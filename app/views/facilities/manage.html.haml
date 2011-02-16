@@ -40,6 +40,8 @@
   %li
     %label== Email
     %p=h current_facility.email || 'None Entered'
-    
+  %li
+    %label== Journal Mask
+    %p=h current_facility.journal_mask
   %ul.horiz
     %li= link_to 'Edit', edit_facility_path(current_facility), :class => 'btn'
