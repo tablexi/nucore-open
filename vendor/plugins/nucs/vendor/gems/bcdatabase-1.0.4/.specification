@@ -1,0 +1,126 @@
+--- !ruby/object:Gem::Specification 
+name: bcdatabase
+version: !ruby/object:Gem::Version 
+  hash: 21
+  prerelease: false
+  segments: 
+  - 1
+  - 0
+  - 1
+  version: 1.0.1
+platform: ruby
+authors: 
+- Rhett Sutphin
+autorequire: 
+bindir: bin
+cert_chain: []
+
+date: 2009-12-20 00:00:00 -06:00
+default_executable: bcdatabase
+dependencies: 
+- !ruby/object:Gem::Dependency 
+  name: rspec
+  prerelease: false
+  requirement: &id001 !ruby/object:Gem::Requirement 
+    none: false
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        hash: 11
+        segments: 
+        - 1
+        - 2
+        version: "1.2"
+  type: :development
+  version_requirements: *id001
+- !ruby/object:Gem::Dependency 
+  name: highline
+  prerelease: false
+  requirement: &id002 !ruby/object:Gem::Requirement 
+    none: false
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        hash: 7
+        segments: 
+        - 1
+        - 4
+        version: "1.4"
+  type: :runtime
+  version_requirements: *id002
+- !ruby/object:Gem::Dependency 
+  name: activesupport
+  prerelease: false
+  requirement: &id003 !ruby/object:Gem::Requirement 
+    none: false
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        hash: 3
+        segments: 
+        - 2
+        - 0
+        version: "2.0"
+  type: :runtime
+  version_requirements: *id003
+description: bcdatabase is a tool for storing passwords and other database configuration information outside of your application source tree.
+email: rhett@detailedbalance.net
+executables: 
+- bcdatabase
+extensions: []
+
+extra_rdoc_files: 
+- LICENSE
+- README.markdown
+files: 
+- .gitignore
+- CHANGELOG.markdown
+- LICENSE
+- README.markdown
+- Rakefile
+- VERSION.yml
+- bin/bcdatabase
+- lib/bcdatabase.rb
+- lib/bcdatabase/commands.rb
+- spec/bcdatabase/commands_spec.rb
+- spec/bcdatabase_spec.rb
+- spec/spec_helper.rb
+has_rdoc: true
+homepage: http://github.com/rsutphin/bcdatabase
+licenses: []
+
+post_install_message: 
+rdoc_options: 
+- --charset=UTF-8
+require_paths: 
+- lib
+required_ruby_version: !ruby/object:Gem::Requirement 
+  none: false
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      hash: 3
+      segments: 
+      - 0
+      version: "0"
+required_rubygems_version: !ruby/object:Gem::Requirement 
+  none: false
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      hash: 3
+      segments: 
+      - 0
+      version: "0"
+requirements: []
+
+rubyforge_project: 
+rubygems_version: 1.3.7
+signing_key: 
+specification_version: 3
+summary: Server-central database configuration for rails and other ruby apps
+test_files: 
+- spec/bcdatabase/commands_spec.rb
+- spec/bcdatabase_spec.rb
+- spec/spec_helper.rb
+
