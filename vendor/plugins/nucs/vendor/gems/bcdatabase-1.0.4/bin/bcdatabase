@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby -W
+
+require 'rubygems'
+require 'bcdatabase/commands'
+
+module Bcdatabase::Commands
+  UTILITY_NAME = File.basename(__FILE__)
+end
+
+###### MAIN
+
+command = ARGV.shift
+unless command
+  $stderr.puts "Please specify a command."
+  $stderr.puts Bcdatabase::Commands.help
+  exit(1)
+end
+
+klass = Bcdatabase::Commands[command]
+unless klass
+  $stderr.puts "Unknown command #{command}."
+  $stderr.puts Bcdatabase::Commands.help
+  exit(2)
+end
+
+exit(klass.new(ARGV).main)
