@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110216164102) do
+ActiveRecord::Schema.define(:version => 20110221225822) do
 
   create_table "account_transactions", :force => true do |t|
     t.integer  "account_id",                        :precision => 38, :scale => 0, :null => false
@@ -169,16 +169,16 @@ ActiveRecord::Schema.define(:version => 20110216164102) do
   create_table "journal_rows", :force => true do |t|
     t.integer "journal_id",                            :precision => 38, :scale => 0, :null => false
     t.integer "order_detail_id",                       :precision => 38, :scale => 0
-    t.integer "fund",                   :limit => 10,  :precision => 10, :scale => 0, :null => false
-    t.integer "dept",                   :limit => 10,  :precision => 10, :scale => 0, :null => false
-    t.integer "project",                               :precision => 38, :scale => 0
-    t.integer "activity",               :limit => 10,  :precision => 10, :scale => 0
-    t.integer "program",                :limit => 10,  :precision => 10, :scale => 0
-    t.integer "account",                :limit => 10,  :precision => 10, :scale => 0, :null => false
     t.decimal "amount",                                :precision => 9,  :scale => 2, :null => false
     t.string  "description",            :limit => 200
     t.string  "reference",              :limit => 50
     t.integer "account_transaction_id",                :precision => 38, :scale => 0
+    t.string  "fund",                   :limit => 3,                                  :null => false
+    t.string  "dept",                   :limit => 7,                                  :null => false
+    t.string  "project",                :limit => 8
+    t.string  "activity",               :limit => 2
+    t.string  "program",                :limit => 4
+    t.string  "account",                :limit => 5,                                  :null => false
   end
 
   create_table "journals", :force => true do |t|
