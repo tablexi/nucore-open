@@ -2,4 +2,4 @@
   %li.first= link_to 'Recent Payment Sources', facility_accounts_path, :class => (secondary_tab == 'recent' ? 'active' : nil)
   %li= link_to 'Search by User', user_search_facility_accounts_path, :class => (secondary_tab == 'search_by_user' ? 'active' : nil)
   %li= link_to 'Search By Payment Source', search_facility_accounts_path, :class => (secondary_tab == 'search_by_account' ? 'active' : nil)
-  %li= link_to 'Add Account', new_account_user_search_facility_accounts_path, :class => (secondary_tab == 'add_account' ? 'active' : nil)
+  %li= link_to 'Add Payment Source', new_account_user_search_facility_accounts_path, :class => (secondary_tab == 'add_account' ? 'active' : nil)
