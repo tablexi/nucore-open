@@ -5,10 +5,10 @@
       = label_tag :owner_user_id, 'Owner User', :class => 'require'
       = text_field_tag 'owner_user_full_name', @owner_user.full_name, :disabled => true, :class => 'show_always'
     %li
-      = label_tag :class_type, nil, :class => 'require'
+      = label_tag :class_type, 'Payment Source Type', :class => 'require'
       = select_tag 'class_type', options_for_select([["Chart String", "NufsAccount"], ["Credit Card", "CreditCardAccount"], ["Purchase Order", "PurchaseOrderAccount"]], :selected => params[:class_type]), :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
     %li
-      = f.label :account_number, nil, :class => 'require'
+      = f.label :account_number, 'Account Number', :class => 'require'
       = f.text_field :account_number, :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
     %li
       = f.label :name_on_card, nil, :class => 'require'
