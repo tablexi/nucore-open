@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110221225822) do
+ActiveRecord::Schema.define(:version => 20110224063354) do
 
   create_table "account_transactions", :force => true do |t|
     t.integer  "account_id",                        :precision => 38, :scale => 0, :null => false
@@ -37,21 +37,20 @@ ActiveRecord::Schema.define(:version => 20110221225822) do
   end
 
   create_table "accounts", :force => true do |t|
-    t.string   "type",                         :limit => 50,                                 :null => false
-    t.string   "account_number",               :limit => 50,                                 :null => false
-    t.string   "description",                  :limit => 50,                                 :null => false
-    t.datetime "expires_at",                                                                 :null => false
-    t.string   "name_on_card",                 :limit => 200
-    t.integer  "expiration_month",                            :precision => 38, :scale => 0
-    t.integer  "expiration_year",                             :precision => 38, :scale => 0
-    t.datetime "created_at",                                                                 :null => false
-    t.integer  "created_by",                                  :precision => 38, :scale => 0, :null => false
+    t.string   "type",                   :limit => 50,                                 :null => false
+    t.string   "account_number",         :limit => 50,                                 :null => false
+    t.string   "description",            :limit => 50,                                 :null => false
+    t.datetime "expires_at",                                                           :null => false
+    t.string   "name_on_card",           :limit => 200
+    t.integer  "expiration_month",                      :precision => 38, :scale => 0
+    t.integer  "expiration_year",                       :precision => 38, :scale => 0
+    t.datetime "created_at",                                                           :null => false
+    t.integer  "created_by",                            :precision => 38, :scale => 0, :null => false
     t.datetime "updated_at"
-    t.integer  "updated_by",                                  :precision => 38, :scale => 0
+    t.integer  "updated_by",                            :precision => 38, :scale => 0
     t.datetime "suspended_at"
-    t.string   "credit_card_number_encrypted", :limit => 200
     t.text     "remittance_information"
-    t.integer  "facility_id",                                 :precision => 38, :scale => 0
+    t.integer  "facility_id",                           :precision => 38, :scale => 0
   end
 
   create_table "answers", :force => true do |t|
