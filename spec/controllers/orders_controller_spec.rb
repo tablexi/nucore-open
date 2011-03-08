@@ -19,122 +19,188 @@ describe OrdersController do
     params_from(:get, "/orders/1/choose_account").should == {:controller => "orders", :action => "choose_account", :id => "1"}
   end
 
+  before :each do
+    @authable         = Factory.create(:facility)
+    @facility_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
+    @price_group      = @authable.price_groups.create(Factory.attributes_for(:price_group))
+    @account          = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
+    @order            = @staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account))
+    @item             = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+    @params={ :id => @order.id }
+  end
+
+
+  context 'cart' do
+
+    before :each do
+      @method=:get
+      @action=:cart
+    end
+
+    it_should_require_login
+
+    it_should_allow :staff do
+      assert_redirected_to order_path(@order)
+    end
+
+    it 'should test more than auth'
+  end
+
+
+  context 'choose_account' do
+
+    before :each do
+      @order.add(@item, 1)
+      @order.order_details.size.should == 1
+
+      @method=:get
+      @action=:choose_account
+      @params.merge!(:account_id => @account.id)
+    end
+
+    it_should_require_login
+
+    it_should_allow :staff do
+      should assign_to(:order).with_kind_of Order
+      assigns(:order).should == @order
+      should render_template 'choose_account.html.haml'
+    end
+
+    it 'should test more than auth'
+  end
+
+
+  context 'purchase' do
+
+    before :each do
+      @method=:put
+      @action=:purchase
+    end
+
+    it_should_require_login
+
+    it_should_allow :staff do
+      should assign_to(:order).with_kind_of Order
+      assigns(:order).should == @order
+      should respond_with :redirect
+    end
+
+    it 'should test more than auth'
+
+  end
+
+
+  context 'receipt' do
+
+    before :each do
+      @order.state='purchased'
+      assert @order.save
+
+      @method=:get
+      @action=:receipt
+    end
+
+    it_should_require_login
+
+    it_should_allow :staff do
+      should assign_to(:order).with_kind_of Order
+      assigns(:order).should == @order
+      should render_template 'receipt.html.haml'
+    end
+
+  end
+
+
+  context 'index' do
+
+    before :each do
+      @method=:get
+      @action=:index
+    end
+
+    it_should_require_login
+
+    it_should_allow :staff do
+      should assign_to(:order_details).with_kind_of Array
+      should render_template 'index.html.haml'
+    end
+
+  end
+
+
   context "add to cart" do
     before(:each) do
-      @facility1         = Factory.create(:facility)
-      @facility_account1 = @facility1.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @price_group1      = @facility1.price_groups.create(Factory.attributes_for(:price_group))
-      @user1             = Factory.create(:user)
-      @account1          = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user1, :created_by => @user1, :user_role => 'Owner']])
-      @order1            = @user1.orders.create(Factory.attributes_for(:order, :created_by => @user1.id, :account => @account1))
-      @item1             = @facility1.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account1.id))
-      @item_pp           = Factory.create(:item_price_policy, :item => @item1, :price_group => @price_group1)
-      @pg_member         = Factory.create(:user_price_group_member, :user => @user1, :price_group => @price_group1)
+      @method=:put
+      @action=:add
+      @params.merge!(:quantity => 1, :product_id => @item.id)
+    end
 
-      @facility2         = Factory.create(:facility)
-      @facility_account2 = @facility2.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @item2             = @facility2.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account2.id))
+    it_should_require_login
 
-      sign_in @admin
-      User.stubs(:find).returns(@user1)
+    it_should_allow :staff, "to add a product with quantity to cart" do
+      assigns(:order).should == @order
+      assigns[:product].should == @item
+      @order.reload.order_details.size.should == 1
+      response.should redirect_to "/orders/#{@order.id}"
     end
 
     context "no account" do
       it "should redirect to choose_account when /add/:product_id/:quantity is called and cart doesn't have an account" do
-        @order1.account = nil
-        @order1.save
-        put :add, :id => @order1.id, :quantity => 10, :product_id => @item1.id
-        response.should redirect_to("/orders/#{@order1.id}/choose_account")
-      end
-    end
-
-    context "cart has an account" do
-      it "should add a product with quantity to cart PUT /add/:product_id/:quantity" do
-        put :add, :id => @order1.id, :quantity => 1, :product_id => @item1.id
-        assigns[:order].should == @order1
-        assigns[:product].should == @item1
-        @order1.reload.order_details.size.should == 1
-        response.should redirect_to "/orders/#{@order1.id}"
+        @order.account = nil
+        @order.save
+        maybe_grant_always_sign_in :staff
+        do_request
+        response.should redirect_to("/orders/#{@order.id}/choose_account")
       end
     end
 
     context "cart with mixed facility" do
       it "should show mixed facility warning if added product doesn't match cart facility" do
-        put :add, :id => @order1.id, :quantity => 1, :product_id => @item1.id
-        put :add, :id => @order1.id, :quantity => 1, :product_id => @item2.id
-        flash[:error].should == "You can not add a product from another facility; please clear your cart or place a separate order."
-        response.should redirect_to "/orders/#{@order1.id}"
+        maybe_grant_always_sign_in :staff
+        do_request
+        @params[:product_id]=@item.id
+        do_request
+        should set_the_flash
+        response.should redirect_to "/orders/#{@order.id}"
       end
     end
 
-    it "should show a warning if the user doesn't have access to the product to be added" do
-      pending
-    end
+    it "should show a warning if the user doesn't have access to the product to be added"
   end
 
-  context "choose account" do
-    before(:each) do
-      @facility         = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @user             = Factory.create(:user)
-      @order            = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id))
-      @item             = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
-
-      sign_in @admin
-      User.stubs(:find).returns(@user)
-    end
-
-    it "should set account on post to set_account" do
-      pending
-#      put :add, :id => @order.id, :product_id => @item.id, :quantity => 1
-#      response.should redirect_to :add_account
-    end
-
-    it "should 403 if account is not in current user's accessible accounts"
-  end
 
   context "remove from cart" do
     before(:each) do
-      @facility         = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @price_group      = @facility.price_groups.create(Factory.attributes_for(:price_group))
-      @user1            = Factory.create(:user)
-      @account1         = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user1, :created_by => @user1, :user_role => 'Owner']])
-      @order1           = @user1.orders.create(Factory.attributes_for(:order, :user => @user1, :created_by => @user1, :account => @account1))
+      @order.add(@item, 1)
+      @order.order_details.size.should == 1
+      @order_detail = @order.order_details[0]
 
-      @user2    = Factory.create(:user)
-      @account2 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user2, :created_by => @user2, :user_role => 'Owner']])
-      @order2   = @user2.orders.create(Factory.attributes_for(:order, :user => @user2, :created_by => @user2, :account => @account2))
-
-      @item      = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
-      @item_pp   = Factory.create(:item_price_policy, :item => @item, :price_group => @price_group)
-      @pg_member = Factory.create(:user_price_group_member, :user => @user1, :price_group => @price_group)
-      @pg_member = Factory.create(:user_price_group_member, :user => @user2, :price_group => @price_group)
+      @method=:put
+      @action=:remove
+      @params.merge!(:order_detail_id => @order_detail.id)
     end
 
-    it "should delete an order_detail when /remove/:order_detail_id is called" do
-      @order1.add(@item, 1)
-      @order1.order_details.size.should == 1
-      @order_detail = @order1.order_details[0]
-      sign_in @admin
-      User.stubs(:find).returns(@user1)
-      put :remove, :id => @order1.id, :order_detail_id => @order_detail.id
-      @order1.reload.order_details.size.should == 0
-      response.should redirect_to "/orders/#{@order1.id}"
+    it_should_require_login
+
+    it_should_allow :staff, "should delete an order_detail when /remove/:order_detail_id is called" do
+      @order.reload.order_details.size.should == 0
+      response.should redirect_to "/orders/#{@order.id}"
     end
 
     it "should 404 it the order_detail to be removed is not in the current cart" do
-      @order1.add(@item)
+      @account2 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @director, :created_by => @director, :user_role => 'Owner']])
+      @order2   = @director.orders.create(Factory.attributes_for(:order, :user => @director, :created_by => @director, :account => @account2))
       @order2.add(@item)
       @order_detail2 = @order2.order_details[0]
-
-      sign_in @admin
-      User.stubs(:find).returns(@user1)
-      put :remove, :id => @order1.id, :order_detail_id => @order_detail2.id
+      @params[:order_detail_id]=@order_detail2.id
+      maybe_grant_always_sign_in :staff
+      do_request
+>>>>>>> nucore
       response.response_code.should == 404
     end
   end
 
+<<<<<<< HEAD
   context "update order_detail quantities" do
     before(:each) do
       @facility         = Factory.create(:facility)
@@ -189,6 +255,52 @@ describe OrdersController do
       @order_detail = @order.order_details.first
       get :show, :id => @order.id
       response.should have_tag 'a[href=?]', new_order_order_detail_reservation_path(@order, @order_detail)
+=======
+
+  context "update order_detail quantities" do
+    before(:each) do
+      @item_pp   = Factory.create(:item_price_policy, :item => @item, :price_group => @price_group)
+      @pg_member = Factory.create(:user_price_group_member, :user => @staff, :price_group => @price_group)
+      @staff.cart.add(@item,1)
+      @order_detail = @order.reload.order_details[0]
+      @order_detail.quantity.should == 1
+      @method=:put
+      @action=:update
+      @params.merge!("quantity#{@order_detail.id}" => "6")
+    end
+
+    it_should_require_login
+
+    it_should_allow :staff, "to update the quantities of order_details" do
+      @order_detail.reload.quantity.should == 6
+    end
+
+    it "should not allow updates of quantities for instruments"
+  end
+
+
+  context "cart meta data" do
+    before(:each) do
+      @instrument       = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @service          = @authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
+      @method=:get
+      @action=:show
+    end
+
+    it_should_require_login
+
+    context 'staff' do
+
+      before :each do
+        @order.add(@instrument)
+        @order_detail = @order.order_details.first
+      end
+
+      it_should_allow :staff, "to show links for making a reservation for instruments" do
+        response.should have_tag 'a[href=?]', new_order_order_detail_reservation_path(@order, @order_detail)
+      end
+
+>>>>>>> nucore
     end
 
     it "should show links for uploading files for services where required by service"
@@ -200,6 +312,7 @@ describe OrdersController do
       @service.service_surveys.first.active!
       @order.add(@service)
       @order_detail = @order.order_details.first
+<<<<<<< HEAD
       get :show, :id => @order.id
       response.should have_tag 'a[href=?]', "/orders/#{@order.id}/details/#{@order_detail.id}/surveys/#{@survey.access_code}"
     end
@@ -242,10 +355,31 @@ describe OrdersController do
       put :clear, :id => @order.id
       @order.order_details.size == 0
       response.should redirect_to order_path(@order)
+=======
+      maybe_grant_always_sign_in :staff
+      do_request
+      response.should have_tag 'a[href=?]', "/orders/#{@order.id}/details/#{@order_detail.id}/surveys/#{@survey.access_code}"
+    end
+  end
+
+
+  context "clear" do
+    before(:each) do
+      @method=:put
+      @action=:clear
+    end
+
+    it_should_require_login
+
+    it_should_allow :staff, "to clear the cart and redirect back to cart" do
+      @order.order_details.size == 0
+      assert_redirected_to order_path(@order)
+>>>>>>> nucore
     end
 
   end
 
+<<<<<<< HEAD
   context "checkout" do
     before(:each) do
       @facility         = Factory.create(:facility)
@@ -274,6 +408,35 @@ describe OrdersController do
       response.should redirect_to "/orders/#{@order.id}/receipt"
 
       put :purchase, :id => @order.id
+=======
+
+  context "checkout" do
+    before(:each) do
+      @item_pp          = Factory.create(:item_price_policy, :item => @item, :price_group => @price_group)
+      @pg_member        = Factory.create(:user_price_group_member, :user => @staff, :price_group => @price_group)
+      @order.add(@item, 10)
+      @method=:get
+      @action=:show
+    end
+
+    it_should_require_login
+
+    it "should disallow viewing of cart that is purchased" do
+      define_open_account(@item.account, @account.account_number)
+      @order.validate_order!
+      @order.purchase!
+      maybe_grant_always_sign_in :staff
+      do_request
+      response.should redirect_to "/orders/#{@order.id}/receipt"
+
+      @action=:choose_account
+      do_request
+      response.should redirect_to "/orders/#{@order.id}/receipt"
+
+      @method=:put
+      @action=:purchase
+      do_request
+>>>>>>> nucore
       response.should redirect_to "/orders/#{@order.id}/receipt"
 
       # TODO: add, etc.
