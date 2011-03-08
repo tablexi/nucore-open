@@ -1,0 +1,23 @@
+- product = @instrument || @service || @item || @bundle
+%li
+  %label URL Name
+  = link_to send("facility_#{product.class.name.downcase}_url", current_facility, product), send("facility_#{product.class.name.downcase}_url", current_facility, product)
+%li
+  %label Description
+  = product.description
+- unless product.is_a?(Bundle)
+  %li
+    %label Recharge Chart String
+    =h product.facility_account.account_number + (product.facility_account.is_active? ? '' : ' (inactive)')
+  %li
+    %label Initial Order Status
+    =h product.initial_order_status.name
+  %li
+    %label Requires Approval?
+    =h product.requires_approval? ? 'Yes' : 'No'
+%li
+  %label Is Inactive?
+  =h product.is_archived? ? 'Yes' : 'No'
+%li
+  %label Is Hidden?
+  =h product.is_hidden? ? 'Yes' : 'No'

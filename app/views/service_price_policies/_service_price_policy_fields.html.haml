@@ -1,0 +1,36 @@
+- content_for :head_content do
+  = javascript_include_tag "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"
+  = javascript_include_tag 'price_policy'
+  = stylesheet_link_tag 'jquery-ui/jquery-ui'
+
+%li
+  = label_tag :start_date 
+  = text_field_tag "start_date", @start_date.class.name == 'Date' ? @start_date.strftime("%m/%d/%Y") : @start_date, :id => 'datepicker'
+%li
+  %table
+    %tr
+      %th.centered Prevent Purchase
+      %th Price Group
+      %th Type
+      %th.currency Unit Cost
+      %th.currency Unit Adjustment
+    - @price_policies.each do |pp|
+      - pg = pp.price_group
+      %tr
+        - if pg.is_master_internal?
+          %td= hidden_field_tag "service_price_policy#{pg.id}[restrict_purchase]", false
+        - else
+          %td.centered= check_box_tag "service_price_policy#{pg.id}[restrict_purchase]", 'true', pp.restrict_purchase?, :class => "restrict_purchase"
+        %td=h pg.name
+        %td= pg.type_string
+        - if !pg.is_internal?
+          %td.currency= text_field_tag "service_price_policy#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => ''), :size => 8
+          %td.currency
+        - elsif pg.is_master_internal?
+          %td.currency= text_field_tag "service_price_policy#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => ''), :size => 8, :class => 'master_unit_cost'
+          %td
+        - else
+          %td.currency
+            %span.unit_cost
+            = hidden_field_tag "service_price_policy#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => ''), :class => "unit_cost"
+          %td.currency= text_field_tag "service_price_policy#{pg.id}[unit_subsidy]", number_to_currency(pp.unit_subsidy, :unit => ''), :size => 8

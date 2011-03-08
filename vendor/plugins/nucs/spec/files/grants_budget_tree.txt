@@ -1,0 +1,6 @@
+77599|Other Capital Equipment|77501|Capital Equipment, Restricted|70000|Non-Personnel Expenses|2008-12-01|NU_GM_BUDGET|1901-01-01
+77550|Other Capital Office Equipment|77501|Capital Equipment, Restricted|70000|Non-Personnel Expenses|1901-01-01|NU_GM_BUDGET|1901-01-01
+77545|AV Equipment-Capital|77501|Capital Equipment, Restricted|70000|Non-Personnel Expenses|1901-01-01|NU_GM_BUDGET|1901-01-01
+77520|Typewriter-Capital|77501|Capital Equipment, Restricted|70000|Non-Personnel Expenses|2008-12-01|NU_GM_BUDGET|1901-01-01
+77510|Furniture-Capital|77501|Capital Equipment, Restricted|70000|Non-Personnel Expenses|1901-01-01|NU_GM_BUDGET|1901-01-01
+78740|Uncollectible Expense|78700|F&A|70000|Non-Personnel Expenses|1901-01-01|NU_GM_BUDGET|1901-01-01

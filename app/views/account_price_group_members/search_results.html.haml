@@ -1,0 +1,22 @@
+- if params[:search_term] == '' || params[:search_term].nil?
+  %p.error Please enter a search term
+- else
+  - if @accounts.nil?
+    %p.error No existing accounts found.
+  - else
+    %h3 Select an Existing Payment Source
+    %p
+      == Can't find the payment source you're looking for?
+      = link_to 'Create a new payment source', new_account_user_search_facility_accounts_path(current_facility)
+    %table
+      %tr
+        %th Account Number
+        %th Owner
+        %th Email
+      - @accounts.each do |account|
+        %tr
+          %td= link_to account.account_number, create_facility_price_group_account_price_group_members_path(current_facility, @price_group, :account_id => account.id)
+          %td=h account.owner_user.full_name
+          %td=h account.owner_user.email
+    - if @count > @limit
+      %p.notice== #{@count-@limit} more payment sources exist, try refining your search.

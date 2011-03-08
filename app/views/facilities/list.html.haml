@@ -1,0 +1,16 @@
+- content_for :h1 do
+  == Manage Facilities
+  
+- if current_user.administrator?
+  %ul.horiz
+    %li= link_to 'Add Facility', new_facility_path
+
+- if @facilities.any?
+  %table
+    %tr
+      %th== Name
+      %th== Status
+    - @facilities.sort.each do |facility|
+      %tr
+        %td= link_to h(facility), facility_orders_path(facility)
+        %td= facility.status_string

@@ -1,0 +1,23 @@
+- content_for :h1 do
+  =h current_facility
+
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'statement_history' }
+
+%h2 Statement History
+
+- unless @statements.empty?
+  %table
+    %tr
+      %th
+      %th Sent At
+      %th Invoice At
+      %th Sent By
+      %th Number of Accounts
+    - @statements.each do |s|
+      %tr
+        %td.cenetered= link_to "View", facility_statement_path(current_facility, s)
+        %td=h human_datetime(s.created_at)
+        %td=h human_datetime(s.invoice_date)
+        %td=h begin User.find(s.created_by).full_name rescue 'Unknown' end
+        %td=h s.accounts.uniq.length

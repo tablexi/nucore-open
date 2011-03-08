@@ -1,0 +1,49 @@
+.unavailable,
+.fc-agenda .unavailable .fc-event-time,
+.unavailable a {
+  background-color: #DBDBDB;
+  border-color: #DBDBDB;
+  color: #fff;
+}
+
+#overlay.on #spinner #hide  {
+  background:url('../../images/transparent.png') top left repeat;
+  filter:alpha(opacity=30);
+  opacity:0.3;
+  overflow: hidden;
+}
+
+#overlay.off {}
+
+#overlay.off #spinner {
+  background:none;
+}
+
+#overlay.on #spinner {
+  background:url('../../images/spinner.gif') top center no-repeat;
+}
+
+#calendar table.fc-header {
+	margin-bottom:15px;
+}
+
+#calendar table.fc-header tr,
+#calendar table.fc-header th, 
+#calendar table.fc-header td {
+	border:1px solid white;
+}
+
+#calendar table {
+	margin-bottom:0;
+}
+
+#calendar table, #calendar tr {
+	border:none;
+}
+
+#calendar .fc-agenda-head tr.fc-last th {
+	padding:10px 0;
+}
+
+
+

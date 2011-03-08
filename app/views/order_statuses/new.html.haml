@@ -1,0 +1,19 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'statuses' }
+
+%h2 New Order Status
+
+- form_for([current_facility, @order_status]) do |f|
+  = f.error_messages
+  %ul.form
+    %li
+      = f.label :parent_id, 'Status of', :class => 'required'
+      = f.select :parent_id, (OrderStatus.new_os + OrderStatus.inprocess + OrderStatus.cancelled).flatten.collect{ |os| [os.name, os.id]}
+    %li
+      = f.label :name, 'Name', :class => 'required'
+      = f.text_field :name
+  %ul.horiz
+    %li= f.submit 'Create', :class => 'btn'
+    %li= link_to 'Cancel', facility_order_statuses_path

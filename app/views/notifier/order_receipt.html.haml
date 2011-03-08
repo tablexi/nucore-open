@@ -1,0 +1,38 @@
+%p Thank you for your order on the NUCore website.
+
+%ul
+  %li
+    %label Order #
+    =h @order.id
+  %li
+    %label Ordered at
+    =h @order.ordered_at.strftime("%b %e, %Y %l:%M %p")
+  %li
+    %label Facility
+    =h @order.facility
+  %li
+    %label Ordered By
+    =h "#{@order.created_by_user.first_name} #{@order.created_by_user.first_name}"
+
+%table
+  %tr
+    %th Product
+    %th Quantity
+    %th Price
+    %th Adjustment
+    %th Total
+  - @order.order_details.each do |od|
+    %tr
+      - if od.reservation
+        %td
+          =h od.product.name
+          %br
+          =h od.reservation
+      - else
+        %td=h od.product.name
+      %td=h od.quantity
+      %td=h number_to_currency od.cost
+      %td=h number_to_currency od.subsidy
+      %td=h number_to_currency od.total
+
+%p * Instrument prices are an estimate.  Actual cost may vary based on time used.

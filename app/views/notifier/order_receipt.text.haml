@@ -1,0 +1,20 @@
+== Thank you for your order on the NUCore website.
+==
+== Order #: #{@order.id}
+== Ordered at: #{@order.ordered_at.strftime("%b %e, %Y %l:%M %p")}
+== Facility: #{@order.facility}
+== Ordered By: #{@order.created_by_user.first_name} #{@order.created_by_user.first_name}
+==
+== Order Details
+== ========================================
+- @order.order_details.each do |od|
+  = od.product.name
+  - if od.reservation
+    == Reservation: #{od.reservation}
+  == Quantity: #{od.quantity}
+  == Price: #{number_to_currency od.cost}
+  == Subsidy #{number_to_currency od.subsidy}
+  == Total #{number_to_currency od.total}
+==
+==
+== * Instrument prices are an estimate.  Actual cost may vary based on time used.

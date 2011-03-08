@@ -1,0 +1,6 @@
+%ul.sidenav
+  %li= link_to 'Overview', manage_facility_path(current_facility), :class => (sidenav_tab == 'overview' ? 'active' : '')
+  %li= link_to 'Recharge Chart Strings', facility_facility_accounts_path(current_facility), :class => (sidenav_tab == 'recharge_accounts' ? 'active' : '')
+  %li= link_to 'Facility Staff', facility_facility_users_path(current_facility), :class => (sidenav_tab == 'staff' ? 'active' : '')
+  %li= link_to 'Price Groups', facility_price_groups_path(current_facility), :class => (sidenav_tab == 'price_groups' ? 'active' : '')
+  %li= link_to 'Order Statuses', facility_order_statuses_path(current_facility), :class => (sidenav_tab == 'statuses' ? 'active' : '')

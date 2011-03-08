@@ -1,0 +1,109 @@
+- content_for :head_content do
+  = javascript_include_tag "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"
+  = javascript_include_tag 'price_policy'
+  = stylesheet_link_tag 'jquery-ui/jquery-ui'
+
+%li
+  = label_tag :start_date, 'Effective'
+  = text_field_tag "start_date", @start_date.class.name == 'Date' ? @start_date.strftime("%m/%d/%Y") : @start_date, :id => 'datepicker'
+%li
+  = label_tag :interval, 'Calculate Rates per'
+  %p Usage, reservation, and overage time will be rounded up based on this selection.
+  = select_tag "interval", options_for_select(InstrumentPricePolicy.intervals.map{|d| [ pluralize(d, 'minute'), d ]}, @price_policies.first.usage_mins)
+%li
+  %table
+    %tr
+      %th.centered{:rowspan => 2} Prevent Purchase
+      %th{:rowspan => 2} Price Group (Type)
+      %th{:rowspan => 2} Reservation Window
+      %th.centered{:colspan => 3}
+        Rates per
+        %span.interval_replace
+      %th{:rowspan => 2} Minimum Cost
+      %th{:rowspan => 2} Cancellation Cost
+    %tr
+      %th Actual
+      %th Scheduled
+      %th Overage 
+    - @price_policies.each do |pp|
+      - pg = pp.price_group
+      %tr
+        - if pg.is_master_internal?
+          %td= hidden_field_tag "instrument_price_policy#{pg.id}[restrict_purchase]", false
+        - else
+          %td.centered= check_box_tag "instrument_price_policy#{pg.id}[restrict_purchase]", 'true', pp.restrict_purchase?, :class => "restrict_purchase"
+        %td=h "#{pg.name} (#{pg.type_string})"
+        %td
+          Days
+          = text_field_tag "instrument_price_policy#{pg.id}[reservation_window]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:reservation_window] : (pp.reservation_window || 14), :size => 8
+        
+        - if !pg.is_internal?
+          %td
+            Rate
+            %br
+            = text_field_tag "instrument_price_policy#{pg.id}[usage_rate]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:usage_rate] : number_to_currency(pp.usage_rate, :unit => ''), :size => 8
+            %br
+          %td
+            Rate
+            %br
+            = text_field_tag "instrument_price_policy#{pg.id}[reservation_rate]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:reservation_rate] : number_to_currency(pp.reservation_rate, :unit => ''), :size => 8
+          %td
+            Rate
+            %br
+            = text_field_tag "instrument_price_policy#{pg.id}[overage_rate]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:overage_rate] : number_to_currency(pp.overage_rate, :unit => ''), :size => 8
+          %td
+            Amount
+            %br
+            = text_field_tag "instrument_price_policy#{pg.id}[minimum_cost]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:minimum_cost] : number_to_currency(pp.minimum_cost, :unit => ''), :size => 8
+
+          %td
+            Amount
+            %br
+            = text_field_tag "instrument_price_policy#{pg.id}[cancellation_cost]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:cancellation_cost] : number_to_currency(pp.cancellation_cost, :unit => ''), :size => 8
+        - elsif pg.is_master_internal?
+          %td
+            Rate
+            %br
+            = text_field_tag "instrument_price_policy#{pg.id}[usage_rate]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:usage_rate] : number_to_currency(pp.usage_rate, :unit => ''), :size => 8, :class => 'master_usage_cost'
+          %td
+            Rate
+            %br
+            = text_field_tag "instrument_price_policy#{pg.id}[reservation_rate]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:reservation_rate] : number_to_currency(pp.reservation_rate, :unit => ''), :size => 8, :class => 'master_reservation_cost'
+          %td
+            Rate
+            %br
+            = text_field_tag "instrument_price_policy#{pg.id}[overage_rate]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:overage_rate] : number_to_currency(pp.overage_rate, :unit => ''), :size => 8, :class => 'master_overage_cost'
+          %td
+            Amount
+            %br
+            = text_field_tag "instrument_price_policy#{pg.id}[minimum_cost]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:minimum_cost] : number_to_currency(pp.minimum_cost, :unit => ''), :size => 8, :class => 'master_minimum_cost'
+          %td
+            Amount
+            %br
+            = text_field_tag "instrument_price_policy#{pg.id}[cancellation_cost]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:cancellation_cost] : number_to_currency(pp.cancellation_cost, :unit => ''), :size => 8, :class => 'master_cancellation_cost'
+        - else
+          %td
+            = hidden_field_tag "instrument_price_policy#{pg.id}[usage_rate]", number_to_currency(pp.usage_rate, :unit => ''), :class => "usage_cost"
+            Adjustment
+            %br
+            = text_field_tag "instrument_price_policy#{pg.id}[usage_subsidy]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:usage_subsidy] : number_to_currency(pp.usage_subsidy, :unit => ''), :size => 8
+          %td
+            = hidden_field_tag "instrument_price_policy#{pg.id}[reservation_rate]", number_to_currency(pp.reservation_rate, :unit => ''), :class => "reservation_cost"
+            Adjustment
+            %br
+            = text_field_tag "instrument_price_policy#{pg.id}[reservation_subsidy]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:reservation_subsidy] : number_to_currency(pp.reservation_subsidy, :unit => ''), :size => 8
+          %td
+            = hidden_field_tag "instrument_price_policy#{pg.id}[overage_rate]", number_to_currency(pp.overage_rate, :unit => ''), :class => "overage_cost"
+            Adjustment
+            %br
+            = text_field_tag "instrument_price_policy#{pg.id}[overage_subsidy]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:overage_subsidy] : number_to_currency(pp.overage_subsidy, :unit => ''), :size => 8
+          %td
+            Amount
+            %br
+            %span.minimum_cost
+            = hidden_field_tag "instrument_price_policy#{pg.id}[minimum_cost]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:minimum_cost] : number_to_currency(pp.minimum_cost, :unit => ''), :size => 8, :class => 'minimum_cost'
+          %td
+            Amount
+            %br
+            %span.cancellation_cost
+            = hidden_field_tag "instrument_price_policy#{pg.id}[cancellation_cost]", params["instrument_price_policy#{pg.id}"] ? params["instrument_price_policy#{pg.id}"][:cancellation_cost] : number_to_currency(pp.cancellation_cost, :unit => ''), :size => 8, :class => 'cancellation_cost'

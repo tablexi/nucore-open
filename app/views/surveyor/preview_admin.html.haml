@@ -1,0 +1,10 @@
+- content_for :h1 do
+  =h current_facility
+
+%h2== #{@service}
+%h3== #{h @survey.title} Preview
+
+= @rendered
+
+%ul.horiz
+  %li= link_to 'Cancel', upload_product_survey_file_path(current_facility, 'service', @service)

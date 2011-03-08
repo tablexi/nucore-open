@@ -1,0 +1,28 @@
+- content_for :h1 do
+  =h current_facility
+
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'services' }
+
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'pricing_rules'}
+
+%h2=h @service
+
+- if session_user.manager_of?(current_facility)
+  %ul.horiz
+    %li= link_to 'Add Pricing Rules', new_facility_service_price_policy_path
+
+- if @current_price_policies.empty?
+  %p.notice You must add pricing rules for this service to be purchasable.
+- else
+  %h2 Current Pricing Rules
+  %h3= "Effective: #{human_date(@current_start_date)}"
+  = render :partial => "table", :locals => { :service_price_policies => @current_price_policies, :editable => false }
+
+- unless @next_dates.empty?
+  %h2 Upcoming Pricing Rules
+  - @next_dates.each do |date|
+    - @price_policies = ServicePricePolicy.for_date(@service, date)
+    %h3= "Effective: #{human_date(date)}"
+    = render :partial => "table", :locals => { :service_price_policies => @price_policies, :editable => true, :url_date => date.strftime("%Y-%m-%d") }

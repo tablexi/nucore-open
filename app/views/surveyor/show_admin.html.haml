@@ -1,0 +1,10 @@
+- content_for :h1 do
+  =h @current_facility
+
+%h2== Order # #{@order_detail}
+%h3== #{@service} Online Order Form
+
+= @rendered
+
+%ul.horiz
+  %li= link_to 'Cancel', request.referer ? request.referer : facility_orders_path(current_facility)

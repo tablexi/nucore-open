@@ -1,0 +1,18 @@
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+
+- content_for :h1 do
+  =h current_facility
+
+%h2 Add Payment Source
+%p To add a payment source, first search for the user you would like to create the payment source for.
+-form_tag user_search_results_url, :id => 'ajax_form' do
+  = label_tag :search_term, 'Search by name, NetID, or username'
+  %br
+  = text_field_tag :search_term, nil, :size => 30
+  = submit_tag 'Search', :class => 'btn'
+  = hidden_field_tag :facility_id, current_facility.id
+  = hidden_field_tag :search_type, 'user_new_account'
+  = hidden_field_tag :create_link, 'true'
+%br
+#result

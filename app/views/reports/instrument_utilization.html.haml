@@ -1,0 +1,27 @@
+- content_for :head_content do
+  = stylesheet_link_tag "jquery-ui/jquery-ui"
+  %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
+  :javascript
+    $(document).ready(function() {
+      $('.datepicker').each(function() {
+        $(this).datepicker();
+      });
+    });
+
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_report', :locals => { :sidenav_tab => 'instrument_utilization' }
+
+%h2 Instrument Utilization Report
+- form_tag instrument_utilization_facility_reports_path(:format => 'csv') do
+  %p.instructions This report shows instrument utilization for the date range specified.
+  %ul.form
+    %li
+      %label Start Date
+      = text_field_tag :date_start, params[:date_start] || human_datetime(@date_start, :date_only => true), :class => 'datepicker'
+    %li
+      %label End Date
+      = text_field_tag :date_end, params[:date_end] || human_datetime(@date_end, :date_only => true), :class => 'datepicker'
+  %ul.horiz
+    %li= submit_tag "Download Report", :class => 'btn'

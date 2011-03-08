@@ -1,0 +1,14 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'price_groups' }
+
+%h2 Add Price Group
+%fieldset
+  - form_for([current_facility, @price_group]) do |f|
+    = f.error_messages
+    %ul.form
+      = render :partial => 'price_group_fields', :locals => {:f => f}
+    %ul.horiz
+      %li= f.submit 'Create', :class => 'btn'
+      %li= link_to 'Cancel', facility_price_groups_path

@@ -1,0 +1,4 @@
+%ul.tabs
+  %li.first= link_to 'Details', facility_account_path(current_facility, @account), :class => (secondary_tab == 'details' ? 'active' : nil)
+  %li= link_to 'Transactions', facility_account_statement_path(current_facility, @account, 'recent'), :class => (secondary_tab == 'transactions' ? 'active' : nil)
+  %li= link_to 'Members', facility_account_members_path(current_facility, @account), :class => (secondary_tab == 'members' ? 'active' : nil)

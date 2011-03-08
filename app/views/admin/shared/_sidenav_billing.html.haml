@@ -1,0 +1,8 @@
+%ul
+  %li= link_to 'Payment Sources', facility_accounts_path, :class => (sidenav_tab == 'accounts' ? 'active' : '')
+  %li= link_to 'Send Statements', pending_facility_statements_path, :class => (sidenav_tab == 'send_statements' ? 'active' : '')
+  %li= link_to 'Statement History', facility_statements_path, :class => (sidenav_tab == 'statement_history' ? 'active' : '')
+  %li= link_to 'Accounts Receivable', accounts_receivable_facility_statements_path, :class => (sidenav_tab == 'accounts_receivable' ? 'active' : '')
+  %li= link_to 'Manage Journals', facility_journals_path, :class => (sidenav_tab == 'journals' ? 'active' : '')
+  %li= link_to 'Manage Credit Cards', credit_cards_facility_accounts_path, :class => (sidenav_tab == 'credit_cards' ? 'active' : '')
+  %li= link_to 'Manage Purchase Orders', purchase_orders_facility_accounts_path, :class => (sidenav_tab == 'purchase_orders' ? 'active' : '')

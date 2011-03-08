@@ -1,0 +1,5 @@
+<% if @facility %>
+  <%= link_to "#{user.last_name}, #{user.first_name}", user_accounts_path(@facility, user.id) %>
+<% elsif @account %>
+  <%= link_to "#{user.last_name}, #{user.first_name}", user_accounts_path(@account, user.id) %>
+<% end %>

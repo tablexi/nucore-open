@@ -1,0 +1,27 @@
+@charset "utf-8";
+
+/* IE Specific Styling
+***********************************************************/
+#nav li.right:hover ul {
+  margin-top:30px !important;
+}
+
+#nav li.active a span.nav-text, #nav li:hover a span.nav-text { 
+  position:relative;
+  top:-15px;
+}
+
+#subnav-top {
+  margin-bottom:-19px !important;
+  padding-bottom:0 !important;
+}
+
+#nav ul li.right:hover ul {
+  position:relative;
+  right:0;
+  top:-47px !important;
+}
+
+#nav ul li.right li { 
+  width:360px !important;
+}

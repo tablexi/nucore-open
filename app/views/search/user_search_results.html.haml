@@ -1,0 +1,30 @@
+- if params[:search_term] == '' || params[:search_term].nil?
+  %p.error Please enter a search term
+- else
+  - if @users.empty?
+    - if params[:create_link] == 'true'
+      %p
+        Can't find the user you're looking for?
+        = link_to 'Create a new user', new_search_facility_users_path(@facility)
+    %p.notice No existing users found.
+  - else
+    %h3 Select an Existing User
+    - if params[:search_type] == 'manage_user'
+      = render :partial => "#{params[:search_type]}_table", :locals => {:users => @users}
+    - else
+      %table
+        %tr
+          %th Name
+          %th Username or NetID
+          %th Email
+        - @users.each do |user|
+          %tr
+            %td= render :partial => "#{params[:search_type]}_link", :locals => {:user => user}
+            %td=h user.username
+            %td=h user.email
+      - if @count > @limit
+        %p.notice="#{@count-@limit} more users exist, try refining your search."
+    - if params[:create_link] == 'true'
+      %p
+        Can't find the user you're looking for?
+        = link_to 'Create a new user', new_search_facility_users_path(@facility)

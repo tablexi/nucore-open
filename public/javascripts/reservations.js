@@ -1,0 +1,55 @@
+$(document).ready(function() {
+  // initialize fullcalendar
+  $('#calendar').fullCalendar({
+    editable: false,
+    defaultView: 'agendaWeek',
+    allDaySlot: false,
+    events: events_path,
+    minTime: minTime,
+    maxTime: maxTime,
+    height: (maxTime - minTime)*42 + 75,
+    loading: function(isLoading, view) {
+      if (isLoading) {
+        $("#overlay").addClass('on').removeClass('off');
+      } else {
+        $("#overlay").addClass('off').removeClass('on');
+        try {
+          var startDate = $.fullCalendar.formatDate(view.start, "yyyyMMdd")
+          var endDate   = $.fullCalendar.formatDate(view.end, "yyyyMMdd")
+          // check calendar start date
+          if (startDate < minDate) {
+            // hide the previous button
+            $("div.fc-button-prev").hide();
+          } else {
+            // show the previous button
+            $("div.fc-button-prev").show();
+          }
+          // check calendar end date
+          if (endDate > maxDate) {
+            // hide the next button
+            $("div.fc-button-next").hide();
+          } else {
+            // show the next button
+            $("div.fc-button-next").show();
+          }
+        } catch(error) {}
+      }
+    }
+  });
+
+  init_datepickers();
+
+  // initialize datepicker
+  function init_datepickers() {
+    if (typeof minDaysFromNow == "undefined") {
+      window['minDaysFromNow'] = 0;
+    }
+    $("#datepicker").datepicker({'minDate':minDaysFromNow, 'maxDate':maxDaysFromNow});
+    $('.datepicker').each(function(){
+      $(this).datepicker({'minDate':minDaysFromNow, 'maxDate':maxDaysFromNow});
+    });
+  }
+
+  //$("div.fc-button-prev").hide();
+});
+

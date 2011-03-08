@@ -1,0 +1,45 @@
+- content_for :head_content do
+  = javascript_include_tag 'calendar/fullcalendar.min.js', 'instruments.js'
+  = stylesheet_link_tag 'calendar/fullcalendar.css', 'calendar/fullcalendar.extensions.css'
+
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'reservations'}
+
+:javascript
+  var events_path = "#{facility_instrument_reservations_url(current_facility, @instrument, :format => 'js')}";
+
+%h2= @instrument
+
+%h3 Administrative Reservations
+%ul.horiz
+  %li= link_to 'Add Admin Reservation', new_facility_instrument_reservation_path
+
+- if @admin_reservations.empty?
+  %p.notice There are no upcoming administrative reservations.
+- else
+  %table
+    %tr
+      %th
+      %th Reservation
+    - @admin_reservations.each do |r|
+      %tr
+        %td= link_to 'Remove Reservation', facility_instrument_reservation_path(current_facility, @instrument, r), :confirm => 'Are you sure?', :method => :delete
+        - if r.reserve_start_at > Time.zone.now
+          %td= link_to r, facility_instrument_reservation_edit_admin_path(current_facility, @instrument, r)
+        - else
+          %td=h r
+%br
+%br
+%br
+
+%h3 Reservations Calendar
+
+#overlay
+  #spinner
+    #hide
+      #calendar
+

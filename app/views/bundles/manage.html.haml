@@ -1,0 +1,13 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'bundles' }
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'details'}
+
+%h2=h @bundle
+%ul.form
+  = render :partial => 'admin/shared/product_manage'
+- if session_user.manager_of?(current_facility)
+  %ul.horiz
+    %li= link_to 'Edit', edit_facility_bundle_path(current_facility, @bundle), :class => 'btn'

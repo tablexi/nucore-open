@@ -1,0 +1,13 @@
+development:
+  adapter: oracle_enhanced
+  database: oracle.local:1521/xe
+  username: nucore_development
+  password: 
+  encoding: utf8
+
+test:
+  adapter: oracle_enhanced
+  database: oracle.local:1521/xe
+  username: nucore_test
+  password: 
+  encoding: utf8

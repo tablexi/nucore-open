@@ -1,0 +1,17 @@
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_account', :locals => {:secondary_tab => 'search_by_account'}
+
+%fieldset
+  - form_tag user_search_results_url, :id => 'ajax_form' do
+    = label_tag :search_term, 'Search by payment method number or description'
+    %br
+    = text_field_tag :search_term, nil, :size => 30
+    = submit_tag "Search", :class => 'btn'
+    = hidden_field_tag :facility_id, current_facility.id
+    = hidden_field_tag :search_type, 'account'
+    = hidden_field_tag :create_link, 'false'
+%br
+#result

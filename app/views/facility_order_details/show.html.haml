@@ -1,0 +1,104 @@
+- content_for :h1 do
+  = current_facility
+
+%h2== Edit Order # #{@order_detail}
+
+.grid_6.alpha
+  %ul.form
+    %li
+      %label Ordered At
+      =h human_datetime(@order.ordered_at)
+    %li
+      %label Ordered For
+      =h @order.user.full_name
+    %li
+      %label Ordered By
+      =h @order.created_by_user.full_name
+    %li
+      %label Payment Source
+      =h @order_detail.account
+
+
+.grid_6.omega.margin_bottom
+  - # Dispute Results
+  - if @order_detail.dispute_at
+    .box.margin_bottom
+      %h3 Dispute Information
+      %ul.form
+        %li
+          %label Disputed On
+          =h human_datetime(@order_detail.dispute_at)
+        %li
+          %label Dispute Reason
+          =h @order_detail.dispute_reason
+        %li
+          %label Resolved At
+          =h human_datetime(@order_detail.dispute_resolved_at)
+        %li
+          %label Resolution Notes
+          =h @order_detail.dispute_resolved_reason
+        %li
+          %label Credit Amount
+          =h number_to_currency(@order_detail.dispute_resolved_credit)
+
+  - # Results Files
+  - if @order_detail.product.is_a?(Service)
+    .box
+      %h3 Results Files
+      - @results = @order_detail.file_uploads.sample_result.sort{|a,b| a.created_at <=> b.created_at}
+      - if @results.empty?
+        %p No results have been uploaded.
+.clear
+
+- # Product table
+%table
+  %tr
+    %th{:colspan => 2} Quantity*/Product
+    %th Status
+    - if @order_detail.product.is_a?(Instrument)
+      %th.currency Est Cost
+      %th.currency Est Adjustment
+    %th.currency Cost
+    %th.currency Adjustment
+    %th.currency Total
+  %tr
+    %td.centered=h @order_detail.quantity
+    %td
+      %ul
+        - product_name = (@order_detail.bundle ? "#{h @order_detail.bundle} &mdash; " : '') + h(@order_detail.product)
+        %li= product_name
+        - if @order_detail.reservation
+          %li.indented=h @order_detail.reservation
+        - if @order_detail.survey_completed?
+          %li.indented= link_to('View Order Form', show_admin_order_survey_path(current_facility, @order, @order_detail, @order_detail.response_set.survey.access_code, @order_detail.response_set.access_code))
+        - unless @order_detail.file_uploads.template_result.empty?
+          %li.indented= link_to('View Order File', @order_detail.file_uploads.template_result.first.file.url)
+    %td=h @order_detail.order_status
+    - if @order_detail.product.is_a?(Instrument)
+      %td.currency=h number_to_currency @order_detail.estimated_cost
+      %td.currency=h number_to_currency @order_detail.estimated_subsidy
+    %td.currency= number_to_currency @order_detail.actual_cost
+    %td.currency= number_to_currency @order_detail.actual_subsidy
+    %td.currency= number_to_currency @order_detail.actual_total
+
+- if @order_detail.bundle
+  -# BUNDLE TABLE
+  %br
+  %br
+  %br
+  %h3 Bundle Summary
+  %p This order is part of a bundle.  Below is a summary of related bundle order line items.
+  %table
+    %tr
+      %th Order #
+      %th{:colspan => 2} Quantity/Product
+      %th Status
+      %th Assigned To
+    - @order.order_details.find(:all, :conditions => {:group_id => @order_detail.group_id}).each do |od|
+      - product_name = (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
+      %tr
+        %td= link_to od, edit_facility_order_order_detail_path(current_facility, @order, od)
+        %td= od.quantity
+        %td= product_name
+        %td=h od.order_status
+        %td=h od.assigned_user.nil? ? '' : od.assigned_user.full_name

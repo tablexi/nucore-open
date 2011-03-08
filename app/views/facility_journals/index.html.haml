@@ -1,0 +1,69 @@
+- content_for :h1 do
+  =h current_facility
+
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'journals' }
+
+%h2 Manage Journals
+%h3 Pending Journal
+- if @pending_journal.nil?
+  %p.notice There is no pending journal at this time
+- else
+  - form_for([current_facility, @pending_journal]) do |f|
+    = f.error_messages 
+    %table
+      %tr
+        %th Download
+        %th Journaled On
+        %th Amount
+        %th
+          %span.require Reference
+        %th Notes
+        %th
+          %span.require Status
+      %tr
+        %td
+          %ul
+            %li=link_to 'XLS File', @pending_journal.file.url
+            %li=link_to 'XML File', facility_journal_path(current_facility, @pending_journal, :format => 'xml')
+        %td=h human_datetime(@pending_journal.created_at)
+        %td=h number_to_currency(@pending_journal.amount)
+        %td= f.text_field :reference
+        %td= f.text_field :description
+        %td
+          = f.select :is_successful, {' ' => nil, 'Succeeded' => true, 'Failed' => false}
+          = submit_tag "Close Journal"
+%p
+%hr
+%p
+%h3 Generate Journal
+- if @accounts.empty?
+  %p.notice There are no accounts to be journaled at this time
+- else
+  - disable = false
+  - unless @pending_journal.nil?
+    -disable = true
+    %p.notice You may not generate a new journal until the pending journal is closed.
+  - form_for(:journal, @journal, :path => facility_journals_path) do |f|
+    = f.error_messages
+    %table
+      %tr.borderless
+        %td{:colspan => 3}= disable ? '' : link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
+        %td= submit_tag "Create Journal", {:disabled => disable}
+      %tr
+        %th
+        %th Account
+        %th Owner
+        %th.currency Balance
+      - @accounts.each do |a|
+        %tr
+          %td= check_box_tag "account_ids[]", a.id, (action_name == 'create' && !@update_accounts.collect{|ua| ua.id}.include?(a.id) ? false : true), {:disabled => disable, :class => 'toggle'}
+          %td
+            %ul
+              %li=h a.description
+              %li=h a.account_number
+          %td=h a.owner_user.full_name
+          %td.currency=h number_to_currency a.facility_balance(current_facility)
+      %tr.borderless
+        %td{:colspan => 3}
+        %td= submit_tag "Create Journal", {:disabled => disable} 

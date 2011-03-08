@@ -1,0 +1,54 @@
+- content_for :head_content do
+  = javascript_include_tag 'calendar/fullcalendar.min.js', 'schedule_rules.js'
+  = stylesheet_link_tag 'calendar/fullcalendar.css', 'calendar/fullcalendar.extensions.css'
+  :javascript
+    var events_path = "#{facility_instrument_schedule_rules_url(:format => 'js')}";
+
+- content_for :h1 do
+  =h current_facility
+
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
+
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'schedule_rules'}
+
+%h2= @instrument
+
+%p You may define one or more non-overlapping schedule rules.  Schedule rules define how and when an instrument is available for reservation.
+
+- if session_user.manager_of?(current_facility)
+  %ul
+    %li= link_to 'Add Schedule Rule', new_facility_instrument_schedule_rule_path
+
+- if !@schedule_rules.blank?
+  %table
+    %tr
+      %th
+      %th== Days of Week
+      %th== Start Time
+      %th== End Time
+      %th== Interval
+      %th.currency== Discount (%)
+    - @schedule_rules.each do |schedule_rule|
+      %tr{:class => cycle('odd', 'even')}
+        %td.centered
+          - if session_user.manager_of?(current_facility)
+            = link_to 'Edit', edit_facility_instrument_schedule_rule_path(current_facility, @instrument, schedule_rule)
+            %br
+            = link_to 'Remove', facility_instrument_schedule_rule_path(current_facility, @instrument, schedule_rule), :confirm => 'Are you sure?', :method => :delete
+        %td=h schedule_rule.days_string
+        %td=h human_time(Time.zone.parse(schedule_rule.start_time))
+        %td=h human_time(Time.zone.parse(schedule_rule.end_time))
+        %td= pluralize(schedule_rule.duration_mins, 'minute')
+        %td.currency=h sprintf '%.2f', schedule_rule.discount_percent
+- else
+  %br
+  %p.notice== No Schedule Rules exist yet.
+
+%h3== Weekly Calendar
+%p== This calendar shows instrument availability based on the scheduling rules.
+#overlay
+  #spinner
+    #hide
+      #calendar

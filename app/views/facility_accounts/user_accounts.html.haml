@@ -1,0 +1,11 @@
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => {:sidenav_tab => 'accounts'}
+
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_account', :locals => {:secondary_tab => 'search_by_user'}
+
+%ul
+  %li= link_to 'Add Account', new_facility_account_path(current_facility, {:owner_user_id => @user.id})
+
+= render(:partial => 'accounts', |
+         :locals => {:accounts => @user.accounts, :title => "Accounts for #{h(@user.full_name)}", :role => 'Owner'}) |

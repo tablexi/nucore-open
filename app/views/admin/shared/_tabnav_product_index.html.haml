@@ -1,0 +1,3 @@
+%ul.tabs
+  %li.first= link_to "Active #{@product_name} (#{@not_archived_product_count})", {:action => :index}, :class => params[:archived] == 'true' ? '' : 'active'
+  %li= link_to "Inactive #{@product_name} (#{@archived_product_count})", {:action => :index, :archived => 'true'}, :class => params[:archived] == 'true' ? 'active' : ''

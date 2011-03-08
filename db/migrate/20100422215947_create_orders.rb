@@ -1,0 +1,23 @@
+class CreateOrders < ActiveRecord::Migration
+  def self.up
+    create_table :orders do |t|
+      t.references :facility, :null => false
+      t.foreign_key :facility
+      t.references :account,  :null => false
+      t.foreign_key :account
+      t.references :user, :null => false
+      t.integer :created_by, :null => false
+      t.references :price_group, :null => false
+      t.decimal :total_cost,    :precision => 8, :scale => 2, :null => false
+      t.decimal :total_subsidy, :precision => 8, :scale => 2, :null => false
+      t.decimal :total,         :precision => 8, :scale => 2, :null => false
+
+      t.timestamps :null => false
+      t.datetime :ordered_at, :null => false
+    end
+  end
+
+  def self.down
+    drop_table :orders
+  end
+end

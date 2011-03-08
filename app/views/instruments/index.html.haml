@@ -1,0 +1,52 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product_index'
+- content_for :head_content do
+  = javascript_include_tag 'relay.js'
+
+%h2= params[:archived].nil? || params[:archived] != 'true' ? 'Active Instruments' : 'Inactive Instruments'
+
+%p Instruments are products that must be reserved; billing is based on reservation duration and/or actual time used.
+
+- if session_user.manager_of?(current_facility)
+  %ul.horiz
+    %li= link_to 'Add Instrument', new_facility_instrument_path
+
+- if @instruments.empty?
+  %p.notice== No #{params[:archived].nil? || params[:archived] != 'true' ? 'active' : 'inactive'} instruments exist for this facility.
+- else
+  %table.instrument_table
+    %tr
+      %th Instrument
+      %th.centered Status
+      %th Upcoming Reservations
+    - @instruments.each do |instrument|
+      %tr
+        %td= link_to instrument.name, facility_instrument_schedule_path(current_facility, instrument)
+        %td.centered
+          - if instrument.has_relay?
+            - status = instrument.current_instrument_status
+            %div{:id => "instrument_status_#{instrument.id}"}
+              - if status
+                %ul
+                  %li= "#{status.status_string} (#{link_to("Refresh", facility_instrument_status_path(current_facility, instrument), :id => "instrument_status_link_#{instrument.id}", :class => 'instrument_status_link')})"
+                  %li=h human_datetime(status.created_at)
+              - else
+                = "Unknown (#{link_to("Refresh", facility_instrument_status_path(current_facility, instrument), :id => "instrument_status_link_#{instrument.id}", :class => 'instrument_status_link')})"
+            %p
+              = link_to('Turn On', facility_instrument_switch_path(current_facility, instrument, :switch => 'on'), :id => "turn_on_#{instrument.id}", :class => 'instrument_switch_link')
+              |
+              = link_to('Turn Off', facility_instrument_switch_path(current_facility, instrument, :switch => 'off'), :id => "turn_off_#{instrument.id}", :class => 'instrument_switch_link')
+          - else
+            No Relay
+        %td
+          - unless @reservations[instrument.id].empty?
+            %ul
+              - @reservations[instrument.id].each do |r|
+                - if r.order_detail
+                  %li= link_to r, edit_facility_order_order_detail_path(current_facility, r.order_detail.order, r.order_detail)
+                - else
+                  %li=h r

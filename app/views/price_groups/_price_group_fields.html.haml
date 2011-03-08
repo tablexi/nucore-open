@@ -1,0 +1,8 @@
+%li
+  = f.label :name, 'Name', :class => 'required'
+  = f.text_field :name
+%li.box
+  %p.instruction Check this box if this price group is internal, intended for use by Northwestern Customers:
+  %br
+  = f.check_box :is_internal
+  %b= 'Is Internal?'

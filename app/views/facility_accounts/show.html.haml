@@ -1,0 +1,40 @@
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_payment_method', :locals => {:secondary_tab => 'details'}
+
+- content_for :h1 do
+  =h current_facility
+
+%h2= @account
+
+%ul.form
+  %li
+    %label Type
+    =h @account.type_string
+  %li
+    %label Description
+    =h @account.description
+  - if @account.is_a?(CreditCardAccount)
+    %li
+      %label Name On Card
+      =h @account.name_on_card
+    %li
+      %label Expiration
+      =h "#{@account.expiration_month}/#{@account.expiration_year}"
+  - else
+    %li
+      %label Expiration
+      = human_datetime(@account.expires_at, :date_only => true)
+  %li
+    %label Bill To
+    = @account.remittance_information ? simple_format(h @account.remittance_information) : '<p>None Entered</p>'
+%ul.horiz
+  %li
+    = link_to 'Edit', edit_facility_account_path(current_facility, @account), :class => 'btn'
+  %li
+    - if @account.suspended?
+      = link_to 'Activate', facility_account_unsuspend_path(current_facility, @account), :class => 'btn'
+    - else
+      = link_to 'Suspend', facility_account_suspend_path(current_facility, @account), :class => 'btn'

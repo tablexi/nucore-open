@@ -1,0 +1,16 @@
+- content_for :tabnav do
+  = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'transactions'}
+- content_for :h1 do
+  == Payment Source Transactions
+
+- if @facilities.empty?
+  %p.notice You have no completed orders for any facility with this payment source.
+- else
+  %table
+    %tr
+      %th Facility
+      %th.currency Balance
+    - @facilities.each do |facility|
+      %tr
+        %td= facility
+        %td.currency= link_to number_to_currency(@account.facility_balance_including_pending(facility)), account_facility_statement_path(@account, facility, 'recent')

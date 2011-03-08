@@ -1,0 +1,10 @@
+class AddAccountTransactionIdToJournalRows < ActiveRecord::Migration
+  def self.up
+    add_column :journal_rows, :account_transaction_id, :integer, :null => true
+    execute "ALTER TABLE journal_rows ADD CONSTRAINT fk_jour_row_act_txn FOREIGN KEY (account_transaction_id) REFERENCES account_transactions (id)"
+  end
+
+  def self.down
+    remove_column :journal_rows, :account_transaction_id
+  end
+end

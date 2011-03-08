@@ -1,0 +1,11 @@
+Product,Purchaser,Payment Source,Payment Source Owner,Order Date,Quantity,Amount,Adjustment
+= FasterCSV.generate do |csv|
+  - @order_details.each do |od|
+    - csv << [ od.product,         |
+               od.order.user,         |
+               od.account,            |
+               od.account.owner.user, |
+               od.order.ordered_at.strftime("%m/%d/%Y"), |
+               od.quantity,           |
+               number_to_currency(od.actual_cost),       |
+               number_to_currency(od.actual_subsidy) ]   |

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+%html
+  %head
+    %meta{ "http-equiv" => "content-type", "content" => "text/html; charset=UTF-8" }
+    = render :partial => '/shared/title', :locals => { :title =>  yield(:h1) }
+    = render :partial => '/shared/head'
+    = yield :head_content
+    = render :partial => '/shared/google'
+  %body
+    - if acting_as?
+      #acting_as
+        .container_12
+          .grid_12
+            %p
+              = "You are ordering for #{acting_user.full_name} (#{acting_user.username})"
+              %br
+              = link_to "Cancel", switch_back_path
+    #header
+      = render :partial => '/shared/header'
+    #nav
+      = render :partial => '/shared/nav'
+    = render :partial => '/shared/breadcrumb', :locals => { :breadcrumb => yield(:breadcrumb) }
+    #content
+      .container_12
+        .grid_12
+          %h1= yield :h1
+          = yield :tabnav
+          - if flash[:error]
+            %p.error= flash[:error]
+          - if flash[:notice]
+            %p.notice= flash[:notice]
+          - if flash[:info]
+            %p.info= flash[:info]
+          - if flash[:alert]
+            %p.error= flash[:alert]
+          = yield
+        .clear
+    #footer
+      .container_12
+        = render :partial => '/shared/footer'

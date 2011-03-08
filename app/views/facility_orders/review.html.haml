@@ -1,0 +1,55 @@
+- content_for :h1 do
+  =h current_facility
+
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_order', :locals => { :secondary_tab => 'reviewable'}
+
+- if @order_details.empty?
+  %p.notice There are no "Reviewable" orders.
+- else
+  %p Please review the following order line items; when a line item review is completed, the line item will appear on the account's statement.
+  - form_tag(review_batch_update_facility_orders_path, :method => :post) do
+    %table
+      %tr.borderless
+        %td{ :colspan => 3 }= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
+        %td
+        %td
+        %td
+        %td
+        %td
+        %td.small= submit_tag "Review Complete"
+      %tr
+        %th
+        %th Order #
+        %th Date
+        %th{ :colspan => 2 } Quantity / Product
+        %th Account
+        %th Cost
+        %th Adjustment
+        %th.currency Total
+      - @order_details.each do |od|
+        - product_name = (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
+        %tr
+          %td= check_box_tag "order_detail_ids[]", od.id, false, {:class => 'toggle'}
+          %td.centered= link_to od, edit_facility_order_order_detail_path(current_facility, od.order, od)
+          %td=h human_datetime(od.order.ordered_at)
+          %td.centered=h od.quantity
+          %td= product_name
+          %td=h od.account
+          - if od.reservation.nil? || (od.reservation && od.reservation.actual_start_at && od.reservation.actual_end_at)
+            %td.currency=h number_to_currency(od.actual_cost)    || ''
+            %td.currency=h number_to_currency(od.actual_subsidy) || ''
+            %td.currency=h number_to_currency(od.actual_total)   || ''
+          - else
+            %td.centered{:colspan => 3}= link_to 'Enter Actual Usage', edit_facility_order_order_detail_reservation_path(current_facility, od.order, od, od.reservation)
+      %tr.borderless
+        %td
+        %td
+        %td
+        %td
+        %td
+        %td
+        %td
+        %td
+        %td= submit_tag "Review Complete"
+  = will_paginate(@order_details)

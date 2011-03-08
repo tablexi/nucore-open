@@ -1,0 +1,13 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'recharge_accounts' }
+
+%h2 Add Recharge Chart String
+- form_for @facility_account, :url => facility_facility_accounts_path do |f|
+  = f.error_messages
+  %ul.form
+    = render :partial => 'facility_account_fields', :locals => {:f => f}
+  %ul.horiz
+    %li= f.submit 'Create', :class => 'btn'
+    %li= link_to 'Cancel', facility_facility_accounts_path

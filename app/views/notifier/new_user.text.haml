@@ -1,0 +1,7 @@
+== Congratulations, #{h @user.first_name}.  A NUCore account has been created for you.  You may log in at #{h new_user_session_url}.
+
+==Username: #{h @user.username}
+- if @password
+  ==Password: #{h @password}
+- else
+  ==You may log in with your existing Northwestern password.

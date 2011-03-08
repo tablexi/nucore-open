@@ -1,0 +1,73 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => @product.class.name.downcase + 's' }
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'surveys'}
+
+%h2=h @product
+%p You may provide an Online Order Form and/or an Order File Template.  If provided, the user must complete one before placing an order.
+.box_no_fill.margin_bottom
+  %h3 Online Order Form
+  %p Online Order Forms are created using the Surveyor DSL file format.  Please contact the NUCore support specialist for assistance.  Multiple Online Order Forms may be uploaded, but only one may be active at a time.
+  - form_for(@survey, :url => add_product_survey_file_path(current_facility, @product.parameterize, @product), :html => { :multipart => true }) do |f|
+    = f.error_messages
+    %ul.form
+      %li
+        = f.label :upload, 'File', :class => 'required'
+        = f.file_field :upload
+    %ul.horiz
+      %li
+        = f.submit('Upload', :disable_with => "Uploading...", :class => 'btn')
+  %br
+  - surveys = @product.service_surveys
+  - if surveys.empty?
+    %p.notice No Online Order Forms have been uploaded.
+  - else
+    %table
+      %tr
+        %th
+        %th.centered Status
+        %th Survey
+        %th Date Uploaded
+      - surveys.each do |service_survey|
+        - survey = service_survey.survey
+        %tr
+          - if service_survey.active?
+            %td.centered= link_to 'Deactivate', deactivate_service_survey_path(current_facility, @product, survey.access_code), :method => :put
+            %td.centered Active
+          - else
+            %td.centered= link_to 'Activate', activate_service_survey_path(current_facility, @product, survey.access_code), :method => :put
+            %td.centered Inactive
+          %td= link_to survey.title, preview_service_survey_path(current_facility, @product, survey.access_code)
+          %td= human_datetime(service_survey.created_at)
+
+.box_no_fill
+  %h3 Downloadable Order Form
+  %p Downloadable Order Forms are templates to be filled in by the user and submitted when ordering.  Uploading a new template will replace any existing Downloadable Order Forms.
+  - form_for(@file, :url => add_product_survey_file_path(current_facility, @product.parameterize, @product), :html => { :multipart => true, :method => :post }) do |f|
+    = f.error_messages
+    = f.hidden_field :file_type
+    %ul.form
+      %li
+        = f.label :file, 'File', :class => 'required'
+        = f.file_field :file
+    %ul.horiz
+      %li= f.submit('Upload', :disable_with => "Uploading...", :class => 'btn')
+  %br
+  - files = @product.file_uploads.template
+  - if files.empty?
+    %p.notice No Downloadable Order Forms have been uploaded.
+  - else
+    %table
+      %tr
+        %th
+        %th File
+        %th Date Uploaded
+        %th Uploaded By
+      - files.each do |file_upload|
+        %tr
+          %td.centered= link_to 'Delete', remove_product_file_path(current_facility, @product.parameterize, @product, file_upload), :method => :delete, :confirm => 'Are you sure you wish to remove this file?'
+          %td= link_to file_upload.name, file_upload.file.url
+          %td= human_datetime(file_upload.created_at)
+          %td= User.find(file_upload.created_by).full_name

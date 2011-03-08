@@ -1,0 +1,55 @@
+%li
+  = f.label :name, nil, :class => 'require'
+  %p.instruction Name of the facility as displayed to the end user
+  = f.text_field :name, :size => 60
+%li
+  = f.label :abbreviation, nil, :class => 'require'
+  %p.instruction Abbreviated name or acronym for the facility
+  = f.text_field :abbreviation, :size => 20
+%li
+  = f.label :url_name, 'URL Name', :class => 'require'
+  - if f.object.url_name && f.object.url_name.length > 0 && !f.object.errors[:url_name]
+    %p.instruction= facility_url(f.object)
+  - else
+    %p.instruction= facility_url('url-name')
+  = f.text_field :url_name, :size => 20
+%li
+  = f.label :short_description, 'Short Description', :class => 'require'
+  %p.instruction Description as it will appear on the home page
+  = f.text_area :short_description, :cols => 86, :rows => 4
+%li
+  = f.label :description, nil
+  %p.instruction Description as it will appear on the facility main page
+  = f.text_area :description, :class => 'editor'
+%li.box
+  %p By default, all facilities accept NU Chart Strings; you may check additional payment options: 
+  %br
+  %p
+    = f.check_box :accepts_po
+    %b= 'Accept Purchase Orders?'
+  %br
+  %p
+    = f.check_box :accepts_cc
+    %b= 'Accept Credit Cards?'
+%li.box
+  %p.instruction Uncheck this box to prevent end users from viewing or purchasing from this facility:
+  %br
+  = f.check_box :is_active
+  %b= 'Is Active?'
+%li.box
+  %p.instruction The following contact information will appear on invoices and should indicate where payment should be sent
+  %br
+  %ul.form
+    %li
+      = f.label :address
+      = f.text_area :address, :cols => 46, :rows => 5
+    %li
+      = f.label :phone_number, 'Phone Number'
+      = f.text_field :phone_number
+    %li
+      = f.label :fax_number, 'Fax Number'
+      = f.text_field :fax_number
+    %li
+      = f.label :email
+      = f.text_field :email
+  

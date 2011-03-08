@@ -1,0 +1,68 @@
+- content_for :h1 do
+  =h current_facility
+
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'users' }
+
+  - content_for :head_content do
+    :javascript
+      $(document).ready(function() {    
+
+        function has_netid_change() {
+          if ($('#has_netid').val() == 'yes') {
+            $('#username_lookup').html($('#username_lookup').html().replace(/Email Address/g, 'NetID'));
+          } else {
+            $('#username_lookup').html($('#username_lookup').html().replace(/NetID/g, 'Email Address'));
+          }
+        }
+
+        $('#has_netid').change(function(e) {
+          has_netid_change();
+          $('#search_results').html('');
+        });
+
+
+        $('#username_search_form').submit(function(e) {
+          e.preventDefault(); //Prevent the normal submission action
+          var form       = $(this);
+          var submit     = $("input[type='submit']",form);
+          var submit_val = submit.val();
+          var error_div  = $('div#error_result');
+          submit.val("Please Wait...");
+          submit.attr("disabled", true);
+          error_div.html('');
+          jQuery.ajax({
+            type: "post",
+            data: form.serialize(),
+            url:  form.attr('action'),
+            timeout: 25000,
+            success: function(r) {
+              $('#search_results').html(r);
+              submit.val(submit_val);
+              submit.attr("disabled", false);
+            },
+            error: function() {
+              error_div.html('<p class="error">An error was encountered while looking up the NetID</p>');
+              submit.val(submit_val);
+              submit.attr("disabled", false);
+            }
+          });
+        });
+      });
+
+%h2 Add User
+- form_tag(username_search_facility_users_path, :id => 'username_search_form') do
+  #error_result
+  %ul.form.box_no_fill
+    %li
+      %p Some information about this user may already exist in university databases.  Please choose whether the user you wish to add has a NetID and enter the requested information.  If the user exists already, you will be able to add her with a single click.
+    %li
+      %label Does the new user have a NetID?
+      = select_tag :has_netid, options_for_select([['Yes','yes'],['No','no']], params[:hidden_has_netid] || 'yes')
+    %li#username_lookup
+      %label NetID
+      %p.instruction Enter the user's NetID
+      = text_field_tag :username_lookup
+      = submit_tag 'Lookup NetID', :class => 'btn'
+      
+#search_results

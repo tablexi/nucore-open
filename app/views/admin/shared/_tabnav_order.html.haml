@@ -1,0 +1,8 @@
+- n_new     = current_facility.order_details.new_or_inprocess.length
+- n_review  = current_facility.order_details.find_all_by_state('reviewable').length
+- n_dispute = current_facility.order_details.in_dispute.length
+%ul.tabs
+  %li.first= link_to "New / In Process (#{n_new})", facility_orders_path, { :class => secondary_tab == 'new' ? 'active' : nil }
+  - if current_user.manager_of?(current_facility)
+    %li= link_to "Reviewable (#{n_review})", review_facility_orders_path, { :class => secondary_tab == 'reviewable' ? 'active' : nil }
+    %li= link_to "Disputed (#{n_dispute})", disputed_facility_orders_path, { :class => secondary_tab == 'disputed' ? 'active' : nil }

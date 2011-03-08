@@ -1,0 +1,38 @@
+%li.box
+  = f.label nil, 'Power Relay Information'
+  %p== (Optional)  If the instrument is connected to an approved power relay, please enter the information below.  Power relays must be purchased separately.
+  %br
+  %ul
+    %li.left
+      = f.label :relay_ip, 'IP Address'
+      = f.text_field :relay_ip
+    %li.left
+      = f.label :relay_port, 'Device Port'
+      = f.text_field :relay_port, :size => 5, :limit => 2
+    %li.clear
+    %li.left
+      = f.label :relay_username, 'Username'
+      = f.text_field :relay_username 
+    %li.left
+      = f.label :relay_password, 'Password'
+      = f.text_field :relay_password
+    %li.clear
+    %li
+      = f.check_box :auto_logout
+      %b== Automatically power off the relay 60 minutes after the reservation is scheduled to end
+%li.box
+  = f.label nil, 'Reservation Restrictions'
+  %p== (Optional)  Define minimum and maximum reservation limits below.
+  %br
+  %ul
+    %li.left
+      = f.label :min_reserve_mins, 'Minimum (minutes)'
+      = f.text_field :min_reserve_mins
+    %li.left
+      = f.label :max_reserve_mins, 'Maximum (minutes)'
+      = f.text_field :max_reserve_mins
+    %li.clear
+    %li
+      = f.label :min_cancel_hours, 'Cancelation Minimum (hours)'
+      %p.instruction Minimum length of time before a reservation begins that a user may cancel a reservation without penalty
+      = f.text_field :min_cancel_hours

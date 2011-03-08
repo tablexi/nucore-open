@@ -1,0 +1,4 @@
+<h2>Instrument Reservation Schedule</h2>
+<%= link_to 'Calendar View', facility_schedule_path %><br/>
+Filter by Instrument: <%= select_tag 'facility_jumper', options_for_select(current_facility.instruments.map{|i| [i.name, i.id]}.unshift ['---', nil]), :url_name => current_facility.url_name %>
+

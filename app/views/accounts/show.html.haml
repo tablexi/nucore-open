@@ -1,0 +1,18 @@
+- content_for :tabnav do
+  = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'details'}
+- content_for :h1 do
+  == Payment Source Details
+
+%ul.form
+  %li
+    %label Payment Source Number
+    =h @account.account_number
+  %li
+    %label Type
+    =h @account.type_string
+  %li
+    %label Description
+    =h @account.description
+  %li
+    %label Expiration
+    = human_datetime(@account.expires_at, :date_only => true)

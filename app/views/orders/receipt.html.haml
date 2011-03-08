@@ -1,0 +1,61 @@
+-content_for :breadcrumb do
+  %ul.horiz
+    %li= link_to 'My Orders', orders_url
+    %li &raquo;
+    %li=h "Order Receipt"
+
+- content_for :h1 do
+  Order Receipt
+
+%p Thank you for your order.
+
+%ul.form
+  %li
+    %label Facility
+    =h @order.facility
+  %li
+    %label Payment Source
+    =h @order.account
+  %li
+    %label Ordered At
+    =h human_datetime(@order.ordered_at)
+  %li
+    %label Ordered For
+    =h @order.user.full_name
+  %li
+    %label Ordered By
+    =h @order.created_by_user.full_name
+
+%table
+  %tr
+    %th.centered Order #
+    %th{:colspan => 2} Quantity/Product
+    %th.currency Cost
+    - if @order.has_subsidies?
+      %th.currency Adjustment
+    %th.currency Total
+  - estimate = false
+  - @order.order_details.each do |order_detail|
+    %tr
+      - res = order_detail.reservation
+      %td.centered= link_to order_detail, order_order_detail_path(@order, order_detail)
+      %td.centered=h order_detail.quantity
+      %td
+        %ul
+          %li= (order_detail.bundle ? "#{h order_detail.bundle} &mdash; " : '') + h(order_detail.product)
+          - if res
+            %li.indented= res
+      - if order_detail.actual_cost && order_detail.actual_subsidy
+        %td.currency=h number_to_currency order_detail.actual_cost
+        - if @order.has_subsidies?
+          %td.currency=h number_to_currency order_detail.actual_subsidy
+        %td.currency=h number_to_currency order_detail.actual_total
+      - else
+        - estimate = true
+        %td.currency=h number_to_currency order_detail.estimated_cost
+        - if @order.has_subsidies?
+          %td.currency=h number_to_currency order_detail.estimated_subsidy
+        %td.currency=h number_to_currency order_detail.estimated_total
+
+- if estimate
+  %p.footnote * Instrument pricing is estimated; the final price may vary based on actual time used.

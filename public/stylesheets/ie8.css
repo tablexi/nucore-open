@@ -1,0 +1,14 @@
+
+
+/* IE 8 Specific Styling
+***********************************************************/
+#nav li:hover {
+	line-height:79px;
+}
+
+#nav li.active a span.nav-text, #nav li.right:hover a span.nav-text {
+	top:-18px;
+}
+#nav ul.right li#cap:hover {
+	line-height:49px;
+}

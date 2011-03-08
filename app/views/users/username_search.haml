@@ -1,0 +1,20 @@
+- if @user.nil? && params[:has_netid] == 'yes'
+  %p.notice The user could no be located in the university database.  Please make sure you typed the NetID correctly.
+- elsif @user.nil?
+  %p.notice No user information was found in the university databases.
+  %p== You may add a new external user by clicking #{link_to 'Add a new external user', new_facility_user_path(current_facility)}.
+- else
+  %p.notice The following user was found.  Click "Add User" to allow this user access to NUCore.
+  %table
+    %tr
+      %th
+      %th Username
+      %th Last Name
+      %th First Name
+      %th Email
+    %tr
+      %td= link_to 'Add User', new_search_facility_users_path(current_facility, {:username => @user.username})
+      %td= @user.username
+      %td= @user.last_name
+      %td= @user.first_name
+      %td= @user.email

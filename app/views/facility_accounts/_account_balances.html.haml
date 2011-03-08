@@ -1,0 +1,20 @@
+- if @accounts.blank?
+  %p.notice No payment sources found.
+- else
+  %table
+    %tr
+      %th== Payment Source
+      %th== Owner
+      %th.currency== Pending*
+      %th.currency== Balance
+    - @accounts.each do |account|
+      %tr
+        %td= link_to account, facility_account_statement_path(current_facility, account, 'recent')
+        %td=h account.owner_user.full_name
+        %td.currency=h number_to_currency account.facility_balance_including_pending(current_facility)
+        %td.currency=h number_to_currency account.facility_balance(current_facility)
+  - if params[:search_term].nil?
+    = will_paginate(@accounts)
+  - else
+    = will_paginate(@accounts, :class => 'ajax_links', :params => {:search_term => params[:search_term]})
+  %p.footnote * Includes transactions for which the user has not been sent a statement or that are in the user review period.

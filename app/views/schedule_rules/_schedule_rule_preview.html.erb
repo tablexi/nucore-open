@@ -1,0 +1,27 @@
+<% content_for :head_content do %>
+<%= javascript_include_tag 'calendar/fullcalendar.min.js' %>
+<%= stylesheet_link_tag 'calendar/fullcalendar.css' %>
+<script type='text/javascript'>
+jQuery.noConflict();
+  jQuery(document).ready(function() {
+    jQuery('#calendar').fullCalendar({
+      editable: false,
+      defaultView: 'agendaDay',
+      allDaySlot: false,
+      header: {
+        left: '',
+        center: '',
+        right: '',
+      },
+      height:600,
+//      events: "<%= facility_instrument_schedule_rules_url + '.json'  %>"
+    })
+});
+</script>
+<% end %>
+<div id="schedule_rule_preview">
+  <fieldset>
+    <legend>Rule Preview</legend>
+  </fieldset>
+  <div id="calendar"></div>
+</div>

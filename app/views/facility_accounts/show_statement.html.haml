@@ -1,0 +1,58 @@
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_payment_method', :locals => {:secondary_tab => 'transactions'}
+
+- content_for :h1 do
+  =h current_facility
+
+%h2= @account
+
+%ul.form
+  %li= select_tag 'statement_id', options_for_select(@statements.map{|s| ["Statement ##{@account.id}-#{s.id} on #{human_date(s.created_at)}", facility_account_statement_path(current_facility, @account, s.id)]}.unshift(['Recent Transactions', facility_account_statement_path(current_facility, @account, 'recent')]), request.request_uri.gsub(/\?.*/, '')), :class => 'link_select'
+
+- if @account_txns.empty?
+  %p.notice No transactions exist for this period.
+- else
+  - if @statement && @statement.invoice_date <= Time.zone.now
+    %p= link_to 'Download Invoice', facility_account_statement_path(current_facility, @account, @statement, :format => 'pdf')
+  %table
+    %tr
+      %th Transaction Date
+      %th Transaction Type
+      %th Description
+      %th.centered Disputed?
+      %th.currency Amount
+    - @account_txns.each do |at|
+      - od = at.order_detail
+      %tr
+        %td= human_datetime(at.created_at)
+        - if at.is_a?(CreditAccountTransaction) || at.is_a?(PurchaseAccountTransaction)
+          %td= at.type_string
+        - else
+          %td=h at.type_string
+        - if at.is_a?(PaymentAccountTransaction)
+          %td Payment received. Thank you.
+        - else
+          %td= link_to at.description, order_order_detail_path(at.order_detail.order, at.order_detail)
+        %td.centered
+          - if at.is_in_dispute?
+            In Dispute
+        %td.currency=h number_to_currency at.transaction_amount
+    %tr
+      %td.currency.borderless{:colspan => 4}
+        %b Previous Balance
+      %td.currency.borderless= number_to_currency @balance_prev
+    %tr
+      %td.currency.borderless{:colspan => 4}
+        %b New Payments/Credits
+      %td.currency.borderless= number_to_currency @new_payments
+    %tr
+      %td.currency.borderless{:colspan => 4}
+        %b New Purchases
+      %td.currency.borderless= number_to_currency @new_purchases
+    %tr
+      %td.currency.borderless{:colspan => 4}
+        %b Balance Due
+      %td.currency.borderless= number_to_currency @balance_due

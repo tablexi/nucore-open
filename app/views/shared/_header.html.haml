@@ -1,0 +1,15 @@
+.container_12
+  .grid_6
+    = link_to app_name + (current_user && current_user.operator? ? ' Admin' : ''), :root, :id => 'logo'
+  .grid_6
+    %ul
+      - if session_user.nil?
+        %li.last= link_to "Login", :new_user_session
+      - elsif acting_as?
+        %li#user= "#{acting_user.full_name} (#{acting_user.username})"
+        %li.last= link_to "Cart", :cart
+      - else
+        %li#user= "#{session_user.full_name} (#{session_user.username})"
+        %li= link_to "Cart", :cart
+        %li.last= link_to "Logout", :destroy_user_session
+  .clear

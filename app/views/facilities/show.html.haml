@@ -1,0 +1,46 @@
+- content_for :h1 do
+  =h current_facility
+
+- if acting_as?
+  - instruments = current_facility.instruments.active_plus_hidden
+  - items       = current_facility.items.active_plus_hidden
+  - services    = current_facility.services.active_plus_hidden
+  - bundles     = current_facility.bundles.active_plus_hidden
+- else
+  - instruments = current_facility.instruments.active
+  - items       = current_facility.items.active
+  - services    = current_facility.services.active
+  - bundles     = current_facility.bundles.active.reject{|b| !b.products_active?}
+
+- content_for :breadcrumb do
+  %ul.horiz
+    %li= link_to 'Home', :root
+    %li== &raquo;
+    %li=h current_facility
+
+= current_facility.description
+
+
+- unless instruments.empty?
+  %h3 Instruments
+  %ul
+    - instruments.sort.each do |instrument|
+      %li=link_to instrument.name + (instrument.is_hidden? ? ' (hidden)' : ''), facility_instrument_path(current_facility, instrument)
+
+- unless services.empty?
+  %h3 Services
+  %ul
+    - services.sort.each do |service|
+      %li= link_to service.name + (service.is_hidden? ? ' (hidden)' : ''), facility_service_path(current_facility, service)
+
+- unless items.empty?
+  %h3 Items
+  %ul
+    - items.sort.each do |item|
+      %li= link_to item.name + (item.is_hidden? ? ' (hidden)' : ''), facility_item_path(current_facility, item)
+
+- unless bundles.empty?
+  %h3 Bundles
+  %ul
+    - bundles.sort.each do |bundle|
+      %li= link_to bundle.name + (bundle.is_hidden? ? ' (hidden)' : ''), facility_bundle_path(current_facility, bundle)

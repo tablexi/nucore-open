@@ -1,0 +1,1 @@
+= link_to "#{user.last_name}, #{user.first_name}", self.send("new_facility_#{@product.class.name.downcase}_user_path", @facility, @product, :user => user.id), :confirm => "Are you sure you wish to authorize this user to order this #{@product.class.name.downcase}?"

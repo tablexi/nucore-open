@@ -1,0 +1,34 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'users' }
+
+%h2 Search Users
+- form_tag user_search_results_url, :id => 'ajax_form' do
+  = label_tag :search_term, 'Search by name, NetID, or username'
+  %br
+  = text_field_tag :search_term, nil, :size => 30
+  = submit_tag "Search", :class => 'btn'
+  = hidden_field_tag :facility_id, current_facility.id
+  = hidden_field_tag :search_type, 'manage_user'
+  = hidden_field_tag :create_link, 'true'
+%br
+#result
+  %h3 Active Users
+  %p Active users are users which have placed an order or had an order placed on their behalf at this facility in the last year.
+  - if @users.empty?
+    %p.notice There are no active users for this facility.
+  - else
+    %table
+      %tr
+        %th
+        %th Name
+        %th Username or NetID
+        %th Email
+      - @users.each do |user|
+        %tr
+          %td.centered= link_to('Order For', facility_user_switch_to_path(current_facility, user))
+          %td= link_to "#{user.last_name}, #{user.first_name}", facility_user_path(current_facility, user)
+          %td=h user.username
+          %td=h user.email
+    = will_paginate(@users)

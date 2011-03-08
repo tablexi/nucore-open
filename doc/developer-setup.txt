@@ -1,0 +1,155 @@
+FOR OS X SNOW LEOPARD
+
+# install XCode
+
+################################################################################
+# Oracle SQL Developer
+################################################################################
+# download and install into /Applications
+from here: http://www.oracle.com/technology/software/products/sql/index.html
+
+################################################################################
+# Oracle 10g Instant Client
+################################################################################
+# Instructions sourced from:
+# http://www.pixellatedvisions.com/2009/03/25/rails-on-oracle-part-1-installing-the-oracle-instant-client-on-mac-os-x
+
+# download basic, sqlplus, sdk (64 bit)
+from here: http://www.oracle.com/technology/software/tech/oci/instantclient/htdocs/intel_macsoft.html
+### http://download.oracle.com/otn/mac/instantclient/10204/instantclient-basic-10.2.0.4.0-macosx-x64.zip
+### http://download.oracle.com/otn/mac/instantclient/10204/instantclient-sqlplus-10.2.0.4.0-macosx-x64.zip
+### http://download.oracle.com/otn/mac/instantclient/10204/instantclient-sdk-10.2.0.4.0-macosx-x64.zip
+
+# install files
+sudo mkdir -p /opt/oracle/
+cd /opt/oracle
+
+sudo mv ~/Downloads/instantclient-* /opt/oracle
+sudo unzip instantclient-basic-macosx-10.2.0.4.0.zip
+sudo unzip instantclient-sdk-macosx-10.2.0.4.0.zip
+sudo unzip instantclient-sqlplus-macosx-10.2.0.4.0.zip
+sudo ln -s instantclient_10_2 instantclient
+
+cd instantclient
+sudo ln -s libclntsh.dylib.10.1 libclntsh.dylib
+sudo ln -s libocci.dylib.10.1   libocci.dylib
+
+########################################
+# Add to (bash) ~/.profile
+export NLS_LANG="AMERICAN_AMERICA.AL32UTF8"
+export ORACLE_HOME=/opt/oracle/instantclient
+export DYLD_LIBRARY_PATH=$ORACLE_HOME
+
+source ~/.profile
+
+########################################
+# Add to (tcsh) ~/.tcshrc
+setenv NLS_LANG "AMERICAN_AMERICA.UTF8"
+setenv ORACLE_HOME /opt/oracle/instantclient
+setenv DYLD_LIBRARY_PATH $ORACLE_HOME
+
+source ~/.tcshrc
+
+# sqlplus in path
+sudo ln -s /opt/oracle/instantclient/sqlplus /usr/local/bin/sqlplus
+
+# test it
+# sqlplus myuser/mypassword@//myserver:1521/mydatabase.mydomain.com
+
+
+################################################################################
+# ruby-oci8 and activerecord-oracle_enhanced adapter
+################################################################################
+# Instructions sourced from:
+# http://blog.rayapps.com/2009/09/06/how-to-setup-ruby-and-oracle-instant-client-on-snow-leopard/
+
+# install ruby-oci8
+sudo env DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH ARCHFLAGS="-arch x86_64" gem install ruby-oci8
+
+# Install oracle_enhanced adapter
+sudo gem install activerecord-oracle_enhanced-adapter
+
+# configure database.yml in your rails project
+development:
+  adapter: oracle_enhanced
+  database: oracle.local/xe
+  username: nucores_development
+  password: testing
+  encoding: utf8
+
+
+################################################################################
+# Phusion Passenger (Optional)
+################################################################################
+# Instructions sourced from:
+# http://www.fngtps.com/2008/04/using-passenger-on-osx-for-rails-development
+
+gem install passenger
+passenger-install-apache2-module
+
+# Add to /etc/apache2/users/<username>.conf
+LoadModule passenger_module /Library/Ruby/Gems/1.8/gems/passenger-1.0.1/ext/apache2/mod_passenger.so
+RailsSpawnServer /Library/Ruby/Gems/1.8/gems/passenger-1.0.1/bin/passenger-spawn-server
+RailsRuby /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+
+RailsEnv development
+
+Allow Apache serve files from our development directories.
+
+<Directory "/Users/<username>/Code">
+    Order allow,deny
+    Allow from all
+</Directory>
+Finally, configure virtual hosts for our various projects.
+
+NameVirtualHost *:80
+
+<VirtualHost *:80>
+DocumentRoot "/Users/<username>/Code/project1/public"
+ServerName project1.local
+</VirtualHost>
+
+<VirtualHost *:80>
+DocumentRoot "/Users/<username>/Code/project2/public"
+ServerName project2.local
+</VirtualHost>
+
+# Convenience config
+# add to /etc/hosts
+nucores.local localhost
+
+# Add this to /System/Library/LaunchDaemons/org.apache.httpd.plist
+<key>EnvironmentVariables</key>
+<dict>
+<key>DYLD_LIBRARY_PATH</key>
+<string>/opt/oracle/instantclient:/opt/local/lib</string>
+<key>NLS_LANG</key>
+<string>AMERICAN_AMERICA.UTF8</string>
+<key>TNS_ADMIN</key>
+<string>/opt/oracle/network/admin</string>
+</dict>
+
+# Other untested techniques...
+# Choose one of the methods at the bottom of this page: http://wiki.github.com/rsim/oracle-enhanced/troubleshooting
+
+# ------------------------------------------------------------------------------
+# Configuring environment variables for GUI launched Eclipse/RadRails, etc.
+# ------------------------------------------------------------------------------
+# Sourced from:
+# http://developer.apple.com/mac/library/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/EnvironmentVars.html#//apple_ref/doc/uid/20002093-BCIJIJBH
+# http://developer.apple.com/mac/library/qa/qa2001/qa1255.html
+# http://developer.apple.com/mac/library/qa/qa2001/qa1067.html
+
+# emacs ~/.MacOSX/environment.plist, then login again
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>ORACLE_HOME</key>
+  <string>/opt/oracle/instantclient</string>
+  <key>DYLD_LIBRARY_PATH</key>
+  <string>/opt/oracle/instantclient</string>
+  <key>NLS_LANG</key>
+  <string>AMERICAN_AMERICA.AL32UTF8</string>
+</dict>
+</plist>

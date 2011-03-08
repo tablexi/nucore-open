@@ -1,0 +1,41 @@
+- links = []
+- links.push({ :url => url_for(root_path), :text => 'Home', :tab_name => 'home' })
+- if !acting_user.nil? and customer_tab?
+  - links.push({ :url => url_for(:controller => '/orders'),   :text => 'My Orders',         :tab_name => 'orders'   }) 
+  - links.push({ :url => url_for(accounts_path),              :text => 'My Payment Sources',:tab_name => 'accounts' })
+- if current_facility and admin_tab?
+  - if current_user.operator_of?(current_facility)
+    - links.push({:url => url_for(facility_orders_path(current_facility)),    :text => 'Orders',   :tab_name => 'admin_orders'})
+    - links.push({:url => url_for(pending_facility_statements_path(current_facility)), :text => 'Billing',  :tab_name => 'admin_invoices'})
+    - links.push({:url => url_for(facility_products_path current_facility),   :text => 'Products', :tab_name => 'admin_products'})
+    - links.push({:url => url_for(facility_users_path current_facility),      :text => 'Users',    :tab_name => 'admin_users'})
+    - links.push({:url => url_for(product_order_summary_facility_reports_path current_facility),    :text => 'Reports',  :tab_name => 'admin_reports'})
+    - if current_user.manager_of?(current_facility)
+      - links.push({:url => url_for(manage_facility_path current_facility), :text => 'Admin', :tab_name => 'admin_facility'})
+.container_12
+  .grid_12
+    %ul
+      %li.first
+      - links.each_index do |i|
+        - if !controller.active_tab.nil? && controller.active_tab == links[i][:tab_name]
+          %li.active= link_to links[i][:text], links[i][:url]
+        - else
+          %li= link_to links[i][:text], links[i][:url]
+      - facilities = manageable_facilities
+      - if !acting_as? && (!facilities.empty? || (current_user && current_user.administrator?))
+        - if !controller.active_tab.nil? && controller.active_tab == 'manage_facilites'
+          %li.right.active
+            = link_to "Manage Facilities", :list_facilities
+            - unless facilities.empty?
+              %ul
+                - facilities.each do |facility|
+                  %li= link_to facility.name, facility_orders_path(facility)
+        - else
+          %li.right
+            = link_to "Manage Facilities", :list_facilities
+            - unless facilities.empty?
+              %ul
+                - facilities.each do |facility|
+                  %li= link_to facility.name, facility_orders_path(facility)
+        %li.right.first
+  .clear

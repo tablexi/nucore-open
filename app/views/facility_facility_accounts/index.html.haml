@@ -1,0 +1,23 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'recharge_accounts' }
+
+%h2 Recharge Chart Strings
+
+%p Chart Strings that are approved by the Provost for collection of facility revenue.
+
+%ul.horiz
+  %li= link_to 'Add Recharge Chart String', new_facility_facility_account_path
+
+- if @accounts.empty?
+  %p.notice No Recharge Chart Strings have been added to this facility yet.
+- else
+  %table
+    %tr
+      %th
+      %th Chart String Number
+    - @accounts.each do |a|
+      %tr
+        %td= link_to 'Edit', edit_facility_facility_account_path(current_facility, a)
+        %td=h a.to_s + (a.is_active? ? '' : ' (inactive)')

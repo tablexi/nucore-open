@@ -1,0 +1,15 @@
+- content_for :head_content do
+  = stylesheet_link_tag "jquery-ui/jquery-ui"
+%li.left
+  = f.label :reserve_start_date, 'Reservation Date'
+  = f.text_field :reserve_start_date, :class => 'datepicker'
+%li.left
+  = f.label  :reserve_start_hour, 'Starting At'
+  = f.select :reserve_start_hour, (1..12).to_a
+  = f.select :reserve_start_min, (0..59).step(5).map{|d| [sprintf('%02d', d),d]}
+  = f.select :reserve_start_meridian, ['AM', 'PM']
+%li.left
+  = f.label :duration_value, 'Duration'
+  = f.text_field :duration_value, :value => f.object.duration_value, :size => '5'
+  = f.select :duration_unit, ['minutes', 'hours'], { :selected => f.object.duration_unit }
+%li.clear

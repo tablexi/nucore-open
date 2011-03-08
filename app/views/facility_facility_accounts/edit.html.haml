@@ -1,0 +1,14 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'recharge_accounts' }
+
+%h2 Edit Recharge Chart String
+%p Editing the Recharge Chart String may effect the facility's ability to collect funds.  Edit the Chart String with caution!
+- form_for @facility_account, :url => facility_facility_account_path do |f|
+  = f.error_messages
+  %ul.form
+    = render :partial => 'facility_account_fields', :locals => {:f => f}
+  %ul.horiz
+    %li= f.submit 'Save', :class => 'btn'
+    %li= link_to 'Cancel', facility_facility_accounts_path

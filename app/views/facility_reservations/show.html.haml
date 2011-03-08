@@ -1,0 +1,27 @@
+- content_for :head_content do
+  = javascript_include_tag 'calendar/fullcalendar.min.js'
+  = javascript_include_tag 'reservations.js'
+  = stylesheet_link_tag 'calendar/fullcalendar.css'
+  = stylesheet_link_tag 'calendar/fullcalendar.extensions.css'
+  :javascript
+    var events_path     = "#{facility_instrument_reservations_url(current_facility, @instrument, :format => 'js')}";
+    var maxDaysFromNow  = #{@instrument.last_reserve_days_from_now};
+    var minTime         = #{@instrument.first_available_hour};
+    var maxTime         = #{@instrument.last_available_hour+1};
+
+- content_for :h1 do
+  =h current_facility
+
+%h2=h @instrument
+%ul.form
+  %li
+    %label Reservation
+    =h @reservation
+  %li
+    %label Actual Usage
+    =h @reservation.actuals_string
+
+#overlay
+  #spinner
+    #hide
+      #calendar

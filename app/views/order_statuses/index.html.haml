@@ -1,0 +1,24 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'statuses' }
+
+%h2 Order Statuses
+
+%ul.horiz
+  %li= link_to 'Add Order Status', new_facility_order_status_path
+
+%table
+  %tr
+    %th
+    %th{:width => '100%'} Order Statuses
+  - OrderStatus.roots.each_with_index do |root, i|
+    %tr
+      %td
+      %td=h root.name
+    - children_for_facility(root, current_facility.id) do |child|
+      %tr
+        %td= link_to('Remove', facility_order_status_path(current_facility, child), :confirm => 'Are you sure?', :method => :delete)
+        %td.indented_lots
+          =h child.name
+          %span.indented== (#{link_to('Edit', edit_facility_order_status_url(current_facility, child))})

@@ -1,0 +1,19 @@
+- content_for :tabnav do
+  = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'members'}
+- content_for :h1 do
+  == Add Payment Source Member
+
+-# show account context
+%p== Search for a user to add to the #{@account.type_string}, "#{@account}".
+%br
+
+- form_tag user_search_results_url, :id => "ajax_form" do
+  = label_tag :search_term, 'Search by name, NetID, or username'
+  %br
+  = text_field_tag :search_term, nil, :size => 30
+  = submit_tag "Search", :class => 'btn'
+  = hidden_field_tag :account_id, @account.id
+  = hidden_field_tag :search_type, 'account_account_user'
+  = hidden_field_tag :create_link, 'false'
+%br
+#result

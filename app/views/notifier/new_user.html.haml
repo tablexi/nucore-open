@@ -1,0 +1,9 @@
+%p== Congratulations, #{h @user.first_name}.  A NUCore account has been created for you.  You may log in at #{link_to new_user_session_url, new_user_session_url}.
+
+- if @password
+  %p
+    =h "Username: #{@user.username}"
+    %br
+    =h "Password: #{@password}"
+- else
+  %p You may log in with your Northwestern NetID and password.

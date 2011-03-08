@@ -1,0 +1,16 @@
+= javascript_include_tag 'ckeditor/ckeditor.js'
+= javascript_include_tag 'ckeditor/adapters/jquery.js'
+= javascript_include_tag 'editor.js'
+
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'overview' }
+
+- form_for([current_facility]) do |f|
+  = f.error_messages
+  %ul.form
+    = render :partial => 'facility_fields', :locals => {:f => f}
+  %ul.horiz
+    %li= f.submit 'Save', :class => 'btn'
+    %li= link_to 'Cancel', manage_facility_path(current_facility)

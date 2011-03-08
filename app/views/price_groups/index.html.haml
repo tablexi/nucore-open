@@ -1,0 +1,32 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'price_groups' }
+
+%h2 Price Groups
+
+%p Price groups associate users and payment sources with price rules and reservation priorities. 
+
+%ul.horiz
+  %li= link_to 'Add Price Group', new_facility_price_group_path
+
+- if @price_groups.empty?
+  %p.notice No price groups exist yet.
+- else
+  %table
+    %tr
+      %th
+      %th Price Group
+      %th Type
+      %th Number of Users
+      %th Number of Payment Sources
+    - @price_groups.each do |price_group|
+      %tr
+        %td= price_group.facility.nil? ? '' : link_to('Remove', [current_facility, price_group], :confirm => 'Are you sure?', :method => :delete)
+        %td= link_to price_group.name, facility_price_group_path(current_facility, price_group)
+        %td= price_group.type_string
+        - if price_group.facility_id
+          %td= price_group.user_price_group_members.count
+        - else
+          %td
+        %td= price_group.account_price_group_members.count

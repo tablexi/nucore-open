@@ -1,0 +1,7 @@
+log/
+tmp/
+sqlnet.log
+.tmp
+*~
+.*~
+.rvmrc

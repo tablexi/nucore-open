@@ -1,0 +1,22 @@
+
+#content
+  .container_12
+    .grid_12
+      %h1== Login
+      - if flash[:error]
+        %p.error= flash[:error]
+      - if flash[:notice]
+        %p.notice= flash[:notice]
+      - if flash[:info]
+        %p.info= flash[:info]
+      - form_for resource_name, resource, :url => session_path(resource_name) do |f|
+        %ul.form
+          %li
+            %label== Username
+            = f.text_field :username, :size => 30
+          %li
+            %label== Password
+            = f.password_field :password, :size => 15
+        %ul.horiz
+          %li= submit_tag 'Login', :class => 'btn'
+    .clear

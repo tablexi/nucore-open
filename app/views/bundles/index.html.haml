@@ -1,0 +1,24 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'bundles' }
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product_index'
+
+%h2= params[:archived].nil? || params[:archived] != 'true' ? 'Active Bundles' : 'Inactive Bundles'
+
+%p Bundles are collections of products that are ordered as a single purchase by the purchaser.
+
+- if current_user.manager_of?(current_facility)
+  %ul.horiz
+    %li= link_to 'Add Bundle', new_facility_bundle_path
+
+- if @bundles.empty?
+  %p.notice== No #{params[:archived].nil? || params[:archived] != 'true' ? 'active' : 'inactive'} bundles exist for this facility.
+- else
+  %table
+    %tr
+      %th== Bundle Name
+    - @bundles.each do |bundle|
+      %tr
+        %td= link_to bundle.name, manage_facility_bundle_path(current_facility, bundle)

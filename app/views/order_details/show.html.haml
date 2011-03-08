@@ -1,0 +1,116 @@
+-content_for :breadcrumb do
+  %ul.horiz
+    %li= link_to 'My Orders', orders_url
+    %li &raquo;
+    %li=h "Order # #{@order_detail}"
+
+- content_for :h1 do
+  == Order # #{@order_detail}
+
+.grid_6.alpha
+  %ul.form
+    %li= link_to 'View Receipt', receipt_order_path(@order)
+    %li
+      %label Facility
+      =h @order.facility
+    %li
+      %label Payment Source
+      =h @order_detail.account
+    %li
+      %label Ordered At
+      =h human_datetime(@order.ordered_at)
+    %li
+      %label Ordered For
+      =h @order.user.full_name
+    %li
+      %label Ordered By
+      =h @order.created_by_user.full_name
+
+.grid_6.omega.margin_bottom
+  - if @order_detail.can_dispute?
+    .box_no_fill.margin_bottom
+      %h3 Dispute Order
+      %p If you wish to dispute the charges for this purchase, please explain the issue with the charges and click "Dispute Purchase".
+      - form_for(:order_detail, @order_detail, :url => order_order_detail_path, :html => {:method => :put}) do |f|
+        = f.error_messages
+        %ul.form
+          %li
+            %label Dispute Reason
+            = f.text_field :dispute_reason
+        %ul.horiz
+          %li= submit_tag "Dispute Purchase", :class => 'btn'
+
+  - unless @order_detail.file_uploads.sample_result.empty?
+    .box
+      %h3 Download Results
+      %ul.form
+        - i = 0
+        - @order_detail.file_uploads.sample_result.sort{|a,b| a.created_at <=> b.created_at}.each do |file_upload|
+          %li= "#{link_to("Results File #{i+=1}", file_upload.file.url)} - #{human_datetime(file_upload.created_at)}"
+
+  - if !@order_detail.dispute_at.nil?
+    %ul.form.box
+      %li
+        %label Disputed At
+        =h human_datetime(@order_detail.dispute_at)
+      %li
+        %label Dispute Reason
+        =h @order_detail.dispute_reason
+    - if !@order_detail.dispute_resolved_at.nil?
+      %li
+        %label Dispute Resolved At
+        =h human_datetime(@order_detail.dispute_resolved_at)
+      %li
+        %label Dispute Resolution Notes
+        =h @order_detail.dispute_resolved_reason
+      - if !@order_detail.dispute_resolved_credit.nil?
+        %li
+          %label Dispute Credit
+          =h number_to_currency(@order_detail.dispute_resolved_credit)
+.clear
+%table
+  %tr
+    %th.centered Action
+    %th{:colspan => 2} Quantity/Product
+    %th Status
+    %th.currency Cost
+    - if @order_detail.has_subsidies?
+      %th.currency Adjustment
+    %th.currency Total
+  %tr
+    - res = @order_detail.reservation
+    %td.centered
+      - if res
+        - if res.can_switch_instrument_on?
+          = link_to "Begin Reservation", order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'on')
+        - elsif res.can_switch_instrument_off?
+          = link_to "End Reservation", order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'off')
+        - elsif res.can_cancel?
+          = link_to "Cancel", "#"
+    %td.centered=h @order_detail.quantity
+    %td
+      %ul
+        %li= (@order_detail.bundle ? "#{h @order_detail.bundle} &mdash; " : '') + h(@order_detail.product)
+        - if res
+          - if res.can_edit?
+            %li.indented= link_to res, edit_order_order_detail_reservation_path(@order, @order_detail, res)
+          - else
+            %li.indented= link_to res, order_order_detail_reservation_path(@order, @order_detail, res)
+        - if @order_detail.survey_completed?
+          %li.indented= link_to('View Order Form', show_order_survey_path(@order, @order_detail, @order_detail.response_set.survey.access_code, @order_detail.response_set.access_code))
+        - unless @order_detail.file_uploads.template_result.empty?
+          %li.indented= link_to('View Order File', @order_detail.file_uploads.template_result.first.file.url)
+    %td=h @order_detail.order_status
+    - if @order_detail.actual_cost && @order_detail.actual_subsidy
+      %td.currency=h number_to_currency @order_detail.actual_cost
+      - if @order_detail.has_subsidies?
+        %td.currency=h number_to_currency @order_detail.actual_subsidy
+      %td.currency=h number_to_currency @order_detail.actual_total
+    - else
+      %td.currency=h number_to_currency @order_detail.estimated_cost
+      - if @order_detail.has_subsidies?
+        %td.currency=h number_to_currency @order_detail.estimated_subsidy
+      %td.currency=h number_to_currency @order_detail.estimated_total
+
+- unless @order_detail.actual_cost && @order_detail.actual_subsidy
+  %p.footnote * Instrument pricing is estimated; the final price may vary based on actual time used.

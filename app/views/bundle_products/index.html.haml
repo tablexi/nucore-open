@@ -1,0 +1,36 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'bundles' }
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'products'}
+
+
+%h2=h @bundle
+
+%p The table below shows the products included in this bundle.
+
+- unless @bundle.products_active?
+  %p.notice Some of the products added to this bundle are inactive.  Users will be unable to view or purchase this bundle if any bundle products are inactive.
+
+#admin-subnav
+  %ul.horiz
+    %li= link_to 'Add Bundled Product', new_facility_bundle_bundle_product_path
+
+- if @bundle_products.empty?
+  %p.notice No products have been added to this bundle.
+- else
+  %table
+    %tr
+      %th
+      %th Product
+      %th Quantity
+    - @bundle_products.each do |bundle_product|
+      - product = bundle_product.product
+      %tr
+        %td.centered= link_to 'Remove', facility_bundle_bundle_product_path(current_facility, @bundle, bundle_product), :method => :delete
+        %td= link_to product.to_s_with_status, send("manage_facility_#{product.class.name.downcase}_path", current_facility, product)
+        - if product.is_a?(Instrument)
+          %td== #{bundle_product.quantity}
+        - else
+          %td== #{bundle_product.quantity} (#{link_to 'edit', edit_facility_bundle_bundle_product_path(current_facility, @bundle, bundle_product)})

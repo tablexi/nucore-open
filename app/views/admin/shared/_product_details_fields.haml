@@ -1,0 +1,38 @@
+%li
+  = f.label :name, nil, :class => 'require'
+  %p.instruction== Name of the #{f.object.class.name.downcase} as displayed to the end user
+  = f.text_field :name
+%li
+  = f.label :url_name, 'URL Name', :class => 'require'
+  - if f.object.url_name && f.object.url_name.length > 0 && !f.object.errors[:url_name]
+    %p.instruction= send("facility_#{f.object.class.name.downcase}_url", current_facility, f.object)
+  - else
+    %p.instruction= send("facility_#{f.object.class.name.downcase}_url", current_facility, 'url-name')
+  = f.text_field :url_name
+%li
+  = f.label :description
+  %p.instruction Description as it will appear on the product page
+  = f.text_area :description, :cols => 80, :rows => 8, :class => 'editor'
+- unless f.object.is_a?(Bundle)
+  %li
+    = f.label :facility_account_id, 'Recharge Chart String and Account'
+    %p.instruction Revenue account to which fees will be deposited
+    = f.select :facility_account_id, current_facility.facility_accounts.active.collect {|fa| [ fa, fa.id ] }
+    = link_to 'Add Chart String', :facility_facility_accounts
+  %li
+    =f.label :account, nil, :class => 'require'
+    %p.instruction Expense account from which fees will be withdrawn; must be open on purchaser's Chart String
+    = f.text_field :account, :size => 10, :maxLength => 5
+  %li
+    = f.label :initial_order_status_id
+    %p.instruction Default status for new orders
+    = f.collection_select(:initial_order_status_id, OrderStatus.initial_statuses(current_facility), :id, :name_with_level)
+  %li
+    = f.check_box :requires_approval
+    %b Check to restrict access to approved users
+%li
+  = f.check_box :is_archived
+  %b== Check to inactivate the product, disallowing purchase and viewing
+%li
+  = f.check_box :is_hidden
+  %b== Check to hide #{f.object.class.name.downcase} from end users; visible to staff when "ordering on behalf" of another user

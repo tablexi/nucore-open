@@ -1,0 +1,15 @@
+log/
+tmp/
+.bundle/
+.idea/
+sqlnet.log
+config/database.yml
+config/Constants.rb
+public/plugin_assets/
+public/files/
+surveys/fixtures/
+vendor/plugins/nucs/config/database.yml
+.tmp
+*~
+.*~
+.rvmrc

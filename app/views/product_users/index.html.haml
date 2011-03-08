@@ -1,0 +1,32 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => {:sidenav_tab => @product.class.name.pluralize.downcase}
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'users'}
+
+%h2=h @product
+%h3 Approved Users
+
+%p== This #{@product.class.name.downcase} requires a user to be approved before they may purchase the #{@product.class.name.downcase}.
+
+%ul.horiz
+  %li= link_to 'Add Approved User', send("new_facility_#{@product.class.name.downcase}_user_path", current_facility, @product)
+
+- if @users.nil?
+- elsif @users.empty?
+  %p.notice== No users are currently approved.
+- else
+  %table
+    %tr
+      %th
+      %th Name
+      %th User Name
+      %th Email
+    - @users.each do |user|
+      %tr
+        %td.centered= link_to "Remove", self.send("facility_#{@product.class.name.downcase}_user_path", current_facility, @product, user), :method => :delete, :confirm => "Are you sure you wish to remove this user from this #{@product.class.name.downcase}?"
+        %td= "#{user.last_name}, #{user.first_name}"
+        %td=h user.username
+        %td=h user.email
+  = will_paginate(@users)

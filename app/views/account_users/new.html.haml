@@ -1,0 +1,30 @@
+- content_for :tabnav do
+  = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'members'}
+- content_for :h1 do
+  == Add Payment Source Member
+
+- form_for(@account_user, :url => account_account_users_path(@account)) do |f|
+  = f.error_messages
+  %ul.form
+    %li
+      %label Payment Source Number
+      =h @account.account_number
+    %li
+      %label Type
+      =h @account.type_string
+    %li
+      %label Description
+      =h @account.description
+    %li
+      %label Expiration
+      =h human_datetime(@account.expires_at, :date_only => true)
+    %li
+      = label_tag :user
+      =h @user.full_name
+      = hidden_field_tag "user_id", @user.id
+    %li
+      = f.label :user_role, nil, :class => 'required'
+      = f.select :user_role, options_for_select(AccountUser.selectable_user_roles, :selected => 'Purchaser')
+  %ul.horiz
+    %li= f.submit 'Create', :class => 'btn'
+    %li= link_to 'Cancel', account_account_users_path(@account)

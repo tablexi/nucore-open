@@ -1,0 +1,30 @@
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_payment_method', :locals => {:secondary_tab => 'members'}
+
+- content_for :h1 do
+  =h current_facility
+
+%h2 Add Payment Source User
+
+- form_for(@account_user, :url => facility_account_account_users_path(current_facility, @account)) do |f|
+  = f.error_messages
+  %ul.form
+    %li
+      = label_tag :account_type
+      = @account.type_string
+    %li
+      = label_tag :account_number
+      = @account.account_number
+    = hidden_field_tag "user_id", @user.id
+    %li
+      = label_tag :user
+      = @user.full_name
+    %li
+      = f.label :user_role, nil, :class => 'require'
+      = f.select :user_role, options_for_select(AccountUser.selectable_user_roles)
+  %ul.horiz
+    %li= f.submit 'Create', :class => 'btn'
+    %li= link_to 'Cancel', facility_account_path(current_facility, @account)

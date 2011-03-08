@@ -1,0 +1,4 @@
+- if flash[:errors]
+  %p.error=h flash[:errors]
+- else
+  = render :partial => 'account_balances.html.haml'

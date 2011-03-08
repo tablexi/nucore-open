@@ -1,0 +1,17 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'schedule_rules'}
+
+%h2=h @instrument
+%h3 Add Schedule Rules
+
+- form_for([current_facility, @instrument, @schedule_rule]) do |f|
+  = f.error_messages
+  %ul.form
+    = render :partial => 'schedule_rule_fields', :locals => {:f => f, :schedule_rule => @schedule_rule}
+  %ul.horiz
+    %li= f.submit 'Create', :class => 'btn'
+    %li= link_to 'Cancel', facility_instrument_schedule_rules_path

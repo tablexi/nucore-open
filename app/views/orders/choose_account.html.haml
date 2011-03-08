@@ -1,0 +1,24 @@
+- content_for :h1 do
+  Select Payment Source
+
+= error_messages_for(:object => @order, :object_name => "order" )
+
+- if @accounts.empty?
+  %p.notice You do not have any payment sources.  You must have a payment source in order to place an order.  Please contact the facility to add a payment source.
+- else
+  - form_tag do
+    %table
+      %tr
+        %th
+        %th Payment Source
+        %th Owner
+      - @accounts.each do |a|
+        %tr
+          %td= @errors[a.id] ? radio_button('', 'account_id', a.id, :disabled => 'disabled') : radio_button('', 'account_id', a.id)
+          %td
+            = a
+            - if @errors[a.id]
+              %p.warning=h @errors[a.id]
+          %td=h "#{a.owner_user.first_name} #{a.owner_user.last_name}"
+    %ul.horiz
+      %li= submit_tag 'Continue', :class => 'btn'

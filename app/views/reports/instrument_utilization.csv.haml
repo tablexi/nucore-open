@@ -1,0 +1,21 @@
+Instrument,Purchaser,Payment Source,Payment Source Owner,Schedule Start Date,Schedule Start Time,Scheduled End Date,Schedule End Time,Scheduled Duration Minutes,Actual Start Date,Actual Start Time,Actual End Date,Actual End Time,Actual Duration Minutes,Amount,Adjustment,Price Group,Price Group Type
+= FasterCSV.generate do |csv|
+  - @reservations.each do |res|
+    - csv << [ res.instrument,         |
+               res.order.user,         |
+               res.account,            |
+               res.account.owner.user, |
+               res.reserve_start_at.strftime("%m/%d/%Y"), |
+               res.reserve_start_at.strftime("%H:%M"),    |
+               res.reserve_end_at.strftime("%m/%d/%Y"),   |
+               res.reserve_end_at.strftime("%H:%M"),      |
+               ((res.reserve_end_at - res.reserve_start_at) / 60).to_i, |
+               res.actual_start_at.strftime("%m/%d/%Y"),  |
+               res.actual_start_at.strftime("%H:%M"),     |
+               res.actual_end_at.strftime("%m/%d/%Y"),    |
+               res.actual_end_at.strftime("%H:%M"),       |
+               ((res.actual_end_at - res.actual_start_at) / 60).to_i, |
+               number_to_currency(res.order_detail.actual_cost),      |
+               number_to_currency(res.order_detail.actual_subsidy),   |
+               res.order_detail.price_policy.price_group, |
+               res.order_detail.price_policy.price_group.type_string] |

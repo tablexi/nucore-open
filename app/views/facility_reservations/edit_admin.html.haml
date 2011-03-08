@@ -1,0 +1,48 @@
+- content_for :head_content do
+  %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
+  = javascript_include_tag 'calendar/fullcalendar.min.js'
+  = javascript_include_tag 'reservations.js'
+  = stylesheet_link_tag 'calendar/fullcalendar.css'
+  = stylesheet_link_tag 'calendar/fullcalendar.extensions.css'
+  = stylesheet_link_tag "jquery-ui/jquery-ui"
+  :javascript
+    var events_path     = "#{facility_instrument_reservations_url(@instrument.facility, @instrument, :format => 'js')}";
+    var minDate         = "#{@min_date}";
+    var maxDate         = "#{@max_date}";
+    var maxDaysFromNow  = #{@instrument.last_reserve_days_from_now};
+    var minTime         = #{@instrument.first_available_hour};
+    var maxTime         = #{@instrument.last_available_hour+1};
+      
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'reservations'}
+
+%h2=h @instrument
+
+- form_for ([@instrument, @reservation], :url => facility_instrument_reservation_update_admin_path) do |f|
+  = f.error_messages
+  %ul.form
+    %li.left
+      = f.label :reserve_start_date, 'Reservation Date'
+      = f.text_field :reserve_start_date, :class => 'datepicker'
+    %li.left
+      = f.label  :reserve_start_hour, 'Starting At'
+      = f.select :reserve_start_hour, (1..12).to_a
+      = f.select :reserve_start_min, (0..59).step(5).map{|d| [sprintf('%02d', d),d]}
+      = f.select :reserve_start_meridian, ['AM', 'PM']
+    %li.left
+      = f.label :duration_value, 'Duration'
+      = f.text_field :duration_value, :value => f.object.duration_value, :size => '5'
+      = f.select :duration_unit, ['minutes', 'hours'], { :selected => f.object.duration_unit }
+    %li.clear
+  %ul.horiz
+    %li= f.submit 'Save', :class => 'btn'
+    %li= link_to 'Cancel', facility_instrument_schedule_path
+
+#overlay
+  #spinner
+    #hide
+      #calendar

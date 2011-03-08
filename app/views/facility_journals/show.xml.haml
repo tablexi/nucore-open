@@ -1,0 +1,30 @@
+%JRNL_HDR_IMP
+  %BUSINESS_UNIT== NWUNV
+  %JOURNAL_ID== NEXT
+  %JOURNAL_DATE= @journal.created_at.strftime("%Y%m%d")
+  %DESCR254=h "NC#{@journal.facility.id.to_s.rjust(5, '0')}: Journal ##{ @journal.id}, Created By: #{User.find(@journal.created_by).username}"
+  %LEDGER_GROUP== ACTUALS
+  %SOURCE== RSC
+  %OPRID== GLBATCH
+  - @journal_rows.each_with_index do |row, i|
+    %JRNL_LN_IMP
+      %JOURNAL_LINE= i+1
+      %BUSINESS_UNIT== NWUNV
+      %LEDGER== ACTUALS
+      %ACCOUNT= row.account
+      %FOREIGN_AMOUNT= number_to_currency row.amount, :unit => ''
+      %LINE_DESCR=h row.description
+      %FUND_CODE= row.fund
+      %DEPTID= row.dept
+      - if row.project
+        %PROJECT_ID= row.project # optional
+      - if row.program
+        %PROGRAM_CODE= row.program # optional
+      - if row.activity
+        %ACTIVITY_ID= row.activity # optional
+      - if row.reference
+        %JRNL_LN_REF= row.reference #optional
+  %NU_JRNL_TRL_IMP
+    %RECORD_COUNT= @journal_rows.length
+    %TOTAL_CREDITS= number_to_currency @journal_rows.inject(0) { |sum,row| sum += (row.amount < 0 ? row.amount : 0) }, :unit => '' # negative number
+    %TOTAL_DEBITS= number_to_currency @journal_rows.inject(0) { |sum,row| sum += (row.amount > 0 ? row.amount : 0) }, :unit => '' # positive number

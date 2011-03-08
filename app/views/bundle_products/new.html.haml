@@ -1,0 +1,20 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'bundles' }
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'products'}
+
+%h2== Add Bundled Product
+- form_for([current_facility, @bundle, @bundle_product]) do |f|
+  = f.error_messages
+  %ul.form
+    %li
+      = f.label :product_id, nil, :class => 'require'
+      = f.select :product_id, grouped_options_for_select(@bundle.products_for_group_select, @bundle_product.product_id, '')
+    %li
+      = f.label :quantity, nil, :class => 'require'
+      = f.text_field :quantity
+  %ul.horiz
+    %li= f.submit 'Create', :class => 'btn'
+    %li= link_to 'Cancel', facility_bundle_bundle_products_url

@@ -1,0 +1,29 @@
+- content_for :head_content do
+  = javascript_include_tag 'calendar/fullcalendar.min.js'
+  = stylesheet_link_tag 'calendar/fullcalendar.css'
+  :javascript
+    jQuery.noConflict();
+      jQuery(document).ready(function() {
+        jQuery('#calendar').fullCalendar({
+          editable: false,
+          defaultView: 'agendaWeek',
+          allDaySlot: false,
+          header: {
+            left: '',
+            center: 'title',
+            right: 'prev,next today agendaDay,agendaWeek,month',
+          },
+          events: "#{facility_schedule_url + '.json'}"
+        })
+      });
+
+%h2 Instrument Reservation Schedule
+= link_to 'Agenda View', facility_agenda_path
+%br
+== Filter by Instrument: #{select_tag 'facility_jumper', options_for_select(current_facility.instruments.map{|i| [i.name, i.id]}.unshift ['---', nil]), :url_name => facility_path(current_facility)}
+%br
+%br
+#overlay
+  #spinner
+    #hide
+      #calendar

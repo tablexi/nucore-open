@@ -1,0 +1,37 @@
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'details'}
+
+%h2=h @instrument
+%ul.form
+  = render :partial => 'admin/shared/product_manage'
+  %li
+    %label Relay IP Address
+    %p=h @instrument.relay_ip || 'N/A'
+  %li
+    %label Relay Port
+    %p=h @instrument.relay_port || 'N/A'
+  %li
+    %label Relay Username
+    %p=h @instrument.relay_username || 'N/A'
+  %li
+    %label Relay Password
+    %p=h @instrument.relay_password || 'N/A'
+  %li
+    %label Automatic Logout?
+    %p=h @instrument.auto_logout? ? 'Yes' : 'No'
+  %li
+    %label Minimum Reservation Minutes
+    %p=h @instrument.min_reserve_mins.to_i
+  %li
+    %label Maximum Reservation Minutes
+    %p=h @instrument.max_reserve_mins || 'None'
+  %li
+    %label Minimum Cancelation Hours
+    %p=h @instrument.min_cancel_hours.to_i
+- if session_user.manager_of?(current_facility)
+  %ul.horiz
+    %li= link_to 'Edit', edit_facility_instrument_path(current_facility, @instrument), :class => 'btn'

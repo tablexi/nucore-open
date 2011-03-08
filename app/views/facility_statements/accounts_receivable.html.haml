@@ -1,0 +1,35 @@
+- content_for :h1 do
+  =h current_facility
+
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts_receivable' }
+
+%h2 Accounts Receivable
+%ul
+  - if params[:show_all]
+    %li= link_to 'Show accounts with a balance', accounts_receivable_facility_statements_path
+  - else
+    %li= link_to 'Show all accounts', accounts_receivable_facility_statements_path(:show_all => '1')
+
+%table
+  %tr
+    %th.auto Account
+    %th.small 0-30
+    %th.small 31-60
+    %th.small 61-90
+    %th.small 91+
+    %th.small Total
+  - @accounts.each do |a|
+    - today = Time.zone.parse(Time.now.strftime("%m/%d/%y 23:59:59"))
+    - balance = {}
+    - balance[91] = a.facility_balance_on_date(current_facility, today - 91*24*60*60)
+    - balance[61] = a.facility_balance_on_date(current_facility, today - 61*24*60*60) - balance.values.inject{|sum, n| sum + n }
+    - balance[31] = a.facility_balance_on_date(current_facility, today - 31*24*60*60) - balance.values.inject{|sum, n| sum + n }
+    - balance[0]  = a.facility_balance_on_date(current_facility, today)               - balance.values.inject{|sum, n| sum + n }
+    %tr
+      %td= link_to a, facility_account_statement_path(current_facility, a, 'recent')
+      %td=h number_to_currency(balance[0])
+      %td=h number_to_currency(balance[31])
+      %td=h number_to_currency(balance[61])
+      %td=h number_to_currency(balance[91])
+      %td=h number_to_currency(@account_balances[a.id])

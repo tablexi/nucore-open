@@ -1,0 +1,27 @@
+- content_for :breadcrumb do
+  %ul.horiz
+    %li= link_to 'Home', :root
+    %li== &raquo;
+    %li= link_to h(current_facility), current_facility
+    %li== &raquo;
+    %li=h @bundle.name
+
+- content_for :h1 do
+  =h @bundle.name
+
+= @bundle.description
+
+- if @log_in
+  - session[:requested_params] = request.request_uri
+  %ul
+    %li= link_to 'Login', new_user_session_path, :class => 'btn'
+- elsif @add_to_cart
+  %ul
+    %li= link_to 'Add to cart', add_order_path(acting_user.cart(session_user), :product_id => @bundle.id, :quantity => 1), :method => :put, :class => 'btn'
+
+- docs = @bundle.file_uploads.info
+- unless docs.empty?
+  %h3 Documentation
+  %ul
+    - docs.each do |file_upload|
+      %li.document= link_to file_upload.name, file_upload.file.url

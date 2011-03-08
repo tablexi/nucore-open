@@ -1,0 +1,233 @@
+- content_for :head_content do
+  = stylesheet_link_tag 'uploadify'
+  = javascript_include_tag 'uploadify/jquery.uploadify.v2.1.0.min'
+  = javascript_include_tag 'uploadify/swfobject'
+  :javascript
+    $(document).ready(function() {
+      $('#file_upload').uploadify({
+        'uploader'     : '#{ActionController::Base.relative_url_root}/javascripts/uploadify/uploadify.swf',
+        'fileDataName' : 'fileData',
+        'script'       : "#{add_uploader_file_path(current_facility, @order_detail.product.parameterize, @order_detail.product.url_name)}",
+        'cancelImg'    : '#{ActionController::Base.relative_url_root}/javascripts/uploadify/cancel.png',
+        'auto'         : false,
+        'method'       : 'get',
+        'multi'        : true,
+        'folder'       : '/uploads',
+        'onAllComplete' : function () {window.location.reload();},
+        'scriptData'   : {
+          '_nucore_session'    : '#{u cookies['_nucore_session']}',
+          'authenticity_token' : encodeURIComponent('#{u form_authenticity_token if protect_against_forgery?}'),
+          'file_type'          : 'sample_result',
+          'order_detail_id'    : '#{@order_detail.id}'
+        }
+      });
+      
+      $("#quantity").change(function () {
+        $('#submit').attr('disabled', true);
+        $.getJSON(
+          "#{facility_order_order_detail_new_price_url(current_facility, @order, @order_detail)}?quantity=" + this.value,
+          function(data) {
+            $("#actual_cost").val(data[0].toFixed(2));
+            $("#actual_subsidy").val(data[1].toFixed(2));
+            $("#actual_total").html("$" + data[2].toFixed(2));
+            $('#submit').attr('disabled', false);
+          }
+        );
+      });
+
+      $("input[type='text']").change(function () {
+        if (this.id == 'actual_cost' || this.id == 'actual_subsidy') {
+          $("#actual_total").html("$" + ($("#actual_cost")[0].value - $("#actual_subsidy")[0].value).toFixed(2));
+        }
+      });
+    });
+
+- content_for :h1 do
+  = current_facility
+- content_for :tabnav do
+  - if @order_detail.reviewable?
+    - tab = 'reviewable'
+  - elsif @order_detail.in_dispute?
+    - tab = 'disputed'
+  - elsif @order_detail.complete?
+    - tab = ''
+  - else
+    - tab = 'new'
+  = render :partial => 'admin/shared/tabnav_order', :locals => { :secondary_tab => tab }
+
+%h2== Edit Order # #{@order_detail}
+- form_for(:order_detail, @order_detail, :url => (@order_detail.in_dispute? ? facility_order_order_detail_resolve_dispute_path(current_facility, @order, @order_detail) : facility_order_order_detail_path(current_facility, @order, @order_detail)), :html => {:method => :put}) do |f|
+  = f.error_messages
+  .grid_6.alpha
+    %ul.form
+      %li
+        %label Ordered At
+        =h human_datetime(@order.ordered_at)
+      %li
+        %label Ordered For
+        =h @order.user.full_name
+      %li
+        %label Ordered By
+        =h @order.created_by_user.full_name
+      %li
+        %label Payment Source
+        = f.collection_select(:account_id, @order.user.account_users.active.collect{|au| au.account}, :id, :account_pretty)
+      %li
+        %label Assigned User
+        - if @order_detail.complete?
+          =h @order_detail.assigned_user ? @order_detail.assigned_user.full_name : 'Unassigned'
+        - else
+          = f.collection_select(:assigned_user_id, User.find_users_by_facility(current_facility), :id, :full_name, :prompt => 'Unassigned')
+  .grid_6.omega.margin_bottom
+    - # Dispute form
+    - if @order_detail.in_dispute?
+      .box.margin_bottom
+        %h3 Resolve Dispute
+        %p To resolve the dispute, please make the necessary changes and click "Resolve Dispute".
+        %ul.form
+          %li
+            %label Disputed On
+            =h human_datetime(@order_detail.dispute_at)
+          %li
+            %label Dispute Reason
+            =h @order_detail.dispute_reason
+          %li
+            %label Credit Amount
+            = f.text_field(:dispute_resolved_credit, {:value => number_to_currency(@order_detail.dispute_resolved_credit, :unit => '')})
+          %li
+            %label.required Resolution Notes
+            = f.text_field :dispute_resolved_reason
+
+    - # Dispute Results
+    - if @order_detail.dispute_resolved_at
+      .box.margin_bottom
+        %h3 Dispute Information
+        %ul.form
+          %li
+            %label Disputed On
+            =h human_datetime(@order_detail.dispute_at)
+          %li
+            %label Dispute Reason
+            =h @order_detail.dispute_reason
+          %li
+            %label Resolved At
+            =h human_datetime(@order_detail.dispute_resolved_at)
+          %li
+            %label Resolution Notes
+            =h @order_detail.dispute_resolved_reason
+          %li
+            %label Credit Amount
+            =h number_to_currency(@order_detail.dispute_resolved_credit)
+    
+    - # Results Files
+    - if @order_detail.product.is_a?(Service)
+      .box
+        %h3 Results Files
+        - @results = @order_detail.file_uploads.sample_result.sort{|a,b| a.created_at <=> b.created_at}
+        - if @results.empty?
+          %p No results have been uploaded yet.
+        - else
+          %ul.form
+            - i = 0
+            - @results.each do |file_upload|
+              %li
+                == #{link_to("Results File #{i+=1}", file_upload.file.url)}:
+                = human_datetime(file_upload.created_at)
+                == - (#{link_to('Remove', remove_product_file_path(current_facility, @order_detail.product.parameterize, @order_detail.product, file_upload, :return_to => request.request_uri), :method => :delete, :confirm => 'Are you sure?')})
+        %h3 Upload Results
+        #file_upload Please enable Javascript and install Adobe Flash Player.
+        %br
+        = link_to "Start Upload", "javascript:$('#file_upload').uploadifyUpload();"
+        == &nbsp;&nbsp;|&nbsp;&nbsp;
+        = link_to "Clear Queue", "javascript:$('#file_upload').uploadifyClearQueue()"
+  .clear
+  - # Product table
+  %table
+    %tr
+      %th{:colspan => 2} Quantity*/Product
+      %th Status
+      - if @order_detail.product.is_a?(Instrument)
+        %th.currency Est Cost
+        %th.currency Est Adjustment
+      %th.currency Cost
+      %th.currency Adjustment
+      %th.currency Total
+    %tr
+      %td.centered
+        - if @order_detail.product.is_a?(Instrument)
+          =h @order_detail.quantity
+        - else
+          = f.text_field :quantity, :id => 'quantity', :size => 3
+      %td
+        %ul
+          - product_name = (@order_detail.bundle ? "#{h @order_detail.bundle} &mdash; " : '') + h(@order_detail.product)
+          %li= product_name
+          - if @order_detail.reservation
+            %li.indented=h @order_detail.reservation
+          - if @order_detail.survey_completed?
+            %li.indented= link_to('View Order Form', show_admin_order_survey_path(current_facility, @order, @order_detail, @order_detail.response_set.survey.access_code, @order_detail.response_set.access_code))
+          - unless @order_detail.file_uploads.template_result.empty?
+            %li.indented= link_to('View Order File', @order_detail.file_uploads.template_result.first.file.url)
+      - if @order_detail.complete?
+        %td=h @order_detail.order_status
+      - else
+        %td= f.collection_select(:order_status_id, OrderStatus.non_protected_statuses(current_facility), :id, :name_with_level)
+      - if @order_detail.product.is_a?(Instrument)
+        %td.currency=h number_to_currency @order_detail.estimated_cost
+        %td.currency=h number_to_currency @order_detail.estimated_subsidy
+      - if @order_detail.complete?
+        %td.currency= number_to_currency @order_detail.actual_cost
+        %td.currency= number_to_currency @order_detail.actual_subsidy
+        %td.currency= number_to_currency @order_detail.actual_total
+      - elsif @order_detail.product.is_a?(Instrument) && @order_detail.reviewable?
+        - res = @order_detail.reservation
+        - if res && res.actual_start_at && res.actual_end_at
+          %td.currency= "$#{f.text_field(:actual_cost, {:value => number_to_currency(@order_detail.actual_cost, :unit => ''), :id => 'actual_cost', :size => 8})}"
+          %td.currency= "$#{f.text_field(:actual_subsidy, {:value => number_to_currency(@order_detail.actual_subsidy, :unit => ''), :id => 'actual_subsidy', :size => 8})}"
+          %td.currency
+            %span#actual_total= number_to_currency(@order_detail.actual_total)
+        - else
+          %td.centered{:colspan => '3'} You must enter actual start/end reservation times.
+      - else 
+        %td.currency= "$#{f.text_field(:actual_cost, {:value => number_to_currency(@order_detail.actual_cost, :unit => ''), :id => 'actual_cost', :size => 8})}"
+        %td.currency= "$#{f.text_field(:actual_subsidy, {:value => number_to_currency(@order_detail.actual_subsidy, :unit => ''), :id => 'actual_subsidy', :size => 8})}"
+        %td.currency
+          %span#actual_total= number_to_currency(@order_detail.actual_total)
+  %p.footnote * Changing the quantity will automatically update the price fields
+
+  - if @order_detail.order_status.name == 'Reviewable'
+    %p You <b>must</b> click "Save" to apply any changes made to the order.
+    %ul.horiz
+      %li= submit_tag 'Save', {:class => 'btn', :id => 'submit'}
+      %li= link_to 'Cancel', review_facility_orders_path
+  - elsif @order_detail.in_dispute?
+    %ul.horiz
+      %li= submit_tag 'Resolve Dispute', {:class => 'btn', :id => 'submit'}
+      %li= link_to 'Cancel', disputed_facility_orders_path
+  - else
+    %p You <b>must</b> click "Save" to apply any changes made to the order.
+    %ul.horiz
+      %li= submit_tag 'Save', {:class => 'btn', :id => 'submit'}
+      %li= link_to 'Cancel', facility_orders_path
+
+- if @order_detail.bundle
+  -# BUNDLE TABLE
+  %br
+  %br
+  %br
+  %h3 Bundle Summary
+  %p This order is part of a bundle.  Below is a summary of related bundle order line items.
+  %table
+    %tr
+      %th Order #
+      %th{:colspan => 2} Quantity/Product
+      %th Status
+      %th Assigned To
+    - @order.order_details.find(:all, :conditions => {:group_id => @order_detail.group_id}).each do |od|
+      - product_name = (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
+      %tr
+        %td= link_to od, edit_facility_order_order_detail_path(current_facility, @order, od)
+        %td= od.quantity
+        %td= product_name
+        %td=h od.order_status
+        %td=h od.assigned_user.nil? ? '' : od.assigned_user.full_name

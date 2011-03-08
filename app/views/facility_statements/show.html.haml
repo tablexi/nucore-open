@@ -1,0 +1,22 @@
+- content_for :h1 do
+  =h current_facility
+
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'statement_history' }
+
+%p=h "Statement sent on #{human_datetime(@statement.created_at)} by #{begin User.find(@statement.created_by).full_name rescue 'Unknown' end}.  Notifications were emailed to the following accounts."
+
+%table
+  %tr
+    %th
+    %th Account
+    %th Owner
+  - @statement.accounts.uniq.each do |a|
+    %tr
+      %td.centered
+        - if @statement.invoice_date < Time.zone.now
+          = link_to 'View Invoice', facility_account_statement_path(current_facility, a, @statement)
+      %td
+        %ul
+          %li= link_to a, facility_account_statement_path(current_facility, a, 'recent')
+      %td=h a.owner_user.full_name

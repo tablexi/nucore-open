@@ -1,0 +1,16 @@
+CHECKOUT CODE
+- git clone git@github.com:tablexi/nucore.git
+
+CONFIGURE DATABASE
+- edit config/database.yml
+
+CONFIGURE DEPENDENCIES
+- inside code directory run "bundle install ../.bundle"
+
+BUILD DB
+- cd db && ./generate_drops.sh | nucore
+- rake db:reset
+
+OPTIONALLY
+- rake db:bi_seed
+- rake db:bi_orders

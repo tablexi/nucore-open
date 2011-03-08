@@ -1,0 +1,19 @@
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+- content_for :h1 do
+  =h current_facility
+
+%h2 Payment Sources
+
+- form_tag search_results_facility_accounts_path, :id => 'ajax_form' do
+  = label_tag :search_term, "Search by payment source number or payment source owner's name, NetID, or username"
+  %br
+  = text_field_tag :search_term, nil, :size => 30
+  = submit_tag "Search", :class => 'btn'
+  = link_to 'Clear Search', facility_accounts_path
+
+%ul.horiz
+  %li= link_to 'Add Payment Source', new_account_user_search_facility_accounts_path
+
+#result
+  = render :partial => 'account_balances.html.haml'

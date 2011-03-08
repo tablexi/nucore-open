@@ -1,0 +1,14 @@
+%table
+  %tr
+    %th
+    %th Name
+    %th Username or NetID
+    %th Email
+  - @users.each do |user|
+    %tr
+      %td.centered= link_to('Order For', facility_user_switch_to_path(@facility, user))
+      %td= link_to "#{user.last_name}, #{user.first_name}", facility_user_path(@facility, user)
+      %td=h user.username
+      %td=h user.email
+- if @count > @limit
+  %p.notice="#{@count-@limit} more users exist, try refining your search."

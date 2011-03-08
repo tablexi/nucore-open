@@ -1,0 +1,35 @@
+- content_for :head_content do
+  %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
+  = javascript_include_tag 'calendar/fullcalendar.min.js'
+  = javascript_include_tag 'reservations.js'
+  = stylesheet_link_tag 'calendar/fullcalendar.css'
+  = stylesheet_link_tag 'calendar/fullcalendar.extensions.css'
+  :javascript
+    var events_path     = "#{facility_instrument_reservations_url(@instrument.facility, @instrument, :format => 'js')}";
+    var minDate         = "#{@min_date}";
+    var maxDate         = "#{@max_date}";
+    var maxDaysFromNow  = #{@instrument.last_reserve_days_from_now};
+    var minTime         = #{@instrument.first_available_hour};
+    var maxTime         = #{@instrument.last_available_hour+1};
+
+- content_for :h1 do
+  =h current_facility
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'reservations'}
+
+%h2=h @instrument
+
+- form_for ([@instrument, @reservation], :url => facility_instrument_reservations_path) do |f|
+  = f.error_messages
+  %ul.form
+    = render :partial => 'reservation_fields', :locals => {:f => f}
+  %ul.horiz
+    %li= f.submit 'Create', :class => 'btn'
+    %li= link_to 'Cancel', facility_instrument_schedule_path
+
+#overlay
+  #spinner
+    #hide
+      #calendar
