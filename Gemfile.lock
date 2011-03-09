@@ -48,6 +48,8 @@ GEM
     creditcard (1.0)
     devise (1.0.9)
       warden (~> 0.10.3)
+    composite_primary_keys (2.3.5.1)
+      activerecord (>= 2.3.5)
     fast-aes (0.1.1)
     fastercsv (1.5.3)
     haml (2.2.17)
@@ -120,7 +122,6 @@ DEPENDENCIES
   bluecloth (= 2.0.7)
   cancan (= 1.5.1)
   capistrano (= 2.5.2)
-  creditcard (= 1.0)
   devise (= 1.0.9)
   devise_ldap_authenticatable (= 0.1.6)!
   fast-aes (= 0.1.1)

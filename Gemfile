@@ -6,7 +6,7 @@ gem 'activerecord-oracle_enhanced-adapter', '1.2.4'
 gem 'bluecloth',        '2.0.7'
 #gem 'bundler',         '0.9.24'
 gem 'capistrano',       '2.5.2'
-gem 'creditcard',       '1.0'
+#gem 'creditcard',       '1.0'
 gem 'mime-types',       '1.16', :require => "mime/types"
 gem 'paperclip',        '2.3.1.1'
 gem 'rails',            '2.3.5'
