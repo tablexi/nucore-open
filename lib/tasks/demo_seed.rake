@@ -221,11 +221,11 @@ namespace :demo  do
 
     user_director = User.find_by_username('ddi123@example.com')
     unless user_director
-      user_director = User.new({0
+      user_director = User.new({
         :username   => 'ddi123@example.com',
         :email      => 'ddi123@example.com',
         :first_name => 'Dave',
-        :last_name  => 'Director',
+        :last_name  => 'Director'
       })
       user_director.password = 'password'
       user_director.save
