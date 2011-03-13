@@ -31,7 +31,7 @@ class BundlesController < ApplicationController
   def show
     raise ActiveRecord::RecordNotFound if @bundle.is_archived? || (@bundle.is_hidden? && !acting_as?)
     @add_to_cart = true
-    @log_in      = false
+    @login_required = false
 
     # do the product have active price policies
     unless @bundle.can_purchase?
@@ -41,7 +41,7 @@ class BundlesController < ApplicationController
 
     # is user logged in?
     if @add_to_cart && acting_user.nil?
-      @log_in      = true
+      @login_required = true
       @add_to_cart = false
     end
 

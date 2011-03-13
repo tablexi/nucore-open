@@ -11,7 +11,7 @@
 
 = @bundle.description
 
-- if @log_in
+- if @login_required
   - session[:requested_params] = request.request_uri
   %ul
     %li= link_to 'Login', new_user_session_path, :class => 'btn'
