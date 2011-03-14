@@ -35,7 +35,7 @@ describe NucsGl066 do
     gl=Factory.create(:nucs_gl066_without_dates)
     date=gl.starts_at
     date.should be_a_kind_of(Time)
-    date.should == Time.zone.parse("#{gl.budget_period}0901")
+    date.should == Time.zone.parse("#{gl.budget_period}0901")-1.year
   end
 
 
