@@ -60,6 +60,8 @@ describe User do
 
   it 'should not be locally authenticated' do
     @user.encrypted_password=nil
+    assert @user.save
+    @user.should_not be_authenticated_locally
     @user.password_salt=nil
     assert @user.save
     @user.should_not be_authenticated_locally

@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
   # Returns true if the user is authenticated against nucore's  
   # user table, false if authenticated by an external system
   def authenticated_locally?
-    !encrypted_password.nil? && !password_salt.nil?
+    encrypted_password && password_salt
   end
 
   # Find the users for a facility
