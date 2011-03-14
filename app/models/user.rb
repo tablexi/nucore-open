@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   include Role
 
-  devise :database_authenticatable, :trackable, :validatable
+  devise :database_authenticatable, :ldap_authenticatable, :trackable, :validatable
 
   #has_many :accounts, :foreign_key => :owner_user_id, :order => :account_number
   has_many :accounts, :through => :account_users
@@ -19,10 +19,25 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :username, :email
   validates_format_of :email, :with => /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,6}$/i
 
+  #
+  # Gem ldap_authenticatable expects User to respond_to? :login. For us that's #username.
+  alias_attribute :login, :username
+
+  #
+  # Gem ldap_authenticatable expects User to respond_to? :ldap_attributes. For us should return nil.
+  attr_accessor :ldap_attributes
+
 
   # finds all user role mappings for a this user in a facility
   def facility_user_roles(facility)
     UserRole.find_all_by_facility_id_and_user_id(facility.id, id)
+  end
+
+  #
+  # Returns true if the user is authenticated against nucore's  
+  # user table, false if authenticated by an external system
+  def authenticated_locally?
+    !encrypted_password.nil? && !password_salt.nil?
   end
 
   # Find the users for a facility

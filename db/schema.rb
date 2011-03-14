@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110216205725) do
+ActiveRecord::Schema.define(:version => 20110314201317) do
 
   create_table "account_transactions", :force => true do |t|
     t.integer  "account_id",                        :precision => 38, :scale => 0, :null => false
@@ -548,13 +548,13 @@ ActiveRecord::Schema.define(:version => 20110216205725) do
   add_index "user_roles", ["user_id", "facility_id", "role"], :name => "i_use_rol_use_id_fac_id_rol"
 
   create_table "users", :force => true do |t|
-    t.string   "username",                                                                         :null => false
+    t.string   "username",                                                          :null => false
     t.string   "first_name"
     t.string   "last_name"
-    t.string   "email",                                                            :default => "", :null => false
-    t.string   "encrypted_password", :limit => 128,                                :default => "", :null => false
-    t.string   "password_salt",                                                    :default => "", :null => false
-    t.integer  "sign_in_count",                     :precision => 38, :scale => 0, :default => 0
+    t.string   "email",                                             :default => "", :null => false
+    t.string   "encrypted_password"
+    t.string   "password_salt"
+    t.integer  "sign_in_count",      :precision => 38, :scale => 0, :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"

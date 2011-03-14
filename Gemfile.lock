@@ -5,6 +5,15 @@ GIT
     vestal_versions (1.3.0)
       activerecord (>= 2.1.0)
 
+GIT
+  remote: https://github.com/cschiewek/devise_ldap_authenticatable.git
+  revision: 0234181349e4316d5cbcc0a961124ee5f6f421f7
+  tag: 0.1.6
+  specs:
+    devise_ldap_authenticatable (0.1.6)
+      devise (> 1.0.4)
+      net-ldap (>= 0.0.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -50,6 +59,7 @@ GEM
     mime-types (1.16)
     mocha (0.9.7)
       rake
+    net-ldap (0.1.1)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
     net-sftp (2.0.5)
@@ -116,6 +126,7 @@ DEPENDENCIES
   capistrano (= 2.5.2)
   creditcard (= 1.0)
   devise (= 1.0.9)
+  devise_ldap_authenticatable (= 0.1.6)!
   fast-aes (= 0.1.1)
   fastercsv (= 1.5.3)
   haml (= 2.2.17)

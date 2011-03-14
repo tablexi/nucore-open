@@ -102,4 +102,10 @@ Devise.setup do |config|
   # config.default_url_options do
   #   { :locale => I18n.locale }
   # end
+
+  # LDAP server configuration, if any
+  #config.ldap_host = 'localhost'
+  #config.ldap_port = 389
+  #config.ldap_base_dn = 'dc=tablexi,dc=com'
+  #config.ldap_login_attribute = 'cn'
 end

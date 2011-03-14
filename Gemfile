@@ -25,6 +25,7 @@ gem 'prawnto',          '0.0.3'
 gem 'fastercsv',        '1.5.3'
 gem 'devise',           '1.0.9'
 gem 'cancan',           '1.5.1'
+gem 'devise_ldap_authenticatable', '0.1.6', :git => 'https://github.com/cschiewek/devise_ldap_authenticatable.git', :tag => '0.1.6'
 
 group :development do
    gem 'rspec', '1.3.0'
