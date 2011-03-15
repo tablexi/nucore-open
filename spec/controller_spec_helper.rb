@@ -122,6 +122,11 @@ def facility_operators
 end
 
 
+def facility_users
+  facility_operators + [ :guest ]
+end
+
+
 #
 # Bundles the common test suite of ensuring an action requires
 # login, denies facility staff, and allows facility managers.
