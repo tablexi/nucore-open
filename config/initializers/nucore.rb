@@ -54,6 +54,18 @@ end
 
 
 #
+# Password-less users are externally authenticated users.
+# Don't let DatabaseAuthenticatable require passwords for all users.
+Devise::Models::DatabaseAuthenticatable.module_eval do
+  protected
+
+  def password_required?
+    return false
+  end
+end
+
+
+#
 # Log info about how each user is authenticated.
 # In the future we may want to record in the DB the means
 # by which auth happened.
