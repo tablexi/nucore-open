@@ -33,6 +33,8 @@ class FacilityAccount < ActiveRecord::Base
   end
 
   def validate
+    return if Rails.env.test?
+
     begin
       NucsValidator.new(account_number, revenue_account).account_is_open!
     rescue NucsErrors::NucsError => e
