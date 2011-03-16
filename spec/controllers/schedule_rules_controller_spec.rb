@@ -53,5 +53,84 @@ describe ScheduleRulesController do
 
   end
 
+
+  context 'create' do
+
+    before :each do
+      @method=:post
+      @action=:create
+      @params.merge!(
+        :schedule_rule => Factory.attributes_for(:schedule_rule, :instrument => @instrument)
+      )
+    end
+
+    it_should_allow_managers_only :redirect do
+      should assign_to(:schedule_rule).with_kind_of ScheduleRule
+      should set_the_flash
+      assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
+    end
+
+  end
+
+
+  context 'needs schedule rule' do
+
+    before :each do
+      @rule=@instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+      @params.merge!(:id => @rule.id)
+    end
+
+
+    context "edit" do
+
+      before :each do
+        @method=:get
+        @action=:edit
+      end
+
+      it_should_allow_managers_only do
+        assigns(:schedule_rule).should == @rule
+        should render_template 'edit.html.haml'
+      end
+
+    end
+
+
+    context 'update' do
+
+      before :each do
+        @method=:put
+        @action=:update
+        @params.merge!(
+          :schedule_rule => Factory.attributes_for(:schedule_rule)
+        )
+      end
+
+      it_should_allow_managers_only :redirect do
+        assigns(:schedule_rule).should == @rule
+        should set_the_flash
+        assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
+      end
+
+    end
+
+
+    context 'destroy' do
+
+      before :each do
+        @method=:delete
+        @action=:destroy
+      end
+
+      it_should_allow_managers_only :redirect do
+        assigns(:schedule_rule).should == @rule
+        should_be_destroyed @rule
+        assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
+      end
+
+    end
+
+  end
+
 end
  
