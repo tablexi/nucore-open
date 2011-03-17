@@ -15,9 +15,9 @@ class User < ActiveRecord::Base
   has_many :user_roles, :dependent => :destroy
   has_many :facilities, :through => :user_roles
 
-  validates_presence_of :username, :first_name, :last_name, :email
-  validates_uniqueness_of :username, :email
+  validates_presence_of :username, :first_name, :last_name
   validates_format_of :email, :with => /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,6}$/i
+  validates_uniqueness_of :username, :email
 
   #
   # Gem ldap_authenticatable expects User to respond_to? :login. For us that's #username.
