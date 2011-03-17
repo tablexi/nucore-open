@@ -201,3 +201,7 @@ Factory.define :file_upload do |f|
   f.name "#{Rails.root}/spec/files/flash_file.swf"
   f.file_type 'info'
 end
+
+Factory.define :response_set do |s|
+  s.sequence(:access_code) { |n| "#{n}#{n}#{n}" }
+end
