@@ -106,7 +106,7 @@ class ServicesController < ApplicationController
     @service.destroy
 
     respond_to do |format|
-      format.html { redirect_to(admin_facility_services_url) }
+      format.html { redirect_to(new_facility_service_url) }
     end
   end
 
