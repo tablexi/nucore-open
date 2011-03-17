@@ -12,25 +12,7 @@ describe UsersController do
 
   before(:each) do
     @authable = Factory.create(:facility)
-  end
-
-
-  context "create" do
-
-    it "should create a user" do
-      @controller.stubs(:current_user).returns(@admin)
-      @controller.stubs(:session_user).returns(@admin)
-      @user_role = Hash[:group_name => 'Facility Director']
-      sign_in @staff
-      @user_params = Hash[:username => 'biggy_director', :first_name => "Biggy", :last_name => "Director", :email => 'bigd@nucore.com']
-      post :create, :facility_id => @authable.url_name, :user_role => @user_role, :user => @user_params
-      assigns[:current_facility].should == @authable
-      # The assert below is valid, but it often (not always!) fails with
-      # "OCIError: ORA-29275: partial multibyte character: select encrypt_password('OrXSmeAn') from dual",
-      # which comes from Pers::Person#encrypt_password in the bcsec gem. That makes the test unreliable
-      #assert_redirected_to facility_users_url
-    end
-
+    @params={ :facility_id => @authable.url_name }
   end
 
 
@@ -39,12 +21,91 @@ describe UsersController do
     before :each do
       @method=:get
       @action=:index
-      @params={ :facility_id => @authable.url_name }
+    end
+
+    it_should_allow_operators_only
+
+  end
+
+
+  context 'new' do
+
+    before :each do
+      @method=:get
+      @action=:new
     end
 
     it_should_allow_operators_only do
-      response.should be_success
-      response.should render_template('users/index.html.haml')
+      should assign_to(:user).with_kind_of User
+      assigns(:user).should be_new_record
+    end
+
+  end
+
+
+  context "create" do
+
+    before :each do
+      @method=:post
+      @action=:create
+      @params.merge!(:group_name => UserRole::FACILITY_DIRECTOR, :user => Factory.attributes_for(:user))
+    end
+
+    it_should_allow_operators_only :redirect do
+      should assign_to(:user).with_kind_of User
+      should set_the_flash
+      assigns[:current_facility].should == @authable
+      assert_redirected_to facility_users_url
+    end
+
+  end
+
+
+  context 'new_search' do
+
+    before :each do
+      @method=:get
+      @action=:new_search
+      @params.merge!(:username => 'guest')
+    end
+
+    it_should_allow_operators_only :redirect do
+      assigns(:user).should == @guest
+      should set_the_flash
+      assert_redirected_to facility_users_url(@authable)
+    end
+
+  end
+
+
+  context 'username_search' do
+
+    before :each do
+      @method=:get
+      @action=:username_search
+      @params.merge!(:username_lookup => 'guest')
+    end
+
+    it_should_allow_operators_only do
+      assigns(:user).should == @guest
+    end
+
+  end
+
+
+  context 'switch_to' do
+
+    before :each do
+      @method=:get
+      @action=:switch_to
+      @params.merge!(:user_id => @guest.id)
+    end
+
+    it_should_allow_operators_only :redirect do
+      assigns(:user).should == @guest
+      session[:acting_user_id].should == @guest.id
+      session[:acting_ref_url].should == facility_users_url
+      assert_redirected_to facilities_path
     end
 
   end
