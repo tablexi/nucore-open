@@ -32,10 +32,6 @@ class UsersController < ApplicationController
     @user.password = newpass
 
     begin
-      if @user.valid?
-        @user.errors.add(:email, 'must be a valid email address')
-        raise
-      end
       @user.save!
       flash[:notice] = 'The user was successfully created.'
       redirect_to facility_users_url
