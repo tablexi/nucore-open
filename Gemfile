@@ -3,7 +3,6 @@ source :gemcutter
 gem 'RedCloth',         '4.1.1'
 gem 'aasm',             '2.1.5'
 gem 'activerecord-oracle_enhanced-adapter', '1.2.4'
-gem 'bcdatabase',       '1.0.1' # I don't think we need this gem
 gem 'bluecloth',        '2.0.7'
 #gem 'bundler',         '0.9.24'
 gem 'capistrano',       '2.5.2'

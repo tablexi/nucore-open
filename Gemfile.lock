@@ -36,9 +36,6 @@ GEM
     autotest (4.2.5)
     autotest-rails (4.1.0)
       ZenTest
-    bcdatabase (1.0.1)
-      activesupport (>= 2.0)
-      highline (>= 1.4)
     bluecloth (2.0.7)
     cancan (1.5.1)
     capistrano (2.5.2)
@@ -120,7 +117,6 @@ DEPENDENCIES
   activerecord-oracle_enhanced-adapter (= 1.2.4)
   autotest (= 4.2.5)
   autotest-rails (= 4.1.0)
-  bcdatabase (= 1.0.1)
   bluecloth (= 2.0.7)
   cancan (= 1.5.1)
   capistrano (= 2.5.2)
