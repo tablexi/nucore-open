@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   include Role
 
-  devise :database_authenticatable, :ldap_authenticatable, :trackable
+  devise :database_authenticatable, :ldap_authenticatable, :trackable, :validatable
 
   #has_many :accounts, :foreign_key => :owner_user_id, :order => :account_number
   has_many :accounts, :through => :account_users
