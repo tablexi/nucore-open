@@ -98,12 +98,12 @@ class Journal < ActiveRecord::Base
   end
 
   def create_payment_transactions! (args = {})
-    journal_rows.find(:all, :conditions => ['amount < 0']).each do |row|
+    journal_rows.find(:all, :conditions => ['amount > 0']).each do |row|
       PaymentAccountTransaction.create!(
         :account_id         => row.account_transaction.account_id,
         :facility_id        => facility_id,
         :description        => "Payment for Order ##{row.order_detail}",
-        :transaction_amount => row.amount,
+        :transaction_amount => row.amount * -1,
         :created_by         => args[:created_by],
         :finalized_at       => Time.zone.now,
         :order_detail_id    => row.order_detail_id,
