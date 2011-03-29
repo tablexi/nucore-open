@@ -1,2 +1,2 @@
 = NU Core
-Northwestern Core Facility Management
+Northwestern University Core Facility Management Software
