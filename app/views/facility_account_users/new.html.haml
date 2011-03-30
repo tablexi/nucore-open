@@ -13,18 +13,18 @@
   = f.error_messages
   %ul.form
     %li
-      = label_tag :account_type
+      = label_tag :account_type, 'Payment Source Type'
       = @account.type_string
     %li
-      = label_tag :account_number
+      = label_tag :account_number, 'Account Number'
       = @account.account_number
     = hidden_field_tag "user_id", @user.id
     %li
       = label_tag :user
       = @user.full_name
     %li
-      = f.label :user_role, nil, :class => 'require'
-      = f.select :user_role, options_for_select(AccountUser.selectable_user_roles)
+      = f.label :user_role, 'User Role', :class => 'require'
+      = f.select :user_role, options_for_select(AccountUser.selectable_user_roles, :selected => 'Purchaser')
   %ul.horiz
     %li= f.submit 'Create', :class => 'btn'
     %li= link_to 'Cancel', facility_account_path(current_facility, @account)

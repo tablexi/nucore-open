@@ -11,7 +11,10 @@
 
 %ul.form
   %li
-    %label Type
+    %label Owner
+    =h @account.owner.user
+  %li
+    %label Payment Source Type
     =h @account.type_string
   %li
     %label Description
@@ -21,11 +24,11 @@
       %label Name On Card
       =h @account.name_on_card
     %li
-      %label Expiration
+      %label Expiration Date
       =h "#{@account.expiration_month}/#{@account.expiration_year}"
   - else
     %li
-      %label Expiration
+      %label Expiration Date
       = human_datetime(@account.expires_at, :date_only => true)
   %li
     %label Bill To

@@ -3,7 +3,7 @@
 %ul.tabs
   %li.first= link_to "Details", send("manage_facility_#{product.class.name.downcase}_path", current_facility, product), :class => secondary_tab == 'details' ? 'active' : ''
   - if product.is_a?(Instrument)
-    %li= link_to 'Reservations', facility_instrument_schedule_path(current_facility, product), :class => secondary_tab == 'reservations' ? 'active' : ''
+    %li= link_to 'Schedule Rules', facility_instrument_schedule_rules_path(current_facility, product), :class => secondary_tab == 'schedule_rules' ? 'active' : ''
   - if product.requires_approval?
     %li= link_to 'Approved Users', facility_instrument_users_path(current_facility, product), :class => secondary_tab == 'users' ? 'active' : ''
   - if product.is_a?(Bundle)
@@ -11,7 +11,7 @@
   - else
     %li= link_to 'Pricing', send("facility_#{product.class.name.downcase}_price_policies_path", current_facility, product), :class => secondary_tab == 'pricing_rules' ? 'active' : ''
   - if product.is_a?(Instrument)
-    %li= link_to 'Schedule Rules', facility_instrument_schedule_rules_path(current_facility, product), :class => secondary_tab == 'schedule_rules' ? 'active' : ''       
+    %li= link_to 'Reservations', facility_instrument_schedule_path(current_facility, product), :class => secondary_tab == 'reservations' ? 'active' : ''
   %li= link_to 'Documentation', upload_product_file_path(current_facility, product.parameterize, product.url_name, :file_type => 'info'), :class => secondary_tab == 'documentation' ? 'active' : ''
   - if product.is_a?(Service)
     %li= link_to 'Order Forms', upload_product_survey_file_path(current_facility, product.parameterize, product.url_name), :class => secondary_tab == 'surveys' ? 'active' : ''

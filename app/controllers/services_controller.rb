@@ -31,7 +31,7 @@ class ServicesController < ApplicationController
   def show
     raise ActiveRecord::RecordNotFound if @service.is_archived? || (@service.is_hidden? && !acting_as?)
     @add_to_cart = true
-    @log_in      = false
+    @login_required = false
 
     # do the product have active price policies
     unless @service.can_purchase?
@@ -41,8 +41,8 @@ class ServicesController < ApplicationController
 
     # is user logged in?
     if @add_to_cart && acting_user.nil?
-      @log_in            = true
-      @add_to_cart       = false
+      @login_required = true
+      @add_to_cart = false
     end
 
     # is the user approved?

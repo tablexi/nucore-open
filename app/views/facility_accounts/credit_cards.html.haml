@@ -15,13 +15,9 @@
         %td
         %td
         %td
-        %td
-        %td
         %td= submit_tag "Save Transactions"
       %tr
-        %th Card Number
-        %th Expiration
-        %th Owner
+        %th Credit Card
         %th Balance
         %th
           Amount
@@ -35,17 +31,14 @@
         %tr
           %td
             %ul
-              %li=h a.description
-              %li=h a.credit_card_number
-          %td=h "#{a.expiration_month}/#{a.expiration_year}"
-          %td=h a.owner_user.full_name
+              %li=h "#{a.description} (#{a.account_number})"
+              %li=h "%02d" % a.expiration_month.to_i + "/#{a.expiration_year}"
+              %li=h a.owner_user.full_name
           %td=h "$#{balance}"
           %td= text_field_tag "account[#{a.id}][transaction_amount]", begin number_to_currency params[:account][a.id.to_s][:transaction_amount] rescue balance end, :class => "#{(@error_fields && @error_fields[a.id] && @error_fields[a.id].include?('transaction_amount')) ? 'fieldWithErrors' : ''}" 
           %td= text_field_tag "account[#{a.id}][reference]", begin params[:account][a.id.to_s][:reference] rescue '' end, :class => "#{(@error_fields && @error_fields[a.id.to_s] && @error_fields[a.id.to_s].include?('reference')) ? 'fieldWithErrors' : ''}"
           %td= text_field_tag "account[#{a.id}][notes]", begin params[:account][a.id.to_s][:notes] rescue '' end
       %tr.borderless
-        %td
-        %td
         %td
         %td
         %td

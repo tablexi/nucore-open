@@ -1,4 +1,6 @@
 class Facility < ActiveRecord::Base
+  attr_protected :journal_mask
+  before_validation_on_create :set_journal_mask
 
   has_many :order_statuses, :finder_sql => 'SELECT * FROM order_statuses WHERE facility_id = #{self.id} or facility_id IS NULL order by lft'
   has_many :items
@@ -22,9 +24,10 @@ class Facility < ActiveRecord::Base
 
   validates_presence_of :name, :short_description, :abbreviation
   validate_url_name :url_name
-  validates_uniqueness_of :abbreviation, :case_sensitive => false
+  validates_uniqueness_of :abbreviation, :journal_mask, :case_sensitive => false
   validates_inclusion_of :is_active, :in => [true, false]
   validates_format_of    :abbreviation, :with => /^[a-zA-Z\d\-\.\s]+$/, :message => "may include letters, numbers, hyphens, spaces, or periods only"
+  validates_format_of    :journal_mask, :with => /^C\d{2}$/, :message => "must be in the format C##"
 
   named_scope :active, :conditions => { :is_active => true }
 
@@ -66,5 +69,15 @@ class Facility < ActiveRecord::Base
 
   def to_s
     "#{name} (#{abbreviation})"
+  end
+
+  private
+  def set_journal_mask
+    f = Facility.find(:all, :limit => 1, :order => 'journal_mask DESC').first
+    if f && f.journal_mask.match(/^C(\d{2})$/)
+      self.journal_mask = sprintf("C%02d", $1.to_i + 1)
+    else
+      self.journal_mask = 'C01'
+    end
   end
 end

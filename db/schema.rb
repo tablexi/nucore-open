@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110314201317) do
+ActiveRecord::Schema.define(:version => 20110224063354) do
 
   create_table "account_transactions", :force => true do |t|
     t.integer  "account_id",                        :precision => 38, :scale => 0, :null => false
@@ -37,21 +37,20 @@ ActiveRecord::Schema.define(:version => 20110314201317) do
   end
 
   create_table "accounts", :force => true do |t|
-    t.string   "type",                         :limit => 50,                                 :null => false
-    t.string   "account_number",               :limit => 50,                                 :null => false
-    t.string   "description",                  :limit => 50,                                 :null => false
-    t.datetime "expires_at",                                                                 :null => false
-    t.string   "name_on_card",                 :limit => 200
-    t.integer  "expiration_month",                            :precision => 38, :scale => 0
-    t.integer  "expiration_year",                             :precision => 38, :scale => 0
-    t.datetime "created_at",                                                                 :null => false
-    t.integer  "created_by",                                  :precision => 38, :scale => 0, :null => false
+    t.string   "type",                   :limit => 50,                                 :null => false
+    t.string   "account_number",         :limit => 50,                                 :null => false
+    t.string   "description",            :limit => 50,                                 :null => false
+    t.datetime "expires_at",                                                           :null => false
+    t.string   "name_on_card",           :limit => 200
+    t.integer  "expiration_month",                      :precision => 38, :scale => 0
+    t.integer  "expiration_year",                       :precision => 38, :scale => 0
+    t.datetime "created_at",                                                           :null => false
+    t.integer  "created_by",                            :precision => 38, :scale => 0, :null => false
     t.datetime "updated_at"
-    t.integer  "updated_by",                                  :precision => 38, :scale => 0
+    t.integer  "updated_by",                            :precision => 38, :scale => 0
     t.datetime "suspended_at"
-    t.string   "credit_card_number_encrypted", :limit => 200
     t.text     "remittance_information"
-    t.integer  "facility_id",                                 :precision => 38, :scale => 0
+    t.integer  "facility_id",                           :precision => 38, :scale => 0
   end
 
   create_table "answers", :force => true do |t|
@@ -131,6 +130,7 @@ ActiveRecord::Schema.define(:version => 20110314201317) do
     t.string   "phone_number"
     t.string   "fax_number"
     t.string   "email"
+    t.string   "journal_mask",      :limit => 50,                                                   :null => false
   end
 
   add_index "facilities", ["abbreviation"], :name => "sys_c008532", :unique => true
@@ -168,16 +168,16 @@ ActiveRecord::Schema.define(:version => 20110314201317) do
   create_table "journal_rows", :force => true do |t|
     t.integer "journal_id",                            :precision => 38, :scale => 0, :null => false
     t.integer "order_detail_id",                       :precision => 38, :scale => 0
-    t.integer "fund",                   :limit => 10,  :precision => 10, :scale => 0, :null => false
-    t.integer "dept",                   :limit => 10,  :precision => 10, :scale => 0, :null => false
-    t.integer "project",                               :precision => 38, :scale => 0
-    t.integer "activity",               :limit => 10,  :precision => 10, :scale => 0
-    t.integer "program",                :limit => 10,  :precision => 10, :scale => 0
-    t.integer "account",                :limit => 10,  :precision => 10, :scale => 0, :null => false
     t.decimal "amount",                                :precision => 9,  :scale => 2, :null => false
     t.string  "description",            :limit => 200
     t.string  "reference",              :limit => 50
     t.integer "account_transaction_id",                :precision => 38, :scale => 0
+    t.string  "fund",                   :limit => 3,                                  :null => false
+    t.string  "dept",                   :limit => 7,                                  :null => false
+    t.string  "project",                :limit => 8
+    t.string  "activity",               :limit => 2
+    t.string  "program",                :limit => 4
+    t.string  "account",                :limit => 5,                                  :null => false
   end
 
   create_table "journals", :force => true do |t|

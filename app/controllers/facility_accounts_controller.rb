@@ -19,7 +19,7 @@ class FacilityAccountsController < ApplicationController
     @accounts = current_facility.order_details.accounts.paginate(:page => params[:page])    
   end
 
-  # GET /facilties/alpha/accounts/1
+  # GET /facilties/:facility_id/accounts/:id
   def show
     @account = Account.find(params[:id])
   end
@@ -47,7 +47,7 @@ class FacilityAccountsController < ApplicationController
     end
   end
 
-  # POST /admin_accounts
+  # POST /facilities/:facility_id/accounts
   def create
     class_params        = params[:account] || params[:credit_card_account] || params[:purchase_order_account] || params[:nufs_account]
     @owner_user         = User.find(params[:owner_user_id])

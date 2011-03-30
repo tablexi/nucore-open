@@ -260,7 +260,7 @@ namespace :demo  do
     nufsaccount.account_users.create(:user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id)
     
     ccaccount = CreditCardAccount.find_or_create_by_account_number({
-      :account_number     => '4111-1111-1111-1111',
+      :account_number     => 'xxxx-xxxx-xxxx-xxxx',
       :description        => "Paul PI's Credit Card",
       :expires_at         => Date.new(2012,1,1),
       :name_on_card       => 'Paul PI',

@@ -28,7 +28,7 @@ class JournalSpreadsheet
       line[3] = row.activity
       line[4] = row.program
       line[5] = row.account
-      line[6] = row.amount
+      line[6] = sprintf("%.2f", row.amount)
       line[7] = row.description
       line[8] = row.reference
 

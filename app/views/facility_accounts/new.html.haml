@@ -12,7 +12,7 @@
 %h2 Add Payment Source
 - form_for([current_facility, @account], :url => facility_accounts_path(current_facility)) do |f|
   = f.error_messages
-  = render :partial => 'account_fields', :locals => {:f => f}
+  = render :partial => 'account_fields', :locals => {:f => f, :instructions_for => :all}
   %ul.horiz
     %li= f.submit 'Create', :class => 'btn'
     %li= link_to 'Cancel', new_account_user_search_facility_accounts_path

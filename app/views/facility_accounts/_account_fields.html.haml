@@ -5,13 +5,13 @@
       = label_tag :owner_user_id, 'Owner User', :class => 'require'
       = text_field_tag 'owner_user_full_name', @owner_user.full_name, :disabled => true, :class => 'show_always'
     %li
-      = label_tag :class_type, nil, :class => 'require'
+      = label_tag :class_type, 'Payment Source Type', :class => 'require'
       = select_tag 'class_type', options_for_select([["Chart String", "NufsAccount"], ["Credit Card", "CreditCardAccount"], ["Purchase Order", "PurchaseOrderAccount"]], :selected => params[:class_type]), :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
     %li
-      = f.label :account_number, nil, :class => 'require'
-      = f.text_field :account_number, :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
+      = f.label :account_number, 'Account Number', :class => 'require'
+      = f.text_field :account_number, :class => 'NufsAccount PurchaseOrderAccount'
     %li
-      = f.label :name_on_card, nil, :class => 'require'
+      = f.label :name_on_card, 'Name on Card', :class => 'require'
       = f.text_field :name_on_card, :class => 'CreditCardAccount'
     %li
       = f.label :expiration_month, nil, :class => 'require'
@@ -26,7 +26,10 @@
   %li
     = f.label :description, nil, :class => 'require'
     = f.text_field :description, :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
+    - if instructions_for == :all || instructions_for == 'CreditCardAccount'
+      %p.instruction.CreditCardAccount No part of a credit card number may be entered. Enter a text description to help you and the user identify this card. For example: "Dr. Smith's Visa Card".
+
   %li
     = f.label :remittance_information, 'Bill To'
-    %p.instruction Where the invoice should be sent to for this account; this text will appear on the customer's invoice.
+    %p.instruction.show_always Where the invoice should be sent to for this account; this text will appear on the customer's invoice.
     = f.text_area :remittance_information, :cols => 92, :rows => 6, :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'  
