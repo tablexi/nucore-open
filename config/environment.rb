@@ -50,7 +50,7 @@ require "Constants.rb"
 
 
 # This is what makes the nucore extension system work.
-# See doc/README_FOR_APP for details on nucore extensions.
+# See doc/README.extensions for details on nucore extensions.
 Dir["#{Rails.root}/lib/extensions/*.rb"].each do |file|
   require file
   file_name=File.basename(file)

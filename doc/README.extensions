@@ -1,0 +1,44 @@
+Nucore extensions are a way to overwrite model and controller methods, or augment model and controller classes,
+without changing the model/controller project files. This allows an open project fork to run custom nucore code
+without causing the fork to diverge far from the open repository version.
+
+Extensions live in lib/extensions. Any .rb file in this directory will be loaded at application startup. If the
+Ruby file ends with "_extension.rb", and it is a module, then environment.rb will look for and open a related class
+to make sure every instance of the class is extended with the module. The related class is discovered by the
+the extension's file name. Specifically, the part that comes before "_extension.rb"
+
+Note that since every .rb file in the extensions directory is loaded you can put any Ruby files in here to make it
+available for the project. It acts like lib/, just as a subdirectory of lib/ should.
+
+
+Examples
+--------
+
+* Module UsersControllerExtension in lib/extensions/users_controller_extension.rb will augment all instances of
+controller class UsersController.
+
+* Module UserExtension in lib/extensions/user_extension.rb will augment all instances of model class User.
+
+* Module PizzaExtension in lib/extensions/pizza_extension.rb will cause an error because there is no Pizza class in nucore.
+
+* Class Foo in lib/extensions/foo.rb will be loaded into the webapp, but no extension will be attempted.
+
+
+Since instances of the model/controller are extended with the extension module unique methods in the module
+become available in the instance and module methods that redefine class methods overwrite.
+
+
+Testing
+-------
+
+Extension tests belong in spec/lib/extensions. You can run them with `rake spec:lib`.
+
+
+Appropriate Use
+---------------
+
+Extensions are good for cases where you want to change one, or a few, methods in an project class. They don't
+make sense for heavy lifting. In that case you should create a plugin, and, if necessary, use extensions to hook
+the plugin into the main application. Also, in some cases, it may be more better for the open project to make room
+for custom code via abstract methods/hooks/callbacks/etc. In that case please contact the project maintainers to
+request a feature.
