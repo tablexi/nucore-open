@@ -10,6 +10,7 @@ public/files/
 surveys/fixtures/
 vendor/bundle
 vendor/plugins/nucs/config/database.yml
+vendor/plugins/nucs/vendor
 .tmp
 *~
 .*~
