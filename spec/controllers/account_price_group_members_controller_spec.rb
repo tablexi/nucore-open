@@ -1,4 +1,4 @@
-require 'spec_helper'; require 'controller_spec_helper'; require 'controller_spec_helper'
+require 'spec_helper'; require 'controller_spec_helper'
 
 describe AccountPriceGroupMembersController do
   integrate_views
