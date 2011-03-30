@@ -47,3 +47,22 @@ require 'active_record/fixtures'
 
 
 require "Constants.rb"
+
+
+# This is what makes the nucore extension system work.
+# See doc/README_FOR_APP for details on nucore extensions.
+Dir["#{Rails.root}/lib/extensions/*.rb"].each do |file|
+  require file
+  file_name=File.basename(file)
+  ext_name=file_name[0...file_name.index('.')]
+  next unless ext_name.ends_with?('_extension')
+  base_name=ext_name[0...ext_name.rindex('_')]
+  base=base_name.camelize.constantize
+
+  base.class_eval %Q<
+    def initialize(*args)
+      super(*args)
+      extend #{ext_name.camelize}
+    end
+  >
+end
