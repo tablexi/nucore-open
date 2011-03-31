@@ -1,5 +1,5 @@
-Nucore extensions are a way to overwrite model and controller methods, or augment model and controller classes,
-without changing the model/controller project files. This allows an open project fork to run custom nucore code
+NU Core extensions are a way to overwrite model and controller methods, or augment model and controller classes,
+without changing the model/controller project files. This allows an open project fork to run custom NU Core code
 without causing the fork to diverge far from the open repository version.
 
 Extensions live in lib/extensions. Any .rb file in this directory will be loaded at application startup. If the
@@ -19,7 +19,7 @@ controller class UsersController.
 
 * Module UserExtension in lib/extensions/user_extension.rb will augment all instances of model class User.
 
-* Module PizzaExtension in lib/extensions/pizza_extension.rb will cause an error because there is no Pizza class in nucore.
+* Module PizzaExtension in lib/extensions/pizza_extension.rb will cause an error because there is no Pizza class in NU Core.
 
 * Class Foo in lib/extensions/foo.rb will be loaded into the webapp, but no extension will be attempted.
 
