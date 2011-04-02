@@ -182,6 +182,19 @@ namespace :demo  do
     })
     spp.save_with_validation(false) # override date validator
 
+    user_admin = User.find_by_username('admin')
+    unless user_admin
+      user_admin = User.new({
+        :username   => 'admin',
+        :email      => 'admin@example.com',
+        :first_name => 'Admin',
+        :last_name  => 'Istrator',
+      })
+      user_admin.password = 'password'
+      user_admin.save!
+    end
+    UserRole.grant(user_admin, UserRole::ADMINISTRATOR)
+
     user_pi = User.find_by_username('ppi123@example.com')
     unless user_pi
       user_pi = User.new({
