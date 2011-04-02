@@ -174,6 +174,7 @@ class ReservationsController < ApplicationController
   
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/switch_instrument
   def switch_instrument
+    relay_error_msg = 'An error was encountered while attempted to toggle the instrument. Please try again.'
     @order        = Order.find(params[:order_id])
     @order_detail = @order.order_details.find(params[:order_detail_id])
     @instrument   = @order_detail.product
@@ -192,7 +193,7 @@ class ReservationsController < ApplicationController
           flash[:notice] = 'The instrument has been activated successfully'
           @instrument.instrument_statuses.create(:is_on => true)
         rescue Exception => e
-          flash[:error] = 'An error was encounter while attempted to toggle the instrument.  Please try again.'
+          flash[:error] = relay_error_msg
           raise ActiveRecord::Rollback
         end
       end
@@ -213,12 +214,12 @@ class ReservationsController < ApplicationController
           flash[:notice] = 'The instrument has been deactivated successfully'
           @instrument.instrument_statuses.create(:is_on => false)
         rescue Exception => e
-          flash[:error] = 'An error was encounter while attempted to toggle the instrument.  Please try again.'
+          flash[:error] = relay_error_msg
           raise ActiveRecord::Rollback
         end
       end
     else
-      flash[:error] = 'An error was encounter while attempted to toggle the instrument.  Please try again.'
+      flash[:error] = relay_error_msg
     end
     redirect_to request.referer || order_order_detail_path(@order, @order_detail)
   end
