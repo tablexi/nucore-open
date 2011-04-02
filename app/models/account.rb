@@ -14,6 +14,7 @@ class Account < ActiveRecord::Base
   named_scope :for_facility, lambda { |facility| { :conditions => ["type <> 'PurchaseOrderAccount' OR (type = 'PurchaseOrderAccount' AND facility_id = ?)", facility.id] }}
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
+  validates_length_of :description, :maximum => 50
 
   def validate
     # an account owner if required
