@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110224063354) do
+ActiveRecord::Schema.define(:version => 20110314201317) do
 
   create_table "account_transactions", :force => true do |t|
     t.integer  "account_id",                        :precision => 38, :scale => 0, :null => false
@@ -130,7 +130,7 @@ ActiveRecord::Schema.define(:version => 20110224063354) do
     t.string   "phone_number"
     t.string   "fax_number"
     t.string   "email"
-    t.string   "journal_mask",      :limit => 50,                                                   :null => false
+    t.string   "journal_mask",      :limit => 50,                                                  :null => false
   end
 
   add_index "facilities", ["abbreviation"], :name => "sys_c008532", :unique => true
