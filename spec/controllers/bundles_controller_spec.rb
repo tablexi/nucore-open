@@ -62,7 +62,7 @@ describe BundlesController do
       do_request
       assert_init_bundle
       should assign_to(:add_to_cart)
-      should assign_to(:log_in)
+      should assign_to(:login_required)
       should_not set_the_flash
       should render_template('show.html.haml')
     end
