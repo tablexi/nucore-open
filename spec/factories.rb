@@ -29,7 +29,7 @@ end
 Factory.define :user, :class => User do |o|
   o.sequence(:username) { |n| "username#{n}" }
   o.first_name "User"
-  o.password 'testing'
+  o.password 'password'
   o.sequence(:last_name) { |n| "#{n}" }
   o.sequence(:email) { |n| "user#{n}@example.com" }
 end
