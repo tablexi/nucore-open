@@ -87,7 +87,7 @@ describe UsersController do
     end
 
     it_should_allow_operators_only do
-      assigns(:user).should == @guest
+      assigns(:user).username.should == @guest.username
     end
 
   end
