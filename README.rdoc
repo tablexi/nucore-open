@@ -1,2 +1,76 @@
 = NU Core
 Northwestern University Core Facility Management Software
+
+== Quickstart
+
+Welcome to nucore! This guide will help you get a development environment up and running. It makes a few assumptions:
+
+1. You write code on a Mac.
+2. You have a running Oracle instance with two brand new databases.
+3. You have the following installed:
+* Ruby[http://www.ruby-lang.org/en] 1.8.7
+* Ruby On Rails[http://rubyonrails.org] 2.3.5
+* Bundler[http://gembundler.com]
+* Git[http://git-scm.com]
+
+=== Spin it up
+
+1. Download the project code from Github
+    git clone git@github.com:tablexi/nucore-open.git nucore
+
+2. Install dependencies
+    cd nucore
+    bundle install
+
+3. Configure your constants
+    cd config
+    cp Constants.rb.template ../../Constants.rb
+    ... edit Constants.rb and change TEST_EMAIL and FROM_EMAIL to addresses that make sense for you ...
+    ln -s ../../Constants.rb .
+
+4. Configure your databases
+    cp database.yml.template database.yml
+    ... edit the database, username, and password settings for both the development and test DBs to match your Oracle instance ...
+    cd ..
+
+5. Create your databases
+    rake db:schema:load
+    export RAILS_ENV=test; rake db:schema:load; export RAILS_ENV=development
+
+6. Seed your development database
+    rake demo:seed
+
+7. Start your server
+    script/server
+
+8. Login as Dave The Director
+    ... Go to http://0.0.0.0:3000 ...
+    ... Login with username 'ddi123@example.com' and password 'password' ...
+
+9. Play around! You're running nucore!
+
+
+=== Test it
+
+nucore uses Rspec[http://rspec.info] to run tests. Try any of the following from nucore's root.
+
+* To run all tests (this will take awhile!)
+    rake spec
+
+* To run just the model tests
+    rake spec:models
+
+* To run just the controller tests
+    rake spec:controllers
+
+
+== Learn more
+
+There are valuable resources in the nucore's doc directory.
+
+* Need help getting Oracle on your Mac? <b>See HOWTO_oracle.txt</b>
+
+* Wondering how you can customize nucore for your institution? <b>See HOWTO_extensions.txt</b>
+
+* Want to authenticate users against your institution's LDAP server? <b>See HOWTO_ldap.txt</b>
+
