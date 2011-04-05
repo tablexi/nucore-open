@@ -64,7 +64,7 @@ nucore uses Rspec[http://rspec.info] to run tests. Try any of the following from
     rake spec:controllers
 
 
-== Learn more
+=== Learn more
 
 There are valuable resources in the nucore's doc directory.
 
