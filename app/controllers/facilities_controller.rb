@@ -5,7 +5,9 @@ class FacilitiesController < ApplicationController
   before_filter :check_acting_as, :except => [:index, :show]
   before_filter :init_current_facility, :only => [:edit, :manage, :schedule, :show, :update, :agenda]
 
-  load_and_authorize_resource :except => [:index, :show]
+  load_resource :find_by => :url_name
+  authorize_resource
+  skip_load_and_authorize_resource :only => [:index, :show]
 
   layout 'two_column'
 

@@ -83,7 +83,7 @@ describe FacilitiesController do
     before(:each) do
       @method=:get
       @action=:manage
-      @params={ :facility_id => @authable.url_name, :id => @authable.id }
+      @params={ :facility_id => @authable.url_name, :id => @authable.url_name }
     end
 
     it_should_require_login
