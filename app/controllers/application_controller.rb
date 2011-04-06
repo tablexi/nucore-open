@@ -54,7 +54,11 @@ class ApplicationController < ActionController::Base
   end
 
   # Global exception handlers
-  rescue_from ActiveRecord::RecordNotFound, :with => :render_404
+  rescue_from ActiveRecord::RecordNotFound do |exception|
+    Rails.logger.debug("#{exception.message}: #{exception.backtrace.join("\n")}") unless Rails.env.production?
+    render_404
+  end
+
   def render_404
     render :file => '/404', :status => 404, :layout => 'application'
   end
