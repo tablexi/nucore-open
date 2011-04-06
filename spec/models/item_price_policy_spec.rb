@@ -5,8 +5,8 @@ describe ItemPricePolicy do
     should allow_value(Date.today+1).for(:start_date)
   end
 
-  it "should not create a price policy for yesterday" do
-    should_not allow_value(Date.today - 1).for(:start_date)
+  it "should create a price policy for yesterday" do
+    should allow_value(Date.today - 1).for(:start_date)
   end
 
   it "should return cost - subsidy as the total" do
