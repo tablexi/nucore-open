@@ -10,7 +10,7 @@
     - @accounts.each do |account|
       %tr
         %td= link_to account, facility_account_statement_path(current_facility, account, 'recent')
-        %td=h account.owner_user.full_name
+        %td=h account.owner_user.full_name if account.owner_user
         %td.currency=h number_to_currency account.facility_balance_including_pending(current_facility)
         %td.currency=h number_to_currency account.facility_balance(current_facility)
   - if params[:search_term].nil?

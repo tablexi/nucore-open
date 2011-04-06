@@ -1,7 +1,7 @@
 class Account < ActiveRecord::Base
   has_many   :account_users
-  has_one    :owner, :class_name => 'AccountUser', :conditions => {:user_role => 'Owner', :deleted_at => nil}
-  has_many   :business_admins, :class_name => 'AccountUser', :conditions => {:user_role => 'Business Administrator', :deleted_at => nil}
+  has_one    :owner, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_OWNER, :deleted_at => nil}
+  has_many   :business_admins, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_ADMINISTRATOR, :deleted_at => nil}
   has_many   :price_group_members
   has_many   :account_transactions
   has_many   :payment_account_transactions
@@ -41,7 +41,7 @@ class Account < ActiveRecord::Base
   end
 
   def owner_user
-    self.owner.user
+    self.owner.user if owner
   end
 
   def business_admin_users
