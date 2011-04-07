@@ -30,6 +30,10 @@ class ServicePricePolicy < PricePolicy
   end
 
   def calculate_cost_and_subsidy (qty = 1)
+    estimate_cost_and_subsidy(qty)
+  end
+
+  def estimate_cost_and_subsidy(qty = 1)
     return nil if restrict_purchase?
     costs = {}
     costs[:cost]    = unit_cost * qty
