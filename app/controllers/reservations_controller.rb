@@ -205,10 +205,10 @@ class ReservationsController < ApplicationController
           relay.deactivate_port(@instrument.relay_port) if @reservation.can_kill_power?
           @reservation.actual_end_at = Time.zone.now
           @reservation.save!
-          costs = @order_detail.price_policy.calculate_actual_instrument_costs(@reservation)
+          costs = @order_detail.price_policy.calculate_cost_and_subsidy(@reservation)
           if costs
-            @order_detail.actual_cost    = costs[:actual_cost]
-            @order_detail.actual_subsidy = costs[:actual_subsidy]
+            @order_detail.actual_cost    = costs[:cost]
+            @order_detail.actual_subsidy = costs[:subsidy]
           end
           @order_detail.change_status!(OrderStatus.find_by_name('Reviewable'))
           flash[:notice] = 'The instrument has been deactivated successfully'

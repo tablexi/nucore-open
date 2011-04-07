@@ -44,7 +44,7 @@ class OrderDetail < ActiveRecord::Base
   aasm_state            :new
   aasm_state            :inprocess
   aasm_state            :reviewable
-  aasm_state            :complete
+  aasm_state            :complete, :exit => :assign_price_policy
   aasm_state            :cancelled
 
   aasm_event :to_new do
@@ -262,10 +262,30 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def update_account(new_account)
-    # set account id
     self.account_id        = new_account.id
     self.estimated_cost    = nil
     self.estimated_subsidy = nil
+
+    # is account valid for facility
+    return unless product.facility.can_pay_with_account?(account)
+
+    policy_holder=product
+    est_args=[ quantity ]
+
+    if product.is_a?(Instrument)
+      return unless reservation
+      policy_holder=reservation
+      est_args=[ reservation.reserve_start_at, reservation.reserve_end_at ]
+    end
+
+    pp = policy_holder.cheapest_price_policy((order.user.price_groups + new_account.price_groups).flatten.uniq)
+    return unless pp
+    costs = pp.estimate_cost_and_subsidy(*est_args)
+    self.estimated_cost    = costs[:cost]
+    self.estimated_subsidy = costs[:subsidy]
+  end
+
+  def assign_price_policy
     self.actual_cost       = nil
     self.actual_subsidy    = nil
     self.price_policy_id   = nil
@@ -273,23 +293,18 @@ class OrderDetail < ActiveRecord::Base
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
 
-    # is reservation valid
+    policy_holder=product
+    calc_args=[ quantity ]
+
     if product.is_a?(Instrument)
-      if !reservation.nil?
-        pp = reservation.cheapest_price_policy((order.user.price_groups + new_account.price_groups).flatten.uniq)
-        return unless pp
-        costs = pp.estimate_cost_and_subsidy(reservation.reserve_start_at, reservation.reserve_end_at)
-        self.price_policy_id   = pp.id
-        self.estimated_cost    = costs[:cost]
-        self.estimated_subsidy = costs[:subsidy]
-      end
-      return
+      return unless reservation
+      policy_holder=reservation
+      calc_args=[ reservation ]
     end
 
-    # set cost and subsidy for items and services
-    pp = product.cheapest_price_policy((order.user.price_groups + new_account.price_groups).flatten.uniq)
+    pp = policy_holder.cheapest_price_policy((order.user.price_groups + account.price_groups).flatten.uniq)
     return unless pp
-    costs = pp.calculate_cost_and_subsidy(quantity)
+    costs = pp.calculate_cost_and_subsidy(*calc_args)
     self.price_policy_id = pp.id
     self.actual_cost     = costs[:cost]
     self.actual_subsidy  = costs[:subsidy]
