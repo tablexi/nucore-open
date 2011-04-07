@@ -60,6 +60,11 @@ describe ItemPricePolicy do
       costs[:subsidy].to_f.should == 1.5
     end
 
+    it "should estimate the same as calculate" do
+      ipp   = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :restrict_purchase => false, :start_date => Date.today, :price_group_id => @price_group.id)
+      ipp.estimate_cost_and_subsidy(2).should == ipp.calculate_cost_and_subsidy(2)
+    end
+
     it "should return a cost of nil if the purchase is restricted" do
       ipp = @item.item_price_policies.create(:restrict_purchase => true, :start_date => Date.today, :price_group_id => @price_group.id)
       ipp.calculate_cost_and_subsidy.should be_nil
