@@ -44,7 +44,7 @@ class OrderDetail < ActiveRecord::Base
   aasm_state            :new
   aasm_state            :inprocess
   aasm_state            :reviewable
-  aasm_state            :complete, :exit => :assign_price_policy
+  aasm_state            :complete, :enter => :assign_price_policy
   aasm_state            :cancelled
 
   aasm_event :to_new do
@@ -185,17 +185,6 @@ class OrderDetail < ActiveRecord::Base
     # are survey requirements met
     response = validate_service_meta
     return response unless response.nil?
-
-    # is there an actual price / estimated price (checks to make sure there is a valid price group/price policy)
-    return "A price cannot be determined using the payment method selected" unless price_policy_id && ((estimated_cost && estimated_subsidy) || (actual_cost && actual_subsidy))
-
-    # is the user still a member of the appropriate price group and getting the best price?
-    if product.is_a?(Instrument)
-      pp = reservation.cheapest_price_policy((order.user.price_groups + account.price_groups).flatten.uniq)
-    else
-      pp = product.cheapest_price_policy((order.user.price_groups + account.price_groups).flatten.uniq)
-    end
-    return "PRICE GROUP / POLICY ERROR" if pp.nil? || pp.id != price_policy_id
   end
 
   def valid_for_purchase?
