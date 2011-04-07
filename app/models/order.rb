@@ -152,8 +152,6 @@ class Order < ActiveRecord::Base
       quantity = order_detail_quantities[order_detail.id]
       if quantity > 0
         order_detail.quantity = quantity
-        order_detail.actual_cost = quantity * order_detail.price_policy.unit_cost
-        order_detail.actual_subsidy = quantity * order_detail.price_policy.unit_subsidy
         order_detail.save
       else
         order_detail.destroy

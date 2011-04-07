@@ -33,12 +33,26 @@ describe OrderDetail do
   end
 
   context "update account" do
-    it "should set the account id"
-    it "should set the actual cost for items and services"
-    it "should set the estimated cost for instruments"
-    it "should set the price policy"
-    it "should set costs to nil if there is no valid price policy"
-    it "should set the price policy to nil if there is no valid price policy"
+    before(:each) do
+      @facility = Factory.create(:facility)
+      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
+      @user     = Factory.create(:user)
+      @item     = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      @order    = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id))
+      @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
+      @price_group = Factory.create(:price_group, :facility => @facility)
+      UserPriceGroupMember.create!(:price_group => @price_group, :user => @user)
+      @pp=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group)
+    end
+
+    it 'should set estimated costs and assign account' do
+      @order_detail.update_account(@account)
+      @order_detail.account.should == @account
+      costs=@pp.estimate_cost_and_subsidy(@order_detail.quantity)
+      @order_detail.estimated_cost.should == costs[:cost]
+      @order_detail.estimated_subsidy.should == costs[:subsidy]
+    end
   end
 
   context "item purchase validation" do
@@ -205,6 +219,34 @@ describe OrderDetail do
       @order_detail.to_complete!
       @order_detail.state.should == 'reviewable'
       @order_detail.version.should == 3
+    end
+
+    it 'should exit with #assign_price_policy' do
+      price_group = Factory.create(:price_group, :facility => @facility)
+      UserPriceGroupMember.create!(:price_group => price_group, :user => @user)
+      pp=Factory.create(:item_price_policy, :item => @item, :price_group => price_group)
+  
+      PurchaseAccountTransaction.create!(
+        :order_detail => @order_detail,
+        :transaction_amount => 10,
+        :facility => @facility,
+        :account => @account,
+        :created_by => @user.id,
+        :is_in_dispute => false
+      )
+
+      @order_detail.reload
+      @order_detail.price_policy.should be_nil
+
+      @order_detail.to_inprocess!
+      @order_detail.to_reviewable!
+      @order_detail.to_complete!
+      @order_detail.state.should == 'complete'
+      @order_detail.price_policy.should == pp
+
+      costs=pp.calculate_cost_and_subsidy(@order_detail.quantity)
+      @order_detail.actual_cost.should == costs[:cost]
+      @order_detail.actual_subsidy.should == costs[:subsidy]
     end
   end
 end

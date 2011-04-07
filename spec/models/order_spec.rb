@@ -99,17 +99,6 @@ describe Order do
       @facility.order_details.accounts.should == [@account]
     end
 
-    it "should check for price group changes before purchase" do
-      @order.order_details.create(:product_id => @service.id, :quantity => 1, :price_policy_id => @service_pp.id, :account_id => @account.id, :actual_cost => 10, :actual_subsidy => 5)
-      define_open_account(@service.account, @account.account_number)
-      @order.validate_order!.should be true
-
-      @pg_member.destroy
-      @order.invalidate!
-      @order.reload
-      @order.validate_order!.should be false
-    end
-
     it "should check for facility active/inactive changes before purchase" do
       @order.order_details.create(:product_id => @service.id, :quantity => 1, :price_policy_id => @service_pp.id, :account_id => @account.id, :actual_cost => 10, :actual_subsidy => 5)
       define_open_account(@service.account, @account.account_number)
