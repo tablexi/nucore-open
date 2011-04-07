@@ -10,10 +10,10 @@ namespace :order_details  do
       od.transaction do
         begin
           od.change_status!(reviewable)
-          costs = od.price_policy.calculate_actual_instrument_costs(od.reservation)
+          costs = od.price_policy.calculate_cost_and_subsidy(od.reservation)
           if costs
-            od.actual_cost    = costs[:actual_cost]
-            od.actual_subsidy = costs[:actual_subsidy]
+            od.actual_cost    = costs[:cost]
+            od.actual_subsidy = costs[:subsidy]
             od.save!
           end
         rescue Exception => e
@@ -36,10 +36,10 @@ namespace :order_details  do
         begin
           od.reservation.actual_end_at = Time.zone.now
           od.change_status!(reviewable)
-          costs = od.price_policy.calculate_actual_instrument_costs(od.reservation)
+          costs = od.price_policy.calculate_cost_and_subsidy(od.reservation)
           if costs
-            od.actual_cost    = costs[:actual_cost]
-            od.actual_subsidy = costs[:actual_subsidy]
+            od.actual_cost    = costs[:cost]
+            od.actual_subsidy = costs[:subsidy]
             od.save!
           end
         rescue Exception => e
