@@ -456,9 +456,9 @@ namespace :demo  do
     res.actual_start_at = res.reserve_start_at
     res.actual_end_at   = res.reserve_end_at
     res.save!
-    costs = order_detail.price_policy.calculate_actual_instrument_costs(res)
-    order_detail.actual_cost    = costs[:actual_cost]
-    order_detail.actual_subsidy = costs[:actual_subsidy]
+    costs = order_detail.price_policy.calculate_cost_and_subsidy(res)
+    order_detail.actual_cost    = costs[:cost]
+    order_detail.actual_subsidy = costs[:subsidy]
     order_detail.save!
   end
 end

@@ -83,14 +83,14 @@ class InstrumentPricePolicy < PricePolicy
     costs
   end
 
-  def calculate_actual_instrument_costs (reservation)
+  def calculate_cost_and_subsidy (reservation)
     ## TODO update cancellation costs
     ## calculate actuals for cancelled reservations
     if (reservation.canceled_at)
       if (reservation.reserve_start_at - reserve.canceled_at)/60 >= instrument.min_cancel_hours.to_i * 60
         actual_cost = cancellation_cost
         actual_subsidy = 0
-        return {:actual_cost => actual_cost, :actual_subsidy => actual_subsidy}
+        return {:cost => actual_cost, :subsidy => actual_subsidy}
       else
         ## TODO how to calculate this
         return nil
@@ -101,7 +101,7 @@ class InstrumentPricePolicy < PricePolicy
     if reservation_rate.to_f == 0 && usage_rate.to_f == 0 && overage_rate.to_f == 0
       actual_cost = minimum_cost || 0
       actual_subsidy = 0
-      return {:actual_cost => actual_cost, :actual_subsidy => actual_subsidy}
+      return {:cost => actual_cost, :subsidy => actual_subsidy}
     end
 
     ## the instrument has a reservation cost only
@@ -119,7 +119,7 @@ class InstrumentPricePolicy < PricePolicy
         actual_cost    = minimum_cost
         actual_subsidy = 0
       end
-      return {:actual_cost => actual_cost, :actual_subsidy => actual_subsidy}
+      return {:cost => actual_cost, :subsidy => actual_subsidy}
     end
 
     ## make sure actuals are entered
@@ -181,6 +181,6 @@ class InstrumentPricePolicy < PricePolicy
       actual_cost    = minimum_cost
       actual_subsidy = 0
     end
-    return {:actual_cost => actual_cost, :actual_subsidy => actual_subsidy}
+    return {:cost => actual_cost, :subsidy => actual_subsidy}
   end
 end

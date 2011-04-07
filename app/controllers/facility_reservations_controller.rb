@@ -59,10 +59,10 @@ class FacilityReservationsController < ApplicationController
         additional_notice = '  Order detail cost estimate has been updated as well.'
       end
     elsif can_edit_actuals && @reservation.changes.any? { |k,v| k == 'actual_start_at' || k == 'actual_end_at' }
-      costs = @order_detail.price_policy.calculate_actual_instrument_costs(@reservation)
+      costs = @order_detail.price_policy.calculate_cost_and_subsidy(@reservation)
       if costs
-        @order_detail.actual_cost    = costs[:actual_cost]
-        @order_detail.actual_subsidy = costs[:actual_subsidy]
+        @order_detail.actual_cost    = costs[:cost]
+        @order_detail.actual_subsidy = costs[:subsidy]
         additional_notice = '  Order detail actual cost has been updated as well.'
       end
     end
