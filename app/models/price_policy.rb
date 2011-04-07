@@ -7,6 +7,22 @@ class PricePolicy < ActiveRecord::Base
 
   named_scope :active, lambda {{ :conditions => [ "start_date <= ?", Time.zone.now ], :order => "start_date DESC" }}
 
+
+  #
+  # A price estimate for a +Product+.
+  # Must return { :cost => estimated_cost, :subsidy => estimated_subsidy }
+  def estimate_cost_and_subsidy(*args)
+    raise "subclass must implement!"
+  end
+
+
+  #
+  # Same as #estimate_cost_and_subsidy, but with actual prices
+  def calculate_cost_and_subsidy(*args)
+    raise "subclass must implement!"
+  end
+
+
   def start_date_is_unique
     type          = self.class.name.downcase.gsub(/pricepolicy$/, '')
     product       = self.send("#{type}")
