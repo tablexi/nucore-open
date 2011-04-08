@@ -4,6 +4,7 @@ class InstrumentPricePoliciesController < ApplicationController
   before_filter :check_acting_as
   before_filter :init_current_facility
   before_filter :init_instrument
+  before_filter :init_instrument_price_policy
 
   load_and_authorize_resource
 
@@ -117,6 +118,12 @@ class InstrumentPricePoliciesController < ApplicationController
 
   def init_instrument
     @instrument = current_facility.instruments.find_by_url_name!(params[:instrument_id])
+  end
+
+  #
+  # Override CanCan's find -- it won't properly search by zoned date
+  def init_instrument_price_policy
+    @instrument_price_policy=InstrumentPricePolicy.find_by_start_date(Time.zone.parse(params[:start_date] || params[:id]))
   end
 
 end
