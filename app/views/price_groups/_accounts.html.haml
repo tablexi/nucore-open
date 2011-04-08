@@ -13,8 +13,9 @@
       %tr
         %td= link_to 'Remove', [current_facility, @price_group, account_price_group_member], :confirm => 'Are you sure?', :method => :delete
         %td=h account_price_group_member.account.account_number
-        %td=h account_price_group_member.account.owner_user.full_name
-        %td=h account_price_group_member.account.owner_user.email
+        - owner=account_price_group_member.account.owner_user
+        %td=h owner.full_name if owner
+        %td=h owner.email if owner
   = will_paginate(@account_members)
 - else
   %p.notice No payment sources have been added to this price group.
