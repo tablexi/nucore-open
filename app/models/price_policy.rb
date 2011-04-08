@@ -23,6 +23,14 @@ class PricePolicy < ActiveRecord::Base
   end
 
 
+  #
+  # Returns true if this +PricePolicy+ is assigned
+  # to any order, false otherwise
+  def assigned_to_order?
+    !OrderDetail.find_all_by_price_policy_id(self.id).empty?
+  end
+
+
   def start_date_is_unique
     type          = self.class.name.downcase.gsub(/pricepolicy$/, '')
     product       = self.send("#{type}")
