@@ -22,18 +22,66 @@ describe PricePolicy do
   end
 
 
-  it 'should define abstract methods' do
-    class SubPricePolicy < PricePolicy
-      def sub; end
+  context 'should define abstract methods' do
+
+    before :each do
+      class SubPricePolicy < PricePolicy
+        def sub; end
+      end
+
+      @sp = SubPricePolicy.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id))
     end
 
-    sp = SubPricePolicy.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id))
+    it 'should abstract calculate_cost_and_subsidy' do
+      @sp.should be_respond_to(:calculate_cost_and_subsidy)
+      assert_raise(RuntimeError) { @sp.calculate_cost_and_subsidy }
+    end
 
-    sp.should be_respond_to(:calculate_cost_and_subsidy)
-    assert_raise(RuntimeError) { sp.calculate_cost_and_subsidy }
+    it 'should abstract estimate_cost_and_subsidy' do
+      @sp.should be_respond_to(:estimate_cost_and_subsidy)
+      assert_raise(RuntimeError) { @sp.estimate_cost_and_subsidy }
+    end
+  end
 
-    sp.should be_respond_to(:estimate_cost_and_subsidy)
-    assert_raise(RuntimeError) { sp.estimate_cost_and_subsidy }
+
+  context 'order assignment' do
+
+    before :each do
+      @facility = Factory.create(:facility)
+      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
+      @user     = Factory.create(:user)
+      @item     = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      @order    = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id))
+      @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
+      @price_group = Factory.create(:price_group, :facility => @facility)
+      UserPriceGroupMember.create!(:price_group => @price_group, :user => @user)
+      @pp=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group)
+    end
+
+    
+    it 'should not be assigned' do
+      @pp.should_not be_assigned_to_order
+    end
+
+
+    it 'should be assigned' do
+      PurchaseAccountTransaction.create!(
+        :order_detail => @order_detail,
+        :transaction_amount => 10,
+        :facility => @facility,
+        :account => @account,
+        :created_by => @user.id,
+        :is_in_dispute => false
+      )
+
+      @order_detail.reload
+      @order_detail.to_inprocess!
+      @order_detail.to_reviewable!
+      @order_detail.to_complete!
+      @pp.should be_assigned_to_order
+    end
+
   end
   
 end
