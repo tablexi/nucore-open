@@ -16,7 +16,8 @@
       - @accounts.each do |account|
         %tr
           %td= link_to account.account_number, create_facility_price_group_account_price_group_members_path(current_facility, @price_group, :account_id => account.id)
-          %td=h account.owner_user.full_name
-          %td=h account.owner_user.email
+          - owner=account.owner_user
+          %td=h owner.full_name if owner
+          %td=h owner.email if owner
     - if @count > @limit
       %p.notice== #{@count-@limit} more payment sources exist, try refining your search.
