@@ -4,7 +4,7 @@ class InstrumentPricePoliciesController < ApplicationController
   before_filter :check_acting_as
   before_filter :init_current_facility
   before_filter :init_instrument
-  before_filter :init_instrument_price_policy
+  before_filter :init_instrument_price_policy, :except => :index
 
   load_and_authorize_resource
 
