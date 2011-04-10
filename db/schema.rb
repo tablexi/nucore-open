@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110314201317) do
+ActiveRecord::Schema.define(:version => 20110403013939) do
 
   create_table "account_transactions", :force => true do |t|
     t.integer  "account_id",                        :precision => 38, :scale => 0, :null => false
@@ -293,6 +293,7 @@ ActiveRecord::Schema.define(:version => 20110314201317) do
     t.decimal  "dispute_resolved_credit",                :precision => 10, :scale => 2
     t.integer  "group_id",                               :precision => 38, :scale => 0
     t.integer  "bundle_product_id",                      :precision => 38, :scale => 0
+    t.string   "note",                    :limit => 25
   end
 
   create_table "order_statuses", :force => true do |t|

@@ -24,6 +24,7 @@ class OrderDetail < ActiveRecord::Base
   validates_numericality_of :dispute_resolved_credit, :greater_than => 0, :allow_nil => true
   validate :credit_less_than_cost?, :if => :dispute_resolved_credit
   validate :account_usable_by_order_owner?
+  validates_length_of :note, :maximum => 25, :allow_blank => true, :allow_nil => true
 
   ## TODO validate assigned_user is a member of the product's facility
   ## TODO validate order status is global or a member of the product's facility

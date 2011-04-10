@@ -47,6 +47,10 @@ label {
   font-weight: bold;
 }
 
+label.inline {
+  display: inline;
+}
+
 /***************************************
 reusable classes
 ***************************************/

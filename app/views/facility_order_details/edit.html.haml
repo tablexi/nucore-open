@@ -193,6 +193,10 @@
         %td.currency= "$#{f.text_field(:actual_subsidy, {:value => number_to_currency(@order_detail.actual_subsidy, :unit => ''), :id => 'actual_subsidy', :size => 8})}"
         %td.currency
           %span#actual_total= number_to_currency(@order_detail.actual_total)
+      %tr
+        %td{:colspan => '6'}
+          %label.inline Note:
+          = f.text_field(:note, :style=> "width:200px")
   %p.footnote * Changing the quantity will automatically update the price fields
 
   - if @order_detail.order_status.name == 'Reviewable'
