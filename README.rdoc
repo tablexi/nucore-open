@@ -3,7 +3,7 @@ Northwestern University Core Facility Management Software
 
 == Quickstart
 
-Welcome to nucore! This guide will help you get a development environment up and running. It makes a few assumptions:
+Welcome to NU Core! This guide will help you get a development environment up and running. It makes a few assumptions:
 
 1. You write code on a Mac.
 2. You have a running Oracle instance with two brand new databases.
@@ -47,12 +47,12 @@ Welcome to nucore! This guide will help you get a development environment up and
     ... Go to http://0.0.0.0:3000 ...
     ... Login with username 'ddi123@example.com' and password 'password' ...
 
-9. Play around! You're running nucore!
+9. Play around! You're running NU Core!
 
 
 === Test it
 
-nucore uses Rspec[http://rspec.info] to run tests. Try any of the following from nucore's root.
+NU Core uses Rspec[http://rspec.info] to run tests. Try any of the following from NU Core's root directory.
 
 * To run all tests (this will take awhile!)
     rake spec
@@ -66,11 +66,10 @@ nucore uses Rspec[http://rspec.info] to run tests. Try any of the following from
 
 === Learn more
 
-There are valuable resources in the nucore's doc directory.
+There are valuable resources in the NU Core's doc directory.
 
-* Need help getting Oracle on your Mac? <b>See HOWTO_oracle.txt</b>
+* Need help getting Oracle running on your Mac? <b>See HOWTO_oracle.txt</b>
 
-* Wondering how you can customize nucore for your institution? <b>See HOWTO_extensions.txt</b>
+* Wondering how you can customize NU Core for your institution? <b>See HOWTO_extensions.txt</b>
 
 * Want to authenticate users against your institution's LDAP server? <b>See HOWTO_ldap.txt</b>
-
