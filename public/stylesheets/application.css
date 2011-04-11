@@ -163,6 +163,10 @@ input.btn:hover {
   text-align: right;
 }
 
+.disabled {
+  color: #D1D1D1;
+}
+
 /***************************************
 main layout ids
 ***************************************/

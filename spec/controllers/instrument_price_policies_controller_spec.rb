@@ -64,7 +64,26 @@ describe InstrumentPricePoliciesController do
       @params.merge!(:id => @price_policy.start_date.to_s)
     end
 
-    it_should_allow_managers_only
+    it_should_allow_managers_only :success, 'to edit assigned effective price policy' do
+      assigns[:price_groups].should == @authable.price_groups
+      assigns[:start_date].should == Date.strptime(@params[:start_date], "%Y-%m-%d")
+      assigns[:price_policies].should == [ @price_policy ]
+      should render_template('edit')
+    end
+
+
+    it 'should not allow edit of assigned effective price policy' do
+      @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @director, :created_by => @director, :user_role => 'Owner']])
+      @order    = @director.orders.create(Factory.attributes_for(:order, :created_by => @director.id))
+      @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @instrument.id, :account_id => @account.id, :price_policy => @price_policy))
+      UserPriceGroupMember.create!(:price_group => @price_group, :user => @director)
+      maybe_grant_always_sign_in :director
+      do_request
+      assigns[:price_groups].should == @authable.price_groups
+      assigns[:start_date].should == Date.strptime(@params[:start_date], "%Y-%m-%d")
+      assigns[:price_policies].should be_empty
+      should render_template '404.html.erb'
+    end
 
   end
 

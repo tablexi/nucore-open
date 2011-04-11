@@ -1,7 +1,6 @@
 %table
   %tr
-    - if editable
-      %th{:rowspan => 2}
+    %th{:rowspan => 2}
     %th{:rowspan => 2} Price Group (Type)
     %th.centered{:rowspan => 2} Reservation Window
     %th.centered{:colspan => 3} Rate per #{instrument_price_policies.first.usage_mins} minute#{instrument_price_policies.first.usage_mins == 1 ? '' : 's'}
@@ -13,11 +12,15 @@
     %th.currency Overage
   - instrument_price_policies.each do |price_policy|
     %tr
-      - if editable && instrument_price_policies.first == price_policy
+      - if instrument_price_policies.first == price_policy
         %td.centered{ :rowspan => instrument_price_policies.length }
           %ul.form
-            %li= link_to 'Edit', edit_facility_instrument_price_policy_path(current_facility, @instrument, url_date)
-            %li= link_to 'Remove', facility_instrument_price_policy_path(current_facility, @instrument, url_date), :confirm => 'Are you sure?', :method => :delete
+            - if !editable && price_policy.assigned_to_order?
+              %li.disabled Edit
+              %li.disabled Remove
+            - else
+              %li= link_to('Edit', edit_facility_instrument_price_policy_path(current_facility, @instrument, url_date))
+              %li= link_to('Remove', facility_instrument_price_policy_path(current_facility, @instrument, url_date), :confirm => 'Are you sure?', :method => :delete)
       %td=h "#{price_policy.price_group.name} (#{price_policy.price_group.type_string})"
       - if price_policy.restrict_purchase?
         %td.centered{ :colspan => 6 } Unable to purchase
