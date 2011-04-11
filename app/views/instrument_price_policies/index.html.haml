@@ -18,7 +18,7 @@
 - else
   %h2 Current Pricing Rules
   %h3= "Effective: #{human_date(@current_start_date)}"
-  = render :partial => "table", :locals => { :instrument_price_policies => @current_price_policies, :editable => false }
+  = render :partial => "table", :locals => { :instrument_price_policies => @current_price_policies, :editable => false, :url_date => @current_start_date.strftime("%Y-%m-%d") }
 
 - unless @next_dates.empty?
   %h2 Upcoming Pricing Rules

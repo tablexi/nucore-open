@@ -37,10 +37,9 @@ class InstrumentPricePoliciesController < ApplicationController
   def edit
     @price_groups = current_facility.price_groups
     @start_date   = start_date_from_params
-    raise ActiveRecord::RecordNotFound unless @start_date > Date.today
     @price_policies = InstrumentPricePolicy.for_date(@instrument, @start_date)
-
-    raise ActiveRecord::RecordNotFound unless @price_policies.count > 0
+    @price_policies.delete_if{|pp| pp.assigned_to_order? }
+    raise ActiveRecord::RecordNotFound if @price_policies.blank?
   end
 
   # POST /price_policies
