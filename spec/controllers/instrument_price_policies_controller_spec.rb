@@ -43,6 +43,7 @@ describe InstrumentPricePoliciesController do
     before :each do
       @method=:get
       @action=:new
+      @params.merge!(:start_date => @price_policy.start_date.to_s)
     end
 
     it_should_allow_managers_only do

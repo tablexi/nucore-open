@@ -36,7 +36,7 @@ class InstrumentPricePoliciesController < ApplicationController
   # GET /price_policies/1/edit
   def edit
     @price_groups = current_facility.price_groups
-    @start_date   = Date.strptime((params[:start_date] || params[:id]), "%Y-%m-%d")
+    @start_date   = start_date_from_params
     raise ActiveRecord::RecordNotFound unless @start_date > Date.today
     @price_policies = InstrumentPricePolicy.for_date(@instrument, @start_date)
 
@@ -75,7 +75,7 @@ class InstrumentPricePoliciesController < ApplicationController
   # PUT /price_policies/1
   def update
     @price_groups   = current_facility.price_groups
-    @start_date     = Date.strptime((params[:start_date] || params[:id]), "%Y-%m-%d")
+    @start_date     = start_date_from_params
     @price_policies = InstrumentPricePolicy.for_date(@instrument, @start_date)
     @price_policies.each { |price_policy|
       price_policy.attributes = params["instrument_price_policy#{price_policy.price_group.id}"].reject {|k,v| k == 'restrict_purchase' }
@@ -98,7 +98,7 @@ class InstrumentPricePoliciesController < ApplicationController
   # DELETE /price_policies/1
   def destroy
     @price_groups   = current_facility.price_groups
-    @start_date     = Date.strptime((params[:start_date] || params[:id]), "%Y-%m-%d")
+    @start_date     = start_date_from_params
     raise ActiveRecord::RecordNotFound unless @start_date > Date.today
     @price_policies = InstrumentPricePolicy.for_date(@instrument, @start_date)
     raise ActiveRecord::RecordNotFound unless @price_policies.count > 0
@@ -123,7 +123,17 @@ class InstrumentPricePoliciesController < ApplicationController
   #
   # Override CanCan's find -- it won't properly search by zoned date
   def init_instrument_price_policy
-    @instrument_price_policy=InstrumentPricePolicy.find_by_start_date(Time.zone.parse(params[:start_date] || params[:id]))
+    @instrument_price_policy=InstrumentPricePolicy.for_date(@instrument, start_date_from_params).first
+  end
+
+
+  private
+
+  def start_date_from_params
+    start_date=params[:start_date] || params[:id]
+    return unless start_date
+    format=start_date.include?('/') ? "%m/%d/%Y" : "%Y-%m-%d"
+    Date.strptime(start_date, format)
   end
 
 end
