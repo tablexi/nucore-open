@@ -61,12 +61,12 @@ describe InstrumentPricePoliciesController do
       @method=:get
       @action=:edit
       set_policy_date
-      @params.merge!(:id => @price_policy.id, :start_date => @price_policy.start_date.to_s)
+      @params.merge!(:id => @price_policy.start_date.to_s)
     end
 
     it_should_allow_managers_only :success, 'to edit assigned effective price policy' do
       assigns[:price_groups].should == @authable.price_groups
-      assigns[:start_date].should == Date.strptime(@params[:start_date], "%Y-%m-%d")
+      assigns[:start_date].should == Date.strptime(@params[:id], "%Y-%m-%d")
       assigns[:price_policies].should == [ @price_policy ]
       should render_template('edit')
     end
@@ -80,7 +80,7 @@ describe InstrumentPricePoliciesController do
       maybe_grant_always_sign_in :director
       do_request
       assigns[:price_groups].should == @authable.price_groups
-      assigns[:start_date].should == Date.strptime(@params[:start_date], "%Y-%m-%d")
+      assigns[:start_date].should == Date.strptime(@params[:id], "%Y-%m-%d")
       assigns[:price_policies].should be_empty
       should render_template '404.html.erb'
     end
@@ -120,7 +120,7 @@ describe InstrumentPricePoliciesController do
         @method=:put
         @action=:update
         set_policy_date
-        @params.merge!(:id => @price_policy.id)
+        @params.merge!(:id => @price_policy.start_date.to_s)
       end
 
       it_should_allow_managers_only :redirect
@@ -134,7 +134,7 @@ describe InstrumentPricePoliciesController do
         @method=:put
         @action=:update
         set_policy_date
-        @params.merge!(:id => @price_policy.id)
+        @params.merge!(:id => @price_policy.start_date.to_s)
       end
 
       it_should_allow_managers_only :redirect

@@ -129,7 +129,7 @@ class InstrumentPricePoliciesController < ApplicationController
   private
 
   def start_date_from_params
-    start_date=params[:start_date] || params[:id]
+    start_date=params[:id] || params[:start_date]
     return unless start_date
     format=start_date.include?('/') ? "%m/%d/%Y" : "%Y-%m-%d"
     Date.strptime(start_date, format)
