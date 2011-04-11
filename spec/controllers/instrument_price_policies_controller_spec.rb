@@ -66,7 +66,7 @@ describe InstrumentPricePoliciesController do
 
     it_should_allow_managers_only :success, 'to edit assigned effective price policy' do
       assigns[:price_groups].should == @authable.price_groups
-      assigns[:start_date].should == Date.strptime(@params[:start_date], "%Y-%m-%d")
+      assigns[:start_date].should == Date.strptime(@params[:id], "%Y-%m-%d")
       assigns[:price_policies].should == [ @price_policy ]
       should render_template('edit')
     end
@@ -80,7 +80,7 @@ describe InstrumentPricePoliciesController do
       maybe_grant_always_sign_in :director
       do_request
       assigns[:price_groups].should == @authable.price_groups
-      assigns[:start_date].should == Date.strptime(@params[:start_date], "%Y-%m-%d")
+      assigns[:start_date].should == Date.strptime(@params[:id], "%Y-%m-%d")
       assigns[:price_policies].should be_empty
       should render_template '404.html.erb'
     end
