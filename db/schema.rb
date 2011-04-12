@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110403013939) do
+ActiveRecord::Schema.define(:version => 20110412174924) do
 
   create_table "account_transactions", :force => true do |t|
     t.integer  "account_id",                        :precision => 38, :scale => 0, :null => false
@@ -324,6 +324,17 @@ ActiveRecord::Schema.define(:version => 20110403013939) do
     t.integer "account_id",                   :precision => 38, :scale => 0
   end
 
+  create_table "price_group_products", :force => true do |t|
+    t.integer  "price_group_id",     :precision => 38, :scale => 0, :null => false
+    t.integer  "product_id",         :precision => 38, :scale => 0, :null => false
+    t.integer  "reservation_window", :precision => 38, :scale => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "price_group_products", ["price_group_id"], :name => "i_pri_gro_pro_pri_gro_id"
+  add_index "price_group_products", ["product_id"], :name => "i_pri_gro_pro_pro_id"
+
   create_table "price_groups", :force => true do |t|
     t.integer "facility_id",                 :precision => 38, :scale => 0
     t.string  "name",          :limit => 50,                                :null => false
@@ -350,7 +361,6 @@ ActiveRecord::Schema.define(:version => 20110403013939) do
     t.integer  "overage_mins",                      :precision => 38, :scale => 0
     t.decimal  "minimum_cost",                      :precision => 10, :scale => 2
     t.decimal  "cancellation_cost",                 :precision => 10, :scale => 2
-    t.integer  "reservation_window",                :precision => 38, :scale => 0
     t.decimal  "usage_subsidy",                     :precision => 10, :scale => 2
     t.decimal  "reservation_subsidy",               :precision => 10, :scale => 2
     t.decimal  "overage_subsidy",                   :precision => 10, :scale => 2
