@@ -16,6 +16,7 @@ describe ReservationsController do
                                                :min_reserve_mins => 60, :max_reserve_mins => 60)
     @instrument       = @authable.instruments.create(@options)
     assert @instrument.valid?
+    Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
     # add rule, available every day from 9 to 5, 60 minutes duration
     @rule             = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
     # create price policy with default window of 1 day

@@ -70,11 +70,6 @@ describe OrderDetail do
       @order_detail.update_attributes(:actual_cost => 20, :actual_subsidy => 10, :price_policy_id => @item_pp.id)
     end
 
-    it "should be valid for an item purchase with valid attributes" do
-      define_open_account(@order_detail.product.account, @order_detail.account.account_number)
-      @order_detail.valid_for_purchase?.should == true
-    end
-
     it "should not be valid if there is no account" do
       @order_detail.update_attributes(:account_id => nil)
       @order_detail.valid_for_purchase?.should_not == true
@@ -82,24 +77,32 @@ describe OrderDetail do
 
     it "should not be valid if the chart string account does not match the product account"
 
-    it "should not be valid if there is no actual price" do
-      @order_detail.update_attributes(:actual_cost => nil, :actual_subsidy => nil)
-      @order_detail.valid_for_purchase?.should_not == true
-    end
+    context 'needs open account' do
+      before :each do
+        define_open_account(@order_detail.product.account, @order_detail.account.account_number)
+      end
 
-    it "should not be valid if a price policy is not selected" do
-      @order_detail.update_attributes(:price_policy_id => nil)
-      @order_detail.valid_for_purchase?.should_not == true
-    end
+      it "should be valid for an item purchase with valid attributes" do
+        @order_detail.valid_for_purchase?.should == true
+      end
 
-    it "should not be valid if the user is not approved for the product" do
-      @item.update_attributes(:requires_approval => true)
-      @order_detail.reload # reload to update related item
-      @order_detail.valid_for_purchase?.should_not == true
+      it "should be valid if there is no actual price" do
+        @order_detail.update_attributes(:actual_cost => nil, :actual_subsidy => nil)
+        @order_detail.valid_for_purchase?.should == true
+      end
 
-      ProductUser.create({:product => @item, :user => @user, :approved_by => @user.id})
-      define_open_account(@order_detail.product.account, @order_detail.account.account_number)
-      @order_detail.valid_for_purchase?.should == true
+      it "should be valid if a price policy is not selected" do
+        @order_detail.update_attributes(:price_policy_id => nil)
+        @order_detail.valid_for_purchase?.should == true
+      end
+
+      it "should not be valid if the user is not approved for the product" do
+        @item.update_attributes(:requires_approval => true)
+        @order_detail.reload # reload to update related item
+        @order_detail.valid_for_purchase?.should_not == true
+        ProductUser.create({:product => @item, :user => @user, :approved_by => @user.id})
+        @order_detail.valid_for_purchase?.should == true
+      end
     end
   end
 

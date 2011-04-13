@@ -126,6 +126,7 @@ describe Order do
     it "should check for schedule rule changes before purchase" do
       @instrument    = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account => @facility_account))
       @instrument_pp = Factory.create(:instrument_price_policy, :instrument => @instrument, :price_group => @price_group)
+      Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
       # default rule, 9am - 5pm all days
       @rule          = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
       @order_detail  = @order.order_details.create(:product_id      => @instrument.id,    :quantity => 1,

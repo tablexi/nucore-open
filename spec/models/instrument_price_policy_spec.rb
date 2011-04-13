@@ -70,6 +70,7 @@ describe InstrumentPricePolicy do
       @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create(Factory.attributes_for(:price_group))
       @instrument       = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account => @facility_account))
+      @price_group_product=Factory.create(:price_group_product, :price_group => @price_group, :product => @instrument)
       # create rule every day from 9 am to 5 pm, no discount, duration= 30 minutes
       @rule             = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :duration_mins => 30))
     end
@@ -88,7 +89,6 @@ describe InstrumentPricePolicy do
           :overage_mins        => 15,
           :minimum_cost        => nil,
           :cancellation_cost   => nil,
-          :reservation_window  => 14,
           :restrict_purchase   => false,
           :price_group         => @price_group,
         ]
@@ -130,7 +130,6 @@ describe InstrumentPricePolicy do
           :overage_mins        => 15,
           :minimum_cost        => nil,
           :cancellation_cost   => nil,
-          :reservation_window  => 14,
           :restrict_purchase   => false,
           :price_group         => @price_group,
         ]
@@ -172,7 +171,6 @@ describe InstrumentPricePolicy do
           :overage_mins        => 15,
           :minimum_cost        => nil,
           :cancellation_cost   => nil,
-          :reservation_window  => 14,
           :restrict_purchase   => false,
           :price_group         => @price_group,
         ]
@@ -214,7 +212,6 @@ describe InstrumentPricePolicy do
           :overage_mins        => 15,
           :minimum_cost        => nil,
           :cancellation_cost   => nil,
-          :reservation_window  => 14,
           :restrict_purchase   => false,
           :price_group         => @price_group,
         ]
@@ -256,7 +253,6 @@ describe InstrumentPricePolicy do
           :overage_mins        => 15,
           :minimum_cost        => nil,
           :cancellation_cost   => nil,
-          :reservation_window  => 14,
           :restrict_purchase   => false,
           :price_group         => @price_group,
         ]
@@ -298,7 +294,6 @@ describe InstrumentPricePolicy do
           :overage_mins        => 15,
           :minimum_cost        => nil,
           :cancellation_cost   => nil,
-          :reservation_window  => 14,
           :restrict_purchase   => false,
           :price_group         => @price_group,
         ]
@@ -340,7 +335,6 @@ describe InstrumentPricePolicy do
           :overage_mins        => 15,
           :minimum_cost        => nil,
           :cancellation_cost   => nil,
-          :reservation_window  => 14,
           :restrict_purchase   => false,
           :price_group         => @price_group,
         ]
@@ -384,7 +378,6 @@ describe InstrumentPricePolicy do
           :overage_mins        => 15,
           :minimum_cost        => nil,
           :cancellation_cost   => nil,
-          :reservation_window  => 14,
           :restrict_purchase   => false,
           :price_group         => @price_group,
         ]
@@ -414,7 +407,6 @@ describe InstrumentPricePolicy do
           :overage_mins        => 15,
           :minimum_cost        => nil,
           :cancellation_cost   => nil,
-          :reservation_window  => 14,
           :restrict_purchase   => false,
           :price_group         => @price_group,
         ]
@@ -444,7 +436,6 @@ describe InstrumentPricePolicy do
           :overage_mins        => 15,
           :minimum_cost        => nil,
           :cancellation_cost   => nil,
-          :reservation_window  => 14,
           :restrict_purchase   => false,
           :price_group         => @price_group,
         ]
@@ -472,11 +463,11 @@ describe InstrumentPricePolicy do
           :overage_mins        => 15,
           :minimum_cost        => nil,
           :cancellation_cost   => nil,
-          :reservation_window  => 1,
           :restrict_purchase   => false,
           :price_group         => @price_group,
         ]
       pp = @instrument.instrument_price_policies.create!(options)
+      assert @price_group_product.save
 
       start_dt = Time.zone.parse("#{Date.today + 2.day} 9:00")
       end_dt   = Time.zone.parse("#{Date.today + 2.day} 10:00")
@@ -503,7 +494,6 @@ describe InstrumentPricePolicy do
           :overage_mins        => 15,
           :minimum_cost        => nil,
           :cancellation_cost   => nil,
-          :reservation_window  => 14,
           :restrict_purchase   => false,
           :price_group         => @price_group,
         ]
@@ -542,6 +532,7 @@ describe InstrumentPricePolicy do
       @facility_account = @facility.facility_accounts.create!(Factory.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create!(Factory.attributes_for(:price_group))
       @instrument       = @facility.instruments.create!(Factory.attributes_for(:instrument, :facility_account => @facility_account))
+      @price_group_product=Factory.create(:price_group_product, :price_group => @price_group, :product => @instrument)
       @rule             = @instrument.schedule_rules.create!(Factory.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24, :duration_mins => 30))
       options           = Hash[
           :start_date          => Date.today,
@@ -556,7 +547,6 @@ describe InstrumentPricePolicy do
           :overage_mins        => 15,
           :minimum_cost        => nil,
           :cancellation_cost   => nil,
-          :reservation_window  => 14,
           :restrict_purchase   => false,
           :price_group         => @price_group,
         ]

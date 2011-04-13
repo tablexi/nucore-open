@@ -402,14 +402,18 @@ class Reservation < ActiveRecord::Base
   # * is included in the provided price groups
   # * is within the reservation windows of the available price policies
   def longest_reservation_window_price_policy(groups = [])
-    return nil if groups.empty?
-    return nil if reserve_start_at.nil?
-    longest = nil
+    return nil if groups.empty? or reserve_start_at.nil?
+
+    longest, longest_window = nil, nil
     diff = ((reserve_start_at - Time.zone.now)/(60*60*24)).to_i
+
     instrument.current_price_policies.each { |pp|
-      if !pp.restrict_purchase? && groups.include?(pp.price_group) && diff <= pp.reservation_window
-        if longest.nil? || pp.reservation_window > longest.reservation_window
+      window=pp.reservation_window
+
+      if !pp.restrict_purchase? && groups.include?(pp.price_group) && diff <= window
+        if longest_window.nil? || window > longest_window
           longest = pp
+          longest_window=window
         end
       end
     }

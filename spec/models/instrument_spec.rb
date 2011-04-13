@@ -220,6 +220,7 @@ describe Instrument do
       @options          = Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id,
                                                  :min_reserve_mins => 60, :max_reserve_mins => 60)
       @instrument       = @facility.instruments.create(@options)
+      @price_group_product=Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
       assert @instrument.valid?
       
       # create price policy with default window of 1 day
@@ -233,7 +234,9 @@ describe Instrument do
     
     it "should use max window of all price polices to calculate dates" do
       # create price policy with window of 15 days
-      @options       = Factory.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id, :reservation_window => 15)
+      @price_group_product.reservation_window=15
+      assert @price_group_product.save
+      @options       = Factory.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id)
       @price_policy2 = @instrument.instrument_price_policies.new(@options)
       @price_policy2.save(false) # save without validations
       assert_equal Time.zone.now.to_date + 15.days, @instrument.last_reserve_date

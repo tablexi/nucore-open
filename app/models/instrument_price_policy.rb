@@ -3,7 +3,6 @@ class InstrumentPricePolicy < PricePolicy
 
   belongs_to :instrument, :class_name => 'Product', :foreign_key => :instrument_id
 
-  validates_numericality_of :reservation_window, :only_integer => true, :greater_than => 0, :unless => :restrict_purchase, :message => 'must be a whole number'
   validates_numericality_of :minimum_cost, :usage_rate, :reservation_rate, :overage_rate, :usage_subsidy, :overage_subsidy, :reservation_subsidy, :cancellation_cost, :allow_nil => true, :greater_than_or_equal_to => 0
   validates_inclusion_of :usage_mins, :reservation_mins, :overage_mins, :in => @@intervals, :unless => :restrict_purchase
   validates_presence_of :usage_rate, :unless => lambda { |o| o.usage_subsidy.nil? || o.restrict_purchase?}
@@ -42,6 +41,11 @@ class InstrumentPricePolicy < PricePolicy
 
   def self.intervals
     @@intervals
+  end
+
+  def reservation_window
+    pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, instrument.id)
+    return pgp ? pgp.reservation_window : 0
   end
 
   def subsidy_less_than_rate?

@@ -103,7 +103,6 @@ Factory.define :instrument_price_policy, :class => InstrumentPricePolicy do |o|
   o.unit_subsidy 0
   o.reservation_rate 1
   o.reservation_subsidy 0
-  o.reservation_window 1
   o.reservation_mins 1
   o.minimum_cost 1
   o.usage_mins 1
@@ -204,4 +203,8 @@ end
 
 Factory.define :response_set do |s|
   s.sequence(:access_code) { |n| "#{n}#{n}#{n}" }
+end
+
+Factory.define :price_group_product do |pgp|
+  pgp.reservation_window 1
 end

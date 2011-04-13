@@ -147,9 +147,11 @@ describe Reservation do
   context "get best possible reservation" do
     before do
       @user = Factory.create(:user)
+      @nupg_pgp=Factory.create(:price_group_product, :product => @instrument, :price_group => @nupg)
 
       # Setup a price group with an account for this user
       @price_group1 = @facility.price_groups.create(Factory.attributes_for(:price_group))
+      @pg1_pgp=Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group1)
       @account1 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
       @account_price_group_member1 = AccountPriceGroupMember.create(Factory.attributes_for(:account_price_group_member).merge(:account => @account1, :price_group => @price_group1))
 
@@ -178,8 +180,12 @@ describe Reservation do
     end
 
     it "should find the best reservation window" do
-      @pp_short = InstrumentPricePolicy.create(Factory.attributes_for(:instrument_price_policy).merge(:reservation_window => 30, :instrument_id => @instrument.id))
-      @pp_long  = InstrumentPricePolicy.create(Factory.attributes_for(:instrument_price_policy).merge(:reservation_window => 60, :instrument_id => @instrument.id))
+      @pp_short = InstrumentPricePolicy.create(Factory.attributes_for(:instrument_price_policy).merge(:instrument_id => @instrument.id))
+      @pg1_pgp.reservation_window=30
+      assert @pg1_pgp.save
+      @pp_long  = InstrumentPricePolicy.create(Factory.attributes_for(:instrument_price_policy).merge(:instrument_id => @instrument.id))
+      @nupg_pgp.reservation_window=60
+      assert @nupg_pgp.save
       @price_group1.price_policies << @pp_short
       @nupg.price_policies         << @pp_long
 
