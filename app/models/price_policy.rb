@@ -52,6 +52,6 @@ class PricePolicy < ActiveRecord::Base
 #      max = p if p.start_date <= Time.zone.now && (max.nil? || p.start_date > max.start_date) 
 #    }
 #    max
-#  end
+#  end?
   
 end

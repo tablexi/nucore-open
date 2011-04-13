@@ -79,11 +79,17 @@ describe OrderDetail do
 
     context 'needs open account' do
       before :each do
+        Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
         define_open_account(@order_detail.product.account, @order_detail.account.account_number)
       end
 
       it "should be valid for an item purchase with valid attributes" do
         @order_detail.valid_for_purchase?.should == true
+      end
+
+      it "should not be valid if the user is not a member of a product's price group" do
+        @pg_user_member.destroy
+        @order_detail.valid_for_purchase?.should == false
       end
 
       it "should be valid if there is no actual price" do

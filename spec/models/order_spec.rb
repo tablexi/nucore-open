@@ -73,6 +73,7 @@ describe Order do
       @price_group  = Factory.create(:price_group, :facility => @facility)
       @order_status = Factory.create(:order_status)
       @service      = @facility.services.create(Factory.attributes_for(:service, :initial_order_status_id => @order_status.id, :facility_account_id => @facility_account.id))
+      Factory.create(:price_group_product, :product => @service, :price_group => @price_group, :reservation_window => nil)
       @service_pp   = Factory.create(:service_price_policy, :service => @service, :price_group => @price_group)
       @user         = Factory.create(:user)
       @pg_member    = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)

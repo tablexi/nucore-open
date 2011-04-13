@@ -185,6 +185,12 @@ class OrderDetail < ActiveRecord::Base
     # are survey requirements met
     response = validate_service_meta
     return response unless response.nil?
+
+    order.user.price_groups.each do |price_group|
+      return nil if PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
+    end
+
+    return 'No assigned price groups allow purchase of this product'
   end
 
   def valid_for_purchase?

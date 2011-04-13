@@ -288,6 +288,7 @@ describe OrdersController do
     it_should_require_login
 
     it "should disallow viewing of cart that is purchased" do
+      Factory.create(:price_group_product, :product => @item, :price_group =>@price_group, :reservation_window => nil)
       define_open_account(@item.account, @account.account_number)
       @order.validate_order!
       @order.purchase!
