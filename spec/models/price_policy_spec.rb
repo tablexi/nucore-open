@@ -22,6 +22,55 @@ describe PricePolicy do
   end
 
 
+  context 'restrict purchase' do
+
+    before :each do
+      @pp=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group)
+      @pgp=Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
+    end
+
+    it 'should not restrict purchase' do
+      @pp.restrict_purchase.should == false
+    end
+
+    it 'should restrict purchase' do
+      @pgp.destroy
+      @pp.restrict_purchase.should == true
+    end
+
+    it 'should alias #restrict with query method' do
+      @pp.should be_respond_to :restrict_purchase?
+      @pp.restrict_purchase.should == @pp.restrict_purchase?
+    end
+
+    it 'should return false when no price group present' do
+      @pp.price_group=nil
+      @pp.restrict_purchase.should == false
+    end
+
+    it 'should return false when no item present' do
+      @pp.item=nil
+      @pp.restrict_purchase.should == false
+    end
+
+    it 'should raise on bad input' do
+      assert_raise(ArgumentError) { @pp.restrict_purchase=44 }
+    end
+
+    it 'should destroy PriceGroupProduct when restricted' do
+      @pp.restrict_purchase=true
+      should_be_destroyed @pgp
+    end
+
+    it 'should create PriceGroupProduct when unrestricted' do
+      @pgp.destroy
+      @pp.restrict_purchase=false
+      PriceGroupProduct.find_by_price_group_id_and_product_id(@price_group.id, @item.id).should_not be_nil
+    end
+
+  end
+
+
   context 'should define abstract methods' do
 
     before :each do
@@ -32,30 +81,34 @@ describe PricePolicy do
       @sp = SubPricePolicy.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id))
     end
 
-    it 'should abstract calculate_cost_and_subsidy' do
+    it 'should abstract #calculate_cost_and_subsidy' do
       @sp.should be_respond_to(:calculate_cost_and_subsidy)
       assert_raise(RuntimeError) { @sp.calculate_cost_and_subsidy }
     end
 
-    it 'should abstract estimate_cost_and_subsidy' do
+    it 'should abstract #estimate_cost_and_subsidy' do
       @sp.should be_respond_to(:estimate_cost_and_subsidy)
       assert_raise(RuntimeError) { @sp.estimate_cost_and_subsidy }
     end
+
+    it 'should abstract #product' do
+      @sp.should be_respond_to(:product)
+      assert_raise(RuntimeError) { @sp.product }
+    end
+
   end
 
 
   context 'order assignment' do
 
     before :each do
-      @facility = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
       @user     = Factory.create(:user)
-      @item     = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
       @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
       @order    = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id))
       @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
       @price_group = Factory.create(:price_group, :facility => @facility)
       UserPriceGroupMember.create!(:price_group => @price_group, :user => @user)
+      Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
       @pp=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group)
     end
 

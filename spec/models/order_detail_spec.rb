@@ -42,6 +42,7 @@ describe OrderDetail do
       @order    = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id))
       @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
       @price_group = Factory.create(:price_group, :facility => @facility)
+      Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
       UserPriceGroupMember.create!(:price_group => @price_group, :user => @user)
       @pp=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group)
     end
@@ -234,6 +235,7 @@ describe OrderDetail do
       price_group = Factory.create(:price_group, :facility => @facility)
       UserPriceGroupMember.create!(:price_group => price_group, :user => @user)
       pp=Factory.create(:item_price_policy, :item => @item, :price_group => price_group)
+      Factory.create(:price_group_product, :product => @item, :price_group => price_group, :reservation_window => nil)
   
       PurchaseAccountTransaction.create!(
         :order_detail => @order_detail,

@@ -15,43 +15,59 @@ describe InstrumentPricePolicy do
       @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create(Factory.attributes_for(:price_group))
       @instrument       = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account => @facility_account))
+      @ipp=@instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group => @price_group))
     end
 
     it "should create using factory" do
       # price policy belongs to an instrument and a price group
-      ipp = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group => @price_group))
-      ipp.should be_valid
+      @ipp.should be_valid
+    end
+
+    it "should return instrument" do
+      # price policy belongs to an instrument and a price group
+      @ipp.product.should == @instrument
+    end
+
+    it 'should override #restrict_purchase=' do
+      PriceGroupProduct.find_by_price_group_id_and_product_id(@price_group.id, @instrument.id).should be_nil
+      @ipp.restrict_purchase=false
+      pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(@price_group.id, @instrument.id)
+      pgp.should_not be_nil
+      pgp.reservation_window.should == PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
     end
 
     it "should create a price policy for today if no active price policy already exists" do
       should allow_value(Date.today).for(:start_date)
-      ipp = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today - 7.days, :price_group => @price_group))
-      ipp.save_with_validation(false) #save without validations
+      @ipp.start_date=Date.today - 7.days
+      @ipp.save_with_validation(false) #save without validations
       ipp_new = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today, :price_group => @price_group))
       ipp_new.errors_on(:start_date).should_not be_nil
     end
 
     it "should not create a price policy for a day that a policy already exists for" do
-      ipp     = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
+      @ipp.start_date=Date.today + 7.days
+      assert @ipp.save
       ipp_new = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
       ipp_new.errors_on(:start_date).should_not be_nil
     end
 
     it "should return the date for the current policies" do
-      ipp = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today - 7.days, :price_group => @price_group))
-      ipp.save(false) #save without validations
+      @ipp.start_date=Date.today - 7.days
+      @ipp.save(false) #save without validations
       @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
       InstrumentPricePolicy.current_date(@instrument).to_date.should == Date.today - 7.days
 
-      ipp = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today, :price_group => @price_group))
-      ipp.save(false) #save without validations
+      @ipp = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today, :price_group => @price_group))
+      @ipp.save(false) #save without validations
       InstrumentPricePolicy.current_date(@instrument).to_date.should == Date.today
     end
 
     it "should return the date for upcoming policies" do
-      i1 = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today, :price_group => @price_group))
-      i2 = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
-      i3 = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + 14.days, :price_group => @price_group))
+
+      for i in 0..2
+        @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + (i*7).days, :price_group => @price_group))
+      end
+
       InstrumentPricePolicy.next_date(@instrument).to_date.should == Date.today + 7.days
       next_dates = InstrumentPricePolicy.next_dates(@instrument)
       next_dates.length.should == 2
@@ -76,23 +92,7 @@ describe InstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with usage cost" do
-      options = Hash[
-          :start_date          => Date.today,
-          :usage_rate          => 10.75,
-          :usage_subsidy       => 0,
-          :usage_mins          => 15,
-          :reservation_rate    => 0,
-          :reservation_subsidy => 0,
-          :reservation_mins    => 15,
-          :overage_rate        => 0,
-          :overage_subsidy     => 0,
-          :overage_mins        => 15,
-          :minimum_cost        => nil,
-          :cancellation_cost   => nil,
-          :restrict_purchase   => false,
-          :price_group         => @price_group,
-        ]
-      pp = @instrument.instrument_price_policies.create!(options)
+      pp = @instrument.instrument_price_policies.create!(ipp_attributes)
       
       # 1 hour (4 intervals)
       start_dt = Time.zone.parse("#{Date.today + 1.day} 9:00")
@@ -117,24 +117,8 @@ describe InstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with usage cost and subsidy" do
-      options = Hash[
-          :start_date          => Date.today,
-          :usage_rate          => 10.75,
-          :usage_subsidy       => 1.75,
-          :usage_mins          => 15,
-          :reservation_rate    => 0,
-          :reservation_subsidy => 0,
-          :reservation_mins    => 15,
-          :overage_rate        => 0,
-          :overage_subsidy     => 0,
-          :overage_mins        => 15,
-          :minimum_cost        => nil,
-          :cancellation_cost   => nil,
-          :restrict_purchase   => false,
-          :price_group         => @price_group,
-        ]
-      pp = @instrument.instrument_price_policies.create!(options)
-      
+      pp = @instrument.instrument_price_policies.create!(ipp_attributes(:usage_subsidy => 1.75))
+
       # 1 hour (4 intervals)
       start_dt = Time.zone.parse("#{Date.today + 1.day} 9:00")
       end_dt   = Time.zone.parse("#{Date.today + 1.day} 10:00")
@@ -158,23 +142,7 @@ describe InstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with usage cost and overage cost" do
-      options = Hash[
-          :start_date          => Date.today,
-          :usage_rate          => 10.75,
-          :usage_subsidy       => 0,
-          :usage_mins          => 15,
-          :reservation_rate    => 0,
-          :reservation_subsidy => 0,
-          :reservation_mins    => 15,
-          :overage_rate        => 15.50,
-          :overage_subsidy     => 0,
-          :overage_mins        => 15,
-          :minimum_cost        => nil,
-          :cancellation_cost   => nil,
-          :restrict_purchase   => false,
-          :price_group         => @price_group,
-        ]
-      pp = @instrument.instrument_price_policies.create!(options)
+      pp = @instrument.instrument_price_policies.create!(ipp_attributes(:overage_rate => 15.50))
       
       # 1 hour (4 intervals)
       start_dt = Time.zone.parse("#{Date.today + 1.day} 9:00")
@@ -199,22 +167,11 @@ describe InstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with reservation cost" do
-      options = Hash[
-          :start_date          => Date.today,
-          :usage_rate          => 0,
-          :usage_subsidy       => 0,
-          :usage_mins          => 15,
-          :reservation_rate    => 10.75,
-          :reservation_subsidy => 0,
-          :reservation_mins    => 15,
-          :overage_rate        => 0,
-          :overage_subsidy     => 0,
-          :overage_mins        => 15,
-          :minimum_cost        => nil,
-          :cancellation_cost   => nil,
-          :restrict_purchase   => false,
-          :price_group         => @price_group,
-        ]
+      options = ipp_attributes({
+        :usage_rate          => 0,
+        :reservation_rate    => 10.75
+      })
+
       pp = @instrument.instrument_price_policies.create!(options)
     
       # 1 hour (4 intervals)
@@ -240,22 +197,12 @@ describe InstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with reservation cost and subsidy" do
-      options = Hash[
-          :start_date          => Date.today,
-          :usage_rate          => 0,
-          :usage_subsidy       => 0,
-          :usage_mins          => 15,
-          :reservation_rate    => 10.75,
-          :reservation_subsidy => 1.75,
-          :reservation_mins    => 15,
-          :overage_rate        => 0,
-          :overage_subsidy     => 0,
-          :overage_mins        => 15,
-          :minimum_cost        => nil,
-          :cancellation_cost   => nil,
-          :restrict_purchase   => false,
-          :price_group         => @price_group,
-        ]
+      options = ipp_attributes({
+        :usage_rate          => 0,
+        :reservation_rate    => 10.75,
+        :reservation_subsidy => 1.75
+      })
+
       pp = @instrument.instrument_price_policies.create!(options)
       
       # 1 hour (4 intervals)
@@ -281,22 +228,11 @@ describe InstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with usage and reservation cost" do
-      options = Hash[
-          :start_date          => Date.today,
-          :usage_rate          => 5,
-          :usage_subsidy       => 0,
-          :usage_mins          => 15,
-          :reservation_rate    => 5.75,
-          :reservation_subsidy => 0,
-          :reservation_mins    => 15,
-          :overage_rate        => 0,
-          :overage_subsidy     => 0,
-          :overage_mins        => 15,
-          :minimum_cost        => nil,
-          :cancellation_cost   => nil,
-          :restrict_purchase   => false,
-          :price_group         => @price_group,
-        ]
+      options = ipp_attributes({
+        :usage_rate          => 5,
+        :reservation_rate    => 5.75
+      })
+
       pp = @instrument.instrument_price_policies.create!(options)
     
       # 1 hour (4 intervals)
@@ -322,22 +258,13 @@ describe InstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with usage and reservation cost and subsidy" do
-      options = Hash[
-          :start_date          => Date.today,
-          :usage_rate          => 5,
-          :usage_subsidy       => 0.5,
-          :usage_mins          => 15,
-          :reservation_rate    => 5.75,
-          :reservation_subsidy => 0.75,
-          :reservation_mins    => 15,
-          :overage_rate        => 0,
-          :overage_subsidy     => 0,
-          :overage_mins        => 15,
-          :minimum_cost        => nil,
-          :cancellation_cost   => nil,
-          :restrict_purchase   => false,
-          :price_group         => @price_group,
-        ]
+      options = ipp_attributes({
+        :usage_rate          => 5,
+        :usage_subsidy       => 0.5,
+        :reservation_rate    => 5.75,
+        :reservation_subsidy => 0.75
+      })
+
       pp = @instrument.instrument_price_policies.create!(options)
     
       # 1 hour (4 intervals)
@@ -365,23 +292,7 @@ describe InstrumentPricePolicy do
     it "should correctly estimate cost across schedule rules" do
       # create adjacent schedule rule
       @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :duration_mins => 30))
-      options = Hash[
-          :start_date          => Date.today,
-          :usage_rate          => 10.75,
-          :usage_subsidy       => 0,
-          :usage_mins          => 15,
-          :reservation_rate    => 0,
-          :reservation_subsidy => 0,
-          :reservation_mins    => 15,
-          :overage_rate        => 0,
-          :overage_subsidy     => 0,
-          :overage_mins        => 15,
-          :minimum_cost        => nil,
-          :cancellation_cost   => nil,
-          :restrict_purchase   => false,
-          :price_group         => @price_group,
-        ]
-      pp = @instrument.instrument_price_policies.create!(options)
+      pp = @instrument.instrument_price_policies.create!(ipp_attributes)
     
       # 2 hour (8 intervals)
       start_dt = Time.zone.parse("#{Date.today + 1.day} #{@rule.end_hour - 1}:00")
@@ -394,23 +305,7 @@ describe InstrumentPricePolicy do
     it "should correctly estimate cost for a schedule rule with a discount" do
       # create discount schedule rule
       @discount_rule = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :duration_mins => 30, :discount_percent => 50))
-      options = Hash[
-          :start_date          => Date.today,
-          :usage_rate          => 10.75,
-          :usage_subsidy       => 0,
-          :usage_mins          => 15,
-          :reservation_rate    => 0,
-          :reservation_subsidy => 0,
-          :reservation_mins    => 15,
-          :overage_rate        => 0,
-          :overage_subsidy     => 0,
-          :overage_mins        => 15,
-          :minimum_cost        => nil,
-          :cancellation_cost   => nil,
-          :restrict_purchase   => false,
-          :price_group         => @price_group,
-        ]
-      pp = @instrument.instrument_price_policies.create!(options)
+      pp = @instrument.instrument_price_policies.create!(ipp_attributes)
     
       # 1 hour (4 intervals)
       start_dt = Time.zone.parse("#{Date.today + 1.day} #{@discount_rule.start_hour}:00")
@@ -423,23 +318,7 @@ describe InstrumentPricePolicy do
     it "should correctly estimate cost across schedule rules with discounts" do
       # create discount schedule rule
       @discount_rule = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :duration_mins => 30, :discount_percent => 50))
-      options = Hash[
-          :start_date          => Date.today,
-          :usage_rate          => 10.75,
-          :usage_subsidy       => 0,
-          :usage_mins          => 15,
-          :reservation_rate    => 0,
-          :reservation_subsidy => 0,
-          :reservation_mins    => 15,
-          :overage_rate        => 0,
-          :overage_subsidy     => 0,
-          :overage_mins        => 15,
-          :minimum_cost        => nil,
-          :cancellation_cost   => nil,
-          :restrict_purchase   => false,
-          :price_group         => @price_group,
-        ]
-      pp = @instrument.instrument_price_policies.create!(options)
+      pp = @instrument.instrument_price_policies.create!(ipp_attributes)
     
       # 2 hour (8 intervals); half of the time, 50% discount
       start_dt = Time.zone.parse("#{Date.today + 1.day} #{@rule.end_hour - 1}:00")
@@ -450,23 +329,7 @@ describe InstrumentPricePolicy do
     end
 
     it "should return nil if the start date is outside of the reservation window" do
-      options = Hash[
-          :start_date          => Date.today,
-          :usage_rate          => 10.75,
-          :usage_subsidy       => 0,
-          :usage_mins          => 15,
-          :reservation_rate    => 0,
-          :reservation_subsidy => 0,
-          :reservation_mins    => 15,
-          :overage_rate        => 0,
-          :overage_subsidy     => 0,
-          :overage_mins        => 15,
-          :minimum_cost        => nil,
-          :cancellation_cost   => nil,
-          :restrict_purchase   => false,
-          :price_group         => @price_group,
-        ]
-      pp = @instrument.instrument_price_policies.create!(options)
+      pp = @instrument.instrument_price_policies.create!(ipp_attributes)
       assert @price_group_product.save
 
       start_dt = Time.zone.parse("#{Date.today + 2.day} 9:00")
@@ -481,24 +344,7 @@ describe InstrumentPricePolicy do
     end
     
     it "should return nil if the end time is earlier than the start time" do
-      options = Hash[
-          :start_date          => Date.today,
-          :usage_rate          => 10.75,
-          :usage_subsidy       => 0,
-          :usage_mins          => 15,
-          :reservation_rate    => 0,
-          :reservation_subsidy => 0,
-          :reservation_mins    => 15,
-          :overage_rate        => 0,
-          :overage_subsidy     => 0,
-          :overage_mins        => 15,
-          :minimum_cost        => nil,
-          :cancellation_cost   => nil,
-          :restrict_purchase   => false,
-          :price_group         => @price_group,
-        ]
-      pp = @instrument.instrument_price_policies.create!(options)
-
+      pp = @instrument.instrument_price_policies.create!(ipp_attributes)
       start_dt = Time.zone.parse("#{Date.today + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.today + 1.day} 9:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
@@ -508,9 +354,10 @@ describe InstrumentPricePolicy do
     it "should return nil for cost if purchase is restricted" do
       options = Hash[
           :start_date          => Date.today,
-          :restrict_purchase   => true,
           :price_group         => @price_group,
         ]
+
+      @price_group_product.destroy
       pp = @instrument.instrument_price_policies.create!(options)
 
       start_dt = Time.zone.parse("#{Date.today + 1.day} 10:00")
@@ -534,23 +381,7 @@ describe InstrumentPricePolicy do
       @instrument       = @facility.instruments.create!(Factory.attributes_for(:instrument, :facility_account => @facility_account))
       @price_group_product=Factory.create(:price_group_product, :price_group => @price_group, :product => @instrument)
       @rule             = @instrument.schedule_rules.create!(Factory.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24, :duration_mins => 30))
-      options           = Hash[
-          :start_date          => Date.today,
-          :usage_rate          => 10.75,
-          :usage_subsidy       => 0,
-          :usage_mins          => 15,
-          :reservation_rate    => 0,
-          :reservation_subsidy => 0,
-          :reservation_mins    => 15,
-          :overage_rate        => 0,
-          :overage_subsidy     => 0,
-          :overage_mins        => 15,
-          :minimum_cost        => nil,
-          :cancellation_cost   => nil,
-          :restrict_purchase   => false,
-          :price_group         => @price_group,
-        ]
-      @pp = @instrument.instrument_price_policies.create!(options)
+      @pp = @instrument.instrument_price_policies.create!(ipp_attributes)
     end
   
     it "should correctly estimate cost across multiple days" do
@@ -570,6 +401,27 @@ describe InstrumentPricePolicy do
       costs[:cost].should    == 10.75 * 16
       costs[:subsidy].should == 0
     end
+  end
+
+
+  def ipp_attributes(overrides={})
+    attrs={
+      :start_date          => Date.today,
+      :usage_rate          => 10.75,
+      :usage_subsidy       => 0,
+      :usage_mins          => 15,
+      :reservation_rate    => 0,
+      :reservation_subsidy => 0,
+      :reservation_mins    => 15,
+      :overage_rate        => 0,
+      :overage_subsidy     => 0,
+      :overage_mins        => 15,
+      :minimum_cost        => nil,
+      :cancellation_cost   => nil,
+      :price_group         => @price_group,
+    }
+
+    attrs.merge(overrides)
   end
   
   context "actual cost calculation tests" do

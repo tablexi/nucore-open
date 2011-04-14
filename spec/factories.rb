@@ -108,7 +108,6 @@ Factory.define :instrument_price_policy, :class => InstrumentPricePolicy do |o|
   o.usage_mins 1
   o.overage_mins 1
   o.start_date Time.zone.now.beginning_of_day
-  o.restrict_purchase false
 end
 
 Factory.define :item, :class => Item do |o|
@@ -126,7 +125,6 @@ Factory.define :item_price_policy, :class => ItemPricePolicy do |o|
   o.unit_cost 1
   o.unit_subsidy 0
   o.start_date Date.today
-  o.restrict_purchase false
 end
 
 Factory.define :service, :class => Service do |o|
@@ -155,7 +153,6 @@ Factory.define :service_price_policy, :class => ServicePricePolicy do |o|
   o.unit_cost 1
   o.unit_subsidy 0
   o.start_date Date.today
-  o.restrict_purchase false
 end
 
 Factory.define :schedule_rule, :class => ScheduleRule do |o|
