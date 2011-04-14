@@ -1,6 +1,8 @@
 class AlterPricePoliciesPopulatePriceGroupsProducts < ActiveRecord::Migration
   def self.up
     PricePolicy.all.each do |policy|
+      next if policy.restrict_purchase?
+
       attrs={ :price_group => policy.price_group }
 
       if policy.is_a? ItemPricePolicy
@@ -9,26 +11,36 @@ class AlterPricePoliciesPopulatePriceGroupsProducts < ActiveRecord::Migration
         attrs.merge!(:product => policy.service)
       elsif policy.is_a? InstrumentPricePolicy
         attrs.merge!(:product => policy.instrument)
-        attrs.merge!(:reservation_window => policy.reservation_window)
+        attrs.merge!(:reservation_window => policy[:reservation_window])
       end
 
       PriceGroupProduct.create!(attrs)
     end
 
     remove_column(:price_policies, :reservation_window)
+    remove_column(:price_policies, :restrict_purchase)
   end
 
 
   def self.down
-    add_column(:price_policies, :reservation_window, :integer)
+    #add_column(:price_policies, :reservation_window, :integer)
+    #add_column(:price_policies, :restrict_purchase, :boolean)
     PricePolicy.reset_column_information
 
-    PriceGroupProduct.all.each do |pgp|
-      next unless pgp.product.is_a? Instrument
-      policy=PricePolicy.find_by_instrument_id_and_price_group_id(pgp.product.id, pgp.price_group.id)
-      policy.reservation_window=pgp.reservation_window
+    PricePolicy.all.each do |policy|
+      product=case policy
+                when ItemPricePolicy then policy.item
+                when ServicePricePolicy then policy.service
+                when InstrumentPricePolicy then policy.instrument
+              end
+
+      pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, product.id)
+
+      policy.restrict_purchase=pgp.nil?
+      policy.reservation_window=pgp.reservation_window if pgp and product.is_a? Instrument
       policy.save!
-      pgp.destroy
-    end
+
+      pgp.destroy if pgp
+    end        
   end
 end

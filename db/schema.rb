@@ -364,7 +364,6 @@ ActiveRecord::Schema.define(:version => 20110412174924) do
     t.decimal  "usage_subsidy",                     :precision => 10, :scale => 2
     t.decimal  "reservation_subsidy",               :precision => 10, :scale => 2
     t.decimal  "overage_subsidy",                   :precision => 10, :scale => 2
-    t.boolean  "restrict_purchase",                 :precision => 1,  :scale => 0, :null => false
   end
 
   create_table "product_users", :force => true do |t|
