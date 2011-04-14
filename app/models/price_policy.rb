@@ -2,7 +2,6 @@ class PricePolicy < ActiveRecord::Base
 
   belongs_to :price_group
   validates_presence_of :start_date, :price_group_id, :type
-  validates_inclusion_of :restrict_purchase, :in => [true, false, 0, 1]
   validate :start_date_is_unique, :unless => lambda { |o| o.start_date.nil? }
 
   named_scope :active, lambda {{ :conditions => [ "start_date <= ?", Time.zone.now ], :order => "start_date DESC" }}
@@ -23,6 +22,46 @@ class PricePolicy < ActiveRecord::Base
   end
 
 
+  #
+  # All subclasses +belong_to+ a +Product+ and have their own
+  # unique accessors for that product. That association should
+  # be made in this class, but it isn't. This method provides
+  # general access to a subclass' product
+  def product
+    raise "subclass must implement!"
+  end
+
+
+  #
+  # Returns true if this PricePolicy's +Product+ cannot be purchased
+  # by this PricePolicy's +PriceGroup+, false otherwise.
+  def restrict_purchase
+    return false unless price_group and product
+    PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id).nil?
+  end
+
+  alias_method :restrict_purchase?, :restrict_purchase
+
+
+  #
+  # Dis/allows the purchase of this PricePolicy's +Product+ by this
+  # PricePolicy's +PriceGroup+.
+  # [_state_]
+  #   true or 1 if #product should not be purchaseable by #price_group
+  #   false or 0 if #product should be purchaseable by #price_group
+  def restrict_purchase=(state)
+    case state
+      when false, 0
+        PriceGroupProduct.create!(:price_group => price_group, :product => product)
+      when true, 1
+        pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
+        pgp.destroy if pgp
+      else
+        raise ArgumentError.new('state must be true, false, 0, or 1')
+    end
+  end
+
+  
   #
   # Returns true if this +PricePolicy+ is assigned
   # to any order, false otherwise
