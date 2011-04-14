@@ -44,4 +44,8 @@ class ItemPricePolicy < PricePolicy
   def unit_total
     unit_cost - unit_subsidy
   end
+
+  def product
+    return item
+  end
 end

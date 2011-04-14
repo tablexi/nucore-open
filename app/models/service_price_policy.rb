@@ -44,4 +44,8 @@ class ServicePricePolicy < PricePolicy
   def unit_total
     unit_cost - unit_subsidy
   end
+
+  def product
+    return service
+  end
 end
