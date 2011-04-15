@@ -18,9 +18,9 @@
   %tr
     %th Product
     %th Quantity
-    %th Price
-    %th Adjustment
-    %th Total
+    %th Estimated Price
+    %th Estimated Adjustment
+    %th Estimated Total
   - @order.order_details.each do |od|
     %tr
       - if od.reservation
@@ -31,8 +31,8 @@
       - else
         %td=h od.product.name
       %td=h od.quantity
-      %td=h number_to_currency od.cost
-      %td=h number_to_currency od.subsidy
-      %td=h number_to_currency od.total
+      %td=h number_to_currency od.estimated_cost
+      %td=h number_to_currency od.estimated_subsidy
+      %td=h number_to_currency od.estimated_total
 
-%p * Instrument prices are an estimate.  Actual cost may vary based on time used.
+%p All prices are estimates. Actual cost is assigned when the order is complete.

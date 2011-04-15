@@ -29,10 +29,10 @@
         %th
         %th== Product
         %th.centered== Quantity
-        %th.currency== Cost
+        %th.currency== Estimated Cost
         - if @order.has_subsidies?
-          %th.currency== Adjustment
-        %th.currency== Extended Cost
+          %th.currency== Estimated Adjustment
+        %th.currency== Estimated Extended Cost
 
       - prev_group_id = nil
       - @order.order_details.find(:all, :order => :group_id).each do |order_detail|
@@ -40,15 +40,16 @@
         - prev_group_id = order_detail.group_id
       %tr
         %td.currency{:colspan => "3"}
-          %b Totals
+          %b Estimated Totals
         %td.currency
-          %b= number_to_currency @order.cost
+          %b= number_to_currency @order.estimated_cost
         - if @order.has_subsidies?
           %td.currency
-            %b= number_to_currency @order.subsidy
+            %b= number_to_currency @order.estimated_subsidy
         %td.currency
-          %b= number_to_currency @order.total
+          %b= number_to_currency @order.estimated_total
 
+    %p.footnote All prices are estimates. Actual cost is assigned when the order is complete.
     - if @order.instrument_order_details.count > 0
       %p.footnote * Instrument pricing is estimated; the final price may vary based on actual time used.
     - if @order.order_details.size > 0

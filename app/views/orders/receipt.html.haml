@@ -30,11 +30,10 @@
   %tr
     %th.centered Order #
     %th{:colspan => 2} Quantity/Product
-    %th.currency Cost
+    %th.currency Estimated Cost
     - if @order.has_subsidies?
-      %th.currency Adjustment
-    %th.currency Total
-  - estimate = false
+      %th.currency Estimated Adjustment
+    %th.currency Estimated Total
   - @order.order_details.each do |order_detail|
     %tr
       - res = order_detail.reservation
@@ -45,17 +44,9 @@
           %li= (order_detail.bundle ? "#{h order_detail.bundle} &mdash; " : '') + h(order_detail.product)
           - if res
             %li.indented= res
-      - if order_detail.actual_cost && order_detail.actual_subsidy
-        %td.currency=h number_to_currency order_detail.actual_cost
-        - if @order.has_subsidies?
-          %td.currency=h number_to_currency order_detail.actual_subsidy
-        %td.currency=h number_to_currency order_detail.actual_total
-      - else
-        - estimate = true
         %td.currency=h number_to_currency order_detail.estimated_cost
         - if @order.has_subsidies?
           %td.currency=h number_to_currency order_detail.estimated_subsidy
         %td.currency=h number_to_currency order_detail.estimated_total
 
-- if estimate
-  %p.footnote * Instrument pricing is estimated; the final price may vary based on actual time used.
+%p.footnote All prices are estimates. Actual cost is assigned when the order is complete.
