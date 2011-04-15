@@ -83,6 +83,13 @@ class PricePolicy < ActiveRecord::Base
       errors.add("start_date", "conflicts with an existing price rule") unless pp.nil?
     end
   end
+
+
+  def before_create
+    exp_date=Date.strptime("#{start_date.year}-8-31")
+    exp_date=Date.strptime("#{start_date.year+1}-8-31") if exp_date <= Time.zone.now.to_date
+    self.expire_date=exp_date
+  end
   
 #  def self.active(product)
 #    policies = product.send("#{product.class.name.downcase}_price_policies")
