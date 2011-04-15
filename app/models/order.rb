@@ -34,6 +34,10 @@ class Order < ActiveRecord::Base
     transitions :to => :new, :from => [:new, :validated], :guard => :clear_cart?
   end
 
+  [ :total, :cost, :subsidy, :estimated_total, :estimated_cost, :estimated_subsidy ].each do |method_name|
+    define_method(method_name) { total_cost method_name }
+  end
+
   def cart_valid?
     has_details? && has_valid_payment? && order_details.all? {|od| od.valid_for_purchase?}
   end
@@ -47,30 +51,6 @@ class Order < ActiveRecord::Base
 
   def has_details?
     self.order_details.count > 0
-  end
-
-  def total
-    total = 0
-    order_details.each { |od|
-      total += od.total unless od.total.nil?
-    }
-    total
-  end
-  
-  def cost
-    cost = 0
-    order_details.each { |od|
-      cost += od.cost unless od.cost.nil?
-    }
-    cost
-  end
-  
-  def subsidy
-    subsidy = 0
-    order_details.each { |od|
-      subsidy += od.subsidy unless od.subsidy.nil?
-    }
-    subsidy
   end
 
   def clear_cart?
@@ -166,5 +146,17 @@ class Order < ActiveRecord::Base
 
   def has_subsidies?
     order_details.any?{|od| od.has_subsidies?}
+  end
+
+
+  private
+
+  def total_cost(order_detail_method)
+    cost = 0
+    order_details.each { |od|
+      od_cost=od.method(order_detail_method.to_sym).call
+      cost += od_cost if od_cost
+    }
+    cost
   end
 end

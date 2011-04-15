@@ -21,6 +21,77 @@ describe Order do
     @order.new?.should be true
   end
 
+
+  context 'total cost' do
+
+    before :each do
+      @facility       = Factory.create(:facility)
+      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
+      @user           = Factory.create(:user)
+      @account        = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      @order          = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id))
+      @item           = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+    end
+
+    context 'actual' do
+      before :each do
+        @cost=@subsidy=0
+
+        (1..4).each do |i|
+          cost, subsidy=10 * i, 5 * i
+          @cost += cost
+          @subsidy += subsidy
+          @order.order_details.create(
+            Factory.attributes_for(
+              :order_detail,
+              :product_id => @item.id,
+              :account_id => @account.id,
+              :actual_cost => cost,
+              :actual_subsidy => subsidy
+            )
+          )
+        end
+
+        @total=@cost-@subsidy
+      end
+
+      [ :total, :subsidy, :cost ].each do |method_name|
+        it "should have equal #{method_name}" do
+          @order.method(method_name).call.should == instance_variable_get("@#{method_name}".to_sym)
+        end
+      end
+    end
+
+    context 'estimated' do
+      before :each do
+        @estimated_cost=@estimated_subsidy=0
+
+        (1..4).each do |i|
+          cost, subsidy=10 * i, 5 * i
+          @estimated_cost += cost
+          @estimated_subsidy += subsidy
+          @order.order_details.create(
+            Factory.attributes_for(
+              :order_detail,
+              :product_id => @item.id,
+              :account_id => @account.id,
+              :estimated_cost => cost,
+              :estimated_subsidy => subsidy
+            )
+          )
+        end
+
+        @estimated_total=@estimated_cost-@estimated_subsidy
+      end
+
+      [ :estimated_total, :estimated_subsidy, :estimated_cost ].each do |method_name|
+        it "should have equal #{method_name}" do
+          @order.method(method_name).call.should == instance_variable_get("@#{method_name}".to_sym)
+        end
+      end
+    end
+  end
+
   context 'invalidate_order state transition' do
     ## TODO decide what tests need to go here
   end
