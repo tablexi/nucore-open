@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110412174924) do
+ActiveRecord::Schema.define(:version => 20110415224140) do
 
   create_table "account_transactions", :force => true do |t|
     t.integer  "account_id",                        :precision => 38, :scale => 0, :null => false
@@ -364,6 +364,7 @@ ActiveRecord::Schema.define(:version => 20110412174924) do
     t.decimal  "usage_subsidy",                     :precision => 10, :scale => 2
     t.decimal  "reservation_subsidy",               :precision => 10, :scale => 2
     t.decimal  "overage_subsidy",                   :precision => 10, :scale => 2
+    t.datetime "expire_date",                                                      :null => false
   end
 
   create_table "product_users", :force => true do |t|

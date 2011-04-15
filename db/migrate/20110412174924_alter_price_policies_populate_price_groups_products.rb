@@ -19,12 +19,22 @@ class AlterPricePoliciesPopulatePriceGroupsProducts < ActiveRecord::Migration
 
     remove_column(:price_policies, :reservation_window)
     remove_column(:price_policies, :restrict_purchase)
+    add_column(:price_policies, :expire_date, :datetime)
+    PricePolicy.reset_column_information
+
+    PricePolicy.all.each do |pp|
+      start_date=pp.start_date
+      expire_date=Date.strptime("#{start_date.year}-8-31")
+      expire_date=Date.strptime("#{start_date.year+1}-8-31") if expire_date <= Time.zone.now.to_date
+      pp.expire_date=expire_date
+      pp.save!
+    end
   end
 
-
   def self.down
-    #add_column(:price_policies, :reservation_window, :integer)
-    #add_column(:price_policies, :restrict_purchase, :boolean)
+    remove_column(:price_policies, :expire_date)
+    add_column(:price_policies, :reservation_window, :integer)
+    add_column(:price_policies, :restrict_purchase, :boolean)
     PricePolicy.reset_column_information
 
     PricePolicy.all.each do |policy|
