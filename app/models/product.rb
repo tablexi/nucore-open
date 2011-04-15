@@ -60,4 +60,10 @@ class Product < ActiveRecord::Base
   def to_s_with_status
     (name || '') + (is_archived? ? ' (inactive)' : '')
   end
+
+  def after_create
+    [ PriceGroup.northwestern.first, PriceGroup.external.first ].each do |pg|
+      PriceGroupProduct.create!(:product => self, :price_group => pg)
+    end
+  end
 end
