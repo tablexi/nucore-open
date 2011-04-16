@@ -75,6 +75,7 @@ ActionController::Routing::Routes.draw do |map|
 
     facility.resources :users, :except => [:edit, :update], :collection => {:username_search => :post, :new_search => :get} do |user|
       user.switch_to '/switch_to', :controller => 'users', :action => 'switch_to', :conditions => {:method => :get}
+      user.orders    'orders',   :controller => 'users', :action => 'orders'
     end
 
     facility.resources :facility_accounts, :controller => 'facility_facility_accounts', :only => [:index, :new, :create, :edit, :update]
