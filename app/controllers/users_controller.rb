@@ -80,7 +80,9 @@ class UsersController < ApplicationController
   def accounts
   end
 
+  # GET /facilities/:facility_id/users/:id
   def show
+    @user = User.find(params[:id])
   end
   
   def email
