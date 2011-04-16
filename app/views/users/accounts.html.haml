@@ -1,0 +1,14 @@
+- content_for :h1 do
+  =h current_facility
+
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'users' }
+  
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_users', :locals => { :secondary_tab => 'accounts' }
+  
+%h1 #{@user.full_name} Payment Sources
+- if @user.accounts.empty?
+  %p.notice #{@user.full_name} does not have any payment sources.
+- else
+  =render :partial => 'shared/accounts_table', :locals => { :facilities => [@current_facility] }

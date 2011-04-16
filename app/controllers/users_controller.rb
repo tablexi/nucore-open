@@ -81,7 +81,11 @@ class UsersController < ApplicationController
     @order_details = @user.order_details.find(:all, :conditions => "orders.facility_id = #{@current_facility.id} AND orders.ordered_at IS NOT NULL", :order => 'orders.ordered_at DESC').paginate(:page => params[:page])
   end
 
+  # GET /facilities/:facility_id/users/:user_id/accounts
   def accounts
+    @user = User.find(params[:user_id])
+    # accounts for this facility
+    @account_users = @user.account_users.active
   end
 
   # GET /facilities/:facility_id/users/:id
