@@ -2,7 +2,7 @@ class Notifier < ActionMailer::Base
   # Welcome user, login credentials.  CC to PI and Department Admin.
   # Who created the account.  How to update.
   def new_user(args)
-    subject      'Welcome to NUCore'
+    subject      'Welcome to NU Core'
     recipients   (TEST_EMAIL_ONLY ? TEST_EMAIL : args[:user].email)
     from         FROM_EMAIL
     sent_on      Time.zone.now
@@ -21,7 +21,7 @@ class Notifier < ActionMailer::Base
   # out to the PI, Departmental Administrators, and that particular
   # account's administrator(s)
   def new_account(args)
-    subject      'NUCore New Payment Method'
+    subject      'NU Core New Payment Method'
     recipients   (TEST_EMAIL_ONLY ? TEST_EMAIL : args[:user].email)
     from         FROM_EMAIL
     sent_on      Time.zone.now
@@ -39,7 +39,7 @@ class Notifier < ActionMailer::Base
   # Changes to the user affecting the PI or department will alert their
   # PI, the Dept Admins, and Lab Manager.
   def user_update(user)
-    subject      'NUCore User Updated'
+    subject      'NU Core User Updated'
     recipients   (TEST_EMAIL_ONLY ? TEST_EMAIL : args[:user].email)
     from         FROM_EMAIL
     sent_on      Time.zone.now
@@ -58,7 +58,7 @@ class Notifier < ActionMailer::Base
   # when it is not them making the change. Adding someone to any role of a
   # financial account as well. Roles: Order, Admin, PI.
   def account_update(args)
-    subject      'NUCore Payment Method Updated'
+    subject      'NU Core Payment Method Updated'
     recipients   (TEST_EMAIL_ONLY ? TEST_EMAIL : args[:user].email)
     from         FROM_EMAIL
     sent_on      Time.zone.now
@@ -76,7 +76,7 @@ class Notifier < ActionMailer::Base
   # Custom order forms send out a confirmation email when filled out by a
   # customer. Customer gets one along with PI/Admin/Lab Manager.
   def order_receipt(args)
-    subject      'NUCore Order Receipt'
+    subject      'NU Core Order Receipt'
     recipients   (TEST_EMAIL_ONLY ? TEST_EMAIL : args[:user].email)
     from         FROM_EMAIL
     sent_on      Time.zone.now
@@ -95,7 +95,7 @@ class Notifier < ActionMailer::Base
   # their version of usage.
   # args = :user, :account, :facility
   def statement(args)
-    subject      'NUCore Statement'
+    subject      'NU Core Statement'
     recipients   (TEST_EMAIL_ONLY ? TEST_EMAIL : args[:user].email)
     from         FROM_EMAIL
     sent_on      Time.zone.now
