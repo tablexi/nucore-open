@@ -86,6 +86,7 @@ class PricePolicy < ActiveRecord::Base
 
 
   def before_create
+    return if expire_date
     exp_date=Date.strptime("#{start_date.year}-8-31")
     exp_date=Date.strptime("#{start_date.year+1}-8-31") if exp_date <= Time.zone.now.to_date
     self.expire_date=exp_date

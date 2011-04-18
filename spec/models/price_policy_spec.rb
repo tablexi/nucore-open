@@ -30,6 +30,14 @@ describe PricePolicy do
   end
 
 
+  it "should not set default expire_date if one is given" do
+    start_date=Date.strptime("2020-5-5")
+    pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id, :start_date => start_date, :expire_date => start_date)
+    pp.expire_date.should_not be_nil
+    pp.expire_date.to_date.should == start_date
+  end
+
+
   context 'restrict purchase' do
 
     before :each do
