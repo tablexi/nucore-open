@@ -20,7 +20,7 @@
     %li
       = f.label :role, 'User Role', :class => 'require'
       %p.instruction Select the facility role for this user
-      = f.select :role, options_for_select(UserRole.facility_roles.unshift(['','']))
+      = f.select :role, options_for_select(UserRole.facility_roles, {:selected => UserRole::FACILITY_STAFF.to_s})
   %ul.horiz
     %li= f.submit 'Create', :class => 'btn'
     %li= link_to 'Cancel', facility_facility_users_path
