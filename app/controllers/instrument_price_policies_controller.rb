@@ -1,3 +1,4 @@
+# TODO: abstract the common logic in this and other *PricePoliciesController into a super class
 class InstrumentPricePoliciesController < ApplicationController
   admin_tab     :all
   before_filter :authenticate_user!
