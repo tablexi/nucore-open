@@ -102,7 +102,7 @@ class PricePolicy < ActiveRecord::Base
   def self.generate_expire_date(price_policy_or_date)
     start_date=price_policy_or_date.is_a?(PricePolicy) ? price_policy_or_date.start_date : price_policy_or_date
     exp_date=Time.zone.parse("#{start_date.year}-8-31")
-    exp_date=Tme.zone.parse("#{start_date.year+1}-8-31") if exp_date <= Time.zone.now
+    exp_date=Time.zone.parse("#{start_date.year+1}-8-31") if exp_date <= Time.zone.now
     return exp_date
   end
 
