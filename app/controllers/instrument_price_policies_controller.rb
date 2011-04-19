@@ -29,7 +29,9 @@ class InstrumentPricePoliciesController < ApplicationController
   # GET /price_policies/new
   def new
     @price_groups   = current_facility.price_groups
-    @start_date     = (Date.today + (@instrument.price_policies.first.nil? ? 0 : 1)).strftime("%m/%d/%Y")
+    start_date     = Date.today + (@instrument.price_policies.first.nil? ? 0 : 1)
+    @expire_date    = PricePolicy.generate_expire_date(start_date).strftime("%m/%d/%Y")
+    @start_date=start_date.strftime("%m/%d/%Y")
     @price_policies = @price_groups.map{ |pg| InstrumentPricePolicy.new({:price_group_id => pg.id, :instrument_id => @instrument.id, :start_date => @start_date, :usage_mins => 15 }) }
   end
 
@@ -40,6 +42,7 @@ class InstrumentPricePoliciesController < ApplicationController
     @price_policies = InstrumentPricePolicy.for_date(@instrument, @start_date)
     @price_policies.delete_if{|pp| pp.assigned_to_order? }
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
+    @expire_date=@price_policies.first.expire_date.to_date
   end
 
   # POST /price_policies
@@ -47,11 +50,13 @@ class InstrumentPricePoliciesController < ApplicationController
     @price_groups = current_facility.price_groups
     @interval     = params[:interval].to_i
     @start_date   = params[:start_date]
+    @expire_date   = params[:expire_date]
     @price_policies = @price_groups.map do |price_group|
       price_policy = InstrumentPricePolicy.new(params["instrument_price_policy#{price_group.id}"].reject {|k,v| k == 'restrict_purchase' })
       price_policy.price_group       = price_group
       price_policy.instrument        = @instrument
       price_policy.start_date        = Time.zone.parse(@start_date)
+      price_policy.expire_date       = Time.zone.parse(@expire_date)
       price_policy.usage_mins        = @interval
       price_policy.reservation_mins  = @interval
       price_policy.overage_mins      = @interval
@@ -75,10 +80,12 @@ class InstrumentPricePoliciesController < ApplicationController
   def update
     @price_groups   = current_facility.price_groups
     @start_date     = start_date_from_params
+    @expire_date    = params[:expire_date]
     @price_policies = InstrumentPricePolicy.for_date(@instrument, @start_date)
     @price_policies.each { |price_policy|
       price_policy.attributes = params["instrument_price_policy#{price_policy.price_group.id}"].reject {|k,v| k == 'restrict_purchase' }
-      price_policy.start_date = Time.zone.parse(params[:start_date])
+      price_policy.start_date = Time.zone.parse(@start_date.to_s)
+      price_policy.expire_date = Time.zone.parse(@expire_date) unless @expire_date.blank?
       price_policy.restrict_purchase = params["instrument_price_policy#{price_policy.price_group.id}"]['restrict_purchase'] && params["instrument_price_policy#{price_policy.price_group.id}"]['restrict_purchase'] == 'true' ? true : false
     }
 

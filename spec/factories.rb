@@ -108,6 +108,7 @@ Factory.define :instrument_price_policy, :class => InstrumentPricePolicy do |o|
   o.usage_mins 1
   o.overage_mins 1
   o.start_date Time.zone.now.beginning_of_day
+  o.expire_date Time.zone.now+1.month
 end
 
 Factory.define :item, :class => Item do |o|

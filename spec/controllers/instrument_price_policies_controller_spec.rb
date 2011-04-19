@@ -43,11 +43,14 @@ describe InstrumentPricePoliciesController do
     before :each do
       @method=:get
       @action=:new
-      @params.merge!(:start_date => (Time.zone.now+1.year).to_s)
     end
 
     it_should_allow_managers_only do
       assigns[:instrument].should == @instrument
+      assigns[:price_groups].should be_include @price_group
+      assigns[:start_date].should_not be_nil
+      assigns[:expire_date].should_not be_nil
+      assigns[:price_policies].should be_is_a Array
       response.should be_success
       response.should render_template('instrument_price_policies/new.html.haml')
     end
@@ -91,9 +94,13 @@ describe InstrumentPricePoliciesController do
   context 'policy params' do
 
     before :each do
+      @start_date=Time.zone.now+1.year
+      @expire_date=PricePolicy.generate_expire_date(@start_date)
+
       @params.merge!({
         :interval => 5,
-        :start_date => (Time.zone.now+1.year).to_s
+        :start_date => @start_date.to_s,
+        :expire_date => @expire_date.to_s
       })
 
       @authable.price_groups.each do |pg|
@@ -148,6 +155,12 @@ describe InstrumentPricePoliciesController do
 
   def set_policy_date
     @price_policy.start_date=Time.zone.now+1.year
+    @price_policy.expire_date=PricePolicy.generate_expire_date(@price_policy.start_date)
+
+    unless @price_policy.valid?
+      puts @price_policy.expire_date.to_s
+    end
+
     assert @price_policy.save
   end
 
