@@ -1,18 +1,5 @@
-class ServicePricePoliciesController < ApplicationController
-  admin_tab     :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_current_facility
-  before_filter :init_service
-
-  load_and_authorize_resource
-
-  layout 'two_column'
-  
-  def initialize
-    @active_tab = 'admin_products'
-    super
-  end
+# TODO: extract the common logic between here and the other *PricePoliciesController into super class
+class ServicePricePoliciesController < PricePoliciesController
 
   # GET /service_price_policies
   def index
@@ -28,29 +15,33 @@ class ServicePricePoliciesController < ApplicationController
   # GET /price_policies/new
   def new
     @price_groups = current_facility.price_groups
-    @start_date = (Date.today + (@service.price_policies.first.nil? ? 0 : 1)).strftime("%m/%d/%Y")
+    start_date     = Date.today + (@service.price_policies.first.nil? ? 0 : 1)
+    @expire_date    = PricePolicy.generate_expire_date(start_date).strftime("%m/%d/%Y")
+    @start_date=start_date.strftime("%m/%d/%Y")
     @price_policies = @price_groups.map{ |pg| ServicePricePolicy.new({:price_group_id => pg.id, :service_id => @service.id, :start_date => @start_date }) }
   end
 
   # GET /price_policies/1/edit
   def edit
     @price_groups = current_facility.price_groups
-    @start_date = Date.strptime(params[:id], "%Y-%m-%d")
-    raise ActiveRecord::RecordNotFound unless @start_date >= Date.today
+    @start_date = start_date_from_params
     @price_policies = ServicePricePolicy.for_date(@service, @start_date)
-
-    raise ActiveRecord::RecordNotFound unless @price_policies.count > 0
+    @price_policies.delete_if{|pp| pp.assigned_to_order? }
+    raise ActiveRecord::RecordNotFound if @price_policies.blank?
+    @expire_date=@price_policies.first.expire_date
   end
 
   # POST /price_policies
   def create
     @price_groups = current_facility.price_groups
     @start_date = params[:start_date]
+    @expire_date   = params[:expire_date]
     @price_policies = @price_groups.map do |price_group|
       price_policy = ServicePricePolicy.new(params["service_price_policy#{price_group.id}"].reject {|k,v| k == 'restrict_purchase' })
       price_policy.price_group = price_group
       price_policy.service = @service
       price_policy.start_date = Time.zone.parse(@start_date)
+      price_policy.expire_date = Time.zone.parse(@expire_date)
       price_policy.restrict_purchase = params["service_price_policy#{price_group.id}"]['restrict_purchase'] && params["service_price_policy#{price_group.id}"]['restrict_purchase'] == 'true' ? true : false
       price_policy
     end
@@ -70,11 +61,13 @@ class ServicePricePoliciesController < ApplicationController
   # PUT /price_policies/1
   def update
     @price_groups = current_facility.price_groups
-    @start_date = Date.strptime(params[:id], "%Y-%m-%d")
+    @start_date = start_date_from_params
+    @expire_date    = params[:expire_date]
     @price_policies = ServicePricePolicy.for_date(@service, @start_date)
     @price_policies.each { |price_policy|
       price_policy.attributes = params["service_price_policy#{price_policy.price_group.id}"].reject {|k,v| k == 'restrict_purchase' }
       price_policy.start_date = Time.zone.parse(params[:start_date])
+      price_policy.expire_date = Time.zone.parse(@expire_date) unless @expire_date.blank?
       price_policy.restrict_purchase = params["service_price_policy#{price_policy.price_group.id}"]['restrict_purchase'] && params["service_price_policy#{price_policy.price_group.id}"]['restrict_purchase'] == 'true' ? true : false
     }
 
@@ -93,7 +86,7 @@ class ServicePricePoliciesController < ApplicationController
   # DELETE /price_policies/2010-01-01
   def destroy
     @price_groups   = current_facility.price_groups
-    @start_date     = Date.strptime(params[:id], "%Y-%m-%d")
+    @start_date     = start_date_from_params
     raise ActiveRecord::RecordNotFound unless @start_date > Date.today
     @price_policies = ServicePricePolicy.for_date(@service, @start_date)
     raise ActiveRecord::RecordNotFound unless @price_policies.count > 0
@@ -111,7 +104,4 @@ class ServicePricePoliciesController < ApplicationController
     end
   end
 
-  def init_service
-    @service = current_facility.services.find_by_url_name!(params[:service_id])
-  end
 end
