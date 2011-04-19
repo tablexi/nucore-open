@@ -6,6 +6,16 @@ class PricePoliciesController < ApplicationController
   before_filter :init_product
   before_filter :init_price_policy, :except => [ :index, :new ]
 
+  load_and_authorize_resource
+
+  layout 'two_column'
+
+
+  def initialize
+    @active_tab = 'admin_products'
+    super
+  end
+
 
   private
 

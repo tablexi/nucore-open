@@ -1,13 +1,5 @@
-# TODO: abstract the common logic in this and other *PricePoliciesController into super class
+# TODO: extract the common logic between here and the other *PricePoliciesController into super class
 class InstrumentPricePoliciesController < PricePoliciesController
-  load_and_authorize_resource
-
-  layout 'two_column'
-  
-  def initialize
-    @active_tab = 'admin_products'
-    super
-  end
 
   # GET /price_policies
   def index
