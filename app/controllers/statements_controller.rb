@@ -3,6 +3,7 @@ class StatementsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_account
+  before_filter :init_statement, :except => :index
 
   load_and_authorize_resource
 
@@ -20,16 +21,13 @@ class StatementsController < ApplicationController
   # GET /accounts/:account_id/facilities/:facility_id/statements/:id
   def show
     @active_tab = 'accounts'
-    @facility   = Facility.find_by_url_name!(params[:facility_id])
-    @statements = @account.statements.final_for_facility(@facility).uniq
 
     if params[:id].to_s.downcase == 'recent'
       @account_txns   = @account.account_transactions.facility_recent(@facility)
-      @prev_statement = @statements.first
+      @prev_statement = @statement
       @new_payments   = @account.facility_recent_payment_balance(@facility) # includes credits
       @new_purchases  = @account.facility_recent_purchase_balance(@facility)
     else
-      @statement      = @account.statements.find(params[:id])
       @prev_statement = @account.statements.find(:first, :conditions => ['statements.created_at < ?', @statement.created_at], :order => 'statements.created_at DESC')
       @new_payments   = @account.statement_payment_balance(@statement) # includes credits
       @new_purchases  = @account.statement_purchase_balance(@statement)
@@ -46,17 +44,24 @@ class StatementsController < ApplicationController
 
   end
 
-  protected
-
-  def init_account
-    @account = session_user.accounts.find(params[:account_id])
-  end
-
 
   private
 
   def ability_resource
     return @account
+  end
+
+
+  def init_account
+    @account = session_user.accounts.find(params[:account_id])
+  end
+
+  #
+  # Override CanCan's find -- it won't properly search by 'recent'
+  def init_statement
+    @facility=Facility.find_by_url_name!(params[:facility_id])
+    @statements=@account.statements.final_for_facility(@facility).uniq
+    @statement=params[:id].to_s.downcase == 'recent' ? @statements.first : @account.statements.find(params[:id])
   end
 
 end
