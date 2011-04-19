@@ -22,19 +22,48 @@ describe PricePolicy do
   end
 
 
-  it "should set default expire_date" do
-    start_date=Date.strptime("2020-5-5")
-    pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id, :start_date => start_date)
-    pp.expire_date.should_not be_nil
-    pp.expire_date.to_date.should == Date.strptime("2020-8-31")
-  end
+  context 'expire date' do
+    before :each do
+      @start_date=Time.zone.parse("2020-5-5")
+    end
 
+    it "should set default expire_date" do
+      @pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id, :start_date => @start_date)
+      @pp.expire_date.should_not be_nil
+      @pp.expire_date.should == Time.zone.parse("2020-8-31")
+    end
 
-  it "should not set default expire_date if one is given" do
-    start_date=Date.strptime("2020-5-5")
-    pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id, :start_date => start_date, :expire_date => start_date)
-    pp.expire_date.should_not be_nil
-    pp.expire_date.to_date.should == start_date
+    it 'should not allow an expire date the same as start date' do
+      pp=ItemPricePolicy.new(
+          Factory.attributes_for(:item_price_policy,
+                                 :price_group_id => @price_group.id,
+                                 :item_id => @item.id,
+                                 :start_date => @start_date,
+                                 :expire_date => @start_date)
+      )
+      
+      assert !pp.save
+      assert pp.errors.on :expire_date
+    end
+
+    it 'should not allow an expire date after a generated date' do
+      pp=ItemPricePolicy.new(
+          Factory.attributes_for(:item_price_policy,
+                                 :price_group_id => @price_group.id,
+                                 :item_id => @item.id,
+                                 :start_date => @start_date,
+                                 :expire_date => PricePolicy.generate_expire_date(@start_date)+1.month)
+      )
+      assert !pp.save
+      assert pp.errors.on :expire_date
+    end
+
+    it "should not set default expire_date if one is given" do
+      expire_date=@start_date+3.months
+      pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id, :start_date => @start_date, :expire_date => expire_date)
+      pp.expire_date.should_not be_nil
+      pp.expire_date.should == expire_date
+    end
   end
 
 

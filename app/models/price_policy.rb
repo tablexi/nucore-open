@@ -4,6 +4,17 @@ class PricePolicy < ActiveRecord::Base
   validates_presence_of :start_date, :price_group_id, :type
   validate :start_date_is_unique, :unless => lambda { |o| o.start_date.nil? }
 
+  validates_each :expire_date do |record,attr,value|
+    if value
+      start_date=record.start_date
+      gen_exp_date=generate_expire_date(start_date)
+
+      if value <= start_date or value > gen_exp_date
+        record.errors.add(:expire_date, "must be after #{start_date.to_date.to_s} and before #{gen_exp_date.to_date.to_s}")
+      end
+    end
+  end
+
   named_scope :active, lambda {{ :conditions => [ "start_date <= ?", Time.zone.now ], :order => "start_date DESC" }}
 
 
@@ -85,20 +96,28 @@ class PricePolicy < ActiveRecord::Base
   end
 
 
-  def before_create
-    return if expire_date
-    exp_date=Date.strptime("#{start_date.year}-8-31")
-    exp_date=Date.strptime("#{start_date.year+1}-8-31") if exp_date <= Time.zone.now.to_date
-    self.expire_date=exp_date
+  #
+  # Given a +PricePolicy+ or +Date+ determine the next
+  # appropriate expiration date.
+  def self.generate_expire_date(price_policy_or_date)
+    start_date=price_policy_or_date.is_a?(PricePolicy) ? price_policy_or_date.start_date : price_policy_or_date
+    exp_date=Time.zone.parse("#{start_date.year}-8-31")
+    exp_date=Tme.zone.parse("#{start_date.year+1}-8-31") if exp_date <= Time.zone.now
+    return exp_date
   end
-  
+
+
+  def before_create
+    self.expire_date=self.class.generate_expire_date(self) unless expire_date
+  end
+
 #  def self.active(product)
 #    policies = product.send("#{product.class.name.downcase}_price_policies")
 #    max      = nil
-#    policies.each { |p| 
-#      max = p if p.start_date <= Time.zone.now && (max.nil? || p.start_date > max.start_date) 
+#    policies.each { |p|
+#      max = p if p.start_date <= Time.zone.now && (max.nil? || p.start_date > max.start_date)
 #    }
 #    max
 #  end?
-  
+
 end
