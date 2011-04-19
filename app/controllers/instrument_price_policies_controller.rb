@@ -1,12 +1,5 @@
-# TODO: abstract the common logic in this and other *PricePoliciesController into a super class
-class InstrumentPricePoliciesController < ApplicationController
-  admin_tab     :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_current_facility
-  before_filter :init_instrument
-  before_filter :init_instrument_price_policy, :except => [ :index, :new ]
-
+# TODO: abstract the common logic in this and other *PricePoliciesController into super class
+class InstrumentPricePoliciesController < PricePoliciesController
   load_and_authorize_resource
 
   layout 'two_column'
@@ -121,26 +114,6 @@ class InstrumentPricePoliciesController < ApplicationController
         format.html { redirect_to facility_instrument_price_policies_url(current_facility, @instrument)  }
       end
     end
-  end
-
-  def init_instrument
-    @instrument = current_facility.instruments.find_by_url_name!(params[:instrument_id])
-  end
-
-  #
-  # Override CanCan's find -- it won't properly search by zoned date
-  def init_instrument_price_policy
-    @instrument_price_policy=InstrumentPricePolicy.for_date(@instrument, start_date_from_params).first
-  end
-
-
-  private
-
-  def start_date_from_params
-    start_date=params[:id] || params[:start_date]
-    return unless start_date
-    format=start_date.include?('/') ? "%m/%d/%Y" : "%Y-%m-%d"
-    Date.strptime(start_date, format)
   end
 
 end
