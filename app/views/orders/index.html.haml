@@ -42,5 +42,21 @@
                 - else
                   %li.indented= link_to od.reservation, order_order_detail_reservation_path(order, od, od.reservation)
         %td.centered=h od.order_status.name
-        %td.currency=h number_to_currency od.total
+        %td.currency
+          - if od.cost_estimated?
+            %span.estimated_cost
+              = h number_to_currency od.estimated_total
+          - elsif od.price_policy.nil?
+            Unassigned
+          - else
+            %span.actual_cost
+              = h number_to_currency od.actual_total
+
+  %p.footnote
+    %span.estimated_cost
+      Orange
+    totals are estimates.
+    %span.actual_cost
+      Green
+    totals are final. Pricing will be assigned to transactions with unassigned totals.
   = will_paginate(@order_details)
