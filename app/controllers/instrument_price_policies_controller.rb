@@ -70,7 +70,7 @@ class InstrumentPricePoliciesController < PricePoliciesController
     @price_policies = InstrumentPricePolicy.for_date(@instrument, @start_date)
     @price_policies.each { |price_policy|
       price_policy.attributes = params["instrument_price_policy#{price_policy.price_group.id}"].reject {|k,v| k == 'restrict_purchase' }
-      price_policy.start_date = Time.zone.parse(@start_date.to_s)
+      price_policy.start_date = Time.zone.parse(params[:start_date])
       price_policy.expire_date = Time.zone.parse(@expire_date) unless @expire_date.blank?
       price_policy.restrict_purchase = params["instrument_price_policy#{price_policy.price_group.id}"]['restrict_purchase'] && params["instrument_price_policy#{price_policy.price_group.id}"]['restrict_purchase'] == 'true' ? true : false
     }
