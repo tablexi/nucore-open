@@ -15,7 +15,6 @@
 %li
   %table
     %tr
-      %th.centered{:rowspan => 2} Prevent Purchase
       %th{:rowspan => 2} Price Group (Type)
       %th.centered{:colspan => 3}
         Rates per
@@ -29,10 +28,6 @@
     - @price_policies.each do |pp|
       - pg = pp.price_group
       %tr
-        - if pg.is_master_internal?
-          %td= hidden_field_tag "instrument_price_policy#{pg.id}[restrict_purchase]", false
-        - else
-          %td.centered= check_box_tag "instrument_price_policy#{pg.id}[restrict_purchase]", 'true', pp.restrict_purchase?, :class => "restrict_purchase"
         %td=h "#{pg.name} (#{pg.type_string})"
 
         - if !pg.is_internal?
