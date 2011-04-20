@@ -310,7 +310,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def cost_estimated?
-    estimated_cost && estimated_subsidy && actual_cost.nil? && actual_subsidy.nil?
+    price_policy.nil? && estimated_cost && estimated_subsidy && actual_cost.nil? && actual_subsidy.nil?
   end
 
   def in_dispute?
