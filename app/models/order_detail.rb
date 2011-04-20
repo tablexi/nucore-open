@@ -309,6 +309,10 @@ class OrderDetail < ActiveRecord::Base
     "#{order.id}-#{id}"
   end
 
+  def cost_estimated?
+    estimated_cost && estimated_subsidy && actual_cost.nil? && actual_subsidy.nil?
+  end
+
   def in_dispute?
     dispute_resolved_at.nil? && !dispute_at.nil?
   end

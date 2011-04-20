@@ -53,6 +53,7 @@ describe OrderDetail do
       costs=@pp.estimate_cost_and_subsidy(@order_detail.quantity)
       @order_detail.estimated_cost.should == costs[:cost]
       @order_detail.estimated_subsidy.should == costs[:subsidy]
+      @order_detail.should be_estimated_cost
     end
   end
 
@@ -86,11 +87,6 @@ describe OrderDetail do
 
       it "should be valid for an item purchase with valid attributes" do
         @order_detail.valid_for_purchase?.should == true
-      end
-
-      it "should not be valid if the user is not a member of a product's price group" do
-        @pg_user_member.destroy
-        @order_detail.valid_for_purchase?.should == false
       end
 
       it "should be valid if there is no actual price" do
@@ -254,6 +250,7 @@ describe OrderDetail do
       @order_detail.to_complete!
       @order_detail.state.should == 'complete'
       @order_detail.price_policy.should == pp
+      @order_detail.should_not be_cost_estimated
 
       costs=pp.calculate_cost_and_subsidy(@order_detail.quantity)
       @order_detail.actual_cost.should == costs[:cost]
