@@ -143,6 +143,19 @@ namespace :demo  do
       :name => 'External Rate', :is_internal => false, :display_order => 3
     })
     pgex.save_with_validation(false) # override facility validator
+
+    [ item, service, bundle ].each do |product|
+      PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pgnu.id, product.id)
+      PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pgex.id, product.id)
+    end
+
+    pgp=PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pgnu.id, instrument.id)
+    pgp.reservation_window=14
+    pgp.save!
+
+    pgp=PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pgex.id, instrument.id)
+    pgp.reservation_window=14
+    pgp.save!
     
     inpp = InstrumentPricePolicy.find_or_create_by_instrument_id_and_price_group_id({
       :instrument_id        => instrument.id,
@@ -159,9 +172,7 @@ namespace :demo  do
       :overage_subsidy      => 0,
       :minimum_cost         => 0,
       :cancellation_cost    => 0,
-      :reservation_window   => 14,
-      :restrict_purchase    => false,
-    })    
+    })
     inpp.save_with_validation(false) # override date validator
     itpp = ItemPricePolicy.find_or_create_by_item_id_and_price_group_id({
       :item_id           => item.id,
@@ -169,8 +180,7 @@ namespace :demo  do
       :start_date        => Date.new(2010,1,1),
       :unit_cost         => 30,
       :unit_subsidy      => 0,
-      :restrict_purchase => false,
-    })    
+    })
     itpp.save_with_validation(false) # override date validator
     spp = ServicePricePolicy.find_or_create_by_service_id_and_price_group_id({
       :service_id        => service.id,
@@ -178,7 +188,6 @@ namespace :demo  do
       :start_date        => Date.new(2010,1,1),
       :unit_cost         => 75,
       :unit_subsidy      => 0,
-      :restrict_purchase => false,
     })
     spp.save_with_validation(false) # override date validator
 
@@ -305,7 +314,7 @@ namespace :demo  do
       order.order_details.each do |od|
         od.change_status!(reviewable)
         # enter actuals for instruments
-        set_instrument_order_actual_cost(od) if od.reservation        
+        set_instrument_order_actual_cost(od) if od.reservation
         at = od.init_purchase_account_transaction
         at.created_by = user_director.id
         at.created_at = od.order.ordered_at + 1.days
@@ -407,6 +416,10 @@ namespace :demo  do
           od = OrderDetail.create!({
             :order_id           => o.id,
             :product_id         => bp.product_id,
+            :actual_cost     => rand(2),
+            :actual_subsidy  => 0,
+            :estimated_cost  => rand(2),
+            :estimated_subsidy  => 0,
             :quantity           => bp.quantity,
             :created_at         => created_at,
             :bundle_product_id  => product.id,
@@ -419,6 +432,10 @@ namespace :demo  do
         od = OrderDetail.create!({
           :order_id        => o.id,
           :product_id      => product.id,
+          :actual_cost     => rand(2),
+          :actual_subsidy  => 0,
+          :estimated_cost  => rand(2),
+          :estimated_subsidy  => 0,
           :quantity        => product.is_a?(Item) ? (rand(3) + 1) : 1,
           :created_at      => (ordered_at - (60*rand(60) + 1)),
         })
@@ -434,6 +451,12 @@ namespace :demo  do
           i += 1
         end
         od.update_account(account)
+
+        od.price_policy=case od.product
+                          when Instrument then InstrumentPricePolicy.first
+                          when Item then ItemPricePolicy.first
+                          when Service then ServicePricePolicy.first
+                        end
         od.save!
       end
     end until rand(5) > 0
