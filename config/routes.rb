@@ -64,6 +64,7 @@ ActionController::Routing::Routes.draw do |map|
     end
 
     facility.resources :reports,  :only => [:index], :collection => {:instrument_utilization => [:get, :post], :product_order_summary => [:get, :post]}
+    facility.resources :price_group_products, :only => [ :edit, :update ]
 
     facility.schedule 'schedule', :controller => 'facilities', :action => 'schedule'
     facility.agenda   'agenda',   :controller => 'facilities', :action => 'agenda'

@@ -12,6 +12,7 @@
 - if session_user.manager_of?(current_facility)
   %ul.horiz
     %li= link_to 'Add Pricing Rules', new_facility_instrument_price_policy_path
+    %li= link_to 'Restrict Purchasing', edit_facility_price_group_product_path(current_facility, @instrument)
 
 - if @current_price_policies.empty?
   %p.notice You must add pricing rules for this instrument to be purchasable.
