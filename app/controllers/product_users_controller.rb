@@ -68,5 +68,6 @@ class ProductUsersController < ApplicationController
 
   def init_product
     @product = current_facility.products.find_by_url_name!(params[:instrument_id] || params[:service_id] || params[:item_id])
+    @product_user=ProductUser.first # for CanCan auth
   end
 end
