@@ -63,7 +63,7 @@ class PricePolicy < ActiveRecord::Base
   def restrict_purchase=(state)
     case state
       when false, 0
-        PriceGroupProduct.create!(:price_group => price_group, :product => product)
+        PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(price_group.id, product.id)
       when true, 1
         pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
         pgp.destroy if pgp
