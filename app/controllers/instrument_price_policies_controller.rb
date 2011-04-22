@@ -14,16 +14,15 @@ class InstrumentPricePoliciesController < PricePoliciesController
 
   # GET /price_policies/new
   def new
-    @price_groups   = current_facility.price_groups
+    price_groups   = current_facility.price_groups
     start_date     = Date.today + (@instrument.price_policies.first.nil? ? 0 : 1)
     @expire_date    = PricePolicy.generate_expire_date(start_date).strftime("%m/%d/%Y")
     @start_date=start_date.strftime("%m/%d/%Y")
-    @price_policies = @price_groups.map{ |pg| InstrumentPricePolicy.new({:price_group_id => pg.id, :instrument_id => @instrument.id, :start_date => @start_date, :usage_mins => 15 }) }
+    @price_policies = price_groups.map{ |pg| InstrumentPricePolicy.new({:price_group_id => pg.id, :instrument_id => @instrument.id, :start_date => @start_date, :usage_mins => 15 }) }
   end
 
   # GET /price_policies/1/edit
   def edit
-    @price_groups = current_facility.price_groups
     @start_date   = start_date_from_params
     @price_policies = InstrumentPricePolicy.for_date(@instrument, @start_date)
     @price_policies.delete_if{|pp| pp.assigned_to_order? }
@@ -33,11 +32,11 @@ class InstrumentPricePoliciesController < PricePoliciesController
 
   # POST /price_policies
   def create
-    @price_groups = current_facility.price_groups
+    price_groups = current_facility.price_groups
     @interval     = params[:interval].to_i
     @start_date   = params[:start_date]
     @expire_date   = params[:expire_date]
-    @price_policies = @price_groups.map do |price_group|
+    @price_policies = price_groups.map do |price_group|
       price_policy = InstrumentPricePolicy.new(params["instrument_price_policy#{price_group.id}"].reject {|k,v| k == 'restrict_purchase' })
       price_policy.price_group       = price_group
       price_policy.instrument        = @instrument
@@ -64,7 +63,6 @@ class InstrumentPricePoliciesController < PricePoliciesController
 
   # PUT /price_policies/1
   def update
-    @price_groups   = current_facility.price_groups
     @start_date     = start_date_from_params
     @expire_date    = params[:expire_date]
     @price_policies = InstrumentPricePolicy.for_date(@instrument, @start_date)
@@ -89,7 +87,6 @@ class InstrumentPricePoliciesController < PricePoliciesController
 
   # DELETE /price_policies/1
   def destroy
-    @price_groups   = current_facility.price_groups
     @start_date     = start_date_from_params
     raise ActiveRecord::RecordNotFound unless @start_date > Date.today
     @price_policies = InstrumentPricePolicy.for_date(@instrument, @start_date)

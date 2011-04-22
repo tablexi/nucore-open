@@ -47,7 +47,6 @@ describe InstrumentPricePoliciesController do
 
     it_should_allow_managers_only do
       assigns[:instrument].should == @instrument
-      assigns[:price_groups].should be_include @price_group
       assigns[:start_date].should_not be_nil
       assigns[:expire_date].should_not be_nil
       assigns[:price_policies].should be_is_a Array
@@ -68,7 +67,6 @@ describe InstrumentPricePoliciesController do
     end
 
     it_should_allow_managers_only :success, 'to edit assigned effective price policy' do
-      assigns[:price_groups].should == @authable.price_groups
       assigns[:start_date].should == Date.strptime(@params[:id], "%Y-%m-%d")
       assigns[:price_policies].should == [ @price_policy ]
       should render_template('edit')
@@ -82,7 +80,6 @@ describe InstrumentPricePoliciesController do
       UserPriceGroupMember.create!(:price_group => @price_group, :user => @director)
       maybe_grant_always_sign_in :director
       do_request
-      assigns[:price_groups].should == @authable.price_groups
       assigns[:start_date].should == Date.strptime(@params[:id], "%Y-%m-%d")
       assigns[:price_policies].should be_empty
       should render_template '404.html.erb'
