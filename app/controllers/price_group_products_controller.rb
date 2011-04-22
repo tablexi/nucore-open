@@ -32,11 +32,11 @@ class PriceGroupProductsController < ApplicationController
       else
         res_win=params[pg_key][:reservation_window]
 
-        if res_win.blank?
+        if @is_instrument and res_win.blank?
           window_errors << pg.name
         else
           pgp=PriceGroupProduct.create!(:price_group => pg, :product => @product) unless pgp
-          pgp.reservation_window=res_win.to_i
+          pgp.reservation_window=res_win.to_i if @is_instrument
           pgp.save!
         end
       end
@@ -56,6 +56,7 @@ class PriceGroupProductsController < ApplicationController
   
   def init_price_group_products
     @product=Product.find_by_url_name!(params[:id])
+    @is_instrument=@product.is_a? Instrument
     @price_groups=PriceGroup.all
     @price_group_products=PriceGroupProduct.find_all_by_product_id(@product.id)
     @price_group_product=@price_group_products.first # for CanCan authorization

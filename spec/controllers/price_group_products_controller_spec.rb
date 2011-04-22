@@ -9,17 +9,9 @@ describe PriceGroupProductsController do
   before(:each) do
     @authable=Factory.create(:facility)
     @facility_account=@authable.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @instrument=@authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
-    @price_group_products=[]
-
-    PriceGroup.all.each do |pg|
-      price_group_product=PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pg.id, @instrument.id)
-      price_group_product.reservation_window=14
-      assert price_group_product.save
-      @price_group_products << price_group_product
-    end
-
-    @params={ :facility_id => @authable.url_name, :id => @instrument.url_name }
+    @product=@authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+    create_price_group_products
+    @params={ :facility_id => @authable.url_name, :id => @product.url_name }
   end
 
 
@@ -82,7 +74,7 @@ describe PriceGroupProductsController do
     end
 
 
-    it 'should error if no reservation window given' do
+    it 'should error if no reservation window given on instrument' do
       pg=PriceGroup.first
       @params[pg_key(pg)][:reservation_window]=''
       maybe_grant_always_sign_in :director
@@ -90,6 +82,18 @@ describe PriceGroupProductsController do
       flash[:notice].should be_nil
       flash[:error].should_not be_nil
       assert_update_redirect
+    end
+
+
+    it 'should not error if no reservation window given on non-instrument' do
+      @product=@authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+      create_price_group_products
+      pg=@price_group_products.first.price_group
+      @params[pg_key(pg)][:reservation_window]=''
+      @params[:id]=@product.url_name
+      maybe_grant_always_sign_in :director
+      do_request
+      assert_successful_update
     end
 
   end
@@ -102,8 +106,24 @@ describe PriceGroupProductsController do
   end
 
 
+  def create_price_group_products
+    @price_group_products=[]
+
+    PriceGroup.all.each do |pg|
+      price_group_product=PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pg.id, @product.id)
+
+      if @product.is_a? Instrument
+        price_group_product.reservation_window=14
+        assert price_group_product.save
+      end
+
+      @price_group_products << price_group_product
+    end
+  end
+
+
   def assert_update_redirect
-    assert_redirected_to edit_facility_price_group_product_path(@authable, @instrument)
+    assert_redirected_to edit_facility_price_group_product_path(@authable, @product)
   end
 
 
@@ -115,7 +135,8 @@ describe PriceGroupProductsController do
 
 
   def assert_init_price_group_products
-    assigns[:product].should == @instrument
+    assigns[:product].should == @product
+    assigns[:is_instrument].should == @product.is_a?(Instrument)
     PriceGroup.all.each {|pg| assigns[:price_groups].should be_include pg }
     @price_group_products.each {|pgp| assigns[:price_group_products].should be_include pgp }
     assigns[:price_group_products].should be_include assigns[:price_group_product]
