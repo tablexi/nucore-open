@@ -36,8 +36,10 @@ class InstrumentPricePoliciesController < PricePoliciesController
     @interval     = params[:interval].to_i
     @start_date   = params[:start_date]
     @expire_date   = params[:expire_date]
+    price_groups.delete_if {|pg| !pg.can_purchase? @instrument }
     @price_policies = price_groups.map do |price_group|
-      price_policy = InstrumentPricePolicy.new(params["instrument_price_policy#{price_group.id}"].reject {|k,v| k == 'restrict_purchase' })
+      pp_param=params["instrument_price_policy#{price_group.id}"]
+      price_policy = InstrumentPricePolicy.new(pp_param.reject {|k,v| k == 'restrict_purchase' })
       price_policy.price_group       = price_group
       price_policy.instrument        = @instrument
       price_policy.start_date        = Time.zone.parse(@start_date)
@@ -45,7 +47,7 @@ class InstrumentPricePoliciesController < PricePoliciesController
       price_policy.usage_mins        = @interval
       price_policy.reservation_mins  = @interval
       price_policy.overage_mins      = @interval
-      price_policy.restrict_purchase = params["instrument_price_policy#{price_group.id}"]['restrict_purchase'] && params["instrument_price_policy#{price_group.id}"]['restrict_purchase'] == 'true' ? true : false
+      price_policy.restrict_purchase = pp_param['restrict_purchase'] && pp_param['restrict_purchase'] == 'true' ? true : false
       price_policy
     end
     
@@ -67,10 +69,12 @@ class InstrumentPricePoliciesController < PricePoliciesController
     @expire_date    = params[:expire_date]
     @price_policies = InstrumentPricePolicy.for_date(@instrument, @start_date)
     @price_policies.each { |price_policy|
-      price_policy.attributes = params["instrument_price_policy#{price_policy.price_group.id}"].reject {|k,v| k == 'restrict_purchase' }
+      pp_param=params["instrument_price_policy#{price_policy.price_group.id}"]
+      next unless pp_param
+      price_policy.attributes = pp_param.reject {|k,v| k == 'restrict_purchase' }
       price_policy.start_date = Time.zone.parse(params[:start_date])
       price_policy.expire_date = Time.zone.parse(@expire_date) unless @expire_date.blank?
-      price_policy.restrict_purchase = params["instrument_price_policy#{price_policy.price_group.id}"]['restrict_purchase'] && params["instrument_price_policy#{price_policy.price_group.id}"]['restrict_purchase'] == 'true' ? true : false
+      price_policy.restrict_purchase = pp_param['restrict_purchase'] && pp_param['restrict_purchase'] == 'true' ? true : false
     }
 
     respond_to do |format|

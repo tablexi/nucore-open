@@ -9,6 +9,7 @@
     %th.currency Actual
     %th.currency Scheduled
     %th.currency Overage
+  - instrument_price_policies.delete_if {|ipp| !ipp.price_group.can_purchase? @instrument }
   - instrument_price_policies.each do |price_policy|
     %tr
       - if instrument_price_policies.first == price_policy

@@ -27,6 +27,7 @@
       %th Overage 
     - @price_policies.each do |pp|
       - pg = pp.price_group
+      - next unless pg.can_purchase? @instrument
       %tr
         %td=h "#{pg.name} (#{pg.type_string})"
 
