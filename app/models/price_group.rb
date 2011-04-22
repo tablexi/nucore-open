@@ -27,6 +27,10 @@ class PriceGroup < ActiveRecord::Base
     self.facility_id_was != nil
   end
 
+  def can_purchase?(product)
+    return !PriceGroupProduct.find_by_price_group_id_and_product_id(self.id, product.id).nil?
+  end
+
   def to_s
     self.name
   end
