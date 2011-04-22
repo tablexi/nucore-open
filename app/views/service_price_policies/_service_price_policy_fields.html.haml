@@ -17,6 +17,7 @@
       %th.currency Unit Adjustment
     - @price_policies.each do |pp|
       - pg = pp.price_group
+      - next unless pg.can_purchase? @service
       %tr
         %td=h pg.name
         %td= pg.type_string

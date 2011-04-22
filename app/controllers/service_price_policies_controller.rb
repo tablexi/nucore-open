@@ -14,16 +14,15 @@ class ServicePricePoliciesController < PricePoliciesController
 
   # GET /price_policies/new
   def new
-    @price_groups = current_facility.price_groups
+    price_groups = current_facility.price_groups
     start_date     = Date.today + (@service.price_policies.first.nil? ? 0 : 1)
     @expire_date    = PricePolicy.generate_expire_date(start_date).strftime("%m/%d/%Y")
     @start_date=start_date.strftime("%m/%d/%Y")
-    @price_policies = @price_groups.map{ |pg| ServicePricePolicy.new({:price_group_id => pg.id, :service_id => @service.id, :start_date => @start_date }) }
+    @price_policies = price_groups.map{ |pg| ServicePricePolicy.new({:price_group_id => pg.id, :service_id => @service.id, :start_date => @start_date }) }
   end
 
   # GET /price_policies/1/edit
   def edit
-    @price_groups = current_facility.price_groups
     @start_date = start_date_from_params
     @price_policies = ServicePricePolicy.for_date(@service, @start_date)
     @price_policies.delete_if{|pp| pp.assigned_to_order? }
@@ -33,16 +32,18 @@ class ServicePricePoliciesController < PricePoliciesController
 
   # POST /price_policies
   def create
-    @price_groups = current_facility.price_groups
+    price_groups = current_facility.price_groups
     @start_date = params[:start_date]
     @expire_date   = params[:expire_date]
-    @price_policies = @price_groups.map do |price_group|
-      price_policy = ServicePricePolicy.new(params["service_price_policy#{price_group.id}"].reject {|k,v| k == 'restrict_purchase' })
+    price_groups.delete_if {|pg| !pg.can_purchase? @service }
+    @price_policies = price_groups.map do |price_group|
+      pp_param=params["service_price_policy#{price_group.id}"]
+      price_policy = ServicePricePolicy.new(pp_param.reject {|k,v| k == 'restrict_purchase' })
       price_policy.price_group = price_group
       price_policy.service = @service
       price_policy.start_date = Time.zone.parse(@start_date)
       price_policy.expire_date = Time.zone.parse(@expire_date)
-      price_policy.restrict_purchase = params["service_price_policy#{price_group.id}"]['restrict_purchase'] && params["service_price_policy#{price_group.id}"]['restrict_purchase'] == 'true' ? true : false
+      price_policy.restrict_purchase = pp_param['restrict_purchase'] && pp_param['restrict_purchase'] == 'true' ? true : false
       price_policy
     end
 
@@ -60,15 +61,16 @@ class ServicePricePoliciesController < PricePoliciesController
 
   # PUT /price_policies/1
   def update
-    @price_groups = current_facility.price_groups
     @start_date = start_date_from_params
     @expire_date    = params[:expire_date]
     @price_policies = ServicePricePolicy.for_date(@service, @start_date)
     @price_policies.each { |price_policy|
-      price_policy.attributes = params["service_price_policy#{price_policy.price_group.id}"].reject {|k,v| k == 'restrict_purchase' }
+      pp_param=params["service_price_policy#{price_policy.price_group.id}"]
+      next unless pp_param
+      price_policy.attributes = pp_param.reject {|k,v| k == 'restrict_purchase' }
       price_policy.start_date = Time.zone.parse(params[:start_date])
       price_policy.expire_date = Time.zone.parse(@expire_date) unless @expire_date.blank?
-      price_policy.restrict_purchase = params["service_price_policy#{price_policy.price_group.id}"]['restrict_purchase'] && params["service_price_policy#{price_policy.price_group.id}"]['restrict_purchase'] == 'true' ? true : false
+      price_policy.restrict_purchase = pp_param['restrict_purchase'] && pp_param['restrict_purchase'] == 'true' ? true : false
     }
 
     respond_to do |format|
@@ -85,7 +87,6 @@ class ServicePricePoliciesController < PricePoliciesController
 
   # DELETE /price_policies/2010-01-01
   def destroy
-    @price_groups   = current_facility.price_groups
     @start_date     = start_date_from_params
     raise ActiveRecord::RecordNotFound unless @start_date > Date.today
     @price_policies = ServicePricePolicy.for_date(@service, @start_date)
