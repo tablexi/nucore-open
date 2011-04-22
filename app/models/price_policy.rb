@@ -81,6 +81,14 @@ class PricePolicy < ActiveRecord::Base
   end
 
 
+  #
+  # Returns true if #expire_date is prior to or the same
+  # as today's date, false otherwise
+  def expired?
+    expire_date.to_date <= Time.zone.now.to_date
+  end
+
+
   def start_date_is_unique
     type          = self.class.name.downcase.gsub(/pricepolicy$/, '')
     product       = self.send("#{type}")

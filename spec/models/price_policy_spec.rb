@@ -64,6 +64,20 @@ describe PricePolicy do
       pp.expire_date.should_not be_nil
       pp.expire_date.should == expire_date
     end
+
+    it "should not be expired" do
+      expire_date=@start_date+3.months
+      pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id, :start_date => @start_date, :expire_date => expire_date)
+      pp.should_not be_expired
+    end
+
+    it "should be expired" do
+      @start_date=Time.zone.parse("2000-5-5")
+      expire_date=@start_date+1.month
+      pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id, :start_date => @start_date, :expire_date => expire_date)
+      pp.should be_expired
+    end
+
   end
 
 
