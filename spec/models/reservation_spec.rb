@@ -146,6 +146,8 @@ describe Reservation do
 
   context "get best possible reservation" do
     before do
+      PriceGroupProduct.destroy_all
+
       @user = Factory.create(:user)
       @nupg_pgp=Factory.create(:price_group_product, :product => @instrument, :price_group => @nupg)
 

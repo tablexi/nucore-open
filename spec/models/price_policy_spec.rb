@@ -28,7 +28,7 @@ describe PricePolicy do
     end
 
     it "should set default expire_date" do
-      @pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id, :start_date => @start_date)
+      @pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id, :start_date => @start_date, :expire_date => nil)
       @pp.expire_date.should_not be_nil
       @pp.expire_date.should == Time.zone.parse("2020-8-31")
     end
