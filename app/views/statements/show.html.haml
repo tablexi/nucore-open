@@ -68,11 +68,5 @@
             %span.actual_cost
               = h number_to_currency at.transaction_amount
 
-  %p.footnote
-    %span.estimated_cost
-      Orange
-    amounts are estimates.
-    %span.actual_cost
-      Green
-    amounts are final. Pricing will soon be assigned to completed transactions with unassigned amounts.
+  = render :partial => '/price_display_footnote'
 
