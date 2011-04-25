@@ -11,7 +11,7 @@ class Item < Product
     min = nil
     cheapest_total = 0
     current_price_policies.each do |pp|
-      if !pp.restrict_purchase? && groups.include?(pp.price_group)
+      if !pp.expired? && !pp.restrict_purchase? && groups.include?(pp.price_group)
         costs = pp.calculate_cost_and_subsidy
         total = costs[:cost] - costs[:subsidy]
         if min.nil? || total < cheapest_total
@@ -26,11 +26,11 @@ class Item < Product
   def can_purchase? (group_ids = nil)
     return false if is_archived? || !facility.is_active?
     if group_ids.nil?
-      current_price_policies.any?{|pp| !pp.restrict_purchase?}
+      current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase?}
     elsif group_ids.empty?
       false
     else
-      current_price_policies.any?{|pp| !pp.restrict_purchase? && group_ids.include?(pp.price_group_id)}
+      current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase? && group_ids.include?(pp.price_group_id)}
     end
   end
 end

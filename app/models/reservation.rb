@@ -376,6 +376,7 @@ class Reservation < ActiveRecord::Base
   end
 
   # return the cheapest available price policy that
+  # * is not expired
   # * is not restricted
   # * is included in the provided price groups
   def cheapest_price_policy(groups = [])
@@ -383,7 +384,7 @@ class Reservation < ActiveRecord::Base
     min = nil
     cheapest_total = 0
     instrument.current_price_policies.each { |pp|
-      if !pp.restrict_purchase? && groups.include?(pp.price_group)
+      if !pp.expired? && !pp.restrict_purchase? && groups.include?(pp.price_group)
         costs = pp.estimate_cost_and_subsidy(reserve_start_at, reserve_end_at)
         unless costs.nil?
           total = costs[:cost] - costs[:subsidy]
@@ -398,6 +399,7 @@ class Reservation < ActiveRecord::Base
   end
 
   # return the longest available reservation window that:
+  # * is not part of an expired price policy
   # * is not part of a restricted price policy
   # * is included in the provided price groups
   # * is within the reservation windows of the available price policies
@@ -410,7 +412,7 @@ class Reservation < ActiveRecord::Base
     instrument.current_price_policies.each { |pp|
       window=pp.reservation_window
 
-      if !pp.restrict_purchase? && groups.include?(pp.price_group) && diff <= window
+      if !pp.expired? && !pp.restrict_purchase? && groups.include?(pp.price_group) && diff <= window
         if longest_window.nil? || window > longest_window
           longest = pp
           longest_window=window
