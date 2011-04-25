@@ -39,20 +39,20 @@
         %td.centered
           - if at.is_in_dispute?
             In Dispute
-        %td.currency=h number_to_currency at.transaction_amount
-    %tr
-      %td.currency.borderless{:colspan => 4}
-        %b Previous Balance
-      %td.currency.borderless= number_to_currency @balance_prev
-    %tr
-      %td.currency.borderless{:colspan => 4}
-        %b New Payments/Credits
-      %td.currency.borderless= number_to_currency @new_payments
-    %tr
-      %td.currency.borderless{:colspan => 4}
-        %b New Purchases
-      %td.currency.borderless= number_to_currency @new_purchases
-    %tr
-      %td.currency.borderless{:colspan => 4}
-        %b Balance Due
-      %td.currency.borderless= number_to_currency @balance_due
+        %td.currency
+          - if od.cost_estimated?
+            %span.estimated_cost
+              = h number_to_currency od.estimated_total
+          - elsif od.price_policy.nil?
+            Unassigned
+          - else
+            %span.actual_cost
+              = h number_to_currency at.transaction_amount
+
+  %p.footnote
+    %span.estimated_cost
+      Orange
+    amounts are estimates.
+    %span.actual_cost
+      Green
+    amounts are final. Pricing will soon be assigned to completed transactions with unassigned amounts.

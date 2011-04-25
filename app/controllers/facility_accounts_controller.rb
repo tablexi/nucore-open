@@ -221,18 +221,10 @@ class FacilityAccountsController < ApplicationController
 
     if params[:statement_id].to_s.downcase == 'recent'
       @account_txns   = @account.account_transactions.facility_recent(current_facility)
-      @prev_statement = @statements.first
-      @new_payments   = @account.facility_recent_payment_balance(current_facility) # includes credits
-      @new_purchases  = @account.facility_recent_purchase_balance(current_facility)
     else
       @statement      = @account.statements.find(params[:statement_id])
-      @prev_statement = @account.statements.find(:first, :conditions => ['statements.created_at < ?', @statement.created_at], :order => 'statements.created_at DESC')
-      @new_payments   = @account.statement_payment_balance(@statement) # includes credits
-      @new_purchases  = @account.statement_purchase_balance(@statement)
       @account_txns   = @statement.account_transactions.finalized
     end
-    @balance_prev = @prev_statement ? @prev_statement.account_balance_due(@account) : 0
-    @balance_due  = @balance_prev + @new_purchases  + @new_payments # payments are negative in the DB already
 
     prawnto :prawn => {
                   :left_margin   => 50,

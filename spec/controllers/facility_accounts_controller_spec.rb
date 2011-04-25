@@ -478,7 +478,8 @@ describe FacilityAccountsController do
           :facility_id => @authable.id,
           :created_by => @admin.id,
           :account_id => @account.id,
-          :statement_id => @statement.id
+          :statement_id => @statement.id,
+          :order_detail => @order_detail
         })
         sleep 1 # need different timestamp on statement
       end
@@ -495,12 +496,7 @@ describe FacilityAccountsController do
       assigns(:facility).should == @authable
       assigns(:statement).should == @statement
       should assign_to(:statements).with_kind_of Array
-      should assign_to(:prev_statement).with_kind_of Statement
-      should assign_to(:new_payments).with_kind_of Float
-      should assign_to(:new_purchases).with_kind_of Float
       assigns(:account_txns)[0].should == @transact
-      should assign_to(:balance_prev).with_kind_of Float
-      should assign_to(:balance_due).with_kind_of Float
       should render_template 'show_statement'
     end
 
