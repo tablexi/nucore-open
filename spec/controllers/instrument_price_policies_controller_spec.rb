@@ -25,7 +25,6 @@ describe InstrumentPricePoliciesController do
 
     it_should_allow_operators_only do |user|
       assigns[:instrument].should == @instrument
-      assigns[:current_price_policies].should == [@price_policy]
       response.should render_template('instrument_price_policies/index.html.haml')
 
       if user.facility_staff?
