@@ -101,16 +101,24 @@
         - unless @order_detail.file_uploads.template_result.empty?
           %li.indented= link_to('View Order File', @order_detail.file_uploads.template_result.first.file.url)
     %td=h @order_detail.order_status
-    - if @order_detail.actual_cost && @order_detail.actual_subsidy
-      %td.currency=h number_to_currency @order_detail.actual_cost
+    - if @order_detail.cost_estimated?
+      %td.estimated_cost.currency=h number_to_currency @order_detail.estimated_cost
       - if @order_detail.has_subsidies?
-        %td.currency=h number_to_currency @order_detail.actual_subsidy
-      %td.currency=h number_to_currency @order_detail.actual_total
+        %td.estimated_cost.currency=h number_to_currency @order_detail.estimated_subsidy
+      %td.estimated_cost.currency=h number_to_currency @order_detail.estimated_total
+    - elsif @order_detail.price_policy.nil?
+      %td{:colspan => 2}
+        Unassigned
     - else
-      %td.currency=h number_to_currency @order_detail.estimated_cost
+      %td.actual_cost.currency=h number_to_currency @order_detail.actual_cost
       - if @order_detail.has_subsidies?
-        %td.currency=h number_to_currency @order_detail.estimated_subsidy
-      %td.currency=h number_to_currency @order_detail.estimated_total
+        %td.actual_cost.currency=h number_to_currency @order_detail.actual_subsidy
+      %td.actual_cost.currency=h number_to_currency @order_detail.actual_total
 
-- unless @order_detail.actual_cost && @order_detail.actual_subsidy
-  %p.footnote * Instrument pricing is estimated; the final price may vary based on actual time used.
+%p.footnote
+  %span.estimated_cost
+    Orange
+  amounts are estimates.
+  %span.actual_cost
+    Green
+  amounts are final. Pricing will soon be assigned to completed transactions with unassigned amounts.
