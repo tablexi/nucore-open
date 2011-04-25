@@ -35,7 +35,7 @@
         - if at.is_a?(PaymentAccountTransaction)
           %td Payment received. Thank you.
         - else
-          %td= link_to at.description, order_order_detail_path(at.order_detail.order, at.order_detail)
+          %td= link_to at.description, edit_facility_order_order_detail_path(current_facility, at.order_detail.order, at.order_detail)
         %td.centered
           - if at.is_in_dispute?
             In Dispute

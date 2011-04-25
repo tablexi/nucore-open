@@ -15,18 +15,6 @@ class FacilityOrderDetailsController < ApplicationController
   def edit
     @order        = current_facility.orders.find(params[:order_id])
     @order_detail = @order.order_details.find(params[:id])
-
-    if @order_detail.cancelled?
-      redirect_to :action => :show
-    elsif current_user.manager_of?(current_facility)
-      render :edit
-    else
-      if @order_detail.state == 'new' || @order_detail.state == 'inprocess'
-        render :edit
-      else
-        redirect_to :action => :show
-      end
-    end
   end
 
   # PUT /facilities/:facility_id/orders/:order_id/order_details/:id
@@ -67,8 +55,6 @@ class FacilityOrderDetailsController < ApplicationController
           redirect_to facility_orders_path(current_facility) and return
         elsif @order_detail.reviewable?
           redirect_to review_facility_orders_path(current_facility) and return
-        else
-          redirect_to :action => 'show' and return
         end
       rescue Exception => e
         flash.now[:error] = 'An error was encounted while updating the order'
@@ -124,11 +110,6 @@ class FacilityOrderDetailsController < ApplicationController
     render :action => 'edit'
   end
 
-  # GET /facilities/:facility_id/orders/:order_id/order_details/:id
-  def show
-    @order        = current_facility.orders.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:id])
-  end
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/new_price
   def new_price

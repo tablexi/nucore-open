@@ -175,7 +175,7 @@
       - if @order_detail.product.is_a?(Instrument)
         %td.currency=h number_to_currency @order_detail.estimated_cost
         %td.currency=h number_to_currency @order_detail.estimated_subsidy
-      - if @order_detail.complete?
+      - if @order_detail.price_policy.nil?
         %td.currency= number_to_currency @order_detail.actual_cost
         %td.currency= number_to_currency @order_detail.actual_subsidy
         %td.currency= number_to_currency @order_detail.actual_total

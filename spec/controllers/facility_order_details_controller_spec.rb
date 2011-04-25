@@ -77,18 +77,6 @@ describe FacilityOrderDetailsController do
   end
 
 
-  context 'show' do
-
-    before :each do
-      @method=:get
-      @action=:show
-    end
-
-    it_should_allow_operators_only
-
-  end
-
-
   context 'new_price' do
 
     before :each do
