@@ -25,7 +25,7 @@ class InstrumentPricePolicy < PricePolicy
   end
   
   def self.current_date(instrument)
-    ipp = instrument.instrument_price_policies.find(:first, :conditions => ['TRUNC(start_date) <= ?', Time.zone.now], :order => 'start_date DESC')
+    ipp = instrument.instrument_price_policies.find(:first, :conditions => ['TRUNC(start_date) <= ? AND TRUNC(expire_date) > ?', Time.zone.now, Time.zone.now], :order => 'start_date DESC')
     ipp ? ipp.start_date.to_date : nil
   end
 

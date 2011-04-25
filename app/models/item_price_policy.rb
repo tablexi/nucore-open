@@ -11,7 +11,7 @@ class ItemPricePolicy < PricePolicy
   before_save { |o| o.unit_subsidy = 0 if o.unit_subsidy.nil? && !o.unit_cost.nil? }
 
   def self.current_date(item)
-    ipp = item.item_price_policies.find(:first, :conditions => ['TRUNC(start_date) <= ?', Time.zone.now], :order => 'start_date DESC')
+    ipp = item.item_price_policies.find(:first, :conditions => ['TRUNC(start_date) <= ? AND TRUNC(expire_date) > ?', Time.zone.now, Time.zone.now], :order => 'start_date DESC')
     ipp ? ipp.start_date.to_date : nil
   end
 
