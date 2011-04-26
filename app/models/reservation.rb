@@ -11,7 +11,13 @@ class Reservation < ActiveRecord::Base
 
   validates_presence_of :instrument_id, :reserve_start_at, :reserve_end_at
   validate :does_not_conflict_with_other_reservation, :satisfies_minimum_length, :satisfies_maximum_length, :instrument_is_available_to_reserve, :in_the_future, :if => :reserve_start_at && :reserve_end_at && :reservation_changed?
-  validate :actuals_past, :if => :actual_start_at && :actual_end_at
+
+  validates_each [ :actual_start_at, :actual_end_at ] do |record,attr,value|
+    if value
+      errors.add(attr.to_s,'cannot be in the future') if Time.zone.now < value
+    end
+  end
+
   validate :starts_before_ends
   #validate :in_window, :if => :has_order_detail?
   #validate minimum_cost met
@@ -27,10 +33,6 @@ class Reservation < ActiveRecord::Base
   named_scope :upcoming, lambda { |*t| {:conditions => ["reservations.reserve_end_at >= ? AND reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)", t.blank? ? Time.zone.now : t], :order => 'reserve_end_at asc', :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id']} }
   named_scope :limit,    lambda { |n| {:limit => n}}
 
-  def actuals_past
-    errors.add('actual_start_date','cannot be in the future') if Time.zone.now < actual_start_at
-    errors.add('actual_end_date','cannot be in the future') if Time.zone.now < actual_end_at
-  end
 
   def starts_before_ends
     if reserve_start_at && reserve_end_at
