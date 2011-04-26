@@ -359,6 +359,16 @@ class OrderDetail < ActiveRecord::Base
     actual_subsidy.to_f > 0 || estimated_subsidy.to_f > 0
   end
 
+
+  #
+  # If this +OrderDetail+ is #complete? and either:
+  #   A) Does not have a +PricePolicy+ or
+  #   B) Has a reservation with missing usage information
+  # the method will return true, otherwise false
+  def problem_order?
+    complete? && (price_policy.nil? || (reservation && (reservation.actual_start_at.nil? || reservation.actual_end_at.nil?)))
+  end
+
   protected
 
   # initialize order detail status with product status
