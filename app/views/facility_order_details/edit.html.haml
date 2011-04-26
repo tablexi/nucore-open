@@ -92,9 +92,6 @@
             %label Dispute Reason
             =h @order_detail.dispute_reason
           %li
-            %label Credit Amount
-            = f.text_field(:dispute_resolved_credit, {:value => number_to_currency(@order_detail.dispute_resolved_credit, :unit => '')})
-          %li
             %label.required Resolution Notes
             = f.text_field :dispute_resolved_reason
 
@@ -115,9 +112,6 @@
           %li
             %label Resolution Notes
             =h @order_detail.dispute_resolved_reason
-          %li
-            %label Credit Amount
-            =h number_to_currency(@order_detail.dispute_resolved_credit)
     
     - # Results Files
     - if @order_detail.product.is_a?(Service)

@@ -78,11 +78,6 @@ class FacilityOrderDetailsController < ApplicationController
         # process account change
         process_account_change
 
-        # process credit
-        if @order_detail.dispute_resolved_credit && @order_detail.dispute_resolved_credit > 0
-          @order_detail.current_purchase_account_transaction.resolve_dispute_with_credit!(@order_detail.dispute_resolved_credit, :created_by => session_user.id)
-        end
-
         # resolve current purchase account transaction (in case no credit or move have adjusted it yet)
         current_txn = @order_detail.current_purchase_account_transaction
         current_txn.is_in_dispute = false

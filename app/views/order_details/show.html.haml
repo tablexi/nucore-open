@@ -63,10 +63,7 @@
       %li
         %label Dispute Resolution Notes
         =h @order_detail.dispute_resolved_reason
-      - if !@order_detail.dispute_resolved_credit.nil?
-        %li
-          %label Dispute Credit
-          =h number_to_currency(@order_detail.dispute_resolved_credit)
+
 .clear
 %table
   %tr

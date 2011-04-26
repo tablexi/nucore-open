@@ -32,7 +32,7 @@ class Journal < ActiveRecord::Base
         :activity        => account.activity,
         :program         => account.program,
         :account         => od.product.account,
-        :amount          => od.actual_total - od.dispute_resolved_credit.to_f,
+        :amount          => od.actual_total,
         :description     => "Order ##{od}"
       )
       JournalRow.create!(
@@ -45,7 +45,7 @@ class Journal < ActiveRecord::Base
         :activity        => fa.activity,
         :program         => fa.program,
         :account         => fa.revenue_account,
-        :amount          => (od.actual_total - od.dispute_resolved_credit.to_f) * -1,
+        :amount          => od.actual_total * -1,
         :description     => "Order ##{od}"
       )
     end
@@ -59,7 +59,7 @@ class Journal < ActiveRecord::Base
       account_txns = account.journalable_facility_transactions(facility)
       account_txns.each do |at|
         od         = at.order_detail
-        txn_amount = od.actual_total - od.dispute_resolved_credit.to_f
+        txn_amount = od.actual_total
         o          = od.order
         NucsValidator.new(account.account_number, od.product.account).account_is_open!
         JournalRow.create!(

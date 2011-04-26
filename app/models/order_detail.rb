@@ -20,9 +20,7 @@ class OrderDetail < ActiveRecord::Base
   validates_numericality_of :actual_cost, :if => lambda { |o| o.actual_cost_changed?}
   validates_numericality_of :actual_subsidy, :if => lambda { |o| o.actual_subsidy_changed?}
   validates_presence_of :dispute_reason, :if => :dispute_at
-  validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, :if => :dispute_resolved_reason || :dispute_resolved_credit || :dispute_resolved_at
-  validates_numericality_of :dispute_resolved_credit, :greater_than => 0, :allow_nil => true
-  validate :credit_less_than_cost?, :if => :dispute_resolved_credit
+  validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, :if => :dispute_resolved_reason || :dispute_resolved_at
   validate :account_usable_by_order_owner?
   validates_length_of :note, :maximum => 25, :allow_blank => true, :allow_nil => true
 
@@ -93,7 +91,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def init_purchase_account_transaction
-    PurchaseAccountTransaction.new({:account_id => account_id, :facility_id => product.facility_id, :description => "Order # #{self.to_s}", :transaction_amount => (actual_total - dispute_resolved_credit.to_f), :order_detail_id => id, :is_in_dispute => false})
+    PurchaseAccountTransaction.new({:account_id => account_id, :facility_id => product.facility_id, :description => "Order # #{self.to_s}", :transaction_amount => actual_total, :order_detail_id => id, :is_in_dispute => false})
   end
 
   def cost
@@ -145,10 +143,6 @@ class OrderDetail < ActiveRecord::Base
   def account_usable_by_order_owner?
     return unless order && account_id
     errors.add("account_id", "is not valid for the orderer") unless AccountUser.find(:first, :conditions => ['user_id = ? AND account_id = ? AND deleted_at IS NULL', order.user_id, account_id])
-  end
-
-  def credit_less_than_cost?
-    errors.add("dispute_resolved_credit", "must not be greater than the total of the order detail") if dispute_resolved_credit > actual_total
   end
 
   def can_dispute?
