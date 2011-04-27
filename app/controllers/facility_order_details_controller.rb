@@ -31,16 +31,19 @@ class FacilityOrderDetailsController < ApplicationController
         # process account change
         process_account_change
 
+        od_params=params[:order_detail]
+
         # process all changes except order status
-        @order_detail.attributes = params[:order_detail].reject{|k, v| k == :order_status_id}
-        @order_detail.actual_cost = params[:order_detail][:actual_cost].gsub(/[^\d\.]/,'')
-        @order_detail.actual_subsidy = params[:order_detail][:actual_subsidy].gsub(/[^\d\.]/,'')
+        @order_detail.attributes = od_params.reject{|k, v| k == :order_status_id}
+        @order_detail.actual_cost = od_params[:actual_cost].gsub(/[^\d\.]/,'') if od_params[:actual_cost]
+        @order_detail.actual_subsidy = od_params[:actual_subsidy].gsub(/[^\d\.]/,'') if od_params[:actual_subsidy]
         @order_detail.updated_by = session_user.id
+        @order_detail.assign_price_policy unless params[:assign_price_policy].blank?
         @order_detail.save!
 
         # process order status change
-        if params[:order_detail][:order_status_id]
-          os = OrderStatus.find(params[:order_detail][:order_status_id])
+        if od_params[:order_status_id]
+          os = OrderStatus.find(od_params[:order_status_id])
           # cancel instrument orders
           if os.root == OrderStatus.cancelled.first && @order_detail.reservation
             raise "Order # #{@order_detail} failed cancellation." unless @order_detail.cancel_reservation(session_user, os, true)
@@ -58,6 +61,7 @@ class FacilityOrderDetailsController < ApplicationController
         end
       rescue Exception => e
         flash.now[:error] = 'An error was encounted while updating the order'
+        Rails.logger.warn "#{e.message}\n#{e.backtrace.join("\n")}"
         raise ActiveRecord::Rollback
       end
     end
