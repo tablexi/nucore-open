@@ -41,28 +41,23 @@ class OrderDetail < ActiveRecord::Base
   aasm_initial_state    :new
   aasm_state            :new
   aasm_state            :inprocess
-  aasm_state            :reviewable
   aasm_state            :complete, :enter => :assign_price_policy
   aasm_state            :cancelled
 
   aasm_event :to_new do
-    transitions :to => :new, :from => [:reviewable, :inprocess]
+    transitions :to => :new, :from => :inprocess
   end
 
   aasm_event :to_inprocess do
-    transitions :to => :inprocess, :from => [:new, :reviewable]
-  end
-
-  aasm_event :to_reviewable do
-    transitions :to => :reviewable, :from => [:new, :inprocess], :guard => :reservation_over?
+    transitions :to => :inprocess, :from => :new
   end
 
   aasm_event :to_complete do
-    transitions :to => :complete, :from => [:reviewable], :guard => :has_purchase_account_transaction?
+    transitions :to => :complete, :from => [:new, :inprocess], :guard => :has_purchase_account_transaction_and_completed_reservation?
   end
 
   aasm_event :to_cancelled do
-    transitions :to => :cancelled, :from => [:new, :inprocess, :reviewable], :guard => :reservation_canceled?
+    transitions :to => :cancelled, :from => [:new, :inprocess], :guard => :reservation_canceled?
   end
   # END acts_as_state_machine
 
@@ -72,18 +67,6 @@ class OrderDetail < ActiveRecord::Base
     raise AASM::InvalidTransition, "Event '#{new_status.root.name.downcase.gsub(/ /,'')}' cannot transition from '#{state}'" unless success
     self.order_status = new_status
     self.save
-  end
-
-  def reservation_over?
-    if !product.is_a?(Instrument) || reservation.actual_end_at || reservation.reserve_end_at < Time.zone.now
-      true
-    else
-      false
-    end
-  end
-
-  def has_purchase_account_transaction?
-    !purchase_account_transactions.empty?
   end
 
   def reservation_canceled?
@@ -339,7 +322,7 @@ class OrderDetail < ActiveRecord::Base
       else
         self.actual_subsidy = 0
         self.actual_cost    = fee
-        return self.change_status!(OrderStatus.reviewable.first)
+        return self.change_status!(OrderStatus.complete.first)
       end
     end
   end
@@ -369,12 +352,16 @@ class OrderDetail < ActiveRecord::Base
     complete? && (price_policy.nil? || (reservation && (reservation.actual_start_at.nil? || reservation.actual_end_at.nil?)))
   end
 
-  protected
+  private
 
   # initialize order detail status with product status
   def init_status
     self.order_status = product.try(:initial_order_status)
     self.state = product.initial_order_status.root.name.downcase.gsub(/ /,'')
+  end
+
+  def has_purchase_account_transaction_and_completed_reservation?
+    !purchase_account_transactions.empty? && (!product.is_a?(Instrument) || (reservation && (reservation.actual_end_at || reservation.reserve_end_at < Time.zone.now)))
   end
 
 end

@@ -8,7 +8,6 @@
 
 OrderStatus.create(:name => 'New')
 OrderStatus.create(:name => 'In Process')
-OrderStatus.create(:name => 'Reviewable')
 OrderStatus.create(:name => 'Cancelled')
 OrderStatus.create(:name => 'Complete')
 

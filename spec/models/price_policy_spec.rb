@@ -189,7 +189,6 @@ describe PricePolicy do
 
       @order_detail.reload
       @order_detail.to_inprocess!
-      @order_detail.to_reviewable!
       @order_detail.to_complete!
       @pp.should be_assigned_to_order
     end

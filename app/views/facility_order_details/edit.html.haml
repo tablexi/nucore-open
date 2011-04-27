@@ -45,8 +45,8 @@
 - content_for :h1 do
   = current_facility
 - content_for :tabnav do
-  - if @order_detail.reviewable?
-    - tab = 'reviewable'
+  - if @order_detail.problem_order?
+    - tab = 'problem'
   - elsif @order_detail.in_dispute?
     - tab = 'disputed'
   - elsif @order_detail.complete?
@@ -173,7 +173,7 @@
         %td.currency= number_to_currency @order_detail.actual_cost
         %td.currency= number_to_currency @order_detail.actual_subsidy
         %td.currency= number_to_currency @order_detail.actual_total
-      - elsif @order_detail.product.is_a?(Instrument) && @order_detail.reviewable?
+      - elsif @order_detail.product.is_a?(Instrument) && @order_detail.complete?
         - res = @order_detail.reservation
         - if res && res.actual_start_at && res.actual_end_at
           %td.currency= "$#{f.text_field(:actual_cost, {:value => number_to_currency(@order_detail.actual_cost, :unit => ''), :id => 'actual_cost', :size => 8})}"
@@ -193,11 +193,11 @@
           = f.text_field(:note, :style=> "width:200px")
   %p.footnote * Changing the quantity will automatically update the price fields
 
-  - if @order_detail.order_status.name == 'Reviewable'
+  - if @order_detail.order_status.name == 'Complete'
     %p You <b>must</b> click "Save" to apply any changes made to the order.
     %ul.horiz
       %li= submit_tag 'Save', {:class => 'btn', :id => 'submit'}
-      %li= link_to 'Cancel', review_facility_orders_path
+      %li= link_to 'Cancel', show_problems_facility_orders_path
   - elsif @order_detail.in_dispute?
     %ul.horiz
       %li= submit_tag 'Resolve Dispute', {:class => 'btn', :id => 'submit'}

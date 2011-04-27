@@ -94,7 +94,6 @@ Spec::Runner.configure do |config|
     # initialize order status constants
     @os_new        = OrderStatus.find_or_create_by_name(:name => 'New')
     @os_in_process = OrderStatus.find_or_create_by_name(:name => 'In Process')
-    @os_reviewable = OrderStatus.find_or_create_by_name(:name => 'Reviewable')
     @os_complete   = OrderStatus.find_or_create_by_name(:name => 'Complete')
     @os_cancelled  = OrderStatus.find_or_create_by_name(:name => 'Cancelled')
 

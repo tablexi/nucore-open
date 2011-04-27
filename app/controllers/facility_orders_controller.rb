@@ -109,41 +109,8 @@ class FacilityOrdersController < ApplicationController
   end
 
   # GET /facilities/:facility_id/orders/review
-  def review
-    @order_details = current_facility.order_details.find_all_by_state('reviewable').paginate(:page => params[:page])
-  end
-
-  #POST /facilities/:facility_id/orders/review_batch_update
-  def review_batch_update
-    complete = OrderStatus.complete
-
-    unless params[:order_detail_ids]
-      flash[:error] = 'No orders selected'
-      redirect_to review_facility_orders_path
-      return
-    end
-
-    order_details = OrderDetail.find(params[:order_detail_ids])
-    if order_details.any? { |od| od.product.facility_id != current_facility.id || od.state.downcase != 'reviewable' }
-      flash[:error] = 'There was an error updating the selected orders'
-      redirect_to review_facility_orders_path
-      return
-    end
-    OrderDetail.transaction do
-      begin
-        order_details.each do |od|
-          at = od.init_purchase_account_transaction
-          at.created_by = session_user.id
-          at.save!
-          raise ActiveRecord::Rollback unless od.change_status!(complete) # saves the order detail
-        end
-      rescue Exception => e
-        flash[:error] = "There was an error updating the selected orders"
-        raise ActiveRecord::Rollback
-      end
-      flash[:notice] = 'The orders were successfully reviewed'
-    end
-    redirect_to review_facility_orders_path
+  def show_problems
+    @order_details = current_facility.order_details.reject{|od| !od.problem_order?}.paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/orders/disputed

@@ -4,7 +4,7 @@
   = javascript_include_tag 'reservations.js'
   = stylesheet_link_tag 'calendar/fullcalendar.css'
   = stylesheet_link_tag 'calendar/fullcalendar.extensions.css'
-  - if @order_detail.reviewable?
+  - if @order_detail.complete?
     :javascript
       var events_path     = "#{facility_instrument_reservations_url(current_facility, @instrument, :format => 'js')}";
       var minDaysFromNow  = #{(@reservation.reserve_start_at.to_date - Time.zone.now.to_date).to_i - 1};
@@ -29,8 +29,8 @@
     = render :partial => 'reservation_fields', :locals => {:f => f}
   %ul.horiz
     %li= f.submit 'Save', :class => 'btn'
-    - if @order_detail.reviewable?
-      %li= link_to 'Cancel', review_facility_orders_path
+    - if @order_detail.complete?
+      %li= link_to 'Cancel', show_problems_facility_orders_path
     - elsif @order_detail.new? || @order_detail.inprocess?
       %li= link_to 'Cancel', facility_orders_path
 

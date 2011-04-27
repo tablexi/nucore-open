@@ -475,7 +475,7 @@ class Reservation < ActiveRecord::Base
   # TODO does this need to be more robust?
   def can_edit_actuals?
     return false if order_detail.nil?
-    order_detail.reviewable?
+    order_detail.complete?
   end
 
   def reservation_changed?

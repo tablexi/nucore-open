@@ -67,26 +67,14 @@ describe FacilityOrdersController do
   end
 
 
-  context 'review' do
+  context 'show_problems' do
 
     before :each do
       @method=:get
-      @action=:review
+      @action=:show_problems
     end
 
     it_should_allow_managers_only
-
-  end
-
-
-  context 'review_batch_update' do
-
-    before :each do
-      @method=:post
-      @action=:review_batch_update
-    end
-
-    it_should_allow_managers_only :redirect
 
   end
 

@@ -7,7 +7,6 @@ namespace :demo  do
   task :seed => :environment do
     new        = OrderStatus.find_or_create_by_name(:name => 'New')
     in_process = OrderStatus.find_or_create_by_name(:name => 'In Process')
-    reviewable = OrderStatus.find_or_create_by_name(:name => 'Reviewable')
     cancelled  = OrderStatus.find_or_create_by_name(:name => 'Cancelled')
     complete   = OrderStatus.find_or_create_by_name(:name => 'Complete')
 
@@ -312,7 +311,6 @@ namespace :demo  do
       order = get_order(user_student, facility, get_account(user_student), {:purchase => true, :ordered_at => Time.zone.now - (rand(30) + 65).days}) # 94-65 days in the past
       order.reload
       order.order_details.each do |od|
-        od.change_status!(reviewable)
         # enter actuals for instruments
         set_instrument_order_actual_cost(od) if od.reservation
         at = od.init_purchase_account_transaction
@@ -336,7 +334,6 @@ namespace :demo  do
       order = get_order(user_student, facility, get_account(user_student), {:purchase => true, :ordered_at => Time.zone.now - (rand(30) + 32).days}) # 61 - 32 days in the past
       order.reload
       order.order_details.each do |od|
-        od.change_status!(reviewable)
         # enter actuals for instruments
         set_instrument_order_actual_cost(od) if od.reservation        
         at = od.init_purchase_account_transaction
@@ -360,7 +357,6 @@ namespace :demo  do
       order = get_order(user_student, facility, get_account(user_student), {:purchase => true, :ordered_at => Time.zone.now - (rand(30) + 1).days}) # 30 - 1 days in past
       order.reload
       order.order_details.each do |od|
-        od.change_status!(reviewable)
         # enter actuals for instruments
         set_instrument_order_actual_cost(od) if od.reservation
         at = od.init_purchase_account_transaction
@@ -377,14 +373,6 @@ namespace :demo  do
       order = get_order(user_student, facility, get_account(user_student), {:purchase => true, :ordered_at => Time.zone.now - (i*2).days})
     end
 
-    # purchased orders, reviewable details, ordered at last X days
-    sleep 2
-    (1..3).each do |i|
-      order = get_order(user_student, facility, get_account(user_student), {:purchase => true, :ordered_at => Time.zone.now - (i*2).days})
-      order.order_details.each do |od|
-        od.change_status! (reviewable)
-      end
-    end
   end
 
   def get_account(user)

@@ -217,7 +217,6 @@ describe OrderDetail do
 #        )
 #
 #        @order_detail.to_inprocess!
-#        @order_detail.to_reviewable!
 #        @order_detail.to_complete!
 #      end
 
@@ -264,19 +263,12 @@ describe OrderDetail do
       @order_detail.version.should == 2
     end
 
-    it "should allow anyone to transition from 'inprocess' to 'reviewable', increment version" do
-      @order_detail.to_inprocess!
-      @order_detail.to_reviewable!
-      @order_detail.state.should == 'reviewable'
-      @order_detail.version.should == 3
-    end
 
-    it "should not transition from 'reviewable' to 'completed' if there is no purchase account transaction" do
+    it "should not transition from 'inprocess' to 'completed' if there is no purchase account transaction" do
       @order_detail.to_inprocess!
-      @order_detail.to_reviewable!
       @order_detail.to_complete!
-      @order_detail.state.should == 'reviewable'
-      @order_detail.version.should == 3
+      @order_detail.state.should == 'inprocess'
+      @order_detail.version.should == 2
     end
 
 
@@ -304,7 +296,6 @@ describe OrderDetail do
         pp=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group3)
         @order_detail.price_policy.should be_nil
         @order_detail.to_inprocess!
-        @order_detail.to_reviewable!
         @order_detail.to_complete!
         @order_detail.state.should == 'complete'
         @order_detail.price_policy.should == pp
@@ -320,7 +311,6 @@ describe OrderDetail do
       it 'should not assign a price policy' do
         @order_detail.price_policy.should be_nil
         @order_detail.to_inprocess!
-        @order_detail.to_reviewable!
         @order_detail.to_complete!
         @order_detail.state.should == 'complete'
         @order_detail.price_policy.should be_nil

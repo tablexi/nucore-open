@@ -32,7 +32,7 @@ class Ability
         can :manage, User if controller.is_a?(UsersController)
         can [ :preview, :show_admin ], ServiceSurvey if controller.is_a?(SurveyorController)
 
-        cannot [ :review, :review_batch_update ], Order
+        cannot :show_problems, Order
         can [ :schedule, :agenda, :list ], Facility
         can :index, [ InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy ]
       end
@@ -52,7 +52,7 @@ class Ability
         can :manage, User if controller.is_a?(FacilityUsersController)
 
         can [ :update, :manage ], Facility
-        can [ :review, :review_batch_update ], Order
+        can :show_problems, Order
       end
 
     elsif resource.is_a?(Account)

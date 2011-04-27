@@ -210,7 +210,7 @@ class ReservationsController < ApplicationController
             @order_detail.actual_cost    = costs[:cost]
             @order_detail.actual_subsidy = costs[:subsidy]
           end
-          @order_detail.change_status!(OrderStatus.find_by_name('Reviewable'))
+          @order_detail.change_status!(OrderStatus.complete.first)
           flash[:notice] = 'The instrument has been deactivated successfully'
           @instrument.instrument_statuses.create(:is_on => false)
         rescue Exception => e
