@@ -74,13 +74,23 @@ class UsersController < ApplicationController
     redirect_to facilities_path
   end
 
+  # GET /facilities/:facility_id/users/:user_id/orders
   def orders
+    @user = User.find(params[:user_id])
+    # order details for this facility
+    @order_details = @user.order_details.find(:all, :conditions => "orders.facility_id = #{@current_facility.id} AND orders.ordered_at IS NOT NULL", :order => 'orders.ordered_at DESC').paginate(:page => params[:page])
   end
 
+  # GET /facilities/:facility_id/users/:user_id/accounts
   def accounts
+    @user = User.find(params[:user_id])
+    # accounts for this facility
+    @account_users = @user.account_users.active
   end
 
+  # GET /facilities/:facility_id/users/:id
   def show
+    @user = User.find(params[:id])
   end
   
   def email
