@@ -12,10 +12,14 @@
           %b= link_to(a, account_path(a))
         - else
           %b= a
-    - if au.can_administer?
+    - if au.can_administer? || session_user.administrator?
       - facilities.each do |f|
         - ats = a.account_transactions.find(:all, :conditions => {:facility_id => f.id})
         - if !ats.empty?
           %tr
             %td{ :style => "padding-left: 50px"}=h f
             %td.currency= link_to number_to_currency(a.facility_balance_including_pending(f)), account_facility_statement_path(a, f, 'recent')
+        - else
+          %tr
+            %td{ :style => "padding-left: 50px"}=h f
+            %td.currency= number_to_currency(0)
