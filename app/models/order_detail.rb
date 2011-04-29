@@ -3,6 +3,8 @@ class OrderDetail < ActiveRecord::Base
 
   belongs_to :product
   belongs_to :price_policy
+  belongs_to :statement
+  belongs_to :journal
   belongs_to :order
   belongs_to :assigned_user, :class_name => 'User', :foreign_key => 'assigned_user_id'
   belongs_to :order_status
