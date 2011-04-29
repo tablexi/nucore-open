@@ -10,9 +10,6 @@ class OrderDetail < ActiveRecord::Base
   belongs_to :order_status
   belongs_to :account
   belongs_to :bundle, :foreign_key => 'bundle_product_id'
-  has_many   :credit_account_transactions
-  has_many   :purchase_account_transactions
-  has_many   :account_transactions
   has_one    :reservation, :dependent => :destroy
   belongs_to :response_set, :dependent => :destroy
   has_many   :file_uploads, :dependent => :destroy

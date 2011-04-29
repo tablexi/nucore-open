@@ -1,6 +1,6 @@
 class Statement < ActiveRecord::Base
-  has_many :accounts, :through => :account_transactions
-  has_many :account_transactions
+  has_many :order_details
+  has_many :accounts, :through => :order_details
   belongs_to :facility
 
   validates_numericality_of :facility_id, :created_by, :only_integer => true
