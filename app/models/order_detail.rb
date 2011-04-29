@@ -55,7 +55,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   aasm_event :to_complete do
-    transitions :to => :complete, :from => [:new, :inprocess], :guard => :has_purchase_account_transaction_and_completed_reservation?
+    transitions :to => :complete, :from => [:new, :inprocess], :guard => :has_completed_reservation?
   end
 
   aasm_event :to_cancelled do
@@ -362,8 +362,8 @@ class OrderDetail < ActiveRecord::Base
     self.state = product.initial_order_status.root.name.downcase.gsub(/ /,'')
   end
 
-  def has_purchase_account_transaction_and_completed_reservation?
-    !purchase_account_transactions.empty? && (!product.is_a?(Instrument) || (reservation && (reservation.actual_end_at || reservation.reserve_end_at < Time.zone.now)))
+  def has_completed_reservation?
+    !product.is_a?(Instrument) || (reservation && (reservation.actual_end_at || reservation.reserve_end_at < Time.zone.now))
   end
 
 end
