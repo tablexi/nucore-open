@@ -27,7 +27,8 @@
     - instruments.sort.each do |instrument|
       %li
         = link_to(instrument.name + (instrument.is_hidden? ? ' (hidden)' : ''), facility_instrument_path(current_facility, instrument))
-        = instrument.is_approved_for?(acting_user) ? '': " (Requires Approval)"
+        -if !acting_user.nil?
+          instrument.is_approved_for?(acting_user) ? '': " (Requires Approval)"
 
 - unless services.empty?
   %h3 Services
