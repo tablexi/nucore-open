@@ -7,6 +7,16 @@ describe Statement do
     @statement.should be_valid
   end
 
+  context "finalized_at" do
+    before :each do
+      @facility  = Factory.create(:facility)
+      @statement = Statement.create({:facility => @facility, :created_by => 1, :invoice_date => Time.zone.now + 7.days})
+    end
+
+    it { should allow_value(nil).for(:finalized_at) }
+    it { should allow_value(Time.zone.now).for(:finalized_at) }
+  end
+
   it "requires created_by" do
     @statement = Statement.new({:created_by => nil})
     @statement.should_not be_valid
