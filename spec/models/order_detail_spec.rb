@@ -164,10 +164,6 @@ describe OrderDetail do
   context 'instrument' do
 
 #    before :each do
-#      @facility       = Factory.create(:facility)
-#      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-#      @user           = Factory.create(:user)
-#      @account        = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
 #      @price_group    = Factory.create(:price_group, :facility => @facility)
 #      @pg_user_member = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
 #      @order          = @user.orders.create(Factory.attributes_for(:order, :facility_id => @facility.id, :account_id => @account.id, :created_by => @user.id))
@@ -188,15 +184,6 @@ describe OrderDetail do
 #        @order_detail.reservation=@reservation
 #        define_open_account(@order_detail.product.account, @order_detail.account.account_number)
 #        Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
-#
-#        PurchaseAccountTransaction.create!(
-#          :order_detail => @order_detail,
-#          :transaction_amount => 10,
-#          :facility => @facility,
-#          :account => @account,
-#          :created_by => @user.id,
-#          :is_in_dispute => false
-#        )
 #
 #        @order_detail.to_inprocess!
 #        @order_detail.to_complete!

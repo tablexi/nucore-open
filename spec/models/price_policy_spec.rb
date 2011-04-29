@@ -178,15 +178,6 @@ describe PricePolicy do
 
 
     it 'should be assigned' do
-      PurchaseAccountTransaction.create!(
-        :order_detail => @order_detail,
-        :transaction_amount => 10,
-        :facility => @facility,
-        :account => @account,
-        :created_by => @user.id,
-        :is_in_dispute => false
-      )
-
       @order_detail.reload
       @order_detail.to_inprocess!
       @order_detail.to_complete!
