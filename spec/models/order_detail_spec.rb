@@ -350,8 +350,13 @@ describe OrderDetail do
       ods.first.should == @order_detail
     end
 
+    it 'should give all order details for a facility' do
+      ods=OrderDetail.for_facility(@facility)
+      ods.size.should == 1
+      ods.first.should == @order_detail
+    end
 
-    it 'should give recent order details of given facility only' do
+    it 'should give finalized order details of given facility only' do
       now=Time.zone.now
       @statement = Statement.create({:facility => @facility, :created_by => 1, :invoice_date => now + 7.days, :finalized_at => now-3.days})
       @order_detail.statement=@statement

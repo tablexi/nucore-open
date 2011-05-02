@@ -42,6 +42,9 @@ class OrderDetail < ActiveRecord::Base
                                                :conditions => ['orders.facility_id = ? AND statements.finalized_at < ?', facility.id, Time.zone.now],
                                                :order => 'fulfilled_at DESC' }}
 
+  named_scope :for_facility, lambda {|facility| { :joins => :order, :conditions => [ 'orders.facility_id = ?', facility.id ] }}
+
+  
   # BEGIN acts_as_state_machine
   include AASM
 
