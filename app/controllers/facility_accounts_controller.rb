@@ -219,8 +219,7 @@ class FacilityAccountsController < ApplicationController
     @facility = current_facility
     @statements = @account.statements.final_for_facility(current_facility).uniq
 
-    @order_details = @account.order_details.facility_recent(@facility)
-    @order_details = @order_details + OrderDetail.finalized(@facility)
+    @order_details = @account.order_details.statemented(@facility)
     @order_details = @order_details.paginate(:page => params[:page])
 
     prawnto :prawn => {
@@ -228,6 +227,7 @@ class FacilityAccountsController < ApplicationController
                   :right_margin  => 50,
                   :top_margin    => 50,
                   :bottom_margin => 75 }
+
     respond_to do |format|
       format.html { render :action => :show_statement }
       format.pdf  { render :action => '../statements/show' }
