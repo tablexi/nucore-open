@@ -33,6 +33,15 @@ class OrderDetail < ActiveRecord::Base
   named_scope :in_dispute, :conditions => ['dispute_at IS NOT NULL AND dispute_resolved_at IS NULL AND STATE != ?', 'cancelled'], :order => 'dispute_at'
   named_scope :new_or_inprocess, :conditions => ["order_details.state IN ('new', 'inprocess') AND orders.ordered_at IS NOT NULL"], :include => :order, :order => 'orders.ordered_at DESC'
 
+  named_scope :facility_recent, lambda { |facility|
+                                  { :conditions => ['(statement_id IS NULL OR statements.invoice_date > ?) AND orders.facility_id = ?', Time.zone.now, facility.id],
+                                    :joins => 'LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id',
+                                    :order => 'fulfilled_at DESC' }}
+
+  named_scope :finalized, lambda {|facility| { :joins => [ :order, :statement ],
+                                               :conditions => ['orders.facility_id = ? AND statements.finalized_at < ?', facility.id, Time.zone.now],
+                                               :order => 'fulfilled_at DESC' }}
+
   # BEGIN acts_as_state_machine
   include AASM
 
@@ -136,6 +145,10 @@ class OrderDetail < ActiveRecord::Base
     else
       false
     end
+  end
+
+  def is_in_dispute?
+    dispute_at && dispute_resolved_at.nil? && !cancelled?
   end
 
   def validate_for_purchase
@@ -283,6 +296,10 @@ class OrderDetail < ActiveRecord::Base
 
   def to_s
     "#{order.id}-#{id}"
+  end
+
+  def description
+    "Order # #{to_s}"
   end
 
   def cost_estimated?

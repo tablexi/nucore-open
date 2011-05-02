@@ -287,4 +287,83 @@ describe OrderDetail do
     end
   end
 
+
+  it "should include ids in description" do
+    desc=@order_detail.to_s
+    desc.should match(/#{@order_detail.id}/)
+    desc.should match(/#{@order_detail.order.id}/)
+  end
+
+
+  context 'is_in_dispute?' do
+
+    it 'should be in dispute' do
+      @order_detail.dispute_at=Time.zone.now
+      @order_detail.dispute_resolved_at=nil
+      @order_detail.should be_is_in_dispute
+    end
+
+
+    it 'should not be in dispute if dispute_at is nil' do
+      @order_detail.dispute_at=nil
+      @order_detail.dispute_resolved_at="all good"
+      @order_detail.should_not be_is_in_dispute
+    end
+
+
+    it 'should not be in dispute if dispute_resolved_at is not nil' do
+      @order_detail.dispute_at=Time.zone.now
+      @order_detail.dispute_resolved_at=Time.zone.now+1.day
+      @order_detail.should_not be_is_in_dispute
+    end
+
+
+    it 'should not be in dispute if order detail is cancelled' do
+      @order_detail.to_cancelled!
+      @order_detail.dispute_at=Time.zone.now
+      @order_detail.dispute_resolved_at=nil
+      @order_detail.should_not be_is_in_dispute
+    end
+
+  end
+
+
+  context 'named scopes' do
+
+    before :each do
+      @order.facility=@facility
+      assert @order.save
+
+      # extra facility records to make sure we scope properly
+      @facility2 = Factory.create(:facility)
+      @facility_account2 = @facility2.facility_accounts.create(Factory.attributes_for(:facility_account))
+      @user2     = Factory.create(:user)
+      @item2     = @facility2.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account2.id))
+      @account2  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user2, :created_by => @user2, :user_role => 'Owner']])
+      @order2    = @user2.orders.create(Factory.attributes_for(:order, :created_by => @user2.id, :facility => @facility2))
+      @order_detail2 = @order2.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item2.id, :account_id => @account2.id))
+    end
+
+    it 'should give recent order details of given facility only' do
+      ods=OrderDetail.facility_recent(@facility)
+      ods.size.should == 1
+      ods.first.should == @order_detail
+    end
+
+
+    it 'should give recent order details of given facility only' do
+      now=Time.zone.now
+      @statement = Statement.create({:facility => @facility, :created_by => 1, :invoice_date => now + 7.days, :finalized_at => now-3.days})
+      @order_detail.statement=@statement
+      assert @order_detail.save
+      @statement2 = Statement.create({:facility => @facility2, :created_by => 1, :invoice_date => now + 8.days, :finalized_at => now-4.days})
+      @order_detail2.statement=@statement2
+      assert @order_detail2.save
+      ods=OrderDetail.finalized(@facility)
+      ods.size.should == 1
+      ods.first.should == @order_detail
+    end
+
+  end
+
 end
