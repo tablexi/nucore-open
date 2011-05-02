@@ -219,12 +219,9 @@ class FacilityAccountsController < ApplicationController
     @facility = current_facility
     @statements = @account.statements.final_for_facility(current_facility).uniq
 
-    if params[:statement_id].to_s.downcase == 'recent'
-      @account_txns   = @account.account_transactions.facility_recent(current_facility)
-    else
-      @statement      = @account.statements.find(params[:statement_id])
-      @account_txns   = @statement.account_transactions.finalized
-    end
+    @order_details = @account.order_details.facility_recent(@facility)
+    @order_details = @order_details + OrderDetail.finalized(@facility)
+    @order_details = @order_details.paginate(:page => params[:page])
 
     prawnto :prawn => {
                   :left_margin   => 50,

@@ -474,17 +474,10 @@ describe FacilityAccountsController do
 
       2.times do
         @statement=Factory.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :invoice_date => Time.zone.now)
-        @transact=Factory.create(:payment_account_transaction, {
-          :facility_id => @authable.id,
-          :created_by => @admin.id,
-          :account_id => @account.id,
-          :statement_id => @statement.id,
-          :order_detail => @order_detail
-        })
         sleep 1 # need different timestamp on statement
       end
 
-      @params={ :facility_id => @authable.url_name, :account_id => @account.id, :statement_id => @statement.id }
+      @params={ :facility_id => @authable.url_name, :account_id => @account.id, :statement_id => 'recent' }
     end
 
     it_should_require_login
@@ -494,23 +487,10 @@ describe FacilityAccountsController do
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
       assigns(:facility).should == @authable
-      assigns(:statement).should == @statement
       should assign_to(:statements).with_kind_of Array
-      assigns(:account_txns)[0].should == @transact
+      should assign_to(:order_details).with_kind_of Array
+      assigns(:order_details).each{|od| od.order.facility.should == @authable }
       should render_template 'show_statement'
-    end
-
-
-    context 'recent statement id' do
-
-      before :each do
-        @params[:statement_id]='recent'
-      end
-
-      it_should_allow_all facility_managers do
-        assigns(:statement).should be_nil
-        should render_template 'show_statement'
-      end
     end
 
   end
