@@ -356,17 +356,31 @@ describe OrderDetail do
       ods.first.should == @order_detail
     end
 
-    it 'should give finalized order details of given facility only' do
-      now=Time.zone.now
-      @statement = Statement.create({:facility => @facility, :created_by => 1, :invoice_date => now + 7.days, :finalized_at => now-3.days})
-      @order_detail.statement=@statement
-      assert @order_detail.save
-      @statement2 = Statement.create({:facility => @facility2, :created_by => 1, :invoice_date => now + 8.days, :finalized_at => now-4.days})
-      @order_detail2.statement=@statement2
-      assert @order_detail2.save
-      ods=OrderDetail.finalized(@facility)
-      ods.size.should == 1
-      ods.first.should == @order_detail
+
+    context 'needs statement' do
+
+      before :each do
+        now=Time.zone.now
+        @statement = Statement.create({:facility => @facility, :created_by => 1, :invoice_date => now + 7.days, :finalized_at => now-3.days})
+        @order_detail.statement=@statement
+        assert @order_detail.save
+        @statement2 = Statement.create({:facility => @facility2, :created_by => 1, :invoice_date => now + 8.days, :finalized_at => now-4.days})
+        @order_detail2.statement=@statement2
+        assert @order_detail2.save
+      end
+
+      it 'should give all order details with statements for a facility' do
+        ods=OrderDetail.statemented(@facility)
+        ods.size.should == 1
+        ods.first.should == @order_detail
+      end
+
+      it 'should give finalized order details of given facility only' do
+        ods=OrderDetail.finalized(@facility)
+        ods.size.should == 1
+        ods.first.should == @order_detail
+      end
+
     end
 
   end

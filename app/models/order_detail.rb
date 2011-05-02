@@ -38,11 +38,18 @@ class OrderDetail < ActiveRecord::Base
                                     :joins => 'LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id',
                                     :order => 'fulfilled_at DESC' }}
 
+  # TODO: remove?
   named_scope :finalized, lambda {|facility| { :joins => [ :order, :statement ],
                                                :conditions => ['orders.facility_id = ? AND statements.finalized_at < ?', facility.id, Time.zone.now],
                                                :order => 'fulfilled_at DESC' }}
 
   named_scope :for_facility, lambda {|facility| { :joins => :order, :conditions => [ 'orders.facility_id = ?', facility.id ] }}
+
+  named_scope :statemented, lambda {|facility| {
+      :joins => :order,
+      :order => 'fulfilled_at DESC',
+      :conditions => [ 'orders.facility_id = ? AND statement_id IS NOT NULL', facility.id ] }
+  }
 
   
   # BEGIN acts_as_state_machine
