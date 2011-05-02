@@ -13,14 +13,12 @@
         %td{:colspan => 2}= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
         %td
         %td
-        %td
         %td= submit_tag "Send Statements"
       %tr
         %th
         %th Account
         %th Owner
         %th Last Statement
-        %th Balance
         %th Notify
       -@accounts.each do |a|
         - statement = a.statements.find(:first, :conditions => {:facility_id => current_facility.id})
@@ -29,13 +27,11 @@
           %td= link_to a, facility_account_statement_path(current_facility, a, 'recent')
           %td=h a.owner_user.full_name
           %td=h (statement.nil? ? 'never' : human_datetime(statement.created_at))
-          %td=h number_to_currency a.facility_balance_including_pending(current_facility)
           %td
             %ul
               - a.notify_users.each do |u|
                 %li=h u.email
       %tr.borderless
-        %td
         %td
         %td
         %td
