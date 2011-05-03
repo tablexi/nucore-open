@@ -38,7 +38,6 @@ class OrderDetail < ActiveRecord::Base
                                     :joins => 'LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id',
                                     :order => 'fulfilled_at DESC' }}
 
-  # TODO: remove?
   named_scope :finalized, lambda {|facility| { :joins => [ :order, :statement ],
                                                :conditions => ['orders.facility_id = ? AND statements.finalized_at < ?', facility.id, Time.zone.now],
                                                :order => 'fulfilled_at DESC' }}
@@ -51,6 +50,11 @@ class OrderDetail < ActiveRecord::Base
       :conditions => [ 'orders.facility_id = ? AND statement_id IS NOT NULL', facility.id ] }
   }
 
+  named_scope :unreconciled, lambda {|facility| {
+      :joins => :order,
+      :conditions => [ 'orders.facility_id = ? AND order_details.state != ?', facility.id, OrderStatus.reconciled.first.name ] }
+  }
+
   
   # BEGIN acts_as_state_machine
   include AASM
@@ -60,6 +64,7 @@ class OrderDetail < ActiveRecord::Base
   aasm_state            :new
   aasm_state            :inprocess
   aasm_state            :complete, :enter => :assign_price_policy
+  aasm_state            :reconciled
   aasm_state            :cancelled
 
   aasm_event :to_new do
@@ -72,6 +77,10 @@ class OrderDetail < ActiveRecord::Base
 
   aasm_event :to_complete do
     transitions :to => :complete, :from => [:new, :inprocess], :guard => :has_completed_reservation?
+  end
+
+  aasm_event :to_reconciled do
+    transitions :to => :reconciled, :from => :complete, :guard => :actual_total
   end
 
   aasm_event :to_cancelled do
@@ -148,8 +157,9 @@ class OrderDetail < ActiveRecord::Base
 
   def can_dispute?
     return false unless self.complete?
-    pending_transaction = purchase_account_transactions.find(:first,
-          :conditions => ['(finalized_at > ? OR finalized_at IS NULL) AND account_transactions.account_id = ?', Time.zone.now, self.account.id])
+    pending_transaction = self.class.find(:first,
+          :joins => :statement,
+          :conditions => ['(statements.finalized_at > ? OR statements.finalized_at IS NULL) AND account_id = ?', Time.zone.now, self.account.id])
     if pending_transaction && dispute_at.nil?
       true
     else

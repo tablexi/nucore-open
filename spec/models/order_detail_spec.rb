@@ -220,7 +220,7 @@ describe OrderDetail do
     end
 
 
-    context 'exits with #assign_price_policy' do
+    context 'needs price policy' do
 
       before :each do
         @price_group3 = Factory.create(:price_group, :facility => @facility)
@@ -253,6 +253,29 @@ describe OrderDetail do
         @order_detail.state.should == 'complete'
         @order_detail.price_policy.should be_nil
         @order_detail.should be_problem_order
+      end
+
+
+      it "should transition to reconciled" do
+        Factory.create(:item_price_policy, :item => @item, :price_group => @price_group3)
+        @order_detail.to_inprocess!
+        @order_detail.to_complete!
+        @order_detail.state.should == 'complete'
+        @order_detail.version.should == 3
+        @order_detail.to_reconciled!
+        @order_detail.state.should == 'reconciled'
+        @order_detail.version.should == 4
+      end
+
+
+      it "should not transition to reconciled if there are no actual costs" do
+        @order_detail.to_inprocess!
+        @order_detail.to_complete!
+        @order_detail.state.should == 'complete'
+        @order_detail.version.should == 3
+        @order_detail.to_reconciled!
+        @order_detail.state.should == 'complete'
+        @order_detail.version.should == 3
       end
 
     end

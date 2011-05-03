@@ -17,6 +17,7 @@ class OrderStatus < ActiveRecord::Base
   named_scope :inprocess,  :conditions => {:name => 'In Process'}, :limit => 1
   named_scope :cancelled,  :conditions => {:name => 'Cancelled'}, :limit => 1
   named_scope :complete, :conditions => {:name => 'Complete'}, :limit => 1
+  named_scope :reconciled, :conditions => {:name => 'Reconciled'}, :limit => 1
 
   def is_left_of? (o)
     rgt < o.lft
