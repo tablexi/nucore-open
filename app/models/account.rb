@@ -3,11 +3,8 @@ class Account < ActiveRecord::Base
   has_one    :owner, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_OWNER, :deleted_at => nil}
   has_many   :business_admins, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_ADMINISTRATOR, :deleted_at => nil}
   has_many   :price_group_members
-  has_many   :account_transactions
-  has_many   :payment_account_transactions
-  has_many   :purchase_account_transactions
-  has_many   :credit_account_transactions
-  has_many   :statements, :through => :account_transactions
+  has_many   :order_details
+  has_many   :statements, :through => :order_details
   accepts_nested_attributes_for :account_users
 
   named_scope :active, lambda {{ :conditions => ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] }}
@@ -82,60 +79,47 @@ class Account < ActiveRecord::Base
   end
 
   def self.need_statements (facility)
-    sql = "SELECT DISTINCT account_id FROM account_transactions WHERE facility_id = #{facility.id} AND statement_id IS NULL AND is_in_dispute = 0"
-    ats = AccountTransaction.find_by_sql(sql) #not a real AT object; only account_id
+    sql=<<-SQL
+      SELECT DISTINCT
+        od.account_id
+      FROM
+        order_details od, orders o
+      WHERE
+        o.facility_id = #{facility.id}
+        AND od.order_id=o.id
+        AND od.statement_id IS NULL
+        AND (od.dispute_at IS NULL OR (od.dispute_at IS NOT NULL AND od.dispute_resolved_at IS NOT NULL))
+    SQL
+    ats = OrderDetail.find_by_sql(sql) #not a real AT object; only account_id
     find(ats.collect{|at| at.account_id} || [])
   end
 
-  def facility_balance (facility)
-    at = account_transactions.find(:first,
-        :conditions => ['facility_id = ? AND finalized_at <= ?', facility.id, Time.zone.now],
-        :select => "SUM(transaction_amount) AS balance" )
-    at.nil? ? 0 : at.balance.to_f
-  end
-
-  def facility_recent_payment_balance (facility)
-    at = account_transactions.find(:first,
-        :conditions => ["(statement_id IS NULL OR invoice_date >= ?) AND account_transactions.facility_id = ? AND (type = 'PaymentAccountTransaction' OR type = 'CreditAccountTransaction')", Time.zone.now, facility.id],
-        :select => 'SUM(transaction_amount) AS balance',
-        :joins => 'LEFT JOIN statements ON statement_id = statements.id' )
-    at.nil? ? 0 : at.balance.to_f
-  end
-  
-  def facility_recent_purchase_balance (facility)
-    at = purchase_account_transactions.find(:first,
-        :conditions => ["(statement_id IS NULL OR invoice_date >= ?) AND account_transactions.facility_id = ?", Time.zone.now, facility.id],
-        :select => 'SUM(transaction_amount) AS balance',
-        :joins => 'LEFT JOIN statements ON statement_id = statements.id' )
-    at.nil? ? 0 : at.balance.to_f    
-  end
-
-  def statement_payment_balance (statement)
-    at = account_transactions.find(:first,
-        :conditions => ["statement_id = ? AND (type = 'PaymentAccountTransction' OR type = 'CreditAccountTransactions')", statement.id],
-        :select => 'SUM(transaction_amount) AS balance' )
-    at.nil? ? 0 : at.balance.to_f
-  end
-  
-  def statement_purchase_balance (statement)
-    at = purchase_account_transactions.find(:first,
-        :conditions => ["statement_id = ?", statement.id],
-        :select => 'SUM(transaction_amount) AS balance' )
-    at.nil? ? 0 : at.balance.to_f    
-  end
-
-  def facility_balance_including_pending (facility)
-    at = account_transactions.find(:first,
-        :conditions => ['facility_id = ? AND is_in_dispute = ?', facility.id, false],
-        :select => "SUM(transaction_amount) AS balance" )
+  def facility_balance (facility, date=Time.zone.now)
+    at = order_details.find(:first,
+        :joins => "INNER JOIN orders ON orders.id=order_details.order_id INNER JOIN statements ON statements.id=order_details.statement_id INNER JOIN statement_rows ON statements.id=statement_rows.statement_id",
+        :conditions => ['orders.facility_id = ? AND statements.finalized_at <= ?', facility.id, date],
+        :select => "SUM(statement_rows.amount) AS balance" )
     at.nil? ? 0 : at.balance.to_f
   end
 
   def facility_balance_on_date (facility, datetime)
-    at = account_transactions.find(:first,
-        :conditions => ['facility_id = ? AND (finalized_at <= ?)', facility.id, datetime],
-        :select => "SUM(transaction_amount) AS balance" )
-    at.nil? ? 0 : at.balance.to_f
+    return facility_balance(facility, datetime)
+  end
+
+  def unreconciled_total(facility)
+    details=order_details.find(:all,
+      :joins => :order,
+      :conditions => [ 'orders.facility_id = ? AND order_details.account_id = ?', facility.id, id ]
+    )
+
+    unreconciled_total=0
+
+    details.each do |od|
+      total=od.cost_estimated? ? od.estimated_total : od.actual_total
+      unreconciled_total += total if total
+    end
+
+    unreconciled_total
   end
 
   def latest_facility_statement (facility)
