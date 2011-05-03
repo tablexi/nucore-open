@@ -102,10 +102,6 @@ class Account < ActiveRecord::Base
     at.nil? ? 0 : at.balance.to_f
   end
 
-  def facility_balance_on_date (facility, datetime)
-    return facility_balance(facility, datetime)
-  end
-
   def unreconciled_total(facility)
     details=order_details.find(:all,
       :joins => :order,
