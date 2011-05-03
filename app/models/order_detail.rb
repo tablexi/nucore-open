@@ -34,20 +34,20 @@ class OrderDetail < ActiveRecord::Base
   named_scope :new_or_inprocess, :conditions => ["order_details.state IN ('new', 'inprocess') AND orders.ordered_at IS NOT NULL"], :include => :order, :order => 'orders.ordered_at DESC'
 
   named_scope :facility_recent, lambda { |facility|
-                                  { :conditions => ['(statement_id IS NULL OR statements.invoice_date > ?) AND orders.facility_id = ?', Time.zone.now, facility.id],
+                                  { :conditions => ['(order_details.statement_id IS NULL OR statements.invoice_date > ?) AND orders.facility_id = ?', Time.zone.now, facility.id],
                                     :joins => 'LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id',
-                                    :order => 'fulfilled_at DESC' }}
+                                    :order => 'order_details.created_at DESC' }}
 
   named_scope :finalized, lambda {|facility| { :joins => [ :order, :statement ],
                                                :conditions => ['orders.facility_id = ? AND statements.finalized_at < ?', facility.id, Time.zone.now],
-                                               :order => 'fulfilled_at DESC' }}
+                                               :order => 'order_details.created_at DESC' }}
 
-  named_scope :for_facility, lambda {|facility| { :joins => :order, :conditions => [ 'orders.facility_id = ?', facility.id ], :order => 'fulfilled_at DESC' }}
+  named_scope :for_facility, lambda {|facility| { :joins => :order, :conditions => [ 'orders.facility_id = ?', facility.id ], :order => 'order_details.created_at DESC' }}
 
   named_scope :statemented, lambda {|facility| {
       :joins => :order,
-      :order => 'fulfilled_at DESC',
-      :conditions => [ 'orders.facility_id = ? AND statement_id IS NOT NULL', facility.id ] }
+      :order => 'order_details.created_at DESC',
+      :conditions => [ 'orders.facility_id = ? AND order_details.statement_id IS NOT NULL', facility.id ] }
   }
 
   named_scope :unreconciled, lambda {|facility| {
