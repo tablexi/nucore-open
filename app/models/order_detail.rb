@@ -42,7 +42,7 @@ class OrderDetail < ActiveRecord::Base
                                                :conditions => ['orders.facility_id = ? AND statements.finalized_at < ?', facility.id, Time.zone.now],
                                                :order => 'fulfilled_at DESC' }}
 
-  named_scope :for_facility, lambda {|facility| { :joins => :order, :conditions => [ 'orders.facility_id = ?', facility.id ] }}
+  named_scope :for_facility, lambda {|facility| { :joins => :order, :conditions => [ 'orders.facility_id = ?', facility.id ], :order => 'fulfilled_at DESC' }}
 
   named_scope :statemented, lambda {|facility| {
       :joins => :order,
