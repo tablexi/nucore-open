@@ -219,7 +219,7 @@ class FacilityAccountsController < ApplicationController
     @facility = current_facility
     @statements = @account.statements.final_for_facility(current_facility).uniq
 
-    @order_details = @account.order_details.statemented(@facility)
+    @order_details = @account.order_details.for_facility(@facility)
     @order_details = @order_details.paginate(:page => params[:page])
 
     prawnto :prawn => {
