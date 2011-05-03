@@ -33,13 +33,13 @@
 - else
   %table
     %tr
-      %th Completed Date
+      %th Transaction Date
       %th Description
       %th.centered Dispute?
       %th.currency Amount
     - @order_details.each do |od|
       %tr
-        %td= human_datetime(od.fulfilled_at)
+        %td= human_datetime(od.created_at)
         %td=h od.description
         %td.centered
           - if od.is_in_dispute?

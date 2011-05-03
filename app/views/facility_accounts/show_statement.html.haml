@@ -16,12 +16,12 @@
     %p= link_to 'Download Invoice', facility_account_statement_path(current_facility, @account, @statement, :format => 'pdf')
   %table
     %tr
-      %th Completed Date
+      %th Transaction Date
       %th Description
       %th.currency Amount
     - @order_details.each do |od|
       %tr
-        %td= human_datetime(od.fulfilled_at)
+        %td= human_datetime(od.created_at)
         %td= link_to od.description, edit_facility_order_order_detail_path(current_facility, od.order, od)
         %td.currency
           - if od.cost_estimated?
@@ -35,4 +35,4 @@
     %tr
       %td.centered{:colspan =>3}= will_paginate(@order_details)
 
-  = render :partial => '/price_display_footnote'
+  = render :partial => '/price_display_footnote', :locals => { :admin => true }
