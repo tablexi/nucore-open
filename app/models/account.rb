@@ -79,18 +79,17 @@ class Account < ActiveRecord::Base
   end
 
   def self.need_statements (facility)
-    sql=<<-SQL
-      SELECT DISTINCT
-        od.account_id
-      FROM
-        order_details od, orders o
-      WHERE
-        o.facility_id = #{facility.id}
-        AND od.order_id=o.id
-        AND od.statement_id IS NULL
-        AND (od.dispute_at IS NULL OR (od.dispute_at IS NOT NULL AND od.dispute_resolved_at IS NOT NULL))
+    where=<<-SQL
+      orders.facility_id = ?
+      AND order_details.state = ?
+      AND order_details.reviewed_at IS NULL
+      AND order_details.statement_id IS NULL
+      AND order_details.price_policy_id IS NOT NULL
+      AND (order_details.dispute_at IS NULL OR (order_details.dispute_at IS NOT NULL AND order_details.dispute_resolved_at IS NOT NULL))
     SQL
-    ats = OrderDetail.find_by_sql(sql) #not a real AT object; only account_id
+
+    # find details that are complete, not yet statemented, priced, and not in dispute
+    ats=OrderDetail.find(:all, :joins => :order, :select => 'DISTINCT order_details.account_id', :conditions => [ where, facility.id, OrderStatus.complete.name ])
     find(ats.collect{|at| at.account_id} || [])
   end
 
