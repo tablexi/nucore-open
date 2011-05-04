@@ -122,8 +122,11 @@ class Account < ActiveRecord::Base
     statements.latest(facility).first
   end
 
-  def update_account_transactions_with_statement (statement)
-    AccountTransaction.update_all({:finalized_at => statement.invoice_date, :statement_id => statement.id}, "account_id = #{id} AND facility_id = #{statement.facility_id} AND statement_id IS NULL")
+  def update_order_details_with_statement (statement)
+    details=order_details.find(:all, :joins => :order, :conditions => [ 'orders.facility_id = ? AND order_details.account_id = ? AND order_details.statement_id IS NULL', statement.facility.id, id])
+    details.each do |od|
+      od.update_attributes({:reviewed_at => statement.invoice_date+7.days, :statement => statement })
+    end
   end
 
   def can_be_used_by?(user)

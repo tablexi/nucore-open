@@ -159,6 +159,21 @@ describe Account do
     it "should return error if the chart string account does not product account number"
   end
 
+  it 'should update order details with statement' do
+    facility = Factory.create(:facility)
+    facility_account = facility.facility_accounts.create(Factory.attributes_for(:facility_account))
+    user     = Factory.create(:user)
+    item     = facility.items.create(Factory.attributes_for(:item, :facility_account_id => facility_account.id))
+    account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => user, :created_by => user, :user_role => 'Owner']])
+    order    = user.orders.create(Factory.attributes_for(:order, :created_by => user.id, :facility => facility))
+    order_detail = order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => item.id, :account_id => account.id))
+    statement = Statement.create({:facility => facility, :created_by => 1, :invoice_date => Time.zone.now})
+    account.update_order_details_with_statement(statement)
+    order_detail.reload.reviewed_at.to_date.should == (statement.invoice_date + 7.days).to_date
+    order_detail.statement.should == statement
+  end
+
+
   context "billing" do
     before(:each) do
       @facility1        = Factory.create(:facility)

@@ -45,7 +45,7 @@ class FacilityStatementsController < ApplicationController
       a.transaction do
         begin
           a.notify_users.each {|u| Notifier.deliver_statement(:user => u, :facility => current_facility, :account => a, :statement => statement)}
-          raise ActiveRecord::Rollback unless a.update_account_transactions_with_statement(statement)
+          raise ActiveRecord::Rollback unless a.update_order_details_with_statement(statement)
         rescue Exception => e
           flash[:error] = "An error was encountered while sending some statement emails"
           error = true
