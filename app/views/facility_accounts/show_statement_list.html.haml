@@ -14,7 +14,6 @@
 - else
   %ul.grid_5
     - @statements.each do |statement|
-    - desc=statement.finalized_at ? human_date(statement.finalized_at) : human_date(statement.invoiced_at).to_s + ' (invoiced only)'
-      %li= link_to desc, facility_account_statement_path(current_facility, @account, statement, :format => :pdf)
+      %li= link_to human_date(statement.invoice_date), facility_account_statement_path(current_facility, @account, statement, :format => :pdf)
 
   %p= will_paginate(@statements)

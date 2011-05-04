@@ -9,9 +9,10 @@ class Statement < ActiveRecord::Base
   named_scope :final_for_facility, lambda { |facility| { :conditions => ['statements.facility_id = ? AND invoice_date <= ?', facility.id, Time.zone.now]}}
 
   def account_balance_due (account)
-    at = account.account_transactions.find(:first,
-        :conditions => ["finalized_at <= ?",self.invoice_date],
-        :select => 'SUM(transaction_amount) AS balance' )
+    at = order_details.find(:first,
+        :joins => "INNER JOIN statement_rows ON statement_rows.statement_id=statements.id",
+        :conditions => ["order_details.received_at <= ? AND order_details.account_id = ?", self.invoice_date, account.id],
+        :select => 'SUM(statement_rows.amount) AS balance' )
     at.nil? ? 0 : at.balance.to_f
   end
 end
