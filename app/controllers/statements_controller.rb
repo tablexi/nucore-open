@@ -20,15 +20,29 @@ class StatementsController < ApplicationController
 
   # GET /accounts/:account_id/facilities/:facility_id/statements/:id
   def show
+    action='show'
     @active_tab = 'accounts'
-    @order_details = OrderDetail.for_facility(@facility)
-    @order_details = @order_details.paginate(:page => params[:page])
 
-    prawnto :prawn => {
-                  :left_margin   => 50,
-                  :right_margin  => 50,
-                  :top_margin    => 50,
-                  :bottom_margin => 75 }
+    case params[:id]
+      when 'recent'
+        @order_details = OrderDetail.for_facility(@facility)
+        @order_details = @order_details.paginate(:page => params[:page])
+      when 'list'
+        action='list'
+        @statements=@statements.paginate(:page => params[:page])
+      else
+        prawnto :prawn => {
+          :left_margin   => 50,
+          :right_margin  => 50,
+          :top_margin    => 50,
+          :bottom_margin => 75
+        }
+    end
+
+    respond_to do |format|
+      format.html { render :action => action }
+      format.pdf  { render :action => 'show' }
+    end
   end
 
 
@@ -49,7 +63,7 @@ class StatementsController < ApplicationController
     @facility=Facility.find_by_url_name!(params[:facility_id])
     @statements=@account.statements.final_for_facility(@facility).uniq
 
-    if params[:id].to_s.downcase == 'recent'
+    if params[:id] =~ /\w+/i
       @statement=@statements.blank? ? Statement.find_by_facility_id(@facility.id) : @statements.first
     else
       @statement=@account.statements.find(params[:id])
