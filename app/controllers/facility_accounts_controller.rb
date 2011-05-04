@@ -217,20 +217,30 @@ class FacilityAccountsController < ApplicationController
   def show_statement
     @account = Account.find(params[:account_id])
     @facility = current_facility
-    @statements = @account.statements.final_for_facility(current_facility).uniq
+    action='show_statement'
 
-    @order_details = @account.order_details.for_facility(@facility)
-    @order_details = @order_details.paginate(:page => params[:page])
+    case params[:statement_id]
+      when 'list'
+        action += '_list'
+        @statements = @account.statements.final_for_facility(current_facility).uniq
+        @statements = @statements.paginate(:page => params[:page])
+      when 'recent'
+        @order_details = @account.order_details.for_facility(@facility)
+        @order_details = @order_details.paginate(:page => params[:page])
+      else
+        prawnto :prawn => {
+          :left_margin   => 50,
+          :right_margin  => 50,
+          :top_margin    => 50,
+          :bottom_margin => 75
+        }
 
-    prawnto :prawn => {
-                  :left_margin   => 50,
-                  :right_margin  => 50,
-                  :top_margin    => 50,
-                  :bottom_margin => 75 }
+        @statement=Statement.find(params[:statement_id].to_i)
+    end
 
     respond_to do |format|
-      format.html { render :action => :show_statement }
-      format.pdf  { render :action => '../statements/show' }
+      format.html { render :action => action }
+      format.pdf  { render :template => '/statements/show' }
     end
   end
   

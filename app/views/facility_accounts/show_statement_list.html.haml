@@ -1,0 +1,20 @@
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_payment_method', :locals => {:secondary_tab => 'statements'}
+
+- content_for :h1 do
+  =h current_facility
+
+%h2= @account
+
+- if @statements.empty?
+  %p.notice No statements exist.
+- else
+  %ul.grid_5
+    - @statements.each do |statement|
+    - desc=statement.finalized_at ? human_date(statement.finalized_at) : human_date(statement.invoiced_at).to_s + ' (invoiced only)'
+      %li= link_to desc, facility_account_statement_path(current_facility, @account, statement, :format => :pdf)
+
+  %p= will_paginate(@statements)

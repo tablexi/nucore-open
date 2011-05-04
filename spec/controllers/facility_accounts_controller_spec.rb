@@ -487,10 +487,31 @@ describe FacilityAccountsController do
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
       assigns(:facility).should == @authable
-      should assign_to(:statements).with_kind_of Array
       should assign_to(:order_details).with_kind_of Array
       assigns(:order_details).each{|od| od.order.facility.should == @authable }
       should render_template 'show_statement'
+    end
+
+    it 'should show statements list' do
+      @params[:statement_id]='list'
+      maybe_grant_always_sign_in :director
+      do_request
+      assigns(:account).should == @account
+      assigns(:facility).should == @authable
+      should assign_to(:statements).with_kind_of Array
+      should render_template 'show_statement_list'
+    end
+
+
+    it 'should show statement PDF' do
+      @params[:statement_id]=@statement.id
+      @params[:format]='pdf'
+      maybe_grant_always_sign_in :director
+      do_request
+      assigns(:account).should == @account
+      assigns(:facility).should == @authable
+      assigns(:statement).should == @statement
+      should render_template 'statements/show.pdf.prawn'
     end
 
   end
