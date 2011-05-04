@@ -12,8 +12,6 @@
 - if @order_details.empty?
   %p.notice No transactions exist for this period.
 - else
-  - if @statement && @statement.invoice_date <= Time.zone.now
-    %p= link_to 'Download Invoice', facility_account_statement_path(current_facility, @account, @statement, :format => 'pdf')
   %table
     %tr
       %th Transaction Date
