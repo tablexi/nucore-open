@@ -5,16 +5,11 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
     AccountTransaction.all.each do |at|
       od=at.order_detail
       st=at.statement
-
-      if st
-        st.finalized_at=at.finalized_at
-        st.save!
-        StatementRow.create!(:account => at.account, :statement => st, :amount => at.transaction_amount)
-      end
-
+      StatementRow.create!(:account => at.account, :statement => st, :amount => at.transaction_amount) if st
       j_row=JournalRow.find_by_account_transaction_id(at.id)
       od.journal=j_row.journal if j_row
       od.statement=st
+      od.reviewed_at=at.finalized_at
       od.fulfilled_at=at.created_at
       od.reconciled_note=at.reference
       od.save!
@@ -72,7 +67,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
           at.transaction_amount=oldest_st_row.amount
           at.created_by=st.created_by
           at.created_at=od.fulfilled_at
-          at.finalized_at=st.finalized_at
+          at.finalized_at=od.reviewed_at
           at.order_detail=od
           at.is_in_dispute=od.dispute_at && od.dispute_resolved_at.nil? ? 1 : 0
           at.statement=st
