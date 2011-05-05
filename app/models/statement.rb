@@ -1,5 +1,6 @@
 class Statement < ActiveRecord::Base
   has_many :order_details
+  has_many :statement_rows
   has_many :accounts, :through => :order_details
   belongs_to :facility
 
