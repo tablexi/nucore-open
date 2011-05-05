@@ -499,11 +499,11 @@ ActiveRecord::Schema.define(:version => 20110503181056) do
   end
 
   create_table "statement_rows", :force => true do |t|
-    t.integer  "statement_id", :precision => 38, :scale => 0, :null => false
-    t.integer  "account_id",   :precision => 38, :scale => 0, :null => false
-    t.decimal  "amount",       :precision => 10, :scale => 2, :null => false
+    t.integer  "statement_id",    :precision => 38, :scale => 0, :null => false
+    t.decimal  "amount",          :precision => 10, :scale => 2, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "order_detail_id", :precision => 38, :scale => 0
   end
 
   create_table "statements", :force => true do |t|
@@ -511,7 +511,7 @@ ActiveRecord::Schema.define(:version => 20110503181056) do
     t.integer  "created_by",   :precision => 38, :scale => 0, :null => false
     t.datetime "created_at",                                  :null => false
     t.datetime "invoice_date",                                :null => false
-    t.datetime "finalized_at"
+    t.integer  "account_id",   :precision => 38, :scale => 0
   end
 
   create_table "survey_sections", :force => true do |t|
