@@ -140,7 +140,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def in_window
-    errors.add("reserve_start_at", "The reservation is too far in advance") unless in_window?
+    errors.add_to_base("The reservation is too far in advance") unless in_window?
   end
 
   def in_the_future?
@@ -148,7 +148,7 @@ class Reservation < ActiveRecord::Base
   end
   
   def in_the_future
-    errors.add("reserve_start_at", "The reservation must be for a future time") unless in_the_future?
+    errors.add_to_base("The reservation must start at a future time") unless in_the_future?
   end
 
   def instrument_is_available_to_reserve

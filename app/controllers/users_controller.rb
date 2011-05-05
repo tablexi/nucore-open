@@ -93,6 +93,12 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
   
+  # GET /facilities/:facility_id/users/:user_id/instruments
+  def instruments
+    @user = User.find(params[:user_id])
+    @approved_instruments = current_facility.instruments.select{ |inst| inst.is_approved_for?(@user) }
+  end
+
   def email
   end
 end

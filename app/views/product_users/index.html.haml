@@ -26,7 +26,7 @@
     - @users.each do |user|
       %tr
         %td.centered= link_to "Remove", self.send("facility_#{@product.class.name.downcase}_user_path", current_facility, @product, user), :method => :delete, :confirm => "Are you sure you wish to remove this user from this #{@product.class.name.downcase}?"
-        %td= "#{user.last_name}, #{user.first_name}"
+        %td= link_to "#{user.last_name}, #{user.first_name}", [current_facility, user]
         %td=h user.username
         %td=h user.email
   = will_paginate(@users)
