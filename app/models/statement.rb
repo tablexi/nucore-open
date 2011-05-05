@@ -1,6 +1,6 @@
 class Statement < ActiveRecord::Base
   has_many :order_details
-  has_many :statement_rows
+  has_many :statement_rows, :dependent => :destroy
   belongs_to :account
   belongs_to :facility
 
