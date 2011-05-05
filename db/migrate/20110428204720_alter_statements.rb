@@ -1,15 +1,13 @@
 class AlterStatements < ActiveRecord::Migration
-  # On second thought, don't migrate the finalized_at column to statements from account_transactions
-
   def self.up
-#    change_table :statements do |t|
-#      t.column :finalized_at, :datetime
-#    end
+    change_table :statements do |t|
+      t.column :account_id, :integer, :null => false
+    end
   end
 
   def self.down
-#    change_table :statements do |t|
-#      t.remove :finalized_at
-#    end
+    change_table :statements do |t|
+      t.remove :account_id
+    end
   end
 end
