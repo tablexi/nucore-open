@@ -1,7 +1,7 @@
 class AlterStatements < ActiveRecord::Migration
   def self.up
     change_table :statements do |t|
-      t.column :account_id, :integer, :null => false
+      t.column :account_id, :integer
     end
   end
 

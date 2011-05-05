@@ -5,7 +5,13 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
     AccountTransaction.all.each do |at|
       od=at.order_detail
       st=at.statement
-      StatementRow.create!(:account => at.account, :statement => st, :amount => at.transaction_amount) if st
+
+      if st
+        st.account=at.account
+        st.save!
+        StatementRow.create!(:order_detail => od, :statement => st, :amount => at.transaction_amount)
+      end
+
       j_row=JournalRow.find_by_account_transaction_id(at.id)
       od.journal=j_row.journal if j_row
       od.statement=st
@@ -51,27 +57,27 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
     else
 
         OrderDetail.all.each do |od|
-          st=od.statement
-          st_rows=StatementRow.find_all_by_statement_id(st.id)
-          oldest_st_row=nil
-
-          st_rows.each do |row|
-            oldest_st_row=row if oldest_st_row.nil? or row.created_at < oldest_st_row.created_at
-          end
-
           # might be another subclass of AccountTransaction but this will do for now
           at=PurchaseAccountTransaction.new
-          at.account=oldest_st_row.account
           at.facility=od.product.facility
           at.description="Order # #{od.to_s}"
-          at.transaction_amount=oldest_st_row.amount
-          at.created_by=st.created_by
           at.created_at=od.fulfilled_at
           at.finalized_at=od.reviewed_at
           at.order_detail=od
           at.is_in_dispute=od.dispute_at && od.dispute_resolved_at.nil? ? 1 : 0
-          at.statement=st
           at.reference=od.reconciled_note
+
+          st=od.statement
+
+          if st
+            at.account=st.account
+            at.created_by=st.created_by
+            at.statement=st
+
+            st_row=StatementRow.find_by_statement_id_and_order_detail_id(st.id, od.id)
+            at.transaction_amount=st_row.amount if st_row
+          end
+
           at.save!
 
           jr=JournalRow.find_by_order_detail_id(od.id)
