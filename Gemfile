@@ -37,6 +37,6 @@ group :development do
    gem 'thoughtbot-factory_girl', '1.2.2'
    gem 'thoughtbot-shoulda', '2.10.2'
    gem 'ruby-debug', '0.10.3'
-   gem 'ruby-debug-ide', '0.4.15'
+   #gem 'ruby-debug-ide', '0.4.15'
    gem 'single_test'
 end

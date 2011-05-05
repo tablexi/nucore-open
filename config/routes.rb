@@ -106,6 +106,7 @@ ActionController::Routing::Routes.draw do |map|
       price_group.resources :account_price_group_members, :only => [:new, :destroy, :create], :collection => {:create => :get}
     end
 
+    facility.notifications '/notifications', :controller => 'facility_notifications', :action => 'index', :conditions => {:method => [:get, :post]}
     facility.resources :statements, :controller => 'facility_statements', :only => [:index, :show], :collection => {:email => :post, :accounts_receivable => :get, :pending => :get }
   end
 

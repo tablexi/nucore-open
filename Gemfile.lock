@@ -89,8 +89,6 @@ GEM
       ruby-debug-base (~> 0.10.3.0)
     ruby-debug-base (0.10.3)
       linecache (>= 0.3)
-    ruby-debug-ide (0.4.15)
-      rake (>= 0.8.1)
     ruby-oci8 (2.0.4)
     ruby-ole (1.2.10.1)
     single_test (0.3.7)
@@ -135,7 +133,6 @@ DEPENDENCIES
   rspec (= 1.3.0)
   rspec-rails (= 1.3.2)
   ruby-debug (= 0.10.3)
-  ruby-debug-ide (= 0.4.15)
   ruby-oci8 (= 2.0.4)
   single_test
   spork (= 0.7.5)

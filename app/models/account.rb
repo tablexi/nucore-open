@@ -93,6 +93,12 @@ class Account < ActiveRecord::Base
     find(ats.collect{|at| at.account_id} || [])
   end
 
+  def self.need_notification (facility)
+    # find details that are complete, not yet statemented, priced, and not in dispute
+    details = OrderDetail.need_notification(facility)
+    find(details.collect{ |detail| detail.account_id }.uniq || [])
+  end
+
   def facility_balance (facility, date=Time.zone.now)
     at = order_details.find(:first,
         :joins => "INNER JOIN orders ON orders.id=order_details.order_id INNER JOIN statements ON statements.id=order_details.statement_id INNER JOIN statement_rows ON statements.id=statement_rows.statement_id",

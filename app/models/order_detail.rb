@@ -44,6 +44,15 @@ class OrderDetail < ActiveRecord::Base
 
   named_scope :for_facility, lambda {|facility| { :joins => :order, :conditions => [ 'orders.facility_id = ?', facility.id ], :order => 'order_details.created_at DESC' }}
 
+  named_scope :need_notification, lambda { |facility| {
+    :joins => :product,
+    :conditions => ['products.facility_id = ?
+                     AND order_details.state = ?
+                     AND order_details.reviewed_at IS NULL
+                     AND order_details.price_policy_id IS NOT NULL
+                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete']
+  }}
+
   named_scope :statemented, lambda {|facility| {
       :joins => :order,
       :order => 'order_details.created_at DESC',
