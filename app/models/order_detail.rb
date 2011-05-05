@@ -39,7 +39,7 @@ class OrderDetail < ActiveRecord::Base
                                     :order => 'order_details.created_at DESC' }}
 
   named_scope :finalized, lambda {|facility| { :joins => :order,
-                                               :conditions => ['orders.facility_id = ? AND order_details.received_at < ?', facility.id, Time.zone.now],
+                                               :conditions => ['orders.facility_id = ? AND order_details.reviewed_at < ?', facility.id, Time.zone.now],
                                                :order => 'order_details.created_at DESC' }}
 
   named_scope :for_facility, lambda {|facility| { :joins => :order, :conditions => [ 'orders.facility_id = ?', facility.id ], :order => 'order_details.created_at DESC' }}
@@ -157,7 +157,7 @@ class OrderDetail < ActiveRecord::Base
 
   def can_dispute?
     return false unless self.complete?
-    pending_transaction = self.class.find(:first, :conditions => ['(received_at > ? OR received_at IS NULL) AND account_id = ?', Time.zone.now, self.account.id])
+    pending_transaction = self.class.find(:first, :conditions => ['(reviewed_at > ? OR reviewed_at IS NULL) AND account_id = ?', Time.zone.now, self.account.id])
     if pending_transaction && dispute_at.nil?
       true
     else
