@@ -290,9 +290,14 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def update_account(new_account)
-    self.account_id        = new_account.id
+    self.account_id = new_account.id
+    assign_estimated_price(new_account)
+  end
+
+  def assign_estimated_price(second_account=nil)
     self.estimated_cost    = nil
     self.estimated_subsidy = nil
+    second_account=account unless second_account
 
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
@@ -306,7 +311,7 @@ class OrderDetail < ActiveRecord::Base
       est_args=[ reservation.reserve_start_at, reservation.reserve_end_at ]
     end
 
-    pp = policy_holder.cheapest_price_policy((order.user.price_groups + new_account.price_groups).flatten.uniq)
+    pp = policy_holder.cheapest_price_policy((order.user.price_groups + second_account.price_groups).flatten.uniq)
     return unless pp
     costs = pp.estimate_cost_and_subsidy(*est_args)
     self.estimated_cost    = costs[:cost]
