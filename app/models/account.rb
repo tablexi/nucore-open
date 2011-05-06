@@ -128,7 +128,9 @@ class Account < ActiveRecord::Base
   end
 
   def update_order_details_with_statement (statement)
-    details=order_details.find(:all, :joins => :order, :conditions => [ 'orders.facility_id = ? AND order_details.account_id = ? AND order_details.statement_id IS NULL', statement.facility.id, id])
+    details=order_details.find(:all, :joins => :order, :conditions => [
+        'orders.facility_id = ? AND order_details.reviewed_at < ? AND order_details.statement_id IS NULL', statement.facility.id, Time.zone.now ]
+    )
     details.each do |od|
       od.update_attributes({:reviewed_at => statement.invoice_date+7.days, :statement => statement })
     end

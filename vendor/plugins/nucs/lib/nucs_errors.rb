@@ -43,6 +43,15 @@ module NucsErrors
 
 
   #
+  # Raised for chart string components that are not found in the GE001 tables
+  class BlacklistedError < NucsError
+    def initialize(component, value)
+      super("#{value} is blacklisted as a #{component}")
+    end
+  end
+
+
+  #
   # Raised for chart string components that are not found in the GL066 tables
   class UnknownGL066Error < NucsError
     def initialize(component, value=nil)

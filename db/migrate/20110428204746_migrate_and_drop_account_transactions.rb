@@ -2,23 +2,48 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
   def self.up
     OrderDetail.reset_column_information
 
-    AccountTransaction.all.each do |at|
-      od=at.order_detail
-      st=at.statement
+    Statement.all.each do |stmt|
+      aid_rows=Statement.find_by_sql(%Q<
+        SELECT
+          DISTINCT at.account_id
+        FROM
+          account_transactions at, statements s
+        WHERE
+          at.statement_id=s.id AND s.id=#{stmt.id}
+      >)
 
-      if st
-        st.account=at.account
-        st.save!
-        StatementRow.create!(:order_detail => od, :statement => st, :amount => at.transaction_amount)
+      aid_rows.each do |aid_row|
+        acct=Account.find(aid_row.account_id)
+        statement=Statement.new(stmt.attributes)
+        statement.account=acct
+        statement.save!
+
+        at_rows=Statement.find_by_sql(%Q<
+          SELECT * FROM
+            account_transactions
+          WHERE
+            statement_id=#{stmt.id} AND account_id=#{acct.id}
+        >)
+
+        at_rows.each do |at_row|
+          od=OrderDetail.find(at_row.order_detail_id)
+          StatementRow.create!(:order_detail => od, :statement => statement, :amount => at_row.transaction_amount)
+
+          j_row=JournalRow.find_by_account_transaction_id(at_row.id)
+          od.journal=j_row.journal if j_row
+          od.statement=statement
+          od.reviewed_at=at_row.finalized_at
+          od.fulfilled_at=at_row.created_at
+          od.reconciled_note=at_row.reference
+          od.save!
+        end
       end
 
-      j_row=JournalRow.find_by_account_transaction_id(at.id)
-      od.journal=j_row.journal if j_row
-      od.statement=st
-      od.reviewed_at=at.finalized_at
-      od.fulfilled_at=at.created_at
-      od.reconciled_note=at.reference
-      od.save!
+      stmt.destroy      
+    end
+
+    change_table :statements do |t|
+      t.column :account_id, :integer, :null => false
     end
 
     change_table :journal_rows do |t|
@@ -28,6 +53,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
     drop_table :account_transactions
   end
 
+  
   def self.down
     change_table :journal_rows do |t|
       t.column :account_transaction_id, :integer
@@ -50,44 +76,11 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
       t.string   "reference", :limit => 50
     end
 
-    begin
-      PurchaseAccountTransaction
-    rescue NameError
-      # class doesn't exist, so don't try to rollback data migration
-    else
-
-        OrderDetail.all.each do |od|
-          # might be another subclass of AccountTransaction but this will do for now
-          at=PurchaseAccountTransaction.new
-          at.facility=od.product.facility
-          at.description="Order # #{od.to_s}"
-          at.created_at=od.fulfilled_at
-          at.finalized_at=od.reviewed_at
-          at.order_detail=od
-          at.is_in_dispute=od.dispute_at && od.dispute_resolved_at.nil? ? 1 : 0
-          at.reference=od.reconciled_note
-
-          st=od.statement
-
-          if st
-            at.account=st.account
-            at.created_by=st.created_by
-            at.statement=st
-
-            st_row=StatementRow.find_by_statement_id_and_order_detail_id(st.id, od.id)
-            at.transaction_amount=st_row.amount if st_row
-          end
-
-          at.save!
-
-          jr=JournalRow.find_by_order_detail_id(od.id)
-
-          if jr
-            jr.account_transaction_id=at.id
-            jr.save!
-          end
-        end
-
-    end
+    puts <<-OUT
+      ****************************************************************************
+      The migration of previous account_transactions data cannot be reconstructed.
+      Old tables were created, but you need to roll back the data yourself!
+      ****************************************************************************
+    OUT
   end
 end
