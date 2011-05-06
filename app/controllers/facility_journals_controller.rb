@@ -17,7 +17,7 @@ class FacilityJournalsController < ApplicationController
   # GET /facilities/:facility_id/journals
   def index
     @pending_journal = Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
-    @accounts        = NufsAccount.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
+    @order_details   = OrderDetail.need_journal(current_facility)
     @journal         = current_facility.journals.new()
   end
 
@@ -46,22 +46,26 @@ class FacilityJournalsController < ApplicationController
     @journal = current_facility.journals.new()
     @journal.created_by = session_user.id
 
-    @update_accounts = Account.find(params[:account_ids] || [])
-    if @update_accounts.empty?
-      @journal.errors.add_to_base("No accounts were selected to journal")
+    @update_order_details = OrderDetail.find(params[:order_detail_ids] || [])
+    if @update_order_details.empty?
+      @journal.errors.add_to_base("No orders were selected to journal")
     else
-      Journal.transaction do
-        begin
-          @journal.save!
-          @journal.create_journal_rows_for_accounts!(@update_accounts)
-          # create the spreadsheet
-          @journal.create_spreadsheet
-          flash[:notice] = "The journal file has been created successfully"
-          redirect_to facility_journals_path
-          return
-        rescue Exception => e
-          @journal.errors.add_to_base("An error was encountered while trying to create the journal #{e}")
-          raise ActiveRecord::Rollback
+      if Journal.order_details_span_fiscal_years?(@update_order_details)
+        flash[:error] = 'Journals may not span multiple fiscal years. Please select only orders in the same fiscal year.'
+        redirect_to facility_journals_path and return
+      else
+        Journal.transaction do
+          begin
+            @journal.save!
+            @journal.create_journal_rows!(@update_order_details)
+            # create the spreadsheet
+            @journal.create_spreadsheet
+            flash[:notice] = "The journal file has been created successfully"
+            redirect_to facility_journals_path and return
+          rescue Exception => e
+            @journal.errors.add_to_base("An error was encountered while trying to create the journal #{e}")
+            raise ActiveRecord::Rollback
+          end
         end
       end
     end

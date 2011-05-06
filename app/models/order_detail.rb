@@ -62,13 +62,25 @@ class OrderDetail < ActiveRecord::Base
   }}
 
   named_scope :need_statement, lambda { |facility| {
-    :joins => :product,
+    :joins => [:product, :account],
     :conditions => ['products.facility_id = ?
                      AND order_details.state = ?
                      AND reviewed_at <= ?
                      AND order_details.statement_id IS NULL
                      AND order_details.price_policy_id IS NOT NULL
-                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete', Time.zone.now]
+                     AND (accounts.type = ? OR accounts.type = ?)
+                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete', Time.zone.now, 'CreditCardAccount', 'PurchaseOrderAccount']
+  }}
+
+  named_scope :need_journal, lambda { |facility| {
+    :joins => [:product, :account],
+    :conditions => ['products.facility_id = ?
+                     AND order_details.state = ?
+                     AND reviewed_at <= ?
+                     AND accounts.type = ?
+                     AND journal_id IS NULL
+                     AND order_details.price_policy_id IS NOT NULL
+                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete', Time.zone.now, 'NufsAccount']
   }}
 
   named_scope :statemented, lambda {|facility| {
