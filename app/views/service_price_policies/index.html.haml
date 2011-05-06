@@ -14,7 +14,7 @@
     %li= link_to 'Add Pricing Rules', new_facility_service_price_policy_path
 
 - if @current_price_policies.empty?
-  %p.notice You must add pricing rules for this service to be purchasable.
+  %p.notice You must add current pricing rules before you may bill for this service.
 - else
   %h2 Current Pricing Rules
   %h3= "Effective: #{human_date(@current_start_date)}, Expires: #{human_date(@current_price_policies.first.expire_date)}"
