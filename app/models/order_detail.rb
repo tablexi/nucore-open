@@ -53,6 +53,24 @@ class OrderDetail < ActiveRecord::Base
                      AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete']
   }}
 
+  named_scope :in_review, lambda { |facility| {
+    :joins => :product,
+    :conditions => ['products.facility_id = ?
+                     AND order_details.state = ?
+                     AND order_details.reviewed_at > ?
+                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete', Time.zone.now]
+  }}
+
+  named_scope :need_statement, lambda { |facility| {
+    :joins => :product,
+    :conditions => ['products.facility_id = ?
+                     AND order_details.state = ?
+                     AND reviewed_at <= ?
+                     AND order_details.statement_id IS NULL
+                     AND order_details.price_policy_id IS NOT NULL
+                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete', Time.zone.now]
+  }}
+
   named_scope :statemented, lambda {|facility| {
       :joins => :order,
       :order => 'order_details.created_at DESC',
@@ -64,7 +82,6 @@ class OrderDetail < ActiveRecord::Base
       :conditions => [ 'orders.facility_id = ? AND order_details.state != ?', facility.id, OrderStatus.reconciled.first.name ] }
   }
 
-  
   # BEGIN acts_as_state_machine
   include AASM
 

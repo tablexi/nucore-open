@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110503181056) do
+ActiveRecord::Schema.define(:version => 20110506191358) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :precision => 38, :scale => 0, :null => false
@@ -507,11 +507,10 @@ ActiveRecord::Schema.define(:version => 20110503181056) do
   end
 
   create_table "statements", :force => true do |t|
-    t.integer  "facility_id",  :precision => 38, :scale => 0, :null => false
-    t.integer  "created_by",   :precision => 38, :scale => 0, :null => false
-    t.datetime "created_at",                                  :null => false
-    t.datetime "invoice_date",                                :null => false
-    t.integer  "account_id",   :precision => 38, :scale => 0
+    t.integer  "facility_id", :precision => 38, :scale => 0, :null => false
+    t.integer  "created_by",  :precision => 38, :scale => 0, :null => false
+    t.datetime "created_at",                                 :null => false
+    t.integer  "account_id",  :precision => 38, :scale => 0
   end
 
   create_table "survey_sections", :force => true do |t|

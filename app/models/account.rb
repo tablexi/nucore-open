@@ -79,22 +79,13 @@ class Account < ActiveRecord::Base
   end
 
   def self.need_statements (facility)
-    where=<<-SQL
-      orders.facility_id = ?
-      AND order_details.state = ?
-      AND order_details.reviewed_at IS NULL
-      AND order_details.statement_id IS NULL
-      AND order_details.price_policy_id IS NOT NULL
-      AND (order_details.dispute_at IS NULL OR (order_details.dispute_at IS NOT NULL AND order_details.dispute_resolved_at IS NOT NULL))
-    SQL
-
     # find details that are complete, not yet statemented, priced, and not in dispute
-    ats=OrderDetail.find(:all, :joins => :order, :select => 'DISTINCT order_details.account_id', :conditions => [ where, facility.id, OrderStatus.complete.name ])
-    find(ats.collect{|at| at.account_id} || [])
+    details = OrderDetail.need_statement(facility)
+    find(details.collect{ |detail| detail.account_id }.uniq || [])
   end
 
   def self.need_notification (facility)
-    # find details that are complete, not yet statemented, priced, and not in dispute
+    # find details that are complete, not yet notified, priced, and not in dispute
     details = OrderDetail.need_notification(facility)
     find(details.collect{ |detail| detail.account_id }.uniq || [])
   end
