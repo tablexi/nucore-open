@@ -1,5 +1,3 @@
 TEST_EMAIL_ONLY = true
 TEST_EMAIL      = 'user@example.com'
 FROM_EMAIL      = 'no-reply@example.com'
-
-AES_CRYPT_KEY = '_Y{<Gth^S^\xNRm*.-):]h+V?zMI`iC.'
