@@ -23,6 +23,9 @@
       });
       
       $("#quantity").change(function () {
+        if($('#actual_cost').length == 0)
+          return;
+
         $('#submit').attr('disabled', true);
         $.getJSON(
           "#{facility_order_order_detail_new_price_url(current_facility, @order, @order_detail)}?quantity=" + this.value,
@@ -140,12 +143,9 @@
     %tr
       %th{:colspan => 2} Quantity*/Product
       %th Status
-      - if @order_detail.product.is_a?(Instrument)
-        %th.currency Est Cost
-        %th.currency Est Adjustment
-      %th.currency Cost
-      %th.currency Adjustment
-      %th.currency Total
+      %th.currency= "#{@order_detail.cost_estimated? ? 'Estimated ' : '' }Cost"
+      %th.currency= "#{@order_detail.cost_estimated? ? 'Estimated ' : '' }Adjustment"
+      %th.currency= "#{@order_detail.cost_estimated? ? 'Estimated ' : '' }Total"
     %tr
       %td.centered
         - if @order_detail.product.is_a?(Instrument)
@@ -166,32 +166,25 @@
         %td=h @order_detail.order_status
       - else
         %td= f.collection_select(:order_status_id, OrderStatus.non_protected_statuses(current_facility), :id, :name_with_level)
-      - if @order_detail.product.is_a?(Instrument)
-        %td.currency=h number_to_currency @order_detail.estimated_cost
-        %td.currency=h number_to_currency @order_detail.estimated_subsidy
-      - if @order_detail.price_policy.nil?
-        %td.currency= number_to_currency @order_detail.actual_cost
-        %td.currency= number_to_currency @order_detail.actual_subsidy
-        %td.currency= number_to_currency @order_detail.actual_total
-      - elsif @order_detail.product.is_a?(Instrument) && @order_detail.complete?
+      - if @order_detail.product.is_a?(Instrument) && @order_detail.complete?
         - res = @order_detail.reservation
         - if res && res.actual_start_at && res.actual_end_at
-          %td.currency= "$#{f.text_field(:actual_cost, {:value => number_to_currency(@order_detail.actual_cost, :unit => ''), :id => 'actual_cost', :size => 8})}"
-          %td.currency= "$#{f.text_field(:actual_subsidy, {:value => number_to_currency(@order_detail.actual_subsidy, :unit => ''), :id => 'actual_subsidy', :size => 8})}"
-          %td.currency
-            %span#actual_total= number_to_currency(@order_detail.actual_total)
+          = render :partial => 'price_row', :locals => { :form => f }
         - else
           %td.centered{:colspan => '3'} You must enter actual start/end reservation times.
       - else 
-        %td.currency= "$#{f.text_field(:actual_cost, {:value => number_to_currency(@order_detail.actual_cost, :unit => ''), :id => 'actual_cost', :size => 8})}"
-        %td.currency= "$#{f.text_field(:actual_subsidy, {:value => number_to_currency(@order_detail.actual_subsidy, :unit => ''), :id => 'actual_subsidy', :size => 8})}"
-        %td.currency
-          %span#actual_total= number_to_currency(@order_detail.actual_total)
+        = render :partial => 'price_row', :locals => { :form => f }
       %tr
-        %td{:colspan => '6'}
+        %td{:colspan => '8'}
           %label.inline Note:
           = f.text_field(:note, :style=> "width:200px")
-  %p.footnote * Changing the quantity will automatically update the price fields
+
+  - if @order_detail.cost_estimated?
+    %p.footnote * Clicking 'Save' will update the cost estimate by quantity
+  - elsif @order_detail.price_policy.nil?
+    %p.footnote * Clicking 'Save' will attempt to estimate the cost by quantity
+  - else
+    %p.footnote * Changing the quantity will automatically update the price fields
 
   - if @order_detail.order_status.name == 'Complete'
     - if @order_detail.price_policy.nil?

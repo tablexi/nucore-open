@@ -44,9 +44,15 @@
           %li= (order_detail.bundle ? "#{h order_detail.bundle} &mdash; " : '') + h(order_detail.product)
           - if res
             %li.indented= res
-        %td.currency=h number_to_currency order_detail.estimated_cost
-        - if @order.has_subsidies?
-          %td.currency=h number_to_currency order_detail.estimated_subsidy
-        %td.currency=h number_to_currency order_detail.estimated_total
+        - if order_detail.cost_estimated?
+          %td.currency=h number_to_currency order_detail.estimated_cost
+          - if @order.has_subsidies?
+            %td.currency=h number_to_currency order_detail.estimated_subsidy
+          %td.currency=h number_to_currency order_detail.estimated_total
+        - else
+          %td.currency Unassigned
+          - if @order.has_subsidies?
+            %td.currency Unassigned
+          %td.currency Unassigned
 
 %p.footnote All prices are estimates. Actual cost is assigned when the order is complete.

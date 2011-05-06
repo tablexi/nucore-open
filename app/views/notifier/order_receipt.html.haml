@@ -31,8 +31,13 @@
       - else
         %td=h od.product.name
       %td=h od.quantity
-      %td=h number_to_currency od.estimated_cost
-      %td=h number_to_currency od.estimated_subsidy
-      %td=h number_to_currency od.estimated_total
+      - if od.cost_estimated?
+        %td=h number_to_currency od.estimated_cost
+        %td=h number_to_currency od.estimated_subsidy
+        %td=h number_to_currency od.estimated_total
+      - else
+        %td Unassigned
+        %td Unassigned
+        %td Unassigned
 
 %p All prices are estimates. Actual cost is assigned when the order is complete.

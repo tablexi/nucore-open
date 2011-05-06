@@ -95,11 +95,11 @@ class Instrument < Product
     if schedule_rules.empty?
       false
     elsif group_ids.nil?
-      current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase?}
+      current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase?}
     elsif group_ids.empty?
       false
     else
-      current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase? && group_ids.include?(pp.price_group_id)}
+      current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase? && group_ids.include?(pp.price_group_id)}
     end
   end
 

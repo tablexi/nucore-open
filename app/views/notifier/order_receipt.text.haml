@@ -12,9 +12,12 @@
   - if od.reservation
     == Reservation: #{od.reservation}
   == Quantity: #{od.quantity}
-  == Estimated Price: #{number_to_currency od.estimated_cost}
-  == Estimated Subsidy #{number_to_currency od.estimated_subsidy}
-  == Estimated Total #{number_to_currency od.estimated_total}
+  - if od.cost_estimated?
+    == Estimated Price: #{number_to_currency od.estimated_cost}
+    == Estimated Subsidy #{number_to_currency od.estimated_subsidy}
+    == Estimated Total #{number_to_currency od.estimated_total}
+  - else
+    == Pricing is currently unassigned.
 ==
 ==
 == * All prices are estimates. Actual cost is assigned when the order is complete.

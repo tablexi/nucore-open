@@ -101,7 +101,7 @@ class OrderDetail < ActiveRecord::Base
   aasm_initial_state    :new
   aasm_state            :new
   aasm_state            :inprocess
-  aasm_state            :complete, :enter => :assign_price_policy
+  aasm_state            :complete, :enter => :make_complete
   aasm_state            :reconciled
   aasm_state            :cancelled
 
@@ -302,9 +302,14 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def update_account(new_account)
-    self.account_id        = new_account.id
+    self.account_id = new_account.id
+    assign_estimated_price(new_account)
+  end
+
+  def assign_estimated_price(second_account=nil)
     self.estimated_cost    = nil
     self.estimated_subsidy = nil
+    second_account=account unless second_account
 
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
@@ -318,7 +323,7 @@ class OrderDetail < ActiveRecord::Base
       est_args=[ reservation.reserve_start_at, reservation.reserve_end_at ]
     end
 
-    pp = policy_holder.cheapest_price_policy((order.user.price_groups + new_account.price_groups).flatten.uniq)
+    pp = policy_holder.cheapest_price_policy((order.user.price_groups + second_account.price_groups).flatten.uniq)
     return unless pp
     costs = pp.estimate_cost_and_subsidy(*est_args)
     self.estimated_cost    = costs[:cost]
@@ -434,6 +439,11 @@ class OrderDetail < ActiveRecord::Base
 
   def has_completed_reservation?
     !product.is_a?(Instrument) || (reservation && (reservation.actual_end_at || reservation.reserve_end_at < Time.zone.now))
+  end
+
+  def make_complete
+    assign_price_policy
+    self.fulfilled_at=Time.zone.now
   end
 
 end

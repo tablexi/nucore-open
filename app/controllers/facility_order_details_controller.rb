@@ -38,7 +38,13 @@ class FacilityOrderDetailsController < ApplicationController
         @order_detail.actual_cost = od_params[:actual_cost].gsub(/[^\d\.]/,'') if od_params[:actual_cost]
         @order_detail.actual_subsidy = od_params[:actual_subsidy].gsub(/[^\d\.]/,'') if od_params[:actual_subsidy]
         @order_detail.updated_by = session_user.id
-        @order_detail.assign_price_policy unless params[:assign_price_policy].blank?
+
+        if params[:assign_price_policy]
+          @order_detail.assign_price_policy
+        elsif @order_detail.price_policy.nil?
+          @order_detail.assign_estimated_price
+        end
+
         @order_detail.save!
 
         # process order status change
