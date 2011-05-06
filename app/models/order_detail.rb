@@ -89,7 +89,7 @@ class OrderDetail < ActiveRecord::Base
   aasm_initial_state    :new
   aasm_state            :new
   aasm_state            :inprocess
-  aasm_state            :complete, :enter => :assign_price_policy
+  aasm_state            :complete, :enter => :make_complete
   aasm_state            :reconciled
   aasm_state            :cancelled
 
@@ -427,6 +427,11 @@ class OrderDetail < ActiveRecord::Base
 
   def has_completed_reservation?
     !product.is_a?(Instrument) || (reservation && (reservation.actual_end_at || reservation.reserve_end_at < Time.zone.now))
+  end
+
+  def make_complete
+    assign_price_policy
+    self.fulfilled_at=Time.zone.now
   end
 
 end

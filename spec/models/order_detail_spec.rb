@@ -239,6 +239,7 @@ describe OrderDetail do
         @order_detail.price_policy.should == pp
         @order_detail.should_not be_cost_estimated
         @order_detail.should_not be_problem_order
+        @order_detail.fulfilled_at.should_not be_nil
 
         costs=pp.calculate_cost_and_subsidy(@order_detail.quantity)
         @order_detail.actual_cost.should == costs[:cost]
