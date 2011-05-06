@@ -36,7 +36,7 @@ class FacilityNotificationsController < ApplicationController
               error = true
               raise ActiveRecord::Rollback
             end
-            flash[:notice] = 'Statements sent successfully'
+            flash[:notice] = 'Notifications sent successfully'
           end
         end
       else
