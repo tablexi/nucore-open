@@ -107,6 +107,7 @@ ActionController::Routing::Routes.draw do |map|
     end
 
     facility.notifications '/notifications', :controller => 'facility_notifications', :action => 'index', :conditions => {:method => [:get, :post]}
+    facility.notifications_in_review '/notifications/in_review', :controller => 'facility_notifications', :action => 'in_review', :conditions => {:method => [:get, :post]}
     facility.resources :statements, :controller => 'facility_statements', :only => [:index, :show], :collection => {:email => :post, :accounts_receivable => :get, :pending => :get }
   end
 

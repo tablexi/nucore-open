@@ -1,0 +1,43 @@
+- content_for :h1 do
+  =h current_facility
+
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'in_review' }
+
+%h2 Orders In Review
+
+- if @order_details.empty?
+  %p.notice No orders are currently in review
+- else
+  %p
+    The orders listed below are still in review by the customer.  The time the review window will close is listed.
+    You may manually mark an order as reviewed, allowing you to create a statement for or journal the order immediately.
+  - form_tag facility_notifications_in_review_path(current_facility), :method => :post do
+    %table
+      %tr.borderless
+        %td{:colspan => 4}
+        %td.currency{:colspan => 2}= submit_tag "Mark As Reviewed"
+      %tr
+        %th
+        %th Order
+        %th Review Closes On
+        %th Payment Source
+        %th Owner
+        %th.currency Total
+      - @order_details.each do |od|
+        - account = od.account
+        %tr
+          %td.centered= check_box_tag "order_detail_ids[]", od.id, false
+          %td
+            %ul
+              %li== ##{od}: #{od.product}
+              - unless od.note.blank?
+                %li
+                  %i= od.note
+          %td=h human_datetime od.reviewed_at
+          %td=h account
+          %td=h od.account.owner_user.full_name
+          %td.currency=h number_to_currency od.total
+      %tr.borderless
+        %td{:colspan => 4}
+        %td.currency{:colspan => 2}= submit_tag "Mark As Reviewed"
