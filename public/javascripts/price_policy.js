@@ -1,7 +1,7 @@
 $(document).ready(function() {
   $(function() {
-    $("#start_datepicker").datepicker({minDate: null});
-    $("#expire_datepicker").datepicker({minDate: null});
+    $("#start_datepicker").datepicker({minDate: new Date()});
+    $("#expire_datepicker").datepicker({minDate: new Date()});
   });
   
   $('#interval').change(function() {
