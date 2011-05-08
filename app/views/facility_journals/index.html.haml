@@ -9,6 +9,17 @@
 - if @pending_journal.nil?
   %p.notice There is no pending journal at this time
 - else
+  %p
+    You should only update this journal after receiving confirmation of a successful or failed journal from
+    NU Financials.  If the journal was processed successfully without any changes, you may choose "Succeeded, no errors".
+    This will mark all orders included in the journal as reconciled and you will be unable to make any further changes to them.
+  %p
+    If the journal succeeded, but if pricing or payment source changes were necessary to one or more orders
+    or if one more more orders were removed from the journal for the journal to succeed, choose "Succeeded, with errors".
+    This will mark the journal as successfully, but you will need to reconcile the orders individually.
+  %p
+    If the journal failed, you may choose "Failed".  This will allow you to include all orders in a new journal.
+
   - form_for([current_facility, @pending_journal]) do |f|
     = f.error_messages 
     %table
@@ -31,8 +42,8 @@
         %td= f.text_field :reference
         %td= f.text_field :description
         %td
-          = f.select :is_successful, {' ' => nil, 'Succeeded' => true, 'Failed' => false}
-          = submit_tag "Close Journal"
+          = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']])
+          = submit_tag 'Close Journal'
 %p
 %hr
 %p

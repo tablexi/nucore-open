@@ -1,6 +1,7 @@
 class Journal < ActiveRecord::Base
   has_many                :journal_rows
   belongs_to              :facility
+  has_many                :order_details, :through => :journal_rows
 
   validates_uniqueness_of :facility_id, :scope => :is_successful, :if => Proc.new { |j| j.is_successful.nil? }
   validates_presence_of   :reference, :updated_by, :on => :update
@@ -29,7 +30,7 @@ class Journal < ActiveRecord::Base
         :journal_id      => id,
         :order_detail_id => od.id,
         :amount          => od.total,
-        :description     => "##{od}: #{od.order.user}: #{od.fulfilled_at.strftime("%m/%d/%Y")}: #{od.product} x#{od.quantity}"
+        :description     => "##{od}: #{od.order.user}: #{od.fulfilled_at.strftime("%m/%d/%Y")}: #{od.product} x#{od.quantity}",
         :fund            => account.fund,
         :dept            => account.dept,
         :project         => account.project,
@@ -91,5 +92,6 @@ class Journal < ActiveRecord::Base
     order_details.each do |od|
       return true if (od.fulfilled_at.to_date < start_fy || od.fulfilled_at.to_date >= end_fy)
     end
+    false
   end
 end

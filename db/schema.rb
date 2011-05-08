@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110506191358) do
+ActiveRecord::Schema.define(:version => 20110507055026) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :precision => 38, :scale => 0, :null => false
@@ -177,6 +177,7 @@ ActiveRecord::Schema.define(:version => 20110506191358) do
     t.string   "file_content_type"
     t.integer  "file_file_size",                   :precision => 38, :scale => 0
     t.datetime "file_updated_at"
+    t.datetime "journal_date",                                                    :null => false
   end
 
   create_table "nucs_accounts", :force => true do |t|

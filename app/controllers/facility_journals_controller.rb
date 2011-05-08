@@ -28,16 +28,40 @@ class FacilityJournalsController < ApplicationController
 
     Journal.transaction do
       begin
-        @pending_journal.update_attributes!(params[:journal])
-        @pending_journal.create_payment_transactions!(:created_by => session_user.id) if @pending_journal.is_successful?
-        flash[:notice] = "The journal file has been successfully closed"
+        # blank input
+        @pending_journal.errors.add_to_base("Please select a journal status") if params[:journal_status].blank?
+
+        # failed
+        if params[:journal_status] == 'failed'
+          @pending_journal.is_successful = false
+          @pending_journal.update_attributes!(params[:journal])
+          OrderDetail.update_all('journal_id = NULL', "journal_id = #{@pending_journal.id}") # null out journal_id for all order_details
+
+        # succeeded, with errors
+        elsif params[:journal_status] == 'succeeded_errors'
+          @pending_journal.is_successful = true
+          @pending_journal.update_attributes!(params[:journal])
+
+        # if succeeded, no errors
+        elsif params[:journal_status]
+          @pending_journal.is_successful = true
+          @pending_journal.update_attributes!(params[:journal])
+          reconciled_status = OrderStatus.reconciled.first
+          @pending_journal.order_details.each do |od|
+            raise Exception unless od.change_status!(reconciled_status)
+          end
+        else
+          raise Exception
+        end
+
+        flash[:notice] = "The journal file has been closed"
         redirect_to facility_journals_path and return
       rescue Exception => e
         @pending_journal.errors.add_to_base("An error was encountered while trying to close the journal")
         raise ActiveRecord::Rollback
       end
     end
-    @accounts = NufsAccount.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
+    @order_details = OrderDetail.need_journal(current_facility)
     render :action => :index
   end
 
@@ -56,6 +80,7 @@ class FacilityJournalsController < ApplicationController
       else
         Journal.transaction do
           begin
+            @journal.journal_date = @update_order_details.collect{ |od| od.fulfilled_at }.max
             @journal.save!
             @journal.create_journal_rows!(@update_order_details)
             # create the spreadsheet
