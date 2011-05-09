@@ -91,8 +91,15 @@ class OrderDetail < ActiveRecord::Base
 
   named_scope :unreconciled, lambda {|facility| {
       :joins => :order,
-      :conditions => [ 'orders.facility_id = ? AND order_details.state != ?', facility.id, OrderStatus.reconciled.first.name ] }
+      :conditions => [ 'orders.facility_id = ? AND order_details.state = ?', facility.id, 'complete' ] }
   }
+
+  named_scope :account_unreconciled, lambda {|facility, account| {
+      :joins => :order,
+      :conditions => [ 'orders.facility_id = ? AND order_details.account_id = ? AND order_details.state = ?', facility.id, account.id, 'complete' ] }
+  }
+
+
 
   # BEGIN acts_as_state_machine
   include AASM
