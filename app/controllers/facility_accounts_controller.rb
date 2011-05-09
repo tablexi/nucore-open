@@ -117,47 +117,54 @@ class FacilityAccountsController < ApplicationController
     @subnav     = 'billing_nav'
     @active_tab = 'admin_invoices'
     @accounts   = CreditCardAccount.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
-    flash.now[:notice] = 'There are no pending credit card transactions' if @accounts.empty?
+
+    if @accounts.empty?
+      flash.now[:notice] = 'There are no pending credit card transactions'
+    else
+      selected_id=params[:selected_account]
+
+      if selected_id.blank?
+        @selected=@accounts.first
+      else
+        @accounts.each{|a| @selected=a and break if a.id == selected_id.to_i }
+      end
+    end
+
+    @unreconciled_details=OrderDetail.account_unreconciled(current_facility, @selected)
+    @unreconciled_details=@unreconciled_details.paginate(:page => params[:page])
   end
 
   #POST /facilities/:facility_id/accounts/update_credit_cards
   def update_credit_cards
-    @subnav     = 'billing_nav'
-    @active_tab = 'admin_invoices'
-
     @error_fields = {}
-    update_accounts = CreditCardAccount.find(params[:account].keys)
-    AccountTransaction.transaction do
+    update_details = OrderDetail.find(params[:order_detail].keys)
+
+    OrderDetail.transaction do
       count = 0
-      update_accounts.each do |a|
-        a_params = params[:account][a.id.to_s]
-        next unless a_params[:reference].length > 0 && a_params[:transaction_amount].length > 0
-        at = a.payment_account_transactions.new({
-          :facility_id        => current_facility.id,
-          :description        => a_params[:notes],
-          :transaction_amount => a_params[:transaction_amount].to_f * -1,
-          :created_by         => session_user.id,
-          :finalized_at       => Time.zone.now,
-          :reference          => a_params[:reference],
-          :is_in_dispute      => false,
-        })
+      update_details.each do |od|
+        od_params = params[:order_detail][od.id.to_s]
+        od.reconciled_note=od_params[:notes]
+
         begin
-          at.save!
-          count += 1
+          if od_params[:reconciled] == '1'
+            od.to_reconciled!
+            count += 1
+          else
+            od.save!
+          end
         rescue
-          @error_fields = {a.id => at.errors.collect { |field,error| field}}
-          errors = at.errors.full_messages
+          @error_fields = {od.id => od.errors.collect { |field,error| field}}
+          errors = od.errors.full_messages
           errors = [$!.message] if errors.empty?
           flash.now[:error] = (['There was an error processing the credit card payments'] + errors).join("<br />")
           raise ActiveRecord::Rollback
         end
       end
-      flash[:notice] = "#{count} payment#{count == 1 ? '' : 's'} successfully processed" if count > 0
-      redirect_to credit_cards_facility_accounts_path
-      return
+
+      flash[:notice] = "#{count} payment#{count == 1 ? '' : 's'} successfully reconciled" if count > 0
     end
-    @accounts = CreditCardAccount.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
-    render :action => "credit_cards"
+
+    redirect_to credit_cards_facility_accounts_path(current_facility)
   end
 
   # GET /facilities/:facility_id/accounts/purchase_orders
