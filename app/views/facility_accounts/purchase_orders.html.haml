@@ -1,17 +1,4 @@
-:javascript
-  $(function() {
-    $('#selected_account').change(function(){
-      $(this).closest('form').submit();
-    });
-
-    $('#toggle').change(function(){
-      var toggle=$(this);
-
-      $('input:checkbox').each(function(){
-        $(this).attr('checked', toggle.attr('checked'));
-      });
-    });
-  });
+= javascript_include_tag 'account_mgmt'
 
 - content_for :h1 do
   =h current_facility
