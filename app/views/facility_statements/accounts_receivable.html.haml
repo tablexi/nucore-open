@@ -20,7 +20,7 @@
     %th.small 91+
     %th.small Total
   - @accounts.each do |a|
-    - today = Time.zone.parse(Time.now.strftime("%m/%d/%y 23:59:59"))
+    - today = Time.zone.now
     - balance = {}
     - balance[91] = a.facility_balance(current_facility, today - 91*24*60*60)
     - balance[61] = a.facility_balance(current_facility, today - 61*24*60*60) - balance.values.inject{|sum, n| sum + n }
