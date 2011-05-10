@@ -83,6 +83,7 @@ class FacilityJournalsController < ApplicationController
             @journal.journal_date = @update_order_details.collect{ |od| od.fulfilled_at }.max
             @journal.save!
             @journal.create_journal_rows!(@update_order_details)
+            OrderDetail.update_all(['journal_id = ?', @journal.id], ['id IN (?)', @update_order_details.collect{|od| od.id}])
             # create the spreadsheet
             @journal.create_spreadsheet
             flash[:notice] = "The journal file has been created successfully"
@@ -97,17 +98,26 @@ class FacilityJournalsController < ApplicationController
 
     @pending_journal = Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
     @accounts        = NufsAccount.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
+    @order_details   = OrderDetail.need_journal(current_facility)
     render :action => :index
   end
 
   # GET /facilities/:facility_id/journals/:id
   def show
-    @journal      = current_facility.journals.find(params[:id])
-    @journal_rows = @journal.journal_rows
+    @journal = current_facility.journals.find(params[:id])
 
-    headers["Content-type"] = "text/xml"
-    headers['Content-Disposition'] = "attachment; filename=\"journal_#{@journal.id}_#{@journal.created_at.strftime("%Y%m%d")}.xml\"" 
+    if request.format.xml?
+      @journal_rows = @journal.journal_rows
+      headers["Content-type"] = "text/xml"
+      headers['Content-Disposition'] = "attachment; filename=\"journal_#{@journal.id}_#{@journal.created_at.strftime("%Y%m%d")}.xml\"" 
 
-    render 'show.xml.haml', :layout => false
+      render 'show.xml.haml', :layout => false and return
+    end
+
+    @order_details = current_facility.order_details.find(:all, :conditions => {:journal_id => @journal.id})
+  end
+
+  def history
+    @journals = current_facility.journals.find(:all, :order => 'journals.created_at DESC').paginate(:page => params[:page])
   end
 end

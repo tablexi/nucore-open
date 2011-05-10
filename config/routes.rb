@@ -99,7 +99,7 @@ ActionController::Routing::Routes.draw do |map|
       account.members '/members', :controller => 'facility_accounts', :action => 'members', :conditions => {:method => :get}
     end
 
-    facility.resources :journals, :controller => 'facility_journals', :only => [:index, :create, :update, :show]
+    facility.resources :journals, :controller => 'facility_journals', :only => [:index, :create, :update, :show], :collection => {:history => :get}
 
     facility.resources :price_groups, :member => {:users => :get, :accounts => :get} do |price_group|
       price_group.resources :user_price_group_members,    :only => [:new, :destroy, :create], :collection => {:create => :get}

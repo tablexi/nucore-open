@@ -2,9 +2,11 @@ class Journal < ActiveRecord::Base
   has_many                :journal_rows
   belongs_to              :facility
   has_many                :order_details, :through => :journal_rows
+  belongs_to              :created_by_user, :class_name => 'User', :foreign_key => :created_by
 
   validates_uniqueness_of :facility_id, :scope => :is_successful, :if => Proc.new { |j| j.is_successful.nil? }
   validates_presence_of   :reference, :updated_by, :on => :update
+  validates_presence_of   :created_by
   validates_inclusion_of  :is_successful, :in => [true, false], :on => :update
   has_attached_file       :file,
                           :storage => :filesystem,
@@ -79,6 +81,27 @@ class Journal < ActiveRecord::Base
     update_attribute(:file, File.open(file_path))
   end
 
+  def status_string
+    if is_successful.nil?
+      'Pending'
+    elsif is_successful? == false
+      'Failed'
+    else
+      is_reconciled? ? 'Successful, reconciled' : 'Successful, not reconciled'
+    end
+  end
+
+  def is_reconciled?
+    if is_successful.nil?
+      false
+    elsif is_successful? == false
+      true
+    else
+      details = OrderDetail.find(:all, :conditions => ['journal_id = ? AND state <> ?', id, 'reconciled'])
+      details.empty? ? true : false
+    end
+  end
+
   def self.order_details_span_fiscal_years?(order_details)
     d = order_details.first.fulfilled_at
     d = d.to_date
@@ -93,5 +116,9 @@ class Journal < ActiveRecord::Base
       return true if (od.fulfilled_at.to_date < start_fy || od.fulfilled_at.to_date >= end_fy)
     end
     false
+  end
+
+  def to_s
+    id.to_s
   end
 end
