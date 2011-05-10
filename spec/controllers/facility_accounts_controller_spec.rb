@@ -322,6 +322,8 @@ describe FacilityAccountsController do
       should render_template('credit_cards.html.haml')
     end
 
+    it 'should test selected_account param'
+
   end
 
 
@@ -365,6 +367,8 @@ describe FacilityAccountsController do
       assigns[:unreconciled_details].should == OrderDetail.account_unreconciled(@authable, assigns[:selected])
       should render_template('purchase_orders.html.haml')
     end
+
+    it 'should test selected_account param'
 
   end
 
@@ -469,7 +473,7 @@ describe FacilityAccountsController do
       @action=:show_statement
 
       2.times do
-        @statement=Factory.create(:statement, :facility_id => @authable.id, :created_by => @admin.id)
+        @statement=Factory.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => @account)
         sleep 1 # need different timestamp on statement
       end
 
@@ -586,9 +590,8 @@ describe FacilityAccountsController do
     @params={ :facility_id => @authable.url_name }
     account.account_users_attributes = [{:user_id => @purchaser.id, :user_role => AccountUser::ACCOUNT_OWNER, :created_by => @admin.id }]
     assert account.save
-    statement=Factory.create(:statement, :facility => @authable, :created_by => 1, :account => account)
-    @order_detail.update_attributes(:account => account, :statement => statement, :reviewed_at => Time.zone.now-1.day)
-    Factory.create(:statement_row, :statement => statement, :order_detail => @order_detail)
+    @order_detail.to_complete!
+    @order_detail.update_attributes(:account => account, :fulfilled_at => Time.zone.now-1.day, :actual_cost => 10, :actual_subsidy => 2)
   end
 
 end
