@@ -96,6 +96,7 @@ Spec::Runner.configure do |config|
     @os_in_process = OrderStatus.find_or_create_by_name(:name => 'In Process')
     @os_complete   = OrderStatus.find_or_create_by_name(:name => 'Complete')
     @os_cancelled  = OrderStatus.find_or_create_by_name(:name => 'Cancelled')
+    @os_reconciled  = OrderStatus.find_or_create_by_name(:name => 'Reconciled')
 
     # initialize price groups
     @nupg = PriceGroup.find_or_create_by_name(:name => 'Northwestern Base Rate', :is_internal => true, :display_order => 1)

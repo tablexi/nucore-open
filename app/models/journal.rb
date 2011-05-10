@@ -19,6 +19,10 @@ class Journal < ActiveRecord::Base
     rows.each{|row| sum += row.amount if row.amount > 0}
     sum
   end
+    
+  def open?
+    is_successful.nil?
+  end
 
   def create_journal_rows!(order_details)
     recharge_by_product = {}

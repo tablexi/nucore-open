@@ -44,7 +44,7 @@ end
 
 Factory.define :nufs_account, :class => NufsAccount do |o|
   o.sequence(:account_number) do |n| 
-    s = "1#{n%10}#{rand(10)}-7777777" # fund3-dept7
+    s = "9#{n%10}#{rand(10)}-7777777" # fund3-dept7
     define_ge001(s)
     s
   end

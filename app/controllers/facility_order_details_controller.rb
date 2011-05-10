@@ -15,6 +15,8 @@ class FacilityOrderDetailsController < ApplicationController
   def edit
     @order        = current_facility.orders.find(params[:order_id])
     @order_detail = @order.order_details.find(params[:id])
+    @in_open_journal=@order_detail.journal && @order_detail.journal.open?
+    flash.now[:notice]="You are unable to edit all aspects of this order because it is part of a pending journal. Please close the journal first." if @in_open_journal
   end
 
   # PUT /facilities/:facility_id/orders/:order_id/order_details/:id

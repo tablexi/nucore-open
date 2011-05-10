@@ -99,11 +99,7 @@ class Account < ActiveRecord::Base
   end
 
   def unreconciled_total(facility)
-    details=order_details.find(:all,
-      :joins => :order,
-      :conditions => [ 'orders.facility_id = ? AND order_details.account_id = ?', facility.id, id ]
-    )
-
+    details=OrderDetail.account_unreconciled(facility, self)
     unreconciled_total=0
 
     details.each do |od|

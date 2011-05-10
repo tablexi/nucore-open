@@ -32,9 +32,34 @@ describe FacilityOrderDetailsController do
     before :each do
       @method=:get
       @action=:edit
+      @journal=Journal.new(:facility => @authable, :created_by => 1, :updated_by => 1, :reference => 'xyz')
+      assert @journal.save
+      @order_detail.journal=@journal
+      assert @order_detail.save
     end
 
-    it_should_allow_operators_only
+    it_should_allow_operators_only :success do
+      assigns[:order].should == @order
+      assigns[:order_detail].should == @order_detail
+      should assign_to :in_open_journal
+      should render_template 'edit'
+    end
+
+    it 'should acknowledge order detail is part of open journal' do
+      maybe_grant_always_sign_in :staff
+      do_request
+      assigns[:in_open_journal].should == true
+      should set_the_flash
+    end
+
+    it 'should acknowledge order detail is not part of open journal' do
+      @journal.is_successful=true
+      assert @journal.save
+      maybe_grant_always_sign_in :staff
+      do_request
+      assigns[:in_open_journal].should == false
+      should_not set_the_flash
+    end
 
   end
 

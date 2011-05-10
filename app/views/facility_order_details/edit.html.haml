@@ -74,7 +74,8 @@
         =h @order.created_by_user.full_name
       %li
         %label Payment Source
-        = f.collection_select(:account_id, @order.user.account_users.active.collect{|au| au.account}, :id, :account_pretty)
+        - html_opts=@in_open_journal ? { :disabled => 'disabled' } : {}
+        = f.collection_select(:account_id, @order.user.account_users.active.collect{|au| au.account}, :id, :account_pretty, {}, html_opts)
       %li
         %label Assigned User
         - if @order_detail.complete?
@@ -151,7 +152,9 @@
         - if @order_detail.product.is_a?(Instrument)
           =h @order_detail.quantity
         - else
-          = f.text_field :quantity, :id => 'quantity', :size => 3
+          - html_opts={ :id => 'quantity', :size => 3 }
+          - html_opts.merge!(:disabled => 'disabled') if @in_open_journal
+          = f.text_field :quantity, html_opts
       %td
         %ul
           - product_name = (@order_detail.bundle ? "#{h @order_detail.bundle} &mdash; " : '') + h(@order_detail.product)
