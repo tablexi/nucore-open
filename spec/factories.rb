@@ -185,6 +185,10 @@ end
 Factory.define :statement do |s|
 end
 
+Factory.define :statement_row do |s|
+  s.amount 5
+end
+
 Factory.define :reservation do |r|
   time=Time.parse('9:30') + 1.day
   r.reserve_start_at time
