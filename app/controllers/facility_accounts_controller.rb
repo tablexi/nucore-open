@@ -207,10 +207,10 @@ class FacilityAccountsController < ApplicationController
       else
         @accounts.each{|a| @selected=a and break if a.id == selected_id.to_i }
       end
-    end
 
-    @unreconciled_details=OrderDetail.account_unreconciled(current_facility, @selected)
-    @unreconciled_details=@unreconciled_details.paginate(:page => params[:page])
+      @unreconciled_details=OrderDetail.account_unreconciled(current_facility, @selected)
+      @unreconciled_details=@unreconciled_details.paginate(:page => params[:page])
+    end
   end
 
 
