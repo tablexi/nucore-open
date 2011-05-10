@@ -132,11 +132,7 @@ class Account < ActiveRecord::Base
   end
 
   def to_s
-    string = "#{description} (#{account_number})"
-    if facility && self.class == PurchaseOrderAccount
-      string += " - #{facility.name}"
-    end
-    string
+    "#{description} (#{account_number})"
   end
   
   def price_groups
