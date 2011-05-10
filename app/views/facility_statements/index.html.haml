@@ -11,13 +11,14 @@
     %tr
       %th
       %th Sent At
-      %th Invoice At
       %th Sent By
-      %th Number of Accounts
+      %th Account
+      %th.currency # of Orders
     - @statements.each do |s|
       %tr
-        %td.cenetered= link_to "View", facility_statement_path(current_facility, s)
+        %td.cenetered= link_to 'Download', facility_account_statement_path(current_facility, s.account_id, s, :format => :pdf)
         %td=h human_datetime(s.created_at)
-        %td=h human_datetime(s.invoice_date)
         %td=h begin User.find(s.created_by).full_name rescue 'Unknown' end
-        %td=h s.accounts.uniq.length
+        %td= link_to s.account, facility_account_path(current_facility, s.account)
+        %td.currency=h s.order_details.count
+  = will_paginate(@statements)

@@ -10,10 +10,18 @@
 %h2= @account
 
 - if @statements.empty?
-  %p.notice No statements exist.
+  %p.notice No statements have been sent for this payment source.
 - else
-  %ul.grid_5
-    - @statements.each do |statement|
-      %li= link_to human_date(statement.invoice_date), facility_account_statement_path(current_facility, @account, statement, :format => :pdf)
-
-  %p= will_paginate(@statements)
+  %table
+    %tr
+      %th
+      %th Sent At
+      %th Sent By
+      %th.currency # of Orders
+    - @statements.each do |s|
+      %tr
+        %td.centered= link_to 'Download', facility_account_statement_path(current_facility, @account, s, :format => :pdf)
+        %td=h human_datetime(s.created_at)
+        %td=h begin User.find(s.created_by).full_name rescue 'Unknown' end
+        %td.currency=h s.order_details.count
+  = will_paginate(@statements)

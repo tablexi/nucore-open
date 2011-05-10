@@ -7,7 +7,6 @@ class Statement < ActiveRecord::Base
   validates_numericality_of :account_id, :facility_id, :created_by, :only_integer => true
 
   default_scope :order => 'statements.created_at DESC'
-  named_scope :final_for_facility, lambda { |facility| { :conditions => ['statements.facility_id = ? AND invoice_date <= ?', facility.id, Time.zone.now]}}
 
   def account_balance_due (account)
     at = order_details.find(:first,
