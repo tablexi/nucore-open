@@ -133,7 +133,7 @@ class Account < ActiveRecord::Base
 
   def to_s
     string = "#{description} (#{account_number})"
-    if self.class == PurchaseOrderAccount
+    if facility && self.class == PurchaseOrderAccount
       string += " - #{facility.name}"
     end
     string
