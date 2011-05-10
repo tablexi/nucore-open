@@ -146,8 +146,7 @@ class FacilityAccountsController < ApplicationController
     case params[:statement_id]
       when 'list'
         action += '_list'
-        @statements = @account.statements.final_for_facility(current_facility).uniq
-        @statements = @statements.paginate(:page => params[:page])
+        @statements = Statement.find(:all, :conditions => {:facility_id => current_facility.id, :account_id => @account}, :order => 'created_at DESC').paginate(:page => params[:page])
       when 'recent'
         @order_details = @account.order_details.for_facility(@facility)
         @order_details = @order_details.paginate(:page => params[:page])
