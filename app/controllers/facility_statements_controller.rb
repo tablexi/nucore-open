@@ -61,16 +61,10 @@ class FacilityStatementsController < ApplicationController
   # GET /facilities/:facility_id/statements/accounts_receivable
   def accounts_receivable
     @account_balances = {}
-    if params[:show_all]
-      AccountTransaction.find(:all, :group => 'account_id', :select => 'account_id, SUM(transaction_amount) AS balance', :conditions => ['facility_id = ? AND finalized_at <= ?', current_facility.id, Time.zone.now]).each do |at|
-        @account_balances[at.account_id] = at.balance
-      end
-    else
-      AccountTransaction.find(:all, :conditions => ['facility_id = ?', current_facility.id], :group => 'account_id', :select => 'account_id, SUM(transaction_amount) AS balance',  :conditions => ['facility_id = ? AND finalized_at <= ?', current_facility.id, Time.zone.now], :having => 'SUM(transaction_amount) > 0').each do |at|
-        @account_balances[at.account_id] = at.balance
-      end
+    order_details = current_facility.order_details.complete
+    order_details.each do |od|
+      @account_balances[od.account_id] = @account_balances[od.account_id].to_f + od.total
     end
-    # TODO add pagination here
     @accounts = Account.find(@account_balances.keys)
   end
 

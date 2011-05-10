@@ -91,11 +91,8 @@ class Account < ActiveRecord::Base
   end
 
   def facility_balance (facility, date=Time.zone.now)
-    at = order_details.find(:first,
-        :joins => "INNER JOIN orders ON orders.id=order_details.order_id INNER JOIN statements ON statements.id=order_details.statement_id INNER JOIN statement_rows ON statements.id=statement_rows.statement_id",
-        :conditions => ['orders.facility_id = ? AND order_details.reviewed_at <= ?', facility.id, date],
-        :select => "SUM(statement_rows.amount) AS balance" )
-    at.nil? ? 0 : at.balance.to_f
+    details = facility.order_details.complete.find(:all, :conditions => ['order_details.fulfilled_at <= ?', date])
+    details.collect{|od| od.total}.sum.to_f
   end
 
   def unreconciled_total(facility)
