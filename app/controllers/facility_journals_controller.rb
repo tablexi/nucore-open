@@ -120,4 +120,24 @@ class FacilityJournalsController < ApplicationController
   def history
     @journals = current_facility.journals.find(:all, :order => 'journals.created_at DESC').paginate(:page => params[:page])
   end
+
+  def reconcile
+    @journal = current_facility.journals.find(params[:journal_id])
+
+    if params[:order_detail_ids].blank?
+      flash[:error] = 'No orders were selected to reconcile'
+      redirect_to facility_journal_url(current_facility, @journal) and return
+    end
+    rec_status = OrderStatus.reconciled.first
+    order_details = OrderDetail.find(params[:order_detail_ids])
+    order_details.each do |od|
+      if od.journal_id != @journal.id
+        flash[:error] = 'An error was encountered while reconcile orders'
+        redirect_to facility_journal_url(current_facility, @journal) and return
+      end
+      od.change_status!(rec_status)
+    end
+    flash[:notice] = The select orders have been reconciled successfully
+    redirect_to facility_journal_url(current_facility, @journal) and return
+  end
 end

@@ -25,7 +25,7 @@
 %hr
 %br
 
-%h2 Reconcile Orders
+%h3 Reconcile Orders
 %p
   Orders on this page reflect updates made to orders since journaling.  To view the journal as originally
   submitted, you may download the XLS or XML journal for reference
@@ -37,28 +37,39 @@
   %p The journal was processed successfully and all orders associated with the journal have been reconciled.  No further changes may be made to the journal or the associated orders.
 - else
   %p
-    The journal was processed successfully, but individual orders must be reconciled.  Please update any orders to reflect changes made
+    The journal was processed successfully, but individual orders must be reconciled.  Please edit orders to reflect changes made
     to the journal after the journal was submitted.  Once an order has been updated to reflect the necessary changes, you should mark that
-    order as reconciled.
+    order as reconciled.  Once reconciled, you may not make any additional changes to the order.
 - if @order_details.empty?
   %p.notice No orders are associated with this journal
 - else
-  %table
-    %tr
-      %th
-      %th Order
-      %th Fulfilled At
-      %th Total
-      %th Is Reconciled
-    - @order_details.each do |od|
-      - disable = od.reconciled? || journal.open?
+  - form_tag facility_journal_reconcile_path(current_facility, @journal), :method => :post do
+    %table
+      - if @journal.is_successful? && !@journal.is_reconciled?
+        %tr.borderless
+          %td{:colspan => 3}
+          %td.currency{:colspan => 3}= submit_tag "Reconcile Orders"
       %tr
-        %td= check_box_tag "order_detail_ids[]", od.id, (od.reconciled? ? true : false), {:disabled => (od.reconciled? ? true : false)}
-        %td
-          %ul
-            %li=h od
-            - unless od.note.blank?
-              %li=h od.note
-        %td=h human_datetime(od.fulfilled_at)
-        %td=h number_to_currency od.total
-        %td=h od.reconciled? ? 'Yes' : 'No'
+        %th
+        %th Order
+        %th Fulfilled At
+        %th Payment Source
+        %th Total
+        %th Reconciled?
+      - @order_details.each do |od|
+        - disable = od.reconciled? || @journal.open?
+        %tr
+          %td= check_box_tag "order_detail_ids[]", od.id, (od.reconciled? ? true : false), {:disabled => (od.reconciled? ? true : false)}
+          %td
+            %ul
+              %li= link_to od, edit_facility_order_order_detail_path(current_facility, od.order_id, od)
+              - unless od.note.blank?
+                %li=h od.note
+          %td=h human_datetime(od.fulfilled_at)
+          %td=h od.account
+          %td=h number_to_currency od.total
+          %td=h od.reconciled? ? 'Yes' : 'No'
+      - if @journal.is_successful? && !@journal.is_reconciled?
+        %tr.borderless
+          %td{:colspan => 3}
+          %td.currency{:colspan => 3}= submit_tag "Reconcile Orders"
