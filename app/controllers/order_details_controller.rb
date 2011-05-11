@@ -31,9 +31,6 @@ class OrderDetailsController < ApplicationController
           @order_detail.dispute_reason = params[:order_detail][:dispute_reason]
           @order_detail.dispute_at = Time.zone.now
           @order_detail.save!
-          account_txn = @order_detail.purchase_account_transactions.find(:first, :conditions => {:account_id => @order_detail.account.id}, :order => 'created_at DESC')
-          account_txn.set_disputed
-          account_txn.save!
           flash[:notice] = 'Your purchase has been disputed'
           redirect_to orders_path and return
         rescue Exception => e

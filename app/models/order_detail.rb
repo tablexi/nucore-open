@@ -206,10 +206,6 @@ class OrderDetail < ActiveRecord::Base
     end
   end
 
-  def is_in_dispute?
-    dispute_at && dispute_resolved_at.nil? && !cancelled?
-  end
-
   def validate_for_purchase
     # can purchase product
     return "The product may not be purchased" unless product.can_purchase?
@@ -371,13 +367,9 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def in_dispute?
-    dispute_resolved_at.nil? && !dispute_at.nil?
+    dispute_at && dispute_resolved_at.nil? && !cancelled?
   end
 
-  def current_purchase_account_transaction
-    purchase_account_transactions.find(:first, :conditions => {:account_id => account_id}, :order => 'created_at DESC')
-  end
-  
   def cancel_reservation(canceled_by, order_status = OrderStatus.cancelled.first, admin_cancellation = false)
     res = self.reservation
 

@@ -24,7 +24,7 @@ class FacilityOrderDetailsController < ApplicationController
         !@order_detail.statement.nil?
     end
 
-    @can_be_reconciled=condition && @order_detail.complete? && !@order_detail.is_in_dispute?
+    @can_be_reconciled=condition && @order_detail.complete? && !@order_detail.in_dispute?
     flash.now[:notice]="You are unable to edit all aspects of this order because it is part of a pending journal. Please close the journal first." if @in_open_journal
   end
 
@@ -100,16 +100,6 @@ class FacilityOrderDetailsController < ApplicationController
         # process account change
         process_account_change
 
-        # resolve current purchase account transaction (in case no credit or move have adjusted it yet)
-        current_txn = @order_detail.current_purchase_account_transaction
-        current_txn.is_in_dispute = false
-        if current_txn.statement_id && current_txn.statement.invoice_date > Time.zone.now
-          current_txn.finalized_at = current_txn.statement.invoice_date
-        else
-          current_txn.statement_id = nil
-        end
-        current_txn.save! if current_txn.changed?
-
         # update order detail
         @order_detail.attributes          = params[:order_detail]
         @order_detail.updated_by          = session_user.id
@@ -156,13 +146,13 @@ class FacilityOrderDetailsController < ApplicationController
   end
   
 
-  protected
+  private
+
   def process_account_change
-    if (params[:order_detail][:account_id].to_i != @order_detail.account_id && @order_detail.state == 'complete')
-      new_account = Account.find(params[:order_detail][:account_id])
-      at = @order_detail.current_purchase_account_transaction
-      at.is_in_dispute = false
-      at.move_to_new_account!(new_account, :created_by => session_user.id)
-    end
+    return if params[:order_detail][:account_id].to_i == @order_detail.account_id
+    @order_detail.account=Account.find(params[:order_detail][:account_id])
+    @order_detail.statement=nil
+    @order_detail.save!
   end
+
 end

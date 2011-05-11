@@ -40,7 +40,7 @@
         %td= human_datetime(od.created_at)
         %td=h od.description
         %td.centered
-          - if od.is_in_dispute?
+          - if od.in_dispute?
             In Dispute
           - elsif od.can_dispute?
             = link_to('Dispute', order_order_detail_path(od.order, od))
