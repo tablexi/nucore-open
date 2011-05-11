@@ -90,6 +90,7 @@ class FacilityJournalsController < ApplicationController
             redirect_to facility_journals_path and return
           rescue Exception => e
             @journal.errors.add_to_base("An error was encountered while trying to create the journal #{e}")
+            Rails.logger.error(e.backtrace.join("\n"))
             raise ActiveRecord::Rollback
           end
         end
