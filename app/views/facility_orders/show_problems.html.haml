@@ -24,9 +24,9 @@
         %td= product_name
         %td=h od.account
         - if od.price_policy
-          %td.centered= "Actual Usage Missing [#{link_to 'Enter', edit_facility_order_order_detail_reservation_path(current_facility, od.order, od, od.reservation)}]"
+          %td.centered= "Actual Usage Missing #{link_to 'Enter', edit_facility_order_order_detail_reservation_path(current_facility, od.order, od, od.reservation)}"
         - else
-          %td.centered= "Price Policy Missing [#{link_to 'Assign', edit_facility_order_order_detail_path(current_facility, od.order, od)}]"
+          %td.centered= "Price Policy Missing #{link_to 'Assign', edit_facility_order_order_detail_path(current_facility, od.order, od)}"
     %tr.borderless
       %td
       %td
