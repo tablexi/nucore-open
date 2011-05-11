@@ -145,10 +145,6 @@ class OrderDetail < ActiveRecord::Base
     reservation.nil? || !reservation.canceled_at.nil?
   end
 
-  def init_purchase_account_transaction
-    PurchaseAccountTransaction.new({:account_id => account_id, :facility_id => product.facility_id, :description => "Order # #{self.to_s}", :transaction_amount => actual_total, :order_detail_id => id, :is_in_dispute => false})
-  end
-
   def cost
     actual_cost || estimated_cost
   end

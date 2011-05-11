@@ -313,10 +313,6 @@ namespace :demo  do
       order.order_details.each do |od|
         # enter actuals for instruments
         set_instrument_order_actual_cost(od) if od.reservation
-        at = od.init_purchase_account_transaction
-        at.created_by = user_director.id
-        at.created_at = od.order.ordered_at + 1.days
-        at.save!
         od.change_status!(complete)
       end
     end
