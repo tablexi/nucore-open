@@ -45,6 +45,16 @@
       });
     });
 
+  - if @can_be_reconciled
+    :javascript
+      $(function() {
+        $('#reconcile-note').hide();
+
+        $('#order_detail_order_status_id').change(function() {
+          $('#reconcile-note').toggle();
+        });
+      });
+
 - content_for :h1 do
   = current_facility
 - content_for :tabnav do
@@ -72,6 +82,10 @@
       %li
         %label Ordered By
         =h @order.created_by_user.full_name
+      - if @can_be_reconciled && @order_detail.account.is_a?(NufsAccount) && @order_detail.journal
+        %li
+          %label Journaled On
+          ==#{h human_date(@order_detail.journal.created_at)} (#{link_to 'remove from journal', remove_from_journal_facility_order_order_detail_path(current_facility, @order, @order_detail)})
       %li
         %label Payment Source
         - html_opts=@in_open_journal ? { :disabled => 'disabled' } : {}
@@ -165,7 +179,9 @@
             %li.indented= link_to('View Order Form', show_admin_order_survey_path(current_facility, @order, @order_detail, @order_detail.response_set.survey.access_code, @order_detail.response_set.access_code))
           - unless @order_detail.file_uploads.template_result.empty?
             %li.indented= link_to('View Order File', @order_detail.file_uploads.template_result.first.file.url)
-      - if @order_detail.complete?
+      - if @can_be_reconciled
+        %td= f.collection_select(:order_status_id, [ OrderStatus.complete.first, OrderStatus.reconciled.first ], :id, :name_with_level)
+      - elsif @order_detail.complete? || @order_detail.reconciled?
         %td=h @order_detail.order_status
       - else
         %td= f.collection_select(:order_status_id, OrderStatus.non_protected_statuses(current_facility), :id, :name_with_level)
@@ -181,6 +197,10 @@
         %td{:colspan => '8'}
           %label.inline Note:
           = f.text_field(:note, :style=> "width:200px")
+          - if @can_be_reconciled || @order_detail.reconciled_note
+            %span#reconcile-note.indented
+              %label.inline Reconciliation Note:
+              = f.text_field(:reconciled_note, :style=> "width:200px")
 
   - if @order_detail.cost_estimated?
     %p.footnote * Clicking 'Save' will update the cost estimate by quantity

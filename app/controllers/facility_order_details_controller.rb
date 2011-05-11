@@ -16,6 +16,15 @@ class FacilityOrderDetailsController < ApplicationController
     @order        = current_facility.orders.find(params[:order_id])
     @order_detail = @order.order_details.find(params[:id])
     @in_open_journal=@order_detail.journal && @order_detail.journal.open?
+
+    condition=case @order_detail.account
+      when NufsAccount
+        (@order_detail.journal && @order_detail.journal.is_successful) || OrderDetail.need_journal(current_facility).include?(@order_detail)
+      else
+        !@order_detail.statement.nil?
+    end
+
+    @can_be_reconciled=condition && @order_detail.complete? && !@order_detail.is_in_dispute?
     flash.now[:notice]="You are unable to edit all aspects of this order because it is part of a pending journal. Please close the journal first." if @in_open_journal
   end
 
@@ -40,6 +49,7 @@ class FacilityOrderDetailsController < ApplicationController
         @order_detail.actual_cost = od_params[:actual_cost].gsub(/[^\d\.]/,'') if od_params[:actual_cost]
         @order_detail.actual_subsidy = od_params[:actual_subsidy].gsub(/[^\d\.]/,'') if od_params[:actual_subsidy]
         @order_detail.updated_by = session_user.id
+        @order_detail.reconciled_note=od_params[:reconciled_note] if od_params[:reconciled_note]
 
         if params[:assign_price_policy]
           @order_detail.assign_price_policy
@@ -130,6 +140,21 @@ class FacilityOrderDetailsController < ApplicationController
 
     render :json => [cost, subsidy, total]
   end
+
+
+  def remove_from_journal
+    oid=params[:id]
+    return redirect_to :back unless oid
+
+    oid=oid.to_i
+    od=OrderDetail.find(oid)
+    od.journal=nil
+    od.save!
+
+    flash[:notice]='The order has been removed from its journal'
+    redirect_to edit_facility_order_order_detail_path(current_facility, od.order, od)
+  end
+  
 
   protected
   def process_account_change
