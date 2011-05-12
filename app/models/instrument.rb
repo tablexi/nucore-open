@@ -110,4 +110,10 @@ class Instrument < Product
   def self.relay_types
     @@relay_types
   end
+
+  def after_create
+    [ PriceGroup.northwestern.first, PriceGroup.external.first ].each do |pg|
+      PriceGroupProduct.create!(:product => self, :price_group => pg, :reservation_window => PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)
+    end
+  end
 end
