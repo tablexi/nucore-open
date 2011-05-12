@@ -6,6 +6,8 @@ class Product < ActiveRecord::Base
   has_many   :product_users
   has_many   :order_details
   has_many   :file_uploads
+  has_many   :price_groups, :through => :price_group_products
+  has_many   :price_group_products
 
   validates_presence_of :name, :type
   validate_url_name :url_name
