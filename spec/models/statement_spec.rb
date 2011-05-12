@@ -2,19 +2,18 @@ require 'spec_helper'
 
 describe Statement do
   it "can be created with valid attributes" do
-    @facility  = Factory.create(:facility)
-    @statement = Statement.create({:facility => @facility, :created_by => 1, :invoice_date => Time.zone.now + 7.days})
+    @facility=Factory.create(:facility)
+    @user=Factory.create(:user)
+    @account=Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+    @statement = Statement.create({:facility => @facility, :created_by => 1, :account => @account})
     @statement.should be_valid
   end
 
   context "finalized_at" do
     before :each do
       @facility  = Factory.create(:facility)
-      @statement = Statement.create({:facility => @facility, :created_by => 1, :invoice_date => Time.zone.now + 7.days})
+      @statement = Statement.create({:facility => @facility, :created_by => 1})
     end
-
-    it { should allow_value(nil).for(:finalized_at) }
-    it { should allow_value(Time.zone.now).for(:finalized_at) }
   end
 
   it "requires created_by" do

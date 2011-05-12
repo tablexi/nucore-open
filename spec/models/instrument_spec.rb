@@ -228,8 +228,9 @@ describe Instrument do
     end
 
     it "should have last_reserve_date == tomorrow, last_reserve_days_from_now == 1 when window is 1" do
-      assert_equal Time.zone.now.to_date + 1.day, @instrument.last_reserve_date
-      assert_equal 1, @instrument.last_reserve_days_from_now
+      @instrument.price_group_products.each{|pgp| pgp.update_attributes(:reservation_window => 1) }
+      assert_equal Time.zone.now.to_date + 1.day, @instrument.reload.last_reserve_date
+      assert_equal 1, @instrument.max_reservation_window
     end
     
     it "should use max window of all price polices to calculate dates" do
@@ -239,8 +240,8 @@ describe Instrument do
       @options       = Factory.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id)
       @price_policy2 = @instrument.instrument_price_policies.new(@options)
       @price_policy2.save(false) # save without validations
-      assert_equal Time.zone.now.to_date + 15.days, @instrument.last_reserve_date
-      assert_equal 15, @instrument.last_reserve_days_from_now
+      assert_equal 15, @instrument.max_reservation_window
+      assert_equal (Time.zone.now+15.days).to_date, @instrument.last_reserve_date
     end
   end
 end

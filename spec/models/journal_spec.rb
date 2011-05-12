@@ -4,7 +4,7 @@ describe Journal do
 
   before :each do
     @facility = Factory.create(:facility)
-    @journal  = Journal.new(:facility => @facility, :created_by => 1)
+    @journal  = Journal.new(:facility => @facility, :created_by => 1, :journal_date => Time.zone.now)
   end
 
   it "can be created with valid attributes" do
@@ -14,18 +14,20 @@ describe Journal do
   end
   
   it "allows only one active journal per facility" do
-    @journal1.id.should_not be_nil
+    assert @journal.save
+    @journal.id.should_not be_nil
     
     @journal2 = Journal.create(:facility => @facility, :created_by => 1)
     @journal2.should_not be_valid
     
-    @journal1.update_attributes({:is_successful => false, :reference => '12345', :updated_by => 1})
-    @journal1.should be_valid
+    @journal.update_attributes({:is_successful => false, :reference => '12345', :updated_by => 1})
+    @journal.should be_valid
     @journal2.should be_valid
   end
   
   it "requires reference on update" do
-    @journal.valid?
+    assert @journal.save
+    assert !@journal.save
     @journal.errors.on(:reference).should_not be_nil
     
     @journal.reference = '12345'
@@ -34,7 +36,8 @@ describe Journal do
   end
   
   it "requires updated_by on update" do
-    @journal.valid?
+    assert @journal.save
+    assert !@journal.save
     @journal.errors.on(:updated_by).should_not be_nil
     
     @journal.updated_by = '1'
@@ -43,7 +46,8 @@ describe Journal do
   end
   
   it "requires a boolean value for is_successful on update" do
-    @journal.valid?
+    assert @journal.save
+    assert !@journal.save
     @journal.errors.on(:is_successful).should_not be_nil
     
     @journal.is_successful = true

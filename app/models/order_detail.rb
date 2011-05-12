@@ -34,7 +34,7 @@ class OrderDetail < ActiveRecord::Base
   named_scope :new_or_inprocess, :conditions => ["order_details.state IN ('new', 'inprocess') AND orders.ordered_at IS NOT NULL"], :include => :order, :order => 'orders.ordered_at DESC'
 
   named_scope :facility_recent, lambda { |facility|
-                                  { :conditions => ['(order_details.statement_id IS NULL OR statements.invoice_date > ?) AND orders.facility_id = ?', Time.zone.now, facility.id],
+                                  { :conditions => ['(order_details.statement_id IS NULL OR order_details.reviewed_at > ?) AND orders.facility_id = ?', Time.zone.now, facility.id],
                                     :joins => 'LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id',
                                     :order => 'order_details.created_at DESC' }}
 

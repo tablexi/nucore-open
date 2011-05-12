@@ -296,7 +296,7 @@ describe OrderDetail do
 
   context 'journal' do
     before :each do
-      @journal=Factory.create(:journal, :facility => @facility, :reference => 'xyz', :created_by => @user.id)
+      @journal=Factory.create(:journal, :facility => @facility, :reference => 'xyz', :created_by => @user.id, :journal_date => Time.zone.now)
     end
 
     it { should allow_value(nil).for(:journal) }
@@ -324,21 +324,21 @@ describe OrderDetail do
     it 'should be in dispute' do
       @order_detail.dispute_at=Time.zone.now
       @order_detail.dispute_resolved_at=nil
-      @order_detail.should be_is_in_dispute
+      @order_detail.should be_in_dispute
     end
 
 
     it 'should not be in dispute if dispute_at is nil' do
       @order_detail.dispute_at=nil
       @order_detail.dispute_resolved_at="all good"
-      @order_detail.should_not be_is_in_dispute
+      @order_detail.should_not be_in_dispute
     end
 
 
     it 'should not be in dispute if dispute_resolved_at is not nil' do
       @order_detail.dispute_at=Time.zone.now
       @order_detail.dispute_resolved_at=Time.zone.now+1.day
-      @order_detail.should_not be_is_in_dispute
+      @order_detail.should_not be_in_dispute
     end
 
 
@@ -346,7 +346,7 @@ describe OrderDetail do
       @order_detail.to_cancelled!
       @order_detail.dispute_at=Time.zone.now
       @order_detail.dispute_resolved_at=nil
-      @order_detail.should_not be_is_in_dispute
+      @order_detail.should_not be_in_dispute
     end
 
   end
@@ -408,11 +408,9 @@ describe OrderDetail do
     context 'needs statement' do
 
       before :each do
-        now=Time.zone.now
-        @statement = Statement.create({:facility => @facility, :created_by => 1, :invoice_date => now + 7.days, :finalized_at => now-3.days})
-        @order_detail.statement=@statement
-        assert @order_detail.save
-        @statement2 = Statement.create({:facility => @facility2, :created_by => 1, :invoice_date => now + 8.days, :finalized_at => now-4.days})
+        @statement = Statement.create({:facility => @facility, :created_by => 1, :account => @account})
+        @order_detail.update_attributes(:statement => @statement, :reviewed_at => (Time.zone.now-1.day))
+        @statement2 = Statement.create({:facility => @facility2, :created_by => 1, :account => @account})
         @order_detail2.statement=@statement2
         assert @order_detail2.save
       end

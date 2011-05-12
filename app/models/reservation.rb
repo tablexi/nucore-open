@@ -146,7 +146,7 @@ class Reservation < ActiveRecord::Base
   end
   
   def in_the_future
-    errors.add_to_base("The reservation must start at a future time") unless in_the_future?
+    errors.add(:reserve_start_at, "The reservation must start at a future time") unless in_the_future?
   end
 
   def instrument_is_available_to_reserve
