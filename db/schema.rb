@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110507055026) do
+ActiveRecord::Schema.define(:version => 20110511180455) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :precision => 38, :scale => 0, :null => false
@@ -385,6 +385,7 @@ ActiveRecord::Schema.define(:version => 20110507055026) do
     t.string   "relay_username",          :limit => 50
     t.string   "relay_password",          :limit => 50
     t.string   "account",                 :limit => 5
+    t.string   "relay_type",              :limit => 50
   end
 
   add_index "products", ["relay_ip", "relay_port"], :name => "sys_c008555", :unique => true

@@ -4,6 +4,10 @@
   %br
   %ul
     %li.left
+      = f.label :relay_type, 'Relay Type'
+      = f.select :relay_type, Instrument.relay_types.collect{|rt| [rt.constantize, rt]}
+    %li.clear
+    %li.left
       = f.label :relay_ip, 'IP Address'
       = f.text_field :relay_ip
     %li.left
