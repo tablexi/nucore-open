@@ -37,7 +37,7 @@ class Instrument < Product
 
   # calculate the last possible reservation date based on all current price policies associated with this instrument
   def last_reserve_date
-    (today + max_reservation_window.days).to_date
+    (Time.zone.now.to_date + max_reservation_window.days).to_date
   end
 
   def max_reservation_window
