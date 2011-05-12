@@ -116,7 +116,7 @@ class Account < ActiveRecord::Base
         'orders.facility_id = ? AND order_details.reviewed_at < ? AND order_details.statement_id IS NULL', statement.facility.id, Time.zone.now ]
     )
     details.each do |od|
-      od.update_attributes({:reviewed_at => statement.invoice_date+7.days, :statement => statement })
+      od.update_attributes({:reviewed_at => Time.zone.now+7.days, :statement => statement })
     end
   end
 

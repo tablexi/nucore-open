@@ -166,11 +166,10 @@ describe Account do
     item     = facility.items.create(Factory.attributes_for(:item, :facility_account_id => facility_account.id))
     account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => user, :created_by => user, :user_role => 'Owner']])
     order    = user.orders.create(Factory.attributes_for(:order, :created_by => user.id, :facility => facility))
-    order_detail = order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => item.id, :account_id => account.id))
-    statement = Statement.create({:facility => facility, :created_by => 1, :invoice_date => Time.zone.now})
+    order_detail = order.order_details.create!(Factory.attributes_for(:order_detail, :reviewed_at => (Time.zone.now-1.day)).update(:product_id => item.id, :account_id => account.id))
+    statement = Statement.create({:facility => facility, :created_by => 1, :account => account})
     account.update_order_details_with_statement(statement)
-    order_detail.reload.reviewed_at.to_date.should == (statement.invoice_date + 7.days).to_date
-    order_detail.statement.should == statement
+    order_detail.reload.statement.should == statement
   end
 
 
