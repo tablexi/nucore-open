@@ -286,7 +286,7 @@ describe OrderDetail do
 
   context 'statement' do
     before :each do
-      @statement=Factory.create(:statement, :facility => @facility, :created_by => @user.id, :invoice_date => Time.zone.now)
+      @statement=Factory.create(:statement, :facility => @facility, :created_by => @user.id, :account => @account)
     end
 
     it { should allow_value(nil).for(:statement) }
