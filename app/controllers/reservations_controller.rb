@@ -40,39 +40,23 @@ class ReservationsController < ApplicationController
     @reservation  = @instrument.reservations.new(params[:reservation].update(:order_detail => @order_detail))
 
     Reservation.transaction do
-      @error = false
-      if @reservation.valid?
-        # find and add price policy
+      begin
+        @reservation.save!
         groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
         @cheapest_price_policy = @reservation.cheapest_price_policy(groups)
-        @max_window = @reservation.longest_reservation_window(groups)
-        if @cheapest_price_policy.blank? || @max_window.blank?
-          @error = true
-          flash[:error] = "Unable to create a reservation at this time; no suitable price policies are available."
-          raise ActiveRecord::Rollback
-        else
-          @order_detail.price_policy = @cheapest_price_policy
+        if @cheapest_price_policy
           costs = @cheapest_price_policy.estimate_cost_and_subsidy(@reservation.reserve_start_at, @reservation.reserve_end_at)
           @order_detail.estimated_cost    = costs[:cost]
           @order_detail.estimated_subsidy = costs[:subsidy]
+          @order_detail.save!
         end
-      end
-
-      if @reservation.save && @order_detail.save
-        flash[:notice] = 'Reservation was successfully created.'
-      else
-        @error = true
+        flash[:notice] = 'The reservation was successfully created.'
+        redirect_to cart_url and return
+      rescue Exception => e
         raise ActiveRecord::Rollback
       end
     end
-
-    respond_to do |format|
-      if !@error
-        format.html { redirect_to cart_url }
-      else
-        format.html { render :action => "new" }
-      end
-    end
+    render :action => "new"
   end
 
   # GET /orders/1/order_details/1/reservations/new
@@ -135,41 +119,25 @@ class ReservationsController < ApplicationController
       @reservation.send("#{k}=", v)
     end
 
+
     Reservation.transaction do
-      @error = false
-      if @reservation.valid?
+      begin
+        @reservation.save!
         groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
         @cheapest_price_policy = @reservation.cheapest_price_policy(groups)
-        @max_window = @reservation.longest_reservation_window(groups)
-        if @cheapest_price_policy.blank? || @max_window.blank?
-          @error = true
-          flash[:error] = "Unable to create a reservation at this time; no suitable price policies are available."
-          raise ActiveRecord::Rollback
-        else
-          @order_detail.price_policy = @cheapest_price_policy
+        if @cheapest_price_policy
           costs = @cheapest_price_policy.estimate_cost_and_subsidy(@reservation.reserve_start_at, @reservation.reserve_end_at)
-          @order_detail.estimated_cost = costs[:cost]
+          @order_detail.estimated_cost    = costs[:cost]
           @order_detail.estimated_subsidy = costs[:subsidy]
+          @order_detail.save!
         end
-      end
-
-      if @reservation.save && @order_detail.save
-        flash[:notice] = 'Reservation was successfully updated.'
-      else
-        @error = true
+        flash[:notice] = 'The reservation was successfully updated.'
+        redirect_to (@order.purchased? ? orders_url : cart_url) and return
+      rescue Exception => e
         raise ActiveRecord::Rollback
       end
     end
-
-    if !@error
-      if @order.purchased?
-        redirect_to orders_url
-      else
-        redirect_to cart_url
-      end
-    else
-      render :action => "edit"
-    end
+    render :action => "edit"
   end
   
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/switch_instrument

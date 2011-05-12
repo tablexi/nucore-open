@@ -134,8 +134,7 @@ class Reservation < ActiveRecord::Base
     groups   = (order_detail.order.user.price_groups + order_detail.order.account.price_groups).flatten.uniq
     max_days = longest_reservation_window(groups)
     diff     = reserve_start_at.to_date - Date.today
-    return false unless diff.to_i <= max_days
-    true
+    diff <= max_days
   end
 
   def in_window
