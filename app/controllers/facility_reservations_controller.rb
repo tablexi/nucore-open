@@ -96,7 +96,7 @@ class FacilityReservationsController < ApplicationController
 
     # initialize calendar time constraints
     @min_date     = Time.zone.now.strftime("%Y%m%d")
-    @max_date     = (Time.zone.now + @instrument.last_reserve_days_from_now.days).strftime("%Y%m%d")
+    @max_date     = (Time.zone.now + @instrument.max_reservation_window.days).strftime("%Y%m%d")
 
     render :layout => 'two_column'
   end

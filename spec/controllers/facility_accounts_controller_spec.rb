@@ -570,6 +570,7 @@ describe FacilityAccountsController do
     @order_detail.to_complete!
     @order_detail.actual_cost=10
     @order_detail.actual_subsidy=2
+    @order_detail.price_policy_id=99 # satisfy Account#facility_balance
     assert @order_detail.save
 
     @params={

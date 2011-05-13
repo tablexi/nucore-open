@@ -14,7 +14,7 @@
   - else
     :javascript
       var events_path     = "#{facility_instrument_reservations_url(current_facility, @instrument, :format => 'js')}";
-      var maxDaysFromNow  = #{@instrument.last_reserve_days_from_now};
+      var maxDaysFromNow  = #{@instrument.max_reservation_window};
       var minTime         = #{@instrument.first_available_hour};
       var maxTime         = #{@instrument.last_available_hour+1};
 

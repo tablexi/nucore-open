@@ -7,15 +7,11 @@ describe FacilityStatementsController do
 
   before(:each) do
     @authable=Factory.create(:facility)
-    @statement=Factory.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :invoice_date => Time.zone.now)
+    @user=Factory.create(:user)
+    @account=Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+    @statement=Factory.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => @account)
     @account=Factory.create(:nufs_account)
     grant_role(@owner, @account)
-    @transact=Factory.create(:payment_account_transaction, {
-      :facility_id => @authable.id,
-      :created_by => @admin.id,
-      :account_id => @account.id,
-      :statement_id => @statement.id
-    })
     @params={ :facility_id => @authable.url_name }
   end
 

@@ -35,7 +35,7 @@ class PriceGroupProductsController < ApplicationController
         if @is_instrument and res_win.blank?
           window_errors << pg.name
         else
-          pgp=PriceGroupProduct.create!(:price_group => pg, :product => @product) unless pgp
+          pgp=PriceGroupProduct.new(:price_group => pg, :product => @product) unless pgp
           pgp.reservation_window=res_win.to_i if @is_instrument
           pgp.save!
         end
