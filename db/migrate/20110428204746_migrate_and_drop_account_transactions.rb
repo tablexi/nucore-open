@@ -14,9 +14,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
 
       aid_rows.each do |aid_row|
         acct=Account.find(aid_row.account_id)
-        statement=Statement.new(stmt.attributes)
-        statement.account=acct
-        statement.save!
+        next if acct.is_a?(NufsAccount)
 
         at_rows=Statement.find_by_sql(%Q<
           SELECT * FROM
@@ -26,6 +24,12 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
         >)
 
         at_rows.each do |at_row|
+          next if at_row.type == 'PaymentAccountTransaction' || at_row.type == 'CreditAccountTransaction'
+
+          statement=Statement.new(stmt.attributes)
+          statement.account=acct
+          statement.save!
+
           od=OrderDetail.find(at_row.order_detail_id)
           StatementRow.create!(:order_detail => od, :statement => statement, :amount => at_row.transaction_amount)
 
@@ -42,9 +46,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
       stmt.destroy      
     end
 
-    change_table :statements do |t|
-      t.column :account_id, :integer, :null => false
-    end
+    change_column(:statements, :account_id, :integer, :null => false)
 
     change_table :journal_rows do |t|
       t.remove :account_transaction_id
