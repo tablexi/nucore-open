@@ -192,7 +192,7 @@ describe Reservation do
       @nupg.price_policies         << @pp_long
 
       groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
-      assert_equal @pp_long, @reservation.longest_reservation_window_price_policy(groups)
+      assert_equal @pp_long.reservation_window, @reservation.longest_reservation_window(groups)
     end
   end
 end

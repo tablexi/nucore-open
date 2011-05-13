@@ -8,6 +8,7 @@
   = render :partial => 'admin/shared/tabnav_users', :locals => { :secondary_tab => 'accounts' }
   
 %h1 #{@user.full_name} Payment Sources
+%p= link_to 'Add Payment Source', new_facility_account_path(@current_facility, :owner_user_id => @user.id)
 - if @user.accounts.empty?
   %p.notice #{@user.full_name} does not have any payment sources.
 - else

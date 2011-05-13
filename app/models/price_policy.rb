@@ -1,17 +1,16 @@
 class PricePolicy < ActiveRecord::Base
 
   belongs_to :price_group
-  validates_presence_of :start_date, :price_group_id, :type
+  validates_presence_of :start_date, :expire_date, :price_group_id, :type
   validate :start_date_is_unique, :unless => lambda { |o| o.start_date.nil? }
 
   validates_each :expire_date do |record,attr,value|
-    if value
-      start_date=record.start_date
-      gen_exp_date=generate_expire_date(start_date)
+    value=value.to_date
+    start_date=record.start_date.to_date
+    gen_exp_date=generate_expire_date(start_date).to_date
 
-      if value <= start_date or value > gen_exp_date
-        record.errors.add(:expire_date, "must be after #{start_date.to_date.to_s} and before #{gen_exp_date.to_date.to_s}")
-      end
+    if value <= start_date || value > gen_exp_date
+      record.errors.add(:expire_date, "must be after #{start_date.to_date.to_s} and before #{gen_exp_date.to_date.to_s}")
     end
   end
 
@@ -110,7 +109,7 @@ class PricePolicy < ActiveRecord::Base
   def self.generate_expire_date(price_policy_or_date)
     start_date=price_policy_or_date.is_a?(PricePolicy) ? price_policy_or_date.start_date : price_policy_or_date
     exp_date=Time.zone.parse("#{start_date.year}-8-31")
-    exp_date=Time.zone.parse("#{start_date.year+1}-8-31") if exp_date <= Time.zone.now
+    exp_date=Time.zone.parse("#{start_date.year+1}-8-31") if start_date.to_date >= exp_date.to_date
     return exp_date
   end
 

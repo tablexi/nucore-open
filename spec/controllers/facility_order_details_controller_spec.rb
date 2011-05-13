@@ -32,9 +32,40 @@ describe FacilityOrderDetailsController do
     before :each do
       @method=:get
       @action=:edit
+      @journal=Journal.new(:facility => @authable, :created_by => 1, :updated_by => 1, :reference => 'xyz', :journal_date => Time.zone.now)
+      assert @journal.save
+      @order_detail.journal=@journal
+      assert @order_detail.save
     end
 
-    it_should_allow_operators_only
+    it_should_allow_operators_only do
+      assigns[:can_be_reconciled].should == false
+      assigns[:order].should == @order
+      assigns[:order_detail].should == @order_detail
+      should assign_to :in_open_journal
+      should render_template 'edit'
+    end
+
+    it_should_allow :staff, 'to acknowledge order detail is part of open journal' do
+      assigns[:in_open_journal].should == true
+      assigns[:can_be_reconciled].should == false
+      should set_the_flash
+    end
+
+    it 'should acknowledge order detail is not part of open journal and is reconcilable' do
+      @journal.is_successful=true
+      assert @journal.save
+      @account.account_users_attributes = [{:user_id => @director.id, :user_role => AccountUser::ACCOUNT_OWNER, :created_by => @admin.id }]
+      assert @account.save
+      @order_detail.account=@account
+      assert @order_detail.save
+      @order_detail.to_complete!
+      maybe_grant_always_sign_in :staff
+      do_request
+      assigns[:in_open_journal].should == false
+      assigns[:can_be_reconciled].should == true
+      should_not set_the_flash
+    end
 
   end
 
@@ -87,6 +118,26 @@ describe FacilityOrderDetailsController do
     end
 
     it_should_allow_operators_only
+
+  end
+
+
+  context 'remove_from_journal' do
+
+    before :each do
+      @method=:get
+      @action=:remove_from_journal
+      @journal=Journal.new(:facility => @authable, :created_by => 1, :updated_by => 1, :reference => 'xyz', :journal_date => Time.zone.now)
+      assert @journal.save
+      @order_detail.journal=@journal
+      assert @order_detail.save
+    end
+
+    it_should_allow_operators_only :redirect do
+      @order_detail.reload.journal.should be_nil
+      should set_the_flash
+      assert_redirected_to edit_facility_order_order_detail_path(@authable, @order_detail.order, @order_detail)
+    end
 
   end
 

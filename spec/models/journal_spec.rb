@@ -1,31 +1,33 @@
 require 'spec_helper'
 
 describe Journal do
-  it "can be created with valid attributes" do
+
+  before :each do
     @facility = Factory.create(:facility)
-    @journal  = Journal.new(:facility => @facility, :created_by => 1)
+    @journal  = Journal.new(:facility => @facility, :created_by => 1, :journal_date => Time.zone.now)
+  end
+
+  it "can be created with valid attributes" do
     @journal.should be_valid
     @journal.save
     @journal.id.should_not be_nil
   end
   
   it "allows only one active journal per facility" do
-    @facility = Factory.create(:facility)
-    @journal1 = Journal.create(:facility => @facility, :created_by => 1)
-    @journal1.id.should_not be_nil
+    assert @journal.save
+    @journal.id.should_not be_nil
     
     @journal2 = Journal.create(:facility => @facility, :created_by => 1)
     @journal2.should_not be_valid
     
-    @journal1.update_attributes({:is_successful => false, :reference => '12345', :updated_by => 1})
-    @journal1.should be_valid
+    @journal.update_attributes({:is_successful => false, :reference => '12345', :updated_by => 1})
+    @journal.should be_valid
     @journal2.should be_valid
   end
   
   it "requires reference on update" do
-    @facility = Factory.create(:facility)
-    @journal  = Journal.create(:facility => @facility, :created_by => 1)
-    @journal.valid?
+    assert @journal.save
+    assert !@journal.save
     @journal.errors.on(:reference).should_not be_nil
     
     @journal.reference = '12345'
@@ -34,9 +36,8 @@ describe Journal do
   end
   
   it "requires updated_by on update" do
-    @facility = Factory.create(:facility)
-    @journal  = Journal.create(:facility => @facility, :created_by => 1)
-    @journal.valid?
+    assert @journal.save
+    assert !@journal.save
     @journal.errors.on(:updated_by).should_not be_nil
     
     @journal.updated_by = '1'
@@ -45,9 +46,8 @@ describe Journal do
   end
   
   it "requires a boolean value for is_successful on update" do
-    @facility = Factory.create(:facility)
-    @journal  = Journal.create(:facility => @facility, :created_by => 1)
-    @journal.valid?
+    assert @journal.save
+    assert !@journal.save
     @journal.errors.on(:is_successful).should_not be_nil
     
     @journal.is_successful = true
@@ -60,8 +60,6 @@ describe Journal do
   end
   
   it "should create and attach journal spreadsheet" do
-    @facility = Factory.create(:facility)
-    @journal  = Journal.create(:facility => @facility, :created_by => 1)
     @journal.valid?
     # create nufs account
     @owner    = Factory.create(:user)
@@ -70,5 +68,15 @@ describe Journal do
     @journal.create_spreadsheet
     # @journal.add_spreadsheet("#{Rails.root}/spec/files/nucore.journal.template.xls")
     @journal.file.url.should =~ /^\/files/
+  end
+
+  it 'should be open' do
+    @journal.is_successful=nil
+    @journal.should be_open
+  end
+
+  it 'should not be open' do
+    @journal.is_successful=true
+    @journal.should_not be_open
   end
 end

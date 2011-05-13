@@ -25,9 +25,10 @@ class AlterPricePoliciesPopulatePriceGroupsProducts < ActiveRecord::Migration
     PricePolicy.all.each do |pp|
       start_date=pp.start_date
       expire_date=Date.strptime("#{start_date.year}-8-31")
-      expire_date=Date.strptime("#{start_date.year+1}-8-31") if expire_date <= Time.zone.now.to_date
-      pp.expire_date=expire_date
-      pp.save!
+      expire_date=Date.strptime("#{start_date.year+1}-8-31") if start_date >= expire_date
+
+      # for some reason ActiveRecord attribute set and save will not work
+      execute("UPDATE price_policies SET expire_date=TO_DATE('#{expire_date.to_s}') WHERE id=#{pp.id}")
     end
   end
 

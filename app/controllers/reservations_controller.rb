@@ -40,39 +40,23 @@ class ReservationsController < ApplicationController
     @reservation  = @instrument.reservations.new(params[:reservation].update(:order_detail => @order_detail))
 
     Reservation.transaction do
-      @error = false
-      if @reservation.valid?
-        # find and add price policy
+      begin
+        @reservation.save!
         groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
         @cheapest_price_policy = @reservation.cheapest_price_policy(groups)
-        @longest_reservation_window_price_policy = @reservation.longest_reservation_window_price_policy(groups)
-        if @cheapest_price_policy.blank? || @longest_reservation_window_price_policy.blank?
-          @error = true
-          flash[:error] = "Unable to create a reservation at this time; no suitable price policies are available."
-          raise ActiveRecord::Rollback
-        else
-          @order_detail.price_policy = @cheapest_price_policy
+        if @cheapest_price_policy
           costs = @cheapest_price_policy.estimate_cost_and_subsidy(@reservation.reserve_start_at, @reservation.reserve_end_at)
           @order_detail.estimated_cost    = costs[:cost]
           @order_detail.estimated_subsidy = costs[:subsidy]
+          @order_detail.save!
         end
-      end
-
-      if @reservation.save && @order_detail.save
-        flash[:notice] = 'Reservation was successfully created.'
-      else
-        @error = true
+        flash[:notice] = 'The reservation was successfully created.'
+        redirect_to cart_url and return
+      rescue Exception => e
         raise ActiveRecord::Rollback
       end
     end
-
-    respond_to do |format|
-      if !@error
-        format.html { redirect_to cart_url }
-      else
-        format.html { render :action => "new" }
-      end
-    end
+    render :action => "new"
   end
 
   # GET /orders/1/order_details/1/reservations/new
@@ -84,11 +68,11 @@ class ReservationsController < ApplicationController
     @reservation  = @instrument.next_available_reservation || Reservation.new(:duration_value => (@instrument.min_reserve_mins.to_i < 15 ? 15 : @instrument.min_reserve_mins), :duration_unit => 'minutes')
 
     groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
-    @pp_reservation = @reservation.longest_reservation_window_price_policy(groups)
+    @max_window = @reservation.longest_reservation_window(groups)
 
     # initialize calendar time constraints
     @min_date     = Time.zone.now.strftime("%Y%m%d")
-    @max_date     = (Time.zone.now + @pp_reservation.reservation_window.days).strftime("%Y%m%d")
+    @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
   end
 
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/:id(.:format)
@@ -110,11 +94,11 @@ class ReservationsController < ApplicationController
     raise ActiveRecord::RecordNotFound if (@reservation != @order_detail.reservation || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
 
     groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
-    @pp_reservation = @reservation.longest_reservation_window_price_policy(groups)
+    @max_window = @reservation.longest_reservation_window(groups)
 
     # initialize calendar time constraints
     @min_date     = Time.zone.now.strftime("%Y%m%d")
-    @max_date     = (Time.zone.now + @pp_reservation.reservation_window.days).strftime("%Y%m%d")
+    @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
   end
 
   # PUT  /orders/1/order_details/1/reservations/1
@@ -135,41 +119,25 @@ class ReservationsController < ApplicationController
       @reservation.send("#{k}=", v)
     end
 
+
     Reservation.transaction do
-      @error = false
-      if @reservation.valid?
+      begin
+        @reservation.save!
         groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
         @cheapest_price_policy = @reservation.cheapest_price_policy(groups)
-        @longest_reservation_window_price_policy = @reservation.longest_reservation_window_price_policy(groups)
-        if @cheapest_price_policy.blank? || @longest_reservation_window_price_policy.blank?
-          @error = true
-          flash[:error] = "Unable to create a reservation at this time; no suitable price policies are available."
-          raise ActiveRecord::Rollback
-        else
-          @order_detail.price_policy = @cheapest_price_policy
+        if @cheapest_price_policy
           costs = @cheapest_price_policy.estimate_cost_and_subsidy(@reservation.reserve_start_at, @reservation.reserve_end_at)
-          @order_detail.estimated_cost = costs[:cost]
+          @order_detail.estimated_cost    = costs[:cost]
           @order_detail.estimated_subsidy = costs[:subsidy]
+          @order_detail.save!
         end
-      end
-
-      if @reservation.save && @order_detail.save
-        flash[:notice] = 'Reservation was successfully updated.'
-      else
-        @error = true
+        flash[:notice] = 'The reservation was successfully updated.'
+        redirect_to (@order.purchased? ? orders_url : cart_url) and return
+      rescue Exception => e
         raise ActiveRecord::Rollback
       end
     end
-
-    if !@error
-      if @order.purchased?
-        redirect_to orders_url
-      else
-        redirect_to cart_url
-      end
-    else
-      render :action => "edit"
-    end
+    render :action => "edit"
   end
   
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/switch_instrument
@@ -183,42 +151,35 @@ class ReservationsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @order.user_id == session_user.id
     raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == 'on' || params[:switch] == 'off')
     
-    if (params[:switch] == 'on' && @reservation.can_switch_instrument_on?)
-      @reservation.transaction do
-        begin
-          relay = Relay.new(@instrument.relay_ip, @instrument.relay_username, @instrument.relay_password)
-          relay.activate_port(@instrument.relay_port)
+    begin
+      relay = @instrument.relay_type.constantize.new(@instrument.relay_ip, @instrument.relay_username, @instrument.relay_password)
+      if (params[:switch] == 'on' && @reservation.can_switch_instrument_on?)
+        relay.activate_port(@instrument.relay_port)
+        status = relay.get_status_port(@instrument.relay_port)
+        if status
           @reservation.actual_start_at = Time.zone.now
           @reservation.save!
           flash[:notice] = 'The instrument has been activated successfully'
-          @instrument.instrument_statuses.create(:is_on => true)
-        rescue Exception => e
-          flash[:error] = relay_error_msg
-          raise ActiveRecord::Rollback
+        else
+          raise Exception
         end
-      end
-    elsif (params[:switch] == 'off' && @reservation.can_switch_instrument_off?)
-      @reservation.transaction do
-        begin
-          relay = Relay.new(@instrument.relay_ip, @instrument.relay_username, @instrument.relay_password)
-          # make sure no one else is using the instrument before killing power
-          relay.deactivate_port(@instrument.relay_port) if @reservation.can_kill_power?
-          @reservation.actual_end_at = Time.zone.now
+        @instrument.instrument_statuses.create(:is_on => status)
+      elsif (params[:switch] == 'off' && @reservation.can_switch_instrument_off?)
+        relay.deactivate_port(@instrument.relay_port)
+        status = relay.get_status_port(@instrument.relay_port)
+        if status == false
+          @reservation.actual_start_at = Time.zone.now
           @reservation.save!
-          costs = @order_detail.price_policy.calculate_cost_and_subsidy(@reservation)
-          if costs
-            @order_detail.actual_cost    = costs[:cost]
-            @order_detail.actual_subsidy = costs[:subsidy]
-          end
-          @order_detail.change_status!(OrderStatus.complete.first)
           flash[:notice] = 'The instrument has been deactivated successfully'
-          @instrument.instrument_statuses.create(:is_on => false)
-        rescue Exception => e
-          flash[:error] = relay_error_msg
-          raise ActiveRecord::Rollback
+        else
+          raise Exception
         end
+        @instrument.instrument_statuses.create(:is_on => status)
+      
+      else
+        raise Exception
       end
-    else
+    rescue Exception => e
       flash[:error] = relay_error_msg
     end
     redirect_to request.referer || order_order_detail_path(@order, @order_detail)

@@ -9,6 +9,17 @@
 - if @pending_journal.nil?
   %p.notice There is no pending journal at this time
 - else
+  %p
+    You should only update this journal after receiving confirmation of a successful or failed journal from
+    NU Financials.  If the journal was processed successfully without any changes, you may choose "Succeeded, no errors".
+    This will mark all orders included in the journal as reconciled and you will be unable to make any further changes to them.
+  %p
+    If the journal succeeded, but if pricing or payment source changes were necessary to one or more orders
+    or if one more more orders were removed from the journal for the journal to succeed, choose "Succeeded, with errors".
+    This will mark the journal as successfully, but you will need to reconcile the orders individually.
+  %p
+    If the journal failed, you may choose "Failed".  This will allow you to include all orders in a new journal.
+
   - form_for([current_facility, @pending_journal]) do |f|
     = f.error_messages 
     %table
@@ -31,15 +42,16 @@
         %td= f.text_field :reference
         %td= f.text_field :description
         %td
-          = f.select :is_successful, {' ' => nil, 'Succeeded' => true, 'Failed' => false}
-          = submit_tag "Close Journal"
+          = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']])
+          = submit_tag 'Close Journal'
 %p
 %hr
 %p
-%h3 Generate Journal
-- if @accounts.empty?
-  %p.notice There are no accounts to be journaled at this time
+%h3 Create Journal
+- if @order_details.empty?
+  %p.notice There are no orders to be journaled at this time
 - else
+  %p Select the orders that you wish to journal.  Only one journal may be pending at a time.  Please note that selected orders may not span multiple fiscal years.
   - disable = false
   - unless @pending_journal.nil?
     -disable = true
@@ -48,22 +60,29 @@
     = f.error_messages
     %table
       %tr.borderless
-        %td{:colspan => 3}= disable ? '' : link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
-        %td= submit_tag "Create Journal", {:disabled => disable}
+        %td{:colspan => 4}= disable ? '' : link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
+        %td.currency{:colspan => 2}= submit_tag "Create Journal", {:disabled => disable}
       %tr
         %th
+        %th Order
+        %th Fulfilled On
         %th Account
         %th Owner
-        %th.currency Balance
-      - @accounts.each do |a|
+        %th.currency Total
+      - @order_details.each do |od|
+        - account = od.account
         %tr
-          %td= check_box_tag "account_ids[]", a.id, (action_name == 'create' && !@update_accounts.collect{|ua| ua.id}.include?(a.id) ? false : true), {:disabled => disable, :class => 'toggle'}
+          %td= check_box_tag "order_detail_ids[]", od.id, (action_name == 'create' && !@update_order_details.collect{|uod| uod.id}.include?(od.id) ? false : true), {:disabled => disable, :class => 'toggle'}
           %td
             %ul
-              %li=h a.description
-              %li=h a.account_number
-          %td=h a.owner_user.full_name
-          %td.currency=h number_to_currency a.facility_balance(current_facility)
+              %li== ##{od}: #{od.product}
+              - unless od.note.blank?
+                %li
+                  %i= od.note
+          %td= human_date od.fulfilled_at
+          %td=h account
+          %td=h account.owner_user.full_name
+          %td.currency=h number_to_currency od.total
       %tr.borderless
-        %td{:colspan => 3}
-        %td= submit_tag "Create Journal", {:disabled => disable} 
+        %td{:colspan => 4}
+        %td.currency{:colspan => 2}= submit_tag "Create Journal", {:disabled => disable}

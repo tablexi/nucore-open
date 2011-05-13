@@ -1,4 +1,5 @@
 class Instrument < Product
+  @@relay_types = %w/RelaySynaccessRevA RelaySynaccessRevB/
 
   has_many :schedule_rules
   has_many :instrument_price_policies
@@ -6,7 +7,7 @@ class Instrument < Product
   has_many :reservations
   has_many :instrument_statuses, :foreign_key => 'instrument_id'
 
-  validates_presence_of :initial_order_status_id, :facility_account_id
+  validates_presence_of :initial_order_status_id, :facility_account_id, :relay_type
   validates_numericality_of :account, :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 99999
   validates_numericality_of :min_reserve_mins, :max_reserve_mins, :only_integer => true, :greater_than_or_equal_to => 0, :allow_nil => true
   validates_uniqueness_of :relay_port, :scope => [:relay_ip]
@@ -36,17 +37,11 @@ class Instrument < Product
 
   # calculate the last possible reservation date based on all current price policies associated with this instrument
   def last_reserve_date
-    today = Time.zone.now.to_date
-    window = 0
-    instrument_price_policies.current(self).each do |p|
-      window = p.reservation_window if p.reservation_window > window
-    end
-    today + window.days
+    (Time.zone.now.to_date + max_reservation_window.days).to_date
   end
 
-  def last_reserve_days_from_now
-    days = (last_reserve_date.to_time(:utc).beginning_of_day - Time.zone.now.utc.beginning_of_day) / (60 * 60 * 24) rescue 0
-    days.to_i
+  def max_reservation_window
+    days = price_group_products.collect{|pgp| pgp.reservation_window }.max.to_i
   end
 
   # find the next available reservation based on schedule rules and existing reservations
@@ -95,11 +90,11 @@ class Instrument < Product
     if schedule_rules.empty?
       false
     elsif group_ids.nil?
-      current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase?}
+      current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase?}
     elsif group_ids.empty?
       false
     else
-      current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase? && group_ids.include?(pp.price_group_id)}
+      current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase? && group_ids.include?(pp.price_group_id)}
     end
   end
 
@@ -109,6 +104,16 @@ class Instrument < Product
       return requires_approval? && !product_users.find_by_user_id(user.id).nil?
     else
       true
+    end
+  end
+
+  def self.relay_types
+    @@relay_types
+  end
+
+  def after_create
+    [ PriceGroup.northwestern.first, PriceGroup.external.first ].each do |pg|
+      PriceGroupProduct.create!(:product => self, :price_group => pg, :reservation_window => PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)
     end
   end
 end

@@ -1,0 +1,18 @@
+- content_for :tabnav do
+  = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'statements'}
+- content_for :h1 do
+  == Payment Source Transactions
+
+%h2=h @account
+%h3== Statements for #{h @facility}
+
+
+- if @statements.empty?
+  %p.notice No statements exist.
+- else
+  %ul.grid_5
+    - @statements.each do |statement|
+      %li= link_to human_date(statement.invoice_date), account_facility_statement_path(@account, @facility, statement, :format => :pdf)
+
+  %p= will_paginate(@statements)
+

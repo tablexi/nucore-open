@@ -44,7 +44,7 @@ end
 
 Factory.define :nufs_account, :class => NufsAccount do |o|
   o.sequence(:account_number) do |n| 
-    s = "1#{n%10}#{rand(10)}-7777777" # fund3-dept7
+    s = "9#{n%10}#{rand(10)}-7777777" # fund3-dept7
     define_ge001(s)
     s
   end
@@ -89,10 +89,11 @@ Factory.define :instrument, :class => Instrument do |o|
   o.sequence(:name) { |n| "Instrument #{n}" }
   o.sequence(:url_name) { |n| "instrument#{n}"  }
   o.description 'Lorem ipsum...'
-  o.account 12345
+  o.account 51234
   o.requires_approval false
   o.is_archived false
   o.is_hidden false
+  o.relay_type 'RelaySynaccessRevA'
   o.initial_order_status_id { |o| find_order_status('new') }
   o.min_reserve_mins 60
   o.max_reserve_mins 120
@@ -115,7 +116,7 @@ Factory.define :item, :class => Item do |o|
   o.sequence(:name) { |n| "Item #{n}" }
   o.sequence(:url_name) { |n| "item_url_#{n}" }
   o.description       'Lorem ipsum...'
-  o.account           12345
+  o.account           51234
   o.requires_approval false
   o.is_archived       false
   o.is_hidden         false
@@ -132,7 +133,7 @@ end
 Factory.define :service, :class => Service do |o|
   o.sequence(:name) { |n| "Service #{n}" }
   o.sequence(:url_name) { |n| "service#{n}" }
-  o.account 12345
+  o.account 51234
   o.requires_approval false
   o.is_archived false
   o.is_hidden false
@@ -183,6 +184,10 @@ Factory.define :payment_account_transaction do |pat|
 end
 
 Factory.define :statement do |s|
+end
+
+Factory.define :statement_row do |s|
+  s.amount 5
 end
 
 Factory.define :reservation do |r|

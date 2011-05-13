@@ -91,6 +91,22 @@ class Notifier < ActionMailer::Base
         :body => render_message("order_receipt.html", :user => args[:user], :order => args[:order])
   end
 
+  def review_orders(args)
+    subject      'NU Core Orders For Review'
+    recipients   (TEST_EMAIL_ONLY ? TEST_EMAIL : args[:user].email)
+    from         FROM_EMAIL
+    sent_on      Time.zone.now
+    content_type "multipart/alternative"
+
+    part "text/plain" do |p|
+        p.body = render_message("review_orders.text", :user => args[:user], :facility => args[:facility], :account => args[:account])
+        p.transfer_encoding = "base64"
+    end
+
+    part :content_type => "text/html",
+        :body => render_message("review_orders.html", :user => args[:user], :facility => args[:facility], :account => args[:account])
+  end
+
   # Billing sends out the statement for the month. Appropriate users get
   # their version of usage.
   # args = :user, :account, :facility

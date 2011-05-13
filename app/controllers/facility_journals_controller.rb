@@ -17,7 +17,7 @@ class FacilityJournalsController < ApplicationController
   # GET /facilities/:facility_id/journals
   def index
     @pending_journal = Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
-    @accounts        = NufsAccount.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
+    @order_details   = OrderDetail.need_journal(current_facility)
     @journal         = current_facility.journals.new()
   end
 
@@ -28,16 +28,40 @@ class FacilityJournalsController < ApplicationController
 
     Journal.transaction do
       begin
-        @pending_journal.update_attributes!(params[:journal])
-        @pending_journal.create_payment_transactions!(:created_by => session_user.id) if @pending_journal.is_successful?
-        flash[:notice] = "The journal file has been successfully closed"
+        # blank input
+        @pending_journal.errors.add_to_base("Please select a journal status") if params[:journal_status].blank?
+
+        # failed
+        if params[:journal_status] == 'failed'
+          @pending_journal.is_successful = false
+          @pending_journal.update_attributes!(params[:journal])
+          OrderDetail.update_all('journal_id = NULL', "journal_id = #{@pending_journal.id}") # null out journal_id for all order_details
+
+        # succeeded, with errors
+        elsif params[:journal_status] == 'succeeded_errors'
+          @pending_journal.is_successful = true
+          @pending_journal.update_attributes!(params[:journal])
+
+        # if succeeded, no errors
+        elsif params[:journal_status]
+          @pending_journal.is_successful = true
+          @pending_journal.update_attributes!(params[:journal])
+          reconciled_status = OrderStatus.reconciled.first
+          @pending_journal.order_details.each do |od|
+            raise Exception unless od.change_status!(reconciled_status)
+          end
+        else
+          raise Exception
+        end
+
+        flash[:notice] = "The journal file has been closed"
         redirect_to facility_journals_path and return
       rescue Exception => e
         @pending_journal.errors.add_to_base("An error was encountered while trying to close the journal")
         raise ActiveRecord::Rollback
       end
     end
-    @accounts = NufsAccount.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
+    @order_details = OrderDetail.need_journal(current_facility)
     render :action => :index
   end
 
@@ -46,39 +70,75 @@ class FacilityJournalsController < ApplicationController
     @journal = current_facility.journals.new()
     @journal.created_by = session_user.id
 
-    @update_accounts = Account.find(params[:account_ids] || [])
-    if @update_accounts.empty?
-      @journal.errors.add_to_base("No accounts were selected to journal")
+    @update_order_details = OrderDetail.find(params[:order_detail_ids] || [])
+    if @update_order_details.empty?
+      @journal.errors.add_to_base("No orders were selected to journal")
     else
-      Journal.transaction do
-        begin
-          @journal.save!
-          @journal.create_journal_rows_for_accounts!(@update_accounts)
-          # create the spreadsheet
-          @journal.create_spreadsheet
-          flash[:notice] = "The journal file has been created successfully"
-          redirect_to facility_journals_path
-          return
-        rescue Exception => e
-          @journal.errors.add_to_base("An error was encountered while trying to create the journal #{e}")
-          raise ActiveRecord::Rollback
+      if Journal.order_details_span_fiscal_years?(@update_order_details)
+        flash[:error] = 'Journals may not span multiple fiscal years. Please select only orders in the same fiscal year.'
+        redirect_to facility_journals_path and return
+      else
+        Journal.transaction do
+          begin
+            @journal.journal_date = @update_order_details.collect{ |od| od.fulfilled_at }.max
+            @journal.save!
+            @journal.create_journal_rows!(@update_order_details)
+            OrderDetail.update_all(['journal_id = ?', @journal.id], ['id IN (?)', @update_order_details.collect{|od| od.id}])
+            # create the spreadsheet
+            @journal.create_spreadsheet
+            flash[:notice] = "The journal file has been created successfully"
+            redirect_to facility_journals_path and return
+          rescue Exception => e
+            @journal.errors.add_to_base("An error was encountered while trying to create the journal #{e}")
+            Rails.logger.error(e.backtrace.join("\n"))
+            raise ActiveRecord::Rollback
+          end
         end
       end
     end
 
     @pending_journal = Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
     @accounts        = NufsAccount.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
+    @order_details   = OrderDetail.need_journal(current_facility)
     render :action => :index
   end
 
   # GET /facilities/:facility_id/journals/:id
   def show
-    @journal      = current_facility.journals.find(params[:id])
-    @journal_rows = @journal.journal_rows
+    @journal = current_facility.journals.find(params[:id])
 
-    headers["Content-type"] = "text/xml"
-    headers['Content-Disposition'] = "attachment; filename=\"journal_#{@journal.id}_#{@journal.created_at.strftime("%Y%m%d")}.xml\"" 
+    if request.format.xml?
+      @journal_rows = @journal.journal_rows
+      headers["Content-type"] = "text/xml"
+      headers['Content-Disposition'] = "attachment; filename=\"journal_#{@journal.id}_#{@journal.created_at.strftime("%Y%m%d")}.xml\"" 
 
-    render 'show.xml.haml', :layout => false
+      render 'show.xml.haml', :layout => false and return
+    end
+
+    @order_details = current_facility.order_details.find(:all, :conditions => {:journal_id => @journal.id})
+  end
+
+  def history
+    @journals = current_facility.journals.find(:all, :order => 'journals.created_at DESC').paginate(:page => params[:page])
+  end
+
+  def reconcile
+    @journal = current_facility.journals.find(params[:journal_id])
+
+    if params[:order_detail_ids].blank?
+      flash[:error] = 'No orders were selected to reconcile'
+      redirect_to facility_journal_url(current_facility, @journal) and return
+    end
+    rec_status = OrderStatus.reconciled.first
+    order_details = OrderDetail.find(params[:order_detail_ids])
+    order_details.each do |od|
+      if od.journal_id != @journal.id
+        flash[:error] = 'An error was encountered while reconcile orders'
+        redirect_to facility_journal_url(current_facility, @journal) and return
+      end
+      od.change_status!(rec_status)
+    end
+    flash[:notice] = The select orders have been reconciled successfully
+    redirect_to facility_journal_url(current_facility, @journal) and return
   end
 end

@@ -7,7 +7,7 @@ describe FacilityJournalsController do
 
   before(:each) do
     @authable=Factory.create(:facility)
-    @journal=Factory.create(:journal, :facility => @authable, :created_by => @admin.id)
+    @journal=Factory.create(:journal, :facility => @authable, :created_by => @admin.id, :journal_date => Time.zone.now)
   end
 
 

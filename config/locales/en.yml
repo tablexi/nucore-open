@@ -62,3 +62,9 @@ en:
         username: User
       order_detail:
         dispute_resolved_reason: Resolution Notes
+      nufs_account:
+        account_number: Payment Source
+      purchase_order_account:
+        account_number: Payment Source
+      credit_card_account:
+        account_number: Payment Source

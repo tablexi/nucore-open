@@ -9,8 +9,8 @@
   %table
     %tr
       %th Facility
-      %th.currency Balance
+      %th.centered Unreconciled Total (actual + estimated)
     - @facilities.each do |facility|
       %tr
         %td= facility
-        %td.currency= link_to number_to_currency(@account.facility_balance_including_pending(facility)), account_facility_statement_path(@account, facility, 'recent')
+        %td.currency= link_to number_to_currency(@account.unreconciled_total(facility)), account_facility_statement_path(@account, facility, 'recent')

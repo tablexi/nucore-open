@@ -1,0 +1,27 @@
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+
+- content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_payment_method', :locals => {:secondary_tab => 'statements'}
+
+- content_for :h1 do
+  =h current_facility
+
+%h2= @account
+
+- if @statements.empty?
+  %p.notice No statements have been sent for this payment source.
+- else
+  %table
+    %tr
+      %th
+      %th Sent At
+      %th Sent By
+      %th.currency # of Orders
+    - @statements.each do |s|
+      %tr
+        %td.centered= link_to 'Download', facility_account_statement_path(current_facility, @account, s, :format => :pdf)
+        %td=h human_datetime(s.created_at)
+        %td=h begin User.find(s.created_by).full_name rescue 'Unknown' end
+        %td.currency=h s.order_details.count
+  = will_paginate(@statements)

@@ -1,9 +1,12 @@
 class Journal < ActiveRecord::Base
   has_many                :journal_rows
   belongs_to              :facility
+  has_many                :order_details, :through => :journal_rows
+  belongs_to              :created_by_user, :class_name => 'User', :foreign_key => :created_by
 
   validates_uniqueness_of :facility_id, :scope => :is_successful, :if => Proc.new { |j| j.is_successful.nil? }
   validates_presence_of   :reference, :updated_by, :on => :update
+  validates_presence_of   :created_by
   validates_inclusion_of  :is_successful, :in => [true, false], :on => :update
   has_attached_file       :file,
                           :storage => :filesystem,
@@ -16,70 +19,35 @@ class Journal < ActiveRecord::Base
     rows.each{|row| sum += row.amount if row.amount > 0}
     sum
   end
-  
-  def create_journal_rows_for_account!(account)
-    account_txns = account.journalable_facility_transactions(facility)
-    account_txns.each do |at|
-      od = at.order_detail
-      fa = od.product.facility_account
+
+  def open?
+    is_successful.nil?
+  end
+
+  def create_journal_rows!(order_details)
+    recharge_by_product = {}
+
+    # create rows for each transaction
+    order_details.each do |od|
+      raise Exception if od.journal_id
+      account = od.account
+      NucsValidator.new(account.account_number, od.product.account).account_is_open!
       JournalRow.create!(
         :journal_id      => id,
-        :order_detail_id => at.order_detail_id,
-        :account_transaction_id => at.id,
+        :order_detail_id => od.id,
+        :amount          => od.total,
+        :description     => "##{od}: #{od.order.user}: #{od.fulfilled_at.strftime("%m/%d/%Y")}: #{od.product} x#{od.quantity}",
         :fund            => account.fund,
         :dept            => account.dept,
         :project         => account.project,
         :activity        => account.activity,
         :program         => account.program,
-        :account         => od.product.account,
-        :amount          => od.actual_total,
-        :description     => "Order ##{od}"
+        :account         => od.product.account
       )
-      JournalRow.create!(
-        :journal_id      => id,
-        :order_detail_id => at.order_detail_id,
-        :account_transaction_id => at.id,
-        :fund            => fa.fund,
-        :dept            => fa.dept,
-        :project         => fa.project,
-        :activity        => fa.activity,
-        :program         => fa.program,
-        :account         => fa.revenue_account,
-        :amount          => od.actual_total * -1,
-        :description     => "Order ##{od}"
-      )
-    end
-  end
-
-  def create_journal_rows_for_accounts!(accounts)
-    recharge_by_product = {}
-
-    ## deduct funds from payment source
-    accounts.each do |account|
-      account_txns = account.journalable_facility_transactions(facility)
-      account_txns.each do |at|
-        od         = at.order_detail
-        txn_amount = od.actual_total
-        o          = od.order
-        NucsValidator.new(account.account_number, od.product.account).account_is_open!
-        JournalRow.create!(
-          :journal_id      => id,
-          :order_detail_id => at.order_detail_id,
-          :account_transaction_id => at.id,
-          :fund            => account.fund,
-          :dept            => account.dept,
-          :project         => account.project,
-          :activity        => account.activity,
-          :program         => account.program,
-          :account         => od.product.account,
-          :amount          => txn_amount,
-          :description     => "##{od}: #{od.order.user}: #{at.created_at.strftime("%m/%d/%Y")}: #{od.product} x#{od.quantity}"
-        )
-        recharge_by_product[od.product_id] = recharge_by_product[od.product_id].to_f + txn_amount
-      end
+      recharge_by_product[od.product_id] = recharge_by_product[od.product_id].to_f + od.total
     end
 
-    ## place funds in recharge chart string, rolled up by product
+    # create rows for each recharge chart string
     recharge_by_product.each_pair do |product_id, total|
       product = Product.find(product_id)
       fa      = product.facility_account
@@ -93,22 +61,6 @@ class Journal < ActiveRecord::Base
         :account         => fa.revenue_account,
         :amount          => total * -1,
         :description     => product.to_s
-      )
-    end
-  end
-
-  def create_payment_transactions! (args = {})
-    journal_rows.find(:all, :conditions => ['amount > 0']).each do |row|
-      PaymentAccountTransaction.create!(
-        :account_id         => row.account_transaction.account_id,
-        :facility_id        => facility_id,
-        :description        => "Payment for Order ##{row.order_detail}",
-        :transaction_amount => row.amount * -1,
-        :created_by         => args[:created_by],
-        :finalized_at       => Time.zone.now,
-        :order_detail_id    => row.order_detail_id,
-        :is_in_dispute      => false,
-        :reference          => reference
       )
     end
   end
@@ -131,5 +83,46 @@ class Journal < ActiveRecord::Base
   def add_spreadsheet(file_path)
     return false if !File.exists?(file_path)
     update_attribute(:file, File.open(file_path))
+  end
+
+  def status_string
+    if is_successful.nil?
+      'Pending'
+    elsif is_successful? == false
+      'Failed'
+    else
+      is_reconciled? ? 'Successful, reconciled' : 'Successful, not reconciled'
+    end
+  end
+
+  def is_reconciled?
+    if is_successful.nil?
+      false
+    elsif is_successful? == false
+      true
+    else
+      details = OrderDetail.find(:all, :conditions => ['journal_id = ? AND state <> ?', id, 'reconciled'])
+      details.empty? ? true : false
+    end
+  end
+
+  def self.order_details_span_fiscal_years?(order_details)
+    d = order_details.first.fulfilled_at
+    d = d.to_date
+    if d.month >= 9
+      start_fy = Date.new(d.year, 9, 1)
+      end_fy   = Date.new(d.year + 1, 9, 1)
+    else
+      start_fy = Date.new(d.year - 1, 9, 1)
+      end_fy   = Date.new(d.year, 9, 1)
+    end
+    order_details.each do |od|
+      return true if (od.fulfilled_at.to_date < start_fy || od.fulfilled_at.to_date >= end_fy)
+    end
+    false
+  end
+
+  def to_s
+    id.to_s
   end
 end

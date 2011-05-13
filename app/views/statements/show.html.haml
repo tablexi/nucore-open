@@ -6,57 +6,43 @@
 %h2=h @account
 %h3== Transactions for #{h @facility}
 
-%ul.form
-  %li= select_tag 'statement_id', options_for_select(@statements.map{|s| ["Statement ##{@account.id}-#{s.id} on #{human_date(s.created_at)}", account_facility_statement_path(@account, @facility, s)]}.unshift(['Recent Transactions', account_facility_statement_path(@account, @facility, 'recent')]), request.request_uri.gsub(/\?.*/, '')), :class => 'link_select'
-
-- if @statement && !@account_txns.empty?
-  %p= link_to 'Download Invoice', account_facility_statement_path(@account, @facility, @statement, :format => 'pdf')
-  - if @facility.has_contact_info?
-    .grid_5.alpha.margin_bottom.box_no_fill
-      %h3=h @facility
-      - if @facility.address
-        = simple_format(h @facility.address)
-      - if @facility.phone_number
-        %p
-          %b Phone Number:
-          =h @facility.phone_number
-      - if @facility.fax_number
-        %p
-          %b Fax Number:
-          =h @facility.fax_number
-      - if @facility.email
-        %p
-          %b Email:
-          =h @facility.email
-    .clear
+- if @facility.has_contact_info?
+  .grid_5.alpha.margin_bottom.box_no_fill
+    %h3=h @facility
+    - if @facility.address
+      = simple_format(h @facility.address)
+    - if @facility.phone_number
+      %p
+        %b Phone Number:
+        =h @facility.phone_number
+    - if @facility.fax_number
+      %p
+        %b Fax Number:
+        =h @facility.fax_number
+    - if @facility.email
+      %p
+        %b Email:
+        =h @facility.email
+  .clear
 
     
-- if @account_txns.empty?
+- if @order_details.empty?
   %p.notice No transactions exist for this period.
 - else
   %table
     %tr
       %th Transaction Date
-      %th Transaction Type
       %th Description
       %th.centered Dispute?
       %th.currency Amount
-    - @account_txns.each do |at|
-      - od = at.order_detail
+    - @order_details.each do |od|
       %tr
-        %td= human_datetime(at.created_at)
-        - if at.is_a?(CreditAccountTransaction) || at.is_a?(PurchaseAccountTransaction)
-          %td= link_to at.type_string, order_order_detail_path(at.order_detail.order, at.order_detail)
-        - else
-          %td=h at.type_string
-        - if at.is_a?(PaymentAccountTransaction)
-          %td Payment received.  Thank you.
-        - else
-          %td=h at.description
+        %td= human_datetime(od.created_at)
+        %td=h od.description
         %td.centered
-          - if at.is_in_dispute?
+          - if od.in_dispute?
             In Dispute
-          - elsif at.can_dispute?
+          - elsif od.can_dispute?
             = link_to('Dispute', order_order_detail_path(od.order, od))
         %td.currency
           - if od.cost_estimated?
@@ -66,7 +52,9 @@
             Unassigned
           - else
             %span.actual_cost
-              = h number_to_currency at.transaction_amount
+              = h number_to_currency od.actual_total
+    %tr
+      %td.centered{:colspan =>4}= will_paginate(@order_details)
 
   = render :partial => '/price_display_footnote'
 

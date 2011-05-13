@@ -11,12 +11,11 @@
     %th
     %th Account
     %th Owner
-  - @statement.accounts.uniq.each do |a|
     %tr
       %td.centered
-        - if @statement.invoice_date < Time.zone.now
-          = link_to 'View Invoice', facility_account_statement_path(current_facility, a, @statement)
+        - if @statement.created_at < Time.zone.now
+          = link_to 'View Invoice', facility_account_statement_path(current_facility, @statement.account, @statement)
       %td
         %ul
-          %li= link_to a, facility_account_statement_path(current_facility, a, 'recent')
-      %td=h a.owner_user.full_name
+          %li= link_to @statement.account, facility_account_statement_path(current_facility, @statement.account, 'recent')
+      %td=h @statement.account.owner_user.full_name

@@ -12,7 +12,7 @@ describe FacilityAccountsController do
     @account=Factory.create(:nufs_account)
     grant_role(@purchaser, @account)
     grant_role(@owner, @account)
-    @order=Factory.create(:order, :user => @purchaser, :created_by => @purchaser.id)
+    @order=Factory.create(:order, :user => @purchaser, :created_by => @purchaser.id, :facility => @authable)
     @order_detail=Factory.create(:order_detail, :product => @item, :order => @order, :account => @account)
   end
 
@@ -302,12 +302,11 @@ describe FacilityAccountsController do
   end
 
 
-  context 'credit_cards' do
+  context 'credit_cards with account' do
 
     before :each do
-      @method=:get
-      @action=:credit_cards
-      @params={ :facility_id => @authable.url_name }
+      ccact=Factory.build(:credit_card_account)
+      prepare_for_account_show(:credit_cards, ccact)
     end
 
     it_should_require_login
@@ -318,11 +317,79 @@ describe FacilityAccountsController do
       should assign_to(:subnav)
       should assign_to(:active_tab)
       should assign_to(:accounts).with_kind_of(Array)
-      should set_the_flash #no accounts found
+      assigns[:selected].should == assigns[:accounts].first
+      assigns[:unreconciled_details].should == OrderDetail.account_unreconciled(@authable, assigns[:selected])
       should render_template('credit_cards.html.haml')
     end
 
-    it 'should test what happens when CreditCardAccount#facility_balance is > 0'
+    it 'should test selected_account param'
+
+  end
+
+
+  context 'credit_cards without account' do
+
+    before :each do
+      @method=:get
+      @action=:credit_cards
+      @params={ :facility_id => @authable.url_name }
+    end
+
+    it_should_allow :director do
+      should assign_to(:subnav)
+      should assign_to(:active_tab)
+      should assign_to(:accounts).with_kind_of(Array)
+      should set_the_flash
+      should_not assign_to :selected
+      should_not assign_to :unreconciled_details
+      should render_template('credit_cards.html.haml')
+    end
+
+  end
+
+
+  context 'purchase_orders with account' do
+
+    before :each do
+      poact=Factory.build(:purchase_order_account)
+      prepare_for_account_show(:purchase_orders, poact)
+    end
+
+    it_should_require_login
+
+    it_should_deny :staff
+
+    it_should_allow_all facility_managers do
+      should assign_to(:subnav)
+      should assign_to(:active_tab)
+      should assign_to(:accounts).with_kind_of(Array)
+      assigns[:selected].should == assigns[:accounts].first
+      assigns[:unreconciled_details].should == OrderDetail.account_unreconciled(@authable, assigns[:selected])
+      should render_template('purchase_orders.html.haml')
+    end
+
+    it 'should test selected_account param'
+
+  end
+
+
+  context 'purchase_orders without account' do
+
+    before :each do
+      @method=:get
+      @action=:purchase_orders
+      @params={ :facility_id => @authable.url_name }
+    end
+
+    it_should_allow :director do
+      should assign_to(:subnav)
+      should assign_to(:active_tab)
+      should assign_to(:accounts).with_kind_of(Array)
+      should set_the_flash
+      should_not assign_to :selected
+      should_not assign_to :unreconciled_details
+      should render_template('purchase_orders.html.haml')
+    end
 
   end
 
@@ -330,42 +397,21 @@ describe FacilityAccountsController do
   context 'update_credit_cards' do
 
     before :each do
-      @method=:post
-      @action=:update_credit_cards
       @ccact=Factory.build(:credit_card_account)
-      @ccact.account_users_attributes = [{:user_id => @owner.id, :user_role => AccountUser::ACCOUNT_OWNER, :created_by => @admin.id }]
-      assert @ccact.save
-      @params={
-        :facility_id => @authable.url_name,
-        :account => {
-          @ccact.id.to_s => {
-            :reference => 'xyz123',
-            :transaction_amount => '12.34',
-            :notes => 'this transaction is fake'
-          }
-        }
-      }
+      prepare_for_account_update(:update_credit_cards, @ccact)
     end
 
     it_should_require_login
 
     it_should_deny :staff
 
-    it_should_allow_all facility_managers do |user|
-      should assign_to(:subnav)
-      should assign_to(:active_tab)
+    it_should_allow_all facility_managers do
       assigns(:error_fields).should be_empty
       should set_the_flash
       assert_redirected_to credit_cards_facility_accounts_path
-      pat=@ccact.reload.payment_account_transactions[0]
-      pat.facility_id.should == @authable.id
-      pat.created_by.should == user.id
-      pat.finalized_at.should_not be_nil
-      pat.is_in_dispute.should == false
-      ccid=@ccact.id.to_s
-      pat.description.should == @params[:account][ccid][:notes]
-      pat.reference.should == @params[:account][ccid][:reference]
-      pat.transaction_amount.should == @params[:account][ccid][:transaction_amount].to_f * -1
+      @order_detail.reload
+      @order_detail.state.should == 'reconciled'
+      @order_detail.reconciled_note.should_not be_nil
     end
 
     it 'should test multiple cards sent in one POST'
@@ -374,49 +420,11 @@ describe FacilityAccountsController do
   end
 
 
-  context 'purchase_orders' do
-
-    before :each do
-      @method=:get
-      @action=:purchase_orders
-      @params={ :facility_id => @authable.url_name }
-    end
-
-    it_should_require_login
-
-    it_should_deny :staff
-
-    it_should_allow_all facility_managers do
-      should assign_to(:subnav)
-      should assign_to(:active_tab)
-      should assign_to(:accounts).with_kind_of(Array)
-      should set_the_flash #no accounts found
-      should render_template('purchase_orders.html.haml')
-    end
-
-    it 'should test what happens when PurchaseOrderAccount#facility_balance is > 0'
-
-  end
-
-
   context 'update_purchase_orders' do
 
     before :each do
-      @method=:post
-      @action=:update_purchase_orders
       @poact=Factory.build(:purchase_order_account)
-      @poact.account_users_attributes = [{:user_id => @owner.id, :user_role => AccountUser::ACCOUNT_OWNER, :created_by => @admin.id }]
-      assert @poact.save
-      @params={
-        :facility_id => @authable.url_name,
-        :account => {
-          @poact.id.to_s => {
-            :reference => 'xyz123',
-            :transaction_amount => '12.34',
-            :notes => 'this transaction is fake'
-          }
-        }
-      }
+      prepare_for_account_update(:update_purchase_orders, @poact)
     end
 
     it_should_require_login
@@ -424,20 +432,12 @@ describe FacilityAccountsController do
     it_should_deny :staff
 
     it_should_allow_all facility_managers do |user|
-      should assign_to(:subnav)
-      should assign_to(:active_tab)
       assigns(:error_fields).should be_empty
       should set_the_flash
       assert_redirected_to purchase_orders_facility_accounts_path
-      pat=@poact.reload.payment_account_transactions[0]
-      pat.facility_id.should == @authable.id
-      pat.created_by.should == user.id
-      pat.finalized_at.should_not be_nil
-      pat.is_in_dispute.should == false
-      poid=@poact.id.to_s
-      pat.description.should == @params[:account][poid][:notes]
-      pat.reference.should == @params[:account][poid][:reference]
-      pat.transaction_amount.should == @params[:account][poid][:transaction_amount].to_f * -1
+      @order_detail.reload
+      @order_detail.state.should == 'reconciled'
+      @order_detail.reconciled_note.should_not be_nil
     end
 
     it 'should test multiple purchase orders sent in one POST'
@@ -473,18 +473,11 @@ describe FacilityAccountsController do
       @action=:show_statement
 
       2.times do
-        @statement=Factory.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :invoice_date => Time.zone.now)
-        @transact=Factory.create(:payment_account_transaction, {
-          :facility_id => @authable.id,
-          :created_by => @admin.id,
-          :account_id => @account.id,
-          :statement_id => @statement.id,
-          :order_detail => @order_detail
-        })
+        @statement=Factory.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => @account)
         sleep 1 # need different timestamp on statement
       end
 
-      @params={ :facility_id => @authable.url_name, :account_id => @account.id, :statement_id => @statement.id }
+      @params={ :facility_id => @authable.url_name, :account_id => @account.id, :statement_id => 'recent' }
     end
 
     it_should_require_login
@@ -494,23 +487,31 @@ describe FacilityAccountsController do
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
       assigns(:facility).should == @authable
-      assigns(:statement).should == @statement
-      should assign_to(:statements).with_kind_of Array
-      assigns(:account_txns)[0].should == @transact
+      should assign_to(:order_details).with_kind_of Array
+      assigns(:order_details).each{|od| od.order.facility.should == @authable }
       should render_template 'show_statement'
     end
 
+    it 'should show statements list' do
+      @params[:statement_id]='list'
+      maybe_grant_always_sign_in :director
+      do_request
+      assigns(:account).should == @account
+      assigns(:facility).should == @authable
+      should assign_to(:statements).with_kind_of Array
+      should render_template 'show_statement_list'
+    end
 
-    context 'recent statement id' do
 
-      before :each do
-        @params[:statement_id]='recent'
-      end
-
-      it_should_allow_all facility_managers do
-        assigns(:statement).should be_nil
-        should render_template 'show_statement'
-      end
+    it 'should show statement PDF' do
+      @params[:statement_id]=@statement.id
+      @params[:format]='pdf'
+      maybe_grant_always_sign_in :director
+      do_request
+      assigns(:account).should == @account
+      assigns(:facility).should == @authable
+      assigns(:statement).should == @statement
+      should render_template 'statements/show.pdf.prawn'
     end
 
   end
@@ -555,6 +556,43 @@ describe FacilityAccountsController do
       assert_redirected_to facility_account_path(@authable, @account)
     end
 
+  end
+
+
+  private
+
+  def prepare_for_account_update(action, account)
+    @method=:post
+    @action=action
+    account.account_users_attributes = [{:user_id => @purchaser.id, :user_role => AccountUser::ACCOUNT_OWNER, :created_by => @admin.id }]
+    assert account.save
+    @order_detail.account=account
+    @order_detail.to_complete!
+    @order_detail.actual_cost=10
+    @order_detail.actual_subsidy=2
+    @order_detail.price_policy_id=99 # satisfy Account#facility_balance
+    assert @order_detail.save
+
+    @params={
+      :facility_id => @authable.url_name,
+      :order_detail => {
+        @order_detail.id.to_s => {
+          :reconciled => '1',
+          :notes => 'this transaction is fake'
+        }
+      }
+    }
+  end
+
+
+  def prepare_for_account_show(action, account)
+    @method=:get
+    @action=action
+    @params={ :facility_id => @authable.url_name }
+    account.account_users_attributes = [{:user_id => @purchaser.id, :user_role => AccountUser::ACCOUNT_OWNER, :created_by => @admin.id }]
+    assert account.save
+    @order_detail.to_complete!
+    @order_detail.update_attributes(:account => account, :fulfilled_at => Time.zone.now-1.day, :actual_cost => 10, :actual_subsidy => 2)
   end
 
 end

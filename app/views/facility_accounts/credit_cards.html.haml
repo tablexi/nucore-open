@@ -1,3 +1,5 @@
+= javascript_include_tag 'account_mgmt'
+
 - content_for :h1 do
   =h current_facility
 
@@ -6,41 +8,41 @@
 
 %h2 Manage Credit Cards
 
-%p Please review the following accounts; process the credit card transactions, then enter the amount and reference number.
 - unless @accounts.empty?
+  - form_tag(credit_cards_facility_accounts_path, :method => :get) do
+    %p
+      = select_tag :selected_account, @accounts.collect{|a| "<option value=\"#{a.id}\"#{a == @selected ? ' selected="selected"' : ''}>#{a.to_s}</option>" }.join('')
+
+  - if @selected.owner_user
+    %h3= "Owner: #{@selected.owner_user.full_name}"
+  %h3= "Balance: #{number_to_currency(@selected.unreconciled_total(current_facility))}"
+
+  %p Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'.
+
   - form_tag(update_credit_cards_facility_accounts_path, :method => :post) do
     %table
       %tr.borderless
-        %td
-        %td
-        %td
-        %td
-        %td= submit_tag "Save Transactions"
+        %td{:colspan => 2}= link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
+        %td.currency{:colspan => 2}= submit_tag "Reconcile Orders"
       %tr
-        %th Credit Card
-        %th Balance
         %th
-          Amount
-          %span.require
-        %th
-          Reference
-          %span.require
-        %th Notes
-      - @accounts.each do |a|
-        - balance = number_to_currency a.facility_balance(current_facility), :unit => ''
+        %th Order
+        %th Total
+        %th Reconcile Note
+      - @unreconciled_details.each do |od|
         %tr
+          %td.centered= check_box_tag "order_detail[#{od.id}][reconciled]", '1', true, {:class => 'toggle'}
           %td
             %ul
-              %li=h "#{a.description} (#{a.account_number})"
-              %li=h "%02d" % a.expiration_month.to_i + "/#{a.expiration_year}"
-              %li=h a.owner_user.full_name if a.owner_user
-          %td=h "$#{balance}"
-          %td= text_field_tag "account[#{a.id}][transaction_amount]", begin number_to_currency params[:account][a.id.to_s][:transaction_amount] rescue balance end, :class => "#{(@error_fields && @error_fields[a.id] && @error_fields[a.id].include?('transaction_amount')) ? 'fieldWithErrors' : ''}" 
-          %td= text_field_tag "account[#{a.id}][reference]", begin params[:account][a.id.to_s][:reference] rescue '' end, :class => "#{(@error_fields && @error_fields[a.id.to_s] && @error_fields[a.id.to_s].include?('reference')) ? 'fieldWithErrors' : ''}"
-          %td= text_field_tag "account[#{a.id}][notes]", begin params[:account][a.id.to_s][:notes] rescue '' end
+              %li=h "#{od.description}: #{od.product.to_s}"
+              - if od.note
+                %li.indented
+                  %i=h od.note
+
+          %td= number_to_currency(od.actual_total)
+          %td= text_field_tag "order_detail[#{od.id}][notes]", begin params[:order_detail][od.id.to_s][:notes] rescue '' end
       %tr.borderless
-        %td
-        %td
-        %td
-        %td
-        %td= submit_tag "Save Transactions"
+        %td{:colspan => 2}= link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
+        %td.currency{:colspan => 2}= submit_tag "Reconcile Orders"
+
+  %p= will_paginate(@unreconciled_details)

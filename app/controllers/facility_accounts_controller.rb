@@ -114,98 +114,22 @@ class FacilityAccountsController < ApplicationController
 
   # GET /facilities/:facility_id/accounts/credit_cards
   def credit_cards
-    @subnav     = 'billing_nav'
-    @active_tab = 'admin_invoices'
-    @accounts   = CreditCardAccount.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
-    flash.now[:notice] = 'There are no pending credit card transactions' if @accounts.empty?
+    show_account(CreditCardAccount)
   end
 
   #POST /facilities/:facility_id/accounts/update_credit_cards
   def update_credit_cards
-    @subnav     = 'billing_nav'
-    @active_tab = 'admin_invoices'
-
-    @error_fields = {}
-    update_accounts = CreditCardAccount.find(params[:account].keys)
-    AccountTransaction.transaction do
-      count = 0
-      update_accounts.each do |a|
-        a_params = params[:account][a.id.to_s]
-        next unless a_params[:reference].length > 0 && a_params[:transaction_amount].length > 0
-        at = a.payment_account_transactions.new({
-          :facility_id        => current_facility.id,
-          :description        => a_params[:notes],
-          :transaction_amount => a_params[:transaction_amount].to_f * -1,
-          :created_by         => session_user.id,
-          :finalized_at       => Time.zone.now,
-          :reference          => a_params[:reference],
-          :is_in_dispute      => false,
-        })
-        begin
-          at.save!
-          count += 1
-        rescue
-          @error_fields = {a.id => at.errors.collect { |field,error| field}}
-          errors = at.errors.full_messages
-          errors = [$!.message] if errors.empty?
-          flash.now[:error] = (['There was an error processing the credit card payments'] + errors).join("<br />")
-          raise ActiveRecord::Rollback
-        end
-      end
-      flash[:notice] = "#{count} payment#{count == 1 ? '' : 's'} successfully processed" if count > 0
-      redirect_to credit_cards_facility_accounts_path
-      return
-    end
-    @accounts = CreditCardAccount.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
-    render :action => "credit_cards"
+    update_account(CreditCardAccount, credit_cards_facility_accounts_path)
   end
 
   # GET /facilities/:facility_id/accounts/purchase_orders
   def purchase_orders
-    @subnav     = 'billing_nav'
-    @active_tab = 'admin_invoices'
-    @accounts   = PurchaseOrderAccount.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
-    flash.now[:notice] = 'There are no pending purchase order transactions' if @accounts.empty?
+    show_account(PurchaseOrderAccount)
   end
 
   # POST /facilities/:facility_id/accounts/update_purchase_orders
   def update_purchase_orders
-    @subnav     = 'billing_nav'
-    @active_tab = 'admin_invoices'
-
-    @error_fields = {}
-    update_accounts = PurchaseOrderAccount.find(params[:account].keys)
-    AccountTransaction.transaction do
-      count = 0
-      update_accounts.each do |a|
-        a_params = params[:account][a.id.to_s]
-        next unless a_params[:reference].length > 0 && a_params[:transaction_amount].length > 0
-        at = a.payment_account_transactions.new({
-          :facility_id        => current_facility.id,
-          :description        => a_params[:notes],
-          :transaction_amount => a_params[:transaction_amount].to_f * -1,
-          :created_by         => session_user.id,
-          :finalized_at       => Time.zone.now,
-          :reference          => a_params[:reference],
-          :is_in_dispute      => false,
-        })
-        begin
-          at.save!
-          count += 1
-        rescue
-          @error_fields = {a.id => at.errors.collect { |field,error| field}}
-          errors = at.errors.full_messages
-          errors = [$!.message] if errors.empty?
-          flash.now[:error] = (['There was an error processing the purchase order payments'] + errors).join("<br />")
-          raise ActiveRecord::Rollback
-        end
-      end
-      flash[:notice] = "#{count} payment#{count == 1 ? '' : 's'} successfully processed" if count > 0
-      redirect_to purchase_orders_facility_accounts_path
-      return
-    end
-    @accounts = PurchaseOrderAccount.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
-    render :action => "purchase_orders"
+    update_account(PurchaseOrderAccount, purchase_orders_facility_accounts_path)
   end
 
   # GET /facilities/:facility_id/accounts/:account_id/members
@@ -217,23 +141,29 @@ class FacilityAccountsController < ApplicationController
   def show_statement
     @account = Account.find(params[:account_id])
     @facility = current_facility
-    @statements = @account.statements.final_for_facility(current_facility).uniq
+    action='show_statement'
 
-    if params[:statement_id].to_s.downcase == 'recent'
-      @account_txns   = @account.account_transactions.facility_recent(current_facility)
-    else
-      @statement      = @account.statements.find(params[:statement_id])
-      @account_txns   = @statement.account_transactions.finalized
+    case params[:statement_id]
+      when 'list'
+        action += '_list'
+        @statements = Statement.find(:all, :conditions => {:facility_id => current_facility.id, :account_id => @account}, :order => 'created_at DESC').paginate(:page => params[:page])
+      when 'recent'
+        @order_details = @account.order_details.for_facility(@facility)
+        @order_details = @order_details.paginate(:page => params[:page])
+      else
+        prawnto :prawn => {
+          :left_margin   => 50,
+          :right_margin  => 50,
+          :top_margin    => 50,
+          :bottom_margin => 75
+        }
+
+        @statement=Statement.find(params[:statement_id].to_i)
     end
 
-    prawnto :prawn => {
-                  :left_margin   => 50,
-                  :right_margin  => 50,
-                  :top_margin    => 50,
-                  :bottom_margin => 75 }
     respond_to do |format|
-      format.html { render :action => :show_statement }
-      format.pdf  { render :action => '../statements/show' }
+      format.html { render :action => action }
+      format.pdf  { render :template => '/statements/show' }
     end
   end
   
@@ -257,5 +187,62 @@ class FacilityAccountsController < ApplicationController
       flash[:notice] = "An error was encountered while activating the payment source"
     end
     redirect_to facility_account_path(current_facility, @account)
+  end
+
+
+  private
+
+  def show_account(model_class)
+    @subnav     = 'billing_nav'
+    @active_tab = 'admin_invoices'
+    @accounts   = model_class.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
+
+    if @accounts.empty?
+      flash.now[:notice] = "There are no pending #{model_class.name.underscore.humanize.downcase} transactions"
+    else
+      selected_id=params[:selected_account]
+
+      if selected_id.blank?
+        @selected=@accounts.first
+      else
+        @accounts.each{|a| @selected=a and break if a.id == selected_id.to_i }
+      end
+
+      @unreconciled_details=OrderDetail.account_unreconciled(current_facility, @selected)
+      @unreconciled_details=@unreconciled_details.paginate(:page => params[:page])
+    end
+  end
+
+
+  def update_account(model_class, redirect_path)
+    @error_fields = {}
+    update_details = OrderDetail.find(params[:order_detail].keys)
+
+    OrderDetail.transaction do
+      count = 0
+      update_details.each do |od|
+        od_params = params[:order_detail][od.id.to_s]
+        od.reconciled_note=od_params[:notes]
+
+        begin
+          if od_params[:reconciled] == '1'
+            od.to_reconciled!
+            count += 1
+          else
+            od.save!
+          end
+        rescue
+          @error_fields = {od.id => od.errors.collect { |field,error| field}}
+          errors = od.errors.full_messages
+          errors = [$!.message] if errors.empty?
+          flash.now[:error] = (["There was an error processing the #{model_class.name.underscore.humanize.downcase} payments"] + errors).join("<br />")
+          raise ActiveRecord::Rollback
+        end
+      end
+
+      flash[:notice] = "#{count} payment#{count == 1 ? '' : 's'} successfully reconciled" if count > 0
+    end
+
+    redirect_to redirect_path
   end
 end

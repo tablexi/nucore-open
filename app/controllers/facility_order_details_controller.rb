@@ -15,6 +15,17 @@ class FacilityOrderDetailsController < ApplicationController
   def edit
     @order        = current_facility.orders.find(params[:order_id])
     @order_detail = @order.order_details.find(params[:id])
+    @in_open_journal=@order_detail.journal && @order_detail.journal.open?
+
+    condition=case @order_detail.account
+      when NufsAccount
+        (@order_detail.journal && @order_detail.journal.is_successful) || OrderDetail.need_journal(current_facility).include?(@order_detail)
+      else
+        !@order_detail.statement.nil?
+    end
+
+    @can_be_reconciled=condition && @order_detail.complete? && !@order_detail.in_dispute?
+    flash.now[:notice]="You are unable to edit all aspects of this order because it is part of a pending journal. Please close the journal first." if @in_open_journal
   end
 
   # PUT /facilities/:facility_id/orders/:order_id/order_details/:id
@@ -38,7 +49,14 @@ class FacilityOrderDetailsController < ApplicationController
         @order_detail.actual_cost = od_params[:actual_cost].gsub(/[^\d\.]/,'') if od_params[:actual_cost]
         @order_detail.actual_subsidy = od_params[:actual_subsidy].gsub(/[^\d\.]/,'') if od_params[:actual_subsidy]
         @order_detail.updated_by = session_user.id
-        @order_detail.assign_price_policy unless params[:assign_price_policy].blank?
+        @order_detail.reconciled_note=od_params[:reconciled_note] if od_params[:reconciled_note]
+
+        if params[:assign_price_policy]
+          @order_detail.assign_price_policy
+        elsif @order_detail.price_policy.nil?
+          @order_detail.assign_estimated_price
+        end
+
         @order_detail.save!
 
         # process order status change
@@ -82,16 +100,6 @@ class FacilityOrderDetailsController < ApplicationController
         # process account change
         process_account_change
 
-        # resolve current purchase account transaction (in case no credit or move have adjusted it yet)
-        current_txn = @order_detail.current_purchase_account_transaction
-        current_txn.is_in_dispute = false
-        if current_txn.statement_id && current_txn.statement.invoice_date > Time.zone.now
-          current_txn.finalized_at = current_txn.statement.invoice_date
-        else
-          current_txn.statement_id = nil
-        end
-        current_txn.save! if current_txn.changed?
-
         # update order detail
         @order_detail.attributes          = params[:order_detail]
         @order_detail.updated_by          = session_user.id
@@ -123,13 +131,28 @@ class FacilityOrderDetailsController < ApplicationController
     render :json => [cost, subsidy, total]
   end
 
-  protected
-  def process_account_change
-    if (params[:order_detail][:account_id].to_i != @order_detail.account_id && @order_detail.state == 'complete')
-      new_account = Account.find(params[:order_detail][:account_id])
-      at = @order_detail.current_purchase_account_transaction
-      at.is_in_dispute = false
-      at.move_to_new_account!(new_account, :created_by => session_user.id)
-    end
+
+  def remove_from_journal
+    oid=params[:id]
+    return redirect_to :back unless oid
+
+    oid=oid.to_i
+    od=OrderDetail.find(oid)
+    od.journal=nil
+    od.save!
+
+    flash[:notice]='The order has been removed from its journal'
+    redirect_to edit_facility_order_order_detail_path(current_facility, od.order, od)
   end
+  
+
+  private
+
+  def process_account_change
+    return if params[:order_detail][:account_id].to_i == @order_detail.account_id
+    @order_detail.account=Account.find(params[:order_detail][:account_id])
+    @order_detail.statement=nil
+    @order_detail.save!
+  end
+
 end

@@ -13,10 +13,11 @@ class OrderStatus < ActiveRecord::Base
     end
   end
 
-  named_scope :new_os,     :conditions => {:name => 'New'}, :limit => 1
+  named_scope :new_os,     :conditions => {:name => 'New'},        :limit => 1
   named_scope :inprocess,  :conditions => {:name => 'In Process'}, :limit => 1
-  named_scope :cancelled,  :conditions => {:name => 'Cancelled'}, :limit => 1
-  named_scope :complete, :conditions => {:name => 'Complete'}, :limit => 1
+  named_scope :cancelled,  :conditions => {:name => 'Cancelled'},  :limit => 1
+  named_scope :complete,   :conditions => {:name => 'Complete'},   :limit => 1
+  named_scope :reconciled, :conditions => {:name => 'Reconciled'}, :limit => 1
 
   def is_left_of? (o)
     rgt < o.lft
@@ -49,16 +50,12 @@ class OrderStatus < ActiveRecord::Base
     end
 
     def non_protected_statuses (facility)
-      first_protected_status = self.find_by_name('Complete')
+      first_protected_status = self.find_by_name('Reconciled')
       statuses = self.find(:all).sort {|a,b| a.lft <=> b.lft }.reject {|os|
         !os.is_left_of?(first_protected_status)
       }
       statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } if !facility.nil?
       statuses
-    end
-
-    def complete
-      find_by_name!('Complete')
     end
   end
 end

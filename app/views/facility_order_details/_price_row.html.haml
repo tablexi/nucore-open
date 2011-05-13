@@ -1,0 +1,18 @@
+- if @order_detail.cost_estimated?
+  %td.currency= number_to_currency(@order_detail.estimated_cost, :unit => '')
+  %td.currency= number_to_currency(@order_detail.estimated_subsidy, :unit => '')
+  %td.currency
+    %span#actual_total= number_to_currency(@order_detail.estimated_total)
+- elsif @order_detail.price_policy.nil?
+  %td.currency Unassigned
+  %td.currency Unassigned
+  %td.currency Unassigned
+- else
+  - html_opts={ :size => 8 }
+  - html_opts.merge!(:disabled => 'disabled') if @in_open_journal
+  - actual_opts=html_opts.merge({:value => number_to_currency(@order_detail.actual_cost, :unit => ''), :id => 'actual_cost'})
+  %td.currency= "$#{form.text_field(:actual_cost, actual_opts)}"
+  - sub_opts=html_opts.merge({:value => number_to_currency(@order_detail.actual_subsidy, :unit => ''), :id => 'actual_subsidy'})
+  %td.currency= "$#{form.text_field(:actual_subsidy, sub_opts)}"
+  %td.currency
+    %span#actual_total= number_to_currency(@order_detail.actual_total)

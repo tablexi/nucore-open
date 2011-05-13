@@ -313,10 +313,6 @@ namespace :demo  do
       order.order_details.each do |od|
         # enter actuals for instruments
         set_instrument_order_actual_cost(od) if od.reservation
-        at = od.init_purchase_account_transaction
-        at.created_by = user_director.id
-        at.created_at = od.order.ordered_at + 1.days
-        at.save!
         od.change_status!(complete)
       end
     end
@@ -325,7 +321,7 @@ namespace :demo  do
     accounts       = Account.need_statements(facility)
     statement      = Statement.create!({:facility_id => facility.id, :created_by => user_director.id, :created_at => statement_date, :invoice_date => statement_date + 7.days})
     accounts.each do |a|
-      a.update_account_transactions_with_statement(statement)
+      a.update_order_details_with_statement(statement)
     end
 
     # purchased orders, complete, statements sent, 2 months ago
@@ -348,7 +344,7 @@ namespace :demo  do
     accounts       = Account.need_statements(facility)
     statement      = Statement.create!({:facility_id => facility.id, :created_by => user_director.id, :created_at => statement_date, :invoice_date => statement_date + 7.days})
     accounts.each do |a|
-      a.update_account_transactions_with_statement(statement)
+      a.update_order_details_with_statement(statement)
     end
 
     # purchased orders, complete details, no statement

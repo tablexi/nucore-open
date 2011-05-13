@@ -1,7 +1,7 @@
 %JRNL_HDR_IMP
   %BUSINESS_UNIT== NWUNV
   %JOURNAL_ID== NEXT
-  %JOURNAL_DATE= @journal.created_at.strftime("%Y%m%d")
+  %JOURNAL_DATE= @journal.journal_date.strftime("%Y%m%d")
   %DESCR254=h "#{@journal.facility.journal_mask}: Journal ##{ @journal.id}, Created By: #{User.find(@journal.created_by).username}"
   %LEDGER_GROUP== ACTUALS
   %SOURCE== RSC

@@ -2,18 +2,16 @@ require 'spec_helper'
 
 describe OrderDetail do
 
-  it "should create using factory, with order status and state of 'new', with defaut version of 1" do
-    @facility     = Factory.create(:facility)
+  before(:each) do
+    @facility = Factory.create(:facility)
     @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @user         = Factory.create(:user)
-    @item         = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+    @user     = Factory.create(:user)
+    @item     = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
     @item.should be_valid
-    @account      = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
-    @order        = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id))
+    @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+    @order    = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id))
     @order.should be_valid
     @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
-    @order_detail.should be_valid
-    @order_detail.order_status.name.should == 'New'
     @order_detail.state.should == 'new'
     @order_detail.version.should == 1
   end
@@ -34,13 +32,6 @@ describe OrderDetail do
 
   context "update account" do
     before(:each) do
-      @facility = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @user     = Factory.create(:user)
-      @item     = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
-      @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
-      @order    = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id))
-      @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
       @price_group = Factory.create(:price_group, :facility => @facility)
       Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
       UserPriceGroupMember.create!(:price_group => @price_group, :user => @user)
@@ -59,16 +50,10 @@ describe OrderDetail do
 
   context "item purchase validation" do
     before(:each) do
-      @facility       = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @user           = Factory.create(:user)
       @account        = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
       @price_group    = Factory.create(:price_group, :facility => @facility)
       @pg_user_member = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
-      @order          = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id))
-      @item           = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
       @item_pp        = @item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
-      @order_detail   = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
       @order_detail.update_attributes(:actual_cost => 20, :actual_subsidy => 10, :price_policy_id => @item_pp.id)
     end
 
@@ -111,9 +96,6 @@ describe OrderDetail do
 
   context "service purchase validation" do
      before(:each) do
-      @facility       = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @user           = Factory.create(:user)
       @account        = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
       @price_group    = Factory.create(:price_group, :facility => @facility)
       @pg_user_member = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
@@ -182,10 +164,6 @@ describe OrderDetail do
   context 'instrument' do
 
 #    before :each do
-#      @facility       = Factory.create(:facility)
-#      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-#      @user           = Factory.create(:user)
-#      @account        = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
 #      @price_group    = Factory.create(:price_group, :facility => @facility)
 #      @pg_user_member = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
 #      @order          = @user.orders.create(Factory.attributes_for(:order, :facility_id => @facility.id, :account_id => @account.id, :created_by => @user.id))
@@ -206,15 +184,6 @@ describe OrderDetail do
 #        @order_detail.reservation=@reservation
 #        define_open_account(@order_detail.product.account, @order_detail.account.account_number)
 #        Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
-#
-#        PurchaseAccountTransaction.create!(
-#          :order_detail => @order_detail,
-#          :transaction_amount => 10,
-#          :facility => @facility,
-#          :account => @account,
-#          :created_by => @user.id,
-#          :is_in_dispute => false
-#        )
 #
 #        @order_detail.to_inprocess!
 #        @order_detail.to_complete!
@@ -237,20 +206,7 @@ describe OrderDetail do
   end
 
   context "state management" do
-    before(:each) do
-      @facility = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @user     = Factory.create(:user)
-      @item     = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
-      @item.should be_valid
-      @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
-      @order    = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id))
-      @order.should be_valid
-      @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
-      @order_detail.state.should == 'new'
-      @order_detail.version.should == 1
-    end
-    
+
     it "should not allow transition from 'new' to 'invoiced'" do
       @order_detail.invoice! rescue nil
       @order_detail.state.should == 'new'
@@ -264,30 +220,12 @@ describe OrderDetail do
     end
 
 
-    it "should not transition from 'inprocess' to 'completed' if there is no purchase account transaction" do
-      @order_detail.to_inprocess!
-      @order_detail.to_complete!
-      @order_detail.state.should == 'inprocess'
-      @order_detail.version.should == 2
-    end
-
-
-    context 'exits with #assign_price_policy' do
+    context 'needs price policy' do
 
       before :each do
         @price_group3 = Factory.create(:price_group, :facility => @facility)
         UserPriceGroupMember.create!(:price_group => @price_group3, :user => @user)
         Factory.create(:price_group_product, :product => @item, :price_group => @price_group3, :reservation_window => nil)
-
-        PurchaseAccountTransaction.create!(
-          :order_detail => @order_detail,
-          :transaction_amount => 10,
-          :facility => @facility,
-          :account => @account,
-          :created_by => @user.id,
-          :is_in_dispute => false
-        )
-
         @order_detail.reload
       end
 
@@ -301,6 +239,7 @@ describe OrderDetail do
         @order_detail.price_policy.should == pp
         @order_detail.should_not be_cost_estimated
         @order_detail.should_not be_problem_order
+        @order_detail.fulfilled_at.should_not be_nil
 
         costs=pp.calculate_cost_and_subsidy(@order_detail.quantity)
         @order_detail.actual_cost.should == costs[:cost]
@@ -317,7 +256,179 @@ describe OrderDetail do
         @order_detail.should be_problem_order
       end
 
+
+      it "should transition to reconciled" do
+        Factory.create(:item_price_policy, :item => @item, :price_group => @price_group3)
+        @order_detail.to_inprocess!
+        @order_detail.to_complete!
+        @order_detail.state.should == 'complete'
+        @order_detail.version.should == 3
+        @order_detail.to_reconciled!
+        @order_detail.state.should == 'reconciled'
+        @order_detail.version.should == 4
+      end
+
+
+      it "should not transition to reconciled if there are no actual costs" do
+        @order_detail.to_inprocess!
+        @order_detail.to_complete!
+        @order_detail.state.should == 'complete'
+        @order_detail.version.should == 3
+        @order_detail.to_reconciled!
+        @order_detail.state.should == 'complete'
+        @order_detail.version.should == 3
+      end
+
     end
 
   end
+
+
+  context 'statement' do
+    before :each do
+      @statement=Factory.create(:statement, :facility => @facility, :created_by => @user.id, :account => @account)
+    end
+
+    it { should allow_value(nil).for(:statement) }
+    it { should allow_value(@statement).for(:statement) }
+  end
+
+
+  context 'journal' do
+    before :each do
+      @journal=Factory.create(:journal, :facility => @facility, :reference => 'xyz', :created_by => @user.id, :journal_date => Time.zone.now)
+    end
+
+    it { should allow_value(nil).for(:journal) }
+    it { should allow_value(@journal).for(:journal) }
+  end
+
+
+  context 'date attributes' do
+    [ :fulfilled_at, :reviewed_at ].each do |attr|
+      it { should allow_value(nil).for(attr) }
+      it { should allow_value(Time.zone.now).for(attr) }
+    end
+  end
+
+
+  it "should include ids in description" do
+    desc=@order_detail.to_s
+    desc.should match(/#{@order_detail.id}/)
+    desc.should match(/#{@order_detail.order.id}/)
+  end
+
+
+  context 'is_in_dispute?' do
+
+    it 'should be in dispute' do
+      @order_detail.dispute_at=Time.zone.now
+      @order_detail.dispute_resolved_at=nil
+      @order_detail.should be_in_dispute
+    end
+
+
+    it 'should not be in dispute if dispute_at is nil' do
+      @order_detail.dispute_at=nil
+      @order_detail.dispute_resolved_at="all good"
+      @order_detail.should_not be_in_dispute
+    end
+
+
+    it 'should not be in dispute if dispute_resolved_at is not nil' do
+      @order_detail.dispute_at=Time.zone.now
+      @order_detail.dispute_resolved_at=Time.zone.now+1.day
+      @order_detail.should_not be_in_dispute
+    end
+
+
+    it 'should not be in dispute if order detail is cancelled' do
+      @order_detail.to_cancelled!
+      @order_detail.dispute_at=Time.zone.now
+      @order_detail.dispute_resolved_at=nil
+      @order_detail.should_not be_in_dispute
+    end
+
+  end
+
+
+  context 'named scopes' do
+
+    before :each do
+      @order.facility=@facility
+      assert @order.save
+
+      # extra facility records to make sure we scope properly
+      @facility2 = Factory.create(:facility)
+      @facility_account2 = @facility2.facility_accounts.create(Factory.attributes_for(:facility_account))
+      @user2     = Factory.create(:user)
+      @item2     = @facility2.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account2.id))
+      @account2  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user2, :created_by => @user2, :user_role => 'Owner']])
+      @order2    = @user2.orders.create(Factory.attributes_for(:order, :created_by => @user2.id, :facility => @facility2))
+      @order_detail2 = @order2.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item2.id, :account_id => @account2.id))
+    end
+
+    it 'should give recent order details of given facility only' do
+      ods=OrderDetail.facility_recent(@facility)
+      ods.size.should == 1
+      ods.first.should == @order_detail
+    end
+
+    it 'should give all order details for a facility' do
+      ods=OrderDetail.for_facility(@facility)
+      ods.size.should == 1
+      ods.first.should == @order_detail
+    end
+
+    context 'unreconciled' do
+
+      before :each do
+        @account3 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user2, :created_by => @user2, :user_role => 'Owner']])
+        @order3   = @user2.orders.create(Factory.attributes_for(:order, :created_by => @user2.id, :facility => @facility2))
+        @order_detail3 = @order3.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item2.id, :account_id => @account3.id))
+        @order_detail2.to_complete!
+        @order_detail3.to_complete!
+      end
+
+      it 'should have two unreconciled orders' do
+        ods=OrderDetail.unreconciled(@facility2)
+        ods.size.should == 2
+        ods.should be_include @order_detail2
+        ods.should be_include @order_detail3
+      end
+
+      it 'should have one unreconciled order' do
+        ods=OrderDetail.account_unreconciled(@facility2, @account3)
+        ods.size.should == 1
+        ods[0].should == @order_detail3
+      end
+
+    end
+
+    context 'needs statement' do
+
+      before :each do
+        @statement = Statement.create({:facility => @facility, :created_by => 1, :account => @account})
+        @order_detail.update_attributes(:statement => @statement, :reviewed_at => (Time.zone.now-1.day))
+        @statement2 = Statement.create({:facility => @facility2, :created_by => 1, :account => @account})
+        @order_detail2.statement=@statement2
+        assert @order_detail2.save
+      end
+
+      it 'should give all order details with statements for a facility' do
+        ods=OrderDetail.statemented(@facility)
+        ods.size.should == 1
+        ods.first.should == @order_detail
+      end
+
+      it 'should give finalized order details of given facility only' do
+        ods=OrderDetail.finalized(@facility)
+        ods.size.should == 1
+        ods.first.should == @order_detail
+      end
+
+    end
+
+  end
+
 end

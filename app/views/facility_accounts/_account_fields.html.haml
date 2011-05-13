@@ -8,7 +8,7 @@
       = label_tag :class_type, 'Payment Source Type', :class => 'require'
       = select_tag 'class_type', options_for_select([["Chart String", "NufsAccount"], ["Credit Card", "CreditCardAccount"], ["Purchase Order", "PurchaseOrderAccount"]], :selected => params[:class_type]), :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
     %li
-      = f.label :account_number, 'Account Number', :class => 'require'
+      = f.label :account_number, 'Payment Source Number', :class => 'require'
       = f.text_field :account_number, :class => 'NufsAccount PurchaseOrderAccount'
     %li
       = f.label :name_on_card, 'Name on Card', :class => 'require'

@@ -4,40 +4,38 @@
 - content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'send_statements' }
 
-%h2 Send Statements
-- unless @accounts.empty?
-  %p Please review the following accounts; a statement notification email will be sent to the selected accounts.
+%h2 Create Statements
+- if @accounts.empty?
+  %p.notice There are no completed orders that require statements.
+- else
+  %p
+    Please review the following Credit Card and Purchase Order payment sources. A statement will be generated for each of the 
+    payment sources and an email with a link to the statement will be sent.
   - form_tag(email_facility_statements_path, :method => :post) do
     %table
       %tr.borderless
-        %td{:colspan => 2}= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
-        %td
-        %td
-        %td
-        %td= submit_tag "Send Statements"
+        %td{:colspan => 4}= link_to 'Select None', 'JavaScript:void(0);', :class => 'select_all'
+        %td.currency{:colspan => 2}= submit_tag "Send Statements"
       %tr
         %th
-        %th Account
+        %th Payment Source
         %th Owner
-        %th Last Statement
-        %th Balance
         %th Notify
+        %th.currency # of Orders*
+        %th.currency Balance*
       -@accounts.each do |a|
-        - statement = a.statements.find(:first, :conditions => {:facility_id => current_facility.id})
+        - details = a.order_details.need_statement(current_facility)
         %tr
-          %td= check_box_tag "account_ids[]", a.id, false, {:class => 'toggle'}
-          %td= link_to a, facility_account_statement_path(current_facility, a, 'recent')
+          %td.centered= check_box_tag "account_ids[]", a.id, true, {:class => 'toggle'}
+          %td=h a
           %td=h a.owner_user.full_name
-          %td=h (statement.nil? ? 'never' : human_datetime(statement.created_at))
-          %td=h number_to_currency a.facility_balance_including_pending(current_facility)
           %td
             %ul
               - a.notify_users.each do |u|
                 %li=h u.email
+          %td.currency=h details.count
+          %td.currency=h number_to_currency details.collect{ |d| d.total }.inject{|sum, t| sum + t}
       %tr.borderless
-        %td
-        %td
-        %td
-        %td
-        %td
-        %td= submit_tag "Send Statements"
+        %td{:colspan => 4}= link_to 'Select None', 'JavaScript:void(0);', :class => 'select_all'
+        %td.currency{:colspan => 2}= submit_tag "Send Statements"
+    %p.footnote * Reflects only orders that have been reviewed but have not yet been added to a statement.

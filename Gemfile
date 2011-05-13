@@ -24,6 +24,7 @@ gem 'prawnto',          '0.0.3'
 gem 'fastercsv',        '1.5.3'
 gem 'devise',           '1.0.9'
 gem 'cancan',           '1.5.1'
+gem 'nokogiri',         '1.4.4'
 gem 'devise_ldap_authenticatable', '0.1.6', :git => 'https://github.com/cschiewek/devise_ldap_authenticatable.git', :tag => '0.1.6'
 
 group :development do
@@ -37,6 +38,6 @@ group :development do
    gem 'thoughtbot-factory_girl', '1.2.2'
    gem 'thoughtbot-shoulda', '2.10.2'
    gem 'ruby-debug', '0.10.3'
-   gem 'ruby-debug-ide', '0.4.15'
+   #gem 'ruby-debug-ide', '0.4.15'
    gem 'single_test'
 end

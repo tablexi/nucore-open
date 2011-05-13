@@ -129,14 +129,12 @@ class Reservation < ActiveRecord::Base
     errors.add_to_base("The reservation is too long") unless satisfies_maximum_length?
   end
 
-  # checks that the reservation starts within the longest available price policy window available for the order's user
+  # checks that the reservation is within the longest window for the groups the user is in
   def in_window?
-    groups = (order_detail.order.user.price_groups + order_detail.order.account.price_groups).flatten.uniq
-    pp = longest_reservation_window_price_policy(groups)
-    max_days = pp.reservation_window
-    diff = reserve_start_at.to_date - Date.today
-    return false unless diff.to_i <= max_days
-    true
+    groups   = (order_detail.order.user.price_groups + order_detail.order.account.price_groups).flatten.uniq
+    max_days = longest_reservation_window(groups)
+    diff     = reserve_start_at.to_date - Date.today
+    diff <= max_days
   end
 
   def in_window
@@ -148,7 +146,7 @@ class Reservation < ActiveRecord::Base
   end
   
   def in_the_future
-    errors.add_to_base("The reservation must start at a future time") unless in_the_future?
+    errors.add(:reserve_start_at, "The reservation must start at a future time") unless in_the_future?
   end
 
   def instrument_is_available_to_reserve
@@ -400,28 +398,10 @@ class Reservation < ActiveRecord::Base
     min
   end
 
-  # return the longest available reservation window that:
-  # * is not part of an expired price policy
-  # * is not part of a restricted price policy
-  # * is included in the provided price groups
-  # * is within the reservation windows of the available price policies
-  def longest_reservation_window_price_policy(groups = [])
-    return nil if groups.empty? or reserve_start_at.nil?
-
-    longest, longest_window = nil, nil
-    diff = ((reserve_start_at - Time.zone.now)/(60*60*24)).to_i
-
-    instrument.current_price_policies.each { |pp|
-      window=pp.reservation_window
-
-      if !pp.expired? && !pp.restrict_purchase? && groups.include?(pp.price_group) && diff <= window
-        if longest_window.nil? || window > longest_window
-          longest = pp
-          longest_window=window
-        end
-      end
-    }
-    longest
+  # return the longest available reservation window for the groups
+  def longest_reservation_window(groups = [])
+    pgps     = instrument.price_group_products.find(:all, :conditions => {:price_group_id => groups.collect{|pg| pg.id}})
+    pgps.collect{|pgp| pgp.reservation_window}.max
   end
 
   def can_switch_instrument_on?(check_off = true)

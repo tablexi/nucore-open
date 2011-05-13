@@ -1,0 +1,39 @@
+- content_for :h1 do
+  =h current_facility
+
+- content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'notifications' }
+
+%h2 Send Notifications
+
+- if @accounts.empty?
+  %p.notice No notifications are currently pending
+- else
+  - form_tag facility_notifications_path(current_facility), :method => :post do
+    %table
+      %tr.borderless
+        %td{:colspan => 4}= link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
+        %td.currency{:colspan => 2}= submit_tag "Send Notifications"
+      %tr
+        %th
+        %th Payment Source
+        %th Owner
+        %th Notify
+        %th.currency # of Orders*
+        %th.currency Balance*
+      - @accounts.each do |a|
+        - details = a.order_details.need_notification(current_facility)
+        %tr
+          %td.centered= check_box_tag "account_ids[]", a.id, true, {:class => 'toggle'}
+          %td=h a
+          %td=h a.owner_user.full_name
+          %td
+            %ul
+              - a.notify_users.each do |u|
+                %li=h u.email
+          %td.currency=h details.count
+          %td.currency=h number_to_currency details.collect{ |d| d.total }.inject{|sum, t| sum + t}
+      %tr.borderless
+        %td{:colspan => 4}= link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
+        %td.currency{:colspan => 2}= submit_tag "Send Notifications"
+    %p.footnote * Reflects only orders that the user has not been notified of yet.

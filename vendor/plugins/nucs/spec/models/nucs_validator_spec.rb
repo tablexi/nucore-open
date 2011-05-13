@@ -42,26 +42,28 @@ describe NucsValidator do
   end
 
 
-  it 'should validate a zero fund chart string' do
-    define_ge001(ZERO_FUND_CS)
-    assert_nothing_raised do
-      NucsValidator.new(ZERO_FUND_CS, NON_REVENUE_ACCT).account_is_open!
-    end
-  end
+  # tests below are commented out because they test logic overridden by blacklist requirements
+
+#  it 'should validate a zero fund chart string' do
+#    define_ge001(ZERO_FUND_CS)
+#    assert_nothing_raised do
+#      NucsValidator.new(ZERO_FUND_CS, NON_REVENUE_ACCT).account_is_open!
+#    end
+#  end
 
 
-  it 'should recognize an invalid zero fund chart string' do
-    assert_raise NucsErrors::InputError do
-      NucsValidator.new(ZERO_FUND_CS.gsub('023-', '034-'), NON_REVENUE_ACCT).account_is_open!
-    end
-  end
+#  it 'should recognize an invalid zero fund chart string' do
+#    assert_raise NucsErrors::InputError do
+#      NucsValidator.new(ZERO_FUND_CS.gsub('023-', '034-'), NON_REVENUE_ACCT).account_is_open!
+#    end
+#  end
 
 
-  it 'should recognize a transposition on a 011 zero fund chart string' do
-    assert_raise NucsErrors::TranspositionError do
-      NucsValidator.new(ZERO_FUND_CS.gsub('023-', '011-'), NON_REVENUE_ACCT).account_is_open!
-    end
-  end
+#  it 'should recognize a transposition on a 011 zero fund chart string' do
+#    assert_raise NucsErrors::TranspositionError do
+#      NucsValidator.new(ZERO_FUND_CS.gsub('023-', '011-'), NON_REVENUE_ACCT).account_is_open!
+#    end
+#  end
 
 
   it 'should validate a non-grant chart string on a revenue account' do
@@ -276,6 +278,26 @@ describe NucsValidator do
   it 'should return nil when the matching GL066 entry is expired' do
     define_gl066(NON_GRANT_CS, :expires_at => Time.zone.now-1.year)
     NucsValidator.new(NON_GRANT_CS).latest_expiration.should be_nil
+  end
+
+
+  it 'should error on blacklisted fund' do
+    Blacklist::DISALLOWED_FUNDS.each do |fund|
+      blacklisted=NON_GRANT_CS.gsub('160-', "#{fund}-")
+      assert_raise NucsErrors::BlacklistedError do
+        NucsValidator.new(blacklisted)
+      end
+    end
+  end
+
+
+  it 'should error on blacklisted account' do
+    [ '0', '1', '2', '3', '4', '6', '8', '9' ].each do |i|
+      blacklisted=i + REVENUE_ACCT[1..-1]
+      assert_raise NucsErrors::BlacklistedError do
+        NucsValidator.new(NON_GRANT_CS, blacklisted)
+      end
+    end
   end
 
 

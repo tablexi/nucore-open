@@ -14,25 +14,35 @@ class StatementsController < ApplicationController
 
   # GET /accounts/:account_id/statements
   def index
-    facility_ids = @account.account_transactions.find(:all, :select => :facility_id, :group => :facility_id).collect {|at| at.facility_id}
+    facility_ids = @account.order_details.find(:all, :select => 'orders.facility_id', :joins => :order, :group => :facility_id).collect {|od| od.facility_id}
     @facilities  = Facility.find(:all, facility_ids, :order => :name)
   end
 
   # GET /accounts/:account_id/facilities/:facility_id/statements/:id
   def show
+    action='show'
     @active_tab = 'accounts'
 
-    if params[:id].to_s.downcase == 'recent'
-      @account_txns   = @account.account_transactions.facility_recent(@facility)
-    else
-      @account_txns   = @statement.account_transactions.finalized
+    case params[:id]
+      when 'recent'
+        @order_details = OrderDetail.for_facility(@facility)
+        @order_details = @order_details.paginate(:page => params[:page])
+      when 'list'
+        action='list'
+        @statements=@statements.paginate(:page => params[:page])
+      else
+        prawnto :prawn => {
+          :left_margin   => 50,
+          :right_margin  => 50,
+          :top_margin    => 50,
+          :bottom_margin => 75
+        }
     end
 
-    prawnto :prawn => {
-                  :left_margin   => 50,
-                  :right_margin  => 50,
-                  :top_margin    => 50,
-                  :bottom_margin => 75 }
+    respond_to do |format|
+      format.html { render :action => action }
+      format.pdf  { render :action => 'show' }
+    end
   end
 
 
@@ -52,7 +62,12 @@ class StatementsController < ApplicationController
   def init_statement
     @facility=Facility.find_by_url_name!(params[:facility_id])
     @statements=@account.statements.final_for_facility(@facility).uniq
-    @statement=params[:id].to_s.downcase == 'recent' ? @statements.first : @account.statements.find(params[:id])
+
+    if params[:id] =~ /\w+/i
+      @statement=@statements.blank? ? Statement.find_by_facility_id(@facility.id) : @statements.first
+    else
+      @statement=@account.statements.find(params[:id])
+    end
   end
 
 end

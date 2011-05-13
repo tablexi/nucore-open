@@ -9,22 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110426221701) do
-
-  create_table "account_transactions", :force => true do |t|
-    t.integer  "account_id",                        :precision => 38, :scale => 0, :null => false
-    t.integer  "facility_id",                       :precision => 38, :scale => 0, :null => false
-    t.string   "description",        :limit => 200
-    t.decimal  "transaction_amount",                :precision => 10, :scale => 2, :null => false
-    t.integer  "created_by",                        :precision => 38, :scale => 0, :null => false
-    t.datetime "created_at",                                                       :null => false
-    t.string   "type",               :limit => 50,                                 :null => false
-    t.datetime "finalized_at"
-    t.integer  "order_detail_id",                   :precision => 38, :scale => 0
-    t.boolean  "is_in_dispute",                     :precision => 1,  :scale => 0, :null => false
-    t.integer  "statement_id",                      :precision => 38, :scale => 0
-    t.string   "reference",          :limit => 50
-  end
+ActiveRecord::Schema.define(:version => 20110511180455) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :precision => 38, :scale => 0, :null => false
@@ -166,18 +151,17 @@ ActiveRecord::Schema.define(:version => 20110426221701) do
   end
 
   create_table "journal_rows", :force => true do |t|
-    t.integer "journal_id",                            :precision => 38, :scale => 0, :null => false
-    t.integer "order_detail_id",                       :precision => 38, :scale => 0
-    t.decimal "amount",                                :precision => 9,  :scale => 2, :null => false
-    t.string  "description",            :limit => 200
-    t.string  "reference",              :limit => 50
-    t.integer "account_transaction_id",                :precision => 38, :scale => 0
-    t.string  "fund",                   :limit => 3,                                  :null => false
-    t.string  "dept",                   :limit => 7,                                  :null => false
-    t.string  "project",                :limit => 8
-    t.string  "activity",               :limit => 2
-    t.string  "program",                :limit => 4
-    t.string  "account",                :limit => 5,                                  :null => false
+    t.integer "journal_id",                     :precision => 38, :scale => 0, :null => false
+    t.integer "order_detail_id",                :precision => 38, :scale => 0
+    t.decimal "amount",                         :precision => 9,  :scale => 2, :null => false
+    t.string  "description",     :limit => 200
+    t.string  "reference",       :limit => 50
+    t.string  "fund",            :limit => 3,                                  :null => false
+    t.string  "dept",            :limit => 7,                                  :null => false
+    t.string  "project",         :limit => 8
+    t.string  "activity",        :limit => 2
+    t.string  "program",         :limit => 4
+    t.string  "account",         :limit => 5,                                  :null => false
   end
 
   create_table "journals", :force => true do |t|
@@ -193,6 +177,7 @@ ActiveRecord::Schema.define(:version => 20110426221701) do
     t.string   "file_content_type"
     t.integer  "file_file_size",                   :precision => 38, :scale => 0
     t.datetime "file_updated_at"
+    t.datetime "journal_date",                                                    :null => false
   end
 
   create_table "nucs_accounts", :force => true do |t|
@@ -293,6 +278,11 @@ ActiveRecord::Schema.define(:version => 20110426221701) do
     t.integer  "group_id",                               :precision => 38, :scale => 0
     t.integer  "bundle_product_id",                      :precision => 38, :scale => 0
     t.string   "note",                    :limit => 25
+    t.datetime "fulfilled_at"
+    t.datetime "reviewed_at"
+    t.integer  "statement_id",                           :precision => 38, :scale => 0
+    t.integer  "journal_id",                             :precision => 38, :scale => 0
+    t.string   "reconciled_note"
   end
 
   create_table "order_statuses", :force => true do |t|
@@ -395,6 +385,7 @@ ActiveRecord::Schema.define(:version => 20110426221701) do
     t.string   "relay_username",          :limit => 50
     t.string   "relay_password",          :limit => 50
     t.string   "account",                 :limit => 5
+    t.string   "relay_type",              :limit => 50
   end
 
   add_index "products", ["relay_ip", "relay_port"], :name => "sys_c008555", :unique => true
@@ -509,11 +500,19 @@ ActiveRecord::Schema.define(:version => 20110426221701) do
     t.string   "preview_code"
   end
 
+  create_table "statement_rows", :force => true do |t|
+    t.integer  "statement_id",    :precision => 38, :scale => 0, :null => false
+    t.decimal  "amount",          :precision => 10, :scale => 2, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "order_detail_id", :precision => 38, :scale => 0
+  end
+
   create_table "statements", :force => true do |t|
-    t.integer  "facility_id",  :precision => 38, :scale => 0, :null => false
-    t.integer  "created_by",   :precision => 38, :scale => 0, :null => false
-    t.datetime "created_at",                                  :null => false
-    t.datetime "invoice_date",                                :null => false
+    t.integer  "facility_id", :precision => 38, :scale => 0, :null => false
+    t.integer  "created_by",  :precision => 38, :scale => 0, :null => false
+    t.datetime "created_at",                                 :null => false
+    t.integer  "account_id",  :precision => 38, :scale => 0
   end
 
   create_table "survey_sections", :force => true do |t|
@@ -622,10 +621,6 @@ ActiveRecord::Schema.define(:version => 20110426221701) do
   add_index "versions", ["user_name"], :name => "index_versions_on_user_name"
   add_index "versions", ["versioned_id", "versioned_type"], :name => "i_ver_ver_id_ver_typ"
 
-  add_foreign_key "account_transactions", "accounts", :name => "fk_act_trans_accounts"
-  add_foreign_key "account_transactions", "facilities", :name => "fk_act_trans_facilities"
-  add_foreign_key "account_transactions", "order_details", :name => "fk_act_trans_ord_dets"
-
   add_foreign_key "account_users", "accounts", :name => "fk_accounts"
 
   add_foreign_key "accounts", "facilities", :name => "fk_account_facility_id"
@@ -639,8 +634,6 @@ ActiveRecord::Schema.define(:version => 20110426221701) do
   add_foreign_key "file_uploads", "products", :name => "fk_files_product"
 
   add_foreign_key "instrument_statuses", "products", :name => "fk_int_stats_product", :column => "instrument_id"
-
-  add_foreign_key "journal_rows", "account_transactions", :name => "fk_jour_row_act_txn"
 
   add_foreign_key "order_details", "accounts", :name => "fk_od_accounts"
   add_foreign_key "order_details", "orders", :name => "sys_c009172"

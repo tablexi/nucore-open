@@ -24,6 +24,7 @@ class NucsValidator
   def account=(account)
     account=account.to_s
     raise InputError.new('account', account) if account !~ /^\d{5}$/
+    raise BlacklistedError.new('account', account) unless Blacklist.valid_account?(account)
     @account=account
   end
 
@@ -34,6 +35,7 @@ class NucsValidator
     raise InputError.new('chart string', chart_string) unless valid_chart_string?(chart_string)
     @chart_string=chart_string
     parse_chart_string
+    raise BlacklistedError.new('fund', @fund) unless Blacklist.valid_fund?(@fund)
   end
 
 

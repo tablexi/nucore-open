@@ -77,7 +77,13 @@
       %td.centered= text_field_tag "quantity#{order_detail.id}", order_detail.quantity, :value => order_detail.quantity, :size => 3
 
 
-  %td.currency= number_to_currency order_detail.estimated_cost
-  - if @order.has_subsidies?
-    %td.currency= number_to_currency order_detail.estimated_subsidy
-  %td.currency= number_to_currency order_detail.estimated_total
+  - if order_detail.cost_estimated?
+    %td.currency= number_to_currency order_detail.estimated_cost * order_detail.quantity
+    - if @order.has_subsidies?
+      %td.currency= number_to_currency order_detail.estimated_subsidy * order_detail.quantity
+    %td.currency= number_to_currency order_detail.estimated_total * order_detail.quantity
+  - else
+    %td.currency Unassigned
+    - if @order.has_subsidies?
+      %td.currency Unassigned
+    %td.currency Unassigned

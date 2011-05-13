@@ -84,7 +84,7 @@ ActionController::Routing::Routes.draw do |map|
     facility.resources :facility_accounts, :controller => 'facility_facility_accounts', :only => [:index, :new, :create, :edit, :update]
 
     facility.resources :orders, :controller => 'facility_orders', :only => [:index, :show], :collection => {:batch_update => :post, :show_problems => :get, :disputed => :get} do |order|
-      order.resources :order_details, :controller => 'facility_order_details', :only => [:edit, :update ] do |order_detail|
+      order.resources :order_details, :controller => 'facility_order_details', :only => [:edit, :update ], :member => {:remove_from_journal => :get} do |order_detail|
         order_detail.new_price '/new_price', :controller => 'facility_order_details', :action => 'new_price', :conditions => {:method => :get}
         order_detail.resolve_dispute '/resolve_dispute', :controller => 'facility_order_details', :action => 'resolve_dispute', :conditions => {:method => :put}
         order_detail.resources :reservations, :controller => 'facility_reservations', :only => [:edit, :update, :show]
@@ -99,13 +99,17 @@ ActionController::Routing::Routes.draw do |map|
       account.members '/members', :controller => 'facility_accounts', :action => 'members', :conditions => {:method => :get}
     end
 
-    facility.resources :journals, :controller => 'facility_journals', :only => [:index, :create, :update, :show]
+    facility.resources :journals, :controller => 'facility_journals', :only => [:index, :create, :update, :show], :collection => {:history => :get} do |journal|
+      journal.reconcile '/reconcile', :controller => 'facility_journals', :action => 'reconcile', :conditions => {:method => :post}
+    end
 
     facility.resources :price_groups, :member => {:users => :get, :accounts => :get} do |price_group|
       price_group.resources :user_price_group_members,    :only => [:new, :destroy, :create], :collection => {:create => :get}
       price_group.resources :account_price_group_members, :only => [:new, :destroy, :create], :collection => {:create => :get}
     end
 
+    facility.notifications '/notifications', :controller => 'facility_notifications', :action => 'index', :conditions => {:method => [:get, :post]}
+    facility.notifications_in_review '/notifications/in_review', :controller => 'facility_notifications', :action => 'in_review', :conditions => {:method => [:get, :post]}
     facility.resources :statements, :controller => 'facility_statements', :only => [:index, :show], :collection => {:email => :post, :accounts_receivable => :get, :pending => :get }
   end
 
