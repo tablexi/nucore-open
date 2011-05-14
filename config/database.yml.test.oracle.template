@@ -1,0 +1,6 @@
+test:
+  adapter: oracle_enhanced
+  database: 10.114.22.3:1521/xe
+  username: nucore-open_test
+  password: nucore-open_test
+  encoding: utf8
