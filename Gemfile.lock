@@ -37,6 +37,7 @@ GEM
     autotest-rails (4.1.0)
       ZenTest
     bluecloth (2.0.7)
+    builder (3.0.0)
     cancan (1.5.1)
     capistrano (2.5.2)
       highline
@@ -44,6 +45,8 @@ GEM
       net-sftp (>= 2.0.0)
       net-ssh (>= 2.0.0)
       net-ssh-gateway (>= 1.0.0)
+    ci_reporter (1.6.4)
+      builder (>= 2.1.2)
     columnize (0.3.1)
     devise (1.0.9)
       warden (~> 0.10.3)
@@ -118,6 +121,7 @@ DEPENDENCIES
   bluecloth (= 2.0.7)
   cancan (= 1.5.1)
   capistrano (= 2.5.2)
+  ci_reporter
   devise (= 1.0.9)
   devise_ldap_authenticatable (= 0.1.6)!
   fast-aes (= 0.1.1)
