@@ -20,3 +20,6 @@ begin
 rescue LoadError
   # ignore
 end
+
+require 'rubygems'
+require 'ci/reporter/rake/rspec'
