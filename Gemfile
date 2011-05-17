@@ -2,6 +2,10 @@ source :gemcutter
 
 gem 'RedCloth',         '4.1.1'
 gem 'aasm',             '2.1.5'
+# to bundle mysql properly for OSX Snow Leopard be sure to configure build params first:
+# bundle config build.mysql --with-mysql-config=/usr/local/mysql/bin/mysql_config
+# Also, your DYLD_LIBRARY_PATH environment variable should include /usr/local/mysql/lib
+gem 'mysql',            '2.8.1'
 gem 'activerecord-oracle_enhanced-adapter', '1.2.4'
 gem 'bluecloth',        '2.0.7'
 #gem 'bundler',         '0.9.24'

@@ -1,16 +1,20 @@
 class PricePolicy < ActiveRecord::Base
 
   belongs_to :price_group
-  validates_presence_of :start_date, :expire_date, :price_group_id, :type
+  validates_presence_of :start_date, :price_group_id, :type
   validate :start_date_is_unique, :unless => lambda { |o| o.start_date.nil? }
 
   validates_each :expire_date do |record,attr,value|
-    value=value.to_date
-    start_date=record.start_date.to_date
-    gen_exp_date=generate_expire_date(start_date).to_date
+    if value.blank?
+      record.errors.add(:expire_date, "cannot be blank")
+    else
+      value=value.to_date
+      start_date=record.start_date.to_date
+      gen_exp_date=generate_expire_date(start_date).to_date
 
-    if value <= start_date || value > gen_exp_date
-      record.errors.add(:expire_date, "must be after #{start_date.to_date.to_s} and before #{gen_exp_date.to_date.to_s}")
+      if value <= start_date || value > gen_exp_date
+        record.errors.add(:expire_date, "must be after #{start_date.to_date.to_s} and before #{gen_exp_date.to_date.to_s}")
+      end
     end
   end
 
