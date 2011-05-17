@@ -88,9 +88,9 @@ describe ItemPricePolicy do
     end
 
     it "should return the date for upcoming policies" do
-      @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id)
-      @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 7.days, :price_group_id => @price_group.id)
-      @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 14.days, :price_group_id => @price_group.id)
+      assert @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id)
+      assert @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 7.days, :price_group_id => @price_group.id)
+      assert @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 14.days, :price_group_id => @price_group.id)
 
       ItemPricePolicy.next_date(@item).to_date.should == Date.today + 7.days
       next_dates = ItemPricePolicy.next_dates(@item)
