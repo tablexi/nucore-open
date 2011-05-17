@@ -10,9 +10,9 @@ class InstrumentPricePolicy < PricePolicy
   validate :has_usage_or_reservation_rate?, :unless => :restrict_purchase
   validate :subsidy_less_than_rate?, :unless => :restrict_purchase
 
-  named_scope :current,  lambda { |instrument|             { :conditions => ['TRUNC(start_date) = ? AND instrument_id = ?', self.current_date(instrument), instrument.id] } }
-  named_scope :next,     lambda { |instrument|             { :conditions => ['TRUNC(start_date) = ? AND instrument_id = ?', self.next_date(instrument), instrument.id] } }
-  named_scope :for_date, lambda { |instrument, start_date| { :conditions => ['TRUNC(start_date) = ? AND instrument_id = ?', start_date.to_date, instrument.id] } }
+  named_scope :current,  lambda { |instrument|             { :conditions => ['start_date = ? AND instrument_id = ?', self.current_date(instrument, true), instrument.id] } }
+  named_scope :next,     lambda { |instrument|             { :conditions => ['start_date = ? AND instrument_id = ?', self.next_date(instrument, true), instrument.id] } }
+  named_scope :for_date, lambda { |instrument, start_date| { :conditions => ['start_date = ? AND instrument_id = ?', start_date.to_datetime, instrument.id] } }
 
   before_save do |o|
     o.usage_subsidy       = 0 if o.usage_subsidy.nil?       && !o.usage_rate.nil?
@@ -24,18 +24,18 @@ class InstrumentPricePolicy < PricePolicy
     errors.add_to_base("You must enter a reservation rate or usage rate for all price groups") if usage_rate.nil? && reservation_rate.nil?
   end
   
-  def self.current_date(instrument)
-    ipp = instrument.instrument_price_policies.find(:first, :conditions => ['TRUNC(start_date) <= ? AND TRUNC(expire_date) > ?', Time.zone.now, Time.zone.now], :order => 'start_date DESC')
-    ipp ? ipp.start_date.to_date : nil
+  def self.current_date(instrument, with_time=false)
+    ipp = instrument.instrument_price_policies.find(:first, :conditions => ['start_date <= ? AND expire_date > ?', Time.zone.now, Time.zone.now], :order => 'start_date DESC')
+    ipp.nil? ? nil : with_time ? ipp.start_date.to_datetime : ipp.start_date.to_date
   end
 
-  def self.next_date(instrument)
-    ipp = instrument.instrument_price_policies.find(:first, :conditions => ['TRUNC(start_date) > ?', Time.zone.now], :order => 'start_date')
-    ipp ? ipp.start_date.to_date : nil
+  def self.next_date(instrument, with_time=false)
+    ipp = instrument.instrument_price_policies.find(:first, :conditions => ['start_date > ?', Time.zone.now], :order => 'start_date')
+    ipp.nil? ? nil : with_time ? ipp.start_date.to_datetime : ipp.start_date.to_date
   end
 
   def self.next_dates(instrument)
-    ipps = instrument.instrument_price_policies.find(:all, :conditions => ['TRUNC(start_date) > ?', Time.zone.now], :order => 'start_date', :select => 'DISTINCT(start_date) AS start_date')
+    ipps = instrument.instrument_price_policies.find(:all, :conditions => ['start_date > ?', Time.zone.now], :order => 'start_date', :select => 'DISTINCT(start_date) AS start_date')
     start_dates = ipps.collect {|ipp| ipp.start_date.to_date}
   end
 

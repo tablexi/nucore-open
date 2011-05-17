@@ -57,7 +57,7 @@ describe InstrumentPricePolicy do
       @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
       InstrumentPricePolicy.current_date(@instrument).to_date.should == Date.today - 7.days
 
-      @ipp = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today, :price_group => @price_group))
+      @ipp = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group => @price_group))
       @ipp.save(false) #save without validations
       InstrumentPricePolicy.current_date(@instrument).to_date.should == Date.today
     end
@@ -354,6 +354,7 @@ describe InstrumentPricePolicy do
     it "should return nil for cost if purchase is restricted" do
       options = Hash[
           :start_date          => Date.today,
+          :expire_date         => Date.today+7.days,
           :price_group         => @price_group,
         ]
 
@@ -407,6 +408,7 @@ describe InstrumentPricePolicy do
   def ipp_attributes(overrides={})
     attrs={
       :start_date          => Date.today,
+      :expire_date         => Date.today+7.days,
       :usage_rate          => 10.75,
       :usage_subsidy       => 0,
       :usage_mins          => 15,
