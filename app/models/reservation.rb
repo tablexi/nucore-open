@@ -30,9 +30,16 @@ class Reservation < ActiveRecord::Base
   before_validation :set_reserve_start_at, :set_reserve_end_at, :set_actual_start_at, :set_actual_end_at
 
   named_scope :active, :conditions => ["reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)"], :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id']
-  named_scope :upcoming, lambda { |*t| {:conditions => ["reservations.reserve_end_at >= ? AND reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)", t.blank? ? Time.zone.now : t], :order => 'reserve_end_at asc', :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id']} }
   named_scope :limit,    lambda { |n| {:limit => n}}
 
+
+  def self.upcoming(t=Time.zone.now)
+    # If this is a named scope differences emerge between Oracle & MySQL on #reserve_end_at querying.
+    # Eliminate by letting Rails filter by #reserve_end_at
+    reservations=find(:all, :conditions => "reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)", :order => 'reserve_end_at asc', :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id'])
+    reservations.delete_if{|r| r.reserve_end_at < t}
+    reservations
+  end
 
   def starts_before_ends
     if reserve_start_at && reserve_end_at
