@@ -8,8 +8,9 @@
 
 OrderStatus.create(:name => 'New')
 OrderStatus.create(:name => 'In Process')
-OrderStatus.create(:name => 'Cancelled')
 OrderStatus.create(:name => 'Complete')
+OrderStatus.create(:name => 'Reconciled')
+OrderStatus.create(:name => 'Cancelled')
 
 p = PriceGroup.new(:name => 'Northwestern Base Rate', :is_internal => true, :display_order => 1)
 p.save(false)
