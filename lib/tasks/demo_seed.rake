@@ -9,6 +9,7 @@ namespace :demo  do
     in_process = OrderStatus.find_or_create_by_name(:name => 'In Process')
     cancelled  = OrderStatus.find_or_create_by_name(:name => 'Cancelled')
     complete   = OrderStatus.find_or_create_by_name(:name => 'Complete')
+    reconciled   = OrderStatus.find_or_create_by_name(:name => 'Reconciled')
 
     facility = Facility.find_or_create_by_name({
       :name              => 'Example Facility',
@@ -43,6 +44,22 @@ namespace :demo  do
       NucsProjectActivity.find_or_create_by_project_and_activity(:project => cs[:project], :activity => cs[:activity])
       NucsGl066.find_or_create_by_fund_and_department_and_project_and_account(cs)
     end
+
+    
+    pgnu = PriceGroup.find_or_create_by_name({
+      :name => 'Northwestern Base Rate', :is_internal => true, :display_order => 1
+    })
+    pgnu.save_with_validation(false) # override facility validator
+
+    pgcc = PriceGroup.find_or_create_by_name({
+      :name => 'Cancer Center Rate', :is_internal => true, :display_order => 2
+    })
+    pgcc.save_with_validation(false) # override facility validator
+
+    pgex = PriceGroup.find_or_create_by_name({
+      :name => 'External Rate', :is_internal => false, :display_order => 3
+    })
+    pgex.save_with_validation(false) # override facility validator
 
 
     fa = FacilityAccount.find_or_create_by_facility_id({
@@ -92,7 +109,14 @@ namespace :demo  do
       :relay_port          => '1',
       :relay_username      => 'admin',
       :relay_password      => 'admin',
+      :relay_type          => 'RelaySynaccessRevB'
     })
+
+    if instrument.new_record?
+      puts "INSTRUMENT CREATE FAILED!"
+      instrument.errors.full_messages.each{|m| puts m}      
+    end
+
     bundle = Bundle.find_or_create_by_url_name({
       :facility_id         => facility.id,
       :account             => '75340',
@@ -127,21 +151,6 @@ namespace :demo  do
       :on_fri             => true,
       :on_sat             => true
     })
-    
-    pgnu = PriceGroup.find_or_create_by_name({
-      :name => 'Northwestern Base Rate', :is_internal => true, :display_order => 1
-    })
-    pgnu.save_with_validation(false) # override facility validator
-
-    pgcc = PriceGroup.find_or_create_by_name({
-      :name => 'Cancer Center Rate', :is_internal => true, :display_order => 2
-    })
-    pgcc.save_with_validation(false) # override facility validator
-    
-    pgex = PriceGroup.find_or_create_by_name({
-      :name => 'External Rate', :is_internal => false, :display_order => 3
-    })
-    pgex.save_with_validation(false) # override facility validator
 
     [ item, service, bundle ].each do |product|
       PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pgnu.id, product.id)
@@ -159,7 +168,8 @@ namespace :demo  do
     inpp = InstrumentPricePolicy.find_or_create_by_instrument_id_and_price_group_id({
       :instrument_id        => instrument.id,
       :price_group_id       => pgnu.id,
-      :start_date           => Date.new(2010,1,1), 
+      :start_date           => Date.new(2010,1,1),
+      :expire_date          => Date.new(2013,1,1),
       :usage_rate           => 20,
       :usage_mins           => 15,
       :usage_subsidy        => 0,
@@ -177,6 +187,7 @@ namespace :demo  do
       :item_id           => item.id,
       :price_group_id    => pgnu.id,
       :start_date        => Date.new(2010,1,1),
+      :expire_date       => Date.new(2013,1,1),
       :unit_cost         => 30,
       :unit_subsidy      => 0,
     })
@@ -185,6 +196,7 @@ namespace :demo  do
       :service_id        => service.id,
       :price_group_id    => pgnu.id,
       :start_date        => Date.new(2010,1,1),
+      :expire_date       => Date.new(2013,1,1),
       :unit_cost         => 75,
       :unit_subsidy      => 0,
     })
@@ -319,8 +331,8 @@ namespace :demo  do
     sleep 2
     statement_date = Time.zone.now - 64.days # 64 days in the past
     accounts       = Account.need_statements(facility)
-    statement      = Statement.create!({:facility_id => facility.id, :created_by => user_director.id, :created_at => statement_date, :invoice_date => statement_date + 7.days})
     accounts.each do |a|
+      statement = Statement.create!({:facility_id => facility.id, :created_by => user_director.id, :created_at => statement_date, :account => a})
       a.update_order_details_with_statement(statement)
     end
 
@@ -332,18 +344,14 @@ namespace :demo  do
       order.order_details.each do |od|
         # enter actuals for instruments
         set_instrument_order_actual_cost(od) if od.reservation        
-        at = od.init_purchase_account_transaction
-        at.created_by = user_director.id
-        at.created_at = od.order.ordered_at + 1.days
-        at.save!
         od.change_status!(complete)
       end
     end
     sleep 2
     statement_date = Time.zone.now - 31.days # 31 days in the past
     accounts       = Account.need_statements(facility)
-    statement      = Statement.create!({:facility_id => facility.id, :created_by => user_director.id, :created_at => statement_date, :invoice_date => statement_date + 7.days})
     accounts.each do |a|
+      statement = Statement.create!({:facility_id => facility.id, :created_by => user_director.id, :created_at => statement_date, :account => a})
       a.update_order_details_with_statement(statement)
     end
 
@@ -355,10 +363,6 @@ namespace :demo  do
       order.order_details.each do |od|
         # enter actuals for instruments
         set_instrument_order_actual_cost(od) if od.reservation
-        at = od.init_purchase_account_transaction
-        at.created_by = user_director.id
-        at.created_at = od.order.ordered_at + 1.days
-        at.save!
         od.change_status!(complete)
       end
     end
