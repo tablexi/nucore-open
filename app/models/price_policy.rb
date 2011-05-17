@@ -5,9 +5,7 @@ class PricePolicy < ActiveRecord::Base
   validate :start_date_is_unique, :unless => lambda { |o| o.start_date.nil? }
 
   validates_each :expire_date do |record,attr,value|
-    if value.blank?
-      record.errors.add(:expire_date, "cannot be blank")
-    else
+    unless value.blank?
       value=value.to_date
       start_date=record.start_date.to_date
       gen_exp_date=generate_expire_date(start_date).to_date
