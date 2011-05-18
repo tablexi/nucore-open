@@ -13,7 +13,7 @@ class FacilityOrderDetailsController < ApplicationController
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:id/edit
   def edit
-    @order        = current_facility.orders.find(params[:order_id])
+    @order        = Order.find_by_id_and_facility_id(params[:order_id], current_facility.id)
     @order_detail = @order.order_details.find(params[:id])
     @in_open_journal=@order_detail.journal && @order_detail.journal.open?
 
