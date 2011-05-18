@@ -26,12 +26,12 @@ class InstrumentPricePolicy < PricePolicy
   
   def self.current_date(instrument, with_time=false)
     ipp = instrument.instrument_price_policies.find(:first, :conditions => ['start_date <= ? AND expire_date > ?', Time.zone.now, Time.zone.now], :order => 'start_date DESC')
-    ipp.nil? ? nil : with_time ? ipp.start_date.to_datetime : ipp.start_date.to_date
+    ipp.nil? ? nil : with_time ? ipp.start_date : ipp.start_date.to_date
   end
 
   def self.next_date(instrument, with_time=false)
     ipp = instrument.instrument_price_policies.find(:first, :conditions => ['start_date > ?', Time.zone.now], :order => 'start_date')
-    ipp.nil? ? nil : with_time ? ipp.start_date.to_datetime : ipp.start_date.to_date
+    ipp.nil? ? nil : with_time ? ipp.start_date : ipp.start_date.to_date
   end
 
   def self.next_dates(instrument)

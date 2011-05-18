@@ -12,13 +12,13 @@ class ServicePricePolicy < PricePolicy
 
   def self.current_date(item, with_time=false)
     ipp = item.service_price_policies.find(:first, :conditions => ['start_date <= ? AND expire_date > ?', Time.zone.now, Time.zone.now], :order => 'start_date DESC')
-    ipp.nil? ? nil : with_time ? ipp.start_date.to_datetime : ipp.start_date.to_date
+    ipp.nil? ? nil : with_time ? ipp.start_date : ipp.start_date.to_date
   end
 
   def self.next_date(item, with_time=false)
     ipp = nil
     item.service_price_policies.sort{|p1,p2| p1.start_date <=> p2.start_date}.each{|pp| ipp=pp and break if pp.start_date > Time.zone.now}
-    ipp.nil? ? nil : with_time ? ipp.start_date.to_datetime : ipp.start_date.to_date
+    ipp.nil? ? nil : with_time ? ipp.start_date : ipp.start_date.to_date
   end
 
   def self.next_dates(item)
