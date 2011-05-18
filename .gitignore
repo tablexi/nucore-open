@@ -2,7 +2,7 @@ log/
 tmp/
 .bundle/
 .idea/
-.rvmrc*
+.rvmrc
 sqlnet.log
 config/database.yml
 config/Constants.rb
