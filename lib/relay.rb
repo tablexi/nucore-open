@@ -10,7 +10,7 @@ module Relay
   def host
     @host
   end
-  
+
   def username
     @username
   end
@@ -18,7 +18,7 @@ module Relay
   def password
     @password
   end
-  
+
   # assume port numbering begins at 1 for public functions
   def get_status_port(port)
     get_status[port - 1]
