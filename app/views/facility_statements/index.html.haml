@@ -6,7 +6,9 @@
 
 %h2 Statement History
 
-- unless @statements.empty?
+- if @statements.empty?
+  %p.notice No statements have been sent yet
+- else
   %table
     %tr
       %th
