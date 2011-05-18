@@ -25,7 +25,12 @@ class FacilityOrderDetailsController < ApplicationController
     end
 
     @can_be_reconciled=condition && @order_detail.complete? && !@order_detail.in_dispute?
-    flash.now[:notice]="You are unable to edit all aspects of this order because it is part of a pending journal. Please close the journal first." if @in_open_journal
+
+    if @in_open_journal
+      flash.now[:notice]="You are unable to edit all aspects of this order because it is part of a pending journal. Please close the journal first."
+    elsif @order_detail.price_policy.nil? && @order_detail.order_status.name == 'Complete'
+      flash.now[:notice]="This order does not have a price policy assigned. Please ensure that there is a price policy for the date this order was fulfilled.  Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
+    end
   end
 
   # PUT /facilities/:facility_id/orders/:order_id/order_details/:id

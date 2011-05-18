@@ -210,13 +210,10 @@
     %p.footnote * Changing the quantity will automatically update the price fields
 
   - if @order_detail.order_status.name == 'Complete'
-    - if @order_detail.price_policy.nil?
-      %p Assign a price policy to apply changes made to the order.
-    - else
-      %p You <b>must</b> click "Save" to apply any changes made to the order.
+    %p You <b>must</b> click "Save" to apply any changes made to the order.
     %ul.horiz
       - if @order_detail.price_policy.nil?
-        %li= submit_tag 'Assign Price Policy', {:class => 'btn', :id => 'submit', :name => 'assign_price_policy'}
+        %li= submit_tag 'Save', {:class => 'btn', :id => 'submit', :name => 'assign_price_policy'}
       - else
         %li= submit_tag 'Save', {:class => 'btn', :id => 'submit'}
       %li= link_to 'Cancel', show_problems_facility_orders_path
