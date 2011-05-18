@@ -63,7 +63,7 @@ class FacilityStatementsController < ApplicationController
     @account_balances = {}
     order_details = current_facility.order_details.complete
     order_details.each do |od|
-      @account_balances[od.account_id] = @account_balances[od.account_id].to_f + od.total
+      @account_balances[od.account_id] = @account_balances[od.account_id].to_f + od.total.to_f
     end
     @accounts = Account.find(@account_balances.keys)
   end
