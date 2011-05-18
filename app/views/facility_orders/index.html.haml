@@ -60,7 +60,8 @@
                 - od.file_uploads.template_result.each do |file_upload|
                   %li.indented= link_to 'View Order File', file_upload.file.url
               - unless od.note.blank?
-                %li=h "Note: #{od.note}"
+                %li
+                  %i=h "Note: #{od.note}"
           %td=h od.assigned_user.nil? ? '' : od.assigned_user.full_name
           %td=h od.order_status.name
           - if od.cost_estimated?
