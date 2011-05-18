@@ -25,11 +25,11 @@
 
   %li
     = f.label :description, nil, :class => 'require'
-    = f.text_field :description, :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
     - if instructions_for == :all || instructions_for == 'CreditCardAccount'
       %p.instruction.CreditCardAccount No part of a credit card number may be entered. Enter a text description to help you and the user identify this card. For example: "Dr. Smith's Visa Card".
+    = f.text_field :description, :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
 
   %li
     = f.label :remittance_information, 'Bill To'
-    %p.instruction.show_always Where the invoice should be sent to for this account; this text will appear on the customer's invoice.
-    = f.text_area :remittance_information, :cols => 92, :rows => 6, :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'  
+    %p.instruction.CreditCardAccount.PurchaseOrderAccount Where the invoice should be sent to for this payment source; this text will appear on the customer's invoice.
+    = f.text_area :remittance_information, :cols => 92, :rows => 6, :class => 'CreditCardAccount PurchaseOrderAccount'
