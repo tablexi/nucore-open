@@ -4,6 +4,9 @@
 - content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_account', :locals => {:secondary_tab => 'search_by_user'}
 
+- content_for :h1 do
+  =h current_facility
+
 - form_tag user_search_results_url, :id => 'ajax_form' do
   = label_tag :search_term, 'Search by name, NetID, or username'
   %br
