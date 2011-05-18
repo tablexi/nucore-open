@@ -5,7 +5,7 @@
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'reconcile' }
 
 %h2 Reconcile Journals
-%h3 Pending Journal
+%h3 Closed Journals
 - if @journals.empty?
   %p.notice No journals have been closed yet
 - else
