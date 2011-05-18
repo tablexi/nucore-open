@@ -25,7 +25,7 @@
         - details = a.order_details.need_notification(current_facility)
         %tr
           %td.centered= check_box_tag "account_ids[]", a.id, true, {:class => 'toggle'}
-          %td=h a
+          %td= link_to a, facility_account_statement_path(current_facility, a, 'recent')
           %td=h a.owner_user.full_name
           %td
             %ul

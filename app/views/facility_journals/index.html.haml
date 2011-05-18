@@ -75,12 +75,12 @@
           %td= check_box_tag "order_detail_ids[]", od.id, (action_name == 'create' && !@update_order_details.collect{|uod| uod.id}.include?(od.id) ? false : true), {:disabled => disable, :class => 'toggle'}
           %td
             %ul
-              %li== ##{od}: #{od.product}
+              %li== #{link_to "##{od}", edit_facility_order_order_detail_path(current_facility, od.order_id, od)}: #{od.product}
               - unless od.note.blank?
                 %li
                   %i= od.note
           %td= human_date od.fulfilled_at
-          %td=h account
+          %td= link_to account, facility_account_statement_path(current_facility, account, 'recent')
           %td=h account.owner_user.full_name
           %td.currency=h number_to_currency od.total
       %tr.borderless

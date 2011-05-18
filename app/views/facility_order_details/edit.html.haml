@@ -82,6 +82,10 @@
       %li
         %label Ordered By
         =h @order.created_by_user.full_name
+      - if @order_detail.fulfilled_at
+        %li
+          %label Fulfilled At
+          =h human_datetime(@order_detail.fulfilled_at)
       - if @can_be_reconciled && @order_detail.account.is_a?(NufsAccount) && @order_detail.journal
         %li
           %label Journaled On
