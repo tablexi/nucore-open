@@ -6,7 +6,7 @@
 - content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'credit_cards' }
 
-%h2 Manage Credit Cards
+%h2 Reconcile Credit Cards
 
 - if @accounts.empty?
   %p.notice There are no credit cards with completed orders to be reconciled at this time

@@ -6,7 +6,7 @@
 - content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'purchase_orders' }
 
-%h2 Manage Purchase Orders
+%h2 Reconcile Purchase Orders
 
 - if @accounts.empty?
   %p.notice There are no purchase orders with completed orders to be reconciled at this time
