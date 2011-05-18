@@ -28,7 +28,7 @@ class InstrumentsController < ApplicationController
 
     # find current and next upcoming reservations for each instrument
     @reservations = {}
-    @instruments.each { |i| @reservations[i.id] = i.reservations.upcoming.limit(3)}
+    @instruments.each { |i| @reservations[i.id] = i.reservations.upcoming[0..2]}
   end
 
   # GET /instruments/1
