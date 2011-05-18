@@ -19,11 +19,11 @@
 - else
   %h2 Current Pricing Rules
   %h3= "Effective: #{human_date(@current_start_date)}, Expires: #{human_date(@current_price_policies.first.expire_date)}"
-  = render :partial => "table", :locals => { :item_price_policies => @current_price_policies, :editable => false, :url_date => @current_start_date.strftime("%Y-%m-%d") }
+  = render :partial => "table", :locals => { :item_price_policies => @current_price_policies, :url_date => @current_start_date.strftime("%Y-%m-%d") }
 
 - unless @next_dates.empty?
   %h2== Upcoming Pricing Rules
   - @next_dates.each do |date|
     - @price_policies = ItemPricePolicy.for_date(@item, date)
     %h3= "Effective: #{human_date(date)}, Expires: #{human_date(@price_policies.first.expire_date)}"
-    = render :partial => "table", :locals => { :item_price_policies => @price_policies, :editable => true, :url_date => date.strftime("%Y-%m-%d") }
+    = render :partial => "table", :locals => { :item_price_policies => @price_policies, :url_date => date.strftime("%Y-%m-%d") }

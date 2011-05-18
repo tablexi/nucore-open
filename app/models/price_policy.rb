@@ -120,6 +120,10 @@ class PricePolicy < ActiveRecord::Base
     self.expire_date=self.class.generate_expire_date(self) unless expire_date
   end
 
+  def editable?
+    !expired? && !assigned_to_order?
+  end
+
 #  def self.active(product)
 #    policies = product.send("#{product.class.name.downcase}_price_policies")
 #    max      = nil

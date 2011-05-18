@@ -12,7 +12,7 @@
       - if item_price_policies.first == price_policy
         %td.centered{ :rowspan => item_price_policies.length }
           %ul.form
-            - if !editable && price_policy.assigned_to_order?
+            - unless item_price_policies.all?{|pp| pp.editable?}
               %li.disabled Edit
               %li.disabled Remove
             - else
