@@ -197,9 +197,7 @@ class FacilityAccountsController < ApplicationController
     @active_tab = 'admin_invoices'
     @accounts   = model_class.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
 
-    if @accounts.empty?
-      flash.now[:notice] = "There are no pending #{model_class.name.underscore.humanize.downcase} transactions"
-    else
+    unless @accounts.empty?
       selected_id=params[:selected_account]
 
       if selected_id.blank?
