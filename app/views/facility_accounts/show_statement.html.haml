@@ -14,13 +14,34 @@
 - else
   %table
     %tr
+      %th Order #
       %th Transaction Date
-      %th Description
+      %th Product
+      %th Order Status
       %th.currency Amount
     - @order_details.each do |od|
       %tr
-        %td= human_datetime(od.created_at)
         %td= link_to od.description, edit_facility_order_order_detail_path(current_facility, od.order, od)
+        %td= human_datetime(od.created_at)                
+        %td
+          %ul
+            - product_name = (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
+            %li= product_name
+            - unless od.reservation.nil?
+              - if od.reservation.can_edit?
+                %li.indented= link_to od.reservation, edit_facility_order_order_detail_reservation_path(current_facility, order, od, od.reservation)
+              - else
+                %li.indented= link_to od.reservation, facility_order_order_detail_reservation_path(current_facility, order, od, od.reservation)
+            - if od.survey_completed?
+              - survey = od.response_set.survey
+              %li.indented= link_to 'View Order Form', show_admin_order_survey_path(current_facility, order, od, survey.access_code, od.response_set.access_code)
+            - if !od.file_uploads.template_result.empty?
+              - od.file_uploads.template_result.each do |file_upload|
+                %li.indented= link_to 'View Order File', file_upload.file.url
+            - unless od.note.blank?
+              %li
+                %i=h "Note: #{od.note}"
+        %td= od.order_status.name
         %td.currency
           - if od.cost_estimated?
             %span.estimated_cost
@@ -31,6 +52,6 @@
             %span.actual_cost
               = h number_to_currency od.actual_total
     %tr
-      %td.centered{:colspan =>3}= will_paginate(@order_details)
+      %td.centered{:colspan =>5}= will_paginate(@order_details)
 
   = render :partial => '/price_display_footnote', :locals => { :admin => true }
