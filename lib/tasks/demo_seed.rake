@@ -9,7 +9,7 @@ namespace :demo  do
     in_process = OrderStatus.find_or_create_by_name(:name => 'In Process')
     cancelled  = OrderStatus.find_or_create_by_name(:name => 'Cancelled')
     complete   = OrderStatus.find_or_create_by_name(:name => 'Complete')
-    reconciled   = OrderStatus.find_or_create_by_name(:name => 'Reconciled')
+    reconciled = OrderStatus.find_or_create_by_name(:name => 'Reconciled')
 
     facility = Facility.find_or_create_by_name({
       :name              => 'Example Facility',
@@ -205,7 +205,7 @@ namespace :demo  do
     user_admin = User.find_by_username('admin')
     unless user_admin
       user_admin = User.new({
-        :username   => 'admin',
+        :username   => 'admin@example.com',
         :email      => 'admin@example.com',
         :first_name => 'Admin',
         :last_name  => 'Istrator',
