@@ -36,7 +36,7 @@
           %td.centered= check_box_tag "order_detail[#{od.id}][reconciled]", '1', true, {:class => 'toggle'}
           %td
             %ul
-              %li=h "#{od.description}: #{od.product.to_s}"
+              %li== #{link_to "##{od}", edit_facility_order_order_detail_path(current_facility, od.order_id, od)}: #{od.product}
               - if od.note
                 %li.indented
                   %i=h od.note
