@@ -9,7 +9,7 @@
   %td.currency Unassigned
 - else
   - html_opts={ :size => 8 }
-  - html_opts.merge!(:disabled => 'disabled') if @in_open_journal
+  - html_opts.merge!(:disabled => 'disabled') if @in_open_journal || @order_detail.reconciled?
   - actual_opts=html_opts.merge({:value => number_to_currency(@order_detail.actual_cost, :unit => ''), :id => 'actual_cost'})
   %td.currency= "$#{form.text_field(:actual_cost, actual_opts)}"
   - sub_opts=html_opts.merge({:value => number_to_currency(@order_detail.actual_subsidy, :unit => ''), :id => 'actual_subsidy'})
