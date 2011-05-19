@@ -416,14 +416,12 @@ class OrderDetail < ActiveRecord::Base
   def self.account_unreconciled(facility, account)
     if account.is_a?(NufsAccount)
       find(:all,
-           :joins => [:order, :journal]
-           :conditions => [ 'orders.facility_id = ? AND order_details.account_id = ? AND order_details.state = ? AND journals.is_successful = ?', facility.id, account.id, 'complete', true ] }
-      }
+           :joins => [:order, :journal],
+           :conditions => [ 'orders.facility_id = ? AND order_details.account_id = ? AND order_details.state = ? AND journals.is_successful = ?', facility.id, account.id, 'complete', true ])
     else
       find(:all,
            :joins => :order,
-           :conditions => [ 'orders.facility_id = ? AND order_details.account_id = ? AND order_details.state = ? AND order_details.statement_id IS NOT NULL', facility.id, account.id, 'complete' ] }
-      }
+           :conditions => [ 'orders.facility_id = ? AND order_details.account_id = ? AND order_details.state = ? AND order_details.statement_id IS NOT NULL', facility.id, account.id, 'complete' ])
     end
   end
 
