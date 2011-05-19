@@ -44,6 +44,11 @@ class OrderDetail < ActiveRecord::Base
 
   named_scope :for_facility, lambda {|facility| { :joins => :order, :conditions => [ 'orders.facility_id = ?', facility.id ], :order => 'order_details.created_at DESC' }}
 
+  named_scope :for_facility_with_price_policy, lambda { |facility| {
+    :joins => :order,
+    :conditions => [ 'orders.facility_id = ? AND price_policy_id IS NOT NULL', facility.id ], :order => 'order_details.fulfilled_at DESC' }
+  }
+
   named_scope :need_notification, lambda { |facility| {
     :joins => :product,
     :conditions => ['products.facility_id = ?
