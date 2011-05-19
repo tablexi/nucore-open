@@ -68,6 +68,7 @@ class StatementsController < ApplicationController
     else
       @statement=@account.statements.find(params[:id])
     end
+    @statement = Statement.new if @statement.nil?
   end
 
 end
