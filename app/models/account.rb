@@ -95,6 +95,7 @@ class Account < ActiveRecord::Base
     details.collect{|od| od.total}.sum.to_f
   end
 
+  # this will return the balance of orders that have been statemented or journaled (successfully) but not reconciled
   def unreconciled_total(facility)
     details=OrderDetail.account_unreconciled(facility, self)
     unreconciled_total=0

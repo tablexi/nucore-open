@@ -195,7 +195,7 @@ class FacilityAccountsController < ApplicationController
   def show_account(model_class)
     @subnav     = 'billing_nav'
     @active_tab = 'admin_invoices'
-    @accounts   = model_class.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
+    @accounts   = model_class.need_reconciling(current_facility)
 
     unless @accounts.empty?
       selected_id=params[:selected_account]

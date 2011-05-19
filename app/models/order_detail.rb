@@ -89,18 +89,6 @@ class OrderDetail < ActiveRecord::Base
       :conditions => [ 'orders.facility_id = ? AND order_details.statement_id IS NOT NULL', facility.id ] }
   }
 
-  named_scope :unreconciled, lambda {|facility| {
-      :joins => :order,
-      :conditions => [ 'orders.facility_id = ? AND order_details.state = ?', facility.id, 'complete' ] }
-  }
-
-  named_scope :account_unreconciled, lambda {|facility, account| {
-      :joins => :order,
-      :conditions => [ 'orders.facility_id = ? AND order_details.account_id = ? AND order_details.state = ?', facility.id, account.id, 'complete' ] }
-  }
-
-
-
   # BEGIN acts_as_state_machine
   include AASM
 
@@ -422,6 +410,21 @@ class OrderDetail < ActiveRecord::Base
   # the method will return true, otherwise false
   def problem_order?
     complete? && (price_policy.nil? || (reservation && (reservation.actual_start_at.nil? || reservation.actual_end_at.nil?)))
+  end
+
+
+  def self.account_unreconciled(facility, account)
+    if account.is_a?(NufsAccount)
+      find(:all,
+           :joins => [:order, :journal]
+           :conditions => [ 'orders.facility_id = ? AND order_details.account_id = ? AND order_details.state = ? AND journals.is_successful = ?', facility.id, account.id, 'complete', true ] }
+      }
+    else
+      find(:all,
+           :joins => :order,
+           :conditions => [ 'orders.facility_id = ? AND order_details.account_id = ? AND order_details.state = ? AND order_details.statement_id IS NOT NULL', facility.id, account.id, 'complete' ] }
+      }
+    end
   end
 
   private
