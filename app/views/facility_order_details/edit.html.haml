@@ -171,7 +171,7 @@
           =h @order_detail.quantity
         - else
           - html_opts={ :id => 'quantity', :size => 3 }
-          - html_opts.merge!(:disabled => 'disabled') if @in_open_journal
+          - html_opts.merge!(:disabled => 'disabled') if @in_open_journal || @order_detail.reconciled?
           = f.text_field :quantity, html_opts
       %td
         %ul
@@ -200,7 +200,9 @@
       %tr
         %td{:colspan => '8'}
           %label.inline Note:
-          = f.text_field(:note, :style=> "width:200px")
+          - opts={ :style=> "width:200px" }
+          - opts.merge!(:disabled => 'disabled') if @order_detail.reconciled?
+          = f.text_field(:note, opts)
           - if @can_be_reconciled || @order_detail.reconciled_note
             %span#reconcile-note.indented
               %label.inline Reconciliation Note:

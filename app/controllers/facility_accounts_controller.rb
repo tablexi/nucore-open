@@ -224,7 +224,7 @@ class FacilityAccountsController < ApplicationController
 
         begin
           if od_params[:reconciled] == '1'
-            od.to_reconciled!
+            od.change_status!(OrderStatus.reconciled.first)
             count += 1
           else
             od.save!
