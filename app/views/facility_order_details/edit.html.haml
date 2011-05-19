@@ -203,7 +203,7 @@
           - opts={ :style=> "width:200px" }
           - opts.merge!(:disabled => 'disabled') if @order_detail.reconciled?
           = f.text_field(:note, opts)
-          - if @can_be_reconciled || @order_detail.reconciled_note
+          - if @can_be_reconciled || @order_detail.reconciled?
             %span#reconcile-note.indented
               %label.inline Reconciliation Note:
               = f.text_field(:reconciled_note, :style=> "width:200px")
