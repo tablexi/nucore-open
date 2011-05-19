@@ -61,7 +61,7 @@ class StatementsController < ApplicationController
   # Override CanCan's find -- it won't properly search by 'recent'
   def init_statement
     @facility=Facility.find_by_url_name!(params[:facility_id])
-    @statements=@account.statements.final_for_facility(@facility).uniq
+    @statements=@account.statements.find(:all, :conditions => {:facility_id => @facility.id})
 
     if params[:id] =~ /\w+/i
       @statement=@statements.blank? ? Statement.find_by_facility_id(@facility.id) : @statements.first

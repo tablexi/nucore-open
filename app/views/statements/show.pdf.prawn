@@ -20,17 +20,17 @@ end
 rows = @statement.order_details.sort{|d,o| d.created_at<=>o.created_at}.reverse.map do |od|
   [
     human_datetime(od.created_at),
-    od.description,
+    "##{od}: #{od.product}" + (od.note.blank? ? '' : "\n#{od.note}"),
     number_to_currency(od.actual_total)
   ]
 end
-headers = ["Transaction Date", "Description", "Amount"]
+headers = ["Transaction Date", "Order", "Amount"]
 
 pdf.move_down(30)
 pdf.table([headers] + rows, :header => true, :width => 510) do
   row(0).style(:style => :bold, :background_color => 'cccccc')
   column(0).width = 125
-  column(1).width = 105
+  column(1).width = 300
   column(2).style(:align => :right)
 end
 
