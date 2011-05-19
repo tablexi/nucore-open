@@ -8,9 +8,9 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
       od=OrderDetail.find(at_row.order_detail_id)
       next if od.account_id != at_row.account_id
 
-      j_row=JournalRow.find_by_account_transaction_id(at_row.id)
+      j_rows=JournalRow.find(:all, :conditions => {:account_transaction_id => at_row.id})
 
-      if j_row
+      j_rows.each do |j_row|
         journal=j_row.journal
 
         if journal.open? || journal.is_successful? == true
