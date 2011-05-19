@@ -59,7 +59,7 @@ class Ability
 
       if user.account_administrator_of?(resource)
         can :manage, Account
-        can [:show, :suspend, :unsuspend, :user_search, :user_accounts, :statements, :show_statement], Statement
+        can [:show, :suspend, :unsuspend, :user_search, :user_accounts, :statements, :show_statement, :index], Statement
       end
 
       if user.owner_of?(resource)
