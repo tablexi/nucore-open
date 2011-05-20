@@ -57,7 +57,7 @@ class PriceGroupProductsController < ApplicationController
   def init_price_group_products
     @product=Product.find_by_url_name!(params[:id])
     @is_instrument=@product.is_a? Instrument
-    @price_groups=PriceGroup.all
+    @price_groups=current_facility.price_groups
     @price_group_products=PriceGroupProduct.find_all_by_product_id(@product.id)
     @price_group_product=@price_group_products.empty? ? PriceGroupProduct.new : @price_group_products.first # for CanCan authorization
   end
