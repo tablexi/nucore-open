@@ -36,7 +36,7 @@ class InstrumentPricePolicy < PricePolicy
 
   def self.next_dates(instrument)
     ipps = instrument.instrument_price_policies.find(:all, :conditions => ['TRUNC(start_date) > ?', Time.zone.now], :order => 'start_date', :select => 'DISTINCT(start_date) AS start_date')
-    start_dates = ipps.collect {|ipp| ipp.start_date.to_date}
+    ipps.collect{|ipp| ipp.start_date.to_date}.uniq
   end
 
   def self.intervals
