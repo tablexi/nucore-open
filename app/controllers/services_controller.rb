@@ -25,6 +25,8 @@ class ServicesController < ApplicationController
     else
       @services = current_facility.services.archived
     end
+
+    @services.sort!
   end
 
   # GET /services/1

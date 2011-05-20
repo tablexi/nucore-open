@@ -25,6 +25,8 @@ class ItemsController < ApplicationController
     else
       @items = current_facility.items.archived
     end
+
+    @items.sort!
   end
 
   # GET /items/1
