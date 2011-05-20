@@ -138,7 +138,7 @@ class FacilityJournalsController < ApplicationController
       end
       od.change_status!(rec_status)
     end
-    flash[:notice] = The select orders have been reconciled successfully
+    flash[:notice] = 'The select orders have been reconciled successfully'
     redirect_to facility_journal_url(current_facility, @journal) and return
   end
 end
