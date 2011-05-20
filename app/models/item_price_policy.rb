@@ -29,7 +29,7 @@ class ItemPricePolicy < PricePolicy
       ipps << sdate.to_date if sdate > Time.zone.now && !ipps.include?(sdate)
     end
 
-    ipps
+    ipps.uniq
   end
 
   def subsidy_less_than_rate?
