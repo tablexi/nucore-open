@@ -5,6 +5,7 @@ class Account < ActiveRecord::Base
   has_many   :price_group_members
   has_many   :order_details
   has_many   :statements, :through => :order_details
+  belongs_to :facility
   accepts_nested_attributes_for :account_users
 
   named_scope :active, lambda {{ :conditions => ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] }}

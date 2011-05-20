@@ -5,10 +5,6 @@
   - @account_users.each do |au|
     - a = au.account
     - if au.can_administer? || session_user.administrator?
-      - facilities.each do |f|
-        %tr
-        - if au.can_administer?
-          %td= link_to(a, account_path(a))
-        - else
-          %td= link_to a, account_facility_statement_path(a, f, 'recent')
-        %td{:style => "padding-left: 50px"}=h f
+      %tr
+        %td= link_to a, account_statements_path(a)
+        %td{:style => "padding-left: 50px"}= a.facility || '<i>All</i>'
