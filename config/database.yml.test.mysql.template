@@ -1,6 +1,6 @@
 test:
   adapter: mysql
-  database: nucore-open_test
+  database: nucore-open
   host: localhost
-  username: nucore-open_test
-  password: nucore-open_test
+  username: nucore-open
+  password: nucore-open
