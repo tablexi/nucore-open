@@ -37,6 +37,20 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
 
   
   def self.down
+    PricePolicy.all.each do |policy|
+      product=case policy
+                when ItemPricePolicy then policy.item
+                when ServicePricePolicy then policy.service
+                when InstrumentPricePolicy then policy.instrument
+              end
+
+      pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, product.id)
+
+      policy.restrict_purchase=pgp.nil?
+      policy.reservation_window=pgp.reservation_window if pgp && product.is_a?(Instrument)
+      policy.save!
+    end
+
     drop_table :price_group_products
   end
 end
