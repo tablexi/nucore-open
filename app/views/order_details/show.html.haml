@@ -97,6 +97,9 @@
           %li.indented= link_to('View Order Form', show_order_survey_path(@order, @order_detail, @order_detail.response_set.survey.access_code, @order_detail.response_set.access_code))
         - unless @order_detail.file_uploads.template_result.empty?
           %li.indented= link_to('View Order File', @order_detail.file_uploads.template_result.first.file.url)
+        - unless @order_detail.note.blank?
+          %li
+            %i=h "Note: #{@order_detail.note}"
     %td=h @order_detail.order_status
     - if @order_detail.cost_estimated?
       %td.estimated_cost.currency=h number_to_currency @order_detail.estimated_cost

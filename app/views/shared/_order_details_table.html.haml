@@ -35,6 +35,9 @@
                 %li.indented= link_to od.reservation, edit_order_order_detail_reservation_path(order, od, od.reservation)
               - else
                 %li.indented= link_to od.reservation, order_order_detail_reservation_path(order, od, od.reservation)
+            - unless od.note.blank?
+              %li
+                %i=h "Note: #{od.note}"
       %td.centered=h od.order_status.name
       %td.currency
         - if od.cost_estimated?

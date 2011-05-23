@@ -38,7 +38,12 @@
     - @order_details.each do |od|
       %tr
         %td= human_datetime(od.created_at)
-        %td=h od.description
+        %td
+          %ul
+            %li= h od.description
+            - unless od.note.blank?
+              %li
+                %i=h "Note: #{od.note}"
         %td.centered
           - if od.in_dispute?
             In Dispute
