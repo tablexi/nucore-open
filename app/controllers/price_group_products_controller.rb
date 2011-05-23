@@ -27,7 +27,7 @@ class PriceGroupProductsController < ApplicationController
       pg_key="price_group_#{pg.id}".to_sym
       pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(pg.id, @product.id)
 
-      if params[pg_key][:purchase] =~ /no/i
+      if params[pg_key].blank?
         pgp.destroy if pgp
       else
         res_win=params[pg_key][:reservation_window]
