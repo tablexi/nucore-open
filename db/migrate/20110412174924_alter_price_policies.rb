@@ -1,4 +1,4 @@
-class AlterPricePoliciesPopulatePriceGroupsProducts < ActiveRecord::Migration
+class AlterPricePolicies < ActiveRecord::Migration
   def self.up
     remove_column(:price_policies, :reservation_window)
     remove_column(:price_policies, :restrict_purchase)
