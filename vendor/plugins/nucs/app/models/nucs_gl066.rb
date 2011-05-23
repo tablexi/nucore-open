@@ -13,7 +13,6 @@ class NucsGl066 < ActiveRecord::Base
   # If no date was specified during import one will be calculated
   # on the fly from +@budget_period+ if the attribute exists
   def starts_at
-    return (self[:starts_at].nil? && !budget_period.nil?) ? Time.zone.parse("#{budget_period}0901")-1.year : self[:starts_at]
     return (self[:starts_at].nil? && !budget_period.nil?) ? (Time.zone.parse("#{budget_period}0901")-1.year) : self[:starts_at]
   end
 
