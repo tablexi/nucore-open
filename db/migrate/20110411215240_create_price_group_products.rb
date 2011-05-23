@@ -21,7 +21,7 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
       case pp
         when InstrumentPricePolicy
           pgp.product=pp.instrument
-          pgp.reservation_window=pp.reservation_window
+          pgp.reservation_window=pp[:reservation_window]
         when ServicePricePolicy
           pgp.product=pp.service
         when ItemPricePolicy
