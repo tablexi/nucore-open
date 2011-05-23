@@ -86,10 +86,6 @@
         %li
           %label Fulfilled At
           =h human_datetime(@order_detail.fulfilled_at)
-      - if @can_be_reconciled && @order_detail.account.is_a?(NufsAccount) && @order_detail.journal
-        %li
-          %label Journaled On
-          ==#{h human_date(@order_detail.journal.created_at)} (#{link_to 'remove from journal', remove_from_journal_facility_order_order_detail_path(current_facility, @order, @order_detail)})
       %li
         %label Payment Source
         - html_opts=@in_open_journal ? { :disabled => 'disabled' } : {}
@@ -184,7 +180,10 @@
           - unless @order_detail.file_uploads.template_result.empty?
             %li.indented= link_to('View Order File', @order_detail.file_uploads.template_result.first.file.url)
       - if @can_be_reconciled
-        %td= f.collection_select(:order_status_id, [ OrderStatus.complete.first, OrderStatus.reconciled.first ], :id, :name_with_level)
+        %td
+          = f.collection_select(:order_status_id, [ OrderStatus.complete.first, OrderStatus.reconciled.first ], :id, :name_with_level)
+          - if @order_detail.account.is_a?(NufsAccount) && @order_detail.journal
+            == <br/><br/>#{link_to ' Remove From Journal', remove_from_journal_facility_order_order_detail_path(current_facility, @order, @order_detail)}
       - elsif @order_detail.complete? || @order_detail.reconciled?
         %td=h @order_detail.order_status
       - else
