@@ -45,5 +45,5 @@ group :development do
    #gem 'ruby-debug-ide', '0.4.15'
    gem 'single_test'
    gem 'ci_reporter'
-   gem 'sqlite3-ruby'
+   #gem 'sqlite3-ruby'
 end
