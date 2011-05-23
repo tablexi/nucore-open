@@ -43,7 +43,7 @@
         %td= f.text_field :description
         %td
           = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']])
-          = submit_tag 'Close Journal'
+          = submit_tag 'Close Journal', :confirm => 'You are about to close this journal. Please ensure you have selected the correct status.'
 %p
 %hr
 %p
