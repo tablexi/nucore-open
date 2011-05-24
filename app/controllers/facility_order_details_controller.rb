@@ -109,6 +109,7 @@ class FacilityOrderDetailsController < ApplicationController
         @order_detail.attributes          = params[:order_detail]
         @order_detail.updated_by          = session_user.id
         @order_detail.dispute_resolved_at = Time.zone.now
+        @order_detail.reviewed_at         = Time.zone.now
         @order_detail.save!
 
         flash[:notice] = 'The dispute has been resolved successfully'
