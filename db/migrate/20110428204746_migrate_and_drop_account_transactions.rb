@@ -26,16 +26,16 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
       od.reviewed_at=at_row.finalized_at
       od.fulfilled_at=at_row.created_at
       od.reconciled_note=at_row.reference
-
-      if od.state == 'inprocess' || od.state == 'new'
-        od.estimated_cost=od.actual_cost
-        od.estimated_subsidy=od.actual_subsidy
-        od.actual_cost=nil
-        od.actual_subsidy=nil
-        od.price_policy=nil
-      end
-
       od.save!
+    end
+
+    OrderDetail.find_all_by_state(['inprocess', 'new']) do |od|
+      od.estimated_cost=od.actual_cost
+      od.estimated_subsidy=od.actual_subsidy
+      od.actual_cost=nil
+      od.actual_subsidy=nil
+      od.price_policy=nil
+      od.save(false)
     end
 
     Statement.all.each do |stmt|
