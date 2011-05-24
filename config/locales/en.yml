@@ -2,6 +2,11 @@
 # See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
+  devise:
+    sessions:
+      unauthenticated: "Your credentials are not valid. Please try again."
+      invalid: "Your credentials are not valid. Please provide a username and password."
+
   activerecord:
     errors:
       # The values :model, :attribute and :value are always available for interpolation
