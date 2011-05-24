@@ -35,7 +35,7 @@ class FacilityUsersController < ApplicationController
 
     if request.request_method == :post
       begin
-        @user_role=UserRole.grant(@user, params[:user_role], current_facility)
+        @user_role=UserRole.grant(@user, params[:user_role][:role], current_facility)
         redirect_to facility_facility_users_url
       rescue ActiveRecord::RecordInvalid
         render :action => "map_user"
