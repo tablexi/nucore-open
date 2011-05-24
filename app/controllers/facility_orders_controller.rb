@@ -18,29 +18,31 @@ class FacilityOrdersController < ApplicationController
     @order_details = case sort_column
       when 'order_number'
         current_facility.order_details.find(:all,
-                                            :conditions => {:state => ['new', 'inprocess']},
+                                            :joins => ['INNER JOIN orders ON orders.id = order_details.order_id'],
+                                            :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
                                             :order => "CONCAT(CONCAT(order_details.order_id, '-'), order_details.id) #{sort_direction}").paginate(:page => params[:page])
       when 'date'
         current_facility.order_details.find(:all,
-                                            :conditions => {:state => ['new', 'inprocess']},
-                                            :joins => 'INNER JOIN orders on orders.id = order_details.order_id',
+                                            :joins => ['INNER JOIN orders ON orders.id = order_details.order_id'],
+                                            :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
                                             :order => "orders.ordered_at #{sort_direction}").paginate(:page => params[:page])
       when 'product'
         current_facility.order_details.find(:all,
-                                            :conditions => {:state => ['new', 'inprocess']},
-                                            :joins => 'INNER JOIN orders on orders.id = order_details.order_id',
+                                            :joins => ['INNER JOIN orders ON orders.id = order_details.order_id'],
+                                            :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
                                             :order => "products.name #{sort_direction}, order_details.state, orders.ordered_at").paginate(:page => params[:page])
       when 'assigned_to'
         current_facility.order_details.find(:all,
-                                            :conditions => {:state => ['new', 'inprocess']},
                                             :joins => ['INNER JOIN order_statuses ON order_details.order_status_id = order_statuses.id ',
-                                                       'INNER JOIN orders on orders.id = order_details.order_id ',
-                                                       "LEFT JOIN #{User.table_name} ON order_details.assigned_user_id = #{User.table_name}.id"],
+                                                       'INNER JOIN orders ON orders.id = order_details.order_id ',
+                                                       "LEFT JOIN #{User.table_name} ON order_details.assigned_user_id = #{User.table_name}.id "],
+                                            :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
                                             :order => "#{User.table_name}.last_name #{sort_direction}, #{User.table_name}.first_name #{sort_direction}, order_statuses.name, orders.ordered_at").paginate(:page => params[:page])
       when 'status'
         current_facility.order_details.find(:all,
-                                            :conditions => {:state => ['new', 'inprocess']},
-                                            :joins => "INNER JOIN orders on orders.id = order_details.order_id INNER JOIN order_statuses on order_details.order_status_id = order_statuses.id",
+                                            :joins => ['INNER JOIN orders ON orders.id = order_details.order_id ',
+                                                       'INNER JOIN order_statuses ON order_details.order_status_id = order_statuses.id '],
+                                            :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
                                             :order => "order_statuses.name #{sort_direction}, orders.ordered_at").paginate(:page => params[:page])
       else
         current_facility.order_details.new_or_inprocess.paginate(:page => params[:page])
