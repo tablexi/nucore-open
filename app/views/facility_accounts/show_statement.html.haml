@@ -29,12 +29,12 @@
             %li= product_name
             - unless od.reservation.nil?
               - if od.reservation.can_edit?
-                %li.indented= link_to od.reservation, edit_facility_order_order_detail_reservation_path(current_facility, order, od, od.reservation)
+                %li.indented= link_to od.reservation, edit_facility_order_order_detail_reservation_path(current_facility, od.order, od, od.reservation)
               - else
-                %li.indented= link_to od.reservation, facility_order_order_detail_reservation_path(current_facility, order, od, od.reservation)
+                %li.indented= link_to od.reservation, facility_order_order_detail_reservation_path(current_facility, od.order, od, od.reservation)
             - if od.survey_completed?
               - survey = od.response_set.survey
-              %li.indented= link_to 'View Order Form', show_admin_order_survey_path(current_facility, order, od, survey.access_code, od.response_set.access_code)
+              %li.indented= link_to 'View Order Form', show_admin_order_survey_path(current_facility, od.order, od, survey.access_code, od.response_set.access_code)
             - if !od.file_uploads.template_result.empty?
               - od.file_uploads.template_result.each do |file_upload|
                 %li.indented= link_to 'View Order File', file_upload.file.url
