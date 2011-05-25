@@ -13,7 +13,8 @@ Devise.setup do |config|
   # config.pepper = "rake secret output"
 
   # Configure how many times you want the password is reencrypted. Default is 10.
-  # config.stretches = 10
+  # Testing speed up: https://github.com/plataformatec/devise/wiki/Speed-up-your-unit-tests
+  config.stretches = Rails.env.test? ? 1 : 10
 
   # Define which will be the encryption algorithm. Supported algorithms are :sha1
   # (default), :sha512 and :bcrypt. Devise also supports encryptors from others
