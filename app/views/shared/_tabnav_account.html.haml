@@ -1,5 +1,5 @@
 %ul.tabs
   %li.first= link_to 'Payment Source Details', account_path(@account), :class => (secondary_tab == 'details' ? 'active' : nil)
   %li= link_to 'Transactions', account_statements_path(@account), :class => (secondary_tab == 'transactions' ? 'active' : nil)
-  %li= link_to 'Statements', account_facility_statement_path(@account, @facility, 'list'), :class => (secondary_tab == 'statements' ? 'active' : nil) if @facility
+  %li= link_to 'Statements', account_facility_statement_path(@account, @facility, 'list'), :class => (secondary_tab == 'statements' ? 'active' : nil) if @facility && !@account.is_a?(NufsAccount)
   %li= link_to 'Members', account_account_users_path(@account), :class => (secondary_tab == 'members' ? 'active' : nil)
