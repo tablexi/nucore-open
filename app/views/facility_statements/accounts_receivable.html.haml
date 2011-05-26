@@ -28,8 +28,8 @@
     - balance[0]  = a.facility_balance(current_facility, today)               - balance.values.inject{|sum, n| sum + n }
     %tr
       %td= link_to a, facility_account_statement_path(current_facility, a, 'recent')
-      %td=h number_to_currency(balance[0])
-      %td=h number_to_currency(balance[31])
-      %td=h number_to_currency(balance[61])
-      %td=h number_to_currency(balance[91])
-      %td=h number_to_currency(@account_balances[a.id])
+      %td.currency=h number_to_currency(balance[0])
+      %td.currency=h number_to_currency(balance[31])
+      %td.currency=h number_to_currency(balance[61])
+      %td.currency=h number_to_currency(balance[91])
+      %td.currency=h number_to_currency(@account_balances[a.id])
