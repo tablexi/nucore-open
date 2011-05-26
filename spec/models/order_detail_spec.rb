@@ -380,30 +380,6 @@ describe OrderDetail do
       ods.first.should == @order_detail
     end
 
-    context 'unreconciled' do
-
-      before :each do
-        @account3 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user2, :created_by => @user2, :user_role => 'Owner']])
-        @order3   = @user2.orders.create(Factory.attributes_for(:order, :created_by => @user2.id, :facility => @facility2))
-        @order_detail3 = @order3.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item2.id, :account_id => @account3.id))
-        @order_detail2.to_complete!
-        @order_detail3.to_complete!
-      end
-
-      it 'should have two unreconciled orders' do
-        ods=OrderDetail.unreconciled(@facility2)
-        ods.size.should == 2
-        ods.should be_include @order_detail2
-        ods.should be_include @order_detail3
-      end
-
-      it 'should have one unreconciled order' do
-        ods=OrderDetail.account_unreconciled(@facility2, @account3)
-        ods.size.should == 1
-        ods[0].should == @order_detail3
-      end
-
-    end
 
     context 'needs statement' do
 
