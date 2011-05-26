@@ -4,14 +4,14 @@ class ServicePricePolicy < PricePolicy
   validates_numericality_of :unit_cost, :unless => :restrict_purchase
   validate :subsidy_less_than_rate?, :unless => lambda { |pp| pp.unit_cost.nil? || pp.unit_subsidy.nil? }
 
-  named_scope :current,  lambda { |service|             { :conditions => ['TRUNC(start_date) = ? AND service_id = ?', self.current_date(service, true), service.id] } }
-  named_scope :next,     lambda { |service|             { :conditions => ['TRUNC(start_date) = ? AND service_id = ?', self.next_date(service, true), service.id] } }
-  named_scope :for_date, lambda { |service, start_date| { :conditions => ['TRUNC(start_date) = ? AND service_id = ?', start_date, service.id] } }
+  named_scope :current,  lambda { |service|             { :conditions => [dateize('start_date', ' = ? AND service_id = ?'), current_date(service), service.id] } }
+  named_scope :next,     lambda { |service|             { :conditions => [dateize('start_date', ' = ? AND service_id = ?'), next_date(service), service.id] } }
+  named_scope :for_date, lambda { |service, start_date| { :conditions => [dateize('start_date', ' = ? AND service_id = ?'), start_date, service.id] } }
 
   before_save { |o| o.unit_subsidy = 0 if o.unit_subsidy.nil? && !o.unit_cost.nil? }
 
   def self.current_date(item, with_time=false)
-    ipp = item.service_price_policies.find(:first, :conditions => ['TRUNC(start_date) <= ? AND TRUNC(expire_date) > ?', Time.zone.now, Time.zone.now], :order => 'start_date DESC')
+    ipp = item.service_price_policies.find(:first, :conditions => [dateize('start_date', ' <= ? AND ') + dateize('expire_date', ' > ?'), Time.zone.now, Time.zone.now], :order => 'start_date DESC')
     ipp.nil? ? nil : with_time ? ipp.start_date.to_datetime : ipp.start_date.to_date
   end
 

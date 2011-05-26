@@ -1,4 +1,5 @@
 class PricePolicy < ActiveRecord::Base
+  include NUCore::Database::DateHelper
 
   belongs_to :price_group
   validates_presence_of :start_date, :price_group_id, :type
