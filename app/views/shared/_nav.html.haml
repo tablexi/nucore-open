@@ -6,7 +6,7 @@
 - if current_facility and admin_tab?
   - if current_user.operator_of?(current_facility)
     - links.push({:url => url_for(facility_orders_path(current_facility)),    :text => 'Orders',   :tab_name => 'admin_orders'})
-    - links.push({:url => url_for(pending_facility_statements_path(current_facility)), :text => 'Billing',  :tab_name => 'admin_invoices'})
+    - links.push({:url => url_for(facility_accounts_path(current_facility)), :text => 'Billing',  :tab_name => 'admin_invoices'})
     - links.push({:url => url_for(facility_products_path current_facility),   :text => 'Products', :tab_name => 'admin_products'})
     - links.push({:url => url_for(facility_users_path current_facility),      :text => 'Users',    :tab_name => 'admin_users'})
     - links.push({:url => url_for(product_order_summary_facility_reports_path current_facility),    :text => 'Reports',  :tab_name => 'admin_reports'})
