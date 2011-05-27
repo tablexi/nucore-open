@@ -10,21 +10,21 @@ class ServicePricePolicy < PricePolicy
 
   before_save { |o| o.unit_subsidy = 0 if o.unit_subsidy.nil? && !o.unit_cost.nil? }
 
-  def self.current_date(item, with_time=false)
-    ipp = item.service_price_policies.find(:first, :conditions => [dateize('start_date', ' <= ? AND ') + dateize('expire_date', ' > ?'), Time.zone.now, Time.zone.now], :order => 'start_date DESC')
-    ipp.nil? ? nil : with_time ? ipp.start_date.to_datetime : ipp.start_date.to_date
+  def self.current_date(service)
+    ipp = service.service_price_policies.find(:first, :conditions => [dateize('start_date', ' <= ? AND ') + dateize('expire_date', ' > ?'), Time.zone.now, Time.zone.now], :order => 'start_date DESC')
+    ipp ? ipp.start_date.to_date : nil
   end
 
-  def self.next_date(item, with_time=false)
+  def self.next_date(service)
     ipp = nil
-    item.service_price_policies.sort{|p1,p2| p1.start_date <=> p2.start_date}.each{|pp| ipp=pp and break if pp.start_date > Time.zone.now}
-    ipp.nil? ? nil : with_time ? ipp.start_date.to_datetime : ipp.start_date.to_date
+    service.service_price_policies.sort{|p1,p2| p1.start_date <=> p2.start_date}.each{|pp| ipp=pp and break if pp.start_date > Time.zone.now}
+    ipp ? ipp.start_date.to_date : nil
   end
 
-  def self.next_dates(item)
+  def self.next_dates(service)
     ipps = []
 
-    item.service_price_policies.each do |pp|
+    service.service_price_policies.each do |pp|
       sdate=pp.start_date
       ipps << sdate.to_date if sdate > Time.zone.now && !ipps.include?(sdate)
     end
