@@ -38,7 +38,7 @@ describe PriceGroupProductsController do
 
       PriceGroup.all.each do |pg|
         @params.merge!({
-          pg_key(pg) => { :reservation_window => 5, :purchase => 'Yes' }
+          pg_key(pg) => { :reservation_window => 5, :purchase => '1' }
         })
       end
     end
@@ -54,7 +54,7 @@ describe PriceGroupProductsController do
 
     it 'should remove PriceGroupProduct when a PriceGroup cannot purchase' do
       pg=PriceGroup.first
-      @params[pg_key(pg)][:purchase]='no'
+      @params[pg_key(pg)]=nil
       PriceGroupProduct.count.should == PriceGroup.count
       maybe_grant_always_sign_in :director
       do_request

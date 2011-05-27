@@ -65,7 +65,7 @@ describe FacilityUsersController do
     before :each do
       @method=:post
       @action=:map_user
-      @params.merge!(:facility_user_id => @staff.id, :user_role => UserRole::FACILITY_STAFF)
+      @params.merge!(:facility_user_id => @staff.id, :user_role => { :role => UserRole::FACILITY_STAFF })
     end
 
     it_should_allow_managers_only :redirect do

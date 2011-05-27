@@ -64,14 +64,14 @@ describe ReservationsController do
       )
     end
 
-    it_should_allow_all facility_users, "to create reservation for tomorrow @ 8 am for 60 minutes, set order detail price policy" do
+    it_should_allow_all facility_users, "to create reservation for tomorrow @ 8 am for 60 minutes, set order detail price estimates" do
       assigns[:order].should == @order
       assigns[:order_detail].should == @order_detail
       assigns[:instrument].should == @instrument
-      assigns[:order_detail].price_policy.should == @price_policy
-      assigns[:reservation].valid?.should == true
-      # should set order detail price policy
-      assigns[:order_detail].reload.price_policy.should == @price_policy
+      assigns[:reservation].should be_valid
+      assigns[:order_detail].estimated_cost.should_not be_nil
+      assigns[:order_detail].estimated_subsidy.should_not be_nil
+      should set_the_flash
       response.should redirect_to("/orders/cart")
     end
 
@@ -89,9 +89,10 @@ describe ReservationsController do
       assigns[:order].should == @order
       assigns[:order_detail].should == @order_detail
       assigns[:instrument].should == @instrument
-      # min date is today, max date is based on price policy window
+      should assign_to(:reservation).with_kind_of Reservation
+      should assign_to(:max_window).with_kind_of Integer
       assigns[:min_date].should == Time.zone.now.strftime("%Y%m%d")
-      assigns[:max_date].should == (Time.zone.now+1.day).strftime("%Y%m%d")
+      assigns[:max_date].should == (Time.zone.now+assigns[:max_window].days).strftime("%Y%m%d")
     end
 
   end
@@ -164,12 +165,15 @@ describe ReservationsController do
         assigns[:order].should == @order
         assigns[:order_detail].should == @order_detail
         assigns[:instrument].should == @instrument
-        assigns[:order_detail].price_policy.should == @price_policy
-        assigns[:reservation].valid?.should == true
+        assigns[:reservation].should be_valid
         # should update reservation time
         @reservation.reload.reserve_start_hour.should == 10
-        @reservation.reload.reserve_end_hour.should == 11
-        @reservation.reload.duration_mins.should == 60
+        @reservation.reserve_end_hour.should == 11
+        @reservation.duration_mins.should == 60
+        assigns[:order_detail].estimated_cost.should_not be_nil
+        assigns[:order_detail].estimated_subsidy.should_not be_nil
+        should set_the_flash
+        assert_redirected_to cart_url
       end
 
     end

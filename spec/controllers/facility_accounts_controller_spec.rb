@@ -307,6 +307,7 @@ describe FacilityAccountsController do
     before :each do
       ccact=Factory.build(:credit_card_account)
       prepare_for_account_show(:credit_cards, ccact)
+      @params[:selected_account]=ccact.id
     end
 
     it_should_require_login
@@ -338,8 +339,7 @@ describe FacilityAccountsController do
     it_should_allow :director do
       should assign_to(:subnav)
       should assign_to(:active_tab)
-      should assign_to(:accounts).with_kind_of(Array)
-      should set_the_flash
+      assigns(:accounts).should be_empty
       should_not assign_to :selected
       should_not assign_to :unreconciled_details
       should render_template('credit_cards.html.haml')
@@ -384,8 +384,7 @@ describe FacilityAccountsController do
     it_should_allow :director do
       should assign_to(:subnav)
       should assign_to(:active_tab)
-      should assign_to(:accounts).with_kind_of(Array)
-      should set_the_flash
+      assigns(:accounts).should be_empty
       should_not assign_to :selected
       should_not assign_to :unreconciled_details
       should render_template('purchase_orders.html.haml')
@@ -397,8 +396,8 @@ describe FacilityAccountsController do
   context 'update_credit_cards' do
 
     before :each do
-      @ccact=Factory.build(:credit_card_account)
-      prepare_for_account_update(:update_credit_cards, @ccact)
+      ccact=Factory.build(:credit_card_account)
+      prepare_for_account_update(:update_credit_cards, ccact)
     end
 
     it_should_require_login
@@ -566,12 +565,13 @@ describe FacilityAccountsController do
     @action=action
     account.account_users_attributes = [{:user_id => @purchaser.id, :user_role => AccountUser::ACCOUNT_OWNER, :created_by => @admin.id }]
     assert account.save
+    @price_policy=Factory.create(:item_price_policy, :item => @item, :price_group => @nupg)
+    @price_group_product=Factory.create(:price_group_product, :product => @item, :price_group => @nupg, :reservation_window => nil)
     @order_detail.account=account
-    @order_detail.to_complete!
-    @order_detail.actual_cost=10
-    @order_detail.actual_subsidy=2
-    @order_detail.price_policy_id=99 # satisfy Account#facility_balance
+    @order_detail.assign_price_policy
     assert @order_detail.save
+
+    @order_detail.change_status!(OrderStatus.complete.first)
 
     @params={
       :facility_id => @authable.url_name,
@@ -591,8 +591,9 @@ describe FacilityAccountsController do
     @params={ :facility_id => @authable.url_name }
     account.account_users_attributes = [{:user_id => @purchaser.id, :user_role => AccountUser::ACCOUNT_OWNER, :created_by => @admin.id }]
     assert account.save
+    statement=Factory.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => account)
     @order_detail.to_complete!
-    @order_detail.update_attributes(:account => account, :fulfilled_at => Time.zone.now-1.day, :actual_cost => 10, :actual_subsidy => 2)
+    @order_detail.update_attributes(:account => account, :statement => statement, :fulfilled_at => Time.zone.now-1.day, :actual_cost => 10, :actual_subsidy => 2)
   end
 
 end
