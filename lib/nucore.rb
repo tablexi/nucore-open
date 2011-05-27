@@ -40,7 +40,7 @@ module NUCore
         #   Any SQL that makes sense to come after +date_column_name+ in the query.
         #   Simply a convenience; the fragment is just concatenated to the returned value.
         def dateize(date_column_name, sql_fragment=nil)
-          col_sql=NUCore::Database.oracle? ? "TRUNC(#{date_column_name})" : date_column_name
+          col_sql=NUCore::Database.oracle? ? "TRUNC(#{date_column_name})" : "DATE(#{date_column_name})"
           sql_fragment ? col_sql + sql_fragment : col_sql
         end
       end
