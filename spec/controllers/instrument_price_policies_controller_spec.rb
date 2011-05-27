@@ -150,13 +150,8 @@ describe InstrumentPricePoliciesController do
   private
 
   def set_policy_date
-    @price_policy.start_date=Time.zone.now+1.year
-    @price_policy.expire_date=PricePolicy.generate_expire_date(@price_policy.start_date)
-
-    unless @price_policy.valid?
-      puts @price_policy.expire_date.to_s
-    end
-
+    @price_policy.start_date=Time.zone.now
+    @price_policy.expire_date=PricePolicy.generate_expire_date(@price_policy)
     assert @price_policy.save
   end
 
