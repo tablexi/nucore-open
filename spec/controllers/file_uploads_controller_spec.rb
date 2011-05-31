@@ -141,9 +141,9 @@ describe FileUploadsController do
       do_request
       assigns[:product].should == @service
 
-      # This is a valid test, and it should work in Oracle. It doesn't work with MySQL
-      # and I believe that's because of the test environment + the fact that Service#import_survey
-      # imports via a system call
+      # This is a valid test, and it should work in Oracle. It doesn't work with MySQL.
+      # I believe this is because tests against MySQL run in a transaction (not so w/ Oracle)
+      # and Service#import_survey imports via a system call
       assert_equal 0, @service.reload.surveys.size if NUCore::Database.oracle?
     end
 
@@ -158,9 +158,14 @@ describe FileUploadsController do
       @params[:survey][:upload] = File.new("#{Rails.root}/spec/files/alpha_survey.rb")
       do_request
       assigns[:product].should == @service
-      # should create survey
-      assert assigns[:survey].valid?
-      assert_equal 1, @service.surveys.size
+
+      if NUCore::Database.oracle?
+        # These are valid tests, and they should work in Oracle. They doesn't work with MySQL.
+        # I believe this is because tests against MySQL run in a transaction (not so w/ Oracle)
+        # and Service#import_survey imports via a system call
+        assert assigns[:survey].valid?
+        assert_equal 1, @service.surveys.size
+      end
     end
 
     it 'should test :file_upload param'
