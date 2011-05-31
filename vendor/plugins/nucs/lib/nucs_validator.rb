@@ -168,7 +168,7 @@ class NucsValidator
   #
   # Validate Project, Activity, and date components
   def validate_gl066_PAD_components!(gls)
-    if grant? || @project
+    if @project
       # This logic breaks from the NU v9 rules in order to address Task #32369
       raise InputError.new('activity', nil) unless @activity
       raise UnknownGL066Error.new('activity', @activity) if grant? && !gls.any?{|gl| gl.activity == @activity }
