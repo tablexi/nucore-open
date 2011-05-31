@@ -143,16 +143,16 @@ class NucsValidator
 
 
   def validate_chart_field1!
-    raise UnknownGE001Error.new('chart field 1', @chart_field1) if @chart_field1 and NucsChartField1.find_by_value(@chart_field1).nil?
+    raise UnknownGE001Error.new('chart field 1', @chart_field1) if @chart_field1 && NucsChartField1.find_by_value(@chart_field1).nil?
   end
 
 
   def validate_ge001_components!
     raise UnknownGE001Error.new('fund', @fund) unless NucsFund.find_by_value(@fund)
     raise UnknownGE001Error.new('department', @department) unless NucsDepartment.find_by_value(@department)
-    raise UnknownGE001Error.new('project', @project) if @project and NucsProjectActivity.find_by_project(@project).nil?
-    raise UnknownGE001Error.new('activity', @activity) if @activity and NucsProjectActivity.find_by_activity(@activity).nil?
-    raise UnknownGE001Error.new('program', @program) if @program and NucsProgram.find_by_value(@program).nil?
+    raise UnknownGE001Error.new('project', @project) if @project && NucsProjectActivity.find_by_project(@project).nil?
+    raise UnknownGE001Error.new('activity', @activity) if @activity && NucsProjectActivity.find_by_activity(@activity).nil?
+    raise UnknownGE001Error.new('program', @program) if @program && NucsProgram.find_by_value(@program).nil?
     validate_chart_field1!
   end
 
@@ -165,11 +165,16 @@ class NucsValidator
     return gls
   end
 
-
+  #
+  # Validate Project, Activity, and date components
   def validate_gl066_PAD_components!(gls)
     if grant?
       raise InputError.new('activity', nil) unless @activity
       raise UnknownGL066Error.new('activity', @activity) unless gls.any?{|gl| gl.activity == @activity }
+    elsif @project
+      # This logic breaks from the NU v9 rules in order to address Task #32369
+      raise InputError.new('activity', nil) unless @activity
+      raise UnknownGL066Error.new('activity', @activity) if @fund.to_i < 800 && @activity != '01'
     end
 
     raise UnknownGL066Error.new('project', @project) unless @project.nil? or gls.any?{|gl| gl.project == @project }

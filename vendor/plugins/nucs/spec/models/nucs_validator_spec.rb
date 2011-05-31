@@ -186,6 +186,24 @@ describe NucsValidator do
   end
 
 
+  it 'should require a 01 activity for a non-grant chart string with project id and fund < 800 on a non-revenue account' do
+    define_open_account(NON_REVENUE_ACCT, NON_GRANT_CS)
+    assert_raise NucsErrors::UnknownGL066Error do
+      chart_string=NON_GRANT_CS[0...NON_GRANT_CS.index('-01')] + '-99'
+      NucsValidator.new(chart_string, NON_REVENUE_ACCT).account_is_open!
+    end
+  end
+
+
+  it 'should require an activity for a non-grant chart string with project id on a non-revenue account' do
+    define_open_account(NON_REVENUE_ACCT, NON_GRANT_CS)
+    assert_raise NucsErrors::InputError do
+      chart_string=NON_GRANT_CS[0...NON_GRANT_CS.index('-01')]
+      NucsValidator.new(chart_string, NON_REVENUE_ACCT).account_is_open!
+    end
+  end
+
+
   it 'should validate an activity for a grant chart string on a non-revenue account' do
     validator=NucsValidator.new(GRANT_CS.gsub('-01-', '-02-'), NON_REVENUE_ACCT)
     assert_unknown_gl066(validator, GRANT_CS, NON_REVENUE_ACCT)
