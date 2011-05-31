@@ -168,12 +168,10 @@ class NucsValidator
   #
   # Validate Project, Activity, and date components
   def validate_gl066_PAD_components!(gls)
-    if grant?
-      raise InputError.new('activity', nil) unless @activity
-      raise UnknownGL066Error.new('activity', @activity) unless gls.any?{|gl| gl.activity == @activity }
-    elsif @project
+    if grant? || @project
       # This logic breaks from the NU v9 rules in order to address Task #32369
       raise InputError.new('activity', nil) unless @activity
+      raise UnknownGL066Error.new('activity', @activity) if grant? && !gls.any?{|gl| gl.activity == @activity }
       raise UnknownGL066Error.new('activity', @activity) if @fund.to_i < 800 && @activity != '01'
     end
 
