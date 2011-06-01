@@ -8,11 +8,8 @@ class NufsAccount < Account
     validate_chartstring
   end
 
-  def set_expires_at
-    begin
-      self.expires_at = NucsValidator.new(account_number).latest_expiration
-    rescue NucsError
-    end
+  def set_expires_at!
+    self.expires_at = NucsValidator.new(account_number).latest_expiration
   end
   
   def account_open? (account_num)

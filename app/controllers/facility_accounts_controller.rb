@@ -54,6 +54,7 @@ class FacilityAccountsController < ApplicationController
     @account            = Class.const_get(params[:class_type]).new(class_params)
     @account.created_by = session_user.id
     @account.account_users_attributes = [{:user_id => params[:owner_user_id], :user_role => 'Owner', :created_by => session_user.id }]
+
     case @account.class.name
       when 'PurchaseOrderAccount'
         @account.facility_id = current_facility.id
@@ -65,7 +66,20 @@ class FacilityAccountsController < ApplicationController
       when 'NufsAccount'
         # set temporary expiration to be updated later
         @account.valid? # populate virtual charstring attributes required by set_expires_at
-        @account.set_expires_at
+        @account.errors.clear
+
+        # be verbose with failures. Too many tasks (#29563, #31873) need it
+        begin
+          @account.set_expires_at!
+
+          unless @account.expires_at
+            @account.errors.add_to_base('The chart string appears to be invalid. Either the fund, department, project, or activity could not be found.')
+          end
+        rescue NucsError => e
+          @account.errors.add_to_base(e.message)
+        end
+
+        return render :action => 'new' if @account.errors.on_base
     end
 
     if @account.save
