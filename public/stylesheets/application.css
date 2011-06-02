@@ -375,6 +375,10 @@ td.one, td.two {
   background-color: #EFEFEF;
 }
 
+tr.reconcile-warning td {
+    background-color: #dbbfc6 !important;
+}
+
 /***************************************
 forms
 ***************************************/
