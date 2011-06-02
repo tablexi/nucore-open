@@ -52,12 +52,12 @@
         %td.currency
           - if od.cost_estimated?
             %span.estimated_cost
-              = h number_to_currency od.estimated_total
+              = show_estimated_total(od)
           - elsif od.price_policy.nil?
             Unassigned
           - else
             %span.actual_cost
-              = h number_to_currency od.actual_total
+              = show_actual_total(od)
     %tr
       %td.centered{:colspan =>4}= will_paginate(@order_details)
 

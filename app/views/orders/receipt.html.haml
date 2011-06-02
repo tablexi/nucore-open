@@ -45,10 +45,10 @@
           - if res
             %li.indented= res
         - if order_detail.cost_estimated?
-          %td.currency=h number_to_currency order_detail.estimated_cost
+          %td.currency=show_estimated_cost(order_detail)
           - if @order.has_subsidies?
-            %td.currency=h number_to_currency order_detail.estimated_subsidy
-          %td.currency=h number_to_currency order_detail.estimated_total
+            %td.currency=show_estimated_subsidy(order_detail)
+          %td.currency=show_estimated_total(order_detail)
         - else
           %td.currency Unassigned
           - if @order.has_subsidies?

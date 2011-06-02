@@ -1,8 +1,8 @@
 - if @order_detail.cost_estimated?
-  %td.currency= number_to_currency(@order_detail.estimated_cost, :unit => '')
-  %td.currency= number_to_currency(@order_detail.estimated_subsidy, :unit => '')
+  %td.currency= show_estimated_cost(@order_detail)
+  %td.currency= show_estimated_subsidy(@order_detail)
   %td.currency
-    %span#actual_total= number_to_currency(@order_detail.estimated_total)
+    %span#actual_total= show_estimated_total(@order_detail)
 - elsif @order_detail.price_policy.nil?
   %td.currency Unassigned
   %td.currency Unassigned
@@ -10,9 +10,9 @@
 - else
   - html_opts={ :size => 8 }
   - html_opts.merge!(:disabled => 'disabled') if @in_open_journal || @order_detail.reconciled?
-  - actual_opts=html_opts.merge({:value => number_to_currency(@order_detail.actual_cost, :unit => ''), :id => 'actual_cost'})
+  - actual_opts=html_opts.merge({:value => show_actual_cost(@order_detail), :id => 'actual_cost'})
   %td.currency= "$#{form.text_field(:actual_cost, actual_opts)}"
-  - sub_opts=html_opts.merge({:value => number_to_currency(@order_detail.actual_subsidy, :unit => ''), :id => 'actual_subsidy'})
+  - sub_opts=html_opts.merge({:value => show_actual_subsidy(@order_detail), :id => 'actual_subsidy'})
   %td.currency= "$#{form.text_field(:actual_subsidy, sub_opts)}"
   %td.currency
-    %span#actual_total= number_to_currency(@order_detail.actual_total)
+    %span#actual_total= show_actual_total(@order_detail)

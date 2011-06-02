@@ -78,10 +78,10 @@
 
 
   - if order_detail.cost_estimated?
-    %td.currency= number_to_currency order_detail.estimated_cost * order_detail.quantity
+    %td.currency= show_estimated_cost(order_detail)
     - if @order.has_subsidies?
-      %td.currency= number_to_currency order_detail.estimated_subsidy * order_detail.quantity
-    %td.currency= number_to_currency order_detail.estimated_total * order_detail.quantity
+      %td.currency= show_estimated_subsidy(order_detail)
+    %td.currency= show_estimated_total(order_detail)
   - else
     %td.currency Unassigned
     - if @order.has_subsidies?

@@ -65,11 +65,11 @@
           %td=h od.assigned_user.nil? ? '' : od.assigned_user.full_name
           %td=h od.order_status.name
           - if od.cost_estimated?
-            %td.estimated_cost.currency= h number_to_currency od.estimated_total
+            %td.estimated_cost.currency= show_estimated_total(od)
           - elsif od.price_policy.nil?
             %td.currency Unassigned
           - else
-            %td.actual_cost.currency= h number_to_currency od.actual_total
+            %td.actual_cost.currency= show_actual_total(od)
       -## THE FOOTER CONTROL ROW
       %tr.borderless
         %td

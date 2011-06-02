@@ -41,7 +41,7 @@
                 %li.indented
                   %i=h od.note
 
-          %td= number_to_currency(od.actual_total)
+          %td= show_actual_total(od)
           %td= text_field_tag "order_detail[#{od.id}][notes]", begin params[:order_detail][od.id.to_s][:notes] rescue '' end
       %tr.borderless
         %td{:colspan => 2}= link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')

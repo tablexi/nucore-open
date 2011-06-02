@@ -54,4 +54,20 @@ module ApplicationHelper
     direction = column == sort_column && sort_direction == 'asc' ? 'desc' : 'asc'
     link_to title, {:sort => column, :dir => direction}, {:class => (column == sort_column ? sort_direction : 'sortable')}
   end
+
+
+  #
+  # currency display helpers
+  [ :total, :cost, :subsidy ].each do |type|
+    define_method("show_actual_#{type}") {|order_detail| show_currency(order_detail, "actual_#{type}") }
+    define_method("show_estimated_#{type}") {|order_detail| show_currency(order_detail, "estimated_#{type}") }
+  end
+
+
+  private
+
+  def show_currency(order_detail, method)
+    h number_to_currency order_detail.method(method).call * order_detail.quantity
+  end
+
 end

@@ -102,17 +102,17 @@
             %i=h "Note: #{@order_detail.note}"
     %td=h @order_detail.order_status
     - if @order_detail.cost_estimated?
-      %td.estimated_cost.currency=h number_to_currency @order_detail.estimated_cost
+      %td.estimated_cost.currency=show_estimated_cost(@order_detail)
       - if @order_detail.has_subsidies?
-        %td.estimated_cost.currency=h number_to_currency @order_detail.estimated_subsidy
-      %td.estimated_cost.currency=h number_to_currency @order_detail.estimated_total
+        %td.estimated_cost.currency=show_estimated_subsidy(@order_detail)
+      %td.estimated_cost.currency=show_estimated_total(@order_detail)
     - elsif @order_detail.price_policy.nil?
       %td{:colspan => 2}
         Unassigned
     - else
-      %td.actual_cost.currency=h number_to_currency @order_detail.actual_cost
+      %td.actual_cost.currency=show_actual_cost(@order_detail)
       - if @order_detail.has_subsidies?
-        %td.actual_cost.currency=h number_to_currency @order_detail.actual_subsidy
-      %td.actual_cost.currency=h number_to_currency @order_detail.actual_total
+        %td.actual_cost.currency=show_actual_subsidy(@order_detail)
+      %td.actual_cost.currency=show_actual_total(@order_detail)
 
 = render :partial => '/price_display_footnote'
