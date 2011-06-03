@@ -71,7 +71,7 @@
         %th.currency Total
       - @order_details.each do |od|
         - account = od.account
-        %tr
+        %tr{:class => needs_reconcile_warning?(od) ? 'reconcile-warning' : ''}
           %td= check_box_tag "order_detail_ids[]", od.id, (action_name == 'create' && !@update_order_details.collect{|uod| uod.id}.include?(od.id) ? false : true), {:disabled => disable, :class => 'toggle'}
           %td
             %ul
@@ -86,3 +86,5 @@
       %tr.borderless
         %td{:colspan => 4}
         %td.currency{:colspan => 2}= submit_tag "Create Journal", {:disabled => disable}
+
+= render :partial => 'shared/reconcile_footnote'

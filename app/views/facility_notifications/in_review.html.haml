@@ -26,7 +26,7 @@
         %th.currency Total
       - @order_details.each do |od|
         - account = od.account
-        %tr
+        %tr{:class => needs_reconcile_warning?(od) ? 'reconcile-warning' : ''}
           %td.centered= check_box_tag "order_detail_ids[]", od.id, false
           %td
             %ul
@@ -41,3 +41,5 @@
       %tr.borderless
         %td{:colspan => 4}
         %td.currency{:colspan => 2}= submit_tag "Mark As Reviewed"
+
+  = render :partial => 'shared/reconcile_footnote'

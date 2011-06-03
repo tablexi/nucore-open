@@ -20,7 +20,7 @@ class FacilityStatementsController < ApplicationController
 
   # GET /facilities/:facility_id/statements/pending
   def pending
-    @accounts = Account.need_statements(current_facility)
+    @accounts = Account.for_facility(current_facility)
   end
 
   # POST /facilities/:facility_id/statements/email

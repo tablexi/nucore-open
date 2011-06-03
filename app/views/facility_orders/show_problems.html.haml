@@ -17,7 +17,7 @@
       %th Problem
     - @order_details.each do |od|
       - product_name = (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
-      %tr
+      %tr{:class => needs_reconcile_warning?(od) ? 'reconcile-warning' : ''}
         %td.centered= link_to od, edit_facility_order_order_detail_path(current_facility, od.order, od)
         %td=h human_datetime(od.order.ordered_at)
         %td.centered=h od.quantity
@@ -35,3 +35,4 @@
       %td
       %td
   = will_paginate(@order_details)
+  = render :partial => 'shared/reconcile_footnote'
