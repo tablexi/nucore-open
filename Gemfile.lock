@@ -101,9 +101,6 @@ GEM
     spork (0.7.5)
     spreadsheet (0.6.4.1)
       ruby-ole
-    surveyor (0.16.0)
-      fastercsv
-      haml
     thoughtbot-factory_girl (1.2.2)
     thoughtbot-shoulda (2.10.2)
     warden (0.10.7)
@@ -147,7 +144,6 @@ DEPENDENCIES
   single_test
   spork (= 0.7.5)
   spreadsheet (= 0.6.4.1)
-  surveyor
   thoughtbot-factory_girl (= 1.2.2)
   thoughtbot-shoulda (= 2.10.2)
   vestal_versions (= 1.3.0)!
