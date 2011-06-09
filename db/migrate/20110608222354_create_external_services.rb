@@ -3,9 +3,11 @@ class CreateExternalServices < ActiveRecord::Migration
     create_table :external_services do |t|
       t.string :type
       t.string :location
+      t.timestamps
     end
   end
 
   def self.down
+    drop_table :external_services
   end
 end

@@ -5,6 +5,7 @@ class CreateExternalServiceReceivers < ActiveRecord::Migration
       t.integer :receiver_id
       t.string :receiver_type
       t.string :response_data
+      t.timestamps
     end
   end
 
