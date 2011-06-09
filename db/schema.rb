@@ -62,22 +62,28 @@ ActiveRecord::Schema.define(:version => 20110608222657) do
   add_index "bundle_products", ["product_id"], :name => "fk_bundle_prod_bundle"
 
   create_table "external_service_passers", :force => true do |t|
-    t.integer "external_service_id"
-    t.integer "passer_id"
-    t.string  "passer_type"
-    t.boolean "active",              :default => false
+    t.integer  "external_service_id"
+    t.integer  "passer_id"
+    t.string   "passer_type"
+    t.boolean  "active",              :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "external_service_receivers", :force => true do |t|
-    t.integer "external_service_id"
-    t.integer "receiver_id"
-    t.string  "receiver_type"
-    t.string  "response_data"
+    t.integer  "external_service_id"
+    t.integer  "receiver_id"
+    t.string   "receiver_type"
+    t.string   "response_data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "external_services", :force => true do |t|
-    t.string "type"
-    t.string "location"
+    t.string   "type"
+    t.string   "location"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "facilities", :force => true do |t|
