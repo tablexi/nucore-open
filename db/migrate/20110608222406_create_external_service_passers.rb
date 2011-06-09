@@ -1,0 +1,14 @@
+class CreateExternalServicePassers < ActiveRecord::Migration
+  def self.up
+    create_table :external_service_passers do |t|
+      t.integer :external_service_id
+      t.integer :passer_id
+      t.string :passer_type
+      t.boolean :active, :default => false
+    end
+  end
+
+  def self.down
+    drop_table :external_service_passers
+  end
+end

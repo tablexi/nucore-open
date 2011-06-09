@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110608215021) do
+ActiveRecord::Schema.define(:version => 20110608222657) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -60,6 +60,25 @@ ActiveRecord::Schema.define(:version => 20110608215021) do
 
   add_index "bundle_products", ["bundle_product_id"], :name => "fk_bundle_prod_prod"
   add_index "bundle_products", ["product_id"], :name => "fk_bundle_prod_bundle"
+
+  create_table "external_service_passers", :force => true do |t|
+    t.integer "external_service_id"
+    t.integer "passer_id"
+    t.string  "passer_type"
+    t.boolean "active",              :default => false
+  end
+
+  create_table "external_service_receivers", :force => true do |t|
+    t.integer "external_service_id"
+    t.integer "receiver_id"
+    t.string  "receiver_type"
+    t.string  "response_data"
+  end
+
+  create_table "external_services", :force => true do |t|
+    t.string "type"
+    t.string "location"
+  end
 
   create_table "facilities", :force => true do |t|
     t.string   "name",              :limit => 200,                   :null => false
