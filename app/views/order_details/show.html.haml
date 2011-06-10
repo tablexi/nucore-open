@@ -94,7 +94,7 @@
           - else
             %li.indented= link_to res, order_order_detail_reservation_path(@order, @order_detail, res)
         - if @order_detail.survey_completed?
-          %li.indented= link_to('View Order Form', show_order_survey_path(@order, @order_detail, @order_detail.response_set.survey.access_code, @order_detail.response_set.access_code))
+          %li.indented= link_to('View Order Form', @order_detail.external_service_receiver.response_data, :target => '_blank')
         - unless @order_detail.file_uploads.template_result.empty?
           %li.indented= link_to('View Order File', @order_detail.file_uploads.template_result.first.file.url)
         - unless @order_detail.note.blank?

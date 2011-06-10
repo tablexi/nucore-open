@@ -176,7 +176,7 @@
           - if @order_detail.reservation
             %li.indented=h @order_detail.reservation
           - if @order_detail.survey_completed?
-            %li.indented= link_to('View Order Form', show_admin_order_survey_path(current_facility, @order, @order_detail, @order_detail.response_set.survey.access_code, @order_detail.response_set.access_code))
+            %li.indented= link_to('View Order Form', @order_detail.external_service_receiver.response_data, :target => '_blank')
           - unless @order_detail.file_uploads.template_result.empty?
             %li.indented= link_to('View Order File', @order_detail.file_uploads.template_result.first.file.url)
       - if @can_be_reconciled

@@ -51,13 +51,13 @@ class FileUploadsController < ApplicationController
   end
 
   # GET /facilities/1/services/3/files/survey_upload
-  def survey_upload
+  def product_survey
     @product  = current_facility.services.find_by_url_name!(params[:product_id])
     @file     = @product.file_uploads.new(:file_type => 'template')
-    @survey   = @product.surveys.new
+    @surveyor = Surveyor.new
   end
 
-  def survey_create
+  def create_product_survey
     @product = current_facility.services.find_by_url_name!(params[:product_id])
 
     if params[:file_upload]
@@ -69,31 +69,39 @@ class FileUploadsController < ApplicationController
           end
           @file.save!
           flash[:notice] = "Order File Template uploaded"
-          redirect_to(upload_product_survey_file_path(current_facility, @product.parameterize, @product)) and return
+          redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) and return
         rescue Exception => e
           @file.errors.add_to_base("Order File Template delete error: #{e.message}")
           raise ActiveRecord::Rollback
         end
       end
-      @survey = @product.surveys.new
+      @surveyor = Surveyor.new
     else
-      if params[:survey].nil? || params[:survey][:upload].nil?
-        @survey = @product.surveys.new
-        @survey.errors.add_to_base("No file specified")
+      if params[:surveyor].nil? || params[:surveyor][:location].blank?
+        @surveyor = Surveyor.new
+        @surveyor.errors.add_to_base("No location specified")
       else
         begin
-          @filepath = params[:survey][:upload].try(:path)
-          @survey = @product.import_survey(@filepath)
-          flash[:notice] = "Online Order Form added"
-          redirect_to(upload_product_survey_file_path(current_facility, @product.parameterize, @product)) and return
+          url = params[:surveyor][:location]
+          ext=Surveyor.find_or_create_by_location(:location => url)
+          esp=ExternalServicePasser.find(:first, :conditions => [ 'passer_id = ? AND external_service_id = ?', @product.id, ext.id ])
+
+          if esp
+            flash[:notice] = "That Online Order Form already exists"
+          else
+            flash[:notice] = "Online Order Form added"
+            ExternalServicePasser.create!(:passer => @product, :external_service => ext)
+          end
+
+          redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) and return
         rescue Exception => e
-          @survey ||= @product.surveys.new
-          @survey.errors.add_to_base("Online Order Form add error: #{e.message}")
+          @surveyor ||= Surveyor.new
+          @surveyor.errors.add_to_base("Online Order Form add error: #{e.message}")
         end
       end
       @file = @product.file_uploads.new(:file_type => 'template')
     end
-    render :survey_upload
+    render :product_survey
   end
 
   def destroy
@@ -110,7 +118,7 @@ class FileUploadsController < ApplicationController
     # use return_to if it was sent
     @return_to = params[:return_to]
     if @file.file_type == 'template'
-      redirect_to(@return_to || upload_product_survey_file_path(current_facility, @product.parameterize, @product)) and return
+      redirect_to(@return_to || product_survey_path(current_facility, @product.parameterize, @product)) and return
     else
       redirect_to(@return_to || upload_product_file_path(current_facility, @product.parameterize, @product, :file_type => @file.file_type)) and return
     end

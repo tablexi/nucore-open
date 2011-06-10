@@ -22,6 +22,8 @@ class Ability
 
     if resource.is_a?(Facility)
 
+      can :complete, Surveyor
+
       if user.operator_of?(resource)
         can :manage, [
           AccountPriceGroupMember, Service, BundleProduct,
@@ -30,7 +32,6 @@ class Ability
         ]
 
         can :manage, User if controller.is_a?(UsersController)
-        can [ :preview, :show_admin ], ServiceSurvey if controller.is_a?(SurveyorController)
 
         cannot :show_problems, Order
         can [ :schedule, :agenda, :list ], Facility
@@ -38,7 +39,7 @@ class Ability
       end
 
       if user.facility_director_of?(resource)
-        can [ :activate, :deactivate ], ServiceSurvey if controller.is_a?(ServiceSurveysController)
+        can [ :activate, :deactivate ], Surveyor if controller.is_a?(SurveyorsController)
       end
 
       if user.manager_of?(resource)

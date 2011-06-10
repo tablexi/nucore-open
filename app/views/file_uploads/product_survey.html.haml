@@ -9,43 +9,42 @@
 %p You may provide an Online Order Form and/or an Order File Template.  If provided, the user must complete one before placing an order.
 .box_no_fill.margin_bottom
   %h3 Online Order Form
-  %p Online Order Forms are created using the Surveyor DSL file format.  Please contact the NUCore support specialist for assistance.  Multiple Online Order Forms may be uploaded, but only one may be active at a time.
-  - form_for(@survey, :url => add_product_survey_file_path(current_facility, @product.parameterize, @product), :html => { :multipart => true }) do |f|
+  %p Online Order Forms are external Surveyor services. Multiple Online Order Forms may be added, but only one may be active at a time. Please contact the NUCore support specialist for more information.
+  - form_for(@surveyor, :url => create_product_survey_path(current_facility, @product.parameterize, @product), :html => { :multipart => true }) do |f|
     = f.error_messages
     %ul.form
       %li
-        = f.label :upload, 'File', :class => 'required'
-        = f.file_field :upload
+        = f.label :location, 'Service URL', :class => 'required'
+        = f.text_field :location, :size => 60
     %ul.horiz
       %li
-        = f.submit('Upload', :disable_with => "Uploading...", :class => 'btn')
+        = f.submit('Add', :disable_with => "Adding...", :class => 'btn')
   %br
-  - surveys = @product.service_surveys
+  - surveys = @product.external_service_passers
   - if surveys.empty?
-    %p.notice No Online Order Forms have been uploaded.
+    %p.notice No Online Order Forms have been added.
   - else
     %table
       %tr
         %th
         %th.centered Status
-        %th Survey
-        %th Date Uploaded
-      - surveys.each do |service_survey|
-        - survey = service_survey.survey
+        %th Service URL
+        %th Date Added
+      - surveys.each do |esp|
         %tr
-          - if service_survey.active?
-            %td.centered= link_to 'Deactivate', deactivate_service_survey_path(current_facility, @product, survey.access_code), :method => :put
+          - if esp.active?
+            %td.centered= link_to 'Deactivate', deactivate_surveyor_path(current_facility, @product, esp), :method => :put
             %td.centered Active
           - else
-            %td.centered= link_to 'Activate', activate_service_survey_path(current_facility, @product, survey.access_code), :method => :put
+            %td.centered= link_to 'Activate', activate_surveyor_path(current_facility, @product, esp), :method => :put
             %td.centered Inactive
-          %td= link_to survey.title, preview_service_survey_path(current_facility, @product, survey.access_code)
-          %td= human_datetime(service_survey.created_at)
+          %td= link_to truncate(esp.external_service.location, :length => 60), esp.external_service.location, :target => '_blank'
+          %td= human_datetime(esp.created_at)
 
 .box_no_fill
   %h3 Downloadable Order Form
   %p Downloadable Order Forms are templates to be filled in by the user and submitted when ordering.  Uploading a new template will replace any existing Downloadable Order Forms.
-  - form_for(@file, :url => add_product_survey_file_path(current_facility, @product.parameterize, @product), :html => { :multipart => true, :method => :post }) do |f|
+  - form_for(@file, :url => create_product_survey_path(current_facility, @product.parameterize, @product), :html => { :multipart => true, :method => :post }) do |f|
     = f.error_messages
     = f.hidden_field :file_type
     %ul.form

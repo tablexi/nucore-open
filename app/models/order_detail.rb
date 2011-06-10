@@ -11,7 +11,7 @@ class OrderDetail < ActiveRecord::Base
   belongs_to :account
   belongs_to :bundle, :foreign_key => 'bundle_product_id'
   has_one    :reservation, :dependent => :destroy
-  belongs_to :response_set, :dependent => :destroy
+  has_one    :external_service_receiver, :as => :receiver, :dependent => :destroy
   has_many   :file_uploads, :dependent => :destroy
 
   validates_presence_of :product_id, :order_id
@@ -178,10 +178,7 @@ class OrderDetail < ActiveRecord::Base
 
   # returns true if the associated survey response set has been completed
   def survey_completed?
-    # default to false if there is no response_set
-    return false if self.response_set.blank?
-    # check response_set completed_at timestamp
-    !self.response_set.completed_at.blank?
+    !external_service_receiver.nil?
   end
 
   def account_usable_by_order_owner?

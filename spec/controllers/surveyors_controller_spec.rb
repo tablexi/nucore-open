@@ -1,6 +1,6 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
-describe ServiceSurveysController do
+describe SurveyorsController do
   integrate_views
 
   it "should route" do

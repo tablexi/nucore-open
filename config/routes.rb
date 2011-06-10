@@ -137,24 +137,15 @@ ActionController::Routing::Routes.draw do |map|
                           :controller => 'file_uploads', :action => 'uploader_create', :conditions => {:method => :post}
   map.remove_product_file '/facilities/:facility_id/:product/:product_id/files/:id',
                           :controller => 'file_uploads', :action => 'destroy', :conditions => {:method => :delete}
-  map.upload_product_survey_file '/facilities/:facility_id/:product/:product_id/files/survey_upload',
-                          :controller => 'file_uploads', :action => 'survey_upload', :conditions => {:method => :get}
-  map.add_product_survey_file    '/facilities/:facility_id/:product/:product_id/files/survey_upload',
-                          :controller => 'file_uploads', :action => 'survey_create', :conditions => {:method => :post}
+  map.product_survey '/facilities/:facility_id/:product/:product_id/files/product_survey',
+                          :controller => 'file_uploads', :action => 'product_survey', :conditions => {:method => :get}
+  map.create_product_survey    '/facilities/:facility_id/:product/:product_id/files/create_product_survey',
+                          :controller => 'file_uploads', :action => 'create_product_survey', :conditions => {:method => :post}
 
-  # survey routes
-  map.create_order_survey     '/orders/:order_id/details/:od_id/surveys/:survey_code',
-                              :controller => 'surveyor', :action => 'create', :conditions => {:method => [:get, :post]}
-  map.edit_order_survey       '/orders/:order_id/details/:od_id/surveys/:survey_code/:response_set_code/edit',
-                              :controller => 'surveyor', :action => 'edit', :conditions => {:method => [:get]}
-  map.show_order_survey       '/orders/:order_id/details/:od_id/surveys/:survey_code/:response_set_code',
-                              :controller => 'surveyor', :action => 'show', :conditions => {:method => [:get]}
-  map.show_admin_order_survey '/facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/surveys/:survey_code/:response_set_code.:format',
-                              :controller => 'surveyor', :action => 'show_admin', :conditions => {:method => [:get]}
-  map.preview_service_survey  '/facilities/:facility_id/services/:service_id/surveys/:survey_code/preview',
-                              :controller => 'surveyor', :action => 'preview', :conditions => {:method => :get}
-  map.activate_service_survey '/facilities/:facility_id/services/:service_id/surveys/:survey_code/activate',
-                              :controller => 'service_surveys', :action => 'activate', :conditions => {:method => :put}
-  map.deactivate_service_survey '/facilities/:facility_id/services/:service_id/surveys/:survey_code/deactivate',
-                                :controller => 'service_surveys', :action => 'deactivate', :conditions => {:method => :put}
+  map.activate_surveyor '/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate',
+                              :controller => 'surveyors', :action => 'activate', :conditions => {:method => :put}
+  map.deactivate_surveyor '/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate',
+                                :controller => 'surveyors', :action => 'deactivate', :conditions => {:method => :put}
+  map.complete_surveyor '/facilities/:facility_id/services/:service_id/surveys/:external_service_id/complete',
+                                :controller => 'surveyors', :action => 'complete', :conditions => {:method => [:get, :post]}
 end
