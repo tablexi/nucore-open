@@ -30,7 +30,7 @@ class Service < Product
     active=external_service_passers.find(
             :first,
             :joins => 'INNER JOIN external_services ON external_services.id=external_service_id',
-            :conditions => [ 'active = 1 AND external_services.type = ?', Surveyor.name ]
+            :conditions => [ 'active = 1 AND external_services.type = ?', ExternalServiceManager.survey_service.name ]
     )
 
     active ? active.external_service : nil

@@ -54,7 +54,7 @@ class FileUploadsController < ApplicationController
   def product_survey
     @product  = current_facility.services.find_by_url_name!(params[:product_id])
     @file     = @product.file_uploads.new(:file_type => 'template')
-    @surveyor = Surveyor.new
+    @survey = ExternalServiceManager.survey_service.new
   end
 
   def create_product_survey
@@ -75,15 +75,17 @@ class FileUploadsController < ApplicationController
           raise ActiveRecord::Rollback
         end
       end
-      @surveyor = Surveyor.new
+      @survey = ExternalServiceManager.survey_service.new
     else
-      if params[:surveyor].nil? || params[:surveyor][:location].blank?
-        @surveyor = Surveyor.new
-        @surveyor.errors.add_to_base("No location specified")
+      survey_param=ExternalServiceManager.survey_service.name.downcase.to_sym
+
+      if params[survey_param].nil? || params[survey_param][:location].blank?
+        @survey = ExternalServiceManager.survey_service.new
+        @survey.errors.add_to_base("No location specified")
       else
         begin
-          url = params[:surveyor][:location]
-          ext=Surveyor.find_or_create_by_location(:location => url)
+          url = params[survey_param][:location]
+          ext=ExternalServiceManager.survey_service.find_or_create_by_location(:location => url)
           esp=ExternalServicePasser.find(:first, :conditions => [ 'passer_id = ? AND external_service_id = ?', @product.id, ext.id ])
 
           if esp
@@ -95,8 +97,8 @@ class FileUploadsController < ApplicationController
 
           redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) and return
         rescue Exception => e
-          @surveyor ||= Surveyor.new
-          @surveyor.errors.add_to_base("Online Order Form add error: #{e.message}")
+          @survey ||= ExternalServiceManager.survey_service.new
+          @survey.errors.add_to_base("Online Order Form add error: #{e.message}")
         end
       end
       @file = @product.file_uploads.new(:file_type => 'template')

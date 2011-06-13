@@ -142,10 +142,10 @@ ActionController::Routing::Routes.draw do |map|
   map.create_product_survey    '/facilities/:facility_id/:product/:product_id/files/create_product_survey',
                           :controller => 'file_uploads', :action => 'create_product_survey', :conditions => {:method => :post}
 
-  map.activate_surveyor '/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate',
+  map.activate_survey '/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate',
                               :controller => 'surveyors', :action => 'activate', :conditions => {:method => :put}
-  map.deactivate_surveyor '/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate',
+  map.deactivate_survey '/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate',
                                 :controller => 'surveyors', :action => 'deactivate', :conditions => {:method => :put}
-  map.complete_surveyor '/facilities/:facility_id/services/:service_id/surveys/:external_service_id/complete',
+  map.complete_survey '/facilities/:facility_id/services/:service_id/surveys/:external_service_id/complete',
                                 :controller => 'surveyors', :action => 'complete', :conditions => {:method => [:get, :post]}
 end
