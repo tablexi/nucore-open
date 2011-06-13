@@ -12,8 +12,6 @@ require 'rake/rdoctask'
 
 require 'tasks/rails'
 
-require 'tasks/surveyor'
-
 begin
   require 'single_test'
   SingleTest.load_tasks
