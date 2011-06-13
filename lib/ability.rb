@@ -39,7 +39,7 @@ class Ability
       end
 
       if user.facility_director_of?(resource)
-        can [ :activate, :deactivate ], Surveyor if controller.is_a?(SurveyorsController)
+        can [ :activate, :deactivate ], Surveyor
       end
 
       if user.manager_of?(resource)
