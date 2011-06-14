@@ -342,6 +342,7 @@ class OrderDetail < ActiveRecord::Base
     pp = policy_holder.cheapest_price_policy((order.user.price_groups + account.price_groups).flatten.uniq)
     return unless pp
     costs = pp.calculate_cost_and_subsidy(*calc_args)
+    return unless costs
     self.price_policy_id = pp.id
     self.actual_cost     = costs[:cost]
     self.actual_subsidy  = costs[:subsidy]
