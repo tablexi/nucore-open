@@ -245,18 +245,7 @@ describe OrdersController do
     end
 
     it "should show links for uploading files for services where required by service"
-
-    it "should show links for add survey metadata for services requiring a survey" do
-      # add survey, make it active
-      @survey = Survey.create(:title => "Survey 1", :access_code => '1234')
-      @service.surveys.push(@survey)
-      @service.service_surveys.first.active!
-      @order.add(@service)
-      @order_detail = @order.order_details.first
-      maybe_grant_always_sign_in :staff
-      do_request
-      response.should have_tag 'a[href=?]', "/orders/#{@order.id}/details/#{@order_detail.id}/surveys/#{@survey.access_code}"
-    end
+    it "should show links for submitting survey for services where required by service"
   end
 
 
