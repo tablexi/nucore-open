@@ -106,38 +106,8 @@ describe OrderDetail do
       @order_detail.update_attributes(:actual_cost => 20, :actual_subsidy => 10, :price_policy_id => @service_pp.id)
     end
 
-    ## TODO will need to re-write to check for surveys / file uploads
-    it 'should validate for a service with no survey' do
-      @order_detail.valid_service_meta?.should be true
-    end
-
-    it 'should not validate for a service with a survey and no response set' do
-      @survey = Survey.create(:title => "Survey 1", :access_code => '1234')
-      # add survey, make it active
-      @service.surveys.push(@survey)
-      @service.service_surveys.first.active!
-      @order_detail.valid_service_meta?.should be false
-    end
-
-    it 'should not validate for a service with a survey and a uncompleted response set' do
-      @survey = Survey.create(:title => "Survey 1", :access_code => '1234')
-      # add survey, make it active, add response set
-      @service.surveys.push(@survey)
-      @service.service_surveys.first.active!
-      @response_set = @survey.response_sets.create(:access_code => 'set1')
-      @order_detail.response_set!(@response_set)
-      @order_detail.valid_service_meta?.should be false
-    end
-
-    it 'should validate for a service with a survey and a completed response set' do
-      @survey = Survey.create(:title => "Survey 1", :access_code => '1234')
-      # add survey, make it active, add completed response set
-      @service.surveys.push(@survey)
-      @service.service_surveys.first.active!
-      @response_set = @survey.response_sets.create(:access_code => 'set1')
-      @response_set.complete!
-      @response_set.save
-      @order_detail.response_set!(@response_set)
+    ## TODO will need to re-write to check for file uploads
+    it 'should validate for a service with no file template upload' do
       @order_detail.valid_service_meta?.should be true
     end
 
