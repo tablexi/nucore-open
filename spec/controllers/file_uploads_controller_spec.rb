@@ -96,6 +96,63 @@ describe FileUploadsController do
   end
 
 
+  context 'product_survey' do
+
+    before :each do
+      @method=:get
+      @action=:product_survey
+      @params={ :facility_id => @authable.url_name, :product => @service.id, :product_id => @service.url_name }
+    end
+
+    it_should_allow_managers_only do
+      assigns[:product].should == @service
+      assigns[:file].should be_kind_of FileUpload
+      assigns[:file].should be_new_record
+      assigns[:survey].should be_kind_of ExternalService
+      assigns[:survey].should be_new_record
+    end
+
+  end
+
+
+  context 'create_product_survey' do
+
+    before :each do
+      @method=:post
+      @action=:create_product_survey
+      @survey_param=ExternalServiceManager.survey_service.name.downcase.to_sym
+      @ext_service_location='http://remote.surveysystem.com/surveys'
+      @params={
+        :facility_id => @authable.url_name,
+        :product => @service.id,
+        :product_id => @service.url_name,
+        @survey_param => {
+          :location => @ext_service_location
+        }
+      }
+    end
+
+    it 'should do nothing if location not given' do
+      @params[@survey_param]=nil
+      maybe_grant_always_sign_in :director
+      do_request
+      assigns[:product].should == @service
+      assigns[:survey].should be_kind_of ExternalService
+      assigns[:survey].should be_new_record
+      assigns[:survey].errors.on_base.should_not be_nil
+    end
+
+    it_should_allow_managers_only :redirect do
+      assigns[:product].should == @service
+      @service.reload.external_services.size.should == 1
+      @service.external_services[0].location.should == @ext_service_location
+      should set_the_flash
+      assert_redirected_to product_survey_path(@authable, @service.parameterize, @service)
+    end
+
+  end
+
+
   context 'destroy' do
 
     before :each do
