@@ -1,0 +1,27 @@
+NU Core has an external service framework for integrating with 3rd party applications. For example, the optional surveys
+associated with Service products are managed outside of the application, but NU Core links to the surveys and redirects
+users to them. NU Core also accepts requests from the survey system in order to store the data it needs to associate
+Service orders with the correct survey.
+
+Let's assume you don't want to use the default survey system (Surveyor) and instead use the Super Survey service. You can
+introduce Super Survey service as a new external service to NU Core and configure your system to use it. To do so you
+would:
+
+1. Create a SuperSurvey model as a subclass of ExternalService. The model should know how to access Super Survey Service.
+
+2. Create a SuperSurveyController. The controller should have (at least) an action to accept requests from the Super Survey service.
+
+3. Override existing survey routes to use SuperSurveyController.
+
+4. Update the external_services.rb initializer to register with the ExternalServiceManager SuperSurvey as the 'survey' service provider.
+
+That's it! Now anywhere surveys are used the SuperSurvey service would be utilized.
+
+
+In order to make this work NU code should not be concerned with the particular 3rd party services in use. Only the
+ExternalServiceManager should be. NU Core code should be concerned with generic service types and ask ExternalServiceManager
+about them.
+
+As always, existing code is your best friend! See it for examples.
+
+
