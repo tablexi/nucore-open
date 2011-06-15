@@ -1,0 +1,1 @@
+ExternalServiceManager.register_service(Surveyor, :survey)

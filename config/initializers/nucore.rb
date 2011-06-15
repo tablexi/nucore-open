@@ -1,9 +1,6 @@
 require 'nucore'
 
 
-ExternalServiceManager.register_service(Surveyor, :survey)
-
-
 ActiveRecord::Base.class_eval do
   def self.validate_url_name(attr_name)
     validates_length_of attr_name, :in => 3..50
