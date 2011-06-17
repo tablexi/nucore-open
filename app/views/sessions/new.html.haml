@@ -1,8 +1,8 @@
-
+- content_for :h1 do
+  Login
 #content
   .container_12
     .grid_12
-      %h1== Login
       - if flash[:error]
         %p.error= flash[:error]
       - if flash[:notice]
