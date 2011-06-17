@@ -12,7 +12,7 @@
     =h @order.facility
   %li
     %label Ordered By
-    =h "#{@order.created_by_user.first_name} #{@order.created_by_user.first_name}"
+    =h "#{@order.created_by_user.full_name}"
 
 %table
   %tr

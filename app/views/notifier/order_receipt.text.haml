@@ -3,7 +3,7 @@
 == Order #: #{@order.id}
 == Ordered at: #{@order.ordered_at.strftime("%b %e, %Y %l:%M %p")}
 == Facility: #{@order.facility}
-== Ordered By: #{@order.created_by_user.first_name} #{@order.created_by_user.first_name}
+== Ordered By: #{@order.created_by_user.full_name}
 ==
 == Order Details
 == ========================================
