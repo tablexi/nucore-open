@@ -14,11 +14,11 @@
 %table
   %tr
     %th.auto Account
-    %th.small 0-30
-    %th.small 31-60
-    %th.small 61-90
-    %th.small 91+
-    %th.small Total
+    %th.small.currency 0-30
+    %th.small.currency 31-60
+    %th.small.currency 61-90
+    %th.small.currency 91+
+    %th.small.currency Total
   - @accounts.each do |a|
     - today = Time.zone.now
     - balance = {}
