@@ -26,6 +26,7 @@ gem 'devise',           '1.3.4'
 gem 'cancan',           '1.6.5'
 gem 'nokogiri',         '1.4.4'
 gem 'devise_ldap_authenticatable', '0.1.6', :git => 'https://github.com/cschiewek/devise_ldap_authenticatable.git', :tag => '0.1.6'
+#gem 'jquery-rails',     '>= 1.0.3'
 
 group :development do
    gem 'rspec', '1.3.0'
