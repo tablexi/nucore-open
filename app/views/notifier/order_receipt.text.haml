@@ -9,7 +9,7 @@
 == ========================================
 - @order.order_details.each do |od|
   == Line Item: #{od}
-  = od.product.name
+  = (od.bundle ? "#{h od.bundle} -- " : '') + h(od.product)
   - if od.reservation
     == Reservation: #{od.reservation}
   == Quantity: #{od.quantity}

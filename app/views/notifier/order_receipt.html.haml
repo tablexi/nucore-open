@@ -31,7 +31,7 @@
           %br
           =h od.reservation
       - else
-        %td=h od.product.name
+        %td= (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
       %td=h od.quantity
       - if od.cost_estimated?
         %td=h number_to_currency od.estimated_cost * od.quantity
