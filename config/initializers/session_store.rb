@@ -8,4 +8,4 @@ NucoreOpen::Application.config.session_store :cookie_store, :key => '_nucore-ope
 # NucoreOpen::Application.config.session_store :active_record_store
 
 # middleware component for handling flash upload authenticity tokens
-ActionController::Dispatcher.middleware.insert_before(ActionController::Base.session_store, FlashSessionCookieMiddleware, ActionController::Base.session_options[:key])
+Rails.application.config.middleware.insert_before(Rails.application.config.session_store, FlashSessionCookieMiddleware, Rails.application.config.session_options[:key])
