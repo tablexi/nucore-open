@@ -8,9 +8,6 @@ class ApplicationController < ActionController::Base
   # Make the following methods available to all views
   helper_method :current_facility, :session_user, :manageable_facilities, :acting_user, :acting_as?, :check_acting_as
 
-  # Scrub sensitive parameters from your log
-  filter_parameter_logging :password
-
   attr_accessor :active_tab
 
   # Navigation tabs configuration
