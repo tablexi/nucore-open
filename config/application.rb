@@ -13,7 +13,7 @@ module NucoreOpen
     # -- all .rb files in that directory are automatically loaded.
 
     # Custom directories with classes and modules you want to be autoloadable.
-    config.autoload_paths += %W(#{config.root}/app/middleware #{config.root}/config)
+    config.autoload_paths += %W(#{config.root}/lib #{config.root}/app/middleware #{config.root}/config)
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -41,7 +41,7 @@ module NucoreOpen
   end
 end
 
-require "Constants.rb"
+require File.dirname(__FILE__) + "/Constants.rb"
 
 # This is what makes the nucore extension system work.
 # See doc/README.extensions for details on nucore extensions.
