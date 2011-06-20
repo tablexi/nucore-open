@@ -16,6 +16,7 @@
 
 %table
   %tr
+    %th Line Item
     %th Product
     %th Quantity
     %th Estimated Price
@@ -23,6 +24,7 @@
     %th Estimated Total
   - @order.order_details.each do |od|
     %tr
+      %td= od
       - if od.reservation
         %td
           =h od.product.name

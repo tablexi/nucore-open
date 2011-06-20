@@ -8,6 +8,7 @@
 == Order Details
 == ========================================
 - @order.order_details.each do |od|
+  == Line Item: #{od}
   = od.product.name
   - if od.reservation
     == Reservation: #{od.reservation}
