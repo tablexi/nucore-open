@@ -21,7 +21,7 @@
 
 %h2=h @instrument
 
-- form_for ([@instrument, @reservation], :url => facility_instrument_reservations_path) do |f|
+- form_for([@instrument, @reservation], :url => facility_instrument_reservations_path) do |f|
   = f.error_messages
   %ul.form
     = render :partial => 'reservation_fields', :locals => {:f => f}

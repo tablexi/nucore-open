@@ -67,7 +67,7 @@ class UsersController < ApplicationController
   # GET /facilities/:facility_id/users/:user_id/switch_to
   def switch_to
     @user = User.find(params[:user_id])
-    unless session_user.id == User.id
+    unless session_user.id == @user.id
       session[:acting_user_id] = params[:user_id]
       session[:acting_ref_url] = facility_users_url
     end
