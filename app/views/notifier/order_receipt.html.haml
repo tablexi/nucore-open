@@ -2,9 +2,6 @@
 
 %ul
   %li
-    %label Order #
-    =h @order.id
-  %li
     %label Ordered at
     =h @order.ordered_at.strftime("%b %e, %Y %l:%M %p")
   %li
@@ -16,7 +13,7 @@
 
 %table
   %tr
-    %th Line Item
+    %th Order #
     %th Product
     %th Quantity
     %th Estimated Price
@@ -27,7 +24,7 @@
       %td= od
       - if od.reservation
         %td
-          =h od.product.name
+          =h (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
           %br
           =h od.reservation
       - else

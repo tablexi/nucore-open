@@ -1,6 +1,5 @@
 == Thank you for your order on the NUCore website.
 ==
-== Order #: #{@order.id}
 == Ordered at: #{@order.ordered_at.strftime("%b %e, %Y %l:%M %p")}
 == Facility: #{@order.facility}
 == Ordered By: #{@order.created_by_user.full_name}
@@ -8,7 +7,7 @@
 == Order Details
 == ========================================
 - @order.order_details.each do |od|
-  == Line Item: #{od}
+  == Order #: #{od}
   = (od.bundle ? "#{h od.bundle} -- " : '') + h(od.product)
   - if od.reservation
     == Reservation: #{od.reservation}
