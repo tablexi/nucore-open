@@ -58,8 +58,10 @@ class OrdersController < ApplicationController
     session[:add_to_cart] = nil
     @product    = Product.find(@product_id)
 
-    # send to choose_account if it's not set in the order
-    if @order.account.nil?
+    # send to choose_account:
+    # if it's not set in the order OR
+    # payment source isn't valid for this facility
+    if @order.account.nil? or @order.account.validate_against_product(@product, acting_user)
       session[:add_to_cart] = {:quantity => @quantity, :product_id => @product.id }
       redirect_to choose_account_order_url(@order)
     else
