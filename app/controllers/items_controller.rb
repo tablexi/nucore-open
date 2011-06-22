@@ -71,7 +71,7 @@ class ItemsController < ApplicationController
 
   # GET /items/new
   def new
-    @item = current_facility.items.new(:account => '75340')
+    @item = current_facility.items.new(:account => NUCore::COMMON_ACCOUNT)
   end
 
   # GET /facilities/alpha/items/1/edit
