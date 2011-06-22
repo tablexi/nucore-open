@@ -132,6 +132,7 @@ class Order < ActiveRecord::Base
       quantity = order_detail_quantities[order_detail.id]
       if quantity > 0
         order_detail.quantity = quantity
+        order_detail.assign_estimated_price if order_detail.cost_estimated?
         order_detail.save
       else
         order_detail.destroy
@@ -155,7 +156,7 @@ class Order < ActiveRecord::Base
     cost = 0
     order_details.each { |od|
       od_cost=od.method(order_detail_method.to_sym).call
-      cost += od_cost * od.quantity if od_cost
+      cost += od_cost if od_cost
     }
     cost
   end
