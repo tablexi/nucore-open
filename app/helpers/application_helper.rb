@@ -74,7 +74,7 @@ module ApplicationHelper
 
   def show_currency(order_detail, method)
     val=order_detail.method(method).call
-    val ? h(number_to_currency(val * order_detail.quantity)) : ''
+    val ? h(number_to_currency(val)) : ''
   end
 
 end
