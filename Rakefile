@@ -4,6 +4,6 @@
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
 
-NucoreOpen::Application.load_tasks
+Nucore::Application.load_tasks
 
 require 'ci/reporter/rake/rspec'
