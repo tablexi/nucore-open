@@ -92,9 +92,8 @@ class NucsValidator
     }
 
     where.merge!(:project => @project) if @project
-    where.merge!(:activity => @activity) if @activity
     gls=NucsGl066.find(:all, :conditions => where)
-    gls.delete_if {|gl| (@project.nil? && gl.project && gl.project != NUCS_BLANK) or (@activity.nil? && gl.activity && gl.activity != NUCS_BLANK) }
+    gls.delete_if {|gl| (@project.nil? && gl.project && gl.project != NUCS_BLANK) }
 
     latest_date=nil
 
