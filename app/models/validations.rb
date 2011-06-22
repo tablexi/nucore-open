@@ -11,7 +11,7 @@ module Validations
 
   def validate_chartstring
     begin
-      validator=NucsValidator.new(account_number)
+      validator=NucsValidator.new(account_number, NUCore::COMMON_ACCOUNT)
     rescue NucsError => e
       self.errors.add(:account_number, e.message)
       return
@@ -23,9 +23,10 @@ module Validations
     @activity = validator.activity
     @program  = validator.program
 
-    unless validator.components_exist?
-      self.errors.add(:account_number, "not found or is inactive")
-      return
+    begin
+      validator.account_is_open!
+    rescue NucsError
+      self.errors.add(:account_number, "not found, is inactive, or is invalid")
     end
   end
 

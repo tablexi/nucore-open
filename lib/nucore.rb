@@ -1,5 +1,8 @@
 module NUCore
 
+  # 'magic number'; is simply the most frequently used account by NU
+  COMMON_ACCOUNT='75340'
+
   class PermissionDenied < SecurityError
   end
 

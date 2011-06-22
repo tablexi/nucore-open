@@ -6,9 +6,10 @@ namespace :chart_strings do
       next if fs.suspended?
       validator=NucsValidator.new(fs.account_number)
 
-      now=Time.zone.now
-      fs.expires_at=validator.latest_expiration
-      fs.expires_at=now if fs.expires_at.nil? || !validator.components_exist?
+      now, latest=Time.zone.now, validator.latest_expiration
+      # don't change date on previously expired accounts
+      next if latest.nil? && fs.expires_at && fs.expires_at < now
+      fs.expires_at=(latest.nil? || !validator.components_exist?) ? now : latest
 
       # TBD: Could we encounter a valid chart string not in the GL066?
       # If so it might mean that chart string never expires, and
