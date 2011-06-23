@@ -5,7 +5,7 @@ gem 'aasm',             '2.2.0'
 # to bundle mysql properly for OSX Snow Leopard be sure to configure build params first:
 # bundle config build.mysql --with-mysql-config=/usr/local/mysql/bin/mysql_config
 # Also, your DYLD_LIBRARY_PATH environment variable should include /usr/local/mysql/lib
-gem 'mysql2', '0.2.11', :git => 'https://github.com/brianmario/mysql2.git', :branch => '0.2.x'
+gem 'mysql2',           '0.2.11'
 gem 'activerecord-oracle_enhanced-adapter', '1.3.0'
 gem 'bluecloth',        '2.1.0'
 gem 'capistrano',       '2.6.0'
