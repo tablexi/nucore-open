@@ -69,7 +69,7 @@ class BundlesController < ApplicationController
 
   # GET /bundles/new
   def new
-    @bundle = current_facility.bundles.new(:account => '75340')
+    @bundle = current_facility.bundles.new()
   end
 
   # GET /facilities/alpha/bundles/1/edit

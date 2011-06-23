@@ -78,7 +78,7 @@ class InstrumentsController < ApplicationController
 
   # GET /instruments/new
   def new
-    @instrument = current_facility.instruments.new(:account => '75340')
+    @instrument = current_facility.instruments.new(:account => NUCore::COMMON_ACCOUNT)
   end
 
   # GET /items/1/edit

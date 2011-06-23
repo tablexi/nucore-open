@@ -71,7 +71,7 @@ class ServicesController < ApplicationController
 
   # GET /services/new
   def new
-    @service = current_facility.services.new(:account => '75340')
+    @service = current_facility.services.new(:account => NUCore::COMMON_ACCOUNT)
   end
 
   # GET /services/1/edit
