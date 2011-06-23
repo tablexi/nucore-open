@@ -55,6 +55,7 @@ module NucsValidatorHelper
   #   Overrides for the +NucsGl066+ Factory, if any
   def define_open_account(account, chart_string, budget_tree_attrs={}, gl066_attrs={})
     tree=Factory.create(:nucs_grants_budget_tree, budget_tree_attrs.merge(:account => account))
+    define_ge001(chart_string)
     define_gl066(chart_string, gl066_attrs.merge(:account => tree.roll_up_node))
   end
 
