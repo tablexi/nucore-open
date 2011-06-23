@@ -181,12 +181,33 @@ class Reservation < ActiveRecord::Base
   end
 
   def as_calendar_object(options={})
-    {
-      "title"  => "Reservation",
+    # initialize result with defaults
+    calendar_object = {
       "start"  => reserve_start_at.strftime("%a, %d %b %Y %H:%M:%S"),
       "end"    => reserve_end_at.strftime("%a, %d %b %Y %H:%M:%S"),
-      "allDay" => false
+      "allDay" => false,
+      "title"  => "Reservation",
     }
+
+    if options[:with_details]
+      if order
+        overrides = {
+          "admin"       => false,
+          "email"        => order.user.email,
+          "name"        => "#{order.user.full_name}",
+          "title"       => "#{order.user.first_name}\n#{order.user.last_name}",
+        }
+      else
+        overrides = {
+          "admin"       => true,
+          "title"       => "Admin\nReservation",
+        }
+      end
+
+      calendar_object.merge!(overrides)
+    end
+
+    calendar_object
   end
 
   #
