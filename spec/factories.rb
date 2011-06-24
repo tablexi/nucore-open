@@ -3,6 +3,7 @@
 end
 
 include NucsValidatorHelper
+include ActionDispatch::TestProcess
 
 
 Factory.define :facility, :class => Facility do |f|
@@ -202,7 +203,7 @@ Factory.define :journal do |j|
 end
 
 Factory.define :file_upload do |f|
-  f.swf_uploaded_data ActionController::TestUploadedFile.new("#{Rails.root}/spec/files/flash_file.swf", 'application/x-shockwave-flash')
+  f.swf_uploaded_data fixture_file_upload("#{Rails.root}/spec/files/flash_file.swf", 'application/x-shockwave-flash')
   f.name "#{Rails.root}/spec/files/flash_file.swf"
   f.file_type 'info'
 end
