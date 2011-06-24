@@ -283,7 +283,7 @@ namespace :demo  do
     })
 
     nufsaccount = NufsAccount.find_or_create_by_account_number({
-      :account_number => '111-2222222-33333333',
+      :account_number => '111-2222222-33333333-01',
       :description    => "Paul PI's Chart String",
       :expires_at     => Date.new(2012,1,1),
       :created_by     => user_director.id,
