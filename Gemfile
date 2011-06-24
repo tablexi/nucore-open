@@ -30,13 +30,12 @@ gem 'jquery-rails',     '>= 1.0.3'
 gem 'foreigner',        '1.0.3'
 
 group :development do
-   gem 'rspec', '1.3.0'
-   gem 'rspec-rails', '1.3.2'
+   gem 'rspec-rails', '2.6.1'
    gem 'spork', '0.7.5'
    gem 'ZenTest', '4.5.0'
-   gem 'autotest', '4.4.6'
-   gem 'autotest-rails', '4.1.0'
-   gem 'mocha', '0.9.7'
+   gem 'autotest', '4.4.6' # TODO: remove?
+   gem 'autotest-rails', '4.1.0' # TODO: remove?
+   gem 'mocha', '0.9.7' # TODO: remove?
    gem 'thoughtbot-factory_girl', '1.2.2'
    gem 'thoughtbot-shoulda', '2.10.2'
    gem 'ruby-debug19', '0.11.6'
