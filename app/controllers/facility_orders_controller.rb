@@ -18,17 +18,17 @@ class FacilityOrdersController < ApplicationController
     @order_details = case sort_column
       when 'order_number'
         current_facility.order_details.find(:all,
-                                            :joins => ['INNER JOIN orders ON orders.id = order_details.order_id'],
+                                            :joins => 'INNER JOIN orders ON orders.id = order_details.order_id',
                                             :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
                                             :order => "CONCAT(CONCAT(order_details.order_id, '-'), order_details.id) #{sort_direction}").paginate(:page => params[:page])
       when 'date'
         current_facility.order_details.find(:all,
-                                            :joins => ['INNER JOIN orders ON orders.id = order_details.order_id'],
+                                            :joins => 'INNER JOIN orders ON orders.id = order_details.order_id',
                                             :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
                                             :order => "orders.ordered_at #{sort_direction}").paginate(:page => params[:page])
       when 'product'
         current_facility.order_details.find(:all,
-                                            :joins => ['INNER JOIN orders ON orders.id = order_details.order_id'],
+                                            :joins => 'INNER JOIN orders ON orders.id = order_details.order_id',
                                             :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
                                             :order => "products.name #{sort_direction}, order_details.state, orders.ordered_at").paginate(:page => params[:page])
       when 'assigned_to'
