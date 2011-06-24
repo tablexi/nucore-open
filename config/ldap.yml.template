@@ -1,0 +1,12 @@
+# Config file for local LDAP settings.
+#
+# Required settings:
+#   'host' => Host of local LDAP server
+#   'port'  => Port of local LDAP server (usually port 389)
+#   'base' => Base Distinguished Name (Base DN) 
+#
+development:
+  host: localhost
+  port: 389
+  base: dc=example,dc=com
+  attribute: cn
