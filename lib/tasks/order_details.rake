@@ -17,7 +17,7 @@ namespace :order_details  do
             od.save!
           end
         rescue Exception => e
-          STDERR.puts "Error on Order # #{od} - #{e}"
+          STDERR.puts "Error on Order # #{od} - #{e}\n#{e.backtrace.join("\n")}"
           raise ActiveRecord::Rollback
         end
       end
