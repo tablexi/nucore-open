@@ -31,13 +31,13 @@ gem 'foreigner',        '1.0.3'
 
 group :development do
    gem 'rspec-rails', '2.6.1'
-   gem 'spork', '0.7.5'
-   gem 'ZenTest', '4.5.0'
+   gem 'spork', '0.7.5' # TODO: remove?
+   gem 'ZenTest', '4.5.0' # TODO: remove?
    gem 'autotest', '4.4.6' # TODO: remove?
    gem 'autotest-rails', '4.1.0' # TODO: remove?
    gem 'mocha', '0.9.7' # TODO: remove?
-   gem 'thoughtbot-factory_girl', '1.2.2'
-   gem 'thoughtbot-shoulda', '2.10.2'
+   gem 'factory_girl_rails', '1.0.1'
+   gem 'shoulda', '2.11.3'
    gem 'ruby-debug19', '0.11.6'
    gem 'single_test', '0.4.0'
    gem 'ci_reporter'
