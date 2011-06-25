@@ -61,7 +61,7 @@ class OrdersController < ApplicationController
     # send to choose_account:
     # if it's not set in the order OR
     # payment source isn't valid for this facility
-    if @order.account.nil? or @order.account.validate_against_product(@product, acting_user)
+    if @order.account.nil?
       session[:add_to_cart] = {:quantity => @quantity, :product_id => @product.id }
       redirect_to choose_account_order_url(@order)
     else
@@ -116,6 +116,12 @@ class OrdersController < ApplicationController
         flash[:error] = "An error was encountered while removing the product."
         redirect_to order_url(@order)
       end
+    end
+
+    # clear out account on the order if its now empty
+    if  @order.order_details.empty?
+      @order.account_id = nil
+      @order.save!
     end
   end
 
