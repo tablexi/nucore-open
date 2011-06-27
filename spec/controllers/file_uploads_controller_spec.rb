@@ -4,10 +4,8 @@ describe FileUploadsController do
   integrate_views
 
   it "should route" do
-    params_from(:get, "/facilities/alpha/services/1/files/upload").should ==
-      {:controller => 'file_uploads', :action => 'upload', :facility_id => 'alpha', :product => 'services', :product_id => '1'}
-    params_from(:post, "/facilities/alpha/services/1/files").should ==
-      {:controller => 'file_uploads', :action => 'create', :facility_id => 'alpha', :product => 'services', :product_id => '1'}
+    { :get => "/facilities/alpha/services/1/files/upload" }.should route_to(:controller => 'file_uploads', :action => 'upload', :facility_id => 'alpha', :product => 'services', :product_id => '1')
+    { :post => "/facilities/alpha/services/1/files" }.should route_to(:controller => 'file_uploads', :action => 'create', :facility_id => 'alpha', :product => 'services', :product_id => '1')
     # params_from(:post, "/facilities/alpha/services/1/yui_files").should == 
     #   {:controller => 'file_uploads', :action => 'yui_create', :facility_id => 'alpha', :product => 'services', :product_id => '1'}
   end

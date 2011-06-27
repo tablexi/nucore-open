@@ -4,9 +4,9 @@ describe FacilitiesController do
   integrate_views
 
   it "should route" do
-    params_from(:get, "/facilities").should == {:controller => 'facilities', :action => 'index'}
-    params_from(:get, "/facilities/url_name").should == {:controller => 'facilities', :action => 'show', :id => 'url_name'}
-    params_from(:get, "/facilities/url_name/manage").should == {:controller => 'facilities', :action => 'manage', :id => 'url_name'}
+    { :get => "/facilities" }.should route_to(:controller => 'facilities', :action => 'index')
+    { :get => "/facilities/url_name" }.should route_to(:controller => 'facilities', :action => 'show', :id => 'url_name')
+    { :get => "/facilities/url_name/manage" }.should route_to(:controller => 'facilities', :action => 'manage', :id => 'url_name')
   end
 
   before(:all) { create_users }

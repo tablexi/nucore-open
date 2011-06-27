@@ -4,8 +4,8 @@ describe InstrumentsController do
   integrate_views
 
   it "should route" do
-    params_from(:get, "/facilities/alpha/instruments").should == {:controller => 'instruments', :action => 'index', :facility_id => 'alpha'}
-    params_from(:get, "/facilities/alpha/instruments/1/manage").should == {:controller => 'instruments', :action => 'manage', :id => '1', :facility_id => 'alpha'}
+    { :get => "/facilities/alpha/instruments" }.should route_to(:controller => 'instruments', :action => 'index', :facility_id => 'alpha')
+    { :get => "/facilities/alpha/instruments/1/manage" }.should route_to(:controller => 'instruments', :action => 'manage', :id => '1', :facility_id => 'alpha')
   end
 
   before(:all) { create_users }

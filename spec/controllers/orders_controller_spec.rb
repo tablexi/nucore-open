@@ -7,16 +7,16 @@ describe OrdersController do
 
 
   it "should route" do
-    params_from(:get, "/orders/cart").should == {:controller => "orders", :action => "cart"}
-    params_from(:get, "/orders/1").should    == {:controller => "orders", :action => "show", :id => "1"}
-    params_from(:put, "/orders/1").should    == {:controller => "orders", :action => "update", :id => "1"}
-    params_from(:put, "/orders/1/add").should == {:controller => "orders", :action => "add", :id => "1"}
-    params_from(:put, "/orders/1/remove/3").should == {:controller => "orders", :action => "remove", :id => "1", :order_detail_id => "3"}
-    params_from(:put, "/orders/1").should == {:controller => "orders", :action => "update", :id => "1"}
-    params_from(:put, "/orders/1/clear").should == {:controller => "orders", :action => "clear", :id => "1"}
-    params_from(:put, "/orders/1/purchase").should == {:controller => "orders", :action => "purchase", :id => "1"}
-    params_from(:get, "/orders/1/receipt").should == {:controller => "orders", :action => "receipt", :id => "1"}
-    params_from(:get, "/orders/1/choose_account").should == {:controller => "orders", :action => "choose_account", :id => "1"}
+    { :get => "/orders/cart" }.should route_to(:controller => "orders", :action => "cart")
+    { :get => "/orders/1" }.should route_to(:controller => "orders", :action => "show", :id => "1")
+    { :put => "/orders/1" }.should route_to(:controller => "orders", :action => "update", :id => "1")
+    { :put => "/orders/1/add" }.should route_to(:controller => "orders", :action => "add", :id => "1")
+    { :put => "/orders/1/remove/3" }.should route_to(:controller => "orders", :action => "remove", :id => "1", :order_detail_id => "3")
+    { :put => "/orders/1" }.should route_to(:controller => "orders", :action => "update", :id => "1")
+    { :put => "/orders/1/clear" }.should route_to(:controller => "orders", :action => "clear", :id => "1")
+    { :put => "/orders/1/purchase" }.should route_to(:controller => "orders", :action => "purchase", :id => "1")
+    { :get => "/orders/1/receipt" }.should route_to(:controller => "orders", :action => "receipt", :id => "1")
+    { :get => "/orders/1/choose_account" }.should route_to(:controller => "orders", :action => "choose_account", :id => "1")
   end
 
   before :each do

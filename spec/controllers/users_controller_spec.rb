@@ -4,8 +4,8 @@ describe UsersController do
   integrate_views
 
   it "should route" do
-    params_from(:get, "/facilities/url_name/users/new_search").should == {:controller => 'users', :action => 'new_search', :facility_id => 'url_name'}
-    params_from(:post, "/facilities/url_name/users").should == {:controller => 'users', :action => 'create', :facility_id => 'url_name'}
+    { :get => "/facilities/url_name/users/new_search" }.should route_to(:controller => 'users', :action => 'new_search', :facility_id => 'url_name')
+    { :post => "/facilities/url_name/users" }.should route_to(:controller => 'users', :action => 'create', :facility_id => 'url_name')
   end
 
   before(:all) { create_users }

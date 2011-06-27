@@ -4,9 +4,9 @@ describe AccountsController do
   integrate_views
   
   it "should route" do
-    params_from(:get, "/accounts").should == {:controller => 'accounts', :action => 'index'}
-    params_from(:get, "/accounts/1").should == {:controller => 'accounts', :action => 'show', :id => '1'}
-    params_from(:get, "/accounts/1/user_search").should == {:controller => 'accounts', :action => 'user_search', :id => '1'}
+    { :get => "/accounts" }.should route_to(:controller => 'accounts', :action => 'index')
+    { :get => "/accounts/1" }.should route_to(:controller => 'accounts', :action => 'show', :id => '1')
+    { :get => "/accounts/1/user_search" }.should route_to(:controller => 'accounts', :action => 'user_search', :id => '1')
   end
 
   before(:all) { create_users }
