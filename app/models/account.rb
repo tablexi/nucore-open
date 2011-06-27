@@ -14,10 +14,10 @@ class Account < ActiveRecord::Base
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
   validates_length_of :description, :maximum => 50
 
-  def validate
+  validate do |acct|
     # an account owner if required
-    if !self.account_users.any?{ |au| au.user_role == 'Owner' }
-      self.errors.add_to_base("Must have an account owner")
+    if !acct.account_users.any?{ |au| au.user_role == 'Owner' }
+      acct.errors.add(:base, "Must have an account owner")
     end
   end
 

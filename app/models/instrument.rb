@@ -14,6 +14,8 @@ class Instrument < Product
 
   scope :relay_ip, :conditions => ["relay_ip IS NOT NULL"]
 
+  after_create :set_default_pricing
+
   def current_instrument_status
     instrument_statuses.find(:first, :order => 'created_at DESC')
   end
@@ -111,7 +113,7 @@ class Instrument < Product
     @@relay_types
   end
 
-  def after_create
+  def set_default_pricing
     [ PriceGroup.northwestern.first, PriceGroup.external.first ].each do |pg|
       PriceGroupProduct.create!(:product => self, :price_group => pg, :reservation_window => PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)
     end

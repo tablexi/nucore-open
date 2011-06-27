@@ -70,11 +70,11 @@ RSpec.configure do |config|
 
     # initialize price groups
     @nupg = PriceGroup.find_or_create_by_name(:name => 'Northwestern Base Rate', :is_internal => true, :display_order => 1)
-    @nupg.save(false)
+    @nupg.save(:validate => false)
     @ccpg = PriceGroup.find_or_create_by_name(:name => 'Cancer Center Rate', :is_internal => true, :display_order => 2)
-    @ccpg.save(false)
+    @ccpg.save(:validate => false)
     @epg = PriceGroup.find_or_create_by_name(:name => 'External Rate', :is_internal => false, :display_order => 3)
-    @epg.save(false)
+    @epg.save(:validate => false)
   end
 end
 
