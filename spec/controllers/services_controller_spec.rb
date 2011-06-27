@@ -1,7 +1,7 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe ServicesController do
-  integrate_views
+  render_views
 
   it "should route" do
     { :get => "/facilities/alpha/services" }.should route_to(:controller => 'services', :action => 'index', :facility_id => 'alpha')

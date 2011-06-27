@@ -1,7 +1,7 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe FacilitiesController do
-  integrate_views
+  render_views
 
   it "should route" do
     { :get => "/facilities" }.should route_to(:controller => 'facilities', :action => 'index')

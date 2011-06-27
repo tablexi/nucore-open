@@ -1,7 +1,7 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe AccountsController do
-  integrate_views
+  render_views
   
   it "should route" do
     { :get => "/accounts" }.should route_to(:controller => 'accounts', :action => 'index')

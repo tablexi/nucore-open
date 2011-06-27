@@ -1,7 +1,7 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe ScheduleRulesController do
-  integrate_views
+  render_views
   
   before(:all) { create_users }
 
