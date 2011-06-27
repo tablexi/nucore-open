@@ -15,18 +15,18 @@ class ScheduleRule < ActiveRecord::Base
   validate :at_least_one_day_selected, :end_time_is_after_start_time, :end_time_is_valid, :no_overlap_with_existing_rules, :no_conflict_with_existing_reservation
 
   def at_least_one_day_selected
-    errors.add_to_base("Please select at least one day") unless
+    errors.add(:base, "Please select at least one day") unless
       on_sun || on_mon || on_tue || on_wed || on_thu || on_fri || on_sat
   end
 
   def end_time_is_after_start_time
     return if start_hour.nil? || end_hour.nil? || start_min.nil? || end_min.nil?
-    errors.add_to_base("End time must be after start time") if (end_hour < start_hour) || (end_hour == start_hour && end_min <= start_min)
+    errors.add(:base, "End time must be after start time") if (end_hour < start_hour) || (end_hour == start_hour && end_min <= start_min)
   end
 
   def end_time_is_valid
     if end_hour == 24 and end_min.to_i != 0
-      errors.add_to_base("End time is invalid")
+      errors.add(:base, "End time is invalid")
     end
   end
 
@@ -43,7 +43,7 @@ class ScheduleRule < ActiveRecord::Base
            self.end_time_int.between?(rule.start_time_int, rule.end_time_int) or
            (self.start_time_int < rule.start_time_int and self.end_time_int > rule.end_time_int)
           # overlap
-          errors.add_to_base("This rule conflicts with an existing rule on #{day}")
+          errors.add(:base, "This rule conflicts with an existing rule on #{day}")
         end
       end
     end

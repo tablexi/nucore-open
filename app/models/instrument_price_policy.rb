@@ -21,7 +21,7 @@ class InstrumentPricePolicy < PricePolicy
   end
 
   def has_usage_or_reservation_rate?
-    errors.add_to_base("You must enter a reservation rate or usage rate for all price groups") if usage_rate.nil? && reservation_rate.nil?
+    errors.add(:base, "You must enter a reservation rate or usage rate for all price groups") if usage_rate.nil? && reservation_rate.nil?
   end
   
   def self.current_date(instrument)

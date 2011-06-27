@@ -29,7 +29,7 @@ class FacilityJournalsController < ApplicationController
     Journal.transaction do
       begin
         # blank input
-        @pending_journal.errors.add_to_base("Please select a journal status") if params[:journal_status].blank?
+        @pending_journal.errors.add(:base, "Please select a journal status") if params[:journal_status].blank?
 
         # failed
         if params[:journal_status] == 'failed'
@@ -57,7 +57,7 @@ class FacilityJournalsController < ApplicationController
         flash[:notice] = "The journal file has been closed"
         redirect_to facility_journals_path and return
       rescue Exception => e
-        @pending_journal.errors.add_to_base("An error was encountered while trying to close the journal")
+        @pending_journal.errors.add(:base, "An error was encountered while trying to close the journal")
         raise ActiveRecord::Rollback
       end
     end
@@ -72,7 +72,7 @@ class FacilityJournalsController < ApplicationController
 
     @update_order_details = OrderDetail.find(params[:order_detail_ids] || [])
     if @update_order_details.empty?
-      @journal.errors.add_to_base("No orders were selected to journal")
+      @journal.errors.add(:base, "No orders were selected to journal")
     else
       if Journal.order_details_span_fiscal_years?(@update_order_details)
         flash[:error] = 'Journals may not span multiple fiscal years. Please select only orders in the same fiscal year.'
@@ -89,7 +89,7 @@ class FacilityJournalsController < ApplicationController
             flash[:notice] = "The journal file has been created successfully"
             redirect_to facility_journals_path and return
           rescue Exception => e
-            @journal.errors.add_to_base("An error was encountered while trying to create the journal #{e}")
+            @journal.errors.add(:base, "An error was encountered while trying to create the journal #{e}")
             Rails.logger.error(e.backtrace.join("\n"))
             raise ActiveRecord::Rollback
           end

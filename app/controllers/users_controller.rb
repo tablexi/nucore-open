@@ -37,7 +37,7 @@ class UsersController < ApplicationController
       flash[:notice] = 'The user was successfully created.'
       redirect_to facility_users_url
     rescue Exception => e
-      @user.errors.add_to_base(e) if @user.errors.empty?
+      @user.errors.add(:base, e) if @user.errors.empty?
       render :action => "new" and return
     end
 

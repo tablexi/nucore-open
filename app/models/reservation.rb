@@ -112,7 +112,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def does_not_conflict_with_other_reservation
-    errors.add_to_base("The reservation conflicts with another reservation") unless does_not_conflict_with_other_reservation?
+    errors.add(:base, "The reservation conflicts with another reservation") unless does_not_conflict_with_other_reservation?
   end
 
   def satisfies_minimum_length?
@@ -122,7 +122,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def satisfies_minimum_length
-    errors.add_to_base("The reservation is too short") unless satisfies_minimum_length?
+    errors.add(:base, "The reservation is too short") unless satisfies_minimum_length?
   end
 
   def satisfies_maximum_length?
@@ -133,7 +133,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def satisfies_maximum_length
-    errors.add_to_base("The reservation is too long") unless satisfies_maximum_length?
+    errors.add(:base, "The reservation is too long") unless satisfies_maximum_length?
   end
 
   # checks that the reservation is within the longest window for the groups the user is in
@@ -145,7 +145,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def in_window
-    errors.add_to_base("The reservation is too far in advance") unless in_window?
+    errors.add(:base, "The reservation is too far in advance") unless in_window?
   end
 
   def in_the_future?
@@ -157,7 +157,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def instrument_is_available_to_reserve
-    errors.add_to_base("The reservation spans time that the instrument is unavailable for reservation") unless instrument_is_available_to_reserve?
+    errors.add(:base, "The reservation spans time that the instrument is unavailable for reservation") unless instrument_is_available_to_reserve?
   end
 
   def instrument_is_available_to_reserve? (start_at = self.reserve_start_at, end_at = self.reserve_end_at)

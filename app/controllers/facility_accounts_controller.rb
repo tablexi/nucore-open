@@ -73,10 +73,10 @@ class FacilityAccountsController < ApplicationController
           @account.set_expires_at!
 
           unless @account.expires_at
-            @account.errors.add_to_base('The chart string appears to be invalid. Either the fund, department, project, or activity could not be found.')
+            @account.errors.add(:base, 'The chart string appears to be invalid. Either the fund, department, project, or activity could not be found.')
           end
         rescue NucsError => e
-          @account.errors.add_to_base(e.message)
+          @account.errors.add(:base, e.message)
         end
 
         return render :action => 'new' if @account.errors.on_base
