@@ -17,6 +17,8 @@ class Product < ActiveRecord::Base
   scope :active_plus_hidden, :conditions => { :is_archived => false}
   scope :archived,           :conditions => { :is_archived => true }
   scope :not_archived,       :conditions => { :is_archived => false }
+
+  after_create :set_default_pricing
   
   def initial_order_status
     self[:initial_order_status] or OrderStatus.default_order_status
@@ -63,7 +65,7 @@ class Product < ActiveRecord::Base
     (name || '') + (is_archived? ? ' (inactive)' : '')
   end
 
-  def after_create
+  def set_default_pricing
     [ PriceGroup.northwestern.first, PriceGroup.external.first ].each do |pg|
       PriceGroupProduct.create!(:product => self, :price_group => pg)
     end
