@@ -28,6 +28,7 @@ gem 'nokogiri',         '1.4.4'
 gem 'devise_ldap_authenticatable', '0.4.4'
 gem 'jquery-rails',     '>= 1.0.3'
 gem 'foreigner',        '1.0.3'
+gem 'awesome_nested_set', '2.0.1'
 
 group :development do
    gem 'rspec-rails', '2.6.1'
