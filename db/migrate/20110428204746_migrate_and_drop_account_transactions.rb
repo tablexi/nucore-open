@@ -35,7 +35,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
       od.actual_cost=nil
       od.actual_subsidy=nil
       od.price_policy=nil
-      od.save(false)
+      od.save(:validate => false)
     end
 
     Statement.all.each do |stmt|

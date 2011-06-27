@@ -53,12 +53,12 @@ describe InstrumentPricePolicy do
 
     it "should return the date for the current policies" do
       @ipp.start_date=Date.today - 7.days
-      @ipp.save(false) #save without validations
+      @ipp.save(:validate => false) #save without validations
       @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
       InstrumentPricePolicy.current_date(@instrument).to_date.should == Date.today - 7.days
 
       @ipp = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group => @price_group))
-      @ipp.save(false) #save without validations
+      @ipp.save(:validate => false) #save without validations
       InstrumentPricePolicy.current_date(@instrument).to_date.should == Date.today
     end
 

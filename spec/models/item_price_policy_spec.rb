@@ -78,12 +78,12 @@ describe ItemPricePolicy do
 
     it "should return the date for the current policies" do
       ipp = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today - 7.days, :price_group_id => @price_group.id)
-      ipp.save(false) #save without validations
+      ipp.save(:validate => false) #save without validations
       @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 7.days, :price_group_id => @price_group.id)
       ItemPricePolicy.current_date(@item).to_date.should == Date.today - 7.days
 
       ipp = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id)
-      ipp.save(false) #save without validations
+      ipp.save(:validate => false) #save without validations
       ItemPricePolicy.current_date(@item).to_date.should == Date.today
     end
 

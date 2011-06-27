@@ -239,7 +239,7 @@ describe Instrument do
       assert @price_group_product.save
       @options       = Factory.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id)
       @price_policy2 = @instrument.instrument_price_policies.new(@options)
-      @price_policy2.save(false) # save without validations
+      @price_policy2.save(:validate => false) # save without validations
       assert_equal 15, @instrument.max_reservation_window
       assert_equal (Time.zone.now+15.days).to_date, @instrument.last_reserve_date
     end

@@ -79,12 +79,12 @@ describe ServicePricePolicy do
 
     it "should return the date for the current policies" do
       ipp = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today - 7.days, :price_group_id => @price_group.id)
-      ipp.save(false) #save without validations
+      ipp.save(:validate => false) #save without validations
       @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today + 7.days, :price_group_id => @price_group.id)
       ServicePricePolicy.current_date(@service).to_date.should == Date.today - 7.days
 
       ipp = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id)
-      ipp.save(false) #save without validations
+      ipp.save(:validate => false) #save without validations
       ServicePricePolicy.current_date(@service).to_date.should == Date.today
     end
 
