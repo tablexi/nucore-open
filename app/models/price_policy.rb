@@ -17,7 +17,7 @@ class PricePolicy < ActiveRecord::Base
     end
   end
 
-  named_scope :active, lambda {{ :conditions => [ "start_date <= ?", Time.zone.now ], :order => "start_date DESC" }}
+  scope :active, lambda {{ :conditions => [ "start_date <= ?", Time.zone.now ], :order => "start_date DESC" }}
 
 
   #

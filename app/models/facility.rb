@@ -29,7 +29,7 @@ class Facility < ActiveRecord::Base
   validates_format_of    :abbreviation, :with => /^[a-zA-Z\d\-\.\s]+$/, :message => "may include letters, numbers, hyphens, spaces, or periods only"
   validates_format_of    :journal_mask, :with => /^C\d{2}$/, :message => "must be in the format C##"
 
-  named_scope :active, :conditions => { :is_active => true }
+  scope :active, :conditions => { :is_active => true }
 
   def destroy
     # TODO: can you ever delete a facility? Currently no.

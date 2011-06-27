@@ -4,9 +4,9 @@ class ServicePricePolicy < PricePolicy
   validates_numericality_of :unit_cost, :unless => :restrict_purchase
   validate :subsidy_less_than_rate?, :unless => lambda { |pp| pp.unit_cost.nil? || pp.unit_subsidy.nil? }
 
-  named_scope :current,  lambda { |service|             { :conditions => [dateize('start_date', ' = ? AND service_id = ?'), current_date(service), service.id] } }
-  named_scope :next,     lambda { |service|             { :conditions => [dateize('start_date', ' = ? AND service_id = ?'), next_date(service), service.id] } }
-  named_scope :for_date, lambda { |service, start_date| { :conditions => [dateize('start_date', ' = ? AND service_id = ?'), start_date, service.id] } }
+  scope :current,  lambda { |service|             { :conditions => [dateize('start_date', ' = ? AND service_id = ?'), current_date(service), service.id] } }
+  scope :next,     lambda { |service|             { :conditions => [dateize('start_date', ' = ? AND service_id = ?'), next_date(service), service.id] } }
+  scope :for_date, lambda { |service, start_date| { :conditions => [dateize('start_date', ' = ? AND service_id = ?'), start_date, service.id] } }
 
   before_save { |o| o.unit_subsidy = 0 if o.unit_subsidy.nil? && !o.unit_cost.nil? }
 

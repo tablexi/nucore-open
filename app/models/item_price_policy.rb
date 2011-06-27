@@ -4,9 +4,9 @@ class ItemPricePolicy < PricePolicy
   validates_numericality_of :unit_cost, :unless => :restrict_purchase
   validate :subsidy_less_than_rate?, :unless => lambda { |pp| pp.unit_cost.nil? || pp.unit_subsidy.nil? }
 
-  named_scope :current,  lambda { |item|             { :conditions => [dateize('start_date', ' = ? AND item_id = ?'), current_date(item), item.id] } }
-  named_scope :next,     lambda { |item|             { :conditions => [dateize('start_date', ' = ? AND item_id = ?'), next_date(item), item.id] } }
-  named_scope :for_date, lambda { |item, start_date| { :conditions => [dateize('start_date', ' = ? AND item_id = ?'), start_date, item.id] } }
+  scope :current,  lambda { |item|             { :conditions => [dateize('start_date', ' = ? AND item_id = ?'), current_date(item), item.id] } }
+  scope :next,     lambda { |item|             { :conditions => [dateize('start_date', ' = ? AND item_id = ?'), next_date(item), item.id] } }
+  scope :for_date, lambda { |item, start_date| { :conditions => [dateize('start_date', ' = ? AND item_id = ?'), start_date, item.id] } }
 
   before_save { |o| o.unit_subsidy = 0 if o.unit_subsidy.nil? && !o.unit_cost.nil? }
 

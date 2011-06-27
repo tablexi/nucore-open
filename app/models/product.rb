@@ -13,10 +13,10 @@ class Product < ActiveRecord::Base
   validate_url_name :url_name
   validates_inclusion_of :requires_approval, :is_archived, :is_hidden, :in => [true, false, 0, 1]
   
-  named_scope :active,             :conditions => { :is_archived => false, :is_hidden => false }
-  named_scope :active_plus_hidden, :conditions => { :is_archived => false}
-  named_scope :archived,           :conditions => { :is_archived => true }
-  named_scope :not_archived,       :conditions => { :is_archived => false }
+  scope :active,             :conditions => { :is_archived => false, :is_hidden => false }
+  scope :active_plus_hidden, :conditions => { :is_archived => false}
+  scope :archived,           :conditions => { :is_archived => true }
+  scope :not_archived,       :conditions => { :is_archived => false }
   
   def initial_order_status
     self[:initial_order_status] or OrderStatus.default_order_status

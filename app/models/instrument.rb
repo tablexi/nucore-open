@@ -12,7 +12,7 @@ class Instrument < Product
   validates_numericality_of :min_reserve_mins, :max_reserve_mins, :only_integer => true, :greater_than_or_equal_to => 0, :allow_nil => true
   validates_uniqueness_of :relay_port, :scope => [:relay_ip]
 
-  named_scope :relay_ip, :conditions => ["relay_ip IS NOT NULL"]
+  scope :relay_ip, :conditions => ["relay_ip IS NOT NULL"]
 
   def current_instrument_status
     instrument_statuses.find(:first, :order => 'created_at DESC')

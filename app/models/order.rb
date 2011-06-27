@@ -7,7 +7,7 @@ class Order < ActiveRecord::Base
 
   validates_presence_of :user_id, :created_by
 
-  named_scope :for_user, lambda { |user| { :conditions => ['user_id = ? AND ordered_at IS NOT NULL AND state = ?', user.id, 'purchased'] } }
+  scope :for_user, lambda { |user| { :conditions => ['user_id = ? AND ordered_at IS NOT NULL AND state = ?', user.id, 'purchased'] } }
 
   # BEGIN acts_as_state_machhine
   include AASM
