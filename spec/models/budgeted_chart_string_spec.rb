@@ -19,7 +19,7 @@ describe BudgetedChartString do
   end
 
   it "should parse file" do
-    filename = "#{RAILS_ROOT}/spec/files/budgeted_chart_strings1.txt"
+    filename = "#{Rails.root}/spec/files/budgeted_chart_strings1.txt"
     BudgetedChartString.delete_all
     BudgetedChartString.import(filename)
     # should have 2 records plus the 4 test records
