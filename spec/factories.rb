@@ -1,5 +1,5 @@
 [ 'factories', 'nucs_validator_helper' ].each do |nucs_file|
-  require File.join(File.dirname(__FILE__), '..', 'vendor', 'plugins', 'nucs', 'spec', nucs_file)
+  require File.join(File.dirname(__FILE__), '..', 'vendor', 'engines', 'nucs', 'spec', nucs_file)
 end
 
 include NucsValidatorHelper
