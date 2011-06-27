@@ -8,6 +8,8 @@ class FacilityAccount < ActiveRecord::Base
   scope :active,   :conditions => { :is_active => true }
   scope :inactive, :conditions => { :is_active => false }
 
+  validate :validate_chartstring
+
   def to_s
     "#{account_number} (#{revenue_account})"
   end
@@ -32,7 +34,7 @@ class FacilityAccount < ActiveRecord::Base
     split_account_number[5]
   end
 
-  def validate
+  def validate_chartstring
     return if Rails.env.test?
 
     begin
