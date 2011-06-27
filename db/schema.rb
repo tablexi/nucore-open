@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110608222657) do
+ActiveRecord::Schema.define(:version => 20110627182814) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -372,17 +372,17 @@ ActiveRecord::Schema.define(:version => 20110608222657) do
   add_index "product_users", ["product_id"], :name => "fk_products"
 
   create_table "products", :force => true do |t|
-    t.string   "type",                    :limit => 50,  :null => false
-    t.integer  "facility_id",                            :null => false
-    t.string   "name",                    :limit => 200, :null => false
-    t.string   "url_name",                :limit => 50,  :null => false
+    t.string   "type",                    :limit => 50,                     :null => false
+    t.integer  "facility_id",                                               :null => false
+    t.string   "name",                    :limit => 200,                    :null => false
+    t.string   "url_name",                :limit => 50,                     :null => false
     t.text     "description"
-    t.boolean  "requires_approval",                      :null => false
+    t.boolean  "requires_approval",                                         :null => false
     t.integer  "initial_order_status_id"
-    t.boolean  "is_archived",                            :null => false
-    t.boolean  "is_hidden",                              :null => false
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.boolean  "is_archived",                                               :null => false
+    t.boolean  "is_hidden",                                                 :null => false
+    t.datetime "created_at",                                                :null => false
+    t.datetime "updated_at",                                                :null => false
     t.string   "relay_ip",                :limit => 15
     t.integer  "relay_port"
     t.boolean  "auto_logout"
@@ -394,6 +394,7 @@ ActiveRecord::Schema.define(:version => 20110608222657) do
     t.string   "relay_password",          :limit => 50
     t.string   "account",                 :limit => 5
     t.string   "relay_type",              :limit => 50
+    t.boolean  "show_details",                           :default => false, :null => false
   end
 
   add_index "products", ["facility_account_id"], :name => "fk_facility_accounts"
