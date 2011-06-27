@@ -45,7 +45,7 @@ end
 def it_should_require_login
   it 'should require login' do
     do_request
-    should redirect_to(new_user_session_url(:unauthenticated => true))
+    should redirect_to(new_user_session_url)
   end
 end
 
