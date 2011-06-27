@@ -1,6 +1,6 @@
 class Facility < ActiveRecord::Base
   attr_protected :journal_mask
-  before_validation_on_create :set_journal_mask
+  before_validation :set_journal_mask, :on => :create
 
   has_many :order_statuses, :finder_sql => 'SELECT * FROM order_statuses WHERE facility_id = #{self.id} or facility_id IS NULL order by lft'
   has_many :items
