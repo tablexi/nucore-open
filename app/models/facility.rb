@@ -41,7 +41,7 @@ class Facility < ActiveRecord::Base
   end
 
   def to_param
-    if errors.on(:url_name).nil?
+    if errors[:url_name].empty?
       url_name
     else
       url_name_was

@@ -137,7 +137,7 @@ describe FileUploadsController do
       assigns[:product].should == @service
       assigns[:survey].should be_kind_of ExternalService
       assigns[:survey].should be_new_record
-      assigns[:survey].errors.on_base.should_not be_nil
+      assigns[:survey].errors[:base].should_not be_empty
     end
 
     it_should_allow_managers_only :redirect do

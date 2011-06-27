@@ -38,21 +38,21 @@ describe Instrument do
     
     it "should not allow reservation in the past" do
       @reservation = @instrument.reservations.create(:reserve_start_at => Time.zone.now - 1.hour, :reserve_end_at => Time.zone.now)
-      assert @reservation.errors.on(:reserve_start_at)
+      assert @reservation.errors[:reserve_start_at]
     end
     
     it "should not allow 1 hour reservation for a time not between 9 and 5" do
       # 8 am - 9 am
       @start       = Time.zone.now.end_of_day + 1.second + 8.hours
       @reservation = @instrument.reservations.create(:reserve_start_at => @start, :reserve_end_at => @start + 1.hour)
-      assert @reservation.errors.on(:base)
+      assert @reservation.errors[:base]
     end
 
     it "should not allow a 2 hour reservation" do
       # 8 am - 10 pam
       @start       = Time.zone.now.end_of_day + 1.second + 9.hours
       @reservation = @instrument.reservations.create(:reserve_start_at => @start, :reserve_end_at => @start + 2.hours)
-      assert @reservation.errors.on(:base)
+      assert @reservation.errors[:base]
     end
 
     it "should allow 1 hour reservations between 9 and 5" do
@@ -86,24 +86,24 @@ describe Instrument do
       assert @reservation1.valid?
       # not allow 10 am - 11 am
       @reservation2 = @instrument.reservations.create(:reserve_start_at => @start, :reserve_end_at => @start+1.hour)
-      assert @reservation2.errors.on(:base)
+      assert @reservation2.errors[:base]
       # not allow 9:30 am - 10:30 am
       @reservation2 = @instrument.reservations.create(:reserve_start_at => @start-30.minutes, :reserve_end_at => @start+30.minutes)
-      assert @reservation2.errors.on(:base)
+      assert @reservation2.errors[:base]
       # not allow 9:30 am - 10:30 am, using reserve_start_date, reserve_start_hour, reserve_start_min, reserve_start_meridian
       @options      = {:reserve_start_date => @start.strftime("%m/%d/%Y"), :reserve_start_hour => '9', :reserve_start_min => '30',
                        :reserve_start_meridian => 'am', :duration_value => '60', :duration_unit => 'minutes'}
       @reservation2 = @instrument.reservations.create(@options)
-      assert @reservation2.errors.on(:base)
+      assert @reservation2.errors[:base]
       # not allow 9:30 am - 11:30 am
       @reservation2 = @instrument.reservations.create(:reserve_start_at => @start-30.minutes, :reserve_end_at => @start+90.minutes)
-      assert @reservation2.errors.on(:base)
+      assert @reservation2.errors[:base]
       # not allow 10:30 am - 10:45 am
       @reservation2 = @instrument.reservations.create(:reserve_start_at => @start+30.minutes, :reserve_end_at => @start+45.minutes)
-      assert @reservation2.errors.on(:base)
+      assert @reservation2.errors[:base]
       # not allow 10:30 am - 11:30 am
       @reservation2 = @instrument.reservations.create(:reserve_start_at => @start+30.minutes, :reserve_end_at => @start+90.minutes)
-      assert @reservation2.errors.on(:base)
+      assert @reservation2.errors[:base]
     end
 
     it "should allow adjacent reservations" do

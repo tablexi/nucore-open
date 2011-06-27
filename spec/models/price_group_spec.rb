@@ -19,7 +19,7 @@ describe PriceGroup do
   it "should require unique name within a facility" do
     @price_group2 = @facility.price_groups.build(Factory.attributes_for(:price_group).update(:name => @price_group.name))
     @price_group2.should_not be_valid
-    @price_group2.errors.on(:name).should_not be_nil
+    @price_group2.errors[:name].should_not be_nil
   end
 
 

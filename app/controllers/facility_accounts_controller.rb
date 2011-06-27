@@ -79,7 +79,7 @@ class FacilityAccountsController < ApplicationController
           @account.errors.add(:base, e.message)
         end
 
-        return render :action => 'new' if @account.errors.on_base
+        return render :action => 'new' unless @account.errors[:base].empty?
     end
 
     if @account.save

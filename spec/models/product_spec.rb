@@ -9,7 +9,7 @@ describe Product do
 
   it "should not create using factory" do
     @product = Product.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
-    @product.errors.on(:type).should_not be_nil
+    @product.errors[:type].should_not be_nil
   end
 
   it "should create map to default price groups" do

@@ -23,14 +23,14 @@ describe FacilityAccount do
         @options[:revenue_account] = "9999"
         @account = FacilityAccount.create(@options)
         assert @account.invalid?
-        assert @account.errors.on(:revenue_account)
+        assert @account.errors[:revenue_account]
       end
       
       it "should not allow account > 5 digits" do
         @options[:revenue_account] = "111111"
         @account = FacilityAccount.create(@options)
         assert @account.invalid?
-        assert @account.errors.on(:revenue_account)
+        assert @account.errors[:revenue_account]
       end
     end
   
@@ -82,14 +82,14 @@ describe FacilityAccount do
       @options[:account_number] = '123-1234567-12345678-12-1234-12345'
       @account = FacilityAccount.create(@options)
       assert !@account.valid?
-      assert @account.errors.on(:account_number)
+      assert @account.errors[:account_number]
     end
 
     it "should not allow invalid account number" do
       @options[:account_number] = '123'
       @account = FacilityAccount.create(@options)
       assert !@account.valid?
-      assert @account.errors.on(:account_number)
+      assert @account.errors[:account_number]
     end
 
     # we no longer validate facility accounts against BCS table
@@ -98,7 +98,7 @@ describe FacilityAccount do
     #  @options[:account_number] = '123-1234567'
     #  @account = FacilityAccount.create(@options)
     #  assert !@account.valid?
-    #  assert_equal "Account has expired", @account.errors.on(:base)
+    #  assert_equal "Account has expired", @account.errors[:base]
     #end
 
     # we no longer validate facility accounts against BCS table
@@ -107,7 +107,7 @@ describe FacilityAccount do
     #  @options[:account_number] = '123-1234567'
     #  @account = FacilityAccount.create(@options)
     #  assert !@account.valid?
-    #  assert_equal "Account is not active", @account.errors.on(:base)
+    #  assert_equal "Account is not active", @account.errors[:base]
     #end
   end
 end
