@@ -189,7 +189,7 @@ class Reservation < ActiveRecord::Base
       "title"  => "Reservation",
     }
 
-    if options[:with_details] || order_detail.try(:product).try(:show_details)
+    if options[:with_details]
       if order
         overrides = {
           "admin"       => false,
