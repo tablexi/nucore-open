@@ -72,6 +72,8 @@ Factory.define :purchase_order_account, :class => PurchaseOrderAccount do |o|
 end
 
 Factory.define :account_user, :class => AccountUser do |o|
+  o.user_role 'Owner'
+  o.created_by 0
 end
 
 Factory.define :price_group, :class => PriceGroup do |o|
