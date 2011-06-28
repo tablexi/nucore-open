@@ -16,7 +16,7 @@ class Account < ActiveRecord::Base
 
   validate do |acct|
     # an account owner if required
-    if !acct.account_users.any?{ |au| au.user_role == 'Owner' }
+    unless acct.account_users.any?{ |au| au.user_role == AccountUser::ACCOUNT_OWNER }
       acct.errors.add(:base, "Must have an account owner")
     end
   end
