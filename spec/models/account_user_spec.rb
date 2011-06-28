@@ -11,7 +11,7 @@ describe AccountUser do
     AccountUser.user_roles.each do |role|
       @au = AccountUser.new({:user_role => role})
       @au.valid?
-      @au.errors[:user_id].should be_nil
+      @au.errors[:user_id].should be_empty
     end
 
     @au = AccountUser.create({:user_role => nil})
@@ -34,7 +34,7 @@ describe AccountUser do
     @account = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user.id, :user_role => 'Owner', :deleted_at => Time.zone.now, :deleted_by => @user.id]])
     
     @au      = @account.account_users.create({:user => @user, :user_role => 'Purchaser', :created_by => @user.id})
-    @au.errors[:user_id].should be_nil
+    @au.errors[:user_id].should be_empty
   end
   
   it "should not allow multiple active account owners" do

@@ -61,7 +61,7 @@ class Reservation < ActiveRecord::Base
   def set_reserve_start_at
     return unless self.reserve_start_at.blank?
     if @reserve_start_date and @reserve_start_hour and @reserve_start_min and @reserve_start_meridian
-      self.reserve_start_at = Time.zone.parse("#{Date.strptime(@reserve_start_date, '%m/%d/%Y').to_s} #{@reserve_start_hour.to_s}:#{@reserve_start_min.to_s.rjust(2, '0')} #{@reserve_start_meridian}")
+      self.reserve_start_at = Time.zone.parse("#{@reserve_start_date} #{@reserve_start_hour.to_s}:#{@reserve_start_min.to_s.rjust(2, '0')} #{@reserve_start_meridian}")
     end
   end
 

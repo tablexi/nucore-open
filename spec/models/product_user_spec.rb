@@ -28,7 +28,7 @@ describe ProductUser do
     
     @product_user = ProductUser.new({:approved_by => 1})
     @product_user.valid?
-    @product_user.errors[:approved_by].should be_nil
+    @product_user.errors[:approved_by].should be_empty
   end
   
   it "requires product_id" do
@@ -38,7 +38,7 @@ describe ProductUser do
     
     @product_user = ProductUser.new({:product_id => 1})
     @product_user.valid?
-    @product_user.errors[:product_id].should be_nil
+    @product_user.errors[:product_id].should be_empty
   end
   
   it "requires user_id" do
@@ -48,6 +48,6 @@ describe ProductUser do
     
     @product_user = ProductUser.new({:user_id => 1})
     @product_user.valid?
-    @product_user.errors[:user_id].should be_nil
+    @product_user.errors[:user_id].should be_empty
   end
 end

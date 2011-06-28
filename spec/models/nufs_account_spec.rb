@@ -20,6 +20,7 @@ describe NufsAccount do
       assert_equal '1234567', @account.dept
       # should initialize reader attributes after loading from database
       @account = NufsAccount.first
+      @account.valid?
       assert_equal '123', @account.fund
       assert_equal '1234567', @account.dept
     end

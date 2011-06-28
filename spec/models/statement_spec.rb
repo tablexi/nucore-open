@@ -23,7 +23,7 @@ describe Statement do
     
     @statement = Statement.new({:created_by => 1})
     @statement.valid?
-    @statement.errors[:created_by].should be_nil
+    @statement.errors[:created_by].should be_empty
   end
   
   it "requires a facility" do
@@ -33,6 +33,6 @@ describe Statement do
     
     @statement = Statement.new({:facility_id => 1})
     @statement.valid?
-    @statement.errors[:facility_id].should be_nil
+    @statement.errors[:facility_id].should be_empty
   end
 end

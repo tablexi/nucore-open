@@ -114,7 +114,7 @@ class Account < ActiveRecord::Base
   end
 
   def update_order_details_with_statement (statement)
-    details=order_details.find(:all, :joins => :order, :conditions => [
+    details=order_details.find(:all, :joins => :order, :readonly => false, :conditions => [
         'orders.facility_id = ? AND order_details.reviewed_at < ? AND order_details.statement_id IS NULL', statement.facility.id, Time.zone.now ]
     )
     details.each do |od|

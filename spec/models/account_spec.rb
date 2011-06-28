@@ -48,7 +48,7 @@ describe Account do
 
     it "should require an account owner" do
       @account = Account.create
-      @account.errors[:base].should == 'Must have an account owner'
+      @account.errors[:base].should == ['Must have an account owner']
     end
 
     it "should find the non-deleted account owner" do
