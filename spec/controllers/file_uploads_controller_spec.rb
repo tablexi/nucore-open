@@ -66,7 +66,7 @@ describe FileUploadsController do
       @params[:file_upload][:file]=''
       sign_in @admin
       do_request
-      should render_template('upload.html.haml')
+      should render_template('upload')
     end
 
   end

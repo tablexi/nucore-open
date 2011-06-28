@@ -28,7 +28,7 @@ describe AccountPriceGroupMembersController do
     it_should_deny :guest
 
     it_should_allow_all facility_operators do
-      should render_template('new.html.haml')
+      should render_template('new')
       should assign_to(:price_group).with_kind_of(PriceGroup)
       should assign_to(:account_price_group_member).with_kind_of(AccountPriceGroupMember)
       assigns(:account_price_group_member).should be_new_record
@@ -100,7 +100,7 @@ describe AccountPriceGroupMembersController do
       # TODO: test GET with valid search term
       should assign_to(:limit).with_kind_of(Fixnum)
       should assign_to(:price_group).with_kind_of(PriceGroup)
-      should render_template('search_results.html.haml')
+      should render_template('search_results')
     end
     
   end

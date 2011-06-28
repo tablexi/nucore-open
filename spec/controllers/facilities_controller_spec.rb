@@ -31,7 +31,7 @@ describe FacilitiesController do
       @controller.expects(:init_current_facility).never
       do_request
       response.should be_success
-      response.should render_template('facilities/new.html.haml')
+      response.should render_template('facilities/new')
     end
 
   end
@@ -72,7 +72,7 @@ describe FacilitiesController do
     it_should_allow_all [ :admin, :guest ] do
       assigns[:facilities].should == [@authable]
       response.should be_success
-      response.should render_template('facilities/index.html.haml')
+      response.should render_template('facilities/index')
     end
 
   end
@@ -92,7 +92,7 @@ describe FacilitiesController do
   
     it_should_allow :director do
       response.should be_success
-      response.should render_template('facilities/manage.html.haml')
+      response.should render_template('facilities/manage')
     end
 
   end
@@ -109,7 +109,7 @@ describe FacilitiesController do
     it_should_allow_all ([ :guest ] + facility_operators) do
       @controller.current_facility.should == @authable
       response.should be_success
-      response.should render_template('facilities/show.html.haml')
+      response.should render_template('facilities/show')
     end
     
   end
@@ -137,7 +137,7 @@ describe FacilitiesController do
         assigns(:manageable_facilities).should_not be_nil
         assigns(:facilities).should == [@authable]
         response.should be_success
-        response.should render_template('facilities/list.html.haml')
+        response.should render_template('facilities/list')
       end
     end
 
@@ -152,7 +152,7 @@ describe FacilitiesController do
         assigns[:manageable_facilities].should == []
         assigns[:facilities].should == [@authable, @facility2]
         response.should be_success
-        response.should render_template('facilities/list.html.haml')
+        response.should render_template('facilities/list')
       end
     end
 

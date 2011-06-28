@@ -33,7 +33,7 @@ describe AccountsController do
       assigns[:account_users].collect(&:user_id).should == [ @owner.id, @owner.id ]
       assigns[:account_users].collect(&:user_role).should == [ 'Owner', 'Owner' ]
       # should show 2 accounts, with 'edit account' links
-      response.should render_template('accounts/index.html.haml')
+      response.should render_template('accounts/index')
     end
 
     it_should_allow :purchaser do
@@ -41,7 +41,7 @@ describe AccountsController do
       assigns[:account_users].collect(&:user_id).should == [@purchaser.id]
       assigns[:account_users].collect(&:user_role).should == ['Purchaser']
       # should show 1 account, with no 'edit account' links
-      response.should render_template('accounts/index.html.haml')
+      response.should render_template('accounts/index')
     end
   end
 
@@ -60,7 +60,7 @@ describe AccountsController do
 
     it_should_allow :owner do
       assigns(:account).should == @authable
-      response.should render_template('accounts/show.html.haml')
+      response.should render_template('accounts/show')
     end
   end
 
@@ -79,7 +79,7 @@ describe AccountsController do
 
     it_should_allow :owner do
       assigns(:account).should == @authable
-      response.should render_template('account_users/user_search.html.haml')
+      response.should render_template('account_users/user_search')
     end
 
   end

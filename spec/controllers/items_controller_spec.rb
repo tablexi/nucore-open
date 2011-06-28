@@ -29,7 +29,7 @@ describe ItemsController do
     it_should_allow_operators_only do |user|
       assigns[:items].should == [@item]
       response.should be_success
-      response.should render_template('items/index.html.haml')
+      response.should render_template('items/index')
     end
 
   end
@@ -45,7 +45,7 @@ describe ItemsController do
     it_should_allow_operators_only do |user|
       assigns[:item].should == @item
       response.should be_success
-      response.should render_template('items/manage.html.haml')
+      response.should render_template('items/manage')
     end
 
   end
@@ -59,7 +59,7 @@ describe ItemsController do
       @block=Proc.new do
         assigns[:item].should == @item
         response.should be_success
-        response.should render_template('items/show.html.haml')
+        response.should render_template('items/show')
       end
     end
 

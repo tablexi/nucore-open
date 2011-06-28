@@ -28,7 +28,7 @@ describe InstrumentsController do
 
     it_should_allow_operators_only do |user|
       assigns[:instruments].should == [@instrument]
-      response.should render_template('instruments/index.html.haml')
+      response.should render_template('instruments/index')
     end
 
   end
@@ -42,7 +42,7 @@ describe InstrumentsController do
     end
 
     it_should_allow_operators_only do |user|
-      response.should render_template('instruments/manage.html.haml')
+      response.should render_template('instruments/manage')
     end
 
   end
@@ -56,7 +56,7 @@ describe InstrumentsController do
       @block=Proc.new do
         assigns[:instrument].should == @instrument
         response.should be_success
-        response.should render_template('instruments/show.html.haml')
+        response.should render_template('instruments/show')
       end
     end
 

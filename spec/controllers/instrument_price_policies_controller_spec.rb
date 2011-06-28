@@ -25,7 +25,7 @@ describe InstrumentPricePoliciesController do
 
     it_should_allow_operators_only do |user|
       assigns[:instrument].should == @instrument
-      response.should render_template('instrument_price_policies/index.html.haml')
+      response.should render_template('instrument_price_policies/index')
     end
 
   end
@@ -44,7 +44,7 @@ describe InstrumentPricePoliciesController do
       assigns[:expire_date].should_not be_nil
       assigns[:price_policies].should be_is_a Array
       response.should be_success
-      response.should render_template('instrument_price_policies/new.html.haml')
+      response.should render_template('instrument_price_policies/new')
     end
 
   end

@@ -60,7 +60,7 @@ def it_should_deny(user_sym, spec_desc='')
   it "should deny #{user_sym.to_s} " + spec_desc do
     maybe_grant_always_sign_in(user_sym)
     do_request
-    should render_template('403.html.erb')
+    should render_template('403')
   end
 end
 

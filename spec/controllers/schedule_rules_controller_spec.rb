@@ -26,7 +26,7 @@ describe ScheduleRulesController do
     it_should_allow_operators_only do |user|
       assigns[:instrument].should == @instrument
       response.should be_success
-      response.should render_template('schedule_rules/index.html.haml')
+      response.should render_template('schedule_rules/index')
     end
 
   end
@@ -42,7 +42,7 @@ describe ScheduleRulesController do
     it_should_allow_managers_only do
       assigns[:instrument].should == @instrument
       response.should be_success
-      response.should render_template('schedule_rules/new.html.haml')
+      response.should render_template('schedule_rules/new')
     end
 
   end

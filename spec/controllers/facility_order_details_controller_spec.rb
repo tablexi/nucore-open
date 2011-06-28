@@ -98,7 +98,7 @@ describe FacilityOrderDetailsController do
 
     it_should_allow :staff do
       # abuse of API since we're not expecting success
-      should render_template('404.html.erb')
+      should render_template('404')
     end
 
     it_should_allow_all facility_managers do

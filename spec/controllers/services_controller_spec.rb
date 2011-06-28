@@ -28,7 +28,7 @@ describe ServicesController do
     it_should_allow_operators_only do
       assigns[:services].should == [@service]
       response.should be_success
-      response.should render_template('services/index.html.haml')
+      response.should render_template('services/index')
     end
 
   end
@@ -46,13 +46,13 @@ describe ServicesController do
       do_request
       assigns[:service].should == @service
       response.should be_success
-      response.should render_template('services/show.html.haml')
+      response.should render_template('services/show')
     end
   
     it_should_allow_all facility_users do
       assigns[:service].should == @service
       response.should be_success
-      response.should render_template('services/show.html.haml')
+      response.should render_template('services/show')
     end
 
   end
@@ -150,7 +150,7 @@ describe ServicesController do
 
     it_should_allow_operators_only do
       response.should be_success
-      response.should render_template('services/manage.html.haml')
+      response.should render_template('services/manage')
     end
 
   end

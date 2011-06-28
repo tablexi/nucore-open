@@ -33,7 +33,7 @@ describe FacilityAccountsController do
       should assign_to(:accounts).with_kind_of(Array)
       assigns(:accounts).size.should == 1
       assigns(:accounts)[0].should == @account
-      should render_template('index.html.haml')
+      should render_template('index')
     end
 
   end
@@ -53,7 +53,7 @@ describe FacilityAccountsController do
 
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
-      should render_template('show.html.haml')
+      should render_template('show')
     end
 
   end
@@ -75,7 +75,7 @@ describe FacilityAccountsController do
       assigns(:owner_user).should == @owner
       assigns(:account).should be_new_record
       assigns(:account).expires_at.should_not be_nil
-      should render_template('new.html.haml')
+      should render_template('new')
     end
 
   end
@@ -95,7 +95,7 @@ describe FacilityAccountsController do
 
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
-      should render_template('edit.html.haml')
+      should render_template('edit')
     end
 
   end
@@ -154,7 +154,7 @@ describe FacilityAccountsController do
       # saving with NufsAccount will fail because expires_at will never
       # be set. That's because the nucs tables aren't mocked. We're not
       # testing nucs here so take the opportunity to test save fails handling
-      should render_template('new.html.haml')
+      should render_template('new')
     end
 
 
@@ -264,7 +264,7 @@ describe FacilityAccountsController do
     it_should_allow_all facility_managers do
       assigns(:users).size.should == 1
       assigns(:users)[0].should == @guest
-      should render_template('search_results.html.haml')
+      should render_template('search_results')
     end
 
 
@@ -274,7 +274,7 @@ describe FacilityAccountsController do
 
       it_should_allow :director do
         assigns(:users).size.should == 1
-        should render_template('search_results.html.haml')
+        should render_template('search_results')
       end
 
     end
@@ -296,7 +296,7 @@ describe FacilityAccountsController do
 
     it_should_allow_all facility_managers do
       assigns(:user).should == @guest
-      should render_template('user_accounts.html.haml')
+      should render_template('user_accounts')
     end
 
   end
@@ -320,7 +320,7 @@ describe FacilityAccountsController do
       should assign_to(:accounts).with_kind_of(Array)
       assigns[:selected].should == assigns[:accounts].first
       assigns[:unreconciled_details].should == OrderDetail.account_unreconciled(@authable, assigns[:selected])
-      should render_template('credit_cards.html.haml')
+      should render_template('credit_cards')
     end
 
     it 'should test selected_account param'
@@ -342,7 +342,7 @@ describe FacilityAccountsController do
       assigns(:accounts).should be_empty
       should_not assign_to :selected
       should_not assign_to :unreconciled_details
-      should render_template('credit_cards.html.haml')
+      should render_template('credit_cards')
     end
 
   end
@@ -365,7 +365,7 @@ describe FacilityAccountsController do
       should assign_to(:accounts).with_kind_of(Array)
       assigns[:selected].should == assigns[:accounts].first
       assigns[:unreconciled_details].should == OrderDetail.account_unreconciled(@authable, assigns[:selected])
-      should render_template('purchase_orders.html.haml')
+      should render_template('purchase_orders')
     end
 
     it 'should test selected_account param'
@@ -387,7 +387,7 @@ describe FacilityAccountsController do
       assigns(:accounts).should be_empty
       should_not assign_to :selected
       should_not assign_to :unreconciled_details
-      should render_template('purchase_orders.html.haml')
+      should render_template('purchase_orders')
     end
 
   end
@@ -459,7 +459,7 @@ describe FacilityAccountsController do
 
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
-      should render_template('members.html.haml')
+      should render_template('members')
     end
 
   end

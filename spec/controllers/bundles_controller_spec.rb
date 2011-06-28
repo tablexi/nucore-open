@@ -64,7 +64,7 @@ describe BundlesController do
       should assign_to(:add_to_cart)
       should assign_to(:login_required)
       should_not set_the_flash
-      should render_template('show.html.haml')
+      should render_template('show')
     end
 
   end
@@ -83,7 +83,7 @@ describe BundlesController do
     it_should_allow_all facility_operators do
       should assign_to(:bundle).with_kind_of(Bundle)
       assigns(:bundle).should be_new_record
-      should render_template('new.html.haml')
+      should render_template('new')
     end
 
   end
@@ -101,7 +101,7 @@ describe BundlesController do
 
     it_should_allow_all facility_operators do
       assert_init_bundle
-      should render_template('edit.html.haml')
+      should render_template('edit')
     end
 
   end
