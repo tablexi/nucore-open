@@ -61,7 +61,7 @@ class Reservation < ActiveRecord::Base
   def set_reserve_start_at
     return unless self.reserve_start_at.blank?
     if @reserve_start_date and @reserve_start_hour and @reserve_start_min and @reserve_start_meridian
-      self.reserve_start_at = Time.zone.parse("#{@reserve_start_date.to_s} #{@reserve_start_hour.to_s}:#{@reserve_start_min.to_s.rjust(2, '0')} #{@reserve_start_meridian}")
+      self.reserve_start_at = Time.zone.parse("#{Date.strptime(@reserve_start_date, '%m/%d/%Y').to_s} #{@reserve_start_hour.to_s}:#{@reserve_start_min.to_s.rjust(2, '0')} #{@reserve_start_meridian}")
     end
   end
 
@@ -82,14 +82,14 @@ class Reservation < ActiveRecord::Base
   def set_actual_start_at
     return unless self.actual_start_at.blank?
     if @actual_start_date and @actual_start_hour and @actual_start_min and @actual_start_meridian
-      self.actual_start_at = Time.zone.parse("#{@actual_start_date.to_s} #{@actual_start_hour.to_s}:#{@actual_start_min.to_s.rjust(2, '0')} #{@actual_start_meridian}")
+      self.actual_start_at = Time.zone.parse("#{Date.strptime(@actual_start_date, '%m/%d/%Y').to_s} #{@actual_start_hour.to_s}:#{@actual_start_min.to_s.rjust(2, '0')} #{@actual_start_meridian}")
     end
   end
 
   def set_actual_end_at
     return unless self.actual_end_at.blank?
     if @actual_end_date and @actual_end_hour and @actual_end_min and @actual_end_meridian
-      self.actual_end_at = Time.zone.parse("#{@actual_end_date.to_s} #{@actual_end_hour.to_s}:#{@actual_end_min.to_s.rjust(2, '0')} #{@actual_end_meridian}")
+      self.actual_end_at = Time.zone.parse("#{Date.strptime(@actual_end_date, '%m/%d/%Y').to_s} #{@actual_end_hour.to_s}:#{@actual_end_min.to_s.rjust(2, '0')} #{@actual_end_meridian}")
     end
   end
 
@@ -127,7 +127,6 @@ class Reservation < ActiveRecord::Base
 
   def satisfies_maximum_length?
     diff = reserve_end_at - reserve_start_at # in seconds
-    time = Date.day_fraction_to_time(diff)
     return false unless instrument.max_reserve_mins.nil? || instrument.max_reserve_mins == 0 || diff/60 <= instrument.max_reserve_mins
     true
   end
