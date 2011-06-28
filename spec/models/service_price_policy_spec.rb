@@ -40,7 +40,7 @@ describe ServicePricePolicy do
       should allow_value(Date.today).for(:start_date)
       ipp     = @service.service_price_policies.create(:unit_cost => 1, :unit_subsidy => 0, :start_date => Date.today - 7,
                                                  :price_group => @price_group)
-      ipp.save_with_validation(false)
+      ipp.save(:validate => false)
       ipp_new = @service.service_price_policies.create(:unit_cost => 1, :unit_subsidy => 0, :start_date => Date.today,
                                                  :price_group => @price_group)
       ipp_new.errors_on(:start_date).should_not be_nil
