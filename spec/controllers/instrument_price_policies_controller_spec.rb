@@ -75,7 +75,7 @@ describe InstrumentPricePoliciesController do
       do_request
       assigns[:start_date].should == Date.strptime(@params[:id], "%Y-%m-%d")
       assigns[:price_policies].should be_empty
-      should render_template '404.html.erb'
+      should render_template '404'
     end
 
   end

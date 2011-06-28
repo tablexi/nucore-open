@@ -83,7 +83,7 @@ describe InstrumentsController do
       should assign_to(:instrument).with_kind_of Instrument
       assigns(:instrument).should be_new_record
       assigns(:instrument).facility.should == @authable
-      should render_template 'new.html.haml'
+      should render_template 'new'
     end
 
   end
@@ -97,7 +97,7 @@ describe InstrumentsController do
     end
 
     it_should_allow_operators_only do
-      should render_template 'edit.html.haml'
+      should render_template 'edit'
     end
 
   end
@@ -184,7 +184,7 @@ describe InstrumentsController do
 
       it_should_allow_operators_only do
         should assign_to(:admin_reservations).with_kind_of Array
-        should render_template 'schedule.html.haml'
+        should render_template 'schedule'
       end
 
     end
@@ -198,7 +198,7 @@ describe InstrumentsController do
       end
 
       it_should_allow_operators_only do
-        should render_template 'agenda.html.haml'
+        should render_template 'agenda'
       end
 
     end

@@ -84,7 +84,7 @@ describe ScheduleRulesController do
 
       it_should_allow_managers_only do
         assigns(:schedule_rule).should == @rule
-        should render_template 'edit.html.haml'
+        should render_template 'edit'
       end
 
     end

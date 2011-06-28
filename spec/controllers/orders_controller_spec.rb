@@ -63,7 +63,7 @@ describe OrdersController do
     it_should_allow :staff do
       should assign_to(:order).with_kind_of Order
       assigns(:order).should == @order
-      should render_template 'choose_account.html.haml'
+      should render_template 'choose_account'
     end
 
     it 'should test more than auth'
@@ -105,7 +105,7 @@ describe OrdersController do
     it_should_allow :staff do
       should assign_to(:order).with_kind_of Order
       assigns(:order).should == @order
-      should render_template 'receipt.html.haml'
+      should render_template 'receipt'
     end
 
   end
@@ -122,7 +122,7 @@ describe OrdersController do
 
     it_should_allow :staff do
       should assign_to(:order_details).with_kind_of Array
-      should render_template 'index.html.haml'
+      should render_template 'index'
     end
 
   end

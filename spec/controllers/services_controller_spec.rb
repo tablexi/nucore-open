@@ -82,7 +82,7 @@ describe ServicesController do
     end
 
     it_should_allow_operators_only do
-      should render_template 'edit.html.haml'
+      should render_template 'edit'
     end
 
   end

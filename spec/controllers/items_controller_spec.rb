@@ -84,7 +84,7 @@ describe ItemsController do
 
     it_should_allow_operators_only do
       should assign_to(:item).with_kind_of Item
-      should render_template 'new.html.haml'
+      should render_template 'new'
     end
 
   end
@@ -98,7 +98,7 @@ describe ItemsController do
     end
 
     it_should_allow_operators_only do
-      should render_template 'edit.html.haml'
+      should render_template 'edit'
     end
 
   end

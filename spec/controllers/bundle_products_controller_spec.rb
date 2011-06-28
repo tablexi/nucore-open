@@ -26,7 +26,7 @@ describe BundleProductsController do
 
     it_should_allow_all facility_operators do
       should assign_to(:bundle_products).with_kind_of(Array)
-      should render_template('new')
+      should render_template('index')
     end
 
   end

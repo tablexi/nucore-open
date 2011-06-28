@@ -49,7 +49,7 @@ describe FacilityOrdersController do
 
     it_should_allow_all facility_operators do
       assigns(:order).should == @order
-      should render_template 'show.html.erb'
+      should render_template 'show'
     end
 
   end

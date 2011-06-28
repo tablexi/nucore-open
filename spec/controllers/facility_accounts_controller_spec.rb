@@ -205,7 +205,7 @@ describe FacilityAccountsController do
     it_should_deny :staff
 
     it_should_allow_all facility_managers do
-      should render_template 'new_account_user_search.html.haml'
+      should render_template 'new_account_user_search'
     end
 
   end
@@ -224,7 +224,7 @@ describe FacilityAccountsController do
     it_should_deny :staff
 
     it_should_allow_all facility_managers do
-      should render_template 'user_search.html.haml'
+      should render_template 'user_search'
     end
 
   end
@@ -243,7 +243,7 @@ describe FacilityAccountsController do
     it_should_deny :staff
 
     it_should_allow_all facility_managers do
-      should render_template 'search.html.haml'
+      should render_template 'search'
     end
 
   end
