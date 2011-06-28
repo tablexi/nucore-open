@@ -2,12 +2,12 @@ class Facility < ActiveRecord::Base
   attr_protected :journal_mask
   before_validation :set_journal_mask, :on => :create
 
-  has_many :order_statuses, :finder_sql => proc { 'SELECT * FROM order_statuses WHERE facility_id = #{self.id} or facility_id IS NULL order by lft' }
+  has_many :order_statuses, :finder_sql => proc { "SELECT * FROM order_statuses WHERE facility_id = #{self.id} or facility_id IS NULL order by lft" }
   has_many :items
   has_many :services
   has_many :instruments
   has_many :bundles
-  has_many :price_groups, :finder_sql => proc { 'SELECT * FROM price_groups WHERE price_groups.facility_id = #{self.id} OR price_groups.facility_id IS NULL ORDER BY price_groups.is_internal DESC, price_groups.display_order ASC, price_groups.name ASC' }
+  has_many :price_groups, :finder_sql => proc { "SELECT * FROM price_groups WHERE price_groups.facility_id = #{self.id} OR price_groups.facility_id IS NULL ORDER BY price_groups.is_internal DESC, price_groups.display_order ASC, price_groups.name ASC" }
   has_many :journals
   has_many :products
   has_many :statements
