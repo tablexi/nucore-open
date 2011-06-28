@@ -14,7 +14,7 @@ describe FacilityReservationsController do
     )
     @schedule_rule=Factory.create(:schedule_rule, :instrument => @product)
     @product.reload
-    @account=Factory.create(:nufs_account)
+    @account=create_nufs_account_with_owner
     @order=Factory.create(:order,
       :facility => @authable,
       :user => @director,

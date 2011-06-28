@@ -12,7 +12,7 @@ describe AccountsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable = Factory.create(:nufs_account)
+    @authable = create_nufs_account_with_owner
   end
 
 
@@ -26,7 +26,7 @@ describe AccountsController do
     it_should_require_login
 
     it "should list accounts, with edit account links for account owner" do
-      grant_role(@owner, Factory.create(:nufs_account))
+      create_nufs_account_with_owner
       maybe_grant_always_sign_in(:owner)
       do_request
       # should find 2 account users, with user roles 'Owner'

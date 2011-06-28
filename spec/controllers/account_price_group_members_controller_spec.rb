@@ -41,7 +41,7 @@ describe AccountPriceGroupMembersController do
     before :each do
       @method=:post
       @action=:create
-      account=Factory.create(:nufs_account)
+      account=create_nufs_account_with_owner
       @params={ :facility_id => @authable.url_name, :price_group_id => @price_group.id, :account_id => account.id }
     end
 
@@ -64,7 +64,7 @@ describe AccountPriceGroupMembersController do
     before(:each) do
       @method=:delete
       @action=:destroy
-      @account=Factory.create(:nufs_account)
+      @account=create_nufs_account_with_owner
       @account_price_group_member=AccountPriceGroupMember.create!(:price_group => @price_group, :account => @account)
       @params={ :facility_id => @authable.url_name, :price_group_id => @price_group.id, :id => @account_price_group_member.id }
     end

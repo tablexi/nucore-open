@@ -113,3 +113,11 @@ def should_be_destroyed(var)
 
   assert dead
 end
+
+
+#
+# Factory wrapper for creating an account with owner
+def create_nufs_account_with_owner(owner=:owner)
+  owner=instance_variable_get("@#{owner.to_s}")
+  Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => owner) ])
+end

@@ -9,7 +9,7 @@ describe FacilityAccountsController do
     @authable=Factory.create(:facility)
     @facility_account=Factory.create(:facility_account, :facility => @authable)
     @item=Factory.create(:item, :facility_account => @facility_account, :facility => @authable)
-    @account=Factory.create(:nufs_account)
+    @account=create_nufs_account_with_owner
     grant_role(@purchaser, @account)
     grant_role(@owner, @account)
     @order=Factory.create(:order, :user => @purchaser, :created_by => @purchaser.id, :facility => @authable)

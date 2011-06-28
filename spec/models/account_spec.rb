@@ -5,7 +5,7 @@ describe Account do
   it "should not create using factory" do
     @user    = Factory.create(:user)
     hash     = Hash[:user => @user, :created_by => @user, :user_role => 'Owner']
-    @account = Account.create(Factory.attributes_for(:nufs_account, :account_users_attributes => [hash]))
+    @account = create_nufs_account_with_owner :user
 
     @account.errors[:type].should_not be_nil
   end

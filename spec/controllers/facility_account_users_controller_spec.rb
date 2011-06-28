@@ -7,7 +7,7 @@ describe FacilityAccountUsersController do
 
   before(:each) do
     @authable=Factory.create(:facility)
-    @account=Factory.create(:nufs_account)
+    @account=create_nufs_account_with_owner
   end
 
 

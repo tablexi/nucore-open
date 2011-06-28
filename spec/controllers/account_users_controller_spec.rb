@@ -6,7 +6,7 @@ describe AccountUsersController do
   before(:all) { create_users }
 
   before :each do
-    @authable=Factory.create(:nufs_account)
+    @authable=create_nufs_account_with_owner
   end
 
 

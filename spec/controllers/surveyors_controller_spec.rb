@@ -102,7 +102,7 @@ describe SurveyorsController do
       :facility_account => @facility_account,
       :facility => @authable
     )
-    @account=Factory.create(:nufs_account)
+    @account=create_nufs_account_with_owner
     @order=Factory.create(:order,
       :facility => @authable,
       :user => @director,
