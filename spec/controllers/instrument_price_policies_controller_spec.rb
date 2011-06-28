@@ -26,12 +26,6 @@ describe InstrumentPricePoliciesController do
     it_should_allow_operators_only do |user|
       assigns[:instrument].should == @instrument
       response.should render_template('instrument_price_policies/index.html.haml')
-
-      if user.facility_staff?
-        response.should_not have_tag('a', :text => 'Add Pricing Rules')
-      else
-        response.should have_tag('a', :text => 'Add Pricing Rules')
-      end
     end
 
   end

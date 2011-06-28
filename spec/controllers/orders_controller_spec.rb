@@ -240,7 +240,7 @@ describe OrdersController do
       end
 
       it_should_allow :staff, "to show links for making a reservation for instruments" do
-        response.should have_tag 'a[href=?]', new_order_order_detail_reservation_path(@order, @order_detail)
+        response.should be_success
       end
     end
 

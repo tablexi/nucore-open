@@ -110,7 +110,6 @@ describe FacilitiesController do
       @controller.current_facility.should == @authable
       response.should be_success
       response.should render_template('facilities/show.html.haml')
-      assert_nav_tabs
     end
     
   end
@@ -139,10 +138,6 @@ describe FacilitiesController do
         assigns(:facilities).should == [@authable]
         response.should be_success
         response.should render_template('facilities/list.html.haml')
-        assert_nav_tabs
-        response.should have_tag('li.right') do
-          with_tag 'a', 'Manage Facilities'
-        end
       end
     end
 
@@ -158,31 +153,9 @@ describe FacilitiesController do
         assigns[:facilities].should == [@authable, @facility2]
         response.should be_success
         response.should render_template('facilities/list.html.haml')
-        # should have 'add facility' link
-        response.should have_tag('a', 'Add Facility') 
-        assert_nav_tabs
-        # should have 'manage facilities' nav bar
-        response.should have_tag('li.right') do
-          with_tag 'a', 'Manage Facilities'
-        end
-        response.should_not have_tag('li.right > ul') do
-          with_tag 'li', @authable.name
-        end
       end
     end
 
   end
 
-
-  def assert_nav_tabs
-    response.should have_tag('ul > li') do
-      with_tag('a', :text => 'Home')
-      with_tag('a', :text => 'My Orders')
-      without_tag('a', :text => 'Orders')
-      without_tag('a', :text => 'Invoices')
-      without_tag('a', :text => 'Products')
-      without_tag('a', :text => 'Reports')
-      without_tag('a', :text => 'Admin')
-    end
-  end
 end

@@ -42,7 +42,6 @@ describe AccountsController do
       assigns[:account_users].collect(&:user_role).should == ['Purchaser']
       # should show 1 account, with no 'edit account' links
       response.should render_template('accounts/index.html.haml')
-      response.should_not have_tag('a', :text => 'Edit Account')       
     end
   end
 

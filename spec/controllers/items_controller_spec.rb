@@ -30,12 +30,6 @@ describe ItemsController do
       assigns[:items].should == [@item]
       response.should be_success
       response.should render_template('items/index.html.haml')
-
-      if user.facility_staff?
-        response.should_not have_tag('a', :text => 'Add Item')
-      else
-        response.should have_tag('a', :text => 'Add Item')
-      end
     end
 
   end
@@ -52,12 +46,6 @@ describe ItemsController do
       assigns[:item].should == @item
       response.should be_success
       response.should render_template('items/manage.html.haml')
-
-      if user.facility_staff?
-        response.should_not have_tag('a', :text => 'Edit')
-      else
-        response.should have_tag('a', :text => 'Edit')
-      end
     end
 
   end

@@ -27,12 +27,6 @@ describe ScheduleRulesController do
       assigns[:instrument].should == @instrument
       response.should be_success
       response.should render_template('schedule_rules/index.html.haml')
-
-      if user.facility_staff?
-        response.should_not have_tag('a', :text => 'Add Schedule Rule')
-      else
-        response.should have_tag('a', :text => 'Add Schedule Rule')
-      end
     end
 
   end

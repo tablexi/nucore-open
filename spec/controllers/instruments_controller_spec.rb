@@ -29,18 +29,6 @@ describe InstrumentsController do
     it_should_allow_operators_only do |user|
       assigns[:instruments].should == [@instrument]
       response.should render_template('instruments/index.html.haml')
-
-      unless user.facility_staff?
-        response.should have_tag('a', :text => 'Add Instrument')
-        response.should have_tag('a', :text => @instrument.name)
-      else
-        # should not have 'add facility' link
-        response.should_not have_tag('a', :text => 'Add Instrument')
-        # should not have 'authorize user' link
-        response.should_not have_tag('a', :text => 'Authorize User')
-        # should have 'manage instrument' link
-        response.should have_tag('a', :text => @instrument.name)
-      end
     end
 
   end
@@ -55,12 +43,6 @@ describe InstrumentsController do
 
     it_should_allow_operators_only do |user|
       response.should render_template('instruments/manage.html.haml')
-
-      unless user.facility_staff?
-        response.should have_tag('a', :text => 'Edit')
-      else
-        response.should_not have_tag('a', :text => 'Edit')
-      end
     end
 
   end
