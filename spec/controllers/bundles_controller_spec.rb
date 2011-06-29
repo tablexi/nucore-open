@@ -35,7 +35,8 @@ describe BundlesController do
       @bundle.is_archived=true
       assert @bundle.save
       maybe_grant_always_sign_in(:director)
-      do_request @params.merge(:archived => 'true')
+      @params.merge!(:archived => 'true')
+      do_request
       should assign_to(:bundles).with_kind_of(Array)
       assigns(:bundles).size.should == 1
       assigns(:bundles).should == @authable.bundles.archived

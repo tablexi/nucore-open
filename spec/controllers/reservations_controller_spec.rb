@@ -39,7 +39,8 @@ describe ReservationsController do
     end
 
     it_should_allow_all facility_users do
-      should respond_with :success
+      assigns[:facility].should == @authable
+      assigns[:instrument].should == @instrument
     end
 
     it 'should test more than auth'

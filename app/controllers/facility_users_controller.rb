@@ -33,7 +33,7 @@ class FacilityUsersController < ApplicationController
   def map_user
     @user = User.find(params[:facility_user_id])
 
-    if request.request_method == :post
+    if request.post?
       begin
         @user_role=UserRole.grant(@user, params[:user_role][:role], current_facility)
         redirect_to facility_facility_users_url
