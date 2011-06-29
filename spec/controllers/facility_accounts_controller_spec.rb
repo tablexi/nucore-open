@@ -510,7 +510,7 @@ describe FacilityAccountsController do
       assigns(:account).should == @account
       assigns(:facility).should == @authable
       assigns(:statement).should == @statement
-      should render_template 'statements/show.pdf.prawn'
+      should render_template 'statements/show'
     end
 
   end

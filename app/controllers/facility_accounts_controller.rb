@@ -1,4 +1,6 @@
 class FacilityAccountsController < ApplicationController
+  include Prawnto::ActionControllerMixin
+
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -177,7 +179,7 @@ class FacilityAccountsController < ApplicationController
 
     respond_to do |format|
       format.html { render :action => action }
-      format.pdf  { render :template => '/statements/show' }
+      format.pdf  { render :template => '/statements/show.pdf.prawn' }
     end
   end
   
