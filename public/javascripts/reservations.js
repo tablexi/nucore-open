@@ -5,6 +5,36 @@ $(document).ready(function() {
     defaultView: 'agendaWeek',
     allDaySlot: false,
     events: events_path,
+    eventAfterRender: function(event, element) {
+      var tooltip = [
+        $.fullCalendar.formatDate(event.start, 'hh:mmTT'),
+        $.fullCalendar.formatDate(event.end,   'hh:mmTT')
+      ].join('&mdash;') + '<br/>';
+
+      if (withDetails) {
+        if (event.admin) {  // administrative reservation
+          tooltip += 'Admin Reservation<br/>';
+        } else {            // normal reservation
+          tooltip += [
+            event.name,
+            event.email
+          ].join('<br/>');
+        }
+
+        // create the tooltip
+        if (element.qtip) {
+          $(element).qtip({
+            content: tooltip,
+            position: {
+              corner: {
+                target:   'bottomLeft',
+                tooltip:  'topRight'
+              }
+            }
+          });
+        }
+      }
+    },
     minTime: minTime,
     maxTime: maxTime,
     height: (maxTime - minTime)*42 + 75,

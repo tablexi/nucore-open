@@ -1,6 +1,6 @@
 - content_for :head_content do
-  = javascript_include_tag 'calendar/fullcalendar.min.js', 'instruments.js'
-  = stylesheet_link_tag 'calendar/fullcalendar.css', 'calendar/fullcalendar.extensions.css'
+  = javascript_include_tag 'calendar/fullcalendar.min.js', 'jquery.qtip-1.0.0-rc3.min.js', 'instruments.js'
+  = stylesheet_link_tag 'calendar/fullcalendar.css', 'calendar/fullcalendar.extensions.css', :media => :all
 
 - content_for :h1 do
   =h current_facility
@@ -10,7 +10,8 @@
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'reservations'}
 
 :javascript
-  var events_path = "#{facility_instrument_reservations_url(current_facility, @instrument, :format => 'js')}";
+  var events_path = "#{facility_instrument_reservations_url(current_facility, @instrument, :format => 'js', :with_details => true)}";
+  var withDetails     = true
 
 %h2= @instrument
 

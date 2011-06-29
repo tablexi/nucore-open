@@ -138,8 +138,9 @@ describe OrdersController do
     it_should_require_login
 
     it_should_allow :staff, "to add a product with quantity to cart" do
+      do_request
       assigns(:order).should == @order
-      assigns[:product].should == @item
+      assigns(:product).should == @item
       @order.reload.order_details.size.should == 1
       response.should redirect_to "/orders/#{@order.id}"
     end
@@ -152,16 +153,25 @@ describe OrdersController do
         do_request
         response.should redirect_to("/orders/#{@order.id}/choose_account")
       end
-    end
 
-    context "cart with mixed facility" do
-      it "should show mixed facility warning if added product doesn't match cart facility" do
-        maybe_grant_always_sign_in :staff
-        do_request
-        @params[:product_id]=@item.id
-        do_request
-        should set_the_flash
-        response.should redirect_to "/orders/#{@order.id}"
+      context "mixed facility" do
+        it "should flash error message containing another" do
+          @facility2          = Factory.create(:facility)
+          @facility_account2  = @facility2.facility_accounts.create!(Factory.attributes_for(:facility_account))
+          @account2           = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
+          @item2              = @facility2.items.create!(Factory.attributes_for(:item, :facility_account_id => @facility_account2.id))
+          # add first item to cart 
+          maybe_grant_always_sign_in :staff
+          do_request
+
+          # add second item to cart
+          @params[:product_id]=@item2.id
+          do_request
+
+          should set_the_flash.to(/can not/)
+          should set_the_flash.to(/another/)
+          response.should redirect_to "/orders/#{@order.id}"  
+        end
       end
     end
 
@@ -196,6 +206,19 @@ describe OrdersController do
       maybe_grant_always_sign_in :staff
       do_request
       response.response_code.should == 404
+    end
+
+    context "removing last item in cart" do
+      it "should nil out the payment source in the order/session" do
+        maybe_grant_always_sign_in :staff
+        do_request
+
+        response.should redirect_to "/orders/#{@order.id}"
+        should set_the_flash.to /removed/
+
+        @order.reload.order_details.size.should == 0
+        @order.reload.account.should == nil
+      end
     end
   end
 
