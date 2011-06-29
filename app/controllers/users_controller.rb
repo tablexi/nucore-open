@@ -42,7 +42,7 @@ class UsersController < ApplicationController
     end
 
     # send email
-    Notifier.deliver_new_user(:user => @user, :password => newpass)
+    Notifier.new_user(:user => @user, :password => newpass).deliver
   end
 
   def new_search
@@ -53,7 +53,7 @@ class UsersController < ApplicationController
         flash[:notice] += "  You may wish to <a href=\"#{facility_facility_user_map_user_url(current_facility, @user)}\">add a facility role</a> for this user."
       end
       # send email
-      Notifier.deliver_new_user(:user => @user, :password => nil)
+      Notifier.new_user(:user => @user, :password => nil).deliver
       redirect_to facility_users_url(current_facility)
     end
   end

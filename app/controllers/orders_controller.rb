@@ -201,7 +201,7 @@ class OrdersController < ApplicationController
   def purchase
     #revalidate the cart, just to be sure
     if @order.validate_order! && @order.purchase!
-      Notifier.deliver_order_receipt(:user => @order.user, :order => @order)
+      Notifier.order_receipt(:user => @order.user, :order => @order).deliver
       redirect_to receipt_order_url(@order) and return
     else
       flash[:error] = 'Unable to place order.'
