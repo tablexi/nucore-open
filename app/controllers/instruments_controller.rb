@@ -131,7 +131,7 @@ class InstrumentsController < ApplicationController
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/status
-  def status
+  def instrument_status
     begin
       @relay  = @instrument.relay_type.constantize.new(@instrument.relay_ip, @instrument.relay_username, @instrument.relay_password)
       status = Rails.env.test? ? true : @relay.get_status_port(@instrument.relay_port)
@@ -159,7 +159,7 @@ class InstrumentsController < ApplicationController
     rescue
       raise ActiveRecord::RecordNotFound
     end
-    render :action => :status, :layout => false
+    render :action => :instrument_status, :layout => false
   end
 
   def init_instrument

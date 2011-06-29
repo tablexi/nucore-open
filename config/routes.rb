@@ -32,7 +32,7 @@ Nucore::Application.routes.draw do |map|
     facility.resources :instruments, :member => {:manage => :get} do |instrument|
       instrument.schedule 'schedule', :controller => 'instruments', :action => 'schedule'
       instrument.agenda   'agenda',   :controller => 'instruments', :action => 'agenda'
-      instrument.status   'status',   :controller => 'instruments', :action => 'status'
+      instrument.status   'status',   :controller => 'instruments', :action => 'instrument_status'
       instrument.switch   'switch',   :controller => 'instruments', :action => 'switch'
       instrument.resources :schedule_rules, :except => [:show]
       instrument.resources :price_policies, :controller => 'instrument_price_policies', :except => [:show]

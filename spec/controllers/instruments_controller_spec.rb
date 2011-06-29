@@ -208,7 +208,7 @@ describe InstrumentsController do
 
       before :each do
         @method=:get
-        @action=:status
+        @action=:instrument_status
       end
 
       it_should_allow_operators_only
