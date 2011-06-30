@@ -32,10 +32,10 @@
             %div{:id => "instrument_status_#{instrument.id}"}
               - if status
                 %ul
-                  %li= "#{status.status_string} (#{link_to("Refresh", facility_instrument_status_path(current_facility, instrument), :id => "instrument_status_link_#{instrument.id}", :class => 'instrument_status_link')})"
+                  %li= "#{status.status_string} (#{link_to("Refresh", facility_instrument_status_path(current_facility, instrument), :id => "instrument_status_link_#{instrument.id}", :class => 'instrument_status_link')})".html_safe
                   %li=h human_datetime(status.created_at)
               - else
-                = "Unknown (#{link_to("Refresh", facility_instrument_status_path(current_facility, instrument), :id => "instrument_status_link_#{instrument.id}", :class => 'instrument_status_link')})"
+                = "Unknown (#{link_to("Refresh", facility_instrument_status_path(current_facility, instrument), :id => "instrument_status_link_#{instrument.id}", :class => 'instrument_status_link')})".html_safe
             %p
               = link_to('Turn On', facility_instrument_switch_path(current_facility, instrument, :switch => 'on'), :id => "turn_on_#{instrument.id}", :class => 'instrument_switch_link')
               |
