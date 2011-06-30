@@ -6,7 +6,7 @@
   %p.notice= flash[:notice]
 - if flash[:info]
   %p.info= flash[:info]
-= form_for resource_name, resource, :url => session_path(resource_name) do |f|
+= form_for resource, :as => resource_name, :url => session_path(resource_name) do |f|
   %ul.form
     %li
       %label== Username
