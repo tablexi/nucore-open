@@ -41,7 +41,7 @@ class Product < ActiveRecord::Base
   end
 
   def description
-    self[:description].html_safe
+    self[:description].html_safe if self[:description]
   end
   
   def parameterize
