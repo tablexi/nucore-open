@@ -27,6 +27,16 @@ end
 
 
 #
+# We don't set passwords via LDAP. If setting a password
+# defer to the next strategy (encryptable or database_authenticatable)
+Devise::Models::LdapAuthenticatable.module_eval do
+  def password=(new_password)
+    super
+  end
+end
+
+
+#
 # Log info about how each user is authenticated.
 # In the future we may want to record in the DB the means
 # by which auth happened.

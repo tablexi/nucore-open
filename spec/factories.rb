@@ -31,6 +31,7 @@ Factory.define :user, :class => User do |o|
   o.sequence(:username) { |n| "username#{n}" }
   o.first_name "User"
   o.password 'password'
+  o.password_confirmation 'password'
   o.sequence(:last_name) { |n| "#{n}" }
   o.sequence(:email) { |n| "user#{n}@example.com" }
 end

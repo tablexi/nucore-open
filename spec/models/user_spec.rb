@@ -49,7 +49,7 @@ describe User do
     pg       = facility.price_groups.create(Factory.attributes_for(:price_group))
     UserPriceGroupMember.create(:user => owner, :price_group => pg)
 
-    cc.account_users.create(:user => @user, :created_by => ower, :user_role => 'Purchaser')
+    cc.account_users.create(:user => @user, :created_by => owner, :user_role => 'Purchaser')
 
     @user.account_price_groups.include?(pg).should == true
   end
