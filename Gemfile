@@ -23,7 +23,7 @@ gem 'devise',           '1.3.4'
 gem 'cancan',           '1.6.5'
 gem 'nokogiri',         '1.4.4'
 gem 'devise_ldap_authenticatable', '0.4.4'
-gem 'jquery-rails',     '>= 1.0.3'
+gem 'jquery-rails',     '1.0.12'
 gem 'foreigner',        '1.0.3'
 gem 'awesome_nested_set', '2.0.1'
 
