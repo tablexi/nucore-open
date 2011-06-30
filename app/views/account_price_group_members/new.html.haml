@@ -1,13 +1,13 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'price_groups' }
--content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_price_group', :locals => { :secondary_tab => 'accounts' }
 
 %h2 Add Price Group Member
 %fieldset
-  - form_tag url_for(:action => 'search_results'), :id => 'ajax_form' do
+  = form_tag url_for(:action => 'search_results'), :id => 'ajax_form' do
     = label_tag :search_term, 'Search by payment source'
     %br
     = text_field_tag :search_term, nil, :size => 30

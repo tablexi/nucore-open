@@ -1,10 +1,10 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'staff' }
 
 %h2 Add a User
-- form_tag user_search_results_url, :id => 'ajax_form' do
+= form_tag user_search_results_url, :id => 'ajax_form' do
   %p.instructions Search for an existing user by name, NetID, or username.  Click on the name of the user you wish to grant access to.  If the search does not return any acceptable matches, you may create a new user.
   = text_field_tag :search_term, nil, :size => 30
   = submit_tag "Search", :class => 'btn'

@@ -1,10 +1,10 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'users' }
   
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_users', :locals => { :secondary_tab => 'accounts' }
   
 %h1 #{@user.full_name} Payment Sources

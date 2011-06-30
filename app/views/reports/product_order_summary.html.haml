@@ -1,4 +1,4 @@
-- content_for :head_content do
+= content_for :head_content do
   = stylesheet_link_tag "jquery-ui/jquery-ui"
   %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
   :javascript
@@ -8,13 +8,13 @@
       });
     });
 
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_report', :locals => { :sidenav_tab => 'product_order_summary' }
 
 %h2 Product Order Summary Report
-- form_tag product_order_summary_facility_reports_path(:format => 'csv') do
+= form_tag product_order_summary_facility_reports_path(:format => 'csv') do
   %p.instructions This report shows all product orders for the date range specified.
   %ul.form
     %li

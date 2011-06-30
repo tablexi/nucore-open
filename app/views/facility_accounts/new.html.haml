@@ -1,16 +1,16 @@
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
 
-- content_for :head_content do
+= content_for :head_content do
   %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
   = javascript_include_tag 'accounts.js'
   = stylesheet_link_tag "jquery-ui/jquery-ui"
 
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
 %h2 Add Payment Source
-- form_for([current_facility, @account], :url => facility_accounts_path(current_facility)) do |f|
+= form_for([current_facility, @account], :url => facility_accounts_path(current_facility)) do |f|
   = f.error_messages
   = render :partial => 'account_fields', :locals => {:f => f, :instructions_for => :all}
   %ul.horiz

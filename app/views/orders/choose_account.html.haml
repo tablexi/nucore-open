@@ -1,4 +1,4 @@
-- content_for :h1 do
+= content_for :h1 do
   Select Payment Source
 
 = error_messages_for(:object => @order, :object_name => "order" )
@@ -6,7 +6,7 @@
 - if @accounts.empty?
   %p.notice You do not have any payment sources.  You must have a payment source in order to place an order.  Please contact the facility to add a payment source.
 - else
-  - form_tag do
+  = form_tag do
     %table
       %tr
         %th

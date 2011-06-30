@@ -1,8 +1,8 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => @product.class.name.downcase + 's' }
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'surveys'}
 
 %h2=h @product
@@ -10,7 +10,7 @@
 .box_no_fill.margin_bottom
   %h3 Online Order Form
   %p Online Order Forms are external Surveyor services. Multiple Online Order Forms may be added, but only one may be active at a time. Please contact the NUCore support specialist for more information.
-  - form_for(@survey, :url => create_product_survey_path(current_facility, @product.parameterize, @product), :html => { :multipart => true }) do |f|
+  = form_for(@survey, :url => create_product_survey_path(current_facility, @product.parameterize, @product), :html => { :multipart => true }) do |f|
     = f.error_messages
     %ul.form
       %li
@@ -44,7 +44,7 @@
 .box_no_fill
   %h3 Downloadable Order Form
   %p Downloadable Order Forms are templates to be filled in by the user and submitted when ordering.  Uploading a new template will replace any existing Downloadable Order Forms.
-  - form_for(@file, :url => create_product_survey_path(current_facility, @product.parameterize, @product), :html => { :multipart => true, :method => :post }) do |f|
+  = form_for(@file, :url => create_product_survey_path(current_facility, @product.parameterize, @product), :html => { :multipart => true, :method => :post }) do |f|
     = f.error_messages
     = f.hidden_field :file_type
     %ul.form

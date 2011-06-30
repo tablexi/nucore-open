@@ -1,4 +1,4 @@
--content_for :breadcrumb do
+= content_for :breadcrumb do
   %ul.horiz
     %li= link_to 'Home', facilities_path
     %li &raquo;
@@ -8,12 +8,12 @@
     %li &raquo;
     %li Upload Order Form
 
-- content_for :h1 do
+= content_for :h1 do
   Upload Order Form
   
 %h2=h @order_detail.product
 
-- form_for(@file, :url => order_order_detail_upload_order_file_path, :html => { :multipart => true, :method => :post }) do |f|
+= form_for(@file, :url => order_order_detail_upload_order_file_path, :html => { :multipart => true, :method => :post }) do |f|
   = f.error_messages
   %table
     %tr

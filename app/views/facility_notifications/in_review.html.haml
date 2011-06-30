@@ -1,7 +1,7 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'in_review' }
 
 %h2 Orders In Review
@@ -12,7 +12,7 @@
   %p
     The orders listed below are still in review by the customer.  The time the review window will close is listed.
     You may manually mark an order as reviewed, allowing you to create a statement for or journal the order immediately.
-  - form_tag facility_notifications_in_review_path(current_facility), :method => :post do
+  = form_tag facility_notifications_in_review_path(current_facility), :method => :post do
     %table
       %tr.borderless
         %td{:colspan => 4}

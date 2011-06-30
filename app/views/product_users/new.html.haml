@@ -1,12 +1,12 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_product', :locals => {:sidenav_tab => @product.class.name.pluralize.downcase}
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'users'}
 
 %fieldset
-  - form_tag user_search_results_url, :id => 'ajax_form' do
+  = form_tag user_search_results_url, :id => 'ajax_form' do
     = label_tag :search_term, 'Search by name, NetID, or username'
     %br
     = text_field_tag :search_term, nil, :size => 30

@@ -1,13 +1,13 @@
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'members'}
-- content_for :h1 do
+= content_for :h1 do
   == Add Payment Source Member
 
 -# show account context
 %p== Search for a user to add to the #{@account.type_string}, "#{@account}".
 %br
 
-- form_tag user_search_results_url, :id => "ajax_form" do
+= form_tag user_search_results_url, :id => "ajax_form" do
   = label_tag :search_term, 'Search by name, NetID, or username'
   %br
   = text_field_tag :search_term, nil, :size => 30

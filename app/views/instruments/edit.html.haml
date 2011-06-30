@@ -2,14 +2,14 @@
 = javascript_include_tag 'ckeditor/adapters/jquery.js'
 = javascript_include_tag 'editor.js'
 
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'details'}
 
-- form_for([current_facility, @instrument]) do |f|
+= form_for([current_facility, @instrument]) do |f|
   = f.error_messages
   %ul.form
     = render :partial => 'admin/shared/product_details_fields', :locals => {:f => f}

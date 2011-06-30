@@ -1,9 +1,9 @@
 = javascript_include_tag 'account_mgmt'
 
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'purchase_orders' }
 
 %h2 Reconcile Purchase Orders
@@ -11,7 +11,7 @@
 - if @accounts.empty?
   %p.notice There are no purchase orders with completed orders to be reconciled at this time
 - else
-  - form_tag(purchase_orders_facility_accounts_path, :method => :get) do
+  = form_tag(purchase_orders_facility_accounts_path, :method => :get) do
     %p
       = select_tag :selected_account, @accounts.collect{|a| "<option value=\"#{a.id}\"#{a == @selected ? ' selected="selected"' : ''}>#{a.to_s}</option>" }.join('')
 
@@ -21,7 +21,7 @@
 
   %p Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'.
 
-  - form_tag(update_purchase_orders_facility_accounts_path, :method => :post) do
+  = form_tag(update_purchase_orders_facility_accounts_path, :method => :post) do
     %table
       %tr.borderless
         %td{:colspan => 2}= link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')

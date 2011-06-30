@@ -1,4 +1,4 @@
-- content_for :head_content do
+= content_for :head_content do
   %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
   = javascript_include_tag 'calendar/fullcalendar.min.js'
   = javascript_include_tag 'jquery.qtip-1.0.0-rc3.min.js'
@@ -15,7 +15,7 @@
     var withDetails     = #{@instrument.show_details? || false};
 
 - unless @order.purchased?
-  -content_for :breadcrumb do
+  = content_for :breadcrumb do
     %ul.horiz
       %li= link_to 'Home', facilities_path
       %li &raquo;
@@ -26,12 +26,12 @@
       %li Edit Reservation
 
 
-- content_for :h1 do
+= content_for :h1 do
   =h @instrument.facility
 
 %h2=h @instrument
 
-- form_for([@order, @order_detail, @reservation]) do |f|
+= form_for([@order, @order_detail, @reservation]) do |f|
   = f.error_messages
   %ul.form.box
     = render :partial => 'reservation_fields', :locals => {:f => f}

@@ -1,7 +1,7 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'statement_history' }
 
 %p=h "Statement sent on #{human_datetime(@statement.created_at)} by #{begin User.find(@statement.created_by).full_name rescue 'Unknown' end}.  Notifications were emailed to the following accounts."

@@ -1,13 +1,13 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_order', :locals => { :secondary_tab => 'new'}
 
 - if @order_details.empty?
   %p.notice There are no "New" or "In Process" orders.
 - else
-  - form_tag(batch_update_facility_orders_path, :method => :post) do
+  = form_tag(batch_update_facility_orders_path, :method => :post) do
     - facility_users = User.find_users_by_facility(current_facility)
     %table
       -## THE HEADER CONTROL ROW

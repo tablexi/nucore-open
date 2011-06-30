@@ -1,15 +1,15 @@
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
 
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_payment_method', :locals => {:secondary_tab => 'members'}
 
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
 %h2 Add Payment Source User
 
-- form_for(@account_user, :url => facility_account_account_users_path(current_facility, @account)) do |f|
+= form_for(@account_user, :url => facility_account_account_users_path(current_facility, @account)) do |f|
   = f.error_messages
   %ul.form
     %li

@@ -1,7 +1,7 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'send_statements' }
 
 %h2 Create Statements
@@ -11,7 +11,7 @@
   %p
     Please review the following Credit Card and Purchase Order payment sources. A statement will be generated for each of the 
     payment sources and an email with a link to the statement will be sent.
-  - form_tag(email_facility_statements_path, :method => :post) do
+  = form_tag(email_facility_statements_path, :method => :post) do
     %table
       %tr.borderless
         %td{:colspan => 4}= link_to 'Select None', 'JavaScript:void(0);', :class => 'select_all'

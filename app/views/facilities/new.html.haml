@@ -2,10 +2,10 @@
 = javascript_include_tag 'ckeditor/adapters/jquery.js'
 = javascript_include_tag 'editor.js'
 
-- content_for :h1 do
+= content_for :h1 do
   == Add Facility
 
-- form_for @facility do |f|
+= form_for @facility do |f|
   = f.error_messages
   %ul.form
     = render :partial => 'facility_fields', :locals => {:f => f}

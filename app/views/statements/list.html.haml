@@ -1,6 +1,6 @@
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'statements'}
-- content_for :h1 do
+= content_for :h1 do
   == Payment Source Transactions
 
 %h2=h @account

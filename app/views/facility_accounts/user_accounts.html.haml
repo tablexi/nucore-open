@@ -1,7 +1,7 @@
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => {:sidenav_tab => 'accounts'}
 
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_account', :locals => {:secondary_tab => 'search_by_user'}
 
 %ul
