@@ -39,6 +39,10 @@ class Product < ActiveRecord::Base
   def <=> (obj)
     name.casecmp obj.name
   end
+
+  def description
+    self[:description].html_safe
+  end
   
   def parameterize
     self.class.to_s.parameterize.to_s.pluralize

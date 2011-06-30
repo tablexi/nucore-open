@@ -40,6 +40,10 @@ class Facility < ActiveRecord::Base
     name.casecmp obj.name
   end
 
+  def description
+    self[:description].html_safe
+  end
+
   def to_param
     if errors[:url_name].empty?
       url_name
