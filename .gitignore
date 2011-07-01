@@ -9,10 +9,10 @@ config/ldap.yml
 config/Constants.rb
 public/plugin_assets/
 public/files/
-surveys/fixtures/
 vendor/bundle
-vendor/plugins/nucs/config/database.yml
-vendor/plugins/nucs/vendor
+vendor/engines/nucs/Gemfile
+vendor/engines/nucs/Gemfile.lock
+vendor/engines/nucs/config/database.yml
 .tmp
 *~
 .*~
