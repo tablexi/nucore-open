@@ -1,5 +1,6 @@
 Product,Purchaser,Payment Source,Payment Source Owner,Order Date,Quantity,Amount,Adjustment
-= FasterCSV.generate do |csv|
+- require 'csv'
+= CSV.generate do |csv|
   - @order_details.each do |od|
     - csv << [ od.product,         |
                od.order.user,         |
