@@ -19,8 +19,8 @@ class ReportsController < ApplicationController
 
   def instrument_utilization
     if request.post?
-      @date_start   = Time.zone.parse(params[:date_start])
-      @date_end     = Time.zone.parse(params[:date_end])
+      @date_start   = parse_usa_date(params[:date_start])
+      @date_end     = parse_usa_date(params[:date_end])
       @reservations = Reservation.find(:all,
                        :conditions => [%q/reserve_start_at >= ? AND reserve_start_at <= ? AND canceled_at IS NULL AND (order_details.state IS NULL OR order_details.state = 'complete')/, @date_start, @date_end],
                        :joins => ['LEFT JOIN order_details ON reservations.order_detail_id = order_details.id'],
@@ -40,8 +40,8 @@ class ReportsController < ApplicationController
 
   def product_order_summary
     if request.post?
-      @date_start    = Time.zone.parse(params[:date_start])
-      @date_end      = Time.zone.parse(params[:date_end])
+      @date_start    = parse_usa_date(params[:date_start])
+      @date_end      = parse_usa_date(params[:date_end])
       @order_details = OrderDetail.find(:all,
                        :conditions => [%q/order_details.state = 'complete' AND orders.ordered_at >= ? AND orders.ordered_at <= ?/, @date_start, @date_end],
                        :joins => ['LEFT JOIN orders ON order_details.order_id = orders.id'],

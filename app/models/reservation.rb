@@ -1,6 +1,7 @@
 require "date"
 require "pp"
 class Reservation < ActiveRecord::Base
+  include DateHelper
 
   belongs_to :instrument
   belongs_to :order_detail
@@ -61,7 +62,7 @@ class Reservation < ActiveRecord::Base
   def set_reserve_start_at
     return unless self.reserve_start_at.blank?
     if @reserve_start_date and @reserve_start_hour and @reserve_start_min and @reserve_start_meridian
-      self.reserve_start_at = Time.zone.parse("#{Date.strptime(@reserve_start_date, '%m/%d/%Y').to_s} #{@reserve_start_hour.to_s}:#{@reserve_start_min.to_s.rjust(2, '0')} #{@reserve_start_meridian}")
+      self.reserve_start_at = parse_usa_date(@reserve_start_date, "#{@reserve_start_hour.to_s}:#{@reserve_start_min.to_s.rjust(2, '0')} #{@reserve_start_meridian}")
     end
   end
 
@@ -82,14 +83,14 @@ class Reservation < ActiveRecord::Base
   def set_actual_start_at
     return unless self.actual_start_at.blank?
     if @actual_start_date and @actual_start_hour and @actual_start_min and @actual_start_meridian
-      self.actual_start_at = Time.zone.parse("#{Date.strptime(@actual_start_date, '%m/%d/%Y').to_s} #{@actual_start_hour.to_s}:#{@actual_start_min.to_s.rjust(2, '0')} #{@actual_start_meridian}")
+      self.actual_start_at = parse_usa_date(@actual_start_date, "#{@actual_start_hour.to_s}:#{@actual_start_min.to_s.rjust(2, '0')} #{@actual_start_meridian}")
     end
   end
 
   def set_actual_end_at
     return unless self.actual_end_at.blank?
     if @actual_end_date and @actual_end_hour and @actual_end_min and @actual_end_meridian
-      self.actual_end_at = Time.zone.parse("#{Date.strptime(@actual_end_date, '%m/%d/%Y').to_s} #{@actual_end_hour.to_s}:#{@actual_end_min.to_s.rjust(2, '0')} #{@actual_end_meridian}")
+      self.actual_end_at = parse_usa_date(@actual_end_date, "#{@actual_end_hour.to_s}:#{@actual_end_min.to_s.rjust(2, '0')} #{@actual_end_meridian}")
     end
   end
 
