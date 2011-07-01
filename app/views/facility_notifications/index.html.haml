@@ -1,7 +1,7 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'notifications' }
 
 %h2 Send Notifications
@@ -9,7 +9,7 @@
 - if @accounts.empty?
   %p.notice No notifications are currently pending
 - else
-  - form_tag facility_notifications_path(current_facility), :method => :post do
+  = form_tag facility_notifications_path(current_facility), :method => :post do
     %table
       %tr.borderless
         %td{:colspan => 4}= link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')

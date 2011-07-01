@@ -1,11 +1,11 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe ItemsController do
-  integrate_views
+  render_views
 
   it "should route" do
-    params_from(:get, "/facilities/url_name/items").should == {:controller => 'items', :action => 'index', :facility_id => 'url_name'}
-    params_from(:get, "/facilities/url_name/items/1").should == {:controller => 'items', :action => 'show', :facility_id => 'url_name', :id => "1"}
+    { :get => "/facilities/url_name/items" }.should route_to(:controller => 'items', :action => 'index', :facility_id => 'url_name')
+    { :get => "/facilities/url_name/items/1" }.should route_to(:controller => 'items', :action => 'show', :facility_id => 'url_name', :id => "1")
   end
 
   before(:all) { create_users }
@@ -29,13 +29,7 @@ describe ItemsController do
     it_should_allow_operators_only do |user|
       assigns[:items].should == [@item]
       response.should be_success
-      response.should render_template('items/index.html.haml')
-
-      if user.facility_staff?
-        response.should_not have_tag('a', :text => 'Add Item')
-      else
-        response.should have_tag('a', :text => 'Add Item')
-      end
+      response.should render_template('items/index')
     end
 
   end
@@ -51,13 +45,7 @@ describe ItemsController do
     it_should_allow_operators_only do |user|
       assigns[:item].should == @item
       response.should be_success
-      response.should render_template('items/manage.html.haml')
-
-      if user.facility_staff?
-        response.should_not have_tag('a', :text => 'Edit')
-      else
-        response.should have_tag('a', :text => 'Edit')
-      end
+      response.should render_template('items/manage')
     end
 
   end
@@ -71,7 +59,7 @@ describe ItemsController do
       @block=Proc.new do
         assigns[:item].should == @item
         response.should be_success
-        response.should render_template('items/show.html.haml')
+        response.should render_template('items/show')
       end
     end
 
@@ -96,7 +84,7 @@ describe ItemsController do
 
     it_should_allow_operators_only do
       should assign_to(:item).with_kind_of Item
-      should render_template 'new.html.haml'
+      should render_template 'new'
     end
 
   end
@@ -110,7 +98,7 @@ describe ItemsController do
     end
 
     it_should_allow_operators_only do
-      should render_template 'edit.html.haml'
+      should render_template 'edit'
     end
 
   end

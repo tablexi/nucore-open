@@ -1,6 +1,6 @@
-- content_for :h1 do
+= content_for :h1 do
   == Cart
-- content_for :breadcrumb do
+= content_for :breadcrumb do
   %ul.horiz
     %li= link_to 'Home', :root
     - detail = @order.order_details.first
@@ -23,7 +23,7 @@
       %br
       = link_to 'Change Payment Source', choose_account_order_path(@order, :reset_account => true)
       
-  - form_tag order_path(@order), :method => :put do
+  = form_tag order_path(@order), :method => :put do
     %table#cart
       %tr
         %th

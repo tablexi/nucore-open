@@ -39,7 +39,7 @@ describe InstrumentPricePolicy do
     it "should create a price policy for today if no active price policy already exists" do
       should allow_value(Date.today).for(:start_date)
       @ipp.start_date=Date.today - 7.days
-      @ipp.save_with_validation(false) #save without validations
+      @ipp.save(:validate => false) #save without validations
       ipp_new = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today, :price_group => @price_group))
       ipp_new.errors_on(:start_date).should_not be_nil
     end
@@ -53,12 +53,12 @@ describe InstrumentPricePolicy do
 
     it "should return the date for the current policies" do
       @ipp.start_date=Date.today - 7.days
-      @ipp.save(false) #save without validations
+      @ipp.save(:validate => false) #save without validations
       @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
       InstrumentPricePolicy.current_date(@instrument).to_date.should == Date.today - 7.days
 
       @ipp = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group => @price_group))
-      @ipp.save(false) #save without validations
+      @ipp.save(:validate => false) #save without validations
       InstrumentPricePolicy.current_date(@instrument).to_date.should == Date.today
     end
 

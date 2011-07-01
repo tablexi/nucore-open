@@ -8,16 +8,16 @@ class Account < ActiveRecord::Base
   belongs_to :facility
   accepts_nested_attributes_for :account_users
 
-  named_scope :active, lambda {{ :conditions => ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] }}
-  named_scope :for_facility, lambda { |facility| { :conditions => ["type <> 'PurchaseOrderAccount' OR (type = 'PurchaseOrderAccount' AND facility_id = ?)", facility.id] }}
+  scope :active, lambda {{ :conditions => ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] }}
+  scope :for_facility, lambda { |facility| { :conditions => ["type <> 'PurchaseOrderAccount' OR (type = 'PurchaseOrderAccount' AND facility_id = ?)", facility.id] }}
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
   validates_length_of :description, :maximum => 50
 
-  def validate
+  validate do |acct|
     # an account owner if required
-    if !self.account_users.any?{ |au| au.user_role == 'Owner' }
-      self.errors.add_to_base("Must have an account owner")
+    unless acct.account_users.any?{ |au| au.user_role == AccountUser::ACCOUNT_OWNER }
+      acct.errors.add(:base, "Must have an account owner")
     end
   end
 
@@ -114,7 +114,7 @@ class Account < ActiveRecord::Base
   end
 
   def update_order_details_with_statement (statement)
-    details=order_details.find(:all, :joins => :order, :conditions => [
+    details=order_details.find(:all, :joins => :order, :readonly => false, :conditions => [
         'orders.facility_id = ? AND order_details.reviewed_at < ? AND order_details.statement_id IS NULL', statement.facility.id, Time.zone.now ]
     )
     details.each do |od|

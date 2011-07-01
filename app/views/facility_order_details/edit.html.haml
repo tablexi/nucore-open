@@ -1,14 +1,14 @@
-- content_for :head_content do
+= content_for :head_content do
   = stylesheet_link_tag 'uploadify'
   = javascript_include_tag 'uploadify/jquery.uploadify.v2.1.0.min'
   = javascript_include_tag 'uploadify/swfobject'
   :javascript
     $(document).ready(function() {
       $('#file_upload').uploadify({
-        'uploader'     : '#{ActionController::Base.relative_url_root}/javascripts/uploadify/uploadify.swf',
+        'uploader'     : '#{ENV['RAILS_RELATIVE_URL_ROOT']}/javascripts/uploadify/uploadify.swf',
         'fileDataName' : 'fileData',
         'script'       : "#{add_uploader_file_path(current_facility, @order_detail.product.parameterize, @order_detail.product.url_name)}",
-        'cancelImg'    : '#{ActionController::Base.relative_url_root}/javascripts/uploadify/cancel.png',
+        'cancelImg'    : '#{ENV['RAILS_RELATIVE_URL_ROOT']}/javascripts/uploadify/cancel.png',
         'auto'         : false,
         'method'       : 'get',
         'multi'        : true,
@@ -55,9 +55,9 @@
         });
       });
 
-- content_for :h1 do
+= content_for :h1 do
   = current_facility
-- content_for :tabnav do
+= content_for :tabnav do
   - if @order_detail.problem_order?
     - tab = 'problem'
   - elsif @order_detail.in_dispute?
@@ -69,7 +69,7 @@
   = render :partial => 'admin/shared/tabnav_order', :locals => { :secondary_tab => tab }
 
 %h2== Edit Order # #{@order_detail}
-- form_for(:order_detail, @order_detail, :url => (@order_detail.in_dispute? ? facility_order_order_detail_resolve_dispute_path(current_facility, @order, @order_detail) : facility_order_order_detail_path(current_facility, @order, @order_detail)), :html => {:method => :put}) do |f|
+= form_for(@order_detail, :as => :order_detail, :url => (@order_detail.in_dispute? ? facility_order_order_detail_resolve_dispute_path(current_facility, @order, @order_detail) : facility_order_order_detail_path(current_facility, @order, @order_detail)), :html => {:method => :put}) do |f|
   = f.error_messages
   .grid_6.alpha
     %ul.form
@@ -171,7 +171,7 @@
           = f.text_field :quantity, html_opts
       %td
         %ul
-          - product_name = (@order_detail.bundle ? "#{h @order_detail.bundle} &mdash; " : '') + h(@order_detail.product)
+          - product_name = ((@order_detail.bundle ? "#{h @order_detail.bundle} &mdash; " : '') + h(@order_detail.product)).html_safe
           %li= product_name
           - if @order_detail.reservation
             %li.indented= link_to(@order_detail.reservation, edit_facility_order_order_detail_reservation_path(current_facility, @order, @order_detail, @order_detail.reservation))
@@ -246,7 +246,7 @@
       %th Status
       %th Assigned To
     - @order.order_details.find(:all, :conditions => {:group_id => @order_detail.group_id}).each do |od|
-      - product_name = (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
+      - product_name = ((od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)).html_safe
       %tr
         %td= link_to od, edit_facility_order_order_detail_path(current_facility, @order, od)
         %td= od.quantity

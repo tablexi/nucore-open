@@ -1,7 +1,7 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe PriceGroupsController do
-  integrate_views
+  render_views
 
   before(:all) { create_users }
 
@@ -36,7 +36,7 @@ describe PriceGroupsController do
 
     it_should_allow_managers_only do
       should assign_to(:price_group).with_kind_of PriceGroup
-      should render_template 'new.html.haml'
+      should render_template 'new'
     end
 
   end
@@ -89,7 +89,7 @@ describe PriceGroupsController do
       it_should_allow_managers_only do
         should assign_to(:user_members).with_kind_of Array
         should assign_to(:tab)
-        should render_template 'show.html.haml'
+        should render_template 'show'
       end
 
     end
@@ -105,7 +105,7 @@ describe PriceGroupsController do
       it_should_allow_managers_only do
         should assign_to(:account_members).with_kind_of Array
         should assign_to(:tab)
-        should render_template 'show.html.haml'
+        should render_template 'show'
       end
 
     end
@@ -121,7 +121,7 @@ describe PriceGroupsController do
       it_should_allow_managers_only do
         should assign_to(:price_group).with_kind_of PriceGroup
         assigns(:price_group).should == @price_group
-        should render_template 'edit.html.haml'
+        should render_template 'edit'
       end
 
     end

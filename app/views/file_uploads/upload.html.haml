@@ -1,16 +1,16 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => @product.class.name.downcase + 's' }
 
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'documentation'}
 
 %h2= @product
 %p If provided, documentation will be available for download from the product page.
 
-- form_for(@file, :url => add_product_file_path(current_facility, @product.parameterize, @product), :html => { :multipart => true, :method => :post }) do |f|
+= form_for(@file, :url => add_product_file_path(current_facility, @product.parameterize, @product), :html => { :multipart => true, :method => :post }) do |f|
   = f.error_messages
   = f.hidden_field :file_type
   %ul.form

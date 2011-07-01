@@ -1,18 +1,18 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe AccountsController do
-  integrate_views
+  render_views
   
   it "should route" do
-    params_from(:get, "/accounts").should == {:controller => 'accounts', :action => 'index'}
-    params_from(:get, "/accounts/1").should == {:controller => 'accounts', :action => 'show', :id => '1'}
-    params_from(:get, "/accounts/1/user_search").should == {:controller => 'accounts', :action => 'user_search', :id => '1'}
+    { :get => "/accounts" }.should route_to(:controller => 'accounts', :action => 'index')
+    { :get => "/accounts/1" }.should route_to(:controller => 'accounts', :action => 'show', :id => '1')
+    { :get => "/accounts/1/user_search" }.should route_to(:controller => 'accounts', :action => 'user_search', :id => '1')
   end
 
   before(:all) { create_users }
 
   before(:each) do
-    @authable = Factory.create(:nufs_account)
+    @authable = create_nufs_account_with_owner
   end
 
 
@@ -26,14 +26,14 @@ describe AccountsController do
     it_should_require_login
 
     it "should list accounts, with edit account links for account owner" do
-      grant_role(@owner, Factory.create(:nufs_account))
+      create_nufs_account_with_owner
       maybe_grant_always_sign_in(:owner)
       do_request
       # should find 2 account users, with user roles 'Owner'
       assigns[:account_users].collect(&:user_id).should == [ @owner.id, @owner.id ]
       assigns[:account_users].collect(&:user_role).should == [ 'Owner', 'Owner' ]
       # should show 2 accounts, with 'edit account' links
-      response.should render_template('accounts/index.html.haml')
+      response.should render_template('accounts/index')
     end
 
     it_should_allow :purchaser do
@@ -41,8 +41,7 @@ describe AccountsController do
       assigns[:account_users].collect(&:user_id).should == [@purchaser.id]
       assigns[:account_users].collect(&:user_role).should == ['Purchaser']
       # should show 1 account, with no 'edit account' links
-      response.should render_template('accounts/index.html.haml')
-      response.should_not have_tag('a', :text => 'Edit Account')       
+      response.should render_template('accounts/index')
     end
   end
 
@@ -61,7 +60,7 @@ describe AccountsController do
 
     it_should_allow :owner do
       assigns(:account).should == @authable
-      response.should render_template('accounts/show.html.haml')
+      response.should render_template('accounts/show')
     end
   end
 
@@ -80,7 +79,7 @@ describe AccountsController do
 
     it_should_allow :owner do
       assigns(:account).should == @authable
-      response.should render_template('account_users/user_search.html.haml')
+      response.should render_template('account_users/user_search')
     end
 
   end

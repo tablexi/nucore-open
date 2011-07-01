@@ -1,7 +1,7 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe FacilityOrdersController do
-  integrate_views
+  render_views
 
   before(:all) { create_users }
 
@@ -12,7 +12,7 @@ describe FacilityOrdersController do
       :facility_account => @facility_account,
       :facility => @authable
     )
-    @account=Factory.create(:nufs_account)
+    @account=create_nufs_account_with_owner
     @order=Factory.create(:order,
       :facility => @authable,
       :user => @director,
@@ -49,7 +49,7 @@ describe FacilityOrdersController do
 
     it_should_allow_all facility_operators do
       assigns(:order).should == @order
-      should render_template 'show.html.erb'
+      should render_template 'show'
     end
 
   end

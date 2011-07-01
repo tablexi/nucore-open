@@ -16,7 +16,7 @@ namespace :chart_strings do
       # that we should set it's expiration date to 1 year from now
       begin        
         if fs.expires_at == now
-          fs.save(false) # we're expiring the chart string now so we don't care if validations fail (they'd just cause a headache)
+          fs.save(:validate => false) # we're expiring the chart string now so we don't care if validations fail (they'd just cause a headache)
         else
           fs.save!
         end

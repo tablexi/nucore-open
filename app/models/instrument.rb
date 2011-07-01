@@ -12,7 +12,9 @@ class Instrument < Product
   validates_numericality_of :min_reserve_mins, :max_reserve_mins, :only_integer => true, :greater_than_or_equal_to => 0, :allow_nil => true
   validates_uniqueness_of :relay_port, :scope => [:relay_ip]
 
-  named_scope :relay_ip, :conditions => ["relay_ip IS NOT NULL"]
+  scope :relay_ip, :conditions => ["relay_ip IS NOT NULL"]
+
+  after_create :set_default_pricing
 
   def current_instrument_status
     instrument_statuses.find(:first, :order => 'created_at DESC')
@@ -111,7 +113,7 @@ class Instrument < Product
     @@relay_types
   end
 
-  def after_create
+  def set_default_pricing
     [ PriceGroup.northwestern.first, PriceGroup.external.first ].each do |pg|
       PriceGroupProduct.create!(:product => self, :price_group => pg, :reservation_window => PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)
     end

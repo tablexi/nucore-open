@@ -5,9 +5,9 @@ describe Account do
   it "should not create using factory" do
     @user    = Factory.create(:user)
     hash     = Hash[:user => @user, :created_by => @user, :user_role => 'Owner']
-    @account = Account.create(Factory.attributes_for(:nufs_account, :account_users_attributes => [hash]))
+    @account = create_nufs_account_with_owner :user
 
-    @account.errors.on(:type).should_not be_nil
+    @account.errors[:type].should_not be_nil
   end
 
   it "should require account_number" do
@@ -48,7 +48,7 @@ describe Account do
 
     it "should require an account owner" do
       @account = Account.create
-      @account.errors.on(:base).should == 'Must have an account owner'
+      @account.errors[:base].should == ['Must have an account owner']
     end
 
     it "should find the non-deleted account owner" do

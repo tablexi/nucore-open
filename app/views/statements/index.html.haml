@@ -1,6 +1,6 @@
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'transactions'}
-- content_for :h1 do
+= content_for :h1 do
   == Payment Source Transactions
 
 - if @facilities.empty?

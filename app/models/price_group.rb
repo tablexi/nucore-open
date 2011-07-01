@@ -11,9 +11,9 @@ class PriceGroup < ActiveRecord::Base
   before_destroy :is_not_global
   before_create  lambda {|o| o.display_order = 999 if !o.facility_id.nil?}
 
-  named_scope :northwestern,  :conditions => { :name => 'Northwestern Base Rate', :facility_id => nil }
-  named_scope :external,      :conditions => { :name => 'External Rate', :facility_id => nil }
-  named_scope :cancer_center, :conditions => { :name => 'Cancer Center Rate', :facility_id => nil }
+  scope :northwestern,  :conditions => { :name => 'Northwestern Base Rate', :facility_id => nil }
+  scope :external,      :conditions => { :name => 'External Rate', :facility_id => nil }
+  scope :cancer_center, :conditions => { :name => 'Cancer Center Rate', :facility_id => nil }
 
   def user_price_group_members
     UserPriceGroupMember.find(:all, :conditions => { :price_group_id => id, :type => 'UserPriceGroupMember' })

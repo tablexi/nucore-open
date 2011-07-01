@@ -1,13 +1,11 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe FileUploadsController do
-  integrate_views
+  render_views
 
   it "should route" do
-    params_from(:get, "/facilities/alpha/services/1/files/upload").should ==
-      {:controller => 'file_uploads', :action => 'upload', :facility_id => 'alpha', :product => 'services', :product_id => '1'}
-    params_from(:post, "/facilities/alpha/services/1/files").should ==
-      {:controller => 'file_uploads', :action => 'create', :facility_id => 'alpha', :product => 'services', :product_id => '1'}
+    { :get => "/facilities/alpha/services/1/files/upload" }.should route_to(:controller => 'file_uploads', :action => 'upload', :facility_id => 'alpha', :product => 'services', :product_id => '1')
+    { :post => "/facilities/alpha/services/1/files" }.should route_to(:controller => 'file_uploads', :action => 'create', :facility_id => 'alpha', :product => 'services', :product_id => '1')
     # params_from(:post, "/facilities/alpha/services/1/yui_files").should == 
     #   {:controller => 'file_uploads', :action => 'yui_create', :facility_id => 'alpha', :product => 'services', :product_id => '1'}
   end
@@ -68,7 +66,7 @@ describe FileUploadsController do
       @params[:file_upload][:file]=''
       sign_in @admin
       do_request
-      should render_template('upload.html.haml')
+      should render_template('upload')
     end
 
   end
@@ -84,7 +82,7 @@ describe FileUploadsController do
         :facility_id => @authable.url_name,
         :product => 'services',
         :product_id => @service.url_name,
-        :fileData => ActionController::TestUploadedFile.new("#{Rails.root}/spec/files/flash_file.swf", 'application/x-shockwave-flash'),
+        :fileData => ActionDispatch::TestProcess.fixture_file_upload("#{Rails.root}/spec/files/flash_file.swf", 'application/x-shockwave-flash'),
         :Filename => "#{Rails.root}/spec/files/flash_file.swf",
         :file_type => 'info',
         :order_detail_id => @order_detail.id
@@ -139,7 +137,7 @@ describe FileUploadsController do
       assigns[:product].should == @service
       assigns[:survey].should be_kind_of ExternalService
       assigns[:survey].should be_new_record
-      assigns[:survey].errors.on_base.should_not be_nil
+      assigns[:survey].errors[:base].should_not be_empty
     end
 
     it_should_allow_managers_only :redirect do
@@ -185,7 +183,7 @@ describe FileUploadsController do
       :facility_account => @facility_account,
       :facility => @authable
     )
-    @account=Factory.create(:nufs_account)
+    @account=create_nufs_account_with_owner
     @order=Factory.create(:order,
       :facility => @authable,
       :user => @director,

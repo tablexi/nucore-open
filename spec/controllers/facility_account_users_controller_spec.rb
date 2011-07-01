@@ -1,13 +1,13 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe FacilityAccountUsersController do
-  integrate_views
+  render_views
 
   before(:all) { create_users }
 
   before(:each) do
     @authable=Factory.create(:facility)
-    @account=Factory.create(:nufs_account)
+    @account=create_nufs_account_with_owner
   end
 
 
@@ -25,7 +25,7 @@ describe FacilityAccountUsersController do
 
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
-      should render_template('user_search.html.haml')
+      should render_template('user_search')
     end
 
   end
@@ -48,7 +48,7 @@ describe FacilityAccountUsersController do
       assigns(:user).should == @guest
       should assign_to(:account_user).with_kind_of(AccountUser)
       assigns(:account_user).should be_new_record
-      should render_template('new.html.haml')
+      should render_template('new')
     end
 
   end

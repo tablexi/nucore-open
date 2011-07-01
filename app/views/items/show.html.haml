@@ -1,4 +1,4 @@
-- content_for :breadcrumb do
+= content_for :breadcrumb do
   %ul.horiz
     %li= link_to 'Home', :root
     %li== &raquo;
@@ -6,13 +6,13 @@
     %li== &raquo;
     %li=h @item.name
 
-- content_for :h1 do
+= content_for :h1 do
   =h @item.name
 
 = @item.description
 
 - if @login_required
-  - session[:requested_params] = request.request_uri
+  - session[:requested_params] = request.fullpath
   %ul
     %li= link_to 'Login', new_user_session_path, :class => 'btn'
 - elsif @add_to_cart

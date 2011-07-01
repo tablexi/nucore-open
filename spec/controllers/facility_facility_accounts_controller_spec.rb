@@ -1,7 +1,7 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe FacilityFacilityAccountsController do
-  integrate_views
+  render_views
 
   before(:all) { create_users }
 
@@ -23,7 +23,7 @@ describe FacilityFacilityAccountsController do
       should assign_to(:accounts).with_kind_of Array
       assigns(:accounts).size.should == 1
       assigns(:accounts)[0].should == @facility_account
-      should render_template 'index.html.haml'
+      should render_template 'index'
     end
 
   end
@@ -39,7 +39,7 @@ describe FacilityFacilityAccountsController do
     it_should_allow_managers_only do
       should assign_to(:facility_account).with_kind_of FacilityAccount
       assigns(:facility_account).should be_new_record
-      should render_template 'new.html.haml'
+      should render_template 'new'
     end
 
   end
@@ -92,7 +92,7 @@ describe FacilityFacilityAccountsController do
     it_should_allow_managers_only do
       should assign_to(:facility_account).with_kind_of FacilityAccount
       assigns(:facility_account).should == @facility_account
-      should render_template 'edit.html.haml'
+      should render_template 'edit'
     end
 
   end

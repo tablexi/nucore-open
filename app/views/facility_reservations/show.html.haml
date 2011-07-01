@@ -1,4 +1,4 @@
-- content_for :head_content do
+= content_for :head_content do
   = javascript_include_tag 'calendar/fullcalendar.min.js'
   = javascript_include_tag 'reservations.js'
   = stylesheet_link_tag 'calendar/fullcalendar.css'
@@ -9,7 +9,7 @@
     var minTime         = #{@instrument.first_available_hour};
     var maxTime         = #{@instrument.last_available_hour+1};
 
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
 %h2=h @instrument

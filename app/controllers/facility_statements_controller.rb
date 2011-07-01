@@ -43,7 +43,7 @@ class FacilityStatementsController < ApplicationController
             od.statement_id = statement.id
             od.save!
           end
-          a.notify_users.each {|u| Notifier.deliver_statement(:user => u, :facility => current_facility, :account => a, :statement => statement)}
+          a.notify_users.each {|u| Notifier.statement(:user => u, :facility => current_facility, :account => a, :statement => statement).deliver }
         rescue Exception => e
           error = true
           raise ActiveRecord::Rollback

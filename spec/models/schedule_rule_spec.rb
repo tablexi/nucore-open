@@ -41,7 +41,7 @@ describe ScheduleRule do
       @options    = Hash[:start_hour => 0, :start_min => 0, :end_hour => 24, :end_min => 1]
       @rule       = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule).merge(@options))
       assert @rule.invalid?
-      assert_equal "End time is invalid", @rule.errors.on(:base)
+      assert_equal ["End time is invalid"], @rule.errors[:base]
     end
 
     it "should recognize inclusive datetimes" do
@@ -72,37 +72,37 @@ describe ScheduleRule do
     # not allow rule from 9 am to 5 pm
     @options    = Factory.attributes_for(:schedule_rule).merge(:start_hour => 9, :end_hour => 17)
     @rule1      = @instrument.schedule_rules.create(@options)
-    assert @rule1.errors.on(:base)
+    assert @rule1.errors[:base]
     
     # not allow rule from 9 am to 10 am
     @options    = Factory.attributes_for(:schedule_rule).merge(:end_hour => 10)
     @rule1      = @instrument.schedule_rules.create(@options)
-    assert @rule1.errors.on(:base)
+    assert @rule1.errors[:base]
 
     # not allow rule from 10 am to 11 am
     @options    = Factory.attributes_for(:schedule_rule).merge(:start_hour => 10, :end_hour => 11)
     @rule1      = @instrument.schedule_rules.create(@options)
-    assert @rule1.errors.on(:base)
+    assert @rule1.errors[:base]
 
     # not allow rule from 3 pm to 5 pm
     @options    = Factory.attributes_for(:schedule_rule).merge(:start_hour => 15, :end_hour => 17)
     @rule1      = @instrument.schedule_rules.create(@options)
-    assert @rule1.errors.on(:base)
+    assert @rule1.errors[:base]
 
     # not allow rule from 7 am to 10 am
     @options    = Factory.attributes_for(:schedule_rule).merge(:start_hour => 7, :end_hour => 10)
     @rule1      = @instrument.schedule_rules.create(@options)
-    assert @rule1.errors.on(:base)
+    assert @rule1.errors[:base]
 
     # not allow rule from 4 pm to 10 pm
     @options    = Factory.attributes_for(:schedule_rule).merge(:start_hour => 16, :end_hour => 22)
     @rule1      = @instrument.schedule_rules.create(@options)
-    assert @rule1.errors.on(:base)
+    assert @rule1.errors[:base]
 
     # not allow rule from 8 am to 8 pm
     @options    = Factory.attributes_for(:schedule_rule).merge(:start_hour => 8, :end_hour => 20)
     @rule1      = @instrument.schedule_rules.create(@options)
-    assert @rule1.errors.on(:base)
+    assert @rule1.errors[:base]
   end
 
   it "should allow adjacent rules" do

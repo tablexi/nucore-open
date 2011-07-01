@@ -71,7 +71,7 @@ class FileUploadsController < ApplicationController
           flash[:notice] = "Order File Template uploaded"
           redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) and return
         rescue Exception => e
-          @file.errors.add_to_base("Order File Template delete error: #{e.message}")
+          @file.errors.add(:base, "Order File Template delete error: #{e.message}")
           raise ActiveRecord::Rollback
         end
       end
@@ -81,7 +81,7 @@ class FileUploadsController < ApplicationController
 
       if params[survey_param].nil? || params[survey_param][:location].blank?
         @survey = ExternalServiceManager.survey_service.new
-        @survey.errors.add_to_base("No location specified")
+        @survey.errors.add(:base, "No location specified")
       else
         begin
           url = params[survey_param][:location]
@@ -98,7 +98,7 @@ class FileUploadsController < ApplicationController
           redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) and return
         rescue Exception => e
           @survey ||= ExternalServiceManager.survey_service.new
-          @survey.errors.add_to_base("Online Order Form add error: #{e.message}")
+          @survey.errors.add(:base, "Online Order Form add error: #{e.message}")
         end
       end
       @file = @product.file_uploads.new(:file_type => 'template')

@@ -1,4 +1,4 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
 - if acting_as?
@@ -12,7 +12,7 @@
   - services    = current_facility.services.active
   - bundles     = current_facility.bundles.active.reject{|b| !b.products_active?}
 
-- content_for :breadcrumb do
+= content_for :breadcrumb do
   %ul.horiz
     %li= link_to 'Home', :root
     %li== &raquo;

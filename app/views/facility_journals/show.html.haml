@@ -1,7 +1,7 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'reconcile' }
 
 %h2== Journal ##{@journal} Details
@@ -43,7 +43,7 @@
 - if @order_details.empty?
   %p.notice No orders are associated with this journal
 - else
-  - form_tag facility_journal_reconcile_path(current_facility, @journal), :method => :post do
+  = form_tag facility_journal_reconcile_path(current_facility, @journal), :method => :post do
     %table
       - if @journal.is_successful? && !@journal.is_reconciled?
         %tr.borderless

@@ -1,3 +1,5 @@
+require 'devise/orm/active_record'
+
 # Use this hook to configure devise mailer, warden hooks and so forth. The first
 # four configuration values can also be set straight in your models.
 Devise.setup do |config|
@@ -16,12 +18,12 @@ Devise.setup do |config|
   # Testing speed up: https://github.com/plataformatec/devise/wiki/Speed-up-your-unit-tests
   config.stretches = Rails.env.test? ? 1 : 10
 
-  # Define which will be the encryption algorithm. Supported algorithms are :sha1
-  # (default), :sha512 and :bcrypt. Devise also supports encryptors from others
+  # Define which will be the encryption algorithm. Supported algorithms are :sha1,
+  # :sha512 and :bcrypt (default). Devise also supports encryptors from others
   # authentication tools as :clearance_sha1, :authlogic_sha512 (then you should set
   # stretches above to 20 for default behavior) and :restful_authentication_sha1
   # (then you should set stretches to 10, and copy REST_AUTH_SITE_KEY to pepper)
-  # config.encryptor = :sha1
+  config.encryptor = :sha1
 
   # Configure which keys are used when authenticating an user. By default is
   # just :email. You can configure it to use [:username, :subdomain], so for
@@ -103,10 +105,4 @@ Devise.setup do |config|
   # config.default_url_options do
   #   { :locale => I18n.locale }
   # end
-
-  # LDAP server configuration, if any
-  #config.ldap_host = 'localhost'
-  #config.ldap_port = 389
-  #config.ldap_base_dn = 'dc=tablexi,dc=com'
-  #config.ldap_login_attribute = 'cn'
 end

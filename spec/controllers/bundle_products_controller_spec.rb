@@ -1,7 +1,7 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe BundleProductsController do
-  integrate_views
+  render_views
 
   before(:all) { create_users }
 
@@ -26,7 +26,7 @@ describe BundleProductsController do
 
     it_should_allow_all facility_operators do
       should assign_to(:bundle_products).with_kind_of(Array)
-      should render_template('index.html.haml')
+      should render_template('index')
     end
 
   end
@@ -72,7 +72,7 @@ describe BundleProductsController do
     it_should_allow_all facility_operators do
       should assign_to(:bundle_product).with_kind_of(BundleProduct)
       assigns(:bundle_product).should be_new_record
-      should render_template('new.html.haml')
+      should render_template('new')
     end
 
   end
@@ -90,7 +90,7 @@ describe BundleProductsController do
 
     it_should_allow_all facility_operators do
       assert_init_bundle
-      should render_template('edit.html.haml')
+      should render_template('edit')
     end
 
   end

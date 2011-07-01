@@ -63,19 +63,19 @@ describe Reservation do
                                                      :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                      :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
     @reservation2.should_not be_valid
-    assert_equal "The reservation conflicts with another reservation", @reservation2.errors.on(:base)
+    assert_equal ["The reservation conflicts with another reservation"], @reservation2.errors[:base]
 
     @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                      :reserve_start_min => 15, :reserve_start_meridian => 'am',
                                                      :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
     @reservation2.should_not be_valid
-    assert_equal "The reservation conflicts with another reservation", @reservation2.errors.on(:base)
+    assert_equal ["The reservation conflicts with another reservation"], @reservation2.errors[:base]
 
     @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 9,
                                                      :reserve_start_min => 45, :reserve_start_meridian => 'am',
                                                      :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
     @reservation2.should_not be_valid
-    assert_equal "The reservation conflicts with another reservation", @reservation2.errors.on(:base)
+    assert_equal ["The reservation conflicts with another reservation"], @reservation2.errors[:base]
   end
 
   it "should not let reservations exceed the maximum length" do
@@ -85,7 +85,7 @@ describe Reservation do
                                                    :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                    :duration_value => 61, :duration_unit => 'minutes')
     assert @reservation.invalid?
-    assert_equal "The reservation is too long", @reservation.errors.on(:base)
+    assert_equal ["The reservation is too long"], @reservation.errors[:base]
     @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                    :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                    :duration_value => 60, :duration_unit => 'minutes')
@@ -99,7 +99,7 @@ describe Reservation do
                                                    :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                    :duration_value => 29, :duration_unit => 'minutes')
     assert @reservation.invalid?
-    assert_equal "The reservation is too short", @reservation.errors.on(:base)
+    assert_equal ["The reservation is too short"], @reservation.errors[:base]
     @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                    :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                    :duration_value => 30, :duration_unit => 'minutes')

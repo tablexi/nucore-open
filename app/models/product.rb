@@ -13,10 +13,12 @@ class Product < ActiveRecord::Base
   validate_url_name :url_name
   validates_inclusion_of :requires_approval, :is_archived, :is_hidden, :in => [true, false, 0, 1]
   
-  named_scope :active,             :conditions => { :is_archived => false, :is_hidden => false }
-  named_scope :active_plus_hidden, :conditions => { :is_archived => false}
-  named_scope :archived,           :conditions => { :is_archived => true }
-  named_scope :not_archived,       :conditions => { :is_archived => false }
+  scope :active,             :conditions => { :is_archived => false, :is_hidden => false }
+  scope :active_plus_hidden, :conditions => { :is_archived => false}
+  scope :archived,           :conditions => { :is_archived => true }
+  scope :not_archived,       :conditions => { :is_archived => false }
+
+  after_create :set_default_pricing
   
   def initial_order_status
     self[:initial_order_status] or OrderStatus.default_order_status
@@ -37,6 +39,10 @@ class Product < ActiveRecord::Base
   def <=> (obj)
     name.casecmp obj.name
   end
+
+  def description
+    self[:description].html_safe if self[:description]
+  end
   
   def parameterize
     self.class.to_s.parameterize.to_s.pluralize
@@ -48,7 +54,7 @@ class Product < ActiveRecord::Base
   end
 
   def to_param
-    if errors.on(:url_name).nil?
+    if errors[:url_name].nil?
       url_name
     else
       url_name_was
@@ -63,7 +69,7 @@ class Product < ActiveRecord::Base
     (name || '') + (is_archived? ? ' (inactive)' : '')
   end
 
-  def after_create
+  def set_default_pricing
     [ PriceGroup.northwestern.first, PriceGroup.external.first ].each do |pg|
       PriceGroupProduct.create!(:product => self, :price_group => pg)
     end

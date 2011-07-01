@@ -1,10 +1,10 @@
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
 
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_payment_method', :locals => {:secondary_tab => 'details'}
 
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
 %h2= @account
@@ -32,7 +32,7 @@
       = human_datetime(@account.expires_at, :date_only => true)
   %li
     %label Bill To
-    = @account.remittance_information ? simple_format(h @account.remittance_information) : '<p>None Entered</p>'
+    = @account.remittance_information ? simple_format(h @account.remittance_information) : '<p>None Entered</p>'.html_safe
 %ul.horiz
   %li
     = link_to 'Edit', edit_facility_account_path(current_facility, @account), :class => 'btn'

@@ -11,8 +11,8 @@
   - html_opts={ :size => 8 }
   - html_opts.merge!(:disabled => 'disabled') if @in_open_journal || @order_detail.reconciled?
   - actual_opts=html_opts.merge({:value => number_with_precision(@order_detail.actual_cost, :precision => 2), :id => 'actual_cost'})
-  %td.currency= "$#{form.text_field(:actual_cost, actual_opts)}"
+  %td.currency= "$#{form.text_field(:actual_cost, actual_opts)}".html_safe
   - sub_opts=html_opts.merge({:value => number_with_precision(@order_detail.actual_subsidy, :precision => 2), :id => 'actual_subsidy'})
-  %td.currency= "$#{form.text_field(:actual_subsidy, sub_opts)}"
+  %td.currency= "$#{form.text_field(:actual_subsidy, sub_opts)}".html_safe
   %td.currency
     %span#actual_total= show_actual_total(@order_detail)

@@ -1,17 +1,17 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'items' }
 
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'pricing_rules'}
 
 %h2=h @item
 %h3 Edit Pricing Rules
 = render :partial => 'instructional_text'
 
-- form_tag facility_item_price_policy_path(current_facility, @item, params[:id]), :method => 'PUT' do
+= form_tag facility_item_price_policy_path(current_facility, @item, params[:id]), :method => 'PUT' do
   - @price_policies.each do |pp|
     - @price_policy = pp
     = error_messages_for :price_policy

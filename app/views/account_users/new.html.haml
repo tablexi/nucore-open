@@ -1,9 +1,9 @@
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'members'}
-- content_for :h1 do
+= content_for :h1 do
   == Add Payment Source Member
 
-- form_for(@account_user, :url => account_account_users_path(@account)) do |f|
+= form_for(@account_user, :url => account_account_users_path(@account)) do |f|
   = f.error_messages
   %ul.form
     %li

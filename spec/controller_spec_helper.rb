@@ -45,7 +45,7 @@ end
 def it_should_require_login
   it 'should require login' do
     do_request
-    should redirect_to(new_user_session_url(:unauthenticated => true))
+    should redirect_to(new_user_session_url)
   end
 end
 
@@ -60,7 +60,7 @@ def it_should_deny(user_sym, spec_desc='')
   it "should deny #{user_sym.to_s} " + spec_desc do
     maybe_grant_always_sign_in(user_sym)
     do_request
-    should render_template('403.html.erb')
+    should render_template('403')
   end
 end
 
@@ -206,7 +206,10 @@ def grant_role(user, authable=nil)
       UserRole.grant(user, UserRole::FACILITY_STAFF, authable)
       user.reload.should be_facility_staff_of(authable)
     when 'owner'
-      AccountUser.grant(user, AccountUser::ACCOUNT_OWNER, authable, @admin)
+      # Creating a NufsAccount requires an owner to be present, and some pre-Rails3 tests try to add the same user
+      # to the same account with the same role of owner. That's a uniqueness error on AccountUser. Avoid it.
+      existing=AccountUser.find_by_user_id_and_account_id_and_user_role(user.id, authable.id, AccountUser::ACCOUNT_OWNER)
+      AccountUser.grant(user, AccountUser::ACCOUNT_OWNER, authable, @admin) unless existing
       user.reload.should be_owner_of(authable)
     when 'purchaser'
       AccountUser.grant(user, AccountUser::ACCOUNT_PURCHASER, authable, @admin)
@@ -217,7 +220,7 @@ end
 
 def maybe_grant_always_sign_in(user_sym)
   user=instance_variable_get("@#{user_sym.to_s}")
-  grant_role(user) unless user == @guest or user == @admin
+  grant_role(user) unless user == @guest || user == @admin
   sign_in user
   return user
 end

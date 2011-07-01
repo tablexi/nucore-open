@@ -1,5 +1,5 @@
-ActionController::Routing::Routes.draw do |map|
-  map.devise_for :users
+Nucore::Application.routes.draw do |map|
+  devise_for :users
 
   # The priority is based upon order of creation: first created -> highest priority.
 
@@ -32,7 +32,7 @@ ActionController::Routing::Routes.draw do |map|
     facility.resources :instruments, :member => {:manage => :get} do |instrument|
       instrument.schedule 'schedule', :controller => 'instruments', :action => 'schedule'
       instrument.agenda   'agenda',   :controller => 'instruments', :action => 'agenda'
-      instrument.status   'status',   :controller => 'instruments', :action => 'status'
+      instrument.status   'status',   :controller => 'instruments', :action => 'instrument_status'
       instrument.switch   'switch',   :controller => 'instruments', :action => 'switch'
       instrument.resources :schedule_rules, :except => [:show]
       instrument.resources :price_policies, :controller => 'instrument_price_policies', :except => [:show]
@@ -148,4 +148,61 @@ ActionController::Routing::Routes.draw do |map|
                                 :controller => 'surveyors', :action => 'deactivate', :conditions => {:method => :put}
   map.complete_survey '/facilities/:facility_id/services/:service_id/surveys/:external_service_id/complete',
                                 :controller => 'surveyors', :action => 'complete', :conditions => {:method => [:get, :post]}
+
+  # The priority is based upon order of creation:
+  # first created -> highest priority.
+
+  # Sample of regular route:
+  #   match 'products/:id' => 'catalog#view'
+  # Keep in mind you can assign values other than :controller and :action
+
+  # Sample of named route:
+  #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
+  # This route can be invoked with purchase_url(:id => product.id)
+
+  # Sample resource route (maps HTTP verbs to controller actions automatically):
+  #   resources :products
+
+  # Sample resource route with options:
+  #   resources :products do
+  #     member do
+  #       get 'short'
+  #       post 'toggle'
+  #     end
+  #
+  #     collection do
+  #       get 'sold'
+  #     end
+  #   end
+
+  # Sample resource route with sub-resources:
+  #   resources :products do
+  #     resources :comments, :sales
+  #     resource :seller
+  #   end
+
+  # Sample resource route with more complex sub-resources
+  #   resources :products do
+  #     resources :comments
+  #     resources :sales do
+  #       get 'recent', :on => :collection
+  #     end
+  #   end
+
+  # Sample resource route within a namespace:
+  #   namespace :admin do
+  #     # Directs /admin/products/* to Admin::ProductsController
+  #     # (app/controllers/admin/products_controller.rb)
+  #     resources :products
+  #   end
+
+  # You can have the root of your site routed with "root"
+  # just remember to delete public/index.html.
+  # root :to => "welcome#index"
+
+  # See how all your routes lay out with "rake routes"
+
+  # This is a legacy wild controller route that's not recommended for RESTful applications.
+  # Note: This route will make all actions in every controller accessible via GET requests.
+  # match ':controller(/:action(/:id(.:format)))'
 end

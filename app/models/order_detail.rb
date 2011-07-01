@@ -29,27 +29,27 @@ class OrderDetail < ActiveRecord::Base
 
   before_create :init_status
 
-  named_scope :with_product_type, lambda { |s| {:joins => :product, :conditions => ["products.type = ?", s.to_s.capitalize]} }
-  named_scope :in_dispute, :conditions => ['dispute_at IS NOT NULL AND dispute_resolved_at IS NULL AND STATE != ?', 'cancelled'], :order => 'dispute_at'
-  named_scope :new_or_inprocess, :conditions => ["order_details.state IN ('new', 'inprocess') AND orders.ordered_at IS NOT NULL"], :include => :order, :order => 'orders.ordered_at DESC'
+  scope :with_product_type, lambda { |s| {:joins => :product, :conditions => ["products.type = ?", s.to_s.capitalize]} }
+  scope :in_dispute, :conditions => ['dispute_at IS NOT NULL AND dispute_resolved_at IS NULL AND STATE != ?', 'cancelled'], :order => 'dispute_at'
+  scope :new_or_inprocess, :conditions => ["order_details.state IN ('new', 'inprocess') AND orders.ordered_at IS NOT NULL"], :include => :order, :order => 'orders.ordered_at DESC'
 
-  named_scope :facility_recent, lambda { |facility|
+  scope :facility_recent, lambda { |facility|
                                   { :conditions => ['(order_details.statement_id IS NULL OR order_details.reviewed_at > ?) AND orders.facility_id = ?', Time.zone.now, facility.id],
                                     :joins => 'LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id',
                                     :order => 'order_details.created_at DESC' }}
 
-  named_scope :finalized, lambda {|facility| { :joins => :order,
+  scope :finalized, lambda {|facility| { :joins => :order,
                                                :conditions => ['orders.facility_id = ? AND order_details.reviewed_at < ?', facility.id, Time.zone.now],
                                                :order => 'order_details.created_at DESC' }}
 
-  named_scope :for_facility, lambda {|facility| { :joins => :order, :conditions => [ 'orders.facility_id = ?', facility.id ], :order => 'order_details.created_at DESC' }}
+  scope :for_facility, lambda {|facility| { :joins => :order, :conditions => [ 'orders.facility_id = ?', facility.id ], :order => 'order_details.created_at DESC' }}
 
-  named_scope :for_facility_with_price_policy, lambda { |facility| {
+  scope :for_facility_with_price_policy, lambda { |facility| {
     :joins => :order,
     :conditions => [ 'orders.facility_id = ? AND price_policy_id IS NOT NULL', facility.id ], :order => 'order_details.fulfilled_at DESC' }
   }
 
-  named_scope :need_notification, lambda { |facility| {
+  scope :need_notification, lambda { |facility| {
     :joins => :product,
     :conditions => ['products.facility_id = ?
                      AND order_details.state = ?
@@ -58,7 +58,7 @@ class OrderDetail < ActiveRecord::Base
                      AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete']
   }}
 
-  named_scope :in_review, lambda { |facility| {
+  scope :in_review, lambda { |facility| {
     :joins => :product,
     :conditions => ['products.facility_id = ?
                      AND order_details.state = ?
@@ -66,7 +66,7 @@ class OrderDetail < ActiveRecord::Base
                      AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete', Time.zone.now]
   }}
 
-  named_scope :need_statement, lambda { |facility| {
+  scope :need_statement, lambda { |facility| {
     :joins => [:product, :account],
     :conditions => ['products.facility_id = ?
                      AND order_details.state = ?
@@ -77,7 +77,7 @@ class OrderDetail < ActiveRecord::Base
                      AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete', Time.zone.now, 'CreditCardAccount', 'PurchaseOrderAccount']
   }}
 
-  named_scope :need_journal, lambda { |facility| {
+  scope :need_journal, lambda { |facility| {
     :joins => [:product, :account],
     :conditions => ['products.facility_id = ?
                      AND order_details.state = ?
@@ -88,7 +88,7 @@ class OrderDetail < ActiveRecord::Base
                      AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete', Time.zone.now, 'NufsAccount']
   }}
 
-  named_scope :statemented, lambda {|facility| {
+  scope :statemented, lambda {|facility| {
       :joins => :order,
       :order => 'order_details.created_at DESC',
       :conditions => [ 'orders.facility_id = ? AND order_details.statement_id IS NOT NULL', facility.id ] }

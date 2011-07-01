@@ -1,7 +1,7 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe ReservationsController do
-  integrate_views
+  render_views
 
   before(:all) { create_users }
 
@@ -39,7 +39,8 @@ describe ReservationsController do
     end
 
     it_should_allow_all facility_users do
-      should respond_with :success
+      assigns[:facility].should == @authable
+      assigns[:instrument].should == @instrument
     end
 
     it 'should test more than auth'

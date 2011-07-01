@@ -20,6 +20,7 @@ describe NufsAccount do
       assert_equal '1234567', @account.dept
       # should initialize reader attributes after loading from database
       @account = NufsAccount.first
+      @account.valid?
       assert_equal '123', @account.fund
       assert_equal '1234567', @account.dept
     end
@@ -58,14 +59,14 @@ describe NufsAccount do
       @options[:account_number] = '123-1234567-12345678-12-1234-12345'
       @account = NufsAccount.create(@options)
       assert !@account.valid?
-      assert @account.errors.on(:account_number)
+      assert @account.errors[:account_number]
     end
 
     it "should not allow invalid account number" do
       @options[:account_number] = '123'
       @account = NufsAccount.create(@options)
       assert !@account.valid?
-      assert @account.errors.on(:account_number)
+      assert @account.errors[:account_number]
     end
 
     it "should not allow account that has expired" do
@@ -73,7 +74,7 @@ describe NufsAccount do
       @options[:account_number] = '123-1234567'
       @account = NufsAccount.create(@options)
       assert !@account.valid?
-      @account.errors.on(:account_number).should_not be_nil
+      @account.errors[:account_number].should_not be_nil
     end
 
     it "should not allow account that has not started" do
@@ -81,7 +82,7 @@ describe NufsAccount do
       @options[:account_number] = '123-1234567'
       @account = NufsAccount.create(@options)
       assert !@account.valid?
-      @account.errors.on(:account_number).should_not be_nil
+      @account.errors[:account_number].should_not be_nil
     end
 
 

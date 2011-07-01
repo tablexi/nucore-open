@@ -1,11 +1,11 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'staff' }
 
 %h2 Grant Facility Role
 
-- form_for(:user_role, :url => facility_facility_user_map_user_path) do |f|
+= form_for(:user_role, :url => facility_facility_user_map_user_path) do |f|
   = f.error_messages
   %ul.form
     %li

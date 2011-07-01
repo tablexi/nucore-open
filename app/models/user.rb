@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   include Role
 
-  devise :ldap_authenticatable, :database_authenticatable, :trackable
+  devise :ldap_authenticatable, :database_authenticatable, :encryptable, :trackable
 
   #has_many :accounts, :foreign_key => :owner_user_id, :order => :account_number
   has_many :accounts, :through => :account_users
@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
   # Returns true if the user is authenticated against nucore's  
   # user table, false if authenticated by an external system
   def authenticated_locally?
-    encrypted_password && password_salt
+    encrypted_password.present? && password_salt.present?
   end
 
   # Find the users for a facility

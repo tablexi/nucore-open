@@ -1,7 +1,7 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe BundlesController do
-  integrate_views
+  render_views
 
   before(:all) { create_users }
 
@@ -35,7 +35,8 @@ describe BundlesController do
       @bundle.is_archived=true
       assert @bundle.save
       maybe_grant_always_sign_in(:director)
-      do_request @params.merge(:archived => 'true')
+      @params.merge!(:archived => 'true')
+      do_request
       should assign_to(:bundles).with_kind_of(Array)
       assigns(:bundles).size.should == 1
       assigns(:bundles).should == @authable.bundles.archived
@@ -64,7 +65,7 @@ describe BundlesController do
       should assign_to(:add_to_cart)
       should assign_to(:login_required)
       should_not set_the_flash
-      should render_template('show.html.haml')
+      should render_template('show')
     end
 
   end
@@ -83,7 +84,7 @@ describe BundlesController do
     it_should_allow_all facility_operators do
       should assign_to(:bundle).with_kind_of(Bundle)
       assigns(:bundle).should be_new_record
-      should render_template('new.html.haml')
+      should render_template('new')
     end
 
   end
@@ -101,7 +102,7 @@ describe BundlesController do
 
     it_should_allow_all facility_operators do
       assert_init_bundle
-      should render_template('edit.html.haml')
+      should render_template('edit')
     end
 
   end

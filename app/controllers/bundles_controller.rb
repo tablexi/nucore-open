@@ -23,7 +23,7 @@ class BundlesController < ApplicationController
     if params[:archived].nil? || params[:archived] != 'true'
       @bundles = current_facility.bundles.find(:all, :conditions => {'is_archived' => false})
     else
-      @bundles = current_facility.bundles.archived
+      @bundles = current_facility.bundles.archived.all
     end
   end
 

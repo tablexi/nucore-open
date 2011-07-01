@@ -1,8 +1,9 @@
 [ 'factories', 'nucs_validator_helper' ].each do |nucs_file|
-  require File.join(File.dirname(__FILE__), '..', 'vendor', 'plugins', 'nucs', 'spec', nucs_file)
+  require File.join(File.dirname(__FILE__), '..', 'vendor', 'engines', 'nucs', 'spec', nucs_file)
 end
 
 include NucsValidatorHelper
+include ActionDispatch::TestProcess
 
 
 Factory.define :facility, :class => Facility do |f|
@@ -30,6 +31,7 @@ Factory.define :user, :class => User do |o|
   o.sequence(:username) { |n| "username#{n}" }
   o.first_name "User"
   o.password 'password'
+  o.password_confirmation 'password'
   o.sequence(:last_name) { |n| "#{n}" }
   o.sequence(:email) { |n| "user#{n}@example.com" }
 end
@@ -71,6 +73,8 @@ Factory.define :purchase_order_account, :class => PurchaseOrderAccount do |o|
 end
 
 Factory.define :account_user, :class => AccountUser do |o|
+  o.user_role 'Owner'
+  o.created_by 0
 end
 
 Factory.define :price_group, :class => PriceGroup do |o|
@@ -202,7 +206,7 @@ Factory.define :journal do |j|
 end
 
 Factory.define :file_upload do |f|
-  f.swf_uploaded_data ActionController::TestUploadedFile.new("#{Rails.root}/spec/files/flash_file.swf", 'application/x-shockwave-flash')
+  f.swf_uploaded_data fixture_file_upload("#{Rails.root}/spec/files/flash_file.swf", 'application/x-shockwave-flash')
   f.name "#{Rails.root}/spec/files/flash_file.swf"
   f.file_type 'info'
 end

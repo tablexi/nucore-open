@@ -19,20 +19,20 @@ describe Statement do
   it "requires created_by" do
     @statement = Statement.new({:created_by => nil})
     @statement.should_not be_valid
-    @statement.errors.on(:created_by).should_not be_nil
+    @statement.errors[:created_by].should_not be_nil
     
     @statement = Statement.new({:created_by => 1})
     @statement.valid?
-    @statement.errors.on(:created_by).should be_nil
+    @statement.errors[:created_by].should be_empty
   end
   
   it "requires a facility" do
     @statement = Statement.new({:facility_id => nil})
     @statement.should_not be_valid
-    @statement.errors.on(:facility_id).should_not be_nil
+    @statement.errors[:facility_id].should_not be_nil
     
     @statement = Statement.new({:facility_id => 1})
     @statement.valid?
-    @statement.errors.on(:facility_id).should be_nil
+    @statement.errors[:facility_id].should be_empty
   end
 end

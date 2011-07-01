@@ -5,8 +5,10 @@ class FacilityAccount < ActiveRecord::Base
   validates_numericality_of :revenue_account, :only_integer => true, :greater_than_or_equal_to => 10000, :less_than_or_equal_to => 99999
   validates_uniqueness_of   :account_number, :scope => [:revenue_account, :facility_id]
 
-  named_scope :active,   :conditions => { :is_active => true }
-  named_scope :inactive, :conditions => { :is_active => false }
+  scope :active,   :conditions => { :is_active => true }
+  scope :inactive, :conditions => { :is_active => false }
+
+  validate :validate_chartstring
 
   def to_s
     "#{account_number} (#{revenue_account})"
@@ -32,7 +34,7 @@ class FacilityAccount < ActiveRecord::Base
     split_account_number[5]
   end
 
-  def validate
+  def validate_chartstring
     return if Rails.env.test?
 
     begin

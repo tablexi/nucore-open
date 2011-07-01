@@ -1,4 +1,4 @@
-- content_for :head_content do
+= content_for :head_content do
   %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
   = javascript_include_tag 'calendar/fullcalendar.min.js'
   = javascript_include_tag 'reservations.js'
@@ -18,12 +18,12 @@
       var minTime         = #{@instrument.first_available_hour};
       var maxTime         = #{@instrument.last_available_hour+1};
 
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
 %h2=h @instrument.name
 
-- form_for(@reservation, :url => facility_order_order_detail_reservation_path, :html => {:method => :put}) do |f|
+= form_for(@reservation, :url => facility_order_order_detail_reservation_path, :html => {:method => :put}) do |f|
   = f.error_messages
   %ul.form
     = render :partial => 'reservation_fields', :locals => {:f => f}

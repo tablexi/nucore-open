@@ -1,10 +1,11 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of Active Record to incrementally modify your database, and
-# then regenerate this schema definition.
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of Active Record to
+# incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your database schema. If you need
-# to create the application database on another system, you should be using db:schema:load, not running
-# all the migrations from scratch. The latter is a flawed and unsustainable approach (the more migrations
+# Note that this schema.rb definition is the authoritative source for your
+# database schema. If you need to create the application database on another
+# system, you should be using db:schema:load, not running all the migrations
+# from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
 # It's strongly recommended to check this file into your version control system.
@@ -502,5 +503,46 @@ ActiveRecord::Schema.define(:version => 20110627182814) do
   add_index "versions", ["user_id", "user_type"], :name => "i_versions_user_id_user_type"
   add_index "versions", ["user_name"], :name => "index_versions_on_user_name"
   add_index "versions", ["versioned_id", "versioned_type"], :name => "i_ver_ver_id_ver_typ"
+
+  add_foreign_key "account_users", "accounts", :name => "fk_accounts"
+
+  add_foreign_key "accounts", "facilities", :name => "fk_account_facility_id"
+
+  add_foreign_key "bundle_products", "products", :name => "fk_bundle_prod_bundle"
+  add_foreign_key "bundle_products", "products", :name => "fk_bundle_prod_prod", :column => "bundle_product_id"
+
+  add_foreign_key "facility_accounts", "facilities", :name => "fk_facilities"
+
+  add_foreign_key "file_uploads", "order_details", :name => "fk_files_od"
+  add_foreign_key "file_uploads", "products", :name => "fk_files_product"
+
+  add_foreign_key "instrument_statuses", "products", :name => "fk_int_stats_product", :column => "instrument_id"
+
+  add_foreign_key "order_details", "accounts", :name => "fk_od_accounts"
+  add_foreign_key "order_details", "orders", :name => "sys_c009172"
+  add_foreign_key "order_details", "price_policies", :name => "sys_c009175"
+  add_foreign_key "order_details", "products", :name => "fk_bundle_prod_id", :column => "bundle_product_id"
+  add_foreign_key "order_details", "products", :name => "sys_c009173"
+
+  add_foreign_key "orders", "accounts", :name => "sys_c008808"
+  add_foreign_key "orders", "facilities", :name => "orders_facility_id_fk"
+
+  add_foreign_key "price_group_members", "price_groups", :name => "sys_c008583"
+
+  add_foreign_key "price_groups", "facilities", :name => "sys_c008578"
+
+  add_foreign_key "price_policies", "price_groups", :name => "sys_c008589"
+
+  add_foreign_key "product_users", "products", :name => "fk_products"
+
+  add_foreign_key "products", "facilities", :name => "sys_c008556"
+  add_foreign_key "products", "facility_accounts", :name => "fk_facility_accounts"
+
+  add_foreign_key "reservations", "order_details", :name => "res_ord_det_id_fk"
+  add_foreign_key "reservations", "products", :name => "reservations_instrument_id_fk", :column => "instrument_id"
+
+  add_foreign_key "schedule_rules", "products", :name => "sys_c008573", :column => "instrument_id"
+
+  add_foreign_key "statements", "facilities", :name => "fk_statement_facilities"
 
 end

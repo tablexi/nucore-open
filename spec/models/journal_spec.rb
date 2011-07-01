@@ -28,35 +28,35 @@ describe Journal do
   it "requires reference on update" do
     assert @journal.save
     assert !@journal.save
-    @journal.errors.on(:reference).should_not be_nil
+    @journal.errors[:reference].should_not be_nil
     
     @journal.reference = '12345'
     @journal.valid?
-    @journal.errors.on(:reference).should be_nil
+    @journal.errors[:reference].should be_empty
   end
   
   it "requires updated_by on update" do
     assert @journal.save
     assert !@journal.save
-    @journal.errors.on(:updated_by).should_not be_nil
+    @journal.errors[:updated_by].should_not be_nil
     
     @journal.updated_by = '1'
     @journal.valid?
-    @journal.errors.on(:updated_by).should be_nil
+    @journal.errors[:updated_by].should be_empty
   end
   
   it "requires a boolean value for is_successful on update" do
     assert @journal.save
     assert !@journal.save
-    @journal.errors.on(:is_successful).should_not be_nil
+    @journal.errors[:is_successful].should_not be_nil
     
     @journal.is_successful = true
     @journal.valid?
-    @journal.errors.on(:is_successful).should be_nil
+    @journal.errors[:is_successful].should be_empty
     
     @journal.is_successful = false
     @journal.valid?
-    @journal.errors.on(:is_successful).should be_nil
+    @journal.errors[:is_successful].should be_empty
   end
   
   it "should create and attach journal spreadsheet" do

@@ -1,11 +1,11 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'price_groups' }
--content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_price_group', :locals => { :secondary_tab => 'edit' }
 
-- form_for([current_facility, @price_group]) do |f|
+= form_for([current_facility, @price_group]) do |f|
   = f.error_messages
   %ul.form
     = render :partial => 'price_group_fields', :locals => {:f => f}

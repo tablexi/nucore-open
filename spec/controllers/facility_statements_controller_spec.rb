@@ -1,7 +1,7 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe FacilityStatementsController do
-  integrate_views
+  render_views
 
   before(:all) { create_users }
 
@@ -10,7 +10,7 @@ describe FacilityStatementsController do
     @user=Factory.create(:user)
     @account=Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
     @statement=Factory.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => @account)
-    @account=Factory.create(:nufs_account)
+    @account=create_nufs_account_with_owner
     grant_role(@owner, @account)
     @params={ :facility_id => @authable.url_name }
   end

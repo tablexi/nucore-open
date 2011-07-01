@@ -1,7 +1,7 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe SurveyorsController do
-  integrate_views
+  render_views
 
   before(:all) { create_users }
 
@@ -102,7 +102,7 @@ describe SurveyorsController do
       :facility_account => @facility_account,
       :facility => @authable
     )
-    @account=Factory.create(:nufs_account)
+    @account=create_nufs_account_with_owner
     @order=Factory.create(:order,
       :facility => @authable,
       :user => @director,

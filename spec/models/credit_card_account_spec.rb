@@ -44,7 +44,7 @@ describe CreditCardAccount do
 #      @options[:account_number] = '1234-1234-1234-1234'
 #      @card = CreditCardAccount.create(@options)
 #      assert !@card.valid?
-#      assert @card.errors.on(:account_number)
+#      assert @card.errors[:account_number]
 #    end
   end
 end

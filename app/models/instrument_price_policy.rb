@@ -10,9 +10,9 @@ class InstrumentPricePolicy < PricePolicy
   validate :has_usage_or_reservation_rate?, :unless => :restrict_purchase
   validate :subsidy_less_than_rate?, :unless => :restrict_purchase
 
-  named_scope :current,  lambda { |instrument|             { :conditions => [dateize('start_date', ' = ? AND instrument_id = ?'), current_date(instrument), instrument.id] } }
-  named_scope :next,     lambda { |instrument|             { :conditions => [dateize('start_date', ' = ? AND instrument_id = ?'), next_date(instrument), instrument.id] } }
-  named_scope :for_date, lambda { |instrument, start_date| { :conditions => [dateize('start_date', ' = ? AND instrument_id = ?'), start_date, instrument.id] } }
+  scope :current,  lambda { |instrument|             { :conditions => [dateize('start_date', ' = ? AND instrument_id = ?'), current_date(instrument), instrument.id] } }
+  scope :next,     lambda { |instrument|             { :conditions => [dateize('start_date', ' = ? AND instrument_id = ?'), next_date(instrument), instrument.id] } }
+  scope :for_date, lambda { |instrument, start_date| { :conditions => [dateize('start_date', ' = ? AND instrument_id = ?'), start_date, instrument.id] } }
 
   before_save do |o|
     o.usage_subsidy       = 0 if o.usage_subsidy.nil?       && !o.usage_rate.nil?
@@ -21,7 +21,7 @@ class InstrumentPricePolicy < PricePolicy
   end
 
   def has_usage_or_reservation_rate?
-    errors.add_to_base("You must enter a reservation rate or usage rate for all price groups") if usage_rate.nil? && reservation_rate.nil?
+    errors.add(:base, "You must enter a reservation rate or usage rate for all price groups") if usage_rate.nil? && reservation_rate.nil?
   end
   
   def self.current_date(instrument)

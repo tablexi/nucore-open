@@ -1,11 +1,11 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe UsersController do
-  integrate_views
+  render_views
 
   it "should route" do
-    params_from(:get, "/facilities/url_name/users/new_search").should == {:controller => 'users', :action => 'new_search', :facility_id => 'url_name'}
-    params_from(:post, "/facilities/url_name/users").should == {:controller => 'users', :action => 'create', :facility_id => 'url_name'}
+    { :get => "/facilities/url_name/users/new_search" }.should route_to(:controller => 'users', :action => 'new_search', :facility_id => 'url_name')
+    { :post => "/facilities/url_name/users" }.should route_to(:controller => 'users', :action => 'create', :facility_id => 'url_name')
   end
 
   before(:all) { create_users }
@@ -103,7 +103,7 @@ describe UsersController do
 
     it_should_allow_operators_only :redirect do
       assigns(:user).should == @guest
-      session[:acting_user_id].should == @guest.id.to_s
+      session[:acting_user_id].should == @guest.id
       session[:acting_ref_url].should == facility_users_url
       assert_redirected_to facilities_path
     end

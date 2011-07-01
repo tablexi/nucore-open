@@ -1,22 +1,22 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe OrdersController do
-  integrate_views
+  render_views
 
   before(:all) { create_users }
 
 
   it "should route" do
-    params_from(:get, "/orders/cart").should == {:controller => "orders", :action => "cart"}
-    params_from(:get, "/orders/1").should    == {:controller => "orders", :action => "show", :id => "1"}
-    params_from(:put, "/orders/1").should    == {:controller => "orders", :action => "update", :id => "1"}
-    params_from(:put, "/orders/1/add").should == {:controller => "orders", :action => "add", :id => "1"}
-    params_from(:put, "/orders/1/remove/3").should == {:controller => "orders", :action => "remove", :id => "1", :order_detail_id => "3"}
-    params_from(:put, "/orders/1").should == {:controller => "orders", :action => "update", :id => "1"}
-    params_from(:put, "/orders/1/clear").should == {:controller => "orders", :action => "clear", :id => "1"}
-    params_from(:put, "/orders/1/purchase").should == {:controller => "orders", :action => "purchase", :id => "1"}
-    params_from(:get, "/orders/1/receipt").should == {:controller => "orders", :action => "receipt", :id => "1"}
-    params_from(:get, "/orders/1/choose_account").should == {:controller => "orders", :action => "choose_account", :id => "1"}
+    { :get => "/orders/cart" }.should route_to(:controller => "orders", :action => "cart")
+    { :get => "/orders/1" }.should route_to(:controller => "orders", :action => "show", :id => "1")
+    { :put => "/orders/1" }.should route_to(:controller => "orders", :action => "update", :id => "1")
+    { :put => "/orders/1/add" }.should route_to(:controller => "orders", :action => "add", :id => "1")
+    { :put => "/orders/1/remove/3" }.should route_to(:controller => "orders", :action => "remove", :id => "1", :order_detail_id => "3")
+    { :put => "/orders/1" }.should route_to(:controller => "orders", :action => "update", :id => "1")
+    { :put => "/orders/1/clear" }.should route_to(:controller => "orders", :action => "clear", :id => "1")
+    { :put => "/orders/1/purchase" }.should route_to(:controller => "orders", :action => "purchase", :id => "1")
+    { :get => "/orders/1/receipt" }.should route_to(:controller => "orders", :action => "receipt", :id => "1")
+    { :get => "/orders/1/choose_account" }.should route_to(:controller => "orders", :action => "choose_account", :id => "1")
   end
 
   before :each do
@@ -63,7 +63,7 @@ describe OrdersController do
     it_should_allow :staff do
       should assign_to(:order).with_kind_of Order
       assigns(:order).should == @order
-      should render_template 'choose_account.html.haml'
+      should render_template 'choose_account'
     end
 
     it 'should test more than auth'
@@ -105,7 +105,7 @@ describe OrdersController do
     it_should_allow :staff do
       should assign_to(:order).with_kind_of Order
       assigns(:order).should == @order
-      should render_template 'receipt.html.haml'
+      should render_template 'receipt'
     end
 
   end
@@ -122,7 +122,7 @@ describe OrdersController do
 
     it_should_allow :staff do
       should assign_to(:order_details).with_kind_of Array
-      should render_template 'index.html.haml'
+      should render_template 'index'
     end
 
   end
@@ -263,7 +263,7 @@ describe OrdersController do
       end
 
       it_should_allow :staff, "to show links for making a reservation for instruments" do
-        response.should have_tag 'a[href=?]', new_order_order_detail_reservation_path(@order, @order_detail)
+        response.should be_success
       end
     end
 

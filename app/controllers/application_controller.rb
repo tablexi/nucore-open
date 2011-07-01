@@ -2,14 +2,13 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  include DateHelper
+
   helper :all # include all helpers, all the time
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
   # Make the following methods available to all views
   helper_method :current_facility, :session_user, :manageable_facilities, :acting_user, :acting_as?, :check_acting_as
-
-  # Scrub sensitive parameters from your log
-  filter_parameter_logging :password
 
   attr_accessor :active_tab
 

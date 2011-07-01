@@ -1,4 +1,6 @@
 class FacilityAccountsController < ApplicationController
+  include Prawnto::ActionControllerMixin
+
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -73,13 +75,13 @@ class FacilityAccountsController < ApplicationController
           @account.set_expires_at!
 
           unless @account.expires_at
-            @account.errors.add_to_base('The chart string appears to be invalid. Either the fund, department, project, or activity could not be found.')
+            @account.errors.add(:base, 'The chart string appears to be invalid. Either the fund, department, project, or activity could not be found.')
           end
         rescue NucsError => e
-          @account.errors.add_to_base(e.message)
+          @account.errors.add(:base, e.message)
         end
 
-        return render :action => 'new' if @account.errors.on_base
+        return render :action => 'new' unless @account.errors[:base].empty?
     end
 
     if @account.save
@@ -177,7 +179,7 @@ class FacilityAccountsController < ApplicationController
 
     respond_to do |format|
       format.html { render :action => action }
-      format.pdf  { render :template => '/statements/show' }
+      format.pdf  { render :template => '/statements/show.pdf.prawn' }
     end
   end
   

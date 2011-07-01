@@ -1,7 +1,7 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'journals' }
 
 %h2 Manage Journals
@@ -20,7 +20,7 @@
   %p
     If the journal failed, you may choose "Failed".  This will allow you to include all orders in a new journal.
 
-  - form_for([current_facility, @pending_journal]) do |f|
+  = form_for([current_facility, @pending_journal]) do |f|
     = f.error_messages 
     %table
       %tr
@@ -56,7 +56,7 @@
   - unless @pending_journal.nil?
     -disable = true
     %p.notice You may not generate a new journal until the pending journal is closed.
-  - form_for(:journal, @journal, :path => facility_journals_path) do |f|
+  = form_for(:journal, @journal, :path => facility_journals_path) do |f|
     = f.error_messages
     %table
       %tr.borderless

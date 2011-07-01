@@ -17,8 +17,9 @@ class PricePolicy < ActiveRecord::Base
     end
   end
 
-  named_scope :active, lambda {{ :conditions => [ "start_date <= ?", Time.zone.now ], :order => "start_date DESC" }}
+  scope :active, lambda {{ :conditions => [ "start_date <= ?", Time.zone.now ], :order => "start_date DESC" }}
 
+  before_create :set_expire_date
 
   #
   # A price estimate for a +Product+.
@@ -117,7 +118,7 @@ class PricePolicy < ActiveRecord::Base
   end
 
 
-  def before_create
+  def set_expire_date
     self.expire_date=self.class.generate_expire_date(self) unless expire_date
   end
 

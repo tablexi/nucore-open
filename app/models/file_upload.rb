@@ -8,14 +8,14 @@ class FileUpload < ActiveRecord::Base
   validates_inclusion_of  :file_type, :in => %w(info template template_result sample_result)
   has_attached_file       :file,
                           :storage => :filesystem,
-                          :url => "#{ActionController::Base.relative_url_root}/:attachment/:id_partition/:style/:basename.:extension",
+                          :url => "#{ENV['RAILS_RELATIVE_URL_ROOT']}/:attachment/:id_partition/:style/:basename.:extension",
                           :path => ":rails_root/public/:attachment/:id_partition/:style/:basename.:extension"
   validates_attachment_presence :file
 
-  named_scope :info,              :conditions => {:file_type => 'info'}
-  named_scope :template,          :conditions => {:file_type => 'template'}
-  named_scope :template_result,   :conditions => {:file_type => 'template_result'}
-  named_scope :sample_result,     :conditions => {:file_type => 'sample_result'}
+  scope :info,              :conditions => {:file_type => 'info'}
+  scope :template,          :conditions => {:file_type => 'template'}
+  scope :template_result,   :conditions => {:file_type => 'template_result'}
+  scope :sample_result,     :conditions => {:file_type => 'sample_result'}
 
   # Map file extensions to mime types.
   # Thanks to bug in Flash 8 the content type is always set to application/octet-stream.

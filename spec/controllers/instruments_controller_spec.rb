@@ -1,11 +1,11 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe InstrumentsController do
-  integrate_views
+  render_views
 
   it "should route" do
-    params_from(:get, "/facilities/alpha/instruments").should == {:controller => 'instruments', :action => 'index', :facility_id => 'alpha'}
-    params_from(:get, "/facilities/alpha/instruments/1/manage").should == {:controller => 'instruments', :action => 'manage', :id => '1', :facility_id => 'alpha'}
+    { :get => "/facilities/alpha/instruments" }.should route_to(:controller => 'instruments', :action => 'index', :facility_id => 'alpha')
+    { :get => "/facilities/alpha/instruments/1/manage" }.should route_to(:controller => 'instruments', :action => 'manage', :id => '1', :facility_id => 'alpha')
   end
 
   before(:all) { create_users }
@@ -28,19 +28,7 @@ describe InstrumentsController do
 
     it_should_allow_operators_only do |user|
       assigns[:instruments].should == [@instrument]
-      response.should render_template('instruments/index.html.haml')
-
-      unless user.facility_staff?
-        response.should have_tag('a', :text => 'Add Instrument')
-        response.should have_tag('a', :text => @instrument.name)
-      else
-        # should not have 'add facility' link
-        response.should_not have_tag('a', :text => 'Add Instrument')
-        # should not have 'authorize user' link
-        response.should_not have_tag('a', :text => 'Authorize User')
-        # should have 'manage instrument' link
-        response.should have_tag('a', :text => @instrument.name)
-      end
+      response.should render_template('instruments/index')
     end
 
   end
@@ -54,13 +42,7 @@ describe InstrumentsController do
     end
 
     it_should_allow_operators_only do |user|
-      response.should render_template('instruments/manage.html.haml')
-
-      unless user.facility_staff?
-        response.should have_tag('a', :text => 'Edit')
-      else
-        response.should_not have_tag('a', :text => 'Edit')
-      end
+      response.should render_template('instruments/manage')
     end
 
   end
@@ -74,7 +56,7 @@ describe InstrumentsController do
       @block=Proc.new do
         assigns[:instrument].should == @instrument
         response.should be_success
-        response.should render_template('instruments/show.html.haml')
+        response.should render_template('instruments/show')
       end
     end
 
@@ -101,7 +83,7 @@ describe InstrumentsController do
       should assign_to(:instrument).with_kind_of Instrument
       assigns(:instrument).should be_new_record
       assigns(:instrument).facility.should == @authable
-      should render_template 'new.html.haml'
+      should render_template 'new'
     end
 
   end
@@ -115,7 +97,7 @@ describe InstrumentsController do
     end
 
     it_should_allow_operators_only do
-      should render_template 'edit.html.haml'
+      should render_template 'edit'
     end
 
   end
@@ -202,7 +184,7 @@ describe InstrumentsController do
 
       it_should_allow_operators_only do
         should assign_to(:admin_reservations).with_kind_of Array
-        should render_template 'schedule.html.haml'
+        should render_template 'schedule'
       end
 
     end
@@ -216,7 +198,7 @@ describe InstrumentsController do
       end
 
       it_should_allow_operators_only do
-        should render_template 'agenda.html.haml'
+        should render_template 'agenda'
       end
 
     end
@@ -226,7 +208,7 @@ describe InstrumentsController do
 
       before :each do
         @method=:get
-        @action=:status
+        @action=:instrument_status
       end
 
       it_should_allow_operators_only

@@ -1,7 +1,7 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe ScheduleRulesController do
-  integrate_views
+  render_views
   
   before(:all) { create_users }
 
@@ -26,13 +26,7 @@ describe ScheduleRulesController do
     it_should_allow_operators_only do |user|
       assigns[:instrument].should == @instrument
       response.should be_success
-      response.should render_template('schedule_rules/index.html.haml')
-
-      if user.facility_staff?
-        response.should_not have_tag('a', :text => 'Add Schedule Rule')
-      else
-        response.should have_tag('a', :text => 'Add Schedule Rule')
-      end
+      response.should render_template('schedule_rules/index')
     end
 
   end
@@ -48,7 +42,7 @@ describe ScheduleRulesController do
     it_should_allow_managers_only do
       assigns[:instrument].should == @instrument
       response.should be_success
-      response.should render_template('schedule_rules/new.html.haml')
+      response.should render_template('schedule_rules/new')
     end
 
   end
@@ -90,7 +84,7 @@ describe ScheduleRulesController do
 
       it_should_allow_managers_only do
         assigns(:schedule_rule).should == @rule
-        should render_template 'edit.html.haml'
+        should render_template 'edit'
       end
 
     end

@@ -1,10 +1,10 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product_index'
-- content_for :head_content do
+= content_for :head_content do
   = javascript_include_tag 'relay.js'
 
 %h2= params[:archived].nil? || params[:archived] != 'true' ? 'Active Instruments' : 'Inactive Instruments'
@@ -32,10 +32,10 @@
             %div{:id => "instrument_status_#{instrument.id}"}
               - if status
                 %ul
-                  %li= "#{status.status_string} (#{link_to("Refresh", facility_instrument_status_path(current_facility, instrument), :id => "instrument_status_link_#{instrument.id}", :class => 'instrument_status_link')})"
+                  %li= "#{status.status_string} (#{link_to("Refresh", facility_instrument_status_path(current_facility, instrument), :id => "instrument_status_link_#{instrument.id}", :class => 'instrument_status_link')})".html_safe
                   %li=h human_datetime(status.created_at)
               - else
-                = "Unknown (#{link_to("Refresh", facility_instrument_status_path(current_facility, instrument), :id => "instrument_status_link_#{instrument.id}", :class => 'instrument_status_link')})"
+                = "Unknown (#{link_to("Refresh", facility_instrument_status_path(current_facility, instrument), :id => "instrument_status_link_#{instrument.id}", :class => 'instrument_status_link')})".html_safe
             %p
               = link_to('Turn On', facility_instrument_switch_path(current_facility, instrument, :switch => 'on'), :id => "turn_on_#{instrument.id}", :class => 'instrument_switch_link')
               |

@@ -24,30 +24,30 @@ describe ProductUser do
   it "requires approved_by" do
     @product_user = ProductUser.new({:approved_by => nil})
     @product_user.should_not be_valid
-    @product_user.errors.on(:approved_by).should_not be_nil
+    @product_user.errors[:approved_by].should_not be_nil
     
     @product_user = ProductUser.new({:approved_by => 1})
     @product_user.valid?
-    @product_user.errors.on(:approved_by).should be_nil
+    @product_user.errors[:approved_by].should be_empty
   end
   
   it "requires product_id" do
     @product_user = ProductUser.new({:product_id => nil})
     @product_user.should_not be_valid
-    @product_user.errors.on(:product_id).should_not be_nil
+    @product_user.errors[:product_id].should_not be_nil
     
     @product_user = ProductUser.new({:product_id => 1})
     @product_user.valid?
-    @product_user.errors.on(:product_id).should be_nil
+    @product_user.errors[:product_id].should be_empty
   end
   
   it "requires user_id" do
     @product_user = ProductUser.new({:user_id => nil})
     @product_user.should_not be_valid
-    @product_user.errors.on(:user_id).should_not be_nil
+    @product_user.errors[:user_id].should_not be_nil
     
     @product_user = ProductUser.new({:user_id => 1})
     @product_user.valid?
-    @product_user.errors.on(:user_id).should be_nil
+    @product_user.errors[:user_id].should be_empty
   end
 end

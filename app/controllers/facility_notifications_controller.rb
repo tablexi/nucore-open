@@ -25,7 +25,7 @@ class FacilityNotificationsController < ApplicationController
             begin
               details = a.order_details.need_notification(current_facility)
               unless details.empty?
-                a.notify_users.each {|u| Notifier.deliver_review_orders(:user => u, :facility => current_facility, :account => a)}
+                a.notify_users.each {|u| Notifier.review_orders(:user => u, :facility => current_facility, :account => a).deliver }
                 a.order_details.need_notification(current_facility).each do |od|
                   od.reviewed_at = reviewed_at
                   raise ActiveRecord::Rollback unless od.save

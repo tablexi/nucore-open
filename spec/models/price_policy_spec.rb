@@ -15,7 +15,7 @@ describe PricePolicy do
     begin
       @pp = PricePolicy.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id))
       @pp.should_not be_valid
-      @pp.errors.on(:type).should_not be_nil
+      @pp.errors[:type].should_not be_nil
     rescue
       true
     end
@@ -43,7 +43,7 @@ describe PricePolicy do
       )
       
       assert !pp.save
-      assert pp.errors.on :expire_date
+      assert pp.errors[:expire_date]
     end
 
     it 'should not allow an expire date after a generated date' do
@@ -55,7 +55,7 @@ describe PricePolicy do
                                  :expire_date => PricePolicy.generate_expire_date(@start_date)+1.month)
       )
       assert !pp.save
-      assert pp.errors.on :expire_date
+      assert pp.errors[:expire_date]
     end
 
     it "should not set default expire_date if one is given" do

@@ -1,11 +1,11 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe ServicesController do
-  integrate_views
+  render_views
 
   it "should route" do
-    params_from(:get, "/facilities/alpha/services").should == {:controller => 'services', :action => 'index', :facility_id => 'alpha'}
-    params_from(:get, "/facilities/alpha/services/1/manage").should == {:controller => 'services', :action => 'manage', :id => '1', :facility_id => 'alpha'}
+    { :get => "/facilities/alpha/services" }.should route_to(:controller => 'services', :action => 'index', :facility_id => 'alpha')
+    { :get => "/facilities/alpha/services/1/manage" }.should route_to(:controller => 'services', :action => 'manage', :id => '1', :facility_id => 'alpha')
   end
 
   before(:all) { create_users }
@@ -28,7 +28,7 @@ describe ServicesController do
     it_should_allow_operators_only do
       assigns[:services].should == [@service]
       response.should be_success
-      response.should render_template('services/index.html.haml')
+      response.should render_template('services/index')
     end
 
   end
@@ -46,13 +46,13 @@ describe ServicesController do
       do_request
       assigns[:service].should == @service
       response.should be_success
-      response.should render_template('services/show.html.haml')
+      response.should render_template('services/show')
     end
   
     it_should_allow_all facility_users do
       assigns[:service].should == @service
       response.should be_success
-      response.should render_template('services/show.html.haml')
+      response.should render_template('services/show')
     end
 
   end
@@ -82,7 +82,7 @@ describe ServicesController do
     end
 
     it_should_allow_operators_only do
-      should render_template 'edit.html.haml'
+      should render_template 'edit'
     end
 
   end
@@ -150,7 +150,7 @@ describe ServicesController do
 
     it_should_allow_operators_only do
       response.should be_success
-      response.should render_template('services/manage.html.haml')
+      response.should render_template('services/manage')
     end
 
   end

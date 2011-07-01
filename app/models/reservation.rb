@@ -1,6 +1,7 @@
 require "date"
 require "pp"
 class Reservation < ActiveRecord::Base
+  include DateHelper
 
   belongs_to :instrument
   belongs_to :order_detail
@@ -29,8 +30,8 @@ class Reservation < ActiveRecord::Base
                     :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian
   before_validation :set_reserve_start_at, :set_reserve_end_at, :set_actual_start_at, :set_actual_end_at
 
-  named_scope :active, :conditions => ["reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)"], :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id']
-  named_scope :limit,    lambda { |n| {:limit => n}}
+  scope :active, :conditions => ["reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)"], :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id']
+  scope :limit,    lambda { |n| {:limit => n}}
 
 
   def self.upcoming(t=Time.zone.now)
@@ -61,7 +62,7 @@ class Reservation < ActiveRecord::Base
   def set_reserve_start_at
     return unless self.reserve_start_at.blank?
     if @reserve_start_date and @reserve_start_hour and @reserve_start_min and @reserve_start_meridian
-      self.reserve_start_at = Time.zone.parse("#{@reserve_start_date.to_s} #{@reserve_start_hour.to_s}:#{@reserve_start_min.to_s.rjust(2, '0')} #{@reserve_start_meridian}")
+      self.reserve_start_at = parse_usa_date(@reserve_start_date, "#{@reserve_start_hour.to_s}:#{@reserve_start_min.to_s.rjust(2, '0')} #{@reserve_start_meridian}")
     end
   end
 
@@ -82,14 +83,14 @@ class Reservation < ActiveRecord::Base
   def set_actual_start_at
     return unless self.actual_start_at.blank?
     if @actual_start_date and @actual_start_hour and @actual_start_min and @actual_start_meridian
-      self.actual_start_at = Time.zone.parse("#{@actual_start_date.to_s} #{@actual_start_hour.to_s}:#{@actual_start_min.to_s.rjust(2, '0')} #{@actual_start_meridian}")
+      self.actual_start_at = parse_usa_date(@actual_start_date, "#{@actual_start_hour.to_s}:#{@actual_start_min.to_s.rjust(2, '0')} #{@actual_start_meridian}")
     end
   end
 
   def set_actual_end_at
     return unless self.actual_end_at.blank?
     if @actual_end_date and @actual_end_hour and @actual_end_min and @actual_end_meridian
-      self.actual_end_at = Time.zone.parse("#{@actual_end_date.to_s} #{@actual_end_hour.to_s}:#{@actual_end_min.to_s.rjust(2, '0')} #{@actual_end_meridian}")
+      self.actual_end_at = parse_usa_date(@actual_end_date, "#{@actual_end_hour.to_s}:#{@actual_end_min.to_s.rjust(2, '0')} #{@actual_end_meridian}")
     end
   end
 
@@ -112,7 +113,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def does_not_conflict_with_other_reservation
-    errors.add_to_base("The reservation conflicts with another reservation") unless does_not_conflict_with_other_reservation?
+    errors.add(:base, "The reservation conflicts with another reservation") unless does_not_conflict_with_other_reservation?
   end
 
   def satisfies_minimum_length?
@@ -122,18 +123,17 @@ class Reservation < ActiveRecord::Base
   end
 
   def satisfies_minimum_length
-    errors.add_to_base("The reservation is too short") unless satisfies_minimum_length?
+    errors.add(:base, "The reservation is too short") unless satisfies_minimum_length?
   end
 
   def satisfies_maximum_length?
     diff = reserve_end_at - reserve_start_at # in seconds
-    time = Date.day_fraction_to_time(diff)
     return false unless instrument.max_reserve_mins.nil? || instrument.max_reserve_mins == 0 || diff/60 <= instrument.max_reserve_mins
     true
   end
 
   def satisfies_maximum_length
-    errors.add_to_base("The reservation is too long") unless satisfies_maximum_length?
+    errors.add(:base, "The reservation is too long") unless satisfies_maximum_length?
   end
 
   # checks that the reservation is within the longest window for the groups the user is in
@@ -145,7 +145,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def in_window
-    errors.add_to_base("The reservation is too far in advance") unless in_window?
+    errors.add(:base, "The reservation is too far in advance") unless in_window?
   end
 
   def in_the_future?
@@ -157,7 +157,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def instrument_is_available_to_reserve
-    errors.add_to_base("The reservation spans time that the instrument is unavailable for reservation") unless instrument_is_available_to_reserve?
+    errors.add(:base, "The reservation spans time that the instrument is unavailable for reservation") unless instrument_is_available_to_reserve?
   end
 
   def instrument_is_available_to_reserve? (start_at = self.reserve_start_at, end_at = self.reserve_end_at)

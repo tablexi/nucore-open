@@ -1,4 +1,4 @@
-- content_for :breadcrumb do
+= content_for :breadcrumb do
   %ul.horiz
     %li= link_to 'Home', :root
     %li== &raquo;
@@ -6,7 +6,7 @@
     %li== &raquo;
     %li=h @instrument.name 
 
-- content_for :h1 do
+= content_for :h1 do
   =h @instrument.name
 
 = @instrument.description

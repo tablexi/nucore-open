@@ -1,5 +1,6 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  include DateHelper
 
   def app_name
     NUCore.app_name
@@ -8,30 +9,6 @@ module ApplicationHelper
   def html_title(title=nil)
     full_title = title.nil? ? "" : "#{title} - "
     full_title += app_name
-  end
-
-  def human_date(date)
-    "#{Date::MONTHNAMES[date.mon]} #{date.day}, #{date.year}"
-  end
-  
-  def human_datetime(dt, args = {})
-    begin
-      if args[:date_only]
-        dt.strftime("%m/%d/%Y")
-      else
-        dt.strftime("%m/%d/%Y %l:%M %p")
-      end
-    rescue
-      ''
-    end
-  end
-  
-  def human_time(dt)
-    begin
-      dt.strftime("%l:%M %p")
-    rescue
-      ''
-    end
   end
   
   def human_rate_calculation(rate, subsidy)

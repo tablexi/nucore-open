@@ -1,7 +1,7 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe FacilityOrderDetailsController do
-  integrate_views
+  render_views
 
   before(:all) { create_users }
 
@@ -12,7 +12,7 @@ describe FacilityOrderDetailsController do
       :facility_account => @facility_account,
       :facility => @authable
     )
-    @account=Factory.create(:nufs_account)
+    @account=create_nufs_account_with_owner :director
     @order=Factory.create(:order,
       :facility => @authable,
       :user => @director,
@@ -55,8 +55,6 @@ describe FacilityOrderDetailsController do
     it 'should acknowledge order detail is not part of open journal and is reconcilable' do
       @journal.is_successful=true
       assert @journal.save
-      @account.account_users_attributes = [{:user_id => @director.id, :user_role => AccountUser::ACCOUNT_OWNER, :created_by => @admin.id }]
-      assert @account.save
       @order_detail.account=@account
       assert @order_detail.save
       @order_detail.to_complete!
@@ -98,7 +96,7 @@ describe FacilityOrderDetailsController do
 
     it_should_allow :staff do
       # abuse of API since we're not expecting success
-      should render_template('404.html.erb')
+      should render_template('404')
     end
 
     it_should_allow_all facility_managers do

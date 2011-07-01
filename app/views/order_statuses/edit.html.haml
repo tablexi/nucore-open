@@ -1,11 +1,11 @@
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'statuses' }
 
 %h2 Edit Order Status
 
-- form_for(@order_status, :url => facility_order_status_url, :method => 'put') do |f|
+= form_for(@order_status, :url => facility_order_status_url, :method => 'put') do |f|
   = f.error_messages
   %ul.form
     %li

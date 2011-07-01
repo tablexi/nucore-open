@@ -1,13 +1,13 @@
-- content_for :head_content do
+= content_for :head_content do
   = javascript_include_tag 'price_group_products'
 
-- content_for :h1 do
+= content_for :h1 do
   =h current_facility
 
-- content_for :sidebar do
+= content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => @product.class.name.pluralize.downcase }
 
-- content_for :tabnav do
+= content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'restrictions'}
 
 %h2=h @product
@@ -16,7 +16,7 @@
 - notice += " The reservation window is the number of days in advance a user in the price group may create a reservation." if @is_instrument
 %p=notice
 
-- form_tag(facility_price_group_product_path(current_facility, @product), :method => :put) do
+= form_tag(facility_price_group_product_path(current_facility, @product), :method => :put) do
   %table
     %tr
       %th Price Group (Type)

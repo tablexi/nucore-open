@@ -6,8 +6,4 @@ if NUCore::Database.oracle?
     self.emulate_integers_by_column_name = true
     self.default_sequence_start_value = 1
   end
-else
-  ActiveRecord::ConnectionAdapters::MysqlAdapter.class_eval do
-    include NUCore::Database::MySQL::DriverExtension
-  end
 end
