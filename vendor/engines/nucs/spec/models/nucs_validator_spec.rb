@@ -281,12 +281,6 @@ describe NucsValidator do
   end
 
 
-  it 'should return nil when there is no activity given, but one exists in the DB' do
-    define_gl066(NON_GRANT_CS, :expires_at => Time.zone.now + 3.year)
-    NucsValidator.new(NON_GRANT_CS[0...NON_GRANT_CS.index('-01')]).latest_expiration.should be_nil
-  end
-
-
   it 'should return a date when there is no activity given and "-" exists in the DB' do
     define_gl066(NON_GRANT_CS, { :expires_at => Time.zone.now + 3.year, :activity => NucsValidator::NUCS_BLANK })
     NucsValidator.new(NON_GRANT_CS[0...NON_GRANT_CS.index('-01')]).latest_expiration.should_not be_nil
