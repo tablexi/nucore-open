@@ -10,7 +10,7 @@ Rails.application.class.configure do
   config.whiny_nils = true
 
   # Show full error reports and disable caching
-  config.action_controller.consider_all_requests_local = false
+  config.consider_all_requests_local                   = false
   config.action_view.debug_rjs                         = false
   config.action_controller.perform_caching             = false
 

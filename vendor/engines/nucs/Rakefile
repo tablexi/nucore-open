@@ -5,13 +5,3 @@ require File.expand_path('../config/application', __FILE__)
 require 'rake'
 
 Nucs::Application.load_tasks
-
-require 'rake/gempackagetask'
-
-spec = nil
-File.open('nucs.gemspec', 'r'){|f| spec = eval(f.read)}
-
-Rake::GemPackageTask.new(spec) do |pkg|
-  pkg.need_zip = false
-  pkg.need_tar = false
-end
