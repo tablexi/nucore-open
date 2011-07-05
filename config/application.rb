@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require File.dirname(__FILE__) + "/Constants.rb"
 require File.join(File.dirname(__FILE__), '..', 'vendor', 'engines', 'nucs', 'lib', 'engine')
 
 # If you have a Gemfile, require the gems listed there, including any gems
@@ -46,27 +47,4 @@ module Nucore
      g.test_framework :rspec
     end
   end
-end
-
-require File.dirname(__FILE__) + "/Constants.rb"
-
-# This is what makes the nucore extension system work.
-# See doc/README.extensions for details on nucore extensions.
-Dir["#{Rails.root}/lib/extensions/*.rb"].each do |file|
-  require file
-  file_name=File.basename(file, File.extname(file))
-  next unless file_name.ends_with?('_extension')
-  base_name=file_name[0...file_name.rindex('_')]
-  base=base_name.camelize.constantize
-
-  base.class_eval %Q<
-    def initialize(*args)
-      super(*args)
-      after_find
-    end
-
-    def after_find
-      extend #{file_name.camelize}
-    end
-  >
 end
