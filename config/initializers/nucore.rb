@@ -18,7 +18,13 @@ end
 # What you see here is a hack of the original. See
 # it for rdoc, etc.
 Devise::Strategies::LdapAuthenticatable.class_eval do
-  class_variable_set(:@@ldap_enabled, File.exist?("#{Rails.root}/config/ldap.yml"))
+  enabled=File.exist?("#{Rails.root}/config/ldap.yml")
+
+  if ENV['RUBY_VERSION'] =~ /ruby-1.9/
+    class_variable_set(:@@ldap_enabled, enabled)
+  else
+    @@ldap_enabled=enabled
+  end
 
   def valid?
     @@ldap_enabled && valid_controller? && valid_params? && mapping.to.respond_to?(:authenticate_with_ldap)
