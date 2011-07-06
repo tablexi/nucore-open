@@ -2,7 +2,7 @@
   = f.check_box :show_details
   %b== Check to show reservation details
 %li.box
-  = f.label nil, 'Power Relay Information'
+  = f.label 'Power Relay Information'
   %p== (Optional)  If the instrument is connected to an approved power relay, please enter the information below.  Power relays must be purchased separately.
   %br
   %ul
@@ -28,7 +28,7 @@
       = f.check_box :auto_logout
       %b== Automatically power off the relay 60 minutes after the reservation is scheduled to end
 %li.box
-  = f.label nil, 'Reservation Restrictions'
+  = f.label 'Reservation Restrictions'
   %p== (Optional)  Define minimum and maximum reservation limits below.
   %br
   %ul
