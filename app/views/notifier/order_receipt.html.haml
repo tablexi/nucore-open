@@ -31,9 +31,9 @@
         %td= (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
       %td=h od.quantity
       - if od.cost_estimated?
-        %td=h number_to_currency od.estimated_cost * od.quantity
-        %td=h number_to_currency od.estimated_subsidy * od.quantity
-        %td=h number_to_currency od.estimated_total * od.quantity
+        %td=h number_to_currency od.estimated_cost
+        %td=h number_to_currency od.estimated_subsidy
+        %td=h number_to_currency od.estimated_total
       - else
         %td Unassigned
         %td Unassigned

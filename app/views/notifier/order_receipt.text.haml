@@ -13,9 +13,9 @@
     == Reservation: #{od.reservation}
   == Quantity: #{od.quantity}
   - if od.cost_estimated?
-    == Estimated Price: #{number_to_currency od.estimated_cost * od.quantity}
-    == Estimated Subsidy #{number_to_currency od.estimated_subsidy * od.quantity}
-    == Estimated Total #{number_to_currency od.estimated_total * od.quantity}
+    == Estimated Price: #{number_to_currency od.estimated_cost}
+    == Estimated Subsidy #{number_to_currency od.estimated_subsidy}
+    == Estimated Total #{number_to_currency od.estimated_total}
   - else
     == Pricing is currently unassigned.
 ==
