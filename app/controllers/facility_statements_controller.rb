@@ -20,7 +20,18 @@ class FacilityStatementsController < ApplicationController
 
   # GET /facilities/:facility_id/statements/pending
   def pending
-    @accounts = Account.for_facility(current_facility)
+    order_details = OrderDetail.need_statement(current_facility)
+    @acct2ods={}
+
+    order_details.each do |od|
+      acct=od.account
+
+      if @acct2ods.has_key? acct
+        @acct2ods[acct] << od
+      else
+        @acct2ods[acct]=[od]
+      end
+    end
   end
 
   # POST /facilities/:facility_id/statements/email

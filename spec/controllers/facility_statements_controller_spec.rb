@@ -8,10 +8,8 @@ describe FacilityStatementsController do
   before(:each) do
     @authable=Factory.create(:facility)
     @user=Factory.create(:user)
-    @account=Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+    @account=Factory.create(:credit_card_account, :account_users_attributes => [Hash[:user => @owner, :created_by => @user, :user_role => 'Owner']])
     @statement=Factory.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => @account)
-    @account=create_nufs_account_with_owner
-    grant_role(@owner, @account)
     @params={ :facility_id => @authable.url_name }
   end
 
@@ -39,7 +37,24 @@ describe FacilityStatementsController do
       @action=:pending
     end
 
-    it_should_allow_managers_only
+    it_should_allow_managers_only do
+      assigns[:acct2ods].should be_empty
+    end
+
+    context 'with reviewed order' do
+
+      before :each do
+        place_and_complete_item_order(@owner, @authable, @account, true)
+      end
+
+      it_should_allow :director, 'to populate an account to order details data structure' do
+        assigns[:acct2ods].size.should == 1
+        assigns[:acct2ods].keys[0].should == @account
+        assigns[:acct2ods][@account].should be_kind_of Array
+        assigns[:acct2ods][@account].size.should == 1
+        assigns[:acct2ods][@account][0].should == @order_detail
+      end
+    end
 
   end
 

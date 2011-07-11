@@ -5,7 +5,7 @@
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'send_statements' }
 
 %h2 Create Statements
-- if @accounts.empty?
+- if @acct2ods.empty?
   %p.notice There are no completed orders that require statements.
 - else
   %p
@@ -23,18 +23,17 @@
         %th Notify
         %th.currency # of Orders*
         %th.currency Balance*
-      -@accounts.each do |a|
-        - details = a.order_details.need_statement(current_facility)
+      -@acct2ods.each do |acct,ods|
         %tr
-          %td.centered= check_box_tag "account_ids[]", a.id, true, {:class => 'toggle'}
-          %td=link_to(a, facility_account_statement_path(current_facility, a, 'recent'))
-          %td=h a.owner_user.full_name
+          %td.centered= check_box_tag "account_ids[]", acct.id, true, {:class => 'toggle'}
+          %td=link_to(acct, facility_account_statement_path(current_facility, acct, 'recent'))
+          %td=h acct.owner_user.full_name
           %td
             %ul
-              - a.notify_users.each do |u|
+              - acct.notify_users.each do |u|
                 %li=h u.email
-          %td.currency=h details.count
-          %td.currency=h number_to_currency details.collect{ |d| d.total }.inject{|sum, t| sum + t}
+          %td.currency=h ods.count
+          %td.currency=h number_to_currency ods.collect{ |d| d.total }.inject{|sum, t| sum + t}
       %tr.borderless
         %td{:colspan => 4}= link_to 'Select None', 'JavaScript:void(0);', :class => 'select_all'
         %td.currency{:colspan => 2}= submit_tag "Send Statements"

@@ -121,3 +121,34 @@ def create_nufs_account_with_owner(owner=:owner)
   owner=instance_variable_get("@#{owner.to_s}")
   Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => owner) ])
 end
+
+
+#
+# Simulates placing an order for an item and having it marked complete
+# [_ordered_by_]
+#   The user who is ordering the item
+# [_facility_]
+#   The facility with which the order is placed
+# [_account_]
+#   The account under which the order is placed
+# [_reviewed_]
+#   true if the completed order should also be marked as reviewed, false by default
+def place_and_complete_item_order(ordered_by, facility, account, reviewed=false)
+  @facility_account=facility.facility_accounts.create(Factory.attributes_for(:facility_account))
+  @item=facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+  @price_group=Factory.create(:price_group, :facility => facility)
+  @order=ordered_by.orders.create(Factory.attributes_for(:order, :created_by => ordered_by.id))
+  Factory.create(:user_price_group_member, :user => ordered_by, :price_group => @price_group)
+  @item_pp=@item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
+  @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => account.id))
+  @order_detail.to_complete!
+
+  od_attrs={
+    :actual_cost => 20,
+    :actual_subsidy => 10,
+    :price_policy_id => @item_pp.id
+  }
+
+  od_attrs.merge!(:reviewed_at => Time.zone.now-1.day) if reviewed
+  @order_detail.update_attributes(od_attrs)
+end
