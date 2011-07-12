@@ -76,7 +76,12 @@ class Account < ActiveRecord::Base
     return "The #{self.type_string} has insufficient price groups" unless product.can_purchase?((self.price_groups + user.price_groups).flatten.uniq.collect {|pg| pg.id})
 
     # check chart string account number
-    return "The #{self.type_string} is not open for the required account" if self.is_a?(NufsAccount) && !self.account_open?(product.account)
+    if self.is_a?(NufsAccount)
+      accts=product.is_a?(Bundle) ? product.products.collect(&:account) : [ product.account ]
+      accts.uniq.each {|acct| return "The #{self.type_string} is not open for the required account" unless self.account_open?(acct) }
+    end
+
+    return nil
   end
 
   def self.need_statements (facility)

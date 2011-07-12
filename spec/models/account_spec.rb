@@ -131,6 +131,32 @@ describe Account do
       @nufs_account.validate_against_product(@item, @user).should == nil
     end
 
+    it "should return error if the product's account is not open for a chart string" do
+      @nufs_account.validate_against_product(@item, @user).should_not be_nil
+    end
+
+    context 'bundles' do
+      before :each do
+        @item2 = @facility.items.create(Factory.attributes_for(:item, :account => 78960, :facility_account_id => @facility_account.id))
+        @bundle = @facility.bundles.create(Factory.attributes_for(:bundle, :facility_account_id => @facility_account.id))
+        [ @item, @item2 ].each{|item| BundleProduct.create!(:quantity => 1, :product => item, :bundle => @bundle) }
+      end
+
+      it "should not return error if the product is a bundle and both of the bundled product's accounts are open for a chart string" do
+        [ @item, @item2 ].each{|item| define_open_account(item.account, @nufs_account.account_number) }
+        @nufs_account.validate_against_product(@bundle, @user).should be_nil
+      end
+
+      it "should return error if the product is a bundle and one of the bundled product's account is not open for a chart string" do
+        cs='160-5401900-60006385-01-1059-1095' # a grant chart string
+        define_open_account(NUCore::COMMON_ACCOUNT, cs) # define the string so it is valid on NufsAccount#validate
+        @nufs_account.account_number=cs
+        assert @nufs_account.save
+        define_open_account(@item.account, cs) # only one product of the bundle should be open
+        @nufs_account.validate_against_product(@bundle, @user).should_not be_nil
+      end
+    end
+
     it "should return error if the product facility does not accept account type for payment" do
       @po_account = Factory.create(:purchase_order_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
       @po_account.validate_against_product(@item, @user).should == nil
@@ -156,7 +182,6 @@ describe Account do
       @nufs_account.validate_against_product(@item, @user).should == nil
     end
 
-    it "should return error if the chart string account does not product account number"
   end
 
   it 'should update order details with statement' do
