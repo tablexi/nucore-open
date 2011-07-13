@@ -6,8 +6,6 @@ class ReportsController < ApplicationController
 
   load_and_authorize_resource :class => ReportsController
 
-  layout 'two_column'
-
   def initialize
     @active_tab = 'admin_reports'
     super
@@ -21,12 +19,11 @@ class ReportsController < ApplicationController
     if request.post?
       @date_start   = parse_usa_date(params[:date_start])
       @date_end     = parse_usa_date(params[:date_end])
-      @reservations = Reservation.find(:all,
-                       :conditions => [%q/reserve_start_at >= ? AND reserve_start_at <= ? AND canceled_at IS NULL AND (order_details.state IS NULL OR order_details.state = 'complete')/, @date_start, @date_end],
-                       :joins => ['LEFT JOIN order_details ON reservations.order_detail_id = order_details.id'],
-                       :include => [:order, :order_detail, :account, :instrument],
-                       :order => ['reserve_start_at ASC'])
-
+      @reservations = Reservation.where(%q/reserve_start_at >= ? AND reserve_start_at <= ? AND canceled_at IS NULL AND (order_details.state IS NULL OR order_details.state = 'complete')/, @date_start, @date_end)
+                                 .joins('LEFT JOIN order_details ON reservations.order_detail_id = order_details.id')
+                                 .includes(:order, :order_detail, :account, :instrument)
+                                 .order('reserve_start_at ASC')
+                                 .all
       respond_to do |format|
         format.csv { render_csv("instrument_utilization_#{@date_start.strftime("%Y%m%d")}-#{@date_end.strftime("%Y%m%d")}") }
       end
@@ -42,12 +39,11 @@ class ReportsController < ApplicationController
     if request.post?
       @date_start    = parse_usa_date(params[:date_start])
       @date_end      = parse_usa_date(params[:date_end])
-      @order_details = OrderDetail.find(:all,
-                       :conditions => [%q/order_details.state = 'complete' AND orders.ordered_at >= ? AND orders.ordered_at <= ?/, @date_start, @date_end],
-                       :joins => ['LEFT JOIN orders ON order_details.order_id = orders.id'],
-                       :include => [:order, :account, :price_policy, :product],
-                       :order => ['orders.ordered_at ASC'])
-
+      @order_details = OrderDetail.where(%q/order_details.state = 'complete' AND orders.ordered_at >= ? AND orders.ordered_at <= ?/, @date_start, @date_end)
+                                  .joins('LEFT JOIN orders ON order_details.order_id = orders.id')
+                                  .includes(:order, :account, :price_policy, :product)
+                                  .order('orders.ordered_at ASC')
+                                  .all
       respond_to do |format|
         format.csv { render_csv("product_order_summary_#{@date_start.strftime("%Y%m%d")}-#{@date_end.strftime("%Y%m%d")}") }
       end
