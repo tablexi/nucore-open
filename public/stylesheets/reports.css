@@ -27,3 +27,8 @@
     display: none;
 }
 
+#tabs .ui-widget-content {
+    color: black;
+    background-color: white;
+}
+
