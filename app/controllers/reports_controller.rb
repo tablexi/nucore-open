@@ -3,7 +3,7 @@ class ReportsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility
-  before_filter :setup_dates
+  before_filter :set_report_params
 
   load_and_authorize_resource :class => ReportsController
 
@@ -20,37 +20,42 @@ class ReportsController < ApplicationController
 
 
   def product
-    render_general_report 0, 'Name' do
-      [ [ 'Product', '23', '100' ] ]
+    render_general_report 0, 'Name' do |rows|
+      order_details_by_date.each {|od| rows << [ od.product.name, od.quantity, od.total ] }
     end
   end
 
 
   def account
-    render_general_report 1, 'Account' do
-      [ [ 'Account', '24', '3100' ] ]
+    render_general_report 1, 'Account' do |rows|
+      order_details_by_date.each {|od| rows << [ od.account.account_number, od.quantity, od.total ] }
     end
   end
 
 
   def account_owner
-    render_general_report 2, 'Owner' do
-      [ [ 'Owner', '26', '1000' ] ]
+    render_general_report 2, 'Owner' do |rows|
+      order_details_by_date.each {|od| rows << [ od.account.owner.user.username, od.quantity, od.total ] }
     end
   end
 
 
   def purchaser
-    render_general_report 3, 'Purchaser' do
-      [ [ 'Purchaser', '66', '9000' ] ]
+    render_general_report 3, 'Purchaser' do |rows|
+      order_details_by_date.each {|od| rows << [ od.order.user.username, od.quantity, od.total ] }
     end
   end
 
 
   def price_group
-    render_general_report 4, 'Price Group' do
-      [ [ 'Price Group', '62', '15000' ] ]
+    render_general_report 4, 'Price Group' do |rows|
+      order_details_by_date.each {|od| rows << [ od.price_policy ? od.price_policy.price_group.name : 'Unassigned', od.quantity, od.total ] }
     end
+  end
+
+  
+  def product_order_summary
+    render_report_download('product_order_summary') { order_details_by_date }
   end
 
   
@@ -64,45 +69,54 @@ class ReportsController < ApplicationController
   end
 
 
-  def product_order_summary
-    render_report_download 'product_order_summary' do
-      OrderDetail.where(%q/order_details.state = 'complete' AND orders.ordered_at >= ? AND orders.ordered_at <= ?/, @date_start, @date_end)
-                 .joins('LEFT JOIN orders ON order_details.order_id = orders.id')
-                 .includes(:order, :account, :price_policy, :product)
-                 .order('orders.ordered_at ASC')
+  private
+
+  def set_report_params
+    @state=params[:status_filter]
+    @state=OrderStatus.complete.first.name if @state.blank?
+
+    if params[:date_start].blank?
+      now=Date.today
+      @date_start=Date.new(now.year, now.month, 1) - 1.month
+    else
+      @date_start=parse_usa_date(params[:date_start])
+    end
+         
+    if params[:date_start].blank?
+      @date_end=@date_start + 42.days
+      @date_end=Date.new(@date_end.year, @date_end.month) - 1.day
+    else
+      @date_end=parse_usa_date(params[:date_end])
     end
   end
 
 
-  private
-
-  def setup_dates
-    if request.post?
-      @date_start    = parse_usa_date(params[:date_start])
-      @date_end      = parse_usa_date(params[:date_end])
-    else
-      now         = Date.today
-      @date_start = Date.new(now.year, now.month, 1) - 1.month
-      @date_end   = @date_start + 42.days
-      @date_end   = Date.new(@date_end.year, @date_end.month) - 1.day
-    end
+  def order_details_by_date
+    OrderDetail.where('order_details.state = ? AND orders.ordered_at >= ? AND orders.ordered_at <= ?', @state, @date_start, @date_end)
+                 .joins('LEFT JOIN orders ON order_details.order_id = orders.id')
+                 .includes(:order, :account, :price_policy, :product)
+                 .order('orders.ordered_at ASC').all
   end
 
 
   def render_general_report(tab_index, *front_th)
-    @rows=yield
     @selected_index=tab_index
-    @headers=front_th + [ 'Quantity', 'Total Cost' ]
 
     respond_to do |format|
-      format.js { render :action => 'general_report' }
+      format.js do
+        @rows=[]
+        yield(@rows)
+        @headers=front_th + [ 'Quantity', 'Total Cost' ]
+        render :action => 'general_report_table'
+      end
+
       format.html { render :action => 'general_report' }
     end
   end
 
 
   def render_report_download(report_prefix)
-    @reportables = yield.all
+    @reportables = yield
 
     respond_to do |format|
       format.html
