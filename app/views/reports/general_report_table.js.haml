@@ -10,4 +10,5 @@
   - @rows.each do |row|
     %tr
       - row.each do |col|
-        %td= col
+        - currency=col.is_a?(BigDecimal)
+        %td{:class => currency ? 'currency' : ''}= currency ? number_to_currency(col) : col
