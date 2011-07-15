@@ -3,21 +3,14 @@
   = render :partial => 'report_head'
   :javascript
     $(function() {
-      $('#tabs').tabs({
-        selected: #{@selected_index},
-        ajaxOptions: {
-          error: function(xhr, status, error) {
-                    $('#error-msg').html('Sorry, but the tab could not load. Please try again soon.').show();
-                  }
-        }
-      });
+      createGeneralReportsTable(#{@selected_index});
     });
 
 = content_for :h1 do
   =h current_facility
 
 %p.error#error-msg
-= form_tag request.fullpath, :id => 'refresh-form'  do
+= form_tag request.fullpath, :remote => true, :id => 'refresh-form'  do
   %ul.options
     %li= image_submit_tag 'icon-refresh.png', :id => 'refresh-ico'
     %li
@@ -28,20 +21,25 @@
       = text_field_tag :date_end, params[:date_end] || human_datetime(@date_end, :date_only => true), :class => 'datepicker'
     %li
       %label Order Status
-      = select_tag 'filter', options_for_select(OrderStatus.all.collect(&:name), OrderStatus.complete.first.name)
+      = select_tag 'status_filter', options_for_select(OrderStatus.all.collect(&:name), @state)
 
   %div#tabs
     %ul
       %li
-        %a{:href => product_facility_reports_path } Product
+        %a{:href => product_facility_reports_path }
+          %span Product
       %li
-        %a{:href => account_facility_reports_path } Account
+        %a{:href => account_facility_reports_path }
+          %span Account
       %li
-        %a{:href => account_owner_facility_reports_path } Account Owner
+        %a{:href => account_owner_facility_reports_path }
+          %span Account Owner
       %li
-        %a{:href => purchaser_facility_reports_path } Purchaser
+        %a{:href => purchaser_facility_reports_path }
+          %span Purchaser
       %li
-        %a{:href => price_group_facility_reports_path } Price Group
+        %a{:href => price_group_facility_reports_path }
+          %span Price Group
 
 
 
