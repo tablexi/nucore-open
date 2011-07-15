@@ -1,0 +1,13 @@
+:javascript
+  $(function(){
+    $('#refresh-form').attr('action', '#{request.fullpath}');
+  });
+
+%table
+  %tr
+    - @headers.each do |heading|
+      %th= heading
+  - @rows.each do |row|
+    %tr
+      - row.each do |col|
+        %td= col

@@ -15,11 +15,47 @@ class ReportsController < ApplicationController
 
 
   def index
+    redirect_to product_facility_reports_path
   end
 
 
+  def product
+    render_general_report 0, 'Name' do
+      [ [ 'Product', '23', '100' ] ]
+    end
+  end
+
+
+  def account
+    render_general_report 1, 'Account' do
+      [ [ 'Account', '24', '3100' ] ]
+    end
+  end
+
+
+  def account_owner
+    render_general_report 2, 'Owner' do
+      [ [ 'Owner', '26', '1000' ] ]
+    end
+  end
+
+
+  def purchaser
+    render_general_report 3, 'Purchaser' do
+      [ [ 'Purchaser', '66', '9000' ] ]
+    end
+  end
+
+
+  def price_group
+    render_general_report 4, 'Price Group' do
+      [ [ 'Price Group', '62', '15000' ] ]
+    end
+  end
+
+  
   def instrument_utilization
-    handle_report_download 'instrument_utilization' do
+    render_report_download 'instrument_utilization' do
       Reservation.where(%q/reserve_start_at >= ? AND reserve_start_at <= ? AND canceled_at IS NULL AND (order_details.state IS NULL OR order_details.state = 'complete')/, @date_start, @date_end)
                  .joins('LEFT JOIN order_details ON reservations.order_detail_id = order_details.id')
                  .includes(:order, :order_detail, :account, :instrument)
@@ -29,7 +65,7 @@ class ReportsController < ApplicationController
 
 
   def product_order_summary
-    handle_report_download 'product_order_summary' do
+    render_report_download 'product_order_summary' do
       OrderDetail.where(%q/order_details.state = 'complete' AND orders.ordered_at >= ? AND orders.ordered_at <= ?/, @date_start, @date_end)
                  .joins('LEFT JOIN orders ON order_details.order_id = orders.id')
                  .includes(:order, :account, :price_policy, :product)
@@ -39,7 +75,6 @@ class ReportsController < ApplicationController
 
 
   private
-
 
   def setup_dates
     if request.post?
@@ -54,11 +89,23 @@ class ReportsController < ApplicationController
   end
 
 
-  def handle_report_download(report_prefix)
-    return unless request.post?
+  def render_general_report(tab_index, *front_th)
+    @rows=yield
+    @selected_index=tab_index
+    @headers=front_th + [ 'Quantity', 'Total Cost' ]
+
+    respond_to do |format|
+      format.js { render :action => 'general_report' }
+      format.html { render :action => 'general_report' }
+    end
+  end
+
+
+  def render_report_download(report_prefix)
     @reportables = yield.all
 
     respond_to do |format|
+      format.html
       format.csv { render_csv("#{report_prefix}_#{@date_start.strftime("%Y%m%d")}-#{@date_end.strftime("%Y%m%d")}") }
     end
   end

@@ -1,0 +1,29 @@
+.options {
+    float: right;
+}
+
+.options li {
+    float: left;
+    padding-right: 10px;
+}
+
+.options li label {
+    padding-left: 2px;
+}
+
+.options input.btn {
+    margin-top: .7em;
+}
+
+#refresh-ico {
+    margin-top: 1em;
+}
+
+#tabs {
+    clear: both;
+}
+
+#error-msg {
+    display: none;
+}
+
