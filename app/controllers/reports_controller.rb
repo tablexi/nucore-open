@@ -20,42 +20,32 @@ class ReportsController < ApplicationController
 
 
   def product
-    render_general_report 0, 'Name' do |rows|
-      order_details_by_date.each {|od| rows << [ od.product.name, od.quantity, od.total ] }
-    end
+    render_general_report(0, 'Name') {|od| od.product.name }
   end
 
 
   def account
-    render_general_report 1, 'Account' do |rows|
-      order_details_by_date.each {|od| rows << [ od.account.account_number, od.quantity, od.total ] }
-    end
+    render_general_report(1, 'Number') {|od| od.account.account_number }
   end
 
 
   def account_owner
-    render_general_report 2, 'Owner' do |rows|
-      order_details_by_date.each {|od| rows << [ od.account.owner.user.username, od.quantity, od.total ] }
-    end
+    render_general_report(2, 'Username') {|od| od.account.owner.user.username }
   end
 
 
   def purchaser
-    render_general_report 3, 'Purchaser' do |rows|
-      order_details_by_date.each {|od| rows << [ od.order.user.username, od.quantity, od.total ] }
-    end
+    render_general_report(3, 'Username') {|od| od.order.user.username }
   end
 
 
   def price_group
-    render_general_report 4, 'Price Group' do |rows|
-      order_details_by_date.each {|od| rows << [ od.price_policy ? od.price_policy.price_group.name : 'Unassigned', od.quantity, od.total ] }
-    end
+    render_general_report(4, 'Name') {|od| od.price_policy ? od.price_policy.price_group.name : 'Unassigned' }
   end
 
   
   def product_order_summary
-    render_report_download('product_order_summary') { order_details_by_date }
+    render_report_download('product_order_summary') { order_details_report.order('orders.ordered_at ASC').all }
   end
 
   
@@ -91,22 +81,29 @@ class ReportsController < ApplicationController
   end
 
 
-  def order_details_by_date
+  def order_details_report
     OrderDetail.where('order_details.state = ? AND orders.ordered_at >= ? AND orders.ordered_at <= ?', @state, @date_start, @date_end)
-                 .joins('LEFT JOIN orders ON order_details.order_id = orders.id')
-                 .includes(:order, :account, :price_policy, :product)
-                 .order('orders.ordered_at ASC').all
+               .joins('LEFT JOIN orders ON order_details.order_id = orders.id')
+               .includes(:order, :account, :price_policy, :product)
   end
 
 
-  def render_general_report(tab_index, *front_th)
+  def render_general_report(tab_index, front_th)
     @selected_index=tab_index
 
     respond_to do |format|
       format.js do
-        @rows=[]
-        yield(@rows)
-        @headers=front_th + [ 'Quantity', 'Total Cost' ]
+        @rows, sums, @headers=[], {}, [ front_th, 'Quantity', 'Total Cost' ]
+
+        order_details_report.all.each do |od|
+          key=yield(od)
+          sums[key]=[0,0] unless sums.has_key?(key)
+          sums[key][0] += od.quantity
+          sums[key][1] += od.total
+        end
+
+        sums.each {|k,v| @rows << v.unshift(k) }
+        @rows.sort!
         render :action => 'general_report_table'
       end
 
