@@ -103,7 +103,7 @@ class ReportsController < ApplicationController
         end
 
         sums.each {|k,v| @rows << v.unshift(k) }
-        @rows.sort!
+        @rows.sort! {|a,b| a.first <=> b.first}
         render :action => 'general_report_table'
       end
 
