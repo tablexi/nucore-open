@@ -10,8 +10,9 @@
   =h current_facility
 
 %p.error#error-msg
+
 = form_tag request.fullpath, :remote => true, :id => 'refresh-form'  do
-  %ul.options
+  %ul#filter.options
     %li
       %label Start Date
       = text_field_tag :date_start, params[:date_start] || human_datetime(@date_start, :date_only => true), :class => 'datepicker'
@@ -20,9 +21,17 @@
       = text_field_tag :date_end, params[:date_end] || human_datetime(@date_end, :date_only => true), :class => 'datepicker'
     %li
       %label Order Status
-      = select_tag 'status_filter', options_for_select(OrderStatus.all.collect(&:name), @state)
-    %li= submit_tag 'Update Report', :id => 'refresh-ico', :class => 'btn'
-
+      = select_tag 'status_filter', options_for_select(OrderStatus.all.collect(&:name), @state), :class => '.btn ui-widget ui-state-default ui-button-text-only'
+    
+  %ul#control.options
+    %li#refresh
+      %button.btn Update
+    %li#export
+      %button.btn Export
+      %button.btn Options &amp; Formats
+      %ul.btn.ui-widget.ui-state-default.ui-button-text-only
+        %li All data
+      
   %div#tabs
     %ul
       %li

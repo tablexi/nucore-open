@@ -1,5 +1,13 @@
-.options {
+#control {
     float: right;
+}
+
+#filter {
+    float: left;
+}
+
+#filter input[type='text'] {
+    margin-top: 3px;
 }
 
 .options li {
@@ -15,7 +23,14 @@
     margin-top: .7em;
 }
 
-#refresh-ico {
+.options ul {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    width: 62px;
+}
+
+button {
     margin-top: 1em;
 }
 
@@ -30,5 +45,9 @@
 #tabs .ui-widget-content {
     color: black;
     background-color: white;
+}
+
+.ui-widget {
+    border-radius: 0 !important;
 }
 

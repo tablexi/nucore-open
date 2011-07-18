@@ -5,6 +5,7 @@ function getParamsString()
 
 function createGeneralReportsTable(selectedIndex)
 {
+    // create tabbed reports
     $('#tabs').tabs({
         selected: selectedIndex,
         ajaxOptions: {
@@ -18,12 +19,27 @@ function createGeneralReportsTable(selectedIndex)
         }
     });
 
-    // capture a click on the refresh button and defer work to jQuery UI's tabs
-    $('#refresh-form').bind('ajax:beforeSend', function(event, xhr) {
-       var selected=$('#tabs').tabs('option', 'selected');
-       $('#tabs').tabs('load', selected);
-       return false;
+    // update report on refresh button click
+    $('#refresh button').button().click(function() {
+        var selected=$('#tabs').tabs('option', 'selected');
+        $('#tabs').tabs('load', selected);
+        return false;
+    });
+
+    // report export options
+    $('#export button:first').button().click(function() {
+        alert( "Export Screen" );
     })
+    .next().button( {
+        text: false,
+        icons: {
+            primary: "ui-icon-triangle-1-s"
+        }
+    })
+    .click(function() {
+        $(this).next().toggle();
+    })
+    .parent().buttonset();
 }
 
 $(document).ready(function() {
