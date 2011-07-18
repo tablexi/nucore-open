@@ -179,6 +179,10 @@ input.btn:hover {
     color: #dbbfc6
 }
 
+.bold {
+    font-weight : bold;
+}
+
 /***************************************
 main layout ids
 ***************************************/

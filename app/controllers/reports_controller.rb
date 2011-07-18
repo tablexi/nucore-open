@@ -93,17 +93,21 @@ class ReportsController < ApplicationController
 
     respond_to do |format|
       format.js do
-        @rows, sums, @headers=[], {}, [ front_th, 'Quantity', 'Total Cost' ]
+        @total_quantity, @total_cost, sums=0, 0.0, {}
+        @rows, @headers=[], [ front_th, 'Quantity', 'Total Cost', 'Percent of Cost' ]
 
         order_details_report.all.each do |od|
           key=yield(od)
           sums[key]=[0,0] unless sums.has_key?(key)
           sums[key][0] += od.quantity
+          @total_quantity += od.quantity
           sums[key][1] += od.total
+          @total_cost += od.total
         end
 
-        sums.each {|k,v| @rows << v.unshift(k) }
+        sums.each {|k,v| @rows << v.push((v[1] / @total_cost) * 100).unshift(k) }
         @rows.sort! {|a,b| a.first <=> b.first}
+
         render :action => 'general_report_table'
       end
 
