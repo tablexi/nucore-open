@@ -89,7 +89,7 @@ class FacilityJournalsController < ApplicationController
             flash[:notice] = "The journal file has been created successfully"
             redirect_to facility_journals_path and return
           rescue Exception => e
-            @journal.errors.add(:base, "An error was encountered while trying to create the journal #{e}")
+            @journal.errors.add(:base, "An error was encountered while trying to create the journal. #{e.message}")
             Rails.logger.error(e.backtrace.join("\n"))
             raise ActiveRecord::Rollback
           end
