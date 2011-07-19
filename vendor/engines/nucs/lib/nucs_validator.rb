@@ -175,7 +175,7 @@ class NucsValidator
     end
 
     raise UnknownGL066Error.new('project', @project) unless @project.nil? or gls.any?{|gl| gl.project == @project }
-    raise DatedGL066Error.new unless gls.any?{|gl| !gl.expired? }
+    raise DatedGL066Error.new('is expired or not yet active') unless gls.any?{|gl| !gl.expired? }
   end
 
 end

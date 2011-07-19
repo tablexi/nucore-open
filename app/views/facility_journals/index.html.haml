@@ -72,7 +72,7 @@
       - @order_details.each do |od|
         - account = od.account
         %tr{:class => needs_reconcile_warning?(od) ? 'reconcile-warning' : ''}
-          %td= check_box_tag "order_detail_ids[]", od.id, (action_name == 'create' && !@update_order_details.collect{|uod| uod.id}.include?(od.id) ? false : true), {:disabled => disable, :class => 'toggle'}
+          %td= check_box_tag "order_detail_ids[]", od.id, (action_name == 'create' && !@update_order_details.collect{|uod| uod.id}.include?(od.id) ? false : true), {:disabled => (disable || od.account.expired? || od.account.suspended?), :class => 'toggle'}
           %td
             %ul
               %li== #{link_to "##{od}", edit_facility_order_order_detail_path(current_facility, od.order_id, od)}: #{od.product}
@@ -80,7 +80,15 @@
                 %li
                   %i= od.note
           %td= human_date od.fulfilled_at
-          %td= link_to account, facility_account_statement_path(current_facility, account, 'recent')
+          %td
+            %ul
+              %li= link_to account, facility_account_statement_path(current_facility, account, 'recent')
+              - if od.account.suspended?
+                %li
+                  %i Account is suspended
+              - if od.account.expired?
+                %li
+                  %i Account is expired
           %td=h account.owner_user.full_name
           %td.currency=h number_to_currency od.total
       %tr.borderless

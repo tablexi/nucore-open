@@ -18,6 +18,15 @@ describe Account do
     should validate_presence_of(:expires_at)
   end
 
+  it 'should be expired' do
+    owner   = Factory.create(:user)
+    hash     = Hash[:user => owner, :created_by => owner, :user_role => 'Owner']
+    account = Factory.create(:nufs_account, :account_users_attributes => [hash])
+    account.expires_at=Time.zone.now
+    assert account.save
+    account.should be_expired
+  end
+
   it "should validate description <= 50 chars" do
     @user    = Factory.create(:user)
     hash     = Hash[:user => @user, :created_by => @user, :user_role => 'Owner']
