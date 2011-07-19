@@ -10,6 +10,17 @@
     margin-top: 1em;
 }
 
+.options a {
+    color: black;
+    display: block;
+    padding-top: 3px;
+    text-decoration: none;
+}
+
+.options a:hover {
+    text-decoration: underline;
+}
+
 .options li {
     float: left;
     padding-right: 10px;
@@ -17,10 +28,6 @@
 
 .options li label {
     padding-left: 2px;
-}
-
-.options input.btn {
-    margin-top: .7em;
 }
 
 .options ul {
@@ -32,9 +39,6 @@
 
 button {
     margin-top: 1em;
-}
-
-.btn {
     color: black !important;
     font-weight: normal !important;
     background: #EFEFEF !important;
