@@ -21,7 +21,7 @@
       = text_field_tag :date_end, params[:date_end] || human_datetime(@date_end, :date_only => true), :class => 'datepicker'
     %li
       %label Order Status
-      = select_tag 'status_filter', options_for_select(OrderStatus.all.collect(&:name), @state), :class => '.btn ui-widget ui-state-default ui-button-text-only'
+      = select_tag 'status_filter', options_for_select(OrderStatus.all.collect(&:name), @state)
     
   %ul#control.options
     %li#refresh

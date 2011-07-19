@@ -6,8 +6,8 @@
     float: left;
 }
 
-#filter input[type='text'] {
-    margin-top: 3px;
+.options {
+    margin-top: 1em;
 }
 
 .options li {
@@ -27,11 +27,18 @@
     display: none;
     position: absolute;
     z-index: 2;
-    width: 62px;
+    width: 60px;
 }
 
 button {
     margin-top: 1em;
+}
+
+.btn {
+    color: black !important;
+    font-weight: normal !important;
+    background: #EFEFEF !important;
+    border: 1px solid #C1C1C1 !important;
 }
 
 #tabs {
