@@ -64,6 +64,10 @@ class Account < ActiveRecord::Base
     !self.suspended_at.blank?
   end
 
+  def expired?
+    expires_at && expires_at <= Time.zone.now
+  end
+
   def account_pretty
     "#{description} (#{account_number})"
   end

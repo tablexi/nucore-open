@@ -27,7 +27,7 @@ gem 'awesome_nested_set', '2.0.1'
 
 group :development do
    gem 'rspec-rails', '2.6.1'
-   gem 'spork', '0.7.5' # TODO: remove?
+   gem 'spork', '0.7.5'
    gem 'ZenTest', '4.5.0' # TODO: remove?
    gem 'autotest', '4.4.6' # TODO: remove?
    gem 'autotest-rails', '4.1.0' # TODO: remove?
