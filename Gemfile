@@ -24,6 +24,7 @@ gem 'devise_ldap_authenticatable', '0.4.4'
 gem 'jquery-rails',     '1.0.12'
 gem 'foreigner',        '1.0.3'
 gem 'awesome_nested_set', '2.0.1'
+gem 'exception_notification', :require => 'exception_notifier'
 
 group :development do
    gem 'rspec-rails', '2.6.1'
