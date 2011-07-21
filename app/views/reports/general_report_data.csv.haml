@@ -1,0 +1,5 @@
+= @headers.join(',')
+- require 'csv'
+= CSV.generate do |csv|
+  - @report_data.each do |od|
+    - csv << [ @report_on.call(od), od.quantity, od.total, od.total / @total_cost ]

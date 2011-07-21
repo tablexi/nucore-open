@@ -30,11 +30,11 @@ function initGeneralReportsUI(selectedIndex)
             var url = $.data(ui.tab, 'load.tabs');
 
             // update main export button
-            $('#export button:first').attr('data-url', url + getQueryString(['export_id', 'screen']));
+            $('#export button:first').attr('data-url', url + '.csv' + getQueryString(['export_id', 'general_report']));
 
             // update export drop down links
             $('#export ul li a').each(function() {
-                $(this).attr('href', url + getQueryString(['export_id', $(this).attr('id')]));
+                $(this).attr('href', url + '.csv' + getQueryString(['export_id', $(this).attr('id')]));
             });
         },
 

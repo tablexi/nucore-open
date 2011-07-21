@@ -3,7 +3,7 @@ class ReportsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility
-  before_filter :set_report_params
+  before_filter :init_report_params
 
   load_and_authorize_resource :class => ReportsController
 
@@ -45,7 +45,7 @@ class ReportsController < ApplicationController
 
   
   def product_order_summary
-    render_report_download('product_order_summary') { order_details_report.order('orders.ordered_at ASC').all }
+    render_report_download('product_order_summary') { report_data.order('orders.ordered_at ASC').all }
   end
 
   
@@ -61,7 +61,7 @@ class ReportsController < ApplicationController
 
   private
 
-  def set_report_params
+  def init_report_params
     @state=params[:status_filter]
     @state=OrderStatus.complete.first.name if @state.blank?
 
@@ -79,41 +79,66 @@ class ReportsController < ApplicationController
       @date_end=parse_usa_date(params[:date_end])
     end
   end
+  
+  
+  def init_report_headers(report_on_label)
+    @headers=[ report_on_label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
+  end
+  
+  
+  def init_general_report_data(report_on_label, &report_on)
+    @report_on=report_on
+    init_report_headers report_on_label
+    @total_cost, @report_data=0.0, report_data.all       
+    @report_data.each {|od| @total_cost += od.total }    
+  end
+  
 
+  def init_general_report(report_on_label)
+    sums, @rows, @total_quantity, @total_cost={}, [], 0, 0.0
+    init_report_headers report_on_label
 
-  def order_details_report
-    OrderDetail.where('order_details.state = ? AND orders.ordered_at >= ? AND orders.ordered_at <= ?', @state, @date_start, @date_end)
-               .joins('LEFT JOIN orders ON order_details.order_id = orders.id')
-               .includes(:order, :account, :price_policy, :product)
+    report_data.all.each do |od|
+      key=yield od
+      sums[key]=[0,0] unless sums.has_key?(key)
+      sums[key][0] += od.quantity
+      @total_quantity += od.quantity
+      sums[key][1] += od.total
+      @total_cost += od.total
+    end
+
+    sums.each {|k,v| @rows << v.push((v[1] / @total_cost) * 100).unshift(k) }
+    @rows.sort! {|a,b| a.first <=> b.first}
   end
 
 
-  def render_general_report(tab_index, front_th)
+  def render_general_report(tab_index, report_on_label, &report_on)
     @selected_index=tab_index
 
     respond_to do |format|
       format.js do
-        @total_quantity, @total_cost, sums=0, 0.0, {}
-        @rows, @headers=[], [ front_th, 'Quantity', 'Total Cost', 'Percent of Cost' ]
-
-        order_details_report.all.each do |od|
-          key=yield(od)
-          sums[key]=[0,0] unless sums.has_key?(key)
-          sums[key][0] += od.quantity
-          @total_quantity += od.quantity
-          sums[key][1] += od.total
-          @total_cost += od.total
-        end
-
-        sums.each {|k,v| @rows << v.push((v[1] / @total_cost) * 100).unshift(k) }
-        @rows.sort! {|a,b| a.first <=> b.first}
-
+        init_general_report(report_on_label, &report_on)
         render :action => 'general_report_table'
       end
 
       format.html { render :action => 'general_report' }
+
+      format.csv do
+        export_type=params[:export_id]             
+        
+        case export_type
+          when nil, '' 
+            raise 'Export type not found'
+          when 'general_report'
+            init_general_report(report_on_label, &report_on)
+          when 'general_report_data'
+            init_general_report_data(report_on_label, &report_on)
+        end
+        
+        render_csv("#{action_name}_#{export_type}", export_type)
+      end
     end
-  end
+  end  
 
 
   def render_report_download(report_prefix)
@@ -121,14 +146,14 @@ class ReportsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.csv { render_csv("#{report_prefix}_#{@date_start.strftime("%Y%m%d")}-#{@date_end.strftime("%Y%m%d")}") }
+      format.csv { render_csv(report_prefix) }
     end
   end
 
 
-  def render_csv(filename = nil)
+  def render_csv(filename = nil, action=nil)
     filename ||= params[:action]
-    filename += '.csv'
+    filename += "_#{@date_start.strftime("%Y%m%d")}-#{@date_end.strftime("%Y%m%d")}.csv"
 
     if request.env['HTTP_USER_AGENT'] =~ /msie/i
       headers['Pragma'] = 'public'
@@ -141,6 +166,16 @@ class ReportsController < ApplicationController
       headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
     end
 
-    render :layout => false
+    render_with={ :layout => false}
+    render_with.merge!(:action => action) if action
+    render render_with
   end
+  
+  
+  def report_data
+    OrderDetail.where('order_details.state = ? AND orders.ordered_at >= ? AND orders.ordered_at <= ?', @state, @date_start, @date_end)
+               .joins('LEFT JOIN orders ON order_details.order_id = orders.id')
+               .includes(:order, :account, :price_policy, :product)
+  end
+  
 end

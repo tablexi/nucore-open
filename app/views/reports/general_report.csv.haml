@@ -1,0 +1,5 @@
+= @headers.join(',')
+- require 'csv'
+= CSV.generate do |csv|
+  - @rows.each do |row|
+    - csv << row
