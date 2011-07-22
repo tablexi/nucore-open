@@ -22,7 +22,7 @@
         %li{:class => !controller.active_tab.nil? && controller.active_tab == link[:tab_name] ? 'active' : ''}
           = link_to link[:text], link[:url]
           - if link[:subnav]
-            %ul
+            %ul.subnav
               - link[:subnav].each do |sub_links|
                 %li= link_to sub_links[:text], sub_links[:url]
 
@@ -31,7 +31,7 @@
         %li.right{:class => !controller.active_tab.nil? && controller.active_tab == 'manage_facilites' ? 'active' : ''}
           = link_to "Manage Facilities", :list_facilities
           - unless facilities.empty?
-            %ul
+            %ul.subnav
               - facilities.each do |facility|
                 %li= link_to facility.name, facility_orders_path(facility)
 

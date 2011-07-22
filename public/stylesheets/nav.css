@@ -46,8 +46,12 @@
 	margin:0;
 }
 
-#nav li li a {
-	margin-top:5px;
+#nav li.right li a {
+	margin-top:6px;
+}
+
+#nav .subnav li {
+    padding-top: 16px;
 }
 
 #nav li li:hover {
