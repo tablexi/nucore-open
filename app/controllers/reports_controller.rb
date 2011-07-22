@@ -95,7 +95,7 @@ class ReportsController < ApplicationController
   
 
   def init_general_report(report_on_label)
-    sums, @rows, @total_quantity, @total_cost={}, [], 0, 0.0
+    sums, rows, @total_quantity, @total_cost={}, [], 0, 0.0
     init_report_headers report_on_label
 
     report_data.all.each do |od|
@@ -107,8 +107,14 @@ class ReportsController < ApplicationController
       @total_cost += od.total
     end
 
-    sums.each {|k,v| @rows << v.push((v[1] / @total_cost) * 100).unshift(k) }
-    @rows.sort! {|a,b| a.first <=> b.first}
+    sums.each {|k,v| rows << v.push((v[1] / @total_cost) * 100).unshift(k) }
+    rows.sort! {|a,b| a.first <=> b.first}
+    page_size, page=25, params[:page].blank? ? 1 : params[:page].to_i
+        
+    @rows=WillPaginate::Collection.create(page, page_size) do |pager|       
+      pager.replace rows[ pager.offset, pager.per_page ]
+      pager.total_entries=rows.size unless pager.total_entries
+    end
   end
 
 

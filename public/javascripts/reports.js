@@ -30,11 +30,11 @@ function initGeneralReportsUI(selectedIndex)
             var url = $.data(ui.tab, 'load.tabs');
 
             // update main export button
-            $('#export button:first').attr('data-url', url + '.csv' + getQueryString(['export_id', 'general_report']));
+            $('#export button:first').attr('data-url', url + '&export_id=general_report&format=csv');
 
             // update export drop down links
             $('#export ul li a').each(function() {
-                $(this).attr('href', url + '.csv' + getQueryString(['export_id', $(this).attr('id')]));
+                $(this).attr('href', url + '&format=csv&export_id=' + $(this).attr('id'));
             });
         },
 
@@ -47,6 +47,13 @@ function initGeneralReportsUI(selectedIndex)
                 xhr.open(this.type, this.url + getQueryString(), this.async);
             }
         }
+    });
+
+    // handle pagination requests
+    $('.pagination a').live('click',function (){
+        var selected=$('#tabs').tabs('option', 'selected');
+        $('#tabs').tabs('url', selected, this.href).tabs('load', selected);
+        return false;
     });
 
     // update report on refresh button click

@@ -58,6 +58,14 @@ button {
     background-color: white;
 }
 
+.pagination {
+    text-align: center;
+}
+
+.pagination a {
+    color: blue !important;
+}
+
 .ui-widget {
     border-radius: 0 !important;
 }
