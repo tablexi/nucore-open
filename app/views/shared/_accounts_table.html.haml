@@ -7,4 +7,4 @@
     - if au.can_administer? || session_user.administrator?
       %tr
         %td= link_to a, account_statements_path(a)
-        %td{:style => "padding-left: 50px"}= a.facility || '<i>All</i>'
+        %td{:style => "padding-left: 50px"}= a.facility || '<i>All</i>'.html_safe

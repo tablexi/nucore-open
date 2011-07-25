@@ -30,7 +30,7 @@
     %p=h current_facility.is_active ? 'Yes' : 'No'
   %li
     %label== Address
-    = current_facility.address ? simple_format(h current_facility.address) : '<p>None Entered</p>'
+    = current_facility.address ? simple_format(h current_facility.address) : '<p>None Entered</p>'.html_safe
   %li
     %label== Phone Number
     %p=h current_facility.phone_number || 'None Entered'
