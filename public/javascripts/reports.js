@@ -7,6 +7,8 @@
  * a value. These will be appended to the end of the
  * default query string.
  */
+
+// get a query string with the most current report parameters
 function getQueryString()
 {
     var paramString='?date_start=' + $('#date_start').val() + '&date_end=' + $('#date_end').val() + '&status_filter=' + $('#status_filter').val();
@@ -19,6 +21,21 @@ function getQueryString()
     return paramString;
 }
 
+
+// update the given url with the most current report parameters
+function updateUrl(url)
+{
+    var pageParam=url.match(/page=\d+/);
+
+    if(pageParam != null) {
+        var pageNum=pageParam[0].substring(pageParam[0].indexOf('=')+1);
+        return url.substring(0, url.indexOf('?')) + getQueryString(['page', pageNum]);
+    }
+
+    return url + getQueryString();
+}
+
+
 function initGeneralReportsUI(selectedIndex)
 {
     // create reports tabs
@@ -27,7 +44,7 @@ function initGeneralReportsUI(selectedIndex)
 
         load: function(event, ui) {
             // every time a tab loads make sure the export urls are set to export current report
-            var url = $.data(ui.tab, 'load.tabs');
+            var url=updateUrl($.data(ui.tab, 'load.tabs'));
 
             // update main export button
             $('#export button:first').attr('data-url', url + '&export_id=general_report&format=csv');
@@ -44,7 +61,7 @@ function initGeneralReportsUI(selectedIndex)
             },
 
             beforeSend: function(xhr) {
-                xhr.open(this.type, this.url + getQueryString(), this.async);
+                xhr.open(this.type, updateUrl(this.url), this.async);
             }
         }
     });

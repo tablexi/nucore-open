@@ -109,7 +109,9 @@ class ReportsController < ApplicationController
 
     sums.each {|k,v| rows << v.push((v[1] / @total_cost) * 100).unshift(k) }
     rows.sort! {|a,b| a.first <=> b.first}
-    page_size, page=25, params[:page].blank? ? 1 : params[:page].to_i
+    page_size=25
+    page=params[:page].blank? || rows.size < page_size ? 1 : params[:page].to_i    
+    page=1 if rows.size / page_size < page    
         
     @rows=WillPaginate::Collection.create(page, page_size) do |pager|       
       pager.replace rows[ pager.offset, pager.per_page ]
