@@ -18,7 +18,7 @@ module ApplicationHelper
     
     # render appropriate string
     if subsidy > 0
-      "#{number_to_currency rate}<br />-#{number_to_currency subsidy}<br /> =<b>#{number_to_currency rate-subsidy}</b>"
+      "#{number_to_currency rate}<br />-#{number_to_currency subsidy}<br /> =<b>#{number_to_currency rate-subsidy}</b>".html_safe
     elsif rate > 0
       number_to_currency rate
     else
