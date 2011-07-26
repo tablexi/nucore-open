@@ -38,8 +38,8 @@ describe ReportsController do
     [
       { :action => :product, :index => 0, :report_on_label => 'Name', :report_on => Proc.new{|od| od.product.name} },
       { :action => :account, :index => 1, :report_on_label => 'Number', :report_on => Proc.new{|od| od.account.account_number} },
-      { :action => :account_owner, :index => 2, :report_on_label => 'Username', :report_on => Proc.new{|od| od.account.owner.user.username} },
-      { :action => :purchaser, :index => 3, :report_on_label => 'Username', :report_on => Proc.new{|od| od.order.user.username} },
+      { :action => :account_owner, :index => 2, :report_on_label => 'Name', :report_on => Proc.new{|od| owner=od.account.owner.user; "#{owner.full_name} (#{owner.username})"} },
+      { :action => :purchaser, :index => 3, :report_on_label => 'Name', :report_on => Proc.new{|od| usr=od.order.user; "#{usr.full_name} (#{usr.username})"} },
       { :action => :price_group, :index => 4, :report_on_label => 'Name', :report_on => Proc.new{|od| od.price_policy ? od.price_policy.price_group.name : 'Unassigned'} }
     ].each do |test|
       context test[:action].to_s do
@@ -127,7 +127,7 @@ describe ReportsController do
 
       it_should_allow_managers_only do
         assert_report_params_init @params
-        assigns(:reportables).should == OrderDetail.all
+        assigns(:reportables).sort{|a,b|a.id <=> b.id}.should == OrderDetail.all.sort{|a,b|a.id <=> b.id}
         should render_template 'product_order_summary'
       end
 
@@ -140,7 +140,7 @@ describe ReportsController do
 
         it_should_allow :director, 'to download report' do
           assert_report_params_init @params
-          assigns(:reportables).should == OrderDetail.all
+          assigns(:reportables).sort{|a,b|a.id <=> b.id}.should == OrderDetail.all.sort{|a,b|a.id <=> b.id}
           assert_report_download_rendered 'product_order_summary'
         end
 
@@ -162,9 +162,9 @@ describe ReportsController do
 
   def assert_report_params_init(params)
     if params[:status_filter].blank?
-      assigns(:state).should == OrderStatus.complete.first.name
+      assigns(:status).should == OrderStatus.complete.first.name
     else
-      assigns(:state).should == params[:status_filter]
+      assigns(:status).should == params[:status_filter]
     end
 
     now=Date.today

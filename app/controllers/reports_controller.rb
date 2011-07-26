@@ -30,12 +30,18 @@ class ReportsController < ApplicationController
 
 
   def account_owner
-    render_general_report(2, 'Username') {|od| od.account.owner.user.username }
+    render_general_report(2, 'Name') do |od|
+      owner=od.account.owner.user
+      "#{owner.full_name} (#{owner.username})"
+    end
   end
 
 
   def purchaser
-    render_general_report(3, 'Username') {|od| od.order.user.username }
+    render_general_report(3, 'Name') do |od|
+      usr=od.order.user
+      "#{usr.full_name} (#{usr.username})"
+    end
   end
 
 
@@ -51,10 +57,10 @@ class ReportsController < ApplicationController
   
   def instrument_utilization
     render_report_download 'instrument_utilization' do
-      Reservation.where(%q/reserve_start_at >= ? AND reserve_start_at <= ? AND canceled_at IS NULL AND (order_details.state IS NULL OR order_details.state = 'complete')/, @date_start, @date_end)
-                 .joins('LEFT JOIN order_details ON reservations.order_detail_id = order_details.id')
-                 .includes(:order, :order_detail, :account, :instrument)
-                 .order('reserve_start_at ASC')
+      Reservation.where(%q/reserve_start_at >= ? AND reserve_start_at <= ? AND canceled_at IS NULL AND (order_details.state IS NULL OR order_details.state = 'complete')/, @date_start, @date_end).
+                 joins('LEFT JOIN order_details ON reservations.order_detail_id = order_details.id').
+                 includes(:order, :order_detail, :account, :instrument).
+                 order('reserve_start_at ASC')
     end
   end
 
@@ -62,8 +68,8 @@ class ReportsController < ApplicationController
   private
 
   def init_report_params
-    @state=params[:status_filter]
-    @state=OrderStatus.complete.first.name if @state.blank?
+    @status=params[:status_filter]
+    @status=OrderStatus.complete.first.name if @status.blank?
 
     if params[:date_start].blank?
       now=Date.today
@@ -107,11 +113,15 @@ class ReportsController < ApplicationController
       @total_cost += od.total
     end
 
-    sums.each {|k,v| rows << v.push((v[1] / @total_cost) * 100).unshift(k) }
+    sums.each do |k,v|
+      frac_cost=@total_cost > 0 ? v[1] / @total_cost : 1
+      rows << v.push(frac_cost * 100).unshift(k)
+    end
+
     rows.sort! {|a,b| a.first <=> b.first}
     page_size=25
     page=params[:page].blank? || rows.size < page_size ? 1 : params[:page].to_i    
-    page=1 if rows.size / page_size < page    
+    #page=1 if (rows.size / page_size).to_i < page
         
     @rows=WillPaginate::Collection.create(page, page_size) do |pager|       
       pager.replace rows[ pager.offset, pager.per_page ]
@@ -181,9 +191,10 @@ class ReportsController < ApplicationController
   
   
   def report_data
-    OrderDetail.where('order_details.state = ? AND orders.ordered_at >= ? AND orders.ordered_at <= ?', @state, @date_start, @date_end)
-               .joins('LEFT JOIN orders ON order_details.order_id = orders.id')
-               .includes(:order, :account, :price_policy, :product)
+    OrderDetail.where('order_statuses.name = ? AND orders.ordered_at >= ? AND orders.ordered_at <= ?', @status, @date_start, @date_end).
+               joins('LEFT JOIN orders ON order_details.order_id = orders.id').
+               joins(:order_status).
+               includes(:order, :account, :price_policy, :product)
   end
   
 end
