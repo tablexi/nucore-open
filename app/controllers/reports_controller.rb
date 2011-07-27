@@ -68,8 +68,19 @@ class ReportsController < ApplicationController
   private
 
   def init_report_params
-    @status=params[:status_filter]
-    @status=OrderStatus.complete.first.name if @status.blank?
+    os, status_id=nil, params[:status_filter]
+
+    if status_id.blank?
+      os=OrderStatus.complete.first
+    elsif status_id.to_i != -1 # not all
+      os=OrderStatus.find(status_id.to_i)
+    end
+
+    if os
+      @status_ids=(os.root? ? os.children.collect(&:id) : []).push(os.id)
+    else
+      @status_ids=OrderStatus.non_protected_statuses(current_facility).collect(&:id)
+    end
 
     if params[:date_start].blank?
       now=Date.today
@@ -191,9 +202,10 @@ class ReportsController < ApplicationController
   
   
   def report_data
-    OrderDetail.where('order_statuses.name = ? AND orders.facility_id = ? AND orders.ordered_at >= ? AND orders.ordered_at <= ?', @status, current_facility.id, @date_start, @date_end).
+    OrderDetail.joins(:order_status).
+               where('order_statuses.id' => @status_ids).
                joins('LEFT JOIN orders ON order_details.order_id = orders.id').
-               joins(:order_status).
+               where('orders.facility_id = ? AND orders.ordered_at >= ? AND orders.ordered_at <= ?', current_facility.id, @date_start, @date_end).
                includes(:order, :account, :price_policy, :product)
   end
   

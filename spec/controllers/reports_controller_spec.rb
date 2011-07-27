@@ -161,11 +161,12 @@ describe ReportsController do
 
 
   def assert_report_params_init(params)
-    if params[:status_filter].blank?
-      assigns(:status).should == OrderStatus.complete.first.name
-    else
-      assigns(:status).should == params[:status_filter]
-    end
+    assigns(:status_ids).should be_instance_of Array
+    os=params[:status_filter].blank? ? OrderStatus.complete.first : OrderStatus.find(params[:status_filter].id)
+    order_status_ids=os.root? ? os.children.collect(&:id) : []
+    order_status_ids << os.id
+
+    assigns(:status_ids).should == order_status_ids
 
     now=Date.today
     date_start=Date.new(now.year, now.month, 1) - 1.month

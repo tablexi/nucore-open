@@ -21,7 +21,10 @@
       = text_field_tag :date_end, params[:date_end] || human_datetime(@date_end, :date_only => true), :class => 'datepicker'
     %li
       %label Order Status
-      = select_tag 'status_filter', options_for_select(OrderStatus.all.collect(&:name), @state)
+      %select{ :name => "status_filter", :class => 'sync_select', :id => 'status_filter' }
+        = options_for_select([['All', '-1']])
+        - OrderStatus.non_protected_statuses(current_facility).each do |os|
+          = options_for_select([[os.name_with_level, os.id]], @status_id)
     
   %ul#control.options
     %li#refresh
