@@ -57,9 +57,9 @@ class ReportsController < ApplicationController
   
   def instrument_utilization
     render_report_download 'instrument_utilization' do
-      Reservation.where(%q/reserve_start_at >= ? AND reserve_start_at <= ? AND canceled_at IS NULL AND (order_details.state IS NULL OR order_details.state = 'complete')/, @date_start, @date_end).
-                 joins('LEFT JOIN order_details ON reservations.order_detail_id = order_details.id').
-                 includes(:order, :order_detail, :account, :instrument).
+      Reservation.where(%q/orders.facility_id = ? AND reserve_start_at >= ? AND reserve_start_at <= ? AND canceled_at IS NULL AND (order_details.state IS NULL OR order_details.state = 'complete')/, current_facility.id, @date_start, @date_end).
+                 joins('LEFT JOIN order_details ON reservations.order_detail_id = order_details.id INNER JOIN orders ON order_details.order_id = orders.id').
+                 includes(:order_detail, :account, :instrument).
                  order('reserve_start_at ASC')
     end
   end
@@ -191,7 +191,7 @@ class ReportsController < ApplicationController
   
   
   def report_data
-    OrderDetail.where('order_statuses.name = ? AND orders.ordered_at >= ? AND orders.ordered_at <= ?', @status, @date_start, @date_end).
+    OrderDetail.where('order_statuses.name = ? AND orders.facility_id = ? AND orders.ordered_at >= ? AND orders.ordered_at <= ?', @status, current_facility.id, @date_start, @date_end).
                joins('LEFT JOIN orders ON order_details.order_id = orders.id').
                joins(:order_status).
                includes(:order, :account, :price_policy, :product)
