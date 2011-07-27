@@ -11,7 +11,7 @@ describe ReportsController do
     @authable=Factory.create(:facility)
     @params={
       :facility_id => @authable.url_name,
-      :status_filter => OrderStatus.complete.first.name,
+      :status_filter => OrderStatus.complete.first.id,
       :date_start => '07/08/2010',
       :date_end => '07/01/2011'
     }
@@ -162,9 +162,20 @@ describe ReportsController do
 
   def assert_report_params_init(params)
     assigns(:status_ids).should be_instance_of Array
-    os=params[:status_filter].blank? ? OrderStatus.complete.first : OrderStatus.find(params[:status_filter].id)
-    order_status_ids=os.root? ? os.children.collect(&:id) : []
-    order_status_ids << os.id
+
+    os=nil
+
+    if params[:status_filter].blank?
+      os=OrderStatus.complete.first
+    elsif params[:status_filter].to_i != -1
+      os=OrderStatus.find(params[:status_filter].to_i)
+    end
+
+    if os
+      order_status_ids=(os.root? ? os.children.collect(&:id) : []).push(os.id)
+    else
+      order_status_ids=OrderStatus.non_protected_statuses(@authable).collect(&:id)
+    end
 
     assigns(:status_ids).should == order_status_ids
 

@@ -151,7 +151,7 @@ Spork.each_run do
     @facility_account=facility.facility_accounts.create(Factory.attributes_for(:facility_account))
     @item=facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
     @price_group=Factory.create(:price_group, :facility => facility)
-    @order=ordered_by.orders.create(Factory.attributes_for(:order, :created_by => ordered_by.id))
+    @order=ordered_by.orders.create(Factory.attributes_for(:order, :created_by => ordered_by.id, :facility => facility))
     Factory.create(:user_price_group_member, :user => ordered_by, :price_group => @price_group)
     @item_pp=@item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
     @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => account.id))
