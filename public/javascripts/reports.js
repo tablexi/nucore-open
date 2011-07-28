@@ -42,6 +42,11 @@ function initGeneralReportsUI(selectedIndex)
     $('#tabs').tabs({
         selected: selectedIndex,
 
+        select: function(event, ui) {
+            var url=updateUrl($.data(ui.tab, 'load.tabs'));
+            $('#tabs').tabs('url', ui.index, url);
+        },
+
         load: function(event, ui) {
             // every time a tab loads make sure the export urls are set to export current report
             var url=updateUrl($.data(ui.tab, 'load.tabs'));
@@ -58,10 +63,6 @@ function initGeneralReportsUI(selectedIndex)
         ajaxOptions: {
             error: function(xhr, status, error) {
                 $('#error-msg').html('Sorry, but the tab could not load. Please try again soon.').show();
-            },
-
-            beforeSend: function(xhr) {
-                xhr.open(this.type, updateUrl(this.url), this.async);
             }
         }
     });
@@ -76,7 +77,7 @@ function initGeneralReportsUI(selectedIndex)
     // update report on refresh button click
     $('#refresh button').button().click(function() {
         var selected=$('#tabs').tabs('option', 'selected');
-        $('#tabs').tabs('load', selected);
+        $('#tabs').tabs('url', selected, updateUrl(window.location.pathname)).tabs('load', selected);
         return false;
     });
 
