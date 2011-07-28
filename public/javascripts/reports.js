@@ -11,12 +11,10 @@
 // get a query string with the most current report parameters
 function getQueryString()
 {
-    var paramString='?date_start=' + $('#date_start').val() + '&date_end=' + $('#date_end').val() + '&status_filter=' + $('#status_filter').val();
+    var paramString='?' + $('#refresh-form').serialize();
 
-    if(arguments.length > 0) {
-        for(i=0; i < arguments.length; i++)
-            paramString += ('&' + arguments[i][0] + '=' + arguments[i][1]);
-    }
+    for(var param in arguments)
+        paramString += ('&' + param);
 
     return paramString;
 }
@@ -27,10 +25,8 @@ function updateUrl(url)
 {
     var pageParam=url.match(/page=\d+/);
 
-    if(pageParam != null) {
-        var pageNum=pageParam[0].substring(pageParam[0].indexOf('=')+1);
-        return url.substring(0, url.indexOf('?')) + getQueryString(['page', pageNum]);
-    }
+    if(pageParam != null)
+        return url.substring(0, url.indexOf('?')) + getQueryString(pageParam[0]);
 
     return url + getQueryString();
 }
@@ -75,7 +71,7 @@ function initGeneralReportsUI(selectedIndex)
     });
 
     // update report on refresh button click
-    $('#refresh button').button().click(function() {
+    $('#refresh-form :input').change(function() {
         var selected=$('#tabs').tabs('option', 'selected');
         $('#tabs').tabs('url', selected, updateUrl(window.location.pathname)).tabs('load', selected);
         return false;
