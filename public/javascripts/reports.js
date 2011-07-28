@@ -32,6 +32,10 @@ function updateUrl(url)
 }
 
 
+// update and return the currently selected tab's URL
+function getUpdateTabUrl(ui) { return updateUrl($.data(ui.tab, 'load.tabs')); }
+
+
 function initGeneralReportsUI(selectedIndex)
 {
     // create reports tabs
@@ -39,21 +43,16 @@ function initGeneralReportsUI(selectedIndex)
         selected: selectedIndex,
 
         select: function(event, ui) {
-            var url=updateUrl($.data(ui.tab, 'load.tabs'));
+            // before refreshing tab update the tab's URL with the current report params
+            var url=getUpdateTabUrl(ui);
             $('#tabs').tabs('url', ui.index, url);
         },
 
         load: function(event, ui) {
             // every time a tab loads make sure the export urls are set to export current report
-            var url=updateUrl($.data(ui.tab, 'load.tabs'));
-
-            // update main export button
-            $('#export button:first').attr('data-url', url + '&export_id=general_report&format=csv');
-
-            // update export drop down links
-            $('#export ul li a').each(function() {
-                $(this).attr('href', url + '&format=csv&export_id=' + $(this).attr('id'));
-            });
+            var url=getUpdateTabUrl(ui);
+            $('#export').attr('href', url + '&export_id=general_report&format=csv');
+            $('#export-all').attr('href', url + '&export_id=general_report_data&format=csv');
         },
 
         ajaxOptions: {
@@ -70,27 +69,11 @@ function initGeneralReportsUI(selectedIndex)
         return false;
     });
 
-    // update report on refresh button click
+    // update report on parameter change
     $('#refresh-form :input').change(function() {
         var selected=$('#tabs').tabs('option', 'selected');
         $('#tabs').tabs('url', selected, updateUrl(window.location.pathname)).tabs('load', selected);
-        return false;
     });
-
-    // export button and drop down options
-    $('#export button:first').button().click(function() {
-        window.location=$(this).attr('data-url');
-    })
-    .next().button( {
-        text: false,
-        icons: {
-            primary: "ui-icon-triangle-1-s"
-        }
-    })
-    .click(function() {
-        $(this).parent().next().toggle();
-    })
-    .parent().buttonset();
 }
 
 $(document).ready(function() {

@@ -27,12 +27,10 @@
           = options_for_select([[os.name_with_level, os.id]], @selected_status_id)
     
   %ul#control.options
-    %li#export
-      %div
-        %button Export
-        %button Options &amp; Formats
-      %ul.btn
-        %li= link_to 'All Data', '#', :id => 'general_report_data'
+    %li
+      = link_to 'Export', '#', :id => 'export'
+    %li
+      = link_to 'Export All', '#', :id => 'export-all'
       
   %div#tabs
     %ul

@@ -11,10 +11,8 @@
 }
 
 .options a {
-    color: black;
     display: block;
-    padding-top: 3px;
-    text-decoration: none;
+    padding-top: 23px;
 }
 
 .options a:hover {
