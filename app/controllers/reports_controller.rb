@@ -77,8 +77,10 @@ class ReportsController < ApplicationController
     end
 
     if os
+      @selected_status_id=os.id
       @status_ids=(os.root? ? os.children.collect(&:id) : []).push(os.id)
     else
+      @selected_status_id=-1
       @status_ids=OrderStatus.non_protected_statuses(current_facility).collect(&:id)
     end
 

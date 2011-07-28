@@ -172,8 +172,10 @@ describe ReportsController do
     end
 
     if os
+      assigns(:selected_status_id).should == os.id
       order_status_ids=(os.root? ? os.children.collect(&:id) : []).push(os.id)
     else
+      assigns(:selected_status_id).should == -1
       order_status_ids=OrderStatus.non_protected_statuses(@authable).collect(&:id)
     end
 
