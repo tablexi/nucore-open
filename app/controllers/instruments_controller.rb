@@ -53,7 +53,7 @@ class InstrumentsController < ApplicationController
     # is the user approved?
     if @add_to_cart && !@instrument.is_approved_for?(acting_user)
       @add_to_cart       = false
-      flash.now[:notice] = "This instrument requires approval to reserve; please contact the facility for further information:<br/><br/> #{@instrument.facility}<br/><a href=\"mailto:#{@instrument.facility.email}\">#{@instrument.facility.email}</a>"
+      flash.now[:notice] = "This instrument requires approval to reserve; please contact the facility for further information:<br/><br/> #{@instrument.facility}<br/><a href=\"mailto:#{@instrument.facility.email}\">#{@instrument.facility.email}</a>".html_safe
     end
 
     # does the product have any price policies for any of the groups the user is a member of?
