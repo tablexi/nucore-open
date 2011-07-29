@@ -169,7 +169,7 @@ class ReservationsController < ApplicationController
         relay.deactivate_port(@instrument.relay_port)
         status = relay.get_status_port(@instrument.relay_port)
         if status == false
-          @reservation.actual_start_at = Time.zone.now
+          @reservation.actual_end_at = Time.zone.now
           @reservation.save!
           flash[:notice] = 'The instrument has been deactivated successfully'
         else
