@@ -50,11 +50,6 @@ class ReportsController < ApplicationController
   end
 
   
-  def product_order_summary
-    render_report_download('product_order_summary') { report_data.order('orders.ordered_at ASC').all }
-  end
-
-  
   def instrument_utilization
     render_report_download 'instrument_utilization' do
       Reservation.where(%q/orders.facility_id = ? AND reserve_start_at >= ? AND reserve_start_at <= ? AND canceled_at IS NULL AND (order_details.state IS NULL OR order_details.state = 'complete')/, current_facility.id, @date_start, @date_end).

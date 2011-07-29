@@ -70,7 +70,6 @@ Nucore::Application.routes.draw do |map|
         :purchaser => [:get, :post],
         :price_group => [:get, :post],
         :instrument_utilization => [:get, :post],
-        :product_order_summary => [:get, :post]
     }
 
     facility.resources :price_group_products, :only => [ :edit, :update ]

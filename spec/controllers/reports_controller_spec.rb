@@ -111,42 +111,6 @@ describe ReportsController do
 
     end
 
-
-    context 'product_order_summary' do
-
-      before :each do
-        @action=:product_order_summary
-        acct=create_nufs_account_with_owner
-
-        3.times do
-          place_and_complete_item_order(@owner, @authable, acct)
-          @order.ordered_at=parse_usa_date('12/20/2010')
-          assert @order.save
-        end
-      end
-
-      it_should_allow_managers_only do
-        assert_report_params_init @params
-        assigns(:reportables).sort{|a,b|a.id <=> b.id}.should == OrderDetail.all.sort{|a,b|a.id <=> b.id}
-        should render_template 'product_order_summary'
-      end
-
-
-      context 'download' do
-
-        before :each do
-          @params.merge!(:format => 'csv')
-        end
-
-        it_should_allow :director, 'to download report' do
-          assert_report_params_init @params
-          assigns(:reportables).sort{|a,b|a.id <=> b.id}.should == OrderDetail.all.sort{|a,b|a.id <=> b.id}
-          assert_report_download_rendered 'product_order_summary'
-        end
-
-      end
-    end
-
   end
 
 
