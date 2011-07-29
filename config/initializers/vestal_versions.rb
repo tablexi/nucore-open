@@ -6,18 +6,5 @@ VestalVersions.configure do |config|
   #
   # Any options passed to the "versioned" method in the model itself will override this global
   # configuration.
-end
-
-require 'vestal_versions'
-
-module VestalVersions
-  module Reversion
-    module InstanceMethods
-      def last_version
-        # here's the default implementation using the reserved word 'number' in oracle
-        # @last_version ||= versions.maximum(:number) || 1
-        @last_version ||= versions.collect(&:number).max || 1
-      end
-    end
-  end
+  config.number_column_name='version_number'
 end

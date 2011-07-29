@@ -1,9 +1,10 @@
 GIT
-  remote: git://github.com/rsim/vestal_versions.git
-  revision: 2773ee61076718c44c3e15c2ae6a7929fcb623c9
+  remote: git://github.com/elzoiddy/vestal_versions.git
+  revision: 77db0cf6e849596093e63734ed3aab0627eab388
   specs:
-    vestal_versions (1.3.0)
-      activerecord (>= 2.1.0)
+    vestal_versions (1.2.4.3)
+      activerecord (>= 3.0.0)
+      activesupport (>= 3.0.0)
 
 GEM
   remote: http://rubygems.org/
@@ -214,5 +215,5 @@ DEPENDENCIES
   single_test (= 0.4.0)
   spork (= 0.7.5)
   spreadsheet (= 0.6.5.5)
-  vestal_versions (= 1.3.0)!
+  vestal_versions (= 1.2.4.3)!
   will_paginate (= 3.0.pre2)

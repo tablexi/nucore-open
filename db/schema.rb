@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110725210324) do
+ActiveRecord::Schema.define(:version => 20110729173029) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :precision => 38, :scale => 0, :null => false
@@ -484,23 +484,27 @@ ActiveRecord::Schema.define(:version => 20110725210324) do
   add_index "users", ["username"], :name => "index_users_on_username", :unique => true, :tablespace => "bc_nucore"
 
   create_table "versions", :force => true do |t|
-    t.integer  "versioned_id",   :precision => 38, :scale => 0
+    t.integer  "versioned_id",      :precision => 38, :scale => 0
     t.string   "versioned_type"
-    t.integer  "user_id",        :precision => 38, :scale => 0
+    t.integer  "user_id",           :precision => 38, :scale => 0
     t.string   "user_type"
     t.string   "user_name"
-    t.text     "data_changes"
-    t.integer  "number",         :precision => 38, :scale => 0
+    t.text     "modifications"
+    t.integer  "version_number",    :precision => 38, :scale => 0
     t.string   "tag"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "reason_for_update"
+    t.integer  "reverted_from",     :precision => 38, :scale => 0
+    t.string   "commit_label"
   end
 
+  add_index "versions", ["commit_label"], :name => "index_versions_on_commit_label"
   add_index "versions", ["created_at"], :name => "index_versions_on_created_at", :tablespace => "bc_nucore"
-  add_index "versions", ["number"], :name => "index_versions_on_number", :tablespace => "bc_nucore"
   add_index "versions", ["tag"], :name => "index_versions_on_tag", :tablespace => "bc_nucore"
   add_index "versions", ["user_id", "user_type"], :name => "i_versions_user_id_user_type", :tablespace => "bc_nucore"
   add_index "versions", ["user_name"], :name => "index_versions_on_user_name", :tablespace => "bc_nucore"
+  add_index "versions", ["version_number"], :name => "index_versions_on_number", :tablespace => "bc_nucore"
   add_index "versions", ["versioned_id", "versioned_type"], :name => "i_ver_ver_id_ver_typ", :tablespace => "bc_nucore"
 
   add_foreign_key "account_users", "accounts", :name => "fk_accounts"
