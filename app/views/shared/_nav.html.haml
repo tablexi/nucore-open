@@ -9,9 +9,9 @@
     - links.push({:url => facility_accounts_path(current_facility), :text => 'Billing',  :tab_name => 'admin_invoices'})
     - links.push({:url => facility_products_path(current_facility),   :text => 'Products', :tab_name => 'admin_products'})
     - links.push({:url => facility_users_path(current_facility),      :text => 'Users',    :tab_name => 'admin_users'})
-    - reports_sub=[{:url => product_order_summary_facility_reports_path, :text => 'Product Order Summary'},
-                   {:url => instrument_utilization_facility_reports_path, :text => 'Instrument Utilization'}]
-    - links.push({:url => product_facility_reports_path,    :text => 'Reports',  :tab_name => 'admin_reports', :subnav => reports_sub})
+    - reports_sub=[{:url => product_order_summary_facility_reports_path(current_facility), :text => 'Product Order Summary'},
+                   {:url => instrument_utilization_facility_reports_path(current_facility), :text => 'Instrument Utilization'}]
+    - links.push({:url => product_facility_reports_path(current_facility),    :text => 'Reports',  :tab_name => 'admin_reports', :subnav => reports_sub})
     - if current_user.manager_of?(current_facility)
       - links.push({:url => manage_facility_path(current_facility), :text => 'Admin', :tab_name => 'admin_facility'})
 .container_12

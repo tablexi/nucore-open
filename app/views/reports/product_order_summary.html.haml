@@ -5,7 +5,7 @@
   =h current_facility
 
 %h2 Product Order Summary Report
-= form_tag product_order_summary_facility_reports_path(:format => 'csv') do
+= form_tag product_order_summary_facility_reports_path(current_facility, :format => 'csv') do
   %p.instructions This report shows all product orders for the date range specified.
   %ul.form
     %li

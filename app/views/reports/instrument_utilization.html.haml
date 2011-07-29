@@ -5,7 +5,7 @@
   =h current_facility
 
 %h2 Instrument Utilization Report
-= form_tag instrument_utilization_facility_reports_path(:format => 'csv') do
+= form_tag instrument_utilization_facility_reports_path(current_facility, :format => 'csv') do
   %p.instructions This report shows instrument utilization for the date range specified.
   %ul.form
     %li
