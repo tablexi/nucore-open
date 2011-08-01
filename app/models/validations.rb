@@ -1,13 +1,19 @@
 module Validations
   include NucsErrors
+  extend ActiveSupport::Concern
 
   attr_reader :fund, :dept, :project, :activity, :program, :account
   
   # after_find method is called after a record is loaded from the database
   # this is also serves to instantiate fund, dept, project, etc.
-  def after_find
-    validate_chartstring
+  included do |base|
+    base.class_eval <<-METHOD
+      def after_find
+        validate_chartstring
+      end
+    METHOD
   end
+
 
   def validate_chartstring
     begin
