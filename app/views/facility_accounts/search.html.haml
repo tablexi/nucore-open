@@ -12,7 +12,8 @@
     = label_tag :search_term, 'Search by payment method number or description'
     %br
     = text_field_tag :search_term, nil, :size => 30
-    = submit_tag "Search", :class => 'btn'
+    - # this action is not yet implemented
+    = submit_tag "Search", :class => 'btn', :disabled => 'disabled'
     = hidden_field_tag :facility_id, current_facility.id
     = hidden_field_tag :search_type, 'account'
     = hidden_field_tag :create_link, 'false'
