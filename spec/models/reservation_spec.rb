@@ -39,44 +39,71 @@ describe Reservation do
     end
   end
 
-  it "should not allow reservations to conflict with an existing reservation in the same order" do
-    @facility      = Factory.create(:facility)
-    @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @price_group   = Factory.create(:price_group, :facility => @facility)
-    @instrument_pp = Factory.create(:instrument_price_policy, :instrument => @instrument, :price_group => @price_group)
-    @user          = Factory.create(:user)
-    @pg_member     = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
-    @account       = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
-    @order         = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
-    @detail1       = @order.order_details.create(:product_id => @instrument.id, :quantity => 1)
-    @detail2       = @order.order_details.create(:product_id => @instrument.id, :quantity => 1)
 
-    @instrument.min_reserve_mins = 15
-    @instrument.save
+  context 'with order details' do
 
-    @reservation1  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                                     :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                     :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail1)
-    @reservation1.should be_valid
+    before :each do
+      @facility      = Factory.create(:facility)
+      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
+      @price_group   = Factory.create(:price_group, :facility => @facility)
+      @instrument_pp = Factory.create(:instrument_price_policy, :instrument => @instrument, :price_group => @price_group)
+      @user          = Factory.create(:user)
+      @pg_member     = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
+      @account       = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      @order         = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
+      @detail1       = @order.order_details.create(:product_id => @instrument.id, :quantity => 1, :account => @account)
+      @detail2       = @order.order_details.create(:product_id => @instrument.id, :quantity => 1)
 
-    @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                                     :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                     :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
-    @reservation2.should_not be_valid
-    assert_equal ["The reservation conflicts with another reservation"], @reservation2.errors[:base]
+      @instrument.min_reserve_mins = 15
+      @instrument.save
 
-    @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                                     :reserve_start_min => 15, :reserve_start_meridian => 'am',
-                                                     :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
-    @reservation2.should_not be_valid
-    assert_equal ["The reservation conflicts with another reservation"], @reservation2.errors[:base]
+      @reservation1  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+                                                       :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                                       :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail1)
+    end
 
-    @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 9,
-                                                     :reserve_start_min => 45, :reserve_start_meridian => 'am',
-                                                     :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
-    @reservation2.should_not be_valid
-    assert_equal ["The reservation conflicts with another reservation"], @reservation2.errors[:base]
+    it 'should be the same order' do
+      @reservation1.order.should == @detail1.order
+    end
+
+    it 'should be the same user' do
+      @reservation1.user.should == @detail1.order.user
+    end
+
+    it 'should be the same account' do
+      @detail1.account.should_not be_nil
+      @reservation1.account.should == @detail1.account
+    end
+
+    it 'should be the same owner' do
+      @detail1.account.owner.should_not be_nil
+      @reservation1.owner.should == @detail1.account.owner
+    end
+
+    it "should not allow reservations to conflict with an existing reservation in the same order" do
+      @reservation1.should be_valid
+
+      @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+                                                       :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                                       :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
+      @reservation2.should_not be_valid
+      assert_equal ["The reservation conflicts with another reservation"], @reservation2.errors[:base]
+
+      @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+                                                       :reserve_start_min => 15, :reserve_start_meridian => 'am',
+                                                       :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
+      @reservation2.should_not be_valid
+      assert_equal ["The reservation conflicts with another reservation"], @reservation2.errors[:base]
+
+      @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 9,
+                                                       :reserve_start_min => 45, :reserve_start_meridian => 'am',
+                                                       :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
+      @reservation2.should_not be_valid
+      assert_equal ["The reservation conflicts with another reservation"], @reservation2.errors[:base]
+    end
+
   end
+
 
   it "should not let reservations exceed the maximum length" do
     @instrument.max_reserve_mins = 60

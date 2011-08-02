@@ -5,10 +5,6 @@ class Reservation < ActiveRecord::Base
 
   belongs_to :instrument
   belongs_to :order_detail
-  has_one    :order,   :through => :order_detail
-  has_one    :user,    :through => :order
-  has_one    :account, :through => :order_detail
-  has_one    :owner,   :through => :account
 
   validates_presence_of :instrument_id, :reserve_start_at, :reserve_end_at
   validate :does_not_conflict_with_other_reservation, :satisfies_minimum_length, :satisfies_maximum_length, :instrument_is_available_to_reserve, :in_the_future, :if => :reserve_start_at && :reserve_end_at && :reservation_changed?
@@ -41,6 +37,27 @@ class Reservation < ActiveRecord::Base
     reservations.delete_if{|r| r.reserve_end_at < t}
     reservations
   end
+
+
+  def order
+    order_detail.order if order_detail
+  end
+
+
+  def user
+    order.user if order
+  end
+
+
+  def account
+    order_detail.account if order_detail
+  end
+
+
+  def owner
+    account.owner if account
+  end
+
 
   def starts_before_ends
     if reserve_start_at && reserve_end_at
