@@ -1,7 +1,7 @@
 class Product < ActiveRecord::Base
 
   belongs_to :facility
-  belongs_to :initial_order_status, :class_name => 'OrderStatus', :foreign_key => 'initial_order_status_id'
+  belongs_to :initial_order_status, :class_name => 'OrderStatus'
   belongs_to :facility_account
   has_many   :product_users
   has_many   :order_details
@@ -21,7 +21,7 @@ class Product < ActiveRecord::Base
   after_create :set_default_pricing
   
   def initial_order_status
-    self[:initial_order_status] or OrderStatus.default_order_status
+    self[:initial_order_status_id] ? OrderStatus.find(self[:initial_order_status_id]) : OrderStatus.default_order_status
   end
 
   def current_price_policies
