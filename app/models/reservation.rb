@@ -11,7 +11,7 @@ class Reservation < ActiveRecord::Base
 
   validates_each [ :actual_start_at, :actual_end_at ] do |record,attr,value|
     if value
-      errors.add(attr.to_s,'cannot be in the future') if Time.zone.now < value
+      record.errors.add(attr.to_s,'cannot be in the future') if Time.zone.now < value
     end
   end
 

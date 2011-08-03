@@ -49,17 +49,17 @@ namespace :demo  do
     pgnu = PriceGroup.find_or_create_by_name({
       :name => 'Northwestern Base Rate', :is_internal => true, :display_order => 1
     })
-    pgnu.save_with_validation(false) # override facility validator
+    pgnu.save(:validate => false) # override facility validator
 
     pgcc = PriceGroup.find_or_create_by_name({
       :name => 'Cancer Center Rate', :is_internal => true, :display_order => 2
     })
-    pgcc.save_with_validation(false) # override facility validator
+    pgcc.save(:validate => false) # override facility validator
 
     pgex = PriceGroup.find_or_create_by_name({
       :name => 'External Rate', :is_internal => false, :display_order => 3
     })
-    pgex.save_with_validation(false) # override facility validator
+    pgex.save(:validate => false) # override facility validator
 
 
     fa = FacilityAccount.find_or_create_by_facility_id({
@@ -182,7 +182,7 @@ namespace :demo  do
       :minimum_cost         => 0,
       :cancellation_cost    => 0,
     })
-    inpp.save_with_validation(false) # override date validator
+    inpp.save(:validate => false) # override date validator
     itpp = ItemPricePolicy.find_or_create_by_item_id_and_price_group_id({
       :item_id           => item.id,
       :price_group_id    => pgnu.id,
@@ -191,7 +191,7 @@ namespace :demo  do
       :unit_cost         => 30,
       :unit_subsidy      => 0,
     })
-    itpp.save_with_validation(false) # override date validator
+    itpp.save(:validate => false) # override date validator
     spp = ServicePricePolicy.find_or_create_by_service_id_and_price_group_id({
       :service_id        => service.id,
       :price_group_id    => pgnu.id,
@@ -200,9 +200,9 @@ namespace :demo  do
       :unit_cost         => 75,
       :unit_subsidy      => 0,
     })
-    spp.save_with_validation(false) # override date validator
+    spp.save(:validate => false) # override date validator
 
-    user_admin = User.find_by_username('admin')
+    user_admin = User.find_by_username('admin@example.com')
     unless user_admin
       user_admin = User.new({
         :username   => 'admin@example.com',
@@ -432,10 +432,10 @@ namespace :demo  do
           res = Reservation.create({
             :order_detail_id  => od.id,
             :instrument_id    => product.id,
-            :reserve_start_at => Time.zone.parse((ordered_at + 1.days).strftime("%m/%d/%Y") + " #{i+8}:00"),
-            :reserve_end_at   => Time.zone.parse((ordered_at + 1.days).strftime("%m/%d/%Y") + " #{i+9}:00"),
+            :reserve_start_at => Time.zone.parse((ordered_at + 1.days).strftime("%Y-%m-%d") + " #{i+8}:00"),
+            :reserve_end_at   => Time.zone.parse((ordered_at + 1.days).strftime("%Y-%m-%d") + " #{i+9}:00"),
           })
-          res.save_with_validation(false)
+          res.save(:validate => false)
           i += 1
         end
         od.update_account(account)
@@ -452,7 +452,7 @@ namespace :demo  do
     # validate and purchase the order
     if args[:purchase]
       o.state = 'validated'
-      o.save_with_validation(false)
+      o.save(:validate => false)
       o.purchase!
       o.update_attributes!(:ordered_at => ordered_at)
     end
@@ -466,7 +466,7 @@ namespace :demo  do
     res = order_detail.reservation
     res.actual_start_at = res.reserve_start_at
     res.actual_end_at   = res.reserve_end_at
-    res.save!
+    res.save(:validate => false)
     costs = order_detail.price_policy.calculate_cost_and_subsidy(res)
     order_detail.actual_cost    = costs[:cost]
     order_detail.actual_subsidy = costs[:subsidy]
