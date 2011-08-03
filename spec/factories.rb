@@ -99,7 +99,7 @@ Factory.define :instrument, :class => Instrument do |o|
   o.is_hidden false
   o.relay_type 'RelaySynaccessRevA'
   o.sequence(:relay_port) {|p| p }
-  o.initial_order_status_id { |o| find_order_status('new') }
+  o.initial_order_status_id { |o| find_order_status('new').id }
   o.min_reserve_mins 60
   o.max_reserve_mins 120
 end
@@ -125,7 +125,7 @@ Factory.define :item, :class => Item do |o|
   o.requires_approval false
   o.is_archived       false
   o.is_hidden         false
-  o.initial_order_status_id { |o| find_order_status('new') }
+  o.initial_order_status_id { |o| find_order_status('new').id }
 end
 
 Factory.define :item_price_policy, :class => ItemPricePolicy do |o|
@@ -142,7 +142,7 @@ Factory.define :service, :class => Service do |o|
   o.requires_approval false
   o.is_archived false
   o.is_hidden false
-  o.initial_order_status_id { |o| find_order_status('new') }
+  o.initial_order_status_id { |o| find_order_status('new').id }
 end
 
 Factory.define :bundle do |b|
