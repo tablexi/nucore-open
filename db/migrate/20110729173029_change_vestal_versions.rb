@@ -5,14 +5,25 @@ class ChangeVestalVersions < ActiveRecord::Migration
     add_column :versions, :commit_label, :string
 
     rename_column :versions, :data_changes, :modifications
-    execute %Q[ ALTER TABLE versions RENAME COLUMN "NUMBER" TO "VERSION_NUMBER" ]
+
+    if NUCore::Database.oracle?
+      execute %Q[ ALTER TABLE versions RENAME COLUMN "NUMBER" TO "VERSION_NUMBER" ]
+    else
+      rename_column :versions, :number, :version_number
+    end
 
     add_index :versions, :commit_label
   end
 
   def self.down
     remove_index :versions, :commit_label
-    execute %Q[ ALTER TABLE versions RENAME COLUMN "VERSION_NUMBER" TO "NUMBER" ]
+
+    if NUCore::Database.oracle?
+      execute %Q[ ALTER TABLE versions RENAME COLUMN "VERSION_NUMBER" TO "NUMBER" ]
+    else
+      rename_column :versions, :version_number, :number
+    end
+
     rename_column :versions, :modifications, :data_changes
     remove_columns :versions, :reason_for_update, :reverted_from, :commit_label
   end
