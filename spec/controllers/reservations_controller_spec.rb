@@ -13,7 +13,7 @@ describe ReservationsController do
     @pg_member        = Factory.create(:user_price_group_member, :user => @guest, :price_group => @price_group)
     # create instrument, min reserve time is 60 minutes, max is 60 minutes
     @options          = Factory.attributes_for(:instrument, :facility_account => @facility_account,
-                                               :min_reserve_mins => 60, :max_reserve_mins => 60)
+                                               :min_reserve_mins => 60, :max_reserve_mins => 60, :relay_ip => '192.168.1.1')
     @instrument       = @authable.instruments.create(@options)
     assert @instrument.valid?
     Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
@@ -99,7 +99,7 @@ describe ReservationsController do
   end
 
 
-  context 'needs reservation' do
+  context 'needs future reservation' do
 
     before :each do
       # create reservation for tomorrow @ 9 am for 60 minutes, with order detail reference
@@ -179,23 +179,66 @@ describe ReservationsController do
 
     end
 
+  end
+
+
+  context 'needs now reservation' do
+
+    before :each do
+      # create reservation for tomorrow @ 9 am for 60 minutes, with order detail reference
+      @start        = Time.zone.now + 1.second
+      @reservation  = @instrument.reservations.create(:reserve_start_at => @start, :order_detail => @order_detail,
+                                                      :duration_value => 60, :duration_unit => 'minutes')
+      assert @reservation.valid?
+    end
 
     context 'switch_instrument' do
 
       before :each do
         @method=:get
         @action=:switch_instrument
-        @params.merge!(:reservation_id => @reservation.id, :switch => 'on')
+        @params.merge!(:reservation_id => @reservation.id)
       end
 
-      it_should_allow :guest do
-        should respond_with :redirect
+      context 'on' do
+         before :each do
+           @params.merge!(:switch => 'on')
+         end
+
+        it_should_allow :guest do
+          assigns(:order).should == @order
+          assigns(:order_detail).should == @order_detail
+          assigns(:instrument).should == @instrument
+          assigns(:reservation).should == @reservation
+          assigns(:reservation).actual_start_at.should < Time.zone.now
+          assigns(:instrument).instrument_statuses.size.should == 1
+          assigns(:instrument).instrument_statuses[0].is_on.should == true
+          should set_the_flash
+          should respond_with :redirect
+        end
       end
 
-      it 'should test more than auth'
+      context 'off' do
+         before :each do
+           @reservation.update_attribute(:actual_start_at, @start)
+           @params.merge!(:switch => 'off')
+           sleep 2 # because res start time is now + 1 second. Need to make time validations pass.
+         end
+
+        it_should_allow :guest do
+          assigns(:order).should == @order
+          assigns(:order_detail).should == @order_detail
+          assigns(:instrument).should == @instrument
+          assigns(:reservation).should == @reservation
+          assigns(:reservation).actual_end_at.should < Time.zone.now
+          assigns(:instrument).instrument_statuses.size.should == 1
+          assigns(:instrument).instrument_statuses[0].is_on.should == false
+          should set_the_flash
+          should respond_with :redirect
+        end
+      end
 
     end
-
   end
 
 end

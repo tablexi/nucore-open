@@ -155,8 +155,13 @@ class ReservationsController < ApplicationController
     begin
       relay = @instrument.relay_type.constantize.new(@instrument.relay_ip, @instrument.relay_username, @instrument.relay_password)
       if (params[:switch] == 'on' && @reservation.can_switch_instrument_on?)
-        relay.activate_port(@instrument.relay_port)
-        status = relay.get_status_port(@instrument.relay_port)
+        status=Rails.env.test? ? true : nil
+
+        if status.nil?
+          relay.activate_port(@instrument.relay_port)
+          status = relay.get_status_port(@instrument.relay_port)
+        end
+
         if status
           @reservation.actual_start_at = Time.zone.now
           @reservation.save!
@@ -166,8 +171,13 @@ class ReservationsController < ApplicationController
         end
         @instrument.instrument_statuses.create(:is_on => status)
       elsif (params[:switch] == 'off' && @reservation.can_switch_instrument_off?)
-        relay.deactivate_port(@instrument.relay_port)
-        status = relay.get_status_port(@instrument.relay_port)
+        status=Rails.env.test? ? false : nil
+
+        if status.nil?
+          relay.deactivate_port(@instrument.relay_port)
+          status = relay.get_status_port(@instrument.relay_port)
+        end
+
         if status == false
           @reservation.actual_end_at = Time.zone.now
           @reservation.save!
@@ -176,7 +186,7 @@ class ReservationsController < ApplicationController
           raise Exception
         end
         @instrument.instrument_statuses.create(:is_on => status)
-      
+
       else
         raise Exception
       end
