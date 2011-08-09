@@ -51,7 +51,7 @@
           - if order_detail.file_uploads.template_result.empty?
             %li.indented= link_to('Upload Order Form', order_order_detail_order_file_path(@order, order_detail))
           - else
-            %li.indented= "#{link_to('Uploaded Order Form', order_detail.file_uploads.template_result.first.file.url)} (#{link_to('Delete', order_order_detail_remove_order_file_path(@order, order_detail))})"
+            %li.indented= "#{link_to('Uploaded Order Form', order_detail.file_uploads.template_result.first.file.url)} (#{link_to('Delete', order_order_detail_remove_order_file_path(@order, order_detail))})".html_safe
     - if order_detail.bundle
       %td.centered= order_detail.quantity
     - else

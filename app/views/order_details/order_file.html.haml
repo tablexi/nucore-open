@@ -21,7 +21,7 @@
       %td
         %p
           %b Download and complete the template
-        %p.document= link_to "#{@order_detail.product.name} &mdash; Order Form Template", @order_detail.product.file_uploads.template.first.file.url
+        %p.document= link_to "#{@order_detail.product.name} &mdash; Order Form Template".html_safe, @order_detail.product.file_uploads.template.first.file.url
     %tr
       %td.two 2
       %td
