@@ -24,7 +24,7 @@
       = @user.full_name
     %li
       = f.label :user_role, 'User Role', :class => 'require'
-      = f.select :user_role, options_for_select(AccountUser.selectable_user_roles, :selected => 'Purchaser')
+      = f.select :user_role, options_for_select(AccountUser.selectable_user_roles(current_user, current_facility), :selected => AccountUser::ACCOUNT_PURCHASER)
   %ul.horiz
     %li= f.submit 'Create', :class => 'btn'
     %li= link_to 'Cancel', facility_account_path(current_facility, @account)

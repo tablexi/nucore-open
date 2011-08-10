@@ -27,10 +27,17 @@ class FacilityAccountUsersController < ApplicationController
 
   # POST /facilities/:facility_id/accounts/:account_id/account_users
   def create
-    @account                 = Account.find(params[:account_id])
-    @user                    = User.find(params[:user_id])
-    @account_user            = @account.account_users.new(params[:account_user])
-    @account_user.user       = @user
+    @account = Account.find(params[:account_id])
+    @user = User.find(params[:user_id])
+    role = params[:account_user]
+
+    if role[:user_role] == AccountUser::ACCOUNT_OWNER
+      # ensure that an account only ever has one owner
+      @account.owner.destroy if @account.owner
+    end
+
+    @account_user = @account.account_users.new(role)
+    @account_user.user = @user
     @account_user.created_by = session_user.id
 
     if @account_user.save

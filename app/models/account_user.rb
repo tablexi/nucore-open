@@ -25,9 +25,20 @@ class AccountUser < ActiveRecord::Base
   end
 
 
-  def self.selectable_user_roles
-    user_roles.reject { |r| r == ACCOUNT_OWNER }
+  #
+  # Provides an +Array+ of roles that can be assigned
+  # to a user. Optionally filters the set by the given
+  # arguments
+  # [_user_]
+  # The user selecting a role to be applied to
+  # another user; the grantor
+  # [_facility_]
+  # The facility under which the selected role is
+  # granted by +user+
+  def self.selectable_user_roles(user=nil, facility=nil)
+    user_roles.reject { |r| r == ACCOUNT_OWNER if user.nil? || facility.nil? || !user.manager_of?(facility) }
   end
+
 
   #
   # Assigns +role+ to +user+ for +account+

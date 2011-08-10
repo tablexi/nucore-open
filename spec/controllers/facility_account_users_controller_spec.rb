@@ -81,6 +81,28 @@ describe FacilityAccountUsersController do
       assert_redirected_to facility_account_members_path(@authable, @account)
     end
 
+
+    context 'change owner' do
+
+      before :each do
+        @params[:account_user][:user_role]=AccountUser::ACCOUNT_OWNER
+        AccountUser.where(:account_id => @account.id, :user_role => AccountUser::ACCOUNT_OWNER).all.size.should == 1
+        @account.owner_user.should == @owner
+      end
+
+      it_should_allow :director, 'to add a new account owner' do
+        assigns(:account).should == @account
+        assigns(:user).should == @purchaser
+        assigns(:account_user).user_role.should == AccountUser::ACCOUNT_OWNER
+        assigns(:account_user).user.should == @purchaser
+        assigns(:account_user).created_by.should == @director.id
+        AccountUser.where(:account_id => @account.id, :user_role => AccountUser::ACCOUNT_OWNER).all.size.should == 1
+        assigns(:account).reload.owner_user.should == @purchaser
+        should set_the_flash
+        assert_redirected_to facility_account_members_path(@authable, @account)
+      end
+    end
+
   end
 
 

@@ -45,4 +45,40 @@ describe AccountUser do
     @au = @account.account_users.create({:user => @user2, :user_role => 'Owner', :created_by => @user1.id})
     @au.errors[:user_role].should_not be_nil
   end
+
+
+  context 'selectable_user_roles' do
+
+    it 'should not include account owner role by default' do
+      roles=AccountUser.selectable_user_roles
+      roles.should_not be_include AccountUser::ACCOUNT_OWNER
+    end
+
+
+    context 'with manager' do
+
+      before :each do
+        @user=Factory.create(:user)
+        @facility=Factory.create(:facility)
+        UserRole.grant(@user, UserRole::FACILITY_DIRECTOR, @facility)
+        @user.should be_manager_of @facility
+      end
+
+      it 'should not include account owner role without facility' do
+        roles=AccountUser.selectable_user_roles(@user)
+        roles.should_not be_include AccountUser::ACCOUNT_OWNER
+      end
+
+      it 'should not include account owner role without user' do
+        roles=AccountUser.selectable_user_roles(nil, @facility)
+        roles.should_not be_include AccountUser::ACCOUNT_OWNER
+      end
+
+      it 'should include account owner role if called by manager' do
+        roles=AccountUser.selectable_user_roles(@user, @facility)
+        roles.should be_include AccountUser::ACCOUNT_OWNER
+      end
+
+    end
+  end
 end
