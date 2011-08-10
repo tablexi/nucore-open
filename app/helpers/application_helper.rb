@@ -9,6 +9,7 @@ module ApplicationHelper
   def html_title(title=nil)
     full_title = title.nil? ? "" : "#{title} - "
     full_title += app_name
+    full_title.html_safe
   end
   
   def human_rate_calculation(rate, subsidy)
