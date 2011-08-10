@@ -9,6 +9,9 @@ Nucore::Application.routes.draw do |map|
   map.logout_target '/', :controller => 'public', :action => 'index'
   map.switch_back '/switch_back', :controller => 'public', :action => 'switch_back'
 
+  # global settings
+  match 'global/affiliates' => 'global_settings#affiliates', :as => :affiliates
+
   # shared searches
   map.user_search_results '/user_search_results', :controller =>'search', :action => 'user_search_results', :conditions => { :method => :post }
 
@@ -102,7 +105,7 @@ Nucore::Application.routes.draw do |map|
     facility.resources :accounts, :controller => 'facility_accounts', :only => [:index, :new, :create, :show, :edit, :update], :collection => {:credit_cards => :get, :update_credit_cards => :post, :purchase_orders => :get, :update_purchase_orders => :post, :user_search => :get, :search => :get, :search_results => [:get, :post], :new_account_user_search => :get} do |account|
       account.suspend '/suspend', :controller => 'facility_accounts', :action => 'suspend'
       account.unsuspend '/unsuspend', :controller => 'facility_accounts', :action => 'unsuspend'
-      account.resources :account_users, :controller => 'facility_account_users', :only => [:new, :destroy, :create], :collection => {:user_search => :get}
+      account.resources :account_users, :controller => 'facility_account_users', :only => [:new, :destroy, :create, :update], :collection => {:user_search => :get}
       account.statement  '/statements/:statement_id.:format', :controller => 'facility_accounts', :action => 'show_statement', :conditions => {:method => :get}
       account.members '/members', :controller => 'facility_accounts', :action => 'members', :conditions => {:method => :get}
     end

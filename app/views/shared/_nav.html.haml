@@ -18,7 +18,7 @@
     %ul
       %li.first
       - links.each do |link|
-        %li{:class => !controller.active_tab.nil? && controller.active_tab == link[:tab_name] ? 'active' : ''}
+        %li{:class => controller.active_tab == link[:tab_name] ? 'active' : ''}
           = link_to link[:text], link[:url]
           - if link[:subnav]
             %ul.subnav
@@ -26,8 +26,13 @@
                 %li= link_to sub_links[:text], sub_links[:url]
 
       - facilities = manageable_facilities
+
+      - if !acting_as? && current_user && current_user.administrator?
+        %li.right{:class => controller.active_tab == 'global_settings' ? 'active' : ''}
+          = link_to "Global Settings", affiliates_path
+
       - if !acting_as? && (!facilities.empty? || (current_user && current_user.administrator?))
-        %li.right{:class => !controller.active_tab.nil? && controller.active_tab == 'manage_facilites' ? 'active' : ''}
+        %li.right{:class => controller.active_tab == 'manage_facilites' ? 'active' : ''}
           = link_to "Manage Facilities", :list_facilities
           - unless facilities.empty?
             %ul.subnav
