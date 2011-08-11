@@ -1,23 +1,19 @@
 require 'spec_helper'
 require 'controller_spec_helper'
 
-describe GlobalSettingsController do
+describe AffiliatesController do
   render_views
 
   before(:all) { create_users }
 
-  before(:each) { @authable=Factory.create(:facility) }
-
-
-  context 'affiliates' do
+  context 'index' do
 
     before :each do
       @method=:get
-      @action=:affiliates
+      @action=:index
     end
 
     it_should_allow_admin_only
-
   end
 
 end

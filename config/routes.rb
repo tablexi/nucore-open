@@ -9,9 +9,6 @@ Nucore::Application.routes.draw do |map|
   map.logout_target '/', :controller => 'public', :action => 'index'
   map.switch_back '/switch_back', :controller => 'public', :action => 'switch_back'
 
-  # global settings
-  match 'global/affiliates' => 'global_settings#affiliates', :as => :affiliates
-
   # shared searches
   map.user_search_results '/user_search_results', :controller =>'search', :action => 'user_search_results', :conditions => { :method => :post }
 
@@ -28,6 +25,8 @@ Nucore::Application.routes.draw do |map|
     end
   end
 
+  # global settings
+  resources :affiliates, :except => [ :update, :show ]
 
   map.resources :facilities, :collection => {:list => :get}, :member => {:manage => :get}, :except => [:delete] do |facility|
     facility.resources :products, :only => [:index]

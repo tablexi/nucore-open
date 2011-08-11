@@ -11,9 +11,4 @@ class GlobalSettingsController < ApplicationController
     super
   end
 
-
-  def affiliates
-
-  end
-
 end
