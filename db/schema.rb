@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110810225150) do
+ActiveRecord::Schema.define(:version => 20110810232349) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -39,8 +39,11 @@ ActiveRecord::Schema.define(:version => 20110810225150) do
     t.datetime "suspended_at"
     t.text     "remittance_information"
     t.integer  "facility_id"
+    t.integer  "affiliate_id"
+    t.string   "affiliate_other"
   end
 
+  add_index "accounts", ["affiliate_id"], :name => "index_accounts_on_affiliate_id"
   add_index "accounts", ["facility_id"], :name => "fk_account_facility_id"
 
   create_table "affiliates", :force => true do |t|

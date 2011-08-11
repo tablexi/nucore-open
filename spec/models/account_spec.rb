@@ -18,6 +18,8 @@ describe Account do
     should validate_presence_of(:expires_at)
   end
 
+  it { should belong_to(:affiliate)}
+
   it 'should be expired' do
     owner   = Factory.create(:user)
     hash     = Hash[:user => owner, :created_by => owner, :user_role => 'Owner']
@@ -173,7 +175,7 @@ describe Account do
       @item.reload #load fresh facility with update attributes
       @po_account.validate_against_product(@item, @user).should_not == nil
 
-      @cc_account  = Factory.create(:credit_card_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
+      @cc_account=Factory.create(:credit_card_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
       @cc_account.validate_against_product(@item, @user).should == nil
       @facility.update_attributes(:accepts_cc => false)
       @item.reload #load fresh facility with update attributes
