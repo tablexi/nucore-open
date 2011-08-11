@@ -26,7 +26,7 @@ Nucore::Application.routes.draw do |map|
   end
 
   # global settings
-  resources :affiliates, :except => [ :update, :show ]
+  resources :affiliates, :except => :show
 
   map.resources :facilities, :collection => {:list => :get}, :member => {:manage => :get}, :except => [:delete] do |facility|
     facility.resources :products, :only => [:index]
