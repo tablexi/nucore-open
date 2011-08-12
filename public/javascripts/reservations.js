@@ -11,7 +11,7 @@ $(document).ready(function() {
         $.fullCalendar.formatDate(event.end,   'hh:mmTT')
       ].join('&mdash;') + '<br/>';
 
-      if (withDetails) {
+      if (typeof withDetails === 'undefined' || withDetails) {
         if (event.admin) {  // administrative reservation
           tooltip += 'Admin Reservation<br/>';
         } else {            // normal reservation
