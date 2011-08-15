@@ -1,7 +1,5 @@
-$(document).ready(function() {
-  $("#datepicker").datepicker({minDate:+0, maxDate:'+3y', dateFormat: 'mm/dd/yy'});
-  
-  function toggleInputs() {
+function toggleInputs()
+{
     var class_select = $("#class_type");
     var class_type   = class_select.val();
     class_select.closest("ul").find(":input").each(function() {
@@ -10,23 +8,36 @@ $(document).ready(function() {
         input.attr('disabled', false);
         input.closest("li").show();
         input.siblings(".instruction").each(function(){
-					if ($(this).hasClass(class_type)) {
-						$(this).show();
-					} else if (!$(this).hasClass('show_always')) {
-						$(this).hide();
-					}
-				});
+                    if ($(this).hasClass(class_type)) {
+                        $(this).show();
+                    } else if (!$(this).hasClass('show_always')) {
+                        $(this).hide();
+                    }
+                });
       } else if (!input.hasClass('show_always')) {
         input.attr('disabled', true);
         input.closest("li").hide();
         input.siblings(".instruction").hide();
       }
     });
-  }
-  
-  $("#class_type").change(function() {
+
+    if($('#affiliate').val() != 'Other')
+        $('#affiliate_other').hide();
+}
+
+$(function(){
+    $("#datepicker").datepicker({minDate:+0, maxDate:'+3y', dateFormat: 'mm/dd/yy'});
+
+    $("#class_type").change(function() {
+        toggleInputs();
+    });
+
+    $('#affiliate').change(function() {
+        if($(this).val() == 'Other')
+            $('#affiliate_other').show();
+        else
+            $('#affiliate_other').hide();
+    });
+
     toggleInputs();
-  });
-  
-  toggleInputs();
 });
