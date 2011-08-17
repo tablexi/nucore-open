@@ -222,4 +222,24 @@ describe Reservation do
       assert_equal @pp_long.reservation_window, @reservation.longest_reservation_window(groups)
     end
   end
+
+  context 'has_actuals?' do
+    before :each do
+      @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+                                                     :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                                     :duration_value => 60, :duration_unit => 'minutes')
+    end
+
+    it 'should not have actuals' do
+      @reservation.should_not be_has_actuals
+    end
+
+    it 'should have actuals' do
+      @reservation.actual_start_at=Time.zone.now
+      @reservation.actual_end_at=Time.zone.now
+      @reservation.should be_has_actuals
+    end
+
+  end
+
 end

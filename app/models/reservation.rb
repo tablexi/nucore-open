@@ -541,6 +541,10 @@ class Reservation < ActiveRecord::Base
     does_not_conflict_with_other_reservation?
   end
 
+  def has_actuals?
+    actual_start_at && actual_end_at
+  end
+
   protected
 
   def has_order_detail?

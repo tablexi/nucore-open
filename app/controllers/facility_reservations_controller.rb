@@ -51,19 +51,22 @@ class FacilityReservationsController < ApplicationController
 
     additional_notice = ''
     @reservation.set_all_split_times
-    if can_edit_reserve && @reservation.changes.any? { |k,v| k == 'reserve_start_at' || k == 'reserve_end_at' }
-      costs = @order_detail.price_policy.estimate_cost_and_subsidy(@reservation.reserve_start_at, @reservation.reserve_end_at)
-      if costs
-        @order_detail.estimated_cost    = costs[:cost]
-        @order_detail.estimated_subsidy = costs[:subsidy]
-        additional_notice = '  Order detail cost estimate has been updated as well.'
-      end
-    elsif can_edit_actuals && @reservation.changes.any? { |k,v| k == 'actual_start_at' || k == 'actual_end_at' }
-      costs = @order_detail.price_policy.calculate_cost_and_subsidy(@reservation)
-      if costs
-        @order_detail.actual_cost    = costs[:cost]
-        @order_detail.actual_subsidy = costs[:subsidy]
-        additional_notice = '  Order detail actual cost has been updated as well.'
+
+    if @order_detail.price_policy
+      if can_edit_reserve && @reservation.changes.any? { |k,v| k == 'reserve_start_at' || k == 'reserve_end_at' }
+        costs = @order_detail.price_policy.estimate_cost_and_subsidy(@reservation.reserve_start_at, @reservation.reserve_end_at)
+        if costs
+          @order_detail.estimated_cost    = costs[:cost]
+          @order_detail.estimated_subsidy = costs[:subsidy]
+          additional_notice = '  Order detail cost estimate has been updated as well.'
+        end
+      elsif can_edit_actuals && @reservation.changes.any? { |k,v| k == 'actual_start_at' || k == 'actual_end_at' }
+        costs = @order_detail.price_policy.calculate_cost_and_subsidy(@reservation)
+        if costs
+          @order_detail.actual_cost    = costs[:cost]
+          @order_detail.actual_subsidy = costs[:subsidy]
+          additional_notice = '  Order detail actual cost has been updated as well.'
+        end
       end
     end
 

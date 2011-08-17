@@ -28,8 +28,12 @@ class FacilityOrderDetailsController < ApplicationController
 
     if @in_open_journal
       flash.now[:notice]="You are unable to edit all aspects of this order because it is part of a pending journal. Please close the journal first."
-    elsif @order_detail.price_policy.nil? && @order_detail.order_status.name == 'Complete'
-      flash.now[:notice]="This order does not have a price policy assigned. Please ensure that there is a price policy for the date this order was fulfilled.  Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
+    elsif @order_detail.order_status.name == 'Complete'
+      if @order_detail.reservation && !@order_detail.reservation.has_actuals?
+        flash.now[:notice]="This order's reservation does not have an actual time. Please ensure that actual times are set and there is a price policy for the date this order was fulfilled. Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
+      elsif @order_detail.price_policy.nil?
+        flash.now[:notice]="This order does not have a price policy assigned. Please ensure that there is a price policy for the date this order was fulfilled. Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
+      end
     end
   end
 
