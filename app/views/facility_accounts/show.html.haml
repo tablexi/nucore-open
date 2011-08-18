@@ -30,9 +30,10 @@
     %li
       %label Expiration Date
       = human_datetime(@account.expires_at, :date_only => true)
-  %li
-    %label Bill To
-    = @account.remittance_information ? simple_format(h @account.remittance_information) : '<p>None Entered</p>'.html_safe
+  - unless @account.is_a?(NufsAccount)
+    %li
+      %label Bill To
+      = @account.remittance_information ? simple_format(h @account.remittance_information) : '<p>None Entered</p>'.html_safe
 %ul.horiz
   %li
     = link_to 'Edit', edit_facility_account_path(current_facility, @account), :class => 'btn'

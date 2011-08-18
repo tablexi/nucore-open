@@ -29,7 +29,8 @@
       %p.instruction.CreditCardAccount No part of a credit card number may be entered. Enter a text description to help you and the user identify this card. For example: "Dr. Smith's Visa Card".
     = f.text_field :description, :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
 
-  %li
-    = f.label :remittance_information, 'Bill To'
-    %p.instruction.CreditCardAccount.PurchaseOrderAccount Where the invoice should be sent to for this payment source; this text will appear on the customer's invoice.
-    = f.text_area :remittance_information, :cols => 92, :rows => 6, :class => 'CreditCardAccount PurchaseOrderAccount'
+  - unless @account.is_a?(NufsAccount)
+    %li
+      = f.label :remittance_information, 'Bill To'
+      %p.instruction.CreditCardAccount.PurchaseOrderAccount Where the invoice should be sent to for this payment source; this text will appear on the customer's invoice.
+      = f.text_area :remittance_information, :cols => 92, :rows => 6, :class => 'CreditCardAccount PurchaseOrderAccount'
