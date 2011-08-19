@@ -412,7 +412,7 @@ class OrderDetail < ActiveRecord::Base
   #   B) Has a reservation with missing usage information
   # the method will return true, otherwise false
   def problem_order?
-    complete? && (price_policy.nil? || (reservation && (reservation.actual_start_at.nil? || reservation.actual_end_at.nil?)))
+    complete? && (price_policy.nil? || (reservation && !reservation.has_actuals?))
   end
 
 

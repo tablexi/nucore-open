@@ -4,12 +4,20 @@
 class Surveyor < UrlService
 
   def edit_url(receiver)
-    "#{receiver.external_service_receiver.response_data}/take"
+    receiver.external_service_receiver.response_data + '/take'
   end
 
 
   def new_url(receiver)
-    "#{location}?receiver_id=#{receiver.id}&product_id=#{receiver.product.url_name}&survey_id=#{id}&facility_id=#{receiver.product.facility.url_name}"
+    params={
+        :receiver_id => receiver.id,
+        :product_id => receiver.product.url_name,
+        :survey_id => id,
+        :facility_id => receiver.product.facility.url_name,
+        :redirect_host => Rails.configuration.surveyor_redirects_to
+    }
+
+    location + '?' + params.to_a.collect{|pair| "#{pair[0]}=#{pair[1]}"}.join('&')
   end
 
 end

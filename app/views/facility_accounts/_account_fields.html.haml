@@ -40,7 +40,8 @@
       = f.label :affiliate_other, 'Affiliate Name', :class => 'require'
       = f.text_field :affiliate_other, :class => 'CreditCardAccount PurchaseOrderAccount'
 
-  %li
-    = f.label :remittance_information, 'Bill To'
-    %p.instruction.CreditCardAccount.PurchaseOrderAccount Where the invoice should be sent to for this payment source; this text will appear on the customer's invoice.
-    = f.text_area :remittance_information, :cols => 92, :rows => 6, :class => 'CreditCardAccount PurchaseOrderAccount'
+  - unless @account.is_a?(NufsAccount)
+    %li
+      = f.label :remittance_information, 'Bill To'
+      %p.instruction.CreditCardAccount.PurchaseOrderAccount Where the invoice should be sent to for this payment source; this text will appear on the customer's invoice.
+      = f.text_area :remittance_information, :cols => 92, :rows => 6, :class => 'CreditCardAccount PurchaseOrderAccount'

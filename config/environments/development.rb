@@ -24,6 +24,9 @@ Nucore::Application.configure do
 
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
+
+  # Where a surveyor external service redirects to when a survey is completed
+  config.surveyor_redirects_to='http://0.0.0.0:3000'
 end
 
 # What's this for?
