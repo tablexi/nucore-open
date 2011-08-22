@@ -12,7 +12,7 @@
   %tr
     %th
     %th{:width => '100%'} Affiliates
-  - Affiliate.all.each_with_index do |affiliate|
+  - Affiliate.all.each do |affiliate|
   - next unless affiliate.destroyable?
     %tr
       %td= link_to('Remove', affiliate_path(affiliate), :confirm => "Really remove affiliate #{affiliate.name}?", :method => :delete)
