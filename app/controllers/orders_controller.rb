@@ -236,6 +236,6 @@ class OrdersController < ApplicationController
         notices << "You have an upcoming reservation for #{res}."
       end
     end
-    flash.now[:notice] = notices.join('<br />') unless notices.empty?
+    flash.now[:notice] = notices.join('<br />').html_safe unless notices.empty?
   end
 end
