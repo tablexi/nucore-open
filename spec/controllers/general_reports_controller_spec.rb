@@ -1,6 +1,6 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
-describe ReportsController do
+describe GeneralReportsController do
   include DateHelper
 
   render_views
@@ -30,7 +30,7 @@ describe ReportsController do
       end
 
       it_should_allow_managers_only :redirect do
-        assert_redirected_to product_facility_reports_path
+        assert_redirected_to product_facility_general_reports_path
       end
     end
 
@@ -91,26 +91,6 @@ describe ReportsController do
         end
       end
     end
-  end
-
-
-  context 'old reports' do
-
-    before :each do
-      @method=:get
-    end
-
-
-    context 'instrument_utilization' do
-
-      before :each do
-        @action=:instrument_utilization
-      end
-
-      it_should_allow_managers_only
-
-    end
-
   end
 
 

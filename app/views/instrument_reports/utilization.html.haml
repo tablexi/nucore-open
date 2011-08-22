@@ -1,11 +1,11 @@
 = content_for :head_content do
-  = render :partial => 'report_head'
+  = render :partial => 'general_reports/report_head'
 
 = content_for :h1 do
   =h current_facility
 
 %h2 Instrument Utilization Report
-= form_tag instrument_utilization_facility_reports_path(current_facility, :format => 'csv') do
+= form_tag utilization_facility_instrument_reports_path(current_facility, :format => 'csv') do
   %p.instructions This report shows instrument utilization for the date range specified.
   %ul.form
     %li
