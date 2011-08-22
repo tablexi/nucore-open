@@ -86,7 +86,7 @@ class ReportsController < ApplicationController
       @date_start=parse_usa_date(params[:date_start])
     end
          
-    if params[:date_start].blank?
+    if params[:date_end].blank?
       @date_end=@date_start + 42.days
       @date_end=Date.new(@date_end.year, @date_end.month) - 1.day
     else
