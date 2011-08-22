@@ -1,0 +1,23 @@
+= content_for :h1 do
+  Global Settings
+= content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_global', :locals => { :sidenav_tab => 'affiliates' }
+
+%h2 Affiliates
+
+%ul.horiz
+  %li= link_to 'Add Affiliate', new_affiliate_path
+
+%table
+  %tr
+    %th
+    %th{:width => '100%'} Affiliates
+  - Affiliate.all.each_with_index do |affiliate|
+  - next unless affiliate.destroyable?
+    %tr
+      %td= link_to('Remove', affiliate_path(affiliate), :confirm => "Really remove affiliate #{affiliate.name}?", :method => :delete)
+      %td.indented_lots
+        = affiliate.name
+        %span.indented== (#{link_to('Edit', edit_affiliate_url(affiliate))})
+
+

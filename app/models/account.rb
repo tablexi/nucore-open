@@ -6,6 +6,7 @@ class Account < ActiveRecord::Base
   has_many   :order_details
   has_many   :statements, :through => :order_details
   belongs_to :facility
+  belongs_to :affiliate
   accepts_nested_attributes_for :account_users
 
   scope :active, lambda {{ :conditions => ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] }}
@@ -123,16 +124,16 @@ class Account < ActiveRecord::Base
   end
 
   def update_order_details_with_statement (statement)
-    details=order_details.find(:all, :joins => :order, :readonly => false, :conditions => [
-        'orders.facility_id = ? AND order_details.reviewed_at < ? AND order_details.statement_id IS NULL', statement.facility.id, Time.zone.now ]
-    )
-    details.each do |od|
-      od.update_attributes({:reviewed_at => Time.zone.now+7.days, :statement => statement })
-    end
+    details=order_details.joins(:order).
+                          where('orders.facility_id = ? AND order_details.reviewed_at < ? AND order_details.statement_id IS NULL', statement.facility.id, Time.zone.now).
+                          readonly(false).
+                          all
+
+    details.each {|od| od.update_attributes({:reviewed_at => Time.zone.now+7.days, :statement => statement }) }
   end
 
   def can_be_used_by?(user)
-    !(account_users.find(:first, :conditions => ['user_id = ? AND deleted_at IS NULL', user.id]).nil?)
+    !account_users.where('user_id = ? AND deleted_at IS NULL', user.id).first.nil?
   end
 
   def is_active?

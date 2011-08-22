@@ -41,6 +41,12 @@ class FacilityAccountsController < ApplicationController
   def update
     @account     = Account.find(params[:id])
     class_params = params[:account] || params[:credit_card_account] || params[:purchase_order_account] || params[:nufs_account]
+
+    if @account.is_a?(AffiliateAccount)
+      class_params[:affiliate]=Affiliate.find_by_name(class_params[:affiliate])
+      class_params[:affiliate_other]=nil if class_params[:affiliate] != Affiliate::OTHER
+    end
+
     if @account.update_attributes(class_params)
       flash[:notice] = 'The payment source was successfully updated.'
       redirect_to facility_account_url
@@ -52,20 +58,28 @@ class FacilityAccountsController < ApplicationController
   # POST /facilities/:facility_id/accounts
   def create
     class_params        = params[:account] || params[:credit_card_account] || params[:purchase_order_account] || params[:nufs_account]
+    acct_class=Class.const_get(params[:class_type])
+
+    if acct_class.included_modules.include?(AffiliateAccount)
+      class_params[:affiliate]=Affiliate.find_by_name(class_params[:affiliate])
+      class_params[:affiliate_other]=nil if class_params[:affiliate] != Affiliate::OTHER
+    end
+
     @owner_user         = User.find(params[:owner_user_id])
-    @account            = Class.const_get(params[:class_type]).new(class_params)
+    @account            = acct_class.new(class_params)
     @account.created_by = session_user.id
     @account.account_users_attributes = [{:user_id => params[:owner_user_id], :user_role => 'Owner', :created_by => session_user.id }]
 
-    case @account.class.name
-      when 'PurchaseOrderAccount'
+    case @account
+      when PurchaseOrderAccount
+        @account.expires_at=parse_usa_date(class_params[:expires_at])
         @account.facility_id = current_facility.id
-      when 'CreditCardAccount'
+      when CreditCardAccount
         begin
           @account.expires_at = Date.civil(class_params[:expiration_year].to_i, class_params[:expiration_month].to_i, -1)
         rescue Exception => e
         end
-      when 'NufsAccount'
+      when NufsAccount
         # set temporary expiration to be updated later
         @account.valid? # populate virtual charstring attributes required by set_expires_at
         @account.errors.clear

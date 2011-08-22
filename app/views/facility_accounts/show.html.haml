@@ -30,6 +30,14 @@
     %li
       %label Expiration Date
       = human_datetime(@account.expires_at, :date_only => true)
+
+  - if @account.affiliate
+    %li
+      %label Affiliate
+      - affiliate_name=@account.affiliate.name
+      - affiliate_name += " (#{@account.affiliate_other})" if @account.affiliate == Affiliate::OTHER
+      = affiliate_name
+
   - unless @account.is_a?(NufsAccount)
     %li
       %label Bill To

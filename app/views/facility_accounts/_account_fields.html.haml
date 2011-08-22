@@ -29,6 +29,17 @@
       %p.instruction.CreditCardAccount No part of a credit card number may be entered. Enter a text description to help you and the user identify this card. For example: "Dr. Smith's Visa Card".
     = f.text_field :description, :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
 
+  - if @account.class == Account || @account.is_a?(AffiliateAccount)
+    - opts={}
+    - opts.merge!(:selected => @account.affiliate.try(:name)) if @account
+    %li
+      = f.label :affiliate, nil, :class => 'require'
+      = f.select :affiliate, Affiliate.all.collect(&:name).sort, opts, :id => 'affiliate', :class => 'CreditCardAccount PurchaseOrderAccount'
+
+    %li#affiliate_other
+      = f.label :affiliate_other, 'Affiliate Name', :class => 'require'
+      = f.text_field :affiliate_other, :class => 'CreditCardAccount PurchaseOrderAccount'
+
   - unless @account.is_a?(NufsAccount)
     %li
       = f.label :remittance_information, 'Bill To'

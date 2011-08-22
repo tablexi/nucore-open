@@ -119,8 +119,61 @@ describe FacilityAccountsController do
 
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
+      assigns(:account).affiliate.should be_nil
+      assigns(:account).affiliate_other.should be_nil
       should set_the_flash
       assert_redirected_to facility_account_url
+    end
+
+    context 'with affiliate' do
+
+      before :each do
+        user=Factory.create(:user)
+
+        owner={
+          :user => user,
+          :created_by => user,
+          :user_role => 'Owner'
+        }
+
+        account_attrs={
+          :created_by => user,
+          :account_users_attributes => [owner],
+        }
+
+        @account=Factory.create(:purchase_order_account, account_attrs)
+
+        @params[:id]=@account.id
+        @params[:class_type]='PurchaseOrderAccount'
+        @params[:account]=@account.attributes
+        @params[:account][:affiliate]=Affiliate::OTHER.name
+        @params[:account][:affiliate_other]='Jesus Charisma'
+      end
+
+      it_should_allow :director, 'to change affiliate to other' do
+        assigns(:account).should == @account
+        assigns(:account).affiliate.should == Affiliate::OTHER
+        assigns(:account).affiliate_other.should == @params[:account][:affiliate_other]
+        should set_the_flash
+        assert_redirected_to facility_account_url
+      end
+
+      context 'not other' do
+
+        before :each do
+          @affiliate=Affiliate.create!(:name => 'Rod Blagojevich')
+          @params[:account][:affiliate]=@affiliate.name
+        end
+
+        it_should_allow :director do
+          assigns(:account).should == @account
+          assigns(:account).affiliate.should == @affiliate
+          assigns(:account).affiliate_other.should be_nil
+          should set_the_flash
+          assert_redirected_to facility_account_url
+        end
+
+      end
     end
 
   end
@@ -151,6 +204,8 @@ describe FacilityAccountsController do
       assigns(:account).created_by.should == user.id
       assigns(:account).account_users.size.should == 1
       assigns(:account).account_users[0] == @owner
+      assigns(:account).affiliate.should be_nil
+      assigns(:account).affiliate_other.should be_nil
       # saving with NufsAccount will fail because expires_at will never
       # be set. That's because the nucs tables aren't mocked. We're not
       # testing nucs here so take the opportunity to test save fails handling
@@ -163,11 +218,15 @@ describe FacilityAccountsController do
       before :each do
         @params[:class_type]='PurchaseOrderAccount'
         @acct_attrs=Factory.attributes_for(:purchase_order_account)
+        @acct_attrs[:affiliate]=@acct_attrs[:affiliate].name
         @params[:account]=@acct_attrs
       end
 
       it_should_allow :director do
         assigns(:account).facility_id.should == @authable.id
+        assigns(:account).should be_kind_of PurchaseOrderAccount
+        assigns(:account).affiliate.name.should == @acct_attrs[:affiliate]
+        assigns(:account).affiliate_other.should be_nil
         should set_the_flash
         assert_redirected_to user_accounts_url(@authable, @owner)
       end

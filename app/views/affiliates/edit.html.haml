@@ -1,0 +1,16 @@
+= content_for :h1 do
+  Global Settings
+= content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_global', :locals => { :sidenav_tab => 'affiliates' }
+
+%h2 Edit Affiliates
+
+= form_for(@affiliate, :url => affiliate_path, :method => 'put') do |f|
+  = f.error_messages
+  %ul.form
+    %li
+      = f.label :name, 'Name', :class => 'required'
+      = f.text_field :name
+  %ul.horiz
+    %li= f.submit 'Save', :class => 'btn'
+    %li= link_to 'Cancel', affiliates_path
