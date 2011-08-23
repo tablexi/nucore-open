@@ -1,9 +1,5 @@
 class GeneralReportsController < ReportsController
 
-  def index
-    redirect_to product_facility_general_reports_path
-  end
-
 
   def product
     render_report(0, 'Name') {|od| od.product.name }
@@ -98,35 +94,6 @@ class GeneralReportsController < ReportsController
     @rows=WillPaginate::Collection.create(page, page_size) do |pager|       
       pager.replace rows[ pager.offset, pager.per_page ]
       pager.total_entries=rows.size unless pager.total_entries
-    end
-  end
-
-
-  def render_report(tab_index, report_on_label, &report_on)
-    @selected_index=tab_index
-
-    respond_to do |format|
-      format.js do
-        init_report(report_on_label, &report_on)
-        render :action => 'general_report_table'
-      end
-
-      format.html { render :action => 'general_report' }
-
-      format.csv do
-        export_type=params[:export_id]             
-        
-        case export_type
-          when nil, '' 
-            raise 'Export type not found'
-          when 'general_report'
-            init_report(report_on_label, &report_on)
-          when 'general_report_data'
-            init_report_data(report_on_label, &report_on)
-        end
-        
-        render_csv("#{action_name}_#{export_type}", export_type)
-      end
     end
   end
   

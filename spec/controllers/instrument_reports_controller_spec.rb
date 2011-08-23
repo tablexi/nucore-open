@@ -17,22 +17,50 @@ describe InstrumentReportsController do
   end
 
 
-  context 'old reports' do
+  context 'instrument' do
 
     before :each do
       @method=:get
+      @action=:instrument
     end
 
+    it_should_allow_managers_only
 
-    context 'utilization' do
+  end
 
-      before :each do
-        @action=:utilization
-      end
 
-      it_should_allow_managers_only
+  context 'account' do
 
+    before :each do
+      @method=:get
+      @action=:account
     end
+
+    it_should_allow_managers_only
+
+  end
+
+
+  context 'account_owner' do
+
+    before :each do
+      @method=:get
+      @action=:account_owner
+    end
+
+    it_should_allow_managers_only
+
+  end
+
+
+  context 'purchaser' do
+
+    before :each do
+      @method=:get
+      @action=:purchaser
+    end
+
+    it_should_allow_managers_only
 
   end
 

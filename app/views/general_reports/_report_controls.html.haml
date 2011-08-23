@@ -1,0 +1,6 @@
+%li
+  %label Order Status
+  %select{ :name => "status_filter", :class => 'sync_select', :id => 'status_filter' }
+    = options_for_select([['All', '-1']])
+    - OrderStatus.non_protected_statuses(current_facility).each do |os|
+      = options_for_select([[os.name_with_level, os.id]], @selected_status_id)

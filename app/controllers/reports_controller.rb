@@ -33,6 +33,45 @@ class ReportsController < ApplicationController
   end
 
 
+  def init_report(report_on_label, &report_on)
+    raise 'Subclass must implement!'
+  end
+
+
+  def init_report_data(report_on_label, &report_on)
+    raise 'Subclass must implement!'
+  end
+
+
+  def render_report(tab_index, report_on_label, &report_on)
+    @selected_index=tab_index
+
+    respond_to do |format|
+      format.js do
+        init_report(report_on_label, &report_on)
+        render :template => 'reports/report_table'
+      end
+
+      format.html { render :template => 'reports/report' }
+
+      format.csv do
+        export_type=params[:export_id]
+
+        case export_type
+          when nil, ''
+            raise 'Export type not found'
+          when 'report'
+            init_report(report_on_label, &report_on)
+          when 'report_data'
+            init_report_data(report_on_label, &report_on)
+        end
+
+        render_csv("#{action_name}_#{export_type}", export_type)
+      end
+    end
+  end
+
+
   def render_report_download(report_prefix)
     @reportables = yield
 
@@ -58,9 +97,7 @@ class ReportsController < ApplicationController
       headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
     end
 
-    render_with={ :layout => false}
-    render_with.merge!(:action => action) if action
-    render render_with
+    render :template => "reports/#{action ? action : action_name}", :layout => false
   end
 
 end

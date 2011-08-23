@@ -24,17 +24,6 @@ describe GeneralReportsController do
     end
 
 
-    context 'index' do
-      before :each do
-        @action=:index
-      end
-
-      it_should_allow_managers_only :redirect do
-        assert_redirected_to product_facility_general_reports_path
-      end
-    end
-
-
     [
       { :action => :product, :index => 0, :report_on_label => 'Name', :report_on => Proc.new{|od| od.product.name} },
       { :action => :account, :index => 1, :report_on_label => 'Number', :report_on => Proc.new{|od| od.account.account_number} },
@@ -72,7 +61,7 @@ describe GeneralReportsController do
 
         context 'export' do
           before :each do
-            @params.merge!(:format => :csv, :export_id => 'general_report')
+            @params.merge!(:format => :csv, :export_id => 'report')
           end
 
           it_should_allow :director do
@@ -81,7 +70,7 @@ describe GeneralReportsController do
 
           context 'export data' do
             before :each do
-              @params[:export_id]='general_report_data'
+              @params[:export_id]='report_data'
             end
 
             it_should_allow :director do
@@ -191,17 +180,17 @@ describe GeneralReportsController do
 
     case format
       when :html
-        should render_template 'general_report'
+        should render_template 'reports/report'
       when :js
         assert_general_report_init label, &report_on
-        should render_template 'general_report_table'
+        should render_template 'reports/report_table'
       when :csv
         export_type=@params[:export_id]
 
         case export_type
-          when 'general_report'
+          when 'report'
             assert_general_report_init label, &report_on
-          when 'general_report_data'
+          when 'report_data'
             assert_general_report_data_init label
         end
 
