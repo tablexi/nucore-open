@@ -86,8 +86,8 @@ class FacilityReservationsController < ApplicationController
   
   # GET /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/reservations/:id
   def show
-    @order        = current_facility.orders.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:order_detail_id])
+    @order        = Order.find(params[:order_id])
+    @order_detail = OrderDetail.find(params[:order_detail_id])
     @reservation  = @order_detail.reservation
     @instrument   = @order_detail.product
   end
