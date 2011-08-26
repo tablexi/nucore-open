@@ -8,6 +8,8 @@ describe Reservation do
     # add rule, available every day from 12 am to 5 pm, 60 minutes duration
     @rule             = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17))
   end
+
+  it { should validate_uniqueness_of :order_detail }
   
   context "create using virtual attributes" do
     it "should create using date, integer values" do
