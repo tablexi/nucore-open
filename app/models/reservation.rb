@@ -6,6 +6,7 @@ class Reservation < ActiveRecord::Base
   belongs_to :instrument
   belongs_to :order_detail
 
+  validates_uniqueness_of :order_detail_id
   validates_presence_of :instrument_id, :reserve_start_at, :reserve_end_at
   validate :does_not_conflict_with_other_reservation, :satisfies_minimum_length, :satisfies_maximum_length, :instrument_is_available_to_reserve, :in_the_future, :if => :reserve_start_at && :reserve_end_at && :reservation_changed?
 
@@ -124,7 +125,7 @@ class Reservation < ActiveRecord::Base
                                               (reserve_start_at <= ? AND reserve_end_at > ?) OR
                                               (reserve_start_at < ? AND reserve_end_at >= ?) OR
                                               (reserve_start_at = ? AND reserve_end_at = ?))",
-      id||0, order_id, tstart_at, tend_at, tstart_at, tend_at, tstart_at, tstart_at, tend_at, tend_at, tstart_at, tend_at],
+      id||0, order_id, tstart_at, tend_at, tstart_at, tend_at, tstart_at, tend_at, tstart_at, tend_at, tstart_at, tend_at],
       :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id'])
     res.nil? ? true : false
   end
