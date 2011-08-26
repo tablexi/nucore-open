@@ -118,14 +118,14 @@ class Reservation < ActiveRecord::Base
     tend_at   = Time.zone.parse(reserve_end_at.to_s)
     order_id  = order_detail.nil? ? 0 : order_detail.order_id
     res = Reservation.first(:conditions => ["reservations.id <> ? AND
-                                             reservations.canceled_at IS NULL AND
+                                             reservations.canceled_at IS NULL AND reservations.actual_end_at IS NULL AND
                                              (orders.state = 'purchased' OR orders.state IS NULL OR orders.id = ?) AND
                                              ((reserve_start_at <= ? AND reserve_end_at >= ?) OR
                                               (reserve_start_at >= ? AND reserve_end_at <= ?) OR
                                               (reserve_start_at <= ? AND reserve_end_at > ?) OR
                                               (reserve_start_at < ? AND reserve_end_at >= ?) OR
                                               (reserve_start_at = ? AND reserve_end_at = ?))",
-      id||0, order_id, tstart_at, tend_at, tstart_at, tend_at, tstart_at, tend_at, tstart_at, tend_at, tstart_at, tend_at],
+      id||0, order_id, tstart_at, tend_at, tstart_at, tend_at, tstart_at, tstart_at, tend_at, tend_at, tstart_at, tend_at],
       :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id'])
     res.nil? ? true : false
   end
