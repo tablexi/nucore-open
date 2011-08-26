@@ -178,7 +178,7 @@ class FacilityAccountsController < ApplicationController
         action += '_list'
         @statements = Statement.find(:all, :conditions => {:facility_id => current_facility.id, :account_id => @account}, :order => 'created_at DESC').paginate(:page => params[:page])
       when 'recent'
-        @order_details = @account.order_details.for_facility(@facility)
+        @order_details = @account.order_details.for_facility(@facility).delete_if{|od| od.order.state != 'purchased'}
         @order_details = @order_details.paginate(:page => params[:page])
       else
         prawnto :prawn => {
