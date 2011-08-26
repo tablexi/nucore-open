@@ -66,7 +66,7 @@ class ReservationsController < ApplicationController
     @order_detail = @order.order_details.find(params[:order_detail_id])
     @instrument   = @order_detail.product
     raise ActiveRecord::RecordNotFound unless @order_detail.reservation.nil?
-    @reservation  = @instrument.next_available_reservation || Reservation.new(:duration_value => (@instrument.min_reserve_mins.to_i < 15 ? 15 : @instrument.min_reserve_mins), :duration_unit => 'minutes')
+    @reservation  = @instrument.next_available_reservation || Reservation.new(:instrument => @instrument, :duration_value => (@instrument.min_reserve_mins.to_i < 15 ? 15 : @instrument.min_reserve_mins), :duration_unit => 'minutes')
 
     groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
     @max_window = @reservation.longest_reservation_window(groups)
