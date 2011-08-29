@@ -13,7 +13,7 @@
 - else
   = form_tag(purchase_orders_facility_accounts_path, :method => :get) do
     %p
-      = select_tag :selected_account, @accounts.collect{|a| "<option value=\"#{a.id}\"#{a == @selected ? ' selected="selected"' : ''}>#{a.to_s}</option>" }.join('')
+      = select_tag :selected_account, @accounts.collect{|a| "<option value=\"#{a.id}\"#{a == @selected ? ' selected="selected"' : ''}>#{a.to_s}</option>" }.join('').html_safe
 
   - if @selected.owner_user
     %h3= "Owner: #{@selected.owner_user.full_name}"
