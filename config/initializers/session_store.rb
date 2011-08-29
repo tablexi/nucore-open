@@ -1,6 +1,6 @@
 # Be sure to restart your server when you modify this file.
 
-Nucore::Application.config.session_store :cookie_store, :key => '_nucore-open_session'
+Nucore::Application.config.session_store :cookie_store, :key => '_nucore_session'
 
 # Use the database for sessions instead of the cookie-based default,
 # which shouldn't be used to store highly confidential information
