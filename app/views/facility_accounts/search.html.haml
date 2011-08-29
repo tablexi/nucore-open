@@ -7,15 +7,15 @@
 = content_for :h1 do
   =h current_facility
 
-%fieldset
-  = form_tag user_search_results_url, :id => 'ajax_form' do
-    = label_tag :search_term, 'Search by payment method number or description'
-    %br
-    = text_field_tag :search_term, nil, :size => 30
-    - # this action is not yet implemented
-    = submit_tag "Search", :class => 'btn', :disabled => 'disabled'
-    = hidden_field_tag :facility_id, current_facility.id
-    = hidden_field_tag :search_type, 'account'
-    = hidden_field_tag :create_link, 'false'
-%br
-#result
+-#%fieldset
+-#  = form_tag user_search_results_url, :id => 'ajax_form' do
+-#    = label_tag :search_term, 'Search by payment method number or description'
+-#    %br
+-#    = text_field_tag :search_term, nil, :size => 30
+-#    - # this action is not yet implemented
+-#    = submit_tag "Search", :class => 'btn'
+-#    = hidden_field_tag :facility_id, current_facility.id
+-#    = hidden_field_tag :search_type, 'account'
+-#    = hidden_field_tag :create_link, 'false'
+-#%br
+-##result
