@@ -1,5 +1,8 @@
+require 'socket'
+
 class Notifier < ActionMailer::Base
   default :from => FROM_EMAIL, :content_type => 'multipart/alternative'
+  default_url_options[:host] = Socket.gethostname
 
   # Welcome user, login credentials.  CC to PI and Department Admin.
   # Who created the account.  How to update.
@@ -20,9 +23,11 @@ class Notifier < ActionMailer::Base
 
   # Changes to the user affecting the PI or department will alert their
   # PI, the Dept Admins, and Lab Manager.
-  def user_update(user)
-    @user=user
-    send_nucore_mail args[:user].email, 'NU Core User Updated'     
+  def user_update(args)
+    @user=args[:user]
+    @account=args[:account]
+    @created_by=args[:created_by]
+    send_nucore_mail @account.owner.user.email, 'NU Core User Updated'
   end
 
   # Any changes to the financial accounts will alert the PI(s), admin(s)
