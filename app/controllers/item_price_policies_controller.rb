@@ -41,8 +41,8 @@ class ItemPricePoliciesController < PricePoliciesController
       price_policy = ItemPricePolicy.new(pp_param.reject {|k,v| k == 'restrict_purchase' })
       price_policy.price_group       = price_group
       price_policy.item              = @item
-      price_policy.start_date        = Time.zone.parse(@start_date)
-      price_policy.expire_date = Time.zone.parse(@expire_date)
+      price_policy.start_date        = parse_usa_date(@start_date)
+      price_policy.expire_date = parse_usa_date(@expire_date)
       price_policy.restrict_purchase = pp_param['restrict_purchase'] && pp_param['restrict_purchase'] == 'true' ? true : false
       price_policy
     end

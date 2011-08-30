@@ -1,4 +1,6 @@
 class PricePoliciesController < ApplicationController
+  include DateHelper
+
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
