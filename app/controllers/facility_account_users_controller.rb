@@ -42,6 +42,7 @@ class FacilityAccountUsersController < ApplicationController
 
     if @account_user.save
       flash[:notice] = "#{@user.full_name} was added to the #{@account.type_string} Account"
+      Notifier.user_update(:account => @account, :user => @user, :created_by => session_user).deliver
       redirect_to facility_account_members_path(current_facility, @account)
     else
       flash.now[:error] = "An error was encountered while trying to add #{@user.full_name} to the #{@account.type_string} Account"

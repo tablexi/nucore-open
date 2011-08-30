@@ -1,0 +1,6 @@
+%p
+  == The following user #{@user.to_s} has been added to your payment source #{@account.to_s} by administrator #{@created_by.to_s}.
+  == If this is incorrect you may log in to NU Core at
+  %a{:href => new_user_session_url}
+    = new_user_session_url
+  == and remove this user or contact the administrator named above.
