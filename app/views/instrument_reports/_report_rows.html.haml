@@ -1,0 +1,15 @@
+- @rows.each do |row|
+  %tr
+    - row.each_with_index do |col, i|
+      %td{:class => i > 0 ? 'currency' : ''}= (i == 2 || i == 4)  ? (col / 60).round(2) : (i == 3 || i == 5) ? number_to_percentage(col, :precision => 0) : col
+
+- if @rows.size > 1
+  %tr
+    %td.bold Total
+    - if @headers.size > 6
+      %td
+    %td.currency.bold= @totals[0]
+    %td.currency.bold= @totals[1] / 60
+    %td.currency.bold 100%
+    %td.currency.bold= @totals[2] / 60
+    %td.currency.bold 100%

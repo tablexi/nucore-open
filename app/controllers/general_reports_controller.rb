@@ -7,7 +7,7 @@ class GeneralReportsController < ReportsController
 
 
   def account
-    render_report(1, 'Number') {|od| od.account.account_number }
+    render_report(1, 'Description') {|od| od.account.to_s }
   end
 
 
@@ -87,14 +87,7 @@ class GeneralReportsController < ReportsController
     end
 
     rows.sort! {|a,b| a.first <=> b.first}
-    page_size=25
-    page=params[:page].blank? || rows.size < page_size ? 1 : params[:page].to_i    
-    #page=1 if (rows.size / page_size).to_i < page
-        
-    @rows=WillPaginate::Collection.create(page, page_size) do |pager|       
-      pager.replace rows[ pager.offset, pager.per_page ]
-      pager.total_entries=rows.size unless pager.total_entries
-    end
+    page_report(rows)
   end
   
   

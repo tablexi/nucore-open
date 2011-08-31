@@ -43,6 +43,18 @@ class ReportsController < ApplicationController
   end
 
 
+  def page_report(rows)
+    page_size=25
+    page=params[:page].blank? || rows.size < page_size ? 1 : params[:page].to_i
+    #page=1 if (rows.size / page_size).to_i < page
+
+    @rows=WillPaginate::Collection.create(page, page_size) do |pager|
+      pager.replace rows[ pager.offset, pager.per_page ]
+      pager.total_entries=rows.size unless pager.total_entries
+    end
+  end
+
+
   def render_report(tab_index, report_on_label, &report_on)
     @selected_index=tab_index
 

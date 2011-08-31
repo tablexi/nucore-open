@@ -333,6 +333,16 @@ class Reservation < ActiveRecord::Base
     end
   end
 
+  def actual_duration_mins
+    if @actual_duration_mins
+      @actual_duration_mins.to_i
+    elsif actual_end_at && actual_start_at
+      @actual_duration_mins = (actual_end_at - actual_start_at) / 60
+    else
+      @duration_mins = 0
+    end
+  end
+
   def actual_start_date
     case
     when @actual_start_date
