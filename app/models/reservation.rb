@@ -308,6 +308,8 @@ class Reservation < ActiveRecord::Base
   end
 
   def duration_value
+    return nil unless reserve_end_at && reserve_start_at
+
     if !@duration_value
       # default to minutes
       @duration_value = (reserve_end_at - reserve_start_at) / 60
@@ -509,6 +511,8 @@ class Reservation < ActiveRecord::Base
   end
 
   def to_s
+    return super unless reserve_start_at && reserve_end_at
+
     if reserve_start_at.day == reserve_end_at.day
       str = "#{reserve_start_at.strftime("%a, %m/%d/%Y %l:%M %p")} - #{reserve_end_at.strftime("%l:%M %p")}"
     else
