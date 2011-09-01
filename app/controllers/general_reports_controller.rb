@@ -61,8 +61,6 @@ class GeneralReportsController < ReportsController
   
   
   def init_report_data(report_on_label, &report_on)
-    @report_on=report_on
-    init_report_headers report_on_label
     @total_cost, @report_data=0.0, report_data.all       
     @report_data.each {|od| @total_cost += od.total }    
   end

@@ -1,4 +1,6 @@
 class ReportsController < ApplicationController
+  include ReportsHelper
+
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -75,6 +77,8 @@ class ReportsController < ApplicationController
           when 'report'
             init_report(report_on_label, &report_on)
           when 'report_data'
+            @report_on=report_on
+            init_report_headers report_on_label
             init_report_data(report_on_label, &report_on)
         end
 
@@ -110,11 +114,6 @@ class ReportsController < ApplicationController
     end
 
     render :template => "reports/#{action ? action : action_name}", :layout => false
-  end
-
-
-  def to_percent(decimal)
-    (decimal * 100).round
   end
 
 end
