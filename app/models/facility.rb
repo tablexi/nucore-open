@@ -40,6 +40,18 @@ class Facility < ActiveRecord::Base
     name.casecmp obj.name
   end
 
+  def is_active=(state)
+    # checkbox inputs on forms pass number strings.
+    # conveniently handle here
+    if state == '1'
+      state=true
+    elsif state == '0'
+      state=false
+    end
+
+    self[:is_active]=state
+  end
+
   def description
     self[:description].html_safe if self[:description]
   end
