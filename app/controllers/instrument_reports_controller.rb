@@ -48,18 +48,20 @@ class InstrumentReportsController < ReportsController
       @totals[0] += 1
 
       # total reserved minutes of reservations
-      sums[key][1] += res.duration_mins
-      @totals[1] += res.duration_mins
+      reserved_hours=to_hours(res.duration_mins)
+      sums[key][1] += reserved_hours
+      @totals[1] += reserved_hours
 
       # total actual minutes of reservations
-      sums[key][2] += res.actual_duration_mins
-      @totals[2] += res.actual_duration_mins
+      actual_hours=to_hours(res.actual_duration_mins)
+      sums[key][2] += actual_hours
+      @totals[2] += actual_hours
     end
 
     sums.each do |k,v|
-      frac_reserved=@totals[1] > 0 ? v[1] / @totals[1] : 1
-      frac_actual=@totals[2] > 0 ? v[2] / @totals[2] : 1
-      rows << (k + v.insert(2, frac_reserved * 100).push(frac_actual * 100))
+      percent_reserved=to_percent(@totals[1] > 0 ? v[1] / @totals[1] : 1)
+      percent_actual=to_percent(@totals[2] > 0 ? v[2] / @totals[2] : 1)
+      rows << (k + v.insert(2, percent_reserved).push(percent_actual))
     end
 
     rows.sort! {|a,b| a.first <=> b.first}
@@ -76,6 +78,11 @@ class InstrumentReportsController < ReportsController
     Reservation.where(%q/orders.facility_id = ? AND reserve_start_at >= ? AND reserve_start_at <= ? AND canceled_at IS NULL AND (order_details.state IS NULL OR order_details.state = 'complete')/, current_facility.id, @date_start, @date_end).
                joins('LEFT JOIN order_details ON reservations.order_detail_id = order_details.id INNER JOIN orders ON order_details.order_id = orders.id').
                includes(:instrument)
+  end
+
+
+  def to_hours(minutes)
+    (minutes / 60).round(2)
   end
 
 end

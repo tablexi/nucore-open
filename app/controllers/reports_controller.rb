@@ -112,4 +112,9 @@ class ReportsController < ApplicationController
     render :template => "reports/#{action ? action : action_name}", :layout => false
   end
 
+
+  def to_percent(decimal)
+    (decimal * 100).round
+  end
+
 end

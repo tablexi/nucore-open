@@ -2,9 +2,8 @@
 - @rows.each do |row|
   %tr
     - row.each_with_index do |col, i|
-      - hour_col=(i == (long_report ? 3 : 2)) || (i == (long_report ? 5 : 4))
       - percent_col=(i == (long_report ? 4 : 3)) || (i == (long_report ? 6 : 5))
-      %td{:class => i > (long_report ? 1 : 0) ? 'currency' : ''}= hour_col  ? (col / 60).round(2) : percent_col ? number_to_percentage(col, :precision => 0) : col
+      %td{:class => i > (long_report ? 1 : 0) ? 'currency' : ''}= percent_col ? number_to_percentage(col, :precision => 0) : col
 
 - if @rows.size > 1
   %tr
@@ -12,7 +11,7 @@
     - if long_report
       %td
     %td.currency.bold= @totals[0]
-    %td.currency.bold= @totals[1] / 60
+    %td.currency.bold= @totals[1]
     %td.currency.bold 100%
-    %td.currency.bold= @totals[2] / 60
+    %td.currency.bold= @totals[2]
     %td.currency.bold 100%

@@ -82,8 +82,8 @@ class GeneralReportsController < ReportsController
     end
 
     sums.each do |k,v|
-      frac_cost=@total_cost > 0 ? v[1] / @total_cost : 1
-      rows << v.push(frac_cost * 100).unshift(k)
+      percent_cost=to_percent(@total_cost > 0 ? v[1] / @total_cost : 1)
+      rows << v.push(percent_cost).unshift(k)
     end
 
     rows.sort! {|a,b| a.first <=> b.first}
