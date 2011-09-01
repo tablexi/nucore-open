@@ -32,8 +32,19 @@ function updateUrl(url)
 }
 
 
+// returns the 0-based index of the currently selected tab
+function getSelectedTabIndex() { return $('#tabs').tabs().tabs('option', 'selected'); }
+
+
 // update and return the currently selected tab's URL
-function getUpdateTabUrl(ui) { return updateUrl($.data(ui.tab, 'load.tabs')); }
+function getUpdateTabUrl(ui)
+{
+    if(ui != null)
+        return updateUrl($.data(ui.tab, 'load.tabs'));
+
+    var links=$("#tabs > ul").find("li a");
+    return updateUrl($.data(links[getSelectedTabIndex()], 'href.tabs'));
+}
 
 
 function initGeneralReportsUI(selectedIndex)
@@ -64,17 +75,18 @@ function initGeneralReportsUI(selectedIndex)
 
     // handle pagination requests
     $('.pagination a').live('click',function (){
-        var selected=$('#tabs').tabs('option', 'selected');
+        var selected=getSelectedTabIndex();
         $('#tabs').tabs('url', selected, this.href).tabs('load', selected);
         return false;
     });
 
     // update report on parameter change
     $('#refresh-form :input').change(function() {
-        var selected=$('#tabs').tabs('option', 'selected');
-        $('#tabs').tabs('url', selected, updateUrl(window.location.pathname)).tabs('load', selected);
+        var selected=getSelectedTabIndex();
+        $('#tabs').tabs('url', selected, getUpdateTabUrl()).tabs('load', selected);
     });
 }
+
 
 $(document).ready(function() {
     $('.datepicker').each(function() {
