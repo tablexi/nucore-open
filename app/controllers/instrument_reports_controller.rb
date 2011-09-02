@@ -1,4 +1,5 @@
 class InstrumentReportsController < ReportsController
+  include InstrumentReporter
 
 
   def instrument
@@ -75,13 +76,6 @@ class InstrumentReportsController < ReportsController
       @totals[0] += to_hours(res.duration_mins)
       @totals[1] += to_hours(res.actual_duration_mins)
     end
-  end
-
-
-  def report_data
-    Reservation.where(%q/orders.facility_id = ? AND reserve_start_at >= ? AND reserve_start_at <= ? AND canceled_at IS NULL AND (order_details.state IS NULL OR order_details.state = 'complete')/, current_facility.id, @date_start, @date_end).
-               joins('LEFT JOIN order_details ON reservations.order_detail_id = order_details.id INNER JOIN orders ON order_details.order_id = orders.id').
-               includes(:instrument)
   end
 
 end
