@@ -45,6 +45,11 @@ class ReportsController < ApplicationController
   end
 
 
+  def init_report_headers(report_on_label)
+    raise 'Subclass must implement!'
+  end
+
+
   def page_report(rows)
     page_size=25
     page=params[:page].blank? || rows.size < page_size ? 1 : params[:page].to_i
