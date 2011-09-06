@@ -27,7 +27,7 @@
     %p=h current_facility.accepts_cc ? 'Yes' : 'No'
   %li
     %label== Is Active?
-    %p=h current_facility.is_active ? 'Yes' : 'No'
+    %p=h current_facility.is_active == true ? 'Yes' : 'No'
   %li
     %label== Address
     = current_facility.address ? simple_format(h current_facility.address) : '<p>None Entered</p>'.html_safe
