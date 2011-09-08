@@ -1,8 +1,5 @@
-require 'socket'
-
 class Notifier < ActionMailer::Base
   default :from => FROM_EMAIL, :content_type => 'multipart/alternative'
-  default_url_options[:host] = Socket.gethostname
 
   # Welcome user, login credentials.  CC to PI and Department Admin.
   # Who created the account.  How to update.
