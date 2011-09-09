@@ -1,0 +1,55 @@
+require 'spec_helper'
+require 'controller_spec_helper'
+require 'report_spec_helper'
+
+describe InstrumentDayReportsController do
+  include ReportsHelper
+  include ReportSpecHelper
+
+
+  run_report_tests([
+    { :action => :reserved_quantity, :index => 4, :report_on_label => nil, :report_on => Proc.new{|res| [ res.reserve_start_at.wday, 1 ]} },
+    { :action => :reserved_hours, :index => 5, :report_on_label => nil, :report_on => Proc.new{|res| [ res.reserve_start_at.wday, to_hours(res.duration_mins) ] } },
+    { :action => :actual_quantity, :index => 6, :report_on_label => nil, :report_on => Proc.new{|res| [ res.actual_start_at.wday, 1 ] } },
+    { :action => :actual_hours, :index => 7, :report_on_label => nil, :report_on => Proc.new{|res| [ res.actual_start_at.wday, to_hours(res.actual_duration_mins) ]} }
+  ])
+
+
+  private
+
+  def setup_extra_test_data(user)
+    start_at=parse_usa_date(@params[:date_start], '10:00 AM')+10.days
+    place_reservation(@authable, @order_detail, start_at)
+    @reservation.actual_start_at=start_at
+    assert @reservation.save(:validate => false)
+  end
+
+
+  def report_headers(label)
+    [ 'Instrument', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]
+  end
+
+
+  def assert_report_init(label, &report_on)
+    assigns(:totals).should be_is_a Array
+    assigns(:totals).size.should == 7
+
+    ndx=@reservation.actual_start_at.wday
+    assigns(:totals).each_with_index do |sum, i|
+      if i == ndx
+        sum.should > 0
+      else
+        sum.should == 0
+      end
+    end
+
+    assigns(:rows).should be_is_a Array
+    assigns(:rows).size.should == Instrument.count
+  end
+
+
+  def assert_report_data_init(label)
+    assigns(:report_data).should == Reservation.all
+  end
+
+end

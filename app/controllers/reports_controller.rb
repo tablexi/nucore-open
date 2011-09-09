@@ -64,6 +64,7 @@ class ReportsController < ApplicationController
 
   def render_report(tab_index, report_on_label, &report_on)
     @selected_index=tab_index
+    init_report_headers report_on_label
 
     respond_to do |format|
       format.js do
@@ -83,7 +84,6 @@ class ReportsController < ApplicationController
             init_report(report_on_label, &report_on)
           when 'report_data'
             @report_on=report_on
-            init_report_headers report_on_label
             init_report_data(report_on_label, &report_on)
         end
 

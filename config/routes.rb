@@ -80,6 +80,13 @@ Nucore::Application.routes.draw do |map|
         :purchaser => [:get, :post]
     }
 
+    facility.resources :instrument_day_reports, :collection => {
+        :actual_quantity => [:get, :post],
+        :reserved_quantity => [:get, :post],
+        :reserved_hours => [:get, :post],
+        :actual_hours => [:get, :post]
+    }
+
     facility.resources :price_group_products, :only => [ :edit, :update ]
 
     facility.schedule 'schedule', :controller => 'facilities', :action => 'schedule'

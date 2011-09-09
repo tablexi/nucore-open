@@ -169,4 +169,49 @@ Spork.each_run do
     od_attrs.merge!(:reviewed_at => Time.zone.now-1.day) if reviewed
     @order_detail.update_attributes(od_attrs)
   end
+
+
+  #
+  # Creates a +Reservation+ for a newly created +Instrument+ that is party
+  # of +facility+. The reservation is made for +order_detail+ and starts
+  # at +reserve_start+. Variables +@instrument+ and +@reservation+ are
+  # available for use once the method completes.
+  # [_facility_]
+  #   The +Facility+ for which the new +Instrument+ will be created
+  # [_order_detail_]
+  #   The +OrderDetail+ that the +Reservation+ will belong to
+  # [_reserve_start_]
+  #   An +ActiveSupport::TimeWithZone+ object representing the time the
+  #   +Reservation+ should begin
+  # [_extra_reservation_attrs_]
+  #   Custom attributes for the +Reservation+, if any
+  def place_reservation(facility, order_detail, reserve_start, extra_reservation_attrs=nil)
+    facility_account=facility.facility_accounts.create(Factory.attributes_for(:facility_account))
+
+    # create instrument, min reserve time is 60 minutes, max is 60 minutes
+    @instrument=facility.instruments.create(
+        Factory.attributes_for(
+          :instrument,
+          :facility_account => facility_account,
+          :min_reserve_mins => 60,
+          :max_reserve_mins => 60,
+          :relay_ip => '192.168.1.1'
+        )
+    )
+
+    assert @instrument.valid?
+    @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+
+
+    res_attrs={
+      :reserve_start_at => reserve_start,
+      :order_detail => order_detail,
+      :duration_value => 60,
+      :duration_unit => 'minutes'
+    }
+
+    res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
+    @reservation=@instrument.reservations.create(res_attrs)
+  end
+
 end

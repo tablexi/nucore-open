@@ -68,7 +68,6 @@ class GeneralReportsController < ReportsController
 
   def init_report(report_on_label)
     sums, rows, @total_quantity, @total_cost={}, [], 0, 0.0
-    init_report_headers report_on_label
 
     report_data.all.each do |od|
       key=yield od

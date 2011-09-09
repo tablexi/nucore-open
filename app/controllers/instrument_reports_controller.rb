@@ -38,7 +38,6 @@ class InstrumentReportsController < ReportsController
 
   def init_report(report_on_label, &report_on)
     sums, rows, @totals={}, [], [0,0,0]
-    init_report_headers report_on_label
 
     report_data.all.each do |res|
       key=yield res

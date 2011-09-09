@@ -1,0 +1,7 @@
+- @report_data.each do |res|
+    :ruby
+        row=Array.new(7)
+        stat=@report_on.call(res)
+        row[stat[0]]=stat[1]
+
+    - csv << row.unshift(res.instrument.name)
