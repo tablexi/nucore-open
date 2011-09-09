@@ -15,7 +15,7 @@ module NucsValidatorHelper
     if attrs.has_key?(:expires_at) or attrs.has_key?(:starts_at)
       Factory.create(:nucs_gl066_with_dates, attrs)
     else
-      attrs.merge!(:budget_period => Time.zone.today.year) unless attrs.has_key?(:budget_period)
+      attrs.merge!(:budget_period => (Time.zone.today+1.year).year) unless attrs.has_key?(:budget_period)
       gl=Factory.create(:nucs_gl066_without_dates, attrs)
     end
 
