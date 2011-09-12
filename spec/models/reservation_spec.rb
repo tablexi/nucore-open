@@ -104,6 +104,21 @@ describe Reservation do
       assert_equal ["The reservation conflicts with another reservation"], @reservation2.errors[:base]
     end
 
+    it "should allow reservations with the same time and date on different instruments" do
+      @reservation1.should be_valid
+
+      @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+                                                       :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                                       :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
+
+      @reservation2.should_not be_does_not_conflict_with_other_reservation
+
+      @instrument2 = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+
+      @reservation2.instrument=@instrument2
+      @reservation2.should be_does_not_conflict_with_other_reservation
+    end
+
   end
 
 
