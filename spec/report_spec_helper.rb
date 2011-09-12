@@ -1,5 +1,6 @@
 module ReportSpecHelper
   include DateHelper
+  include ReportsHelper
   extend ActiveSupport::Concern
 
 
