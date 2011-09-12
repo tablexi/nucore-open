@@ -117,8 +117,9 @@ class Reservation < ActiveRecord::Base
     tstart_at = Time.zone.parse(reserve_start_at.to_s)
     tend_at   = Time.zone.parse(reserve_end_at.to_s)
     order_id  = order_detail.nil? ? 0 : order_detail.order_id
-    # look for a reservation on the same instrument that isn't purchased or conflicting
-    # with an admin or in-cart reservation during an overlapping time.
+    # look for a reservation on the same instrument that conflicts in time with a
+    # purchased, admin, or in-cart reservation. Should not check reservations that
+    # are unpurchased in other user's carts.
     res = Reservation.
           joins('LEFT JOIN order_details ON order_details.id = reservations.order_detail_id',
                 'LEFT JOIN orders ON orders.id = order_details.order_id').
