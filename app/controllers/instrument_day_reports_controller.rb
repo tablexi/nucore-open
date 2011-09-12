@@ -34,7 +34,7 @@ class InstrumentDayReportsController < ReportsController
 
     report_data.all.each do |res|
       stat=yield res
-      ndx, value=stat[0],  stat[1]
+      ndx, value=stat[0], stat[1]
       instrument=res.instrument.name
       days=instruments[instrument]
 

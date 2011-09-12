@@ -3,7 +3,6 @@ require 'controller_spec_helper'
 require 'report_spec_helper'
 
 describe InstrumentDayReportsController do
-  include ReportsHelper
   include ReportSpecHelper
 
 
@@ -21,6 +20,7 @@ describe InstrumentDayReportsController do
     start_at=parse_usa_date(@params[:date_start], '10:00 AM')+10.days
     place_reservation(@authable, @order_detail, start_at)
     @reservation.actual_start_at=start_at
+    @reservation.actual_end_at=start_at+1.hour
     assert @reservation.save(:validate => false)
   end
 
@@ -43,8 +43,15 @@ describe InstrumentDayReportsController do
       end
     end
 
+    instruments=Instrument.all
     assigns(:rows).should be_is_a Array
-    assigns(:rows).size.should == Instrument.count
+    assigns(:rows).size.should == instruments.count
+
+    assigns(:rows).each do |row|
+      row.size.should == 8
+      instruments.collect(&:name).should be_include(row[0])
+      row[1..-1].all?{|data| data.should be_is_a(Numeric)}
+    end
   end
 
 
