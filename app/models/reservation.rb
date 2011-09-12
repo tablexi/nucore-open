@@ -119,9 +119,8 @@ class Reservation < ActiveRecord::Base
     order_id  = order_detail.nil? ? 0 : order_detail.order_id
     res = Reservation.
           joins('LEFT JOIN order_details ON order_details.id = reservations.order_detail_id',
-                'LEFT JOIN orders ON orders.id = order_details.order_id',
-                'LEFT JOIN products ON products.id = reservations.instrument_id').
-          where("products.id = ? AND
+                'LEFT JOIN orders ON orders.id = order_details.order_id').
+          where("reservations.instrument_id = ? AND
                 reservations.id <> ? AND
                 reservations.canceled_at IS NULL AND
                 reservations.actual_end_at IS NULL AND
