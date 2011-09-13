@@ -336,7 +336,9 @@ class OrderDetail < ActiveRecord::Base
       calc_args=[ reservation ]
     end
 
-    pp = policy_holder.cheapest_price_policy((order.user.price_groups + account.price_groups).flatten.uniq)
+    pgs=order.user.price_groups
+    pgs += account.price_groups if account
+    pp = policy_holder.cheapest_price_policy(pgs.flatten.uniq)
     return unless pp
     costs = pp.calculate_cost_and_subsidy(*calc_args)
     return unless costs
