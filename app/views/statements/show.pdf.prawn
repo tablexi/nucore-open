@@ -17,9 +17,9 @@ if @account.remittance_information
   pdf.text @account.remittance_information
 end
 
-rows = @statement.order_details.sort{|d,o| d.created_at<=>o.created_at}.reverse.map do |od|
+rows = @statement.order_details.sort{|d,o| d.order.ordered_at<=>o.order.ordered_at}.reverse.map do |od|
   [
-    human_datetime(od.created_at),
+    human_datetime(od.order.ordered_at),
     "##{od}: #{od.product}" + (od.note.blank? ? '' : "\n#{od.note}"),
     number_to_currency(od.actual_total)
   ]

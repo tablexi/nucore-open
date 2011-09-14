@@ -37,7 +37,7 @@
       %th.currency Amount
     - @order_details.each do |od|
       %tr
-        %td= human_datetime(od.created_at)
+        %td= human_datetime(od.order.ordered_at)
         %td
           %ul
             %li= h od.description
