@@ -75,7 +75,7 @@
     %ul.form
       %li
         %label Ordered At
-        =h human_datetime(@order.ordered_at)
+        =h human_datetime(@order.created_at)
       %li
         %label Ordered For
         =h @order.user.full_name
