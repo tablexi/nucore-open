@@ -22,7 +22,7 @@
     - @order_details.each do |od|
       %tr{:class => needs_reconcile_warning?(od) ? 'reconcile-warning' : ''}
         %td= link_to od.description, edit_facility_order_order_detail_path(current_facility, od.order, od)
-        %td= human_datetime(od.created_at)
+        %td= human_datetime(od.order.ordered_at)
         %td
           %ul
             - product_name = (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
