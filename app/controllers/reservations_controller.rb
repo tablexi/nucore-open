@@ -187,6 +187,9 @@ class ReservationsController < ApplicationController
         end
         @instrument.instrument_statuses.create(:is_on => status)
 
+        # reservation is done, now give the best price
+        @reservation.order_detail.assign_price_policy
+        @reservation.order_detail.save!
       else
         raise Exception
       end

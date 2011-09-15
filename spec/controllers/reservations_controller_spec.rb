@@ -18,7 +18,7 @@ describe ReservationsController do
     assert @instrument.valid?
     Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
     # add rule, available every day from 9 to 5, 60 minutes duration
-    @rule             = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+    @rule             = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :end_hour => 23))
     # create price policy with default window of 1 day
     @price_policy     = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id))
     # create order, order detail
@@ -223,6 +223,7 @@ describe ReservationsController do
            @reservation.update_attribute(:actual_start_at, @start)
            @params.merge!(:switch => 'off')
            sleep 2 # because res start time is now + 1 second. Need to make time validations pass.
+           @reservation.order_detail.price_policy.should be_nil
          end
 
         it_should_allow :guest do
@@ -230,6 +231,7 @@ describe ReservationsController do
           assigns(:order_detail).should == @order_detail
           assigns(:instrument).should == @instrument
           assigns(:reservation).should == @reservation
+          assigns(:reservation).order_detail.price_policy.should_not be_nil
           assigns(:reservation).actual_end_at.should < Time.zone.now
           assigns(:instrument).instrument_statuses.size.should == 1
           assigns(:instrument).instrument_statuses[0].is_on.should == false
