@@ -71,10 +71,14 @@ class InstrumentReportsController < ReportsController
 
   def init_report_data(report_on_label, &report_on)
     @totals, @report_data=[0,0], report_data.all
+
     @report_data.each do |res|
       @totals[0] += to_hours(res.duration_mins)
       @totals[1] += to_hours(res.actual_duration_mins)
     end
+
+    reservation=@report_data.first
+    @headers += report_attributes(reservation, reservation.instrument)
   end
 
 end

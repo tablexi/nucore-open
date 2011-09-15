@@ -59,6 +59,8 @@ class InstrumentDayReportsController < ReportsController
 
   def init_report_data(report_on_label, &report_on)
     @report_data=report_data.all
+    reservation=@report_data.first
+    @headers += report_attributes(reservation, reservation.instrument)
   end
 
 end
