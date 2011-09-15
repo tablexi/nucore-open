@@ -1,5 +1,3 @@
 = @headers.join(',')
 - require 'csv'
-= CSV.generate do |csv|
-  - @rows.each do |row|
-    - csv << row
+= CSV.generate {|csv| @rows.each{|row| csv << row} }.html_safe
