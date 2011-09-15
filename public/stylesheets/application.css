@@ -164,7 +164,7 @@ input.btn:hover {
 }
 
 .disabled {
-  color: #D1D1D1;
+  color: #D1D1D1 !important;
 }
 
 .estimated_cost {
