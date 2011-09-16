@@ -113,32 +113,43 @@ class Reservation < ActiveRecord::Base
   end
 
   def does_not_conflict_with_other_reservation?
+    conflicting_reservation.nil?
+  end
+
+  def does_not_conflict_with_other_reservation
+    res=conflicting_reservation
+
+    if res
+      msg='The reservation conflicts with another reservation'
+      msg += ' in your cart. Please purchase or remove it then continue.' if res.order.try(:==, order)
+      errors.add(:base, msg.html_safe)
+    end
+  end
+
+  #
+  # Look for a reservation on the same instrument that conflicts in time with a
+  # purchased, admin, or in-cart reservation. Should not check reservations that
+  # are unpurchased in other user's carts.
+  def conflicting_reservation
     # remove millisecond precision from time
     tstart_at = Time.zone.parse(reserve_start_at.to_s)
     tend_at   = Time.zone.parse(reserve_end_at.to_s)
     order_id  = order_detail.nil? ? 0 : order_detail.order_id
-    # look for a reservation on the same instrument that conflicts in time with a
-    # purchased, admin, or in-cart reservation. Should not check reservations that
-    # are unpurchased in other user's carts.
-    res = Reservation.
-          joins('LEFT JOIN order_details ON order_details.id = reservations.order_detail_id',
-                'LEFT JOIN orders ON orders.id = order_details.order_id').
-          where("reservations.instrument_id = ? AND
-                reservations.id <> ? AND
-                reservations.canceled_at IS NULL AND
-                reservations.actual_end_at IS NULL AND
-                (orders.state = 'purchased' OR orders.state IS NULL OR orders.id = ?) AND
-                ((reserve_start_at <= ? AND reserve_end_at >= ?) OR
-                (reserve_start_at >= ? AND reserve_end_at <= ?) OR
-                (reserve_start_at <= ? AND reserve_end_at > ?) OR
-                (reserve_start_at < ? AND reserve_end_at >= ?) OR
-                (reserve_start_at = ? AND reserve_end_at = ?))",
-                instrument.id, id||0, order_id, tstart_at, tend_at, tstart_at, tend_at, tstart_at, tstart_at, tend_at, tend_at, tstart_at, tend_at).first
-    res.nil?
-  end
 
-  def does_not_conflict_with_other_reservation
-    errors.add(:base, "The reservation conflicts with another reservation") unless does_not_conflict_with_other_reservation?
+    Reservation.
+    joins('LEFT JOIN order_details ON order_details.id = reservations.order_detail_id',
+          'LEFT JOIN orders ON orders.id = order_details.order_id').
+    where("reservations.instrument_id = ? AND
+          reservations.id <> ? AND
+          reservations.canceled_at IS NULL AND
+          reservations.actual_end_at IS NULL AND
+          (orders.state = 'purchased' OR orders.state IS NULL OR orders.id = ?) AND
+          ((reserve_start_at <= ? AND reserve_end_at >= ?) OR
+          (reserve_start_at >= ? AND reserve_end_at <= ?) OR
+          (reserve_start_at <= ? AND reserve_end_at > ?) OR
+          (reserve_start_at < ? AND reserve_end_at >= ?) OR
+          (reserve_start_at = ? AND reserve_end_at = ?))",
+          instrument.id, id||0, order_id, tstart_at, tend_at, tstart_at, tend_at, tstart_at, tstart_at, tend_at, tend_at, tstart_at, tend_at).first
   end
 
   def satisfies_minimum_length?
