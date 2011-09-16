@@ -32,6 +32,7 @@
         %th
         %th.centered= sortable 'order_number', 'Order #'
         %th= sortable 'date'
+        %th User Name
         %th{ :colspan => 2 }== Quantity / #{sortable 'product'}
         %th= sortable 'assigned_to'
         %th= sortable 'status'
@@ -43,6 +44,7 @@
           %td.centered= check_box_tag("order_detail_ids[]", od.id, false, {:class => 'toggle', :id => nil })
           %td.centered= link_to od, edit_facility_order_order_detail_path(current_facility, order, od)
           %td=h human_datetime(order.ordered_at)
+          %td= order.user.full_name
           %td.centered= od.quantity
           %td
             %ul
