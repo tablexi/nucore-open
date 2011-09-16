@@ -1,7 +1,7 @@
 class ReservationsController < ApplicationController
   customer_tab  :all
   before_filter :authenticate_user!
-  before_filter :check_acting_as,  :except => [:new, :create, :edit, :update]
+  before_filter :check_acting_as,  :only => [ :switch_instrument, :show ]
   
   def initialize
     @active_tab = 'orders'
