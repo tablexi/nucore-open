@@ -30,7 +30,7 @@
     = f.text_field :description, :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
 
   - if @account.class == Account || @account.is_a?(AffiliateAccount)
-    - opts={}
+    - opts = {:include_blank => true}
     - opts.merge!(:selected => @account.affiliate.try(:name)) if @account
     %li
       = f.label :affiliate, nil, :class => 'require'
