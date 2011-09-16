@@ -13,12 +13,12 @@ class InstrumentDayReportsController < ReportsController
 
 
   def actual_quantity
-    render_report(6, nil) {|res| [ res.actual_start_at.wday, 1 ] }
+    render_report(6, nil) {|res| res.actual_start_at ? [ res.actual_start_at.wday, 1 ] : nil }
   end
 
 
   def actual_hours
-    render_report(7, nil) {|res| [ res.actual_start_at.wday, to_hours(res.actual_duration_mins) ] }
+    render_report(7, nil) {|res| res.actual_start_at ? [ res.actual_start_at.wday, to_hours(res.actual_duration_mins) ] : nil }
   end
 
 
@@ -34,6 +34,7 @@ class InstrumentDayReportsController < ReportsController
 
     report_data.all.each do |res|
       stat=yield res
+      next unless stat
       ndx, value=stat[0], stat[1]
       instrument=res.instrument.name
       days=instruments[instrument]
