@@ -6,5 +6,8 @@
     - a = au.account
     - if au.can_administer? || session_user.administrator?
       %tr
-        %td= link_to a, account_statements_path(a)
+        - if current_facility
+          %td= link_to a, facility_account_statement_path(current_facility, a, 'recent')
+        - else
+          %td= link_to a, account_statements_path(a)
         %td{:style => "padding-left: 50px"}= a.facility || '<i>All</i>'.html_safe
