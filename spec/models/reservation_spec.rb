@@ -9,8 +9,7 @@ describe Reservation do
     @rule             = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17))
   end
 
-  it { should validate_uniqueness_of :order_detail }
-  
+
   context "create using virtual attributes" do
     it "should create using date, integer values" do
       @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
@@ -68,6 +67,14 @@ describe Reservation do
       @reservation1.order.should == @detail1.order
     end
 
+    it 'should not allow two reservations with the same order detail id' do
+      reservation2=@instrument.reservations.new(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+                                                :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                                :duration_value => 30, :duration_unit => 'minutes', :order_detail => @reservation1.order_detail)
+      assert !reservation2.save
+      reservation2.errors[:order_detail].should_not be_nil
+    end
+
     it 'should be the same user' do
       @reservation1.user.should == @detail1.order.user
     end
@@ -89,19 +96,19 @@ describe Reservation do
                                                        :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                        :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
       @reservation2.should_not be_valid
-      assert_equal ["The reservation conflicts with another reservation"], @reservation2.errors[:base]
+      assert_equal ["The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue."], @reservation2.errors[:base]
 
       @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                        :reserve_start_min => 15, :reserve_start_meridian => 'am',
                                                        :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
       @reservation2.should_not be_valid
-      assert_equal ["The reservation conflicts with another reservation"], @reservation2.errors[:base]
+      assert_equal ["The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue."], @reservation2.errors[:base]
 
       @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 9,
                                                        :reserve_start_min => 45, :reserve_start_meridian => 'am',
                                                        :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
       @reservation2.should_not be_valid
-      assert_equal ["The reservation conflicts with another reservation"], @reservation2.errors[:base]
+      assert_equal ["The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue."], @reservation2.errors[:base]
     end
 
     it "should allow reservations with the same time and date on different instruments" do
