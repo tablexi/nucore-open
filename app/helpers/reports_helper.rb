@@ -1,6 +1,4 @@
 module ReportsHelper
-  include ActiveSupport::Inflector
-
 
   def to_hours(minutes)
     (minutes / 60).round(2)
@@ -14,7 +12,7 @@ module ReportsHelper
 
   def report_attributes(*records)
     combine_attributes(*records) do |ar|
-      order_and_filter_attributes(ar).collect{|attr| humanize(attr[0])}
+      order_and_filter_attributes(ar).collect{|attr| ActiveSupport::Inflector.humanize(attr[0])}
     end
   end
 
