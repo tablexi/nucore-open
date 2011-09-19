@@ -17,7 +17,7 @@ class PricePolicy < ActiveRecord::Base
     end
   end
 
-  scope :active, lambda {{ :conditions => [ "start_date <= ?", Time.zone.now ], :order => "start_date DESC" }}
+  scope :active, lambda {{ :conditions => [ "start_date <= ? AND expire_date > ?", Time.zone.now, Time.zone.now ], :order => "start_date DESC" }}
 
   before_create :set_expire_date
 
