@@ -105,6 +105,11 @@ module ReportSpecHelper
   end
 
 
+  def export_all_request?
+    @params.has_key?(:export_id) && @params[:export_id] == 'report_data'
+  end
+
+
   def assert_report_params_init
     now=Date.today
     date_start=Date.new(now.year, now.month, 1) - 1.month

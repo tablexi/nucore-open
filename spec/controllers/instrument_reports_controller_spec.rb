@@ -28,6 +28,7 @@ describe InstrumentReportsController do
   def report_headers(label)
     headers=[ 'Instrument', 'Quantity', 'Reserved Time (h)', 'Percent of Reserved', 'Actual Time (h)', 'Percent of Actual Time' ]
     headers.insert(1, label) if label
+    headers += report_attributes(@reservation, @instrument) if export_all_request?
     headers
   end
 

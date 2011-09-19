@@ -23,7 +23,9 @@ describe GeneralReportsController do
 
 
   def report_headers(label)
-    [ label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
+    headers=[ label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
+    headers += report_attributes(@order_detail, @order) if export_all_request?
+    headers
   end
 
 
@@ -71,7 +73,7 @@ describe GeneralReportsController do
       rows[i][0].should == yield(od)
       rows[i][1].should == od.quantity
       rows[i][2].should == od.total.to_i
-      rows[i][3].should == ((od.total / assigns(:total_cost)) * 100).round
+      rows[i][3].should == to_percent(od.total / assigns(:total_cost))
     end
   end
 
