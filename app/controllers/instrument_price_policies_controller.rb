@@ -42,8 +42,8 @@ class InstrumentPricePoliciesController < PricePoliciesController
       price_policy = InstrumentPricePolicy.new(pp_param.reject {|k,v| k == 'restrict_purchase' })
       price_policy.price_group       = price_group
       price_policy.instrument        = @instrument
-      price_policy.start_date        = Time.zone.parse(@start_date)
-      price_policy.expire_date       = Time.zone.parse(@expire_date)
+      price_policy.start_date        = parse_usa_date(@start_date)
+      price_policy.expire_date       = parse_usa_date(@expire_date)
       price_policy.usage_mins        = @interval
       price_policy.reservation_mins  = @interval
       price_policy.overage_mins      = @interval
