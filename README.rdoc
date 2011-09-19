@@ -6,10 +6,10 @@ Northwestern University Core Facility Management Software
 Welcome to NU Core! This guide will help you get a development environment up and running. It makes a few assumptions:
 
 1. You write code on a Mac.
-2. You have a running Oracle instance with two brand new databases.
+2. You have a running Oracle or MySQL instance with two brand new databases.
 3. You have the following installed:
-* Ruby[http://www.ruby-lang.org/en] 1.8.7
-* Ruby On Rails[http://rubyonrails.org] 2.3.5
+* Ruby[http://www.ruby-lang.org/en] 1.8.7 or 1.9.2
+* Ruby On Rails[http://rubyonrails.org] 3.0.10
 * Bundler[http://gembundler.com]
 * Git[http://git-scm.com]
 
@@ -30,7 +30,7 @@ Welcome to NU Core! This guide will help you get a development environment up an
 
 4. Configure your databases
     cp database.yml.template database.yml
-    ... edit the database, username, and password settings for both the development and test DBs to match your Oracle instance ...
+    ... edit the adapter, database, username, and password settings for both the development and test DBs to match your database instance ...
     cd ..
 
 5. Create your databases
@@ -73,3 +73,5 @@ There are valuable resources in the NU Core's doc directory.
 * Wondering how you can customize NU Core for your institution? <b>See HOWTO_extensions.txt</b>
 
 * Want to authenticate users against your institution's LDAP server? <b>See HOWTO_ldap.txt</b>
+
+* Need to use a 3rd party service with your NU Core? <b>See HOWTO_external_services.txt</b>
