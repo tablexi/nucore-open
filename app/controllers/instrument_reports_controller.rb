@@ -3,19 +3,19 @@ class InstrumentReportsController < ReportsController
 
 
   def instrument
-    render_report(0, nil) {|r| [ r.instrument.url_name ] }
+    render_report(0, nil) {|r| [ r.instrument.name ] }
   end
 
 
   def account
-    render_report(1, 'Description') {|r| [ r.instrument.url_name, r.order_detail.account.to_s ]}
+    render_report(1, 'Description') {|r| [ r.instrument.name, r.order_detail.account.to_s ]}
   end
   
 
   def account_owner
     render_report(2, 'Name') do |r|
       owner=r.order_detail.account.owner.user
-      [ r.instrument.url_name, "#{owner.full_name} (#{owner.username})" ]
+      [ r.instrument.name, "#{owner.full_name} (#{owner.username})" ]
     end
   end
 
@@ -23,7 +23,7 @@ class InstrumentReportsController < ReportsController
   def purchaser
     render_report(3, 'Name') do |r|
       usr=r.order_detail.order.user
-      [ r.instrument.url_name, "#{usr.full_name} (#{usr.username})" ]
+      [ r.instrument.name, "#{usr.full_name} (#{usr.username})" ]
     end
   end
 
