@@ -28,6 +28,22 @@ describe InstrumentPricePolicy do
       @ipp.product.should == @instrument
     end
 
+    it 'should require usage or reservation rate, but not both' do
+      @ipp.restrict_purchase=false
+
+      @ipp.should be_valid
+      @ipp.reservation_rate=nil
+      @ipp.usage_rate=nil
+      @ipp.should_not be_valid
+
+      @ipp.usage_rate=1
+      @ipp.should be_valid
+
+      @ipp.usage_rate=nil
+      @ipp.reservation_rate=1
+      @ipp.should be_valid
+    end
+
     it 'should override #restrict_purchase=' do
       PriceGroupProduct.find_by_price_group_id_and_product_id(@price_group.id, @instrument.id).should be_nil
       @ipp.restrict_purchase=false
