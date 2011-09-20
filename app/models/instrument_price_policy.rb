@@ -5,8 +5,8 @@ class InstrumentPricePolicy < PricePolicy
 
   validates_numericality_of :minimum_cost, :usage_rate, :reservation_rate, :overage_rate, :usage_subsidy, :overage_subsidy, :reservation_subsidy, :cancellation_cost, :allow_nil => true, :greater_than_or_equal_to => 0
   validates_inclusion_of :usage_mins, :reservation_mins, :overage_mins, :in => @@intervals, :unless => :restrict_purchase
-  validates_presence_of :usage_rate, :unless => lambda { |o| o.usage_subsidy.nil? || o.restrict_purchase?}
-  validates_presence_of :reservation_rate, :unless => lambda { |o| o.reservation_subsidy.nil? || o.restrict_purchase?}
+  validates_presence_of :usage_rate, :unless => lambda { |o| o.reservation_rate || o.usage_subsidy.nil? || o.restrict_purchase?}
+  validates_presence_of :reservation_rate, :unless => lambda { |o| o.usage_rate || o.reservation_subsidy.nil? || o.restrict_purchase?}
   validate :has_usage_or_reservation_rate?, :unless => :restrict_purchase
   validate :subsidy_less_than_rate?, :unless => :restrict_purchase
 
