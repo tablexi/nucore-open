@@ -147,13 +147,13 @@ describe FacilityAccountsController do
         @params[:class_type]='PurchaseOrderAccount'
         @params[:account]=@account.attributes
         @params[:account][:affiliate]=Affiliate::OTHER.name
-        @params[:account][:affiliate_other]='Jesus Charisma'
+        @params[:account]['affiliate_other']='Jesus Charisma'
       end
 
       it_should_allow :director, 'to change affiliate to other' do
         assigns(:account).should == @account
         assigns(:account).affiliate.should == Affiliate::OTHER
-        assigns(:account).affiliate_other.should == @params[:account][:affiliate_other]
+        assigns(:account).affiliate_other.should == @params[:account]['affiliate_other']
         should set_the_flash
         assert_redirected_to facility_account_url
       end
@@ -239,6 +239,7 @@ describe FacilityAccountsController do
       before :each do
         @params[:class_type]='CreditCardAccount'
         @acct_attrs=Factory.attributes_for(:credit_card_account)
+        @acct_attrs[:affiliate]=@acct_attrs[:affiliate].name
         @params[:account]=@acct_attrs
       end
 

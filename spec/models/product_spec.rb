@@ -31,7 +31,7 @@ describe Product do
     end
 
     it 'should give default order status if status not set' do
-      @item.initial_order_status.should == OrderStatus.default_order_status
+      Item.new.initial_order_status.should == OrderStatus.default_order_status
     end
 
   end
