@@ -17,7 +17,12 @@ class FacilityReservationsController < ApplicationController
     @order_detail = @order.order_details.find(params[:order_detail_id])
     @reservation  = @order_detail.reservation
     @instrument   = @order_detail.product
-    raise ActiveRecord::RecordNotFound unless @reservation == Reservation.find(params[:id]) && (@reservation.can_edit? || @reservation.can_edit_actuals?)
+
+    raise ActiveRecord::RecordNotFound unless @reservation == Reservation.find(params[:id])
+
+    unless @reservation.can_edit? || @reservation.can_edit_actuals?
+      return redirect_to facility_order_order_detail_reservation_path(current_facility, @order, @order_detail, @reservation)
+    end
   end
 
   # PUT /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/reservations/:id

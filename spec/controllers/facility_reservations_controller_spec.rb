@@ -35,7 +35,23 @@ describe FacilityReservationsController do
       @action=:edit
     end
 
-    it_should_allow_operators_only
+    it_should_allow_operators_only do
+      assigns(:order).should == @order
+      assigns(:order_detail).should == @order_detail
+      assigns(:reservation).should == @reservation
+      assigns(:instrument).should == @product
+      should render_template 'edit'
+    end
+
+    context 'redirect on no edit' do
+      before :each do
+        @reservation.update_attribute(:canceled_at, Time.zone.now)
+      end
+
+      it_should_allow :director do
+        assert_redirected_to facility_order_order_detail_reservation_path(@authable, @order, @order_detail, @reservation)
+      end
+    end
 
   end
 
