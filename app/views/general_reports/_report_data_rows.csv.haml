@@ -1,2 +1,38 @@
 - @report_data.each do |od|
-  - csv << ([ @report_on.call(od), od.quantity, od.total, od.total / @total_cost ] + report_attribute_values(od, od.order))
+    :ruby
+        order=od.order
+        buyer=order.user
+        account=od.account
+        owner=account.owner_user
+        product=od.product
+        bundle_desc=product.is_a?(Bundle) ? product.products.collect(&:name).join(' & ') : nil
+
+        row=[
+            # basic info
+            od.to_s, human_datetime(order.ordered_at), human_datetime(od.fulfilled_at), od.order_status.name, od.state,
+
+            # who placed the order
+            buyer.username, buyer.first_name, buyer.last_name, buyer.email,
+
+            # what was ordered
+            product.url_name, product.type.underscore.humanize, product.name, od.quantity, bundle_desc,
+
+            # what account this order detail is for
+            account.type.underscore.humanize, account.affiliate.try(:name), account.account_number, account.description, human_datetime(account.expires_at),
+            owner.username, owner.first_name, owner.last_name, owner.email,
+
+            # pricing info
+            od.price_policy.try(:price_group).try(:name), show_estimated_cost(od), show_estimated_subsidy(od), show_estimated_total(od),
+            show_actual_cost(od), show_actual_subsidy(od), show_actual_total(od),
+
+            # dispute info
+            human_datetime(od.dispute_at), od.dispute_reason, human_datetime(od.dispute_resolved_at), od.dispute_resolved_reason
+        ]
+
+        statement=od.statement
+        row += [ human_datetime(od.reviewed_at), human_datetime(statement.created_at) ] if statement
+
+        journal=od.journal
+        row += [ human_datetime(journal.journal_date), od.reconciled_note ] if journal
+
+        csv << row

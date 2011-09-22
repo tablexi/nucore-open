@@ -121,4 +121,9 @@ class ReportsController < ApplicationController
     render :template => "reports/#{action ? action : action_name}", :layout => false
   end
 
+
+  def report_data_request?
+    params[:export_id] && params[:export_id] == 'report_data'
+  end
+
 end
