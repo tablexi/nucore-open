@@ -41,6 +41,24 @@ describe Reservation do
   end
 
 
+  context 'cancelled?' do
+    before :each do
+      @reservation = @instrument.reservations.create(:reserve_start_date => (Date.today+1.day).to_s, :reserve_start_hour => '10',
+                                                     :reserve_start_min => '0', :reserve_start_meridian => 'am',
+                                                     :duration_value => '2', :duration_unit => 'hours')
+      assert @reservation.valid?
+    end
+
+
+    it('should not be cancelled') { @reservation.should_not be_cancelled }
+
+    it 'should be cancelled' do
+      @reservation.canceled_at=Time.zone.now
+      @reservation.should be_cancelled
+    end
+  end
+
+
   context 'with order details' do
 
     before :each do

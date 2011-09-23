@@ -379,7 +379,7 @@ class OrderDetail < ActiveRecord::Base
 
       fee = self.cancellation_fee
       # no cancelation fee
-      if cancellation_fee  == 0
+      if fee  == 0
         self.actual_subsidy = 0
         self.actual_cost    = 0
         return self.change_status!(order_status)
@@ -395,8 +395,14 @@ class OrderDetail < ActiveRecord::Base
   def cancellation_fee
     res    = reservation
     policy = price_policy
+
+    unless policy
+      assign_price_policy
+      policy=price_policy
+    end
+
     return 0 unless res && policy && self.product.min_cancel_hours.to_i > 0
-    if (res.reserve_start_at - Time.zone.now)/(60*60) > self.product.min_cancel_hours
+    if (res.reserve_start_at - Time.zone.now)/3600 > self.product.min_cancel_hours
       return 0
     else
       return policy.cancellation_cost.to_f
@@ -439,7 +445,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def has_completed_reservation?
-    !product.is_a?(Instrument) || (reservation && (reservation.actual_end_at || reservation.reserve_end_at < Time.zone.now))
+    !product.is_a?(Instrument) || (reservation && (reservation.canceled_at || reservation.actual_end_at || reservation.reserve_end_at < Time.zone.now))
   end
 
   def make_complete

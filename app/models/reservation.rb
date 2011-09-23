@@ -481,6 +481,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def can_switch_instrument_on?(check_off = true)
+    return false if cancelled?
     return false unless instrument.relay_ip?   # is relay controlled
     return false if can_switch_instrument_off?(false) if check_off # mutually exclusive
     return false unless actual_start_at.nil?   # already turned on
@@ -514,6 +515,10 @@ class Reservation < ActiveRecord::Base
     # no schedule rule breaks between now and reserve_start
     # return instrument_is_available_to_reserve?(Time.zone.now, reserve_start_at)
     true
+  end
+
+  def cancelled?
+    !canceled_at.nil?
   end
 
   # can the CUSTOMER cancel the order
