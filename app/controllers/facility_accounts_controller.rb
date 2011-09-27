@@ -1,6 +1,4 @@
 class FacilityAccountsController < ApplicationController
-  include Prawnto::ActionControllerMixin
-
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -181,13 +179,6 @@ class FacilityAccountsController < ApplicationController
         @order_details = @account.order_details.for_facility(@facility).delete_if{|od| od.order.state != 'purchased'}
         @order_details = @order_details.paginate(:page => params[:page])
       else
-        prawnto :prawn => {
-          :left_margin   => 50,
-          :right_margin  => 50,
-          :top_margin    => 50,
-          :bottom_margin => 75
-        }
-
         @statement=Statement.find(params[:statement_id].to_i)
     end
 

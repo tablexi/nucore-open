@@ -30,13 +30,6 @@ class StatementsController < ApplicationController
       when 'list'
         action='list'
         @statements=@statements.paginate(:page => params[:page])
-      else
-        prawnto :prawn => {
-          :left_margin   => 50,
-          :right_margin  => 50,
-          :top_margin    => 50,
-          :bottom_margin => 75
-        }
     end
 
     respond_to do |format|
