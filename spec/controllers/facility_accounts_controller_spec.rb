@@ -570,6 +570,8 @@ describe FacilityAccountsController do
       assigns(:account).should == @account
       assigns(:facility).should == @authable
       assigns(:statement).should == @statement
+      response.content_type.should == "application/pdf"
+      response.body.should =~ /%PDF-1.3/
       should render_template 'statements/show'
     end
 
