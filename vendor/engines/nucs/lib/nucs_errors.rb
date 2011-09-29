@@ -60,7 +60,7 @@ module NucsErrors
       elsif component.is_a?(Hash)
         msg=[]
         component.each{|k, v| msg << "#{k.to_s} is #{v}" }
-        super("could not find a GL066 value where #{msg.to_sentence}. Please make sure the lab services account is open for this chart string.")
+        super("could not find a GL066 value where #{msg.to_sentence}. Please make sure the lab services account (75340) is open for this chart string.")
       else
         super()
       end
