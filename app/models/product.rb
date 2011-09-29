@@ -62,11 +62,11 @@ class Product < ActiveRecord::Base
   end
 
   def to_s
-    name || ''
+    name.html_safe || ''
   end
   
   def to_s_with_status
-    (name || '') + (is_archived? ? ' (inactive)' : '')
+    to_s + (is_archived? ? ' (inactive)' : '')
   end
 
   def set_default_pricing
