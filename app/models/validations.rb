@@ -31,8 +31,10 @@ module Validations
 
     begin
       validator.account_is_open!
-    rescue NucsError
-      self.errors.add(:account_number, "not found, is inactive, or is invalid")
+    rescue NucsError => e
+      msg=e.message
+      msg="not found, is inactive, or is invalid" if msg.blank?
+      self.errors.add(:account_number, msg)
     end
   end
 
