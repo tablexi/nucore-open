@@ -38,7 +38,7 @@ class ReservationsController < ApplicationController
     now = Time.zone.now
     @reservations = Reservation
       .includes(:order_detail => :order)
-      .where("orders.user_id = ?", session_user.id)
+      .where("orders.user_id = ? AND orders.ordered_at IS NOT NULL", session_user.id)
       .order('orders.ordered_at DESC')
       .paginate(:page => params[:page])
 
