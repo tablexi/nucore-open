@@ -1,13 +1,12 @@
 class ReservationsController < ApplicationController
   customer_tab  :all
   before_filter :authenticate_user!
-  before_filter :check_acting_as,  :only => [ :switch_instrument, :show ]
-  
-  def initialize
-    @active_tab = 'orders'
-    super
-  end
 
+  before_filter :set_active_tab_to_orders, :except => [:list]
+  before_filter :set_active_tab_to_reservations, :only => :list
+  
+  before_filter :check_acting_as,  :only => [ :switch_instrument, :show, :list]
+  
   # GET /facilities/1/instruments/1/reservations.js?_=1279579838269&start=1279429200&end=1280034000
   def index
     @facility     = Facility.find_by_url_name!(params[:facility_id])
@@ -30,6 +29,33 @@ class ReservationsController < ApplicationController
       format.js { render :json => @reservations.map{|r| r.as_calendar_object(as_calendar_object_options)}.flatten + 
                                   @unavailable.map{ |r| r.as_calendar_object(as_calendar_object_options)}.flatten }
     end
+  end
+
+  # GET /reservations
+  # All My Resesrvations
+  def list
+    notices = []
+    now = Time.zone.now
+    @reservations = Reservation
+      .includes(:order_detail => :order)
+      .where("orders.user_id = ?", session_user.id)
+      .order('orders.ordered_at DESC')
+      .paginate(:page => params[:page])
+
+    @reservations.each do |res|
+      # do you need to click stop
+      if res.can_switch_instrument_off?
+        notices << "Do not forget to click the \"End Reservation\" link when you finished your #{res} reservation."
+      # do you need to begin your reservation
+      elsif res.can_switch_instrument_on?
+        notices << "You may click the \"Begin Reservation\" link when you are ready to begin your #{res} reservation."
+      # do you have a reservation for today
+      elsif (res.reserve_start_at.to_s[0..9] == now.to_s[0..9] || res.reserve_start_at < now) && res.reserve_end_at > now
+        notices << "You have an upcoming reservation for #{res}."
+      end
+    end
+    flash.now[:notice] = notices.join('<br />').html_safe unless notices.empty?
+    
   end
 
   # POST /orders/1/order_details/1/reservations
@@ -197,5 +223,14 @@ class ReservationsController < ApplicationController
       flash[:error] = relay_error_msg
     end
     redirect_to request.referer || order_order_detail_path(@order, @order_detail)
+  end
+
+  private
+  def set_active_tab_to_orders
+    @active_tab = 'orders'
+  end
+
+  def set_active_tab_to_reservations
+    @active_tab = 'reservations'
   end
 end

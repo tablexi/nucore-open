@@ -94,6 +94,9 @@ class OrderDetail < ActiveRecord::Base
       :conditions => [ 'orders.facility_id = ? AND order_details.statement_id IS NOT NULL', facility.id ] }
   }
 
+  scope :non_reservations, joins(:product).where("products.type <> 'Instrument'")
+  scope :reservations, joins(:product).where("products.type == 'Instrument'")
+
   # BEGIN acts_as_state_machine
   include AASM
 

@@ -2,6 +2,7 @@
 - links.push({ :url => root_path, :text => 'Home', :tab_name => 'home' })
 - if !acting_user.nil? and customer_tab?
   - links.push({ :url => url_for(:controller => '/orders'), :text => 'My Orders', :tab_name => 'orders' })
+  - links.push({ :url => reservations_url, :text => 'My Reservations', :tab_name => 'reservations'})
   - links.push({ :url => accounts_path, :text => 'My Payment Sources',:tab_name => 'accounts' })
 - if current_facility and admin_tab?
   - if current_user.operator_of?(current_facility)

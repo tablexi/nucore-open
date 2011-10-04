@@ -151,6 +151,9 @@ Nucore::Application.routes.draw do |map|
     end
   end
 
+  # reservations
+  match 'reservations' => 'reservations#list', :as => 'reservations'
+
   # file upload routes
   map.upload_product_file '/facilities/:facility_id/:product/:product_id/files/upload',
                           :controller => 'file_uploads', :action => 'upload', :conditions => {:method => :get}
