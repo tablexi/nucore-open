@@ -1,6 +1,5 @@
 %table
   %tr
-    %th.centered Actions
     %th.centered Order #
     %th Date
     %th{ :colspan => 2 } Quantity / Product
@@ -10,18 +9,6 @@
     - order = od.order
     - res = od.reservation
     %tr
-      %td.centered
-        - unless res.nil?
-          - if res.can_switch_instrument_on?
-            = link_to "Begin Reservation", order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'on')
-          - elsif res.can_switch_instrument_off?
-            = link_to "End Reservation", order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'off')
-          - elsif res.can_cancel?
-            - fee = od.cancellation_fee
-            - if fee > 0
-              = link_to "Cancel", order_order_detail_path(order, od, :cancel => 'cancel'), :method => :put, :confirm => "Canceling this reservation will incur a #{number_to_currency fee} fee.  Are you sure you wish to cancel this reservation?"
-            - else
-              = link_to "Cancel", order_order_detail_path(order, od, :cancel => 'cancel'), :method => :put
       %td.centered= link_to od, order_order_detail_path(order, od)
       %td=h human_datetime(order.ordered_at)
       %td.centered=h od.quantity

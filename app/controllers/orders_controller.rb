@@ -218,24 +218,11 @@ class OrdersController < ApplicationController
   # GET /orders
   # all my orders
   def index
-    @order_details = session_user.order_details.find(:all, :conditions => 'orders.ordered_at IS NOT NULL', :order => 'orders.ordered_at DESC').paginate(:page => params[:page])
-    notices = []
-    now = Time.zone.now
-    reservations = Reservation.find(:all,
-                                    :conditions => ["orders.user_id = ? AND (order_details.state = 'new' OR order_details.state = 'inprocess') AND orders.state = 'purchased' AND reservations.canceled_at IS NULL", session_user.id],
-                                    :joins => {:order_detail => :order})
-    reservations.each do |res|
-      # do you need to click stop
-      if res.can_switch_instrument_off?
-        notices << "Do not forget to click the \"End Reservation\" link when you finished your #{res} reservation."
-      # do you need to begin your reservation
-      elsif res.can_switch_instrument_on?
-        notices << "You may click the \"Begin Reservation\" link when you are ready to begin your #{res} reservation."
-      # do you have a reservation for today
-      elsif (res.reserve_start_at.to_s[0..9] == now.to_s[0..9] || res.reserve_start_at < now) && res.reserve_end_at > now
-        notices << "You have an upcoming reservation for #{res}."
-      end
-    end
-    flash.now[:notice] = notices.join('<br />').html_safe unless notices.empty?
+    # won't show reservations
+    @order_details = session_user.order_details
+      .non_reservations
+      .where("orders.ordered_at IS NOT NULL")
+      .order('orders.ordered_at DESC')
+      .paginate(:page => params[:page])
   end
 end
