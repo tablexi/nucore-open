@@ -15,7 +15,8 @@ class FacilityReservationsController < ApplicationController
       'reserve_range' => 'CONCAT(reservations.reserve_start_at, reservations.reserve_end_at)',
       'product_name'  => 'products.name',
       'status'        => 'order_statuses.name',
-      'assigned_to'   => "CONCAT(#{User.table_name}.last_name, #{User.table_name}.first_name)",
+      'assigned_to'   => "CONCAT(assigned_users_order_details.last_name, assigned_users_order_details.first_name)",
+      'reserved_by'   => "#{User.table_name}.first_name, #{User.table_name}.last_name"
   }
 
   # GET /facilities/:facility_id/reservations
@@ -24,7 +25,14 @@ class FacilityReservationsController < ApplicationController
 
     order_by_clause = [real_sort_clause, sort_direction].join(' ')
     @reservations = Reservation
-      .includes(:instrument, :order_detail => [:order, :order_status, :assigned_user])
+      .includes(
+        :instrument,
+        :order_detail => [
+          {:order => :user}, # move this below assigned_user and order_by reserved_by won't work
+          :order_status,
+          :assigned_user
+        ]
+      )
       .where("orders.facility_id = ? AND orders.ordered_at IS NOT NULL", current_facility.id)
       .order(order_by_clause)
       .paginate(:page => params[:page])

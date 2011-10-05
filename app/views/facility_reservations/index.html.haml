@@ -34,7 +34,7 @@
       -## THE HEADER ROW
       %tr
         %th
-        %th Reserved By
+        %th= sortable 'reserved_by', 'Reserved By'
         %th{:colspan => 2}= sortable 'date', 'Date Placed'
         %th{:colspan => 2}= sortable "reserve_range", 'Reservation Date/Time'
         %th= sortable 'product_name', 'Product'
