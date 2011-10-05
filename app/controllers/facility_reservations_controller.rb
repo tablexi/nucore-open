@@ -3,12 +3,31 @@ class FacilityReservationsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility
+  before_filter :set_active_tab_to_orders, :except => :index
+  before_filter :set_active_tab_to_reservations, :only => :index
 
   load_and_authorize_resource :class => Reservation
 
-  def initialize
-    @active_tab = 'admin_orders'
-    super
+  helper_method :sort_column, :sort_direction
+
+  ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN = {
+      'date'          => 'orders.ordered_at',
+      'reserve_range' => 'CONCAT(reservations.reserve_start_at, reservations.reserve_end_at)',
+      'product_name'  => 'products.name',
+      'status'        => 'order_statuses.name',
+      'assigned_to'   => "CONCAT(#{User.table_name}.last_name, #{User.table_name}.first_name)",
+  }
+
+  # GET /facilities/:facility_id/reservations
+  def index
+    real_sort_clause = ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN[sort_column] || sort_column
+
+    order_by_clause = [real_sort_clause, sort_direction].join(' ')
+    @reservations = Reservation
+      .includes(:instrument, :order_detail => [:order, :order_status, :assigned_user])
+      .where("orders.facility_id = ? AND orders.ordered_at IS NOT NULL", current_facility.id)
+      .order(order_by_clause)
+      .paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/reservations/:id/edit
@@ -155,6 +174,19 @@ class FacilityReservationsController < ApplicationController
     end
   end
 
+  # POST /facilities/:facility_id/reservations/batch_update
+  def batch_update 
+    redirect_to facility_reservations_path
+
+    msg_hash = OrderDetail.batch_update(params[:order_detail_ids], current_facility, params, 'reservations')
+
+    # add flash messages if necessary
+    if msg_hash
+      flash.merge!(msg_hash)
+    end
+  end
+
+
   # DELETE  /facilities/:facility_id/instruments/:instrument_id/reservations/:id
   def destroy
     @instrument  = current_facility.instruments.find_by_url_name!(params[:instrument_id])
@@ -164,5 +196,27 @@ class FacilityReservationsController < ApplicationController
     @reservation.destroy
     flash[:notice] = 'The reservation has been removed successfully'
     redirect_to facility_instrument_schedule_url
+  end
+
+  private
+
+  def set_active_tab_to_orders
+    @active_tab = 'admin_orders'
+  end
+
+  def set_active_tab_to_reservations
+    @active_tab = 'admin_reservations'
+  end
+
+  def sort_column
+    # TK: check against a whitelist
+    params[:sort] || 'date'
+  end
+
+  def order_clause_override(sort_column)
+  end
+
+  def sort_direction
+    (params[:dir] || '') == 'desc' ? 'desc' : 'asc'
   end
 end
