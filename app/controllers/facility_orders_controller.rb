@@ -64,53 +64,11 @@ class FacilityOrdersController < ApplicationController
   def batch_update
     redirect_to facility_orders_path
 
-    unless params[:order_detail_ids]
-      flash[:error] = 'No orders selected'
-      return
-    end
-
-    order_details = OrderDetail.find(params[:order_detail_ids])
-    if order_details.any? { |od| od.product.facility_id != current_facility.id || !(od.state.include?('inprocess') || od.state.include?('new'))}
-      flash[:error] = 'There was an error updating the selected orders'
-      return
-    end
-
-    changes = false
-    if params[:assigned_user_id] && params[:assigned_user_id].length > 0
-      changes = true
-      order_details.each {|od| od.assigned_user_id = (params[:assigned_user_id] == 'unassign' ? nil : params[:assigned_user_id])}
-    end
-
-    OrderDetail.transaction do
-      if params[:order_status_id] && params[:order_status_id].length > 0
-        changes = true
-        begin
-          os = OrderStatus.find(params[:order_status_id])
-          order_details.each do |od|
-            # cancel instrument orders
-            if os.id == OrderStatus.cancelled.first.id && od.reservation
-              raise "Order # #{od} failed cancellation." unless od.cancel_reservation(session_user, os, true)
-            # cancel other orders or change status of any order
-            else
-              od.change_status!(os)
-            end
-          end
-        rescue Exception => e
-          flash[:error] = "There was an error updating the selected orders.  #{e}"
-          raise ActiveRecord::Rollback
-        end
-      end
-      unless changes
-        flash[:notice] = 'No changes were required'
-        return
-      end
-      begin
-        order_details.all? { |od| od.save! }
-        flash[:notice] = 'The orders were successfully updated'
-      rescue
-        flash[:error] = 'There was an error updating the selected orders'
-        raise ActiveRecord::Rollback
-      end
+    msg_hash = OrderDetail.batch_update(params[:order_detail_ids], current_facility, params)
+    
+    # add flash messages if necessary
+    if msg_hash
+      flash.merge!(msg_hash)
     end
   end
 
