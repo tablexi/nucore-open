@@ -64,7 +64,7 @@ class FacilityOrdersController < ApplicationController
   def batch_update
     redirect_to facility_orders_path
 
-    msg_hash = OrderDetail.batch_update(params[:order_detail_ids], current_facility, params)
+    msg_hash = OrderDetail.batch_update(params[:order_detail_ids], current_facility, session_user, params)
     
     # add flash messages if necessary
     if msg_hash

@@ -449,6 +449,7 @@ class OrderDetail < ActiveRecord::Base
   # 
   # update_params:    a hash containing updates to attempt on the order_details
   #
+  # session_user:     user requesting the update
   #
   # Acceptable Updates:
   #   key                     value
@@ -473,7 +474,7 @@ class OrderDetail < ActiveRecord::Base
   #                   (since this class method is also used to update
   #                   order_details associated with reservations)
   #                   defaults to 'orders'
-  def self.batch_update(order_detail_ids, current_facility, update_params, msg_type='orders')
+  def self.batch_update(order_detail_ids, current_facility, session_user, update_params, msg_type='orders')
     msg_hash = {}
 
     unless order_detail_ids.present?
