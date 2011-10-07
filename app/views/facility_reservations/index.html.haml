@@ -95,6 +95,6 @@
             - OrderStatus.non_protected_statuses(current_facility).each do |os|
               = options_for_select([[os.name_with_level, os.id]])
         %td
-          = submit_tag "Update Orders"
+          = submit_tag "Update Reservations"
   = will_paginate(@order_details)
   = render :partial => '/price_display_footnote', :locals => { :admin => true }

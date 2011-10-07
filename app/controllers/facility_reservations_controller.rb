@@ -3,8 +3,8 @@ class FacilityReservationsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility
-  before_filter :set_active_tab_to_orders, :except => :index
-  before_filter :set_active_tab_to_reservations, :only => :index
+  before_filter :set_active_tab_to_orders, :except => [:index, :show_problems, :disputed]
+  before_filter :set_active_tab_to_reservations, :only => [:index, :show_problems, :disputed]
 
   load_and_authorize_resource :class => Reservation
 
