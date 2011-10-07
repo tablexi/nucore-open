@@ -1,10 +1,10 @@
 = content_for :h1 do
   =h current_facility
 
--#= content_for :tabnav do
-  -#= render :partial => 'admin/shared/tabnav_order', :locals => { :secondary_tab => 'new'}
+= content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_reservation', :locals => { :secondary_tab => 'new'}
 
-- if @reservations.empty?
+- if @order_details.empty?
   %p.notice There are no "New" or "In Process" Reservations.
 - else
   = form_tag(batch_update_facility_reservations_path, :method => :post) do
@@ -34,7 +34,7 @@
       -## THE HEADER ROW
       %tr
         %th
-        %th= sortable 'reserved_by', 'Reserved By'
+        %th= sortable 'reserved_by'
         %th{:colspan => 2}= sortable 'date', 'Date Placed'
         %th{:colspan => 2}= sortable "reserve_range", 'Reservation Date/Time'
         %th= sortable 'product_name', 'Product'
@@ -42,9 +42,9 @@
         %th= sortable 'status', 'Status'
         %th.currency Price
       -## THE DETAIL ROWS
-      - @reservations.each do |res|
-        - od = res.order_detail
+      - @order_details.each do |od|
         - order = od.order
+        - res = od.reservation
         %tr
           %td.centered= check_box_tag("order_detail_ids[]", od.id, false, {:class => 'toggle', :id => nil })
           %td= order.user.full_name
@@ -96,5 +96,5 @@
               = options_for_select([[os.name_with_level, os.id]])
         %td
           = submit_tag "Update Orders"
-  = will_paginate(@reservations)
+  = will_paginate(@order_details)
   = render :partial => '/price_display_footnote', :locals => { :admin => true }
