@@ -5,9 +5,9 @@
     %th Product
     %th.centered Status
     %th.currency Total
-  - reservations.each do |res|
-    - od = res.order_detail
+  - order_details.each do |od|
     - order = od.order
+    - res = od.reservation
     %tr
       %td.centered
         - if res.can_switch_instrument_on?
@@ -51,4 +51,4 @@
   %span.actual_cost
     Green
   totals are final. Pricing will be assigned to transactions with unassigned totals.
-= will_paginate(reservations)
+= will_paginate(order_details)

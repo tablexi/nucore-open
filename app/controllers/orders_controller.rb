@@ -218,7 +218,7 @@ class OrdersController < ApplicationController
   # GET /orders
   # all my orders
   def index
-    # won't show reservations
+    # won't show instrument order_details
     @order_details = session_user.order_details
       .non_reservations
       .where("orders.ordered_at IS NOT NULL")

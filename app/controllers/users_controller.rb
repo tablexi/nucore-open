@@ -89,9 +89,9 @@ class UsersController < ApplicationController
   def reservations
     @user = User.find(params[:user_id])
     # order details for this facility
-    @reservations = Reservation
-      .includes(:order_detail => :order)
-      .where("orders.user_id = ? AND orders.facility_id = #{@current_facility.id} AND orders.ordered_at IS NOT NULL", @user.id)
+    @order_details = @user.order_details
+      .reservations
+      .where("orders.facility_id = #{@current_facility.id} AND orders.ordered_at IS NOT NULL")
       .order('orders.ordered_at DESC')
       .paginate(:page => params[:page])
   end

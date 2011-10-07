@@ -1,8 +1,8 @@
 = content_for :h1 do
   My Reservations
 
-- if @reservations.empty?
+- if @order_details.empty?
   %p.notice You have not made any reservations.
 - else
-  = render :partial => 'shared/reservations_table', :locals => { :reservations => @reservations } 
+  = render :partial => 'shared/reservations_table', :locals => { :order_details => @order_details } 
 

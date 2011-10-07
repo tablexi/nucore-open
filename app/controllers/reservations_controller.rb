@@ -36,13 +36,15 @@ class ReservationsController < ApplicationController
   def list
     notices = []
     now = Time.zone.now
-    @reservations = Reservation
-      .includes(:order_detail => :order)
-      .where("orders.user_id = ? AND orders.ordered_at IS NOT NULL", session_user.id)
+    @order_details = session_user.order_details
+      .reservations
+      .includes(:reservation)
+      .where("orders.ordered_at IS NOT NULL")
       .order('orders.ordered_at DESC')
       .paginate(:page => params[:page])
 
-    @reservations.each do |res|
+    @order_details.each do |od|
+      res = od.reservation
       # do you need to click stop
       if res.can_switch_instrument_off?
         notices << "Do not forget to click the \"End Reservation\" link when you finished your #{res} reservation."

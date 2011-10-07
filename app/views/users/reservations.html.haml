@@ -8,7 +8,7 @@
   = render :partial => 'admin/shared/tabnav_users', :locals => {:secondary_tab => 'reservations'}
  
 %h1 #{@user.full_name} Reservations
-- if @reservations.empty?
+- if @order_details.empty?
   %p.notice #{@user.full_name} has not placed any reservations.
 - else
-  = render :partial => 'shared/reservations_table', :locals => { :reservations => @reservations } 
+  = render :partial => 'shared/reservations_table', :locals => { :order_details => @order_details } 
