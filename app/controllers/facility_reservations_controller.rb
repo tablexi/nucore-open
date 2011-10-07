@@ -24,14 +24,12 @@ class FacilityReservationsController < ApplicationController
     real_sort_clause = ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN[sort_column] || sort_column
 
     order_by_clause = [real_sort_clause, sort_direction].join(' ')
-    @reservations = Reservation
+    @order_details = current_facility.order_details.new_or_inprocess.reservations
       .includes(
-        :instrument,
-        :order_detail => [
-          {:order => :user}, # move this below assigned_user and order_by reserved_by won't work
-          :order_status,
-          :assigned_user
-        ]
+        {:order => :user},
+        :order_status,
+        :reservation,
+        :assigned_user
       )
       .where("orders.facility_id = ? AND orders.ordered_at IS NOT NULL", current_facility.id)
       .order(order_by_clause)
@@ -194,6 +192,21 @@ class FacilityReservationsController < ApplicationController
     end
   end
 
+  # GET /facilities/:facility_id/orders/review
+  def show_problems
+    @order_details = current_facility.order_details
+      .reservations
+      .reject{|od| !od.problem_order?}
+      .paginate(:page => params[:page])
+  end
+
+  # GET /facilities/:facility_id/orders/disputed
+  def disputed
+    @details = current_facility.order_details
+      .reservations
+      .in_dispute
+      .paginate(:page => params[:page])
+  end
 
   # DELETE  /facilities/:facility_id/instruments/:instrument_id/reservations/:id
   def destroy
@@ -219,9 +232,6 @@ class FacilityReservationsController < ApplicationController
   def sort_column
     # TK: check against a whitelist
     params[:sort] || 'date'
-  end
-
-  def order_clause_override(sort_column)
   end
 
   def sort_direction
