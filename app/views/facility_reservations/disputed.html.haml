@@ -2,7 +2,7 @@
   =h current_facility
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_order', :locals => { :secondary_tab => 'disputed'}
+  = render :partial => 'admin/shared/tabnav_reservation', :locals => { :secondary_tab => 'disputed'}
 
 - if @details.empty?
   %p.notice There are no Disputed reservations
