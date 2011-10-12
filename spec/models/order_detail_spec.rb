@@ -259,9 +259,14 @@ describe OrderDetail do
     end
 
     context "run on an order_detail for an instrument who's price policy" do
-      it "does not require actuals should not be a problem order" do
-        @no_actuals_od.state.should == 'complete'
-        @no_actuals_od.problem_order?.should be_false
+      context "does not require actuals" do
+        it "should complete" do
+          @no_actuals_od.state.should == 'complete'
+        end
+
+        it "should not be a problem order" do
+          @no_actuals_od.problem_order?.should be_false
+        end
       end
 
       context "requires actuals" do
