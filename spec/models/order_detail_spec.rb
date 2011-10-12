@@ -191,13 +191,17 @@ describe OrderDetail do
         :facility_account => @facility_account,
         :facility => @facility
       )
+      @instrument_wo_pp = Factory.create(:instrument,
+        :facility_account => @facility_account,
+        :facility => @facility
+      )
       
-      [@no_actuals_instrument, @actuals_instrument, @both_instrument].each do |instrument|
+      [@no_actuals_instrument, @actuals_instrument, @both_instrument, @instrument_wo_pp].each do |instrument|
         sr = Factory.create(:schedule_rule, :instrument => instrument)
       end
 
       # refresh associations so the instruments will know about their shiny new schedule rules
-      [@no_actuals_instrument, @actuals_instrument, @both_instrument].each do |instrument|
+      [@no_actuals_instrument, @actuals_instrument, @both_instrument, @instrument_wo_pp].each do |instrument|
         instrument.reload
       end
 
@@ -206,12 +210,13 @@ describe OrderDetail do
         :price_group  => @user.price_groups.first
       ))
       @actuals_instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy,
-        :price_group => @user.price_groups.first,
-        :usage_rate  => 1
+        :price_group      => @user.price_groups.first,
+        :usage_rate       => 1,
+        :reservation_rate => nil
       ))
       @both_instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy,
-        :price_group => @user.price_groups.first,
-        :usage_rate  => 1
+        :price_group      => @user.price_groups.first,
+        :usage_rate       => 1
       ))
 
       # create an order and some order details 
@@ -227,8 +232,8 @@ describe OrderDetail do
       @no_actuals_od  = Factory.create(:order_detail, :order => @order, :product => @no_actuals_instrument)
       @actuals_od     = Factory.create(:order_detail, :order => @order, :product => @actuals_instrument)
       @both_od        = Factory.create(:order_detail, :order => @order, :product => @both_instrument)
+      @no_pp_od       = Factory.create(:order_detail, :order => @order, :product => @instrument_wo_pp)
 
-      #require 'ruby-debug'; debugger
 
       @no_actuals_od.reservation = Factory(:reservation, :instrument => @no_actuals_instrument)
       @no_actuals_od.save!
@@ -236,13 +241,21 @@ describe OrderDetail do
       @actuals_od.save!
       @both_od.reservation = Factory(:reservation, :instrument => @both_instrument)
       @both_od.save!
+      @no_pp_od.reservation = Factory(:reservation, :instrument => @both_instrument)
+      @no_pp_od.save!
       
+      # travel to the future to complete the order_details
       Timecop.travel(2.days.from_now) do
-        [@no_actuals_od, @actuals_od, @both_od].each do |od|
-          #od.to_inprocess!
-          od.to_complete!
+        [@no_actuals_od, @actuals_od, @both_od, @no_pp_od].each do |od|
+          od.change_status!(OrderStatus.find_by_name('In Process'))
+          od.change_status!(OrderStatus.find_by_name('Complete'))
         end
       end
+
+      [@no_actuals_od, @actuals_od, @both_od, @no_pp_od].each do |od|
+        od.reload
+      end
+
     end
 
     context "run on an order_detail for an instrument who's price policy" do
@@ -251,14 +264,34 @@ describe OrderDetail do
         @no_actuals_od.problem_order?.should be_false
       end
 
-      it "requires actuals should be a problem order" do
-        @actuals_od.state.should == 'complete'
-        @actuals_od.problem_order?.should be_true
+      context "requires actuals should" do
+        it "should complete" do
+          @actuals_od.state.should == 'complete'
+        end
+
+        it "should be a problem order" do
+          @actuals_od.problem_order?.should be_true
+        end
       end
 
-      it "requires actuals and has a reservation_rate should be a problem order" do
-        @both_od.state.should == 'complete'
-        @both_od.problem_order?.should be_true
+      context "requires actuals and has a reservation_rate" do
+        it "should complete" do
+          @both_od.state.should == 'complete'
+        end
+
+        it "should be a problem order" do
+          @both_od.problem_order?.should be_true
+        end
+      end
+
+      context "doesn't exist" do
+        it "should complete" do
+          @no_pp_od.state.should == 'complete'
+        end
+
+        it "should be a problem order" do
+          @no_pp_od.problem_order?.should be_true
+        end
       end
     end
 
