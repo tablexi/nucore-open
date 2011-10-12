@@ -264,7 +264,7 @@ describe OrderDetail do
         @no_actuals_od.problem_order?.should be_false
       end
 
-      context "requires actuals should" do
+      context "requires actuals" do
         it "should complete" do
           @actuals_od.state.should == 'complete'
         end
