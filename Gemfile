@@ -27,16 +27,17 @@ gem 'awesome_nested_set', '2.0.1'
 gem 'exception_notification', :require => 'exception_notifier'
 
 group :development do
-   gem 'rspec-rails', '2.6.1'
-   gem 'spork', '0.7.5'
-   gem 'ZenTest', '4.5.0' # TODO: remove?
-   gem 'autotest', '4.4.6' # TODO: remove?
-   gem 'autotest-rails', '4.1.0' # TODO: remove?
-   gem 'mocha', '0.9.7' # TODO: remove?
-   gem 'factory_girl_rails', '1.0.1'
-   gem 'shoulda', '2.11.3'
-   gem 'ruby-debug19', '0.11.6'
-   gem 'single_test', '0.4.0'
+   gem 'autotest',          '4.4.6' # TODO: remove?
+   gem 'autotest-rails',    '4.1.0' # TODO: remove?
    gem 'ci_reporter'
+   gem 'factory_girl_rails','1.0.1'
+   gem 'mocha',             '0.9.7' # TODO: remove?
+   gem 'rspec-rails',       '2.6.1'
+   gem 'ruby-debug19',      '0.11.6'
+   gem 'shoulda',           '2.11.3'
+   gem 'single_test',       '0.4.0'
+   gem 'spork',             '0.7.5'
+   gem 'timecop'
+   gem 'ZenTest',           '4.5.0' # TODO: remove?
    #gem 'sqlite3-ruby'
 end

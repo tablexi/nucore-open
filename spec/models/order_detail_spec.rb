@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'timecop'
 
 describe OrderDetail do
 
@@ -175,6 +176,94 @@ describe OrderDetail do
 
   end
 
+  describe "#problem_order?" do
+    before :each do
+      # create some instruments and schedule rules
+      @actuals_instrument=Factory.create(:instrument,
+        :facility_account => @facility_account,
+        :facility => @facility
+      )
+      @both_instrument = Factory.create(:instrument,
+        :facility_account => @facility_account,
+        :facility => @facility
+      )
+      @no_actuals_instrument = Factory.create(:instrument,
+        :facility_account => @facility_account,
+        :facility => @facility
+      )
+      
+      [@no_actuals_instrument, @actuals_instrument, @both_instrument].each do |instrument|
+        sr = Factory.create(:schedule_rule, :instrument => instrument)
+      end
+
+      # refresh associations so the instruments will know about their shiny new schedule rules
+      [@no_actuals_instrument, @actuals_instrument, @both_instrument].each do |instrument|
+        instrument.reload
+      end
+
+      # create the price policies
+      @no_actuals_instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy,
+        :price_group  => @user.price_groups.first
+      ))
+      @actuals_instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy,
+        :price_group => @user.price_groups.first,
+        :usage_rate  => 1
+      ))
+      @both_instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy,
+        :price_group => @user.price_groups.first,
+        :usage_rate  => 1
+      ))
+
+      # create an order and some order details 
+      @order=Factory.create(:order,
+        :facility => @facility,
+        :user => @user,
+        :created_by => @user.id,
+        :account => @account,
+        :ordered_at => Time.zone.now
+      )
+
+      # create the order_details
+      @no_actuals_od  = Factory.create(:order_detail, :order => @order, :product => @no_actuals_instrument)
+      @actuals_od     = Factory.create(:order_detail, :order => @order, :product => @actuals_instrument)
+      @both_od        = Factory.create(:order_detail, :order => @order, :product => @both_instrument)
+
+      #require 'ruby-debug'; debugger
+
+      @no_actuals_od.reservation = Factory(:reservation, :instrument => @no_actuals_instrument)
+      @no_actuals_od.save!
+      @actuals_od.reservation = Factory(:reservation, :instrument => @actuals_instrument)
+      @actuals_od.save!
+      @both_od.reservation = Factory(:reservation, :instrument => @both_instrument)
+      @both_od.save!
+      
+      Timecop.travel(2.days.from_now) do
+        [@no_actuals_od, @actuals_od, @both_od].each do |od|
+          #od.to_inprocess!
+          od.to_complete!
+        end
+      end
+    end
+
+    context "run on an order_detail for an instrument who's price policy" do
+      it "does not require actuals should not be a problem order" do
+        @no_actuals_od.state.should == 'complete'
+        @no_actuals_od.problem_order?.should be_false
+      end
+
+      it "requires actuals should be a problem order" do
+        @actuals_od.state.should == 'complete'
+        @actuals_od.problem_order?.should be_true
+      end
+
+      it "requires actuals and has a reservation_rate should be a problem order" do
+        @both_od.state.should == 'complete'
+        @both_od.problem_order?.should be_true
+      end
+    end
+
+  end
+  
   context "state management" do
 
     it "should not allow transition from 'new' to 'invoiced'" do
