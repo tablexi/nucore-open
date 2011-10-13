@@ -28,7 +28,7 @@
       %td
         %ul
           %li
-            - product_name = (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
+            - product_name = order_detail_description(od)
             = "#{h od.product.facility.abbreviation} / #{product_name}".html_safe
             - unless res.nil?
               - if res.can_edit?

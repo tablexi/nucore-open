@@ -48,7 +48,7 @@
           %td.centered= od.quantity
           %td
             %ul
-              - product_name = (od.bundle ? "#{h od.bundle} &mdash; ".html_safe : '') + h(od.product)
+              - product_name = order_detail_description(od)
               %li= product_name
               - unless od.reservation.nil?
                 - if od.reservation.can_edit?

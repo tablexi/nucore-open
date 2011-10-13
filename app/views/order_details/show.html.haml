@@ -87,7 +87,7 @@
     %td.centered=h @order_detail.quantity
     %td
       %ul
-        %li= (@order_detail.bundle ? "#{h @order_detail.bundle} &mdash; " : '') + h(@order_detail.product)
+        %li= order_detail_description(@order_detail)
         - if res
           - if res.can_edit?
             %li.indented= link_to res, edit_order_order_detail_reservation_path(@order, @order_detail, res)

@@ -24,11 +24,11 @@
       %td= od
       - if od.reservation
         %td
-          =h (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
+          = ((od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)).html_safe
           %br
           =h od.reservation
       - else
-        %td= (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
+        %td= ((od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)).html_safe
       %td=h od.quantity
       - if od.cost_estimated?
         %td=h number_to_currency od.estimated_cost

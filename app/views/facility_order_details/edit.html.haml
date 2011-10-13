@@ -171,7 +171,7 @@
           = f.text_field :quantity, html_opts
       %td
         %ul
-          - product_name = ((@order_detail.bundle ? "#{h @order_detail.bundle} &mdash; " : '') + h(@order_detail.product)).html_safe
+          - product_name = order_detail_description(@order_detail)
           %li= product_name
           - if @order_detail.reservation
             %li.indented= link_to(@order_detail.reservation, edit_facility_order_order_detail_reservation_path(current_facility, @order, @order_detail, @order_detail.reservation))
@@ -246,7 +246,7 @@
       %th Status
       %th Assigned To
     - @order.order_details.find(:all, :conditions => {:group_id => @order_detail.group_id}).each do |od|
-      - product_name = ((od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)).html_safe
+      - product_name = order_detail_description(od)
       %tr
         %td= link_to od, edit_facility_order_order_detail_path(current_facility, @order, od)
         %td= od.quantity
