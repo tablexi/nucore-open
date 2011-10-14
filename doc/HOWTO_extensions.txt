@@ -42,3 +42,10 @@ make sense for heavy lifting. In that case you should create a plugin, and, if n
 the plugin into the main application. Also, in some cases, it may be better for the open project to make room
 for custom code via abstract methods/hooks/callbacks/etc. In that case please contact the project maintainers to
 request a feature.
+
+
+Warning
+-------
+
+The extensions system does its work by opening the class to be extended and overwriting #initialize. That said,
+initialization done in the constructor will be lost unless the extension compensates in some manner.

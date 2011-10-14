@@ -76,6 +76,16 @@ describe User do
     @user.should be_respond_to :ldap_attributes
   end
 
+  it 'should not be external user' do
+    @user.username.should_not == @user.email
+    @user.should_not be_external
+  end
+
+  it 'should be external user' do
+    @user.username=@user.email
+    @user.should be_external
+  end
+
   it "should belong to Cancer Center price group if the user is in the Cancer Center view"
 
   it "cart should always return an order object with nil ordered_at"
