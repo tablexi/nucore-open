@@ -40,6 +40,13 @@ class User < ActiveRecord::Base
     encrypted_password.present? && password_salt.present?
   end
 
+  #
+  # Returns true if this user is external to organization, false othewise
+  def external?
+    username == email
+  end
+
+
   # Find the users for a facility
   # TODO: move this to facility?
   def self.find_users_by_facility(facility)
