@@ -26,10 +26,10 @@
     - balance[61] = a.facility_balance(current_facility, today - 61*24*60*60) - balance.values.inject{|sum, n| sum + n }
     - balance[31] = a.facility_balance(current_facility, today - 31*24*60*60) - balance.values.inject{|sum, n| sum + n }
     - balance[0]  = a.facility_balance(current_facility, today)               - balance.values.inject{|sum, n| sum + n }
-    %tr
+    %tr{:class => (balance[91] > 0 ? "reconcile-warning" : "")}
       %td= link_to a, facility_account_statement_path(current_facility, a, 'recent')
-      %td.currency=h number_to_currency(balance[0])
-      %td.currency=h number_to_currency(balance[31])
-      %td.currency=h number_to_currency(balance[61])
-      %td.currency=h number_to_currency(balance[91])
-      %td.currency=h number_to_currency(@account_balances[a.id])
+      %td.currency= number_to_currency(balance[0])
+      %td.currency= number_to_currency(balance[31])
+      %td.currency= number_to_currency(balance[61])
+      %td.currency= number_to_currency(balance[91])
+      %td.currency= number_to_currency(@account_balances[a.id])
