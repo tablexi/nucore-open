@@ -17,13 +17,16 @@ class Ability
       can :manage, :all
       return
     end
-
+    
+    can :list, Facility if user.facilities.size > 0 and controller.is_a?(FacilitiesController)
+    
     return unless resource
 
     if resource.is_a?(Facility)
 
       can :complete, Surveyor
-
+      
+      
       if user.operator_of?(resource)
         can :manage, [
           AccountPriceGroupMember, Service, BundleProduct,
@@ -55,6 +58,8 @@ class Ability
         can [ :update, :manage ], Facility
         can :show_problems, Order
       end
+      
+      
 
     elsif resource.is_a?(Account)
 
