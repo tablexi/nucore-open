@@ -126,18 +126,32 @@ describe FacilitiesController do
 
     it_should_deny :guest
 
-    context "as facility operators" do
+    context "as facility operators with two facilities" do
 
       before(:each) do
+        @facility2 = Factory.create(:facility)
         @controller.stubs(:current_facility).returns(@authable)
+        @controller.stubs(:manageable_facilities).returns([@authable, @facility2])
         @controller.expects(:init_current_facility).never
       end
 
       it_should_allow_all facility_operators do
-        assigns(:manageable_facilities).should_not be_nil
-        assigns(:facilities).should == [@authable]
+        assigns(:facilities).should == [@authable, @facility2]
         response.should be_success
         response.should render_template('facilities/list')
+      end
+    end
+    
+    context "as facility operators with one facility" do
+      before(:each) do
+        @controller.stubs(:current_facility).returns(@authable)
+        @controller.expects(:init_current_facility).never
+      end
+      # admin won't be redirected since their manageable facilities is something more
+      it_should_allow_all (facility_operators - [:admin]) do
+        assigns(:facilities).should == [@authable]
+        assigns(:manageable_facilities).should == [@authable]
+        response.should redirect_to(facility_orders_path(@authable))
       end
     end
 

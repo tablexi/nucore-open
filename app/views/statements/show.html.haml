@@ -32,15 +32,19 @@
   %table
     %tr
       %th Transaction Date
+      %th Purchaser
+      %th Order Number
       %th Description
       %th.centered Dispute?
       %th.currency Amount
     - @order_details.each do |od|
       %tr
         %td= human_datetime(od.order.ordered_at)
+        %td= od.order.user
+        %td= link_to od, order_order_detail_path(od.order, od)
         %td
           %ul
-            %li= h od.description
+            %li= order_detail_description(od)
             - unless od.note.blank?
               %li
                 %i=h "Note: #{od.note}"
@@ -59,7 +63,7 @@
             %span.actual_cost
               = show_actual_total(od)
     %tr
-      %td.centered{:colspan =>4}= will_paginate(@order_details)
+      %td.centered{:colspan =>6}= will_paginate(@order_details)
 
   = render :partial => '/price_display_footnote'
 

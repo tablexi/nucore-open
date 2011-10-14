@@ -35,6 +35,10 @@ class FacilitiesController < ApplicationController
     else
       @facilities = manageable_facilities
       raise ActiveRecord::RecordNotFound if @facilities.empty?
+      if (@facilities.size == 1)
+        redirect_to facility_orders_path(@facilities[0]) 
+        return
+      end
     end
 
     render :layout => 'application'
