@@ -20,6 +20,7 @@
         %td
         %td
         %td
+        %td
           - if facility_users.empty?
             = select_tag :assigned_user_id, options_for_select([['Assign to...', nil], ['Unassign', 'unassign']]), :class => 'sync_select', :id => nil
           - else
@@ -34,9 +35,10 @@
       -## THE HEADER ROW
       %tr
         %th
+        %th Order #
         %th= sortable 'reserved_by'
-        %th{:colspan => 2}= sortable 'date', 'Date Placed'
-        %th{:colspan => 2}= sortable "reserve_range", 'Reservation Date/Time'
+        %th{:colspan => 2}= sortable 'date', 'Reserved On'
+        %th{:colspan => 2}= sortable "reserve_range", 'Reserved For'
         %th= sortable 'product_name', 'Product'
         %th= sortable 'assigned_to', 'Assigned To'
         %th= sortable 'status', 'Status'
@@ -47,6 +49,7 @@
         - res = od.reservation
         %tr
           %td.centered= check_box_tag("order_detail_ids[]", od.id, false, {:class => 'toggle', :id => nil })
+          %td.centered= link_to od, edit_facility_order_order_detail_path(current_facility, order, od)
           %td= order.user.full_name
           %td{:colspan => 2}=h human_datetime(order.ordered_at)
           %td{:colspan => 2}
@@ -77,6 +80,7 @@
             %td.actual_cost.currency= show_actual_total(od)
       -## THE FOOTER CONTROL ROW
       %tr.borderless
+        %td
         %td
         %td
         %td

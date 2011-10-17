@@ -12,7 +12,7 @@
     %table
       -## THE HEADER CONTROL ROW
       %tr.borderless
-        %td{ :colspan => 3 }= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
+        %td{ :colspan => 4 }= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
         %td
         %td
         %td
@@ -31,7 +31,7 @@
       %tr
         %th
         %th.centered= sortable 'order_number', 'Order #'
-        %th= sortable 'date'
+        %th= sortable 'date', 'Ordered On'
         %th User Name
         %th{ :colspan => 2 }== Quantity / #{sortable 'product'}
         %th= sortable 'assigned_to'
@@ -69,6 +69,7 @@
             %td.actual_cost.currency= show_actual_total(od)
       -## THE FOOTER CONTROL ROW
       %tr.borderless
+        %td
         %td
         %td
         %td

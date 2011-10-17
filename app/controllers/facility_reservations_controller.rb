@@ -3,21 +3,25 @@ class FacilityReservationsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility
-  before_filter :set_active_tab_to_orders, :except => [:index, :show_problems, :disputed]
-  before_filter :set_active_tab_to_reservations, :only => [:index, :show_problems, :disputed]
 
   load_and_authorize_resource :class => Reservation
 
   helper_method :sort_column, :sort_direction
 
   ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN = {
-      'date'          => 'orders.ordered_at',
+      'date'          => 'reservations.reserve_start_at',
       'reserve_range' => 'CONCAT(reservations.reserve_start_at, reservations.reserve_end_at)',
       'product_name'  => 'products.name',
       'status'        => 'order_statuses.name',
       'assigned_to'   => "CONCAT(assigned_users_order_details.last_name, assigned_users_order_details.first_name)",
       'reserved_by'   => "#{User.table_name}.first_name, #{User.table_name}.last_name"
   }
+
+
+  def initialize
+    super
+    @active_tab = 'admin_reservations'
+  end
 
   # GET /facilities/:facility_id/reservations
   def index
@@ -32,8 +36,9 @@ class FacilityReservationsController < ApplicationController
         :assigned_user
       )
       .where("orders.facility_id = ? AND orders.ordered_at IS NOT NULL", current_facility.id)
-      .order(order_by_clause)
-      .paginate(:page => params[:page])
+      .order(order_by_clause).all
+
+    @order_details=@order_details.delete_if{|od| od.reservation.nil? }.paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/reservations/:id/edit
@@ -221,20 +226,12 @@ class FacilityReservationsController < ApplicationController
 
   private
 
-  def set_active_tab_to_orders
-    @active_tab = 'admin_orders'
-  end
-
-  def set_active_tab_to_reservations
-    @active_tab = 'admin_reservations'
-  end
-
   def sort_column
     # TK: check against a whitelist
     params[:sort] || 'date'
   end
 
   def sort_direction
-    (params[:dir] || '') == 'desc' ? 'desc' : 'asc'
+    (params[:dir] || '') =~ /asc/i ? 'asc' : 'desc'
   end
 end

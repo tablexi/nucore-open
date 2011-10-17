@@ -38,7 +38,7 @@
   %ul.horiz
     %li= f.submit 'Save', :class => 'btn'
     - if @order.purchased?
-      %li= link_to 'Cancel', orders_path
+      %li= link_to 'Cancel', reservations_path
     - else
       %li= link_to 'Cancel', cart_path
 
