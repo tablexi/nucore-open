@@ -12,6 +12,16 @@ module ApplicationHelper
     full_title.html_safe
   end
   
+  def order_detail_description(order_detail)
+    name = "";
+    if order_detail.bundle
+      name << "#{h order_detail.bundle}";
+      name << " &mdash; "
+    end 
+    name << h(order_detail.product)
+    name.html_safe
+  end
+  
   def human_rate_calculation(rate, subsidy)
     # handle nil input
     rate    = 0 if rate.nil?

@@ -583,6 +583,16 @@ class Reservation < ActiveRecord::Base
     actual_start_at && actual_end_at
   end
 
+  def has_and_requires_actuals?
+    if pp = order_detail.price_policy
+      if pp.usage_rate.present?
+        has_actuals?
+      else
+        true
+      end
+    end
+  end
+
   protected
 
   def has_order_detail?

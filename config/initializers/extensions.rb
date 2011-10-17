@@ -1,5 +1,5 @@
 # This is what makes the nucore extension system work.
-# See doc/README.extensions for details on nucore extensions.
+# See doc/HOWTO_extensions for details on nucore extensions.
 Dir["#{Rails.root}/lib/extensions/*.rb"].each do |file|
   require file
   file_name=File.basename(file, File.extname(file))
