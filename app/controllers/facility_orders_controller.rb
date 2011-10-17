@@ -74,18 +74,18 @@ class FacilityOrdersController < ApplicationController
 
   # GET /facilities/:facility_id/orders/review
   def show_problems
-    @order_details = current_facility.order_details
-      .non_reservations
-      .reject{|od| !od.problem_order?}
-      .paginate(:page => params[:page])
+    @order_details = current_facility.order_details.
+      non_reservations.
+      reject{|od| !od.problem_order?}.
+      paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/orders/disputed
   def disputed
-    @details = current_facility.order_details
-      .non_reservations
-      .in_dispute
-      .paginate(:page => params[:page])
+    @details = current_facility.order_details.
+      non_reservations.
+      in_dispute.
+      paginate(:page => params[:page])
   end
   
   private

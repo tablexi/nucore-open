@@ -38,11 +38,11 @@ class ReservationsController < ApplicationController
   def list
     notices = []
     now = Time.zone.now
-    @order_details = current_user.order_details
-      .joins(:order)
-      .includes(:reservation)
-      .where("orders.ordered_at IS NOT NULL")
-      .order('orders.ordered_at DESC').all
+    @order_details = current_user.order_details.
+      joins(:order).
+      includes(:reservation).
+      where("orders.ordered_at IS NOT NULL").
+      order('orders.ordered_at DESC').all
 
     @order_details=@order_details.delete_if{|od| od.reservation.nil? }.paginate(:page => params[:page])
 

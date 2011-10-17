@@ -219,10 +219,10 @@ class OrdersController < ApplicationController
   # all my orders
   def index
     # won't show instrument order_details
-    @order_details = session_user.order_details
-      .non_reservations
-      .where("orders.ordered_at IS NOT NULL")
-      .order('orders.ordered_at DESC')
-      .paginate(:page => params[:page])
+    @order_details = session_user.order_details.
+      non_reservations.
+      where("orders.ordered_at IS NOT NULL").
+      order('orders.ordered_at DESC').
+      paginate(:page => params[:page])
   end
 end
