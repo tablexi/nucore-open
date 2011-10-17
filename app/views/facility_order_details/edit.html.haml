@@ -192,12 +192,12 @@
         - res = @order_detail.reservation
         - if res && res.actual_start_at && res.actual_end_at
           = render :partial => 'price_row', :locals => { :form => f }
-        - else
+        - elsif !res.has_and_requires_actuals?
           %td.centered{:colspan => '3'} You must enter actual start/end reservation times.
       - else 
         = render :partial => 'price_row', :locals => { :form => f }
       %tr
-        %td{:colspan => '8'}
+        %td{:colspan => '6'}
           %label.inline Note:
           - opts={ :style=> "width:200px" }
           - opts.merge!(:disabled => 'disabled') if @order_detail.reconciled?
