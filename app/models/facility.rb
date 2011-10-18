@@ -25,7 +25,6 @@ class Facility < ActiveRecord::Base
   validates_presence_of :name, :short_description, :abbreviation
   validate_url_name :url_name
   validates_uniqueness_of :abbreviation, :journal_mask, :case_sensitive => false
-  validates_inclusion_of :is_active, :in => [true, false]
   validates_format_of    :abbreviation, :with => /^[a-zA-Z\d\-\.\s]+$/, :message => "may include letters, numbers, hyphens, spaces, or periods only"
   validates_format_of    :journal_mask, :with => /^C\d{2}$/, :message => "must be in the format C##"
 
