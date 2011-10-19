@@ -86,8 +86,15 @@ class GeneralReportsController < ReportsController
       sums[key]=[0,0] unless sums.has_key?(key)
       sums[key][0] += od.quantity
       @total_quantity += od.quantity
-      sums[key][1] += od.total
-      @total_cost += od.total
+
+      total=od.total
+      # total can be nil, in which case don't add to cost
+      # stats. Report remains true but can appear off since
+      # quantity goes up but not cost.
+      if total
+        sums[key][1] += total
+        @total_cost += total
+      end
     end
 
     sums.each do |k,v|
