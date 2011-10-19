@@ -47,6 +47,22 @@ describe ReservationsController do
 
   end
 
+  context 'list' do
+    before :each do
+      @method=:get
+      @action=:list
+    end
+
+    it_should_require_login
+
+    it_should_allow :staff do
+      should respond_with :success
+      should assign_to(:order_details).with_kind_of(Array)
+      should assign_to(:active_tab).with('reservations')
+      should render_template('list')
+    end
+  end
+
 
   context 'create' do
 

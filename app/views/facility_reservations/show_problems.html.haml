@@ -1,0 +1,40 @@
+= content_for :h1 do
+  =h current_facility
+
+= content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_reservation', :locals => { :secondary_tab => 'problem'}
+
+- if @order_details.empty?
+  %p.notice There are no problem reservations.
+- else
+  %p The reservation line items below are complete and either do not have a price policy or are reservations without usage information. Each will need to be corrected.
+  %table
+    %tr
+      %th Order #
+      %th Date
+      %th{ :colspan => 2 } Quantity / Product
+      %th Account
+      %th Problem
+    - @order_details.each do |od|
+      - order = od.order
+      - res   = od.reservation
+      - product_name = (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
+      %tr{:class => needs_reconcile_warning?(od) ? 'reconcile-warning' : ''}
+        %td.centered= link_to od, edit_facility_order_order_detail_path(current_facility, od.order, od)
+        %td=h human_datetime(od.order.ordered_at)
+        %td.centered=h od.quantity
+        %td= product_name
+        %td=h od.account
+        - if res && !res.has_actuals?
+          %td.centered= "Actual Usage Missing #{link_to 'Enter', edit_facility_order_order_detail_reservation_path(current_facility, od.order, od, res)}".html_safe
+        - else
+          %td.centered= "Price Policy Missing #{link_to 'Assign', edit_facility_order_order_detail_path(current_facility, od.order, od)}".html_safe
+    %tr.borderless
+      %td
+      %td
+      %td
+      %td
+      %td
+      %td
+  = will_paginate(@order_details)
+  = render :partial => 'shared/reconcile_footnote'

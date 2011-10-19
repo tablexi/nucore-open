@@ -55,6 +55,24 @@ describe FacilityReservationsController do
 
   end
 
+  context 'index' do
+    before :each do
+      @method=:get
+      @action=:index
+    end
+
+    it_should_allow_operators_only
+
+    context "once signed in" do
+      before :each do
+        sign_in(@admin)
+      end
+
+      
+      it "provides sort headers that don't result in errors"
+    end
+  end
+
 
   context 'update' do
 

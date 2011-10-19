@@ -99,9 +99,10 @@ Nucore::Application.routes.draw do |map|
 
     facility.resources :users, :except => [:edit, :update], :collection => {:username_search => :post, :new_search => :get} do |user|
       user.switch_to   '/switch_to',  :controller => 'users', :action => 'switch_to', :conditions => {:method => :get}
-      user.orders      'orders',      :controller => 'users', :action => 'orders'
-      user.accounts    'accounts',    :controller => 'users', :action => 'accounts'
-      user.instruments 'instruments', :controller => 'users', :action => 'instruments'
+      user.orders       'orders',      :controller => 'users', :action => 'orders'
+      user.reservations 'reservations',      :controller => 'users', :action => 'reservations'
+      user.accounts     'accounts',    :controller => 'users', :action => 'accounts'
+      user.instruments  'instruments', :controller => 'users', :action => 'instruments'
     end
 
     facility.resources :facility_accounts, :controller => 'facility_facility_accounts', :only => [:index, :new, :create, :edit, :update]
@@ -113,6 +114,8 @@ Nucore::Application.routes.draw do |map|
         order_detail.resources :reservations, :controller => 'facility_reservations', :only => [:edit, :update, :show]
       end
     end
+
+    facility.resources :reservations, :controller => 'facility_reservations', :only => :index, :collection => {:batch_update => :post, :show_problems => :get, :disputed => :get}
 
     facility.resources :accounts, :controller => 'facility_accounts', :only => [:index, :new, :create, :show, :edit, :update], :collection => {:credit_cards => :get, :update_credit_cards => :post, :purchase_orders => :get, :update_purchase_orders => :post, :user_search => :get, :search => :get, :search_results => [:get, :post], :new_account_user_search => :get} do |account|
       account.suspend '/suspend', :controller => 'facility_accounts', :action => 'suspend'
@@ -150,6 +153,9 @@ Nucore::Application.routes.draw do |map|
       end
     end
   end
+
+  # reservations
+  match 'reservations' => 'reservations#list', :as => 'reservations'
 
   # file upload routes
   map.upload_product_file '/facilities/:facility_id/:product/:product_id/files/upload',

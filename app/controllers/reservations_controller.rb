@@ -1,11 +1,12 @@
 class ReservationsController < ApplicationController
   customer_tab  :all
   before_filter :authenticate_user!
-  before_filter :check_acting_as,  :only => [ :switch_instrument, :show ]
-  
+  before_filter :check_acting_as,  :only => [ :switch_instrument, :show, :list]
+
+
   def initialize
-    @active_tab = 'orders'
     super
+    @active_tab = 'reservations'
   end
 
   # GET /facilities/1/instruments/1/reservations.js?_=1279579838269&start=1279429200&end=1280034000
@@ -30,6 +31,36 @@ class ReservationsController < ApplicationController
       format.js { render :json => @reservations.map{|r| r.as_calendar_object(as_calendar_object_options)}.flatten + 
                                   @unavailable.map{ |r| r.as_calendar_object(as_calendar_object_options)}.flatten }
     end
+  end
+
+  # GET /reservations
+  # All My Resesrvations
+  def list
+    notices = []
+    now = Time.zone.now
+    @order_details = current_user.order_details.
+      joins(:order).
+      includes(:reservation).
+      where("orders.ordered_at IS NOT NULL").
+      order('orders.ordered_at DESC').all
+
+    @order_details=@order_details.delete_if{|od| od.reservation.nil? }.paginate(:page => params[:page])
+
+    @order_details.each do |od|
+      res = od.reservation
+      # do you need to click stop
+      if res.can_switch_instrument_off?
+        notices << "Do not forget to click the \"End Reservation\" link when you finished your #{res} reservation."
+      # do you need to begin your reservation
+      elsif res.can_switch_instrument_on?
+        notices << "You may click the \"Begin Reservation\" link when you are ready to begin your #{res} reservation."
+      # do you have a reservation for today
+      elsif (res.reserve_start_at.to_s[0..9] == now.to_s[0..9] || res.reserve_start_at < now) && res.reserve_end_at > now
+        notices << "You have an upcoming reservation for #{res}."
+      end
+    end
+
+    flash.now[:notice] = notices.join('<br />').html_safe unless notices.empty?
   end
 
   # POST /orders/1/order_details/1/reservations
@@ -133,7 +164,7 @@ class ReservationsController < ApplicationController
           @order_detail.save!
         end
         flash[:notice] = 'The reservation was successfully updated.'
-        redirect_to (@order.purchased? ? orders_url : cart_url) and return
+        redirect_to (@order.purchased? ? reservations_path : cart_path) and return
       rescue Exception => e
         raise ActiveRecord::Rollback
       end
@@ -198,4 +229,5 @@ class ReservationsController < ApplicationController
     end
     redirect_to request.referer || order_order_detail_path(@order, @order_detail)
   end
+
 end

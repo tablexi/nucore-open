@@ -78,8 +78,6 @@ class FacilitiesController < ApplicationController
 
   # PUT /facilities/abc123
   def update
-    params[:facility][:is_active]=params[:facility][:is_active] == '1'
-
     if current_facility.update_attributes(params[:facility])
       flash[:notice] = 'The facility was successfully updated.'
       redirect_to manage_facility_url(current_facility)

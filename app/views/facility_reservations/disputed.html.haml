@@ -1,0 +1,31 @@
+= content_for :h1 do
+  =h current_facility
+
+= content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_reservation', :locals => { :secondary_tab => 'disputed'}
+
+- if @details.empty?
+  %p.notice There are no Disputed reservations
+- else
+  %p Please review the following disputes.
+  %table
+    %tr
+      %th.small Order #
+      %th.med Order On
+      %th.med Ordered By
+      %th.med Ordered For
+      %th.med Product
+      %th.med Disputed On
+      %th.auto Dispute Reason
+    - @details.each do |od|
+      - o = od.order
+      - product_name = (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
+      %tr
+        %td= link_to od, edit_facility_order_order_detail_path(current_facility, o, od)
+        %td=h human_datetime(o.ordered_at)
+        %td=h User.find(o.created_by).full_name
+        %td=h User.find(o.user_id).full_name
+        %td= product_name
+        %td=h human_datetime(od.dispute_at)
+        %td=h od.dispute_reason
+  = will_paginate(@details)

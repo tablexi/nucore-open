@@ -1,6 +1,6 @@
-- n_new     = current_facility.order_details.new_or_inprocess.length
-- n_review  = current_facility.order_details.reject{|od| !od.problem_order?}.length
-- n_dispute = current_facility.order_details.in_dispute.length
+- n_new     = current_facility.order_details.non_reservations.new_or_inprocess.count
+- n_review  = current_facility.order_details.non_reservations.reject{|od| !od.problem_order?}.count
+- n_dispute = current_facility.order_details.non_reservations.in_dispute.count
 %ul.tabs
   %li.first= link_to "New / In Process (#{n_new})", facility_orders_path, { :class => secondary_tab == 'new' ? 'active' : nil }
   - if current_user.manager_of?(current_facility)

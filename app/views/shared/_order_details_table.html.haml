@@ -1,27 +1,13 @@
 %table
   %tr
-    %th.centered Actions
     %th.centered Order #
-    %th Date
+    %th Ordered On
     %th{ :colspan => 2 } Quantity / Product
     %th.centered Status
     %th.currency Total
   - @order_details.each do |od|
     - order = od.order
-    - res = od.reservation
     %tr
-      %td.centered
-        - unless res.nil?
-          - if res.can_switch_instrument_on?
-            = link_to "Begin Reservation", order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'on')
-          - elsif res.can_switch_instrument_off?
-            = link_to "End Reservation", order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'off')
-          - elsif res.can_cancel?
-            - fee = od.cancellation_fee
-            - if fee > 0
-              = link_to "Cancel", order_order_detail_path(order, od, :cancel => 'cancel'), :method => :put, :confirm => "Canceling this reservation will incur a #{number_to_currency fee} fee.  Are you sure you wish to cancel this reservation?"
-            - else
-              = link_to "Cancel", order_order_detail_path(order, od, :cancel => 'cancel'), :method => :put
       %td.centered= link_to od, order_order_detail_path(order, od)
       %td=h human_datetime(order.ordered_at)
       %td.centered=h od.quantity
@@ -30,11 +16,6 @@
           %li
             - product_name = order_detail_description(od)
             = "#{h od.product.facility.abbreviation} / #{product_name}".html_safe
-            - unless res.nil?
-              - if res.can_edit?
-                %li.indented= link_to od.reservation, edit_order_order_detail_reservation_path(order, od, od.reservation)
-              - else
-                %li.indented= link_to od.reservation, order_order_detail_reservation_path(order, od, od.reservation)
             - unless od.note.blank?
               %li
                 %i=h "Note: #{od.note}"

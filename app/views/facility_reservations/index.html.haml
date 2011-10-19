@@ -2,17 +2,22 @@
   =h current_facility
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_order', :locals => { :secondary_tab => 'new'}
+  = render :partial => 'admin/shared/tabnav_reservation', :locals => { :secondary_tab => 'new'}
 
 - if @order_details.empty?
-  %p.notice There are no "New" or "In Process" orders.
+  %p.notice There are no "New" or "In Process" Reservations.
 - else
-  = form_tag(batch_update_facility_orders_path, :method => :post) do
+  = form_tag(batch_update_facility_reservations_path, :method => :post) do
     - facility_users = User.find_users_by_facility(current_facility)
     %table
       -## THE HEADER CONTROL ROW
       %tr.borderless
-        %td{ :colspan => 4 }= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
+        %td= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
+        %td
+        %td
+        %td
+        %td
+        %td
         %td
         %td
         %td
@@ -26,29 +31,35 @@
             - OrderStatus.non_protected_statuses(current_facility).each do |os|
               = options_for_select([[os.name_with_level, os.id]])
         %td
-          = submit_tag "Update Orders"
+          = submit_tag "Update Reservations"
       -## THE HEADER ROW
       %tr
         %th
-        %th.centered= sortable 'order_number', 'Order #'
-        %th= sortable 'date', 'Ordered On'
-        %th User Name
-        %th{ :colspan => 2 }== Quantity / #{sortable 'product'}
-        %th= sortable 'assigned_to'
-        %th= sortable 'status'
+        %th Order #
+        %th= sortable 'reserved_by'
+        %th{:colspan => 2}= sortable 'date', 'Reserved On'
+        %th{:colspan => 2}= sortable "reserve_range", 'Reserved For'
+        %th= sortable 'product_name', 'Product'
+        %th= sortable 'assigned_to', 'Assigned To'
+        %th= sortable 'status', 'Status'
         %th.currency Price
       -## THE DETAIL ROWS
       - @order_details.each do |od|
         - order = od.order
+        - res = od.reservation
         %tr
           %td.centered= check_box_tag("order_detail_ids[]", od.id, false, {:class => 'toggle', :id => nil })
           %td.centered= link_to od, edit_facility_order_order_detail_path(current_facility, order, od)
-          %td=h human_datetime(order.ordered_at)
           %td= order.user.full_name
-          %td.centered= od.quantity
+          %td{:colspan => 2}=h human_datetime(order.ordered_at)
+          %td{:colspan => 2}
+            - if res.can_edit?
+              = link_to res, edit_facility_order_order_detail_reservation_path(current_facility, order, od, res)
+            - else
+              = link_to res, facility_order_order_detail_reservation_path(current_facility, order, od, res)
           %td
             %ul
-              - product_name = order_detail_description(od)
+              - product_name = (od.bundle ? "#{h od.bundle} &mdash; ".html_safe : '') + h(od.product)
               %li= product_name
               - if od.survey_completed?
                 - receiver = od.external_service_receiver
@@ -76,6 +87,8 @@
         %td
         %td
         %td
+        %td
+        %td
           - if facility_users.empty?
             = select_tag :assigned_user_id, options_for_select([['Assign to...', nil], ['Unassign', 'unassign']]), :class => 'sync_select', :id => nil
           - else
@@ -86,6 +99,6 @@
             - OrderStatus.non_protected_statuses(current_facility).each do |os|
               = options_for_select([[os.name_with_level, os.id]])
         %td
-          = submit_tag "Update Orders"
+          = submit_tag "Update Reservations"
   = will_paginate(@order_details)
   = render :partial => '/price_display_footnote', :locals => { :admin => true }

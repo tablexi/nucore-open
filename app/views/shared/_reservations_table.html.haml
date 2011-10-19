@@ -1,0 +1,56 @@
+%table
+  %tr
+    %th.centered Order #
+    %th.centered Actions
+    %th Reserved For
+    %th Product
+    %th.centered Status
+    %th.currency Total
+  - order_details.each do |od|
+    - order = od.order
+    - res = od.reservation
+    %tr
+      %td.centered= link_to od, order_order_detail_path(order, od)
+      %td.centered
+        - if res.can_switch_instrument_on?
+          = link_to "Begin Reservation", order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'on')
+        - elsif res.can_switch_instrument_off?
+          = link_to "End Reservation", order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'off')
+        - elsif res.can_cancel?
+          - fee = od.cancellation_fee
+          - if fee > 0
+            = link_to "Cancel", order_order_detail_path(order, od, :cancel => 'cancel'), :method => :put, :confirm => "Canceling this reservation will incur a #{number_to_currency fee} fee.  Are you sure you wish to cancel this reservation?"
+          - else
+            = link_to "Cancel", order_order_detail_path(order, od, :cancel => 'cancel'), :method => :put
+      %td
+        - if res.can_edit?
+          = link_to res, edit_order_order_detail_reservation_path(order, od, res)
+        - else
+          = link_to res, order_order_detail_reservation_path(order, od, res)
+      %td
+        %ul
+          %li
+            - product_name = (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
+            = "#{h od.product.facility.abbreviation} / #{product_name}".html_safe
+          - unless od.note.blank?
+            %li
+              %i=h "Note: #{od.note}"
+      %td.centered=h od.order_status.name
+      %td.currency
+        - if od.cost_estimated?
+          %span.estimated_cost
+            = show_estimated_total(od)
+        - elsif od.price_policy.nil?
+          Unassigned
+        - else
+          %span.actual_cost
+            = show_actual_total(od)
+
+%p.footnote
+  %span.estimated_cost
+    Orange
+  totals are estimates.
+  %span.actual_cost
+    Green
+  totals are final. Pricing will be assigned to transactions with unassigned totals.
+= will_paginate(order_details)

@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
   admin_tab     :all
+  before_filter :init_current_facility
   before_filter :authenticate_user!
   before_filter :check_acting_as
-  before_filter :init_current_facility
 
   load_and_authorize_resource
 
@@ -78,7 +78,22 @@ class UsersController < ApplicationController
   def orders
     @user = User.find(params[:user_id])
     # order details for this facility
-    @order_details = @user.order_details.find(:all, :conditions => "orders.facility_id = #{@current_facility.id} AND orders.ordered_at IS NOT NULL", :order => 'orders.ordered_at DESC').paginate(:page => params[:page])
+    @order_details = @user.order_details.
+      non_reservations.
+      where("orders.facility_id = #{@current_facility.id} AND orders.ordered_at IS NOT NULL").
+      order('orders.ordered_at DESC').
+      paginate(:page => params[:page])
+  end
+
+  # GET /facilities/:facility_id/users/:user_id/reservations
+  def reservations
+    @user = User.find(params[:user_id])
+    # order details for this facility
+    @order_details = @user.order_details.
+      reservations.
+      where("orders.facility_id = #{@current_facility.id} AND orders.ordered_at IS NOT NULL").
+      order('orders.ordered_at DESC').
+      paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/users/:user_id/accounts

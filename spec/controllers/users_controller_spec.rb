@@ -110,4 +110,32 @@ describe UsersController do
 
   end
 
+  context "orders" do
+    before :each do
+      @method=:get
+      @action=:orders
+      @params.merge!(:user_id => @guest.id)
+    end
+
+    it_should_allow_operators_only do
+      should assign_to(:current_facility).with(@authable)
+      should assign_to(:user).with(@guest)
+      should assign_to(:order_details).with_kind_of Array
+    end
+  end
+
+  context "reservations" do
+    before :each do
+      @method=:get
+      @action=:reservations
+      @params.merge!(:user_id => @guest.id)
+    end
+
+    it_should_allow_operators_only do
+      should assign_to(:current_facility).with(@authable)
+      should assign_to(:user).with(@guest)
+      should assign_to(:order_details).with_kind_of Array
+    end
+  end
+
 end

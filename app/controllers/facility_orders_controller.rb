@@ -15,37 +15,41 @@ class FacilityOrdersController < ApplicationController
 
   # GET /facility/1/orders
   def index
+    # will never include instrument order details
+    facility_ods = current_facility.order_details.non_reservations
+
     @order_details = case sort_column
       when 'order_number'
-        current_facility.order_details.find(:all,
-                                            :joins => 'INNER JOIN orders ON orders.id = order_details.order_id',
-                                            :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
-                                            :order => "CONCAT(CONCAT(order_details.order_id, '-'), order_details.id) #{sort_direction}").paginate(:page => params[:page])
+        facility_ods.find(:all,
+                          :joins => 'INNER JOIN orders ON orders.id = order_details.order_id',
+                          :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
+                          :order => "CONCAT(CONCAT(order_details.order_id, '-'), order_details.id) #{sort_direction}").paginate(:page => params[:page])
       when 'date'
-        current_facility.order_details.find(:all,
-                                            :joins => 'INNER JOIN orders ON orders.id = order_details.order_id',
-                                            :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
-                                            :order => "orders.ordered_at #{sort_direction}").paginate(:page => params[:page])
+        facility_ods.find(:all,
+                          :joins => 'INNER JOIN orders ON orders.id = order_details.order_id',
+                          :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
+                          :order => "orders.ordered_at #{sort_direction}").paginate(:page => params[:page])
       when 'product'
-        current_facility.order_details.find(:all,
-                                            :joins => 'INNER JOIN orders ON orders.id = order_details.order_id',
-                                            :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
-                                            :order => "products.name #{sort_direction}, order_details.state, orders.ordered_at").paginate(:page => params[:page])
+        facility_ods.find(:all,
+                          :joins => 'INNER JOIN orders ON orders.id = order_details.order_id',
+                          :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
+                          :order => "products.name #{sort_direction}, order_details.state, orders.ordered_at").paginate(:page => params[:page])
       when 'assigned_to'
-        current_facility.order_details.find(:all,
-                                            :joins => ['INNER JOIN order_statuses ON order_details.order_status_id = order_statuses.id ',
-                                                       'INNER JOIN orders ON orders.id = order_details.order_id ',
-                                                       "LEFT JOIN #{User.table_name} ON order_details.assigned_user_id = #{User.table_name}.id "],
-                                            :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
-                                            :order => "#{User.table_name}.last_name #{sort_direction}, #{User.table_name}.first_name #{sort_direction}, order_statuses.name, orders.ordered_at").paginate(:page => params[:page])
+        facility_ods.find(:all,
+                          :joins => ['INNER JOIN order_statuses ON order_details.order_status_id = order_statuses.id ',
+                                     'INNER JOIN orders ON orders.id = order_details.order_id ',
+                                     "LEFT JOIN #{User.table_name} ON order_details.assigned_user_id = #{User.table_name}.id "],
+                          :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
+                          :order => "#{User.table_name}.last_name #{sort_direction}, #{User.table_name}.first_name #{sort_direction}, order_statuses.name, orders.ordered_at"
+        ).paginate(:page => params[:page])
       when 'status'
-        current_facility.order_details.find(:all,
-                                            :joins => ['INNER JOIN orders ON orders.id = order_details.order_id ',
-                                                       'INNER JOIN order_statuses ON order_details.order_status_id = order_statuses.id '],
-                                            :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
-                                            :order => "order_statuses.name #{sort_direction}, orders.ordered_at").paginate(:page => params[:page])
+        facility_ods.find(:all,
+                          :joins => ['INNER JOIN orders ON orders.id = order_details.order_id ',
+                                     'INNER JOIN order_statuses ON order_details.order_status_id = order_statuses.id '],
+                          :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
+                          :order => "order_statuses.name #{sort_direction}, orders.ordered_at").paginate(:page => params[:page])
       else
-        current_facility.order_details.new_or_inprocess.paginate(:page => params[:page])
+        facility_ods.new_or_inprocess.paginate(:page => params[:page])
     end
   end
 
@@ -60,64 +64,28 @@ class FacilityOrdersController < ApplicationController
   def batch_update
     redirect_to facility_orders_path
 
-    unless params[:order_detail_ids]
-      flash[:error] = 'No orders selected'
-      return
-    end
-
-    order_details = OrderDetail.find(params[:order_detail_ids])
-    if order_details.any? { |od| od.product.facility_id != current_facility.id || !(od.state.include?('inprocess') || od.state.include?('new'))}
-      flash[:error] = 'There was an error updating the selected orders'
-      return
-    end
-
-    changes = false
-    if params[:assigned_user_id] && params[:assigned_user_id].length > 0
-      changes = true
-      order_details.each {|od| od.assigned_user_id = (params[:assigned_user_id] == 'unassign' ? nil : params[:assigned_user_id])}
-    end
-
-    OrderDetail.transaction do
-      if params[:order_status_id] && params[:order_status_id].length > 0
-        changes = true
-        begin
-          os = OrderStatus.find(params[:order_status_id])
-          order_details.each do |od|
-            # cancel instrument orders
-            if os.id == OrderStatus.cancelled.first.id && od.reservation
-              raise "Order # #{od} failed cancellation." unless od.cancel_reservation(session_user, os, true)
-            # cancel other orders or change status of any order
-            else
-              od.change_status!(os)
-            end
-          end
-        rescue Exception => e
-          flash[:error] = "There was an error updating the selected orders.  #{e}"
-          raise ActiveRecord::Rollback
-        end
-      end
-      unless changes
-        flash[:notice] = 'No changes were required'
-        return
-      end
-      begin
-        order_details.all? { |od| od.save! }
-        flash[:notice] = 'The orders were successfully updated'
-      rescue
-        flash[:error] = 'There was an error updating the selected orders'
-        raise ActiveRecord::Rollback
-      end
+    msg_hash = OrderDetail.batch_update(params[:order_detail_ids], current_facility, session_user, params)
+    
+    # add flash messages if necessary
+    if msg_hash
+      flash.merge!(msg_hash)
     end
   end
 
   # GET /facilities/:facility_id/orders/review
   def show_problems
-    @order_details = current_facility.order_details.reject{|od| !od.problem_order?}.paginate(:page => params[:page])
+    @order_details = current_facility.order_details.
+      non_reservations.
+      reject{|od| !od.problem_order?}.
+      paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/orders/disputed
   def disputed
-    @details = current_facility.order_details.in_dispute.paginate(:page => params[:page])
+    @details = current_facility.order_details.
+      non_reservations.
+      in_dispute.
+      paginate(:page => params[:page])
   end
   
   private
