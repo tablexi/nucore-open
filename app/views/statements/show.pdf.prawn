@@ -2,7 +2,9 @@ pdf_config={
   :left_margin   => 50,
   :right_margin  => 50,
   :top_margin    => 50,
-  :bottom_margin => 75
+  :bottom_margin => 75,
+  :filename => "Statement-#{@statement.created_at.strftime("%m-%d-%Y")}.pdf",
+  :force_download => true
 }
 
 prawn_document pdf_config do |pdf|
