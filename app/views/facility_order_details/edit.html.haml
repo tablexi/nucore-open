@@ -89,7 +89,11 @@
       %li
         %label Payment Source
         - html_opts=@in_open_journal ? { :disabled => 'disabled' } : {}
-        = f.collection_select(:account_id, @order.user.account_users.active.collect{|au| au.account}, :id, :account_pretty, {}, html_opts)
+        - # make sure that the account it was purchased under is available, even if it's no
+        - # longer available for the owner
+        - available_accounts = @order.user.account_users.active.collect{|au| au.account}
+        - available_accounts << @order.account if available_accounts.index(@order.account).nil?
+        = f.collection_select(:account_id, available_accounts, :id, :account_pretty, {}, html_opts)
       %li
         %label Assigned User
         - if @order_detail.complete?
