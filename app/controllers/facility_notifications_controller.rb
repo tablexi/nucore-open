@@ -25,14 +25,14 @@ class FacilityNotificationsController < ApplicationController
             begin
               details = a.order_details.need_notification(current_facility)
               unless details.empty?
-                a.notify_users.each {|u| Notifier.review_orders(:user => u, :facility => current_facility, :account => a).deliver }
-                a.order_details.need_notification(current_facility).each do |od|
-                  od.reviewed_at = reviewed_at
-                  raise ActiveRecord::Rollback unless od.save
+                details.each do |od|
+                 od.reviewed_at = reviewed_at
+                 od.save!
                 end
+                a.notify_users.each {|u| Notifier.review_orders(:user => u, :facility => current_facility, :account => a).deliver }
               end
             rescue Exception => e
-              flash.now[:error] = "An error was encountered while sending some notification emails"
+              flash.now[:error] = e.message
               error = true
               raise ActiveRecord::Rollback
             end
