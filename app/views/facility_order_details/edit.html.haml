@@ -192,7 +192,7 @@
         - res = @order_detail.reservation
         - if res && res.actual_start_at && res.actual_end_at
           = render :partial => 'price_row', :locals => { :form => f }
-        - elsif !res.has_and_requires_actuals?
+        - elsif res.requires_but_missing_actuals?
           %td.centered{:colspan => '3'} You must enter actual start/end reservation times.
       - else 
         = render :partial => 'price_row', :locals => { :form => f }

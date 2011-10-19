@@ -144,6 +144,70 @@ describe Reservation do
       @reservation2.should be_does_not_conflict_with_other_reservation
     end
 
+    context 'requires_but_missing_actuals?' do
+
+      it 'should be true when there is a usage rate but no actuals' do
+        @instrument_pp.usage_rate=5
+        assert @instrument_pp.save
+
+        @reservation1.actual_start_at.should be_nil
+        @reservation1.actual_end_at.should be_nil
+        @reservation1.order_detail.price_policy=@instrument_pp
+        assert @reservation1.save
+
+        @reservation1.should be_requires_but_missing_actuals
+      end
+
+
+      it 'should be false when there is no price policy' do
+        @reservation1.actual_start_at=1.day.ago
+        @reservation1.actual_end_at=1.day.ago+1.hour
+        assert @reservation1.save
+
+        @reservation1.order_detail.price_policy.should be_nil
+        @reservation1.should_not be_requires_but_missing_actuals
+      end
+
+
+      it 'should be false when price policy has no usage rate' do
+        @instrument_pp.usage_rate.should_not be_present
+
+        @reservation1.order_detail.price_policy=@instrument_pp
+        @reservation1.actual_start_at=1.day.ago
+        @reservation1.actual_end_at=1.day.ago+1.hour
+        assert @reservation1.save
+
+        @reservation1.should_not be_requires_but_missing_actuals
+      end
+
+
+      it 'should be false when price policy has zero usage rate' do
+        @instrument_pp.usage_rate=0
+        assert @instrument_pp.save
+
+        @reservation1.order_detail.price_policy=@instrument_pp
+        @reservation1.actual_start_at=1.day.ago
+        @reservation1.actual_end_at=1.day.ago+1.hour
+        assert @reservation1.save
+
+        @reservation1.should_not be_requires_but_missing_actuals
+      end
+
+
+      it 'should be false when there is a usage rate and actuals' do
+        @instrument_pp.usage_rate=5
+        assert @instrument_pp.save
+
+        @reservation1.order_detail.price_policy=@instrument_pp
+        @reservation1.actual_start_at=1.day.ago
+        @reservation1.actual_end_at=1.day.ago+1.hour
+        assert @reservation1.save
+
+        @reservation1.should_not be_requires_but_missing_actuals
+      end
+
+    end
+
   end
 
 
