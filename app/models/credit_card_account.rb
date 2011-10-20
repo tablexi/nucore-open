@@ -1,6 +1,8 @@
 class CreditCardAccount < Account
   include AffiliateAccount
 
+  belongs_to :facility
+  
   attr_readonly :account_number
   before_validation :setup_false_credit_card_number
 

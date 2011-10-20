@@ -85,6 +85,11 @@ describe NufsAccount do
       @account.errors[:account_number].should_not be_nil
     end
 
+    it "should not have a facility" do
+      facility = Factory.create(:facility)
+      account = NufsAccount.create(@options)
+      account.facility.should be_nil
+    end
 
     private
 

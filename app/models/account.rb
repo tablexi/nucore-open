@@ -5,7 +5,6 @@ class Account < ActiveRecord::Base
   has_many   :price_group_members
   has_many   :order_details
   has_many   :statements, :through => :order_details
-  belongs_to :facility
   belongs_to :affiliate
   accepts_nested_attributes_for :account_users
 
@@ -20,6 +19,10 @@ class Account < ActiveRecord::Base
     unless acct.account_users.any?{ |au| au.user_role == AccountUser::ACCOUNT_OWNER }
       acct.errors.add(:base, "Must have an account owner")
     end
+  end
+  
+  def facility
+    nil
   end
 
   def type_string

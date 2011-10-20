@@ -75,7 +75,9 @@ class FacilityAccountsController < ApplicationController
       when CreditCardAccount
         begin
           @account.expires_at = Date.civil(class_params[:expiration_year].to_i, class_params[:expiration_month].to_i, -1)
+          @account.facility_id = current_facility.id
         rescue Exception => e
+           @account.errors.add(:base, e.message)
         end
       when NufsAccount
         # set temporary expiration to be updated later

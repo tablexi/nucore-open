@@ -23,6 +23,19 @@ describe CreditCardAccount do
       :account_users_attributes => [@owner]
     }
   end
+  
+  it "should handle facilities" do
+    
+    account1 = CreditCardAccount.create(@account_attrs)
+    account1.should respond_to(:facility)
+  end
+  
+  it "should take a facility" do
+    facility = Factory.create(:facility)
+    @account_attrs[:facility] = facility
+    account = CreditCardAccount.create(@account_attrs)
+    account.facility.should == facility
+  end
 
   context "valid credit card number" do
 #    it "should mask VISA correctly" do
