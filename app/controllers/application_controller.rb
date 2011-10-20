@@ -15,6 +15,14 @@ class ApplicationController < ActionController::Base
   # Navigation tabs configuration
   include NavTab
 
+  def after_sign_in_path_for(resource)
+    if (resource.is_a?(User))
+      session["requested_params"].nil? ? "/" : session["requested_params"]
+    else
+      super
+    end
+  end
+  
   # accessor method for the current facility
   def current_facility
     @current_facility
