@@ -80,7 +80,14 @@ class ApplicationController < ActionController::Base
     term = '%' + term + '%'
     term.downcase
   end
-  
+
+  #
+  # Customize Devise redirect after login
+  def after_sign_in_path_for(resource)
+    session[:requested_params] || super
+  end
+
+
   private
   
   def current_ability
