@@ -34,5 +34,9 @@ describe PurchaseOrderAccount do
     account = PurchaseOrderAccount.create(@account_attrs)
     account.facility.should == facility
   end
+  
+  it "should be limited to a single facility" do
+    PurchaseOrderAccount.limited_to_single_facility?.should be_true
+  end
 
 end

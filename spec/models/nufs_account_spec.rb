@@ -90,7 +90,10 @@ describe NufsAccount do
       account = NufsAccount.create(@options)
       account.facility.should be_nil
     end
-
+    it "should not be limited to a single facility" do
+      NufsAccount.limited_to_single_facility?.should be_false
+    end
+    
     private
 
     def assert_number_format(account_number, valid, gl066_override=nil)

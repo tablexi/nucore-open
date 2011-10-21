@@ -36,6 +36,10 @@ describe CreditCardAccount do
     account = CreditCardAccount.create(@account_attrs)
     account.facility.should == facility
   end
+  
+  it "should be limited to a single facility" do
+    CreditCardAccount.limited_to_single_facility?.should be_true
+  end
 
   context "valid credit card number" do
 #    it "should mask VISA correctly" do
