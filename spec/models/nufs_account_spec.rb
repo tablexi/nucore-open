@@ -85,7 +85,15 @@ describe NufsAccount do
       @account.errors[:account_number].should_not be_nil
     end
 
-
+    it "should not have a facility" do
+      facility = Factory.create(:facility)
+      account = NufsAccount.create(@options)
+      account.facility.should be_nil
+    end
+    it "should not be limited to a single facility" do
+      NufsAccount.limited_to_single_facility?.should be_false
+    end
+    
     private
 
     def assert_number_format(account_number, valid, gl066_override=nil)

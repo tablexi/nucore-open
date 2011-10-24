@@ -67,15 +67,15 @@ class FacilityAccountsController < ApplicationController
     @account            = acct_class.new(class_params)
     @account.created_by = session_user.id
     @account.account_users_attributes = [{:user_id => params[:owner_user_id], :user_role => 'Owner', :created_by => session_user.id }]
-
+    @account.facility_id = current_facility.id if @account.class.limited_to_single_facility?
     case @account
       when PurchaseOrderAccount
         @account.expires_at=parse_usa_date(class_params[:expires_at])
-        @account.facility_id = current_facility.id
       when CreditCardAccount
         begin
           @account.expires_at = Date.civil(class_params[:expiration_year].to_i, class_params[:expiration_month].to_i, -1)
         rescue Exception => e
+           @account.errors.add(:base, e.message)
         end
       when NufsAccount
         # set temporary expiration to be updated later

@@ -186,12 +186,13 @@ describe FacilityAccountsController do
       @action=:create
       @acct_attrs=Factory.attributes_for(:nufs_account)
       @params={
-        :facility_id => @authable.url_name,
         :id => @account.id,
+        :facility_id => @authable.url_name,
         :owner_user_id => @owner.id,
         :account => @acct_attrs,
         :class_type => 'NufsAccount'
       }
+      @controller.stubs(:current_facility).returns(@authable)
     end
 
     it_should_require_login
@@ -245,7 +246,10 @@ describe FacilityAccountsController do
 
       it_should_allow :director do
         assigns(:account).expires_at.should_not be_nil
+        assigns(:account).facility.id.should == @authable.id
+        
       end
+
 
     end
 

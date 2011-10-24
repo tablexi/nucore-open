@@ -5,12 +5,11 @@ class Account < ActiveRecord::Base
   has_many   :price_group_members
   has_many   :order_details
   has_many   :statements, :through => :order_details
-  belongs_to :facility
   belongs_to :affiliate
   accepts_nested_attributes_for :account_users
 
   scope :active, lambda {{ :conditions => ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] }}
-  scope :for_facility, lambda { |facility| { :conditions => ["type <> 'PurchaseOrderAccount' OR (type = 'PurchaseOrderAccount' AND facility_id = ?)", facility.id] }}
+  #scope :for_facility, lambda { |facility| { :conditions => ["type <> 'PurchaseOrderAccount' OR (type = 'PurchaseOrderAccount' AND facility_id = ?)", facility.id] }}
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
   validates_length_of :description, :maximum => 50
@@ -20,6 +19,28 @@ class Account < ActiveRecord::Base
     unless acct.account_users.any?{ |au| au.user_role == AccountUser::ACCOUNT_OWNER }
       acct.errors.add(:base, "Must have an account owner")
     end
+  end
+  
+  def facility
+    nil
+  end
+  
+  @@limited_to_one_facility_subclasses = []
+  def self.limit_facilities
+    @@limited_to_one_facility_subclasses << self.to_s
+  end
+  
+  def self.limited_to_single_facility?
+    @@limited_to_one_facility_subclasses.include? self.to_s
+  end
+  
+  def self.for_facility(facility)
+    all_subclass_names = subclasses.collect { |clazz| clazz.to_s }
+    
+    where("type in (:allow_all) or (type in (:limit_one) and facility_id = :facility)", 
+          {:allow_all => all_subclass_names - @@limited_to_one_facility_subclasses,
+            :limit_one => @@limited_to_one_facility_subclasses,
+            :facility => facility})
   end
 
   def type_string
@@ -146,5 +167,6 @@ class Account < ActiveRecord::Base
   
   def price_groups
     (price_group_members.collect{ |pgm| pgm.price_group } + (owner_user ? owner_user.price_groups : [])).flatten.uniq
-  end
+  end 
+  
 end
