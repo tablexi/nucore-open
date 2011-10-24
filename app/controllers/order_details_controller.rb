@@ -22,7 +22,7 @@ class OrderDetailsController < ApplicationController
           raise ActiveRecord::Rollback
         end
       end
-      redirect_to orders_path and return
+      redirect_to reservations_path and return
 
     # handle order disputes
     elsif @order_detail.can_dispute?
