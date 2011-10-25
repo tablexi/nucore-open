@@ -3,7 +3,7 @@
 %li.left
   = f.label :reserve_start_date, 'Reservation Date'
   = f.text_field :reserve_start_date, :class => 'datepicker'
-%li.left
+%li#res-time-select.left
   = f.label  :reserve_start_hour, 'Starting At'
   = f.select :reserve_start_hour, (1..12).to_a
   = f.select :reserve_start_min, (0..59).step(5).map{|d| [sprintf('%02d', d),d]}

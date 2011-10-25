@@ -67,7 +67,24 @@ $(document).ready(function() {
     }
   });
 
+  function initReserveButton()
+  {
+      var now=new Date(),
+        future=now.clone().addMinutes(2),
+        date=$('#reservation_reserve_start_date').val(),
+        hour=$('#reservation_reserve_start_hour').val(),
+        mins=$('#reservation_reserve_start_min').val(),
+        meridian=$('#reservation_reserve_start_meridian').val(),
+        picked=new Date(date + ' ' + (hour < 10 ? '0'+hour : hour) + ':' + (mins < 10 ? '0'+mins : mins) + ':00 ' + meridian);
+
+    $('#reservation_submit').attr('value', picked.between(now, future) ? 'Create & Start' : 'Create');
+  }
+
+  // change reservation creation button based on Reservation
+  $('#res-time-select select,#reservation_reserve_start_date').change(initReserveButton);
+
   init_datepickers();
+  initReserveButton();
 
   // initialize datepicker
   function init_datepickers() {
