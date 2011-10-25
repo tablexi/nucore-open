@@ -4,6 +4,7 @@ class Account < ActiveRecord::Base
   has_many   :business_admins, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_ADMINISTRATOR, :deleted_at => nil}
   has_many   :price_group_members
   has_many   :order_details
+  has_many   :orders
   has_many   :statements, :through => :order_details
   belongs_to :affiliate
   accepts_nested_attributes_for :account_users
