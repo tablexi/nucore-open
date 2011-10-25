@@ -17,6 +17,27 @@ describe OrderDetail do
     @order_detail.version.should == 1
   end
 
+  context 'bundle' do
+
+    before :each do
+      @bundle=Factory.create(:bundle, :facility_account => @facility_account, :facility => @facility)
+      @bundle_product=BundleProduct.create!(:bundle => @bundle, :product => @item, :quantity => 1)
+      @order_detail.bundle=@bundle
+      assert @order_detail.save
+    end
+
+    it 'should be bundled' do
+      @order_detail.should be_bundled
+    end
+
+    it 'should not be bundled' do
+      @order_detail.bundle=nil
+      assert @order_detail.save
+      @order_detail.should_not be_bundled
+    end
+
+  end
+
   it "should have a product" do
     should_not allow_value(nil).for(:product_id)
   end

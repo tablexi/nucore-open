@@ -441,6 +441,12 @@ class OrderDetail < ActiveRecord::Base
     end
   end
 
+  #
+  # Returns true if this order detail is part of a bundle purchase, false otherwise
+  def bundled?
+    !bundle.nil?
+  end
+
   # returns a hash of :notice (and/or?) :error
   # these should be shown to the user as an appropriate flash message
   #
