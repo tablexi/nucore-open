@@ -1,5 +1,6 @@
 = content_for :head_content do
   %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
+  = javascript_include_tag 'date.js'
   = javascript_include_tag 'calendar/fullcalendar.min.js'
   = javascript_include_tag 'jquery.qtip-1.0.0-rc3.min.js'
   = javascript_include_tag 'reservations.js'
@@ -29,8 +30,26 @@
 
 %h2=h @instrument
 
+= @instrument.description
+
+- docs = @instrument.file_uploads.info
+- unless docs.empty?
+  %h3 Documentation
+  %ul
+    - docs.each do |file_upload|
+      %li.document= link_to file_upload.name, file_upload.file.url
+
 = form_for([@order, @order_detail, @reservation]) do |f|
   = f.error_messages
+  - unless @order_detail.bundled?
+    %ul.form.box
+      %li.left
+        = label_tag 'order_account', 'Payment source'
+        - options=@order.user.accounts.active.for_facility(@instrument.facility)
+        - options.reject!{|acct| !acct.validate_against_product(@instrument, @order.user).nil?}
+        - options.collect!{|acct| [acct.to_s ,acct.id] }
+        = select_tag 'order_account', options_for_select(options, @order.account)
+      %li.clear
   %ul.form.box
     = render :partial => 'reservation_fields', :locals => {:f => f}
   %ul.horiz
