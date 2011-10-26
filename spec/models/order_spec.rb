@@ -303,5 +303,33 @@ describe Order do
 #        @cart.account.should be_nil
       end
     end
+
+
+    context 'auto_assign_account!' do
+      before :each do
+        @facility=Factory.create(:facility)
+        place_and_complete_item_order(@user, @facility)
+      end
+
+      it 'should assign payment source' do
+        @order1=@order
+        @nufs=Factory.create(:nufs_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
+        place_and_complete_item_order(@user, @facility, @nufs)
+        define_open_account(@item.account, @nufs.account_number)
+        @user.reload
+
+        @order1.account.should be_nil
+        @order1.auto_assign_account!(@item)
+        @order1.account.should == @nufs
+      end
+
+      it 'should raise if an account cannot be found' do
+        assert_raise RuntimeError do
+          @order.auto_assign_account!(@item)
+        end
+      end
+
+    end
+
   end
 end

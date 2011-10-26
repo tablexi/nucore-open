@@ -149,6 +149,22 @@ class Order < ActiveRecord::Base
     order_details.any?{|od| od.has_subsidies?}
   end
 
+  def auto_assign_account!(product)
+    return if self.account
+
+    accounts=user.accounts.active.for_facility(product.facility)
+
+    if accounts.size > 0
+      # last useable account used to place an order
+      user.orders.delete_if{|o| o.ordered_at.nil?}.sort{|x,y| y.ordered_at <=> x.ordered_at}.each do |order|
+        acct=order.account
+        self.account=acct and break if accounts.include?(acct) && acct.validate_against_product(product, user).nil?
+      end
+    end
+
+    raise "Could not find a valid payment source for purchasing #{product.name}" if self.account.nil?
+  end
+
 
   private
 
