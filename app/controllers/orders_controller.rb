@@ -58,37 +58,51 @@ class OrdersController < ApplicationController
     session[:add_to_cart] = nil
     @product    = Product.find(@product_id)
 
-    # send to choose_account:
-    # if it's not set in the order OR
-    # payment source isn't valid for this facility
     if @order.account.nil?
-      session[:add_to_cart] = {:quantity => @quantity, :product_id => @product.id }
-      redirect_to choose_account_order_url(@order)
-    else
-      # if acting_as, make sure the session use can place orders for the facility
-      if acting_as? && !session_user.administrator? && !manageable_facilities.include?(@product.facility)
-        flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{@product.facility.name}."
-        redirect_to order_url(@order) and return
+      unless @product.is_a?(Instrument)
+        # send to choose_account:
+        # if it's not set in the order OR
+        # payment source isn't valid for this facility
+        session[:add_to_cart] = {:quantity => @quantity, :product_id => @product.id }
+        return redirect_to choose_account_order_url(@order)
       end
-      @order.transaction do
-        begin
-          order_detail = @order.add(@product, @quantity) # if product is a bundle, order_detail is an array of details
-          @order.invalidate!
-          if @product.is_a?(Instrument)
-            redirect_to new_order_order_detail_reservation_path(@order, order_detail) and return
-          elsif @product.is_a?(Bundle) && @product.products.any?{|p| p.is_a?(Instrument)}
-            redirect_to new_order_order_detail_reservation_path(@order, order_detail.find{ |od| od.product.is_a?(Instrument) }) and return
-          end
-          flash[:notice] = "#{@product.class.name} added to cart."
-        rescue NUCore::MixedFacilityCart
-          flash[:error] = "You can not add a product from another facility; please clear your cart or place a separate order."
-        rescue Exception => e
-          flash[:error] = "An error was encountered while adding the product."
-          raise ActiveRecord::Rollback
-        end
+
+      begin
+        @order.auto_assign_account!(@product)
+      rescue => e
+        flash[:error]=e.message
+        return redirect_to facility_path(@product.facility)
       end
-      redirect_to order_url(@order)
     end
+
+    # if acting_as, make sure the session use can place orders for the facility
+    if acting_as? && !session_user.administrator? && !manageable_facilities.include?(@product.facility)
+      flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{@product.facility.name}."
+      redirect_to order_url(@order) and return
+    end
+
+    @order.transaction do
+      begin
+        order_detail = @order.add(@product, @quantity) # if product is a bundle, order_detail is an array of details
+        @order.invalidate!
+
+        if @product.is_a?(Instrument)
+          return redirect_to new_order_order_detail_reservation_path(@order, order_detail)
+        elsif @product.is_a?(Bundle) && @product.products.any?{|p| p.is_a?(Instrument)}
+          return redirect_to new_order_order_detail_reservation_path(@order, order_detail.find{ |od| od.product.is_a?(Instrument) })
+        end
+
+        flash[:notice] = "#{@product.class.name} added to cart."
+      rescue NUCore::MixedFacilityCart
+        flash[:error] = "You can not add a product from another facility; please clear your cart or place a separate order."
+      rescue Exception => e
+        flash[:error] = "An error was encountered while adding the product."
+        Rails.logger.error(e.backtrace.join("\n"))
+        raise ActiveRecord::Rollback
+      end
+    end
+
+    redirect_to order_url(@order)
   end
 
   # PUT /orders/:id/remove/:order_detail_id
@@ -202,7 +216,22 @@ class OrdersController < ApplicationController
     #revalidate the cart, just to be sure
     if @order.validate_order! && @order.purchase!
       Notifier.order_receipt(:user => @order.user, :order => @order).deliver
-      redirect_to receipt_order_url(@order) and return
+
+      if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled?
+        od=@order.order_details[0]
+
+        if od.reservation.can_switch_instrument_on?
+          redirect_to order_order_detail_reservation_switch_instrument_path(@order, od, od.reservation, :switch => 'on', :redirect_to => reservations_path)
+        else
+          redirect_to reservations_path
+        end
+
+        flash[:notice]='Reservation completed successfully'
+      else
+        redirect_to receipt_order_url(@order)
+      end
+
+      return
     else
       flash[:error] = 'Unable to place order.'
       @order.invalidate!

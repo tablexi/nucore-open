@@ -142,7 +142,28 @@ describe OrdersController do
       assigns(:order).should == @order
       assigns(:product).should == @item
       @order.reload.order_details.size.should == 1
+      flash[:error].should be_nil
+      should set_the_flash
       response.should redirect_to "/orders/#{@order.id}"
+    end
+
+    context 'as instrument' do
+      before :each do
+        @options=Factory.attributes_for(:instrument, :facility_account => @facility_account,
+                                        :min_reserve_mins => 60, :max_reserve_mins => 60, :relay_ip => '192.168.1.1')
+        @instrument=@authable.instruments.create(@options)
+        @order2=@staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account))
+        @params[:id]=@order2.id
+        @params[:product_id]=@instrument.id
+      end
+
+      it_should_allow :staff do
+        assigns(:order).should == @order2
+        assigns(:product).should == @instrument
+        @order2.reload.order_details.size.should == 1
+        flash[:error].should be_nil
+        assert_redirected_to new_order_order_detail_reservation_path(@order2, @order2.order_details.first)
+      end
     end
 
     context "no account" do
