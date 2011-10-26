@@ -18,7 +18,7 @@
       = f.select :start_min, (0..59).step(5).map{|d| [sprintf('%02d', d),d]}
     %li.left
       = f.label :duration_mins, 'Appointments Start Every', :class => 'require'
-      = f.select :duration_mins, ScheduleRule.durations.map{|d| [(d == 1 ? "1 minute" : "#{d} minutes"), d]}, params.has_key?(:schedule_rule) ? { } : { :selected => 5 }
+      = f.select :duration_mins, ScheduleRule.durations.map{|d| [(d == 1 ? "1 minute" : "#{d} minutes"), d]}, schedule_rule.duration_mins ? { } : { :selected => 5 }
     %li.clear
     %li
       = label_tag :end_time, nil, :class => 'require'
