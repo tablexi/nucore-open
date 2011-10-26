@@ -73,6 +73,17 @@ class ReservationsController < ApplicationController
 
     Reservation.transaction do
       begin
+        unless params[:order_account].blank?
+          account=Account.find(params[:order_account].to_i)
+
+          if account != @order.account
+            @order.invalidate
+            @order.update_attributes!(:account_id => account.id)
+            @order_detail.update_account(account)
+            @order_detail.save!
+          end
+        end
+
         @reservation.save!
         groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
         @cheapest_price_policy = @reservation.cheapest_price_policy(groups)
@@ -83,7 +94,14 @@ class ReservationsController < ApplicationController
           @order_detail.save!
         end
         flash[:notice] = 'The reservation was successfully created.'
-        redirect_to cart_url and return
+
+        if @order_detail.product.is_a?(Instrument) && !@order_detail.bundled?
+          redirect_to purchase_order_path(@order)
+        else
+          redirect_to cart_path
+        end
+
+        return
       rescue Exception => e
         raise ActiveRecord::Rollback
       end
@@ -186,7 +204,7 @@ class ReservationsController < ApplicationController
     begin
       relay = @instrument.relay_type.constantize.new(@instrument.relay_ip, @instrument.relay_username, @instrument.relay_password)
       if (params[:switch] == 'on' && @reservation.can_switch_instrument_on?)
-        status=Rails.env.test? ? true : nil
+        status=Rails.env.production? ? nil : true
 
         if status.nil?
           relay.activate_port(@instrument.relay_port)
@@ -202,7 +220,7 @@ class ReservationsController < ApplicationController
         end
         @instrument.instrument_statuses.create(:is_on => status)
       elsif (params[:switch] == 'off' && @reservation.can_switch_instrument_off?)
-        status=Rails.env.test? ? false : nil
+        status=Rails.env.production? ? nil : false
 
         if status.nil?
           relay.deactivate_port(@instrument.relay_port)
@@ -227,7 +245,8 @@ class ReservationsController < ApplicationController
     rescue Exception => e
       flash[:error] = relay_error_msg
     end
-    redirect_to request.referer || order_order_detail_path(@order, @order_detail)
+
+    redirect_to params[:redirect_to] || request.referer || order_order_detail_path(@order, @order_detail)
   end
 
 end

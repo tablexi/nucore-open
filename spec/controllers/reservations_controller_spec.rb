@@ -89,7 +89,43 @@ describe ReservationsController do
       assigns[:order_detail].estimated_cost.should_not be_nil
       assigns[:order_detail].estimated_subsidy.should_not be_nil
       should set_the_flash
-      response.should redirect_to("/orders/cart")
+      assert_redirected_to purchase_order_path(@order)
+    end
+
+    context 'with new account' do
+
+      before :each do
+        @account2=Factory.create(:nufs_account, :account_users_attributes => [{:user => @guest, :created_by => @guest, :user_role => 'Owner'}])
+        define_open_account(@instrument.account, @account2.account_number)
+        @params.merge!({ :order_account => @account2.id })
+        @order.account.should == @account
+        @order_detail.account.should == @account
+      end
+
+      it_should_allow :guest do
+        @order.reload.account.should == @account2
+        @order_detail.reload.account.should == @account2
+      end
+
+    end
+
+    context 'as bundle' do
+
+      before :each do
+        bundle=Factory.create(:bundle, :facility_account => @facility_account, :facility => @authable)
+        @order_detail.update_attribute(:bundle_product_id, bundle.id)
+      end
+
+      it_should_allow :staff, 'but should redirect to cart' do
+        assigns[:order].should == @order
+        assigns[:order_detail].should == @order_detail
+        assigns[:instrument].should == @instrument
+        assigns[:reservation].should be_valid
+        assigns[:order_detail].estimated_cost.should_not be_nil
+        assigns[:order_detail].estimated_subsidy.should_not be_nil
+        should set_the_flash
+        assert_redirected_to cart_path
+      end
     end
 
   end
