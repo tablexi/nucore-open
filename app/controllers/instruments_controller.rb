@@ -35,41 +35,47 @@ class InstrumentsController < ApplicationController
   # GET /instruments/1
   def show
     raise ActiveRecord::RecordNotFound if @instrument.is_archived? || (@instrument.is_hidden? && !acting_as?)
-    @add_to_cart = true
-    @login_required = false
+    add_to_cart = true
+    login_required = false
     
     # do the product have active price policies && schedule rules
     unless @instrument.can_purchase?
-      @add_to_cart       = false
-      flash.now[:notice] = 'This instrument is currently unavailable for reservation online.'
+      add_to_cart       = false
+      flash.now[:notice] = "The #{@instrument.to_s} instrument is currently unavailable for reservation online."
     end
 
     # is user logged in?
-    if @add_to_cart && acting_user.nil?
-      @login_required = true
-      @add_to_cart = false
+    if add_to_cart && acting_user.nil?
+      login_required = true
+      add_to_cart = false
     end
 
     # is the user approved?
-    if @add_to_cart && !@instrument.is_approved_for?(acting_user)
-      @add_to_cart       = false
-      flash.now[:notice] = "This instrument requires approval to reserve; please contact the facility for further information:<br/><br/> #{@instrument.facility}<br/><a href=\"mailto:#{@instrument.facility.email}\">#{@instrument.facility.email}</a>".html_safe
+    if add_to_cart && !@instrument.is_approved_for?(acting_user)
+      add_to_cart       = false
+      flash.now[:notice] = "The #{@instrument.to_s} instrument requires approval to reserve; please contact the facility for further information:<br/><br/> #{@instrument.facility}<br/><a href=\"mailto:#{@instrument.facility.email}\">#{@instrument.facility.email}</a>".html_safe
     end
 
     # does the product have any price policies for any of the groups the user is a member of?
-    if @add_to_cart && !(@instrument.can_purchase?((acting_user.price_groups + acting_user.account_price_groups).flatten.uniq.collect{ |pg| pg.id }))
-      @add_to_cart       = false
-      flash.now[:notice] = 'You are not in a price group that may reserve this instrument; please contact the facility.'
+    if add_to_cart && !(@instrument.can_purchase?((acting_user.price_groups + acting_user.account_price_groups).flatten.uniq.collect{ |pg| pg.id }))
+      add_to_cart       = false
+      flash.now[:notice] = "You are not in a price group that may reserve instrument #{@instrument.to_s}; please contact the facility."
     end
 
     # when ordering on behalf of, does the staff have permissions for this facility?
-    if @add_to_cart && acting_as? && !session_user.operator_of?(@instrument.facility)
-      @add_to_cart = false
+    if add_to_cart && acting_as? && !session_user.operator_of?(@instrument.facility)
+      add_to_cart = false
       flash.now[:notice] = 'You are not authorized to order instruments from this facility on behalf of a user.'
     end
 
-    @active_tab = 'home'
-    render :layout => 'application'
+    if login_required
+      session[:requested_params]=request.fullpath
+      return redirect_to new_user_session_path
+    elsif !add_to_cart
+      return redirect_to facility_path(current_facility)
+    end
+
+    redirect_to add_order_path(acting_user.cart(session_user), :product_id => @instrument.id, :quantity => 1)
   end
 
   # GET /instruments/1/manage

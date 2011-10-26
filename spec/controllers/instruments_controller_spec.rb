@@ -53,22 +53,30 @@ describe InstrumentsController do
     before :each do
       @method=:get
       @action=:show
-      @block=Proc.new do
+    end
+
+    it_should_allow :guest, 'but should not add to cart' do
+      assigns[:instrument].should == @instrument
+      assert_redirected_to facility_path(@authable)
+    end
+
+    context 'needs schedule rules' do
+      before :each do
+        @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+      end
+
+      it "should require sign in" do
+        do_request
         assigns[:instrument].should == @instrument
-        response.should be_success
-        response.should render_template('instruments/show')
+        session[:requested_params].should_not be_empty
+        assert_redirected_to new_user_session_path
+      end
+
+      it_should_allow_all(facility_operators) do |op|
+        assigns[:instrument].should == @instrument
+        assert_redirected_to add_order_path(op.cart(op), :product_id => @instrument.id, :quantity => 1)
       end
     end
-
-    it "should all public access" do
-      do_request
-      @block.call
-    end
-
-    it_should_allow(:guest) { @block.call }
-
-    it_should_allow_all(facility_operators) { @block.call }
-
   end
 
 
