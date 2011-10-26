@@ -36,7 +36,7 @@ class Account < ActiveRecord::Base
   end
   
   def self.for_facility(facility)
-    all_subclass_names = subclasses.collect { |clazz| clazz.to_s }
+    all_subclass_names = descendants.collect { |clazz| clazz.to_s }
     
     where("type in (:allow_all) or (type in (:limit_one) and facility_id = :facility)", 
           {:allow_all => all_subclass_names - @@limited_to_one_facility_subclasses,
