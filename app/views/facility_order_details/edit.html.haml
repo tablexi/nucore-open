@@ -30,9 +30,9 @@
         $.getJSON(
           "#{facility_order_order_detail_new_price_url(current_facility, @order, @order_detail)}?quantity=" + this.value,
           function(data) {
-            $("#actual_cost").val(data[0].toFixed(2));
-            $("#actual_subsidy").val(data[1].toFixed(2));
-            $("#actual_total").html("$" + data[2].toFixed(2));
+            $("#actual_cost").val(new Number(data[0]).toFixed(2));
+            $("#actual_subsidy").val(new Number(data[1]).toFixed(2));
+            $("#actual_total").html("$" + new Number(data[2]).toFixed(2));
             $('#submit').attr('disabled', false);
           }
         );
