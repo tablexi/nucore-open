@@ -323,6 +323,16 @@ describe Order do
         @order1.account.should == @nufs
       end
 
+      it 'should assign payment source if user has a valid account and has never placed an order' do
+        @nufs=Factory.create(:nufs_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
+        define_open_account(@item.account, @nufs.account_number)
+        @user.reload
+
+        @order.account.should be_nil
+        @order.auto_assign_account!(@item)
+        @order.account.should == @nufs
+      end
+
       it 'should raise if an account cannot be found' do
         assert_raise RuntimeError do
           @order.auto_assign_account!(@item)

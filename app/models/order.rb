@@ -155,10 +155,16 @@ class Order < ActiveRecord::Base
     accounts=user.accounts.active.for_facility(product.facility)
 
     if accounts.size > 0
-      # last useable account used to place an order
-      user.orders.delete_if{|o| o.ordered_at.nil?}.sort{|x,y| y.ordered_at <=> x.ordered_at}.each do |order|
-        acct=order.account
-        self.account=acct and break if accounts.include?(acct) && acct.validate_against_product(product, user).nil?
+      orders=user.orders.delete_if{|o| o.ordered_at.nil? || o == self}
+
+      if orders.blank?
+        accounts.each{|acct| self.account=acct and break if acct.validate_against_product(product, user).nil? }
+      else
+        # last useable account used to place an order
+        orders.sort{|x,y| y.ordered_at <=> x.ordered_at}.each do |order|
+          acct=order.account
+          self.account=acct and break if accounts.include?(acct) && acct.validate_against_product(product, user).nil?
+        end
       end
     end
 

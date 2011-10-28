@@ -156,7 +156,7 @@ Spork.each_run do
     @price_group=Factory.create(:price_group, :facility => facility)
     o_attrs={ :created_by => ordered_by.id, :facility => facility, :ordered_at => Time.zone.now }
     o_attrs.merge!(:account_id => account.id) if account
-    @order=ordered_by.orders.create(Factory.attributes_for(:order).update(o_attrs))
+    @order=ordered_by.orders.create(Factory.attributes_for(:order, o_attrs))
     Factory.create(:user_price_group_member, :user => ordered_by, :price_group => @price_group)
     @item_pp=@item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
     @item_pp.reload.restrict_purchase=false
