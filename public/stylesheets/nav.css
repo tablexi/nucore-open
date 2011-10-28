@@ -7,7 +7,6 @@
 #nav a {
   color:#000000;
   display:block;
-  padding-top:3px;
   text-decoration:none;
 }
 
@@ -31,9 +30,9 @@
 #nav li {
   background:url("../images/bg-li-mixed.jpg") repeat-x scroll right -51px transparent;
   float:left;
-  height:30px;
+  height:27px;
   list-style-type:none;
-  padding:20px 15px 0;
+  padding:23px 15px 0;
 }
 
 #nav li li {
