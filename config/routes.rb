@@ -24,6 +24,7 @@ Nucore::Application.routes.draw do |map|
     end
   end
 
+  match "/transactions" => "transaction_history#index", :as => "transaction_history"
   # global settings
   resources :affiliates, :except => :show
 
