@@ -4,7 +4,8 @@ class OrderDetailsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as,  :except => [:order_file, :upload_order_file, :remove_order_file]
   before_filter :init_order_detail
-
+  after_filter :set_active_tab
+  
   def initialize
     @active_tab = 'orders'
     super
@@ -32,7 +33,7 @@ class OrderDetailsController < ApplicationController
           @order_detail.dispute_at = Time.zone.now
           @order_detail.save!
           flash[:notice] = 'Your purchase has been disputed'
-          redirect_to orders_path and return
+          redirect_to (@order_detail.reservation ? reservations_path : orders_path) and return
         rescue Exception => e
           flash.now[:error] = "An error was encountered while disputing the order."
           raise ActiveRecord::Rollback
@@ -46,6 +47,7 @@ class OrderDetailsController < ApplicationController
   
   # GET /orders/:order_id/order_details/:id
   def show
+    set_active_tab
   end
   
   def init_order_detail
@@ -86,4 +88,13 @@ class OrderDetailsController < ApplicationController
     @order.invalidate!
     redirect_to(order_path(@order))
   end
+  
+  def set_active_tab
+    if @order_detail.reservation.nil?
+      @active_tab = "orders"      
+    else
+      @active_tab = "reservations"
+    end
+  end
+  
 end
