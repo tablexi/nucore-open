@@ -15,6 +15,7 @@ class FacilityOrderDetailsController < ApplicationController
   def edit
     @order        = Order.find_by_id_and_facility_id(params[:order_id], current_facility.id)
     @order_detail = @order.order_details.find(params[:id])
+    set_active_tab
     @in_open_journal=@order_detail.journal && @order_detail.journal.open?
 
     condition=case @order_detail.account
@@ -35,6 +36,7 @@ class FacilityOrderDetailsController < ApplicationController
         flash.now[:notice]="This order does not have a price policy assigned. Please ensure that there is a price policy for the date this order was fulfilled. Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
       end
     end
+    
   end
 
   # PUT /facilities/:facility_id/orders/:order_id/order_details/:id
@@ -82,9 +84,9 @@ class FacilityOrderDetailsController < ApplicationController
         @order_detail.save!
         flash[:notice] = 'The order has been updated successfully'
         if @order_detail.new? || @order_detail.inprocess? || @order_detail.cancelled?
-          redirect_to facility_orders_path(current_facility) and return
+          redirect_to (@order_detail.reservation ? facility_reservations_path(current_facility) : facility_orders_path(current_facility)) and return
         elsif @order_detail.complete?
-          redirect_to show_problems_facility_orders_path(current_facility) and return
+          redirect_to (@order_detail.reservation ? show_problems_facility_reservations_path(current_facility) : show_problems_facility_orders_path(current_facility)) and return
         end
       rescue Exception => e
         flash.now[:error] = 'An error was encounted while updating the order'
@@ -117,7 +119,7 @@ class FacilityOrderDetailsController < ApplicationController
         @order_detail.save!
 
         flash[:notice] = 'The dispute has been resolved successfully'
-        redirect_to disputed_facility_orders_path and return
+        redirect_to (@order_detail.reservation ? disputed_facility_reservations_path : disputed_facility_orders_path) and return
       rescue Exception => e
         flash.now[:error] = "An error was encountered while resolving the dispute"
         raise ActiveRecord::Rollback
@@ -165,4 +167,11 @@ class FacilityOrderDetailsController < ApplicationController
     @order_detail.save!
   end
 
+  def set_active_tab
+    if @order_detail.reservation
+      @active_tab = "admin_reservations"
+    else
+      @active_tab = "admin_orders"
+    end
+  end
 end
