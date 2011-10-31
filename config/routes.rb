@@ -5,7 +5,6 @@ Nucore::Application.routes.draw do |map|
 
   # authentication
   map.root :controller => "public", :action => "index"
-  map.login_target '/orders', :controller => 'orders', :action => 'index'
   map.logout_target '/', :controller => 'public', :action => 'index'
   map.switch_back '/switch_back', :controller => 'public', :action => 'switch_back'
 
@@ -141,6 +140,9 @@ Nucore::Application.routes.draw do |map|
 
   # order process
   map.cart '/orders/cart', :controller => 'orders', :action => 'cart'
+  match "/orders" => redirect("/orders/pending")
+  match "/orders/:status" => "orders#index", :status => /pending|all/, :as => "orders_status"
+  #match "/orders/all" => "orders#index", :status => "all", :as => "orders_all"
   map.remove_order '/orders/:id/remove/:order_detail_id', :controller => 'orders', :action => 'remove', :conditions => {:method => :put}
   map.add_account '/order/:id/add_account', :controller => 'orders', :action => 'add_account'
   map.resources :orders, :member => {:add => [:get, :put], :purchase => [ :get, :put ], :receipt => :get, :clear => :put, :choose_account => [:get,:post]} do |order|
@@ -156,7 +158,8 @@ Nucore::Application.routes.draw do |map|
   end
 
   # reservations
-  match 'reservations' => 'reservations#list', :as => 'reservations'
+  match 'reservations' => redirect('/reservations/upcoming'), :as => 'reservations'
+  match 'reservations/:status' => 'reservations#list', :as => 'reservations_status'
 
   # file upload routes
   map.upload_product_file '/facilities/:facility_id/:product/:product_id/files/upload',

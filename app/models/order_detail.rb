@@ -98,7 +98,19 @@ class OrderDetail < ActiveRecord::Base
 
   scope :non_reservations, joins(:product).where("products.type <> 'Instrument'")
   scope :reservations, joins(:product).where("products.type = 'Instrument'")
-
+  
+  scope :ordered, where("orders.ordered_at IS NOT NULL")
+  scope :pending, joins(:order).where(:state => ['new', 'inprocess']).ordered
+  scope :confirmed_reservations,  reservations.
+                                 joins(:order).
+                                 includes(:reservation).
+                                 ordered
+  scope :upcoming_reservations, confirmed_reservations.
+                                where("reservations.reserve_end_at > ?", Time.zone.now).
+                                order('reservations.reserve_start_at ASC')
+  scope :all_reservations, confirmed_reservations.
+                           order('reservations.reserve_start_at DESC')
+                  
   # BEGIN acts_as_state_machine
   include AASM
 

@@ -247,11 +247,25 @@ class OrdersController < ApplicationController
   # GET /orders
   # all my orders
   def index
-    # won't show instrument order_details
-    @order_details = session_user.order_details.
-      non_reservations.
-      where("orders.ordered_at IS NOT NULL").
-      order('orders.ordered_at DESC').
-      paginate(:page => params[:page])
+    # new or in process
+    @order_details = session_user.order_details.non_reservations
+    @available_statuses = ['pending', 'all']
+    case params[:status]
+    when "pending"
+      @order_details = @order_details.pending
+    when "all"
+      @order_details = @order_details.ordered
+    else
+      raise ActionController::RoutingError.new("Not Found: #{params[:status]}")
+    end
+    @order_details = @order_details. order('order_details.created_at DESC').paginate(:page => params[:page])
   end
+  # def index_all
+    # # won't show instrument order_details
+    # @order_details = session_user.order_details.
+      # non_reservations.
+      # where("orders.ordered_at IS NOT NULL").
+      # order('orders.ordered_at DESC').
+      # paginate(:page => params[:page])
+  # end
 end
