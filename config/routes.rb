@@ -155,7 +155,8 @@ Nucore::Application.routes.draw do |map|
   end
 
   # reservations
-  match 'reservations' => 'reservations#list', :as => 'reservations'
+  match 'reservations' => redirect('/reservations/upcoming'), :as => 'reservations'
+  match 'reservations/:status' => 'reservations#list', :as => 'reservations_status'
 
   # file upload routes
   map.upload_product_file '/facilities/:facility_id/:product/:product_id/files/upload',
