@@ -1,0 +1,6 @@
+- form_tag do
+  = label_tag :accounts, "Accounts"
+  = select_tag :accounts, options_for_select(@accounts.map { |account| [account.description, account.id] }), :multiple => true
+  = label_tag :facilities, "Facilities"
+  = select_tag :facilities, options_for_select(@facilities.map{ |facility| [facility.name, facility.id]})
+  
