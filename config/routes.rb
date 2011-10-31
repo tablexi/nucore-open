@@ -23,7 +23,14 @@ Nucore::Application.routes.draw do |map|
       facility.resources :statements, :only => [:show]
     end
   end
-
+  
+  # transaction searches
+  match "/accounts/:account_id/transactions" => 'transaction_history#search', :as => "account_transaction_history"
+  match "/accounts/:account_id/transactions/:facilities/:start_date/:end_date" => 'transaction_history#search', :as => "account_transaction_history_search"
+  match "/transactions" => 'transaction_history#search', :as => "transaction_history"
+  match "/transactions/:accounts/:facilities/:start_date/:end_date" => 'transaction_history#search', :as => 'transaction_history_search'
+  
+  
   # global settings
   resources :affiliates, :except => :show
 

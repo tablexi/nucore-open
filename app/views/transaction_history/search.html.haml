@@ -1,0 +1,45 @@
+= content_for :head_content do
+  = javascript_include_tag "chosen.jquery.min.js"
+  = stylesheet_link_tag "chosen.css"
+  = javascript_include_tag "transaction_history.js"
+  %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
+  = javascript_include_tag 'calendar/fullcalendar.min.js'
+  = stylesheet_link_tag 'calendar/fullcalendar.css'
+  = stylesheet_link_tag 'calendar/fullcalendar.extensions.css'
+  = stylesheet_link_tag "jquery-ui/jquery-ui"
+- content_for :h1 do
+  Transaction History
+-if (@account)
+  %h2= @account.account_number
+  %p= @account.description  
+- form_tag transaction_search_submit_path(@account), :method => :get do
+  - if (@accounts)
+    = label_tag :accounts, "Accounts"
+    = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "description", @search_fields[:accounts]), :multiple => true
+  = label_tag :facilities, "Facilities"
+  = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", @search_fields[:facilities]), :multiple => true
+  = label_tag :start_date, "Start Date"
+  = text_field_tag :start_date, @search_fields[:start_date], :class => 'datepicker'
+  = label_tag :end_date, "End Date"
+  = text_field_tag :end_date, @search_fields[:end_date], :class => 'datepicker'
+  
+  = submit_tag "Search"
+  
+= will_paginate(@order_details)
+%table
+  - @order_details.each do |order_detail|
+    %tr
+      %td= order_detail
+      %td= human_date(order_detail.order.ordered_at)
+      %td= order_detail.product
+      %td 
+        - if order_detail.cost_estimated?
+          %span.estimated_cost
+            = show_estimated_total(order_detail)
+        - elsif order_detail.price_policy.nil?
+          Unassigned
+        - else
+          %span.actual_cost
+            = show_actual_total(order_detail)
+= will_paginate(@order_details)
+  

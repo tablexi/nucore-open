@@ -110,7 +110,18 @@ class OrderDetail < ActiveRecord::Base
                                 order('reservations.reserve_start_at ASC')
   scope :all_reservations, confirmed_reservations.
                            order('reservations.reserve_start_at DESC')
-                  
+  
+  scope :for_accounts, lambda {|accounts| where("order_details.account_id in (?)", accounts) unless accounts.nil? or accounts.empty? }
+  scope :for_facilities, lambda {|facilities| joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? or facilities.empty? }
+  scope :in_date_range, lambda { |start_date, end_date| 
+    if (start_date)
+      search = where("orders.ordered_at > ?", start_date)
+    end
+    if (end_date)
+      search = search.where("orders.ordered_at < ?", end_date)
+    end
+    search
+  }
   # BEGIN acts_as_state_machine
   include AASM
 
