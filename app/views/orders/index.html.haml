@@ -1,5 +1,10 @@
 = content_for :h1 do
   My Orders
+- @available_statuses.each do |status|
+  - if (params[:status] == status)
+    %strong= status.humanize
+  - else
+    = link_to status.humanize, orders_status_path(:status => status)
 
 - if @order_details.empty?
   %p.notice You have not placed any orders.
