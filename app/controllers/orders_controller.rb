@@ -256,9 +256,9 @@ class OrdersController < ApplicationController
     when "all"
       @order_details = @order_details.ordered
     else
-      raise ActionController::RoutingError.new('Not Found')
+      raise ActionController::RoutingError.new("Not Found: #{params[:status]}")
     end
-    @order_details = @order_details.paginate(:page => params[:page])
+    @order_details = @order_details. order('order_details.created_at DESC').paginate(:page => params[:page])
   end
   # def index_all
     # # won't show instrument order_details
