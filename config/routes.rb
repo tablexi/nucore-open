@@ -24,8 +24,9 @@ Nucore::Application.routes.draw do |map|
     end
     account.resources :transactions, :controller => 'transaction_history', :only => [:index]
   end
-
-  match "/transactions" => 'transaction_history#index', :as => 'transaction_history'
+  match "/accounts/:account_id/transactions/*params" => 'transaction_history#search'
+  match "/transactions" => 'transaction_history#search', :as => "transaction_history"
+  match "/transactions/*search_fields" => 'transaction_history#search', :as => 'transaction_history_search'
   
   # global settings
   resources :affiliates, :except => :show

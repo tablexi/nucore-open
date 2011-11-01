@@ -12,16 +12,16 @@
 -if (@account)
   %h2= @account.account_number
   %p= @account.description  
-- form_tag(transaction_history_path) do
+- form_tag transaction_history_path, :method => :get do
   - if (@accounts)
     = label_tag :accounts, "Accounts"
-    = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "description", params[:accounts]), :multiple => true
+    = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "description", @search_fields[:accounts]), :multiple => true
   = label_tag :facilities, "Facilities"
-  = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", params[:facilities]), :multiple => true
+  = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", @search_fields[:facilities]), :multiple => true
   = label_tag :start_date, "Start Date"
-  = text_field_tag :start_date, nil, :class => 'datepicker'
+  = text_field_tag :start_date, @search_fields[:start_date], :class => 'datepicker'
   = label_tag :end_date, "End Date"
-  = text_field_tag :end_date, nil, :class => 'datepicker'
+  = text_field_tag :end_date, @search_fields[:end_date], :class => 'datepicker'
   
   = submit_tag "Search"
   
