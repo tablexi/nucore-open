@@ -22,9 +22,11 @@ Nucore::Application.routes.draw do |map|
     account.resources :facilities, :only => [] do |facility|
       facility.resources :statements, :only => [:show]
     end
+    account.resources :transactions, :controller => 'transaction_history', :only => [:index]
   end
 
-  match "/transactions" => "transaction_history#index", :as => "transaction_history"
+  match "/transactions" => 'transaction_history#index', :as => 'transaction_history'
+  
   # global settings
   resources :affiliates, :except => :show
 

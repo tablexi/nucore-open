@@ -7,10 +7,15 @@
   = stylesheet_link_tag 'calendar/fullcalendar.css'
   = stylesheet_link_tag 'calendar/fullcalendar.extensions.css'
   = stylesheet_link_tag "jquery-ui/jquery-ui"
-  
+- content_for :h1 do
+  Transaction History
+-if (@account)
+  %h2= @account.account_number
+  %p= @account.description  
 - form_tag(transaction_history_path) do
-  = label_tag :accounts, "Accounts"
-  = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "description", params[:accounts]), :multiple => true
+  - if (@accounts)
+    = label_tag :accounts, "Accounts"
+    = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "description", params[:accounts]), :multiple => true
   = label_tag :facilities, "Facilities"
   = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", params[:facilities]), :multiple => true
   = label_tag :start_date, "Start Date"
@@ -20,7 +25,6 @@
   
   = submit_tag "Search"
   
-%h2 Transactions
 %table
   - @order_details.each do |order_detail|
     %tr
@@ -36,4 +40,5 @@
         - else
           %span.actual_cost
             = show_actual_total(order_detail)
+= will_paginate(@order_details)
   
