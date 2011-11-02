@@ -12,7 +12,7 @@
 -if (@account)
   %h2= @account.account_number
   %p= @account.description  
-- form_tag transaction_history_path, :method => :get do
+- form_tag transaction_search_submit_path(@account), :method => :get do
   - if (@accounts)
     = label_tag :accounts, "Accounts"
     = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "description", @search_fields[:accounts]), :multiple => true
