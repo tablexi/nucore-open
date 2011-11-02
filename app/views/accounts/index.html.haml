@@ -11,6 +11,8 @@
       %th Type
       %th Expiration
       %th Facility
+      %th
+      %th
     - @account_users.each do |au|
       - account = au.account
       %tr
@@ -20,7 +22,7 @@
         %td= human_date(account.expires_at)
         %td= account.facility || '<i>All</i>'.html_safe
         - if au.can_administer? || session_user.administrator?
-          %td= link_to "Transactions", account_statements_path(account)
+          %td= link_to "Transactions", account_transaction_history_path(account)
           %td= link_to "Members", account_account_users_path(account)
     
         
