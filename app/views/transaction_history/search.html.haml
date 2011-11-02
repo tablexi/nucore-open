@@ -9,6 +9,8 @@
   = stylesheet_link_tag "jquery-ui/jquery-ui"
 - content_for :h1 do
   Transaction History
+= content_for :tabnav do
+  = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'transactions'}
 -if (@account)
   %h2= @account.account_number
   %p= @account.description  

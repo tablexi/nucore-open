@@ -21,7 +21,7 @@ class TransactionHistoryController < ApplicationController
       if (@account)
         redirect_to account_transaction_history_search_path(p.merge({:account_id => @account.id})) 
       else
-        p.merge!({ :accounts => params[:accounts].join("-") })
+        p.merge!({ :accounts => (params[:accounts] & @accounts).join("-") })
         redirect_to transaction_history_search_path(p)
       end
       return
@@ -63,7 +63,7 @@ class TransactionHistoryController < ApplicationController
     if (params[:account_id])
       @account = session_user.accounts.find(params[:account_id])
     else
-      @accounts = Account.active
+      @accounts = session_user.accounts
     end 
     
     @facilities = Facility.active
