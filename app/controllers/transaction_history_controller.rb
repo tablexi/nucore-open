@@ -1,4 +1,6 @@
 class TransactionHistoryController < ApplicationController
+  customer_tab  :all
+  
   include DateHelper
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -30,10 +32,8 @@ class TransactionHistoryController < ApplicationController
     @search_fields[:facilities] =  Facility.ids_from_urls(split_by_hyphen(params[:facilities])) unless params[:facilities] == "all"
     @search_fields[:start_date] = params[:start_date] unless params[:start_date] == "all"
     @search_fields[:end_date] = params[:end_date] unless params[:end_date] == "all"
-    puts "SEARCH #{@search_fields}"
     do_search(@search_fields)
     @order_details = @order_details.paginate(:page => params[:page])
-    render :action => "index"
   end
   
   def do_search(search_params)

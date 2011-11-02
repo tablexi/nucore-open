@@ -25,6 +25,7 @@
   
   = submit_tag "Search"
   
+= will_paginate(@order_details)
 %table
   - @order_details.each do |order_detail|
     %tr
