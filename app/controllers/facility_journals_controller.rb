@@ -1,4 +1,6 @@
 class FacilityJournalsController < ApplicationController
+  include DateHelper
+
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -19,6 +21,7 @@ class FacilityJournalsController < ApplicationController
     @pending_journal = Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
     @order_details   = OrderDetail.need_journal(current_facility)
     @journal         = current_facility.journals.new()
+    @soonest_journal_date=@order_details.collect{ |od| od.fulfilled_at }.max
   end
 
   #PUT /facilities/:facility_id/journals/:id
@@ -69,6 +72,7 @@ class FacilityJournalsController < ApplicationController
   def create
     @journal = current_facility.journals.new()
     @journal.created_by = session_user.id
+    @journal.journal_date = parse_usa_date(params[:journal][:journal_date])
 
     @update_order_details = OrderDetail.find(params[:order_detail_ids] || [])
     if @update_order_details.empty?
@@ -80,7 +84,6 @@ class FacilityJournalsController < ApplicationController
       else
         Journal.transaction do
           begin
-            @journal.journal_date = @update_order_details.collect{ |od| od.fulfilled_at }.max
             @journal.save!
             @journal.create_journal_rows!(@update_order_details)
             OrderDetail.update_all(['journal_id = ?', @journal.id], ['id IN (?)', @update_order_details.collect{|od| od.id}])
@@ -100,6 +103,7 @@ class FacilityJournalsController < ApplicationController
     @pending_journal = Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
     @accounts        = NufsAccount.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
     @order_details   = OrderDetail.need_journal(current_facility)
+    @soonest_journal_date = @journal.journal_date
     render :action => :index
   end
 
