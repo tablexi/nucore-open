@@ -1,3 +1,15 @@
+= content_for :head_content do
+  %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
+  = stylesheet_link_tag 'jquery-ui/jquery-ui'
+  :javascript
+    $(function(){
+      $(".datepicker").datepicker({
+        'defaultDate':'#{@soonest_journal_date.strftime("%m/%d/%y")}',
+        'minDate':'#{@soonest_journal_date.strftime("%m/%d/%y")}',
+        'maxDate':'#{Time.zone.now.to_datetime.strftime("%m/%d/%y")}'
+      });
+    });
+
 = content_for :h1 do
   =h current_facility
 
@@ -60,7 +72,9 @@
     = f.error_messages
     %table
       %tr.borderless
-        %td{:colspan => 4}= disable ? '' : link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
+        %td{:colspan => 2}= disable ? '' : link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
+        %td= f.label :journal_date
+        %td= f.text_field :journal_date, :value => @soonest_journal_date.strftime("%m/%d/%Y"), :class => 'datepicker'
         %td.currency{:colspan => 2}= submit_tag "Create Journal", {:disabled => disable}
       %tr
         %th

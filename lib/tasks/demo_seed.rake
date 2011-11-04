@@ -282,40 +282,57 @@ namespace :demo  do
       :price_group_id => pgnu.id,
     })
 
-    nufsaccount = NufsAccount.find_or_create_by_account_number({
-      :account_number => '111-2222222-33333333-01',
-      :description    => "Paul PI's Chart String",
-      :expires_at     => Date.new(2012,1,1),
-      :created_by     => user_director.id,
-    })
-    nufsaccount.account_users_attributes = [{:user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id }]
-    nufsaccount.save
-    nufsaccount.account_users.create(:user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id)
-    
-    ccaccount = CreditCardAccount.find_or_create_by_account_number({
-      :account_number     => 'xxxx-xxxx-xxxx-xxxx',
-      :description        => "Paul PI's Credit Card",
-      :expires_at         => Date.new(2012,1,1),
-      :name_on_card       => 'Paul PI',
-      :expiration_month   => '10',
-      :expiration_year    => '2014',
-      :created_by         => user_director.id,
-    })
-    ccaccount.account_users_attributes = [{:user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id }]
-    ccaccount.save
-    ccaccount.account_users.create(:user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id)
+    nufsaccount = NufsAccount.find_by_account_number('111-2222222-33333333-01')
 
-    poaccount = PurchaseOrderAccount.find_or_create_by_account_number({
-      :account_number => '12345',
-      :description    => "Paul PI's Purchase Order",
-      :expires_at     => Date.new(2012,1,1),
-      :created_by     => user_director.id,
-      :facility_id    => facility.id,
-      :remittance_information => "Billing Dept\nEdward External\n1702 E Research Dr\nAuburn, AL 36830",
-    })
-    poaccount.account_users_attributes = [{:user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id }]
-    poaccount.save
-    poaccount.account_users.create(:user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id)
+    unless nufsaccount
+      nufsaccount=NufsAccount.create({
+        :account_number => '111-2222222-33333333-01',
+        :description    => "Paul PI's Chart String",
+        :expires_at     => Date.new(2012,1,1),
+        :created_by     => user_director.id,
+      })
+      nufsaccount.account_users_attributes = [{:user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id }]
+      nufsaccount.save!
+      nufsaccount.account_users.create(:user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id)
+    end
+
+    ccaccount = CreditCardAccount.find_by_account_number('xxxx-xxxx-xxxx-xxxx')
+    other_affiliate=Affiliate.find_or_create_by_name('Other')
+
+    unless ccaccount
+      ccaccount=CreditCardAccount.create({
+        :account_number     => 'xxxx-xxxx-xxxx-xxxx',
+        :description        => "Paul PI's Credit Card",
+        :expires_at         => Date.new(2012,1,1),
+        :name_on_card       => 'Paul PI',
+        :expiration_month   => '10',
+        :expiration_year    => '2014',
+        :created_by         => user_director.id,
+        :affiliate_id       => other_affiliate.id,
+        :affiliate_other    => 'Some Affiliate'
+      })
+      ccaccount.account_users_attributes = [{:user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id }]
+      ccaccount.save!
+      ccaccount.account_users.create(:user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id)
+    end
+
+    poaccount = PurchaseOrderAccount.find_by_account_number('12345')
+
+    unless poaccount
+      poaccount=PurchaseOrderAccount.create({
+        :account_number => '12345',
+        :description    => "Paul PI's Purchase Order",
+        :expires_at     => Date.new(2012,1,1),
+        :created_by     => user_director.id,
+        :facility_id    => facility.id,
+        :affiliate_id       => other_affiliate.id,
+        :affiliate_other    => 'Some Affiliate',
+        :remittance_information => "Billing Dept\nEdward External\n1702 E Research Dr\nAuburn, AL 36830"
+      })
+      poaccount.account_users_attributes = [{:user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id }]
+      poaccount.save!
+      poaccount.account_users.create(:user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id)
+    end
 
     # purchased orders, complete, statements sent, 3 months ago
     sleep 2

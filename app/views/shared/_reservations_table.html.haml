@@ -37,7 +37,7 @@
               %i=h "Note: #{od.note}"
       %td.centered=h od.order_status.name
       %td.currency
-        - if od.cost_estimated?
+        - if od.reload.cost_estimated?
           %span.estimated_cost
             = show_estimated_total(od)
         - elsif od.price_policy.nil?
