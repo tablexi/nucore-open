@@ -21,19 +21,25 @@ class TransactionHistoryController < ApplicationController
       if (@account)
         redirect_to account_transaction_history_search_path(p.merge({:account_id => @account.id})) 
       else
-        p.merge!({ :accounts => (params[:accounts] & @accounts).join("-") })
+        # do the intersection with @accounts to remove any accounts they're not allowed to see
+        account_ids = @accounts.map {|a| a.id.to_s}
+        account_str = (((params[:accounts] || []) & account_ids).join("-")).presence || "all"
+        p.merge!({ :accounts => account_str })
         redirect_to transaction_history_search_path(p)
       end
       return
     end
-    
+    params[:accounts] = [params[:account_id]] if params[:account_id]
     @search_fields = {}
-    @search_fields[:accounts] = split_by_hyphen(params[:accounts]).presence || params[:account_id] unless params[:accounts] == "all"
+    @search_fields[:accounts] = split_by_hyphen(params[:accounts]).presence unless params[:accounts] == "all"
     @search_fields[:facilities] =  Facility.ids_from_urls(split_by_hyphen(params[:facilities])) unless params[:facilities] == "all"
     @search_fields[:start_date] = params[:start_date] unless params[:start_date] == "all"
     @search_fields[:end_date] = params[:end_date] unless params[:end_date] == "all"
     do_search(@search_fields)
+    
     @order_details = @order_details.paginate(:page => params[:page])
+    # save some SQL queries
+    @order_details = @order_details.includes(:order => :facility).includes(:account).includes(:product).includes(:order_status)
   end
   
   def do_search(search_params)
@@ -41,7 +47,7 @@ class TransactionHistoryController < ApplicationController
     if (@account)
       @order_details = @order_details.for_accounts([@account.id])
     else
-      @order_details = @order_details.for_accounts(search_params[:account_id] || search_params[:accounts])
+      @order_details = @order_details.for_accounts(search_params[:accounts])
     end
     start_date = parse_usa_date(search_params[:start_date].to_s.gsub("-", "/"))
     end_date = parse_usa_date(search_params[:end_date].to_s.gsub("-", "/"))  
@@ -49,6 +55,7 @@ class TransactionHistoryController < ApplicationController
     @order_details = @order_details.joins(:order).for_facilities(search_params[:facilities]).
       in_date_range(start_date, end_date).
       order("orders.ordered_at DESC")
+    
   end
      
   private
