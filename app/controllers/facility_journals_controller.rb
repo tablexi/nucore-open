@@ -22,6 +22,7 @@ class FacilityJournalsController < ApplicationController
     @order_details   = OrderDetail.need_journal(current_facility)
     @journal         = current_facility.journals.new()
     @soonest_journal_date=@order_details.collect{ |od| od.fulfilled_at }.max
+    @soonest_journal_date=Time.zone.now unless @soonest_journal_date
   end
 
   #PUT /facilities/:facility_id/journals/:id
