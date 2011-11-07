@@ -432,6 +432,19 @@ p.error {
   padding: 1px 0;
 }
 
+/***********************
+ * Search forms
+ */
+.search_form {
+  margin-bottom: 0.75em;
+}
+.search_form fieldset {
+	float: left;
+	width: 26em;
+}
+.search_form select {
+  width: 25em;
+}
 
 /***************************************
 tabs

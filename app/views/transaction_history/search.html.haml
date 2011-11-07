@@ -14,19 +14,21 @@
     = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'transactions'}
   %h2= @account.account_number
   %p= @account.description  
-= form_tag transaction_search_submit_path(@account), :method => :get do
-  - if @accounts
-    = label_tag :accounts, "Accounts"
-    = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "description", @search_fields[:accounts]), :multiple => true
-  = label_tag :facilities, "Facilities"
-  = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", @search_fields[:facilities]), :multiple => true
-  = label_tag :start_date, "Start Date"
-  = text_field_tag :start_date, @search_fields[:start_date], :class => 'datepicker'
-  = label_tag :end_date, "End Date"
-  = text_field_tag :end_date, @search_fields[:end_date], :class => 'datepicker'
+= form_tag transaction_search_submit_path(@account), :method => :get, :class => "search_form" do
+  %fieldset
+    - if @accounts
+      = label_tag :accounts, "Accounts"
+      = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "description", @search_fields[:accounts]), :multiple => true
+    = label_tag :facilities, "Facilities"
+    = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", @search_fields[:facilities]), :multiple => true
+  %fieldset
+    = label_tag :start_date, "Start Date"
+    = text_field_tag :start_date, @search_fields[:start_date], :class => 'datepicker'
+    = label_tag :end_date, "End Date"
+    = text_field_tag :end_date, @search_fields[:end_date], :class => 'datepicker'
   
   = submit_tag "Search"
-
+%div{:style=>"clear:both"}
 = will_paginate(@order_details)
 %table
   %tr
