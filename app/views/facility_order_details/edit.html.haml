@@ -203,13 +203,13 @@
       %tr
         %td{:colspan => '6'}
           %label.inline Note:
-          - opts={ :style=> "width:200px" }
+          - opts={ :style=> "width:375px" }
           - opts.merge!(:disabled => 'disabled') if @order_detail.reconciled?
           = f.text_field(:note, opts)
           - if @can_be_reconciled || @order_detail.reconciled?
             %span#reconcile-note.indented
               %label.inline Reconciliation Note:
-              = f.text_field(:reconciled_note, :style=> "width:200px")
+              = f.text_field(:reconciled_note, :style=> "width:360px")
 
   - if @order_detail.cost_estimated?
     %p.footnote * Clicking 'Save' will update the cost estimate by quantity
