@@ -39,7 +39,7 @@ class TransactionHistoryController < ApplicationController
     
     @order_details = @order_details.paginate(:page => params[:page])
     # save some SQL queries
-    @order_details = @order_details.includes(:order => :facility).includes(:account).includes(:product).includes(:order_status)
+    @order_details = @order_details.includes(:order => :facility).includes(:account).includes(:product).includes(:order_status).includes(:reservation)
   end
   
   def do_search(search_params)
