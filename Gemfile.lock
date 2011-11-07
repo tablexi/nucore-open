@@ -176,7 +176,7 @@ GEM
     tzinfo (0.3.29)
     warden (1.0.4)
       rack (>= 1.0)
-    will_paginate (3.0.pre2)
+    will_paginate (3.0.2)
 
 PLATFORMS
   ruby
@@ -217,4 +217,4 @@ DEPENDENCIES
   spreadsheet (= 0.6.5.5)
   timecop
   vestal_versions (= 1.2.4.3)!
-  will_paginate (= 3.0.pre2)
+  will_paginate (= 3.0.2)
