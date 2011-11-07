@@ -31,7 +31,7 @@ class TransactionHistoryController < ApplicationController
     end
     params[:accounts] = [params[:account_id]] if params[:account_id]
     @search_fields = {}
-    @search_fields[:accounts] = split_by_hyphen(params[:accounts]).presence unless params[:accounts] == "all"
+    @search_fields[:accounts] = split_by_hyphen(params[:accounts]).presence || [] unless params[:accounts] == "all"
     @search_fields[:facilities] =  Facility.ids_from_urls(split_by_hyphen(params[:facilities])) unless params[:facilities] == "all"
     @search_fields[:start_date] = params[:start_date] unless params[:start_date] == "all"
     @search_fields[:end_date] = params[:end_date] unless params[:end_date] == "all"
@@ -47,7 +47,13 @@ class TransactionHistoryController < ApplicationController
     if (@account)
       @order_details = @order_details.for_accounts([@account.id])
     else
-      @order_details = @order_details.for_accounts(search_params[:accounts])
+      search = search_params[:accounts]
+      allowed_search_accounts = @accounts.map {|a| a.id.to_s}
+      if (search.nil? or search.empty?)
+        search = allowed_search_accounts
+      end
+      
+      @order_details = @order_details.for_accounts(search & allowed_search_accounts)
     end
     start_date = parse_usa_date(search_params[:start_date].to_s.gsub("-", "/"))
     end_date = parse_usa_date(search_params[:end_date].to_s.gsub("-", "/"))  
