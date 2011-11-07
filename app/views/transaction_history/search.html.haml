@@ -38,6 +38,7 @@
     %th Ordered Date
     - unless single_facility?
       %th Facility
+    %th Ordered/Reserved By
     %th Description
     %th Cost
     %th Status
@@ -50,6 +51,7 @@
       %td= human_date(order_detail.order.ordered_at)
       - unless single_facility?
         %td= order_detail.order.facility
+      %td= order_detail.order.user.full_name
       %td
         = order_detail.product
         %br
