@@ -105,7 +105,7 @@ describe UsersController do
       assigns(:user).should == @guest
       session[:acting_user_id].should == @guest.id
       session[:acting_ref_url].should == facility_users_url
-      assert_redirected_to facilities_path
+      assert_redirected_to facility_path(@authable)
     end
 
   end

@@ -71,7 +71,7 @@ class UsersController < ApplicationController
       session[:acting_user_id] = params[:user_id]
       session[:acting_ref_url] = facility_users_url
     end
-    redirect_to facilities_path
+    redirect_to facility_path(current_facility)
   end
 
   # GET /facilities/:facility_id/users/:user_id/orders
