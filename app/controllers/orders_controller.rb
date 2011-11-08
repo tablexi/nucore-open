@@ -256,7 +256,8 @@ class OrdersController < ApplicationController
     when "all"
       @order_details = @order_details.ordered
     else
-      raise ActionController::RoutingError.new("Not Found: #{params[:status]}")
+      redirect_to orders_status_path(:status => "pending")
+      return
     end
     @order_details = @order_details. order('order_details.created_at DESC').paginate(:page => params[:page])
   end

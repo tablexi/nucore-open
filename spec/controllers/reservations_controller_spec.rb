@@ -57,8 +57,8 @@ describe ReservationsController do
     it "should redirect to a 404" do
       user=maybe_grant_always_sign_in(:staff)
       get :list, :status => 'junk'
-      #should redirect_to "reservations/upcoming"
-      response.response_code.should == 404
+      should redirect_to "/reservations/upcoming"
+      #response.response_code.should == 404
     end
     
     
@@ -70,7 +70,7 @@ describe ReservationsController do
       
       it_should_allow :staff do
         should respond_with :success
-        should assign_to(:order_details).with_kind_of(Array)
+        should assign_to(:order_details).with_kind_of(ActiveRecord::Relation)
         should assign_to(:active_tab).with('reservations')
         should render_template('list')
       end      
