@@ -5,7 +5,9 @@ html, body {
   background: #EFEFEF;
   font-family: "Lucida Grande",Geneva,Verdana,Arial,sans-serif;
   font-size: 12px;
+  line-height: 1.5em;
 }
+
 
 a,
 a:hover,
@@ -38,7 +40,7 @@ h3 {
 }
 
 p, ul {
-  line-height: 1.5;
+  line-height: 1.5em;
   margin-bottom: 15px;
 }
 
@@ -185,6 +187,13 @@ input.btn:hover {
 
 .bold {
     font-weight : bold;
+}
+
+.dense {
+	font-size: 11px;
+}
+.nowrap {
+	white-space: nowrap;
 }
 
 /***************************************

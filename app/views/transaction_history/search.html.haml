@@ -30,11 +30,11 @@
   = submit_tag "Search"
 %div{:style=>"clear:both"}
 = will_paginate(@order_details)
-%table
+%table.dense
   %tr
     - unless single_account?
       %th Payment Source
-    %th Order Number
+    %th Order #
     %th Fulfillment Date
     - unless single_facility?
       %th Facility
@@ -47,7 +47,7 @@
     %tr
       - unless single_account?
         %td= order_detail.account
-      %td= link_to order_detail, order_order_detail_path(order_detail.order, order_detail) 
+      %td.nowrap= link_to order_detail, order_order_detail_path(order_detail.order, order_detail) 
       %td= order_detail.fulfilled_at.strftime("%m/%d/%Y") if order_detail.fulfilled_at
       - unless single_facility?
         %td= order_detail.order.facility
