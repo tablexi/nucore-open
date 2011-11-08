@@ -115,10 +115,10 @@ class OrderDetail < ActiveRecord::Base
   scope :for_facilities, lambda {|facilities| joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? or facilities.empty? }
   scope :in_date_range, lambda { |start_date, end_date| 
     if (start_date)
-      search = where("orders.ordered_at > ?", start_date)
+      search = where("orders.ordered_at > ?", start_date.beginning_of_day)
     end
     if (end_date)
-      search = search.where("orders.ordered_at < ?", end_date)
+      search = search.where("orders.ordered_at < ?", end_date.end_of_day)
     end
     search
   }
