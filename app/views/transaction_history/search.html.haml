@@ -17,7 +17,7 @@
 = form_tag transaction_search_submit_path(@account), :method => :get, :class => "search_form" do
   %fieldset
     - if @accounts
-      = label_tag :accounts, "Accounts"
+      = label_tag :accounts, "Payment Sources"
       = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "description", @search_fields[:accounts]), :multiple => true
     = label_tag :facilities, "Facilities"
     = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", @search_fields[:facilities]), :multiple => true
@@ -33,9 +33,9 @@
 %table
   %tr
     - unless single_account?
-      %th Account
+      %th Payment Source
     %th Order Number
-    %th Ordered Date
+    %th Fulfillment Date
     - unless single_facility?
       %th Facility
     %th Ordered/Reserved By
@@ -48,7 +48,7 @@
       - unless single_account?
         %td= order_detail.account
       %td= link_to order_detail, order_order_detail_path(order_detail.order, order_detail) 
-      %td= human_date(order_detail.order.ordered_at)
+      %td= order_detail.fulfilled_at.strftime("%m/%d/%Y") if order_detail.fulfilled_at
       - unless single_facility?
         %td= order_detail.order.facility
       %td= order_detail.order.user.full_name
