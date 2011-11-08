@@ -1,4 +1,6 @@
 class OrderDetail < ActiveRecord::Base
+  include NUCore::Database::SortHelper
+  
   versioned
 
   belongs_to :product
