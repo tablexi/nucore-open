@@ -52,7 +52,6 @@ class TransactionHistoryController < ApplicationController
       if (search.nil? or search.empty?)
         search = allowed_search_accounts
       end
-      
       @order_details = @order_details.for_accounts(search & allowed_search_accounts)
     end
     start_date = parse_usa_date(search_params[:start_date].to_s.gsub("-", "/"))
@@ -60,8 +59,7 @@ class TransactionHistoryController < ApplicationController
     
     @order_details = @order_details.joins(:order).for_facilities(search_params[:facilities]).
       in_date_range(start_date, end_date).
-      order("orders.ordered_at DESC")
-    
+      order_by_desc_nulls_first(:fulfilled_at)    
   end
      
   private
@@ -81,4 +79,9 @@ class TransactionHistoryController < ApplicationController
     
     @facilities = Facility.active
   end
+  
+  def set_accounts(accounts)
+    @accounts = accounts
+  end
+  
 end
