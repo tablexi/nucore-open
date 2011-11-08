@@ -46,7 +46,8 @@ class ReservationsController < ApplicationController
     when 'all'
       @order_details = current_user.order_details.all_reservations
     else
-      raise ActionController::RoutingError.new('Not Found')
+      redirect_to reservations_status_path(:status => "upcoming")
+      return
     end
     @order_details = @order_details.paginate(:page => params[:page])
     
