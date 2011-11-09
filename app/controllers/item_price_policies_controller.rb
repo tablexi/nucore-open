@@ -15,7 +15,7 @@ class ItemPricePoliciesController < PricePoliciesController
   # GET /price_policies/new
   def new
     price_groups   = current_facility.price_groups
-    start_date     = Date.today + (@item.price_policies.first.nil? ? 0 : 1)
+    start_date     = Date.today + (@item.price_policies.active.empty? ? 0 : 1)
     @expire_date    = PricePolicy.generate_expire_date(start_date).strftime("%m/%d/%Y")
     @start_date=start_date.strftime("%m/%d/%Y")
     @price_policies = price_groups.map{ |pg| ItemPricePolicy.new({:price_group_id => pg.id, :item_id => @item.id, :start_date => @start_date }) }
