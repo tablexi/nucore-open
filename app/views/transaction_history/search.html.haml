@@ -1,12 +1,10 @@
 = content_for :head_content do
   = javascript_include_tag "chosen.jquery.min.js"
   = stylesheet_link_tag "chosen.css"
+  = javascript_include_tag "date.js"
   = javascript_include_tag "transaction_history.js"
   %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
-  = javascript_include_tag 'calendar/fullcalendar.min.js'
-  = stylesheet_link_tag 'calendar/fullcalendar.css'
-  = stylesheet_link_tag 'calendar/fullcalendar.extensions.css'
-  = stylesheet_link_tag "jquery-ui/jquery-ui"
+  = stylesheet_link_tag "jquery-ui/jquery-ui" 
 - content_for :h1 do
   Transaction History
 -if (@account)
@@ -23,9 +21,9 @@
     = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", @search_fields[:facilities]), :multiple => true
   %fieldset
     = label_tag :start_date, "Start Date"
-    = text_field_tag :start_date, @search_fields[:start_date], :class => 'datepicker'
+    = text_field_tag :start_date, (@search_fields[:start_date] || "").gsub("-","/"), :class => 'datepicker'
     = label_tag :end_date, "End Date"
-    = text_field_tag :end_date, @search_fields[:end_date], :class => 'datepicker'
+    = text_field_tag :end_date, (@search_fields[:end_date] || "").gsub("-","/"), :class => 'datepicker'
   
   = submit_tag "Search"
 %div{:style=>"clear:both"}
