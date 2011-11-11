@@ -21,17 +21,15 @@ class TransactionHistoryController < ApplicationController
       if (@account)
         redirect_to account_transaction_history_search_path(p.merge({:account_id => @account.id})) 
       else
-        # do the intersection with @accounts to remove any accounts they're not allowed to see
-        account_ids = @accounts.map {|a| a.id.to_s}
-        account_str = (((params[:accounts] || []) & account_ids).join("-")).presence || "all"
+        account_str = get_accounts.join("-").presence || "all"
         p.merge!({ :accounts => account_str })
         redirect_to transaction_history_search_path(p)
       end
       return
     end
-    params[:accounts] = [params[:account_id]] if params[:account_id]
+    
     @search_fields = {}
-    @search_fields[:accounts] = split_by_hyphen(params[:accounts]).presence || [] unless params[:accounts] == "all"
+    @search_fields[:accounts] = get_accounts
     @search_fields[:facilities] =  Facility.ids_from_urls(split_by_hyphen(params[:facilities])) unless params[:facilities] == "all"
     @search_fields[:start_date] = params[:start_date] unless params[:start_date] == "all"
     @search_fields[:end_date] = params[:end_date] unless params[:end_date] == "all"
@@ -42,31 +40,36 @@ class TransactionHistoryController < ApplicationController
     @order_details = @order_details.includes(:order => :facility).includes(:account).includes(:product).includes(:order_status).includes(:reservation)
   end
   
-  def do_search(search_params)
-    @order_details = OrderDetail.ordered
-    if (@account)
-      @order_details = @order_details.for_accounts([@account.id])
+  def get_accounts
+    if @account
+      accounts = [@account]
     else
-      search = search_params[:accounts]
+      accounts = params[:accounts].respond_to?(:each) ? params[:accounts] : split_by_hyphen(params[:accounts])
       allowed_search_accounts = @accounts.map {|a| a.id.to_s}
-      if (search.nil? or search.empty?)
-        search = allowed_search_accounts
-      end
-      @order_details = @order_details.for_accounts(search & allowed_search_accounts)
+      unallowed = accounts - allowed_search_accounts
+      accounts = accounts - unallowed
     end
+    accounts
+  end
+  
+  def do_search(search_params)
+    puts "search: #{search_params}"
+    @order_details = OrderDetail.ordered
+    @order_details = @order_details.for_accounts(search_params[:accounts])
+    
     start_date = parse_usa_date(search_params[:start_date].to_s.gsub("-", "/"))
     end_date = parse_usa_date(search_params[:end_date].to_s.gsub("-", "/"))  
     
-    @order_details = @order_details.joins(:order).for_facilities(search_params[:facilities]).
-      in_date_range(start_date, end_date).
+    @order_details = @order_details.for_facilities(search_params[:facilities]).
+      fulfilled_in_date_range(start_date, end_date).
       order_by_desc_nulls_first(:fulfilled_at)    
   end
      
   private
   
-  # made this to handle nils while keeping the above code cleaner
+  # made this to handle nils and 'all' while keeping the above code cleaner
   def split_by_hyphen(str)
-    return nil if str.nil?
+    return [] if str.nil? or str == "all"
     str.split("-")
   end
   

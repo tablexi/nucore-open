@@ -115,15 +115,28 @@ class OrderDetail < ActiveRecord::Base
   
   scope :for_accounts, lambda {|accounts| where("order_details.account_id in (?)", accounts) unless accounts.nil? or accounts.empty? }
   scope :for_facilities, lambda {|facilities| joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? or facilities.empty? }
+
   scope :in_date_range, lambda { |start_date, end_date| 
+    search = self;
     if (start_date)
-      search = where("orders.ordered_at > ?", start_date.beginning_of_day)
+      search = search.where("orders.ordered_at > ?", start_date.beginning_of_day)
     end
     if (end_date)
       search = search.where("orders.ordered_at < ?", end_date.end_of_day)
     end
     search
   }
+  
+  def self.fulfilled_in_date_range(start_date, end_date)
+    search = self;
+    if start_date
+      search = search.where("fulfilled_at > ?", start_date.beginning_of_day)
+    end
+    if end_date
+      search = search.where("fulfilled_at < ?", end_date.end_of_day)
+    end
+    search
+  end
   # BEGIN acts_as_state_machine
   include AASM
 
