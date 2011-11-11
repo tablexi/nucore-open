@@ -1,6 +1,8 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe ReservationsController do
+  include DateHelper
+
   render_views
 
   before(:all) { create_users }
@@ -234,6 +236,31 @@ describe ReservationsController do
   end
 
 
+  context 'move' do
+    before :each do
+      @method=:get
+      @action=:move
+      @reservation  = @instrument.reservations.create(:reserve_start_at => Time.zone.now+1.day, :order_detail => @order_detail,
+                                                      :duration_value => 60, :duration_unit => 'minutes')
+      @earliest=@reservation.earliest_possible
+      @reservation.reserve_start_at.should_not == @earliest.reserve_start_at
+      @reservation.reserve_end_at.should_not == @earliest.reserve_end_at
+      @params.merge!(:reservation_id => @reservation.id)
+    end
+
+    it_should_allow :guest, 'to move a reservation' do
+      assigns(:order).should == @order
+      assigns(:order_detail).should == @order_detail
+      assigns(:instrument).should == @instrument
+      assigns(:reservation).should == @reservation
+      human_datetime(assigns(:reservation).reserve_start_at).should == human_datetime(@earliest.reserve_start_at)
+      human_datetime(assigns(:reservation).reserve_end_at).should == human_datetime(@earliest.reserve_end_at)
+      should set_the_flash
+      assert_redirected_to reservations_path
+    end
+  end
+
+
   context 'needs now reservation' do
 
     before :each do
@@ -242,6 +269,28 @@ describe ReservationsController do
       @reservation  = @instrument.reservations.create(:reserve_start_at => @start, :order_detail => @order_detail,
                                                       :duration_value => 60, :duration_unit => 'minutes')
       assert @reservation.valid?
+    end
+
+    context 'move' do
+      before :each do
+        @method=:get
+        @action=:move
+        @reservation.earliest_possible.should be_nil
+        @orig_start_at=@reservation.reserve_start_at
+        @orig_end_at=@reservation.reserve_end_at
+        @params.merge!(:reservation_id => @reservation.id)
+      end
+
+      it_should_allow :guest, 'but not move the reservation' do
+        assigns(:order).should == @order
+        assigns(:order_detail).should == @order_detail
+        assigns(:instrument).should == @instrument
+        assigns(:reservation).should == @reservation
+        human_datetime(assigns(:reservation).reserve_start_at).should == human_datetime(@orig_start_at)
+        human_datetime(assigns(:reservation).reserve_end_at).should == human_datetime(@orig_end_at)
+        should set_the_flash
+        assert_redirected_to reservations_path
+      end
     end
 
     context 'switch_instrument' do

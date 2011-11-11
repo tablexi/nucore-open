@@ -2,6 +2,7 @@ class ReservationsController < ApplicationController
   customer_tab  :all
   before_filter :authenticate_user!
   before_filter :check_acting_as,  :only => [ :switch_instrument, :show, :list]
+  before_filter :load_and_check_resources, :only => [ :move, :switch_instrument ]
 
 
   def initialize
@@ -189,16 +190,30 @@ class ReservationsController < ApplicationController
     end
     render :action => "edit"
   end
-  
+
+  # GET /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
+  # this action should really respond to a PUT only but for some reason that doesn't work w/ jQuery UI popup
+  def move
+    earlier=@reservation.earliest_possible
+
+    unless earlier
+      flash[:notice]='Sorry, but your reservation can no longer be moved.'
+    else
+      begin
+        @reservation.move_to!(earlier)
+        flash[:notice]='The reservation was moved successfully.'
+      rescue => e
+        flash[:error]='Sorry, but your reservation could not be moved. Please try again later.'
+        Rails.logger.error(e.backtrace.join("\n"))
+      end
+    end
+
+    return redirect_to reservations_path
+  end
+
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/switch_instrument
   def switch_instrument
     relay_error_msg = 'An error was encountered while attempted to toggle the instrument. Please try again.'
-    @order        = Order.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:order_detail_id])
-    @instrument   = @order_detail.product
-    @reservation  = @instrument.reservations.find_by_id_and_order_detail_id(params[:reservation_id], @order_detail.id)
-    raise ActiveRecord::RecordNotFound if @reservation.blank?
-    raise ActiveRecord::RecordNotFound unless @order.user_id == session_user.id
     raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == 'on' || params[:switch] == 'off')
     
     begin
@@ -247,6 +262,18 @@ class ReservationsController < ApplicationController
     end
 
     redirect_to params[:redirect_to] || request.referer || order_order_detail_path(@order, @order_detail)
+  end
+
+
+  private
+
+  def load_and_check_resources
+    @order        = Order.find(params[:order_id])
+    @order_detail = @order.order_details.find(params[:order_detail_id])
+    @instrument   = @order_detail.product
+    @reservation  = @instrument.reservations.find_by_id_and_order_detail_id(params[:reservation_id], @order_detail.id)
+    raise ActiveRecord::RecordNotFound if @reservation.blank?
+    raise ActiveRecord::RecordNotFound unless @order.user_id == session_user.id
   end
 
 end

@@ -66,6 +66,10 @@ reusable classes
   text-align:center;
 }
 
+.hidden {
+    display: none;
+}
+
 .document {
   padding-left: 28px;
   background: url(../images/icon_file.jpg) no-repeat 0 0;

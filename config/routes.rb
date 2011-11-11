@@ -149,6 +149,7 @@ Nucore::Application.routes.draw do |map|
       order_detail.upload_order_file '/upload_order_file', :controller => 'order_details', :action => 'upload_order_file', :conditions => {:method => :post}
       order_detail.remove_order_file '/remove_order_file', :controller => 'order_details', :action => 'remove_order_file', :conditions => {:method => :get}
       order_detail.resources :reservations, :except => [:index] do |reservation|
+        reservation.move_reservation '/move', :controller => 'reservations', :action => 'move', :conditions => {:method => :get}
         reservation.switch_instrument '/switch_instrument', :controller => 'reservations', :action => 'switch_instrument', :conditions => {:method => :get}
       end
     end
