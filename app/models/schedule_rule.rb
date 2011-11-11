@@ -62,14 +62,6 @@ class ScheduleRule < ActiveRecord::Base
     days.join ', '
   end
 
-  def start_time
-    Time.new(start_hour, start_min)
-  end
-
-  def end_time
-    Time.new(end_hour, end_min)
-  end
-
   def start_time_int
     start_hour*100+start_min
   end
