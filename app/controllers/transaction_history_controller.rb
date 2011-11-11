@@ -35,9 +35,10 @@ class TransactionHistoryController < ApplicationController
     @search_fields[:end_date] = params[:end_date] unless params[:end_date] == "all"
     do_search(@search_fields)
     
+    # cut down on some n+1s
+    @order_details = @order_details.includes(:order => :facility).includes(:account).includes(:product).includes(:order_status).includes(:reservation).includes(:order => :user)
+    
     @order_details = @order_details.paginate(:page => params[:page])
-    # save some SQL queries
-    @order_details = @order_details.includes(:order => :facility).includes(:account).includes(:product).includes(:order_status).includes(:reservation)
   end
   
   def get_accounts
@@ -54,8 +55,12 @@ class TransactionHistoryController < ApplicationController
   
   def do_search(search_params)
     puts "search: #{search_params}"
-    @order_details = OrderDetail.ordered
-    @order_details = @order_details.for_accounts(search_params[:accounts])
+    @order_details = OrderDetail.joins(:order).ordered
+    if search_params[:accounts].blank?
+      @order_details = @order_details.for_accounts(@accounts)
+    else
+      @order_details = @order_details.for_accounts(search_params[:accounts])
+    end
     
     start_date = parse_usa_date(search_params[:start_date].to_s.gsub("-", "/"))
     end_date = parse_usa_date(search_params[:end_date].to_s.gsub("-", "/"))  
