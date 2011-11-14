@@ -78,6 +78,31 @@ class PricePoliciesController < ApplicationController
     @expire_date=@price_policies.first.expire_date
   end
 
+  # PUT /price_policies/1
+  def update
+    @start_date = start_date_from_params
+    @expire_date    = params[:expire_date]
+    @price_policies = model_class.for_date(@service, @start_date)
+    @price_policies.each { |price_policy|
+      pp_param=params["#{@product_var}_price_policy#{price_policy.price_group.id}"]
+      next unless pp_param
+      price_policy.attributes = pp_param.reject {|k,v| k == 'restrict_purchase' }
+      price_policy.start_date = parse_usa_date(params[:start_date])
+      price_policy.expire_date = parse_usa_date(@expire_date) unless @expire_date.blank?
+      price_policy.restrict_purchase = pp_param['restrict_purchase'] && pp_param['restrict_purchase'] == 'true' ? true : false
+    }
+
+    respond_to do |format|
+      if ActiveRecord::Base.transaction do
+          raise ActiveRecord::Rollback unless @price_policies.all?(&:save)
+          flash[:notice] = 'Price Rules were successfully updated.'
+          format.html { redirect_to method("facility_#{@product_var}_price_policies_url").call(current_facility, @product) }
+        end
+      else
+        format.html { render :action => "edit" }
+      end
+    end
+  end
 
   private
 
