@@ -20,7 +20,25 @@ class PricePolicy < ActiveRecord::Base
   scope :active, lambda {{ :conditions => [ "start_date <= ? AND expire_date > ?", Time.zone.now, Time.zone.now ], :order => "start_date DESC" }}
 
   before_create :set_expire_date
-
+  before_create :truncate_existing_policies
+  
+  def truncate_existing_policies
+    existing_policies = PricePolicy.where("start_date <= ? and expire_date >= ?", start_date, start_date).
+                                    where("type = ?", self.class.name).
+                                    where("#{product_type}_id = ?", self.send("#{product_type}_id")).
+                                    where("price_group_id = ?", price_group_id)
+    existing_policies = existing_policies.where("id != ?", id) unless id.nil?
+    existing_policies.each do |policy|
+      policy.expire_date = start_date - 1.day
+      policy.save
+    end
+    
+  end
+  
+  def product_type
+    self.class.name.gsub("PricePolicy", "").downcase
+  end
+  
   #
   # A price estimate for a +Product+.
   # Must return { :cost => estimated_cost, :subsidy => estimated_subsidy }
