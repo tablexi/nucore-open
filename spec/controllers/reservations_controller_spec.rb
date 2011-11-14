@@ -72,6 +72,7 @@ describe ReservationsController do
       @method=:post
       @action=:create
       @params.merge!(
+        :order_account => @account.id,
         :reservation => {
             :reserve_start_date => Time.zone.now.to_date+1.day,
             :reserve_start_hour => '9',
@@ -92,6 +93,21 @@ describe ReservationsController do
       assigns[:order_detail].estimated_subsidy.should_not be_nil
       should set_the_flash
       assert_redirected_to purchase_order_path(@order)
+    end
+
+    context 'without account' do
+      before :each do
+        @params[:order_account]=nil
+      end
+
+      it_should_allow :guest do
+        assigns[:order].should == @order
+        assigns[:order_detail].should == @order_detail
+        assigns[:instrument].should == @instrument
+        assigns[:reservation].should be_valid
+        should set_the_flash
+        assert_redirected_to new_order_order_detail_reservation_path(@order, @order_detail)
+      end
     end
 
     context 'with new account' do

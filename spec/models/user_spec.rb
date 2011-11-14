@@ -88,6 +88,42 @@ describe User do
 
   it "should belong to Cancer Center price group if the user is in the Cancer Center view"
 
-  it "cart should always return an order object with nil ordered_at"
+  context 'cart' do
+    before :each do
+      @facility=Factory.create(:facility)
+      @facility_account=@facility.facility_accounts.create(Factory.attributes_for(:facility_account))
+      @item=@facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @order=@user.orders.create(Factory.attributes_for(:order, :created_by => @user.id, :facility => @facility))
+      @price_group=Factory.create(:price_group, :facility => @facility)
+      Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
+      @item_pp=@item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
+      @item_pp.reload.restrict_purchase=false
+      @order_detail=@order.order_details.create(Factory.attributes_for(:order_detail, :product_id => @item.id))
+    end
+
+    it 'should return the order' do
+      order=@user.cart
+      order.should == @order
+    end
+
+    it 'should return the order when given created_by user' do
+      order=@user.cart(@user)
+      order.should == @order
+    end
+
+    it 'should return a new order' do
+      order=@user.cart(@user, false)
+      order.should_not == @order
+      order.user.should == @user
+      order.created_by.should == @user.id
+    end
+
+    it 'should return a new order when created_by user is nil' do
+      order=@user.cart(nil, false)
+      order.should_not == @order
+      order.user.should == @user
+      order.created_by.should == @user.id
+    end
+  end
 
 end

@@ -72,9 +72,9 @@ describe InstrumentsController do
         assert_redirected_to new_user_session_path
       end
 
-      it_should_allow_all(facility_operators) do |op|
+      it_should_allow_all(facility_operators) do
         assigns[:instrument].should == @instrument
-        assert_redirected_to add_order_path(op.cart(op), :product_id => @instrument.id, :quantity => 1)
+        assert_redirected_to add_order_path(Order.all.last, :product_id => @instrument.id, :quantity => 1)
       end
     end
   end

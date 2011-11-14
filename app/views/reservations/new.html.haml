@@ -48,13 +48,14 @@
         - options=@order.user.accounts.active.for_facility(@instrument.facility)
         - options.reject!{|acct| !acct.validate_against_product(@instrument, @order.user).nil?}
         - options.collect!{|acct| [acct.to_s ,acct.id] }
+        - options.unshift(Array.new(2)) if options.size > 1
         = select_tag 'order_account', options_for_select(options, @order.account)
       %li.clear
   %ul.form.box
     = render :partial => 'reservation_fields', :locals => {:f => f}
   %ul.horiz
     %li= f.submit 'Create', :class => 'btn'
-    %li= link_to 'Cancel', cart_path
+    %li= link_to 'Cancel', facility_path(@instrument.facility)
 
 #overlay
   #spinner

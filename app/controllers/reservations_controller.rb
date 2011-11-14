@@ -72,17 +72,20 @@ class ReservationsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @order_detail.reservation.nil?
     @reservation  = @instrument.reservations.new(params[:reservation].update(:order_detail => @order_detail))
 
+    if params[:order_account].blank?
+      flash[:error]="You must select a payment source before reserving"
+      return redirect_to new_order_order_detail_reservation_path(@order, @order_detail)
+    end
+
     Reservation.transaction do
       begin
-        unless params[:order_account].blank?
-          account=Account.find(params[:order_account].to_i)
+        account=Account.find(params[:order_account].to_i)
 
-          if account != @order.account
-            @order.invalidate
-            @order.update_attributes!(:account_id => account.id)
-            @order_detail.update_account(account)
-            @order_detail.save!
-          end
+        if account != @order.account
+          @order.invalidate
+          @order.update_attributes!(:account_id => account.id)
+          @order_detail.update_account(account)
+          @order_detail.save!
         end
 
         @reservation.save!
