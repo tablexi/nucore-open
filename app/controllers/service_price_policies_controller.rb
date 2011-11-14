@@ -1,43 +1,6 @@
 # TODO: extract the common logic between here and the other *PricePoliciesController into super class
 class ServicePricePoliciesController < PricePoliciesController
 
-  # GET /price_policies/1/edit
-  def edit
-    @start_date = start_date_from_params
-    @price_policies = ServicePricePolicy.for_date(@service, @start_date)
-    @price_policies.delete_if{|pp| pp.assigned_to_order? }
-    raise ActiveRecord::RecordNotFound if @price_policies.blank?
-    @expire_date=@price_policies.first.expire_date
-  end
-
-  # POST /price_policies
-  def create
-    price_groups = current_facility.price_groups
-    @start_date = params[:start_date]
-    @expire_date   = params[:expire_date]
-    price_groups.delete_if {|pg| !pg.can_purchase? @service }
-    @price_policies = price_groups.map do |price_group|
-      pp_param=params["service_price_policy#{price_group.id}"]
-      price_policy = ServicePricePolicy.new(pp_param.reject {|k,v| k == 'restrict_purchase' })
-      price_policy.price_group = price_group
-      price_policy.service = @service
-      price_policy.start_date = parse_usa_date(@start_date)
-      price_policy.expire_date = parse_usa_date(@expire_date)
-      price_policy.restrict_purchase = pp_param['restrict_purchase'] && pp_param['restrict_purchase'] == 'true' ? true : false
-      price_policy
-    end
-
-    respond_to do |format|
-      if ActiveRecord::Base.transaction do
-          raise ActiveRecord::Rollback unless @price_policies.all?(&:save)
-          flash[:notice] = 'Price Rules were successfully created.'
-          format.html { redirect_to facility_service_price_policies_url(current_facility, @service) }
-        end
-      else
-        format.html { render :action => "new" }
-      end
-    end
-  end
 
   # PUT /price_policies/1
   def update
