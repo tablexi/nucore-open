@@ -1,26 +1,6 @@
 # TODO: extract the common logic between here and the other *PricePoliciesController into super class
 class ServicePricePoliciesController < PricePoliciesController
 
-  # GET /service_price_policies
-  def index
-    @current_price_policies = ServicePricePolicy.current(@service)
-    @current_start_date = @current_price_policies.first ? @current_price_policies.first.start_date : nil
-
-    @next_price_policies = ServicePricePolicy.next(@service)
-    @next_start_date = @next_price_policies.first ? @next_price_policies.first.start_date : nil
-
-    @next_dates = ServicePricePolicy.next_dates(@service)
-  end
-
-  # GET /price_policies/new
-  def new
-    price_groups = current_facility.price_groups
-    start_date     = Date.today + (@service.price_policies.active.empty? ? 0 : 1)
-    @expire_date    = PricePolicy.generate_expire_date(start_date).strftime("%m/%d/%Y")
-    @start_date=start_date.strftime("%m/%d/%Y")
-    @price_policies = price_groups.map{ |pg| ServicePricePolicy.new({:price_group_id => pg.id, :service_id => @service.id, :start_date => @start_date }) }
-  end
-
   # GET /price_policies/1/edit
   def edit
     @start_date = start_date_from_params
