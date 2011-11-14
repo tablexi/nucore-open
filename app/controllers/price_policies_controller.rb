@@ -63,7 +63,7 @@ class PricePoliciesController < ApplicationController
       
       price_policy
     end
-
+    
     respond_to do |format|
       if ActiveRecord::Base.transaction do
           raise ActiveRecord::Rollback unless @price_policies.all?(&:save)
@@ -71,11 +71,11 @@ class PricePoliciesController < ApplicationController
           format.html { redirect_to facility_product_price_policies_path }
         end
       else
+        flash[:error] = "There was an error saving the policy"
         format.html { render :action => "new" }
       end
     end
   end
-  
   
   # GET /price_policies/1/edit
   def edit
