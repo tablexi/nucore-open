@@ -33,6 +33,7 @@ class PricePoliciesController < ApplicationController
     price_groups = current_facility.price_groups
     start_date     = Date.today + (@product.price_policies.active.empty? ? 0 : 1)
     @expire_date    = PricePolicy.generate_expire_date(start_date).strftime("%m/%d/%Y")
+    @max_expire_date = @expire_date
     @start_date=start_date.strftime("%m/%d/%Y")
     policy_class = model_class
     @price_policies = price_groups.map{ |pg| policy_class.new({:price_group_id => pg.id, :"#{@product_var}_id" => @product.id, :start_date => @start_date }) }
@@ -84,6 +85,7 @@ class PricePoliciesController < ApplicationController
     @price_policies.delete_if{|pp| pp.assigned_to_order? }
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
     @expire_date=@price_policies.first.expire_date
+    @max_expire_date = PricePolicy.generate_expire_date(@price_policies.first.start_date).strftime("%m/%d/%Y")
   end
 
   # PUT /price_policies/1

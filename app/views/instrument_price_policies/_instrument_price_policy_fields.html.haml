@@ -3,11 +3,7 @@
   = javascript_include_tag 'price_policy'
   = stylesheet_link_tag 'jquery-ui/jquery-ui'
 
-%li
-  = label_tag :start_date, 'Effective'
-  = text_field_tag "start_date", format_date(@start_date), :id => 'start_datepicker'
-  = label_tag :expire_date, 'Expires'
-  = text_field_tag "expire_date", format_date(@expire_date), :id => 'expire_datepicker'
+= render :partial => 'price_policies/dates'
 %li
   = label_tag :interval, 'Calculate Rates per'
   %p Usage, reservation, and overage time will be rounded up based on this selection.
