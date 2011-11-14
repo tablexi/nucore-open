@@ -44,6 +44,9 @@ class PricePoliciesController < ApplicationController
     @start_date = params[:start_date]
     @expire_date   = params[:expire_date]
     price_groups.delete_if {|pg| !pg.can_purchase? @product }
+    
+    @interval = params[:interval].to_i if params[:interval]
+    
     @price_policies = price_groups.map do |price_group|
       pp_param=params["#{@product_var}_price_policy#{price_group.id}"]
       price_policy = model_class.new(pp_param.reject {|k,v| k == 'restrict_purchase' })
@@ -53,6 +56,11 @@ class PricePoliciesController < ApplicationController
       price_policy.start_date = parse_usa_date(@start_date)
       price_policy.expire_date = parse_usa_date(@expire_date)
       price_policy.restrict_purchase = pp_param['restrict_purchase'] && pp_param['restrict_purchase'] == 'true' ? true : false
+      
+      price_policy.usage_mins        = @interval if price_policy.respond_to?(:usage_mins=) and @interval
+      price_policy.reservation_mins  = @interval if price_policy.respond_to?(:reservation_mins=) and @interval
+      price_policy.overage_mins      = @interval if price_policy.respond_to?(:overage_mins=) and @interval
+      
       price_policy
     end
 
@@ -83,12 +91,19 @@ class PricePoliciesController < ApplicationController
     @start_date = start_date_from_params
     @expire_date    = params[:expire_date]
     @price_policies = model_class.for_date(@product, @start_date)
+    @interval = params[:interval].to_i if params[:interval]
+    
     @price_policies.each { |price_policy|
       pp_param=params["#{@product_var}_price_policy#{price_policy.price_group.id}"]
       next unless pp_param
       price_policy.attributes = pp_param.reject {|k,v| k == 'restrict_purchase' }
       price_policy.start_date = parse_usa_date(params[:start_date])
       price_policy.expire_date = parse_usa_date(@expire_date) unless @expire_date.blank?
+      
+      price_policy.usage_mins        = @interval if price_policy.respond_to?(:usage_mins=) and @interval
+      price_policy.reservation_mins  = @interval if price_policy.respond_to?(:reservation_mins=) and @interval
+      price_policy.overage_mins      = @interval if price_policy.respond_to?(:overage_mins=) and @interval
+      
       price_policy.restrict_purchase = pp_param['restrict_purchase'] && pp_param['restrict_purchase'] == 'true' ? true : false
     }
 
