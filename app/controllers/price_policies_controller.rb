@@ -54,8 +54,8 @@ class PricePoliciesController < ApplicationController
       price_policy.price_group = price_group
       # price_policy.service = @service
       price_policy.send(:"#{@product_var}=", @product)
-      price_policy.start_date = parse_usa_date(@start_date)
-      price_policy.expire_date = parse_usa_date(@expire_date)
+      price_policy.start_date = parse_usa_date(@start_date).beginning_of_day
+      price_policy.expire_date = parse_usa_date(@expire_date).end_of_day
       price_policy.restrict_purchase = pp_param['restrict_purchase'] && pp_param['restrict_purchase'] == 'true' ? true : false
       
       price_policy.usage_mins        = @interval if price_policy.respond_to?(:usage_mins=) and @interval
@@ -99,8 +99,8 @@ class PricePoliciesController < ApplicationController
       pp_param=params["#{@product_var}_price_policy#{price_policy.price_group.id}"]
       next unless pp_param
       price_policy.attributes = pp_param.reject {|k,v| k == 'restrict_purchase' }
-      price_policy.start_date = parse_usa_date(params[:start_date])
-      price_policy.expire_date = parse_usa_date(@expire_date) unless @expire_date.blank?
+      price_policy.start_date = parse_usa_date(params[:start_date]).beginning_of_day
+      price_policy.expire_date = parse_usa_date(@expire_date).end_of_day unless @expire_date.blank?
       
       price_policy.usage_mins        = @interval if price_policy.respond_to?(:usage_mins=) and @interval
       price_policy.reservation_mins  = @interval if price_policy.respond_to?(:reservation_mins=) and @interval

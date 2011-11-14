@@ -29,7 +29,7 @@ class PricePolicy < ActiveRecord::Base
                                     where("price_group_id = ?", price_group_id)
     existing_policies = existing_policies.where("id != ?", id) unless id.nil?
     existing_policies.each do |policy|
-      policy.expire_date = start_date - 1.day
+      policy.expire_date = start_date.end_of_day - 1.day
       policy.save
     end
     
@@ -132,6 +132,7 @@ class PricePolicy < ActiveRecord::Base
     start_date=price_policy_or_date.is_a?(PricePolicy) ? price_policy_or_date.start_date : price_policy_or_date
     exp_date=Time.zone.parse("#{start_date.year}-8-31")
     exp_date=Time.zone.parse("#{start_date.year+1}-8-31") if start_date.to_date >= exp_date.to_date
+    exp_date = exp_date.end_of_day
     return exp_date
   end
 
