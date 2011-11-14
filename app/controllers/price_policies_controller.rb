@@ -25,7 +25,7 @@ class PricePoliciesController < ApplicationController
     @next_price_policies = model_class.next(@product)
     @next_start_date = @next_price_policies.first ? @next_price_policies.first.start_date : nil
 
-    @next_dates = model_class.next_dates(@product)
+    @next_dates = model_class.next_dates(@product).sort
   end
 
   # GET /price_policies/new
