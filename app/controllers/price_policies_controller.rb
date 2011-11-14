@@ -31,7 +31,7 @@ class PricePoliciesController < ApplicationController
   # GET /price_policies/new
   def new
     price_groups = current_facility.price_groups
-    start_date     = Date.today + (@service.price_policies.active.empty? ? 0 : 1)
+    start_date     = Date.today + (@product.price_policies.active.empty? ? 0 : 1)
     @expire_date    = PricePolicy.generate_expire_date(start_date).strftime("%m/%d/%Y")
     @start_date=start_date.strftime("%m/%d/%Y")
     policy_class = model_class
@@ -48,8 +48,8 @@ class PricePoliciesController < ApplicationController
       pp_param=params["#{@product_var}_price_policy#{price_group.id}"]
       price_policy = model_class.new(pp_param.reject {|k,v| k == 'restrict_purchase' })
       price_policy.price_group = price_group
+      # price_policy.service = @service
       price_policy.send(:"#{@product_var}=", @product)
-      #price_policy.service = @service
       price_policy.start_date = parse_usa_date(@start_date)
       price_policy.expire_date = parse_usa_date(@expire_date)
       price_policy.restrict_purchase = pp_param['restrict_purchase'] && pp_param['restrict_purchase'] == 'true' ? true : false
@@ -82,7 +82,7 @@ class PricePoliciesController < ApplicationController
   def update
     @start_date = start_date_from_params
     @expire_date    = params[:expire_date]
-    @price_policies = model_class.for_date(@service, @start_date)
+    @price_policies = model_class.for_date(@product, @start_date)
     @price_policies.each { |price_policy|
       pp_param=params["#{@product_var}_price_policy#{price_policy.price_group.id}"]
       next unless pp_param
@@ -114,7 +114,7 @@ class PricePoliciesController < ApplicationController
       return redirect_to facility_product_price_policies_path
     end
 
-    @price_policies = model_class.for_date(@service, @start_date)
+    @price_policies = model_class.for_date(@product, @start_date)
     raise ActiveRecord::RecordNotFound unless @price_policies.count > 0
 
     respond_to do |format|
