@@ -30,7 +30,7 @@ describe PricePolicy do
     it "should set default expire_date" do
       @pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id, :start_date => @start_date, :expire_date => nil)
       @pp.expire_date.should_not be_nil
-      @pp.expire_date.should == Time.zone.parse("2020-8-31")
+      @pp.expire_date.should == Time.zone.parse("2020-8-31").end_of_day
     end
 
     it 'should not allow an expire date the same as start date' do
@@ -135,6 +135,10 @@ describe PricePolicy do
     before :each do
       class SubPricePolicy < PricePolicy
         def sub; end
+        def sub_id=; end
+        def sub_id
+          0
+        end
       end
 
       @sp = SubPricePolicy.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id))
