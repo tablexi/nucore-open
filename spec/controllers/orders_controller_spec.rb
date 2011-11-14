@@ -26,6 +26,12 @@ describe OrdersController do
     @account          = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
     @order            = @staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account))
     @item             = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+
+      Factory.create(:user_price_group_member, :user => @staff, :price_group => @price_group)
+      @item_pp=@item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
+      @item_pp.reload.restrict_purchase=false
+      @order_detail=@order.order_details.create(Factory.attributes_for(:order_detail, :product_id => @item.id))
+
     @params={ :id => @order.id }
   end
 
@@ -246,11 +252,6 @@ describe OrdersController do
 
   context "update order_detail quantities" do
     before(:each) do
-      @item_pp   = Factory.create(:item_price_policy, :item => @item, :price_group => @price_group)
-      @pg_member = Factory.create(:user_price_group_member, :user => @staff, :price_group => @price_group)
-      @staff.cart.add(@item,1)
-      @order_detail = @order.reload.order_details[0]
-      @order_detail.quantity.should == 1
       @method=:put
       @action=:update
       @params.merge!("quantity#{@order_detail.id}" => "6")
@@ -311,8 +312,8 @@ describe OrdersController do
 
   context "checkout" do
     before(:each) do
-      @item_pp          = Factory.create(:item_price_policy, :item => @item, :price_group => @price_group)
-      @pg_member        = Factory.create(:user_price_group_member, :user => @staff, :price_group => @price_group)
+      #@item_pp          = Factory.create(:item_price_policy, :item => @item, :price_group => @price_group)
+      #@pg_member        = Factory.create(:user_price_group_member, :user => @staff, :price_group => @price_group)
       @order.add(@item, 10)
       @method=:get
       @action=:show
