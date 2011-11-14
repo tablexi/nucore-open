@@ -60,7 +60,7 @@ class PricePoliciesController < ApplicationController
       if ActiveRecord::Base.transaction do
           raise ActiveRecord::Rollback unless @price_policies.all?(&:save)
           flash[:notice] = 'Price Rules were successfully created.'
-          format.html { redirect_to method("facility_#{@product_var}_price_policies_url").call(current_facility, @product) }
+          format.html { redirect_to facility_product_price_policies_path }
         end
       else
         format.html { render :action => "new" }
@@ -96,16 +96,46 @@ class PricePoliciesController < ApplicationController
       if ActiveRecord::Base.transaction do
           raise ActiveRecord::Rollback unless @price_policies.all?(&:save)
           flash[:notice] = 'Price Rules were successfully updated.'
-          format.html { redirect_to method("facility_#{@product_var}_price_policies_url").call(current_facility, @product) }
+          format.html { redirect_to facility_product_price_policies_path }
         end
       else
         format.html { render :action => "edit" }
       end
     end
   end
+  
+  # DELETE /price_policies/2010-01-01
+  def destroy
+    @start_date     = start_date_from_params
+
+    unless @start_date > Date.today
+      # force the user to really think about what they're doing, but tell them how to do it if they really want.
+      flash[:notice]="Sorry, but you cannot remove an active price policy.<br/>If you really want to do so move the start date to the future and try again."
+      return redirect_to facility_product_price_policies_path
+    end
+
+    @price_policies = model_class.for_date(@service, @start_date)
+    raise ActiveRecord::RecordNotFound unless @price_policies.count > 0
+
+    respond_to do |format|
+      if ActiveRecord::Base.transaction do
+        raise ActiveRecord::Rollback unless @price_policies.all?(&:destroy)
+        flash[:notice] = 'Price Rules were successfully removed'
+        format.html { redirect_to facility_product_price_policies_path }
+        end
+      else
+        flash[:error] = 'An error was encountered while trying to remove the Price Rules'
+        format.html { redirect_to facility_product_price_policies_path  }
+      end
+    end
+  end
+
 
   private
 
+  def facility_product_price_policies_path
+    method("facility_#{@product_var}_price_policies_path").call(current_facility, @product)
+  end
   def init_product
     product_var=model_name.gsub('PricePolicy', '').downcase
     var=current_facility.method(product_var.pluralize).call.find_by_url_name!(params["#{product_var}_id".to_sym])
