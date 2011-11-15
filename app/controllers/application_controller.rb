@@ -65,6 +65,11 @@ class ApplicationController < ActionController::Base
     Rails.logger.debug("#{exception.message}: #{exception.backtrace.join("\n")}") unless Rails.env.production?
     render_404
   end
+  
+  # rescue_from ActionController::RoutingError do |exception|
+    # Rails.logger.debug("#{exception.message}: #{exception.backtrace.join("\n")}") unless Rails.env.production?
+    # render_404
+  # end
 
   def render_404
     render :file => '/404', :status => 404, :layout => 'application'

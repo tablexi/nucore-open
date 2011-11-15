@@ -122,12 +122,13 @@ describe OrdersController do
     before :each do
       @method=:get
       @action=:index
+      @params={:status => 'pending'}
     end
 
     it_should_require_login
 
     it_should_allow :staff do
-      should assign_to(:order_details).with_kind_of Array
+      should assign_to(:order_details).with_kind_of ActiveRecord::Relation
       should render_template 'index'
     end
 
