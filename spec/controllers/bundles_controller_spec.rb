@@ -53,9 +53,24 @@ describe BundlesController do
       @params={ :facility_id => @authable.url_name, :id => @bundle.url_name }
     end
 
-    it 'should flash and falsify @add_to_cart if bundle cannot be purchased'
-    it 'should falsify @add_to_cart if #acting_user is nil'
-    it 'should flash and falsify @add_to_cart if user is not approved'
+    it 'should flash and falsify @add_to_cart if bundle cannot be purchased' do
+      Bundle.any_instance.stubs(:can_purchase?).returns(false)
+      do_request
+      assigns[:add_to_cart].should be_false
+      flash[:notice].should_not be_nil
+    end
+    
+    it 'should falsify @add_to_cart if #acting_user is nil' do
+      BundlesController.any_instance.stubs(:acting_user).returns(nil)
+      do_request
+      assigns[:add_to_cart].should be_false
+      assigns[:login_required].should be_true
+    end
+    
+    it 'should flash and falsify @add_to_cart if user is not approved' #do
+      #Bundle.any_instance.stubs(:requires_approval?).returns(true)
+      
+    #end
     it 'should flash and falsify @add_to_cart if there is no price group for user to purchase through'
     it 'should flash and falsify @add_to_cart if user is not authorized to purchase on behalf of another user'
 
