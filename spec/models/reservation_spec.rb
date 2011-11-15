@@ -146,42 +146,50 @@ describe Reservation do
       @reservation2.should be_does_not_conflict_with_other_reservation
     end
 
-    it 'should return the earliest possible time slot' do
-      now=Time.zone.now
-      human_date(@reservation1.reserve_start_at).should == human_date(now+1.day)
-      earliest=@reservation1.earliest_possible
-      human_date(earliest.reserve_start_at).should == human_date(now)
+    context 'moving' do
 
-      new_min=0
+      before(:each) { @morning=Time.zone.parse("#{Time.zone.now.strftime('%d/%m/%Y')} 10:31 AM") }
 
-      (now.min..60).each do |min|
-        new_min=min == 60 ? 0 : min
-        earliest.reserve_start_at.min.should == new_min and break if new_min % @rule.duration_mins == 0
+      it 'should return the earliest possible time slot' do
+        human_date(@reservation1.reserve_start_at).should == human_date(@morning+1.day)
+
+        earliest=nil
+        Timecop.freeze(@morning) { earliest=@reservation1.earliest_possible }
+        human_date(earliest.reserve_start_at).should == human_date(@morning)
+
+        new_min=0
+
+        (@morning.min..60).each do |min|
+          new_min=min == 60 ? 0 : min
+          earliest.reserve_start_at.min.should == new_min and break if new_min % @rule.duration_mins == 0
+        end
+
+        earliest.reserve_start_at.hour.should == (new_min == 0 ? @morning.hour+1 : @morning.hour)
+        (earliest.reserve_end_at-earliest.reserve_start_at).should == (@reservation1.reserve_end_at-@reservation1.reserve_start_at)
       end
 
-      earliest.reserve_start_at.hour.should == (new_min == 0 ? now.hour+1 : now.hour)
-      (earliest.reserve_end_at-earliest.reserve_start_at).should == (@reservation1.reserve_end_at-@reservation1.reserve_start_at)
-    end
+      it 'should not be moveable if the reservation is cancelled' do
+        Timecop.freeze(@morning) do
+          @reservation1.should be_can_move
+          @reservation1.canceled_at=Time.zone.now
+          @reservation1.should_not be_can_move
+        end
+      end
 
-    it 'should not be moveable if the reservation is cancelled' do
-      @reservation1.should be_can_move
-      @reservation1.canceled_at=Time.zone.now
-      @reservation1.should_not be_can_move
-    end
+      it 'should not be moveable if there is not a time slot earlier than this one' do
+        @reservation1.should be_can_move
+        @reservation1.move_to!(@reservation1.earliest_possible)
+        @reservation1.should_not be_can_move
+      end
 
-    it 'should not be moveable if there is not a time slot earlier than this one' do
-      @reservation1.should be_can_move
-      @reservation1.move_to!(@reservation1.earliest_possible)
-      @reservation1.should_not be_can_move
-    end
-
-    it 'should update the reservation to the earliest available' do
-      earliest=@reservation1.earliest_possible
-      @reservation1.reserve_start_at.should_not == earliest.reserve_start_at
-      @reservation1.reserve_end_at.should_not == earliest.reserve_end_at
-      @reservation1.move_to!(earliest)
-      @reservation1.reserve_start_at.should == earliest.reserve_start_at
-      @reservation1.reserve_end_at.should == earliest.reserve_end_at
+      it 'should update the reservation to the earliest available' do
+        earliest=@reservation1.earliest_possible
+        @reservation1.reserve_start_at.should_not == earliest.reserve_start_at
+        @reservation1.reserve_end_at.should_not == earliest.reserve_end_at
+        @reservation1.move_to!(earliest)
+        @reservation1.reserve_start_at.should == earliest.reserve_start_at
+        @reservation1.reserve_end_at.should == earliest.reserve_end_at
+      end
     end
 
     context 'requires_but_missing_actuals?' do

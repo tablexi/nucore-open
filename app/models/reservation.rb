@@ -482,8 +482,9 @@ class Reservation < ActiveRecord::Base
 
   #
   # Returns a clone of this reservation with the reserve_*_at times updated
-  # to the next accommodating time slot on the calendar from NOW. The clone
-  # is frozen so don't try to change it. It's for read-only purposes.
+  # to the next accommodating time slot on the calendar from NOW. Returns nil
+  # if there is no such time slot. The clone is frozen so don't try to change
+  # it. It's for read-only purposes.
   def earliest_possible
     clone=self.clone
     after=Time.zone.now
@@ -522,7 +523,7 @@ class Reservation < ActiveRecord::Base
   # returns true if this reservation can be moved to
   # an earlier time slot, false otherwise
   def can_move?
-    !cancelled? && earliest_possible
+    !(cancelled? || earliest_possible.nil?)
   end
 
   def can_switch_instrument_on?(check_off = true)
