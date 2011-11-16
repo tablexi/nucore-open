@@ -67,11 +67,23 @@ describe BundlesController do
       assigns[:login_required].should be_true
     end
     
-    it 'should flash and falsify @add_to_cart if user is not approved' #do
-      #Bundle.any_instance.stubs(:requires_approval?).returns(true)
-      
-    #end
-    it 'should flash and falsify @add_to_cart if there is no price group for user to purchase through'
+    it 'should flash and falsify @add_to_cart if user is not approved' do
+      BundlesController.any_instance.stubs(:acting_user).returns(User.new(:id =>17))
+      Bundle.any_instance.stubs(:requires_approval?).returns(true)
+      ProductUser.stubs(:find_by_user_id).returns(nil)
+      do_request
+      assigns[:add_to_cart].should be_false
+      flash[:notice].should_not be_nil
+    end
+    
+    it 'should flash and falsify @add_to_cart if there is no price group for user to purchase through' do
+      BundlesController.any_instance.stubs(:acting_user).returns(User.new(:id =>18))
+      BundlesController.any_instance.stubs(:bundle_has_price_policies_for_user?).returns(false)
+      do_request
+      assigns[:add_to_cart].should be_false
+      flash[:notice].should_not be_nil
+    end
+    
     it 'should flash and falsify @add_to_cart if user is not authorized to purchase on behalf of another user'
 
     it 'should not require login' do
