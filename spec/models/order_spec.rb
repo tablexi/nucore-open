@@ -332,6 +332,24 @@ describe Order do
         @order.auto_assign_account!(@item)
         @order.account.should == @nufs
       end
+      
+      it 'should assign payment source if user has an old account that has orders, but a new one that does not' do
+        @nufs_inactive=Factory.create(:nufs_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}], :suspended_at => 1.day.ago)
+        place_and_complete_item_order(@user, @facility, @nufs_inactive)
+        @order2 = @order
+        
+        @nufs=Factory.create(:nufs_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
+        define_open_account(@item.account, @nufs.account_number)
+        
+        place_and_complete_item_order(@user, @facility)
+        @order3 = @order
+        
+        @user.reload
+        
+        @order3.account.should be_nil
+        @order3.auto_assign_account!(@item)
+        @order3.account.should == @nufs
+      end
 
       it 'should raise if an account cannot be found' do
         assert_raise RuntimeError do
