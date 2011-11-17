@@ -155,7 +155,7 @@ class Order < ActiveRecord::Base
     accounts=user.accounts.active.for_facility(product.facility)
 
     if accounts.size > 0
-      orders=user.orders.delete_if{|o| o.ordered_at.nil? || o == self}
+      orders=user.orders.delete_if{|o| o.ordered_at.nil? || o == self || !accounts.include?(o.account) }
 
       if orders.blank?
         accounts.each{|acct| self.account=acct and break if acct.validate_against_product(product, user).nil? }
