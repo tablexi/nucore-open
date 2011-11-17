@@ -27,11 +27,9 @@ class TransactionHistoryController < ApplicationController
     @accounts = session_user.accounts
     @facilities = Facility.active
     
-    @search_fields = {}
-    @search_fields[:accounts] = get_my_accounts(@accounts, params[:accounts])
-    @search_fields[:start_date] = params[:start_date].presence
-    @search_fields[:end_date] = params[:end_date].presence
-    @search_fields[:facilities] = params[:facilities]
+    @search_fields = params.merge({
+      :accounts => get_allowed_accounts(@accounts, params[:accounts])
+    })
     do_search(@search_fields)
     add_optimizations
     @order_details = @order_details.paginate(:page => params[:page])
@@ -42,11 +40,9 @@ class TransactionHistoryController < ApplicationController
     @accounts = [@account]
     @facilities = @account.facilities
     
-    @search_fields = {}
-    @search_fields[:accounts] = [@account]
-    @search_fields[:start_date] = params[:start_date].presence
-    @search_fields[:end_date] = params[:end_date].presence
-    @search_fields[:facilities] = params[:facilities]
+    @search_fields = params.merge({
+      :accounts => [@account]
+    })
     do_search(@search_fields)
     add_optimizations
     @order_details = @order_details.paginate(:page => params[:page])
@@ -59,11 +55,11 @@ class TransactionHistoryController < ApplicationController
     @facilities = [@facility]
     @accounts = Account.for_facility(@facility)
     
-    @search_fields = {}
-    @search_fields[:accounts] = get_my_accounts(@accounts, params[:accounts])
-    @search_fields[:start_date] = params[:start_date].presence
-    @search_fields[:end_date] = params[:end_date].presence
-    @search_fields[:facilities] = @facilities
+    @search_fields = params.merge({
+      :accounts => get_allowed_accounts(@accounts, params[:accounts]),
+      :facilities => @facilities
+    })
+    
     do_search(@search_fields)
     add_optimizations
     @order_details = @order_details.paginate(:page => params[:page])
@@ -72,11 +68,7 @@ class TransactionHistoryController < ApplicationController
   def do_search(search_params)
     Rails.logger.debug "search: #{search_params}"
     @order_details = OrderDetail.joins(:order).ordered
-    if search_params[:accounts].blank?
-      @order_details = @order_details.for_accounts(@accounts)
-    else
-      @order_details = @order_details.for_accounts(search_params[:accounts])
-    end
+    @order_details = @order_details.for_accounts(search_params[:accounts])
     
     start_date = parse_usa_date(search_params[:start_date].to_s.gsub("-", "/"))
     end_date = parse_usa_date(search_params[:end_date].to_s.gsub("-", "/"))  
@@ -96,8 +88,8 @@ class TransactionHistoryController < ApplicationController
       return false
     end
   end
-  
-  def get_my_accounts(allowed_accounts, search_accounts)
+    
+  def get_allowed_accounts(allowed_accounts, search_accounts)
     search_accounts ||= []
     allowed_accounts = allowed_accounts.map{|a| a.id.to_s}
     denyed_accounts = search_accounts - allowed_accounts
