@@ -30,7 +30,7 @@
   %ul.horiz
     %li= f.submit 'Save', :class => 'btn'
     - if @order_detail.complete?
-      %li= link_to 'Cancel', show_problems_facility_orders_path
+      %li= link_to 'Cancel', show_problems_facility_reservations_path
     - elsif @order_detail.new? || @order_detail.inprocess?
       %li= link_to 'Cancel', facility_reservations_path
 
