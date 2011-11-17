@@ -43,6 +43,14 @@ class Account < ActiveRecord::Base
             :limit_one => @@limited_to_one_facility_subclasses,
             :facility => facility})
   end
+  
+  def facilities
+    if facility_id
+      [Facility.active.find(facility_id)]
+    else
+      Facility.active
+    end
+  end
 
   def type_string
     case self
