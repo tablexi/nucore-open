@@ -28,7 +28,7 @@ Nucore::Application.routes.draw do |map|
   match "/accounts/:account_id/transactions" => 'transaction_history#account_history', :as => "account_transaction_history"
   match "/transactions" => 'transaction_history#my_history', :as => "transaction_history"
   match "/facilities/:facility_url/transactions" => "transaction_history#facility_history", :as => "facility_transaction_history"
-  
+  match "/facilities/:facility_url/transactions/in_review" => "transaction_history#in_review", :as => "facility_transactions_in_review"
   
   
   # global settings

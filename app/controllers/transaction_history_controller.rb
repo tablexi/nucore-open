@@ -5,24 +5,8 @@ class TransactionHistoryController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   
-  #before_filter :load_filter_options
   before_filter :remove_ugly_params
-  
-  #def search
-    
-#     
-    # @search_fields = {}
-    # @search_fields[:accounts] = get_accounts
-    # @search_fields[:facilities] = params[:facilities] unless params[:facilities] == "all" # Facility.ids_from_urls(split_by_hyphen(params[:facilities])) unless params[:facilities] == "all"
-    # @search_fields[:start_date] = params[:start_date] unless params[:start_date] == "all"
-    # @search_fields[:end_date] = params[:end_date] unless params[:end_date] == "all"
-    # do_search(@search_fields)
-    # add_optimizations
-    # @order_details = @order_details.paginate(:page => params[:page])
-  #  account_history
-    
-  #end
-  
+   
   def my_history
     @accounts = session_user.accounts
     @facilities = Facility.active
@@ -50,6 +34,18 @@ class TransactionHistoryController < ApplicationController
   end
   
   def facility_history
+    find_with_facility
+    @order_details = @order_details.paginate(:page => params[:page])
+  end
+    
+  def in_review
+    find_with_facility
+    @order_details = @order_details.in_review(@facility)
+    @order_detail_action = :in_review
+    render :action => 'facility_history'
+  end
+  
+  def find_with_facility
     @facility = Facility.find_by_url_name(params[:facility_url])
     raise ActiveRecord::RecordNotFound unless @facility
     @facilities = [@facility]
@@ -62,8 +58,9 @@ class TransactionHistoryController < ApplicationController
     
     do_search(@search_fields)
     add_optimizations
-    @order_details = @order_details.paginate(:page => params[:page])
   end
+     
+  private
   
   def do_search(search_params)
     Rails.logger.debug "search: #{search_params}"
@@ -77,8 +74,6 @@ class TransactionHistoryController < ApplicationController
       fulfilled_in_date_range(start_date, end_date).
       order_by_desc_nulls_first(:fulfilled_at)    
   end
-     
-  private
   
   def remove_ugly_params
     if (params[:commit])
