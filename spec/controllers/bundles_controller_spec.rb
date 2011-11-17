@@ -84,7 +84,19 @@ describe BundlesController do
       flash[:notice].should_not be_nil
     end
     
-    it 'should flash and falsify @add_to_cart if user is not authorized to purchase on behalf of another user'
+    it 'should flash and falsify @add_to_cart if user is not authorized to purchase on behalf of another user' do
+      # stubs to pass through earlier filters
+      BundlesController.any_instance.stubs(:acting_user).returns(User.new(:id =>18))
+      BundlesController.any_instance.stubs(:acting_as?).returns(true)
+      BundlesController.any_instance.stubs(:bundle_has_price_policies_for_user?).returns(true)
+      
+      # stubs to make this return false
+      BundlesController.any_instance.stubs(:session_user).returns(User.new(:id=>19))
+      
+      do_request
+      assigns[:add_to_cart].should be_false
+      flash[:notice].should == 'You are not authorized to order bundles from this facility on behalf of a user.'
+    end
 
     it 'should not require login' do
       do_request
