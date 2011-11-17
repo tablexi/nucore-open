@@ -54,7 +54,19 @@ class TransactionHistoryController < ApplicationController
   end
   
   def facility_history
+    @facility = Facility.find_by_url_name(params[:facility_url])
+    raise ActiveRecord::RecordNotFound unless @facility
+    @facilities = [@facility]
+    @accounts = Account.for_facility(@facility)
     
+    @search_fields = {}
+    @search_fields[:accounts] = get_my_accounts(@accounts, params[:accounts])
+    @search_fields[:start_date] = params[:start_date].presence
+    @search_fields[:end_date] = params[:end_date].presence
+    @search_fields[:facilities] = @facilities
+    do_search(@search_fields)
+    add_optimizations
+    @order_details = @order_details.paginate(:page => params[:page])
   end
   
   def do_search(search_params)
@@ -89,31 +101,12 @@ class TransactionHistoryController < ApplicationController
     search_accounts ||= []
     allowed_accounts = allowed_accounts.map{|a| a.id.to_s}
     denyed_accounts = search_accounts - allowed_accounts
-    allowed_accounts - denyed_accounts
+    search_accounts - denyed_accounts
   end
   
   def add_optimizations
     # cut down on some n+1s
     @order_details = @order_details.includes(:order => :facility).includes(:account).includes(:product).includes(:order_status).includes(:reservation).includes(:order => :user)
   end
-  # made this to handle nils and 'all' while keeping the above code cleaner
-  def split_by_hyphen(str)
-    return [] if str.nil? or str == "all"
-    str.split("-")
-  end
-  
-  # def load_filter_options
-    # if (params[:account_id])
-      # @account = session_user.accounts.find(params[:account_id])
-    # else
-      # @accounts = session_user.accounts
-    # end 
-#     
-    # @facilities = Facility.active
-  # end
-  
-  # def set_accounts(accounts)
-    # @accounts = accounts
-  # end
   
 end

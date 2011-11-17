@@ -1,0 +1,7 @@
+= render :partial => "headers"
+- content_for :h1 do
+  Transaction History
+%h2= @facility
+= render :partial => 'search'
+= render :partial => 'table'  
+
