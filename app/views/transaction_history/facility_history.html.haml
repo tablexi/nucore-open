@@ -1,7 +1,12 @@
 = render :partial => "headers"
 - content_for :h1 do
-  Transaction History
-%h2= @facility
+  = @facility
+%h2
+  - if @order_detail_action
+    = @order_detail_action.to_s.titleize
+  - else
+    Transaction History
+ 
 = render :partial => 'search'
 = render :partial => 'table'  
 
