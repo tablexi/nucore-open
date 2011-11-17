@@ -59,9 +59,29 @@ class User < ActiveRecord::Base
     SQL
   end
 
-  def cart(created_by_user = nil)
-    @order = Order.first(:conditions => { :created_by => created_by_user ? created_by_user.id : id, :user_id => id, :ordered_at => nil })
-    @order = Order.create(:user => self, :created_by => created_by_user ? created_by_user.id : id) if @order.nil?
+  #
+  # A cart is an order. This method finds this user's order.
+  # [_created_by_user_]
+  #   The user that created the order we want. +self+ is
+  #   inferred if left nil.
+  # [_find_existing_]
+  #   true if we want to look in the DB for an order to add
+  #   new +OrderDetail+s to, false if we want a brand new order
+  def cart(created_by_user = nil, find_existing=true)
+
+    if find_existing
+      # filter out instrument/reservation orders. Each of those requires a brand new order.
+      # If any exist unordered it's because the user bailed on the reservation process.
+      # Such orders should be cleaned from the DB periodically.
+      oid=OrderDetail.select(:order_id).joins(:order, :product).where(
+                        'orders.user_id = ? AND orders.created_by = ? AND orders.ordered_at IS NULL AND products.type != ?',
+                        id, created_by_user ? created_by_user.id : id, Instrument.name
+                      ).group(:order_id).first
+
+      @order = Order.find(oid.order_id) if oid
+    end
+
+    @order = Order.create(:user => self, :created_by => created_by_user ? created_by_user.id : id) unless @order
     @order
   end
 

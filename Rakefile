@@ -6,4 +6,4 @@ require 'rake'
 
 Nucore::Application.load_tasks
 
-require 'ci/reporter/rake/rspec'
+require 'ci/reporter/rake/rspec' if Rails.env.test?

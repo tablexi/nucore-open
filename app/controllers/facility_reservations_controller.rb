@@ -43,7 +43,7 @@ class FacilityReservationsController < ApplicationController
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/reservations/:id/edit
   def edit
-    @order        = current_facility.orders.find(params[:order_id])
+    @order        = Order.find(params[:order_id])
     @order_detail = @order.order_details.find(params[:order_detail_id])
     @reservation  = @order_detail.reservation
     @instrument   = @order_detail.product
@@ -57,7 +57,7 @@ class FacilityReservationsController < ApplicationController
 
   # PUT /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/reservations/:id
   def update
-    @order        = current_facility.orders.find(params[:order_id])
+    @order        = Order.find(params[:order_id])
     @order_detail = @order.order_details.find(params[:order_detail_id])
     @reservation  = @order_detail.reservation
     @instrument   = @order_detail.product

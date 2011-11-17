@@ -75,7 +75,7 @@ class InstrumentsController < ApplicationController
       return redirect_to facility_path(current_facility)
     end
 
-    redirect_to add_order_path(acting_user.cart(session_user), :product_id => @instrument.id, :quantity => 1)
+    redirect_to add_order_path(acting_user.cart(session_user, false), :product_id => @instrument.id, :quantity => 1)
   end
 
   # GET /instruments/1/manage

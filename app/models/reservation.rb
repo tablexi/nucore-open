@@ -480,6 +480,52 @@ class Reservation < ActiveRecord::Base
     pgps.collect{|pgp| pgp.reservation_window}.max
   end
 
+  #
+  # Returns a clone of this reservation with the reserve_*_at times updated
+  # to the next accommodating time slot on the calendar from NOW. Returns nil
+  # if there is no such time slot. The clone is frozen so don't try to change
+  # it. It's for read-only purposes.
+  def earliest_possible
+    clone=self.clone
+    after=Time.zone.now
+
+    while true
+      next_res=instrument.next_available_reservation(after)
+
+      return nil if next_res.reserve_start_at > reserve_start_at
+
+      clone.reserve_start_at=next_res.reserve_start_at
+      clone.reserve_end_at=next_res.reserve_start_at.advance(:minutes => duration_mins)
+
+      if instrument_is_available_to_reserve? && does_not_conflict_with_other_reservation?
+        clone.freeze
+        return clone
+      end
+
+      after=next_res.reserve_end_at
+    end
+  end
+
+  #
+  # Updates this reservation's reserve_*_at times
+  # to that of +reservation+'s.
+  # [_reservation_]
+  #   The reservation whose reserve times we want to adopt.
+  # [_exception_]
+  #   On anything that #save! raises for
+  def move_to!(reservation)
+    self.reserve_start_at=reservation.reserve_start_at
+    self.reserve_end_at=reservation.reserve_end_at
+    save!
+  end
+
+  #
+  # returns true if this reservation can be moved to
+  # an earlier time slot, false otherwise
+  def can_move?
+    !(cancelled? || earliest_possible.nil?)
+  end
+
   def can_switch_instrument_on?(check_off = true)
     return false if cancelled?
     return false unless instrument.relay_ip?   # is relay controlled

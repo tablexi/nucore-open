@@ -25,11 +25,11 @@ gem 'cancan',           '1.6.5'
 gem 'nokogiri',         '1.4.4'
 gem 'devise_ldap_authenticatable', '0.4.4'
 gem 'jquery-rails',     '1.0.12'
-gem 'foreigner',        '1.0.3'
+gem 'foreigner',        '1.1.1'
 gem 'awesome_nested_set', '2.0.1'
 gem 'exception_notification', :require => 'exception_notifier'
 
-group :development do
+group :development, :test do
    gem 'autotest',          '4.4.6' # TODO: remove?
    gem 'autotest-rails',    '4.1.0' # TODO: remove?
    gem 'ci_reporter'
@@ -39,8 +39,9 @@ group :development do
    gem 'ruby-debug19',      '0.11.6'
    gem 'shoulda',           '2.11.3'
    gem 'single_test',       '0.4.0'
-   gem 'spork',             '0.7.5'
+   gem 'spork',             '0.9.0.rc9'
    gem 'timecop'
    gem 'ZenTest',           '4.5.0' # TODO: remove?
    #gem 'sqlite3-ruby'
 end
+
