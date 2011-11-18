@@ -12,7 +12,7 @@
     You may manually mark an order as reviewed, allowing you to create a statement for or journal the order immediately.
   = render :partial => "search"
   = render :partial => 'table'
-    
+  = render :partial => 'shared/reconcile_footnote'    
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing_transactions', :locals => { :sidenav_tab => 'in_review' }
 

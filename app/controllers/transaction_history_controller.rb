@@ -48,6 +48,7 @@ class TransactionHistoryController < ApplicationController
     @order_details = @order_details.in_review(@facility)
     @order_details = @order_details.reorder(:reviewed_at)
     @order_detail_action = :mark_as_reviewed
+    #@warning_method = Proc.new { |helper, order_detail| helper.needs_reconcile_warning?(order_detail) }
     @active_tab = 'admin_transactions'
     render :layout => 'two_column'
   end
@@ -75,6 +76,7 @@ class TransactionHistoryController < ApplicationController
     @accounts = @accounts.where("type in (?)", ['CreditCardAccount', 'PurchaseOrderAccount'])
     @order_details = @order_details.need_statement(@facility)
     @order_detail_action = :send_statements
+    #@warning_method = Proc.new { |helper, order_detail| helper.needs_reconcile_warning?(order_detail) }
     @active_tab = 'admin_transactions'
     render :layout => 'two_column'
   end
@@ -90,6 +92,7 @@ class TransactionHistoryController < ApplicationController
     @accounts = @accounts.where("type in (?)", ['NufsAccount'])
     @order_details = @order_details.need_journal(@facility)
     @order_detail_action = 'create_journal'
+    #@warning_method = Proc.new { |helper, order_detail| helper.needs_reconcile_warning?(order_detail) }
     @active_tab = 'admin_transactions'
     render :layout => 'two_column'
   end

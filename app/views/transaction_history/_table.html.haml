@@ -1,5 +1,5 @@
 - if @order_detail_action
-  = form_tag url_for({ :controller => params[:controller], :facility_id => params[:facility_id], :action => @order_detail_action }), :method => :post do
+  = form_tag url_for(params.merge({:action => @order_detail_action})), :method => :post do
     = render :partial => 'table_inside'
 - else
   = render :partial => 'table_inside'
