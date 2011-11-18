@@ -16,7 +16,8 @@
     
   - @order_details.each do |order_detail|
     %tr
-      %td= check_box_tag "order_detail_ids[]", order_detail.id, false if @order_detail_action
+      - if @order_detail_action
+        %td= check_box_tag "order_detail_ids[]", order_detail.id, false
       - unless single_account?
         %td= order_detail.account
       %td.nowrap= link_to order_detail, order_order_detail_path(order_detail.order, order_detail) 
