@@ -39,6 +39,8 @@ class TransactionHistoryController < ApplicationController
   def facility_history
     find_with_facility
     @order_details = @order_details.paginate(:page => params[:page])
+    @active_tab = 'admin_transactions'
+    render :layout => 'two_column'
   end
     
   def in_review
@@ -46,14 +48,15 @@ class TransactionHistoryController < ApplicationController
     @order_details = @order_details.in_review(@facility)
     @order_details = @order_details.reorder(:reviewed_at)
     @order_detail_action = :in_review
+    @active_tab = 'admin_transactions'
     render :layout => 'two_column'
-    #render :action => 'facility_history'
   end
   
   def notifications
     find_with_facility
     @order_details = @order_details.need_notification(@facility)
     @order_detail_action = :notifications
+    @active_tab = 'admin_transactions'
     render :layout => 'two_column'
   end
   
@@ -105,7 +108,15 @@ class TransactionHistoryController < ApplicationController
   
   def add_optimizations
     # cut down on some n+1s
-    @order_details = @order_details.includes(:order => :facility).includes(:account).includes(:product).includes(:order_status).includes(:reservation).includes(:order => :user)
+    @order_details = @order_details.
+        includes(:order => :facility).
+        includes(:account).
+        includes(:product).
+        includes(:order_status).
+        includes(:reservation).
+        includes(:order => :user).
+        includes(:price_policy)
+        
   end
   
 end

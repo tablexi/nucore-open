@@ -6,6 +6,8 @@
     = @order_detail_action.to_s.titleize
   - else
     Transaction History
+= content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing_transactions', :locals => { :sidenav_tab => 'transactions' }
  
 = render :partial => 'search'
 = render :partial => 'table'  
