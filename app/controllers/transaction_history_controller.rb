@@ -1,5 +1,8 @@
 class TransactionHistoryController < ApplicationController
-  customer_tab  :all
+  #layout 'application'
+  #layout 'two_column', :except => [:my_history, :account_history]
+  admin_tab     :all
+  customer_tab :my_history, :account_history
   
   include DateHelper
   before_filter :authenticate_user!
@@ -41,12 +44,21 @@ class TransactionHistoryController < ApplicationController
   def in_review
     find_with_facility
     @order_details = @order_details.in_review(@facility)
+    @order_details = @order_details.reorder(:reviewed_at)
     @order_detail_action = :in_review
-    render :action => 'facility_history'
+    render :layout => 'two_column'
+    #render :action => 'facility_history'
+  end
+  
+  def notifications
+    find_with_facility
+    @order_details = @order_details.need_notification(@facility)
+    @order_detail_action = :notifications
+    render :layout => 'two_column'
   end
   
   def find_with_facility
-    @facility = Facility.find_by_url_name(params[:facility_url])
+    @current_facility = @facility = Facility.find_by_url_name(params[:facility_id])
     raise ActiveRecord::RecordNotFound unless @facility
     @facilities = [@facility]
     @accounts = Account.for_facility(@facility)

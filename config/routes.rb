@@ -27,16 +27,16 @@ Nucore::Application.routes.draw do |map|
   # transaction searches
   match "/accounts/:account_id/transactions" => 'transaction_history#account_history', :as => "account_transaction_history"
   match "/transactions" => 'transaction_history#my_history', :as => "transaction_history"
-  match "/facilities/:facility_url/transactions" => "transaction_history#facility_history", :as => "facility_transaction_history"
-  match "/facilities/:facility_url/transactions/in_review" => "transaction_history#in_review", :as => "facility_transactions_in_review"
-  
   
   # global settings
   resources :affiliates, :except => :show
 
   map.resources :facilities, :collection => {:list => :get}, :member => {:manage => :get}, :except => [:delete] do |facility|
     facility.resources :products, :only => [:index]
-
+    facility.transactions '/transactions', :controller => 'transaction_history', :action => 'facility_history'
+    facility.transactions_in_review '/transactions/in_review', :controller => 'transaction_history', :action => 'in_review'
+    facility.transactions_notifications '/transactions/notifications', :controller => 'transaction_history', :action => 'notifications'
+    
     facility.resources :instruments, :member => {:manage => :get} do |instrument|
       instrument.schedule 'schedule', :controller => 'instruments', :action => 'schedule'
       instrument.agenda   'agenda',   :controller => 'instruments', :action => 'agenda'
