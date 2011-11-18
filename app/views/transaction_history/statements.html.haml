@@ -4,6 +4,7 @@
 
 %h2 Create Statements
 - if @order_details.empty?
+  = render :partial => "search"
   %p.notice There are no completed orders that require statements.
 - else
   %p
