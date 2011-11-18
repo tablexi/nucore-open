@@ -68,6 +68,7 @@ $(document).ready(function() {
     });
     $('.toggle:checkbox').each(function() {
       this.checked = check;
-    })
+    });
+    return false;
   });
 });

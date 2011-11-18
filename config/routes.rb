@@ -41,7 +41,8 @@ Nucore::Application.routes.draw do |map|
     facility.transactions_send_notifications 'transactions/send_notifications', :controller => 'transaction_history', :action => 'send_notifications'
     facility.transactions_statements '/transactions/statements', :controller => 'transaction_history', :action => 'statements'
     facility.transactions_send_statements 'transactions/send_statements', :controller => 'transaction_history', :action => 'send_statements'
-    
+    facility.transactions_journals '/transactions/journals', :controller => 'transaction_history', :action => 'journals'
+    facility.transactions_create_journal '/transactions/create_journal', :controller => 'transaction_history', :action => 'create_journal'
     
     
     facility.resources :instruments, :member => {:manage => :get} do |instrument|

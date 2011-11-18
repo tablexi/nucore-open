@@ -72,7 +72,7 @@ class TransactionHistoryController < ApplicationController
   
   def statements
     find_with_facility
-    @accounts = @accounts.where("type in ('CreditCardAccount', 'PurchaseOrderAccount')")
+    @accounts = @accounts.where("type in (?)", ['CreditCardAccount', 'PurchaseOrderAccount'])
     @order_details = @order_details.need_statement(@facility)
     @order_detail_action = :send_statements
     @active_tab = 'admin_transactions'
@@ -83,6 +83,21 @@ class TransactionHistoryController < ApplicationController
     #TODO send statements
     flash[:notice] = "Sending statements not yet implemented"
     redirect_to :action => "statements"
+  end
+  
+  def journals
+    find_with_facility
+    @accounts = @accounts.where("type in (?)", ['NufsAccount'])
+    @order_details = @order_details.need_journal(@facility)
+    @order_detail_action = 'create_journal'
+    @active_tab = 'admin_transactions'
+    render :layout => 'two_column'
+  end
+  
+  def create_journal
+    #TODO create journal
+    flash[:notice] = "Creating journals not yet implemented"
+    redirect_to :action => "journals"
   end
   
   def find_with_facility

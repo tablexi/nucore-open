@@ -2,7 +2,7 @@
 %table.dense
   - if @order_detail_action
     %tr.borderless
-      %td{:colspan => 6}= link_to 'Select None', '#', :class => 'select_all'
+      %td{:colspan => 6}= link_to 'Select All', '#', :class => 'select_all'
       %td.currency{:colspan => 2}= submit_tag @order_detail_action.to_s.titleize
   %tr
     -if @order_detail_action 
@@ -21,7 +21,7 @@
   - @order_details.each do |order_detail|
     %tr
       - if @order_detail_action
-        %td= check_box_tag "order_detail_ids[]", order_detail.id, false
+        %td= check_box_tag "order_detail_ids[]", order_detail.id, false, {:class => 'toggle'}
       - unless single_account?
         %td= order_detail.account
       %td.nowrap= link_to order_detail, order_order_detail_path(order_detail.order, order_detail) 
