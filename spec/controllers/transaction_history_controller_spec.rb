@@ -24,8 +24,8 @@ describe TransactionHistoryController do
     end
       
     it "should return nils first" do
-      @controller.send(:set_accounts, Account.all)
-      order_details = @controller.do_search({})
+      
+      order_details = @controller.send(:do_search, { :accounts => [@account.id] })
       order_details.map(&:id).should == [@order_detail1, @order_detail2, @order_detail3].map(&:id)
     end
     
