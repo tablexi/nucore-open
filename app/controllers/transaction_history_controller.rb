@@ -72,6 +72,7 @@ class TransactionHistoryController < ApplicationController
   
   def statements
     find_with_facility
+    @accounts = @accounts.where("type in ('CreditCardAccount', 'PurchaseOrderAccount')")
     @order_details = @order_details.need_statement(@facility)
     @order_detail_action = :send_statements
     @active_tab = 'admin_transactions'
