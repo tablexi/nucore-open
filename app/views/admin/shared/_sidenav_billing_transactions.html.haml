@@ -6,6 +6,7 @@
   %li= link_to 'Orders In Review',       facility_transactions_in_review_path, :class => (sidenav_tab == 'in_review' ? 'active' : '')
   %li= "Create Statements" #link_to 'Create Statements',      pending_facility_statements_path, :class => (sidenav_tab == 'send_statements' ? 'active' : '')
   %li= "Statement History" #link_to 'Statement History',      facility_statements_path, :class => (sidenav_tab == 'statement_history' ? 'active' : '')
+  %li= link_to "Create Journal",                 facility_transactions_journals_path, :class => (sidenav_tab == 'journals' ? 'active' : '')
   %li= "Manage Journals" #link_to 'Manage Journals',        facility_journals_path, :class => (sidenav_tab == 'journals' ? 'active' : '')
   %li= "Reconcile Journals" #link_to 'Reconcile Journals',     history_facility_journals_path, :class => (sidenav_tab == 'reconcile' ? 'active' : '')
   %li= "Reconcile Credit Cards" #link_to 'Reconcile Credit Cards',    credit_cards_facility_accounts_path, :class => (sidenav_tab == 'credit_cards' ? 'active' : '')
