@@ -1,0 +1,18 @@
+= render :partial => "headers"
+= content_for :h1 do
+  = @facility
+
+%h2 Create Statements
+- if @order_details.empty?
+  = render :partial => "search"
+  %p.notice There are no completed orders that require statements.
+- else
+  %p
+    Please review the following Credit Card and Purchase Order payment sources. A statement will be generated for each of the 
+    payment sources and an email with a link to the statement will be sent.
+  = render :partial => "search"
+  = render :partial => 'table'
+    
+= content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing_transactions', :locals => { :sidenav_tab => 'statements' }
+

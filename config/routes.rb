@@ -33,10 +33,15 @@ Nucore::Application.routes.draw do |map|
 
   map.resources :facilities, :collection => {:list => :get}, :member => {:manage => :get}, :except => [:delete] do |facility|
     facility.resources :products, :only => [:index]
+    
     facility.transactions '/transactions', :controller => 'transaction_history', :action => 'facility_history'
     facility.transactions_in_review '/transactions/in_review', :controller => 'transaction_history', :action => 'in_review'
+    facility.transactions_mark_as_reviewed 'transactions/mark_as_reviewed', :controller => 'transaction_history', :action => 'mark_as_reviewed'
     facility.transactions_notifications '/transactions/notifications', :controller => 'transaction_history', :action => 'notifications'
-    
+    facility.transactions_send_notifications 'transactions/send_notifications', :controller => 'transaction_history', :action => 'send_notifications'
+    facility.transactions_statements '/transactions/statements', :controller => 'transaction_history', :action => 'statements'
+    facility.transactions_send_statements 'transactions/send_statements', :controller => 'transaction_history', :action => 'send_statements'
+        
     facility.resources :instruments, :member => {:manage => :get} do |instrument|
       instrument.schedule 'schedule', :controller => 'instruments', :action => 'schedule'
       instrument.agenda   'agenda',   :controller => 'instruments', :action => 'agenda'

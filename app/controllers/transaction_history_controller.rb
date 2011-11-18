@@ -47,17 +47,41 @@ class TransactionHistoryController < ApplicationController
     find_with_facility
     @order_details = @order_details.in_review(@facility)
     @order_details = @order_details.reorder(:reviewed_at)
-    @order_detail_action = :in_review
+    @order_detail_action = :mark_as_reviewed
     @active_tab = 'admin_transactions'
     render :layout => 'two_column'
+  end
+  def mark_as_reviewed
+    #TODO mark as reviewed
+    flash[:notice] = "Marking as reviewed not yet implemented"
+    redirect_to :action => :in_review
   end
   
   def notifications
     find_with_facility
     @order_details = @order_details.need_notification(@facility)
-    @order_detail_action = :notifications
+    @order_detail_action = :send_notifications
     @active_tab = 'admin_transactions'
     render :layout => 'two_column'
+  end
+  def send_notifications
+    #TODO send notifications
+    flash[:notice] = "Sending notifications not yet implemented"
+    redirect_to :action => :notifications
+  end
+  
+  def statements
+    find_with_facility
+    @order_details = @order_details.need_statement(@facility)
+    @order_detail_action = :send_statements
+    @active_tab = 'admin_transactions'
+    render :layout => 'two_column'
+  end
+  
+  def send_statements
+    #TODO send statements
+    flash[:notice] = "Sending statements not yet implemented"
+    redirect_to :action => "statements"
   end
   
   def find_with_facility
