@@ -60,6 +60,14 @@ class TransactionHistoryController < ApplicationController
     render :layout => 'two_column'
   end
   
+  def statements
+    find_with_facility
+    @order_details = @order_details.need_statement(@facility)
+    @order_detail_action = :statements
+    @active_tab = 'admin_transactions'
+    render :layout => 'two_column'
+  end
+  
   def find_with_facility
     @current_facility = @facility = Facility.find_by_url_name(params[:facility_id])
     raise ActiveRecord::RecordNotFound unless @facility

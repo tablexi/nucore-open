@@ -36,6 +36,7 @@ Nucore::Application.routes.draw do |map|
     facility.transactions '/transactions', :controller => 'transaction_history', :action => 'facility_history'
     facility.transactions_in_review '/transactions/in_review', :controller => 'transaction_history', :action => 'in_review'
     facility.transactions_notifications '/transactions/notifications', :controller => 'transaction_history', :action => 'notifications'
+    facility.transactions_statements '/transactions/statements', :controller => 'transaction_history', :action => 'statements'
     
     facility.resources :instruments, :member => {:manage => :get} do |instrument|
       instrument.schedule 'schedule', :controller => 'instruments', :action => 'schedule'
