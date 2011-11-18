@@ -11,7 +11,7 @@
     Select the orders that you wish to journal. Only one journal may be pending at a time. Please note that selected orders may not span multiple fiscal years.
   = render :partial => "search"
   = render :partial => 'table'
-    
+  = render :partial => 'shared/reconcile_footnote'
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing_transactions', :locals => { :sidenav_tab => 'statements' }
 
