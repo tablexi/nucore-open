@@ -107,7 +107,8 @@ class TransactionHistoryController < ApplicationController
     @current_facility = @facility = Facility.find_by_url_name(params[:facility_id])
     raise ActiveRecord::RecordNotFound unless @facility
     @facilities = [@facility]
-    @accounts = Account.for_facility(@facility)
+    # only select a few fields. This speeds up the load when there get to be a lot of accounts
+    @accounts = Account.for_facility(@facility).select("id, description, account_number, type")
     
     @search_fields = params.merge({
       :accounts => get_allowed_accounts(@accounts, params[:accounts]),
