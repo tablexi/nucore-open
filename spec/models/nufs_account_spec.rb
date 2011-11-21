@@ -50,6 +50,12 @@ describe NufsAccount do
 
     it "should allow format fund3-dept7-project8-activity2-program4" do
       assert_number_format '123-1234567-12345678-01-1234', true
+      account = NufsAccount.find(@account.id)
+      assert_equal '123', account.fund
+      assert_equal '1234567', account.dept
+      assert_equal '12345678', account.project
+      assert_equal '01', account.activity
+      assert_equal '1234', account.program
     end
 
     it "should not allow format fund3-dept7-project8-activity2-program4-account5" do
