@@ -23,8 +23,8 @@ class TransactionHistoryController < ApplicationController
   end
   
   def account_history
-    @account = Account.find(params[:account_id])
-    @accounts = [@account]
+    @accounts = Account.find_all_by_id(params[:account_id])
+    @account = @accounts[0]
     @facilities = @account.facilities
     
     @search_fields = params.merge({
