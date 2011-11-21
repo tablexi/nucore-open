@@ -33,7 +33,7 @@ class TransactionHistoryController < ApplicationController
     do_search(@search_fields)
     add_optimizations
     @order_details = @order_details.paginate(:page => params[:page])
-    
+    @active_tab = 'accounts'
   end
   
   def facility_history
