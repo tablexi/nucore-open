@@ -46,9 +46,9 @@ class Account < ActiveRecord::Base
   
   def facilities
     if facility_id
-      [Facility.active.find(facility_id)]
+      [Facility.find(facility_id)]
     else
-      Facility.active
+      Facility.all
     end
   end
 
