@@ -10,7 +10,6 @@ class Account < ActiveRecord::Base
   accepts_nested_attributes_for :account_users
 
   scope :active, lambda {{ :conditions => ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] }}
-  #scope :for_facility, lambda { |facility| { :conditions => ["type <> 'PurchaseOrderAccount' OR (type = 'PurchaseOrderAccount' AND facility_id = ?)", facility.id] }}
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
   validates_length_of :description, :maximum => 50
