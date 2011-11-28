@@ -2,11 +2,28 @@
 # See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
+  app_name: NU Core
+  app_admin_name: NU Core Admin
+  
+  pages:
+    my_tab: My %{model}
+    manage: Manage %{model}
+    global_settings: Global Settings
+    login: Login
+    logout: Logout
+    cart: Cart
+    
+  shared:
+    footer:
+      copyright_html: "&copy; Copyright 2010%{to_date} Northwestern University"
+  facilities:
+    index:
+      welcome: Welcome to NU Core, the centralized ordering system for all Shared Facilities at Northwestern University.
+               Please select the Shared Facility below to view and purchase services and products offered by the facility.
   devise:
-    sessions:
-      unauthenticated: "Your credentials are not valid. Please try again."
-      invalid: "Your credentials are not valid. Please provide a username and password."
-
+    failure: 
+      invalid: Invalid username or password.
+      
   activerecord:
     errors:
       # The values :model, :attribute and :value are always available for interpolation
@@ -48,7 +65,7 @@ en:
     models:
       account:
         one: Payment Source
-        other: Payment Sources
+        other: Payment Sources 
       nufs account:
         one: Chart String Payment Source
         other: Chart String Payment Sources
@@ -58,9 +75,22 @@ en:
       account user:
         one: Account User
         other: Account Users
+      reservation:
+        one: Reservation
+        other: Reservations
+      order: 
+        one: Order
+        other: Orders
+      facility:
+        one: Facility
+        other: Facilities
+        
 
     # Model Attributes
     attributes:
+      user:
+        username: Username
+        password: Password
       facility:
         url_name: URL name
       user_role:
