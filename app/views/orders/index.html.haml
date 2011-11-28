@@ -1,7 +1,7 @@
 = content_for :h1 do
-  My Orders
+  = t_my(Order)
 
 - if @order_details.empty?
-  %p.notice You have not placed any orders.
+  %p.notice= "You have not placed any #{Order.human_name.pluralize.downcase}."
 - else
   =render :partial => 'shared/order_details_table', :locals => { :order_details => @order_details }
