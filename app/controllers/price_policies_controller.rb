@@ -85,6 +85,7 @@ class PricePoliciesController < ApplicationController
     @price_policies.delete_if{|pp| pp.assigned_to_order? }
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
     @expire_date=@price_policies.first.expire_date
+    include_newer_price_groups    
     @max_expire_date = PricePolicy.generate_expire_date(@price_policies.first.start_date).strftime("%m/%d/%Y")
   end
 
@@ -94,6 +95,8 @@ class PricePoliciesController < ApplicationController
     @expire_date    = params[:expire_date]
     @price_policies = model_class.for_date(@product, @start_date)
     @interval = params[:interval].to_i if params[:interval]
+    
+    include_newer_price_groups
     
     @price_policies.each { |price_policy|
       pp_param=params["#{@product_var}_price_policy#{price_policy.price_group.id}"]
@@ -149,6 +152,18 @@ class PricePoliciesController < ApplicationController
 
 
   private
+  
+  # if a new price group has been added since the price policy was set up, we want to be able to add a price for it
+  # otherwise you would have to create a brand new rule
+  def include_newer_price_groups
+    current_price_groups = @price_policies.map { |pp| pp.price_group }
+    current_facility.price_groups.each do |group|
+      # ignore groups that don't have a facility (i.e. the default groups)
+      if group.facility_id.presence and !current_price_groups.include?(group) and group.can_purchase?(@product)
+        @price_policies << model_class.new({:price_group_id => group.id, :"#{@product_var}_id" => @product.id, :start_date => @start_date })
+      end
+    end
+  end
 
   def facility_product_price_policies_path
     method("facility_#{@product_var}_price_policies_path").call(current_facility, @product)
