@@ -7,6 +7,7 @@ class FacilityReservationsController < ApplicationController
   load_and_authorize_resource :class => Reservation
 
   helper_method :sort_column, :sort_direction
+  helper_method :new_or_in_process_orders, :problem_orders, :disputed_orders
 
   ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN = {
       'date'          => 'reservations.reserve_start_at',
@@ -28,17 +29,9 @@ class FacilityReservationsController < ApplicationController
     real_sort_clause = ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN[sort_column] || sort_column
 
     order_by_clause = [real_sort_clause, sort_direction].join(' ')
-    @order_details = current_facility.order_details.new_or_inprocess.reservations.
-      includes(
-        {:order => :user},
-        :order_status,
-        :reservation,
-        :assigned_user
-      ).
-      where("orders.facility_id = ? AND orders.ordered_at IS NOT NULL", current_facility.id).
-      order(order_by_clause).all
+    @order_details = new_or_in_process_orders(order_by_clause)
 
-    @order_details=@order_details.delete_if{|od| od.reservation.nil? }.paginate(:page => params[:page])
+    @order_details=@order_details.paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/reservations/:id/edit
@@ -199,17 +192,13 @@ class FacilityReservationsController < ApplicationController
 
   # GET /facilities/:facility_id/orders/review
   def show_problems
-    @order_details = current_facility.order_details.
-      reservations.
-      reject{|od| !od.problem_order?}.
+    @order_details = problem_orders.
       paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/orders/disputed
   def disputed
-    @details = current_facility.order_details.
-      reservations.
-      in_dispute.
+    @details = disputed_orders.
       paginate(:page => params[:page])
   end
 
@@ -226,6 +215,28 @@ class FacilityReservationsController < ApplicationController
 
   private
 
+  def new_or_in_process_orders(order_by_clause = 'reservations.reserve_start_at')
+    current_facility.order_details.new_or_inprocess.reservations.
+      includes(
+        {:order => :user},
+        :order_status,
+        :reservation,
+        :assigned_user
+      ).
+      order(order_by_clause).
+      delete_if{|od| od.reservation.nil? }
+  end
+  
+  def problem_orders
+    current_facility.order_details.
+      reservations.
+      reject{|od| !od.problem_order?}
+  end
+  def disputed_orders
+    current_facility.order_details.
+      reservations.
+      in_dispute
+  end
   def sort_column
     # TK: check against a whitelist
     params[:sort] || 'date'
