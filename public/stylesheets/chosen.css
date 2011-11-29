@@ -240,10 +240,10 @@
 }
 .chzn-container .chzn-results li {
   display: none;
-  line-height: 80%;
-  padding: 7px 7px 8px;
+  padding: 3px 7px 3px;
   margin: 0;
   list-style: none;
+  border-bottom: 1px solid #DDD;
 }
 .chzn-container .chzn-results .active-result {
   cursor: pointer;
