@@ -9,26 +9,34 @@ module Validations
   included do |base|
     base.class_eval <<-METHOD
       def after_find
-        validate_chartstring
+        parse_chartstring
       end
     METHOD
   end
 
-
+  # parse_chartstring and validate_chartstring used to be one method that was called in after_find
+  # the account_is_open! made loading Accounts incredibly slow. - JH 11/21/11
+  def parse_chartstring
+    validator=NucsValidator.new(account_number, NUCore::COMMON_ACCOUNT)
+    if validator
+      @fund     = validator.fund
+      @dept     = validator.department
+      @project  = validator.project
+      @activity = validator.activity
+      @program  = validator.program
+    end
+    
+    validator
+  end
+  
   def validate_chartstring
     begin
-      validator=NucsValidator.new(account_number, NUCore::COMMON_ACCOUNT)
+      validator = parse_chartstring
     rescue NucsError => e
       self.errors.add(:account_number, e.message)
       return
     end
-
-    @fund     = validator.fund
-    @dept     = validator.department
-    @project  = validator.project
-    @activity = validator.activity
-    @program  = validator.program
-
+    
     begin
       validator.account_is_open!
     rescue NucsError => e
