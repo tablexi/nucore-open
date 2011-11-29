@@ -16,10 +16,27 @@ en:
   shared:
     footer:
       copyright_html: "&copy; Copyright 2010%{to_date} Northwestern University"
+      logo_alt: "Northwestern Logo"
   facilities:
     index:
       welcome: Welcome to NU Core, the centralized ordering system for all Shared Facilities at Northwestern University.
                Please select the Shared Facility below to view and purchase services and products offered by the facility.
+  price_policies:
+    instructional_text:
+      common: All Northwestern users must be charged the same base rate.  Rates must be reviewed by the Provost's Office.  You may define adjustments to this rate for individual internal price groups.
+      item: ""
+      service: ""
+      instrument: The user will be charged the sum of actual, scheduled, and overage usage fees.  Actual usage is measured by power relay or manually entered by facility staff.  Scheduled usage is calculated from the user's reservation.  Overage is any usage that exceeds the user's reservation.  If an overage rate is not specified, the actual usage rate will be applied for any overage. 
+  price_groups:
+    price_group_fields:
+      internal_instruction: "Check this box if this price group is internal, intended for use by Northwestern Customers:"
+      
+      
+  notifier:
+    new_user:
+      intro_html: Congratulations, %{first_name}. A NU Core account has been created for you. You may log in at <a href="%{login_url}">%{login_url}</a>.
+      intro: Congratulations, %{first_name}. A NU Core account has been created for you. You may log in at %{login_url}.
+      no_password: You may log in with your Northwestern NetID and password.
   devise:
     failure: 
       invalid: Invalid username or password.
@@ -93,6 +110,8 @@ en:
         password: Password
       facility:
         url_name: URL name
+      price_group:
+        is_internal: Is Internal?
       user_role:
         username: User
       order_detail:
