@@ -15,7 +15,7 @@ class UsersController < ApplicationController
 
   # GET /facilities/:facility_id/users
   def index
-    @users = current_facility.orders.find(:all, :conditions => ['ordered_at > ?', Time.zone.now - 1.year]).collect{|o| o.user}.uniq
+    @users = current_facility.orders.where('ordered_at > ?', Time.zone.now - 1.year).includes(:user).collect{|o| o.user}.uniq
     @users.delete nil # on a dev db with screwy data nil can get ya
     @users = @users.sort {|x,y| [x.last_name, x.first_name].join(' ') <=> [y.last_name, y.first_name].join(' ') }.paginate(:page => params[:page])
   end

@@ -82,7 +82,53 @@ describe FacilityReservationsController do
       @params.merge!(:reservation => Factory.attributes_for(:reservation))
     end
 
-    it_should_allow_operators_only
+
+    it_should_allow_operators_only do
+      assigns(:order).should == @order
+      assigns(:order_detail).should == @order_detail
+      assigns(:reservation).should == @reservation
+      assigns(:instrument).should == @product
+    end
+
+
+    context 'update actuals' do
+
+      before :each do
+        @order_detail.price_policy.should be_nil
+        @price_group=Factory.create(:price_group, :facility => @authable)
+        Factory.create(:user_price_group_member, :user => @director, :price_group => @price_group)
+        @instrument_pp=@product.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id))
+        @instrument_pp.reload.restrict_purchase=false
+        @reservation.update_attributes(:actual_start_at => nil, :actual_end_at => nil)
+        @now=@reservation.reserve_start_at+3.hour
+        @reservation_attrs=Factory.attributes_for(
+            :reservation,
+            :actual_start_at => @now-2.hour,
+            :actual_end_at => @now-1.hour
+        )
+        @params.merge!(:reservation => @reservation_attrs)
+      end
+
+      it 'should update the actuals and assign a price policy if there is none' do
+        Timecop.freeze(@now) do
+          maybe_grant_always_sign_in :director
+          @order_detail.to_complete!
+          do_request
+          assigns(:order).should == @order
+          assigns(:order_detail).should == @order_detail
+          assigns(:reservation).should == @reservation
+          assigns(:instrument).should == @product
+          assigns(:reservation).actual_start_at.should == @reservation_attrs[:actual_start_at]
+          assigns(:reservation).actual_end_at.should == @reservation_attrs[:actual_end_at]
+          assigns(:order_detail).price_policy.should == @instrument_pp
+          assigns(:order_detail).actual_cost.should_not be_nil
+          assigns(:order_detail).actual_subsidy.should_not be_nil
+          should set_the_flash
+          should render_template 'edit'
+        end
+      end
+
+    end
 
   end
 
