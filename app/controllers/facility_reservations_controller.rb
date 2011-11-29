@@ -108,6 +108,12 @@ class FacilityReservationsController < ApplicationController
     Reservation.transaction do
       begin
         @reservation.save!
+
+        unless @order_detail.price_policy
+          @order_detail.assign_price_policy
+          additional_notice = '  Order detail price policy and actual cost has been updated as well.'
+        end
+
         @order_detail.save!
         flash.now[:notice] = "The reservation has been updated successfully.#{additional_notice}"
       rescue
