@@ -2,7 +2,7 @@
   %fieldset
     - if (@accounts.size > 1)
       = label_tag :accounts, "Payment Sources"
-      = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "description", @search_fields[:accounts]), :multiple => true
+      = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "account_list_item", @search_fields[:accounts]), :multiple => true
     - unless single_facility?
       = label_tag :facilities, "Facilities"
       = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", @search_fields[:facilities]), :multiple => true

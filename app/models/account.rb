@@ -101,6 +101,10 @@ class Account < ActiveRecord::Base
   def account_pretty
     "#{description} (#{account_number})"
   end
+  
+  def account_list_item
+    "#{account_number} #{description}"
+  end
 
   def validate_against_product(product, user)
     # does the facility accept payment method?
