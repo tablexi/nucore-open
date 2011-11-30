@@ -9,7 +9,7 @@ class FacilityNotificationsController < ApplicationController
   layout 'two_column'
 
   def initialize
-    @active_tab = 'admin_invoices'
+    @active_tab = 'admin_billing'
     super
   end
 

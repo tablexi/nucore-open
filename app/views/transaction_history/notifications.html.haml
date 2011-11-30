@@ -5,7 +5,7 @@
 %h2 Send Notifications
 
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing_transactions', :locals => { :sidenav_tab => 'notifications' }
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'notifications' }
 
 = render :partial => "search"
 - if @order_details.empty?

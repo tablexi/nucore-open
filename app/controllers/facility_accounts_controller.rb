@@ -9,7 +9,7 @@ class FacilityAccountsController < ApplicationController
   layout 'two_column'
 
   def initialize
-    @active_tab = 'admin_invoices'
+    @active_tab = 'admin_billing'
     super
   end
 
@@ -215,7 +215,7 @@ class FacilityAccountsController < ApplicationController
 
   def show_account(model_class)
     @subnav     = 'billing_nav'
-    @active_tab = 'admin_invoices'
+    @active_tab = 'admin_billing'
     @accounts   = model_class.need_reconciling(current_facility)
 
     unless @accounts.empty?

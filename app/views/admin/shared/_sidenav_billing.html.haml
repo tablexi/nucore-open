@@ -9,3 +9,17 @@
   %li= link_to 'Reconcile Journals',     history_facility_journals_path, :class => (sidenav_tab == 'reconcile' ? 'active' : '')
   %li= link_to 'Reconcile Credit Cards',    credit_cards_facility_accounts_path, :class => (sidenav_tab == 'credit_cards' ? 'active' : '')
   %li= link_to 'Reconcile Purchase Orders', purchase_orders_facility_accounts_path, :class => (sidenav_tab == 'purchase_orders' ? 'active' : '')
+
+%ul
+  %li= link_to 'All Transactions',       facility_transactions_path, :class => (sidenav_tab == 'transactions' ? 'active' : '')
+  %li= link_to Account.human_name.pluralize,       facility_accounts_path, :class => (sidenav_tab == 'accounts' ? 'active' : '')
+  %li= "Accounts Receivable" #link_to 'Accounts Receivable',    accounts_receivable_facility_statements_path, :class => (sidenav_tab == 'accounts_receivable' ? 'active' : '')
+  %li= link_to 'Send Notifications',     facility_transactions_notifications_path, :class => (sidenav_tab == 'notifications' ? 'active' : '')
+  %li= link_to 'Orders In Review',       facility_transactions_in_review_path, :class => (sidenav_tab == 'in_review' ? 'active' : '')
+  %li= link_to 'Create Statements',      facility_transactions_statements_path, :class => (sidenav_tab == 'statements' ? 'active' : '')
+  %li= "Statement History" #link_to 'Statement History',      facility_statements_path, :class => (sidenav_tab == 'statement_history' ? 'active' : '')
+  %li= link_to "Create Journal",                 facility_transactions_journals_path, :class => (sidenav_tab == 'journals' ? 'active' : '')
+  %li= "Manage Journals" #link_to 'Manage Journals',        facility_journals_path, :class => (sidenav_tab == 'journals' ? 'active' : '')
+  %li= "Reconcile Journals" #link_to 'Reconcile Journals',     history_facility_journals_path, :class => (sidenav_tab == 'reconcile' ? 'active' : '')
+  %li= "Reconcile Credit Cards" #link_to 'Reconcile Credit Cards',    credit_cards_facility_accounts_path, :class => (sidenav_tab == 'credit_cards' ? 'active' : '')
+  %li= "Reconcile Purchase Orders" #link_to 'Reconcile Purchase Orders', purchase_orders_facility_accounts_path, :class => (sidenav_tab == 'purchase_orders' ? 'active' : '')

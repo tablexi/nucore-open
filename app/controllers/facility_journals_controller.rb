@@ -12,7 +12,7 @@ class FacilityJournalsController < ApplicationController
   
   def initialize
     @subnav     = 'billing_nav'
-    @active_tab = 'admin_invoices'
+    @active_tab = 'admin_billing'
     super
   end
   

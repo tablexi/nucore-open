@@ -39,7 +39,7 @@ class TransactionHistoryController < ApplicationController
   def facility_history
     find_with_facility
     @order_details = @order_details.paginate(:page => params[:page])
-    @active_tab = 'admin_transactions'
+    @active_tab = 'admin_billing'
     render :layout => 'two_column'
   end
     
@@ -49,7 +49,7 @@ class TransactionHistoryController < ApplicationController
     @order_details = @order_details.reorder(:reviewed_at)
     @order_detail_action = :mark_as_reviewed
     #@warning_method = Proc.new { |helper, order_detail| helper.needs_reconcile_warning?(order_detail) }
-    @active_tab = 'admin_transactions'
+    @active_tab = 'admin_billing'
     render :layout => 'two_column'
   end
   def mark_as_reviewed
@@ -62,7 +62,7 @@ class TransactionHistoryController < ApplicationController
     find_with_facility
     @order_details = @order_details.need_notification(@facility)
     @order_detail_action = :send_notifications
-    @active_tab = 'admin_transactions'
+    @active_tab = 'admin_billing'
     render :layout => 'two_column'
   end
   def send_notifications
@@ -77,7 +77,7 @@ class TransactionHistoryController < ApplicationController
     @order_details = @order_details.need_statement(@facility)
     @order_detail_action = :send_statements
     #@warning_method = Proc.new { |helper, order_detail| helper.needs_reconcile_warning?(order_detail) }
-    @active_tab = 'admin_transactions'
+    @active_tab = 'admin_billing'
     render :layout => 'two_column'
   end
   
@@ -93,7 +93,7 @@ class TransactionHistoryController < ApplicationController
     @order_details = @order_details.need_journal(@facility)
     @order_detail_action = 'create_journal'
     #@warning_method = Proc.new { |helper, order_detail| helper.needs_reconcile_warning?(order_detail) }
-    @active_tab = 'admin_transactions'
+    @active_tab = 'admin_billing'
     render :layout => 'two_column'
   end
   
