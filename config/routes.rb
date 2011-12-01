@@ -131,12 +131,15 @@ Nucore::Application.routes.draw do |map|
 
     facility.resources :reservations, :controller => 'facility_reservations', :only => :index, :collection => {:batch_update => :post, :show_problems => :get, :disputed => :get}
 
+    facility.accounts_receivable '/accounts_receivable', :controller => 'facility_accounts', :action => 'accounts_receivable', :conditions => {:method => :get}
+    
     facility.resources :accounts, :controller => 'facility_accounts', :only => [:index, :new, :create, :show, :edit, :update], :collection => {:credit_cards => :get, :update_credit_cards => :post, :purchase_orders => :get, :update_purchase_orders => :post, :user_search => :get, :search => :get, :search_results => [:get, :post], :new_account_user_search => :get} do |account|
       account.suspend '/suspend', :controller => 'facility_accounts', :action => 'suspend'
       account.unsuspend '/unsuspend', :controller => 'facility_accounts', :action => 'unsuspend'
       account.resources :account_users, :controller => 'facility_account_users', :only => [:new, :destroy, :create, :update], :collection => {:user_search => :get}
       account.statement  '/statements/:statement_id.:format', :controller => 'facility_accounts', :action => 'show_statement', :conditions => {:method => :get}
       account.members '/members', :controller => 'facility_accounts', :action => 'members', :conditions => {:method => :get}
+      
     end
 
     facility.resources :journals, :controller => 'facility_journals', :only => [:index, :create, :update, :show], :collection => {:history => :get} do |journal|
@@ -150,7 +153,8 @@ Nucore::Application.routes.draw do |map|
 
     facility.notifications '/notifications', :controller => 'facility_notifications', :action => 'index', :conditions => {:method => [:get, :post]}
     facility.notifications_in_review '/notifications/in_review', :controller => 'facility_notifications', :action => 'in_review', :conditions => {:method => [:get, :post]}
-    facility.resources :statements, :controller => 'facility_statements', :only => [:index, :show], :collection => {:email => :post, :accounts_receivable => :get, :pending => :get }
+    
+    facility.resources :statements, :controller => 'facility_statements', :only => [:index, :show], :collection => {:email => :post, :pending => :get }
   end
 
   # order process

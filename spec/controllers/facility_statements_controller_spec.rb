@@ -70,19 +70,6 @@ describe FacilityStatementsController do
 
   end
 
-
-  context 'accounts_receivable' do
-
-    before :each do
-      @method=:get
-      @action=:accounts_receivable
-    end
-
-    it_should_allow_managers_only
-
-  end
-
-
   context 'show' do
 
     before :each do

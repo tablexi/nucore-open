@@ -68,16 +68,6 @@ class FacilityStatementsController < ApplicationController
     redirect_to pending_facility_statements_path
   end
 
-  # GET /facilities/:facility_id/statements/accounts_receivable
-  def accounts_receivable
-    @account_balances = {}
-    order_details = current_facility.order_details.complete
-    order_details.each do |od|
-      @account_balances[od.account_id] = @account_balances[od.account_id].to_f + od.total.to_f
-    end
-    @accounts = Account.find(@account_balances.keys)
-  end
-
   # GET /facilities/:facility_id/statements/:id
   def show
     @statement = Statement.find(params[:id])

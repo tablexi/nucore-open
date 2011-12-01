@@ -1,9 +1,9 @@
 - if @accounts.blank?
-  %p.notice= "No #{Account.human_name.pluralize} found."
+  %p.notice= "No #{Account.model_name.human.pluralize} found."
 - else
   %table
     %tr
-      %th= Account.human_name
+      %th= Account.model_name.human
       %th== Owner
       %th.currency== Unreconciled Total (actual + estimated)
     - @accounts.each do |account|

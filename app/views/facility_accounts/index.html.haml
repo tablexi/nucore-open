@@ -4,10 +4,10 @@
 = content_for :h1 do
   =h current_facility
 
-%h2= Account.human_name.pluralize
+%h2= Account.model_name.human.pluralize
 
 %ul.horiz
-  %li= link_to "Add #{Account.human_name}", new_account_user_search_facility_accounts_path
+  %li= link_to "Add #{Account.model_name.human}", new_account_user_search_facility_accounts_path
 
 #result
   = render :partial => 'account_balances.html.haml'
