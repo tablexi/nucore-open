@@ -39,7 +39,11 @@ class TransactionHistoryController < ApplicationController
   def facility_history
     find_with_facility
     @order_details = @order_details.paginate(:page => params[:page])
+<<<<<<< HEAD
     @active_tab = 'admin_billing'
+=======
+    @active_tab = 'admin_transactions'
+>>>>>>> 6e4874e042cb1276ab6bbb07e62a3f079bf7db77
     render :layout => 'two_column'
   end
     
@@ -49,7 +53,11 @@ class TransactionHistoryController < ApplicationController
     @order_details = @order_details.reorder(:reviewed_at)
     @order_detail_action = :mark_as_reviewed
     #@warning_method = Proc.new { |helper, order_detail| helper.needs_reconcile_warning?(order_detail) }
+<<<<<<< HEAD
     @active_tab = 'admin_billing'
+=======
+    @active_tab = 'admin_transactions'
+>>>>>>> 6e4874e042cb1276ab6bbb07e62a3f079bf7db77
     render :layout => 'two_column'
   end
   def mark_as_reviewed
@@ -94,6 +102,7 @@ class TransactionHistoryController < ApplicationController
     @order_detail_action = 'create_journal'
     #@warning_method = Proc.new { |helper, order_detail| helper.needs_reconcile_warning?(order_detail) }
     @active_tab = 'admin_billing'
+    @active_tab = 'admin_transactions'
     render :layout => 'two_column'
   end
   
