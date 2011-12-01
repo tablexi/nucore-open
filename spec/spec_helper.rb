@@ -173,6 +173,7 @@ Spork.each_run do
 
     od_attrs.merge!(:reviewed_at => Time.zone.now-1.day) if reviewed
     @order_detail.update_attributes(od_attrs)
+    return @order_detail
   end
 
 
