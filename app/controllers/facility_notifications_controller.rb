@@ -64,9 +64,36 @@ class FacilityNotificationsController < ApplicationController
   end
   
   def in_review
-    
+    @order_details = @order_details.in_review(@facility)
+    @order_details = @order_details.reorder(:reviewed_at)
+    @order_detail_action = :mark_as_reviewed
   end
-# 
+  
+  def mark_as_reviewed
+    if params[:order_detail_ids].nil? or params[:order_detail_ids].empty?
+      flash[:error] = 'No orders were selected'      
+    else
+      @errors = []
+      @order_details_updated = []
+      params[:order_detail_ids].each do |order_detail_id|
+        begin
+          od = OrderDetail.find(order_detail_id)
+          od.reviewed_at = Time.zone.now
+          od.save!
+          @order_details_updated << od
+        rescue Exception => e
+          logger.error(e.message)
+          @errors << order_detail_id
+        end
+      end
+      flash[:notice] = "The select orders have been marked as reviewed" if @order_details_updated.any?
+      flash[:error] = "An error was encountered while marking some orders as reviewed: #{@errors.join(', ')}" if @errors.any?
+    end
+    redirect_to :action => :in_review
+  end
+
+
+#
   # def in_review
     # if request.post?
       # if params[:order_detail_ids]

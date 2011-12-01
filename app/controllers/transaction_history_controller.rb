@@ -43,21 +43,6 @@ class TransactionHistoryController < ApplicationController
     render :layout => 'two_column'
   end
     
-  def in_review
-    find_with_facility
-    @order_details = @order_details.in_review(@facility)
-    @order_details = @order_details.reorder(:reviewed_at)
-    @order_detail_action = :mark_as_reviewed
-    #@warning_method = Proc.new { |helper, order_detail| helper.needs_reconcile_warning?(order_detail) }
-    @active_tab = 'admin_billing'
-    render :layout => 'two_column'
-  end
-  def mark_as_reviewed
-    #TODO mark as reviewed
-    flash[:notice] = "Marking as reviewed not yet implemented"
-    redirect_to :action => :in_review
-  end
-    
   def statements
     find_with_facility
     @accounts = @accounts.where("type in (?)", ['CreditCardAccount', 'PurchaseOrderAccount'])

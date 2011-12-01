@@ -154,7 +154,8 @@ Nucore::Application.routes.draw do |map|
     facility.notifications '/notifications', :controller => 'facility_notifications', :action => 'index', :conditions => {:method => :get}
     facility.send_notifications 'notifications/send', :controller => 'facility_notifications', :action => 'send_notifications', :conditions => {:method => :post }
     
-    facility.notifications_in_review '/notifications/in_review', :controller => 'facility_notifications', :action => 'in_review', :conditions => {:method => [:get, :post]}
+    facility.notifications_in_review '/in_review', :controller => 'facility_notifications', :action => 'in_review', :conditions => {:method => [:get]}
+    facility.notifications_mark_as_reviewed '/in_review/mark', :controller => 'facility_notifications', :action => 'mark_as_reviewed', :conditions => {:method => [:post]}
     
     facility.resources :statements, :controller => 'facility_statements', :only => [:index, :show], :collection => {:email => :post, :pending => :get }
   end

@@ -70,5 +70,46 @@ describe FacilityNotificationsController do
     end
   end
   
+  context "in review" do
+     before :each do
+      @method=:get
+      @action=:in_review
+      @order_detail1.reviewed_at = 7.days.from_now
+      @order_detail1.save!
+      @order_detail3.reviewed_at = 7.days.from_now
+      @order_detail3.save!
+    end
+
+    it_should_allow_managers_only do
+      (assigns(:order_details) - [@order_detail1, @order_detail3]).should be_empty
+      assigns(:order_detail_action).should == :mark_as_reviewed
+      should_not set_the_flash
+    end
+  end
+  
+  context "mark as reviewed" do
+    before :each do
+      @method = :post
+      @action = :mark_as_reviewed
+      maybe_grant_always_sign_in(:admin)
+    end
+    
+    it "should update" do
+      Timecop.freeze do
+        @params.merge!({:order_detail_ids => [@order_detail1.id, @order_detail3.id]})
+        do_request
+        flash[:error].should be_nil
+        assigns(:order_details_updated).should == [@order_detail1, @order_detail3]
+        @order_detail1.reload.reviewed_at.should == Time.zone.now
+        @order_detail3.reload.reviewed_at.should == Time.zone.now
+      end
+    end
+    
+    it "should display an error for no orders" do
+      do_request
+      flash[:error].should_not be_nil
+    end
+  end
+  
   
 end
