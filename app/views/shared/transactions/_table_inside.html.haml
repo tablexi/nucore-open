@@ -8,11 +8,11 @@
     -if @order_detail_action 
       %th
     - unless single_account?
-      %th Payment Source
+      %th= Account.model_name.human
     %th Order #
     %th Fulfillment Date
     - unless single_facility?
-      %th Facility
+      %th Facility.model_name.human
     %th Ordered/Reserved By
     %th Description
     %th Cost

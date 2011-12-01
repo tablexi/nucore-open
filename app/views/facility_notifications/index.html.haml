@@ -1,4 +1,4 @@
-= render :partial => "transaction_history/headers"
+= render :partial => "shared/transactions/headers"
 = content_for :h1 do
   = @facility
 
@@ -7,11 +7,11 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'notifications' }
 
-= render :partial => "transaction_history/search"
+= render :partial => "shared/transactions/search"
 - if @order_details.empty?
   %p.notice No notifications are currently pending
 - else
-  = render :partial => 'transaction_history/table'
+  = render :partial => 'shared/transactions/table'
   = render :partial => 'shared/reconcile_footnote'
   
     

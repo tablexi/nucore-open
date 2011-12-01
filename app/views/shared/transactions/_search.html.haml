@@ -1,10 +1,10 @@
 = form_tag url_for(params), :method => :get, :class => "search_form" do
   %fieldset
     - if (@accounts.size > 1)
-      = label_tag :accounts, "Payment Sources"
+      = label_tag :accounts, Account.model_name.human.pluralize
       = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "account_list_item", @search_fields[:accounts]), :multiple => true
     - unless single_facility?
-      = label_tag :facilities, "Facilities"
+      = label_tag :facilities, Facility.model_name.human.pluralize
       = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", @search_fields[:facilities]), :multiple => true
   %fieldset
     = label_tag :start_date, "Start Date"

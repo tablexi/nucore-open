@@ -1,4 +1,4 @@
-= render :partial => "headers"
+= render :partial => "shared/transactions/headers"
 - content_for :h1 do
   = @facility
 %h2
@@ -9,6 +9,6 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'transactions' }
  
-= render :partial => 'search'
-= render :partial => 'table'  
+= render :partial => 'shared/transactions/search'
+= render :partial => 'shared/transactions/table'  
 
