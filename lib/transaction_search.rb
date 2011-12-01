@@ -1,9 +1,16 @@
 module TransactionSearch
-  def self.included(base)
-    base.before_filter :find_with_facility, :only => [:search, :index]
-    base.before_filter :remove_ugly_params, :only => [:search, :index]
+  def self.included(base)    
+    base.extend(ClassMethods)
+    #base.before_filter :find_with_facility, :only => [:search, :index]
+    #base.before_filter :remove_ugly_params, :only => [:search, :index]
   end
-   
+  
+  module ClassMethods
+    def transaction_search(*fields)
+      self.before_filter :remove_ugly_params, :only => fields
+      self.before_filter :find_with_facility, :only => fields
+    end
+  end
   def find_with_facility
     @current_facility = @facility = Facility.find_by_url_name(params[:facility_id])
     raise ActiveRecord::RecordNotFound unless @facility

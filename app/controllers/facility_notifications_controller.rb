@@ -3,12 +3,15 @@ class FacilityNotificationsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility
+  
+  include TransactionSearch
+  transaction_search :index, :in_review
 
   authorize_resource :manage, :class => Facility
 
   layout 'two_column'
   
-  include TransactionSearch
+  
 
   def initialize
     @active_tab = 'admin_billing'
@@ -17,13 +20,11 @@ class FacilityNotificationsController < ApplicationController
 
   # GET /facilities/:facility_id/notifications
   def index
-    
     @order_details = @order_details.need_notification(@facility)
     @order_detail_action = :send_notifications
   end
   
   def send_notifications
-    #TODO send notifications
     @accounts_to_notify = []
     @orders_notified = []
     @errors = []
@@ -62,6 +63,9 @@ class FacilityNotificationsController < ApplicationController
     redirect_to :action => :index
   end
   
+  def in_review
+    
+  end
 # 
   # def in_review
     # if request.post?
