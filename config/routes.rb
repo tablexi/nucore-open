@@ -37,8 +37,8 @@ Nucore::Application.routes.draw do |map|
     facility.transactions '/transactions', :controller => 'transaction_history', :action => 'facility_history'
     facility.transactions_in_review '/transactions/in_review', :controller => 'transaction_history', :action => 'in_review'
     facility.transactions_mark_as_reviewed 'transactions/mark_as_reviewed', :controller => 'transaction_history', :action => 'mark_as_reviewed'
-    facility.transactions_notifications '/transactions/notifications', :controller => 'transaction_history', :action => 'notifications'
-    facility.transactions_send_notifications 'transactions/send_notifications', :controller => 'transaction_history', :action => 'send_notifications'
+    #facility.transactions_notifications '/transactions/notifications', :controller => 'transaction_history', :action => 'notifications'
+    #facility.transactions_send_notifications 'transactions/send_notifications', :controller => 'transaction_history', :action => 'send_notifications'
     facility.transactions_statements '/transactions/statements', :controller => 'transaction_history', :action => 'statements'
     facility.transactions_send_statements 'transactions/send_statements', :controller => 'transaction_history', :action => 'send_statements'
     facility.transactions_journals '/transactions/journals', :controller => 'transaction_history', :action => 'journals'
@@ -151,7 +151,9 @@ Nucore::Application.routes.draw do |map|
       price_group.resources :account_price_group_members, :only => [:new, :destroy, :create], :collection => {:create => :get}
     end
 
-    facility.notifications '/notifications', :controller => 'facility_notifications', :action => 'index', :conditions => {:method => [:get, :post]}
+    facility.notifications '/notifications', :controller => 'facility_notifications', :action => 'index', :conditions => {:method => :get}
+    facility.send_notifications 'notifications/send', :controller => 'facility_notifications', :action => 'send_notifications', :conditions => {:method => :post }
+    
     facility.notifications_in_review '/notifications/in_review', :controller => 'facility_notifications', :action => 'in_review', :conditions => {:method => [:get, :post]}
     
     facility.resources :statements, :controller => 'facility_statements', :only => [:index, :show], :collection => {:email => :post, :pending => :get }

@@ -14,7 +14,7 @@
   %li= link_to 'All Transactions',       facility_transactions_path, :class => (sidenav_tab == 'transactions' ? 'active' : '')
   %li= link_to Account.model_name.human.pluralize,       facility_accounts_path, :class => (sidenav_tab == 'accounts' ? 'active' : '')
   %li= link_to 'Accounts Receivable',    facility_accounts_receivable_path, :class => (sidenav_tab == 'accounts_receivable' ? 'active' : '')
-  %li= link_to 'Send Notifications',     facility_transactions_notifications_path, :class => (sidenav_tab == 'notifications' ? 'active' : '')
+  %li= link_to 'Send Notifications',     facility_notifications_path, :class => (sidenav_tab == 'notifications' ? 'active' : '')
   %li= link_to 'Orders In Review',       facility_transactions_in_review_path, :class => (sidenav_tab == 'in_review' ? 'active' : '')
   %li= link_to 'Create Statements',      facility_transactions_statements_path, :class => (sidenav_tab == 'statements' ? 'active' : '')
   %li= "Statement History" #link_to 'Statement History',      facility_statements_path, :class => (sidenav_tab == 'statement_history' ? 'active' : '')

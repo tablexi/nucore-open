@@ -39,11 +39,7 @@ class TransactionHistoryController < ApplicationController
   def facility_history
     find_with_facility
     @order_details = @order_details.paginate(:page => params[:page])
-<<<<<<< HEAD
     @active_tab = 'admin_billing'
-=======
-    @active_tab = 'admin_transactions'
->>>>>>> 6e4874e042cb1276ab6bbb07e62a3f079bf7db77
     render :layout => 'two_column'
   end
     
@@ -53,11 +49,7 @@ class TransactionHistoryController < ApplicationController
     @order_details = @order_details.reorder(:reviewed_at)
     @order_detail_action = :mark_as_reviewed
     #@warning_method = Proc.new { |helper, order_detail| helper.needs_reconcile_warning?(order_detail) }
-<<<<<<< HEAD
     @active_tab = 'admin_billing'
-=======
-    @active_tab = 'admin_transactions'
->>>>>>> 6e4874e042cb1276ab6bbb07e62a3f079bf7db77
     render :layout => 'two_column'
   end
   def mark_as_reviewed
@@ -65,20 +57,7 @@ class TransactionHistoryController < ApplicationController
     flash[:notice] = "Marking as reviewed not yet implemented"
     redirect_to :action => :in_review
   end
-  
-  def notifications
-    find_with_facility
-    @order_details = @order_details.need_notification(@facility)
-    @order_detail_action = :send_notifications
-    @active_tab = 'admin_billing'
-    render :layout => 'two_column'
-  end
-  def send_notifications
-    #TODO send notifications
-    flash[:notice] = "Sending notifications not yet implemented"
-    redirect_to :action => :notifications
-  end
-  
+    
   def statements
     find_with_facility
     @accounts = @accounts.where("type in (?)", ['CreditCardAccount', 'PurchaseOrderAccount'])
