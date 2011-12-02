@@ -40,8 +40,8 @@ class InstrumentsController < ApplicationController
     
     # do the product have active price policies && schedule rules
     unless @instrument.can_purchase?
-      add_to_cart       = false
-      flash.now[:notice] = "The #{@instrument.to_s} instrument is currently unavailable for reservation online."
+      add_to_cart = false
+      flash[:notice] = "The #{@instrument.to_s} instrument is currently unavailable for reservation online."
     end
 
     # is user logged in?
@@ -52,20 +52,20 @@ class InstrumentsController < ApplicationController
 
     # is the user approved?
     if add_to_cart && !@instrument.is_approved_for?(acting_user)
-      add_to_cart       = false
-      flash.now[:notice] = "The #{@instrument.to_s} instrument requires approval to reserve; please contact the facility for further information:<br/><br/> #{@instrument.facility}<br/><a href=\"mailto:#{@instrument.facility.email}\">#{@instrument.facility.email}</a>".html_safe
+      add_to_cart = false
+      flash[:notice] = "The #{@instrument.to_s} instrument requires approval to reserve; please contact the facility for further information:<br/><br/> #{@instrument.facility}<br/><a href=\"mailto:#{@instrument.facility.email}\">#{@instrument.facility.email}</a>".html_safe
     end
 
     # does the product have any price policies for any of the groups the user is a member of?
     if add_to_cart && !(@instrument.can_purchase?((acting_user.price_groups + acting_user.account_price_groups).flatten.uniq.collect{ |pg| pg.id }))
-      add_to_cart       = false
-      flash.now[:notice] = "You are not in a price group that may reserve instrument #{@instrument.to_s}; please contact the facility."
+      add_to_cart = false
+      flash[:notice] = "You are not in a price group that may reserve instrument #{@instrument.to_s}; please contact the facility."
     end
 
     # when ordering on behalf of, does the staff have permissions for this facility?
     if add_to_cart && acting_as? && !session_user.operator_of?(@instrument.facility)
       add_to_cart = false
-      flash.now[:notice] = 'You are not authorized to order instruments from this facility on behalf of a user.'
+      flash[:notice] = 'You are not authorized to order instruments from this facility on behalf of a user.'
     end
 
     if login_required
