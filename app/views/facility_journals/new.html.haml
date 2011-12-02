@@ -9,6 +9,8 @@
 - else
   %p
     Select the orders that you wish to journal. Only one journal may be pending at a time. Please note that selected orders may not span multiple fiscal years.
+  - unless @pending_journal.nil?
+    %p.notice You may not generate a new journal until the pending journal is closed.
   = render :partial => "shared/transactions/search"
   = render :partial => 'shared/transactions/table'
   = render :partial => 'shared/reconcile_footnote'

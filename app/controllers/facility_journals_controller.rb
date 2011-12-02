@@ -27,11 +27,18 @@ class FacilityJournalsController < ApplicationController
     set_soonest_journal_date
   end
 
+  # GET /facilities/:facility_id/journals/new
   def new
+    @pending_journal = Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
     @order_details   = OrderDetail.need_journal(current_facility)
-    @journal         = current_facility.journals.new()
+    #@journal         = current_facility.journals.new()
     set_soonest_journal_date
+    if @pending_journal.nil?
+      @order_detail_action = :create
+      @action_date_field = {:journal_date => @soonest_journal_date}
+    end
   end
+  
   #PUT /facilities/:facility_id/journals/:id
   def update
     @pending_journal = Journal.find(params[:id])
