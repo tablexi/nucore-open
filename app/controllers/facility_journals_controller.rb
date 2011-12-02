@@ -7,7 +7,7 @@ class FacilityJournalsController < ApplicationController
   before_filter :init_current_facility
 
   include TransactionSearch
-  transaction_search :new
+  transaction_search [:new], [:create]
   
   load_and_authorize_resource :class => Journal
 
@@ -29,6 +29,10 @@ class FacilityJournalsController < ApplicationController
 
   # GET /facilities/:facility_id/journals/new
   def new
+    set_default_variables
+  end
+  
+  def set_default_variables
     @pending_journal = Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
     @order_details   = OrderDetail.need_journal(current_facility)
     #@journal         = current_facility.journals.new()
@@ -81,6 +85,7 @@ class FacilityJournalsController < ApplicationController
     end
     @order_details = OrderDetail.need_journal(current_facility)
     set_soonest_journal_date
+    @soonest_journal_date = params[:journal_date] || @soonest_journal_date 
     render :action => :index
   end
 
@@ -88,15 +93,14 @@ class FacilityJournalsController < ApplicationController
   def create
     @journal = current_facility.journals.new()
     @journal.created_by = session_user.id
-    @journal.journal_date = parse_usa_date(params[:journal][:journal_date])
+    @journal.journal_date = parse_usa_date(params[:journal_date])
 
     @update_order_details = OrderDetail.find(params[:order_detail_ids] || [])
     if @update_order_details.empty?
       @journal.errors.add(:base, "No orders were selected to journal")
     else
       if Journal.order_details_span_fiscal_years?(@update_order_details)
-        flash[:error] = 'Journals may not span multiple fiscal years. Please select only orders in the same fiscal year.'
-        redirect_to facility_journals_path and return
+        @journal.errors.add(:base, 'Journals may not span multiple fiscal years. Please select only orders in the same fiscal year.')
       else
         Journal.transaction do
           begin
@@ -115,12 +119,12 @@ class FacilityJournalsController < ApplicationController
         end
       end
     end
-
-    @pending_journal = Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
-    @accounts        = NufsAccount.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
-    @order_details   = OrderDetail.need_journal(current_facility)
-    @soonest_journal_date = @journal.journal_date
-    render :action => :index
+    if @journal.errors.any?
+      
+      flash[:error] = @journal.errors.values.join("<br/>").html_safe
+      remove_ugly_params
+      redirect_to params.merge({:action => :new})   
+    end
   end
 
   # GET /facilities/:facility_id/journals/:id

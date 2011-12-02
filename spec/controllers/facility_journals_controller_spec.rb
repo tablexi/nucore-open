@@ -66,21 +66,13 @@ describe FacilityJournalsController do
       @journal_date=DateTime.now.strftime('%m/%d/%Y')
       @params={
         :facility_id => @authable.url_name,
-        :journal => {
-            :journal_date => @journal_date
-        }
+        :journal_date => @journal_date
       }
     end
 
-    it_should_allow_managers_only :success, 'and respond gracefully when no order details given' do |user|
+    it_should_allow_managers_only :redirect, 'and respond gracefully when no order details given' do |user|
       journal_date=parse_usa_date(@journal_date)
-      assigns(:journal).should be_new_record
-      assigns(:journal).created_by.should == user.id
-      assigns(:journal).journal_date.should == journal_date
-      assigns(:journal).errors[:base].should_not be_empty
-      assigns(:soonest_journal_date).should == journal_date
-      assert assigns(:order_details)
-      assert assigns(:accounts)
+      flash[:error].should_not be_nil
     end
 
 
@@ -94,6 +86,7 @@ describe FacilityJournalsController do
       end
 
       it_should_allow :director do
+        assigns(:journal).errors.should be_empty
         assigns(:journal).should_not be_new_record
         assigns(:journal).created_by.should == @director.id
         assigns(:journal).journal_date.should == parse_usa_date(@journal_date)
