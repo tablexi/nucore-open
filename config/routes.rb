@@ -35,12 +35,6 @@ Nucore::Application.routes.draw do |map|
     facility.resources :products, :only => [:index]
     
     facility.transactions '/transactions', :controller => 'transaction_history', :action => 'facility_history'
-    facility.transactions_in_review '/transactions/in_review', :controller => 'transaction_history', :action => 'in_review'
-    facility.transactions_mark_as_reviewed 'transactions/mark_as_reviewed', :controller => 'transaction_history', :action => 'mark_as_reviewed'
-    #facility.transactions_notifications '/transactions/notifications', :controller => 'transaction_history', :action => 'notifications'
-    #facility.transactions_send_notifications 'transactions/send_notifications', :controller => 'transaction_history', :action => 'send_notifications'
-    facility.transactions_statements '/transactions/statements', :controller => 'transaction_history', :action => 'statements'
-    facility.transactions_send_statements 'transactions/send_statements', :controller => 'transaction_history', :action => 'send_statements'
     facility.transactions_journals '/transactions/journals', :controller => 'transaction_history', :action => 'journals'
     facility.transactions_create_journal '/transactions/create_journal', :controller => 'transaction_history', :action => 'create_journal'
     
@@ -157,7 +151,7 @@ Nucore::Application.routes.draw do |map|
     facility.notifications_in_review '/in_review', :controller => 'facility_notifications', :action => 'in_review', :conditions => {:method => [:get]}
     facility.notifications_mark_as_reviewed '/in_review/mark', :controller => 'facility_notifications', :action => 'mark_as_reviewed', :conditions => {:method => [:post]}
     
-    facility.resources :statements, :controller => 'facility_statements', :only => [:index, :show], :collection => {:email => :post, :pending => :get }
+    facility.resources :statements, :controller => 'facility_statements', :only => [:index, :new, :show, :send_statements], :collection => {:send_statements => :post }
   end
 
   # order process

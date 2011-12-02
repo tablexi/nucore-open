@@ -42,22 +42,6 @@ class TransactionHistoryController < ApplicationController
     @active_tab = 'admin_billing'
     render :layout => 'two_column'
   end
-    
-  def statements
-    find_with_facility
-    @accounts = @accounts.where("type in (?)", ['CreditCardAccount', 'PurchaseOrderAccount'])
-    @order_details = @order_details.need_statement(@facility)
-    @order_detail_action = :send_statements
-    #@warning_method = Proc.new { |helper, order_detail| helper.needs_reconcile_warning?(order_detail) }
-    @active_tab = 'admin_billing'
-    render :layout => 'two_column'
-  end
-  
-  def send_statements
-    #TODO send statements
-    flash[:notice] = "Sending statements not yet implemented"
-    redirect_to :action => "statements"
-  end
   
   def journals
     find_with_facility

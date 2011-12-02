@@ -217,10 +217,13 @@ def grant_role(user, authable=nil)
   end
 end
 
-
-def maybe_grant_always_sign_in(user_sym)
-  user=instance_variable_get("@#{user_sym.to_s}")
+def grant_and_sign_in(user)
   grant_role(user) unless user == @guest || user == @admin
   sign_in user
   return user
+end
+
+def maybe_grant_always_sign_in(user_sym)
+  user=instance_variable_get("@#{user_sym.to_s}")
+  grant_and_sign_in(user)
 end
