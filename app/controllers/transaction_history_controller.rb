@@ -9,7 +9,7 @@ class TransactionHistoryController < ApplicationController
   before_filter :check_acting_as
   
   include TransactionSearch
-  transaction_search [:my_history, :account_history, :facility_history]
+  transaction_search :my_history, :account_history, :facility_history
    
   def my_history
     @accounts = session_user.accounts

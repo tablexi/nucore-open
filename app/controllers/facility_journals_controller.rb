@@ -7,7 +7,7 @@ class FacilityJournalsController < ApplicationController
   before_filter :init_current_facility
 
   include TransactionSearch
-  transaction_search [:new], [:create]
+  transaction_search :new, :create
   
   load_and_authorize_resource :class => Journal
 
@@ -107,7 +107,6 @@ class FacilityJournalsController < ApplicationController
       end
     end
     if @journal.errors.any?
-      
       flash[:error] = @journal.errors.values.join("<br/>").html_safe
       remove_ugly_params
       redirect_to params.merge({:action => :new})   

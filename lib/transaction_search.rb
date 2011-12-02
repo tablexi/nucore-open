@@ -4,11 +4,9 @@ module TransactionSearch
   end
   
   module ClassMethods
-    def transaction_search(fields, find_only = [])      
-      fields = [fields] unless fields.is_a?(Array)
-      find_only = [find_only] unless find_only.is_a?(Array)
-      self.before_filter :remove_ugly_params_and_redirect, :only => fields - find_only
-      self.before_filter :populate_search_fields, :only => (fields + find_only).uniq
+    def transaction_search(*fields)      
+      self.before_filter :remove_ugly_params_and_redirect, :only => fields
+      self.before_filter :populate_search_fields, :only => fields
     end
   end
   def populate_search_fields
@@ -46,7 +44,7 @@ module TransactionSearch
   end
   
   def remove_ugly_params_and_redirect
-    if (params[:commit])
+    if (params[:commit] && request.get?)
       remove_ugly_params
       redirect_to params
       return false
@@ -74,8 +72,7 @@ module TransactionSearch
         includes(:order_status).
         includes(:reservation).
         includes(:order => :user).
-        includes(:price_policy)
-        
+        includes(:price_policy)        
   end
   
   
