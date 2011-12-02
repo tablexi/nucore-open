@@ -163,7 +163,8 @@ class FacilityJournalsController < ApplicationController
   
   def set_default_variables
     @pending_journal = get_pending_journal
-    @order_details   = OrderDetail.need_journal(current_facility)
+    @order_details   = @order_details.need_journal(current_facility)
+    @accounts = @accounts.where("type in (?)", ['NufsAccount'])
     #@journal         = current_facility.journals.new()
     set_soonest_journal_date
     if @pending_journal.nil?
