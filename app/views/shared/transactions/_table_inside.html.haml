@@ -1,12 +1,5 @@
 = will_paginate(@order_details) if @order_details.respond_to? :total_pages
 %table.dense
-  - if @order_detail_action
-    %tr.borderless
-      %td{:colspan => (@action_date_field ? 2 : 6)}= link_to 'Select All', '#', :class => 'select_all'
-      - if @action_date_field
-        %td{:colspan => 2, :style=> "font-weight: bold"}= @action_date_field.keys.first.to_s.titleize
-        %td{:colspan => 2}= text_field_tag @action_date_field.keys.first, @action_date_field.values.first.strftime("%m/%d/%Y"), {:class => 'datepicker'}  
-      %td.currency{:colspan => 2}= submit_tag @order_detail_action.to_s.titleize
   %tr
     -if @order_detail_action 
       %th

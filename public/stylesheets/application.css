@@ -455,6 +455,22 @@ p.error {
   width: 25em;
 }
 
+.order_action {
+	border-top: 1px solid #C1C1C1;
+	padding: 0.5em;	
+}
+.order_action div {
+	float: left;
+	width: 50%;
+}
+.order_action .select_all_none,
+.order_action .submit {
+	width: 25%;
+}
+.order_action .submit {
+	text-align: right;
+}
+
 /***************************************
 tabs
 ***************************************/
