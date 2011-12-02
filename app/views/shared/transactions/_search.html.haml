@@ -6,6 +6,9 @@
     - unless single_facility?
       = label_tag :facilities, Facility.model_name.human.pluralize
       = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", @search_fields[:facilities]), :multiple => true
+    - if @products
+      = label_tag :products, Product.model_name.human.pluralize
+      = select_tag :products, options_from_collection_for_select(@products, "id", "name", @search_fields[:products]), :multiple => true
   %fieldset
     = label_tag :start_date, "Start Date"
     = text_field_tag :start_date, (@search_fields[:start_date] || "").gsub("-","/"), :class => 'datepicker'

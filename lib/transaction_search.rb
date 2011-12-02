@@ -18,6 +18,8 @@ module TransactionSearch
     # only select a few fields. This speeds up the load when there get to be a lot of accounts
     @accounts = Account.for_facility(@facility).select("id, description, account_number, type")
     
+    @products = Product.where(:facility_id => @facility.id)
+    
     @search_fields = params.merge({
       :accounts => get_allowed_accounts(@accounts, params[:accounts]),
       :facilities => @facilities
@@ -31,7 +33,7 @@ module TransactionSearch
     #Rails.logger.debug "search: #{search_params}"
     @order_details = OrderDetail.joins(:order).ordered
     @order_details = @order_details.for_accounts(search_params[:accounts])
-    
+    @order_details = @order_details.for_products(search_params[:products])
     start_date = parse_usa_date(search_params[:start_date].to_s.gsub("-", "/"))
     end_date = parse_usa_date(search_params[:end_date].to_s.gsub("-", "/"))  
     
