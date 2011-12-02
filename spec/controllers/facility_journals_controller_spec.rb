@@ -128,7 +128,8 @@ describe FacilityJournalsController do
       sign_in @admin
       do_request
       response.should be_success
-      assigns(:order_details).should == [@order_detail1, @order_detail3]
+      assigns(:order_details).should be_include(@order_detail1)
+      assigns(:order_details).should be_include(@order_detail3)
       assigns(:pending_journal).should be_nil
       assigns(:order_detail_action).should == :create
     end
