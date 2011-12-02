@@ -8,10 +8,10 @@ module TransactionSearch
       fields = [fields] unless fields.is_a?(Array)
       find_only = [find_only] unless find_only.is_a?(Array)
       self.before_filter :remove_ugly_params_and_redirect, :only => fields - find_only
-      self.before_filter :find_with_facility, :only => (fields + find_only).uniq
+      self.before_filter :populate_search_fields, :only => (fields + find_only).uniq
     end
   end
-  def find_with_facility
+  def populate_search_fields
     @current_facility = @facility = Facility.find_by_url_name(params[:facility_id])
     raise ActiveRecord::RecordNotFound unless @facility
     @facilities = [@facility]
@@ -19,6 +19,8 @@ module TransactionSearch
     @accounts = Account.for_facility(@facility).select("id, description, account_number, type")
     
     @products = Product.where(:facility_id => @facility.id)
+    
+    @account_owners = @accounts.map(&:owner_user).uniq
     
     @search_fields = params.merge({
       :accounts => get_allowed_accounts(@accounts, params[:accounts]),
@@ -34,6 +36,7 @@ module TransactionSearch
     @order_details = OrderDetail.joins(:order).ordered
     @order_details = @order_details.for_accounts(search_params[:accounts])
     @order_details = @order_details.for_products(search_params[:products])
+    @order_details = @order_details.for_owners(search_params[:owners])
     start_date = parse_usa_date(search_params[:start_date].to_s.gsub("-", "/"))
     end_date = parse_usa_date(search_params[:end_date].to_s.gsub("-", "/"))  
     

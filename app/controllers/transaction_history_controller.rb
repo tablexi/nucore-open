@@ -38,7 +38,6 @@ class TransactionHistoryController < ApplicationController
   end
   
   def facility_history
-    find_with_facility
     @order_details = @order_details.paginate(:page => params[:page])
     @active_tab = 'admin_billing'
     render :layout => 'two_column'

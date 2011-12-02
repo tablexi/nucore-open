@@ -116,7 +116,10 @@ class OrderDetail < ActiveRecord::Base
   scope :for_accounts, lambda {|accounts| where("order_details.account_id in (?)", accounts) unless accounts.nil? or accounts.empty? }
   scope :for_facilities, lambda {|facilities| joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? or facilities.empty? }
   scope :for_products, lambda { |products| where("order_details.product_id in (?)", products) unless products.blank? }
-  
+  scope :for_owners, lambda { |owners| joins(:account).
+                                       joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'").
+                                       where("account_users.user_id in (?)", owners) unless owners.blank? }
+                                       
   scope :in_date_range, lambda { |start_date, end_date| 
     search = scoped
     if (start_date)

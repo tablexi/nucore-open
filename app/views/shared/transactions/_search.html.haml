@@ -9,6 +9,9 @@
     - if @products
       = label_tag :products, Product.model_name.human.pluralize
       = select_tag :products, options_from_collection_for_select(@products, "id", "name", @search_fields[:products]), :multiple => true
+    - if @account_owners
+      = label_tag :owners, "Owners"
+      = select_tag :owners, options_from_collection_for_select(@account_owners, "id", "full_name", @search_fields[:owners]), :multiple => true
   %fieldset
     = label_tag :start_date, "Start Date"
     = text_field_tag :start_date, (@search_fields[:start_date] || "").gsub("-","/"), :class => 'datepicker'
