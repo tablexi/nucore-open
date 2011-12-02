@@ -35,9 +35,6 @@ Nucore::Application.routes.draw do |map|
     facility.resources :products, :only => [:index]
     
     facility.transactions '/transactions', :controller => 'transaction_history', :action => 'facility_history'
-    facility.transactions_journals '/transactions/journals', :controller => 'transaction_history', :action => 'journals'
-    facility.transactions_create_journal '/transactions/create_journal', :controller => 'transaction_history', :action => 'create_journal'
-    
     
     facility.resources :instruments, :member => {:manage => :get} do |instrument|
       instrument.schedule 'schedule', :controller => 'instruments', :action => 'schedule'
@@ -136,7 +133,7 @@ Nucore::Application.routes.draw do |map|
       
     end
 
-    facility.resources :journals, :controller => 'facility_journals', :only => [:index, :create, :update, :show], :collection => {:history => :get} do |journal|
+    facility.resources :journals, :controller => 'facility_journals', :only => [:index, :new, :create, :update, :show], :collection => {:history => :get} do |journal|
       journal.reconcile '/reconcile', :controller => 'facility_journals', :action => 'reconcile', :conditions => {:method => :post}
     end
 

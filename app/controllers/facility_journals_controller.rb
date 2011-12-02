@@ -6,6 +6,9 @@ class FacilityJournalsController < ApplicationController
   before_filter :check_acting_as
   before_filter :init_current_facility
 
+  include TransactionSearch
+  transaction_search :new
+  
   load_and_authorize_resource :class => Journal
 
   layout 'two_column'
@@ -24,6 +27,11 @@ class FacilityJournalsController < ApplicationController
     set_soonest_journal_date
   end
 
+  def new
+    @order_details   = OrderDetail.need_journal(current_facility)
+    @journal         = current_facility.journals.new()
+    set_soonest_journal_date
+  end
   #PUT /facilities/:facility_id/journals/:id
   def update
     @pending_journal = Journal.find(params[:id])

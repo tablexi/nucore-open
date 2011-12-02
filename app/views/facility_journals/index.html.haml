@@ -16,8 +16,7 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'journals' }
 
-%h2 Manage Journals
-%h3 Pending Journal
+%h2 Pending Journal
 - if @pending_journal.nil?
   %p.notice There is no pending journal at this time
 - else
