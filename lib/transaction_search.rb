@@ -1,14 +1,14 @@
 module TransactionSearch
   def self.included(base)    
     base.extend(ClassMethods)
-    #base.before_filter :find_with_facility, :only => [:search, :index]
-    #base.before_filter :remove_ugly_params, :only => [:search, :index]
   end
   
   module ClassMethods
-    def transaction_search(*fields)
-      self.before_filter :remove_ugly_params, :only => fields
-      self.before_filter :find_with_facility, :only => fields
+    def transaction_search(fields, find_only = [])      
+      fields = [fields] unless fields.is_a?(Array)
+      find_only = [find_only] unless find_only.is_a?(Array)
+      self.before_filter :remove_ugly_params_and_redirect, :only => fields - find_only
+      self.before_filter :find_with_facility, :only => (fields + find_only).uniq
     end
   end
   def find_with_facility
@@ -28,7 +28,7 @@ module TransactionSearch
   end
       
   def do_search(search_params)
-    Rails.logger.debug "search: #{search_params}"
+    #Rails.logger.debug "search: #{search_params}"
     @order_details = OrderDetail.joins(:order).ordered
     @order_details = @order_details.for_accounts(search_params[:accounts])
     
@@ -40,13 +40,17 @@ module TransactionSearch
       order_by_desc_nulls_first(:fulfilled_at)    
   end
   
-  def remove_ugly_params
+  def remove_ugly_params_and_redirect
     if (params[:commit])
-      params.delete(:commit)
-      params.delete(:utf8)
+      remove_ugly_params
       redirect_to params
       return false
     end
+  end
+  def remove_ugly_params
+    params.delete(:commit)
+    params.delete(:utf8)
+    params.delete(:authenticity_token)
   end
     
   def get_allowed_accounts(allowed_accounts, search_accounts)

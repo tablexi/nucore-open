@@ -5,14 +5,12 @@ class FacilityNotificationsController < ApplicationController
   before_filter :init_current_facility
   
   include TransactionSearch
-  transaction_search :index, :in_review
+  transaction_search [:index, :in_review]
 
   authorize_resource :manage, :class => Facility
 
   layout 'two_column'
   
-  
-
   def initialize
     @active_tab = 'admin_billing'
     super
