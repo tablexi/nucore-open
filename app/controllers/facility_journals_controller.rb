@@ -22,27 +22,14 @@ class FacilityJournalsController < ApplicationController
   # GET /facilities/:facility_id/journals
   def index
     @pending_journal = Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
-    @order_details   = OrderDetail.need_journal(current_facility)
-    @journal         = current_facility.journals.new()
-    set_soonest_journal_date
+    @journals = current_facility.journals.find(:all, :order => 'journals.created_at DESC').paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/journals/new
   def new
     set_default_variables
   end
-  
-  def set_default_variables
-    @pending_journal = Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
-    @order_details   = OrderDetail.need_journal(current_facility)
-    #@journal         = current_facility.journals.new()
-    set_soonest_journal_date
-    if @pending_journal.nil?
-      @order_detail_action = :create
-      @action_date_field = {:journal_date => @soonest_journal_date}
-    end
-  end
-  
+   
   #PUT /facilities/:facility_id/journals/:id
   def update
     @pending_journal = Journal.find(params[:id])
@@ -142,10 +129,6 @@ class FacilityJournalsController < ApplicationController
     @order_details = current_facility.order_details.find(:all, :conditions => {:journal_id => @journal.id})
   end
 
-  def history
-    @journals = current_facility.journals.find(:all, :order => 'journals.created_at DESC').paginate(:page => params[:page])
-  end
-
   def reconcile
     @journal = current_facility.journals.find(params[:journal_id])
 
@@ -168,9 +151,24 @@ class FacilityJournalsController < ApplicationController
 
 
   private
-
+  
+  def get_pending_journal
+    Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
+  end
+  
   def set_soonest_journal_date
     @soonest_journal_date=@order_details.collect{ |od| od.fulfilled_at }.max
     @soonest_journal_date=Time.zone.now unless @soonest_journal_date
+  end
+  
+  def set_default_variables
+    @pending_journal = get_pending_journal
+    @order_details   = OrderDetail.need_journal(current_facility)
+    #@journal         = current_facility.journals.new()
+    set_soonest_journal_date
+    if @pending_journal.nil?
+      @order_detail_action = :create
+      @action_date_field = {:journal_date => @soonest_journal_date}
+    end
   end
 end

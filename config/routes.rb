@@ -133,7 +133,7 @@ Nucore::Application.routes.draw do |map|
       
     end
 
-    facility.resources :journals, :controller => 'facility_journals', :only => [:index, :new, :create, :update, :show], :collection => {:history => :get} do |journal|
+    facility.resources :journals, :controller => 'facility_journals', :only => [:index, :new, :create, :update, :show] do |journal|
       journal.reconcile '/reconcile', :controller => 'facility_journals', :action => 'reconcile', :conditions => {:method => :post}
     end
 
