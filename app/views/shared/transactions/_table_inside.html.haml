@@ -36,7 +36,7 @@
         = order_detail.product
         %br
         %em= order_detail.reservation
-      %td 
+      %td.currency 
         - if order_detail.cost_estimated?
           %span.estimated_cost
             = show_estimated_total(order_detail)

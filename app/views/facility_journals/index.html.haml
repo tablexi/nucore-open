@@ -45,7 +45,7 @@
           = submit_tag 'Close Journal', :confirm => 'You are about to close this journal. Please ensure you have selected the correct status.'
 
 %h2 Closed Journals
-- if @journals.empty?
+- if @journals.blank?
   %p.notice No journals have been closed yet
 - else
   %table
