@@ -2,6 +2,6 @@
   = t_my(Order)
 
 - if @order_details.empty?
-  %p.notice= "You have not placed any #{Order.human_name.pluralize.downcase}."
+  %p.notice= "You have not placed any #{Order.model_name.human.pluralize.downcase}."
 - else
   =render :partial => 'shared/order_details_table', :locals => { :order_details => @order_details }
