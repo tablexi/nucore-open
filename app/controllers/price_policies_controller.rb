@@ -158,8 +158,7 @@ class PricePoliciesController < ApplicationController
   def include_newer_price_groups
     current_price_groups = @price_policies.map { |pp| pp.price_group }
     current_facility.price_groups.each do |group|
-      # ignore groups that don't have a facility (i.e. the default groups)
-      if group.facility_id.presence and !current_price_groups.include?(group) and group.can_purchase?(@product)
+      if !current_price_groups.include?(group) and group.can_purchase?(@product)
         @price_policies << model_class.new({:price_group_id => group.id, :"#{@product_var}_id" => @product.id, :start_date => @start_date })
       end
     end

@@ -61,7 +61,8 @@ describe InstrumentPricePoliciesController do
 
     it_should_allow_managers_only :success, 'to edit assigned effective price policy' do
       assigns[:start_date].should == Date.strptime(@params[:id], "%Y-%m-%d")
-      assigns[:price_policies].should == [ @price_policy ]
+      # don't worry about the default groups
+      (assigns[:price_policies].delete_if { |pp| pp.price_group.facility_id.nil? }).should == [@price_policy] 
       should render_template('edit')
     end
 
