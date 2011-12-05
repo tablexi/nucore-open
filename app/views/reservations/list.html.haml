@@ -6,7 +6,7 @@
       %li{:class => "#{'first' if i == 0}"}
         = link_to status.humanize, reservations_status_path(:status => status), :class => "#{'active' if params[:status] == status}"
 - if @order_details.empty?
-  %p.notice= "You have not made any #{Reservation.human_name.pluralize.downcase}."
+  %p.notice= "You have not made any #{Reservation.model_name.human.pluralize.downcase}."
 - else
   = render :partial => 'shared/reservations_table', :locals => { :order_details => @order_details } 
 

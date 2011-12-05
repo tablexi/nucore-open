@@ -1,7 +1,7 @@
 %table
   %tr
-    %th= Account.human_name
-    %th.centered= Facility.human_name
+    %th= Account.model_name.human
+    %th.centered= Facility.model_name.human
   - @account_users.each do |au|
     - a = au.account
     %tr
