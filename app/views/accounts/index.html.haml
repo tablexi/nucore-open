@@ -1,8 +1,8 @@
 = content_for :h1 do
-  == My Payment Sources
+  = t_my(Account)
 
 - if @account_users.empty?
-  %p.notice You do not have any payment sources.
+  %p.notice= "You do not have any #{Account.human_name.pluralize.downcase}."
 - else
   %table
     %tr

@@ -16,10 +16,6 @@ module NUCore
     return 'nucore'
   end
 
-  def self.app_name
-    return 'NU Core'
-  end
-
   module Database
 
     def self.oracle?

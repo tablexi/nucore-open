@@ -1,5 +1,5 @@
 = content_for :h1 do
-  Login
+  = t('pages.login')
 - if flash[:error]
   %p.error= flash[:error]
 - if flash[:notice]
@@ -9,10 +9,10 @@
 = form_for resource, :as => resource_name, :url => session_path(resource_name) do |f|
   %ul.form
     %li
-      %label== Username
+      %label= User.human_attribute_name(:username)
       = f.text_field :username, :size => 30
     %li
-      %label== Password
+      %label= User.human_attribute_name(:password)
       = f.password_field :password, :size => 15
   %ul.horiz
-    %li= submit_tag 'Login', :class => 'btn'
+    %li= submit_tag t('pages.login'), :class => 'btn'
