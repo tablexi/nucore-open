@@ -14,11 +14,17 @@ module TransactionSearch
     raise ActiveRecord::RecordNotFound unless @facility
     @facilities = [@facility]
     # only select a few fields. This speeds up the load when there get to be a lot of accounts
-    @accounts = Account.for_facility(@facility).select("id, description, account_number, type")
+    # joins is just a little faster than includes for :account_users => :user. Might want to test again
+    # on a larger account sample size
+    @accounts = Account.for_facility(@facility).joins(:account_users => :user).select("accounts.id, description, account_number, type, users.last_name, users.first_name")
+    # sort accounts by description. may change to account number later
+    @accounts = @accounts.order(:description)
     
     @products = Product.where(:facility_id => @facility.id)
+    @products = @products.order(:name)
     
-    @account_owners = @accounts.map(&:owner_user).uniq
+    # order account owners by last name, first name
+    @account_owners = @accounts.reorder(:last_name, :first_name).map(&:owner_user).uniq
     
     @search_fields = params.merge({
       :accounts => get_allowed_accounts(@accounts, params[:accounts]),
