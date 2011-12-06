@@ -42,7 +42,7 @@ class FacilityOrdersController < ApplicationController
 
   # GET /facilities/:facility_id/orders/review
   def show_problems
-    @details = problem_orders.paginate(:page => params[:page])
+    @order_details = problem_orders.paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/orders/disputed
