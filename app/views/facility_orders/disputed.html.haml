@@ -4,7 +4,7 @@
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_order', :locals => { :secondary_tab => 'disputed'}
 
-- if @details.empty?
+- if @order_details.empty?
   %p.notice There are no "Disputed" orders.
 - else
   %p Please review the following disputes.
@@ -17,7 +17,7 @@
       %th.med Product
       %th.med Disputed On
       %th.auto Dispute Reason
-    - @details.each do |od|
+    - @order_details.each do |od|
       - o = od.order
       - product_name = order_detail_description(od)
       %tr
@@ -28,4 +28,4 @@
         %td= product_name
         %td=h human_datetime(od.dispute_at)
         %td=h od.dispute_reason
-  = will_paginate(@details)
+  = will_paginate(@order_details)

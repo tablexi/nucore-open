@@ -25,12 +25,12 @@ class PricePolicy < ActiveRecord::Base
   def truncate_existing_policies
     existing_policies = PricePolicy.where("start_date <= ? and expire_date >= ?", start_date, start_date).
                                     where("type = ?", self.class.name).
-                                    where("price_group_id = ?", price_group_id)
-    exiisting_policies = existing_policies.where("#{product_type}_id = ?", self.send("#{product_type}_id")) if self.respond_to? :"#{product_type}_id"
+                                    where("price_group_id = ?", price_group_id).
+                                    where("#{product_type}_id = ?", self.send("#{product_type}_id"))
     
     existing_policies = existing_policies.where("id != ?", id) unless id.nil?
     existing_policies.each do |policy|
-      policy.expire_date = start_date.end_of_day - 1.day
+      policy.expire_date = (start_date - 1.day).end_of_day
       policy.save
     end
     
