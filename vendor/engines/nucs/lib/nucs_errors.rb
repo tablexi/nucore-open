@@ -81,4 +81,13 @@ module NucsErrors
       super("account #{account} not found in Grants Budget Tree")
     end
   end
+
+
+  #
+  # Raised when an account is searched for but not found in the GrantsBudgetTree
+  class NotAllowedError < NucsError
+    def initialize(field)
+      super("#{field} is not allowed")
+    end
+  end
 end

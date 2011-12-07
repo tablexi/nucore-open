@@ -158,6 +158,8 @@ class NucsValidator
 
   def validate_gl066_components!(account=nil)
     where={ :fund => @fund, :department => @department }
+    where.merge!(:activity => @activity) if @activity && grant?
+    where.merge!(:project => @project) if @project
     where.merge!(:account => account) if account
     gls=NucsGl066.find(:all, :conditions => where)
     raise UnknownGL066Error.new(where) if gls.empty?
@@ -167,15 +169,37 @@ class NucsValidator
   #
   # Validate Project, Activity, and date components
   def validate_gl066_PAD_components!(gls)
-    if @project
-      # This logic breaks from the NU v9 rules in order to address Task #32369
-      raise InputError.new('activity', nil) unless @activity
-      raise UnknownGL066Error.new('activity', @activity) if grant? && !gls.any?{|gl| gl.activity == @activity }
-      raise UnknownGL066Error.new('activity', @activity) if @fund.to_i < 800 && @activity != '01'
-    end
+    validate_activity, validate_project=grant?, !@project.blank?
 
-    raise UnknownGL066Error.new('project', @project) unless @project.nil? or gls.any?{|gl| gl.project == @project }
+    raise InputError.new('activity', nil) if @project && @activity.blank?
+    raise UnknownGL066Error.new('activity', @activity) if validate_activity && !gls.any?{|gl| gl.activity == @activity }
+    raise UnknownGL066Error.new('project', @project) if validate_project && !gls.any?{|gl| gl.project == @project }
     raise DatedGL066Error.new('is expired or not yet active') unless gls.any?{|gl| !gl.expired? }
+
+    fund_i=@fund.to_i
+
+    # this logic implements the relevant rules found in AcctngChartStringConstructionRules.pdf
+    # Note: funds less than 100 are blacklisted
+    if fund_i >= 100 && fund_i <= 169
+      raise NotAllowedError.new('project') if validate_project && @project
+      raise NotAllowedError.new('activity') if validate_activity && @activity
+    elsif fund_i >= 170 && fund_i <= 179
+      raise InputError.new('project', @project) if validate_project && !@project.start_with?('1')
+    elsif fund_i >= 191 && fund_i <= 199
+      raise InputError.new('project', @project) if validate_project && !@project.start_with?('6')
+    elsif fund_i >= 300 && fund_i <= 320
+      raise InputError.new('project', @project) if validate_project && !@project.start_with?('3')
+    elsif fund_i >= 410 && fund_i <= 483
+      raise InputError.new('activity', @activity) if validate_activity && @activity != '01'
+    elsif fund_i >= 500 && fund_i <= 540
+      raise InputError.new('project', @project) if validate_project && !@project.start_with?('5')
+    elsif fund_i >= 600 && fund_i <= 650
+      raise InputError.new('project', @project) if validate_project && !@project.start_with?('6')
+    elsif fund_i == 750 || (fund_i >= 700 && fund_i <= 740)
+      raise InputError.new('project', @project) if validate_project && !@project.start_with?('7')
+    elsif fund_i >= 800 && fund_i <= 840
+      raise InputError.new('project', @project) if validate_project && !@project.start_with?('8')
+    end
   end
 
 end

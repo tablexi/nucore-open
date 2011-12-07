@@ -7,9 +7,9 @@ describe NucsValidator do
 
   REVENUE_ACCT='50617'
   NON_REVENUE_ACCT='75340'
-  NON_GRANT_CS='160-5401900-10006385-01-1059-1095'
-  GRANT_CS=NON_GRANT_CS.gsub('10006385', '60006385') # 160-5401900-60006385-01-1059-1095
-  ZERO_FUND_CS=NON_GRANT_CS.gsub('160-', '023-')     # 023-5401900-10006385-01-1059-1095
+  NON_GRANT_CS='171-5401900-10006385-01-1059-1095'
+  GRANT_CS=NON_GRANT_CS.gsub('171-', '191-').gsub('10006385', '60006385') # 191-5401900-60006385-01-1059-1095
+  ZERO_FUND_CS=NON_GRANT_CS.gsub('171-', '023-') # 023-5401900-10006385-01-1059-1095
 
 
   it 'should require a valid account' do
@@ -75,7 +75,7 @@ describe NucsValidator do
 
 
   it 'should recognize a bad fund on a revenue account' do
-    validator=NucsValidator.new(NON_GRANT_CS.gsub('160-', '166-'), REVENUE_ACCT)
+    validator=NucsValidator.new(NON_GRANT_CS.gsub('171-', '166-'), REVENUE_ACCT)
     assert_unknown_ge001(validator, 'fund')
   end
 
@@ -119,7 +119,7 @@ describe NucsValidator do
 
 
   it 'should recognize a bad fund on a non-revenue account' do
-    validator=NucsValidator.new(NON_GRANT_CS.gsub('160-', '170-'), NON_REVENUE_ACCT)
+    validator=NucsValidator.new(NON_GRANT_CS.gsub('171-', '170-'), NON_REVENUE_ACCT)
     assert_unknown_gl066(validator)
   end
 
@@ -186,15 +186,6 @@ describe NucsValidator do
   end
 
 
-  it 'should require a 01 activity for a non-grant chart string with project id and fund < 800 on a non-revenue account' do
-    define_open_account(NON_REVENUE_ACCT, NON_GRANT_CS)
-    assert_raise NucsErrors::UnknownGL066Error do
-      chart_string=NON_GRANT_CS[0...NON_GRANT_CS.index('-01')] + '-99'
-      NucsValidator.new(chart_string, NON_REVENUE_ACCT).account_is_open!
-    end
-  end
-
-
   it 'should require an activity for a non-grant chart string with project id on a non-revenue account' do
     define_open_account(NON_REVENUE_ACCT, NON_GRANT_CS)
     assert_raise NucsErrors::InputError do
@@ -244,7 +235,7 @@ describe NucsValidator do
 
   it 'should acknowledge when a GE001 component is missing' do
     define_ge001(NON_GRANT_CS)
-    validator=NucsValidator.new(NON_GRANT_CS.gsub('160-', '161-'))
+    validator=NucsValidator.new(NON_GRANT_CS.gsub('171-', '161-'))
     validator.should_not be_components_exist
   end
 
@@ -260,7 +251,7 @@ describe NucsValidator do
 
   it 'should return nil when there is no match on components' do
     define_gl066(NON_GRANT_CS, :expires_at => Time.zone.now + 3.year)
-    NucsValidator.new(NON_GRANT_CS.gsub('160-', '161-')).latest_expiration.should be_nil
+    NucsValidator.new(NON_GRANT_CS.gsub('171-', '161-')).latest_expiration.should be_nil
   end
 
 
@@ -295,7 +286,7 @@ describe NucsValidator do
 
   it 'should error on blacklisted fund' do
     Blacklist::DISALLOWED_FUNDS.each do |fund|
-      blacklisted=NON_GRANT_CS.gsub('160-', "#{fund}-")
+      blacklisted=NON_GRANT_CS.gsub('171-', "#{fund}-")
       assert_raise NucsErrors::BlacklistedError do
         NucsValidator.new(blacklisted)
       end
@@ -310,6 +301,83 @@ describe NucsValidator do
         NucsValidator.new(NON_GRANT_CS, blacklisted)
       end
     end
+  end
+
+
+  #
+  # Test AcctngChartStringConstructionRules.pdf logic in #validate_gl066_PAD_components!
+  #
+
+  it 'should not allow a project when fund >= 100 and <= 169' do
+    chart_string=GRANT_CS.gsub('191-', '111-')
+    define_open_account(NON_REVENUE_ACCT, chart_string)
+
+    assert_raise NucsErrors::NotAllowedError do
+      NucsValidator.new(chart_string, NON_REVENUE_ACCT).account_is_open!
+    end
+  end
+
+
+  it 'should not allow a project that does not start with 1 when fund >= 170 and <= 179' do
+    assert_project_input_error GRANT_CS.gsub('191-', '175-')
+  end
+
+
+  it 'should not allow a project that does not start with 6 when fund >= 191 and <= 199' do
+    assert_project_input_error GRANT_CS.gsub('60006385', '40006385')
+  end
+
+
+  it 'should not allow a project that does not start with 3 when fund >= 300 and <= 320' do
+    assert_project_input_error GRANT_CS.gsub('191-', '315-')
+  end
+
+
+  it 'should not allow an activity other than 01 when fund is >= 410 and <= 483' do
+    chart_string=GRANT_CS.gsub('191-', '411-').gsub('-01-', '-02-')
+    define_open_account(NON_REVENUE_ACCT, chart_string)
+
+    exception=assert_raise NucsErrors::InputError do
+      NucsValidator.new(chart_string, NON_REVENUE_ACCT).account_is_open!
+    end
+
+    exception.message.should be_end_with 'activity'
+  end
+
+
+  it 'should not allow a project that does not start with 5 when fund >= 500 and <= 540' do
+    assert_project_input_error GRANT_CS.gsub('191-', '505-')
+  end
+
+
+  it 'should not allow a project that does not start with 6 when fund >= 600 and <= 650' do
+    assert_project_input_error GRANT_CS.gsub('191-', '605-').gsub('60006385', '40006385')
+  end
+
+
+  it 'should not allow a project that does not start with 7 when fund >= 700 and <= 740' do
+    assert_project_input_error GRANT_CS.gsub('191-', '701-')
+  end
+
+
+  it 'should not allow a project that does not start with 7 when fund is 750' do
+    assert_project_input_error GRANT_CS.gsub('191-', '750-')
+  end
+
+
+  it 'should not allow a project that does not start with 8 when fund >= 800 and <= 840' do
+    assert_project_input_error GRANT_CS.gsub('191-', '810-')
+  end
+
+
+  def assert_project_input_error(chart_string)
+    define_open_account(NON_REVENUE_ACCT, chart_string)
+
+    exception=assert_raise NucsErrors::InputError do
+      NucsValidator.new(chart_string, NON_REVENUE_ACCT).account_is_open!
+    end
+
+    exception.message.should be_end_with 'project'
   end
 
 

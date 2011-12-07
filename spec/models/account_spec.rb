@@ -159,7 +159,7 @@ describe Account do
       end
 
       it "should return error if the product is a bundle and one of the bundled product's account is not open for a chart string" do
-        cs='160-5401900-60006385-01-1059-1095' # a grant chart string
+        cs='191-5401900-60006385-01-1059-1095' # a grant chart string
         define_open_account(NUCore::COMMON_ACCOUNT, cs) # define the string so it is valid on NufsAccount#validate
         @nufs_account.account_number=cs
         assert @nufs_account.save
