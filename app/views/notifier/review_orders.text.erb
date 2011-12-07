@@ -1,3 +1,3 @@
-New transactions for <%=h @facility %> have been posted to "<%=h @account %>". Please log in to NU Core and review these charges.
+<%= t('.body', :facility => @facility.to_s, :account => @account.to_s) %>
 
 <%=h account_statements_url(@account) %>

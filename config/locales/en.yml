@@ -37,6 +37,23 @@ en:
       intro_html: Congratulations, %{first_name}. A NU Core account has been created for you. You may log in at <a href="%{login_url}">%{login_url}</a>.
       intro: Congratulations, %{first_name}. A NU Core account has been created for you. You may log in at %{login_url}.
       no_password: You may log in with your Northwestern NetID and password.
+    order_receipt:
+      intro: Thank you for your order on the NU Core website.
+      outro: All prices are estimates. Actual cost is assigned when the order is complete.
+    review_orders:
+      body: New transactions for %{facility} have been posted to "%{account}". Please log in to NU Core and review these charges.
+      body_html: New transactions for %{facility} have been posted to "%{account}".<br/><br/>Please %{login_link} and review these charges.
+    statement:
+      body: A new statement from %{facility} has been created for your payment source, "%{account}". Please log in to NU Core and review these charges.
+      body_html: A new statement from %{facility} has been created for your payment source, "%{account}".<br/><br/>Please %{login_link} and review your statement.
+    user_update:
+      body: |
+        The following user %{user} has been added to your payment source %{account} by administrator %{created_by}.
+        If this is incorrect you may log in to NU Core at %{login_link} and remove this user or contact the administrator named above.
+      body_html: |
+        The following user %{user} has been added to your payment source "%{account}" by administrator %{created_by}.<br/><br/>
+        If this is incorrect you may %{login_link} and remove this user or contact the administrator named above.
+
   devise:
     failure: 
       invalid: Invalid username or password.
