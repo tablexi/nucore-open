@@ -1,22 +1,23 @@
-= form_tag url_for(params), :method => :get, :class => "search_form" do
-  %fieldset
-    - if (@accounts.size > 1)
-      = label_tag :accounts, Account.model_name.human.pluralize
-      = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "account_list_item", @search_fields[:accounts]), :multiple => true
-    - unless single_facility?
-      = label_tag :facilities, Facility.model_name.human.pluralize
-      = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", @search_fields[:facilities]), :multiple => true
-    - if @products
-      = label_tag :products, Product.model_name.human.pluralize
-      = select_tag :products, options_from_collection_for_select(@products, "id", "name", @search_fields[:products]), :multiple => true
-    - if @account_owners
-      = label_tag :owners, "Owners"
-      = select_tag :owners, options_from_collection_for_select(@account_owners, "id", "full_name", @search_fields[:owners]), :multiple => true
-  %fieldset
-    = label_tag :start_date, "Start Date"
-    = text_field_tag :start_date, (@search_fields[:start_date] || "").gsub("-","/"), :class => 'datepicker'
-    = label_tag :end_date, "End Date"
-    = text_field_tag :end_date, (@search_fields[:end_date] || "").gsub("-","/"), :class => 'datepicker'
-  
-  = submit_tag "Search"
-%div{:style=>"clear:both"}
+= content_for :tabnav do
+  = form_tag url_for(params), :method => :get, :class => "search_form" do
+    %fieldset
+      - if (@accounts.size > 1)
+        = label_tag :accounts, Account.model_name.human.pluralize
+        = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "account_list_item", @search_fields[:accounts]), :multiple => true
+      - unless single_facility?
+        = label_tag :facilities, Facility.model_name.human.pluralize
+        = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", @search_fields[:facilities]), :multiple => true
+      - if @products
+        = label_tag :products, Product.model_name.human.pluralize
+        = select_tag :products, options_from_collection_for_select(@products, "id", "name", @search_fields[:products]), :multiple => true
+      - if @account_owners
+        = label_tag :owners, "Owners"
+        = select_tag :owners, options_from_collection_for_select(@account_owners, "id", "full_name", @search_fields[:owners]), :multiple => true
+    %fieldset
+      = label_tag :start_date, "Start Date"
+      = text_field_tag :start_date, (@search_fields[:start_date] || "").gsub("-","/"), :class => 'datepicker'
+      = label_tag :end_date, "End Date"
+      = text_field_tag :end_date, (@search_fields[:end_date] || "").gsub("-","/"), :class => 'datepicker'
+    
+    = submit_tag "Search"
+  %div{:style=>"clear:both"}

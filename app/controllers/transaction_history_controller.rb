@@ -40,7 +40,7 @@ class TransactionHistoryController < ApplicationController
   def facility_history
     @order_details = @order_details.paginate(:page => params[:page])
     @active_tab = 'admin_billing'
-    render :layout => 'two_column'
+    render :layout => 'two_column_head'
   end
   
 end
