@@ -9,7 +9,7 @@ class FacilityNotificationsController < ApplicationController
 
   authorize_resource :manage, :class => Facility
 
-  layout 'two_column'
+  layout 'two_column_head'
   
   def initialize
     @active_tab = 'admin_billing'
