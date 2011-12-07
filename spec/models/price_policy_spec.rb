@@ -128,20 +128,54 @@ describe PricePolicy do
     end
 
   end
+  
+  context "truncate old policies" do
+    before :each do
+      @user     = Factory.create(:user)
+      @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])      
+      @price_group = Factory.create(:price_group, :facility => @facility)
+      @item2    = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))   
+    end
+    it "should truncate the old policy" do
+      @today = Time.zone.local(2011, 06, 06, 12, 0, 0)
+      Timecop.freeze(@today) do
+        #@today = Time.zone.local(2011, 06, 06, 12, 0, 0)
+        
+        @pp=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group, :start_date => @today.beginning_of_day, :expire_date => @today + 30.days)
+        @pp2=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group, :start_date => @today + 2.days, :expire_date => @today + 30.days)
+        @pp.reload.start_date.should == @today.beginning_of_day
+        # they weren't matching up exactly right, but were within a second of each other
+        # @pp.exire_date.should == (@today + 1.day).end_of_day
+        ((@today.end_of_day + 1.day) - @pp.expire_date).abs.should < 1
+        @pp2.reload.start_date.should == @today + 2.days
+        @pp2.expire_date.should == @today + 30.days
+      end
+    end
+    
+    it "should not truncate any other policies" do
+      @today = Time.zone.local(2011, 06, 06, 12, 0, 0)
+      
+      Timecop.freeze(@today) do
+        @pp=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group, :start_date => @today.beginning_of_day, :expire_date => @today + 30.days)
+        @pp3 = Factory.create(:item_price_policy, :item => @item2, :price_group => @price_group, :start_date => @today, :expire_date => @today + 30.days)
+        @pp2=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group, :start_date => @today + 2.days, :expire_date => @today + 30.days)
+        @pp.reload.start_date.should == @today.beginning_of_day
+        # they weren't matching up exactly right, but were within a second of each other
+        # @pp.exire_date.should == (@today + 1.day).end_of_day
+        ((@today.end_of_day + 1.day) - @pp.expire_date).abs.should < 1
+        @pp2.reload.start_date.should == @today + 2.days
+        @pp2.expire_date.should == @today + 30.days
+        
+        @pp3.reload.start_date.should == @today
+        @pp3.expire_date.should == @today + 30.days
+      end
+    end
 
 
   context 'should define abstract methods' do
 
     before :each do
-      class SubPricePolicy < PricePolicy
-        def sub; end
-        def sub_id=; end
-        def sub_id
-          0
-        end
-      end
-
-      @sp = SubPricePolicy.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id))
+      @sp = PricePolicy.new
     end
 
     it 'should abstract #calculate_cost_and_subsidy' do
@@ -188,6 +222,9 @@ describe PricePolicy do
       @pp.should be_assigned_to_order
     end
 
+  end
+  
+  
   end
   
 end
