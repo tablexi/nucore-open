@@ -2,7 +2,7 @@
 = content_for :tabnav do
   #daniel
     = form_tag url_for(params), :method => :get, :class => "search_form" do
-      %fieldset
+      %fieldset#search
         %ul
           - if (@accounts.size > 1)
             %li
