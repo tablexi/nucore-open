@@ -4,17 +4,17 @@
     -if @order_detail_action 
       %th
     %th Order #
-    %th Fulfillment Date
+    %th.nowrap Fulfillment Date
     - unless single_facility?
       %th Facility.model_name.human
     %th Description
-    %th Ordered For
+    %th.nowrap Ordered For
     -# %th Ordered By
     - unless single_account?
       %th= Account.model_name.human
       %th= t('activerecord.models.account.owner')
     %th Cost
-    %th{:style => 'width:75px'} Status
+    %th Status
     
     
     
@@ -44,5 +44,5 @@
         - else
           %span.actual_cost
             = show_actual_total(order_detail)
-      %td= order_detail.order_status
+      %td.nowrap= order_detail.order_status
 = will_paginate(@order_details) if @order_details.respond_to? :total_pages
