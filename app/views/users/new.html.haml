@@ -16,8 +16,8 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'users' }
 
-%h2 Add External User
-%p You may use this grant NUCore access to external users.  The email address and username must match.
+%h2= t('.head')
+%p= t('.main')
 = form_for(@user, :url => facility_users_path, :method => :post) do |f|
   = f.error_messages
   %ul.form
