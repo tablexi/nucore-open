@@ -322,6 +322,11 @@ main layout ids
   box-shadow: 0 1px 0 #FFFFFF inset;
 }
 
+#sidebar ul ul {
+	box-shadow:none;
+	border:none;
+}
+
 #sidebar li {
 	background-color: #F5F5F5;
    background-image: -moz-linear-gradient(center top , #FFFFFF, #F5F5F5);
@@ -375,6 +380,12 @@ main layout ids
 	position:relative;
 
 	width:12px;
+}
+
+#sidebar ul .break {
+	display:block;
+	height:10px;
+	width:100%;
 }
 
 #sidebar li.sub_menu:hover {
@@ -543,10 +554,16 @@ p.error {
 	margin-bottom:4px;
 }
 
+.search_form fieldset#search, .search_form fieldset#search ul {
+	width:500px;
+}
+
+body .search_form .chzn-container .chzn-drop {
+	width:500px !important; /* Necessary Evil*/
+}
+
 .search_form fieldset#calendar_filter {
 	margin-left:10px;
-	border-left:1px solid #ccc;
-	border-right:1px solid #ccc;
 	padding:0 20px;
 }
 
@@ -558,8 +575,15 @@ p.error {
 	margin:0;
 }
 
+
 .search_form fieldset li {
 	margin-bottom:10px;
+}
+
+.search_form input[type=submit] {
+	clear:both;
+	float:right;
+	margin-top:20px;
 }
 
 .order_action {
@@ -589,10 +613,8 @@ ul.tabs {
 }
 
 ul.tabs li {
-	background-color: #F5F5F5;
-   background-image: -moz-linear-gradient(center top , #FFFFFF, #F5F5F5);
-   background-repeat: repeat-x;
-   padding: 5px 10px;
+	border-top: 1px solid #c1c1c1;
+  border-right: 1px solid #c1c1c1;
   float:left;
   line-height:32px;
   overflow:hidden;
@@ -608,10 +630,16 @@ ul.tabs li a {
 
 ul.tabs li a.active,
 ul.tabs li a:hover {
-	color:#000;
-	font-weight:700;
+	background:none repeat scroll 0 0 #a7a7a7;
+	color:#FFF;
   text-decoration:none;
 }
+
+ul.tabs li a {
+	background:none repeat scroll 0 0 #efefef;
+ 	padding:10px 20px;
+}
+
 
 /***************************************
 billing
@@ -619,6 +647,7 @@ billing
 #header_billing {
 	border-top:1px solid #ccc;
 	padding-top:10px;
+	background:url(../images/bg-search-form.jpg) top right repeat-y;
 }
 
 #table_billing {
