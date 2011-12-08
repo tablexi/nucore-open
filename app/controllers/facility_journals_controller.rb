@@ -28,6 +28,7 @@ class FacilityJournalsController < ApplicationController
   # GET /facilities/:facility_id/journals/new
   def new
     set_default_variables
+    render :layout => 'two_column_head'
   end
    
   #PUT /facilities/:facility_id/journals/:id

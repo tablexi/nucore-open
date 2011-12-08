@@ -26,6 +26,7 @@ class FacilityStatementsController < ApplicationController
     @accounts = @accounts.where("type in (?)", ['CreditCardAccount', 'PurchaseOrderAccount'])
     @order_details = @order_details.need_statement(@facility)
     @order_detail_action = :send_statements
+    render :layout => "two_column_head"
   end
   
   # POST /facilities/:facility_id/statements/send_statements
