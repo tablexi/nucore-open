@@ -14,18 +14,22 @@
     #content
       .container_12
         .clean
-        .grid_9.push_3
+        .grid_12 
           %h1= yield :h1
           %h2= yield :h2
-          - if flash[:error]
-            %p.error= flash[:error]
-          - if flash[:notice]
-            %p.notice= flash[:notice]
-          - if flash[:info]
-            %p.info= flash[:info]
-          = yield :tabnav
-        #sidebar.grid_3.pull_9
-          = yield :sidebar
+        .grid_12#header_billing
+          .grid_3.alpha
+            #sidebar
+              = yield :sidebar
+          .grid_9.omega
+            - if flash[:error]
+              %p.error= flash[:error]
+            - if flash[:notice]
+              %p.notice= flash[:notice]
+            - if flash[:info]
+              %p.info= flash[:info]
+            = yield :tabnav
+        .clear
         .grid_12
           = yield
         .clear
