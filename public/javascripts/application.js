@@ -73,7 +73,11 @@ $(document).ready(function() {
   });
 
 	$('.menu_accordion li').click(function() {
-	        $(this).find('ul').toggle();
+		$(this).find('ul').toggle();
+	});
+	
+	$('.menu_accordion li.sub_menu').has("ul li a.active").each(function() {
+		$(this).find('ul').show();
 	});
 	
 	$('#filter_toggle').click(function(){
