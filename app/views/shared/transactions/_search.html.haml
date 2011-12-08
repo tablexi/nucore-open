@@ -7,19 +7,19 @@
           - if (@accounts.size > 1)
             %li
               = label_tag :accounts, Account.model_name.human.pluralize
-              = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "account_list_item", @search_fields[:accounts]), :multiple => true
+              = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "account_list_item", @search_fields[:accounts]), :multiple => true, :"data-placeholder" => "Select #{Account.model_name.human.pluralize.downcase}"
           - unless single_facility?
             %li
               = label_tag :facilities, Facility.model_name.human.pluralize
-              = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", @search_fields[:facilities]), :multiple => true
+              = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", @search_fields[:facilities]), :multiple => true, :"data-placeholder" => "Select #{Facility.model_name.human.pluralize.downcase}"
           - if @products
             %li
               = label_tag :products, Product.model_name.human.pluralize
-              = select_tag :products, options_from_collection_for_select(@products, "id", "name", @search_fields[:products]), :multiple => true
+              = select_tag :products, options_from_collection_for_select(@products, "id", "name", @search_fields[:products]), :multiple => true, :"data-placeholder" => "Select #{Product.model_name.human.pluralize.downcase}"
           - if @account_owners
             %li
-              = label_tag :owners, "Owners"
-              = select_tag :owners, options_from_collection_for_select(@account_owners, "id", "full_name", @search_fields[:owners]), :multiple => true
+              = label_tag :owners, "#{t('activerecord.models.account.owner').pluralize}"
+              = select_tag :owners, options_from_collection_for_select(@account_owners, "id", "full_name", @search_fields[:owners]), :multiple => true, :"data-placeholder" => "Select #{t('activerecord.models.account.owner').pluralize.downcase}"
       %fieldset#calendar_filter
         %ul
           %li

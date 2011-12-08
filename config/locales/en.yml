@@ -99,7 +99,8 @@ en:
     models:
       account:
         one: Payment Source
-        other: Payment Sources 
+        other: Payment Sources
+        owner: Owner 
       nufs account:
         one: Chart String Payment Source
         other: Chart String Payment Sources
