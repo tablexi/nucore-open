@@ -3,18 +3,18 @@
   %tr
     -if @order_detail_action 
       %th
-    %th Order #
-    %th.nowrap Fulfillment Date
+    %th= "#{Order.model_name.human} #"
+    %th.nowrap= OrderDetail.human_attribute_name('fulfilled_at')
     - unless single_facility?
-      %th Facility.model_name.human
-    %th Description
-    %th.nowrap Ordered For
-    -# %th Ordered By
+      %th= Facility.model_name.human
+    %th= OrderDetail.human_attribute_name("description")
+    %th.nowrap= OrderDetail.human_attribute_name("user")
+    -# %th= OrderDetail.human_attribute_name('created_by_user') #Ordered By
     - unless single_account?
       %th= Account.model_name.human
-      %th= t('activerecord.models.account.owner')
-    %th Cost
-    %th Status
+      %th= Account.human_attribute_name("owner")
+    %th= OrderDetail.human_attribute_name("cost")
+    %th= OrderDetail.human_attribute_name("order_status")
     
     
     

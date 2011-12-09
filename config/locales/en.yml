@@ -134,6 +134,11 @@ en:
         username: User
       order_detail:
         dispute_resolved_reason: Resolution Notes
+        description: Description
+        fulfilled_at: Fulfilled Date
+        user: Ordered For
+        created_by_user: Ordered By
+        order_status: Status
       nufs_account:
         account_number: Payment Source
       purchase_order_account:
