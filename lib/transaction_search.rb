@@ -10,23 +10,35 @@ module TransactionSearch
     end
   end
   def populate_search_fields
-    @current_facility = @facility = Facility.find_by_url_name(params[:facility_id])
-    raise ActiveRecord::RecordNotFound unless @facility
-    @facilities = [@facility]
-    # only select a few fields. This speeds up the load when there get to be a lot of accounts
-    @accounts = Account.for_facility(@facility).select("accounts.id, description, account_number, type")
-    # sort accounts by description. may change to account number later
-    @accounts = @accounts.order(:description)
+    if params[:facility_id]
+      @current_facility = @facility = Facility.find_by_url_name(params[:facility_id])
+      raise ActiveRecord::RecordNotFound unless @facility
+      @facilities = [@facility]
+      @products = Product.where(:facility_id => @facility.id)
+      @products = @products.order(:name)
+    else
+      @facilities = Facility.active
+    end
     
-    @products = Product.where(:facility_id => @facility.id)
-    @products = @products.order(:name)
-    
-    # sort account owners by last name, first name
-    @account_owners = @accounts.includes(:owner => :user).
+    if params[:account_id]
+      @account = Account.find(params[:account_id])
+      @accounts = [@account]
+      @facilities = @account.facilities
+      @facility = @facilities[0] if @facilities.size == 1
+    else
+      # only select a few fields. This speeds up the load when there get to be a lot of accounts
+      @accounts = Account.for_facility(@facility).active.select("accounts.id, description, account_number, type")
+      
+      # sort accounts by description. may change to account number later
+      @accounts = @accounts.order(:account_number, :description)
+      
+      # sort account owners by last name, first name
+      @account_owners = @accounts.includes(:owner => :user).
                                 map(&:owner_user).
                                 uniq.
-                                sort_by{|x| [x.last_name, x.first_name]}
-    
+                                sort_by{|x| [x.last_name, x.first_name]}  
+    end
+        
     @search_fields = params.merge({
       :accounts => get_allowed_accounts(@accounts, params[:accounts]),
       :facilities => @facilities

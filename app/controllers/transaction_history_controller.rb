@@ -26,7 +26,6 @@ class TransactionHistoryController < ApplicationController
   def account_history
     @accounts = Account.find_all_by_id(params[:account_id])
     @account = @accounts[0]
-    @facilities = @account.facilities
     
     @search_fields = params.merge({
       :accounts => [@account]
