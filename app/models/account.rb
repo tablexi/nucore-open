@@ -47,11 +47,11 @@ class Account < ActiveRecord::Base
   def type_string
     case self
       when PurchaseOrderAccount
-        'Purchase Order'
+        I18n.t('accounts.po')
       when CreditCardAccount
-        'Credit Card'
+        I18n.t('accounts.credit_card')
       when NufsAccount
-        'Chart String'
+        I18n.t('accounts.institution')
       else
         'Account'
     end

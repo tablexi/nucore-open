@@ -3,7 +3,7 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'recharge_accounts' }
 
-%h2 Add Recharge Chart String
+%h2= t('.head')
 = form_for @facility_account, :url => facility_facility_accounts_path do |f|
   = f.error_messages
   %ul.form
