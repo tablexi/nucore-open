@@ -88,6 +88,16 @@ en:
     new:
       head: "Add Recharge Chart String"
 
+  account_price_group_members:
+    search_results:
+      head: "Select an Existing Payment Source"
+      main: "Can't find the payment source you're looking for?"
+      create: "Create a new payment source"
+      notice: "%{count} more payment sources exist, try refining your search."
+      error:
+        noterm: "Please enter a search term"
+        notfound: "No existing payment sources found."
+
   facilities:
     index:
       welcome: |
