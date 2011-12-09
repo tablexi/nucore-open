@@ -4,6 +4,7 @@
 en:
   app_name: NU Core
   app_admin_name: NU Core Admin
+  institution_name: Northwestern
   
   pages:
     my_tab: My %{model}
