@@ -23,7 +23,7 @@ module TransactionSearch
     if params[:account_id]
       @account = Account.find(params[:account_id])
       @accounts = [@account]
-      @facilities = @account.facilities
+      @facilities = @account.facilities.order(:name)
       @facility = @facilities[0] if @facilities.size == 1
     else
       # only select a few fields. This speeds up the load when there get to be a lot of accounts

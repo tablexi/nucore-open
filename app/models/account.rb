@@ -45,9 +45,10 @@ class Account < ActiveRecord::Base
   
   def facilities
     if facility_id
-      [Facility.find(facility_id)]
-    else
-      Facility.all
+      # return a relation
+      Facility.active.where(:id => facility_id)
+   else
+      Facility.active
     end
   end
 
