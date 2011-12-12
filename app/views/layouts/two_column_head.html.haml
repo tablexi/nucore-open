@@ -17,19 +17,7 @@
         .grid_12 
           %h1= yield :h1
           %h2= yield :h2
-        .grid_12#header_billing
-          .grid_3.alpha
-            #sidebar
-              = yield :sidebar
-          .grid_9.omega
-            - if flash[:error]
-              %p.error= flash[:error]
-            - if flash[:notice]
-              %p.notice= flash[:notice]
-            - if flash[:info]
-              %p.info= flash[:info]
-            = yield :tabnav
-        .clear
+        = yield :top_block
         .grid_12
           = yield
         .clear

@@ -594,6 +594,9 @@ body .search_form .chzn-container .chzn-drop {
 	float: left;
 	width: 50%;
 }
+.order_action .center_fields {
+	text-align: center;
+}
 .order_action .select_all_none,
 .order_action .submit {
 	width: 25%;

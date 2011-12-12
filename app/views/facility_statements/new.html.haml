@@ -4,16 +4,15 @@
 
 =content_for :h2 do
   %h2 Create Statements
+
+= content_for :top_block do      
+  = render :partial => 'shared/transactions/top', :locals => { :tab => 'statements' }
 - if @order_details.empty?
-  = render :partial => "shared/transactions/search"
   %p.notice There are no completed orders that require statements.
 - else
-  %p
-    Please review the following Credit Card and Purchase Order payment sources. A statement will be generated for each of the 
-    payment sources and an email with a link to the statement will be sent.
-  = render :partial => "shared/transactions/search"
+  = content_for :action_instructions do
+    %p
+      Please review the following Credit Card and Purchase Order payment sources. A statement will be generated for each of the 
+      payment sources and an email with a link to the statement will be sent.
   = render :partial => 'shared/transactions/table'
   = render :partial => 'shared/reconcile_footnote'
-    
-= content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'statements' }

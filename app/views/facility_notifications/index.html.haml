@@ -4,10 +4,9 @@
 = content_for :h2 do
   %h2 Send Notifications
 
-= content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'notifications' }
+= content_for :top_block do      
+  = render :partial => 'shared/transactions/top', :locals => { :tab => "notifications" }
 
-= render :partial => "shared/transactions/search"
 - if @order_details.empty?
   %p.notice No notifications are currently pending
 - else

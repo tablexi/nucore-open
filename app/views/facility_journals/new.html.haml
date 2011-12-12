@@ -15,17 +15,17 @@
   = @facility
 = content_for :h2 do
   %h2 Create Journal
+
+= content_for :top_block do      
+  = render :partial => 'shared/transactions/top', :locals => { :tab => 'new_journal' }
+  
 - if @order_details.empty?
-  = render :partial => "shared/transactions/search"
   %p.notice There are no orders to be journaled at this time.
 - else
-  %p
-    Select the orders that you wish to journal. Only one journal may be pending at a time. Please note that selected orders may not span multiple fiscal years.
-  - unless @pending_journal.nil?
-    %p.notice You may not generate a new journal until the pending journal is closed.
-  = render :partial => "shared/transactions/search"
+  = content_for :action_instructions do
+    %p
+      Select the orders that you wish to journal. Only one journal may be pending at a time. Please note that selected orders may not span multiple fiscal years.
+    - unless @pending_journal.nil?
+      %p.notice You may not generate a new journal until the pending journal is closed.
   = render :partial => 'shared/transactions/table'
   = render :partial => 'shared/reconcile_footnote'
-= content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'new_journal' }
-
