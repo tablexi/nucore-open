@@ -85,13 +85,7 @@ class OrdersController < ApplicationController
       begin
         order_detail = @order.add(@product, @quantity) # if product is a bundle, order_detail is an array of details
         @order.invalidate!
-
-        if @product.is_a?(Instrument)
-          return redirect_to new_order_order_detail_reservation_path(@order, order_detail)
-        elsif @product.is_a?(Bundle) && @product.products.any?{|p| p.is_a?(Instrument)}
-          return redirect_to new_order_order_detail_reservation_path(@order, order_detail.find{ |od| od.product.is_a?(Instrument) })
-        end
-
+        return redirect_to new_order_order_detail_reservation_path(@order, order_detail) if @product.is_a?(Instrument)
         flash[:notice] = "#{@product.class.name} added to cart."
       rescue NUCore::MixedFacilityCart
         flash[:error] = "You can not add a product from another facility; please clear your cart or place a separate order."
