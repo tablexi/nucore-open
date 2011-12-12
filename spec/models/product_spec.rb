@@ -20,7 +20,7 @@ describe Product do
 
     it "should create map to default price groups" do
       PriceGroupProduct.count.should == 2
-      PriceGroupProduct.find_by_product_id_and_price_group_id(@item.id, PriceGroup.northwestern.first.id).should_not be_nil
+      PriceGroupProduct.find_by_product_id_and_price_group_id(@item.id, PriceGroup.base.first.id).should_not be_nil
       PriceGroupProduct.find_by_product_id_and_price_group_id(@item.id, PriceGroup.external.first.id).should_not be_nil
     end
 
