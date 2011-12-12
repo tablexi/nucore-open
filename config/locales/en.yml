@@ -160,6 +160,7 @@ en:
         fulfilled_at: Fulfilled Date
         user: Ordered For
         created_by_user: Ordered By
+        reviewed_at: Review Closes
         order_status: Status
       nufs_account:
         account_number: Payment Source

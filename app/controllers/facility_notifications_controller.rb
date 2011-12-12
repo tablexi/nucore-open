@@ -6,7 +6,7 @@ class FacilityNotificationsController < ApplicationController
   
   include TransactionSearch
   transaction_search :index, :in_review
-
+  
   authorize_resource :manage, :class => Facility
 
   layout 'two_column_head'
@@ -65,6 +65,7 @@ class FacilityNotificationsController < ApplicationController
     @order_details = @order_details.in_review(@facility)
     @order_details = @order_details.reorder(:reviewed_at)
     @order_detail_action = :mark_as_reviewed
+    @extra_date_column = :reviewed_at
   end
   
   def mark_as_reviewed
