@@ -171,7 +171,21 @@ en:
       notice1: "The user could no be located in the university database.  Please make sure you typed the NetID correctly."
       notice2: "No user information was found in the university databases."
       notice3: "The following user was found.  Click \"Add User\" to allow this user access to NU Core."
-
+  facility_notifications:
+    in_review:
+      instructions: The orders listed below are still in review by the customer. The time the review window will close is listed. You may manually mark an order as reviewed, allowing you to create a statement for or journal the order immediately.
+      
+  facility_journals:
+    new:
+      instructions: Select the orders that you wish to journal. Only one journal may be pending at a time. Please note that selected orders may not span multiple fiscal years.
+      not_closed: You may not generate a new journal until the pending journal is closed.
+      no_orders: There are no orders to be journaled at this time.
+  facility_statements:
+    new:
+      instructions: Please review the following Credit Card and Purchase Order payment sources. A statement will be generated for each of the payment sources and an email with a link to the statement will be sent.
+      no_orders: There are no completed orders that require statements.
+    index:
+      no_statements: No statements have been sent yet
   devise:
     failure:
       invalid: "Invalid username or password."
@@ -262,6 +276,9 @@ en:
         created_by_user: Ordered By
         reviewed_at: Review Closes
         order_status: Status
+      statement:
+        created_by: Sent By
+        created_at: Sent At
       nufs_account:
         account_number: Payment Source
       purchase_order_account:

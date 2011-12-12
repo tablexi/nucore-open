@@ -8,11 +8,10 @@
 = content_for :top_block do      
   = render :partial => 'shared/transactions/top', :locals => { :tab => 'statements' }
 - if @order_details.empty?
-  %p.notice There are no completed orders that require statements.
+  %p.notice= t("facility_statements.new.no_orders")
 - else
   = content_for :action_instructions do
-    %p
-      Please review the following Credit Card and Purchase Order payment sources. A statement will be generated for each of the 
-      payment sources and an email with a link to the statement will be sent.
+    %p= t("facility_statements.new.instructions")
+      
   = render :partial => 'shared/transactions/table'
   = render :partial => 'shared/reconcile_footnote'
