@@ -196,14 +196,14 @@ ActiveRecord::Schema.define(:version => 20111209185608) do
     t.string "auxiliary", :limit => 512
   end
 
-  add_index "nucs_chart_field1s", ["value"], :name => "i_nucs_chart_field1s_value"
+  add_index "nucs_chart_field1s", ["value"], :name => "index_nucs_chart_field1s_on_value"
 
   create_table "nucs_departments", :force => true do |t|
     t.string "value",     :limit => 16,  :null => false
     t.string "auxiliary", :limit => 512
   end
 
-  add_index "nucs_departments", ["value"], :name => "i_nucs_departments_value"
+  add_index "nucs_departments", ["value"], :name => "index_nucs_departments_on_value"
 
   create_table "nucs_funds", :force => true do |t|
     t.string "value",     :limit => 8,   :null => false
@@ -225,7 +225,7 @@ ActiveRecord::Schema.define(:version => 20111209185608) do
 
   add_index "nucs_gl066s", ["account"], :name => "index_nucs_gl066s_on_account"
   add_index "nucs_gl066s", ["activity"], :name => "index_nucs_gl066s_on_activity"
-  add_index "nucs_gl066s", ["department"], :name => "i_nucs_gl066s_department"
+  add_index "nucs_gl066s", ["department"], :name => "index_nucs_gl066s_on_department"
   add_index "nucs_gl066s", ["fund"], :name => "index_nucs_gl066s_on_fund"
   add_index "nucs_gl066s", ["project"], :name => "index_nucs_gl066s_on_project"
 
@@ -241,7 +241,7 @@ ActiveRecord::Schema.define(:version => 20111209185608) do
     t.datetime "tree_effective_at",                  :null => false
   end
 
-  add_index "nucs_grants_budget_trees", ["account"], :name => "i_nuc_gra_bud_tre_acc"
+  add_index "nucs_grants_budget_trees", ["account"], :name => "index_nucs_grants_budget_trees_on_account"
 
   create_table "nucs_programs", :force => true do |t|
     t.string "value",     :limit => 8,   :null => false
@@ -256,8 +256,8 @@ ActiveRecord::Schema.define(:version => 20111209185608) do
     t.string "auxiliary", :limit => 512
   end
 
-  add_index "nucs_project_activities", ["activity"], :name => "i_nuc_pro_act_act"
-  add_index "nucs_project_activities", ["project"], :name => "i_nuc_pro_act_pro"
+  add_index "nucs_project_activities", ["activity"], :name => "index_nucs_project_activities_on_activity"
+  add_index "nucs_project_activities", ["project"], :name => "index_nucs_project_activities_on_project"
 
   create_table "order_details", :force => true do |t|
     t.integer  "order_id",                                                              :null => false
