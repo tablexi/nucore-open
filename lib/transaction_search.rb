@@ -14,10 +14,8 @@ module TransactionSearch
       @current_facility = @facility = Facility.find_by_url_name(params[:facility_id])
       raise ActiveRecord::RecordNotFound unless @facility
       @facilities = [@facility]
-      @products = Product.where(:facility_id => @facility.id)
-      @products = @products.order(:name)
     else
-      @facilities = Facility.active
+      @facilities = Facility.active.order(:name)
     end
     
     if params[:account_id]
@@ -38,7 +36,11 @@ module TransactionSearch
                                 uniq.
                                 sort_by{|x| [x.last_name, x.first_name]}  
     end
-        
+    
+    
+    @products = Product.where("facility_id in (?)", @facilities.map(&:id)).order(:name) #:facility_id => @facility.id)
+    
+       
     @search_fields = params.merge({
       :accounts => get_allowed_accounts(@accounts, params[:accounts]),
       :facilities => @facilities
