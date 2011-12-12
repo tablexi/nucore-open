@@ -138,7 +138,7 @@ describe FacilityJournalsController do
       @pending_journal = Factory.create(:journal, :facility_id => @authable.id, :created_by => @admin.id, :journal_date => Time.zone.now, :is_successful => nil)
       sign_in @admin
       do_request
-      assigns(:order_details).should == [@order_detail1, @order_detail3]
+      assigns(:order_details).should contain_all [@order_detail1, @order_detail3]
       assigns(:pending_journal).should == @pending_journal
       assigns(:order_detail_action).should be_nil
     end
