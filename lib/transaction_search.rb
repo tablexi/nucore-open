@@ -4,9 +4,12 @@ module TransactionSearch
   end
   
   module ClassMethods
-    def transaction_search(*fields)      
-      self.before_filter :remove_ugly_params_and_redirect, :only => fields
-      self.before_filter :populate_search_fields, :only => fields
+    def transaction_search(*actions)      
+      self.before_filter :remove_ugly_params_and_redirect, :only => actions
+      self.before_filter :populate_search_fields, :only => actions
+    end
+    def use_date_field_for_search(field, *actions)
+      self.prepend_before_filter(:only => actions) {|c| c.use_date_field field } 
     end
   end
   def populate_search_fields
@@ -49,7 +52,9 @@ module TransactionSearch
     do_search(@search_fields)
     add_optimizations
   end
-      
+  def use_date_field(field)
+    @date_field_to_use = field
+  end
   def do_search(search_params)
     #Rails.logger.debug "search: #{search_params}"
     @order_details = OrderDetail.joins(:order).ordered
@@ -59,9 +64,10 @@ module TransactionSearch
     start_date = parse_usa_date(search_params[:start_date].to_s.gsub("-", "/"))
     end_date = parse_usa_date(search_params[:end_date].to_s.gsub("-", "/"))  
     
-    @order_details = @order_details.for_facilities(search_params[:facilities]).
-      fulfilled_in_date_range(start_date, end_date).
-      order_by_desc_nulls_first(:fulfilled_at)    
+    @order_details = @order_details.for_facilities(search_params[:facilities])
+    @date_field_to_use ||= :fulfilled_at
+    @order_details = @order_details.action_in_date_range(@date_field_to_use, start_date, end_date).
+          order_by_desc_nulls_first(@date_field_to_use)    
   end
   
   def remove_ugly_params_and_redirect

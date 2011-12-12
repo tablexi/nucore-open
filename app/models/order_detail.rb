@@ -62,13 +62,13 @@ class OrderDetail < ActiveRecord::Base
                      AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete']
   }}
 
-  scope :in_review, lambda { |facility| {
-    :joins => :product,
-    :conditions => ['products.facility_id = ?
-                     AND order_details.state = ?
-                     AND order_details.reviewed_at > ?
-                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete', Time.zone.now]
-  }}
+  scope :in_review, lambda { |facility| 
+    scoped.joins(:product).
+    where(:products => {:facility_id => facility.id}).
+    where(:state => 'complete').
+    where("order_details.reviewed_at > ?", Time.zone.now).
+    where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+  }
 
   scope :need_statement, lambda { |facility| {
     :joins => [:product, :account],
@@ -132,12 +132,17 @@ class OrderDetail < ActiveRecord::Base
   }
   
   scope :fulfilled_in_date_range, lambda {|start_date, end_date|
+    action_in_date_range :fulfilled_at, start_date, end_date
+  }
+  
+  scope :action_in_date_range, lambda {|action, start_date, end_date|
+    logger.debug("searching #{action} between #{start_date} and #{end_date}")
     search = scoped
     if start_date
-      search = search.where("fulfilled_at > ?", start_date.beginning_of_day)
+      search = search.where("#{action} > ?", start_date.beginning_of_day)
     end
     if end_date
-      search = search.where("fulfilled_at < ?", end_date.end_of_day)
+      search = search.where("#{action} < ?", end_date.end_of_day)
     end
     search
   }
