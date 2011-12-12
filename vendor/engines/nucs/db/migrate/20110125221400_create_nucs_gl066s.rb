@@ -1,15 +1,15 @@
 class CreateNucsGl066s < ActiveRecord::Migration
   
   def self.up
-    create_table(:nucs_gl066s) do |t|
+    create_table(:nucs_gl066s, :force => true) do |t|
       t.column(:budget_period, :string, :limit => 8, :null => false)
       t.column(:fund, :string, :limit => 8, :null => false)
       t.column(:department, :string, :limit => 16, :null => false)
       t.column(:project, :string, :limit => 16, :null => false)
       t.column(:activity, :string, :limit => 16, :null => false)
       t.column(:account, :string, :limit => 16, :null => false)
-      t.column(:starts_at, :date)
-      t.column(:expires_at, :date)
+      t.column(:starts_at, :datetime)
+      t.column(:expires_at, :datetime)
     end
 
     add_index(:nucs_gl066s, :fund)
