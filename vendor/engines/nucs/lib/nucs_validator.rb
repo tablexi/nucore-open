@@ -47,6 +47,7 @@ class NucsValidator
   #
   # You must have set +@account+ before calling this method!
   def account_is_open!
+    return if Whitelist.includes?(@chart_string)
     raise NucsErrors::InputError.new('account', nil) unless @account
     return validate_zero_fund! if @fund.start_with?('0')
     return validate_ge001_components! if revenue_account?

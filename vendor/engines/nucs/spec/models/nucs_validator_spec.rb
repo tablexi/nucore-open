@@ -370,6 +370,12 @@ describe NucsValidator do
   end
 
 
+  it 'should consider whitelisted chart strings always open' do
+    validator=NucsValidator.new(Whitelist::ALLOWED_CHART_STRINGS[0], NON_REVENUE_ACCT)
+    assert_nothing_raised { validator.account_is_open! }
+  end
+
+
   def assert_project_input_error(chart_string)
     define_open_account(NON_REVENUE_ACCT, chart_string)
 

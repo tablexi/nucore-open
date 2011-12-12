@@ -1,7 +1,7 @@
 class CreateNucsChartField1s < ActiveRecord::Migration
   
   def self.up
-    create_table(:nucs_chart_field1s) do |t|
+    create_table(:nucs_chart_field1s, :force => true) do |t|
       t.column(:value, :string, :limit => 16, :null => false)
       t.column(:auxiliary, :string, :limit => 512)
     end

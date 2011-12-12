@@ -1,7 +1,7 @@
 class CreateNucsPrograms < ActiveRecord::Migration
   
   def self.up
-    create_table(:nucs_programs) do |t|
+    create_table(:nucs_programs, :force => true) do |t|
       t.column(:value, :string, :limit => 8, :null => false)
       t.column(:auxiliary, :string, :limit => 512)
     end
