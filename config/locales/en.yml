@@ -4,6 +4,12 @@
 en:
   app_name: NU Core
   app_admin_name: NU Core Admin
+  institution_name: Northwestern
+
+  accounts:
+    institution: Chart String
+    credit_card: Credit Card
+    po: Purchase Order
   
   pages:
     my_tab: My %{model}
@@ -17,16 +23,106 @@ en:
     footer:
       copyright_html: "&copy; Copyright 2010%{to_date} Northwestern University"
       logo_alt: "Northwestern Logo"
+
+    product_details_fields:
+      name: "Name of the %{field} as displayed to the end user"
+      description: "Description as it will appear on the product page"
+      account: "Expense account from which fees will be withdrawn; must be open on purchaser's Chart String"
+      requires_approval: "Check to restrict access to approved users"
+      initial_order_status: "Default status for new orders"
+      is_archived: "Check to inactivate the product, disallowing purchase and viewing"
+      is_hidden: "Check to hide %{field} from end users; visible to staff when \"ordering on behalf\" of another user"
+      deposit_account:
+        label: "Recharge Chart String and Account"
+        instruct: "Revenue account to which fees will be deposited"
+        add: "Add Chart String"
+
+    product_manage:
+      label:
+        url: "URL Name"
+        description: "Description"
+        deposit: "Recharge Chart String"
+        initial_status: "Initial Order Status"
+        requires_approval: "Requires Approval?"
+        inactive: "Is Inactive?"
+        hidden: "Is Hidden?"
+
+    sidenav_admin:
+      overview: "Overview"
+      deposit_accounts: "Recharge Chart Strings"
+      facility_staff: "Facility Staff"
+      price_groups: "Price Groups"
+      statuses: "Order Statuses"
+
+  facility_accounts:
+    account_fields:
+      label:
+        owner_user: "Owner User"
+        payment_type: "Payment Source Type"
+        payment_number: "Payment Source Number"
+        cc_name: "Name on Card"
+        affiliate: "Affiliate Name"
+        remit: "Bill To"
+        cc_instruct: "No part of a credit card number may be entered. Enter a text description to help you and the user identify this card. For example: \"Dr. Smith's Visa Card\"."
+        po_instruct: "Where the invoice should be sent to for this payment source; this text will appear on the customer's invoice."
+
+  facility_facility_accounts:
+    facility_account_fields:
+      instruct: "Use hyphens to separate Chart String number groups e.g. 123-1234567-12345678"
+      active: "Is Active?"
+      label:
+        account_number: "Chart String Number"
+        deposit_account: "Revenue Account"
+
+    edit:
+      head: "Edit Recharge Chart String"
+      main: "Editing the Recharge Chart String may effect the facility's ability to collect funds. Edit the Chart String with caution!"
+
+    index:
+      head: "Recharge Chart Strings"
+      main: "Chart Strings that are approved by the Provost for collection of facility revenue."
+      notice: "No Recharge Chart Strings have been added to this facility yet."
+      th: "Chart String Number"
+      add: "Add Recharge Chart String"
+
+    new:
+      head: "Add Recharge Chart String"
+
+  account_price_group_members:
+    search_results:
+      head: "Select an Existing Payment Source"
+      main: "Can't find the payment source you're looking for?"
+      create: "Create a new payment source"
+      notice: "%{count} more payment sources exist, try refining your search."
+      error:
+        noterm: "Please enter a search term"
+        notfound: "No existing payment sources found."
+
   facilities:
     index:
-      welcome: Welcome to NU Core, the centralized ordering system for all Shared Facilities at Northwestern University.
-               Please select the Shared Facility below to view and purchase services and products offered by the facility.
+      welcome: |
+        Welcome to NU Core, the centralized ordering system for all Shared Facilities at Northwestern University.
+        Please select the Shared Facility below to view and purchase services and products offered by the facility.
+
+    facility_fields:
+      name: "Name of the facility as displayed to the end user"
+      abbreviation: "Abbreviated name or acronym for the facility"
+      short_description: "Description as it will appear on the home page"
+      description: "Description as it will appear on the facility main page"
+      payment_options: "By default, all facilities accept NU Chart Strings; you may check additional payment options:"
+      accepts_po: "Accept Purchase Orders?"
+      accepts_cc: "Accept Credit Cards?"
+      inactive: "Uncheck this box to prevent end users from viewing or purchasing from this facility:"
+      is_active: "Is Active?"
+      contact: "The following contact information will appear on statements and should indicate where payment should be sent"
+
   price_policies:
     instructional_text:
-      common: All Northwestern users must be charged the same base rate.  Rates must be reviewed by the Provost's Office.  You may define adjustments to this rate for individual internal price groups.
+      common: "All Northwestern users must be charged the same base rate.  Rates must be reviewed by the Provost's Office.  You may define adjustments to this rate for individual internal price groups."
       item: ""
       service: ""
-      instrument: The user will be charged the sum of actual, scheduled, and overage usage fees.  Actual usage is measured by power relay or manually entered by facility staff.  Scheduled usage is calculated from the user's reservation.  Overage is any usage that exceeds the user's reservation.  If an overage rate is not specified, the actual usage rate will be applied for any overage. 
+      instrument: "The user will be charged the sum of actual, scheduled, and overage usage fees.  Actual usage is measured by power relay or manually entered by facility staff.  Scheduled usage is calculated from the user's reservation.  Overage is any usage that exceeds the user's reservation.  If an overage rate is not specified, the actual usage rate will be applied for any overage."
+
   price_groups:
     price_group_fields:
       internal_instruction: "Check this box if this price group is internal, intended for use by Northwestern Customers:"
@@ -78,7 +174,12 @@ en:
 
   devise:
     failure:
-      invalid: Invalid username or password.
+      invalid: "Invalid username or password."
+
+  controllers:
+    facility_accounts:
+      create:
+        expires_at_missing: "The chart string appears to be invalid. Either the fund, department, project, or activity could not be found."
       
   activerecord:
     errors:
@@ -142,7 +243,6 @@ en:
         one: Facility
         other: Facilities
         
-
     # Model Attributes
     attributes:
       user:

@@ -85,10 +85,7 @@ class FacilityAccountsController < ApplicationController
         # be verbose with failures. Too many tasks (#29563, #31873) need it
         begin
           @account.set_expires_at!
-
-          unless @account.expires_at
-            @account.errors.add(:base, 'The chart string appears to be invalid. Either the fund, department, project, or activity could not be found.')
-          end
+          @account.errors.add(:base, I18n.t('controllers.facility_accounts.create.expires_at_missing')) unless @account.expires_at
         rescue NucsErrors::NucsError => e
           @account.errors.add(:base, e.message)
         end

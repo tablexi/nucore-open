@@ -1,14 +1,14 @@
 %li
   %ul.form.box
     %li
-      %p.instruction Use hyphens to separate Chart String number groups e.g. 123-1234567-12345678
+      %p.instruction= t('facility_facility_accounts.facility_account_fields.instruct')
     %li.left
-      = f.label :account_number, 'Chart String Number', :class => 'require'
+      = f.label :account_number, t('facility_facility_accounts.facility_account_fields.label.account_number'), :class => 'require'
       = f.text_field :account_number
     %li.left
-      =f.label :revenue_account, 'Revenue Account', :class => 'require'
+      =f.label :revenue_account, t('facility_facility_accounts.facility_account_fields.label.deposit_account'), :class => 'require'
       = f.text_field :revenue_account, :maxLength => 5, :size => 10
     %li.clear
 %li
   = f.check_box :is_active
-  %b Is Active?
+  %b= t('facility_facility_accounts.facility_account_fields.active')
