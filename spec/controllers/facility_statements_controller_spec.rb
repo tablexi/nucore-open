@@ -58,7 +58,7 @@ describe FacilityStatementsController do
       grant_and_sign_in(@user)
       do_request
       response.should be_success
-      assigns(:accounts).should == [@account, @account2]
+      assigns(:accounts).should contain_all [@account, @account2]
       assigns(:facility).should == @authable
       assigns(:order_detail_action).should == :send_statements
       (assigns(:order_details) - [@order_detail1, @order_detail3]).should be_empty
