@@ -1,6 +1,6 @@
 #table_billing
   - if @order_detail_action
-    = form_tag url_for(params.merge({:action => @order_detail_action})), :method => :post do |f|
+    = form_tag url_for(params.merge({:action => @order_detail_action})), :method => :post do
       .order_action
         = yield :action_instructions
         .select_all_none= link_to 'Select All', '#', :class => 'select_all'
