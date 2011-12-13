@@ -22,10 +22,10 @@
 - if @order_details.empty?
   %p.notice= t("facility_journals.new.no_orders")
 - else
+  - unless @pending_journal.nil?
+    %p.notice= t("facility_journals.new.not_closed_html", :link => facility_journals_path)
   = content_for :action_instructions do
     %p
       = t("facility_journals.new.instructions")
-    - unless @pending_journal.nil?
-      %p.notice= t("facility_journals.new.not_cosed")
   = render :partial => 'shared/transactions/table'
   = render :partial => 'shared/reconcile_footnote'
