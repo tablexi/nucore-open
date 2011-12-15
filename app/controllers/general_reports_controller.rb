@@ -37,9 +37,14 @@ class GeneralReportsController < ReportsController
   def init_report_params
     status_ids=params[:status_filter]
 
-    if status_ids.blank?
+    if params[:date_start].blank? && params[:date_end].blank?
+      # page load -- default to most interesting/common statuses
       stati=[ OrderStatus.complete.first, OrderStatus.reconciled.first ]
+    elsif status_ids.blank?
+      # user removed all status filters. They will get nothing back but that's what they want!
+      stati=[]
     else
+      # user filters
       stati=status_ids.collect{|si| OrderStatus.find(si.to_i) }
     end
 
@@ -73,14 +78,14 @@ class GeneralReportsController < ReportsController
   
   
   def init_report_data(report_on_label, &report_on)
-    @report_data=report_data.all
+    @report_data=report_data
   end
   
 
   def init_report(report_on_label)
     sums, rows, @total_quantity, @total_cost={}, [], 0, 0.0
 
-    report_data.all.each do |od|
+    report_data.each do |od|
       key=yield od
       sums[key]=[0,0] unless sums.has_key?(key)
       sums[key][0] += od.quantity
@@ -107,11 +112,22 @@ class GeneralReportsController < ReportsController
   
   
   def report_data
-    OrderDetail.joins(:order_status).
-               where('order_statuses.id' => @status_ids).
-               joins('LEFT JOIN orders ON order_details.order_id = orders.id').
-               where('orders.facility_id = ? AND orders.ordered_at >= ? AND orders.ordered_at <= ?', current_facility.id, @date_start, @date_end).
-               includes(:order, :account, :price_policy, :product)
+    fulfilled_stati=[ OrderStatus.complete.first.id, OrderStatus.reconciled.first.id ]
+    fulfilled_ods=report_data_query(fulfilled_stati & @status_ids, 'order_details.fulfilled_at')
+    ordered_ods=report_data_query(@status_ids - fulfilled_stati, 'orders.ordered_at')
+    fulfilled_ods + ordered_ods
   end
-  
+
+
+  def report_data_query(stati, date_column)
+    return [] if stati.blank?
+
+    OrderDetail.joins(:order_status).
+                where('order_statuses.id' => stati).
+                joins('LEFT JOIN orders ON order_details.order_id = orders.id').
+                where("orders.facility_id = ? AND #{date_column} >= ? AND #{date_column} <= ?", current_facility.id, @date_start, @date_end).
+                includes(:order, :account, :price_policy, :product).
+                all
+  end
+
 end
