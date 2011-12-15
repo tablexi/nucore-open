@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+%html
+  %head
+    %meta{ "http-equiv" => "content-type", "content" => "text/html; charset=UTF-8" }
+    = render :partial => '/shared/title', :locals => { :title =>  yield(:h1) }
+    = render :partial => '/shared/head'
+    = yield :head_content
+    = render :partial => '/shared/google'
+  %body
+    #header
+      = render :partial => '/shared/header'
+    #nav
+      = render :partial => '/shared/nav'
+    #content
+      .container_12
+        .clean
+        .grid_12 
+          %h1= yield :h1
+          %h2= yield :h2
+        = yield :top_block
+        .grid_12
+          = yield
+        .clear
+    #footer
+      .container_12
+        = render :partial => '/shared/footer'

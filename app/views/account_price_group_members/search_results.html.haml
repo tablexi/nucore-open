@@ -1,13 +1,13 @@
 - if params[:search_term] == '' || params[:search_term].nil?
-  %p.error Please enter a search term
+  %p.error= t('.error.noterm')
 - else
   - if @accounts.nil?
-    %p.error No existing payment sources found.
+    %p.error= t('.error.notfound')
   - else
-    %h3 Select an Existing Payment Source
+    %h3= t('.head')
     %p
-      == Can't find the payment source you're looking for?
-      = link_to 'Create a new payment source', new_account_user_search_facility_accounts_path(current_facility)
+      = t('.main')
+      = link_to t('.create'), new_account_user_search_facility_accounts_path(current_facility)
     %table
       %tr
         %th Account Number
@@ -20,4 +20,4 @@
           %td=h owner.full_name if owner
           %td=h owner.email if owner
     - if @count > @limit
-      %p.notice== #{@count-@limit} more payment sources exist, try refining your search.
+      %p.notice= t('.notice', :count => @count-@limit)

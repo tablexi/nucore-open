@@ -1,7 +1,31 @@
 = content_for :h1 do
-  == My Payment Sources
+  = t_my(Account)
 
 - if @account_users.empty?
-  %p.notice You do not have any payment sources.
+  %p.notice= "You do not have any #{Account.human_name.pluralize.downcase}."
 - else
-  =render :partial => 'shared/accounts_table', :locals => {:facilities => Facility.all}
+  %table
+    %tr
+      %th Payment Source
+      %th Description
+      %th Type
+      %th Expiration
+      %th Facility
+      %th
+      %th
+    - @account_users.each do |au|
+      - account = au.account
+      %tr
+        %td= account.account_number
+        %td= account.description
+        %td= account.type_string
+        %td= human_date(account.expires_at)
+        %td= account.facility || '<i>All</i>'.html_safe
+        - if au.can_administer? || session_user.administrator?
+          %td= link_to "Transactions", account_transaction_history_path(account)
+          %td= link_to "Members", account_account_users_path(account)
+    
+        
+
+  
+  =#render :partial => 'shared/accounts_table', :locals => {:facilities => Facility.all}

@@ -1,4 +1,2 @@
-%p
-  == A new statement from #{@facility} has been created for your payment source, "#{ @account }".
-  == Please #{link_to 'log in to NU Core', account_facility_statement_url(@account, @facility, @statement, :format => :pdf)} and review your statement.
+%p= t('.body_html', :facility => @facility.to_s, :account => @account.to_s, :login_link => link_to('log in to ' + t('app_name'), account_facility_statement_url(@account, @facility, @statement, :format => :pdf)))
 

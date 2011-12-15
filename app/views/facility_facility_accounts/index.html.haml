@@ -3,20 +3,20 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'recharge_accounts' }
 
-%h2 Recharge Chart Strings
+%h2= t('.head')
 
-%p Chart Strings that are approved by the Provost for collection of facility revenue.
+%p= t('.main')
 
 %ul.horiz
-  %li= link_to 'Add Recharge Chart String', new_facility_facility_account_path
+  %li= link_to t('.add'), new_facility_facility_account_path
 
 - if @accounts.empty?
-  %p.notice No Recharge Chart Strings have been added to this facility yet.
+  %p.notice= t('.notice')
 - else
   %table
     %tr
       %th
-      %th Chart String Number
+      %th= t('.th')
     - @accounts.each do |a|
       %tr
         %td= link_to 'Edit', edit_facility_facility_account_path(current_facility, a)

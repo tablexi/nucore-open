@@ -9,7 +9,7 @@ class FacilityAccountsController < ApplicationController
   layout 'two_column'
 
   def initialize
-    @active_tab = 'admin_invoices'
+    @active_tab = 'admin_billing'
     super
   end
 
@@ -85,10 +85,7 @@ class FacilityAccountsController < ApplicationController
         # be verbose with failures. Too many tasks (#29563, #31873) need it
         begin
           @account.set_expires_at!
-
-          unless @account.expires_at
-            @account.errors.add(:base, 'The chart string appears to be invalid. Either the fund, department, project, or activity could not be found.')
-          end
+          @account.errors.add(:base, I18n.t('controllers.facility_accounts.create.expires_at_missing')) unless @account.expires_at
         rescue NucsErrors::NucsError => e
           @account.errors.add(:base, e.message)
         end
@@ -165,6 +162,16 @@ class FacilityAccountsController < ApplicationController
     @account = Account.find(params[:account_id])
   end
 
+  # GET /facilities/:facility_id/statements/accounts_receivable
+  def accounts_receivable
+    @account_balances = {}
+    order_details = current_facility.order_details.complete
+    order_details.each do |od|
+      @account_balances[od.account_id] = @account_balances[od.account_id].to_f + od.total.to_f
+    end
+    @accounts = Account.find(@account_balances.keys)
+  end
+  
   # GET /facilities/:facility_id/accounts/:account_id/statements/:statement_id
   def show_statement
     @account = Account.find(params[:account_id])
@@ -215,7 +222,7 @@ class FacilityAccountsController < ApplicationController
 
   def show_account(model_class)
     @subnav     = 'billing_nav'
-    @active_tab = 'admin_invoices'
+    @active_tab = 'admin_billing'
     @accounts   = model_class.need_reconciling(current_facility)
 
     unless @accounts.empty?

@@ -1,0 +1,55 @@
+= content_for :head_content do
+  = javascript_include_tag "chosen.jquery.min.js"
+  = stylesheet_link_tag "chosen.css"
+  = javascript_include_tag "date.js"
+  = javascript_include_tag "transaction_history.js"
+  %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
+  = stylesheet_link_tag "jquery-ui/jquery-ui" 
+- content_for :h1 do
+  Transaction History
+-if (@account)
+  = content_for :tabnav do
+    = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'transactions'}
+  %h2= @account.account_number
+  %p= @account.description  
+= render :partial => "search"
+%div{:style=>"clear:both"}
+= will_paginate(@order_details)
+%table.dense
+  %tr
+    - unless single_account?
+      %th Payment Source
+    %th Order #
+    %th Fulfillment Date
+    - unless single_facility?
+      %th Facility
+    %th Ordered/Reserved By
+    %th Description
+    %th Cost
+    %th Status
+    
+  - @order_details.each do |order_detail|
+    %tr
+      - unless single_account?
+        %td= order_detail.account
+      %td.nowrap= link_to order_detail, order_order_detail_path(order_detail.order, order_detail) 
+      %td= order_detail.fulfilled_at.strftime("%m/%d/%Y") if order_detail.fulfilled_at
+      - unless single_facility?
+        %td= order_detail.order.facility
+      %td= order_detail.order.user.full_name
+      %td
+        = order_detail.product
+        %br
+        %em= order_detail.reservation
+      %td 
+        - if order_detail.cost_estimated?
+          %span.estimated_cost
+            = show_estimated_total(order_detail)
+        - elsif order_detail.price_policy.nil?
+          Unassigned
+        - else
+          %span.actual_cost
+            = show_actual_total(order_detail)
+      %td= order_detail.order_status
+= will_paginate(@order_details)
+  

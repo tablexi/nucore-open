@@ -1,9 +1,9 @@
-%p== Congratulations, #{h @user.first_name}. A NU Core account has been created for you. You may log in at #{link_to new_user_session_url, new_user_session_url}.
+%p= t(".intro_html", :first_name => @user.first_name, :last_name => @user.last_name, :login_url => new_user_session_url)
 
 - if @password
   %p
-    =h "Username: #{@user.username}"
+    =h "#{User.human_attribute_name(:username)}: #{@user.username}"
     %br
-    =h "Password: #{@password}"
+    =h "#{User.human_attribute_name(:password)}: #{@password}"
 - else
-  %p You may log in with your Northwestern NetID and password.
+  %p= t(".no_password")

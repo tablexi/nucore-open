@@ -1,10 +1,10 @@
 %li
   = f.label :name, nil, :class => 'require'
-  %p.instruction Name of the facility as displayed to the end user
+  %p.instruction= t('facilities.facility_fields.name')
   = f.text_field :name, :size => 60
 %li
   = f.label :abbreviation, nil, :class => 'require'
-  %p.instruction Abbreviated name or acronym for the facility
+  %p.instruction= t('facilities.facility_fields.abbreviation')
   = f.text_field :abbreviation, :size => 20
 %li
   = f.label :url_name, 'URL Name', :class => 'require'
@@ -15,29 +15,29 @@
   = f.text_field :url_name, :size => 20
 %li
   = f.label :short_description, 'Short Description', :class => 'require'
-  %p.instruction Description as it will appear on the home page
+  %p.instruction= t('facilities.facility_fields.short_description')
   = f.text_area :short_description, :cols => 86, :rows => 4
 %li
   = f.label :description, nil
-  %p.instruction Description as it will appear on the facility main page
+  %p.instruction= t('facilities.facility_fields.description')
   = f.text_area :description, :class => 'editor'
 %li.box
-  %p By default, all facilities accept NU Chart Strings; you may check additional payment options: 
+  %p= t('facilities.facility_fields.payment_options')
   %br
   %p
     = f.check_box :accepts_po
-    %b= 'Accept Purchase Orders?'
+    %b= t('facilities.facility_fields.accepts_po')
   %br
   %p
     = f.check_box :accepts_cc
-    %b= 'Accept Credit Cards?'
+    %b= t('facilities.facility_fields.accepts_cc')
 %li.box
-  %p.instruction Uncheck this box to prevent end users from viewing or purchasing from this facility:
+  %p.instruction= t('facilities.facility_fields.inactive')
   %br
   = f.check_box :is_active
-  %b= 'Is Active?'
+  %b= t('facilities.facility_fields.is_active')
 %li.box
-  %p.instruction The following contact information will appear on statements and should indicate where payment should be sent
+  %p.instruction= t('facilities.facility_fields.contact')
   %br
   %ul.form
     %li

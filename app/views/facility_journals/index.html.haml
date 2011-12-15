@@ -1,23 +1,10 @@
-= content_for :head_content do
-  %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
-  = stylesheet_link_tag 'jquery-ui/jquery-ui'
-  :javascript
-    $(function(){
-      $(".datepicker").datepicker({
-        'defaultDate':'#{@soonest_journal_date.strftime("%m/%d/%y")}',
-        'minDate':'#{@soonest_journal_date.strftime("%m/%d/%y")}',
-        'maxDate':'#{Time.zone.now.to_datetime.strftime("%m/%d/%y")}'
-      });
-    });
-
 = content_for :h1 do
   =h current_facility
 
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'journals' }
 
-%h2 Manage Journals
-%h3 Pending Journal
+%h2 Pending Journal
 - if @pending_journal.nil?
   %p.notice There is no pending journal at this time
 - else
@@ -56,57 +43,22 @@
         %td
           = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']])
           = submit_tag 'Close Journal', :confirm => 'You are about to close this journal. Please ensure you have selected the correct status.'
-%p
-%hr
-%p
-%h3 Create Journal
-- if @order_details.empty?
-  %p.notice There are no orders to be journaled at this time
-- else
-  %p Select the orders that you wish to journal.  Only one journal may be pending at a time.  Please note that selected orders may not span multiple fiscal years.
-  - disable = false
-  - unless @pending_journal.nil?
-    -disable = true
-    %p.notice You may not generate a new journal until the pending journal is closed.
-  = form_for(:journal, @journal, :path => facility_journals_path) do |f|
-    = f.error_messages
-    %table
-      %tr.borderless
-        %td{:colspan => 2}= disable ? '' : link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
-        %td= f.label :journal_date
-        %td= f.text_field :journal_date, :value => @soonest_journal_date.strftime("%m/%d/%Y"), :class => 'datepicker'
-        %td.currency{:colspan => 2}= submit_tag "Create Journal", {:disabled => disable}
-      %tr
-        %th
-        %th Order
-        %th Fulfilled On
-        %th Account
-        %th Owner
-        %th.currency Total
-      - @order_details.each do |od|
-        - account = od.account
-        %tr{:class => needs_reconcile_warning?(od) ? 'reconcile-warning' : ''}
-          %td= check_box_tag "order_detail_ids[]", od.id, (action_name == 'create' && !@update_order_details.collect{|uod| uod.id}.include?(od.id) ? false : true), {:disabled => (disable || od.account.expired? || od.account.suspended?), :class => 'toggle'}
-          %td
-            %ul
-              %li== #{link_to "##{od}", edit_facility_order_order_detail_path(current_facility, od.order_id, od)}: #{od.product}
-              - unless od.note.blank?
-                %li
-                  %i= od.note
-          %td= human_date od.fulfilled_at
-          %td
-            %ul
-              %li= link_to account, facility_account_statement_path(current_facility, account, 'recent')
-              - if od.account.suspended?
-                %li
-                  %i Account is suspended
-              - if od.account.expired?
-                %li
-                  %i Account is expired
-          %td=h account.owner_user.full_name
-          %td.currency=h number_to_currency od.total
-      %tr.borderless
-        %td{:colspan => 4}
-        %td.currency{:colspan => 2}= submit_tag "Create Journal", {:disabled => disable}
 
-= render :partial => 'shared/reconcile_footnote'
+%h2 Closed Journals
+- if @journals.blank?
+  %p.notice No journals have been closed yet
+- else
+  %table
+    %tr
+      %th
+      %th Created At
+      %th Journal Date
+      %th Reference
+      %th Status
+    - @journals.each do |j|
+      %tr
+        %td.centered= link_to 'View', facility_journal_path(current_facility, j)
+        %td=h human_datetime(j.created_at)
+        %td=h human_date(j.journal_date)
+        %td=h j.reference
+        %td=h j.status_string

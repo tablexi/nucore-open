@@ -6,24 +6,31 @@ class FacilityJournalsController < ApplicationController
   before_filter :check_acting_as
   before_filter :init_current_facility
 
+  include TransactionSearch
+  transaction_search :new, :create
+  
   load_and_authorize_resource :class => Journal
 
   layout 'two_column'
   
   def initialize
     @subnav     = 'billing_nav'
-    @active_tab = 'admin_invoices'
+    @active_tab = 'admin_billing'
     super
   end
   
   # GET /facilities/:facility_id/journals
   def index
     @pending_journal = Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
-    @order_details   = OrderDetail.need_journal(current_facility)
-    @journal         = current_facility.journals.new()
-    set_soonest_journal_date
+    @journals = current_facility.journals.find(:all, :order => 'journals.created_at DESC').paginate(:page => params[:page])
   end
 
+  # GET /facilities/:facility_id/journals/new
+  def new
+    set_default_variables
+    render :layout => 'two_column_head'
+  end
+   
   #PUT /facilities/:facility_id/journals/:id
   def update
     @pending_journal = Journal.find(params[:id])
@@ -66,6 +73,7 @@ class FacilityJournalsController < ApplicationController
     end
     @order_details = OrderDetail.need_journal(current_facility)
     set_soonest_journal_date
+    @soonest_journal_date = params[:journal_date] || @soonest_journal_date 
     render :action => :index
   end
 
@@ -73,15 +81,14 @@ class FacilityJournalsController < ApplicationController
   def create
     @journal = current_facility.journals.new()
     @journal.created_by = session_user.id
-    @journal.journal_date = parse_usa_date(params[:journal][:journal_date])
+    @journal.journal_date = parse_usa_date(params[:journal_date])
 
     @update_order_details = OrderDetail.find(params[:order_detail_ids] || [])
     if @update_order_details.empty?
       @journal.errors.add(:base, "No orders were selected to journal")
     else
       if Journal.order_details_span_fiscal_years?(@update_order_details)
-        flash[:error] = 'Journals may not span multiple fiscal years. Please select only orders in the same fiscal year.'
-        redirect_to facility_journals_path and return
+        @journal.errors.add(:base, 'Journals may not span multiple fiscal years. Please select only orders in the same fiscal year.')
       else
         Journal.transaction do
           begin
@@ -100,12 +107,11 @@ class FacilityJournalsController < ApplicationController
         end
       end
     end
-
-    @pending_journal = Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
-    @accounts        = NufsAccount.find(:all).reject{|a| a.facility_balance(current_facility) <= 0}
-    @order_details   = OrderDetail.need_journal(current_facility)
-    @soonest_journal_date = @journal.journal_date
-    render :action => :index
+    if @journal.errors.any?
+      flash[:error] = @journal.errors.values.join("<br/>").html_safe
+      remove_ugly_params
+      redirect_to params.merge({:action => :new})   
+    end
   end
 
   # GET /facilities/:facility_id/journals/:id
@@ -121,10 +127,6 @@ class FacilityJournalsController < ApplicationController
     end
 
     @order_details = current_facility.order_details.find(:all, :conditions => {:journal_id => @journal.id})
-  end
-
-  def history
-    @journals = current_facility.journals.find(:all, :order => 'journals.created_at DESC').paginate(:page => params[:page])
   end
 
   def reconcile
@@ -149,9 +151,25 @@ class FacilityJournalsController < ApplicationController
 
 
   private
-
+  
+  def get_pending_journal
+    Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
+  end
+  
   def set_soonest_journal_date
     #@soonest_journal_date=@order_details.collect{ |od| od.fulfilled_at }.max
     @soonest_journal_date=Time.zone.now #unless @soonest_journal_date
+  end
+  
+  def set_default_variables
+    @pending_journal = get_pending_journal
+    @order_details   = @order_details.need_journal(current_facility)
+    @accounts = @accounts.where("type in (?)", ['NufsAccount'])
+    #@journal         = current_facility.journals.new()
+    set_soonest_journal_date
+    if @pending_journal.nil?
+      @order_detail_action = :create
+      @action_date_field = {:journal_date => @soonest_journal_date}
+    end
   end
 end

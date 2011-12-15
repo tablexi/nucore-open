@@ -70,7 +70,7 @@ class Product < ActiveRecord::Base
   end
 
   def set_default_pricing
-    [ PriceGroup.northwestern.first, PriceGroup.external.first ].each do |pg|
+    [ PriceGroup.base.first, PriceGroup.external.first ].each do |pg|
       PriceGroupProduct.create!(:product => self, :price_group => pg)
     end
   end

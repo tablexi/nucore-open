@@ -11,7 +11,7 @@ class PriceGroup < ActiveRecord::Base
   before_destroy :is_not_global
   before_create  lambda {|o| o.display_order = 999 if !o.facility_id.nil?}
 
-  scope :northwestern,  :conditions => { :name => 'Northwestern Base Rate', :facility_id => nil }
+  scope :base,  :conditions => { :name => 'Base Rate', :facility_id => nil }
   scope :external,      :conditions => { :name => 'External Rate', :facility_id => nil }
   scope :cancer_center, :conditions => { :name => 'Cancer Center Rate', :facility_id => nil }
 
@@ -32,7 +32,7 @@ class PriceGroup < ActiveRecord::Base
   end
 
   def to_s
-    self.name
+    is_master_internal? ? "#{I18n.t('institution_name')} #{self.name}" : self.name
   end
 
   def type_string
@@ -40,7 +40,7 @@ class PriceGroup < ActiveRecord::Base
   end
 
   def is_master_internal?
-    return true if self.is_internal? && self.display_order == 1
+    self.is_internal? && self.display_order == 1
   end
 
   def <=> (obj)

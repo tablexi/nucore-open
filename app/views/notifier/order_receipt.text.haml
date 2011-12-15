@@ -1,4 +1,4 @@
-== Thank you for your order on the NUCore website.
+== #{t('.intro')}
 ==
 == Ordered at: #{@order.ordered_at.strftime("%b %e, %Y %l:%M %p")}
 == Facility: #{@order.facility}
@@ -20,4 +20,4 @@
     == Pricing is currently unassigned.
 ==
 ==
-== * All prices are estimates. Actual cost is assigned when the order is complete.
+== * #{t('.outro')}

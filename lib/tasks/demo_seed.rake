@@ -47,7 +47,7 @@ namespace :demo  do
 
     
     pgnu = PriceGroup.find_or_create_by_name({
-      :name => 'Northwestern Base Rate', :is_internal => true, :display_order => 1
+      :name => 'Base Rate', :is_internal => true, :display_order => 1
     })
     pgnu.save(:validate => false) # override facility validator
 

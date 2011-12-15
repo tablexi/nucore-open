@@ -1,3 +1,1 @@
-%p
-  == New transactions for #{@facility} have been posted to "#{ @account }".
-  == Please #{link_to 'log in to NU Core', account_statements_url(@account)} and review these charges.
+%p= t('.body_html', :facility => @facility.to_s, :account => @account.to_s, :login_link => link_to('log in to ' + t('app_name'), account_statements_url(@account)))

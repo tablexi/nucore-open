@@ -2,16 +2,16 @@
   - if controller.action_name == 'new' || controller.action_name == 'create'
     = hidden_field_tag "owner_user_id", @owner_user.id, :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
     %li
-      = label_tag :owner_user_id, 'Owner User', :class => 'require'
+      = label_tag :owner_user_id, t('facility_accounts.account_fields.label.owner_user'), :class => 'require'
       = text_field_tag 'owner_user_full_name', @owner_user.full_name, :disabled => true, :class => 'show_always'
     %li
-      = label_tag :class_type, 'Payment Source Type', :class => 'require'
-      = select_tag 'class_type', options_for_select([["Chart String", "NufsAccount"], ["Credit Card", "CreditCardAccount"], ["Purchase Order", "PurchaseOrderAccount"]], :selected => params[:class_type]), :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
+      = label_tag :class_type, t('facility_accounts.account_fields.label.payment_type'), :class => 'require'
+      = select_tag 'class_type', options_for_select([[t('accounts.institution'), "NufsAccount"], [t('accounts.credit_card'), "CreditCardAccount"], [t('accounts.po'), "PurchaseOrderAccount"]], :selected => params[:class_type]), :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
     %li
-      = f.label :account_number, 'Payment Source Number', :class => 'require'
+      = f.label :account_number, t('facility_accounts.account_fields.label.payment_number'), :class => 'require'
       = f.text_field :account_number, :class => 'NufsAccount PurchaseOrderAccount'
     %li
-      = f.label :name_on_card, 'Name on Card', :class => 'require'
+      = f.label :name_on_card, t('facility_accounts.account_fields.label.cc_name'), :class => 'require'
       = f.text_field :name_on_card, :class => 'CreditCardAccount'
     %li
       = f.label :expiration_month, nil, :class => 'require'
@@ -26,7 +26,7 @@
   %li
     = f.label :description, nil, :class => 'require'
     - if instructions_for == :all || instructions_for == 'CreditCardAccount'
-      %p.instruction.CreditCardAccount No part of a credit card number may be entered. Enter a text description to help you and the user identify this card. For example: "Dr. Smith's Visa Card".
+      %p.instruction.CreditCardAccount= t('facility_accounts.account_fields.label.cc_instruct')
     = f.text_field :description, :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
 
   - if @account.class == Account || @account.is_a?(AffiliateAccount)
@@ -37,11 +37,11 @@
       = f.select :affiliate, Affiliate.all.collect(&:name).sort, opts, :id => 'affiliate', :class => 'CreditCardAccount PurchaseOrderAccount'
 
     %li#affiliate_other
-      = f.label :affiliate_other, 'Affiliate Name', :class => 'require'
+      = f.label :affiliate_other, t('facility_accounts.account_fields.label.affiliate'), :class => 'require'
       = f.text_field :affiliate_other, :class => 'CreditCardAccount PurchaseOrderAccount'
 
   - unless @account.is_a?(NufsAccount)
     %li
-      = f.label :remittance_information, 'Bill To'
-      %p.instruction.CreditCardAccount.PurchaseOrderAccount Where the invoice should be sent to for this payment source; this text will appear on the customer's invoice.
+      = f.label :remittance_information, t('facility_accounts.account_fields.label.remit')
+      %p.instruction.CreditCardAccount.PurchaseOrderAccount= t('facility_accounts.account_fields.label.po_instruct')
       = f.text_area :remittance_information, :cols => 92, :rows => 6, :class => 'CreditCardAccount PurchaseOrderAccount'

@@ -10,7 +10,6 @@ class Account < ActiveRecord::Base
   accepts_nested_attributes_for :account_users
 
   scope :active, lambda {{ :conditions => ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] }}
-  #scope :for_facility, lambda { |facility| { :conditions => ["type <> 'PurchaseOrderAccount' OR (type = 'PurchaseOrderAccount' AND facility_id = ?)", facility.id] }}
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
   validates_length_of :description, :maximum => 50
@@ -43,15 +42,24 @@ class Account < ActiveRecord::Base
             :limit_one => @@limited_to_one_facility_subclasses,
             :facility => facility})
   end
+  
+  def facilities
+    if facility_id
+      # return a relation
+      Facility.active.where(:id => facility_id)
+   else
+      Facility.active
+    end
+  end
 
   def type_string
     case self
       when PurchaseOrderAccount
-        'Purchase Order'
+        I18n.t('accounts.po')
       when CreditCardAccount
-        'Credit Card'
+        I18n.t('accounts.credit_card')
       when NufsAccount
-        'Chart String'
+        I18n.t('accounts.institution')
       else
         'Account'
     end
@@ -93,6 +101,10 @@ class Account < ActiveRecord::Base
 
   def account_pretty
     "#{description} (#{account_number})"
+  end
+  
+  def account_list_item
+    "#{account_number} #{description}"
   end
 
   def validate_against_product(product, user)

@@ -1,14 +1,14 @@
 - links = []
 - links.push({ :url => root_path, :text => 'Home', :tab_name => 'home' })
 - if !acting_user.nil? and customer_tab?
-  - links.push({ :url => url_for(:controller => '/orders'), :text => 'My Orders', :tab_name => 'orders' })
-  - links.push({ :url => reservations_url, :text => 'My Reservations', :tab_name => 'reservations'})
-  - links.push({ :url => accounts_path, :text => 'My Payment Sources',:tab_name => 'accounts' })
+  - links.push({ :url => url_for(:controller => '/orders'), :text => t_my(Order), :tab_name => 'orders' })
+  - links.push({ :url => reservations_url, :text => t_my(Reservation), :tab_name => 'reservations'})
+  - links.push({ :url => accounts_path, :text => t_my(Account),:tab_name => 'accounts' })
 - if current_facility and admin_tab?
   - if current_user.operator_of?(current_facility)
     - links.push({:url => facility_orders_path(current_facility),    :text => 'Orders',   :tab_name => 'admin_orders'})
     - links.push({:url => facility_reservations_path(current_facility),    :text => 'Reservations',   :tab_name => 'admin_reservations'})
-    - links.push({:url => facility_accounts_path(current_facility), :text => 'Billing',  :tab_name => 'admin_invoices'})
+    - links.push({:url => facility_transactions_path(current_facility), :text => 'Billing', :tab_name => 'admin_billing'})
     - links.push({:url => facility_products_path(current_facility),   :text => 'Products', :tab_name => 'admin_products'})
     - links.push({:url => facility_users_path(current_facility),      :text => 'Users',    :tab_name => 'admin_users'})
     - reports_sub=[{:url => product_facility_general_reports_path(current_facility), :text => 'General'},
@@ -32,11 +32,11 @@
 
       - if !acting_as? && current_user && current_user.administrator?
         %li.right{:class => controller.active_tab == 'global_settings' ? 'active' : ''}
-          = link_to "Global Settings", affiliates_path
+          = link_to t('pages.global_settings'), affiliates_path
 
       - if !acting_as? && (!facilities.empty? || (current_user && current_user.administrator?))
         %li.right{:class => controller.active_tab == 'manage_facilites' ? 'active' : ''}
-          = link_to "Manage Facilities", :list_facilities
+          = link_to t("pages.manage", :model => t('activerecord.models.facility', :count => 2)), :list_facilities
           - unless facilities.empty?
             %ul.subnav
               - facilities.each do |facility|

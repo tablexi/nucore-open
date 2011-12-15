@@ -1,0 +1,13 @@
+= render :partial => "shared/transactions/headers"
+- content_for :h1 do
+  = @facility
+- content_for :h2 do
+  %h2
+    - if @order_detail_action
+      = @order_detail_action.to_s.titleize
+    - else
+      Transaction History
+= content_for :top_block do      
+  = render :partial => 'shared/transactions/top', :locals => { :tab => "transactions" }
+= render :partial => 'shared/transactions/table'  
+

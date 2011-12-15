@@ -1,9 +1,11 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   include DateHelper
+  include TranslationHelper
 
   def app_name
-    NUCore.app_name
+    t :app_name
+    #NUCore.app_name
   end
 
   def html_title(title=nil)
@@ -56,7 +58,6 @@ module ApplicationHelper
     define_method("show_actual_#{type}") {|order_detail| show_currency(order_detail, "actual_#{type}") }
     define_method("show_estimated_#{type}") {|order_detail| show_currency(order_detail, "estimated_#{type}") }
   end
-
 
   private
 

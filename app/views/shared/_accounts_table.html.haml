@@ -1,7 +1,7 @@
 %table
   %tr
-    %th Payment Source
-    %th.centered Facility
+    %th= Account.model_name.human
+    %th.centered= Facility.model_name.human
   - @account_users.each do |au|
     - a = au.account
     %tr
