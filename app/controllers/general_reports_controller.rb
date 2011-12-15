@@ -35,20 +35,19 @@ class GeneralReportsController < ReportsController
   private
 
   def init_report_params
-    os, status_id=nil, params[:status_filter]
+    status_ids=params[:status_filter]
 
-    if status_id.blank?
-      os=OrderStatus.complete.first
-    elsif status_id.to_i != -1 # not all
-      os=OrderStatus.find(status_id.to_i)
+    if status_ids.blank?
+      stati=[ OrderStatus.complete.first, OrderStatus.reconciled.first ]
+    else
+      stati=status_ids.collect{|si| OrderStatus.find(si.to_i) }
     end
 
-    if os
-      @selected_status_id=os.id
-      @status_ids=(os.root? ? os.children.collect(&:id) : []).push(os.id)
-    else
-      @selected_status_id=-1
-      @status_ids=OrderStatus.non_protected_statuses(current_facility).collect(&:id)
+    @status_ids=[]
+
+    stati.each do |stat|
+      @status_ids << stat.id
+      @status_ids += stat.children.collect(&:id) if stat.root?
     end
 
     super

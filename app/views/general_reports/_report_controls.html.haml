@@ -5,6 +5,6 @@
 
 %li
   %label Order Status
-  %select{ :name => "status_filter", :'data-placeholder' => 'Choose...', :multiple => true, :id => 'status_filter' }
-    - OrderStatus.non_protected_statuses(current_facility).each do |os|
-      = options_for_select([[os.name_with_level, os.id]], @selected_status_id)
+  %select{ :name => "status_filter[]", :'data-placeholder' => 'Choose...', :multiple => true, :id => 'status_filter' }
+    - stati=[ OrderStatus.complete.first, OrderStatus.reconciled.first, OrderStatus.new_os.first, OrderStatus.inprocess.first, OrderStatus.cancelled.first ]
+    = options_for_select(stati.collect{|stat| [ stat.name_with_level, stat.id ] }, @status_ids)
