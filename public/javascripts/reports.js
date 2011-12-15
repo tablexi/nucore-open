@@ -47,6 +47,13 @@ function getUpdateTabUrl(ui)
 }
 
 
+function updateReport()
+{
+    var selected=getSelectedTabIndex();
+    $('#tabs').tabs('url', selected, getUpdateTabUrl()).tabs('load', selected);
+}
+
+
 function initReportsUI(selectedIndex)
 {
     // create reports tabs
@@ -81,10 +88,11 @@ function initReportsUI(selectedIndex)
     });
 
     // update report on parameter change
-    $('#refresh-form :input').change(function() {
-        var selected=getSelectedTabIndex();
-        $('#tabs').tabs('url', selected, getUpdateTabUrl()).tabs('load', selected);
-    });
+    $('#refresh-form :input').change(updateReport);
+
+    // decorate order status drop down
+    if($('#status_filter').length)
+        $('#status_filter').chosen();
 }
 
 

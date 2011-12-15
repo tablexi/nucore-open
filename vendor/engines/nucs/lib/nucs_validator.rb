@@ -87,6 +87,8 @@ class NucsValidator
   # window return the latest value of expires_at that is found.
   # return nil otherwise.
   def latest_expiration
+    return Time.zone.now+3.years if Whitelist.includes?(@chart_string)
+    
     where={
       :fund => @fund,
       :department => @department,

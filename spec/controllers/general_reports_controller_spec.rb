@@ -18,7 +18,7 @@ describe GeneralReportsController do
   private
 
   def setup_extra_params(params)
-    params.merge!(:status_filter => OrderStatus.complete.first.id)
+    params.merge!(:status_filter => [ OrderStatus.complete.first.id ])
   end
 
 
@@ -44,26 +44,24 @@ describe GeneralReportsController do
 
   def assert_report_params_init
     super
-
     assigns(:status_ids).should be_instance_of Array
 
-    os=nil
-
-    if @params[:status_filter].blank?
-      os=OrderStatus.complete.first
-    elsif @params[:status_filter].to_i != -1
-      os=OrderStatus.find(@params[:status_filter].to_i)
-    end
-
-    if os
-      assigns(:selected_status_id).should == os.id
-      order_status_ids=(os.root? ? os.children.collect(&:id) : []).push(os.id)
+    if @params[:date_start].blank? && @params[:date_end].blank?
+      stati=[ OrderStatus.complete.first, OrderStatus.reconciled.first ]
+    elsif @params[:status_filter].blank?
+      stati=[]
     else
-      assigns(:selected_status_id).should == -1
-      order_status_ids=OrderStatus.non_protected_statuses(@authable).collect(&:id)
+      stati=@params[:status_filter].collect{|si| OrderStatus.find(si.to_i) }
     end
 
-    assigns(:status_ids).should == order_status_ids
+    status_ids=[]
+
+    stati.each do |stat|
+      status_ids << stat.id
+      status_ids += stat.children.collect(&:id) if stat.root?
+    end
+
+    assigns(:status_ids).should == status_ids
   end
 
 

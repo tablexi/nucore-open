@@ -32,7 +32,32 @@
     display: none;
     position: absolute;
     z-index: 2;
-    width: 60px;
+}
+
+.chzn-container ul {
+    display: block;
+}
+
+.chzn-container a {
+    padding: 0;
+}
+
+.chzn-container-multi .chzn-choices {
+    width: 210px;
+}
+
+.chzn-results li {
+    float: none;
+}
+
+.chzn-container-multi .chzn-choices .search-choice {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+}
+
+.datepicker {
+    height: 23px;
+    border: 1px solid #AAAAAA;
 }
 
 button {
