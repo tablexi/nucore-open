@@ -36,8 +36,12 @@ class OrderStatus < ActiveRecord::Base
   end
 
   class << self
+    def root_statuses
+      roots.sort {|a,b| a.lft <=> b.lft }
+    end
+
     def default_order_status
-      roots.sort {|a,b| a.lft <=> b.lft }.first
+      root_statuses.first
     end
 
     def initial_statuses (facility)

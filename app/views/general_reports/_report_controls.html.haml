@@ -1,6 +1,8 @@
+= content_for :head_content do
+  = stylesheet_link_tag 'chosen'
+  = javascript_include_tag 'chosen.jquery.min'
+
 %li
   %label Order Status
-  %select{ :name => "status_filter", :class => 'sync_select', :id => 'status_filter' }
-    = options_for_select([['All', '-1']])
-    - OrderStatus.non_protected_statuses(current_facility).each do |os|
-      = options_for_select([[os.name_with_level, os.id]], @selected_status_id)
+  %select{ :name => "status_filter[]", :'data-placeholder' => 'Choose...', :multiple => true, :id => 'status_filter' }
+    = options_for_select(OrderStatus.root_statuses.collect{|stat| [ stat.name_with_level, stat.id ] }, @status_ids)
