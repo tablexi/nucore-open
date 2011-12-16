@@ -1,0 +1,16 @@
+.grid_12
+  - if flash[:error]
+    %p.error= flash[:error]
+  - if flash[:notice]
+    %p.notice= flash[:notice]
+  - if flash[:info]
+    %p.info= flash[:info]
+.grid_12#header_billing
+  .grid_3.alpha
+    #sidebar
+      = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => tab }
+  .grid_9.omega
+    = render :partial => 'shared/transactions/search'
+  .clear
+
+  

@@ -1,0 +1,53 @@
+= will_paginate(@order_details) if @order_details.respond_to? :total_pages
+- @date_field_to_use ||= :fulfilled_at
+%table.dense
+  %tr
+    -if @order_detail_action 
+      %th
+    %th= "#{Order.model_name.human} #"
+    %th.nowrap= OrderDetail.human_attribute_name(:fulfilled_at)
+    - if @extra_date_column
+      %th.nowrap= OrderDetail.human_attribute_name(@extra_date_column) 
+    - unless single_facility?
+      %th= Facility.model_name.human
+    %th= OrderDetail.human_attribute_name("description")
+    %th.nowrap= OrderDetail.human_attribute_name("user")
+    -# %th= OrderDetail.human_attribute_name('created_by_user') #Ordered By
+    - unless single_account?
+      %th= Account.model_name.human
+      %th= Account.human_attribute_name("owner")
+    %th= OrderDetail.human_attribute_name("cost")
+    %th= OrderDetail.human_attribute_name("order_status")
+    
+    
+    
+  - @order_details.each do |order_detail|
+    %tr{:class => row_class(order_detail)}
+      - if @order_detail_action
+        %td= check_box_tag "order_detail_ids[]", order_detail.id, false, {:class => 'toggle'}
+      %td.nowrap= link_to order_detail, order_order_detail_path(order_detail.order, order_detail)
+      %td= order_detail.fulfilled_at.strftime("%m/%d/%Y") if order_detail.fulfilled_at
+      - if @extra_date_column and order_detail.send(@extra_date_column)
+        %td= order_detail.send(@extra_date_column).strftime("%m/%d/%Y")
+      - unless single_facility?
+        %td= order_detail.order.facility
+      %td
+        = order_detail.product
+        %br
+        %em= order_detail.reservation
+      %td= order_detail.order.user.full_name
+      -# %td= order_detail.order.created_by_user.full_name  
+      - unless single_account?
+        %td= order_detail.account
+        %td= order_detail.account.owner.user
+      %td.currency 
+        - if order_detail.cost_estimated?
+          %span.estimated_cost
+            = show_estimated_total(order_detail)
+        - elsif order_detail.price_policy.nil?
+          Unassigned
+        - else
+          %span.actual_cost
+            = show_actual_total(order_detail)
+      %td.nowrap= order_detail.order_status
+= will_paginate(@order_details) if @order_details.respond_to? :total_pages

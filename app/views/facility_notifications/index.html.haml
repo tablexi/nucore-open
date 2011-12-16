@@ -1,39 +1,17 @@
+= render :partial => "shared/transactions/headers"
 = content_for :h1 do
-  =h current_facility
+  = @facility
+= content_for :h2 do
+  %h2 Send Notifications
 
-= content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'notifications' }
+= content_for :top_block do      
+  = render :partial => 'shared/transactions/top', :locals => { :tab => "notifications" }
 
-%h2= t('.head')
-
-- if @accounts.empty?
-  %p.notice= t('.notice')
+- if @order_details.empty?
+  %p.notice No notifications are currently pending
 - else
-  = form_tag facility_notifications_path(current_facility), :method => :post do
-    %table
-      %tr.borderless
-        %td{:colspan => 4}= link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
-        %td.currency{:colspan => 2}= submit_tag t('.submit')
-      %tr
-        %th
-        %th= t('.th.account')
-        %th= t('.th.owner')
-        %th= t('.th.notify')
-        %th.currency= t('.th.orders')
-        %th.currency= t('.th.balance')
-      - @accounts.each do |a|
-        - details = a.order_details.need_notification(current_facility)
-        %tr
-          %td.centered= check_box_tag "account_ids[]", a.id, true, {:class => 'toggle'}
-          %td= link_to a, facility_account_statement_path(current_facility, a, 'recent')
-          %td=h a.owner_user.full_name
-          %td
-            %ul
-              - a.notify_users.each do |u|
-                %li=h u.email
-          %td.currency=h details.count
-          %td.currency=h number_to_currency details.collect{ |d| d.total }.inject{|sum, t| sum + t}
-      %tr.borderless
-        %td{:colspan => 4}= link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
-        %td.currency{:colspan => 2}= submit_tag t('.submit')
-    %p.footnote= t('.foot')
+  = render :partial => 'shared/transactions/table'
+  = render :partial => 'shared/reconcile_footnote'
+
+    
+

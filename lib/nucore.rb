@@ -44,6 +44,17 @@ module NUCore
         end
       end
     end
+    
+    module SortHelper
+      def self.included(base)
+        base.extend ClassMethods
+      end
+      module ClassMethods
+        def order_by_desc_nulls_first(field)
+          NUCore::Database.oracle? ? order("#{field} desc nulls first") : order("-#{field}")
+        end
+      end
+    end
 
   end
 

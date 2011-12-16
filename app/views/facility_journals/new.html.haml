@@ -1,0 +1,31 @@
+= content_for :head_content do
+  %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
+  = stylesheet_link_tag 'jquery-ui/jquery-ui'
+  :javascript
+    $(function(){
+      $(".datepicker").datepicker({
+        'defaultDate':'#{@soonest_journal_date.strftime("%m/%d/%y")}',
+        'minDate':'#{@soonest_journal_date.strftime("%m/%d/%y")}',
+        'maxDate':'#{Time.zone.now.to_datetime.strftime("%m/%d/%y")}'
+      });
+    });
+
+= render :partial => "shared/transactions/headers"
+= content_for :h1 do
+  = @facility
+= content_for :h2 do
+  %h2 Create Journal
+
+= content_for :top_block do      
+  = render :partial => 'shared/transactions/top', :locals => { :tab => 'new_journal' }
+  
+- if @order_details.empty?
+  %p.notice= t("facility_journals.new.no_orders")
+- else
+  - unless @pending_journal.nil?
+    %p.notice= t("facility_journals.new.not_closed_html", :link => facility_journals_path)
+  = content_for :action_instructions do
+    %p
+      = t("facility_journals.new.instructions")
+  = render :partial => 'shared/transactions/table'
+  = render :partial => 'shared/reconcile_footnote'

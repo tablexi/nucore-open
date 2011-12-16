@@ -1,4 +1,6 @@
 class OrderDetail < ActiveRecord::Base
+  include NUCore::Database::SortHelper
+  
   versioned
 
   belongs_to :product
@@ -60,13 +62,13 @@ class OrderDetail < ActiveRecord::Base
                      AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete']
   }}
 
-  scope :in_review, lambda { |facility| {
-    :joins => :product,
-    :conditions => ['products.facility_id = ?
-                     AND order_details.state = ?
-                     AND order_details.reviewed_at > ?
-                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete', Time.zone.now]
-  }}
+  scope :in_review, lambda { |facility| 
+    scoped.joins(:product).
+    where(:products => {:facility_id => facility.id}).
+    where(:state => 'complete').
+    where("order_details.reviewed_at > ?", Time.zone.now).
+    where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+  }
 
   scope :need_statement, lambda { |facility| {
     :joins => [:product, :account],
@@ -98,7 +100,52 @@ class OrderDetail < ActiveRecord::Base
 
   scope :non_reservations, joins(:product).where("products.type <> 'Instrument'")
   scope :reservations, joins(:product).where("products.type = 'Instrument'")
-
+  
+  scope :ordered, where("orders.ordered_at IS NOT NULL")
+  scope :pending, joins(:order).where(:state => ['new', 'inprocess']).ordered
+  scope :confirmed_reservations,  reservations.
+                                 joins(:order).
+                                 includes(:reservation).
+                                 ordered
+  scope :upcoming_reservations, confirmed_reservations.
+                                where("reservations.reserve_end_at > ?", Time.zone.now).
+                                order('reservations.reserve_start_at ASC')
+  scope :all_reservations, confirmed_reservations.
+                           order('reservations.reserve_start_at DESC')
+  
+  scope :for_accounts, lambda {|accounts| where("order_details.account_id in (?)", accounts) unless accounts.nil? or accounts.empty? }
+  scope :for_facilities, lambda {|facilities| joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? or facilities.empty? }
+  scope :for_products, lambda { |products| where("order_details.product_id in (?)", products) unless products.blank? }
+  scope :for_owners, lambda { |owners| joins(:account).
+                                       joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'").
+                                       where("account_users.user_id in (?)", owners) unless owners.blank? }
+                                       
+  scope :in_date_range, lambda { |start_date, end_date| 
+    search = scoped
+    if (start_date)
+      search = search.where("orders.ordered_at > ?", start_date.beginning_of_day)
+    end
+    if (end_date)
+      search = search.where("orders.ordered_at < ?", end_date.end_of_day)
+    end
+    search
+  }
+  
+  scope :fulfilled_in_date_range, lambda {|start_date, end_date|
+    action_in_date_range :fulfilled_at, start_date, end_date
+  }
+  
+  scope :action_in_date_range, lambda {|action, start_date, end_date|
+    logger.debug("searching #{action} between #{start_date} and #{end_date}")
+    search = scoped
+    if start_date
+      search = search.where("#{action} > ?", start_date.beginning_of_day)
+    end
+    if end_date
+      search = search.where("#{action} < ?", end_date.end_of_day)
+    end
+    search
+  }
   # BEGIN acts_as_state_machine
   include AASM
 

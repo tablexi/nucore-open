@@ -1,10 +1,12 @@
 /***************************************
 reset.css overrides
 ***************************************/
-html, body {
+
+body {
   background: #EFEFEF;
   font-family: "Lucida Grande",Geneva,Verdana,Arial,sans-serif;
   font-size: 12px;
+  line-height: 1.5em;
 }
 
 a,
@@ -24,9 +26,9 @@ h1, h2, h3 {
 }
 
 h1 {
-  font-size: 25px;
-  border-bottom: 1px solid #c1c1c1;
-  padding-bottom: 5px;
+  font-size: 32px;
+  padding-bottom: 15px;
+	margin:10px 0 15px;
 }
 
 h2 {
@@ -38,7 +40,7 @@ h3 {
 }
 
 p, ul {
-  line-height: 1.5;
+  line-height: 1.5em;
   margin-bottom: 15px;
 }
 
@@ -51,6 +53,29 @@ label.inline {
   display: inline;
 }
 
+input[type=button] {
+	-moz-border-bottom-colors: none;
+  -moz-border-image: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  -moz-transition: all 0.1s linear 0s;
+  background-color: #C1C1C1;
+  background-image: -moz-linear-gradient(center top , #FFFFFF, #FFFFFF 25%, #E6E6E6);
+  background-repeat: no-repeat;
+  border-color: #C1C1C1 #C1C1C1 #C1C1C1;
+  border-radius: 4px 4px 4px 4px;
+  border-style: solid;
+  border-width: 1px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: #333333;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 13px;
+  line-height: normal;
+  padding: 5px 14px 6px;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+}
 /***************************************
 reusable classes
 ***************************************/
@@ -187,6 +212,13 @@ input.btn:hover {
     font-weight : bold;
 }
 
+.dense {
+	font-size: 11px;
+}
+.nowrap {
+	white-space: nowrap;
+}
+
 /***************************************
 main layout ids
 ***************************************/
@@ -282,33 +314,108 @@ main layout ids
   padding: 15px 0 60px;
 }
 
+
+
 #sidebar ul {
-  background:#F5F3F4;
-  border: 1px solid #D1D1D1;
+  border: 1px solid #DDDDDD;
+  border-radius: 3px 3px 3px 3px;
+  box-shadow: 0 1px 0 #FFFFFF inset;
+}
+
+#sidebar ul ul {
+	box-shadow:none;
+	border:none;
+}
+
+#sidebar li {
+	background-color: #F5F5F5;
+   background-image: -moz-linear-gradient(center top , #FFFFFF, #F5F5F5);
+   background-repeat: repeat-x;
+   padding: 10px 15px;
 }
 
 /* todo: need to browser test this */
 #sidebar ul li + li {
-  border-top: 1px solid #c1c1c1;
+  border-top: 1px solid #ddd;
 }
 
 #sidebar ul li a {
-  color: black;
-  display:block;
+	color:#666;
   text-decoration: none;
-  padding: 7px 10px;
 }
 
-#sidebar ul li a.active {
-  background:#a7a7a7;
-  color:#fff;
+
+#sidebar ul li a.active, #sidebar ul li a:hover{
+  color:#000;
+	font-weight:700;
 }
 
-#sidebar ul li a:hover {
-  background:#a7a7a7;
-  color:#fff;
-  text-decoration: underline;
+#sidebar ul ul {
+	border:none;
 }
+
+#sidebar li, #sidebar li li {
+	color:#666;
+	font-weight:normal;
+}
+
+#sidebar li li {
+	padding:5px;
+	text-indent:0px;
+}
+
+#sidebar ul ul {
+	display:none;
+}
+
+#sidebar li.sub_menu {
+	cursor:pointer;
+	text-indent:-12px;
+}
+
+#sidebar li.sub_menu .icon {
+	background: url(../images/icon-submenu.png) top left no-repeat;
+	display:inline-block;
+	height:12px;
+	position:relative;
+
+	width:12px;
+}
+
+#sidebar ul .break {
+	display:block;
+	height:10px;
+	width:100%;
+}
+
+#sidebar li.sub_menu:hover {
+	color:#000;
+	font-weight:700;
+}
+
+#sidebar #menu_billing {
+
+	z-index:999999;
+}
+
+#sidebar #menu_billing li {
+	padding:6px 15px
+}
+
+#sidebar #menu_billing li.sub_menu .icon {
+	height:10px;
+}
+
+#sidebar #menu_billing ul li li {
+	background:none;
+	border:none;
+	padding:0 0 0 10px;
+}
+
+#sidebar #menu_billing ul ul {
+	margin-bottom:0;
+}
+
 
 #cart ul li {
   margin-top: 6px;
@@ -432,6 +539,71 @@ p.error {
   padding: 1px 0;
 }
 
+/***********************
+ * Search forms
+ */
+.search_form fieldset {
+	float:left;
+	margin-right:20px;
+}
+.search_form fieldset#calendar_filter input[type=text] {
+	background-image: -moz-linear-gradient(center bottom , white 85%, #EEEEEE 99%);
+  border: 1px solid #AAAAAA;
+	height:24px;
+	width:100px;
+	margin-bottom:4px;
+}
+
+.search_form fieldset#search, .search_form fieldset#search ul {
+	width:500px;
+}
+
+body .search_form .chzn-container .chzn-drop {
+	width:500px !important; /* Necessary Evil*/
+}
+
+.search_form fieldset#calendar_filter {
+	margin-left:10px;
+	padding:0 20px;
+}
+
+.search_form select {
+	width:200px;
+}
+
+.search_form fieldset li .chzn-container, .search_form fieldset li .chzn-container input{
+	margin:0;
+}
+
+
+.search_form fieldset li {
+	margin-bottom:10px;
+}
+
+.search_form input[type=submit] {
+	clear:both;
+	float:right;
+	margin-top:20px;
+}
+
+.order_action {
+	padding-bottom:10px;
+	overflow:hidden;
+}
+.order_action div {
+	float: left;
+	width: 50%;
+}
+.order_action .center_fields {
+	text-align: center;
+}
+.order_action .select_all_none,
+.order_action .submit {
+	width: 25%;
+}
+.order_action .submit {
+	text-align: right;
+}
 
 /***************************************
 tabs
@@ -444,7 +616,7 @@ ul.tabs {
 }
 
 ul.tabs li {
-  border-top: 1px solid #c1c1c1;
+	border-top: 1px solid #c1c1c1;
   border-right: 1px solid #c1c1c1;
   float:left;
   line-height:32px;
@@ -455,14 +627,44 @@ ul.tabs li.first {
   border-left:1px solid #c1c1c1;
 }
 
+ul.tabs li a {
+	color:#666;
+}
+
 ul.tabs li a.active,
 ul.tabs li a:hover {
-  background:none repeat scroll 0 0 #a7a7a7;
-  color:#FFF;
+	background:none repeat scroll 0 0 #a7a7a7;
+	color:#FFF;
   text-decoration:none;
 }
 
 ul.tabs li a {
-  background:none repeat scroll 0 0 #efefef;
-  padding:10px 20px;
+	background:none repeat scroll 0 0 #efefef;
+ 	padding:10px 20px;
+}
+
+
+/***************************************
+billing
+***************************************/
+#header_billing {
+	border-top:1px solid #ccc;
+	padding-top:10px;
+	background:url(../images/bg-search-form.jpg) top right repeat-y;
+}
+
+#table_billing {
+	border-top:1px solid #ccc;
+	padding-top:10px;
+}
+#table_billing .pagination {
+	margin-bottom:10px;
+}
+
+#filtering_billing {
+	border-left:4px solid #ccc;
+	border-top:1px solid #ccc;
+	border-right:1px solid #ccc;
+	border-bottom:1px solid #ccc;
+	overflow:hidden;
 }

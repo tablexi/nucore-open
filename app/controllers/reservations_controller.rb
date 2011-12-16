@@ -39,13 +39,24 @@ class ReservationsController < ApplicationController
   def list
     notices = []
     now = Time.zone.now
-    @order_details = current_user.order_details.
-      joins(:order).
-      includes(:reservation).
-      where("orders.ordered_at IS NOT NULL").
-      order('orders.ordered_at DESC').all
+    @available_statuses = ['upcoming', 'all']
+    case params[:status]
+    when 'upcoming'
+      @order_details = current_user.order_details.upcoming_reservations
+    when 'all'
+      @order_details = current_user.order_details.all_reservations
+    else
+      redirect_to reservations_status_path(:status => "upcoming")
+      return
+    end
+    @order_details = @order_details.paginate(:page => params[:page])
+    
+      # joins(:order).
+      # includes(:reservation).
+      # where("orders.ordered_at IS NOT NULL").
+      # order('orders.ordered_at DESC').all
 
-    @order_details=@order_details.delete_if{|od| od.reservation.nil? }.paginate(:page => params[:page])
+    #@order_details=@order_details.delete_if{|od| od.reservation.nil? }.paginate(:page => params[:page])
 
     @order_details.each do |od|
       res = od.reservation
