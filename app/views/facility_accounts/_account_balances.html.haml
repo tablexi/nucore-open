@@ -1,14 +1,14 @@
 - if @accounts.blank?
-  %p.notice No payment sources found.
+  %p.notice= "No #{Account.model_name.human.pluralize} found."
 - else
   %table
     %tr
-      %th== Payment Source
+      %th= Account.model_name.human
       %th== Owner
       %th.currency== Unreconciled Total (actual + estimated)
     - @accounts.each do |account|
       %tr
-        %td= link_to account, facility_account_statement_path(current_facility, account, 'recent')
+        %td= link_to account, facility_account_path(current_facility, account)
         %td=h account.owner_user.full_name if account.owner_user
         %td.currency=h number_to_currency account.unreconciled_total(current_facility)
   - if params[:search_term].nil?

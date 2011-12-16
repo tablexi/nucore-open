@@ -23,6 +23,6 @@
       - if price_policy.restrict_purchase?
         %td.centered{ :colspan => 3 } Unable to purchase
       - else
-        %td.currency=h number_to_currency price_policy.unit_cost
-        %td.currency=h number_to_currency price_policy.unit_subsidy
-        %td.currency=h number_to_currency (price_policy.unit_cost - price_policy.unit_subsidy)
+        %td.currency= number_to_currency price_policy.unit_cost
+        %td.currency= number_to_currency price_policy.unit_subsidy
+        %td.currency= number_to_currency(price_policy.unit_cost - price_policy.unit_subsidy)

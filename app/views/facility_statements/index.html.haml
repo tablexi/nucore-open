@@ -7,15 +7,15 @@
 %h2 Statement History
 
 - if @statements.empty?
-  %p.notice No statements have been sent yet
+  %p.notice= t(".no_statements")
 - else
   %table
     %tr
       %th
-      %th Sent At
-      %th Sent By
-      %th Account
-      %th.currency # of Orders
+      %th= Statement.human_attribute_name(:created_at) #Sent At
+      %th= Statement.human_attribute_name(:created_by) # Sent By
+      %th= Account.model_name.human
+      %th.currency # of #{Order.model_name.human.pluralize}
     - @statements.each do |s|
       %tr
         %td.cenetered= link_to 'Download', facility_account_statement_path(current_facility, s.account_id, s, :format => :pdf)

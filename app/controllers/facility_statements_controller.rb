@@ -5,11 +5,14 @@ class FacilityStatementsController < ApplicationController
   before_filter :init_current_facility
 
   load_and_authorize_resource :class => Statement
+  
+  include TransactionSearch
+  transaction_search :new
 
   layout 'two_column'
 
   def initialize
-    @active_tab = 'admin_invoices'
+    @active_tab = 'admin_billing'
     super
   end
 
@@ -17,65 +20,60 @@ class FacilityStatementsController < ApplicationController
   def index
     @statements = current_facility.statements.find(:all, :order => 'statements.created_at DESC').paginate(:page => params[:page])
   end
-
-  # GET /facilities/:facility_id/statements/pending
-  def pending
-    order_details = OrderDetail.need_statement(current_facility)
-    @acct2ods={}
-
-    order_details.each do |od|
-      acct=od.account
-
-      if @acct2ods.has_key? acct
-        @acct2ods[acct] << od
-      else
-        @acct2ods[acct]=[od]
-      end
-    end
+  
+  # GET /facilities/:facility_id/statements/new
+  def new
+    @accounts = @accounts.where("type in (?)", ['CreditCardAccount', 'PurchaseOrderAccount'])
+    @order_details = @order_details.need_statement(@facility)
+    @order_detail_action = :send_statements
+    render :layout => "two_column_head"
   end
 
-  # POST /facilities/:facility_id/statements/email
-  def email
-    unless params[:account_ids]
-      flash[:error] = I18n.t 'controllers.facility_statements.email.no_selection'
-      redirect_to pending_facility_statements_path and return
+  # POST /facilities/:facility_id/statements/send_statements
+  def send_statements
+    
+    if params[:order_detail_ids].nil? or params[:order_detail_ids].empty?
+      flash[:error] = I18n.t 'controllers.facility_statements.send_statements.no_selection'
+      redirect_to :action => :new
+      return
     end
-    accounts = Account.find(params[:account_ids])
-
-    error = false
-    accounts.each do |a|
-      details = a.order_details.need_statement(current_facility)
-      next if details.empty?
-      a.transaction do
+    @errors = []
+    to_statement = {}
+    OrderDetail.transaction do
+      params[:order_detail_ids].each do |order_detail_id|
+        od = nil
         begin
-          statement = Statement.create!({:facility => current_facility, :account_id => a.id, :created_by => session_user.id})
-          details.each do |od|
-            StatementRow.create!({ :statement_id => statement.id, :amount => od.total, :order_detail_id => od.id })
-            od.statement_id = statement.id
-            od.save!
-          end
-          a.notify_users.each {|u| Notifier.statement(:user => u, :facility => current_facility, :account => a, :statement => statement).deliver }
+          od = OrderDetail.need_statement(current_facility).find(order_detail_id, :readonly => false)
+          to_statement[od.account] ||= []
+          to_statement[od.account] << od
         rescue Exception => e
-          error = true
-          raise ActiveRecord::Rollback
+          @errors << I18n.t('controllers.facility_statements.send_statements.order_error', :order_detail_id => order_detail_id)
         end
       end
-    end
-    if error
-      redirect_to pending_facility_statements_path and return
-    end
-    flash[:notice] = I18n.t 'controllers.facility_statements.email.success'
-    redirect_to pending_facility_statements_path
-  end
+      
+      @account_statements = {}
+      to_statement.each do |account, order_details|
+        statement = Statement.create!({:facility => current_facility, :account_id => account.id, :created_by => session_user.id})
+        order_details.each do |od|
+          StatementRow.create!({ :statement_id => statement.id, :amount => od.total, :order_detail_id => od.id })
+          od.statement_id = statement.id
+          @errors << "#{od} #{od.errors}" unless od.save
+        end
+        @account_statements[account] = statement        
+      end
 
-  # GET /facilities/:facility_id/statements/accounts_receivable
-  def accounts_receivable
-    @account_balances = {}
-    order_details = current_facility.order_details.complete
-    order_details.each do |od|
-      @account_balances[od.account_id] = @account_balances[od.account_id].to_f + od.total.to_f
+      if @errors.any?
+        flash[:error] = I18n.t('controllers.facility_statements.errors_html', :errors => @errors.join('<br/>')).html_safe
+        raise ActiveRecord::Rollback
+      else      
+        @account_statements.each do |account, statement|
+          account.notify_users.each {|u| Notifier.statement(:user => u, :facility => current_facility, :account => account, :statement => statement).deliver }
+        end
+        account_list = @account_statements.map {|a,s| a.account_list_item }
+        flash[:notice] = I18n.t('controllers.facility_statements.send_statements.success_html', :accounts => account_list.join('<br/>')).html_safe
+      end
     end
-    @accounts = Account.find(@account_balances.keys)
+    redirect_to :action => "new"
   end
 
   # GET /facilities/:facility_id/statements/:id

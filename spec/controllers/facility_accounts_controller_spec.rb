@@ -273,6 +273,19 @@ describe FacilityAccountsController do
     end
 
   end
+  
+  context 'accounts_receivable' do
+
+    before :each do
+      @method=:get
+      @action=:accounts_receivable
+      @params={:facility_id => @authable.url_name}
+    end
+
+    it_should_allow_managers_only
+
+  end
+
 
 
   context 'user_search' do

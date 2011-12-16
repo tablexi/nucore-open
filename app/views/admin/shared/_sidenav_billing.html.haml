@@ -1,11 +1,27 @@
-%ul
-  %li= link_to 'Payment Sources',        facility_accounts_path, :class => (sidenav_tab == 'accounts' ? 'active' : '')
-  %li= link_to 'Accounts Receivable',    accounts_receivable_facility_statements_path, :class => (sidenav_tab == 'accounts_receivable' ? 'active' : '')
-  %li= link_to 'Send Notifications',     facility_notifications_path, :class => (sidenav_tab == 'notifications' ? 'active' : '')
-  %li= link_to 'Orders In Review',       facility_notifications_in_review_path, :class => (sidenav_tab == 'in_review' ? 'active' : '')
-  %li= link_to 'Create Statements',      pending_facility_statements_path, :class => (sidenav_tab == 'send_statements' ? 'active' : '')
-  %li= link_to 'Statement History',      facility_statements_path, :class => (sidenav_tab == 'statement_history' ? 'active' : '')
-  %li= link_to 'Manage Journals',        facility_journals_path, :class => (sidenav_tab == 'journals' ? 'active' : '')
-  %li= link_to 'Reconcile Journals',     history_facility_journals_path, :class => (sidenav_tab == 'reconcile' ? 'active' : '')
-  %li= link_to 'Reconcile Credit Cards',    credit_cards_facility_accounts_path, :class => (sidenav_tab == 'credit_cards' ? 'active' : '')
-  %li= link_to 'Reconcile Purchase Orders', purchase_orders_facility_accounts_path, :class => (sidenav_tab == 'purchase_orders' ? 'active' : '')
+#menu_billing
+  %ul.menu_accordion
+    %li.sub_menu
+      .icon
+      Transactions
+      %ul
+        %li= link_to 'All Transactions',       facility_transactions_path, :class => (sidenav_tab == 'transactions' ? 'active' : '')
+        %li= link_to 'Send Notifications',     facility_notifications_path, :class => (sidenav_tab == 'notifications' ? 'active' : '')
+        %li= link_to 'Orders In Review',       facility_notifications_in_review_path, :class => (sidenav_tab == 'in_review' ? 'active' : '')
+    %li= link_to 'Accounts Receivable',    facility_accounts_receivable_path, :class => (sidenav_tab == 'accounts_receivable' ? 'active' : '')
+    %li= link_to Account.model_name.human.pluralize,       facility_accounts_path, :class => (sidenav_tab == 'accounts' ? 'active' : '')
+    %li.sub_menu
+      .icon
+      Journals
+      %ul
+        %li= link_to "Create Journal",         new_facility_journal_path, :class => (sidenav_tab == 'new_journal' ? 'active' : '')
+        %li= link_to 'Manage Journals',        facility_journals_path, :class => (sidenav_tab == 'journals' ? 'active' : '')
+    %li.sub_menu
+      .icon
+      Statments
+      %ul
+        %li= link_to 'Create Statements',      new_facility_statement_path, :class => (sidenav_tab == 'statements' ? 'active' : '')
+        %li= link_to 'Statement History',      facility_statements_path, :class => (sidenav_tab == 'statement_history' ? 'active' : '')
+        .break
+        %li= link_to 'Reconcile Credit Cards',    credit_cards_facility_accounts_path, :class => (sidenav_tab == 'credit_cards' ? 'active' : '')
+        %li= link_to 'Reconcile Purchase Orders', purchase_orders_facility_accounts_path, :class => (sidenav_tab == 'purchase_orders' ? 'active' : '')
+      

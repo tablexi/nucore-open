@@ -59,7 +59,6 @@ module ApplicationHelper
     define_method("show_estimated_#{type}") {|order_detail| show_currency(order_detail, "estimated_#{type}") }
   end
 
-
   private
 
   def show_currency(order_detail, method)

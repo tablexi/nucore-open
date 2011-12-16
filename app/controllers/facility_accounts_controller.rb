@@ -9,7 +9,7 @@ class FacilityAccountsController < ApplicationController
   layout 'two_column'
 
   def initialize
-    @active_tab = 'admin_invoices'
+    @active_tab = 'admin_billing'
     super
   end
 
@@ -162,6 +162,16 @@ class FacilityAccountsController < ApplicationController
     @account = Account.find(params[:account_id])
   end
 
+  # GET /facilities/:facility_id/statements/accounts_receivable
+  def accounts_receivable
+    @account_balances = {}
+    order_details = current_facility.order_details.complete
+    order_details.each do |od|
+      @account_balances[od.account_id] = @account_balances[od.account_id].to_f + od.total.to_f
+    end
+    @accounts = Account.find(@account_balances.keys)
+  end
+  
   # GET /facilities/:facility_id/accounts/:account_id/statements/:statement_id
   def show_statement
     @account = Account.find(params[:account_id])
@@ -212,7 +222,7 @@ class FacilityAccountsController < ApplicationController
 
   def show_account(model_class)
     @subnav     = 'billing_nav'
-    @active_tab = 'admin_invoices'
+    @active_tab = 'admin_billing'
     @accounts   = model_class.need_reconciling(current_facility)
 
     unless @accounts.empty?
