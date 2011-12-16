@@ -68,26 +68,26 @@
     - tab = 'new'
   = render :partial => 'admin/shared/tabnav_order', :locals => { :secondary_tab => tab }
 
-%h2== Edit Order # #{@order_detail}
+%h2= t('.head.h2', :order_number => @order_detail.to_s)
 = form_for(@order_detail, :as => :order_detail, :url => (@order_detail.in_dispute? ? facility_order_order_detail_resolve_dispute_path(current_facility, @order, @order_detail) : facility_order_order_detail_path(current_facility, @order, @order_detail)), :html => {:method => :put}) do |f|
   = f.error_messages
   .grid_6.alpha
     %ul.form
       %li
-        %label Ordered At
+        %label= t('.label.ordered.at')
         =h human_datetime(@order.ordered_at)
       %li
-        %label Ordered For
+        %label= t('.label.ordered.for')
         =h @order.user.full_name
       %li
-        %label Ordered By
+        %label= t('.label.ordered.by')
         =h @order.created_by_user.full_name
       - if @order_detail.fulfilled_at
         %li
-          %label Fulfilled At
+          %label= t('.label.fulfilled')
           =h human_datetime(@order_detail.fulfilled_at)
       %li
-        %label Payment Source
+        %label= t('.label.account')
         - html_opts=@in_open_journal ? { :disabled => 'disabled' } : {}
         - # make sure that the account it was purchased under is available, even if it's no
         - # longer available for the owner
@@ -95,7 +95,7 @@
         - available_accounts << @order.account if available_accounts.index(@order.account).nil?
         = f.collection_select(:account_id, available_accounts, :id, :account_pretty, {}, html_opts)
       %li
-        %label Assigned User
+        %label= t('.label.assigned')
         - if @order_detail.complete?
           =h @order_detail.assigned_user ? @order_detail.assigned_user.full_name : 'Unassigned'
         - else
@@ -104,44 +104,44 @@
     - # Dispute form
     - if @order_detail.in_dispute?
       .box.margin_bottom
-        %h3 Resolve Dispute
-        %p To resolve the dispute, please make the necessary changes and click "Resolve Dispute".
+        %h3= t('.head.h3')
+        %p= t('.instruct.dispute')
         %ul.form
           %li
-            %label Disputed On
+            %label= t('.label.dispute.on')
             =h human_datetime(@order_detail.dispute_at)
           %li
-            %label Dispute Reason
+            %label= t('.label.dispute.reason')
             =h @order_detail.dispute_reason
           %li
-            %label.required Resolution Notes
+            %label.required= t('.label.dispute.resolve')
             = f.text_field :dispute_resolved_reason
 
     - # Dispute Results
     - if @order_detail.dispute_resolved_at
       .box.margin_bottom
-        %h3 Dispute Information
+        %h3= t('.head.h3-2')
         %ul.form
           %li
-            %label Disputed On
+            %label= t('.label.dispute.on')
             =h human_datetime(@order_detail.dispute_at)
           %li
-            %label Dispute Reason
+            %label= t('.label.dispute.reason')
             =h @order_detail.dispute_reason
           %li
-            %label Resolved At
+            %label= t('.label.resolved')
             =h human_datetime(@order_detail.dispute_resolved_at)
           %li
-            %label Resolution Notes
+            %label= t('.label.dispute.resolve')
             =h @order_detail.dispute_resolved_reason
     
     - # Results Files
     - if @order_detail.product.is_a?(Service)
       .box
-        %h3 Results Files
+        %h3= t('.head.h3-3')
         - @results = @order_detail.file_uploads.sample_result.sort{|a,b| a.created_at <=> b.created_at}
         - if @results.empty?
-          %p No results have been uploaded yet.
+          %p= t('.notice.no_results')
         - else
           %ul.form
             - i = 0
@@ -150,7 +150,7 @@
                 == #{link_to("Results File #{i+=1}", file_upload.file.url)}:
                 = human_datetime(file_upload.created_at)
                 == - (#{link_to('Remove', remove_product_file_path(current_facility, @order_detail.product.parameterize, @order_detail.product, file_upload, :return_to => request.request_uri), :method => :delete, :confirm => 'Are you sure?')})
-        %h3 Upload Results
+        %h3= t('.head.h3-4')
         #file_upload Please enable Javascript and install Adobe Flash Player.
         %br
         = link_to "Start Upload", "javascript:$('#file_upload').uploadifyUpload();"
@@ -160,7 +160,7 @@
   - # Product table
   %table
     %tr
-      %th{:colspan => 2} Quantity*/Product
+      %th{:colspan => 2}= t('.th.product')
       %th Status
       %th.currency= "#{@order_detail.cost_estimated? ? 'Estimated ' : '' }Cost"
       %th.currency= "#{@order_detail.cost_estimated? ? 'Estimated ' : '' }Adjustment"
@@ -197,7 +197,7 @@
         - if res && res.actual_start_at && res.actual_end_at
           = render :partial => 'price_row', :locals => { :form => f }
         - elsif res.requires_but_missing_actuals?
-          %td.centered{:colspan => '3'} You must enter actual start/end reservation times.
+          %td.centered{:colspan => '3'}= t('.notice.no_time')
       - else 
         = render :partial => 'price_row', :locals => { :form => f }
       %tr
@@ -208,22 +208,22 @@
           = f.text_field(:note, opts)
           - if @can_be_reconciled || @order_detail.reconciled?
             %span#reconcile-note.indented
-              %label.inline Reconciliation Note:
+              %label.inline= t('.label.reconcile')
               = f.text_field(:reconciled_note, :style=> "width:360px")
 
   - if @order_detail.cost_estimated?
-    %p.footnote * Clicking 'Save' will update the cost estimate by quantity
+    %p.footnote= t('.foot.estimated')
   - elsif @order_detail.price_policy.nil?
-    %p.footnote * Clicking 'Save' will attempt to estimate the cost by quantity
+    %p.footnote= t('.foot.price_policy')
   - else
-    %p.footnote * Changing the quantity will automatically update the price fields
+    %p.footnote= t('.foot.default')
 
   - if @order_detail.in_dispute?
     %ul.horiz
       %li= submit_tag 'Resolve Dispute', {:class => 'btn', :id => 'submit'}
       %li= link_to 'Cancel', disputed_facility_orders_path
   - elsif @order_detail.order_status.name == 'Complete'
-    %p You <b>must</b> click "Save" to apply any changes made to the order.
+    %p= t('.notice.save_html')
     %ul.horiz
       - if @order_detail.price_policy.nil?
         %li= submit_tag 'Save', {:class => 'btn', :id => 'submit', :name => 'assign_price_policy'}
@@ -231,7 +231,7 @@
         %li= submit_tag 'Save', {:class => 'btn', :id => 'submit'}
       %li= link_to 'Cancel', show_problems_facility_orders_path
   - else
-    %p You <b>must</b> click "Save" to apply any changes made to the order.
+    %p= t('.notice.save_html')
     %ul.horiz
       %li= submit_tag 'Save', {:class => 'btn', :id => 'submit'}
       %li= link_to 'Cancel', facility_orders_path
@@ -241,14 +241,14 @@
   %br
   %br
   %br
-  %h3 Bundle Summary
-  %p This order is part of a bundle.  Below is a summary of related bundle order line items.
+  %h3= t('.head.h3-5')
+  %p= t('.instruct.bundle')
   %table
     %tr
-      %th Order #
-      %th{:colspan => 2} Quantity/Product
-      %th Status
-      %th Assigned To
+      %th= t('.th.order')
+      %th{:colspan => 2}= t('.th.quantity')
+      %th= t('.th.status')
+      %th= t('.th.assigned')
     - @order.order_details.find(:all, :conditions => {:group_id => @order_detail.group_id}).each do |od|
       - product_name = order_detail_description(od)
       %tr

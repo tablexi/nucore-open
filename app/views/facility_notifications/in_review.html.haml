@@ -4,26 +4,25 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'in_review' }
 
-%h2 Orders In Review
+%h2= t('.head')
 
 - if @order_details.empty?
-  %p.notice No orders are currently in review
+  %p.notice= t('.notice')
 - else
-  %p
-    The orders listed below are still in review by the customer.  The time the review window will close is listed.
-    You may manually mark an order as reviewed, allowing you to create a statement for or journal the order immediately.
+  %p= t('.instruct')
+
   = form_tag facility_notifications_in_review_path(current_facility), :method => :post do
     %table
       %tr.borderless
         %td{:colspan => 4}
-        %td.currency{:colspan => 2}= submit_tag "Mark As Reviewed"
+        %td.currency{:colspan => 2}= submit_tag t('.submit')
       %tr
         %th
-        %th Order
-        %th Review Closes On
-        %th Payment Source
-        %th Owner
-        %th.currency Total
+        %th= t('.th.order')
+        %th= t('.th.review')
+        %th= t('.th.account')
+        %th= t('.th.owner')
+        %th.currency= t('.th.total')
       - @order_details.each do |od|
         - account = od.account
         %tr{:class => needs_reconcile_warning?(od) ? 'reconcile-warning' : ''}
@@ -40,6 +39,6 @@
           %td.currency=h number_to_currency od.total
       %tr.borderless
         %td{:colspan => 4}
-        %td.currency{:colspan => 2}= submit_tag "Mark As Reviewed"
+        %td.currency{:colspan => 2}= submit_tag t('.submit')
 
   = render :partial => 'shared/reconcile_footnote'

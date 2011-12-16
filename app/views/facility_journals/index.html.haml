@@ -16,34 +16,27 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'journals' }
 
-%h2 Manage Journals
-%h3 Pending Journal
+%h2= t('.head.h2')
+%h3= t('.head.h3')
 - if @pending_journal.nil?
-  %p.notice There is no pending journal at this time
+  %p.notice= t('.notice.pending')
 - else
-  %p
-    You should only update this journal after receiving confirmation of a successful or failed journal from
-    NU Financials.  If the journal was processed successfully without any changes, you may choose "Succeeded, no errors".
-    This will mark all orders included in the journal as reconciled and you will be unable to make any further changes to them.
-  %p
-    If the journal succeeded, but if pricing or payment source changes were necessary to one or more orders
-    or if one more more orders were removed from the journal for the journal to succeed, choose "Succeeded, with errors".
-    This will mark the journal as successfully, but you will need to reconcile the orders individually.
-  %p
-    If the journal failed, you may choose "Failed".  This will allow you to include all orders in a new journal.
+  %p= t('.instruct.p1')
+  %p= t('.instruct.p3')
+  %p= t('.instruct.p3')
 
   = form_for([current_facility, @pending_journal]) do |f|
     = f.error_messages 
     %table
       %tr
-        %th Download
-        %th Journaled On
-        %th Amount
+        %th= t('.th.download')
+        %th= t('.th.journaled')
+        %th= t('.th.amount')
         %th
-          %span.require Reference
-        %th Notes
+          %span.require= t('.th.reference')
+        %th= t('.th.notes')
         %th
-          %span.require Status
+          %span.require= t('.th.status')
       %tr
         %td
           %ul
@@ -55,19 +48,19 @@
         %td= f.text_field :description
         %td
           = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']])
-          = submit_tag 'Close Journal', :confirm => 'You are about to close this journal. Please ensure you have selected the correct status.'
+          = submit_tag t('.journal.close'), :confirm => t('.journal.confirm')
 %p
 %hr
 %p
-%h3 Create Journal
+%h3= t('.head.h3-2')
 - if @order_details.empty?
-  %p.notice There are no orders to be journaled at this time
+  %p.notice= t('.notice.journaled')
 - else
-  %p Select the orders that you wish to journal.  Only one journal may be pending at a time.  Please note that selected orders may not span multiple fiscal years.
+  %p= t('.instruct.p4')
   - disable = false
   - unless @pending_journal.nil?
     -disable = true
-    %p.notice You may not generate a new journal until the pending journal is closed.
+    %p.notice= t('.notice.close')
   = form_for(:journal, @journal, :path => facility_journals_path) do |f|
     = f.error_messages
     %table
@@ -78,11 +71,11 @@
         %td.currency{:colspan => 2}= submit_tag "Create Journal", {:disabled => disable}
       %tr
         %th
-        %th Order
-        %th Fulfilled On
-        %th Account
-        %th Owner
-        %th.currency Total
+        %th= t('.th.order')
+        %th= t('.th.fulfilled')
+        %th= t('.th.account')
+        %th= t('.th.owner')
+        %th.currency= t('.th.total')
       - @order_details.each do |od|
         - account = od.account
         %tr{:class => needs_reconcile_warning?(od) ? 'reconcile-warning' : ''}
@@ -99,10 +92,10 @@
               %li= link_to account, facility_account_statement_path(current_facility, account, 'recent')
               - if od.account.suspended?
                 %li
-                  %i Account is suspended
+                  %i= t('.account.suspended')
               - if od.account.expired?
                 %li
-                  %i Account is expired
+                  %i= t('.account.expired')
           %td=h account.owner_user.full_name
           %td.currency=h number_to_currency od.total
       %tr.borderless

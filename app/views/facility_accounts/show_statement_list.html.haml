@@ -10,14 +10,14 @@
 %h2= @account
 
 - if @statements.empty?
-  %p.notice No statements have been sent for this payment source.
+  %p.notice= t('.notice')
 - else
   %table
     %tr
       %th
-      %th Sent At
-      %th Sent By
-      %th.currency # of Orders
+      %th= t('.th.sent_at')
+      %th= t('.th.sent_by')
+      %th.currency= t('.th.orders')
     - @statements.each do |s|
       %tr
         %td.centered= link_to 'Download', facility_account_statement_path(current_facility, @account, s, :format => :pdf)

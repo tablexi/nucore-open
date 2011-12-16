@@ -9,7 +9,7 @@
 = content_for :h1 do
   =h current_facility
 
-%h2 Add Payment Source
+%h2= t('.head')
 = form_for([current_facility, @account], :url => facility_accounts_path(current_facility)) do |f|
   = f.error_messages
   = render :partial => 'account_fields', :locals => {:f => f, :instructions_for => :all}

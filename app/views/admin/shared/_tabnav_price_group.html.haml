@@ -1,5 +1,5 @@
 %ul.tabs
-  %li.first= link_to 'Payment Sources', accounts_facility_price_group_path(current_facility, @price_group), { :class => secondary_tab == 'accounts' ? 'active' : nil }
+  %li.first= link_to t('shared.tabnav_price_group.accounts'), accounts_facility_price_group_path(current_facility, @price_group), { :class => secondary_tab == 'accounts' ? 'active' : nil }
   - if @price_group.facility_id
-    %li= link_to 'Users', users_facility_price_group_path(current_facility, @price_group), { :class => secondary_tab == 'users' ? 'active' : nil }
-    %li= link_to 'Edit', edit_facility_price_group_path(current_facility, @price_group), { :class => secondary_tab == 'edit' ? 'active' : nil }
+    %li= link_to t('shared.tabnav_price_group.users'), users_facility_price_group_path(current_facility, @price_group), { :class => secondary_tab == 'users' ? 'active' : nil }
+    %li= link_to t('shared.tabnav_price_group.edit'), edit_facility_price_group_path(current_facility, @price_group), { :class => secondary_tab == 'edit' ? 'active' : nil }
