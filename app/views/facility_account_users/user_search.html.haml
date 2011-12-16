@@ -8,10 +8,10 @@
   =h current_facility
 
 %h2= @account
-%h3 Add Payment Source User
+%h3= t('.head')
 
 = form_tag user_search_results_url, :id => "ajax_form" do
-  = label_tag :search_term, 'Search by name, NetID, or username'
+  = label_tag :search_term, t('.label.search_term')
   %br
   = text_field_tag :search_term, nil, :size => 30
   = submit_tag "Search", :class => 'btn'

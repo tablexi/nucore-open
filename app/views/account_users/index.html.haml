@@ -1,7 +1,7 @@
 = content_for :tabnav do
   = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'members'}
 = content_for :h1 do
-  == Payment Source Members
+  = t('.head')
 
 %ul.horiz
   %li= link_to 'Add Access', user_search_account_path(@account)

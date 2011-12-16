@@ -7,10 +7,10 @@
 = content_for :h1 do
   =h current_facility
 
-%h2 Add Payment Source
-%p To add a payment source, first search for the user you would like to create the payment source for.
+%h2= t('.head') 
+%p= t('.instruct')
 = form_tag user_search_results_url, :id => 'ajax_form' do
-  = label_tag :search_term, 'Search by name, NetID, or username'
+  = label_tag :search_term, t('.label.search_term')
   %br
   = text_field_tag :search_term, nil, :size => 30
   = submit_tag 'Search', :class => 'btn'

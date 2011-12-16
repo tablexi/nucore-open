@@ -36,11 +36,11 @@ class FacilityNotificationsController < ApplicationController
               error = true
               raise ActiveRecord::Rollback
             end
-            flash.now[:notice] = 'Notifications sent successfully'
+            flash.now[:notice] = I18n.t 'controllers.facility_notifications.index.success'
           end
         end
       else
-        flash.now[:error] = 'No payment sources selected'
+        flash.now[:error] = I18n.t 'controllers.facility_notifications.index.failure'
       end
     end
 

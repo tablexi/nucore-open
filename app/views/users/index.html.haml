@@ -3,9 +3,9 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'users' }
 
-%h2 Search Users
+%h2= t('.head.h2')
 = form_tag user_search_results_url, :id => 'ajax_form' do
-  = label_tag :search_term, 'Search by name, NetID, or username'
+  = label_tag :search_term, t('.label.search_term')
   %br
   = text_field_tag :search_term, nil, :size => 30
   = submit_tag "Search", :class => 'btn'
@@ -14,17 +14,17 @@
   = hidden_field_tag :create_link, 'true'
 %br
 #result
-  %h3 Active Users
-  %p Active users are users which have placed an order or had an order placed on their behalf at this facility in the last year.
+  %h3= t('.head.h3')
+  %p= t('.instruct')
   - if @users.empty?
-    %p.notice There are no active users for this facility.
+    %p.notice= t('.notice')
   - else
     %table
       %tr
         %th
-        %th Name
-        %th Username or NetID
-        %th Email
+        %th= t('.th.name')
+        %th= t('.th.username')
+        %th= t('.th.email')
       - @users.each do |user|
         %tr
           %td.centered= link_to('Order For', facility_user_switch_to_path(current_facility, user))

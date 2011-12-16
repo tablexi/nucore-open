@@ -1,9 +1,9 @@
 %table
   %tr
     %th
-    %th Name
-    %th Username or NetID
-    %th Email
+    %th= t('search.manage_user_table.th.name')
+    %th= t('search.manage_user_table.th.username')
+    %th= t('search.manage_user_table.th.email')
   - @users.each do |user|
     %tr
       %td.centered= link_to('Order For', facility_user_switch_to_path(@facility, user))
@@ -11,4 +11,4 @@
       %td=h user.username
       %td=h user.email
 - if @count > @limit
-  %p.notice="#{@count-@limit} more users exist, try refining your search."
+  %p.notice= t('search.manage_user_table.notice', :count => @count-@limit)

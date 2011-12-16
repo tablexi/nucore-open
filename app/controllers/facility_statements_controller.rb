@@ -37,7 +37,7 @@ class FacilityStatementsController < ApplicationController
   # POST /facilities/:facility_id/statements/email
   def email
     unless params[:account_ids]
-      flash[:error] = 'No payment sources selected'
+      flash[:error] = I18n.t 'controllers.facility_statements.email.no_selection'
       redirect_to pending_facility_statements_path and return
     end
     accounts = Account.find(params[:account_ids])
@@ -64,7 +64,7 @@ class FacilityStatementsController < ApplicationController
     if error
       redirect_to pending_facility_statements_path and return
     end
-    flash[:notice] = 'The statements were created successfully'
+    flash[:notice] = I18n.t 'controllers.facility_statements.email.success'
     redirect_to pending_facility_statements_path
   end
 

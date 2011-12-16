@@ -14,9 +14,9 @@
     - else
       %table
         %tr
-          %th Name
-          %th Username or NetID
-          %th Email
+          %th= t('.th.name')
+          %th= t('.th.username')
+          %th= t('.th.email')
         - @users.each do |user|
           %tr
             %td= render :partial => "#{params[:search_type]}_link", :locals => {:user => user}

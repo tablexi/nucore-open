@@ -5,7 +5,7 @@
 
 %h2 Add a User
 = form_tag user_search_results_url, :id => 'ajax_form' do
-  %p.instructions Search for an existing user by name, NetID, or username.  Click on the name of the user you wish to grant access to.  If the search does not return any acceptable matches, you may create a new user.
+  %p.instructions= t('.instruct')
   = text_field_tag :search_term, nil, :size => 30
   = submit_tag "Search", :class => 'btn'
   = hidden_field_tag :facility_id, current_facility.id

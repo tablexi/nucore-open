@@ -46,7 +46,7 @@ class FacilityAccountsController < ApplicationController
     end
 
     if @account.update_attributes(class_params)
-      flash[:notice] = 'The payment source was successfully updated.'
+      flash[:notice] = I18n.t('controllers.facility_accounts.update')
       redirect_to facility_account_url
     else
       render :action => "edit"
@@ -189,9 +189,9 @@ class FacilityAccountsController < ApplicationController
   def suspend
     @account = Account.find(params[:account_id])
     if @account.suspend!
-      flash[:notice] = "Payment source suspended successfully"
+      flash[:notice] = I18n.t 'controllers.facility_accounts.suspend.success'
     else
-      flash[:notice] = "An error was encountered while suspending the payment source"
+      flash[:notice] = I18n.t 'controllers.facility_accounts.suspend.failure'
     end
     redirect_to facility_account_path(current_facility, @account)
   end
@@ -200,9 +200,9 @@ class FacilityAccountsController < ApplicationController
   def unsuspend
     @account = Account.find(params[:account_id])
     if @account.unsuspend!
-      flash[:notice] = "Payment source activated successfully"
+      flash[:notice] = I18n.t 'controllers.facility_accounts.unsuspend.success'
     else
-      flash[:notice] = "An error was encountered while activating the payment source"
+      flash[:notice] = I18n.t 'controllers.facility_accounts.unsuspend.failure'
     end
     redirect_to facility_account_path(current_facility, @account)
   end

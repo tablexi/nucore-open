@@ -8,7 +8,7 @@
 %h2 Add Price Group Member
 %fieldset
   = form_tag url_for(:action => 'search_results'), :id => 'ajax_form' do
-    = label_tag :search_term, 'Search by payment source'
+    = label_tag :search_term, t('.label.search_term')
     %br
     = text_field_tag :search_term, nil, :size => 30
     = submit_tag "Search", :class => 'btn'

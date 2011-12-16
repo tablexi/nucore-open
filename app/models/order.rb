@@ -168,7 +168,7 @@ class Order < ActiveRecord::Base
       end
     end
 
-    raise "Could not find a valid payment source for purchasing #{product.name}" if self.account.nil?
+    raise I18n.t('models.order.auto_assign_account', :product_name => product.name) if self.account.nil?
   end
 
 

@@ -73,7 +73,7 @@ class ReservationsController < ApplicationController
     @reservation  = @instrument.reservations.new(params[:reservation].update(:order_detail => @order_detail))
 
     if !@order_detail.bundled? && params[:order_account].blank?
-      flash[:error]="You must select a payment source before reserving"
+      flash[:error]=I18n.t 'controllers.reservations.create.no_selection'
       return redirect_to new_order_order_detail_reservation_path(@order, @order_detail)
     end
 
@@ -99,7 +99,7 @@ class ReservationsController < ApplicationController
           @order_detail.estimated_subsidy = costs[:subsidy]
           @order_detail.save!
         end
-        flash[:notice] = 'The reservation was successfully created.'
+        flash[:notice] = I18n.t 'controllers.reservations.create.success'
 
         if @order_detail.product.is_a?(Instrument) && !@order_detail.bundled?
           redirect_to purchase_order_path(@order)

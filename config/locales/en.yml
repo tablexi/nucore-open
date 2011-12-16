@@ -23,7 +23,6 @@ en:
     footer:
       copyright_html: "&copy; Copyright 2010%{to_date} Northwestern University"
       logo_alt: "Northwestern Logo"
-
     product_details_fields:
       name: "Name of the %{field} as displayed to the end user"
       description: "Description as it will appear on the product page"
@@ -36,7 +35,6 @@ en:
         label: "Recharge Chart String and Account"
         instruct: "Revenue account to which fees will be deposited"
         add: "Add Chart String"
-
     product_manage:
       label:
         url: "URL Name"
@@ -46,7 +44,6 @@ en:
         requires_approval: "Requires Approval?"
         inactive: "Is Inactive?"
         hidden: "Is Hidden?"
-
     sidenav_admin:
       overview: "Overview"
       deposit_accounts: "Recharge Chart Strings"
@@ -55,6 +52,19 @@ en:
       statuses: "Order Statuses"
 
   facility_accounts:
+    index:
+      head: "Recent Payment Sources"
+      add_account: "Add Payment Source"
+      label:
+        search_term: "Search by payment source number or payment source owner's name, NetID, or username"
+    new_account_user_search:
+      head: "Add Payment Source"
+      instruct: "To add a payment source, first search for the user you would like to create the payment source for."
+      label:
+        search_term: "Search by name, NetID, or username"
+    user_search:
+      label:
+        search_term: "Search by name, NetID, or username"
     account_fields:
       label:
         owner_user: "Owner User"
@@ -66,6 +76,16 @@ en:
         cc_instruct: "No part of a credit card number may be entered. Enter a text description to help you and the user identify this card. For example: \"Dr. Smith's Visa Card\"."
         po_instruct: "Where the invoice should be sent to for this payment source; this text will appear on the customer's invoice."
 
+  facility_users:
+    search:
+      instruct: "Search for an existing user by name, NetID, or username.  Click on the name of the user you wish to grant access to.  If the search does not return any acceptable matches, you may create a new user."
+
+  facility_account_users:
+    user_search:
+      head: "Add Payment Source User"
+      label:
+        search_term: "Search by name, NetID, or username"
+
   facility_facility_accounts:
     facility_account_fields:
       instruct: "Use hyphens to separate Chart String number groups e.g. 123-1234567-12345678"
@@ -73,22 +93,46 @@ en:
       label:
         account_number: "Chart String Number"
         deposit_account: "Revenue Account"
-
     edit:
       head: "Edit Recharge Chart String"
       main: "Editing the Recharge Chart String may effect the facility's ability to collect funds. Edit the Chart String with caution!"
-
     index:
       head: "Recharge Chart Strings"
       main: "Chart Strings that are approved by the Provost for collection of facility revenue."
       notice: "No Recharge Chart Strings have been added to this facility yet."
       th: "Chart String Number"
       add: "Add Recharge Chart String"
-
     new:
       head: "Add Recharge Chart String"
 
+  product_users:
+    new:
+      label:
+        search_term: "Search by name, NetID, or username"
+
+  user_price_group_members:
+    new:
+      head: "Add Price Group Member"
+      label:
+        search_term: "Search by name, NetID, or username"
+
+  search:
+    user_search_results:
+      th:
+        name: "Name"
+        username: "Username or NetID"
+        email: "Email"
+    manage_user_table:
+      notice: "%{count} more users exist, try refining your search."
+      th:
+        name: "Name"
+        username: "Username or NetID"
+        email: "Email"
+
   account_price_group_members:
+    new:
+      label:
+        search_term: "Search by payment source"
     search_results:
       head: "Select an Existing Payment Source"
       main: "Can't find the payment source you're looking for?"
@@ -98,12 +142,27 @@ en:
         noterm: "Please enter a search term"
         notfound: "No existing payment sources found."
 
+  account_users:
+    index:
+      head: "Payment Source Members"
+    new:
+      head: "Add Payment Source Member"
+      label:
+        account: "Payment Source Number"
+        type: "Type"
+        description: "Description"
+        expiration: "Expiration"
+    user_search:
+      head: "Add Payment Source Member"
+      instruct: "Search for a user to add to the %{account_type}, (%{account})"
+      label:
+        search: "Search by name, NetID, or username"
+
   facilities:
     index:
       welcome: |
         Welcome to NU Core, the centralized ordering system for all Shared Facilities at Northwestern University.
         Please select the Shared Facility below to view and purchase services and products offered by the facility.
-
     facility_fields:
       name: "Name of the facility as displayed to the end user"
       abbreviation: "Abbreviated name or acronym for the facility"
@@ -163,9 +222,34 @@ en:
         confirm: "Are you sure you wish to remove this file?"
 
   users:
+    index:
+      head:
+        h2: "Search Users"
+        h3: "Active Users"
+      instruct: "Active users are users which have placed an order or had an order placed on their behalf at this facility in the last year."
+      notice: "There are no active users for this facility."
+      label:
+        search_term: "Search by name, NetID, or username"
+      th:
+        name: "Name"
+        username: "Username or NetID"
+        email: "Email"
     new:
       head: "Add External User"
       main: "You may use this grant NU Core access to external users.  The email address and username must match."
+    new_search:
+      js:
+        id: "NetID"
+        email: "Email Address"
+        error: "An error was encountered while looking up the NetID"
+      head: "Add User"
+      intro: "Some information about this user may already exist in university databases.  Please choose whether the user you wish to add has a NetID and enter the requested information.  If the user exists already, you will be able to add her with a single click."
+      instruct: "Enter the user's NetID"
+      submit: "Lookup NetID"
+      label:
+        id: "NetID"
+        have_id: "Does the new user have a NetID?"
+
     username_search:
       main_html: "You may add a new external user by clicking <a href=\"%{link}\">Add a new external user</a>."
       notice1: "The user could no be located in the university database.  Please make sure you typed the NetID correctly."
@@ -180,7 +264,40 @@ en:
     facility_accounts:
       create:
         expires_at_missing: "The chart string appears to be invalid. Either the fund, department, project, or activity could not be found."
-      
+
+    facility_accounts:
+      update: "The payment source was successfully updated."
+      suspend:
+        success: "Payment source suspended successfully"
+        failure: "An error was encountered while suspending the payment source"
+      unsuspend:
+        success: "Payment source activated successfully"
+        failure: "An error was encountered while activating the payment source"
+
+    facility_notifications:
+      index:
+        success: "Notifications sent successfully"
+        failure: "No payment sources selected"
+
+    facility_statements:
+      email:
+        no_selection: "No payment sources selected"
+        success: "The statements were created successfully"
+
+    reservations:
+      create:
+        no_selection: "You must select a payment source before reserving"
+        success: "The reservation was successfully created."
+
+  models:
+    account_user:
+      validation:
+        userid: "is already a member of this payment source"
+    order:
+      auto_assign_account: "Could not find a valid payment source for purchasing %{product_name}"
+
+
+
   activerecord:
     errors:
       # The values :model, :attribute and :value are always available for interpolation
@@ -207,17 +324,14 @@ en:
         even: "must be even"
         record_invalid: "Validation failed: %{errors}"
         # Append your own errors here or at the model/attributes scope.
-
       full_messages:
         format: "%{attribute} %{message}"
-
       template:
         header:
           one:    "1 error prohibited this %{model} from being saved"
           other:  "%{count} errors prohibited this %{model} from being saved"
         # The variable :count is also available
         body: "There were problems with the following fields:"
-
     # Model Names
     models:
       account:
@@ -241,7 +355,6 @@ en:
       facility:
         one: Facility
         other: Facilities
-        
     # Model Attributes
     attributes:
       user:

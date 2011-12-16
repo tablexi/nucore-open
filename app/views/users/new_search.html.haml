@@ -9,11 +9,10 @@
       $(document).ready(function() {    
 
         function has_netid_change() {
-          if ($('#has_netid').val() == 'yes') {
-            $('#username_lookup').html($('#username_lookup').html().replace(/Email Address/g, 'NetID'));
-          } else {
-            $('#username_lookup').html($('#username_lookup').html().replace(/NetID/g, 'Email Address'));
-          }
+          if ($('#has_netid').val() == 'yes')
+            $('#username_lookup').html($('#username_lookup').html().replace(/#{t(".js.email")}/g, '#{t(".js.id")}'));
+          else
+            $('#username_lookup').html($('#username_lookup').html().replace(/#{t(".js.id")}/g, '#{t(".js.email")}'));
         }
 
         $('#has_netid').change(function(e) {
@@ -42,7 +41,7 @@
               submit.attr("disabled", false);
             },
             error: function() {
-              error_div.html('<p class="error">An error was encountered while looking up the NetID</p>');
+              error_div.html('<p class="error">#{t('.js.error')}</p>');
               submit.val(submit_val);
               submit.attr("disabled", false);
             }
@@ -50,19 +49,19 @@
         });
       });
 
-%h2 Add User
+%h2= t('.head')
 = form_tag(username_search_facility_users_path, :id => 'username_search_form') do
   #error_result
   %ul.form.box_no_fill
     %li
-      %p Some information about this user may already exist in university databases.  Please choose whether the user you wish to add has a NetID and enter the requested information.  If the user exists already, you will be able to add her with a single click.
+      %p= t('.intro')
     %li
-      %label Does the new user have a NetID?
+      %label= t('.label.have_id')
       = select_tag :has_netid, options_for_select([['Yes','yes'],['No','no']], params[:hidden_has_netid] || 'yes')
     %li#username_lookup
-      %label NetID
-      %p.instruction Enter the user's NetID
+      %label= t('.label.id')
+      %p.instruction= t('.instruct')
       = text_field_tag :username_lookup
-      = submit_tag 'Lookup NetID', :class => 'btn'
+      = submit_tag t('.submit'), :class => 'btn'
       
 #search_results
