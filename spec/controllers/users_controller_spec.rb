@@ -181,6 +181,31 @@ describe UsersController do
       flash[:notice].should_not be_nil
       @user.reload.should be_valid_password('newpassword')
     end
+    
+  end
+  
+  context "change password link" do
+    before :each do
+      @method = :get
+      @action = :password
+    end
+    
+    it "should show for 'external' users" do
+      @user = Factory.create(:user, :username => 'email@example.org', :email => 'email@example.org')
+      @user.should be_external
+      sign_in @user
+      do_request
+      response.body.should include("Change Password</a>")
+    end
+    
+    it "should not show for netid or ldap people" do
+      @user = Factory.create(:user)
+      @user.should_not be_external
+      sign_in @user
+      do_request
+      response.body.should_not include("Change Password</a>")
+    end
+    
   end
 
 
