@@ -127,22 +127,8 @@ class UsersController < ApplicationController
       render :no_password and return
     end
     
-    if request.post?
-      if params[:password].blank?
-        @user.errors.add(:password, "cannot be blank")
-      end
-      if params[:password] != params[:password_confirmation]
-        @user.errors.add(:password_confirmation, "does not match")
-      end
-      unless @user.valid_password? params[:current_password]
-        @user.errors.add(:base, "Current password is incorrect")
-      end
-      if @user.errors.empty?
-        @user.password = params[:password].strip
-        @user.save!
-        @user.clean_up_passwords
-        flash[:notice] = "Your password has been updated" 
-      end
+    if request.post? and @user.update_password(params)
+      flash[:notice] = "Your password has been updated" 
     end
     
     render :layout => "application"

@@ -47,6 +47,32 @@ class User < ActiveRecord::Base
   end
 
 
+  def update_password(params)
+    unless external?
+      self.errors.add(:base, "Cannot update this user's password")
+      return false
+    end
+
+    if params[:password].blank?
+      self.errors.add(:password, "cannot be blank")
+    end
+    if params[:password] != params[:password_confirmation]
+      self.errors.add(:password_confirmation, "does not match")
+    end
+    unless self.valid_password? params[:current_password]
+      self.errors.add(:base, "Current password is incorrect")
+    end
+    if self.errors.empty?
+      self.password = params[:password].strip
+      self.save!
+      self.clean_up_passwords
+      return true 
+    else
+      return false
+    end
+    
+    
+  end
   # Find the users for a facility
   # TODO: move this to facility?
   def self.find_users_by_facility(facility)
