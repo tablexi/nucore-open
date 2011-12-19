@@ -137,5 +137,51 @@ describe UsersController do
       should assign_to(:order_details).with_kind_of ActiveRecord::Relation
     end
   end
+  
+  context "password change" do
+    before :each do
+      @method = :get
+      @action = :password
+      @user = Factory.create(:user, :username => 'email@example.org', :email => 'email@example.org')
+    end
+    it_should_require_login
+    
+    it "should not allow someone who is authenticated elsewhere" do
+      @user = Factory.create(:user)
+      sign_in(@user)
+      do_request
+      response.should render_template("users/no_password")
+    end
+    
+    it "should throw errors if blank" do
+      sign_in(@user)
+      @method = :post
+      @params = {:password => "", :password_confirmation => ""}
+      do_request
+      response.should render_template("users/password")
+      assigns[:user].errors.should_not be_empty
+    end
+    
+    it "should throw errors if passwords don't match" do
+      sign_in(@user)
+      @method = :post
+      @params = {:password => 'password1', :password_confirmation => 'password2'}
+      do_request
+      response.should render_template("users/password")
+      assigns[:user].errors.should_not be_empty
+    end
+    
+    it "should update password" do
+      sign_in(@user)
+      @method = :post
+      @params = {:password => 'newpassword', :password_confirmation => 'newpassword'}
+      do_request
+      response.should render_template("users/password")
+      assigns[:user].errors.should be_empty
+      flash[:notice].should_not be_nil
+      @user.reload.should be_valid_password('newpassword')
+    end
+  end
+
 
 end
