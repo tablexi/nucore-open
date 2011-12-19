@@ -17,6 +17,7 @@ en:
     global_settings: Global Settings
     login: Login
     logout: Logout
+    change_password: Change Password
     cart: Cart
     create: Create %{model}
     

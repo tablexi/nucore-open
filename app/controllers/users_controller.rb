@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  customer_tab :password
   admin_tab     :all
   before_filter :init_current_facility, :except => "password"
   before_filter :authenticate_user!
@@ -138,9 +139,10 @@ class UsersController < ApplicationController
         @user.save!
         @user.clean_up_passwords
         flash[:notice] = "Your password has been updated" 
-        
       end
     end
+    
+    render :layout => "application"
     
   end
 end
