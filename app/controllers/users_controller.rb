@@ -134,6 +134,9 @@ class UsersController < ApplicationController
       if params[:password] != params[:password_confirmation]
         @user.errors.add(:password_confirmation, "does not match")
       end
+      unless @user.valid_password? params[:current_password]
+        @user.errors.add(:base, "Current password is incorrect")
+      end
       if @user.errors.empty?
         @user.password = params[:password].strip
         @user.save!
