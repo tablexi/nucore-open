@@ -24,6 +24,7 @@ Nucore::Application.routes.draw do |map|
     end
   end
   
+  match '/users/change_password' => "users#password", :as => "change_password"
   # transaction searches
   match "/accounts/:account_id/transactions" => 'transaction_history#account_history', :as => "account_transaction_history"
   match "/transactions" => 'transaction_history#my_history', :as => "transaction_history"

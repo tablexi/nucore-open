@@ -1,10 +1,10 @@
 class UsersController < ApplicationController
   admin_tab     :all
-  before_filter :init_current_facility
+  before_filter :init_current_facility, :except => "password"
   before_filter :authenticate_user!
-  before_filter :check_acting_as
+  before_filter :check_acting_as, :except => "password"
 
-  load_and_authorize_resource
+  load_and_authorize_resource  :except => "password"
 
   layout 'two_column'
 
@@ -115,5 +115,30 @@ class UsersController < ApplicationController
   end
 
   def email
+  end
+  
+  # GET /users/change_password
+  # POST /users/change_password
+  def password
+    @user = current_user
+    unless @user.external?
+      render :no_password and return
+    end
+    
+    if request.post?
+      if params[:password].blank?
+        @user.errors.add(:password, "cannot be blank")
+      end
+      if params[:password] != params[:password_confirmation]
+        @user.errors.add(:password_confirmation, "does not match")
+      end
+      if @user.errors.empty?
+        @user.password = params[:password].strip
+        @user.save!
+        flash[:notice] = "Your password has been updated" 
+        
+      end
+    end
+    
   end
 end
