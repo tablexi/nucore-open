@@ -4,19 +4,19 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'reconcile' }
 
-%h2== Journal ##{@journal} Details
+%h2= t('.head.h2', :journal => @journal)
 %ul.form
   %li
-    %label Created At
+    %label= t('.label.created_at')
     =h human_datetime @journal.created_at
   %li
-    %label Created By
+    %label= t('.label.created_by')
     =h @journal.created_by_user
   %li
-    %label Journal Date
+    %label= t('.label.journal_date')
     =h human_date @journal.journal_date
   %li
-    %label Journal Status
+    %label= t('.label.journal_status')
     =h @journal.status_string
   %li=link_to 'Download XLS File', @journal.file.url
   %li=link_to 'Download XML File', facility_journal_path(current_facility, @journal, :format => 'xml')
@@ -25,37 +25,34 @@
 %hr
 %br
 
-%h3 Reconcile Orders
-%p
-  Orders on this page reflect updates made to orders since journaling.  To view the journal as originally
-  submitted, you may download the XLS or XML journal for reference
+%h3= t('.head.h3')
+%p= t('.instruct.orders')
+
 - if @journal.open?
-  %p The journal is pending.  No changes can be made to any of the orders on the journal until the journal is closed.
+  %p= t('.journal.pending')
 - elsif !@journal.is_successful?
-  %p The journal failed processing.  All orders that were associated with the journal have been removed from the journal so they may be re-journaled. 
+  %p= t('.journal.failed')
 - elsif @journal.is_successful? && @journal.is_reconciled?
-  %p The journal was processed successfully and all orders associated with the journal have been reconciled.  No further changes may be made to the journal or the associated orders.
+  %p= t('.journal.success')
 - else
-  %p
-    The journal was processed successfully, but individual orders must be reconciled.  Please edit orders to reflect changes made
-    to the journal after the journal was submitted.  Once an order has been updated to reflect the necessary changes, you should mark that
-    order as reconciled.  Once reconciled, you may not make any additional changes to the order.
+  %p= t('.instruct.reconcile')
+
 - if @order_details.empty?
-  %p.notice No orders are associated with this journal
+  %p.notice= t('.notice')
 - else
   = form_tag facility_journal_reconcile_path(current_facility, @journal), :method => :post do
     %table
       - if @journal.is_successful? && !@journal.is_reconciled?
         %tr.borderless
           %td{:colspan => 3}
-          %td.currency{:colspan => 3}= submit_tag "Reconcile Orders"
+          %td.currency{:colspan => 3}= submit_tag t('.submit')
       %tr
         %th
-        %th Order
-        %th Fulfilled At
-        %th Payment Source
-        %th Total
-        %th Reconciled?
+        %th= t('.th.order')
+        %th= t('.th.fulfilled')
+        %th= t('.th.account')
+        %th= t('.th.total')
+        %th= t('.th.reconciled')
       - @order_details.each do |od|
         - disable = od.reconciled? || @journal.open?
         %tr
@@ -72,4 +69,4 @@
       - if @journal.is_successful? && !@journal.is_reconciled?
         %tr.borderless
           %td{:colspan => 3}
-          %td.currency{:colspan => 3}= submit_tag "Reconcile Orders"
+          %td.currency{:colspan => 3}= submit_tag t('.submit')
