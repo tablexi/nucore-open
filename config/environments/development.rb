@@ -16,7 +16,8 @@ Nucore::Application.configure do
 
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.delivery_method = :sendmail
+  config.action_mailer.delivery_method = :test
+  config.action_mailer.perform_deliveries = false
   config.action_mailer.default_url_options = { :host => "localhost", :port => 3000 }
 
   # Print deprecation notices to the Rails logger
