@@ -241,7 +241,8 @@ describe UsersController do
       response.should render_template "users/password_reset"
       response.should render_template "layouts/application"
       assigns[:user].should be_nil
-      flash[:warning].should_not be_nil
+      flash[:error].should_not be_nil
+      flash[:error].should include "xxxxx"
     end
     
     it "should not be able to do anything for non-local users" do
@@ -250,7 +251,7 @@ describe UsersController do
       response.should render_template "users/password_reset"
       response.should render_template "layouts/application"
       assigns[:user].should == @remote_authenticated_user
-      flash[:warning].should_not be_nil
+      flash[:error].should_not be_nil
     end
     
     it "should send a notification and set a new token" do
@@ -260,7 +261,7 @@ describe UsersController do
       response.should render_template "users/password_reset"
       response.should render_template "layouts/application"
       assigns[:user] == @db_user
-      flash[:warning].should be_nil
+      flash[:error].should be_nil
       flash[:notice].should_not be_nil
       assigns[:user].reset_password_token.should_not be_nil
 

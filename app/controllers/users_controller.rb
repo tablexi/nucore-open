@@ -143,10 +143,10 @@ class UsersController < ApplicationController
           @user.send_reset_password_instructions
           flash.now[:notice] = "Instructions on how to reset your password have been sent to #{@user.email}"
         else
-          flash.now[:warning] = "We cannot reset the password for that account. Please change it via the NetID website."
+          flash.now[:error] = "We cannot reset the password for that account. Please change it via the NetID website."
         end
       else
-        flash.now[:warning] = "We cannot find #{params[:email]} in our records."
+        flash.now[:error] = "We cannot find #{params[:user][:email]} in our records."
       end
     end
     render :layout => "application"
