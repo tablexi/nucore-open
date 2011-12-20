@@ -142,11 +142,20 @@ class UsersController < ApplicationController
         if @user.external?
           @user.send_reset_password_instructions
           flash.now[:notice] = "Instructions on how to reset your password have been sent to #{@user.email}"
+          @hide_form = true
         else
           flash.now[:error] = "We cannot reset the password for that account. Please change it via the NetID website."
         end
       else
         flash.now[:error] = "We cannot find #{params[:user][:email]} in our records."
+      end
+    else
+      if params[:reset_password_token]
+        @user = User.find_by_reset_password_token(params[:reset_password_token])
+        if @user and @user.external?
+          render :action => :password, :layout => "application" and return
+        end
+        flash.now[:error] = "That link you clicked is no longer valid."
       end
     end
     render :layout => "application"
