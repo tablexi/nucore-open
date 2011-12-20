@@ -1,20 +1,34 @@
 class Instrument < Product
   @@relay_types = %w/RelaySynaccessRevA RelaySynaccessRevB/
 
+  has_one  :relay
   has_many :schedule_rules
   has_many :instrument_price_policies
   has_many :price_policies, :foreign_key => 'instrument_id'
   has_many :reservations
   has_many :instrument_statuses, :foreign_key => 'instrument_id'
 
-  validates_presence_of :initial_order_status_id, :facility_account_id, :relay_type
+  accepts_nested_attributes_for :relay
+
+  validates_presence_of :initial_order_status_id, :facility_account_id
   validates_numericality_of :account, :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 99999
   validates_numericality_of :min_reserve_mins, :max_reserve_mins, :only_integer => true, :greater_than_or_equal_to => 0, :allow_nil => true
-  validates_uniqueness_of :relay_port, :scope => :relay_ip, :allow_blank => true
 
   scope :relay_ip, :conditions => ["relay_ip IS NOT NULL"]
 
   after_create :set_default_pricing
+
+  [ :ip, :port, :username, :password, :type ].each do |meth|
+    define_method "relay_#{meth}" do
+      ActiveSupport::Deprecation.warn "#relay_#{meth} has been replaced by Relay##{meth}. Please use the Relay class instead"
+      relay.try(meth.to_sym)
+    end
+  end
+
+  def auto_logout?
+    ActiveSupport::Deprecation.warn "#auto_logout has been replaced by Relay#auto_logout. Please use the Relay class instead"
+    relay.try(:auto_logout)
+  end
 
   def current_instrument_status
     instrument_statuses.find(:first, :order => 'created_at DESC')
