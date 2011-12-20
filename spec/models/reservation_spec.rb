@@ -148,7 +148,7 @@ describe Reservation do
 
     context 'moving' do
 
-      before(:each) { @morning=Time.local(2011, 12, 16, 10, 31) }
+      before(:each) { @morning=Time.local(Date.today.year, Date.today.month, Date.today.day, 10, 31) }
 
       it 'should return the earliest possible time slot' do
         human_date(@reservation1.reserve_start_at).should == human_date(@morning+1.day)
@@ -169,11 +169,9 @@ describe Reservation do
       end
 
       it 'should not be moveable if the reservation is cancelled' do
-        Timecop.freeze(@morning) do
-          @reservation1.should be_can_move
-          @reservation1.canceled_at=Time.zone.now
-          @reservation1.should_not be_can_move
-        end
+        @reservation1.should be_can_move
+        @reservation1.canceled_at=Time.zone.now
+        @reservation1.should_not be_can_move
       end
 
       it 'should not be moveable if there is not a time slot earlier than this one' do
