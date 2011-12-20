@@ -124,10 +124,10 @@ class UsersController < ApplicationController
     @user = current_user
 
     unless @user.external?
-      render :no_password and return
+      render :no_password, :layout => "application" and return
     end
     
-    if request.post? and @user.update_password(params)
+    if request.post? and @user.update_password(params[:user])
       flash[:notice] = "Your password has been updated" 
     end
     

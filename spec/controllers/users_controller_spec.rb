@@ -156,7 +156,7 @@ describe UsersController do
     it "should throw errors if blank" do
       sign_in(@user)
       @method = :post
-      @params = {:password => "", :password_confirmation => "", :current_password => 'password'}
+      @params = {:user => {:password => "", :password_confirmation => "", :current_password => 'password'}}
       do_request
       response.should render_template("users/password")
       assigns[:user].errors.should_not be_empty
@@ -166,7 +166,7 @@ describe UsersController do
     it "should throw errors if passwords don't match" do
       sign_in(@user)
       @method = :post
-      @params = {:password => 'password1', :password_confirmation => 'password2', :current_password => 'password'}
+      @params = {:user => {:password => 'password1', :password_confirmation => 'password2', :current_password => 'password'}}
       do_request
       response.should render_template("users/password")
       assigns[:user].errors.should_not be_empty
@@ -176,7 +176,7 @@ describe UsersController do
     it "should display errors if the current password is incorrect" do
       sign_in(@user)
       @method = :post
-      @params = {:password => 'password1', :password_confirmation => 'password1', :current_password => 'incorrectpassword'}
+      @params = {:user => {:password => 'password1', :password_confirmation => 'password1', :current_password => 'incorrectpassword'}}
       do_request
       response.should render_template("users/password")
       assigns[:user].errors.should_not be_empty
@@ -186,7 +186,7 @@ describe UsersController do
     it "should update password" do
       sign_in(@user)
       @method = :post
-      @params = {:password => 'newpassword', :password_confirmation => 'newpassword', :current_password => 'password'}
+      @params = {:user => {:password => 'newpassword', :password_confirmation => 'newpassword', :current_password => 'password'}}
       do_request
       response.should render_template("users/password")
       assigns[:user].errors.should be_empty
