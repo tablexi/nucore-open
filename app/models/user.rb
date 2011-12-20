@@ -49,18 +49,18 @@ class User < ActiveRecord::Base
 
   def update_password(params)
     unless external?
-      self.errors.add(:base, "Cannot update this user's password")
+      self.errors.add(:base, :password_not_updatable)
       return false
     end
 
     if params[:password].blank?
-      self.errors.add(:password, "cannot be blank")
+      self.errors.add(:password, :empty)
     end
     if params[:password] != params[:password_confirmation]
-      self.errors.add(:password_confirmation, "does not match")
+      self.errors.add(:password_confirmation, :confirmation)
     end
     unless self.valid_password? params[:current_password]
-      self.errors.add(:base, "Current password is incorrect")
+      self.errors.add(:current_password, :incorrect)
     end
     if self.errors.empty?
       self.password = params[:password].strip

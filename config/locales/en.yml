@@ -346,6 +346,7 @@ en:
         odd: "must be odd"
         even: "must be even"
         record_invalid: "Validation failed: %{errors}"
+        incorrect: "is incorrect"
         # Append your own errors here or at the model/attributes scope.
       full_messages:
         format: "%{attribute} %{message}"
@@ -355,6 +356,11 @@ en:
           other:  "%{count} errors prohibited this %{model} from being saved"
         # The variable :count is also available
         body: "There were problems with the following fields:"
+      models:
+        user:
+          password_not_updatable: You cannot change this user's password
+              
+              
     # Model Names
     models:
       account:
@@ -384,6 +390,8 @@ en:
       user:
         username: Username
         password: Password
+        password_confirmation: Confirm password
+        current_password: Current password
       facility:
         url_name: URL name
       price_group:
