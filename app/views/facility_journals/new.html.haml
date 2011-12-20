@@ -3,7 +3,7 @@
   = stylesheet_link_tag 'jquery-ui/jquery-ui'
   :javascript
     $(function(){
-      $(".datepicker").datepicker({
+      $("#journal_date").datepicker({
         'defaultDate':'#{@soonest_journal_date.strftime("%m/%d/%y")}',
         'minDate':'#{@soonest_journal_date.strftime("%m/%d/%y")}',
         'maxDate':'#{Time.zone.now.to_datetime.strftime("%m/%d/%y")}'
