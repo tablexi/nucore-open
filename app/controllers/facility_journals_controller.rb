@@ -157,8 +157,8 @@ class FacilityJournalsController < ApplicationController
   end
   
   def set_soonest_journal_date
-    #@soonest_journal_date=@order_details.collect{ |od| od.fulfilled_at }.max
-    @soonest_journal_date=Time.zone.now #unless @soonest_journal_date
+    @soonest_journal_date=@order_details.collect{ |od| od.fulfilled_at }.max
+    @soonest_journal_date=Time.zone.now unless @soonest_journal_date
   end
   
   def set_default_variables

@@ -4,7 +4,7 @@
   :javascript
     $(function(){
       $(".datepicker").datepicker({
-        'defaultDate':'#{@soonest_journal_date.strftime("%m/%d/%y")}',
+        'defaultDate':'#{Time.zone.now.to_datetime.strftime("%m/%d/%y")}',
         'minDate':'#{@soonest_journal_date.strftime("%m/%d/%y")}',
         'maxDate':'#{Time.zone.now.to_datetime.strftime("%m/%d/%y")}'
       });
