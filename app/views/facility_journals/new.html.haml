@@ -3,8 +3,7 @@
   = stylesheet_link_tag 'jquery-ui/jquery-ui'
   :javascript
     $(function(){
-      $(".datepicker").datepicker({
-        'defaultDate':'#{Time.zone.now.to_datetime.strftime("%m/%d/%y")}',
+      $("#journal_date").val("#{Time.zone.now.to_datetime.strftime("%m/%d/%y")}").datepicker({
         'minDate':'#{@soonest_journal_date.strftime("%m/%d/%y")}',
         'maxDate':'#{Time.zone.now.to_datetime.strftime("%m/%d/%y")}'
       });
@@ -14,7 +13,7 @@
 = content_for :h1 do
   = @facility
 = content_for :h2 do
-  %h2 Create Journal
+  %h2= t_create_model(Journal)
 
 = content_for :top_block do      
   = render :partial => 'shared/transactions/top', :locals => { :tab => 'new_journal' }

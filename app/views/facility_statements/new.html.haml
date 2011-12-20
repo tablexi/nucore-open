@@ -3,7 +3,7 @@
   = @facility
 
 =content_for :h2 do
-  %h2 Create Statements
+  %h2= t_create_models(Statement)
 
 = content_for :top_block do      
   = render :partial => 'shared/transactions/top', :locals => { :tab => 'statements' }

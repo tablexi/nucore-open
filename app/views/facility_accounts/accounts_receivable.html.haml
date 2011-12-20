@@ -4,12 +4,12 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts_receivable' }
 
-%h2 Accounts Receivable
+%h2= t(".head")
 %ul
   - if params[:show_all]
-    %li= link_to "Show #{Account.model_name.human.pluralize.downcase} with a balance", facility_accounts_receivable_path
+    %li= link_to t(".show_with_balance", :model => Account.model_name.human.pluralize.downcase), facility_accounts_receivable_path
   - else
-    %li= link_to "Show all #{Account.model_name.human.pluralize.downcase}", facility_accounts_receivable_path(:show_all => '1')
+    %li= link_to t(".show_all", :model => Account.model_name.human.pluralize.downcase), facility_accounts_receivable_path(:show_all => '1')
 
 %table
   %tr
