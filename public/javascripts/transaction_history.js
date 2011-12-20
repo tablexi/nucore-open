@@ -37,7 +37,7 @@ $(function() {
 			});
 		} else {
 			$("#products option").each(function() {
-				if (facilitiesValues.indexOf($(this).attr("data-facility")) > -1) {
+				if ($.inArray($(this).attr("data-facility"), facilitiesValues) > -1) {
 					$(this).removeAttr("disabled");
 				} else {
 					$(this).attr("disabled", "disabled").removeAttr("selected");
