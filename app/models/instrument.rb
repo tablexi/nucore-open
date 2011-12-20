@@ -12,8 +12,6 @@ class Instrument < Product
   validates_numericality_of :account, :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 99999
   validates_numericality_of :min_reserve_mins, :max_reserve_mins, :only_integer => true, :greater_than_or_equal_to => 0, :allow_nil => true
 
-  scope :relay_ip, :conditions => ["relay_ip IS NOT NULL"]
-
   after_create :set_default_pricing
 
   def current_instrument_status
