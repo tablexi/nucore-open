@@ -10,7 +10,8 @@
         %li.last= link_to t('pages.cart'), :cart
       - else
         %li#user= "#{session_user.full_name} (#{session_user.username})"
-        %li= link_to t('pages.change_password'), :change_password if current_user.external?
+        - if current_user.external?
+          %li= link_to t('pages.change_password'), :change_password 
         %li= link_to t('pages.cart'), :cart
         %li.last= link_to t('pages.logout'), :destroy_user_session
   .clear
