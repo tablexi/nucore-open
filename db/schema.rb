@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111209185608) do
+ActiveRecord::Schema.define(:version => 20111220164710) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -476,19 +476,20 @@ ActiveRecord::Schema.define(:version => 20111209185608) do
   add_index "user_roles", ["user_id", "facility_id", "role"], :name => "i_use_rol_use_id_fac_id_rol"
 
   create_table "users", :force => true do |t|
-    t.string   "username",                           :null => false
+    t.string   "username",                             :null => false
     t.string   "first_name"
     t.string   "last_name"
-    t.string   "email",              :default => "", :null => false
+    t.string   "email",                :default => "", :null => false
     t.string   "encrypted_password"
     t.string   "password_salt"
-    t.integer  "sign_in_count",      :default => 0
+    t.integer  "sign_in_count",        :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "reset_password_token"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
