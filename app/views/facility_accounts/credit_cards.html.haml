@@ -6,10 +6,10 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'credit_cards' }
 
-%h2 Reconcile Credit Cards
+%h2= t(".head")
 
 - if @accounts.empty?
-  %p.notice There are no credit cards with completed orders to be reconciled at this time
+  %p.notice= t(".none")
 - else
   = form_tag(credit_cards_facility_accounts_path, :method => :get) do
     %p
@@ -19,7 +19,7 @@
     %h3= "Owner: #{@selected.owner_user.full_name}"
   %h3= "Balance: #{number_to_currency(@selected.unreconciled_total(current_facility))}"
 
-  %p Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'.
+  %p= t(".instructions")
 
   = form_tag(update_credit_cards_facility_accounts_path, :method => :post) do
     %table

@@ -27,3 +27,23 @@ var DatePickerRange = {
 	}
 		
 }
+
+$(function() {
+	$("#facilities").change(function() {
+		var facilitiesValues = $(this).val();
+		if (facilitiesValues == null || facilitiesValues.length == 0) {
+			$("#products option").each(function() {
+				$(this).removeAttr("disabled");
+			});
+		} else {
+			$("#products option").each(function() {
+				if (facilitiesValues.indexOf($(this).attr("data-facility")) > -1) {
+					$(this).removeAttr("disabled");
+				} else {
+					$(this).attr("disabled", "disabled").removeAttr("selected");
+				}
+			});
+		}
+		$("#products").trigger("liszt:updated")
+	});
+});
