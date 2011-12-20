@@ -2,7 +2,7 @@
 = content_for :h1 do
   = @facility
 = content_for :h2 do
-  %h2 Send Notifications
+  %h2= t(".head")
 
 = content_for :top_block do      
   = render :partial => 'shared/transactions/top', :locals => { :tab => "notifications" }
