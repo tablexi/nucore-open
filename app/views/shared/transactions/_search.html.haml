@@ -12,7 +12,7 @@
       - if @products
         %li
           = label_tag :products, Product.model_name.human.pluralize
-          = select_tag :products, options_from_collection_for_select(@products, "id", "name", @search_fields[:products]), :multiple => true, :"data-placeholder" => "Select #{Product.model_name.human.pluralize.downcase}"
+          = select_tag :products, product_options(@products, @search_fields[:products]), :multiple => true, :"data-placeholder" => "Select #{Product.model_name.human.pluralize.downcase}"
       - if @account_owners
         %li
           = label_tag :owners, Account.human_attribute_name('owner').pluralize

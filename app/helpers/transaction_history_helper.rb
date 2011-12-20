@@ -18,4 +18,14 @@ module TransactionHistoryHelper
     # end
   end
   
+  def product_options(products, search_fields)
+    options = []
+    products.each do |product|
+      selected = search_fields && search_fields.include?(product.id.to_s) ? "selected = \"selected\"" : ""
+      options << "<option value=\"#{product.id}\" data-facility=\"#{product.facility.id}\" #{selected}>#{product.name}</option>"
+    end
+    options.join("\n").html_safe
+    #options_from_collection_for_select(products, "id", "name", search_fields)
+  end
+  
 end
