@@ -217,7 +217,54 @@ describe UsersController do
       do_request
       response.body.should_not include("Change Password</a>")
     end
+  end
+  
+  context "reset password" do
+    before :each do
+      @method = :post
+      @action = :password_reset
+      @db_user = Factory.create(:user, :username => 'email@example.org', :email => 'email@example.org')
+      @remote_authenticated_user = Factory.create(:user)
+    end
+    it "should display the page on get" do
+      @method = :get
+      do_request
+      response.should be_success
+      response.should render_template "users/password_reset"
+      response.should render_template "layouts/application"
+      assigns[:user].should be_nil
+    end
     
+    it "should not find someone" do
+      @params = {:user => {:email => 'xxxxx'}}
+      do_request
+      response.should render_template "users/password_reset"
+      response.should render_template "layouts/application"
+      assigns[:user].should be_nil
+      flash[:warning].should_not be_nil
+    end
+    
+    it "should not be able to do anything for non-local users" do
+      @params = {:user => {:email => @remote_authenticated_user.email}}
+      do_request
+      response.should render_template "users/password_reset"
+      response.should render_template "layouts/application"
+      assigns[:user].should == @remote_authenticated_user
+      flash[:warning].should_not be_nil
+    end
+    
+    it "should send a notification and set a new token" do
+      @params = {:user => {:email => @db_user.email}}
+      @db_user.reset_password_token.should be_nil
+      do_request
+      response.should render_template "users/password_reset"
+      response.should render_template "layouts/application"
+      assigns[:user] == @db_user
+      flash[:warning].should be_nil
+      flash[:notice].should_not be_nil
+      assigns[:user].reset_password_token.should_not be_nil
+
+    end
   end
 
 

@@ -1,11 +1,11 @@
 class UsersController < ApplicationController
   customer_tab :password
   admin_tab     :all
-  before_filter :init_current_facility, :except => "password"
-  before_filter :authenticate_user!
+  before_filter :init_current_facility, :except => [:password, :password_reset] 
+  before_filter :authenticate_user!, :except => [:password_reset]
   before_filter :check_acting_as
 
-  load_and_authorize_resource :except => "password"
+  load_and_authorize_resource :except => [:password, :password_reset]
 
   layout 'two_column'
 
@@ -133,5 +133,22 @@ class UsersController < ApplicationController
     
     render :layout => "application"
     
+  end
+  
+  def password_reset
+    if request.post?
+      @user = User.find_by_email(params[:user][:email])
+      if @user
+        if @user.external?
+          @user.send_reset_password_instructions
+          flash.now[:notice] = "Instructions on how to reset your password have been sent to #{@user.email}"
+        else
+          flash.now[:warning] = "We cannot reset the password for that account. Please change it via the NetID website."
+        end
+      else
+        flash.now[:warning] = "We cannot find #{params[:email]} in our records."
+      end
+    end
+    render :layout => "application"
   end
 end
