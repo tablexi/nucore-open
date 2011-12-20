@@ -1,6 +1,4 @@
 class Instrument < Product
-  @@relay_types = %w/RelaySynaccessRevA RelaySynaccessRevB/
-
   has_one  :relay
   has_many :schedule_rules
   has_many :instrument_price_policies
@@ -17,18 +15,6 @@ class Instrument < Product
   scope :relay_ip, :conditions => ["relay_ip IS NOT NULL"]
 
   after_create :set_default_pricing
-
-  [ :ip, :port, :username, :password, :type ].each do |meth|
-    define_method "relay_#{meth}" do
-      ActiveSupport::Deprecation.warn "#relay_#{meth} has been replaced by Relay##{meth}. Please use the Relay class instead"
-      relay.try(meth.to_sym)
-    end
-  end
-
-  def auto_logout?
-    ActiveSupport::Deprecation.warn "#auto_logout has been replaced by Relay#auto_logout. Please use the Relay class instead"
-    relay.try(:auto_logout)
-  end
 
   def current_instrument_status
     instrument_statuses.find(:first, :order => 'created_at DESC')
@@ -98,7 +84,7 @@ class Instrument < Product
   end
 
   def has_relay?
-    (relay_ip && relay_port) ? true : false
+    relay && relay.ip && relay.port
   end
 
   def can_purchase? (group_ids = nil)
@@ -121,10 +107,6 @@ class Instrument < Product
     else
       true
     end
-  end
-
-  def self.relay_types
-    @@relay_types
   end
 
   def set_default_pricing

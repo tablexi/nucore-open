@@ -99,11 +99,15 @@ Factory.define :instrument, :class => Instrument do |o|
   o.requires_approval false
   o.is_archived false
   o.is_hidden false
-  o.relay_type 'RelaySynaccessRevA'
-  o.sequence(:relay_port) {|p| p }
   o.initial_order_status_id { |o| find_order_status('new').id }
   o.min_reserve_mins 60
   o.max_reserve_mins 120
+end
+
+Factory.define :relay, :class => Relay do |o|
+  o.type 'RelaySynaccessRevA'
+  o.ip '192.168.1.1'
+  o.sequence(:port) {|p| p }
 end
 
 Factory.define :instrument_price_policy, :class => InstrumentPricePolicy do |o|

@@ -156,8 +156,7 @@ describe OrdersController do
 
     context 'as instrument' do
       before :each do
-        @options=Factory.attributes_for(:instrument, :facility_account => @facility_account,
-                                        :min_reserve_mins => 60, :max_reserve_mins => 60, :relay_ip => '192.168.1.1')
+        @options=Factory.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
         @instrument=@authable.instruments.create(@options)
         @order2=@staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account))
         @params[:id]=@order2.id

@@ -14,8 +14,7 @@ describe ReservationsController do
     @price_group      = @authable.price_groups.create(Factory.attributes_for(:price_group))
     @pg_member        = Factory.create(:user_price_group_member, :user => @guest, :price_group => @price_group)
     # create instrument, min reserve time is 60 minutes, max is 60 minutes
-    @options          = Factory.attributes_for(:instrument, :facility_account => @facility_account,
-                                               :min_reserve_mins => 60, :max_reserve_mins => 60, :relay_ip => '192.168.1.1')
+    @options          = Factory.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
     @instrument       = @authable.instruments.create(@options)
     assert @instrument.valid?
     Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
@@ -330,6 +329,7 @@ describe ReservationsController do
         @method=:get
         @action=:switch_instrument
         @params.merge!(:reservation_id => @reservation.id)
+        Factory.create(:relay, :instrument => @instrument)
       end
 
       context 'on' do

@@ -139,8 +139,8 @@ class InstrumentsController < ApplicationController
   # GET /facilities/:facility_id/instruments/:instrument_id/status
   def instrument_status
     begin
-      @relay  = @instrument.relay_type.constantize.new(@instrument.relay_ip, @instrument.relay_username, @instrument.relay_password)
-      status = Rails.env.test? ? true : @relay.get_status_port(@instrument.relay_port)
+      @relay  = @instrument.relay
+      status = Rails.env.test? ? true : @relay.get_status_port(@relay.port)
       @status = @instrument.instrument_statuses.create!(:is_on => status)
     rescue
       raise ActiveRecord::RecordNotFound
@@ -153,12 +153,13 @@ class InstrumentsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == 'on' || params[:switch] == 'off')
 
     begin
-      relay = @instrument.relay_type.constantize.new(@instrument.relay_ip, @instrument.relay_username, @instrument.relay_password)
+      relay = @instrument.relay
       status=true
 
       unless Rails.env.test?
-        params[:switch] == 'on' ? relay.activate_port(@instrument.relay_port) : relay.deactivate_port(@instrument.relay_port)
-        status = relay.get_status_port(@instrument.relay_port)
+        port=@instrument.relay.port
+        params[:switch] == 'on' ? relay.activate_port(port) : relay.deactivate_port(port)
+        status = relay.get_status_port(port)
       end
 
       @status = @instrument.instrument_statuses.create!(:is_on => status)

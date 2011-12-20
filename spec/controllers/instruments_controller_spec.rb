@@ -117,7 +117,7 @@ describe InstrumentsController do
       @method=:post
       @action=:create
       @params.merge!(
-        :instrument => Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id, :relay_port => 99)
+        :instrument => Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id)
       )
     end
 
@@ -137,7 +137,7 @@ describe InstrumentsController do
       @method=:put
       @action=:update
       @params.merge!(
-        :instrument => Factory.attributes_for(:item, :facility_account_id => @facility_account.id, :relay_port => 99)
+        :instrument => Factory.attributes_for(:item, :facility_account_id => @facility_account.id)
       )
     end
 

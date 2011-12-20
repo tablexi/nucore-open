@@ -233,13 +233,14 @@ class ReservationsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == 'on' || params[:switch] == 'off')
     
     begin
-      relay = @instrument.relay_type.constantize.new(@instrument.relay_ip, @instrument.relay_username, @instrument.relay_password)
+      relay = @instrument.relay
       if (params[:switch] == 'on' && @reservation.can_switch_instrument_on?)
         status=Rails.env.production? ? nil : true
 
         if status.nil?
-          relay.activate_port(@instrument.relay_port)
-          status = relay.get_status_port(@instrument.relay_port)
+          port=@instrument.relay.port
+          relay.activate_port(port)
+          status = relay.get_status_port(port)
         end
 
         if status
@@ -254,8 +255,9 @@ class ReservationsController < ApplicationController
         status=Rails.env.production? ? nil : false
 
         if status.nil?
-          relay.deactivate_port(@instrument.relay_port)
-          status = relay.get_status_port(@instrument.relay_port)
+          port=@instrument.relay.port
+          relay.deactivate_port(port)
+          status = relay.get_status_port(port)
         end
 
         if status == false
