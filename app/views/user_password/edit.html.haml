@@ -1,0 +1,11 @@
+= content_for :h1 do
+  = t("pages.change_password")
+= error_messages_for :user
+= form_for :user, :url => update_password_path do |f|
+  .password
+    =f.hidden_field :reset_password_token
+    =f.label :password
+    =f.password_field :password
+    =f.label :password_confirmation
+    =f.password_field :password_confirmation
+  =f.submit t("pages.change_password") 

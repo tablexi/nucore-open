@@ -45,25 +45,30 @@ class User < ActiveRecord::Base
   def external?
     username == email
   end
+  
+  def password_updatable?
+    external?
+  end
 
-
+  def update_password_confirm_current(params)
+    unless self.valid_password? params[:current_password]
+      self.errors.add(:current_password, :incorrect)
+    end
+    update_password(params)
+  end
   def update_password(params)
-    unless external?
+    unless password_updatable?
       self.errors.add(:base, :password_not_updatable)
       return false
     end
 
-    if params[:password].blank?
-      self.errors.add(:password, :empty)
-    end
-    if params[:password] != params[:password_confirmation]
-      self.errors.add(:password_confirmation, :confirmation)
-    end
-    unless self.valid_password? params[:current_password]
-      self.errors.add(:current_password, :incorrect)
-    end
+    self.errors.add(:password, :empty) if params[:password].blank?    
+    self.errors.add(:password, :password_too_short) if params[:password] and params[:password].strip.length < 6    
+    self.errors.add(:password_confirmation, :confirmation) if params[:password] != params[:password_confirmation]
+    
     if self.errors.empty?
       self.password = params[:password].strip
+      self.clear_reset_password_token
       self.save!
       self.clean_up_passwords
       return true 
