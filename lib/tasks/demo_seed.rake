@@ -104,18 +104,21 @@ namespace :demo  do
       :requires_approval   => false,
       :is_archived         => false,
       :is_hidden           => false,
-      :facility_account_id => fa.id,
-      :relay_ip            => '192.168.10.135',
-      :relay_port          => '1',
-      :relay_username      => 'admin',
-      :relay_password      => 'admin',
-      :relay_type          => 'RelaySynaccessRevB'
+      :facility_account_id => fa.id
     })
 
     if instrument.new_record?
       puts "INSTRUMENT CREATE FAILED!"
       instrument.errors.full_messages.each{|m| puts m}      
     end
+
+    RelaySynaccessRevB.find_or_create_by_instrument_id({
+      :instrument_id => instrument.id,
+      :ip            => '192.168.10.135',
+      :port          => '1',
+      :username      => 'admin',
+      :password      => 'admin'
+    })
 
     bundle = Bundle.find_or_create_by_url_name({
       :facility_id         => facility.id,
