@@ -46,7 +46,12 @@ class User < ActiveRecord::Base
     username == email
   end
 
-
+  def update_password_confirm_current(params)
+    unless self.valid_password? params[:current_password]
+      self.errors.add(:current_password, :incorrect)
+    end
+    update_password(params)
+  end
   def update_password(params)
     unless external?
       self.errors.add(:base, :password_not_updatable)
@@ -59,11 +64,10 @@ class User < ActiveRecord::Base
     if params[:password] != params[:password_confirmation]
       self.errors.add(:password_confirmation, :confirmation)
     end
-    unless self.valid_password? params[:current_password]
-      self.errors.add(:current_password, :incorrect)
-    end
+    
     if self.errors.empty?
       self.password = params[:password].strip
+      self.clear_reset_password_token
       self.save!
       self.clean_up_passwords
       return true 

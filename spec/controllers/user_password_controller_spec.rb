@@ -197,10 +197,12 @@ describe UserPasswordController do
     it "should succeed" do
       @params.merge!({:user => {:password => "newpassword", :password_confirmation => "newpassword"}})
       do_request
+      assigns[:user].should == @user
       assigns[:user].errors.should be_empty
       response.should redirect_to(new_user_session_path)
       flash[:notice].should_not be_nil
-      @user.reload.valid_password?("newpassword").should be_true
+      assigns[:user].reload.valid_password?("newpassword").should be_true
+      assigns[:user].reset_password_token.should be_nil
     end
   end
 

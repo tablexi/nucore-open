@@ -11,7 +11,7 @@ class UserPasswordController < ApplicationController
       render :no_password, :layout => "application" and return
     end
     
-    if request.post? and @user.update_password(params[:user])
+    if request.post? and @user.update_password_confirm_current(params[:user])
       flash[:notice] = "Your password has been updated" 
     end    
   end
@@ -42,21 +42,18 @@ class UserPasswordController < ApplicationController
   end
   
   def update
-    # logger.debug("params[:user] #{params[:user]}")
-    # logger.debug("rset: #{params[:user][:reset_password_token]}")
-    # @user = User.find_by_reset_password_token(params[:user][:reset_password_token])
-    # logger.debug(@user)
-    # logger.debug("external? #{@user.external?}")
     unless params[:user] and params[:user][:reset_password_token] and @user = User.find_by_reset_password_token(params[:user][:reset_password_token]) and @user.external?
       flash[:error] = "The token is either invalid or has expired."
       redirect_to :action => :reset and return  
     end
-    @user = User.reset_password_by_token(params[:user])
+    #@user = User.reset_password_by_token(params[:user])
+    @user.update_password(params[:user])
     if @user.errors.empty?
       flash[:notice] = "Your password has successfully been reset"
       sign_in(@user)
       redirect_to new_user_session_path and return
     end
+    puts @user
     render :action => :edit
   end
   
