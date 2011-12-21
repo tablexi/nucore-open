@@ -15,7 +15,7 @@ class Instrument < Product
   after_create :set_default_pricing
 
   def current_instrument_status
-    instrument_statuses.find(:first, :order => 'created_at DESC')
+    instrument_statuses.order('created_at DESC').first
   end
   
   def first_available_hour
@@ -82,7 +82,7 @@ class Instrument < Product
   end
 
   def has_relay?
-    relay && relay.ip && relay.port
+    relay && (relay.is_a?(RelayDummy) || relay.ip && relay.port)
   end
 
   def can_purchase? (group_ids = nil)
