@@ -26,5 +26,28 @@ describe Relay do
       @relay.host.should == @relay.ip
     end
 
+    context 'dummy relay' do
+
+      before :each do
+        @relay.destroy
+        @relay.should be_destroyed
+        @relay=RelayDummy.create!(:instrument_id => @instrument.id)
+      end
+
+
+      it 'should turn on the relay' do
+        @relay.activate_port(nil)
+        @relay.get_status_port(nil).should == true
+      end
+
+
+      it 'should turn off the relay' do
+        @relay.deactivate_port(nil)
+        @relay.get_status_port(nil).should == false
+      end
+
+    end
+
   end
+
 end
