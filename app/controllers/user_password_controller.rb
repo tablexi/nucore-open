@@ -53,7 +53,7 @@ class UserPasswordController < ApplicationController
     if @user.errors.empty?
       flash[:notice] = I18n.t("user_password.edit.success")
       sign_in(@user)
-      redirect_to new_user_session_path and return
+      redirect_to :root and return
     end
     render :action => :edit
   end

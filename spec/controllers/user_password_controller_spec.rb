@@ -204,7 +204,7 @@ describe UserPasswordController do
     it "should succeed" do
       @params.deep_merge!({:user => {:password => "newpassword", :password_confirmation => "newpassword"}})
       do_request
-      response.should redirect_to(new_user_session_path)
+      response.should redirect_to(:root)
       assigns[:user].should == @user
       assigns[:user].errors.should be_empty
       flash[:notice].should_not be_nil

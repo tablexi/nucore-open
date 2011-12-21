@@ -1,5 +1,5 @@
 = content_for :h1 do
-  = t("pages.change_password")
+  = t("user_password.edit.head")
 = error_messages_for :user
 = form_for :user, :url => update_password_path do |f|
   .password
@@ -8,4 +8,4 @@
     =f.password_field :password
     =f.label :password_confirmation
     =f.password_field :password_confirmation
-  =f.submit t("pages.change_password") 
+  =f.submit t("user_password.edit.head") 

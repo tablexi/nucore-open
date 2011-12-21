@@ -11,7 +11,7 @@
       - else
         %li#user= "#{session_user.full_name} (#{session_user.username})"
         - if current_user.external?
-          %li= link_to t('pages.change_password'), :edit_current_password 
+          %li= link_to t("user_password.edit.head"), :edit_current_password 
         %li= link_to t('pages.cart'), :cart
         %li.last= link_to t('pages.logout'), :destroy_user_session
   .clear

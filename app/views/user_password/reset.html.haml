@@ -1,5 +1,6 @@
 = content_for :h1 do
-  Reset Password
+  = t(".head")
+%p= t(".instructions_html")
 = form_for :user, :url => reset_password_path do |f|
   = f.label :email
   = f.text_field :email
