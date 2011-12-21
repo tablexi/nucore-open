@@ -35,14 +35,14 @@ class UserPasswordController < ApplicationController
   end
   
   def edit
-    unless params[:reset_password_token] and @user = User.find_by_reset_password_token(params[:reset_password_token]) and @user.password_updatable?
+    unless params[:reset_password_token] and @user = User.find_by_reset_password_token(params[:reset_password_token]) and @user.password_updatable? and @user.reset_password_period_valid?
       flash[:error] = I18n.t("activerecord.errors.models.user.invalid_token")
       redirect_to :action => :reset  
     end
   end
   
   def update
-    unless params[:user] and params[:user][:reset_password_token] and @user = User.find_by_reset_password_token(params[:user][:reset_password_token]) and @user.password_updatable?
+    unless params[:user] and params[:user][:reset_password_token] and @user = User.find_by_reset_password_token(params[:user][:reset_password_token]) and @user.password_updatable? and @user.reset_password_period_valid?
       flash[:error] = I18n.t("activerecord.errors.models.user.invalid_token")
       redirect_to :action => :reset and return  
     end

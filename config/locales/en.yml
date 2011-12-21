@@ -298,7 +298,9 @@ en:
   devise:
     failure:
       invalid: "Invalid username or password."
-
+    mailer:
+      reset_password_instructions:
+        subject: 'NUCore Password Reset Instructions'
   controllers:
     facility_accounts:
       create:

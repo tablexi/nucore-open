@@ -167,6 +167,14 @@ describe UserPasswordController do
       do_request
       response.should render_template "user_password/edit"
     end
+    
+    it "should show error if token expired" do
+      @user.reset_password_sent_at = @user.reset_password_sent_at - 2.days
+      @user.save!
+      do_request
+      response.should redirect_to(reset_password_path)
+      flash[:error].should_not be_nil
+    end
   end
   
   context "update" do

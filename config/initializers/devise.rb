@@ -6,6 +6,7 @@ Devise.setup do |config|
   # Configure the e-mail address which will be shown in DeviseMailer.
   config.mailer_sender = "no-reply@example.com"
   
+  
   # Configure the content type of DeviseMailer mails (defaults to text/html")
   # config.mailer_content_type = "text/plain"
 
@@ -59,6 +60,8 @@ Devise.setup do |config|
   # :both  = enables both strategies
   # config.unlock_strategy = :both
 
+  config.reset_password_within = 1.day
+  
   # Time interval to unlock the account if :time is enabled as unlock_strategy.
   # config.unlock_in = 1.hour
 
