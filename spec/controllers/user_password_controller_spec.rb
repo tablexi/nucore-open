@@ -5,8 +5,7 @@ require 'controller_spec_helper'
     it "should not allow if you're signed in" do
       sign_in(@user)
       do_request
-      flash[:error].should_not be_nil 
-      assigns[:hide_form].should be_true
+      response.should redirect_to(edit_current_password_path)
     end
   end
 
@@ -188,18 +187,18 @@ describe UserPasswordController do
     end
     
     it "should fail if passwords don't match" do
-      @params.merge!({:user => {:password => "newpassword", :password_confirmation => "anotherpassword"}})
+      @params.deep_merge!({:user => {:password => "newpassword", :password_confirmation => "anotherpassword"}})
       do_request
       response.should render_template("user_password/edit")
       assigns[:user].errors.should_not be_empty
     end
     
     it "should succeed" do
-      @params.merge!({:user => {:password => "newpassword", :password_confirmation => "newpassword"}})
+      @params.deep_merge!({:user => {:password => "newpassword", :password_confirmation => "newpassword"}})
       do_request
+      response.should redirect_to(new_user_session_path)
       assigns[:user].should == @user
       assigns[:user].errors.should be_empty
-      response.should redirect_to(new_user_session_path)
       flash[:notice].should_not be_nil
       assigns[:user].reload.valid_password?("newpassword").should be_true
       assigns[:user].reset_password_token.should be_nil

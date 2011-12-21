@@ -7,12 +7,12 @@ class UserPasswordController < ApplicationController
   def edit_current
     @user = current_user
 
-    unless @user.external?
+    unless @user.password_updatable?
       render :no_password, :layout => "application" and return
     end
     
     if request.post? and @user.update_password_confirm_current(params[:user])
-      flash[:notice] = "Your password has been updated" 
+      flash[:notice] = I18n.t("user_password.edit.success")
     end    
   end
 
@@ -21,56 +21,47 @@ class UserPasswordController < ApplicationController
     if request.post? and params[:user]
       @user = User.find_by_email(params[:user][:email])
       if @user
-        if @user.external?
+        if @user.password_updatable?
           @user.send_reset_password_instructions
-          flash[:notice] = "Instructions on how to reset your password have been sent to #{@user.email}"
+          flash[:notice] = I18n.t("user_password.reset.success", :email => @user.email)
           redirect_to new_user_session_path
         else
-          flash.now[:error] = "We cannot reset the password for that account. Please change it via the NetID website."
+          flash.now[:error] = I18n.t("activerecord.errors.models.user.password_not_updatable")
         end
       else
-        flash.now[:error] = "We cannot find #{params[:user][:email]} in our records."
+        flash.now[:error] = I18n.t("user_password.reset.not_found", :email => params[:user][:email])
       end
     end
   end
   
   def edit
-    unless params[:reset_password_token] and @user = User.find_by_reset_password_token(params[:reset_password_token]) and @user.external?
-      flash[:error] = "The token is either invalid or has expired."
+    unless params[:reset_password_token] and @user = User.find_by_reset_password_token(params[:reset_password_token]) and @user.password_updatable?
+      flash[:error] = I18n.t("activerecord.errors.models.user.invalid_token")
       redirect_to :action => :reset  
     end
   end
   
   def update
-    unless params[:user] and params[:user][:reset_password_token] and @user = User.find_by_reset_password_token(params[:user][:reset_password_token]) and @user.external?
-      flash[:error] = "The token is either invalid or has expired."
+    unless params[:user] and params[:user][:reset_password_token] and @user = User.find_by_reset_password_token(params[:user][:reset_password_token]) and @user.password_updatable?
+      flash[:error] = I18n.t("activerecord.errors.models.user.invalid_token")
       redirect_to :action => :reset and return  
     end
-    #@user = User.reset_password_by_token(params[:user])
+    # devise's reset has problems with the ldap module enabled and no ldap.yml
+    # @user = User.reset_password_by_token(params[:user])
     @user.update_password(params[:user])
     if @user.errors.empty?
-      flash[:notice] = "Your password has successfully been reset"
+      flash[:notice] = I18n.t("user_password.edit.success")
       sign_in(@user)
       redirect_to new_user_session_path and return
     end
-    puts @user
     render :action => :edit
   end
   
   private
   def no_user_allowed
     if current_user
-      @hide_form = true
-      flash.now[:error] = "You should not be accessing this page while already logged in."
+      redirect_to :action => :edit_current
       return false
     end
   end
 end
-
-# if params[:reset_password_token]
-        # @user = User.find_by_reset_password_token(params[:reset_password_token])
-        # if @user and @user.external?
-          # render :action => :password, :layout => "application" and return
-        # end
-        # flash.now[:error] = "That link you clicked is no longer valid."
-      # end
