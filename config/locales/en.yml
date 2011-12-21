@@ -233,7 +233,16 @@ en:
         main: "Downloadable Order Forms are templates to be filled in by the user and submitted when ordering.  Uploading a new template will replace any existing Downloadable Order Forms."
         notice: "No Downloadable Order Forms have been uploaded."
         confirm: "Are you sure you wish to remove this file?"
-
+  user_password:
+    edit:
+      head: Change Password
+      success: Your password has been updated
+    reset:
+      head: Reset Password
+      instructions_html: Please enter your email address below. If you use a NetID, please reset it through <a href="https://validate.it.northwestern.edu/idm/user/login.jsp">NUVALIDATE</a>
+      success: Instructions on how to reset your password have been sent to %{email}
+      not_found: We cannot find %{email} in our records.
+    
   users:
     index:
       head:
@@ -291,7 +300,9 @@ en:
   devise:
     failure:
       invalid: "Invalid username or password."
-
+    mailer:
+      reset_password_instructions:
+        subject: 'NUCore Password Reset Instructions'
   controllers:
     facility_accounts:
       create:
@@ -362,6 +373,7 @@ en:
         odd: "must be odd"
         even: "must be even"
         record_invalid: "Validation failed: %{errors}"
+        incorrect: "is incorrect"
         # Append your own errors here or at the model/attributes scope.
       full_messages:
         format: "%{attribute} %{message}"
@@ -371,6 +383,13 @@ en:
           other:  "%{count} errors prohibited this %{model} from being saved"
         # The variable :count is also available
         body: "There were problems with the following fields:"
+      models:
+        user:
+          password_not_updatable: You cannot change this user's password
+          password_too_short: must be at least 6 characters long
+          invalid_token: The token is either invalid or has expired.
+              
+              
     # Model Names
     models:
       account:
@@ -406,6 +425,8 @@ en:
       user:
         username: Username
         password: Password
+        password_confirmation: Confirm password
+        current_password: Current password
       facility:
         url_name: URL name
       price_group:

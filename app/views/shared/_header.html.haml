@@ -1,7 +1,7 @@
 .container_12
-  .grid_6
+  .grid_3
     = link_to (current_user && current_user.operator? ? t(:app_admin_name) : t(:app_name)), :root, :id => 'logo'
-  .grid_6
+  .grid_9
     %ul
       - if session_user.nil?
         %li.last= link_to t("pages.login"), :new_user_session
@@ -10,6 +10,8 @@
         %li.last= link_to t('pages.cart'), :cart
       - else
         %li#user= "#{session_user.full_name} (#{session_user.username})"
+        - if current_user.external?
+          %li= link_to t("user_password.edit.head"), :edit_current_password 
         %li= link_to t('pages.cart'), :cart
         %li.last= link_to t('pages.logout'), :destroy_user_session
   .clear

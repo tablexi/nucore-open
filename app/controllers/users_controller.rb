@@ -1,10 +1,11 @@
 class UsersController < ApplicationController
+  customer_tab :password
   admin_tab     :all
-  before_filter :init_current_facility
-  before_filter :authenticate_user!
+  before_filter :init_current_facility, :except => [:password, :password_reset] 
+  before_filter :authenticate_user!, :except => [:password_reset]
   before_filter :check_acting_as
 
-  load_and_authorize_resource
+  load_and_authorize_resource :except => [:password, :password_reset]
 
   layout 'two_column'
 
@@ -116,4 +117,5 @@ class UsersController < ApplicationController
 
   def email
   end
+  
 end

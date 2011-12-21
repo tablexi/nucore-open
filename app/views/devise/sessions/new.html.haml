@@ -2,8 +2,6 @@
   = t('pages.login')
 - if flash[:error]
   %p.error= flash[:error]
-- if flash[:notice]
-  %p.notice= flash[:notice]
 - if flash[:info]
   %p.info= flash[:info]
 = form_for resource, :as => resource_name, :url => session_path(resource_name) do |f|
@@ -16,3 +14,5 @@
       = f.password_field :password, :size => 15
   %ul.horiz
     %li= submit_tag t('pages.login'), :class => 'btn'
+
+= link_to "Forgot password?", :reset_password

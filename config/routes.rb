@@ -1,6 +1,11 @@
 Nucore::Application.routes.draw do |map|
-  devise_for :users
-
+  
+  devise_for :users, :skip => :passwords
+  
+  match '/users/password/edit_current' => 'user_password#edit_current', :as => 'edit_current_password'  
+  match '/users/password/reset' => 'user_password#reset', :as => 'reset_password'
+  match '/users/password/edit' => 'user_password#edit', :as => 'edit_password'
+  match '/users/password/update' => 'user_password#update', :as => 'update_password'
   # The priority is based upon order of creation: first created -> highest priority.
 
   # authentication
@@ -24,6 +29,8 @@ Nucore::Application.routes.draw do |map|
     end
   end
   
+  #match '/users/change_password' => "users#password", :as => "change_password"
+  #match '/users/reset_password' => "users#password_reset", :as => "reset_password"
   # transaction searches
   match "/accounts/:account_id/transactions" => 'transaction_history#account_history', :as => "account_transaction_history"
   match "/transactions" => 'transaction_history#my_history', :as => "transaction_history"
