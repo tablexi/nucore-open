@@ -18,7 +18,7 @@ class UserPasswordController < ApplicationController
 
   
   def reset
-    if request.post?
+    if request.post? and params[:user]
       @user = User.find_by_email(params[:user][:email])
       if @user
         if @user.external?
@@ -42,7 +42,22 @@ class UserPasswordController < ApplicationController
   end
   
   def update
-    
+    # logger.debug("params[:user] #{params[:user]}")
+    # logger.debug("rset: #{params[:user][:reset_password_token]}")
+    # @user = User.find_by_reset_password_token(params[:user][:reset_password_token])
+    # logger.debug(@user)
+    # logger.debug("external? #{@user.external?}")
+    unless params[:user] and params[:user][:reset_password_token] and @user = User.find_by_reset_password_token(params[:user][:reset_password_token]) and @user.external?
+      flash[:error] = "The token is either invalid or has expired."
+      redirect_to :action => :reset and return  
+    end
+    @user = User.reset_password_by_token(params[:user])
+    if @user.errors.empty?
+      flash[:notice] = "Your password has successfully been reset"
+      sign_in(@user)
+      redirect_to new_user_session_path and return
+    end
+    render :action => :edit
   end
   
   private

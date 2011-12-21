@@ -1,9 +1,19 @@
 require 'spec_helper'
 require 'controller_spec_helper'
 
+  def it_should_deny_if_signed_in
+    it "should not allow if you're signed in" do
+      sign_in(@user)
+      do_request
+      flash[:error].should_not be_nil 
+      assigns[:hide_form].should be_true
+    end
+  end
+
 describe UserPasswordController do
   render_views
-  
+
+    
   context "password change" do
     before :each do
       @method = :get
@@ -91,7 +101,7 @@ describe UserPasswordController do
     before :each do
       @method = :post
       @action = :reset
-      @db_user = Factory.create(:user, :username => 'email@example.org', :email => 'email@example.org')
+      @user = @db_user = Factory.create(:user, :username => 'email@example.org', :email => 'email@example.org')
       @remote_authenticated_user = Factory.create(:user)
     end
     it "should display the page on get" do
@@ -103,14 +113,7 @@ describe UserPasswordController do
       assigns[:user].should be_nil
     end
     
-    it "should not be able to reset if logged in" do
-      @method = :get
-      sign_in(@db_user)
-      do_request
-      response.should render_template "user_password/reset"
-      assigns[:hide_form].should be_true
-      flash[:error].should_not be_nil
-    end
+    it_should_deny_if_signed_in
     
     it "should not find someone" do
       @params = {:user => {:email => 'xxxxx'}}
@@ -152,6 +155,8 @@ describe UserPasswordController do
       @user.send(:generate_reset_password_token!)
       @params = {:reset_password_token => @user.reset_password_token}
     end
+    it_should_deny_if_signed_in
+    
     it "should redirect if there isn't a valid token" do
       @params = {:reset_password_token => "xxxxx"}
       do_request
@@ -162,6 +167,40 @@ describe UserPasswordController do
     it "should display if the token is valid" do
       do_request
       response.should render_template "user_password/edit"
+    end
+  end
+  
+  context "update" do
+    before :each do
+      @method = :put
+      @action = :update
+      @user = Factory.create(:user, :username => 'email@example.org', :email => 'email@example.org')
+      @user.send(:generate_reset_password_token!)
+      @params = {:user => {:reset_password_token => @user.reset_password_token}}
+    end
+    it_should_deny_if_signed_in
+    
+    it "should redirect if there isn't a valid token" do
+      @params = {:user => {:reset_password_token => "xxxxx"}}
+      do_request
+      response.should redirect_to(reset_password_path)
+      flash[:error].should_not be_nil
+    end
+    
+    it "should fail if passwords don't match" do
+      @params.merge!({:user => {:password => "newpassword", :password_confirmation => "anotherpassword"}})
+      do_request
+      response.should render_template("user_password/edit")
+      assigns[:user].errors.should_not be_empty
+    end
+    
+    it "should succeed" do
+      @params.merge!({:user => {:password => "newpassword", :password_confirmation => "newpassword"}})
+      do_request
+      assigns[:user].errors.should be_empty
+      response.should redirect_to(new_user_session_path)
+      flash[:notice].should_not be_nil
+      @user.reload.valid_password?("newpassword").should be_true
     end
   end
 

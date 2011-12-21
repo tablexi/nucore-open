@@ -5,7 +5,7 @@ Nucore::Application.routes.draw do |map|
   match '/users/password/edit_current' => 'user_password#edit_current', :as => 'edit_current_password'  
   match '/users/password/reset' => 'user_password#reset', :as => 'reset_password'
   match '/users/password/edit' => 'user_password#edit', :as => 'edit_password'
-  
+  match '/users/password/update' => 'user_password#update', :as => 'update_password'
   # The priority is based upon order of creation: first created -> highest priority.
 
   # authentication
