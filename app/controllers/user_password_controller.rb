@@ -12,6 +12,7 @@ class UserPasswordController < ApplicationController
     end
     
     if request.post? and @user.update_password_confirm_current(params[:user])
+      @user.clean_up_passwords
       flash[:notice] = I18n.t("user_password.edit.success")
     end    
   end

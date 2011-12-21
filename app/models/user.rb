@@ -70,7 +70,6 @@ class User < ActiveRecord::Base
       self.password = params[:password].strip
       self.clear_reset_password_token
       self.save!
-      self.clean_up_passwords
       return true 
     else
       return false
