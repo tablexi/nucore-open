@@ -36,7 +36,7 @@
 
       - prev_group_id = nil
       - @order.order_details.find(:all, :order => :group_id).each do |order_detail|
-        = render :partial => 'cart_row', :locals => { :order_detail => order_detail, :first_of_group => prev_group_id != order_detail.group_id }
+        = render :partial => 'cart_row', :locals => { :order_detail => order_detail, :first_of_group => order_detail.group_id && (prev_group_id != order_detail.group_id) }
         - prev_group_id = order_detail.group_id
       %tr
         %td.currency{:colspan => "3"}
