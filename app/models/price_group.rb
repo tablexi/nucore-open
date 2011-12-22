@@ -31,8 +31,12 @@ class PriceGroup < ActiveRecord::Base
     return !PriceGroupProduct.find_by_price_group_id_and_product_id(self.id, product.id).nil?
   end
 
+  def name
+    is_master_internal? ? "#{I18n.t('institution_name')} #{self[:name]}" : self[:name]
+  end
+
   def to_s
-    is_master_internal? ? "#{I18n.t('institution_name')} #{self.name}" : self.name
+    self.name  
   end
 
   def type_string
@@ -44,6 +48,6 @@ class PriceGroup < ActiveRecord::Base
   end
 
   def <=> (obj)
-    name.casecmp(obj.display_order + '-' + obj.name)
+    "#{display_order}-#{name}".casecmp("#{obj.display_order}-#{obj.name}")
   end
 end
