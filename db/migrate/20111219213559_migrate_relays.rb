@@ -3,7 +3,7 @@ class MigrateRelays < ActiveRecord::Migration
     Relay.reset_column_information
 
     Instrument.all.each do |inst|
-      next if inst[:relay_type].blank?
+      next if inst[:relay_type].blank? && inst[:relay_ip].blank? && inst[:relay_port].blank? && inst[:relay_username].blank? && inst[:relay_password].blank?
 
       inst[:relay_type].constantize.create!(
           :instrument_id => inst.id,
