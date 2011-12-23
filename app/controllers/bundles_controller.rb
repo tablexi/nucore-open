@@ -52,7 +52,7 @@ class BundlesController < ApplicationController
     end
 
     # does the product have any price policies for any of the groups the user is a member of?
-    if @add_to_cart && !(@bundle.can_purchase?((acting_user.price_groups + acting_user.account_price_groups).flatten.uniq.collect{ |pg| pg.id }))
+    if @add_to_cart && !bundle_has_price_policies_for_user?
       @add_to_cart       = false
       flash.now[:notice] = 'You are not in a price group that may purchase this bundle; please contact the facility.'
     end
@@ -108,4 +108,11 @@ class BundlesController < ApplicationController
   def init_bundle
     @bundle = current_facility.bundles.find_by_url_name!(params[:bundle_id] || params[:id])
   end
+  
+  private
+  
+  def bundle_has_price_policies_for_user?
+    @bundle.can_purchase?((acting_user.price_groups + acting_user.account_price_groups).flatten.uniq.collect{ |pg| pg.id })
+  end
+  
 end
