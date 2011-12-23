@@ -668,3 +668,30 @@ billing
 	border-bottom:1px solid #ccc;
 	overflow:hidden;
 }
+
+/****************************************
+ * WYSIWYG editor views (mainly list styles)
+ * Adapted from http://www.w3.org/TR/CSS2/sample.html
+ ****************************************/
+
+.wysiwyg {}
+.wysiwyg ul,
+.wysiwyg ol {
+	margin: 1.12em 0;
+	margin-left: 1.5em;
+}
+.wysiwyg ol ul,
+.wysiwyg ul ol,
+.wysiwyg ul ul,
+.wysiwyg ol ol,
+.wysiwyg ol li,
+.wysiwyg ul li {
+	margin-top: 0; 
+	margin-bottom: 0 
+}
+.wysiwyg ul {
+	list-style-type: disc;
+}
+.wysiwyg ol { 
+	list-style-type: decimal;
+}

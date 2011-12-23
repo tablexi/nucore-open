@@ -30,7 +30,7 @@
 
 %h2=h @instrument
 
-= @instrument.description
+.wysiwyg= @instrument.description
 
 - docs = @instrument.file_uploads.info
 - unless docs.empty?

@@ -9,7 +9,7 @@
 = content_for :h1 do
   =h @service.name
 
-= @service.description
+.wysiwyg= @service.description
 - if @login_required
   - session[:requested_params] = request.fullpath
   %ul

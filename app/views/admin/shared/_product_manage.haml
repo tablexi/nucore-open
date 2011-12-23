@@ -4,7 +4,7 @@
   = link_to send("facility_#{product.class.name.downcase}_url", current_facility, product), send("facility_#{product.class.name.downcase}_url", current_facility, product)
 %li
   %label= t('shared.product_manage.label.description')
-  = product.description
+  .wysiwyg= product.description
 - unless product.is_a?(Bundle)
   %li
     %label= t('shared.product_manage.label.deposit')

@@ -18,7 +18,7 @@
     =h current_facility.short_description
   %li
     %label== Description
-    = current_facility.description.nil? ? '--' : current_facility.description
+    .wysiwyg= current_facility.description.nil? ? '--' : current_facility.description
   %li
     %label== Accept Purchase Orders?
     %p=h current_facility.accepts_po ? 'Yes' : 'No'

@@ -9,7 +9,7 @@
 = content_for :h1 do
   =h @bundle.name
 
-= @bundle.description
+.wysiwyg= @bundle.description
 
 - if @login_required
   - session[:requested_params] = request.fullpath
