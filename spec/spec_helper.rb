@@ -203,8 +203,7 @@ Spork.each_run do
           :instrument,
           :facility_account => facility_account,
           :min_reserve_mins => 60,
-          :max_reserve_mins => 60,
-          :relay_ip => '192.168.1.1'
+          :max_reserve_mins => 60
         )
     )
 

@@ -1,23 +1,21 @@
 class Instrument < Product
-  @@relay_types = %w/RelaySynaccessRevA RelaySynaccessRevB/
-
+  has_one  :relay
   has_many :schedule_rules
   has_many :instrument_price_policies
   has_many :price_policies, :foreign_key => 'instrument_id'
   has_many :reservations
   has_many :instrument_statuses, :foreign_key => 'instrument_id'
 
-  validates_presence_of :initial_order_status_id, :facility_account_id, :relay_type
+  accepts_nested_attributes_for :relay
+
+  validates_presence_of :initial_order_status_id, :facility_account_id
   validates_numericality_of :account, :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 99999
   validates_numericality_of :min_reserve_mins, :max_reserve_mins, :only_integer => true, :greater_than_or_equal_to => 0, :allow_nil => true
-  validates_uniqueness_of :relay_port, :scope => :relay_ip, :allow_blank => true
-
-  scope :relay_ip, :conditions => ["relay_ip IS NOT NULL"]
 
   after_create :set_default_pricing
 
   def current_instrument_status
-    instrument_statuses.find(:first, :order => 'created_at DESC')
+    instrument_statuses.order('created_at DESC').first
   end
   
   def first_available_hour
@@ -84,7 +82,7 @@ class Instrument < Product
   end
 
   def has_relay?
-    (relay_ip && relay_port) ? true : false
+    relay && (relay.is_a?(RelayDummy) || relay.ip && relay.port)
   end
 
   def can_purchase? (group_ids = nil)
@@ -107,10 +105,6 @@ class Instrument < Product
     else
       true
     end
-  end
-
-  def self.relay_types
-    @@relay_types
   end
 
   def set_default_pricing

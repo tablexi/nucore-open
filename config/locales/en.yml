@@ -18,8 +18,7 @@ en:
     login: Login
     logout: Logout
     cart: Cart
-    create: Create %{model}
-    
+
   shared:
     footer:
       copyright_html: "&copy; Copyright 2010%{to_date} Northwestern University"
@@ -51,6 +50,33 @@ en:
       facility_staff: "Facility Staff"
       price_groups: "Price Groups"
       statuses: "Order Statuses"
+    sidenav_billing:
+      accounts: "Payment Sources"
+      receiveable: "Accounts Receivable"
+      notifications: "Send Notifications"
+      review: "Orders In Review"
+      statements: "Create Statements"
+      history: "Statement History"
+      journals: "Manage Journals"
+      reconcile:
+        journals: "Reconcile Journals"
+        cc: "Reconcile Credit Cards"
+        po: "Reconcile Purchase Orders"
+    tabnav_account:
+      recent: "Recent Payment Sources"
+      user: "Search by User"
+      account: "Search By Payment Source"
+      add_account: "Add Payment Source"
+    tabnav_price_group:
+      accounts: "Payment Sources"
+      users: "Users"
+      edit: "Edit"
+    tabnav_users:
+      details: "Details"
+      orders: "Orders"
+      reservations: "Reservations"
+      accounts: "Payment Sources"
+      instruments: "Available Instruments"
 
   facility_accounts:
     index:
@@ -76,18 +102,44 @@ en:
         remit: "Bill To"
         cc_instruct: "No part of a credit card number may be entered. Enter a text description to help you and the user identify this card. For example: \"Dr. Smith's Visa Card\"."
         po_instruct: "Where the invoice should be sent to for this payment source; this text will appear on the customer's invoice."
-    accounts_receivable:
-      head: Accounts Receivable
-      show_with_balance: Show %{model} with a balance
-      show_all: Show all %{model}
-    credit_cards:
-      head: Reconcile Credit Cards
-      none: There are no credit cards with completed orders to be reconciled at this time
-      instructions: Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'.
-    purchase_orders:
-      head: Reconcile Purchase Orders
-      none: There are no purchase orders with completed orders to be reconciled at this time
-      instructions: Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'.
+    account_balances:
+      notice: "No payment sources found."
+      foot: "* Includes transactions for which the user has not been sent a statement or that are in the user review period."
+      th:
+        account: "Payment Source"
+        owner: "Owner"
+        total: "Unreconciled Total (actual + estimated)"
+    accounts:
+      th:
+        access: "Access Level"
+        account:
+          number: "Payment Source Number"
+          type: "Payment Source Type"
+    new:
+      head: "Add Payment Source"
+    show:
+      label:
+        owner: "Owner"
+        account: "Payment Source Type"
+        description: "Description"
+        name: "Name On Card"
+        expiration: "Expiration Date"
+        affiliate: "Affiliate"
+        bill_to: "Bill To"
+      link:
+        edit: "Edit"
+        activate: "Activate"
+        suspend: "Suspend"
+    show_statement_list:
+      notice: "No statements have been sent for this payment source."
+      th:
+        sent_at: "Sent At"
+        sent_by: "Sent By"
+        orders: "# of Orders"
+    user_accounts:
+      add_account: "Add payment source"
+      title: "Payment Sources for %{name}"
+
 
   facility_users:
     search:
@@ -98,6 +150,162 @@ en:
       head: "Add Payment Source User"
       label:
         search_term: "Search by name, NetID, or username"
+    new:
+      head: "Add Payment Source User"
+      label:
+        account:
+          type: "Payment Source Type"
+          number: "Account Number"
+
+  facility_journals:
+    index:
+      head:
+        h2: "Manage Journals"
+        h3: "Pending Journal"
+        h3-2: "Create Journal"
+      notice:
+        pending: "There is no pending journal at this time"
+        journaled: "There are no orders to be journaled at this time"
+        close: "You may not generate a new journal until the pending journal is closed."
+      instruct:
+        p1: |
+          You should only update this journal after receiving confirmation of a successful or failed journal from
+          NU Financials.  If the journal was processed successfully without any changes, you may choose "Succeeded, no errors".
+          This will mark all orders included in the journal as reconciled and you will be unable to make any further changes to them.
+        p2: |
+          If the journal succeeded, but if pricing or payment source changes were necessary to one or more orders
+          or if one more more orders were removed from the journal for the journal to succeed, choose "Succeeded, with errors".
+          This will mark the journal as successfully, but you will need to reconcile the orders individually.
+        p3: "If the journal failed, you may choose \"Failed\".  This will allow you to include all orders in a new journal."
+        p4: "Select the orders that you wish to journal.  Only one journal may be pending at a time.  Please note that selected orders may not span multiple fiscal years."
+      th:
+        download: "Download"
+        journaled: "Journaled On"
+        amount: "Amount"
+        reference: "Reference"
+        notes: "Notes"
+        status: "Status"
+        order: "Order"
+        fulfilled: "Fulfilled On"
+        account: "Account"
+        owner: "Owner"
+        total: "Total"
+      journal:
+        close: "Close Journal"
+        confirm: "You are about to close this journal. Please ensure you have selected the correct status."
+      account:
+        suspended: "Account is suspended"
+        expired: "Account is expired"
+    show:
+      head:
+        h2: "Journal #%{journal} Details"
+        h3: "Reconcile Orders"
+      label:
+        created_at: "Created At"
+        created_by: "Created By"
+        journal_date: "Journal Date"
+        journal_status: "Journal Status"
+      instruct:
+        orders: |
+          Orders on this page reflect updates made to orders since journaling.  To view the journal as originally
+          submitted, you may download the XLS or XML journal for reference
+        reconcile: |
+          The journal was processed successfully, but individual orders must be reconciled.  Please edit orders to reflect changes made
+          to the journal after the journal was submitted.  Once an order has been updated to reflect the necessary changes, you should mark that
+          order as reconciled.  Once reconciled, you may not make any additional changes to the order.
+      journal:
+        pending: "The journal is pending.  No changes can be made to any of the orders on the journal until the journal is closed."
+        failed: "The journal failed processing.  All orders that were associated with the journal have been removed from the journal so they may be re-journaled."
+        success: "The journal was processed successfully and all orders associated with the journal have been reconciled.  No further changes may be made to the journal or the associated orders."
+      notice: "No orders are associated with this journal"
+      th:
+        order: "Order"
+        fulfilled: "Fulfilled At"
+        account: "Payment Source"
+        total: "Total"
+        reconciled: "Reconciled?"
+      submit: "Reconcile Orders"
+
+  facility_notifications:
+    in_review:
+      head: "Orders In Review"
+      notice: "No orders are currently in review"
+      instruct: |
+        The orders listed below are still in review by the customer.  The time the review window will close is listed.
+        You may manually mark an order as reviewed, allowing you to create a statement for or journal the order immediately.
+      th:
+        order: "Order"
+        review: "Review Closes On"
+        account: "Payment Source"
+        owner: "Owner"
+        total: "Total"
+      submit: "Mark As Reviewed"
+    index:
+      head: "Send Notifications"
+      notice: "No notifications are currently pending"
+      th:
+        account: "Payment Source"
+        owner: "Owner"
+        notify: "Notify"
+        orders: "# of Orders*"
+        balance: "Balance*"
+      foot: "* Reflects only orders that the user has not been notified of yet."
+      submit: "Send Notifications"
+
+  facility_order_details:
+    edit:
+      head:
+        h2: "Edit Order # %{order_number}"
+        h3: "Resolve Dispute"
+        h3-2: "Dispute Information"
+        h3-3: "Results Files"
+        h3-4: "Upload Results"
+        h3-5: "Bundle Summary"
+      label:
+        ordered:
+          at: "Ordered At"
+          for: "Ordered For"
+          by: "Ordered By"
+        fulfilled: "Fulfilled At"
+        account: "Payment Source"
+        assigned: "Assigned User"
+        dispute:
+          on: "Disputed On"
+          reason: "Dispute Reason"
+          resolve: "Resolution Notes"
+        resolved: "Resolved At"
+        reconcile: "Reconciliation Note:"
+      instruct:
+        dispute: "To resolve the dispute, please make the necessary changes and click \"Resolve Dispute\"."
+        bundle: "This order is part of a bundle.  Below is a summary of related bundle order line items."
+      notice:
+        no_results: "No results have been uploaded yet."
+        no_time: "You must enter actual start/end reservation times."
+        save_html: "You <b>must</b> click \"Save\" to apply any changes made to the order."
+      th:
+        product: "Quantity*/Product"
+        order: "Order #"
+        quantity: "Quantity/Product"
+        status: "Status"
+        assigned: "Assigned To"
+      foot:
+        estimated: "* Clicking 'Save' will update the cost estimate by quantity"
+        price_policy: "* Clicking 'Save' will attempt to estimate the cost by quantity"
+        default: "* Changing the quantity will automatically update the price fields"
+
+  facility_statements:
+    pending:
+      head: "Create Statements"
+      notice: "There are no completed orders that require statements."
+      instruct: "Please review the following Credit Card and Purchase Order payment sources. A statement will be generated for each of the payment sources and an email with a link to the statement will be sent."
+      th:
+        account: "Payment Source"
+        owner: "Owner"
+        notify: "Notify"
+        orders: "# of Orders*"
+        balance: "Balance*"
+      submit: "Send Statements"
+      foot: "* Reflects only orders that have been reviewed but have not yet been added to a statement."
 
   facility_facility_accounts:
     facility_account_fields:
@@ -117,6 +325,47 @@ en:
       add: "Add Recharge Chart String"
     new:
       head: "Add Recharge Chart String"
+
+  order_details:
+    show:
+      head:
+        h1: "Order # %{order_number}"
+        h3: "Dispute Order"
+        h3-2: "Download Results"
+      label:
+        facility: "Facility"
+        account: "Payment Source"
+        dispute:
+          at: "Disputed At"
+          reason: "Dispute Reason"
+          resolved_at: "Dispute Resolved At"
+          notes: "Dispute Resolution Notes"
+        ordered:
+          at: "Ordered At"
+          for: "Ordered For"
+          by: "Ordered By"
+      instruct:
+        dispute: "If you wish to dispute the charges for this purchase, please explain the issue with the charges and click \"Dispute Purchase\"."
+      link:
+        orders: "My Orders"
+        receipt: "View Receipt"
+        reservation:
+          start: "Begin Reservation"
+          end: "End Reservation"
+          cancel: "Cancel"
+        view:
+          order_form: "View Order Form"
+          order_file: "View Order File"
+      submit:
+        dispute: "Dispute Purchase"
+      th:
+        action: "Action"
+        quantity: "Quantity/Product"
+        status: "Status"
+        cost: "Cost"
+        adjust: "Adjustment"
+        total: "Total"
+      unassigned: "Unassigned"
 
   product_users:
     new:
@@ -171,6 +420,15 @@ en:
       label:
         search: "Search by name, NetID, or username"
 
+  accounts:
+    show:
+      head: "Payment Source Details"
+      label:
+        account: "Payment Source Number"
+        type: "Type"
+        description: "Description"
+        expiration: "Expiration"
+
   facilities:
     index:
       welcome: |
@@ -198,7 +456,7 @@ en:
   price_groups:
     price_group_fields:
       internal_instruction: "Check this box if this price group is internal, intended for use by Northwestern Customers:"
-      
+
   notifier:
     new_user:
       intro_html: "Congratulations, %{first_name}. A NU Core account has been created for you. You may log in at <a href=\"%{login_url}\">%{login_url}</a>."
@@ -278,12 +536,9 @@ en:
       notice2: "No user information was found in the university databases."
       notice3: "The following user was found.  Click \"Add User\" to allow this user access to NU Core."
   facility_notifications:
-    index:
-      head: Send Notifications
     in_review:
-      head: Orders In Review
       instructions: The orders listed below are still in review by the customer. The time the review window will close is listed. You may manually mark an order as reviewed, allowing you to create a statement for or journal the order immediately.
-      
+
   facility_journals:
     new:
       instructions: Select the orders that you wish to journal. Only one journal may be pending at a time. Please note that selected orders may not span multiple fiscal years.
@@ -295,7 +550,6 @@ en:
       instructions: Please review the following Credit Card and Purchase Order payment sources. A statement will be generated for each of the payment sources and an email with a link to the statement will be sent.
       no_orders: There are no completed orders that require statements.
     index:
-      head: Statement History
       no_statements: No statements have been sent yet
   devise:
     failure:
@@ -326,7 +580,7 @@ en:
       mark_as_reviewed:
         success: The selected orders have been marked as reviewed
         errors: "An error was encountered while marking some orders as reviewed: %{errors}"
-        
+
     facility_statements:
       errors_html: We experienced the following errors. Pease try again.<br/>%{errors}
       send_statements:
@@ -345,8 +599,6 @@ en:
         userid: "is already a member of this payment source"
     order:
       auto_assign_account: "Could not find a valid payment source for purchasing %{product_name}"
-
-
 
   activerecord:
     errors:
@@ -395,7 +647,7 @@ en:
       account:
         one: Payment Source
         other: Payment Sources
-        owner: Owner 
+        owner: Owner
       nufs account:
         one: Chart String Payment Source
         other: Chart String Payment Sources
@@ -408,18 +660,12 @@ en:
       reservation:
         one: Reservation
         other: Reservations
-      order: 
+      order:
         one: Order
         other: Orders
       facility:
         one: Facility
         other: Facilities
-      statement:
-        one: Statement
-        other: Statements
-      journal:
-        one: Journal
-        other: Journals
     # Model Attributes
     attributes:
       user:

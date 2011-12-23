@@ -117,13 +117,85 @@ describe InstrumentsController do
       @method=:post
       @action=:create
       @params.merge!(
-        :instrument => Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id, :relay_port => 99)
+        :control_mechanism => 'manual',
+        :instrument => Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id)
       )
     end
 
     it_should_allow_operators_only :redirect do
+      assert_successful_creation { assigns(:instrument).relay.should be_nil }
+    end
+
+    context 'with relay' do
+
+      before :each do
+        @params[:control_mechanism]='relay'
+        @params[:instrument].merge!({
+          :relay_attributes => {
+            :ip => '192.168.1.2',
+            :port => 1234,
+            :username => 'username',
+            :password => 'password',
+            :type => RelaySynaccessRevA.name,
+            :instrument_id => -1 # nested attributes want something
+          }
+        })
+      end
+
+      it_should_allow :director, 'to create a relay' do
+        assert_successful_creation do
+          relay=assigns(:instrument).relay
+          relay.should be_is_a Relay
+          relay.ip.should == @params[:instrument][:relay_attributes][:ip]
+          relay.port.should == @params[:instrument][:relay_attributes][:port]
+          relay.username.should == @params[:instrument][:relay_attributes][:username]
+          relay.password.should == @params[:instrument][:relay_attributes][:password]
+          relay.type.should == @params[:instrument][:relay_attributes][:type]
+        end
+      end
+
+      context 'dummy relay' do
+
+        before :each do
+          @params[:control_mechanism]='timer'
+        end
+
+        it_should_allow :director, 'to create a timer' do
+          assert_successful_creation do
+            relay=assigns(:instrument).relay
+            relay.should be_is_a Relay
+            relay.ip.should be_nil
+            relay.port.should be_nil
+            relay.username.should be_nil
+            relay.password.should be_nil
+            relay.type.should == RelayDummy.name
+          end
+        end
+
+      end
+
+    end
+
+
+    context 'fail' do
+
+      before :each do
+        @params[:instrument].delete(:name)
+      end
+
+      it_should_allow :director, 'and fail when no name is given' do
+        should assign_to(:instrument).with_kind_of Instrument
+        assigns(:instrument).initial_order_status_id.should == OrderStatus.default_order_status.id
+        should render_template 'new'
+      end
+
+    end
+
+
+    def assert_successful_creation
       should assign_to(:instrument).with_kind_of Instrument
       assigns(:instrument).initial_order_status_id.should == OrderStatus.default_order_status.id
+      yield
       should set_the_flash
       assert_redirected_to manage_facility_instrument_url(@authable, assigns(:instrument))
     end
@@ -136,13 +208,74 @@ describe InstrumentsController do
     before :each do
       @method=:put
       @action=:update
-      @params.merge!(
-        :instrument => Factory.attributes_for(:item, :facility_account_id => @facility_account.id, :relay_port => 99)
-      )
+      @params[:control_mechanism]='manual'
+      @params.merge!(:instrument => @instrument.attributes)
     end
 
-    it_should_allow_operators_only :redirect do
-      should assign_to(:instrument).with_kind_of Instrument
+    context 'no relay' do
+      before :each do
+        RelaySynaccessRevA.create!(:instrument_id => @instrument.id)
+      end
+
+      it_should_allow_operators_only :redirect do
+        assert_successful_update { assigns(:instrument).reload.relay.should be_nil }
+      end
+    end
+
+    context 'with relay' do
+
+      before :each do
+        @params[:control_mechanism]='relay'
+        @params[:instrument].merge!({
+          :relay_attributes => {
+            :ip => '192.168.1.2',
+            :port => 1234,
+            :username => 'username',
+            :password => 'password',
+            :type => RelaySynaccessRevA.name,
+            :instrument_id => @instrument.id
+          }
+        })
+      end
+
+      it_should_allow :director, 'to create a relay' do
+        assert_successful_update do
+          relay=assigns(:instrument).relay
+          relay.should be_is_a Relay
+          relay.ip.should == @params[:instrument][:relay_attributes][:ip]
+          relay.port.should == @params[:instrument][:relay_attributes][:port]
+          relay.username.should == @params[:instrument][:relay_attributes][:username]
+          relay.password.should == @params[:instrument][:relay_attributes][:password]
+          relay.type.should == @params[:instrument][:relay_attributes][:type]
+        end
+      end
+
+      context 'dummy relay' do
+
+        before :each do
+          @params[:control_mechanism]='timer'
+        end
+
+        it_should_allow :director, 'to create a timer' do
+          assert_successful_update do
+            relay=assigns(:instrument).relay
+            relay.should be_is_a Relay
+            relay.ip.should be_nil
+            relay.port.should be_nil
+            relay.username.should be_nil
+            relay.password.should be_nil
+            relay.type.should == RelayDummy.name
+          end
+        end
+
+      end
+
+    end
+
+    def assert_successful_update
+      assigns(:header_prefix).should == "Edit"
+      assigns(:instrument).should == @instrument
+      yield
       should set_the_flash
       assert_redirected_to manage_facility_instrument_url(@authable, assigns(:instrument))
     end

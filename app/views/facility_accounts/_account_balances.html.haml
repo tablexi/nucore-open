@@ -1,11 +1,11 @@
 - if @accounts.blank?
-  %p.notice= "No #{Account.model_name.human.pluralize} found."
+  %p.notice= t('facility_accounts.account_balances.notice')
 - else
   %table
     %tr
-      %th= Account.model_name.human
-      %th== Owner
-      %th.currency== Unreconciled Total (actual + estimated)
+      %th= t('facility_accounts.account_balances.th.account')
+      %th= t('facility_accounts.account_balances.th.owner')
+      %th.currency= t('facility_accounts.account_balances.th.total')
     - @accounts.each do |account|
       %tr
         %td= link_to account, facility_account_path(current_facility, account)
@@ -15,4 +15,4 @@
     = will_paginate(@accounts)
   - else
     = will_paginate(@accounts, :class => 'ajax_links', :params => {:search_term => params[:search_term]})
-  %p.footnote * Includes transactions for which the user has not been sent a statement or that are in the user review period.
+  %p.footnote= t('facility_accounts.account_balances.foot')

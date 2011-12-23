@@ -1,48 +1,48 @@
 = content_for :breadcrumb do
   %ul.horiz
-    %li= link_to 'My Orders', orders_url
+    %li= link_to t('.link.orders'), orders_url
     %li &raquo;
-    %li=h "Order # #{@order_detail}"
+    %li= t('.head.h1', :order_number => @order_detail.to_s)
 
 = content_for :h1 do
-  == Order # #{@order_detail}
+  = t('.head.h1', :order_number => @order_detail.to_s)
 
 .grid_6.alpha
   %ul.form
-    %li= link_to 'View Receipt', receipt_order_path(@order)
+    %li= link_to t('.link.receipt'), receipt_order_path(@order)
     %li
-      %label Facility
+      %label= t('.label.facility')
       =h @order.facility
     %li
-      %label Payment Source
+      %label= t('.label.account')
       =h @order_detail.account
     %li
-      %label Ordered At
+      %label= t('.label.ordered.at')
       =h human_datetime(@order.ordered_at)
     %li
-      %label Ordered For
+      %label= t('.label.ordered.for')
       =h @order.user.full_name
     %li
-      %label Ordered By
+      %label= t('.label.ordered.by')
       =h @order.created_by_user.full_name
 
 .grid_6.omega.margin_bottom
   - if @order_detail.can_dispute?
     .box_no_fill.margin_bottom
-      %h3 Dispute Order
-      %p If you wish to dispute the charges for this purchase, please explain the issue with the charges and click "Dispute Purchase".
+      %h3= t('.head.h3')
+      %p= t('.instruct.dispute')
       = form_for(:order_detail, @order_detail, :url => order_order_detail_path, :html => {:method => :put}) do |f|
         = f.error_messages
         %ul.form
           %li
-            %label Dispute Reason
+            %label= t('.label.dispute.reason')
             = f.text_field :dispute_reason
         %ul.horiz
-          %li= submit_tag "Dispute Purchase", :class => 'btn'
+          %li= submit_tag t('.submit.dispute'), :class => 'btn'
 
   - unless @order_detail.file_uploads.sample_result.empty?
     .box
-      %h3 Download Results
+      %h3= t('.head.h3-2')
       %ul.form
         - i = 0
         - @order_detail.file_uploads.sample_result.sort{|a,b| a.created_at <=> b.created_at}.each do |file_upload|
@@ -51,39 +51,39 @@
   - if !@order_detail.dispute_at.nil?
     %ul.form.box
       %li
-        %label Disputed At
+        %label= t('.label.dispute.at')
         =h human_datetime(@order_detail.dispute_at)
       %li
-        %label Dispute Reason
+        %label= t('.label.dispute.reason')
         =h @order_detail.dispute_reason
     - if !@order_detail.dispute_resolved_at.nil?
       %li
-        %label Dispute Resolved At
+        %label= t('.label.dispute.resolved_at')
         =h human_datetime(@order_detail.dispute_resolved_at)
       %li
-        %label Dispute Resolution Notes
+        %label= t('.label.dispute.notes')
         =h @order_detail.dispute_resolved_reason
 
 .clear
 %table
   %tr
-    %th.centered Action
-    %th{:colspan => 2} Quantity/Product
-    %th Status
-    %th.currency Cost
+    %th.centered= t('.th.action')
+    %th{:colspan => 2}= t('.th.quantity')
+    %th= t('.th.status')
+    %th.currency= t('.th.cost')
     - if @order_detail.has_subsidies?
-      %th.currency Adjustment
-    %th.currency Total
+      %th.currency= t('.th.adjust')
+    %th.currency= t('.th.total')
   %tr
     - res = @order_detail.reservation
     %td.centered
       - if res
         - if res.can_switch_instrument_on?
-          = link_to "Begin Reservation", order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'on')
+          = link_to t('.link.reservation.start'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'on')
         - elsif res.can_switch_instrument_off?
-          = link_to "End Reservation", order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'off')
+          = link_to t('.link.reservation.end'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'off')
         - elsif res.can_cancel?
-          = link_to "Cancel", "#"
+          = link_to t('.link.reservation.cancel'), "#"
     %td.centered=h @order_detail.quantity
     %td
       %ul
@@ -94,9 +94,9 @@
           - else
             %li.indented= link_to res, order_order_detail_reservation_path(@order, @order_detail, res)
         - if @order_detail.survey_completed?
-          %li.indented= link_to('View Order Form', @order_detail.external_service_receiver.response_data, :target => '_blank')
+          %li.indented= link_to(t('.link.view.order_form'), @order_detail.external_service_receiver.response_data, :target => '_blank')
         - unless @order_detail.file_uploads.template_result.empty?
-          %li.indented= link_to('View Order File', @order_detail.file_uploads.template_result.first.file.url)
+          %li.indented= link_to(t('.link.view.order_file'), @order_detail.file_uploads.template_result.first.file.url)
         - unless @order_detail.note.blank?
           %li
             %i=h "Note: #{@order_detail.note}"
@@ -107,8 +107,8 @@
         %td.estimated_cost.currency=show_estimated_subsidy(@order_detail)
       %td.estimated_cost.currency=show_estimated_total(@order_detail)
     - elsif @order_detail.price_policy.nil?
-      %td{:colspan => 2}
-        Unassigned
+      %td{:colspan => 2}= t('.unassigned')
+
     - else
       %td.actual_cost.currency=show_actual_cost(@order_detail)
       - if @order_detail.has_subsidies?

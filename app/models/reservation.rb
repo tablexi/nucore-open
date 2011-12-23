@@ -528,7 +528,7 @@ class Reservation < ActiveRecord::Base
 
   def can_switch_instrument_on?(check_off = true)
     return false if cancelled?
-    return false unless instrument.relay_ip?   # is relay controlled
+    return false unless instrument.relay   # is relay controlled
     return false if can_switch_instrument_off?(false) if check_off # mutually exclusive
     return false unless actual_start_at.nil?   # already turned on
     return false unless actual_end_at.nil?     # already turned off
@@ -538,7 +538,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def can_switch_instrument_off?(check_on = true)
-    return false unless instrument.relay_ip?  # is relay controlled
+    return false unless instrument.relay  # is relay controlled
     return false if can_switch_instrument_on?(false) if check_on  # mutually exclusive
     return false unless actual_end_at.nil?    # already ended
     return false if actual_start_at.nil?      # hasn't been started yet

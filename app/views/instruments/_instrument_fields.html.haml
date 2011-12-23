@@ -1,32 +1,41 @@
+- content_for :head_content do
+  = javascript_include_tag 'power_relay'
+
 %li
   = f.check_box :show_details
   %b== Check to show reservation details
-%li.box
+%li
+  = label_tag :control_mechanism
+  %p.instruction How the instrument and its time is managed
+  - selection=@instrument.relay.nil? ? nil : @instrument.relay.is_a?(RelayDummy) ? 'timer' : 'relay'
+  = select_tag :control_mechanism, options_for_select({ 'Manual' =>  'manual', 'Timer' => 'timer', 'Power Relay' => 'relay' }, selection)
+%li#power-relay{:class => "box#{selection == 'relay' ? '' : ' hidden'}"}
   = f.label 'Power Relay Information'
   %p== (Optional)  If the instrument is connected to an approved power relay, please enter the information below.  Power relays must be purchased separately.
   %br
-  %ul
-    %li.left
-      = f.label :relay_type, 'Relay Type'
-      = f.select :relay_type, Instrument.relay_types.collect{|rt| [rt.constantize, rt]}
-    %li.clear
-    %li.left
-      = f.label :relay_ip, 'IP Address'
-      = f.text_field :relay_ip
-    %li.left
-      = f.label :relay_port, 'Device Port'
-      = f.text_field :relay_port, :size => 5, :limit => 2
-    %li.clear
-    %li.left
-      = f.label :relay_username, 'Username'
-      = f.text_field :relay_username 
-    %li.left
-      = f.label :relay_password, 'Password'
-      = f.text_field :relay_password
-    %li.clear
-    %li
-      = f.check_box :auto_logout
-      %b== Automatically power off the relay 60 minutes after the reservation is scheduled to end
+  = f.fields_for :relay, @instrument.relay || @instrument.build_relay do |rf|
+    %ul
+      %li.left
+        = rf.label :type, 'Relay Type'
+        = rf.select :type, options_for_select(RelaySynaccessRevA => RelaySynaccessRevA.name, RelaySynaccessRevB => RelaySynaccessRevB.name)
+      %li.clear
+      %li.left
+        = rf.label :ip, 'IP Address'
+        = rf.text_field :ip
+      %li.left
+        = rf.label :port, 'Device Port'
+        = rf.text_field :port, :size => 5, :limit => 2
+      %li.clear
+      %li.left
+        = rf.label :username, 'Username'
+        = rf.text_field :username
+      %li.left
+        = rf.label :password, 'Password'
+        = rf.text_field :password
+      %li.clear
+      %li
+        = rf.check_box :auto_logout
+        %b== Automatically power off the relay 60 minutes after the reservation is scheduled to end
 %li.box
   = f.label 'Reservation Restrictions'
   %p== (Optional)  Define minimum and maximum reservation limits below.

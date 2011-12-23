@@ -1,23 +1,14 @@
 require "net/http"
 
-module Relay
-  def initialize(host, username = nil, password = nil)
-    @host     = host
-    @username = username
-    @password = password
-  end
+class Relay < ActiveRecord::Base
+  belongs_to :instrument
 
-  def host
-    @host
-  end
+  validates_presence_of :instrument_id, :on => :update
+  validates_uniqueness_of :port, :scope => :ip, :allow_blank => true
 
-  def username
-    @username
-  end
+  attr_accessible :username, :password, :ip, :port, :auto_logout, :instrument_id, :type
 
-  def password
-    @password
-  end
+  alias_attribute :host, :ip
 
   # assume port numbering begins at 1 for public functions
   def get_status_port(port)
@@ -45,9 +36,9 @@ module Relay
 
   def get_request(path)
     resp = nil
-    Net::HTTP.start(@host) { |http|
+    Net::HTTP.start(host) { |http|
       req = Net::HTTP::Get.new(path)
-      req.basic_auth @username, @password
+      req.basic_auth username, password
       resp = http.request(req)
     }
     resp

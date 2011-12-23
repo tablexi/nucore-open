@@ -1,6 +1,6 @@
 %ul.tabs
-  %li.first= link_to 'Details', facility_user_path(@current_facility, @user), :class => (secondary_tab == 'details' ? 'active' : nil)
-  %li= link_to 'Orders', facility_user_orders_path(@current_facility, @user), :class => (secondary_tab == 'orders' ? 'active' : nil)
-  %li= link_to 'Reservations', facility_user_reservations_path(@current_facility, @user), :class => (secondary_tab == 'reservations' ? 'active' : nil)
-  %li= link_to 'Payment Sources', facility_user_accounts_path(@current_facility, @user), :class => (secondary_tab == 'accounts' ? 'active' : nil)
-  %li= link_to 'Available Instruments', facility_user_instruments_path(@current_facility, @user), :class => (secondary_tab == 'instruments' ? 'active' : nil)
+  %li.first= link_to t('shared.tabnav_users.details'), facility_user_path(@current_facility, @user), :class => (secondary_tab == 'details' ? 'active' : nil)
+  %li= link_to t('shared.tabnav_users.orders'), facility_user_orders_path(@current_facility, @user), :class => (secondary_tab == 'orders' ? 'active' : nil)
+  %li= link_to t('shared.tabnav_users.reservations'), facility_user_reservations_path(@current_facility, @user), :class => (secondary_tab == 'reservations' ? 'active' : nil)
+  %li= link_to t('shared.tabnav_users.accounts'), facility_user_accounts_path(@current_facility, @user), :class => (secondary_tab == 'accounts' ? 'active' : nil)
+  %li= link_to t('shared.tabnav_users.instruments'), facility_user_instruments_path(@current_facility, @user), :class => (secondary_tab == 'instruments' ? 'active' : nil)

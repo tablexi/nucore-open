@@ -9,20 +9,29 @@
 %ul.form
   = render :partial => 'admin/shared/product_manage'
   %li
-    %label Relay IP Address
-    %p=h @instrument.relay_ip || 'N/A'
-  %li
-    %label Relay Port
-    %p=h @instrument.relay_port || 'N/A'
-  %li
-    %label Relay Username
-    %p=h @instrument.relay_username || 'N/A'
-  %li
-    %label Relay Password
-    %p=h @instrument.relay_password || 'N/A'
-  %li
-    %label Automatic Logout?
-    %p=h @instrument.auto_logout? ? 'Yes' : 'No'
+    - if @instrument.relay.nil?
+      %label Control mechanism
+      %p Manual
+    - elsif @instrument.relay.is_a?(RelayDummy)
+      %label Control mechanism
+      %p Timer
+    - else
+      %ul
+        %li
+          %label Relay IP Address
+          %p=h @instrument.relay.ip.presence || 'N/A'
+        %li
+          %label Relay Port
+          %p=h @instrument.relay.port || 'N/A'
+        %li
+          %label Relay Username
+          %p=h @instrument.relay.username.presence || 'N/A'
+        %li
+          %label Relay Password
+          %p=h @instrument.relay.password.presence || 'N/A'
+        %li
+          %label Automatic Logout?
+          %p=h @instrument.relay.auto_logout ? 'Yes' : 'No'
   %li
     %label Minimum Reservation Minutes
     %p=h @instrument.min_reserve_mins.to_i

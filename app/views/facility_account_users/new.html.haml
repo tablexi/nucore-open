@@ -7,16 +7,16 @@
 = content_for :h1 do
   =h current_facility
 
-%h2 Add Payment Source User
+%h2= t('.head')
 
 = form_for(@account_user, :url => facility_account_account_users_path(current_facility, @account)) do |f|
   = f.error_messages
   %ul.form
     %li
-      = label_tag :account_type, 'Payment Source Type'
+      = label_tag :account_type, t('.label.account.type')
       = @account.type_string
     %li
-      = label_tag :account_number, 'Account Number'
+      = label_tag :account_number, t('.label.account.number')
       = @account.account_number
     = hidden_field_tag "user_id", @user.id
     %li
