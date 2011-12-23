@@ -1,7 +1,15 @@
+- content_for :head_content do
+  = javascript_include_tag 'power_relay'
+
 %li
   = f.check_box :show_details
   %b== Check to show reservation details
-%li.box
+%li
+  = label_tag :control_mechanism
+  %p.instruction How the instrument and its time is managed
+  - selection=@instrument.relay.nil? ? nil : @instrument.relay.is_a?(RelayDummy) ? 'timer' : 'relay'
+  = select_tag :control_mechanism, options_for_select({ 'Manual' =>  'manual', 'Timer' => 'timer', 'Power Relay' => 'relay' }, selection)
+%li#power-relay{:class => "box#{selection == 'relay' ? '' : ' hidden'}"}
   = f.label 'Power Relay Information'
   %p== (Optional)  If the instrument is connected to an approved power relay, please enter the information below.  Power relays must be purchased separately.
   %br
@@ -9,7 +17,7 @@
     %ul
       %li.left
         = rf.label :type, 'Relay Type'
-        = rf.select :type, Relay.subclasses.collect{|sub| [sub, sub.name]}
+        = rf.select :type, options_for_select(RelaySynaccessRevA => RelaySynaccessRevA.name, RelaySynaccessRevB => RelaySynaccessRevB.name)
       %li.clear
       %li.left
         = rf.label :ip, 'IP Address'
