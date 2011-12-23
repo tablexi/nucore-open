@@ -5,6 +5,7 @@ class InstrumentsController < ApplicationController
   before_filter :check_acting_as, :except => [:show]
   before_filter :init_current_facility
   before_filter :init_instrument, :except => [:index, :new, :create]
+  before_filter :prepare_relay_params, :only => [ :create, :update ]
 
   load_and_authorize_resource :except => :show
 
@@ -107,15 +108,16 @@ class InstrumentsController < ApplicationController
   # PUT /instruments/1
   def update
     @header_prefix = "Edit"
-    
-    respond_to do |format|
+
+    Instrument.transaction do                
       if @instrument.update_attributes(params[:instrument])
+        @instrument.relay.destroy if @instrument.relay && !params[:instrument].has_key?(:relay_attributes)
         flash[:notice] = 'Instrument was successfully updated.'
-        format.html { redirect_to(manage_facility_instrument_url(current_facility, @instrument)) }
-      else
-        format.html { render :action => "edit" }
+        return redirect_to(manage_facility_instrument_url(current_facility, @instrument))
       end
     end
+
+    render :action => "edit"
   end
 
   # DELETE /instruments/1
@@ -171,5 +173,24 @@ class InstrumentsController < ApplicationController
 
   def init_instrument
     @instrument = current_facility.instruments.find_by_url_name!(params[:instrument_id] || params[:id])
+  end
+
+
+  private
+
+  def prepare_relay_params
+    case params[:control_mechanism]
+      when 'relay'
+      when 'timer'
+        params[:instrument][:relay_attributes].merge!(
+            :ip => nil,
+            :port => nil,
+            :username => nil,
+            :password => nil,
+            :type => RelayDummy.name
+        )
+      else
+        params[:instrument].delete(:relay_attributes)
+    end
   end
 end
