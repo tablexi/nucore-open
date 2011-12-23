@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Relay do
-  it { should validate_presence_of :instrument_id }
   it { should allow_mass_assignment_of :username }
   it { should allow_mass_assignment_of :password }
   it { should allow_mass_assignment_of :ip }

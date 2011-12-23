@@ -3,7 +3,7 @@ require "net/http"
 class Relay < ActiveRecord::Base
   belongs_to :instrument
 
-  validates_presence_of :instrument_id
+  validates_presence_of :instrument_id, :on => :update
   validates_uniqueness_of :port, :scope => :ip, :allow_blank => true
 
   attr_accessible :username, :password, :ip, :port, :auto_logout, :instrument_id, :type
