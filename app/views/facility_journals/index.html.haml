@@ -4,10 +4,8 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'journals' }
 
-%h2= t(".head.pending")
-- if @pending_journal.nil?
-  %p.notice= t(".no_pending")
-- else
+- if @pending_journal
+  %h2= t(".head.pending")
   %div= t(".instructions_html")
 
   = form_for([current_facility, @pending_journal]) do |f|
@@ -42,8 +40,8 @@
   %table
     %tr
       %th
-      %th= Journal.human_attribute_name(:created_at)
-      %th= Journal.human_attribute_name(:journal_date)
+      %th= Journal.human_attribute_name(:created_at).titlecase
+      %th= Journal.human_attribute_name(:journal_date).titlecase
       %th= Journal.human_attribute_name(:reference)
       %th= Journal.human_attribute_name(:journal_status)
     - @journals.each do |j|

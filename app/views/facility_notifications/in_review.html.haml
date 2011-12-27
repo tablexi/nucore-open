@@ -8,10 +8,10 @@
   = render :partial => 'shared/transactions/top', :locals => { :tab => "in_review" }
 
 - if @order_details.empty?
-  %p.notice No orders are currently in review
+  %p.notice= t(".notice")
 - else
   = content_for :action_instructions do
-    %p= t("facility_notifications.in_review.instructions")
+    %p= t(".instructions")
       
   = render :partial => 'shared/transactions/table'
   = render :partial => 'shared/reconcile_footnote'    

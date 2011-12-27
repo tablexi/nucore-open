@@ -651,6 +651,7 @@ en:
         order_status: Status
       journal:
         description: Notes
+        journal_status: Status
       statement:
         created_by: Sent By
         created_at: Sent At
