@@ -159,38 +159,33 @@ en:
           number: "Account Number"
 
   facility_journals:
+    new:
+      instructions: Select the orders that you wish to journal. Only one journal may be pending at a time. Please note that selected orders may not span multiple fiscal years.
+      not_closed: You may not generate a new journal until the pending journal is closed.
+      not_closed_html: You may not generate a new journal until the <a href="%{link}">pending journal</a> is closed.
+      no_orders: There are no orders to be journaled at this time.
     index:
       head:
-        h2: "Manage Journals"
-        h3: "Pending Journal"
-        h3-2: "Create Journal"
+        pending: Pending Journal
+        closed: Closed Journals
       notice:
         no_pending: "There is no pending journal at this time"
+        no_journals: No journals have been closed yet
         journaled: "There are no orders to be journaled at this time"
         close: "You may not generate a new journal until the pending journal is closed."
-      instruct:
-        p1: |
+      instructions_html: |
+          <p>
           You should only update this journal after receiving confirmation of a successful or failed journal from
           NU Financials.  If the journal was processed successfully without any changes, you may choose "Succeeded, no errors".
-          This will mark all orders included in the journal as reconciled and you will be unable to make any further changes to them.
-        p2: |
+          This will mark all orders included in the journal as reconciled and you will be unable to make any further changes to them.</p>
+          <p>
           If the journal succeeded, but if pricing or payment source changes were necessary to one or more orders
           or if one more more orders were removed from the journal for the journal to succeed, choose "Succeeded, with errors".
-          This will mark the journal as successfully, but you will need to reconcile the orders individually.
-        p3: "If the journal failed, you may choose \"Failed\".  This will allow you to include all orders in a new journal."
-        p4: "Select the orders that you wish to journal.  Only one journal may be pending at a time.  Please note that selected orders may not span multiple fiscal years."
+          This will mark the journal as successfully, but you will need to reconcile the orders individually.</p>
+          <p>If the journal failed, you may choose "Failed".  This will allow you to include all orders in a new journal.</p>
       th:
         download: "Download"
-        journaled: "Journaled On"
-        amount: "Amount"
-        reference: "Reference"
-        notes: "Notes"
-        status: "Status"
-        order: "Order"
-        fulfilled: "Fulfilled On"
-        account: "Account"
-        owner: "Owner"
-        total: "Total"
+        journaled_at: Journaled On
       journal:
         close: "Close Journal"
         confirm: "You are about to close this journal. Please ensure you have selected the correct status."
@@ -510,13 +505,7 @@ en:
       notice1: "The user could no be located in the university database.  Please make sure you typed the NetID correctly."
       notice2: "No user information was found in the university databases."
       notice3: "The following user was found.  Click \"Add User\" to allow this user access to NU Core."
-
-  facility_journals:
-    new:
-      instructions: Select the orders that you wish to journal. Only one journal may be pending at a time. Please note that selected orders may not span multiple fiscal years.
-      not_closed: You may not generate a new journal until the pending journal is closed.
-      not_closed_html: You may not generate a new journal until the <a href="%{link}">pending journal</a> is closed.
-      no_orders: There are no orders to be journaled at this time.
+    
   facility_statements:
     new:
       instructions: Please review the following Credit Card and Purchase Order payment sources. A statement will be generated for each of the payment sources and an email with a link to the statement will be sent.
@@ -660,6 +649,8 @@ en:
         created_by_user: Ordered By
         reviewed_at: Review Closes
         order_status: Status
+      journal:
+        description: Notes
       statement:
         created_by: Sent By
         created_at: Sent At

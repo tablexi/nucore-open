@@ -4,33 +4,24 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'journals' }
 
-%h2 Pending Journal
+%h2= t(".head.pending")
 - if @pending_journal.nil?
-  %p.notice There is no pending journal at this time
+  %p.notice= t(".no_pending")
 - else
-  %p
-    You should only update this journal after receiving confirmation of a successful or failed journal from
-    NU Financials.  If the journal was processed successfully without any changes, you may choose "Succeeded, no errors".
-    This will mark all orders included in the journal as reconciled and you will be unable to make any further changes to them.
-  %p
-    If the journal succeeded, but if pricing or payment source changes were necessary to one or more orders
-    or if one more more orders were removed from the journal for the journal to succeed, choose "Succeeded, with errors".
-    This will mark the journal as successfully, but you will need to reconcile the orders individually.
-  %p
-    If the journal failed, you may choose "Failed".  This will allow you to include all orders in a new journal.
+  %div= t(".instructions_html")
 
   = form_for([current_facility, @pending_journal]) do |f|
     = f.error_messages 
     %table
       %tr
-        %th Download
-        %th Journaled On
-        %th Amount
+        %th= t(".th.download")
+        %th= t(".th.journaled_at")
+        %th= Journal.human_attribute_name(:amount)
         %th
-          %span.require Reference
-        %th Notes
+          %span.require= Journal.human_attribute_name(:reference)
+        %th= Journal.human_attribute_name(:description)
         %th
-          %span.require Status
+          %span.require= Journal.human_attribute_name(:journal_status)
       %tr
         %td
           %ul
@@ -42,19 +33,19 @@
         %td= f.text_field :description
         %td
           = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']])
-          = submit_tag 'Close Journal', :confirm => 'You are about to close this journal. Please ensure you have selected the correct status.'
+          = submit_tag t(".journal.close"), :confirm => t(".journal.confirm")
 
-%h2 Closed Journals
+%h2= t(".head.closed")
 - if @journals.blank?
-  %p.notice No journals have been closed yet
+  %p.notice= t(".notice.no_journals")
 - else
   %table
     %tr
       %th
-      %th Created At
-      %th Journal Date
-      %th Reference
-      %th Status
+      %th= Journal.human_attribute_name(:created_at)
+      %th= Journal.human_attribute_name(:journal_date)
+      %th= Journal.human_attribute_name(:reference)
+      %th= Journal.human_attribute_name(:journal_status)
     - @journals.each do |j|
       %tr
         %td.centered= link_to 'View', facility_journal_path(current_facility, j)
