@@ -13,6 +13,7 @@ en:
   
   pages:
     my_tab: My %{model}
+    create: Create %{model}
     manage: Manage %{model}
     global_settings: Global Settings
     login: Login
@@ -50,18 +51,6 @@ en:
       facility_staff: "Facility Staff"
       price_groups: "Price Groups"
       statuses: "Order Statuses"
-    sidenav_billing:
-      accounts: "Payment Sources"
-      receiveable: "Accounts Receivable"
-      notifications: "Send Notifications"
-      review: "Orders In Review"
-      statements: "Create Statements"
-      history: "Statement History"
-      journals: "Manage Journals"
-      reconcile:
-        journals: "Reconcile Journals"
-        cc: "Reconcile Credit Cards"
-        po: "Reconcile Purchase Orders"
     tabnav_account:
       recent: "Recent Payment Sources"
       user: "Search by User"
@@ -84,6 +73,18 @@ en:
       add_account: "Add Payment Source"
       label:
         search_term: "Search by payment source number or payment source owner's name, NetID, or username"
+    accounts_receivable:
+          head: Accounts Receivable
+          show_with_balance: Show %{model} with a balance
+          show_all: Show all %{model}      
+    credit_cards:    
+      head: Reconcile Credit Cards
+      none: There are no credit cards with completed orders to be reconciled at this time
+      instructions: Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'.
+    purchase_orders:
+      head: Reconcile Purchase Orders
+      none: There are no purchase orders with completed orders to be reconciled at this time
+      instructions: Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'.
     new_account_user_search:
       head: "Add Payment Source"
       instruct: "To add a payment source, first search for the user you would like to create the payment source for."
@@ -164,7 +165,7 @@ en:
         h3: "Pending Journal"
         h3-2: "Create Journal"
       notice:
-        pending: "There is no pending journal at this time"
+        no_pending: "There is no pending journal at this time"
         journaled: "There are no orders to be journaled at this time"
         close: "You may not generate a new journal until the pending journal is closed."
       instruct:
@@ -230,25 +231,13 @@ en:
     in_review:
       head: "Orders In Review"
       notice: "No orders are currently in review"
-      instruct: |
+      instructions: |
         The orders listed below are still in review by the customer.  The time the review window will close is listed.
         You may manually mark an order as reviewed, allowing you to create a statement for or journal the order immediately.
-      th:
-        order: "Order"
-        review: "Review Closes On"
-        account: "Payment Source"
-        owner: "Owner"
-        total: "Total"
       submit: "Mark As Reviewed"
     index:
       head: "Send Notifications"
       notice: "No notifications are currently pending"
-      th:
-        account: "Payment Source"
-        owner: "Owner"
-        notify: "Notify"
-        orders: "# of Orders*"
-        balance: "Balance*"
       foot: "* Reflects only orders that the user has not been notified of yet."
       submit: "Send Notifications"
 
@@ -292,20 +281,6 @@ en:
         estimated: "* Clicking 'Save' will update the cost estimate by quantity"
         price_policy: "* Clicking 'Save' will attempt to estimate the cost by quantity"
         default: "* Changing the quantity will automatically update the price fields"
-
-  facility_statements:
-    pending:
-      head: "Create Statements"
-      notice: "There are no completed orders that require statements."
-      instruct: "Please review the following Credit Card and Purchase Order payment sources. A statement will be generated for each of the payment sources and an email with a link to the statement will be sent."
-      th:
-        account: "Payment Source"
-        owner: "Owner"
-        notify: "Notify"
-        orders: "# of Orders*"
-        balance: "Balance*"
-      submit: "Send Statements"
-      foot: "* Reflects only orders that have been reviewed but have not yet been added to a statement."
 
   facility_facility_accounts:
     facility_account_fields:
@@ -535,9 +510,6 @@ en:
       notice1: "The user could no be located in the university database.  Please make sure you typed the NetID correctly."
       notice2: "No user information was found in the university databases."
       notice3: "The following user was found.  Click \"Add User\" to allow this user access to NU Core."
-  facility_notifications:
-    in_review:
-      instructions: The orders listed below are still in review by the customer. The time the review window will close is listed. You may manually mark an order as reviewed, allowing you to create a statement for or journal the order immediately.
 
   facility_journals:
     new:
@@ -550,6 +522,7 @@ en:
       instructions: Please review the following Credit Card and Purchase Order payment sources. A statement will be generated for each of the payment sources and an email with a link to the statement will be sent.
       no_orders: There are no completed orders that require statements.
     index:
+      head: Statement History
       no_statements: No statements have been sent yet
   devise:
     failure:
