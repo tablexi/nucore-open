@@ -1,14 +1,11 @@
 class AlterProductsRemoveRelays < ActiveRecord::Migration
   def self.up
-    remove_columns(
-        :products,
-        :relay_ip,
-        :relay_port,
-        :relay_username,
-        :relay_password,
-        :relay_type,
-        :auto_logout
-    )
+    remove_column(:products, :relay_ip)
+    remove_column(:products, :relay_port)
+    remove_column(:products, :relay_username)
+    remove_column(:products, :relay_password)
+    remove_column(:products, :relay_type)
+    remove_column(:products, :auto_logout)       
   end
 
   def self.down
