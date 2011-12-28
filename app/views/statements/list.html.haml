@@ -1,14 +1,14 @@
 = content_for :tabnav do
   = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'statements'}
 = content_for :h1 do
-  == Payment Source Transactions
+  = t('.head.h1')
 
 %h2=h @account
-%h3== Statements for #{h @facility}
+%h3= t('.head.h3', :facility => @facility.to_s)
 
 
 - if @statements.empty?
-  %p.notice No statements exist.
+  %p.notice= t('.notice')
 - else
   %ul.grid_5
     - @statements.each do |statement|

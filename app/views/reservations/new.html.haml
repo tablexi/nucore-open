@@ -23,7 +23,7 @@
     %li &raquo;
     %li= link_to 'Cart', order_path(@order)
     %li &raquo;
-    %li Create Reservation
+    %li= t('.crumb')
 
 = content_for :h1 do
   =h @instrument.facility
@@ -34,7 +34,7 @@
 
 - docs = @instrument.file_uploads.info
 - unless docs.empty?
-  %h3 Documentation
+  %h3= t('.h3')
   %ul
     - docs.each do |file_upload|
       %li.document= link_to file_upload.name, file_upload.file.url
@@ -44,7 +44,7 @@
   - unless @order_detail.bundled?
     %ul.form.box
       %li.left
-        = label_tag 'order_account', 'Payment source'
+        = label_tag 'order_account', t('.label')
         - options=@order.user.accounts.active.for_facility(@instrument.facility)
         - options.reject!{|acct| !acct.validate_against_product(@instrument, @order.user).nil?}
         - options.collect!{|acct| [acct.to_s ,acct.id] }

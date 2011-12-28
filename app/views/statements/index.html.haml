@@ -1,15 +1,15 @@
 = content_for :tabnav do
   = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'transactions'}
 = content_for :h1 do
-  == Payment Source Transactions
+  = t('.h1')
 
 - if @facilities.empty?
-  %p.notice You have no completed orders for any facility with this payment source.
+  %p.notice= t('.notice')
 - else
   %table
     %tr
-      %th Facility
-      %th.centered Unreconciled Total (actual + estimated)
+      %th= t('.th.facility')
+      %th.centered= t('.th.total')
     - @facilities.each do |facility|
       %tr
         %td= facility

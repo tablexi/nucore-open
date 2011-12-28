@@ -1,17 +1,17 @@
 = content_for :h1 do
-  Select Payment Source
+  = t('.select')
 
 = error_messages_for(:object => @order, :object_name => "order" )
 
 - if @accounts.empty?
-  %p.notice You do not have any payment sources.  You must have a payment source in order to place an order.  Please contact the facility to add a payment source.
+  %p.notice= t('.notice')
 - else
   = form_tag do
     %table
       %tr
         %th
-        %th Payment Source
-        %th Owner
+        %th= t('.th.account')
+        %th= t('.th.owner')
       - @accounts.each do |a|
         %tr
           %td= @errors[a.id] ? radio_button('', 'account_id', a.id, :disabled => 'disabled') : radio_button('', 'account_id', a.id)

@@ -1,14 +1,14 @@
-%p== Pricing policies apply to orders paid for with the following payment sources.
+%p= t('price_groups.accounts.intro')
 %ul
-  %li= link_to 'Add Payment Source', new_facility_price_group_account_price_group_member_path(current_facility, @price_group)
+  %li= link_to t('price_groups.accounts.link.add'), new_facility_price_group_account_price_group_member_path(current_facility, @price_group)
 
 - unless @account_members.empty?
   %table
     %tr
       %th
-      %th== Account Number
-      %th== Owner
-      %th== Email
+      %th= t('price_groups.accounts.th.number')
+      %th= t('price_groups.accounts.th.owner')
+      %th= t('price_groups.accounts.th.email')
     - @account_members.each do |account_price_group_member|
       %tr
         %td= link_to 'Remove', [current_facility, @price_group, account_price_group_member], :confirm => 'Are you sure?', :method => :delete
@@ -18,4 +18,4 @@
         %td=h owner.email if owner
   = will_paginate(@account_members)
 - else
-  %p.notice No payment sources have been added to this price group.
+  %p.notice= t('price_groups.accounts.notice')

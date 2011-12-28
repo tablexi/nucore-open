@@ -1,10 +1,10 @@
 = content_for :tabnav do
   = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'transactions'}
 = content_for :h1 do
-  == Payment Source Transactions
+  = t('.head.h1')
 
 %h2=h @account
-%h3== Transactions for #{h @facility}
+%h3= t('.head.h3', :facility => @facility.to_s)
 
 - if @facility.has_contact_info?
   .grid_5.alpha.margin_bottom.box_no_fill
@@ -13,30 +13,30 @@
       = simple_format(h @facility.address)
     - if @facility.phone_number
       %p
-        %b Phone Number:
+        %b= t('.contact.phone')
         =h @facility.phone_number
     - if @facility.fax_number
       %p
-        %b Fax Number:
+        %b= t('.contact.fax')
         =h @facility.fax_number
     - if @facility.email
       %p
-        %b Email:
+        %b= t('.contact.email')
         =h @facility.email
   .clear
 
     
 - if @order_details.empty?
-  %p.notice No transactions exist for this period.
+  %p.notice= t('.notice')
 - else
   %table
     %tr
-      %th Transaction Date
-      %th Purchaser
-      %th Order Number
-      %th Description
-      %th.centered Dispute?
-      %th.currency Amount
+      %th= t('.th.transact')
+      %th= t('.th.purchaser')
+      %th= t('.th.order')
+      %th= t('.th.desc')
+      %th.centered= t('.th.dispute')
+      %th.currency= t('.th.amount')
     - @order_details.each do |od|
       %tr
         %td= human_datetime(od.order.ordered_at)
@@ -50,7 +50,7 @@
                 %i=h "Note: #{od.note}"
         %td.centered
           - if od.in_dispute?
-            In Dispute
+            = t('.td.dispute')
           - elsif od.can_dispute?
             = link_to('Dispute', order_order_detail_path(od.order, od))
         %td.currency
@@ -58,7 +58,7 @@
             %span.estimated_cost
               = show_estimated_total(od)
           - elsif od.price_policy.nil?
-            Unassigned
+            = t('.td.unassigned')
           - else
             %span.actual_cost
               = show_actual_total(od)

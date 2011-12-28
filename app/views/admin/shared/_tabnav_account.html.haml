@@ -1,5 +1,5 @@
 %ul.tabs
-  %li.first= link_to t('shared.tabnav_account.recent'), facility_accounts_path, :class => (secondary_tab == 'recent' ? 'active' : nil)
-  %li= link_to t('shared.tabnav_account.user'), user_search_facility_accounts_path, :class => (secondary_tab == 'search_by_user' ? 'active' : nil)
-  %li= link_to t('shared.tabnav_account.account'), search_facility_accounts_path, :class => (secondary_tab == 'search_by_account' ? 'active' : nil)
-  %li= link_to t('shared.tabnav_account.add_account'), new_account_user_search_facility_accounts_path, :class => (secondary_tab == 'add_account' ? 'active' : nil)
+  %li.first= link_to t('shared.admin.tabnav_account.recent'), facility_accounts_path, :class => (secondary_tab == 'recent' ? 'active' : nil)
+  %li= link_to t('shared.admin.tabnav_account.user'), user_search_facility_accounts_path, :class => (secondary_tab == 'search_by_user' ? 'active' : nil)
+  %li= link_to t('shared.admin.tabnav_account.account'), search_facility_accounts_path, :class => (secondary_tab == 'search_by_account' ? 'active' : nil)
+  %li= link_to t('shared.admin.tabnav_account.add_account'), new_account_user_search_facility_accounts_path, :class => (secondary_tab == 'add_account' ? 'active' : nil)

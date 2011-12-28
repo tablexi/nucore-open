@@ -1,39 +1,39 @@
 = content_for :breadcrumb do
   %ul.horiz
-    %li= link_to 'My Orders', orders_url
+    %li= link_to t('.crumbs.orders'), orders_url
     %li &raquo;
-    %li=h "Order Receipt"
+    %li= t('.crumbs.receipt')
 
 = content_for :h1 do
-  Order Receipt
+  = t('.h1')
 
-%p Thank you for your order.
+%p= t('.intro')
 
 %ul.form
   %li
-    %label Facility
+    %label= t('.label.facility')
     =h @order.facility
   %li
-    %label Payment Source
+    %label= t('.label.account')
     =h @order.account
   %li
-    %label Ordered At
+    %label= t('.label.ordered.at')
     =h human_datetime(@order.ordered_at)
   %li
-    %label Ordered For
+    %label= t('.label.ordered.for')
     =h @order.user.full_name
   %li
-    %label Ordered By
+    %label= t('.label.ordered.for')
     =h @order.created_by_user.full_name
 
 %table
   %tr
-    %th.centered Order #
-    %th{:colspan => 2} Quantity/Product
-    %th.currency Estimated Cost
+    %th.centered= t('.th.order_no')
+    %th{:colspan => 2}= t('.th.quantity')
+    %th.currency= t('.th.cost')
     - if @order.has_subsidies?
-      %th.currency Estimated Adjustment
-    %th.currency Estimated Total
+      %th.currency= t('.th.adjust')
+    %th.currency= t('.th.total')
   - @order.order_details.each do |order_detail|
     %tr
       - res = order_detail.reservation
@@ -55,4 +55,4 @@
             %td.currency Unassigned
           %td.currency Unassigned
 
-%p.footnote All prices are estimates. Actual cost is assigned when the order is complete.
+%p.footnote= t('.foot')

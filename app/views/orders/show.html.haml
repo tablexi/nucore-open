@@ -1,38 +1,38 @@
 = content_for :h1 do
-  == Cart
+  = t('.h1')
 = content_for :breadcrumb do
   %ul.horiz
-    %li= link_to 'Home', :root
+    %li= link_to t('.crumbs.home'), :root
     - detail = @order.order_details.first
     - unless detail.nil?
       %li &raquo;
       %li= link_to detail.product.facility, facility_path(detail.product.facility)
     %li &raquo;
-    %li Cart
+    %li= t('.crumbs.cart')
 
-%p Your cart will be saved between visits and can be added to, or your order completed at a later time.
+%p= t('.intro')
 
 - if @order.order_details.empty?
   %div
-    %p.notice== Your cart is empty.
+    %p.notice= t('.notice')
 - else
   %ul.form
     %li
-      %label Payment Source
+      %label= t('.label.account')
       =h @order.account
       %br
-      = link_to 'Change Payment Source', choose_account_order_path(@order, :reset_account => true)
+      = link_to t('.link.change_account'), choose_account_order_path(@order, :reset_account => true)
       
   = form_tag order_path(@order), :method => :put do
     %table#cart
       %tr
         %th
-        %th== Product
-        %th.centered== Quantity
-        %th.currency== Estimated Cost
+        %th= t('.th.product')
+        %th.centered= t('.th.quantity')
+        %th.currency= t('.th.cost')
         - if @order.has_subsidies?
-          %th.currency== Estimated Adjustment
-        %th.currency== Estimated Extended Cost
+          %th.currency= t('.th.adjust')
+        %th.currency= t('.th.extend')
 
       - prev_group_id = nil
       - @order.order_details.find(:all, :order => :group_id).each do |order_detail|
@@ -40,7 +40,7 @@
         - prev_group_id = order_detail.group_id
       %tr
         %td.currency{:colspan => "3"}
-          %b Estimated Totals
+          %b= t('.td.total')
         %td.currency
           %b= number_to_currency @order.estimated_cost
         - if @order.has_subsidies?
@@ -49,11 +49,11 @@
         %td.currency
           %b= number_to_currency @order.estimated_total
 
-    %p.footnote All prices are estimates. Actual cost is assigned when the order is complete.
+    %p.footnote= t('.foot.all')
     - if @order.instrument_order_details.count > 0
-      %p.footnote * Instrument pricing is estimated; the final price may vary based on actual time used.
+      %p.footnote= t('.foot.instrument')
     - if @order.order_details.size > 0
       %ul.horiz
         %li= submit_tag 'Update', :class => 'btn'
         - if @order.validated?
-          %li= link_to 'Purchase', purchase_order_path(@order), :method => :put, :class => 'btn', :confirm => "Are you sure you wish to place this order?"
+          %li= link_to 'Purchase', purchase_order_path(@order), :method => :put, :class => 'btn', :confirm => t('.confirm')

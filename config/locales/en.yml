@@ -52,10 +52,10 @@ en:
       price_groups: "Price Groups"
       statuses: "Order Statuses"
     tabnav_account:
-      recent: "Recent Payment Sources"
-      user: "Search by User"
-      account: "Search By Payment Source"
-      add_account: "Add Payment Source"
+      details: "Payment Source Details"
+      transact: "Transactions"
+      statement: "Statements"
+      members: "Members"
     tabnav_price_group:
       accounts: "Payment Sources"
       users: "Users"
@@ -66,6 +66,12 @@ en:
       reservations: "Reservations"
       accounts: "Payment Sources"
       instruments: "Available Instruments"
+    admin:
+      tabnav_account:
+        recent: "Recent Payment Sources"
+        user: "Search by User"
+        account: "Search By Payment Source"
+        add_account: "Add Payment Source"
 
   facility_accounts:
     index:
@@ -140,7 +146,6 @@ en:
     user_accounts:
       add_account: "Add payment source"
       title: "Payment Sources for %{name}"
-
 
   facility_users:
     search:
@@ -296,6 +301,112 @@ en:
     new:
       head: "Add Recharge Chart String"
 
+  reservations:
+    new:
+      label: "Payment source"
+      h3: "Documentation"
+      crumb: "Create Reservation"
+
+  statements:
+    index:
+      h1: "Payment Source Transactions"
+      notice: "You have no completed orders for any facility with this payment source."
+      th:
+        facility: "Facility"
+        total: "Unreconciled Total (actual + estimated)"
+    list:
+      head:
+        h1: "Payment Source Transactions"
+        h3: "Statements for %{facility}"
+      notice: "No statements exist."
+    show:
+      head:
+        h1: "Payment Source Transactions"
+        h3: "Transactions for %{facility}"
+      contact:
+        phone: "Phone Number:"
+        fax: "Fax Number:"
+        email: "Email:"
+      notice: "No transactions exist for this period."
+      th:
+        transact: "Transaction Date"
+        purchaser: "Purchaser"
+        order: "Order Number"
+        desc: "Description"
+        dispute: "Dispute?"
+        amount: "Amount"
+      td:
+        dispute: "In Dispute"
+        unassigned: "Unassigned"
+
+  transaction_history:
+    search:
+      h1: "Transaction History"
+      unassigned: "Unassigned"
+      th:
+        account: "Payment Source"
+        order: "Order #"
+        fulfill: "Fulfillment Date"
+        facility: "Facility"
+        reserved: "Ordered/Reserved By"
+        description: "Description"
+        cost: "Cost"
+        status: "Status"
+
+  orders:
+    add_account:
+      add: "Add a Payment Source"
+    choose_account:
+      select: "Select Payment Source"
+      notice: "You do not have any payment sources. You must have a payment source in order to place an order. Please contact the facility to add a payment source."
+      th:
+        account: "Payment Source"
+        owner: "Owner"
+    receipt:
+      crumbs:
+        orders: "My Orders"
+        receipt: "Order Receipt"
+      h1: "Order Receipt"
+      intro: "Thank you for your order."
+      label:
+        facility: "Facility"
+        account: "Payment Source"
+        ordered:
+          at: "Ordered At"
+          for: "Ordered For"
+          by: "Ordered By"
+      th:
+        order_no: "Order #"
+        quantity: "Quantity/Product"
+        cost: "Estimated Cost"
+        adjust: "Estimated Adjustment"
+        total: "Estimated Total"
+      foot: "All prices are estimates. Actual cost is assigned when the order is complete."
+    show:
+      h1: "Cart"
+      intro: "Your cart will be saved between visits and can be added to, or your order completed at a later time."
+      notice: "Your cart is empty."
+      crumbs:
+        home: "Home"
+        cart: "Cart"
+      label:
+        account: "Payment Source"
+      link:
+        change_account: "Change Payment Source"
+      th:
+        product: "Product"
+        quantity: "Quantity"
+        cost: "Estimated Cost"
+        adjust: "Estimated Adjustment"
+        extend: "Estimated Extended Cost"
+      td:
+        total: "Estimated Totals"
+      foot:
+        all: "All prices are estimates. Actual cost is assigned when the order is complete."
+        instrument: "* Instrument pricing is estimated; the final price may vary based on actual time used."
+      confirm: "Are you sure you wish to place this order?"
+
+
   order_details:
     show:
       head:
@@ -426,6 +537,26 @@ en:
   price_groups:
     price_group_fields:
       internal_instruction: "Check this box if this price group is internal, intended for use by Northwestern Customers:"
+    accounts:
+      intro: "Pricing policies apply to orders paid for with the following payment sources."
+      notice: "No payment sources have been added to this price group."
+      link:
+        add: "Add Payment Source"
+      th:
+        number: "Account Number"
+        owner: "Owner"
+        email: "Email"
+    index:
+      h2: "Price Groups"
+      intro: "Price groups associate users and payment sources with price rules and reservation priorities."
+      link:
+        add: "Add Price Group"
+      notice: "No price groups exist yet."
+      th:
+        pg: "Price Group"
+        type: "Type"
+        users: "Number of Users"
+        accounts: "Number of Payment Sources"
 
   notifier:
     new_user:
@@ -461,6 +592,7 @@ en:
         main: "Downloadable Order Forms are templates to be filled in by the user and submitted when ordering.  Uploading a new template will replace any existing Downloadable Order Forms."
         notice: "No Downloadable Order Forms have been uploaded."
         confirm: "Are you sure you wish to remove this file?"
+
   user_password:
     edit:
       head: Change Password
@@ -499,12 +631,15 @@ en:
       label:
         id: "NetID"
         have_id: "Does the new user have a NetID?"
-
     username_search:
       main_html: "You may add a new external user by clicking <a href=\"%{link}\">Add a new external user</a>."
       notice1: "The user could no be located in the university database.  Please make sure you typed the NetID correctly."
       notice2: "No user information was found in the university databases."
       notice3: "The following user was found.  Click \"Add User\" to allow this user access to NU Core."
+    accounts:
+      h1: "%{user_name} Payment Sources"
+      link: "Add Payment Source"
+      notice: "%{user_name} does not have any payment sources."
     
   facility_statements:
     new:
