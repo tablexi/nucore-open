@@ -6,11 +6,11 @@
 - else
   %table
     %tr
-      %th Payment Source
-      %th Description
-      %th Type
-      %th Expiration
-      %th Facility
+      %th= Account.model_name.human
+      %th= Account.human_attribute_name(:description)
+      %th= Account.human_attribute_name(:type)
+      %th= Account.human_attribute_name(:expires_at)
+      %th= Facility.model_name.human
       %th.hidden
       %th.hidden
     - show_th=false

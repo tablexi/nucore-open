@@ -610,12 +610,15 @@ en:
         one: Payment Source
         other: Payment Sources
         owner: Owner
-      nufs account:
-        one: Chart String Payment Source
-        other: Chart String Payment Sources
-      credit card account:
-        one: Credit Card Payment Source
-        other: Credit Card Payment Sources
+      nufs_account:
+        one: Chart String
+        other: Chart Strings
+      credit_card_account:
+        one: Credit Card
+        other: Credit Cards
+      purchase_order_account:
+        one: Purchase Order
+        other: Purchase Orders
       account user:
         one: Account User
         other: Account Users
@@ -655,6 +658,8 @@ en:
       statement:
         created_by: Sent By
         created_at: Sent At
+      account:
+        expires_at: Expires
       nufs_account:
         account_number: Payment Source
       purchase_order_account:

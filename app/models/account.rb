@@ -53,16 +53,7 @@ class Account < ActiveRecord::Base
   end
 
   def type_string
-    case self
-      when PurchaseOrderAccount
-        I18n.t('accounts.po')
-      when CreditCardAccount
-        I18n.t('accounts.credit_card')
-      when NufsAccount
-        I18n.t('accounts.institution')
-      else
-        'Account'
-    end
+    I18n.t("activerecord.models.#{self.class.to_s.underscore}.one", :default => self.class.model_name.human)
   end
 
   def <=>(obj)
