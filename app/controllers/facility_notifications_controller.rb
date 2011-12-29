@@ -5,7 +5,6 @@ class FacilityNotificationsController < ApplicationController
   before_filter :init_current_facility
   
   include TransactionSearch
-  transaction_search :index, :in_review
   
   authorize_resource :manage, :class => Facility
 
@@ -18,9 +17,10 @@ class FacilityNotificationsController < ApplicationController
 
   # GET /facilities/:facility_id/notifications
   def index
-    @order_details = @order_details.need_notification(@facility)
+    @order_details = @order_details.all_need_notification
     @order_detail_action = :send_notifications
   end
+  transaction_search2 :index
   
   def send_notifications
     @accounts_to_notify = []
@@ -62,11 +62,13 @@ class FacilityNotificationsController < ApplicationController
   end
   
   def in_review
-    @order_details = @order_details.in_review(@facility)
+    @order_details = @order_details.all_in_review
     @order_details = @order_details.reorder(:reviewed_at)
     @order_detail_action = :mark_as_reviewed
     @extra_date_column = :reviewed_at
   end
+  
+  transaction_search2 :in_review
   
   def mark_as_reviewed
     if params[:order_detail_ids].nil? or params[:order_detail_ids].empty?
