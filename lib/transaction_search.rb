@@ -16,17 +16,18 @@ module TransactionSearch
     # method has run 
     def method_added(name)
       @@methods_with_remove_ugly_filter ||= []
-      if (name =~ /(.*)_with_search$/)
+      if (name.to_s =~ /(.*)_with_search$/)
         @@methods_with_remove_ugly_filter << $1
         self.before_filter :remove_ugly_params_and_redirect, :only => @@methods_with_remove_ugly_filter
         define_method($1) do 
           init_order_details
-          send(:"#{$&}")           
+          send(:"#{$&}")    
           load_search_options
+          @empty_orders = @order_details.empty?
           @search_fields = params.merge({})
           do_search(@search_fields)
           add_optimizations
-          @order_details = @order_details_sort ? @order_details.order(@order_details_sort) : @order_details.order_by_desc_nulls_first(@date_field_to_use)
+          @order_details = @order_details_sort ? @order_details.reorder(@order_details_sort) : @order_details.order_by_desc_nulls_first(@date_field_to_use)
           @order_details = @order_details.paginate(:page => params[:page]) if @paginate_order_details
           render :layout => @layout if @layout
         end
@@ -43,10 +44,18 @@ module TransactionSearch
   # Find all the unique search options based on @order_details. This needs to happen before do_search so these
   # variables have the full non-searched section of values
   def load_search_options
-    @facilities = Facility.find_by_sql(@order_details.joins(:order => :facility).select("distinct(facilities.id), facilities.name, facilities.abbreviation").to_sql)
-    @accounts = Account.find_by_sql(@order_details.joins(:order => :account).select("distinct(accounts.id), accounts.description, accounts.account_number, accounts.type").to_sql)
-    @products = Product.find_by_sql(@order_details.joins(:product).select("distinct(products.id), products.name, products.facility_id, products.type").to_sql)
-    @account_owners = User.find_by_sql(@order_details.joins(:order => {:account => {:owner => :user} }).select("distinct(users.id), users.first_name, users.last_name").to_sql)
+    @facilities = Facility.find_by_sql(@order_details.joins(:order => :facility).
+                                                      select("distinct(facilities.id), facilities.name, facilities.abbreviation").
+                                                      reorder("facilities.name").to_sql)
+    @accounts = Account.find_by_sql(@order_details.joins(:order => :account).
+                                                   select("distinct(accounts.id), accounts.description, accounts.account_number, accounts.type").
+                                                   reorder("accounts.account_number, accounts.description").to_sql)
+    @products = Product.find_by_sql(@order_details.joins(:product).
+                                                   select("distinct(products.id), products.name, products.facility_id, products.type").
+                                                   reorder("products.name").to_sql)
+    @account_owners = User.find_by_sql(@order_details.joins(:order => {:account => {:owner => :user} }).
+                                                      select("distinct(users.id), users.first_name, users.last_name").
+                                                      reorder("users.last_name, users.first_name").to_sql)
   end
       
   def paginate_order_details
