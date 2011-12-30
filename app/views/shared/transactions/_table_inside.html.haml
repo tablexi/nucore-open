@@ -8,18 +8,16 @@
     %th.nowrap= OrderDetail.human_attribute_name(:fulfilled_at)
     - if @extra_date_column
       %th.nowrap= OrderDetail.human_attribute_name(@extra_date_column) 
-    - unless single_facility?
+    - unless @facility
       %th= Facility.model_name.human
     %th= OrderDetail.human_attribute_name("description")
     %th.nowrap= OrderDetail.human_attribute_name("user")
     -# %th= OrderDetail.human_attribute_name('created_by_user') #Ordered By
-    - unless single_account?
+    - unless @account
       %th= Account.model_name.human
       %th= Account.human_attribute_name("owner")
     %th= OrderDetail.human_attribute_name("cost")
-    %th= OrderDetail.human_attribute_name("order_status")
-    
-    
+    %th= OrderDetail.human_attribute_name("order_status")   
     
   - @order_details.each do |order_detail|
     %tr{:class => row_class(order_detail)}
@@ -29,7 +27,7 @@
       %td= order_detail.fulfilled_at.strftime("%m/%d/%Y") if order_detail.fulfilled_at
       - if @extra_date_column and order_detail.send(@extra_date_column)
         %td= order_detail.send(@extra_date_column).strftime("%m/%d/%Y")
-      - unless single_facility?
+      - unless @facility
         %td= order_detail.order.facility
       %td
         = order_detail.product
@@ -37,7 +35,7 @@
         %em= order_detail.reservation
       %td= order_detail.order.user.full_name
       -# %td= order_detail.order.created_by_user.full_name  
-      - unless single_account?
+      - unless @account
         %td= order_detail.account
         %td= order_detail.account.owner.user
       %td.currency 

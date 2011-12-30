@@ -5,8 +5,7 @@
   = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'transactions'}
   %h2= @account.account_number
   %p= @account.description
-  - if single_facility?
-    %h2= @facilities[0].name
+  %h3= @facility.name if @facility
 #header_billing.grid_9
   = render :partial => 'shared/transactions/search'
 = render :partial => 'shared/transactions/table'  
