@@ -1,15 +1,14 @@
 class TransactionHistoryController < ApplicationController
-  #layout 'application'
-  #layout 'two_column', :except => [:my_history, :account_history]
   admin_tab     :all
   customer_tab :my_history, :account_history
   
   include DateHelper
   before_filter :authenticate_user!
   before_filter :check_acting_as
-  
+  before_filter :init_current_facility, :only => [:facility_history]
+  layout "two_column_head", :only => [:facility_history]
   include TransactionSearch
-  transaction_search :my_history, :account_history, :facility_history
+  #transaction_search :my_history, :account_history, :facility_history
    
   def my_history
     @accounts = session_user.accounts
@@ -23,7 +22,7 @@ class TransactionHistoryController < ApplicationController
     @order_details = @order_details.paginate(:page => params[:page])
   end
   
-  def account_history
+  def account_history_with_search
     @accounts = Account.find_all_by_id(params[:account_id])
     @account = @accounts[0]
     
@@ -36,10 +35,9 @@ class TransactionHistoryController < ApplicationController
     @active_tab = 'accounts'
   end
   
-  def facility_history
-    @order_details = @order_details.paginate(:page => params[:page])
+  def facility_history_with_search
+    #@order_details = @order_details.paginate(:page => params[:page])
     @active_tab = 'admin_billing'
-    render :layout => 'two_column_head'
   end
   
 end
