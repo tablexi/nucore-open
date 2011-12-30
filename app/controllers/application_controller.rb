@@ -32,6 +32,10 @@ class ApplicationController < ActionController::Base
   def init_current_facility
     @facility = @current_facility = Facility.find_by_url_name!(params[:facility_id] || params[:id])
   end
+  
+  def init_current_account
+    @account = Account.find(params[:account_id] || params[:id])
+  end
 
   def check_acting_as
     raise NUCore::NotPermittedWhileActingAs if acting_as?

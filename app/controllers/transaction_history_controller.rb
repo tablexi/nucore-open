@@ -6,7 +6,7 @@ class TransactionHistoryController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility, :only => [:facility_history]
-
+  before_filter :init_current_account, :only => [:account_history]
   include TransactionSearch
    
   def my_history
@@ -22,7 +22,6 @@ class TransactionHistoryController < ApplicationController
   end
   
   def account_history_with_search
-    @account = Account.find(params[:account_id])
     @facility = @account.facility
     @order_details = @order_details.where(:account_id => @account.id)
     paginate_order_details
