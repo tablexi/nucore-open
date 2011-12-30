@@ -26,13 +26,11 @@ module TransactionSearch
           @search_fields = params.merge({})
           do_search(@search_fields)
           add_optimizations
+          @order_details = @order_details_sort ? @order_details.order(@order_details_sort) : @order_details.order_by_desc_nulls_first(@date_field_to_use)
           @order_details = @order_details.paginate(:page => params[:page]) if @paginate_order_details
           render :layout => @layout if @layout
         end
       end
-    end
-    def use_date_field_for_search(field, *actions)
-      self.prepend_before_filter(:only => actions) {|c| c.use_date_field field } 
     end
   end
   
@@ -50,14 +48,17 @@ module TransactionSearch
     @products = Product.find_by_sql(@order_details.joins(:product).select("distinct(products.id), products.name, products.facility_id, products.type").to_sql)
     @account_owners = User.find_by_sql(@order_details.joins(:order => {:account => {:owner => :user} }).select("distinct(users.id), users.first_name, users.last_name").to_sql)
   end
-    
-  def use_date_field(field)
-    @date_field_to_use = field
-  end
-  
+      
   def paginate_order_details
     @paginate_order_details = true
   end
+  
+  def order_details_sort(field)
+    @order_details_sort = field
+  end
+  
+  private
+  
   def do_search(search_params)
     #Rails.logger.debug "search: #{search_params}"
     @order_details = @order_details || OrderDetail.joins(:order).ordered
@@ -69,9 +70,9 @@ module TransactionSearch
     
     @order_details = @order_details.for_facilities(search_params[:facilities])
     @date_field_to_use ||= :fulfilled_at
-    @order_details = @order_details.action_in_date_range(@date_field_to_use, start_date, end_date).
-          order_by_desc_nulls_first(@date_field_to_use)    
-  end
+    @order_details = @order_details.action_in_date_range(@date_field_to_use, start_date, end_date)
+  end  
+
   
   def remove_ugly_params_and_redirect
     if (params[:commit] && request.get?)
@@ -86,13 +87,6 @@ module TransactionSearch
     params.delete(:authenticity_token)
   end
     
-  # def get_allowed_accounts(allowed_accounts, search_accounts)
-    # search_accounts ||= []
-    # allowed_accounts = allowed_accounts.map{|a| a.id.to_s}
-    # denyed_accounts = search_accounts - allowed_accounts
-    # search_accounts - denyed_accounts
-  # end
-  
   def add_optimizations
     # cut down on some n+1s
     @order_details = @order_details.
