@@ -2,8 +2,9 @@ class AccountsController < ApplicationController
   customer_tab  :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
-  before_filter :init_account, :only => [:show, :user_search ]
+  before_filter :init_account, :only => [:show, :user_search, :transactions ]
 
+  include TransactionSearch
   load_and_authorize_resource :only => [:show, :user_search ]
 
 
@@ -26,6 +27,13 @@ class AccountsController < ApplicationController
     render(:template => "account_users/user_search")
   end
 
+  def transactions_with_search
+    @facility = @account.facility
+    @order_details = @order_details.where(:account_id => @account.id)
+    paginate_order_details
+    @active_tab = 'accounts'
+  end
+  
   protected
   
   def init_account
