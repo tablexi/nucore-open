@@ -26,6 +26,7 @@ module TransactionSearch
           @search_fields = params.merge({})
           do_search(@search_fields)
           add_optimizations
+          render :layout => @layout if @layout
         end
       end
     end
@@ -49,46 +50,6 @@ module TransactionSearch
     @account_owners = User.find_by_sql(@order_details.joins(:order => {:account => {:owner => :user} }).select("distinct(users.id), users.first_name, users.last_name").to_sql)
   end
     
-  def populate_search_fields
-    if params[:facility_id]
-      @current_facility = @facility = Facility.find_by_url_name(params[:facility_id])
-      raise ActiveRecord::RecordNotFound unless @facility
-      @facilities = [@facility]
-    else
-      @facilities = Facility.active.order(:name)
-    end
-    
-    if params[:account_id]
-      @account = Account.find(params[:account_id])
-      @accounts = [@account]
-      @facilities = @account.facilities.order(:name)
-      @facility = @facilities[0] if @facilities.size == 1
-    else
-      # only select a few fields. This speeds up the load when there get to be a lot of accounts
-      @accounts = Account.for_facility(@facility).active.select("accounts.id, description, account_number, type")
-      
-      # sort accounts by description. may change to account number later
-      @accounts = @accounts.order(:account_number, :description)
-      
-      # sort account owners by last name, first name
-      @account_owners = @accounts.includes(:owner => :user).
-                                map(&:owner_user).
-                                uniq.
-                                sort_by{|x| [x.last_name, x.first_name]}  
-    end
-    
-    
-    @products = Product.where("facility_id in (?)", @facilities.map(&:id)).order(:name) #:facility_id => @facility.id)
-    
-       
-    @search_fields = params.merge({
-      :accounts => get_allowed_accounts(@accounts, params[:accounts]),
-      :facilities => @facilities
-    })
-    
-    do_search(@search_fields)
-    add_optimizations
-  end
   def use_date_field(field)
     @date_field_to_use = field
   end
@@ -120,12 +81,12 @@ module TransactionSearch
     params.delete(:authenticity_token)
   end
     
-  def get_allowed_accounts(allowed_accounts, search_accounts)
-    search_accounts ||= []
-    allowed_accounts = allowed_accounts.map{|a| a.id.to_s}
-    denyed_accounts = search_accounts - allowed_accounts
-    search_accounts - denyed_accounts
-  end
+  # def get_allowed_accounts(allowed_accounts, search_accounts)
+    # search_accounts ||= []
+    # allowed_accounts = allowed_accounts.map{|a| a.id.to_s}
+    # denyed_accounts = search_accounts - allowed_accounts
+    # search_accounts - denyed_accounts
+  # end
   
   def add_optimizations
     # cut down on some n+1s
