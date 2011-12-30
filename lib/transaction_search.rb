@@ -8,27 +8,24 @@ module TransactionSearch
       self.before_filter :remove_ugly_params_and_redirect, :only => actions
       self.before_filter :populate_search_fields, :only => actions
     end
-    def transaction_search2(*actions)
-      self.before_filter :remove_ugly_params_and_redirect, :only => actions
-      actions.each do |action|
-        class_eval do
-          alias_method :"original_#{action}", "#{action}"
-          define_method(action) do 
-            @order_details = OrderDetail.joins(:order).joins(:product).ordered
-            @order_details = @order_details.for_facility_url(params[:facility_id]) if params[:facility_id]          
-            @order_details = @order_details.where(:account_id => params[:account_id]) if params[:account_id]
-            
-            send(:"original_#{action}")
-            @facilities = Facility.find_by_sql(@order_details.joins(:order => :facility).select("distinct(facilities.id), facilities.name, facilities.abbreviation").to_sql)
-            @accounts = Account.find_by_sql(@order_details.joins(:order => :account).select("distinct(accounts.id), accounts.description, accounts.account_number, accounts.type").to_sql)
-            @products = Product.find_by_sql(@order_details.joins(:product).select("distinct(products.id), products.name, products.facility_id, products.type").to_sql)
-            @account_owners = User.find_by_sql(@order_details.joins(:order => {:account => {:owner => :user} }).select("distinct(users.id), users.first_name, users.last_name").to_sql)
-            @facility = @facilities.first
-            @account = @accounts.first
-            @search_fields = params.merge({})
-            do_search(@search_fields)
-            add_optimizations
-          end
+    
+    # If a method is tagged with _with_search at the end, then define the normal controller
+    # action to be wrapped in the search.
+    # e.g. index_with_search will define #index, which will init_order_details before passing
+    # control to the controller method. Then it will further filter @order_details after the controller
+    # method has run 
+    def method_added(name)
+      @@methods_with_remove_ugly_filter ||= []
+      if (name =~ /(.*)_with_search$/)
+        @@methods_with_remove_ugly_filter << $1
+        self.before_filter :remove_ugly_params_and_redirect, :only => @@methods_with_remove_ugly_filter
+        define_method($1) do 
+          init_order_details
+          send(:"#{$&}")           
+          load_search_options
+          @search_fields = params.merge({})
+          do_search(@search_fields)
+          add_optimizations
         end
       end
     end
@@ -36,6 +33,22 @@ module TransactionSearch
       self.prepend_before_filter(:only => actions) {|c| c.use_date_field field } 
     end
   end
+  
+  def init_order_details
+    @order_details = OrderDetail.joins(:order).joins(:product).ordered
+    @order_details = @order_details.for_facility_id(@current_facility.id) if @current_facility          
+    @order_details = @order_details.where(:account_id => @account.id) if @account
+  end
+    
+  # Find all the unique search options based on @order_details. This needs to happen before do_search so these
+  # variables have the full non-searched section of values
+  def load_search_options
+    @facilities = Facility.find_by_sql(@order_details.joins(:order => :facility).select("distinct(facilities.id), facilities.name, facilities.abbreviation").to_sql)
+    @accounts = Account.find_by_sql(@order_details.joins(:order => :account).select("distinct(accounts.id), accounts.description, accounts.account_number, accounts.type").to_sql)
+    @products = Product.find_by_sql(@order_details.joins(:product).select("distinct(products.id), products.name, products.facility_id, products.type").to_sql)
+    @account_owners = User.find_by_sql(@order_details.joins(:order => {:account => {:owner => :user} }).select("distinct(users.id), users.first_name, users.last_name").to_sql)
+  end
+    
   def populate_search_fields
     if params[:facility_id]
       @current_facility = @facility = Facility.find_by_url_name(params[:facility_id])
