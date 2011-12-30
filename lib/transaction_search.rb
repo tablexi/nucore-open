@@ -26,6 +26,7 @@ module TransactionSearch
           @search_fields = params.merge({})
           do_search(@search_fields)
           add_optimizations
+          @order_details = @order_details.paginate(:page => params[:page]) if @paginate_order_details
           render :layout => @layout if @layout
         end
       end
@@ -52,6 +53,10 @@ module TransactionSearch
     
   def use_date_field(field)
     @date_field_to_use = field
+  end
+  
+  def paginate_order_details
+    @paginate_order_details = true
   end
   def do_search(search_params)
     #Rails.logger.debug "search: #{search_params}"
