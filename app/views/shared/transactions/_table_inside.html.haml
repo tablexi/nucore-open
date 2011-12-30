@@ -1,5 +1,4 @@
 = will_paginate(@order_details) if @order_details.respond_to? :total_pages
-- @date_field_to_use ||= :fulfilled_at
 %table.dense
   %tr
     -if @order_detail_action 

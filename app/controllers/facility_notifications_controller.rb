@@ -64,6 +64,7 @@ class FacilityNotificationsController < ApplicationController
     @order_details = @order_details.all_in_review
     @order_details = @order_details.reorder(:reviewed_at)
     @order_detail_action = :mark_as_reviewed
+    order_details_sort(:reviewed_at)
     @extra_date_column = :reviewed_at
   end
   
