@@ -6,11 +6,6 @@ en:
   app_admin_name: NU Core Admin
   institution_name: Northwestern
 
-  accounts:
-    institution: Chart String
-    credit_card: Credit Card
-    po: Purchase Order
-  
   pages:
     my_tab: My %{model}
     create: Create %{model}
@@ -502,6 +497,9 @@ en:
         search: "Search by name, NetID, or username"
 
   accounts:
+    institution: Chart String
+    credit_card: Credit Card
+    po: Purchase Order
     show:
       head: "Payment Source Details"
       label:
