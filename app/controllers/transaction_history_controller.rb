@@ -21,18 +21,6 @@ class TransactionHistoryController < ApplicationController
     @order_details = @order_details.paginate(:page => params[:page])
   end
   
-  def account_history_with_search
-    @facility = @account.facility
-    @order_details = @order_details.where(:account_id => @account.id)
-    paginate_order_details
-    @active_tab = 'accounts'
-  end
   
-  def facility_history_with_search
-    #@order_details = @order_details.paginate(:page => params[:page])
-    @active_tab = 'admin_billing'
-    @layout = "two_column_head"
-    paginate_order_details
-  end
   
 end
