@@ -9,6 +9,7 @@ module TransactionSearch
       self.before_filter :populate_search_fields, :only => actions
     end
     def transaction_search2(*actions)
+      self.before_filter :remove_ugly_params_and_redirect, :only => actions
       actions.each do |action|
         class_eval do
           alias_method :"original_#{action}", "#{action}"
@@ -24,8 +25,8 @@ module TransactionSearch
             @account_owners = User.find_by_sql(@order_details.joins(:order => {:account => {:owner => :user} }).select("distinct(users.id), users.first_name, users.last_name").to_sql)
             @facility = @facilities.first
             @account = @accounts.first
-            #@account_owners = []
-            @search_fields = {}
+            @search_fields = params.merge({})
+            do_search(@search_fields)
             add_optimizations
           end
         end
@@ -80,8 +81,7 @@ module TransactionSearch
   end
   def do_search(search_params)
     #Rails.logger.debug "search: #{search_params}"
-    @order_details = @order_details || OrderDetail.joins(:order)
-    @order_details = @order_details.ordered
+    @order_details = @order_details || OrderDetail.joins(:order).ordered
     @order_details = @order_details.for_accounts(search_params[:accounts])
     @order_details = @order_details.for_products(search_params[:products])
     @order_details = @order_details.for_owners(search_params[:owners])
