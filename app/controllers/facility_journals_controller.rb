@@ -39,7 +39,7 @@ class FacilityJournalsController < ApplicationController
     Journal.transaction do
       begin
         # blank input
-        @pending_journal.errors.add(:base, "Please select a journal status") if params[:journal_status].blank?
+        @pending_journal.errors.add(:base, I18n.t('controllers.facility_journals.update.error.status')) if params[:journal_status].blank?
 
         # failed
         if params[:journal_status] == 'failed'
@@ -64,10 +64,10 @@ class FacilityJournalsController < ApplicationController
           raise Exception
         end
 
-        flash[:notice] = "The journal file has been closed"
+        flash[:notice] = I18n.t 'controllers.facility_journals.update.notice'
         redirect_to facility_journals_path and return
       rescue Exception => e
-        @pending_journal.errors.add(:base, "An error was encountered while trying to close the journal")
+        @pending_journal.errors.add(:base, I18n.t('controllers.facility_journals.update.error.rescue'))
         raise ActiveRecord::Rollback
       end
     end
@@ -85,10 +85,10 @@ class FacilityJournalsController < ApplicationController
 
     @update_order_details = OrderDetail.find(params[:order_detail_ids] || [])
     if @update_order_details.empty?
-      @journal.errors.add(:base, "No orders were selected to journal")
+      @journal.errors.add(:base, I18n.t('controllers.facility_journals.create.errors.no_orders'))
     else
       if Journal.order_details_span_fiscal_years?(@update_order_details)
-        @journal.errors.add(:base, 'Journals may not span multiple fiscal years. Please select only orders in the same fiscal year.')
+        @journal.errors.add(:base, I18n.t('controllers.facility_journals.create.errors.fiscal_span'))
       else
         Journal.transaction do
           begin
@@ -97,10 +97,10 @@ class FacilityJournalsController < ApplicationController
             OrderDetail.update_all(['journal_id = ?', @journal.id], ['id IN (?)', @update_order_details.collect{|od| od.id}])
             # create the spreadsheet
             @journal.create_spreadsheet
-            flash[:notice] = "The journal file has been created successfully"
+            flash[:notice] = I18n.t('controllers.facility_journals.create.notice')
             redirect_to facility_journals_path and return
           rescue Exception => e
-            @journal.errors.add(:base, "An error was encountered while trying to create the journal. #{e.message}")
+            @journal.errors.add(:base, I18n.t('controllers.facility_journals.create.errors.rescue', :message => e.message))
             Rails.logger.error(e.backtrace.join("\n"))
             raise ActiveRecord::Rollback
           end

@@ -221,6 +221,16 @@ en:
         total: "Total"
         reconciled: "Reconciled?"
       submit: "Reconcile Orders"
+    history:
+      head:
+        h2: "Reconcile Journals"
+        h3: "Closed Journals"
+      notice: "No journals have been closed yet"
+      th:
+        created_at: "Created At"
+        journal: "Journal Date"
+        reference: "Reference"
+        status: "Status"
 
   facility_notifications:
     in_review:
@@ -276,6 +286,8 @@ en:
         estimated: "* Clicking 'Save' will update the cost estimate by quantity"
         price_policy: "* Clicking 'Save' will attempt to estimate the cost by quantity"
         default: "* Changing the quantity will automatically update the price fields"
+      link:
+        remove: " Remove From Journal"
 
   facility_facility_accounts:
     facility_account_fields:
@@ -347,6 +359,10 @@ en:
         description: "Description"
         cost: "Cost"
         status: "Status"
+    journals:
+      h2: "Create Journal"
+      notice: "There are no orders to be journaled at this time."
+      intro: "Select the orders that you wish to journal. Only one journal may be pending at a time. Please note that selected orders may not span multiple fiscal years."
 
   orders:
     add_account:
@@ -561,22 +577,31 @@ en:
       intro_html: "Congratulations, %{first_name}. A NU Core account has been created for you. You may log in at <a href=\"%{login_url}\">%{login_url}</a>."
       intro: "Congratulations, %{first_name}. A NU Core account has been created for you. You may log in at %{login_url}."
       no_password: "You may log in with your Northwestern NetID and password."
+      subject: "Welcome to NU Core"
+    new_account:
+      subject: "NU Core New Payment Method"
     order_receipt:
+      subject: "NU Core Order Receipt"
       intro: "Thank you for your order on the NU Core website."
       outro: "All prices are estimates. Actual cost is assigned when the order is complete."
     review_orders:
+      subject: "NU Core Orders For Review"
       body: "New transactions for %{facility} have been posted to \"%{account}\". Please log in to NU Core and review these charges."
       body_html: "New transactions for %{facility} have been posted to \"%{account}\".<br/><br/>Please %{login_link} and review these charges."
     statement:
+      subject: "NU Core Statement"
       body: "A new statement from %{facility} has been created for your payment source, \"%{account}\". Please log in to NU Core and review these charges."
       body_html: "A new statement from %{facility} has been created for your payment source, \"%{account}\".<br/><br/>Please %{login_link} and review your statement."
     user_update:
+      subject: "NU Core User Updated"
       body: |
         The following user %{user} has been added to your payment source %{account} by administrator %{created_by}.
         If this is incorrect you may log in to NU Core at %{login_link} and remove this user or contact the administrator named above.
       body_html: |
         The following user %{user} has been added to your payment source "%{account}" by administrator %{created_by}.<br/><br/>
         If this is incorrect you may %{login_link} and remove this user or contact the administrator named above.
+    account_update:
+      subject: "NU Core Payment Method Updated"
 
   file_uploads:
     product_survey:
@@ -646,12 +671,14 @@ en:
     index:
       head: Statement History
       no_statements: No statements have been sent yet
+
   devise:
     failure:
       invalid: "Invalid username or password."
     mailer:
       reset_password_instructions:
         subject: 'NUCore Password Reset Instructions'
+
   controllers:
     facility_accounts:
       create:
@@ -681,10 +708,45 @@ en:
         no_selection: No orders selected
         success_html: Notifications sent successfully to:<br/>%{accounts}
 
+    facility_journals:
+      update:
+        notice: "The journal file has been closed"
+        error:
+          status: "Please select a journal status"
+          rescue: "An error was encountered while trying to close the journal"
+      create:
+        notice: "The journal file has been created successfully"
+        errors:
+          rescue: "An error was encountered while trying to create the journal. %{message}"
+          no_orders: "No orders were selected to journal"
+          fiscal_span: "Journals may not span multiple fiscal years. Please select only orders in the same fiscal year."
+
+    facility_order_details:
+      edit:
+        notice:
+          open_journal: "You are unable to edit all aspects of this order because it is part of a pending journal. Please close the journal first."
+          no_actuals: "This order's reservation does not have an actual time. Please ensure that actual times are set and there is a price policy for the date this order was fulfilled. Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
+          no_policy: "This order does not have a price policy assigned. Please ensure that there is a price policy for the date this order was fulfilled. Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
+      remove_from_journal:
+        notice: "The order has been removed from its journal"
+
     reservations:
       create:
         no_selection: "You must select a payment source before reserving"
         success: "The reservation was successfully created."
+
+    general_reports:
+      headers:
+        data: [
+        'Order', 'Ordered At', 'Fulfilled At', 'Order Status', 'Order State',
+        'Ordered By', 'First Name', 'Last Name', 'Email', 'Product ID', 'Product Type',
+        'Product', 'Quantity', 'Bundled Products', 'Account Type', 'Affiliate', 'Account',
+        'Account Description', 'Account Expiration', 'Account Owner', 'Owner First Name',
+        'Owner Last Name', 'Owner Email', 'Price Group', 'Estimated Cost', 'Estimated Subsidy',
+        'Estimated Total', 'Actual Cost', 'Actual Subsidy', 'Actual Total', 'Disputed At',
+        'Dispute Reason', 'Dispute Resolved At', 'Dispute Resolved Reason', 'Reviewed At',
+        'Statemented On', 'Journal Date', 'Reconciled Note'
+      ]
 
   models:
     account_user:

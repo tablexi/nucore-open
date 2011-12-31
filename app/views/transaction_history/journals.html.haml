@@ -2,13 +2,12 @@
 = content_for :h1 do
   = @facility
 
-%h2 Create Journal
+%h2= t('.h2')
 - if @order_details.empty?
   = render :partial => "search"
-  %p.notice There are no orders to be journaled at this time.
+  %p.notice= t('.notice')
 - else
-  %p
-    Select the orders that you wish to journal. Only one journal may be pending at a time. Please note that selected orders may not span multiple fiscal years.
+  %p= t('.intro')
   = render :partial => "search"
   = render :partial => 'table'
   = render :partial => 'shared/reconcile_footnote'
