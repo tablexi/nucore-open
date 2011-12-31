@@ -21,7 +21,7 @@ Nucore::Application.routes.draw do |map|
   map.user_accounts  '/facilities/:facility_id/accounts/user/:user_id', :controller => 'facility_accounts', :action => 'user_accounts'
 
   # front-end accounts
-  map.resources :accounts, :only => [:index, :show], :member => {:user_search => :get, :transactions => :get} do |account|
+  map.resources :accounts, :only => [:index, :show], :member => {:user_search => :get, :transactions => :get, :transactions_in_review => :get} do |account|
     
     account.resources :account_users, :only => [:new, :destroy, :create, :index], :collection => {:user_search => :get}
     account.resources :statements, :only => [:index]
