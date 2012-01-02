@@ -346,24 +346,6 @@ en:
         dispute: "In Dispute"
         unassigned: "Unassigned"
 
-  transaction_history:
-    search:
-      h1: "Transaction History"
-      unassigned: "Unassigned"
-      th:
-        account: "Payment Source"
-        order: "Order #"
-        fulfill: "Fulfillment Date"
-        facility: "Facility"
-        reserved: "Ordered/Reserved By"
-        description: "Description"
-        cost: "Cost"
-        status: "Status"
-    journals:
-      h2: "Create Journal"
-      notice: "There are no orders to be journaled at this time."
-      intro: "Select the orders that you wish to journal. Only one journal may be pending at a time. Please note that selected orders may not span multiple fiscal years."
-
   orders:
     add_account:
       add: "Add a Payment Source"
