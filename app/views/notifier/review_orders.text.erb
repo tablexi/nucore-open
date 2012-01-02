@@ -1,3 +1,3 @@
 <%= t('.body', :facility => @facility.to_s, :account => @account.to_s) %>
 
-<%=h account_statements_url(@account) %>
+<%=h transactions_in_review_account_url(@account, :facilities => [@facility.id]) %>
