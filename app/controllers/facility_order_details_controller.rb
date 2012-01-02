@@ -31,12 +31,12 @@ class FacilityOrderDetailsController < ApplicationController
     @can_be_reconciled=condition && @order_detail.complete? && !@order_detail.in_dispute?
 
     if @in_open_journal
-      flash.now[:notice]="You are unable to edit all aspects of this order because it is part of a pending journal. Please close the journal first."
+      flash.now[:notice]=I18n.t 'controllers.facility_order_details.edit.notice.open_journal'
     elsif @order_detail.order_status.name == 'Complete'
       if @order_detail.reservation.try(:requires_but_missing_actuals?)
-        flash.now[:notice]="This order's reservation does not have an actual time. Please ensure that actual times are set and there is a price policy for the date this order was fulfilled. Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
+        flash.now[:notice]=I18n.t 'controllers.facility_order_details.edit.notice.no_actuals'
       elsif @order_detail.price_policy.nil?
-        flash.now[:notice]="This order does not have a price policy assigned. Please ensure that there is a price policy for the date this order was fulfilled. Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
+        flash.now[:notice]=I18n.t 'controllers.facility_order_details.edit.notice.no_policy'
       end
     end
     
@@ -156,7 +156,7 @@ class FacilityOrderDetailsController < ApplicationController
     od.journal=nil
     od.save!
 
-    flash[:notice]='The order has been removed from its journal'
+    flash[:notice]=I18n.t 'controllers.facility_order_details.remove_from_journal.notice'
     redirect_to edit_facility_order_order_detail_path(current_facility, od.order, od)
   end
   
