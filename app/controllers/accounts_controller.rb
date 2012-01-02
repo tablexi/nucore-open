@@ -37,7 +37,12 @@ class AccountsController < ApplicationController
   def transactions_in_review_with_search
     authorize! :manage, @account
     @facility = @account.facility
-    @order_details = @order_details.where(:account_id => @account.id).all_in_review                                    
+    @order_details = @order_details.where(:account_id => @account.id).all_in_review
+    @order_detail_link = {
+      :text => "Dispute",
+      :display? => Proc.new {|order_detail| order_detail.can_dispute?},
+      :proc => Proc.new {|order_detail| order_order_detail_path(order_detail.order, order_detail)}
+    }                                    
     paginate_order_details
   end
   
