@@ -198,22 +198,28 @@ class FacilityAccountsController < ApplicationController
   # GET /facilities/:facility_id/accounts/:account_id/suspend
   def suspend
     @account = Account.find(params[:account_id])
-    if @account.suspend!
+
+    begin
+      @account.suspend!
       flash[:notice] = I18n.t 'controllers.facility_accounts.suspend.success'
-    else
-      flash[:notice] = I18n.t 'controllers.facility_accounts.suspend.failure'
+    rescue => e
+      flash[:notice] = e.message || I18n.t('controllers.facility_accounts.suspend.failure')
     end
+
     redirect_to facility_account_path(current_facility, @account)
   end
 
   # GET /facilities/:facility_id/accounts/:account_id/unsuspend
   def unsuspend
     @account = Account.find(params[:account_id])
-    if @account.unsuspend!
+
+    begin
+      @account.unsuspend!
       flash[:notice] = I18n.t 'controllers.facility_accounts.unsuspend.success'
-    else
-      flash[:notice] = I18n.t 'controllers.facility_accounts.unsuspend.failure'
+    rescue => e
+      flash[:notice] = e.message || I18n.t('controllers.facility_accounts.unsuspend.failure')
     end
+
     redirect_to facility_account_path(current_facility, @account)
   end
 

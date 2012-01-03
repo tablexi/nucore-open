@@ -42,9 +42,9 @@ describe Account do
     @owner   = Factory.create(:user)
     hash     = Hash[:user => @owner, :created_by => @owner, :user_role => 'Owner']
     @account = Factory.create(:nufs_account, :account_users_attributes => [hash])
-    @account.suspend!
+    assert_nothing_raised { @account.suspend! }
     @account.suspended_at.should_not == nil
-    @account.unsuspend!
+    assert_nothing_raised { @account.unsuspend! }
     @account.suspended_at.should == nil
   end
 
