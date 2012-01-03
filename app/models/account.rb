@@ -74,12 +74,12 @@ class Account < ActiveRecord::Base
 
   def suspend!
     self.suspended_at = Time.zone.now
-    self.save
+    self.save!
   end
 
   def unsuspend!
     self.suspended_at = nil
-    self.save
+    self.save!
   end
 
   def suspended?
