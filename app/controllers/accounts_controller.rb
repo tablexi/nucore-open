@@ -38,6 +38,7 @@ class AccountsController < ApplicationController
     authorize! :manage, @account
     @facility = @account.facility
     @order_details = @order_details.where(:account_id => @account.id).all_in_review
+    @extra_date_column = :reviewed_at
     @order_detail_link = {
       :text => "Dispute",
       :display? => Proc.new {|order_detail| order_detail.can_dispute?},
