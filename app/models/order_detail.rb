@@ -92,6 +92,12 @@ class OrderDetail < ActiveRecord::Base
     where("order_details.reviewed_at > ?", Time.zone.now).
     where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   end
+  def in_review?
+    # check in the database if self.id is in the scope
+    self.class.all_in_review.find_by_id(self.id) ? true :false
+    # this would work without hitting the database again, but duplicates the functionality of the scope
+    # state == 'complete' and !reviewed_at.nil? and reviewed_at > Time.zone.now and (dispute_at.nil? or !dispute_resolved_at.nil?)
+  end
 
   scope :need_statement, lambda { |facility| {
     :joins => [:product, :account],
@@ -262,13 +268,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def can_dispute?
-    return false unless self.complete?
-    pending_transaction = self.class.find(:first, :conditions => ['(reviewed_at > ? OR reviewed_at IS NULL) AND account_id = ?', Time.zone.now, self.account.id])
-    if pending_transaction && dispute_at.nil?
-      true
-    else
-      false
-    end
+    in_review?
   end
 
   def validate_for_purchase
