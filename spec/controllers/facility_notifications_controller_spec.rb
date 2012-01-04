@@ -1,4 +1,6 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require 'spec_helper'
+require 'controller_spec_helper'
+require 'transaction_search_spec_helper'
 
 describe FacilityNotificationsController do
   
@@ -29,6 +31,13 @@ describe FacilityNotificationsController do
       (assigns(:order_details) - [@order_detail1, @order_detail2, @order_detail3]).should be_empty
       assigns(:order_detail_action).should == :send_notifications
       should_not set_the_flash
+    end
+    
+    context "searching" do
+      before :each do 
+        @user = @admin
+      end
+      it_should_support_searching
     end
   end
   
@@ -84,6 +93,13 @@ describe FacilityNotificationsController do
       (assigns(:order_details) - [@order_detail1, @order_detail3]).should be_empty
       assigns(:order_detail_action).should == :mark_as_reviewed
       should_not set_the_flash
+    end
+    
+    context "searching" do
+      before :each do
+        @user = @admin
+      end
+      it_should_support_searching
     end
   end
   

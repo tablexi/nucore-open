@@ -1,4 +1,6 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require 'spec_helper'
+require 'controller_spec_helper'
+require 'transaction_search_spec_helper'
 
 describe FacilityJournalsController do
   include DateHelper
@@ -96,6 +98,13 @@ describe FacilityJournalsController do
       end
 
     end
+    
+    context "searching" do
+      before :each do
+        @user = @admin
+      end
+      it_should_support_searching
+    end
 
   end
 
@@ -143,6 +152,12 @@ describe FacilityJournalsController do
       assigns(:order_detail_action).should be_nil
     end
     
+    context "searching" do
+      before :each do
+        @user = @admin
+      end
+      it_should_support_searching
+    end
   end
 
 end

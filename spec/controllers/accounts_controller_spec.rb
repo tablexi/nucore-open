@@ -1,4 +1,6 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require 'spec_helper'
+require 'controller_spec_helper'
+require 'transaction_search_spec_helper'
 
 describe AccountsController do
   render_views
@@ -83,6 +85,68 @@ describe AccountsController do
     end
 
   end
+  
+  context 'transactions' do
+    before :each do
+      @method = :get
+      @action = :transactions
+      @params = { :id => @authable.id }
+      @user = @authable.owner.user
+    end
+    it_should_require_login
+    it_should_deny :purchaser
+    it_should_allow :owner do
+      assigns(:account).should == @authable
+      assigns[:order_details].where_values_hash.should == { :account_id => @authable.id }
+      # @authable is an nufs account, so it doesn't have a facility
+      assigns[:facility].should be_nil
+    end
+    
+    it_should_support_searching
+    
+  end
+  
+  context 'transactions_in_review' do
+    before :each do
+      @method = :get
+      @action = :transactions_in_review
+      @params = { :id => @authable.id }
+      @user = @authable.owner.user
+    end
+    it_should_support_searching
+    
+    it_should_require_login
+    
+    it_should_deny :purchaser
+    
+    it_should_allow :owner do
+      assigns[:account].should == @authable
+      assigns[:order_details].where_values_hash.should be_has_key(:account_id)
+      assigns[:order_details].where_values_hash[:account_id].should == @authable.id
+      assigns[:facility].should be_nil
+    end
+    
+    it "should use reviewed_at" do
+      sign_in @user
+      do_request
+      response.should be_success
+      assigns[:extra_date_column].should == :reviewed_at
+      assigns[:order_details].to_sql.should be_include("order_details.reviewed_at >")
+    end
+    
+    it "should add dispute links" do
+      sign_in @user
+      do_request
+      response.should be_success
+      OrderDetail.any_instance.stubs(:can_dispute?).returns(true)
+      assigns[:order_detail_link].should_not be_nil
+      assigns[:order_detail_link][:text].should == "Dispute"
+      assigns[:order_detail_link][:display?].call(OrderDetail.new).should be_true
+    end
+    
+    
+  end
+  
 
 
   context "POST /accounts/create" do
