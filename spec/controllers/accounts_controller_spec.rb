@@ -1,4 +1,6 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require 'spec_helper'
+require 'controller_spec_helper'
+require 'transaction_search_spec_helper'
 
 describe AccountsController do
   render_views
@@ -82,6 +84,25 @@ describe AccountsController do
       response.should render_template('account_users/user_search')
     end
 
+  end
+  
+  context 'transactions' do
+    before :each do
+      @method = :get
+      @action = :transactions
+      @params = { :id => @authable.id }
+    end
+    it_should_require_login
+    it_should_deny :purchaser
+    it_should_allow :owner do
+      assigns(:account).should == @authable
+      assigns[:order_details].where_values_hash.should == { :account_id => @authable.id }
+      # @authable is an nufs account, so it doesn't have a facility
+      assigns[:facility].should be_nil
+    end
+    
+    it_should_support_searching
+    
   end
 
 
