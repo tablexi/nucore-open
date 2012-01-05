@@ -11,10 +11,10 @@
   %li
     - if @instrument.relay.nil?
       %label Control mechanism
-      %p Manual
+      %p Reservation only
     - elsif @instrument.relay.is_a?(RelayDummy)
       %label Control mechanism
-      %p Timer
+      %p Timer without relay
     - else
       %ul
         %li
