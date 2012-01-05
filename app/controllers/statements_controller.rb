@@ -47,7 +47,8 @@ class StatementsController < ApplicationController
 
 
   def init_account
-    @account = session_user.accounts.find(params[:account_id])
+    # CanCan will make sure that we're authorizing the account
+    @account = Account.find(params[:account_id]) 
   end
 
   #
