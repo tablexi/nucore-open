@@ -46,7 +46,7 @@ module TransactionSearch
   def load_search_options
     @facilities = Facility.find_by_sql(@order_details.joins(:order => :facility).
                                                       select("distinct(facilities.id), facilities.name, facilities.abbreviation").
-                                                      reorder("facilities.name").to_sql)
+                                                      reorder("facilities.name").to_sql)                                                 
     @accounts = Account.find_by_sql(@order_details.joins(:order => :account).
                                                    select("distinct(accounts.id), accounts.description, accounts.account_number, accounts.type").
                                                    reorder("accounts.account_number, accounts.description").to_sql)
