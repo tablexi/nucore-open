@@ -73,7 +73,7 @@ module TransactionSearch
     @order_details = @order_details || OrderDetail.joins(:order).ordered
     @order_details = @order_details.for_accounts(search_params[:accounts])
     @order_details = @order_details.for_products(search_params[:products])
-    @order_details = @order_details.for_owners(search_params[:owners])
+    @order_details = @order_details.for_owners(search_params[:account_owners])
     start_date = parse_usa_date(search_params[:start_date].to_s.gsub("-", "/"))
     end_date = parse_usa_date(search_params[:end_date].to_s.gsub("-", "/"))  
     

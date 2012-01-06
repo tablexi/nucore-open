@@ -28,7 +28,7 @@ class AccountsController < ApplicationController
   end
 
   def transactions_with_search
-    @facility = @account.facility
+    #@facility = @account.facility
     @order_details = @order_details.where(:account_id => @account.id)
     paginate_order_details
     @active_tab = 'accounts'

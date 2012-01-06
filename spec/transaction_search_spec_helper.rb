@@ -41,7 +41,7 @@ def it_should_support_searching
     end
     
     it "should handle account owners" do
-      @params.merge!({:owners => [3,4]})
+      @params.merge!({:account_owners => [3,4]})
       do_request
       assigns[:order_details].where_values.should be_include("account_users.user_id in (3,4)")
     end
