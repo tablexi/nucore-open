@@ -222,19 +222,14 @@
     %ul.horiz
       %li= submit_tag 'Resolve Dispute', {:class => 'btn', :id => 'submit'}
       %li= link_to 'Cancel', disputed_facility_orders_path
-  - elsif @order_detail.order_status.name == 'Complete'
-    %p= t('.notice.save_html')
-    %ul.horiz
-      - if @order_detail.price_policy.nil?
-        %li= submit_tag 'Save', {:class => 'btn', :id => 'submit', :name => 'assign_price_policy'}
-      - else
-        %li= submit_tag 'Save', {:class => 'btn', :id => 'submit'}
-      %li= link_to 'Cancel', show_problems_facility_orders_path
   - else
+    - cancel_link=request.referrer.blank? ? facility_transactions_path(current_facility) : request.referrer
     %p= t('.notice.save_html')
     %ul.horiz
-      %li= submit_tag 'Save', {:class => 'btn', :id => 'submit'}
-      %li= link_to 'Cancel', facility_orders_path
+      - attrs={:class => 'btn', :id => 'submit'}
+      - attrs.merge!(:name => 'assign_price_policy') if @order_detail.price_policy.nil? && @order_detail.order_status.name == 'Complete'
+      %li= submit_tag 'Save', attrs             
+      %li= link_to 'Cancel', cancel_link
 
 - if @order_detail.bundle
   -# BUNDLE TABLE
