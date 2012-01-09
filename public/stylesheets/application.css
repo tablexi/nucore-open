@@ -580,10 +580,13 @@ body .search_form .chzn-container .chzn-drop {
 	margin-bottom:10px;
 }
 
+.submit_button {
+	clear: both;
+	margin-bottom: 1em;
+}
 .search_form input[type=submit] {
-	clear:both;
-	float:right;
-	margin-top:20px;
+	width: 7em;
+	font-size: 12px;
 }
 
 .order_action {
@@ -650,7 +653,6 @@ billing
 #header_billing {
 	border-top:1px solid #ccc;
 	padding-top:10px;
-	background:url(../images/bg-search-form.jpg) top right repeat-y;
 }
 
 #table_billing {
