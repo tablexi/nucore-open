@@ -17,5 +17,6 @@
         = label_tag :end_date, "End Date"
         = text_field_tag :end_date, (@search_fields[:end_date] || "").gsub("-","/"), :class => 'datepicker'
 
-  = submit_tag "Search"
+  .submit_button
+    = submit_tag "Search"
 %div{:style=>"clear:both"}
