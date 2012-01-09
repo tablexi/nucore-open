@@ -21,9 +21,7 @@ module TransactionHistoryHelper
   def chosen_field(field, label, value_field = "id", label_field = "name", from_collection = nil)
     var = instance_variable_get("@#{field}")
     enabled = var && var.size > 1
-    puts "#{field} size is #{var.size}"
     @search_fields[field] = [var.first.send(value_field.to_sym)] if value_field and var.size == 1
-    puts "@search #{@search_fields[field]}"  
     html = "<li class=\"#{enabled ? '' : 'disabled'}\">"
     html << (label_tag field, label.pluralize)
     
