@@ -36,7 +36,7 @@ class AccountsController < ApplicationController
   
   def transactions_in_review_with_search
     authorize! :manage, @account
-    @facility = @account.facility
+    #@facility = @account.facility
     @order_details = @order_details.where(:account_id => @account.id).all_in_review
     @extra_date_column = :reviewed_at
     @order_detail_link = {
