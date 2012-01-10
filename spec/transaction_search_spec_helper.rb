@@ -10,18 +10,17 @@ def it_should_support_searching
       controller.should respond_to :"#{@action}_with_search"
     end
     
-    it "should take start date" do
+   it "should take start date" do
       @params.merge!({:start_date => @date_string})
       do_request
-      assigns[:order_details].where_values.should be_include("fulfilled_at > '#{@datetime.beginning_of_day.utc.strftime(@sql_datetime_format)}'")
+      assigns[:order_details].should contain_beginning_of_day(:fulfilled_at, @datetime)
     end
     
     it "should take end date" do
       @params.merge!({:end_date => @date_string})
       do_request
-      assigns[:order_details].where_values.should be_include("fulfilled_at < '#{@datetime.end_of_day.utc.strftime(@sql_datetime_format)}'")
+      assigns[:order_details].should contain_end_of_day(:fulfilled_at, @datetime)
     end
-    
     it "should take facilities" do
       @params.merge!({:facilities => [2, 3]})
       do_request
