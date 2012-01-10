@@ -28,15 +28,12 @@ class AccountsController < ApplicationController
   end
 
   def transactions_with_search
-    #@facility = @account.facility
     @order_details = @order_details.where(:account_id => @account.id)
     paginate_order_details
     @active_tab = 'accounts'
   end
   
   def transactions_in_review_with_search
-    authorize! :manage, @account
-    #@facility = @account.facility
     @order_details = @order_details.where(:account_id => @account.id).all_in_review
     @extra_date_column = :reviewed_at
     @order_detail_link = {
@@ -50,7 +47,7 @@ class AccountsController < ApplicationController
   protected
   
   def init_account
-    @account = session_user.accounts.find(params[:id] || params[:account_id])
+    @account = Account.find(params[:id] || params[:account_id])
   end
 
 
