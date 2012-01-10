@@ -37,7 +37,7 @@ else
       actual.where_values.include? expected
     end
   end
-  Rspec::Matchers.define :contain_string_in_sql do |expected|
+  RSpec::Matchers.define :contain_string_in_sql do |expected|
     match do |actual|
       actual.to_sql.include? expected
     end
