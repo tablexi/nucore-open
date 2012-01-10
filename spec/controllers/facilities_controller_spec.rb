@@ -200,7 +200,7 @@ describe FacilitiesController do
     it "should query against the facility" do
       sign_in @admin
       do_request
-      assigns[:order_details].to_sql.should be_include("`orders`.`facility_id` = #{@authable.id}")
+      assigns[:order_details].should contain_string_in_sql("`orders`.`facility_id` = #{@authable.id}")
     end
   end
 
