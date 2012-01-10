@@ -5,7 +5,7 @@
         = chosen_field(:accounts, Account.model_name.human, "id", "account_list_item")
       - unless @facility
         = chosen_field(:facilities, Facility.model_name.human)
-      = chosen_field(:products, Product.model_name.human, nil, nil, product_options(@products, @search_fields[:products]))
+      = chosen_field(:products, Product.model_name.human, "id", nil, :product_options)
       - unless @account
         = chosen_field(:account_owners, Account.human_attribute_name('owner'), "id", "full_name")
   %fieldset#calendar_filter
