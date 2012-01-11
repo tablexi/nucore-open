@@ -527,8 +527,8 @@ en:
   facilities:
     index:
       welcome: |
-        Welcome to NU Core, the centralized ordering system for all Shared Facilities at Northwestern University.
-        Please select the Shared Facility below to view and purchase services and products offered by the facility.
+        Welcome to NU Core, the centralized ordering system for all shared facilities at Northwestern University.
+        Please select the shared facility below to view and purchase services and products offered by the facility.
     facility_fields:
       name: "Name of the facility as displayed to the end user"
       abbreviation: "Abbreviated name or acronym for the facility"
@@ -641,7 +641,7 @@ en:
         email: "Email"
     new:
       head: "Add External User"
-      main: "You may use this grant NU Core access to external users.  The email address and username must match."
+      main: "You may use this to grant NU Core access to external users. The email address and username must match."
     new_search:
       js:
         id: "NetID"
@@ -677,7 +677,7 @@ en:
       invalid: "Invalid username or password."
     mailer:
       reset_password_instructions:
-        subject: 'NUCore Password Reset Instructions'
+        subject: "NU Core Password Reset Instructions"
 
   controllers:
     facility_accounts:
