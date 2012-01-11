@@ -1,4 +1,6 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require 'spec_helper'
+require 'controller_spec_helper'
+require 'transaction_search_spec_helper'
 
 describe FacilitiesController do
   render_views
@@ -170,6 +172,36 @@ describe FacilitiesController do
       end
     end
 
+  end
+  
+  context "transactions" do
+    before(:each) do
+      @action = :transactions
+      @method = :get
+      @params = {:facility_id => @authable.url_name}
+      @user = @admin
+    end
+    
+    it_should_support_searching
+    
+    it "should set the facility" do
+      sign_in @admin
+      do_request
+      assigns[:facility].should == @authable
+      assigns[:current_facility].should == @authable
+    end
+    
+    it "should use two column head" do
+      sign_in @admin
+      do_request
+      assigns[:layout].should == 'two_column_head'
+    end
+    
+    it "should query against the facility" do
+      sign_in @admin
+      do_request
+      assigns[:order_details].should contain_string_in_sql("`orders`.`facility_id` = #{@authable.id}")
+    end
   end
 
 end

@@ -1,4 +1,6 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require 'spec_helper'
+require 'controller_spec_helper'
+require 'transaction_search_spec_helper'
 
 describe FacilityStatementsController do
   render_views
@@ -63,6 +65,8 @@ describe FacilityStatementsController do
       assigns(:order_detail_action).should == :send_statements
       (assigns(:order_details) - [@order_detail1, @order_detail3]).should be_empty
     end
+    
+    it_should_support_searching
   end
   
   context "send_statements" do

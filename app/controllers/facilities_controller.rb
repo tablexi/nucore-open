@@ -1,14 +1,16 @@
 class FacilitiesController < ApplicationController
   customer_tab  :index, :list, :show
-  admin_tab     :edit, :manage, :schedule, :update, :agenda
+  admin_tab     :edit, :manage, :schedule, :update, :agenda, :transactions
   before_filter :authenticate_user!, :except => [:index, :show]  # public pages do not require authentication
   before_filter :check_acting_as, :except => [:index, :show]
-  before_filter :init_current_facility, :only => [:edit, :manage, :schedule, :show, :update, :agenda]
+  before_filter :init_current_facility, :only => [:edit, :manage, :schedule, :show, :update, :agenda, :transactions]
 
   load_resource :find_by => :url_name
   authorize_resource
   skip_load_and_authorize_resource :only => [:index, :show]
 
+  include TransactionSearch
+  
   layout 'two_column'
 
   # GET /facilities
@@ -94,5 +96,11 @@ class FacilitiesController < ApplicationController
   def agenda
     @active_tab = 'admin_products'
     render :layout => 'product'
+  end
+  
+  def transactions_with_search
+    @active_tab = 'admin_billing'
+    @layout = "two_column_head"
+    paginate_order_details
   end
 end

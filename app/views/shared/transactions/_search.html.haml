@@ -1,22 +1,13 @@
 = form_tag url_for(params), :method => :get, :class => "search_form" do
   %fieldset#search
     %ul
-      - if (@accounts.size > 1)
-        %li
-          = label_tag :accounts, Account.model_name.human.pluralize
-          = select_tag :accounts, options_from_collection_for_select(@accounts, "id", "account_list_item", @search_fields[:accounts]), :multiple => true, :"data-placeholder" => "Select #{Account.model_name.human.pluralize.downcase}"
-      - unless single_facility?
-        %li
-          = label_tag :facilities, Facility.model_name.human.pluralize
-          = select_tag :facilities, options_from_collection_for_select(@facilities, "id", "name", @search_fields[:facilities]), :multiple => true, :"data-placeholder" => "Select #{Facility.model_name.human.pluralize.downcase}"
-      - if @products
-        %li
-          = label_tag :products, Product.model_name.human.pluralize
-          = select_tag :products, product_options(@products, @search_fields[:products]), :multiple => true, :"data-placeholder" => "Select #{Product.model_name.human.pluralize.downcase}"
-      - if @account_owners
-        %li
-          = label_tag :owners, Account.human_attribute_name('owner').pluralize
-          = select_tag :owners, options_from_collection_for_select(@account_owners, "id", "full_name", @search_fields[:owners]), :multiple => true, :"data-placeholder" => "Select #{Account.human_attribute_name('owner').pluralize.downcase}"
+      - unless @account
+        = chosen_field(:accounts, Account.model_name.human, "id", "account_list_item")
+      - unless @facility
+        = chosen_field(:facilities, Facility.model_name.human)
+      = chosen_field(:products, Product.model_name.human, "id", nil, :product_options)
+      - unless @account
+        = chosen_field(:account_owners, Account.human_attribute_name('owner'), "id", "full_name")
   %fieldset#calendar_filter
     %ul
       %li
@@ -26,5 +17,6 @@
         = label_tag :end_date, "End Date"
         = text_field_tag :end_date, (@search_fields[:end_date] || "").gsub("-","/"), :class => 'datepicker'
 
-  = submit_tag "Search"
+  .submit_button
+    = submit_tag "Search"
 %div{:style=>"clear:both"}

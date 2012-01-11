@@ -468,7 +468,37 @@ describe OrderDetail do
     end
 
   end
+  
+  context "can_dispute?" do
+    before :each do
+      @order_detail.to_complete
+      @order_detail.reviewed_at = 1.day.from_now
+      @order_detail.save
+      
+      @order_detail2 = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
+      @order_detail2.to_complete
+      @order_detail2.reviewed_at = 1.day.ago
+      @order_detail2.save!
+    end
+    
+    it 'should not be disputable if its not complete' do
+      @order_detail3 = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
+      @order_detail3.should_not be_can_dispute
+    end
+    it 'should not be in dispute if the review date has passed' do
+      @order_detail.should be_can_dispute
+      @order_detail2.should_not be_can_dispute
+    end
+    
+    it "should not be in dispute if it's already been disputed" do
+      @order_detail.dispute_at = 1.hour.ago
+      @order_detail.dispute_reason = "because"
+      @order_detail.save!
+      @order_detail.should_not be_can_dispute
+    end
+  end
 
+  
 
   context 'named scopes' do
 

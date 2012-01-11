@@ -24,7 +24,7 @@
         %td= account.facility || '<i>All</i>'.html_safe
         - if au.can_administer? || session_user.administrator?
           - show_th=true
-          %td= link_to "Transactions", account_transaction_history_path(account)
+          %td= link_to "Transactions", transactions_account_path(account)
           %td= link_to "Members", account_account_users_path(account)
 
     - if show_th

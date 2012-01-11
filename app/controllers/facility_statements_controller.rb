@@ -7,7 +7,6 @@ class FacilityStatementsController < ApplicationController
   load_and_authorize_resource :class => Statement
   
   include TransactionSearch
-  transaction_search :new
 
   layout 'two_column'
 
@@ -22,11 +21,10 @@ class FacilityStatementsController < ApplicationController
   end
   
   # GET /facilities/:facility_id/statements/new
-  def new
-    @accounts = @accounts.where("type in (?)", ['CreditCardAccount', 'PurchaseOrderAccount'])
+  def new_with_search
     @order_details = @order_details.need_statement(@facility)
     @order_detail_action = :send_statements
-    render :layout => "two_column_head"
+    @layout = 'two_column_head'
   end
 
   # POST /facilities/:facility_id/statements/send_statements

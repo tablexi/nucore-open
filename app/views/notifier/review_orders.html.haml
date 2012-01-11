@@ -1,1 +1,1 @@
-%p= t('.body_html', :facility => @facility.to_s, :account => @account.to_s, :login_link => link_to('log in to ' + t('app_name'), account_statements_url(@account)))
+%p= t('.body_html', :facility => @facility.to_s, :account => @account.to_s, :login_link => link_to('log in to ' + t('app_name'), transactions_in_review_account_url(@account, :facilities => [@facility.id])))

@@ -21,7 +21,8 @@ Nucore::Application.routes.draw do |map|
   map.user_accounts  '/facilities/:facility_id/accounts/user/:user_id', :controller => 'facility_accounts', :action => 'user_accounts'
 
   # front-end accounts
-  map.resources :accounts, :only => [:index, :show], :member => {:user_search => :get} do |account|
+  map.resources :accounts, :only => [:index, :show], :member => {:user_search => :get, :transactions => :get, :transactions_in_review => :get} do |account|
+    
     account.resources :account_users, :only => [:new, :destroy, :create, :index], :collection => {:user_search => :get}
     account.resources :statements, :only => [:index]
     account.resources :facilities, :only => [] do |facility|
@@ -30,7 +31,7 @@ Nucore::Application.routes.draw do |map|
   end
   
   # transaction searches
-  match "/accounts/:account_id/transactions" => 'transaction_history#account_history', :as => "account_transaction_history"
+  #match "/accounts/:account_id/transactions" => 'transaction_history#account_history', :as => "account_transaction_history"
   match "/transactions" => 'transaction_history#my_history', :as => "transaction_history"
   
   # global settings
@@ -39,7 +40,7 @@ Nucore::Application.routes.draw do |map|
   map.resources :facilities, :collection => {:list => :get}, :member => {:manage => :get}, :except => [:delete] do |facility|
     facility.resources :products, :only => [:index]
     
-    facility.transactions '/transactions', :controller => 'transaction_history', :action => 'facility_history'
+    #facility.transactions '/transactions', :controller => 'transaction_history', :action => 'facility_history'
     
     facility.resources :instruments, :member => {:manage => :get} do |instrument|
       instrument.schedule 'schedule', :controller => 'instruments', :action => 'schedule'
@@ -149,7 +150,7 @@ Nucore::Application.routes.draw do |map|
 
     facility.notifications '/notifications', :controller => 'facility_notifications', :action => 'index', :conditions => {:method => :get}
     facility.send_notifications 'notifications/send', :controller => 'facility_notifications', :action => 'send_notifications', :conditions => {:method => :post }
-    
+    facility.transactions '/transactions', :controller => 'facilities', :action => 'transactions', :conditions => {:method => :get}
     facility.notifications_in_review '/in_review', :controller => 'facility_notifications', :action => 'in_review', :conditions => {:method => [:get]}
     facility.notifications_mark_as_reviewed '/in_review/mark', :controller => 'facility_notifications', :action => 'mark_as_reviewed', :conditions => {:method => [:post]}
     

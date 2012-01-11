@@ -5,10 +5,9 @@ class FacilityNotificationsController < ApplicationController
   before_filter :init_current_facility
   
   include TransactionSearch
-  transaction_search :index, :in_review
   
   authorize_resource :manage, :class => Facility
-
+  
   layout 'two_column_head'
   
   def initialize
@@ -17,8 +16,8 @@ class FacilityNotificationsController < ApplicationController
   end
 
   # GET /facilities/:facility_id/notifications
-  def index
-    @order_details = @order_details.need_notification(@facility)
+  def index_with_search
+    @order_details = @order_details.all_need_notification
     @order_detail_action = :send_notifications
   end
   
@@ -61,12 +60,14 @@ class FacilityNotificationsController < ApplicationController
     redirect_to :action => :index
   end
   
-  def in_review
-    @order_details = @order_details.in_review(@facility)
+  def in_review_with_search
+    @order_details = @order_details.all_in_review
     @order_details = @order_details.reorder(:reviewed_at)
     @order_detail_action = :mark_as_reviewed
+    order_details_sort(:reviewed_at)
     @extra_date_column = :reviewed_at
   end
+  
   
   def mark_as_reviewed
     if params[:order_detail_ids].nil? or params[:order_detail_ids].empty?

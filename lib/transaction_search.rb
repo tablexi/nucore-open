@@ -4,71 +4,84 @@ module TransactionSearch
   end
   
   module ClassMethods
-    def transaction_search(*actions)      
+    def transaction_search(*actions)    
       self.before_filter :remove_ugly_params_and_redirect, :only => actions
       self.before_filter :populate_search_fields, :only => actions
     end
-    def use_date_field_for_search(field, *actions)
-      self.prepend_before_filter(:only => actions) {|c| c.use_date_field field } 
+    
+    # If a method is tagged with _with_search at the end, then define the normal controller
+    # action to be wrapped in the search.
+    # e.g. index_with_search will define #index, which will init_order_details before passing
+    # control to the controller method. Then it will further filter @order_details after the controller
+    # method has run 
+    def method_added(name)
+      @@methods_with_remove_ugly_filter ||= []
+      if (name.to_s =~ /(.*)_with_search$/)
+        @@methods_with_remove_ugly_filter << $1
+        self.before_filter :remove_ugly_params_and_redirect, :only => @@methods_with_remove_ugly_filter
+        define_method($1) do 
+          init_order_details
+          send(:"#{$&}")    
+          load_search_options
+          @empty_orders = @order_details.empty?
+          @search_fields = params.merge({})
+          do_search(@search_fields)
+          add_optimizations
+          @order_details = @order_details_sort ? @order_details.reorder(@order_details_sort) : @order_details.order_by_desc_nulls_first(@date_field_to_use)
+          @order_details = @order_details.paginate(:page => params[:page]) if @paginate_order_details
+          render :layout => @layout if @layout
+        end
+      end
     end
   end
-  def populate_search_fields
-    if params[:facility_id]
-      @current_facility = @facility = Facility.find_by_url_name(params[:facility_id])
-      raise ActiveRecord::RecordNotFound unless @facility
-      @facilities = [@facility]
-    else
-      @facilities = Facility.active.order(:name)
-    end
+  
+  def init_order_details
+    @order_details = OrderDetail.joins(:order).joins(:product).ordered
+    @order_details = @order_details.for_facility_id(@current_facility.id) if @current_facility
+    @order_details = @order_details.where(:account_id => @account.id) if @account
+  end
     
-    if params[:account_id]
-      @account = Account.find(params[:account_id])
-      @accounts = [@account]
-      @facilities = @account.facilities.order(:name)
-      @facility = @facilities[0] if @facilities.size == 1
-    else
-      # only select a few fields. This speeds up the load when there get to be a lot of accounts
-      @accounts = Account.for_facility(@facility).active.select("accounts.id, description, account_number, type")
+  # Find all the unique search options based on @order_details. This needs to happen before do_search so these
+  # variables have the full non-searched section of values
+  def load_search_options
+    @facilities = Facility.find_by_sql(@order_details.joins(:order => :facility).
+                                                      select("distinct(facilities.id), facilities.name, facilities.abbreviation").
+                                                      reorder("facilities.name").to_sql)                                                 
+    @accounts = Account.find_by_sql(@order_details.joins(:order => :account).
+                                                   select("distinct(accounts.id), accounts.description, accounts.account_number, accounts.type").
+                                                   reorder("accounts.account_number, accounts.description").to_sql)
+    @products = Product.find_by_sql(@order_details.joins(:product).
+                                                   select("distinct(products.id), products.name, products.facility_id, products.type").
+                                                   reorder("products.name").to_sql)
+    @account_owners = User.find_by_sql(@order_details.joins(:order => {:account => {:owner => :user} }).
+                                                      select("distinct(users.id), users.first_name, users.last_name").
+                                                      reorder("users.last_name, users.first_name").to_sql)
+  end
       
-      # sort accounts by description. may change to account number later
-      @accounts = @accounts.order(:account_number, :description)
-      
-      # sort account owners by last name, first name
-      @account_owners = @accounts.includes(:owner => :user).
-                                map(&:owner_user).
-                                uniq.
-                                sort_by{|x| [x.last_name, x.first_name]}  
-    end
-    
-    
-    @products = Product.where("facility_id in (?)", @facilities.map(&:id)).order(:name) #:facility_id => @facility.id)
-    
-       
-    @search_fields = params.merge({
-      :accounts => get_allowed_accounts(@accounts, params[:accounts]),
-      :facilities => @facilities
-    })
-    
-    do_search(@search_fields)
-    add_optimizations
+  def paginate_order_details
+    @paginate_order_details = true
   end
-  def use_date_field(field)
-    @date_field_to_use = field
+  
+  def order_details_sort(field)
+    @order_details_sort = field
   end
+  
+  private
+  
   def do_search(search_params)
     #Rails.logger.debug "search: #{search_params}"
-    @order_details = OrderDetail.joins(:order).ordered
+    @order_details = @order_details || OrderDetail.joins(:order).ordered
     @order_details = @order_details.for_accounts(search_params[:accounts])
     @order_details = @order_details.for_products(search_params[:products])
-    @order_details = @order_details.for_owners(search_params[:owners])
+    @order_details = @order_details.for_owners(search_params[:account_owners])
     start_date = parse_usa_date(search_params[:start_date].to_s.gsub("-", "/"))
     end_date = parse_usa_date(search_params[:end_date].to_s.gsub("-", "/"))  
     
     @order_details = @order_details.for_facilities(search_params[:facilities])
     @date_field_to_use ||= :fulfilled_at
-    @order_details = @order_details.action_in_date_range(@date_field_to_use, start_date, end_date).
-          order_by_desc_nulls_first(@date_field_to_use)    
-  end
+    @order_details = @order_details.action_in_date_range(@date_field_to_use, start_date, end_date)
+  end  
+
   
   def remove_ugly_params_and_redirect
     if (params[:commit] && request.get?)
@@ -83,13 +96,6 @@ module TransactionSearch
     params.delete(:authenticity_token)
   end
     
-  def get_allowed_accounts(allowed_accounts, search_accounts)
-    search_accounts ||= []
-    allowed_accounts = allowed_accounts.map{|a| a.id.to_s}
-    denyed_accounts = search_accounts - allowed_accounts
-    search_accounts - denyed_accounts
-  end
-  
   def add_optimizations
     # cut down on some n+1s
     @order_details = @order_details.

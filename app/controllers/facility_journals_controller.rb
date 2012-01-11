@@ -7,7 +7,6 @@ class FacilityJournalsController < ApplicationController
   before_filter :init_current_facility
 
   include TransactionSearch
-  transaction_search :new, :create
   
   load_and_authorize_resource :class => Journal
 
@@ -21,14 +20,14 @@ class FacilityJournalsController < ApplicationController
   
   # GET /facilities/:facility_id/journals
   def index
-    @pending_journal = Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
+    @pending_journal = get_pending_journal
     @journals = current_facility.journals.find(:all, :order => 'journals.created_at DESC').paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/journals/new
-  def new
+  def new_with_search
     set_default_variables
-    render :layout => 'two_column_head'
+    @layout = "two_column_head"
   end
    
   #PUT /facilities/:facility_id/journals/:id
@@ -78,7 +77,7 @@ class FacilityJournalsController < ApplicationController
   end
 
   # POST /facilities/:facility_id/journals
-  def create
+  def create_with_search
     @journal = current_facility.journals.new()
     @journal.created_by = session_user.id
     @journal.journal_date = parse_usa_date(params[:journal_date])
@@ -110,8 +109,9 @@ class FacilityJournalsController < ApplicationController
     if @journal.errors.any?
       flash[:error] = @journal.errors.values.join("<br/>").html_safe
       remove_ugly_params
-      redirect_to params.merge({:action => :new})   
+      redirect_to params.merge({:action => :new}) and return
     end
+    @layout = "two_column_head"
   end
 
   # GET /facilities/:facility_id/journals/:id
@@ -164,7 +164,7 @@ class FacilityJournalsController < ApplicationController
   def set_default_variables
     @pending_journal = get_pending_journal
     @order_details   = @order_details.need_journal(current_facility)
-    @accounts = @accounts.where("type in (?)", ['NufsAccount'])
+    #@accounts = @accounts.where("type in (?)", ['NufsAccount'])
     #@journal         = current_facility.journals.new()
     set_soonest_journal_date
     if @pending_journal.nil?

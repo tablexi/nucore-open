@@ -1,0 +1,10 @@
+= render :partial => "shared/transactions/headers"
+- content_for :h1 do
+  Transactions in Review
+= content_for :tabnav do
+  %h2= @account.account_number
+  %p= @account.description
+  %h3= @facility.name if @facility
+#header_billing.grid_9
+  = render :partial => 'shared/transactions/search'
+= render :partial => 'shared/transactions/table'  

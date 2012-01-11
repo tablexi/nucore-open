@@ -30,7 +30,11 @@ class ApplicationController < ActionController::Base
 
   # initialize the current facility from the params hash
   def init_current_facility
-    @current_facility = Facility.find_by_url_name!(params[:facility_id] || params[:id])
+    @facility = @current_facility = Facility.find_by_url_name!(params[:facility_id] || params[:id])
+  end
+  
+  def init_current_account
+    @account = Account.find(params[:account_id] || params[:id])
   end
 
   def check_acting_as
