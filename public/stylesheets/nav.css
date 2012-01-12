@@ -1,13 +1,8 @@
 #header {
-
-	background-color: #d5d5d5;
-	background-image: -moz-linear-gradient(center top , #d5d5d5, #c1c1c1);
-	border-bottom:1px solid #aaa;
+  background-color: #D5D5D5;
+  background-image: -moz-linear-gradient(center top , #FFFFFF, #EEEEEE);
+  border-bottom: 1px solid #CCCCCC;
 	color:#000;
-	
-	/* Nucore Color  background:#571963; */
-	/* Nucore Color color:#94679B; */
-
 	/* UIC Color  background:#25557F;*/
 	/* UIC Color  color:#fff;*/
 	height:50px;
@@ -26,7 +21,7 @@
 
 #header ul li {
 	border-right:1px solid #000;
-	
+
 	/* Nucore Colors border-right:1px solid #6F297E; */
 	
 	/* UIC Colors border-right:1px solid #ffffff; */
@@ -90,7 +85,7 @@
 }
 
 #nav li:hover,#nav li.active {
-	/* UIC Colors */ border-top:5px solid #666;
+	border-top:5px solid #666;
 }
 
 #nav li.right li a {
