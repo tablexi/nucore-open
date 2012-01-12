@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120203185844) do
+ActiveRecord::Schema.define(:version => 20120112161624) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -145,6 +145,18 @@ ActiveRecord::Schema.define(:version => 20120203185844) do
 
   add_index "file_uploads", ["order_detail_id"], :name => "fk_files_od"
   add_index "file_uploads", ["product_id"], :name => "fk_files_product"
+
+  create_table "instrument_restriction_levels", :force => true do |t|
+    t.integer  "instrument_id", :null => false
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "instrument_restriction_levels_schedule_rules", :id => false, :force => true do |t|
+    t.integer "instrument_restriction_level_id", :null => false
+    t.integer "schedule_rule_id",                :null => false
+  end
 
   create_table "instrument_statuses", :force => true do |t|
     t.integer  "instrument_id", :null => false
@@ -374,10 +386,11 @@ ActiveRecord::Schema.define(:version => 20120203185844) do
   add_index "price_policies", ["price_group_id"], :name => "sys_c008589"
 
   create_table "product_users", :force => true do |t|
-    t.integer  "product_id",  :null => false
-    t.integer  "user_id",     :null => false
-    t.integer  "approved_by", :null => false
-    t.datetime "approved_at", :null => false
+    t.integer  "product_id",                      :null => false
+    t.integer  "user_id",                         :null => false
+    t.integer  "approved_by",                     :null => false
+    t.datetime "approved_at",                     :null => false
+    t.integer  "instrument_restriction_level_id"
   end
 
   add_index "product_users", ["product_id"], :name => "fk_products"

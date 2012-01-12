@@ -63,6 +63,29 @@ describe ScheduleRulesController do
       should set_the_flash
       assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
     end
+    
+    context 'with restriction levels' do
+      before :each do
+        @restriction_levels = []
+        3.times do
+          @restriction_levels << Factory.create(:instrument_restriction_level, :instrument_id => @instrument.id)
+        end
+        sign_in(@admin)
+      end
+      
+      it "should come out with no restriction levels" do
+        do_request
+        assigns[:schedule_rule].instrument_restriction_levels.should be_empty          
+      end
+              
+      it "should store restriction_rules" do
+        @params.deep_merge!(:schedule_rule => {:instrument_restriction_level_ids => [@restriction_levels[0].id, @restriction_levels[2].id]})
+        do_request
+        assigns[:schedule_rule].instrument_restriction_levels.should contain_all [@restriction_levels[0], @restriction_levels[2]]
+        assigns[:schedule_rule].instrument_restriction_levels.size.should == 2
+      end
+      
+    end
 
   end
 
@@ -104,6 +127,36 @@ describe ScheduleRulesController do
         assigns(:schedule_rule).should == @rule
         should set_the_flash
         assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
+      end
+      
+      context 'restriction levels' do
+        before :each do
+          @restriction_levels = []
+          3.times do
+            @restriction_levels << Factory.create(:instrument_restriction_level, :instrument_id => @instrument.id)
+          end
+          sign_in(@admin)
+        end
+        
+        it "should come out with no restriction levels" do
+          do_request
+          assigns[:schedule_rule].instrument_restriction_levels.should be_empty          
+        end
+        
+        it "should come out with no restriction levels if it had them before" do
+          @rule.instrument_restriction_levels = @restriction_levels
+          @rule.save!
+          do_request
+          assigns[:schedule_rule].instrument_restriction_levels.should be_empty
+        end
+        
+        it "should store restriction_rules" do
+          @params.deep_merge!(:schedule_rule => {:instrument_restriction_level_ids => [@restriction_levels[0].id, @restriction_levels[2].id]})
+          do_request
+          assigns[:schedule_rule].instrument_restriction_levels.should contain_all [@restriction_levels[0], @restriction_levels[2]]
+          assigns[:schedule_rule].instrument_restriction_levels.size.should == 2
+        end
+        
       end
 
     end

@@ -30,3 +30,9 @@
   %p.instruction During the period covered by this schedule rule, overall cost will be discounted by
   = f.text_field :discount_percent, :size => 4
   ='%'
+- if @instrument.instrument_restriction_levels.any?
+  %li
+    = label_tag "Restricted to only these groups:"
+    - @instrument.instrument_restriction_levels.each do |level|
+      = check_box_tag "schedule_rule[instrument_restriction_level_ids][]", level.id, @schedule_rule.instrument_restriction_levels.include?(level)
+      = level.name
