@@ -1,0 +1,42 @@
+/* Nucore Styling 
+body #header {
+	background:#571963;
+	border-bottom:1px solid #4a0957;
+}
+
+body #header a { 
+	color:#fff;
+}
+
+body #header ul li {
+	border-right:1px solid #692d75;
+	color:#fff;
+}
+
+
+body #nav li:hover, body #nav li.active {
+	border-top:5px solid #aca66c;
+}
+*/
+
+
+/* UIC Styling */
+body #header {
+	background:#225480;
+	border-bottom:1px solid #0e3d66;
+}
+
+body #header a { 
+	color:#fff;
+}
+
+body #header ul li {
+	border-right:1px solid #4f82af;
+	color:#fff;
+}
+
+
+body #nav li:hover, body #nav li.active {
+	border-top:5px solid #bc0000;
+}
+
