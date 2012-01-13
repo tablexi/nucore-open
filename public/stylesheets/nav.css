@@ -1,113 +1,173 @@
+#header {
+  background-color: #D5D5D5;
+  background-image: -moz-linear-gradient(center top , #FFFFFF, #EEEEEE);
+  border-bottom: 1px solid #CCCCCC;
+	color:#000;
+	/* UIC Color  background:#25557F;*/
+	/* UIC Color  color:#fff;*/
+	height:50px;
+	line-height:50px;
+}
+
+#header a {
+	/* Base Color */ color:#000;
+}
+
+#header ul {
+	line-height:50px;
+	margin:0;
+	text-align:right;
+}
+
+#header ul li {
+	border-right:1px solid #000;
+
+	/* Nucore Colors border-right:1px solid #6F297E; */
+	
+	/* UIC Colors border-right:1px solid #ffffff; */
+	display:inline;
+	padding:0 10px;
+}
+
+#header ul li.last {
+	border-right:none;
+	padding-right:0;
+}
+
+#nav {
+	background-color: #f5f5f5;
+	background-image: -moz-linear-gradient(center top , #FFFFFF, #f5f5f5);
+	background-repeat: no-repeat;
+	border-bottom:1px solid #ddd;
+	color:#333;
+	font-size:13px;
+	height:51px;
+	line-height:normal;
+	padding:0 10px;
+	text-shadow:0 1px 1px rgba(255, 255, 255, 0.75);
+}
+
 #nav ul {
-  line-height: 1;
-  margin: -5px 0 0 0;
-  *margin: 0 0 0 0;
+	line-height:1;
+	margin:0;
 }
 
 #nav a {
-  color:#000000;
-  display:block;
-  text-decoration:none;
+	color:#000;
+	display:block;
+	text-decoration:none;
 }
 
 #nav a:hover {
-  text-decoration:underline;
+	text-decoration:underline;
 }
 
 #nav li.active {
-  font-weight:700;
-}
-
-#nav li.first {
-  padding:20px 0 0;
-  width:2px !important;
-}
-
-#nav li.active, #nav li:hover {
-  background:url("../images/bg-li-mixed.jpg") repeat-x scroll right top transparent;
+	font-weight:700;
 }
 
 #nav li {
-  background:url("../images/bg-li-mixed.jpg") repeat-x scroll right -51px transparent;
-  float:left;
-  height:27px;
-  list-style-type:none;
-  padding:23px 15px 0;
+	border-top:5px solid transparent;
+	cursor:pointer;
+	float:left;
+	list-style-type:none;
+	padding:15px 0;
 }
 
-#nav li li {
-  background:none repeat scroll 0 0 #F5F3F4;
-  border-left:1px solid #C1C1C1;
-  border-right:1px solid #C1C1C1;
-  border-bottom:1px solid #C1C1C1;	
-  left:-15px;
-  position:relative;
-	margin:0;
+#nav li .divider {
+	border-right:1px solid #ddd;
+	padding:0 10px;
+	height:20px;
+	line-height:18px;
+}
+
+#nav li a {
+}
+
+#nav li:hover,#nav li.active {
+	border-top:5px solid #666;
 }
 
 #nav li.right li a {
 	margin-top:6px;
 }
 
-#nav .subnav li {
-    padding-top: 16px;
-}
-
-#nav li li:hover {
-  background:none repeat scroll 0 0 #c1c1c1;
-}
-
 #nav li ul {
-  left:-999em;
-  padding-top:16px;
-  position:absolute;
-	margin:1px 0 0 0;
+	border-left:1px solid #ddd;
+	border-right:1px solid #ddd;
+	left:-999em;
+	margin:13px 0 0 -10px;
+	position:absolute;
 	z-index:999999;
 }
 
 #nav li.active li {
-  font-weight:normal;
+	font-weight:400;
 }
 
 #nav li.nav_header {
-  border-bottom:1px solid #333333;
-  font-weight:700;
+	border-bottom:1px solid #333;
+	font-weight:700;
 }
 
 #nav li.nav_header:hover {
-  background:none repeat scroll 0 0 transparent;
+	background:none repeat scroll 0 0 transparent;
 }
 
 #nav li li {
-  float:none;
+	background:none repeat scroll 0 0 #F5F3F4;
+	border-bottom:1px solid #ddd;
+	border-top:none;
+	float:none;
+	position:relative;
+	padding:3px;
+}
+
+#nav li li:hover {
+	border-top:none;
+}
+
+#nav li li a {
+	padding:10px;
 }
 
 #nav li ul ul {
-  margin:-22px 0 0 175px;
+	margin:-22px 0 0 175px;
 }
 
-#nav li:hover ul ul, #nav li:hover ul ul ul, #nav li.sfhover ul ul, #nav li.sfhover ul ul ul {
-  left:-999em;
+#nav li li a:hover {
+	background:#ddd;
 }
 
-#nav li:hover ul, #nav li li:hover ul, #nav li li li:hover ul, #nav li.sfhover ul, #nav li li.sfhover ul, #nav li li li.sfhover ul {
-  left:auto;
+#nav li:hover ul ul,#nav li:hover ul ul ul,#nav li.sfhover ul ul,#nav li.sfhover ul ul ul {
+	left:-999em;
+}
+
+#nav li:hover ul,#nav li li:hover ul,#nav li li li:hover ul,#nav li.sfhover ul,#nav li li.sfhover ul,#nav li li li.sfhover ul {
+	left:auto;
 }
 
 #nav li.right {
-  float:right;
-  font-weight:700;
-  text-align:right;
+	float:right;
+	font-weight:700;
+	text-align:right;
 }
 
 #nav li.right:hover ul {
-  margin-left:-151px;
-  padding-top:16px;
-  right:auto !important;
-  width:300px;
+	margin-left:-151px;
+	padding-top:16px;
+	right:auto !important;
+	width:300px;
 }
 
 #nav li.right li {
-  padding:5px 20px;
-  width:auto;
+	padding:5px 20px;
+	width:auto;
+}
+
+#nav li .dropdown {
+	background:url(../images/bg-dropdown.png) top right no-repeat;
+	float:right;
+	height:20px;
+	width:15px;
 }

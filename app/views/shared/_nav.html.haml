@@ -19,28 +19,30 @@
 .container_12
   .grid_12
     %ul
-      %li.first
       - links.each do |link|
         %li{:class => !controller.active_tab.nil? && controller.active_tab == link[:tab_name] ? 'active' : ''}
-          = link.has_key?(:url) ? link_to(link[:text], link[:url]) : link[:text]
-          - if link[:subnav]
-            %ul.subnav
-              - link[:subnav].each do |sub_links|
-                %li= link_to sub_links[:text], sub_links[:url]
+          .divider
+            = link.has_key?(:url) ? link_to(link[:text], link[:url]) : link[:text]
+            - if link[:subnav]
+              .dropdown
+              %ul.subnav
+                - link[:subnav].each do |sub_links|
+                  %li= link_to sub_links[:text], sub_links[:url]
 
       - facilities = manageable_facilities
 
       - if !acting_as? && current_user && current_user.administrator?
         %li.right{:class => controller.active_tab == 'global_settings' ? 'active' : ''}
-          = link_to t('pages.global_settings'), affiliates_path
+          .divider
+            = link_to t('pages.global_settings'), affiliates_path
 
       - if !acting_as? && (!facilities.empty? || (current_user && current_user.administrator?))
         %li.right{:class => controller.active_tab == 'manage_facilites' ? 'active' : ''}
-          = link_to t("pages.manage", :model => t('activerecord.models.facility', :count => 2)), :list_facilities
-          - unless facilities.empty?
-            %ul.subnav
-              - facilities.each do |facility|
-                %li= link_to facility.name, facility_orders_path(facility)
+          .divider
+            = link_to t("pages.manage", :model => t('activerecord.models.facility', :count => 2)), :list_facilities
+            - unless facilities.empty?
+              %ul.subnav
+                - facilities.each do |facility|
+                  %li= link_to facility.name, facility_orders_path(facility)
 
-        %li.right.first
   .clear
