@@ -171,8 +171,8 @@ namespace :demo  do
     inpp = InstrumentPricePolicy.find_or_create_by_instrument_id_and_price_group_id({
       :instrument_id        => instrument.id,
       :price_group_id       => pgnu.id,
-      :start_date           => Date.new(2010,1,1),
-      :expire_date          => Date.new(2013,1,1),
+      :start_date           => Time.zone.now-1.year,
+      :expire_date          => Time.zone.now+1.year,
       :usage_rate           => 20,
       :usage_mins           => 15,
       :usage_subsidy        => 0,
@@ -189,8 +189,8 @@ namespace :demo  do
     itpp = ItemPricePolicy.find_or_create_by_item_id_and_price_group_id({
       :item_id           => item.id,
       :price_group_id    => pgnu.id,
-      :start_date        => Date.new(2010,1,1),
-      :expire_date       => Date.new(2013,1,1),
+      :start_date        => Time.zone.now-1.year,
+      :expire_date       => Time.zone.now+1.year,
       :unit_cost         => 30,
       :unit_subsidy      => 0,
     })
@@ -198,8 +198,8 @@ namespace :demo  do
     spp = ServicePricePolicy.find_or_create_by_service_id_and_price_group_id({
       :service_id        => service.id,
       :price_group_id    => pgnu.id,
-      :start_date        => Date.new(2010,1,1),
-      :expire_date       => Date.new(2013,1,1),
+      :start_date        => Time.zone.now-1.year,
+      :expire_date       => Time.zone.now+1.year,
       :unit_cost         => 75,
       :unit_subsidy      => 0,
     })
@@ -291,7 +291,7 @@ namespace :demo  do
       nufsaccount=NufsAccount.create({
         :account_number => '111-2222222-33333333-01',
         :description    => "Paul PI's Chart String",
-        :expires_at     => Date.new(2012,1,1),
+        :expires_at     => Time.zone.now+1.year,
         :created_by     => user_director.id,
       })
       nufsaccount.account_users_attributes = [{:user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id }]
@@ -306,7 +306,7 @@ namespace :demo  do
       ccaccount=CreditCardAccount.create({
         :account_number     => 'xxxx-xxxx-xxxx-xxxx',
         :description        => "Paul PI's Credit Card",
-        :expires_at         => Date.new(2012,1,1),
+        :expires_at         => Time.zone.now+1.year,
         :name_on_card       => 'Paul PI',
         :expiration_month   => '10',
         :expiration_year    => '2014',
@@ -325,7 +325,7 @@ namespace :demo  do
       poaccount=PurchaseOrderAccount.create({
         :account_number => '12345',
         :description    => "Paul PI's Purchase Order",
-        :expires_at     => Date.new(2012,1,1),
+        :expires_at     => Time.zone.now+1.year,
         :created_by     => user_director.id,
         :facility_id    => facility.id,
         :affiliate_id       => other_affiliate.id,
