@@ -45,7 +45,7 @@ class Instrument < Product
   end
 
   # find the next available reservation based on schedule rules and existing reservations
-  def next_available_reservation(after = Time.zone.now)
+  def next_available_reservation(after = Time.zone.now, not_a_conflict=nil)
     reservation = nil
     day_of_week = after.wday
     0.upto(6) do |i|
@@ -68,7 +68,8 @@ class Instrument < Product
           # build reservation
           reservation = self.reservations.new(:reserve_start_at => after, :reserve_end_at => after+duration)
           # check for conflicts with an existing reservation
-          return reservation if reservation.valid?
+          conflict=reservation.conflicting_reservation
+          return reservation if conflict.nil? || not_a_conflict == conflict
           # we have a conflict, reset reservation and increment after by the rule's interval/duration time
           reservation = nil
           # after += self.min_reserve_mins.to_i.minutes

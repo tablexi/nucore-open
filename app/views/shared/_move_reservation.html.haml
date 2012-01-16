@@ -9,6 +9,6 @@
 - msg="The earliest time you can move this reservation to begins on #{human_date(next_start)} at #{human_time(next_start)} and ends "
 - msg += human_date(next_start) == human_date(next_end) ? "at #{human_time(next_end)}." : "on #{human_date(next_end)} at #{human_time(next_end)}."
 
-%div#dialog.hidden
+%div.hidden{:id => "dialog#{reservation.id}"}
   %p= msg
   %p= 'Would you like to move your reservation?'

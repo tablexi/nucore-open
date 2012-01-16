@@ -487,10 +487,10 @@ class Reservation < ActiveRecord::Base
   # it. It's for read-only purposes.
   def earliest_possible
     clone=self.clone
-    after=Time.zone.now
+    after=Time.zone.now+1.minute
 
     while true
-      next_res=instrument.next_available_reservation(after)
+      next_res=instrument.next_available_reservation(after, self)
 
       return nil if next_res.reserve_start_at > reserve_start_at
 

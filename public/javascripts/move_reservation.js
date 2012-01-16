@@ -1,21 +1,17 @@
 $(function() {
-    $("#dialog").dialog({
-        autoOpen: false,
-        resizable: false
-    });
-
-    $('#move-res').click(function(e) {
+    $('.move-res').click(function(e) {
         e.preventDefault();
-        var targetUrl=$(this).attr("href");
 
-        $("#dialog").dialog({
-          buttons : {
+        var targetUrl=$(this).attr("href"),
+            dialogSelector="#dialog" + $(this).attr('id');
+
+        $(dialogSelector).dialog({
+            resizable: false,
+            buttons : {
             'Move' : function() {
-              window.location.href = targetUrl;
+                window.location.href = targetUrl;
             }
           }
         });
-
-        $("#dialog").dialog("open");
     });
 });
