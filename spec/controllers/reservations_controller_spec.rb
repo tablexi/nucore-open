@@ -116,8 +116,8 @@ describe ReservationsController do
       it_should_allow_all facility_managers, "to create a reservation beyond the default reservation window" do
         assert_redirected_to purchase_order_path(@order)
       end
-      it_should_allow_all [:staff], "to receive an error that they are trying to reserve outside of the window" do
-        assigns[:reservation].should_not be_valid
+      it_should_allow_all [:guest], "to receive an error that they are trying to reserve outside of the window" do
+        assigns[:reservation].errors.should_not be_empty
         response.should render_template(:new)
       end
     end
@@ -305,11 +305,11 @@ describe ReservationsController do
         @params.deep_merge!(:reservation => {:reserve_start_date => Time.zone.now.to_date + (PriceGroupProduct::DEFAULT_RESERVATION_WINDOW + 1).days })
       end
       it_should_allow_all facility_managers, "to create a reservation beyond the default reservation window" do
-        assigns[:reservation].should be_valid
+        assigns[:reservation].errors.should be_empty 
         assert_redirected_to cart_url
       end
-      it_should_allow_all [:staff], "to receive an error that they are trying to reserve outside of the window" do
-        assigns[:reservation].should_not be_valid
+      it_should_allow_all [:guest], "to receive an error that they are trying to reserve outside of the window" do
+        assigns[:reservation].errors.should_not be_empty
         response.should render_template(:edit)
       end
     end
