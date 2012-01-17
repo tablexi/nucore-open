@@ -41,7 +41,7 @@ class Order < ActiveRecord::Base
   end
 
   def cart_valid?
-    has_details? && has_valid_payment? && order_details.all? {|od| od.valid_for_purchase?}
+    has_details? && has_valid_payment? && order_details.all? {|od| od.context_user = self.context_user; od.valid_for_purchase?}
   end
 
   def has_valid_payment?

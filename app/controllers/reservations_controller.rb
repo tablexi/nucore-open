@@ -149,7 +149,7 @@ class ReservationsController < ApplicationController
   # GET /orders/1/order_details/1/reservations/1/edit
   def edit
     # TODO you shouldn't be able to edit reservations that have passed or are outside of the cancellation period (check to make sure order has been placed)
-    raise ActiveRecord::RecordNotFound if (params[:id] != @reservation.id || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
+    raise ActiveRecord::RecordNotFound if (params[:id].to_i != @reservation.id || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
 
     groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
     @max_window = @reservation.longest_reservation_window(groups)
@@ -162,7 +162,7 @@ class ReservationsController < ApplicationController
   # PUT  /orders/1/order_details/1/reservations/1
   def update
     # TODO you shouldn't be able to edit reservations that have passed or are outside of the cancellation period (check to make sure order has been placed)
-    raise ActiveRecord::RecordNotFound if (params[:id] != @reservation.id || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
+    raise ActiveRecord::RecordNotFound if (params[:id].to_i != @reservation.id || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
 
     # clear existing reservation attributes
     [:reserve_start_at, :reserve_end_at].each do |k|
