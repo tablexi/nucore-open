@@ -654,6 +654,48 @@ en:
       head: Statement History
       no_statements: No statements have been sent yet
 
+  instruments:
+    manage:
+      res_only: "Reservation only"
+      control_mech: "Timer without relay"
+      label:
+        control_mech: "Control mechanism"
+        min_res: "Minimum Reservation Minutes"
+        max_res: "Maximum Reservation Minutes"
+        cancel_hours: "Minimum Cancelation Hours"
+        cancel_mins: "Automatic Cancelation Minutes"
+        relay:
+          ip: "Relay IP Address"
+          port: "Relay Port"
+          user: "Relay Username"
+          pass: "Relay Password"
+          auto_logout: "Automatic Logout?"
+
+    instrument_fields:
+      show_details: "Check to show reservation details"
+      control_mechanism: "How the instrument and its time is managed"
+      relay:
+        intro: "(Optional) If the instrument is connected to an approved power relay, please enter the information below. Power relays must be purchased separately."
+        label:
+          relay: "Power Relay Information"
+          type: "Relay Type"
+          ip: "IP Address"
+          port: "Device Port"
+          user: "Username"
+          pass: "Password"
+          auto_logout: "Automatically power off the relay 60 minutes after the reservation is scheduled to end"
+      reservation:
+        intro: "(Optional)  Define minimum and maximum reservation limits below."
+        instruct:
+          cancel_hours: "Minimum length of time before a reservation begins that a user may cancel a reservation without penalty"
+          auto_cancel: "The duration a due but unactivated reservation can exist before the system cancels it"
+        label:
+          restrict: "Reservation Restrictions"
+          min_reserve: "Minimum (minutes)"
+          max_reserve: "Maximum (minutes)"
+          cancel_hours: "Cancelation Minimum (hours)"
+          auto_cancel: "Automatic Cancelation (minutes)"
+
   devise:
     failure:
       invalid: "Invalid username or password."
