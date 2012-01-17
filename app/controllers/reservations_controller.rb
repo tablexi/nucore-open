@@ -2,6 +2,7 @@ class ReservationsController < ApplicationController
   customer_tab  :all
   before_filter :authenticate_user!
   before_filter :check_acting_as,  :only => [ :switch_instrument, :show, :list]
+  before_filter :load_basic_resources, :only => [:new, :create, :edit, :update]
   before_filter :load_and_check_resources, :only => [ :move, :switch_instrument ]
 
 
@@ -77,10 +78,7 @@ class ReservationsController < ApplicationController
 
   # POST /orders/1/order_details/1/reservations
   def create
-    @order        = Order.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:order_detail_id])
-    @instrument   = @order_detail.product
-    raise ActiveRecord::RecordNotFound unless @order_detail.reservation.nil?
+    raise ActiveRecord::RecordNotFound unless @reservation.nil?
     @reservation  = @instrument.reservations.new(params[:reservation].update(:order_detail => @order_detail))
 
     if !@order_detail.bundled? && params[:order_account].blank?
@@ -128,12 +126,9 @@ class ReservationsController < ApplicationController
 
   # GET /orders/1/order_details/1/reservations/new
   def new
-    @order        = Order.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:order_detail_id])
-    @instrument   = @order_detail.product
-    raise ActiveRecord::RecordNotFound unless @order_detail.reservation.nil?
+    raise ActiveRecord::RecordNotFound unless @reservation.nil?
     @reservation  = @instrument.next_available_reservation || Reservation.new(:instrument => @instrument, :duration_value => (@instrument.min_reserve_mins.to_i < 15 ? 15 : @instrument.min_reserve_mins), :duration_unit => 'minutes')
-
+    @reservation.order_detail = @order_detail
     groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
     @max_window = @reservation.longest_reservation_window(groups)
 
@@ -153,12 +148,8 @@ class ReservationsController < ApplicationController
 
   # GET /orders/1/order_details/1/reservations/1/edit
   def edit
-    @order        = Order.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:order_detail_id])
-    @instrument   = @order_detail.product
-    @reservation  = Reservation.find(params[:id])
     # TODO you shouldn't be able to edit reservations that have passed or are outside of the cancellation period (check to make sure order has been placed)
-    raise ActiveRecord::RecordNotFound if (@reservation != @order_detail.reservation || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
+    raise ActiveRecord::RecordNotFound if (params[:id] != @reservation.id || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
 
     groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
     @max_window = @reservation.longest_reservation_window(groups)
@@ -170,12 +161,8 @@ class ReservationsController < ApplicationController
 
   # PUT  /orders/1/order_details/1/reservations/1
   def update
-    @order        = Order.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:order_detail_id])
-    @instrument   = @order_detail.product
-    @reservation  = @instrument.reservations.find_by_id_and_order_detail_id!(params[:id], @order_detail.id)
     # TODO you shouldn't be able to edit reservations that have passed or are outside of the cancellation period (check to make sure order has been placed)
-    raise ActiveRecord::RecordNotFound if (@reservation != @order_detail.reservation || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
+    raise ActiveRecord::RecordNotFound if (params[:id] != @reservation.id || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
 
     # clear existing reservation attributes
     [:reserve_start_at, :reserve_end_at].each do |k|
@@ -284,12 +271,17 @@ class ReservationsController < ApplicationController
 
 
   private
-
-  def load_and_check_resources
-    @order        = Order.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:order_detail_id])
+  def load_basic_resources
+    @order_detail = Order.find(params[:order_id]).order_details.find(params[:order_detail_id])
+    @order = @order_detail.order
+    @order.context_user = session_user
+    @reservation = @order_detail.reservation
+    @reservation.context_user = session_user if @reservation
     @instrument   = @order_detail.product
-    @reservation  = @instrument.reservations.find_by_id_and_order_detail_id(params[:reservation_id], @order_detail.id)
+  end
+  def load_and_check_resources
+    load_basic_resources
+    #@reservation  = @instrument.reservations.find_by_id_and_order_detail_id(params[:reservation_id], @order_detail.id)
     raise ActiveRecord::RecordNotFound if @reservation.blank?
     raise ActiveRecord::RecordNotFound unless @order.user_id == session_user.id
   end

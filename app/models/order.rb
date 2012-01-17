@@ -9,6 +9,8 @@ class Order < ActiveRecord::Base
 
   scope :for_user, lambda { |user| { :conditions => ['user_id = ? AND ordered_at IS NOT NULL AND state = ?', user.id, 'purchased'] } }
 
+  attr_accessor :context_user
+  
   # BEGIN acts_as_state_machhine
   include AASM
 

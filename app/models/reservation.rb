@@ -10,11 +10,14 @@ class Reservation < ActiveRecord::Base
   validates_presence_of :instrument_id, :reserve_start_at, :reserve_end_at
   validate :does_not_conflict_with_other_reservation, :satisfies_minimum_length, :satisfies_maximum_length, :instrument_is_available_to_reserve, :in_the_future, :if => :reserve_start_at && :reserve_end_at && :reservation_changed?
 
+  validate :in_window, :if => :has_order_detail?
+  
   validates_each [ :actual_start_at, :actual_end_at ] do |record,attr,value|
     if value
       record.errors.add(attr.to_s,'cannot be in the future') if Time.zone.now < value
     end
   end
+  
 
   validate :starts_before_ends
   #validate :in_window, :if => :has_order_detail?
@@ -39,7 +42,12 @@ class Reservation < ActiveRecord::Base
     reservations
   end
 
-
+  attr_accessor :context_user
+  def admin_context?
+    user_to_check = @context_user || (order_detail ? order_detail.order.context_user : nil)
+    (user_to_check && user_to_check.manager_of?(instrument.facility)) ? true : false
+  end
+  
   def order
     order_detail.order if order_detail
   end
@@ -476,6 +484,7 @@ class Reservation < ActiveRecord::Base
 
   # return the longest available reservation window for the groups
   def longest_reservation_window(groups = [])
+    return 365 if admin_context?
     pgps     = instrument.price_group_products.find(:all, :conditions => {:price_group_id => groups.collect{|pg| pg.id}})
     pgps.collect{|pgp| pgp.reservation_window}.max
   end
@@ -621,7 +630,6 @@ class Reservation < ActiveRecord::Base
     satisfies_maximum_length? &&
     instrument_is_available_to_reserve? &&
     in_the_future? &&
-    in_window? &&
     does_not_conflict_with_other_reservation?
   end
 
