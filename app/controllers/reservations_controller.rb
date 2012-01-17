@@ -80,7 +80,7 @@ class ReservationsController < ApplicationController
   def create
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
     @reservation  = @instrument.reservations.new(params[:reservation].update(:order_detail => @order_detail))
-
+    
     if !@order_detail.bundled? && params[:order_account].blank?
       flash[:error]=I18n.t 'controllers.reservations.create.no_selection'
       return redirect_to new_order_order_detail_reservation_path(@order, @order_detail)
@@ -90,7 +90,6 @@ class ReservationsController < ApplicationController
       begin
         unless params[:order_account].blank?
           account=Account.find(params[:order_account].to_i)
-
           if account != @order.account
             @order.invalidate
             @order.update_attributes!(:account_id => account.id)
@@ -98,8 +97,8 @@ class ReservationsController < ApplicationController
             @order_detail.save!
           end
         end
-
-        @reservation.save!
+        @reservation.save_as_user!(session_user)
+        
         groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
         @cheapest_price_policy = @reservation.cheapest_price_policy(groups)
         if @cheapest_price_policy
@@ -128,13 +127,8 @@ class ReservationsController < ApplicationController
   def new
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
     @reservation  = @instrument.next_available_reservation || Reservation.new(:instrument => @instrument, :duration_value => (@instrument.min_reserve_mins.to_i < 15 ? 15 : @instrument.min_reserve_mins), :duration_unit => 'minutes')
-    @reservation.order_detail = @order_detail
-    groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
-    @max_window = @reservation.longest_reservation_window(groups)
-
-    # initialize calendar time constraints
-    @min_date     = Time.zone.now.strftime("%Y%m%d")
-    @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
+    set_windows
+    
   end
 
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/:id(.:format)
@@ -150,13 +144,7 @@ class ReservationsController < ApplicationController
   def edit
     # TODO you shouldn't be able to edit reservations that have passed or are outside of the cancellation period (check to make sure order has been placed)
     raise ActiveRecord::RecordNotFound if (params[:id].to_i != @reservation.id || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
-
-    groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
-    @max_window = @reservation.longest_reservation_window(groups)
-
-    # initialize calendar time constraints
-    @min_date     = Time.zone.now.strftime("%Y%m%d")
-    @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
+    set_windows
   end
 
   # PUT  /orders/1/order_details/1/reservations/1
@@ -176,7 +164,7 @@ class ReservationsController < ApplicationController
 
     Reservation.transaction do
       begin
-        @reservation.save!
+        @reservation.save_as_user!(session_user)
         groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
         @cheapest_price_policy = @reservation.cheapest_price_policy(groups)
         if @cheapest_price_policy
@@ -274,16 +262,23 @@ class ReservationsController < ApplicationController
   def load_basic_resources
     @order_detail = Order.find(params[:order_id]).order_details.find(params[:order_detail_id])
     @order = @order_detail.order
-    @order.context_user = session_user
     @reservation = @order_detail.reservation
-    @reservation.context_user = session_user if @reservation
     @instrument   = @order_detail.product
+    @facility = @instrument.facility
   end
   def load_and_check_resources
     load_basic_resources
     #@reservation  = @instrument.reservations.find_by_id_and_order_detail_id(params[:reservation_id], @order_detail.id)
     raise ActiveRecord::RecordNotFound if @reservation.blank?
     raise ActiveRecord::RecordNotFound unless @order.user_id == session_user.id
+  end
+  def set_windows
+    groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
+    @max_window = session_user.manager_of?(@facility) ? 365 : @reservation.longest_reservation_window(groups)
+
+    # initialize calendar time constraints
+    @min_date     = Time.zone.now.strftime("%Y%m%d")
+    @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
   end
 
 end

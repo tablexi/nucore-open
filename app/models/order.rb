@@ -8,9 +8,7 @@ class Order < ActiveRecord::Base
   validates_presence_of :user_id, :created_by
 
   scope :for_user, lambda { |user| { :conditions => ['user_id = ? AND ordered_at IS NOT NULL AND state = ?', user.id, 'purchased'] } }
-
-  attr_accessor :context_user
-  
+ 
   # BEGIN acts_as_state_machhine
   include AASM
 
@@ -41,7 +39,7 @@ class Order < ActiveRecord::Base
   end
 
   def cart_valid?
-    has_details? && has_valid_payment? && order_details.all? {|od| od.context_user = self.context_user; od.valid_for_purchase?}
+    has_details? && has_valid_payment? && order_details.all? {|od| od.valid_for_purchase?}
   end
 
   def has_valid_payment?

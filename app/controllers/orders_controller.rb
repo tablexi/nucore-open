@@ -208,7 +208,6 @@ class OrdersController < ApplicationController
   # PUT /orders/1/purchase
   def purchase
     #revalidate the cart, just to be sure
-    @order.context_user = session_user
     if @order.validate_order! && @order.purchase!
       Notifier.order_receipt(:user => @order.user, :order => @order).deliver
 

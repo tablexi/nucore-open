@@ -207,13 +207,6 @@ class OrderDetail < ActiveRecord::Base
   end
   # END acts_as_state_machine
 
-  def context_user
-    return @context_user
-  end
-  def context_user=(user)
-    @context_user = user
-    reservation.context_user = user if reservation
-  end
   def change_status! (new_status)
     success = true
     success = send("to_#{new_status.root.name.downcase.gsub(/ /,'')}!") if new_status.root.name.downcase.gsub(/ /,'') != state
