@@ -8,7 +8,7 @@ class Reservation < ActiveRecord::Base
 
   validates_uniqueness_of :order_detail_id, :allow_nil => true
   validates_presence_of :instrument_id, :reserve_start_at, :reserve_end_at
-  validate :does_not_conflict_with_other_reservation, :satisfies_minimum_length, :satisfies_maximum_length, :instrument_is_available_to_reserve, :in_the_future, :if => :reserve_start_at && :reserve_end_at && :reservation_changed?
+  validate :does_not_conflict_with_other_reservation, :satisfies_minimum_length, :satisfies_maximum_length, :instrument_is_available_to_reserve, :if => :reserve_start_at && :reserve_end_at && :reservation_changed?
   
   validates_each [ :actual_start_at, :actual_end_at ] do |record,attr,value|
     if value
@@ -35,6 +35,7 @@ class Reservation < ActiveRecord::Base
   def save_extended_validations(options ={})
     perform_validations(options)
     in_window
+    in_the_future
     return false if self.errors.any?
     self.save
   end
@@ -42,7 +43,7 @@ class Reservation < ActiveRecord::Base
     raise ActiveRecord::RecordInvalid.new(self) unless save_extended_validations()  
   end
   def save_as_user!(user)
-    if (user.manager_of?(instrument.facility))
+    if (user.operator_of?(instrument.facility))
       self.save!
     else
       self.save_extended_validations!  
@@ -638,7 +639,6 @@ class Reservation < ActiveRecord::Base
     satisfies_minimum_length? &&
     satisfies_maximum_length? &&
     instrument_is_available_to_reserve? &&
-    in_the_future? &&
     does_not_conflict_with_other_reservation?
   end
 

@@ -274,7 +274,7 @@ class ReservationsController < ApplicationController
   end
   def set_windows
     groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
-    @max_window = session_user.manager_of?(@facility) ? 365 : @reservation.longest_reservation_window(groups)
+    @max_window = session_user.operator_of?(@facility) ? 365 : @reservation.longest_reservation_window(groups)
 
     # initialize calendar time constraints
     @min_date     = Time.zone.now.strftime("%Y%m%d")

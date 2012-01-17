@@ -113,10 +113,23 @@ describe ReservationsController do
       before :each do
         @params.deep_merge!(:reservation => {:reserve_start_date => Time.zone.now.to_date + (PriceGroupProduct::DEFAULT_RESERVATION_WINDOW + 1).days })
       end
-      it_should_allow_all facility_managers, "to create a reservation beyond the default reservation window" do
+      it_should_allow_all facility_operators, "to create a reservation beyond the default reservation window" do
         assert_redirected_to purchase_order_path(@order)
       end
       it_should_allow_all [:guest], "to receive an error that they are trying to reserve outside of the window" do
+        assigns[:reservation].errors.should_not be_empty
+        response.should render_template(:new)
+      end
+    end
+    
+    context 'creating a reservation in the past' do
+      before :each do
+        @params.deep_merge!(:reservation => {:reserve_start_date => Time.zone.now.to_date - 5.days })
+      end
+      it_should_allow_all facility_operators, 'to create a reservation in the past' do
+        assert_redirected_to purchase_order_path(@order)
+      end
+      it_should_allow_all [:guest], 'to receive an error they are tyring to reserve in the past' do
         assigns[:reservation].errors.should_not be_empty
         response.should render_template(:new)
       end
@@ -195,7 +208,7 @@ describe ReservationsController do
     end
     
     # Managers should be able to go far out into the future
-    it_should_allow_all facility_managers do
+    it_should_allow_all facility_operators do
       assigns[:max_date].should == (Time.zone.now + 365.days).strftime("%Y%m%d")
     end
     # guests should only be able to go the default reservation window into the future
@@ -304,7 +317,7 @@ describe ReservationsController do
       before :each do
         @params.deep_merge!(:reservation => {:reserve_start_date => Time.zone.now.to_date + (PriceGroupProduct::DEFAULT_RESERVATION_WINDOW + 1).days })
       end
-      it_should_allow_all facility_managers, "to create a reservation beyond the default reservation window" do
+      it_should_allow_all facility_operators, "to create a reservation beyond the default reservation window" do
         assigns[:reservation].errors.should be_empty 
         assert_redirected_to cart_url
       end
