@@ -1,7 +1,7 @@
 = content_for :h1 do
   =h current_facility
 
-- if acting_as?
+- if acting_as? or session_user.operator_of?(current_facility)
   - instruments = current_facility.instruments.active_plus_hidden
   - items       = current_facility.items.active_plus_hidden
   - services    = current_facility.services.active_plus_hidden
