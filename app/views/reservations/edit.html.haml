@@ -1,5 +1,6 @@
 = content_for :head_content do
   %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
+  = javascript_include_tag 'date.js'
   = javascript_include_tag 'calendar/fullcalendar.min.js'
   = javascript_include_tag 'jquery.qtip-1.0.0-rc3.min.js'
   = javascript_include_tag 'reservations.js'
