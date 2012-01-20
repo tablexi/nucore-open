@@ -783,7 +783,7 @@ en:
           acting_as_not_on_approval_list: The user you are ordering for is not on the authorized list for this instrument.
         item:
           not_available: This item is currently unavailable for purchase online.
-          requires_approval_html: This item requires approval to purchase; please contact the facility.
+          requires_approval: This item requires approval to purchase; please contact the facility.
           not_in_price_group: You are not in a price group that may purchase this item; please contact the facility.
           not_authorized_acting_as: You are not authorized to order items from this facility on behalf of a user.
         service:
