@@ -10,6 +10,8 @@ class ItemsController < ApplicationController
 
   layout 'two_column'
 
+  include TranslationHelper
+  
   def initialize
     @active_tab = 'admin_products'
     super
@@ -38,7 +40,7 @@ class ItemsController < ApplicationController
     # do the product have active price policies
     unless @item.can_purchase?
       @add_to_cart       = false
-      flash.now[:notice] = 'This item is currently unavailable for purchase online.'
+      flash.now[:notice] = t_model_error(Product, 'not_available')
     end
 
     # is user logged in?
@@ -48,21 +50,21 @@ class ItemsController < ApplicationController
     end
 
     # is the user approved?
-    if @add_to_cart && @item.requires_approval? && @item.product_users.find_by_user_id(acting_user.id).nil?
-      @add_to_cart       = false
-      flash.now[:notice] = 'This item requires approval to purchase; please contact the facility.'
+    if @add_to_cart && !@item.is_approved_for?(acting_user)
+      @add_to_cart       = false unless session_user and session_user.can_override_restrictions?(@item)
+      flash.now[:notice] = t_model_error(Item, 'requires_approval').html_safe
     end
 
     # does the product have any price policies for any of the groups the user is a member of?
     if @add_to_cart && !(@item.can_purchase?((acting_user.price_groups + acting_user.account_price_groups).flatten.uniq.collect{ |pg| pg.id }))
       @add_to_cart       = false
-      flash.now[:notice] = 'You are not in a price group that may purchase this item; please contact the facility.'
+      flash.now[:notice] = t_model_error(Item, 'not_in_price_group')
     end
 
     # when ordering on behalf of, does the staff have permissions for this facility?
     if @add_to_cart && acting_as? && !session_user.operator_of?(@item.facility)
       @add_to_cart = false
-      flash.now[:notice] = 'You are not authorized to order items from this facility on behalf of a user.'
+      flash.now[:notice] = t_model_error(Item, 'not_authorized_acting_as')
     end
 
     @active_tab = 'home'

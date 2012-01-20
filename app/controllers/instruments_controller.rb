@@ -55,8 +55,8 @@ class InstrumentsController < ApplicationController
 
     # is the user approved? or is the logged in user an operator of the facility (logged in user can override restrictions)
     
-    if add_to_cart && !@instrument.is_approved_for?(acting_user) && !session_user.can_override_restrictions?(@instrument)
-      add_to_cart = false
+    if add_to_cart && !@instrument.is_approved_for?(acting_user)
+      add_to_cart = false unless session_user and session_user.can_override_restrictions?(@instrument)
       flash[:notice] = t_model_error(Instrument, 'requires_approval_html', :instrument => @instrument, :facility => @instrument.facility, :email => @instrument.facility.email).html_safe
     end
 
@@ -71,6 +71,7 @@ class InstrumentsController < ApplicationController
       add_to_cart = false
       flash[:notice] = 'You are not authorized to order instruments from this facility on behalf of a user.'
     end
+    @add_to_cart = add_to_cart
 
     if login_required
       session[:requested_params]=request.fullpath
