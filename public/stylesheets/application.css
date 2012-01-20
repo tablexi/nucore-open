@@ -127,8 +127,7 @@ ul.form li.left {
 }
 
 .box {
-	border:1px dashed #ddd;
-	font-size:14px;
+	border:1px dashed #888;
 	padding:15px;
 }
 
@@ -183,8 +182,11 @@ a.btn,input.btn {
 }
 
 a.btn:hover,input.btn:hover {
+	background:#ccc;
+	border:1px solid #bbb;
 	cursor:hand;
 }
+
 
 .footnote {
 	font-size:10px;
@@ -246,11 +248,16 @@ main layout ids
 	font-size:27px;
 	line-height:0;
 	text-decoration:none;
+	position:relative;
+	top:5px;
 }
 
 #breadcrumb {
-	font-size:10px;
-	font-weight:700;
+  background: none repeat scroll 0 0 #F9F9F9;
+  border-bottom: 1px solid #DDDDDD;
+  font-size: 10px;
+  font-weight: 700;
+  height: 35px;
 }
 
 #breadcrumb ul {
@@ -616,4 +623,12 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
 
 .search_form fieldset li,#table_billing .pagination {
 	margin-bottom:10px;
+}
+
+.order_num_width {
+	width:75px;
+}
+
+.ordered_on_width {
+	width:130px;
 }
