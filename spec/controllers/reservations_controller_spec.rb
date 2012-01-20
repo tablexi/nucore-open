@@ -203,17 +203,23 @@ describe ReservationsController do
       assigns[:instrument].should == @instrument
       should assign_to(:reservation).with_kind_of Reservation
       should assign_to(:max_window).with_kind_of Integer
-      assigns[:min_date].should == Time.zone.now.strftime("%Y%m%d")
+      
       assigns[:max_date].should == (Time.zone.now+assigns[:max_window].days).strftime("%Y%m%d")
     end
     
     # Managers should be able to go far out into the future
     it_should_allow_all facility_operators do
+      assigns[:max_window].should == 365
+      assigns[:max_days_ago].should == -365
+      assigns[:min_date].should == (Time.zone.now+assigns[:max_days_ago].days).strftime("%Y%m%d")
       assigns[:max_date].should == (Time.zone.now + 365.days).strftime("%Y%m%d")
     end
     # guests should only be able to go the default reservation window into the future
     it_should_allow_all [:guest] do
-      assigns[:max_date].should == (Time.zone.now + PriceGroupProduct::DEFAULT_RESERVATION_WINDOW.day).strftime("%Y%m%d")
+      assigns[:max_window].should == PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
+      assigns[:max_days_ago].should == 0 
+      assigns[:max_date].should == (Time.zone.now + PriceGroupProduct::DEFAULT_RESERVATION_WINDOW.days).strftime("%Y%m%d")
+      assigns[:min_date].should == Time.zone.now.strftime("%Y%m%d")
     end
 
   end
