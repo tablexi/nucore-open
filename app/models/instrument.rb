@@ -99,15 +99,6 @@ class Instrument < Product
     end
   end
 
-  def is_approved_for? (user)
-    return true if user.nil?
-    if requires_approval?
-      return requires_approval? && !product_users.find_by_user_id(user.id).nil?
-    else
-      true
-    end
-  end
-
   def set_default_pricing
     [ PriceGroup.base.first, PriceGroup.external.first ].each do |pg|
       PriceGroupProduct.create!(:product => self, :price_group => pg, :reservation_window => PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)

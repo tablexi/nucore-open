@@ -74,4 +74,14 @@ class Product < ActiveRecord::Base
       PriceGroupProduct.create!(:product => self, :price_group => pg)
     end
   end
+  
+  def is_approved_for? (user)
+    return true if user.nil?
+    if requires_approval?
+      return requires_approval? && !product_users.find_by_user_id(user.id).nil?
+    else
+      true
+    end
+  end
+  
 end

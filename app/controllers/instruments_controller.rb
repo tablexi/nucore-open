@@ -6,7 +6,9 @@ class InstrumentsController < ApplicationController
   before_filter :init_current_facility
   before_filter :init_instrument, :except => [:index, :new, :create]
   before_filter :prepare_relay_params, :only => [ :create, :update ]
-
+  
+  include TranslationHelper
+  
   load_and_authorize_resource :except => :show
 
   layout 'two_column'
@@ -42,7 +44,7 @@ class InstrumentsController < ApplicationController
     # do the product have active price policies && schedule rules
     unless @instrument.can_purchase?
       add_to_cart = false
-      flash[:notice] = "The #{@instrument.to_s} instrument is currently unavailable for reservation online."
+      flash[:notice] = t_model_error(Instrument, 'not_available', :instrument => @instrument)
     end
 
     # is user logged in?
@@ -51,10 +53,10 @@ class InstrumentsController < ApplicationController
       add_to_cart = false
     end
 
-    # is the user approved?
-    if add_to_cart && !@instrument.is_approved_for?(acting_user)
+    # is the user approved? or is the logged in user an operator of the facility (logged in user can override restrictions)
+    if add_to_cart && !@instrument.is_approved_for?(acting_user) && cannot?(:override_restrictions, @instrument)
       add_to_cart = false
-      flash[:notice] = "The #{@instrument.to_s} instrument requires approval to reserve; please contact the facility for further information:<br/><br/> #{@instrument.facility}<br/><a href=\"mailto:#{@instrument.facility.email}\">#{@instrument.facility.email}</a>".html_safe
+      flash[:notice] = t_model_error(Instrument, 'requires_approval_html', :instrument => @instrument, :facility => @instrument.facility, :email => @instrument.facility.email).html_safe
     end
 
     # does the product have any price policies for any of the groups the user is a member of?
