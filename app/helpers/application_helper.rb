@@ -59,6 +59,10 @@ module ApplicationHelper
     define_method("show_estimated_#{type}") {|order_detail| show_currency(order_detail, "estimated_#{type}") }
   end
 
+  def facility_product_path(facility, product)
+    method = "facility_#{product.class.model_name.underscore}_path"
+    send(method, facility, product)
+  end
   private
 
   def show_currency(order_detail, method)

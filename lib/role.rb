@@ -48,6 +48,9 @@ module Role
     facility_director_of?(facility) || facility_administrator_of?(facility) || administrator?
   end
 
+  def can_override_restrictions?(product)
+    operator_of? product.facility
+  end
 
   #
   # Account management roles
