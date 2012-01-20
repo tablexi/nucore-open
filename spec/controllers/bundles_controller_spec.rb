@@ -75,7 +75,7 @@ describe BundlesController do
       assigns[:add_to_cart].should be_false
       flash[:notice].should_not be_nil
     end
-    
+        
     it 'should flash and falsify @add_to_cart if there is no price group for user to purchase through' do
       BundlesController.any_instance.stubs(:acting_user).returns(User.new(:id =>18))
       BundlesController.any_instance.stubs(:bundle_has_price_policies_for_user?).returns(false)
@@ -105,6 +105,33 @@ describe BundlesController do
       should assign_to(:login_required)
       should_not set_the_flash
       should render_template('show')
+    end
+    
+    context "restricted bundle" do
+      before :each do
+        @bundle.update_attributes(:requires_approval => true)
+      end
+      it "should show a notice if you're not approved" do
+        sign_in @guest
+        do_request
+        assigns[:add_to_cart].should be_false
+        flash[:notice].should_not be_nil
+      end
+      
+      it "should not show a notice and show an add to cart" do
+        @product_user = ProductUser.create(:product => @bundle, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
+        sign_in @guest
+        do_request
+        flash.should be_empty
+        assigns[:add_to_cart].should be_true
+      end
+      
+      it "should allow an admin to allow it to add to cart" do
+        sign_in @admin
+        do_request
+        flash.should_not be_empty
+        assigns[:add_to_cart].should be_true
+      end
     end
 
   end

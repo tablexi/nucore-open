@@ -71,6 +71,33 @@ describe ItemsController do
     it_should_allow(:guest) { @block.call }
 
     it_should_allow_all(facility_operators) { @block.call }
+    
+    context "restricted item" do
+      before :each do
+        @item.update_attributes(:requires_approval => true)
+      end
+      it "should show a notice if you're not approved" do
+        sign_in @guest
+        do_request
+        assigns[:add_to_cart].should be_false
+        flash[:notice].should_not be_nil
+      end
+      
+      it "should not show a notice and show an add to cart" do
+        @product_user = ProductUser.create(:product => @item, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
+        sign_in @guest
+        do_request
+        flash.should be_empty
+        assigns[:add_to_cart].should be_true
+      end
+      
+      it "should allow an admin to allow it to add to cart" do
+        sign_in @admin
+        do_request
+        flash.should_not be_empty
+        assigns[:add_to_cart].should be_true
+      end
+    end
 
   end
 
