@@ -128,7 +128,7 @@ class ReservationsController < ApplicationController
   def new
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
     @reservation  = @instrument.next_available_reservation || Reservation.new(:instrument => @instrument, :duration_value => (@instrument.min_reserve_mins.to_i < 15 ? 15 : @instrument.min_reserve_mins), :duration_unit => 'minutes')
-    flash[:notice] = t_model_error(Instrument, 'acting_as_not_on_approval_list') unless @instrument.is_approved_for?(acting_user) and can?(:override_restrictions, @instrument)
+    flash[:notice] = t_model_error(Instrument, 'acting_as_not_on_approval_list') unless @instrument.is_approved_for?(acting_user)
     set_windows
     
   end
