@@ -22,7 +22,8 @@
       - links.each do |link|
         %li{:class => !controller.active_tab.nil? && controller.active_tab == link[:tab_name] ? 'active' : ''}
           .divider
-            = link.has_key?(:url) ? link_to(link[:text], link[:url]) : link[:text]
+            .button_text
+              = link.has_key?(:url) ? link_to(link[:text], link[:url]) : link[:text]
             - if link[:subnav]
               .dropdown
               %ul.subnav

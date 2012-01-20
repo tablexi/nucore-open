@@ -1,6 +1,13 @@
 #header {
-  background-color: #D5D5D5;
-  background-image: -moz-linear-gradient(center top , #FFFFFF, #EEEEEE);
+	
+	background: #eeeeee; /* Old browsers */
+	background: -moz-linear-gradient(top,  #ffffff 0%, #eeeeee 99%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(99%,#eeeeee)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #ffffff 0%,#eeeeee 99%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #ffffff 0%,#eeeeee 99%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #ffffff 0%,#eeeeee 99%); /* IE10+ */
+	background: linear-gradient(top,  #ffffff 0%,#eeeeee 99%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#eeeeee',GradientType=0 ); /* IE6-9 */
   border-bottom: 1px solid #CCCCCC;
 	color:#000;
 	/* UIC Color  background:#25557F;*/
@@ -96,7 +103,7 @@
 	border-left:1px solid #ddd;
 	border-right:1px solid #ddd;
 	left:-999em;
-	margin:13px 0 0 -10px;
+	margin:31px 0 0 -10px;
 	position:absolute;
 	z-index:999999;
 }
@@ -167,7 +174,12 @@
 
 #nav li .dropdown {
 	background:url(../images/bg-dropdown.png) top right no-repeat;
-	float:right;
+	display:block;
+	float:left;
 	height:20px;
 	width:15px;
+}
+
+#nav .button_text {
+	float:left;
 }

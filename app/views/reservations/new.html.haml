@@ -11,6 +11,7 @@
     var minDate         = "#{@min_date}";
     var maxDate         = "#{@max_date}";
     var maxDaysFromNow  = #{@max_window};
+    var minDaysFromNow  = #{@max_days_ago};
     var minTime         = #{@instrument.first_available_hour};
     var maxTime         = #{@instrument.last_available_hour+1};
     var withDetails     = #{@instrument.show_details? || false}

@@ -253,7 +253,7 @@ class FacilityReservationsController < ApplicationController
   
   def set_windows
     @max_window = 365
-
+    @max_days_ago = -365
     # initialize calendar time constraints
     @min_date     = Time.zone.now.strftime("%Y%m%d")
     @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
