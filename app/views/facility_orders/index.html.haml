@@ -30,8 +30,8 @@
       -## THE HEADER ROW
       %tr
         %th
-        %th.centered= sortable 'order_number', 'Order #'
-        %th= sortable 'date', 'Ordered On'
+        %th.order_num_width.centered= sortable 'order_number', 'Order #'
+        %th.ordered_on_width= sortable 'date', 'Ordered On'
         %th User Name
         %th{ :colspan => 2 }== Quantity / #{sortable 'product'}
         %th= sortable 'assigned_to'
