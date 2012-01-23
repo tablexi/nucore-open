@@ -75,3 +75,5 @@ There are valuable resources in the NU Core's doc directory.
 * Want to authenticate users against your institution's LDAP server? <b>See HOWTO_ldap.txt</b>
 
 * Need to use a 3rd party service with your NU Core? <b>See HOWTO_external_services.txt</b>
+
+* Need to asynchronously monitor some aspect of NU Core? <b>See HOWTO_daemons.txt</b>
