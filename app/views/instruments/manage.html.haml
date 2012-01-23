@@ -10,37 +10,40 @@
   = render :partial => 'admin/shared/product_manage'
   %li
     - if @instrument.relay.nil?
-      %label Control mechanism
-      %p Reservation only
+      %label= t '.label.control_mech'
+      %p= t '.res_only'
     - elsif @instrument.relay.is_a?(RelayDummy)
-      %label Control mechanism
-      %p Timer without relay
+      %label= t '.label.control_mech'
+      %p= t '.control_mech'
     - else
       %ul
         %li
-          %label Relay IP Address
-          %p=h @instrument.relay.ip.presence || 'N/A'
+          %label= t '.label.relay.ip'
+          %p= @instrument.relay.ip.presence || 'N/A'
         %li
-          %label Relay Port
-          %p=h @instrument.relay.port || 'N/A'
+          %label= t '.label.relay.port'
+          %p= @instrument.relay.port || 'N/A'
         %li
-          %label Relay Username
-          %p=h @instrument.relay.username.presence || 'N/A'
+          %label= t '.label.relay.user'
+          %p= @instrument.relay.username.presence || 'N/A'
         %li
-          %label Relay Password
-          %p=h @instrument.relay.password.presence || 'N/A'
+          %label= t '.label.relay.pass'
+          %p= @instrument.relay.password.presence || 'N/A'
         %li
-          %label Automatic Logout?
-          %p=h @instrument.relay.auto_logout ? 'Yes' : 'No'
+          %label= t '.label.relay.auto_logout'
+          %p= @instrument.relay.auto_logout ? 'Yes' : 'No'
   %li
-    %label Minimum Reservation Minutes
-    %p=h @instrument.min_reserve_mins.to_i
+    %label= t '.label.min_res'
+    %p= @instrument.min_reserve_mins.to_i
   %li
-    %label Maximum Reservation Minutes
-    %p=h @instrument.max_reserve_mins || 'None'
+    %label= t '.label.max_res'
+    %p= @instrument.max_reserve_mins || 'None'
   %li
-    %label Minimum Cancelation Hours
-    %p=h @instrument.min_cancel_hours.to_i
+    %label= t '.label.cancel_hours'
+    %p= @instrument.min_cancel_hours.to_i
+  %li
+    %label= t '.label.cancel_mins'
+    %p= @instrument.auto_cancel_mins.to_i
 - if session_user.manager_of?(current_facility)
   %ul.horiz
     %li= link_to 'Edit', edit_facility_instrument_path(current_facility, @instrument), :class => 'btn'

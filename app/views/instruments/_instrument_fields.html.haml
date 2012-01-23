@@ -3,52 +3,56 @@
 
 %li
   = f.check_box :show_details
-  %b== Check to show reservation details
+  %b= t 'instruments.instrument_fields.show_details'
 %li
   = label_tag :control_mechanism
-  %p.instruction How the instrument and its time is managed
+  %p.instruction= t 'instruments.instrument_fields.control_mechanism'
   - selection=@instrument.relay.nil? ? nil : @instrument.relay.is_a?(RelayDummy) ? 'timer' : 'relay'
   = select_tag :control_mechanism, options_for_select({ 'Reservation only' =>  'manual', 'Timer without relay' => 'timer', 'Timer with relay' => 'relay' }, selection)
 %li#power-relay{:class => "box#{selection == 'relay' ? '' : ' hidden'}"}
-  = f.label 'Power Relay Information'
-  %p== (Optional)  If the instrument is connected to an approved power relay, please enter the information below.  Power relays must be purchased separately.
+  = f.label t('instruments.instrument_fields.relay.label.relay')
+  %p= t 'instruments.instrument_fields.relay.intro'
   %br
   = f.fields_for :relay, @instrument.relay || @instrument.build_relay do |rf|
     %ul
       %li.left
-        = rf.label :type, 'Relay Type'
+        = rf.label :type, t('instruments.instrument_fields.relay.label.type')
         = rf.select :type, options_for_select(RelaySynaccessRevA => RelaySynaccessRevA.name, RelaySynaccessRevB => RelaySynaccessRevB.name)
       %li.clear
       %li.left
-        = rf.label :ip, 'IP Address'
+        = rf.label :ip, t('instruments.instrument_fields.relay.label.ip')
         = rf.text_field :ip
       %li.left
-        = rf.label :port, 'Device Port'
+        = rf.label :port, t('instruments.instrument_fields.relay.label.port')
         = rf.text_field :port, :size => 5, :limit => 2
       %li.clear
       %li.left
-        = rf.label :username, 'Username'
+        = rf.label :username, t('instruments.instrument_fields.relay.label.user')
         = rf.text_field :username
       %li.left
-        = rf.label :password, 'Password'
+        = rf.label :password, t('instruments.instrument_fields.relay.label.pass')
         = rf.text_field :password
       %li.clear
       %li
         = rf.check_box :auto_logout
-        %b== Automatically power off the relay 60 minutes after the reservation is scheduled to end
+        %b= t 'instruments.instrument_fields.relay.label.auto_logout'
 %li.box
-  = f.label 'Reservation Restrictions'
-  %p== (Optional)  Define minimum and maximum reservation limits below.
+  = f.label t('instruments.instrument_fields.reservation.label.restrict')
+  %p= t 'instruments.instrument_fields.reservation.intro'
   %br
   %ul
     %li.left
-      = f.label :min_reserve_mins, 'Minimum (minutes)'
+      = f.label :min_reserve_mins, t('instruments.instrument_fields.reservation.label.min_reserve')
       = f.text_field :min_reserve_mins
     %li.left
-      = f.label :max_reserve_mins, 'Maximum (minutes)'
+      = f.label :max_reserve_mins, t('instruments.instrument_fields.reservation.label.max_reserve')
       = f.text_field :max_reserve_mins
     %li.clear
     %li
-      = f.label :min_cancel_hours, 'Cancelation Minimum (hours)'
-      %p.instruction Minimum length of time before a reservation begins that a user may cancel a reservation without penalty
+      = f.label :min_cancel_hours, t('instruments.instrument_fields.reservation.label.cancel_hours')
+      %p.instruction= t('instruments.instrument_fields.reservation.instruct.cancel_hours')
       = f.text_field :min_cancel_hours
+    %li
+      = f.label :auto_cancel_mins, t('instruments.instrument_fields.reservation.label.auto_cancel')
+      %p.instruction= t('instruments.instrument_fields.reservation.instruct.auto_cancel')
+      = f.text_field :auto_cancel_mins
