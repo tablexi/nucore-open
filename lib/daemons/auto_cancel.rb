@@ -28,14 +28,14 @@ Daemons::Base.new('auto_cancel').start do
       res.update_attributes!(
         :canceled_at => Time.zone.now,
         :canceled_by => 0,
-        :canceled_reason => 'reservation was not activated before auto cancel minutes'
+        :canceled_reason => 'auto cancelled by system'
       )
     rescue => e
       puts "Could not auto cancel reservation #{res.id}! #{e.message}\n#{e.backtrace.join("\n")}"
     end
   end
 
-  sleep 1.minute
+  sleep 1.minute.to_i
 end
 
 
