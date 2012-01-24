@@ -571,7 +571,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def can_start_early?
-    return false if reserve_start_at > Time.zone.now.advance(:minutes => 2) # reserve start is more than 2 minutes in the future
+    return false if reserve_start_at > Time.zone.now.advance(:minutes => 5) # reserve start is more than 5 minutes in the future
     # no other reservation ongoing; no res between now and reserve_start;
     return false unless Reservation.find(:first,
                                          :conditions => ["((reserve_start_at > ? AND reserve_start_at < ?) OR actual_start_at IS NOT NULL) AND reservations.instrument_id = ? AND actual_end_at IS NULL AND (order_detail_id IS NULL OR order_details.state = 'new' OR order_details.state = 'inprocess')", Time.zone.now, reserve_start_at, instrument_id],
