@@ -194,11 +194,11 @@
         %td= f.collection_select(:order_status_id, OrderStatus.non_protected_statuses(current_facility), :id, :name_with_level)
       - if @order_detail.product.is_a?(Instrument) && @order_detail.complete?
         - res = @order_detail.reservation
-        - if res && res.actual_start_at && res.actual_end_at
-          = render :partial => 'price_row', :locals => { :form => f }
-        - elsif res.requires_but_missing_actuals?
+        - if res && res.requires_but_missing_actuals?
           %td.centered{:colspan => '3'}= t('.notice.no_time')
-      - else 
+        - else
+          = render :partial => 'price_row', :locals => { :form => f }
+      - else
         = render :partial => 'price_row', :locals => { :form => f }
       %tr
         %td{:colspan => '6'}
