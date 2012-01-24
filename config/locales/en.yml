@@ -773,9 +773,6 @@ en:
       ]
 
   models:
-    account_user:
-      validation:
-        userid: "is already a member of this payment source"
     order:
       auto_assign_account: "Could not find a valid payment source for purchasing %{product_name}"
 
@@ -833,7 +830,10 @@ en:
           requires_approval: This service requires approval to purchase; please contact the facility.
           not_in_price_group: You are not in a price group that may reserve this service; please contact the facility.
           not_authorized_acting_as: You are not authorized to order services from this facility on behalf of a user. 
-              
+        account_user:
+          attributes:
+            user_id:
+              taken: "is already a member of this payment source"   
               
     # Model Names
     models:
