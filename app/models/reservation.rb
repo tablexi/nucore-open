@@ -648,7 +648,7 @@ class Reservation < ActiveRecord::Base
 
   def requires_but_missing_actuals?
     pp = order_detail.price_policy
-    pp && pp.usage_rate && pp.usage_rate > 0 && !has_actuals?
+    !cancelled? && pp && pp.usage_rate && pp.usage_rate > 0 && !has_actuals?
   end
 
   protected
