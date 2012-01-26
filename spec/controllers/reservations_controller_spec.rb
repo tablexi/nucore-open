@@ -108,6 +108,33 @@ describe ReservationsController do
       should set_the_flash
       assert_redirected_to purchase_order_path(@order)
     end
+    
+    context 'creating a reservation in the future' do
+      before :each do
+        @params.deep_merge!(:reservation => {:reserve_start_date => Time.zone.now.to_date + (PriceGroupProduct::DEFAULT_RESERVATION_WINDOW + 1).days })
+      end
+      it_should_allow_all facility_operators, "to create a reservation beyond the default reservation window" do
+        assert_redirected_to purchase_order_path(@order)
+      end
+      it_should_allow_all [:guest], "to receive an error that they are trying to reserve outside of the window" do
+        assigns[:reservation].errors.should_not be_empty
+        response.should render_template(:new)
+      end
+    end
+    
+    context 'creating a reservation in the past' do
+      before :each do
+        @params.deep_merge!(:reservation => {:reserve_start_date => Time.zone.now.to_date - 5.days })
+      end
+      it_should_allow_all facility_operators, 'to create a reservation in the past' do
+        assert_redirected_to purchase_order_path(@order)
+      end
+      it_should_allow_all [:guest], 'to receive an error they are tyring to reserve in the past' do
+        assigns[:reservation].errors.should_not be_empty
+        response.should render_template(:new)
+      end
+    end
+    
 
     context 'without account' do
       before :each do
@@ -176,8 +203,23 @@ describe ReservationsController do
       assigns[:instrument].should == @instrument
       should assign_to(:reservation).with_kind_of Reservation
       should assign_to(:max_window).with_kind_of Integer
-      assigns[:min_date].should == Time.zone.now.strftime("%Y%m%d")
+      
       assigns[:max_date].should == (Time.zone.now+assigns[:max_window].days).strftime("%Y%m%d")
+    end
+    
+    # Managers should be able to go far out into the future
+    it_should_allow_all facility_operators do
+      assigns[:max_window].should == 365
+      assigns[:max_days_ago].should == -365
+      assigns[:min_date].should == (Time.zone.now+assigns[:max_days_ago].days).strftime("%Y%m%d")
+      assigns[:max_date].should == (Time.zone.now + 365.days).strftime("%Y%m%d")
+    end
+    # guests should only be able to go the default reservation window into the future
+    it_should_allow_all [:guest] do
+      assigns[:max_window].should == PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
+      assigns[:max_days_ago].should == 0 
+      assigns[:max_date].should == (Time.zone.now + PriceGroupProduct::DEFAULT_RESERVATION_WINDOW.days).strftime("%Y%m%d")
+      assigns[:min_date].should == Time.zone.now.strftime("%Y%m%d")
     end
 
   end
@@ -201,13 +243,14 @@ describe ReservationsController do
         @action=:show
         @params.merge!(:id => @reservation.id)
       end
-
+     
       it_should_allow_all facility_users do
+        assigns[:reservation].should == @reservation
+        assigns[:order_detail].should == @reservation.order_detail
+        assigns[:order].should == @reservation.order_detail.order
         should respond_with :success
       end
-
-      it 'should test more than auth'
-
+      
     end
 
 
@@ -220,10 +263,25 @@ describe ReservationsController do
       end
 
       it_should_allow_all facility_users do
+        assigns[:reservation].should == @reservation
+        assigns[:order_detail].should == @reservation.order_detail
+        assigns[:order].should == @reservation.order_detail.order
         should respond_with :success
       end
-
-      it 'should test more than auth'
+      
+      it "should throw 404 if reservation is cancelled" do
+        @reservation.update_attributes(:canceled_at => Time.zone.now - 1.day)
+        sign_in @admin
+        do_request
+        response.response_code.should == 404 
+      end
+      
+      it "should throw 404 if reservation happened" do
+        @reservation.update_attributes(:actual_start_at => Time.zone.now - 1.day)
+        sign_in @admin
+        do_request
+        response.response_code.should == 404
+      end
 
     end
 
@@ -260,6 +318,20 @@ describe ReservationsController do
         should set_the_flash
         assert_redirected_to cart_url
       end
+      
+      context 'creating a reservation in the future' do
+      before :each do
+        @params.deep_merge!(:reservation => {:reserve_start_date => Time.zone.now.to_date + (PriceGroupProduct::DEFAULT_RESERVATION_WINDOW + 1).days })
+      end
+      it_should_allow_all facility_operators, "to create a reservation beyond the default reservation window" do
+        assigns[:reservation].errors.should be_empty 
+        assert_redirected_to cart_url
+      end
+      it_should_allow_all [:guest], "to receive an error that they are trying to reserve outside of the window" do
+        assigns[:reservation].errors.should_not be_empty
+        response.should render_template(:edit)
+      end
+    end
 
     end
 

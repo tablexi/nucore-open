@@ -1,5 +1,6 @@
 = content_for :head_content do
   %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
+  = javascript_include_tag 'date.js'
   = javascript_include_tag 'calendar/fullcalendar.min.js'
   = javascript_include_tag 'jquery.qtip-1.0.0-rc3.min.js'
   = stylesheet_link_tag 'calendar/fullcalendar.css'
@@ -9,10 +10,11 @@
     var events_path     = "#{facility_instrument_reservations_url(@instrument.facility, @instrument, :format => 'js', :with_details => true)}";
     var minDate         = "#{@min_date}";
     var maxDate         = "#{@max_date}";
-    var maxDaysFromNow  = #{@instrument.max_reservation_window};
+    var maxDaysFromNow  = #{@max_window}; //#{@instrument.max_reservation_window};
     var minTime         = #{@instrument.first_available_hour};
     var maxTime         = #{@instrument.last_available_hour+1};
-    var withDetails     = true
+    var withDetails     = true;
+    var initialDate     = "#{@reservation.reserve_start_at.strftime('%Y-%m-%d')}";
   = javascript_include_tag 'reservations.js'
       
 = content_for :h1 do

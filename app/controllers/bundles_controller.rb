@@ -45,9 +45,10 @@ class BundlesController < ApplicationController
       @add_to_cart = false
     end
 
+    #TODO I18n error messages. Use is_approved_for?
     # is the user approved?
-    if @add_to_cart && @bundle.requires_approval? && @bundle.product_users.find_by_user_id(acting_user.id).nil?
-      @add_to_cart       = false
+    if @add_to_cart && !@bundle.is_approved_for?(acting_user) 
+      @add_to_cart       = false unless session_user and session_user.can_override_restrictions?(@bundle)
       flash.now[:notice] = 'This bundle requires approval to purchase; please contact the facility.'
     end
 

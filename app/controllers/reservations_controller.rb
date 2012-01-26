@@ -2,9 +2,11 @@ class ReservationsController < ApplicationController
   customer_tab  :all
   before_filter :authenticate_user!
   before_filter :check_acting_as,  :only => [ :switch_instrument, :show, :list]
+  before_filter :load_basic_resources, :only => [:new, :create, :edit, :update]
   before_filter :load_and_check_resources, :only => [ :move, :switch_instrument ]
 
-
+  include TranslationHelper
+  
   def initialize
     super
     @active_tab = 'reservations'
@@ -77,12 +79,9 @@ class ReservationsController < ApplicationController
 
   # POST /orders/1/order_details/1/reservations
   def create
-    @order        = Order.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:order_detail_id])
-    @instrument   = @order_detail.product
-    raise ActiveRecord::RecordNotFound unless @order_detail.reservation.nil?
+    raise ActiveRecord::RecordNotFound unless @reservation.nil?
     @reservation  = @instrument.reservations.new(params[:reservation].update(:order_detail => @order_detail))
-
+    
     if !@order_detail.bundled? && params[:order_account].blank?
       flash[:error]=I18n.t 'controllers.reservations.create.no_selection'
       return redirect_to new_order_order_detail_reservation_path(@order, @order_detail)
@@ -92,7 +91,6 @@ class ReservationsController < ApplicationController
       begin
         unless params[:order_account].blank?
           account=Account.find(params[:order_account].to_i)
-
           if account != @order.account
             @order.invalidate
             @order.update_attributes!(:account_id => account.id)
@@ -100,8 +98,8 @@ class ReservationsController < ApplicationController
             @order_detail.save!
           end
         end
-
-        @reservation.save!
+        @reservation.save_as_user!(session_user)
+        
         groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
         @cheapest_price_policy = @reservation.cheapest_price_policy(groups)
         if @cheapest_price_policy
@@ -128,18 +126,11 @@ class ReservationsController < ApplicationController
 
   # GET /orders/1/order_details/1/reservations/new
   def new
-    @order        = Order.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:order_detail_id])
-    @instrument   = @order_detail.product
-    raise ActiveRecord::RecordNotFound unless @order_detail.reservation.nil?
+    raise ActiveRecord::RecordNotFound unless @reservation.nil?
     @reservation  = @instrument.next_available_reservation || Reservation.new(:instrument => @instrument, :duration_value => (@instrument.min_reserve_mins.to_i < 15 ? 15 : @instrument.min_reserve_mins), :duration_unit => 'minutes')
-
-    groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
-    @max_window = @reservation.longest_reservation_window(groups)
-
-    # initialize calendar time constraints
-    @min_date     = Time.zone.now.strftime("%Y%m%d")
-    @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
+    flash[:notice] = t_model_error(Instrument, 'acting_as_not_on_approval_list') unless @instrument.is_approved_for?(acting_user)
+    set_windows
+    
   end
 
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/:id(.:format)
@@ -153,29 +144,15 @@ class ReservationsController < ApplicationController
 
   # GET /orders/1/order_details/1/reservations/1/edit
   def edit
-    @order        = Order.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:order_detail_id])
-    @instrument   = @order_detail.product
-    @reservation  = Reservation.find(params[:id])
     # TODO you shouldn't be able to edit reservations that have passed or are outside of the cancellation period (check to make sure order has been placed)
-    raise ActiveRecord::RecordNotFound if (@reservation != @order_detail.reservation || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
-
-    groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
-    @max_window = @reservation.longest_reservation_window(groups)
-
-    # initialize calendar time constraints
-    @min_date     = Time.zone.now.strftime("%Y%m%d")
-    @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
+    raise ActiveRecord::RecordNotFound if (params[:id].to_i != @reservation.id || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
+    set_windows
   end
 
   # PUT  /orders/1/order_details/1/reservations/1
   def update
-    @order        = Order.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:order_detail_id])
-    @instrument   = @order_detail.product
-    @reservation  = @instrument.reservations.find_by_id_and_order_detail_id!(params[:id], @order_detail.id)
     # TODO you shouldn't be able to edit reservations that have passed or are outside of the cancellation period (check to make sure order has been placed)
-    raise ActiveRecord::RecordNotFound if (@reservation != @order_detail.reservation || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
+    raise ActiveRecord::RecordNotFound if (params[:id].to_i != @reservation.id || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
 
     # clear existing reservation attributes
     [:reserve_start_at, :reserve_end_at].each do |k|
@@ -189,7 +166,7 @@ class ReservationsController < ApplicationController
 
     Reservation.transaction do
       begin
-        @reservation.save!
+        @reservation.save_as_user!(session_user)
         groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
         @cheapest_price_policy = @reservation.cheapest_price_policy(groups)
         if @cheapest_price_policy
@@ -284,14 +261,26 @@ class ReservationsController < ApplicationController
 
 
   private
-
-  def load_and_check_resources
-    @order        = Order.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:order_detail_id])
+  def load_basic_resources
+    @order_detail = Order.find(params[:order_id]).order_details.find(params[:order_detail_id])
+    @order = @order_detail.order
+    @reservation = @order_detail.reservation
     @instrument   = @order_detail.product
-    @reservation  = @instrument.reservations.find_by_id_and_order_detail_id(params[:reservation_id], @order_detail.id)
+    @facility = @instrument.facility
+  end
+  def load_and_check_resources
+    load_basic_resources
+    #@reservation  = @instrument.reservations.find_by_id_and_order_detail_id(params[:reservation_id], @order_detail.id)
     raise ActiveRecord::RecordNotFound if @reservation.blank?
     raise ActiveRecord::RecordNotFound unless @order.user_id == session_user.id
+  end
+  def set_windows
+    groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
+    @max_window = session_user.operator_of?(@facility) ? 365 : @reservation.longest_reservation_window(groups)
+    @max_days_ago = session_user.operator_of?(@facility) ? -365 : 0
+    # initialize calendar time constraints
+    @min_date     = (Time.zone.now + @max_days_ago.days).strftime("%Y%m%d")
+    @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
   end
 
 end

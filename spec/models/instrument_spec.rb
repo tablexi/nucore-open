@@ -11,15 +11,13 @@ describe Instrument do
       @instrument.type.should == 'Instrument'
     end
   end
-  
-  it "should require min_reserve_mins and max_reserve_mins to be >= 0 and integers only" do
-    should allow_value(0).for(:min_reserve_mins)
-    should_not allow_value(-1).for(:min_reserve_mins)
-    should_not allow_value(5.0).for(:min_reserve_mins)
 
-    should allow_value(0).for(:max_reserve_mins)
-    should_not allow_value(-1).for(:max_reserve_mins)
-    should_not allow_value(5.0).for(:max_reserve_mins)
+  [ :min_reserve_mins, :max_reserve_mins, :auto_cancel_mins ].each do |attr|
+    it "should require #{attr} to be >= 0 and integers only" do
+      should allow_value(0).for(attr)
+      should_not allow_value(-1).for(attr)
+      should_not allow_value(5.0).for(attr)
+    end
   end
 
   context "reservations with schedule rules from 9 am to 5 pm every day, with 60 minute durations" do

@@ -1,6 +1,6 @@
 $(document).ready(function() {
   // initialize fullcalendar
-  $('#calendar').fullCalendar({
+  var calendarOptions = {
     editable: false,
     defaultView: 'agendaWeek',
     allDaySlot: false,
@@ -65,7 +65,16 @@ $(document).ready(function() {
         } catch(error) {}
       }
     }
-  });
+    
+  };
+  if (window.initialDate) {
+	  var d = new Date(Date.parse(initialDate));
+	  $.extend(calendarOptions, {year: d.getFullYear(), month: d.getMonth(), date: d.getDate()});
+  }
+  
+  $('#calendar').fullCalendar(calendarOptions);
+  
+
 
   function initReserveButton()
   {
@@ -92,8 +101,15 @@ $(document).ready(function() {
       window['minDaysFromNow'] = 0;
     }
     $("#datepicker").datepicker({'minDate':minDaysFromNow, 'maxDate':maxDaysFromNow});
+
     $('.datepicker').each(function(){
-      $(this).datepicker({'minDate':minDaysFromNow, 'maxDate':maxDaysFromNow});
+      $(this).datepicker({'minDate':minDaysFromNow, 'maxDate':maxDaysFromNow})
+      		.change(function() {
+      			var d = new Date(Date.parse($(this).val()));
+      			$('#calendar').fullCalendar('gotoDate', d);
+    	
+    
+      		});
     });
   }
 

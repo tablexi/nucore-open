@@ -1,7 +1,7 @@
 = content_for :h1 do
   =h current_facility
 
-- if acting_as? or session_user.operator_of?(current_facility)
+- if acting_as? || session_user.try(:operator_of?, current_facility)
   - instruments = current_facility.instruments.active_plus_hidden
   - items       = current_facility.items.active_plus_hidden
   - services    = current_facility.services.active_plus_hidden
@@ -21,29 +21,7 @@
 .wysiwyg= current_facility.description
 
 
-- unless instruments.empty?
-  %h3 Instruments
-  %ul
-    - instruments.sort.each do |instrument|
-      %li
-        = link_to(instrument.name + (instrument.is_hidden? ? ' (hidden)' : ''), facility_instrument_path(current_facility, instrument))
-        -if !acting_user.nil?
-          =instrument.is_approved_for?(acting_user) ? '': " (Requires Approval)"
-
-- unless services.empty?
-  %h3 Services
-  %ul
-    - services.sort.each do |service|
-      %li= link_to service.name + (service.is_hidden? ? ' (hidden)' : ''), facility_service_path(current_facility, service)
-
-- unless items.empty?
-  %h3 Items
-  %ul
-    - items.sort.each do |item|
-      %li= link_to item.name + (item.is_hidden? ? ' (hidden)' : ''), facility_item_path(current_facility, item)
-
-- unless bundles.empty?
-  %h3 Bundles
-  %ul
-    - bundles.sort.each do |bundle|
-      %li= link_to bundle.name + (bundle.is_hidden? ? ' (hidden)' : ''), facility_bundle_path(current_facility, bundle)
+= render :partial => 'product_list', :locals => {:products => instruments}
+= render :partial => 'product_list', :locals => {:products => services}
+= render :partial => 'product_list', :locals => {:products => items}
+= render :partial => 'product_list', :locals => {:products => bundles}

@@ -6,6 +6,8 @@ class ServicesController < ApplicationController
   before_filter :init_current_facility
   before_filter :init_service, :except => [:index, :new, :create]
 
+  include TranslationHelper
+  
   load_and_authorize_resource :except => [:show]
 
   layout 'two_column'
@@ -38,7 +40,7 @@ class ServicesController < ApplicationController
     # do the product have active price policies
     unless @service.can_purchase?
       @add_to_cart       = false
-      flash.now[:notice] = 'This service is currently unavailable for purchase online.'
+      flash.now[:notice] = t_model_error(Service, 'not_available')
     end
 
     # is user logged in?
@@ -46,23 +48,23 @@ class ServicesController < ApplicationController
       @login_required = true
       @add_to_cart = false
     end
-
+       
     # is the user approved?
-    if @add_to_cart && @service.requires_approval? && @service.product_users.find_by_user_id(acting_user.id).nil?
-      @add_to_cart       = false
-      flash.now[:notice] = 'This service requires approval to purchase; please contact the facility.'
+    if @add_to_cart && !@service.is_approved_for?(acting_user)
+      @add_to_cart       = false unless session_user and session_user.can_override_restrictions?(@service) 
+      flash.now[:notice] = t_model_error(Service, 'requires_approval')
     end
 
     # does the product have any price policies for any of the groups the user is a member of?
     if @add_to_cart && !(@service.can_purchase?((acting_user.price_groups + acting_user.account_price_groups).flatten.uniq.collect{ |pg| pg.id }))
       @add_to_cart       = false
-      flash.now[:notice] = 'You are not in a price group that may reserve this service; please contact the facility.'
+      flash.now[:notice] = t_model_error(Service, 'not_in_price_group')
     end
 
     # when ordering on behalf of, does the staff have permissions for this facility?
     if @add_to_cart && acting_as? && !session_user.operator_of?(@service.facility)
       @add_to_cart = false
-      flash.now[:notice] = 'You are not authorized to order services from this facility on behalf of a user.'
+      flash.now[:notice] = t_model_error(Service, 'not_authorized_acting_as')
     end
 
     @active_tab = 'home'

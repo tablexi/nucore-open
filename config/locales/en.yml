@@ -654,6 +654,48 @@ en:
       head: Statement History
       no_statements: No statements have been sent yet
 
+  instruments:
+    manage:
+      res_only: "Reservation only"
+      control_mech: "Timer without relay"
+      label:
+        control_mech: "Control mechanism"
+        min_res: "Minimum Reservation Minutes"
+        max_res: "Maximum Reservation Minutes"
+        cancel_hours: "Minimum Cancelation Hours"
+        cancel_mins: "Automatic Cancelation Minutes"
+        relay:
+          ip: "Relay IP Address"
+          port: "Relay Port"
+          user: "Relay Username"
+          pass: "Relay Password"
+          auto_logout: "Automatic Logout?"
+
+    instrument_fields:
+      show_details: "Check to show reservation details"
+      control_mechanism: "How the instrument and its time is managed"
+      relay:
+        intro: "(Optional) If the instrument is connected to an approved power relay, please enter the information below. Power relays must be purchased separately."
+        label:
+          relay: "Power Relay Information"
+          type: "Relay Type"
+          ip: "IP Address"
+          port: "Device Port"
+          user: "Username"
+          pass: "Password"
+          auto_logout: "Automatically power off the relay 60 minutes after the reservation is scheduled to end"
+      reservation:
+        intro: "(Optional)  Define minimum and maximum reservation limits below."
+        instruct:
+          cancel_hours: "Minimum length of time before a reservation begins that a user may cancel a reservation without penalty"
+          auto_cancel: "The duration a due but unactivated reservation can exist before the system cancels it"
+        label:
+          restrict: "Reservation Restrictions"
+          min_reserve: "Minimum (minutes)"
+          max_reserve: "Maximum (minutes)"
+          cancel_hours: "Cancelation Minimum (hours)"
+          auto_cancel: "Automatic Cancelation (minutes)"
+
   devise:
     failure:
       invalid: "Invalid username or password."
@@ -731,9 +773,6 @@ en:
       ]
 
   models:
-    account_user:
-      validation:
-        userid: "is already a member of this payment source"
     order:
       auto_assign_account: "Could not find a valid payment source for purchasing %{product_name}"
 
@@ -777,7 +816,24 @@ en:
           password_not_updatable: You cannot change this user's password
           password_too_short: must be at least 6 characters long
           invalid_token: The token is either invalid or has expired.
-              
+        instrument:
+          not_available: The %{instrument} instrument is currently unavailable for reservation online.
+          requires_approval_html: The %{instrument} instrument requires approval to reserve; please contact the facility for further information:<br/><br/> %{facility}<br/><a href=\"mailto:%{email}\">%{email}</a>
+          acting_as_not_on_approval_list: The user you are ordering for is not on the authorized list for this instrument.
+        item:
+          not_available: This item is currently unavailable for purchase online.
+          requires_approval: This item requires approval to purchase; please contact the facility.
+          not_in_price_group: You are not in a price group that may purchase this item; please contact the facility.
+          not_authorized_acting_as: You are not authorized to order items from this facility on behalf of a user.
+        service:
+          not_available: This service is currently unavailable for purchase online.
+          requires_approval: This service requires approval to purchase; please contact the facility.
+          not_in_price_group: You are not in a price group that may reserve this service; please contact the facility.
+          not_authorized_acting_as: You are not authorized to order services from this facility on behalf of a user. 
+        account_user:
+          attributes:
+            user_id:
+              taken: "is already a member of this payment source"   
               
     # Model Names
     models:
@@ -815,6 +871,8 @@ en:
         current_password: Current password
       facility:
         url_name: URL name
+      product:
+        requires_approval: Requires Approval
       price_group:
         is_internal: Is Internal?
       user_role:

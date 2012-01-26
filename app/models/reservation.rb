@@ -8,18 +8,20 @@ class Reservation < ActiveRecord::Base
 
   validates_uniqueness_of :order_detail_id, :allow_nil => true
   validates_presence_of :instrument_id, :reserve_start_at, :reserve_end_at
-  validate :does_not_conflict_with_other_reservation, :satisfies_minimum_length, :satisfies_maximum_length, :instrument_is_available_to_reserve, :in_the_future, :if => :reserve_start_at && :reserve_end_at && :reservation_changed?
-
+  validate :does_not_conflict_with_other_reservation, :satisfies_minimum_length, :satisfies_maximum_length, :instrument_is_available_to_reserve, :if => :reserve_start_at && :reserve_end_at && :reservation_changed?
+  
   validates_each [ :actual_start_at, :actual_end_at ] do |record,attr,value|
     if value
       record.errors.add(attr.to_s,'cannot be in the future') if Time.zone.now < value
     end
   end
-
+  
   validate :starts_before_ends
-  #validate :in_window, :if => :has_order_detail?
   #validate minimum_cost met
 
+  # validates for non_admins
+  #validate :in_window, :if => :has_order_detail?  
+  
   # virtual attributes
   attr_accessor     :duration_mins, :duration_value, :duration_unit,
                     :reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian,
@@ -30,7 +32,24 @@ class Reservation < ActiveRecord::Base
   scope :active, :conditions => ["reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)"], :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id']
   scope :limit,    lambda { |n| {:limit => n}}
 
-
+  def save_extended_validations(options ={})
+    perform_validations(options)
+    in_window
+    in_the_future
+    return false if self.errors.any?
+    self.save
+  end
+  def save_extended_validations!
+    raise ActiveRecord::RecordInvalid.new(self) unless save_extended_validations()  
+  end
+  def save_as_user!(user)
+    if (user.operator_of?(instrument.facility))
+      self.save!
+    else
+      self.save_extended_validations!  
+    end
+  end
+  
   def self.upcoming(t=Time.zone.now)
     # If this is a named scope differences emerge between Oracle & MySQL on #reserve_end_at querying.
     # Eliminate by letting Rails filter by #reserve_end_at
@@ -38,7 +57,6 @@ class Reservation < ActiveRecord::Base
     reservations.delete_if{|r| r.reserve_end_at < t}
     reservations
   end
-
 
   def order
     order_detail.order if order_detail
@@ -176,6 +194,7 @@ class Reservation < ActiveRecord::Base
   def in_window?
     groups   = (order_detail.order.user.price_groups + order_detail.order.account.price_groups).flatten.uniq
     max_days = longest_reservation_window(groups)
+    logger.debug("reserve_start: #{reserve_start_at}")
     diff     = reserve_start_at.to_date - Date.today
     diff <= max_days
   end
@@ -552,7 +571,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def can_start_early?
-    return false if reserve_start_at > Time.zone.now.advance(:minutes => 2) # reserve start is more than 2 minutes in the future
+    return false if reserve_start_at > Time.zone.now.advance(:minutes => 5) # reserve start is more than 5 minutes in the future
     # no other reservation ongoing; no res between now and reserve_start;
     return false unless Reservation.find(:first,
                                          :conditions => ["((reserve_start_at > ? AND reserve_start_at < ?) OR actual_start_at IS NOT NULL) AND reservations.instrument_id = ? AND actual_end_at IS NULL AND (order_detail_id IS NULL OR order_details.state = 'new' OR order_details.state = 'inprocess')", Time.zone.now, reserve_start_at, instrument_id],
@@ -620,8 +639,6 @@ class Reservation < ActiveRecord::Base
     satisfies_minimum_length? &&
     satisfies_maximum_length? &&
     instrument_is_available_to_reserve? &&
-    in_the_future? &&
-    in_window? &&
     does_not_conflict_with_other_reservation?
   end
 
@@ -631,7 +648,7 @@ class Reservation < ActiveRecord::Base
 
   def requires_but_missing_actuals?
     pp = order_detail.price_policy
-    pp && pp.usage_rate && pp.usage_rate > 0 && !has_actuals?
+    !cancelled? && pp && pp.usage_rate && pp.usage_rate > 0 && !has_actuals?
   end
 
   protected

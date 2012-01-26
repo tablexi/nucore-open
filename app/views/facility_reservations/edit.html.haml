@@ -1,21 +1,24 @@
 = content_for :head_content do
   %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
+  = javascript_include_tag 'date.js'
   = javascript_include_tag 'calendar/fullcalendar.min.js'
   = stylesheet_link_tag 'calendar/fullcalendar.css'
   = stylesheet_link_tag 'calendar/fullcalendar.extensions.css'
   - if @order_detail.complete?
     :javascript
       var events_path     = "#{facility_instrument_reservations_url(current_facility, @instrument, :format => 'js')}";
-      var minDaysFromNow  = #{(@reservation.reserve_start_at.to_date - Time.zone.now.to_date).to_i - 1};
-      var maxDaysFromNow  = #{(@reservation.reserve_end_at.to_date - Time.zone.now.to_date).to_i + 1};
+      var maxDaysFromNow  = #{@max_window};
+      var minDaysFromNow  = #{@max_days_ago};
       var minTime         = #{@instrument.first_available_hour};
       var maxTime         = #{@instrument.last_available_hour+1};
   - else
     :javascript
       var events_path     = "#{facility_instrument_reservations_url(current_facility, @instrument, :format => 'js')}";
-      var maxDaysFromNow  = #{@instrument.max_reservation_window};
+      var maxDaysFromNow  = #{@max_window};
+      var minDaysFromNow  = #{@max_days_ago};
       var minTime         = #{@instrument.first_available_hour};
       var maxTime         = #{@instrument.last_available_hour+1};
+      var initialDate     = "#{@reservation.reserve_start_at.strftime('%Y-%m-%d')}";
   = javascript_include_tag 'reservations.js'
 
 = content_for :h1 do

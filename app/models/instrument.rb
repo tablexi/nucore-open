@@ -10,7 +10,7 @@ class Instrument < Product
 
   validates_presence_of :initial_order_status_id, :facility_account_id
   validates_numericality_of :account, :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 99999
-  validates_numericality_of :min_reserve_mins, :max_reserve_mins, :only_integer => true, :greater_than_or_equal_to => 0, :allow_nil => true
+  validates_numericality_of :min_reserve_mins, :max_reserve_mins, :auto_cancel_mins, :only_integer => true, :greater_than_or_equal_to => 0, :allow_nil => true
 
   after_create :set_default_pricing
 
@@ -96,15 +96,6 @@ class Instrument < Product
       false
     else
       current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase? && group_ids.include?(pp.price_group_id)}
-    end
-  end
-
-  def is_approved_for? (user)
-    return true if user.nil?
-    if requires_approval?
-      return requires_approval? && !product_users.find_by_user_id(user.id).nil?
-    else
-      true
     end
   end
 

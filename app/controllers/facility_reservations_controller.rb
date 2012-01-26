@@ -3,7 +3,7 @@ class FacilityReservationsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility
-
+  
   load_and_authorize_resource :class => Reservation
 
   helper_method :sort_column, :sort_direction
@@ -40,9 +40,9 @@ class FacilityReservationsController < ApplicationController
     @order_detail = @order.order_details.find(params[:order_detail_id])
     @reservation  = @order_detail.reservation
     @instrument   = @order_detail.product
-
+    
     raise ActiveRecord::RecordNotFound unless @reservation == Reservation.find(params[:id])
-
+    set_windows
     unless @reservation.can_edit? || @reservation.can_edit_actuals?
       return redirect_to facility_order_order_detail_reservation_path(current_facility, @order, @order_detail, @reservation)
     end
@@ -55,7 +55,7 @@ class FacilityReservationsController < ApplicationController
     @reservation  = @order_detail.reservation
     @instrument   = @order_detail.product
     raise ActiveRecord::RecordNotFound unless @reservation == Reservation.find(params[:id]) && (@reservation.can_edit? || @reservation.can_edit_actuals?)
-
+    set_windows
     # clear existing reservation attributes
     can_edit_reserve = @reservation.can_edit?
     can_edit_actuals = @reservation.can_edit_actuals?
@@ -131,9 +131,7 @@ class FacilityReservationsController < ApplicationController
     @instrument   = current_facility.instruments.find_by_url_name!(params[:instrument_id])
     @reservation  = @instrument.next_available_reservation || Reservation.new(:duration_value => @instrument.min_reserve_mins, :duration_unit => 'minutes')
 
-    # initialize calendar time constraints
-    @min_date     = Time.zone.now.strftime("%Y%m%d")
-    @max_date     = (Time.zone.now + @instrument.max_reservation_window.days).strftime("%Y%m%d")
+    set_windows
 
     render :layout => 'two_column'
   end
@@ -147,6 +145,7 @@ class FacilityReservationsController < ApplicationController
       flash[:notice] = 'The reservation has been created successfully.'
       redirect_to facility_instrument_schedule_url
     else
+      set_windows
       render :action => "new", :layout => 'two_column'
     end
   end
@@ -156,7 +155,7 @@ class FacilityReservationsController < ApplicationController
     @instrument  = current_facility.instruments.find_by_url_name!(params[:instrument_id])
     @reservation = @instrument.reservations.find(params[:reservation_id])
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
-
+    set_windows
     render :layout => 'two_column'
   end
 
@@ -165,7 +164,7 @@ class FacilityReservationsController < ApplicationController
     @instrument  = current_facility.instruments.find_by_url_name!(params[:instrument_id])
     @reservation = @instrument.reservations.find(params[:reservation_id])
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
-
+    set_windows
     [:reserve_start_at, :reserve_end_at].each do |k|
       @reservation.send("#{k}=", nil)
     end
@@ -250,5 +249,13 @@ class FacilityReservationsController < ApplicationController
 
   def sort_direction
     (params[:dir] || '') =~ /asc/i ? 'asc' : 'desc'
+  end
+  
+  def set_windows
+    @max_window = 365
+    @max_days_ago = -365
+    # initialize calendar time constraints
+    @min_date     = Time.zone.now.strftime("%Y%m%d")
+    @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
   end
 end

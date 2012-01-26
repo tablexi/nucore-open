@@ -1,0 +1,41 @@
+There is small, simple framework inside NU Core for creating and controlling daemons that have the same environment as
+the web application. This is useful for monitoring NU Core's database outside of the running web application while using
+the application's classes. The daemons framework is based on the daemons gem (http://daemons.rubyforge.org/)
+
+Creating daemons
+----------------
+
+All daemons belong in lib/daemons. In most cases all you need is:
+
+    require File.expand_path('base', File.dirname(__FILE__))
+
+    Daemons::Base.new('daemon_name').start do
+        # the work your daemon needs to do
+    end
+
+The daemon_name argument can be anything. It's simply what you want to call your daemon. The filename of your source
+should match what you give the constructor. By default a sane runtime is given to the daemon. If you want to tweak
+the daemon's runtime see Daemons::Base#daemon_opts.
+
+
+Controlling daemons
+-------------------
+
+There are rake tasks for controlling daemons:
+
+    * daemon:start[daemon_name]
+    * daemon:stop[daemon_name]
+    * daemon:debug[daemon_name]
+
+In every case the daemon_name argument should match the filename of your daemon. For example, `rake daemon:start[mydaemon]`
+would fire up the daemon at lib/daemons/mydaemon.rb. Note that the debug task will start the daemon in the foreground,
+making it easier to diagnose problems by dumping output to the console.
+
+
+Monitoring daemons
+------------------
+
+The default configuration for daemons includes a monitoring process that will restart failed daemons. In addition daemon
+output is sent to log/<daemon_name>.output and log/<daemon_name>.log. Since a daemon is a stand-alone process you can
+see it in your system's `ps` output by grepping for <daemon_name>.
+
