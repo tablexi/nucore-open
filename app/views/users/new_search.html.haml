@@ -10,9 +10,9 @@
 
         function has_netid_change() {
           if ($('#has_netid').val() == 'yes')
-            $('#username_lookup').html($('#username_lookup').html().replace(/#{t(".js.email")}/g, '#{t(".js.id")}'));
+            $('#username_lookup').html($('#username_lookup').html().replace(/#{t(".js.email")}/ig, '#{t(".js.id")}'));
           else
-            $('#username_lookup').html($('#username_lookup').html().replace(/#{t(".js.id")}/g, '#{t(".js.email")}'));
+            $('#username_lookup').html($('#username_lookup').html().replace(/#{t(".js.id")}/ig, '#{t(".js.email")}'));
         }
 
         $('#has_netid').change(function(e) {
