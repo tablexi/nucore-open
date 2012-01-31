@@ -12,14 +12,7 @@
     %table
       -## THE HEADER CONTROL ROW
       %tr.borderless
-        %td= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
-        %td
-        %td
-        %td
-        %td
-        %td
-        %td
-        %td
+        %td{ :colspan => 8 }= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
         %td
           - if facility_users.empty?
             = select_tag :assigned_user_id, options_for_select([['Assign to...', nil], ['Unassign', 'unassign']]), :class => 'sync_select', :id => nil
