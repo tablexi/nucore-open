@@ -6,13 +6,24 @@
 
   = content_for :head_content do
     :javascript
+      function changeUsernameLookupText(from, to)
+      {
+        $('#username_lookup p,#username_lookup label').each(function() {
+          $(this).text($(this).text().replace(new RegExp(from, 'ig'), to));
+        });
+
+        $('#username_lookup input[type=submit]').each(function() {
+          $(this).val($(this).val().replace(new RegExp(from, 'ig'), to));
+        });
+      }
+
       $(document).ready(function() {    
 
         function has_netid_change() {
           if ($('#has_netid').val() == 'yes')
-            $('#username_lookup').html($('#username_lookup').html().replace(/#{t(".js.email")}/ig, '#{t(".js.id")}'));
+            changeUsernameLookupText('#{t(".js.email")}', '#{t(".js.id")}');
           else
-            $('#username_lookup').html($('#username_lookup').html().replace(/#{t(".js.id")}/ig, '#{t(".js.email")}'));
+            changeUsernameLookupText('#{t(".js.id")}', '#{t(".js.email")}');
         }
 
         $('#has_netid').change(function(e) {
