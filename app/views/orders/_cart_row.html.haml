@@ -87,3 +87,9 @@
     - if @order.has_subsidies?
       %td.currency Unassigned
     %td.currency Unassigned
+- if acting_as?
+  %tr
+    %td{:colspan => '6'}
+      %label.inline Note:
+      = text_field_tag("note#{order_detail.id}", order_detail.note, :style => "width:375px" )
+
