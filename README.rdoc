@@ -41,7 +41,7 @@ Welcome to NU Core! This guide will help you get a development environment up an
     rake demo:seed
 
 7. Start your server
-    script/server
+    rails server
 
 8. Login as Dave The Director
     ... Go to http://0.0.0.0:3000 ...
