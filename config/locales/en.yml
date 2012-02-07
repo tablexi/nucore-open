@@ -102,6 +102,7 @@ en:
         cc_name: "Name on Card"
         affiliate: "Affiliate Name"
         remit: "Bill To"
+        all_instruct: "Enter a text description to help you and the user identify this payment source."
         cc_instruct: "No part of a credit card number may be entered. Enter a text description to help you and the user identify this card. For example: \"Dr. Smith's Visa Card\"."
         po_instruct: "Where the invoice should be sent to for this payment source; this text will appear on the customer's invoice."
     account_balances:
