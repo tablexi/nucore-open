@@ -37,7 +37,7 @@
         %ul
           %li
             - product_name = (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
-            = "#{h od.product.facility.abbreviation} / #{product_name}".html_safe
+            = link_to  "#{h od.product.facility.abbreviation} / #{product_name}".html_safe, facility_product_path(od.product.facility, od.product)
           - unless od.note.blank?
             %li
               %i=h "Note: #{od.note}"
