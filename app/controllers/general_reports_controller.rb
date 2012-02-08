@@ -31,6 +31,9 @@ class GeneralReportsController < ReportsController
     render_report(4, 'Name') {|od| od.price_policy ? od.price_policy.price_group.name : 'Unassigned' }
   end
 
+  def assigned_to
+    render_report(5, 'Name') {|od| od.assigned_user.presence ? od.assigned_user.to_s : 'Unassigned' }
+  end
 
   private
 
