@@ -51,6 +51,10 @@
         - options.collect!{|acct| [acct.to_s ,acct.id] }
         - options.unshift(Array.new(2)) if options.size > 1
         = select_tag 'order_account', options_for_select(options, @order.account)
+      - if acting_as?
+        %li.left
+          = f.label       :note
+          = f.text_field  :note
       %li.clear
   %ul.form.box
     = render :partial => 'reservation_fields', :locals => {:f => f}
