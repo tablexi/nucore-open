@@ -1,5 +1,0 @@
-TEST_EMAIL_ONLY       = true
-TEST_EMAIL            = 'user@example.com'
-FROM_EMAIL            = 'no-reply@example.com'
-EXCEPTIONS_SENDER     = 'exception-notifier@example.com'
-EXCEPTIONS_RECIPIENTS = 'devs@example.com'

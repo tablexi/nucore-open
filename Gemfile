@@ -29,6 +29,7 @@ gem 'foreigner',        '1.1.1'
 gem 'awesome_nested_set', '2.0.1'
 gem 'exception_notification', :require => 'exception_notifier'
 gem 'daemons',          '1.1.6'
+gem 'rails_config',     '0.2.5'
 
 group :development, :test do
    gem 'autotest',          '4.4.6' # TODO: remove?

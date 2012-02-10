@@ -1,0 +1,9 @@
+aes_crypt_key:
+email:
+  from: 'noreply@example.com'
+  fake:
+    enabled: false
+    to:
+  exceptions:
+    sender: 'noreply@example.com'
+    recipients: [ 'warn@example.com', 'error@example.com' ]

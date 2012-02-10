@@ -8,8 +8,8 @@ class FileUpload < ActiveRecord::Base
   validates_inclusion_of  :file_type, :in => %w(info template template_result sample_result)
   has_attached_file       :file,
                           :storage => :filesystem,
-                          :url => "#{ENV['RAILS_RELATIVE_URL_ROOT']}/:attachment/:id_partition/:style/:basename.:extension",
-                          :path => ":rails_root/public/:attachment/:id_partition/:style/:basename.:extension"
+                          :url => "#{ENV['RAILS_RELATIVE_URL_ROOT']}/:attachment/:id_partition/:style/:safe_filename",
+                          :path => ":rails_root/public/:attachment/:id_partition/:style/:safe_filename"
   validates_attachment_presence :file
 
   scope :info,              :conditions => {:file_type => 'info'}

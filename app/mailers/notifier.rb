@@ -1,5 +1,5 @@
 class Notifier < ActionMailer::Base
-  default :from => FROM_EMAIL, :content_type => 'multipart/alternative'
+  default :from => Settings.email.from, :content_type => 'multipart/alternative'
 
   # Welcome user, login credentials.  CC to PI and Department Admin.
   # Who created the account.  How to update.
@@ -66,6 +66,6 @@ class Notifier < ActionMailer::Base
   private
 
   def send_nucore_mail(to, subject)
-    mail(:subject => subject, :to => TEST_EMAIL_ONLY ? TEST_EMAIL : to)
+    mail(:subject => subject, :to => Settings.email.fake.enabled ? Settings.email.fake.to : to)
   end
 end

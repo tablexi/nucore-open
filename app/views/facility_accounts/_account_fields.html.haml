@@ -25,8 +25,11 @@
 
   %li
     = f.label :description, nil, :class => 'require'
-    - if instructions_for == :all || instructions_for == 'CreditCardAccount'
-      %p.instruction.CreditCardAccount= t('facility_accounts.account_fields.label.cc_instruct')
+    %p.instruction.CreditCardAccount
+      - if instructions_for == :all
+        = t('facility_accounts.account_fields.label.all_instruct')
+      - elsif instructions_for == 'CreditCardAccount'
+        = t('facility_accounts.account_fields.label.cc_instruct')
     = f.text_field :description, :class => 'NufsAccount CreditCardAccount PurchaseOrderAccount'
 
   - if @account.class == Account || @account.is_a?(AffiliateAccount)
