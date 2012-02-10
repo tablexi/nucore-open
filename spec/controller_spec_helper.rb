@@ -30,6 +30,13 @@ def do_request(params=nil)
   method(@method).call(@action, params)
 end
 
+# This does what Users#switch_to does and sets the acting user.
+# This will make ApplicationController#acting_as? return true and
+# ApplicationController#acting_user return a user 
+def switch_to(user)
+  session[:acting_user_id] = user.id
+end
+
 
 #
 # The helpers below are useful for testing the authentication
