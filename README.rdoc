@@ -22,11 +22,10 @@ Welcome to NU Core! This guide will help you get a development environment up an
     cd nucore
     bundle install
 
-3. Configure your constants
-    cd config
-    cp Constants.rb.template ../../Constants.rb
-    ... edit Constants.rb and change TEST_EMAIL and FROM_EMAIL to addresses that make sense for you ...
-    ln -s ../../Constants.rb .
+3. Configure your local settings
+    cd config/settings
+    touch settings.local.yml
+    ... edit settings.local.yml and add email.fake.to and override email.from with addresses that make sense for you ...
 
 4. Configure your databases
     cp database.yml.template database.yml

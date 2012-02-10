@@ -1,7 +1,6 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-require File.dirname(__FILE__) + "/Constants.rb"
 require File.join(File.dirname(__FILE__), '..', 'vendor', 'engines', 'nucs', 'lib', 'engine')
 
 require 'will_paginate/array'
