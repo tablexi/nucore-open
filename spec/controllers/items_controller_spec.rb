@@ -98,6 +98,32 @@ describe ItemsController do
         assigns[:add_to_cart].should be_true
       end
     end
+    
+     context "hidden item" do
+      before :each do
+        @item.update_attributes(:is_hidden => true)
+      end
+      it "should throw a 404 if you're not an admin" do
+        sign_in @guest
+        do_request
+        response.should_not be_success
+        response.response_code.should == 404
+      end
+      it "should show the page if you're an admin" do
+        sign_in @admin
+        do_request
+        response.should be_success
+        assigns[:item].should == @item
+      end
+      it "should show the page if you're acting as a user" do
+        ItemsController.any_instance.stubs(:acting_user).returns(@guest)
+        ItemsController.any_instance.stubs(:acting_as?).returns(true)
+        sign_in @admin
+        do_request
+        response.should be_success
+        assigns[:item].should == @item
+      end
+    end
 
   end
 

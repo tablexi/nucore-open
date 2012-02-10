@@ -84,4 +84,8 @@ class Product < ActiveRecord::Base
     end
   end
   
+  def available_for_purchase?
+    !is_archived? && facility.is_active?
+  end
+  
 end

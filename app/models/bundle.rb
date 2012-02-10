@@ -24,12 +24,15 @@ class Bundle < Product
   end
 
   def products_active?
+    return true if products.empty? && !self.is_archived?
     return false if products.empty? || products.any?{|p| p.is_archived?}
     true
   end
 
   def can_purchase? (group_ids = nil)
-    return false if is_archived? || !facility.is_active?
+    return false if  !available_for_purchase?
+    # before if products.empty?, this would return and empty set [], which evaluates to true
+    return false if products.empty?
     products.each do |p|
       return false unless p.can_purchase?(group_ids)
     end
