@@ -31,7 +31,6 @@ describe BundlesController do
       should assign_to(:archived_product_count).with_kind_of(Fixnum)
       should assign_to(:not_archived_product_count).with_kind_of(Fixnum)
       should assign_to(:product_name).with_kind_of(String)
-      should assign_to(:bundles).with_kind_of(Array)
       assigns(:bundles).size.should == 1
       assigns(:bundles).should == @authable.bundles.not_archived
     end
@@ -42,7 +41,6 @@ describe BundlesController do
       maybe_grant_always_sign_in(:director)
       @params.merge!(:archived => 'true')
       do_request
-      should assign_to(:bundles).with_kind_of(Array)
       assigns(:bundles).size.should == 1
       assigns(:bundles).should == @authable.bundles.archived
     end
