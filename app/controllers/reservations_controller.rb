@@ -121,6 +121,7 @@ class ReservationsController < ApplicationController
         raise ActiveRecord::Rollback
       end
     end
+    set_windows
     render :action => "new"
   end
 
@@ -181,6 +182,7 @@ class ReservationsController < ApplicationController
         raise ActiveRecord::Rollback
       end
     end
+    set_windows
     render :action => "edit"
   end
 
