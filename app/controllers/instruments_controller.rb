@@ -6,19 +6,10 @@ class InstrumentsController < ProductsCommonController
 
   # GET /instruments
   def index
-    @archived_product_count     = current_facility.instruments.archived.length
-    @not_archived_product_count = current_facility.instruments.not_archived.length
-    @product_name               = 'Instruments'
-    if params[:archived].nil? || params[:archived] != 'true'
-      @instruments = current_facility.instruments.not_archived
-    else
-      @instruments = current_facility.instruments.archived
-    end
-
+    super
     # find current and next upcoming reservations for each instrument
     @reservations = {}
     @instruments.each { |i| @reservations[i.id] = i.reservations.upcoming[0..2]}
-    @instruments.sort!
   end
 
   # GET /instruments/1

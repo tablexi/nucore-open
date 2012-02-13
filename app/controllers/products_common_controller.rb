@@ -16,6 +16,27 @@ class ProductsCommonController < ApplicationController
     super
   end
   
+  # GET /services
+  def index
+    @product_name = self.class.name.gsub(/Controller$/, '')
+    
+    @archived_product_count     = current_facility_products.archived.length
+    @not_archived_product_count = current_facility_products.not_archived.length
+    if params[:archived].nil? || params[:archived] != 'true'
+      @products = current_facility_products.not_archived
+    else
+      @products = current_facility_products.archived
+    end
+    
+    # not sure this actually does anything since @products is a Relation, not an Array, but it was
+    # in ServicesController, ItemsController, and InstrumentsController before I pulled #index up
+    # into this class
+    @products.sort!
+    
+    # save to @services, @items, etc.
+    instance_variable_set("@#{plural_object_name}", @products)
+  end
+  
   # GET /(services|items|instruments|bundles)/1
   def show
     raise ActiveRecord::RecordNotFound if !product_is_accessible?
@@ -136,7 +157,7 @@ class ProductsCommonController < ApplicationController
   end
   # Get the object name to work off of. E.g. In ServicesController, this returns "services"
   def plural_object_name
-    self.class.name.underscore.gsub(/_controller/, "")
+    self.class.name.underscore.gsub(/_controller$/, "")
   end
   def singular_object_name
     plural_object_name.singularize
