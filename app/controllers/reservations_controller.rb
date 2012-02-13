@@ -80,7 +80,8 @@ class ReservationsController < ApplicationController
   # POST /orders/1/order_details/1/reservations
   def create
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
-    @reservation  = @instrument.reservations.new(params[:reservation].update(:order_detail => @order_detail))
+    @reservation  = @instrument.reservations.new(params[:reservation])
+    @reservation.order_detail = @order_detail
     
     if !@order_detail.bundled? && params[:order_account].blank?
       flash[:error]=I18n.t 'controllers.reservations.create.no_selection'
