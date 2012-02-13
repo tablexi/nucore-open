@@ -85,9 +85,7 @@ describe BundlesController do
         
     it 'should flash and falsify @add_to_cart if there is no price group for user to purchase through' do
       sign_in @guest
-      # make sure we don't get even the default group back
-      User.any_instance.stubs(:price_groups).returns([])
-      
+      BundlesController.any_instance.stubs(:price_policy_available_for_product?).returns(false)
       do_request
       assigns[:add_to_cart].should be_false
       assigns[:error].should == 'not_in_price_group'
