@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120117210956) do
+ActiveRecord::Schema.define(:version => 20120203185844) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -499,9 +499,11 @@ ActiveRecord::Schema.define(:version => 20120117210956) do
     t.datetime "updated_at"
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
+    t.integer  "uid"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["uid"], :name => "index_users_on_uid"
   add_index "users", ["username"], :name => "index_users_on_username", :unique => true
 
   create_table "versions", :force => true do |t|
