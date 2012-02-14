@@ -25,6 +25,7 @@ class ApplicationController < ActionController::Base
     @facility = @current_facility = Facility.find_by_url_name!(params[:facility_id] || params[:id])
   end
 
+  #TODO: refactor existing calls of this definition to use this helper 
   def current_cart
     acting_user.cart(session_user)
   end
