@@ -38,7 +38,9 @@
       url,
       function(response, status, xhr) {
         // show dialog
-        dialog.dialog();
+        dialog.dialog({
+          title: 'Accessories Entry'
+        });
       }
     ); 
 
