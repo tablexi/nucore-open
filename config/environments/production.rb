@@ -54,10 +54,10 @@ Nucore::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
-  # configure automatic exception notifier based on addresses in Constants.rb
+  # configure automatic exception notifier
   config.middleware.use ExceptionNotifier,
-    :sender_address       => EXCEPTIONS_SENDER,
-    :exception_recipients => EXCEPTIONS_RECIPIENTS
+    :sender_address       => Settings.email.exceptions.sender,
+    :exception_recipients => Settings.email.exceptions.recipients
 end
 
 # What's this for?

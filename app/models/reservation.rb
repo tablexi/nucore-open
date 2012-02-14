@@ -3,8 +3,10 @@ require "pp"
 class Reservation < ActiveRecord::Base
   include DateHelper
 
+  ## relationships
   belongs_to :instrument
   belongs_to :order_detail
+  
 
   validates_uniqueness_of :order_detail_id, :allow_nil => true
   validates_presence_of :instrument_id, :reserve_start_at, :reserve_end_at
@@ -27,10 +29,20 @@ class Reservation < ActiveRecord::Base
                     :reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian,
                     :actual_start_date, :actual_start_hour, :actual_start_min, :actual_start_meridian,
                     :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian
+  attr_writer       :note
   before_validation :set_reserve_start_at, :set_reserve_end_at, :set_actual_start_at, :set_actual_end_at
 
   scope :active, :conditions => ["reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)"], :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id']
   scope :limit,    lambda { |n| {:limit => n}}
+
+  ## delegations
+  delegate :note,     :to => :order_detail, :allow_nil => true
+
+  ## AR Hooks
+  after_save do
+    order_detail.note = @note
+    order_detail.save
+  end
 
   def save_extended_validations(options ={})
     perform_validations(options)
@@ -58,6 +70,7 @@ class Reservation < ActiveRecord::Base
     reservations
   end
 
+  # should perhaps be delegations above
   def order
     order_detail.order if order_detail
   end

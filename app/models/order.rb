@@ -126,17 +126,22 @@ class Order < ActiveRecord::Base
     return order_detail
   end
 
-  def update_quantities(order_detail_quantities)
-    order_details = self.order_details.find(order_detail_quantities.keys)
+  ## TODO: this doesn't pass errors up to the caller.. does it need to?
+  def update_details(order_detail_updates)
+    order_details = self.order_details.find(order_detail_updates.keys)
     order_details.each do |order_detail|
-      quantity = order_detail_quantities[order_detail.id]
-      if quantity > 0
-        order_detail.quantity = quantity
-        order_detail.assign_estimated_price if order_detail.cost_estimated?
-        order_detail.save
-      else
+      updates = order_detail_updates[order_detail.id]
+      quantity = updates[:quantity].to_i
+      
+      # if quantity isn't there or is 0, destroy and skip
+      unless quantity > 0
         order_detail.destroy
+        next
       end
+      
+      # otherwise update the field(s)
+      order_detail.assign_estimated_price if order_detail.cost_estimated?
+      order_detail.update_attributes(updates)
     end
   end
   

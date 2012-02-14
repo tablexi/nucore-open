@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120209231652) do
+ActiveRecord::Schema.define(:version => 20120203185844) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -373,14 +373,6 @@ ActiveRecord::Schema.define(:version => 20120209231652) do
 
   add_index "price_policies", ["price_group_id"], :name => "sys_c008589"
 
-  create_table "product_accessories", :force => true do |t|
-    t.integer "product_id",   :null => false
-    t.integer "accessory_id", :null => false
-  end
-
-  add_index "product_accessories", ["accessory_id"], :name => "product_accessories_accessory_id_fk"
-  add_index "product_accessories", ["product_id"], :name => "product_accessories_product_id_fk"
-
   create_table "product_users", :force => true do |t|
     t.integer  "product_id",  :null => false
     t.integer  "user_id",     :null => false
@@ -507,9 +499,11 @@ ActiveRecord::Schema.define(:version => 20120209231652) do
     t.datetime "updated_at"
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
+    t.integer  "uid"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["uid"], :name => "index_users_on_uid"
   add_index "users", ["username"], :name => "index_users_on_username", :unique => true
 
   create_table "versions", :force => true do |t|
@@ -564,9 +558,6 @@ ActiveRecord::Schema.define(:version => 20120209231652) do
   add_foreign_key "price_groups", "facilities", :name => "sys_c008578"
 
   add_foreign_key "price_policies", "price_groups", :name => "sys_c008589"
-
-  add_foreign_key "product_accessories", "products", :name => "product_accessories_accessory_id_fk", :column => "accessory_id"
-  add_foreign_key "product_accessories", "products", :name => "product_accessories_product_id_fk"
 
   add_foreign_key "product_users", "products", :name => "fk_products"
 

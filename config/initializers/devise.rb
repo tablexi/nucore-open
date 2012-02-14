@@ -4,7 +4,7 @@ require 'devise/orm/active_record'
 # four configuration values can also be set straight in your models.
 Devise.setup do |config|
   # Configure the e-mail address which will be shown in DeviseMailer.
-  config.mailer_sender = FROM_EMAIL
+  config.mailer_sender = Settings.email.from
   
   
   # Configure the content type of DeviseMailer mails (defaults to text/html")

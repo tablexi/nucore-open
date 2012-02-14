@@ -274,11 +274,11 @@ describe Order do
       end
     end
 
-    context 'quantity adjustments' do
+    context 'order detail updates' do
       it "should adjust the quantity" do
         @cart.add(@service, 1)
         @order_detail = @cart.reload.order_details.first
-        @cart.update_quantities({@order_detail.id => 2})
+        @cart.update_details(@order_detail.id => {:quantity => '2'})
         @order_detail = @cart.reload.order_details.first
         @order_detail.quantity.should == 2
       end
@@ -286,8 +286,17 @@ describe Order do
       it "should delete the order_detail when setting the quantity to 0" do
         @cart.add(@service, 1)
         @order_detail = @cart.order_details[0]
-        @cart.update_quantities({@order_detail.id => 0})
+        @cart.update_details(@order_detail.id => {:quantity => '0'})
         @cart.reload.order_details.size.should == 0
+      end
+
+      it "should adjust the note" do
+        @cart.add(@service, 1)
+        @order_detail = @cart.reload.order_details.first
+        # quantity must be there, or we'll delete the order_detail
+        @cart.update_details(@order_detail.id => {:quantity => 1, :note => 'new note value'})
+        @order_detail = @cart.reload.order_details.first
+        @order_detail.note.should == 'new note value' 
       end
 
       it "should clear the facility and the account when destroying the last order_detail from the cart" do
@@ -303,7 +312,6 @@ describe Order do
 #        @cart.account.should be_nil
       end
     end
-
 
     context 'auto_assign_account!' do
       before :each do
