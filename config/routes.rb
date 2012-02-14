@@ -38,7 +38,9 @@ Nucore::Application.routes.draw do |map|
   resources :affiliates, :except => :show
 
   map.resources :facilities, :collection => {:list => :get}, :member => {:manage => :get}, :except => [:delete] do |facility|
-    facility.resources :products, :only => [:index]
+    facility.resources :products, :only => [:index] do |product|
+      product.resources :product_accessories, :as => 'accessories', :only => [:index, :create, :destroy]
+    end
     
     #facility.transactions '/transactions', :controller => 'transaction_history', :action => 'facility_history'
     
