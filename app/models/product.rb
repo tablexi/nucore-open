@@ -8,6 +8,8 @@ class Product < ActiveRecord::Base
   has_many   :file_uploads
   has_many   :price_groups, :through => :price_group_products
   has_many   :price_group_products
+  has_many   :product_accessories, :dependent => :destroy
+  has_many   :accessories, :through => :product_accessories, :class_name => 'Product'
 
   validates_presence_of :name, :type
   validate_url_name :url_name

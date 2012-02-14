@@ -3,7 +3,7 @@ class ReservationsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as,  :only => [ :switch_instrument, :show, :list]
   before_filter :load_basic_resources, :only => [:new, :create, :edit, :update]
-  before_filter :load_and_check_resources, :only => [ :move, :switch_instrument ]
+  before_filter :load_and_check_resources, :only => [ :move, :switch_instrument, :pick_accessories ]
 
   include TranslationHelper
   
@@ -256,9 +256,46 @@ class ReservationsController < ApplicationController
       flash[:error] = relay_error_msg
     end
 
+    if params[:switch] == 'off'
+      render 'pick_accessories', :layout => false and return
+    end
+
     redirect_to params[:redirect_to] || request.referer || order_order_detail_path(@order, @order_detail)
   end
 
+  def pick_accessories
+    @operation_status = nil
+    @errors_by_id = {}
+    @complete_state = OrderStatus.find_by_name!('Complete')
+    
+    params.each do |k, v|
+      if k =~ /quantity(\d+)/ and v.present?
+        OrderDetail.transaction do
+          new_od = @order.order_details.new(
+            :product_id       => $1.to_i,
+            :quantity         => v,
+            :price_policy_id  => @order_detail.price_policy_id,
+            :account_id       => @order_detail.account_id
+          )
+          
+          if new_od.save
+            new_od.change_status!(@complete_state)
+            next
+          end
+
+          ## otherwise something's wrong w/ new_od... safe it for the view
+          @operation_status = 406
+          @errors_by_id[new_od.product_id] = new_od.errors.full_messages.join(', ')
+
+          ## all save or non save.
+          raise ActiveRecord::Rollback
+        end
+      end
+    end
+    logger.info('return status: ', @operation_status)
+
+    render 'pick_accessories', :format => :html, :layout => false, :status => (@operation_status.presence || 200)
+  end
 
   private
   def load_basic_resources
@@ -267,6 +304,7 @@ class ReservationsController < ApplicationController
     @reservation = @order_detail.reservation
     @instrument   = @order_detail.product
     @facility = @instrument.facility
+    nil
   end
   def load_and_check_resources
     load_basic_resources
