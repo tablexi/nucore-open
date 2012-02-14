@@ -9,7 +9,8 @@
 
 - res = @order_detail.reservation
 - if res
-  = javascript_include_tag 'pick_accessories'
+  = content_for :head_content do
+    = javascript_include_tag 'pick_accessories'
 
 .grid_6.alpha
   %ul.form
