@@ -3,7 +3,8 @@
 
 = form_tag order_order_detail_reservation_pick_accessories_path(@order, @order_detail, @reservation), :remote => true, 'data-type' => 'html', :class => :pick_accessories_form do
   %ul
-    - @instrument.accessories.each do |a|
+    - @instrument.product_accessories.for_acting_as(acting_as?).each do |pa|
+      - a = pa.accessory
       %li
         %b= a.to_s
         = text_field_tag "quantity#{a.id}", params["quantity#{a.id}"], :size => 3
