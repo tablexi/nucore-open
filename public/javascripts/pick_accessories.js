@@ -10,10 +10,14 @@
     // close dialog if ajax call succeeded
     if (status == "success") {
       dialog.dialog('close');
-      window.location = window.location.href;
     }
 
     return false;
+  });
+  
+  // when the dialog closes, reload this page since the link shouldn't be there anymore
+  $('#pick_accessories_dialog').live('dialogclose', function() {
+    window.location = window.location.href;
   });
 
   $('.end_reservation_link').live('click', function() {
@@ -21,7 +25,7 @@
       , url = clicked.attr('href');
 
     // set closure's dialog so other handler(s) can find it
-    dialog = $('#dialog');
+    dialog = $('#pick_accessories_dialog');
 
     // build dialog if necessary
     if (dialog.length == 0) {
