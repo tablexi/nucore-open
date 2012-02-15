@@ -277,7 +277,6 @@ class ReservationsController < ApplicationController
           new_od = @order.order_details.new(
             :product_id       => $1.to_i,
             :quantity         => v,
-            :price_policy_id  => @order_detail.price_policy_id,
             :account_id       => @order_detail.account_id
           )
           
