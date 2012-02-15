@@ -4,9 +4,6 @@ class CreateProductAccessories < ActiveRecord::Migration
       t.references  :product,       :null => false
       t.integer     :accessory_id,  :null => false
     end
-
-    add_foreign_key :product_accessories, :products
-    add_foreign_key :product_accessories, :products, :column => :accessory_id
   end
 
   def self.down

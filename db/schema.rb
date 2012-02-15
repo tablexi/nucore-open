@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120203185844) do
+ActiveRecord::Schema.define(:version => 20120209231652) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -372,6 +372,11 @@ ActiveRecord::Schema.define(:version => 20120203185844) do
   end
 
   add_index "price_policies", ["price_group_id"], :name => "sys_c008589"
+
+  create_table "product_accessories", :force => true do |t|
+    t.integer "product_id",   :null => false
+    t.integer "accessory_id", :null => false
+  end
 
   create_table "product_users", :force => true do |t|
     t.integer  "product_id",  :null => false
