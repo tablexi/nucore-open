@@ -40,8 +40,10 @@ class Reservation < ActiveRecord::Base
 
   ## AR Hooks
   after_save do
-    order_detail.note = @note
-    order_detail.save
+    if order_detail
+      order_detail.note = @note
+      order_detail.save
+    end
   end
 
   def save_extended_validations(options ={})
@@ -252,7 +254,7 @@ class Reservation < ActiveRecord::Base
     # initialize result with defaults
     calendar_object = {
       "start"  => reserve_start_at.strftime("%a, %d %b %Y %H:%M:%S"),
-      "end"    => reserve_end_at.strftime("%a, %d %b %Y %H:%M:%S"),
+      "end"    => (actual_end_at || reserve_end_at).strftime("%a, %d %b %Y %H:%M:%S"),
       "allDay" => false,
       "title"  => "Reservation",
     }
