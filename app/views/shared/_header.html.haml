@@ -10,7 +10,7 @@
         %li.last
           = link_to t('pages.cart'), :cart
           (
-          = current_cart.order_details.count
+          = current_cart.order_details.sum(:quantity)
           )
       - else
         %li#user= "#{session_user.full_name} (#{session_user.username})"
@@ -19,7 +19,7 @@
         %li
           = link_to t('pages.cart'), :cart
           (
-          = current_cart.order_details.count
+          = current_cart.order_details.sum(:quantity)
           )
         %li.last= link_to t('pages.logout'), :destroy_user_session
   .clear
