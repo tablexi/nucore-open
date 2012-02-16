@@ -441,6 +441,10 @@ en:
         adjust: "Adjustment"
         total: "Total"
       unassigned: "Unassigned"
+  
+  product_accessories:
+    index:
+      description: "Here You may define one or more accessories which may be used during a reservation of this product"
 
   product_users:
     new:

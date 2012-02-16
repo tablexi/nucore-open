@@ -9,7 +9,7 @@
 
 %h2=h @product
 
-%p You may define one or more accessories which may be used during a reservation of this product
+%p= t('product_accessories.index.description')
 
 - selectable_products = @facility.products.where("products.id NOT IN (?)", @product.accessory_ids+[@product.id])
 - if selectable_products.count > 0
