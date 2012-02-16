@@ -274,11 +274,10 @@ class ReservationsController < ApplicationController
     params.each do |k, v|
       if k =~ /quantity(\d+)/ and v.present?
         OrderDetail.transaction do
-          new_od = @order.order_details.new(
-            :product_id       => $1.to_i,
-            :quantity         => v,
-            :account_id       => @order_detail.account_id
-          )
+          product   = @facility.products.find_by_id!($1)
+          quantity  = v.to_i
+
+          new_od = @order.add(product, quantity)
           
           if new_od.save
             new_od.change_status!(@complete_state)
