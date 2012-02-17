@@ -1,0 +1,10 @@
+Gemfile
+Gemfile.lock
+config/database.yml
+log/
+tmp/
+sqlnet.log
+.tmp
+*~
+.*~
+.rvmrc
