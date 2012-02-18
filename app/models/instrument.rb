@@ -112,7 +112,7 @@ class Instrument < Product
   
   def available_schedule_rules(user)
     if requires_approval?
-      self.schedule_rules.available_for_user user
+      self.schedule_rules.available_to_user user
     else
       self.schedule_rules
     end

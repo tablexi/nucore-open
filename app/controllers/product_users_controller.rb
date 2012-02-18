@@ -69,7 +69,6 @@ class ProductUsersController < ApplicationController
     product_param_name = @product.class.name.underscore.downcase 
     params[product_param_name][:product_users].each do |key, value|
       product_user = @product.product_users.find(key)
-      logger.debug("#{key}: value: #{value}")
       product_user.update_attributes(value)  
     end
     
