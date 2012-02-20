@@ -12,22 +12,12 @@ class GeneralReportsController < ReportsController
 
 
   def account_owner
-    render_report(2, 'Name') do |od|
-      owner=od.account.owner.user
-      name=''
-      name += (owner.last_name || '')
-      name += ", " unless name.blank?
-      name += (owner.first_name || '')
-      "#{name} (#{owner.username})"
-    end
+    render_report(2, 'Name') {|od| format_username od.account.owner.user }
   end
 
 
   def purchaser
-    render_report(3, 'Name') do |od|
-      usr=od.order.user
-      "#{usr.full_name} (#{usr.username})"
-    end
+    render_report(3, 'Name') {|od| format_username od.order.user}
   end
 
 
@@ -35,9 +25,11 @@ class GeneralReportsController < ReportsController
     render_report(4, 'Name') {|od| od.price_policy ? od.price_policy.price_group.name : 'Unassigned' }
   end
 
+
   def assigned_to
-    render_report(5, 'Name') {|od| od.assigned_user.presence ? od.assigned_user.to_s : 'Unassigned' }
+    render_report(5, 'Name') {|od| od.assigned_user.presence ? format_username(od.assigned_user) : 'Unassigned' }
   end
+
 
   private
 
