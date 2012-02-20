@@ -14,7 +14,11 @@ class GeneralReportsController < ReportsController
   def account_owner
     render_report(2, 'Name') do |od|
       owner=od.account.owner.user
-      "#{owner.full_name} (#{owner.username})"
+      name=''
+      name += (owner.last_name || '')
+      name += ", " unless name.blank?
+      name += (owner.first_name || '')
+      "#{name} (#{owner.username})"
     end
   end
 
