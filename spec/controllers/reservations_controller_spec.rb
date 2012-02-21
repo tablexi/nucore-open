@@ -126,13 +126,28 @@ describe ReservationsController do
       before :each do
         @params.deep_merge!(:reservation => {:reserve_start_date => Time.zone.now.to_date - 5.days })
       end
+
       it_should_allow_all facility_operators, 'to create a reservation in the past' do
         assert_redirected_to purchase_order_path(@order)
       end
+
+      it_should_allow_all facility_operators, 'to create a reservation in the past that has actuals' do
+        assigns[:reservation].has_actuals?.should be_true
+      end
+
+      it_should_allow_all facility_operators, 'to create a reservation in the past that autocompletes' do
+        assigns[:reservation].order_detail.state.should == 'complete'
+      end
+
+      it_should_allow_all facility_operators, "to create a reservation in the past that autocompletes and isn't a problem" do
+        assigns[:reservation].order_detail.reload.problem_order?.should be_false
+      end
+
       it_should_allow_all [:guest], 'to receive an error they are tyring to reserve in the past' do
         assigns[:reservation].errors.should_not be_empty
         response.should render_template(:new)
       end
+
     end
     
 
