@@ -3,7 +3,7 @@
 
 = form_tag order_order_detail_reservation_pick_accessories_path(@order, @order_detail, @reservation), :remote => true, 'data-type' => 'html', :class => :pick_accessories_form do
   %ul
-    - @instrument.product_accessories.for_acting_as(acting_as?).each do |pa|
+    - @product_accessories.each do |pa|
       - a = pa.accessory
       %li
         %b= a.to_s

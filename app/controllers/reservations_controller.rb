@@ -260,6 +260,7 @@ class ReservationsController < ApplicationController
     end
 
     if params[:switch] == 'off'
+      @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
       render 'pick_accessories', :layout => false and return
     end
 
@@ -267,8 +268,9 @@ class ReservationsController < ApplicationController
   end
 
   def pick_accessories
-    @operation_status = nil
+    @error_status = nil
     @errors_by_id = {}
+    @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
     @complete_state = OrderStatus.find_by_name!('Complete')
     
     params.each do |k, v|
@@ -276,26 +278,26 @@ class ReservationsController < ApplicationController
         OrderDetail.transaction do
           product   = @facility.products.find_by_id!($1)
           quantity  = v.to_i
+          new_od    = nil
 
-          new_od = @order.add(product, quantity)
-          
-          if new_od.save
+          begin
+            new_od = @order.add(product, quantity)
             new_od.change_status!(@complete_state)
             next
+          rescue ActiveRecord::RecordInvalid
+            ## otherwise something's wrong w/ new_od... safe it for the view
+            @error_status = 406
+            @errors_by_id[product.id] = "Invalid Quantity"
+
+            ## all save or non save.
+            raise ActiveRecord::Rollback
           end
-
-          ## otherwise something's wrong w/ new_od... safe it for the view
-          @operation_status = 406
-          @errors_by_id[new_od.product_id] = new_od.errors.full_messages.join(', ')
-
-          ## all save or non save.
-          raise ActiveRecord::Rollback
         end
       end
     end
-    logger.info('return status: ', @operation_status)
 
-    render 'pick_accessories', :format => :html, :layout => false, :status => (@operation_status.presence || 200)
+    @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
+    render 'pick_accessories', :format => :html, :layout => false, :status => (@error_status.presence || 200)
   end
 
   private
