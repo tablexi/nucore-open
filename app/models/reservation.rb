@@ -658,7 +658,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def has_actuals?
-    actual_start_at && actual_end_at
+    !!(actual_start_at && actual_end_at)
   end
 
   def requires_but_missing_actuals?
