@@ -132,18 +132,18 @@ describe ReservationsController do
       end
 
       it_should_allow_all facility_operators, 'to create a reservation in the past that has actuals' do
-        assigns[:reservation].has_actuals?.should be_true
+        assigns[:reservation].should be_has_actuals
       end
 
       it_should_allow_all facility_operators, 'to create a reservation in the past that autocompletes' do
         assigns[:reservation].order_detail.state.should == 'complete'
       end
 
-      it_should_allow_all facility_operators, "to create a reservation in the past that autocompletes and isn't a problem" do
-        assigns[:reservation].order_detail.reload.problem_order?.should be_false
+      it_should_allow_all facility_operators, "to create a reservation in the past that isn't a problem" do
+        assigns[:reservation].order_detail.reload.should_not be_problem_order
       end
 
-      it_should_allow_all [:guest], 'to receive an error they are tyring to reserve in the past' do
+      it_should_allow_all [:guest], 'to receive an error they are trying to reserve in the past' do
         assigns[:reservation].errors.should_not be_empty
         response.should render_template(:new)
       end
