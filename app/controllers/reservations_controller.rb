@@ -124,6 +124,7 @@ class ReservationsController < ApplicationController
 
         return
       rescue Exception => e
+        logger.error(e.message)
         raise ActiveRecord::Rollback
       end
     end
