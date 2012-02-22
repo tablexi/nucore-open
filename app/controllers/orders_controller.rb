@@ -208,7 +208,8 @@ class OrdersController < ApplicationController
 
   # PUT /orders/1/purchase
   def purchase
-    #revalidate the cart, just to be sure
+    #revalidate the cart, but only if the user is not an admin
+    @order.being_purchased_by_admin = session_user.operator_of? @facility
     if @order.validate_order! && @order.purchase!
       Notifier.order_receipt(:user => @order.user, :order => @order).deliver
 
