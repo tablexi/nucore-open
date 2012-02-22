@@ -2,8 +2,9 @@ class ScheduleRule < ActiveRecord::Base
   @@durations = [1, 5, 10, 15, 30, 60]
   
   belongs_to :instrument
-  #has_many :instrument_restriction_levels, :through => :instrument_restriction_levels_schedule_rules
-  has_and_belongs_to_many :instrument_restriction_levels
+  
+  # oracle has a maximum table name length of 30, so we have to abbreviate it down
+  has_and_belongs_to_many :instrument_restriction_levels, :join_table => 'instr_restr_schedule_rules'
   
   attr_accessor :unavailable # virtual attribute
 
@@ -20,10 +21,10 @@ class ScheduleRule < ActiveRecord::Base
     where(:product_users => {:user_id => user.id}).
     joins(:instrument => :product_users).     
     # instrument doesn't have any restrictions at all, or has one that matches the product_user
-    where("(not EXISTS (SELECT * FROM instrument_restriction_levels_schedule_rules WHERE instrument_restriction_levels_schedule_rules.schedule_rule_id = schedule_rules.id)
-     OR (exists (select * from instrument_restriction_levels_schedule_rules 
-         where instrument_restriction_levels_schedule_rules.`instrument_restriction_level_id` = product_users.`instrument_restriction_level_id` 
-         and instrument_restriction_levels_schedule_rules.schedule_rule_id = schedule_rules.id)))")
+    where("(not EXISTS (SELECT * FROM instr_restr_schedule_rules WHERE instr_restr_schedule_rules.schedule_rule_id = schedule_rules.id)
+     OR (exists (select * from instr_restr_schedule_rules 
+         where instr_restr_schedule_rules.`instrument_restriction_level_id` = product_users.`instrument_restriction_level_id` 
+         and instr_restr_schedule_rules.schedule_rule_id = schedule_rules.id)))")
   end
    
   def at_least_one_day_selected
