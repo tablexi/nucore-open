@@ -118,7 +118,7 @@ class ReservationsController < ApplicationController
         end
 
         return
-      rescue Exception => e
+      rescue ActiveRecord::RecordInvalid => e
         raise ActiveRecord::Rollback
       end
     end
@@ -179,7 +179,7 @@ class ReservationsController < ApplicationController
         end
         flash[:notice] = 'The reservation was successfully updated.'
         redirect_to (@order.purchased? ? reservations_path : cart_path) and return
-      rescue Exception => e
+      rescue ActiveRecord::RecordInvalid => e
         raise ActiveRecord::Rollback
       end
     end
