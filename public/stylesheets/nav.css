@@ -162,10 +162,6 @@
 	text-align:right;
 }
 
-#nav li.right ul {
-    margin-top: 14px;
-}
-
 #nav li.right:hover ul {
 	margin-left:-151px;
 	right:auto !important;
