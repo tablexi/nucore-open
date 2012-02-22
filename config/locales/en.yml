@@ -871,7 +871,7 @@ en:
       facility:
         one: Facility
         other: Facilities
-      instrument_restriction_level: Scheduling Group
+      product_access_group: Scheduling Group
     # Model Attributes
     attributes:
       user:

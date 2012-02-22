@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'controller_spec_helper'
 
-describe InstrumentRestrictionLevelsController do
+describe ProductAccessGroupsController do
   render_views
   before :all do
     create_users
@@ -16,10 +16,10 @@ describe InstrumentRestrictionLevelsController do
   
   context 'index' do
     before :each do
-      @level = Factory.create(:instrument_restriction_level, :instrument_id => @instrument.id)
-      @level2 = Factory.create(:instrument_restriction_level, :instrument_id => @instrument.id)
+      @level = Factory.create(:product_access_group, :product => @instrument)
+      @level2 = Factory.create(:product_access_group, :product => @instrument)
       @instrument2 = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
-      @level3 = Factory.create(:instrument_restriction_level, :instrument_id => @instrument2.id)
+      @level3 = Factory.create(:product_access_group, :product => @instrument2)
       
       @action = :index
       @method = :get
@@ -27,7 +27,7 @@ describe InstrumentRestrictionLevelsController do
     it_should_allow_managers_only :success, 'see index' do
       assigns[:facility].should == @authable
       assigns[:instrument].should == @instrument
-      assigns[:instrument_restriction_levels].should == [@level, @level2]
+      assigns[:product_access_groups].should == [@level, @level2]
     end
   end
   
@@ -39,7 +39,7 @@ describe InstrumentRestrictionLevelsController do
     it_should_allow_managers_only :success, 'do new' do
       assigns[:facility].should == @authable
       assigns[:instrument].should == @instrument
-      assigns[:instrument_restriction_level].should be_new_record
+      assigns[:product_access_group].should be_new_record
       response.should render_template :new
     end
   end
@@ -51,25 +51,25 @@ describe InstrumentRestrictionLevelsController do
     end
     context 'correct info' do
       before :each do
-        @params.merge!({:instrument_restriction_level => Factory.attributes_for(:instrument_restriction_level)})
+        @params.merge!({:product_access_group => Factory.attributes_for(:product_access_group)})
       end
       it_should_allow_managers_only :redirect, 'do create' do
         assigns[:facility].should == @authable
         assigns[:instrument].should == @instrument
-        assigns[:instrument_restriction_level].should_not be_new_record
+        assigns[:product_access_group].should_not be_new_record
         flash[:notice].should_not be_nil
-        response.should redirect_to(facility_instrument_instrument_restriction_levels_path(@authable, @instrument))
+        response.should redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
       end      
     end
     context 'missing data' do
       before :each do
-        @params.merge!({:instrument_restriction_level => Factory.attributes_for(:instrument_restriction_level, :name => '')})
+        @params.merge!({:product_access_group => Factory.attributes_for(:product_access_group, :name => '')})
       end
       it_should_allow_managers_only :success, 'do create' do
         assigns[:facility].should == @authable
         assigns[:instrument].should == @instrument
-        assigns[:instrument_restriction_level].should be_new_record
-        assigns[:instrument_restriction_level].errors.should_not be_empty
+        assigns[:product_access_group].should be_new_record
+        assigns[:product_access_group].errors.should_not be_empty
         response.should render_template :new
       end
     end
@@ -79,13 +79,13 @@ describe InstrumentRestrictionLevelsController do
     before :each do
       @action = :edit
       @method = :get
-      @instrument_restriction_level = Factory.create(:instrument_restriction_level, :instrument_id => @instrument.id)
-      @params.merge!({:id => @instrument_restriction_level})
+      @product_access_group = Factory.create(:product_access_group, :product_id => @instrument.id)
+      @params.merge!({:id => @product_access_group})
     end
     it_should_allow_managers_only :success, 'do edit' do
       assigns[:facility].should == @authable
       assigns[:instrument].should == @instrument
-      assigns[:instrument_restriction_level].should == @instrument_restriction_level
+      assigns[:product_access_group].should == @product_access_group
       response.should render_template :edit
     end
   end
@@ -93,31 +93,31 @@ describe InstrumentRestrictionLevelsController do
     before :each do
       @action = :update
       @method = :post
-      @instrument_restriction_level = Factory.create(:instrument_restriction_level, :instrument_id => @instrument.id)
-      @params.merge!({:id => @instrument_restriction_level.id})
+      @product_access_group = Factory.create(:product_access_group, :product_id => @instrument.id)
+      @params.merge!({:id => @product_access_group.id})
     end
     context 'correct info' do
       before :each do
-        @params.merge!({:instrument_restriction_level => {:name => 'new name'}})
+        @params.merge!({:product_access_group => {:name => 'new name'}})
       end
       it_should_allow_managers_only :redirect, 'do update' do
         assigns[:facility].should == @authable
         assigns[:instrument].should == @instrument
-        assigns[:instrument_restriction_level].should == @instrument_restriction_level
-        assigns[:instrument_restriction_level].name.should == 'new name'
+        assigns[:product_access_group].should == @product_access_group
+        assigns[:product_access_group].name.should == 'new name'
         flash[:notice].should_not be_nil
-        response.should redirect_to(facility_instrument_instrument_restriction_levels_path(@authable, @instrument))
+        response.should redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
       end      
     end
     context 'missing data' do
       before :each do
-        @params.merge!({:instrument_restriction_level => {:name => ''}})
+        @params.merge!({:product_access_group => {:name => ''}})
       end
       it_should_allow_managers_only :success, 'do update' do
         assigns[:facility].should == @authable
         assigns[:instrument].should == @instrument
-        assigns[:instrument_restriction_level].should == @instrument_restriction_level
-        assigns[:instrument_restriction_level].errors.should_not be_empty
+        assigns[:product_access_group].should == @product_access_group
+        assigns[:product_access_group].errors.should_not be_empty
         response.should render_template :edit
       end
     end
@@ -127,13 +127,13 @@ describe InstrumentRestrictionLevelsController do
     before :each do
       @method=:delete
       @action=:destroy
-      @instrument_restriction_level = Factory.create(:instrument_restriction_level, :instrument_id => @instrument.id)
-      @params.merge!({:id => @instrument_restriction_level.id})
+      @product_access_group = Factory.create(:product_access_group, :product => @instrument)
+      @params.merge!({:id => @product_access_group.id})
     end
     it_should_allow_managers_only :redirect, 'do delete' do
-      assigns[:instrument_restriction_level].should be_destroyed
+      assigns[:product_access_group].should be_destroyed
       flash[:notice].should_not be_nil
-      response.should redirect_to(facility_instrument_instrument_restriction_levels_path(@authable, @instrument))
+      response.should redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
     end
   end
   

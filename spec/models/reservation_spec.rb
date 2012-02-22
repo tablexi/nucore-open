@@ -352,7 +352,7 @@ describe Reservation do
           @order_detail = Factory.create(:order_detail, :order => @order, :product => @instrument)
           # @instrument.update_attributes(:requires_approval => true)
           
-          @restriction_level = @rule_5_to_7.instrument_restriction_levels.create(Factory.attributes_for(:instrument_restriction_level, :instrument => @instrument))
+          @restriction_level = @rule_5_to_7.product_access_groups.create(Factory.attributes_for(:product_access_group, :product => @instrument))
           @instrument.reload
           @reservation = Reservation.new(:reserve_start_date => Date.today + 1, 
                                                       :reserve_start_hour => 6, 
@@ -377,7 +377,7 @@ describe Reservation do
           @reservation.should_not be_valid
         end
         it "should allow a user who is approved and part of the restriction group" do
-          @product_user = @user.product_users.create(:product => @instrument, :instrument_restriction_level => @restriction_level, :approved_by => @user.id)
+          @product_user = @user.product_users.create(:product => @instrument, :product_access_group => @restriction_level, :approved_by => @user.id)
           @product_user.should_not be_new_record
           
           @reservation.should be_valid

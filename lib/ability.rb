@@ -50,7 +50,7 @@ class Ability
           AccountUser, Account, FacilityAccount, Journal,
           Statement, FileUpload, InstrumentPricePolicy,
           ItemPricePolicy, OrderStatus, PriceGroup, ReportsController,
-          ScheduleRule, ServicePricePolicy, PriceGroupProduct, InstrumentRestrictionLevel
+          ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup
         ]
 
         can :manage, User if controller.is_a?(FacilityUsersController)

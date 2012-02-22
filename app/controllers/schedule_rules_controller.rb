@@ -60,7 +60,7 @@ class ScheduleRulesController < ApplicationController
     # TODO: 404 protection for non inst, facil rules
     
     # if there are no boxes checked, remove them all
-    params[:schedule_rule][:instrument_restriction_level_ids] ||= []
+    params[:schedule_rule][:product_access_group_ids] ||= []
     respond_to do |format|
       if @schedule_rule.update_attributes(params[:schedule_rule])
         flash[:notice] = 'Schedule Rule was successfully updated.'

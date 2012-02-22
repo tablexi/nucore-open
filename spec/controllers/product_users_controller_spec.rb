@@ -16,8 +16,8 @@ describe ProductUsersController do
     @params={ :facility_id => @authable.url_name, :instrument_id => @instrument.url_name }
     
     @rule=@instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
-    @level = Factory.create(:instrument_restriction_level, :instrument_id => @instrument.id)
-    @level2 = Factory.create(:instrument_restriction_level, :instrument_id => @instrument.id)
+    @level = Factory.create(:product_access_group, :product_id => @instrument.id)
+    @level2 = Factory.create(:product_access_group, :product_id => @instrument.id)
   end
   
   context "index" do
@@ -51,16 +51,16 @@ describe ProductUsersController do
       @method = :put
       @params.deep_merge!({
         :instrument => {:product_users => {
-          @guest_product.id => { :instrument_restriction_level_id => @level.id},
-          @staff_product.id => { :instrument_restriction_level_id => @level2.id} 
+          @guest_product.id => { :product_access_group_id => @level.id},
+          @staff_product.id => { :product_access_group_id => @level2.id} 
         }
         } 
       })
     end
         
     it_should_allow_operators_only :redirect, "update the product_users" do
-      ProductUser.find(@guest_product.id).instrument_restriction_level.should == @level
-      ProductUser.find(@staff_product.id).instrument_restriction_level.should == @level2
+      ProductUser.find(@guest_product.id).product_access_group.should == @level
+      ProductUser.find(@staff_product.id).product_access_group.should == @level2
       flash[:notice].should_not be_nil
     end
   end

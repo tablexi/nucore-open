@@ -146,18 +146,6 @@ ActiveRecord::Schema.define(:version => 20120222161624) do
   add_index "file_uploads", ["order_detail_id"], :name => "fk_files_od"
   add_index "file_uploads", ["product_id"], :name => "fk_files_product"
 
-  create_table "instr_restr_schedule_rules", :id => false, :force => true do |t|
-    t.integer "instrument_restriction_level_id", :null => false
-    t.integer "schedule_rule_id",                :null => false
-  end
-
-  create_table "instrument_restriction_levels", :force => true do |t|
-    t.integer  "instrument_id", :null => false
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "instrument_statuses", :force => true do |t|
     t.integer  "instrument_id", :null => false
     t.boolean  "is_on",         :null => false
@@ -385,12 +373,24 @@ ActiveRecord::Schema.define(:version => 20120222161624) do
 
   add_index "price_policies", ["price_group_id"], :name => "sys_c008589"
 
+  create_table "product_access_groups", :force => true do |t|
+    t.integer  "product_id", :null => false
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "product_access_schedule_rules", :id => false, :force => true do |t|
+    t.integer "product_access_group_id", :null => false
+    t.integer "schedule_rule_id",        :null => false
+  end
+
   create_table "product_users", :force => true do |t|
-    t.integer  "product_id",                      :null => false
-    t.integer  "user_id",                         :null => false
-    t.integer  "approved_by",                     :null => false
-    t.datetime "approved_at",                     :null => false
-    t.integer  "instrument_restriction_level_id"
+    t.integer  "product_id",              :null => false
+    t.integer  "user_id",                 :null => false
+    t.integer  "approved_by",             :null => false
+    t.datetime "approved_at",             :null => false
+    t.integer  "product_access_group_id"
   end
 
   add_index "product_users", ["product_id"], :name => "fk_products"

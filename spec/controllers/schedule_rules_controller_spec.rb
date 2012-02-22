@@ -68,21 +68,21 @@ describe ScheduleRulesController do
       before :each do
         @restriction_levels = []
         3.times do
-          @restriction_levels << Factory.create(:instrument_restriction_level, :instrument_id => @instrument.id)
+          @restriction_levels << Factory.create(:product_access_group, :product_id => @instrument.id)
         end
         sign_in(@admin)
       end
       
       it "should come out with no restriction levels" do
         do_request
-        assigns[:schedule_rule].instrument_restriction_levels.should be_empty          
+        assigns[:schedule_rule].product_access_groups.should be_empty          
       end
               
       it "should store restriction_rules" do
-        @params.deep_merge!(:schedule_rule => {:instrument_restriction_level_ids => [@restriction_levels[0].id, @restriction_levels[2].id]})
+        @params.deep_merge!(:schedule_rule => {:product_access_group_ids => [@restriction_levels[0].id, @restriction_levels[2].id]})
         do_request
-        assigns[:schedule_rule].instrument_restriction_levels.should contain_all [@restriction_levels[0], @restriction_levels[2]]
-        assigns[:schedule_rule].instrument_restriction_levels.size.should == 2
+        assigns[:schedule_rule].product_access_groups.should contain_all [@restriction_levels[0], @restriction_levels[2]]
+        assigns[:schedule_rule].product_access_groups.size.should == 2
       end
       
     end
@@ -133,28 +133,28 @@ describe ScheduleRulesController do
         before :each do
           @restriction_levels = []
           3.times do
-            @restriction_levels << Factory.create(:instrument_restriction_level, :instrument_id => @instrument.id)
+            @restriction_levels << Factory.create(:product_access_group, :product_id => @instrument.id)
           end
           sign_in(@admin)
         end
         
         it "should come out with no restriction levels" do
           do_request
-          assigns[:schedule_rule].instrument_restriction_levels.should be_empty          
+          assigns[:schedule_rule].product_access_groups.should be_empty          
         end
         
         it "should come out with no restriction levels if it had them before" do
-          @rule.instrument_restriction_levels = @restriction_levels
+          @rule.product_access_groups = @restriction_levels
           @rule.save!
           do_request
-          assigns[:schedule_rule].instrument_restriction_levels.should be_empty
+          assigns[:schedule_rule].product_access_groups.should be_empty
         end
         
         it "should store restriction_rules" do
-          @params.deep_merge!(:schedule_rule => {:instrument_restriction_level_ids => [@restriction_levels[0].id, @restriction_levels[2].id]})
+          @params.deep_merge!(:schedule_rule => {:product_access_group_ids => [@restriction_levels[0].id, @restriction_levels[2].id]})
           do_request
-          assigns[:schedule_rule].instrument_restriction_levels.should contain_all [@restriction_levels[0], @restriction_levels[2]]
-          assigns[:schedule_rule].instrument_restriction_levels.size.should == 2
+          assigns[:schedule_rule].product_access_groups.should contain_all [@restriction_levels[0], @restriction_levels[2]]
+          assigns[:schedule_rule].product_access_groups.size.should == 2
         end
         
       end

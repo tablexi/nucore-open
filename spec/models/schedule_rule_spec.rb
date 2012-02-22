@@ -342,7 +342,7 @@ describe ScheduleRule do
       before :each do
         @restriction_levels = []
         3.times do
-          @restriction_levels << Factory.create(:instrument_restriction_level, :instrument_id => @instrument.id)
+          @restriction_levels << Factory.create(:product_access_group, :product_id => @instrument.id)
         end
       end
       
@@ -355,16 +355,16 @@ describe ScheduleRule do
       
       context 'the scheduling rule has levels' do
         before :each do
-          @rule.instrument_restriction_levels = [@restriction_levels[0], @restriction_levels[2]]
+          @rule.product_access_groups = [@restriction_levels[0], @restriction_levels[2]]
           @rule.save!
         end
         it 'should return the rule if the user is in the group' do
-          @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id, :instrument_restriction_level_id => @restriction_levels[0]})
+          @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id, :product_access_group_id => @restriction_levels[0]})
           @instrument.schedule_rules.available_to_user(@user).to_a.should == []
         end
         
         it 'should not return the rule if the user is not in the group' do
-          @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id, :instrument_restriction_level_id => @restriction_levels[1]})
+          @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id, :product_access_group_id => @restriction_levels[1]})
           @instrument.schedule_rules.available_to_user(@user).should be_empty
         end
         it 'should not return the rule if the user has no group' do

@@ -5,7 +5,7 @@ class Instrument < Product
   has_many :price_policies, :foreign_key => 'instrument_id'
   has_many :reservations
   has_many :instrument_statuses, :foreign_key => 'instrument_id'
-  has_many :instrument_restriction_levels, :foreign_key => 'instrument_id'
+  has_many :product_access_groups, :foreign_key => 'product_id'
 
   accepts_nested_attributes_for :relay
 
@@ -101,7 +101,7 @@ class Instrument < Product
   end
   
   def restriction_levels_for(user)
-    instrument_restriction_levels.joins(:product_users).where(:product_users => {:user_id => user.id})
+    product_access_groups.joins(:product_users).where(:product_users => {:user_id => user.id})
   end
 
   def set_default_pricing

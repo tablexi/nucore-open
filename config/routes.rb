@@ -48,7 +48,7 @@ Nucore::Application.routes.draw do |map|
       instrument.status   'status',   :controller => 'instruments', :action => 'instrument_status'
       instrument.switch   'switch',   :controller => 'instruments', :action => 'switch'
       instrument.resources :schedule_rules, :except => [:show]
-      instrument.resources :instrument_restriction_levels
+      instrument.resources :product_access_groups
       instrument.resources :price_policies, :controller => 'instrument_price_policies', :except => [:show]
       instrument.resources :reservations, :only => [:new, :create, :destroy], :controller => 'facility_reservations' do |reservation|
         reservation.edit_admin '/edit_admin', :controller => 'facility_reservations', :action => 'edit_admin', :conditions => {:method => :get}

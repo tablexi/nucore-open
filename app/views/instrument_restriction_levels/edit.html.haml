@@ -1,5 +1,0 @@
-= render :partial => "headers"
-%h3 Edit #{InstrumentRestrictionLevel.model_name.human}
-= form_for([current_facility, @instrument, @instrument_restriction_level]) do |f|
-  = f.error_messages
-  = render :partial => "fields", :locals => {:f => f}
