@@ -1,7 +1,7 @@
 %tr
   - if first_of_group
     - rows = @order.order_details.find(:all, :conditions => {:group_id => order_detail.group_id}).length
-    %td.centered{:rowspan => rows }= link_to 'Remove', remove_order_path(@order, order_detail), :method => :put
+    %td.centered{:rowspan => rows*order_detail.bundle.products.count }= link_to 'Remove', remove_order_path(@order, order_detail), :method => :put
   - elsif order_detail.group_id.nil?
     %td.centered= link_to 'Remove', remove_order_path(@order, order_detail), :method => :put
 
@@ -87,3 +87,9 @@
     - if @order.has_subsidies?
       %td.currency Unassigned
     %td.currency Unassigned
+- if acting_as?
+  %tr
+    %td{:colspan => 4}
+      %label.inline Note:
+      = text_field_tag("note#{order_detail.id}", order_detail.note, :style => "width:375px" )
+

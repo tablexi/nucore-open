@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
   # Make the following methods available to all views
-  helper_method :current_facility, :session_user, :manageable_facilities, :acting_user, :acting_as?, :check_acting_as
+  helper_method :current_facility, :session_user, :manageable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart
 
   attr_accessor :active_tab
 
@@ -23,6 +23,11 @@ class ApplicationController < ActionController::Base
   # initialize the current facility from the params hash
   def init_current_facility
     @facility = @current_facility = Facility.find_by_url_name!(params[:facility_id] || params[:id])
+  end
+
+  #TODO: refactor existing calls of this definition to use this helper 
+  def current_cart
+    acting_user.cart(session_user)
   end
   
   def init_current_account

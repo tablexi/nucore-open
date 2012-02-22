@@ -34,13 +34,14 @@ class OrdersController < ApplicationController
 
   # PUT /orders/:id/update
   def update
-    order_detail_quantities = {}
+    order_detail_updates = {}
     params.each do |key, value|
-      if /^quantity(\d+)$/ =~ key
-        order_detail_quantities[$1.to_i] = value.to_i
+      if /^(quantity|note)(\d+)$/ =~ key and value.present?
+        order_detail_updates[$2.to_i] ||= Hash.new
+        order_detail_updates[$2.to_i][$1.to_sym] = value
       end
     end
-    @order.update_quantities(order_detail_quantities)
+    @order.update_details(order_detail_updates)
 
     redirect_to order_path(@order) and return
   end

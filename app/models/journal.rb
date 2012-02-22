@@ -7,7 +7,6 @@ class Journal < ActiveRecord::Base
   validates_uniqueness_of :facility_id, :scope => :is_successful, :if => Proc.new { |j| j.is_successful.nil? }
   validates_presence_of   :reference, :updated_by, :on => :update
   validates_presence_of   :created_by
-  validates_inclusion_of  :is_successful, :in => [true, false], :on => :update
   has_attached_file       :file,
                           :storage => :filesystem,
                           :url => "#{ENV['RAILS_RELATIVE_URL_ROOT']}/:attachment/:id_partition/:style/:basename.:extension",

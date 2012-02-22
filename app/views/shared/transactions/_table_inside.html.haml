@@ -34,7 +34,7 @@
       - unless @facility
         %td= order_detail.order.facility
       %td
-        = order_detail.product
+        = order_detail_description(order_detail)
         %br
         %em= order_detail.reservation
       %td= order_detail.order.user.full_name
