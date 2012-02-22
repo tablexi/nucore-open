@@ -49,16 +49,18 @@ class Reservation < ActiveRecord::Base
   before_save :on => :create do
     # if reservation is in the past, set the actuals = to the reservation time
     # move to complete
-    self.valid?
     return unless acting_user = self.try(:order).try(:created_by_user)
 
     if acting_user and acting_user.operator_of?(instrument.facility) and self.reserve_end_at <= Time.zone.now
       self.actual_start_at ||= self.reserve_start_at
       self.actual_end_at   ||= self.reserve_end_at
-      self.order_detail.change_status!(OrderStatus.find_by_name('complete'))
     end
 
-    return
+    return true
+  end
+
+  after_save :on => :create do
+    self.order_detail.reload.change_status!(OrderStatus.find_by_name!('complete')) if self.has_actuals?
   end
 
   def save_extended_validations(options ={})

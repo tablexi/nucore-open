@@ -80,6 +80,55 @@ describe ReservationsController do
   end
 
 
+  context 'creating a reservation in the past' do
+    before :each do
+      @method=:post
+      @action=:create
+      @order            = @guest.orders.create(Factory.attributes_for(:order, :created_by => @director.id, :account => @account))
+      @order.add(@instrument, 1)
+      @order_detail     = @order.order_details.first
+      @params={
+        :order_id => @order.id,
+        :order_detail_id => @order_detail.id,
+        :order_account => @account.id,
+        :reservation => {
+            :reserve_start_date => Time.zone.now.to_date - 5.days,
+            :reserve_start_hour => '9',
+            :reserve_start_min => '0',
+            :reserve_start_meridian => 'am',
+            :duration_value => '60',
+            :duration_unit => 'minutes'
+        }
+      }
+    end
+
+    it_should_allow_all facility_operators, 'should redirect' do
+      assert_redirected_to purchase_order_path(@order)
+    end
+
+    it_should_allow_all facility_operators, 'and not have errors' do
+      assigns[:reservation].errors.should be_empty
+    end
+
+    it_should_allow_all facility_operators, 'and will have actuals' do
+      assigns[:reservation].should be_has_actuals
+    end
+
+    it_should_allow_all facility_operators, 'and autocompletes' do
+      assigns[:reservation].order_detail.reload.state.should == 'complete'
+    end
+
+    it_should_allow_all facility_operators, "and isn't a problem" do
+      assigns[:reservation].order_detail.reload.should_not be_problem_order
+    end
+
+    it_should_allow_all [:guest], 'to receive an error they are trying to reserve in the past' do
+      assigns[:reservation].errors.should_not be_empty
+      response.should render_template(:new)
+    end
+
+  end
+
   context 'create' do
 
     before :each do
@@ -122,33 +171,6 @@ describe ReservationsController do
       end
     end
     
-    context 'creating a reservation in the past' do
-      before :each do
-        @params.deep_merge!(:reservation => {:reserve_start_date => Time.zone.now.to_date - 5.days })
-      end
-
-      it_should_allow_all facility_operators, 'to create a reservation in the past' do
-        assert_redirected_to purchase_order_path(@order)
-      end
-
-      it_should_allow_all facility_operators, 'to create a reservation in the past that has actuals' do
-        assigns[:reservation].should be_has_actuals
-      end
-
-      it_should_allow_all facility_operators, 'to create a reservation in the past that autocompletes' do
-        assigns[:reservation].order_detail.state.should == 'complete'
-      end
-
-      it_should_allow_all facility_operators, "to create a reservation in the past that isn't a problem" do
-        assigns[:reservation].order_detail.reload.should_not be_problem_order
-      end
-
-      it_should_allow_all [:guest], 'to receive an error they are trying to reserve in the past' do
-        assigns[:reservation].errors.should_not be_empty
-        response.should render_template(:new)
-      end
-
-    end
     
 
     context 'without account' do
