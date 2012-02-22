@@ -23,7 +23,7 @@ class ScheduleRule < ActiveRecord::Base
     # instrument doesn't have any restrictions at all, or has one that matches the product_user
     where("(not EXISTS (SELECT * FROM product_access_schedule_rules WHERE product_access_schedule_rules.schedule_rule_id = schedule_rules.id)
      OR (exists (select * from product_access_schedule_rules 
-         where product_access_schedule_rules.`product_access_group_id` = product_users.`product_access_group_id` 
+         where product_access_schedule_rules.product_access_group_id = product_users.product_access_group_id
          and product_access_schedule_rules.schedule_rule_id = schedule_rules.id)))")
   end
    
