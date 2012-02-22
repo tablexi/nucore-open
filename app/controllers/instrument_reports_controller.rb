@@ -15,7 +15,7 @@ class InstrumentReportsController < ReportsController
   def account_owner
     render_report(2, 'Name') do |r|
       owner=r.order_detail.account.owner.user
-      [ r.instrument.name, "#{owner.full_name} (#{owner.username})" ]
+      [ r.instrument.name, format_username(owner) ]
     end
   end
 
@@ -23,7 +23,7 @@ class InstrumentReportsController < ReportsController
   def purchaser
     render_report(3, 'Name') do |r|
       usr=r.order_detail.order.user
-      [ r.instrument.name, "#{usr.full_name} (#{usr.username})" ]
+      [ r.instrument.name, format_username(usr) ]
     end
   end
 
