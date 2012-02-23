@@ -84,7 +84,7 @@ describe ReservationsController do
     before :each do
       @method=:post
       @action=:create
-      @order            = @guest.orders.create(Factory.attributes_for(:order, :created_by => @director.id, :account => @account))
+      @order            = @guest.orders.create(Factory.attributes_for(:order, :created_by => @admin.id, :account => @account))
       @order.add(@instrument, 1)
       @order_detail     = @order.order_details.first
       @params={
