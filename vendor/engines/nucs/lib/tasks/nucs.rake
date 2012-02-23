@@ -12,8 +12,8 @@ namespace :nucs do
       chart_string=(chart_string.delete_if {|c| c.blank?}).join('-')
 
       begin
-        NucsValidator.new(chart_string, row['account']).account_is_open!
-      rescue NucsErrors::NucsError => e
+        ValidatorFactory.instance(chart_string, row['account']).account_is_open!
+      rescue ValidatorError => e
         puts "#{row['amount'].to_i < 0 ? 'recharge' : ''} account #{row['account']} not open for #{chart_string}: #{e.message}"
         bad += 1
       else

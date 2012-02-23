@@ -1,3 +1,5 @@
+validator:
+  class_name: ValidatorDefault
 aes_crypt_key:
 email:
   from: 'noreply@example.com'

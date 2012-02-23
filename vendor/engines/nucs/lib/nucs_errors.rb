@@ -1,14 +1,7 @@
 module NucsErrors
-
-  #
-  # Base class for all nucs related errors.
-  # Makes it easier to write rescues.
-  class NucsError < StandardError; end
-
-
   #
   # Raised when there is an import parsing error
-  class ImportError < NucsError
+  class ImportError < ValidatorError
     def initialize(message='malformed line')
       super(message)
     end
@@ -17,7 +10,7 @@ module NucsErrors
 
   #
   # Raised when user input is invalid
-  class InputError < NucsError
+  class InputError < ValidatorError
     def initialize(input_name, input)
       super("#{input} is invalid for #{input_name}")
     end
@@ -26,7 +19,7 @@ module NucsErrors
 
   #
   # Raised when user input is invalid and commonly transposed with a valid value
-  class TranspositionError < NucsError
+  class TranspositionError < ValidatorError
     def initialize(was, might_be)
       super("#{was} given, should it be #{might_be}?")
     end
@@ -35,7 +28,7 @@ module NucsErrors
 
   #
   # Raised for chart string components that are not found in the GE001 tables
-  class UnknownGE001Error < NucsError
+  class UnknownGE001Error < ValidatorError
     def initialize(component, value)
       super("#{value} is GE001 invalid for #{component}")
     end
@@ -44,7 +37,7 @@ module NucsErrors
 
   #
   # Raised for chart string components that are not found in the GE001 tables
-  class BlacklistedError < NucsError
+  class BlacklistedError < ValidatorError
     def initialize(component, value)
       super("#{value} is blacklisted as a #{component}")
     end
@@ -53,7 +46,7 @@ module NucsErrors
 
   #
   # Raised for chart string components that are not found in the GL066 tables
-  class UnknownGL066Error < NucsError
+  class UnknownGL066Error < ValidatorError
     def initialize(component, value=nil)
       if value
         super("#{value} is not allowed for #{component}")
@@ -71,12 +64,12 @@ module NucsErrors
   #
   # Raised when a chart string references a valid GL066 budgeted chart
   # string, but that chart string is expired
-  class DatedGL066Error < NucsError; end
+  class DatedGL066Error < ValidatorError; end
 
 
   #
   # Raised when an account is searched for but not found in the GrantsBudgetTree
-  class UnknownBudgetTreeError < NucsError
+  class UnknownBudgetTreeError < ValidatorError
     def initialize(account)
       super("account #{account} not found in Grants Budget Tree")
     end
@@ -85,7 +78,7 @@ module NucsErrors
 
   #
   # Raised when an account is searched for but not found in the GrantsBudgetTree
-  class NotAllowedError < NucsError
+  class NotAllowedError < ValidatorError
     def initialize(field)
       super("#{field} is not allowed")
     end

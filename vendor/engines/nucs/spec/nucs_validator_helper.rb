@@ -2,11 +2,11 @@ module NucsValidatorHelper
   #
   # Seeds the DB with a GL066 record for validation of +chart_string+
   # [_chart_string_]
-  #   A +NucsValidator::NUCS_PATTERN+ matching +String+
+  #   A +ValidatorFactory#pattern+ matching +String+
   # [_attrs_]
   #   Overrides for the +NucsGl066+ Factory, if any
   def define_gl066(chart_string, attrs={})
-    components=chart_string.match(NucsValidator::NUCS_PATTERN)
+    components=chart_string.match(NucsValidator.pattern)
     attrs.merge!(:fund => components[1]) unless attrs.has_key?(:fund)
     attrs.merge!(:department => components[2]) unless attrs.has_key?(:department)
     attrs.merge!(:project => components[3]) if components[3] and not attrs.has_key?(:project)
@@ -32,9 +32,9 @@ module NucsValidatorHelper
   #
   # Seeds the DB with GE001 records for validation of +chart_string+
   # [_chart_string_]
-  #   A +NucsValidator::NUCS_PATTERN+ matching +String+
+  #   A +ValidatorFactory#pattern+ matching +String+
   def define_ge001(chart_string)
-    components=chart_string.match(NucsValidator::NUCS_PATTERN)
+    components=chart_string.match(NucsValidator.pattern)
     Factory.create(:nucs_fund, :value => components[1])
     Factory.create(:nucs_department, :value => components[2])
 
@@ -54,7 +54,7 @@ module NucsValidatorHelper
   # [_account_]
   #   A chart string account component
   # [_chart_string_]
-  #   A +NucsValidator::NUCS_PATTERN+ matching +String+
+  #   A +ValidatorFactory#pattern+ matching +String+
   # [_budget_tree_attrs_]
   #   Overrides for the +NucsGrantsBudgetTree+ Factory, if any
   # [_gl066_attrs_]

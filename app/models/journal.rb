@@ -32,8 +32,8 @@ class Journal < ActiveRecord::Base
       account = od.account
 
       begin
-        NucsValidator.new(account.account_number, od.product.account).account_is_open!
-      rescue NucsErrors::NucsError => e
+        ValidatorFactory.instance(account.account_number, od.product.account).account_is_open!
+      rescue ValidatorError => e
         raise "Account #{account} on order detail ##{od} is invalid. It #{e.message}."
       end
 

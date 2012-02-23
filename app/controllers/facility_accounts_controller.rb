@@ -86,7 +86,7 @@ class FacilityAccountsController < ApplicationController
         begin
           @account.set_expires_at!
           @account.errors.add(:base, I18n.t('controllers.facility_accounts.create.expires_at_missing')) unless @account.expires_at
-        rescue NucsErrors::NucsError => e
+        rescue ValidatorError => e
           @account.errors.add(:base, e.message)
         end
 
