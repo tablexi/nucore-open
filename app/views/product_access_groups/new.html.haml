@@ -1,0 +1,5 @@
+= render :partial => "headers"
+%h3 New #{ProductAccessGroup.model_name.human}
+= form_for([current_facility, @instrument, @product_access_group]) do |f|
+  = f.error_messages
+  = render :partial => "fields", :locals => {:f => f}

@@ -9,6 +9,8 @@ class Order < ActiveRecord::Base
 
   scope :for_user, lambda { |user| { :conditions => ['user_id = ? AND ordered_at IS NOT NULL AND state = ?', user.id, 'purchased'] } }
  
+  attr_accessor :being_purchased_by_admin
+
   # BEGIN acts_as_state_machhine
   include AASM
 
@@ -39,7 +41,7 @@ class Order < ActiveRecord::Base
   end
 
   def cart_valid?
-    has_details? && has_valid_payment? && order_details.all? {|od| od.valid_for_purchase?}
+    has_details? && has_valid_payment? && (@being_purchased_by_admin || order_details.all? {|od| od.valid_for_purchase?})
   end
 
   def has_valid_payment?

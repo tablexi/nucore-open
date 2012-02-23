@@ -6,6 +6,7 @@
     %li= link_to 'Scheduling', facility_instrument_schedule_rules_path(current_facility, product), :class => secondary_tab == 'schedule_rules' ? 'active' : ''
   - if product.requires_approval?
     %li= link_to 'Users', facility_instrument_users_path(current_facility, product), :class => secondary_tab == 'users' ? 'active' : ''
+    %li= link_to ProductAccessGroup.model_name.human.pluralize, facility_instrument_product_access_groups_path(current_facility, product), :class => secondary_tab == 'restriction_levels' ? 'active' : ''
   - if product.is_a?(Bundle)
     %li= link_to 'Bundled Products', facility_bundle_bundle_products_path(current_facility, product), :class => secondary_tab == 'products' ? 'active' : ''
   - else
