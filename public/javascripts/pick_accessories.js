@@ -39,7 +39,9 @@
       function(response, status, xhr) {
         // show dialog
         dialog.dialog({
-          title: 'Accessories Entry'
+          closeOnEscape:  false,
+          modal:          true,
+          title:          'Accessories Entry'
         });
       }
     ); 
