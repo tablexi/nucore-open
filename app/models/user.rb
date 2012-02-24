@@ -100,15 +100,27 @@ class User < ActiveRecord::Base
   def cart(created_by_user = nil, find_existing=true)
 
     if find_existing
+      created_by_id = created_by_user ? created_by_user.id : id
       # filter out instrument/reservation orders. Each of those requires a brand new order.
       # If any exist unordered it's because the user bailed on the reservation process.
       # Such orders should be cleaned from the DB periodically.
-      oid=OrderDetail.select(:order_id).joins(:order, :product).where(
+      if oid=OrderDetail.select(:order_id).joins(:order, :product).where(
                         'orders.user_id = ? AND orders.created_by = ? AND orders.ordered_at IS NULL AND products.type != ?',
                         id, created_by_user ? created_by_user.id : id, Instrument.name
                       ).group(:order_id).first
 
-      @order = Order.find(oid.order_id) if oid
+        return @order = Order.find(oid.order_id)
+      
+      ##find most recent unordered order 
+      elsif @order = self.orders.where( 
+          :state   => :new,
+          :user_id => self.id,
+          :ordered_at => nil,
+          :created_by => created_by_id
+        ).order("orders.updated_at DESC").try(:first)
+
+        return @order
+      end
     end
 
     @order = Order.create(:user => self, :created_by => created_by_user ? created_by_user.id : id) unless @order
