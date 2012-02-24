@@ -8,6 +8,7 @@ namespace :order_details  do
       od.transaction do
         begin
           od.change_status!(complete)
+          od.fullfilled_at = od.reservation.reserve_end_at
           next unless od.price_policy
           costs = od.price_policy.calculate_cost_and_subsidy(od.reservation)
           next if costs.blank?
