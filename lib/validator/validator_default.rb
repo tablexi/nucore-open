@@ -1,6 +1,6 @@
 #
 # This class defines an interface for validating
-# payment source strings. It is also the default
+# payment source account strings. It is also the default
 # for validating payment sources. As such it does
 # very little. In fact, it will consider every payment
 # source it validates as valid. Every real nucore instance
@@ -24,7 +24,6 @@ class ValidatorDefault
   end
 
 
-
   #
   # This class will not use anything you pass in.
   def initialize(*args)
@@ -32,8 +31,8 @@ class ValidatorDefault
 
 
   #
-  # Validate a payment source. Returns nil and raises
-  # no +Exception+ if a payment source is open for new
+  # Validates a payment source. Returns nil and raises
+  # no +Exception+ if a payment source is open to new
   # payments. Otherwise a +ValidatorError+ will be raised.
   def account_is_open!
   end
@@ -44,6 +43,14 @@ class ValidatorDefault
   #   the latest expiration date for a payment source
   def latest_expiration
     Time.zone.now + 1.year
+  end
+
+
+  #
+  # [_return_]
+  #   A +Hash+ of :component_name => component_value pairs
+  def components
+    {}
   end
 
 

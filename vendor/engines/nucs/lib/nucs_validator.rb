@@ -54,6 +54,19 @@ class NucsValidator
 
 
   #
+  # Returns a +Hash+ with keys :fund, :dept, :project, :activity,
+  # :program, and :chart_field along with their corresponding values
+  def components
+    { :fund => fund,
+      :dept => department,
+      :project => project,
+      :activity => activity,
+      :program => program,
+      :chart_field => chart_field1 }
+  end
+
+
+  #
   # Compares this object's +#chart string+ components against
   # known values in the DB.
   # [_return_]
