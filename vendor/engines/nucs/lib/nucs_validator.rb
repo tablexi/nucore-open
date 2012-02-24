@@ -2,40 +2,29 @@ class NucsValidator
   include NucsErrors
 
   NUCS_BLANK='-'
-  NUCS_PATTERN=/^(\d{3})-(\d{7})(?:-(\d{8}))?(?:-(\d{2}))?(?:-(\d{4}))?(?:-(\d{4}))?$/
 
   attr_reader :chart_string, :fund, :department, :project, :activity, :program, :chart_field1, :account
 
 
+  def self.pattern_format
+    '123-1234567-12345678-12-1234-1234'
+  end
+
+
+  def self.pattern
+    /^(\d{3})-(\d{7})(?:-(\d{8}))?(?:-(\d{2}))?(?:-(\d{4}))?(?:-(\d{4}))?$/
+  end
+
+
   #
   # [_chart_string_]
-  #   A string that matches +NUCS_PATTERN+. Doesn't include +account+.
+  #   A string that matches +#pattern+. Doesn't include +account+.
   # [_account_]
   #   The account component of a NU chart string
   def initialize(chart_string, account=nil)
     super()
     self.account=account if account
     self.chart_string=chart_string
-  end
-
-
-  #
-  # Raises a +NucsErrors::InputError+ if +account+ is not a string of 5 digits
-  def account=(account)
-    account=account.to_s
-    raise InputError.new('account', account) if account !~ /^\d{5}$/
-    raise BlacklistedError.new('account', account) unless Blacklist.valid_account?(account)
-    @account=account
-  end
-
-
-  #
-  # Raises a +NucsErrors::InputError+ if +chart_string+ doesn't match +NUCS_PATTERN+
-  def chart_string=(chart_string)
-    raise InputError.new('chart string', chart_string) unless valid_chart_string?(chart_string)
-    @chart_string=chart_string
-    parse_chart_string
-    raise BlacklistedError.new('fund', @fund) unless Blacklist.valid_fund?(@fund)
   end
 
 
@@ -109,10 +98,30 @@ class NucsValidator
   end
 
 
+  #
+  # Raises a +NucsErrors::InputError+ if +account+ is not a string of 5 digits
+  def account=(account)
+    account=account.to_s
+    raise InputError.new('account', account) if account !~ /^\d{5}$/
+    raise BlacklistedError.new('account', account) unless Blacklist.valid_account?(account)
+    @account=account
+  end
+
+
+  #
+  # Raises a +NucsErrors::InputError+ if +chart_string+ doesn't match +#pattern+
+  def chart_string=(chart_string)
+    raise InputError.new('chart string', chart_string) unless valid_chart_string?(chart_string)
+    @chart_string=chart_string
+    parse_chart_string
+    raise BlacklistedError.new('fund', @fund) unless Blacklist.valid_fund?(@fund)
+  end
+
+
   private
 
   def parse_chart_string
-    results=@chart_string.match(NUCS_PATTERN)
+    results=@chart_string.match(self.class.pattern)
     @fund=results[1]
     @department=results[2]
     @project=results[3]
@@ -123,17 +132,17 @@ class NucsValidator
 
 
   def revenue_account?
-    return !(@account !~ /^(4|5)/)
+    !(@account !~ /^(4|5)/)
   end
 
 
   def grant?
-    return @project && @project.start_with?('6')
+    @project && @project.start_with?('6')
   end
 
 
   def valid_chart_string?(chart_string)
-    return !(chart_string !~ NUCS_PATTERN)
+    !(chart_string !~ self.class.pattern)
   end
 
 
