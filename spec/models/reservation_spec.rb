@@ -318,8 +318,93 @@ describe Reservation do
       pending
     end
 
-    it "should not let reservations occur outside of times/days defined by schedule rules" do
-      pending
+    context "schedule rules" do
+      before :each do
+        @rule.destroy
+        @rule_9_to_5 = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :start_hour => 9, :end_hour => 17, :duration_mins => 15))
+        @rule_5_to_7 = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :start_hour => 17, :end_hour => 19, :duration_mins => 15))
+      end
+      
+      it "should allow a reservation within the schedule rules" do
+        
+        @reservation = @instrument.reservations.new(:reserve_start_date => Date.today + 1, :reserve_start_hour => 6, :reserve_start_min => 0, :reserve_start_meridian => 'pm', :duration_value => 1, :duration_unit => 'hours')
+        @reservation.should be_valid
+        @reservation2 = @instrument.reservations.new(:reserve_start_date => Date.today + 1, :reserve_start_hour => 10, :reserve_start_min => 0, :reserve_start_meridian => 'am', :duration_value => 1, :duration_unit => 'hours')
+        @reservation2.should be_valid
+      end
+      it "should not let reservations occur after times defined by schedule rules" do
+        @reservation = @instrument.reservations.new(:reserve_start_date => Date.today + 1, :reserve_start_hour => 8, :reserve_start_min => 0, :reserve_start_meridian => 'pm', :duration_value => 1, :duration_unit => 'hours')
+        @reservation.should be_invalid
+      end
+      it "should not let reservations occur before times define by schedule rules" do
+        @reservation = @instrument.reservations.new(:reserve_start_date => Date.today + 1, :reserve_start_hour => 5, :reserve_start_min => 0, :reserve_start_meridian => 'am', :duration_value => 1, :duration_unit => 'hours')
+        @reservation.should be_invalid
+      end
+      
+      context "schedule rules with restrictions" do
+        before :each do
+          @user = Factory.create(:user)
+          @account = Factory.create(:nufs_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
+          
+          @instrument.update_attributes(:requires_approval => true)
+            
+          @order = Factory.create(:order, :user => @user, :created_by => @user.id, :account => @account, :facility => @facility)
+          @order_detail = Factory.create(:order_detail, :order => @order, :product => @instrument)
+          # @instrument.update_attributes(:requires_approval => true)
+          
+          @restriction_level = @rule_5_to_7.product_access_groups.create(Factory.attributes_for(:product_access_group, :product => @instrument))
+          @instrument.reload
+          @reservation = Reservation.new(:reserve_start_date => Date.today + 1, 
+                                                      :reserve_start_hour => 6, 
+                                                      :reserve_start_min => 0, 
+                                                      :reserve_start_meridian => 'pm', 
+                                                      :duration_value => 1, 
+                                                      :duration_unit => 'hours', 
+                                                      :order_detail => @order_detail,
+                                                      :instrument => @instrument)          
+        end
+        it "should allow a user to reserve if it doesn't require approval" do
+          @instrument.update_attributes(:requires_approval => false)
+          @reservation.should be_valid
+        end    
+        
+        it "should not allow a user who is not approved to reserve" do          
+          @reservation.should_not be_valid
+        end
+        it "should not allow a user who is approved, but not in the group" do
+          @product_user = ProductUser.create(:user => @user, :product => @instrument, :approved_by => @user.id)
+          @product_user.should_not be_new_record
+          @reservation.should_not be_valid
+        end
+        it "should allow a user who is approved and part of the restriction group" do
+          @product_user = @user.product_users.create(:product => @instrument, :product_access_group => @restriction_level, :approved_by => @user.id)
+          @product_user.should_not be_new_record
+          
+          @reservation.should be_valid
+        end
+        
+        context "admin overrides" do
+          before :each do
+            # user is not in the restricted group
+            @product_user = ProductUser.create(:user => @user, :product => @instrument, :approved_by => @user.id)
+            @admin = Factory.create(:user)
+            UserRole.grant(@admin, UserRole::ADMINISTRATOR)
+          end
+
+          it "should allow an administrator to save in one of the restricted scheduling rules" do
+            @reservation.save_as_user!(@admin)
+            # if it raises an exception, we're in trouble            
+          end
+          it "should not allow a regular user to save in a restricted scheduling rule" do
+            lambda { @reservation.save_as_user!(@user) }.should raise_error(ActiveRecord::RecordInvalid)
+          end
+          it "should not allow an administrator to save outside of scheduling rules" do
+            @reservation.update_attributes(:reserve_start_hour => 10)            
+            lambda { @reservation.save_as_user!(@admin) }.should raise_error(ActiveRecord::RecordInvalid)
+          end
+        end
+      end
+      
     end
   end
 

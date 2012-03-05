@@ -22,6 +22,11 @@ class ReservationsController < ApplicationController
     @reservations = @instrument.reservations.active
     @rules        = @instrument.schedule_rules
     
+    # restrict to available if it requires if it requires approval,
+    # but params[:all] will override that
+    @rules = @rules.available_to_user(acting_user) if @instrument.requires_approval
+    
+    
     if @end_at - @start_at <= 1.week
       # build unavailable schedule
       @unavailable = ScheduleRule.unavailable(@rules)
@@ -118,7 +123,7 @@ class ReservationsController < ApplicationController
         end
 
         return
-      rescue Exception => e
+      rescue ActiveRecord::RecordInvalid => e
         raise ActiveRecord::Rollback
       end
     end
@@ -179,7 +184,7 @@ class ReservationsController < ApplicationController
         end
         flash[:notice] = 'The reservation was successfully updated.'
         redirect_to (@order.purchased? ? reservations_path : cart_path) and return
-      rescue Exception => e
+      rescue ActiveRecord::RecordInvalid => e
         raise ActiveRecord::Rollback
       end
     end

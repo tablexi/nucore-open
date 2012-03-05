@@ -58,8 +58,10 @@ class Reservation < ActiveRecord::Base
   end
   def save_as_user!(user)
     if (user.operator_of?(instrument.facility))
+      @reserved_by_admin = true
       self.save!
     else
+      @reserved_by_admin = false
       self.save_extended_validations!  
     end
   end
@@ -209,7 +211,6 @@ class Reservation < ActiveRecord::Base
   def in_window?
     groups   = (order_detail.order.user.price_groups + order_detail.order.account.price_groups).flatten.uniq
     max_days = longest_reservation_window(groups)
-    logger.debug("reserve_start: #{reserve_start_at}")
     diff     = reserve_start_at.to_date - Date.today
     diff <= max_days
   end
@@ -231,9 +232,16 @@ class Reservation < ActiveRecord::Base
   end
 
   def instrument_is_available_to_reserve? (start_at = self.reserve_start_at, end_at = self.reserve_end_at)
+    
+    # check for order_detail and order because some old specs don't set an order detail
+    # if we're saving as an administrator, we want access to all schedule rules
+    if (order_detail and order_detail.order and !@reserved_by_admin)
+      rules = instrument.available_schedule_rules(order_detail.order.user)
+    else
+      rules = instrument.schedule_rules
+    end
+    
     mins  = (end_at - start_at)/60
-    rules = instrument.schedule_rules.each
-
     (0..mins).each { |n|
       dt    = start_at.advance(:minutes => n)
       found = false

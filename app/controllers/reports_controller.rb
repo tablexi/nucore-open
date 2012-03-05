@@ -18,6 +18,15 @@ class ReportsController < ApplicationController
 
   private
 
+  def format_username(user)
+    name=''
+    name += (user.last_name || '')
+    name += ", " unless name.blank?
+    name += (user.first_name || '')
+    "#{name} (#{user.username})"
+  end
+
+
   def init_report_params
     if params[:date_start].blank?
       now=Date.today

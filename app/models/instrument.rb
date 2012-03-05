@@ -5,6 +5,7 @@ class Instrument < Product
   has_many :price_policies, :foreign_key => 'instrument_id'
   has_many :reservations
   has_many :instrument_statuses, :foreign_key => 'instrument_id'
+  has_many :product_access_groups, :foreign_key => 'product_id'
 
   accepts_nested_attributes_for :relay
 
@@ -98,10 +99,22 @@ class Instrument < Product
       current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase? && group_ids.include?(pp.price_group_id)}
     end
   end
+  
+  def restriction_levels_for(user)
+    product_access_groups.joins(:product_users).where(:product_users => {:user_id => user.id})
+  end
 
   def set_default_pricing
     [ PriceGroup.base.first, PriceGroup.external.first ].each do |pg|
       PriceGroupProduct.create!(:product => self, :price_group => pg, :reservation_window => PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)
+    end
+  end
+  
+  def available_schedule_rules(user)
+    if requires_approval?
+      self.schedule_rules.available_to_user user
+    else
+      self.schedule_rules
     end
   end
 end

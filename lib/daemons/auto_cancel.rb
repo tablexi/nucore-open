@@ -2,7 +2,11 @@ require File.expand_path('base', File.dirname(__FILE__))
 
 Daemons::Base.new('auto_cancel').start do
   if NUCore::Database.oracle?
-    time_condition=" EXTRACT(MINUTE FROM SYS_EXTRACT_UTC(CURRENT_TIMESTAMP)-reserve_start_at) >= auto_cancel_mins"
+    time_condition=<<-CONDITION
+      (EXTRACT(MINUTE FROM (SYS_EXTRACT_UTC(CURRENT_TIMESTAMP) - reserve_start_at)) +
+       EXTRACT(HOUR FROM (SYS_EXTRACT_UTC(CURRENT_TIMESTAMP) - reserve_start_at))*60 +
+       EXTRACT(DAY FROM (SYS_EXTRACT_UTC(CURRENT_TIMESTAMP) - reserve_start_at))*24*60) >= auto_cancel_mins
+    CONDITION
   else
     time_condition=" TIMESTAMPDIFF(MINUTE, reserve_start_at, UTC_TIMESTAMP) >= auto_cancel_mins"
   end

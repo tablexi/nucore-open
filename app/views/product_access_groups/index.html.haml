@@ -1,0 +1,18 @@
+= render :partial => "headers"
+
+%h3 #{ProductAccessGroup.model_name.human}
+
+%p= link_to "Add #{ProductAccessGroup.model_name.human}", new_facility_instrument_product_access_group_path(@facility, @instrument)
+
+%table
+  %tr
+    %th
+    %th #{ProductAccessGroup.human_attribute_name(:name)}
+    %th #{User.model_name.human.pluralize}
+  - @product_access_groups.each do |level|
+    %tr
+      %td= link_to "Remove", facility_instrument_product_access_group_path(@facility, @instrument, level), :method => :delete, :confirm => 'Are you sure?'
+      %td= link_to level.name, edit_facility_instrument_product_access_group_path(@facility, @instrument, level)
+      %td= level.users.size
+
+

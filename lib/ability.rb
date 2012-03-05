@@ -33,7 +33,7 @@ class Ability
           Bundle, OrderDetail, Order, Reservation, Instrument,
           Item, ProductUser, Product, UserPriceGroupMember
         ]
-
+        
         can :manage, User if controller.is_a?(UsersController)
 
         cannot :show_problems, Order
@@ -50,7 +50,7 @@ class Ability
           AccountUser, Account, FacilityAccount, Journal,
           Statement, FileUpload, InstrumentPricePolicy,
           ItemPricePolicy, OrderStatus, PriceGroup, ReportsController,
-          ScheduleRule, ServicePricePolicy, PriceGroupProduct
+          ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup
         ]
 
         can :manage, User if controller.is_a?(FacilityUsersController)
