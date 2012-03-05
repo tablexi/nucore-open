@@ -321,4 +321,64 @@ describe ScheduleRule do
     end
   end
   
+  context 'available_to_user' do
+    before :each do
+      @facility   = Factory.create(:facility)
+      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
+      @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id, :requires_approval => true))
+      @rule       = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+      @user = Factory.create(:user)
+    end
+    context 'if instrument has no levels' do
+      it 'should not return a rule if the user is not added' do
+        @instrument.schedule_rules.available_to_user(@user).should be_empty
+      end
+      it 'should return a rule' do
+        @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id})
+        @instrument.schedule_rules.available_to_user(@user).to_a.should == [@rule]
+      end
+    end
+    context 'if instrument has levels' do
+      before :each do
+        @restriction_levels = []
+        3.times do
+          @restriction_levels << Factory.create(:product_access_group, :product_id => @instrument.id)
+        end
+      end
+      
+      context 'the scheduling rule does not have levels' do
+        it 'should return a rule if the user is in the group' do
+          @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id})
+          @instrument.schedule_rules.available_to_user(@user).to_a.should == [@rule]
+        end
+      end
+      
+      context 'the scheduling rule has levels' do
+        before :each do
+          @rule.product_access_groups = [@restriction_levels[0], @restriction_levels[2]]
+          @rule.save!
+        end
+        it 'should return the rule if the user is in the group' do
+          @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id, :product_access_group_id => @restriction_levels[0]})
+          @instrument.schedule_rules.available_to_user(@user).to_a.should == []
+        end
+        
+        it 'should not return the rule if the user is not in the group' do
+          @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id, :product_access_group_id => @restriction_levels[1]})
+          @instrument.schedule_rules.available_to_user(@user).should be_empty
+        end
+        it 'should not return the rule if the user has no group' do
+          @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id})
+          @instrument.schedule_rules.available_to_user(@user).should be_empty
+        end
+        
+        it 'should return the rule if requires_approval has been set to false' do
+          @instrument.update_attributes(:requires_approval => false)
+          @instrument.available_schedule_rules(@user).should == [@rule]
+        end
+      end
+      
+      
+    end
+  end
 end

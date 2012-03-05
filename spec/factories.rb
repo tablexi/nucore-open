@@ -110,6 +110,10 @@ Factory.define :relay, :class => Relay do |o|
   o.sequence(:port) {|p| p }
 end
 
+Factory.define :product_access_group do |o|
+  o.sequence(:name) { |n| "Level #{n}" }
+end
+
 Factory.define :instrument_price_policy, :class => InstrumentPricePolicy do |o|
   o.unit_cost 1
   o.unit_subsidy 0

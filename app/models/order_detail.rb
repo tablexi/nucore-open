@@ -285,8 +285,6 @@ class OrderDetail < ActiveRecord::Base
     return "The #{account.type_string} is not open for the required account" if account.is_a?(NufsAccount) && !account.account_open?(product.account)
 
     # is the user approved for the product
-    logger.debug("created_by_user: #{order.created_by_user}")
-    logger.debug("can override? #{order.created_by_user.can_override_restrictions?(product)}")
     return "You are not approved to purchase this #{product.class.name.downcase}" unless product.can_be_used_by?(order.user) or order.created_by_user.can_override_restrictions?(product)
 
     # are reservation requirements met

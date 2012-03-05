@@ -17,11 +17,10 @@ class ProductUsersController < ApplicationController
   # GET /users
   def index
     if @product.requires_approval?
-      @users = @product.product_users
-      @users = @product.product_users.map { |pu| pu.user }
-      @users = @users.sort_by { |u| [ u.last_name, u.first_name ] }.paginate(:page => params[:page])
+      @product_users = @product.product_users.includes(:user).order(:user => [:last_name, :first_name])
+      @product_users = @product_users.paginate(:page => params[:page])
     else
-      @users = nil
+      @product_users = nil
       flash.now[:notice] = "This #{@product.class.name.downcase} does not require user authorization"
     end
   end
@@ -64,6 +63,17 @@ class ProductUsersController < ApplicationController
     end
     
     render :layout => false
+  end
+  
+  def update_restrictions
+    product_param_name = @product.class.name.underscore.downcase 
+    params[product_param_name][:product_users].each do |key, value|
+      product_user = @product.product_users.find(key)
+      product_user.update_attributes(value)  
+    end
+    
+    flash[:notice] = t("product_users.update_restrictions.notice")
+    redirect_to self.send("facility_#{product_param_name}_users_url", @facility, @product)
   end
 
   def init_product

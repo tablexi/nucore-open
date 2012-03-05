@@ -63,6 +63,29 @@ describe ScheduleRulesController do
       should set_the_flash
       assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
     end
+    
+    context 'with restriction levels' do
+      before :each do
+        @restriction_levels = []
+        3.times do
+          @restriction_levels << Factory.create(:product_access_group, :product_id => @instrument.id)
+        end
+        sign_in(@admin)
+      end
+      
+      it "should come out with no restriction levels" do
+        do_request
+        assigns[:schedule_rule].product_access_groups.should be_empty          
+      end
+              
+      it "should store restriction_rules" do
+        @params.deep_merge!(:schedule_rule => {:product_access_group_ids => [@restriction_levels[0].id, @restriction_levels[2].id]})
+        do_request
+        assigns[:schedule_rule].product_access_groups.should contain_all [@restriction_levels[0], @restriction_levels[2]]
+        assigns[:schedule_rule].product_access_groups.size.should == 2
+      end
+      
+    end
 
   end
 
@@ -104,6 +127,36 @@ describe ScheduleRulesController do
         assigns(:schedule_rule).should == @rule
         should set_the_flash
         assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
+      end
+      
+      context 'restriction levels' do
+        before :each do
+          @restriction_levels = []
+          3.times do
+            @restriction_levels << Factory.create(:product_access_group, :product_id => @instrument.id)
+          end
+          sign_in(@admin)
+        end
+        
+        it "should come out with no restriction levels" do
+          do_request
+          assigns[:schedule_rule].product_access_groups.should be_empty          
+        end
+        
+        it "should come out with no restriction levels if it had them before" do
+          @rule.product_access_groups = @restriction_levels
+          @rule.save!
+          do_request
+          assigns[:schedule_rule].product_access_groups.should be_empty
+        end
+        
+        it "should store restriction_rules" do
+          @params.deep_merge!(:schedule_rule => {:product_access_group_ids => [@restriction_levels[0].id, @restriction_levels[2].id]})
+          do_request
+          assigns[:schedule_rule].product_access_groups.should contain_all [@restriction_levels[0], @restriction_levels[2]]
+          assigns[:schedule_rule].product_access_groups.size.should == 2
+        end
+        
       end
 
     end

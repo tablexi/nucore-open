@@ -2,7 +2,10 @@ class ScheduleRule < ActiveRecord::Base
   @@durations = [1, 5, 10, 15, 30, 60]
   
   belongs_to :instrument
-
+  
+  # oracle has a maximum table name length of 30, so we have to abbreviate it down
+  has_and_belongs_to_many :product_access_groups, :join_table => 'product_access_schedule_rules'
+  
   attr_accessor :unavailable # virtual attribute
 
   validates_presence_of :instrument_id
@@ -14,6 +17,16 @@ class ScheduleRule < ActiveRecord::Base
 
   validate :at_least_one_day_selected, :end_time_is_after_start_time, :end_time_is_valid, :no_overlap_with_existing_rules, :no_conflict_with_existing_reservation
 
+  def self.available_to_user(user)    
+    where(:product_users => {:user_id => user.id}).
+    joins(:instrument => :product_users).     
+    # instrument doesn't have any restrictions at all, or has one that matches the product_user
+    where("(not EXISTS (SELECT * FROM product_access_schedule_rules WHERE product_access_schedule_rules.schedule_rule_id = schedule_rules.id)
+     OR (exists (select * from product_access_schedule_rules 
+         where product_access_schedule_rules.product_access_group_id = product_users.product_access_group_id
+         and product_access_schedule_rules.schedule_rule_id = schedule_rules.id)))")
+  end
+   
   def at_least_one_day_selected
     errors.add(:base, "Please select at least one day") unless
       on_sun || on_mon || on_tue || on_wed || on_thu || on_fri || on_sat

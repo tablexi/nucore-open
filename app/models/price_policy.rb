@@ -107,7 +107,7 @@ class PricePolicy < ActiveRecord::Base
   # Returns true if #expire_date is prior to or the same
   # as today's date, false otherwise
   def expired?
-    expire_date.to_date <= Time.zone.now.to_date
+    expire_date <= Time.zone.now
   end
 
 
