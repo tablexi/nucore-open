@@ -60,7 +60,7 @@ class Reservation < ActiveRecord::Base
   end
 
   after_save :on => :create do
-    self.order_detail.reload.change_status!(OrderStatus.find_by_name!('complete')) if self.has_actuals?
+    self.order_detail.reload.change_status!(OrderStatus.find_by_name!('Complete')) if self.has_actuals?
   end
 
   def save_extended_validations(options ={})
