@@ -31,7 +31,7 @@ class Ability
         can :manage, [
           AccountPriceGroupMember, Service, BundleProduct,
           Bundle, OrderDetail, Order, Reservation, Instrument,
-          Item, ProductUser, Product, UserPriceGroupMember
+          Item, ProductUser, Product, ProductAccessory, UserPriceGroupMember
         ]
         
         can :manage, User if controller.is_a?(UsersController)

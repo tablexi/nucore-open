@@ -372,10 +372,9 @@ en:
       th:
         order_no: "Order #"
         quantity: "Quantity/Product"
-        cost: "Estimated Cost"
-        adjust: "Estimated Adjustment"
-        total: "Estimated Total"
-      foot: "All prices are estimates. Actual cost is assigned when the order is complete."
+        cost: "Cost"
+        adjust: "Adjustment"
+        total: "Total"
     show:
       h1: "Cart"
       intro: "Your cart will be saved between visits and can be added to, or your order completed at a later time."
@@ -441,6 +440,10 @@ en:
         adjust: "Adjustment"
         total: "Total"
       unassigned: "Unassigned"
+  
+  product_accessories:
+    index:
+      description: "Here you may define one or more accessories that can be used during a reservation of this product"
 
   product_users:
     new:

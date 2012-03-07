@@ -1,3 +1,5 @@
+- content_for :head_content do
+  = javascript_include_tag 'pick_accessories'
 %table
   %tr
     %th.centered Order #
@@ -15,7 +17,7 @@
         - if res.can_switch_instrument_on?
           = link_to "Begin Reservation", order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'on')
         - elsif res.can_switch_instrument_off?
-          = link_to "End Reservation", order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'off')
+          = link_to "End Reservation", order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'off'), :class => (od.product.accessories.count > 0 ? :end_reservation_link : nil)
         - else
           - if res.can_cancel?
             - fee = od.cancellation_fee

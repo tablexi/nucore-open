@@ -1,4 +1,5 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require 'spec_helper'
+require 'controller_spec_helper'
 
 describe ReservationsController do
   include DateHelper
@@ -479,9 +480,120 @@ describe ReservationsController do
           should set_the_flash
           should respond_with :redirect
         end
+
+        context "for instrument w/ accessory (pick_accessories)" do
+          before :each do
+            ## (setup stolen from orders_controller_spec)
+            ## create a purchasable item
+            @item = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+            @item_pp=@item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
+            @item_pp.reload.restrict_purchase=false
+            
+            ## make it an accessory of the reserved product
+            @instrument.product_accessories.create!(:accessory => @item)
+            sleep 2 # because res start time is now + 1 second. Need to make time validations pass.
+          end
+
+          it_should_allow :guest, "and render with right template & be successful" do
+            should render_template(:pick_accessories)
+            should respond_with :success
+          end
+
+          it_should_allow :guest, "and set variables needed by the pick_accessories view" do
+            assigns(:order).should == @order
+            assigns(:order_detail).should == @order_detail
+            assigns(:reservation).should == @reservation
+            assigns(:product_accessories).collect(&:accessory).should == [@item]
+          end
+          
+          it_should_allow :guest, "and have a product accessory" do
+            pas = assigns(:product_accessories)
+            pa = pas.first
+            accessory = pa.accessory
+            accessory.should == @item
+          end
+        end
+      end
+    end
+
+    context 'pick_accessories' do
+      before :each do
+        ## action setup
+        @method=:post
+        @action=:pick_accessories
+        @params.merge!(:reservation_id => @reservation.id)
+
+        ## create a purchasable item
+        @item = @authable.items.create!(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+        @item_pp=@item.item_price_policies.create!(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
+        @item_pp.reload.restrict_purchase=false
+
+        # make it an accessory of the reserved product
+        @product_accessory = @instrument.product_accessories.create!(:accessory => @item)
+        @pre_post_line_item_count = @order.order_details.count
       end
 
+      it_should_allow :guest, "and set variables needed by the pick_accessories view" do
+        assigns(:order).should == @order
+        assigns(:order_detail).should == @order_detail
+        assigns(:reservation).should == @reservation
+        assigns(:product_accessories).collect(&:accessory).should == [@item]
+      end
+
+      context "adding accessories to an order" do 
+        before :each do
+          @accessory_quantity = 3
+          @params.merge!("quantity#{@item.id}" => @accessory_quantity)
+        end
+
+        it_should_allow :guest, "render successfully" do
+          should respond_with :success
+        end
+
+        it_should_allow :guest, "and add a complete order_detail for the accessory" do
+          @order_details = assigns(:order).order_details
+          @order_details.count.should == 2
+
+          ## shouldn't remove the instrument
+          @order.order_details.first.product.should == @instrument
+          
+          ## should be set as user requested
+          @accessory_od = @order_details.last
+          @accessory_od.product.should == @item
+          @accessory_od.quantity.should == @accessory_quantity
+          @accessory_od.state.should == "complete"
+        end
+      end
+
+      context "not adding accessories to an order (blank quantity)" do 
+        before :each do
+          @params.merge!("quantity#{@item.id}" => "")
+        end
+
+        it_should_allow :guest, "and not add any order_details" do
+          @order = assigns(:order).reload
+          @order.order_details.count.should == @pre_post_line_item_count
+        end
+      end
+
+      context "not adding accessories to an order (invalid quantity)" do 
+        before :each do
+          @params.merge!("quantity#{@item.id}" => "abc")
+        end
+
+        it_should_allow :guest, "and indicate an error (406 status)" do
+          should respond_with 406
+        end
+
+        it_should_allow :guest, "and not add any order_details" do
+          @order = assigns(:order).reload
+          @order.order_details.count.should == @pre_post_line_item_count
+        end
+
+        it_should_allow :guest, "and set errors for that accessory" do
+          assigns(:errors_by_id)[@item.id].should be_present
+        end 
+      end
     end
   end
-
 end
