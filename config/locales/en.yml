@@ -443,7 +443,7 @@ en:
   
   product_accessories:
     index:
-      description: "Here You may define one or more accessories which may be used during a reservation of this product"
+      description: "Here you may define one or more accessories that can be used during a reservation of this product"
 
   product_users:
     new:
