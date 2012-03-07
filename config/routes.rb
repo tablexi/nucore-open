@@ -38,7 +38,9 @@ Nucore::Application.routes.draw do |map|
   resources :affiliates, :except => :show
 
   map.resources :facilities, :collection => {:list => :get}, :member => {:manage => :get}, :except => [:delete] do |facility|
-    facility.resources :products, :only => [:index]
+    facility.resources :products, :only => [:index] do |product|
+      product.resources :product_accessories, :as => 'accessories', :only => [:index, :create, :destroy]
+    end
     
     #facility.transactions '/transactions', :controller => 'transaction_history', :action => 'facility_history'
     
@@ -175,6 +177,7 @@ Nucore::Application.routes.draw do |map|
       order_detail.resources :reservations, :except => [:index] do |reservation|
         reservation.move_reservation '/move', :controller => 'reservations', :action => 'move', :conditions => {:method => :get}
         reservation.switch_instrument '/switch_instrument', :controller => 'reservations', :action => 'switch_instrument', :conditions => {:method => :get}
+        reservation.pick_accessories '/pick_accessories', :controller => 'reservations', :action => 'pick_accessories', :conditions => {:method => [:get, :post]}
       end
     end
   end
