@@ -28,7 +28,7 @@ namespace :order_details  do
     complete    = OrderStatus.find_by_name!('Complete')
     order_details = OrderDetail.where("(state = 'new' OR state = 'inprocess') AND reservations.actual_end_at IS NULL AND canceled_at IS NULL AND reserve_end_at < ?", Time.zone.now - 1.hour).
                                joins(:reservation).
-                               include(:product).
+                               includes(:product).
                                readonly(false).all
     order_details.each do |od|
       next unless od.product.relay.try(:auto_logout) == true
