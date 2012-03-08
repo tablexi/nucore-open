@@ -54,7 +54,8 @@ class OrdersController < ApplicationController
 
   # PUT /orders/2/add/
   def add
-    @quantity   = params[:quantity].to_i || session[:add_to_cart][:quantity]
+    @quantity   = params[:quantity] || session[:add_to_cart][:quantity]
+    @quantity=@quantity.to_i if @quantity.is_a?(String)
     @product_id = params[:product_id]    || session[:add_to_cart][:product_id]
     session[:add_to_cart] = nil
     @product    = Product.find(@product_id)
