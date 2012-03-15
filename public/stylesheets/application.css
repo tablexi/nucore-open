@@ -411,6 +411,10 @@ th {
 	text-shadow:1px 1px #fff;
 }
 
+th.actions, td.actions {
+  width: 100px;
+}
+
 .sortable {
 	background-image:url(../images/icon-sort.gif);
 	background-position:right center;

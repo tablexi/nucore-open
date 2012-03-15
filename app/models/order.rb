@@ -113,13 +113,13 @@ class Order < ActiveRecord::Base
       when Item
         order_detail = self.order_details.first(:conditions => ['product_id = ? AND group_id IS NULL', product.id])
         if order_detail.nil?
-          order_detail = order_details.create(:product_id => product.id, :quantity => 1)
+          order_detail = order_details.create(:product_id => product.id, :quantity => quantity)
         else
           order_detail.quantity += quantity.to_i
         end
         order_detail.update_account(account)
       else
-        order_detail = order_details.create(:product_id => product.id, :quantity => 1)
+        order_detail = order_details.create(:product_id => product.id, :quantity => quantity)
         order_detail.update_account(account)
     end
     self.facility = product.facility

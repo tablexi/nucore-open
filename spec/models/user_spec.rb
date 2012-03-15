@@ -111,6 +111,12 @@ describe User do
       order.should == @order
     end
 
+    it 'should return the existing unordered order even when its empty' do
+      @order.order_details.destroy_all
+      order = @user.cart(@user)
+      order.reload.should == @order
+    end
+
     it 'should return a new order' do
       order=@user.cart(@user, false)
       order.should_not == @order

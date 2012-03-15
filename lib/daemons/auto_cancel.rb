@@ -27,13 +27,15 @@ Daemons::Base.new('auto_cancel').start do
     SQL
   ).readonly(false).all
 
+  # we need something that responds to #id to satisfy OrderDetail#cancel_reservation
+  Admin=Struct.new(:id)
+  admin=Admin.new
+  admin.id=0
+
   cancelable.each do |res|
     begin
-      res.update_attributes!(
-        :canceled_at => Time.zone.now,
-        :canceled_by => 0,
-        :canceled_reason => 'auto cancelled by system'
-      )
+      res.order_detail.cancel_reservation admin, OrderStatus.cancelled.first, true
+      res.update_attribute :canceled_reason, 'auto cancelled by system'
     rescue => e
       puts "Could not auto cancel reservation #{res.id}! #{e.message}\n#{e.backtrace.join("\n")}"
     end
