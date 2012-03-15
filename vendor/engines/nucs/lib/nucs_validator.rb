@@ -186,7 +186,7 @@ class NucsValidator
     where.merge!(:activity => @activity) if @activity && grant?
     where.merge!(:project => @project) if @project
     where.merge!(:account => account) if account
-    gls=NucsGl066.find(:all, :conditions => where)
+    gls=NucsGl066.where(where).all
     raise UnknownGL066Error.new(where) if gls.empty?
     return gls
   end
