@@ -4,6 +4,8 @@ class NufsAccount < Account
 
   validate { validate_account_number }
 
+  after_find :load_components
+
 
   def set_expires_at!
     self.expires_at = ValidatorFactory.instance(account_number).latest_expiration
@@ -18,11 +20,6 @@ class NufsAccount < Account
     end
 
     return true
-  end
-
-
-  def after_find
-    load_components
   end
 
 
