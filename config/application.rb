@@ -1,7 +1,10 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-require File.join(File.dirname(__FILE__), '..', 'vendor', 'engines', 'nucs', 'lib', 'engine')
+
+Dir[File.expand_path('../vendor/engines/*', File.dirname(__FILE__))].each do |engine|
+  require File.join(engine, 'lib', 'engine')
+end
 
 require 'will_paginate/array'
 # If you have a Gemfile, require the gems listed there, including any gems
