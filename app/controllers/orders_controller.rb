@@ -125,7 +125,6 @@ class OrdersController < ApplicationController
     end
 
     redirect_to params[:redirect_to].presence || order_url(@order)
-    #redirect_to order_url(@order)
 
     # clear out account on the order if its now empty
     if  @order.order_details.empty?
