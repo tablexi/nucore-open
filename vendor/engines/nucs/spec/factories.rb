@@ -1,3 +1,15 @@
+Factory.define :nufs_account, :class => NufsAccount do |o|
+  o.sequence(:account_number) do |n|
+    s = "9#{n%10}#{rand(10)}-7777777" # fund3-dept7
+    define_gl066(s)
+    s
+  end
+  o.description 'nufs account description'
+  o.expires_at Time.zone.now + 1.month
+  o.created_by 0
+end
+
+
 Factory.define :nucs_grants_budget_tree do |tree|
   tree.account '77599'
   tree.account_desc 'Other Capital Equipment'
