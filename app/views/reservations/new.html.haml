@@ -60,7 +60,7 @@
     = render :partial => 'reservation_fields', :locals => {:f => f}
   %ul.horiz
     %li= f.submit 'Create', :class => 'btn'
-    %li= link_to 'Remove', remove_order_path(@order, @order_detail), :method => :put
+    %li= link_to 'Cancel', remove_order_path(@order, @order_detail), :method => :put
 
 #overlay
   #spinner
