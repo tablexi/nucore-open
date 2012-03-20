@@ -111,22 +111,21 @@ class OrdersController < ApplicationController
       OrderDetail.transaction do
         if order_details.all?{|od| od.destroy}
           flash[:notice] = "The bundle has been removed."
-          redirect_to order_url(@order)
         else
           flash[:error] = "An error was encountered while removing the bundle."
-          redirect_to order_url(@order)
         end
       end
     # remove single products
     else
       if order_detail.destroy
         flash[:notice] = "The product has been removed."
-        redirect_to order_url(@order)
       else
         flash[:error] = "An error was encountered while removing the product."
-        redirect_to order_url(@order)
       end
     end
+
+    redirect_to params[:redirect_to].presence || order_url(@order)
+    #redirect_to order_url(@order)
 
     # clear out account on the order if its now empty
     if  @order.order_details.empty?
