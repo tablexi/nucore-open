@@ -37,7 +37,7 @@ group :development, :test do
    gem 'ci_reporter'
    gem 'factory_girl_rails','1.0.1'
    gem 'mocha',             '0.9.7' # TODO: remove?
-   gem 'rspec-rails',       '2.6.1'
+   gem 'rspec-rails',       '2.9'
    gem 'ruby-debug19',      '0.11.6'
    gem 'shoulda',           '2.11.3'
    gem 'single_test',       '0.4.0'
