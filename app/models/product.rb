@@ -13,7 +13,6 @@ class Product < ActiveRecord::Base
 
   validates_presence_of :name, :type
   validate_url_name :url_name
-  validates_inclusion_of :requires_approval, :is_archived, :is_hidden, :in => [true, false, 0, 1]
   
   scope :active,             :conditions => { :is_archived => false, :is_hidden => false }
   scope :active_plus_hidden, :conditions => { :is_archived => false}
