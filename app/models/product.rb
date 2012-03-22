@@ -19,6 +19,16 @@ class Product < ActiveRecord::Base
   scope :archived,           :conditions => { :is_archived => true }
   scope :not_archived,       :conditions => { :is_archived => false }
 
+  
+  ## AR Hooks
+  before_validation do
+    self.requires_approval ||= false
+    self.is_archived       ||= false
+    self.is_hidden         ||= false
+
+    # return true so validations will run
+    return true
+  end
   after_create :set_default_pricing
   
   def initial_order_status
