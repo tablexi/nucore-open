@@ -11,7 +11,6 @@ class ScheduleRule < ActiveRecord::Base
   validates_presence_of :instrument_id
   validates_inclusion_of :duration_mins, :in => @@durations
   validates_numericality_of :discount_percent, :greater_than_or_equal_to => 0, :less_than => 100
-  validates_inclusion_of :on_sun, :on_mon, :on_tue, :on_wed, :on_thu, :on_fri, :on_sat, :in => [true, false]
   validates_numericality_of :start_hour, :end_hour, :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 24
   validates_numericality_of :start_min,  :end_min, :only_integer => true, :greater_than_or_equal_to => 0, :less_than => 60
 
