@@ -584,7 +584,7 @@ class Reservation < ActiveRecord::Base
   # returns true if this reservation can be moved to
   # an earlier time slot, false otherwise
   def can_move?
-    !(cancelled? || earliest_possible.nil?)
+    !(cancelled? || order_detail.complete? || earliest_possible.nil?)
   end
 
   def can_switch_instrument_on?(check_off = true)

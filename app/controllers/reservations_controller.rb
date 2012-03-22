@@ -264,9 +264,11 @@ class ReservationsController < ApplicationController
       flash[:error] = relay_error_msg
     end
 
-    if params[:switch] == 'off'
+    if params[:switch] == 'off' 
       @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
-      render 'pick_accessories', :layout => false and return
+      if @product_accessories.present?
+        render 'pick_accessories', :layout => false and return
+      end
     end
 
     redirect_to params[:redirect_to] || request.referer || order_order_detail_path(@order, @order_detail)
