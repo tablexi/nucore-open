@@ -90,10 +90,12 @@ $(document).ready(function() {
   }
 
   // change reservation creation button based on Reservation
-  $('#res-time-select select,#reservation_reserve_start_date').change(initReserveButton);
+  if(!isBundle) {
+    $('#res-time-select select,#reservation_reserve_start_date').change(initReserveButton);
+    initReserveButton();
+  }
 
   init_datepickers();
-  initReserveButton();
 
   // initialize datepicker
   function init_datepickers() {
