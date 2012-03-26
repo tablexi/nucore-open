@@ -28,8 +28,8 @@ Daemons::Base.new('auto_cancel').start do
   ).readonly(false).all
 
   # we need something that responds to #id to satisfy OrderDetail#cancel_reservation
-  Admin=Struct.new(:id)
-  admin=Admin.new
+  AdminStruct=Struct.new(:id)
+  admin=AdminStruct.new
   admin.id=0
 
   cancelable.each do |res|
