@@ -33,6 +33,8 @@ Daemons::Base.new('auto_cancel').start do
   admin.id=0
 
   cancelable.each do |res|
+    next if res.order_detail.blank?
+
     begin
       res.order_detail.cancel_reservation admin, OrderStatus.cancelled.first, true
       res.update_attribute :canceled_reason, 'auto cancelled by system'
