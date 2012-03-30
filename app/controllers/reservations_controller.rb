@@ -310,7 +310,7 @@ class ReservationsController < ApplicationController
       @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
       render 'pick_accessories', :format => :html, :layout => false, :status => @error_status
     else
-      flash[:notice] = "Reservation Ended, #{helpers.pluralize(@count, 'accessories')} added"
+      flash[:notice] = "Reservation Ended, #{helpers.pluralize(@count, 'accessory')} added"
       render :nothing => true, :status => 200
     end
 
