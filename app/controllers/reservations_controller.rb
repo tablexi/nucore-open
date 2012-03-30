@@ -79,7 +79,8 @@ class ReservationsController < ApplicationController
       end
     end
 
-    flash.now[:notice] = notices.join('<br />').html_safe unless notices.empty?
+    existing_notices = flash[:notice].presence ? [flash[:notice]] : []
+    flash.now[:notice] = existing_notices.concat(notices).join('<br />').html_safe unless notices.empty?
   end
 
   # POST /orders/1/order_details/1/reservations
@@ -280,6 +281,7 @@ class ReservationsController < ApplicationController
     @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
     @complete_state = OrderStatus.find_by_name!('Complete')
     
+    @count = 0
     params.each do |k, v|
       if k =~ /quantity(\d+)/ and v.present?
         OrderDetail.transaction do
@@ -290,6 +292,7 @@ class ReservationsController < ApplicationController
           begin
             new_od = @order.add(product, quantity)
             new_od.change_status!(@complete_state)
+            @count += quantity
             next
           rescue ActiveRecord::RecordInvalid
             ## otherwise something's wrong w/ new_od... safe it for the view
@@ -303,8 +306,14 @@ class ReservationsController < ApplicationController
       end
     end
 
-    @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
-    render 'pick_accessories', :format => :html, :layout => false, :status => (@error_status.presence || 200)
+    if @error_status
+      @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
+      render 'pick_accessories', :format => :html, :layout => false, :status => @error_status
+    else
+      flash[:notice] = "Reservation Ended, #{helpers.pluralize(@count, 'accessories')} added"
+      render :nothing => true, :status => 200
+    end
+
   end
 
   private
@@ -330,5 +339,7 @@ class ReservationsController < ApplicationController
     @min_date     = (Time.zone.now + @max_days_ago.days).strftime("%Y%m%d")
     @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
   end
-
+  def helpers
+    ActionController::Base.helpers
+  end
 end

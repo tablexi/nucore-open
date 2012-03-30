@@ -11,7 +11,7 @@
 
 %p= t('product_accessories.index.description')
 
-- selectable_products = @facility.products.where("products.id NOT IN (?)", @product.accessory_ids+[@product.id])
+- selectable_products = @facility.products.where("products.type <> 'Instrument' AND products.id NOT IN (?)", @product.accessory_ids+[@product.id]).order(:name)
 - if selectable_products.count > 0
   = form_for @product_accessory, :url => facility_product_product_accessories_path(@facility, @product, @product_accessory) do |f|
     %p
