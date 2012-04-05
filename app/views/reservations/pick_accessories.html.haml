@@ -1,5 +1,5 @@
 %p.notice Reservation Ended
-%p If any of the following were used during this reservation, please enter their quantities.
+%p If any of the following were used during this reservation please enter their quantities.
 - @errors_by_id ||= {}
 
 = form_tag order_order_detail_reservation_pick_accessories_path(@order, @order_detail, @reservation), :remote => true, 'data-type' => 'html', :class => :pick_accessories_form do
@@ -12,4 +12,4 @@
         - if errors = @errors_by_id[a.id] 
           .errors= errors
             
-    %li= submit_tag 'Add Accessories'
+    %li= submit_tag 'Add Accessories', :class => 'btn'
