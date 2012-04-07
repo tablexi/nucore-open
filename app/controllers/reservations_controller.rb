@@ -332,7 +332,10 @@ class ReservationsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @order.user_id == session_user.id
   end
   def set_windows
-    groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
+    user_price_groups     = @order.user.price_groups.presence || []
+    # @order.account could be nil if quick reservation
+    account_price_groups  = @order.account.try(:price_groups).presence || []
+    groups = (user_price_groups + account_price_groups).flatten.uniq
     @max_window = session_user.operator_of?(@facility) ? 365 : @reservation.longest_reservation_window(groups)
     @max_days_ago = session_user.operator_of?(@facility) ? -365 : 0
     # initialize calendar time constraints
