@@ -290,8 +290,8 @@ class ReservationsController < ApplicationController
           new_od    = nil
 
           begin
-            new_od = @order.add(product, quantity)
-            new_od.change_status!(@complete_state)
+            new_ods = @order.add(product, quantity)
+            new_ods.map{|od| od.change_status!(@complete_state)}
             @count += quantity
             next
           rescue ActiveRecord::RecordInvalid
