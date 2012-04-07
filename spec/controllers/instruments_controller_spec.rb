@@ -74,7 +74,7 @@ describe InstrumentsController do
 
       it_should_allow_all(facility_operators) do
         assigns[:instrument].should == @instrument
-        assert_redirected_to add_order_path(Order.all.last, :product_id => @instrument.id, :quantity => 1)
+        assert_redirected_to add_order_path(Order.all.last, :order => {:order_details => [{:product_id => @instrument.id, :quantity => 1}]})
       end
     end
     
