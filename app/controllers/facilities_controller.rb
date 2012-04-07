@@ -25,7 +25,10 @@ class FacilitiesController < ApplicationController
     return redirect_to :new_user_session unless acting_user
     raise ActiveRecord::RecordNotFound unless current_facility.is_active?
     
+    # TK: set this to nil (or don't set it at all)
+    # when facility doesn't need multi-add to cart
     @order_form = Order.new
+    
     @active_tab = 'home'
     render :layout => 'application'
   end
