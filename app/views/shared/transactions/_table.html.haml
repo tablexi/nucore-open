@@ -1,13 +1,14 @@
 #table_billing
   - if @order_detail_action
-    = form_tag url_for(params.merge({:action => @order_detail_action})), :method => :post do
+    -#= form_tag url_for(params.merge({:action => @order_detail_action})), :method => :post do
+    = form_tag url_for(:controller => params[:controller], :action => @order_detail_action), :method => :post do
       .order_action
         = yield :action_instructions
         .select_all_none= link_to 'Select All', '#', :class => 'select_all'
         .center_fields
           - if @action_date_field
             = @action_date_field.keys.first.to_s.titleize
-            = text_field_tag @action_date_field.keys.first, @action_date_field.values.first.strftime("%m/%d/%Y"), {:class => 'datepicker'}
+            = text_field_tag @action_date_field.keys.first, @action_date_field.values.first.strftime("%m/%d/%Y"), {:class => :datepicker}
           - else
             &nbsp;  
         .submit= submit_tag @order_detail_action.to_s.titleize
@@ -15,5 +16,3 @@
       = render :partial => 'shared/transactions/table_inside'
   - else
     = render :partial => 'shared/transactions/table_inside'
-  
-  
