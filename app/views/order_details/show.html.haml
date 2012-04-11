@@ -87,7 +87,7 @@
         - if res.can_switch_instrument_on?
           = link_to t('.link.reservation.start'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'on')
         - elsif res.can_switch_instrument_off?
-          = link_to t('.link.reservation.end'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'off'), :class => :end_reservation_link
+          = link_to t('.link.reservation.end'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'off'), :class => (od.product.accessories.count > 0 ? :end_reservation_link : nil) 
         - elsif res.can_cancel?
           = link_to t('.link.reservation.cancel'), "#"
     %td.centered=h @order_detail.quantity
