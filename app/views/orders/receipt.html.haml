@@ -44,15 +44,18 @@
           %li= order_detail_description(order_detail)
           - if res
             %li.indented= res
-        - if order_detail.cost_estimated?
-          %td.currency=show_estimated_cost(order_detail)
-          - if @order.has_subsidies?
-            %td.currency=show_estimated_subsidy(order_detail)
-          %td.currency=show_estimated_total(order_detail)
-        - else
-          %td.currency Unassigned
-          - if @order.has_subsidies?
-            %td.currency Unassigned
-          %td.currency Unassigned
+          - if order_detail.cost_estimated?
+            %td.estimated_cost.currency=show_estimated_cost(order_detail)
+            - if order_detail.has_subsidies?
+              %td.estimated_cost.currency=show_estimated_subsidy(order_detail)
+            %td.estimated_cost.currency=show_estimated_total(order_detail)
+          - elsif order_detail.price_policy.nil?
+            %td{:colspan => 2}= t('.unassigned')
 
-%p.footnote= t('.foot')
+          - else
+            %td.actual_cost.currency=show_actual_cost(order_detail)
+            - if order_detail.has_subsidies?
+              %td.actual_cost.currency=show_actual_subsidy(order_detail)
+            %td.actual_cost.currency=show_actual_total(order_detail)
+
+= render :partial => '/price_display_footnote'

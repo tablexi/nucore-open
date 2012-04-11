@@ -247,6 +247,18 @@ describe OrdersController do
         @order.reload.account.should == nil
       end
     end
+
+    it "should redirect to the value of the redirect_to param if available" do
+      maybe_grant_always_sign_in :staff
+      overridden_redirect = facility_url(@item.facility)
+
+      @params.merge!(:redirect_to => overridden_redirect)
+      do_request
+
+      response.should redirect_to overridden_redirect
+      should set_the_flash.to /removed/
+    end
+
   end
 
 

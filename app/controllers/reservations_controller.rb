@@ -3,7 +3,7 @@ class ReservationsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as,  :only => [ :switch_instrument, :show, :list]
   before_filter :load_basic_resources, :only => [:new, :create, :edit, :update]
-  before_filter :load_and_check_resources, :only => [ :move, :switch_instrument ]
+  before_filter :load_and_check_resources, :only => [ :move, :switch_instrument, :pick_accessories ]
 
   include TranslationHelper
   
@@ -79,7 +79,8 @@ class ReservationsController < ApplicationController
       end
     end
 
-    flash.now[:notice] = notices.join('<br />').html_safe unless notices.empty?
+    existing_notices = flash[:notice].presence ? [flash[:notice]] : []
+    flash.now[:notice] = existing_notices.concat(notices).join('<br />').html_safe unless notices.empty?
   end
 
   # POST /orders/1/order_details/1/reservations
@@ -264,9 +265,56 @@ class ReservationsController < ApplicationController
       flash[:error] = relay_error_msg
     end
 
+    if params[:switch] == 'off' 
+      @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
+      if @product_accessories.present?
+        render 'pick_accessories', :layout => false and return
+      end
+    end
+
     redirect_to params[:redirect_to] || request.referer || order_order_detail_path(@order, @order_detail)
   end
 
+  def pick_accessories
+    @error_status = nil
+    @errors_by_id = {}
+    @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
+    @complete_state = OrderStatus.find_by_name!('Complete')
+    
+    @count = 0
+    params.each do |k, v|
+      if k =~ /quantity(\d+)/ and v.present?
+        OrderDetail.transaction do
+          product   = @facility.products.find_by_id!($1)
+          quantity  = v.to_i
+          new_od    = nil
+
+          begin
+            new_od = @order.add(product, quantity)
+            new_od.change_status!(@complete_state)
+            @count += quantity
+            next
+          rescue ActiveRecord::RecordInvalid
+            ## otherwise something's wrong w/ new_od... safe it for the view
+            @error_status = 406
+            @errors_by_id[product.id] = "Invalid Quantity"
+
+            ## all save or non save.
+            raise ActiveRecord::Rollback
+          end
+        end
+      end
+    end
+
+    if @error_status
+      @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
+      render 'pick_accessories', :format => :html, :layout => false, :status => @error_status
+    else
+      flash[:notice] = "Reservation Ended, #{helpers.pluralize(@count, 'accessory')} added"
+      render :nothing => true, :status => 200
+    end
+
+  end
 
   private
   def load_basic_resources
@@ -275,6 +323,7 @@ class ReservationsController < ApplicationController
     @reservation = @order_detail.reservation
     @instrument   = @order_detail.product
     @facility = @instrument.facility
+    nil
   end
   def load_and_check_resources
     load_basic_resources
@@ -290,5 +339,7 @@ class ReservationsController < ApplicationController
     @min_date     = (Time.zone.now + @max_days_ago.days).strftime("%Y%m%d")
     @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
   end
-
+  def helpers
+    ActionController::Base.helpers
+  end
 end
