@@ -78,7 +78,7 @@ class OrdersController < ApplicationController
     end
 
     # if acting_as, make sure the session use can place orders for the facility
-    if acting_as? && !session_user.administrator? && !manageable_facilities.include?(@product.facility)
+    if acting_as? && !session_user.administrator? && !operable_facilities.include?(@product.facility)
       flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{@product.facility.name}."
       redirect_to order_url(@order) and return
     end

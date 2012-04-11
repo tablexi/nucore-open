@@ -133,7 +133,7 @@ describe FacilitiesController do
       before(:each) do
         @facility2 = Factory.create(:facility)
         @controller.stubs(:current_facility).returns(@authable)
-        @controller.stubs(:manageable_facilities).returns([@authable, @facility2])
+        @controller.stubs(:operable_facilities).returns([@authable, @facility2])
         @controller.expects(:init_current_facility).never
       end
 
@@ -149,10 +149,10 @@ describe FacilitiesController do
         @controller.stubs(:current_facility).returns(@authable)
         @controller.expects(:init_current_facility).never
       end
-      # admin won't be redirected since their manageable facilities is something more
+      # admin won't be redirected since their operable facilities is something more
       it_should_allow_all (facility_operators - [:admin]) do
         assigns(:facilities).should == [@authable]
-        assigns(:manageable_facilities).should == [@authable]
+        assigns(:operable_facilities).should == [@authable]
         response.should redirect_to(facility_orders_path(@authable))
       end
     end
@@ -165,7 +165,7 @@ describe FacilitiesController do
       end
   
       it_should_allow :admin do
-        assigns[:manageable_facilities].should == []
+        assigns[:operable_facilities].should == []
         assigns[:facilities].should == [@authable, @facility2]
         response.should be_success
         response.should render_template('facilities/list')

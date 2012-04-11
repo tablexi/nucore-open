@@ -29,13 +29,13 @@ class FacilitiesController < ApplicationController
 
   # GET /facilities/list
   def list
-    # show list of manageable facilities for current user, and admins manage all facilities
+    # show list of operable facilities for current user, and admins manage all facilities
     @active_tab = 'manage_facilites'
     if session_user.administrator?
       @facilities = Facility.all
       flash.now[:notice] = "No facilities have been added" if @facilities.empty?
     else
-      @facilities = manageable_facilities
+      @facilities = operable_facilities
       raise ActiveRecord::RecordNotFound if @facilities.empty?
       if (@facilities.size == 1)
         redirect_to facility_orders_path(@facilities[0]) 

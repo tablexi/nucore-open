@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
   # Make the following methods available to all views
-  helper_method :current_facility, :session_user, :manageable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart
+  helper_method :current_facility, :session_user, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart
 
   attr_accessor :active_tab
 
@@ -38,9 +38,9 @@ class ApplicationController < ActionController::Base
     raise NUCore::NotPermittedWhileActingAs if acting_as?
   end
 
-  # return the list of manageable facilities
-  def manageable_facilities
-    return @manageable_facilities ||= (session_user.blank? ? [] : session_user.facilities)
+  # return the list of facilities where this user has a role (ie is staff or higher)
+  def operable_facilities
+    return @operable_facilities ||= (session_user.blank? ? [] : session_user.facilities)
   end
 
   # BCSEC legacy method. Kept to give us ability to override devises #current_user.
