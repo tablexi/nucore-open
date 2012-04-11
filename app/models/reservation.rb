@@ -70,7 +70,7 @@ class Reservation < ActiveRecord::Base
     return false if self.errors.any?
     self.save
   end
-  
+
   def save_extended_validations!
     raise ActiveRecord::RecordInvalid.new(self) unless save_extended_validations()  
   end

@@ -70,7 +70,6 @@ describe GeneralReportsController do
     assigns(:total_cost).should be_instance_of Float
 
     rows, ods=assigns(:rows), OrderDetail.all
-    rows.should be_instance_of WillPaginate::Collection
     rows.size.should == ods.size
 
     rows.each do |row|
