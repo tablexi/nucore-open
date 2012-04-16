@@ -31,8 +31,6 @@ Nucore::Application.routes.draw do |map|
   end
   
   # transaction searches
-  #match "/accounts/:account_id/transactions" => 'transaction_history#account_history', :as => "account_transaction_history"
-  match "/transactions" => 'transaction_history#my_history', :as => "transaction_history"
   
   # global settings
   resources :affiliates, :except => :show
@@ -41,8 +39,6 @@ Nucore::Application.routes.draw do |map|
     facility.resources :products, :only => [:index] do |product|
       product.resources :product_accessories, :as => 'accessories', :only => [:index, :create, :destroy]
     end
-    
-    #facility.transactions '/transactions', :controller => 'transaction_history', :action => 'facility_history'
     
     facility.resources :instruments, :member => {:manage => :get} do |instrument|
       instrument.schedule 'schedule', :controller => 'instruments', :action => 'schedule'
@@ -166,7 +162,6 @@ Nucore::Application.routes.draw do |map|
   map.cart '/orders/cart', :controller => 'orders', :action => 'cart'
   
   match "/orders(/:status)" => "orders#index", :status => /pending|all/, :as => "orders_status"
-  #match "/orders/all" => "orders#index", :status => "all", :as => "orders_all"
   map.remove_order '/orders/:id/remove/:order_detail_id', :controller => 'orders', :action => 'remove', :conditions => {:method => :put}
   map.add_account '/order/:id/add_account', :controller => 'orders', :action => 'add_account'
   map.resources :orders, :member => {:add => [:get, :put], :purchase => [ :get, :put ], :receipt => :get, :clear => :put, :choose_account => [:get,:post]} do |order|
