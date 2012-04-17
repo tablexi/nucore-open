@@ -142,8 +142,9 @@ class Order < ActiveRecord::Base
       end
       
       # otherwise update the field(s)
+      order_detail.update_attributes!(updates)
       order_detail.assign_estimated_price if order_detail.cost_estimated?
-      order_detail.update_attributes(updates)
+      order_detail.save
     end
   end
   
