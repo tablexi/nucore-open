@@ -20,7 +20,7 @@ describe FileUploadsController do
   end
 
 
-  context 'upload' do
+  context 'upload info' do
 
     before :each do
       @method=:get
@@ -38,7 +38,7 @@ describe FileUploadsController do
   end
 
 
-  context "create" do
+  context "create info" do
 
     before(:each) do
       @method=:post
@@ -89,7 +89,19 @@ describe FileUploadsController do
       }
     end
 
-    it_should_allow_managers_only
+    context "product info" do
+      it_should_allow_managers_only
+    end
+
+    context "sample_result" do
+      before :each do
+        @params.merge!(:file_type => 'sample_result')
+      end
+
+      it_should_allow_all(facility_operators) do
+        should respond_with :success
+      end
+    end
 
   end
 
@@ -172,8 +184,26 @@ describe FileUploadsController do
       }
     end
 
-    it_should_allow_managers_only :redirect
+    context 'info' do
+      it_should_allow_managers_only :redirect
+    end
 
+    context 'sample_result' do
+      before :each do
+        @sample_result=Factory.create(:file_upload,
+          :order_detail_id => @order_detail.id,
+          :created_by => @staff.id,
+          :product => @service,
+          :file_type => 'sample_result'
+        )
+        @params.merge!(:id => @sample_result.id)
+      end
+
+      it_should_allow_all(facility_operators) do
+        should respond_with :redirect
+      end
+        
+    end
   end
 
 
