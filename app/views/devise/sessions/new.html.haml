@@ -1,9 +1,13 @@
 = content_for :h1 do
   = t('pages.login')
+
+%p.notice= t('sessions.new.help_text')
+
 - if flash[:error]
   %p.error= flash[:error]
 - if flash[:info]
   %p.info= flash[:info]
+
 = form_for resource, :as => resource_name, :url => session_path(resource_name) do |f|
   %ul.form
     %li

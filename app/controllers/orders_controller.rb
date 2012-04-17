@@ -3,7 +3,7 @@ class OrdersController < ApplicationController
 
   before_filter :authenticate_user!
   before_filter :check_acting_as,          :except => [:cart, :add, :choose_account, :show, :remove, :purchase, :receipt, :update]
-  before_filter :init_order,               :except => [:cart, :index]
+  before_filter :init_order,               :except => [:cart, :index, :receipt]
   before_filter :protect_purchased_orders, :except => [:cart, :receipt, :confirmed, :index]
 
   def initialize
@@ -12,7 +12,7 @@ class OrdersController < ApplicationController
   end
 
   def init_order
-    @order = acting_user.orders.find(params[:id])
+    @order = Order.find(params[:id])
   end
 
   def protect_purchased_orders
@@ -236,7 +236,13 @@ class OrdersController < ApplicationController
 
   # GET /orders/1/receipt
   def receipt
+    @order = Order.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @order.purchased?
+
+    @order_details = @order.order_details.select{|od| od.can_be_viewed_by?(acting_user) }
+    raise ActiveRecord::RecordNotFound if @order_details.empty?
+
+    @accounts = @order_details.collect(&:account)
   end
 
   # GET /orders

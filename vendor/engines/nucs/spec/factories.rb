@@ -7,7 +7,7 @@ Factory.define :nucs_grants_budget_tree do |tree|
   tree.parent_node_desc "Non-Personnel Expenses"
   tree.account_effective_at "2008-12-01"
   tree.tree "NU_GM_BUDGET"
-  tree.tree_effective_at "1901-01-01"
+  tree.tree_effective_at "1970-01-01"
 end
 
 

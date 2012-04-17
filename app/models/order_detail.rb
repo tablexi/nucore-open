@@ -99,6 +99,10 @@ class OrderDetail < ActiveRecord::Base
     # state == 'complete' and !reviewed_at.nil? and reviewed_at > Time.zone.now and (dispute_at.nil? or !dispute_resolved_at.nil?)
   end
 
+  def can_be_viewed_by?(user)
+    self.order.user_id == user.id || self.account.owner_user.id == user.id || self.account.business_admins.any?{|au| au.user_id == user.id} 
+  end
+
   scope :need_statement, lambda { |facility| {
     :joins => [:product, :account],
     :conditions => ['products.facility_id = ?
