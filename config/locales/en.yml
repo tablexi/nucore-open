@@ -675,6 +675,7 @@ en:
         cancel_hours: "Minimum Cancelation Hours"
         cancel_mins: "Automatic Cancelation Minutes"
         relay:
+          type: "Relay Type"
           ip: "Relay IP Address"
           port: "Relay Port"
           user: "Relay Username"

@@ -18,6 +18,9 @@
     - else
       %ul
         %li
+          %label= t '.label.relay.type'
+          %p= @instrument.relay.class.presence || 'N/A'
+        %li
           %label= t '.label.relay.ip'
           %p= @instrument.relay.ip.presence || 'N/A'
         %li

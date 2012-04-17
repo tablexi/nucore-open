@@ -17,7 +17,7 @@
     %ul
       %li.left
         = rf.label :type, t('instruments.instrument_fields.relay.label.type')
-        = rf.select :type, options_for_select(RelaySynaccessRevA => RelaySynaccessRevA.name, RelaySynaccessRevB => RelaySynaccessRevB.name)
+        = rf.select :type, options_for_select({RelaySynaccessRevA => RelaySynaccessRevA.name, RelaySynaccessRevB => RelaySynaccessRevB.name}, rf.object.type)
       %li.clear
       %li.left
         = rf.label :ip, t('instruments.instrument_fields.relay.label.ip')
