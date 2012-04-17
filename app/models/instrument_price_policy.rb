@@ -173,10 +173,10 @@ class InstrumentPricePolicy < PricePolicy
     end
 
     # calculate overage cost & subsidy
-    over_cost    = 0
-    over_subsidy = 0
-    rate = 0
-    sub  = 0
+    over_cost = 0
+    over_sub  = 0
+    rate      = 0
+    sub       = 0
     if overage_rate.nil?
       rate = usage_rate.to_f
       sub  = usage_subsidy.to_f
@@ -193,7 +193,7 @@ class InstrumentPricePolicy < PricePolicy
 
     # calculate total cost & subsidy
     actual_cost    = reserve_cost + usage_cost + over_cost
-    actual_subsidy = reserve_sub  + usage_sub  + over_subsidy
+    actual_subsidy = reserve_sub  + usage_sub  + over_sub
     if actual_cost - actual_subsidy < minimum_cost.to_f
       actual_cost    = minimum_cost
       actual_subsidy = 0

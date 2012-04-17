@@ -442,9 +442,41 @@ describe InstrumentPricePolicy do
     attrs.merge(overrides)
   end
   
+  #TK WTF?
   context "actual cost calculation tests" do
+    before :each do
+      @facility         = Factory.create(:facility)
+      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
+      @price_group      = @facility.price_groups.create(Factory.attributes_for(:price_group))
+      @instrument       = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account => @facility_account))
+      @ipp=@instrument.instrument_price_policies.create(ipp_attributes(
+        :usage_rate => 100,
+        :usage_subsidy => 100,
+        :usage_mins => 15,
+        :overage_rate => nil,
+        :overage_subsidy => nil,
+        :reservation_rate => 0
+      ))
+    end
     it "should correctly calculate cost with usage rate"
     it "should correctly calculate cost with usage rate and subsidy"
+
+    it "should correctly calculate cost with usage rate and subsidy and overage using usage rate for overage rate and usage subsidy for overage subsidy" do
+      @reservation = Reservation.new
+
+      # set reservation window to usage minutes from the price policy
+      @reservation.reserve_start_at = Time.zone.now
+      @reservation.reserve_end_at   = @reservation.reserve_start_at + @ipp.usage_mins.minutes
+
+      # actual usage == twice as long as the reservation window
+      @reservation.actual_start_at  = @reservation.reserve_start_at
+      @reservation.actual_end_at    = @reservation.actual_start_at + (@ipp.usage_mins*2).minutes
+      
+      @costs = @ipp.calculate_cost_and_subsidy(@reservation)
+
+      @costs[:subsidy].should == @ipp.usage_subsidy * 2
+    end
+    
     it "should correctly calculate cost with reservation rate, with and without actual hours"
     it "should correctly calculate cost with reservation rate and subsidy, with and without actual hours"
     it "should correctly calculate cost with usage and reservation rate and subsidy"
