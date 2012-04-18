@@ -398,7 +398,7 @@ describe FacilityAccountsController do
       should assign_to(:active_tab)
       should assign_to(:accounts).with_kind_of(Array)
       assigns[:selected].should == assigns[:accounts].first
-      assigns[:unreconciled_details].should == OrderDetail.account_unreconciled(@authable, assigns[:selected])
+      assigns[:unreconciled_details].first.should == OrderDetail.account_unreconciled(@authable, assigns[:selected]).first
       should render_template('credit_cards')
     end
 

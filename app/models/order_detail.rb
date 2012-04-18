@@ -509,13 +509,13 @@ class OrderDetail < ActiveRecord::Base
         where(
           'orders.facility_id = ?  AND order_details.account_id = ?  AND order_details.state = ?  AND journals.is_successful = ?',
           facility.id, account.id, 'complete', true
-        )
+        ).all
     else
       joins(:order).
         where(
           'orders.facility_id = ?  AND order_details.account_id = ?  AND order_details.state = ?  AND order_details.statement_id IS NOT NULL',
           facility.id, account.id, 'complete'
-       )
+       ).all
     end
   end
 
