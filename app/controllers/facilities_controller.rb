@@ -100,6 +100,7 @@ class FacilitiesController < ApplicationController
     render :layout => 'product'
   end
   
+  # GET /facilities/transactions
   def transactions_with_search
     @active_tab = 'admin_billing'
     @layout = "two_column_head"

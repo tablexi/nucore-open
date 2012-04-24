@@ -35,6 +35,15 @@ Nucore::Application.routes.draw do |map|
 
   # global Billing tab
   scope 'facilities', :as => 'facility' do
+    get 'transactions' => 'facilities#transactions'
+
+    scope 'notifications', :controller => :facility_notifications, :as => :notifications do
+      get  '/',             :action => :index
+      post 'send',          :action => :send_notifications
+      get  'in_review',     :action => :in_review
+      post 'in_review/mark',:action => :mark_as_reviewed,   :as => :mark_as_reviewed
+    end
+
     resources :journals, :controller => :facility_journals do
       post 'reconcile', :on => :member
     end
@@ -135,7 +144,7 @@ Nucore::Application.routes.draw do |map|
     facility.resources :reservations, :controller => 'facility_reservations', :only => :index, :collection => {:batch_update => :post, :show_problems => :get, :disputed => :get}
 
     facility.accounts_receivable '/accounts_receivable', :controller => 'facility_accounts', :action => 'accounts_receivable', :conditions => {:method => :get}
-    
+   
     facility.resources :accounts, :controller => 'facility_accounts', :only => [:index, :new, :create, :show, :edit, :update], :collection => {:credit_cards => :get, :update_credit_cards => :post, :purchase_orders => :get, :update_purchase_orders => :post, :user_search => :get, :search => :get, :search_results => [:get, :post], :new_account_user_search => :get} do |account|
       account.suspend '/suspend', :controller => 'facility_accounts', :action => 'suspend'
       account.unsuspend '/unsuspend', :controller => 'facility_accounts', :action => 'unsuspend'
@@ -150,12 +159,6 @@ Nucore::Application.routes.draw do |map|
       price_group.resources :account_price_group_members, :only => [:new, :destroy, :create], :collection => {:create => :get}
     end
 
-    facility.notifications '/notifications', :controller => 'facility_notifications', :action => 'index', :conditions => {:method => :get}
-    facility.send_notifications 'notifications/send', :controller => 'facility_notifications', :action => 'send_notifications', :conditions => {:method => :post }
-    facility.transactions '/transactions', :controller => 'facilities', :action => 'transactions', :conditions => {:method => :get}
-    facility.notifications_in_review '/in_review', :controller => 'facility_notifications', :action => 'in_review', :conditions => {:method => [:get]}
-    facility.notifications_mark_as_reviewed '/in_review/mark', :controller => 'facility_notifications', :action => 'mark_as_reviewed', :conditions => {:method => [:post]}
-    
     facility.resources :statements, :controller => 'facility_statements', :only => [:index, :new, :show, :send_statements], :collection => {:send_statements => :post }
   end
 

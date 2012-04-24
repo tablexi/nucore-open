@@ -178,17 +178,11 @@ describe FacilitiesController do
     before(:each) do
       @action = :transactions
       @method = :get
-      @params = {:facility_id => @authable.url_name}
+      @params = { }
       @user = @admin
     end
     
     it_should_support_searching
-    
-    it "should set the facility" do
-      sign_in @admin
-      do_request
-      assigns[:current_facility].should == @authable
-    end
     
     it "should use two column head" do
       sign_in @admin

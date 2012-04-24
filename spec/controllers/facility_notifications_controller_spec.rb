@@ -5,6 +5,7 @@ require 'transaction_search_spec_helper'
 describe FacilityNotificationsController do
   
   before(:all) { create_users }
+  render_views
   
   before :each do
     @authable=Factory.create(:facility)

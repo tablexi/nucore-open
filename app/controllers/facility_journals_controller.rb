@@ -19,23 +19,22 @@ class FacilityJournalsController < ApplicationController
     super
   end
   
-  # GET /facilities/:facility_id/journals
+  # GET /facilities/journals
   def index
     @pending_journal = get_pending_journal
 
-    @journals = Journal.
-      for_facilities(manageable_facilities, manageable_facilities.size > 1).
+    @journals = @journals.
       order('journals.created_at DESC').
       paginate(:page => params[:page])
   end
 
-  # GET /facilities/:facility_id/journals/new
+  # GET /facilities/journals/new
   def new_with_search
     set_default_variables
     @layout = "two_column_head"
   end
    
-  #PUT /facilities/:facility_id/journals/:id
+  #PUT /facilities/journals/:id
   def update
     @pending_journal = @journal
     @pending_journal.updated_by = session_user.id
@@ -81,7 +80,7 @@ class FacilityJournalsController < ApplicationController
     render :action => :index
   end
 
-  # POST /facilities/:facility_id/journals
+  # POST /facilities/journals
   def create_with_search
     @journal = Journal.new
     @journal.created_by = session_user.id
@@ -133,7 +132,7 @@ class FacilityJournalsController < ApplicationController
     @layout = "two_column_head"
   end
 
-  # GET /facilities/:facility_id/journals/:id
+  # GET /facilities/journals/:id
   def show
     if request.format.xml?
       @journal_rows = @journal.journal_rows
@@ -152,7 +151,7 @@ class FacilityJournalsController < ApplicationController
       redirect_to journal_url(@journal) and return
     end
     rec_status = OrderStatus.reconciled.first
-    order_details = OrderDetail.join(:order).where('orders.facility_id' =>  manageable_facilities.collect(&:id), :id => params[:order_detail_ids])
+    order_details = OrderDetail.for_facilities(manageable_facilities).where(:id => params[:order_detail_ids])
     order_details.each do |od|
       if od.journal_id != @journal.id
         flash[:error] = 'An error was encountered while reconcile orders'

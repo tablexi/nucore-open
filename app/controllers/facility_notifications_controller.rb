@@ -14,12 +14,13 @@ class FacilityNotificationsController < ApplicationController
     super
   end
 
-  # GET /facilities/:facility_id/notifications
+  # GET /facilities/notifications
   def index_with_search
     @order_details = @order_details.all_need_notification
     @order_detail_action = :send_notifications
   end
   
+  # GET /facilities/notifications/send
   def send_notifications
     @accounts_to_notify = []
     @orders_notified = []
@@ -58,7 +59,8 @@ class FacilityNotificationsController < ApplicationController
     end
     redirect_to :action => :index
   end
-  
+
+  # GET /facilities/notifications/in_review
   def in_review_with_search
     @order_details = @order_details.all_in_review
     @order_details = @order_details.reorder(:reviewed_at)
@@ -67,7 +69,7 @@ class FacilityNotificationsController < ApplicationController
     @extra_date_column = :reviewed_at
   end
   
-  
+  # GET /facilities/notifications/in_review/mark
   def mark_as_reviewed
     if params[:order_detail_ids].nil? or params[:order_detail_ids].empty?
       flash[:error] = I18n.t 'controllers.facility_notifications.no_selection'      
