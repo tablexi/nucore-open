@@ -187,7 +187,6 @@ describe FacilitiesController do
     it "should set the facility" do
       sign_in @admin
       do_request
-      assigns[:facility].should == @authable
       assigns[:current_facility].should == @authable
     end
     
@@ -200,7 +199,7 @@ describe FacilitiesController do
     it "should query against the facility" do
       sign_in @admin
       do_request
-      assigns[:order_details].should contain_string_in_sql("`orders`.`facility_id` = #{@authable.id}")
+      assigns(:order_details).should contain_string_in_sql("orders.facility_id in (")
     end
   end
 

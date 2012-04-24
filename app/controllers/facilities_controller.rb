@@ -4,11 +4,13 @@ class FacilitiesController < ApplicationController
   before_filter :authenticate_user!, :except => [:index, :show]  # public pages do not require authentication
   before_filter :check_acting_as, :except => [:index, :show]
   before_filter :init_current_facility, :only => [:edit, :manage, :schedule, :show, :update, :agenda, :transactions]
+  before_filter :check_has_manageable_facilities, :only => :transactions
 
   load_resource :find_by => :url_name
   authorize_resource
   skip_load_and_authorize_resource :only => [:index, :show]
 
+  # needed for transactions_with_search
   include TransactionSearch
   
   layout 'two_column'

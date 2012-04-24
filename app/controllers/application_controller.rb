@@ -17,12 +17,11 @@ class ApplicationController < ActionController::Base
   
   # accessor method for the current facility
   def current_facility
-    @current_facility
+    Facility.find_by_url_name(params[:facility_id].presence || params[:id])
   end
 
   # initialize the current facility from the params hash
   def init_current_facility
-    @facility = @current_facility = Facility.find_by_url_name!(params[:facility_id] || params[:id])
   end
 
   #TODO: refactor existing calls of this definition to use this helper 
@@ -38,9 +37,18 @@ class ApplicationController < ActionController::Base
     raise NUCore::NotPermittedWhileActingAs if acting_as?
   end
 
+  def check_has_manageable_facilities
+    raise CanCan::AccessDenied unless manageable_facilities.any?
+  end
+
+  # return the list of facilities where this user has a role (ie is staff or higher)
+  def manageable_facilities
+    (session_user.blank? ? [] : session_user.manageable_facilities)
+  end
+
   # return the list of facilities where this user has a role (ie is staff or higher)
   def operable_facilities
-    return @operable_facilities ||= (session_user.blank? ? [] : session_user.facilities)
+    @operable_facilities ||= (session_user.blank? ? [] : session_user.facilities)
   end
 
   # BCSEC legacy method. Kept to give us ability to override devises #current_user.

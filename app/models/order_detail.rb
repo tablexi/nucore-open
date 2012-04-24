@@ -63,13 +63,12 @@ class OrderDetail < ActiveRecord::Base
     :conditions => [ 'orders.facility_id = ? AND price_policy_id IS NOT NULL', facility.id ], :order => 'order_details.fulfilled_at DESC' }
   }
 
-  scope :need_notification, lambda { |facility| {
+  scope :need_notification, lambda {{
     :joins => :product,
-    :conditions => ['products.facility_id = ?
-                     AND order_details.state = ?
+    :conditions => ['order_details.state = ?
                      AND order_details.reviewed_at IS NULL
                      AND order_details.price_policy_id IS NOT NULL
-                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete']
+                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', 'complete']
   }}
   
   def self.all_need_notification
@@ -114,16 +113,15 @@ class OrderDetail < ActiveRecord::Base
                      AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete', Time.zone.now, 'CreditCardAccount', 'PurchaseOrderAccount']
   }}
 
-  scope :need_journal, lambda { |facility| {
+  scope :need_journal, lambda { {
     :joins => [:product, :account],
-    :conditions => ['products.facility_id = ?
-                     AND order_details.state = ?
+    :conditions => ['order_details.state = ?
                      AND reviewed_at <= ?
                      AND accounts.type = ?
                      AND journal_id IS NULL
                      AND order_details.price_policy_id IS NOT NULL
-                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete', Time.zone.now, 'NufsAccount']
-  }}
+                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', 'complete', Time.zone.now, 'NufsAccount']
+  } }
 
   scope :statemented, lambda {|facility| {
       :joins => :order,

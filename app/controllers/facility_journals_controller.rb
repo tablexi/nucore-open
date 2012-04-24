@@ -4,11 +4,12 @@ class FacilityJournalsController < ApplicationController
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
-  before_filter :init_current_facility
+  before_filter :check_has_manageable_facilities
+  before_filter :init_journals, :except => :create_with_search
 
   include TransactionSearch
   
-  load_and_authorize_resource :class => Journal
+  #authorize_resource :class => Journal
 
   layout 'two_column'
   
@@ -21,7 +22,11 @@ class FacilityJournalsController < ApplicationController
   # GET /facilities/:facility_id/journals
   def index
     @pending_journal = get_pending_journal
-    @journals = current_facility.journals.find(:all, :order => 'journals.created_at DESC').paginate(:page => params[:page])
+
+    @journals = Journal.
+      for_facilities(manageable_facilities, manageable_facilities.size > 1).
+      order('journals.created_at DESC').
+      paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/journals/new
@@ -32,7 +37,7 @@ class FacilityJournalsController < ApplicationController
    
   #PUT /facilities/:facility_id/journals/:id
   def update
-    @pending_journal = Journal.find(params[:id])
+    @pending_journal = @journal
     @pending_journal.updated_by = session_user.id
 
     Journal.transaction do
@@ -64,13 +69,13 @@ class FacilityJournalsController < ApplicationController
         end
 
         flash[:notice] = I18n.t 'controllers.facility_journals.update.notice'
-        redirect_to facility_journals_path and return
+        redirect_to facility_journals_url and return
       rescue Exception => e
         @pending_journal.errors.add(:base, I18n.t('controllers.facility_journals.update.error.rescue'))
         raise ActiveRecord::Rollback
       end
     end
-    @order_details = OrderDetail.need_journal(current_facility)
+    @order_details = OrderDetail.for_facilities(manageable_facilities).need_journal
     set_soonest_journal_date
     @soonest_journal_date = params[:journal_date] || @soonest_journal_date 
     render :action => :index
@@ -78,27 +83,41 @@ class FacilityJournalsController < ApplicationController
 
   # POST /facilities/:facility_id/journals
   def create_with_search
-    @journal = current_facility.journals.new()
+    @journal = Journal.new
     @journal.created_by = session_user.id
     @journal.journal_date = parse_usa_date(params[:journal_date])
+    
+    if params[:order_detail_ids].present?
+      @update_order_details = @order_details.where(:id => params[:order_detail_ids])
+    else
+      @update_order_details = []
+    end
 
-    @update_order_details = OrderDetail.find(params[:order_detail_ids] || [])
     if @update_order_details.empty?
       @journal.errors.add(:base, I18n.t('controllers.facility_journals.create.errors.no_orders'))
     else
       if Journal.order_details_span_fiscal_years?(@update_order_details)
         @journal.errors.add(:base, I18n.t('controllers.facility_journals.create.errors.fiscal_span'))
       else
+        # detect if this should be a multi-facility journal, set facility_id appropriately
+        if @update_order_details.includes(:order).count('orders.facility_id', :distinct => true) > 1
+          @journal.facility_id = nil
+        else
+          @journal.facility_id = @update_order_details.first.order.facility_id
+        end
         Journal.transaction do
           begin
             @journal.save!
             @journal.create_journal_rows!(@update_order_details)
+            
+
             OrderDetail.update_all(['journal_id = ?', @journal.id], ['id IN (?)', @update_order_details.collect{|od| od.id}])
             # create the spreadsheet
             @journal.create_spreadsheet
             flash[:notice] = I18n.t('controllers.facility_journals.create.notice')
-            redirect_to facility_journals_path and return
+            redirect_to facility_journals_url and return
           rescue Exception => e
+            require 'ruby-debug'; debugger
             @journal.errors.add(:base, I18n.t('controllers.facility_journals.create.errors.rescue', :message => e.message))
             Rails.logger.error(e.backtrace.join("\n"))
             raise ActiveRecord::Rollback
@@ -116,8 +135,6 @@ class FacilityJournalsController < ApplicationController
 
   # GET /facilities/:facility_id/journals/:id
   def show
-    @journal = current_facility.journals.find(params[:id])
-
     if request.format.xml?
       @journal_rows = @journal.journal_rows
       headers["Content-type"] = "text/xml"
@@ -126,34 +143,34 @@ class FacilityJournalsController < ApplicationController
       render 'show.xml.haml', :layout => false and return
     end
 
-    @order_details = current_facility.order_details.find(:all, :conditions => {:journal_id => @journal.id})
+    @order_details = @journal.order_details
   end
 
   def reconcile
-    @journal = current_facility.journals.find(params[:journal_id])
-
     if params[:order_detail_ids].blank?
       flash[:error] = 'No orders were selected to reconcile'
-      redirect_to facility_journal_url(current_facility, @journal) and return
+      redirect_to journal_url(@journal) and return
     end
     rec_status = OrderStatus.reconciled.first
-    order_details = OrderDetail.find(params[:order_detail_ids])
+    order_details = OrderDetail.join(:order).where('orders.facility_id' =>  manageable_facilities.collect(&:id), :id => params[:order_detail_ids])
     order_details.each do |od|
       if od.journal_id != @journal.id
         flash[:error] = 'An error was encountered while reconcile orders'
-        redirect_to facility_journal_url(current_facility, @journal) and return
+        redirect_to journal_url(@journal) and return
       end
       od.change_status!(rec_status)
     end
     flash[:notice] = 'The select orders have been reconciled successfully'
-    redirect_to facility_journal_url(current_facility, @journal) and return
+    redirect_to journal_url(@journal) and return
   end
 
 
   private
   
   def get_pending_journal
-    Journal.find_by_facility_id_and_is_successful(current_facility.id, nil)
+    return @journals.find_by_is_successful(nil)
+    #return @journals.find_by_is_successful(nil)
+
   end
   
   def set_soonest_journal_date
@@ -163,13 +180,21 @@ class FacilityJournalsController < ApplicationController
   
   def set_default_variables
     @pending_journal = get_pending_journal
-    @order_details   = @order_details.need_journal(current_facility)
+    @order_details   = @order_details.need_journal
     #@accounts = @accounts.where("type in (?)", ['NufsAccount'])
     #@journal         = current_facility.journals.new()
     set_soonest_journal_date
     if @pending_journal.nil?
       @order_detail_action = :create
       @action_date_field = {:journal_date => @soonest_journal_date}
+    end
+  end
+
+  def init_journals
+    @journals = Journal.for_facilities(manageable_facilities, manageable_facilities.size > 1)
+
+    if params[:id]
+      @journal = @journals.find(params[:id])
     end
   end
 end

@@ -12,6 +12,35 @@ class Journal < ActiveRecord::Base
                           :url => "#{ENV['RAILS_RELATIVE_URL_ROOT']}/:attachment/:id_partition/:style/:basename.:extension",
                           :path => ":rails_root/public/:attachment/:id_partition/:style/:basename.:extension"
 
+  # scopes
+  
+  # Digs up journals pertaining to the passed in facilities
+  # 
+  # == Parameters
+  #
+  # facilities::
+  #   enumerable of facilities (usually ones which the user has access to)
+  # 
+  # include_multi::
+  #   include multi-facility journals in the results?
+  def self.for_facilities(facilities, include_multi = false)
+    allowed_ids = facilities.collect(&:id)
+
+    if include_multi
+      Journal.includes(:journal_rows => {:order_detail => :order}).where('orders.facility_id IN (?)', allowed_ids).select('journals.*')
+    else 
+      Journal.where(:facility_id => allowed_ids)
+    end
+  end
+
+  def facility_ids
+    if facility_id?
+      return [facility_id]
+    else
+      return order_details.join(:order).select('orders.facility_id', :distinct => true).collect(:facility_id)
+    end
+  end
+
   def amount
     rows = journal_rows
     sum = 0

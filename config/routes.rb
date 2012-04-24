@@ -30,10 +30,15 @@ Nucore::Application.routes.draw do |map|
     end
   end
   
-  # transaction searches
-  
   # global settings
   resources :affiliates, :except => :show
+
+  # global Billing tab
+  scope 'facilities', :as => 'facility' do
+    resources :journals, :controller => :facility_journals do
+      post 'reconcile', :on => :member
+    end
+  end
 
   map.resources :facilities, :collection => {:list => :get}, :member => {:manage => :get}, :except => [:delete] do |facility|
     facility.resources :products, :only => [:index] do |product|
@@ -138,10 +143,6 @@ Nucore::Application.routes.draw do |map|
       account.statement  '/statements/:statement_id.:format', :controller => 'facility_accounts', :action => 'show_statement', :conditions => {:method => :get}
       account.members '/members', :controller => 'facility_accounts', :action => 'members', :conditions => {:method => :get}
       
-    end
-
-    facility.resources :journals, :controller => 'facility_journals', :only => [:index, :new, :create, :update, :show] do |journal|
-      journal.reconcile '/reconcile', :controller => 'facility_journals', :action => 'reconcile', :conditions => {:method => :post}
     end
 
     facility.resources :price_groups, :member => {:users => :get, :accounts => :get} do |price_group|
