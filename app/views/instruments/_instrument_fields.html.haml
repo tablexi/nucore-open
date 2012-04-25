@@ -7,8 +7,8 @@
 %li
   = label_tag :control_mechanism
   %p.instruction= t 'instruments.instrument_fields.control_mechanism'
-  - selection=@instrument.relay.nil? ? nil : @instrument.relay.is_a?(RelayDummy) ? 'timer' : 'relay'
-  = select_tag :control_mechanism, options_for_select({ 'Reservation only' =>  'manual', 'Timer without relay' => 'timer', 'Timer with relay' => 'relay' }, selection)
+  - selection = @instrument.control_mechanism
+  = f.select :control_mechanism, options_for_select({ 'Reservation only' =>  'manual', 'Timer without relay' => 'timer', 'Timer with relay' => 'relay' }, selection)
 %li#power-relay{:class => "box#{selection == 'relay' ? '' : ' hidden'}"}
   = f.label t('instruments.instrument_fields.relay.label.relay')
   %p= t 'instruments.instrument_fields.relay.intro'

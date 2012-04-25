@@ -15,7 +15,7 @@
     - elsif @instrument.relay.is_a?(RelayDummy)
       %label= t '.label.control_mech'
       %p= t '.control_mech'
-    - else
+    - elsif @instrument.relay.is_a?(PowerRelay)
       %ul
         %li
           %label= t '.label.relay.type'
@@ -35,6 +35,8 @@
         %li
           %label= t '.label.relay.auto_logout'
           %p= @instrument.relay.auto_logout ? 'Yes' : 'No'
+    - else
+      %p UNKNOWN RELAY TYPE
   %li
     %label= t '.label.min_res'
     %p= @instrument.min_reserve_mins.to_i

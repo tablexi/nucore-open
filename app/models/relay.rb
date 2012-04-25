@@ -6,7 +6,7 @@ class Relay < ActiveRecord::Base
   validates_presence_of :instrument_id, :on => :update
   validates_uniqueness_of :port, :scope => :ip, :allow_blank => true
 
-  attr_accessible :username, :password, :ip, :port, :auto_logout, :instrument_id, :type
+  attr_accessible :type, :username, :password, :ip, :port, :auto_logout, :instrument_id
 
   alias_attribute :host, :ip
 
@@ -42,5 +42,9 @@ class Relay < ActiveRecord::Base
       resp = http.request(req)
     }
     resp
+  end
+  
+  def control_mechanism
+    return nil
   end
 end

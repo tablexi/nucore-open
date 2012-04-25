@@ -104,10 +104,12 @@ Factory.define :instrument, :class => Instrument do |o|
   o.max_reserve_mins 120
 end
 
-Factory.define :relay, :class => Relay do |o|
+Factory.define :relay, :class => RelaySynaccessRevA do |o|
   o.type 'RelaySynaccessRevA'
   o.ip '192.168.1.1'
   o.sequence(:port) {|p| p }
+  o.sequence(:username) {|n| "username#{n}" }
+  o.sequence(:password) {|n| "password#{n}" }
 end
 
 Factory.define :product_access_group do |o|
