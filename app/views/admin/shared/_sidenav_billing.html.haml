@@ -7,10 +7,18 @@
         %li= link_to 'All Transactions',       facility_transactions_path, :class => (sidenav_tab == 'transactions' ? 'active' : '')
         %li= link_to t("facility_notifications.index.head"),     facility_notifications_path, :class => (sidenav_tab == 'notifications' ? 'active' : '')
         %li= link_to t('facility_notifications.in_review.head'),       facility_notifications_in_review_path, :class => (sidenav_tab == 'in_review' ? 'active' : '')
-    - manageable_facilities.each do |facility|
-      %li= link_to t('facility_accounts.accounts_receivable.head')+" (#{facility.name})",    facility_accounts_receivable_path(facility), :class => (sidenav_tab == 'accounts_receivable' ? 'active' : '')
-    - manageable_facilities.each do |facility|
-      %li= link_to Account.model_name.human.pluralize+" (#{facility.name})",       facility_accounts_path(facility), :class => (sidenav_tab == 'accounts' ? 'active' : '')
+    %li.sub_menu
+      .icon
+      = t('facility_accounts.accounts_receivable.head')
+      %ul
+        - manageable_facilities.each do |facility|
+          %li= link_to facility.name, facility_accounts_receivable_path(facility), :class => (sidenav_tab == "#{facility.url_name}_accounts_receivable" ? 'active' : '')
+    %li.sub_menu
+      .icon
+      = Account.model_name.human.pluralize
+      %ul
+        - manageable_facilities.each do |facility|
+          %li= link_to facility.name, facility_accounts_path(facility), :class => (sidenav_tab == "#{facility.url_name}_accounts" ? 'active' : '')
     %li.sub_menu
       .icon
       = Journal.model_name.human.pluralize
