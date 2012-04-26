@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
   # Make the following methods available to all views
-  helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart
+  helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :backend?
 
   attr_accessor :active_tab
 
@@ -41,9 +41,13 @@ class ApplicationController < ActionController::Base
     raise CanCan::AccessDenied unless manageable_facilities.any?
   end
 
+  def backend?
+    params[:controller].starts_with?("facilit")
+  end
+
   # return the list of facilities where this user has a role (ie is staff or higher)
   def manageable_facilities
-    (session_user.blank? ? [] : session_user.manageable_facilities)
+    @manageable_facilities ||= (session_user.blank? ? [] : session_user.manageable_facilities)
   end
 
   # return the list of facilities where this user has a role (ie is staff or higher)

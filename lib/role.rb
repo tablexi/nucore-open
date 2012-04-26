@@ -31,8 +31,8 @@ module Role
     # Creates method #manageable_facilities
     # returns list of facilities for which this user is a director or admin
     define_method(:manageable_facilities) do
-      @manageable_facilities ||= if self.try(:administrator?) or self.try(:billing_administrator?)
-        Facility.all
+      if self.try(:administrator?) or self.try(:billing_administrator?)
+        Facility.where("1=1")
       else
         facilities.where("user_roles.role IN (?)", UserRole.facility_management_roles)
       end
