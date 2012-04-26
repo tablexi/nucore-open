@@ -35,6 +35,8 @@ class Ability
 
       # can manage multi-facility journals where facility is one of manageable_facilities
       can :manage, Journal, :facility_id => nil, :journal_rows => {:order_detail => {:order => {:facility_id => manageable_facility_ids}}}
+
+      can :manage, Account
       #can :transactions, Facility, :id => manageable_facility_ids
     end
 
