@@ -9,7 +9,7 @@ class FacilityJournalsController < ApplicationController
 
   include TransactionSearch
   
-  #authorize_resource :class => Journal
+  authorize_resource :class => Journal
 
   layout 'two_column'
   
@@ -116,7 +116,6 @@ class FacilityJournalsController < ApplicationController
             flash[:notice] = I18n.t('controllers.facility_journals.create.notice')
             redirect_to facility_journals_url and return
           rescue Exception => e
-            require 'ruby-debug'; debugger
             @journal.errors.add(:base, I18n.t('controllers.facility_journals.create.errors.rescue', :message => e.message))
             Rails.logger.error(e.backtrace.join("\n"))
             raise ActiveRecord::Rollback
@@ -151,16 +150,16 @@ class FacilityJournalsController < ApplicationController
       redirect_to journal_url(@journal) and return
     end
     rec_status = OrderStatus.reconciled.first
-    order_details = OrderDetail.for_facilities(manageable_facilities).where(:id => params[:order_detail_ids])
+    order_details = OrderDetail.for_facilities(manageable_facilities).where(:id => params[:order_detail_ids]).readonly(false)
     order_details.each do |od|
       if od.journal_id != @journal.id
         flash[:error] = 'An error was encountered while reconcile orders'
-        redirect_to journal_url(@journal) and return
+        redirect_to facility_journal_url(@journal) and return
       end
       od.change_status!(rec_status)
     end
     flash[:notice] = 'The select orders have been reconciled successfully'
-    redirect_to journal_url(@journal) and return
+    redirect_to facility_journal_url(@journal) and return
   end
 
 
@@ -195,5 +194,9 @@ class FacilityJournalsController < ApplicationController
     if params[:id]
       @journal = @journals.find(params[:id])
     end
+  end
+
+  def ability_resource
+    :billing_tab
   end
 end

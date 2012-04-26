@@ -3,7 +3,6 @@ class FacilityNotificationsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :check_has_manageable_facilities
-  before_filter :init_current_facility
   
   include TransactionSearch
   
@@ -92,5 +91,4 @@ class FacilityNotificationsController < ApplicationController
     end
     redirect_to :action => :in_review
   end
-
 end

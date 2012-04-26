@@ -22,6 +22,22 @@ class Ability
     
     return unless resource
 
+    if resource == :billing_tab || user.billing_administrator?
+      manageable_facility_ids = user.manageable_facilities.collect(&:id)
+      
+      # can manage orders / order_details / reservations for this facility
+      can :manage, Order, :facility_id => manageable_facility_ids
+      can :manage, OrderDetail, :order => {:facility_id => manageable_facility_ids}
+      can :manage, Reservation, :order_detail => {:order => {:facility_id => manageable_facility_ids}}
+      
+      # can manage journals for this facility
+      can :manage, Journal, :facility_id => manageable_facility_ids
+
+      # can manage multi-facility journals where facility is one of manageable_facilities
+      can :manage, Journal, :facility_id => nil, :journal_rows => {:order_detail => {:order => {:facility_id => manageable_facility_ids}}}
+      #can :transactions, Facility, :id => manageable_facility_ids
+    end
+
     if resource.is_a?(Facility)
 
       can :complete, Surveyor
