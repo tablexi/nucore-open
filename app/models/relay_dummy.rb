@@ -12,4 +12,7 @@ class RelayDummy < Relay
     @active=false
   end
 
+  def control_mechanism
+    'timer'
+  end
 end

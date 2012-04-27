@@ -326,12 +326,15 @@ describe FacilityAccountsController do
   end
 
 
+  #TODO: ping Chris / Matt for functions / factories
+  #      to create other accounts w/ custom numbers
+  #      and non-nufs type
   context 'search_results' do
 
     before :each do
       @method=:get
       @action=:search_results
-      @params={ :facility_id => @authable.url_name, :search_term => @guest.username }
+      @params={ :facility_id => @authable.url_name, :search_term => @owner.username }
     end
 
     it_should_require_login
@@ -339,8 +342,7 @@ describe FacilityAccountsController do
     it_should_deny :staff
 
     it_should_allow_all facility_managers do
-      assigns(:users).size.should == 1
-      assigns(:users)[0].should == @guest
+      assigns(:accounts).size.should == 1
       should render_template('search_results')
     end
 
@@ -350,7 +352,7 @@ describe FacilityAccountsController do
       before(:each) { @method=:post }
 
       it_should_allow :director do
-        assigns(:users).size.should == 1
+        assigns(:accounts).size.should == 1
         should render_template('search_results')
       end
 
@@ -396,7 +398,7 @@ describe FacilityAccountsController do
       should assign_to(:active_tab)
       should assign_to(:accounts).with_kind_of(Array)
       assigns[:selected].should == assigns[:accounts].first
-      assigns[:unreconciled_details].should == OrderDetail.account_unreconciled(@authable, assigns[:selected])
+      assigns[:unreconciled_details].first.should == OrderDetail.account_unreconciled(@authable, assigns[:selected]).first
       should render_template('credit_cards')
     end
 

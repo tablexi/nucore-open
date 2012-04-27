@@ -5,7 +5,7 @@ class FileUploadsController < ApplicationController
   before_filter       :init_current_facility
   skip_before_filter  :verify_authenticity_token, :only => :create
 
-  load_and_authorize_resource
+  load_and_authorize_resource :except => :uploader_create
 
   layout 'two_column'
 
@@ -45,6 +45,7 @@ class FileUploadsController < ApplicationController
                     :file_type => params[:file_type], :order_detail_id => params[:order_detail_id],
                     :created_by => session_user.id]
     @upload = @product.file_uploads.new(@options)
+    authorize! :uploader_create, @upload
     @upload.save!
 
     render :text => @upload.file.url
