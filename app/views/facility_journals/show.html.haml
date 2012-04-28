@@ -19,7 +19,7 @@
     %label= t('.label.journal_status')
     =h @journal.status_string
   %li=link_to 'Download XLS File', @journal.file.url
-  %li=link_to 'Download XML File', facility_journal_path(@journal, :format => 'xml')
+  %li=link_to 'Download XML File', facility_journal_path(current_facility, @journal, :format => 'xml')
 
 %br
 %hr
@@ -40,7 +40,7 @@
 - if @order_details.empty?
   %p.notice= t('.notice')
 - else
-  = form_tag reconcile_facility_journal_path(@journal), :method => :post do
+  = form_tag facility_journal_reconcile_path(current_facility, @journal), :method => :post do
     %table
       - if @journal.is_successful? && !@journal.is_reconciled?
         %tr.borderless

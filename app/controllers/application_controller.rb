@@ -4,6 +4,9 @@
 class ApplicationController < ActionController::Base
   include DateHelper
 
+  # sentinal value meaning all facilities
+  ALL_FACILITY = Facility.new(:url_name => 'all', :name => "Cross-Facility")
+
   helper :all # include all helpers, all the time
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
@@ -15,12 +18,19 @@ class ApplicationController < ActionController::Base
   # Navigation tabs configuration
   include NavTab
   
-  # accessor method for the current facility
+  # return whatever facility is indicated by the :facility_id or :id url parameter
+  # UNLESS that url parameter has the value of 'all'
+  # in which case, return the all facility
   def current_facility
-    Facility.find_by_url_name(params[:facility_id].presence || params[:id])
+    return unless facility_id = params[:facility_id] || params[:id]
+
+    if facility_id.present? and facility_id == 'all'
+      ALL_FACILITY
+    else
+      Facility.find_by_url_name(facility_id)
+    end
   end
 
-  # initialize the current facility from the params hash
   def init_current_facility
   end
 
@@ -37,22 +47,63 @@ class ApplicationController < ActionController::Base
     raise NUCore::NotPermittedWhileActingAs if acting_as?
   end
 
-  def check_has_manageable_facilities
-    raise CanCan::AccessDenied unless manageable_facilities.any?
-  end
-
   def backend?
     params[:controller].starts_with?("facilit")
   end
 
-  # return the list of facilities where this user has a role (ie is staff or higher)
-  def manageable_facilities
-    @manageable_facilities ||= (session_user.blank? ? [] : session_user.manageable_facilities)
+  # authorization before_filter for billing actions
+  # (need to be a manager or director to access)
+  def check_billing_access
+    # something has gone wrong,
+    # this before_filter shouldn't be run
+    raise ActiveRecord::RecordNotFound unless current_facility
+
+    # no cross facility actions / views unless you're billing administrator or global administrator
+    if current_facility == ALL_FACILITY
+      raise CanCan::AccessDenied unless session_user.billing_administrator?
+      # .. if you ARE Billing Administrator, your credentials are valid
+      return
+    end
+
+    # OTHERWISE
+    # you can only manage billing for a facility
+    # if you're a director / administrator of that facility
+    raise CanCan::AccessDenied unless session_user.manageable_facilities.member?(current_facility)
   end
 
-  # return the list of facilities where this user has a role (ie is staff or higher)
+
+  # helper for actions in the 'Billing' manager tab
+  # 
+  # Purpose:
+  #   used to get facilities normally used to scope down
+  #   which order_details / journals are shown within the tables
+  #
+  # Returns
+  #   returns an ActiveRecord::Relation of facilities
+  #   which order_details / journals should be limited to
+  #   when running a transaction search or working in the billing tab
+  #
+  # depends heavily on value of current_facility
+  #
+  # interprets the sentinel ALL_FACILITY as all facilities
+  def manageable_facilities
+    @manageable_facilities = case current_facility
+
+    when ALL_FACILITY
+      # if client ever wants cross-facility billing for a subset of facilities,
+      # make this return session_user.manageable_facilities in the case of ALL_FACILITY
+      Facility.scoped
+    when nil 
+      session_user.manageable_facilities
+    else # only facility that can be managed is the current facility
+      Facility.where(:id => current_facility.id)
+    end
+  end
+
+  # return an ActiveRecord:Relation of facilities where this user has a role (ie is staff or higher)
+  # Administrator and Billing Administrator get a relation of all facilities
   def operable_facilities
-    @operable_facilities ||= (session_user.blank? ? [] : session_user.facilities)
+    @operable_facilities ||= (session_user.blank? ? [] : session_user.operable_facilities)
   end
 
   # BCSEC legacy method. Kept to give us ability to override devises #current_user.
@@ -128,5 +179,4 @@ class ApplicationController < ActionController::Base
   def ability_resource
     return current_facility
   end
-
 end

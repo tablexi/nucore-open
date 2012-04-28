@@ -26,13 +26,24 @@ module Role
       user_roles.each {|ur| is=true and break if ur.facility == facility && ur.role == role }
       is
     end
+
+    # Creates method #operable_facilities
+    # returns relation of facilities for which this user is staff, a director, or an admin
+    define_method(:operable_facilities) do
+      if self.try(:administrator?)
+        Facility.scoped
+      else
+        self.facilities.where("user_roles.role IN(?)", UserRole.facility_roles)
+      end
+    end
+      
     
     #
     # Creates method #manageable_facilities
-    # returns list of facilities for which this user is a director or admin
+    # returns relation of facilities for which this user is a director or admin
     define_method(:manageable_facilities) do
       if self.try(:administrator?) or self.try(:billing_administrator?)
-        Facility.where("1=1")
+        Facility.scoped
       else
         facilities.where("user_roles.role IN (?)", UserRole.facility_management_roles)
       end

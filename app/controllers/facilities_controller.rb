@@ -3,7 +3,7 @@ class FacilitiesController < ApplicationController
   admin_tab     :edit, :manage, :schedule, :update, :agenda, :transactions
   before_filter :authenticate_user!, :except => [:index, :show]  # public pages do not require authentication
   before_filter :check_acting_as, :except => [:index, :show]
-  before_filter :check_has_manageable_facilities, :only => :transactions
+  before_filter :check_billing_access, :only => :transactions
 
   load_and_authorize_resource :find_by => :url_name
   skip_load_and_authorize_resource :only => [:index, :show, :transactions]

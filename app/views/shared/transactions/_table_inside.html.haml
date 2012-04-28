@@ -31,7 +31,7 @@
       %td= order_detail.fulfilled_at.strftime("%m/%d/%Y") if order_detail.fulfilled_at
       - if @extra_date_column and order_detail.send(@extra_date_column)
         %td= order_detail.send(@extra_date_column).strftime("%m/%d/%Y")
-      - unless @facility
+      - unless current_facility
         %td= order_detail.order.facility
       %td
         = order_detail_description(order_detail)

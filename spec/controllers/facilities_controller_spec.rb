@@ -102,6 +102,7 @@ describe FacilitiesController do
 
   context "show" do
 
+:so
     before(:each) do
       @method=:get
       @action=:show
@@ -165,7 +166,7 @@ describe FacilitiesController do
       end
   
       it_should_allow :admin do
-        assigns[:operable_facilities].should == []
+        assigns[:operable_facilities].should == [@authable, @facility2]
         assigns[:facilities].should == [@authable, @facility2]
         response.should be_success
         response.should render_template('facilities/list')
@@ -178,7 +179,7 @@ describe FacilitiesController do
     before(:each) do
       @action = :transactions
       @method = :get
-      @params = { }
+      @params = { :facility_id => @authable.url_name }
       @user = @admin
     end
     

@@ -30,29 +30,19 @@ Nucore::Application.routes.draw do |map|
     end
   end
   
+  # transaction searches
+  #match "/accounts/:account_id/transactions" => 'transaction_history#account_history', :as => "account_transaction_history"
+  match "/transactions" => 'transaction_history#my_history', :as => "transaction_history"
+  
   # global settings
   resources :affiliates, :except => :show
-
-  # global Billing tab
-  scope 'facilities', :as => 'facility' do
-    get 'transactions' => 'facilities#transactions'
-
-    scope 'notifications', :controller => :facility_notifications, :as => :notifications do
-      get  '/',             :action => :index
-      post 'send',          :action => :send_notifications
-      get  'in_review',     :action => :in_review
-      post 'in_review/mark',:action => :mark_as_reviewed,   :as => :mark_as_reviewed
-    end
-
-    resources :journals, :controller => :facility_journals do
-      post 'reconcile', :on => :member
-    end
-  end
 
   map.resources :facilities, :collection => {:list => :get}, :member => {:manage => :get}, :except => [:delete] do |facility|
     facility.resources :products, :only => [:index] do |product|
       product.resources :product_accessories, :as => 'accessories', :only => [:index, :create, :destroy]
     end
+    
+    #facility.transactions '/transactions', :controller => 'transaction_history', :action => 'facility_history'
     
     facility.resources :instruments, :member => {:manage => :get} do |instrument|
       instrument.schedule 'schedule', :controller => 'instruments', :action => 'schedule'
@@ -144,7 +134,7 @@ Nucore::Application.routes.draw do |map|
     facility.resources :reservations, :controller => 'facility_reservations', :only => :index, :collection => {:batch_update => :post, :show_problems => :get, :disputed => :get}
 
     facility.accounts_receivable '/accounts_receivable', :controller => 'facility_accounts', :action => 'accounts_receivable', :conditions => {:method => :get}
-   
+    
     facility.resources :accounts, :controller => 'facility_accounts', :only => [:index, :new, :create, :show, :edit, :update], :collection => {:credit_cards => :get, :update_credit_cards => :post, :purchase_orders => :get, :update_purchase_orders => :post, :user_search => :get, :search => :get, :search_results => [:get, :post], :new_account_user_search => :get} do |account|
       account.suspend '/suspend', :controller => 'facility_accounts', :action => 'suspend'
       account.unsuspend '/unsuspend', :controller => 'facility_accounts', :action => 'unsuspend'
@@ -154,11 +144,21 @@ Nucore::Application.routes.draw do |map|
       
     end
 
+    facility.resources :journals, :controller => 'facility_journals', :only => [:index, :new, :create, :update, :show] do |journal|
+      journal.reconcile '/reconcile', :controller => 'facility_journals', :action => 'reconcile', :conditions => {:method => :post}
+    end
+
     facility.resources :price_groups, :member => {:users => :get, :accounts => :get} do |price_group|
       price_group.resources :user_price_group_members,    :only => [:new, :destroy, :create], :collection => {:create => :get}
       price_group.resources :account_price_group_members, :only => [:new, :destroy, :create], :collection => {:create => :get}
     end
 
+    facility.notifications '/notifications', :controller => 'facility_notifications', :action => 'index', :conditions => {:method => :get}
+    facility.send_notifications 'notifications/send', :controller => 'facility_notifications', :action => 'send_notifications', :conditions => {:method => :post }
+    facility.transactions '/transactions', :controller => 'facilities', :action => 'transactions', :conditions => {:method => :get}
+    facility.notifications_in_review '/in_review', :controller => 'facility_notifications', :action => 'in_review', :conditions => {:method => [:get]}
+    facility.notifications_mark_as_reviewed '/in_review/mark', :controller => 'facility_notifications', :action => 'mark_as_reviewed', :conditions => {:method => [:post]}
+    
     facility.resources :statements, :controller => 'facility_statements', :only => [:index, :new, :show, :send_statements], :collection => {:send_statements => :post }
   end
 
@@ -166,6 +166,7 @@ Nucore::Application.routes.draw do |map|
   map.cart '/orders/cart', :controller => 'orders', :action => 'cart'
   
   match "/orders(/:status)" => "orders#index", :status => /pending|all/, :as => "orders_status"
+  #match "/orders/all" => "orders#index", :status => "all", :as => "orders_all"
   map.remove_order '/orders/:id/remove/:order_detail_id', :controller => 'orders', :action => 'remove', :conditions => {:method => :put}
   map.add_account '/order/:id/add_account', :controller => 'orders', :action => 'add_account'
   map.resources :orders, :member => {:add => [:get, :put], :purchase => [ :get, :put ], :receipt => :get, :clear => :put, :choose_account => [:get,:post]} do |order|

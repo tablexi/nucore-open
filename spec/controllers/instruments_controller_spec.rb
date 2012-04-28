@@ -273,7 +273,7 @@ describe InstrumentsController do
 
     context 'no relay' do
       before :each do
-        RelaySynaccessRevA.create!(:instrument_id => @instrument.id)
+        RelayDummy.create!(:instrument_id => @instrument.id)
       end
 
       it_should_allow_operators_only :redirect do

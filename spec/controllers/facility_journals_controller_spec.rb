@@ -36,6 +36,7 @@ describe FacilityJournalsController do
     before :each do
       @method=:get
       @action=:index
+      @params={ :facility_id => @authable.url_name }
       @pending_journal=Factory.create(:journal, :facility => @authable, :created_by => @admin.id, :journal_date => Time.zone.now, :is_successful => nil)
     end
 
@@ -51,7 +52,7 @@ describe FacilityJournalsController do
     before :each do
       @method=:put
       @action=:update
-      @params={ :id => @journal.id }
+      @params={ :facility_id => @authable.url_name, :id => @journal.id }
     end
 
     it_should_allow_managers_only
@@ -65,7 +66,10 @@ describe FacilityJournalsController do
       @method=:post
       @action=:create
       @journal_date=DateTime.now.strftime('%m/%d/%Y')
-      @params={ :journal_date => @journal_date }
+      @params={
+        :facility_id => @authable.url_name,
+        :journal_date => @journal_date
+      }
     end
 
     it_should_allow_managers_only :redirect, 'and respond gracefully when no order details given' do |user|
@@ -110,7 +114,7 @@ describe FacilityJournalsController do
     before :each do
       @method=:get
       @action=:show
-      @params={ :id => @journal.id }
+      @params={ :facility_id => @authable.url_name, :id => @journal.id }
     end
 
     it_should_allow_managers_only
@@ -121,7 +125,7 @@ describe FacilityJournalsController do
     before :each do
       @method = :get
       @action=:new
-      @params = {  }
+      @params = { :facility_id => @authable.url_name }
       create_order_details
     end
     

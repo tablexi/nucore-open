@@ -2,7 +2,7 @@ class FacilityNotificationsController < ApplicationController
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
-  before_filter :check_has_manageable_facilities
+  before_filter :check_billing_access
   
   include TransactionSearch
   

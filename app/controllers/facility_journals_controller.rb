@@ -4,13 +4,11 @@ class FacilityJournalsController < ApplicationController
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
-  before_filter :check_has_manageable_facilities
+  before_filter :check_billing_access
   before_filter :init_journals, :except => :create_with_search
 
   include TransactionSearch
   
-  authorize_resource :class => Journal
-
   layout 'two_column'
   
   def initialize
@@ -68,7 +66,7 @@ class FacilityJournalsController < ApplicationController
         end
 
         flash[:notice] = I18n.t 'controllers.facility_journals.update.notice'
-        redirect_to facility_journals_url and return
+        redirect_to facility_journals_url(current_facility) and return
       rescue Exception => e
         @pending_journal.errors.add(:base, I18n.t('controllers.facility_journals.update.error.rescue'))
         raise ActiveRecord::Rollback
@@ -114,7 +112,7 @@ class FacilityJournalsController < ApplicationController
             # create the spreadsheet
             @journal.create_spreadsheet
             flash[:notice] = I18n.t('controllers.facility_journals.create.notice')
-            redirect_to facility_journals_url and return
+            redirect_to facility_journals_url(current_facility) and return
           rescue Exception => e
             @journal.errors.add(:base, I18n.t('controllers.facility_journals.create.errors.rescue', :message => e.message))
             Rails.logger.error(e.backtrace.join("\n"))
@@ -147,19 +145,19 @@ class FacilityJournalsController < ApplicationController
   def reconcile
     if params[:order_detail_ids].blank?
       flash[:error] = 'No orders were selected to reconcile'
-      redirect_to journal_url(@journal) and return
+      redirect_to facility_journal_url(current_facility, @journal) and return
     end
     rec_status = OrderStatus.reconciled.first
     order_details = OrderDetail.for_facilities(manageable_facilities).where(:id => params[:order_detail_ids]).readonly(false)
     order_details.each do |od|
       if od.journal_id != @journal.id
         flash[:error] = 'An error was encountered while reconcile orders'
-        redirect_to facility_journal_url(@journal) and return
+        redirect_to facility_journal_url(current_facility, @journal) and return
       end
       od.change_status!(rec_status)
     end
     flash[:notice] = 'The select orders have been reconciled successfully'
-    redirect_to facility_journal_url(@journal) and return
+    redirect_to facility_journal_url(current_facility, @journal) and return
   end
 
 
@@ -167,8 +165,6 @@ class FacilityJournalsController < ApplicationController
   
   def get_pending_journal
     return @journals.find_by_is_successful(nil)
-    #return @journals.find_by_is_successful(nil)
-
   end
   
   def set_soonest_journal_date
