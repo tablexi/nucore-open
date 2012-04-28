@@ -15,6 +15,7 @@ en:
     create: Create %{model}
     manage: Manage %{model}
     global_settings: Global Settings
+    global_billing: Billing 
     login: Login
     logout: Logout
     cart: Cart

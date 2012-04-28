@@ -32,12 +32,14 @@
 
       - facilities = operable_facilities
 
+
+
       - if !acting_as? && current_user && current_user.administrator?
         %li.right{:class => controller.active_tab == 'global_settings' ? 'active' : ''}
           .divider
             = link_to t('pages.global_settings'), affiliates_path
 
-      - if !acting_as? && (!facilities.empty? || (current_user && current_user.administrator?))
+      - if !acting_as? && (facilities.any? || (current_user && current_user.administrator?))
         %li.right{:class => controller.active_tab == 'manage_facilites' ? 'active' : ''}
           .divider
             = link_to t("pages.manage", :model => t('activerecord.models.facility', :count => 2)), :list_facilities
@@ -46,4 +48,8 @@
                 - facilities.each do |facility|
                   %li= link_to facility.name, facility_orders_path(facility)
 
+      - if !acting_as? && current_user && current_user.billing_administrator?
+        %li.right
+          .divider
+            = link_to t("pages.global_billing"), facility_transactions_path('all')
   .clear
