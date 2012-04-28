@@ -8,12 +8,13 @@
         %li= link_to t("facility_notifications.index.head"),     facility_notifications_path, :class => (sidenav_tab == 'notifications' ? 'active' : '')
         %li= link_to t('facility_notifications.in_review.head'),       facility_notifications_in_review_path, :class => (sidenav_tab == 'in_review' ? 'active' : '')
 
-    -# don't provide submenus for these unless user has more then one facility to handle billing for
     - if manageable_facilities.count == 1
+      -# non-billing admin
       %li= link_to t('facility_accounts.accounts_receivable.head'), facility_accounts_receivable_path, :class => (sidenav_tab == "#{current_facility.url_name}_accounts_receivable" ? 'active' : '')
       %li= link_to Account.model_name.human.pluralize,              facility_accounts_path, :class => (sidenav_tab == 'accounts' ? 'active' : '')
 
     - else
+      -# user managing billing for multiple facilities
       %li.sub_menu
         .icon
         = t('facility_accounts.accounts_receivable.head')
