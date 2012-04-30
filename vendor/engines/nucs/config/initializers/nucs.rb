@@ -15,7 +15,7 @@ unless Rails.env.production?
     # must integrate via a real directory (i.e. can't symlink dir) or rspec won't find specs
     FileUtils.mkdir integrate_path unless File.exists? integrate_path
 
-    Dir[File.expand_path("../../spec/integrations/#{spec_dir}/*_spec.rb", base)].each do |spec|
+    Dir[File.expand_path("../../spec/core/#{spec_dir}/*_spec.rb", base)].each do |spec|
       FileUtils.ln_sf spec, integrate_path
     end
   end
