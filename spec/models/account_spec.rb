@@ -142,10 +142,6 @@ describe Account do
       @nufs_account.validate_against_product(@item, @user).should == nil
     end
 
-    it "should return error if the product's account is not open for a chart string" do
-      @nufs_account.validate_against_product(@item, @user).should_not be_nil
-    end
-
     context 'bundles' do
       before :each do
         @item2 = @facility.items.create(Factory.attributes_for(:item, :account => 78960, :facility_account_id => @facility_account.id))
@@ -156,15 +152,6 @@ describe Account do
       it "should not return error if the product is a bundle and both of the bundled product's accounts are open for a chart string" do
         [ @item, @item2 ].each{|item| define_open_account(item.account, @nufs_account.account_number) }
         @nufs_account.validate_against_product(@bundle, @user).should be_nil
-      end
-
-      it "should return error if the product is a bundle and one of the bundled product's account is not open for a chart string" do
-        cs='191-5401900-60006385-01-1059-1095' # a grant chart string
-        define_open_account(NUCore::COMMON_ACCOUNT, cs) # define the string so it is valid on NufsAccount#validate
-        @nufs_account.account_number=cs
-        assert @nufs_account.save
-        define_open_account(@item.account, cs) # only one product of the bundle should be open
-        @nufs_account.validate_against_product(@bundle, @user).should_not be_nil
       end
     end
 
