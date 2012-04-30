@@ -636,3 +636,25 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
 .ordered_on_width {
 	width:130px;
 }
+
+
+/***
+ * Popup calendar
+ */
+
+.ui-datepicker-calendar thead span {
+    color: black;
+}
+
+
+/***
+ * Reservations
+ */
+
+#pick_accessories_dialog .notice {
+    color: black;
+}
+
+#pick_accessories_dialog input[type=submit] {
+    margin-top: 1em;
+}

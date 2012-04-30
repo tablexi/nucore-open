@@ -13,7 +13,8 @@
 - else
   = form_tag(credit_cards_facility_accounts_path, :method => :get) do
     %p
-      = select_tag :selected_account, @accounts.collect{|a| "<option value=\"#{a.id}\"#{a == @selected ? ' selected="selected"' : ''}>#{a.to_s}</option>" }.join('')
+      -#= select_tag :selected_account, @accounts.collect{|a| "<option value=\"#{a.id}\"#{a == @selected ? ' selected="selected"' : ''}>#{a.to_s}</option>" }.join('')
+      = select_tag :selected_account, options_from_collection_for_select(@accounts, :id, :to_s, @selected.id)
 
   - if @selected.owner_user
     %h3= "Owner: #{@selected.owner_user.full_name}"

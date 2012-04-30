@@ -33,7 +33,11 @@ class Ability
           Bundle, OrderDetail, Order, Reservation, Instrument,
           Item, ProductUser, Product, ProductAccessory, UserPriceGroupMember
         ]
-        
+
+        can [:uploader_create, :destroy], FileUpload do |fileupload|
+          fileupload.file_type == 'sample_result'
+        end
+
         can :manage, User if controller.is_a?(UsersController)
 
         cannot :show_problems, Order

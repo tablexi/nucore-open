@@ -385,6 +385,11 @@ ActiveRecord::Schema.define(:version => 20120222161624) do
     t.integer "schedule_rule_id",        :null => false
   end
 
+  create_table "product_accessories", :force => true do |t|
+    t.integer "product_id",   :null => false
+    t.integer "accessory_id", :null => false
+  end
+
   create_table "product_users", :force => true do |t|
     t.integer  "product_id",              :null => false
     t.integer  "user_id",                 :null => false

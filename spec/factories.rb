@@ -102,6 +102,8 @@ Factory.define_default :relay, :class => Relay do |o|
   o.type 'RelaySynaccessRevA'
   o.ip '192.168.1.1'
   o.sequence(:port) {|p| p }
+  o.sequence(:username) {|n| "username#{n}" }
+  o.sequence(:password) {|n| "password#{n}" }
 end
 
 Factory.define_default :product_access_group do |o|

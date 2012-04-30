@@ -172,7 +172,7 @@ describe ReservationsController do
       end
     end
     
-    
+
 
     context 'without account' do
       before :each do
@@ -478,7 +478,7 @@ describe ReservationsController do
           assigns(:instrument).instrument_statuses.size.should == 1
           assigns(:instrument).instrument_statuses[0].is_on.should == false
           should set_the_flash
-          should render_template :pick_accessories
+          should respond_with :redirect
         end
 
         context "for instrument w/ accessory (pick_accessories)" do

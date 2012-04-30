@@ -6,6 +6,10 @@ en:
   app_admin_name: NU Core Admin
   institution_name: Northwestern
 
+  sessions:
+    new:
+      help_text: "If you do not have a NU Core account, please contact the facility manager."
+
   pages:
     my_tab: My %{model}
     create: Create %{model}
@@ -671,6 +675,7 @@ en:
         cancel_hours: "Minimum Cancelation Hours"
         cancel_mins: "Automatic Cancelation Minutes"
         relay:
+          type: "Relay Type"
           ip: "Relay IP Address"
           port: "Relay Port"
           user: "Relay Username"

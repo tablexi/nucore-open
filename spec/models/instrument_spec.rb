@@ -20,6 +20,167 @@ describe Instrument do
     end
   end
 
+  context "updating nested relay" do
+    before :each do
+      @facility         = Factory.create(:facility)
+      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
+      @instrument       = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+    end
+
+    context "existing type: 'timer' (Timer without relay)" do
+      before :each do
+        @instrument.relay = RelayDummy.new
+        @instrument.relay.save!
+        @instrument.control_mechanism.should == 'timer'
+      end
+
+      context "update with new control_mechanism: 'relay' (Timer with relay)" do
+        context "when validations not met" do
+          before :each do
+            @updated = @instrument.update_attributes(:control_mechanism => "relay", :relay_attributes => {:type => 'RelaySynaccessRevA'})
+          end
+
+          it "should fail" do
+            @updated.should be_false
+          end
+
+          it "should have errors" do
+            @instrument.errors.full_messages.should_not == []
+          end
+        end
+
+        context "when validations met" do
+          before :each do
+            @updated = @instrument.update_attributes(:control_mechanism => "relay", :relay_attributes => Factory.attributes_for(:relay)) 
+          end
+
+          it "should succeed" do
+            @updated.should be_true
+          end
+
+          it "should have no errors" do
+            @instrument.errors.full_messages.should == []
+          end
+          
+          it "should have control mechanism of relay" do
+            @instrument.reload.control_mechanism.should == 'relay'
+          end
+        end
+      end
+
+      context "update with new control_mechanism: 'manual' (Reservation Only)" do
+        before :each do
+          @updated = @instrument.update_attributes(:control_mechanism => 'manual')
+        end
+
+        it "should succeed" do
+          @updated.should be_true
+        end
+
+        it "should have a control_mechanism of manual" do
+          @instrument.reload.control_mechanism.should == 'manual'
+        end
+
+        it "should destroy the relay" do
+          @instrument.reload.relay.should be_nil
+        end
+      end
+    end
+
+    context "existing type: RelaySynaccessA" do
+      before :each do
+        Factory.create(:relay, :instrument_id => @instrument.id)
+        @instrument.reload.control_mechanism.should == 'relay'
+      end
+
+      context "update with new control_mechanism: 'manual' (Reservation Only)" do
+        before :each do
+          @updated = @instrument.update_attributes(:control_mechanism => 'manual')
+        end
+
+        it "should succeed" do
+          @updated.should be_true
+        end
+
+        it "should have a control_mechanism of manual" do
+          @instrument.reload.control_mechanism.should == 'manual'
+        end
+
+        it "should destroy the relay" do
+          @instrument.reload.relay.should be_nil
+        end
+      end
+
+      context "update with new control_mechanism: 'timer' (Timer without relay)" do
+        before :each do
+          @updated = @instrument.update_attributes(:control_mechanism => 'timer')
+        end
+
+        it "should succeed" do
+          @updated.should be_true
+        end
+
+        it "control mechanism should be a timer" do
+          @instrument.reload.control_mechanism.should == 'timer'
+        end
+      end
+    end
+
+    context "existing type: manual 'Reservation Only'" do
+      before :each do
+        @instrument.relay.destroy if @instrument.relay
+        @instrument.reload.control_mechanism.should == 'manual'
+      end
+
+      context "update with new control_mechanism: 'relay' (Timer with relay)" do
+        context "when validations not met" do
+          before :each do
+            @updated = @instrument.update_attributes(:control_mechanism => "relay", :relay_attributes => {:type => 'RelaySynaccessRevA'}) 
+          end
+
+          it "should fail" do
+            @updated.should be_false
+          end
+
+          it "should have errors" do
+            @instrument.errors.full_messages.should_not == []
+          end
+        end
+
+        context "when validations met" do
+          before :each do
+            @updated = @instrument.update_attributes(:control_mechanism => "relay", :relay_attributes => Factory.attributes_for(:relay)) 
+          end
+          it "should succeed" do
+            @updated.should be_true
+          end
+
+          it "should have no errors" do
+            @instrument.errors.full_messages.should == []
+          end
+
+          it "should have control mechanism of relay" do
+            @instrument.reload.control_mechanism.should == 'relay'
+          end
+        end
+      end
+
+      context "update with new control_mechanism: 'timer' (Timer without relay)" do
+        before :each do
+          @updated = @instrument.update_attributes(:control_mechanism => 'timer')
+        end
+
+        it "should succeed" do
+          @updated.should be_true
+        end
+
+        it "control mechanism should be a timer" do
+          @instrument.reload.control_mechanism.should == 'timer'
+        end
+      end
+    end
+  end
+  
   context "reservations with schedule rules from 9 am to 5 pm every day, with 60 minute durations" do
     before(:each) do
       @facility         = Factory.create(:facility)

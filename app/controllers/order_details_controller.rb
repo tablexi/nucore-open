@@ -53,7 +53,7 @@ class OrderDetailsController < ApplicationController
   def init_order_detail
     @order = Order.find(params[:order_id])
     @order_detail = @order.order_details.find(params[:id] || params[:order_detail_id])
-    raise ActiveRecord::RecordNotFound unless @order.user_id == acting_user.id || @order_detail.account.owner_user.id = @order.user_id || @order_detail.account.business_admins.any?{|u| u.id = @order.user_id} 
+    raise ActiveRecord::RecordNotFound unless @order_detail.can_be_viewed_by?(acting_user)
   end
 
   # GET /orders/:order_id/order_details/:order_detail_id/order_file

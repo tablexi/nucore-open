@@ -13,13 +13,22 @@ class Product < ActiveRecord::Base
 
   validates_presence_of :name, :type
   validate_url_name :url_name
-  validates_inclusion_of :requires_approval, :is_archived, :is_hidden, :in => [true, false, 0, 1]
   
   scope :active,             :conditions => { :is_archived => false, :is_hidden => false }
   scope :active_plus_hidden, :conditions => { :is_archived => false}
   scope :archived,           :conditions => { :is_archived => true }
   scope :not_archived,       :conditions => { :is_archived => false }
 
+  
+  ## AR Hooks
+  before_validation do
+    self.requires_approval ||= false
+    self.is_archived       ||= false
+    self.is_hidden         ||= false
+
+    # return true so validations will run
+    return true
+  end
   after_create :set_default_pricing
   
   def initial_order_status
