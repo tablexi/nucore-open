@@ -1,6 +1,9 @@
 validator:
-  class_name: ValidatorDefault
-aes_crypt_key:
+  class_name: ValidatorDefault #NucsValidator
+  test:
+    factory: #'vendor/engines/nucs/spec/factories' # relative to Rails.root
+    helper: 'spec/validator_helper' #'vendor/engines/nucs/spec/nucs_validator_helper' # relative to Rails.root
+
 email:
   from: 'noreply@example.com'
   fake:
