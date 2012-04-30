@@ -9,7 +9,7 @@ gem 'rails',            '3.0.10'
 gem 'rake',             '0.8.7'
 gem 'ruby-ole',         '1.2.11.1'
 # ruby-oci8 won't compile on lion
-unless (RUBY_PLATFORM =~ /x86_64-darwin11/)
+unless RUBY_PLATFORM =~ /x86_64-darwin11\.(0\.1|3\.0)/
   gem 'ruby-oci8',        '2.0.4'
 end
 gem 'haml',             '3.1.2'
