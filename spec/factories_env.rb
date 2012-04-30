@@ -11,12 +11,12 @@ include ActionDispatch::TestProcess
 #
 
 validator_factory=Settings.validator.test.factory
-require File.expand_path("../#{validator_factory}", File.dirname(__FILE__)) if validator_factory.present?
+require Rails.root.join(validator_factory) if validator_factory.present?
 
 validator_helper=Settings.validator.test.helper
 
 if validator_helper.present?
-  require File.expand_path("../#{validator_helper}", File.dirname(__FILE__))
+  require Rails.root.join(validator_helper)
   include File.basename(validator_helper).camelize.constantize
 end
 
