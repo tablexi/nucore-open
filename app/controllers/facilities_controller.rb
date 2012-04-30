@@ -104,12 +104,4 @@ class FacilitiesController < ApplicationController
     @layout = "two_column_head"
     paginate_order_details
   end
-
-  def ability_resource
-    if @action == :transactions
-      return :billing_tab
-    else
-      super
-    end
-  end
 end

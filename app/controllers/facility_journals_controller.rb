@@ -191,8 +191,4 @@ class FacilityJournalsController < ApplicationController
       @journal = @journals.find(params[:id])
     end
   end
-
-  def ability_resource
-    :billing_tab
-  end
 end
