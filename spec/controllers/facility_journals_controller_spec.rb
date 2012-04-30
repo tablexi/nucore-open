@@ -76,28 +76,6 @@ describe FacilityJournalsController do
       journal_date=parse_usa_date(@journal_date)
       flash[:error].should_not be_nil
     end
-
-
-    context 'with order detail' do
-
-      before :each do
-        acct=create_nufs_account_with_owner :director
-        place_and_complete_item_order(@director, @authable, acct)
-        define_open_account(@item.account, acct.account_number)
-        @params.merge!(:order_detail_ids => [ @order_detail.id ])
-      end
-
-      it_should_allow :director do
-        assigns(:journal).errors.should be_empty
-        assigns(:journal).should_not be_new_record
-        assigns(:journal).created_by.should == @director.id
-        assigns(:journal).journal_date.should == parse_usa_date(@journal_date)
-        assigns(:journal).journal_rows.should_not be_empty
-        should set_the_flash
-        assert_redirected_to facility_journals_path
-      end
-
-    end
     
     context "searching" do
       before :each do
