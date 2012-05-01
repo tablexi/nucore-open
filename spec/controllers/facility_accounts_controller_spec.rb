@@ -207,10 +207,8 @@ describe FacilityAccountsController do
       assigns(:account).account_users[0] == @owner
       assigns(:account).affiliate.should be_nil
       assigns(:account).affiliate_other.should be_nil
-      # saving with NufsAccount will fail because expires_at will never
-      # be set. That's because the nucs tables aren't mocked. We're not
-      # testing nucs here so take the opportunity to test save fails handling
-      should render_template('new')
+      should set_the_flash
+      assert_redirected_to user_accounts_url(@authable, assigns(:account).owner_user)
     end
 
 

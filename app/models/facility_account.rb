@@ -1,7 +1,7 @@
 class FacilityAccount < ActiveRecord::Base
   belongs_to :facility
 
-  validates_format_of       :account_number, :with => NucsValidator::NUCS_PATTERN, :message => "must be in the format 123-1234567-12345678-12-1234-1234; project, activity, program, and chart field 1 are optional"
+  validates_format_of       :account_number, :with => ValidatorFactory.pattern, :message => I18n.t('activerecord.errors.messages.bad_payment_source_format', :pattern_format => ValidatorFactory.pattern_format)
   validates_numericality_of :revenue_account, :only_integer => true, :greater_than_or_equal_to => 10000, :less_than_or_equal_to => 99999
   validates_uniqueness_of   :account_number, :scope => [:revenue_account, :facility_id]
 
@@ -38,8 +38,8 @@ class FacilityAccount < ActiveRecord::Base
     return if Rails.env.test?
 
     begin
-      NucsValidator.new(account_number, revenue_account).account_is_open!
-    rescue NucsErrors::NucsError => e
+      ValidatorFactory.instance(account_number, revenue_account).account_is_open!
+    rescue ValidatorError => e
       errors.add(:account_number, e.message)
     end
   end
@@ -48,6 +48,6 @@ class FacilityAccount < ActiveRecord::Base
 
   def split_account_number
     return [] unless account_number
-    account_number.match(NucsValidator::NUCS_PATTERN) || []
+    account_number.match(ValidatorFactory.pattern) || []
   end
 end

@@ -29,7 +29,6 @@ namespace :deploy do
   task :symlink_configs do
     run "ln -s #{deploy_to}/database.yml #{release_path}/config/database.yml"
     run "ln -s #{deploy_to}/files #{release_path}/public/files"
-    run "ln -s #{deploy_to}/database.yml #{release_path}/vendor/plugins/nucs/config/database.yml"
   end
   task :bundle_install do
     # if using RVM you probably don't want to specify the bundle install path.
