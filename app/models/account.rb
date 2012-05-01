@@ -126,8 +126,8 @@ class Account < ActiveRecord::Base
     find(details.collect{ |detail| detail.account_id }.uniq || [])
   end
 
-  def facility_balance (facility, date=Time.zone.now)
-    details = facility.order_details.complete.find(:all, :conditions => ['order_details.fulfilled_at <= ? AND price_policy_id IS NOT NULL AND order_details.account_id = ?', date, id])
+  def facility_balance (facilities, date=Time.zone.now)
+    details = OrderDetail.for_facilities(facilities).complete.where('order_details.fulfilled_at <= ? AND price_policy_id IS NOT NULL AND order_details.account_id = ?', date, id)
     details.collect{|od| od.total}.sum.to_f
   end
 
