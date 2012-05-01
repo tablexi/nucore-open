@@ -1,8 +1,8 @@
 validator:
-  class_name: ValidatorDefault #NucsValidator
+  class_name: ValidatorDefault
   test:
-    factory: #'vendor/engines/nucs/spec/factories' # relative to Rails.root
-    helper: 'spec/validator_helper' #'vendor/engines/nucs/spec/nucs_validator_helper' # relative to Rails.root
+    factory: # relative to Rails.root
+    helper: 'spec/validator_helper' # relative to Rails.root
 
 email:
   from: 'noreply@example.com'
