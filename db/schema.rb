@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120420204254) do
+ActiveRecord::Schema.define(:version => 20120501184422) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -184,81 +184,6 @@ ActiveRecord::Schema.define(:version => 20120420204254) do
     t.datetime "journal_date",                     :null => false
   end
 
-  create_table "nucs_accounts", :force => true do |t|
-    t.string "value",     :limit => 16,  :null => false
-    t.string "auxiliary", :limit => 512
-  end
-
-  add_index "nucs_accounts", ["value"], :name => "index_nucs_accounts_on_value"
-
-  create_table "nucs_chart_field1s", :force => true do |t|
-    t.string "value",     :limit => 16,  :null => false
-    t.string "auxiliary", :limit => 512
-  end
-
-  add_index "nucs_chart_field1s", ["value"], :name => "index_nucs_chart_field1s_on_value"
-
-  create_table "nucs_departments", :force => true do |t|
-    t.string "value",     :limit => 16,  :null => false
-    t.string "auxiliary", :limit => 512
-  end
-
-  add_index "nucs_departments", ["value"], :name => "index_nucs_departments_on_value"
-
-  create_table "nucs_funds", :force => true do |t|
-    t.string "value",     :limit => 8,   :null => false
-    t.string "auxiliary", :limit => 512
-  end
-
-  add_index "nucs_funds", ["value"], :name => "index_nucs_funds_on_value"
-
-  create_table "nucs_gl066s", :force => true do |t|
-    t.string   "budget_period", :limit => 8,  :null => false
-    t.string   "fund",          :limit => 8,  :null => false
-    t.string   "department",    :limit => 16, :null => false
-    t.string   "project",       :limit => 16, :null => false
-    t.string   "activity",      :limit => 16, :null => false
-    t.string   "account",       :limit => 16, :null => false
-    t.datetime "starts_at"
-    t.datetime "expires_at"
-  end
-
-  add_index "nucs_gl066s", ["account"], :name => "index_nucs_gl066s_on_account"
-  add_index "nucs_gl066s", ["activity"], :name => "index_nucs_gl066s_on_activity"
-  add_index "nucs_gl066s", ["department"], :name => "index_nucs_gl066s_on_department"
-  add_index "nucs_gl066s", ["fund"], :name => "index_nucs_gl066s_on_fund"
-  add_index "nucs_gl066s", ["project"], :name => "index_nucs_gl066s_on_project"
-
-  create_table "nucs_grants_budget_trees", :force => true do |t|
-    t.string   "account",              :limit => 16, :null => false
-    t.string   "account_desc",         :limit => 32, :null => false
-    t.string   "roll_up_node",         :limit => 32, :null => false
-    t.string   "roll_up_node_desc",    :limit => 32, :null => false
-    t.string   "parent_node",          :limit => 32, :null => false
-    t.string   "parent_node_desc",     :limit => 32, :null => false
-    t.datetime "account_effective_at",               :null => false
-    t.string   "tree",                 :limit => 32, :null => false
-    t.datetime "tree_effective_at",                  :null => false
-  end
-
-  add_index "nucs_grants_budget_trees", ["account"], :name => "index_nucs_grants_budget_trees_on_account"
-
-  create_table "nucs_programs", :force => true do |t|
-    t.string "value",     :limit => 8,   :null => false
-    t.string "auxiliary", :limit => 512
-  end
-
-  add_index "nucs_programs", ["value"], :name => "index_nucs_programs_on_value"
-
-  create_table "nucs_project_activities", :force => true do |t|
-    t.string "project",   :limit => 16,  :null => false
-    t.string "activity",  :limit => 16,  :null => false
-    t.string "auxiliary", :limit => 512
-  end
-
-  add_index "nucs_project_activities", ["activity"], :name => "index_nucs_project_activities_on_activity"
-  add_index "nucs_project_activities", ["project"], :name => "index_nucs_project_activities_on_project"
-
   create_table "order_details", :force => true do |t|
     t.integer  "order_id",                                                              :null => false
     t.integer  "product_id",                                                            :null => false
@@ -389,6 +314,9 @@ ActiveRecord::Schema.define(:version => 20120420204254) do
     t.integer "product_id",   :null => false
     t.integer "accessory_id", :null => false
   end
+
+  add_index "product_accessories", ["accessory_id"], :name => "product_accessories_accessory_id_fk"
+  add_index "product_accessories", ["product_id"], :name => "product_accessories_product_id_fk"
 
   create_table "product_users", :force => true do |t|
     t.integer  "product_id",              :null => false
@@ -572,6 +500,9 @@ ActiveRecord::Schema.define(:version => 20120420204254) do
   add_foreign_key "price_groups", "facilities", :name => "sys_c008578"
 
   add_foreign_key "price_policies", "price_groups", :name => "sys_c008589"
+
+  add_foreign_key "product_accessories", "products", :name => "product_accessories_accessory_id_fk", :column => "accessory_id"
+  add_foreign_key "product_accessories", "products", :name => "product_accessories_product_id_fk"
 
   add_foreign_key "product_users", "products", :name => "fk_products"
 
