@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120501184422) do
+ActiveRecord::Schema.define(:version => 20120502223446) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -160,11 +160,6 @@ ActiveRecord::Schema.define(:version => 20120501184422) do
     t.decimal "amount",                         :precision => 9, :scale => 2, :null => false
     t.string  "description",     :limit => 200
     t.string  "reference",       :limit => 50
-    t.string  "fund",            :limit => 3,                                 :null => false
-    t.string  "dept",            :limit => 7,                                 :null => false
-    t.string  "project",         :limit => 8
-    t.string  "activity",        :limit => 2
-    t.string  "program",         :limit => 4
     t.string  "account",         :limit => 5,                                 :null => false
   end
 
