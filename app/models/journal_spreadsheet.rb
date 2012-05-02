@@ -22,15 +22,14 @@ class JournalSpreadsheet
     rows.each do |row|
       line  = sheet1.row(srow)
 
-      line[0] = row.fund
-      line[1] = row.dept
-      line[2] = row.project
-      line[3] = row.activity
-      line[4] = row.program
-      line[5] = row.account
-      line[6] = sprintf("%.2f", row.amount)
-      line[7] = row.description
-      line[8] = row.reference
+      if block_given?
+        yield line, row
+      else
+        line[0] = row.account
+        line[1] = sprintf("%.2f", row.amount)
+        line[2] = row.description
+        line[3] = row.reference
+      end
 
       # increment row
       srow += 1
