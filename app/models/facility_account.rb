@@ -14,25 +14,23 @@ class FacilityAccount < ActiveRecord::Base
     "#{account_number} (#{revenue_account})"
   end
 
-  def fund
-    split_account_number[1]
+
+  def method_missing(method_sym, *arguments, &block)
+    return super unless account_number
+    ValidatorFactory.instance(account_number).send(method_sym, *arguments)
   end
 
-  def dept
-    split_account_number[2]
+
+  def respond_to?(method_sym, include_private = false)
+    return true if super
+
+    begin
+      return account_number && ValidatorFactory.instance(account_number).respond_to?(method_sym)
+    rescue
+      return false
+    end
   end
 
-  def project
-    split_account_number[3]
-  end
-
-  def activity
-    split_account_number[4]
-  end
-
-  def program
-    split_account_number[5]
-  end
 
   def validate_chartstring
     return if Rails.env.test?
@@ -44,10 +42,4 @@ class FacilityAccount < ActiveRecord::Base
     end
   end
 
-  protected
-
-  def split_account_number
-    return [] unless account_number
-    account_number.match(ValidatorFactory.pattern) || []
-  end
 end
