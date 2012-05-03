@@ -5,13 +5,13 @@ class ApplicationController < ActionController::Base
   include DateHelper
 
   # sentinal value meaning all facilities
-  ALL_FACILITY = Facility.new(:url_name => 'all', :name => "Cross-Facility")
+  ALL_FACILITY = Facility.new(:url_name => 'all', :name => "Cross-Facility", :abbreviation => 'ALL')
 
   helper :all # include all helpers, all the time
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
   # Make the following methods available to all views
-  helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :backend?
+  helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :all_facility?, :backend? 
 
   attr_accessor :active_tab
 
@@ -29,6 +29,10 @@ class ApplicationController < ActionController::Base
     else
       Facility.find_by_url_name(facility_id)
     end
+  end
+
+  def all_facility?
+    current_facility == ALL_FACILITY
   end
 
   def init_current_facility
