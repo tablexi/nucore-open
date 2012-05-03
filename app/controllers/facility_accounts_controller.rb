@@ -114,25 +114,6 @@ class FacilityAccountsController < ApplicationController
 
   # GET/POST /facilities/:facility_id/accounts/search_results
   def search_results
-    # original implementation
-    #term   = generate_multipart_like_search_term(params[:search_term])
-    #if params[:search_term].length >= 3
-      #conditions = ["LOWER(first_name) LIKE ? OR LOWER(last_name) LIKE ? OR LOWER(username) LIKE ? OR LOWER(CONCAT(first_name, last_name)) LIKE ?", term, term, term, term]
-      #@users     = User.find(:all, :conditions => conditions, :order => 'last_name, first_name')
-      #if @users.length > 0
-        #@accounts = @users.collect{|u| u.account_users.find(:all, :conditions => ['account_users.deleted_at IS NULL AND user_role = ?', 'Owner'], :include => :account).collect{|au| au.account}}.flatten
-      #end
-      #if @accounts.nil? || @accounts.empty?
-        #@accounts = Account.find(:all, :conditions => ['account_number like ?', term], :order => 'type, account_number')
-      #end
-      #@accounts = @accounts.paginate(:page => params[:page]) #hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
-    #else
-      #flash.now[:errors] = 'Search terms must be 3 or more characters.'
-    #end
-    #respond_to do |format|
-      #format.html { render :layout => false }
-    #end
-    
     term   = generate_multipart_like_search_term(params[:search_term])
     if params[:search_term].length >= 3
 
