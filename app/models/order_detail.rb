@@ -47,23 +47,26 @@ class OrderDetail < ActiveRecord::Base
                                                :order => 'order_details.created_at DESC' }}
 
   def self.for_facility(facility)
-    details = scoped.joins(:order).order('order_details.created_at DESC')
+    for_facility_id(facility.id)
+  end
 
-    unless facility.all_facility?
-      details = details.for_facility(facility)
+  def self.for_facility_id(facility_id=nil)
+    details = scoped.joins(:order)
+
+    unless facility_id.nil?
+      where(:orders => { :facility_id => facility_id})
     end
-
+    
     details
   end
-
-  def self.for_facility_id(facility_id)
-    joins(:order).
-    where(:orders => { :facility_id => facility_id})
-  end
   def self.for_facility_url(facility_url)
-    joins(:order).
-    joins(:order => :facility).
-    where(:orders => {:facilities => {:url_name => facility_url}})
+    details = scoped.joins(:order)
+
+    unless facility_id.nil?
+      details = details.where(:orders => {:facilities => {:url_name => facility_url}})
+    end
+    
+    details
   end
   
   scope :for_facility_with_price_policy, lambda { |facility| {
