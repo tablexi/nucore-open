@@ -1,12 +1,8 @@
 price_group:
   name:
-    base: 'University of Illinois at Chicago'
-    external: 'Non-Academic'
-    cancer_center: 'University of Illinois Cancer Center'
-#  name:
-#    base: 'Base Rate'
-#    external: 'External Rate'
-#    cancer_center: 'Cancer Center Rate'
+    base: 'Base Rate'
+    external: 'External Rate'
+    cancer_center: 'Cancer Center Rate'
 
 validator:
   class_name: ValidatorDefault
