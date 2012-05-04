@@ -178,7 +178,7 @@ class FacilityAccountsController < ApplicationController
   # GET /facilities/:facility_id/statements/accounts_receivable
   def accounts_receivable
     @account_balances = {}
-    order_details = OrderDetail.for_facilities(manageable_facilities).complete
+    order_details = OrderDetail.for_facility(current_facility).complete
     order_details.each do |od|
       @account_balances[od.account_id] = @account_balances[od.account_id].to_f + od.total.to_f
     end
