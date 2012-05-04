@@ -36,7 +36,11 @@ module TransactionSearch
   
   def init_order_details
     @order_details = OrderDetail.joins(:order).joins(:product).ordered
-    @order_details = @order_details.for_facilities(manageable_facilities.collect(&:id))
+
+    if current_facility
+      @order_details = @order_details.for_facility(current_facility)
+    end
+
     @order_details = @order_details.where(:account_id => @account.id) if @account
   end
     

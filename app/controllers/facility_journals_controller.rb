@@ -72,7 +72,7 @@ class FacilityJournalsController < ApplicationController
         raise ActiveRecord::Rollback
       end
     end
-    @order_details = OrderDetail.for_facilities(manageable_facilities).need_journal
+    @order_details = OrderDetail.for_facility(current_facility).need_journal
     set_soonest_journal_date
     @soonest_journal_date = params[:journal_date] || @soonest_journal_date 
     render :action => :index
@@ -148,7 +148,7 @@ class FacilityJournalsController < ApplicationController
       redirect_to facility_journal_url(current_facility, @journal) and return
     end
     rec_status = OrderStatus.reconciled.first
-    order_details = OrderDetail.for_facilities(manageable_facilities).where(:id => params[:order_detail_ids]).readonly(false)
+    order_details = OrderDetail.for_facility(current_facility).where(:id => params[:order_detail_ids]).readonly(false)
     order_details.each do |od|
       if od.journal_id != @journal.id
         flash[:error] = 'An error was encountered while reconcile orders'

@@ -34,7 +34,7 @@ class FacilityNotificationsController < ApplicationController
       params[:order_detail_ids].each do |order_detail_id|
         od = nil
         begin
-          od = OrderDetail.for_facilities(manageable_facilities).need_notification.find(order_detail_id, :readonly => false)
+          od = OrderDetail.for_facility(current_facility).need_notification.find(order_detail_id, :readonly => false)
         rescue Exception => e
           @errors << I18n.t('controllers.facility_notifications.send_notifications.order_error', :order_detail_id => order_detail_id)
         end
@@ -77,7 +77,7 @@ class FacilityNotificationsController < ApplicationController
       @order_details_updated = []
       params[:order_detail_ids].each do |order_detail_id|
         begin
-          od = OrderDetail.for_facilities(manageable_facilities).find(order_detail_id, :readonly => false)
+          od = OrderDetail.for_facility(current_facility).find(order_detail_id, :readonly => false)
           od.reviewed_at = Time.zone.now
           od.save!
           @order_details_updated << od
