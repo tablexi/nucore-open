@@ -77,6 +77,10 @@ class Facility < ActiveRecord::Base
     true
   end
 
+  def all_facility?
+    url_name == 'all'
+  end
+
   def to_s
     "#{name} (#{abbreviation})"
   end

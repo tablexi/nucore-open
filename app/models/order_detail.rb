@@ -46,7 +46,15 @@ class OrderDetail < ActiveRecord::Base
                                                :conditions => ['orders.facility_id = ? AND order_details.reviewed_at < ?', facility.id, Time.zone.now],
                                                :order => 'order_details.created_at DESC' }}
 
-  scope :for_facility, lambda {|facility| { :joins => :order, :conditions => [ 'orders.facility_id = ?', facility.id ], :order => 'order_details.created_at DESC' }}
+  def self.for_facility(facility)
+    details = scoped.joins(:order).order('order_details.created_at DESC')
+
+    unless facility.all_facility?
+      details = details.for_facility(facility)
+    end
+
+    details
+  end
 
   def self.for_facility_id(facility_id)
     joins(:order).
@@ -503,16 +511,12 @@ class OrderDetail < ActiveRecord::Base
 
   def self.account_unreconciled(facility, account)
     if account.is_a?(NufsAccount)
-      joins(:order, :journal).
-        where(
-          'orders.facility_id = ?  AND order_details.account_id = ?  AND order_details.state = ?  AND journals.is_successful = ?',
-          facility.id, account.id, 'complete', true
+      joins(:journal).for_facility(facility).where("order_details.account_id = ?  AND order_details.state = ?  AND journals.is_successful = ?",
+          account.id, 'complete', true
         ).all
     else
-      joins(:order).
-        where(
-          'orders.facility_id = ?  AND order_details.account_id = ?  AND order_details.state = ?  AND order_details.statement_id IS NOT NULL',
-          facility.id, account.id, 'complete'
+      for_facility(facility).where("order_details.account_id = ?  AND order_details.state = ?  AND order_details.statement_id IS NOT NULL",
+          account.id, 'complete'
        ).all
     end
   end

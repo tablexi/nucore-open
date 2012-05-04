@@ -15,8 +15,8 @@ class FacilityAccountsController < ApplicationController
 
   # GET /facilties/:facility_id/accounts
   def index
-    # list accounts that have ordered in the facility
-    @accounts = current_facility.order_details.accounts.paginate(:page => params[:page])    
+    @order_details = OrderDetail.for_facility(current_facility).includes(:account)
+    @accounts = @order_details.collect(&:account).uniq.paginate(:page => params[:page])
   end
 
   # GET /facilties/:facility_id/accounts/:id
@@ -118,7 +118,7 @@ class FacilityAccountsController < ApplicationController
     if params[:search_term].length >= 3
 
       # retrieve accounts matched on user for this facility
-      @accounts = Account.joins(:account_users => :user).where(
+      @accounts = Account.joins(:account_users => :user).for_facility(current_facility).where(
         "(
            LOWER(users.first_name) LIKE :term
            OR LOWER(users.last_name) LIKE :term
@@ -126,22 +126,14 @@ class FacilityAccountsController < ApplicationController
            OR LOWER(CONCAT(users.first_name, users.last_name)) LIKE :term
          )
          AND account_users.user_role = :acceptable_role
-         AND account_users.deleted_at IS NULL
-         AND (
-           (accounts.type <> 'NufsAccount' AND accounts.facility_id = :facility_id)
-           OR (accounts.type = 'NufsAccount' AND accounts.facility_id IS NULL)
-        )",
+         AND account_users.deleted_at IS NULL",
         :term             => term,
         :acceptable_role  => 'Owner',
-        :facility_id      => current_facility.id
       ).order('users.last_name, users.first_name')
       
       # retrieve accounts matched on account_number for this facility
-      @accounts += Account.where(
-        "LOWER(account_number) LIKE ? AND (
-          (type <> 'NufsAccount' AND facility_id = ?)
-          OR (type = 'NufsAccount' AND facility_id IS NULL)
-        )", term, current_facility.id
+      @accounts += Account.for_facility(current_facility).where(
+        "LOWER(account_number) LIKE ?", term
       ).order('type, account_number')
       
       # only show an account once.
