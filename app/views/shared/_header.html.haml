@@ -18,8 +18,7 @@
           %li= link_to t("user_password.edit.head"), :edit_current_password 
         %li
           = link_to t('pages.cart'), :cart
-          (
-          = current_cart.order_details.sum(:quantity)
-          )
+          = "(#{current_cart.order_details.sum(:quantity)})"
+
         %li.last= link_to t('pages.logout'), :destroy_user_session
   .clear
