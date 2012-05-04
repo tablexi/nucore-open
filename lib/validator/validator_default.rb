@@ -42,7 +42,7 @@ class ValidatorDefault
   # [_return_]
   #   the latest expiration date for a payment source
   def latest_expiration
-    Time.zone.now + 1.year
+    Time.zone.now + 50.years
   end
 
 
