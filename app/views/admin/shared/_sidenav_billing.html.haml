@@ -17,7 +17,7 @@
       %ul
         %li= link_to t_create_model(Journal),         new_facility_journal_path, :class => (sidenav_tab == 'new_journal' ? 'active' : '')
         %li= link_to t_manage_models(Journal),        facility_journals_path, :class => (sidenav_tab == 'journals' ? 'active' : '')
-    - manageable_facilities.each do |current_facility|
+    - unless all_facility?
       %li.sub_menu
         .icon
         #{current_facility.name} #{Statement.model_name.human.pluralize}
