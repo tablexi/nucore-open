@@ -55,6 +55,16 @@ class Journal < ActiveRecord::Base
     is_successful.nil?
   end
 
+  def facility_ids_with_pending_journals
+    # use AR to build the SQL for pending journals
+    pending_facility_ids_sql = Journal.joins(:order_details => :order).where(:is_successful => nil).select("DISTINCT orders.facility_id").to_sql
+
+    # run it and get the results back (a list)
+    pending_facility_ids = Journal.connection.select_values(pending_facility_ids_sql)
+
+    return pending_facility_ids
+  end
+
   def create_journal_rows!(order_details)
     recharge_by_product = {}
     facility_ids_already_in_journal = Set.new
@@ -65,6 +75,14 @@ class Journal < ActiveRecord::Base
       raise Exception if od.journal_id
       order_detail_ids << od.id
       account = od.account
+      facility_id = od.order.facility_id
+
+      unless facility_ids_already_in_journal.member? facility_id
+        if facility_ids_with_pending_journals.member? facility_id
+          raise "Facility #{Facility.find(facility_id)} already has a pending journal"
+        end
+        facility_ids_already_in_journal.add(facility_id)
+      end 
 
       begin
         ValidatorFactory.instance(account.account_number, od.product.account).account_is_open!
