@@ -54,16 +54,18 @@ class OrderDetail < ActiveRecord::Base
     details = scoped.joins(:order)
 
     unless facility_id.nil?
-      where(:orders => { :facility_id => facility_id})
+      details = details.where(:orders => { :facility_id => facility_id})
     end
     
     details
   end
+
   def self.for_facility_url(facility_url)
     details = scoped.joins(:order)
 
-    unless facility_id.nil?
-      details = details.where(:orders => {:facilities => {:url_name => facility_url}})
+    unless facility_url.nil?
+      details = details.joins(:order => :facility)
+      details = details.where(:facilities => {:url_name => facility_url})
     end
     
     details
