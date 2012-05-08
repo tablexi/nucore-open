@@ -1,16 +1,19 @@
+require 'set'
+
 class Journal < ActiveRecord::Base
   has_many                :journal_rows
   belongs_to              :facility
   has_many                :order_details, :through => :journal_rows
   belongs_to              :created_by_user, :class_name => 'User', :foreign_key => :created_by
 
-  validates_uniqueness_of :facility_id, :scope => :is_successful, :if => Proc.new { |j| j.is_successful.nil? }
   validates_presence_of   :reference, :updated_by, :on => :update
   validates_presence_of   :created_by
   has_attached_file       :file,
                           :storage => :filesystem,
                           :url => "#{ENV['RAILS_RELATIVE_URL_ROOT']}/:attachment/:id_partition/:style/:basename.:extension",
                           :path => ":rails_root/public/:attachment/:id_partition/:style/:basename.:extension"
+  # prevent two in-flight single-facility journals
+  validates_uniqueness_of :facility_id, :scope => :is_successful, :if => Proc.new { |j| !j.facility_id.nil? && j.is_successful.nil? }
 
   # scopes
   
@@ -54,10 +57,13 @@ class Journal < ActiveRecord::Base
 
   def create_journal_rows!(order_details)
     recharge_by_product = {}
+    facility_ids_already_in_journal = Set.new
+    order_detail_ids = []
 
     # create rows for each transaction
     order_details.each do |od|
       raise Exception if od.journal_id
+      order_detail_ids << od.id
       account = od.account
 
       begin
@@ -87,6 +93,8 @@ class Journal < ActiveRecord::Base
         :description     => product.to_s
       )
     end
+
+    OrderDetail.update_all(['journal_id = ?', self.id], ['id IN (?)', order_detail_ids])
   end
 
   def create_spreadsheet

@@ -85,7 +85,7 @@ class FacilityJournalsController < ApplicationController
     @journal.journal_date = parse_usa_date(params[:journal_date])
     
     if params[:order_detail_ids].present?
-      @update_order_details = @order_details.where(:id => params[:order_detail_ids])
+      @update_order_details = @order_details.includes(:order).where(:id => params[:order_detail_ids])
     else
       @update_order_details = []
     end
@@ -97,7 +97,7 @@ class FacilityJournalsController < ApplicationController
         @journal.errors.add(:base, I18n.t('controllers.facility_journals.create.errors.fiscal_span'))
       else
         # detect if this should be a multi-facility journal, set facility_id appropriately
-        if @update_order_details.includes(:order).count('orders.facility_id', :distinct => true) > 1
+        if @update_order_details.count('orders.facility_id', :distinct => true) > 1
           @journal.facility_id = nil
         else
           @journal.facility_id = @update_order_details.first.order.facility_id
@@ -105,10 +105,11 @@ class FacilityJournalsController < ApplicationController
         Journal.transaction do
           begin
             @journal.save!
+
+            # populate the journal
             @journal.create_journal_rows!(@update_order_details)
             
 
-            OrderDetail.update_all(['journal_id = ?', @journal.id], ['id IN (?)', @update_order_details.collect{|od| od.id}])
             # create the spreadsheet
             @journal.create_spreadsheet
             flash[:notice] = I18n.t('controllers.facility_journals.create.notice')
