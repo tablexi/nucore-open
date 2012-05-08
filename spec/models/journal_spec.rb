@@ -45,6 +45,8 @@ describe Journal do
           @ods << od
         end
 
+        # .should raise_error and .should_not raise_error
+        # expect to be called on a block / Proc
         return Proc.new do
           journal  = Journal.create!(
             :facility_id => (facilities_list.size == 1 ? facilities_list.first.id : nil),
