@@ -13,6 +13,7 @@ class Journal < ActiveRecord::Base
                           :url => "#{ENV['RAILS_RELATIVE_URL_ROOT']}/:attachment/:id_partition/:style/:basename.:extension",
                           :path => ":rails_root/public/:attachment/:id_partition/:style/:basename.:extension"
   # prevent two in-flight single-facility journals
+  # (on the same facility)
   validates_uniqueness_of :facility_id, :scope => :is_successful, :if => Proc.new { |j| !j.facility_id.nil? && j.is_successful.nil? }
 
   # scopes
@@ -36,6 +37,16 @@ class Journal < ActiveRecord::Base
     end
   end
 
+  def self.facility_ids_with_pending_journals
+    # use AR to build the SQL for pending journals
+    pending_facility_ids_sql = Journal.joins(:order_details => :order).where(:is_successful => nil).select("DISTINCT orders.facility_id").to_sql
+
+    # run it and get the results back (a list)
+    pending_facility_ids = Journal.connection.select_values(pending_facility_ids_sql)
+
+    return pending_facility_ids
+  end
+
   def facility_ids
     if facility_id?
       return [facility_id]
@@ -55,20 +66,13 @@ class Journal < ActiveRecord::Base
     is_successful.nil?
   end
 
-  def facility_ids_with_pending_journals
-    # use AR to build the SQL for pending journals
-    pending_facility_ids_sql = Journal.joins(:order_details => :order).where(:is_successful => nil).select("DISTINCT orders.facility_id").to_sql
-
-    # run it and get the results back (a list)
-    pending_facility_ids = Journal.connection.select_values(pending_facility_ids_sql)
-
-    return pending_facility_ids
-  end
 
   def create_journal_rows!(order_details)
     recharge_by_product = {}
     facility_ids_already_in_journal = Set.new
     order_detail_ids = []
+    pending_facility_ids = Journal.facility_ids_with_pending_journals
+ 
 
     # create rows for each transaction
     order_details.each do |od|
@@ -77,8 +81,13 @@ class Journal < ActiveRecord::Base
       account = od.account
       facility_id = od.order.facility_id
 
+      # unless we've already encountered this facility_id during
+      # this call to create_journal_rows,
       unless facility_ids_already_in_journal.member? facility_id
-        if facility_ids_with_pending_journals.member? facility_id
+        
+        # check against facility_ids which actually have pending journals
+        # in the DB
+        if pending_facility_ids.member? facility_id
           raise "Facility #{Facility.find(facility_id)} already has a pending journal"
         end
         facility_ids_already_in_journal.add(facility_id)
