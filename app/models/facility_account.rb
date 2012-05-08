@@ -16,8 +16,14 @@ class FacilityAccount < ActiveRecord::Base
 
 
   def method_missing(method_sym, *arguments, &block)
-    return super unless account_number
-    ValidatorFactory.instance(account_number).send(method_sym, *arguments)
+    begin
+      super # we must call super! Not doing so makes ruby 1.9.2 die a hard death
+    rescue NoMethodError => e
+      raise e unless account_number
+      validator=ValidatorFactory.instance(account_number)
+      raise e unless validator.components.has_key?(method_sym)
+      validator.send(method_sym, *arguments)
+    end
   end
 
 

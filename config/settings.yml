@@ -1,3 +1,9 @@
+price_group:
+  name:
+    base: 'Base Rate'
+    external: 'External Rate'
+    cancer_center: 'Cancer Center Rate'
+
 validator:
   class_name: ValidatorDefault
   test:

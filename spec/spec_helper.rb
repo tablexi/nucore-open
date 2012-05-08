@@ -83,11 +83,11 @@ Spork.prefork do
       Affiliate.find_or_create_by_name('Other')
 
       # initialize price groups
-      @nupg = PriceGroup.find_or_create_by_name(:name => 'Base Rate', :is_internal => true, :display_order => 1)
+      @nupg = PriceGroup.find_or_create_by_name(:name => Settings.price_group.name.base, :is_internal => true, :display_order => 1)
       @nupg.save(:validate => false)
-      @ccpg = PriceGroup.find_or_create_by_name(:name => 'Cancer Center Rate', :is_internal => true, :display_order => 2)
+      @ccpg = PriceGroup.find_or_create_by_name(:name => Settings.price_group.name.cancer_center, :is_internal => true, :display_order => 2)
       @ccpg.save(:validate => false)
-      @epg = PriceGroup.find_or_create_by_name(:name => 'External Rate', :is_internal => false, :display_order => 3)
+      @epg = PriceGroup.find_or_create_by_name(:name => Settings.price_group.name.external, :is_internal => false, :display_order => 3)
       @epg.save(:validate => false)
 
       now=Time.zone.parse("#{Date.today.to_s} 09:30:00")
