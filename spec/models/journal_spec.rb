@@ -53,6 +53,8 @@ describe Journal do
           )
 
           journal.create_journal_rows!(@ods)
+
+          journal
         end
       end
     end
