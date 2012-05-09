@@ -67,6 +67,8 @@ class ApplicationController < ActionController::Base
       raise CanCan::AccessDenied unless session_user.billing_administrator?
       # .. if you ARE Billing Administrator, your credentials are valid
       return
+    else
+      raise CanCan::AccessDenied if session_user.billing_administrator?
     end
 
     # OTHERWISE

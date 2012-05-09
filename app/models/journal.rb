@@ -49,10 +49,17 @@ class Journal < ActiveRecord::Base
 
   def facility_ids
     if facility_id?
-      return [facility_id]
+      [facility_id]
     else
-      return order_details.join(:order).select('orders.facility_id', :distinct => true).collect(:facility_id)
+        order_details.joins(:order).
+        select('orders.facility_id').
+        collect(&:facility_id).
+        uniq
     end
+  end
+
+  def facility_abbreviations
+    Facility.where(:id => self.facility_ids).collect(&:abbreviation)
   end
 
   def amount
