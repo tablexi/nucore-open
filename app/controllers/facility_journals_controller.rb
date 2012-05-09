@@ -6,6 +6,7 @@ class FacilityJournalsController < ApplicationController
   before_filter :check_acting_as
   before_filter :check_billing_access
   before_filter :init_journals, :except => :create_with_search
+  helper_method :has_pending_journals?
 
   include TransactionSearch
   
@@ -19,7 +20,7 @@ class FacilityJournalsController < ApplicationController
   
   # GET /facilities/journals
   def index
-    @pending_journal = get_pending_journal
+    set_pending_journals
 
     @journals = @journals.
       order('journals.created_at DESC').
@@ -164,8 +165,8 @@ class FacilityJournalsController < ApplicationController
 
   private
   
-  def get_pending_journal
-    return @journals.find_by_is_successful(nil)
+  def set_pending_journals
+    @pending_journals = @journals.where(:is_successful => nil)
   end
   
   def set_soonest_journal_date
@@ -174,12 +175,13 @@ class FacilityJournalsController < ApplicationController
   end
   
   def set_default_variables
-    @pending_journal = get_pending_journal
     @order_details   = @order_details.need_journal
-    #@accounts = @accounts.where("type in (?)", ['NufsAccount'])
-    #@journal         = current_facility.journals.new()
+
+    set_pending_journals
     set_soonest_journal_date
-    if @pending_journal.nil?
+
+    blocked_facility_ids = Journal.facility_ids_with_pending_journals
+    unless @pending_journals.any? || current_facility.has_pending_journals?
       @order_detail_action = :create
       @action_date_field = {:journal_date => @soonest_journal_date}
     end
@@ -191,5 +193,9 @@ class FacilityJournalsController < ApplicationController
     if params[:id]
       @journal = @journals.find(params[:id])
     end
+  end
+
+  def has_pending_journals?
+    current_facility.has_pending_journals?
   end
 end

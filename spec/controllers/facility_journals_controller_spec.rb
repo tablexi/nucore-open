@@ -42,7 +42,7 @@ describe FacilityJournalsController do
 
     it_should_allow_managers_only do
       response.should be_success
-      assigns(:pending_journal).should == @pending_journal
+      assigns(:pending_journals).should == [@pending_journal]
     end
   end
 
@@ -117,7 +117,7 @@ describe FacilityJournalsController do
       response.should be_success
       assigns(:order_details).should be_include(@order_detail1)
       assigns(:order_details).should be_include(@order_detail3)
-      assigns(:pending_journal).should be_nil
+      assigns(:pending_journals).should be_empty
       assigns(:order_detail_action).should == :create
     end
     
@@ -126,7 +126,7 @@ describe FacilityJournalsController do
       sign_in @admin
       do_request
       assigns(:order_details).should contain_all [@order_detail1, @order_detail3]
-      assigns(:pending_journal).should == @pending_journal
+      assigns(:pending_journals).should == [@pending_journal]
       assigns(:order_detail_action).should be_nil
     end
     

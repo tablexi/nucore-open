@@ -11,7 +11,7 @@
 
 = render :partial => "shared/transactions/headers"
 = content_for :h1 do
-  = @facility
+  = current_facility
 = content_for :h2 do
   %h2= t_create_model(Journal)
 
@@ -21,7 +21,7 @@
 - if @order_details.empty?
   %p.notice= t("facility_journals.new.no_orders")
 - else
-  - unless @pending_journal.nil?
+  - if has_pending_journals?
     %p.notice= t("facility_journals.new.not_closed_html", :link => facility_journals_path)
   = content_for :action_instructions do
     %p
