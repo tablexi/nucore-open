@@ -1,5 +1,7 @@
 class RelaySynaccessRevA < Relay
   # Supports Synaccess Models: NP-02
+  
+  include PowerRelay
 
   private
 

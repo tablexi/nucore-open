@@ -13,9 +13,9 @@ OrderStatus.create(:name => 'Complete')
 OrderStatus.create(:name => 'Reconciled')
 
 
-p = PriceGroup.new(:name => 'Base Rate', :is_internal => true, :display_order => 1)
+p = PriceGroup.new(:name => Settings.price_group.name.base, :is_internal => true, :display_order => 1)
 p.save(:validate => false)
-p = PriceGroup.new(:name => 'Cancer Center Rate', :is_internal => true, :display_order => 2)
+p = PriceGroup.new(:name => Settings.price_group.name.cancer_center, :is_internal => true, :display_order => 2)
 p.save(:validate => false)
-p = PriceGroup.new(:name => 'External Rate', :is_internal => false, :display_order => 3)
+p = PriceGroup.new(:name => Settings.price_group.name.external, :is_internal => false, :display_order => 3)
 p.save(:validate => false)

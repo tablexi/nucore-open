@@ -176,8 +176,10 @@ describe InstrumentsController do
       @method=:post
       @action=:create
       @params.merge!(
-        :control_mechanism => 'manual',
-        :instrument => Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id)
+        :instrument => Factory.attributes_for(:instrument,
+          :facility_account_id => @facility_account.id,
+          :control_mechanism => 'manual'
+        )
       )
     end
 
@@ -188,8 +190,8 @@ describe InstrumentsController do
     context 'with relay' do
 
       before :each do
-        @params[:control_mechanism]='relay'
         @params[:instrument].merge!({
+          :control_mechanism => 'relay',
           :relay_attributes => {
             :ip => '192.168.1.2',
             :port => 1234,
@@ -213,28 +215,24 @@ describe InstrumentsController do
         end
       end
 
-      context 'dummy relay' do
-
-        before :each do
-          @params[:control_mechanism]='timer'
-        end
-
-        it_should_allow :director, 'to create a timer' do
-          assert_successful_creation do
-            relay=assigns(:instrument).relay
-            relay.should be_is_a Relay
-            relay.ip.should be_nil
-            relay.port.should be_nil
-            relay.username.should be_nil
-            relay.password.should be_nil
-            relay.type.should == RelayDummy.name
-          end
-        end
-
-      end
 
     end
 
+    context 'dummy relay' do
+
+      before :each do
+        # relay attributes 
+        @params[:instrument].merge!(:control_mechanism =>'timer')
+      end
+
+      it_should_allow :director, 'to create a timer' do
+        assert_successful_creation do
+          relay=assigns(:instrument).relay
+          relay.should be_a Relay
+          relay.type.should == RelayDummy.name
+        end
+      end
+    end
 
     context 'fail' do
 
@@ -267,13 +265,19 @@ describe InstrumentsController do
     before :each do
       @method=:put
       @action=:update
-      @params[:control_mechanism]='manual'
-      @params.merge!(:instrument => @instrument.attributes)
+      @params.merge!(:instrument => @instrument.attributes.merge!(:control_mechanism =>'manual'))
     end
 
     context 'no relay' do
       before :each do
-        RelaySynaccessRevA.create!(:instrument_id => @instrument.id)
+        RelaySynaccessRevA.create!(
+          :ip => '192.168.1.2',
+          :port => 1234,
+          :username => 'username',
+          :password => 'password',
+          :type => RelaySynaccessRevA.name,
+          :instrument_id => @instrument.id
+        )
       end
 
       it_should_allow_operators_only :redirect do
@@ -284,8 +288,8 @@ describe InstrumentsController do
     context 'with relay' do
 
       before :each do
-        @params[:control_mechanism]='relay'
         @params[:instrument].merge!({
+          :control_mechanism => 'relay',
           :relay_attributes => {
             :ip => '192.168.1.2',
             :port => 1234,
@@ -309,26 +313,26 @@ describe InstrumentsController do
         end
       end
 
-      context 'dummy relay' do
 
-        before :each do
-          @params[:control_mechanism]='timer'
-        end
+    end
 
-        it_should_allow :director, 'to create a timer' do
-          assert_successful_update do
-            relay=assigns(:instrument).relay
-            relay.should be_is_a Relay
-            relay.ip.should be_nil
-            relay.port.should be_nil
-            relay.username.should be_nil
-            relay.password.should be_nil
-            relay.type.should == RelayDummy.name
-          end
-        end
+    context 'dummy relay' do
 
+      before :each do
+        @params[:instrument].merge!(:control_mechanism => 'timer')
       end
 
+      it_should_allow :director, 'to create a timer' do
+        assert_successful_update do
+          relay=assigns(:instrument).relay
+          relay.should be_is_a Relay
+          relay.ip.should be_nil
+          relay.port.should be_nil
+          relay.username.should be_nil
+          relay.password.should be_nil
+          relay.type.should == RelayDummy.name
+        end
+      end
     end
 
     def assert_successful_update

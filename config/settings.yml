@@ -1,4 +1,15 @@
-aes_crypt_key:
+price_group:
+  name:
+    base: 'Base Rate'
+    external: 'External Rate'
+    cancer_center: 'Cancer Center Rate'
+
+validator:
+  class_name: ValidatorDefault
+  test:
+    factory: # relative to Rails.root
+    helper: 'spec/validator_helper' # relative to Rails.root
+
 email:
   from: 'noreply@example.com'
   fake:

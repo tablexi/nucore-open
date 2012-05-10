@@ -37,15 +37,16 @@ namespace :demo  do
       }
     ]
 
-    chart_strings.each do |cs|
-      NucsFund.find_or_create_by_value(cs[:fund])
-      NucsDepartment.find_or_create_by_value(cs[:department])
-      NucsAccount.find_or_create_by_value(cs[:account]) if cs[:account]
-      NucsProjectActivity.find_or_create_by_project_and_activity(:project => cs[:project], :activity => cs[:activity])
-      NucsGl066.find_or_create_by_fund_and_department_and_project_and_account(cs)
+    if Settings.validator.class_name == 'NucsValidator'
+      chart_strings.each do |cs|
+        NucsFund.find_or_create_by_value(cs[:fund])
+        NucsDepartment.find_or_create_by_value(cs[:department])
+        NucsAccount.find_or_create_by_value(cs[:account]) if cs[:account]
+        NucsProjectActivity.find_or_create_by_project_and_activity(:project => cs[:project], :activity => cs[:activity])
+        NucsGl066.find_or_create_by_fund_and_department_and_project_and_account(cs)
+      end
     end
 
-    
     pgnu = PriceGroup.find_or_create_by_name({
       :name => 'Base Rate', :is_internal => true, :display_order => 1
     })

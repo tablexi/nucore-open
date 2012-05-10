@@ -172,7 +172,7 @@ describe ReservationsController do
       end
     end
     
-    
+
 
     context 'without account' do
       before :each do

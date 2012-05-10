@@ -15,7 +15,8 @@
     =h @order.facility
   %li
     %label= t('.label.account')
-    =h @order.account
+    - @accounts.each do |account|
+      =h account
   %li
     %label= t('.label.ordered.at')
     =h human_datetime(@order.ordered_at)
@@ -34,7 +35,7 @@
     - if @order.has_subsidies?
       %th.currency= t('.th.adjust')
     %th.currency= t('.th.total')
-  - @order.order_details.each do |order_detail|
+  - @order_details.each do |order_detail|
     %tr
       - res = order_detail.reservation
       %td.centered= link_to order_detail, order_order_detail_path(@order, order_detail)

@@ -2,8 +2,7 @@ class InstrumentsController < ProductsCommonController
   customer_tab  :show
   admin_tab     :agenda, :create, :edit, :index, :manage, :new, :schedule, :update
   
-  before_filter :prepare_relay_params, :only => [ :create, :update ]
-
+  
   # GET /instruments
   def index
     super
@@ -64,12 +63,9 @@ class InstrumentsController < ProductsCommonController
   def update
     @header_prefix = "Edit"
 
-    Instrument.transaction do                
-      if @instrument.update_attributes(params[:instrument])
-        @instrument.relay.destroy if @instrument.relay && !params[:instrument].has_key?(:relay_attributes)
-        flash[:notice] = 'Instrument was successfully updated.'
-        return redirect_to(manage_facility_instrument_url(current_facility, @instrument))
-      end
+    if @instrument.update_attributes(params[:instrument])
+      flash[:notice] = 'Instrument was successfully updated.'
+      return redirect_to(manage_facility_instrument_url(current_facility, @instrument))
     end
 
     render :action => "edit"
@@ -115,23 +111,5 @@ class InstrumentsController < ProductsCommonController
       raise ActiveRecord::RecordNotFound
     end
     render :action => :instrument_status, :layout => false
-  end
-
-  private
-
-  def prepare_relay_params
-    case params[:control_mechanism]
-      when 'relay'
-      when 'timer'
-        params[:instrument][:relay_attributes].merge!(
-            :ip => nil,
-            :port => nil,
-            :username => nil,
-            :password => nil,
-            :type => RelayDummy.name
-        )
-      else
-        params[:instrument].delete(:relay_attributes)
-    end
   end
 end

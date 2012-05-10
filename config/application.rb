@@ -1,7 +1,10 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-require File.join(File.dirname(__FILE__), '..', 'vendor', 'engines', 'nucs', 'lib', 'engine')
+
+Dir[File.expand_path('../vendor/engines/*', File.dirname(__FILE__))].each do |engine|
+  require File.join(engine, 'lib', 'engine')
+end
 
 require 'will_paginate/array'
 # If you have a Gemfile, require the gems listed there, including any gems
@@ -15,7 +18,7 @@ module Nucore
     # -- all .rb files in that directory are automatically loaded.
 
     # Custom directories with classes and modules you want to be autoloadable.
-    config.autoload_paths += %W(#{config.root}/lib #{config.root}/app/middleware #{config.root}/config)
+    config.autoload_paths += (Dir["#{config.root}/lib/**/"] + %W(#{config.root}/app/middleware #{config.root}/config))
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.

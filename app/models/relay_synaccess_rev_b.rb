@@ -1,6 +1,8 @@
 class RelaySynaccessRevB < Relay
   # Supports Synaccess Models: NP-02B
 
+  include PowerRelay
+
   private
 
   def toggle(port)

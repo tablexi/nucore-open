@@ -33,19 +33,6 @@ describe FacilityAccount do
         assert @account.errors[:revenue_account]
       end
     end
-  
-    it "should allow format fund3-dept7" do
-      @options[:account_number] = '123-1234567'
-      define_open_account(@options[:revenue_account], @options[:account_number])
-      @account = FacilityAccount.create(@options)
-      assert @account.valid?
-      assert_equal '123', @account.fund
-      assert_equal '1234567', @account.dept
-      # should initialize reader attributes after loading from database
-      @account = FacilityAccount.first
-      assert_equal '123', @account.fund
-      assert_equal '1234567', @account.dept
-    end
 
     it "should allow format fund3-dept7-project8" do
       @options[:account_number] = '123-1234567-12345678'
@@ -74,22 +61,6 @@ describe FacilityAccount do
       define_open_account(@options[:revenue_account], @options[:account_number])
       @account = FacilityAccount.create(@options)
       assert @account.valid?
-    end
-    
-    # accounts should not be part of the account_number string
-    it "should not allow format fund3-dept7-project8-activity2-program4-account5" do
-      # create chart string without program value
-      @options[:account_number] = '123-1234567-12345678-12-1234-12345'
-      @account = FacilityAccount.create(@options)
-      assert !@account.valid?
-      assert @account.errors[:account_number]
-    end
-
-    it "should not allow invalid account number" do
-      @options[:account_number] = '123'
-      @account = FacilityAccount.create(@options)
-      assert !@account.valid?
-      assert @account.errors[:account_number]
     end
 
     # we no longer validate facility accounts against BCS table
