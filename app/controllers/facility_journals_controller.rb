@@ -118,15 +118,15 @@ class FacilityJournalsController < ApplicationController
   def show
     @journal = current_facility.journals.find(params[:id])
 
-    if request.format.xml?
-      @journal_rows = @journal.journal_rows
-      headers["Content-type"] = "text/xml"
-      headers['Content-Disposition'] = "attachment; filename=\"journal_#{@journal.id}_#{@journal.created_at.strftime("%Y%m%d")}.xml\"" 
+    respond_to do |format|
+      format.xml do
+        @journal_rows = @journal.journal_rows
+        headers['Content-Disposition'] = "attachment; filename=\"journal_#{@journal.id}_#{@journal.created_at.strftime("%Y%m%d")}.xml\""
+        render :partial => 'rake_show', :locals => { :journal => @journal, :journal_rows => @journal_rows }, :layout => false
+      end
 
-      render 'show.xml.haml', :layout => false and return
+      format.any { @order_details = current_facility.order_details.find(:all, :conditions => {:journal_id => @journal.id}) }
     end
-
-    @order_details = current_facility.order_details.find(:all, :conditions => {:journal_id => @journal.id})
   end
 
   def reconcile
