@@ -114,27 +114,30 @@ class FacilityAccountsController < ApplicationController
 
   # GET/POST /facilities/:facility_id/accounts/search_results
   def search_results
+    owner_where_clause =<<-end_of_where
+      (
+        LOWER(users.first_name) LIKE :term
+        OR LOWER(users.last_name) LIKE :term
+        OR LOWER(users.username) LIKE :term
+        OR LOWER(CONCAT(users.first_name, users.last_name)) LIKE :term
+      )
+      AND account_users.user_role = :acceptable_role
+      AND account_users.deleted_at IS NULL
+    end_of_where
     term   = generate_multipart_like_search_term(params[:search_term])
     if params[:search_term].length >= 3
 
       # retrieve accounts matched on user for this facility
       @accounts = Account.joins(:account_users => :user).for_facility(current_facility).where(
-        "(
-           LOWER(users.first_name) LIKE :term
-           OR LOWER(users.last_name) LIKE :term
-           OR LOWER(users.username) LIKE :term
-           OR LOWER(CONCAT(users.first_name, users.last_name)) LIKE :term
-         )
-         AND account_users.user_role = :acceptable_role
-         AND account_users.deleted_at IS NULL",
+        owner_where_clause,
         :term             => term,
-        :acceptable_role  => 'Owner',
-      ).order('users.last_name, users.first_name')
+        :acceptable_role  => 'Owner').
+        order('users.last_name, users.first_name')
       
       # retrieve accounts matched on account_number for this facility
       @accounts += Account.for_facility(current_facility).where(
-        "LOWER(account_number) LIKE ?", term
-      ).order('type, account_number')
+        "LOWER(account_number) LIKE ?", term).
+        order('type, account_number')
       
       # only show an account once.
       @accounts = @accounts.uniq.paginate(:page => params[:page]) #hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
