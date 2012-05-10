@@ -122,7 +122,12 @@ describe FacilityJournalsController do
     end
     
     it "should not have different values if there is a pending journal" do
+      
+      # create and populate a journal
       @pending_journal = Factory.create(:journal, :facility_id => @authable.id, :created_by => @admin.id, :journal_date => Time.zone.now, :is_successful => nil)
+      @order_detail4 = place_and_complete_item_order(@user, @authable, @account)
+      @pending_journal.create_journal_rows!([@order_detail4])
+
       sign_in @admin
       do_request
       assigns(:order_details).should contain_all [@order_detail1, @order_detail3]
