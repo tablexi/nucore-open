@@ -135,8 +135,8 @@ class Order < ActiveRecord::Base
       updates = order_detail_updates[order_detail.id]
       quantity = updates[:quantity].to_i
       
-      # if quantity isn't there or is 0, destroy and skip
-      unless quantity > 0
+      # if quantity isn't there or is 0 (and not bundled), destroy and skip
+      if (quantity == 0 && !order_detail.bundled?)
         order_detail.destroy
         next
       end
