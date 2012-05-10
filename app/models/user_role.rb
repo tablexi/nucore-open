@@ -44,5 +44,5 @@ class UserRole < ActiveRecord::Base
 
 
   validates_presence_of :user_id
-  validates_inclusion_of :role, :in => (administrator + facility_roles), :message => 'is not a valid value'
+  validates_inclusion_of :role, :in => (administrator + billing_administrator, facility_roles), :message => 'is not a valid value'
 end
