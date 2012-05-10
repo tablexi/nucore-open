@@ -181,7 +181,7 @@ class FacilityJournalsController < ApplicationController
     set_soonest_journal_date
 
     blocked_facility_ids = Journal.facility_ids_with_pending_journals
-    unless @pending_journals.any? || current_facility.has_pending_journals?
+    if all_facility? or !has_pending_journals?
       @order_detail_action = :create
       @action_date_field = {:journal_date => @soonest_journal_date}
     end
