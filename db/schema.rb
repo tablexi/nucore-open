@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120510172358) do
+ActiveRecord::Schema.define(:version => 20120502223446) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -52,16 +52,6 @@ ActiveRecord::Schema.define(:version => 20120510172358) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "bi_netids", :force => true do |t|
-    t.string  "netid",                                      :null => false
-    t.integer "facility_id", :precision => 38, :scale => 0, :null => false
-  end
-
-  add_index "bi_netids", ["facility_id"], :name => "index_bi_netids_on_facility_id"
-  add_index "bi_netids", ["netid"], :name => "index_bi_netids_on_netid"
-
-  add_foreign_key "bi_netids", "facilities", :name => "sys_c00199891"
 
   create_table "budgeted_chart_strings", :force => true do |t|
     t.string   "fund",       :limit => 20, :null => false
@@ -484,8 +474,6 @@ ActiveRecord::Schema.define(:version => 20120510172358) do
   add_foreign_key "account_users", "accounts", :name => "fk_accounts"
 
   add_foreign_key "accounts", "facilities", :name => "fk_account_facility_id"
-
-  add_foreign_key "bi_netids", "facilities", :name => "sys_c00199891"
 
   add_foreign_key "bundle_products", "products", :name => "fk_bundle_prod_bundle"
   add_foreign_key "bundle_products", "products", :name => "fk_bundle_prod_prod", :column => "bundle_product_id"
