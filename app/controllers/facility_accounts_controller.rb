@@ -178,7 +178,7 @@ class FacilityAccountsController < ApplicationController
     @account = Account.find(params[:account_id])
   end
 
-  # GET /facilities/:facility_id/statements/accounts_receivable
+  # GET /facilities/:facility_id/accounts_receivable
   def accounts_receivable
     @account_balances = {}
     order_details = OrderDetail.for_facility(current_facility).complete
