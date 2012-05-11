@@ -64,7 +64,7 @@ class OrdersController < ApplicationController
     items.select! { |od| od.is_a?(Hash) and od[:quantity].present? and (od[:quantity] = od[:quantity].to_i) > 0 }
     return redirect_to(:back, :notice => "Please add at least one quantity to order something") unless items.size > 0
 
-    # if acting_as, make sure the session use can place orders for the facility
+    # if acting_as, make sure the session user can place orders for the facility
     if acting_as? && !session_user.administrator? && !manageable_facilities.include?(@facility)
       flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{@facility.name}."
       redirect_to order_url(@order) and return
