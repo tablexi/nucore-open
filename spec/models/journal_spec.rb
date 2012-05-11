@@ -17,7 +17,7 @@ describe Journal do
     assert @journal.save
     @journal.id.should_not be_nil
     
-    @journal2 = Journal.create(:facility => @facility, :created_by => 1)
+    @journal2 = Journal.create(:facility => @facility, :created_by => 1, :journal_date => Time.zone.now)
     @journal2.should_not be_valid
     
     @journal.update_attributes({:is_successful => false, :reference => '12345', :updated_by => 1})
