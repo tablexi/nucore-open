@@ -23,7 +23,6 @@ class Ability
     return unless resource
 
     if resource.is_a?(Facility)
-
       can :complete, Surveyor
      
       if user.operator_of?(resource)
@@ -60,17 +59,14 @@ class Ability
         can :manage, User if controller.is_a?(FacilityUsersController)
 
         can :show_problems, Order
-      end
-      
-      if user.manager_of?(resource)
         can [:update, :manage], Facility
-      end
+      end      
       
       # Facility Senior staff should have all the rights of director (manager_of?), but should not see
       # a billing tab or be able to edit price policies (Ticket # 38481)
       if in_role?(user, resource, UserRole::FACILITY_SENIOR_STAFF)
-        cannot :manage_billing, Facility
-        cannot :manage, [PricePolicy]
+        cannot [:transactions, :manage_billing], Facility
+        cannot :manage, [PricePolicy, Journal, Statement]
         can :index, PricePolicy
       end
       

@@ -16,7 +16,6 @@ describe FacilityAccountsController do
     @order_detail=Factory.create(:order_detail, :product => @item, :order => @order, :account => @account)
   end
 
-
   context 'index' do
 
     before(:each) do
@@ -281,7 +280,7 @@ describe FacilityAccountsController do
     end
 
     it_should_allow_managers_only
-
+    it_should_deny_all [:staff, :senior_staff]
   end
 
 
@@ -479,7 +478,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       assigns(:error_fields).should be_empty
@@ -505,7 +504,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do |user|
       assigns(:error_fields).should be_empty
@@ -558,7 +557,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       assigns(:account).should == @account

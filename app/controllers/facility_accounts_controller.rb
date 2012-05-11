@@ -5,6 +5,9 @@ class FacilityAccountsController < ApplicationController
   before_filter :init_current_facility
 
   load_and_authorize_resource :class => Account
+  before_filter :only => [:credit_cards, :update_credit_cards, :purchase_orders, :update_purchase_orders, :accounts_receivable, :show_statement] do
+    authorize! :manage_billing, current_facility
+  end
 
   layout 'two_column'
 

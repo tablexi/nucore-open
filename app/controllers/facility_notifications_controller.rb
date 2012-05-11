@@ -3,7 +3,7 @@ class FacilityNotificationsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility
-  
+  before_filter { authorize! :manage_billing, current_facility }
   include TransactionSearch
   
   authorize_resource :manage, :class => Facility
