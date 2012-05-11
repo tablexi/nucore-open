@@ -25,8 +25,7 @@ class Ability
     if resource.is_a?(Facility)
 
       can :complete, Surveyor
-      
-      
+     
       if user.operator_of?(resource)
         can :manage, [
           AccountPriceGroupMember, Service, BundleProduct,
@@ -42,7 +41,8 @@ class Ability
 
         cannot :show_problems, Order
         can [ :schedule, :agenda, :list ], Facility
-        can :index, [ InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy ]
+
+        can :index, [ PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy ]
       end
 
       if user.facility_director_of?(resource)
@@ -52,17 +52,27 @@ class Ability
       if user.manager_of?(resource)
         can :manage, [
           AccountUser, Account, FacilityAccount, Journal,
-          Statement, FileUpload, InstrumentPricePolicy,
+          Statement, FileUpload, PricePolicy, InstrumentPricePolicy,
           ItemPricePolicy, OrderStatus, PriceGroup, ReportsController,
           ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup
         ]
 
         can :manage, User if controller.is_a?(FacilityUsersController)
 
-        can [ :update, :manage ], Facility
         can :show_problems, Order
       end
       
+      if user.manager_of?(resource)
+        can [:update, :manage], Facility
+      end
+      
+      # Facility Senior staff should have all the rights of director (manager_of?), but should not see
+      # a billing tab or be able to edit price policies (Ticket # 38481)
+      if in_role?(user, resource, UserRole::FACILITY_SENIOR_STAFF)
+        cannot :manage_billing, Facility
+        cannot :manage, [PricePolicy]
+        can :index, PricePolicy
+      end
       
 
     elsif resource.is_a?(Account)
@@ -75,6 +85,13 @@ class Ability
 
     end
 
+  end
+
+  def in_role?(user, facility, *roles)
+    # facility_user_roles returns full objects; we just want the names
+    facility_roles = user.facility_user_roles(facility).map(&:role)
+    # do the roles the user is part of match any of the potential roles
+    (facility_roles & roles).any?
   end
 
 end

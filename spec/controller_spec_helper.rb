@@ -3,7 +3,7 @@
 def create_users
   @users=[]
 
-  [ 'admin', 'director', 'staff', 'guest', 'owner', 'purchaser' ].each do |name|
+  [ 'admin', 'director', 'staff', 'guest', 'owner', 'purchaser', 'senior_staff' ].each do |name|
     user=Factory.create(:user, :username => name)
     instance_variable_set("@#{name}".to_sym, user)
     @users << user
@@ -221,6 +221,9 @@ def grant_role(user, authable=nil)
     when 'purchaser'
       AccountUser.grant(user, AccountUser::ACCOUNT_PURCHASER, authable, @admin)
       user.reload.should be_purchaser_of(authable)
+    when 'senior_staff'
+      UserRole.grant(user, UserRole::FACILITY_SENIOR_STAFF, authable)
+      user.reload.should be_facility_senior_staff_of(authable)
   end
 end
 

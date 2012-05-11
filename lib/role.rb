@@ -35,7 +35,7 @@ module Role
 
 
   def manager?
-    facility_director? || facility_administrator?
+    facility_director? || facility_administrator? 
   end
 
 
@@ -45,7 +45,7 @@ module Role
 
 
   def manager_of?(facility)
-    facility_director_of?(facility) || facility_administrator_of?(facility) || administrator?
+    facility_senior_staff_of?(facility) || facility_director_of?(facility) || facility_administrator_of?(facility) || administrator?
   end
 
   def can_override_restrictions?(product)

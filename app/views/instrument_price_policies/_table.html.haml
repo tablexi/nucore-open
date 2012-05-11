@@ -15,7 +15,7 @@
       - if instrument_price_policies.first == price_policy
         %td.centered{ :rowspan => instrument_price_policies.length }
           %ul.form
-            - unless instrument_price_policies.all?{|pp| pp.editable?}
+            - unless instrument_price_policies.all?{|pp| pp.editable?} and can? :edit, PricePolicy
               %li.disabled Edit
               %li.disabled Remove
             - else

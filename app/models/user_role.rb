@@ -7,7 +7,7 @@ class UserRole < ActiveRecord::Base
   FACILITY_DIRECTOR='Facility Director'
   FACILITY_ADMINISTRATOR='Facility Administrator'
   FACILITY_STAFF='Facility Staff'
-
+  FACILITY_SENIOR_STAFF='Facility Senior Staff'
 
   def self.administrator
     [ ADMINISTRATOR ]
@@ -15,12 +15,12 @@ class UserRole < ActiveRecord::Base
 
 
   def self.facility_roles
-    [ FACILITY_DIRECTOR, FACILITY_ADMINISTRATOR, FACILITY_STAFF ]
+    [ FACILITY_DIRECTOR, FACILITY_ADMINISTRATOR, FACILITY_STAFF, FACILITY_SENIOR_STAFF ]
   end
 
 
   def self.facility_management_roles
-    facility_roles - [ FACILITY_STAFF ]
+    facility_roles - [ FACILITY_STAFF, FACILITY_SENIOR_STAFF ]
   end
 
   
@@ -40,4 +40,5 @@ class UserRole < ActiveRecord::Base
 
   validates_presence_of :user_id
   validates_inclusion_of :role, :in => (administrator + facility_roles), :message => 'is not a valid value'
+
 end
