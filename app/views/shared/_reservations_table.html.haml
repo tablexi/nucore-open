@@ -31,7 +31,7 @@
             - if res.can_cancel?
               = ' | '
             = render :partial => 'shared/move_reservation', :locals => { :reservation => res }
-            = link_to 'Move', order_order_detail_reservation_move_reservation_path(order, od, res), :class => 'move-res', :id => res.id
+            = link_to 'Begin Now', order_order_detail_reservation_move_reservation_path(order, od, res), :class => 'move-res', :id => res.id
       %td
         - if res.can_edit?
           = link_to res, edit_order_order_detail_reservation_path(order, od, res)
