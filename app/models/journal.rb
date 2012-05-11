@@ -7,6 +7,7 @@ class Journal < ActiveRecord::Base
   validates_uniqueness_of :facility_id, :scope => :is_successful, :if => Proc.new { |j| j.is_successful.nil? }
   validates_presence_of   :reference, :updated_by, :on => :update
   validates_presence_of   :created_by
+  validates_presence_of   :journal_date
   has_attached_file       :file,
                           :storage => :filesystem,
                           :url => "#{ENV['RAILS_RELATIVE_URL_ROOT']}/:attachment/:id_partition/:style/:basename.:extension",
@@ -25,10 +26,10 @@ class Journal < ActiveRecord::Base
 
   def create_journal_rows!(order_details)
     recharge_by_product = {}
-
+    row_errors = []
     # create rows for each transaction
     order_details.each do |od|
-      raise Exception if od.journal_id
+      row_errors << "##{od} is already journaled in journal ##{od.journal_id}" if od.journal_id
       account = od.account
 
       begin
@@ -58,7 +59,9 @@ class Journal < ActiveRecord::Base
         :description     => product.to_s
       )
     end
+    return row_errors
   end
+
 
   def create_spreadsheet
     rows = journal_rows
