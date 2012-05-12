@@ -92,7 +92,13 @@ class FacilityJournalsController < ApplicationController
         Journal.transaction do
           begin
             @journal.save!
-            @journal.create_journal_rows!(@update_order_details)
+
+            # try to create the journal rows.
+            # TK: if any journal_row creation/validation errors occur,
+            # create_journal_rows blindly raises an exception
+            row_errors = @journal.create_journal_rows!(@update_order_details)
+            raise "<br/>"+row_errors.join('<br/>') if row_errors.present?
+
             OrderDetail.update_all(['journal_id = ?', @journal.id], ['id IN (?)', @update_order_details.collect{|od| od.id}])
             # create the spreadsheet
             @journal.create_spreadsheet
@@ -118,15 +124,15 @@ class FacilityJournalsController < ApplicationController
   def show
     @journal = current_facility.journals.find(params[:id])
 
-    if request.format.xml?
-      @journal_rows = @journal.journal_rows
-      headers["Content-type"] = "text/xml"
-      headers['Content-Disposition'] = "attachment; filename=\"journal_#{@journal.id}_#{@journal.created_at.strftime("%Y%m%d")}.xml\"" 
+    respond_to do |format|
+      format.xml do
+        @journal_rows = @journal.journal_rows
+        headers['Content-Disposition'] = "attachment; filename=\"journal_#{@journal.id}_#{@journal.created_at.strftime("%Y%m%d")}.xml\""
+        render :partial => 'rake_show', :locals => { :journal => @journal, :journal_rows => @journal_rows }, :layout => false
+      end
 
-      render 'show.xml.haml', :layout => false and return
+      format.any { @order_details = current_facility.order_details.find(:all, :conditions => {:journal_id => @journal.id}) }
     end
-
-    @order_details = current_facility.order_details.find(:all, :conditions => {:journal_id => @journal.id})
   end
 
   def reconcile

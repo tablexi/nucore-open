@@ -25,7 +25,7 @@ class OrderDetail < ActiveRecord::Base
   # only do this validation if it hasn't been ordered yet. Update errors caused by notification sending
   # were being triggered on orders where the orderer had been removed from the account.
   validate :account_usable_by_order_owner?, :if => lambda { |o| o.order.nil? or o.order.ordered_at.nil? }
-  validates_length_of :note, :maximum => 25, :allow_blank => true, :allow_nil => true
+  validates_length_of :note, :maximum => 100, :allow_blank => true, :allow_nil => true
 
   ## TODO validate assigned_user is a member of the product's facility
   ## TODO validate order status is global or a member of the product's facility
