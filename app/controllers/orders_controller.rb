@@ -56,7 +56,7 @@ class OrdersController < ApplicationController
   # PUT /orders/2/add/
   def add
     ## get items to add from the form post or from the session
-    ods_from_params = (params[:order].presence and params[:order][:order_details].presence || [])
+    ods_from_params = (params[:order].presence and params[:order][:order_details].presence) || []
     items =  ods_from_params || session[:add_to_cart].presence || []
     session[:add_to_cart] = nil
 

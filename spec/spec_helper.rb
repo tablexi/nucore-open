@@ -166,6 +166,9 @@ Spork.each_run do
     od_attrs={ :product_id => @item.id }
     od_attrs.merge!(:account_id => account.id) if account
     @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(od_attrs))
+    @order.validate_order!
+    @order.purchase!
+
     @order_detail.change_status!(OrderStatus.complete.first)
 
     od_attrs={

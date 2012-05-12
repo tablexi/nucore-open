@@ -144,13 +144,21 @@ describe OrdersController do
 
     it_should_require_login
 
-    it_should_allow :staff, "to add a product with quantity to cart" do
-      do_request
-      assigns(:order).id.should == @order.id
-      @order.reload.order_details.count.should == 1
-      flash[:error].should be_nil
-      should set_the_flash
-      response.should redirect_to "/orders/#{@order.id}"
+    context "with account (having already gone through choose_account)" do
+      before :each do
+        @order.account = @account
+        assert @order.save
+        session[:add_to_cart] = nil
+        do_request
+      end
+
+      it_should_allow :staff, "to add a product with quantity to cart" do
+        assigns(:order).id.should == @order.id
+        @order.reload.order_details.count.should == 1
+        flash[:error].should be_nil
+        should set_the_flash
+        response.should redirect_to "/orders/#{@order.id}"
+      end
     end
 
     context 'instrument' do
