@@ -197,13 +197,21 @@ describe OrdersController do
       end
     end
 
-    context "no account" do
-      it "should redirect to choose_account when /add/:product_id/:quantity is called and cart doesn't have an account" do
+    context "add is called and cart doesn't have an account" do
+      before :each do
         @order.account = nil
         @order.save
         maybe_grant_always_sign_in :staff
         do_request
+      end
+
+      it "should redirect to choose account" do
         response.should redirect_to("/orders/#{@order.id}/choose_account")
+      end
+
+      it "should set session with contents of params[:order][:order_details]" do
+        session[:add_to_cart].should_not be_empty
+        session[:add_to_cart].should == [{"product_id" => @item.id, "quantity" => 1}]
       end
     end
 
