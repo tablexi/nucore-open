@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120510172358) do
+ActiveRecord::Schema.define(:version => 20120512014131) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -107,7 +107,8 @@ ActiveRecord::Schema.define(:version => 20120510172358) do
     t.text     "description"
     t.boolean  "accepts_cc",                       :default => true
     t.boolean  "accepts_po",                       :default => true
-    t.text     "short_description",                                  :null => false
+    t.boolean  "accepts_multi_add",                :default => false, :null => false
+    t.text     "short_description",                                   :null => false
     t.text     "address"
     t.string   "phone_number"
     t.string   "fax_number"
