@@ -98,18 +98,18 @@ describe OrdersController do
   context 'receipt' do
 
     before :each do
-      @order.state='purchased'
-      assert @order.save
-
+      # for receipt to work, order needs to have order_details
+      @complete_order = place_and_complete_item_order(@staff, @authable, @account).order.reload
       @method=:get
       @action=:receipt
+      @params={:id => @complete_order.id}
     end
 
     it_should_require_login
 
     it_should_allow :staff do
       should assign_to(:order).with_kind_of Order
-      assigns(:order).should == @order
+      assigns(:order).should == @complete_order
       should render_template 'receipt'
     end
 
