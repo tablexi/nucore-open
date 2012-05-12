@@ -20,6 +20,10 @@
     %label== Description
     .wysiwyg= current_facility.description.nil? ? '--' : current_facility.description
   %li
+    %label= t('facilities.facility_fields.accepts_multi_add')
+    %p= h current_facility.accepts_multi_add ? 'Yes' : 'No'
+    
+  %li
     %label== Accept Purchase Orders?
     %p=h current_facility.accepts_po ? 'Yes' : 'No'
   %li
