@@ -57,8 +57,9 @@ class OrdersController < ApplicationController
   def add
     ## get items to add from the form post or from the session
     ods_from_params = (params[:order].presence and params[:order][:order_details].presence) || []
-    items =  ods_from_params || session[:add_to_cart].presence || []
+    items =  ods_from_params.presence || session[:add_to_cart].presence || []
     session[:add_to_cart] = nil
+
 
     # ignore ods w/ empty or 0 quantities
     items.select! { |od| od.is_a?(Hash) and od[:quantity].present? and (od[:quantity] = od[:quantity].to_i) > 0 }
@@ -200,7 +201,7 @@ class OrdersController < ApplicationController
     else
       @product = Product.find(session[:add_to_cart].first[:product_id])
     end
-    @accounts = acting_user.accounts.active.for_facility(@product.facility)
+    @accounts = acting_user.accounts.for_facility(@product.facility).active
     @errors   = {}
     details   = @order.order_details
     @accounts.each do |account|
