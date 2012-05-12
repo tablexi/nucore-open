@@ -109,7 +109,7 @@ class OrdersController < ApplicationController
       end
 
       if @order.errors.any?
-        flash[:error] = "There were errors adding to your cart"
+        flash[:error] = "There were errors adding to your cart:<br>"+@order.errors.full_messages.join('<br>').html_safe
         raise ActiveRecord::Rollback
       end
     end

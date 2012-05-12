@@ -205,6 +205,13 @@ describe OrdersController do
         do_request
         response.should redirect_to("/orders/#{@order.id}/choose_account")
       end
+    end
+
+    context "w/ account" do
+      before :each do
+        @order.account = @account
+        @order.save!
+      end
 
       context "mixed facility" do
         it "should flash error message containing another" do
@@ -217,7 +224,7 @@ describe OrdersController do
           do_request
 
           # add second item to cart
-          @params[:product_id]=@item2.id
+          @params.merge!(:order => {:order_details => [{:quantity => 1, :product_id => @item2.id}]})
           do_request
 
           should set_the_flash.to(/can not/)
