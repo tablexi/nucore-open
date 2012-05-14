@@ -166,10 +166,13 @@ Spork.each_run do
     od_attrs={ :product_id => @item.id }
     od_attrs.merge!(:account_id => account.id) if account
     @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(od_attrs))
-    @order.validate_order!
-    @order.purchase!
 
     @order_detail.change_status!(OrderStatus.complete.first)
+    # act like the parent order is valid
+    @order.state = 'validated'
+
+    # purchase it
+    @order.purchase!
 
     od_attrs={
       :actual_cost => 20,
