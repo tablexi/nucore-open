@@ -117,7 +117,9 @@ class ReservationsController < ApplicationController
         end
         flash[:notice] = I18n.t 'controllers.reservations.create.success'
 
-        if @order_detail.product.is_a?(Instrument) && !@order_detail.bundled?
+        # only trigger purchase if instrument
+        # and is only thing in cart (isn't bundled or on a multi-add order)
+        if @order_detail.product.is_a?(Instrument) && @order.order_details.count == 1
           redirect_to purchase_order_path(@order)
         else
           redirect_to cart_path
