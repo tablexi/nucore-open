@@ -27,21 +27,24 @@ class Ability
      
       if user.operator_of?(resource)
         can :manage, [
-          AccountPriceGroupMember, Service, BundleProduct,
-          Bundle, OrderDetail, Order, Reservation, Instrument,
-          Item, ProductUser, Product, ProductAccessory, UserPriceGroupMember
+          AccountPriceGroupMember, OrderDetail, Order, Reservation,
+          UserPriceGroupMember
         ]
 
-        can [:uploader_create, :destroy], FileUpload do |fileupload|
+        can [:index, :view_details, :schedule, :show], [Product]
+
+        can [:upload, :uploader_create, :destroy], FileUpload do |fileupload|
           fileupload.file_type == 'sample_result'
         end
 
         can :manage, User if controller.is_a?(UsersController)
 
         cannot :show_problems, Order
-        can [ :schedule, :agenda, :list ], Facility
+        can [ :schedule, :agenda, :list, :show ], Facility
 
-        can :index, [ PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy ]
+        can :index, [ PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup ]
+
+        can :edit, [PriceGroupProduct]
       end
 
       if user.facility_director_of?(resource)
@@ -53,7 +56,8 @@ class Ability
           AccountUser, Account, FacilityAccount, Journal,
           Statement, FileUpload, PricePolicy, InstrumentPricePolicy,
           ItemPricePolicy, OrderStatus, PriceGroup, ReportsController,
-          ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup
+          ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup,
+          ProductUser, ProductAccessory
         ]
 
         can :manage, User if controller.is_a?(FacilityUsersController)
@@ -65,10 +69,14 @@ class Ability
       # Facility Senior staff should have all the rights of director (manager_of?), but should not see
       # a billing tab or be able to edit price policies (Ticket # 38481)
       if in_role?(user, resource, UserRole::FACILITY_SENIOR_STAFF)
-        cannot [:transactions, :manage_billing], Facility
-        cannot :manage, [PricePolicy, Journal, Statement]
-        can :index, PricePolicy
+        can :manage, [ScheduleRule, ProductUser]
+
       end
+      # if in_role?(user, resource, UserRole::FACILITY_SENIOR_STAFF)
+      #   cannot [:transactions, :manage_billing], Facility
+      #   cannot :manage, [PricePolicy, Journal, Statement]
+      #   can :index, PricePolicy
+      # end
       
 
     elsif resource.is_a?(Account)

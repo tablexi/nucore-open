@@ -7,7 +7,7 @@ class ProductsCommonController < ApplicationController
   before_filter :init_product, :except => [:index, :new, :create]
   
   include TranslationHelper
-  load_and_authorize_resource :except => [:show]
+  load_and_authorize_resource :except => [:show, :manage]
 
   layout 'two_column'
 
@@ -127,6 +127,7 @@ class ProductsCommonController < ApplicationController
   end
 
   def manage
+    authorize! :view_details, @product
     @active_tab = 'admin_products'
   end
   
