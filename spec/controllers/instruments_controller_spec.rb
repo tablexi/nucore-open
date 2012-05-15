@@ -393,21 +393,6 @@ describe InstrumentsController do
 
     end
 
-
-    context "agenda" do
-
-      before :each do
-        @method=:get
-        @action=:agenda
-      end
-
-      it_should_allow_operators_only do
-        should render_template 'agenda'
-      end
-
-    end
-
-
     context "status" do
 
       before :each do
