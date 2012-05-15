@@ -119,7 +119,7 @@ class ReservationsController < ApplicationController
 
         # only trigger purchase if instrument
         # and is only thing in cart (isn't bundled or on a multi-add order)
-        if @order_detail.product.is_a?(Instrument) && @order.order_details.count == 1
+        if @order_detail.product.is_a?(Instrument) && (@order.order_details.count == 1)
           redirect_to purchase_order_path(@order)
         else
           redirect_to cart_path
@@ -292,11 +292,16 @@ class ReservationsController < ApplicationController
           new_od    = nil
 
           begin
-            new_ods = @order.add(product, quantity)
-            new_ods.map{|od| od.change_status!(@complete_state)}
-            @count += quantity
+            if quantity > 0
+              new_ods = @order.add(product, quantity)
+              new_ods.map{|od| od.change_status!(@complete_state)}
+              @count += quantity
+            else
+              raise ArgumentError.new
+            end
+
             next
-          rescue ActiveRecord::RecordInvalid
+          rescue ArgumentError
             ## otherwise something's wrong w/ new_od... safe it for the view
             @error_status = 406
             @errors_by_id[product.id] = "Invalid Quantity"
