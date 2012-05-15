@@ -42,8 +42,8 @@ class Ability
         cannot :show_problems, Order
         can [ :schedule, :agenda, :list, :show ], Facility
 
-        can :index, [ PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup ]
-
+        can :index, [ BundleProduct, PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup ]
+        can [:instrument_status, :switch], Instrument
         can :edit, [PriceGroupProduct]
       end
 
@@ -57,7 +57,7 @@ class Ability
           Statement, FileUpload, PricePolicy, InstrumentPricePolicy,
           ItemPricePolicy, OrderStatus, PriceGroup, ReportsController,
           ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup,
-          ProductUser, ProductAccessory
+          ProductUser, ProductAccessory, Product, BundleProduct
         ]
 
         can :manage, User if controller.is_a?(FacilityUsersController)

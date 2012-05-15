@@ -117,7 +117,7 @@ describe ServicesController do
       @action=:new
     end
 
-    it_should_allow_operators_only do
+    it_should_allow_managers_only do
       should assign_to(:service).with_kind_of Service
       assigns(:service).facility.should == @authable
     end
@@ -133,7 +133,7 @@ describe ServicesController do
       @params.merge!(:id => @service.url_name)
     end
 
-    it_should_allow_operators_only do
+    it_should_allow_managers_only do
       should render_template 'edit'
     end
 
@@ -148,7 +148,7 @@ describe ServicesController do
       @params.merge!(:service => Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
     end
 
-    it_should_allow_operators_only :redirect do
+    it_should_allow_managers_only :redirect do
       should assign_to(:service).with_kind_of Service
       assigns(:service).facility.should == @authable
       should set_the_flash
@@ -166,7 +166,7 @@ describe ServicesController do
       @params.merge!(:id => @service.url_name, :service => Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
     end
 
-    it_should_allow_operators_only :redirect do
+    it_should_allow_managers_only :redirect do
       should assign_to(:service).with_kind_of Service
       should set_the_flash
       assert_redirected_to manage_facility_service_url(@authable, assigns(:service))
@@ -183,7 +183,7 @@ describe ServicesController do
       @params.merge!(:id => @service.url_name)
     end
 
-    it_should_allow_operators_only :redirect do
+    it_should_allow_managers_only :redirect do
       assigns(:service).should == @service
       should_be_destroyed @service
       assert_redirected_to facility_services_url

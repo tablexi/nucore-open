@@ -125,7 +125,7 @@ end
 
 
 def facility_operators
-  facility_managers + [ :staff ]
+  facility_managers + [ :staff, :senior_staff ]
 end
 
 
@@ -152,6 +152,8 @@ def it_should_allow_managers_only(response=:success, spec_desc='', &eval)
   it_should_deny(:guest, spec_desc)
 
   it_should_deny(:staff, spec_desc)
+
+  it_should_deny(:senior_staff)
 
   it_should_allow_all(facility_managers, spec_desc) do |user|
     should respond_with response
