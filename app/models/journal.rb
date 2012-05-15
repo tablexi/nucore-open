@@ -8,6 +8,7 @@ class Journal < ActiveRecord::Base
 
   validates_presence_of   :reference, :updated_by, :on => :update
   validates_presence_of   :created_by
+  validates_presence_of   :journal_date
   has_attached_file       :file,
                           :storage => :filesystem,
                           :url => "#{ENV['RAILS_RELATIVE_URL_ROOT']}/:attachment/:id_partition/:style/:basename.:extension",
@@ -79,12 +80,11 @@ class Journal < ActiveRecord::Base
     facility_ids_already_in_journal = Set.new
     order_detail_ids = []
     pending_facility_ids = Journal.facility_ids_with_pending_journals
+    row_errors = []
  
-
     # create rows for each transaction
     order_details.each do |od|
-      raise Exception if od.journal_id
-      order_detail_ids << od.id
+      row_errors << "##{od} is already journaled in journal ##{od.journal_id}" if od.journal_id
       account = od.account
       facility_id = od.order.facility_id
 
@@ -95,7 +95,7 @@ class Journal < ActiveRecord::Base
         # check against facility_ids which actually have pending journals
         # in the DB
         if pending_facility_ids.member? facility_id
-          raise "Facility #{Facility.find(facility_id)} already has a pending journal"
+          raise  "Facility #{Facility.find(facility_id)} already has a pending journal"
         end
         facility_ids_already_in_journal.add(facility_id)
       end 
@@ -103,8 +103,9 @@ class Journal < ActiveRecord::Base
       begin
         ValidatorFactory.instance(account.account_number, od.product.account).account_is_open!
       rescue ValidatorError => e
-        raise "Account #{account} on order detail ##{od} is invalid. It #{e.message}."
+        row_errors << "Account #{account} on order detail ##{od} is invalid. It #{e.message}."
       end
+
 
       JournalRow.create!(
         :journal_id      => id,
@@ -113,6 +114,7 @@ class Journal < ActiveRecord::Base
         :description     => "##{od}: #{od.order.user}: #{od.fulfilled_at.strftime("%m/%d/%Y")}: #{od.product} x#{od.quantity}",
         :account         => od.product.account
       )
+      order_detail_ids << od.id
       recharge_by_product[od.product_id] = recharge_by_product[od.product_id].to_f + od.total
     end
 
@@ -128,8 +130,11 @@ class Journal < ActiveRecord::Base
       )
     end
 
-    OrderDetail.update_all(['journal_id = ?', self.id], ['id IN (?)', order_detail_ids])
+    OrderDetail.update_all(['journal_id = ?', self.id], ['id IN (?)', order_detail_ids]) unless row_errors.present?
+
+    return row_errors
   end
+
 
   def create_spreadsheet
     rows = journal_rows

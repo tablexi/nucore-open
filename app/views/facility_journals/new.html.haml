@@ -5,7 +5,7 @@
     $(function(){
       $("#journal_date").val("#{Time.zone.now.to_datetime.strftime("%m/%d/%Y")}").datepicker({
         'minDate':'#{@soonest_journal_date.strftime("%m/%d/%Y")}',
-        'maxDate':'#{Time.zone.now.to_datetime.strftime("%m/%d/%Y")}'
+        'maxDate':'#{Time.zone.now.to_datetime.strftime("%m/%d/%Y")}',
       });
     });
 

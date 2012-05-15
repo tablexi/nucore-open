@@ -203,7 +203,7 @@
       %tr
         %td{:colspan => '6'}
           %label.inline Note:
-          - opts={ :style=> "width:375px" }
+          - opts={ :maxlength => 100, :size => 100 }
           - opts.merge!(:disabled => 'disabled') if @order_detail.reconciled?
           = f.text_field(:note, opts)
           - if @can_be_reconciled || @order_detail.reconciled?

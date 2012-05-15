@@ -55,7 +55,7 @@
       - if acting_as?
         %li.left
           = f.label       :note
-          = f.text_field  :note
+          = f.text_field  :note, :size => 100, :maxlength => 100
       %li.clear
   %ul.form.box
     = render :partial => 'reservation_fields', :locals => {:f => f}
