@@ -18,8 +18,13 @@ describe DateHelper do
 
     context "passed valid dates" do
       it "parse a usa formatted date properly" do
-        parse_usa_date("05/10/2012").should == Time.zone.parse("05/10/2012")
+        parse_usa_date("05/10/2012").should == Time.zone.parse("2012-05-10")
       end
+
+      it "parses a usa formatted date with single digits properly" do
+        parse_usa_date("5/1/2012").should == Time.zone.parse('2012-05-01')
+      end
+
     end
 
     it "should do something with extra_date_info (unknown)"

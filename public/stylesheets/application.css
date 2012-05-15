@@ -637,7 +637,6 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
 	width:130px;
 }
 
-
 /***
  * Popup calendar
  */
@@ -657,4 +656,9 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
 
 #pick_accessories_dialog input[type=submit] {
     margin-top: 1em;
+}
+
+.product_quantity {
+	width: 3em;
+	margin-right: 0.5em;
 }

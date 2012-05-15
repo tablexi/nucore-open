@@ -22,7 +22,11 @@ class FacilitiesController < ApplicationController
 
   # GET /facilities/abc123
   def show
+    return redirect_to :new_user_session unless acting_user
     raise ActiveRecord::RecordNotFound unless current_facility.is_active?
+    
+    @order_form = current_facility.accepts_multi_add? ? Order.new : nil
+    
     @active_tab = 'home'
     render :layout => 'application'
   end

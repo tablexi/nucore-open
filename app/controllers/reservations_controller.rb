@@ -58,13 +58,6 @@ class ReservationsController < ApplicationController
     end
     @order_details = @order_details.paginate(:page => params[:page])
     
-      # joins(:order).
-      # includes(:reservation).
-      # where("orders.ordered_at IS NOT NULL").
-      # order('orders.ordered_at DESC').all
-
-    #@order_details=@order_details.delete_if{|od| od.reservation.nil? }.paginate(:page => params[:page])
-
     @order_details.each do |od|
       res = od.reservation
       # do you need to click stop
@@ -117,7 +110,9 @@ class ReservationsController < ApplicationController
         end
         flash[:notice] = I18n.t 'controllers.reservations.create.success'
 
-        if @order_detail.product.is_a?(Instrument) && !@order_detail.bundled?
+        # only trigger purchase if instrument
+        # and is only thing in cart (isn't bundled or on a multi-add order)
+        if @order_detail.product.is_a?(Instrument) && @order.order_details.count == 1
           redirect_to purchase_order_path(@order)
         else
           redirect_to cart_path
@@ -290,11 +285,16 @@ class ReservationsController < ApplicationController
           new_od    = nil
 
           begin
-            new_od = @order.add(product, quantity)
-            new_od.change_status!(@complete_state)
-            @count += quantity
+            if quantity > 0
+              new_ods = @order.add(product, quantity)
+              new_ods.map{|od| od.change_status!(@complete_state)}
+              @count += quantity
+            else
+              raise ArgumentError.new
+            end
+
             next
-          rescue ActiveRecord::RecordInvalid
+          rescue ArgumentError
             ## otherwise something's wrong w/ new_od... safe it for the view
             @error_status = 406
             @errors_by_id[product.id] = "Invalid Quantity"
@@ -332,7 +332,10 @@ class ReservationsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @order.user_id == session_user.id
   end
   def set_windows
-    groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
+    user_price_groups     = @order.user.price_groups.presence || []
+    # @order.account could be nil if quick reservation
+    account_price_groups  = @order.account.try(:price_groups).presence || []
+    groups = (user_price_groups + account_price_groups).flatten.uniq
     @max_window = session_user.operator_of?(@facility) ? 365 : @reservation.longest_reservation_window(groups)
     @max_days_ago = session_user.operator_of?(@facility) ? -365 : 0
     # initialize calendar time constraints
