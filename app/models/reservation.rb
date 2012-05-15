@@ -606,6 +606,10 @@ class Reservation < ActiveRecord::Base
     true
   end
 
+  def can_switch_instrument?
+    return can_switch_instrument_off? || can_switch_instrument_on?
+  end
+
   def can_kill_power?
     return false if actual_start_at.nil?
     return false unless Reservation.find(:first, :conditions => ['actual_start_at > ? AND instrument_id = ? AND id <> ? AND actual_end_at IS NULL', actual_start_at, instrument_id, id]).nil?
