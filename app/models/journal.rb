@@ -86,18 +86,18 @@ class Journal < ActiveRecord::Base
     order_details.each do |od|
       row_errors << "##{od} is already journaled in journal ##{od.journal_id}" if od.journal_id
       account = od.account
-      facility_id = od.order.facility_id
+      od_facility_id = od.order.facility_id
 
       # unless we've already encountered this facility_id during
       # this call to create_journal_rows,
-      unless facility_ids_already_in_journal.member? facility_id
+      unless facility_ids_already_in_journal.member? od_facility_id
         
         # check against facility_ids which actually have pending journals
         # in the DB
-        if pending_facility_ids.member? facility_id
-          raise  "Facility #{Facility.find(facility_id)} already has a pending journal"
+        if pending_facility_ids.member? od_facility_id
+          raise  "Facility #{Facility.find(od_facility_id)} already has a pending journal"
         end
-        facility_ids_already_in_journal.add(facility_id)
+        facility_ids_already_in_journal.add(od_facility_id)
       end 
 
       begin

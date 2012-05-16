@@ -41,6 +41,7 @@ describe Journal do
         
         facilities_list.each do |f|
           od = place_and_complete_item_order(@admin, f, @account, true)
+          define_open_account(@item.account, @account.account_number)
 
           @ods << od
         end
@@ -53,7 +54,7 @@ describe Journal do
             :created_by => @admin.id,
             :journal_date => Time.zone.now
           )
-
+          
           journal.create_journal_rows!(@ods)
 
           journal
@@ -63,27 +64,31 @@ describe Journal do
 
     context "(with: pending journal for A & B)" do
       before :each do
-        create_pending_journal_for( @facilitya, @facilityb ).should_not raise_error
+        create_pending_journal_for( @facilitya, @facilityb ).should_not raise_error(Exception, /pending journal/)
       end
 
       it "should not allow creation of a journal for B & C (journal pending on B)" do
-        create_pending_journal_for( @facilityb, @facilityc ).should raise_error
+        create_pending_journal_for( @facilityb, @facilityc ).should raise_error(Exception, /pending journal/)
+
       end
 
       it "should not allow creation of a journal for A (journal pending on A)" do
-        create_pending_journal_for( @facilitya ).should raise_error
+        create_pending_journal_for( @facilitya ).should raise_error(Exception, /pending journal/)
+
       end
         
       it "should not allow creation of a journal for B (journal pending on B)" do
-        create_pending_journal_for( @facilityb ).should raise_error
+        create_pending_journal_for( @facilityb ).should raise_error(Exception, /pending journal/)
+
       end
 
       it "should allow creation of a journal for C" do
-        create_pending_journal_for( @facilityc ).should_not raise_error
+        create_pending_journal_for( @facilityc ).should_not raise_error(Exception, /pending journal/)
+
       end
 
       it "should allow creation of a journal for C & D (no journals on either C or D)" do
-        create_pending_journal_for( @facilityc, @facilityd ).should_not raise_error
+        create_pending_journal_for( @facilityc, @facilityd ).should_not raise_error(Exception, /pending journal/)
       end
     end
   end
