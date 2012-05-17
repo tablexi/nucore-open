@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
     if facility_id.present? and facility_id == 'all'
       ALL_FACILITY
     else
-      Facility.find_by_url_name(facility_id)
+      Facility.find_by_url_name(facility_id.to_s)
     end
   end
 

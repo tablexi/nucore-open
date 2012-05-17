@@ -62,7 +62,7 @@ class OrdersController < ApplicationController
 
 
     # ignore ods w/ empty or 0 quantities
-    items.select! { |od| od.is_a?(Hash) and od[:quantity].present? and (od[:quantity] = od[:quantity].to_i) > 0 }
+    items = items.select { |od| od.is_a?(Hash) and od[:quantity].present? and (od[:quantity] = od[:quantity].to_i) > 0 }
     return redirect_to(:back, :notice => "Please add at least one quantity to order something") unless items.size > 0
 
     # if acting_as, make sure the session user can place orders for the facility
