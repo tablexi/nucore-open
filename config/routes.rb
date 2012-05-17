@@ -148,6 +148,8 @@ Nucore::Application.routes.draw do |map|
       journal.reconcile '/reconcile', :controller => 'facility_journals', :action => 'reconcile', :conditions => {:method => :post}
     end
 
+    facility.resources :bulk_email, :only => [:new, :create]
+
     facility.resources :price_groups, :member => {:users => :get, :accounts => :get} do |price_group|
       price_group.resources :user_price_group_members,    :only => [:new, :destroy, :create], :collection => {:create => :get}
       price_group.resources :account_price_group_members, :only => [:new, :destroy, :create], :collection => {:create => :get}
