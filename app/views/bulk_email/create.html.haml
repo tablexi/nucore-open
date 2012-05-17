@@ -1,0 +1,11 @@
+= render :partial => 'search'
+%table
+  %tr
+    %th Username
+    %th Name
+    %th Email
+  - @users.each do |user|
+    %tr
+      %td= user.username
+      %td= user.full_name
+      %td= user.email
