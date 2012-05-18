@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
     return unless facility_id = params[:facility_id] || params[:id]
 
     if facility_id.present? and facility_id == 'all'
-      ALL_FACILITY
+      all_facility
     else
       Facility.find_by_url_name(facility_id.to_s)
     end
@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
 
   ## sentinal value meaning all facilities
   def all_facility
-    @@ALL_FACILITY ||= Facility.new(:url_name => 'all', :name => "Cross-Facility", :abbreviation => 'ALL')
+    @@all_facility ||= Facility.new(:url_name => 'all', :name => "Cross-Facility", :abbreviation => 'ALL')
   end
 
   def all_facility?
@@ -92,13 +92,13 @@ class ApplicationController < ActionController::Base
   #
   # depends heavily on value of current_facility
   #
-  # interprets the sentinel ALL_FACILITY as all facilities
+  # interprets the sentinel all_facility as all facilities
   def manageable_facilities
     @manageable_facilities = case current_facility
 
     when all_facility
       # if client ever wants cross-facility billing for a subset of facilities,
-      # make this return session_user.manageable_facilities in the case of ALL_FACILITY
+      # make this return session_user.manageable_facilities in the case of all_facility
       Facility.scoped
     when nil 
       session_user.manageable_facilities
