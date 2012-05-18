@@ -4,18 +4,14 @@
 class ApplicationController < ActionController::Base
   include DateHelper
 
-  # sentinal value meaning all facilities
-  ALL_FACILITY = Facility.new(:url_name => 'all', :name => "Cross-Facility", :abbreviation => 'ALL')
-
   helper :all # include all helpers, all the time
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
   # Make the following methods available to all views
   helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :all_facility?, :backend? 
 
-  attr_accessor :active_tab
-
   # Navigation tabs configuration
+  attr_accessor :active_tab
   include NavTab
   
   # return whatever facility is indicated by the :facility_id or :id url parameter
@@ -31,8 +27,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  ## sentinal value meaning all facilities
+  def all_facility
+    @@ALL_FACILITY ||= Facility.new(:url_name => 'all', :name => "Cross-Facility", :abbreviation => 'ALL')
+  end
+
   def all_facility?
-    current_facility == ALL_FACILITY
+    current_facility == all_facility
   end
 
   def init_current_facility
@@ -63,7 +64,7 @@ class ApplicationController < ActionController::Base
     raise ActiveRecord::RecordNotFound unless current_facility
 
     # no cross facility actions / views unless you're billing administrator or global administrator
-    if current_facility == ALL_FACILITY
+    if current_facility == all_facility
       raise CanCan::AccessDenied unless session_user.billing_administrator?
       # .. if you ARE Billing Administrator, your credentials are valid
       return
@@ -95,7 +96,7 @@ class ApplicationController < ActionController::Base
   def manageable_facilities
     @manageable_facilities = case current_facility
 
-    when ALL_FACILITY
+    when all_facility
       # if client ever wants cross-facility billing for a subset of facilities,
       # make this return session_user.manageable_facilities in the case of ALL_FACILITY
       Facility.scoped
