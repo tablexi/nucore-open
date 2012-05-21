@@ -6,17 +6,29 @@
 
 = content_for :h1 do
   = current_facility
-%h2= human_date(@display_date)
+%h2
+  = link_to "&laquo;".html_safe, timeline_facility_reservations_path(:date => format_usa_date(@display_date - 1.day))
+  = human_date(@display_date)
+  = link_to "&raquo;".html_safe, timeline_facility_reservations_path(:date => format_usa_date(@display_date + 1.day))
 %br/
 - @instruments.each do |instrument|
   %h3= instrument
   .timeline
     .unit_container
-      - instrument.reservations.today.each do |reservation|
+      - instrument.reservations.for_date(@display_date).each do |reservation|
         - minutes = (reservation.reserve_end_at - reservation.reserve_start_at) / 60
         - minutes_from_midnight = (reservation.reserve_start_at - reservation.reserve_start_at.beginning_of_day) / 60
         - if reservation.admin?
           .blackout{ :style => "width: #{minutes * 0.6}px; left: #{minutes_from_midnight * 0.6}px" }
         - else
-          .unit.tip.confirmed{:style => "width: #{minutes * 0.6}px; left: #{minutes_from_midnight * 0.6}px", :data => { :user => reservation.user, :start => human_time(reservation.reserve_start_at), :end => human_time(reservation.reserve_end_at), :endable => reservation.can_switch_instrument_off? ? 'true' : 'false', :startable => reservation.can_switch_instrument_on? ? 'true' : 'false' } }
-    .time
+          %div[reservation, :tooltip]
+            %strong= reservation.user
+            %br/
+            %span #{human_time(reservation.reserve_start_at)}&ndash;#{human_time(reservation.reserve_end_at)}
+            %br/
+            = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(reservation.order, reservation.order_detail, reservation, :switch => 'on') if reservation.can_switch_instrument_on?
+            = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(reservation.order, reservation.order_detail, reservation, :switch => 'off'), :class => (reservation.order_detail.product.product_accessories.for_acting_as(acting_as?).any? ? :has_accessories : nil) if reservation.can_switch_instrument_off?
+            = link_to "Edit", edit_order_order_detail_reservation_path(reservation.order, reservation.order_detail, reservation) if reservation.can_edit?
+          .unit.tip.confirmed{:style => "width: #{minutes * 0.6}px; left: #{minutes_from_midnight * 0.6}px"}[reservation, :block]
+    - if @display_date.beginning_of_day == Time.zone.now.beginning_of_day
+      .time

@@ -219,7 +219,9 @@ class FacilityReservationsController < ApplicationController
   end
 
   def timeline
-    @display_date = Time.zone.now
+    @display_date = parse_usa_date(params[:date]) if params[:date]
+    @display_date ||= Time.zone.now
+
     @instruments = current_facility.instruments.active
     #@reservations = Reservation.today.order(:reserve_start_at)
   end

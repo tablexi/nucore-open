@@ -27,15 +27,8 @@ $(function() {
       //   })
         //Tool Tip
         tooltipContent = function($el, $tip) {
-          var result = '<strong>' + $el.data('user') + '</strong>';
-          result += '<br />';
-          result += '<small>' + $el.data('start') + "&ndash;" + $el.data('end') + "<br/>";
-          if ($el.data('startable')) { result += '<a href="#">Begin</a>'; }
-          if ($el.data('endable')) { result += '<a href="#">End</a>'; }
-          //result += 
-          //+ "<strong>Status</strong><br /><a href="#">Action Links</a>
-          result += '</small>';
-          return result;
+          var id = /block_reservation_(\d+)/.exec($el.attr("id"))[1];
+          return $("#tooltip_reservation_" + id).html();
         }
         $('.tip').tooltipsy({
             content: tooltipContent,

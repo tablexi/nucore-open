@@ -7,6 +7,10 @@ module DateHelper
     begin Time.zone.parse(date_string) rescue nil end
   end
 
+  def format_usa_date(date)
+    date.strftime("%m/%d/%Y")
+  end
+
   def human_date(date)
     "#{Date::MONTHNAMES[date.mon]} #{date.day}, #{date.year}"
   end

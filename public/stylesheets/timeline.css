@@ -79,6 +79,10 @@ body .unit {
   z-index: 0;
 }
 
+.tooltip_reservation {
+  display: none;
+}
+
 .time.hour_0 { left:-16px}
 .time.hour_1 { left:19px}
 .time.hour_2 { left:55px}
