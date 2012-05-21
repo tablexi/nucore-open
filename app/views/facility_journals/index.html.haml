@@ -41,7 +41,7 @@
             %td= f.text_field :reference
             %td= f.text_field :description
             %td
-              = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']])
+              = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']], params[:journal_status])
               = submit_tag t(".journal.close"), :confirm => t(".journal.confirm")
 
   - else    # there's pending journals, but user can't edit

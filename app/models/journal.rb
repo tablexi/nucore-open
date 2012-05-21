@@ -13,9 +13,6 @@ class Journal < ActiveRecord::Base
                           :storage => :filesystem,
                           :url => "#{ENV['RAILS_RELATIVE_URL_ROOT']}/:attachment/:id_partition/:style/:basename.:extension",
                           :path => ":rails_root/public/:attachment/:id_partition/:style/:basename.:extension"
-  # prevent two in-flight single-facility journals
-  # (on the same facility)
-  validates_uniqueness_of :facility_id, :scope => :is_successful, :if => Proc.new { |j| !j.facility_id.nil? && j.is_successful.nil? }
 
   # scopes
   
@@ -95,7 +92,7 @@ class Journal < ActiveRecord::Base
         # check against facility_ids which actually have pending journals
         # in the DB
         if pending_facility_ids.member? od_facility_id
-          raise  "Facility #{Facility.find(od_facility_id)} already has a pending journal"
+          raise  "Facility: #{Facility.find(od_facility_id)} already has a pending journal"
         end
         facility_ids_already_in_journal.add(od_facility_id)
       end 
