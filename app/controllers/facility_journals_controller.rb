@@ -55,7 +55,7 @@ class FacilityJournalsController < ApplicationController
           @pending_journal.update_attributes!(params[:journal])
 
         # if succeeded, no errors
-        elsif params[:journal_status]
+        elsif params[:journal_status] == 'succeeded'
           @pending_journal.is_successful = true
           @pending_journal.update_attributes!(params[:journal])
           reconciled_status = OrderStatus.reconciled.first
@@ -75,6 +75,13 @@ class FacilityJournalsController < ApplicationController
     end
     @order_details = OrderDetail.for_facility(current_facility).need_journal
     set_soonest_journal_date
+    set_pending_journals
+
+    # move error messages for pending journal into the flash
+    if @pending_journal.errors.any?
+      flash[:error] = @journal.errors.full_messages.join("<br/>").html_safe
+    end
+
     @soonest_journal_date = params[:journal_date] || @soonest_journal_date 
     render :action => :index
   end
@@ -191,7 +198,7 @@ class FacilityJournalsController < ApplicationController
   end
 
   def init_journals
-    @journals = Journal.for_facilities(manageable_facilities, manageable_facilities.size > 1)
+    @journals = Journal.for_facilities(manageable_facilities, manageable_facilities.size > 1).order("journals.created_at DESC")
 
     if params[:id]
       @journal = @journals.find(params[:id])
