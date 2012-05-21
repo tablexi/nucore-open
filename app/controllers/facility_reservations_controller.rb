@@ -218,6 +218,12 @@ class FacilityReservationsController < ApplicationController
     redirect_to facility_instrument_schedule_url
   end
 
+  def timeline
+    @display_date = Time.zone.now
+    @instruments = current_facility.instruments.active
+    #@reservations = Reservation.today.order(:reserve_start_at)
+  end
+
   private
 
   def new_or_in_process_orders(order_by_clause = 'reservations.reserve_start_at')

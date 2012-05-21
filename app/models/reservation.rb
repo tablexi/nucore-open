@@ -35,6 +35,14 @@ class Reservation < ActiveRecord::Base
   scope :active, :conditions => ["reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)"], :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id']
   scope :limit,    lambda { |n| {:limit => n}}
 
+  def self.today
+    for_date(Time.zone.now)
+  end
+
+  def self.for_date(date)
+    where("reserve_start_at > ? and reserve_start_at < ?", date.beginning_of_day, date.end_of_day)
+  end
+
   ## delegations
   delegate :note,     :to => :order_detail, :allow_nil => true
 
@@ -113,6 +121,9 @@ class Reservation < ActiveRecord::Base
     account.owner if account
   end
 
+  def admin?
+    order.nil?
+  end
 
   def starts_before_ends
     if reserve_start_at && reserve_end_at

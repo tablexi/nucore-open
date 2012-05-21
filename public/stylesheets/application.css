@@ -88,6 +88,10 @@ input[type=button] {
 	text-shadow:0 1px 1px rgba(255, 255, 255, 0.75);
 }
 
+small {
+	font-size: smaller;
+}
+
 /***************************************
 reusable classes
 ***************************************/

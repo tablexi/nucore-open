@@ -25,7 +25,7 @@ module DateHelper
 
   def human_time(dt)
     begin
-      dt.strftime("%l:%M %p")
+      dt.strftime("%l:%M %p").strip
     rescue
       ''
     end

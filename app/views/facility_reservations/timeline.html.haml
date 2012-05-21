@@ -1,0 +1,22 @@
+= content_for :head_content do
+  = javascript_include_tag "tooltipsy.min.js"
+  = javascript_include_tag "timeline.js"
+  = stylesheet_link_tag "timeline.css"
+
+
+= content_for :h1 do
+  = current_facility
+%h2= human_date(@display_date)
+%br/
+- @instruments.each do |instrument|
+  %h3= instrument
+  .timeline
+    .unit_container
+      - instrument.reservations.today.each do |reservation|
+        - minutes = (reservation.reserve_end_at - reservation.reserve_start_at) / 60
+        - minutes_from_midnight = (reservation.reserve_start_at - reservation.reserve_start_at.beginning_of_day) / 60
+        - if reservation.admin?
+          .blackout{ :style => "width: #{minutes * 0.6}px; left: #{minutes_from_midnight * 0.6}px" }
+        - else
+          .unit.tip.confirmed{:style => "width: #{minutes * 0.6}px; left: #{minutes_from_midnight * 0.6}px", :data => { :user => reservation.user, :start => human_time(reservation.reserve_start_at), :end => human_time(reservation.reserve_end_at), :endable => reservation.can_switch_instrument_off? ? 'true' : 'false', :startable => reservation.can_switch_instrument_on? ? 'true' : 'false' } }
+    .time
