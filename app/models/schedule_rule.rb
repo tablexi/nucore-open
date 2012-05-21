@@ -25,6 +25,22 @@ class ScheduleRule < ActiveRecord::Base
          where product_access_schedule_rules.product_access_group_id = product_users.product_access_group_id
          and product_access_schedule_rules.schedule_rule_id = schedule_rules.id)))")
   end
+
+  def self.unavailable_for_date(instrument, day)
+    rules = where(:instrument_id => instrument.id)
+    rules = unavailable(rules)
+    rules.select! {|item| item.send(:"on_#{day.strftime("%a").downcase}")}
+    reservations = []
+    rules.each do |rule|
+      res = Reservation.new
+      res.reserve_start_at = day.dup.change(:hour => rule.start_hour, :minute => rule.start_hour)
+      res.reserve_end_at = day.dup.change(:hour => rule.end_hour, :minute => rule.end_hour)
+      reservations << res
+    end
+    reservations
+  end
+
+
    
   def at_least_one_day_selected
     errors.add(:base, "Please select at least one day") unless

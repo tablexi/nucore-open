@@ -19,7 +19,9 @@
         - minutes = (reservation.reserve_end_at - reservation.reserve_start_at) / 60
         - minutes_from_midnight = (reservation.reserve_start_at - reservation.reserve_start_at.beginning_of_day) / 60
         - if reservation.admin?
-          .blackout{ :style => "width: #{minutes * 0.6}px; left: #{minutes_from_midnight * 0.6}px" }
+          .unit.tip.not_confirmed{ :style => "width: #{minutes * 0.6}px; left: #{minutes_from_midnight * 0.6}px" }[reservation, :block]
+          %div[reservation, :tooltip]
+            %strong Admin Reservation
         - else
           %div[reservation, :tooltip]
             %strong= reservation.user
@@ -28,7 +30,11 @@
             %br/
             = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(reservation.order, reservation.order_detail, reservation, :switch => 'on') if reservation.can_switch_instrument_on?
             = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(reservation.order, reservation.order_detail, reservation, :switch => 'off'), :class => (reservation.order_detail.product.product_accessories.for_acting_as(acting_as?).any? ? :has_accessories : nil) if reservation.can_switch_instrument_off?
-            = link_to "Edit", edit_order_order_detail_reservation_path(reservation.order, reservation.order_detail, reservation) if reservation.can_edit?
+            = link_to "Edit", order_order_detail_path(reservation.order, reservation.order_detail)
           .unit.tip.confirmed{:style => "width: #{minutes * 0.6}px; left: #{minutes_from_midnight * 0.6}px"}[reservation, :block]
+      - ScheduleRule.unavailable_for_date(instrument, @display_date).each do |rule|
+        - minutes = (rule.reserve_end_at - rule.reserve_start_at) / 60
+        - minutes_from_midnight = (rule.reserve_start_at - rule.reserve_start_at.beginning_of_day) / 60
+        .blackout{ :style => "width: #{minutes * 0.6}px; left: #{minutes_from_midnight * 0.6}px" }  
     - if @display_date.beginning_of_day == Time.zone.now.beginning_of_day
       .time

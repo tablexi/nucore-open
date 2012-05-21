@@ -408,6 +408,8 @@ en:
 
 
   order_details:
+    cancel:
+      confirm: "Canceling this reservation will incur a %{fee} fee.  Are you sure you wish to cancel this reservation?"
     show:
       head:
         h1: "Order # %{order_number}"
