@@ -1,3 +1,8 @@
+- content_for :head_content do
+  %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
+  = javascript_include_tag 'pick_accessories'
+  = stylesheet_link_tag "jquery-ui/jquery-ui"
+
 = content_for :h1 do
   =h current_facility
 
@@ -9,7 +14,7 @@
 - else
   = form_tag(batch_update_facility_reservations_path, :method => :post) do
     - facility_users = User.find_users_by_facility(current_facility)
-    %table
+    %table.reservations
       -## THE HEADER CONTROL ROW
       %tr.borderless
         %td{ :colspan => 8 }= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
@@ -40,16 +45,23 @@
       - @order_details.each do |od|
         - order = od.order
         - res = od.reservation
-        %tr
+        - is_current = res.can_switch_instrument?
+        %tr{:class => ('current' if is_current)}
           %td.centered= check_box_tag("order_detail_ids[]", od.id, false, {:class => 'toggle', :id => nil })
           %td.centered= link_to od, edit_facility_order_order_detail_path(current_facility, order, od)
           %td= order.user.full_name
-          %td{:colspan => 2}=h human_datetime(order.ordered_at)
+          %td{:colspan => 2}
+            = human_datetime(order.ordered_at)
           %td{:colspan => 2}
             - if res.can_edit?
               = link_to res, edit_facility_order_order_detail_reservation_path(current_facility, order, od, res)
             - else
               = link_to res, facility_order_order_detail_reservation_path(current_facility, order, od, res)
+            - if is_current
+              %br
+              %span.very_dense
+                = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(od.order, od, od.reservation, :switch => 'on') if od.reservation.can_switch_instrument_on?
+                = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(od.order, od, od.reservation, :switch => 'off'), :class => (od.product.product_accessories.for_acting_as(acting_as?).any? ? :has_accessories : nil)  if od.reservation.can_switch_instrument_off?
           %td
             %ul
               - product_name = (od.bundle ? "#{h od.bundle} &mdash; ".html_safe : '') + h(od.product)
@@ -64,7 +76,8 @@
                 %li
                   %i=h "Note: #{od.note}"
           %td=h od.assigned_user.nil? ? '' : od.assigned_user.full_name
-          %td=h od.order_status.name
+          %td
+            = od.order_status.name
           - if od.cost_estimated?
             %td.estimated_cost.currency= show_estimated_total(od)
           - elsif od.price_policy.nil?
@@ -95,3 +108,4 @@
           = submit_tag "Update Reservations"
   = will_paginate(@order_details)
   = render :partial => '/price_display_footnote', :locals => { :admin => true }
+  #pick_accessories_dialog

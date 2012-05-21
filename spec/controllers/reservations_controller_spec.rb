@@ -440,6 +440,7 @@ describe ReservationsController do
         @action=:switch_instrument
         @params.merge!(:reservation_id => @reservation.id)
         Factory.create(:relay, :instrument => @instrument)
+        @random_user = Factory.create(:user)
       end
 
       context 'on' do
@@ -458,6 +459,12 @@ describe ReservationsController do
           should set_the_flash
           should respond_with :redirect
         end
+
+        it_should_allow_all facility_operators, 'turn on instrument from someone elses reservation' do
+          should respond_with :redirect
+        end
+        it_should_deny :random_user
+
       end
 
       context 'off' do
@@ -480,6 +487,11 @@ describe ReservationsController do
           should set_the_flash
           should respond_with :redirect
         end
+
+        it_should_allow_all facility_operators, 'turn off instrument from someone elses reservation' do
+          should respond_with :redirect
+        end
+        it_should_deny :random_user
 
         context "for instrument w/ accessory (pick_accessories)" do
           before :each do
