@@ -13,20 +13,7 @@ describe Journal do
     @journal.id.should_not be_nil
   end
   
-  it "allows only one active single-facility journal per facility" do
-    assert @journal.save
-    @journal.id.should_not be_nil
-    
-    @journal2 = Journal.create(:facility => @facility, :created_by => 1, :journal_date => Time.zone.now)
-    @journal2.should_not be_valid
-    
-    @journal.update_attributes({:is_successful => false, :reference => '12345', :updated_by => 1})
-    @journal.should be_valid
-    @journal2.should be_valid
-  end
-
-  
-  context "multi-facility journals" do
+  context "journal creation" do
     before :each do
       @admin = Factory(:user)
       @facilitya = Factory.create(:facility, :abbreviation => "A")
@@ -61,6 +48,17 @@ describe Journal do
         end
       end
     end
+
+    context "(with pending journal for A)" do
+      before :each do
+        create_pending_journal_for(@facilitya)
+      end
+
+      it "should not allow creation of a journal for A" do
+        create_pending_journal_for( @facilitya).should_not raise_error(Exception, /pending journal/)
+      end
+    end
+      
 
     context "(with: pending journal for A & B)" do
       before :each do
