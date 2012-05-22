@@ -321,6 +321,11 @@ en:
     switch:
       start: "Begin Reservation"
       end: "End Reservation"
+    edit:
+      link: Edit
+    delete:
+      confirm: Are you sure you wish to cancel this reservation?
+      link: Cancel
 
   statements:
     index:
