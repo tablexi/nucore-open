@@ -28,7 +28,7 @@ class Ability
       if user.operator_of?(resource)
         can :manage, [
           AccountPriceGroupMember, OrderDetail, Order, Reservation,
-          UserPriceGroupMember
+          UserPriceGroupMember, ProductUser
         ]
 
         can [:index, :view_details, :schedule, :show], [Product]
@@ -57,7 +57,7 @@ class Ability
           Statement, FileUpload, PricePolicy, InstrumentPricePolicy,
           ItemPricePolicy, OrderStatus, PriceGroup, ReportsController,
           ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup,
-          ProductUser, ProductAccessory, Product, BundleProduct
+          ProductAccessory, Product, BundleProduct
         ]
 
         can :manage, User if controller.is_a?(FacilityUsersController)
@@ -66,18 +66,14 @@ class Ability
         can [:update, :manage], Facility
       end      
       
-      # Facility Senior staff should have all the rights of director (manager_of?), but should not see
-      # a billing tab or be able to edit price policies (Ticket # 38481)
+      # Facility senior staff is based off of staff, but has a few more abilities
       if in_role?(user, resource, UserRole::FACILITY_SENIOR_STAFF)
-        can :manage, [ScheduleRule, ProductUser]
-
+        can :manage, [ScheduleRule, ProductUser, ProductAccessGroup, FileUpload, ProductAccessory]
+        
+        # they can get to reports controller, but they're not allowed to export all
+        can :manage, ReportsController
+        cannot :export_all, ReportsController
       end
-      # if in_role?(user, resource, UserRole::FACILITY_SENIOR_STAFF)
-      #   cannot [:transactions, :manage_billing], Facility
-      #   cannot :manage, [PricePolicy, Journal, Statement]
-      #   can :index, PricePolicy
-      # end
-      
 
     elsif resource.is_a?(Account)
 

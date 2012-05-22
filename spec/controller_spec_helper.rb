@@ -163,6 +163,21 @@ def it_should_allow_managers_only(response=:success, spec_desc='', &eval)
   it 'should test more than auth' unless eval
 end
 
+def it_should_allow_managers_and_senior_staff_only(response=:success, spec_desc='', &eval)
+  it_should_require_login
+
+  it_should_deny(:guest, spec_desc)
+
+  it_should_deny(:staff, spec_desc)
+
+  it_should_allow_all(facility_managers, spec_desc) do |user|
+    should respond_with response
+    instance_exec(user, &eval) if eval
+  end
+
+  it 'should test more than auth' unless eval
+end
+
 
 #
 # Similar to #it_should_allow_managers_only, but for operators

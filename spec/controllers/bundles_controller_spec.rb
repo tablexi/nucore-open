@@ -187,7 +187,7 @@ describe BundlesController do
 
     it_should_require_login
 
-    it_should_allow_managers_only do
+    it_should_allow_managers_only :redirect do
       should assign_to(:bundle).with_kind_of(Bundle)
       assigns(:bundle).initial_order_status_id.should == OrderStatus.default_order_status.id
       assigns(:bundle).requires_approval.should == false
@@ -212,7 +212,7 @@ describe BundlesController do
 
     it_should_require_login
 
-    it_should_allow_managers_only do
+    it_should_allow_managers_only :redirect do
       assert_init_bundle
       should set_the_flash
       assert_redirected_to manage_facility_bundle_url(@authable, @bundle)

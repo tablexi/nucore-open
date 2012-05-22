@@ -14,8 +14,9 @@
   %p.notice No products have been added to the bundle or some of the products added to this bundle are inactive.  Users will be unable to view or purchase this bundle until resolved.
 
 #admin-subnav
-  %ul.horiz
-    %li= link_to 'Add Bundled Product', new_facility_bundle_bundle_product_path
+  - if can? :create, BundleProduct
+    %ul.horiz
+      %li= link_to 'Add Bundled Product', new_facility_bundle_bundle_product_path
 
 - if @bundle_products.empty?
   %p.notice No products have been added to this bundle.
@@ -28,9 +29,9 @@
     - @bundle_products.each do |bundle_product|
       - product = bundle_product.product
       %tr
-        %td.centered= link_to 'Remove', facility_bundle_bundle_product_path(current_facility, @bundle, bundle_product), :method => :delete
+        %td.centered= link_to 'Remove', facility_bundle_bundle_product_path(current_facility, @bundle, bundle_product), :method => :delete if can? :delete, bundle_product
         %td= link_to product.to_s_with_status, send("manage_facility_#{product.class.name.downcase}_path", current_facility, product)
-        - if product.is_a?(Instrument)
+        - if product.is_a?(Instrument) or cannot? :edit, bundle_product
           %td== #{bundle_product.quantity}
         - else
           %td== #{bundle_product.quantity} (#{link_to 'edit', edit_facility_bundle_bundle_product_path(current_facility, @bundle, bundle_product)})
