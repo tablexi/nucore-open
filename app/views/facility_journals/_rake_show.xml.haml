@@ -4,11 +4,7 @@
   %BUSINESS_UNIT== NWUNV
   %JOURNAL_ID== NEXT
   %JOURNAL_DATE= journal.journal_date.strftime("%Y%m%d")
-<<<<<<< HEAD
-  %DESCR254=h "#{journal.facility.try(:journal_mask) || 'NO FACILITY' }: Journal ##{ journal.id}, Created By: #{User.find(journal.created_by).username}"
-=======
   %DESCR254=h "#{mask}: Journal ##{ journal.id}, Created By: #{User.find(journal.created_by).username}"
->>>>>>> master
   %LEDGER_GROUP== ACTUALS
   %SOURCE== RSC
   %OPRID== GLBATCH
