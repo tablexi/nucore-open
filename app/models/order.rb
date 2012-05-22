@@ -45,10 +45,11 @@ class Order < ActiveRecord::Base
   end
 
   def has_valid_payment?
+    self.account.present? &&                                 # order has account
     order_details.all? {|od| od.account_id == account_id} && # order detail accounts match order account
-    facility.can_pay_with_account?(account) &&   # payment is accepted by facility
-    account.can_be_used_by?(user) &&             # user can pay with account
-    account.is_active?                           # account is active/valid
+    facility.can_pay_with_account?(account) &&               # payment is accepted by facility
+    account.can_be_used_by?(user) &&                         # user can pay with account
+    account.is_active?                                       # account is active/valid
   end
 
   def has_details?
@@ -135,8 +136,8 @@ class Order < ActiveRecord::Base
       updates = order_detail_updates[order_detail.id]
       quantity = updates[:quantity].to_i
       
-      # if quantity isn't there or is 0, destroy and skip
-      unless quantity > 0
+      # if quantity isn't there or is 0 (and not bundled), destroy and skip
+      if (quantity == 0 && !order_detail.bundled?)
         order_detail.destroy
         next
       end
