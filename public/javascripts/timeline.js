@@ -31,25 +31,13 @@ $(function() {
           return $("#tooltip_reservation_" + id).html();
         }
         $('.tip').tooltipsy({
-            content: tooltipContent,
-            css: {
-              'padding': '5px',
-              'max-width': '200px',
-              'color': '#303030',
-              'background-color': '#fff',
-              'border': '1px solid #ccc',
-              'border-radius' : '5px',
-              '-moz-box-shadow': '0 0 10px rgba(0, 0, 0, .5)',
-              '-webkit-box-shadow': '0 0 10px rgba(0, 0, 0, .5)',
-              'box-shadow': '0 0 10px rgba(0, 0, 0, .5)',
-              'text-shadow': 'none'
-            }
+            content: tooltipContent
         });
         //Get the Current Hour, create a class and add it the time div
         time = function() {
           var currentTime = new Date()
           var hours = currentTime.getHours()            
-          $('.time').addClass("hour_" + hours);
+          $('.current_time').addClass("hour_" + hours);
         };  
         time();
         setInterval(time, 500);

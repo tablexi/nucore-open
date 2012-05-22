@@ -21,4 +21,4 @@
       - ScheduleRule.unavailable_for_date(instrument, @display_date).each do |rule|
         = render :partial => "timeline_block", :locals => { :reservation => rule, :type => :blackout }
     - if @display_date.beginning_of_day == Time.zone.now.beginning_of_day
-      .time
+      .current_time
