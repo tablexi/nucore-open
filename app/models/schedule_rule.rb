@@ -29,13 +29,14 @@ class ScheduleRule < ActiveRecord::Base
   def self.unavailable_for_date(instrument, day)
     rules = where(:instrument_id => instrument.id)
     rules = unavailable(rules)
-    rules.select! {|item| item.send(:"on_#{day.strftime("%a").downcase}")}
+    rules = rules.select {|item| item.send(:"on_#{day.strftime("%a").downcase}")}
     reservations = []
     rules.each do |rule|
-      res = Reservation.new
-      res.instrument = instrument
-      res.reserve_start_at = day.dup.change(:hour => rule.start_hour, :minute => rule.start_hour)
-      res.reserve_end_at = day.dup.change(:hour => rule.end_hour, :minute => rule.end_hour)
+      res = Reservation.new({
+        :instrument => instrument,
+        :reserve_start_at => day.dup.change(:hour => rule.start_hour, :minute => rule.start_hour),
+        :reserve_end_at => day.dup.change(:hour => rule.end_hour, :minute => rule.end_hour)
+        })
       reservations << res
     end
     reservations
