@@ -662,3 +662,8 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
 	width: 3em;
 	margin-right: 0.5em;
 }
+
+#choose-account-frm input[type=radio] {
+    display: block;
+    margin: 0 auto;
+}

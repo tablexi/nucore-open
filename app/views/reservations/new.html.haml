@@ -16,6 +16,7 @@
     var maxTime         = #{@instrument.last_available_hour+1};
     var withDetails     = #{@instrument.show_details? || false};
     var isBundle        = #{@order_detail.bundled?};
+    var ctrlMechanism   = "#{@instrument.control_mechanism}";
 
 = content_for :breadcrumb do
   %ul.horiz
