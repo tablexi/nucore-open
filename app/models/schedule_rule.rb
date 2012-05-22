@@ -34,8 +34,8 @@ class ScheduleRule < ActiveRecord::Base
     rules.each do |rule|
       res = Reservation.new({
         :instrument => instrument,
-        :reserve_start_at => day.dup.change(:hour => rule.start_hour, :minute => rule.start_hour),
-        :reserve_end_at => day.dup.change(:hour => rule.end_hour, :minute => rule.end_hour)
+        :reserve_start_at => day.dup.change(:hour => rule.start_hour, :min => rule.start_min),
+        :reserve_end_at => day.dup.change(:hour => rule.end_hour, :min => rule.end_min)
         })
       reservations << res
     end
