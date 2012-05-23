@@ -1,6 +1,5 @@
 = content_for :head_content do
-  = javascript_include_tag 'calendar/fullcalendar.min.js'
-  = stylesheet_link_tag 'calendar/fullcalendar.css'
+  = render 'shared/headers/calendar'
   :javascript
     jQuery.noConflict();
       jQuery(document).ready(function() {
