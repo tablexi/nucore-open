@@ -44,33 +44,13 @@ body .unit {
   z-index:99999;
 }
 
-.unit.blackout, 
-.unit.admin {
-  display:inline-block;
-  height:71px;
-  opacity:0.5;
-  top:0px;
-  width:110px;
-  z-index: 10;
-  border-radius: 3px 3px 0 0;
-}
-
-.blackout {
-  background:#ccc;
-  border-top:5px solid #000;
-}
-
-.unit.admin {
-  background: #ECC;
-  border-top:5px solid #F00;
-}
-
 .invalid {
   background:url(../images/bg-conflict.jpg) top left repeat-x !important;
   height:30px;
 }
 
-.unit.status_new {
+/* Default block is green-NEW */
+.unit {
   background-color: #3a7e31;
   background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(58, 126, 49)), to(rgb(92, 154, 91)));
   background-image: -webkit-linear-gradient(top, rgb(58, 126, 49), rgb(92, 154, 91));
@@ -81,7 +61,7 @@ body .unit {
   filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#3a7e31', EndColorStr='#5c9a5b');
   border-right: 1px solid #5c9a5b;
 }
-.unit.status_new:hover {
+.unit:hover {
   box-shadow: 0 0 10px #3a7e31;
 }
 
@@ -115,6 +95,30 @@ body .unit {
   box-shadow:0 0 10px #3a6d88;
 }
 
+/* Tall blocks */
+.unit.blackout, 
+.unit.admin {
+  display:inline-block;
+  height:71px;
+  opacity:0.5;
+  top:0px;
+  width:110px;
+  z-index: 10;
+  border-radius: 3px 3px 0 0;
+  border: none;
+  box-shadow: none;
+}
+
+.unit.blackout {
+  background:#ccc;
+  border-top:5px solid #000;
+}
+
+.unit.admin {
+  background: #ECC;
+  border-top:5px solid #F00;
+}
+
 .current_time {
   background:#3e3ede;
   border-radius:6px;
@@ -127,6 +131,7 @@ body .unit {
   z-index: 0;
 }
 
+/* tooltip_reservation should be hidden until it gets pulled into the popup */
 .tooltip_reservation {
   display: none;
 }
