@@ -98,6 +98,9 @@ class Ability
         can [:show, :suspend, :unsuspend, :user_search, :user_accounts, :statements, :show_statement, :index], Statement
       end
 
+    elsif resource.is_a?(Reservation)
+      can :manage, Reservation if user.operator_of?(resource.instrument.facility)
+      can :start_stop, Reservation if resource.order_detail.order.user_id == user.id
     end
 
   end

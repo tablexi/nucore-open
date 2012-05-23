@@ -320,6 +320,9 @@ en:
       label: "Payment source"
       h3: "Documentation"
       crumb: "Create Reservation"
+    switch:
+      start: "Begin Reservation"
+      end: "End Reservation"
 
   statements:
     index:
@@ -430,8 +433,6 @@ en:
         orders: "My Orders"
         receipt: "View Receipt"
         reservation:
-          start: "Begin Reservation"
-          end: "End Reservation"
           cancel: "Cancel"
         view:
           order_form: "View Order Form"
