@@ -1,7 +1,5 @@
 = content_for :head_content do
-  %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
   = javascript_include_tag 'move_reservation'
-  = stylesheet_link_tag "jquery-ui/jquery-ui"
 
 - next_res=reservation.earliest_possible
 - next_start=next_res.reserve_start_at

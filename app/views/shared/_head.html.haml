@@ -3,7 +3,9 @@
 = stylesheet_link_tag 'application', :media => :all
 = stylesheet_link_tag 'override', :media => :all
 = stylesheet_link_tag 'nav',         :media => :all
-= javascript_include_tag "#{request.protocol}ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"
+= stylesheet_link_tag "jquery-ui/jquery-ui"
+= javascript_include_tag "jquery-1.7.2.min.js"
+= javascript_include_tag "jquery-ui-1.8.1.min.js"
 = javascript_include_tag 'application'
 = javascript_include_tag 'jquery_ujs'
 = csrf_meta_tag

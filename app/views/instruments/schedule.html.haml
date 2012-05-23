@@ -1,6 +1,7 @@
 = content_for :head_content do
-  = javascript_include_tag 'calendar/fullcalendar.min.js', 'jquery.qtip-1.0.0-rc3.min.js', 'instruments.js'
-  = stylesheet_link_tag 'calendar/fullcalendar.css', 'calendar/fullcalendar.extensions.css', :media => :all
+  = render :partial => 'shared/headers/calendar'
+  = javascript_include_tag 'instruments.js'
+  
 
 = content_for :h1 do
   =h current_facility
