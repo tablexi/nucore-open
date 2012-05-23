@@ -1,15 +1,3 @@
-.red {background:red}
-.blue {background:blue}
-.green {background:green}
-
-.clear {clear:both}
-
-.spacer {
-  display:block;
-  height:50px;
-  width:100%;
-}
-
 .timeline {
   background:url(../images/timeline.png);
   display:block;
@@ -36,7 +24,7 @@ body .unit {
   display:inline-block;
   height:30px;
   position:absolute;
-  bottom: 0;
+  top: 46px;
   z-index: 20;
 }
 
@@ -44,9 +32,8 @@ body .unit {
   z-index:99999;
 }
 
-.invalid {
-  background:url(../images/bg-conflict.jpg) top left repeat-x !important;
-  height:30px;
+.unit.invalid {
+  opacity: 0.5;
 }
 
 /* Default block is green-NEW */

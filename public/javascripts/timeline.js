@@ -1,6 +1,6 @@
 $(function() {
     	  //Set Draggable Unit, grid and axis
-    		$( ".unit" ).draggable({
+    		$( ".reschedulable .unit:not(.blackout)" ).draggable({
     		  axis: "x",
     		  containment: "parent",
     		  grid: [ 2, 0],
@@ -11,11 +11,11 @@ $(function() {
             }
     		});
     	  //The unit container will fit the units. 
-      	$('.unit_container').droppable({
+      	$('.reschedulable .unit_container').droppable({
             tolerance: 'fit'
         });
         //Do not allow the overlap, yell at me if I try to drop a reservation on a reservation
-        $('.unit').droppable({
+        $('.reschedulable .unit').droppable({
           greedy: true,
           tolerance: 'touch',
           hoverClass: "invalid",

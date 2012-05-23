@@ -14,6 +14,7 @@
 %br/
 - @instruments.each do |instrument|
   %h3= instrument
+  -# Add .reschedulable to enable drag/drop
   .timeline
     .unit_container
       - instrument.reservations.for_date(@display_date).each do |reservation|
