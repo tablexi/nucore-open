@@ -57,25 +57,13 @@ class ApplicationController < ActionController::Base
   end
 
   # authorization before_filter for billing actions
-  # (need to be a manager or director to access)
   def check_billing_access
     # something has gone wrong,
     # this before_filter shouldn't be run
     raise ActiveRecord::RecordNotFound unless current_facility
 
-    # no cross facility actions / views unless you're billing administrator or global administrator
-    if current_facility == all_facility
-      raise CanCan::AccessDenied unless session_user.billing_administrator?
-      # .. if you ARE Billing Administrator, your credentials are valid
-      return
-    else
-      raise CanCan::AccessDenied if session_user.billing_administrator?
-    end
+    authorize! :manage_billing, current_facility
 
-    # OTHERWISE
-    # you can only manage billing for a facility
-    # if you're a director / administrator of that facility
-    raise CanCan::AccessDenied unless session_user.manageable_facilities.member?(current_facility)
   end
 
 

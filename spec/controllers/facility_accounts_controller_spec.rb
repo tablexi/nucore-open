@@ -26,12 +26,12 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
-      should assign_to(:accounts).with_kind_of(Array)
+      should assign_to(:accounts).with_kind_of(ActiveRecord::Relation)
       assigns(:accounts).size.should == 1
-      assigns(:accounts)[0].should == @account
+      assigns(:accounts).first.should == @account
       should render_template('index')
     end
 
@@ -48,7 +48,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
@@ -68,7 +68,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       assigns(:owner_user).should == @owner
@@ -90,7 +90,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
@@ -114,7 +114,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
@@ -196,7 +196,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do |user|
       should assign_to(:account).with_kind_of(NufsAccount)
@@ -263,7 +263,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       should render_template 'new_account_user_search'
@@ -295,7 +295,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       should render_template 'user_search'
@@ -314,7 +314,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       should render_template 'search'
@@ -336,7 +336,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       assigns(:accounts).size.should == 1
@@ -368,7 +368,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       assigns(:user).should == @guest
@@ -388,7 +388,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       should assign_to(:subnav)
@@ -433,7 +433,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       should assign_to(:subnav)
@@ -531,7 +531,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
@@ -604,7 +604,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
@@ -625,7 +625,7 @@ describe FacilityAccountsController do
 
     it_should_require_login
 
-    it_should_deny :staff
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
