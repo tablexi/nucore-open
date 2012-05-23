@@ -1,5 +1,15 @@
 require 'spec_helper'
 
+def define_purchasable_instrument
+  @instrument    = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account => @facility_account))
+  @instrument_pp = Factory.create(:instrument_price_policy, :instrument => @instrument, :price_group => @price_group)
+  Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
+  # default rule, 9am - 5pm all days
+  @rule          = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+  define_open_account(@instrument.account, @account.account_number)
+end
+
+
 describe Order do
   it "should create using factory" do
     @user  = Factory.create(:user)
@@ -201,10 +211,10 @@ describe Order do
       Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
       # default rule, 9am - 5pm all days
       @rule          = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+      define_open_account(@instrument.account, @account.account_number)
       @order_detail  = @order.order_details.create(:product_id      => @instrument.id,    :quantity => 1,
                                                    :price_policy_id => @instrument_pp.id, :account_id => @account.id,
                                                    :estimated_cost  => 10,                :estimated_subsidy => 5)
-      define_open_account(@instrument.account, @account.account_number)
       @reservation   = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour     => 9,
                                                        :reserve_start_min  => 00,               :reserve_start_meridian => 'am',
                                                        :duration_value     => 60,               :duration_unit          => 'minutes',
@@ -224,7 +234,7 @@ describe Order do
     it "should check for chart string account being open before purchase"
   end
 
-  context 'add, clear, adjust' do
+  context do #'add, clear, adjust' do
     before(:each) do
       @facility         = Factory.create(:facility)
       @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
@@ -245,9 +255,87 @@ describe Order do
       @pg_member       = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @account         = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
       @cart            = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id, :account => @account))
+
+      @item           = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
     end
 
-    context 'add' do
+    context '#add' do
+
+      context "bundle" do
+        before :each do
+          # make a bundle
+          @bundle = @facility.bundles.create(Factory.attributes_for(:bundle, :facility_account_id => @facility_account.id))
+          @bundle.bundle_products.create!(:product => @item, :quantity => 4)
+          @bundle.bundle_products.create!(:product => @service, :quantity => 2)
+
+          # add two of them to the cart
+          @ods = @cart.add(@bundle, 2)
+        end
+
+        it "should add one order_detail per product in the bundle" do
+          # should only have as many ods as (# of products in bundle * quantity)
+          @ods.size.should == @bundle.products.count * 2
+
+          # shouldn't be missing any products
+          (@ods.collect(&:product_id) - @bundle.product_ids).should == []
+        end
+
+        it "should have quantity of each = quantity specified in the bundle * passed in quantity" do
+          # check quantities
+          @ods.each do |od|
+            od.quantity.should == @bundle.bundle_products.find_by_product_id(od.product_id).quantity
+          end
+        end
+      end
+
+      it "should add a single order_detail for an item w/ quantity of 2" do
+        ods = @cart.add(@item, 2)
+        ods.size.should == 1
+        ods.first.should be_a_kind_of OrderDetail
+      end
+
+      context "service" do
+        it "should add two order_details when has an active survey and a quantity of 2" do
+          # setup
+          @service_w_active_survey = @facility.services.create!(Factory.attributes_for(:service, :initial_order_status_id => @order_status.id, :facility_account_id => @facility_account.id))
+          @service_w_active_survey.stubs(:active_survey?).returns(true)
+
+          # doit
+          @ods = @cart.add(@service_w_active_survey, 2)
+
+          # asserts
+          @ods.should respond_to :each
+          @ods.size.should == 2
+        end
+
+        it "should add two order_details when has an active template and a quantity of 2" do
+          # setup
+          @service_w_active_template = @facility.services.create(Factory.attributes_for(:service, :initial_order_status_id => @order_status.id, :facility_account_id => @facility_account.id))
+          @service_w_active_template.file_uploads.create! Factory.attributes_for(:file_upload, :file_type => 'template', :created_by => @user.id)
+
+          # doit
+          @ods = @cart.add(@service_w_active_template, 2)
+          
+          #asserts
+          @ods.should respond_to :each
+          @ods.size.should == 2
+        end
+
+        it "should add one order_detail when has a quantity of 2 and service doesn't have a template or survey" do 
+          @ods = @cart.add(@service, 2)
+          @ods.size.should == 1
+        end
+      end
+
+      
+      it "should add two order_details when product responds to :reservations and quantity = 2" do
+        define_purchasable_instrument
+        
+        @ods = @cart.add(@instrument, 2)
+        @ods.collect(&:product).should == [@instrument, @instrument]
+        @ods.size.should == 2
+      end
+
       it "should have a facility after adding a product to the cart" do
         @cart.add(@service, 1)
         @cart.reload.facility.should == @facility
@@ -311,26 +399,6 @@ describe Order do
 #        @cart.facility.should be_nil
 #        @cart.account.should be_nil
       end
-    end
-
-    context 'auto_assign_account!' do
-      before :each do
-        @facility=Factory.create(:facility)
-        place_and_complete_item_order(@user, @facility)
-      end
-
-      it 'should assign payment source' do
-        @order1=@order
-        @nufs=Factory.create(:nufs_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
-        place_and_complete_item_order(@user, @facility, @nufs)
-        define_open_account(@item.account, @nufs.account_number)
-        @user.reload
-
-        @order1.account.should be_nil
-        @order1.auto_assign_account!(@item)
-        @order1.account.should == @nufs
-      end
-
     end
 
   end

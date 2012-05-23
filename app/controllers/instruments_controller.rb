@@ -56,7 +56,7 @@ class InstrumentsController < ProductsCommonController
       return redirect_to facility_path(current_facility)
     end
 
-    redirect_to add_order_path(acting_user.cart(session_user, false), :product_id => @instrument.id, :quantity => 1)
+    redirect_to add_order_path(acting_user.cart(session_user), :order => {:order_details => [{:product_id => @instrument.id, :quantity => 1}]})
   end
 
   # PUT /instruments/1

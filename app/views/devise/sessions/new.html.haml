@@ -1,7 +1,9 @@
 = content_for :h1 do
   = t('pages.login')
 
-%p.notice= t('sessions.new.help_text')
+- notice=t('sessions.new.help_text')
+- unless notice.blank?
+  %p.notice=notice
 
 - if flash[:error]
   %p.error= flash[:error]

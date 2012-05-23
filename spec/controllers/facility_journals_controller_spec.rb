@@ -44,7 +44,7 @@ describe FacilityJournalsController do
 
     it_should_allow_managers_only do
       response.should be_success
-      assigns(:pending_journal).should == @pending_journal
+      assigns(:pending_journals).should == [@pending_journal]
     end
   end
 
@@ -125,16 +125,21 @@ describe FacilityJournalsController do
       response.should be_success
       assigns(:order_details).should be_include(@order_detail1)
       assigns(:order_details).should be_include(@order_detail3)
-      assigns(:pending_journal).should be_nil
+      assigns(:pending_journals).should be_empty
       assigns(:order_detail_action).should == :create
     end
     
     it "should not have different values if there is a pending journal" do
+      
+      # create and populate a journal
       @pending_journal = Factory.create(:journal, :facility_id => @authable.id, :created_by => @admin.id, :journal_date => Time.zone.now, :is_successful => nil)
+      @order_detail4 = place_and_complete_item_order(@user, @authable, @account)
+      @pending_journal.create_journal_rows!([@order_detail4])
+
       sign_in @admin
       do_request
       assigns(:order_details).should contain_all [@order_detail1, @order_detail3]
-      assigns(:pending_journal).should == @pending_journal
+      assigns(:pending_journals).should == [@pending_journal]
       assigns(:order_detail_action).should be_nil
     end
     

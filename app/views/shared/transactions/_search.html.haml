@@ -1,10 +1,9 @@
 = form_tag url_for(params), :method => :get, :class => "search_form" do
   %fieldset#search
     %ul
+      = chosen_field(:facilities, Facility.model_name.human)
       - unless @account
         = chosen_field(:accounts, Account.model_name.human, "id", "account_list_item")
-      - unless @facility
-        = chosen_field(:facilities, Facility.model_name.human)
       = chosen_field(:products, Product.model_name.human, "id", nil, :product_options)
       - unless @account
         = chosen_field(:account_owners, Account.human_attribute_name('owner'), "id", "full_name")

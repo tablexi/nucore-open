@@ -2,6 +2,11 @@ require 'spec_helper'
 
 describe TransactionSearch do
   class TransactionSearcher < ApplicationController
+    attr_reader :facility, :facilities, :account, :accounts, :account_owners, :products
+    attr_writer :facility, :account
+    # give us a way to set the user
+    attr_accessor :session_user
+
     include TransactionSearch
     def params
       @params
@@ -9,12 +14,11 @@ describe TransactionSearch do
     def params=(params)
       @params = params
     end
-    attr_reader :facility, :facilities, :account, :accounts, :account_owners, :products
-    attr_writer :facility, :account
+
     def all_order_details_with_search
       # do nothing of import
     end
-    
+
   end
   before :each do
     @user = Factory.create(:user)
@@ -28,6 +32,9 @@ describe TransactionSearch do
     @order            = @staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account, :ordered_at => Time.now))
     @item             = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
     @order_detail1 = place_and_complete_item_order(@user, @authable, @account)
+    
+    # fake signing in as staff
+    @controller.session_user = @staff
   end
   
   context "wrapping" do
@@ -44,7 +51,7 @@ describe TransactionSearch do
       end
       it "should populate facility" do
         @controller.all_order_details
-        @controller.facility.should == @authable
+        @controller.current_facility.should == @authable
         @controller.facilities.should == [@authable]
       end
       it "should populate accounts" do
@@ -57,7 +64,7 @@ describe TransactionSearch do
         @account2 = Factory.create(:credit_card_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
 
         @controller.all_order_details
-        @controller.facility.should == @authable
+        @controller.current_facility.should == @authable
         @controller.account.should be_nil
         @controller.accounts.should == [@account]
       end
@@ -77,7 +84,7 @@ describe TransactionSearch do
         @controller.params = { :account_id => @account.id }
         @controller.init_current_account
         @controller.all_order_details
-        @controller.facility.should be_nil
+        @controller.current_facility.should be_nil
         @controller.account.should == @account
         @controller.facilities.should contain_all [@authable, @facility2]
       end
@@ -85,7 +92,7 @@ describe TransactionSearch do
         @controller.params = { :account_id => @credit_account.id }
         @controller.init_current_account
         @controller.all_order_details
-        @controller.facility.should be_nil
+        @controller.current_facility.should be_nil
         @controller.account.should == @credit_account
         @controller.facilities.should == [@facility2]
       end
@@ -119,7 +126,5 @@ describe TransactionSearch do
       end
     end
   end
-  
- 
-    
+
 end

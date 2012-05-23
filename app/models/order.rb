@@ -97,36 +97,56 @@ class Order < ActiveRecord::Base
     if self.facility && product.facility != self.facility && self.order_details.length > 0
       raise NUCore::MixedFacilityCart
     end
+    quantity = quantity.to_i
+    ods=[]
 
-    case product
-      when Bundle
-        ods = []
+    return [] if quantity <= 0
+    
+    case
+    when product.is_a?(Bundle)
+      quantity.times do
         group_id = max_group_id + 1
         product.bundle_products.each do |bp|
-          order_detail = order_details.create(:product_id => bp.product.id, :quantity => bp.quantity, :bundle_product_id => product.id, :group_id => group_id)
-          order_detail.update_account(account)
+          order_detail = self.order_details.new(:product_id => bp.product.id, :quantity => bp.quantity, :bundle_product_id => product.id, :group_id => group_id)
+          order_detail.update_account(account) if account
           order_detail.save!
           ods << order_detail
         end
-        self.facility = product.facility
-        save!
-        return ods
-      when Item
-        order_detail = self.order_details.first(:conditions => ['product_id = ? AND group_id IS NULL', product.id])
-        if order_detail.nil?
-          order_detail = order_details.create(:product_id => product.id, :quantity => quantity)
-        else
-          order_detail.quantity += quantity.to_i
-        end
-        order_detail.update_account(account)
-      else
-        order_detail = order_details.create(:product_id => product.id, :quantity => quantity)
-        order_detail.update_account(account)
+      end
+    when product.is_a?(Service)
+      separate = (product.active_template? || product.active_survey?)
+
+      # can't add single order_detail for service when it requires a template or a survey.
+      # number of order details to add
+      repeat =              separate ? quantity : 1
+      # quantity to add them with
+      individual_quantity = separate ? 1        : quantity
+      
+      repeat.times do
+        order_detail = self.order_details.new(:product_id => product.id, :quantity => individual_quantity)
+        order_detail.update_account(account) if account
+        order_detail.save!
+        ods << order_detail
+      end
+
+    # products which have reservations (instruments) should each get their own order_detail
+    when (product.respond_to?(:reservations) and quantity > 1) then
+      quantity.times do
+        order_detail = order_details.new(:product_id => product.id, :quantity => 1)
+        order_detail.update_account(account) if account
+        order_detail.save!
+        ods << order_detail
+      end
+    else
+      order_detail = order_details.new(:product_id => product.id, :quantity => quantity)
+      order_detail.update_account(account) if account
+      order_detail.save!
+      ods << order_detail
     end
-    self.facility = product.facility
+
+    self.facility_id = product.facility_id
     save!
-    order_detail.save!
-    return order_detail
+    return ods
   end
 
   ## TODO: this doesn't pass errors up to the caller.. does it need to?
@@ -150,35 +170,35 @@ class Order < ActiveRecord::Base
   end
   
   def max_group_id
-    od = self.order_details.find(:first, :select => 'MAX(group_id) AS max_group_id', :group => 'order_details.order_id')
-    od.nil? ? 0 : od.max_group_id.to_i
+    self.order_details.maximum(:group_id).to_i + 1
   end
 
   def has_subsidies?
     order_details.any?{|od| od.has_subsidies?}
   end
 
-  def auto_assign_account!(product)
-    return if self.account
+  # was originally used in OrdersController#add 
+  #def auto_assign_account!(product)
+    #return if self.account
 
-    accounts=user.accounts.active.for_facility(product.facility)
+    #accounts=user.accounts.active.for_facility(product.facility)
 
-    if accounts.size > 0
-      orders=user.orders.delete_if{|o| o.ordered_at.nil? || o == self || !accounts.include?(o.account) }
+    #if accounts.size > 0
+      #orders=user.orders.delete_if{|o| o.ordered_at.nil? || o == self || !accounts.include?(o.account) }
 
-      if orders.blank?
-        accounts.each{|acct| self.account=acct and break if acct.validate_against_product(product, user).nil? }
-      else
-        # last useable account used to place an order
-        orders.sort{|x,y| y.ordered_at <=> x.ordered_at}.each do |order|
-          acct=order.account
-          self.account=acct and break if accounts.include?(acct) && acct.validate_against_product(product, user).nil?
-        end
-      end
-    end
+      #if orders.blank?
+        #accounts.each{|acct| self.account=acct and break if acct.validate_against_product(product, user).nil? }
+      #else
+        ## last useable account used to place an order
+        #orders.sort{|x,y| y.ordered_at <=> x.ordered_at}.each do |order|
+          #acct=order.account
+          #self.account=acct and break if accounts.include?(acct) && acct.validate_against_product(product, user).nil?
+        #end
+      #end
+    #end
 
-    raise I18n.t('models.order.auto_assign_account', :product_name => product.name) if self.account.nil?
-  end
+    #raise I18n.t('models.order.auto_assign_account', :product_name => product.name) if self.account.nil?
+  #end
 
 
   private

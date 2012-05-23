@@ -78,6 +78,9 @@ $(document).ready(function() {
 
   function initReserveButton()
   {
+      if(ctrlMechanism == 'manual')
+        return;
+
       var now=new Date(),
         future=now.clone().addMinutes(5),
         date=$('#reservation_reserve_start_date').val(),

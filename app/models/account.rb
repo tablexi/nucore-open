@@ -35,12 +35,18 @@ class Account < ActiveRecord::Base
   end
   
   def self.for_facility(facility)
-    all_subclass_names = descendants.collect { |clazz| clazz.to_s }
-    
-    where("type in (:allow_all) or (type in (:limit_one) and facility_id = :facility)", 
-          {:allow_all => all_subclass_names - @@limited_to_one_facility_subclasses,
-            :limit_one => @@limited_to_one_facility_subclasses,
-            :facility => facility})
+    accounts = scoped
+
+    unless facility.all_facility?
+      all_subclass_names = descendants.collect { |clazz| clazz.to_s }
+
+      accounts = accounts.where("type in (:allow_all) or (type in (:limit_one) and facility_id = :facility)", 
+            {:allow_all => all_subclass_names - @@limited_to_one_facility_subclasses,
+              :limit_one => @@limited_to_one_facility_subclasses,
+              :facility => facility})
+    end
+
+    accounts  
   end
   
   def facilities
@@ -122,18 +128,19 @@ class Account < ActiveRecord::Base
 
   def self.need_notification (facility)
     # find details that are complete, not yet notified, priced, and not in dispute
-    details = OrderDetail.need_notification(facility)
+    details = OrderDetail.for_facility(facility).need_notification
     find(details.collect{ |detail| detail.account_id }.uniq || [])
   end
 
   def facility_balance (facility, date=Time.zone.now)
-    details = facility.order_details.complete.find(:all, :conditions => ['order_details.fulfilled_at <= ? AND price_policy_id IS NOT NULL AND order_details.account_id = ?', date, id])
+    details = OrderDetail.for_facility(facility).complete.where('order_details.fulfilled_at <= ? AND price_policy_id IS NOT NULL AND order_details.account_id = ?', date, id)
     details.collect{|od| od.total}.sum.to_f
   end
 
   # this will return the balance of orders that have been statemented or journaled (successfully) but not reconciled
   def unreconciled_total(facility)
     details=OrderDetail.account_unreconciled(facility, self)
+
     unreconciled_total=0
 
     details.each do |od|

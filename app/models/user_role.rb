@@ -4,6 +4,7 @@ class UserRole < ActiveRecord::Base
 
 
   ADMINISTRATOR='Administrator'
+  BILLING_ADMINISTRATOR='Billing Administrator'
   FACILITY_DIRECTOR='Facility Director'
   FACILITY_ADMINISTRATOR='Facility Administrator'
   FACILITY_STAFF='Facility Staff'
@@ -11,6 +12,10 @@ class UserRole < ActiveRecord::Base
 
   def self.administrator
     [ ADMINISTRATOR ]
+  end
+
+  def self.billing_administrator
+    [ BILLING_ADMINISTRATOR ]
   end
 
 
@@ -39,6 +44,6 @@ class UserRole < ActiveRecord::Base
 
 
   validates_presence_of :user_id
-  validates_inclusion_of :role, :in => (administrator + facility_roles), :message => 'is not a valid value'
+  validates_inclusion_of :role, :in => (administrator + billing_administrator + facility_roles), :message => 'is not a valid value'
 
 end

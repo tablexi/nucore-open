@@ -5,6 +5,7 @@ require 'transaction_search_spec_helper'
 describe FacilityNotificationsController do
   
   before(:all) { create_users }
+  render_views
   
   before :each do
     @authable=Factory.create(:facility)
@@ -54,7 +55,7 @@ describe FacilityNotificationsController do
 
     it_should_allow_managers_only :redirect do
       assigns(:errors).should be_empty
-      assigns(:accounts_to_notify).should == [@account]
+      assigns(:accounts_to_notify).should == [[@account, @authable]]
       assigns(:orders_notified).should == [@order_detail1, @order_detail2]
       @order_detail1.reload.reviewed_at.should_not be_nil
       @order_detail1.reviewed_at.should > 6.days.from_now
@@ -68,7 +69,7 @@ describe FacilityNotificationsController do
       it_should_allow_managers_only :redirect do
         assigns(:errors).should be_empty
         assigns(:orders_notified).should == [@order_detail1, @order_detail2, @order_detail3]
-        assigns(:accounts_to_notify).should == [@account, @account2]
+        assigns(:accounts_to_notify).should == [[@account, @authable], [@account2, @authable]]
       end
     end
     

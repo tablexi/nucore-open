@@ -23,7 +23,7 @@ class FacilityOrderDetailsController < ApplicationController
 
     condition=case @order_detail.account
       when NufsAccount
-        (@order_detail.journal && @order_detail.journal.is_successful) || OrderDetail.need_journal(current_facility).include?(@order_detail)
+        (@order_detail.journal && @order_detail.journal.is_successful) || OrderDetail.need_journal.include?(@order_detail)
       else
         !@order_detail.statement.nil?
     end
