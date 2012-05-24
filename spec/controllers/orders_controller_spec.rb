@@ -27,12 +27,11 @@ describe OrdersController do
     @order            = @staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account))
     @item             = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
 
-      Factory.create(:user_price_group_member, :user => @staff, :price_group => @price_group)
-      @item_pp=@item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
-      @item_pp.reload.restrict_purchase=false
-      @order_detail=@order.order_details.create(Factory.attributes_for(:order_detail, :product_id => @item.id))
+    Factory.create(:user_price_group_member, :user => @staff, :price_group => @price_group)
+    @item_pp=@item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
+    @item_pp.reload.restrict_purchase=false
 
-    @params={ :id => @order.id }
+    @params={ :id => @order.id, :order_id => @order.id }
   end
 
 
@@ -46,7 +45,7 @@ describe OrdersController do
     it_should_require_login
 
     it_should_allow :staff do
-      assert_redirected_to order_path(@order)
+      assert_redirected_to order_url(@order)
     end
 
     it 'should test more than auth'
@@ -99,18 +98,18 @@ describe OrdersController do
   context 'receipt' do
 
     before :each do
-      @order.state='purchased'
-      assert @order.save
-
+      # for receipt to work, order needs to have order_details
+      @complete_order = place_and_complete_item_order(@staff, @authable, @account).order.reload
       @method=:get
       @action=:receipt
+      @params={:id => @complete_order.id}
     end
 
     it_should_require_login
 
     it_should_allow :staff do
       should assign_to(:order).with_kind_of Order
-      assigns(:order).should == @order
+      assigns(:order).should == @complete_order
       should render_template 'receipt'
     end
 
@@ -139,46 +138,95 @@ describe OrdersController do
     before(:each) do
       @method=:put
       @action=:add
-      @params.merge!(:quantity => 1, :product_id => @item.id)
+      @params.merge!(:order => {:order_details => [{:quantity => 1, :product_id => @item.id}]})
+      @order.clear_cart?
     end
 
     it_should_require_login
 
-    it_should_allow :staff, "to add a product with quantity to cart" do
-      do_request
-      assigns(:order).should == @order
-      assigns(:product).should == @item
-      @order.reload.order_details.size.should == 1
-      flash[:error].should be_nil
-      should set_the_flash
-      response.should redirect_to "/orders/#{@order.id}"
+    context "with account (having already gone through choose_account)" do
+      before :each do
+        @order.account = @account
+        assert @order.save
+        session[:add_to_cart] = nil
+        do_request
+      end
+
+      it_should_allow :staff, "to add a product with quantity to cart" do
+        assigns(:order).id.should == @order.id
+        @order.reload.order_details.count.should == 1
+        flash[:error].should be_nil
+        should set_the_flash
+        response.should redirect_to "/orders/#{@order.id}"
+      end
     end
 
-    context 'as instrument' do
+    context 'instrument' do
       before :each do
         @options=Factory.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
+        @order.clear_cart?
         @instrument=@authable.instruments.create(@options)
-        @order2=@staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account))
-        @params[:id]=@order2.id
-        @params[:product_id]=@instrument.id
+        @params[:id]=@order.id
+        @params[:order][:order_details].first[:product_id] = @instrument.id
       end
 
-      it_should_allow :staff do
-        assigns(:order).should == @order2
-        assigns(:product).should == @instrument
-        @order2.reload.order_details.size.should == 1
+      it_should_allow :staff, "with empty cart (will use same order)" do
+        assigns(:order).id.should == @order.id
         flash[:error].should be_nil
-        assert_redirected_to new_order_order_detail_reservation_path(@order2, @order2.order_details.first)
+
+        assert_redirected_to new_order_order_detail_reservation_path(@order.id, @order.reload.order_details.first.id)
+      end
+
+      context "quantity = 2" do
+        before :each do
+          @params[:order][:order_details].first[:quantity] = 2
+        end
+
+        it_should_allow :staff, "with empty cart (will use same order) redirect to choose account" do
+          assigns(:order).id.should == @order.id
+          flash[:error].should be_nil
+
+          assert_redirected_to choose_account_order_url(@order)
+        end
+
+      end
+
+      context "with non-empty cart" do
+        before :each do
+          @order.add(@item, 1)
+        end
+
+        it_should_allow :staff, "with non-empty cart (will create new order)" do
+          assigns(:order).should_not == @order
+          flash[:error].should be_nil
+
+          assert_redirected_to new_order_order_detail_reservation_path(assigns(:order), assigns(:order).order_details.first)
+        end
       end
     end
 
-    context "no account" do
-      it "should redirect to choose_account when /add/:product_id/:quantity is called and cart doesn't have an account" do
+    context "add is called and cart doesn't have an account" do
+      before :each do
         @order.account = nil
         @order.save
         maybe_grant_always_sign_in :staff
         do_request
+      end
+
+      it "should redirect to choose account" do
         response.should redirect_to("/orders/#{@order.id}/choose_account")
+      end
+
+      it "should set session with contents of params[:order][:order_details]" do
+        session[:add_to_cart].should_not be_empty
+        session[:add_to_cart].should == [{"product_id" => @item.id, "quantity" => 1}]
+      end
+    end
+
+    context "w/ account" do
+      before :each do
+        @order.account = @account
+        @order.save!
       end
 
       context "mixed facility" do
@@ -192,7 +240,7 @@ describe OrdersController do
           do_request
 
           # add second item to cart
-          @params[:product_id]=@item2.id
+          @params.merge!(:order => {:order_details => [{:quantity => 1, :product_id => @item2.id}]})
           do_request
 
           should set_the_flash.to(/can not/)
@@ -266,6 +314,7 @@ describe OrdersController do
     before(:each) do
       @method=:put
       @action=:update
+      @order_detail = @order.add(@item, 1).first
       @params.merge!("quantity#{@order_detail.id}" => "6")
     end
 
@@ -282,6 +331,7 @@ describe OrdersController do
     before(:each) do
       @method=:put
       @action=:update
+      @order_detail = @order.add(@item, 1).first
       @params.merge!(
         "quantity#{@order_detail.id}" => "6",
         "note#{@order_detail.id}" => "new note"

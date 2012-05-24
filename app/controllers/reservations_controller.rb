@@ -1,7 +1,7 @@
 class ReservationsController < ApplicationController
   customer_tab  :all
   before_filter :authenticate_user!
-  before_filter :check_acting_as,  :only => [ :switch_instrument, :show, :list]
+  before_filter :check_acting_as,  :only => [ :switch_instrument, :show, :list ]
   before_filter :load_basic_resources, :only => [:new, :create, :edit, :update]
   before_filter :load_and_check_resources, :only => [ :move, :switch_instrument, :pick_accessories ]
 
@@ -49,22 +49,15 @@ class ReservationsController < ApplicationController
     @available_statuses = ['upcoming', 'all']
     case params[:status]
     when 'upcoming'
-      @order_details = current_user.order_details.upcoming_reservations
+      @order_details = acting_user.order_details.upcoming_reservations
     when 'all'
-      @order_details = current_user.order_details.all_reservations
+      @order_details = acting_user.order_details.all_reservations
     else
       redirect_to reservations_status_path(:status => "upcoming")
       return
     end
     @order_details = @order_details.paginate(:page => params[:page])
     
-      # joins(:order).
-      # includes(:reservation).
-      # where("orders.ordered_at IS NOT NULL").
-      # order('orders.ordered_at DESC').all
-
-    #@order_details=@order_details.delete_if{|od| od.reservation.nil? }.paginate(:page => params[:page])
-
     @order_details.each do |od|
       res = od.reservation
       # do you need to click stop
@@ -117,7 +110,9 @@ class ReservationsController < ApplicationController
         end
         flash[:notice] = I18n.t 'controllers.reservations.create.success'
 
-        if @order_detail.product.is_a?(Instrument) && !@order_detail.bundled?
+        # only trigger purchase if instrument
+        # and is only thing in cart (isn't bundled or on a multi-add order)
+        if @order_detail.product.is_a?(Instrument) && @order.order_details.count == 1
           redirect_to purchase_order_path(@order)
         else
           redirect_to cart_path
@@ -215,6 +210,8 @@ class ReservationsController < ApplicationController
 
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/switch_instrument
   def switch_instrument
+    authorize! :start_stop, @reservation
+    
     relay_error_msg = 'An error was encountered while attempted to toggle the instrument. Please try again.'
     raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == 'on' || params[:switch] == 'off')
     
@@ -290,11 +287,16 @@ class ReservationsController < ApplicationController
           new_od    = nil
 
           begin
-            new_od = @order.add(product, quantity)
-            new_od.change_status!(@complete_state)
-            @count += quantity
+            if quantity > 0
+              new_ods = @order.add(product, quantity)
+              new_ods.map{|od| od.change_status!(@complete_state)}
+              @count += quantity
+            else
+              raise ArgumentError.new
+            end
+
             next
-          rescue ActiveRecord::RecordInvalid
+          rescue ArgumentError
             ## otherwise something's wrong w/ new_od... safe it for the view
             @error_status = 406
             @errors_by_id[product.id] = "Invalid Quantity"
@@ -329,10 +331,17 @@ class ReservationsController < ApplicationController
     load_basic_resources
     #@reservation  = @instrument.reservations.find_by_id_and_order_detail_id(params[:reservation_id], @order_detail.id)
     raise ActiveRecord::RecordNotFound if @reservation.blank?
-    raise ActiveRecord::RecordNotFound unless @order.user_id == session_user.id
   end
+
+  def ability_resource
+    return @reservation
+  end
+
   def set_windows
-    groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
+    user_price_groups     = @order.user.price_groups.presence || []
+    # @order.account could be nil if quick reservation
+    account_price_groups  = @order.account.try(:price_groups).presence || []
+    groups = (user_price_groups + account_price_groups).flatten.uniq
     @max_window = session_user.operator_of?(@facility) ? 365 : @reservation.longest_reservation_window(groups)
     @max_days_ago = session_user.operator_of?(@facility) ? -365 : 0
     # initialize calendar time constraints

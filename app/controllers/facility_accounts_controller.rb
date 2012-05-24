@@ -5,6 +5,7 @@ class FacilityAccountsController < ApplicationController
   before_filter :init_current_facility
 
   load_and_authorize_resource :class => Account
+  before_filter :check_billing_access, :only => [:credit_cards, :update_credit_cards, :purchase_orders, :update_purchase_orders, :accounts_receivable, :show_statement] 
 
   layout 'two_column'
 
@@ -15,8 +16,7 @@ class FacilityAccountsController < ApplicationController
 
   # GET /facilties/:facility_id/accounts
   def index
-    # list accounts that have ordered in the facility
-    @accounts = current_facility.order_details.accounts.paginate(:page => params[:page])    
+    @accounts = Account.for_facility(current_facility).joins(:order_details).group("accounts.id").paginate(:page => params[:page])
   end
 
   # GET /facilties/:facility_id/accounts/:id
@@ -114,54 +114,30 @@ class FacilityAccountsController < ApplicationController
 
   # GET/POST /facilities/:facility_id/accounts/search_results
   def search_results
-    # original implementation
-    #term   = generate_multipart_like_search_term(params[:search_term])
-    #if params[:search_term].length >= 3
-      #conditions = ["LOWER(first_name) LIKE ? OR LOWER(last_name) LIKE ? OR LOWER(username) LIKE ? OR LOWER(CONCAT(first_name, last_name)) LIKE ?", term, term, term, term]
-      #@users     = User.find(:all, :conditions => conditions, :order => 'last_name, first_name')
-      #if @users.length > 0
-        #@accounts = @users.collect{|u| u.account_users.find(:all, :conditions => ['account_users.deleted_at IS NULL AND user_role = ?', 'Owner'], :include => :account).collect{|au| au.account}}.flatten
-      #end
-      #if @accounts.nil? || @accounts.empty?
-        #@accounts = Account.find(:all, :conditions => ['account_number like ?', term], :order => 'type, account_number')
-      #end
-      #@accounts = @accounts.paginate(:page => params[:page]) #hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
-    #else
-      #flash.now[:errors] = 'Search terms must be 3 or more characters.'
-    #end
-    #respond_to do |format|
-      #format.html { render :layout => false }
-    #end
-    
+    owner_where_clause =<<-end_of_where
+      (
+        LOWER(users.first_name) LIKE :term
+        OR LOWER(users.last_name) LIKE :term
+        OR LOWER(users.username) LIKE :term
+        OR LOWER(CONCAT(users.first_name, users.last_name)) LIKE :term
+      )
+      AND account_users.user_role = :acceptable_role
+      AND account_users.deleted_at IS NULL
+    end_of_where
     term   = generate_multipart_like_search_term(params[:search_term])
     if params[:search_term].length >= 3
 
       # retrieve accounts matched on user for this facility
-      @accounts = Account.joins(:account_users => :user).where(
-        "(
-           LOWER(users.first_name) LIKE :term
-           OR LOWER(users.last_name) LIKE :term
-           OR LOWER(users.username) LIKE :term
-           OR LOWER(CONCAT(users.first_name, users.last_name)) LIKE :term
-         )
-         AND account_users.user_role = :acceptable_role
-         AND account_users.deleted_at IS NULL
-         AND (
-           (accounts.type <> 'NufsAccount' AND accounts.facility_id = :facility_id)
-           OR (accounts.type = 'NufsAccount' AND accounts.facility_id IS NULL)
-        )",
+      @accounts = Account.joins(:account_users => :user).for_facility(current_facility).where(
+        owner_where_clause,
         :term             => term,
-        :acceptable_role  => 'Owner',
-        :facility_id      => current_facility.id
-      ).order('users.last_name, users.first_name')
+        :acceptable_role  => 'Owner').
+        order('users.last_name, users.first_name')
       
       # retrieve accounts matched on account_number for this facility
-      @accounts += Account.where(
-        "LOWER(account_number) LIKE ? AND (
-          (type <> 'NufsAccount' AND facility_id = ?)
-          OR (type = 'NufsAccount' AND facility_id IS NULL)
-        )", term, current_facility.id
-      ).order('type, account_number')
+      @accounts += Account.for_facility(current_facility).where(
+        "LOWER(account_number) LIKE ?", term).
+        order('type, account_number')
       
       # only show an account once.
       @accounts = @accounts.uniq.paginate(:page => params[:page]) #hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
@@ -202,10 +178,10 @@ class FacilityAccountsController < ApplicationController
     @account = Account.find(params[:account_id])
   end
 
-  # GET /facilities/:facility_id/statements/accounts_receivable
+  # GET /facilities/:facility_id/accounts_receivable
   def accounts_receivable
     @account_balances = {}
-    order_details = current_facility.order_details.complete
+    order_details = OrderDetail.for_facility(current_facility).complete
     order_details.each do |od|
       @account_balances[od.account_id] = @account_balances[od.account_id].to_f + od.total.to_f
     end

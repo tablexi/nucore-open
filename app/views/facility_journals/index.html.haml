@@ -4,34 +4,48 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'journals' }
 
-- if @pending_journal
+- if has_pending_journals?
   %h2= t(".head.pending")
-  %div= t(".instructions_html")
 
-  = form_for([current_facility, @pending_journal]) do |f|
-    = f.error_messages 
-    %table
-      %tr
-        %th= t(".th.download")
-        %th= t(".th.journaled_at")
-        %th= Journal.human_attribute_name(:amount)
-        %th
-          %span.require= Journal.human_attribute_name(:reference)
-        %th= Journal.human_attribute_name(:description)
-        %th
-          %span.require= Journal.human_attribute_name(:journal_status)
-      %tr
-        %td
-          %ul
-            %li=link_to 'XLS File', @pending_journal.file.url
-            %li=link_to 'XML File', facility_journal_path(current_facility, @pending_journal, :format => 'xml')
-        %td=h human_datetime(@pending_journal.created_at)
-        %td=h number_to_currency(@pending_journal.amount)
-        %td= f.text_field :reference
-        %td= f.text_field :description
-        %td
-          = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']])
-          = submit_tag t(".journal.close"), :confirm => t(".journal.confirm")
+  
+  - if @pending_journals.present?
+    %div= t(".instructions_html")
+    
+    - @pending_journals.each do |pending_journal|
+      - facility_abbreviations = pending_journal.facility_abbreviations
+      = form_for([current_facility, pending_journal]) do |f|
+        = f.error_messages 
+        %table
+          %tr
+            %th= t(".th.download")
+            %th= t(".th.journaled_at")
+            - if all_facility?
+              %th Facility
+            %th= Journal.human_attribute_name(:amount)
+            %th
+              %span.require= Journal.human_attribute_name(:reference)
+            %th= Journal.human_attribute_name(:description)
+            %th
+              %span.require= Journal.human_attribute_name(:journal_status)
+          %tr
+            %td
+              %ul
+                %li=link_to 'XLS File', pending_journal.file.url
+                %li=link_to 'XML File', facility_journal_path(current_facility, pending_journal, :format => 'xml')
+            %td=h human_datetime(pending_journal.created_at)
+
+            - if all_facility?
+              %td= facility_abbreviations.join("<br>").html_safe
+            
+            %td=h number_to_currency(pending_journal.amount)
+            %td= f.text_field :reference
+            %td= f.text_field :description
+            %td
+              = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']], params[:journal_status])
+              = submit_tag t(".journal.close"), :confirm => t(".journal.confirm")
+
+  - else    # there's pending journals, but user can't edit
+    %p.notice= t(".notice.no_editable")
 
 %h2= t(".head.closed")
 - if @journals.blank?

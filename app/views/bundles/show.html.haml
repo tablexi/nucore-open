@@ -17,7 +17,7 @@
     %li= link_to 'Login', new_user_session_path, :class => 'btn'
 - elsif @add_to_cart
   %ul
-    %li= link_to 'Add to cart', add_order_path(acting_user.cart(session_user), :product_id => @bundle.id, :quantity => 1), :method => :put, :class => 'btn'
+    %li= link_to 'Add to cart', add_order_path(acting_user.cart(session_user), :order => {:order_details => [{:product_id => @bundle.id, :quantity => 1}] }), :method => :put, :class => 'btn'
 
 - docs = @bundle.file_uploads.info
 - unless docs.empty?

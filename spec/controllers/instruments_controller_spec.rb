@@ -74,7 +74,7 @@ describe InstrumentsController do
 
       it_should_allow_all(facility_operators) do
         assigns[:instrument].should == @instrument
-        assert_redirected_to add_order_path(Order.all.last, :product_id => @instrument.id, :quantity => 1)
+        assert_redirected_to add_order_path(Order.all.last, :order => {:order_details => [{:product_id => @instrument.id, :quantity => 1}]})
       end
     end
     
@@ -146,7 +146,7 @@ describe InstrumentsController do
       @action=:new
     end
 
-    it_should_allow_operators_only do
+    it_should_allow_managers_only do
       should assign_to(:instrument).with_kind_of Instrument
       assigns(:instrument).should be_new_record
       assigns(:instrument).facility.should == @authable
@@ -163,7 +163,7 @@ describe InstrumentsController do
       @action=:edit
     end
 
-    it_should_allow_operators_only do
+    it_should_allow_managers_only do
       should render_template 'edit'
     end
 
@@ -183,7 +183,7 @@ describe InstrumentsController do
       )
     end
 
-    it_should_allow_operators_only :redirect do
+    it_should_allow_managers_only :redirect do
       assert_successful_creation { assigns(:instrument).relay.should be_nil }
     end
 
@@ -280,7 +280,7 @@ describe InstrumentsController do
         )
       end
 
-      it_should_allow_operators_only :redirect do
+      it_should_allow_managers_only :redirect do
         assert_successful_update { assigns(:instrument).reload.relay.should be_nil }
       end
     end
@@ -353,7 +353,7 @@ describe InstrumentsController do
       @action=:destroy
     end
 
-    it_should_allow_operators_only :redirect do
+    it_should_allow_managers_only :redirect do
       should assign_to(:instrument).with_kind_of Instrument
       #assert_redirected_to manage_facility_instrument_url(@authable, assigns(:instrument))
       assert_redirected_to facility_instruments_url
@@ -392,21 +392,6 @@ describe InstrumentsController do
       end
 
     end
-
-
-    context "agenda" do
-
-      before :each do
-        @method=:get
-        @action=:agenda
-      end
-
-      it_should_allow_operators_only do
-        should render_template 'agenda'
-      end
-
-    end
-
 
     context "status" do
 

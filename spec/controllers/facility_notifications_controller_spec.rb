@@ -5,6 +5,7 @@ require 'transaction_search_spec_helper'
 describe FacilityNotificationsController do
   
   before(:all) { create_users }
+  render_views
   
   before :each do
     @authable=Factory.create(:facility)
@@ -26,6 +27,7 @@ describe FacilityNotificationsController do
       @method=:get
       @action=:index
     end
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_managers_only do
       (assigns(:order_details) - [@order_detail1, @order_detail2, @order_detail3]).should be_empty
@@ -39,6 +41,7 @@ describe FacilityNotificationsController do
       end
       it_should_support_searching
     end
+
   end
   
   context "send_notifications" do
@@ -48,9 +51,11 @@ describe FacilityNotificationsController do
       @params.merge!({ :order_detail_ids => [@order_detail1.id, @order_detail2.id] })
     end
     
+    it_should_deny_all [:staff, :senior_staff]
+
     it_should_allow_managers_only :redirect do
       assigns(:errors).should be_empty
-      assigns(:accounts_to_notify).should == [@account]
+      assigns(:accounts_to_notify).should == [[@account, @authable]]
       assigns(:orders_notified).should == [@order_detail1, @order_detail2]
       @order_detail1.reload.reviewed_at.should_not be_nil
       @order_detail1.reviewed_at.should > 6.days.from_now
@@ -64,7 +69,7 @@ describe FacilityNotificationsController do
       it_should_allow_managers_only :redirect do
         assigns(:errors).should be_empty
         assigns(:orders_notified).should == [@order_detail1, @order_detail2, @order_detail3]
-        assigns(:accounts_to_notify).should == [@account, @account2]
+        assigns(:accounts_to_notify).should == [[@account, @authable], [@account2, @authable]]
       end
     end
     
@@ -80,6 +85,8 @@ describe FacilityNotificationsController do
   end
   
   context "in review" do
+    it_should_deny_all [:staff, :senior_staff]
+
      before :each do
       @method=:get
       @action=:in_review
@@ -104,6 +111,8 @@ describe FacilityNotificationsController do
   end
   
   context "mark as reviewed" do
+    it_should_deny_all [:staff, :senior_staff]
+    
     before :each do
       @method = :post
       @action = :mark_as_reviewed

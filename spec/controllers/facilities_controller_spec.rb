@@ -102,6 +102,7 @@ describe FacilitiesController do
 
   context "show" do
 
+:so
     before(:each) do
       @method=:get
       @action=:show
@@ -133,7 +134,7 @@ describe FacilitiesController do
       before(:each) do
         @facility2 = Factory.create(:facility)
         @controller.stubs(:current_facility).returns(@authable)
-        @controller.stubs(:manageable_facilities).returns([@authable, @facility2])
+        @controller.stubs(:operable_facilities).returns([@authable, @facility2])
         @controller.expects(:init_current_facility).never
       end
 
@@ -149,10 +150,10 @@ describe FacilitiesController do
         @controller.stubs(:current_facility).returns(@authable)
         @controller.expects(:init_current_facility).never
       end
-      # admin won't be redirected since their manageable facilities is something more
+      # admin won't be redirected since their operable facilities is something more
       it_should_allow_all (facility_operators - [:admin]) do
         assigns(:facilities).should == [@authable]
-        assigns(:manageable_facilities).should == [@authable]
+        assigns(:operable_facilities).should == [@authable]
         response.should redirect_to(facility_orders_path(@authable))
       end
     end
@@ -165,7 +166,7 @@ describe FacilitiesController do
       end
   
       it_should_allow :admin do
-        assigns[:manageable_facilities].should == []
+        assigns[:operable_facilities].should == [@authable, @facility2]
         assigns[:facilities].should == [@authable, @facility2]
         response.should be_success
         response.should render_template('facilities/list')
@@ -178,18 +179,11 @@ describe FacilitiesController do
     before(:each) do
       @action = :transactions
       @method = :get
-      @params = {:facility_id => @authable.url_name}
+      @params = { :facility_id => @authable.url_name }
       @user = @admin
     end
     
     it_should_support_searching
-    
-    it "should set the facility" do
-      sign_in @admin
-      do_request
-      assigns[:facility].should == @authable
-      assigns[:current_facility].should == @authable
-    end
     
     it "should use two column head" do
       sign_in @admin
@@ -200,8 +194,11 @@ describe FacilitiesController do
     it "should query against the facility" do
       sign_in @admin
       do_request
-      assigns[:order_details].should contain_string_in_sql("`orders`.`facility_id` = #{@authable.id}")
+      assigns(:order_details).should contain_string_in_sql("`orders`.`facility_id` = ")
     end
+
+    it_should_deny_all [:senior_staff, :staff]
+
   end
 
 end

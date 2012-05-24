@@ -213,6 +213,10 @@ a.btn:hover,input.btn:hover {
 	font-size:11px;
 }
 
+.very_dense {
+	font-size: 10px;
+}
+
 .nowrap {
 	white-space:nowrap;
 }
@@ -637,7 +641,6 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
 	width:130px;
 }
 
-
 /***
  * Popup calendar
  */
@@ -657,4 +660,17 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
 
 #pick_accessories_dialog input[type=submit] {
     margin-top: 1em;
+}
+
+.product_quantity {
+	width: 3em;
+	margin-right: 0.5em;
+}
+
+#choose-account-frm input[type=radio] {
+    display: block;
+    margin: 0 auto;
+
+.reservations tr.current {
+	background-color: #DDFFDD;
 }

@@ -52,48 +52,65 @@ class OrdersController < ApplicationController
     redirect_to order_path(@order) and return
   end
 
+  # GET /orders/2/add/
   # PUT /orders/2/add/
   def add
-    @quantity   = params[:quantity] || session[:add_to_cart][:quantity]
-    @quantity=@quantity.to_i if @quantity.is_a?(String)
-    @product_id = params[:product_id]    || session[:add_to_cart][:product_id]
+    ## get items to add from the form post or from the session
+    ods_from_params = (params[:order].presence and params[:order][:order_details].presence) || []
+    items =  ods_from_params.presence || session[:add_to_cart].presence || []
     session[:add_to_cart] = nil
-    @product    = Product.find(@product_id)
 
-    if @order.account.nil?
-      unless @product.is_a?(Instrument)
-        # send to choose_account:
-        # if it's not set in the order OR
-        # payment source isn't valid for this facility
-        session[:add_to_cart] = {:quantity => @quantity, :product_id => @product.id }
-        return redirect_to choose_account_order_url(@order)
-      end
 
-      begin
-        @order.auto_assign_account!(@product)
-      rescue => e
-        flash[:error]=e.message
-        return redirect_to facility_path(@product.facility)
-      end
-    end
+    # ignore ods w/ empty or 0 quantities
+    items = items.select { |od| od.is_a?(Hash) and od[:quantity].present? and (od[:quantity] = od[:quantity].to_i) > 0 }
+    return redirect_to(:back, :notice => "Please add at least one quantity to order something") unless items.size > 0
 
-    # if acting_as, make sure the session use can place orders for the facility
-    if acting_as? && !session_user.administrator? && !manageable_facilities.include?(@product.facility)
-      flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{@product.facility.name}."
+    # if acting_as, make sure the session user can place orders for the facility
+    if acting_as? && !session_user.administrator? && !manageable_facilities.include?(current_facility)
+      flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{current_facility.name}."
       redirect_to order_url(@order) and return
     end
 
+    ## handle a single instrument reservation
+    if items.size == 1 and (quantity = items.first[:quantity].to_i) == 1 #only one od w/ quantity of 1
+      if product = Product.find(items.first[:product_id]) and            # and can find product
+         product.respond_to?(:reservations)                              # and product is reservable
+        
+        # make a new cart w/ instrument (unless this order is empty.. then use that one)
+        @order = acting_user.cart(session_user, @order.order_details.empty?)
+        @order.add(product, 1)
+
+        # bypass cart kicking user over to new reservation screen
+        return redirect_to new_order_order_detail_reservation_url(@order.id, @order.order_details.first)
+      end
+    end
+
+    ## make sure the order has an account
+    if @order.account.nil?
+      ## add auto_assign back here if needed
+
+      ## save the state to the session and redirect
+      session[:add_to_cart] = items
+      redirect_to choose_account_order_url(@order) and return
+    end
+
+    ## process each item
     @order.transaction do
-      begin
-        order_detail = @order.add(@product, @quantity) # if product is a bundle, order_detail is an array of details
-        @order.invalidate!
-        return redirect_to new_order_order_detail_reservation_path(@order, order_detail) if @product.is_a?(Instrument)
-        flash[:notice] = "#{@product.class.name} added to cart."
-      rescue NUCore::MixedFacilityCart
-        flash[:error] = "You can not add a product from another facility; please clear your cart or place a separate order."
-      rescue Exception => e
-        flash[:error] = "An error was encountered while adding the product."
-        Rails.logger.error(e.backtrace.join("\n"))
+      items.each do |item|
+        @product = Product.find(item[:product_id])
+        begin
+          @order.add(@product, item[:quantity])
+          @order.invalidate! ## this is because we just added an order_detail
+        rescue NUCore::MixedFacilityCart
+          @order.errors.add(:base, "You can not add a product from another facility; please clear your cart or place a separate order.")
+        rescue Exception => e
+          @order.errors.add(:base, "An error was encountered while adding the product #{@product}.")
+          Rails.logger.error(e.backtrace.join("\n"))
+        end
+      end
+
+      if @order.errors.any?
+        flash[:error] = "There were errors adding to your cart:<br>"+@order.errors.full_messages.join('<br>').html_safe
         raise ActiveRecord::Rollback
       end
     end
@@ -182,14 +199,16 @@ class OrdersController < ApplicationController
     if session[:add_to_cart].blank?
       @product = @order.order_details[0].product
     else
-      @product = Product.find(session[:add_to_cart][:product_id])
+      @product = Product.find(session[:add_to_cart].first[:product_id])
     end
-    @accounts = acting_user.accounts.active.for_facility(@product.facility)
+    @accounts = acting_user.accounts.for_facility(@product.facility).active
     @errors   = {}
     details   = @order.order_details
     @accounts.each do |account|
-      if session[:add_to_cart] && session[:add_to_cart][:product_id]
-        error = account.validate_against_product(Product.find(session[:add_to_cart][:product_id]), acting_user)
+      if session[:add_to_cart] and
+         ods = session[:add_to_cart].presence and
+         product_id = ods.first[:product_id]
+        error = account.validate_against_product(Product.find(product_id), acting_user)
         @errors[account.id] = error if error
       end
       unless @errors[account.id]
