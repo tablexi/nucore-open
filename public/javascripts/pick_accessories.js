@@ -20,7 +20,7 @@
     window.location = window.location.href;
   });
 
-  $('.end_reservation_link').live('click', function() {
+  $('.has_accessories').live('click', function() {
     var clicked = $(this)
       , url = clicked.attr('href');
 
@@ -32,7 +32,6 @@
       dialog = $('<div id="pick_accessories_dialog" style="display:hidden"/>');
       clicked.after(dialog);
     }
-
     // load pick_accessories_form into dialog
     dialog.load(
       url,

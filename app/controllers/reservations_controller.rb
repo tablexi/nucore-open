@@ -1,7 +1,7 @@
 class ReservationsController < ApplicationController
   customer_tab  :all
   before_filter :authenticate_user!
-  before_filter :check_acting_as,  :only => [ :switch_instrument, :show, :list]
+  before_filter :check_acting_as,  :only => [ :switch_instrument, :show, :list ]
   before_filter :load_basic_resources, :only => [:new, :create, :edit, :update]
   before_filter :load_and_check_resources, :only => [ :move, :switch_instrument, :pick_accessories ]
 
@@ -49,9 +49,9 @@ class ReservationsController < ApplicationController
     @available_statuses = ['upcoming', 'all']
     case params[:status]
     when 'upcoming'
-      @order_details = current_user.order_details.upcoming_reservations
+      @order_details = acting_user.order_details.upcoming_reservations
     when 'all'
-      @order_details = current_user.order_details.all_reservations
+      @order_details = acting_user.order_details.all_reservations
     else
       redirect_to reservations_status_path(:status => "upcoming")
       return
@@ -210,6 +210,8 @@ class ReservationsController < ApplicationController
 
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/switch_instrument
   def switch_instrument
+    authorize! :start_stop, @reservation
+    
     relay_error_msg = 'An error was encountered while attempted to toggle the instrument. Please try again.'
     raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == 'on' || params[:switch] == 'off')
     
@@ -329,8 +331,12 @@ class ReservationsController < ApplicationController
     load_basic_resources
     #@reservation  = @instrument.reservations.find_by_id_and_order_detail_id(params[:reservation_id], @order_detail.id)
     raise ActiveRecord::RecordNotFound if @reservation.blank?
-    raise ActiveRecord::RecordNotFound unless @order.user_id == session_user.id
   end
+
+  def ability_resource
+    return @reservation
+  end
+
   def set_windows
     user_price_groups     = @order.user.price_groups.presence || []
     # @order.account could be nil if quick reservation

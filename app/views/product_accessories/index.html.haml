@@ -11,13 +11,14 @@
 
 %p= t('product_accessories.index.description')
 
-- selectable_products = current_facility.products.where("products.type <> 'Instrument' AND products.id NOT IN (?)", @product.accessory_ids+[@product.id]).order(:name)
-- if selectable_products.count > 0
-  = form_for @product_accessory, :url => facility_product_product_accessories_path(current_facility, @product, @product_accessory) do |f|
-    %p
-      %label.required Product
-      = f.collection_select :accessory_id, selectable_products, :id, :to_s
-      = f.submit "Add as Accessory"
+- if can? :edit, ProductAccessory
+  - selectable_products = @facility.products.where("products.type <> 'Instrument' AND products.id NOT IN (?)", @product.accessory_ids+[@product.id]).order(:name)
+  - if selectable_products.count > 0
+    = form_for @product_accessory, :url => facility_product_product_accessories_path(@facility, @product, @product_accessory) do |f|
+      %p
+        %label.required Product
+        = f.collection_select :accessory_id, selectable_products, :id, :to_s
+        = f.submit "Add as Accessory"
 
 - if @product_accessories.empty?
   %p.notice No accessories defined for this product
@@ -29,5 +30,5 @@
     - @product_accessories.each do |pa|
       - accessory = pa.accessory
       %tr
-        %td.centered= link_to 'Remove', facility_product_product_accessory_path(current_facility, @product, pa), :method => :delete
+        %td.centered= link_to 'Remove', facility_product_product_accessory_path(current_facility, @product, pa), :method => :delete if can? :delete, pa
         %td= link_to accessory.to_s_with_status, send("manage_facility_#{accessory.class.name.downcase}_path", current_facility, accessory)

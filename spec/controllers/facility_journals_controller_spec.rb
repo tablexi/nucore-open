@@ -40,6 +40,8 @@ describe FacilityJournalsController do
       @pending_journal=Factory.create(:journal, :facility => @authable, :created_by => @admin.id, :journal_date => Time.zone.now, :is_successful => nil)
     end
 
+    it_should_deny_all [:staff, :senior_staff]
+
     it_should_allow_managers_only do
       response.should be_success
       assigns(:pending_journals).should == [@pending_journal]
@@ -56,6 +58,7 @@ describe FacilityJournalsController do
     end
 
     it_should_allow_managers_only
+    it_should_deny_all [:staff, :senior_staff]
 
   end
 
@@ -71,6 +74,8 @@ describe FacilityJournalsController do
         :journal_date => @journal_date
       }
     end
+
+    it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_managers_only :redirect, 'and respond gracefully when no order details given' do |user|
       journal_date=parse_usa_date(@journal_date)
@@ -96,6 +101,7 @@ describe FacilityJournalsController do
     end
 
     it_should_allow_managers_only
+    it_should_deny_all [:staff, :senior_staff]
 
   end
   
@@ -106,6 +112,8 @@ describe FacilityJournalsController do
       @params = { :facility_id => @authable.url_name }
       create_order_details
     end
+    
+    it_should_deny_all [:staff, :senior_staff]
     
     it_should_allow_managers_only do
       response.should be_success

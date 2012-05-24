@@ -43,6 +43,8 @@ describe FacilityStatementsController do
       should_not set_the_flash
     end
 
+    it_should_deny_all [:staff, :senior_staff]
+
   end
 
   context "new" do
@@ -56,6 +58,8 @@ describe FacilityStatementsController do
       response.should be_success
     end
     
+    it_should_deny_all [:staff, :senior_staff]
+
     it "should return the right order details" do
       grant_and_sign_in(@user)
       do_request
@@ -65,7 +69,7 @@ describe FacilityStatementsController do
       assigns(:order_detail_action).should == :send_statements
       (assigns(:order_details) - [@order_detail1, @order_detail3]).should be_empty
     end
-    
+
     it_should_support_searching
   end
   
@@ -80,6 +84,8 @@ describe FacilityStatementsController do
     it_should_allow_managers_only :redirect do
       response.should be_redirect
     end
+
+    it_should_deny_all [:staff, :senior_staff]
         
     it "should create and send statements" do
       @order_detail1.reload.reviewed_at.should < Time.zone.now
@@ -116,6 +122,8 @@ describe FacilityStatementsController do
     end
 
     it_should_allow_managers_only { assigns(:statement).should == @statement }
+
+    it_should_deny_all [:staff, :senior_staff]
 
   end
 

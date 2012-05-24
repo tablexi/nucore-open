@@ -57,12 +57,12 @@ module Role
 
 
   def manager?
-    facility_director? || facility_administrator?
+    facility_director? || facility_administrator? 
   end
 
 
   def operator_of?(facility)
-    manager_of?(facility) || facility_staff_of?(facility)
+    manager_of?(facility) || facility_staff_of?(facility) || facility_senior_staff_of?(facility)
   end
 
 

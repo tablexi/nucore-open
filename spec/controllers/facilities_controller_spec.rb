@@ -196,6 +196,9 @@ describe FacilitiesController do
       do_request
       assigns(:order_details).should contain_string_in_sql("`orders`.`facility_id` = ")
     end
+
+    it_should_deny_all [:senior_staff, :staff]
+
   end
 
 end

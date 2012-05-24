@@ -3,7 +3,7 @@
 def create_users
   @users=[]
 
-  [ 'admin', 'director', 'staff', 'guest', 'owner', 'purchaser' ].each do |name|
+  [ 'admin', 'director', 'staff', 'guest', 'owner', 'purchaser', 'senior_staff' ].each do |name|
     user=Factory.create(:user, :username => name)
     instance_variable_set("@#{name}".to_sym, user)
     @users << user
@@ -125,7 +125,7 @@ end
 
 
 def facility_operators
-  facility_managers + [ :staff ]
+  facility_managers + [ :staff, :senior_staff ]
 end
 
 
@@ -147,6 +147,23 @@ end
 #   A block holding successful auth tests. If given will be passed the
 #   user whose auth is currently being tested. Not required.
 def it_should_allow_managers_only(response=:success, spec_desc='', &eval)
+  it_should_require_login
+
+  it_should_deny(:guest, spec_desc)
+
+  it_should_deny(:staff, spec_desc)
+
+  it_should_deny(:senior_staff)
+
+  it_should_allow_all(facility_managers, spec_desc) do |user|
+    should respond_with response
+    instance_exec(user, &eval) if eval
+  end
+
+  it 'should test more than auth' unless eval
+end
+
+def it_should_allow_managers_and_senior_staff_only(response=:success, spec_desc='', &eval)
   it_should_require_login
 
   it_should_deny(:guest, spec_desc)
@@ -221,6 +238,9 @@ def grant_role(user, authable=nil)
     when 'purchaser'
       AccountUser.grant(user, AccountUser::ACCOUNT_PURCHASER, authable, @admin)
       user.reload.should be_purchaser_of(authable)
+    when 'senior_staff'
+      UserRole.grant(user, UserRole::FACILITY_SENIOR_STAFF, authable)
+      user.reload.should be_facility_senior_staff_of(authable)
   end
 end
 

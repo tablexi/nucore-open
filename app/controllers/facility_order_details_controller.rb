@@ -47,7 +47,7 @@ class FacilityOrderDetailsController < ApplicationController
     @order        = Order.find(params[:order_id])
     @order_detail = @order.order_details.find(params[:id])
 
-    unless @order_detail.state == 'new' || @order_detail.state == 'inprocess' || session_user.manager_of?(current_facility)
+    unless @order_detail.state == 'new' || @order_detail.state == 'inprocess' || can?(:update, @order_detail)
       raise ActiveRecord::RecordNotFound
     end
 

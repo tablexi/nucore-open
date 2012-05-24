@@ -9,7 +9,7 @@
 
 %h2=h @instrument
 
-- if session_user.manager_of?(current_facility)
+- if can? :new, PricePolicy #session_user.manager_of?(current_facility)
   %ul.horiz
     %li= link_to 'Add Pricing Rules', new_facility_instrument_price_policy_path
 

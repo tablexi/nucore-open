@@ -17,7 +17,7 @@
 
 %p You may define one or more non-overlapping schedule rules.  Schedule rules define how and when an instrument is available for reservation.
 
-- if session_user.manager_of?(current_facility)
+- if can? :add, ScheduleRule
   %ul
     %li= link_to 'Add Schedule Rule', new_facility_instrument_schedule_rule_path
 
@@ -33,7 +33,7 @@
     - @schedule_rules.each do |schedule_rule|
       %tr{:class => cycle('odd', 'even')}
         %td.centered
-          - if session_user.manager_of?(current_facility)
+          - if can? :edit, ScheduleRule
             = link_to 'Edit', edit_facility_instrument_schedule_rule_path(current_facility, @instrument, schedule_rule)
             %br
             = link_to 'Remove', facility_instrument_schedule_rule_path(current_facility, @instrument, schedule_rule), :confirm => 'Are you sure?', :method => :delete

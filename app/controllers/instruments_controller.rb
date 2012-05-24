@@ -1,6 +1,6 @@
 class InstrumentsController < ProductsCommonController
   customer_tab  :show
-  admin_tab     :agenda, :create, :edit, :index, :manage, :new, :schedule, :update
+  admin_tab     :create, :edit, :index, :manage, :new, :schedule, :update
   
   
   # GET /instruments
@@ -74,10 +74,6 @@ class InstrumentsController < ProductsCommonController
   # GET /instruments/1/schedule
   def schedule
     @admin_reservations = @instrument.reservations.find(:all, :conditions => ['reserve_end_at > ? AND order_detail_id IS NULL', Time.zone.now])
-  end
-
-  # GET /instruments/1/agenda
-  def agenda
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/status

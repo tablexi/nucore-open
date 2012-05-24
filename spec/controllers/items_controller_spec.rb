@@ -135,7 +135,7 @@ describe ItemsController do
       @action=:new
     end
 
-    it_should_allow_operators_only do
+    it_should_allow_managers_only do
       should assign_to(:item).with_kind_of Item
       should render_template 'new'
     end
@@ -150,7 +150,7 @@ describe ItemsController do
       @action=:edit
     end
 
-    it_should_allow_operators_only do
+    it_should_allow_managers_only do
       should render_template 'edit'
     end
 
@@ -165,7 +165,7 @@ describe ItemsController do
       @params.merge!(:item => Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
     end
 
-    it_should_allow_operators_only :redirect do
+    it_should_allow_managers_only :redirect do
       should assign_to(:item).with_kind_of Item
       should set_the_flash
       assert_redirected_to [:manage, @authable, assigns(:item)]
@@ -182,7 +182,7 @@ describe ItemsController do
       @params.merge!(:item => Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
     end
 
-    it_should_allow_operators_only :redirect do
+    it_should_allow_managers_only :redirect do
       should assign_to(:item).with_kind_of Item
       assigns(:item).should == @item
       should set_the_flash
@@ -199,7 +199,7 @@ describe ItemsController do
       @action=:destroy
     end
 
-    it_should_allow_operators_only :redirect do
+    it_should_allow_managers_only :redirect do
       should assign_to(:item).with_kind_of Item
       should_be_destroyed @item
       assert_redirected_to facility_items_url

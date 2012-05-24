@@ -5,6 +5,7 @@ class FacilityAccountsController < ApplicationController
   before_filter :init_current_facility
 
   load_and_authorize_resource :class => Account
+  before_filter :check_billing_access, :only => [:credit_cards, :update_credit_cards, :purchase_orders, :update_purchase_orders, :accounts_receivable, :show_statement] 
 
   layout 'two_column'
 
@@ -15,8 +16,7 @@ class FacilityAccountsController < ApplicationController
 
   # GET /facilties/:facility_id/accounts
   def index
-    @order_details = OrderDetail.for_facility(current_facility).includes(:account)
-    @accounts = @order_details.collect(&:account).uniq.paginate(:page => params[:page])
+    @accounts = Account.for_facility(current_facility).joins(:order_details).group("accounts.id").paginate(:page => params[:page])
   end
 
   # GET /facilties/:facility_id/accounts/:id

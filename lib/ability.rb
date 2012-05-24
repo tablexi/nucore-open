@@ -23,12 +23,9 @@ class Ability
     return unless resource
 
     if user.billing_administrator?
-      manageable_facility_ids = Facility.select(:id).collect(&:id)
       
       # can manage orders / order_details / reservations
-      can :manage, Order
-      can :manage, OrderDetail
-      can :manage, Reservation
+      can :manage, [Order, OrderDetail, Reservation]
       
       # can manage all journals
       can :manage, Journal
@@ -37,30 +34,32 @@ class Ability
       can :manage, Account
 
       # can list transactions for a facility
-      can :transactions, Facility
+      can [:transactions, :manage_billing], Facility
     end
 
     if resource.is_a?(Facility)
-
       can :complete, Surveyor
-      
-      
+     
       if user.operator_of?(resource)
         can :manage, [
-          AccountPriceGroupMember, Service, BundleProduct,
-          Bundle, OrderDetail, Order, Reservation, Instrument,
-          Item, ProductUser, Product, ProductAccessory, UserPriceGroupMember
+          AccountPriceGroupMember, OrderDetail, Order, Reservation,
+          UserPriceGroupMember, ProductUser
         ]
 
-        can [:uploader_create, :destroy], FileUpload do |fileupload|
+        can [:index, :view_details, :schedule, :show], [Product]
+
+        can [:upload, :uploader_create, :destroy], FileUpload do |fileupload|
           fileupload.file_type == 'sample_result'
         end
 
         can :manage, User if controller.is_a?(UsersController)
 
         cannot :show_problems, Order
-        can [ :schedule, :agenda, :list ], Facility
-        can :index, [ InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy ]
+        can [ :schedule, :agenda, :list, :show ], Facility
+
+        can :index, [ BundleProduct, PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup ]
+        can [:instrument_status, :switch], Instrument
+        can :edit, [PriceGroupProduct]
       end
 
       if user.facility_director_of?(resource)
@@ -70,18 +69,26 @@ class Ability
       if user.manager_of?(resource)
         can :manage, [
           AccountUser, Account, FacilityAccount, Journal,
-          Statement, FileUpload, InstrumentPricePolicy,
+          Statement, FileUpload, PricePolicy, InstrumentPricePolicy,
           ItemPricePolicy, OrderStatus, PriceGroup, ReportsController,
-          ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup
+          ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup,
+          ProductAccessory, Product, BundleProduct
         ]
 
         can :manage, User if controller.is_a?(FacilityUsersController)
 
-        can [ :update, :manage ], Facility
         can :show_problems, Order
+        can [:update, :manage], Facility
+      end      
+      
+      # Facility senior staff is based off of staff, but has a few more abilities
+      if in_role?(user, resource, UserRole::FACILITY_SENIOR_STAFF)
+        can :manage, [ScheduleRule, ProductUser, ProductAccessGroup, FileUpload, ProductAccessory]
+        
+        # they can get to reports controller, but they're not allowed to export all
+        can :manage, ReportsController
+        cannot :export_all, ReportsController
       end
-      
-      
 
     elsif resource.is_a?(Account)
 
@@ -91,8 +98,18 @@ class Ability
         can [:show, :suspend, :unsuspend, :user_search, :user_accounts, :statements, :show_statement, :index], Statement
       end
 
+    elsif resource.is_a?(Reservation)
+      can :manage, Reservation if user.operator_of?(resource.instrument.facility)
+      can :start_stop, Reservation if resource.order_detail.order.user_id == user.id
     end
 
+  end
+
+  def in_role?(user, facility, *roles)
+    # facility_user_roles returns full objects; we just want the names
+    facility_roles = user.facility_user_roles(facility).map(&:role)
+    # do the roles the user is part of match any of the potential roles
+    (facility_roles & roles).any?
   end
 
 end
