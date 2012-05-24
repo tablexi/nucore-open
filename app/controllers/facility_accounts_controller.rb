@@ -16,7 +16,7 @@ class FacilityAccountsController < ApplicationController
 
   # GET /facilties/:facility_id/accounts
   def index
-    @accounts = Account.for_facility(current_facility).joins(:order_details).group("accounts.id").paginate(:page => params[:page])
+    @accounts = Account.has_orders_for_facility(current_facility).paginate(:page => params[:page])
   end
 
   # GET /facilties/:facility_id/accounts/:id
