@@ -26,10 +26,9 @@
     %li
       = link_to 'Export', '#', :id => 'export'
     %li
-      - unless controller_name == 'general_reports'
-        - if can? :export_all, ReportsController
-          - attrs={ :id => 'export-all' }
-          = link_to 'Export All', '#', attrs
+      - if controller_name == 'general_reports' && can?(:export_all, ReportsController)
+        - attrs={ :id => 'export-all' }
+        = link_to 'Export All', '#', attrs
 
   %div#tabs
     = render :partial => 'report_tabs'
