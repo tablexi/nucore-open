@@ -40,13 +40,19 @@ class Account < ActiveRecord::Base
     unless facility.all_facility?
       all_subclass_names = descendants.collect { |clazz| clazz.to_s }
 
-      accounts = accounts.where("type in (:allow_all) or (type in (:limit_one) and facility_id = :facility)", 
+      accounts = accounts.where("accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)", 
             {:allow_all => all_subclass_names - @@limited_to_one_facility_subclasses,
               :limit_one => @@limited_to_one_facility_subclasses,
               :facility => facility})
     end
 
     accounts  
+  end
+
+  # find all accounts that have ordered fror a facility
+  def self.has_orders_for_facility(facility)
+    ids = OrderDetail.for_facility(facility).select("distinct order_details.account_id").collect(&:account_id)
+    where(:id => ids)
   end
   
   def facilities
