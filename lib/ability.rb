@@ -68,7 +68,7 @@ class Ability
 
       if user.manager_of?(resource)
         can :manage, [
-          AccountUser, Account, FacilityAccount, Journal,
+          AccountUser, FacilityAccount, Journal,
           Statement, FileUpload, PricePolicy, InstrumentPricePolicy,
           ItemPricePolicy, OrderStatus, PriceGroup, ReportsController,
           ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup,
@@ -76,6 +76,12 @@ class Ability
         ]
 
         can :manage, User if controller.is_a?(FacilityUsersController)
+
+        # A facility admin can manage an account if it has no facility (i.e. it's a chart string) or the account
+        # is attached to the current facility.
+        can :manage, Account do |account|
+          account.facility.nil? || account.facility == resource
+        end
 
         can :show_problems, Order
         can [:update, :manage], Facility
@@ -91,7 +97,6 @@ class Ability
       end
 
     elsif resource.is_a?(Account)
-
       if user.account_administrator_of?(resource)
         can :manage, Account
         can :manage, AccountUser
