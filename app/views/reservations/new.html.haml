@@ -40,7 +40,7 @@
   %h3= t('.h3')
   %ul
     - docs.each do |file_upload|
-      %li.document= link_to file_upload.name, file_upload.file.url
+      %li.document= link_to file_upload.name, file_upload.file.url, :target => '_blank'
 
 = form_for([@order, @order_detail, @reservation]) do |f|
   = f.error_messages
