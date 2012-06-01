@@ -132,7 +132,7 @@ class GeneralReportsController < ReportsController
     if NUCore::Database.oracle?
       result = result.includes(:account, :price_policy, :product)
     else
-      result = result.includes(:orders, :account, :price_policy, :product)
+      result = result.includes(:order, :account, :price_policy, :product)
     end
 
     result                
