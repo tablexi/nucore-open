@@ -389,22 +389,30 @@ class OrderDetail < ActiveRecord::Base
     self.estimated_cost    = nil
     self.estimated_subsidy = nil
     second_account=account unless second_account
-
+    
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
-
+    
     policy_holder=product
-    est_args=[ quantity ]
 
     if product.is_a?(Instrument)
       return unless reservation
       policy_holder=reservation
-      est_args=[ reservation.reserve_start_at, reservation.reserve_end_at ]
     end
-
+    
     pp = policy_holder.cheapest_price_policy((order.user.price_groups + second_account.price_groups).flatten.uniq)
-    return unless pp
-    costs = pp.estimate_cost_and_subsidy(*est_args)
+    
+    assign_estimated_price_from_policy pp
+  end
+
+  def assign_estimated_price_from_policy(price_policy)
+    return unless price_policy
+    if product.is_a?(Instrument)
+      est_args = [ reservation.reserve_start_at, reservation.reserve_end_at ]
+    else
+      est_args = [ quantity ]
+    end
+    costs = price_policy.estimate_cost_and_subsidy(*est_args)
     self.estimated_cost    = costs[:cost]
     self.estimated_subsidy = costs[:subsidy]
   end

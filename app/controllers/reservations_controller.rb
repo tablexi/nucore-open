@@ -169,14 +169,8 @@ class ReservationsController < ApplicationController
     Reservation.transaction do
       begin
         @reservation.save_as_user!(session_user)
-        groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
-        @cheapest_price_policy = @reservation.cheapest_price_policy(groups)
-        if @cheapest_price_policy
-          costs = @cheapest_price_policy.estimate_cost_and_subsidy(@reservation.reserve_start_at, @reservation.reserve_end_at)
-          @order_detail.estimated_cost    = costs[:cost]
-          @order_detail.estimated_subsidy = costs[:subsidy]
-          @order_detail.save!
-        end
+        @order_detail.assign_estimated_price
+        @order_detail.save!
         flash[:notice] = 'The reservation was successfully updated.'
         redirect_to (@order.purchased? ? reservations_path : cart_path) and return
       rescue ActiveRecord::RecordInvalid => e
