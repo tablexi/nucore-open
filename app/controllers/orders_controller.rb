@@ -65,20 +65,23 @@ class OrdersController < ApplicationController
     items = items.select { |od| od.is_a?(Hash) and od[:quantity].present? and (od[:quantity] = od[:quantity].to_i) > 0 }
     return redirect_to(:back, :notice => "Please add at least one quantity to order something") unless items.size > 0
 
+    first_product = Product.find(items.first[:product_id])
+
     # if acting_as, make sure the session user can place orders for the facility
-    if acting_as? && !session_user.administrator? && !manageable_facilities.include?(current_facility)
+    if acting_as? && !session_user.administrator? && !manageable_facilities.include?(first_product.facility)
       flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{current_facility.try(:name)}."
       redirect_to order_url(@order) and return
     end
 
+
+
     ## handle a single instrument reservation
     if items.size == 1 and (quantity = items.first[:quantity].to_i) == 1 #only one od w/ quantity of 1
-      if product = Product.find(items.first[:product_id]) and            # and can find product
-         product.respond_to?(:reservations)                              # and product is reservable
+      if first_product.respond_to?(:reservations)                              # and product is reservable
         
         # make a new cart w/ instrument (unless this order is empty.. then use that one)
         @order = acting_user.cart(session_user, @order.order_details.empty?)
-        @order.add(product, 1)
+        @order.add(first_product, 1)
 
         # bypass cart kicking user over to new reservation screen
         return redirect_to new_order_order_detail_reservation_url(@order.id, @order.order_details.first)
