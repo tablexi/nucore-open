@@ -122,8 +122,13 @@ class GeneralReportsController < ReportsController
                 where('order_statuses.id' => stati).
                 joins('LEFT JOIN orders ON order_details.order_id = orders.id').
                 where("orders.facility_id = ? AND #{date_column} >= ? AND #{date_column} <= ?", current_facility.id, @date_start, @date_end).
-                includes(:order, :account, :price_policy, :product).
-                all
+                ## TODO 
+                # there is a bug in activerecord-oracle-enhanced 1.3.0 and rails 3.0.x that causes an ORA-01795: maximum number of expressions in a list is 1000
+                # error if we're trying to join more than 1000 orders. oracle-enhanced 1.3.2 contains a fix, but only works in Rails 3.1.
+                # We've removed :orders from the includes to prevent the SQL error, but it results in N+1 on orders. Make sure
+                # to put it back when we upgrade to Rails 3.1/3.2
+                # includes(:orders, :account, :price_policy, :product)
+                includes(:account, :price_policy, :product)
   end
 
 end
