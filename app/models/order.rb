@@ -200,6 +200,17 @@ class Order < ActiveRecord::Base
     #raise I18n.t('models.order.auto_assign_account', :product_name => product.name) if self.account.nil?
   #end
 
+  # If we update the account_id of the order, update the account_id of
+  # each of the child order_details
+  # currently being called explicitly, but could possibly go in an after_save filter
+  def update_order_detail_accounts    
+    account.reload if account && account.id != account_id
+    return unless account
+    order_details.each do |od|
+      od.update_account(account)
+      od.save!
+    end
+  end
 
   private
 
@@ -211,4 +222,5 @@ class Order < ActiveRecord::Base
     }
     cost
   end
+
 end
