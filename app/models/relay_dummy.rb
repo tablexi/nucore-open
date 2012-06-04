@@ -1,7 +1,7 @@
 class RelayDummy < Relay
 
   def get_status_port(port)
-    @active
+    @active || instrument.current_instrument_status.is_on?
   end
 
   def activate_port(port)
@@ -13,6 +13,6 @@ class RelayDummy < Relay
   end
 
   def control_mechanism
-    'timer'
+    CONTROL_MECHANISMS[:timer]
   end
 end
