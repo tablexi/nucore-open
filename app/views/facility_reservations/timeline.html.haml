@@ -9,9 +9,12 @@
   = current_facility
 %h2
   = link_to "&laquo;".html_safe, timeline_facility_reservations_path(:date => format_usa_date(@display_date - 1.day))
-  = human_date(@display_date)
+  = human_date_extra_info(@display_date)
   = link_to "&raquo;".html_safe, timeline_facility_reservations_path(:date => format_usa_date(@display_date + 1.day))
 %br/
+= form_tag timeline_facility_reservations_path(current_facility), :method => :get do
+  = text_field_tag 'date', format_usa_date(@display_date), :class => 'datepicker'
+  = submit_tag 'Go'
 - @instruments.each do |instrument|
   %h3= instrument
   -# Add .reschedulable to enable drag/drop

@@ -15,6 +15,18 @@ module DateHelper
     "#{Date::MONTHNAMES[date.mon]} #{date.day}, #{date.year}"
   end
 
+  def human_date_with_day(date)
+    date.strftime("%A, %B %e, %Y")
+  end
+
+  def human_date_extra_info(date)
+    result = ""
+    result << "Today, " if date.beginning_of_day == Time.zone.now.beginning_of_day
+    result << "Tomorrow, " if date.beginning_of_day == (Time.zone.now.beginning_of_day + 1.day)
+    result << "Yesterday, " if date.beginning_of_day == (Time.zone.now.beginning_of_day - 1.day)
+    result << human_date_with_day(date)
+  end
+
   def human_datetime(dt, args = {})
     begin
       if args[:date_only]

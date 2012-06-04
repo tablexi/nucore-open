@@ -33,6 +33,10 @@ $(function() {
         $('.tip').tooltipsy({
             content: tooltipContent
         });
+
+        // Date select calendar
+        $(".datepicker").datepicker();
+
         //Get the Current Hour, create a class and add it the time div
         time = function() {
           var currentTime = new Date();
