@@ -201,16 +201,16 @@ describe ReservationsController do
 
       it_should_allow :guest do
         @order.reload.account.should == @account2
+        @order.order_details.first.account.should == @account2
         @order_detail.reload.account.should == @account2
       end
 
     end
 
-    context 'as bundle' do
+    context 'with other things in the cart (bundle or multi-add)' do
 
       before :each do
-        bundle=Factory.create(:bundle, :facility_account => @facility_account, :facility => @authable)
-        @order_detail.update_attribute(:bundle_product_id, bundle.id)
+        @order.add(@instrument, 1)
       end
 
       it_should_allow :staff, 'but should redirect to cart' do

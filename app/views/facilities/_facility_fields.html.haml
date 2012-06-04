@@ -21,6 +21,11 @@
   = f.label :description, nil
   %p.instruction= t('facilities.facility_fields.description')
   = f.text_area :description, :class => 'editor'
+  
+%li.box
+  %b= f.check_box :accepts_multi_add
+  = t('facilities.facility_fields.accepts_multi_add')
+
 %li.box
   %p= t('facilities.facility_fields.payment_options')
   %br

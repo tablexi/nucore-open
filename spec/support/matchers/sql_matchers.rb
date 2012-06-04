@@ -41,5 +41,9 @@ else
     match do |actual|
       actual.to_sql.include? expected
     end
+
+    failure_message_for_should do |actual|
+      "Expected: #{actual.to_sql}\n To Contain: #{expected}"
+    end
   end
 end

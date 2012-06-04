@@ -24,7 +24,7 @@ describe ProductAccessGroupsController do
       @action = :index
       @method = :get
     end
-    it_should_allow_managers_only :success, 'see index' do
+    it_should_allow_operators_only :success, 'see index' do
       assigns[:facility].should == @authable
       assigns[:instrument].should == @instrument
       assigns[:product_access_groups].should == [@level, @level2]
@@ -36,7 +36,7 @@ describe ProductAccessGroupsController do
       @action = :new
       @method = :get
     end
-    it_should_allow_managers_only :success, 'do new' do
+    it_should_allow_managers_and_senior_staff_only :success, 'do new' do
       assigns[:facility].should == @authable
       assigns[:instrument].should == @instrument
       assigns[:product_access_group].should be_new_record
@@ -53,7 +53,7 @@ describe ProductAccessGroupsController do
       before :each do
         @params.merge!({:product_access_group => Factory.attributes_for(:product_access_group)})
       end
-      it_should_allow_managers_only :redirect, 'do create' do
+      it_should_allow_managers_and_senior_staff_only :redirect, 'do create' do
         assigns[:facility].should == @authable
         assigns[:instrument].should == @instrument
         assigns[:product_access_group].should_not be_new_record
@@ -65,7 +65,7 @@ describe ProductAccessGroupsController do
       before :each do
         @params.merge!({:product_access_group => Factory.attributes_for(:product_access_group, :name => '')})
       end
-      it_should_allow_managers_only :success, 'do create' do
+      it_should_allow_managers_and_senior_staff_only :success, 'do create' do
         assigns[:facility].should == @authable
         assigns[:instrument].should == @instrument
         assigns[:product_access_group].should be_new_record
@@ -82,7 +82,7 @@ describe ProductAccessGroupsController do
       @product_access_group = Factory.create(:product_access_group, :product_id => @instrument.id)
       @params.merge!({:id => @product_access_group})
     end
-    it_should_allow_managers_only :success, 'do edit' do
+    it_should_allow_managers_and_senior_staff_only :success, 'do edit' do
       assigns[:facility].should == @authable
       assigns[:instrument].should == @instrument
       assigns[:product_access_group].should == @product_access_group
@@ -100,7 +100,7 @@ describe ProductAccessGroupsController do
       before :each do
         @params.merge!({:product_access_group => {:name => 'new name'}})
       end
-      it_should_allow_managers_only :redirect, 'do update' do
+      it_should_allow_managers_and_senior_staff_only :redirect, 'do update' do
         assigns[:facility].should == @authable
         assigns[:instrument].should == @instrument
         assigns[:product_access_group].should == @product_access_group
@@ -113,7 +113,7 @@ describe ProductAccessGroupsController do
       before :each do
         @params.merge!({:product_access_group => {:name => ''}})
       end
-      it_should_allow_managers_only :success, 'do update' do
+      it_should_allow_managers_and_senior_staff_only :success, 'do update' do
         assigns[:facility].should == @authable
         assigns[:instrument].should == @instrument
         assigns[:product_access_group].should == @product_access_group
@@ -130,7 +130,7 @@ describe ProductAccessGroupsController do
       @product_access_group = Factory.create(:product_access_group, :product => @instrument)
       @params.merge!({:id => @product_access_group.id})
     end
-    it_should_allow_managers_only :redirect, 'do delete' do
+    it_should_allow_managers_and_senior_staff_only :redirect, 'do delete' do
       assigns[:product_access_group].should be_destroyed
       flash[:notice].should_not be_nil
       response.should redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))

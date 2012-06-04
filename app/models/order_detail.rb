@@ -46,16 +46,29 @@ class OrderDetail < ActiveRecord::Base
                                                :conditions => ['orders.facility_id = ? AND order_details.reviewed_at < ?', facility.id, Time.zone.now],
                                                :order => 'order_details.created_at DESC' }}
 
-  scope :for_facility, lambda {|facility| { :joins => :order, :conditions => [ 'orders.facility_id = ?', facility.id ], :order => 'order_details.created_at DESC' }}
-
-  def self.for_facility_id(facility_id)
-    joins(:order).
-    where(:orders => { :facility_id => facility_id})
+  def self.for_facility(facility)
+    for_facility_id(facility.id)
   end
+
+  def self.for_facility_id(facility_id=nil)
+    details = scoped.joins(:order)
+
+    unless facility_id.nil?
+      details = details.where(:orders => { :facility_id => facility_id})
+    end
+    
+    details
+  end
+
   def self.for_facility_url(facility_url)
-    joins(:order).
-    joins(:order => :facility).
-    where(:orders => {:facilities => {:url_name => facility_url}})
+    details = scoped.joins(:order)
+
+    unless facility_url.nil?
+      details = details.joins(:order => :facility)
+      details = details.where(:facilities => {:url_name => facility_url})
+    end
+    
+    details
   end
   
   scope :for_facility_with_price_policy, lambda { |facility| {
@@ -63,13 +76,12 @@ class OrderDetail < ActiveRecord::Base
     :conditions => [ 'orders.facility_id = ? AND price_policy_id IS NOT NULL', facility.id ], :order => 'order_details.fulfilled_at DESC' }
   }
 
-  scope :need_notification, lambda { |facility| {
+  scope :need_notification, lambda {{
     :joins => :product,
-    :conditions => ['products.facility_id = ?
-                     AND order_details.state = ?
+    :conditions => ['order_details.state = ?
                      AND order_details.reviewed_at IS NULL
                      AND order_details.price_policy_id IS NOT NULL
-                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete']
+                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', 'complete']
   }}
   
   def self.all_need_notification
@@ -114,16 +126,15 @@ class OrderDetail < ActiveRecord::Base
                      AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete', Time.zone.now, 'CreditCardAccount', 'PurchaseOrderAccount']
   }}
 
-  scope :need_journal, lambda { |facility| {
+  scope :need_journal, lambda { {
     :joins => [:product, :account],
-    :conditions => ['products.facility_id = ?
-                     AND order_details.state = ?
+    :conditions => ['order_details.state = ?
                      AND reviewed_at <= ?
                      AND accounts.type = ?
                      AND journal_id IS NULL
                      AND order_details.price_policy_id IS NOT NULL
-                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', facility.id, 'complete', Time.zone.now, 'NufsAccount']
-  }}
+                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', 'complete', Time.zone.now, 'NufsAccount']
+  } }
 
   scope :statemented, lambda {|facility| {
       :joins => :order,
@@ -505,16 +516,12 @@ class OrderDetail < ActiveRecord::Base
 
   def self.account_unreconciled(facility, account)
     if account.is_a?(NufsAccount)
-      joins(:order, :journal).
-        where(
-          'orders.facility_id = ?  AND order_details.account_id = ?  AND order_details.state = ?  AND journals.is_successful = ?',
-          facility.id, account.id, 'complete', true
+      joins(:journal).for_facility(facility).where("order_details.account_id = ?  AND order_details.state = ?  AND journals.is_successful = ?",
+          account.id, 'complete', true
         ).all
     else
-      joins(:order).
-        where(
-          'orders.facility_id = ?  AND order_details.account_id = ?  AND order_details.state = ?  AND order_details.statement_id IS NOT NULL',
-          facility.id, account.id, 'complete'
+      for_facility(facility).where("order_details.account_id = ?  AND order_details.state = ?  AND order_details.statement_id IS NOT NULL",
+          account.id, 'complete'
        ).all
     end
   end

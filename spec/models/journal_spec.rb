@@ -13,17 +13,85 @@ describe Journal do
     @journal.id.should_not be_nil
   end
   
-  it "allows only one active journal per facility" do
-    assert @journal.save
-    @journal.id.should_not be_nil
-    
-    @journal2 = Journal.create(:facility => @facility, :created_by => 1, :journal_date => Time.zone.now)
-    @journal2.should_not be_valid
-    
-    @journal.update_attributes({:is_successful => false, :reference => '12345', :updated_by => 1})
-    @journal.should be_valid
-    @journal2.should be_valid
+  context "journal creation" do
+    before :each do
+      @admin = Factory(:user)
+      @facilitya = Factory.create(:facility, :abbreviation => "A")
+      @facilityb = Factory.create(:facility, :abbreviation => "B")
+      @facilityc = Factory.create(:facility, :abbreviation => "C")
+      @facilityd = Factory.create(:facility, :abbreviation => "D")
+      @account = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @admin, :created_by => @admin, :user_role => 'Owner']], :facility_id => @facilitya.id)
+      
+      # little helper to create the calls which the controller performs 
+      def create_pending_journal_for(*facilities_list)
+        @ods = []
+        
+        facilities_list.each do |f|
+          od = place_and_complete_item_order(@admin, f, @account, true)
+          define_open_account(@item.account, @account.account_number)
+
+          @ods << od
+        end
+
+        # .should raise_error and .should_not raise_error
+        # expect to be called on a block / Proc
+        return Proc.new do
+          journal  = Journal.create!(
+            :facility_id => (facilities_list.size == 1 ? facilities_list.first.id : nil),
+            :created_by => @admin.id,
+            :journal_date => Time.zone.now
+          )
+          
+          journal.create_journal_rows!(@ods)
+
+          journal
+        end
+      end
+    end
+
+    context "(with pending journal for A)" do
+      before :each do
+        create_pending_journal_for(@facilitya)
+      end
+
+      it "should not allow creation of a journal for A" do
+        create_pending_journal_for( @facilitya).should_not raise_error(Exception, /pending journal/)
+      end
+    end
+      
+
+    context "(with: pending journal for A & B)" do
+      before :each do
+        create_pending_journal_for( @facilitya, @facilityb ).should_not raise_error(Exception, /pending journal/)
+      end
+
+      it "should not allow creation of a journal for B & C (journal pending on B)" do
+        create_pending_journal_for( @facilityb, @facilityc ).should raise_error(Exception, /pending journal/)
+
+      end
+
+      it "should not allow creation of a journal for A (journal pending on A)" do
+        create_pending_journal_for( @facilitya ).should raise_error(Exception, /pending journal/)
+
+      end
+        
+      it "should not allow creation of a journal for B (journal pending on B)" do
+        create_pending_journal_for( @facilityb ).should raise_error(Exception, /pending journal/)
+
+      end
+
+      it "should allow creation of a journal for C" do
+        create_pending_journal_for( @facilityc ).should_not raise_error(Exception, /pending journal/)
+
+      end
+
+      it "should allow creation of a journal for C & D (no journals on either C or D)" do
+        create_pending_journal_for( @facilityc, @facilityd ).should_not raise_error(Exception, /pending journal/)
+      end
+    end
   end
+
+  
   
   it "requires reference on update" do
     assert @journal.save

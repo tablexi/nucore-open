@@ -73,7 +73,7 @@ class ProductUsersController < ApplicationController
     end
     
     flash[:notice] = t("product_users.update_restrictions.notice")
-    redirect_to self.send("facility_#{product_param_name}_users_url", @facility, @product)
+    redirect_to self.send("facility_#{product_param_name}_users_url", current_facility, @product)
   end
 
   def init_product

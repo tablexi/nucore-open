@@ -9,21 +9,21 @@
 
 %h2= @product
 %p If provided, documentation will be available for download from the product page.
-
-= form_for(@file, :url => add_product_file_path(current_facility, @product.parameterize, @product), :html => { :multipart => true, :method => :post }) do |f|
-  = f.error_messages
-  = f.hidden_field :file_type
-  %ul.form
-    %li
-      = f.label :file, 'File', :class => 'required'
-      = f.file_field :file
-    %li
-      = f.label :upload, 'Name', :class => 'required'
-      -# TK fix this working
-      %p.instruction Name of the file as displayed on the product page
-      = f.text_field :name, :value => ''
-  %ul.horiz
-    %li= f.submit('Upload', :disable_with => "Uploading...", :class => 'btn')
+- if can? :create, @file
+  = form_for(@file, :url => add_product_file_path(current_facility, @product.parameterize, @product), :html => { :multipart => true, :method => :post }) do |f|
+    = f.error_messages
+    = f.hidden_field :file_type
+    %ul.form
+      %li
+        = f.label :file, 'File', :class => 'required'
+        = f.file_field :file
+      %li
+        = f.label :upload, 'Name', :class => 'required'
+        -# TK fix this working
+        %p.instruction Name of the file as displayed on the product page
+        = f.text_field :name, :value => ''
+    %ul.horiz
+      %li= f.submit('Upload', :disable_with => "Uploading...", :class => 'btn')
 %br
 - files = @product.file_uploads.send("#{@file.file_type || params[:file_type]}")
 - if files.empty?
@@ -37,7 +37,7 @@
       %th Uploaded by
     - files.each do |file_upload|
       %tr
-        %td= link_to 'Delete', remove_product_file_path(current_facility, @product.parameterize, @product, file_upload), :method => :delete, :confirm => 'Are you sure you wish to remove this file?'
+        %td= link_to 'Delete', remove_product_file_path(current_facility, @product.parameterize, @product, file_upload), :method => :delete, :confirm => 'Are you sure you wish to remove this file?' if can? :delete, file_upload
         %td= link_to file_upload.name, file_upload.file.url
         %td= human_datetime(file_upload.created_at)
         %td= User.find(file_upload.created_by).full_name

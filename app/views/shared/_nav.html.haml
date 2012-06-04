@@ -8,13 +8,13 @@
   - if current_user.operator_of?(current_facility)
     - links.push({:url => facility_orders_path(current_facility),    :text => 'Orders',   :tab_name => 'admin_orders'})
     - links.push({:url => facility_reservations_path(current_facility),    :text => 'Reservations',   :tab_name => 'admin_reservations'})
-    - links.push({:url => facility_transactions_path(current_facility), :text => 'Billing', :tab_name => 'admin_billing'})
+    - links.push({:url => facility_transactions_path(current_facility), :text => 'Billing', :tab_name => 'admin_billing'}) if can? :manage_billing, current_facility
     - links.push({:url => facility_products_path(current_facility),   :text => 'Products', :tab_name => 'admin_products'})
     - links.push({:url => facility_users_path(current_facility),      :text => 'Users',    :tab_name => 'admin_users'})
     - reports_sub=[{:url => product_facility_general_reports_path(current_facility), :text => 'General'},
                    {:url => instrument_facility_instrument_reports_path(current_facility), :text => 'Instrument Utilization'}]
-    - links.push({:text => 'Reports',  :tab_name => 'admin_reports', :subnav => reports_sub})
-    - if current_user.manager_of?(current_facility)
+    - links.push({:text => 'Reports',  :tab_name => 'admin_reports', :subnav => reports_sub}) if can? :manage, ReportsController
+    - if can? :edit, current_facility #current_user.manager_of?(current_facility)
       - links.push({:url => manage_facility_path(current_facility), :text => 'Admin', :tab_name => 'admin_facility'})
 .container_12
   .grid_12
@@ -30,14 +30,14 @@
                 - link[:subnav].each do |sub_links|
                   %li= link_to sub_links[:text], sub_links[:url]
 
-      - facilities = manageable_facilities
+      - facilities = operable_facilities
 
       - if !acting_as? && current_user && current_user.administrator?
         %li.right{:class => controller.active_tab == 'global_settings' ? 'active' : ''}
           .divider
             = link_to t('pages.global_settings'), affiliates_path
 
-      - if !acting_as? && (!facilities.empty? || (current_user && current_user.administrator?))
+      - if !acting_as? && (facilities.any? || (current_user && current_user.administrator?))
         %li.right{:class => controller.active_tab == 'manage_facilites' ? 'active' : ''}
           .divider
             = link_to t("pages.manage", :model => t('activerecord.models.facility', :count => 2)), :list_facilities
@@ -46,4 +46,8 @@
                 - facilities.each do |facility|
                   %li= link_to facility.name, facility_orders_path(facility)
 
+      - if !acting_as? && current_user && current_user.billing_administrator?
+        %li.right{:class => !controller.active_tab.nil? && controller.active_tab == 'admin_billing' ? 'active' : ''}
+          .divider
+            = link_to t("pages.global_billing"), facility_transactions_path('all')
   .clear

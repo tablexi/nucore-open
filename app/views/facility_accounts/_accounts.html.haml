@@ -2,13 +2,11 @@
 
 %table
   %tr
-    %th
     %th= t('facility_accounts.accounts.th.account.number')
     %th= t('facility_accounts.accounts.th.account.type')
     %th= t('facility_accounts.accounts.th.access')
   - accounts.each do |account|
-    %tr
-      %td
-      %td= link_to account, facility_account_path(current_facility, account)
+    %tr  
+      %td= link_to_if can?(:manage, account), account, facility_account_path(current_facility, account)
       %td=h account.type_string
       %td= role

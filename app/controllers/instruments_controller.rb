@@ -1,6 +1,6 @@
 class InstrumentsController < ProductsCommonController
   customer_tab  :show
-  admin_tab     :agenda, :create, :edit, :index, :manage, :new, :schedule, :update
+  admin_tab     :create, :edit, :index, :manage, :new, :schedule, :update
   
   
   # GET /instruments
@@ -56,7 +56,7 @@ class InstrumentsController < ProductsCommonController
       return redirect_to facility_path(current_facility)
     end
 
-    redirect_to add_order_path(acting_user.cart(session_user, false), :product_id => @instrument.id, :quantity => 1)
+    redirect_to add_order_path(acting_user.cart(session_user), :order => {:order_details => [{:product_id => @instrument.id, :quantity => 1}]})
   end
 
   # PUT /instruments/1
@@ -74,10 +74,6 @@ class InstrumentsController < ProductsCommonController
   # GET /instruments/1/schedule
   def schedule
     @admin_reservations = @instrument.reservations.find(:all, :conditions => ['reserve_end_at > ? AND order_detail_id IS NULL', Time.zone.now])
-  end
-
-  # GET /instruments/1/agenda
-  def agenda
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/status

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120510172358) do
+ActiveRecord::Schema.define(:version => 20120512014131) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -107,7 +107,8 @@ ActiveRecord::Schema.define(:version => 20120510172358) do
     t.text     "description"
     t.boolean  "accepts_cc",                       :default => true
     t.boolean  "accepts_po",                       :default => true
-    t.text     "short_description",                                  :null => false
+    t.boolean  "accepts_multi_add",                :default => false, :null => false
+    t.text     "short_description",                                   :null => false
     t.text     "address"
     t.string   "phone_number"
     t.string   "fax_number"
@@ -164,7 +165,7 @@ ActiveRecord::Schema.define(:version => 20120510172358) do
   end
 
   create_table "journals", :force => true do |t|
-    t.integer  "facility_id",                      :null => false
+    t.integer  "facility_id"
     t.string   "reference",         :limit => 50
     t.string   "description",       :limit => 200
     t.boolean  "is_successful"
@@ -375,10 +376,6 @@ ActiveRecord::Schema.define(:version => 20120510172358) do
 
   add_index "reservations", ["instrument_id"], :name => "reservations_instrument_id_fk"
   add_index "reservations", ["order_detail_id"], :name => "res_ord_det_id_fk"
-
-  create_table "roles", :force => true do |t|
-    t.string "name"
-  end
 
   create_table "schedule_rules", :force => true do |t|
     t.integer "instrument_id",                                                    :null => false
