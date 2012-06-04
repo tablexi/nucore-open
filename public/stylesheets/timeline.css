@@ -1,3 +1,5 @@
+#ui-datepicker-div { display: none; }
+
 .timeline {
   background:url(../images/timeline.png);
   display:block;
