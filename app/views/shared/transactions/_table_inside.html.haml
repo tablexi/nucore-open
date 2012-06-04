@@ -7,7 +7,7 @@
     %th.nowrap= OrderDetail.human_attribute_name(:fulfilled_at)
     - if @extra_date_column
       %th.nowrap= OrderDetail.human_attribute_name(@extra_date_column) 
-    - unless @facility
+    - if !current_facility || all_facility?
       %th= Facility.model_name.human
     %th= OrderDetail.human_attribute_name("description")
     %th.nowrap= OrderDetail.human_attribute_name("user")
@@ -24,14 +24,15 @@
         %td= check_box_tag "order_detail_ids[]", order_detail.id, false, {:class => 'toggle'}
       - if @order_detail_link
         %td.nowrap= link_to @order_detail_link[:text], @order_detail_link[:proc].call(order_detail) if @order_detail_link[:display?].call(order_detail)
-      - if current_facility
-        %td.nowrap= link_to order_detail, edit_facility_order_order_detail_path(current_facility, order_detail.order, order_detail)
+      - if backend?
+        %td.nowrap= link_to order_detail, edit_facility_order_order_detail_path(order_detail.order.facility, order_detail.order, order_detail)
       - else
         %td.nowrap= link_to order_detail, order_order_detail_path(order_detail.order, order_detail)
       %td= order_detail.fulfilled_at.strftime("%m/%d/%Y") if order_detail.fulfilled_at
       - if @extra_date_column and order_detail.send(@extra_date_column)
         %td= order_detail.send(@extra_date_column).strftime("%m/%d/%Y")
-      - unless @facility
+      - if !current_facility || all_facility?
+ 
         %td= order_detail.order.facility
       %td
         = order_detail_description(order_detail)

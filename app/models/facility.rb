@@ -77,6 +77,19 @@ class Facility < ActiveRecord::Base
     true
   end
 
+  def has_pending_journals?
+    pending_facility_ids = Journal.facility_ids_with_pending_journals
+    if all_facility?
+      pending_facility_ids.any?
+    else
+      pending_facility_ids.member?(self.id)
+    end
+  end
+
+  def all_facility?
+    url_name == 'all'
+  end
+
   def to_s
     "#{name} (#{abbreviation})"
   end

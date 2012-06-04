@@ -50,7 +50,7 @@ GEM
       activerecord (>= 3.0.0)
     bcrypt-ruby (2.1.4)
     builder (2.1.2)
-    cancan (1.6.5)
+    cancan (1.6.7)
     capistrano (2.6.0)
       highline
       net-scp (>= 1.0.0)
@@ -194,7 +194,7 @@ DEPENDENCIES
   autotest (= 4.4.6)
   autotest-rails (= 4.1.0)
   awesome_nested_set (= 2.0.1)
-  cancan (= 1.6.5)
+  cancan (= 1.6.7)
   capistrano (= 2.6.0)
   ci_reporter
   daemons (= 1.1.6)

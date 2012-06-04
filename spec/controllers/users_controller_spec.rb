@@ -54,7 +54,6 @@ describe UsersController do
     it_should_allow_operators_only :redirect do
       should assign_to(:user).with_kind_of User
       should set_the_flash
-      assigns[:current_facility].should == @authable
       assert_redirected_to facility_users_url
     end
 
@@ -118,7 +117,6 @@ describe UsersController do
     end
 
     it_should_allow_operators_only do
-      should assign_to(:current_facility).with(@authable)
       should assign_to(:user).with(@guest)
       should assign_to(:order_details).with_kind_of ActiveRecord::Relation
     end
@@ -132,7 +130,6 @@ describe UsersController do
     end
 
     it_should_allow_operators_only do
-      should assign_to(:current_facility).with(@authable)
       should assign_to(:user).with(@guest)
       should assign_to(:order_details).with_kind_of ActiveRecord::Relation
     end

@@ -22,7 +22,9 @@ describe PriceGroupProductsController do
       @action=:edit
     end
 
-    it_should_allow_managers_only do
+    # Edit is really a view/show, so all operators can view, but
+    # only the managers can submit
+    it_should_allow_operators_only do
       assert_init_price_group_products
       should render_template 'edit'
     end

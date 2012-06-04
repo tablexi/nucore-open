@@ -39,7 +39,7 @@ module ReportSpecHelper
           end
 
 
-          it_should_allow_managers_only do
+          it_should_allow_managers_and_senior_staff_only do
             assert_report_rendered(test[:index], test[:report_on_label], &test[:report_on])
           end
 

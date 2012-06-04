@@ -15,6 +15,7 @@ en:
     create: Create %{model}
     manage: Manage %{model}
     global_settings: Global Settings
+    global_billing: Billing 
     login: Login
     logout: Logout
     cart: Cart
@@ -165,7 +166,7 @@ en:
 
   facility_journals:
     new:
-      instructions: Select the orders that you wish to journal. Only one journal may be pending at a time. Please note that selected orders may not span multiple fiscal years.
+      instructions: Select the orders that you wish to journal. Only one journal per-facility may be pending at a time. Please note that selected orders may not span multiple fiscal years.
       not_closed: You may not generate a new journal until the pending journal is closed.
       not_closed_html: You may not generate a new journal until the <a href="%{link}">pending journal</a> is closed.
       no_orders: There are no orders to be journaled at this time.
@@ -175,6 +176,7 @@ en:
         closed: Closed Journals
       notice:
         no_pending: "There is no pending journal at this time"
+        no_editable: There is a pending journal, but you don't have the rights to manage it
         no_journals: No journals have been closed yet
         journaled: "There are no orders to be journaled at this time"
         close: "You may not generate a new journal until the pending journal is closed."
@@ -318,6 +320,9 @@ en:
       label: "Payment source"
       h3: "Documentation"
       crumb: "Create Reservation"
+    switch:
+      start: "Begin Reservation"
+      end: "End Reservation"
 
   statements:
     index:
@@ -428,8 +433,6 @@ en:
         orders: "My Orders"
         receipt: "View Receipt"
         reservation:
-          start: "Begin Reservation"
-          end: "End Reservation"
           cancel: "Cancel"
         view:
           order_form: "View Order Form"
@@ -527,6 +530,7 @@ en:
       short_description: "Description as it will appear on the home page"
       description: "Description as it will appear on the facility main page"
       payment_options: "By default, all facilities accept NU Chart Strings; you may check additional payment options:"
+      accepts_multi_add: "Show Order Form for Facility (allows adding of multiple products simultaneously)"
       accepts_po: "Accept Purchase Orders?"
       accepts_cc: "Accept Credit Cards?"
       inactive: "Uncheck this box to prevent end users from viewing or purchasing from this facility:"

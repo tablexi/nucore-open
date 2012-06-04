@@ -41,6 +41,11 @@ class Service < Product
     !self.active_survey.blank?
   end
 
+  # returns true if there is an active template... false otherwise
+  def active_template?
+    self.file_uploads.template.count > 0
+  end
+
   def can_purchase? (group_ids = nil)
     return false if is_archived? || !facility.is_active?
     if group_ids.nil?

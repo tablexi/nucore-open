@@ -59,7 +59,7 @@
           %td= check_box_tag "order_detail_ids[]", od.id, (od.reconciled? ? true : false), {:disabled => (od.reconciled? ? true : false)}
           %td
             %ul
-              %li= link_to od, edit_facility_order_order_detail_path(current_facility, od.order_id, od)
+              %li= link_to od, edit_facility_order_order_detail_path(od.order.facility.url_name, od.order_id, od)
               - unless od.note.blank?
                 %li=h od.note
           %td=h human_datetime(od.fulfilled_at)
