@@ -201,6 +201,7 @@ describe ReservationsController do
 
       it_should_allow :guest do
         @order.reload.account.should == @account2
+        @order.order_details.first.account.should == @account2
         @order_detail.reload.account.should == @account2
       end
 

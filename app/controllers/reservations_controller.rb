@@ -94,8 +94,7 @@ class ReservationsController < ApplicationController
           if account != @order.account
             @order.invalidate
             @order.update_attributes!(:account_id => account.id)
-            @order_detail.update_account(account)
-            @order_detail.save!
+            @order.update_order_detail_accounts
           end
         end
         @reservation.save_as_user!(session_user)

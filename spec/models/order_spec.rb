@@ -387,6 +387,21 @@ describe Order do
         @order_detail.note.should == 'new note value' 
       end
 
+      it "should update the child order_details' account on self's account change" do
+        @cart.account = @account
+        @cart.add(@service, 1)
+        @cart.add(@service_same, 1)
+        @cart.reload.order_details[0].account_id = @account.id
+        @cart.order_details[1].account_id = @account.id
+        @account2 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+        @cart.account = @account2
+        @cart.save        
+        @cart.update_order_detail_accounts
+        @cart.reload.order_details[0].account.should == @account2
+        @cart.order_details[1].account.should == @account2
+        @cart.account.should == @account2
+      end
+
       it "should clear the facility and the account when destroying the last order_detail from the cart" do
         pending
 #        @cart.add(@service, 1)

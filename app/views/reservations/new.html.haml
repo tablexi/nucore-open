@@ -52,7 +52,7 @@
         - options.reject!{|acct| !acct.validate_against_product(@instrument, @order.user).nil?}
         - options.collect!{|acct| [acct.to_s ,acct.id] }
         - options.unshift(Array.new(2)) if options.size > 1
-        = select_tag 'order_account', options_for_select(options, @order.account)
+        = select_tag 'order_account', options_for_select(options, @order.account_id)
       - if acting_as?
         %li.left
           = f.label       :note
