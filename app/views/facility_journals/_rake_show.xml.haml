@@ -1,9 +1,10 @@
 - # keep this a partial because rake task nu:journal:render_and_move needs it to be
+- mask=journal.facility.journal_mask
 %JRNL_HDR_IMP
   %BUSINESS_UNIT== NWUNV
   %JOURNAL_ID== NEXT
   %JOURNAL_DATE= journal.journal_date.strftime("%Y%m%d")
-  %DESCR254=h "#{journal.facility.journal_mask}: Journal ##{ journal.id}, Created By: #{User.find(journal.created_by).username}"
+  %DESCR254=h "#{mask}: Journal ##{ journal.id}, Created By: #{User.find(journal.created_by).username}"
   %LEDGER_GROUP== ACTUALS
   %SOURCE== RSC
   %OPRID== GLBATCH
@@ -14,7 +15,10 @@
       %LEDGER== ACTUALS
       %ACCOUNT= row.account
       %FOREIGN_AMOUNT= number_to_currency row.amount, :delimiter => '', :unit => ''
-      %LINE_DESCR=h row.description
+      - line_desc="#{mask}:#{row.description}"
+      - line_desc="#{mask}:#{row.order_detail.to_s}:#{row.order_detail.product.name}" if row.order_detail
+      - line_desc=line_desc[0..29] if line_desc.size > 30
+      %LINE_DESCR=h line_desc
       %FUND_CODE= row.fund
       %DEPTID= row.dept
       - if row.project

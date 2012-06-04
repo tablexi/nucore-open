@@ -1,9 +1,9 @@
 %tr
   - if first_of_group
-    - rows = @order.order_details.find(:all, :conditions => {:group_id => order_detail.group_id}).length
-    %td.centered{:rowspan => rows*order_detail.bundle.products.count }= link_to 'Remove', remove_order_path(@order, order_detail), :method => :put
+    - row_span = @order.order_details.find(:all, :conditions => {:group_id => order_detail.group_id}).length
+    %td.centered{:rowspan => row_span * (acting_as? ? 2 : 1) }= link_to 'Remove', remove_order_path(@order, order_detail), :method => :put
   - elsif order_detail.group_id.nil?
-    %td.centered= link_to 'Remove', remove_order_path(@order, order_detail), :method => :put
+    %td.centered{:rowspan => (acting_as? ? 2 : 1) }= link_to 'Remove', remove_order_path(@order, order_detail), :method => :put
 
   - if order_detail.product.is_a?(Instrument)
     %td
@@ -89,7 +89,7 @@
     %td.currency Unassigned
 - if acting_as?
   %tr
-    %td{:colspan => 4}
+    %td{:colspan => 4 }
       %label.inline Note:
-      = text_field_tag("note#{order_detail.id}", order_detail.note, :style => "width:375px" )
+      = text_field_tag("note#{order_detail.id}", order_detail.note, :maxlength => 100, :size => 100 )
 

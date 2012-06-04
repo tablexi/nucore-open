@@ -15,8 +15,10 @@
 %br
 %hr
 %br
-%ul.horiz
-  %li= link_to t('.add_account'), new_account_user_search_facility_accounts_path
+
+- unless all_facility?
+  %ul.horiz
+    %li= link_to t('.add_account'), new_account_user_search_facility_accounts_path
 
 #result
   = render :partial => 'account_balances.html.haml'

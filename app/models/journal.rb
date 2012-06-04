@@ -1,16 +1,64 @@
+require 'set'
+
 class Journal < ActiveRecord::Base
   has_many                :journal_rows
   belongs_to              :facility
   has_many                :order_details, :through => :journal_rows
   belongs_to              :created_by_user, :class_name => 'User', :foreign_key => :created_by
 
-  validates_uniqueness_of :facility_id, :scope => :is_successful, :if => Proc.new { |j| j.is_successful.nil? }
   validates_presence_of   :reference, :updated_by, :on => :update
   validates_presence_of   :created_by
+  validates_presence_of   :journal_date
   has_attached_file       :file,
                           :storage => :filesystem,
                           :url => "#{ENV['RAILS_RELATIVE_URL_ROOT']}/:attachment/:id_partition/:style/:basename.:extension",
                           :path => ":rails_root/public/:attachment/:id_partition/:style/:basename.:extension"
+
+  # scopes
+  
+  # Digs up journals pertaining to the passed in facilities
+  # 
+  # == Parameters
+  #
+  # facilities::
+  #   enumerable of facilities (usually ones which the user has access to)
+  # 
+  # include_multi::
+  #   include multi-facility journals in the results?
+  def self.for_facilities(facilities, include_multi = false)
+    allowed_ids = facilities.collect(&:id)
+
+    if include_multi
+      Journal.includes(:journal_rows => {:order_detail => :order}).where('orders.facility_id IN (?)', allowed_ids).select('journals.*')
+    else 
+      Journal.where(:facility_id => allowed_ids)
+    end
+  end
+
+  def self.facility_ids_with_pending_journals
+    # use AR to build the SQL for pending journals
+    pending_facility_ids_sql = Journal.joins(:order_details => :order).where(:is_successful => nil).select("DISTINCT orders.facility_id").to_sql
+
+    # run it and get the results back (a list)
+    pending_facility_ids = Journal.connection.select_values(pending_facility_ids_sql)
+
+    return pending_facility_ids
+  end
+
+  def facility_ids
+    if facility_id?
+      [facility_id]
+    else
+        order_details.joins(:order).
+        select('orders.facility_id').
+        collect(&:facility_id).
+        uniq
+    end
+  end
+
+  def facility_abbreviations
+    Facility.where(:id => self.facility_ids).collect(&:abbreviation)
+  end
 
   def amount
     rows = journal_rows
@@ -23,19 +71,38 @@ class Journal < ActiveRecord::Base
     is_successful.nil?
   end
 
+
   def create_journal_rows!(order_details)
     recharge_by_product = {}
-
+    facility_ids_already_in_journal = Set.new
+    order_detail_ids = []
+    pending_facility_ids = Journal.facility_ids_with_pending_journals
+    row_errors = []
+ 
     # create rows for each transaction
     order_details.each do |od|
-      raise Exception if od.journal_id
+      row_errors << "##{od} is already journaled in journal ##{od.journal_id}" if od.journal_id
       account = od.account
+      od_facility_id = od.order.facility_id
+
+      # unless we've already encountered this facility_id during
+      # this call to create_journal_rows,
+      unless facility_ids_already_in_journal.member? od_facility_id
+        
+        # check against facility_ids which actually have pending journals
+        # in the DB
+        if pending_facility_ids.member? od_facility_id
+          raise  "Facility: #{Facility.find(od_facility_id)} already has a pending journal"
+        end
+        facility_ids_already_in_journal.add(od_facility_id)
+      end 
 
       begin
         ValidatorFactory.instance(account.account_number, od.product.account).account_is_open!
       rescue ValidatorError => e
-        raise "Account #{account} on order detail ##{od} is invalid. It #{e.message}."
+        row_errors << "Account #{account} on order detail ##{od} is invalid. It #{e.message}."
       end
+
 
       JournalRow.create!(
         :journal_id      => id,
@@ -44,6 +111,7 @@ class Journal < ActiveRecord::Base
         :description     => "##{od}: #{od.order.user}: #{od.fulfilled_at.strftime("%m/%d/%Y")}: #{od.product} x#{od.quantity}",
         :account         => od.product.account
       )
+      order_detail_ids << od.id
       recharge_by_product[od.product_id] = recharge_by_product[od.product_id].to_f + od.total
     end
 
@@ -58,7 +126,12 @@ class Journal < ActiveRecord::Base
         :description     => product.to_s
       )
     end
+
+    OrderDetail.update_all(['journal_id = ?', self.id], ['id IN (?)', order_detail_ids]) unless row_errors.present?
+
+    return row_errors
   end
+
 
   def create_spreadsheet
     rows = journal_rows

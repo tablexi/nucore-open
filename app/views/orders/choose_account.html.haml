@@ -6,7 +6,7 @@
 - if @accounts.empty?
   %p.notice= t('.notice')
 - else
-  = form_tag do
+  = form_tag({}, :id => 'choose-account-frm') do
     %table
       %tr
         %th

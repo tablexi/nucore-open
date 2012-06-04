@@ -4,9 +4,8 @@ module TransactionSearch
   end
   
   module ClassMethods
-    def transaction_search(*actions)    
+    def transaction_search(*actions)
       self.before_filter :remove_ugly_params_and_redirect, :only => actions
-      self.before_filter :populate_search_fields, :only => actions
     end
     
     # If a method is tagged with _with_search at the end, then define the normal controller
@@ -21,7 +20,7 @@ module TransactionSearch
         self.before_filter :remove_ugly_params_and_redirect, :only => @@methods_with_remove_ugly_filter
         define_method($1) do 
           init_order_details
-          send(:"#{$&}")    
+          send(:"#{$&}")
           load_search_options
           @empty_orders = @order_details.empty?
           @search_fields = params.merge({})
@@ -37,7 +36,11 @@ module TransactionSearch
   
   def init_order_details
     @order_details = OrderDetail.joins(:order).joins(:product).ordered
-    @order_details = @order_details.for_facility_id(@current_facility.id) if @current_facility
+
+    if current_facility
+      @order_details = @order_details.for_facility(current_facility)
+    end
+
     @order_details = @order_details.where(:account_id => @account.id) if @account
   end
     
@@ -46,7 +49,8 @@ module TransactionSearch
   def load_search_options
     @facilities = Facility.find_by_sql(@order_details.joins(:order => :facility).
                                                       select("distinct(facilities.id), facilities.name, facilities.abbreviation").
-                                                      reorder("facilities.name").to_sql)                                                 
+                                                      reorder("facilities.name").to_sql)
+
     @accounts = Account.find_by_sql(@order_details.joins(:order => :account).
                                                    select("distinct(accounts.id), accounts.description, accounts.account_number, accounts.type").
                                                    reorder("accounts.account_number, accounts.description").to_sql)
@@ -82,7 +86,6 @@ module TransactionSearch
     @order_details = @order_details.action_in_date_range(@date_field_to_use, start_date, end_date)
   end  
 
-  
   def remove_ugly_params_and_redirect
     if (params[:commit] && request.get?)
       remove_ugly_params

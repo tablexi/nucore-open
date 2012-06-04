@@ -606,6 +606,10 @@ class Reservation < ActiveRecord::Base
     true
   end
 
+  def can_switch_instrument?
+    return can_switch_instrument_off? || can_switch_instrument_on?
+  end
+
   def can_kill_power?
     return false if actual_start_at.nil?
     return false unless Reservation.find(:first, :conditions => ['actual_start_at > ? AND instrument_id = ? AND id <> ? AND actual_end_at IS NULL', actual_start_at, instrument_id, id]).nil?
@@ -653,10 +657,13 @@ class Reservation < ActiveRecord::Base
   def to_s
     return super unless reserve_start_at && reserve_end_at
 
+    start_at=actual_start_at || reserve_start_at
+    end_at=actual_end_at || reserve_end_at
+
     if reserve_start_at.day == reserve_end_at.day
-      str = "#{reserve_start_at.strftime("%a, %m/%d/%Y %l:%M %p")} - #{reserve_end_at.strftime("%l:%M %p")}"
+      str = "#{start_at.strftime("%a, %m/%d/%Y %l:%M %p")} - #{end_at.strftime("%l:%M %p")}"
     else
-      str = "#{reserve_start_at.strftime("%a, %m/%d/%Y %l:%M %p")} - #{reserve_end_at.strftime("%a, %m/%d/%Y %l:%M %p")}"
+      str = "#{start_at.strftime("%a, %m/%d/%Y %l:%M %p")} - #{end_at.strftime("%a, %m/%d/%Y %l:%M %p")}"
     end
     str + (canceled_at ? ' (Cancelled)' : '')
   end

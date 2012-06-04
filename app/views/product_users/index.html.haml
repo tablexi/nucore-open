@@ -17,7 +17,7 @@
 - elsif @product_users.empty?
   %p.notice== No users are currently approved.
 - else
-  = form_for @product, :url => facility_instrument_update_restrictions_path(@facility, @product), :method => :put do |f|
+  = form_for @product, :url => facility_instrument_update_restrictions_path(current_facility, @product), :method => :put do |f|
     %table
       %tr
         %th

@@ -33,7 +33,9 @@ describe FileUploadsController do
       }
     end
 
-    it_should_allow_managers_only
+    it_should_allow_operators_only do
+      response.should be_success
+    end
 
   end
 
@@ -55,7 +57,7 @@ describe FileUploadsController do
       }
     end
 
-    it_should_allow_managers_only :redirect do
+    it_should_allow_managers_and_senior_staff_only :redirect do
       assigns[:product].should == @service
       response.should redirect_to(upload_product_file_path(@authable, @service.parameterize, @service, :file_type => 'info'))
       @service.reload.file_uploads.size.should == 1
@@ -90,7 +92,7 @@ describe FileUploadsController do
     end
 
     context "product info" do
-      it_should_allow_managers_only
+      it_should_allow_managers_and_senior_staff_only
     end
 
     context "sample_result" do
@@ -114,7 +116,7 @@ describe FileUploadsController do
       @params={ :facility_id => @authable.url_name, :product => @service.id, :product_id => @service.url_name }
     end
 
-    it_should_allow_managers_only do
+    it_should_allow_managers_and_senior_staff_only do
       assigns[:product].should == @service
       assigns[:file].should be_kind_of FileUpload
       assigns[:file].should be_new_record
@@ -152,7 +154,7 @@ describe FileUploadsController do
       assigns[:survey].errors[:base].should_not be_empty
     end
 
-    it_should_allow_managers_only :redirect do
+    it_should_allow_managers_and_senior_staff_only :redirect do
       assigns[:product].should == @service
       @service.reload.external_services.size.should == 1
       @service.external_services[0].location.should == @ext_service_location
@@ -185,7 +187,7 @@ describe FileUploadsController do
     end
 
     context 'info' do
-      it_should_allow_managers_only :redirect
+      it_should_allow_managers_and_senior_staff_only :redirect
     end
 
     context 'sample_result' do

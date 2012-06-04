@@ -28,7 +28,7 @@
   %li.left
     = f.label  :actual_start_hour, 'Starting At'
     = f.select :actual_start_hour, (1..12).to_a
-    = f.select :actual_start_min, (0..59).step(5).map{|d| [sprintf('%02d', d),d]}
+    = f.select :actual_start_min, (0..59).map{|d| [sprintf('%02d', d),d]}
     = f.select :actual_start_meridian, ['AM', 'PM']
   %li.left
     = f.label :actual_end_date, 'Actual End Date'
@@ -36,7 +36,7 @@
   %li.left
     = f.label  :actual_end_hour, 'Ending At'
     = f.select :actual_end_hour, (1..12).to_a
-    = f.select :actual_end_min, (0..59).step(5).map{|d| [sprintf('%02d', d),d]}
+    = f.select :actual_end_min, (0..59).map{|d| [sprintf('%02d', d),d]}
     = f.select :actual_end_meridian, ['AM', 'PM']
   %li.clear
 - else
