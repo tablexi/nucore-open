@@ -17,21 +17,26 @@ module BulkEmailHelper
     #only use this for testing (in specs)
     @order_details = order_details
     
-    purchaser_ids = order_details.select("distinct orders.user_id")
+    purchaser_ids = []
+    account_ids = []
+    authorized_user_ids = []
 
+    if search_fields[:roles]
+      account_ids = order_details.joins(:account => :account_users).where(:account_users => { :user_role => search_fields[:roles] }).select("distinct account_users.user_id")
+    else
+      purchaser_ids = order_details.select("distinct orders.user_id")
+    end
 
-    #account_ids = order_details.joins(:account => :account_users).where(:account_users => { :user_role => search_fields[:roles] }).select("distinct ")
+    if search_fields[:authorized_user]
+      authorized_user_ids = User.joins(:product_users).select("distinct users.id as user_id")
+      authorized_user_ids = authorized_user_ids.where(:product_users => {:product_id => search_fields[:products]}) if search_fields[:products].present?
+    end
 
-    # users = User.joins(:order_details).joins(:products)
-    # users = users.merge(order_details)
-    # users = users.joins(:orders).where(:orders => {:facility_id => current_facility.id})
-    # users = users.joins(:account_users).where(:account_users => { :user_role => search_fields[:roles] }) if search_fields[:roles]
-    
-  #   #@users = @users.joins(:product_users) if search_fields[:authorized_user]
+    all_user_ids = (purchaser_ids + account_ids + authorized_user_ids).map(&:user_id).uniq
 
-    # users = users.group("users.id")
-
-    users = User.find_all_by_id purchaser_ids.map(&:user_id).uniq
+    users = User.find_all_by_id all_user_ids
 
   end
+
+
 end
