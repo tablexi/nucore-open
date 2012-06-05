@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe BulkEmailHelper do
+  
+  # Utility class for testing the helper methods
   class BulkEmailTest
     include BulkEmailHelper
     include DateHelper
@@ -12,12 +14,10 @@ describe BulkEmailHelper do
     end
     attr_reader :order_details
   end
+
   before :each do
     @owner = Factory.create(:user)
-    @owner2 = Factory.create(:user)
-    @owner3 = Factory.create(:user)
-    @business_admin = Factory.create(:user)
-    @business_admin2 = Factory.create(:user)
+    
     @purchaser = Factory.create(:user)
     @purchaser2 = Factory.create(:user)
     @purchaser3 = Factory.create(:user)
@@ -26,10 +26,9 @@ describe BulkEmailHelper do
     @facility_account=Factory.create(:facility_account, :facility => @facility)
     @product=Factory.create(:item, :facility_account => @facility_account, :facility => @facility)
     @product2=Factory.create(:item, :facility_account => @facility_account, :facility => @facility)
+    @product3=Factory.create(:item, :facility_account => @facility_account, :facility => @facility)
 
     @account = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner) ])
-    @account2 = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner2) ])
-    @account3 = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner3) ])
 
     @controller = BulkEmailTest.new(@facility)
   end
@@ -108,19 +107,156 @@ describe BulkEmailHelper do
 
   context "search products" do
     before :each do
-      #place orders
+      @od1 = place_item_order(@purchaser, @facility, @product, @account)
+      @od2 = place_item_order(@purchaser2, @facility, @product2, @account)
+      @od3 = place_item_order(@purchaser3, @facility, @product3, @account)
     end
-    it "should return all products"
-    it "should return just one product"
-    it "should return two products"
+    it "should return all three user details" do
+      users = @controller.do_search({})
+      @controller.order_details.should contain_all [@od1, @od2, @od3]
+      users.should contain_all [@purchaser, @purchaser2, @purchaser3]
+    end
+    it "should return just one product" do
+      params = {:products => [@product.id]}
+      users = @controller.do_search(params)
+      @controller.order_details.should contain_all [@od1]
+      users.should == [@purchaser]
+    end
+    it "should return two products" do
+      params = {:products => [@product.id, @product2.id]}
+      users = @controller.do_search(params)
+      @controller.order_details.should contain_all [@od1, @od2]
+      users.should contain_all [@purchaser, @purchaser2]
+    end
   end
 
   context "search user roles" do
-    it "should search the user roles"
+    before :each do
+      @owner2 = Factory.create(:user)
+      @owner3 = Factory.create(:user)
+      @account2 = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner2) ])
+      @account3 = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner3) ])
+      
+      @business_admin = Factory.create(:user)
+      @business_admin2 = Factory.create(:user)
+      @business_admin3 = Factory.create(:user)
+
+      Factory.create(:account_user, {
+        :user_role => AccountUser::ACCOUNT_ADMINISTRATOR,
+        :account_id => @account.id,
+        :user_id => @business_admin.id,
+        :created_by => @owner.id
+      })
+      Factory.create(:account_user, {
+        :user_role => AccountUser::ACCOUNT_ADMINISTRATOR,
+        :account_id => @account2.id,
+        :user_id => @business_admin2.id,
+        :created_by => @owner.id
+      })
+      Factory.create(:account_user, {
+        :user_role => AccountUser::ACCOUNT_ADMINISTRATOR,
+        :account_id => @account3.id,
+        :user_id => @business_admin3.id,
+        :created_by => @owner.id
+      })
+
+      Factory.create(:account_user, {
+        :user_role => AccountUser::ACCOUNT_PURCHASER,
+        :account_id => @account.id,
+        :user_id => @purchaser.id,
+        :created_by => @owner.id
+      })
+      Factory.create(:account_user, {
+        :user_role => AccountUser::ACCOUNT_PURCHASER,
+        :account_id => @account2.id,
+        :user_id => @purchaser2.id,
+        :created_by => @owner.id
+      })
+      Factory.create(:account_user, {
+        :user_role => AccountUser::ACCOUNT_PURCHASER,
+        :account_id => @account3.id,
+        :user_id => @purchaser3.id,
+        :created_by => @owner.id
+      })
+
+      @od1 = place_item_order(@purchaser, @facility, @product, @account)
+      @od2 = place_item_order(@purchaser, @facility, @product2, @account2)
+      @od3 = place_item_order(@purchaser, @facility, @product3, @account3)
+    end
+
+    it "should find owners if no other limits" do
+      params = {:roles => [AccountUser::ACCOUNT_OWNER]}
+      users = @controller.do_search(params)
+      @controller.order_details.should contain_all [@od1, @od2, @od3]
+      users.map(&:id).should contain_all [@owner, @owner2, @owner3].map(&:id)
+    end
+
+    it "should find owners with limited order details" do
+      params = {:roles => [AccountUser::ACCOUNT_OWNER], :products => [@product.id, @product2.id]}
+      users = @controller.do_search(params)
+      @controller.order_details.should contain_all [@od1, @od2]
+      users.should contain_all [@owner, @owner2]
+    end
+
+    it "should find purchasers" do
+      params = {:roles => [AccountUser::ACCOUNT_PURCHASER]}
+      users = @controller.do_search(params)
+      @controller.order_details.should contain_all [@od1, @od2, @od3]
+      users.should contain_all [@purchaser, @purchaser2, @purchaser3]
+    end
+
+    it "should find purchasers limited order details" do
+      params = {:roles => [AccountUser::ACCOUNT_PURCHASER], :products => [@product2.id]}
+      users = @controller.do_search(params)
+      @controller.order_details.should contain_all [@od2]
+      users.should contain_all [@purchaser2]
+    end
+
+    it "should find business admins" do
+      params = {:roles => [AccountUser::ACCOUNT_ADMINISTRATOR]}
+      users = @controller.do_search(params)
+      @controller.order_details.should contain_all [@od1, @od2, @od3]
+      users.should contain_all [@business_admin, @business_admin2, @business_admin3]
+    end
+
+    it "should find owners and business admins" do
+      params = {:roles => [AccountUser::ACCOUNT_ADMINISTRATOR, AccountUser::ACCOUNT_OWNER]}
+      users = @controller.do_search(params)
+      @controller.order_details.should contain_all [@od1, @od2, @od3]
+      users.should contain_all [@business_admin, @business_admin2, @business_admin3, @owner, @owner2, @owner3]
+    end
   end
 
   context "search authorized users" do
-    it "should return all authorized users"
+    before :each do
+      @user = Factory.create(:user)
+      @user2 = Factory.create(:user)
+      @user3 = Factory.create(:user)
+
+      @product.update_attributes(:requires_approval => true)
+      @product2.update_attributes(:requires_approval => true)
+      # Users 1 and 2 have access to product1
+      # Users 2 and 3 have access to product2
+      ProductUser.create(:product => @product, :user => @user, :approved_by => @owner.id, :approved_at => Time.zone.now)
+      ProductUser.create(:product => @product, :user => @user2, :approved_by => @owner.id, :approved_at => Time.zone.now)
+      ProductUser.create(:product => @product2, :user => @user2, :approved_by => @owner.id, :approved_at => Time.zone.now)
+      ProductUser.create(:product => @product2, :user => @user3, :approved_by => @owner.id, :approved_at => Time.zone.now)
+      @params = {:authorized_user => 1}
+    end
+    it "should return all authorized users for any instrument" do
+      @params.merge!({:products => []})
+      users = @controller.do_search(@params)
+      users.should contain_all [@user, @user2, @user3]
+    end
+    it "should return only the users for a specific instrument" do
+      @params.merge!({:products => [@product.id]})
+      users = @controller.do_search(@params)
+      users.should contain_all [@user, @user2]
+
+      @params.merge!({:products => [@product2.id]})
+      users = @controller.do_search(@params)
+      users.should contain_all [@user2, @user3]
+    end
   end
 
 
