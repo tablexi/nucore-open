@@ -51,7 +51,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def self.for_facility_id(facility_id=nil)
-    details = scoped.joins(:order)
+    details = joins(:order)
 
     unless facility_id.nil?
       details = details.where(:orders => { :facility_id => facility_id})
