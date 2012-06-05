@@ -6,6 +6,6 @@ module PowerRelay
 
   ## instance methods
   def control_mechanism
-    'relay'
+    Relay::CONTROL_MECHANISMS[:relay]
   end
 end

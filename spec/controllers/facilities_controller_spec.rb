@@ -166,7 +166,6 @@ describe FacilitiesController do
       end
   
       it_should_allow :admin do
-        assigns[:operable_facilities].should == [@authable, @facility2]
         assigns[:facilities].should == [@authable, @facility2]
         response.should be_success
         response.should render_template('facilities/list')
