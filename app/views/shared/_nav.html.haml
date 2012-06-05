@@ -30,7 +30,7 @@
                 - link[:subnav].each do |sub_links|
                   %li= link_to sub_links[:text], sub_links[:url]
 
-      - facilities = operable_facilities
+      - facilities = menu_facilities
 
       - if !acting_as? && current_user && current_user.administrator?
         %li.right{:class => controller.active_tab == 'global_settings' ? 'active' : ''}

@@ -70,4 +70,10 @@ module ApplicationHelper
     val ? h(number_to_currency(val)) : ''
   end
 
+  def menu_facilities
+    return [] unless session_user
+    session_user.facilities    
+  end
+
+
 end
