@@ -13,7 +13,7 @@
     = human_date_extra_info(@display_date)
     = link_to "&raquo;".html_safe, timeline_facility_reservations_path(:date => format_usa_date(@display_date + 1.day))
   .timeline_change_date
-    = form_tag timeline_facility_reservations_path(current_facility), :method => :get do
+    = form_tag timeline_facility_reservations_path(current_facility), :method => :get, :id => "timeline_date_search" do
       = text_field_tag 'date', format_usa_date(@display_date), :class => 'datepicker'
       = submit_tag 'Go'
       .show_cancelled

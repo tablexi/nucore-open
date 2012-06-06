@@ -48,7 +48,7 @@ $(function() {
 
         showOrHideCancelled = function() {
           if ($('#show_cancelled').is(':checked')) {
-            $('.status_cancelled').fadeIn('fast');  
+            $('.status_cancelled').fadeIn('fast');
           } else {
             $('.status_cancelled').fadeOut('fast');  
           }
@@ -57,5 +57,14 @@ $(function() {
         $('#show_cancelled').change(showOrHideCancelled);
         // no animation when first loading
         $('.status_cancelled').toggle($('#show_cancelled').is(':checked'));
+
+        // When clicking on the forward or back date links, trigger the date select
+        // submission. This is mainly so we can include the show/hide cancelled checkbox easily
+        $(".timeline_current_date a").click(function() {
+          var d = /date=([^&]+)/.exec(this.href);
+          $("#timeline_date_search #date").val(decodeURIComponent(d[1]))
+          $("#timeline_date_search").submit();
+          return false;
+        });
     
       });
