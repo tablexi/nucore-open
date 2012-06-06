@@ -45,5 +45,17 @@ $(function() {
         };  
         time();
         setInterval(time, 500);
+
+        showOrHideCancelled = function() {
+          if ($('#show_cancelled').is(':checked')) {
+            $('.status_cancelled').fadeIn('fast');  
+          } else {
+            $('.status_cancelled').fadeOut('fast');  
+          }
+          
+        }
+        $('#show_cancelled').change(showOrHideCancelled);
+        // no animation when first loading
+        $('.status_cancelled').toggle($('#show_cancelled').is(':checked'));
     
       });
