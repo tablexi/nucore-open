@@ -43,6 +43,7 @@ describe BulkEmailController do
     before :each do
       @action = 'create'
       @method = :post
+      @params.merge!({ :search_type => :customers })
     end
     it_should_require_login
     it_should_allow_managers_only {}
@@ -51,17 +52,23 @@ describe BulkEmailController do
       before :each do
         maybe_grant_always_sign_in :director
       end
-      context 'empty params' do
-        before :each do
-         do_request
-        end
-        it 'should set products' do
-          assigns[:products].should contain_all [@item, @service, @instrument]
-        end
-        it 'should set search types' do
-          assigns[:search_types].should_not be_empty
-        end
+
+      it 'should set the search method to customer if no search method' do
+        @params.delete :search_type
+        do_request
+        assigns[:search_fields][:search_type].should == :customers   
       end
+      
+      before :each do
+       do_request
+      end
+      it 'should set products' do
+        assigns[:products].should contain_all [@item, @service, @instrument]
+      end
+      it 'should set search types' do
+        assigns[:search_types].should_not be_empty
+      end
+    
     end
   end
 

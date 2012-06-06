@@ -1,14 +1,15 @@
 = render :partial => 'search'
 
-= will_paginate(@users)
-%table
-  %tr
-    %th Username
-    %th Name
-    %th Email
-  - @users.each do |user|
+- if @users
+  = will_paginate(@users)
+  %table
     %tr
-      %td= user.username
-      %td= user.full_name
-      %td= user.email
-= will_paginate(@users)
+      %th Username
+      %th Name
+      %th Email
+    - @users.each do |user|
+      %tr
+        %td= user.username
+        %td= user.full_name
+        %td= user.email
+  = will_paginate(@users)
