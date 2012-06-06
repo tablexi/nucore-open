@@ -151,7 +151,7 @@ Spork.each_run do
   #   The product being ordered
   # [_account_]
   #   The account under which the order is placed
-  def place_item_order(ordered_by, facility, product, account=nil)
+  def place_product_order(ordered_by, facility, product, account=nil)
     @price_group=Factory.create(:price_group, :facility => facility)
     o_attrs={ :created_by => ordered_by.id, :facility => facility, :ordered_at => Time.zone.now }
     o_attrs.merge!(:account_id => account.id) if account
@@ -178,7 +178,7 @@ Spork.each_run do
   def place_and_complete_item_order(ordered_by, facility, account=nil, reviewed=false)
     @facility_account=facility.facility_accounts.create(Factory.attributes_for(:facility_account))
     @item=facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
-    place_item_order(ordered_by, facility, @item, account)
+    place_product_order(ordered_by, facility, @item, account)
 
     @order_detail.change_status!(OrderStatus.complete.first)
     # act like the parent order is valid
@@ -199,7 +199,7 @@ Spork.each_run do
   end
 
   def place_reservation_for_instrument(ordered_by, instrument, account, reserve_start, extra_reservation_attrs=nil)
-    order_detail = place_item_order(ordered_by, instrument.facility, instrument, account)
+    order_detail = place_product_order(ordered_by, instrument.facility, instrument, account)
 
     instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule)) if instrument.schedule_rules.empty?
     res_attrs={
