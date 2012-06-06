@@ -35,13 +35,13 @@ describe BulkEmailHelper do
 
   context "search ordered dates" do
     before :each do
-      @od_yesterday = place_item_order(@purchaser, @facility, @product, @account)
+      @od_yesterday = place_product_order(@purchaser, @facility, @product, @account)
       @od_yesterday.order.update_attributes(:ordered_at => (Time.zone.now - 1.day))
       
-      @od_tomorrow = place_item_order(@purchaser2, @facility, @product2, @account)
+      @od_tomorrow = place_product_order(@purchaser2, @facility, @product2, @account)
       @od_tomorrow.order.update_attributes(:ordered_at => (Time.zone.now + 1.day))
       
-      @od_today = place_item_order(@purchaser3, @facility, @product, @account)
+      @od_today = place_product_order(@purchaser3, @facility, @product, @account)
     end
 
     it "should only return the one today and the one tomorrow" do
@@ -107,9 +107,9 @@ describe BulkEmailHelper do
 
   context "search products" do
     before :each do
-      @od1 = place_item_order(@purchaser, @facility, @product, @account)
-      @od2 = place_item_order(@purchaser2, @facility, @product2, @account)
-      @od3 = place_item_order(@purchaser3, @facility, @product3, @account)
+      @od1 = place_product_order(@purchaser, @facility, @product, @account)
+      @od2 = place_product_order(@purchaser2, @facility, @product2, @account)
+      @od3 = place_product_order(@purchaser3, @facility, @product3, @account)
     end
     it "should return all three user details" do
       users = @controller.do_search({})
@@ -179,9 +179,9 @@ describe BulkEmailHelper do
         :created_by => @owner.id
       })
 
-      @od1 = place_item_order(@purchaser, @facility, @product, @account)
-      @od2 = place_item_order(@purchaser, @facility, @product2, @account2)
-      @od3 = place_item_order(@purchaser, @facility, @product3, @account3)
+      @od1 = place_product_order(@purchaser, @facility, @product, @account)
+      @od2 = place_product_order(@purchaser, @facility, @product2, @account2)
+      @od3 = place_product_order(@purchaser, @facility, @product3, @account3)
     end
 
     it "should find owners if no other limits" do
