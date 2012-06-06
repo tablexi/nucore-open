@@ -567,7 +567,12 @@ en:
         type: "Type"
         users: "Number of Users"
         accounts: "Number of Payment Sources"
-
+  bulk_email:
+    search_type:
+      customers: Customers
+      account_owners: Account Owners
+      customers_and_account_owners: Customers and Account Owners
+      authorized_users: Authorized Users
   notifier:
     new_user:
       intro_html: "Congratulations, %{first_name}. A NU Core account has been created for you. You may log in at <a href=\"%{login_url}\">%{login_url}</a>."

@@ -31,6 +31,7 @@ describe BulkEmailHelper do
     @account = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner) ])
 
     @controller = BulkEmailTest.new(@facility)
+    @params = { :search_type => :customers }
   end
 
   context "search ordered dates" do
@@ -45,22 +46,22 @@ describe BulkEmailHelper do
     end
 
     it "should only return the one today and the one tomorrow" do
-      params = { :order_start_date => Time.zone.now }
-      users = @controller.do_search(params)
+      @params.merge!({ :order_start_date => Time.zone.now })
+      users = @controller.do_search(@params)
       @controller.order_details.should contain_all [@od_today, @od_tomorrow]
       users.should contain_all [@purchaser3, @purchaser2]
     end
     
     it "should only return the one today and the one yesterday" do
-      params = { :order_end_date => Time.zone.now }
-      users = @controller.do_search(params)
+      @params.merge!({ :order_end_date => Time.zone.now })
+      users = @controller.do_search(@params)
       @controller.order_details.should contain_all [@od_yesterday, @od_today]
       users.should contain_all [@purchaser3, @purchaser]
     end
 
     it "should only return the one from today" do
-      params = {:order_start_date => Time.zone.now, :order_end_date => Time.zone.now}
-      users = @controller.do_search(params)
+      @params.merge!({:order_start_date => Time.zone.now, :order_end_date => Time.zone.now})
+      users = @controller.do_search(@params)
       @controller.order_details.should == [@od_today]
       users.should == [@purchaser3]
     end
@@ -84,22 +85,22 @@ describe BulkEmailHelper do
     end
 
     it "should only return the one today and the one tomorrow" do
-      params = { :reservation_start_date => Time.zone.now }
-      users = @controller.do_search(params)
+      @params.merge!({ :reservation_start_date => Time.zone.now })
+      users = @controller.do_search(@params)
       @controller.order_details.should contain_all [@reservation_today.order_detail, @reservation_tomorrow.order_detail]
       users.should contain_all [@purchaser3, @purchaser2]
     end
     
     it "should only return the one today and the one yesterday" do
-      params = { :reservation_end_date => Time.zone.now }
-      users = @controller.do_search(params)
+      @params.merge!({ :reservation_end_date => Time.zone.now })
+      users = @controller.do_search(@params)
       @controller.order_details.should contain_all [@reservation_yesterday.order_detail, @reservation_today.order_detail]
       users.should contain_all [@purchaser3, @purchaser]
     end
 
     it "should only return the one from today" do
-      params = {:reservation_start_date => Time.zone.now, :reservation_end_date => Time.zone.now}
-      users = @controller.do_search(params)
+      @params.merge!({:reservation_start_date => Time.zone.now, :reservation_end_date => Time.zone.now})
+      users = @controller.do_search(@params)
       @controller.order_details.should == [@reservation_today.order_detail]
       users.should == [@purchaser3]
     end
@@ -107,24 +108,25 @@ describe BulkEmailHelper do
 
   context "search products" do
     before :each do
+      @params = { :search_type => :customers }
       @od1 = place_product_order(@purchaser, @facility, @product, @account)
       @od2 = place_product_order(@purchaser2, @facility, @product2, @account)
       @od3 = place_product_order(@purchaser3, @facility, @product3, @account)
     end
     it "should return all three user details" do
-      users = @controller.do_search({})
+      users = @controller.do_search(@params)
       @controller.order_details.should contain_all [@od1, @od2, @od3]
       users.should contain_all [@purchaser, @purchaser2, @purchaser3]
     end
     it "should return just one product" do
-      params = {:products => [@product.id]}
-      users = @controller.do_search(params)
+      @params.merge!({:products => [@product.id]})
+      users = @controller.do_search(@params)
       @controller.order_details.should contain_all [@od1]
       users.should == [@purchaser]
     end
     it "should return two products" do
-      params = {:products => [@product.id, @product2.id]}
-      users = @controller.do_search(params)
+      @params.merge!({:products => [@product.id, @product2.id]})
+      users = @controller.do_search(@params)
       @controller.order_details.should contain_all [@od1, @od2]
       users.should contain_all [@purchaser, @purchaser2]
     end
@@ -137,94 +139,25 @@ describe BulkEmailHelper do
       @account2 = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner2) ])
       @account3 = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner3) ])
       
-      @business_admin = Factory.create(:user)
-      @business_admin2 = Factory.create(:user)
-      @business_admin3 = Factory.create(:user)
-
-      Factory.create(:account_user, {
-        :user_role => AccountUser::ACCOUNT_ADMINISTRATOR,
-        :account_id => @account.id,
-        :user_id => @business_admin.id,
-        :created_by => @owner.id
-      })
-      Factory.create(:account_user, {
-        :user_role => AccountUser::ACCOUNT_ADMINISTRATOR,
-        :account_id => @account2.id,
-        :user_id => @business_admin2.id,
-        :created_by => @owner.id
-      })
-      Factory.create(:account_user, {
-        :user_role => AccountUser::ACCOUNT_ADMINISTRATOR,
-        :account_id => @account3.id,
-        :user_id => @business_admin3.id,
-        :created_by => @owner.id
-      })
-
-      Factory.create(:account_user, {
-        :user_role => AccountUser::ACCOUNT_PURCHASER,
-        :account_id => @account.id,
-        :user_id => @purchaser.id,
-        :created_by => @owner.id
-      })
-      Factory.create(:account_user, {
-        :user_role => AccountUser::ACCOUNT_PURCHASER,
-        :account_id => @account2.id,
-        :user_id => @purchaser2.id,
-        :created_by => @owner.id
-      })
-      Factory.create(:account_user, {
-        :user_role => AccountUser::ACCOUNT_PURCHASER,
-        :account_id => @account3.id,
-        :user_id => @purchaser3.id,
-        :created_by => @owner.id
-      })
-
       @od1 = place_product_order(@purchaser, @facility, @product, @account)
       @od2 = place_product_order(@purchaser, @facility, @product2, @account2)
       @od3 = place_product_order(@purchaser, @facility, @product3, @account3)
+      @params = {:search_type => :account_owners }
     end
 
     it "should find owners if no other limits" do
-      params = {:roles => [AccountUser::ACCOUNT_OWNER]}
-      users = @controller.do_search(params)
+      users = @controller.do_search(@params)
       @controller.order_details.should contain_all [@od1, @od2, @od3]
       users.map(&:id).should contain_all [@owner, @owner2, @owner3].map(&:id)
     end
 
     it "should find owners with limited order details" do
-      params = {:roles => [AccountUser::ACCOUNT_OWNER], :products => [@product.id, @product2.id]}
-      users = @controller.do_search(params)
+      @params.merge!({:products => [@product.id, @product2.id]})
+      users = @controller.do_search(@params)
       @controller.order_details.should contain_all [@od1, @od2]
       users.should contain_all [@owner, @owner2]
     end
 
-    it "should find purchasers" do
-      params = {:roles => [AccountUser::ACCOUNT_PURCHASER]}
-      users = @controller.do_search(params)
-      @controller.order_details.should contain_all [@od1, @od2, @od3]
-      users.should contain_all [@purchaser, @purchaser2, @purchaser3]
-    end
-
-    it "should find purchasers limited order details" do
-      params = {:roles => [AccountUser::ACCOUNT_PURCHASER], :products => [@product2.id]}
-      users = @controller.do_search(params)
-      @controller.order_details.should contain_all [@od2]
-      users.should contain_all [@purchaser2]
-    end
-
-    it "should find business admins" do
-      params = {:roles => [AccountUser::ACCOUNT_ADMINISTRATOR]}
-      users = @controller.do_search(params)
-      @controller.order_details.should contain_all [@od1, @od2, @od3]
-      users.should contain_all [@business_admin, @business_admin2, @business_admin3]
-    end
-
-    it "should find owners and business admins" do
-      params = {:roles => [AccountUser::ACCOUNT_ADMINISTRATOR, AccountUser::ACCOUNT_OWNER]}
-      users = @controller.do_search(params)
-      @controller.order_details.should contain_all [@od1, @od2, @od3]
-      users.should contain_all [@business_admin, @business_admin2, @business_admin3, @owner, @owner2, @owner3]
-    end
   end
 
   context "search authorized users" do
@@ -241,7 +174,7 @@ describe BulkEmailHelper do
       ProductUser.create(:product => @product, :user => @user2, :approved_by => @owner.id, :approved_at => Time.zone.now)
       ProductUser.create(:product => @product2, :user => @user2, :approved_by => @owner.id, :approved_at => Time.zone.now)
       ProductUser.create(:product => @product2, :user => @user3, :approved_by => @owner.id, :approved_at => Time.zone.now)
-      @params = {:authorized_user => 1}
+      @params = {:search_type => :authorized_users}
     end
     it "should return all authorized users for any instrument" do
       @params.merge!({:products => []})
