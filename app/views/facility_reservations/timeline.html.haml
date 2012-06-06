@@ -7,23 +7,26 @@
 
 = content_for :h1 do
   = current_facility
-%h2
-  = link_to "&laquo;".html_safe, timeline_facility_reservations_path(:date => format_usa_date(@display_date - 1.day))
-  = human_date_extra_info(@display_date)
-  = link_to "&raquo;".html_safe, timeline_facility_reservations_path(:date => format_usa_date(@display_date + 1.day))
-%br/
-= form_tag timeline_facility_reservations_path(current_facility), :method => :get do
-  = text_field_tag 'date', format_usa_date(@display_date), :class => 'datepicker'
-  = submit_tag 'Go'
+.timeline_date
+  .timeline_current_date
+    = link_to "&laquo;".html_safe, timeline_facility_reservations_path(:date => format_usa_date(@display_date - 1.day))
+    = human_date_extra_info(@display_date)
+    = link_to "&raquo;".html_safe, timeline_facility_reservations_path(:date => format_usa_date(@display_date + 1.day))
+  .timeline_change_date
+    = form_tag timeline_facility_reservations_path(current_facility), :method => :get do
+      = text_field_tag 'date', format_usa_date(@display_date), :class => 'datepicker'
+      = submit_tag 'Go'
+.clear
 - @instruments.each do |instrument|
-  %h3= instrument
-  -# Add .reschedulable to enable drag/drop
-  .timeline
-    .unit_container
-      - instrument.reservations.for_date(@display_date).each do |reservation|
-        = render :partial => "timeline_block", :locals => { :reservation => reservation }
-        = render :partial => "timeline_tooltip", :locals => { :reservation => reservation }
-      - ScheduleRule.unavailable_for_date(instrument, @display_date).each do |rule|
-        = render :partial => "timeline_block", :locals => { :reservation => rule, :type => :blackout }
-    - if @display_date.beginning_of_day == Time.zone.now.beginning_of_day
-      .current_time
+  .timeline_instrument
+    %h4= instrument
+    -# Add .reschedulable to enable drag/drop
+    .timeline
+      .unit_container
+        - instrument.reservations.for_date(@display_date).each do |reservation|
+          = render :partial => "timeline_block", :locals => { :reservation => reservation }
+          = render :partial => "timeline_tooltip", :locals => { :reservation => reservation }
+        - ScheduleRule.unavailable_for_date(instrument, @display_date).each do |rule|
+          = render :partial => "timeline_block", :locals => { :reservation => rule, :type => :blackout }
+      - if @display_date.beginning_of_day == Time.zone.now.beginning_of_day
+        .current_time
