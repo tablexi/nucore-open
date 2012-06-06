@@ -10,6 +10,14 @@ class Relay < ActiveRecord::Base
 
   alias_attribute :host, :ip
 
+
+  CONTROL_MECHANISMS={
+    :manual => nil,
+    :timer => 'timer',
+    :relay => 'relay'
+  }
+
+
   # assume port numbering begins at 1 for public functions
   def get_status_port(port)
     get_status[port - 1]
@@ -21,6 +29,10 @@ class Relay < ActiveRecord::Base
 
   def deactivate_port(port)
     toggle(port - 1) if get_status_port(port)
+  end
+
+  def control_mechanism
+    CONTROL_MECHANISMS[:manual]
   end
 
   private
@@ -42,9 +54,5 @@ class Relay < ActiveRecord::Base
       resp = http.request(req)
     }
     resp
-  end
-  
-  def control_mechanism
-    return nil
   end
 end

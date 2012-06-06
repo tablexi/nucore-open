@@ -167,7 +167,7 @@ class Instrument < Product
 
         # relay_attributes aren't passed in when control_mechanism isn't relay
         # may need to init the relay
-        if @control_mechanism == 'timer'
+        if @control_mechanism == Relay::CONTROL_MECHANISMS[:timer]
           self.relay      ||= RelayDummy.new 
           self.relay.type =   'RelayDummy'
         end

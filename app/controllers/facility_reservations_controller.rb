@@ -82,12 +82,7 @@ class FacilityReservationsController < ApplicationController
 
     if @order_detail.price_policy
       if can_edit_reserve && @reservation.changes.any? { |k,v| k == 'reserve_start_at' || k == 'reserve_end_at' }
-        costs = @order_detail.price_policy.estimate_cost_and_subsidy(@reservation.reserve_start_at, @reservation.reserve_end_at)
-        if costs
-          @order_detail.estimated_cost    = costs[:cost]
-          @order_detail.estimated_subsidy = costs[:subsidy]
-          additional_notice = '  Order detail cost estimate has been updated as well.'
-        end
+        @order_detail.assign_estimated_price_from_policy(@order_detail.price_policy)
       elsif can_edit_actuals && @reservation.changes.any? { |k,v| k == 'actual_start_at' || k == 'actual_end_at' }
         costs = @order_detail.price_policy.calculate_cost_and_subsidy(@reservation)
         if costs
@@ -96,17 +91,23 @@ class FacilityReservationsController < ApplicationController
           additional_notice = '  Order detail actual cost has been updated as well.'
         end
       end
+    else
+      # We're updating a reservation before it's been completed
+      if can_edit_reserve && @reservation.changes.any? { |k,v| k == 'reserve_start_at' || k == 'reserve_end_at' }
+        @order_detail.assign_estimated_price
+        additional_notice = ' Estimated cost has been updated as well.'
+      end
     end
 
     Reservation.transaction do
       begin
-        @reservation.save!
+        @reservation.save_as_user!(session_user)
 
         unless @order_detail.price_policy
+          old_pp = @order_detail.price_policy
           @order_detail.assign_price_policy
-          additional_notice = '  Order detail price policy and actual cost has been updated as well.'
+          additional_notice = '  Order detail price policy and actual cost have been updated as well.' unless old_pp == @order_detail.price_policy
         end
-
         @order_detail.save!
         flash.now[:notice] = "The reservation has been updated successfully.#{additional_notice}"
       rescue
