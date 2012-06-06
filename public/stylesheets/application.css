@@ -505,6 +505,10 @@ p.error {
 	width:500px;
 }
 
+.search_form li {
+  list-style: none;
+}
+
 body .search_form .chzn-container .chzn-drop {
 	width:500px !important;
 }
@@ -670,7 +674,15 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
 #choose-account-frm input[type=radio] {
     display: block;
     margin: 0 auto;
-
+}
 .reservations tr.current {
 	background-color: #DDFFDD;
 }
+
+/***
+ * Bulk Email
+ ***/
+#user_types label { 
+  display: inline; 
+}
+

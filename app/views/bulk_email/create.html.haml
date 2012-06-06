@@ -1,5 +1,6 @@
 = render :partial => 'search'
 
+= will_paginate(@users)
 %table
   %tr
     %th Username
@@ -10,3 +11,4 @@
       %td= user.username
       %td= user.full_name
       %td= user.email
+= will_paginate(@users)
