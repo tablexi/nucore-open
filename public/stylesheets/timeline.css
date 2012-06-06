@@ -1,21 +1,19 @@
 #ui-datepicker-div { display: none; }
 
 .timeline {
-  background:url(../images/timeline.png);
+  background:url(../images/timeline.png) no-repeat;
   display:block;
-  height:100px;
+  height:44px;
   position:relative;
-  margin-bottom:20px;
-  margin-top: 15px;
   width:865px;
   z-index:9999;
 }
 
 .unit_container {
-  bottom:31px;
+  bottom:19px;
   display:block;
   left:0;
-  height:76px;
+  height:44px;
   position:absolute;
   width:100%;
   z-index: 20;
@@ -88,9 +86,9 @@ body .unit {
 .unit.blackout, 
 .unit.admin {
   display:inline-block;
-  height:71px;
+  height:23px;
   opacity:0.5;
-  top:0px;
+  top:16px;
   width:110px;
   z-index: 10;
   border-radius: 3px 3px 0 0;
@@ -109,14 +107,13 @@ body .unit {
 }
 
 .current_time {
-  background:#3e3ede;
-  border-radius:6px;
+  background:#f00;
   display:inline-block;
-  height:110px;
-  opacity:.05;
+  height:35px;
+  opacity:.4;
   position:relative;
   top:-9px;
-  width:35px;
+  width:2px;
   z-index: 0;
 }
 
@@ -162,3 +159,23 @@ body .unit {
 .current_time.hour_21 { left:739px}
 .current_time.hour_22 { left:775px}
 .current_time.hour_23 { left:811px}
+
+.timeline_date {
+  border-bottom:1px solid #ddd;
+  overflow:hidden;
+  padding-bottom:20px;
+}
+
+.timeline_instrument {
+  margin:15px 0;
+  padding-left:40px;
+}
+
+.timeline_current_date {
+  float:left;
+  font-size:18px;
+}
+
+.timeline_change_date {
+  float:right;
+}
