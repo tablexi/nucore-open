@@ -34,7 +34,7 @@ describe BulkEmailHelper do
     @params = { :search_type => :customers }
   end
 
-  context "search ordered dates" do
+  context "search customers filtered by ordered dates" do
     before :each do
       @od_yesterday = place_product_order(@purchaser, @facility, @product, @account)
       @od_yesterday.order.update_attributes(:ordered_at => (Time.zone.now - 1.day))
@@ -67,7 +67,7 @@ describe BulkEmailHelper do
     end
   end
 
-  context "search reserved dates" do
+  context "search customers filtered by reserved dates" do
     before :each do
 
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
@@ -106,7 +106,7 @@ describe BulkEmailHelper do
     end
   end
 
-  context "search products" do
+  context "search customers filtered by products" do
     before :each do
       @params = { :search_type => :customers }
       @od1 = place_product_order(@purchaser, @facility, @product, @account)
@@ -132,7 +132,7 @@ describe BulkEmailHelper do
     end
   end
 
-  context "search user roles" do
+  context "account owners" do
     before :each do
       @owner2 = Factory.create(:user)
       @owner3 = Factory.create(:user)
@@ -156,6 +156,34 @@ describe BulkEmailHelper do
       users = @controller.do_search(@params)
       @controller.order_details.should contain_all [@od1, @od2]
       users.should contain_all [@owner, @owner2]
+    end
+
+  end
+
+  context "customers_and_account_owners" do
+    before :each do
+      @owner2 = Factory.create(:user)
+      @owner3 = Factory.create(:user)
+      @account2 = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner2) ])
+      @account3 = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner3) ])
+      
+      @od1 = place_product_order(@purchaser, @facility, @product, @account)
+      @od2 = place_product_order(@purchaser2, @facility, @product2, @account2)
+      @od3 = place_product_order(@purchaser3, @facility, @product3, @account3)
+      @params = {:search_type => :customers_and_account_owners }
+    end
+
+    it "should find owners and purchaser if no other limits" do
+      users = @controller.do_search(@params)
+      @controller.order_details.should contain_all [@od1, @od2, @od3]
+      users.should contain_all [@owner, @owner2, @owner3, @purchaser, @purchaser2, @purchaser3]
+    end
+
+    it "should find owners and purchasers with limited order details" do
+      @params.merge!({:products => [@product.id, @product2.id]})
+      users = @controller.do_search(@params)
+      @controller.order_details.should contain_all [@od1, @od2]
+      users.should contain_all [@owner, @owner2, @purchaser, @purchaser2]
     end
 
   end

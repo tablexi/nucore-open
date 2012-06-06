@@ -2,8 +2,9 @@
 = content_for :h1 do
   =h current_facility
 
-= form_tag facility_bulk_email_index_path, :method => :post, :class => "search_form" do
+= form_tag facility_bulk_email_index_path, :method => :post, :class => "search_form", :id => "bulk_email" do
   %fieldset#search_type
+    Search
     = select_tag 'search_type', options_for_select(@search_types.invert, :selected => params[:search_type])
   %fieldset#search
     = chosen_field(:products, Product.model_name.human, "id", nil, :product_options)
@@ -25,16 +26,5 @@
       %li
         = label_tag :order_end_date, "End Date"
         = text_field_tag :order_end_date, (@search_fields[:order_end_date] || "").gsub("-","/"), :class => 'datepicker'
-  %fieldset#user_types
-    %ul
-      %li
-        = check_box_tag :authorized_users, 1, params[:authorized_users]
-        = label_tag :authorized_users
-      %li
-        %ul{:style => "border: 1px dashed #AAA"}
-          - AccountUser.user_roles.each do |role|
-            %li
-              = check_box_tag "roles[]", role, (params[:roles] && params[:roles].include?(role))
-              = label_tag role
   .submit_button
     = submit_tag "Search"

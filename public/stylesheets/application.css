@@ -682,6 +682,9 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
 /***
  * Bulk Email
  ***/
+#bulk_email fieldset {
+  float: none;
+}
 #user_types label { 
   display: inline; 
 }

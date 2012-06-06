@@ -10,14 +10,20 @@ class BulkEmailController < ApplicationController
   before_filter :add_search_types
 
 	def new
-		@search_fields = params.merge({})
 		@products = current_facility.products
+
+    @search_fields = params.merge({})
 	end
 
 	def create
-		@search_fields = params.merge({})
     @products = current_facility.products
-    @users = do_search(@search_fields)
+
+    @search_fields = params.merge({})
+
+    # default search type
+    @search_fields[:search_type] ||= :customers
+    
+    @users = do_search(@search_fields).paginate(:page => params[:page])
 	end
 
   private 
