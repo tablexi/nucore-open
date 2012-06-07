@@ -83,13 +83,17 @@ body .unit {
   box-shadow:0 0 10px #3a6d88;
 }
 
+.unit.behalf_of {
+  /* do something here for ordered on behalf of */
+}
+
 /* Tall blocks */
 .unit.blackout, 
 .unit.admin {
   display:inline-block;
   height:28px;
   opacity:0.5;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=75);
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
   top:10px;
   width:110px;
   z-index: 10;

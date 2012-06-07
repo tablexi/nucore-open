@@ -254,6 +254,25 @@ describe Reservation do
 
     end
 
+    context 'ordered_on_behalf_of?' do
+      it 'should return true if the associated order was ordered by someone else' do
+        @user2 = Factory.create(:user)
+        @reservation1.order.update_attributes(:created_by_user => @user2)
+        @reservation1.reload.should be_ordered_on_behalf_of
+      end
+      it 'should return false if the associated order was not ordered on behalf of' do
+        user = @reservation1.order_detail.order.user
+        @reservation1.order_detail.order.update_attributes(:created_by_user => user)
+        @reservation1.reload
+        @reservation1.reload.should_not be_ordered_on_behalf_of
+      end
+      it 'should return false for admin reservations' do
+        @admin_reservation = Factory.create(:reservation, :instrument => @instrument)
+        @admin_reservation.should_not be_ordered_on_behalf_of
+      end
+      
+    end
+
   end
 
 

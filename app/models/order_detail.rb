@@ -234,6 +234,8 @@ class OrderDetail < ActiveRecord::Base
     reservation.nil? || !reservation.canceled_at.nil?
   end
 
+  delegate :ordered_on_behalf_of?, :to => :order
+
   def cost
     actual_cost || estimated_cost
   end

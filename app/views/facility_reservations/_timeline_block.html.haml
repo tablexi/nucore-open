@@ -4,5 +4,6 @@
 - else
   - classes << 'tip'
   - classes << 'admin' if reservation.admin?
+  - classes << 'behalf_of' if reservation.ordered_on_behalf_of?
   - classes << "status_#{reservation.order_detail.order_status.to_s.downcase}" if reservation.order_detail
 %div{ :style => "width: #{datetime_width(reservation.reserve_start_at, reservation.reserve_end_at)}; left: #{datetime_left_position(reservation.reserve_start_at)}", :class => classes.join(" ") }[reservation, :block]          

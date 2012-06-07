@@ -592,4 +592,18 @@ describe OrderDetail do
 
   end
 
+  context 'ordered_on_behalf_of?' do
+    it 'should return true if the associated order was ordered by someone else' do
+      @user2 = Factory.create(:user)
+      @order_detail.order.update_attributes(:created_by_user => @user2)
+      @order_detail.reload.should be_ordered_on_behalf_of
+    end
+    it 'should return false if the associated order was not ordered on behalf of' do
+      user = @order_detail.order.user
+      @order_detail.order.update_attributes(:created_by_user => user)
+      @order_detail.reload
+      @order_detail.reload.should_not be_ordered_on_behalf_of
+    end
+  end
+
 end
