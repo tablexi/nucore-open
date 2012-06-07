@@ -41,21 +41,21 @@ describe BulkEmailHelper do
     end
 
     it "should only return the one today and the one tomorrow" do
-      @params.merge!({ :order_start_date => Time.zone.now })
+      @params.merge!({ :start_date => Time.zone.now })
       users = @controller.do_search(@params)
       @controller.order_details.should contain_all [@od_today, @od_tomorrow]
       users.should contain_all [@purchaser3, @purchaser2]
     end
     
     it "should only return the one today and the one yesterday" do
-      @params.merge!({ :order_end_date => Time.zone.now })
+      @params.merge!({ :end_date => Time.zone.now })
       users = @controller.do_search(@params)
       @controller.order_details.should contain_all [@od_yesterday, @od_today]
       users.should contain_all [@purchaser3, @purchaser]
     end
 
     it "should only return the one from today" do
-      @params.merge!({:order_start_date => Time.zone.now, :order_end_date => Time.zone.now})
+      @params.merge!({:start_date => Time.zone.now, :end_date => Time.zone.now})
       users = @controller.do_search(@params)
       @controller.order_details.should == [@od_today]
       users.should == [@purchaser3]
@@ -80,21 +80,21 @@ describe BulkEmailHelper do
     end
 
     it "should only return the one today and the one tomorrow" do
-      @params.merge!({ :reservation_start_date => Time.zone.now })
+      @params.merge!({ :start_date => Time.zone.now })
       users = @controller.do_search(@params)
       @controller.order_details.should contain_all [@reservation_today.order_detail, @reservation_tomorrow.order_detail]
       users.should contain_all [@purchaser3, @purchaser2]
     end
     
     it "should only return the one today and the one yesterday" do
-      @params.merge!({ :reservation_end_date => Time.zone.now })
+      @params.merge!({ :end_date => Time.zone.now })
       users = @controller.do_search(@params)
       @controller.order_details.should contain_all [@reservation_yesterday.order_detail, @reservation_today.order_detail]
       users.should contain_all [@purchaser3, @purchaser]
     end
 
     it "should only return the one from today" do
-      @params.merge!({:reservation_start_date => Time.zone.now, :reservation_end_date => Time.zone.now})
+      @params.merge!({:start_date => Time.zone.now, :end_date => Time.zone.now})
       users = @controller.do_search(@params)
       @controller.order_details.should == [@reservation_today.order_detail]
       users.should == [@purchaser3]

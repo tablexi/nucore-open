@@ -190,6 +190,24 @@ class OrderDetail < ActiveRecord::Base
     end
     search
   }
+
+  def self.ordered_or_reserved_in_range(start_date, end_date)
+    start_date = start_date.beginning_of_day if start_date
+    end_date = end_date.end_of_day if end_date
+    
+    query = joins(:order).joins('LEFT JOIN reservations ON reservations.order_detail_id = order_details.id')
+    # If there is a reservation, query on the reservation time, if there's not a reservation (i.e. the left join ends up with a null reservation)
+    # use the ordered at time
+    if start_date && end_date
+      sql = "(reservations.id IS NULL AND orders.ordered_at > :start AND orders.ordered_at < :end) OR (reservations.id IS NOT NULL AND reservations.reserve_start_at > :start AND reservations.reserve_start_at < :end)"
+    elsif start_date
+      sql = "(reservations.id IS NULL AND orders.ordered_at > :start) OR (reservations.id IS NOT NULL AND reservations.reserve_start_at > :start)"
+    elsif end_date
+      sql = "(reservations.id IS NULL AND orders.ordered_at < :end) OR (reservations.id IS NOT NULL AND reservations.reserve_start_at < :end)"
+    end
+
+    query.where(sql, {:start => start_date, :end => end_date})
+  end
   # BEGIN acts_as_state_machine
   include AASM
 

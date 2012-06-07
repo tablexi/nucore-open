@@ -12,13 +12,13 @@ class BulkEmailController < ApplicationController
 	def new
 		@products = current_facility.products
 
-    @search_fields = params.merge({})
+    @search_fields = params.merge({:facility_id => current_facility.id})
 	end
 
 	def create
     @products = current_facility.products
 
-    @search_fields = params.merge({})
+    @search_fields = params.merge({:facility_id => current_facility.id})
 
     # default search type
     @search_fields[:search_type] ||= :customers
