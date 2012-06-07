@@ -1,7 +1,4 @@
-= javascript_include_tag 'ckeditor/ckeditor.js'
-= javascript_include_tag 'ckeditor/adapters/jquery.js'
-= javascript_include_tag 'editor.js'
-
+= render :partial => 'shared/headers/ckeditor'
 = content_for :h1 do
   =h current_facility
 = content_for :sidebar do

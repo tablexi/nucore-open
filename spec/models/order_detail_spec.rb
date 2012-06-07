@@ -70,6 +70,43 @@ describe OrderDetail do
     end
   end
 
+  context "assigning estimated costs" do
+    
+    context "for reservations" do
+      before(:each) do
+        @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+        @price_group = Factory.create(:price_group, :facility => @facility)
+        Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
+        UserPriceGroupMember.create!(:price_group => @price_group, :user => @user)
+        @pp=Factory.create(:instrument_price_policy, :instrument => @instrument, :price_group => @price_group)
+        @rule = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 24, :duration_mins => 15))
+        @order_detail.reservation = Factory.create(:reservation,
+                :reserve_start_at => Time.now,
+                :reserve_end_at => Time.now+1.hour,
+                :instrument => @instrument
+              )
+        @order_detail.product = @instrument
+        @order_detail.save
+        assert @order_detail.reservation
+        @start_stop = [Time.now, Time.now+1.hour]
+      end
+      
+      it "should assign_estimated_price" do
+        @order_detail.estimated_cost.should be_nil
+        # will be the cheapest price policy
+        @order_detail.assign_estimated_price
+        @order_detail.estimated_cost.should == @pp.estimate_cost_and_subsidy(*@start_stop)[:cost]
+      end
+
+      it "should assign_estimated_price_from_policy" do
+        @order_detail.estimated_cost.should be_nil
+        @order_detail.assign_estimated_price_from_policy(@pp)
+        @order_detail.estimated_cost.should == @pp.estimate_cost_and_subsidy(*@start_stop)[:cost]
+      end
+    end
+  end
+
+
   context "item purchase validation" do
     before(:each) do
       @account        = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
