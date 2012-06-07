@@ -54,16 +54,10 @@ module BulkEmailHelper
     order_details = OrderDetail.for_products(search_fields[:products])
     order_details = order_details.joins(:order).where(:orders => {:facility_id => search_fields[:facility_id]})
 
-    reserve_start_date = parse_usa_date(search_fields[:reservation_start_date].to_s.gsub("-", "/"))
-    reserve_end_date = parse_usa_date(search_fields[:reservation_end_date].to_s.gsub("-", "/")) 
-    if reserve_start_date || reserve_end_date
-      order_details = order_details.joins(:reservation) 
-      order_details = order_details.action_in_date_range("reservations.reserve_start_at", reserve_start_date, reserve_end_date)
-    end
-
-    order_start_date = parse_usa_date(search_fields[:order_start_date].to_s.gsub("-", "/"))
-    order_end_date = parse_usa_date(search_fields[:order_end_date].to_s.gsub("-", "/"))  
-    order_details = order_details.action_in_date_range('orders.ordered_at', order_start_date, order_end_date)
+    start_date = parse_usa_date(search_fields[:start_date].to_s.to_s.gsub("-", "/")) if search_fields[:start_date]
+    end_date = parse_usa_date(search_fields[:end_date].to_s.to_s.gsub("-", "/")) if search_fields[:end_date]
+    order_details = order_details.ordered_or_reserved_in_range(start_date, end_date)
+    
     @order_details = order_details
     order_details
   end

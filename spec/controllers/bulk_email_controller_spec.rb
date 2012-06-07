@@ -36,6 +36,9 @@ describe BulkEmailController do
       it 'should set search types' do
         assigns[:search_types].should_not be_empty
       end
+      it 'should have the facility_id as the id, not the url_name' do
+        assigns[:search_fields][:facility_id].should == @authable.id
+      end
     end
   end
 
@@ -67,6 +70,9 @@ describe BulkEmailController do
       end
       it 'should set search types' do
         assigns[:search_types].should_not be_empty
+      end
+      it 'should have the facility_id as the id, not the url_name' do
+        assigns[:search_fields][:facility_id].should == @authable.id
       end
     
     end
