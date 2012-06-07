@@ -12,10 +12,11 @@ module TransactionHistoryHelper
     search_fields.map! { |i| i.to_s } if search_fields
     options = []
     products.each do |product|
-      selected = search_fields && search_fields.include?(product.id.to_s) ? "selected = \"selected\"" : ""
-      options << "<option value=\"#{product.id}\" data-facility=\"#{product.facility.id}\" #{selected}>#{product.name}</option>"
+      options << [product.name, product.id, { :"data-facility" => product.facility.id, 
+                                              :"data-restricted" => product.requires_approval,
+                                              :"data-product-type" => product.type.downcase}]
     end
-    options.join("\n").html_safe
+    options_for_select options, :selected => search_fields
   end
   
   def chosen_field(field, label, value_field = "id", label_field = "name", from_collection_method = nil)

@@ -2,6 +2,10 @@ class BulkEmailController < ApplicationController
 	include BulkEmailHelper
   
   admin_tab :all
+  layout 'two_column'
+
+  before_filter { @active_tab = 'admin_users' }
+  
 
   before_filter :authenticate_user!
 	before_filter :check_acting_as
@@ -9,10 +13,12 @@ class BulkEmailController < ApplicationController
   before_filter { authorize! :send_bulk_emails, current_facility }
   before_filter :add_search_types
 
+
 	def new
 		@products = current_facility.products
 
     @search_fields = params.merge({:facility_id => current_facility.id})
+    render :create
 	end
 
 	def create

@@ -1,0 +1,12 @@
+= will_paginate(@users)
+%table
+  %tr
+    %th= User.human_attribute_name(:username)
+    %th= User.human_attribute_name(:name)
+    %th= User.human_attribute_name(:email)
+  - @users.each do |user|
+    %tr
+      %td= user.username
+      %td= user.full_name
+      %td= user.email
+= will_paginate(@users)

@@ -1,15 +1,17 @@
+= render :partial => 'shared/transactions/headers'
+= javascript_include_tag 'bulk_email.js'
+= content_for :h1 do
+  =h current_facility
+%h2= t('bulk_email.title')
+
+= content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'email' }
+
 = render :partial => 'search'
 
-- if @users
-  = will_paginate(@users)
-  %table
-    %tr
-      %th Username
-      %th Name
-      %th Email
-    - @users.each do |user|
-      %tr
-        %td= user.username
-        %td= user.full_name
-        %td= user.email
-  = will_paginate(@users)
+- if @users && @users.any?
+  = render :partial =>'results'
+- elsif @users
+  .clear
+  .notice= t('bulk_email.no_results')
+  
