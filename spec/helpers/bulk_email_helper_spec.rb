@@ -6,12 +6,7 @@ describe BulkEmailHelper do
   class BulkEmailTest
     include BulkEmailHelper
     include DateHelper
-    def initialize(facility)
-      @facility = facility
-    end
-    def current_facility
-      @facility
-    end
+    
     attr_reader :order_details
   end
 
@@ -30,8 +25,8 @@ describe BulkEmailHelper do
 
     @account = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner) ])
 
-    @controller = BulkEmailTest.new(@facility)
-    @params = { :search_type => :customers }
+    @controller = BulkEmailTest.new
+    @params = { :search_type => :customers, :facility_id => @facility.id }
   end
 
   context "search customers filtered by ordered dates" do
@@ -108,7 +103,6 @@ describe BulkEmailHelper do
 
   context "search customers filtered by products" do
     before :each do
-      @params = { :search_type => :customers }
       @od1 = place_product_order(@purchaser, @facility, @product, @account)
       @od2 = place_product_order(@purchaser2, @facility, @product2, @account)
       @od3 = place_product_order(@purchaser3, @facility, @product3, @account)
@@ -142,7 +136,7 @@ describe BulkEmailHelper do
       @od1 = place_product_order(@purchaser, @facility, @product, @account)
       @od2 = place_product_order(@purchaser, @facility, @product2, @account2)
       @od3 = place_product_order(@purchaser, @facility, @product3, @account3)
-      @params = {:search_type => :account_owners }
+      @params.merge!({:search_type => :account_owners })
     end
 
     it "should find owners if no other limits" do
@@ -170,7 +164,7 @@ describe BulkEmailHelper do
       @od1 = place_product_order(@purchaser, @facility, @product, @account)
       @od2 = place_product_order(@purchaser2, @facility, @product2, @account2)
       @od3 = place_product_order(@purchaser3, @facility, @product3, @account3)
-      @params = {:search_type => :customers_and_account_owners }
+      @params.merge!({:search_type => :customers_and_account_owners })
     end
 
     it "should find owners and purchaser if no other limits" do
@@ -202,7 +196,7 @@ describe BulkEmailHelper do
       ProductUser.create(:product => @product, :user => @user2, :approved_by => @owner.id, :approved_at => Time.zone.now)
       ProductUser.create(:product => @product2, :user => @user2, :approved_by => @owner.id, :approved_at => Time.zone.now)
       ProductUser.create(:product => @product2, :user => @user3, :approved_by => @owner.id, :approved_at => Time.zone.now)
-      @params = {:search_type => :authorized_users}
+      @params.merge!({:search_type => :authorized_users})
     end
     it "should return all authorized users for any instrument" do
       @params.merge!({:products => []})
