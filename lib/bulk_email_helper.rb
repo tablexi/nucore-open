@@ -29,7 +29,7 @@ module BulkEmailHelper
     account_owner_ids = find_user_ids_from_order_details(account_owner_order_details, 'account_users.user_id')
 
     customer_order_details = find_order_details(search_fields).joins(:order => :user)
-    customer_ids = find_users_from_order_details(order_details, "orders.user_id")
+    customer_ids = find_users_from_order_details(customer_order_details, "orders.user_id")
 
     find_users_from_ids((account_owner_ids + customer_ids).uniq)
   end
