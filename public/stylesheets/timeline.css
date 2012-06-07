@@ -89,6 +89,7 @@ body .unit {
   display:inline-block;
   height:28px;
   opacity:0.5;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=75);
   top:10px;
   width:110px;
   z-index: 10;
