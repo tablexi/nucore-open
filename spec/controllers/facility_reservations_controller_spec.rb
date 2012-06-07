@@ -90,6 +90,32 @@ describe FacilityReservationsController do
       assigns(:instrument).should == @product
     end
 
+    context "updating reservation length before complete" do
+      before :each do
+        @order_detail.price_policy.should be_nil
+        @order_detail.account = @account
+        @order_detail.save!
+        @price_group=Factory.create(:price_group, :facility => @authable)
+        Factory.create(:user_price_group_member, :user => @director, :price_group => @price_group)
+        @instrument_pp=@product.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id))
+        @instrument_pp.reload.restrict_purchase=false
+        @reservation.update_attributes(:actual_start_at => nil, :actual_end_at => nil)
+        @params.merge!(:reservation => {
+                :reserve_start_at => @reservation.reserve_start_at, 
+                :reserve_end_at => @reservation.reserve_end_at - 15.minutes
+              }
+            )
+      end
+
+      it "should update estimated cost" do
+        maybe_grant_always_sign_in :director
+        do_request
+        assigns[:reservation].should_not be_reserve_start_at_changed
+        assigns[:reservation].should be_reserve_end_at_changed
+        assigns[:order_detail].should be_estimated_cost_changed
+      end
+    end
+
 
     context 'update actuals' do
 
