@@ -37,7 +37,7 @@ module BulkEmailHelper
   def search_authorized_users(search_fields)
     result = User.joins(:product_users)
     # if we don't have any products, listed get them all for the current facility
-    product_ids = search_fields[:products].presence || current_facility.products.map(&:id)
+    product_ids = search_fields[:products].presence || Facility.find(search_fields[:facility_id]).products.map(&:id)
     result.where(:product_users => {:product_id => product_ids}).reorder(*BulkEmailHelper::DEFAULT_SORT)
   end
   
@@ -52,7 +52,7 @@ module BulkEmailHelper
 
   def find_order_details(search_fields)
     order_details = OrderDetail.for_products(search_fields[:products])
-    order_details = order_details.joins(:order).where(:orders => {:facility_id => current_facility.id})
+    order_details = order_details.joins(:order).where(:orders => {:facility_id => search_fields[:facility_id]})
 
     reserve_start_date = parse_usa_date(search_fields[:reservation_start_date].to_s.gsub("-", "/"))
     reserve_end_date = parse_usa_date(search_fields[:reservation_end_date].to_s.gsub("-", "/")) 
