@@ -164,3 +164,7 @@ body .unit {
   font-weight: normal;
   display: inline;
 }
+
+.ui-datepicker-trigger {
+  cursor: pointer;
+}
