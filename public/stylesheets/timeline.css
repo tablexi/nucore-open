@@ -5,7 +5,7 @@
   display:block;
   height:44px;
   position:relative;
-  margin-top:5px;
+  margin-top:8px;
   width:865px;
   z-index:9999;
 }
@@ -87,9 +87,9 @@ body .unit {
 .unit.blackout, 
 .unit.admin {
   display:inline-block;
-  height:25px;
+  height:28px;
   opacity:0.5;
-  top:14px;
+  top:10px;
   width:110px;
   z-index: 10;
   border-radius: 3px 3px 0 0;
@@ -116,7 +116,7 @@ body .unit {
   height:35px;
   opacity:.4;
   position:relative;
-  top:-9px;
+  top:8px;
   width:2px;
   z-index: 0;
 }
@@ -139,52 +139,22 @@ body .unit {
   text-shadow: none;
 }
 
-.current_time.hour_0 { left:-16px}
-.current_time.hour_1 { left:19px}
-.current_time.hour_2 { left:55px}
-.current_time.hour_3 { left:91px}
-.current_time.hour_4 { left:127px}
-.current_time.hour_5 { left:163px}
-.current_time.hour_6 { left:199px}
-.current_time.hour_7 { left:235px}
-.current_time.hour_8 { left:271px}
-.current_time.hour_9 { left:307px}
-.current_time.hour_10 { left:374px}
-.current_time.hour_11 { left:379px}
-.current_time.hour_12 { left:415px}
-.current_time.hour_13 { left:451px}
-.current_time.hour_14 { left:487px}
-.current_time.hour_15 { left:523px}
-.current_time.hour_16 { left:559px}
-.current_time.hour_17 { left:595px}
-.current_time.hour_18 { left:631px}
-.current_time.hour_19 { left:667px}
-.current_time.hour_20 { left:707px}
-.current_time.hour_21 { left:739px}
-.current_time.hour_22 { left:775px}
-.current_time.hour_23 { left:811px}
+.timeline_header {
+  text-align: center;
+}
 
-.timeline_date {
-  border-bottom:1px solid #ddd;
-  overflow:hidden;
-  padding-bottom:20px;
+/* Center the text excluding the calendar icon. The margin-left should be the width of the icon */
+.timeline_header h3 {
+  margin-left: 16px;
 }
 
 .timeline_instrument {
   margin:15px 0;
-  padding-left:40px;
 }
-
-.timeline_current_date {
-  float:left;
-  font-size:18px;
+.timeline_options {
+  float: right;
 }
-
-.timeline_change_date {
-  float:right;
-}
-
-label[for=show_cancelled] {
+.timeline_options label {
   color: #777;
   font-weight: normal;
   display: inline;

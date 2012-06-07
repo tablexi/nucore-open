@@ -35,16 +35,30 @@ $(function() {
         });
 
         // Date select calendar
-        $(".datepicker").datepicker();
+        $(".datepicker").datepicker({
+          showOn: "button",
+          buttonImage: "/images/icon-calendar.gif",
+          buttonImageOnly: true
+        }).change(function() {
+          $(this).parents("form").submit();
+        });
 
         //Get the Current Hour, create a class and add it the time div
         time = function() {
+          $e = $('.current_time');
           var currentTime = new Date();
-          var hours = currentTime.getHours();
-          $('.current_time').addClass("hour_" + hours);
+          // minutes since midnight
+          var minutes = currentTime.getHours() * 60 + currentTime.getMinutes();
+          // Cache the pixel to minute ratio based on where it's initially displayed
+          if (!window.PIXEL_TO_MINUTE_RATIO) {
+            var pixels = parseInt($e.css('left'));
+            window.PIXEL_TO_MINUTE_RATIO = (pixels / minutes).toFixed(2);
+          }
+          var pixels = Math.floor(minutes * PIXEL_TO_MINUTE_RATIO) + 'px'
+          $e.css('left', pixels);
         };  
         time();
-        setInterval(time, 500);
+        setInterval(time, 30000);
 
         showOrHideCancelled = function() {
           if ($('#show_cancelled').is(':checked')) {
@@ -57,14 +71,5 @@ $(function() {
         $('#show_cancelled').change(showOrHideCancelled);
         // no animation when first loading
         $('.status_cancelled').toggle($('#show_cancelled').is(':checked'));
-
-        // When clicking on the forward or back date links, trigger the date select
-        // submission. This is mainly so we can include the show/hide cancelled checkbox easily
-        $(".timeline_current_date a").click(function() {
-          var d = /date=([^&]+)/.exec(this.href);
-          $("#timeline_date_search #date").val(decodeURIComponent(d[1]))
-          $("#timeline_date_search").submit();
-          return false;
-        });
     
       });
