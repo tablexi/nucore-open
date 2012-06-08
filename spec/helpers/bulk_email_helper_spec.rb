@@ -213,6 +213,27 @@ describe BulkEmailHelper do
       users.should contain_all [@user2, @user3]
     end
   end
-
+  
+  # Oracle blows up if you do a WHERE IN (...) clause with more than a 1000 items
+  # so let's test it.
+  # commented out because the creation of users takes so long. run it every once in a while
+  # context 'being ready for Oracle' do
+  #   before :each do
+  #     puts "creating users"
+  #     1001.times do
+  #       user = Factory.create(:user)
+  #       od = place_product_order(user, @facility, @product, @account)
+  #     end
+  #     puts 'users created'
+  #     OrderDetail.all.size.should == 1001
+  #     puts 'ensured order detail size'
+  #   end
+  #   it "should return 1001 users" do
+  #     puts 'doing query'
+  #     users = @controller.do_search(@params)
+  #     puts "type: #{users.class}"
+  #     users.size.should == 1001
+  #   end
+  # end
 
 end
