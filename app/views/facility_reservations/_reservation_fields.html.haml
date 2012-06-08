@@ -15,7 +15,7 @@
 - else
   %li.left
     = f.label :reserve_start_date, 'Reservation'
-    =h @reservation
+    = @reservation.reserve_to_s
   %li.clear
 
 - if @reservation.can_edit_actuals?
