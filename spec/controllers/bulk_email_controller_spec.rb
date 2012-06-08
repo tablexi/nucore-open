@@ -44,7 +44,7 @@ describe BulkEmailController do
 
   context "create" do
     before :each do
-      @action = 'create'
+      @action = 'search'
       @method = :post
       @params.merge!({ :search_type => :customers })
     end

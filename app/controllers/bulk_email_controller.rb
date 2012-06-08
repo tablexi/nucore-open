@@ -18,10 +18,10 @@ class BulkEmailController < ApplicationController
 		@products = current_facility.products
 
     @search_fields = params.merge({:facility_id => current_facility.id})
-    render :create
+    render :search
 	end
 
-	def create
+	def search
     @products = current_facility.products
 
     @search_fields = params.merge({:facility_id => current_facility.id})
@@ -30,6 +30,11 @@ class BulkEmailController < ApplicationController
     @search_fields[:search_type] ||= :customers
     
     @users = do_search(@search_fields).paginate(:page => params[:page])
+
+    respond_to do |format|
+      format.html
+      format.csv
+    end
 	end
 
   private 

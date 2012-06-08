@@ -7,7 +7,7 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'email' }
 
-= render :partial => 'search'
+= render :partial => 'fields'
 
 - if @users && @users.any?
   = render :partial =>'results'

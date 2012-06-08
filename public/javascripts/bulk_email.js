@@ -16,4 +16,9 @@ $(function() {
   
   $('.search_form #search_type').change(showHideNonRestrictedProducts).trigger('change');
 
+  $('a.submit_link').click(function() {
+    $(this).parents("form").submit();
+    return false;
+  })
+
 });
