@@ -16,22 +16,21 @@ module BulkEmailHelper
 
   def search_customers(search_fields)
     order_details = find_order_details(search_fields).joins(:order => :user)
-    find_users_from_order_details(order_details, "orders.user_id")
+    User.find_by_sql(order_details.select("distinct(users.id), users.*").
+                                          reorder("users.last_name, users.first_name").to_sql)
   end
 
   def search_account_owners(search_fields)
     order_details = find_order_details_for_roles(search_fields, [AccountUser::ACCOUNT_OWNER])
-    find_users_from_order_details(order_details, 'account_users.user_id')
+    User.find_by_sql(order_details.joins(:account => {:account_users => :user}).
+                                   select("distinct(users.id), users.*").
+                                   reorder("users.last_name, users.first_name").to_sql)
   end
 
   def search_customers_and_account_owners(search_fields)
-    account_owner_order_details = find_order_details_for_roles(search_fields, [AccountUser::ACCOUNT_OWNER])
-    account_owner_ids = find_user_ids_from_order_details(account_owner_order_details, 'account_users.user_id')
-
-    customer_order_details = find_order_details(search_fields).joins(:order => :user)
-    customer_ids = find_users_from_order_details(customer_order_details, "orders.user_id")
-
-    find_users_from_ids((account_owner_ids + customer_ids).uniq)
+    customers = search_customers(search_fields)
+    account_owners = search_account_owners(search_fields)
+    (customers + account_owners).uniq.sort {|x,y| x.last_name <=> y.last_name }
   end
 
   def search_authorized_users(search_fields)
@@ -60,18 +59,6 @@ module BulkEmailHelper
     
     @order_details = order_details
     order_details
-  end
-
-  def find_users_from_order_details(order_details, user_id_field, sort_fields = nil)
-    user_ids = find_user_ids_from_order_details(order_details, user_id_field)
-    find_users_from_ids(user_ids, sort_fields)
-  end
-  def find_user_ids_from_order_details(order_details, user_id_field)
-    order_details.select("distinct(#{user_id_field}) as user_id").map(&:user_id).uniq
-  end
-  def find_users_from_ids(user_ids, sort_fields=nil)
-    sort_fields = BulkEmailHelper::DEFAULT_SORT if sort_fields.blank?
-    User.find_all_by_id(user_ids, :order => sort_fields)
   end
 
   def find_order_details_for_roles(search_fields, roles)
