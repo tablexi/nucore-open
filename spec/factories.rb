@@ -202,7 +202,7 @@ Factory.define_default :statement_row do |s|
 end
 
 Factory.define_default :reservation do |r|
-  time=Time.parse('9:30') + 1.day
+  time=Time.zone.parse("#{Date.today.to_s} 10:00:00") + 1.day
   r.reserve_start_at time
   r.reserve_end_at time + 1.hour
 end
