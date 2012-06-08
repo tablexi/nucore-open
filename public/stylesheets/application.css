@@ -684,8 +684,22 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
  ***/
 #bulk_email fieldset {
   float: none;
+  margin: 1em 0;
+}
+#dates_between li {
+  float: left;
+  margin: 0 1em 0 0;
 }
 #user_types label { 
   display: inline; 
 }
+#bulk_email.search_form input[type="submit"] {
+  float: none;
+  margin-top: 0;
+}
+#bulk_email_export {
+  float: right;
+  margin-top: -1em;
+}
+
 
