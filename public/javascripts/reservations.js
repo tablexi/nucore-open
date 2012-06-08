@@ -128,6 +128,7 @@ $(document).ready(function() {
     setDateInPicker($('#reservation_actual_end_date'), endDate);
     setTimeInPickers('reservation_actual_end', endDate);
     $(this).remove();
+    return false;
   }
   function setDateInPicker(picker, date) {
     var dateFormat = picker.datepicker('option', 'dateFormat');
