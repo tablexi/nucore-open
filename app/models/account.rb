@@ -26,6 +26,7 @@ class Account < ActiveRecord::Base
   end
   
   @@limited_to_one_facility_subclasses = []
+  @@all_subclass_names = []
   def self.limit_facilities
     @@limited_to_one_facility_subclasses << self.to_s
   end
@@ -38,15 +39,25 @@ class Account < ActiveRecord::Base
     accounts = scoped
 
     unless facility.all_facility?
-      all_subclass_names = descendants.collect { |clazz| clazz.to_s }
+      __ensureSubclassesAreLoaded
 
       accounts = accounts.where("accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)", 
-            {:allow_all => all_subclass_names - @@limited_to_one_facility_subclasses,
+            {:allow_all => @@all_subclass_names - @@limited_to_one_facility_subclasses,
               :limit_one => @@limited_to_one_facility_subclasses,
               :facility => facility})
     end
 
     accounts  
+  end
+  # If class caching is enabled, the subclasses aren't necessarily loaded, so descendents wouldn't
+  # find them. If the subclass list is empty, find all the files in the same directory as this
+  # and load the class inside that file. If it's a subclass of Account, it'll trigger the inherited method above
+  def self.__ensureSubclassesAreLoaded
+    return if @@all_subclass_names && @@all_subclass_names.any?
+    Dir.glob(File.expand_path("../*_account.rb", __FILE__)).each do |file|
+      clazz = file.split('/').last.gsub(/\.rb$/, '').camelize.constantize
+      @@all_subclass_names << clazz.name if clazz < Account
+    end
   end
 
   # find all accounts that have ordered fror a facility
