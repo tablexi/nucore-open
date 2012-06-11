@@ -1,13 +1,7 @@
 module BulkEmailHelper
   
   DEFAULT_SORT = [:last_name, :first_name]
-
-  def self.method_added(name)
-    @@search_types ||= []
-    if (name.to_s =~ /^search_(.*)$/)
-      @@search_types << $1.to_sym
-    end
-  end
+  SEARCH_TYPES = [:customers, :account_owners, :customers_and_account_owners, :authorized_users]
 
   def do_search(search_fields)
     return unless BulkEmailHelper::search_types.include? search_fields[:search_type].to_sym
@@ -41,10 +35,10 @@ module BulkEmailHelper
   end
   
   def self.search_types
-    @@search_types
+    SEARCH_TYPES
   end
   def self.search_types_and_titles
-    Hash[@@search_types.map {|a| [a, I18n.t("bulk_email.search_type.#{a}")]}]
+    Hash[self.search_types.map {|a| [a, I18n.t("bulk_email.search_type.#{a}")]}]
   end
 
   private
