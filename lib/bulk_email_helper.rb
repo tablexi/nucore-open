@@ -1,6 +1,7 @@
 module BulkEmailHelper
   
   DEFAULT_SORT = [:last_name, :first_name]
+  SEARCH_TYPES = [:customers, :account_owners, :customers_and_account_owners, :authorized_users]
 
   def self.method_added(name)
     @@search_types ||= []
@@ -41,10 +42,10 @@ module BulkEmailHelper
   end
   
   def self.search_types
-    @@search_types
+    SEARCH_TYPES
   end
   def self.search_types_and_titles
-    Hash[@@search_types.map {|a| [a, I18n.t("bulk_email.search_type.#{a}")]}]
+    Hash[self.search_types.map {|a| [a, I18n.t("bulk_email.search_type.#{a}")]}]
   end
 
   private
