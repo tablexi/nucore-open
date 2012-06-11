@@ -39,7 +39,6 @@ describe BulkEmailController do
       it 'should set the search types in order' do
         assigns[:search_types].keys.should == [:customers, :account_owners, :customers_and_account_owners, :authorized_users].map(&:to_s)
       end
-
       it 'should have the facility_id as the id, not the url_name' do
         assigns[:search_fields][:facility_id].should == @authable.id
       end
