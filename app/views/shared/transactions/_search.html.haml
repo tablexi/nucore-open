@@ -11,10 +11,10 @@
     %ul
       %li
         = label_tag :start_date, "Start Date"
-        = text_field_tag :start_date, (@search_fields[:start_date] || "").gsub("-","/"), :class => 'datepicker'
+        = text_field_tag :start_date, (@search_fields[:start_date] || "").gsub("-","/"), :class => 'datepicker in_past'
       %li
         = label_tag :end_date, "End Date"
-        = text_field_tag :end_date, (@search_fields[:end_date] || "").gsub("-","/"), :class => 'datepicker'
+        = text_field_tag :end_date, (@search_fields[:end_date] || "").gsub("-","/"), :class => 'datepicker in_past'
 
   .submit_button
     = submit_tag "Search"
