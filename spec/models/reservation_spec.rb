@@ -148,7 +148,7 @@ describe Reservation do
 
     context 'moving' do
 
-      before(:each) { @morning=Time.local(Date.today.year, Date.today.month, Date.today.day, 10, 31) }
+      before(:each) { @morning=Time.zone.parse("#{Date.today.to_s} 10:31:00") }
 
       it 'should return the earliest possible time slot' do
         human_date(@reservation1.reserve_start_at).should == human_date(@morning+1.day)
