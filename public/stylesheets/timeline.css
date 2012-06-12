@@ -53,7 +53,7 @@ body .unit {
   background-image: -ms-linear-gradient(top, rgb(58, 126, 49), rgb(92, 154, 91));
   background-image: linear-gradient(top, rgb(58, 126, 49), rgb(92, 154, 91));
   filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#3a7e31', EndColorStr='#5c9a5b');
-  border-left: 1px solid #FFFFFF;
+  border-left: 1px solid #CCC;
 }
 .unit:hover {
   box-shadow: 0 0 10px #3a7e31;
