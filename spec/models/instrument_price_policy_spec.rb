@@ -71,24 +71,22 @@ describe InstrumentPricePolicy do
       @ipp.start_date=Date.today - 7.days
       @ipp.save(:validate => false) #save without validations
       @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
-      InstrumentPricePolicy.current_date(@instrument).to_date.should == Date.today - 7.days
+      InstrumentPricePolicy.current_date(@instrument).to_date.should == @ipp.start_date.to_date
 
       @ipp = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group => @price_group))
-      @ipp.save(:validate => false) #save without validations
-      InstrumentPricePolicy.current_date(@instrument).to_date.should == Date.today
+      InstrumentPricePolicy.current_date(@instrument).to_date.should == @ipp.start_date.to_date
     end
 
     it "should return the date for upcoming policies" do
+      @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today, :price_group => @price_group))
+      ipp2=@instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
+      ipp3=@instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + 14.days, :price_group => @price_group))
 
-      for i in 0..2
-        @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + (i*7).days, :price_group => @price_group))
-      end
-
-      InstrumentPricePolicy.next_date(@instrument).to_date.should == Date.today + 7.days
+      InstrumentPricePolicy.next_date(@instrument).to_date.should == ipp2.start_date.to_date
       next_dates = InstrumentPricePolicy.next_dates(@instrument)
       next_dates.length.should == 2
-      next_dates.include?(Date.today + 7.days).should be_true
-      next_dates.include?(Date.today + 14.days).should be_true
+      next_dates.include?(ipp2.start_date.to_date).should be_true
+      next_dates.include?(ipp3.start_date.to_date).should be_true
     end
   end
   

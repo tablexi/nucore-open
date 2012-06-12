@@ -171,7 +171,6 @@ class OrdersController < ApplicationController
             @order.update_order_detail_accounts
           rescue Exception => e
             success = false
-            puts e
             raise ActiveRecord::Rollback
           end
         end

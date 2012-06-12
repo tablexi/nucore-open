@@ -78,26 +78,23 @@ describe ServicePricePolicy do
     end
 
     it "should return the date for the current policies" do
-      ipp = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today - 7.days, :price_group_id => @price_group.id)
-      ipp.save(:validate => false) #save without validations
+      spp = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today - 7.days, :price_group_id => @price_group.id)
       @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today + 7.days, :price_group_id => @price_group.id)
-      ServicePricePolicy.current_date(@service).to_date.should == Date.today - 7.days
-
-      ipp = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id)
-      ipp.save(:validate => false) #save without validations
-      ServicePricePolicy.current_date(@service).to_date.should == Date.today
+      ServicePricePolicy.current_date(@service).should == spp.start_date.to_date
+      spp3 = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id)
+      ServicePricePolicy.current_date(@service).should == spp3.start_date.to_date
     end
 
     it "should return the date for upcoming policies" do
       @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id)
-      @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today + 7.days, :price_group_id => @price_group.id)
-      @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today + 14.days, :price_group_id => @price_group.id)
+      spp2=@service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today + 7.days, :price_group_id => @price_group.id)
+      spp3=@service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today + 14.days, :price_group_id => @price_group.id)
 
-      ServicePricePolicy.next_date(@service).to_date.should == Date.today + 7.days
+      ServicePricePolicy.next_date(@service).should == spp2.start_date.to_date
       next_dates = ServicePricePolicy.next_dates(@service)
       next_dates.length.should == 2
-      next_dates.include?(Date.today + 7.days).should be_true
-      next_dates.include?(Date.today + 14.days).should be_true
+      next_dates.include?(spp2.start_date.to_date).should be_true
+      next_dates.include?(spp3.start_date.to_date).should be_true
     end
   end
 end
