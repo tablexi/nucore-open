@@ -29,6 +29,9 @@ class Reservation < ActiveRecord::Base
                     :reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian,
                     :actual_start_date, :actual_start_hour, :actual_start_min, :actual_start_meridian,
                     :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian
+  # Represents a resevation time that is unavailable, but is not an admin reservation
+  # Used by timeline view
+  attr_accessor     :blackout
   attr_writer       :note
   before_validation :set_reserve_start_at, :set_reserve_end_at, :set_actual_start_at, :set_actual_end_at
 
@@ -123,7 +126,11 @@ class Reservation < ActiveRecord::Base
   end
 
   def admin?
-    order.nil?
+    order.nil? && !blackout?
+  end
+
+  def blackout?
+    blackout.present?
   end
 
   def starts_before_ends

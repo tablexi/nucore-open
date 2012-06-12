@@ -32,6 +32,6 @@ module FacilityReservationsHelper
   end
 
   def datetime_width(datetime_start, datetime_end)
-    "#{(datetime_end - datetime_start) / 60 * MINUTE_TO_PIXEL_RATIO}px"
+    "#{(datetime_end - datetime_start) / 60 * MINUTE_TO_PIXEL_RATIO }px"
   end
 end
