@@ -483,22 +483,33 @@ describe Reservation do
     before :each do
       @reservation = @instrument.reservations.create!(:reserve_start_at => 1.hour.ago,
                                                      :duration_value => 60, :duration_unit => 'minutes')
+      @reserve_start_at_timestamp = @reservation.reserve_start_at.strftime("%a, %d %b %Y %H:%M:%S")
       @reserve_end_at_timestamp = @reservation.reserve_end_at.strftime("%a, %d %b %Y %H:%M:%S")
 
       @cal_obj_wo_actual_end = @reservation.as_calendar_object
-      @end_time = 5.minutes.from_now
-      @reservation.actual_end_at = @end_time
+      
+      @reservation.actual_start_at = 1.minute.from_now
+      @reservation.actual_end_at = 5.minutes.from_now
+      
       @cal_obj_w_actual_end = @reservation.as_calendar_object
 
+      @actual_start_at_timestamp = @reservation.actual_start_at.strftime("%a, %d %b %Y %H:%M:%S")
       @actual_end_at_timestamp = @reservation.actual_end_at.strftime("%a, %d %b %Y %H:%M:%S")
 
+      assert @reservation.reserve_start_at != @reservation.actual_start_at
       assert @reservation.reserve_end_at != @reservation.actual_end_at
     end
 
+    it "should have start set to reserve_start_at timestamp if no actual" do
+      @cal_obj_wo_actual_end['start'].should == @reserve_start_at_timestamp
+    end
     it "should have end set to reserve_end_at timestamp if no actual" do
       @cal_obj_wo_actual_end['end'].should == @reserve_end_at_timestamp
     end
 
+    it "should have start set to actual timestamp" do
+      @cal_obj_w_actual_end['start'].should == @actual_start_at_timestamp
+    end
     it "should have end set to actual_end_at timestamp" do
       @cal_obj_w_actual_end['end'].should == @actual_end_at_timestamp
     end

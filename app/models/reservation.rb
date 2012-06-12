@@ -280,7 +280,7 @@ class Reservation < ActiveRecord::Base
   def as_calendar_object(options={})
     # initialize result with defaults
     calendar_object = {
-      "start"  => reserve_start_at.strftime("%a, %d %b %Y %H:%M:%S"),
+      "start"  => (actual_start_at || reserve_start_at).strftime("%a, %d %b %Y %H:%M:%S"),
       "end"    => (actual_end_at || reserve_end_at).strftime("%a, %d %b %Y %H:%M:%S"),
       "allDay" => false,
       "title"  => "Reservation",
