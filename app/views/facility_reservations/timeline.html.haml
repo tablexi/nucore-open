@@ -16,5 +16,5 @@
       = hidden_field_tag 'date', format_usa_date(@display_date), :class => 'datepicker'
 
 .clear
-= render :partial => 'timeline_instrument', :collection => @instruments, :as => :instrument
+= render :partial => 'shared/timeline/instrument', :collection => @instruments, :as => :instrument
   
