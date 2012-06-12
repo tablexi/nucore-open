@@ -146,6 +146,10 @@ body .unit {
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, .5);
   box-shadow: 0 0 10px rgba(0, 0, 0, .5);
   text-shadow: none;
+  
+  /* Moving the tooltip box 1px down so it's butted up with the reservation block and doesn't dissappear when you try to click on it. */
+  position:relative;
+  top:1px;
 }
 
 .timeline_header {
