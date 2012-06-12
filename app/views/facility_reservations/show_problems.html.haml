@@ -16,17 +16,15 @@
       %th Account
       %th Problem
     - @order_details.each do |od|
-      - order = od.order
-      - res   = od.reservation
-      - product_name = (od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)
+      - product_name = order_detail_description(od)
       %tr{:class => needs_reconcile_warning?(od) ? 'reconcile-warning' : ''}
         %td.centered= link_to od, edit_facility_order_order_detail_path(current_facility, od.order, od)
         %td=h human_datetime(od.order.ordered_at)
         %td.centered=h od.quantity
         %td= product_name
         %td=h od.account
-        - if res && !res.has_actuals?
-          %td.centered= "Actual Usage Missing #{link_to 'Enter', edit_facility_order_order_detail_reservation_path(current_facility, od.order, od, res)}".html_safe
+        - if od.reservation.try(:requires_but_missing_actuals?)
+          %td.centered= "Actual Usage Missing #{link_to 'Enter', edit_facility_order_order_detail_reservation_path(current_facility, od.order, od, od.reservation)}".html_safe
         - else
           %td.centered= "Price Policy Missing #{link_to 'Assign', edit_facility_order_order_detail_path(current_facility, od.order, od)}".html_safe
     %tr.borderless
