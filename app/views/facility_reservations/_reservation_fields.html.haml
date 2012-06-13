@@ -15,7 +15,7 @@
 - else
   %li.left
     = f.label :reserve_start_date, 'Reservation'
-    =h @reservation
+    = @reservation.reserve_to_s
   %li.clear
 
 - if @reservation.can_edit_actuals?
@@ -35,6 +35,11 @@
     = f.select :actual_end_hour, (1..12).to_a
     = f.select :actual_end_min, (0..59).map{|d| [sprintf('%02d', d),d]}
     = f.select :actual_end_meridian, ['AM', 'PM']
+  - unless @reservation.has_actuals?
+    %li.left.copy_actual_from_reservation
+      = link_to 'Copy from reservation','#'
+      %span.start_date= @reservation.reserve_start_at #human_datetime(@reservation.reserve_start_at, :date_only => true)
+      %span.end_date= @reservation.reserve_end_at #human_datetime(@reservation.reserve_end_at, :date_only => true)
   %li.clear
 - else
   %li.left

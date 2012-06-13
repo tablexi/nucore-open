@@ -78,25 +78,22 @@ describe ItemPricePolicy do
 
     it "should return the date for the current policies" do
       ipp = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today - 7.days, :price_group_id => @price_group.id)
-      ipp.save(:validate => false) #save without validations
       @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 7.days, :price_group_id => @price_group.id)
-      ItemPricePolicy.current_date(@item).to_date.should == Date.today - 7.days
-
-      ipp = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id)
-      ipp.save(:validate => false) #save without validations
-      ItemPricePolicy.current_date(@item).to_date.should == Date.today
+      ItemPricePolicy.current_date(@item).to_date.should == ipp.start_date.to_date
+      ipp3 = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id)
+      ItemPricePolicy.current_date(@item).to_date.should == ipp3.start_date.to_date
     end
 
     it "should return the date for upcoming policies" do
-      assert @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id)
-      assert @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 7.days, :price_group_id => @price_group.id)
-      assert @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 14.days, :price_group_id => @price_group.id)
+      @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id)
+      ipp2=@item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 7.days, :price_group_id => @price_group.id)
+      ipp3=@item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 14.days, :price_group_id => @price_group.id)
 
-      ItemPricePolicy.next_date(@item).to_date.should == Date.today + 7.days
+      ItemPricePolicy.next_date(@item).to_date.should == ipp2.start_date.to_date
       next_dates = ItemPricePolicy.next_dates(@item)
       next_dates.length.should == 2
-      next_dates.include?(Date.today + 7.days).should be_true
-      next_dates.include?(Date.today + 14.days).should be_true
+      next_dates.include?(ipp2.start_date.to_date).should be_true
+      next_dates.include?(ipp3.start_date.to_date).should be_true
     end
   end
 end

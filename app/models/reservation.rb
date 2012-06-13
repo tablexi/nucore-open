@@ -280,7 +280,7 @@ class Reservation < ActiveRecord::Base
   def as_calendar_object(options={})
     # initialize result with defaults
     calendar_object = {
-      "start"  => reserve_start_at.strftime("%a, %d %b %Y %H:%M:%S"),
+      "start"  => (actual_start_at || reserve_start_at).strftime("%a, %d %b %Y %H:%M:%S"),
       "end"    => (actual_end_at || reserve_end_at).strftime("%a, %d %b %Y %H:%M:%S"),
       "allDay" => false,
       "title"  => "Reservation",
@@ -659,13 +659,21 @@ class Reservation < ActiveRecord::Base
 
     start_at=actual_start_at || reserve_start_at
     end_at=actual_end_at || reserve_end_at
-
-    if reserve_start_at.day == reserve_end_at.day
-      str = "#{start_at.strftime("%a, %m/%d/%Y %l:%M %p")} - #{end_at.strftime("%l:%M %p")}"
-    else
-      str = "#{start_at.strftime("%a, %m/%d/%Y %l:%M %p")} - #{end_at.strftime("%a, %m/%d/%Y %l:%M %p")}"
-    end
+    str = range_to_s(start_at, end_at)
+    
     str + (canceled_at ? ' (Cancelled)' : '')
+  end
+
+  def reserve_to_s
+    range_to_s(reserve_start_at, reserve_end_at)
+  end
+
+  def range_to_s(start_at, end_at)
+    if start_at.day == end_at.day
+      "#{start_at.strftime("%a, %m/%d/%Y %l:%M %p")} - #{end_at.strftime("%l:%M %p")}"
+    else
+      "#{start_at.strftime("%a, %m/%d/%Y %l:%M %p")} - #{end_at.strftime("%a, %m/%d/%Y %l:%M %p")}"
+    end
   end
 
   def actuals_string

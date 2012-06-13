@@ -566,6 +566,57 @@ describe OrderDetail do
     end
 
 
+    context 'reservations' do
+      before :each do
+        @now=Time.zone.now
+        setup_reservation @facility, @facility_account, @account, @user
+      end
+
+
+      it 'should be upcoming' do
+        start_time=@now+2.days
+        place_reservation @facility, @order_detail, start_time, { :reserve_end_at => start_time+1.hour }
+        upcoming=OrderDetail.upcoming_reservations.all
+        upcoming.size.should == 1
+        upcoming[0].should == @order_detail
+      end
+
+
+      it 'should not be upcoming because reserve_end_at is in the past' do
+        start_time=@now-2.days
+        place_reservation @facility, @order_detail, start_time, { :reserve_end_at => start_time+1.hour }
+        OrderDetail.upcoming_reservations.all.should be_blank
+      end
+
+
+      it 'should not be upcoming because actual_start_at exists' do
+        start_time=@now+2.days
+        place_reservation @facility, @order_detail, start_time, { :reserve_end_at => start_time+1.hour, :actual_start_at => start_time }
+        OrderDetail.upcoming_reservations.all.should be_blank
+      end
+
+
+      it 'should be in progress' do
+        place_reservation @facility, @order_detail, @now, { :actual_start_at => @now }
+        upcoming=OrderDetail.in_progress_reservations.all
+        upcoming.size.should == 1
+        upcoming[0].should == @order_detail
+      end
+
+
+      it 'should not be in progress because actual_start_at missing' do
+        place_reservation @facility, @order_detail, @now
+        OrderDetail.in_progress_reservations.all.should be_empty
+      end
+
+
+      it 'should not be in progress because actual_end_at exists' do
+        start_time=@now-3.hour
+        place_reservation @facility, @order_detail, start_time, { :actual_start_at => start_time, :actual_end_at => start_time+1.hour }
+        OrderDetail.in_progress_reservations.all.should be_empty
+      end
+    end
+
     context 'needs statement' do
 
       before :each do

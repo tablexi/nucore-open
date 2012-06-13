@@ -151,9 +151,15 @@ class OrderDetail < ActiveRecord::Base
                                  joins(:order).
                                  includes(:reservation).
                                  ordered
+
   scope :upcoming_reservations, confirmed_reservations.
-                                where("reservations.reserve_end_at > ?", Time.zone.now).
+                                where("reservations.reserve_end_at > ? AND reservations.actual_start_at IS NULL", Time.zone.now).
                                 order('reservations.reserve_start_at ASC')
+
+  scope :in_progress_reservations, confirmed_reservations.
+                                  where("reservations.actual_start_at IS NOT NULL AND reservations.actual_end_at IS NULL").
+                                  order('reservations.reserve_start_at ASC')
+
   scope :all_reservations, confirmed_reservations.
                            order('reservations.reserve_start_at DESC')
   
