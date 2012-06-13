@@ -38,6 +38,9 @@
         = order_detail_description(order_detail)
         %br
         %em= order_detail.reservation
+        - if order_detail.note.present?
+          %br
+          %em= "Note: #{order_detail.note}"
       %td= order_detail.order.user.full_name
       -# %td= order_detail.order.created_by_user.full_name  
       - unless @account

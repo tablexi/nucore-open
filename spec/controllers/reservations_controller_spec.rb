@@ -55,12 +55,13 @@ describe ReservationsController do
       @action=:list
       @params = {}
     end
-        
-    it "should redirect to a 404" do
-      user=maybe_grant_always_sign_in(:staff)
-      get :list, :status => 'junk'
+
+
+    it "should redirect to default view" do
+      maybe_grant_always_sign_in(:staff)
+      @params.merge!(:status => 'junk')
+      do_request
       should redirect_to "/reservations/upcoming"
-      #response.response_code.should == 404
     end
     
     
@@ -68,14 +69,33 @@ describe ReservationsController do
       before :each do
         @params = {:status => 'upcoming'}
       end
+
       it_should_require_login
       
       it_should_allow :staff do
-        should respond_with :success
-        should assign_to(:order_details).with_kind_of(ActiveRecord::Relation)
+        assigns(:available_statuses).size.should == 2
+        assigns(:status).should == assigns(:available_statuses).first
+        assigns(:order_details).should == (OrderDetail.upcoming_reservations.all + OrderDetail.in_progress_reservations.all)
         should assign_to(:active_tab).with('reservations')
         should render_template('list')
       end      
+    end
+
+
+    context 'all' do
+      before :each do
+        @params = {:status => 'all'}
+      end
+
+      it 'should respond with all reservations' do
+        maybe_grant_always_sign_in :staff
+        do_request
+        assigns(:status).should == 'all'
+        assigns(:available_statuses).size.should == 2
+        assigns(:order_details).should == OrderDetail.all_reservations.all
+        should assign_to(:active_tab).with('reservations')
+        should render_template('list')
+      end
     end
     
   end

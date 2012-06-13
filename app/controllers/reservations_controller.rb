@@ -46,16 +46,20 @@ class ReservationsController < ApplicationController
   def list
     notices = []
     now = Time.zone.now
-    @available_statuses = ['upcoming', 'all']
-    case params[:status]
-    when 'upcoming'
-      @order_details = acting_user.order_details.upcoming_reservations
-    when 'all'
-      @order_details = acting_user.order_details.all_reservations
+    relation=acting_user.order_details
+    in_progress=relation.in_progress_reservations.all
+    @status=params[:status]
+    @available_statuses = [ in_progress.blank? ? 'upcoming' : 'upcoming &amp; in progress', 'all' ]
+
+    if @status == 'all'
+      @order_details = relation.all_reservations.all
+    elsif @status == 'upcoming'
+      @status=@available_statuses.first
+      @order_details = in_progress + relation.upcoming_reservations.all
     else
-      redirect_to reservations_status_path(:status => "upcoming")
-      return
+      return redirect_to reservations_status_path(:status => "upcoming")
     end
+
     @order_details = @order_details.paginate(:page => params[:page])
     
     @order_details.each do |od|
