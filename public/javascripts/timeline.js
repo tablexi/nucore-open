@@ -71,5 +71,8 @@ $(function() {
         $('#show_cancelled').change(showOrHideCancelled);
         // no animation when first loading
         $('.status_cancelled').toggle($('#show_cancelled').is(':checked'));
-    
-      });
+        $('.relay_checkbox :checkbox').iphoneStyle({
+          checkedLabel: '|',
+          uncheckedLabel: 'O'
+        });    
+});

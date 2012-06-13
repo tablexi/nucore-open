@@ -6,7 +6,7 @@
   height:44px;
   position:relative;
   margin-top:8px;
-  width:865px;
+  width:920px;
   z-index:9999;
 }
 
@@ -16,7 +16,7 @@
   left:0;
   height:44px;
   position:absolute;
-  width:100%;
+  width:870px;
   z-index: 20;
 }
 
@@ -175,4 +175,9 @@ body .unit {
 
 .ui-datepicker-trigger {
   cursor: pointer;
+}
+
+.relay_checkbox {
+  float: right;
+  width: 40px;
 }
