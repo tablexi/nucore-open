@@ -98,6 +98,14 @@ class FacilityJournalsController < ApplicationController
       @update_order_details = []
     end
 
+    # The referer can have a crazy long query string depending on how many checkboxes
+    # are selected. We've seen Apache not like stuff like that and give a "malformed
+    # header from script. Bad header" error which causes the page to completely bomb out.
+    # (See Task #48311). This is just preventative.
+    referer=response.headers['Referer']
+    response.headers['Referer']=referer[0..referrer.index('?')] if referer.present?
+
+    @update_order_details = OrderDetail.find(params[:order_detail_ids] || [])
     if @update_order_details.empty?
       @journal.errors.add(:base, I18n.t('controllers.facility_journals.create.errors.no_orders'))
     else
@@ -135,7 +143,7 @@ class FacilityJournalsController < ApplicationController
     if @journal.errors.any?
       flash[:error] = @journal.errors.values.join("<br/>").html_safe
       remove_ugly_params
-      redirect_to params.merge({:action => :new}) and return
+      redirect_to new_facility_journal_path and return
     end
     @layout = "two_column_head"
   end

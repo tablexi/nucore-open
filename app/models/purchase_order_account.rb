@@ -5,7 +5,6 @@ class PurchaseOrderAccount < Account
 
   validates_presence_of   :account_number
 
-  limit_facilities
 
   def to_s
     string = "#{description} (#{account_number})"

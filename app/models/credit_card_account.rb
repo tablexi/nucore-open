@@ -10,7 +10,6 @@ class CreditCardAccount < Account
   validates_numericality_of :expiration_month, :only_integer => true, :greater_than => 0, :less_than => 13
   validate :expiration_year_in_future
   
-  limit_facilities
 
   def expiration_year_in_future
     if expiration_year.nil? || expiration_year < Time.zone.now.year || expiration_year > Time.zone.now.year + 20

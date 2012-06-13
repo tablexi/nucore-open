@@ -1,7 +1,8 @@
 class RelayDummy < Relay
 
   def get_status_port(port)
-    @active || instrument.current_instrument_status.is_on?
+    return @active unless @active.nil?
+    instrument.current_instrument_status.try(:is_on?)
   end
 
   def activate_port(port)
