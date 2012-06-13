@@ -45,7 +45,7 @@ describe BulkEmailController do
     end
   end
 
-  context "create" do
+  context "search" do
     before :each do
       @action = 'search'
       @method = :post
@@ -77,10 +77,27 @@ describe BulkEmailController do
       it 'should have the facility_id as the id, not the url_name' do
         assigns[:search_fields][:facility_id].should == @authable.id
       end
-    
     end
-  end
-
-
     
+    context "pagination" do
+      before :each do
+        maybe_grant_always_sign_in :director
+      end
+      it "should paginate for html" do
+        do_request
+        assigns[:users].should be_respond_to :per_page
+      end
+
+      context "csv" do
+        before :each do
+          @params.merge!({:format => 'csv'})
+        end
+        it "should not paginate" do
+          do_request
+          assigns[:users].should_not be_respond_to :per_page
+        end
+      end
+    end
+    
+  end
 end
