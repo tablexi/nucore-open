@@ -1,4 +1,3 @@
-- require 'csv'
-= CSV.generate do |csv|
-  - csv << [User.human_attribute_name(:email), User.human_attribute_name(:name), User.human_attribute_name(:username)]
-  - @users.each{ |user| csv << [user.email, user.name, user.username] }
+= CSVHelper::generate do |csv|
+  - csv << [User.human_attribute_name(:name), User.human_attribute_name(:username), User.human_attribute_name(:email)]
+  - @users.each{ |user| csv << [user.name, user.username, user.email] }

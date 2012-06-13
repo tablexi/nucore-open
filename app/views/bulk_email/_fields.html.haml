@@ -11,8 +11,6 @@
         = label_tag :start_date, t('bulk_email.dates.start')
         = text_field_tag :start_date, (@search_fields[:start_date] || "").gsub("-","/"), :class => 'datepicker'
       %li 
-        %br/
-        and
       %li
         = label_tag :end_date, t('bulk_email.dates.end')
         = text_field_tag :end_date, (@search_fields[:end_date] || "").gsub("-","/"), :class => 'datepicker'
