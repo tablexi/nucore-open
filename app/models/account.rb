@@ -20,45 +20,31 @@ class Account < ActiveRecord::Base
       acct.errors.add(:base, "Must have an account owner")
     end
   end
-  
+
+
   def facility
     nil
   end
-  
-  @@limited_to_one_facility_subclasses = []
-  @@all_subclass_names = []
-  def self.limit_facilities
-    @@limited_to_one_facility_subclasses << self.to_s
-  end
-  
+
+
   def self.limited_to_single_facility?
-    @@limited_to_one_facility_subclasses.include? self.to_s
+    AccountManager::FACILITY_ACCOUNT_CLASSES.include? self.name.to_s
   end
-  
+
+
   def self.for_facility(facility)
     accounts = scoped
 
     unless facility.all_facility?
-      __ensureSubclassesAreLoaded
-
-      accounts = accounts.where("accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)", 
-            {:allow_all => @@all_subclass_names - @@limited_to_one_facility_subclasses,
-              :limit_one => @@limited_to_one_facility_subclasses,
+      accounts = accounts.where("accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)",
+            {:allow_all => AccountManager::GLOBAL_ACCOUNT_CLASSES,
+              :limit_one => AccountManager::FACILITY_ACCOUNT_CLASSES,
               :facility => facility})
     end
 
     accounts  
   end
-  # If class caching is enabled, the subclasses aren't necessarily loaded, so descendents wouldn't
-  # find them. If the subclass list is empty, find all the files in the same directory as this
-  # and load the class inside that file. If it's a subclass of Account, it'll trigger the inherited method above
-  def self.__ensureSubclassesAreLoaded
-    return if @@all_subclass_names && @@all_subclass_names.any?
-    Dir.glob(File.expand_path("../*_account.rb", __FILE__)).each do |file|
-      clazz = file.split('/').last.gsub(/\.rb$/, '').camelize.constantize
-      @@all_subclass_names << clazz.name if clazz < Account
-    end
-  end
+
 
   # find all accounts that have ordered fror a facility
   def self.has_orders_for_facility(facility)
