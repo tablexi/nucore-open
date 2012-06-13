@@ -29,10 +29,10 @@ class BulkEmailController < ApplicationController
     # default search type
     @search_fields[:search_type] ||= :customers
     
-    @users = do_search(@search_fields).paginate(:page => params[:page])
+    @users = do_search(@search_fields)
 
     respond_to do |format|
-      format.html
+      format.html { @users = @users.paginate(:page => params[:page]) }
       format.csv
     end
 	end
