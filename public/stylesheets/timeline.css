@@ -181,3 +181,33 @@ body .unit {
   float: right;
   width: 40px;
 }
+
+.toggle_switch {
+  position: relative;
+  border-radius: 6px;
+  width: 94px;
+  height: 27px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.toggle_switch .bg {
+  background: transparent url(../images/itoggle.png) no-repeat top left;
+  z-index: 200;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.toggle_switch .switch {
+  position: absolute;
+  height: 100%;
+  width: 147px;
+  left: -54px;
+  background: #FFF url(../images/itoggle.png) no-repeat bottom left;
+  z-index: 100;
+}
+
+.toggle_switch .switch.toggle_on {
+  left: 0;
+}

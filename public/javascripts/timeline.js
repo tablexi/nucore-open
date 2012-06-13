@@ -71,8 +71,37 @@ $(function() {
         $('#show_cancelled').change(showOrHideCancelled);
         // no animation when first loading
         $('.status_cancelled').toggle($('#show_cancelled').is(':checked'));
-        $('.relay_checkbox :checkbox').iphoneStyle({
-          checkedLabel: '|',
-          uncheckedLabel: 'O'
-        });    
+        
+
+        $('.relay_checkbox :checkbox')
+        .click(function(e) {
+          if (confirm("Are you sure you want to toggle the relay?")) {
+            //console.debug("changed", this);
+          } else {
+            return false;
+          }
+        })
+        .toggleSwitch();
+
+        function loadRelayStatuses() {
+          $.ajax({
+            url: '../instrument_statuses',
+            success: function(data) {
+              for(var i = 0; i < data.length; i++) {
+                var stat = data[i].instrument_status;
+                $checkbox = $("#relay_" + stat.instrument_id);
+                if (stat.error) {
+                  $checkbox.prop("disabled", true);
+                } else {
+                  $checkbox.prop("disabled", false).prop("checked", stat.is_on);
+                }
+                $checkbox.trigger("change");
+              }
+              // Refresh every 10 seconds
+              //setTimeout(loadRelayStatuses, 20000);
+            },
+            dataType: 'json'
+          });
+        }    
+        loadRelayStatuses();
 });

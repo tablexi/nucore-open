@@ -218,9 +218,8 @@ class ReservationsController < ApplicationController
         status=Rails.env.production? ? nil : true
 
         if status.nil?
-          port=@instrument.relay.port
-          relay.activate_port(port)
-          status = relay.get_status_port(port)
+          relay.activate
+          status = relay.get_status
         end
 
         if status
@@ -236,8 +235,8 @@ class ReservationsController < ApplicationController
 
         if status.nil?
           port=@instrument.relay.port
-          relay.deactivate_port(port)
-          status = relay.get_status_port(port)
+          relay.deactivate
+          status = relay.get_status
         end
 
         if status == false
