@@ -214,4 +214,37 @@ describe Account do
 
     it "should return the most recent account statement for a given facility"
   end
+
+  context "limited facilities" do
+    before :each do
+      @user             = Factory.create(:user)
+      @facility1        = Factory.create(:facility)
+      @facility2        = Factory.create(:facility)
+      @nufs_account = Factory.create(:nufs_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
+      @cc_account1 = Factory.create(:credit_card_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}], :facility => @facility1)
+      @cc_account2 = Factory.create(:credit_card_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}], :facility => @facility2)
+      @po_account1 = Factory.create(:purchase_order_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}], :facility => @facility1)
+      @po_account2 = Factory.create(:purchase_order_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}], :facility => @facility2)
+    end
+    it "should return the right accounts" do
+      Account.for_facility(@facility1).should contain_all [@nufs_account, @cc_account1, @po_account1]
+      Account.for_facility(@facility2).should contain_all [@nufs_account, @cc_account2, @po_account2]
+    end
+  
+    context "subclassing properly" do
+      before :all do
+        class TestLimitedAccount < Account
+          limit_facilities
+        end
+        class TestUnlimitedAccount < Account
+        end
+      end
+      it "limited should have TestLimited" do
+        TestLimitedAccount.should be_limited_to_single_facility
+      end
+      it "unlimited should not have TestUnlimitedAccount" do
+        TestUnlimitedAccount.should_not be_limited_to_single_facility
+      end
+    end
+  end
 end
