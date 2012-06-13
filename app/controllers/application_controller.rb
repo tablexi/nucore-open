@@ -136,9 +136,12 @@ class ApplicationController < ActionController::Base
 
   rescue_from NUCore::PermissionDenied, CanCan::AccessDenied, :with => :render_403
   def render_403(exception)
-    logger.error "#{exception.subject} #{exception.action}"
     # if current_user is nil, the user should be redirected to login
-    render :file => '/403', :status => 403, :layout => 'application' unless current_user.nil?
+    if current_user
+      render :file => '/403', :status => 403, :layout => 'application'
+    else
+      redirect_to new_user_session_path
+    end
   end
 
   rescue_from NUCore::NotPermittedWhileActingAs, :with => :render_acting_error
