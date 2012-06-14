@@ -56,6 +56,7 @@ class Ability
 
         cannot :show_problems, Order
         can [ :schedule, :agenda, :list, :show ], Facility
+        can :act_as, Facility
 
         can :index, [ BundleProduct, PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup ]
         can [:instrument_status, :switch], Instrument
