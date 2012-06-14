@@ -96,13 +96,11 @@ class OrdersController < ApplicationController
 
     ## make sure the order has an account
     if @order.account.nil?
-      begin
-        @order.auto_assign_account!(@product)
-      rescue => e
-        flash[:error]=e.message
-        session[:add_to_cart] = items
-        redirect_to choose_account_order_url(@order) and return
-      end
+      ## add auto_assign back here if needed
+
+      ## save the state to the session and redirect
+      session[:add_to_cart] = items
+      redirect_to choose_account_order_url(@order) and return
     end
 
     ## process each item
