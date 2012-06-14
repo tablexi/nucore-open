@@ -101,10 +101,13 @@ class InstrumentPricePolicy < PricePolicy
   end
 
   def calculate_cost_and_subsidy (reservation)
+    res_end_at=strip_seconds reservation.reserve_end_at
+    res_start_at=strip_seconds reservation.reserve_start_at
+
     ## TODO update cancellation costs
     ## calculate actuals for cancelled reservations
-    if (reservation.canceled_at)
-      if instrument.min_cancel_hours && (reservation.reserve_start_at - reservation.canceled_at)/3600 <= instrument.min_cancel_hours
+    if reservation.canceled_at
+      if instrument.min_cancel_hours && (res_start_at - strip_seconds(reservation.canceled_at))/3600 <= instrument.min_cancel_hours
         actual_cost = cancellation_cost
         actual_subsidy = 0
         return {:cost => actual_cost, :subsidy => actual_subsidy}
@@ -122,12 +125,12 @@ class InstrumentPricePolicy < PricePolicy
     end
 
     ## the instrument has a reservation cost only
-    if (usage_rate.to_f == 0 && overage_rate.to_f == 0)
-      reserve_mins = (reservation.reserve_end_at - reservation.reserve_start_at)/60
+    if usage_rate.to_f == 0 && overage_rate.to_f == 0
+      reserve_mins = (res_end_at - res_start_at)/60
       reserve_intervals = (reserve_mins / reservation_mins).ceil
       reserve_discount = 0
       instrument.schedule_rules.each do |sr|
-        reserve_discount += sr.percent_overlap(reservation.reserve_start_at, reservation.reserve_end_at) * sr.discount_percent
+        reserve_discount += sr.percent_overlap(res_start_at, res_end_at) * sr.discount_percent
       end
       reserve_discount = 1 - reserve_discount/100
       actual_cost = reservation_rate * reserve_intervals * reserve_discount
@@ -142,15 +145,18 @@ class InstrumentPricePolicy < PricePolicy
     ## make sure actuals are entered
     return nil unless (reservation.actual_start_at && reservation.actual_end_at)
 
+    act_end_at=strip_seconds reservation.actual_end_at
+    act_start_at=strip_seconds reservation.actual_start_at
+
     # calculate reservation cost & subsidy
     reserve_cost = 0
     reserve_sub  = 0
     unless reservation_rate.to_f == 0
-      reserve_mins = (reservation.reserve_end_at - reservation.reserve_start_at)/60
+      reserve_mins = (res_end_at - res_start_at)/60
       reserve_intervals = (reserve_mins / reservation_mins).ceil
       reserve_discount = 0
       instrument.schedule_rules.each do |sr|
-        reserve_discount += sr.percent_overlap(reservation.reserve_start_at, reservation.reserve_end_at) * sr.discount_percent
+        reserve_discount += sr.percent_overlap(res_start_at, res_end_at) * sr.discount_percent
       end
       reserve_discount = 1 - reserve_discount/100
       reserve_cost = reservation_rate * reserve_intervals * reserve_discount
@@ -161,11 +167,11 @@ class InstrumentPricePolicy < PricePolicy
     usage_cost = 0
     usage_sub  = 0
     unless usage_rate.to_f == 0
-      usage_minutes   = ([reservation.actual_end_at, reservation.reserve_end_at].min - reservation.actual_start_at)/60
+      usage_minutes   = ([act_end_at, res_end_at].min - act_start_at)/60
       usage_intervals = (usage_minutes / usage_mins).ceil
       usage_discount = 0
       instrument.schedule_rules.each do |sr|
-        usage_discount += sr.percent_overlap(reservation.actual_start_at, [reservation.actual_end_at, reservation.reserve_end_at].min) * sr.discount_percent
+        usage_discount += sr.percent_overlap(act_start_at, [act_end_at, res_end_at].min) * sr.discount_percent
       end
       usage_discount = 1 - usage_discount/100
       usage_cost = usage_rate * usage_intervals * usage_discount
@@ -184,8 +190,8 @@ class InstrumentPricePolicy < PricePolicy
       rate = overage_rate.to_f
       sub  = overage_subsidy.to_f
     end
-    if reservation.actual_end_at > reservation.reserve_end_at && rate > 0
-      over_mins = (reservation.actual_end_at - reservation.reserve_end_at)/60
+    if act_end_at > res_end_at && rate > 0
+      over_mins = (act_end_at - res_end_at)/60
       over_intervals = (over_mins / overage_mins).ceil
       over_cost = rate * over_intervals
       over_sub  = sub * over_intervals
@@ -199,5 +205,12 @@ class InstrumentPricePolicy < PricePolicy
       actual_subsidy = 0
     end
     return {:cost => actual_cost, :subsidy => actual_subsidy}
+  end
+
+
+  private
+
+  def strip_seconds(time)
+    Time.zone.parse("#{time.year}-#{time.month}-#{time.day} #{time.hour}:#{time.min}")
   end
 end
