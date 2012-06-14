@@ -4,9 +4,9 @@
 class AccountManager
   #
   # An +Array+ of the #names of +Account+ classes that are used across facilities.
-  GLOBAL_ACCOUNT_CLASSES=[ NufsAccount.name.to_s ]
+  GLOBAL_ACCOUNT_CLASSES=[ NufsAccount.name ]
 
   #
   # An +Array+ of the #names of +Account+ classes that are limited to individual facilities.
-  FACILITY_ACCOUNT_CLASSES=[ CreditCardAccount.name.to_s, PurchaseOrderAccount.name.to_s ]
+  FACILITY_ACCOUNT_CLASSES=[ CreditCardAccount.name, PurchaseOrderAccount.name ]
 end
