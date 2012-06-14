@@ -110,22 +110,8 @@ describe InstrumentsController do
       before :each do
         @instrument.update_attributes(:is_hidden => true)
       end
-      it "should throw a 404 if you're not an admin" do
-        sign_in @guest
-        do_request
-        response.should_not be_success
-        response.response_code.should == 404
-      end
-      it "should show the page if you're an admin" do
-        # instruments have some complicated can_purchase rules requiring schedule rules
-        # and price policies.
-        Instrument.any_instance.stubs(:can_purchase?).returns(true)
-        sign_in @admin
-        do_request
-        assigns[:instrument].should == @instrument
-        assigns[:add_to_cart].should == true
-        response.should be_redirect
-      end
+      it_should_allow_operators_only(:redirect) {}
+        
       it "should show the page if you're acting as a user" do
         Instrument.any_instance.stubs(:can_purchase?).returns(true)
         sign_in @admin

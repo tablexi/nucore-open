@@ -39,7 +39,7 @@ class ProductsCommonController < ApplicationController
   
   # GET /(services|items|instruments|bundles)/1
   def show
-    raise ActiveRecord::RecordNotFound if !product_is_accessible?
+    assert_product_is_accessible!
     @add_to_cart = true
     @login_required = false
 
@@ -132,9 +132,13 @@ class ProductsCommonController < ApplicationController
   end
   
   private
+
+  def assert_product_is_accessible!
+    raise NUCore::PermissionDenied unless product_is_accessible?
+  end
   
   def product_is_accessible?
-    is_operator = session_user && session_user.operator_of?(@facility)
+    is_operator = session_user && session_user.operator_of?(current_facility)
     !(@product.is_archived? || (@product.is_hidden? && !is_operator))
   end
   # The equivalent of calling current_facility.services or current_facility.items

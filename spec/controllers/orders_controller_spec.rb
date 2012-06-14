@@ -258,22 +258,46 @@ describe OrdersController do
         @facility_account2  = @facility2.facility_accounts.create!(Factory.attributes_for(:facility_account))
         @account2           = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
         @item2              = @facility2.items.create!(Factory.attributes_for(:item, :facility_account_id => @facility_account2.id))
-        maybe_grant_always_sign_in :director
-        switch_to @guest
       end
-      it "should let a director order" do
-        @params.merge!(:order => {:order_details => [{:quantity => 1, :product_id => @item.id}]})
-        do_request
-        should_not set_the_flash
-        @order.reload.order_details.should_not be_empty
-        response.should redirect_to "/orders/#{@order.id}"
-      end
+      context "in the right facility" do
+        before :each do
+          
+          
+          @params.merge!(:order => {:order_details => [{:quantity => 1, :product_id => @item.id}]})
+        end
+        facility_operators.each do |role|
+          it "should allow #{role} to purchase" do
+            maybe_grant_always_sign_in role
+            switch_to @guest
+            do_request
+            should_not set_the_flash
+            @order.reload.order_details.should_not be_empty
+            response.should redirect_to "/orders/#{@order.id}"
+          end
+        end
+        it "should not allow guest" do
+          maybe_grant_always_sign_in :guest
+          @guest2 = Factory.create(:user)
+          switch_to @guest2
+          do_request
+          should set_the_flash
+          @order.reload.order_details.should be_empty
+        end
 
-      it "should not allow ordering as another facility" do
-        @params.merge!(:order => {:order_details => [{:quantity => 1, :product_id => @item2.id}]})
-        do_request
-        @order.reload.order_details.should be_empty
-        should set_the_flash.to(/You are not authorized to place an order on behalf of another user for the facility/)
+      end
+      context "in the another facility" do
+        before :each do
+          maybe_grant_always_sign_in :director
+          switch_to @guest
+          @params.merge!(:order => {:order_details => [{:quantity => 1, :product_id => @item2.id}]})
+        end
+
+        it "should not allow ordering" do
+          
+          do_request
+          @order.reload.order_details.should be_empty
+          should set_the_flash.to(/You are not authorized to place an order on behalf of another user for the facility/)
+        end
       end
 
 
