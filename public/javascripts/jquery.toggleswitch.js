@@ -12,7 +12,8 @@
       var newDiv = $("<div><div class=\"bg\"/><div class=\"switch\"/></div>").attr("id", "toggle_switch_" + $this.attr("id")).addClass("toggle_switch");
       this.toggle_switch = newDiv;
       newDiv.checkbox = $this;
-      newDiv.click(function() { 
+      newDiv.click(function() {
+        if (newDiv.checkbox.is(":disabled")) return;
         newDiv.checkbox.trigger("click");
       });
       $this.after(newDiv);
@@ -27,6 +28,7 @@
     function refreshToggle() {
       var newLeft = $(this).is(":checked") ? this.animation_properties.on_left : this.animation_properties.off_left;
       this.toggle_switch.find(".switch").stop().animate({left: newLeft }, settings.duration);
+      this.toggle_switch.toggleClass("disabled", $(this).prop("disabled"));
     }
   }
 })(jQuery);
