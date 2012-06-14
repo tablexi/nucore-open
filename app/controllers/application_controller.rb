@@ -21,9 +21,9 @@ class ApplicationController < ActionController::Base
     return unless facility_id = params[:facility_id] || params[:id]
 
     if facility_id.present? and facility_id == 'all'
-      all_facility
+      @current_facility ||= all_facility
     else
-      Facility.find_by_url_name(facility_id.to_s)
+      @current_facility ||= Facility.find_by_url_name(facility_id.to_s)
     end
   end
 
@@ -37,6 +37,7 @@ class ApplicationController < ActionController::Base
   end
 
   def init_current_facility
+    raise ActiveRecord::RecordNotFound unless current_facility
   end
 
   #TODO: refactor existing calls of this definition to use this helper 
@@ -125,10 +126,10 @@ class ApplicationController < ActionController::Base
     render_404
   end
   
-  # rescue_from ActionController::RoutingError do |exception|
-    # Rails.logger.debug("#{exception.message}: #{exception.backtrace.join("\n")}") unless Rails.env.production?
-    # render_404
-  # end
+  rescue_from ActionController::RoutingError do |exception|
+    Rails.logger.debug("#{exception.message}: #{exception.backtrace.join("\n")}") unless Rails.env.production?
+    render_404
+  end
 
   def render_404
     render :file => '/404', :status => 404, :layout => 'application'
