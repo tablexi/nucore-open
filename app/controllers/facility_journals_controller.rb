@@ -113,7 +113,7 @@ class FacilityJournalsController < ApplicationController
         @journal.errors.add(:base, I18n.t('controllers.facility_journals.create.errors.fiscal_span'))
       else
         # detect if this should be a multi-facility journal, set facility_id appropriately
-        if @update_order_details.count('orders.facility_id', :distinct => true) > 1
+        if @update_order_details.collect{|od|od.order.facility_id}.uniq.size > 1
           @journal.facility_id = nil
         else
           @journal.facility_id = @update_order_details.first.order.facility_id
