@@ -162,11 +162,20 @@ class Order < ActiveRecord::Base
         next
       end
       
-      # otherwise update the field(s)
-      order_detail.update_attributes!(updates)
+      unless order_detail.update_attributes(updates)
+        logger.debug "errors on #{order_detail.id}"
+        order_detail.errors.each do |attr, error|
+          logger.debug "#{attr} #{error}"
+          self.errors.add attr, error
+        end
+        next
+      end
+      
       order_detail.assign_estimated_price if order_detail.cost_estimated?
       order_detail.save
     end
+    return self.errors.empty?
+
   end
   
   def max_group_id

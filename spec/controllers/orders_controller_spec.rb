@@ -377,6 +377,19 @@ describe OrdersController do
       @order_detail.reload.quantity.should == 6
     end
 
+    context "bad input" do
+      it "should show an error on not an integer" do
+        @params.merge!("quantity#{@order_detail.id}" => "1.5")
+        maybe_grant_always_sign_in :guest
+        do_request
+        should set_the_flash.to(/quantity/i)
+        should set_the_flash.to(/integer/i)
+        should render_template :show
+      end
+      
+
+    end
+
     it "should not allow updates of quantities for instruments"
   end
 

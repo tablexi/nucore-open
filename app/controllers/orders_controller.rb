@@ -41,9 +41,14 @@ class OrdersController < ApplicationController
         order_detail_updates[$2.to_i][$1.to_sym] = value
       end
     end
-    @order.update_details(order_detail_updates)
-
-    redirect_to order_path(@order) and return
+    
+    if @order.update_details(order_detail_updates)
+      redirect_to order_path(@order) and return
+    else
+      logger.debug "errors #{@order.errors.full_messages}"
+      flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
+      render :show
+    end
   end
 
   # PUT /orders/:id/clear
