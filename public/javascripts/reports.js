@@ -74,7 +74,7 @@ function initReportsUI(selectedIndex)
         },
 
         ajaxOptions: {
-            dataType: "js",
+            dataType: "text html",
             error: function(xhr, status, error) {
                 $('#error-msg').html('Sorry, but the tab could not load. Please try again soon.').show();
             }
@@ -82,7 +82,7 @@ function initReportsUI(selectedIndex)
     });
 
     // handle pagination requests
-    $('.pagination a').live('click',function (){
+    $(document).on('click', '.pagination a', function (){
         var selected=getSelectedTabIndex();
         $('#tabs').tabs('url', selected, this.href).tabs('load', selected);
         return false;
@@ -97,7 +97,7 @@ function initReportsUI(selectedIndex)
 }
 
 
-$(document).ready(function() {
+$(function() {
     $('.datepicker').each(function() {
       $(this).datepicker();
     });

@@ -28,7 +28,7 @@ class Account < ActiveRecord::Base
 
 
   def self.limited_to_single_facility?
-    AccountManager::FACILITY_ACCOUNT_CLASSES.include? self.name.to_s
+    AccountManager::FACILITY_ACCOUNT_CLASSES.include? self.name
   end
 
 
