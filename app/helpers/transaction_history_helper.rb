@@ -13,7 +13,7 @@ module TransactionHistoryHelper
     options = []
     products.each do |product|
       options << [product.name, product.id, { :"data-facility" => product.facility.id, 
-                                              :"data-restricted" => product.requires_approval,
+                                              :"data-restricted" => product.requires_approval ? false : true, # Ruby 1.8 outputs 0/1 instead of true/false
                                               :"data-product-type" => product.type.downcase}]
     end
     options_for_select options, :selected => search_fields
