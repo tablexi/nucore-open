@@ -1,38 +1,44 @@
 - @report_data.each do |od|
     :ruby
-        order=od.order
-        buyer=order.user
-        account=od.account
-        owner=account.owner_user
-        product=od.product
-        bundle_desc=product.is_a?(Bundle) ? product.products.collect(&:name).join(' & ') : nil
+        row=nil
 
-        row=[
-            # basic info
-            od.to_s, human_datetime(order.ordered_at), human_datetime(od.fulfilled_at), od.order_status.name, od.state,
+        begin
+            order=od.order
+            buyer=order.user
+            account=od.account
+            owner=account.owner_user
+            product=od.product
+            bundle_desc=product.is_a?(Bundle) ? product.products.collect(&:name).join(' & ') : nil
 
-            # who placed the order
-            buyer.username, buyer.first_name, buyer.last_name, buyer.email,
+            row=[
+                # basic info
+                od.to_s, human_datetime(order.ordered_at), human_datetime(od.fulfilled_at), od.order_status.name, od.state,
 
-            # what was ordered
-            product.url_name, product.type.underscore.humanize, product.name, od.quantity, bundle_desc,
+                # who placed the order
+                buyer.username, buyer.first_name, buyer.last_name, buyer.email,
 
-            # what account this order detail is for
-            account.type.underscore.humanize, account.affiliate.try(:name), account.account_number, account.description, human_datetime(account.expires_at),
-            owner.username, owner.first_name, owner.last_name, owner.email,
+                # what was ordered
+                product.url_name, product.type.underscore.humanize, product.name, od.quantity, bundle_desc,
 
-            # pricing info
-            od.price_policy.try(:price_group).try(:name), show_estimated_cost(od), show_estimated_subsidy(od), show_estimated_total(od),
-            show_actual_cost(od), show_actual_subsidy(od), show_actual_total(od),
+                # what account this order detail is for
+                account.type.underscore.humanize, account.affiliate.try(:name), account.account_number, account.description, human_datetime(account.expires_at),
+                owner.username, owner.first_name, owner.last_name, owner.email,
 
-            # dispute info
-            human_datetime(od.dispute_at), od.dispute_reason, human_datetime(od.dispute_resolved_at), od.dispute_resolved_reason
-        ]
+                # pricing info
+                od.price_policy.try(:price_group).try(:name), show_estimated_cost(od), show_estimated_subsidy(od), show_estimated_total(od),
+                show_actual_cost(od), show_actual_subsidy(od), show_actual_total(od),
 
-        statement=od.statement
-        row += [ human_datetime(od.reviewed_at), human_datetime(statement.created_at) ] if statement
+                # dispute info
+                human_datetime(od.dispute_at), od.dispute_reason, human_datetime(od.dispute_resolved_at), od.dispute_resolved_reason
+            ]
 
-        journal=od.journal
-        row += [ human_datetime(journal.journal_date), od.reconciled_note ] if journal
+            statement=od.statement
+            row += [ human_datetime(od.reviewed_at), human_datetime(statement.created_at) ] if statement
+
+            journal=od.journal
+            row += [ human_datetime(journal.journal_date), od.reconciled_note ] if journal
+        rescue => e
+            row=[ "*** ERROR WHEN REPORTING ON ORDER DETAIL #{od.to_s}: #{e.message} ***" ]
+        end
 
         csv << row
