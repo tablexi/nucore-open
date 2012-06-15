@@ -13,7 +13,7 @@ class InstrumentsController < ProductsCommonController
 
   # GET /instruments/1
   def show
-    raise ActiveRecord::RecordNotFound if !product_is_accessible?
+    assert_product_is_accessible!
     add_to_cart = true
     login_required = false
     

@@ -54,7 +54,7 @@ describe ServicesController do
       response.should be_success
       response.should render_template('services/show')
     end
-    
+
     context "restricted service" do
       before :each do
         @service.update_attributes(:requires_approval => true)
@@ -86,18 +86,11 @@ describe ServicesController do
       before :each do
         @service.update_attributes(:is_hidden => true)
       end
-      it "should throw a 404 if you're not an admin" do
-        sign_in @guest
-        do_request
-        response.should_not be_success
-        response.response_code.should == 404
-      end
-      it "should show the page if you're an admin" do
-        sign_in @admin
-        do_request
+      
+      it_should_allow_operators_only do
         response.should be_success
-        assigns[:service].should == @service
       end
+
       it "should show the page if you're acting as a user" do
         ServicesController.any_instance.stubs(:acting_user).returns(@guest)
         ServicesController.any_instance.stubs(:acting_as?).returns(true)
