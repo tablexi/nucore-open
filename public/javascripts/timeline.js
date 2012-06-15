@@ -95,6 +95,7 @@ $(function() {
         .toggleSwitch();
 
         function loadRelayStatuses() {
+          console.debug("loading");
           $.ajax({
             url: '../instrument_statuses',
             success: function(data) {
