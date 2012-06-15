@@ -26,6 +26,7 @@ describe BulkEmailController do
 
     context 'authorized' do
       before :each do
+        @restricted_item = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id, :requires_approval => true))
         maybe_grant_always_sign_in :director
       end
       context 'parameter settings' do
@@ -34,10 +35,10 @@ describe BulkEmailController do
           response.should be_success
         end
         it 'should set products' do
-          assigns[:products].should contain_all [@item, @service, @instrument]
+          assigns[:products].should contain_all [@item, @service, @instrument, @restricted_item]
         end
         it 'should set the products in order' do
-          assigns[:products].should == [@item, @service, @instrument].sort
+          assigns[:products].should == [@item, @service, @instrument, @restricted_item].sort
         end
         it 'should set search types' do
           assigns[:search_types].should_not be_empty
@@ -47,6 +48,11 @@ describe BulkEmailController do
         end
         it 'should have the facility_id as the id, not the url_name' do
           assigns[:search_fields][:facility_id].should == @authable.id
+        end
+        it 'should not have :authorized_users if there are no restricted instruments' do
+          @restricted_item.destroy
+          do_request
+          assigns[:search_types].should_not be_include :authorized_users
         end
       end
       context 'product loading' do
@@ -62,6 +68,7 @@ describe BulkEmailController do
           response.should be_success
           assigns[:products].should_not be_include @item
         end
+
       end
     end
     

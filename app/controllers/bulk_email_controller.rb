@@ -5,15 +5,13 @@ class BulkEmailController < ApplicationController
   layout 'two_column'
 
   before_filter { @active_tab = 'admin_users' }
-  
 
   before_filter :authenticate_user!
 	before_filter :check_acting_as
 	before_filter :init_current_facility
   before_filter { authorize! :send_bulk_emails, current_facility }
   
-  before_filter :load_search_types
-  before_filter :load_products
+  before_filter :init_search_options
 
 	def new
     @search_fields = params.merge({:facility_id => current_facility.id})
@@ -35,12 +33,10 @@ class BulkEmailController < ApplicationController
 	end
 
   private 
-  def load_search_types
-    @search_types = BulkEmailHelper.search_types_and_titles
-  end
-  def load_products
+  def init_search_options
     @products = current_facility.products.active_plus_hidden.order(:name)
+    @search_types = BulkEmailHelper.search_types_and_titles
+    @search_types.delete(:authorized_users) unless @products.exists?(:requires_approval => true)
   end
-
 
 end
