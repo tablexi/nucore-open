@@ -106,10 +106,8 @@ class InstrumentsController < ProductsCommonController
         else
           statuses << instrument.instrument_statuses.create!(:is_on => status)
         end
-      rescue Timeout::Error => e
-        statuses << {:instrument_status => { :instrument_id => instrument.id, :error => 'Timeout' } }
       rescue Exception => e
-        statuses << { :instrument_status => { :instrument_id => instrument.id, :error => e.message } }
+        statuses << InstrumentStatus.new(:instrument => instrument, :error_message => e.message)
       end
     end
     render :json => statuses
@@ -132,8 +130,12 @@ class InstrumentsController < ProductsCommonController
       @status = @instrument.instrument_statuses.create!(:is_on => status)
     rescue Exception => e
       logger.error "ERROR: #{e.message}"
-      raise ActiveRecord::RecordNotFound
+      @status = InstrumentStatus.new(:instrument => @instrument, :error_message => e.message)
+      #raise ActiveRecord::RecordNotFound
     end
-    render :action => :instrument_status, :layout => false
+    respond_to do |format|
+      format.html { render :action => :instrument_status, :layout => false }
+      format.json { render :json => @status }
+    end
   end
 end
