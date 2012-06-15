@@ -178,7 +178,7 @@ body .unit {
 }
 
 /***
- * Relay switches
+ * Relay switch checkboxes
  */
 .relay_checkbox {
   float: right;
@@ -224,6 +224,9 @@ body .unit {
   left: 0;
 }
 
+/***
+ * Relay switch overlays
+ */
 .relay_checkbox .loading_box {
   background-image: url(../images/spinner.gif);
   width: 48px;
