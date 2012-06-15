@@ -575,9 +575,9 @@ en:
       customers_and_account_owners: Customers and Account Owners
       authorized_users: Authorized Users
     dates:
-      label: Orders or Reservations between
-      start: Start Date
-      end: End Date
+      label: Orders or Reservations
+      start: Starting
+      end: Ending
     no_results: No users found
 
   notifier:
