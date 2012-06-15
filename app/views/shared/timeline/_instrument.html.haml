@@ -8,4 +8,5 @@
         .current_time{:style => "left: #{datetime_left_position(Time.zone.now)}"}
     - if instrument.has_relay? && instrument.current_instrument_status
       .relay_checkbox
-        = check_box_tag "relay[#{instrument.id}]", 1, false, :disabled => true
+        = check_box_tag "relay[#{instrument.id}]", 1, false, :disabled => true, :"data-relay-url" => facility_instrument_switch_path(instrument.facility, instrument)
+        .loading_box

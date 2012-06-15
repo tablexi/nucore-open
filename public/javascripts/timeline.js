@@ -74,9 +74,20 @@ $(function() {
         
 
         $('.relay_checkbox :checkbox')
-        .click(function(e) {
+        .bind('click', function(e) {
           if (confirm("Are you sure you want to toggle the relay?")) {
-            //console.debug("changed", this);
+            $(this).parent().addClass("loading");
+            $.ajax({
+              url: $(this).data("relay-url"),
+              success: function(data) {
+                updateRelayStatus(data.instrument_status);
+              },
+              data: {
+                // This is what we're switching to, not what we currently display
+                switch: $(this).is(":checked") ? 'off' : 'on'
+              },
+              dataType: 'json'
+            });
           } else {
             return false;
           }
@@ -88,14 +99,8 @@ $(function() {
             url: '../instrument_statuses',
             success: function(data) {
               for(var i = 0; i < data.length; i++) {
-                var stat = data[i].instrument_status;
-                $checkbox = $("#relay_" + stat.instrument_id);
-                if (stat.error) {
-                  $checkbox.prop("disabled", true);
-                } else {
-                  $checkbox.prop("disabled", false).prop("checked", stat.is_on);
-                }
-                $checkbox.trigger("change");
+                updateRelayStatus(data[i].instrument_status);
+                
               }
               // Refresh every 10 seconds
               //setTimeout(loadRelayStatuses, 20000);
@@ -103,5 +108,20 @@ $(function() {
             dataType: 'json'
           });
         }    
+        
+        function updateRelayStatus(stat) {
+          $checkbox = $("#relay_" + stat.instrument_id);
+          if (stat.error_message) {
+            $checkbox.prop("disabled", true);
+            $checkbox.parent().append($("<span class=\"error\" title=\"" + stat.error_message + "\">Error</span>"));
+          } else {
+            $checkbox.prop("disabled", false).prop("checked", stat.is_on);
+            $checkbox.parent().find("span.error").remove();
+          }
+          $checkbox.parent().removeClass("loading");
+          $checkbox.trigger("change");
+        }
+
+        $('.relay_checkbox').addClass('loading');
         loadRelayStatuses();
 });
