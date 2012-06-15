@@ -706,9 +706,12 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
   float: none;
   margin-top: 0;
 }
+.results_header {
+  border-top: 1px solid #CCCCCC;
+  padding: 1em 0;
+}
 #bulk_email_export {
   float: right;
-  margin-top: -1em;
 }
 
 

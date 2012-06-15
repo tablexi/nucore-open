@@ -1,4 +1,4 @@
-= form_tag facility_bulk_email_path, :method => :post, :class => "search_form", :id => "bulk_email" do
+= form_tag facility_bulk_email_path, :method => :get, :class => "search_form", :id => "bulk_email" do
   %fieldset
     = label_tag :search_type
     = select_tag 'search_type', options_for_select(@search_types.invert, :selected => params[:search_type])

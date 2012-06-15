@@ -85,19 +85,6 @@ module TransactionSearch
     @date_field_to_use ||= :fulfilled_at
     @order_details = @order_details.action_in_date_range(@date_field_to_use, start_date, end_date)
   end  
-
-  def remove_ugly_params_and_redirect
-    if (params[:commit] && request.get?)
-      remove_ugly_params
-      redirect_to params
-      return false
-    end
-  end
-  def remove_ugly_params
-    params.delete(:commit)
-    params.delete(:utf8)
-    params.delete(:authenticity_token)
-  end
     
   def add_optimizations
     # cut down on some n+1s

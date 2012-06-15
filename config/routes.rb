@@ -148,8 +148,7 @@ Nucore::Application.routes.draw do |map|
       journal.reconcile '/reconcile', :controller => 'facility_journals', :action => 'reconcile', :conditions => {:method => :post}
     end
 
-    facility.bulk_email '/bulk_email', :controller => 'bulk_email', :action => 'new', :conditions => {:method => :get}
-    facility.bulk_email '/bulk_email', :controller => 'bulk_email', :action => 'search', :conditions => {:method => :post}
+    facility.bulk_email '/bulk_email', :controller => 'bulk_email', :action => 'search', :conditions => {:method => :get}
     #resources :bulk_email, :member => { :search => [:get, :post]}, :only => [:search]
 
     facility.resources :price_groups, :member => {:users => :get, :accounts => :get} do |price_group|

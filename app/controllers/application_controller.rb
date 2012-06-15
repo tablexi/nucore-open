@@ -175,4 +175,16 @@ class ApplicationController < ActionController::Base
   def ability_resource
     return current_facility
   end
+
+  def remove_ugly_params_and_redirect
+    if (params[:commit] && request.get?)
+      # remove ugly parameters
+      params.delete(:commit)
+      params.delete(:utf8)
+      params.delete(:authenticity_token)
+      # redirect to self
+      redirect_to params
+      return false
+    end
+  end
 end
