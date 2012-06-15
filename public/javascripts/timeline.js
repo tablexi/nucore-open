@@ -102,8 +102,8 @@ $(function() {
                 updateRelayStatus(data[i].instrument_status);
                 
               }
-              // Refresh every 10 seconds
-              //setTimeout(loadRelayStatuses, 20000);
+              // Refresh every 30 seconds
+              setTimeout(loadRelayStatuses, 30000);
             },
             dataType: 'json'
           });
@@ -111,12 +111,14 @@ $(function() {
         
         function updateRelayStatus(stat) {
           $checkbox = $("#relay_" + stat.instrument_id);
+          // remove pre-existing errors
+          $checkbox.parent().find("span.error").remove();
           if (stat.error_message) {
             $checkbox.prop("disabled", true);
+            // add a new error if there is one
             $checkbox.parent().append($("<span class=\"error\" title=\"" + stat.error_message + "\">Error</span>"));
           } else {
             $checkbox.prop("disabled", false).prop("checked", stat.is_on);
-            $checkbox.parent().find("span.error").remove();
           }
           $checkbox.parent().removeClass("loading");
           $checkbox.trigger("change");

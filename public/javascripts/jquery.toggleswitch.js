@@ -2,7 +2,7 @@
   $.fn.toggleSwitch = function(options) {
        
     var defaults = {
-      duration: 400
+      duration: 300
     };
     settings = $.extend({}, defaults, options);
 
