@@ -11,19 +11,16 @@ class BulkEmailController < ApplicationController
 	before_filter :check_acting_as
 	before_filter :init_current_facility
   before_filter { authorize! :send_bulk_emails, current_facility }
-  before_filter :add_search_types
-
+  
+  before_filter :load_search_types
+  before_filter :load_products
 
 	def new
-		@products = current_facility.products
-
     @search_fields = params.merge({:facility_id => current_facility.id})
     render :search
 	end
 
 	def search
-    @products = current_facility.products
-
     @search_fields = params.merge({:facility_id => current_facility.id})
 
     # default search type
@@ -38,8 +35,12 @@ class BulkEmailController < ApplicationController
 	end
 
   private 
-  def add_search_types
+  def load_search_types
     @search_types = BulkEmailHelper.search_types_and_titles
   end
+  def load_products
+    @products = current_facility.products.active_plus_hidden.order(:name)
+  end
+
 
 end
