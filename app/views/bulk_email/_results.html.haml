@@ -1,6 +1,7 @@
 .results_header
   = render :partial => 'export'  
   = will_paginate(@users)
+  .clear
 %table
   %tr
     %th= User.human_attribute_name(:name)
