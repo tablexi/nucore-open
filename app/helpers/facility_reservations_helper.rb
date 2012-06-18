@@ -26,12 +26,4 @@ module FacilityReservationsHelper
     link_to I18n.t('reservations.delete.link'), order_order_detail_path(od.order, od, :cancel => 'cancel'), :method => :put, :confirm => confirmation_message
   end
 
-  MINUTE_TO_PIXEL_RATIO = 0.6
-  def datetime_left_position(datetime)
-    "#{(datetime - datetime.beginning_of_day) / 60 * MINUTE_TO_PIXEL_RATIO}px"
-  end
-
-  def datetime_width(datetime_start, datetime_end)
-    "#{(datetime_end - datetime_start) / 60 * MINUTE_TO_PIXEL_RATIO }px"
-  end
 end
