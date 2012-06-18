@@ -535,6 +535,30 @@ describe OrderDetail do
     end
   end
 
+  context 'review period' do
+    after :each do
+      Settings.reload!
+    end
+    context '7 day' do
+      before :each do
+        Settings.billing.review_period = 7.days
+      end
+      it 'should not have a reviewed time' do
+        @order_detail.to_complete
+        @order_detail.reviewed_at.should be_nil
+      end
+    end
+    context 'zero day' do
+      before :each do
+        Settings.billing.review_period = 0.days
+      end
+      it 'should set reviewed_at to now' do
+        @order_detail.to_complete
+        @order_detail.reviewed_at.should < Time.zone.now
+      end
+    end
+  end
+
   
 
   context 'named scopes' do
