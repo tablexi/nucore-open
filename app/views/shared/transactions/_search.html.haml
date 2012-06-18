@@ -7,6 +7,8 @@
       = chosen_field(:products, Product.model_name.human, "id", nil, :product_options)
       - unless @account
         = chosen_field(:account_owners, Account.human_attribute_name('owner'), "id", "full_name")
+      - if @order_statuses
+        = chosen_field(:order_statuses, OrderStatus.model_name.human, "id", nil, :order_statuses_options)
   %fieldset#calendar_filter
     %ul
       %li

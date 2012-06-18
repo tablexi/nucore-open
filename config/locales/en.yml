@@ -881,6 +881,9 @@ en:
       order:
         one: Order
         other: Orders
+      order_status:
+        one: Order Status
+        other: Order Statuses
       facility:
         one: Facility
         other: Facilities
