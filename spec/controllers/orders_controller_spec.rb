@@ -298,10 +298,7 @@ describe OrdersController do
       end
       it "should show a warning if the user doesn't have access to the product to be added"
     end
-
-    
   end
-
 
   context "remove from cart" do
     before(:each) do
@@ -411,7 +408,9 @@ describe OrdersController do
     before(:each) do
       @instrument       = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
       @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24))
-      @instrument_pp = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id, :restrict_purchase => false))
+      @instrument_pp = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id))
+      @instrument_pp.restrict_purchase = false
+      define_open_account(@instrument.account, @account.account_number)
       @service          = @authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
       @method=:get
       @action=:show
