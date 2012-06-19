@@ -261,8 +261,6 @@ describe OrdersController do
       end
       context "in the right facility" do
         before :each do
-          
-          
           @params.merge!(:order => {:order_details => [{:quantity => 1, :product_id => @item.id}]})
         end
         facility_operators.each do |role|
@@ -293,17 +291,15 @@ describe OrdersController do
         end
 
         it "should not allow ordering" do
-          
           do_request
           @order.reload.order_details.should be_empty
           should set_the_flash.to(/You are not authorized to place an order on behalf of another user for the facility/)
         end
       end
-
-
+      it "should show a warning if the user doesn't have access to the product to be added"
     end
 
-    it "should show a warning if the user doesn't have access to the product to be added"
+    
   end
 
 
@@ -414,6 +410,8 @@ describe OrdersController do
   context "cart meta data" do
     before(:each) do
       @instrument       = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24))
+      @instrument_pp = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id, :restrict_purchase => false))
       @service          = @authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
       @method=:get
       @action=:show
@@ -422,7 +420,6 @@ describe OrdersController do
     it_should_require_login
 
     context 'staff' do
-
       before :each do
         @order.add(@instrument)
         @order_detail = @order.order_details.first
@@ -435,6 +432,28 @@ describe OrdersController do
 
     it "should show links for uploading files for services where required by service"
     it "should show links for submitting survey for services where required by service"
+
+    context "restricted instrument" do
+      before :each do
+        @instrument.update_attributes(:requires_approval => true)
+        maybe_grant_always_sign_in :director
+        @order.update_attributes(:created_by_user => @director)
+        @order.add(@instrument)
+        @order.order_details.size.should == 1
+        switch_to @guest
+      end
+
+      it "should allow purchasing a restricted item the user isn't authorized for" do
+        place_reservation(@authable, @order.order_details.first, Time.zone.now)      
+        do_request
+        assigns[:order].should be_validated
+      end
+      it "should not be validated if there is no reservation" do
+        do_request
+        assigns[:order].should_not be_validated
+        assigns[:order].order_details.first.validate_for_purchase.should == "Please make a reservation"
+      end
+    end
   end
 
 
