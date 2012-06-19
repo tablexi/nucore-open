@@ -1,6 +1,5 @@
 class PricePolicy < ActiveRecord::Base
   include NUCore::Database::DateHelper
-  include SettingsHelper
 
   belongs_to :price_group
   validates_presence_of :start_date, :price_group_id, :type
@@ -132,7 +131,7 @@ class PricePolicy < ActiveRecord::Base
   # appropriate expiration date.
   def self.generate_expire_date(price_policy_or_date)
     start_date = price_policy_or_date.is_a?(PricePolicy) ? price_policy_or_date.start_date : price_policy_or_date
-    fiscal_year_end(start_date)
+    SettingsHelper::fiscal_year_end(start_date)
   end
 
   def set_expire_date
