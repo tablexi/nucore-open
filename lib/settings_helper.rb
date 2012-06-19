@@ -8,7 +8,7 @@ module SettingsHelper
   def self.fiscal_year_beginning(date=nil)
     date ||= Time.zone.now
     fiscal_year_starts = fiscal_year(date.year) 
-    date.to_time > fiscal_year_starts ? fiscal_year_starts : fiscal_year_starts - 1.year
+    date.to_time >= fiscal_year_starts ? fiscal_year_starts : fiscal_year_starts - 1.year
   end
 
   def self.fiscal_year(year)

@@ -176,16 +176,10 @@ class Journal < ActiveRecord::Base
 
   def self.order_details_span_fiscal_years?(order_details)
     d = order_details.first.fulfilled_at
-    d = d.to_date
-    if d.month >= 9
-      start_fy = Date.new(d.year, 9, 1)
-      end_fy   = Date.new(d.year + 1, 9, 1)
-    else
-      start_fy = Date.new(d.year - 1, 9, 1)
-      end_fy   = Date.new(d.year, 9, 1)
-    end
+    start_fy = SettingsHelper::fiscal_year_beginning(d)
+    end_fy = SettingsHelper::fiscal_year_end(d)
     order_details.each do |od|
-      return true if (od.fulfilled_at.to_date < start_fy || od.fulfilled_at.to_date >= end_fy)
+      return true if (od.fulfilled_at < start_fy || od.fulfilled_at >= end_fy)
     end
     false
   end
