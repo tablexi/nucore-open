@@ -7,16 +7,16 @@
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'pricing_rules'}
 
-%h2=h @item
-%h3 Add Pricing Rules
-= render :partial => 'instructional_text'
+%h2=h @product
+%h3 Edit Pricing Rules
+= render :partial => 'price_policies/instructional_text'
 
-= form_tag facility_item_price_policies_path do
+= form_tag price_policy_path(@product, params[:id]), :method => 'PUT' do
   - @price_policies.each do |pp|
     - @price_policy = pp
     = error_messages_for :price_policy
   %ul.form
-    = render :partial => 'item_price_policy_fields'
+    = render :partial => "price_policies/#{@product.is_a?(Instrument) ? 'instrument_' : ''}price_policy_fields"
   %ul.horiz
-    %li= submit_tag 'Add Price Rules', :class => 'btn'
-    %li= link_to 'Cancel', facility_item_price_policies_path
+    %li= submit_tag 'Save Rules', :class => 'btn'
+    %li= link_to 'Cancel', price_policies_path

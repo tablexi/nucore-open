@@ -26,6 +26,8 @@ class PricePoliciesController < ApplicationController
     @next_start_date = @next_price_policies.first ? @next_price_policies.first.start_date : nil
 
     @next_dates = model_class.next_dates(@product).sort
+
+    render 'price_policies/index'
   end
 
   # GET /price_policies/new
@@ -36,6 +38,8 @@ class PricePoliciesController < ApplicationController
     @max_expire_date = @expire_date
     @start_date=start_date.strftime("%m/%d/%Y")
     @price_policies = price_groups.map{ |pg| model_class.new({:price_group_id => pg.id, :product_id => @product.id, :start_date => @start_date }) }
+
+    render 'price_policies/new'
   end
 
   # POST /price_policies
@@ -48,7 +52,7 @@ class PricePoliciesController < ApplicationController
     @interval = params[:interval].to_i if params[:interval]
     
     @price_policies = price_groups.map do |price_group|
-      pp_param=params["#{@product_var}_price_policy#{price_group.id}"]
+      pp_param=params["price_policy#{price_group.id}"]
       price_policy = model_class.new(pp_param.reject {|k,v| k == 'restrict_purchase' })
       price_policy.price_group = price_group
       price_policy.product = @product
@@ -85,6 +89,7 @@ class PricePoliciesController < ApplicationController
     @expire_date=@price_policies.first.expire_date
     include_newer_price_groups    
     @max_expire_date = PricePolicy.generate_expire_date(@price_policies.first.start_date).strftime("%m/%d/%Y")
+    render 'price_policies/edit'
   end
 
   # PUT /price_policies/1
@@ -97,7 +102,7 @@ class PricePoliciesController < ApplicationController
     include_newer_price_groups
     
     @price_policies.each { |price_policy|
-      pp_param=params["#{@product_var}_price_policy#{price_policy.price_group.id}"]
+      pp_param=params["price_policy#{price_policy.price_group.id}"]
       next unless pp_param
       price_policy.attributes = pp_param.reject {|k,v| k == 'restrict_purchase' }
       price_policy.start_date = parse_usa_date(params[:start_date]).beginning_of_day
