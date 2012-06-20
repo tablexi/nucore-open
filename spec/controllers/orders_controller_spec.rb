@@ -90,6 +90,38 @@ describe OrdersController do
       should respond_with :redirect
     end
 
+    context 'success' do
+      before :each do
+        @instrument = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+        @reservation = place_reservation_for_instrument(@staff, @instrument, @account, Time.zone.now)
+        @order = @reservation.order_detail.order
+        @params.merge!({:id => @order.id, :order_id => @order.id})        
+      end
+
+      it 'should redirect to my reservations on a successful purchase of a single reservation' do
+        sign_in @staff
+        do_request
+        flash[:notice].should == 'Reservation completed successfully'
+        response.should redirect_to reservations_path
+      end
+      it 'should redirect to receipt when purchasing multiple reservations' do
+        @order.add(@instrument, 1)
+        @order.order_details.size.should == 2
+        @reservation2 = Factory.create(:reservation, :order_detail => @order.order_details[1], :instrument => @instrument)
+        Reservation.all.size.should == 2
+
+        sign_in @staff
+        do_request
+        response.should redirect_to receipt_order_url(@order)
+      end
+      it 'should redirect to receipt when acting as and ordering a single reservation' do
+        sign_in @admin
+        switch_to @staff
+        do_request
+        response.should redirect_to receipt_order_url(@order)
+      end
+    end
+
     it 'should test more than auth'
 
   end
