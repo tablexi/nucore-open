@@ -8,10 +8,6 @@ class InstrumentPricePolicy < PricePolicy
   validate :has_usage_or_reservation_rate?, :unless => :restrict_purchase
   validate :subsidy_less_than_rate?, :unless => :restrict_purchase
 
-  scope :current,  lambda { |product|             { :conditions => [dateize('start_date', ' = ? AND product_id = ?'), current_date(product), product.id] } }
-  scope :next,     lambda { |product|             { :conditions => [dateize('start_date', ' = ? AND product_id = ?'), next_date(product), product.id] } }
-  scope :for_date, lambda { |product, start_date| { :conditions => [dateize('start_date', ' = ? AND product_id = ?'), start_date, product.id] } }
-
   before_save do |o|
     o.usage_subsidy       = 0 if o.usage_subsidy.nil?       && !o.usage_rate.nil?
     o.reservation_subsidy = 0 if o.reservation_subsidy.nil? && !o.reservation_rate.nil?
@@ -20,16 +16,6 @@ class InstrumentPricePolicy < PricePolicy
 
   def has_usage_or_reservation_rate?
     errors.add(:base, "You must enter a reservation rate or usage rate for all price groups") if usage_rate.nil? && reservation_rate.nil?
-  end
-  
-  def self.current_date(product)
-    ipp = product.price_policies.find(:first, :conditions => [dateize('start_date', ' <= ? AND ') + dateize('expire_date', ' > ?'), Time.zone.now, Time.zone.now], :order => 'start_date DESC')
-    ipp ? ipp.start_date.to_date : nil
-  end
-
-  def self.next_date(product)
-    ipp = product.price_policies.find(:first, :conditions => [dateize('start_date', ' > ?'), Time.zone.now], :order => 'start_date')
-    ipp ? ipp.start_date.to_date : nil
   end
 
   def self.next_dates(product)
