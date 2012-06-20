@@ -10,6 +10,7 @@ class Product < ActiveRecord::Base
   has_many   :price_group_products
   has_many   :product_accessories, :dependent => :destroy
   has_many   :accessories, :through => :product_accessories, :class_name => 'Product'
+  has_many   :price_policies
 
   validates_presence_of :name, :type
   validate_url_name :url_name
@@ -37,7 +38,7 @@ class Product < ActiveRecord::Base
 
   def current_price_policies
     current_policies = {}
-    PricePolicy.find(:all, :conditions => ["#{self.class.name.downcase}_id = ? AND start_date <= ? AND expire_date > ?", self.id, Time.zone.now, Time.zone.now]).each { |pp|
+    PricePolicy.find(:all, :conditions => ["product_id = ? AND start_date <= ? AND expire_date > ?", self.id, Time.zone.now, Time.zone.now]).each { |pp|
       unless current_policies[pp.price_group_id].nil?
         current_policies[pp.price_group_id] = pp if pp.start_date > current_policies[pp.price_group_id].start_date
       else

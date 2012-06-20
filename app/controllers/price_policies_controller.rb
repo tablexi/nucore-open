@@ -35,8 +35,7 @@ class PricePoliciesController < ApplicationController
     @expire_date    = PricePolicy.generate_expire_date(start_date).strftime("%m/%d/%Y")
     @max_expire_date = @expire_date
     @start_date=start_date.strftime("%m/%d/%Y")
-    policy_class = model_class
-    @price_policies = price_groups.map{ |pg| policy_class.new({:price_group_id => pg.id, :"#{@product_var}_id" => @product.id, :start_date => @start_date }) }
+    @price_policies = price_groups.map{ |pg| model_class.new({:price_group_id => pg.id, :product_id => @product.id, :start_date => @start_date }) }
   end
 
   # POST /price_policies
@@ -52,8 +51,7 @@ class PricePoliciesController < ApplicationController
       pp_param=params["#{@product_var}_price_policy#{price_group.id}"]
       price_policy = model_class.new(pp_param.reject {|k,v| k == 'restrict_purchase' })
       price_policy.price_group = price_group
-      # price_policy.service = @service
-      price_policy.send(:"#{@product_var}=", @product)
+      price_policy.product = @product
       price_policy.start_date = parse_usa_date(@start_date).beginning_of_day
       price_policy.expire_date = parse_usa_date(@expire_date).end_of_day
       price_policy.restrict_purchase = pp_param['restrict_purchase'] && pp_param['restrict_purchase'] == 'true' ? true : false
@@ -159,7 +157,7 @@ class PricePoliciesController < ApplicationController
     current_price_groups = @price_policies.map { |pp| pp.price_group }
     current_facility.price_groups.each do |group|
       if !current_price_groups.include?(group) and group.can_purchase?(@product)
-        @price_policies << model_class.new({:price_group_id => group.id, :"#{@product_var}_id" => @product.id, :start_date => @start_date })
+        @price_policies << model_class.new({:price_group_id => group.id, :product_id => @product.id, :start_date => @start_date })
       end
     end
   end

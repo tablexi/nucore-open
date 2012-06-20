@@ -1,8 +1,7 @@
 class Instrument < Product
   has_one  :relay
   has_many :schedule_rules
-  has_many :instrument_price_policies
-  has_many :price_policies, :foreign_key => 'instrument_id'
+  has_many :instrument_price_policies, :foreign_key => 'product_id'
   has_many :reservations
   has_many :instrument_statuses, :foreign_key => 'instrument_id'
   has_many :product_access_groups, :foreign_key => 'product_id'

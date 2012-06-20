@@ -57,7 +57,7 @@ describe OrderDetail do
       @price_group = Factory.create(:price_group, :facility => @facility)
       Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
       UserPriceGroupMember.create!(:price_group => @price_group, :user => @user)
-      @pp=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group)
+      @pp=Factory.create(:item_price_policy, :product => @item, :price_group => @price_group)
     end
 
     it 'should set estimated costs and assign account' do
@@ -78,12 +78,12 @@ describe OrderDetail do
         @price_group = Factory.create(:price_group, :facility => @facility)
         Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
         UserPriceGroupMember.create!(:price_group => @price_group, :user => @user)
-        @pp=Factory.create(:instrument_price_policy, :instrument => @instrument, :price_group => @price_group)
+        @pp=Factory.create(:instrument_price_policy, :product=> @instrument, :price_group => @price_group)
         @rule = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 24, :duration_mins => 15))
         @order_detail.reservation = Factory.create(:reservation,
                 :reserve_start_at => Time.now,
                 :reserve_end_at => Time.now+1.hour,
-                :instrument => @instrument
+                :instrument=> @instrument
               )
         @order_detail.product = @instrument
         @order_detail.save
@@ -386,7 +386,7 @@ describe OrderDetail do
 
 
       it 'should assign a price policy' do
-        pp=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group3)
+        pp=Factory.create(:item_price_policy, :product => @item, :price_group => @price_group3)
         @order_detail.price_policy.should be_nil
         @order_detail.to_inprocess!
         @order_detail.to_complete!
@@ -413,7 +413,7 @@ describe OrderDetail do
 
 
       it "should transition to reconciled" do
-        Factory.create(:item_price_policy, :item => @item, :price_group => @price_group3)
+        Factory.create(:item_price_policy, :product => @item, :price_group => @price_group3)
         @order_detail.to_inprocess!
         @order_detail.to_complete!
         @order_detail.state.should == 'complete'

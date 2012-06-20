@@ -13,7 +13,7 @@ describe PricePolicy do
   it "should not create using factory" do
     # putting inside begin/rescue as some PricePolicy validation functions throw exception if type is nil
     begin
-      @pp = PricePolicy.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id))
+      @pp = PricePolicy.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :product_id => @item.id))
       @pp.should_not be_valid
       @pp.errors[:type].should_not be_nil
     rescue
@@ -28,7 +28,7 @@ describe PricePolicy do
     end
 
     it "should set default expire_date" do
-      @pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id, :start_date => @start_date, :expire_date => nil)
+      @pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :product_id => @item.id, :start_date => @start_date, :expire_date => nil)
       @pp.expire_date.should_not be_nil
       @pp.expire_date.should == Time.zone.parse("2020-8-31").end_of_day
     end
@@ -37,7 +37,7 @@ describe PricePolicy do
       pp=ItemPricePolicy.new(
           Factory.attributes_for(:item_price_policy,
                                  :price_group_id => @price_group.id,
-                                 :item_id => @item.id,
+                                 :product_id => @item.id,
                                  :start_date => @start_date,
                                  :expire_date => @start_date)
       )
@@ -50,7 +50,7 @@ describe PricePolicy do
       pp=ItemPricePolicy.new(
           Factory.attributes_for(:item_price_policy,
                                  :price_group_id => @price_group.id,
-                                 :item_id => @item.id,
+                                 :product_id => @item.id,
                                  :start_date => @start_date,
                                  :expire_date => PricePolicy.generate_expire_date(@start_date)+1.month)
       )
@@ -60,21 +60,21 @@ describe PricePolicy do
 
     it "should not set default expire_date if one is given" do
       expire_date=@start_date+3.months
-      pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id, :start_date => @start_date, :expire_date => expire_date)
+      pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :product_id => @item.id, :start_date => @start_date, :expire_date => expire_date)
       pp.expire_date.should_not be_nil
       pp.expire_date.should == expire_date
     end
 
     it "should not be expired" do
       expire_date=@start_date+3.months
-      pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id, :start_date => @start_date, :expire_date => expire_date)
+      pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :product_id => @item.id, :start_date => @start_date, :expire_date => expire_date)
       pp.should_not be_expired
     end
 
     it "should be expired" do
       @start_date=Time.zone.parse("2000-5-5")
       expire_date=@start_date+1.month
-      pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id, :start_date => @start_date, :expire_date => expire_date)
+      pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :product_id => @item.id, :start_date => @start_date, :expire_date => expire_date)
       pp.should be_expired
     end
 
@@ -84,7 +84,7 @@ describe PricePolicy do
   context 'restrict purchase' do
 
     before :each do
-      @pp=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group)
+      @pp=Factory.create(:item_price_policy, :product => @item, :price_group => @price_group)
       @pgp=Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
     end
 
@@ -108,7 +108,7 @@ describe PricePolicy do
     end
 
     it 'should return false when no item present' do
-      @pp.item=nil
+      @pp.product=nil
       @pp.restrict_purchase.should == false
     end
 
@@ -141,8 +141,8 @@ describe PricePolicy do
       Timecop.freeze(@today) do
         #@today = Time.zone.local(2011, 06, 06, 12, 0, 0)
         
-        @pp=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group, :start_date => @today.beginning_of_day, :expire_date => @today + 30.days)
-        @pp2=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group, :start_date => @today + 2.days, :expire_date => @today + 30.days)
+        @pp=Factory.create(:item_price_policy, :product => @item, :price_group => @price_group, :start_date => @today.beginning_of_day, :expire_date => @today + 30.days)
+        @pp2=Factory.create(:item_price_policy, :product => @item, :price_group => @price_group, :start_date => @today + 2.days, :expire_date => @today + 30.days)
         @pp.reload.start_date.should == @today.beginning_of_day
         # they weren't matching up exactly right, but were within a second of each other
         # @pp.exire_date.should == (@today + 1.day).end_of_day
@@ -156,9 +156,9 @@ describe PricePolicy do
       @today = Time.zone.local(2011, 06, 06, 12, 0, 0)
       
       Timecop.freeze(@today) do
-        @pp=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group, :start_date => @today.beginning_of_day, :expire_date => @today + 30.days)
-        @pp3 = Factory.create(:item_price_policy, :item => @item2, :price_group => @price_group, :start_date => @today, :expire_date => @today + 30.days)
-        @pp2=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group, :start_date => @today + 2.days, :expire_date => @today + 30.days)
+        @pp=Factory.create(:item_price_policy, :product => @item, :price_group => @price_group, :start_date => @today.beginning_of_day, :expire_date => @today + 30.days)
+        @pp3 = Factory.create(:item_price_policy, :product => @item2, :price_group => @price_group, :start_date => @today, :expire_date => @today + 30.days)
+        @pp2=Factory.create(:item_price_policy, :product => @item, :price_group => @price_group, :start_date => @today + 2.days, :expire_date => @today + 30.days)
         @pp.reload.start_date.should == @today.beginning_of_day
         # they weren't matching up exactly right, but were within a second of each other
         # @pp.exire_date.should == (@today + 1.day).end_of_day
@@ -188,11 +188,6 @@ describe PricePolicy do
       assert_raise(RuntimeError) { @sp.estimate_cost_and_subsidy }
     end
 
-    it 'should abstract #product' do
-      @sp.should be_respond_to(:product)
-      assert_raise(RuntimeError) { @sp.product }
-    end
-
   end
 
 
@@ -206,7 +201,7 @@ describe PricePolicy do
       @price_group = Factory.create(:price_group, :facility => @facility)
       UserPriceGroupMember.create!(:price_group => @price_group, :user => @user)
       Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
-      @pp=Factory.create(:item_price_policy, :item => @item, :price_group => @price_group)
+      @pp=Factory.create(:item_price_policy, :product => @item, :price_group => @price_group)
     end
 
     

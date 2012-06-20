@@ -2,6 +2,7 @@ class PricePolicy < ActiveRecord::Base
   include NUCore::Database::DateHelper
 
   belongs_to :price_group
+  belongs_to :product
   validates_presence_of :start_date, :price_group_id, :type
   validate :start_date_is_unique, :unless => lambda { |o| o.start_date.nil? }
 
@@ -26,7 +27,7 @@ class PricePolicy < ActiveRecord::Base
     existing_policies = PricePolicy.where("start_date <= ? and expire_date >= ?", start_date, start_date).
                                     where("type = ?", self.class.name).
                                     where("price_group_id = ?", price_group_id).
-                                    where("#{product_type}_id = ?", self.send("#{product_type}_id"))
+                                    where("product_id = ?", product_id)
     
     existing_policies = existing_policies.where("id != ?", id) unless id.nil?
     existing_policies.each do |policy|
@@ -39,7 +40,7 @@ class PricePolicy < ActiveRecord::Base
   def product_type
     self.class.name.gsub("PricePolicy", "").downcase
   end
-  
+ 
   #
   # A price estimate for a +Product+.
   # Must return { :cost => estimated_cost, :subsidy => estimated_subsidy }
@@ -53,17 +54,6 @@ class PricePolicy < ActiveRecord::Base
   def calculate_cost_and_subsidy(*args)
     raise "subclass must implement!"
   end
-
-
-  #
-  # All subclasses +belong_to+ a +Product+ and have their own
-  # unique accessors for that product. That association should
-  # be made in this class, but it isn't. This method provides
-  # general access to a subclass' product
-  def product
-    raise "subclass must implement!"
-  end
-
 
   #
   # Returns true if this PricePolicy's +Product+ cannot be purchased
@@ -113,13 +103,12 @@ class PricePolicy < ActiveRecord::Base
 
   def start_date_is_unique
     type          = self.class.name.downcase.gsub(/pricepolicy$/, '')
-    product       = self.send("#{type}")
     price_group   = self.price_group
     unless (product.nil? || price_group.nil?)
       if id.nil?
-        pp = PricePolicy.find(:first, :conditions => ["price_group_id = ? AND #{type}_id = ? AND start_date = ?", price_group.id, product.id, start_date])
+        pp = PricePolicy.find(:first, :conditions => ["price_group_id = ? AND product_id = ? AND start_date = ?", price_group.id, product.id, start_date])
       else
-        pp = PricePolicy.find(:first, :conditions => ["price_group_id = ? AND #{type}_id = ? AND start_date = ? AND id <> ?", price_group.id, product.id, start_date, id])
+        pp = PricePolicy.find(:first, :conditions => ["price_group_id = ? AND product_id = ? AND start_date = ? AND id <> ?", price_group.id, product.id, start_date, id])
       end
       errors.add("start_date", "conflicts with an existing price rule") unless pp.nil?
     end

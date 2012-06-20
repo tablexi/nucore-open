@@ -133,7 +133,7 @@ describe Account do
       @item              = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
       @price_group       = Factory.create(:price_group, :facility => @facility)
       @price_group_product=Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
-      @price_policy      = Factory.create(:item_price_policy, :item => @item, :price_group => @price_group)
+      @price_policy      = Factory.create(:item_price_policy, :product => @item, :price_group => @price_group)
       @pg_user_member    = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
     end
 
