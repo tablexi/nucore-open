@@ -7,6 +7,8 @@ class Reservation < ActiveRecord::Base
   belongs_to :instrument
   belongs_to :order_detail
   
+  # used for overriding certain restrictions
+  attr_accessor :reserved_by_admin
 
   validates_uniqueness_of :order_detail_id, :allow_nil => true
   validates_presence_of :instrument_id, :reserve_start_at, :reserve_end_at

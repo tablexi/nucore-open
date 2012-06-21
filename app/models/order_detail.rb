@@ -3,6 +3,9 @@ class OrderDetail < ActiveRecord::Base
   
   versioned
 
+  # Used when ordering to override certain restrictions
+  attr_accessor :being_purchased_by_admin
+
   belongs_to :product
   belongs_to :price_policy
   belongs_to :statement
@@ -304,10 +307,10 @@ class OrderDetail < ActiveRecord::Base
 
     # TODO if chart string, is chart string + account valid
     return "The #{account.type_string} is not open for the required account" if account.is_a?(NufsAccount) && !account.account_open?(product.account)
-
+    
     # is the user approved for the product
     return "You are not approved to purchase this #{product.class.name.downcase}" unless product.can_be_used_by?(order.user) or order.created_by_user.can_override_restrictions?(product)
-
+    
     # are reservation requirements met
     response = validate_reservation
     return response unless response.nil?
@@ -330,6 +333,7 @@ class OrderDetail < ActiveRecord::Base
   def validate_reservation
     return nil unless product.is_a?(Instrument)
     return "Please make a reservation" if reservation.nil?
+    reservation.reserved_by_admin = @being_purchased_by_admin
     return "There is a problem with your reservation" unless reservation.valid? && reservation.valid_before_purchase?
   end
   

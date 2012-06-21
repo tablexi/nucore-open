@@ -77,10 +77,11 @@ describe TransactionSearch do
         @facility_account2 = @facility2.facility_accounts.create(Factory.attributes_for(:facility_account))
         @item2             = @facility2.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account2.id))
         @order_detail2 = place_and_complete_item_order(@user, @facility2, @credit_account)
-        
       end
       
-      it "should pull all facilities for nufs account" do
+      it "should pull all facilities for nufs account that have transactions" do
+        # @account needs to have an order detail for it to show up
+        @order_detail3 = place_and_complete_item_order(@user, @facility2, @account)
         @controller.params = { :account_id => @account.id }
         @controller.init_current_account
         @controller.all_order_details
@@ -102,6 +103,8 @@ describe TransactionSearch do
         @user2 = Factory.create(:user)
         @user3 = Factory.create(:user)
         @account2 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user2, :created_by => @user2, :user_role => AccountUser::ACCOUNT_OWNER]])
+        # account 2 needs to have an order detail for it to show up
+        place_and_complete_item_order(@user2, @authable, @account2)
       end
       it "should populate account owners" do
         @controller.params = { :facility_id => @authable.url_name }
@@ -117,6 +120,11 @@ describe TransactionSearch do
         @instrument = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
         @service = @authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id)) 
         @other_item = @facility2.instruments.create(Factory.attributes_for(:item))
+        # each product needs to have an order detail for it to show up
+        [@item, @instrument, @service].each do |product|
+          place_product_order(@staff, @authable, product, @account)
+        end
+        
         @controller.params = { :facility_id => @authable.url_name }
         @controller.init_current_facility
         @controller.all_order_details
