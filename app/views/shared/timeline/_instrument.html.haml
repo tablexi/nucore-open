@@ -5,7 +5,7 @@
     .unit_container
       = render :partial => "shared/timeline/reservation", :collection => (instrument.reservations.for_date(@display_date).order(:reserve_start_at) + ScheduleRule.unavailable_for_date(instrument, @display_date)), :as => :reservation
       - if @display_date.beginning_of_day == Time.zone.now.beginning_of_day
-        .current_time{:style => "left: #{datetime_left_position(Time.zone.now)}"}
+        .current_time{:style => "left: #{datetime_left_position(@display_date, Time.zone.now)}"}
     - if instrument.has_relay? && instrument.current_instrument_status
       .relay_checkbox
         = check_box_tag "relay[#{instrument.id}]", 1, false, :disabled => true, :"data-relay-url" => facility_instrument_switch_path(instrument.facility, instrument)
