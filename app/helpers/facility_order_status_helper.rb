@@ -37,9 +37,11 @@ module FacilityOrderStatusHelper
     end
   end
   
+  #TODO make problem_order an SQL relation to speet things up
   def problem_orders
     current_facility.order_details.
       non_reservations.
+      complete.
       reject{|od| !od.problem_order?}
   end
   
