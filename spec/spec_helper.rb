@@ -247,7 +247,7 @@ Spork.each_run do
     }
 
     res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
-    @instrument.reservations.create(res_attrs)
+    instrument.reservations.create(res_attrs)
   end
 
   #

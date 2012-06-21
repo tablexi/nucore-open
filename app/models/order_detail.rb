@@ -3,6 +3,9 @@ class OrderDetail < ActiveRecord::Base
   
   versioned
 
+  # Used when ordering to override certain restrictions
+  attr_accessor :being_purchased_by_admin
+
   belongs_to :product
   belongs_to :price_policy
   belongs_to :statement
@@ -169,6 +172,7 @@ class OrderDetail < ActiveRecord::Base
   scope :for_owners, lambda { |owners| joins(:account).
                                        joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'").
                                        where("account_users.user_id in (?)", owners) unless owners.blank? }
+  scope :for_order_statuses, lambda {|statuses| where("order_details.order_status_id in (?)", statuses) unless statuses.nil? or statuses.empty? }
                                        
   scope :in_date_range, lambda { |start_date, end_date| 
     search = scoped
@@ -322,10 +326,10 @@ class OrderDetail < ActiveRecord::Base
 
     # TODO if chart string, is chart string + account valid
     return "The #{account.type_string} is not open for the required account" if account.is_a?(NufsAccount) && !account.account_open?(product.account)
-
+    
     # is the user approved for the product
     return "You are not approved to purchase this #{product.class.name.downcase}" unless product.can_be_used_by?(order.user) or order.created_by_user.can_override_restrictions?(product)
-
+    
     # are reservation requirements met
     response = validate_reservation
     return response unless response.nil?
@@ -348,6 +352,7 @@ class OrderDetail < ActiveRecord::Base
   def validate_reservation
     return nil unless product.is_a?(Instrument)
     return "Please make a reservation" if reservation.nil?
+    reservation.reserved_by_admin = @being_purchased_by_admin
     return "There is a problem with your reservation" unless reservation.valid? && reservation.valid_before_purchase?
   end
   

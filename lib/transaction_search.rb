@@ -60,6 +60,11 @@ module TransactionSearch
     @account_owners = User.find_by_sql(@order_details.joins(:order => {:account => {:owner => :user} }).
                                                       select("distinct(users.id), users.first_name, users.last_name").
                                                       reorder("users.last_name, users.first_name").to_sql)
+    
+    @order_statuses = OrderStatus.find_by_sql(@order_details.joins(:order_status).
+                                                             select("distinct(order_statuses.id), order_statuses.facility_id, order_statuses.name").
+                                                             reorder("order_statuses.lft").to_sql)
+
   end
       
   def paginate_order_details
@@ -78,6 +83,7 @@ module TransactionSearch
     @order_details = @order_details.for_accounts(search_params[:accounts])
     @order_details = @order_details.for_products(search_params[:products])
     @order_details = @order_details.for_owners(search_params[:account_owners])
+    @order_details = @order_details.for_order_statuses(search_params[:order_statuses])
     start_date = parse_usa_date(search_params[:start_date].to_s.gsub("-", "/"))
     end_date = parse_usa_date(search_params[:end_date].to_s.gsub("-", "/"))  
     
