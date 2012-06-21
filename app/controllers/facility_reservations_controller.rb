@@ -240,9 +240,11 @@ class FacilityReservationsController < ApplicationController
       delete_if{|od| od.reservation.nil? }
   end
   
+  #TODO make problem_order an SQL relation to speet things up
   def problem_orders
     current_facility.order_details.
       reservations.
+      complete.
       reject{|od| !od.problem_order?}
   end
   def disputed_orders
