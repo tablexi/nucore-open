@@ -5,6 +5,8 @@
 
 = content_for :h1 do
   = current_facility
+= content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_reservation', :locals => { :secondary_tab => 'daily'}
 
 .timeline_header
   = form_tag timeline_facility_reservations_path(current_facility), :method => :get, :id => "timeline_date_search" do

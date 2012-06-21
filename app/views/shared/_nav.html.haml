@@ -7,7 +7,7 @@
 - if current_facility and admin_tab?
   - if current_user.operator_of?(current_facility)
     - links.push({:url => facility_orders_path(current_facility),    :text => 'Orders',   :tab_name => 'admin_orders'})
-    - links.push({:url => facility_reservations_path(current_facility),    :text => 'Reservations',   :tab_name => 'admin_reservations'})
+    - links.push({:url => timeline_facility_reservations_path(current_facility),    :text => 'Reservations',   :tab_name => 'admin_reservations'})
     - links.push({:url => facility_transactions_path(current_facility), :text => 'Billing', :tab_name => 'admin_billing'}) if can? :manage_billing, current_facility
     - links.push({:url => facility_products_path(current_facility),   :text => 'Products', :tab_name => 'admin_products'})
     - links.push({:url => facility_users_path(current_facility),      :text => 'Users',    :tab_name => 'admin_users'})
