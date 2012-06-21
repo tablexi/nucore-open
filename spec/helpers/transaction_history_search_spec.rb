@@ -32,7 +32,7 @@ describe TransactionSearch do
     @order            = @staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account, :ordered_at => Time.now))
     @item             = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
     @order_detail_complete = place_and_complete_item_order(@user, @authable, @account)
-    @order_detail_new = place_item_order(@staff, @authable, @item)
+    @order_detail_new = place_product_order(@staff, @authable, @item)
     
     # fake signing in as staff
     @controller.session_user = @staff
