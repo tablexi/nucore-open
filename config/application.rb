@@ -1,12 +1,7 @@
 require File.expand_path('../boot', __FILE__)
-
 require 'rails/all'
-
-Dir[File.expand_path('../vendor/engines/*', File.dirname(__FILE__))].each do |engine|
-  require File.join(engine, 'lib', 'engine')
-end
-
 require 'will_paginate/array'
+
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env) if defined?(Bundler)
