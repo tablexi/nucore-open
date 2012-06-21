@@ -1,8 +1,7 @@
-(function() {
+$(function() {
   var dialog = null;
 
-  // set up handler for any form w/in the dialog
-  $('#pick_accessories_dialog form.pick_accessories_form').live('ajax:complete', function(e, jqXHR, status) {
+  function pickAccessoriesHandleResponse(e, jqXHR, status) {
     var response = jqXHR.responseText;
     
     dialog.html(response);
@@ -11,27 +10,32 @@
     if (status == "success") {
       dialog.dialog('close');
     }
-
     return false;
-  });
-  
-  // when the dialog closes, reload this page since the link shouldn't be there anymore
-  $('#pick_accessories_dialog').live('dialogclose', function() {
-    window.location = window.location.href;
-  });
+  };
 
-  $('.has_accessories').live('click', function() {
+  $('body').on('click', '.has_accessories', function() {
+    
     var clicked = $(this)
       , url = clicked.attr('href');
+
+    // Hide any tooltips
+    if ($('.tip').length > 0) $('.tip').data('tooltipsy').hide();
 
     // set closure's dialog so other handler(s) can find it
     dialog = $('#pick_accessories_dialog');
 
     // build dialog if necessary
     if (dialog.length == 0) {
-      dialog = $('<div id="pick_accessories_dialog" style="display:hidden"/>');
-      clicked.after(dialog);
+      dialog = $('<div id="pick_accessories_dialog" style="display:none"/>');
+      $("body").append(dialog);
+      //clicked.after(dialog);
+      // when the dialog closes, reload this page since the link shouldn't be there anymore
+      dialog.on('dialogclose', function() { window.location.reload(); return false; });
+      // call the response handler when the form inside submits
+      dialog.on('ajax:complete', 'form.pick_accessories_form', pickAccessoriesHandleResponse);
     }
+
+    clicked.fadeOut();
     // load pick_accessories_form into dialog
     dialog.load(
       url,
@@ -40,7 +44,8 @@
         dialog.dialog({
           closeOnEscape:  false,
           modal:          true,
-          title:          'Accessories Entry'
+          title:          'Accessories Entry',
+          zIndex:         10000
         });
       }
     ); 
@@ -48,4 +53,4 @@
     return false;
   });
 
-})();
+});
