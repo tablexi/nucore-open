@@ -41,7 +41,7 @@ class Order < ActiveRecord::Base
   end
 
   def cart_valid?
-    has_details? && has_valid_payment? && (@being_purchased_by_admin || order_details.all? {|od| od.valid_for_purchase?})
+    has_details? && has_valid_payment? && order_details.all? {|od| od.being_purchased_by_admin = @being_purchased_by_admin; od.valid_for_purchase?}
   end
 
   def has_valid_payment?

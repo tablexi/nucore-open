@@ -29,6 +29,8 @@ class OrdersController < ApplicationController
 
   # GET /orders/:id
   def show
+    facility_ability = Ability.new(session_user, @order.facility, self)
+    @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
     @order.validate_order! if @order.new?
   end
 
@@ -232,7 +234,7 @@ class OrdersController < ApplicationController
   # PUT /orders/1/purchase
   def purchase
     #revalidate the cart, but only if the user is not an admin
-    @order.being_purchased_by_admin = session_user.operator_of? @order.facility
+    @order.being_purchased_by_admin = Ability.new(session_user, @order.facility, self).can?(:act_as, @order.facility)
     if @order.validate_order! && @order.purchase!
       Notifier.order_receipt(:user => @order.user, :order => @order).deliver
 
