@@ -47,6 +47,7 @@ gem 'ccpo',             '~> 1.0.0', :path => 'vendor/engines/ccpo'
 group :development, :test do
   gem 'ci_reporter'
   gem 'factory_girl_rails','1.0.1'
+  gem 'mocha',             '0.9.7'
   gem 'rspec-rails',       '2.9'
   gem 'ruby-debug19',      '0.11.6'
   gem 'shoulda',           '2.11.3'
