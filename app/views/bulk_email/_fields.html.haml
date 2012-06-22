@@ -1,0 +1,18 @@
+= form_tag facility_bulk_email_path, :method => :get, :class => "search_form", :id => "bulk_email" do
+  %fieldset
+    = label_tag :search_type
+    = select_tag 'search_type', options_for_select(@search_types.invert, :selected => params[:search_type])
+  %fieldset#search
+    = chosen_field(:products, Product.model_name.human, "id", nil, :product_options)
+  %fieldset#dates_between
+    = label_tag :orders_reservations_between, t('bulk_email.dates.label')
+    %ul
+      %li
+        = label_tag :start_date, t('bulk_email.dates.start')
+        = text_field_tag :start_date, (@search_fields[:start_date] || "").gsub("-","/"), :class => 'datepicker'
+      %li 
+      %li
+        = label_tag :end_date, t('bulk_email.dates.end')
+        = text_field_tag :end_date, (@search_fields[:end_date] || "").gsub("-","/"), :class => 'datepicker'
+  .submit_button
+    %p= submit_tag "Search"

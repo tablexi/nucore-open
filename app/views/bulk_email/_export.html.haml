@@ -1,0 +1,9 @@
+= form_tag facility_bulk_email_path, :method => :get, :id => "bulk_email_export" do
+  = hidden_field_tag :format, :csv
+  = hidden_field_tag :search_type, @search_fields[:search_type]
+  = hidden_field_tag :start_date, @search_fields[:start_date]
+  = hidden_field_tag :end_date, @search_fields[:end_date]
+  - if @search_fields[:products]
+    - @search_fields[:products].each do |product_id|
+      = hidden_field_tag 'products[]', product_id
+  = link_to 'Export', '#', :class => 'submit_link'
