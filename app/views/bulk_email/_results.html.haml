@@ -1,0 +1,15 @@
+.results_header
+  = render :partial => 'export'  
+  = will_paginate(@users)
+  .clear
+%table
+  %tr
+    %th= User.human_attribute_name(:name)
+    %th= User.human_attribute_name(:username)
+    %th= User.human_attribute_name(:email)
+  - @users.each do |user|
+    %tr
+      %td= link_to user.full_name, facility_user_path(current_facility, user)
+      %td= user.username
+      %td= user.email
+= will_paginate(@users)
