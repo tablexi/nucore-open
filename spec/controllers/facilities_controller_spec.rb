@@ -101,8 +101,6 @@ describe FacilitiesController do
 
 
   context "show" do
-
-:so
     before(:each) do
       @method=:get
       @action=:show
@@ -113,6 +111,12 @@ describe FacilitiesController do
       @controller.current_facility.should == @authable
       response.should be_success
       response.should render_template('facilities/show')
+    end
+
+    it 'should 404 for invalid facility' do
+      @params.merge!({:id => 'randomstringofcharacters'})
+      do_request
+      response.code.should == "404"
     end
     
   end

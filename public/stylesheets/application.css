@@ -505,6 +505,10 @@ p.error {
 	width:500px;
 }
 
+.search_form li {
+  list-style: none;
+}
+
 body .search_form .chzn-container .chzn-drop {
 	width:500px !important;
 }
@@ -683,3 +687,31 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
 .copy_actual_from_reservation .end_date {
   display: none;
 }
+
+/***
+ * Bulk Email
+ ***/
+#bulk_email fieldset {
+  float: none;
+  margin: 1em 0;
+}
+#dates_between li {
+  float: left;
+  margin: 0 1em 0 0;
+}
+#user_types label { 
+  display: inline; 
+}
+#bulk_email.search_form input[type="submit"] {
+  float: none;
+  margin-top: 0;
+}
+.results_header {
+  border-top: 1px solid #CCCCCC;
+  padding: 1em 0;
+}
+#bulk_email_export {
+  float: right;
+}
+
+

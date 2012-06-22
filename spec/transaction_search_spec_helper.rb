@@ -44,5 +44,11 @@ def it_should_support_searching
       do_request
       assigns[:order_details].where_values.should be_include("account_users.user_id in (3,4)")
     end
+
+    it "should handle order statuses" do
+      @params.merge!({:order_statuses => [1,2]})
+      do_request
+      assigns[:order_details].where_values.should be_include("order_details.order_status_id in (1,2)")
+    end
   end
 end

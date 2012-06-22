@@ -21,7 +21,7 @@ class FacilitiesController < ApplicationController
 
   # GET /facilities/abc123
   def show
-    raise ActiveRecord::RecordNotFound unless current_facility.is_active?
+    raise ActiveRecord::RecordNotFound unless current_facility && current_facility.is_active?
     @order_form = nil
     @order_form = Order.new if acting_user && current_facility.accepts_multi_add?
     @active_tab = 'home'
