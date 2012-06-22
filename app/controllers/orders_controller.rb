@@ -238,7 +238,8 @@ class OrdersController < ApplicationController
     if @order.validate_order! && @order.purchase!
       Notifier.order_receipt(:user => @order.user, :order => @order).deliver
 
-      if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled?
+      # If we're only making a single reservation, we'll redirect
+      if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled? && !acting_as?
         od=@order.order_details[0]
 
         if od.reservation.can_switch_instrument_on?
