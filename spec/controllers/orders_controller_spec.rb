@@ -90,6 +90,39 @@ describe OrdersController do
       should respond_with :redirect
     end
 
+    context 'success' do
+      before :each do
+        @instrument = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+        define_open_account(@instrument.account, @account.account_number)
+        @reservation = place_reservation_for_instrument(@staff, @instrument, @account, Time.zone.now)
+        @order = @reservation.order_detail.order
+        @params.merge!({:id => @order.id, :order_id => @order.id})        
+      end
+
+      it 'should redirect to my reservations on a successful purchase of a single reservation' do
+        sign_in @staff
+        do_request
+        flash[:notice].should == 'Reservation completed successfully'
+        response.should redirect_to reservations_path
+      end
+      it 'should redirect to receipt when purchasing multiple reservations' do
+        @order.add(@instrument, 1)
+        @order.order_details.size.should == 2
+        @reservation2 = Factory.create(:reservation, :order_detail => @order.order_details[1], :instrument => @instrument)
+        Reservation.all.size.should == 2
+
+        sign_in @staff
+        do_request
+        response.should redirect_to receipt_order_url(@order)
+      end
+      it 'should redirect to receipt when acting as and ordering a single reservation' do
+        sign_in @admin
+        switch_to @staff
+        do_request
+        response.should redirect_to receipt_order_url(@order)
+      end
+    end
+
     it 'should test more than auth'
 
   end
@@ -258,30 +291,47 @@ describe OrdersController do
         @facility_account2  = @facility2.facility_accounts.create!(Factory.attributes_for(:facility_account))
         @account2           = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
         @item2              = @facility2.items.create!(Factory.attributes_for(:item, :facility_account_id => @facility_account2.id))
-        maybe_grant_always_sign_in :director
-        switch_to @guest
       end
-      it "should let a director order" do
-        @params.merge!(:order => {:order_details => [{:quantity => 1, :product_id => @item.id}]})
-        do_request
-        should_not set_the_flash
-        @order.reload.order_details.should_not be_empty
-        response.should redirect_to "/orders/#{@order.id}"
+      context "in the right facility" do
+        before :each do
+          @params.merge!(:order => {:order_details => [{:quantity => 1, :product_id => @item.id}]})
+        end
+        facility_operators.each do |role|
+          it "should allow #{role} to purchase" do
+            maybe_grant_always_sign_in role
+            switch_to @guest
+            do_request
+            should_not set_the_flash
+            @order.reload.order_details.should_not be_empty
+            response.should redirect_to "/orders/#{@order.id}"
+          end
+        end
+        it "should not allow guest" do
+          maybe_grant_always_sign_in :guest
+          @guest2 = Factory.create(:user)
+          switch_to @guest2
+          do_request
+          should set_the_flash
+          @order.reload.order_details.should be_empty
+        end
+
       end
+      context "in the another facility" do
+        before :each do
+          maybe_grant_always_sign_in :director
+          switch_to @guest
+          @params.merge!(:order => {:order_details => [{:quantity => 1, :product_id => @item2.id}]})
+        end
 
-      it "should not allow ordering as another facility" do
-        @params.merge!(:order => {:order_details => [{:quantity => 1, :product_id => @item2.id}]})
-        do_request
-        @order.reload.order_details.should be_empty
-        should set_the_flash.to(/You are not authorized to place an order on behalf of another user for the facility/)
+        it "should not allow ordering" do
+          do_request
+          @order.reload.order_details.should be_empty
+          should set_the_flash.to(/You are not authorized to place an order on behalf of another user for the facility/)
+        end
       end
-
-
+      it "should show a warning if the user doesn't have access to the product to be added"
     end
-
-    it "should show a warning if the user doesn't have access to the product to be added"
   end
-
 
   context "remove from cart" do
     before(:each) do
@@ -353,6 +403,19 @@ describe OrdersController do
       @order_detail.reload.quantity.should == 6
     end
 
+    context "bad input" do
+      it "should show an error on not an integer" do
+        @params.merge!("quantity#{@order_detail.id}" => "1.5")
+        maybe_grant_always_sign_in :guest
+        do_request
+        should set_the_flash.to(/quantity/i)
+        should set_the_flash.to(/integer/i)
+        should render_template :show
+      end
+      
+
+    end
+
     it "should not allow updates of quantities for instruments"
   end
 
@@ -377,6 +440,10 @@ describe OrdersController do
   context "cart meta data" do
     before(:each) do
       @instrument       = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24))
+      @instrument_pp = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id))
+      @instrument_pp.restrict_purchase = false
+      define_open_account(@instrument.account, @account.account_number)
       @service          = @authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
       @method=:get
       @action=:show
@@ -385,7 +452,6 @@ describe OrdersController do
     it_should_require_login
 
     context 'staff' do
-
       before :each do
         @order.add(@instrument)
         @order_detail = @order.order_details.first
@@ -398,6 +464,28 @@ describe OrdersController do
 
     it "should show links for uploading files for services where required by service"
     it "should show links for submitting survey for services where required by service"
+
+    context "restricted instrument" do
+      before :each do
+        @instrument.update_attributes(:requires_approval => true)
+        maybe_grant_always_sign_in :director
+        @order.update_attributes(:created_by_user => @director)
+        @order.add(@instrument)
+        @order.order_details.size.should == 1
+        switch_to @guest
+      end
+
+      it "should allow purchasing a restricted item the user isn't authorized for" do
+        place_reservation(@authable, @order.order_details.first, Time.zone.now)      
+        do_request
+        assigns[:order].should be_validated
+      end
+      it "should not be validated if there is no reservation" do
+        do_request
+        assigns[:order].should_not be_validated
+        assigns[:order].order_details.first.validate_for_purchase.should == "Please make a reservation"
+      end
+    end
   end
 
 

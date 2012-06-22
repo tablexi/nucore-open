@@ -55,11 +55,16 @@ module TransactionSearch
                                                    select("distinct(accounts.id), accounts.description, accounts.account_number, accounts.type").
                                                    reorder("accounts.account_number, accounts.description").to_sql)
     @products = Product.find_by_sql(@order_details.joins(:product).
-                                                   select("distinct(products.id), products.name, products.facility_id, products.type").
+                                                   select("distinct(products.id), products.name, products.facility_id, products.type, products.requires_approval").
                                                    reorder("products.name").to_sql)
     @account_owners = User.find_by_sql(@order_details.joins(:order => {:account => {:owner => :user} }).
                                                       select("distinct(users.id), users.first_name, users.last_name").
                                                       reorder("users.last_name, users.first_name").to_sql)
+    
+    @order_statuses = OrderStatus.find_by_sql(@order_details.joins(:order_status).
+                                                             select("distinct(order_statuses.id), order_statuses.facility_id, order_statuses.name, order_statuses.lft").
+                                                             reorder("order_statuses.lft").to_sql)
+
   end
       
   def paginate_order_details
@@ -78,6 +83,7 @@ module TransactionSearch
     @order_details = @order_details.for_accounts(search_params[:accounts])
     @order_details = @order_details.for_products(search_params[:products])
     @order_details = @order_details.for_owners(search_params[:account_owners])
+    @order_details = @order_details.for_order_statuses(search_params[:order_statuses])
     start_date = parse_usa_date(search_params[:start_date].to_s.gsub("-", "/"))
     end_date = parse_usa_date(search_params[:end_date].to_s.gsub("-", "/"))  
     
@@ -85,19 +91,6 @@ module TransactionSearch
     @date_field_to_use ||= :fulfilled_at
     @order_details = @order_details.action_in_date_range(@date_field_to_use, start_date, end_date)
   end  
-
-  def remove_ugly_params_and_redirect
-    if (params[:commit] && request.get?)
-      remove_ugly_params
-      redirect_to params
-      return false
-    end
-  end
-  def remove_ugly_params
-    params.delete(:commit)
-    params.delete(:utf8)
-    params.delete(:authenticity_token)
-  end
     
   def add_optimizations
     # cut down on some n+1s

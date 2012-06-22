@@ -402,6 +402,14 @@ describe Order do
         @cart.account.should == @account2
       end
 
+      it "should return an error for invalid quantities" do
+        @order_detail = @cart.add(@service, 1).first
+        result = @cart.update_details(@order_detail.id => {:quantity => "1.5"})
+        result.should be_false
+        @cart.errors.should_not be_empty
+        @cart.errors.to_a.should be_include 'Quantity must be an integer'
+      end
+
       it "should clear the facility and the account when destroying the last order_detail from the cart" do
         pending
 #        @cart.add(@service, 1)

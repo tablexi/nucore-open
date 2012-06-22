@@ -29,6 +29,8 @@ class OrdersController < ApplicationController
 
   # GET /orders/:id
   def show
+    facility_ability = Ability.new(session_user, @order.facility, self)
+    @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
     @order.validate_order! if @order.new?
   end
 
@@ -41,9 +43,14 @@ class OrdersController < ApplicationController
         order_detail_updates[$2.to_i][$1.to_sym] = value
       end
     end
-    @order.update_details(order_detail_updates)
-
-    redirect_to order_path(@order) and return
+    
+    if @order.update_details(order_detail_updates)
+      redirect_to order_path(@order) and return
+    else
+      logger.debug "errors #{@order.errors.full_messages}"
+      flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
+      render :show
+    end
   end
 
   # PUT /orders/:id/clear
@@ -66,9 +73,10 @@ class OrdersController < ApplicationController
     return redirect_to(:back, :notice => "Please add at least one quantity to order something") unless items.size > 0
 
     first_product = Product.find(items.first[:product_id])
+    facility_ability = Ability.new(session_user, first_product.facility, self)
 
     # if acting_as, make sure the session user can place orders for the facility
-    if acting_as? && !session_user.administrator? && !manageable_facilities.include?(first_product.facility)
+    if acting_as? && facility_ability.cannot?(:act_as, first_product.facility)
       flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{current_facility.try(:name)}."
       redirect_to order_url(@order) and return
     end
@@ -171,7 +179,6 @@ class OrdersController < ApplicationController
             @order.update_order_detail_accounts
           rescue Exception => e
             success = false
-            puts e
             raise ActiveRecord::Rollback
           end
         end
@@ -227,11 +234,12 @@ class OrdersController < ApplicationController
   # PUT /orders/1/purchase
   def purchase
     #revalidate the cart, but only if the user is not an admin
-    @order.being_purchased_by_admin = session_user.operator_of? @order.facility
+    @order.being_purchased_by_admin = Ability.new(session_user, @order.facility, self).can?(:act_as, @order.facility)
     if @order.validate_order! && @order.purchase!
       Notifier.order_receipt(:user => @order.user, :order => @order).deliver
 
-      if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled?
+      # If we're only making a single reservation, we'll redirect
+      if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled? && !acting_as?
         od=@order.order_details[0]
 
         if od.reservation.can_switch_instrument_on?

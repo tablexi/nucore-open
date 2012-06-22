@@ -3,6 +3,9 @@ class OrderDetail < ActiveRecord::Base
   
   versioned
 
+  # Used when ordering to override certain restrictions
+  attr_accessor :being_purchased_by_admin
+
   belongs_to :product
   belongs_to :price_policy
   belongs_to :statement
@@ -51,7 +54,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def self.for_facility_id(facility_id=nil)
-    details = scoped.joins(:order)
+    details = joins(:order)
 
     unless facility_id.nil?
       details = details.where(:orders => { :facility_id => facility_id})
@@ -151,9 +154,15 @@ class OrderDetail < ActiveRecord::Base
                                  joins(:order).
                                  includes(:reservation).
                                  ordered
+
   scope :upcoming_reservations, confirmed_reservations.
-                                where("reservations.reserve_end_at > ?", Time.zone.now).
+                                where("reservations.reserve_end_at > ? AND reservations.actual_start_at IS NULL", Time.zone.now).
                                 order('reservations.reserve_start_at ASC')
+
+  scope :in_progress_reservations, confirmed_reservations.
+                                  where("reservations.actual_start_at IS NOT NULL AND reservations.actual_end_at IS NULL").
+                                  order('reservations.reserve_start_at ASC')
+
   scope :all_reservations, confirmed_reservations.
                            order('reservations.reserve_start_at DESC')
   
@@ -163,6 +172,7 @@ class OrderDetail < ActiveRecord::Base
   scope :for_owners, lambda { |owners| joins(:account).
                                        joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'").
                                        where("account_users.user_id in (?)", owners) unless owners.blank? }
+  scope :for_order_statuses, lambda {|statuses| where("order_details.order_status_id in (?)", statuses) unless statuses.nil? or statuses.empty? }
                                        
   scope :in_date_range, lambda { |start_date, end_date| 
     search = scoped
@@ -190,6 +200,24 @@ class OrderDetail < ActiveRecord::Base
     end
     search
   }
+
+  def self.ordered_or_reserved_in_range(start_date, end_date)
+    start_date = start_date.beginning_of_day if start_date
+    end_date = end_date.end_of_day if end_date
+    
+    query = joins(:order).joins('LEFT JOIN reservations ON reservations.order_detail_id = order_details.id')
+    # If there is a reservation, query on the reservation time, if there's not a reservation (i.e. the left join ends up with a null reservation)
+    # use the ordered at time
+    if start_date && end_date
+      sql = "(reservations.id IS NULL AND orders.ordered_at > :start AND orders.ordered_at < :end) OR (reservations.id IS NOT NULL AND reservations.reserve_start_at > :start AND reservations.reserve_start_at < :end)"
+    elsif start_date
+      sql = "(reservations.id IS NULL AND orders.ordered_at > :start) OR (reservations.id IS NOT NULL AND reservations.reserve_start_at > :start)"
+    elsif end_date
+      sql = "(reservations.id IS NULL AND orders.ordered_at < :end) OR (reservations.id IS NOT NULL AND reservations.reserve_start_at < :end)"
+    end
+
+    query.where(sql, {:start => start_date, :end => end_date})
+  end
   # BEGIN acts_as_state_machine
   include AASM
 
@@ -298,10 +326,10 @@ class OrderDetail < ActiveRecord::Base
 
     # TODO if chart string, is chart string + account valid
     return "The #{account.type_string} is not open for the required account" if account.is_a?(NufsAccount) && !account.account_open?(product.account)
-
+    
     # is the user approved for the product
     return "You are not approved to purchase this #{product.class.name.downcase}" unless product.can_be_used_by?(order.user) or order.created_by_user.can_override_restrictions?(product)
-
+    
     # are reservation requirements met
     response = validate_reservation
     return response unless response.nil?
@@ -324,6 +352,7 @@ class OrderDetail < ActiveRecord::Base
   def validate_reservation
     return nil unless product.is_a?(Instrument)
     return "Please make a reservation" if reservation.nil?
+    reservation.reserved_by_admin = @being_purchased_by_admin
     return "There is a problem with your reservation" unless reservation.valid? && reservation.valid_before_purchase?
   end
   

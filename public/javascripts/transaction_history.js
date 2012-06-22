@@ -1,7 +1,11 @@
 $(function() {
 	$("select[multiple]").chosen();
 	
-	$(".datepicker").datepicker({maxDate: new Date()});
+  $(".datepicker").each(function() {
+    var datepickerParams = {};
+    if ($(this).hasClass('in_past')) datepickerParams.maxDate = new Date();
+    $(this).datepicker(datepickerParams);
+  });
 	// call trigger("change") to make sure that it updates on page load
 	$(".datepicker[name=start_date]").change(DatePickerRange.updateEndMaxDate).trigger("change");
 	$(".datepicker[name=end_date]").change(DatePickerRange.updateStartMinDate).trigger("change");
@@ -32,18 +36,19 @@ $(function() {
 	$("#facilities").change(function() {
 		var facilitiesValues = $(this).val();
 		if (facilitiesValues == null || facilitiesValues.length == 0) {
-			$("#products option").each(function() {
+			$("#products option, #order_statuses option").each(function() {
 				$(this).removeAttr("disabled");
 			});
 		} else {
-			$("#products option").each(function() {
-				if ($.inArray($(this).attr("data-facility"), facilitiesValues) > -1) {
+			$("#products option, #order_statuses option").each(function() {
+				// If the option doesn't have a facility or the facility is in the list of values 
+        if (!$(this).is("[data-facility]") || $.inArray($(this).attr("data-facility"), facilitiesValues) > -1) {
 					$(this).removeAttr("disabled");
 				} else {
 					$(this).attr("disabled", "disabled").removeAttr("selected");
 				}
 			});
 		}
-		$("#products").trigger("liszt:updated")
+		$("#products, #order_statuses").trigger("liszt:updated")
 	});
 });

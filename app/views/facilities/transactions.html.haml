@@ -1,6 +1,6 @@
 = render :partial => "shared/transactions/headers"
 - content_for :h1 do
-  = @facility
+  = current_facility
 - content_for :h2 do
   %h2
     - if @order_detail_action

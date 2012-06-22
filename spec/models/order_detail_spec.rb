@@ -566,6 +566,57 @@ describe OrderDetail do
     end
 
 
+    context 'reservations' do
+      before :each do
+        @now=Time.zone.now
+        setup_reservation @facility, @facility_account, @account, @user
+      end
+
+
+      it 'should be upcoming' do
+        start_time=@now+2.days
+        place_reservation @facility, @order_detail, start_time, { :reserve_end_at => start_time+1.hour }
+        upcoming=OrderDetail.upcoming_reservations.all
+        upcoming.size.should == 1
+        upcoming[0].should == @order_detail
+      end
+
+
+      it 'should not be upcoming because reserve_end_at is in the past' do
+        start_time=@now-2.days
+        place_reservation @facility, @order_detail, start_time, { :reserve_end_at => start_time+1.hour }
+        OrderDetail.upcoming_reservations.all.should be_blank
+      end
+
+
+      it 'should not be upcoming because actual_start_at exists' do
+        start_time=@now+2.days
+        place_reservation @facility, @order_detail, start_time, { :reserve_end_at => start_time+1.hour, :actual_start_at => start_time }
+        OrderDetail.upcoming_reservations.all.should be_blank
+      end
+
+
+      it 'should be in progress' do
+        place_reservation @facility, @order_detail, @now, { :actual_start_at => @now }
+        upcoming=OrderDetail.in_progress_reservations.all
+        upcoming.size.should == 1
+        upcoming[0].should == @order_detail
+      end
+
+
+      it 'should not be in progress because actual_start_at missing' do
+        place_reservation @facility, @order_detail, @now
+        OrderDetail.in_progress_reservations.all.should be_empty
+      end
+
+
+      it 'should not be in progress because actual_end_at exists' do
+        start_time=@now-3.hour
+        place_reservation @facility, @order_detail, start_time, { :actual_start_at => start_time, :actual_end_at => start_time+1.hour }
+        OrderDetail.in_progress_reservations.all.should be_empty
+      end
+    end
+
     context 'needs statement' do
 
       before :each do
@@ -590,6 +641,48 @@ describe OrderDetail do
 
     end
 
+  end
+
+  context 'ordered_or_reserved_in_range' do
+    before :each do
+      @user = Factory.create(:user)
+      @od_yesterday = place_product_order(@user, @facility, @item, @account)
+      @od_yesterday.order.update_attributes(:ordered_at => (Time.zone.now - 1.day))
+      
+      @od_tomorrow = place_product_order(@user, @facility, @item, @account)
+      @od_tomorrow.order.update_attributes(:ordered_at => (Time.zone.now + 1.day))
+      
+      @od_today = place_product_order(@user, @facility, @item, @account)
+
+      # create instrument, min reserve time is 60 minutes, max is 60 minutes
+      @instrument=@facility.instruments.create(
+          Factory.attributes_for(
+            :instrument,
+            :facility_account => @facility_account,
+            :min_reserve_mins => 60,
+            :max_reserve_mins => 60
+          )
+      )
+      # all reservations get placed in today
+      @reservation_yesterday = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now - 1.day)
+      @reservation_tomorrow = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now + 1.day)      
+      @reservation_today = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now)
+    end
+
+    it "should only return the reservations and the orders from today and tomorrow" do
+      result = OrderDetail.ordered_or_reserved_in_range(Time.zone.now, nil)
+      result.should contain_all [@od_today, @od_tomorrow, @reservation_today.order_detail, @reservation_tomorrow.order_detail]
+    end
+    
+    it "should only return the reservations and the orders from today and yesterday" do
+      result = OrderDetail.ordered_or_reserved_in_range(nil, Time.zone.now)
+      result.should contain_all [@od_yesterday, @od_today, @reservation_yesterday.order_detail, @reservation_today.order_detail]
+    end
+
+    it "should only return the order detail and the reservation from today" do
+      result = OrderDetail.ordered_or_reserved_in_range(Time.zone.now, Time.zone.now)
+      result.should contain_all [@od_today, @reservation_today.order_detail]
+    end
   end
 
 end

@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe TransactionSearch do
   class TransactionSearcher < ApplicationController
-    attr_reader :facility, :facilities, :account, :accounts, :account_owners, :products
+    attr_reader :facility, :facilities, :account, :accounts, :account_owners, :products, :order_statuses
     attr_writer :facility, :account
     # give us a way to set the user
-    attr_accessor :session_user
+    attr_accessor :session_user, :order_details
 
     include TransactionSearch
     def params
@@ -16,7 +16,7 @@ describe TransactionSearch do
     end
 
     def all_order_details_with_search
-      # do nothing of import
+      # everything that needs to be done will be done by the module
     end
 
   end
@@ -31,7 +31,8 @@ describe TransactionSearch do
     @account          = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
     @order            = @staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account, :ordered_at => Time.now))
     @item             = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
-    @order_detail1 = place_and_complete_item_order(@user, @authable, @account)
+    @order_detail_complete = place_and_complete_item_order(@user, @authable, @account)
+    @order_detail_new = place_product_order(@staff, @authable, @item)
     
     # fake signing in as staff
     @controller.session_user = @staff
@@ -68,6 +69,10 @@ describe TransactionSearch do
         @controller.account.should be_nil
         @controller.accounts.should == [@account]
       end
+      it "should populate order statuses" do
+        @controller.all_order_details
+        @controller.order_statuses.should contain_all [@os_new, @os_complete]
+      end
     end
     
     context "with account" do
@@ -77,10 +82,11 @@ describe TransactionSearch do
         @facility_account2 = @facility2.facility_accounts.create(Factory.attributes_for(:facility_account))
         @item2             = @facility2.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account2.id))
         @order_detail2 = place_and_complete_item_order(@user, @facility2, @credit_account)
-        
       end
       
-      it "should pull all facilities for nufs account" do
+      it "should pull all facilities for nufs account that have transactions" do
+        # @account needs to have an order detail for it to show up
+        @order_detail3 = place_and_complete_item_order(@user, @facility2, @account)
         @controller.params = { :account_id => @account.id }
         @controller.init_current_account
         @controller.all_order_details
@@ -102,6 +108,8 @@ describe TransactionSearch do
         @user2 = Factory.create(:user)
         @user3 = Factory.create(:user)
         @account2 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user2, :created_by => @user2, :user_role => AccountUser::ACCOUNT_OWNER]])
+        # account 2 needs to have an order detail for it to show up
+        place_and_complete_item_order(@user2, @authable, @account2)
       end
       it "should populate account owners" do
         @controller.params = { :facility_id => @authable.url_name }
@@ -117,6 +125,11 @@ describe TransactionSearch do
         @instrument = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
         @service = @authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id)) 
         @other_item = @facility2.instruments.create(Factory.attributes_for(:item))
+        # each product needs to have an order detail for it to show up
+        [@item, @instrument, @service].each do |product|
+          place_product_order(@staff, @authable, product, @account)
+        end
+        
         @controller.params = { :facility_id => @authable.url_name }
         @controller.init_current_facility
         @controller.all_order_details
@@ -124,6 +137,32 @@ describe TransactionSearch do
       it "should populate products" do
         @controller.products.should contain_all [@item, @instrument, @service]
       end
+    end
+  end
+
+  context "searching" do
+    context "order statuses" do
+      before :each do   
+        @order_detail_complete.order_status.should == @os_complete
+        @order_detail_new.order_status.should == @os_new
+        @controller.params = { :facility_id => @authable.url_name }
+        @controller.init_current_facility
+      end
+      it 'should return all with no status' do
+        @controller.all_order_details
+        @controller.order_details.should contain_all [@order_detail_new, @order_detail_complete]
+      end
+      it 'should return just new' do
+        @controller.params.merge!({:order_statuses => [@os_new.id]})
+        @controller.all_order_details
+        @controller.order_details.should == [@order_detail_new]
+      end
+      it 'should return just complete' do
+        @controller.params.merge!({:order_statuses => [@os_complete.id]})
+        @controller.all_order_details
+        @controller.order_details.should == [@order_detail_complete]
+      end
+        
     end
   end
 

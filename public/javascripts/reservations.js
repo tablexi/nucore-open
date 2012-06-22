@@ -118,6 +118,32 @@ $(document).ready(function() {
     });
   }
 
+  /* Copy in actual times from reservation time */
+  function copyReservationTimeIntoActual() {
+    var parent = $(this).parents('.copy_actual_from_reservation');
+    var startDate = Date.parse(parent.find('.start_date').text());
+    var endDate = Date.parse(parent.find('.end_date').text());
+    setDateInPicker($('#reservation_actual_start_date'), startDate);
+    setTimeInPickers('reservation_actual_start', startDate);
+    setDateInPicker($('#reservation_actual_end_date'), endDate);
+    setTimeInPickers('reservation_actual_end', endDate);
+    $(this).remove();
+    return false;
+  }
+  function setDateInPicker(picker, date) {
+    var dateFormat = picker.datepicker('option', 'dateFormat');
+    picker.val($.datepicker.formatDate(dateFormat, date));
+  }
+  function setTimeInPickers(id_prefix, date) {
+    var hour = date.getHours() % 12;
+    var ampm = date.getHours() < 12 ? 'AM' : 'PM';
+    if (hour == 0) hour = 12;
+    $('#' + id_prefix + '_hour').val(hour);
+    $('#' + id_prefix + '_min').val(date.getMinutes());
+    $('#' + id_prefix + '_meridian').val(ampm);
+  }
+  $('.copy_actual_from_reservation a').click(copyReservationTimeIntoActual);
+
   //$("div.fc-button-prev").hide();
 });
 

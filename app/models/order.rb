@@ -41,7 +41,7 @@ class Order < ActiveRecord::Base
   end
 
   def cart_valid?
-    has_details? && has_valid_payment? && (@being_purchased_by_admin || order_details.all? {|od| od.valid_for_purchase?})
+    has_details? && has_valid_payment? && order_details.all? {|od| od.being_purchased_by_admin = @being_purchased_by_admin; od.valid_for_purchase?}
   end
 
   def has_valid_payment?
@@ -162,11 +162,20 @@ class Order < ActiveRecord::Base
         next
       end
       
-      # otherwise update the field(s)
-      order_detail.update_attributes!(updates)
+      unless order_detail.update_attributes(updates)
+        logger.debug "errors on #{order_detail.id}"
+        order_detail.errors.each do |attr, error|
+          logger.debug "#{attr} #{error}"
+          self.errors.add attr, error
+        end
+        next
+      end
+      
       order_detail.assign_estimated_price if order_detail.cost_estimated?
       order_detail.save
     end
+    return self.errors.empty?
+
   end
   
   def max_group_id

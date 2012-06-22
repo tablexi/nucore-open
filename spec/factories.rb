@@ -93,7 +93,7 @@ Factory.define_default :instrument, :class => Instrument do |o|
   o.requires_approval false
   o.is_archived false
   o.is_hidden false
-  o.initial_order_status_id { |o| find_order_status('new').id }
+  o.initial_order_status_id { |o| find_order_status('New').id }
   o.min_reserve_mins 60
   o.max_reserve_mins 120
 end
@@ -131,7 +131,7 @@ Factory.define_default :item, :class => Item do |o|
   o.requires_approval false
   o.is_archived       false
   o.is_hidden         false
-  o.initial_order_status_id { |o| find_order_status('new').id }
+  o.initial_order_status_id { |o| find_order_status('New').id }
 end
 
 Factory.define_default :item_price_policy, :class => ItemPricePolicy do |o|
@@ -148,7 +148,7 @@ Factory.define_default :service, :class => Service do |o|
   o.requires_approval false
   o.is_archived false
   o.is_hidden false
-  o.initial_order_status_id { |o| find_order_status('new').id }
+  o.initial_order_status_id { |o| find_order_status('New').id }
 end
 
 Factory.define_default :bundle do |b|
