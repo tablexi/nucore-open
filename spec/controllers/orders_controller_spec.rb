@@ -93,6 +93,7 @@ describe OrdersController do
     context 'success' do
       before :each do
         @instrument = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+        define_open_account(@instrument.account, @account.account_number)
         @reservation = place_reservation_for_instrument(@staff, @instrument, @account, Time.zone.now)
         @order = @reservation.order_detail.order
         @params.merge!({:id => @order.id, :order_id => @order.id})        
