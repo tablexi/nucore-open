@@ -26,8 +26,16 @@ class PricePolicy < ActiveRecord::Base
   before_create :set_expire_date
   before_create :truncate_existing_policies
 
+  def self.for_date(start_date)
+    where(dateize('start_date', ' = ?'), start_date)
+  end
+
   def self.current
     where("start_date <= :now AND expire_date > :now", {:now => Time.zone.now})
+  end
+
+  def self.upcoming
+    where("start_date > :now", {:now => Time.zone.now})
   end
   def self.current_date(product)
     ipp = product.price_policies.find(:first, :conditions => [dateize('start_date', ' <= ? AND ') + dateize('expire_date', ' > ?'), Time.zone.now, Time.zone.now], :order => 'start_date DESC')
@@ -38,6 +46,18 @@ class PricePolicy < ActiveRecord::Base
     ipp = product.price_policies.find(:first, :conditions => [dateize('start_date', ' > ?'), Time.zone.now], :order => 'start_date')
     ipp ? ipp.start_date.to_date : nil
   end
+
+  def self.next_dates(product)
+    ipps = []
+
+    product.price_policies.each do |pp|
+      sdate=pp.start_date
+      ipps << sdate.to_date if sdate > Time.zone.now && !ipps.include?(sdate)
+    end
+
+    ipps.uniq
+  end
+
   
   def truncate_existing_policies
     existing_policies = PricePolicy.where("start_date <= ? and expire_date >= ?", start_date, start_date).

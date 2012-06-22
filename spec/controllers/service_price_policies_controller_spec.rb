@@ -25,7 +25,7 @@ describe ServicePricePoliciesController do
 
     it_should_allow_operators_only do |user|
       assigns[:service].should == @service
-      response.should render_template('service_price_policies/index')
+      response.should render_template('price_policies/index')
     end
 
   end
@@ -44,7 +44,7 @@ describe ServicePricePoliciesController do
       assigns[:expire_date].should_not be_nil
       assigns[:price_policies].should be_is_a Array
       response.should be_success
-      response.should render_template('service_price_policies/new')
+      response.should render_template('price_policies/new')
     end
 
   end

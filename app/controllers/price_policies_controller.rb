@@ -19,14 +19,9 @@ class PricePoliciesController < ApplicationController
   end
 
   def index
-    @current_price_policies = model_class.current(@product)
+    @current_price_policies = @product.price_policies.current
     @current_start_date = @current_price_policies.first ? @current_price_policies.first.start_date : nil
-
-    @next_price_policies = model_class.next(@product)
-    @next_start_date = @next_price_policies.first ? @next_price_policies.first.start_date : nil
-
-    @next_dates = model_class.next_dates(@product).sort
-
+    @next_price_policies_by_date = @product.price_policies.upcoming.group_by(&:start_date)
     render 'price_policies/index'
   end
 
@@ -83,7 +78,7 @@ class PricePoliciesController < ApplicationController
   # GET /price_policies/1/edit
   def edit
     @start_date = start_date_from_params
-    price_policies = model_class.for_date(@product, @start_date)
+    price_policies = @product.price_policies.for_date(@start_date)
     # what does this do?
     # price_policies.delete_if{|pp| pp.assigned_to_order? }
     
@@ -105,7 +100,7 @@ class PricePoliciesController < ApplicationController
   def update
     @start_date = start_date_from_params
     @expire_date    = params[:expire_date]
-    @price_policies = model_class.for_date(@product, @start_date)
+    @price_policies = @product.price_policies.for_date(@start_date)
     @interval = params[:interval].to_i if params[:interval]
     
     include_newer_price_groups
@@ -131,7 +126,7 @@ class PricePoliciesController < ApplicationController
           format.html { redirect_to facility_product_price_policies_path }
         end
       else
-        format.html { render :action => "edit" }
+        format.html { render 'price_policies/edit' }
       end
     end
   end
@@ -200,9 +195,10 @@ class PricePoliciesController < ApplicationController
   # Override CanCan's find -- it won't properly search by zoned date
   def init_price_policy
     product_var="@#{model_name.gsub('PricePolicy', '').downcase}"
+    
     instance_variable_set(
       "@#{model_name.underscore}",
-      model_name.constantize.for_date(instance_variable_get(product_var), start_date_from_params).first
+      instance_variable_get(product_var).price_policies.for_date(start_date_from_params).first
     )
   end
 

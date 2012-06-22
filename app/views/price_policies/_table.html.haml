@@ -6,8 +6,8 @@
     %th.currency Unit Cost
     %th.currency Unit Adjustment
     %th.currency Unit Net Cost
-  - price_policies.delete_if {|ipp| !ipp.price_group.can_purchase? @product }
   - price_policies.each do |price_policy|
+
     %tr
       - if price_policies.first == price_policy
         %td.centered{ :rowspan => price_policies.length }
@@ -20,9 +20,13 @@
               %li= link_to 'Remove', price_policy_path(price_policy, url_date), :confirm => 'Are you sure?', :method => :delete
       %td=h price_policy.price_group.name
       %td=h price_policy.price_group.type_string
-      - if price_policy.restrict_purchase?
+      - if !price_policy.can_purchase?
         %td.centered{ :colspan => 3 } Unable to purchase
       - else
-        %td.currency= number_to_currency price_policy.unit_cost
-        %td.currency= number_to_currency price_policy.unit_subsidy
-        %td.currency= number_to_currency(price_policy.unit_cost - price_policy.unit_subsidy)
+        - if price_policy.valid?
+          %td.currency= number_to_currency price_policy.unit_cost
+          %td.currency= number_to_currency price_policy.unit_subsidy
+          %td.currency= number_to_currency(price_policy.unit_cost - price_policy.unit_subsidy)
+        - else
+          %td.centered{:colspan => 3 }= price_policy.errors
+

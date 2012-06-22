@@ -5,17 +5,6 @@ class ItemPricePolicy < PricePolicy
 
   before_save { |o| o.unit_subsidy = 0 if o.unit_subsidy.nil? && !o.unit_cost.nil? }
 
-  def self.next_dates(product)
-    ipps = []
-
-    product.price_policies.each do |pp|
-      sdate=pp.start_date
-      ipps << sdate.to_date if sdate > Time.zone.now && !ipps.include?(sdate)
-    end
-
-    ipps.uniq
-  end
-
   def subsidy_less_than_rate?
     errors.add("unit_subsidy", "cannot be greater than the Unit cost") if (unit_subsidy > unit_cost)
   end

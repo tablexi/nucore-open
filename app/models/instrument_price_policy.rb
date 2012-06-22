@@ -87,7 +87,7 @@ class InstrumentPricePolicy < PricePolicy
     ## TODO update cancellation costs
     ## calculate actuals for cancelled reservations
     if reservation.canceled_at
-      if instrument.min_cancel_hours && (res_start_at - strip_seconds(reservation.canceled_at))/3600 <= instrument.min_cancel_hours
+      if product.min_cancel_hours && (res_start_at - strip_seconds(reservation.canceled_at))/3600 <= instrument.min_cancel_hours
         actual_cost = cancellation_cost
         actual_subsidy = 0
         return {:cost => actual_cost, :subsidy => actual_subsidy}
@@ -109,7 +109,7 @@ class InstrumentPricePolicy < PricePolicy
       reserve_mins = (res_end_at - res_start_at)/60
       reserve_intervals = (reserve_mins / reservation_mins).ceil
       reserve_discount = 0
-      instrument.schedule_rules.each do |sr|
+      product.schedule_rules.each do |sr|
         reserve_discount += sr.percent_overlap(res_start_at, res_end_at) * sr.discount_percent
       end
       reserve_discount = 1 - reserve_discount/100
@@ -135,7 +135,7 @@ class InstrumentPricePolicy < PricePolicy
       reserve_mins = (res_end_at - res_start_at)/60
       reserve_intervals = (reserve_mins / reservation_mins).ceil
       reserve_discount = 0
-      instrument.schedule_rules.each do |sr|
+      product.schedule_rules.each do |sr|
         reserve_discount += sr.percent_overlap(res_start_at, res_end_at) * sr.discount_percent
       end
       reserve_discount = 1 - reserve_discount/100
@@ -150,7 +150,7 @@ class InstrumentPricePolicy < PricePolicy
       usage_minutes   = ([act_end_at, res_end_at].min - act_start_at)/60
       usage_intervals = (usage_minutes / usage_mins).ceil
       usage_discount = 0
-      instrument.schedule_rules.each do |sr|
+      product.schedule_rules.each do |sr|
         usage_discount += sr.percent_overlap(act_start_at, [act_end_at, res_end_at].min) * sr.discount_percent
       end
       usage_discount = 1 - usage_discount/100

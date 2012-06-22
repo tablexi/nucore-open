@@ -25,7 +25,7 @@ describe ItemPricePoliciesController do
 
     it_should_allow_operators_only do |user|
       assigns[:item].should == @item
-      response.should render_template('item_price_policies/index')
+      response.should render_template('price_policies/index')
     end
 
   end
@@ -44,7 +44,7 @@ describe ItemPricePoliciesController do
       assigns[:expire_date].should_not be_nil
       assigns[:price_policies].should be_is_a Array
       response.should be_success
-      response.should render_template('item_price_policies/new')
+      response.should render_template('price_policies/new')
     end
 
   end
@@ -64,7 +64,7 @@ describe ItemPricePoliciesController do
       # don't worry about the default groups
       (assigns[:price_policies].delete_if { |pp| pp.price_group.facility_id.nil? }).should == [@price_policy]
       #assigns[:price_policies].should == [ @price_policy ]
-      should render_template('edit')
+      should render_template('price_policies/edit')
     end
 
 
