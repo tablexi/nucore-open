@@ -119,6 +119,7 @@ Factory.define_default :instrument_price_policy, :class => InstrumentPricePolicy
   o.minimum_cost 1
   o.usage_mins 1
   o.overage_mins 1
+  o.can_purchase true
   o.start_date Time.zone.now.beginning_of_day
   o.expire_date PricePolicy.generate_expire_date(Time.zone.now.beginning_of_day)
 end

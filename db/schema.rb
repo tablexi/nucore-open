@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120620181642) do
+ActiveRecord::Schema.define(:version => 20120622185758) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -270,10 +270,11 @@ ActiveRecord::Schema.define(:version => 20120620181642) do
   add_index "price_groups", ["facility_id", "name"], :name => "sys_c008577", :unique => true
 
   create_table "price_policies", :force => true do |t|
-    t.string   "type",                :limit => 50,                                :null => false
+    t.string   "type",                :limit => 50,                                                   :null => false
     t.integer  "product_id"
-    t.integer  "price_group_id",                                                   :null => false
-    t.datetime "start_date",                                                       :null => false
+    t.integer  "price_group_id",                                                                      :null => false
+    t.boolean  "can_purchase",                                                     :default => false, :null => false
+    t.datetime "start_date",                                                                          :null => false
     t.decimal  "unit_cost",                         :precision => 10, :scale => 2
     t.decimal  "unit_subsidy",                      :precision => 10, :scale => 2
     t.decimal  "usage_rate",                        :precision => 10, :scale => 2
@@ -287,7 +288,7 @@ ActiveRecord::Schema.define(:version => 20120620181642) do
     t.decimal  "usage_subsidy",                     :precision => 10, :scale => 2
     t.decimal  "reservation_subsidy",               :precision => 10, :scale => 2
     t.decimal  "overage_subsidy",                   :precision => 10, :scale => 2
-    t.datetime "expire_date",                                                      :null => false
+    t.datetime "expire_date",                                                                         :null => false
   end
 
   add_index "price_policies", ["price_group_id"], :name => "sys_c008589"

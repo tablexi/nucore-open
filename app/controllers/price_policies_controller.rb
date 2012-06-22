@@ -34,11 +34,11 @@ class PricePoliciesController < ApplicationController
   def new
     price_groups = current_facility.price_groups
     start_date     = Date.today + (@product.price_policies.active.empty? ? 0 : 1)
-    @expire_date    = PricePolicy.generate_expire_date(start_date).strftime("%m/%d/%Y")
-    @max_expire_date = @expire_date
     @start_date=start_date.strftime("%m/%d/%Y")
-    @price_policies = price_groups.map{ |pg| model_class.new({:price_group_id => pg.id, :product_id => @product.id, :start_date => @start_date }) }
-
+    @expire_date    = PricePolicy.generate_expire_date(start_date).strftime("%m/%d/%Y")
+    #@max_expire_date = @expire_date
+    @price_policies = price_groups.map{ |pg| model_class.new({:price_group_id => pg.id, :product_id => @product.id, :start_date => @start_date, :can_purchase => true }) }
+    @purchaseable_groups = price_groups
     render 'price_policies/new'
   end
 
@@ -83,12 +83,21 @@ class PricePoliciesController < ApplicationController
   # GET /price_policies/1/edit
   def edit
     @start_date = start_date_from_params
-    @price_policies = model_class.for_date(@product, @start_date)
-    @price_policies.delete_if{|pp| pp.assigned_to_order? }
+    price_policies = model_class.for_date(@product, @start_date)
+    # what does this do?
+    # price_policies.delete_if{|pp| pp.assigned_to_order? }
+    
+    groups_with_policies = Hash[price_policies.map {|pp| [pp.price_group, pp] }]
+    @purchaseable_groups = groups_with_policies.keys
+    @price_policies = []
+    current_facility.price_groups.each do |pg|
+      @price_policies << (groups_with_policies[pg] || model_class.new({:price_group_id => pg.id, :product_id => @product.id, :start_date => @start_date, :can_purchase => false }))
+    end
+
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
-    @expire_date=@price_policies.first.expire_date
-    include_newer_price_groups    
-    @max_expire_date = PricePolicy.generate_expire_date(@price_policies.first.start_date).strftime("%m/%d/%Y")
+    # get from the existing price policies, not the new list which may include blanks
+    @expire_date=price_policies.first.expire_date
+    @max_expire_date = PricePolicy.generate_expire_date(@start_date).strftime("%m/%d/%Y")
     render 'price_policies/edit'
   end
 

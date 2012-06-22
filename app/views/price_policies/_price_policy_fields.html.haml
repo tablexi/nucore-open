@@ -7,14 +7,15 @@
     %tr
       %th Price Group
       %th Type
+      %th Can purchase?
       %th.centered Unit Cost
       %th.centered Unit Adjustment
     - @price_policies.each do |pp|
       - pg = pp.price_group
-      - next unless pg.can_purchase? @product
       %tr
-        %td=h pg.name
+        %td= pg.name
         %td= pg.type_string
+        %td= check_box_tag "price_group_#{pg.id}[purchase]", '1', pp.can_purchase?
         - if !pg.is_internal?
           %td.centered= text_field_tag "price_policy#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => ''), :size => 8
           %td.centered
