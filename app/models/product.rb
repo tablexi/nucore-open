@@ -37,16 +37,19 @@ class Product < ActiveRecord::Base
   end
 
   def current_price_policies
-    current_policies = {}
-    PricePolicy.find(:all, :conditions => ["product_id = ? AND start_date <= ? AND expire_date > ?", self.id, Time.zone.now, Time.zone.now]).each { |pp|
-      unless current_policies[pp.price_group_id].nil?
-        current_policies[pp.price_group_id] = pp if pp.start_date > current_policies[pp.price_group_id].start_date
-      else
-        current_policies[pp.price_group_id] = pp
-      end
-    }
-    current_policies.values
+    price_policies.current
   end
+  # def current_price_policies
+  #   current_policies = {}
+  #   PricePolicy.find(:all, :conditions => ["product_id = ? AND start_date <= ? AND expire_date > ?", self.id, Time.zone.now, Time.zone.now]).each { |pp|
+  #     unless current_policies[pp.price_group_id].nil?
+  #       current_policies[pp.price_group_id] = pp if pp.start_date > current_policies[pp.price_group_id].start_date
+  #     else
+  #       current_policies[pp.price_group_id] = pp
+  #     end
+  #   }
+  #   current_policies.values
+  # end
 
   def <=> (obj)
     name.casecmp obj.name
@@ -98,6 +101,17 @@ class Product < ActiveRecord::Base
   
   def available_for_purchase?
     !is_archived? && facility.is_active?
+  end
+
+  def can_purchase? (group_ids = nil)
+    return false unless available_for_purchase?
+    if group_ids.nil?
+      current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase?}
+    elsif group_ids.empty?
+      false
+    else
+      current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase? && group_ids.include?(pp.price_group_id)}
+    end
   end
   
 end

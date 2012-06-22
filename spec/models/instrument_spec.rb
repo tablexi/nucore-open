@@ -403,4 +403,28 @@ describe Instrument do
       assert_equal (Time.zone.now+15.days).to_date, @instrument.last_reserve_date
     end
   end
+
+  context 'can_purchase?' do
+    before :each do
+      @facility         = Factory.create(:facility)
+      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
+      @instrument       = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @price_group = Factory.create(:price_group, :facility => @facility)
+      @user = Factory.create(:user)
+      Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
+      @user.reload
+      @user_price_policy_ids = @user.price_groups.map(&:id)
+      @price_policy = Factory.create(:instrument_price_policy, :product => @instrument, :price_group => @price_group)
+      #TODO remove this line
+      Factory.create(:price_group_product, :price_group => @price_group, :product => @instrument)
+    end
+    it 'should be purchasable if there are schedule rules' do
+      @schedule_rule = Factory.create(:schedule_rule, :instrument => @instrument)
+      @instrument.reload
+      @instrument.should be_can_purchase(@user_price_policy_ids)
+    end
+    it 'should not be purchasable if there are no schedule rules' do
+      @instrument.should_not be_can_purchase(@user_price_policy_ids)
+    end
+  end
 end

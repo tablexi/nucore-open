@@ -19,13 +19,16 @@ class PricePolicy < ActiveRecord::Base
   end
 
   scope :active, lambda {{ :conditions => [ "start_date <= ? AND expire_date > ?", Time.zone.now, Time.zone.now ], :order => "start_date DESC" }}
-  scope :current,  lambda { |product|             { :conditions => [dateize('start_date', ' = ? AND product_id = ?'), current_date(product), product.id] } }
-  scope :next,     lambda { |product|             { :conditions => [dateize('start_date', ' = ? AND product_id = ?'), next_date(product), product.id] } }
-  scope :for_date, lambda { |product, start_date| { :conditions => [dateize('start_date', ' = ? AND product_id = ?'), start_date, product.id] } }
+  scope :current_for_product,  lambda { |product|             { :conditions => [dateize('start_date', ' = ? AND product_id = ?'), current_date(product), product.id] } }
+  scope :next_for_product,     lambda { |product|             { :conditions => [dateize('start_date', ' = ? AND product_id = ?'), next_date(product), product.id] } }
+  scope :for_product_and_date, lambda { |product, start_date| { :conditions => [dateize('start_date', ' = ? AND product_id = ?'), start_date, product.id] } }
 
   before_create :set_expire_date
   before_create :truncate_existing_policies
 
+  def self.current
+    where("start_date <= :now AND expire_date > :now", {:now => Time.zone.now})
+  end
   def self.current_date(product)
     ipp = product.price_policies.find(:first, :conditions => [dateize('start_date', ' <= ? AND ') + dateize('expire_date', ' > ?'), Time.zone.now, Time.zone.now], :order => 'start_date DESC')
     ipp ? ipp.start_date.to_date : nil

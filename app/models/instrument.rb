@@ -98,15 +98,10 @@ class Instrument < Product
   end
 
   def can_purchase? (group_ids = nil)
-    return false if is_archived? || !facility.is_active?
     if schedule_rules.empty?
       false
-    elsif group_ids.nil?
-      current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase?}
-    elsif group_ids.empty?
-      false
     else
-      current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase? && group_ids.include?(pp.price_group_id)}
+      super
     end
   end
   
