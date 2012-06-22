@@ -1,11 +1,43 @@
 class FacilityAccountsController < ApplicationController
+  module Overridable
+    extend ActiveSupport::Concern
+
+    module ClassMethods
+      def billing_access_checked_actions
+        [ :accounts_receivable, :show_statement ]
+      end
+    end
+
+    module InstanceMethods
+      def account_class_params
+        params[:account] || params[:nufs_account]
+      end
+
+      def configure_new_account(account)
+        # set temporary expiration to be updated later
+        account.valid? # populate virtual charstring attributes required by set_expires_at
+        account.errors.clear
+
+        # be verbose with failures. Too many tasks (#29563, #31873) need it
+        begin
+          account.set_expires_at!
+          account.errors.add(:base, I18n.t('controllers.facility_accounts.create.expires_at_missing')) unless account.expires_at
+        rescue ValidatorError => e
+          account.errors.add(:base, e.message)
+        end
+      end
+    end
+  end
+
+  include Overridable
+
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility
 
   load_and_authorize_resource :class => Account
-  before_filter :check_billing_access, :only => [:credit_cards, :update_credit_cards, :purchase_orders, :update_purchase_orders, :accounts_receivable, :show_statement] 
+  before_filter :check_billing_access, :only => billing_access_checked_actions
 
   layout 'two_column'
 
@@ -34,11 +66,11 @@ class FacilityAccountsController < ApplicationController
   def edit
     @account = Account.find(params[:id])
   end
-  
+
   # PUT /facilities/:facility_id/accounts/:id
   def update
     @account     = Account.find(params[:id])
-    class_params = params[:account] || params[:credit_card_account] || params[:purchase_order_account] || params[:nufs_account]
+    class_params = account_class_params
 
     if @account.is_a?(AffiliateAccount)
       class_params[:affiliate]=Affiliate.find_by_name(class_params[:affiliate])
@@ -55,7 +87,7 @@ class FacilityAccountsController < ApplicationController
 
   # POST /facilities/:facility_id/accounts
   def create
-    class_params        = params[:account] || params[:credit_card_account] || params[:purchase_order_account] || params[:nufs_account]
+    class_params        = account_class_params
     acct_class=Class.const_get(params[:class_type])
 
     if acct_class.included_modules.include?(AffiliateAccount)
@@ -68,30 +100,9 @@ class FacilityAccountsController < ApplicationController
     @account.created_by = session_user.id
     @account.account_users_attributes = [{:user_id => params[:owner_user_id], :user_role => 'Owner', :created_by => session_user.id }]
     @account.facility_id = current_facility.id if @account.class.limited_to_single_facility?
-    case @account
-      when PurchaseOrderAccount
-        @account.expires_at=parse_usa_date(class_params[:expires_at])
-      when CreditCardAccount
-        begin
-          @account.expires_at = Date.civil(class_params[:expiration_year].to_i, class_params[:expiration_month].to_i, -1)
-        rescue Exception => e
-           @account.errors.add(:base, e.message)
-        end
-      when NufsAccount
-        # set temporary expiration to be updated later
-        @account.valid? # populate virtual charstring attributes required by set_expires_at
-        @account.errors.clear
 
-        # be verbose with failures. Too many tasks (#29563, #31873) need it
-        begin
-          @account.set_expires_at!
-          @account.errors.add(:base, I18n.t('controllers.facility_accounts.create.expires_at_missing')) unless @account.expires_at
-        rescue ValidatorError => e
-          @account.errors.add(:base, e.message)
-        end
-
-        return render :action => 'new' unless @account.errors[:base].empty?
-    end
+    configure_new_account @account
+    return render :action => 'new' unless @account.errors[:base].empty?
 
     if @account.save
       flash[:notice] = 'Account was successfully created.'
@@ -153,25 +164,6 @@ class FacilityAccountsController < ApplicationController
     @user = User.find(params[:user_id])
   end
 
-  # GET /facilities/:facility_id/accounts/credit_cards
-  def credit_cards
-    show_account(CreditCardAccount)
-  end
-
-  #POST /facilities/:facility_id/accounts/update_credit_cards
-  def update_credit_cards
-    update_account(CreditCardAccount, credit_cards_facility_accounts_path)
-  end
-
-  # GET /facilities/:facility_id/accounts/purchase_orders
-  def purchase_orders
-    show_account(PurchaseOrderAccount)
-  end
-
-  # POST /facilities/:facility_id/accounts/update_purchase_orders
-  def update_purchase_orders
-    update_account(PurchaseOrderAccount, purchase_orders_facility_accounts_path)
-  end
 
   # GET /facilities/:facility_id/accounts/:account_id/members
   def members
