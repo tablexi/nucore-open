@@ -41,6 +41,9 @@ gem 'pdf-reader',       '0.8.6'
 gem 'exception_notification', :require => 'exception_notifier'
 gem 'daemons',          '1.1.6'
 
+## custom
+gem 'ccpo',             '~> 1.0.0', :path => 'vendor/engines/ccpo'
+
 group :development, :test do
   gem 'ci_reporter'
   gem 'factory_girl_rails','1.0.1'
