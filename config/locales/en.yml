@@ -574,6 +574,18 @@ en:
         type: "Type"
         users: "Number of Users"
         accounts: "Number of Payment Sources"
+  bulk_email:
+    title: Bulk Email
+    search_type:
+      customers: Customers
+      account_owners: Account Owners
+      customers_and_account_owners: Customers and Account Owners
+      authorized_users: Authorized Users
+    dates:
+      label: Orders or Reservations
+      start: Starting
+      end: Ending
+    no_results: No users found
 
   notifier:
     new_user:
@@ -888,6 +900,9 @@ en:
       order:
         one: Order
         other: Orders
+      order_status:
+        one: Order Status
+        other: Order Statuses
       facility:
         one: Facility
         other: Facilities

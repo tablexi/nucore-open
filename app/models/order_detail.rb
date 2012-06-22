@@ -54,7 +54,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def self.for_facility_id(facility_id=nil)
-    details = scoped.joins(:order)
+    details = joins(:order)
 
     unless facility_id.nil?
       details = details.where(:orders => { :facility_id => facility_id})
@@ -172,6 +172,7 @@ class OrderDetail < ActiveRecord::Base
   scope :for_owners, lambda { |owners| joins(:account).
                                        joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'").
                                        where("account_users.user_id in (?)", owners) unless owners.blank? }
+  scope :for_order_statuses, lambda {|statuses| where("order_details.order_status_id in (?)", statuses) unless statuses.nil? or statuses.empty? }
                                        
   scope :in_date_range, lambda { |start_date, end_date| 
     search = scoped
@@ -199,6 +200,24 @@ class OrderDetail < ActiveRecord::Base
     end
     search
   }
+
+  def self.ordered_or_reserved_in_range(start_date, end_date)
+    start_date = start_date.beginning_of_day if start_date
+    end_date = end_date.end_of_day if end_date
+    
+    query = joins(:order).joins('LEFT JOIN reservations ON reservations.order_detail_id = order_details.id')
+    # If there is a reservation, query on the reservation time, if there's not a reservation (i.e. the left join ends up with a null reservation)
+    # use the ordered at time
+    if start_date && end_date
+      sql = "(reservations.id IS NULL AND orders.ordered_at > :start AND orders.ordered_at < :end) OR (reservations.id IS NOT NULL AND reservations.reserve_start_at > :start AND reservations.reserve_start_at < :end)"
+    elsif start_date
+      sql = "(reservations.id IS NULL AND orders.ordered_at > :start) OR (reservations.id IS NOT NULL AND reservations.reserve_start_at > :start)"
+    elsif end_date
+      sql = "(reservations.id IS NULL AND orders.ordered_at < :end) OR (reservations.id IS NOT NULL AND reservations.reserve_start_at < :end)"
+    end
+
+    query.where(sql, {:start => start_date, :end => end_date})
+  end
   # BEGIN acts_as_state_machine
   include AASM
 
