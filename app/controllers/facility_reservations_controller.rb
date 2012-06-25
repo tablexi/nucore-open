@@ -223,7 +223,7 @@ class FacilityReservationsController < ApplicationController
     @display_date = parse_usa_date(params[:date]) if params[:date]
     @display_date ||= Time.zone.now
 
-    @instruments = current_facility.instruments.active
+    @instruments = current_facility.instruments.active.order(:name)
   end
 
   private
