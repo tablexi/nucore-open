@@ -53,14 +53,14 @@ describe ServicePricePolicy do
     end
 
     it "should calculate the cost for an 1 service" do
-      ipp   = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id)
+      ipp   = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
       costs = ipp.calculate_cost_and_subsidy
       costs[:cost].to_f.should == 10.75
       costs[:subsidy].to_f.should == 0.75
     end
 
     it "should calculate the cost for multiple service when given a quantity" do
-      ipp   = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id)
+      ipp   = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
       costs = ipp.calculate_cost_and_subsidy(2)
       costs[:cost].to_f.should == 21.5
       costs[:subsidy].to_f.should == 1.5

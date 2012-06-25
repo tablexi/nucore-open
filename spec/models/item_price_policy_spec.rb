@@ -52,21 +52,21 @@ describe ItemPricePolicy do
     end
 
     it "should calculate the cost for an 1 item" do
-      ipp   = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id)
+      ipp   = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
       costs = ipp.calculate_cost_and_subsidy
       costs[:cost].to_f.should == 10.75
       costs[:subsidy].to_f.should == 0.75
     end
 
     it "should calculate the cost for multiple item when given a quantity" do
-      ipp   = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id)
+      ipp   = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
       costs = ipp.calculate_cost_and_subsidy(2)
       costs[:cost].to_f.should == 21.5
       costs[:subsidy].to_f.should == 1.5
     end
 
     it "should estimate the same as calculate" do
-      ipp   = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id)
+      ipp   = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
       ipp.estimate_cost_and_subsidy(2).should == ipp.calculate_cost_and_subsidy(2)
     end
 
@@ -77,7 +77,7 @@ describe ItemPricePolicy do
     end
 
     it "should return the date for the current policies" do
-      ipp = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today - 7.days, :price_group_id => @price_group.id)
+      ipp = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today - 7.days, :price_group_id => @price_group.id, :can_purchase => true)
       @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 7.days, :price_group_id => @price_group.id)
       ItemPricePolicy.current_date(@item).to_date.should == ipp.start_date.to_date
       ipp3 = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id)
@@ -85,9 +85,9 @@ describe ItemPricePolicy do
     end
 
     it "should return the date for upcoming policies" do
-      @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id)
-      ipp2=@item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 7.days, :price_group_id => @price_group.id)
-      ipp3=@item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 14.days, :price_group_id => @price_group.id)
+      @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
+      ipp2=@item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 7.days, :price_group_id => @price_group.id, :can_purchase => true)
+      ipp3=@item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 14.days, :price_group_id => @price_group.id, :can_purchase => true)
 
       ItemPricePolicy.next_date(@item).to_date.should == ipp2.start_date.to_date
       next_dates = ItemPricePolicy.next_dates(@item)
