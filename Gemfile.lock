@@ -7,9 +7,9 @@ GIT
       activesupport (>= 3.0.0)
 
 PATH
-  remote: vendor/engines/ccpo
+  remote: vendor/engines/c2po
   specs:
-    ccpo (1.0.0)
+    c2po (1.0.0)
 
 GEM
   remote: http://rubygems.org/
@@ -191,9 +191,9 @@ DEPENDENCIES
   aasm (= 2.2.0)
   activerecord-oracle_enhanced-adapter (= 1.3.0)
   awesome_nested_set (= 2.0.1)
+  c2po (~> 1.0.0)!
   cancan (= 1.6.7)
   capistrano (= 2.6.0)
-  ccpo (~> 1.0.0)!
   ci_reporter
   daemons (= 1.1.6)
   devise (= 1.3.4)

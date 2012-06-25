@@ -42,7 +42,7 @@ gem 'exception_notification', :require => 'exception_notifier'
 gem 'daemons',          '1.1.6'
 
 ## custom
-gem 'ccpo',             '~> 1.0.0', :path => 'vendor/engines/ccpo'
+gem 'c2po',             '~> 1.0.0', :path => 'vendor/engines/c2po'
 
 group :development, :test do
   gem 'ci_reporter'

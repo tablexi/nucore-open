@@ -189,7 +189,7 @@ class FacilityAccountsController < ApplicationController
     case params[:statement_id]
       when 'list'
         action += '_list'
-        @statements = Statement.find(:all, :conditions => {:facility_id => current_facility.id, :account_id => @account}, :order => 'created_at DESC').paginate(:page => params[:page])
+        @statements = Statement.where(:facility_id => current_facility.id, :account_id => @account).order('created_at DESC').all.paginate(:page => params[:page])
       when 'recent'
         @order_details = @account.order_details.for_facility(@facility).delete_if{|od| od.order.state != 'purchased'}
         @order_details = @order_details.paginate(:page => params[:page])
