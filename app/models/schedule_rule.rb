@@ -29,7 +29,7 @@ class ScheduleRule < ActiveRecord::Base
   def self.unavailable_for_date(instrument, day)
     rules = where(:instrument_id => instrument.id)
     rules = unavailable(rules)
-    rules = rules.select {|item| item.send(:"on_#{day.strftime("%a").downcase}")}
+    rules = rules.select {|item| item.send(:"on_#{day.strftime("%a").downcase}?")}
     reservations = []
     rules.each do |rule|
       res = Reservation.new({
@@ -176,8 +176,7 @@ class ScheduleRule < ActiveRecord::Base
 
     # group rules by day, sort by start_hour
     Date::ABBR_DAYNAMES.each do |day|
-      day_rules = rules.select{ |rule| rule.send("on_#{day.downcase}") }.sort_by{ |rule| rule.start_hour }
-      # for now, skip days with no rules
+      day_rules = rules.select{ |rule| rule.send("on_#{day.downcase}?") }.sort_by{ |rule| rule.start_hour }
       if day_rules.empty?
         # build entire day not rule
         not_rule = ScheduleRule.new("on_#{day.downcase}" => true, :start_hour => 0, :start_min => 0, :end_hour => 24, :end_min => 0,
