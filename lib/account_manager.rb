@@ -9,4 +9,8 @@ class AccountManager
   #
   # An +Array+ of the #names of +Account+ classes that are limited to individual facilities.
   FACILITY_ACCOUNT_CLASSES=EngineManager.engine_loaded?(:c2po) ? [ CreditCardAccount.name, PurchaseOrderAccount.name ] : []
+
+  #
+  # An +Array+ of the #names of +Account+ classes whose +OrderDetail+s can be included on statements.
+  STATEMENT_ACCOUNT_CLASSES=FACILITY_ACCOUNT_CLASSES
 end
