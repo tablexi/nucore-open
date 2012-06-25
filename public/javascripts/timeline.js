@@ -117,7 +117,7 @@ $(function() {
           if (stat.error_message) {
             $checkbox.prop("disabled", true);
             // add a new error if there is one
-            $checkbox.parent().append($("<span class=\"error\" title=\"" + stat.error_message + "\">Error</span>"));
+            $checkbox.parent().append($("<span class=\"error\" title=\"" + stat.error_message + "\"></span>"));
           } else {
             $checkbox.prop("disabled", false).prop("checked", stat.is_on);
           }

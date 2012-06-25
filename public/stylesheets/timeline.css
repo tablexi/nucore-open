@@ -208,7 +208,7 @@ body .unit {
   height: 100%;
 }
 .toggle_switch.disabled .bg {
-  background-color: rgba(255,255,255,0.8);
+  background-color: rgba(255,255,255,0.9);
 } 
 .toggle_switch .switch {
   position: absolute;
@@ -226,26 +226,37 @@ body .unit {
 /***
  * Relay switch overlays
  */
-.relay_checkbox .loading_box {
-  background-image: url(../images/spinner.gif);
-  width: 48px;
-  height: 48px;
+.relay_checkbox .loading_box{
+  background-image: url(../images/spinner-big.gif);
+  width: 32px;
+  height: 32px;
   position: absolute;
-  top: -10px;
-  left: 20px;
-  display: none;
+  top: -6px;
+  left: 12px;
   z-index: 1000;
+  display: none;
 }
 .relay_checkbox.loading .loading_box {
   display: block;
 }
 .relay_checkbox .error {
-  background: transparent url(../images/icon_warning.jpg) no-repeat;
+  background: transparent url(../images/icon-warning-48.png) no-repeat;
+  display: block;
+  width: 48px;
+  height: 48px;
+  position: absolute;
+  top: -16px;
+  left: 8px;
+  z-index: 1000;
+}
+/*.relay_checkbox .error {
+  background: transparent url(../images/icon-warning-32.png) no-repeat;
   margin-left: 14px;
   padding-left: 26px;
   line-height: 24px;
+  height: 16px;
   color: red;
   display: block;
   z-index: 1000;
 
-}
+}*/
