@@ -182,16 +182,19 @@ body .unit {
  */
 .relay_checkbox {
   float: right;
-  width: 40px;
   position: relative;
+  right: -20px;
+  top: -2px;
 }
 
 .toggle_switch {
   position: relative;
+  border:1px solid #999;
   border-radius: 6px;
-  width: 94px;
-  height: 27px;
+  width: 60px;
+  height:30px;
   overflow: hidden;
+  top:-5px;
   cursor: pointer;
   z-index: ;
 }
@@ -200,7 +203,7 @@ body .unit {
 }
 
 .toggle_switch .bg {
-  background: transparent url(../images/itoggle.png) no-repeat top left;
+ /*  background: transparent url(../images/itoggle.png) no-repeat top left; */
   z-index: 200;
   position: absolute;
   top: 0;
@@ -215,7 +218,7 @@ body .unit {
   position: absolute;
   height: 100%;
   width: 147px;
-  left: -54px;
+  left: -60px;
   background: #FFF url(../images/itoggle.png) no-repeat bottom left;
   z-index: 100;
 }
