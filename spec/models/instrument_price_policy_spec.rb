@@ -44,14 +44,6 @@ describe InstrumentPricePolicy do
       @ipp.should be_valid
     end
 
-    it 'should override #restrict_purchase=' do
-      PriceGroupProduct.find_by_price_group_id_and_product_id(@price_group.id, @instrument.id).should be_nil
-      @ipp.restrict_purchase=false
-      pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(@price_group.id, @instrument.id)
-      pgp.should_not be_nil
-      pgp.reservation_window.should == PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
-    end
-
     it "should create a price policy for today if no active price policy already exists" do
       should allow_value(Date.today).for(:start_date)
       @ipp.start_date=Date.today - 7.days
@@ -435,6 +427,7 @@ describe InstrumentPricePolicy do
       :minimum_cost        => nil,
       :cancellation_cost   => nil,
       :price_group         => @price_group,
+      :can_purchase        => true
     }
 
     attrs.merge(overrides)

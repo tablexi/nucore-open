@@ -85,7 +85,7 @@ describe PricePolicy do
 
     before :each do
       @pp=Factory.create(:item_price_policy, :product => @item, :price_group => @price_group)
-      @pgp=Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
+      #@pgp=Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
     end
 
     it 'should not restrict purchase' do
@@ -93,8 +93,14 @@ describe PricePolicy do
     end
 
     it 'should restrict purchase' do
-      @pgp.destroy
+      @pp.update_attributes(:can_purchase => false)
       @pp.restrict_purchase.should == true
+    end
+
+    it 'should restrict purchase' do
+      @pp.restrict_purchase = true
+      @pp.restrict_purchase.should be_true
+      @pp.can_purchase.should be_false
     end
 
     it 'should alias #restrict with query method' do
@@ -120,13 +126,6 @@ describe PricePolicy do
       @pp.restrict_purchase=true
       should_be_destroyed @pgp
     end
-
-    it 'should create PriceGroupProduct when unrestricted' do
-      @pgp.destroy
-      @pp.restrict_purchase=false
-      PriceGroupProduct.find_by_price_group_id_and_product_id(@price_group.id, @item.id).should_not be_nil
-    end
-
   end
   
   context "truncate old policies" do

@@ -95,8 +95,8 @@ class PricePolicy < ActiveRecord::Base
   # Returns true if this PricePolicy's +Product+ cannot be purchased
   # by this PricePolicy's +PriceGroup+, false otherwise.
   def restrict_purchase
+    return false unless price_group and product
     !can_purchase?
-    #return false unless price_group and product
     #PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id).nil?
   end
 
@@ -112,10 +112,12 @@ class PricePolicy < ActiveRecord::Base
   def restrict_purchase=(state)
     case state
       when false, 0
-        PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(price_group.id, product.id)
+        self.can_purchase = true
+        #PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(price_group.id, product.id)
       when true, 1
-        pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
-        pgp.destroy if pgp
+        self.can_purchase = false
+        # pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
+        # pgp.destroy if pgp
       else
         raise ArgumentError.new('state must be true, false, 0, or 1')
     end

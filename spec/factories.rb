@@ -136,6 +136,7 @@ Factory.define_default :item, :class => Item do |o|
 end
 
 Factory.define_default :item_price_policy, :class => ItemPricePolicy do |o|
+  o.can_purchase true
   o.unit_cost 1
   o.unit_subsidy 0
   o.start_date Date.today
@@ -165,6 +166,7 @@ Factory.define_default :order_status, :class => OrderStatus do |o|
 end
 
 Factory.define_default :service_price_policy, :class => ServicePricePolicy do |o|
+  o.can_purchase true
   o.unit_cost 1
   o.unit_subsidy 0
   o.start_date Date.today
