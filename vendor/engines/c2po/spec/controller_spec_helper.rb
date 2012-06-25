@@ -1,1 +1,0 @@
-../../../../spec/controller_spec_helper.rb
