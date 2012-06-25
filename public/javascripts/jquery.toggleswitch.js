@@ -9,8 +9,7 @@
     this.each(function() {
       $this = $(this);
       $this.addClass("toggle_switch_checkbox");
-      //var newDiv = $("<div><div class=\"bg\"/><div class=\"switch\"/></div>").attr("id", "toggle_switch_" + $this.attr("id")).addClass("toggle_switch");
-      var newDiv = $("#toggle_switch_template").clone();
+      var newDiv = $("<div><div class=\"bg\"/><div class=\"switch\"/></div>").attr("id", "toggle_switch_" + $this.attr("id")).addClass("toggle_switch");
       this.toggle_switch = newDiv;
       newDiv.checkbox = $this;
       newDiv.click(function(e) {
