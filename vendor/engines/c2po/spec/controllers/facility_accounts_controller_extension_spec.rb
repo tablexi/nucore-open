@@ -92,7 +92,6 @@ describe FacilityAccountsController do
       @action=:create
       @acct_attrs=Factory.attributes_for(:purchase_order_account)
       @acct_attrs[:affiliate]=@acct_attrs[:affiliate].name
-      @params[:account]=@acct_attrs
 
       @params={
         :id => @account.id,
@@ -102,6 +101,7 @@ describe FacilityAccountsController do
         :class_type => 'PurchaseOrderAccount'
       }
 
+      @params[:account]=@acct_attrs
       @controller.stubs(:current_facility).returns(@authable)
     end
 

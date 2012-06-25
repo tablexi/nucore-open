@@ -20,6 +20,13 @@ Spork.prefork do
   require 'mocha'
   require 'factories'
 
+  #
+  # Check for engine factories. If they exist load 'em up
+  Dir[File.expand_path('vendor/engines/*', Rails.root)].each do |engine|
+    factory_file=File.join(engine, 'spec/factories.rb')
+    require factory_file if File.exist? factory_file
+  end
+
   # Uncomment the next line to use webrat's matchers
   #require 'webrat/integrations/rspec-rails'
 
