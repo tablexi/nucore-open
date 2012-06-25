@@ -47,9 +47,12 @@ class Relay < ActiveRecord::Base
 
   def get_request(path)
     resp = nil
-    opts = {}
-    opts[:open_timeout] = 2 if Rails.env.development?
-    Net::HTTP.start(host, nil, nil, nil, nil, nil, opts) { |http|
+    # This would make development easier, but it doesn't work in ruby 1.8.7 because
+    # HTTP.start doesn't take the seventh opts
+    # opts = {}
+    # opts[:open_timeout] = 2 if Rails.env.development?
+    # Net::HTTP.start(host, nil, nil, nil, nil, nil, opts) { |http|
+    Net::HTTP.start(host) { |http|
       req = Net::HTTP::Get.new(path)
       req.basic_auth username, password
       resp = http.request(req)
