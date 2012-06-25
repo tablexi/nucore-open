@@ -95,7 +95,7 @@ describe ServicePricePoliciesController do
       })
 
       @authable.price_groups.each do |pg|
-        @params.merge!("service_price_policy#{pg.id}".to_sym => Factory.attributes_for(:service_price_policy))
+        @params.merge!("price_policy_#{pg.id}".to_sym => Factory.attributes_for(:service_price_policy))
       end
     end
 
@@ -122,6 +122,16 @@ describe ServicePricePoliciesController do
       end
 
       it_should_allow_managers_only :redirect
+
+      it 'should not allow update of assigned effective price policy' do
+        @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @director, :created_by => @director, :user_role => 'Owner']])
+        @order    = @director.orders.create(Factory.attributes_for(:order, :created_by => @director.id))
+        @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @service.id, :account_id => @account.id, :price_policy => @price_policy))
+        UserPriceGroupMember.create!(:price_group => @price_group, :user => @director)
+        maybe_grant_always_sign_in :director
+        do_request
+        should render_template '404'
+    end
 
     end
 

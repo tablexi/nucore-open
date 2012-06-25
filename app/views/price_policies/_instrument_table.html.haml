@@ -9,8 +9,8 @@
     %th.currency Actual
     %th.currency Scheduled
     %th.currency Overage
-  - price_policies.delete_if {|ipp| !ipp.price_group.can_purchase? @product }
   - price_policies.each do |price_policy|
+    - next unless price_policy.can_purchase?
     %tr
       - if price_policies.first == price_policy
         %td.centered{ :rowspan => price_policies.length }

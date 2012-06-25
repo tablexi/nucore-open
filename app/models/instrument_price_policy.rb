@@ -32,14 +32,15 @@ class InstrumentPricePolicy < PricePolicy
     return pgp ? pgp.reservation_window : 0
   end
 
-  def restrict_purchase=(state)
-    price_group_product=super
+  # TODO: Remove
+  # def restrict_purchase=(state)
+  #   price_group_product=super
 
-    if price_group_product and (!state or state == 0)
-      price_group_product.reservation_window=PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
-      price_group_product.save!
-    end
-  end
+  #   if price_group_product and (!state or state == 0)
+  #     price_group_product.reservation_window=PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
+  #     price_group_product.save!
+  #   end
+  # end
 
   def subsidy_less_than_rate?
     if (reservation_subsidy && reservation_rate)

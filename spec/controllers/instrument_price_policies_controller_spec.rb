@@ -95,7 +95,7 @@ describe InstrumentPricePoliciesController do
       })
 
       @authable.price_groups.each do |pg|
-        @params.merge!("instrument_price_policy#{pg.id}".to_sym => Factory.attributes_for(:instrument_price_policy))
+        @params.merge!("price_policy_#{pg.id}".to_sym => Factory.attributes_for(:instrument_price_policy))
       end
     end
 

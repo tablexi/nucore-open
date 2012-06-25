@@ -25,4 +25,4 @@
   %h2 Upcoming Pricing Rules
   - @next_price_policies_by_date.each do |date, rules|
     %h3= "Effective: #{human_date(date)}, Expires: #{human_date(rules.first.expire_date)}"
-    = render :partial => "price_policies/table", :locals => { :price_policies => rules, :url_date => date.strftime("%Y-%m-%d") }
+    = render :partial => "price_policies/#{@product.is_a?(Instrument) ? 'instrument_' : ''}table", :locals => { :price_policies => rules, :url_date => date.strftime("%Y-%m-%d") }

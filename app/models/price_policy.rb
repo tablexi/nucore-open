@@ -95,8 +95,9 @@ class PricePolicy < ActiveRecord::Base
   # Returns true if this PricePolicy's +Product+ cannot be purchased
   # by this PricePolicy's +PriceGroup+, false otherwise.
   def restrict_purchase
-    return false unless price_group and product
-    PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id).nil?
+    !can_purchase?
+    #return false unless price_group and product
+    #PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id).nil?
   end
 
   alias_method :restrict_purchase?, :restrict_purchase

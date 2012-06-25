@@ -96,7 +96,7 @@ describe ItemPricePoliciesController do
       })
 
       @authable.price_groups.each do |pg|
-        @params.merge!("item_price_policy#{pg.id}".to_sym => Factory.attributes_for(:item_price_policy))
+        @params.merge!("price_policy_#{pg.id}".to_sym => Factory.attributes_for(:item_price_policy))
       end
     end
 
