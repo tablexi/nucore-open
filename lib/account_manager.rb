@@ -13,4 +13,10 @@ class AccountManager
   #
   # An +Array+ of the #names of +Account+ classes whose +OrderDetail+s can be included on statements.
   STATEMENT_ACCOUNT_CLASSES=FACILITY_ACCOUNT_CLASSES
+
+  #
+  # Returns true if this app is using +Account+ classes that appear on statements, false otherwise
+  def self.using_statements?
+    !STATEMENT_ACCOUNT_CLASSES.empty?
+  end
 end

@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'controller_spec_helper'
 require 'transaction_search_spec_helper'
 
-unless AccountManager::STATEMENT_ACCOUNT_CLASSES.empty?
+if AccountManager.using_statements?
 
   describe FacilityStatementsController do
     render_views
