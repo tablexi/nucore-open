@@ -80,17 +80,9 @@ en:
       label:
         search_term: "Search by payment source number or payment source owner's name, NetID, or username"
     accounts_receivable:
-          head: Accounts Receivable
-          show_with_balance: Show %{model} with a balance
-          show_all: Show all %{model}      
-    credit_cards:    
-      head: Reconcile Credit Cards
-      none: There are no credit cards with completed orders to be reconciled at this time
-      instructions: Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'.
-    purchase_orders:
-      head: Reconcile Purchase Orders
-      none: There are no purchase orders with completed orders to be reconciled at this time
-      instructions: Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'.
+      head: Accounts Receivable
+      show_with_balance: Show %{model} with a balance
+      show_all: Show all %{model}
     new_account_user_search:
       head: "Add Payment Source"
       instruct: "To add a payment source, first search for the user you would like to create the payment source for."
@@ -104,12 +96,9 @@ en:
         owner_user: "Owner User"
         payment_type: "Payment Source Type"
         payment_number: "Payment Source Number"
-        cc_name: "Name on Card"
         affiliate: "Affiliate Name"
         remit: "Bill To"
         all_instruct: "Enter a text description to help you and the user identify this payment source."
-        cc_instruct: "No part of a credit card number may be entered. Enter a text description to help you and the user identify this card. For example: \"Dr. Smith's Visa Card\"."
-        po_instruct: "Where the invoice should be sent to for this payment source; this text will appear on the customer's invoice."
     account_balances:
       notice: "No payment sources found."
       foot: "* Includes transactions for which the user has not been sent a statement or that are in the user review period."
@@ -509,8 +498,6 @@ en:
 
   accounts:
     institution: Chart String
-    credit_card: Credit Card
-    po: Purchase Order
     show:
       head: "Payment Source Details"
       label:
@@ -531,8 +518,6 @@ en:
       description: "Description as it will appear on the facility main page"
       payment_options: "By default, all facilities accept NU Chart Strings; you may check additional payment options:"
       accepts_multi_add: "Show Order Form for Facility (allows adding of multiple products simultaneously)"
-      accepts_po: "Accept Purchase Orders?"
-      accepts_cc: "Accept Credit Cards?"
       inactive: "Uncheck this box to prevent end users from viewing or purchasing from this facility:"
       is_active: "Is Active?"
       contact: "The following contact information will appear on statements and should indicate where payment should be sent"
@@ -674,7 +659,7 @@ en:
     
   facility_statements:
     new:
-      instructions: Please review the following Credit Card and Purchase Order payment sources. A statement will be generated for each of the payment sources and an email with a link to the statement will be sent.
+      instructions: Please review the following payment sources. A statement will be generated for each of the payment sources and an email with a link to the statement will be sent.
       no_orders: There are no completed orders that require statements.
     index:
       head: Statement History
@@ -878,12 +863,6 @@ en:
       nufs_account:
         one: Chart String
         other: Chart Strings
-      credit_card_account:
-        one: Credit Card
-        other: Credit Cards
-      purchase_order_account:
-        one: Purchase Order
-        other: Purchase Orders
       account user:
         one: Account User
         other: Account Users
@@ -932,8 +911,4 @@ en:
       account:
         expires_at: Expires
       nufs_account:
-        account_number: Payment Source
-      purchase_order_account:
-        account_number: Payment Source
-      credit_card_account:
         account_number: Payment Source
