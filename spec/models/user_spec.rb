@@ -35,7 +35,7 @@ describe User do
   end
 
   it "should belong to price groups of accounts" do
-    cc       = Factory.create(:credit_card_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
+    cc       = Factory.create(:nufs_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
     facility = Factory.create(:facility)
     pg       = facility.price_groups.create(Factory.attributes_for(:price_group))
     AccountPriceGroupMember.create(:account => cc, :price_group => pg)
@@ -44,7 +44,7 @@ describe User do
 
   it "should belong to price groups of account owner" do
     owner    = Factory.create(:user)
-    cc       = Factory.create(:credit_card_account, :account_users_attributes => [{:user => owner, :created_by => owner, :user_role => 'Owner'}])
+    cc       = Factory.create(:nufs_account, :account_users_attributes => [{:user => owner, :created_by => owner, :user_role => 'Owner'}])
     facility = Factory.create(:facility)
     pg       = facility.price_groups.create(Factory.attributes_for(:price_group))
     UserPriceGroupMember.create(:user => owner, :price_group => pg)
