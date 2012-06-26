@@ -26,7 +26,7 @@
       %tr
         %td #{pg.name}
         %td #{pg.type_string}
-        %td= check_box_tag "price_policy_#{pg.id}[can_purchase]", '1', pp.can_purchase?
+        %td= check_box_tag "price_policy_#{pg.id}[can_purchase]", '1', pp.can_purchase?, :class => 'can_purchase'
         - if !pg.is_internal?
           %td
             Rate

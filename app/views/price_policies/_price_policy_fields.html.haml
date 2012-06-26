@@ -15,7 +15,7 @@
       %tr
         %td= pg.name
         %td= pg.type_string
-        %td= check_box_tag "price_policy_#{pg.id}[can_purchase]", '1', pp.can_purchase?
+        %td= check_box_tag "price_policy_#{pg.id}[can_purchase]", '1', pp.can_purchase?, :class => 'can_purchase'
         - if !pg.is_internal?
           %td.centered= text_field_tag "price_policy_#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => ''), :size => 8
           %td.centered

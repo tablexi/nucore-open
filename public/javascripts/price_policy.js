@@ -20,15 +20,10 @@ $(document).ready(function() {
     });
   }
 
-  $('.restrict_purchase').each(function (i, checkBox) {
-    if (checkBox.checked == true) {
-      changecheckbox(checkBox);
-    }
-  });
+  $('.can_purchase').change(function(e) {
+    toggleGroupFields($(this));
+  }).trigger("change");
 
-  $('.restrict_purchase').change(function(e) {
-    changecheckbox(this);
-  });
 
   $('input[type=text]').change(function(e) {
     setinternalcost(this);
@@ -50,16 +45,10 @@ $(document).ready(function() {
     }
   }
 
-  function changecheckbox(o) {
-    var disable = false
-    if (o.checked == true) {
-      disable = true;
-    }
-    $(o).closest('tr').find('input').each(function (i, element) {
-      if (element != o) {
-        element.disabled = disable;
-      }
-    });
+  function toggleGroupFields($checkbox) {
+    $cells = $checkbox.parents('tr').find('td');
+    $cells.toggleClass('disabled', !$checkbox.prop('checked'));
+    $cells.find('input[type=text], input[type=hidden]').val('').prop('disabled', !$checkbox.prop('checked'));
   }
 });
 
