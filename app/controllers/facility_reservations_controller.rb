@@ -205,7 +205,7 @@ class FacilityReservationsController < ApplicationController
 
   # GET /facilities/:facility_id/orders/disputed
   def disputed
-    @details = disputed_orders.
+    @order_details = disputed_orders.
       paginate(:page => params[:page])
   end
 

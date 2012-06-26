@@ -1,5 +1,5 @@
 %ul.tabs.tab_counts
-  %li.first= link_to "New / In Process", facility_reservations_path, { :class => secondary_tab == 'new' ? 'active' : nil, :id => :new_or_in_process_orders }
+  %li.first= display_tab "New / In Process", facility_reservations_path, :action => :index
   - if current_user.manager_of?(current_facility)
-    %li= link_to "Problem Reservations", show_problems_facility_reservations_path, { :class => secondary_tab == 'problem' ? 'active' : nil, :id => :problem_orders }
-    %li= link_to "Disputed", disputed_facility_reservations_path, { :class => secondary_tab == 'disputed' ? 'active' : nil, :id => :disputed_orders }
+    %li= display_tab "Problem Reservations", show_problems_facility_reservations_path, :action => :show_problems
+    %li= display_tab "Disputed", disputed_facility_reservations_path, :action => :disputed

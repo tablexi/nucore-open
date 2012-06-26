@@ -91,7 +91,7 @@ $(document).ready(function() {
 
   function loadTabCounts() {
     var tabs = [];
-    $('.tab_counts a').each(function() {
+    $('.tab_counts a:not(.active)').each(function() {
       if (this.id) tabs.push(this.id);
     });
     if (tabs.length > 0) {
