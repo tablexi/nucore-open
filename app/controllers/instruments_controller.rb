@@ -95,8 +95,7 @@ class InstrumentsController < ProductsCommonController
 
   def instrument_statuses
     statuses = []
-    current_facility.instruments.each do |instrument|
-      next unless instrument.has_relay?
+    current_facility.instruments.includes(:relay).each do |instrument|
       begin
         status = instrument.relay.get_status
         instrument_status = instrument.current_instrument_status

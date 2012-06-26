@@ -102,8 +102,8 @@ $(function() {
                 updateRelayStatus(data[i].instrument_status);
                 
               }
-              // Refresh every 30 seconds
-              setTimeout(loadRelayStatuses, 30000);
+              // Refresh 2 minutes after updating
+              setTimeout(loadRelayStatuses, 120000);
             },
             dataType: 'json'
           });
@@ -125,5 +125,6 @@ $(function() {
         }
 
         $('.relay_checkbox').addClass('loading');
-        loadRelayStatuses();
+        // Only try to load relay statuses if there are relays to check
+        if ($('.relay_checkbox :checkbox').length > 0) loadRelayStatuses();
 });
