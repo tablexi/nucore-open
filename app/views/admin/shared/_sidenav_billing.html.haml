@@ -1,12 +1,15 @@
 #menu_billing
   %ul.menu_accordion
-    %li.sub_menu
-      .icon
-      Transactions
-      %ul
-        %li= link_to 'All Transactions',       facility_transactions_path, :class => (sidenav_tab == 'transactions' ? 'active' : '')
-        %li= link_to t("facility_notifications.index.head"),     facility_notifications_path, :class => (sidenav_tab == 'notifications' ? 'active' : '')
-        %li= link_to t('facility_notifications.in_review.head'),       facility_notifications_in_review_path, :class => (sidenav_tab == 'in_review' ? 'active' : '')
+    - if SettingsHelper::has_review_period?
+      %li.sub_menu
+        .icon
+        Transactions
+        %ul
+          %li= link_to 'All Transactions', facility_transactions_path, :class => (sidenav_tab == 'transactions' ? 'active' : '')
+          %li= link_to t("facility_notifications.index.head"), facility_notifications_path, :class => (sidenav_tab == 'notifications' ? 'active' : '')
+          %li= link_to t('facility_notifications.in_review.head'), facility_notifications_in_review_path, :class => (sidenav_tab == 'in_review' ? 'active' : '')
+    - else
+      %li= link_to 'All Transactions', facility_transactions_path, :class => (sidenav_tab == 'transactions' ? 'active' : '')
 
     %li= link_to t('facility_accounts.accounts_receivable.head'), facility_accounts_receivable_path, :class => (sidenav_tab == "accounts_receivable" ? 'active' : '')
     %li= link_to Account.model_name.human.pluralize,              facility_accounts_path, :class => (sidenav_tab == 'accounts' ? 'active' : '')

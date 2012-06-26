@@ -10,6 +10,7 @@ unless AccountManager::STATEMENT_ACCOUNT_CLASSES.empty?
     def create_order_details
       @order_detail1 = place_and_complete_item_order(@user, @authable, @account)
       @order_detail2 = place_and_complete_item_order(@user, @authable, @account)
+      @order_detail2.update_attributes(:reviewed_at => nil)
 
       @account2=Factory.create(@account_sym, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']], :facility_id => @authable.id)
       @authable_account2 = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
@@ -75,7 +76,7 @@ unless AccountManager::STATEMENT_ACCOUNT_CLASSES.empty?
         assigns(:accounts).should contain_all [@account, @account2]
         assigns(:facility).should == @authable
         assigns(:order_detail_action).should == :send_statements
-        (assigns(:order_details) - [@order_detail1, @order_detail3]).should be_empty
+        assigns(:order_details).should contain_all [@order_detail1, @order_detail3]
       end
 
       it_should_support_searching

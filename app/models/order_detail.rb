@@ -677,6 +677,7 @@ class OrderDetail < ActiveRecord::Base
   def make_complete
     assign_price_policy
     self.fulfilled_at=Time.zone.now
+    self.reviewed_at = Time.zone.now unless SettingsHelper::has_review_period?
   end
 
 end
