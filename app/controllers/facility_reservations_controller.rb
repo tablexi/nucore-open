@@ -236,8 +236,8 @@ class FacilityReservationsController < ApplicationController
         :reservation,
         :assigned_user
       ).
-      order(order_by_clause).
-      delete_if{|od| od.reservation.nil? }
+      where("reservations.id IS NOT NULL").
+      order(order_by_clause)
   end
   
   #TODO make problem_order an SQL relation to speet things up
