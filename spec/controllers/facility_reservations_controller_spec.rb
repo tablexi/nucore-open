@@ -23,6 +23,7 @@ describe FacilityReservationsController do
       :ordered_at => Time.zone.now
     )
     @reservation=Factory.create(:reservation, :instrument => @product)
+    @reservation.should_not be_new_record
     @order_detail=Factory.create(:order_detail, :order => @order, :product => @product, :reservation => @reservation)
     @params={ :facility_id => @authable.url_name, :order_id => @order.id, :order_detail_id => @order_detail.id, :id => @reservation.id }
   end
