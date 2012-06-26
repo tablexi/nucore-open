@@ -124,18 +124,6 @@ describe Order do
       @order.validate_order!.should be false
     end
 
-    it "should not allow validate if the account type is not allowed by the facility" do
-      # facility does not accept credit card accounts
-      @facility.accepts_cc = false
-      @facility.save
-      # create credit card account and link to order
-      @cc_account = Factory.create(:credit_card_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
-      @order = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id, :account => @cc_account, :facility => @facility))
-      @order.order_details.create(:product_id => @service.id, :quantity => 1)
-      # should not be allowed to purchase with a credit card account
-      @order.validate_order!.should be false
-    end
-
     ## TODO simplify these to prevent overlapping test coverage with order_detail_spec
     it 'should validate_extras for a valid instrument with reservation'
     it 'should validate_extras for a service with no survey'

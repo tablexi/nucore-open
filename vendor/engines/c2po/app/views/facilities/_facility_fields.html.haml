@@ -1,0 +1,59 @@
+%li
+  = f.label :name, nil, :class => 'require'
+  %p.instruction= t('facilities.facility_fields.name')
+  = f.text_field :name, :size => 60
+%li
+  = f.label :abbreviation, nil, :class => 'require'
+  %p.instruction= t('facilities.facility_fields.abbreviation')
+  = f.text_field :abbreviation, :size => 20
+%li
+  = f.label :url_name, 'URL Name', :class => 'require'
+  - if f.object.url_name && f.object.url_name.length > 0 && !f.object.errors[:url_name]
+    %p.instruction= facility_url(f.object)
+  - else
+    %p.instruction= facility_url('url-name')
+  = f.text_field :url_name, :size => 20
+%li
+  = f.label :short_description, 'Short Description', :class => 'require'
+  %p.instruction= t('facilities.facility_fields.short_description')
+  = f.text_area :short_description, :cols => 86, :rows => 4
+%li
+  = f.label :description, nil
+  %p.instruction= t('facilities.facility_fields.description')
+  = f.text_area :description, :class => 'editor'
+  
+%li.box
+  %b= f.check_box :accepts_multi_add
+  = t('facilities.facility_fields.accepts_multi_add')
+
+%li.box
+  %p= t('facilities.facility_fields.payment_options')
+  %br
+  %p
+    = f.check_box :accepts_po
+    %b= t('facilities.facility_fields.accepts_po')
+  %br
+  %p
+    = f.check_box :accepts_cc
+    %b= t('facilities.facility_fields.accepts_cc')
+%li.box
+  %p.instruction= t('facilities.facility_fields.inactive')
+  %br
+  = f.check_box :is_active
+  %b= t('facilities.facility_fields.is_active')
+%li.box
+  %p.instruction= t('facilities.facility_fields.contact')
+  %br
+  %ul.form
+    %li
+      = f.label :address
+      = f.text_area :address, :cols => 46, :rows => 5
+    %li
+      = f.label :phone_number, 'Phone Number'
+      = f.text_field :phone_number
+    %li
+      = f.label :fax_number, 'Fax Number'
+      = f.text_field :fax_number
+    %li
+      = f.label :email
+      = f.text_field :email
