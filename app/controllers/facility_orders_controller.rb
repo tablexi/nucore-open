@@ -1,4 +1,6 @@
 class FacilityOrdersController < ApplicationController
+  include TabCountHelper
+  
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -9,7 +11,6 @@ class FacilityOrdersController < ApplicationController
   helper_method :sort_column, :sort_direction
   
   include FacilityOrderStatusHelper
-  helper_method :new_or_in_process_orders, :problem_orders, :disputed_orders
   
   def initialize
     @active_tab = 'admin_orders'

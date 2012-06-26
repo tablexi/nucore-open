@@ -1,4 +1,6 @@
 class FacilityReservationsController < ApplicationController
+  include TabCountHelper
+
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -7,7 +9,6 @@ class FacilityReservationsController < ApplicationController
   load_and_authorize_resource :class => Reservation
 
   helper_method :sort_column, :sort_direction
-  helper_method :new_or_in_process_orders, :problem_orders, :disputed_orders
 
   ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN = {
       'date'          => 'reservations.reserve_start_at',
