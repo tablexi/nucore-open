@@ -47,8 +47,13 @@ $(document).ready(function() {
 
   function toggleGroupFields($checkbox) {
     $cells = $checkbox.parents('tr').find('td');
-    $cells.toggleClass('disabled', !$checkbox.prop('checked'));
-    $cells.find('input[type=text], input[type=hidden]').val('').prop('disabled', !$checkbox.prop('checked'));
+    var isDisabled = !$checkbox.prop('checked');
+    $cells.toggleClass('disabled', isDisabled);
+    $cells.find('input[type=text], input[type=hidden]').each(function() {
+      // If we're hiding the value, store it so we can retreive it later
+      if ($(this).val()) $(this).data('original-value', $(this).val());
+      $(this).val(isDisabled ? '' : $(this).data('original-value')).prop('disabled', isDisabled);
+    });
   }
 });
 

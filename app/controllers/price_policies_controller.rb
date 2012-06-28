@@ -27,35 +27,29 @@ class PricePoliciesController < ApplicationController
 
   # GET /price_policies/new
   def new
-    price_groups = current_facility.price_groups
+    # If there are active policies, start tomorrow. If none, start today
     start_date     = Date.today + (@product.price_policies.active.empty? ? 0 : 1)
-    @start_date=start_date.strftime("%m/%d/%Y")
-    @expire_date    = PricePolicy.generate_expire_date(start_date).strftime("%m/%d/%Y")
+    @start_date = start_date.strftime("%m/%d/%Y")
+
+    @expire_date    = PricePolicy.generate_expire_date(start_date)
     @max_expire_date = @expire_date
+    
+    build_price_policies
+    
     # TODO make default based on previous
-    @price_policies = price_groups.map{ |pg| model_class.new({:price_group_id => pg.id, :product_id => @product.id, :start_date => @start_date, :can_purchase => true }) }
-    @purchaseable_groups = price_groups
+    
+    # Make them all start as enabled
+    @price_policies.each { |pp| pp.can_purchase = true }
+
     render 'price_policies/new'
   end
 
   # POST /price_policies
   def create
-    price_groups = current_facility.price_groups
-    @start_date = params[:start_date]
+    @start_date = start_date_from_params
     @expire_date   = params[:expire_date]    
-    
-    @price_policies = price_groups.map do |price_group|
-      pp_param=params["price_policy_#{price_group.id}"]
-      pp_param.merge!(:product_id => @product.id,
-            :start_date => parse_usa_date(@start_date).beginning_of_day,
-            :expire_date => parse_usa_date(@expire_date).end_of_day,
-            :price_group_id => price_group.id)
-      @interval = params[:interval].to_i if params[:interval]
-      pp_param.merge!(:usage_mins => @interval,
-                      :reservation_mins => @interval,
-                      :overage_mins => @interval) if @interval
-      model_class.new(pp_param)
-    end
+    build_price_policies
+    update_policies_from_params
     
     respond_to do |format|
       if ActiveRecord::Base.transaction do
@@ -73,47 +67,24 @@ class PricePoliciesController < ApplicationController
   # GET /price_policies/1/edit
   def edit
     @start_date = start_date_from_params
-    @price_policies = []
-
-    price_policies = @product.price_policies.for_date(@start_date)
-
-    raise ActiveRecord::RecordNotFound unless price_policies.all?{ |pp| pp.editable? }
-
-    groups_with_policies = Hash[price_policies.map {|pp| [pp.price_group, pp] }]
-    @purchaseable_groups = groups_with_policies.keys
-    current_facility.price_groups.each do |pg|
-      @price_policies << (groups_with_policies[pg] || model_class.new({:price_group_id => pg.id, :product_id => @product.id, :start_date => @start_date, :can_purchase => false }))
-    end
     
-    # get from the existing price policies, not the new list which may include blanks
-    @expire_date=price_policies.first.expire_date
-    @max_expire_date = PricePolicy.generate_expire_date(@start_date).strftime("%m/%d/%Y")
+    build_price_policies
+
+    @expire_date=@price_policies.map(&:expire_date).compact.first
+    @max_expire_date = PricePolicy.generate_expire_date(@start_date)
     render 'price_policies/edit'
   end
 
   # PUT /price_policies/1
   def update
     @start_date = start_date_from_params
-    @expire_date    = params[:expire_date]
-    @price_policies = @product.price_policies.for_date(@start_date)
-    @interval = params[:interval].to_i if params[:interval]
     
-    raise ActiveRecord::RecordNotFound unless @price_policies.all?{ |pp| pp.editable? }
+    build_price_policies
 
-    
-    @price_policies.each { |price_policy|
-      pp_param=params["price_policy_#{price_policy.price_group.id}"]
-      next unless pp_param
-      price_policy.attributes = pp_param
-      price_policy.start_date = parse_usa_date(params[:start_date]).beginning_of_day
-      price_policy.expire_date = parse_usa_date(@expire_date).end_of_day unless @expire_date.blank?
-      
-      price_policy.usage_mins        = @interval if price_policy.respond_to?(:usage_mins=) and @interval
-      price_policy.reservation_mins  = @interval if price_policy.respond_to?(:reservation_mins=) and @interval
-      price_policy.overage_mins      = @interval if price_policy.respond_to?(:overage_mins=) and @interval
-      
-      price_policy.restrict_purchase = pp_param['restrict_purchase'] && pp_param['restrict_purchase'] == 'true' ? true : false
-    }
+    @expire_date    = params[:expire_date]
+    @max_expire_date = PricePolicy.generate_expire_date(@start_date)
+
+    update_policies_from_params
 
     respond_to do |format|
       if ActiveRecord::Base.transaction do
@@ -159,12 +130,39 @@ class PricePoliciesController < ApplicationController
   def facility_product_price_policies_path
     method("facility_#{@product_var}_price_policies_path").call(current_facility, @product)
   end
+  
   def init_product
     product_var=model_name.gsub('PricePolicy', '').downcase
     var=current_facility.method(product_var.pluralize).call.find_by_url_name!(params["#{product_var}_id".to_sym])
     instance_variable_set("@#{product_var}", var)
     @product = var
     @product_var = product_var
+  end
+
+    def build_price_policies
+    original_price_policies = @product.price_policies.for_date(@start_date) || []
+    @price_policies = []
+
+    raise ActiveRecord::RecordNotFound unless original_price_policies.all?{ |pp| pp.editable? } || original_price_policies.empty?
+    groups_with_policy = Hash[original_price_policies.map {|pp| [pp.price_group, pp] }]
+    current_facility.price_groups.each do |pg|
+      @price_policies << (groups_with_policy[pg] || model_class.new({:price_group_id => pg.id, :product_id => @product.id, :can_purchase => false }))
+    end
+  end
+
+  def update_policies_from_params
+    @price_policies.each do |price_policy|
+      pp_param=params["price_policy_#{price_policy.price_group.id}"]
+      pp_param ||= {:can_purchase => false}
+      pp_param.merge!(
+            :start_date => parse_usa_date(@start_date).beginning_of_day,
+            :expire_date => parse_usa_date(@expire_date).end_of_day)
+      @interval = params[:interval].to_i if params[:interval]
+      pp_param.merge!(:usage_mins => @interval,
+                      :reservation_mins => @interval,
+                      :overage_mins => @interval) if @interval
+      price_policy.attributes = pp_param
+    end
   end
   
   
