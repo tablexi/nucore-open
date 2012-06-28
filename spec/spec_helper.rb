@@ -20,6 +20,14 @@ Spork.prefork do
   require 'mocha'
   require 'factories'
 
+  #
+  # Check for engine factories. If they exist and the engine is in use load it up
+  Dir[File.expand_path('vendor/engines/*', Rails.root)].each do |engine|
+    engine_name=File.basename engine
+    factory_file=File.join(engine, 'spec/factories.rb')
+    require factory_file if File.exist?(factory_file) && EngineManager.engine_loaded?(engine_name)
+  end
+
   # Uncomment the next line to use webrat's matchers
   #require 'webrat/integrations/rspec-rails'
 
@@ -90,7 +98,10 @@ Spork.prefork do
       @epg = PriceGroup.find_or_create_by_name(:name => Settings.price_group.name.external, :is_internal => false, :display_order => 3)
       @epg.save(:validate => false)
 
-      now=Time.zone.parse("#{Date.today.to_s} 09:30:00")
+      #now=Time.zone.parse("#{Date.today.to_s} 09:30:00")
+      Timecop.return
+      now=(SettingsHelper::fiscal_year_beginning(Date.today) + 1.year + 10.days).change(:hour => 9, :min => 30) 
+      #puts "travelling to #{now}"
       Timecop.travel(now)
     end
   end
@@ -163,30 +174,6 @@ Spork.each_run do
     od_attrs.merge!(:account_id => account.id) if account
     @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(od_attrs))
   end
-
-  #
-  # Simulates placing an order for an item and having it marked complete
-  # [_ordered_by_]
-  #   The user who is ordering the item
-  # [_facility_]
-  #   The facility with which the order is placed
-  # [_item_]
-  #   The product being ordered
-  # [_account_]
-  #   The account under which the order is placed
-  def place_product_order(ordered_by, facility, product, account=nil)
-    @price_group=Factory.create(:price_group, :facility => facility)
-    o_attrs={ :created_by => ordered_by.id, :facility => facility, :ordered_at => Time.zone.now }
-    o_attrs.merge!(:account_id => account.id) if account
-    @order=ordered_by.orders.create(Factory.attributes_for(:order, o_attrs))
-    Factory.create(:user_price_group_member, :user => ordered_by, :price_group => @price_group)
-    @item_pp=product.send(:"#{product.class.name.downcase}_price_policies").create(Factory.attributes_for(:"#{product.class.name.downcase}_price_policy", :price_group_id => @price_group.id))
-    @item_pp.reload.restrict_purchase=false
-    od_attrs={ :product_id => product.id }
-    od_attrs.merge!(:account_id => account.id) if account
-    @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(od_attrs))
-  end
-
 
   #
   # Simulates placing an order for an item and having it marked complete

@@ -24,12 +24,6 @@
     %p= h current_facility.accepts_multi_add ? 'Yes' : 'No'
     
   %li
-    %label== Accept Purchase Orders?
-    %p=h current_facility.accepts_po ? 'Yes' : 'No'
-  %li
-    %label== Accept Credit Cards?
-    %p=h current_facility.accepts_cc ? 'Yes' : 'No'
-  %li
     %label== Is Active?
     %p=h current_facility.is_active == true ? 'Yes' : 'No'
   %li

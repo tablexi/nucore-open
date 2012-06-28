@@ -1,7 +1,13 @@
 require 'spec_helper'
 
 describe PricePolicy do
-
+  before :all do
+    # Settings should be 09-01 or 08-01
+    Settings.financial.fiscal_year_begins = '10-01'
+  end
+  after :all do
+    Settings.reload!
+  end
   before :each do
     @facility         = Factory.create(:facility)
     @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
@@ -30,7 +36,7 @@ describe PricePolicy do
     it "should set default expire_date" do
       @pp=Factory.create(:item_price_policy, :price_group_id => @price_group.id, :item_id => @item.id, :start_date => @start_date, :expire_date => nil)
       @pp.expire_date.should_not be_nil
-      @pp.expire_date.should == Time.zone.parse("2020-8-31").end_of_day
+      @pp.expire_date.should == Time.zone.parse("2020-9-30").end_of_day
     end
 
     it 'should not allow an expire date the same as start date' do

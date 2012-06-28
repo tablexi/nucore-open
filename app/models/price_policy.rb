@@ -130,13 +130,9 @@ class PricePolicy < ActiveRecord::Base
   # Given a +PricePolicy+ or +Date+ determine the next
   # appropriate expiration date.
   def self.generate_expire_date(price_policy_or_date)
-    start_date=price_policy_or_date.is_a?(PricePolicy) ? price_policy_or_date.start_date : price_policy_or_date
-    exp_date=Time.zone.parse("#{start_date.year}-8-31")
-    exp_date=Time.zone.parse("#{start_date.year+1}-8-31") if start_date.to_date >= exp_date.to_date
-    exp_date = exp_date.end_of_day
-    return exp_date
+    start_date = price_policy_or_date.is_a?(PricePolicy) ? price_policy_or_date.start_date : price_policy_or_date
+    SettingsHelper::fiscal_year_end(start_date)
   end
-
 
   def set_expire_date
     self.expire_date=self.class.generate_expire_date(self) unless expire_date

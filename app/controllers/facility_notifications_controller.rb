@@ -5,6 +5,8 @@ class FacilityNotificationsController < ApplicationController
 
   before_filter :init_current_facility
   before_filter :check_billing_access
+
+  before_filter :check_review_period
   
   include TransactionSearch
   
@@ -13,6 +15,10 @@ class FacilityNotificationsController < ApplicationController
   def initialize
     @active_tab = 'admin_billing'
     super
+  end
+
+  def check_review_period
+    raise ActionController::RoutingError.new('Notifications disabled with a zero-day review period') unless SettingsHelper::has_review_period?
   end
 
   # GET /facilities/notifications
@@ -26,7 +32,7 @@ class FacilityNotificationsController < ApplicationController
     @accounts_to_notify = []
     @orders_notified = []
     @errors = []
-    reviewed_at = Time.zone.now + 7.days
+    reviewed_at = Time.zone.now + Settings.billing.review_period
     if params[:order_detail_ids].nil? or params[:order_detail_ids].empty?
       flash[:error] = I18n.t 'controllers.facility_notifications.no_selection'
       redirect_to :action => :index
@@ -43,8 +49,11 @@ class FacilityNotificationsController < ApplicationController
         if od
           od.reviewed_at = reviewed_at
           @errors << "#{od} #{od.errors}" unless od.save
-          @orders_notified << od
-          @accounts_to_notify << [od.account, od.product.facility] unless @accounts_to_notify.include?([od.account, od.product.facility])
+          
+          if Settings.billing.review_period > 0
+            @orders_notified << od
+            @accounts_to_notify << [od.account, od.product.facility] unless @accounts_to_notify.include?([od.account, od.product.facility])
+          end
         end      
       end
       if @errors.any?

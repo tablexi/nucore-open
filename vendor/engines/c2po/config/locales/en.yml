@@ -1,0 +1,40 @@
+en:
+  facility_accounts:
+    credit_cards:
+      head: Reconcile Credit Cards
+      none: There are no credit cards with completed orders to be reconciled at this time
+      instructions: Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'.
+    purchase_orders:
+      head: Reconcile Purchase Orders
+      none: There are no purchase orders with completed orders to be reconciled at this time
+      instructions: Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'.
+    account_fields:
+      label:
+        cc_name: "Name on Card"
+        cc_instruct: "No part of a credit card number may be entered. Enter a text description to help you and the user identify this card. For example: \"Dr. Smith's Visa Card\"."
+        po_instruct: "Where the invoice should be sent to for this payment source; this text will appear on the customer's invoice."
+
+  facilities:
+    facility_fields:
+      accepts_po: "Accept Purchase Orders?"
+      accepts_cc: "Accept Credit Cards?"
+
+  accounts:
+    credit_card: Credit Card
+    po: Purchase Order
+
+  active_record:
+    models:
+      credit_card_account:
+        one: Credit Card
+        other: Credit Cards
+      purchase_order_account:
+        one: Purchase Order
+        other: Purchase Orders
+    attributes:
+      purchase_order_account:
+        account_number: Payment Source
+      credit_card_account:
+        account_number: Payment Source
+
+

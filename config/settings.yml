@@ -4,6 +4,10 @@ price_group:
     external: 'External Rate'
     cancer_center: 'Cancer Center Rate'
 
+financial:
+  # in the format MM-DD
+  fiscal_year_begins: 09-01
+
 validator:
   class_name: ValidatorDefault
   test:
@@ -18,3 +22,6 @@ email:
   exceptions:
     sender: 'noreply@example.com'
     recipients: [ 'warn@example.com', 'error@example.com' ]
+
+billing:
+  review_period: <%= 7.days %>
