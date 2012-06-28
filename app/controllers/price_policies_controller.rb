@@ -28,10 +28,9 @@ class PricePoliciesController < ApplicationController
   # GET /price_policies/new
   def new
     # If there are active policies, start tomorrow. If none, start today
-    start_date     = Date.today + (@product.price_policies.active.empty? ? 0 : 1)
-    @start_date = start_date.strftime("%m/%d/%Y")
+    @start_date     = Date.today + (@product.price_policies.active.empty? ? 0 : 1)
 
-    @expire_date    = PricePolicy.generate_expire_date(start_date)
+    @expire_date    = PricePolicy.generate_expire_date(@start_date)
     @max_expire_date = @expire_date
     
     build_price_policies
@@ -101,14 +100,13 @@ class PricePoliciesController < ApplicationController
   # DELETE /price_policies/2010-01-01
   def destroy
     @start_date     = start_date_from_params
-
     unless @start_date > Date.today
       # force the user to really think about what they're doing, but tell them how to do it if they really want.
-      flash[:notice]="Sorry, but you cannot remove an active price policy.<br/>If you really want to do so move the start date to the future and try again."
+      flash[:error]="Sorry, but you cannot remove an active price policy.<br/>If you really want to do so move the start date to the future and try again."
       return redirect_to facility_product_price_policies_path
     end
 
-    @price_policies = model_class.for_date(@product, @start_date)
+    @price_policies = @product.price_policies.for_date(@start_date)
     raise ActiveRecord::RecordNotFound unless @price_policies.count > 0
 
     respond_to do |format|
@@ -130,7 +128,7 @@ class PricePoliciesController < ApplicationController
   def facility_product_price_policies_path
     method("facility_#{@product_var}_price_policies_path").call(current_facility, @product)
   end
-  
+
   def init_product
     product_var=model_name.gsub('PricePolicy', '').downcase
     var=current_facility.method(product_var.pluralize).call.find_by_url_name!(params["#{product_var}_id".to_sym])
@@ -139,7 +137,7 @@ class PricePoliciesController < ApplicationController
     @product_var = product_var
   end
 
-    def build_price_policies
+  def build_price_policies
     original_price_policies = @product.price_policies.for_date(@start_date) || []
     @price_policies = []
 
