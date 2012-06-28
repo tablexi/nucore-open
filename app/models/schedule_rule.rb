@@ -69,7 +69,7 @@ class ScheduleRule < ActiveRecord::Base
   def days_string
     days = []
     Date::ABBR_DAYNAMES.each do |day|
-      days << day if self.send("on_#{day.downcase}")
+      days << day if self.send("on_#{day.downcase}?")
     end
     days.join ', '
   end
@@ -121,7 +121,7 @@ class ScheduleRule < ActiveRecord::Base
     rules = Range.new(0,num_days-1).inject([]) do |array, i|
       date = start_date + i.days
       # check if rule occurs on this day
-      if self.send("on_#{Date::ABBR_DAYNAMES[date.wday].downcase}")
+      if self.send("on_#{Date::ABBR_DAYNAMES[date.wday].downcase}?")
         array << {
           "className" => unavailable ? 'unavailable' : 'default',
           "title"  => unavailable ? '' : "Interval: #{duration_mins.to_s} minute" + (duration_mins == 1 ? '' : 's'),
@@ -157,7 +157,7 @@ class ScheduleRule < ActiveRecord::Base
 
     # group rules by day, sort by start_hour
     Date::ABBR_DAYNAMES.each do |day|
-      day_rules = rules.select{ |rule| rule.send("on_#{day.downcase}") }.sort_by{ |rule| rule.start_hour }
+      day_rules = rules.select{ |rule| rule.send("on_#{day.downcase}?") }.sort_by{ |rule| rule.start_hour }
       # for now, skip days with no rules
       if day_rules.empty?
         # build entire day not rule

@@ -5,7 +5,7 @@
     - ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].each do |day|
       %li.left
         = f.label "on_#{day.downcase}".to_sym, day
-        = f.check_box "on_#{day.downcase}".to_sym, { :checked => schedule_rule.send("on_#{day.downcase}") ? 'checked' : '' }
+        = f.check_box "on_#{day.downcase}".to_sym
     %li.clear
 %li
   %ul.form.box
