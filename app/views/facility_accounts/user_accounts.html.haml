@@ -4,7 +4,8 @@
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_account', :locals => {:secondary_tab => 'search_by_user'}
 
-%ul
-  %li= link_to t('.add_account'), new_facility_account_path(current_facility, {:owner_user_id => @user.id})
+- if SettingsHelper.feature_on?(:edit_accounts)
+  %ul
+    %li= link_to t('.add_account'), new_facility_account_path(current_facility, {:owner_user_id => @user.id})
 
 = render(:partial => 'accounts', :locals => {:accounts => @user.accounts, :title => t('.title', :name => @user.full_name), :role => 'Owner'})

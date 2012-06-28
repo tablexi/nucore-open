@@ -25,3 +25,13 @@ email:
 
 billing:
   review_period: <%= 7.days %>
+
+#
+# For these settings use SettingsHelper#feature_on?
+feature:
+  create_users_on: true
+  password_update_on: true
+  recharge_accounts_on: true
+  expense_accounts_on: true
+  edit_accounts_on: true
+  suspend_accounts_on: true

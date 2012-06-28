@@ -59,127 +59,149 @@ describe FacilityAccountsController do
   end
 
 
-  context 'new' do
+  context 'edit accounts', :if => SettingsHelper.feature_on?(:edit_accounts) do
+    context 'new' do
 
-    before(:each) do
-      @method=:get
-      @action=:new
-      @params={ :facility_id => @authable.url_name, :owner_user_id => @owner.id }
+      before(:each) do
+        @method=:get
+        @action=:new
+        @params={ :facility_id => @authable.url_name, :owner_user_id => @owner.id }
+      end
+
+      it_should_require_login
+
+      it_should_deny_all [:staff, :senior_staff]
+
+      it_should_allow_all facility_managers do
+        assigns(:owner_user).should == @owner
+        assigns(:account).should be_new_record
+        assigns(:account).expires_at.should_not be_nil
+        should render_template('new')
+      end
+
     end
 
-    it_should_require_login
 
-    it_should_deny_all [:staff, :senior_staff]
+    context 'edit' do
 
-    it_should_allow_all facility_managers do
-      assigns(:owner_user).should == @owner
-      assigns(:account).should be_new_record
-      assigns(:account).expires_at.should_not be_nil
-      should render_template('new')
+      before(:each) do
+        @method=:get
+        @action=:edit
+        @params={ :facility_id => @authable.url_name, :id => @account.id }
+      end
+
+      it_should_require_login
+
+      it_should_deny_all [:staff, :senior_staff]
+
+      it_should_allow_all facility_managers do
+        assigns(:account).should == @account
+        should render_template('edit')
+      end
+
     end
 
+
+    context 'update' do
+
+      before(:each) do
+        @method=:put
+        @action=:update
+        @params={
+          :facility_id => @authable.url_name,
+          :id => @account.id,
+          :account => Factory.attributes_for(:nufs_account)
+        }
+      end
+
+      it_should_require_login
+
+      it_should_deny_all [:staff, :senior_staff]
+
+      it_should_allow_all facility_managers do
+        assigns(:account).should == @account
+        assigns(:account).affiliate.should be_nil
+        assigns(:account).affiliate_other.should be_nil
+        should set_the_flash
+        assert_redirected_to facility_account_url
+      end
+
+    end
+
+
+    context 'create' do
+
+      before :each do
+        @method=:post
+        @action=:create
+        @acct_attrs=Factory.attributes_for(:nufs_account)
+        @params={
+          :id => @account.id,
+          :facility_id => @authable.url_name,
+          :owner_user_id => @owner.id,
+          :account => @acct_attrs,
+          :class_type => 'NufsAccount'
+        }
+        @controller.stubs(:current_facility).returns(@authable)
+      end
+
+      it_should_require_login
+
+      it_should_deny_all [:staff, :senior_staff]
+
+      it_should_allow_all facility_managers do |user|
+        should assign_to(:account).with_kind_of(NufsAccount)
+        assigns(:account).account_number.should == @acct_attrs[:account_number]
+        assigns(:account).created_by.should == user.id
+        assigns(:account).account_users.size.should == 1
+        assigns(:account).account_users[0] == @owner
+        assigns(:account).affiliate.should be_nil
+        assigns(:account).affiliate_other.should be_nil
+        should set_the_flash
+        assert_redirected_to user_accounts_url(@authable, assigns(:account).owner_user)
+      end
+
+    end
+
+
+    context 'new_account_user_search' do
+
+      before :each do
+        @method=:get
+        @action=:new_account_user_search
+        @params={ :facility_id => @authable.url_name }
+      end
+
+      it_should_require_login
+
+      it_should_deny_all [:staff, :senior_staff]
+
+      it_should_allow_all facility_managers do
+        should render_template 'new_account_user_search'
+      end
+
+    end
+
+
+    context 'user_search' do
+
+      before :each do
+        @method=:get
+        @action=:user_search
+        @params={ :facility_id => @authable.url_name }
+      end
+
+      it_should_require_login
+
+      it_should_deny_all [:staff, :senior_staff]
+
+      it_should_allow_all facility_managers do
+        should render_template 'user_search'
+      end
+
+    end
   end
 
-
-  context 'edit' do
-
-    before(:each) do
-      @method=:get
-      @action=:edit
-      @params={ :facility_id => @authable.url_name, :id => @account.id }
-    end
-
-    it_should_require_login
-
-    it_should_deny_all [:staff, :senior_staff]
-
-    it_should_allow_all facility_managers do
-      assigns(:account).should == @account
-      should render_template('edit')
-    end
-
-  end
-
-
-  context 'update' do
-
-    before(:each) do
-      @method=:put
-      @action=:update
-      @params={
-        :facility_id => @authable.url_name,
-        :id => @account.id,
-        :account => Factory.attributes_for(:nufs_account)
-      }
-    end
-
-    it_should_require_login
-
-    it_should_deny_all [:staff, :senior_staff]
-
-    it_should_allow_all facility_managers do
-      assigns(:account).should == @account
-      assigns(:account).affiliate.should be_nil
-      assigns(:account).affiliate_other.should be_nil
-      should set_the_flash
-      assert_redirected_to facility_account_url
-    end
-
-  end
-
-
-  context 'create' do
-
-    before :each do
-      @method=:post
-      @action=:create
-      @acct_attrs=Factory.attributes_for(:nufs_account)
-      @params={
-        :id => @account.id,
-        :facility_id => @authable.url_name,
-        :owner_user_id => @owner.id,
-        :account => @acct_attrs,
-        :class_type => 'NufsAccount'
-      }
-      @controller.stubs(:current_facility).returns(@authable)
-    end
-
-    it_should_require_login
-
-    it_should_deny_all [:staff, :senior_staff]
-
-    it_should_allow_all facility_managers do |user|
-      should assign_to(:account).with_kind_of(NufsAccount)
-      assigns(:account).account_number.should == @acct_attrs[:account_number]
-      assigns(:account).created_by.should == user.id
-      assigns(:account).account_users.size.should == 1
-      assigns(:account).account_users[0] == @owner
-      assigns(:account).affiliate.should be_nil
-      assigns(:account).affiliate_other.should be_nil
-      should set_the_flash
-      assert_redirected_to user_accounts_url(@authable, assigns(:account).owner_user)
-    end
-
-  end
-
-
-  context 'new_account_user_search' do
-
-    before :each do
-      @method=:get
-      @action=:new_account_user_search
-      @params={ :facility_id => @authable.url_name }
-    end
-
-    it_should_require_login
-
-    it_should_deny_all [:staff, :senior_staff]
-
-    it_should_allow_all facility_managers do
-      should render_template 'new_account_user_search'
-    end
-
-  end
   
   context 'accounts_receivable' do
 
@@ -191,26 +213,6 @@ describe FacilityAccountsController do
 
     it_should_allow_managers_only
     it_should_deny_all [:staff, :senior_staff]
-  end
-
-
-
-  context 'user_search' do
-
-    before :each do
-      @method=:get
-      @action=:user_search
-      @params={ :facility_id => @authable.url_name }
-    end
-
-    it_should_require_login
-
-    it_should_deny_all [:staff, :senior_staff]
-
-    it_should_allow_all facility_managers do
-      should render_template 'user_search'
-    end
-
   end
 
 
@@ -308,7 +310,7 @@ describe FacilityAccountsController do
   end
 
 
-  context 'show_statement' do
+  context 'show_statement', :if => AccountManager.using_statements? do
 
     before :each do
       @method=:get
@@ -361,45 +363,47 @@ describe FacilityAccountsController do
   end
 
 
-  context 'suspend' do
+  context 'suspension', :if => SettingsHelper.feature_on?(:suspend_accounts) do
+    context 'suspend' do
 
-    before :each do
-      @method=:get
-      @action=:suspend
-      @params={ :facility_id => @authable.url_name, :account_id => @account.id }
+      before :each do
+        @method=:get
+        @action=:suspend
+        @params={ :facility_id => @authable.url_name, :account_id => @account.id }
+      end
+
+      it_should_require_login
+
+      it_should_deny_all [:staff, :senior_staff]
+
+      it_should_allow_all facility_managers do
+        assigns(:account).should == @account
+        should set_the_flash
+        assert_redirected_to facility_account_path(@authable, @account)
+      end
+
     end
 
-    it_should_require_login
 
-    it_should_deny_all [:staff, :senior_staff]
+    context 'unsuspend' do
 
-    it_should_allow_all facility_managers do
-      assigns(:account).should == @account
-      should set_the_flash
-      assert_redirected_to facility_account_path(@authable, @account)
+      before :each do
+        @method=:get
+        @action=:unsuspend
+        @params={ :facility_id => @authable.url_name, :account_id => @account.id }
+      end
+
+      it_should_require_login
+
+      it_should_deny_all [:staff, :senior_staff]
+
+      it_should_allow_all facility_managers do
+        assigns(:account).should == @account
+        should set_the_flash
+        assert_redirected_to facility_account_path(@authable, @account)
+      end
+
     end
-
-  end
-
-
-  context 'unsuspend' do
-
-    before :each do
-      @method=:get
-      @action=:unsuspend
-      @params={ :facility_id => @authable.url_name, :account_id => @account.id }
-    end
-
-    it_should_require_login
-
-    it_should_deny_all [:staff, :senior_staff]
-
-    it_should_allow_all facility_managers do
-      assigns(:account).should == @account
-      should set_the_flash
-      assert_redirected_to facility_account_path(@authable, @account)
-    end
-
   end
 
 end

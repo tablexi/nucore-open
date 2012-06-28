@@ -45,7 +45,7 @@
       -# %td= order_detail.order.created_by_user.full_name  
       - unless @account
         %td= order_detail.account
-        %td= order_detail.account.owner.user
+        %td= order_detail.account.owner_user
       %td.currency 
         - if order_detail.cost_estimated?
           %span.estimated_cost

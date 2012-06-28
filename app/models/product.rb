@@ -13,6 +13,13 @@ class Product < ActiveRecord::Base
 
   validates_presence_of :name, :type
   validate_url_name :url_name
+  validates_numericality_of(
+      :account,
+      :only_integer => true,
+      :greater_than_or_equal_to => 0,
+      :less_than_or_equal_to => 99999,
+      :if => :account_required
+  ) if SettingsHelper.feature_on? :expense_accounts
   
   scope :active,             :conditions => { :is_archived => false, :is_hidden => false }
   scope :active_plus_hidden, :conditions => { :is_archived => false}
@@ -81,7 +88,7 @@ class Product < ActiveRecord::Base
   end
 
   def set_default_pricing
-    [ PriceGroup.base.first, PriceGroup.external.first ].each do |pg|
+    PriceGroup.globals.all.each do |pg|
       PriceGroupProduct.create!(:product => self, :price_group => pg)
     end
   end
@@ -97,6 +104,13 @@ class Product < ActiveRecord::Base
   
   def available_for_purchase?
     !is_archived? && facility.is_active?
+  end
+
+
+  private
+
+  def account_required
+    true
   end
   
 end

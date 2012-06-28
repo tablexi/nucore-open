@@ -13,8 +13,8 @@ class Instrument < Product
 
   before_validation :init_or_destroy_relay
 
-  validates_presence_of :initial_order_status_id, :facility_account_id
-  validates_numericality_of :account, :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 99999
+  validates_presence_of :initial_order_status_id
+  validates_presence_of :facility_account_id if SettingsHelper.feature_on? :recharge_accounts
   validates_numericality_of :min_reserve_mins, :max_reserve_mins, :auto_cancel_mins, :only_integer => true, :greater_than_or_equal_to => 0, :allow_nil => true
   validate :check_relay_with_right_type
   
@@ -116,7 +116,7 @@ class Instrument < Product
   end
 
   def set_default_pricing
-    [ PriceGroup.base.first, PriceGroup.external.first ].each do |pg|
+    PriceGroup.globals.all.each do |pg|
       PriceGroupProduct.create!(:product => self, :price_group => pg, :reservation_window => PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)
     end
   end

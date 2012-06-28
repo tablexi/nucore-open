@@ -1,6 +1,6 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
-describe FacilityFacilityAccountsController do
+describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:recharge_accounts) do
   render_views
 
   before(:all) { create_users }

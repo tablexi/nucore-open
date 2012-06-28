@@ -1,11 +1,14 @@
 Nucore::Application.routes.draw do |map|
   
   devise_for :users, :skip => :passwords
-  
-  match '/users/password/edit_current' => 'user_password#edit_current', :as => 'edit_current_password'  
-  match '/users/password/reset' => 'user_password#reset', :as => 'reset_password'
-  match '/users/password/edit' => 'user_password#edit', :as => 'edit_password'
-  match '/users/password/update' => 'user_password#update', :as => 'update_password'
+
+  if SettingsHelper.feature_on? :password_update
+    match '/users/password/edit_current' => 'user_password#edit_current', :as => 'edit_current_password'
+    match '/users/password/reset' => 'user_password#reset', :as => 'reset_password'
+    match '/users/password/edit' => 'user_password#edit', :as => 'edit_password'
+    match '/users/password/update' => 'user_password#update', :as => 'update_password'
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
 
   # authentication
@@ -113,7 +116,15 @@ Nucore::Application.routes.draw do |map|
       user.map_user '/map_user', :controller => 'facility_users', :action => 'map_user'
     end
 
-    facility.resources :users, :except => [:edit, :update], :collection => {:username_search => :post, :new_search => :get} do |user|
+    except=[ :edit, :update ]
+    collection={:username_search => :post, :new_search => :get}
+
+    unless SettingsHelper.feature_on?(:create_users)
+      except += [ :new, :create ]
+      collection.clear
+    end
+
+    facility.resources :users, :except => except, :collection => collection do |user|
       user.switch_to   '/switch_to',  :controller => 'users', :action => 'switch_to', :conditions => {:method => :get}
       user.orders       'orders',      :controller => 'users', :action => 'orders'
       user.reservations 'reservations',      :controller => 'users', :action => 'reservations'
@@ -121,7 +132,7 @@ Nucore::Application.routes.draw do |map|
       user.instruments  'instruments', :controller => 'users', :action => 'instruments'
     end
 
-    facility.resources :facility_accounts, :controller => 'facility_facility_accounts', :only => [:index, :new, :create, :edit, :update]
+    facility.resources :facility_accounts, :controller => 'facility_facility_accounts', :only => [:index, :new, :create, :edit, :update] if SettingsHelper.feature_on? :recharge_accounts
 
     facility.resources :orders, :controller => 'facility_orders', :only => [:index, :show], :collection => {:batch_update => :post, :show_problems => :get, :disputed => :get} do |order|
       order.resources :order_details, :controller => 'facility_order_details', :only => [:edit, :update ], :member => {:remove_from_journal => :get} do |order_detail|
@@ -134,14 +145,25 @@ Nucore::Application.routes.draw do |map|
     facility.resources :reservations, :controller => 'facility_reservations', :only => :index, :collection => {:batch_update => :post, :show_problems => :get, :disputed => :get}
 
     facility.accounts_receivable '/accounts_receivable', :controller => 'facility_accounts', :action => 'accounts_receivable', :conditions => {:method => :get}
-    
-    facility.resources :accounts, :controller => 'facility_accounts', :only => [:index, :new, :create, :show, :edit, :update], :collection => {:user_search => :get, :search => :get, :search_results => [:get, :post], :new_account_user_search => :get} do |account|
-      account.suspend '/suspend', :controller => 'facility_accounts', :action => 'suspend'
-      account.unsuspend '/unsuspend', :controller => 'facility_accounts', :action => 'unsuspend'
-      account.resources :account_users, :controller => 'facility_account_users', :only => [:new, :destroy, :create, :update], :collection => {:user_search => :get}
-      account.statement  '/statements/:statement_id.:format', :controller => 'facility_accounts', :action => 'show_statement', :conditions => {:method => :get}
+
+    only=[ :index,  :show, ]
+    collection={ :search => :get, :search_results => [:get, :post] }
+    can_edit_accounts=SettingsHelper.feature_on? :edit_accounts
+
+    if can_edit_accounts
+      only += [:new, :create, :edit, :update ]
+      collection.merge!(:new_account_user_search => :get, :user_search => :get)
+    end
+
+    facility.resources :accounts, :controller => 'facility_accounts', :only => only, :collection => collection do |account|
       account.members '/members', :controller => 'facility_accounts', :action => 'members', :conditions => {:method => :get}
-      
+      account.resources :account_users, :controller => 'facility_account_users', :only => [:new, :destroy, :create, :update], :collection => {:user_search => :get} if can_edit_accounts
+      account.statement  '/statements/:statement_id.:format', :controller => 'facility_accounts', :action => 'show_statement', :conditions => {:method => :get} if AccountManager.using_statements?
+
+      if SettingsHelper.feature_on? :suspend_accounts
+        account.suspend '/suspend', :controller => 'facility_accounts', :action => 'suspend'
+        account.unsuspend '/unsuspend', :controller => 'facility_accounts', :action => 'unsuspend'
+      end
     end
 
     facility.resources :journals, :controller => 'facility_journals', :only => [:index, :new, :create, :update, :show] do |journal|

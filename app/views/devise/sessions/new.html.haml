@@ -21,4 +21,5 @@
   %ul.horiz
     %li= submit_tag t('pages.login'), :class => 'btn'
 
-= link_to "Forgot password?", :reset_password
+- if SettingsHelper.feature_on? :password_update
+  = link_to "Forgot password?", :reset_password
