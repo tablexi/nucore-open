@@ -51,6 +51,10 @@ label {
 label.inline {
 	display:inline;
 }
+label.inline_wide {
+	display:inline-block;
+	width: 11em;
+}
 
 .text_left {
 	text-align:left;

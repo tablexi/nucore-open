@@ -45,7 +45,7 @@ Factory.define_default :nufs_account, :class => NufsAccount do |o|
   end
 
   o.description 'nufs account description'
-  o.expires_at Time.zone.now + 1.month
+  o.expires_at { Time.zone.now + 1.month }
   o.created_by 0
 end 
 
@@ -100,8 +100,8 @@ Factory.define_default :instrument_price_policy, :class => InstrumentPricePolicy
   o.minimum_cost 1
   o.usage_mins 1
   o.overage_mins 1
-  o.start_date Time.zone.now.beginning_of_day
-  o.expire_date PricePolicy.generate_expire_date(Time.zone.now.beginning_of_day)
+  o.start_date { Time.zone.now.beginning_of_day }
+  o.expire_date { PricePolicy.generate_expire_date(Time.zone.now.beginning_of_day) }
 end
 
 Factory.define_default :item, :class => Item do |o|
@@ -118,8 +118,8 @@ end
 Factory.define_default :item_price_policy, :class => ItemPricePolicy do |o|
   o.unit_cost 1
   o.unit_subsidy 0
-  o.start_date Date.today
-  o.expire_date PricePolicy.generate_expire_date(Date.today)
+  o.start_date { Date.today }
+  o.expire_date { PricePolicy.generate_expire_date(Date.today) }
 end
 
 Factory.define_default :service, :class => Service do |o|
@@ -147,8 +147,8 @@ end
 Factory.define_default :service_price_policy, :class => ServicePricePolicy do |o|
   o.unit_cost 1
   o.unit_subsidy 0
-  o.start_date Date.today
-  o.expire_date PricePolicy.generate_expire_date(Date.today)
+  o.start_date { Date.today }
+  o.expire_date { PricePolicy.generate_expire_date(Date.today) }
 end
 
 Factory.define_default :schedule_rule, :class => ScheduleRule do |o|
@@ -170,7 +170,7 @@ end
 Factory.define_default :payment_account_transaction do |pat|
   pat.description 'fake trans'
   pat.transaction_amount -12.34
-  pat.finalized_at Time.zone.now
+  pat.finalized_at { Time.zone.now }
   pat.reference 'abc123xyz'
   pat.is_in_dispute false
 end
@@ -183,9 +183,8 @@ Factory.define_default :statement_row do |s|
 end
 
 Factory.define_default :reservation do |r|
-  time=Time.zone.parse("#{Date.today.to_s} 10:00:00") + 1.day
-  r.reserve_start_at time
-  r.reserve_end_at time + 1.hour
+  r.reserve_start_at { Time.zone.parse("#{Date.today.to_s} 10:00:00") + 1.day }
+  r.reserve_end_at { Time.zone.parse("#{Date.today.to_s} 10:00:00") + 1.day + 1.hour }
 end
 
 Factory.define_default :journal do |j|
