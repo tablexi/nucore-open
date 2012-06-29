@@ -92,7 +92,11 @@ $(document).ready(function() {
   function loadTabCounts() {
     var tabs = [];
     $('.tab_counts a:not(.active)').each(function() {
-      if (this.id) tabs.push(this.id);
+      if (this.id) {
+        tabs.push(this.id);
+        // Add a spinner
+        $(this).append('<span class="updating"></span>');
+      }
     });
     if (tabs.length > 0) {
       var base = '';
@@ -107,7 +111,7 @@ $(document).ready(function() {
         data: { tabs: tabs },
         success: function(data, textStatus, xhr) {
           for (i in tabs) {
-            $('.tab_counts').find('a#' + tabs[i]).append("&nbsp;<span>(" + data[tabs[i]] +")</span>");
+            $('.tab_counts').find('a#' + tabs[i] + ' .updating').text("(" + data[tabs[i]] + ")").removeClass('updating').addClass('updated');
           }
         }
       });
