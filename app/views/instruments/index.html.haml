@@ -16,37 +16,12 @@
     %li= link_to 'Add Instrument', new_facility_instrument_path
 
 - if @instruments.empty?
-  %p.notice== No #{params[:archived].nil? || params[:archived] != 'true' ? 'active' : 'inactive'} instruments exist for this facility.
+  %p.notice No #{params[:archived].nil? || params[:archived] != 'true' ? 'active' : 'inactive'} instruments exist for this facility.
 - else
-  %table.instrument_table
+  %table
     %tr
-      %th Instrument
-      %th.centered Status
-      %th Upcoming Reservations
+      %th== Instrument Name
     - @instruments.each do |instrument|
       %tr
         %td= link_to instrument.name, facility_instrument_schedule_path(current_facility, instrument)
-        %td.centered
-          - if instrument.has_relay?
-            - status = instrument.current_instrument_status
-            %div{:id => "instrument_status_#{instrument.id}"}
-              - if status
-                %ul
-                  %li= "#{status.status_string} (#{link_to("Refresh", facility_instrument_status_path(current_facility, instrument), :id => "instrument_status_link_#{instrument.id}", :class => 'instrument_status_link')})".html_safe
-                  %li=h human_datetime(status.created_at)
-              - else
-                = "Unknown (#{link_to("Refresh", facility_instrument_status_path(current_facility, instrument), :id => "instrument_status_link_#{instrument.id}", :class => 'instrument_status_link')})".html_safe
-            %p
-              = link_to("#{instrument.relay.control_mechanism.capitalize} On", facility_instrument_switch_path(current_facility, instrument, :switch => 'on'), :id => "turn_on_#{instrument.id}", :class => 'instrument_switch_link')
-              |
-              = link_to("#{instrument.relay.control_mechanism.capitalize} Off", facility_instrument_switch_path(current_facility, instrument, :switch => 'off'), :id => "turn_off_#{instrument.id}", :class => 'instrument_switch_link')
-          - else
-            No Timer
-        %td
-          - unless @reservations[instrument.id].empty?
-            %ul
-              - @reservations[instrument.id].each do |r|
-                - if r.order_detail
-                  %li= link_to r, edit_facility_order_order_detail_path(current_facility, r.order_detail.order, r.order_detail)
-                - else
-                  %li=h r
+  
