@@ -1,5 +1,6 @@
 class FacilityJournalsController < ApplicationController
   include DateHelper
+  include CSVHelper
 
   admin_tab     :all
   before_filter :authenticate_user!
@@ -150,12 +151,16 @@ class FacilityJournalsController < ApplicationController
 
   # GET /facilities/journals/:id
   def show
-
+    @journal_rows = @journal.journal_rows
+    @filename = "journal_#{@journal.id}_#{@journal.created_at.strftime("%Y%m%d")}"
     respond_to do |format|
       format.xml do
-        @journal_rows = @journal.journal_rows
-        headers['Content-Disposition'] = "attachment; filename=\"journal_#{@journal.id}_#{@journal.created_at.strftime("%Y%m%d")}.xml\""
+        headers['Content-Disposition'] = "attachment; filename=\"@filename.xml\""
         render :partial => 'rake_show', :locals => { :journal => @journal, :journal_rows => @journal_rows }, :layout => false
+      end
+
+      format.csv do
+        set_csv_headers("#{@filename}.csv")
       end
 
       format.any { @order_details = @journal.order_details }

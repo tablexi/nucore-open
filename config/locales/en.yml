@@ -889,6 +889,7 @@ en:
       facility:
         url_name: URL name
       product:
+        url_name: ID
         requires_approval: Requires Approval
       price_group:
         is_internal: Is Internal?
@@ -909,6 +910,7 @@ en:
         created_by: Sent By
         created_at: Sent At
       account:
+        account_number: Number
         expires_at: Expires
       nufs_account:
         account_number: Payment Source

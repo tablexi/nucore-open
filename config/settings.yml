@@ -7,6 +7,10 @@ price_group:
 financial:
   # in the format MM-DD
   fiscal_year_begins: 09-01
+  journal_format:
+    xls: true
+    csv: true
+    xml: true
 
 validator:
   class_name: ValidatorDefault
