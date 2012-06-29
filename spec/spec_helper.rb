@@ -20,6 +20,14 @@ Spork.prefork do
   require 'mocha'
   require 'factories'
 
+  #
+  # Check for engine factories. If they exist and the engine is in use load it up
+  Dir[File.expand_path('vendor/engines/*', Rails.root)].each do |engine|
+    engine_name=File.basename engine
+    factory_file=File.join(engine, 'spec/factories.rb')
+    require factory_file if File.exist?(factory_file) && EngineManager.engine_loaded?(engine_name)
+  end
+
   # Uncomment the next line to use webrat's matchers
   #require 'webrat/integrations/rspec-rails'
 
@@ -90,7 +98,10 @@ Spork.prefork do
       @epg = PriceGroup.find_or_create_by_name(:name => Settings.price_group.name.external, :is_internal => false, :display_order => 3)
       @epg.save(:validate => false)
 
-      now=Time.zone.parse("#{Date.today.to_s} 09:30:00")
+      #now=Time.zone.parse("#{Date.today.to_s} 09:30:00")
+      Timecop.return
+      now=(SettingsHelper::fiscal_year_beginning(Date.today) + 1.year + 10.days).change(:hour => 9, :min => 30) 
+      #puts "travelling to #{now}"
       Timecop.travel(now)
     end
   end

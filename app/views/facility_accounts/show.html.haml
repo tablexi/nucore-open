@@ -19,17 +19,9 @@
   %li
     %label= t('.label.description')
     =h @account.description
-  - if @account.is_a?(CreditCardAccount)
-    %li
-      %label= t('.label.name')
-      =h @account.name_on_card
-    %li
-      %label= t('.label.expiration')
-      =h "#{@account.expiration_month}/#{@account.expiration_year}"
-  - else
-    %li
-      %label= t('.label.expiration')
-      = human_datetime(@account.expires_at, :date_only => true)
+  %li
+    %label= t('.label.expiration')
+    = human_datetime(@account.expires_at, :date_only => true)
 
   - if @account.affiliate
     %li

@@ -34,7 +34,7 @@
           %p= @instrument.relay.password.presence || 'N/A'
         %li
           %label= t '.label.relay.auto_logout'
-          %p= @instrument.relay.auto_logout ? 'Yes' : 'No'
+          %p= @instrument.relay.auto_logout? ? 'Yes' : 'No'
     - else
       %p UNKNOWN RELAY TYPE
   %li

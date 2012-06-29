@@ -147,4 +147,46 @@ describe Journal do
     @journal.is_successful=true
     @journal.should_not be_open
   end
+
+  context 'order_details_span_fiscal_years?' do
+    before :each do
+      Settings.financial.fiscal_year_begins = '06-01'
+      @owner    = Factory.create(:user)
+      @account  = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner) ])
+      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
+      @item = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @price_group = Factory.create(:price_group, :facility => @facility)
+      Factory.create(:user_price_group_member, :user => @owner, :price_group => @price_group)
+      @pp = @item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
+
+      # Create one order detail fulfulled in each month for a two year range
+      d1 = Time.zone.parse('2020-01-01')
+      @order_details = []
+      (0..23).each do |i|
+        order=@owner.orders.create(Factory.attributes_for(:order, :created_by => @owner))
+        od = order.order_details.create(Factory.attributes_for(:order_detail, :product => @item))
+        od.update_attributes(:actual_cost => 20, :actual_subsidy => 0)
+        od.to_complete!
+        od.update_attributes(:fulfilled_at => d1 + i.months)
+        @order_details << od
+      end
+      @order_details.size.should == 24
+      # You can use this to view the indexes
+      # @order_details.each_with_index do |od, i|
+      #   puts "#{i} #{od.fulfilled_at}"
+      # end
+    end 
+    it 'should not span fiscal years with everything in the same year' do
+      Journal.order_details_span_fiscal_years?(@order_details[5..16]).should be_false
+    end
+    it 'should span fiscal years when it goes over the beginning' do
+      Journal.order_details_span_fiscal_years?([@order_details[6], @order_details[5], @order_details[4]]).should be_true
+    end
+    it 'should span fiscal years when it goes over the end' do
+      Journal.order_details_span_fiscal_years?(@order_details[16..17]).should be_true
+    end
+    it 'should return false with just one order detail' do
+      Journal.order_details_span_fiscal_years?([@order_details[3]])
+    end
+  end
 end

@@ -12,7 +12,7 @@
     - order = od.order
     - res = od.reservation
     %tr
-      %td.centered= link_to od, order_order_detail_path(order, od)
+      %td.centered= link_to od, current_facility ? edit_facility_order_order_detail_path(current_facility, order, od) : order_order_detail_path(order, od)
       %td.centered
         - if res.can_switch_instrument_on?
           = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'on')
@@ -32,9 +32,9 @@
             = link_to 'Begin Now', order_order_detail_reservation_move_reservation_path(order, od, res), :class => 'move-res', :id => res.id
       %td
         - if res.can_edit?
-          = link_to res, edit_order_order_detail_reservation_path(order, od, res)
+          = link_to res, current_facility ? edit_facility_order_order_detail_reservation_path(current_facility, order, od, res) : edit_order_order_detail_reservation_path(order, od, res)
         - else
-          = link_to res, order_order_detail_reservation_path(order, od, res)
+          = link_to res, current_facility ? facility_order_order_detail_reservation_path(current_facility, order, od, res) : order_order_detail_reservation_path(order, od, res)
       %td
         %ul
           %li

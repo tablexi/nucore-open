@@ -202,14 +202,15 @@
         = render :partial => 'price_row', :locals => { :form => f }
       %tr
         %td{:colspan => '6'}
-          %label.inline Note:
+          %label.inline_wide Note:
           - opts={ :maxlength => 100, :size => 100 }
           - opts.merge!(:disabled => 'disabled') if @order_detail.reconciled?
           = f.text_field(:note, opts)
           - if @can_be_reconciled || @order_detail.reconciled?
-            %span#reconcile-note.indented
-              %label.inline= t('.label.reconcile')
-              = f.text_field(:reconciled_note, :style=> "width:360px")
+            %br/
+            %span#reconcile-note
+              %label.inline_wide= t('.label.reconcile')
+              = f.text_field(:reconciled_note, {:maxlength => 255, :size => 100})
 
   - if @order_detail.cost_estimated?
     %p.footnote= t('.foot.estimated')
