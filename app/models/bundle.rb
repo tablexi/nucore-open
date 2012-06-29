@@ -37,4 +37,11 @@ class Bundle < Product
       return false unless p.can_purchase?(group_ids)
     end
   end
+
+
+  private
+
+  def account_required
+    false
+  end
 end

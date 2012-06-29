@@ -78,7 +78,8 @@ class Journal < ActiveRecord::Base
     order_detail_ids = []
     pending_facility_ids = Journal.facility_ids_with_pending_journals
     row_errors = []
- 
+    recharge_enabled=SettingsHelper.feature_on? :recharge_accounts
+
     # create rows for each transaction
     order_details.each do |od|
       row_errors << "##{od} is already journaled in journal ##{od.journal_id}" if od.journal_id
@@ -92,7 +93,7 @@ class Journal < ActiveRecord::Base
         # check against facility_ids which actually have pending journals
         # in the DB
         if pending_facility_ids.member? od_facility_id
-          raise  "Facility: #{Facility.find(od_facility_id)} already has a pending journal"
+          raise  "This journal date overlaps with a pending journal. You may not generate a new journal until the pending journal is closed."
         end
         facility_ids_already_in_journal.add(od_facility_id)
       end 
@@ -100,7 +101,7 @@ class Journal < ActiveRecord::Base
       begin
         ValidatorFactory.instance(account.account_number, od.product.account).account_is_open!
       rescue ValidatorError => e
-        row_errors << "Account #{account} on order detail ##{od} is invalid. It #{e.message}."
+        row_errors << "Account #{account} on order detail ##{od} is invalid. #{e.message}."
       end
 
 
@@ -112,7 +113,7 @@ class Journal < ActiveRecord::Base
         :account         => od.product.account
       )
       order_detail_ids << od.id
-      recharge_by_product[od.product_id] = recharge_by_product[od.product_id].to_f + od.total
+      recharge_by_product[od.product_id] = recharge_by_product[od.product_id].to_f + od.total if recharge_enabled
     end
 
     # create rows for each recharge chart string

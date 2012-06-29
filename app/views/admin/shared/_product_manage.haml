@@ -6,9 +6,10 @@
   %label= t('shared.product_manage.label.description')
   .wysiwyg= product.description
 - unless product.is_a?(Bundle)
-  %li
-    %label= t('shared.product_manage.label.deposit')
-    =h product.facility_account.account_number + (product.facility_account.is_active? ? '' : ' (inactive)')
+  - if SettingsHelper.feature_on? :recharge_accounts
+    %li
+      %label= t('shared.product_manage.label.deposit')
+      =h product.facility_account.account_number + (product.facility_account.is_active? ? '' : ' (inactive)')
   %li
     %label= t('shared.product_manage.label.initial_status')
     =h product.initial_order_status.name

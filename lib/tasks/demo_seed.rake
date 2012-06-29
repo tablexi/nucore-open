@@ -1,6 +1,9 @@
 # This file contains a base set of data appropriate for development or testing.
 # The data can then be loaded with the rake db:bi_seed.
-
+#
+# !!!! BE AWARE that ActiveRecord's #find_or_create_by... methods do not
+# always work properly! You're better off doing a #find_by, checking
+# the return's existence, and creating if necessary !!!!
 namespace :demo  do
   desc "bootstrap db with data appropriate for demonstration"
 
@@ -47,20 +50,25 @@ namespace :demo  do
       end
     end
 
-    pgnu = PriceGroup.find_or_create_by_name({
-      :name => 'Base Rate', :is_internal => true, :display_order => 1
-    })
-    pgnu.save(:validate => false) # override facility validator
 
-    pgcc = PriceGroup.find_or_create_by_name({
-      :name => 'Cancer Center Rate', :is_internal => true, :display_order => 2
-    })
-    pgcc.save(:validate => false) # override facility validator
+    order=1
+    pgnu=pgex=nil
 
-    pgex = PriceGroup.find_or_create_by_name({
-      :name => 'External Rate', :is_internal => false, :display_order => 3
-    })
-    pgex.save(:validate => false) # override facility validator
+    Settings.price_group.name.to_hash.each do |k,v|
+      price_group = PriceGroup.find_or_create_by_name({
+        :name => v, :is_internal => (k == :base || k == :cancer_center), :display_order => order
+      })
+
+      price_group.save(:validate => false) # override facility validator
+
+      if k == :base
+        pgnu=price_group
+      elsif k == :external
+        pgex=price_group
+      end
+
+      order += 1
+    end
 
 
     fa = FacilityAccount.find_or_create_by_facility_id({
@@ -108,11 +116,6 @@ namespace :demo  do
       :facility_account_id => fa.id
     })
 
-    if instrument.new_record?
-      puts "INSTRUMENT CREATE FAILED!"
-      instrument.errors.full_messages.each{|m| puts m}      
-    end
-
     RelaySynaccessRevB.find_or_create_by_instrument_id({
       :instrument_id => instrument.id,
       :ip            => '192.168.10.135',
@@ -121,19 +124,25 @@ namespace :demo  do
       :password      => 'admin'
     })
 
-    bundle = Bundle.find_or_create_by_url_name({
-      :facility_id         => facility.id,
-      :account             => '75340',
-      :name                => 'Example Bundle',
-      :url_name            => 'example-bundle',
-      :description         => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non ipsum id odio cursus euismod eu bibendum nisl. Sed nec.</p>',
-      :requires_approval   => false,
-      :is_archived         => false,
-      :is_hidden           => false,
-      :facility_account_id => fa.id,
-    })
-    bundle_item    = BundleProduct.create(:bundle => bundle, :product => item, :quantity => 1)
-    bundle_service = BundleProduct.create(:bundle => bundle, :product => service, :quantity => 1)
+    bundle=Bundle.find_by_url_name 'example-bundle'
+
+    unless bundle
+      bundle = Bundle.create!({
+        :facility_id         => facility.id,
+        :account             => '75340',
+        :name                => 'Example Bundle',
+        :url_name            => 'example-bundle',
+        :description         => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non ipsum id odio cursus euismod eu bibendum nisl. Sed nec.</p>',
+        :requires_approval   => false,
+        :is_archived         => false,
+        :is_hidden           => false,
+        :facility_account_id => fa.id,
+      })
+    end
+
+    BundleProduct.create(:bundle => bundle, :product => item, :quantity => 1)
+    BundleProduct.create(:bundle => bundle, :product => service, :quantity => 1)
+
     @item          = item
     @service       = service
     @instrument    = instrument
@@ -496,5 +505,13 @@ namespace :demo  do
     order_detail.actual_cost    = costs[:cost]
     order_detail.actual_subsidy = costs[:subsidy]
     order_detail.save!
+  end
+
+
+  def dump_record(model)
+    if model.new_record?
+      puts "#{model.class.name} CREATE FAILED!"
+      model.errors.full_messages.each{|m| puts m}
+    end
   end
 end

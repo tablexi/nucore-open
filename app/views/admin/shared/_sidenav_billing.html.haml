@@ -20,7 +20,7 @@
       %ul
         %li= link_to t_create_model(Journal),         new_facility_journal_path, :class => (sidenav_tab == 'new_journal' ? 'active' : '')
         %li= link_to t_manage_models(Journal),        facility_journals_path, :class => (sidenav_tab == 'journals' ? 'active' : '')
-    - unless all_facility?
+    - if !all_facility? && AccountManager.using_statements?
       %li.sub_menu
         .icon
         #{Statement.model_name.human.pluralize}

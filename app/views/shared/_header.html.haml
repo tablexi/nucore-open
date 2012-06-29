@@ -14,7 +14,7 @@
           )
       - else
         %li#user= "#{session_user.full_name} (#{session_user.username})"
-        - if current_user.external?
+        - if current_user.external? && SettingsHelper.feature_on?(:password_update)
           %li= link_to t("user_password.edit.head"), :edit_current_password 
         %li
           = link_to t('pages.cart'), :cart
