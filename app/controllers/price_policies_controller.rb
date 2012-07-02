@@ -92,6 +92,7 @@ class PricePoliciesController < ApplicationController
           format.html { redirect_to facility_product_price_policies_path }
         end
       else
+        flash[:error] = "There was an error saving the policy"
         format.html { render 'price_policies/edit' }
       end
     end
@@ -142,7 +143,8 @@ class PricePoliciesController < ApplicationController
     @price_policies = []
 
     raise ActiveRecord::RecordNotFound unless original_price_policies.all?{ |pp| pp.editable? } || original_price_policies.empty?
-    groups_with_policy = Hash[original_price_policies.map {|pp| [pp.price_group, pp] }]
+    # TODO Change to regular Hash once we don't need to support Ruby 1.8 anymore
+    groups_with_policy = ActiveSupport::OrderedHash[original_price_policies.map {|pp| [pp.price_group, pp] }]
     current_facility.price_groups.each do |pg|
       @price_policies << (groups_with_policy[pg] || model_class.new({:price_group_id => pg.id, :product_id => @product.id, :can_purchase => false }))
     end

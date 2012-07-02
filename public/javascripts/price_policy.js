@@ -27,7 +27,7 @@ $(document).ready(function() {
 
   $('input[type=text]').change(function(e) {
     setinternalcost(this);
-  });
+  }).trigger('change');
   
   $('input[type=text]').keyup(function(e) {
     setinternalcost(this);

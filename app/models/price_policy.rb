@@ -27,7 +27,7 @@ class PricePolicy < ActiveRecord::Base
   before_create :truncate_existing_policies
 
   def self.for_date(start_date)
-    where(dateize('start_date', ' = ?'), start_date)
+    where('start_date >= ? AND start_date <= ?', start_date.beginning_of_day, start_date.end_of_day)
   end
 
   def self.current

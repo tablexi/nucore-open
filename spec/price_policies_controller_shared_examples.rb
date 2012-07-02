@@ -1,14 +1,11 @@
-# require 'spec_helper'
-# require 'controller_spec_helper'
-
-shared_examples_for 'PricePoliciesController' do |product_type|
+shared_examples_for PricePoliciesController do |product_type|
   before(:each) do
     @product_type = product_type
     @authable         = Factory.create(:facility)
     @facility_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
     @price_group      = @authable.price_groups.create(Factory.attributes_for(:price_group))
     @price_group2     = @authable.price_groups.create(Factory.attributes_for(:price_group))
-    @product          = @authable.items.create(Factory.attributes_for(product_type, :facility_account_id => @facility_account.id))
+    @product          = @authable.send(product_type.to_s.pluralize).create(Factory.attributes_for(product_type, :facility_account_id => @facility_account.id))
     @price_policy     = make_price_policy
     @price_policy.should be_valid
     @params={ :facility_id => @authable.url_name, :"#{product_type}_id" => @product.url_name }
@@ -133,13 +130,8 @@ shared_examples_for 'PricePoliciesController' do |product_type|
   context 'policy params' do
 
     before :each do
-      @start_date=Time.zone.now+1.year
-      @expire_date=PricePolicy.generate_expire_date(@start_date)
-
       @params.merge!({
         :interval => 5,
-        :start_date => @start_date.to_s,
-        :expire_date => @expire_date.to_s
       })
 
       @authable.price_groups.each do |pg|
@@ -153,6 +145,12 @@ shared_examples_for 'PricePoliciesController' do |product_type|
       before :each do
         @method=:post
         @action=:create
+        @start_date=Time.zone.now+1.year
+        @expire_date=PricePolicy.generate_expire_date(@start_date)
+        @params.merge!({
+          :start_date => @start_date.to_s,
+          :expire_date => @expire_date.to_s
+        })
       end
 
       it_should_allow_managers_only(:redirect) {}
@@ -215,11 +213,77 @@ shared_examples_for 'PricePoliciesController' do |product_type|
         @method=:put
         @action=:update
         set_policy_date
-        @params.merge!(:id => @price_policy.start_date.to_s)
+        @params.merge!(:id => @price_policy.start_date.to_s,
+          :start_date => @price_policy.start_date.to_s,
+          :expire_date => @price_policy.expire_date.to_s)
       end
 
-      it_should_allow_managers_only :redirect
+      it_should_allow_managers_only(:redirect) {}
 
+      context 'signed in' do
+        before :each do
+          maybe_grant_always_sign_in :director
+        end
+
+        it 'should redirect to show on success' do
+          do_request
+          should redirect_to price_policy_index_path
+        end
+
+        it 'should update the expiration dates for all price policies' do
+          @new_expire_date = @price_policy.expire_date - 1.day
+          @params[:expire_date] = @new_expire_date.to_s
+          do_request
+          @product.price_policies.for_date(@price_policy.start_date).each do |pp|
+            pp.expire_date.should match_date @new_expire_date
+          end
+        end
+
+        it 'should update the start_date for all price policies' do
+          @new_start_date = @price_policy.start_date + 1.day
+          @params[:start_date] = @new_start_date.to_s
+          do_request
+          assigns[:price_policies].each do |pp|
+            pp.start_date.should match_date @new_start_date
+          end
+        end
+        
+        it 'should update the can_purchase for price policy' do
+          last_price_group = @authable.price_groups.last
+          @params[:"price_policy_#{last_price_group.id}"][:can_purchase] = false
+          do_request
+          @product.price_policies.for_date(@price_policy.start_date).where(:price_group_id => last_price_group.id).first.should_not be_can_purchase
+        end
+
+        it 'should create a new price policy that cant be purchased for a new price group' do
+          @price_group3 = @authable.price_groups.create(Factory.attributes_for(:price_group))
+          do_request
+          @product.price_policies.map(&:price_group).should be_include @price_group3
+
+          new_pp = @product.price_policies.for_date(@price_policy.start_date).where(:price_group_id => @price_group3.id).first
+          new_pp.should_not be_can_purchase
+        end
+        it 'should reject everything if expire date is before start date' do
+          @params[:expire_date] = (@price_policy.start_date - 2.days).to_s
+          do_request
+          flash[:error].should_not be_nil
+          response.should render_template 'price_policies/edit'
+          @product.price_policies.for_date(@price_policy.start_date).each do |pp|
+            pp.expire_date.should match_date @price_policy.expire_date
+          end
+        end
+
+        it 'should reject everything if the expiration date spans into the next fiscal year' do
+          @params[:expire_date] = (PricePolicy.generate_expire_date(@price_policy.start_date) + 1.day).to_s
+          do_request
+          response.should be
+          flash[:error].should_not be_nil
+          response.should render_template 'price_policies/edit'
+          @product.price_policies.for_date(@price_policy.start_date).each do |pp|
+            pp.expire_date.should match_date @price_policy.expire_date
+          end
+        end
+      end
     end
 
 
