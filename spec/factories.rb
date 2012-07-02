@@ -120,7 +120,7 @@ Factory.define_default :item_price_policy, :class => ItemPricePolicy do |o|
   o.can_purchase true
   o.unit_cost 1
   o.unit_subsidy 0
-  o.start_date { Date.today }
+  o.start_date { Time.zone.now.beginning_of_day }
   o.expire_date { PricePolicy.generate_expire_date(Date.today) }
 end
 
@@ -150,7 +150,7 @@ Factory.define_default :service_price_policy, :class => ServicePricePolicy do |o
   o.can_purchase true
   o.unit_cost 1
   o.unit_subsidy 0
-  o.start_date { Date.today }
+  o.start_date { Time.zone.now.beginning_of_day }
   o.expire_date { PricePolicy.generate_expire_date(Date.today) }
 end
 

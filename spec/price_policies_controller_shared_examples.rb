@@ -320,7 +320,12 @@ shared_examples_for PricePoliciesController do |product_type|
           flash[:error].should_not be_nil
           response.should redirect_to price_policy_index_path
         end
-        it 'should raise a 404 if there are no price policies for that date'
+        
+        it 'should raise a 404 if there are no price policies for that date' do
+          @params.merge!(:id => (@price_policy.start_date + 1.day).to_s)
+          do_request
+          response.code.should == "404"
+        end
       end
     end
 
@@ -338,7 +343,7 @@ shared_examples_for PricePoliciesController do |product_type|
   end
 
   def set_policy_date(time_in_future=0)
-    @price_policy.start_date=Time.zone.now + time_in_future
+    @price_policy.start_date=Time.zone.now.beginning_of_day + time_in_future
     @price_policy.expire_date=PricePolicy.generate_expire_date(@price_policy)
     assert @price_policy.save
   end

@@ -155,7 +155,7 @@ class PricePoliciesController < ApplicationController
       pp_param=params["price_policy_#{price_policy.price_group.id}"]
       pp_param ||= {:can_purchase => false}
       pp_param.merge!(
-            :start_date => parse_usa_date(@start_date).beginning_of_day,
+            :start_date => parse_usa_date(params[:start_date]).beginning_of_day,
             :expire_date => parse_usa_date(@expire_date).end_of_day)
       @interval = params[:interval].to_i if params[:interval]
       pp_param.merge!(:usage_mins => @interval,
