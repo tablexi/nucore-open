@@ -130,7 +130,7 @@ class FacilityJournalsController < ApplicationController
             raise "<br/>"+row_errors.join('<br/>') if row_errors.present?
 
             # create the spreadsheet
-            @journal.create_spreadsheet
+            @journal.create_spreadsheet if Settings.financial.journal_format.xls
             flash[:notice] = I18n.t('controllers.facility_journals.create.notice')
             redirect_to facility_journals_url(current_facility) and return
           rescue Exception => e
