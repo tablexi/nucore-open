@@ -15,6 +15,8 @@ class PriceGroup < ActiveRecord::Base
   scope :external,      :conditions => { :name => Settings.price_group.name.external, :facility_id => nil }
   scope :cancer_center, :conditions => { :name => Settings.price_group.name.cancer_center, :facility_id => nil }
 
+  scope :globals, :conditions => { :facility_id => nil }
+
   def user_price_group_members
     UserPriceGroupMember.find(:all, :conditions => { :price_group_id => id, :type => 'UserPriceGroupMember' })
   end

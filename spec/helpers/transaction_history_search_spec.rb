@@ -62,7 +62,7 @@ describe TransactionSearch do
       end
       it "should not populate an account for another facility" do
         @facility2 = Factory.create(:facility)
-        @account2 = Factory.create(:credit_card_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
+        @account2 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
 
         @controller.all_order_details
         @controller.current_facility.should == @authable
@@ -78,7 +78,7 @@ describe TransactionSearch do
     context "with account" do
       before :each do
         @facility2 = Factory.create(:facility)
-        @credit_account = Factory.create(:credit_card_account, :facility_id => @facility2.id, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
+        @credit_account = Factory.create(:nufs_account, :facility_id => @facility2.id, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
         @facility_account2 = @facility2.facility_accounts.create(Factory.attributes_for(:facility_account))
         @item2             = @facility2.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account2.id))
         @order_detail2 = place_and_complete_item_order(@user, @facility2, @credit_account)

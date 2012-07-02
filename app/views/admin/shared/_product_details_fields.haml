@@ -14,15 +14,17 @@
   %p.instruction= t('shared.product_details_fields.description')
   = f.text_area :description, :cols => 80, :rows => 8, :class => 'editor'
 - unless f.object.is_a?(Bundle)
-  %li
-    = f.label :facility_account_id, t('shared.product_details_fields.deposit_account.label')
-    %p.instruction= t('shared.product_details_fields.deposit_account.instruct')
-    = f.select :facility_account_id, current_facility.facility_accounts.active.collect {|fa| [ fa, fa.id ] }
-    = link_to t('shared.product_details_fields.deposit_account.add'), :facility_facility_accounts
-  %li
-    =f.label :account, nil, :class => 'require'
-    %p.instruction= t('shared.product_details_fields.account')
-    = f.text_field :account, :size => 10, :maxLength => 5
+  - if SettingsHelper.feature_on? :recharge_accounts
+    %li
+      = f.label :facility_account_id, t('shared.product_details_fields.deposit_account.label')
+      %p.instruction= t('shared.product_details_fields.deposit_account.instruct')
+      = f.select :facility_account_id, current_facility.facility_accounts.active.collect {|fa| [ fa, fa.id ] }
+      = link_to t('shared.product_details_fields.deposit_account.add'), :facility_facility_accounts
+  - if SettingsHelper.feature_on? :expense_accounts
+    %li
+      =f.label :account, nil, :class => 'require'
+      %p.instruction= t('shared.product_details_fields.account')
+      = f.text_field :account, :size => 10, :maxLength => 5
   %li
     = f.label :initial_order_status_id
     %p.instruction= t('shared.product_details_fields.initial_order_status')

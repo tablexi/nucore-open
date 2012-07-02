@@ -9,7 +9,7 @@ require 'controller_spec_helper'
     end
   end
 
-describe UserPasswordController do
+describe UserPasswordController, :if => SettingsHelper.feature_on?(:password_update) do
   render_views
 
     

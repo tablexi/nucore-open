@@ -1,4 +1,12 @@
 class Facility < ActiveRecord::Base
+  module Overridable
+    def can_pay_with_account?(account)
+      true
+    end
+  end
+
+  include Overridable
+
   attr_protected :journal_mask
   before_validation :set_journal_mask, :on => :create
 
@@ -69,12 +77,6 @@ class Facility < ActiveRecord::Base
 
   def has_contact_info?
     address || phone_number || fax_number || email
-  end
-
-  def can_pay_with_account?(account)
-    return false if account.is_a?(PurchaseOrderAccount) && !accepts_po?
-    return false if account.is_a?(CreditCardAccount) && !accepts_cc?
-    true
   end
 
   def has_pending_journals?

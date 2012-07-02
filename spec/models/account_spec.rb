@@ -155,20 +155,6 @@ describe Account do
       end
     end
 
-    it "should return error if the product facility does not accept account type for payment" do
-      @po_account = Factory.create(:purchase_order_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
-      @po_account.validate_against_product(@item, @user).should == nil
-      @facility.update_attributes(:accepts_po => false)
-      @item.reload #load fresh facility with update attributes
-      @po_account.validate_against_product(@item, @user).should_not == nil
-
-      @cc_account=Factory.create(:credit_card_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
-      @cc_account.validate_against_product(@item, @user).should == nil
-      @facility.update_attributes(:accepts_cc => false)
-      @item.reload #load fresh facility with update attributes
-      @cc_account.validate_against_product(@item, @user).should_not == nil
-    end
-
     it "should return error if the product does not have a price policy for the account or user price groups" do
       define_open_account(@item.account, @nufs_account.account_number)
       @nufs_account.validate_against_product(@item, @user).should == nil
@@ -215,20 +201,26 @@ describe Account do
     it "should return the most recent account statement for a given facility"
   end
 
-  context "limited facilities" do
-    before :each do
-      @user             = Factory.create(:user)
-      @facility1        = Factory.create(:facility)
-      @facility2        = Factory.create(:facility)
-      @nufs_account = Factory.create(:nufs_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
-      @cc_account1 = Factory.create(:credit_card_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}], :facility => @facility1)
-      @cc_account2 = Factory.create(:credit_card_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}], :facility => @facility2)
-      @po_account1 = Factory.create(:purchase_order_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}], :facility => @facility1)
-      @po_account2 = Factory.create(:purchase_order_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}], :facility => @facility2)
-    end
-    it "should return the right accounts" do
-      Account.for_facility(@facility1).should contain_all [@nufs_account, @cc_account1, @po_account1]
-      Account.for_facility(@facility2).should contain_all [@nufs_account, @cc_account2, @po_account2]
+  unless AccountManager::FACILITY_ACCOUNT_CLASSES.empty?
+    context "limited facilities" do
+      before :each do
+        @user             = Factory.create(:user)
+        @facility1        = Factory.create(:facility)
+        @facility2        = Factory.create(:facility)
+        @nufs_account = Factory.create(:nufs_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
+        @facility1_accounts, @facility2_accounts=[ @nufs_account ], [ @nufs_account ]
+
+        AccountManager::FACILITY_ACCOUNT_CLASSES.each do |class_name|
+          class_sym=class_name.underscore.to_sym
+          @facility1_accounts << Factory.create(class_sym, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}], :facility => @facility1)
+          @facility2_accounts << Factory.create(class_sym, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}], :facility => @facility2)
+        end
+      end
+
+      it "should return the right accounts" do
+        Account.for_facility(@facility1).should contain_all @facility1_accounts
+        Account.for_facility(@facility2).should contain_all @facility2_accounts
+      end
     end
   end
 end

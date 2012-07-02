@@ -2,7 +2,6 @@ class Item < Product
   has_many :item_price_policies, :foreign_key => :product_id
 
   validates_presence_of :initial_order_status_id, :facility_account_id
-  validates_numericality_of :account, :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 99999
 
   def cheapest_price_policy (groups = [])
     return nil if groups.empty?

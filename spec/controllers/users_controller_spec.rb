@@ -3,11 +3,6 @@ require 'spec_helper'; require 'controller_spec_helper'
 describe UsersController do
   render_views
 
-  it "should route" do
-    { :get => "/facilities/url_name/users/new_search" }.should route_to(:controller => 'users', :action => 'new_search', :facility_id => 'url_name')
-    { :post => "/facilities/url_name/users" }.should route_to(:controller => 'users', :action => 'create', :facility_id => 'url_name')
-  end
-
   before(:all) { create_users }
 
   before(:each) do
@@ -28,67 +23,75 @@ describe UsersController do
   end
 
 
-  context 'new' do
-
-    before :each do
-      @method=:get
-      @action=:new
+  context 'create user', :if => SettingsHelper.feature_on?(:create_users) do
+    it "should route" do
+      { :get => "/facilities/url_name/users/new_search" }.should route_to(:controller => 'users', :action => 'new_search', :facility_id => 'url_name')
+      { :post => "/facilities/url_name/users" }.should route_to(:controller => 'users', :action => 'create', :facility_id => 'url_name')
     end
 
-    it_should_allow_operators_only do
-      should assign_to(:user).with_kind_of User
-      assigns(:user).should be_new_record
+
+    context 'new' do
+
+      before :each do
+        @method=:get
+        @action=:new
+      end
+
+      it_should_allow_operators_only do
+        should assign_to(:user).with_kind_of User
+        assigns(:user).should be_new_record
+      end
+
     end
 
-  end
 
+    context "create" do
 
-  context "create" do
+      before :each do
+        @method=:post
+        @action=:create
+        @params.merge!(:group_name => UserRole::FACILITY_DIRECTOR, :user => Factory.attributes_for(:user))
+      end
 
-    before :each do
-      @method=:post
-      @action=:create
-      @params.merge!(:group_name => UserRole::FACILITY_DIRECTOR, :user => Factory.attributes_for(:user))
+      it_should_allow_operators_only :redirect do
+        should assign_to(:user).with_kind_of User
+        should set_the_flash
+        assert_redirected_to facility_users_url
+      end
+
     end
 
-    it_should_allow_operators_only :redirect do
-      should assign_to(:user).with_kind_of User
-      should set_the_flash
-      assert_redirected_to facility_users_url
+
+    context 'new_search' do
+
+      before :each do
+        @method=:get
+        @action=:new_search
+        @params.merge!(:username => 'guest')
+      end
+
+      it_should_allow_operators_only :redirect do
+        assigns(:user).should == @guest
+        should set_the_flash
+        assert_redirected_to facility_users_url(@authable)
+      end
+
     end
 
-  end
 
+    context 'username_search' do
 
-  context 'new_search' do
+      before :each do
+        @method=:get
+        @action=:username_search
+        @params.merge!(:username_lookup => 'guest')
+      end
 
-    before :each do
-      @method=:get
-      @action=:new_search
-      @params.merge!(:username => 'guest')
+      it_should_allow_operators_only do
+        assigns(:user).username.should == @guest.username
+      end
+
     end
-
-    it_should_allow_operators_only :redirect do
-      assigns(:user).should == @guest
-      should set_the_flash
-      assert_redirected_to facility_users_url(@authable)
-    end
-
-  end
-
-
-  context 'username_search' do
-
-    before :each do
-      @method=:get
-      @action=:username_search
-      @params.merge!(:username_lookup => 'guest')
-    end
-
-    it_should_allow_operators_only do
-      assigns(:user).username.should == @guest.username
-    end
-
   end
 
 

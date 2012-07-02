@@ -25,11 +25,11 @@
   %table
     %tr
       %th.actions
-      %th== Days of Week
-      %th== Start Time
-      %th== End Time
-      %th== Interval
-      %th.currency== Discount (%)
+      %th Days of Week
+      %th Start Time
+      %th End Time
+      %th Interval
+      %th.currency Discount (%)
     - @schedule_rules.each do |schedule_rule|
       %tr{:class => cycle('odd', 'even')}
         %td.centered
@@ -37,17 +37,17 @@
             = link_to 'Edit', edit_facility_instrument_schedule_rule_path(current_facility, @instrument, schedule_rule)
             %br
             = link_to 'Remove', facility_instrument_schedule_rule_path(current_facility, @instrument, schedule_rule), :confirm => 'Are you sure?', :method => :delete
-        %td=h schedule_rule.days_string
-        %td=h human_time(Time.zone.parse(schedule_rule.start_time))
-        %td=h human_time(Time.zone.parse(schedule_rule.end_time))
+        %td= schedule_rule.days_string
+        %td= human_time(Time.zone.parse(schedule_rule.start_time))
+        %td= human_time(Time.zone.parse(schedule_rule.end_time))
         %td= pluralize(schedule_rule.duration_mins, 'minute')
         %td.currency=h sprintf '%.2f', schedule_rule.discount_percent
 - else
   %br
-  %p.notice== No Schedule Rules exist yet.
+  %p.notice No Schedule Rules exist yet.
 
-%h3== Weekly Calendar
-%p== This calendar shows instrument availability based on the scheduling rules.
+%h3 Weekly Calendar
+%p This calendar shows instrument availability based on the scheduling rules.
 #overlay
   #spinner
     #hide

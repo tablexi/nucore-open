@@ -1,4 +1,15 @@
 class User < ActiveRecord::Base
+
+  module Overridable
+    def price_groups
+      groups = price_group_members.collect{ |pgm| pgm.price_group }
+      # check internal/external membership
+      groups << (self.username.match(/@/) ? PriceGroup.external.first : PriceGroup.base.first)
+      groups.flatten.uniq
+    end
+  end
+
+  include Overridable
   include Role
 
   devise :ldap_authenticatable, :database_authenticatable, :encryptable, :trackable, :recoverable
@@ -125,13 +136,6 @@ class User < ActiveRecord::Base
 
     @order = Order.create(:user => self, :created_by => created_by_user ? created_by_user.id : id) unless @order
     @order
-  end
-
-  def price_groups
-    groups = price_group_members.collect{ |pgm| pgm.price_group }
-    # check internal/external membership
-    groups << (self.username.match(/@/) ? PriceGroup.external.first : PriceGroup.base.first)
-    groups.flatten.uniq
   end
   
   def account_price_groups

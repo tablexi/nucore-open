@@ -27,16 +27,6 @@
   = t('facilities.facility_fields.accepts_multi_add')
 
 %li.box
-  %p= t('facilities.facility_fields.payment_options')
-  %br
-  %p
-    = f.check_box :accepts_po
-    %b= t('facilities.facility_fields.accepts_po')
-  %br
-  %p
-    = f.check_box :accepts_cc
-    %b= t('facilities.facility_fields.accepts_cc')
-%li.box
   %p.instruction= t('facilities.facility_fields.inactive')
   %br
   = f.check_box :is_active

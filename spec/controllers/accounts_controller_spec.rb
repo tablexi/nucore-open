@@ -150,7 +150,7 @@ describe AccountsController do
 
 
   context "POST /accounts/create" do
-    it "should 403 unless class_type is NufsAccount, CreditCardAccount, or PurchaseOrderAccount"
+    it "should 403 unless class_type is legit"
   end
 
 end

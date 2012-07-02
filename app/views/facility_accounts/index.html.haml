@@ -16,7 +16,7 @@
 %hr
 %br
 
-- unless all_facility?
+- if !all_facility? && SettingsHelper.feature_on?(:edit_accounts)
   %ul.horiz
     %li= link_to t('.add_account'), new_account_user_search_facility_accounts_path
 

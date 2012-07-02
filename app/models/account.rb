@@ -164,7 +164,7 @@ class Account < ActiveRecord::Base
                           readonly(false).
                           all
 
-    details.each {|od| od.update_attributes({:reviewed_at => Time.zone.now+7.days, :statement => statement }) }
+    details.each {|od| od.update_attributes({:reviewed_at => Time.zone.now+Settings.billing.review_period, :statement => statement }) }
   end
 
   def can_be_used_by?(user)

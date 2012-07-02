@@ -2,7 +2,7 @@
   %p.error Please enter a search term
 - else
   - if @users.empty?
-    - if params[:create_link] == 'true'
+    - if params[:create_link] == 'true' && SettingsHelper.feature_on?(:create_users)
       %p
         Can't find the user you're looking for?
         = link_to 'Create a new user', new_search_facility_users_path(@facility)
@@ -24,7 +24,7 @@
             %td=h user.email
       - if @count > @limit
         %p.notice="#{@count-@limit} more users exist, try refining your search."
-    - if params[:create_link] == 'true'
+    - if params[:create_link] == 'true' && SettingsHelper.feature_on?(:create_users)
       %p
         Can't find the user you're looking for?
         = link_to 'Create a new user', new_search_facility_users_path(@facility)

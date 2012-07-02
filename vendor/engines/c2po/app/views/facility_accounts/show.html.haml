@@ -1,0 +1,54 @@
+= content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+
+= content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_payment_method', :locals => {:secondary_tab => 'details'}
+
+= content_for :h1 do
+  =h current_facility
+
+%h2= @account
+
+%ul.form
+  %li
+    %label= t('.label.owner')
+    =h @account.owner_user
+  %li
+    %label= t('.label.account')
+    =h @account.type_string
+  %li
+    %label= t('.label.description')
+    =h @account.description
+  - if @account.is_a?(CreditCardAccount)
+    %li
+      %label= t('.label.name')
+      =h @account.name_on_card
+    %li
+      %label= t('.label.expiration')
+      =h "#{@account.expiration_month}/#{@account.expiration_year}"
+  - else
+    %li
+      %label= t('.label.expiration')
+      = human_datetime(@account.expires_at, :date_only => true)
+
+  - if @account.affiliate
+    %li
+      %label= t('.label.affiliate')
+      - affiliate_name=@account.affiliate.name
+      - affiliate_name += " (#{@account.affiliate_other})" if @account.affiliate == Affiliate::OTHER
+      = affiliate_name
+
+  - unless @account.is_a?(NufsAccount)
+    %li
+      %label= t('.label.bill_to')
+      = @account.remittance_information ? simple_format(h @account.remittance_information) : '<p>None Entered</p>'.html_safe
+%ul.horiz
+  - if SettingsHelper.feature_on? :edit_accounts
+    %li
+      = link_to t('.link.edit'), edit_facility_account_path(current_facility, @account), :class => 'btn'
+  - if SettingsHelper.feature_on? :suspend_accounts
+    %li
+      - if @account.suspended?
+        = link_to t('.link.activate'), facility_account_unsuspend_path(current_facility, @account), :class => 'btn'
+      - else
+        = link_to t('.link.suspend'), facility_account_suspend_path(current_facility, @account), :class => 'btn'

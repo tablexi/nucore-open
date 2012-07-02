@@ -1,3 +1,8 @@
+= content_for :h1 do
+  = @reservation.instrument.facility
+
+%h2= @reservation.instrument
+
 %ul
   %li
     %label Reservation

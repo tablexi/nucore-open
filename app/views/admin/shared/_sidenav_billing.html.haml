@@ -1,12 +1,15 @@
 #menu_billing
   %ul.menu_accordion
-    %li.sub_menu
-      .icon
-      Transactions
-      %ul
-        %li= link_to 'All Transactions',       facility_transactions_path, :class => (sidenav_tab == 'transactions' ? 'active' : '')
-        %li= link_to t("facility_notifications.index.head"),     facility_notifications_path, :class => (sidenav_tab == 'notifications' ? 'active' : '')
-        %li= link_to t('facility_notifications.in_review.head'),       facility_notifications_in_review_path, :class => (sidenav_tab == 'in_review' ? 'active' : '')
+    - if SettingsHelper::has_review_period?
+      %li.sub_menu
+        .icon
+        Transactions
+        %ul
+          %li= link_to 'All Transactions', facility_transactions_path, :class => (sidenav_tab == 'transactions' ? 'active' : '')
+          %li= link_to t("facility_notifications.index.head"), facility_notifications_path, :class => (sidenav_tab == 'notifications' ? 'active' : '')
+          %li= link_to t('facility_notifications.in_review.head'), facility_notifications_in_review_path, :class => (sidenav_tab == 'in_review' ? 'active' : '')
+    - else
+      %li= link_to 'All Transactions', facility_transactions_path, :class => (sidenav_tab == 'transactions' ? 'active' : '')
 
     %li= link_to t('facility_accounts.accounts_receivable.head'), facility_accounts_receivable_path, :class => (sidenav_tab == "accounts_receivable" ? 'active' : '')
     %li= link_to Account.model_name.human.pluralize,              facility_accounts_path, :class => (sidenav_tab == 'accounts' ? 'active' : '')
@@ -17,13 +20,10 @@
       %ul
         %li= link_to t_create_model(Journal),         new_facility_journal_path, :class => (sidenav_tab == 'new_journal' ? 'active' : '')
         %li= link_to t_manage_models(Journal),        facility_journals_path, :class => (sidenav_tab == 'journals' ? 'active' : '')
-    - unless all_facility?
+    - if !all_facility? && AccountManager.using_statements?
       %li.sub_menu
         .icon
         #{Statement.model_name.human.pluralize}
         %ul
           %li= link_to t_create_models(Statement),      new_facility_statement_path(current_facility), :class => (sidenav_tab == 'statements' ? 'active' : '')
           %li= link_to t("facility_statements.index.head"),      facility_statements_path(current_facility), :class => (sidenav_tab == 'statement_history' ? 'active' : '')
-          .break
-          %li= link_to t("facility_accounts.credit_cards.head"),    credit_cards_facility_accounts_path(current_facility), :class => (sidenav_tab == 'credit_cards' ? 'active' : '')
-          %li= link_to t("facility_accounts.purchase_orders.head"), purchase_orders_facility_accounts_path(current_facility), :class => (sidenav_tab == 'purchase_orders' ? 'active' : '')

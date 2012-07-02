@@ -8,7 +8,7 @@
   - @order_details.each do |od|
     - order = od.order
     %tr
-      %td.centered= link_to od, order_order_detail_path(order, od)
+      %td.centered= link_to od, current_facility ? edit_facility_order_order_detail_path(current_facility, order, od) : order_order_detail_path(order, od)
       %td=h human_datetime(order.ordered_at)
       %td.centered=h od.quantity
       %td
