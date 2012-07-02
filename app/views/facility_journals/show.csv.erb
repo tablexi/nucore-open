@@ -10,11 +10,11 @@ output = CSVHelper::generate do |csv|
               "#{Product.model_name.human} #{Product.human_attribute_name(:url_name)}",
               "#{Product.model_name.human} #{Product.human_attribute_name(:type)}",
               "#{Product.model_name.human} #{Product.human_attribute_name(:name)}",
-              OrderDetail.human_attribute_name(:quantity),
-              # bundle_desc
-              "#{Account.model_name.human} #{Account.human_attribute_name(:type)}",
-              Account.human_attribute_name(:affiliate),
-              "#{Account.model_name.human} #{Account.human_attribute_name(:account_number)}",
+              OrderDetail.human_attribute_name(:quantity)]
+  headers << "#{Account.model_name.human} #{Account.human_attribute_name(:type)}" if AccountManager::multiple_account_types?
+  headers << Account.human_attribute_name(:affiliate) if AccountManager::using_affiliates?
+              
+  headers += ["#{Account.model_name.human} #{Account.human_attribute_name(:account_number)}",
               "#{Account.model_name.human} #{Account.human_attribute_name(:description)}",
               "#{Account.model_name.human} #{Account.human_attribute_name(:expires_at)}",
 
@@ -60,13 +60,13 @@ output = CSVHelper::generate do |csv|
            product.url_name,
            product.type.underscore.humanize,
            product.name,
-           od.quantity,
-           #bundle_desc,
+           od.quantity]
 
            # account information
-           account.type.underscore.humanize,
-           account.affiliate.try(:name),
-           account.account_number,
+    row << account.type.underscore.humanize if AccountManager::multiple_account_types?
+    row << account.affiliate.try(:name) if AccountManager::using_affiliates?
+
+    row +=[account.account_number,
            account.description,
            human_datetime(account.expires_at),
 
