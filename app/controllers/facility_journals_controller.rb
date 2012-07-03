@@ -1,5 +1,6 @@
 class FacilityJournalsController < ApplicationController
   include DateHelper
+  include CSVHelper
 
   admin_tab     :all
   before_filter :authenticate_user!
@@ -129,7 +130,7 @@ class FacilityJournalsController < ApplicationController
             raise "<br/>"+row_errors.join('<br/>') if row_errors.present?
 
             # create the spreadsheet
-            @journal.create_spreadsheet
+            @journal.create_spreadsheet if Settings.financial.journal_format.xls
             flash[:notice] = I18n.t('controllers.facility_journals.create.notice')
             redirect_to facility_journals_url(current_facility) and return
           rescue Exception => e
@@ -150,12 +151,17 @@ class FacilityJournalsController < ApplicationController
 
   # GET /facilities/journals/:id
   def show
-
+    @journal_rows = @journal.journal_rows
+    @filename = "journal_#{@journal.id}_#{@journal.created_at.strftime("%Y%m%d")}"
     respond_to do |format|
       format.xml do
-        @journal_rows = @journal.journal_rows
-        headers['Content-Disposition'] = "attachment; filename=\"journal_#{@journal.id}_#{@journal.created_at.strftime("%Y%m%d")}.xml\""
+        headers['Content-Disposition'] = "attachment; filename=\"@filename.xml\""
         render :partial => 'rake_show', :locals => { :journal => @journal, :journal_rows => @journal_rows }, :layout => false
+      end
+
+      format.csv do
+        @show_uid = @journal_rows.joins(:order_detail => {:order => :user}).where('users.uid IS NOT NULL').any?
+        set_csv_headers("#{@filename}.csv")
       end
 
       format.any { @order_details = @journal.order_details }

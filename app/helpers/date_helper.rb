@@ -28,6 +28,7 @@ module DateHelper
   end
 
   def human_datetime(dt, args = {})
+    return nil if dt.nil?
     begin
       if args[:date_only]
         dt.strftime("%m/%d/%Y")
@@ -40,6 +41,7 @@ module DateHelper
   end
 
   def human_time(dt)
+    return nil if dt.nil?
     begin
       dt.strftime("%l:%M %p").strip
     rescue
