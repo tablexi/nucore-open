@@ -110,15 +110,23 @@ class Product < ActiveRecord::Base
     !is_archived? && facility.is_active?
   end
 
-  def can_purchase? (group_ids = nil)
+  def can_purchase? (group_ids)
     return false unless available_for_purchase?
-    if group_ids.nil?
-      current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase?}
-    elsif group_ids.empty?
-      false
-    else
-      current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase? && group_ids.include?(pp.price_group_id)}
+    
+    # return false if there are no existing policies at all
+    return false if price_policies.empty?
+    
+    # return false if there are no existing policies for the user's groups, e.g. they're a new group
+    return false if price_policies.for_price_groups(group_ids).empty?
+
+    # if there are current rules, but the user is not part of them
+    if price_policies.current.any?
+      price_policies.current.for_price_groups(group_ids).where(:can_purchase => true).any? 
     end
+    
+    # Find the most recent price policy. If they could purchase then, they can purchase now
+    price_policies.for_price_groups(group_ids).order(:expire_date).last.can_purchase?
+
   end
 
   private

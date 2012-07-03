@@ -14,6 +14,7 @@ describe ServicesController do
     @authable         = Factory.create(:facility)
     @facility_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
     @service          = @authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
+    @service_pp       = @service.service_price_policies.create(Factory.attributes_for(:service_price_policy, :price_group => @nupg))
     @params={ :facility_id => @authable.url_name }
   end
 

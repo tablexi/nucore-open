@@ -93,10 +93,11 @@ describe OrdersController do
     context 'success' do
       before :each do
         @instrument = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+        @instrument_pp = @instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy, :price_group => @nupg))
         define_open_account(@instrument.account, @account.account_number)
         @reservation = place_reservation_for_instrument(@staff, @instrument, @account, Time.zone.now)
         @order = @reservation.order_detail.order
-        @params.merge!({:id => @order.id, :order_id => @order.id})        
+        @params.merge!({:id => @order.id, :order_id => @order.id})
       end
 
       it 'should redirect to my reservations on a successful purchase of a single reservation' do

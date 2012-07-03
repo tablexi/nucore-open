@@ -75,6 +75,7 @@ describe BundlesController do
     
     it 'should flash and falsify @add_to_cart if user is not approved' do
       switch_to @guest
+      BundlesController.any_instance.stubs(:price_policy_available_for_product?).returns(true)
       @bundle.update_attributes(:requires_approval => true)
       do_request
       assigns[:login_required].should be_false
@@ -113,6 +114,7 @@ describe BundlesController do
     context "restricted bundle" do
       before :each do
         @bundle.update_attributes(:requires_approval => true)
+        BundlesController.any_instance.stubs(:price_policy_available_for_product?).returns(true)
       end
       it "should show a notice if you're not approved" do
         sign_in @guest

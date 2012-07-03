@@ -208,6 +208,7 @@ describe Reservation do
       it 'should be false when there is no price policy' do
         @reservation1.actual_start_at=1.day.ago
         @reservation1.actual_end_at=1.day.ago+1.hour
+        @instrument.instrument_price_policies.clear
         assert @reservation1.save
 
         @reservation1.order_detail.price_policy.should be_nil

@@ -15,6 +15,7 @@ describe InstrumentsController do
     @facility_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
     @instrument       = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
     @params={ :id => @instrument.url_name, :facility_id => @authable.url_name }
+    @instrument_pp    = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group => @nupg))
   end
 
 

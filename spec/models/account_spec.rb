@@ -146,7 +146,10 @@ describe Account do
       before :each do
         @item2 = @facility.items.create(Factory.attributes_for(:item, :account => 78960, :facility_account_id => @facility_account.id))
         @bundle = @facility.bundles.create(Factory.attributes_for(:bundle, :facility_account_id => @facility_account.id))
-        [ @item, @item2 ].each{|item| BundleProduct.create!(:quantity => 1, :product => item, :bundle => @bundle) }
+        [ @item, @item2 ].each do |item| 
+          price_policy = item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group => @price_group))
+          BundleProduct.create!(:quantity => 1, :product => item, :bundle => @bundle) 
+        end
       end
 
       it "should not return error if the product is a bundle and both of the bundled product's accounts are open for a chart string" do
@@ -158,7 +161,9 @@ describe Account do
     it "should return error if the product does not have a price policy for the account or user price groups" do
       define_open_account(@item.account, @nufs_account.account_number)
       @nufs_account.validate_against_product(@item, @user).should == nil
-      @price_group_product.destroy
+      @pg_user_member.destroy
+      @user.reload
+      @nufs_account.reload
       @nufs_account.validate_against_product(@item, @user).should_not == nil
       Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
       @pg_account_member = Factory.create(:account_price_group_member, :account => @nufs_account, :price_group => @price_group)

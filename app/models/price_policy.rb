@@ -37,6 +37,11 @@ class PricePolicy < ActiveRecord::Base
   def self.upcoming
     where("start_date > :now", {:now => Time.zone.now})
   end
+
+  def self.for_price_groups(price_groups)
+    where(:price_group_id => price_groups)
+  end
+  
   def self.current_date(product)
     ipp = product.price_policies.find(:first, :conditions => [dateize('start_date', ' <= ? AND ') + dateize('expire_date', ' > ?'), Time.zone.now, Time.zone.now], :order => 'start_date DESC')
     ipp ? ipp.start_date.to_date : nil
