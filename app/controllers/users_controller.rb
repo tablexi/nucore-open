@@ -1,4 +1,27 @@
 class UsersController < ApplicationController
+  module Overridable
+    def new_search
+      if params[:username]
+        @user = User.where("LOWER(username) = ?", params[:username].downcase).first
+        flash[:notice] = "The user has been added successfully."
+        if session_user.manager_of?(current_facility)
+          flash[:notice]=(flash[:notice] + "  You may wish to <a href=\"#{facility_facility_user_map_user_url(current_facility, @user)}\">add a facility role</a> for this user.").html_safe
+        end
+        # send email
+        Notifier.new_user(:user => @user, :password => nil).deliver
+        redirect_to facility_users_url(current_facility)
+      end
+    end
+
+    # POST /facilities/:facility_id/users/netid_search
+    def username_search
+      @user = User.find(:first, :conditions => ["LOWER(username) = ?", params[:username_lookup].downcase])
+      render :layout => false
+    end
+  end
+
+  include Overridable
+
   customer_tab :password
   admin_tab     :all
   before_filter :init_current_facility, :except => [:password, :password_reset] 
@@ -44,25 +67,6 @@ class UsersController < ApplicationController
 
     # send email
     Notifier.new_user(:user => @user, :password => newpass).deliver
-  end
-
-  def new_search
-    if params[:username]
-      @user = User.find(:first, :conditions => ["LOWER(username) = ?", params[:username].downcase])
-      flash[:notice] = "The user has been added successfully."
-      if session_user.manager_of?(current_facility)
-        flash[:notice]=(flash[:notice] + "  You may wish to <a href=\"#{facility_facility_user_map_user_url(current_facility, @user)}\">add a facility role</a> for this user.").html_safe
-      end
-      # send email
-      Notifier.new_user(:user => @user, :password => nil).deliver
-      redirect_to facility_users_url(current_facility)
-    end
-  end
-
-  # POST /facilities/:facility_id/users/netid_search
-  def username_search
-    @user = User.find(:first, :conditions => ["LOWER(username) = ?", params[:username_lookup].downcase])
-    render :layout => false
   end
 
   # GET /facilities/:facility_id/users/:user_id/switch_to
