@@ -2,8 +2,9 @@
 output = CSVHelper::generate do |csv|
   headers =  [Order.model_name.human, 
               Order.human_attribute_name(:ordered_at), 
-              OrderDetail.human_attribute_name(:fulfilled_at), 
-              OrderDetail.human_attribute_name(:created_by_user),
+              OrderDetail.human_attribute_name(:fulfilled_at)]
+  headers <<  User.human_attribute_name(:uid) if @show_uid
+  headers += [OrderDetail.human_attribute_name(:created_by_user),
               User.human_attribute_name(:first_name),
               User.human_attribute_name(:last_name),
               User.human_attribute_name(:email),
@@ -48,10 +49,12 @@ output = CSVHelper::generate do |csv|
 
     row = [od.to_s,
            human_datetime(order.ordered_at), 
-           human_datetime(od.fulfilled_at),
+           human_datetime(od.fulfilled_at)]
            
            # Who placed the order
-           buyer.username, 
+    row << buyer.uid if @show_uid
+
+    row +=[buyer.username, 
            buyer.first_name, 
            buyer.last_name, 
            buyer.email,
