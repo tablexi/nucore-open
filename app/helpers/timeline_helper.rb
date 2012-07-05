@@ -25,7 +25,8 @@ module TimelineHelper
     
     # cut it off at midnight of start day if end time goes into the next day
     end_datetime_to_use = [datetime_end, display_date.end_of_day].min
-    "#{((end_datetime_to_use - start_datetime_to_use) / 60 * MINUTE_TO_PIXEL_RATIO).floor}px"
+    # In Ruby 1.8.7, the subtraction leads to a .99999 value, so go ahead and round that off
+    "#{((end_datetime_to_use - start_datetime_to_use).round(4) / 60 * MINUTE_TO_PIXEL_RATIO).floor}px"
   end
   
   def spans_midnight_class(datetime_start, datetime_end)
