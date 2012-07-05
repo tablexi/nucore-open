@@ -1,13 +1,11 @@
 - content_for :head_content do
-  %script{:type => 'text/javascript', :src => "#{request.protocol}ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"}
   = javascript_include_tag 'pick_accessories'
-  = stylesheet_link_tag "jquery-ui/jquery-ui"
 
 = content_for :h1 do
   =h current_facility
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_reservation', :locals => { :secondary_tab => 'new'}
+  = render :partial => 'admin/shared/tabnav_reservation'
 
 - if @order_details.empty?
   %p.notice There are no "New" or "In Process" Reservations.

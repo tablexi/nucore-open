@@ -18,8 +18,12 @@
   %li
     %label= t('.label.journal_status')
     =h @journal.status_string
-  %li=link_to 'Download XLS File', @journal.file.url
-  %li=link_to 'Download XML File', facility_journal_path(current_facility, @journal, :format => 'xml')
+  - if Settings.financial.journal_format.xls
+    %li=link_to 'Download XLS File', @journal.file.url
+  - if Settings.financial.journal_format.xml
+    %li=link_to 'Download XML File', facility_journal_path(current_facility, @journal, :format => 'xml')
+  - if Settings.financial.journal_format.csv
+    %li=link_to 'Download CSV File', facility_journal_path(current_facility, @journal, :format => 'csv')
 
 %br
 %hr

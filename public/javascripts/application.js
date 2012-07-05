@@ -88,4 +88,39 @@ $(document).ready(function() {
 	$('#filter_toggle').click(function(){
      $('#filter_container').toggle('fast');
    });
+
+  function loadTabCounts() {
+    var tabs = [];
+    $('.tab_counts a:not(.active)').each(function() {
+      if (this.id) {
+        tabs.push(this.id);
+        // Add a spinner
+        $(this).append('<span class="updating"></span>');
+      }
+    });
+    if (tabs.length > 0) {
+      var base = '';
+      if (window.location.pathname.endsWith('reservations')) {
+        base = 'reservations/';
+      } else if (window.location.pathname.endsWith('orders')) {
+        base = 'orders/';
+      }
+      $.ajax({
+        url: base + 'tab_counts',
+        dataType: 'json',
+        data: { tabs: tabs },
+        success: function(data, textStatus, xhr) {
+          for (i in tabs) {
+            $('.tab_counts').find('a#' + tabs[i] + ' .updating').text("(" + data[tabs[i]] + ")").removeClass('updating').addClass('updated');
+          }
+        }
+      });
+    }
+  };
+  loadTabCounts();
+  
 });
+
+String.prototype.endsWith = function(suffix) {
+  return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};

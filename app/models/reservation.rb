@@ -31,14 +31,30 @@ class Reservation < ActiveRecord::Base
                     :reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian,
                     :actual_start_date, :actual_start_hour, :actual_start_min, :actual_start_meridian,
                     :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian
+  # Represents a resevation time that is unavailable, but is not an admin reservation
+  # Used by timeline view
+  attr_accessor     :blackout
   attr_writer       :note
   before_validation :set_reserve_start_at, :set_reserve_end_at, :set_actual_start_at, :set_actual_end_at
 
   scope :active, :conditions => ["reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)"], :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id']
   scope :limit,    lambda { |n| {:limit => n}}
 
+  def self.today
+    for_date(Time.zone.now)
+  end
+
+  def self.for_date(date)
+    where("(reserve_start_at > :start and reserve_start_at < :end) OR (reserve_end_at > :start and reserve_end_at < :end)", 
+      { :start => date.beginning_of_day, 
+        :end => date.end_of_day
+      }
+    )
+  end
+
   ## delegations
   delegate :note,     :to => :order_detail, :allow_nil => true
+  delegate :ordered_on_behalf_of?, :to => :order_detail, :allow_nil => true
 
   ## AR Hooks
   after_save do
@@ -115,6 +131,13 @@ class Reservation < ActiveRecord::Base
     account.owner if account
   end
 
+  def admin?
+    order.nil? && !blackout?
+  end
+
+  def blackout?
+    blackout.present?
+  end
 
   def starts_before_ends
     if reserve_start_at && reserve_end_at

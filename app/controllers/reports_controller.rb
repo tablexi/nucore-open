@@ -1,5 +1,6 @@
 class ReportsController < ApplicationController
   include ReportsHelper
+  include CSVHelper
 
   admin_tab     :all
   before_filter :authenticate_user!
@@ -116,16 +117,7 @@ class ReportsController < ApplicationController
     filename ||= params[:action]
     filename += "_#{@date_start.strftime("%Y%m%d")}-#{@date_end.strftime("%Y%m%d")}.csv"
 
-    if request.env['HTTP_USER_AGENT'] =~ /msie/i
-      headers['Pragma'] = 'public'
-      headers["Content-type"] = "text/plain"
-      headers['Cache-Control'] = 'no-cache, must-revalidate, post-check=0, pre-check=0'
-      headers['Content-Disposition'] = "attachment; filename=\"#{filename}\""
-      headers['Expires'] = "0"
-    else
-      headers["Content-Type"] ||= 'text/csv'
-      headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
-    end
+    set_csv_headers(filename)
 
     render :template => "reports/#{action ? action : action_name}", :layout => false
   end

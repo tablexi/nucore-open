@@ -98,6 +98,10 @@ class Instrument < Product
     relay && (relay.is_a?(RelayDummy) || relay.ip && relay.port)
   end
 
+  def has_real_relay?
+    relay && relay.ip && relay.port
+  end
+
   def can_purchase? (group_ids = nil)
     return false if is_archived? || !facility.is_active?
     if schedule_rules.empty?

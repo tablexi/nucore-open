@@ -9,7 +9,7 @@ class RelaySynaccessRevB < Relay
     get_request("/cmd.cgi?rly=#{port}")
   end
 
-  def get_status
+  def query_status
     resp   = get_request('/status.xml')
     doc    = Nokogiri::XML(resp.body)
     nodes  = doc.xpath('/response/*')

@@ -17,18 +17,17 @@ class Relay < ActiveRecord::Base
     :relay => 'relay'
   }
 
-
   # assume port numbering begins at 1 for public functions
-  def get_status_port(port)
-    get_status[port - 1]
+  def get_status
+    query_status[port - 1]
   end
 
-  def activate_port(port)
-    toggle(port - 1) if !get_status_port(port)
+  def activate
+    toggle(port - 1) if !get_status
   end
 
-  def deactivate_port(port)
-    toggle(port - 1) if get_status_port(port)
+  def deactivate
+    toggle(port - 1) if get_status
   end
 
   def control_mechanism
@@ -42,12 +41,17 @@ class Relay < ActiveRecord::Base
     raise 'Including class must define'
   end
 
-  def get_status
+  def query_status
     raise 'Including class must define'
   end
 
   def get_request(path)
     resp = nil
+    # This would make development easier, but it doesn't work in ruby 1.8.7 because
+    # HTTP.start doesn't take the seventh opts
+    # opts = {}
+    # opts[:open_timeout] = 2 if Rails.env.development?
+    # Net::HTTP.start(host, nil, nil, nil, nil, nil, opts) { |http|
     Net::HTTP.start(host) { |http|
       req = Net::HTTP::Get.new(path)
       req.basic_auth username, password

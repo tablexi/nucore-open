@@ -254,6 +254,25 @@ describe Reservation do
 
     end
 
+    context 'ordered_on_behalf_of?' do
+      it 'should return true if the associated order was ordered by someone else' do
+        @user2 = Factory.create(:user)
+        @reservation1.order.update_attributes(:created_by_user => @user2)
+        @reservation1.reload.should be_ordered_on_behalf_of
+      end
+      it 'should return false if the associated order was not ordered on behalf of' do
+        user = @reservation1.order_detail.order.user
+        @reservation1.order_detail.order.update_attributes(:created_by_user => user)
+        @reservation1.reload
+        @reservation1.reload.should_not be_ordered_on_behalf_of
+      end
+      it 'should return false for admin reservations' do
+        @admin_reservation = Factory.create(:reservation, :instrument => @instrument)
+        @admin_reservation.should_not be_ordered_on_behalf_of
+      end
+      
+    end
+
   end
 
 
@@ -512,6 +531,30 @@ describe Reservation do
     end
     it "should have end set to actual_end_at timestamp" do
       @cal_obj_w_actual_end['end'].should == @actual_end_at_timestamp
+    end
+  end
+
+  context 'for_date' do
+    before :each do
+      @rule.destroy
+      @rule = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 24, :duration_mins => 15))
+      @spans_day_reservation = @instrument.reservations.create!(:reserve_start_at => Time.zone.now.end_of_day - 1.hour,
+                                                     :duration_value => 120, :duration_unit => 'minutes')
+      @today_reservation = @instrument.reservations.create!(:reserve_start_at => Time.zone.now.beginning_of_day + 8.hours,
+                                                     :duration_value => 120, :duration_unit => 'minutes')
+      @yeserday_reservation = @instrument.reservations.create!(:reserve_start_at => Time.zone.now.beginning_of_day - 16.hours,
+                                                     :duration_value => 120, :duration_unit => 'minutes')
+      @tomorrow_reservation = @instrument.reservations.create!(:reserve_start_at => Time.zone.now.end_of_day + 8.hours,
+                                                     :duration_value => 120, :duration_unit => 'minutes')
+    end
+    it 'should return reservations from a single day' do
+      Reservation.for_date(Time.zone.now - 1.day).should contain_all [@yeserday_reservation]
+    end
+    it 'should return a reservation that spans days when looking up the earlier date' do
+      Reservation.for_date(Time.zone.now).should contain_all [@today_reservation, @spans_day_reservation]
+    end
+    it 'should return a reservation that spands days when looking up the later date' do
+      Reservation.for_date(Time.zone.now + 1.day).should contain_all [@tomorrow_reservation, @spans_day_reservation]
     end
   end
 end

@@ -8,7 +8,8 @@
   = render :partial => 'admin/shared/tabnav_users', :locals => { :secondary_tab => 'accounts' }
   
 %h1= t('.h1', :user_name => @user.full_name)
-%p= link_to t('.link'), new_facility_account_path(current_facility, :owner_user_id => @user.id)
+- if SettingsHelper.feature_on? :recharge_accounts
+  %p= link_to t('.link'), new_facility_account_path(current_facility, :owner_user_id => @user.id)
 - if @user.accounts.empty?
   %p.notice= t('.notice', :user_name => @user.full_name)
 - else

@@ -1,4 +1,6 @@
 class FacilityReservationsController < ApplicationController
+  include TabCountHelper
+
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -7,7 +9,6 @@ class FacilityReservationsController < ApplicationController
   load_and_authorize_resource :class => Reservation
 
   helper_method :sort_column, :sort_direction
-  helper_method :new_or_in_process_orders, :problem_orders, :disputed_orders
 
   ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN = {
       'date'          => 'reservations.reserve_start_at',
@@ -204,7 +205,7 @@ class FacilityReservationsController < ApplicationController
 
   # GET /facilities/:facility_id/orders/disputed
   def disputed
-    @details = disputed_orders.
+    @order_details = disputed_orders.
       paginate(:page => params[:page])
   end
 
@@ -219,6 +220,13 @@ class FacilityReservationsController < ApplicationController
     redirect_to facility_instrument_schedule_url
   end
 
+  def timeline
+    @display_date = parse_usa_date(params[:date]) if params[:date]
+    @display_date ||= Time.zone.now
+
+    @instruments = current_facility.instruments.active.order(:name)
+  end
+
   private
 
   def new_or_in_process_orders(order_by_clause = 'reservations.reserve_start_at')
@@ -229,13 +237,15 @@ class FacilityReservationsController < ApplicationController
         :reservation,
         :assigned_user
       ).
-      order(order_by_clause).
-      delete_if{|od| od.reservation.nil? }
+      where("reservations.id IS NOT NULL").
+      order(order_by_clause)
   end
   
+  #TODO make problem_order an SQL relation to speet things up
   def problem_orders
     current_facility.order_details.
       reservations.
+      complete.
       reject{|od| !od.problem_order?}
   end
   def disputed_orders

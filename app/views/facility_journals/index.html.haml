@@ -30,8 +30,12 @@
           %tr
             %td
               %ul
-                %li=link_to 'XLS File', pending_journal.file.url
-                %li=link_to 'XML File', facility_journal_path(current_facility, pending_journal, :format => 'xml')
+                - if Settings.financial.journal_format.xls
+                  %li=link_to 'XLS File', pending_journal.file.url
+                - if Settings.financial.journal_format.xml
+                  %li=link_to 'XML File', facility_journal_path(current_facility, pending_journal, :format => 'xml')
+                - if Settings.financial.journal_format.csv
+                  %li=link_to 'CSV File', facility_journal_path(current_facility, pending_journal, :format => 'csv')
             %td=h human_datetime(pending_journal.created_at)
 
             - if all_facility?

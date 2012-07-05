@@ -1,0 +1,2 @@
+%div{ :style => "width: #{datetime_width(@display_date, reservation.reserve_start_at, reservation.reserve_end_at)}; left: #{datetime_left_position(@display_date, reservation.reserve_start_at)}; z-index: #{reservation_counter};", :class => reservation_classes(reservation) }[reservation, :block]          
+= render :partial => "shared/timeline/tooltip", :locals => { :reservation => reservation } unless reservation.blackout?

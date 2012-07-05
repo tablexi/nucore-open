@@ -13,7 +13,7 @@ class RelaySynaccessRevA < Relay
     get_request("/synOpStatus.shtml")
   end
 
-  def get_status
+  def query_status
     resp   = get_request('/synOpStatus.shtml')
     doc    = Nokogiri::HTML(resp.body)
     nodes  = doc.xpath('//img')
