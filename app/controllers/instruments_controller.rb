@@ -2,6 +2,7 @@ class InstrumentsController < ProductsCommonController
   customer_tab  :show
   admin_tab     :create, :edit, :index, :manage, :new, :schedule, :update
   
+  skip_before_filter :init_product, :only => [:instrument_statuses]
   
   # GET /instruments
   def index
@@ -80,12 +81,35 @@ class InstrumentsController < ProductsCommonController
   def instrument_status
     begin
       @relay  = @instrument.relay
-      status = Rails.env.test? ? true : @relay.get_status_port(@relay.port)
+      status = Rails.env.test? ? true : @relay.get_status
       @status = @instrument.instrument_statuses.create!(:is_on => status)
-    rescue
+    rescue Exception => e
+      logger.error e
       raise ActiveRecord::RecordNotFound
     end
-    render :layout => false
+    respond_to do |format|
+      format.html  { render :layout => false }
+      format.json  { render :json => @status }
+    end
+  end
+
+  def instrument_statuses
+    statuses = []
+    current_facility.instruments.includes(:relay).each do |instrument|
+      begin
+        status = instrument.relay.get_status
+        instrument_status = instrument.current_instrument_status
+        # if the status hasn't changed, don't create a new status
+        if instrument_status && status == instrument_status.is_on?
+          statuses << instrument_status
+        else
+          statuses << instrument.instrument_statuses.create!(:is_on => status)
+        end
+      rescue Exception => e
+        statuses << InstrumentStatus.new(:instrument => instrument, :error_message => e.message)
+      end
+    end
+    render :json => statuses
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/switch
@@ -98,14 +122,19 @@ class InstrumentsController < ProductsCommonController
 
       unless Rails.env.test?
         port=@instrument.relay.port
-        params[:switch] == 'on' ? relay.activate_port(port) : relay.deactivate_port(port)
-        status = relay.get_status_port(port)
+        params[:switch] == 'on' ? relay.activate : relay.deactivate
+        status = relay.get_status
       end
 
       @status = @instrument.instrument_statuses.create!(:is_on => status)
-    rescue
-      raise ActiveRecord::RecordNotFound
+    rescue Exception => e
+      logger.error "ERROR: #{e.message}"
+      @status = InstrumentStatus.new(:instrument => @instrument, :error_message => e.message)
+      #raise ActiveRecord::RecordNotFound
     end
-    render :action => :instrument_status, :layout => false
+    respond_to do |format|
+      format.html { render :action => :instrument_status, :layout => false }
+      format.json { render :json => @status }
+    end
   end
 end

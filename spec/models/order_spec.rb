@@ -411,6 +411,20 @@ describe Order do
 #        @cart.account.should be_nil
       end
     end
+  end
+  context "ordered_on_behalf_of?" do
+    before :each do
+      @user = Factory.create(:user)
+      @user2 = Factory.create(:user)
+    end
+    it "should be false if it was ordered by the same person" do
+      @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id))
+      @user.orders.first.should_not be_ordered_on_behalf_of
+    end
+    it "should be true if it was created by someone else" do
+      @user.orders.create(Factory.attributes_for(:order, :created_by => @user2.id))
+      @user.orders.first.should be_ordered_on_behalf_of
+    end
 
   end
 end

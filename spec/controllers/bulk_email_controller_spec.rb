@@ -100,8 +100,11 @@ describe BulkEmailController do
           do_request
           assigns[:users].should_not be_respond_to :per_page
         end
+        it 'should set the filename in the content disposition' do
+          do_request
+          response.headers['Content-Disposition'].should == "attachment; filename=\"bulk_email_customers.csv\""
+        end
       end
-    end
-    
+    end    
   end
 end

@@ -1,0 +1,24 @@
+= content_for :head_content do
+  = javascript_include_tag 'pick_accessories'
+  = javascript_include_tag "tooltipsy.min.js"
+  = javascript_include_tag "timeline.js"
+  = javascript_include_tag "jquery.toggleswitch.js"
+  = stylesheet_link_tag "timeline.css"
+
+= content_for :h1 do
+  = current_facility
+= content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_reservation', :locals => { :secondary_tab => 'daily'}
+
+.timeline_header
+  = form_tag timeline_facility_reservations_path(current_facility), :method => :get, :id => "timeline_date_search" do
+    .timeline_options
+      = check_box_tag :show_cancelled, 1, params[:show_cancelled]
+      = label_tag :show_cancelled
+    %h3
+      = human_date_with_day(@display_date)
+      = hidden_field_tag 'date', format_usa_date(@display_date), :class => 'datepicker'
+
+.clear
+= render :partial => 'shared/timeline/instrument', :collection => @instruments, :as => :instrument
+  

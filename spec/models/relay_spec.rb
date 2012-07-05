@@ -35,14 +35,14 @@ describe Relay do
 
 
       it 'should turn on the relay' do
-        @relay.activate_port(nil)
-        @relay.get_status_port(nil).should == true
+        @relay.activate
+        @relay.get_status.should == true
       end
 
 
       it 'should turn off the relay' do
-        @relay.deactivate_port(nil)
-        @relay.get_status_port(nil).should == false
+        @relay.deactivate
+        @relay.get_status.should == false
       end
 
     end

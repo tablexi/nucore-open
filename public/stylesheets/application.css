@@ -26,7 +26,7 @@ h1 {
 	font-size:32px;
 	letter-spacing:-1px;
 	line-height:1em;
-	margin-bottom:.75em;
+	margin-bottom:.5em;
 	padding-bottom:10px;
 }
 
@@ -90,6 +90,10 @@ input[type=button] {
 	line-height:normal;
 	padding:5px 14px 6px;
 	text-shadow:0 1px 1px rgba(255, 255, 255, 0.75);
+}
+
+small {
+	font-size: smaller;
 }
 
 /***************************************
@@ -583,6 +587,24 @@ ul.tabs li a {
 	background-repeat: no-repeat;
 	color:#666;
 	padding:10px 8px;
+}
+
+ul.tabs .updating,
+ul.tabs .updated {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+    margin-left: 0.4em;
+    margin-right: 4px;
+    text-decoration: none;
+}
+ul.tabs .updating {
+	background-image: url(../images/spinner-arrow.gif);
+	position: relative;
+	top: 3px;
+}
+ul.tabs .updated {
+	padding-bottom: 4px;
 }
 
 

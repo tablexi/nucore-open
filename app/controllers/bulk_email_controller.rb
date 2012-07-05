@@ -1,5 +1,6 @@
 class BulkEmailController < ApplicationController
 	include BulkEmailHelper
+  include CSVHelper
   
   admin_tab :all
   layout 'two_column'
@@ -18,7 +19,10 @@ class BulkEmailController < ApplicationController
 
     respond_to do |format|
       format.html { @users = @users.paginate(:page => params[:page]) if @users }
-      format.csv
+      format.csv do
+        filename = "bulk_email_#{params[:search_type]}.csv"
+        set_csv_headers(filename)
+      end
     end
 	end
 

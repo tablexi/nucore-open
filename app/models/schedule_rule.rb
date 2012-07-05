@@ -25,6 +25,25 @@ class ScheduleRule < ActiveRecord::Base
          where product_access_schedule_rules.product_access_group_id = product_users.product_access_group_id
          and product_access_schedule_rules.schedule_rule_id = schedule_rules.id)))")
   end
+
+  def self.unavailable_for_date(instrument, day)
+    rules = where(:instrument_id => instrument.id)
+    rules = unavailable(rules)
+    rules = rules.select {|item| item.send(:"on_#{day.strftime("%a").downcase}?")}
+    reservations = []
+    rules.each do |rule|
+      res = Reservation.new({
+        :instrument => instrument,
+        :reserve_start_at => day.dup.change(:hour => rule.start_hour, :min => rule.start_min),
+        :reserve_end_at => day.dup.change(:hour => rule.end_hour, :min => rule.end_min),
+        :blackout => true
+        })
+      reservations << res
+    end
+    reservations
+  end
+
+
    
   def at_least_one_day_selected
     errors.add(:base, "Please select at least one day") unless
@@ -158,7 +177,6 @@ class ScheduleRule < ActiveRecord::Base
     # group rules by day, sort by start_hour
     Date::ABBR_DAYNAMES.each do |day|
       day_rules = rules.select{ |rule| rule.send("on_#{day.downcase}?") }.sort_by{ |rule| rule.start_hour }
-      # for now, skip days with no rules
       if day_rules.empty?
         # build entire day not rule
         not_rule = ScheduleRule.new("on_#{day.downcase}" => true, :start_hour => 0, :start_min => 0, :end_hour => 24, :end_min => 0,

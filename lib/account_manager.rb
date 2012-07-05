@@ -19,4 +19,12 @@ class AccountManager
   def self.using_statements?
     !STATEMENT_ACCOUNT_CLASSES.empty?
   end
+
+  def self.using_affiliates?
+    using_statements?
+  end
+
+  def self.multiple_account_types?
+    (GLOBAL_ACCOUNT_CLASSES + FACILITY_ACCOUNT_CLASSES).size > 1
+  end
 end

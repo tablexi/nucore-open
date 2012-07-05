@@ -221,6 +221,11 @@ class Order < ActiveRecord::Base
     end
   end
 
+  # If user_id doesn't match created_by, that means it was ordered on behalf of
+  def ordered_on_behalf_of?
+    user_id != created_by
+  end
+
   private
 
   def total_cost(order_detail_method)

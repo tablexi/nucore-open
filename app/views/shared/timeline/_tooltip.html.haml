@@ -1,0 +1,8 @@
+%div[reservation, :tooltip]
+  %strong= reservation.admin? ? 'Administrative Reservation' : reservation.user
+  %br/
+  %span #{human_time(reservation.reserve_start_at)}&ndash;#{human_time(reservation.reserve_end_at)}
+  - if reservation.order_detail
+    %span{:class => reservation.order_detail.order_status.to_s.downcase}= "- #{reservation.order_detail.order_status}"
+  %br/
+  = reservation_links(reservation)

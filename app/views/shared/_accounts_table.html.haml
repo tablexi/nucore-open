@@ -6,7 +6,7 @@
     - a = au.account
     %tr
       - if can?(:manage, a) || session_user.administrator? #au.can_administer? || session_user.administrator?
-        - if current_facility
+        - if current_facility && AccountManager.using_statements?
           %td= link_to a, facility_account_statement_path(current_facility, a, 'recent')
         - else
           %td= link_to a, account_statements_path(a)
