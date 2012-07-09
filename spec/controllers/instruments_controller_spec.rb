@@ -50,6 +50,11 @@ describe InstrumentsController do
 
   context "show" do
 
+    def add_account_for_user(user_sym)
+      nufs=create_nufs_account_with_owner user_sym
+      define_open_account @instrument.account, nufs.account_number
+    end
+
     before :each do
       @method=:get
       @action=:show
@@ -60,8 +65,30 @@ describe InstrumentsController do
       assert_redirected_to facility_path(@authable)
     end
 
+    context 'needs valid account' do
+      before :each do
+        @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+      end
+
+      it "should fail without a valid account" do
+        maybe_grant_always_sign_in :director
+        do_request
+        flash.should_not be_empty
+        assert_redirected_to facility_path(@authable)
+      end
+
+      it "should succeed with valid account" do
+        add_account_for_user :director
+        maybe_grant_always_sign_in :director
+        do_request
+        flash.should be_empty
+        assert_redirected_to add_order_path(Order.all.last, :order => {:order_details => [{:product_id => @instrument.id, :quantity => 1}]})
+      end
+    end
+
     context 'needs schedule rules' do
       before :each do
+        facility_operators.each {|op| add_account_for_user op}
         @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
       end
 
@@ -92,6 +119,7 @@ describe InstrumentsController do
       
       it "should not show a notice and show an add to cart" do
         @product_user = ProductUser.create(:product => @instrument, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
+        add_account_for_user :guest
         sign_in @guest
         do_request
         flash.should be_empty
@@ -99,6 +127,7 @@ describe InstrumentsController do
       end
       
       it "should allow an admin to allow it to add to cart" do
+        add_account_for_user :admin
         sign_in @admin
         do_request
         flash.should_not be_empty
@@ -114,6 +143,7 @@ describe InstrumentsController do
         
       it "should show the page if you're acting as a user" do
         Instrument.any_instance.stubs(:can_purchase?).returns(true)
+        add_account_for_user :guest
         sign_in @admin
         switch_to @guest
         do_request

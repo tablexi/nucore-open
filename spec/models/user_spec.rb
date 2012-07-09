@@ -132,4 +132,28 @@ describe User do
     end
   end
 
+  context 'accounts_for_product' do
+    before :each do
+      @facility=Factory.create(:facility)
+      @facility_account=@facility.facility_accounts.create(Factory.attributes_for(:facility_account))
+      @item=@facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @price_group=Factory.create(:price_group, :facility => @facility)
+      Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
+      @item_pp=@item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
+      @item_pp.reload.restrict_purchase=false
+      @account=Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @user) ])
+    end
+
+    it 'should not have an account because nufs is not open' do
+      @user.accounts_for_product(@item).should be_empty
+    end
+
+    it 'should have an account' do
+      define_open_account @item.account, @account.account_number
+      accts=@user.accounts_for_product(@item)
+      accts.size.should == 1
+      accts.first.should == @account
+    end
+  end
+
 end
