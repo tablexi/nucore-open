@@ -53,7 +53,7 @@ shared_examples_for PricePoliciesController do |product_type|
         do_request
         response.should be_success
         assigns[:start_date].should_not be_nil
-        assigns[:start_date].should match_date (Date.today + 1.day)
+        assigns[:start_date].should match_date(Date.today + 1.day)
       end
       it 'should set the expiration date to when the fiscal year ends' do
         do_request
@@ -102,7 +102,7 @@ shared_examples_for PricePoliciesController do |product_type|
 
       it 'should return a new policy for other groups' do
         new_price_policies = assigns[:price_policies].reject {|pp| pp.price_group == @price_group}
-        new_price_policies.map(&:price_group).should contain_all (PriceGroup.all - [@price_group])
+        new_price_policies.map(&:price_group).should contain_all(PriceGroup.all - [@price_group])
         new_price_policies.each do |pp|
           pp.should be_new_record
         end
