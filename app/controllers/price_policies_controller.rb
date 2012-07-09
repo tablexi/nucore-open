@@ -42,7 +42,7 @@ class PricePoliciesController < ApplicationController
     new_price_policy_list = []
     @price_policies.each do |pp|
       existing_pp = @product.price_policies.current.where(:price_group_id => pp.price_group.id).first
-      new_price_policy_list << existing_pp ? existing_pp.clone : pp
+      new_price_policy_list << (existing_pp ? existing_pp.clone : pp)
     end
     @price_policies = new_price_policy_list
 
