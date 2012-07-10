@@ -28,7 +28,7 @@ class PricePoliciesController < ApplicationController
   # GET /price_policies/new
   def new
     # If there are active policies, start tomorrow. If none, start today
-    @start_date     = Date.today + (@product.price_policies.active.empty? ? 0 : 1)
+    @start_date     = Date.today + (@product.price_policies.current.empty? ? 0 : 1)
 
     @expire_date    = PricePolicy.generate_expire_date(@start_date)
     @max_expire_date = @expire_date

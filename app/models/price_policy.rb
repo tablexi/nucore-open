@@ -18,11 +18,6 @@ class PricePolicy < ActiveRecord::Base
     end
   end
 
-  scope :active, lambda {{ :conditions => [ "start_date <= ? AND expire_date > ?", Time.zone.now, Time.zone.now ], :order => "start_date DESC" }}
-  scope :current_for_product,  lambda { |product|             { :conditions => [dateize('start_date', ' = ? AND product_id = ?'), current_date(product), product.id] } }
-  scope :next_for_product,     lambda { |product|             { :conditions => [dateize('start_date', ' = ? AND product_id = ?'), next_date(product), product.id] } }
-  scope :for_product_and_date, lambda { |product, start_date| { :conditions => [dateize('start_date', ' = ? AND product_id = ?'), start_date, product.id] } }
-
   before_create :set_expire_date
   before_create :truncate_existing_policies
 
@@ -32,6 +27,10 @@ class PricePolicy < ActiveRecord::Base
 
   def self.current
     where("start_date <= :now AND expire_date > :now", {:now => Time.zone.now})
+  end
+
+  def self.purchaseable
+    where(:can_purchase => true)
   end
 
   def self.upcoming
@@ -102,7 +101,6 @@ class PricePolicy < ActiveRecord::Base
   def restrict_purchase
     return false unless price_group and product
     !can_purchase?
-    #PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id).nil?
   end
 
   alias_method :restrict_purchase?, :restrict_purchase
@@ -118,11 +116,8 @@ class PricePolicy < ActiveRecord::Base
     case state
       when false, 0
         self.can_purchase = true
-        #PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(price_group.id, product.id)
       when true, 1
         self.can_purchase = false
-        # pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
-        # pgp.destroy if pgp
       else
         raise ArgumentError.new('state must be true, false, 0, or 1')
     end
