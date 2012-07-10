@@ -8,16 +8,14 @@ class PricePolicy < ActiveRecord::Base
 
   validates_each :expire_date do |record,attr,value|
     unless value.blank?
-      value=value.to_date
-      start_date=record.start_date.to_date
-      gen_exp_date=generate_expire_date(start_date).to_date
-
+      start_date=record.start_date
+      gen_exp_date=generate_expire_date(start_date)
       if value <= start_date || value > gen_exp_date
         record.errors.add(:expire_date, "must be after #{start_date.to_date.to_s} and before #{gen_exp_date.to_date.to_s}")
       end
     end
   end
-
+  
   before_create :set_expire_date
   before_create :truncate_existing_policies
 
@@ -64,12 +62,13 @@ class PricePolicy < ActiveRecord::Base
 
   
   def truncate_existing_policies
-    existing_policies = PricePolicy.where("start_date <= ? and expire_date >= ?", start_date, start_date).
-                                    where("type = ?", self.class.name).
-                                    where("price_group_id = ?", price_group_id).
-                                    where("product_id = ?", product_id)
+    logger.debug("Truncating existing policies")
+    existing_policies = PricePolicy.current.where(:type => self.class.name, 
+                                                  :price_group_id => price_group_id,
+                                                  :product_id => product_id)
     
     existing_policies = existing_policies.where("id != ?", id) unless id.nil?
+    
     existing_policies.each do |policy|
       policy.expire_date = (start_date - 1.day).end_of_day
       policy.save
