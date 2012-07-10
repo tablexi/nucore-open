@@ -35,15 +35,15 @@ class PricePoliciesController < ApplicationController
     
     build_price_policies
 
-    # Make them all start as enabled
-    @price_policies.each { |pp| pp.can_purchase = true }
-
-    # copy over current price policy info
+    # Base the new policies off the most recent version
     new_price_policy_list = []
     @price_policies.each do |pp|
-      existing_pp = @product.price_policies.current.where(:price_group_id => pp.price_group.id).first
+      existing_pp = @product.price_policies.where(:price_group_id => pp.price_group.id).order(:expire_date).last
       new_price_policy_list << (existing_pp ? existing_pp.clone : pp)
     end
+    # If it's all new policies (i.e. nothing changed in the list), make the default can_purchase true
+    new_price_policy_list.each { |pp| pp.can_purchase = true } if @price_policies == new_price_policy_list
+
     @price_policies = new_price_policy_list
 
     render 'price_policies/new'

@@ -3,10 +3,14 @@ shared_examples_for PricePoliciesController do |product_type|
     @product_type = product_type
     @authable         = Factory.create(:facility)
     @facility_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
+
+    # Delete the default price groups since they get in the way of testing
+    PriceGroup.all.each { |pg| pg.delete }
+
     @price_group      = @authable.price_groups.create(Factory.attributes_for(:price_group))
     @price_group2     = @authable.price_groups.create(Factory.attributes_for(:price_group))
     @product          = @authable.send(product_type.to_s.pluralize).create(Factory.attributes_for(product_type, :facility_account_id => @facility_account.id))
-    @price_policy     = make_price_policy
+    @price_policy     = make_price_policy(@price_group)
     @price_policy.should be_valid
     @params={ :facility_id => @authable.url_name, :"#{product_type}_id" => @product.url_name }
   end
@@ -15,8 +19,8 @@ shared_examples_for PricePoliciesController do |product_type|
     before :each do
       @method=:get
       @action=:index
-      @price_policy_past = make_price_policy({:start_date => 1.year.ago, :expire_date => PricePolicy.generate_expire_date(1.year.ago)})
-      @price_policy_future = make_price_policy({:start_date => 1.year.from_now, :expire_date => PricePolicy.generate_expire_date(1.year.from_now)})
+      @price_policy_past = make_price_policy(@price_group, {:start_date => 1.year.ago, :expire_date => PricePolicy.generate_expire_date(1.year.ago)})
+      @price_policy_future = make_price_policy(@price_group, {:start_date => 1.year.from_now, :expire_date => PricePolicy.generate_expire_date(1.year.from_now)})
     end
 
     it_should_allow_operators_only do |user|
@@ -65,13 +69,59 @@ shared_examples_for PricePoliciesController do |product_type|
         price_groups = assigns[:price_policies].map(&:price_group)
         price_groups.should contain_all PriceGroup.all
       end
-      it 'should set each price policy to true' do
+      it 'should set the policies in the correct order' do
+        @price_group.update_attributes(:display_order => 2)
+        @price_group2.update_attributes(:display_order => 1)
         do_request
+        assigns[:price_policies].map(&:price_group).should == [@price_group2, @price_group]
+      end
+      it 'should set each price policy to true' do
+        make_price_policy(@price_group2)
+        do_request
+        assigns[:price_policies].size.should == 2
         (assigns[:price_policies].all?{|pp| pp.can_purchase?}).should be_true
       end
       it 'should render the new template' do
         do_request
         response.should render_template('price_policies/new')
+      end
+      context 'old policies exist' do
+        before :each do
+          @price_group2_policy = make_price_policy(@price_group2, :can_purchase => false, :unit_cost => 13)
+        end
+        it 'should set can_purchase based off old policy' do
+          do_request
+          assigns[:price_policies].map(&:price_group).should == [@price_policy.price_group, @price_group2_policy.price_group]
+          assigns[:price_policies][0].should be_can_purchase
+          assigns[:price_policies][1].should_not be_can_purchase
+        end
+        it 'should set fields based off the old policy' do
+          do_request
+          assigns[:price_policies].map(&:price_group).should == [@price_policy.price_group, @price_group2_policy.price_group]
+          assigns[:price_policies][0].unit_cost.should == @price_policy.unit_cost
+          assigns[:price_policies][1].unit_cost.should == @price_group2_policy.unit_cost
+        end
+        it "should leave can_purchase as false if there isn't an existing policy for the group, but there are policies" do
+          @price_group3 = @authable.price_groups.create(Factory.attributes_for(:price_group))
+          do_request
+          assigns[:price_policies].map(&:price_group).should == [@price_policy.price_group, @price_group2_policy.price_group, @price_group3]
+          assigns[:price_policies].size.should == 3
+          assigns[:price_policies][0].should be_can_purchase
+          assigns[:price_policies][1].should_not be_can_purchase
+          assigns[:price_policies][2].should_not be_can_purchase
+        end
+        it 'should use the policy with the furthest out expiration date' do
+          @price_policy.update_attributes(:unit_cost => 16.0)
+          @price_policy2 = make_price_policy(@price_group, :start_date => 1.years.from_now, :expire_date => SettingsHelper::fiscal_year_end(1.years.from_now), :unit_cost => 17.0)
+          @price_policy3 = make_price_policy(@price_group, :start_date => 1.year.ago, :expire_date => SettingsHelper::fiscal_year_end(1.year.ago), :unit_cost => 18.0)
+          # Ensure the policy two is the one with the max expire date
+          [@price_policy, @price_policy2, @price_policy3].max_by(&:expire_date).should == @price_policy2
+          do_request
+          # make sure we're not out of order
+          assigns[:price_policies][0].price_group.should == @price_group
+          # the unit cost for price_policy_2
+          assigns[:price_policies][0].unit_cost.should == 17
+        end
       end
     end
   end
@@ -337,8 +387,8 @@ shared_examples_for PricePoliciesController do |product_type|
     "/facilities/#{@authable.url_name}/#{@product_type.to_s.pluralize}/#{@product.url_name}/price_policies"
   end
 
-  def make_price_policy(extra_attr = {})
-    extra_attr.merge!(:price_group_id => @price_group.id)
+  def make_price_policy(price_group, extra_attr = {})
+    extra_attr.merge!(:price_group_id => price_group.id)
     @product.send(:"#{@product_type}_price_policies").create(Factory.attributes_for(:"#{@product_type}_price_policy", extra_attr))
   end
 
