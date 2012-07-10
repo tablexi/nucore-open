@@ -60,7 +60,13 @@ class ProductsCommonController < ApplicationController
       @add_to_cart = false
       @error = 'not_authorized_acting_as'
     end
-    
+
+    # does the user have a valid payment source for purchasing this reservation?
+    if @add_to_cart && acting_user.accounts_for_product(@product).blank?
+      @add_to_cart=false
+      @error='no_accounts'
+    end
+
     # does the product have any price policies for any of the groups the user is a member of?
     if @add_to_cart && !price_policy_available_for_product?
       @add_to_cart       = false

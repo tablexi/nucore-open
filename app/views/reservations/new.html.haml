@@ -44,8 +44,7 @@
     %ul.form.box
       %li.left
         = label_tag 'order_account', t('.label')
-        - options=@order.user.accounts.active.for_facility(@instrument.facility)
-        - options.reject!{|acct| !acct.validate_against_product(@instrument, @order.user).nil?}
+        - options=@order.user.accounts_for_product @instrument
         - options.collect!{|acct| [acct.to_s ,acct.id] }
         - options.unshift(Array.new(2)) if options.size > 1
         = select_tag 'order_account', options_for_select(options, @order.account_id)
