@@ -13,7 +13,9 @@ end
 Factory.define_default :facility_account, :class => FacilityAccount do |o|
   o.revenue_account 12345
   o.sequence(:account_number) do |n|
-    s = "1#{n%10}#{rand(10)}-7777777" # fund3-dept7
+    # This sequence was often running into blacklist problems
+    # s = "1#{n%10}#{rand(10)}-7777777" # fund3-dept7
+    s = "134-7#{"%06d" % n}"
     define_open_account(12345, s)
     s
   end
