@@ -71,7 +71,15 @@ describe ItemsController do
     it_should_allow(:guest) { @block.call }
 
     it_should_allow_all(facility_operators) { @block.call }
-    
+
+    it "should fail without a valid account" do
+      sign_in @guest
+      do_request
+      flash.should_not be_empty
+      assigns[:add_to_cart].should be_false
+      assigns[:error].should == 'no_accounts'
+    end
+
     context "restricted item" do
       before :each do
         @item.update_attributes(:requires_approval => true)
@@ -85,6 +93,8 @@ describe ItemsController do
       
       it "should not show a notice and show an add to cart" do
         @product_user = ProductUser.create(:product => @item, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
+        nufs=create_nufs_account_with_owner :guest
+        define_open_account @item.account, nufs.account_number
         sign_in @guest
         do_request
         flash.should be_empty
@@ -92,6 +102,8 @@ describe ItemsController do
       end
       
       it "should allow an admin to allow it to add to cart" do
+        nufs=create_nufs_account_with_owner :admin
+        define_open_account @item.account, nufs.account_number
         sign_in @admin
         do_request
         flash.should_not be_empty

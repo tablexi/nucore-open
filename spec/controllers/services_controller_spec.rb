@@ -55,6 +55,14 @@ describe ServicesController do
       response.should render_template('services/show')
     end
 
+    it "should fail without a valid account" do
+      sign_in @guest
+      do_request
+      flash.should_not be_empty
+      assigns[:add_to_cart].should be_false
+      assigns[:error].should == 'no_accounts'
+    end
+
     context "restricted service" do
       before :each do
         @service.update_attributes(:requires_approval => true)
@@ -68,6 +76,8 @@ describe ServicesController do
       
       it "should not show a notice and show an add to cart" do
         @product_user = ProductUser.create(:product => @service, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
+        nufs=create_nufs_account_with_owner :guest
+        define_open_account @service.account, nufs.account_number
         sign_in @guest
         do_request
         flash.should be_empty
@@ -75,6 +85,8 @@ describe ServicesController do
       end
       
       it "should allow an admin to allow it to add to cart" do
+        nufs=create_nufs_account_with_owner :admin
+        define_open_account @service.account, nufs.account_number
         sign_in @admin
         do_request
         flash.should_not be_empty

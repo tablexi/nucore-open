@@ -51,13 +51,13 @@ module TransactionSearch
                                                       select("distinct(facilities.id), facilities.name, facilities.abbreviation").
                                                       reorder("facilities.name").to_sql)
 
-    @accounts = Account.find_by_sql(@order_details.joins(:order => :account).
+    @accounts = Account.find_by_sql(@order_details.joins(:account).
                                                    select("distinct(accounts.id), accounts.description, accounts.account_number, accounts.type").
                                                    reorder("accounts.account_number, accounts.description").to_sql)
     @products = Product.find_by_sql(@order_details.joins(:product).
                                                    select("distinct(products.id), products.name, products.facility_id, products.type, products.requires_approval").
                                                    reorder("products.name").to_sql)
-    @account_owners = User.find_by_sql(@order_details.joins(:order => {:account => {:owner => :user} }).
+    @account_owners = User.find_by_sql(@order_details.joins(:account => {:owner => :user}).
                                                       select("distinct(users.id), users.first_name, users.last_name").
                                                       reorder("users.last_name, users.first_name").to_sql)
     

@@ -314,7 +314,6 @@ describe OrdersController do
           should set_the_flash
           @order.reload.order_details.should be_empty
         end
-
       end
       context "in the another facility" do
         before :each do

@@ -23,13 +23,14 @@ describe TransactionSearch do
   before :each do
     @user = Factory.create(:user)
     @staff = Factory.create(:user, :username => "staff")
+    @staff2 = Factory.create(:user, :username => "staff2")
     UserRole.grant(@staff, UserRole::FACILITY_DIRECTOR)
     @controller = TransactionSearcher.new
     @authable         = Factory.create(:facility)
     @facility_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
     @price_group      = @authable.price_groups.create(Factory.attributes_for(:price_group))
     @account          = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
-    @order            = @staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account, :ordered_at => Time.now))
+    @order            = @staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account, :ordered_at => Time.now))    
     @item             = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
     @order_detail_complete = place_and_complete_item_order(@user, @authable, @account)
     @order_detail_new = place_product_order(@staff, @authable, @item)
@@ -60,6 +61,25 @@ describe TransactionSearch do
         @controller.account.should be_nil
         @controller.accounts.should == [@account]
       end
+      it 'should populate accounts based off order_details, not orders' do
+        @account2 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
+        Order.all.each { |o| o.update_attributes!(:account => @account) }
+        OrderDetail.all.each { |od| od.update_attributes!(:account => @account2)}
+        @order.reload.account.should == @account
+        @controller.all_order_details
+        @controller.accounts.should == [@account2]
+      end
+
+      it 'should populate owners based off of order_details, not orders' do
+        @account2 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff2, :created_by => @staff2, :user_role => AccountUser::ACCOUNT_OWNER]])
+        Order.all.each { |o| o.update_attributes!(:account => @account) }
+        OrderDetail.all.each { |od| od.update_attributes!(:account => @account2) }
+        @order.reload.account.owner.user.should == @staff
+        @controller.all_order_details
+        @controller.account_owners.should == [@staff2]
+      end
+
+
       it "should not populate an account for another facility" do
         @facility2 = Factory.create(:facility)
         @account2 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
