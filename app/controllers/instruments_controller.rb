@@ -99,22 +99,27 @@ class InstrumentsController < ProductsCommonController
   end
 
   def instrument_statuses
-    statuses = []
-    current_facility.instruments.includes(:relay).each do |instrument|
+    @instrument_statuses = []
+    current_facility.instruments.order(:id).includes(:relay).each do |instrument|
+      # skip instruments with no relay
+      next unless instrument.relay
+      
       begin
         status = instrument.relay.get_status
         instrument_status = instrument.current_instrument_status
         # if the status hasn't changed, don't create a new status
         if instrument_status && status == instrument_status.is_on?
-          statuses << instrument_status
+          @instrument_statuses << instrument_status
         else
-          statuses << instrument.instrument_statuses.create!(:is_on => status)
+          # || false will ensure that the value of is_on is not nil (causes a DB error)
+          @instrument_statuses << instrument.instrument_statuses.create!(:is_on => status || NUCore::Database.boolean(false))
         end
       rescue Exception => e
-        statuses << InstrumentStatus.new(:instrument => instrument, :error_message => e.message)
+        logger.error e.message
+        @instrument_statuses << InstrumentStatus.new(:instrument => instrument, :error_message => e.message)
       end
     end
-    render :json => statuses
+    render :json => @instrument_statuses
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/switch
