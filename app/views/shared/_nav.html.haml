@@ -18,9 +18,9 @@
       - links.push({:url => manage_facility_path(current_facility), :text => 'Admin', :tab_name => 'admin_facility'})
 .container_12
   .grid_12
-    %ul
+    %ul#main_navigation
       - links.each do |link|
-        %li{:class => !controller.active_tab.nil? && controller.active_tab == link[:tab_name] ? 'active' : ''}
+        %li{:class => !controller.active_tab.nil? && controller.active_tab == link[:tab_name] ? 'active' : '', :id => "#{link[:tab_name]}_tab"}
           .divider
             .button_text
               = link.has_key?(:url) ? link_to(link[:text], link[:url]) : link[:text]

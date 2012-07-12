@@ -99,12 +99,14 @@ $(document).ready(function() {
       }
     });
     if (tabs.length > 0) {
-      var base = '';
-      if (window.location.pathname.endsWith('reservations')) {
-        base = 'reservations/';
-      } else if (window.location.pathname.endsWith('orders')) {
-        base = 'orders/';
+      var base = FACILITY_PATH;
+      var active_tab = $('#main_navigation .active').attr('id')
+      if (active_tab.indexOf('reservations') > -1) {
+        base += '/reservations/';
+      } else if (active_tab.indexOf('orders') > -1) {
+        base += '/orders/';
       }
+      console.debug("BASE", base);
       $.ajax({
         url: base + 'tab_counts',
         dataType: 'json',

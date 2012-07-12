@@ -9,3 +9,6 @@
 = javascript_include_tag 'application'
 = javascript_include_tag 'jquery_ujs'
 = csrf_meta_tag
+:javascript
+  var ROOT_PATH = '#{root_path}';
+  var FACILITY_PATH = '#{current_facility ? facility_path(current_facility) : ''}';
