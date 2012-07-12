@@ -679,6 +679,15 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
     color: black;
 }
 
+/***
+ * Product listing
+ ***/
+
+.price_policy_error {
+	display: block;
+	float: right;
+	color: red;
+}
 
 /***
  * Reservations

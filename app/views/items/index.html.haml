@@ -17,9 +17,12 @@
 - if @items.empty?
   %p.notice== No #{params[:archived].nil? || params[:archived] != 'true' ? 'active' : 'inactive'} items exist for this facility.
 - else
-  %table
+  %table.product_list
     %tr
       %th== Item Name
     - @items.each do |item|
       %tr
-        %td= link_to item.name, manage_facility_item_path(current_facility, item)
+        %td
+          = link_to item.name, manage_facility_item_path(current_facility, item)
+          = price_policy_errors(item) unless params[:archived] == 'true'
+
