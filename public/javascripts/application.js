@@ -106,7 +106,6 @@ $(document).ready(function() {
       } else if (active_tab.indexOf('orders') > -1) {
         base += '/orders/';
       }
-      console.debug("BASE", base);
       $.ajax({
         url: base + 'tab_counts',
         dataType: 'json',
