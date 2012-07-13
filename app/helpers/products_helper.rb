@@ -3,8 +3,6 @@ module ProductsHelper
 
     @facility_price_groups ||= current_facility.price_groups.count
     price_policy_count = product.price_policies.current.count
-    logger.debug("policies: #{price_policy_count}")
-    logger.debug("groups: #{@facility_price_groups}")
     error_msg = ''
     if price_policy_count == 0
       error_msg = t('price_policies.errors.none_exist')
