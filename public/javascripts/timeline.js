@@ -31,7 +31,11 @@ $(function() {
           return $("#tooltip_reservation_" + id).html();
         }
         $('.tip').tooltipsy({
-            content: tooltipContent
+            content: tooltipContent,
+            hide: function (e, $el) {
+                   $el.delay(1000),
+                   $el.fadeOut(200)
+               }
         });
 
         // Date select calendar
