@@ -163,7 +163,7 @@ describe OrdersController do
         do_request
         assigns[:order].ordered_at.should match_date Time.zone.now
       end
-      
+
       context 'setting status of order details' do
         before :each do
           maybe_grant_always_sign_in :director
@@ -188,20 +188,60 @@ describe OrdersController do
           do_request
           assigns[:order].order_details.all? { |od| od.state.should == 'complete' }
         end
+        it 'should set the fulfilled date to the order time' do
+          @params.merge!({:order_status_id => OrderStatus.complete.first.id, :order_date => format_usa_date(1.day.ago), :order_time => "10:13"})
+          do_request
+          assigns[:order].order_details.all? { |od| od.fulfilled_at.should match_date 1.day.ago.change(:hour => 10, :min => 13) }
+        end
       end
 
       context 'backdating a reservation' do
         before :each do
+          @instrument = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+          define_open_account(@instrument.account, @account.account_number)
           @reservation = place_reservation_for_instrument(@staff, @instrument, @account, 1.day.ago)
+          @params.merge!(:id => @reservation.order_detail.order.id)
           maybe_grant_always_sign_in :director
           switch_to @staff
-          @params.merge!({:order_date => format_usa_date(1.day.ago), :order_time => '10:12'})
+          @params.merge!({:order_date => format_usa_date(2.days.ago), :order_time => '14:27'})
+          @submitted_date = 2.days.ago.change(:hour => 14, :min => 27)
         end
-        it 'should be new by default'
-        it 'should be able to be set to cancelled'
-        it 'should be able to be set to completed'
-        it 'should set the actual times to the reservation times for completed'
-
+        it 'should be new by default' do
+          do_request
+          assigns[:order].order_details.all? { |od| od.state.should == 'new' }
+        end
+        context 'cancelled' do
+          before :each do
+            @params.merge!({:order_status_id => OrderStatus.cancelled.first.id})
+            do_request
+          end
+          it 'should be able to be set to cancelled' do
+            assigns[:order].order_details.all? { |od| od.state.should == 'cancelled' }
+          end
+          it 'should set the cancelled time on the reservation' do
+            assigns[:order].order_details.all? { |od| od.reservation.canceled_at.should_not be_nil }
+            @reservation.reload.canceled_at.should_not be_nil
+            # Should this match the date put in the form, or the date when the action took place
+            # @reservation.canceled_at.should match_date @submitted_date
+          end
+        end
+        context 'completed' do
+          before :each do
+            @params.merge!({:order_status_id => OrderStatus.complete.first.id})
+            do_request
+          end
+          it 'should be able to be set to completed' do
+            assigns[:order].order_details.all? { |od| od.state.should == 'complete' }
+          end
+          it 'should set the fulfilment date to the order time' do
+            assigns[:order].order_details.all? { |od| od.fulfilled_at.should match_date @submitted_date }
+          end
+          it 'should set the actual times to the reservation times for completed' do
+            do_request
+            @reservation.reload.actual_start_at.should match_date @submitted_date
+            @reservation.actual_end_at.should match_date(@submitted_date + 60.minutes)
+          end
+        end
       end
     end
 

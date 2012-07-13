@@ -249,7 +249,7 @@ class OrdersController < ApplicationController
         os = OrderStatus.find(params[:order_status_id])
         @order.transaction do
           @order.order_details.each do |od|
-            od.change_status! os
+            od.update_order_status! session_user, os, true
           end
         end
       end 

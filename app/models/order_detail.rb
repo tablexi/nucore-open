@@ -262,6 +262,12 @@ class OrderDetail < ActiveRecord::Base
     self.save
   end
 
+  # This method is a replacement for change_status! that also will cancel the associated reservation when necessary
+  def update_order_status!(updated_by, order_status, admin_update = false)
+    cancel_reservation(updated_by, order_status, admin_update) if reservation && order_status.root == OrderStatus.cancelled.first
+    change_status! order_status
+  end
+
   def reservation_canceled?
     reservation.nil? || !reservation.canceled_at.nil?
   end
