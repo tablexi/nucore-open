@@ -116,6 +116,7 @@ class OrdersController < ApplicationController
           @order.errors.add(:base, "You can not add a product from another facility; please clear your cart or place a separate order.")
         rescue Exception => e
           @order.errors.add(:base, "An error was encountered while adding the product #{@product}.")
+          Rails.logger.error(e.message)
           Rails.logger.error(e.backtrace.join("\n"))
         end
       end
@@ -235,8 +236,23 @@ class OrdersController < ApplicationController
   def purchase
     #revalidate the cart, but only if the user is not an admin
     @order.being_purchased_by_admin = Ability.new(session_user, @order.facility, self).can?(:act_as, @order.facility)
+    
+    @order.ordered_at = parse_usa_date_time(params[:order_date], params[:order_time]) if params[:order_date].present? && params[:order_time].present? && acting_as?   
+
     if @order.validate_order! && @order.purchase!
+
       Notifier.order_receipt(:user => @order.user, :order => @order).deliver
+
+      # update order detail statuses
+
+      if acting_as?
+        os = OrderStatus.find(params[:order_status_id])
+        @order.transaction do
+          @order.order_details.each do |od|
+            od.change_status! os
+          end
+        end
+      end 
 
       # If we're only making a single reservation, we'll redirect
       if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled? && !acting_as?

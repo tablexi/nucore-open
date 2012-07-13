@@ -1,6 +1,8 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe OrdersController do
+  include DateHelper
+
   render_views
 
   before(:all) { create_users }
@@ -120,6 +122,86 @@ describe OrdersController do
         switch_to @staff
         do_request
         response.should redirect_to receipt_order_url(@order)
+      end
+    end
+
+    context 'backdating' do
+      before :each do
+        @order_detail = place_product_order(@staff, @authable, @item, @account)
+        @order.update_attribute(:ordered_at, nil)
+        @params.merge!({:id => @order.id})
+      end
+      it 'should be set up correctly' do
+        @order.state.should == 'new'
+        @order_detail.state.should == 'new'
+      end
+      it 'should validate the order properly' do
+        @order.should be_has_details
+        @order.should be_has_valid_payment
+        @order.should be_cart_valid
+      end
+      it 'should validate and place order' do
+        @order.validate_order!
+        @order.should be_place_order
+      end
+      it 'should redirect to order receipt on a successful purchase' do
+        sign_in @staff
+        do_request
+        flash[:error].should be_nil
+        response.should redirect_to receipt_order_path(@order)
+      end
+      it 'should set the ordered at to the past' do
+        maybe_grant_always_sign_in :director
+        switch_to @staff
+        @params.merge!({:order_date => format_usa_date(1.day.ago), :order_time => '10:12'})
+        do_request
+        assigns[:order].ordered_at.should match_date 1.day.ago.change(:hour => 10, :min => 12)
+      end
+      it 'should set the ordered at to now if not acting_as' do
+        maybe_grant_always_sign_in :director
+        @params.merge!({:order_date => format_usa_date(1.day.ago)})
+        do_request
+        assigns[:order].ordered_at.should match_date Time.zone.now
+      end
+      
+      context 'setting status of order details' do
+        before :each do
+          maybe_grant_always_sign_in :director
+          switch_to @staff
+        end
+        it 'should leave as new by default' do
+          do_request
+          assigns[:order].order_details.all? { |od| od.state.should == 'new' }
+        end
+        it 'should leave as new if new is set as the param' do
+          @params.merge!({:order_status_id => OrderStatus.new_os.first.id})
+          do_request
+          assigns[:order].order_details.all? { |od| od.state.should == 'new' }
+        end
+        it 'should be able to set to cancelled' do
+          @params.merge!({:order_status_id => OrderStatus.cancelled.first.id})
+          do_request
+          assigns[:order].order_details.all? { |od| od.state.should == 'cancelled' }
+        end
+        it 'should be able to set to completed' do
+          @params.merge!({:order_status_id => OrderStatus.complete.first.id})
+          do_request
+          assigns[:order].order_details.all? { |od| od.state.should == 'complete' }
+        end
+      end
+
+      context 'backdating a reservation' do
+        before :each do
+          @reservation = place_reservation_for_instrument(@staff, @instrument, @account, 1.day.ago)
+          maybe_grant_always_sign_in :director
+          switch_to @staff
+          @params.merge!({:order_date => format_usa_date(1.day.ago), :order_time => '10:12'})
+        end
+        it 'should be new by default'
+        it 'should be able to be set to cancelled'
+        it 'should be able to be set to completed'
+        it 'should set the actual times to the reservation times for completed'
+
       end
     end
 

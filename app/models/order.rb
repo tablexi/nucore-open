@@ -66,7 +66,7 @@ class Order < ActiveRecord::Base
   # set the ordered time and send emails
   def place_order?
     # set the ordered_at date
-    self.ordered_at = DateTime.now
+    self.ordered_at ||= Time.zone.now
     self.save
 #    #send email to ordering user
 #    unless self.user.email.nil?

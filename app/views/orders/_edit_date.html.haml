@@ -1,0 +1,13 @@
+%ul
+  %li
+    = label_tag :order_date
+    = text_field_tag :order_date, format_usa_date(Time.zone.now), :class => 'datepicker'
+  %li
+    = label_tag :order_time
+    = text_field_tag :order_time, Time.zone.now.strftime("%l:%M %p").strip
+  %li
+    = label_tag :status
+    - statuses = OrderStatus.non_protected_statuses(current_facility).map {|s| [s.name_with_level, s.id] }
+    = select_tag(:order_status_id, options_for_select(statuses))
+:javascript
+  $(function() { $('.datepicker').datepicker({maxDate: '#{format_usa_date(Time.zone.now)}'}); });

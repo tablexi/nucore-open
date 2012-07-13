@@ -7,6 +7,12 @@ module DateHelper
     begin Time.zone.parse(date_string) rescue nil end
   end
 
+  def parse_usa_date_time(date, time)
+    d = parse_usa_date(date)
+    return nil unless time =~ /(\d{1,2}):(\d{2})/    
+    d.change(:hour => $1, :min => $2)
+  end
+
   def format_usa_date(date)
     date.strftime("%m/%d/%Y")
   end
