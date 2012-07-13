@@ -13,7 +13,9 @@ end
 Factory.define_default :facility_account, :class => FacilityAccount do |o|
   o.revenue_account 12345
   o.sequence(:account_number) do |n|
-    s = "1#{n%10}#{rand(10)}-7777777" # fund3-dept7
+    # This sequence was often running into blacklist problems
+    # s = "1#{n%10}#{rand(10)}-7777777" # fund3-dept7
+    s = "134-7#{"%06d" % n}"
     define_open_account(12345, s)
     s
   end
@@ -85,6 +87,27 @@ Factory.define_default :relay, :class => Relay do |o|
   o.sequence(:port) {|p| p }
   o.sequence(:username) {|n| "username#{n}" }
   o.sequence(:password) {|n| "password#{n}" }
+end
+
+Factory.define_default :relay_syna, :class => RelaySynaccessRevA do |o|
+  o.ip '192.168.1.1'
+  o.sequence(:port) {|p| p }
+  o.sequence(:username) {|n| "username#{n}" }
+  o.sequence(:password) {|n| "password#{n}" }
+end
+
+Factory.define_default :relay_synb, :class => RelaySynaccessRevB do |o|
+  o.ip '192.168.1.2'
+  o.sequence(:port) {|p| p }
+  o.sequence(:username) {|n| "username#{n}" }
+  o.sequence(:password) {|n| "password#{n}" }
+end
+
+Factory.define_default :relay_dummy, :class => RelayDummy do |o|
+end
+
+Factory.define_default :instrument_status do |o|
+  o.is_on true
 end
 
 Factory.define_default :product_access_group do |o|

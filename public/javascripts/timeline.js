@@ -37,7 +37,7 @@ $(function() {
         // Date select calendar
         $(".datepicker").datepicker({
           showOn: "button",
-          buttonImage: "/images/icon-calendar.gif",
+          buttonImage: window.calendar_image_path,
           buttonImageOnly: true
         }).change(function() {
           $(this).parents("form").submit();

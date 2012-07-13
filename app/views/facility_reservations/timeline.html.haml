@@ -4,7 +4,9 @@
   = javascript_include_tag "timeline.js"
   = javascript_include_tag "jquery.toggleswitch.js"
   = stylesheet_link_tag "timeline.css"
-
+  :javascript
+    window.calendar_image_path = '#{image_path('icon-calendar.gif')}';
+    
 = content_for :h1 do
   = current_facility
 = content_for :tabnav do
