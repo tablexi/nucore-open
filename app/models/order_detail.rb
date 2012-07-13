@@ -263,9 +263,24 @@ class OrderDetail < ActiveRecord::Base
   end
 
   # This method is a replacement for change_status! that also will cancel the associated reservation when necessary
-  def update_order_status!(updated_by, order_status, admin_update = false)
-    cancel_reservation(updated_by, order_status, admin_update) if reservation && order_status.root == OrderStatus.cancelled.first
+  def update_order_status!(updated_by, order_status, options_args = {})
+    options = { :admin => false,
+                :fulfilled_at_ordered => false,
+                :update_reservation_actuals => false
+              }.merge(options_args)
+    
+    cancel_reservation(updated_by, order_status, options[:admin]) if reservation && order_status.root == OrderStatus.cancelled.first
+    
+    # If we're moving it to complete, we might want to automatically
+    if options[:update_reservation_actuals] && reservation && order_status.root == OrderStatus.complete.first
+      reservation.assign_actuals_off_reserve 
+      reservation.save!
+    end
+    
     change_status! order_status
+    
+    # This has to happen after the change status since to_complete sets the fulfilled date
+    self.update_attributes!(:fulfilled_at => order.reload.ordered_at) if options[:fulfilled_at_ordered] && order_status.root == OrderStatus.complete.first
   end
 
   def reservation_canceled?
@@ -504,16 +519,14 @@ class OrderDetail < ActiveRecord::Base
 
   def cancel_reservation(canceled_by, order_status = OrderStatus.cancelled.first, admin_cancellation = false)
     res = self.reservation
+    res.canceled_by = canceled_by.id
+    res.canceled_at = Time.zone.now
 
     if admin_cancellation
-      res.canceled_by = canceled_by.id
-      res.canceled_at = Time.zone.now
       return false unless res.save
       return self.change_status!(order_status)
     else
       return false unless res && res.can_cancel?
-      res.canceled_by = canceled_by.id
-      res.canceled_at = Time.zone.now
       return false unless res.save
 
       fee = self.cancellation_fee

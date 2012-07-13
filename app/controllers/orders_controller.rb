@@ -245,11 +245,11 @@ class OrdersController < ApplicationController
 
       # update order detail statuses
 
-      if acting_as?
+      if acting_as? && params[:order_status_id].present?
         os = OrderStatus.find(params[:order_status_id])
         @order.transaction do
           @order.order_details.each do |od|
-            od.update_order_status! session_user, os, true
+            od.update_order_status! session_user, os, :admin => true, :fulfilled_at_ordered => true, :update_reservation_actuals =>true
           end
         end
       end 

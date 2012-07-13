@@ -70,8 +70,7 @@ class Reservation < ActiveRecord::Base
     return unless acting_user = self.try(:order).try(:created_by_user)
 
     if acting_user and acting_user.operator_of?(instrument.facility) and self.reserve_end_at <= Time.zone.now
-      self.actual_start_at ||= self.reserve_start_at
-      self.actual_end_at   ||= self.reserve_end_at
+      assign_actuals_off_reserve
     end
 
     return true
@@ -79,6 +78,11 @@ class Reservation < ActiveRecord::Base
 
   after_save :on => :create do
     self.order_detail.reload.change_status!(OrderStatus.find_by_name!('Complete')) if self.has_actuals?
+  end
+
+  def assign_actuals_off_reserve
+    self.actual_start_at ||= self.reserve_start_at
+    self.actual_end_at   ||= self.reserve_end_at
   end
 
   def save_extended_validations(options ={})

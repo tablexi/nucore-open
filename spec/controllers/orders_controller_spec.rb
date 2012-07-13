@@ -238,8 +238,8 @@ describe OrdersController do
           end
           it 'should set the actual times to the reservation times for completed' do
             do_request
-            @reservation.reload.actual_start_at.should match_date @submitted_date
-            @reservation.actual_end_at.should match_date(@submitted_date + 60.minutes)
+            @reservation.reload.actual_start_at.should match_date @reservation.reserve_start_at
+            @reservation.actual_end_at.should match_date(@reservation.reserve_start_at + 60.minutes)
           end
         end
       end
