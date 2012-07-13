@@ -34,11 +34,17 @@ $(function() {
         $('.tip').tooltipsy({
             content: tooltipContent,
             hide: function (e, $el) {
-                   $el.delay(1500),
+                   $el.delay(500),
                    $el.fadeOut(10)
                } 
         });
-        
+      
+       /*  $(".tooltip_stay").mouseenter( function(){
+            setTimeout( function(){
+              $('.tooltip_stay').css('background','red');
+            },1500);
+         }); */
+
 
         // Date select calendar
         $(".datepicker").datepicker({

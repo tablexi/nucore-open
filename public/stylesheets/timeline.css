@@ -156,9 +156,6 @@ body .unit {
     display:block !important;
 }
 
-.tooltipsy:hover, .tooltipsy:focus {
-  display:block !important;
-}
 .timeline_header {
   text-align: center;
 }
