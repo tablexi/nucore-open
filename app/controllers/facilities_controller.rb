@@ -10,6 +10,8 @@ class FacilitiesController < ApplicationController
   # needed for transactions_with_search
   include TransactionSearch
   
+  include FacilitiesHelper
+
   layout 'two_column'
 
   # GET /facilities
@@ -39,7 +41,7 @@ class FacilitiesController < ApplicationController
       @facilities = operable_facilities
       raise ActiveRecord::RecordNotFound if @facilities.empty?
       if (@facilities.size == 1)
-        redirect_to facility_orders_path(@facilities[0]) 
+        redirect_to facility_default_admin_path(@facilities.first) 
         return
       end
     end
