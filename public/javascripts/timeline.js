@@ -30,13 +30,15 @@ $(function() {
           var id = /block_reservation_(\d+)/.exec($el.attr("id"))[1];
           return $("#tooltip_reservation_" + id).html();
         }
+
         $('.tip').tooltipsy({
             content: tooltipContent,
             hide: function (e, $el) {
-                   $el.delay(1000),
-                   $el.fadeOut(200)
-               }
+                   $el.delay(1500),
+                   $el.fadeOut(10)
+               } 
         });
+        
 
         // Date select calendar
         $(".datepicker").datepicker({

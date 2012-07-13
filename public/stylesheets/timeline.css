@@ -152,6 +152,13 @@ body .unit {
   top:1px;
 }
 
+.tooltip_stay:hover, .tooltip_stay:focus {
+    display:block !important;
+}
+
+.tooltipsy:hover, .tooltipsy:focus {
+  display:block !important;
+}
 .timeline_header {
   text-align: center;
 }
