@@ -250,7 +250,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   aasm_event :to_cancelled do
-    transitions :to => :cancelled, :from => [:new, :inprocess], :guard => :reservation_canceled?
+    transitions :to => :cancelled, :from => [:new, :inprocess, :complete], :guard => :cancelable?
   end
   # END acts_as_state_machine
 
@@ -262,8 +262,14 @@ class OrderDetail < ActiveRecord::Base
     self.save
   end
 
-  def reservation_canceled?
-    reservation.nil? || !reservation.canceled_at.nil?
+  def cancelable?
+    if order_status.root == OrderStatus.complete.first
+      # cannot cancel if detail is journaled or statemented
+      statement.nil? && journal.nil? && (reservation.nil? || reservation.canceled_at.present?)
+    else
+      # reservation must be canceled first
+      reservation.nil? || reservation.canceled_at.present?
+    end
   end
 
   delegate :ordered_on_behalf_of?, :to => :order
@@ -496,32 +502,25 @@ class OrderDetail < ActiveRecord::Base
     dispute_at && dispute_resolved_at.nil? && !cancelled?
   end
 
-  def cancel_reservation(canceled_by, order_status = OrderStatus.cancelled.first, admin_cancellation = false)
+  def cancel_reservation(canceled_by, order_status = OrderStatus.cancelled.first, admin_cancellation = false, admin_with_cancel_fee=false)
     res = self.reservation
 
     if admin_cancellation
       res.canceled_by = canceled_by.id
       res.canceled_at = Time.zone.now
       return false unless res.save
-      return self.change_status!(order_status)
+
+      if admin_with_cancel_fee
+        cancel_with_fee order_status
+      else
+        change_status! order_status
+      end
     else
       return false unless res && res.can_cancel?
       res.canceled_by = canceled_by.id
       res.canceled_at = Time.zone.now
       return false unless res.save
-
-      fee = self.cancellation_fee
-      # no cancelation fee
-      if fee  == 0
-        self.actual_subsidy = 0
-        self.actual_cost    = 0
-        return self.change_status!(order_status)
-      # cancellation fee
-      else
-        self.actual_subsidy = 0
-        self.actual_cost    = fee
-        return self.change_status!(OrderStatus.complete.first)
-      end
+      cancel_with_fee order_status
     end
   end
 
@@ -681,6 +680,13 @@ class OrderDetail < ActiveRecord::Base
     assign_price_policy
     self.fulfilled_at=Time.zone.now
     self.reviewed_at = Time.zone.now unless SettingsHelper::has_review_period?
+  end
+
+  def cancel_with_fee(order_status)
+    fee = self.cancellation_fee
+    self.actual_cost = fee
+    self.actual_subsidy = 0
+    self.change_status!(fee > 0 ? OrderStatus.complete.first : order_status)
   end
 
 end

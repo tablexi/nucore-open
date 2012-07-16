@@ -679,6 +679,19 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
     color: black;
 }
 
+/***
+ * Order detail
+ */
+#cancel-fee-opt {
+    display:none;
+    margin-top: 1em;
+}
+
+#cancel-fee-opt label {
+    float: right;
+    margin-left: -5em;
+}
+
 
 /***
  * Reservations
