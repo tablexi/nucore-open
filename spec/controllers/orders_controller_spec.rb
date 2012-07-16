@@ -7,6 +7,10 @@ describe OrdersController do
 
   before(:all) { create_users }
 
+  class DummyNotifier
+    def deliver; end
+  end
+
 
   it "should route" do
     { :get => "/orders/cart" }.should route_to(:controller => "orders", :action => "cart")
@@ -123,6 +127,25 @@ describe OrdersController do
         do_request
         response.should redirect_to receipt_order_url(@order)
       end
+      it 'should send a notification' do
+        Notifier.expects(:order_receipt).once.returns(DummyNotifier.new)
+        sign_in @admin
+        do_request
+      end
+      it "should not send an email by default if you're acting as" do
+        Notifier.expects(:order_receipt).never
+        sign_in @admin
+        switch_to @staff
+        do_request
+      end
+      it "should send an email if you're acting as and set the parameter" do
+        Notifier.expects(:order_receipt).once.returns(DummyNotifier.new)
+        sign_in @admin
+        switch_to @staff
+        @params.merge!(:send_notification => '1')
+        do_request
+      end
+
     end
 
     context 'backdating' do
@@ -183,15 +206,24 @@ describe OrdersController do
           do_request
           assigns[:order].order_details.all? { |od| od.state.should == 'cancelled' }
         end
-        it 'should be able to set to completed' do
-          @params.merge!({:order_status_id => OrderStatus.complete.first.id})
-          do_request
-          assigns[:order].order_details.all? { |od| od.state.should == 'complete' }
-        end
-        it 'should set the fulfilled date to the order time' do
-          @params.merge!({:order_status_id => OrderStatus.complete.first.id, :order_date => format_usa_date(1.day.ago), :order_time => {:hour => '10', :minute => '13', :ampm => 'AM'}})
-          do_request
-          assigns[:order].order_details.all? { |od| od.fulfilled_at.should match_date 1.day.ago.change(:hour => 10, :min => 13) }
+        
+        context 'completed' do
+          before :each do
+            @params.merge!({:order_status_id => OrderStatus.complete.first.id})
+          end
+          it 'should be able to set to completed' do
+            do_request
+            assigns[:order].order_details.all? { |od| od.state.should == 'complete' }
+          end
+          it 'should leave reviewed_at as nil' do
+            do_request
+            assigns[:order].order_details.all? { |od| od.reviewed_at.should be_nil }
+          end
+          it 'should set the fulfilled date to the order time' do
+            @params.merge!({:order_date => format_usa_date(1.day.ago), :order_time => {:hour => '10', :minute => '13', :ampm => 'AM'}})
+            do_request
+            assigns[:order].order_details.all? { |od| od.fulfilled_at.should match_date 1.day.ago.change(:hour => 10, :min => 13) }
+          end
         end
       end
 

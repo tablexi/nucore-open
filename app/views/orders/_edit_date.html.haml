@@ -13,5 +13,8 @@
     = label_tag :status
     - statuses = OrderStatus.non_protected_statuses(current_facility).map {|s| [s.name_with_level, s.id] }
     = select_tag(:order_status_id, options_for_select(statuses))
+  %li
+    = label_tag :send_notification
+    = check_box_tag :send_notification, 1, true
 :javascript
   $(function() { $('.datepicker').datepicker({maxDate: '#{format_usa_date(Time.zone.now)}'}); });

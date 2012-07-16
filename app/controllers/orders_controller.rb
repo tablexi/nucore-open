@@ -241,7 +241,7 @@ class OrdersController < ApplicationController
     
     if @order.validate_order! && @order.purchase!
 
-      Notifier.order_receipt(:user => @order.user, :order => @order).deliver
+      Notifier.order_receipt(:user => @order.user, :order => @order).deliver unless acting_as? && !params[:send_notification]
 
       # update order detail statuses if you've changed it while acting as
       if acting_as? && params[:order_status_id].present?
