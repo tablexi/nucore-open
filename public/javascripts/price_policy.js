@@ -20,19 +20,14 @@ $(document).ready(function() {
     });
   }
 
-  $('.restrict_purchase').each(function (i, checkBox) {
-    if (checkBox.checked == true) {
-      changecheckbox(checkBox);
-    }
-  });
+  $('.can_purchase').change(function(e) {
+    toggleGroupFields($(this));
+  }).trigger("change");
 
-  $('.restrict_purchase').change(function(e) {
-    changecheckbox(this);
-  });
 
   $('input[type=text]').change(function(e) {
     setinternalcost(this);
-  });
+  }).trigger('change');
   
   $('input[type=text]').keyup(function(e) {
     setinternalcost(this);
@@ -50,15 +45,14 @@ $(document).ready(function() {
     }
   }
 
-  function changecheckbox(o) {
-    var disable = false
-    if (o.checked == true) {
-      disable = true;
-    }
-    $(o).closest('tr').find('input').each(function (i, element) {
-      if (element != o) {
-        element.disabled = disable;
-      }
+  function toggleGroupFields($checkbox) {
+    $cells = $checkbox.parents('tr').find('td');
+    var isDisabled = !$checkbox.prop('checked');
+    $cells.toggleClass('disabled', isDisabled);
+    $cells.find('input[type=text], input[type=hidden]').each(function() {
+      // If we're hiding the value, store it so we can retreive it later
+      if ($(this).val()) $(this).data('original-value', $(this).val());
+      $(this).val(isDisabled ? '' : $(this).data('original-value')).prop('disabled', isDisabled);
     });
   }
 });

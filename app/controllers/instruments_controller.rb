@@ -19,7 +19,7 @@ class InstrumentsController < ProductsCommonController
     login_required = false
     
     # do the product have active price policies && schedule rules
-    unless @instrument.can_purchase?
+    unless @instrument.available_for_purchase?
       add_to_cart = false
       flash[:notice] = t_model_error(Instrument, 'not_available', :instrument => @instrument)
     end

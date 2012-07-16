@@ -14,6 +14,7 @@ describe ItemsController do
     @authable         = Factory.create(:facility)
     @facility_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
     @item             = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+    @item_pp          = @item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group => @nupg))
     @params={ :facility_id => @authable.url_name, :id => @item.url_name }
   end
 

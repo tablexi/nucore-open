@@ -1,0 +1,29 @@
+= content_for :h1 do
+  =h current_facility
+
+= content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => @product.class.name.pluralize.downcase }
+= content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'pricing_rules'}
+
+%h2= @product
+
+%p Pricing rules determine the specific rate applied to each price group.
+
+- if session_user.manager_of?(current_facility)
+  %ul.horiz
+    %li= link_to 'Add Pricing Rules', new_price_policy_path(@product)
+
+- if @current_price_policies.empty?
+  %p.notice You must add current pricing rules before you may bill for this item.
+- else
+  %h2 Current Pricing Rules
+  %h3= "Effective: #{human_date(@current_start_date)}, Expires: #{human_date(@current_price_policies.first.expire_date)}"
+  = render :partial => "price_policies/#{@product.is_a?(Instrument) ? 'instrument_' : ''}table", :locals => { :price_policies => @current_price_policies, :url_date => @current_start_date.strftime("%Y-%m-%d") }
+  = price_policy_errors(@product)
+
+- unless @next_price_policies_by_date.empty?
+  %h2 Upcoming Pricing Rules
+  - @next_price_policies_by_date.each do |date, rules|
+    %h3= "Effective: #{human_date(date)}, Expires: #{human_date(rules.first.expire_date)}"
+    = render :partial => "price_policies/#{@product.is_a?(Instrument) ? 'instrument_' : ''}table", :locals => { :price_policies => rules, :url_date => date.strftime("%Y-%m-%d") }

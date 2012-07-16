@@ -10,6 +10,7 @@ class Product < ActiveRecord::Base
   has_many   :price_group_products
   has_many   :product_accessories, :dependent => :destroy
   has_many   :accessories, :through => :product_accessories, :class_name => 'Product'
+  has_many   :price_policies
 
   validates_presence_of :name, :type
   validate_url_name :url_name
@@ -43,15 +44,7 @@ class Product < ActiveRecord::Base
   end
 
   def current_price_policies
-    current_policies = {}
-    PricePolicy.find(:all, :conditions => ["#{self.class.name.downcase}_id = ? AND start_date <= ? AND expire_date > ?", self.id, Time.zone.now, Time.zone.now]).each { |pp|
-      unless current_policies[pp.price_group_id].nil?
-        current_policies[pp.price_group_id] = pp if pp.start_date > current_policies[pp.price_group_id].start_date
-      else
-        current_policies[pp.price_group_id] = pp
-      end
-    }
-    current_policies.values
+    price_policies.current.purchaseable
   end
 
   def <=> (obj)
@@ -106,6 +99,24 @@ class Product < ActiveRecord::Base
     !is_archived? && facility.is_active?
   end
 
+  def can_purchase? (group_ids)
+    return false unless available_for_purchase?
+    
+    # return false if there are no existing policies at all
+    return false if price_policies.empty?
+    
+    # return false if there are no existing policies for the user's groups, e.g. they're a new group
+    return false if price_policies.for_price_groups(group_ids).empty?
+
+    # if there are current rules, but the user is not part of them
+    if price_policies.current.any?
+      price_policies.current.for_price_groups(group_ids).where(:can_purchase => true).any? 
+    end
+    
+    # Find the most recent price policy. If they could purchase then, they can purchase now
+    price_policies.for_price_groups(group_ids).order(:expire_date).last.can_purchase?
+
+  end
 
   private
 

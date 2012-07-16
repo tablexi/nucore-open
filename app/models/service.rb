@@ -1,6 +1,5 @@
 class Service < Product
-  has_many :service_price_policies
-  has_many :price_policies, :foreign_key => 'service_id'
+  has_many :service_price_policies, :foreign_key => :product_id
   has_many :external_service_passers, :as => :passer
   has_many :external_services, :through => :external_service_passers
 
@@ -43,17 +42,6 @@ class Service < Product
   # returns true if there is an active template... false otherwise
   def active_template?
     self.file_uploads.template.count > 0
-  end
-
-  def can_purchase? (group_ids = nil)
-    return false if is_archived? || !facility.is_active?
-    if group_ids.nil?
-      current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase?}
-    elsif group_ids.empty?
-      false
-    else
-      current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase? && group_ids.include?(pp.price_group_id)}
-    end
   end
 
 end
