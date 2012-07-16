@@ -237,7 +237,7 @@ class OrdersController < ApplicationController
     #revalidate the cart, but only if the user is not an admin
     @order.being_purchased_by_admin = Ability.new(session_user, @order.facility, self).can?(:act_as, @order.facility)
     
-    @order.ordered_at = parse_usa_date(params[:order_date], join_time_select_values(params[:order_time])) if params[:order_date].present? && params[:order_time].present? && acting_as?   
+    @order.ordered_at = parse_usa_date(params[:order_date], join_time_select_values(params[:order_time])) if params[:order_date].present? && params[:order_time].present? && acting_as?
     
     if @order.validate_order! && @order.purchase!
 
@@ -245,12 +245,7 @@ class OrdersController < ApplicationController
 
       # update order detail statuses if you've changed it while acting as
       if acting_as? && params[:order_status_id].present?
-        os = OrderStatus.find(params[:order_status_id])
-        @order.transaction do
-          @order.order_details.each do |od|
-            od.update_order_status! session_user, os, :admin => true, :fulfilled_at_ordered => true, :update_reservation_actuals =>true
-          end
-        end
+        @order.update_order_detail_statuses(params[:order_status_id], session_user)
       end 
 
       # If we're only making a single reservation, we'll redirect
