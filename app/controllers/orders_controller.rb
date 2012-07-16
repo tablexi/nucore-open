@@ -237,14 +237,13 @@ class OrdersController < ApplicationController
     #revalidate the cart, but only if the user is not an admin
     @order.being_purchased_by_admin = Ability.new(session_user, @order.facility, self).can?(:act_as, @order.facility)
     
-    @order.ordered_at = parse_usa_date_time(params[:order_date], params[:order_time]) if params[:order_date].present? && params[:order_time].present? && acting_as?   
-
+    @order.ordered_at = parse_usa_date(params[:order_date], join_time_select_values(params[:order_time])) if params[:order_date].present? && params[:order_time].present? && acting_as?   
+    
     if @order.validate_order! && @order.purchase!
 
       Notifier.order_receipt(:user => @order.user, :order => @order).deliver
 
-      # update order detail statuses
-
+      # update order detail statuses if you've changed it while acting as
       if acting_as? && params[:order_status_id].present?
         os = OrderStatus.find(params[:order_status_id])
         @order.transaction do

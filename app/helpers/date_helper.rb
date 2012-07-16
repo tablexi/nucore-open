@@ -7,12 +7,6 @@ module DateHelper
     begin Time.zone.parse(date_string) rescue nil end
   end
 
-  def parse_usa_date_time(date, time)
-    d = parse_usa_date(date)
-    return nil unless time =~ /(\d{1,2}):(\d{2})/    
-    d.change(:hour => $1, :min => $2)
-  end
-
   def format_usa_date(date)
     date.strftime("%m/%d/%Y")
   end
@@ -53,6 +47,21 @@ module DateHelper
     rescue
       ''
     end
+  end
+
+  #TODO Replace calls to this with select_time(default_time, :ignore_date => true, :prefix => field, :ampm => true)
+  # once we've migrated to Rails 3.1.
+  # 3.0 doesn't support the :ampm option
+  def time_select_tag(field, default_time = Time.zone.now)
+    output = ""
+    output << select_tag("#{field}[hour]", options_for_select((1..12).map {|x| [x,x]}, default_time.strftime('%I').to_i))
+    output << select_tag("#{field}[minute]", options_for_select((0..59).map{|d| [sprintf('%02d', d),d]}, default_time.min))
+    output << select_tag("#{field}[ampm]", options_for_select(['AM', 'PM'], default_time.strftime('%p')))
+    output.html_safe
+  end
+
+  def join_time_select_values(values)
+    "#{values['hour']}:#{values['minute']} #{values['ampm']}"
   end
 
 end

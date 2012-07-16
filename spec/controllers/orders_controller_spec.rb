@@ -153,7 +153,7 @@ describe OrdersController do
       it 'should set the ordered at to the past' do
         maybe_grant_always_sign_in :director
         switch_to @staff
-        @params.merge!({:order_date => format_usa_date(1.day.ago), :order_time => '10:12'})
+        @params.merge!({:order_date => format_usa_date(1.day.ago), :order_time => {:hour => '10', :minute => '12', :ampm => 'AM'}})
         do_request
         assigns[:order].ordered_at.should match_date 1.day.ago.change(:hour => 10, :min => 12)
       end
@@ -189,7 +189,7 @@ describe OrdersController do
           assigns[:order].order_details.all? { |od| od.state.should == 'complete' }
         end
         it 'should set the fulfilled date to the order time' do
-          @params.merge!({:order_status_id => OrderStatus.complete.first.id, :order_date => format_usa_date(1.day.ago), :order_time => "10:13"})
+          @params.merge!({:order_status_id => OrderStatus.complete.first.id, :order_date => format_usa_date(1.day.ago), :order_time => {:hour => '10', :minute => '13', :ampm => 'AM'}})
           do_request
           assigns[:order].order_details.all? { |od| od.fulfilled_at.should match_date 1.day.ago.change(:hour => 10, :min => 13) }
         end
@@ -203,7 +203,7 @@ describe OrdersController do
           @params.merge!(:id => @reservation.order_detail.order.id)
           maybe_grant_always_sign_in :director
           switch_to @staff
-          @params.merge!({:order_date => format_usa_date(2.days.ago), :order_time => '14:27'})
+          @params.merge!({:order_date => format_usa_date(2.days.ago), :order_time => {:hour => '2', :minute => '27', :ampm => 'PM'}})
           @submitted_date = 2.days.ago.change(:hour => 14, :min => 27)
         end
         it 'should be new by default' do

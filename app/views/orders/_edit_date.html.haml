@@ -4,7 +4,10 @@
     = text_field_tag :order_date, format_usa_date(Time.zone.now), :class => 'datepicker'
   %li
     = label_tag :order_time
-    = text_field_tag :order_time, Time.zone.now.strftime("%l:%M %p").strip
+    -# Switch to select_time in rails 3.1. Rails 3.0 doesn't support the :ampm option
+    -# = select_time Time.zone.now, :prefix => :order_time, :ignore_date => true, :ampm => true
+    = time_select_tag :order_time, Time.zone.now
+
   %li
     = label_tag :status
     - statuses = OrderStatus.non_protected_statuses(current_facility).map {|s| [s.name_with_level, s.id] }

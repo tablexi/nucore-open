@@ -53,13 +53,13 @@
     - if @order.instrument_order_details.count > 0
       %p.footnote= t('.foot.instrument')
     - if @order.order_details.size > 0
-      %ul.horiz
-        %li= submit_tag 'Update', :class => 'btn', :style => "float: left"
+      %ul.horiz{:style => "float: left"}
+        %li= submit_tag 'Update', :class => 'btn'
   - if @order.validated?
-    = form_tag purchase_order_path(@order), :method => :put do
+    = form_for @order, :url => { :action => "purchase" } do |f|
       %ul.horiz
-        %li= submit_tag 'Purchase', :class => 'btn', :confirm => t('.confirm')
+        %li= f.submit 'Purchase', :class => 'btn', :confirm => t('.confirm')
       - if acting_as?
         .admin_fields
-          = render :partial => 'edit_date'
+          = render :partial => 'edit_date', :locals => { :f => f}
 
