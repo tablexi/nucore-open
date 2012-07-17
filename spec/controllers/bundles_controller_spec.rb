@@ -12,6 +12,7 @@ describe BundlesController do
     
     # Create at least one item in the bundle, otherwise bundle.can_purchase? will return false
     item = Factory.create(:item, :facility_account => @facility_account, :facility => @authable)
+    price_policy = item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group => @nupg))
     bundle_product = BundleProduct.new(:bundle => @bundle, :product => item, :quantity => 1)
     bundle_product.save!
   end

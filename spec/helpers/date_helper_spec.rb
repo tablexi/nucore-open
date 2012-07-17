@@ -30,14 +30,6 @@ describe DateHelper do
     it "should do something with extra_date_info (unknown)"
   end
 
-  describe "#parse_usa_date_time" do
-    it 'parse a datetime' do
-      parse_usa_date_time("05/10/2012", "11:00").should == Time.zone.parse("2012-05-10 11:00")
-    end
-    it 'should return nil for a bad time' do
-      parse_usa_date_time('05/10/2012', '1242345').should be_nil
-    end
-  end
   describe "#human_date"
   describe "#human_time"
 

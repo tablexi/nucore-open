@@ -455,16 +455,6 @@ describe Reservation do
       @reservation.save
     end
 
-    it "should find the best price policy" do
-      @pp_expensive = InstrumentPricePolicy.create(Factory.attributes_for(:instrument_price_policy).merge(:usage_rate => 22, :product => @instrument))
-      @pp_cheap     = InstrumentPricePolicy.create(Factory.attributes_for(:instrument_price_policy).merge(:usage_rate => 11, :product => @instrument))
-      @price_group1.price_policies << @pp_expensive
-      @nupg.price_policies         << @pp_cheap
-
-      groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
-      assert_equal @pp_cheap, @reservation.cheapest_price_policy(groups)
-    end
-
     it "should find the best reservation window" do
       @pp_short = InstrumentPricePolicy.create(Factory.attributes_for(:instrument_price_policy, :product_id => @instrument.id))
       @pg1_pgp.reservation_window=30

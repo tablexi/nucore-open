@@ -5,25 +5,6 @@ class Service < Product
 
   validates_presence_of :initial_order_status_id, :facility_account_id
 
-
-  def cheapest_price_policy (groups = [])
-    return nil if groups.empty?
-
-    min = nil
-    cheapest_total = 0
-    current_price_policies.each do |pp|
-      if !pp.expired? && !pp.restrict_purchase? && groups.include?(pp.price_group)
-        costs = pp.calculate_cost_and_subsidy
-        total = costs[:cost] - costs[:subsidy]
-        if min.nil? || total < cheapest_total
-          cheapest_total = total
-          min = pp
-        end
-      end
-    end
-    min
-  end
-
   def active_survey
     active=external_service_passers.find(
             :first,

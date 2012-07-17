@@ -50,6 +50,11 @@ class InstrumentPricePolicy < PricePolicy
     end
   end
 
+  def estimate_cost_and_subsidy_from_order_detail(order_detail)
+    return nil unless order_detail.reservation
+    estimate_cost_and_subsidy(order_detail.reservation.reserve_start_at, order_detail.reservation.reserve_end_at)
+  end
+
   def estimate_cost_and_subsidy (start_at, end_at)
     return nil if restrict_purchase? || start_at.to_date > Date.today + reservation_window.days || end_at <= start_at
     costs = {}
@@ -77,6 +82,9 @@ class InstrumentPricePolicy < PricePolicy
     costs
   end
 
+  def calculate_cost_and_subsidy_from_order_detail(order_detail)
+    calculate_cost_and_subsidy(order_detail.reservation)
+  end
   def calculate_cost_and_subsidy (reservation)
     res_end_at=strip_seconds reservation.reserve_end_at
     res_start_at=strip_seconds reservation.reserve_start_at

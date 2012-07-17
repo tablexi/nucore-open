@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'product_shared_examples'
 
 describe Service do
 
@@ -16,5 +17,7 @@ describe Service do
   it "should validate presence of initial_order_status_id" do
     should validate_presence_of(:initial_order_status_id)
   end
+
+  it_should_behave_like "NonReservationProduct", :service
 
 end

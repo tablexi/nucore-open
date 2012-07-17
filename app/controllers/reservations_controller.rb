@@ -83,8 +83,7 @@ class ReservationsController < ApplicationController
   # POST /orders/1/order_details/1/reservations
   def create
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
-    @reservation  = @instrument.reservations.new(params[:reservation])
-    @reservation.order_detail = @order_detail
+    @reservation = @order_detail.build_reservation(params[:reservation].merge(:instrument => @instrument))
     
     if !@order_detail.bundled? && params[:order_account].blank?
       flash[:error]=I18n.t 'controllers.reservations.create.no_selection'
@@ -103,14 +102,9 @@ class ReservationsController < ApplicationController
         end
         @reservation.save_as_user!(session_user)
         
-        groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
-        @cheapest_price_policy = @reservation.cheapest_price_policy(groups)
-        if @cheapest_price_policy
-          costs = @cheapest_price_policy.estimate_cost_and_subsidy(@reservation.reserve_start_at, @reservation.reserve_end_at)
-          @order_detail.estimated_cost    = costs[:cost]
-          @order_detail.estimated_subsidy = costs[:subsidy]
-          @order_detail.save!
-        end
+        @order_detail.assign_estimated_price
+        @order_detail.save!
+        
         flash[:notice] = I18n.t 'controllers.reservations.create.success'
 
         # only trigger purchase if instrument

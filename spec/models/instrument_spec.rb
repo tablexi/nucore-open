@@ -1,7 +1,9 @@
 require 'spec_helper'
+require 'product_shared_examples'
 
 describe Instrument do
-
+  it_should_behave_like 'ReservationProduct', :instrument
+  
   context "factory" do
     it "should create using factory" do
       @facility         = Factory.create(:facility)

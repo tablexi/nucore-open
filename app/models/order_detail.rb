@@ -449,26 +449,14 @@ class OrderDetail < ActiveRecord::Base
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
     
-    policy_holder=product
-
-    if product.is_a?(Instrument)
-      return unless reservation
-      policy_holder=reservation
-    end
-    
-    pp = policy_holder.cheapest_price_policy((order.user.price_groups + second_account.price_groups).flatten.uniq)
-    
+    pp = product.cheapest_price_policy(self)
     assign_estimated_price_from_policy pp
   end
 
   def assign_estimated_price_from_policy(price_policy)
     return unless price_policy
-    if product.is_a?(Instrument)
-      est_args = [ reservation.reserve_start_at, reservation.reserve_end_at ]
-    else
-      est_args = [ quantity ]
-    end
-    costs = price_policy.estimate_cost_and_subsidy(*est_args)
+    costs = price_policy.estimate_cost_and_subsidy_from_order_detail(self)
+    return unless costs
     self.estimated_cost    = costs[:cost]
     self.estimated_subsidy = costs[:subsidy]
   end
@@ -481,20 +469,9 @@ class OrderDetail < ActiveRecord::Base
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
 
-    policy_holder=product
-    calc_args=[ quantity ]
-
-    if product.is_a?(Instrument)
-      return unless reservation
-      policy_holder=reservation
-      calc_args=[ reservation ]
-    end
-
-    pgs=order.user.price_groups
-    pgs += account.price_groups if account
-    pp = policy_holder.cheapest_price_policy(pgs.flatten.uniq)
+    pp = product.cheapest_price_policy(self)
     return unless pp
-    costs = pp.calculate_cost_and_subsidy(*calc_args)
+    costs = pp.calculate_cost_and_subsidy_from_order_detail(self)
     return unless costs
     self.price_policy_id = pp.id
     self.actual_cost     = costs[:cost]

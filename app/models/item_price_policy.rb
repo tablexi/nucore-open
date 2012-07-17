@@ -9,8 +9,15 @@ class ItemPricePolicy < PricePolicy
     errors.add("unit_subsidy", "cannot be greater than the Unit cost") if (unit_subsidy > unit_cost)
   end
 
+  def calculate_cost_and_subsidy_from_order_detail(order_detail)
+    calculate_cost_and_subsidy(order_detail.quantity)
+  end
   def calculate_cost_and_subsidy (qty = 1)
     estimate_cost_and_subsidy(qty)
+  end
+
+  def estimate_cost_and_subsidy_from_order_detail(order_detail)
+    estimate_cost_and_subsidy(order_detail.quantity)
   end
 
   def estimate_cost_and_subsidy(qty = 1)

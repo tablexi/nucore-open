@@ -101,7 +101,7 @@ class Product < ActiveRecord::Base
 
   def can_purchase? (group_ids)
     return false unless available_for_purchase?
-    
+
     # return false if there are no existing policies at all
     return false if price_policies.empty?
     
@@ -116,6 +116,22 @@ class Product < ActiveRecord::Base
     # Find the most recent price policy. If they could purchase then, they can purchase now
     price_policies.for_price_groups(group_ids).order(:expire_date).last.can_purchase?
 
+  end
+
+  def cheapest_price_policy(order_detail, date = Time.zone.now)
+    groups = groups_for_order_detail(order_detail)
+    return nil if groups.empty?
+    price_policies = current_price_policies.delete_if { |pp| pp.expired? || pp.restrict_purchase? || groups.exclude?(pp.price_group) }
+    price_policies.min_by do |pp|
+      costs = pp.estimate_cost_and_subsidy_from_order_detail(order_detail) || {:cost => 9999999, :subsidy => 0}
+      costs[:cost] - costs[:subsidy]
+    end
+  end
+
+  def groups_for_order_detail(order_detail)
+    groups = order_detail.order.user.price_groups
+    groups += order_detail.account.price_groups if order_detail.account
+    groups.compact.uniq
   end
 
   private
