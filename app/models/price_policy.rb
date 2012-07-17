@@ -24,7 +24,11 @@ class PricePolicy < ActiveRecord::Base
   end
 
   def self.current
-    where("start_date <= :now AND expire_date > :now", {:now => Time.zone.now})
+    current_for_date(Time.zone.now)
+  end
+
+  def self.current_for_date(date)
+    where("start_date <= :now AND expire_date > :now", {:now => date})
   end
 
   def self.purchaseable

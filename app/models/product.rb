@@ -43,8 +43,8 @@ class Product < ActiveRecord::Base
     self[:initial_order_status_id] ? OrderStatus.find(self[:initial_order_status_id]) : OrderStatus.default_order_status
   end
 
-  def current_price_policies
-    price_policies.current.purchaseable
+  def current_price_policies(date)
+    price_policies.current_for_date(date).purchaseable
   end
 
   def <=> (obj)
@@ -121,9 +121,10 @@ class Product < ActiveRecord::Base
   def cheapest_price_policy(order_detail, date = Time.zone.now)
     groups = groups_for_order_detail(order_detail)
     return nil if groups.empty?
-    price_policies = current_price_policies.delete_if { |pp| pp.expired? || pp.restrict_purchase? || groups.exclude?(pp.price_group) }
+    price_policies = current_price_policies(date).delete_if { |pp| pp.restrict_purchase? || groups.exclude?(pp.price_group) }
     price_policies.min_by do |pp|
-      costs = pp.estimate_cost_and_subsidy_from_order_detail(order_detail) || {:cost => 9999999, :subsidy => 0}
+      # default to very large number if the estimate returns a nil
+      costs = pp.estimate_cost_and_subsidy_from_order_detail(order_detail) || {:cost => 999999999, :subsidy => 0}
       costs[:cost] - costs[:subsidy]
     end
   end
