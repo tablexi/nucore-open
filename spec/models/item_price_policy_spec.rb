@@ -16,6 +16,14 @@ describe ItemPricePolicy do
     ipp.unit_total.to_f.should == 10
   end
 
+  context 'validations' do
+    it { should validate_numericality_of :unit_cost }
+    it 'should not allow a subsidy more than cost' do
+      pp = Factory.build(:item_price_policy, :unit_subsidy => 10, :unit_cost => 5)
+      pp.should_not be_valid
+      pp.errors.keys.should be_include :unit_subsidy
+    end
+  end
   context "test requiring items" do
     before(:each) do
       @facility         = Factory.create(:facility)
