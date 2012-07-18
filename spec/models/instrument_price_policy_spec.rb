@@ -333,22 +333,7 @@ describe InstrumentPricePolicy do
       costs[:cost].should    == (10.75 * 0.5 * 4) + (10.75 * 4)
       costs[:subsidy].should == 0
     end
-
-    it "should return nil if the start date is outside of the reservation window" do
-      pp = @instrument.instrument_price_policies.create!(ipp_attributes)
-      assert @price_group_product.save
-
-      start_dt = Time.zone.parse("#{Date.today + 2.day} 9:00")
-      end_dt   = Time.zone.parse("#{Date.today + 2.day} 10:00")
-      costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs.should be_nil
-      
-      start_dt = Time.zone.parse("#{Date.today + 1.day} 9:00")
-      end_dt   = Time.zone.parse("#{Date.today + 1.day} 10:00")
-      costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs.should_not be_nil
-    end
-    
+   
     it "should return nil if the end time is earlier than the start time" do
       pp = @instrument.instrument_price_policies.create!(ipp_attributes)
       start_dt = Time.zone.parse("#{Date.today + 1.day} 10:00")

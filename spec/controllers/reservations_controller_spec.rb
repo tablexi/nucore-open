@@ -22,7 +22,7 @@ describe ReservationsController do
     # add rule, available every day from 9 to 5, 60 minutes duration
     @rule             = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :end_hour => 23))
     # create price policy with default window of 1 day
-    @price_policy     = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id))
+    @price_policy     = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id, :usage_rate => 1))
     # create order, order detail
     @order            = @guest.orders.create(Factory.attributes_for(:order, :created_by => @guest.id, :account => @account))
     @order.add(@instrument, 1)
@@ -108,12 +108,13 @@ describe ReservationsController do
       @order            = @guest.orders.create(Factory.attributes_for(:order, :created_by => @admin.id, :account => @account))
       @order.add(@instrument, 1)
       @order_detail     = @order.order_details.first
+      @price_policy_past = @instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id, :start_date => 7.days.ago, :expire_date => 1.day.ago, :usage_rate => 2, :reservation_rate => 0))
       @params={
         :order_id => @order.id,
         :order_detail_id => @order_detail.id,
         :order_account => @account.id,
         :reservation => {
-            :reserve_start_date => Time.zone.now.to_date - 5.days,
+            :reserve_start_date => format_usa_date(Time.zone.now.to_date - 5.days),
             :reserve_start_hour => '9',
             :reserve_start_min => '0',
             :reserve_start_meridian => 'am',
@@ -131,12 +132,8 @@ describe ReservationsController do
       assigns[:reservation].errors.should be_empty
     end
 
-    it_should_allow_all facility_operators, 'and will have actuals' do
-      assigns[:reservation].should be_has_actuals
-    end
-
-    it_should_allow_all facility_operators, 'and autocompletes' do
-      assigns[:reservation].order_detail.reload.state.should == 'complete'
+    it_should_allow_all facility_operators, 'to still be new' do
+      assigns[:reservation].order_detail.reload.state.should == 'new'
     end
 
     it_should_allow_all facility_operators, "and isn't a problem" do
@@ -148,6 +145,26 @@ describe ReservationsController do
       response.should render_template(:new)
     end
 
+    it_should_allow_all facility_operators, 'not set a price policy' do
+      assigns[:reservation].order_detail.reload.price_policy.should be_nil
+    end
+
+    it_should_allow_all facility_operators, 'set the right estimated price' do
+      assigns[:reservation].order_detail.reload.estimated_cost.should == 120
+    end
+
+    context "but if there is no price policy for the date" do
+      before :each do
+        @params[:reservation][:reserve_start_date] = format_usa_date(Time.zone.now - 10.days)
+      end
+      it 'should give an error' do
+        maybe_grant_always_sign_in :admin
+        do_request
+        assigns[:reservation].should be_new_record
+        flash.now[:error].should_not be_nil
+        response.should render_template :new
+      end
+    end
   end
 
   context 'create' do

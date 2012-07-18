@@ -239,34 +239,45 @@ class OrdersController < ApplicationController
     
     @order.ordered_at = parse_usa_date(params[:order_date], join_time_select_values(params[:order_time])) if params[:order_date].present? && params[:order_time].present? && acting_as?
     
-    if @order.validate_order! && @order.purchase!
+    begin
+      @order.transaction do
+        raise PurchaseException.new unless @order.validate_order! && @order.purchase!
 
-      Notifier.order_receipt(:user => @order.user, :order => @order).deliver unless acting_as? && !params[:send_notification]
+        # update order detail statuses if you've changed it while acting as
+        if acting_as? && params[:order_status_id].present?
+          order_status = OrderStatus.find(params[:order_status_id])
+          @order.order_details.each do |od|
+            if order_status.root == OrderStatus.complete.first
+              od.backdate_to_complete!(@order.ordered_at)
+            else
+              od.update_order_status!(session_user, order_status, :admin => true)
+            end
+          end      
+        end 
 
-      # update order detail statuses if you've changed it while acting as
-      if acting_as? && params[:order_status_id].present?
-        @order.update_order_detail_statuses(params[:order_status_id], session_user)
-      end 
+        Notifier.order_receipt(:user => @order.user, :order => @order).deliver unless acting_as? && !params[:send_notification]
 
-      # If we're only making a single reservation, we'll redirect
-      if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled? && !acting_as?
-        od=@order.order_details[0]
+        # If we're only making a single reservation, we'll redirect
+        if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled? && !acting_as?
+          od=@order.order_details[0]
 
-        if od.reservation.can_switch_instrument_on?
-          redirect_to order_order_detail_reservation_switch_instrument_path(@order, od, od.reservation, :switch => 'on', :redirect_to => reservations_path)
+          if od.reservation.can_switch_instrument_on?
+            redirect_to order_order_detail_reservation_switch_instrument_path(@order, od, od.reservation, :switch => 'on', :redirect_to => reservations_path)
+          else
+            redirect_to reservations_path
+          end
+
+          flash[:notice]='Reservation completed successfully'
         else
-          redirect_to reservations_path
+          redirect_to receipt_order_url(@order)
         end
 
-        flash[:notice]='Reservation completed successfully'
-      else
-        redirect_to receipt_order_url(@order)
+        return
       end
-
-      return
-    else
-      flash[:error] = 'Unable to place order.'
-      @order.invalidate!
+    rescue Exception => e
+      flash[:error] = I18n.t('orders.purchase.error')
+      flash[:error] += " #{e.message}" if e.message
+      @order.reload.invalidate!
       redirect_to order_url(@order) and return
     end
   end

@@ -34,8 +34,7 @@ describe OrdersController do
     @item             = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
 
     Factory.create(:user_price_group_member, :user => @staff, :price_group => @price_group)
-    @item_pp=@item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
-    @item_pp.reload.restrict_purchase=false
+    @item_pp=@item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :start_date => 1.month.ago))
 
     @params={ :id => @order.id, :order_id => @order.id }
   end
@@ -179,13 +178,13 @@ describe OrdersController do
         switch_to @staff
         @params.merge!({:order_date => format_usa_date(1.day.ago), :order_time => {:hour => '10', :minute => '12', :ampm => 'AM'}})
         do_request
-        assigns[:order].ordered_at.should match_date 1.day.ago.change(:hour => 10, :min => 12)
+        assigns[:order].reload.ordered_at.should match_date 1.day.ago.change(:hour => 10, :min => 12)
       end
       it 'should set the ordered at to now if not acting_as' do
         maybe_grant_always_sign_in :director
         @params.merge!({:order_date => format_usa_date(1.day.ago)})
         do_request
-        assigns[:order].ordered_at.should match_date Time.zone.now
+        assigns[:order].reload.ordered_at.should match_date Time.zone.now
       end
 
       context 'setting status of order details' do
@@ -195,17 +194,17 @@ describe OrdersController do
         end
         it 'should leave as new by default' do
           do_request
-          assigns[:order].order_details.all? { |od| od.state.should == 'new' }
+          assigns[:order].reload.order_details.all? { |od| od.state.should == 'new' }
         end
         it 'should leave as new if new is set as the param' do
           @params.merge!({:order_status_id => OrderStatus.new_os.first.id})
           do_request
-          assigns[:order].order_details.all? { |od| od.state.should == 'new' }
+          assigns[:order].reload.order_details.all? { |od| od.state.should == 'new' }
         end
         it 'should be able to set to cancelled' do
           @params.merge!({:order_status_id => OrderStatus.cancelled.first.id})
           do_request
-          assigns[:order].order_details.all? { |od| od.state.should == 'cancelled' }
+          assigns[:order].reload.order_details.all? { |od| od.state.should == 'cancelled' }
         end
         
         context 'completed' do
@@ -214,23 +213,56 @@ describe OrdersController do
           end
           it 'should be able to set to completed' do
             do_request
-            assigns[:order].order_details.all? { |od| od.state.should == 'complete' }
+            assigns[:order].reload.order_details.all? { |od| od.state.should == 'complete' }
           end
           it 'should leave reviewed_at as nil' do
             do_request
-            assigns[:order].order_details.all? { |od| od.reviewed_at.should be_nil }
+            assigns[:order].reload.order_details.all? { |od| od.reviewed_at.should be_nil }
           end
           it 'should set the fulfilled date to the order time' do
+            @item_pp = @item.item_price_policies.create!(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :start_date => 1.day.ago, :expire_date => 1.day.from_now))
             @params.merge!({:order_date => format_usa_date(1.day.ago), :order_time => {:hour => '10', :minute => '13', :ampm => 'AM'}})
             do_request
-            assigns[:order].order_details.all? { |od| od.fulfilled_at.should match_date 1.day.ago.change(:hour => 10, :min => 13) }
+            assigns[:order].reload.order_details.all? { |od| od.fulfilled_at.should match_date 1.day.ago.change(:hour => 10, :min => 13) }
           end
+          context 'price policies' do
+            before :each do
+              @item.item_price_policies.clear
+              @item_pp = @item.item_price_policies.create!(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :start_date => 1.day.ago, :expire_date => 1.day.from_now))
+              @item_past_pp=@item.item_price_policies.create!(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :start_date => 7.days.ago, :expire_date => 1.day.ago))
+              @params.merge!(:order_time => {:hour => '10', :minute => '00', :ampm => 'AM'})
+            end
+            it 'should use the current price policy for dates in that policy' do
+              @params.merge!({:order_date => format_usa_date(Time.zone.now)})
+              do_request
+              assigns[:order].reload.order_details.all? { |od| od.price_policy.should == @item_pp }
+            end
+            it 'should use an old price policy for the past' do
+              @params.merge!({:order_date => format_usa_date(5.days.ago)})
+              do_request
+              assigns[:order].reload.order_details.all? { |od| od.price_policy.should == @item_past_pp }
+            end
+            it 'should have a problem if there is no policy set for the date in the past' do
+              @params.merge!({:order_date => format_usa_date(9.days.ago)})
+              do_request
+              assigns[:order].reload.order_details.all? do |od|
+                od.price_policy.should be_nil
+                od.actual_cost.should be_nil
+                od.actual_subsidy.should be_nil
+                od.state.should == 'new'
+              end
+              flash[:error].should_not be_nil
+              response.should redirect_to order_url(@order)
+            end
+          end
+          
         end
       end
 
       context 'backdating a reservation' do
         before :each do
           @instrument = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+          @instrument_pp = @instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy, :price_group => @price_group, :start_date => 7.day.ago, :expire_date => 1.day.from_now))
           define_open_account(@instrument.account, @account.account_number)
           @reservation = place_reservation_for_instrument(@staff, @instrument, @account, 1.day.ago)
           @params.merge!(:id => @reservation.order_detail.order.id)
@@ -277,9 +309,6 @@ describe OrdersController do
         end
       end
     end
-
-    it 'should test more than auth'
-
   end
 
 

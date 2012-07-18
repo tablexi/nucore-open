@@ -90,7 +90,7 @@ class ReservationsController < ApplicationController
       return redirect_to new_order_order_detail_reservation_path(@order, @order_detail)
     end
 
-    Reservation.transaction do
+    @reservation.transaction do
       begin
         unless params[:order_account].blank?
           account=Account.find(params[:order_account].to_i)
@@ -100,9 +100,11 @@ class ReservationsController < ApplicationController
             @order.update_order_detail_accounts
           end
         end
+
         @reservation.save_as_user!(session_user)
         
-        @order_detail.assign_estimated_price
+        @order_detail.assign_estimated_price!(nil, @reservation.reserve_end_at)
+
         @order_detail.save!
         
         flash[:notice] = I18n.t 'controllers.reservations.create.success'
@@ -117,6 +119,12 @@ class ReservationsController < ApplicationController
 
         return
       rescue ActiveRecord::RecordInvalid => e
+        logger.error e.message
+        raise ActiveRecord::Rollback
+      rescue Exception => e
+        logger.error e.message
+        flash.now[:error] = I18n.t('orders.purchase.error')
+        flash.now[:error] += " #{e.message}" if e.message
         raise ActiveRecord::Rollback
       end
     end
@@ -167,7 +175,7 @@ class ReservationsController < ApplicationController
     Reservation.transaction do
       begin
         @reservation.save_as_user!(session_user)
-        @order_detail.assign_estimated_price
+        @order_detail.assign_estimated_price(nil, @reservation.reserve_end_at)
         @order_detail.save!
         flash[:notice] = 'The reservation was successfully updated.'
         redirect_to (@order.purchased? ? reservations_path : cart_path) and return

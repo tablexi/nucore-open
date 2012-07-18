@@ -210,16 +210,6 @@ class Order < ActiveRecord::Base
     #raise I18n.t('models.order.auto_assign_account', :product_name => product.name) if self.account.nil?
   #end
 
-  def update_order_detail_statuses(order_status, updated_by_user)
-    # accept either an OrderStatus or an id
-    order_status = OrderStatus.find(order_status) unless order_status.is_a? OrderStatus
-    self.transaction do
-      order_details.each do |od|
-        od.update_order_status! updated_by_user, order_status, :admin => true, :fulfilled_at_ordered => true, :update_reservation_actuals =>true
-      end
-    end
-  end
-
   # If we update the account_id of the order, update the account_id of
   # each of the child order_details
   # currently being called explicitly, but could possibly go in an after_save filter
