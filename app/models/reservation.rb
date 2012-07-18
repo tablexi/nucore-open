@@ -77,7 +77,7 @@ class Reservation < ActiveRecord::Base
     return true
   end
 
-  after_save :on => :create do
+  after_create do
     self.order_detail.reload.change_status!(OrderStatus.find_by_name!('Complete')) if self.has_actuals?
   end
 
