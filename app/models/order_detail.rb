@@ -263,13 +263,8 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def cancelable?
-    if order_status.root == OrderStatus.complete.first
-      # cannot cancel if detail is journaled or statemented
-      statement.nil? && journal.nil? && (reservation.nil? || reservation.canceled_at.present?)
-    else
-      # reservation must be canceled first
-      reservation.nil? || reservation.canceled_at.present?
-    end
+    # can't cancel if the reservation isn't already canceled or if this OD has been added to a statement or journal
+    statement.nil? && journal.nil? && (reservation.nil? || reservation.canceled_at.present?)
   end
 
   delegate :ordered_on_behalf_of?, :to => :order

@@ -411,6 +411,45 @@ describe OrderDetail do
         @order_detail.should be_problem_order
       end
 
+      it "should transition to cancelled" do
+        @order_detail.to_inprocess!
+        @order_detail.to_complete!
+        @order_detail.to_cancelled!
+        @order_detail.state.should == 'cancelled'
+        @order_detail.version.should == 4
+      end
+
+      it "should not transition to cancelled from reconciled" do
+        Factory.create(:item_price_policy, :item => @item, :price_group => @price_group3)
+        @order_detail.to_inprocess!
+        @order_detail.to_complete!
+        @order_detail.to_reconciled!
+        lambda { @order_detail.to_cancelled! }.should raise_exception AASM::InvalidTransition
+        @order_detail.state.should == 'reconciled'
+        @order_detail.version.should == 4
+      end
+
+      it "should not transition to cancelled if part of journal" do
+        journal=Factory.create(:journal, :facility => @facility, :reference => 'xyz', :created_by => @user.id, :journal_date => Time.zone.now)
+        @order_detail.update_attribute :journal_id, journal.id
+        @order_detail.reload.journal.should == journal
+        @order_detail.to_inprocess!
+        @order_detail.to_complete!
+        @order_detail.to_cancelled!
+        @order_detail.state.should == 'complete'
+        @order_detail.version.should == 4
+      end
+
+      it "should not transition to cancelled if part of statement" do
+        statement=Factory.create(:statement, :facility => @facility, :created_by => @user.id, :account => @account)
+        @order_detail.update_attribute :statement_id, statement.id
+        @order_detail.reload.statement.should == statement
+        @order_detail.to_inprocess!
+        @order_detail.to_complete!
+        @order_detail.to_cancelled!
+        @order_detail.state.should == 'complete'
+        @order_detail.version.should == 4
+      end
 
       it "should transition to reconciled" do
         Factory.create(:item_price_policy, :item => @item, :price_group => @price_group3)
@@ -721,6 +760,49 @@ describe OrderDetail do
       result = OrderDetail.ordered_or_reserved_in_range(Time.zone.now, Time.zone.now)
       result.should contain_all [@od_today, @reservation_today.order_detail]
     end
+  end
+
+
+  context 'cancel_reservation' do
+    before :each do
+      start_date=Time.zone.now+1.day
+      setup_reservation @facility, @facility_account, @account, @user
+      place_reservation @facility, @order_detail, start_date
+      InstrumentPricePolicy.all.each{|pp| pp.update_attribute :cancellation_cost, 5.0}
+      Factory.create :user_price_group_member, :user_id => @user.id, :price_group_id => @price_group.id
+    end
+
+    it 'should cancel as admin and not have cancellation fee' do
+      @order_detail.cancel_reservation(@user, OrderStatus.cancelled.first, true).should be_true
+      @reservation.reload.canceled_by.should == @user.id
+      @reservation.canceled_at.should_not be_nil
+      @order_detail.reload.state.should == 'cancelled'
+    end
+
+    it 'should not cancel as user if reservation was already cancelled' do
+      @instrument.update_attribute :min_cancel_hours, 25
+      @reservation.update_attribute :canceled_at, Time.zone.now
+      @order_detail.cancel_reservation(@user).should be_false
+    end
+
+    it 'should cancel as admin and add cancellation fee' do
+      cancel_with_fee @user, OrderStatus.cancelled.first, true, true
+    end
+
+    it 'should cancel as user and add cancellation fee' do
+      cancel_with_fee @user
+    end
+
+    def cancel_with_fee(*cancel_reservation_args)
+      @instrument.update_attribute :min_cancel_hours, 25
+      @order_detail.cancel_reservation(*cancel_reservation_args).should be_true
+      @reservation.reload.canceled_by.should == @user.id
+      @reservation.canceled_at.should_not be_nil
+      @order_detail.reload.state.should == 'complete'
+      @order_detail.actual_cost.should == @order_detail.price_policy.cancellation_cost
+      @order_detail.actual_subsidy.should == 0
+    end
+
   end
 
 end
