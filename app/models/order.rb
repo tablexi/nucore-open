@@ -178,6 +178,25 @@ class Order < ActiveRecord::Base
     return self.errors.empty?
 
   end
+
+  def backdate_order_details!(update_by, order_status)
+    # can accept either an order status or an id
+    order_status = order_status.is_a?(OrderStatus) ? order_status : OrderStatus.find(order_status)
+
+    order_details.each do |od|
+      if order_status.root == OrderStatus.complete.first
+        od.backdate_to_complete!(ordered_at)
+      else
+        od.update_order_status!(update_by, order_status, :admin => true)
+      end
+    end      
+  end
+  
+  def complete_past_reservations!
+    order_details.select {|od| od.reservation && od.reservation.reserve_end_at < Time.zone.now }.each do |od|
+      od.backdate_to_complete! od.reservation.reserve_end_at
+    end
+  end
   
   def max_group_id
     self.order_details.maximum(:group_id).to_i + 1

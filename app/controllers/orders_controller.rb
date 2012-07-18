@@ -241,19 +241,15 @@ class OrdersController < ApplicationController
     
     begin
       @order.transaction do
-        raise PurchaseException.new unless @order.validate_order! && @order.purchase!
+        raise NUCore::PurchaseException.new unless @order.validate_order! && @order.purchase!
 
         # update order detail statuses if you've changed it while acting as
         if acting_as? && params[:order_status_id].present?
-          order_status = OrderStatus.find(params[:order_status_id])
-          @order.order_details.each do |od|
-            if order_status.root == OrderStatus.complete.first
-              od.backdate_to_complete!(@order.ordered_at)
-            else
-              od.update_order_status!(session_user, order_status, :admin => true)
-            end
-          end      
-        end 
+          @order.backdate_order_details!(session_user, params[:order_status_id])
+        elsif can? :order_in_past, @reservation
+          @order.complete_past_reservations!
+        end
+
 
         Notifier.order_receipt(:user => @order.user, :order => @order).deliver unless acting_as? && !params[:send_notification]
 
