@@ -77,6 +77,42 @@ describe FacilityOrderDetailsController do
 
     it_should_allow_operators_only
 
+    context 'cancel reservation' do
+      before :each do
+        start_date=Time.zone.now+1.day
+        setup_reservation @authable, @facility_account, @account, @director
+        place_reservation @authable, @order_detail, start_date
+        @instrument.update_attribute :min_cancel_hours, 25
+        InstrumentPricePolicy.all.each{|pp| pp.update_attribute :cancellation_cost, 5.0}
+        Factory.create :user_price_group_member, :user_id => @director.id, :price_group_id => @price_group.id
+
+        @params[:order_id]=@order.id
+        @params[:id]=@order_detail.id
+        @params[:order_detail]={
+          :order_status_id => OrderStatus.cancelled.first.id,
+          :actual_cost => '5.0',
+          :actual_subsidy => '0',
+          :reconciled_note => '',
+          :account_id => @account.id.to_s
+        }
+      end
+
+      it 'should add cancellation fee' do
+        @params.merge! :with_cancel_fee => '1'
+        maybe_grant_always_sign_in :director
+        do_request
+        @order_detail.reload.state.should == 'complete'
+        @order_detail.actual_cost.should == @order_detail.price_policy.cancellation_cost
+      end
+
+      it 'should not add cancellation fee' do
+        @params.merge! :with_cancel_fee => '0'
+        maybe_grant_always_sign_in :director
+        do_request
+        @order_detail.reload.state.should == 'cancelled'
+      end
+    end
+
   end
 
 
