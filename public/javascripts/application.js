@@ -120,6 +120,20 @@ $(document).ready(function() {
   };
   loadTabCounts();
   
+  $("fieldset.collapsable").each(function() {
+    $this = $(this);
+    $this.find("> :not(legend)").toggle(!$this.hasClass("collapsed"));
+    $this.enableDisableFields = function() {
+      this.find("input, select").prop('disabled', $this.hasClass('collapsed'));
+    }
+    $this.enableDisableFields();
+    $this.find("legend").click(function() {
+      // $this is still the fieldset, but 'this' is legend
+      $this.toggleClass("collapsed").find("> :not(legend)").slideToggle();
+      $this.enableDisableFields();
+    });
+
+  });
 });
 
 String.prototype.endsWith = function(suffix) {
