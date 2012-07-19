@@ -250,7 +250,6 @@ class OrdersController < ApplicationController
           @order.complete_past_reservations!
         end
 
-
         Notifier.order_receipt(:user => @order.user, :order => @order).deliver unless acting_as? && !params[:send_notification]
 
         # If we're only making a single reservation, we'll redirect
@@ -286,7 +285,7 @@ class OrdersController < ApplicationController
     @order_details = @order.order_details.select{|od| od.can_be_viewed_by?(acting_user) }
     raise ActiveRecord::RecordNotFound if @order_details.empty?
 
-    @accounts = @order_details.collect(&:account)
+    @accounts = @order_details.collect(&:account).uniq
   end
 
   # GET /orders
