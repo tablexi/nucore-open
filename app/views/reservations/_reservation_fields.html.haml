@@ -8,6 +8,6 @@
   = f.select :reserve_start_meridian, ['AM', 'PM']
 %li.left
   = f.label :duration_value, 'Duration'
-  = f.text_field :duration_value, :value => f.object.duration_value, :size => '5'
+  = f.text_field :duration_value, :size => '5'
   = f.select :duration_unit, ['minutes', 'hours'], { :selected => f.object.duration_unit }
 %li.clear
