@@ -264,7 +264,7 @@ describe OrdersController do
           @instrument = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
           @instrument_pp = @instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy, :price_group => @price_group, :start_date => 7.day.ago, :expire_date => 1.day.from_now))
           define_open_account(@instrument.account, @account.account_number)
-          @reservation = place_reservation_for_instrument(@staff, @instrument, @account, 1.day.ago)
+          @reservation = place_reservation_for_instrument(@staff, @instrument, @account, 3.days.ago)
           @params.merge!(:id => @reservation.order_detail.order.id)
           maybe_grant_always_sign_in :director
           switch_to @staff

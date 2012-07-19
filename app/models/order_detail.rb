@@ -1,5 +1,6 @@
 class OrderDetail < ActiveRecord::Base
   include NUCore::Database::SortHelper
+  include TranslationHelper
   
   versioned
 
@@ -267,15 +268,16 @@ class OrderDetail < ActiveRecord::Base
   # This method is a replacement for change_status! that also will cancel the associated reservation when necessary
   def update_order_status!(updated_by, order_status, options_args = {}, &block)
     options = { :admin => false }.merge(options_args)
-    
+
     cancel_reservation(updated_by, order_status, options[:admin]) if reservation && order_status.root == OrderStatus.cancelled.first
-    
+
     change_status! order_status, &block
   end
 
   def backdate_to_complete!(event_time)
     # if we're setting it to compete, automatically set the actuals for a reservation
     if reservation
+      raise NUCore::PurchaseException.new(t_model_error(Reservation, 'connot_be_completed_in_future')) if reservation.reserve_end_at > event_time
       reservation.assign_actuals_off_reserve 
       reservation.save!
     end
