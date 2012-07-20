@@ -30,11 +30,11 @@ module TimelineHelper
   end
 
   def reservation_width(display_date, reservation)
-    datetime_width(display_date, reservation.actual_start_at || reservation.reserve_start_at, reservation.actual_end_at || reservation.reserve_end_at)
+    datetime_width(display_date, reservation.display_start_at, reservation.display_end_at)
   end
 
   def reservation_left_position(display_date, reservation)
-    datetime_left_position(display_date, reservation.actual_start_at || reservation.reserve_start_at)
+    datetime_left_position(display_date, reservation.display_start_at)
   end
   
   def spans_midnight_class(datetime_start, datetime_end)
