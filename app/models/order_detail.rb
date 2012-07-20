@@ -1,5 +1,6 @@
 class OrderDetail < ActiveRecord::Base
   include NUCore::Database::SortHelper
+  include OrderDetailStatusHooks
   
   versioned
 
@@ -255,11 +256,15 @@ class OrderDetail < ActiveRecord::Base
   # END acts_as_state_machine
 
   def change_status! (new_status)
+    old_status = order_status
     success = true
     success = send("to_#{new_status.root.name.downcase.gsub(/ /,'')}!") if new_status.root.name.downcase.gsub(/ /,'') != state
     raise AASM::InvalidTransition, "Event '#{new_status.root.name.downcase.gsub(/ /,'')}' cannot transition from '#{state}'" unless success
-    self.order_status = new_status
-    self.save
+    if old_status != new_status
+      self.order_status = new_status
+      success = self.save
+    end
+    success
   end
 
   def reservation_canceled?

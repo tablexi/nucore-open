@@ -19,6 +19,12 @@ module SettingsHelper
     Settings.billing.review_period > 0
   end
 
+
+  def self.status_change_hooks
+    hash = Settings.try(:order_details).try(:status_change_hooks).try(:to_hash)
+    hash || {}
+  end
+
   #
   # Used to query the +Settings+ under feature:
   # [_feature_]

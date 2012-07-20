@@ -2,15 +2,15 @@ require 'spec_helper'
 require 'timecop'
 
 describe OrderDetail do
-
   before(:each) do
+    Settings.order_details.status_change_hooks = nil
     @facility = Factory.create(:facility)
     @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
     @user     = Factory.create(:user)
     @item     = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
     @item.should be_valid
     @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
-    @order    = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id))
+    @order    = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
     @order.should be_valid
     @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
     @order_detail.state.should == 'new'
@@ -720,6 +720,37 @@ describe OrderDetail do
     it "should only return the order detail and the reservation from today" do
       result = OrderDetail.ordered_or_reserved_in_range(Time.zone.now, Time.zone.now)
       result.should contain_all [@od_today, @reservation_today.order_detail]
+    end
+  end
+
+  context 'triggers notifications on status changes' do
+    before :each do
+      class TriggerTestHook
+        def on_status_change(od, old_status, new_status); end
+      end
+      class TriggerTestHookNew < TriggerTestHook; end
+      
+      @order.validate_order!.should be_true
+      @order.purchase!.should be_true
+      
+      @order_detail.reload.order.state.should == 'purchased'
+
+      Settings.order_details.status_change_hooks = {:in_process => 'TriggerTestHook', :new => 'TriggerTestHookNew'}
+      @order_detail.order_status.should == OrderStatus.new_os.first
+    end
+    it 'should trigger a notification on change to inprogress' do
+      TriggerTestHook.any_instance.expects(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first).once
+      @order_detail.change_status!(OrderStatus.inprocess.first).should be_true
+    end
+    it 'should trigger a notification on change from in_process to new' do
+      TriggerTestHook.any_instance.expects(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first)
+      @order_detail.change_status!(OrderStatus.inprocess.first).should be_true
+      TriggerTestHookNew.any_instance.expects(:on_status_change).once.with(@order_detail, OrderStatus.inprocess.first, OrderStatus.new_os.first)
+      @order_detail.change_status!(OrderStatus.new_os.first).should be_true
+    end
+    it 'should not trigger going from new to new' do
+      TriggerTestHookNew.any_instance.expects(:on_status_change).never
+      @order_detail.change_status!(OrderStatus.new_os.first).should be_true
     end
   end
 
