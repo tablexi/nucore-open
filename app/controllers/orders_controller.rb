@@ -241,7 +241,8 @@ class OrdersController < ApplicationController
     
     begin
       @order.transaction do
-        raise NUCore::PurchaseException.new unless @order.validate_order! && @order.purchase!
+        # Empty message because validate_order! and purchase! don't give us useful messages as to why they failed
+        raise NUCore::PurchaseException.new("") unless @order.validate_order! && @order.purchase!
 
         # update order detail statuses if you've changed it while acting as
         if acting_as? && params[:order_status_id].present?
