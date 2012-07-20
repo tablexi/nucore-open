@@ -32,6 +32,7 @@ describe OrdersController do
     @account          = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
     @order            = @staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account))
     @item             = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+    define_open_account(@item.account, @account.account_number)
 
     Factory.create(:user_price_group_member, :user => @staff, :price_group => @price_group)
     @item_pp=@item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :start_date => 1.month.ago))
