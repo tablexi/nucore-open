@@ -1,6 +1,5 @@
 class OrderDetail < ActiveRecord::Base
   include NUCore::Database::SortHelper
-  include OrderDetailStatusHooks
   
   versioned
 
