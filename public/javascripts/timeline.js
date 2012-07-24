@@ -30,9 +30,21 @@ $(function() {
           var id = /block_reservation_(\d+)/.exec($el.attr("id"))[1];
           return $("#tooltip_reservation_" + id).html();
         }
+
         $('.tip').tooltipsy({
-            content: tooltipContent
+            content: tooltipContent,
+            hide: function (e, $el) {
+                   $el.delay(500),
+                   $el.fadeOut(10)
+               } 
         });
+      
+       /*  $(".tooltip_stay").mouseenter( function(){
+            setTimeout( function(){
+              $('.tooltip_stay').css('background','red');
+            },1500);
+         }); */
+
 
         // Date select calendar
         $(".datepicker").datepicker({
