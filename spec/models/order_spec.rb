@@ -2,7 +2,7 @@ require 'spec_helper'
 
 def define_purchasable_instrument
   @instrument    = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account => @facility_account))
-  @instrument_pp = Factory.create(:instrument_price_policy, :instrument => @instrument, :price_group => @price_group)
+  @instrument_pp = Factory.create(:instrument_price_policy, :product => @instrument, :price_group => @price_group)
   Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
   # default rule, 9am - 5pm all days
   @rule          = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
@@ -113,7 +113,7 @@ describe Order do
       @price_group  = @facility.price_groups.create(Factory.attributes_for(:price_group))
       @order_status = Factory.create(:order_status)
       @service      = @facility.services.create(Factory.attributes_for(:service, :initial_order_status_id => @order_status.id, :facility_account_id => @facility_account.id))
-      @service_pp   = Factory.create(:service_price_policy, :service => @service, :price_group => @price_group)
+      @service_pp   = Factory.create(:service_price_policy, :product => @service, :price_group => @price_group)
       @user         = Factory.create(:user)
       @pg_member    = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @account      = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
@@ -143,7 +143,7 @@ describe Order do
       @order_status = Factory.create(:order_status)
       @service      = @facility.services.create(Factory.attributes_for(:service, :initial_order_status_id => @order_status.id, :facility_account_id => @facility_account.id))
       Factory.create(:price_group_product, :product => @service, :price_group => @price_group, :reservation_window => nil)
-      @service_pp   = Factory.create(:service_price_policy, :service => @service, :price_group => @price_group)
+      @service_pp   = Factory.create(:service_price_policy, :product => @service, :price_group => @price_group)
       @user         = Factory.create(:user)
       @pg_member    = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @account      = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
@@ -195,7 +195,7 @@ describe Order do
 
     it "should check for schedule rule changes before purchase" do
       @instrument    = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account => @facility_account))
-      @instrument_pp = Factory.create(:instrument_price_policy, :instrument => @instrument, :price_group => @price_group)
+      @instrument_pp = Factory.create(:instrument_price_policy, :product => @instrument, :price_group => @price_group)
       Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
       # default rule, 9am - 5pm all days
       @rule          = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
@@ -229,15 +229,15 @@ describe Order do
       @price_group      = Factory.create(:price_group, :facility => @facility)
       @order_status     = Factory.create(:order_status)
       @service          = @facility.services.create(Factory.attributes_for(:service, :initial_order_status_id => @order_status.id, :facility_account_id => @facility_account.id))
-      @service_pp       = Factory.create(:service_price_policy, :service => @service, :price_group => @price_group)
+      @service_pp       = Factory.create(:service_price_policy, :product => @service, :price_group => @price_group)
       @service_same     = @facility.services.create(Factory.attributes_for(:service, :initial_order_status_id => @order_status.id, :facility_account_id => @facility_account.id))
-      @service_same_pp  = Factory.create(:service_price_policy, :service => @service_same, :price_group => @price_group)
+      @service_same_pp  = Factory.create(:service_price_policy, :product => @service_same, :price_group => @price_group)
 
       @facility2         = Factory.create(:facility)
       @facility_account2 = @facility2.facility_accounts.create(Factory.attributes_for(:facility_account))
       @price_group2      = Factory.create(:price_group, :facility => @facility2)
       @service2          = @facility2.services.create(Factory.attributes_for(:service, :initial_order_status_id => @order_status.id, :facility_account_id => @facility_account2.id))
-      @service2_pp       = Factory.create(:service_price_policy, :service => @service2, :price_group => @price_group2)
+      @service2_pp       = Factory.create(:service_price_policy, :product => @service2, :price_group => @price_group2)
 
       @user            = Factory.create(:user)
       @pg_member       = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)

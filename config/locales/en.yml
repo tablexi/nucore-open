@@ -400,7 +400,10 @@ en:
       foot:
         all: "All prices are estimates. Actual cost is assigned when the order is complete."
         instrument: "* Instrument pricing is estimated; the final price may vary based on actual time used."
+      more_options: More options
       confirm: "Are you sure you wish to place this order?"
+    purchase:
+      error: Unable to place order.
 
 
   order_details:
@@ -535,6 +538,11 @@ en:
       item: ""
       service: ""
       instrument: "The user will be charged the sum of actual, scheduled, and overage usage fees.  Actual usage is measured by power relay or manually entered by facility staff.  Scheduled usage is calculated from the user's reservation.  Overage is any usage that exceeds the user's reservation.  If an overage rate is not specified, the actual usage rate will be applied for any overage."
+    problem: There is a problem with this price policy.
+    errors:
+      none_exist_for_date: No valid price policies exists for that date.
+      none_exist: No current price policies
+      fewer_than_price_groups: Some price groups are missing price policies 
 
   price_groups:
     price_group_fields:
@@ -859,7 +867,8 @@ en:
           not_in_price_group: You are not in a price group that may purchase this bundle; please contact the facility.
           not_authorized_acting_as: You are not authorized to order bundles from this facility on behalf of a user.
           no_accounts: "Sorry, but we could not find a valid payment source that you can use to purchase this bundle"
-          
+        reservation:
+          connot_be_completed_in_future: You cannot complete a future reservation.
         account_user:
           attributes:
             user_id:

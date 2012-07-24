@@ -6,13 +6,14 @@
     %li= link_to 'Scheduling', facility_instrument_schedule_rules_path(current_facility, product), :class => secondary_tab == 'schedule_rules' ? 'active' : ''
   - if product.requires_approval?
     %li= link_to 'Users', facility_instrument_users_path(current_facility, product), :class => secondary_tab == 'users' ? 'active' : ''
+  - if product.requires_approval? && product.is_a?(Instrument)  
     %li= link_to ProductAccessGroup.model_name.human.pluralize, facility_instrument_product_access_groups_path(current_facility, product), :class => secondary_tab == 'restriction_levels' ? 'active' : ''
   - if product.is_a?(Bundle)
     %li= link_to 'Bundled Products', facility_bundle_bundle_products_path(current_facility, product), :class => secondary_tab == 'products' ? 'active' : ''
   - else
     %li= link_to 'Pricing', send("facility_#{product.class.name.downcase}_price_policies_path", current_facility, product), :class => secondary_tab == 'pricing_rules' ? 'active' : '' if can? :index, PricePolicy
-    %li= link_to 'Restrictions', send("edit_facility_price_group_product_path", current_facility, product), :class => secondary_tab == 'restrictions' ? 'active' : ''
   - if product.is_a?(Instrument)
+    %li= link_to 'Restrictions', send("edit_facility_price_group_product_path", current_facility, product), :class => secondary_tab == 'restrictions' ? 'active' : ''
     %li= link_to 'Reservations', facility_instrument_schedule_path(current_facility, product), :class => secondary_tab == 'reservations' ? 'active' : ''
   %li= link_to 'Docs', upload_product_file_path(current_facility, product.parameterize, product.url_name, :file_type => 'info'), :class => secondary_tab == 'documentation' ? 'active' : ''
   - if product.is_a?(Service)

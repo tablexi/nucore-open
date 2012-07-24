@@ -123,6 +123,7 @@ Factory.define_default :instrument_price_policy, :class => InstrumentPricePolicy
   o.minimum_cost 1
   o.usage_mins 1
   o.overage_mins 1
+  o.can_purchase true
   o.start_date { Time.zone.now.beginning_of_day }
   o.expire_date { PricePolicy.generate_expire_date(Time.zone.now.beginning_of_day) }
 end
@@ -139,9 +140,10 @@ Factory.define_default :item, :class => Item do |o|
 end
 
 Factory.define_default :item_price_policy, :class => ItemPricePolicy do |o|
+  o.can_purchase true
   o.unit_cost 1
   o.unit_subsidy 0
-  o.start_date { Date.today }
+  o.start_date { Time.zone.now.beginning_of_day }
   o.expire_date { PricePolicy.generate_expire_date(Date.today) }
 end
 
@@ -168,9 +170,10 @@ Factory.define_default :order_status, :class => OrderStatus do |o|
 end
 
 Factory.define_default :service_price_policy, :class => ServicePricePolicy do |o|
+  o.can_purchase true
   o.unit_cost 1
   o.unit_subsidy 0
-  o.start_date { Date.today }
+  o.start_date { Time.zone.now.beginning_of_day }
   o.expire_date { PricePolicy.generate_expire_date(Date.today) }
 end
 

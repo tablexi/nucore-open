@@ -1,0 +1,34 @@
+%table
+  %tr
+    %th.actions{:rowspan => 2}
+    %th{:rowspan => 2} Price Group (Type)
+    %th.centered{:colspan => 3} Rate per #{price_policies.first.usage_mins} minute#{price_policies.first.usage_mins == 1 ? '' : 's'}
+    %th.currency{:rowspan => 2} Minimum Cost
+    %th.currency{:rowspan => 2} Reservation Cost
+  %tr
+    %th.currency Actual
+    %th.currency Scheduled
+    %th.currency Overage
+  - price_policies_to_show = price_policies.select { |pp| pp.can_purchase? }
+  - price_policies_to_show.each do |price_policy|
+    %tr
+      - if price_policies_to_show.first == price_policy
+        %td.centered{ :rowspan => price_policies_to_show.length }
+          %ul.form
+            - unless price_policies.all?{|pp| pp.editable?} and can? :edit, PricePolicy
+              %li.disabled Edit
+              %li.disabled Remove
+            - else
+              %li= link_to('Edit', edit_facility_instrument_price_policy_path(current_facility, @product, url_date))
+              %li= link_to('Remove', facility_instrument_price_policy_path(current_facility, @product, url_date), :confirm => 'Are you sure?', :method => :delete)
+      %td=h "#{price_policy.price_group.name} (#{price_policy.price_group.type_string})"
+      - if price_policy.valid?
+        %td.currency= human_rate_calculation(price_policy.usage_rate, price_policy.usage_subsidy)
+        %td.currency= human_rate_calculation(price_policy.reservation_rate, price_policy.reservation_subsidy)
+        %td.currency= human_rate_calculation(price_policy.overage_rate, price_policy.overage_subsidy)
+        %td.currency=h number_to_currency price_policy.minimum_cost
+        %td.currency=h number_to_currency price_policy.cancellation_cost
+      - else
+        %td.centered{:colspan => 5}
+          = t('price_policies.problem')
+          = price_policy.errors.full_messages.to_sentence

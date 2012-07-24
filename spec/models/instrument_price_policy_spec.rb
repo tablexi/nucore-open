@@ -44,14 +44,6 @@ describe InstrumentPricePolicy do
       @ipp.should be_valid
     end
 
-    it 'should override #restrict_purchase=' do
-      PriceGroupProduct.find_by_price_group_id_and_product_id(@price_group.id, @instrument.id).should be_nil
-      @ipp.restrict_purchase=false
-      pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(@price_group.id, @instrument.id)
-      pgp.should_not be_nil
-      pgp.reservation_window.should == PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
-    end
-
     it "should create a price policy for today if no active price policy already exists" do
       should allow_value(Date.today).for(:start_date)
       @ipp.start_date=Date.today - 7.days
@@ -341,22 +333,7 @@ describe InstrumentPricePolicy do
       costs[:cost].should    == (10.75 * 0.5 * 4) + (10.75 * 4)
       costs[:subsidy].should == 0
     end
-
-    it "should return nil if the start date is outside of the reservation window" do
-      pp = @instrument.instrument_price_policies.create!(ipp_attributes)
-      assert @price_group_product.save
-
-      start_dt = Time.zone.parse("#{Date.today + 2.day} 9:00")
-      end_dt   = Time.zone.parse("#{Date.today + 2.day} 10:00")
-      costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs.should be_nil
-      
-      start_dt = Time.zone.parse("#{Date.today + 1.day} 9:00")
-      end_dt   = Time.zone.parse("#{Date.today + 1.day} 10:00")
-      costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs.should_not be_nil
-    end
-    
+   
     it "should return nil if the end time is earlier than the start time" do
       pp = @instrument.instrument_price_policies.create!(ipp_attributes)
       start_dt = Time.zone.parse("#{Date.today + 1.day} 10:00")
@@ -435,6 +412,7 @@ describe InstrumentPricePolicy do
       :minimum_cost        => nil,
       :cancellation_cost   => nil,
       :price_group         => @price_group,
+      :can_purchase        => true
     }
 
     attrs.merge(overrides)

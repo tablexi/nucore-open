@@ -16,6 +16,15 @@ describe ServicePricePolicy do
     ipp.unit_total.to_f.should == 10
   end
 
+  context 'validations' do
+    it { should validate_numericality_of :unit_cost }
+    it 'should not allow a subsidy more than cost' do
+      pp = Factory.build(:item_price_policy, :unit_subsidy => 10, :unit_cost => 5)
+      pp.should_not be_valid
+      pp.errors.keys.should be_include :unit_subsidy
+    end
+  end
+
   context "test requiring services" do
     before(:each) do
       @facility         = Factory.create(:facility)
@@ -53,14 +62,14 @@ describe ServicePricePolicy do
     end
 
     it "should calculate the cost for an 1 service" do
-      ipp   = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id)
+      ipp   = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
       costs = ipp.calculate_cost_and_subsidy
       costs[:cost].to_f.should == 10.75
       costs[:subsidy].to_f.should == 0.75
     end
 
     it "should calculate the cost for multiple service when given a quantity" do
-      ipp   = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id)
+      ipp   = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
       costs = ipp.calculate_cost_and_subsidy(2)
       costs[:cost].to_f.should == 21.5
       costs[:subsidy].to_f.should == 1.5

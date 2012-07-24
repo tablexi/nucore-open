@@ -22,13 +22,12 @@
       %th Price Group (Type)
       - if @is_instrument
         %th Reservation Window
-      %th Can purchase?
-    - @price_groups.each do |price_group|
-    - purchasable=can_purchase?(price_group)
-      %tr
+    - @price_group_products.each do |price_group_product|
+      - price_group = price_group_product.price_group
+      - is_current = @active_price_groups.include? price_group
+      %tr{:class => "#{'disabled' unless is_current}"}
         %td=h "#{price_group.name} (#{price_group.type_string})"
         - if @is_instrument
-          %td=text_field_tag "price_group_#{price_group.id}[reservation_window]", purchasable ? reservation_window(price_group) : '', :disabled => !purchasable || cannot?(:update, PriceGroupProduct)
-        %td=check_box_tag "price_group_#{price_group.id}[purchase]", '1', purchasable, :disabled => cannot?(:update, PriceGroupProduct)
+          %td=text_field_tag "price_group_#{price_group.id}[reservation_window]", price_group_product.reservation_window, :disabled => !is_current || cannot?(:update, PriceGroupProduct)
 
   = submit_tag 'Save restrictions', :class => :btn if can? :update, PriceGroupProduct

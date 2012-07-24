@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120512014131) do
+ActiveRecord::Schema.define(:version => 20120622185758) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -98,12 +98,12 @@ ActiveRecord::Schema.define(:version => 20120512014131) do
   end
 
   create_table "facilities", :force => true do |t|
-    t.string   "name",              :limit => 200,                   :null => false
-    t.string   "abbreviation",      :limit => 50,                    :null => false
-    t.string   "url_name",          :limit => 50,                    :null => false
-    t.boolean  "is_active",                                          :null => false
-    t.datetime "created_at",                                         :null => false
-    t.datetime "updated_at",                                         :null => false
+    t.string   "name",              :limit => 200,                    :null => false
+    t.string   "abbreviation",      :limit => 50,                     :null => false
+    t.string   "url_name",          :limit => 50,                     :null => false
+    t.boolean  "is_active",                                           :null => false
+    t.datetime "created_at",                                          :null => false
+    t.datetime "updated_at",                                          :null => false
     t.text     "description"
     t.boolean  "accepts_cc",                       :default => true
     t.boolean  "accepts_po",                       :default => true
@@ -113,7 +113,7 @@ ActiveRecord::Schema.define(:version => 20120512014131) do
     t.string   "phone_number"
     t.string   "fax_number"
     t.string   "email"
-    t.string   "journal_mask",      :limit => 50,                    :null => false
+    t.string   "journal_mask",      :limit => 50,                     :null => false
   end
 
   add_index "facilities", ["abbreviation"], :name => "sys_c008532", :unique => true
@@ -270,12 +270,11 @@ ActiveRecord::Schema.define(:version => 20120512014131) do
   add_index "price_groups", ["facility_id", "name"], :name => "sys_c008577", :unique => true
 
   create_table "price_policies", :force => true do |t|
-    t.string   "type",                :limit => 50,                                :null => false
-    t.integer  "instrument_id"
-    t.integer  "service_id"
-    t.integer  "item_id"
-    t.integer  "price_group_id",                                                   :null => false
-    t.datetime "start_date",                                                       :null => false
+    t.string   "type",                :limit => 50,                                                   :null => false
+    t.integer  "product_id"
+    t.integer  "price_group_id",                                                                      :null => false
+    t.boolean  "can_purchase",                                                     :default => false, :null => false
+    t.datetime "start_date",                                                                          :null => false
     t.decimal  "unit_cost",                         :precision => 10, :scale => 2
     t.decimal  "unit_subsidy",                      :precision => 10, :scale => 2
     t.decimal  "usage_rate",                        :precision => 10, :scale => 2
@@ -289,7 +288,7 @@ ActiveRecord::Schema.define(:version => 20120512014131) do
     t.decimal  "usage_subsidy",                     :precision => 10, :scale => 2
     t.decimal  "reservation_subsidy",               :precision => 10, :scale => 2
     t.decimal  "overage_subsidy",                   :precision => 10, :scale => 2
-    t.datetime "expire_date",                                                      :null => false
+    t.datetime "expire_date",                                                                         :null => false
   end
 
   add_index "price_policies", ["price_group_id"], :name => "sys_c008589"
@@ -310,9 +309,6 @@ ActiveRecord::Schema.define(:version => 20120512014131) do
     t.integer "product_id",   :null => false
     t.integer "accessory_id", :null => false
   end
-
-  add_index "product_accessories", ["accessory_id"], :name => "product_accessories_accessory_id_fk"
-  add_index "product_accessories", ["product_id"], :name => "product_accessories_product_id_fk"
 
   create_table "product_users", :force => true do |t|
     t.integer  "product_id",              :null => false
@@ -376,6 +372,10 @@ ActiveRecord::Schema.define(:version => 20120512014131) do
 
   add_index "reservations", ["instrument_id"], :name => "reservations_instrument_id_fk"
   add_index "reservations", ["order_detail_id"], :name => "res_ord_det_id_fk"
+
+  create_table "roles", :force => true do |t|
+    t.string "name"
+  end
 
   create_table "schedule_rules", :force => true do |t|
     t.integer "instrument_id",                                                    :null => false
@@ -496,9 +496,6 @@ ActiveRecord::Schema.define(:version => 20120512014131) do
   add_foreign_key "price_groups", "facilities", :name => "sys_c008578"
 
   add_foreign_key "price_policies", "price_groups", :name => "sys_c008589"
-
-  add_foreign_key "product_accessories", "products", :name => "product_accessories_accessory_id_fk", :column => "accessory_id"
-  add_foreign_key "product_accessories", "products", :name => "product_accessories_product_id_fk"
 
   add_foreign_key "product_users", "products", :name => "fk_products"
 

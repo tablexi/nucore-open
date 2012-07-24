@@ -1,0 +1,29 @@
+= content_for :head_content do
+  = javascript_include_tag 'price_policy'
+
+= render :partial => 'price_policies/dates'
+%li
+  %table
+    %tr
+      %th Price Group
+      %th Type
+      %th Can purchase?
+      %th.centered Unit Cost
+      %th.centered Unit Adjustment
+    - @price_policies.each do |pp|
+      - pg = pp.price_group
+      %tr
+        %td= pg.name
+        %td= pg.type_string
+        %td= check_box_tag "price_policy_#{pg.id}[can_purchase]", '1', pp.can_purchase?, :class => 'can_purchase'
+        - if !pg.is_internal?
+          %td.centered= text_field_tag "price_policy_#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => ''), :size => 8
+          %td.centered
+        - elsif pg.is_master_internal?
+          %td.centered= text_field_tag "price_policy_#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => ''), :size => 8, :class => 'master_unit_cost'
+          %td
+        - else
+          %td.centered
+            %span.unit_cost
+            = hidden_field_tag "price_policy_#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => ''), :class => "unit_cost"
+          %td.centered= text_field_tag "price_policy_#{pg.id}[unit_subsidy]", number_to_currency(pp.unit_subsidy, :unit => ''), :size => 8

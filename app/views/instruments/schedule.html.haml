@@ -30,10 +30,7 @@
     - @admin_reservations.each do |r|
       %tr
         %td= link_to 'Remove Reservation', facility_instrument_reservation_path(current_facility, @instrument, r), :confirm => 'Are you sure?', :method => :delete
-        - if r.reserve_start_at > Time.zone.now
-          %td= link_to r, facility_instrument_reservation_edit_admin_path(current_facility, @instrument, r)
-        - else
-          %td=h r
+        %td= link_to r, facility_instrument_reservation_edit_admin_path(current_facility, @instrument, r)
 %br
 %br
 %br

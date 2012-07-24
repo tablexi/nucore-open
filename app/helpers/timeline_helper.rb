@@ -28,6 +28,14 @@ module TimelineHelper
     # In Ruby 1.8.7, the subtraction leads to a .99999 value, so go ahead and round that off
     "#{((end_datetime_to_use - start_datetime_to_use).round(4) / 60 * MINUTE_TO_PIXEL_RATIO).floor}px"
   end
+
+  def reservation_width(display_date, reservation)
+    datetime_width(display_date, reservation.display_start_at, reservation.display_end_at)
+  end
+
+  def reservation_left_position(display_date, reservation)
+    datetime_left_position(display_date, reservation.display_start_at)
+  end
   
   def spans_midnight_class(datetime_start, datetime_end)
     return 'spans_into_tomorrow' if datetime_end > @display_date.end_of_day

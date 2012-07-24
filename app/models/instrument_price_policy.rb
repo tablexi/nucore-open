@@ -1,8 +1,6 @@
 class InstrumentPricePolicy < PricePolicy
   @@intervals = [1, 5, 10, 15, 30, 60]
 
-  belongs_to :instrument, :class_name => 'Product', :foreign_key => :instrument_id
-
   validates_numericality_of :minimum_cost, :usage_rate, :reservation_rate, :overage_rate, :usage_subsidy, :overage_subsidy, :reservation_subsidy, :cancellation_cost, :allow_nil => true, :greater_than_or_equal_to => 0
   validates_inclusion_of :usage_mins, :reservation_mins, :overage_mins, :in => @@intervals, :unless => :restrict_purchase
   validates_presence_of :usage_rate, :unless => lambda { |o| o.reservation_rate || o.usage_subsidy.nil? || o.restrict_purchase?}
@@ -10,32 +8,24 @@ class InstrumentPricePolicy < PricePolicy
   validate :has_usage_or_reservation_rate?, :unless => :restrict_purchase
   validate :subsidy_less_than_rate?, :unless => :restrict_purchase
 
-  scope :current,  lambda { |instrument|             { :conditions => [dateize('start_date', ' = ? AND instrument_id = ?'), current_date(instrument), instrument.id] } }
-  scope :next,     lambda { |instrument|             { :conditions => [dateize('start_date', ' = ? AND instrument_id = ?'), next_date(instrument), instrument.id] } }
-  scope :for_date, lambda { |instrument, start_date| { :conditions => [dateize('start_date', ' = ? AND instrument_id = ?'), start_date, instrument.id] } }
-
   before_save do |o|
     o.usage_subsidy       = 0 if o.usage_subsidy.nil?       && !o.usage_rate.nil?
     o.reservation_subsidy = 0 if o.reservation_subsidy.nil? && !o.reservation_rate.nil?
     o.overage_subsidy     = 0 if o.overage_subsidy.nil?     && !o.overage_rate.nil?
   end
 
+  # Make sure we have a default reservation window for this price group and product
+  after_create do |o|
+    pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(o.price_group.id, o.product.id)
+    PriceGroupProduct.create(:price_group => o.price_group, :product => o.product, :reservation_window => PriceGroupProduct::DEFAULT_RESERVATION_WINDOW) unless pgp
+  end
+
   def has_usage_or_reservation_rate?
     errors.add(:base, "You must enter a reservation rate or usage rate for all price groups") if usage_rate.nil? && reservation_rate.nil?
   end
-  
-  def self.current_date(instrument)
-    ipp = instrument.instrument_price_policies.find(:first, :conditions => [dateize('start_date', ' <= ? AND ') + dateize('expire_date', ' > ?'), Time.zone.now, Time.zone.now], :order => 'start_date DESC')
-    ipp ? ipp.start_date.to_date : nil
-  end
 
-  def self.next_date(instrument)
-    ipp = instrument.instrument_price_policies.find(:first, :conditions => [dateize('start_date', ' > ?'), Time.zone.now], :order => 'start_date')
-    ipp ? ipp.start_date.to_date : nil
-  end
-
-  def self.next_dates(instrument)
-    ipps = instrument.instrument_price_policies.find(:all, :conditions => [dateize('start_date', ' > ?'), Time.zone.now], :order => 'start_date', :select => 'DISTINCT(start_date) AS start_date')
+  def self.next_dates(product)
+    ipps = product.price_policies.find(:all, :conditions => [dateize('start_date', ' > ?'), Time.zone.now], :order => 'start_date', :select => 'DISTINCT(start_date) AS start_date')
     ipps.collect{|ipp| ipp.start_date.to_date}.uniq
   end
 
@@ -44,21 +34,8 @@ class InstrumentPricePolicy < PricePolicy
   end
 
   def reservation_window
-    pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, instrument.id)
+    pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
     return pgp ? pgp.reservation_window : 0
-  end
-
-  def product
-    return instrument
-  end
-
-  def restrict_purchase=(state)
-    price_group_product=super
-
-    if price_group_product and (!state or state == 0)
-      price_group_product.reservation_window=PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
-      price_group_product.save!
-    end
   end
 
   def subsidy_less_than_rate?
@@ -73,8 +50,13 @@ class InstrumentPricePolicy < PricePolicy
     end
   end
 
+  def estimate_cost_and_subsidy_from_order_detail(order_detail)
+    return nil unless order_detail.reservation
+    estimate_cost_and_subsidy(order_detail.reservation.reserve_start_at, order_detail.reservation.reserve_end_at)
+  end
+
   def estimate_cost_and_subsidy (start_at, end_at)
-    return nil if restrict_purchase? || start_at.to_date > Date.today + reservation_window.days || end_at <= start_at
+    return nil if restrict_purchase? || end_at <= start_at
     costs = {}
 
     ## the instrument is free to use
@@ -86,7 +68,7 @@ class InstrumentPricePolicy < PricePolicy
 
     duration = (end_at - start_at)/60
     discount = 0
-    instrument.schedule_rules.each do |sr|
+    product.schedule_rules.each do |sr|
       discount += sr.percent_overlap(start_at, end_at) * sr.discount_percent.to_f
     end
     discount = 1 - discount/100
@@ -100,6 +82,10 @@ class InstrumentPricePolicy < PricePolicy
     costs
   end
 
+  def calculate_cost_and_subsidy_from_order_detail(order_detail)
+    calculate_cost_and_subsidy(order_detail.reservation)
+  end
+  
   def calculate_cost_and_subsidy (reservation)
     res_end_at=strip_seconds reservation.reserve_end_at
     res_start_at=strip_seconds reservation.reserve_start_at
@@ -107,7 +93,7 @@ class InstrumentPricePolicy < PricePolicy
     ## TODO update cancellation costs
     ## calculate actuals for cancelled reservations
     if reservation.canceled_at
-      if instrument.min_cancel_hours && (res_start_at - strip_seconds(reservation.canceled_at))/3600 <= instrument.min_cancel_hours
+      if product.min_cancel_hours && (res_start_at - strip_seconds(reservation.canceled_at))/3600 <= instrument.min_cancel_hours
         actual_cost = cancellation_cost
         actual_subsidy = 0
         return {:cost => actual_cost, :subsidy => actual_subsidy}
@@ -129,7 +115,7 @@ class InstrumentPricePolicy < PricePolicy
       reserve_mins = (res_end_at - res_start_at)/60
       reserve_intervals = (reserve_mins / reservation_mins).ceil
       reserve_discount = 0
-      instrument.schedule_rules.each do |sr|
+      product.schedule_rules.each do |sr|
         reserve_discount += sr.percent_overlap(res_start_at, res_end_at) * sr.discount_percent
       end
       reserve_discount = 1 - reserve_discount/100
@@ -155,7 +141,7 @@ class InstrumentPricePolicy < PricePolicy
       reserve_mins = (res_end_at - res_start_at)/60
       reserve_intervals = (reserve_mins / reservation_mins).ceil
       reserve_discount = 0
-      instrument.schedule_rules.each do |sr|
+      product.schedule_rules.each do |sr|
         reserve_discount += sr.percent_overlap(res_start_at, res_end_at) * sr.discount_percent
       end
       reserve_discount = 1 - reserve_discount/100
@@ -170,7 +156,7 @@ class InstrumentPricePolicy < PricePolicy
       usage_minutes   = ([act_end_at, res_end_at].min - act_start_at)/60
       usage_intervals = (usage_minutes / usage_mins).ceil
       usage_discount = 0
-      instrument.schedule_rules.each do |sr|
+      product.schedule_rules.each do |sr|
         usage_discount += sr.percent_overlap(act_start_at, [act_end_at, res_end_at].min) * sr.discount_percent
       end
       usage_discount = 1 - usage_discount/100
