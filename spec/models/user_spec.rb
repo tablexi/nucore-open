@@ -144,7 +144,8 @@ describe User do
       @account=Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @user) ])
     end
 
-    it 'should not have an account because nufs is not open' do
+    it 'should not have an account because there is no price group' do
+      UserPriceGroupMember.where(:price_group_id => @price_group.id, :user_id => @user.id).first.destroy
       @user.accounts_for_product(@item).should be_empty
     end
 
