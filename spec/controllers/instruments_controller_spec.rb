@@ -51,6 +51,11 @@ describe InstrumentsController do
 
   context "show" do
 
+    def add_account_for_user(user_sym)
+      nufs=create_nufs_account_with_owner user_sym
+      define_open_account @instrument.account, nufs.account_number
+    end
+
     before :each do
       @method=:get
       @action=:show
@@ -61,8 +66,30 @@ describe InstrumentsController do
       assert_redirected_to facility_path(@authable)
     end
 
+    context 'needs valid account' do
+      before :each do
+        @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+      end
+
+      it "should fail without a valid account" do
+        maybe_grant_always_sign_in :director
+        do_request
+        flash.should_not be_empty
+        assert_redirected_to facility_path(@authable)
+      end
+
+      it "should succeed with valid account" do
+        add_account_for_user :director
+        maybe_grant_always_sign_in :director
+        do_request
+        flash.should be_empty
+        assert_redirected_to add_order_path(Order.all.last, :order => {:order_details => [{:product_id => @instrument.id, :quantity => 1}]})
+      end
+    end
+
     context 'needs schedule rules' do
       before :each do
+        facility_operators.each {|op| add_account_for_user op}
         @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
       end
 
@@ -93,6 +120,7 @@ describe InstrumentsController do
       
       it "should not show a notice and show an add to cart" do
         @product_user = ProductUser.create(:product => @instrument, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
+        add_account_for_user :guest
         sign_in @guest
         do_request
         flash.should be_empty
@@ -100,6 +128,7 @@ describe InstrumentsController do
       end
       
       it "should allow an admin to allow it to add to cart" do
+        add_account_for_user :admin
         sign_in @admin
         do_request
         flash.should_not be_empty
@@ -115,6 +144,7 @@ describe InstrumentsController do
         
       it "should show the page if you're acting as a user" do
         Instrument.any_instance.stubs(:can_purchase?).returns(true)
+        add_account_for_user :guest
         sign_in @admin
         switch_to @guest
         do_request
@@ -388,6 +418,76 @@ describe InstrumentsController do
       end
 
       it_should_allow_operators_only
+
+    end
+
+    context 'instrument statuses' do
+      before :each do
+        # So it doesn't try to actually connect
+        RelaySynaccessRevA.any_instance.stubs(:query_status).returns([false])
+
+        @method=:get
+        @action=:instrument_statuses
+        @instrument_with_relay = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+        @instrument_with_relay.update_attributes(:relay => Factory.create(:relay_syna))
+        @instrument_with_dummy_relay = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+        @instrument_with_dummy_relay.update_attributes(:relay => Factory.create(:relay_dummy))
+        @instrument_with_dummy_relay.instrument_statuses.create(:is_on => true)
+        @instrument_with_bad_relay = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+        
+        # don't stub query status since this SynAcceesRevB will fail due to a bad IP address
+        @instrument_with_bad_relay.update_attributes(:relay => Factory.create(:relay_synb))
+        @instrument_with_bad_relay.relay.update_attribute(:ip, '')
+      end
+
+      it_should_allow_operators_only {}
+
+      context 'signed in' do
+        before :each do
+          maybe_grant_always_sign_in :director
+          do_request
+          @json_output = JSON.parse(response.body, {:symbolize_names => true})
+          @instrument_ids = @json_output.map { |hash| hash[:instrument_status][:instrument_id] }
+        end
+
+        it 'should not return instruments without relays' do
+          assigns[:instrument_statuses].map(&:instrument).should_not be_include @instrument
+          @instrument_ids.should_not be_include @instrument.id
+        end
+        it 'should include instruments with real relays' do
+          assigns[:instrument_statuses].map(&:instrument).should be_include @instrument_with_relay
+          @instrument_ids.should be_include @instrument_with_relay.id
+        end
+        it 'should include instruments with dummy relays' do
+          assigns[:instrument_statuses].map(&:instrument).should be_include @instrument_with_dummy_relay
+          @instrument_ids.should be_include @instrument_with_dummy_relay.id
+        end
+        
+        it 'should return an error if the relay is missing a host' do
+          assigns[:instrument_statuses].last.instrument.should == @instrument_with_bad_relay
+          assigns[:instrument_statuses].last.error_message.should_not be_nil
+        end
+        
+        it 'should return true for a relay thats switched on' do
+          assigns[:instrument_statuses][1].instrument.should == @instrument_with_dummy_relay
+          assigns[:instrument_statuses][1].is_on.should be_true
+          @json_output[1][:instrument_status][:instrument_id].should == @instrument_with_dummy_relay.id
+          @json_output[1][:instrument_status][:is_on].should be_true
+        end
+        it 'should return false for a relay thats not turned on' do
+          assigns[:instrument_statuses].first.instrument.should == @instrument_with_relay
+          assigns[:instrument_statuses].first.is_on.should be_false
+          @json_output[0][:instrument_status][:is_on].should be_false
+          @json_output[0][:instrument_status][:instrument_id].should == @instrument_with_relay.id
+        end
+        
+        it 'should create a new false instrument status if theres nothing' do
+          @instrument_with_relay.reload.instrument_statuses.size.should == 1
+        end
+        it 'should not create a second true instrument status' do
+          @instrument_with_dummy_relay.reload.instrument_statuses.size.should == 1
+        end
+      end
 
     end
 

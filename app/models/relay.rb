@@ -46,17 +46,20 @@ class Relay < ActiveRecord::Base
   end
 
   def get_request(path)
+    raise Exception.new("Host/IP not defined for relay") if host.blank?
+    raise Exception.new("Path not defined for relay") if path.blank?
+    
     resp = nil
     # This would make development easier, but it doesn't work in ruby 1.8.7 because
     # HTTP.start doesn't take the seventh opts
     # opts = {}
     # opts[:open_timeout] = 2 if Rails.env.development?
     # Net::HTTP.start(host, nil, nil, nil, nil, nil, opts) { |http|
-    Net::HTTP.start(host) { |http|
+    Net::HTTP.start(host) do |http|
       req = Net::HTTP::Get.new(path)
       req.basic_auth username, password
       resp = http.request(req)
-    }
+    end
     resp
   end
 end

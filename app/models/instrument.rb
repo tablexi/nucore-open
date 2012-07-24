@@ -98,7 +98,7 @@ class Instrument < Product
   end
 
   def has_real_relay?
-    relay && relay.ip && relay.port
+    relay && !relay.is_a?(RelayDummy) && relay.ip && relay.port
   end
 
   def can_purchase? (group_ids = nil)

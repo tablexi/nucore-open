@@ -31,10 +31,15 @@ class InstrumentsController < ProductsCommonController
     end
 
     # is the user approved? or is the logged in user an operator of the facility (logged in user can override restrictions)
-    
     if add_to_cart && !@instrument.is_approved_for?(acting_user)
       add_to_cart = false unless session_user and session_user.can_override_restrictions?(@instrument)
       flash[:notice] = t_model_error(Instrument, 'requires_approval_html', :instrument => @instrument, :facility => @instrument.facility, :email => @instrument.facility.email).html_safe
+    end
+
+    # does the user have a valid payment source for purchasing this reservation?
+    if add_to_cart && acting_user.accounts_for_product(@instrument).blank?
+      add_to_cart=false
+      flash[:notice]=t_model_error @instrument.class, 'no_accounts'
     end
 
     # does the product have any price policies for any of the groups the user is a member of?
@@ -94,22 +99,27 @@ class InstrumentsController < ProductsCommonController
   end
 
   def instrument_statuses
-    statuses = []
-    current_facility.instruments.includes(:relay).each do |instrument|
+    @instrument_statuses = []
+    current_facility.instruments.order(:id).includes(:relay).each do |instrument|
+      # skip instruments with no relay
+      next unless instrument.relay
+      
       begin
         status = instrument.relay.get_status
         instrument_status = instrument.current_instrument_status
         # if the status hasn't changed, don't create a new status
         if instrument_status && status == instrument_status.is_on?
-          statuses << instrument_status
+          @instrument_statuses << instrument_status
         else
-          statuses << instrument.instrument_statuses.create!(:is_on => status)
+          # || false will ensure that the value of is_on is not nil (causes a DB error)
+          @instrument_statuses << instrument.instrument_statuses.create!(:is_on => status || NUCore::Database.boolean(false))
         end
       rescue Exception => e
-        statuses << InstrumentStatus.new(:instrument => instrument, :error_message => e.message)
+        logger.error e.message
+        @instrument_statuses << InstrumentStatus.new(:instrument => instrument, :error_message => e.message)
       end
     end
-    render :json => statuses
+    render :json => @instrument_statuses
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/switch

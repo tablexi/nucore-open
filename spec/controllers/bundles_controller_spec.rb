@@ -65,6 +65,14 @@ describe BundlesController do
       flash[:notice].should_not be_nil
       
     end
+
+    it "should fail without a valid account" do
+      sign_in @guest
+      do_request
+      flash.should_not be_empty
+      assigns[:add_to_cart].should be_false
+      assigns[:error].should == 'no_accounts'
+    end
     
     it 'should falsify @add_to_cart if #acting_user is nil' do
       BundlesController.any_instance.stubs(:acting_user).returns(nil)
@@ -74,6 +82,8 @@ describe BundlesController do
     end
     
     it 'should flash and falsify @add_to_cart if user is not approved' do
+      nufs=create_nufs_account_with_owner :guest
+      define_open_account @bundle.products.first.account, nufs.account_number
       switch_to @guest
       BundlesController.any_instance.stubs(:price_policy_available_for_product?).returns(true)
       @bundle.update_attributes(:requires_approval => true)
@@ -85,6 +95,8 @@ describe BundlesController do
     end
         
     it 'should flash and falsify @add_to_cart if there is no price group for user to purchase through' do
+      nufs=create_nufs_account_with_owner :guest
+      define_open_account @bundle.products.first.account, nufs.account_number
       sign_in @guest
       BundlesController.any_instance.stubs(:price_policy_available_for_product?).returns(false)
       do_request
@@ -125,6 +137,8 @@ describe BundlesController do
       
       it "should not show a notice and show an add to cart" do
         @product_user = ProductUser.create(:product => @bundle, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
+        nufs=create_nufs_account_with_owner :guest
+        define_open_account @bundle.products.first.account, nufs.account_number
         sign_in @guest
         do_request
         flash.should be_empty
@@ -132,6 +146,8 @@ describe BundlesController do
       end
       
       it "should allow an admin to allow it to add to cart" do
+        nufs=create_nufs_account_with_owner :admin
+        define_open_account @bundle.products.first.account, nufs.account_number
         sign_in @admin
         do_request
         flash.should_not be_empty

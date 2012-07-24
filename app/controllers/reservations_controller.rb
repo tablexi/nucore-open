@@ -87,8 +87,11 @@ class ReservationsController < ApplicationController
     @reservation.order_detail = @order_detail
     
     if !@order_detail.bundled? && params[:order_account].blank?
-      flash[:error]=I18n.t 'controllers.reservations.create.no_selection'
-      return redirect_to new_order_order_detail_reservation_path(@order, @order_detail)
+      flash.now[:error]=I18n.t 'controllers.reservations.create.no_selection'
+      @reservation.valid? # run validations so it sets reserve_end_at
+      set_windows
+      render :new and return
+      #return redirect_to new_order_order_detail_reservation_path(@order, @order_detail)
     end
 
     Reservation.transaction do
@@ -136,7 +139,7 @@ class ReservationsController < ApplicationController
     @reservation  = @instrument.next_available_reservation || Reservation.new(:instrument => @instrument, :duration_value => (@instrument.min_reserve_mins.to_i < 15 ? 15 : @instrument.min_reserve_mins), :duration_unit => 'minutes')
     flash[:notice] = t_model_error(Instrument, 'acting_as_not_on_approval_list') unless @instrument.is_approved_for?(acting_user)
     set_windows
-    
+
   end
 
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/:id(.:format)

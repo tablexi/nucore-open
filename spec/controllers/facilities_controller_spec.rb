@@ -154,11 +154,24 @@ describe FacilitiesController do
         @controller.stubs(:current_facility).returns(@authable)
         @controller.expects(:init_current_facility).never
       end
-      # admin won't be redirected since their operable facilities is something more
-      it_should_allow_all (facility_operators - [:admin]) do
-        assigns(:facilities).should == [@authable]
-        assigns(:operable_facilities).should == [@authable]
-        response.should redirect_to(facility_orders_path(@authable))
+      context 'has instruments' do
+        before :each do
+          @facility_account = Factory.create(:facility_account, :facility => @authable)
+          @authable.instruments.create!(Factory.attributes_for(:instrument, :facility_account => @facility_account))
+        end
+        it_should_allow_all (facility_operators - [:admin]) do
+          assigns(:facilities).should == [@authable]
+          assigns(:operable_facilities).should == [@authable]
+          response.should redirect_to(timeline_facility_reservations_path(@authable))
+        end
+      end
+      context 'has no instruments' do
+        # admin won't be redirected since their operable facilities is something more
+        it_should_allow_all (facility_operators - [:admin]) do
+          assigns(:facilities).should == [@authable]
+          assigns(:operable_facilities).should == [@authable]
+          response.should redirect_to(facility_orders_path(@authable))
+        end
       end
     end
 

@@ -158,7 +158,7 @@ describe ReservationsController do
       @params.merge!(
         :order_account => @account.id,
         :reservation => {
-            :reserve_start_date => Time.zone.now.to_date+1.day,
+            :reserve_start_date => format_usa_date(Time.zone.now.to_date+1.day),
             :reserve_start_hour => '9',
             :reserve_start_min => '0',
             :reserve_start_meridian => 'am',
@@ -191,21 +191,33 @@ describe ReservationsController do
         response.should render_template(:new)
       end
     end
-    
-
 
     context 'without account' do
       before :each do
-        @params[:order_account]=nil
+        @params.delete :order_account
+        sign_in @guest
+        do_request
       end
-
-      it_should_allow :guest do
+      it 'should have a flash message and render :new' do
+        should set_the_flash
+        response.should render_template :new
+      end
+      it 'should maintain duration value and units' do
+        assigns[:reservation].duration_value.should == 60
+        assigns[:reservation].duration_unit.should == "minutes"
+      end
+      it 'should not lose the time' do
+        assigns[:reservation].reserve_start_date.should == format_usa_date(Time.zone.now.to_date+1.day)
+        assigns[:reservation].reserve_start_hour.should == 9
+        assigns[:reservation].reserve_start_min.should == 0
+        assigns[:reservation].reserve_start_meridian.should == 'am'
+      end
+      it 'should assign the correct variables' do
         assigns[:order].should == @order
         assigns[:order_detail].should == @order_detail
         assigns[:instrument].should == @instrument
-        assigns[:reservation].should be_valid
         should set_the_flash
-        assert_redirected_to new_order_order_detail_reservation_path(@order, @order_detail)
+        should render_template :new
       end
     end
 

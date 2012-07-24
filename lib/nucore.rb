@@ -22,6 +22,15 @@ module NUCore
       @@is_oracle ||= ActiveRecord::Base.connection.adapter_name == 'OracleEnhanced'
     end
 
+    def self.boolean(value)
+      # Oracle doesn't always properly handle boolean values correctly
+      if self.oracle?
+        value ? 1 : 0
+      else
+        value ? true : false
+      end
+    end
+
 
     module DateHelper
       def self.included(base)
