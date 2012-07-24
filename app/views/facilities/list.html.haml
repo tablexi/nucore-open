@@ -12,5 +12,5 @@
       %th== Status
     - @facilities.sort.each do |facility|
       %tr
-        %td= link_to h(facility), facility_orders_path(facility)
+        %td= link_to h(facility), facility_default_admin_path(facility)
         %td= facility.status_string

@@ -644,12 +644,19 @@ class Reservation < ActiveRecord::Base
     changes.any? { |k,v| k == 'reserve_start_at' || k == 'reserve_end_at' }
   end
 
+  # Will display the actual start time if it's available, otherwise fall back to reserve time
+  def display_start_at
+    actual_start_at || reserve_start_at
+  end
+  
+  def display_end_at
+    actual_end_at || reserve_end_at
+  end
+
   def to_s
     return super unless reserve_start_at && reserve_end_at
 
-    start_at=actual_start_at || reserve_start_at
-    end_at=actual_end_at || reserve_end_at
-    str = range_to_s(start_at, end_at)
+    str = range_to_s(display_start_at, display_end_at)
     
     str + (canceled_at ? ' (Cancelled)' : '')
   end

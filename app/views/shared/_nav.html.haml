@@ -14,7 +14,7 @@
     - reports_sub=[{:url => product_facility_general_reports_path(current_facility), :text => 'General'},
                    {:url => instrument_facility_instrument_reports_path(current_facility), :text => 'Instrument Utilization'}]
     - links.push({:text => 'Reports',  :tab_name => 'admin_reports', :subnav => reports_sub}) if can? :manage, ReportsController
-    - if can? :edit, current_facility #current_user.manager_of?(current_facility)
+    - if can? :edit, current_facility
       - links.push({:url => manage_facility_path(current_facility), :text => 'Admin', :tab_name => 'admin_facility'})
 .container_12
   .grid_12
@@ -44,7 +44,7 @@
             - unless facilities.empty?
               %ul.subnav
                 - facilities.each do |facility|
-                  %li= link_to facility.name, facility_orders_path(facility)
+                  %li= link_to facility.name, facility_default_admin_path(facility)
 
       - if !acting_as? && current_user && current_user.billing_administrator?
         %li.right{:class => !controller.active_tab.nil? && controller.active_tab == 'admin_billing' ? 'active' : ''}
