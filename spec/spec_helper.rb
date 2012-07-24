@@ -252,13 +252,11 @@ Spork.each_run do
   # [_extra_reservation_attrs_]
   #   Custom attributes for the +Reservation+, if any
   def place_reservation(facility, order_detail, reserve_start, extra_reservation_attrs=nil)
-    facility_account=facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-
     # create instrument, min reserve time is 60 minutes, max is 60 minutes
-    @instrument=facility.instruments.create(
+    @instrument ||= facility.instruments.create(
         Factory.attributes_for(
           :instrument,
-          :facility_account => facility_account,
+          :facility_account => facility.facility_accounts.create(Factory.attributes_for(:facility_account)),
           :min_reserve_mins => 60,
           :max_reserve_mins => 60
         )

@@ -78,7 +78,7 @@ class FacilityOrderDetailsController < ApplicationController
           os = OrderStatus.find(od_params[:order_status_id])
           # cancel instrument orders
           if os.root == OrderStatus.cancelled.first && @order_detail.reservation
-            raise "Order # #{@order_detail} failed cancellation." unless @order_detail.cancel_reservation(session_user, os, true)
+            raise "Order # #{@order_detail} failed cancellation." unless @order_detail.cancel_reservation(session_user, os, true, params[:with_cancel_fee] == '1')
           # cancel other orders or change status of any order
           else
             @order_detail.change_status!(os)

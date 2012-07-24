@@ -58,8 +58,20 @@ class PriceGroupProductsController < ApplicationController
     @product=Product.find_by_url_name!(params[:id])
     @is_instrument=@product.is_a? Instrument
     @price_groups=current_facility.price_groups
-    @price_group_products=PriceGroupProduct.find_all_by_product_id(@product.id)
+    
+    
+    existing_pgps = @product.price_group_products
+    # TODO change to plain Hash once we don't need to support Ruby 1.8
+    groups_with_pgp = ActiveSupport::OrderedHash[existing_pgps.map {|pgp| [pgp.price_group, pgp] }]
+
+    @price_group_products = []
+    current_facility.price_groups.each do |pg|
+      @price_group_products << (groups_with_pgp[pg] || PriceGroupProduct.new(:price_group => pg, :product => @product, :reservation_window => @is_instrument ? PriceGroupProduct::DEFAULT_RESERVATION_WINDOW : nil))
+    end
     @price_group_product=@price_group_products.empty? ? PriceGroupProduct.new : @price_group_products.first # for CanCan authorization
+
+    # Price groups that currently have a policy that can purchase
+    @active_price_groups = @product.price_policies.current.where(:can_purchase => true).map(&:price_group)
   end
 
 end

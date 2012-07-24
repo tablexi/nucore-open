@@ -67,7 +67,7 @@ describe Reservation do
       @facility      = Factory.create(:facility)
       @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
       @price_group   = Factory.create(:price_group, :facility => @facility)
-      @instrument_pp = Factory.create(:instrument_price_policy, :instrument => @instrument, :price_group => @price_group)
+      @instrument_pp = Factory.create(:instrument_price_policy, :product => @instrument, :price_group => @price_group)
       @user          = Factory.create(:user)
       @pg_member     = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @account       = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
@@ -208,6 +208,7 @@ describe Reservation do
       it 'should be false when there is no price policy' do
         @reservation1.actual_start_at=1.day.ago
         @reservation1.actual_end_at=1.day.ago+1.hour
+        @instrument.instrument_price_policies.clear
         assert @reservation1.save
 
         @reservation1.order_detail.price_policy.should be_nil
@@ -454,21 +455,11 @@ describe Reservation do
       @reservation.save
     end
 
-    it "should find the best price policy" do
-      @pp_expensive = InstrumentPricePolicy.create(Factory.attributes_for(:instrument_price_policy).merge(:usage_rate => 22, :instrument => @instrument))
-      @pp_cheap     = InstrumentPricePolicy.create(Factory.attributes_for(:instrument_price_policy).merge(:usage_rate => 11, :instrument => @instrument))
-      @price_group1.price_policies << @pp_expensive
-      @nupg.price_policies         << @pp_cheap
-
-      groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
-      assert_equal @pp_cheap, @reservation.cheapest_price_policy(groups)
-    end
-
     it "should find the best reservation window" do
-      @pp_short = InstrumentPricePolicy.create(Factory.attributes_for(:instrument_price_policy).merge(:instrument_id => @instrument.id))
+      @pp_short = InstrumentPricePolicy.create(Factory.attributes_for(:instrument_price_policy, :product_id => @instrument.id))
       @pg1_pgp.reservation_window=30
       assert @pg1_pgp.save
-      @pp_long  = InstrumentPricePolicy.create(Factory.attributes_for(:instrument_price_policy).merge(:instrument_id => @instrument.id))
+      @pp_long  = InstrumentPricePolicy.create(Factory.attributes_for(:instrument_price_policy, :product_id => @instrument.id))
       @nupg_pgp.reservation_window=60
       assert @nupg_pgp.save
       @price_group1.price_policies << @pp_short

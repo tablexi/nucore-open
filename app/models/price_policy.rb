@@ -2,33 +2,77 @@ class PricePolicy < ActiveRecord::Base
   include NUCore::Database::DateHelper
 
   belongs_to :price_group
+  belongs_to :product
   validates_presence_of :start_date, :price_group_id, :type
   validate :start_date_is_unique, :unless => lambda { |o| o.start_date.nil? }
 
   validates_each :expire_date do |record,attr,value|
     unless value.blank?
-      value=value.to_date
-      start_date=record.start_date.to_date
-      gen_exp_date=generate_expire_date(start_date).to_date
-
+      start_date=record.start_date
+      gen_exp_date=generate_expire_date(start_date)
       if value <= start_date || value > gen_exp_date
         record.errors.add(:expire_date, "must be after #{start_date.to_date.to_s} and before #{gen_exp_date.to_date.to_s}")
       end
     end
   end
-
-  scope :active, lambda {{ :conditions => [ "start_date <= ? AND expire_date > ?", Time.zone.now, Time.zone.now ], :order => "start_date DESC" }}
-
+  
   before_create :set_expire_date
   before_create :truncate_existing_policies
+
+  def self.for_date(start_date)
+    where('start_date >= ? AND start_date <= ?', start_date.beginning_of_day, start_date.end_of_day)
+  end
+
+  def self.current
+    current_for_date(Time.zone.now)
+  end
+
+  def self.current_for_date(date)
+    where("start_date <= :now AND expire_date > :now", {:now => date})
+  end
+
+  def self.purchaseable
+    where(:can_purchase => true)
+  end
+
+  def self.upcoming
+    where("start_date > :now", {:now => Time.zone.now})
+  end
+
+  def self.for_price_groups(price_groups)
+    where(:price_group_id => price_groups)
+  end
+  
+  def self.current_date(product)
+    ipp = product.price_policies.find(:first, :conditions => [dateize('start_date', ' <= ? AND ') + dateize('expire_date', ' > ?'), Time.zone.now, Time.zone.now], :order => 'start_date DESC')
+    ipp ? ipp.start_date.to_date : nil
+  end
+
+  def self.next_date(product)
+    ipp = product.price_policies.find(:first, :conditions => [dateize('start_date', ' > ?'), Time.zone.now], :order => 'start_date')
+    ipp ? ipp.start_date.to_date : nil
+  end
+
+  def self.next_dates(product)
+    ipps = []
+
+    product.price_policies.each do |pp|
+      sdate=pp.start_date
+      ipps << sdate.to_date if sdate > Time.zone.now && !ipps.include?(sdate)
+    end
+
+    ipps.uniq
+  end
+
   
   def truncate_existing_policies
-    existing_policies = PricePolicy.where("start_date <= ? and expire_date >= ?", start_date, start_date).
-                                    where("type = ?", self.class.name).
-                                    where("price_group_id = ?", price_group_id).
-                                    where("#{product_type}_id = ?", self.send("#{product_type}_id"))
+    logger.debug("Truncating existing policies")
+    existing_policies = PricePolicy.current.where(:type => self.class.name, 
+                                                  :price_group_id => price_group_id,
+                                                  :product_id => product_id)
     
     existing_policies = existing_policies.where("id != ?", id) unless id.nil?
+    
     existing_policies.each do |policy|
       policy.expire_date = (start_date - 1.day).end_of_day
       policy.save
@@ -39,7 +83,7 @@ class PricePolicy < ActiveRecord::Base
   def product_type
     self.class.name.gsub("PricePolicy", "").downcase
   end
-  
+ 
   #
   # A price estimate for a +Product+.
   # Must return { :cost => estimated_cost, :subsidy => estimated_subsidy }
@@ -54,23 +98,12 @@ class PricePolicy < ActiveRecord::Base
     raise "subclass must implement!"
   end
 
-
-  #
-  # All subclasses +belong_to+ a +Product+ and have their own
-  # unique accessors for that product. That association should
-  # be made in this class, but it isn't. This method provides
-  # general access to a subclass' product
-  def product
-    raise "subclass must implement!"
-  end
-
-
   #
   # Returns true if this PricePolicy's +Product+ cannot be purchased
   # by this PricePolicy's +PriceGroup+, false otherwise.
   def restrict_purchase
     return false unless price_group and product
-    PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id).nil?
+    !can_purchase?
   end
 
   alias_method :restrict_purchase?, :restrict_purchase
@@ -85,10 +118,9 @@ class PricePolicy < ActiveRecord::Base
   def restrict_purchase=(state)
     case state
       when false, 0
-        PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(price_group.id, product.id)
+        self.can_purchase = true
       when true, 1
-        pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
-        pgp.destroy if pgp
+        self.can_purchase = false
       else
         raise ArgumentError.new('state must be true, false, 0, or 1')
     end
@@ -113,13 +145,12 @@ class PricePolicy < ActiveRecord::Base
 
   def start_date_is_unique
     type          = self.class.name.downcase.gsub(/pricepolicy$/, '')
-    product       = self.send("#{type}")
     price_group   = self.price_group
     unless (product.nil? || price_group.nil?)
       if id.nil?
-        pp = PricePolicy.find(:first, :conditions => ["price_group_id = ? AND #{type}_id = ? AND start_date = ?", price_group.id, product.id, start_date])
+        pp = PricePolicy.find(:first, :conditions => ["price_group_id = ? AND product_id = ? AND start_date = ?", price_group.id, product.id, start_date])
       else
-        pp = PricePolicy.find(:first, :conditions => ["price_group_id = ? AND #{type}_id = ? AND start_date = ? AND id <> ?", price_group.id, product.id, start_date, id])
+        pp = PricePolicy.find(:first, :conditions => ["price_group_id = ? AND product_id = ? AND start_date = ? AND id <> ?", price_group.id, product.id, start_date, id])
       end
       errors.add("start_date", "conflicts with an existing price rule") unless pp.nil?
     end

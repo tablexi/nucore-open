@@ -12,6 +12,7 @@ describe BundlesController do
     
     # Create at least one item in the bundle, otherwise bundle.can_purchase? will return false
     item = Factory.create(:item, :facility_account => @facility_account, :facility => @authable)
+    price_policy = item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group => @nupg))
     bundle_product = BundleProduct.new(:bundle => @bundle, :product => item, :quantity => 1)
     bundle_product.save!
   end
@@ -85,6 +86,7 @@ describe BundlesController do
       nufs=create_nufs_account_with_owner :guest
       define_open_account @bundle.products.first.account, nufs.account_number
       switch_to @guest
+      BundlesController.any_instance.stubs(:price_policy_available_for_product?).returns(true)
       @bundle.update_attributes(:requires_approval => true)
       do_request
       assigns[:login_required].should be_false
@@ -125,6 +127,7 @@ describe BundlesController do
     context "restricted bundle" do
       before :each do
         @bundle.update_attributes(:requires_approval => true)
+        BundlesController.any_instance.stubs(:price_policy_available_for_product?).returns(true)
       end
       it "should show a notice if you're not approved" do
         sign_in @guest

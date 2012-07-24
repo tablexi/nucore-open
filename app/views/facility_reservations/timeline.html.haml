@@ -14,13 +14,15 @@
 
 .timeline_header
   = form_tag timeline_facility_reservations_path(current_facility), :method => :get, :id => "timeline_date_search" do
+    #reservation_date_container
+      = link_to "&laquo;".html_safe, timeline_facility_reservations_path(current_facility, :date => format_usa_date(@display_date - 1.day)), :id => 'reservation_left'
+      #reservation_date
+        = human_date_with_day(@display_date)
+        = hidden_field_tag 'date', format_usa_date(@display_date), :class => 'datepicker'
+      = link_to "&raquo;".html_safe, timeline_facility_reservations_path(current_facility, :date => format_usa_date(@display_date + 1.day)), :id => 'reservation_right'
     .timeline_options
       = check_box_tag :show_cancelled, 1, params[:show_cancelled]
       = label_tag :show_cancelled
-    %h3
-      = human_date_with_day(@display_date)
-      = hidden_field_tag 'date', format_usa_date(@display_date), :class => 'datepicker'
-
 .clear
 = render :partial => 'shared/timeline/instrument', :collection => @instruments, :as => :instrument
   

@@ -1,5 +1,6 @@
 class OrderDetail < ActiveRecord::Base
   include NUCore::Database::SortHelper
+  include TranslationHelper
   
   versioned
 
@@ -21,8 +22,8 @@ class OrderDetail < ActiveRecord::Base
 
   validates_presence_of :product_id, :order_id
   validates_numericality_of :quantity, :only_integer => true, :greater_than_or_equal_to => 1
-  validates_numericality_of :actual_cost, :if => lambda { |o| o.actual_cost_changed?}
-  validates_numericality_of :actual_subsidy, :if => lambda { |o| o.actual_subsidy_changed?}
+  validates_numericality_of :actual_cost, :if => lambda { |o| o.actual_cost_changed? && !o.actual_cost.nil?}
+  validates_numericality_of :actual_subsidy, :if => lambda { |o| o.actual_subsidy_changed? && !o.actual_cost.nil?}
   validates_presence_of :dispute_reason, :if => :dispute_at
   validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, :if => :dispute_resolved_reason || :dispute_resolved_at
   # only do this validation if it hasn't been ordered yet. Update errors caused by notification sending
@@ -250,7 +251,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   aasm_event :to_cancelled do
-    transitions :to => :cancelled, :from => [:new, :inprocess], :guard => :reservation_canceled?
+    transitions :to => :cancelled, :from => [:new, :inprocess, :complete], :guard => :cancelable?
   end
   # END acts_as_state_machine
 
@@ -266,8 +267,44 @@ class OrderDetail < ActiveRecord::Base
     success
   end
 
-  def reservation_canceled?
-    reservation.nil? || !reservation.canceled_at.nil?
+  # block will be called after the transition, but before the save
+  def change_status! (new_status, &block)
+    success = true
+    success = send("to_#{new_status.root.name.downcase.gsub(/ /,'')}!") if new_status.root.name.downcase.gsub(/ /,'') != state
+    raise AASM::InvalidTransition, "Event '#{new_status.root.name.downcase.gsub(/ /,'')}' cannot transition from '#{state}'" unless success
+    self.order_status = new_status
+    block.call(self) if block
+    self.save!
+  end
+
+  # This method is a replacement for change_status! that also will cancel the associated reservation when necessary
+  def update_order_status!(updated_by, order_status, options_args = {}, &block)
+    options = { :admin => false }.merge(options_args)
+
+    cancel_reservation(updated_by, order_status, options[:admin]) if reservation && order_status.root == OrderStatus.cancelled.first
+
+    change_status! order_status, &block
+  end
+
+  def backdate_to_complete!(event_time)
+    # if we're setting it to compete, automatically set the actuals for a reservation
+    if reservation
+      raise NUCore::PurchaseException.new(t_model_error(Reservation, 'connot_be_completed_in_future')) if reservation.reserve_end_at > event_time
+      reservation.assign_actuals_off_reserve 
+      reservation.save!
+    end
+    change_status!(OrderStatus.complete.first) do |od|
+      od.fulfilled_at = event_time
+      od.assign_price_policy(event_time)
+      # If there isn't a price policy for that date the user can use, we want to prevent the user
+      # from purchasing
+      raise NUCore::PurchaseException.new(I18n.t('price_policies.errors.none_exist_for_date')) unless od.price_policy
+    end
+  end
+
+  def cancelable?
+    # can't cancel if the reservation isn't already canceled or if this OD has been added to a statement or journal
+    statement.nil? && journal.nil? && (reservation.nil? || reservation.canceled_at.present?)
   end
 
   delegate :ordered_on_behalf_of?, :to => :order
@@ -326,7 +363,7 @@ class OrderDetail < ActiveRecord::Base
 
   def validate_for_purchase
     # can purchase product
-    return "The product may not be purchased" unless product.can_purchase?
+    return "The product may not be purchased" unless product.available_for_purchase?
 
     # payment method is selected
     return "You must select a payment method" if account.nil?
@@ -424,60 +461,43 @@ class OrderDetail < ActiveRecord::Base
     assign_estimated_price(new_account)
   end
 
-  def assign_estimated_price(second_account=nil)
+  def assign_estimated_price(second_account=nil, date = Time.zone.now)
     self.estimated_cost    = nil
     self.estimated_subsidy = nil
     second_account=account unless second_account
     
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
-    
-    policy_holder=product
 
-    if product.is_a?(Instrument)
-      return unless reservation
-      policy_holder=reservation
-    end
-    
-    pp = policy_holder.cheapest_price_policy((order.user.price_groups + second_account.price_groups).flatten.uniq)
-    
+    pp = product.cheapest_price_policy(self, date)
     assign_estimated_price_from_policy pp
+  end
+
+  def assign_estimated_price!(second_account=nil, date = Time.zone.now)
+    assign_estimated_price(second_account, date)
+    raise NUCore::PurchaseException.new(I18n.t('price_policies.errors.none_exist_for_date')) unless estimated_cost
   end
 
   def assign_estimated_price_from_policy(price_policy)
     return unless price_policy
-    if product.is_a?(Instrument)
-      est_args = [ reservation.reserve_start_at, reservation.reserve_end_at ]
-    else
-      est_args = [ quantity ]
-    end
-    costs = price_policy.estimate_cost_and_subsidy(*est_args)
+
+    costs = price_policy.estimate_cost_and_subsidy_from_order_detail(self)
+    return unless costs
+
     self.estimated_cost    = costs[:cost]
     self.estimated_subsidy = costs[:subsidy]
   end
 
-  def assign_price_policy
+  def assign_price_policy(time = Time.zone.now)
     self.actual_cost       = nil
     self.actual_subsidy    = nil
     self.price_policy_id   = nil
 
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
-
-    policy_holder=product
-    calc_args=[ quantity ]
-
-    if product.is_a?(Instrument)
-      return unless reservation
-      policy_holder=reservation
-      calc_args=[ reservation ]
-    end
-
-    pgs=order.user.price_groups
-    pgs += account.price_groups if account
-    pp = policy_holder.cheapest_price_policy(pgs.flatten.uniq)
+    pp = product.cheapest_price_policy(self, time)
     return unless pp
-    costs = pp.calculate_cost_and_subsidy(*calc_args)
+    costs = pp.calculate_cost_and_subsidy_from_order_detail(self)
     return unless costs
     self.price_policy_id = pp.id
     self.actual_cost     = costs[:cost]
@@ -500,32 +520,23 @@ class OrderDetail < ActiveRecord::Base
     dispute_at && dispute_resolved_at.nil? && !cancelled?
   end
 
-  def cancel_reservation(canceled_by, order_status = OrderStatus.cancelled.first, admin_cancellation = false)
+  def cancel_reservation(canceled_by, order_status = OrderStatus.cancelled.first, admin_cancellation = false, admin_with_cancel_fee=false)
     res = self.reservation
+    res.canceled_by = canceled_by.id
+    res.canceled_at = Time.zone.now
 
     if admin_cancellation
-      res.canceled_by = canceled_by.id
-      res.canceled_at = Time.zone.now
-      return false unless res.save
-      return self.change_status!(order_status)
-    else
-      return false unless res && res.can_cancel?
-      res.canceled_by = canceled_by.id
-      res.canceled_at = Time.zone.now
       return false unless res.save
 
-      fee = self.cancellation_fee
-      # no cancelation fee
-      if fee  == 0
-        self.actual_subsidy = 0
-        self.actual_cost    = 0
-        return self.change_status!(order_status)
-      # cancellation fee
+      if admin_with_cancel_fee
+        cancel_with_fee order_status
       else
-        self.actual_subsidy = 0
-        self.actual_cost    = fee
-        return self.change_status!(OrderStatus.complete.first)
+        change_status! order_status
       end
+    else
+      return false unless res && res.can_cancel?
+      return false unless res.save
+      cancel_with_fee order_status
     end
   end
 
@@ -685,6 +696,13 @@ class OrderDetail < ActiveRecord::Base
     assign_price_policy
     self.fulfilled_at=Time.zone.now
     self.reviewed_at = Time.zone.now unless SettingsHelper::has_review_period?
+  end
+
+  def cancel_with_fee(order_status)
+    fee = self.cancellation_fee
+    self.actual_cost = fee
+    self.actual_subsidy = 0
+    self.change_status!(fee > 0 ? OrderStatus.complete.first : order_status)
   end
 
 end

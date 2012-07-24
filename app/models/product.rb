@@ -10,6 +10,7 @@ class Product < ActiveRecord::Base
   has_many   :price_group_products
   has_many   :product_accessories, :dependent => :destroy
   has_many   :accessories, :through => :product_accessories, :class_name => 'Product'
+  has_many   :price_policies
 
   validates_presence_of :name, :type
   validate_url_name :url_name
@@ -42,16 +43,8 @@ class Product < ActiveRecord::Base
     self[:initial_order_status_id] ? OrderStatus.find(self[:initial_order_status_id]) : OrderStatus.default_order_status
   end
 
-  def current_price_policies
-    current_policies = {}
-    PricePolicy.find(:all, :conditions => ["#{self.class.name.downcase}_id = ? AND start_date <= ? AND expire_date > ?", self.id, Time.zone.now, Time.zone.now]).each { |pp|
-      unless current_policies[pp.price_group_id].nil?
-        current_policies[pp.price_group_id] = pp if pp.start_date > current_policies[pp.price_group_id].start_date
-      else
-        current_policies[pp.price_group_id] = pp
-      end
-    }
-    current_policies.values
+  def current_price_policies(date)
+    price_policies.current_for_date(date).purchaseable
   end
 
   def <=> (obj)
@@ -106,6 +99,41 @@ class Product < ActiveRecord::Base
     !is_archived? && facility.is_active?
   end
 
+  def can_purchase? (group_ids)
+    return false unless available_for_purchase?
+
+    # return false if there are no existing policies at all
+    return false if price_policies.empty?
+    
+    # return false if there are no existing policies for the user's groups, e.g. they're a new group
+    return false if price_policies.for_price_groups(group_ids).empty?
+
+    # if there are current rules, but the user is not part of them
+    if price_policies.current.any?
+      price_policies.current.for_price_groups(group_ids).where(:can_purchase => true).any? 
+    end
+    
+    # Find the most recent price policy. If they could purchase then, they can purchase now
+    price_policies.for_price_groups(group_ids).order(:expire_date).last.can_purchase?
+
+  end
+
+  def cheapest_price_policy(order_detail, date = Time.zone.now)
+    groups = groups_for_order_detail(order_detail)
+    return nil if groups.empty?
+    price_policies = current_price_policies(date).delete_if { |pp| pp.restrict_purchase? || groups.exclude?(pp.price_group) }
+    price_policies.min_by do |pp|
+      # default to very large number if the estimate returns a nil
+      costs = pp.estimate_cost_and_subsidy_from_order_detail(order_detail) || {:cost => 999999999, :subsidy => 0}
+      costs[:cost] - costs[:subsidy]
+    end
+  end
+
+  def groups_for_order_detail(order_detail)
+    groups = order_detail.order.user.price_groups
+    groups += order_detail.account.price_groups if order_detail.account
+    groups.compact.uniq
+  end
 
   private
 

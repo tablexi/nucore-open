@@ -1,0 +1,22 @@
+= content_for :h1 do
+  =h current_facility
+
+= content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'items' }
+
+= content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'pricing_rules'}
+
+%h2=h @product
+%h3 Add Pricing Rules
+= render :partial => 'price_policies/instructional_text'
+
+= form_tag price_policies_path do
+  - @price_policies.each do |pp|
+    - @price_policy = pp
+    = error_messages_for :price_policy
+  %ul.form
+    = render :partial => "price_policies/#{@product.is_a?(Instrument) ? 'instrument_' : ''}price_policy_fields"
+  %ul.horiz
+    %li= submit_tag 'Add Price Rules', :class => 'btn'
+    %li= link_to 'Cancel', price_policies_path

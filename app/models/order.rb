@@ -66,7 +66,7 @@ class Order < ActiveRecord::Base
   # set the ordered time and send emails
   def place_order?
     # set the ordered_at date
-    self.ordered_at = DateTime.now
+    self.ordered_at ||= Time.zone.now
     self.save
 #    #send email to ordering user
 #    unless self.user.email.nil?
@@ -80,6 +80,7 @@ class Order < ActiveRecord::Base
   end
   #####
   # END acts_as_state_machine
+
 
   def instrument_order_details
     self.order_details.find(:all, :joins => 'LEFT JOIN products p ON p.id = order_details.product_id', :conditions => { 'p.type' => 'Instrument' })
@@ -176,6 +177,25 @@ class Order < ActiveRecord::Base
     end
     return self.errors.empty?
 
+  end
+
+  def backdate_order_details!(update_by, order_status)
+    # can accept either an order status or an id
+    order_status = order_status.is_a?(OrderStatus) ? order_status : OrderStatus.find(order_status)
+
+    order_details.each do |od|
+      if order_status.root == OrderStatus.complete.first
+        od.backdate_to_complete!(ordered_at)
+      else
+        od.update_order_status!(update_by, order_status, :admin => true)
+      end
+    end      
+  end
+  
+  def complete_past_reservations!
+    order_details.select {|od| od.reservation && od.reservation.reserve_end_at < Time.zone.now }.each do |od|
+      od.backdate_to_complete! od.reservation.reserve_end_at
+    end
   end
   
   def max_group_id

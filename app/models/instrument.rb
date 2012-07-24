@@ -1,8 +1,7 @@
 class Instrument < Product
   has_one  :relay
   has_many :schedule_rules
-  has_many :instrument_price_policies
-  has_many :price_policies, :foreign_key => 'instrument_id'
+  has_many :instrument_price_policies, :foreign_key => 'product_id'
   has_many :reservations
   has_many :instrument_statuses, :foreign_key => 'instrument_id'
   has_many :product_access_groups, :foreign_key => 'product_id'
@@ -103,15 +102,10 @@ class Instrument < Product
   end
 
   def can_purchase? (group_ids = nil)
-    return false if is_archived? || !facility.is_active?
     if schedule_rules.empty?
       false
-    elsif group_ids.nil?
-      current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase?}
-    elsif group_ids.empty?
-      false
     else
-      current_price_policies.empty? || current_price_policies.any?{|pp| !pp.expired? && !pp.restrict_purchase? && group_ids.include?(pp.price_group_id)}
+      super
     end
   end
   

@@ -64,21 +64,9 @@ class Reservation < ActiveRecord::Base
     end
   end
 
-  before_save :on => :create do
-    # if reservation is in the past, set the actuals = to the reservation time
-    # move to complete
-    return unless acting_user = self.try(:order).try(:created_by_user)
-
-    if acting_user and acting_user.operator_of?(instrument.facility) and self.reserve_end_at <= Time.zone.now
-      self.actual_start_at ||= self.reserve_start_at
-      self.actual_end_at   ||= self.reserve_end_at
-    end
-
-    return true
-  end
-
-  after_save :on => :create do
-    self.order_detail.reload.change_status!(OrderStatus.find_by_name!('Complete')) if self.has_actuals?
+  def assign_actuals_off_reserve
+    self.actual_start_at ||= self.reserve_start_at
+    self.actual_end_at   ||= self.reserve_end_at
   end
 
   def save_extended_validations(options ={})
@@ -537,29 +525,6 @@ class Reservation < ActiveRecord::Base
     end
   end
 
-  # return the cheapest available price policy that
-  # * is not expired
-  # * is not restricted
-  # * is included in the provided price groups
-  def cheapest_price_policy(groups = [])
-    return nil if groups.empty?
-    min = nil
-    cheapest_total = 0
-    instrument.current_price_policies.each { |pp|
-      if !pp.expired? && !pp.restrict_purchase? && groups.include?(pp.price_group)
-        costs = pp.estimate_cost_and_subsidy(reserve_start_at, reserve_end_at)
-        unless costs.nil?
-          total = costs[:cost] - costs[:subsidy]
-          if min.nil? || total < cheapest_total
-            cheapest_total = total
-            min = pp
-          end
-        end
-      end
-    }
-    min
-  end
-
   # return the longest available reservation window for the groups
   def longest_reservation_window(groups = [])
     pgps     = instrument.price_group_products.find(:all, :conditions => {:price_group_id => groups.collect{|pg| pg.id}})
@@ -679,12 +644,19 @@ class Reservation < ActiveRecord::Base
     changes.any? { |k,v| k == 'reserve_start_at' || k == 'reserve_end_at' }
   end
 
+  # Will display the actual start time if it's available, otherwise fall back to reserve time
+  def display_start_at
+    actual_start_at || reserve_start_at
+  end
+  
+  def display_end_at
+    actual_end_at || reserve_end_at
+  end
+
   def to_s
     return super unless reserve_start_at && reserve_end_at
 
-    start_at=actual_start_at || reserve_start_at
-    end_at=actual_end_at || reserve_end_at
-    str = range_to_s(start_at, end_at)
+    str = range_to_s(display_start_at, display_end_at)
     
     str + (canceled_at ? ' (Cancelled)' : '')
   end

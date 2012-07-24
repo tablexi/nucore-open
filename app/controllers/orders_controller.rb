@@ -116,6 +116,7 @@ class OrdersController < ApplicationController
           @order.errors.add(:base, "You can not add a product from another facility; please clear your cart or place a separate order.")
         rescue Exception => e
           @order.errors.add(:base, "An error was encountered while adding the product #{@product}.")
+          Rails.logger.error(e.message)
           Rails.logger.error(e.backtrace.join("\n"))
         end
       end
@@ -235,28 +236,44 @@ class OrdersController < ApplicationController
   def purchase
     #revalidate the cart, but only if the user is not an admin
     @order.being_purchased_by_admin = Ability.new(session_user, @order.facility, self).can?(:act_as, @order.facility)
-    if @order.validate_order! && @order.purchase!
-      Notifier.order_receipt(:user => @order.user, :order => @order).deliver
+    
+    @order.ordered_at = parse_usa_date(params[:order_date], join_time_select_values(params[:order_time])) if params[:order_date].present? && params[:order_time].present? && acting_as?
+    
+    begin
+      @order.transaction do
+        # Empty message because validate_order! and purchase! don't give us useful messages as to why they failed
+        raise NUCore::PurchaseException.new("") unless @order.validate_order! && @order.purchase!
 
-      # If we're only making a single reservation, we'll redirect
-      if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled? && !acting_as?
-        od=@order.order_details[0]
-
-        if od.reservation.can_switch_instrument_on?
-          redirect_to order_order_detail_reservation_switch_instrument_path(@order, od, od.reservation, :switch => 'on', :redirect_to => reservations_path)
-        else
-          redirect_to reservations_path
+        # update order detail statuses if you've changed it while acting as
+        if acting_as? && params[:order_status_id].present?
+          @order.backdate_order_details!(session_user, params[:order_status_id])
+        elsif can? :order_in_past, @reservation
+          @order.complete_past_reservations!
         end
 
-        flash[:notice]='Reservation completed successfully'
-      else
-        redirect_to receipt_order_url(@order)
-      end
+        Notifier.order_receipt(:user => @order.user, :order => @order).deliver unless acting_as? && !params[:send_notification]
 
-      return
-    else
-      flash[:error] = 'Unable to place order.'
-      @order.invalidate!
+        # If we're only making a single reservation, we'll redirect
+        if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled? && !acting_as?
+          od=@order.order_details[0]
+
+          if od.reservation.can_switch_instrument_on?
+            redirect_to order_order_detail_reservation_switch_instrument_path(@order, od, od.reservation, :switch => 'on', :redirect_to => reservations_path)
+          else
+            redirect_to reservations_path
+          end
+
+          flash[:notice]='Reservation completed successfully'
+        else
+          redirect_to receipt_order_url(@order)
+        end
+
+        return
+      end
+    rescue Exception => e
+      flash[:error] = I18n.t('orders.purchase.error')
+      flash[:error] += " #{e.message}" if e.message
+      @order.reload.invalidate!
       redirect_to order_url(@order) and return
     end
   end
@@ -269,7 +286,7 @@ class OrdersController < ApplicationController
     @order_details = @order.order_details.select{|od| od.can_be_viewed_by?(acting_user) }
     raise ActiveRecord::RecordNotFound if @order_details.empty?
 
-    @accounts = @order_details.collect(&:account)
+    @accounts = @order_details.collect(&:account).uniq
   end
 
   # GET /orders

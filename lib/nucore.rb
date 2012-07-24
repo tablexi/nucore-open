@@ -12,6 +12,8 @@ module NUCore
   class NotPermittedWhileActingAs < Exception
   end
 
+  class PurchaseException < Exception; end
+
   def self.portal
     return 'nucore'
   end
