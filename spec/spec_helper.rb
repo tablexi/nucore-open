@@ -271,7 +271,8 @@ Spork.each_run do
       :duration_value => 60,
       :duration_unit => 'minutes'
     }
-
+    order_detail.order.update_attributes!(:state => 'purchased')
+    
     res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
     @reservation=@instrument.reservations.build(res_attrs)
     # force validation to run to set reserve_end_at, but ignore the errors

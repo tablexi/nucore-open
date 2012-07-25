@@ -1,7 +1,7 @@
 module FacilityOrderStatusHelper
   def new_or_in_process_orders
     # will never include instrument order details
-    facility_ods = current_facility.order_details #.non_reservations
+    facility_ods = current_facility.order_details.non_reservations
     facility_ods = facility_ods.joins(:order).where('(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased')
 
     case sort_column

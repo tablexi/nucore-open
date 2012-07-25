@@ -62,13 +62,25 @@ describe FacilityReservationsController do
       @action=:index
     end
 
-    it_should_allow_operators_only
+    it_should_allow_operators_only {}
 
     context "once signed in" do
       before :each do
         sign_in(@admin)
       end
 
+      it 'should not return non-reservation order details' do
+        # setup_reservation overwrites @order_detail
+        @order_detail_reservation = @order_detail
+        
+        @product=Factory.create(:item, :facility_account => @facility_account, :facility => @authable)
+        @order_detail_item = place_product_order(@director, @authable, @product, @account)
+        @order_detail.order.update_attributes!(:state => 'purchased')   
+
+        @authable.reload.order_details.should contain_all [@order_detail_reservation, @order_detail_item]     
+        do_request
+        assigns[:order_details].should == [@order_detail_reservation]
+      end
       
       it "provides sort headers that don't result in errors"
     end
