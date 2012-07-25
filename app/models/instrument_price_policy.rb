@@ -93,7 +93,7 @@ class InstrumentPricePolicy < PricePolicy
     ## TODO update cancellation costs
     ## calculate actuals for cancelled reservations
     if reservation.canceled_at
-      if product.min_cancel_hours && (res_start_at - strip_seconds(reservation.canceled_at))/3600 <= instrument.min_cancel_hours
+      if product.min_cancel_hours && (res_start_at - strip_seconds(reservation.canceled_at))/3600 <= product.min_cancel_hours
         actual_cost = cancellation_cost
         actual_subsidy = 0
         return {:cost => actual_cost, :subsidy => actual_subsidy}

@@ -25,7 +25,7 @@ describe FacilityOrdersController do
       @action=:index
     end
 
-    it_should_allow_operators_only
+    it_should_allow_operators_only {}
 
     context 'signed in' do
       before :each do
@@ -39,6 +39,17 @@ describe FacilityOrdersController do
           assigns[:order_details].should_not be_nil
           assigns[:order_details].first.should_not be_nil
         end
+      end
+
+      it 'should not return reservations' do
+        # setup_reservation overwrites @order_detail
+        @order_detail_item = @order_detail
+        @order_detail_reservation = setup_reservation(@authable, @facility_account, @account, @director)
+        @reservation = place_reservation(@authable, @order_detail_reservation, Time.zone.now + 1.hour)
+
+        @authable.reload.order_details.should contain_all [@order_detail_item, @order_detail_reservation]
+        do_request
+        assigns[:order_details].should == [@order_detail_item]
       end
     end
   end

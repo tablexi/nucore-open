@@ -420,7 +420,7 @@ describe OrderDetail do
       end
 
       it "should not transition to cancelled from reconciled" do
-        Factory.create(:item_price_policy, :item => @item, :price_group => @price_group3)
+        Factory.create(:item_price_policy, :product => @item, :price_group => @price_group3)
         @order_detail.to_inprocess!
         @order_detail.to_complete!
         @order_detail.to_reconciled!
