@@ -646,30 +646,47 @@ describe OrdersController do
       end
     end
 
-    it "should show links for uploading files for services where required by service"
-    it "should show links for submitting survey for services where required by service"
-
     context "restricted instrument" do
       before :each do
         @instrument.update_attributes(:requires_approval => true)
-        maybe_grant_always_sign_in :director
-        @order.update_attributes(:created_by_user => @director)
+        @order.update_attributes(:created_by_user => @director, :account => @account)
         @order.add(@instrument)
         @order.order_details.size.should == 1
-        switch_to @guest
+        @params.merge!(:id => @order.id)
       end
-
-      it "should allow purchasing a restricted item the user isn't authorized for" do
-        place_reservation(@authable, @order.order_details.first, Time.zone.now)      
+      it 'should not allow purchasing a restricted item' do
+        maybe_grant_always_sign_in :guest
+        place_reservation(@authable, @order.order_details.first, Time.zone.now)
+        #place reservation makes the @order purchased
+        @order.reload.update_attributes!(:state => 'new')
         do_request
+        assigns[:order].should == @order
+        assigns[:order].should_not be_validated
+      end
+      it "should allow purchasing a restricted item the user isn't authorized for" do
+        place_reservation(@authable, @order.order_details.first, Time.zone.now)
+        #place reservation makes the @order purchased
+        @order.reload.update_attributes!(:state => 'new')
+        maybe_grant_always_sign_in :director
+        switch_to @guest
+        do_request
+        response.code.should == '200'
+        assigns[:order].should == @order
         assigns[:order].should be_validated
       end
       it "should not be validated if there is no reservation" do
+        maybe_grant_always_sign_in :director
         do_request
+        response.should be_success
         assigns[:order].should_not be_validated
+        assigns[:order].should == @order
         assigns[:order].order_details.first.validate_for_purchase.should == "Please make a reservation"
       end
     end
+
+    it "should show links for uploading files for services where required by service"
+    it "should show links for submitting survey for services where required by service"
+
   end
 
 
