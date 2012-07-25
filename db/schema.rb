@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120622185758) do
+ActiveRecord::Schema.define(:version => 20120723203745) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -197,7 +197,7 @@ ActiveRecord::Schema.define(:version => 20120622185758) do
     t.string   "dispute_resolved_reason", :limit => 200
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "order_status_id",                                                       :null => false
+    t.integer  "order_status_id"
     t.string   "state",                   :limit => 50
     t.integer  "response_set_id"
     t.integer  "group_id"
