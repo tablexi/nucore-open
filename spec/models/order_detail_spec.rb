@@ -15,6 +15,7 @@ describe OrderDetail do
     @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
     @order_detail.state.should == 'new'
     @order_detail.version.should == 1
+    @order_detail.order_status.should be_nil
   end
 
   context 'bundle' do
@@ -306,7 +307,9 @@ describe OrderDetail do
       Timecop.travel(2.days.from_now) do
         [@no_actuals_od, @actuals_od, @both_od, @no_pp_od].each do |od|
           od.change_status!(OrderStatus.find_by_name('In Process'))
+          od.state.should == 'inprocess'
           od.change_status!(OrderStatus.find_by_name('Complete'))
+          od.state.should == 'complete'
         end
       end
 

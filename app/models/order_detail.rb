@@ -35,8 +35,6 @@ class OrderDetail < ActiveRecord::Base
   ## TODO validate order status is global or a member of the product's facility
   ## TODO validate which fields can be edited for which states
 
-  before_create :init_status
-
   scope :with_product_type, lambda { |s| {:joins => :product, :conditions => ["products.type = ?", s.to_s.capitalize]} }
   scope :in_dispute, :conditions => ['dispute_at IS NOT NULL AND dispute_resolved_at IS NULL AND STATE != ?', 'cancelled'], :order => 'dispute_at'
   scope :new_or_inprocess, :conditions => ["order_details.state IN ('new', 'inprocess') AND orders.ordered_at IS NOT NULL"], :include => :order
@@ -255,26 +253,20 @@ class OrderDetail < ActiveRecord::Base
   end
   # END acts_as_state_machine
 
-  def change_status! (new_status)
-    old_status = order_status
-    success = true
-    success = send("to_#{new_status.root.name.downcase.gsub(/ /,'')}!") if new_status.root.name.downcase.gsub(/ /,'') != state
-    raise AASM::InvalidTransition, "Event '#{new_status.root.name.downcase.gsub(/ /,'')}' cannot transition from '#{state}'" unless success
-    if old_status != new_status
-      self.order_status = new_status
-      success = self.save
-    end
-    success
-  end
-
   # block will be called after the transition, but before the save
   def change_status! (new_status, &block)
-    success = true
-    success = send("to_#{new_status.root.name.downcase.gsub(/ /,'')}!") if new_status.root.name.downcase.gsub(/ /,'') != state
-    raise AASM::InvalidTransition, "Event '#{new_status.root.name.downcase.gsub(/ /,'')}' cannot transition from '#{state}'" unless success
-    self.order_status = new_status
-    block.call(self) if block
-    self.save!
+    new_state = new_status.root.name.downcase.gsub(/ /,'')
+    # don't try to change state if it's not a valid method or it's the same as it was before
+    if OrderDetail.aasm_states.map(&:name).include?(new_state.to_sym) && new_state != state
+      raise AASM::InvalidTransition, "Event '#{new_status.root.name.downcase.gsub(/ /,'')}' cannot transition from '#{state}'" unless send("to_#{new_state}!")
+    end
+    # don't try to change status if it's the same as before
+    unless new_status == order_status
+      self.order_status = new_status
+      block.call(self) if block
+      self.save!
+    end
+    return true
   end
 
   # This method is a replacement for change_status! that also will cancel the associated reservation when necessary
@@ -300,6 +292,10 @@ class OrderDetail < ActiveRecord::Base
       # from purchasing
       raise NUCore::PurchaseException.new(I18n.t('price_policies.errors.none_exist_for_date')) unless od.price_policy
     end
+  end
+
+  def set_default_status!
+    change_status! product.initial_order_status
   end
 
   def cancelable?
@@ -681,12 +677,6 @@ class OrderDetail < ActiveRecord::Base
   end
 
   private
-
-  # initialize order detail status with product status
-  def init_status
-    self.order_status = product.try(:initial_order_status)
-    self.state = product.initial_order_status.root.name.downcase.gsub(/ /,'')
-  end
 
   def has_completed_reservation?
     !product.is_a?(Instrument) || (reservation && (reservation.canceled_at || reservation.actual_end_at || reservation.reserve_end_at < Time.zone.now))
