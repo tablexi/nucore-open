@@ -190,12 +190,13 @@ Spork.each_run do
     @item=facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
     place_product_order(ordered_by, facility, @item, account)
 
-    @order_detail.change_status!(OrderStatus.complete.first)
     # act like the parent order is valid
     @order.state = 'validated'
 
     # purchase it
     @order.purchase!
+
+    @order_detail.change_status!(OrderStatus.complete.first)
 
     od_attrs={
       :actual_cost => 20,
