@@ -519,9 +519,9 @@ class OrderDetail < ActiveRecord::Base
   def cancel_reservation(canceled_by, order_status = OrderStatus.cancelled.first, admin_cancellation = false, admin_with_cancel_fee=false)
     res = self.reservation
     res.canceled_by = canceled_by.id
-    res.canceled_at = Time.zone.now
 
     if admin_cancellation
+      res.canceled_at = Time.zone.now
       return false unless res.save
 
       if admin_with_cancel_fee
@@ -531,6 +531,7 @@ class OrderDetail < ActiveRecord::Base
       end
     else
       return false unless res && res.can_cancel?
+      res.canceled_at = Time.zone.now # must set canceled_at after calling #can_cancel?
       return false unless res.save
       cancel_with_fee order_status
     end

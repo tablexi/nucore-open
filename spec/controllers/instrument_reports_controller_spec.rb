@@ -35,9 +35,8 @@ describe InstrumentReportsController do
 
   def assert_report_init(label, &report_on)
     assigns(:totals).size.should == 3
-    assigns(:totals)[0].should == Instrument.count
-
     reservations=Reservation.all
+    assigns(:totals)[0].should == reservations.size
 
     reserved_hours=0
     reservations.each{|r| reserved_hours += to_hours(r.duration_mins)}

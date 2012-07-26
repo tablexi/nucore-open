@@ -216,9 +216,17 @@ describe OrdersController do
             do_request
             assigns[:order].reload.order_details.all? { |od| od.state.should == 'complete' }
           end
-          it 'should leave reviewed_at as nil' do
+          it 'should set reviewed_at if there is zero review period' do
+            Settings.billing.review_period = 0.days
+            do_request
+            assigns[:order].reload.order_details.all? { |od| od.reviewed_at.should_not be_nil }
+            Settings.reload!
+          end
+          it 'should leave reviewed_at as nil if there is a review period' do
+            Settings.billing.review_period = 7.days
             do_request
             assigns[:order].reload.order_details.all? { |od| od.reviewed_at.should be_nil }
+            Settings.reload!
           end
           it 'should set the fulfilled date to the order time' do
             @item_pp = @item.item_price_policies.create!(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :start_date => 1.day.ago, :expire_date => 1.day.from_now))
