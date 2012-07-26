@@ -708,13 +708,13 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
  * Order detail
  */
 #cancel-fee-opt {
-    display:none;
+    display: none;
     margin-top: 1em;
+    width: 76%;
 }
 
 #cancel-fee-opt label {
     float: right;
-    margin-left: -5em;
 }
 
 /***
