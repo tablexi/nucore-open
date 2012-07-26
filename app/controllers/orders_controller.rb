@@ -29,6 +29,7 @@ class OrdersController < ApplicationController
 
   # GET /orders/:id
   def show
+    @order_statuses = OrderStatus.non_protected_statuses(@order.facility)
     facility_ability = Ability.new(session_user, @order.facility, self)
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
     @order.validate_order! if @order.new?

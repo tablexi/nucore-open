@@ -1,5 +1,5 @@
 %fieldset.collapsable.collapsed
-  %legend= t(".more_options")
+  %legend= t("orders.show.more_options")
   = hidden_field_tag :backdate_order, true
   %ul
     %li
@@ -13,8 +13,7 @@
 
     %li
       = label_tag :status
-      - statuses = OrderStatus.non_protected_statuses(current_facility).map {|s| [s.name_with_level, s.id] }
-      = select_tag(:order_status_id, options_for_select(statuses))
+      = select_tag(:order_status_id, options_for_select(@order_statuses.map {|s| [s.name_with_level, s.id] }))
     %li
       = label_tag :send_notification
       = check_box_tag :send_notification, 1, true
