@@ -746,6 +746,16 @@ describe OrdersController do
       # TODO: add, etc.
     end
 
+    it 'should set the potential order_statuses from this facility and only this facility' do
+      maybe_grant_always_sign_in :staff
+      @facility2 = Factory.create(:facility)
+      @order_status = Factory.create(:order_status, :facility => @authable, :parent => OrderStatus.new_os.first)
+      @order_status_other = Factory.create(:order_status, :facility => @facility2, :parent => OrderStatus.new_os.first)
+      do_request
+      assigns[:order_statuses].should be_include @order_status
+      assigns[:order_statuses].should_not be_include @order_status_other
+    end
+
     it "should validate and transition to validated"
 
     it "should only allow checkout if the cart has at least one order_detail"
