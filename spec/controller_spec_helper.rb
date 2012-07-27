@@ -255,3 +255,29 @@ def maybe_grant_always_sign_in(user_sym)
   user=instance_variable_get("@#{user_sym.to_s}")
   grant_and_sign_in(user)
 end
+
+def split_date_to_params(key, date)
+  {
+    :"#{key}_date" => format_usa_date(date),
+    :"#{key}_hour" => date.strftime("%I"),
+    :"#{key}_min" => date.min.to_s,
+    :"#{key}_meridian" => date.strftime('%p')
+  }
+end
+
+
+# Takes a parameter set and replaces _start_at and _end_at DateTime parameters split up into their other fields
+# like reserve_start_date, reserve_start_hour, and duration_unit
+# Alters the params hash
+def parametrize_dates(params, key)
+  start_time = params[:"#{key}_start_at"]
+  end_time = params[:"#{key}_end_at"]
+  
+  params.merge!(split_date_to_params("#{key}_start", start_time))
+  params.merge!(:duration_value => ((end_time - start_time) / 60).ceil.to_s, :duration_unit => 'minutes')
+  
+  params.delete :"#{key}_start_at"
+  params.delete :"#{key}_end_at"
+  
+  params
+end

@@ -18,11 +18,13 @@ describe FacilityOrderDetailsController do
       :user => @director,
       :created_by => @director.id,
       :account => @account,
-      :ordered_at => Time.zone.now
+      :ordered_at => Time.zone.now,
+      :state => 'purchased'
     )
     @price_group=Factory.create(:price_group, :facility => @authable)
     @price_policy=Factory.create(:item_price_policy, :product => @product, :price_group => @price_group)
     @order_detail=Factory.create(:order_detail, :order => @order, :product => @product, :price_policy => @price_policy)
+    @order_detail.set_default_status!
     @params={ :facility_id => @authable.url_name, :order_id => @order.id, :id => @order_detail.id }
   end
 

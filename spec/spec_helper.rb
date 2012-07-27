@@ -162,17 +162,24 @@ Spork.each_run do
   #   The product being ordered
   # [_account_]
   #   The account under which the order is placed
-  def place_product_order(ordered_by, facility, product, account=nil)
+  def place_product_order(ordered_by, facility, product, account=nil, purchased=true)
     @price_group=Factory.create(:price_group, :facility => facility)
+    
     o_attrs={ :created_by => ordered_by.id, :facility => facility, :ordered_at => Time.zone.now }
     o_attrs.merge!(:account_id => account.id) if account
+    o_attrs.merge!(:state => 'purchased') if purchased
     @order=ordered_by.orders.create(Factory.attributes_for(:order, o_attrs))
+
     Factory.create(:user_price_group_member, :user => ordered_by, :price_group => @price_group)
     @item_pp=product.send(:"#{product.class.name.downcase}_price_policies").create(Factory.attributes_for(:"#{product.class.name.downcase}_price_policy", :price_group_id => @price_group.id))
     @item_pp.reload.restrict_purchase=false
     od_attrs={ :product_id => product.id }
     od_attrs.merge!(:account_id => account.id) if account
     @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(od_attrs))
+    
+    @order_detail.set_default_status! if purchased
+    
+    @order_detail
   end
 
   #
@@ -224,7 +231,7 @@ Spork.each_run do
   #
   # Returns the reservation
   def place_reservation_for_instrument(ordered_by, instrument, account, reserve_start, extra_reservation_attrs=nil)
-    order_detail = place_product_order(ordered_by, instrument.facility, instrument, account)
+    order_detail = place_product_order(ordered_by, instrument.facility, instrument, account, false)
 
     instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule)) if instrument.schedule_rules.empty?
     res_attrs={

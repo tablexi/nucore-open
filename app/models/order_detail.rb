@@ -255,10 +255,10 @@ class OrderDetail < ActiveRecord::Base
 
   # block will be called after the transition, but before the save
   def change_status! (new_status, &block)
-    new_state = new_status.root.name.downcase.gsub(/ /,'')
-    # don't try to change state if it's not a valid method or it's the same as it was before
+    new_state = new_status.root_state
+    # don't try to change state if it's not a valid state or it's the same as it was before
     if OrderDetail.aasm_states.map(&:name).include?(new_state.to_sym) && new_state != state
-      raise AASM::InvalidTransition, "Event '#{new_status.root.name.downcase.gsub(/ /,'')}' cannot transition from '#{state}'" unless send("to_#{new_state}!")
+      raise AASM::InvalidTransition, "Event '#{new_state}' cannot transition from '#{state}'" unless send("to_#{new_state}!")
     end
     # don't try to change status if it's the same as before
     unless new_status == order_status
