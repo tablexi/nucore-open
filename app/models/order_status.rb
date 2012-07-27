@@ -20,9 +20,13 @@ class OrderStatus < ActiveRecord::Base
   scope :complete,   :conditions => {:name => 'Complete'},   :limit => 1
   scope :reconciled, :conditions => {:name => 'Reconciled'}, :limit => 1
 
+  def database_name
+    name.downcase.gsub(/ /,'')
+  end
+
   # For use with OrderDetail's state changes. Converts root 'New' to 'new' and 'In Process' to 'inprocess'
   def root_state
-    self.root.name.downcase.gsub(/ /,'')
+    self.root.database_name
   end
 
   def is_left_of? (o)

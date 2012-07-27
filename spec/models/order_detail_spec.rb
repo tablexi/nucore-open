@@ -765,37 +765,6 @@ describe OrderDetail do
     end
   end
 
-  context 'triggers notifications on status changes' do
-    before :each do
-      class TriggerTestHook
-        def on_status_change(od, old_status, new_status); end
-      end
-      class TriggerTestHookNew < TriggerTestHook; end
-      
-      @order.validate_order!.should be_true
-      @order.purchase!.should be_true
-      
-      @order_detail.reload.order.state.should == 'purchased'
-
-      Settings.order_details.status_change_hooks = {:in_process => 'TriggerTestHook', :new => 'TriggerTestHookNew'}
-      @order_detail.order_status.should == OrderStatus.new_os.first
-    end
-    it 'should trigger a notification on change to inprogress' do
-      TriggerTestHook.any_instance.expects(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first).once
-      @order_detail.change_status!(OrderStatus.inprocess.first).should be_true
-    end
-    it 'should trigger a notification on change from in_process to new' do
-      TriggerTestHook.any_instance.expects(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first)
-      @order_detail.change_status!(OrderStatus.inprocess.first).should be_true
-      TriggerTestHookNew.any_instance.expects(:on_status_change).once.with(@order_detail, OrderStatus.inprocess.first, OrderStatus.new_os.first)
-      @order_detail.change_status!(OrderStatus.new_os.first).should be_true
-    end
-    it 'should not trigger going from new to new' do
-      TriggerTestHookNew.any_instance.expects(:on_status_change).never
-      @order_detail.change_status!(OrderStatus.new_os.first).should be_true
-    end
-  end
-
   context 'cancel_reservation' do
     before :each do
       start_date=Time.zone.now+1.day
