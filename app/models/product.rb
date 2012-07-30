@@ -43,7 +43,7 @@ class Product < ActiveRecord::Base
     self[:initial_order_status_id] ? OrderStatus.find(self[:initial_order_status_id]) : OrderStatus.default_order_status
   end
 
-  def current_price_policies(date)
+  def current_price_policies(date=Time.zone.now)
     price_policies.current_for_date(date).purchaseable
   end
 
@@ -110,12 +110,17 @@ class Product < ActiveRecord::Base
 
     # if there are current rules, but the user is not part of them
     if price_policies.current.any?
-      price_policies.current.for_price_groups(group_ids).where(:can_purchase => true).any? 
+      return price_policies.current.for_price_groups(group_ids).where(:can_purchase => true).any? 
     end
     
-    # Find the most recent price policy. If they could purchase then, they can purchase now
-    price_policies.for_price_groups(group_ids).order(:expire_date).last.can_purchase?
+    # if there are no current price policies, find the most recent price policy for each group.
+    # if one of those can purchase, then allow the purchase
+    group_ids.each do |group_id|
+      # .try is in case the query doesn't return any values
+      return true if price_policies.for_price_groups(group_id).order(:expire_date).last.try(:can_purchase?)
+    end
 
+    false
   end
 
   def cheapest_price_policy(order_detail, date = Time.zone.now)
