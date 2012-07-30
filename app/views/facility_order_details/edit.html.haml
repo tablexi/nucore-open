@@ -60,7 +60,10 @@
         $('#reconcile-note').hide();
 
         $('#order_detail_order_status_id').change(function() {
-          $('#reconcile-note').toggle();
+          if($(this).val() == #{OrderStatus.reconciled.first.id})
+            $('#reconcile-note').show();
+          else
+            $('#reconcile-note').hide();
         });
       });
 
@@ -194,7 +197,7 @@
             %li.indented= link_to('View Order File', @order_detail.file_uploads.template_result.first.file.url)
       %td
         - if @can_be_reconciled
-          = f.collection_select(:order_status_id, [ OrderStatus.complete.first, OrderStatus.reconciled.first ], :id, :name_with_level)
+          = f.collection_select(:order_status_id, [ OrderStatus.complete.first, OrderStatus.cancelled.first, OrderStatus.reconciled.first ], :id, :name_with_level)
           - if @order_detail.account.is_a?(NufsAccount) && @order_detail.journal
             == <br/><br/>#{link_to t('.link.remove'), remove_from_journal_facility_order_order_detail_path(current_facility, @order, @order_detail)}
         - elsif @order_detail.complete?
