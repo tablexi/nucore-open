@@ -12,8 +12,7 @@ class Product < ActiveRecord::Base
   has_many   :accessories, :through => :product_accessories, :class_name => 'Product'
   has_many   :price_policies
 
-  validates_presence_of :name, :type, :initial_order_status_id
-  validates_presence_of :facility_account_id if SettingsHelper.feature_on? :recharge_accounts
+  validates_presence_of :name, :type
   validate_url_name :url_name
   validates_numericality_of(
       :account,
