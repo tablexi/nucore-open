@@ -17,28 +17,24 @@ class OrderDetailStatusChangeNotification < ActiveRecord::Observer
     hash.each do |status,classes_listing|
       hooks = []
       Array.wrap(classes_listing).each do |class_definition|
-        hooks << StatusChangeListener.build(class_definition)
+        hooks << build_hook(class_definition)
       end
       new_hash[status] = hooks
     end
     new_hash
   end
-end
 
-class StatusChangeListener
-  attr_reader :settings
-  def self.build(input)
-    if input.respond_to? :to_hash
-      hash = input.to_hash
-      hash.delete(:class).constantize.new(hash)
+  def self.build_hook(class_definition)
+    if class_definition.respond_to? :to_hash
+      hash = class_definition.to_hash
+      clazz = hash.delete(:class).constantize
     else
-      input.constantize.new({})
+      hash = {}
+      clazz = class_definition.constantize
     end
-  end
-  def initialize(settings={})
-    @settings = settings
-  end
-  def on_status_change(order_detail, old_status, new_status)
-    # do nothing
+    # Create a new istance and set settings if the class has that setter
+    inst = clazz.new
+    inst.settings = hash if inst.respond_to?(:settings=)
+    inst
   end
 end

@@ -1,9 +1,11 @@
 require 'spec_helper'
 describe OrderDetailStatusChangeNotification do
   module DummyHooks
-    class DummyHook1 < StatusChangeListener; end
-    class DummyHook2 < StatusChangeListener; end
-    class DummyHook3 < StatusChangeListener; end
+    class DummyHook1
+      attr_accessor :settings
+    end
+    class DummyHook2; end
+    class DummyHook3; end
   end
   context 'status change hooks' do
     # This before and after all is some nastiness to use a specific file for these tests, but
@@ -45,6 +47,7 @@ describe OrderDetailStatusChangeNotification do
 
   context 'order details changes statuses' do
     before :each do
+      Settings.order_details.status_change_hooks = nil
       @facility = Factory.create(:facility)
       @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
       @user     = Factory.create(:user)
