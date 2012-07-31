@@ -610,6 +610,10 @@ en:
         If this is incorrect you may %{login_link} and remove this user or contact the administrator named above.
     account_update:
       subject: "NU Core Payment Method Updated"
+    order_status_changed_to_approved:
+      subject: "Reservation #%{order_detail} has been approved"
+    order_status_changed_to_pending_approval:
+      subject: "%{user} has made a reservation for %{product}. Please approve."
 
   file_uploads:
     product_survey:

@@ -41,7 +41,7 @@ order_details:
   #   completed: ApprovalNotification::NotifyPurchaser
   #   reconciled: ["ApprovalNotification::NotifyPurchaser", "ApprovalNotification::NotifyFacility"]
   status_change_hooks:
-    pendingapproval: StatusChangeNotifications::NotifyFacilityHook
+    pending_approval: StatusChangeNotifications::NotifyFacilityHook
     approved: StatusChangeNotifications::NotifyPurchaserHook
 
     

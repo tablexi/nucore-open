@@ -12,4 +12,4 @@ order_details:
     simple_array: ["DummyHooks::DummyHook1", "DummyHooks::DummyHook2"]
 
     new: DummyHooks::DummyHook1
-    inprocess: DummyHooks::DummyHook2
+    in_process: DummyHooks::DummyHook2
