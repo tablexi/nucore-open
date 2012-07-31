@@ -20,6 +20,8 @@ class OrderDetail < ActiveRecord::Base
   has_one    :external_service_receiver, :as => :receiver, :dependent => :destroy
   has_many   :file_uploads, :dependent => :destroy
 
+  delegate :user, :facility, :to => :order
+
   validates_presence_of :product_id, :order_id
   validates_numericality_of :quantity, :only_integer => true, :greater_than_or_equal_to => 1
   validates_numericality_of :actual_cost, :if => lambda { |o| o.actual_cost_changed? && !o.actual_cost.nil?}

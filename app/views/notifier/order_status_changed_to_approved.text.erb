@@ -1,1 +1,8 @@
-Your reservation for <%= @order_detail.product %> on <%= @order_detail.reservation %> has been approved.
+<%= @order_detail.facility %>
+
+The following reservation has been approved.
+<%= Order.model_name.human %>: #<%= @order_detail %>
+<%= Instrument.model_name.human %>: <%= @order_detail.product %>
+<%= Reservation.model_name.human %>: <%= @order_detail.reservation %>
+
+You can modify your reservations at <%= t_my(Reservation) %> [<%= reservations_url %>].

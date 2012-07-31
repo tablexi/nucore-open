@@ -1,4 +1,6 @@
 class Notifier < ActionMailer::Base
+  add_template_helper TranslationHelper
+
   default :from => Settings.email.from, :content_type => 'multipart/alternative'
 
   # Welcome user, login credentials.  CC to PI and Department Admin.

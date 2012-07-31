@@ -1,5 +1,5 @@
-A reservation has been made for <%= @order_detail.product %>.
+<%= @order_detail.facility %>
 
-<%= @order_detail.order.user %> has reserved: <%= @order_detail.reservation %>
+<%= @order_detail.user %> has placed a reservation for <%= @order_detail.product %>. It is currently pending approval.
 
-Please approve: #<%= @order_detail %>.
+Please approve it at <%= edit_facility_order_order_detail_path(@order_detail.facility, @order_detail.order, @order_detail) %>.
