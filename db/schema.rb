@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120622185758) do
+ActiveRecord::Schema.define(:version => 20120801223135) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -161,7 +161,7 @@ ActiveRecord::Schema.define(:version => 20120622185758) do
     t.decimal "amount",                         :precision => 9, :scale => 2, :null => false
     t.string  "description",     :limit => 200
     t.string  "reference",       :limit => 50
-    t.string  "account",         :limit => 5,                                 :null => false
+    t.string  "account",         :limit => 5
   end
 
   create_table "journals", :force => true do |t|
@@ -309,6 +309,9 @@ ActiveRecord::Schema.define(:version => 20120622185758) do
     t.integer "product_id",   :null => false
     t.integer "accessory_id", :null => false
   end
+
+  add_index "product_accessories", ["accessory_id"], :name => "product_accessories_accessory_id_fk"
+  add_index "product_accessories", ["product_id"], :name => "product_accessories_product_id_fk"
 
   create_table "product_users", :force => true do |t|
     t.integer  "product_id",              :null => false
@@ -496,6 +499,9 @@ ActiveRecord::Schema.define(:version => 20120622185758) do
   add_foreign_key "price_groups", "facilities", :name => "sys_c008578"
 
   add_foreign_key "price_policies", "price_groups", :name => "sys_c008589"
+
+  add_foreign_key "product_accessories", "products", :name => "product_accessories_accessory_id_fk", :column => "accessory_id"
+  add_foreign_key "product_accessories", "products", :name => "product_accessories_product_id_fk"
 
   add_foreign_key "product_users", "products", :name => "fk_products"
 
