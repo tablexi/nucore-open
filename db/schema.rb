@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120723203745) do
+ActiveRecord::Schema.define(:version => 20120801161003) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -339,6 +339,7 @@ ActiveRecord::Schema.define(:version => 20120723203745) do
     t.string   "account",                 :limit => 5
     t.boolean  "show_details",                           :default => false, :null => false
     t.integer  "auto_cancel_mins"
+    t.string   "contact_email"
   end
 
   add_index "products", ["facility_account_id"], :name => "fk_facility_accounts"

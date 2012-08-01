@@ -2,6 +2,10 @@
 %li
   %label= t('shared.product_manage.label.url')
   = link_to send("facility_#{product.class.name.downcase}_url", current_facility, product), send("facility_#{product.class.name.downcase}_url", current_facility, product)
+- if SettingsHelper::feature_on? :product_specific_contacts
+  %li
+    %label= Product.human_attribute_name(:email)
+    = product.email
 %li
   %label= t('shared.product_manage.label.description')
   .wysiwyg= product.description

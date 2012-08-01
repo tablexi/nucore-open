@@ -33,7 +33,7 @@ class InstrumentsController < ProductsCommonController
     # is the user approved? or is the logged in user an operator of the facility (logged in user can override restrictions)
     if add_to_cart && !@instrument.is_approved_for?(acting_user)
       add_to_cart = false unless session_user and session_user.can_override_restrictions?(@instrument)
-      flash[:notice] = t_model_error(Instrument, 'requires_approval_html', :instrument => @instrument, :facility => @instrument.facility, :email => @instrument.facility.email).html_safe
+      flash[:notice] = t_model_error(Instrument, 'requires_approval_html', :instrument => @instrument, :facility => @instrument.facility, :email => @instrument.email).html_safe
     end
 
     # does the user have a valid payment source for purchasing this reservation?

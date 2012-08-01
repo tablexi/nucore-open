@@ -10,12 +10,13 @@ describe StatusChangeNotifications do
     @user = Factory.create(:user)
     @facility = Factory.create(:facility, :email => 'notify-facility@example.org')
     @order_detail = place_and_complete_item_order(@user, @facility)
+    @order_detail.product.update_attributes!(:contact_email => 'notify-product@example.org')
     @initial_order_status = @order_detail.order_status
   end
 
   context 'NotifyFacilityHook' do
-    it "should notify the facility's email address" do
-      notifier_expects_email @facility.email
+    it "should notify the product's email address" do
+      notifier_expects_email 'notify-product@example.org'
     end
   end
 
