@@ -9,7 +9,7 @@ module StatusChangeNotifications
 
   class NotifyFacilityHook
     def on_status_change(order_detail, old_status, new_status)
-      Notifier.order_detail_status_change(order_detail, old_status, new_status, order_detail.product.facility.email).deliver
+      Notifier.order_detail_status_change(order_detail, old_status, new_status, order_detail.product.admin_notification_email).deliver
     end
   end
 end

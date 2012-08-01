@@ -135,6 +135,10 @@ class Product < ActiveRecord::Base
     groups.compact.uniq
   end
 
+  def admin_notification_email
+    facility.email
+  end
+  
   private
 
   def account_required
