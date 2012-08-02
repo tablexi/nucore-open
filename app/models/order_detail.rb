@@ -445,8 +445,8 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def update_account(new_account)
-    self.account_id = new_account.id
-    assign_estimated_price(new_account)
+    self.account = new_account
+    assign_estimated_price(account)
   end
 
   def assign_estimated_price(second_account=nil, date = Time.zone.now)

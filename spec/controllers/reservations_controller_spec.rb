@@ -27,9 +27,9 @@ describe ReservationsController do
     @order            = @guest.orders.create(Factory.attributes_for(:order, :created_by => @guest.id, :account => @account))
     @order.add(@instrument, 1)
     @order_detail     = @order.order_details.first
+    
     @params={ :order_id => @order.id, :order_detail_id => @order_detail.id }
   end
-
 
 
   context 'index' do
@@ -211,6 +211,7 @@ describe ReservationsController do
 
     context 'without account' do
       before :each do
+        
         @params.delete :order_account
         sign_in @guest
         do_request
@@ -253,8 +254,26 @@ describe ReservationsController do
         @order.order_details.first.account.should == @account2
         @order_detail.reload.account.should == @account2
       end
-
     end
+
+    context 'with a price policy attached to the account' do
+      before :each do
+        @order.update_attributes(:account => nil)
+        @order.account.should be_nil
+        @order_detail.account.should be_nil
+      
+        @price_group2      = @authable.price_groups.create(Factory.attributes_for(:price_group))
+        @pg_account        = Factory.create(:account_price_group_member, :account => @account, :price_group => @price_group2)
+        @price_policy2     = @instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group2.id, :usage_rate => 1, :usage_subsidy => 0.25))
+        sign_in @guest
+      end
+      it "should use the policy based on the account because it's cheaper" do
+        do_request
+        assigns[:order_detail].estimated_cost.should == 120.0
+        assigns[:order_detail].estimated_subsidy.should == 15
+      end
+    end
+
 
     context 'with other things in the cart (bundle or multi-add)' do
 

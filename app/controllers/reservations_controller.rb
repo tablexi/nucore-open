@@ -99,14 +99,13 @@ class ReservationsController < ApplicationController
           account=Account.find(params[:order_account].to_i)
           if account != @order.account
             @order.invalidate
-            @order.update_attributes!(:account_id => account.id)
-            @order.update_order_detail_accounts
+            @order.update_attributes!(:account => account)
           end
         end
 
         @reservation.save_as_user!(session_user)
         
-        @order_detail.assign_estimated_price!(nil, @reservation.reserve_end_at)
+        @order_detail.reload.assign_estimated_price!(nil, @reservation.reserve_end_at)
 
         @order_detail.save!
         
