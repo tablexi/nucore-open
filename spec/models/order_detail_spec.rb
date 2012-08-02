@@ -795,6 +795,8 @@ describe OrderDetail do
 
     def cancel_with_fee(*cancel_reservation_args)
       @instrument.update_attribute :min_cancel_hours, 25
+      # make sure the @order_detail's product is up to date with the new min_cancel_hours
+      @order_detail.reload
       @order_detail.cancel_reservation(*cancel_reservation_args).should be_true
       @reservation.reload.canceled_by.should == @user.id
       @reservation.canceled_at.should_not be_nil
