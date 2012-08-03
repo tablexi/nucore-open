@@ -384,7 +384,6 @@ describe Order do
         @account2 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
         @cart.account = @account2
         @cart.save        
-        @cart.update_order_detail_accounts
         @cart.reload.order_details[0].account.should == @account2
         @cart.order_details[1].account.should == @account2
         @cart.account.should == @account2

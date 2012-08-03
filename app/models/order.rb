@@ -7,6 +7,8 @@ class Order < ActiveRecord::Base
 
   validates_presence_of :user_id, :created_by
 
+  after_save :update_order_detail_accounts, :if => :account_id_changed?
+
   scope :for_user, lambda { |user| { :conditions => ['user_id = ? AND ordered_at IS NOT NULL AND state = ?', user.id, 'purchased'] } }
  
   attr_accessor :being_purchased_by_admin
@@ -108,9 +110,7 @@ class Order < ActiveRecord::Base
       quantity.times do
         group_id = max_group_id + 1
         product.bundle_products.each do |bp|
-          order_detail = self.order_details.new(:product_id => bp.product.id, :quantity => bp.quantity, :bundle_product_id => product.id, :group_id => group_id)
-          order_detail.update_account(account) if account
-          order_detail.save!
+          order_detail = self.order_details.create!(:product_id => bp.product.id, :quantity => bp.quantity, :bundle_product_id => product.id, :group_id => group_id, :account => account)
           ods << order_detail
         end
       end
@@ -124,24 +124,18 @@ class Order < ActiveRecord::Base
       individual_quantity = separate ? 1        : quantity
       
       repeat.times do
-        order_detail = self.order_details.new(:product_id => product.id, :quantity => individual_quantity)
-        order_detail.update_account(account) if account
-        order_detail.save!
+        order_detail = self.order_details.create!(:product_id => product.id, :quantity => individual_quantity, :account => account)
         ods << order_detail
       end
 
     # products which have reservations (instruments) should each get their own order_detail
     when (product.respond_to?(:reservations) and quantity > 1) then
       quantity.times do
-        order_detail = order_details.new(:product_id => product.id, :quantity => 1)
-        order_detail.update_account(account) if account
-        order_detail.save!
+        order_detail = order_details.create!(:product_id => product.id, :quantity => 1, :account => account)
         ods << order_detail
       end
     else
-      order_detail = order_details.new(:product_id => product.id, :quantity => quantity)
-      order_detail.update_account(account) if account
-      order_detail.save!
+      order_detail = order_details.create!(:product_id => product.id, :quantity => quantity, :account => account)
       ods << order_detail
     end
 
@@ -229,24 +223,21 @@ class Order < ActiveRecord::Base
     #raise I18n.t('models.order.auto_assign_account', :product_name => product.name) if self.account.nil?
   #end
 
-  # If we update the account_id of the order, update the account_id of
-  # each of the child order_details
-  # currently being called explicitly, but could possibly go in an after_save filter
-  def update_order_detail_accounts    
-    account.reload if account && account.id != account_id
-    return unless account
-    order_details.each do |od|
-      od.update_account(account)
-      od.save!
-    end
-  end
-
   # If user_id doesn't match created_by, that means it was ordered on behalf of
   def ordered_on_behalf_of?
     user_id != created_by
   end
 
   private
+
+  # If we update the account of the order, update the account of
+  # each of the child order_details
+  def update_order_detail_accounts    
+    order_details.each do |od|
+      od.update_account(account)
+      od.save!
+    end
+  end
 
   def total_cost(order_detail_method)
     cost = 0
