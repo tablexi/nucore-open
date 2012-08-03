@@ -128,12 +128,9 @@ class Product < ActiveRecord::Base
     return nil if groups.empty?
     price_policies = current_price_policies(date).delete_if { |pp| pp.restrict_purchase? || groups.exclude?(pp.price_group) }
     base_ndx=price_policies.index{|pp| pp.price_group == PriceGroup.base.first}
-
-    if base_ndx
-      base=price_policies.delete_at base_ndx
-      price_policies.sort!{|pp1, pp2| pp1.price_group.name <=> pp2.price_group.name}
-      price_policies.unshift base
-    end
+    base=price_policies.delete_at base_ndx if base_ndx
+    price_policies.sort!{|pp1, pp2| pp1.price_group.name <=> pp2.price_group.name}
+    price_policies.unshift base if base
 
     price_policies.min_by do |pp|
       # default to very large number if the estimate returns a nil
