@@ -40,6 +40,21 @@ shared_examples_for "NonReservationProduct" do |product_type|
         @product.cheapest_price_policy(@order_detail).should == @pp_g4
       end
 
+      it 'should use the base rate when that is the cheapest and others have equal unit_cost' do
+        base_pg=PriceGroup.new(Factory.attributes_for(:price_group, :name => Settings.price_group.name.base, :is_internal => true, :display_order => 1))
+        base_pg.save(:validate => false)
+        base_pp=make_price_policy(:unit_cost => 1, :price_group => base_pg)
+
+        [ base_pg , @price_group3, @price_group4 ].each do |pg|
+          Factory.create(:user_price_group_member, :user => @user, :price_group => pg)
+        end
+
+        [ @pp_g1, @pp_g2, @pp_g3, @pp_g4 ].each do |pp|
+          pp.update_attribute :unit_cost, base_pp.unit_cost
+          @product.cheapest_price_policy(@order_detail).should == base_pp
+        end
+      end
+
       it 'should find the cheapest price policy if the user is in one group, but the account is in another' do
         @account = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
         AccountPriceGroupMember.create!(:price_group => @price_group3, :account => @account)
