@@ -702,6 +702,8 @@ class Reservation < ActiveRecord::Base
 
   def requires_but_missing_actuals?
     pp = order_detail.price_policy
+    # If there isn't a policy assigned, find the one that would be used
+    pp ||= order_detail.product.cheapest_price_policy(order_detail, reserve_end_at)
     !cancelled? && pp && pp.usage_rate && pp.usage_rate > 0 && !has_actuals?
   end
 
