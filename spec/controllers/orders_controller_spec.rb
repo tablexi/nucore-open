@@ -251,17 +251,19 @@ describe OrdersController do
               do_request
               assigns[:order].reload.order_details.all? { |od| od.price_policy.should == @item_past_pp }
             end
-            it 'should have a problem if there is no policy set for the date in the past' do
+
+            # when backdating was initially set up, this would cause an error, but behavior changed as of ticket #51239
+            it 'should not have a problem even if there is no policy set for the date in the past' do
               @params.merge!({:order_date => format_usa_date(9.days.ago)})
               do_request
               assigns[:order].reload.order_details.all? do |od|
                 od.price_policy.should be_nil
                 od.actual_cost.should be_nil
                 od.actual_subsidy.should be_nil
-                od.state.should == 'new'
+                od.state.should == 'complete'
               end
-              flash[:error].should_not be_nil
-              response.should redirect_to order_url(@order)
+              flash[:error].should be_nil
+              response.should redirect_to receipt_order_url(@order)
             end
           end
           

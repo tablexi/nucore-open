@@ -284,9 +284,6 @@ class OrderDetail < ActiveRecord::Base
     change_status!(OrderStatus.complete.first) do |od|
       od.fulfilled_at = event_time
       od.assign_price_policy(event_time)
-      # If there isn't a price policy for that date the user can use, we want to prevent the user
-      # from purchasing
-      raise NUCore::PurchaseException.new(I18n.t('price_policies.errors.none_exist_for_date')) unless od.price_policy
     end
   end
 
@@ -463,7 +460,6 @@ class OrderDetail < ActiveRecord::Base
 
   def assign_estimated_price!(second_account=nil, date = Time.zone.now)
     assign_estimated_price(second_account, date)
-    raise NUCore::PurchaseException.new(I18n.t('price_policies.errors.none_exist_for_date')) unless estimated_cost
   end
 
   def assign_estimated_price_from_policy(price_policy)

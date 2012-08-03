@@ -18,7 +18,7 @@ describe ReservationsController do
     @options          = Factory.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
     @instrument       = @authable.instruments.create(@options)
     assert @instrument.valid?
-    Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
+    @price_group_product = Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
     # add rule, available every day from 9 to 5, 60 minutes duration
     @rule             = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :end_hour => 23))
     # create price policy with default window of 1 day
@@ -153,18 +153,6 @@ describe ReservationsController do
       assigns[:reservation].order_detail.reload.estimated_cost.should == 120
     end
 
-    context "but if there is no price policy for the date" do
-      before :each do
-        @params[:reservation][:reserve_start_date] = format_usa_date(Time.zone.now - 10.days)
-      end
-      it 'should give an error' do
-        maybe_grant_always_sign_in :admin
-        do_request
-        assigns[:reservation].should be_new_record
-        flash.now[:error].should_not be_nil
-        response.should render_template :new
-      end
-    end
   end
 
   context 'create' do
@@ -208,6 +196,20 @@ describe ReservationsController do
         response.should render_template(:new)
       end
     end
+
+    context 'creating a reservation in the future with no price policy' do
+      before :each do
+        @params[:reservation][:reserve_start_date] = format_usa_date(@price_policy.expire_date+1.day)
+        @price_group_product.update_attributes(:reservation_window => 365)
+        sign_in @guest
+        do_request
+      end
+      it 'should allow creation' do
+        assigns[:reservation].should_not be_nil
+        assigns[:reservation].should_not be_new_record
+      end
+    end
+
 
     context 'without account' do
       before :each do
