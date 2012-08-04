@@ -234,8 +234,9 @@ class OrdersController < ApplicationController
 
   # PUT /orders/1/purchase
   def purchase
+    facility_ability = Ability.new(session_user, @order.facility, self)
     #revalidate the cart, but only if the user is not an admin
-    @order.being_purchased_by_admin = Ability.new(session_user, @order.facility, self).can?(:act_as, @order.facility)
+    @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
     
     @order.ordered_at = parse_usa_date(params[:order_date], join_time_select_values(params[:order_time])) if params[:order_date].present? && params[:order_time].present? && acting_as?
     
@@ -243,12 +244,14 @@ class OrdersController < ApplicationController
       @order.transaction do
         # Empty message because validate_order! and purchase! don't give us useful messages as to why they failed
         raise NUCore::PurchaseException.new("") unless @order.validate_order! && @order.purchase!
-
-        # update order detail statuses if you've changed it while acting as
-        if acting_as? && params[:order_status_id].present?
-          @order.backdate_order_details!(session_user, params[:order_status_id])
-        elsif can? :order_in_past, @reservation
-          @order.complete_past_reservations!
+        
+        if facility_ability.can? :order_in_past, @order 
+          # update order detail statuses if you've changed it while acting as
+          if acting_as? && params[:order_status_id].present?
+            @order.backdate_order_details!(session_user, params[:order_status_id])
+          else 
+            @order.complete_past_reservations!
+          end
         end
 
         Notifier.order_receipt(:user => @order.user, :order => @order).deliver unless acting_as? && !params[:send_notification]
