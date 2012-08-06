@@ -18,7 +18,7 @@ describe ReservationsController do
     @options          = Factory.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
     @instrument       = @authable.instruments.create(@options)
     assert @instrument.valid?
-    Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
+    @price_group_product = Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
     # add rule, available every day from 9 to 5, 60 minutes duration
     @rule             = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :end_hour => 23))
     # create price policy with default window of 1 day
@@ -27,9 +27,9 @@ describe ReservationsController do
     @order            = @guest.orders.create(Factory.attributes_for(:order, :created_by => @guest.id, :account => @account))
     @order.add(@instrument, 1)
     @order_detail     = @order.order_details.first
+    
     @params={ :order_id => @order.id, :order_detail_id => @order_detail.id }
   end
-
 
 
   context 'index' do
@@ -153,18 +153,6 @@ describe ReservationsController do
       assigns[:reservation].order_detail.reload.estimated_cost.should == 120
     end
 
-    context "but if there is no price policy for the date" do
-      before :each do
-        @params[:reservation][:reserve_start_date] = format_usa_date(Time.zone.now - 10.days)
-      end
-      it 'should give an error' do
-        maybe_grant_always_sign_in :admin
-        do_request
-        assigns[:reservation].should be_new_record
-        flash.now[:error].should_not be_nil
-        response.should render_template :new
-      end
-    end
   end
 
   context 'create' do
@@ -209,8 +197,23 @@ describe ReservationsController do
       end
     end
 
+    context 'creating a reservation in the future with no price policy' do
+      before :each do
+        @params[:reservation][:reserve_start_date] = format_usa_date(@price_policy.expire_date+1.day)
+        @price_group_product.update_attributes(:reservation_window => 365)
+        sign_in @guest
+        do_request
+      end
+      it 'should allow creation' do
+        assigns[:reservation].should_not be_nil
+        assigns[:reservation].should_not be_new_record
+      end
+    end
+
+
     context 'without account' do
       before :each do
+        
         @params.delete :order_account
         sign_in @guest
         do_request
@@ -253,8 +256,26 @@ describe ReservationsController do
         @order.order_details.first.account.should == @account2
         @order_detail.reload.account.should == @account2
       end
-
     end
+
+    context 'with a price policy attached to the account' do
+      before :each do
+        @order.update_attributes(:account => nil)
+        @order.account.should be_nil
+        @order_detail.account.should be_nil
+      
+        @price_group2      = @authable.price_groups.create(Factory.attributes_for(:price_group))
+        @pg_account        = Factory.create(:account_price_group_member, :account => @account, :price_group => @price_group2)
+        @price_policy2     = @instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group2.id, :usage_rate => 1, :usage_subsidy => 0.25))
+        sign_in @guest
+      end
+      it "should use the policy based on the account because it's cheaper" do
+        do_request
+        assigns[:order_detail].estimated_cost.should == 120.0
+        assigns[:order_detail].estimated_subsidy.should == 15
+      end
+    end
+
 
     context 'with other things in the cart (bundle or multi-add)' do
 

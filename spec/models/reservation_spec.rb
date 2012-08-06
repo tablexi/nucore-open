@@ -193,8 +193,7 @@ describe Reservation do
     context 'requires_but_missing_actuals?' do
 
       it 'should be true when there is a usage rate but no actuals' do
-        @instrument_pp.usage_rate=5
-        assert @instrument_pp.save
+        @instrument_pp.update_attributes!(:usage_rate => 5)
 
         @reservation1.actual_start_at.should be_nil
         @reservation1.actual_end_at.should be_nil
@@ -204,13 +203,22 @@ describe Reservation do
         @reservation1.should be_requires_but_missing_actuals
       end
 
+      it 'should be true when there is no policy assigned, but the one it would use requires actuals' do
+        @reservation1.actual_start_at.should be_nil
+        @reservation1.actual_end_at.should be_nil
+        @instrument_pp.update_attributes(:usage_rate => 5)
+
+        assert @reservation1.save
+        @instrument.cheapest_price_policy(@reservation1.order_detail, @reservation1.reserve_end_at).should == @instrument_pp
+        @reservation1.should be_requires_but_missing_actuals
+      end
 
       it 'should be false when there is no price policy' do
         @reservation1.actual_start_at=1.day.ago
         @reservation1.actual_end_at=1.day.ago+1.hour
         @instrument.instrument_price_policies.clear
         assert @reservation1.save
-
+        @instrument.cheapest_price_policy(@reservation1.order_detail).should be_nil
         @reservation1.order_detail.price_policy.should be_nil
         @reservation1.should_not be_requires_but_missing_actuals
       end
@@ -548,4 +556,5 @@ describe Reservation do
       Reservation.for_date(Time.zone.now + 1.day).should contain_all [@tomorrow_reservation, @spans_day_reservation]
     end
   end
+
 end

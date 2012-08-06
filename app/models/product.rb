@@ -48,7 +48,7 @@ class Product < ActiveRecord::Base
     self[:initial_order_status_id] ? OrderStatus.find(self[:initial_order_status_id]) : OrderStatus.default_order_status
   end
 
-  def current_price_policies(date)
+  def current_price_policies(date=Time.zone.now)
     price_policies.current_for_date(date).purchaseable
   end
 
@@ -122,18 +122,33 @@ class Product < ActiveRecord::Base
 
     # if there are current rules, but the user is not part of them
     if price_policies.current.any?
-      price_policies.current.for_price_groups(group_ids).where(:can_purchase => true).any? 
+      return price_policies.current.for_price_groups(group_ids).where(:can_purchase => true).any? 
     end
     
-    # Find the most recent price policy. If they could purchase then, they can purchase now
-    price_policies.for_price_groups(group_ids).order(:expire_date).last.can_purchase?
+    # if there are no current price policies, find the most recent price policy for each group.
+    # if one of those can purchase, then allow the purchase
+    group_ids.each do |group_id|
+      # .try is in case the query doesn't return any values
+      return true if price_policies.for_price_groups(group_id).order(:expire_date).last.try(:can_purchase?)
+    end
 
+    false
   end
 
   def cheapest_price_policy(order_detail, date = Time.zone.now)
     groups = groups_for_order_detail(order_detail)
     return nil if groups.empty?
     price_policies = current_price_policies(date).delete_if { |pp| pp.restrict_purchase? || groups.exclude?(pp.price_group) }
+
+    # provide a predictable ordering of price groups so that equal unit costs
+    # are always handled the same way. Put the base group at the front of the
+    # price policy array so that it takes precedence over all others that have
+    # equal unit cost. See task #49823.
+    base_ndx=price_policies.index{|pp| pp.price_group == PriceGroup.base.first}
+    base=price_policies.delete_at base_ndx if base_ndx
+    price_policies.sort!{|pp1, pp2| pp1.price_group.name <=> pp2.price_group.name}
+    price_policies.unshift base if base
+
     price_policies.min_by do |pp|
       # default to very large number if the estimate returns a nil
       costs = pp.estimate_cost_and_subsidy_from_order_detail(order_detail) || {:cost => 999999999, :subsidy => 0}

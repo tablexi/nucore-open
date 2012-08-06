@@ -11,35 +11,42 @@ Daemons::Base.new('auto_cancel').start do
     time_condition=" TIMESTAMPDIFF(MINUTE, reserve_start_at, UTC_TIMESTAMP) >= auto_cancel_mins"
   end
 
-  cancelable=Reservation.joins(:instrument).where(
-    <<-SQL
-        actual_start_at IS NULL
-      AND
-        actual_end_at IS NULL
-      AND
-        canceled_at IS NULL
-      AND
-        auto_cancel_mins IS NOT NULL
-      AND
-        auto_cancel_mins > 0
-      AND
-        #{time_condition}
-    SQL
-  ).readonly(false).all
+  where=<<-SQL
+      actual_start_at IS NULL
+    AND
+      actual_end_at IS NULL
+    AND
+      canceled_at IS NULL
+    AND
+      auto_cancel_mins IS NOT NULL
+    AND
+      auto_cancel_mins > 0
+    AND
+      (state = ? OR state = ?)
+    AND
+      #{time_condition}
+  SQL
 
-  # we need something that responds to #id to satisfy OrderDetail#cancel_reservation
-  AdminStruct=Struct.new(:id)
-  admin=AdminStruct.new
-  admin.id=0
+  cancelable=Reservation.
+             joins(:instrument, :order_detail).
+             where(where, OrderStatus.new_os.first.name, OrderStatus.inprocess.first.name).
+             readonly(false).all
 
-  cancelable.each do |res|
-    next if res.order_detail.blank?
+  if cancelable.present?
+    # we need something that responds to #id to satisfy OrderDetail#cancel_reservation
+    AdminStruct=Struct.new(:id)
+    admin=AdminStruct.new
+    admin.id=0
 
-    begin
-      res.order_detail.cancel_reservation admin, OrderStatus.cancelled.first, true
-      res.update_attribute :canceled_reason, 'auto cancelled by system'
-    rescue => e
-      puts "Could not auto cancel reservation #{res.id}! #{e.message}\n#{e.backtrace.join("\n")}"
+    cancelable.each do |res|
+      next if res.order_detail.blank?
+
+      begin
+        res.order_detail.cancel_reservation admin, OrderStatus.cancelled.first, true
+        res.update_attribute :canceled_reason, 'auto cancelled by system'
+      rescue => e
+        puts "Could not auto cancel reservation #{res.id}! #{e.message}\n#{e.backtrace.join("\n")}"
+      end
     end
   end
 

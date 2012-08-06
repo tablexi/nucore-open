@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120801161003) do
+ActiveRecord::Schema.define(:version => 20120801223135) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -161,7 +161,7 @@ ActiveRecord::Schema.define(:version => 20120801161003) do
     t.decimal "amount",                         :precision => 9, :scale => 2, :null => false
     t.string  "description",     :limit => 200
     t.string  "reference",       :limit => 50
-    t.string  "account",         :limit => 5,                                 :null => false
+    t.string  "account",         :limit => 5
   end
 
   create_table "journals", :force => true do |t|

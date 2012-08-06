@@ -24,8 +24,8 @@ class OrderDetail < ActiveRecord::Base
 
   validates_presence_of :product_id, :order_id
   validates_numericality_of :quantity, :only_integer => true, :greater_than_or_equal_to => 1
-  validates_numericality_of :actual_cost, :if => lambda { |o| o.actual_cost_changed? && !o.actual_cost.nil?}
-  validates_numericality_of :actual_subsidy, :if => lambda { |o| o.actual_subsidy_changed? && !o.actual_cost.nil?}
+  validates_numericality_of :actual_cost, :greater_than_or_equal_to => 0, :if => lambda { |o| o.actual_cost_changed? && !o.actual_cost.nil?}
+  validates_numericality_of :actual_subsidy, :greater_than_or_equal_to => 0, :if => lambda { |o| o.actual_subsidy_changed? && !o.actual_cost.nil?}
   validates_presence_of :dispute_reason, :if => :dispute_at
   validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, :if => :dispute_resolved_reason || :dispute_resolved_at
   # only do this validation if it hasn't been ordered yet. Update errors caused by notification sending
@@ -290,9 +290,6 @@ class OrderDetail < ActiveRecord::Base
     change_status!(OrderStatus.complete.first) do |od|
       od.fulfilled_at = event_time
       od.assign_price_policy(event_time)
-      # If there isn't a price policy for that date the user can use, we want to prevent the user
-      # from purchasing
-      raise NUCore::PurchaseException.new(I18n.t('price_policies.errors.none_exist_for_date')) unless od.price_policy
     end
   end
 
@@ -455,8 +452,8 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def update_account(new_account)
-    self.account_id = new_account.id
-    assign_estimated_price(new_account)
+    self.account = new_account
+    assign_estimated_price(account)
   end
 
   def assign_estimated_price(second_account=nil, date = Time.zone.now)
@@ -473,7 +470,6 @@ class OrderDetail < ActiveRecord::Base
 
   def assign_estimated_price!(second_account=nil, date = Time.zone.now)
     assign_estimated_price(second_account, date)
-    raise NUCore::PurchaseException.new(I18n.t('price_policies.errors.none_exist_for_date')) unless estimated_cost
   end
 
   def assign_estimated_price_from_policy(price_policy)

@@ -119,7 +119,7 @@ describe Product do
       Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @user.reload
 
-      @user_price_policy_ids = @user.price_groups.map(&:id)
+      @user_price_group_ids = @user.price_groups.map(&:id)
     end
     it 'should not be purchasable if it is archived' do
       @product.update_attributes :is_archived => true
@@ -136,7 +136,7 @@ describe Product do
     end
     
     it "should not be purchasable if there are no pricing rules ever" do
-      @product.should_not be_can_purchase(@user_price_policy_ids)
+      @product.should_not be_can_purchase(@user_price_group_ids)
     end
 
     it "should not be purchasable if there is no price rule for a user, but there are current price rules" do
@@ -145,7 +145,7 @@ describe Product do
                                               :start_date => Time.zone.now - 1.day, 
                                               :expire_date => Time.zone.now + 7.days,
                                               :can_purchase => true)
-      @product.should_not be_can_purchase(@user_price_policy_ids)
+      @product.should_not be_can_purchase(@user_price_group_ids)
     end
 
     it "should be purchasable if there is a current price rule for the user's group" do
@@ -154,7 +154,7 @@ describe Product do
                                               :start_date => Time.zone.now - 1.day, 
                                               :expire_date => Time.zone.now + 7.days,
                                               :can_purchase => true)
-      @product.should be_can_purchase(@user_price_policy_ids)
+      @product.should be_can_purchase(@user_price_group_ids)
     end
     
     it "should be purchasable if the user has an expired price rule where they were allowed to purchase" do
@@ -163,7 +163,7 @@ describe Product do
                                               :start_date => Time.zone.now - 7.days, 
                                               :expire_date => Time.zone.now - 1.day,
                                               :can_purchase => true)
-      @product.should be_can_purchase(@user_price_policy_ids)
+      @product.should be_can_purchase(@user_price_group_ids)
     end
 
     it "should not be purchasable if there is a current rule, but marked as can_purchase = false" do
@@ -172,7 +172,7 @@ describe Product do
                                               :start_date => Time.zone.now - 1.day, 
                                               :expire_date => Time.zone.now + 7.days,
                                               :can_purchase => false)
-      @product.should_not be_can_purchase(@user_price_policy_ids)
+      @product.should_not be_can_purchase(@user_price_group_ids)
     end
     
     it 'should not be purchasable if the most recent expired policy is marked can_purchase = false' do
@@ -186,7 +186,7 @@ describe Product do
                                               :start_date => Time.zone.now - 5.day, 
                                               :expire_date => Time.zone.now + 4.days,
                                               :can_purchase => false)
-      @product.should_not be_can_purchase(@user_price_policy_ids)
+      @product.should_not be_can_purchase(@user_price_group_ids)
     end
 
     it 'should be purchasable if the most recent expired policy is can_purchase, but old ones arent' do
@@ -200,7 +200,80 @@ describe Product do
                                               :start_date => Time.zone.now - 5.day, 
                                               :expire_date => Time.zone.now + 4.days,
                                               :can_purchase => true)
-      @product.should be_can_purchase(@user_price_policy_ids)
+      @product.should be_can_purchase(@user_price_group_ids)
+    end
+
+    it 'should be purchasable if there is a current policy with can_purchase, but a future one that cant' do
+      @current_price_policy = TestPricePolicy.create!(:price_group => @price_group, 
+                                              :product => @product, 
+                                              :start_date => Time.zone.now - 7.day, 
+                                              :expire_date => Time.zone.now + 1.day,
+                                              :can_purchase => true)
+      @future_price_policy2 = TestPricePolicy.create!(:price_group => @price_group, 
+                                              :product => @product, 
+                                              :start_date => Time.zone.now + 2.day, 
+                                              :expire_date => Time.zone.now + 4.days,
+                                              :can_purchase => false)
+      @product.current_price_policies.should == [@current_price_policy]
+      @product.should be_can_purchase(@user_price_group_ids)
+    end
+
+    it 'should not be purchasable if there is a current policy without can_purchase, but a future one that can' do
+      @current_price_policy = TestPricePolicy.create!(:price_group => @price_group, 
+                                                       :product => @product, 
+                                                       :start_date => Time.zone.now - 7.day, 
+                                                       :expire_date => Time.zone.now + 1.day,
+                                                       :can_purchase => false)
+      @future_price_policy2 = TestPricePolicy.create!(:price_group => @price_group, 
+                                                      :product => @product, 
+                                                      :start_date => Time.zone.now + 2.day, 
+                                                      :expire_date => Time.zone.now + 4.days,
+                                                      :can_purchase => true)
+      @product.should_not be_can_purchase(@user_price_group_ids)
+    end
+    it 'should be purchasable if there are no current policies, but two future policies, one of which is purchasable and one is not' do
+      @product.current_price_policies.should be_empty
+      @price_policy_pg1 = TestPricePolicy.create!(:price_group => @price_group, 
+                                                  :product => @product, 
+                                                  :start_date => Time.zone.now + 2.day, 
+                                                  :expire_date => Time.zone.now + 4.days,
+                                                  :can_purchase => true)
+      @price_policy_pg2 = TestPricePolicy.create!(:price_group => @price_group2, 
+                                                      :product => @product, 
+                                                      :start_date => Time.zone.now + 2.day, 
+                                                      :expire_date => Time.zone.now + 4.days + 1.second,
+                                                      :can_purchase => false)
+      Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group2)
+      @user_price_group_ids = @user.reload.price_groups.map(&:id)
+      @product.should be_can_purchase(@user_price_group_ids)
+    end
+
+    it 'should not be purchasable if there are no current policies, and most recent for each group cannot can_purchase' do
+      @price_policy_pg1_1 = TestPricePolicy.create!(:price_group => @price_group, 
+                                                  :product => @product, 
+                                                  :start_date => Time.zone.now - 7.days, 
+                                                  :expire_date => Time.zone.now - 5.days,
+                                                  :can_purchase => false)
+      @price_policy_pg1_2 = TestPricePolicy.create!(:price_group => @price_group, 
+                                                  :product => @product, 
+                                                  :start_date => Time.zone.now - 4.days, 
+                                                  :expire_date => Time.zone.now - 4.days,
+                                                  :can_purchase => false)
+
+      @price_policy_pg2_1 = TestPricePolicy.create!(:price_group => @price_group2, 
+                                                  :product => @product, 
+                                                  :start_date => Time.zone.now - 7.days, 
+                                                  :expire_date => Time.zone.now - 5.days,
+                                                  :can_purchase => false)
+      @price_policy_pg2_2 = TestPricePolicy.create!(:price_group => @price_group2, 
+                                                  :product => @product, 
+                                                  :start_date => Time.zone.now - 5.days, 
+                                                  :expire_date => Time.zone.now - 4.days,
+                                                  :can_purchase => false)
+      Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group2)
+      @user_price_group_ids = @user.reload.price_groups.map(&:id)
+      @product.should_not be_can_purchase(@user_price_group_ids)
+
     end
 
   end
