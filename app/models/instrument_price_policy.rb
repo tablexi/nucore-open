@@ -155,6 +155,8 @@ class InstrumentPricePolicy < PricePolicy
     unless usage_rate.to_f == 0
       usage_minutes   = ([act_end_at, res_end_at].min - act_start_at)/60
       usage_intervals = (usage_minutes / usage_mins).ceil
+      # Make sure we always have at least one interval
+      usage_intervals = [usage_intervals, 1].max
       usage_discount = 0
       product.schedule_rules.each do |sr|
         usage_discount += sr.percent_overlap(act_start_at, [act_end_at, res_end_at].min) * sr.discount_percent

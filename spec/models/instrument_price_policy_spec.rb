@@ -418,7 +418,6 @@ describe InstrumentPricePolicy do
     attrs.merge(overrides)
   end
   
-  #TK WTF?
   context "actual cost calculation tests" do
     before :each do
       @facility         = Factory.create(:facility)
@@ -427,30 +426,74 @@ describe InstrumentPricePolicy do
       @instrument       = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account => @facility_account))
       @ipp=@instrument.instrument_price_policies.create(ipp_attributes(
         :usage_rate => 100,
-        :usage_subsidy => 100,
+        :usage_subsidy => 99,
         :usage_mins => 15,
         :overage_rate => nil,
         :overage_subsidy => nil,
         :reservation_rate => 0
       ))
+      @now = Time.zone.now
+      # set reservation window to usage minutes from the price policy
+      @reservation = Reservation.new(:reserve_start_at => @now,
+                                     :reserve_end_at => @now + @ipp.usage_mins.minutes)
     end
-    it "should correctly calculate cost with usage rate"
-    it "should correctly calculate cost with usage rate and subsidy"
+    
+    it 'should return zero for zero priced policy' do
+      @ipp.update_attributes(:usage_rate => 0, :usage_subsidy => 0)
+      @costs = @ipp.calculate_cost_and_subsidy(@reservation)
+      @costs.should == {:cost => 0, :subsidy => 0}
+    end
+    it 'should return minimum cost for a zero priced policy' do
+      @ipp.update_attributes(:usage_rate => 0, :usage_subsidy => 0, :minimum_cost => 20)
+      @costs = @ipp.calculate_cost_and_subsidy(@reservation)
+      @costs.should == {:cost => 20, :subsidy => 0}
+    end
+
+    it "should correctly calculate cost with usage rate and subsidy" do
+      @reservation.actual_start_at = @reservation.reserve_start_at
+      @reservation.actual_end_at = @reservation.reserve_end_at
+      @costs = @ipp.calculate_cost_and_subsidy(@reservation)
+      @costs.should == {:cost => 100, :subsidy => 99}
+    end
 
     it "should correctly calculate cost with usage rate and subsidy and overage using usage rate for overage rate and usage subsidy for overage subsidy" do
-      @reservation = Reservation.new
-
-      # set reservation window to usage minutes from the price policy
-      @reservation.reserve_start_at = Time.zone.now
-      @reservation.reserve_end_at   = @reservation.reserve_start_at + @ipp.usage_mins.minutes
-
       # actual usage == twice as long as the reservation window
-      @reservation.actual_start_at  = @reservation.reserve_start_at
-      @reservation.actual_end_at    = @reservation.actual_start_at + (@ipp.usage_mins*2).minutes
+      @reservation.actual_start_at = @reservation.reserve_start_at
+      @reservation.actual_end_at =  @reservation.actual_start_at + (@ipp.usage_mins*2).minutes
       
       @costs = @ipp.calculate_cost_and_subsidy(@reservation)
 
       @costs[:subsidy].should == @ipp.usage_subsidy * 2
+    end
+
+    it 'should have at least one block even if the actual times are within a minute of each other' do
+      @reservation.actual_start_at = @reservation.reserve_start_at
+      @reservation.actual_end_at =  @reservation.actual_start_at + 10.seconds
+
+      @costs = @ipp.calculate_cost_and_subsidy(@reservation)
+      @costs[:cost].should == 100
+      @costs[:subsidy].should == 99
+    end
+
+    context 'overage' do
+      before :each do
+        @ipp.update_attributes(:overage_rate => 200, :overage_subsidy => 199)
+      end
+      it 'should not overage for less than one minute' do
+        @reservation.actual_start_at = @reservation.reserve_start_at
+        @reservation.actual_end_at = @reservation.reserve_end_at + 10.seconds
+        @costs = @ipp.calculate_cost_and_subsidy(@reservation)
+        @costs[:cost].should == 100
+        @costs[:subsidy].should == 99
+      end
+
+      it 'should charge a full interval for more than one minute over' do
+        @reservation.actual_start_at = @reservation.reserve_start_at
+        @reservation.actual_end_at = @reservation.reserve_end_at + 61.seconds
+        @costs = @ipp.calculate_cost_and_subsidy(@reservation)
+        @costs[:cost].should == 300
+        @costs[:subsidy].should == 298
+      end
     end
     
     it "should correctly calculate cost with reservation rate, with and without actual hours"
@@ -460,7 +503,12 @@ describe InstrumentPricePolicy do
     it "should correctly calculate cost with usage and overage rate and subsidy"
     it "should correctly calculate cost with reservation and overage rate"
     it "should correctly calculate cost with reservation and overage rate and subsidy"
-    it "should return nil for calculate cost with reservation and overage rate without actual hours"
+    it "should return nil for calculate cost with reservation and overage rate without actual hours" do
+      @reservation.actual_start_at = nil
+      @reservation.actual_end_at = nil
+      @ipp.update_attributes(:overage_rate => 120, :overage_subsidy => 119)
+      @ipp.calculate_cost_and_subsidy(@reservation).should be_nil
+    end
     it "should correctly calculate cost with usage, reservation, and overage rate and subsidy"
     it "should correctly calculate cost across time changes"
     it "should return nil for cost if purchase is restricted"
