@@ -111,6 +111,18 @@ describe FacilityOrderDetailsController do
         do_request
         @order_detail.reload.state.should == 'cancelled'
       end
+      it 'should render edit on failure' do
+        maybe_grant_always_sign_in :director
+        OrderDetail.any_instance.stubs(:save!).raises(ActiveRecord::RecordInvalid)
+        do_request
+        response.should render_template :edit
+        should set_the_flash
+      end
+      it 'should redirect to timeline view on success' do
+        maybe_grant_always_sign_in :director
+        do_request
+        response.should redirect_to timeline_facility_reservations_path
+      end
     end
 
   end

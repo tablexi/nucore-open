@@ -22,8 +22,8 @@ class OrderDetail < ActiveRecord::Base
 
   validates_presence_of :product_id, :order_id
   validates_numericality_of :quantity, :only_integer => true, :greater_than_or_equal_to => 1
-  validates_numericality_of :actual_cost, :if => lambda { |o| o.actual_cost_changed? && !o.actual_cost.nil?}
-  validates_numericality_of :actual_subsidy, :if => lambda { |o| o.actual_subsidy_changed? && !o.actual_cost.nil?}
+  validates_numericality_of :actual_cost, :greater_than_or_equal_to => 0, :if => lambda { |o| o.actual_cost_changed? && !o.actual_cost.nil?}
+  validates_numericality_of :actual_subsidy, :greater_than_or_equal_to => 0, :if => lambda { |o| o.actual_subsidy_changed? && !o.actual_cost.nil?}
   validates_presence_of :dispute_reason, :if => :dispute_at
   validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, :if => :dispute_resolved_reason || :dispute_resolved_at
   # only do this validation if it hasn't been ordered yet. Update errors caused by notification sending

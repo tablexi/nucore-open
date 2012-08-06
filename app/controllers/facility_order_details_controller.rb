@@ -88,7 +88,7 @@ class FacilityOrderDetailsController < ApplicationController
         end
         @order_detail.save!
         flash[:notice] = 'The order has been updated successfully'
-        redirect_to (@order_detail.reservation ? facility_reservations_path(current_facility) : facility_orders_path(current_facility)) and return
+        redirect_to (@order_detail.reservation ? timeline_facility_reservations_path(current_facility) : facility_orders_path(current_facility)) and return
       rescue Exception => e
         flash.now[:error] = 'An error was encounted while updating the order'
         Rails.logger.warn "#{e.message}\n#{e.backtrace.join("\n")}"
