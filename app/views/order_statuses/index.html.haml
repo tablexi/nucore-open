@@ -18,7 +18,8 @@
       %td=h root.name
     - children_for_facility(root, current_facility.id) do |child|
       %tr
-        %td= link_to('Remove', facility_order_status_path(current_facility, child), :confirm => 'Are you sure?', :method => :delete)
+        %td= link_to('Remove', facility_order_status_path(current_facility, child), :confirm => 'Are you sure?', :method => :delete) if child.editable?
         %td.indented_lots
           =h child.name
-          %span.indented== (#{link_to('Edit', edit_facility_order_status_url(current_facility, child))})
+          - if child.editable?
+            %span.indented (#{link_to('Edit', edit_facility_order_status_url(current_facility, child))})

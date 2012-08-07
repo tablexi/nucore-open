@@ -28,4 +28,17 @@ module SettingsHelper
     Settings.feature.send(:"#{feature}_on")
   end
 
+  #
+  # Used to turn on an off a feature. Most useful for tests:
+  # [_feature_]
+  #   If you want to change 'feature.password_update_on'
+  #   then this parameter would be :password_update
+  # [_value_]
+  #   If set to false, it will disable the feature
+  def self.enable_feature(feature, value=true)
+    Settings.feature.send(:"#{feature}_on=", !!value) # !! forces to boolean
+  end
+
+
+
 end

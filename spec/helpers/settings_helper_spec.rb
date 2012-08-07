@@ -29,4 +29,5 @@ describe SettingsHelper do
       SettingsHelper::fiscal_year_end(DateTime.new(2014, 5, 14)).should == Time.zone.parse('2015-02-28').end_of_day
     end
   end
+
 end

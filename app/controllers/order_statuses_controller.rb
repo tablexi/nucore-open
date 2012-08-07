@@ -5,7 +5,9 @@ class OrderStatusesController < ApplicationController
   before_filter :init_current_facility
 
   load_and_authorize_resource
-
+  # Disallow editing root statuses
+  before_filter :ensure_editable, :only => [:edit, :update, :destroy]
+  
   layout 'two_column'
 
   def initialize
@@ -32,7 +34,7 @@ class OrderStatusesController < ApplicationController
   # POST /order_statuses
   def create
     @order_status = current_facility.order_statuses.new(params[:order_status])
-
+    
     if @order_status.save
       flash[:notice] = 'The Order Status was successfully created.'
       redirect_to facility_order_statuses_url
@@ -55,19 +57,25 @@ class OrderStatusesController < ApplicationController
 
   # DELETE /facilities/:facility_id/order_statuses/:id
   def destroy
-    order_status = current_facility.order_statuses.find(params[:id])
-    parent_status = order_status.root
-    order_status.transaction do
+    @order_status = current_facility.order_statuses.find(params[:id])
+    parent_status = @order_status.root
+    @order_status.transaction do
       begin
         # used instead of update_all so vestal_versions can do its thing; annoying, I know
-        order_status.order_details.each{ |os| os.update_attribute(:order_status, parent_status) }
-        OrderStatus.delete(order_status)
+        @order_status.order_details.each{ |os| os.update_attribute(:order_status, parent_status) }
+        @order_status.destroy
         flash[:notice] = 'The order status was successfully removed.'
-      rescue
+      rescue Exception => e
         flash[:error] = 'An error was encountered while removing the order status.'
         raise ActiveRecord::Rollback
       end
     end
     redirect_to facility_order_statuses_url
+  end
+
+  private
+
+  def ensure_editable
+    raise ActiveRecord::RecordNotFound unless @order_status.editable?
   end
 end

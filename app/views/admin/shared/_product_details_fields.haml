@@ -9,6 +9,11 @@
   - else
     %p.instruction= send("facility_#{f.object.class.name.downcase}_url", current_facility, 'url-name')
   = f.text_field :url_name
+- if SettingsHelper.feature_on? :product_specific_contacts
+  %li 
+    = f.label :contact_email
+    %p.instruction= t 'shared.product_details_fields.contact_email', :facility_email => current_facility.email
+    = f.text_field :contact_email
 %li
   = f.label :description
   %p.instruction= t('shared.product_details_fields.description')

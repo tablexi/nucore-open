@@ -1,7 +1,12 @@
 require 'spec_helper'
 
 describe Product do
-
+  class TestProduct < Product
+    def account_required
+      false
+    end
+  end
+  
   before :each do
     @facility         = Factory.create(:facility)
     @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
@@ -40,12 +45,70 @@ describe Product do
     it "should return all current price policies"
   end
 
-  context 'can_purchase?' do
-    class TestProduct < Product
-      def account_required
-        false
+  context 'email' do
+    before :each do
+      SettingsHelper::enable_feature(:expense_accounts, false)
+      @facility = Factory.create(:facility, :email => 'facility@example.com')
+      @product = TestProduct.create!(:contact_email => 'product@example.com', :facility => @facility, :name => 'Test Product', :url_name => 'test')
+    end
+    context 'product specific enabled' do
+      before :all do
+        @original_setting = SettingsHelper::feature_on? :product_specific_contacts
+        SettingsHelper::enable_feature(:product_specific_contacts)
+      end
+      after :all do
+        SettingsHelper::enable_feature(:product_specific_contacts, @original_setting)
+      end
+
+      it "should return the product's email if it has it" do
+        @product.email.should == 'product@example.com'
+      end
+      it "should return the facility's email if no product email" do
+        @product.contact_email = ''
+        @product.email.should == 'facility@example.com'
+      end
+      it 'should validate with the product email set' do
+        @product.should be_valid
+      end
+      it "should validate with the facility's email set" do
+        @product.contact_email = ''
+        @product.should be_valid
+      end
+      it 'should not validate without an email on either product or facility' do
+        @facility.update_attributes!(:email => '')
+        @product.contact_email = ''
+        @product.should_not be_valid
+        @product.errors.full_messages.should include "Contact email must be set on either the product or the facility"
       end
     end
+    context 'product specific disabled' do
+      before :all do
+        @original_setting = SettingsHelper::feature_on? :product_specific_contacts
+        SettingsHelper::enable_feature(:product_specific_contacts, false)
+      end
+      after :all do
+        SettingsHelper::enable_feature(:product_specific_contacts, @original_setting)
+      end
+      it "should return the facility's email address even if the product has an email" do
+        @product.email.should == 'facility@example.com'
+      end
+      it "should validate if the product email is set" do
+        @product.should be_valid
+      end
+      it "should validate if the product email is not set, but the the facility is" do
+        @product.contact_email = ''
+        @product.should be_valid
+      end
+      it "should validate even if the facility's email is blank" do
+        @facility.update_attributes!(:email => '')
+        @product.contact_email = ''
+        @product.should be_valid
+      end
+    end
+  end
+
+  context 'can_purchase?' do
+    
     class TestPricePolicy < PricePolicy
     end
     before :each do

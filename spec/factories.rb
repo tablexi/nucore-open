@@ -3,6 +3,7 @@ require File.expand_path('factories_env', File.dirname(__FILE__))
 
 Factory.define_default :facility, :class => Facility do |f|
   f.sequence(:name) { |n| "Facility#{n}" }
+  f.sequence(:email) { |n| "facility-#{n}@example.com" }
   f.sequence(:abbreviation) { |n| "FA#{n}" }
   f.short_description 'Short Description'
   f.description 'Facility Description'

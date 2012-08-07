@@ -2,19 +2,20 @@ require 'spec_helper'
 require 'timecop'
 
 describe OrderDetail do
-
   before(:each) do
+    Settings.order_details.status_change_hooks = nil
     @facility = Factory.create(:facility)
     @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
     @user     = Factory.create(:user)
     @item     = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
     @item.should be_valid
     @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
-    @order    = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id))
+    @order    = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
     @order.should be_valid
     @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
     @order_detail.state.should == 'new'
     @order_detail.version.should == 1
+    @order_detail.order_status.should be_nil
   end
 
   context 'bundle' do
@@ -306,7 +307,9 @@ describe OrderDetail do
       Timecop.travel(2.days.from_now) do
         [@no_actuals_od, @actuals_od, @both_od, @no_pp_od].each do |od|
           od.change_status!(OrderStatus.find_by_name('In Process'))
+          od.state.should == 'inprocess'
           od.change_status!(OrderStatus.find_by_name('Complete'))
+          od.state.should == 'complete'
         end
       end
 
@@ -762,7 +765,6 @@ describe OrderDetail do
     end
   end
 
-
   context 'cancel_reservation' do
     before :each do
       start_date=Time.zone.now+1.day
@@ -804,7 +806,7 @@ describe OrderDetail do
       @order_detail.actual_cost.should == @order_detail.price_policy.cancellation_cost
       @order_detail.actual_subsidy.should == 0
     end
-
+    
   end
 
 end

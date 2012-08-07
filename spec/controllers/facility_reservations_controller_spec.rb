@@ -1,6 +1,8 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe FacilityReservationsController do
+  include DateHelper
+
   render_views
 
   before(:all) { create_users }
@@ -20,11 +22,13 @@ describe FacilityReservationsController do
       :user => @director,
       :created_by => @director.id,
       :account => @account,
-      :ordered_at => Time.zone.now
+      :ordered_at => Time.zone.now,
+      :state => 'purchased'
     )
     @reservation=Factory.create(:reservation, :instrument => @product)
     @reservation.should_not be_new_record
     @order_detail=Factory.create(:order_detail, :order => @order, :product => @product, :reservation => @reservation)
+    @order_detail.set_default_status!
     @params={ :facility_id => @authable.url_name, :order_id => @order.id, :order_detail_id => @order_detail.id, :id => @reservation.id }
   end
 
@@ -202,15 +206,49 @@ describe FacilityReservationsController do
     before :each do
       @method=:post
       @action=:create
+      @time = 1.hour.from_now.change(:sec => 0)
       @params={
         :facility_id => @authable.url_name,
         :instrument_id => @product.url_name,
-        :reservation => Factory.attributes_for(:reservation)
+        :reservation => Factory.attributes_for(:reservation, :reserve_start_at => @time, :reserve_end_at => @time + 1.hour)
       }
+      parametrize_dates(@params[:reservation], :reserve)
     end
 
-    it_should_allow_operators_only :redirect
+    it_should_allow_operators_only(:redirect) {}
+    
+    context 'while signed in' do
+      before :each do
+        maybe_grant_always_sign_in :director
+      end
+      context 'a success' do
+        before(:each) { do_request }
+        it 'should create the reservation' do
+          assigns[:reservation].should_not be_nil
+          assigns[:reservation].should_not be_new_record
+        end
+        it 'should be an admin reservation' do
+          assigns[:reservation].should be_admin
+        end
+        it 'should set the times' do
+          assigns[:reservation].reserve_start_at.should == @time
+          assigns[:reservation].reserve_end_at.should == (@time + 1.hour)
+        end
+        it "should redirect to the facility's schedule page" do
+          response.should redirect_to facility_instrument_schedule_path
+        end
+      end
 
+      context 'fails validations' do
+        it 'should not allow a conflict with an existing reservation' do
+          @params[:reservation] = Factory.attributes_for(:reservation)
+          parametrize_dates(@params[:reservation], :reserve)
+          do_request
+          assigns[:reservation].should be_new_record
+          response.should render_template :new
+        end
+      end
+    end
   end
 
 

@@ -1,4 +1,6 @@
 class Notifier < ActionMailer::Base
+  add_template_helper TranslationHelper
+
   default :from => Settings.email.from, :content_type => 'multipart/alternative'
 
   # Welcome user, login credentials.  CC to PI and Department Admin.
@@ -62,10 +64,17 @@ class Notifier < ActionMailer::Base
     send_nucore_mail args[:user].email, t('notifier.statement.subject')
   end
 
+  def order_detail_status_change(order_detail, old_status, new_status, to)
+    @order_detail = order_detail
+    @old_status = old_status
+    @new_status = new_status
+    template = "order_status_changed_to_#{new_status.downcase_name}"
+    send_nucore_mail to, t("notifier.#{template}.subject", :order_detail => order_detail, :user => order_detail.order.user, :product => order_detail.product), template
+  end
 
   private
 
-  def send_nucore_mail(to, subject)
-    mail(:subject => subject, :to => Settings.email.fake.enabled ? Settings.email.fake.to : to)
+  def send_nucore_mail(to, subject, template_name=nil)
+    mail(:subject => subject, :to => Settings.email.fake.enabled ? Settings.email.fake.to : to, :template_name => template_name)
   end
 end

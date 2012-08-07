@@ -31,7 +31,6 @@ describe Order do
     @order.new?.should be true
   end
 
-
   context 'total cost' do
 
     before :each do
@@ -157,16 +156,28 @@ describe Order do
       lambda {@order.purchase!}.should raise_exception AASM::InvalidTransition
     end
 
-    it "place_order should mark the order with ordered_at date, purchased status, add to facility.orders collection" do
-      @order.order_details.create(:product_id => @service.id, :quantity => 1, :price_policy_id => @service_pp.id, :account_id => @account.id, :actual_cost => 10, :actual_subsidy => 5)
-      define_open_account(@service.account, @account.account_number)
-      @order.validate_order!.should be true
-      @order.purchase!.should be true
-      @order.ordered_at.should_not be_nil
-
-      # should add account to facility orders, accounts (through order_details) collections
-      @facility.orders.should == [@order]
-      @facility.order_details.accounts.should == [@account]
+    context 'successfully moving to purchase' do
+      before :each do
+        @order.order_details.create(:product_id => @service.id, :quantity => 1, :price_policy_id => @service_pp.id, :account_id => @account.id, :actual_cost => 10, :actual_subsidy => 5)
+        define_open_account(@service.account, @account.account_number)
+        @order.validate_order!.should be true
+      end
+      it 'should start off with an empty order status' do
+        @order.order_details.all? { |od| od.order_status.should be_nil }
+      end
+      it 'should set the ordered_at' do
+        @order.purchase!.should be_true
+        @order.ordered_at.should_not be_nil
+      end
+      it 'should add to facility.orders collection' do
+        @order.purchase!.should be_true
+        @facility.orders.should == [@order]
+        @facility.order_details.accounts.should == [@account]
+      end
+      it 'purchase should mark the initial state to the products default' do
+        @order.purchase!.should be_true
+        @order.order_details.all? { |od| od.order_status.should == @order_status }
+      end
     end
 
     it "should check for facility active/inactive changes before purchase" do

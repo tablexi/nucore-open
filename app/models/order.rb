@@ -30,7 +30,7 @@ class Order < ActiveRecord::Base
     transitions :to => :validated, :from => [:new, :validated], :guard => :cart_valid?
   end
 
-  aasm_event :purchase do
+  aasm_event :purchase, :success => :move_order_details_to_default_status do
     transitions :to => :purchased, :from => :validated, :guard => :place_order?
   end
 
@@ -40,6 +40,10 @@ class Order < ActiveRecord::Base
 
   [ :total, :cost, :subsidy, :estimated_total, :estimated_cost, :estimated_subsidy ].each do |method_name|
     define_method(method_name) { total_cost method_name }
+  end
+
+  def move_order_details_to_default_status
+    order_details.each { |od| od.set_default_status! }
   end
 
   def cart_valid?

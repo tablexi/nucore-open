@@ -103,7 +103,30 @@ describe OrdersController do
         define_open_account(@instrument.account, @account.account_number)
         @reservation = place_reservation_for_instrument(@staff, @instrument, @account, Time.zone.now)
         @order = @reservation.order_detail.order
+        @reservation.order_detail.order_status.should be_nil
         @params.merge!({:id => @order.id, :order_id => @order.id})
+      end
+
+      it 'should purchase the order' do
+        sign_in @staff
+        do_request
+        assigns[:order].state.should == 'purchased'
+      end
+
+      it 'should set the status of the order detail to the products default status' do
+        sign_in @staff
+        do_request
+        assigns[:order].order_details.size.should == 1
+        assigns[:order].order_details.first.order_status.should == OrderStatus.new_os.first
+      end
+
+      it 'should set the status of the order detail to the products default status' do
+        @order_status = Factory.create(:order_status, :parent => OrderStatus.inprocess.first)
+        @instrument.update_attributes!(:initial_order_status_id => @order_status.id)
+        sign_in @staff
+        do_request
+        assigns[:order].order_details.size.should == 1
+        assigns[:order].order_details.first.order_status.should == @order_status
       end
 
       it 'should redirect to my reservations on a successful purchase of a single reservation' do
@@ -151,7 +174,7 @@ describe OrdersController do
 
     context 'backdating' do
       before :each do
-        @order_detail = place_product_order(@staff, @authable, @item, @account)
+        @order_detail = place_product_order(@staff, @authable, @item, @account, false)
         @order.update_attribute(:ordered_at, nil)
         @params.merge!({:id => @order.id})
       end
