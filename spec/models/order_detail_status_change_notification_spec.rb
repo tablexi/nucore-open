@@ -54,6 +54,7 @@ describe OrderDetailStatusChangeNotification do
       @item     = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
       @item.should be_valid
       @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      define_open_account(@item.account, @account.account_number)
       @order    = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
       @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
       @order_detail.state.should == 'new'
