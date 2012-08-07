@@ -9,8 +9,6 @@ class OrderDetailStatusChangeNotification < ActiveRecord::Observer
     hooks_to_run.each { |hook| hook.on_status_change(order_detail, old_status, new_status) } if hooks_to_run
   end
 
-  private
-
   def self.status_change_hooks
     hash = Settings.try(:order_details).try(:status_change_hooks).try(:to_hash) || {}
     new_hash = {}
@@ -23,6 +21,8 @@ class OrderDetailStatusChangeNotification < ActiveRecord::Observer
     end
     new_hash
   end
+
+  private
 
   def self.build_hook(class_definition)
     if class_definition.respond_to? :to_hash

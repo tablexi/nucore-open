@@ -42,9 +42,7 @@ order_details:
   #   reconciled: ["ApprovalNotification::NotifyPurchaser", "ApprovalNotification::NotifyFacility"]
   status_change_hooks:
     pending_approval: StatusChangeNotifications::NotifyFacilityHook
-    approved: StatusChangeNotifications::NotifyPurchaserHook
-
-    
+    approved: StatusChangeNotifications::NotifyPurchaserHook    
 
 billing:
   review_period: <%= 7.days %>
