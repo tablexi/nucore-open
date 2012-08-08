@@ -142,7 +142,7 @@ GEM
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (~> 0.14.4)
-    rake (0.8.7)
+    rake (0.9.2.2)
     rdoc (3.12)
       json (~> 1.4)
     rspec (2.9.0)
@@ -213,7 +213,7 @@ DEPENDENCIES
   prawn_rails (= 0.0.5)
   rails (= 3.0.14)
   rails_config (= 0.2.5)
-  rake (= 0.8.7)
+  rake
   rspec-rails (= 2.9)
   ruby-debug19 (= 0.11.6)
   ruby-ole (= 1.2.11.1)
