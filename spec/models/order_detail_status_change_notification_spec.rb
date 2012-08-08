@@ -7,19 +7,20 @@ describe OrderDetailStatusChangeNotification do
     class DummyHook2; end
     class DummyHook3; end
   end
+  after :all do
+    Settings.reload_from_files(
+      Rails.root.join("config", "settings.yml").to_s,
+      Rails.root.join("config", "settings", "#{Rails.env}.yml").to_s,
+      Rails.root.join("config", "environments", "#{Rails.env}.yml").to_s
+    )
+  end
   context 'status change hooks' do
     # This before and after all is some nastiness to use a specific file for these tests, but
     # keep the original Settings for all other tests.
     before :all do
-      @old_settings = Settings
-      Settings = RailsConfig.load_files(Rails.root.join("spec", "support", "order_detail_status_change_notification_test.yaml"))
+      Settings.reload_from_files(Rails.root.join("spec", "support", "order_detail_status_change_notification_test.yaml"))
     end
-    after :all do
-      Object.send(:remove_const, :Settings)
-      Settings = @old_settings
-      Settings.reload!
-    end
-
+    
     before :each do
       @hooks = OrderDetailStatusChangeNotification.send(:status_change_hooks)
     end
