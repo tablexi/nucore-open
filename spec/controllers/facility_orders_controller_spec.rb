@@ -55,11 +55,11 @@ describe FacilityOrdersController do
   end
 
 
-  context 'show' do
+  context 'edit' do
 
     before :each do
       @method=:get
-      @action=:show
+      @action=:edit
       @params.merge!(:id => @order.id)
     end
 
@@ -67,7 +67,7 @@ describe FacilityOrdersController do
 
     it_should_allow_all facility_operators do
       assigns(:order).should == @order
-      should render_template 'show'
+      should render_template 'edit'
     end
 
   end
