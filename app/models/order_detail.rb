@@ -13,6 +13,7 @@ class OrderDetail < ActiveRecord::Base
   belongs_to :journal
   belongs_to :order
   belongs_to :assigned_user, :class_name => 'User', :foreign_key => 'assigned_user_id'
+  belongs_to :created_by_user, :class_name => 'User', :foreign_key => :created_by
   belongs_to :order_status
   belongs_to :account
   belongs_to :bundle, :foreign_key => 'bundle_product_id'
@@ -22,7 +23,7 @@ class OrderDetail < ActiveRecord::Base
 
   delegate :user, :facility, :to => :order
 
-  validates_presence_of :product_id, :order_id
+  validates_presence_of :product_id, :order_id, :created_by
   validates_numericality_of :quantity, :only_integer => true, :greater_than_or_equal_to => 1
   validates_numericality_of :actual_cost, :greater_than_or_equal_to => 0, :if => lambda { |o| o.actual_cost_changed? && !o.actual_cost.nil?}
   validates_numericality_of :actual_subsidy, :greater_than_or_equal_to => 0, :if => lambda { |o| o.actual_subsidy_changed? && !o.actual_cost.nil?}

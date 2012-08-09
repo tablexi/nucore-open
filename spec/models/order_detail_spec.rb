@@ -39,6 +39,10 @@ describe OrderDetail do
 
   end
 
+  it 'should have a created_by' do
+    should_not allow_value(nil).for(:created_by)
+  end
+
   it "should have a product" do
     should_not allow_value(nil).for(:product_id)
   end

@@ -158,7 +158,8 @@ describe Order do
 
     context 'successfully moving to purchase' do
       before :each do
-        @order.order_details.create(:product_id => @service.id, :quantity => 1, :price_policy_id => @service_pp.id, :account_id => @account.id, :actual_cost => 10, :actual_subsidy => 5)
+        order_attrs=Factory.attributes_for(:order_detail, :product_id => @service.id, :quantity => 1, :price_policy_id => @service_pp.id, :account_id => @account.id, :actual_cost => 10, :actual_subsidy => 5)
+        @order.order_details.create(order_attrs)
         define_open_account(@service.account, @account.account_number)
         @order.validate_order!.should be true
       end
@@ -181,7 +182,8 @@ describe Order do
     end
 
     it "should check for facility active/inactive changes before purchase" do
-      @order.order_details.create(:product_id => @service.id, :quantity => 1, :price_policy_id => @service_pp.id, :account_id => @account.id, :actual_cost => 10, :actual_subsidy => 5)
+      order_attrs=Factory.attributes_for(:order_detail, :product_id => @service.id, :quantity => 1, :price_policy_id => @service_pp.id, :account_id => @account.id, :actual_cost => 10, :actual_subsidy => 5)
+      @order.order_details.create(order_attrs)
       define_open_account(@service.account, @account.account_number)
       @order.validate_order!.should be true
 
@@ -193,7 +195,8 @@ describe Order do
     end
 
     it "should check for product active/inactive changes before purchase" do
-      @order.order_details.create(:product_id => @service.id, :quantity => 1, :price_policy_id => @service_pp.id, :account_id => @account.id, :actual_cost => 10, :actual_subsidy => 5)
+      order_attrs=Factory.attributes_for(:order_detail, :product_id => @service.id, :quantity => 1, :price_policy_id => @service_pp.id, :account_id => @account.id, :actual_cost => 10, :actual_subsidy => 5)
+      @order.order_details.create(order_attrs)
       define_open_account(@service.account, @account.account_number)
       @order.validate_order!.should be true
 
@@ -213,7 +216,7 @@ describe Order do
       define_open_account(@instrument.account, @account.account_number)
       @order_detail  = @order.order_details.create(:product_id      => @instrument.id,    :quantity => 1,
                                                    :price_policy_id => @instrument_pp.id, :account_id => @account.id,
-                                                   :estimated_cost  => 10,                :estimated_subsidy => 5)
+                                                   :estimated_cost  => 10, :estimated_subsidy => 5, :created_by => 0)
       @reservation   = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour     => 9,
                                                        :reserve_start_min  => 00,               :reserve_start_meridian => 'am',
                                                        :duration_value     => 60,               :duration_unit          => 'minutes',

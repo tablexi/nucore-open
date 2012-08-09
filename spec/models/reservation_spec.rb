@@ -72,8 +72,9 @@ describe Reservation do
       @pg_member     = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @account       = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
       @order         = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
-      @detail1       = @order.order_details.create(:product_id => @instrument.id, :quantity => 1, :account => @account)
-      @detail2       = @order.order_details.create(:product_id => @instrument.id, :quantity => 1)
+      order_attrs    = Factory.attributes_for(:order_detail, :product_id => @instrument.id, :quantity => 1)
+      @detail1       = @order.order_details.create(order_attrs.merge(:account => @account))
+      @detail2       = @order.order_details.create(order_attrs)
 
       @instrument.min_reserve_mins = 15
       @instrument.save

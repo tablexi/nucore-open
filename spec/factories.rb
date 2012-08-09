@@ -40,6 +40,7 @@ end
 
 Factory.define_default :order_detail, :class => OrderDetail do |o|
   o.quantity 1
+  o.created_by 0
 end
 
 Factory.define_default :nufs_account, :class => NufsAccount do |o|

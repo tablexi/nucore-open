@@ -114,7 +114,7 @@ class Order < ActiveRecord::Base
       quantity.times do
         group_id = max_group_id + 1
         product.bundle_products.each do |bp|
-          order_detail = self.order_details.create!(:product_id => bp.product.id, :quantity => bp.quantity, :bundle_product_id => product.id, :group_id => group_id, :account => account)
+          order_detail = self.order_details.create!(:product_id => bp.product.id, :quantity => bp.quantity, :bundle_product_id => product.id, :group_id => group_id, :account => account, :created_by => created_by)
           ods << order_detail
         end
       end
@@ -128,18 +128,18 @@ class Order < ActiveRecord::Base
       individual_quantity = separate ? 1        : quantity
       
       repeat.times do
-        order_detail = self.order_details.create!(:product_id => product.id, :quantity => individual_quantity, :account => account)
+        order_detail = self.order_details.create!(:product_id => product.id, :quantity => individual_quantity, :account => account, :created_by => created_by)
         ods << order_detail
       end
 
     # products which have reservations (instruments) should each get their own order_detail
     when (product.respond_to?(:reservations) and quantity > 1) then
       quantity.times do
-        order_detail = order_details.create!(:product_id => product.id, :quantity => 1, :account => account)
+        order_detail = order_details.create!(:product_id => product.id, :quantity => 1, :account => account, :created_by => created_by)
         ods << order_detail
       end
     else
-      order_detail = order_details.create!(:product_id => product.id, :quantity => quantity, :account => account)
+      order_detail = order_details.create!(:product_id => product.id, :quantity => quantity, :account => account, :created_by => created_by)
       ods << order_detail
     end
 
