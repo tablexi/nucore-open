@@ -86,6 +86,8 @@
   .grid_6.alpha
     %ul.form
       %li
+        %label= link_to t('.label.ordered.summary', :order_number => @order.id), edit_facility_order_path(current_facility, @order)
+      %li
         %label= t('.label.ordered.at')
         =h human_datetime(@order.ordered_at)
       %li
