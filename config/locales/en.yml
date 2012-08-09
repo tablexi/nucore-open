@@ -243,6 +243,12 @@ en:
       foot: "* Reflects only orders that the user has not been notified of yet."
       submit: "Send Notifications"
 
+  facility_orders:
+    edit:
+      head:
+        h1: "Summary Of Order #%{order_number}"
+        h2: "Order Detail #%{order_number}"
+
   facility_order_details:
     edit:
       head:
@@ -257,6 +263,7 @@ en:
           at: "Ordered At"
           for: "Ordered For"
           by: "Ordered By"
+          summary: "Summary Of Order #%{order_number}"
         fulfilled: "Fulfilled At"
         account: "Payment Source"
         assigned: "Assigned User"
@@ -777,6 +784,11 @@ en:
           no_orders: "No orders were selected to journal"
           fiscal_span: "Journals may not span multiple fiscal years. Please select only orders in the same fiscal year."
 
+    facility_orders:
+      add:
+        zero_quantity: "Please enter a quantity for the product you'd like to add"
+        error: "An error was encountered while adding the product %{product}."
+        success: "%{product} was successfully added to this order."
     facility_order_details:
       edit:
         notice:
