@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120809185703) do
+ActiveRecord::Schema.define(:version => 20120809205551) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -229,13 +229,14 @@ ActiveRecord::Schema.define(:version => 20120809185703) do
 
   create_table "orders", :force => true do |t|
     t.integer  "account_id"
-    t.integer  "user_id",                   :null => false
-    t.integer  "created_by",                :null => false
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
+    t.integer  "user_id",                           :null => false
+    t.integer  "created_by",                        :null => false
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
     t.datetime "ordered_at"
     t.integer  "facility_id"
-    t.string   "state",       :limit => 50
+    t.string   "state",               :limit => 50
+    t.integer  "merge_with_order_id"
   end
 
   add_index "orders", ["account_id"], :name => "sys_c008808"
