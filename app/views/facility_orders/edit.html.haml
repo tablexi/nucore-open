@@ -1,0 +1,13 @@
+- content_for :head_content do
+  = stylesheet_link_tag 'chosen'
+  = javascript_include_tag 'chosen.jquery.min'
+  = javascript_tag "$(function() { $('#product_add').chosen(); });"
+
+- content_for(:h1) { t '.head.h1', :order_number => @order.id }
+= render :partial => 'shared/order_details_table'
+= form_for @order, :url => facility_order_path(current_facility, @order) do
+  = text_field_tag :product_add_quantity, 0
+  = select_tag :product_add, options_for_select(current_facility.products.collect{|p| [ p.name, p.id ]})
+  %br
+  = submit_tag 'Add To Order', :class => 'btn', :id => :product_add_btn
+
