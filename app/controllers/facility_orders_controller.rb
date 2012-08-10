@@ -41,6 +41,7 @@ class FacilityOrdersController < ApplicationController
   def edit
     @order=current_facility.orders.find params[:id]
     @order_details=@order.order_details.paginate(:page => params[:page])
+    @merge_orders=Order.where(:merge_with_order_id => @order.id).all
   end
 
 
@@ -58,32 +59,46 @@ class FacilityOrdersController < ApplicationController
 
 
   def update
-    product=Product.find params[:product_add].to_i
-    original_order=Order.find params[:id].to_i
+    product=Product.find(params[:product_add].to_i)
+    order=original_order=Order.find(params[:id].to_i)
     quantity=params[:product_add_quantity].to_i
 
     if quantity <= 0
       flash[:notice]=I18n.t 'controllers.facility_orders.add.zero_quantity'
     else
-      @order=Order.create!(
+      order=Order.create!(
         :merge_with_order_id => original_order.id,
         :facility_id => original_order.facility_id,
         :account_id => original_order.account_id,
         :user_id => original_order.user_id,
         :created_by => current_user.id,
         :ordered_at => Time.zone.now
-      )
+      ) if merge?(product)
 
       begin
-        @order.add product, quantity
+        details=order.add product, quantity
+        details.each{|d| d.set_default_status! }
         flash[:notice]=I18n.t 'controllers.facility_orders.add.success', :product => product.name
       rescue Exception => e
         Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-        @order.destroy
+        order.destroy if order != original_order
         flash[:error]=I18n.t 'controllers.facility_orders.add.error', :product => product.name
       end
     end
 
     redirect_to edit_facility_order_path(current_facility, original_order)
+  end
+
+
+  private
+
+  def merge?(product)
+    products=product.is_a?(Bundle) ? product.products : [ product ]
+
+    products.each do |p|
+      return true if p.is_a?(Instrument) || (p.is_a?(Service) && (p.active_survey? || p.active_template?))
+    end
+
+    false
   end
 end
