@@ -7,75 +7,24 @@
 
   - if order_detail.product.is_a?(Instrument)
     %td
-      %ul
-        %li
-          - if order_detail.bundle
-            = link_to order_detail.bundle, facility_bundle_path(order_detail.bundle.facility, order_detail.bundle)
-            == &ndash; 
-          - if order_detail.product.is_hidden?
-            = order_detail.product
-          - else
-            = link_to order_detail.product, self.send("facility_#{order_detail.product.class.name.underscore}_path", order_detail.product.facility, order_detail.product)
-        - unless @order.validated?
-          %li.warning=h order_detail.validate_for_purchase
-        - if order_detail.reservation
-          %li.indented= link_to(order_detail.reservation, edit_order_order_detail_reservation_path(@order, order_detail, order_detail.reservation))
-        - else
-          %li.indented= link_to('Make a Reservation', new_order_order_detail_reservation_path(@order, order_detail))
+      = render :partial => 'instrument_desc', :locals => { :order_detail => order_detail }
     %td
-
 
   - elsif order_detail.product.is_a?(Service)
     %td
-      %ul
-        %li
-          - if order_detail.bundle
-            = link_to order_detail.bundle, facility_bundle_path(order_detail.bundle.facility, order_detail.bundle)
-            == &ndash; 
-          - if order_detail.product.is_hidden?
-            = order_detail.product
-          - else
-            = link_to order_detail.product, self.send("facility_#{order_detail.product.class.name.underscore}_path", order_detail.product.facility, order_detail.product)
-        - unless @order.validated?
-          %li.warning=h order_detail.validate_for_purchase
-        - if survey = order_detail.product.active_survey
-          - # if active_survey doesn't match response set survey, blow away the response set
-          - if order_detail.external_service_receiver && survey != order_detail.external_service_receiver.external_service
-            - order_detail.external_service_receiver.destroy
-            - order_detail.reload
-          - if order_detail.survey_completed?
-            %li.indented= link_to('Edit Online Order Form', survey.edit_url(order_detail))
-          - else
-            %li.indented= link_to('Complete Online Order Form', survey.new_url(order_detail))
-        - if order_detail.product.file_uploads.template.count > 0
-          - if order_detail.file_uploads.template_result.empty?
-            %li.indented= link_to('Upload Order Form', order_order_detail_order_file_path(@order, order_detail))
-          - else
-            %li.indented= "#{link_to('Uploaded Order Form', order_detail.file_uploads.template_result.first.file.url)} (#{link_to('Delete', order_order_detail_remove_order_file_path(@order, order_detail))})".html_safe
+      = render :partial => 'service_desc', :locals => { :order_detail => order_detail }
     - if order_detail.bundle
       %td.centered= order_detail.quantity
     - else
       %td.centered= text_field_tag "quantity#{order_detail.id}", order_detail.quantity, :value => order_detail.quantity, :size => 3
-
 
   - elsif order_detail.product.is_a?(Item)
     %td
-      %ul
-        %li
-          - if order_detail.bundle
-            = link_to order_detail.bundle, facility_bundle_path(order_detail.bundle.facility, order_detail.bundle)
-            == &ndash; 
-          - if order_detail.product.is_hidden?
-            = order_detail.product
-          - else
-            = link_to order_detail.product, self.send("facility_#{order_detail.product.class.name.underscore}_path", order_detail.product.facility, order_detail.product)
-        - if !@order.validated? && order_detail.validate_for_purchase
-          %li.warning=h order_detail.validate_for_purchase
+      = render :partial => 'item_desc', :locals => { :order_detail => order_detail }
     - if order_detail.bundle
       %td.centered= order_detail.quantity
     - else
       %td.centered= text_field_tag "quantity#{order_detail.id}", order_detail.quantity, :value => order_detail.quantity, :size => 3
-
 
   - if order_detail.cost_estimated?
     %td.currency= show_estimated_cost(order_detail)
