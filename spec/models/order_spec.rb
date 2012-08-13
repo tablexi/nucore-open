@@ -438,6 +438,23 @@ describe Order do
       @user.orders.create(Factory.attributes_for(:order, :created_by => @user2.id))
       @user.orders.first.should be_ordered_on_behalf_of
     end
+  end
 
+  context 'merge orders' do
+    before :each do
+      @user  = Factory.create(:user)
+      @order = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id))
+    end
+
+    it 'should not be mergeable' do
+      @order.should_not be_to_be_merged
+      @order.merge_order.should be_nil
+    end
+
+    it 'should be mergeable' do
+      @order2 = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id, :merge_with_order_id => @order.id))
+      @order2.should be_to_be_merged
+      @order2.merge_order.should == @order
+    end
   end
 end
