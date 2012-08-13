@@ -738,6 +738,10 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
     margin-top: 1em;
 }
 
+#merge-orders p {
+    margin-top: 4em;
+}
+
 
 /***
  * Product listing

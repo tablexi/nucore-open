@@ -245,7 +245,7 @@ en:
 
   facility_orders:
     edit:
-      attention: "The following order details need your attention before you can add to this order"
+      attention: "The following order details need your attention. Before you can add to this order you need to address them."
       head:
         h1: "Summary Of Order #%{order_number}"
         h2: "Order Detail #%{order_number}"
