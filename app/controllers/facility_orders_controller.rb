@@ -41,7 +41,7 @@ class FacilityOrdersController < ApplicationController
   def edit
     @order=current_facility.orders.find params[:id]
     @order_details=@order.order_details.paginate(:page => params[:page])
-    @merge_orders=Order.where(:merge_with_order_id => @order.id).all
+    @merge_orders=Order.where(:merge_with_order_id => @order.id, :created_by => current_user.id).all
   end
 
 

@@ -3,6 +3,7 @@ class FacilityOrderDetailsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility
+  before_filter :init_order_detail, :except => :remove_from_journal
 
   load_and_authorize_resource :class => OrderDetail
 
@@ -16,9 +17,6 @@ class FacilityOrderDetailsController < ApplicationController
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:id/edit
   def edit
-    @order        = Order.find_by_id_and_facility_id(params[:order_id], current_facility.id)
-    raise ActiveRecord::RecordNotFound unless @order
-    @order_detail = @order.order_details.find(params[:id])
     set_active_tab
     @in_open_journal=@order_detail.journal && @order_detail.journal.open?
 
@@ -45,10 +43,6 @@ class FacilityOrderDetailsController < ApplicationController
 
   # PUT /facilities/:facility_id/orders/:order_id/order_details/:id
   def update
-    @order        = Order.find(params[:order_id])
-    raise ActiveRecord::RecordNotFound unless @order
-    @order_detail = @order.order_details.find(params[:id])
-
     unless @order_detail.state == 'new' || @order_detail.state == 'inprocess' || can?(:update, @order_detail)
       raise ActiveRecord::RecordNotFound
     end
@@ -100,9 +94,6 @@ class FacilityOrderDetailsController < ApplicationController
 
   # POST /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/resolve_dispute
   def resolve_dispute
-    @order        = current_facility.orders.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:order_detail_id])
-
     unless current_user.manager_of?(current_facility) && @order_detail.dispute_at && @order_detail.dispute_resolved_at.nil?
       raise ActiveRecord::RecordNotFound
     end
@@ -133,8 +124,6 @@ class FacilityOrderDetailsController < ApplicationController
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/new_price
   def new_price
-    @order        = current_facility.orders.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:order_detail_id])
     qty           = params[:quantity].to_i
 
     cost    = qty * @order_detail.price_policy.unit_cost
@@ -157,6 +146,24 @@ class FacilityOrderDetailsController < ApplicationController
     flash[:notice]=I18n.t 'controllers.facility_order_details.remove_from_journal.notice'
     redirect_to edit_facility_order_order_detail_path(current_facility, od.order, od)
   end
+
+
+  def destroy
+    unless @order.to_be_merged?
+      flash[:notice]=I18n.t 'controllers.facility_order_details.destroy.notice'
+    else
+      begin
+        @order_detail.destroy
+        @order.destroy if @order.reload.order_details.blank?
+        flash[:notice]=I18n.t 'controllers.facility_order_details.destroy.success'
+      rescue => e
+        Rails.logger.error "#{e.message}:#{e.backtrace.join("\n")}"
+        flash[:error]=I18n.t 'controllers.facility_order_details.destroy.error', @order_detail.to_s
+      end
+    end
+
+    redirect_to edit_facility_order_path(current_facility, @order.merge_order)
+  end
   
 
   private
@@ -174,5 +181,11 @@ class FacilityOrderDetailsController < ApplicationController
     else
       @active_tab = "admin_orders"
     end
+  end
+
+  def init_order_detail
+    @order = Order.find(params[:order_id])
+    raise ActiveRecord::RecordNotFound unless @order
+    @order_detail = @order.order_details.find(params[:id] || params[:order_detail_id])
   end
 end
