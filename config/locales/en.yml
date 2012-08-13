@@ -245,6 +245,7 @@ en:
 
   facility_orders:
     edit:
+      attention: "The following order details need your attention before you can add to this order"
       head:
         h1: "Summary Of Order #%{order_number}"
         h2: "Order Detail #%{order_number}"
@@ -785,7 +786,7 @@ en:
           fiscal_span: "Journals may not span multiple fiscal years. Please select only orders in the same fiscal year."
 
     facility_orders:
-      add:
+      update:
         zero_quantity: "Please enter a quantity for the product you'd like to add"
         error: "An error was encountered while adding the product %{product}."
         success: "%{product} was successfully added to this order."
@@ -797,6 +798,10 @@ en:
           no_policy: "This order does not have a price policy assigned. Please ensure that there is a price policy for the date this order was fulfilled. Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
       remove_from_journal:
         notice: "The order has been removed from its journal"
+      destroy:
+        notice: "You cannot delete an order detail that isn't being merged"
+        error: "Could not delete order detail %{order_detail_id}"
+        success: "The order detail was successfully removed"
 
     reservations:
       create:

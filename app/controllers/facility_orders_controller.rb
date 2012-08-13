@@ -64,7 +64,7 @@ class FacilityOrdersController < ApplicationController
     quantity=params[:product_add_quantity].to_i
 
     if quantity <= 0
-      flash[:notice]=I18n.t 'controllers.facility_orders.add.zero_quantity'
+      flash[:notice]=I18n.t 'controllers.facility_orders.update.zero_quantity'
     else
       order=Order.create!(
         :merge_with_order_id => original_order.id,
@@ -78,11 +78,11 @@ class FacilityOrdersController < ApplicationController
       begin
         details=order.add product, quantity
         details.each{|d| d.set_default_status! }
-        flash[:notice]=I18n.t 'controllers.facility_orders.add.success', :product => product.name
+        flash[:notice]=I18n.t 'controllers.facility_orders.update.success', :product => product.name
       rescue Exception => e
         Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
         order.destroy if order != original_order
-        flash[:error]=I18n.t 'controllers.facility_orders.add.error', :product => product.name
+        flash[:error]=I18n.t 'controllers.facility_orders.update.error', :product => product.name
       end
     end
 
