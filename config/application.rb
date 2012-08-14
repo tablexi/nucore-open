@@ -20,7 +20,7 @@ module Nucore
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
     # Activate observers that should always be running.
-    config.active_record.observers = :order_detail_status_change_notification
+    config.active_record.observers = :order_detail_observer
     #:cacher, :garbage_collector, :forum_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
