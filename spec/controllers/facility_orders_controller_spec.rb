@@ -108,6 +108,194 @@ describe FacilityOrdersController do
 
   end
 
+
+  context 'update' do
+    before :each do
+      @method=:put
+      @action=:update
+      @params.merge!({
+        :id => @order.id,
+        :product_add => @product.id,
+        :product_add_quantity => 0
+      })
+    end
+
+    it_should_allow_operators_only :redirect, 'to submit product quantity 0 and get failure notice' do
+      flash[:notice].should be_present
+      assert_redirected_to edit_facility_order_path(@authable, @order)
+    end
+
+    context 'with quantity' do
+      before :each do
+        @params[:product_add_quantity]=1
+        @order.order_details.each{|od| od.destroy }
+      end
+
+      it_should_allow :director, 'to add an item to existing order directly' do
+        assert_no_merge_order @order, @product
+      end
+
+      context 'with instrument' do
+        before :each do
+          options=Factory.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
+          @instrument=@authable.instruments.create(options)
+          @params[:product_add]=@instrument.id
+        end
+
+        it_should_allow :director, 'to add an instrument to existing order via merge' do
+          assert_merge_order @order, @instrument
+        end
+      end
+
+      context 'with service' do
+        before :each do
+          @service=@authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
+          @params[:product_add]=@service.id
+        end
+
+        context 'with active survey' do
+          before :each do
+            Service.any_instance.stubs(:active_survey?).returns(true)
+            Service.any_instance.stubs(:active_template?).returns(false)
+          end
+
+          it_should_allow :director, 'to add a service to existing order via merge' do
+            assert_merge_order @order, @service
+          end
+        end
+
+        context 'with active template' do
+          before :each do
+            Service.any_instance.stubs(:active_survey?).returns(false)
+            Service.any_instance.stubs(:active_template?).returns(true)
+          end
+
+          it_should_allow :director, 'to add an service to existing order via merge' do
+            assert_merge_order @order, @service
+          end
+        end
+
+        context 'with nothing active' do
+          before :each do
+            Service.any_instance.stubs(:active_survey?).returns(false)
+            Service.any_instance.stubs(:active_template?).returns(false)
+          end
+
+          it_should_allow :director, 'to add an service to existing order directly' do
+            assert_no_merge_order @order, @service
+          end
+        end
+      end
+
+      context 'with bundle' do
+        before :each do
+          @bundle=@authable.bundles.create(Factory.attributes_for(:bundle, :facility_account_id => @facility_account.id))
+          @params[:product_add]=@bundle.id
+          BundleProduct.create!(:bundle => @bundle, :product => @product, :quantity => 1)
+        end
+
+        context 'has items' do
+          before :each do
+            item=Factory.create(:item, :facility_account => @facility_account, :facility => @authable)
+            BundleProduct.create!(:bundle => @bundle, :product => item, :quantity => 1)
+          end
+
+          it_should_allow :director, 'to add an item to existing order directly' do
+            assert_no_merge_order @order, @bundle, 2
+          end
+        end
+
+        context 'has instrument' do
+          before :each do
+            options=Factory.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
+            @instrument=@authable.instruments.create(options)
+            BundleProduct.create!(:bundle => @bundle, :product => @instrument, :quantity => 1)
+          end
+
+          it_should_allow :director, 'to add an instrument to existing order via merge' do
+            assert_merge_order @order, @bundle, 2
+          end
+        end
+
+        context 'has service' do
+          before :each do
+            @service=@authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
+            BundleProduct.create!(:bundle => @bundle, :product => @service, :quantity => 1)
+          end
+
+          context 'with active survey' do
+            before :each do
+              Service.any_instance.stubs(:active_survey?).returns(true)
+              Service.any_instance.stubs(:active_template?).returns(false)
+            end
+
+            it_should_allow :director, 'to add a bundle to existing order via merge' do
+              assert_merge_order @order, @bundle, 2
+            end
+          end
+
+          context 'with active template' do
+            before :each do
+              Service.any_instance.stubs(:active_survey?).returns(false)
+              Service.any_instance.stubs(:active_template?).returns(true)
+            end
+
+            it_should_allow :director, 'to add a bundle to existing order via merge' do
+              assert_merge_order @order, @bundle, 2
+            end
+          end
+
+          context 'with nothing active' do
+            before :each do
+              Service.any_instance.stubs(:active_survey?).returns(false)
+              Service.any_instance.stubs(:active_template?).returns(false)
+            end
+
+            it_should_allow :director, 'to add a bundle to existing order directly' do
+              assert_no_merge_order @order, @bundle, 2
+            end
+          end
+        end
+      end
+    end
+
+    def assert_update_success order, product
+      if product.is_a? Bundle
+        product.products.each{|p| assert order.order_details.any?{|od| od.product == p}}
+        order.order_details.each{|od| od.order_status.should == OrderStatus.default_order_status }
+      else
+        order_detail=order.order_details[0]
+        order_detail.product.should == product
+        order_detail.order_status.should == OrderStatus.default_order_status
+      end
+
+      flash[:notice].should be_present
+      assert_redirected_to edit_facility_order_path(@authable, order.to_be_merged? ? order.merge_order : order)
+    end
+
+    def assert_no_merge_order original_order, product, detail_count=1
+      original_order.reload.order_details.size.should == detail_count
+      assert_update_success original_order, product
+    end
+
+    def assert_merge_order original_order, product, detail_count=1
+      original_order.reload.order_details.size.should == 0
+      merges=Order.where(:merge_with_order_id => original_order.id).all
+      merges.size.should == 1
+      merge_order=merges[0]
+      merge_order.merge_order.should == original_order
+      merge_order.facility_id.should == original_order.facility_id
+      merge_order.account_id.should == original_order.account_id
+      merge_order.user_id.should == original_order.user_id
+      merge_order.created_by.should == @director.id
+      merge_order.ordered_at.should_not be_blank
+      merge_order.order_details.size.should == detail_count
+      assert_update_success merge_order, product
+    end
+
+  end
+
+
   context 'tab_counts' do
     before :each do
       @method = :get
