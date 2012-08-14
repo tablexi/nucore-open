@@ -1,3 +1,4 @@
+- order=local_order || @order
 %ul
   %li
     - if order_detail.bundle
@@ -9,5 +10,5 @@
     - else
       = link_to order_detail.product, self.send("facility_#{order_detail.product.class.name.underscore}_path", order_detail.product.facility, order_detail.product)
 
-  - if !@order.validated? && order_detail.validate_for_purchase
+  - if !order.validated? && order_detail.validate_for_purchase
     %li.warning=h order_detail.validate_for_purchase

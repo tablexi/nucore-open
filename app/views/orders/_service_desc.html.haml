@@ -1,3 +1,4 @@
+- order=local_order || @order
 %ul
   %li
     - if order_detail.bundle
@@ -9,7 +10,7 @@
     - else
       = link_to order_detail.product, self.send("facility_#{order_detail.product.class.name.underscore}_path", order_detail.product.facility, order_detail.product)
 
-  - unless @order.validated?
+  - unless order.validated?
     %li.warning=h order_detail.validate_for_purchase
 
   - if survey = order_detail.product.active_survey
@@ -25,6 +26,6 @@
 
   - if order_detail.product.file_uploads.template.count > 0
     - if order_detail.file_uploads.template_result.empty?
-      %li.indented= link_to('Upload Order Form', order_order_detail_order_file_path(@order, order_detail))
+      %li.indented= link_to('Upload Order Form', order_order_detail_order_file_path(order, order_detail))
     - else
-      %li.indented= "#{link_to('Uploaded Order Form', order_detail.file_uploads.template_result.first.file.url)} (#{link_to('Delete', order_order_detail_remove_order_file_path(@order, order_detail))})".html_safe
+      %li.indented= "#{link_to('Uploaded Order Form', order_detail.file_uploads.template_result.first.file.url)} (#{link_to('Delete', order_order_detail_remove_order_file_path(order, order_detail))})".html_safe

@@ -30,7 +30,7 @@
           %tr
             %td.centered= link_to 'Remove', facility_order_order_detail_path(current_facility, order, detail), :method => :delete
             %td
-              = render :partial => "orders/#{detail.product.class.name.downcase}_desc", :locals => { :order_detail => detail }
+              = render :partial => "orders/#{detail.product.class.name.downcase}_desc", :locals => { :local_order => order, :order_detail => detail }
             %td.centered
               = detail.quantity
             - if detail.cost_estimated?
