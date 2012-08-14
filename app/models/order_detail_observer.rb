@@ -1,6 +1,12 @@
-class OrderDetailStatusChangeNotification < ActiveRecord::Observer
-  observe :order_detail
-  
+class OrderDetailObserver < ActiveRecord::Observer
+
+  def after_destroy(order_detail)
+    # merge orders should be cleaned up if they are without order details
+    order=order_detail.order
+    order.destroy if order.reload.to_be_merged? && order.order_details.empty?
+  end
+
+
   def after_save(order_detail)
   	return unless order_detail.order_status_id_changed?
     old_status = order_detail.order_status_id_was ? OrderStatus.find(order_detail.order_status_id_was) : nil
@@ -8,6 +14,7 @@ class OrderDetailStatusChangeNotification < ActiveRecord::Observer
     hooks_to_run = self.class.status_change_hooks[new_status.downcase_name.to_sym]
     hooks_to_run.each { |hook| hook.on_status_change(order_detail, old_status, new_status) } if hooks_to_run
   end
+
 
   def self.status_change_hooks
     hash = Settings.try(:order_details).try(:status_change_hooks).try(:to_hash) || {}
@@ -21,6 +28,7 @@ class OrderDetailStatusChangeNotification < ActiveRecord::Observer
     end
     new_hash
   end
+
 
   private
 
@@ -37,4 +45,5 @@ class OrderDetailStatusChangeNotification < ActiveRecord::Observer
     inst.settings = hash if inst.respond_to?(:settings=)
     inst
   end
+
 end

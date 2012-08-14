@@ -813,4 +813,34 @@ describe OrderDetail do
     
   end
 
+
+  context 'OrderDetailObserver#after_destroy' do
+    it 'should not destroy order if order is not a merge and there are no more details' do
+      @order_detail.destroy
+      @order.reload.should_not be_frozen
+      @order.order_details.should be_empty
+    end
+
+    context 'as merge order' do
+      before :each do
+        clone=@order.clone
+        assert clone.save
+        @order.update_attribute :merge_with_order_id, clone.id
+      end
+
+      it 'should destroy merge order when its last detail is killed' do
+        @order_detail.destroy
+        assert_raise(ActiveRecord::RecordNotFound){ Order.find @order.id }
+      end
+
+      it 'should not destroy merge order when there are other details' do
+        order_detail=@order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
+        @order.order_details.size.should == 2
+        @order_detail.destroy
+        @order.should_not be_frozen
+        @order.reload.order_details.size.should == 1
+      end
+    end
+  end
+
 end
