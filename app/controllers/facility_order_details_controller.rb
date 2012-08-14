@@ -149,17 +149,17 @@ class FacilityOrderDetailsController < ApplicationController
 
 
   def destroy
-    unless @order.to_be_merged?
-      flash[:notice]=I18n.t 'controllers.facility_order_details.destroy.notice'
-    else
+    if @order.to_be_merged?
       begin
         @order_detail.destroy
-        @order.destroy if @order.reload.order_details.blank?
         flash[:notice]=I18n.t 'controllers.facility_order_details.destroy.success'
       rescue => e
         Rails.logger.error "#{e.message}:#{e.backtrace.join("\n")}"
         flash[:error]=I18n.t 'controllers.facility_order_details.destroy.error', @order_detail.to_s
       end
+    else
+      flash[:notice]=I18n.t 'controllers.facility_order_details.destroy.notice'
+      return redirect_to edit_facility_order_path(current_facility, @order)
     end
 
     redirect_to edit_facility_order_path(current_facility, @order.merge_order)
