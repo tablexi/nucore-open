@@ -814,32 +814,145 @@ describe OrderDetail do
   end
 
 
-  context 'OrderDetailObserver#after_destroy' do
-    it 'should not destroy order if order is not a merge and there are no more details' do
-      @order_detail.destroy
-      @order.reload.should_not be_frozen
-      @order.order_details.should be_empty
+  context 'OrderDetailObserver' do
+
+    context 'after_destroy' do
+      it 'should not destroy order if order is not a merge and there are no more details' do
+        @order_detail.destroy
+        @order.reload.should_not be_frozen
+        @order.order_details.should be_empty
+      end
+
+      context 'as merge order' do
+        before(:each) { setup_merge_order }
+
+        it 'should destroy merge order when its last detail is killed' do
+          @order_detail.destroy
+          assert_raise(ActiveRecord::RecordNotFound){ Order.find @order.id }
+        end
+
+        it 'should not destroy merge order when there are other details' do
+          @service=@facility.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
+          Service.any_instance.stubs(:active_survey?).returns(true)
+          @order.order_details.create(Factory.attributes_for(:order_detail, :product_id => @service.id, :account_id => @account.id))
+          @order.order_details.size.should == 2
+          @order_detail.destroy
+          @order.reload.should_not be_frozen
+          @order.order_details.size.should == 1
+        end
+      end
     end
 
-    context 'as merge order' do
-      before :each do
-        clone=@order.clone
-        assert clone.save
-        @order.update_attribute :merge_with_order_id, clone.id
+    context 'before_save/after_save merge order handling' do
+      before(:each) { setup_merge_order }
+
+      context 'item' do
+        it 'should update order_id and delete merge order' do
+          assert @order_detail.reload.save
+          @order_detail.reload.order.should == @merge_to_order
+          assert_raise(ActiveRecord::RecordNotFound) { Order.find @order.id }
+        end
+
+        it 'should not affect non merge orders' do
+          assert @order_detail.reload.save
+          @order_detail.reload.order.should == @merge_to_order
+          assert @order_detail.reload.save
+          @order_detail.reload.order.should == @merge_to_order
+        end
+
+        it 'should update order_id but not delete merge order when there is another detail' do
+          @service=@facility.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
+          Service.any_instance.stubs(:active_survey?).returns(true)
+          @order.order_details.create(Factory.attributes_for(:order_detail, :product_id => @service.id, :account_id => @account.id))
+          assert @order_detail.reload.save
+          @order_detail.reload.order.should == @merge_to_order
+          assert_nothing_raised do
+            @order.reload.order_details.size.should == 1
+          end
+        end
       end
 
-      it 'should destroy merge order when its last detail is killed' do
-        @order_detail.destroy
-        assert_raise(ActiveRecord::RecordNotFound){ Order.find @order.id }
+      context 'service' do
+        before :each do
+          @service=@facility.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
+          Service.any_instance.stubs(:active_survey?).returns(true)
+          @service_order_detail=@order.order_details.create(Factory.attributes_for(:order_detail, :product_id => @service.id, :account_id => @account.id))
+        end
+
+        it 'should not update order_id if there is an incomplete active survey' do
+          assert @service_order_detail.save
+          @service_order_detail.reload.order.should == @order
+          @order.reload.should be_to_be_merged
+        end
+
+        it 'should not affect non merge orders' do
+          OrderDetail.any_instance.stubs(:valid_service_meta?).returns(true)
+          assert @service_order_detail.save
+          @service_order_detail.reload.order.should == @merge_to_order
+          assert @service_order_detail.save
+          @service_order_detail.reload.order.should == @merge_to_order
+        end
+
+        it 'should update order_id but not destroy merge order if there is a complete active survey and other detail' do
+          OrderDetail.any_instance.stubs(:valid_service_meta?).returns(true)
+          @order.reload.order_details.size.should == 2
+          assert @service_order_detail.save
+          @service_order_detail.reload.order.should == @merge_to_order
+          @order.reload.order_details.size.should == 1
+        end
+
+        it 'should update order_id and destroy merge order if there is a complete active survey and no other details' do
+          OrderDetail.any_instance.stubs(:valid_service_meta?).returns(true)
+          @order_detail.destroy
+          assert @service_order_detail.save
+          @service_order_detail.reload.order.should == @merge_to_order
+          assert_raise(ActiveRecord::RecordNotFound) { Order.find @order.id }
+        end
       end
 
-      it 'should not destroy merge order when there are other details' do
-        order_detail=@order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
-        @order.order_details.size.should == 2
-        @order_detail.destroy
-        @order.should_not be_frozen
-        @order.reload.order_details.size.should == 1
+      context 'instrument' do
+        before :each do
+          options=Factory.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
+          @instrument=@facility.instruments.create(options)
+          @instrument_order_detail=@order.order_details.create(Factory.attributes_for(:order_detail, :product_id => @instrument.id, :account_id => @account.id))
+        end
+
+        it 'should not update order_id if there is an incomplete reservation' do
+          assert @instrument_order_detail.save
+          @instrument_order_detail.reload.order.should == @order
+          @order.reload.should be_to_be_merged
+        end
+
+        it 'should not affect non merge orders' do
+          OrderDetail.any_instance.stubs(:valid_reservation?).returns(true)
+          assert @instrument_order_detail.save
+          @instrument_order_detail.reload.order.should == @merge_to_order
+          assert @instrument_order_detail.save
+          @instrument_order_detail.reload.order.should == @merge_to_order
+        end
+
+        it 'should update order_id but not destroy merge order if there is a complete reservation and other detail' do
+          OrderDetail.any_instance.stubs(:valid_reservation?).returns(true)
+          @order.reload.order_details.size.should == 2
+          assert @instrument_order_detail.save
+          @instrument_order_detail.reload.order.should == @merge_to_order
+          @order.reload.order_details.size.should == 1
+        end
+
+        it 'should update order_id and destroy merge order if there is a complete reservation and no other details' do
+          OrderDetail.any_instance.stubs(:valid_reservation?).returns(true)
+          @order_detail.destroy
+          assert @instrument_order_detail.save
+          @instrument_order_detail.reload.order.should == @merge_to_order
+          assert_raise(ActiveRecord::RecordNotFound) { Order.find @order.id }
+        end
       end
+    end
+
+    def setup_merge_order
+      @merge_to_order=@order.clone
+      assert @merge_to_order.save
+      @order.update_attribute :merge_with_order_id, @merge_to_order.id
     end
   end
 
