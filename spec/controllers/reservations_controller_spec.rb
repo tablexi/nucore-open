@@ -183,7 +183,33 @@ describe ReservationsController do
       should set_the_flash
       assert_redirected_to purchase_order_path(@order)
     end
-    
+
+    context 'merge order' do
+      before :each do
+        @merge_to_order=@order.clone
+        assert @merge_to_order.save
+        assert @order.update_attribute :merge_with_order_id, @merge_to_order.id
+      end
+
+      it_should_allow :director, 'to create a reservation on merge order detail and redirect to order summary when merge order is destroyed' do
+        assert_redirected_to edit_facility_order_path(@authable, @merge_to_order)
+        assert_raises(ActiveRecord::RecordNotFound) { Order.find @order }
+      end
+
+      context 'extra order details' do
+        before :each do
+          @service=@authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
+          Service.any_instance.stubs(:active_survey?).returns(true)
+          @service_order_detail=@order.order_details.create(Factory.attributes_for(:order_detail, :product_id => @service.id, :account_id => @account.id))
+        end
+
+        it_should_allow :director, 'to create a reservation on merge order detail and redirect to order summary when merge order is not destroyed' do
+          assert_redirected_to edit_facility_order_path(@authable, @merge_to_order)
+          assert_nothing_raised { Order.find @order }
+        end
+      end
+    end
+
     context 'creating a reservation in the future' do
       before :each do
         @params.deep_merge!(:reservation => {:reserve_start_date => Time.zone.now.to_date + (PriceGroupProduct::DEFAULT_RESERVATION_WINDOW + 1).days })

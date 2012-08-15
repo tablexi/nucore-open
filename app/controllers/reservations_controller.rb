@@ -103,17 +103,20 @@ class ReservationsController < ApplicationController
           end
         end
 
-        @reservation.save_as_user!(session_user)
-        
-        @order_detail.reload.assign_estimated_price!(nil, @reservation.reserve_end_at)
+        mergeable=@order_detail.order.to_be_merged?
 
+        @reservation.save_as_user!(session_user)
+        @order_detail.reload.assign_estimated_price!(nil, @reservation.reserve_end_at)
         @order_detail.save!
         
         flash[:notice] = I18n.t 'controllers.reservations.create.success'
 
-        # only trigger purchase if instrument
-        # and is only thing in cart (isn't bundled or on a multi-add order)
-        if @order_detail.product.is_a?(Instrument) && @order.order_details.count == 1
+        if mergeable
+          # merge state can change after call to #save! due to OrderDetailObserver#before_save
+          redirect_to edit_facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
+        elsif @order_detail.product.is_a?(Instrument) && @order.order_details.count == 1
+          # only trigger purchase if instrument
+          # and is only thing in cart (isn't bundled or on a multi-add order)
           redirect_to purchase_order_path(@order)
         else
           redirect_to cart_path
