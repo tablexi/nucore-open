@@ -172,7 +172,6 @@ class FacilityJournalsController < ApplicationController
   end
 
   def reconcile
-    puts 'reconcile'
     if params[:order_detail_ids].blank?
       flash[:error] = 'No orders were selected to reconcile'
       redirect_to facility_journal_url(current_facility, @journal) and return
@@ -186,7 +185,7 @@ class FacilityJournalsController < ApplicationController
       end
       od.change_status!(rec_status)
     end
-    flash[:notice] = 'The select orders have been reconciled successfully'
+    flash[:notice] = 'The selected orders have been reconciled successfully'
     redirect_to facility_journal_url(current_facility, @journal) and return
   end
 
