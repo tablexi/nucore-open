@@ -71,7 +71,13 @@ class OrderDetailsController < ApplicationController
 
     if @file.save
       flash[:notice] = 'Order File uploaded successfully'
-      redirect_to(order_path(@order))
+
+      if @order_detail.order.to_be_merged?
+        @order_detail.save # trigger the OrderDetailObserver callbacks
+        redirect_to edit_facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
+      else
+        redirect_to(order_path(@order))
+      end
     else
       flash.now[:error] = 'An error was encountered while uploading the Order File'
       render :order_file
