@@ -470,6 +470,7 @@ class OrderDetail < ActiveRecord::Base
 
   def assign_estimated_price!(second_account=nil, date = Time.zone.now)
     assign_estimated_price(second_account, date)
+    self.save!
   end
 
   def assign_estimated_price_from_policy(price_policy)

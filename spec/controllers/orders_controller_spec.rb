@@ -35,7 +35,8 @@ describe OrdersController do
     define_open_account(@item.account, @account.account_number)
 
     Factory.create(:user_price_group_member, :user => @staff, :price_group => @price_group)
-    @item_pp=@item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :start_date => 1.month.ago))
+    
+    @item_pp=@item.item_price_policies.create!(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :start_date => 1.hour.ago))
 
     @params={ :id => @order.id, :order_id => @order.id }
   end
@@ -411,6 +412,12 @@ describe OrdersController do
         should set_the_flash
         response.should redirect_to "/orders/#{@order.id}"
       end
+
+      it_should_allow :staff, 'should assign an estimated price if there is a policy' do
+        @item.price_policies.should_not be_empty
+        @order.reload.order_details.first.estimated_cost.should_not be_nil
+      end
+
     end
 
     context 'instrument' do
