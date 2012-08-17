@@ -705,6 +705,13 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
 }
 
 /***
+ * Dialog boxes
+ */
+.ui-dialog input[disabled] {
+	opacity: 0.3;
+	cursor: default;
+}
+/***
  * Order detail
  */
 #cancel-fee-opt {
