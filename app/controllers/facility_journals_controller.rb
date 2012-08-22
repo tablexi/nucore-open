@@ -180,7 +180,7 @@ class FacilityJournalsController < ApplicationController
     order_details = OrderDetail.for_facility(current_facility).where(:id => params[:order_detail_ids]).readonly(false)
     order_details.each do |od|
       if od.journal_id != @journal.id
-        flash[:error] = 'An error was encountered while reconcile orders'
+        flash[:error] = "Order detail #{od.to_s} does not belong to this journal! Please reconcile without it."
         redirect_to facility_journal_url(current_facility, @journal) and return
       end
       od.change_status!(rec_status)
