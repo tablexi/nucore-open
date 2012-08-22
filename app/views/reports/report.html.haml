@@ -14,6 +14,9 @@
 = form_tag request.fullpath, :remote => true, :id => 'refresh-form'  do
   %ul#filter.options
     %li
+      %label &nbsp;
+      = select_tag :date_range_field, options_for_select(TransactionSearch::DATE_RANGE_FIELDS, @date_range_field)
+    %li
       %label Start Date
       = text_field_tag :date_start, params[:date_start] || human_datetime(@date_start, :date_only => true), :class => 'datepicker'
     %li
@@ -21,7 +24,7 @@
       = text_field_tag :date_end, params[:date_end] || human_datetime(@date_end, :date_only => true), :class => 'datepicker'
 
     = render :partial => 'report_controls'
-    
+
   %ul#control.options
     %li
       = link_to 'Export', '#', :id => 'export'

@@ -55,11 +55,13 @@
     padding-bottom: 2px !important;
 }
 
-.datepicker {
+.datepicker, #date_range_field {
     height: 23px;
     border: 1px solid #AAAAAA;
 }
-
+#date_range_field {
+    margin-top: 3px;
+}
 button {
     margin-top: 1em;
     color: black !important;

@@ -564,11 +564,12 @@ p.error {
 	margin-right:20px;
 }
 
-.search_form fieldset#calendar_filter input[type=text] {
+.search_form fieldset#calendar_filter input[type=text],
+.search_form fieldset#calendar_filter select {
+	width:100px;
 	border:1px solid #AAA;
 	height:24px;
 	margin-bottom:4px;
-	width:100px;
 }
 
 .search_form fieldset#search,.search_form fieldset#search ul {
@@ -586,10 +587,6 @@ body .search_form .chzn-container .chzn-drop {
 .search_form fieldset#calendar_filter {
 	margin-left:10px;
 	padding:0 20px;
-}
-
-.search_form select {
-	width:200px;
 }
 
 .search_form input[type=submit] {

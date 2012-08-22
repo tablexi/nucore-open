@@ -4,9 +4,9 @@
     -if @order_detail_action or @order_detail_link
       %th
     %th= "#{Order.model_name.human} #"
-    %th.nowrap= OrderDetail.human_attribute_name(:fulfilled_at)
+    %th.nowrap= OrderDetail.human_attribute_name(@date_range_field)
     - if @extra_date_column
-      %th.nowrap= OrderDetail.human_attribute_name(@extra_date_column) 
+      %th.nowrap= OrderDetail.human_attribute_name(@extra_date_column)
     - if !current_facility || all_facility?
       %th= Facility.model_name.human
     %th= OrderDetail.human_attribute_name("description")
@@ -16,8 +16,8 @@
       %th= Account.model_name.human
       %th= Account.human_attribute_name("owner")
     %th= OrderDetail.human_attribute_name("cost")
-    %th= OrderDetail.human_attribute_name("order_status")   
-    
+    %th= OrderDetail.human_attribute_name("order_status")
+
   - @order_details.each do |order_detail|
     %tr{:class => row_class(order_detail)}
       - if @order_detail_action
@@ -28,11 +28,11 @@
         %td.nowrap= link_to order_detail, edit_facility_order_order_detail_path(order_detail.order.facility, order_detail.order, order_detail)
       - else
         %td.nowrap= link_to order_detail, order_order_detail_path(order_detail.order, order_detail)
-      %td= order_detail.fulfilled_at.strftime("%m/%d/%Y") if order_detail.fulfilled_at
+      %td= order_detail.send(:"#{@date_range_field}").try(:strftime, "%m/%d/%Y")
       - if @extra_date_column and order_detail.send(@extra_date_column)
         %td= order_detail.send(@extra_date_column).strftime("%m/%d/%Y")
       - if !current_facility || all_facility?
- 
+
         %td= order_detail.order.facility
       %td
         = order_detail_description(order_detail)
@@ -42,11 +42,11 @@
           %br
           %em= "Note: #{order_detail.note}"
       %td= order_detail.order.user.full_name
-      -# %td= order_detail.order.created_by_user.full_name  
+      -# %td= order_detail.order.created_by_user.full_name
       - unless @account
         %td= order_detail.account
         %td= order_detail.account.owner_user
-      %td.currency 
+      %td.currency
         - if order_detail.cost_estimated?
           %span.estimated_cost
             = show_estimated_total(order_detail)

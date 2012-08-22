@@ -30,21 +30,21 @@ describe TransactionSearch do
     @facility_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
     @price_group      = @authable.price_groups.create(Factory.attributes_for(:price_group))
     @account          = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
-    @order            = @staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account, :ordered_at => Time.now))    
+    @order            = @staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account, :ordered_at => Time.now))
     @item             = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
     @order_detail_complete = place_and_complete_item_order(@user, @authable, @account)
     @order_detail_new = place_product_order(@staff, @authable, @item)
-    
+
     # fake signing in as staff
     @controller.session_user = @staff
   end
-  
+
   context "wrapping" do
     it "should responsd to all_order_details" do
       @controller.should respond_to(:all_order_details)
     end
   end
-  
+
   context "field populating" do
     context "with facility" do
       before :each do
@@ -94,7 +94,7 @@ describe TransactionSearch do
         @controller.order_statuses.should contain_all [@os_new, @os_complete]
       end
     end
-    
+
     context "with account" do
       before :each do
         @facility2 = Factory.create(:facility)
@@ -103,7 +103,7 @@ describe TransactionSearch do
         @item2             = @facility2.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account2.id))
         @order_detail2 = place_and_complete_item_order(@user, @facility2, @credit_account)
       end
-      
+
       it "should pull all facilities for nufs account that have transactions" do
         # @account needs to have an order detail for it to show up
         @order_detail3 = place_and_complete_item_order(@user, @facility2, @account)
@@ -138,18 +138,18 @@ describe TransactionSearch do
         @controller.account_owners.should contain_all [@staff, @user2]
       end
     end
-    
+
     context "products" do
       before :each do
         @facility2 = Factory.create(:facility)
         @instrument = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
-        @service = @authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id)) 
+        @service = @authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
         @other_item = @facility2.instruments.create(Factory.attributes_for(:item))
         # each product needs to have an order detail for it to show up
         [@item, @instrument, @service].each do |product|
           place_product_order(@staff, @authable, product, @account)
         end
-        
+
         @controller.params = { :facility_id => @authable.url_name }
         @controller.init_current_facility
         @controller.all_order_details
@@ -162,10 +162,10 @@ describe TransactionSearch do
 
   context "searching" do
     context "order statuses" do
-      before :each do   
+      before :each do
         @order_detail_complete.order_status.should == @os_complete
         @order_detail_new.order_status.should == @os_new
-        @controller.params = { :facility_id => @authable.url_name }
+        @controller.params = { :facility_id => @authable.url_name, :date_range_field => :ordered_at }
         @controller.init_current_facility
       end
       it 'should return all with no status' do
@@ -182,7 +182,7 @@ describe TransactionSearch do
         @controller.all_order_details
         @controller.order_details.should == [@order_detail_complete]
       end
-        
+
     end
   end
 
