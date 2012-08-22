@@ -216,10 +216,8 @@ class FacilityJournalsController < ApplicationController
 
   def init_journals
     @journals = Journal.for_facilities(manageable_facilities, manageable_facilities.size > 1).order("journals.created_at DESC")
-
-    if params[:id]
-      @journal = @journals.find(params[:id])
-    end
+    jid=params[:id] || params[:journal_id]
+    @journal = @journals.find(jid) if jid
   end
 
   def has_pending_journals?
