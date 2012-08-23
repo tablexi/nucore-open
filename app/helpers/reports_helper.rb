@@ -5,6 +5,15 @@ module ReportsHelper
     (minutes / 60).round(2)
   end
 
+  def time_difference(end_at, start_at)
+    return '' unless start_at && end_at
+    minutes = (truncate_seconds(end_at) - truncate_seconds(start_at)) / 60
+    minutes.to_s
+  end
+
+  def truncate_seconds(datetime)
+    datetime.change(:sec => 0)
+  end
 
   def to_percent(decimal)
     (decimal * 100).round(1)

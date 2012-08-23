@@ -172,7 +172,6 @@ class FacilityJournalsController < ApplicationController
   end
 
   def reconcile
-    puts 'reconcile'
     if params[:order_detail_ids].blank?
       flash[:error] = 'No orders were selected to reconcile'
       redirect_to facility_journal_url(current_facility, @journal) and return
@@ -181,12 +180,12 @@ class FacilityJournalsController < ApplicationController
     order_details = OrderDetail.for_facility(current_facility).where(:id => params[:order_detail_ids]).readonly(false)
     order_details.each do |od|
       if od.journal_id != @journal.id
-        flash[:error] = 'An error was encountered while reconcile orders'
+        flash[:error] = "Order detail #{od.to_s} does not belong to this journal! Please reconcile without it."
         redirect_to facility_journal_url(current_facility, @journal) and return
       end
       od.change_status!(rec_status)
     end
-    flash[:notice] = 'The select orders have been reconciled successfully'
+    flash[:notice] = 'The selected orders have been reconciled successfully'
     redirect_to facility_journal_url(current_facility, @journal) and return
   end
 
@@ -217,10 +216,8 @@ class FacilityJournalsController < ApplicationController
 
   def init_journals
     @journals = Journal.for_facilities(manageable_facilities, manageable_facilities.size > 1).order("journals.created_at DESC")
-
-    if params[:id]
-      @journal = @journals.find(params[:id])
-    end
+    jid=params[:id] || params[:journal_id]
+    @journal = @journals.find(jid) if jid
   end
 
   def has_pending_journals?

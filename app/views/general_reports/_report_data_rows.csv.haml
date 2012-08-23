@@ -9,6 +9,7 @@
             owner=account.owner_user
             product=od.product
             bundle_desc=product.is_a?(Bundle) ? product.products.collect(&:name).join(' & ') : nil
+            reservation = od.reservation
 
             row=[
                 # basic info
@@ -26,11 +27,22 @@
 
                 # pricing info
                 od.price_policy.try(:price_group).try(:name), show_estimated_cost(od), show_estimated_subsidy(od), show_estimated_total(od),
-                show_actual_cost(od), show_actual_subsidy(od), show_actual_total(od),
+                show_actual_cost(od), show_actual_subsidy(od), show_actual_total(od)
+            ]
+
+            if reservation
+                # reservation info
+                row += [human_datetime(reservation.reserve_start_at), human_datetime(reservation.reserve_end_at),
+                time_difference(reservation.reserve_end_at, reservation.reserve_start_at),
+                human_datetime(reservation.actual_start_at), human_datetime(reservation.actual_end_at),
+                time_difference(reservation.actual_end_at, reservation.actual_start_at)]
+            else
+                # leave blanks for non-reservations
+                row += [nil, nil, nil, nil, nil, nil]
+            end
 
                 # dispute info
-                human_datetime(od.dispute_at), od.dispute_reason, human_datetime(od.dispute_resolved_at), od.dispute_resolved_reason
-            ]
+            row += [ human_datetime(od.dispute_at), od.dispute_reason, human_datetime(od.dispute_resolved_at), od.dispute_resolved_reason ]
 
             statement=od.statement
             row += [ human_datetime(od.reviewed_at), human_datetime(statement.created_at) ] if statement

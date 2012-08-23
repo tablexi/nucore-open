@@ -270,7 +270,7 @@ body .unit {
 #reservation_date_container {
   overflow:hidden;
   margin:0 auto;
-  width:315px;
+  width:325px;
 }
 
 #reservation_date_container #reservation_left, #reservation_date_container #reservation_date, #reservation_date_container #reservation_right {
@@ -295,5 +295,5 @@ body .unit {
  #reservation_date_container #reservation_date {
    font-size:18px;
    text-align:center;
-   width:270px;
+   width:280px;
  }

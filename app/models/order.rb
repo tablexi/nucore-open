@@ -147,7 +147,7 @@ class Order < ActiveRecord::Base
       order_detail = order_details.create!(:product_id => product.id, :quantity => quantity, :account => account, :created_by => created_by)
       ods << order_detail
     end
-
+    ods.each { |od| od.assign_estimated_price! }
     self.facility_id = product.facility_id
     save!
     return ods
