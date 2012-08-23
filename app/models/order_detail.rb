@@ -22,6 +22,7 @@ class OrderDetail < ActiveRecord::Base
   has_many   :file_uploads, :dependent => :destroy
 
   delegate :user, :facility, :to => :order
+  alias_method :merge!, :save!
 
   validates_presence_of :product_id, :order_id, :created_by
   validates_numericality_of :quantity, :only_integer => true, :greater_than_or_equal_to => 1
