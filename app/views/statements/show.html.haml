@@ -26,7 +26,7 @@
   .clear
 
     
-- if @order_details.empty?
+- if @order_details.blank?
   %p.notice= t('.notice')
 - else
   %table
