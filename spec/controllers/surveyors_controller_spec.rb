@@ -77,6 +77,20 @@ describe SurveyorsController do
       should redirect_to @params[:referer]
     end
 
+    context 'merge orders' do
+      before :each do
+        @clone=@order.clone
+        assert @clone.save
+        @order.update_attribute :merge_with_order_id, @clone.id
+        @order.should be_to_be_merged
+      end
+
+      it_should_allow :director, 'to complete survey on merge order' do
+        @order_detail.reload.order.should == @clone
+        assert_raises(ActiveRecord::RecordNotFound) { @order.reload }
+      end
+
+    end
   end
 
 

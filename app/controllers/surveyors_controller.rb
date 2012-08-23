@@ -27,11 +27,15 @@ class SurveyorsController < ApplicationController
 
   def complete
     begin
+      od=OrderDetail.find(params[:receiver_id].to_i)
+
       ExternalServiceReceiver.create!(
-          :receiver => OrderDetail.find(params[:receiver_id].to_i),
+          :receiver => od,
           :external_service => Surveyor.find(params[:external_service_id].to_i),
           :response_data => params[:survey_url]
       )
+
+      od.merge!
     rescue => e
       Rails.logger.error("Could not save external surveyor response! #{e.message}\n#{e.backtrace.join("\n")}")
     end
