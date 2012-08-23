@@ -53,7 +53,7 @@ class OrderDetailsController < ApplicationController
   def init_order_detail
     @order = Order.find(params[:order_id])
     @order_detail = @order.order_details.find(params[:id] || params[:order_detail_id])
-    raise ActiveRecord::RecordNotFound unless @order_detail.can_be_viewed_by?(acting_user)
+    raise ActiveRecord::RecordNotFound unless @order.to_be_merged? || @order_detail.can_be_viewed_by?(acting_user)
   end
 
   # GET /orders/:order_id/order_details/:order_detail_id/order_file
@@ -73,7 +73,7 @@ class OrderDetailsController < ApplicationController
       flash[:notice] = 'Order File uploaded successfully'
 
       if @order_detail.order.to_be_merged?
-        @order_detail.save # trigger the OrderDetailObserver callbacks
+        @order_detail.merge! # trigger the OrderDetailObserver callbacks
         redirect_to edit_facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
       else
         redirect_to(order_path(@order))
