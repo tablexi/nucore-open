@@ -243,11 +243,44 @@ fieldset.collapsable legend:before {
 	height: 10px;
 	left: 0;
 	top: 3px;
-	background: url(../images/sprite-collapse.png) no-repeat -10px 0;	
+	background: url(../images/sprite-collapse.png) no-repeat -10px 0;
 }
 fieldset.collapsable.collapsed legend:before {
 	background-position: 0 0;
 }
+
+/****************************************
+ * Displaying fields edited in the WYSIWYG editor
+ ****************************************/
+
+.wysiwyg {}
+.wysiwyg ul,
+.wysiwyg ol {
+	margin: 1.12em 0;
+	margin-left: 1.9em;
+}
+.wysiwyg ol ul,
+.wysiwyg ul ol,
+.wysiwyg ul ul,
+.wysiwyg ol ol,
+.wysiwyg ol li,
+.wysiwyg ul li {
+	margin-top: 0;
+	margin-bottom: 0
+}
+.wysiwyg ul {
+	list-style-type: disc;
+}
+.wysiwyg ol {
+	list-style-type: decimal;
+}
+
+.wysiwyg blockquote {
+	border-left: 2px solid #DDD;
+	margin: 1em 1.5em;
+	padding-left: 0.5em;
+}
+
 
 /***************************************
 main layout ids
@@ -667,7 +700,7 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
 	margin:0;
 }
 
-.margin_bottom,ul.form li {
+.margin_bottom, ul.form > li {
 	margin-bottom:15px;
 }
 
@@ -779,8 +812,8 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
   float: left;
   margin: 0 1em 0 0;
 }
-#user_types label { 
-  display: inline; 
+#user_types label {
+  display: inline;
 }
 #bulk_email.search_form input[type="submit"] {
   float: none;
