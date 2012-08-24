@@ -281,6 +281,10 @@ fieldset.collapsable.collapsed legend:before {
 	padding-left: 0.5em;
 }
 
+#content .wysiwyg p {
+	margin: 1em 0;
+}
+
 
 /***************************************
 main layout ids
