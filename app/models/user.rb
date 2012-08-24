@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
   has_many :order_details, :through => :orders
   has_many :price_group_members
   has_many :product_users
+  has_many :notifications
   has_many :products, :through => :product_users
   has_many :assigned_order_details, :class_name => 'OrderDetail', :foreign_key => 'assigned_user_id'
   has_many :user_roles, :dependent => :destroy

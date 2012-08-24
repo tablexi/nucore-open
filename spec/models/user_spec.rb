@@ -12,6 +12,8 @@ describe User do
     should validate_uniqueness_of(:username)
   end
 
+  it { should have_many(:notifications) }
+
   it "should use factory" do
     @user.should be_valid
   end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120809205551) do
+ActiveRecord::Schema.define(:version => 20120824185714) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -178,6 +178,16 @@ ActiveRecord::Schema.define(:version => 20120809205551) do
     t.integer  "file_file_size"
     t.datetime "file_updated_at"
     t.datetime "journal_date",                     :null => false
+  end
+
+  create_table "notifications", :force => true do |t|
+    t.integer  "user_id",         :null => false
+    t.integer  "created_by",      :null => false
+    t.string   "created_by_type", :null => false
+    t.string   "notice",          :null => false
+    t.datetime "dismissed_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "order_details", :force => true do |t|
