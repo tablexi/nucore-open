@@ -8,6 +8,11 @@ class Notification < ActiveRecord::Base
   scope :active, where('dismissed_at IS NULL')
 
 
+  def notice
+    self[:notice].html_safe
+  end
+
+
   def self.create_for!(user, notifier)
     create!(
       :user_id => user.id,
