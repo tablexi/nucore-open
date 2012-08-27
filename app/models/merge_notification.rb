@@ -1,0 +1,2 @@
+class MergeNotification < Notification
+end

@@ -1,25 +1,24 @@
 class Notification < ActiveRecord::Base
   belongs_to :user
+  belongs_to :subject, :polymorphic => true
 
-  validates_presence_of :user_id, :created_by, :created_by_type, :notice
+  validates_presence_of :user_id, :subject_id, :notice
 
 
-  scope :by, lambda{|notifier| where(:created_by => notifier.id, :created_by_type => notifier.class.name) }
+  scope :about, lambda{|subject| where(:subject_id => subject.id, :subject_type => subject.class.name) }
   scope :active, where('dismissed_at IS NULL')
 
 
   def notice
-    self[:notice].html_safe
+    self[:notice].try(:html_safe)
   end
 
 
-  def self.create_for!(user, notifier)
+  def self.create_for!(user, subject)
     create!(
-      :user_id => user.id,
-      :created_by => notifier.id,
-      :created_by_type => notifier.class.name,
-      :notice => notifier.to_notice(user)
+      :user => user,
+      :subject => subject,
+      :notice => subject.to_notice(self, user)
     )
   end
-
 end

@@ -181,10 +181,11 @@ ActiveRecord::Schema.define(:version => 20120824185714) do
   end
 
   create_table "notifications", :force => true do |t|
-    t.integer  "user_id",         :null => false
-    t.integer  "created_by",      :null => false
-    t.string   "created_by_type", :null => false
-    t.string   "notice",          :null => false
+    t.string   "type",         :null => false
+    t.integer  "subject_id",   :null => false
+    t.string   "subject_type", :null => false
+    t.integer  "user_id",      :null => false
+    t.string   "notice",       :null => false
     t.datetime "dismissed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
