@@ -1,6 +1,7 @@
 class OrderDetail < ActiveRecord::Base
   include NUCore::Database::SortHelper
   include TranslationHelper
+  include NotificationSubject
   
   versioned
 
@@ -19,6 +20,7 @@ class OrderDetail < ActiveRecord::Base
   belongs_to :bundle, :foreign_key => 'bundle_product_id'
   has_one    :reservation, :dependent => :destroy
   has_one    :external_service_receiver, :as => :receiver, :dependent => :destroy
+  has_many   :notifications, :as => :subject, :dependent => :destroy
   has_many   :file_uploads, :dependent => :destroy
 
   delegate :user, :facility, :to => :order
@@ -586,6 +588,23 @@ class OrderDetail < ActiveRecord::Base
   # Returns true if this order detail is part of a bundle purchase, false otherwise
   def bundled?
     !bundle.nil?
+  end
+
+  def to_notice(notification_class, *args)
+    case notification_class.name
+      when MergeNotification.name
+        notice="<a href=\"#{edit_facility_order_path(order.facility, order.merge_order)}\">Order ##{order.merge_order.id}</a> needs your attention. A line item was added after purchase and "
+
+        notice += case product
+          when Instrument then 'has an incomplete reservation.'
+          when Service then 'has an incomplete order form.'
+          else; 'is incomplete.'
+        end
+
+        notice.html_safe
+      else
+        ''
+    end
   end
 
   # returns a hash of :notice (and/or?) :error

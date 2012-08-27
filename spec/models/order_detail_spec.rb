@@ -848,13 +848,13 @@ describe OrderDetail do
 
       context 'item' do
         it 'should update order_id and delete merge order' do
-          assert @order_detail.reload.save
+          assert @order_detail.save
           @order_detail.reload.order.should == @merge_to_order
           assert_raise(ActiveRecord::RecordNotFound) { Order.find @order.id }
         end
 
         it 'should not affect non merge orders' do
-          assert @order_detail.reload.save
+          assert @order_detail.save
           @order_detail.reload.order.should == @merge_to_order
           assert @order_detail.reload.save
           @order_detail.reload.order.should == @merge_to_order
@@ -869,6 +869,31 @@ describe OrderDetail do
           assert_nothing_raised do
             @order.reload.order_details.size.should == 1
           end
+        end
+
+        context 'notifications' do
+
+          it 'should be a NotificationSubject' do
+            @order_detail.should be_is_a(NotificationSubject)
+          end
+
+          it 'should delete merge notification after merge' do
+            MergeNotification.create_for! @user, @order_detail
+            assert @order_detail.save
+            MergeNotification.count.should == 0
+          end
+
+          it 'should delete merge notification on destroy' do
+            MergeNotification.create_for! @user, @order_detail
+            @order_detail.destroy
+            @order_detail.should be_frozen
+            MergeNotification.count.should == 0
+          end
+
+          it 'should produce a notice' do
+            @order_detail.to_notice(MergeNotification).should_not be_blank
+          end
+
         end
       end
 
@@ -953,6 +978,7 @@ describe OrderDetail do
       @merge_to_order=@order.clone
       assert @merge_to_order.save
       @order.update_attribute :merge_with_order_id, @merge_to_order.id
+      @order_detail.reload
     end
   end
 
