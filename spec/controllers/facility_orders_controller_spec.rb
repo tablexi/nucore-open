@@ -157,6 +157,7 @@ describe FacilityOrdersController do
           before :each do
             Service.any_instance.stubs(:active_survey?).returns(true)
             Service.any_instance.stubs(:active_template?).returns(false)
+            OrderDetail.any_instance.stubs(:valid_service_meta?).returns(false)
           end
 
           it_should_allow :director, 'to add a service to existing order via merge' do
@@ -168,6 +169,7 @@ describe FacilityOrdersController do
           before :each do
             Service.any_instance.stubs(:active_survey?).returns(false)
             Service.any_instance.stubs(:active_template?).returns(true)
+            OrderDetail.any_instance.stubs(:valid_service_meta?).returns(false)
           end
 
           it_should_allow :director, 'to add an service to existing order via merge' do
@@ -213,7 +215,7 @@ describe FacilityOrdersController do
           end
 
           it_should_allow :director, 'to add an instrument to existing order via merge' do
-            assert_merge_order @order, @bundle, 2
+            assert_merge_order @order, @bundle, 1, 1
           end
         end
 
@@ -227,10 +229,11 @@ describe FacilityOrdersController do
             before :each do
               Service.any_instance.stubs(:active_survey?).returns(true)
               Service.any_instance.stubs(:active_template?).returns(false)
+              OrderDetail.any_instance.stubs(:valid_service_meta?).returns(false)
             end
 
             it_should_allow :director, 'to add a bundle to existing order via merge' do
-              assert_merge_order @order, @bundle, 2
+              assert_merge_order @order, @bundle, 1, 1
             end
           end
 
@@ -238,10 +241,11 @@ describe FacilityOrdersController do
             before :each do
               Service.any_instance.stubs(:active_survey?).returns(false)
               Service.any_instance.stubs(:active_template?).returns(true)
+              OrderDetail.any_instance.stubs(:valid_service_meta?).returns(false)
             end
 
             it_should_allow :director, 'to add a bundle to existing order via merge' do
-              assert_merge_order @order, @bundle, 2
+              assert_merge_order @order, @bundle, 1, 1
             end
           end
 
@@ -261,8 +265,10 @@ describe FacilityOrdersController do
 
     def assert_update_success order, product
       if product.is_a? Bundle
-        product.products.each{|p| assert order.order_details.any?{|od| od.product == p}}
-        order.order_details.each{|od| od.order_status.should == OrderStatus.default_order_status }
+        order.order_details.each do |od|
+          od.order_status.should == OrderStatus.default_order_status
+          product.products.should be_include(od.product)
+        end
       else
         order_detail=order.order_details[0]
         order_detail.product.should == product
@@ -278,8 +284,8 @@ describe FacilityOrdersController do
       assert_update_success original_order, product
     end
 
-    def assert_merge_order original_order, product, detail_count=1
-      original_order.reload.order_details.size.should == 0
+    def assert_merge_order original_order, product, detail_count=1, original_detail_count=0
+      original_order.reload.order_details.size.should == original_detail_count
       merges=Order.where(:merge_with_order_id => original_order.id).all
       merges.size.should == 1
       merge_order=merges[0]
@@ -290,6 +296,7 @@ describe FacilityOrdersController do
       merge_order.created_by.should == @director.id
       merge_order.ordered_at.should_not be_blank
       merge_order.order_details.size.should == detail_count
+      MergeNotification.count.should == detail_count
       assert_update_success merge_order, product
     end
 

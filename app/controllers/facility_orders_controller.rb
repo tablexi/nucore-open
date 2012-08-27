@@ -66,18 +66,28 @@ class FacilityOrdersController < ApplicationController
     if quantity <= 0
       flash[:notice]=I18n.t 'controllers.facility_orders.update.zero_quantity'
     else
-      order=Order.create!(
-        :merge_with_order_id => original_order.id,
-        :facility_id => original_order.facility_id,
-        :account_id => original_order.account_id,
-        :user_id => original_order.user_id,
-        :created_by => current_user.id,
-        :ordered_at => Time.zone.now
-      ) if merge?(product)
+      if merge?(product)
+        order=Order.create!(
+          :merge_with_order_id => original_order.id,
+          :facility_id => original_order.facility_id,
+          :account_id => original_order.account_id,
+          :user_id => original_order.user_id,
+          :created_by => current_user.id,
+          :ordered_at => Time.zone.now
+        )
+      end
 
       begin
         details=order.add product, quantity
-        details.each{|d| d.set_default_status! }
+
+        details.each do |d|
+          d.set_default_status!
+
+          if order.to_be_merged? && ((d.product.is_a?(Instrument) && !d.valid_reservation?) || (d.product.is_a?(Service) && !d.valid_service_meta?))
+            MergeNotification.create_for! current_user, d
+          end
+        end
+
         flash[:notice]=I18n.t 'controllers.facility_orders.update.success', :product => product.name
       rescue Exception => e
         Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
