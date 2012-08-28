@@ -5,7 +5,6 @@ class Notification < ActiveRecord::Base
   validates_presence_of :user_id, :subject_id, :notice
 
 
-  scope :for, lambda{|user| where(:user_id => user.id) }
   scope :about, lambda{|subject| where(:subject_id => subject.id, :subject_type => subject.class.name) }
   scope :active, where('dismissed_at IS NULL')
 

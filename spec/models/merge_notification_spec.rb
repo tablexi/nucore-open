@@ -32,11 +32,6 @@ describe MergeNotification do
       MergeNotification.create_for! @user, @subject2
     end
 
-    it 'should find notifications by user' do
-      notices=MergeNotification.for(@user).all
-      notices.size.should == 2
-    end
-
     it 'should find notifications by subject' do
       notices=MergeNotification.about(@subject2).all
       notices.size.should == 1
