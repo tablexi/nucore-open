@@ -1,9 +1,11 @@
 require 'spec_helper'
+require 'notifications_helper'
 
 describe MergeNotification do
+  include NotificationsHelper
 
   before :each do
-    @subject=notification_subject
+    @subject=create_merge_notification_subject
     MergeNotification.create_for! @user, @subject
   end
 
@@ -26,8 +28,13 @@ describe MergeNotification do
   context 'scopes' do
 
     before :each do
-      @subject2=notification_subject
+      @subject2=create_merge_notification_subject
       MergeNotification.create_for! @user, @subject2
+    end
+
+    it 'should find notifications by user' do
+      notices=MergeNotification.for(@user).all
+      notices.size.should == 2
     end
 
     it 'should find notifications by subject' do
@@ -44,20 +51,6 @@ describe MergeNotification do
       notices.first.subject.should == @subject
     end
 
-  end
-  
-  
-  def notification_subject
-    @facility       ||= Factory.create(:facility)
-    @facility_account ||= @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @user           ||= Factory.create(:user)
-    @item           ||= @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
-  
-    place_product_order @user, @facility, @item
-    clone=@order.clone
-    assert clone.save
-    @order.update_attribute :merge_with_order_id, clone.id
-    @order_detail.reload
   end
 
 end
