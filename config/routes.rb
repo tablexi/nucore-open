@@ -207,6 +207,11 @@ Nucore::Application.routes.draw do |map|
     end
   end
 
+  #notifications
+  resources :notifications, :only => [ :index, :update ] do
+    collection { get :count }
+  end
+
   # reservations
   match 'reservations' => 'reservations#list', :as => 'reservations'
   match "reservations(/:status)" => 'reservations#list', :as => 'reservations_status'

@@ -1,0 +1,10 @@
+- content_for :head_content do
+  = javascript_include_tag 'notifications.js'
+
+- content_for(:h1) { t '.head.h1' }
+
+%ul#notifications
+  - @notices.each do |notice|
+    %li
+      = notice.notice
+      = link_to 'Dismiss', notification_path(notice), :method => :put, :class => 'dismiss-notice', :remote => true

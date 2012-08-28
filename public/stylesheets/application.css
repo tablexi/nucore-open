@@ -858,3 +858,24 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
 }
 
 
+/***
+ * Notifications
+ ***/
+
+#notifications li {
+    padding: 2em 0;
+    margin-bottom: 2em;
+    text-align: center;
+    -moz-box-shadow: 10px 10px 5px #888;
+    -webkit-box-shadow: 10px 10px 5px #888;
+    box-shadow: 10px 10px 5px #888;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    border: 1px solid #888;
+}
+
+.dismiss-notice {
+    margin-left: 5em;
+}
+
+

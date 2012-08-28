@@ -19,6 +19,7 @@ en:
     login: Login
     logout: Logout
     cart: Cart
+    notices: Notices
 
   shared:
     footer:
@@ -736,6 +737,11 @@ en:
           cancel_hours: "Cancelation Minimum (hours)"
           auto_cancel: "Automatic Cancelation (minutes)"
 
+  notifications:
+    index:
+      head:
+        h1: "Notices"
+
   devise:
     failure:
       invalid: "Invalid username or password."
@@ -821,6 +827,9 @@ en:
         'Dispute Reason', 'Dispute Resolved At', 'Dispute Resolved Reason', 'Reviewed At',
         'Statemented On', 'Journal Date', 'Reconciled Note'
       ]
+
+    notifications:
+      no_notices: "You have no notifications at this time"
 
   models:
     order:

@@ -19,6 +19,13 @@
         %li
           = link_to t('pages.cart'), :cart
           = "(#{current_cart.order_details.sum(:quantity)})"
+        - if current_user.operator?
+          - n_count=current_user.notifications.active.count
+          - if n_count > 0
+            %li
+              = link_to t('pages.notices'), notifications_path
+              %span#notice-count
+                = "(#{n_count})"
 
         %li.last= link_to t('pages.logout'), :destroy_user_session
   .clear
