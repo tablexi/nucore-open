@@ -18,6 +18,8 @@ class NotificationsController < ApplicationController
     rescue => e
       Rails.logger.warn "#{e.message}\n#{e.backtrace.join("\n")}"
     end
+
+    respond_with nil
   end
 
 
