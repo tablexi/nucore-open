@@ -1,5 +1,5 @@
 require 'spec_helper'
-describe OrderDetailStatusChangeNotification do
+describe OrderDetailObserver do
   module DummyHooks
     class DummyHook1
       attr_accessor :settings
@@ -22,7 +22,7 @@ describe OrderDetailStatusChangeNotification do
     end
     
     before :each do
-      @hooks = OrderDetailStatusChangeNotification.send(:status_change_hooks)
+      @hooks = OrderDetailObserver.send(:status_change_hooks)
     end
 
     it 'should support a list' do
