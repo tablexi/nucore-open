@@ -48,32 +48,32 @@ describe NotificationsController do
   end
 
 
-  context 'update' do
-    before :each do
-      @method=:put
-      @action=:update
-      @params={ :id => Notification.first.id }
-    end
-
-    it_should_require_login
-
-    it_should_behave_like 'user without notifications'
-
-    facility_users.each do |usr_sym|
-      context "as #{usr_sym}" do
-        before :each do
-          @user=instance_variable_get "@#{usr_sym}"
-          @notice=@user.notifications.first
-          @params[:id]=@notice.id
-        end
-
-        it_should_allow usr_sym do
-          assigns(:notices).size.should == 1
-          @notice.reload.dismissed_at.should_not be_nil
-          response.body.should be_blank
-        end
-      end
-    end
-  end
+  #context 'update' do
+  #  before :each do
+  #    @method=:put
+  #    @action=:update
+  #    @params={ :id => Notification.first.id }
+  #  end
+  #
+  #  it_should_require_login
+  #
+  #  it_should_behave_like 'user without notifications'
+  #
+  #  facility_users.each do |usr_sym|
+  #    context "as #{usr_sym}" do
+  #      before :each do
+  #        @user=instance_variable_get "@#{usr_sym}"
+  #        @notice=@user.notifications.first
+  #        @params[:id]=@notice.id
+  #      end
+  #
+  #      it_should_allow usr_sym do
+  #        assigns(:notices).size.should == 1
+  #        @notice.reload.dismissed_at.should_not be_nil
+  #        response.body.should be_blank
+  #      end
+  #    end
+  #  end
+  #end
 
 end

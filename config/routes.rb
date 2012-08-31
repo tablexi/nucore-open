@@ -208,7 +208,7 @@ Nucore::Application.routes.draw do |map|
   end
 
   #notifications
-  resources :notifications, :only => [ :index, :update ] do
+  resources :notifications, :only => [ :index ] do
     collection { get :count }
   end
 
