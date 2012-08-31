@@ -109,6 +109,26 @@ describe FacilityOrdersController do
   end
 
 
+  context 'send_receipt' do
+    before :each do
+      @method=:post
+      @action=:send_receipt
+      @params.merge! :id => @order.id
+      request.env['HTTP_REFERRER']=edit_facility_order_path @authable, @order
+      ActionMailer::Base.deliveries.clear
+    end
+
+    it_should_allow_operators_only :redirect, 'to send a receipt' do
+      flash[:notice].should be_present
+      ActionMailer::Base.deliveries.size.should == 1
+      mail=ActionMailer::Base.deliveries.first
+      mail.subject.should == I18n.t('notifier.order_receipt.subject')
+      mail.from.first.should == Settings.email.from
+      assert_redirected_to edit_facility_order_path(@authable, @order)
+    end
+  end
+
+
   context 'update' do
     before :each do
       @method=:put

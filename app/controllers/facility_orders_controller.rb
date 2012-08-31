@@ -58,6 +58,25 @@ class FacilityOrdersController < ApplicationController
   end
 
 
+  def send_receipt
+    order=nil
+
+    begin
+      order=Order.find params[:id].to_i
+      Notifier.order_receipt(:order => order, :user => order.user ).deliver
+      flash[:notice]="Receipt sent successfully."
+    rescue => e
+      flash[:error]="There was a problem while sending the receipt: #{e.message}"
+    end
+
+    begin
+      redirect_to :back
+    rescue ActionController::RedirectBackError
+      redirect_to order ? edit_facility_order_path(current_facility, order) : root_path
+    end
+  end
+
+
   def update
     product=Product.find(params[:product_add].to_i)
     order=original_order=Order.find(params[:id].to_i)

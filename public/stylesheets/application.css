@@ -777,6 +777,12 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
     height: 24px;
 }
 
+#send_receipt_btn {
+    width: 122px;
+    float: right;
+    margin-top: 3.5em;
+}
+
 #product_add_btn {
     margin-left: 0;
     margin-top: 1em;
