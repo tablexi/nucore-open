@@ -82,6 +82,7 @@
 
 %h2= t('.head.h2', :order_number => @order_detail.to_s)
 = form_for(@order_detail, :as => :order_detail, :url => (@order_detail.in_dispute? ? facility_order_order_detail_resolve_dispute_path(current_facility, @order, @order_detail) : facility_order_order_detail_path(current_facility, @order, @order_detail)), :html => {:method => :put}) do |f|
+  = hidden_field_tag :return_to, request.referer if request.referer =~ /\/facilities\/.+\/orders\/[0-9]+\/edit/
   = f.error_messages
   .grid_6.alpha
     %ul.form
