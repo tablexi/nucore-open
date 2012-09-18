@@ -15,10 +15,159 @@ describe GeneralReportsController do
   ])
 
 
+  context 'report searching' do
+    before :each do
+      @complete_status = OrderStatus.complete.first
+
+      @user = Factory.create(:user)
+      @authable=Factory.create(:facility)
+      @facility_account=@authable.facility_accounts.create!(Factory.attributes_for(:facility_account))
+      @item = @authable.items.create!(Factory.attributes_for(:item, :facility_account => @facility_account))
+
+      @account = create_nufs_account_with_owner :guest
+      define_open_account @item.account, @account.account_number
+
+      @order_detail_ordered_today_unfulfilled = place_product_order(@user, @authable, @item)
+
+      @order_detail_ordered_yesterday_unfulfilled = place_product_order(@user, @authable, @item)
+      @order_detail_ordered_yesterday_unfulfilled.order.update_attributes(:ordered_at => 1.day.ago)
+
+      @order_detail_ordered_yesterday_fulfilled_today_unreconciled = place_and_complete_item_order(@user, @authable, @account)
+      @order_detail_ordered_yesterday_fulfilled_today_unreconciled.order.update_attributes(:ordered_at => 1.day.ago)
+
+      @order_detail_ordered_today_fulfilled_today_unreconciled = place_and_complete_item_order(@user, @authable, @account)
+
+      @order_detail_ordered_today_fulfilled_next_month_unreconciled = place_and_complete_item_order(@user, @authable, @account)
+      @order_detail_ordered_today_fulfilled_next_month_unreconciled.update_attributes(:fulfilled_at => 1.month.from_now)
+
+      @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today = place_and_complete_item_order(@user, @authable, @account)
+      @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today.order.update_attributes(:ordered_at => 1.day.ago)
+      @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today.update_attributes(:fulfilled_at => 1.day.ago)
+      @journal_today = Factory.create(:journal, :facility => @authable, :created_by => @admin.id, :journal_date => Time.zone.now)
+      @journal_today.create_journal_rows!([@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today])
+      @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today.change_status!(OrderStatus.reconciled.first)
+
+      @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday = place_and_complete_item_order(@user, @authable, @account)
+      @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday.order.update_attributes(:ordered_at => 1.day.ago)
+      @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday.update_attributes(:fulfilled_at => 1.day.ago)
+      @journal_yesterday = Factory.create(:journal, :facility => @authable, :created_by => @admin.id, :journal_date => 1.day.ago)
+      @journal_yesterday.create_journal_rows!([@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday])
+      @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday.change_status!(OrderStatus.reconciled.first)
+
+
+      @method = :get
+      @action = :product
+      @params = {
+        :facility_id => @authable.url_name,
+        :date_start => Time.zone.now.strftime('%m/%d/%Y'),
+        :date_end => 1.day.from_now.strftime('%m/%d/%Y'),
+        :format => :js
+      }
+
+      sign_in @admin
+    end
+    context 'ordered_at search' do
+      before :each do
+        @params.merge!(:date_range_field => :ordered_at)
+      end
+
+      it 'should search' do
+        do_request
+        response.should be_success
+      end
+
+      it 'should search search unfulfilled' do
+        @params.merge!(:status_filter => [OrderStatus.new_os.first.id])
+        do_request
+        assigns[:report_data].should contain_all [@order_detail_ordered_today_unfulfilled]
+      end
+
+      it 'should search fulfilled' do
+        @params.merge!(:status_filter => [@complete_status.id])
+        do_request
+        assigns[:report_data].should contain_all [@order_detail_ordered_today_fulfilled_today_unreconciled, @order_detail_ordered_today_fulfilled_next_month_unreconciled]
+      end
+
+      it 'should search reconciled' do
+        @params.merge!(:status_filter => [OrderStatus.reconciled.first.id])
+        do_request
+        assigns[:report_data].should be_empty
+      end
+
+      it 'should find reconciled that started yesterday' do
+        @params.merge!(:status_filter => [OrderStatus.reconciled.first.id], :date_start => 1.day.ago.strftime('%m/%d/%Y'))
+        do_request
+        assigns[:report_data].should contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today]
+      end
+    end
+
+    context 'fulfilled_at search' do
+      before :each do
+        @params.merge!(:date_range_field => :fulfilled_at)
+      end
+
+      it 'should have a problem if it searches unfulfilled' do
+        @params.merge!(:status_filter => [OrderStatus.new_os.first.id])
+        do_request
+        assigns[:report_data].should be_empty
+      end
+
+      it 'should search fulfilled' do
+        @params.merge!(:status_filter => [@complete_status.id])
+        do_request
+        assigns[:report_data].should contain_all [@order_detail_ordered_yesterday_fulfilled_today_unreconciled, @order_detail_ordered_today_fulfilled_today_unreconciled]
+      end
+
+      it 'should search reconciled' do
+        @params.merge!(:status_filter => [OrderStatus.reconciled.first.id])
+        do_request
+        assigns[:report_data].should be_empty
+      end
+
+      it 'should find reconciled that started yesterday' do
+        @params.merge!(:status_filter => [OrderStatus.reconciled.first.id], :date_start => 1.day.ago.strftime('%m/%d/%Y'))
+        do_request
+        assigns[:report_data].should contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today]
+      end
+    end
+
+    context 'journed_at search' do
+      before :each do
+        # change start date so we get an order detail
+        @params.merge!(:date_range_field => :journal_date)
+      end
+
+      it 'should have a problem if it searches unfulfilled' do
+        @params.merge!(:status_filter => [OrderStatus.new_os.first.id])
+        do_request
+        assigns[:report_data].should be_empty
+      end
+
+      it 'should have a problem if it searches unjournaled' do
+        @params.merge!(:status_filter => [@complete_status.id])
+        do_request
+        assigns[:report_data].should be_empty
+      end
+
+      it 'should search reconciled' do
+        @params.merge!(:status_filter => [OrderStatus.reconciled.first.id])
+        do_request
+        assigns[:report_data].should == [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today]
+      end
+
+      it 'should find reconciled that started yesterday' do
+        @params.merge!(:status_filter => [OrderStatus.reconciled.first.id], :date_start => 1.day.ago.strftime('%m/%d/%Y'))
+        do_request
+        assigns[:report_data].should contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday]
+      end
+    end
+  end
+
+
   private
 
   def setup_extra_params(params)
-    params.merge!(:status_filter => [ OrderStatus.complete.first.id ])
+    params.merge!(:status_filter => [ OrderStatus.complete.first.id ], :date_range_field => 'fulfilled_at')
   end
 
 
@@ -32,8 +181,8 @@ describe GeneralReportsController do
         'Product', 'Quantity', 'Bundled Products', 'Account Type', 'Affiliate', 'Account',
         'Account Description', 'Account Expiration', 'Account Owner', 'Owner First Name',
         'Owner Last Name', 'Owner Email', 'Price Group', 'Estimated Cost', 'Estimated Subsidy',
-        'Estimated Total', 'Actual Cost', 'Actual Subsidy', 'Actual Total', 'Reservation Start Time', 
-        'Reservation End Time', 'Reservation Minutes', 'Actual Start Time', 'Actual End Time', 
+        'Estimated Total', 'Actual Cost', 'Actual Subsidy', 'Actual Total', 'Reservation Start Time',
+        'Reservation End Time', 'Reservation Minutes', 'Actual Start Time', 'Actual End Time',
         'Actual Minutes', 'Disputed At', 'Dispute Reason', 'Dispute Resolved At', 'Dispute Resolved Reason',
         'Reviewed At', 'Statemented On', 'Journal Date', 'Reconciled Note'
       ]

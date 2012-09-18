@@ -2,7 +2,7 @@ namespace :order_details  do
   desc "mark order_details with past reservations as complete"
   task :expire_reservations => :environment do
     complete    = OrderStatus.find_by_name!('Complete')
-    order_details = OrderDetail.where("(state = 'new' OR state = 'inprocess') AND reservations.reserve_end_at < ? AND canceled_at IS NULL", Time.zone.now - 12.hours).
+    order_details = OrderDetail.where("(state = 'new' OR state = 'inprocess') AND order_status_id IS NOT NULL AND reservations.reserve_end_at < ? AND canceled_at IS NULL", Time.zone.now - 12.hours).
                                joins(:reservation).readonly(false).all
     order_details.each do |od|
       od.transaction do

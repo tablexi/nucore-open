@@ -10,15 +10,15 @@ class FacilityJournalsController < ApplicationController
   helper_method :has_pending_journals?
 
   include TransactionSearch
-  
+
   layout 'two_column'
-  
+
   def initialize
     @subnav     = 'billing_nav'
     @active_tab = 'admin_billing'
     super
   end
-  
+
   # GET /facilities/journals
   def index
     set_pending_journals
@@ -33,7 +33,7 @@ class FacilityJournalsController < ApplicationController
     set_default_variables
     @layout = "two_column_head"
   end
-   
+
   #PUT /facilities/journals/:id
   def update
     @pending_journal = @journal
@@ -85,7 +85,7 @@ class FacilityJournalsController < ApplicationController
       flash[:error] = @journal.errors.full_messages.join("<br/>").html_safe
     end
 
-    @soonest_journal_date = params[:journal_date] || @soonest_journal_date 
+    @soonest_journal_date = params[:journal_date] || @soonest_journal_date
     render :action => :index
   end
 
@@ -94,7 +94,7 @@ class FacilityJournalsController < ApplicationController
     @journal = Journal.new
     @journal.created_by = session_user.id
     @journal.journal_date = parse_usa_date(params[:journal_date])
-    
+
     if params[:order_detail_ids].present?
       @update_order_details = @order_details.includes(:order).where(:id => params[:order_detail_ids])
     else
@@ -191,16 +191,16 @@ class FacilityJournalsController < ApplicationController
 
 
   private
-  
+
   def set_pending_journals
     @pending_journals = @journals.where(:is_successful => nil)
   end
-  
+
   def set_soonest_journal_date
     @soonest_journal_date=@order_details.collect{ |od| od.fulfilled_at }.max
     @soonest_journal_date=Time.zone.now unless @soonest_journal_date
   end
-  
+
   def set_default_variables
     @order_details   = @order_details.need_journal
 

@@ -23,7 +23,9 @@ class OrderDetail < ActiveRecord::Base
   has_many   :notifications, :as => :subject, :dependent => :destroy
   has_many   :file_uploads, :dependent => :destroy
 
-  delegate :user, :facility, :to => :order
+  delegate :user, :facility, :ordered_at, :to => :order
+  delegate :journal_date, :to => :journal
+  
   alias_method :merge!, :save!
 
   validates_presence_of :product_id, :order_id, :created_by
@@ -64,7 +66,7 @@ class OrderDetail < ActiveRecord::Base
     unless facility_id.nil?
       details = details.where(:orders => { :facility_id => facility_id})
     end
-    
+
     details
   end
 
@@ -75,10 +77,10 @@ class OrderDetail < ActiveRecord::Base
       details = details.joins(:order => :facility)
       details = details.where(:facilities => {:url_name => facility_url})
     end
-    
+
     details
   end
-  
+
   scope :for_facility_with_price_policy, lambda { |facility| {
     :joins => :order,
     :conditions => [ 'orders.facility_id = ? AND price_policy_id IS NOT NULL', facility.id ], :order => 'order_details.fulfilled_at DESC' }
@@ -91,7 +93,7 @@ class OrderDetail < ActiveRecord::Base
                      AND order_details.price_policy_id IS NOT NULL
                      AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', 'complete']
   }}
-  
+
   def self.all_need_notification
     where(:state => 'complete').
     where(:reviewed_at => nil).
@@ -99,14 +101,14 @@ class OrderDetail < ActiveRecord::Base
     where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   end
 
-  scope :in_review, lambda { |facility| 
+  scope :in_review, lambda { |facility|
     scoped.joins(:product).
     where(:products => {:facility_id => facility.id}).
     where(:state => 'complete').
     where("order_details.reviewed_at > ?", Time.zone.now).
     where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   }
-  
+
   def self.all_in_review
     where(:state => 'complete').
     where("order_details.reviewed_at > ?", Time.zone.now).
@@ -120,7 +122,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def can_be_viewed_by?(user)
-    self.order.user_id == user.id || self.account.owner_user.id == user.id || self.account.business_admins.any?{|au| au.user_id == user.id} 
+    self.order.user_id == user.id || self.account.owner_user.id == user.id || self.account.business_admins.any?{|au| au.user_id == user.id}
   end
 
   scope :need_statement, lambda { |facility| {
@@ -155,7 +157,7 @@ class OrderDetail < ActiveRecord::Base
 
   scope :non_reservations, joins(:product).where("products.type <> 'Instrument'")
   scope :reservations, joins(:product).where("products.type = 'Instrument'")
-  
+
   scope :ordered, where("orders.ordered_at IS NOT NULL")
   scope :pending, joins(:order).where(:state => ['new', 'inprocess']).ordered
   scope :confirmed_reservations,  reservations.
@@ -174,7 +176,7 @@ class OrderDetail < ActiveRecord::Base
 
   scope :all_reservations, confirmed_reservations.
                            order('reservations.reserve_start_at DESC')
-  
+
   scope :for_accounts, lambda {|accounts| where("order_details.account_id in (?)", accounts) unless accounts.nil? or accounts.empty? }
   scope :for_facilities, lambda {|facilities| joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? or facilities.empty? }
   scope :for_products, lambda { |products| where("order_details.product_id in (?)", products) unless products.blank? }
@@ -182,8 +184,8 @@ class OrderDetail < ActiveRecord::Base
                                        joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'").
                                        where("account_users.user_id in (?)", owners) unless owners.blank? }
   scope :for_order_statuses, lambda {|statuses| where("order_details.order_status_id in (?)", statuses) unless statuses.nil? or statuses.empty? }
-                                       
-  scope :in_date_range, lambda { |start_date, end_date| 
+
+  scope :in_date_range, lambda { |start_date, end_date|
     search = scoped
     if (start_date)
       search = search.where("orders.ordered_at > ?", start_date.beginning_of_day)
@@ -193,14 +195,20 @@ class OrderDetail < ActiveRecord::Base
     end
     search
   }
-  
+
   scope :fulfilled_in_date_range, lambda {|start_date, end_date|
     action_in_date_range :fulfilled_at, start_date, end_date
   }
-  
+
   scope :action_in_date_range, lambda {|action, start_date, end_date|
     logger.debug("searching #{action} between #{start_date} and #{end_date}")
     search = scoped
+
+    search = search.joins(:journal) if action.to_sym == :journal_date
+
+    # If we're searching on fulfilled_at, ignore any order details that don't have a fulfilled date
+    search = search.where('fulfilled_at IS NOT NULL') if action.to_sym == :fulfilled_at
+
     if start_date
       search = search.where("#{action} > ?", start_date.beginning_of_day)
     end
@@ -210,10 +218,12 @@ class OrderDetail < ActiveRecord::Base
     search
   }
 
+
+
   def self.ordered_or_reserved_in_range(start_date, end_date)
     start_date = start_date.beginning_of_day if start_date
     end_date = end_date.end_of_day if end_date
-    
+
     query = joins(:order).joins('LEFT JOIN reservations ON reservations.order_detail_id = order_details.id')
     # If there is a reservation, query on the reservation time, if there's not a reservation (i.e. the left join ends up with a null reservation)
     # use the ordered at time
@@ -288,7 +298,7 @@ class OrderDetail < ActiveRecord::Base
     # if we're setting it to compete, automatically set the actuals for a reservation
     if reservation
       raise NUCore::PurchaseException.new(t_model_error(Reservation, 'connot_be_completed_in_future')) if reservation.reserve_end_at > event_time
-      reservation.assign_actuals_off_reserve 
+      reservation.assign_actuals_off_reserve
       reservation.save!
     end
     change_status!(OrderStatus.complete.first) do |od|
@@ -372,10 +382,10 @@ class OrderDetail < ActiveRecord::Base
 
     # TODO if chart string, is chart string + account valid
     return "The #{account.type_string} is not open for the required account" if account.is_a?(NufsAccount) && !account.account_open?(product.account)
-    
+
     # is the user approved for the product
     return "You are not approved to purchase this #{product.class.name.downcase}" unless product.can_be_used_by?(order.user) or order.created_by_user.can_override_restrictions?(product)
-    
+
     # are reservation requirements met
     response = validate_reservation
     return response unless response.nil?
@@ -401,7 +411,7 @@ class OrderDetail < ActiveRecord::Base
     reservation.reserved_by_admin = @being_purchased_by_admin
     return "There is a problem with your reservation" unless reservation.valid? && reservation.valid_before_purchase?
   end
-  
+
   def valid_reservation?
     validate_reservation.nil? ? true : false
   end
@@ -464,7 +474,7 @@ class OrderDetail < ActiveRecord::Base
     self.estimated_cost    = nil
     self.estimated_subsidy = nil
     second_account=account unless second_account
-    
+
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
 
@@ -611,10 +621,10 @@ class OrderDetail < ActiveRecord::Base
   # these should be shown to the user as an appropriate flash message
   #
   # Required Parameters:
-  # 
+  #
   # order_detail_ids: enumerable of strings or integers representing
   #                   order_details to attempt update of
-  # 
+  #
   # update_params:    a hash containing updates to attempt on the order_details
   #
   # session_user:     user requesting the update
@@ -626,7 +636,7 @@ class OrderDetail < ActiveRecord::Base
   #                                              they should be assigned to
   #
   #                                               OR
-  #                                              
+  #
   #                                              'unassign'
   #                                              (to unassign current user)
   #
@@ -636,7 +646,7 @@ class OrderDetail < ActiveRecord::Base
   #
   #
   # Optional Parameters:
-  # 
+  #
   # msg_type:         a plural string used in error/success messages to indicate
   #                   type of records,
   #                   (since this class method is also used to update

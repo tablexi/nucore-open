@@ -7,11 +7,11 @@ class FacilityNotificationsController < ApplicationController
   before_filter :check_billing_access
 
   before_filter :check_review_period
-  
+
   include TransactionSearch
-  
+
   layout 'two_column_head'
-  
+
   def initialize
     @active_tab = 'admin_billing'
     super
@@ -26,7 +26,7 @@ class FacilityNotificationsController < ApplicationController
     @order_details = @order_details.all_need_notification
     @order_detail_action = :send_notifications
   end
-  
+
   # GET /facilities/notifications/send
   def send_notifications
     @accounts_to_notify = []
@@ -49,12 +49,12 @@ class FacilityNotificationsController < ApplicationController
         if od
           od.reviewed_at = reviewed_at
           @errors << "#{od} #{od.errors}" unless od.save
-          
+
           if Settings.billing.review_period > 0
             @orders_notified << od
             @accounts_to_notify << [od.account, od.product.facility] unless @accounts_to_notify.include?([od.account, od.product.facility])
           end
-        end      
+        end
       end
       if @errors.any?
         flash[:error] = I18n.t('controllers.facility_notifications.errors_html', :errors => @errors.join('<br/>')).html_safe
@@ -78,11 +78,11 @@ class FacilityNotificationsController < ApplicationController
     order_details_sort(:reviewed_at)
     @extra_date_column = :reviewed_at
   end
-  
+
   # GET /facilities/notifications/in_review/mark
   def mark_as_reviewed
     if params[:order_detail_ids].nil? or params[:order_detail_ids].empty?
-      flash[:error] = I18n.t 'controllers.facility_notifications.no_selection'      
+      flash[:error] = I18n.t 'controllers.facility_notifications.no_selection'
     else
       @errors = []
       @order_details_updated = []

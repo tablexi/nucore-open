@@ -15,7 +15,7 @@ en:
     create: Create %{model}
     manage: Manage %{model}
     global_settings: Global Settings
-    global_billing: Billing 
+    global_billing: Billing
     login: Login
     logout: Logout
     cart: Cart
@@ -456,7 +456,7 @@ en:
         adjust: "Adjustment"
         total: "Total"
       unassigned: "Unassigned"
-  
+
   product_accessories:
     index:
       description: "Here you may define one or more accessories that can be used during a reservation of this product"
@@ -552,7 +552,7 @@ en:
     errors:
       none_exist_for_date: No valid price policies exists for that date.
       none_exist: No current price policies
-      fewer_than_price_groups: Some price groups are missing price policies 
+      fewer_than_price_groups: Some price groups are missing price policies
 
   price_groups:
     price_group_fields:
@@ -647,7 +647,7 @@ en:
       instructions_html: Please enter your email address below. If you use a NetID, please reset it through <a href="https://validate.it.northwestern.edu/idm/user/login.jsp">NUVALIDATE</a>
       success: Instructions on how to reset your password have been sent to %{email}
       not_found: We cannot find %{email} in our records.
-    
+
   users:
     index:
       head:
@@ -685,7 +685,7 @@ en:
       h1: "%{user_name} Payment Sources"
       link: "Add Payment Source"
       notice: "%{user_name} does not have any payment sources."
-    
+
   facility_statements:
     new:
       instructions: Please review the following payment sources. A statement will be generated for each of the payment sources and an email with a link to the statement will be sent.
@@ -908,8 +908,8 @@ en:
         account_user:
           attributes:
             user_id:
-              taken: "is already a member of this payment source"   
-              
+              taken: "is already a member of this payment source"
+
     # Model Names
     models:
       account:
@@ -955,6 +955,8 @@ en:
         dispute_resolved_reason: Resolution Notes
         description: Description
         fulfilled_at: Fulfilled Date
+        ordered_at: Ordered Date
+        journal_date: Journal Date
         user: Ordered For
         created_by_user: Ordered By
         reviewed_at: Review Closes

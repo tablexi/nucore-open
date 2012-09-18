@@ -117,14 +117,14 @@ module ReportSpecHelper
     if @params[:date_start].blank?
       assigns(:date_start).should == date_start
     else
-      assigns(:date_start).should == parse_usa_date(@params[:date_start])
+      assigns(:date_start).should == parse_usa_date(@params[:date_start]).beginning_of_day
     end
 
     if @params[:date_end].blank?
       date_end=date_start + 42.days
       assigns(:date_end).should == Date.new(date_end.year, date_end.month) - 1.day
     else
-      assigns(:date_end).should == parse_usa_date(@params[:date_end])
+      assigns(:date_end).should == parse_usa_date(@params[:date_end]).end_of_day
     end
   end
 

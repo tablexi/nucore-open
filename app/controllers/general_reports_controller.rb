@@ -54,10 +54,11 @@ class GeneralReportsController < ReportsController
       @status_ids += stat.children.collect(&:id) if stat.root?
     end
 
+    @date_range_field = params[:date_range_field] || 'journal_date'
     super
   end
-  
-  
+
+
   def init_report_headers(report_on_label)
     if !report_data_request?
       @headers=[ report_on_label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
@@ -65,12 +66,12 @@ class GeneralReportsController < ReportsController
       @headers=I18n.t 'controllers.general_reports.headers.data'
     end
   end
-  
-  
+
+
   def init_report_data(report_on_label, &report_on)
     @report_data=report_data
   end
-  
+
 
   def init_report(report_on_label)
     sums, rows, @total_quantity, @total_cost={}, [], 0, 0.0
@@ -97,7 +98,7 @@ class GeneralReportsController < ReportsController
     end
 
     rows.sort! {|a,b| a.first <=> b.first}
-    
+
     # only page results if we're not exporting
     if params[:export_id].present?
       @rows = rows
@@ -105,37 +106,33 @@ class GeneralReportsController < ReportsController
       page_report(rows)
     end
   end
-  
-  
+
+
   def report_data
-    fulfilled_stati=[ OrderStatus.complete.first.id, OrderStatus.reconciled.first.id ]
-    fulfilled_ods=report_data_query(fulfilled_stati & @status_ids, 'order_details.fulfilled_at')
-    ordered_ods=report_data_query(@status_ids - fulfilled_stati, 'orders.ordered_at')
-    fulfilled_ods + ordered_ods
+    @report_data = report_data_query(@status_ids, @date_range_field)
   end
 
 
   def report_data_query(stati, date_column)
     return [] if stati.blank?
+    # default to using fulfilled_at
+    result = OrderDetail.where(:order_status_id => stati).
+                        for_facility(current_facility).
+                        action_in_date_range(date_column, @date_start, @date_end)
 
-    result = OrderDetail.joins(:order_status).
-                where('order_statuses.id' => stati).
-                joins('LEFT JOIN orders ON order_details.order_id = orders.id').
-                where("orders.facility_id = ? AND #{date_column} >= ? AND #{date_column} <= ?", current_facility.id, @date_start, @date_end)
-                
-    ## TODO 
+    ## TODO
     # there is a bug in activerecord-oracle-enhanced 1.3.0 and rails 3.0.x that causes an ORA-01795: maximum number of expressions in a list is 1000
     # error if we're trying to join more than 1000 orders. oracle-enhanced 1.3.2 contains a fix, but only works in Rails 3.1.
     # We've removed :orders from the includes to prevent the SQL error, but it results in N+1 on orders. Make sure
     # to put it back when we upgrade to Rails 3.1/3.2
 
     if NUCore::Database.oracle?
-      result = result.includes(:account, :price_policy, :product)
+      result = result.includes(:account, :price_policy, :product, :order_status)
     else
-      result = result.includes(:order, :account, :price_policy, :product)
+      result = result.includes(:order, :account, :price_policy, :product, :order_status)
     end
 
-    result                
+    result
   end
 
 end
