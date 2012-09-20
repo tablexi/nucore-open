@@ -19,6 +19,10 @@ class Instrument < Product
   
   after_create :set_default_pricing
 
+  def active_reservations
+    self.reservations.active
+  end
+
   # control mechanism for instrument
   def control_mechanism
     return @control_mechanism || self.relay.try(:control_mechanism) || 'manual'
