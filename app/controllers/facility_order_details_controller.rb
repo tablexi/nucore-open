@@ -144,7 +144,7 @@ class FacilityOrderDetailsController < ApplicationController
 
     OrderDetail.transaction do
       jr=JournalRow.where(:journal_id => od.journal_id, :order_detail_id => od.id).first
-      jr.destroy
+      jr.try :destroy
       od.update_attributes! :journal_id => nil
     end
 
