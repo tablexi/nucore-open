@@ -138,12 +138,15 @@ class FacilityOrderDetailsController < ApplicationController
 
   def remove_from_journal
     oid=params[:id]
-    return redirect_to :back unless oid
+    return redirect_to :back if oid.blank?
 
-    oid=oid.to_i
-    od=OrderDetail.find(oid)
-    od.journal=nil
-    od.save!
+    od=OrderDetail.find(oid.to_i)
+
+    OrderDetail.transaction do
+      jr=JournalRow.where(:journal_id => od.journal_id, :order_detail_id => od.id).first
+      jr.destroy
+      od.update_attributes! :journal_id => nil
+    end
 
     flash[:notice]=I18n.t 'controllers.facility_order_details.remove_from_journal.notice'
     redirect_to edit_facility_order_order_detail_path(current_facility, od.order, od)
