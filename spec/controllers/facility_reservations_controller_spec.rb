@@ -288,4 +288,44 @@ describe FacilityReservationsController do
 
   end
 
+  context 'timeline' do
+    before :each do
+      # create unpurchased reservation
+      @order2=Factory.create(:order,
+      :facility => @authable,
+      :user => @director,
+      :created_by => @director.id,
+      :account => @account,
+      :ordered_at => nil,
+      :state => 'new'
+      )
+      # make sure the reservations are happening today
+      @reservation.update_attributes!(:reserve_start_at => Time.zone.now, :reserve_end_at => 1.hour.from_now)
+      @unpurchased_reservation=Factory.create(:reservation, :instrument => @product, :reserve_start_at => 1.hour.from_now, :reserve_end_at => 2.hours.from_now)
+      @order_detail2=Factory.create(:order_detail, :order => @order2, :product => @product, :reservation => @unpurchased_reservation)
+
+      maybe_grant_always_sign_in :director
+      @method = :get
+      @action = :timeline
+      @params={ :facility_id => @authable.url_name }
+      do_request
+    end
+
+    it 'should not be admin reservations' do
+      @reservation.should_not be_admin
+      @unpurchased_reservation.should_not be_admin
+    end
+
+    it 'should show reservation' do
+      # puts "paid: #{@reservation.id}"
+      # puts "unpaid: #{@unpurchased_reservation.id}"
+      # puts response.body
+      response.body.should include "id='tooltip_reservation_#{@reservation.id}'"
+    end
+
+    it 'should not show unpaid reservation' do
+      response.body.should_not include "id='tooltip_reservation_#{@unpurchased_reservation.id}'"
+    end
+  end
+
 end

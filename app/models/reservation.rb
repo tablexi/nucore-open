@@ -38,7 +38,7 @@ class Reservation < ActiveRecord::Base
   before_validation :set_reserve_start_at, :set_reserve_end_at, :set_actual_start_at, :set_actual_end_at
 
   scope :active, :conditions => ["reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)"], :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id']
-  scope :limit,    lambda { |n| {:limit => n}}
+  # scope :limit,    lambda { |n| {:limit => n}}
 
   def self.today
     for_date(Time.zone.now)
