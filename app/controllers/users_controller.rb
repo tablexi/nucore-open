@@ -39,9 +39,13 @@ class UsersController < ApplicationController
 
   # GET /facilities/:facility_id/users
   def index
-    @users = current_facility.orders.where('ordered_at > ?', Time.zone.now - 1.year).includes(:user).collect{|o| o.user}.uniq
-    @users.delete nil # on a dev db with screwy data nil can get ya
-    @users = @users.sort {|x,y| [x.last_name, x.first_name].join(' ') <=> [y.last_name, y.first_name].join(' ') }.paginate(:page => params[:page])
+    @new_user = User.find_by_id(params[:user])
+    @users = User.joins(:orders).
+                  where(:orders => { :facility_id => current_facility.id }).
+                  where('orders.ordered_at > ?', Time.zone.now - 1.year).
+                  order(:last_name, :first_name).
+                  select("DISTINCT users.*").
+                  paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/facility_users/new
@@ -58,8 +62,7 @@ class UsersController < ApplicationController
 
     begin
       @user.save!
-      flash[:notice] = 'The user was successfully created.'
-      redirect_to facility_users_url
+      redirect_to facility_users_url(:user => @user.id)
     rescue Exception => e
       @user.errors.add(:base, e) if @user.errors.empty?
       render :action => "new" and return
