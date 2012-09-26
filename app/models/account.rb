@@ -100,7 +100,9 @@ class Account < ActiveRecord::Base
   end
 
   def account_pretty
-    "#{description} (#{account_number})"
+    desc="#{description} (#{account_number})"
+    desc += " [#{owner_user.name}]" if owner_user
+    desc
   end
   
   def account_list_item
