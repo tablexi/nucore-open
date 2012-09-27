@@ -67,6 +67,122 @@ describe FacilityOrderDetailsController do
       should_not set_the_flash
     end
 
+    context 'enable/disable subsidy field' do
+      def sign_in_and_do_request
+        maybe_grant_always_sign_in :director
+        do_request
+        @dom = Nokogiri::HTML(response.body)
+      end
+      context 'new' do
+        before :each do
+          @order_detail.update_attributes(:price_policy => nil)
+          Item.any_instance.stubs(:cheapest_price_policy).returns(@price_policy)
+          @order_detail.assign_estimated_price!
+          @order_detail.estimated_cost.should be
+          sign_in_and_do_request
+        end
+
+        it 'should say "Estimated Subsidy"' do
+          response.body.to_s.should =~ /Estimated\sSubsidy/
+        end
+
+        it 'should not have a field for subsidy' do
+          @dom.css('.order_detail_edit .estimated_subsidy').should_not be_empty
+          @dom.css('.order_detail_edit .actual_subsidy input').should be_empty
+        end
+
+        it 'should have the estimated price and subsidy' do
+          @dom.css('.order_detail_edit .estimated_cost').first.content.should == '$1.00'
+          @dom.css('.order_detail_edit .estimated_subsidy').first.content.should == '$0.00'
+        end
+      end
+
+      context "no price policy assigned" do
+        before :each do
+          @order_detail.update_attributes(:price_policy => nil, :actual_cost => nil, :estimated_cost => nil)
+          sign_in_and_do_request
+        end
+
+        it 'should say "Estimated Subsidy"' do
+          response.body.should_not =~ /Estimated\sSubsidy/
+        end
+
+        it 'should say "Unassigned"' do
+          @dom.css('.order_detail_edit .unassigned_subsidy').first.content.should == 'Unassigned'
+        end
+
+        it 'should not have a field for subsidy' do
+          @dom.css('.order_detail_edit .actual_subsidy input').should be_empty
+        end
+      end
+
+      context 'price policy without subsidy' do
+        context 'instrument' do
+          before :each do
+            prepare_reservation
+            sign_in_and_do_request
+          end
+
+          it 'should be set up correctly' do
+            @order_detail.price_policy.should == @instrument_price_policy
+            @order_detail.actual_cost.should be
+            @order_detail.actual_subsidy.should be
+          end
+
+          it 'should include the price policy name' do
+            @dom.css('.order_detail_edit .subsidy_header').first.content.should include @instrument_price_policy.price_group.name
+          end
+
+          it 'should have the field disabled' do
+            @dom.css('.order_detail_edit .actual_subsidy input').first.should be_matches '[disabled]'
+          end
+        end
+        context 'item' do
+          before :each do
+            @price_policy.update_attributes(:unit_cost => 10, :unit_subsidy => 0)
+            @order_detail.change_status!(OrderStatus.complete.first)
+            sign_in_and_do_request
+          end
+          it 'should include the price policy name' do
+            @dom.css('.order_detail_edit .subsidy_header').first.content.should include @price_policy.price_group.name
+          end
+          it 'should have the field disabled' do
+            @dom.css('.order_detail_edit .actual_subsidy input').first.should be_matches '[disabled]'
+          end
+        end
+      end
+
+      context 'price_policy with subsidy' do
+        context 'instrument' do
+          before :each do
+            prepare_reservation
+            @instrument_price_policy.update_attributes(:usage_subsidy => 1)
+            sign_in_and_do_request
+          end
+
+          it 'should include the price policy name' do
+            @dom.css('.order_detail_edit .subsidy_header').first.content.should include @instrument_price_policy.price_group.name
+          end
+          it 'should have the field enabled' do
+            @dom.css('.order_detail_edit .actual_subsidy input').first.should_not be_matches '[disabled]'
+          end
+        end
+        context 'item' do
+          before :each do
+            @price_policy.update_attributes(:unit_cost => 10, :unit_subsidy => 1)
+            @order_detail.change_status!(OrderStatus.complete.first)
+            sign_in_and_do_request
+          end
+          it 'should include the price policy name' do
+            @dom.css('.order_detail_edit .subsidy_header').first.content.should include @price_policy.price_group.name
+          end
+          it 'should have the field enabled' do
+            @dom.css('.order_detail_edit .actual_subsidy input').first.should_not be_matches '[disabled]'
+          end
+        end
+      end
+    end
+
   end
 
 
@@ -235,6 +351,22 @@ describe FacilityOrderDetailsController do
         assert_redirected_to edit_facility_order_path(@authable, @clone)
       end
     end
+  end
+
+  def prepare_reservation
+    @order_detail.update_attributes(:price_policy => nil)
+    @instrument = Factory.create(:instrument, :facility => @authable,
+      :facility_account => @authable.facility_accounts.create(Factory.attributes_for(:facility_account)))
+    @instrument_price_policy=Factory.create(:instrument_price_policy,
+                                            :product => @instrument,
+                                            :price_group => @price_group,
+                                            :usage_rate => 10,
+                                            :usage_subsidy => 0)
+    @instrument_price_policy.should be_persisted
+    puts @instrument_price_policy.errors.full_messages
+    Instrument.any_instance.stubs(:cheapest_price_policy).returns(@instrument_price_policy)
+    @reservation = place_reservation @authable, @order_detail, 1.day.ago
+    @order_detail.backdate_to_complete! @reservation.reserve_end_at
   end
 
 end

@@ -50,6 +50,11 @@ class InstrumentPricePolicy < PricePolicy
     end
   end
 
+  # if the subsidy is zero, return false
+  def has_subsidy?
+    usage_subsidy && usage_subsidy > 0
+  end
+
   def estimate_cost_and_subsidy_from_order_detail(order_detail)
     return nil unless order_detail.reservation
     estimate_cost_and_subsidy(order_detail.reservation.reserve_start_at, order_detail.reservation.reserve_end_at)
@@ -73,7 +78,7 @@ class InstrumentPricePolicy < PricePolicy
     end
     discount = 1 - discount/100
 
-    costs[:cost] = ((duration/reservation_mins).ceil * reservation_rate.to_f + (duration/usage_mins).ceil * usage_rate.to_f) * discount 
+    costs[:cost] = ((duration/reservation_mins).ceil * reservation_rate.to_f + (duration/usage_mins).ceil * usage_rate.to_f) * discount
     costs[:subsidy] = ((duration/reservation_mins).ceil * reservation_subsidy.to_f + (duration/usage_mins).ceil * usage_subsidy.to_f) * discount
     if (costs[:cost] - costs[:subsidy]) < minimum_cost.to_f
       costs[:cost]    = minimum_cost
@@ -85,7 +90,7 @@ class InstrumentPricePolicy < PricePolicy
   def calculate_cost_and_subsidy_from_order_detail(order_detail)
     calculate_cost_and_subsidy(order_detail.reservation)
   end
-  
+
   def calculate_cost_and_subsidy (reservation)
     res_end_at=strip_seconds reservation.reserve_end_at
     res_start_at=strip_seconds reservation.reserve_start_at

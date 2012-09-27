@@ -100,7 +100,7 @@ Spork.prefork do
 
       #now=Time.zone.parse("#{Date.today.to_s} 09:30:00")
       Timecop.return
-      now=(SettingsHelper::fiscal_year_beginning(Date.today) + 1.year + 10.days).change(:hour => 9, :min => 30) 
+      now=(SettingsHelper::fiscal_year_beginning(Date.today) + 1.year + 10.days).change(:hour => 9, :min => 30)
       #puts "travelling to #{now}"
       Timecop.travel(now)
     end
@@ -164,7 +164,7 @@ Spork.each_run do
   #   The account under which the order is placed
   def place_product_order(ordered_by, facility, product, account=nil, purchased=true)
     @price_group=Factory.create(:price_group, :facility => facility)
-    
+
     o_attrs={ :created_by => ordered_by.id, :facility => facility, :ordered_at => Time.zone.now }
     o_attrs.merge!(:account_id => account.id) if account
     o_attrs.merge!(:state => 'purchased') if purchased
@@ -176,9 +176,9 @@ Spork.each_run do
     od_attrs={ :product_id => product.id }
     od_attrs.merge!(:account_id => account.id) if account
     @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(od_attrs))
-    
+
     @order_detail.set_default_status! if purchased
-    
+
     @order_detail
   end
 
@@ -279,8 +279,9 @@ Spork.each_run do
       :duration_value => 60,
       :duration_unit => 'minutes'
     }
+    order_detail.update_attributes!(:product => @instrument)
     order_detail.order.update_attributes!(:state => 'purchased')
-    
+
     res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
     @reservation=@instrument.reservations.build(res_attrs)
     # force validation to run to set reserve_end_at, but ignore the errors

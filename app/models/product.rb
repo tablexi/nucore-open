@@ -26,13 +26,13 @@ class Product < ActiveRecord::Base
   validate :if => lambda {SettingsHelper::feature_on?(:product_specific_contacts)} do
     errors.add(:contact_email, :required) unless email.present?
   end
-  
+
   scope :active,             :conditions => { :is_archived => false, :is_hidden => false }
   scope :active_plus_hidden, :conditions => { :is_archived => false}
   scope :archived,           :conditions => { :is_archived => true }
   scope :not_archived,       :conditions => { :is_archived => false }
 
-  
+
   ## AR Hooks
   before_validation do
     self.requires_approval ||= false
@@ -43,7 +43,7 @@ class Product < ActiveRecord::Base
     return true
   end
   after_create :set_default_pricing
-  
+
   def initial_order_status
     self[:initial_order_status_id] ? OrderStatus.find(self[:initial_order_status_id]) : OrderStatus.default_order_status
   end
@@ -66,7 +66,7 @@ class Product < ActiveRecord::Base
   def description
     self[:description].html_safe if self[:description]
   end
-  
+
   def parameterize
     self.class.to_s.parameterize.to_s.pluralize
   end
@@ -87,7 +87,7 @@ class Product < ActiveRecord::Base
   def to_s
     name.present? ? name.html_safe : ''
   end
-  
+
   def to_s_with_status
     to_s + (is_archived? ? ' (inactive)' : '')
   end
@@ -97,7 +97,7 @@ class Product < ActiveRecord::Base
       PriceGroupProduct.create!(:product => self, :price_group => pg)
     end
   end
-  
+
   def is_approved_for? (user)
     return true if user.nil?
     if requires_approval?
@@ -106,7 +106,7 @@ class Product < ActiveRecord::Base
       true
     end
   end
-  
+
   def available_for_purchase?
     !is_archived? && facility.is_active?
   end
@@ -116,15 +116,15 @@ class Product < ActiveRecord::Base
 
     # return false if there are no existing policies at all
     return false if price_policies.empty?
-    
+
     # return false if there are no existing policies for the user's groups, e.g. they're a new group
     return false if price_policies.for_price_groups(group_ids).empty?
 
     # if there are current rules, but the user is not part of them
     if price_policies.current.any?
-      return price_policies.current.for_price_groups(group_ids).where(:can_purchase => true).any? 
+      return price_policies.current.for_price_groups(group_ids).where(:can_purchase => true).any?
     end
-    
+
     # if there are no current price policies, find the most recent price policy for each group.
     # if one of those can purchase, then allow the purchase
     group_ids.each do |group_id|
@@ -167,5 +167,5 @@ class Product < ActiveRecord::Base
   def account_required
     true
   end
-  
+
 end

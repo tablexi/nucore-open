@@ -2,7 +2,7 @@ class OrderDetail < ActiveRecord::Base
   include NUCore::Database::SortHelper
   include TranslationHelper
   include NotificationSubject
-  
+
   versioned
 
   # Used when ordering to override certain restrictions
@@ -25,7 +25,7 @@ class OrderDetail < ActiveRecord::Base
 
   delegate :user, :facility, :ordered_at, :to => :order
   delegate :journal_date, :to => :journal
-  
+
   alias_method :merge!, :save!
 
   validates_presence_of :product_id, :order_id, :created_by
