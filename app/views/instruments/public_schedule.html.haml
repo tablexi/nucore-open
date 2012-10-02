@@ -17,7 +17,7 @@
 
 = content_for :h1 do
   =h current_facility
-
+%p= link_to 'Place reservation', facility_instrument_path(current_facility, @instrument)
 %h2 #{@instrument} #{t('.title')}
 
 #overlay

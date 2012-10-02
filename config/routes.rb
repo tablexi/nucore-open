@@ -49,7 +49,7 @@ Nucore::Application.routes.draw do |map|
     #facility.transactions '/transactions', :controller => 'transaction_history', :action => 'facility_history'
     facility.instrument_statuses 'instrument_statuses', :controller => 'instruments', :action => 'instrument_statuses'
     facility.resources :instruments, :member => {:manage => :get} do |instrument|
-      instrument.connect '/public_schedule', :controller => 'instruments', :action => 'public_schedule'
+      instrument.public_schedule 'public_schedule', :controller => 'instruments', :action => 'public_schedule'
 
       instrument.schedule 'schedule', :controller => 'instruments', :action => 'schedule'
       instrument.agenda   'agenda',   :controller => 'instruments', :action => 'agenda'
