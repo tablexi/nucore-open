@@ -1,12 +1,12 @@
 class ReservationsController < ApplicationController
   customer_tab  :all
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => [ :index ]
   before_filter :check_acting_as,  :only => [ :switch_instrument, :show, :list ]
   before_filter :load_basic_resources, :only => [:new, :create, :edit, :update]
   before_filter :load_and_check_resources, :only => [ :move, :switch_instrument, :pick_accessories ]
 
   include TranslationHelper
-  
+
   def initialize
     super
     @active_tab = 'reservations'
@@ -21,12 +21,12 @@ class ReservationsController < ApplicationController
     @end_at       = params[:end] ? Time.zone.at(params[:end].to_i) : @start_at
     @reservations = @instrument.reservations.active
     @rules        = @instrument.schedule_rules
-    
+
     # restrict to available if it requires if it requires approval,
     # but params[:all] will override that
     @rules = @rules.available_to_user(acting_user) if @instrument.requires_approval
-    
-    
+
+
     if @end_at - @start_at <= 1.week
       # build unavailable schedule
       @unavailable = ScheduleRule.unavailable(@rules)
@@ -35,8 +35,8 @@ class ReservationsController < ApplicationController
     end
 
     respond_to do |format|
-      as_calendar_object_options = {:start_date => @start_date, :with_details => params[:with_details]}
-      format.js { render :json => @reservations.map{|r| r.as_calendar_object(as_calendar_object_options)}.flatten + 
+      as_calendar_object_options = {:start_date => @start_date, :with_details => current_user && params[:with_details]}
+      format.js { render :json => @reservations.map{|r| r.as_calendar_object(as_calendar_object_options)}.flatten +
                                   @unavailable.map{ |r| r.as_calendar_object(as_calendar_object_options)}.flatten }
     end
   end
@@ -61,7 +61,7 @@ class ReservationsController < ApplicationController
     end
 
     @order_details = @order_details.paginate(:page => params[:page])
-    
+
     @order_details.each do |od|
       res = od.reservation
       # do you need to click stop
@@ -84,7 +84,7 @@ class ReservationsController < ApplicationController
   def create
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
     @reservation = @order_detail.build_reservation(params[:reservation].merge(:instrument => @instrument))
-    
+
     if !@order_detail.bundled? && params[:order_account].blank?
       flash.now[:error]=I18n.t 'controllers.reservations.create.no_selection'
       @reservation.valid? # run validations so it sets reserve_end_at
@@ -108,7 +108,7 @@ class ReservationsController < ApplicationController
         @reservation.save_as_user!(session_user)
         @order_detail.reload.assign_estimated_price!(nil, @reservation.reserve_end_at)
         @order_detail.save!
-        
+
         flash[:notice] = I18n.t 'controllers.reservations.create.success'
 
         if mergeable
@@ -151,7 +151,7 @@ class ReservationsController < ApplicationController
     @order        = Order.find(params[:order_id])
     @order_detail = @order.order_details.find(params[:order_detail_id])
     @reservation  = Reservation.find(params[:id])
-    
+
     raise ActiveRecord::RecordNotFound if (@reservation != @order_detail.reservation)
   end
 
@@ -215,10 +215,10 @@ class ReservationsController < ApplicationController
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/switch_instrument
   def switch_instrument
     authorize! :start_stop, @reservation
-    
+
     relay_error_msg = 'An error was encountered while attempted to toggle the instrument. Please try again.'
     raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == 'on' || params[:switch] == 'off')
-    
+
     begin
       relay = @instrument.relay
       if (params[:switch] == 'on' && @reservation.can_switch_instrument_on?)
@@ -265,7 +265,7 @@ class ReservationsController < ApplicationController
       flash[:error] = relay_error_msg
     end
 
-    if params[:switch] == 'off' 
+    if params[:switch] == 'off'
       @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
       if @product_accessories.present?
         render 'pick_accessories', :layout => false and return
@@ -280,7 +280,7 @@ class ReservationsController < ApplicationController
     @errors_by_id = {}
     @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
     @complete_state = OrderStatus.find_by_name!('Complete')
-    
+
     @count = 0
     params.each do |k, v|
       if k =~ /quantity(\d+)/ and v.present?

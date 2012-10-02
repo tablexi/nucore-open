@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  $('#calendar').fullCalendar({
+  var calendarOptions = ({
                   editable: false,
                   defaultView: 'agendaWeek',
                   allDaySlot: false,
@@ -58,5 +58,12 @@ $(document).ready(function() {
                       } catch(error) {}
                     }
                   }
-                })
+                });
+  if (typeof minTime!='undefined') { calendarOptions.minTime = minTime; };
+  if (typeof maxTime!='undefined') {
+    calendarOptions.maxTime = maxTime;
+    calendarOptions.height = (maxTime - minTime)*42 + 75
+  }
+
+  $('#calendar').fullCalendar(calendarOptions);
 })
