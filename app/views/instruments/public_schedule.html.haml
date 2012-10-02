@@ -17,7 +17,10 @@
 
 = content_for :h1 do
   =h current_facility
-%p= link_to 'Place reservation', facility_instrument_path(current_facility, @instrument)
+  - button_text = current_user ? t('.place_reservation') : "#{t('pages.login')} & #{t('.place_reservation')}"
+  = link_to button_text, facility_instrument_path(current_facility, @instrument), :class => 'btn'
+
+
 %h2 #{@instrument} #{t('.title')}
 
 #overlay
