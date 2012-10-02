@@ -27,7 +27,7 @@ describe ReservationsController do
     @order            = @guest.orders.create(Factory.attributes_for(:order, :created_by => @guest.id, :account => @account))
     @order.add(@instrument, 1)
     @order_detail     = @order.order_details.first
-    
+
     @params={ :order_id => @order.id, :order_detail_id => @order_detail.id }
   end
 
@@ -35,6 +35,11 @@ describe ReservationsController do
   context 'index' do
 
     before :each do
+      @order.stubs(:cart_valid?).returns(true)
+      @order.stubs(:place_order?).returns(true)
+      @order.validate_order!
+      @order.purchase!
+
       @method=:get
       @action=:index
       @params.merge!(:instrument_id => @instrument.url_name, :facility_id => @authable.url_name)
@@ -45,7 +50,76 @@ describe ReservationsController do
       assigns[:instrument].should == @instrument
     end
 
-    it 'should test more than auth'
+    context 'schedule rules' do
+      before :each do
+        sign_in @guest
+        @now = Time.zone.now
+        @params.merge!(:start => @now.to_i)
+      end
+
+      it 'should set end to end of day of start if blank' do
+        do_request
+        assigns[:end_at].should match_date @now.end_of_day
+      end
+
+      it 'should include a reservation from today' do
+        @reservation = @instrument.reservations.create(:reserve_start_at => @now, :order_detail => @order_detail,
+                                                      :duration_value => 60, :duration_unit => 'minutes')
+        do_request
+        assigns[:reservations].should =~ [@reservation]
+      end
+
+      it 'should not contain reservations from before start date' do
+        @reservation = @instrument.reservations.create(:reserve_start_at => @now - 1.day, :order_detail => @order_detail,
+                                                      :duration_value => 60, :duration_unit => 'minutes')
+        do_request
+        assigns[:reservations].should_not include @reservation
+      end
+
+      it 'should not contain reservations from after the end date' do
+        @reservation = @instrument.reservations.create(:reserve_start_at => @now + 3.days, :order_detail => @order_detail,
+                                                      :duration_value => 60, :duration_unit => 'minutes')
+        @params.merge!(:end => @now + 2.days)
+        do_request
+        assigns[:reservations].should_not include @reservation
+      end
+
+      it 'should not contain @unavailable if more than a week' do
+        @params.merge!(:start => 1.day.ago.to_i, :end => 7.days.from_now.to_i)
+        do_request
+        assigns[:unavailable].should == []
+      end
+
+      context 'schedule rules' do
+        before :each do
+          @instrument.update_attributes(:requires_approval => true)
+          @restriction_level = Factory.create(:product_access_group, :product_id => @instrument.id)
+          @rule.product_access_groups = [@restriction_level]
+          @rule.save!
+        end
+
+        it 'should not contain rule if not part of group' do
+          do_request
+          assigns[:rules].should be_empty
+        end
+
+        it 'should contain rule if user is part of group' do
+          @product_user = ProductUser.create({:product => @instrument, :user => @guest, :approved_by => @director.id, :product_access_group => @restriction_level})
+          do_request
+          assigns[:rules].should =~ [@rule]
+        end
+
+        context 'as admin' do
+          before :each do
+            maybe_grant_always_sign_in :director
+          end
+          it 'should contain all schedule rules' do
+            do_request
+            assigns[:rules].should =~ [@rule]
+          end
+        end
+      end
+    end
 
   end
 
@@ -63,22 +137,22 @@ describe ReservationsController do
       do_request
       should redirect_to "/reservations/upcoming"
     end
-    
-    
+
+
     context "upcoming" do
       before :each do
         @params = {:status => 'upcoming'}
       end
 
       it_should_require_login
-      
+
       it_should_allow :staff do
         assigns(:available_statuses).size.should == 2
         assigns(:status).should == assigns(:available_statuses).first
         assigns(:order_details).should == (OrderDetail.upcoming_reservations.all + OrderDetail.in_progress_reservations.all)
         should assign_to(:active_tab).with('reservations')
         should render_template('list')
-      end      
+      end
     end
 
 
@@ -97,7 +171,7 @@ describe ReservationsController do
         should render_template('list')
       end
     end
-    
+
   end
 
 
@@ -239,7 +313,7 @@ describe ReservationsController do
 
     context 'without account' do
       before :each do
-        
+
         @params.delete :order_account
         sign_in @guest
         do_request
@@ -289,7 +363,7 @@ describe ReservationsController do
         @order.update_attributes(:account => nil)
         @order.account.should be_nil
         @order_detail.account.should be_nil
-      
+
         @price_group2      = @authable.price_groups.create(Factory.attributes_for(:price_group))
         @pg_account        = Factory.create(:account_price_group_member, :account => @account, :price_group => @price_group2)
         @price_policy2     = @instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group2.id, :usage_rate => 1, :usage_subsidy => 0.25))
@@ -337,10 +411,10 @@ describe ReservationsController do
       assigns[:instrument].should == @instrument
       should assign_to(:reservation).with_kind_of Reservation
       should assign_to(:max_window).with_kind_of Integer
-      
+
       assigns[:max_date].should == (Time.zone.now+assigns[:max_window].days).strftime("%Y%m%d")
     end
-    
+
     # Managers should be able to go far out into the future
     it_should_allow_all facility_operators do
       assigns[:max_window].should == 365
@@ -351,7 +425,7 @@ describe ReservationsController do
     # guests should only be able to go the default reservation window into the future
     it_should_allow_all [:guest] do
       assigns[:max_window].should == PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
-      assigns[:max_days_ago].should == 0 
+      assigns[:max_days_ago].should == 0
       assigns[:max_date].should == (Time.zone.now + PriceGroupProduct::DEFAULT_RESERVATION_WINDOW.days).strftime("%Y%m%d")
       assigns[:min_date].should == Time.zone.now.strftime("%Y%m%d")
     end
@@ -377,14 +451,14 @@ describe ReservationsController do
         @action=:show
         @params.merge!(:id => @reservation.id)
       end
-     
+
       it_should_allow_all facility_users do
         assigns[:reservation].should == @reservation
         assigns[:order_detail].should == @reservation.order_detail
         assigns[:order].should == @reservation.order_detail.order
         should respond_with :success
       end
-      
+
     end
 
 
@@ -402,14 +476,14 @@ describe ReservationsController do
         assigns[:order].should == @reservation.order_detail.order
         should respond_with :success
       end
-      
+
       it "should throw 404 if reservation is cancelled" do
         @reservation.update_attributes(:canceled_at => Time.zone.now - 1.day)
         sign_in @admin
         do_request
-        response.response_code.should == 404 
+        response.response_code.should == 404
       end
-      
+
       it "should throw 404 if reservation happened" do
         @reservation.update_attributes(:actual_start_at => Time.zone.now - 1.day)
         sign_in @admin
@@ -452,13 +526,13 @@ describe ReservationsController do
         should set_the_flash
         assert_redirected_to cart_url
       end
-      
+
       context 'creating a reservation in the future' do
       before :each do
         @params.deep_merge!(:reservation => {:reserve_start_date => Time.zone.now.to_date + (PriceGroupProduct::DEFAULT_RESERVATION_WINDOW + 1).days })
       end
       it_should_allow_all facility_operators, "to create a reservation beyond the default reservation window" do
-        assigns[:reservation].errors.should be_empty 
+        assigns[:reservation].errors.should be_empty
         assert_redirected_to cart_url
       end
       it_should_allow_all [:guest], "to receive an error that they are trying to reserve outside of the window" do
@@ -596,7 +670,7 @@ describe ReservationsController do
             @item = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
             @item_pp=@item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
             @item_pp.reload.restrict_purchase=false
-            
+
             ## make it an accessory of the reserved product
             @instrument.product_accessories.create!(:accessory => @item)
             sleep 2 # because res start time is now + 1 second. Need to make time validations pass.
@@ -613,7 +687,7 @@ describe ReservationsController do
             assigns(:reservation).should == @reservation
             assigns(:product_accessories).collect(&:accessory).should == [@item]
           end
-          
+
           it_should_allow :guest, "and have a product accessory" do
             pas = assigns(:product_accessories)
             pa = pas.first
@@ -648,7 +722,7 @@ describe ReservationsController do
         assigns(:product_accessories).collect(&:accessory).should == [@item]
       end
 
-      context "adding accessories to an order" do 
+      context "adding accessories to an order" do
         before :each do
           @accessory_quantity = 3
           @params.merge!("quantity#{@item.id}" => @accessory_quantity)
@@ -664,7 +738,7 @@ describe ReservationsController do
 
           ## shouldn't remove the instrument
           @order.order_details.first.product.should == @instrument
-          
+
           ## should be set as user requested
           @accessory_od = @order_details.last
           @accessory_od.product.should == @item
@@ -673,7 +747,7 @@ describe ReservationsController do
         end
       end
 
-      context "not adding accessories to an order (blank quantity)" do 
+      context "not adding accessories to an order (blank quantity)" do
         before :each do
           @params.merge!("quantity#{@item.id}" => "")
         end
@@ -684,7 +758,7 @@ describe ReservationsController do
         end
       end
 
-      context "not adding accessories to an order (invalid quantity)" do 
+      context "not adding accessories to an order (invalid quantity)" do
         before :each do
           @params.merge!("quantity#{@item.id}" => "abc")
         end
@@ -700,7 +774,7 @@ describe ReservationsController do
 
         it_should_allow :guest, "and set errors for that accessory" do
           assigns(:errors_by_id)[@item.id].should be_present
-        end 
+        end
       end
     end
   end

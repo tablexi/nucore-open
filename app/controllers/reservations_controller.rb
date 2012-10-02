@@ -16,17 +16,27 @@ class ReservationsController < ApplicationController
   def index
     @facility     = Facility.find_by_url_name!(params[:facility_id])
     @instrument   = @facility.instruments.find_by_url_name!(params[:instrument_id])
+
     @start_at     = params[:start] ? Time.zone.at(params[:start].to_i) : Time.zone.now
-    @start_date   = @start_at.to_date
-    @end_at       = params[:end] ? Time.zone.at(params[:end].to_i) : @start_at
-    @reservations = @instrument.reservations.active
+    @start_date   = @start_at.beginning_of_day
+
+    @end_at       = params[:end] ? Time.zone.at(params[:end].to_i) : @start_at.end_of_day
+
+    @reservations = @instrument.reservations.
+                                active.
+                                in_range(@start_at, @end_at).
+                                includes(:order_detail => { :order => :user })
+
+
     @rules        = @instrument.schedule_rules
 
-    # restrict to available if it requires if it requires approval,
-    # but params[:all] will override that
-    @rules = @rules.available_to_user(acting_user) if @instrument.requires_approval
+    # restrict to available if it requires approval and the user
+    # isn't a facility admin
+    if @instrument.requires_approval && acting_user && acting_user.cannot_override_restrictions?(@instrument)
+      @rules = @rules.available_to_user(acting_user)
+    end
 
-
+    # We're not using unavailable rules for month view
     if @end_at - @start_at <= 1.week
       # build unavailable schedule
       @unavailable = ScheduleRule.unavailable(@rules)
@@ -36,6 +46,7 @@ class ReservationsController < ApplicationController
 
     respond_to do |format|
       as_calendar_object_options = {:start_date => @start_date, :with_details => current_user && params[:with_details]}
+      as_calendar_object_options = {:start_date => @start_date, :with_details => params[:with_details]}
       format.js { render :json => @reservations.map{|r| r.as_calendar_object(as_calendar_object_options)}.flatten +
                                   @unavailable.map{ |r| r.as_calendar_object(as_calendar_object_options)}.flatten }
     end

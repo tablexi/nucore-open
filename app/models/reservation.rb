@@ -52,6 +52,11 @@ class Reservation < ActiveRecord::Base
     )
   end
 
+  def self.in_range(start_time, end_time)
+    where('reserve_start_at >= ?', start_time).
+    where('reserve_start_at < ?', end_time)
+  end
+
   ## delegations
   delegate :note,     :to => :order_detail, :allow_nil => true
   delegate :ordered_on_behalf_of?, :to => :order_detail, :allow_nil => true
