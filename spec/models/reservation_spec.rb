@@ -6,7 +6,7 @@ describe Reservation do
   before(:each) do
     @facility         = Factory.create(:facility)
     @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @instrument       = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+    @instrument       = Factory.create(:instrument, :facility_account_id => @facility_account.id, :facility => @facility)
     # add rule, available every day from 12 am to 5 pm, 60 minutes duration
     @rule             = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17, :duration_mins => 15))
   end
@@ -194,12 +194,12 @@ describe Reservation do
     context 'requires_but_missing_actuals?' do
 
       it 'should be true when there is a usage rate but no actuals' do
-        @instrument_pp.update_attributes!(:usage_rate => 5)
+        #@instrument_pp.update_attributes!(:usage_rate => 5)
 
         @reservation1.actual_start_at.should be_nil
         @reservation1.actual_end_at.should be_nil
-        @reservation1.order_detail.price_policy=@instrument_pp
-        assert @reservation1.save
+        #@reservation1.order_detail.price_policy=@instrument_pp
+        #assert @reservation1.save
 
         @reservation1.should be_requires_but_missing_actuals
       end

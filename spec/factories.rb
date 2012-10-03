@@ -81,6 +81,7 @@ Factory.define_default :instrument, :class => Instrument do |o|
   o.initial_order_status_id { |o| find_order_status('New').id }
   o.min_reserve_mins 60
   o.max_reserve_mins 120
+  o.after_create {|inst| inst.relay=Factory.create(:relay_dummy, :instrument_id => inst.id)}
 end
 
 Factory.define_default :relay, :class => Relay do |o|
