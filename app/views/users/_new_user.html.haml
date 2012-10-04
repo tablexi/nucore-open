@@ -1,0 +1,3 @@
+.notice
+  %p You just created a new user #{link_to "#{@new_user} (#{@new_user.username})", facility_user_path(current_facility, @new_user)}.
+  = link_to 'Create a new payment source for this user', new_facility_account_path(current_facility, {:owner_user_id => @new_user.id})

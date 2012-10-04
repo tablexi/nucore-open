@@ -10,7 +10,7 @@
   = form_for :order, :url => send_receipt_facility_order_path(current_facility, @order) do
     = hidden_field_tag :id, @order.id
     = submit_tag 'Send Receipt', :class => 'btn', :id => :send_receipt_btn
-  = form_for :order, :url => facility_order_path(current_facility, @order) do
+  = form_for :order, :url => facility_order_path(current_facility, @order), :html => { :method => :put } do
     = text_field_tag :product_add_quantity, 1
     = select_tag :product_add, options_for_select(current_facility.products.active_plus_hidden.collect{|p| [ p.name, p.id ]})
     %br
