@@ -1,9 +1,13 @@
 class InstrumentsController < ProductsCommonController
-  customer_tab  :show
+  customer_tab  :show, :public_schedule
   admin_tab     :create, :edit, :index, :manage, :new, :schedule, :update
-  
+
+  # public_schedule does not require login
+  skip_before_filter :authenticate_user!, :only => [:public_schedule]
+  skip_authorize_resource :only => [:public_schedule]
+
   skip_before_filter :init_product, :only => [:instrument_statuses]
-  
+
   # GET /instruments
   def index
     super
@@ -17,7 +21,7 @@ class InstrumentsController < ProductsCommonController
     assert_product_is_accessible!
     add_to_cart = true
     login_required = false
-    
+
     # do the product have active price policies && schedule rules
     unless @instrument.available_for_purchase?
       add_to_cart = false
@@ -54,7 +58,7 @@ class InstrumentsController < ProductsCommonController
       flash[:notice] = 'You are not authorized to order instruments from this facility on behalf of a user.'
     end
     @add_to_cart = add_to_cart
-    
+
     if login_required
       session[:requested_params]=request.fullpath
       return redirect_to new_user_session_path
@@ -82,6 +86,10 @@ class InstrumentsController < ProductsCommonController
     @admin_reservations = @instrument.reservations.find(:all, :conditions => ['reserve_end_at > ? AND order_detail_id IS NULL', Time.zone.now])
   end
 
+  def public_schedule
+    render :layout => 'application'
+  end
+
   # GET /facilities/:facility_id/instruments/:instrument_id/status
   def instrument_status
     begin
@@ -103,7 +111,7 @@ class InstrumentsController < ProductsCommonController
     current_facility.instruments.order(:id).includes(:relay).each do |instrument|
       # skip instruments with no relay
       next unless instrument.relay
-      
+
       begin
         status = instrument.relay.get_status
         instrument_status = instrument.current_instrument_status

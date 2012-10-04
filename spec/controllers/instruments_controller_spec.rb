@@ -34,6 +34,25 @@ describe InstrumentsController do
 
   end
 
+  describe 'public_schedule' do
+    before :each do
+      @method = :get
+      @action = :public_schedule
+      @params[:instrument_id] = @params[:id]
+      @params.delete(:id)
+    end
+
+    it 'should not require login' do
+      do_request
+      response.should be_success
+    end
+
+    it 'should set the instrument' do
+      do_request
+      assigns[:instrument].should == @instrument
+    end
+  end
+
 
   context "manage" do
 
@@ -105,7 +124,7 @@ describe InstrumentsController do
         assert_redirected_to add_order_path(Order.all.last, :order => {:order_details => [{:product_id => @instrument.id, :quantity => 1}]})
       end
     end
-    
+
     context "restricted instrument" do
       before :each do
         @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
@@ -117,7 +136,7 @@ describe InstrumentsController do
         assigns[:add_to_cart].should be_false
         flash[:notice].should_not be_nil
       end
-      
+
       it "should not show a notice and show an add to cart" do
         @product_user = ProductUser.create(:product => @instrument, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
         add_account_for_user :guest
@@ -126,7 +145,7 @@ describe InstrumentsController do
         flash.should be_empty
         assigns[:add_to_cart].should be_true
       end
-      
+
       it "should allow an admin to allow it to add to cart" do
         add_account_for_user :admin
         sign_in @admin
@@ -135,13 +154,13 @@ describe InstrumentsController do
         assigns[:add_to_cart].should be_true
       end
     end
-    
+
      context "hidden instrument" do
       before :each do
         @instrument.update_attributes(:is_hidden => true)
       end
       it_should_allow_operators_only(:redirect) {}
-        
+
       it "should show the page if you're acting as a user" do
         Instrument.any_instance.stubs(:can_purchase?).returns(true)
         add_account_for_user :guest
@@ -238,7 +257,7 @@ describe InstrumentsController do
     context 'dummy relay' do
 
       before :each do
-        # relay attributes 
+        # relay attributes
         @params[:instrument].merge!(:control_mechanism =>'timer')
       end
 
@@ -434,7 +453,7 @@ describe InstrumentsController do
         @instrument_with_dummy_relay.update_attributes(:relay => Factory.create(:relay_dummy))
         @instrument_with_dummy_relay.instrument_statuses.create(:is_on => true)
         @instrument_with_bad_relay = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
-        
+
         # don't stub query status since this SynAcceesRevB will fail due to a bad IP address
         @instrument_with_bad_relay.update_attributes(:relay => Factory.create(:relay_synb))
         @instrument_with_bad_relay.relay.update_attribute(:ip, '')
@@ -462,12 +481,12 @@ describe InstrumentsController do
           assigns[:instrument_statuses].map(&:instrument).should be_include @instrument_with_dummy_relay
           @instrument_ids.should be_include @instrument_with_dummy_relay.id
         end
-        
+
         it 'should return an error if the relay is missing a host' do
           assigns[:instrument_statuses].last.instrument.should == @instrument_with_bad_relay
           assigns[:instrument_statuses].last.error_message.should_not be_nil
         end
-        
+
         it 'should return true for a relay thats switched on' do
           assigns[:instrument_statuses][1].instrument.should == @instrument_with_dummy_relay
           assigns[:instrument_statuses][1].is_on.should be_true
@@ -480,7 +499,7 @@ describe InstrumentsController do
           @json_output[0][:instrument_status][:is_on].should be_false
           @json_output[0][:instrument_status][:instrument_id].should == @instrument_with_relay.id
         end
-        
+
         it 'should create a new false instrument status if theres nothing' do
           @instrument_with_relay.reload.instrument_statuses.size.should == 1
         end

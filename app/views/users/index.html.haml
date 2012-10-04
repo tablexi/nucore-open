@@ -3,6 +3,8 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'users' }
 
+= render :partial => 'new_user' if @new_user
+
 %h2= t('.head.h2')
 = form_tag user_search_results_url, :id => 'ajax_form' do
   = label_tag :search_term, t('.label.search_term')

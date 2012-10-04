@@ -711,6 +711,9 @@ en:
           user: "Relay Username"
           pass: "Relay Password"
           auto_logout: "Automatic Logout?"
+    public_schedule:
+      title: Schedule
+      place_reservation: Place Reservation
 
     instrument_fields:
       show_details: "Check to show reservation details"
