@@ -195,6 +195,11 @@ a.btn:hover,input.btn:hover {
 	cursor:hand;
 }
 
+h1 .btn {
+	float: right;
+	letter-spacing: 0;
+}
+
 
 .footnote {
 	font-size:10px;

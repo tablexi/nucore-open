@@ -1,0 +1,29 @@
+= content_for :head_content do
+  = render :partial => 'shared/headers/calendar'
+  = javascript_include_tag 'instruments.js'
+
+:javascript
+  var events_path = "#{facility_instrument_reservations_url(current_facility, @instrument, :format => 'js')}";
+  var minTime         = #{@instrument.first_available_hour};
+  var maxTime         = #{@instrument.last_available_hour+1};
+
+= content_for :breadcrumb do
+  %ul.horiz
+    %li= link_to 'Home', facilities_path
+    %li &raquo;
+    %li= link_to @instrument.facility, facility_path(@instrument.facility)
+    %li &raquo;
+    %li #{@instrument} #{t('.title')}
+
+= content_for :h1 do
+  =h current_facility
+  - button_text = current_user ? t('.place_reservation') : "#{t('pages.login')} & #{t('.place_reservation')}"
+  = link_to button_text, facility_instrument_path(current_facility, @instrument), :class => 'btn'
+
+
+%h2 #{@instrument} #{t('.title')}
+
+#overlay
+  #spinner
+    #hide
+      #calendar
