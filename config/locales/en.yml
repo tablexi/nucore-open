@@ -402,9 +402,9 @@ en:
       th:
         product: "Product"
         quantity: "Quantity"
-        cost: "Estimated Cost"
+        cost: "Estimated Price"
         adjust: "Estimated Adjustment"
-        extend: "Estimated Extended Cost"
+        extend: "Estimated Total"
       td:
         total: "Estimated Totals"
       foot:
