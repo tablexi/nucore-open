@@ -3,6 +3,8 @@ class PricePolicy < ActiveRecord::Base
 
   belongs_to :price_group
   belongs_to :product
+  has_many :order_details
+
   validates_presence_of :start_date, :price_group_id, :type
   validate :start_date_is_unique, :unless => lambda { |o| o.start_date.nil? }
 

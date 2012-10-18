@@ -92,7 +92,16 @@ class PriceGroupsController < ApplicationController
     @price_group = current_facility.price_groups.find(params[:id])
     raise ActiveRecord::RecordNotFound if @price_group.nil? || @price_group.facility.nil?
 
-    @price_group.destroy
+    begin
+      if @price_group.destroy
+        flash[:notice] = 'Price Group was successfully deleted'
+      else
+        flash[:error] = 'The price group could not be deleted'
+      end
+    rescue ActiveRecord::ActiveRecordError => e
+      puts e.to_yaml
+      flash[:error] = e.message
+    end
     respond_to do |format|
       format.html { redirect_to(facility_price_groups_url) }
     end

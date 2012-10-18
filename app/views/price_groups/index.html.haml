@@ -22,7 +22,7 @@
       %th= t('.th.accounts')
     - @price_groups.each do |price_group|
       %tr
-        %td= price_group.facility.nil? ? '' : link_to('Remove', [current_facility, price_group], :confirm => 'Are you sure?', :method => :delete)
+        %td= link_to('Remove', [current_facility, price_group], :confirm => 'Are you sure?', :method => :delete) if price_group.can_delete?
         %td= link_to price_group.name, facility_price_group_path(current_facility, price_group)
         %td= price_group.type_string
         - if price_group.facility_id
