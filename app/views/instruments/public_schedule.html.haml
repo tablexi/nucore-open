@@ -3,7 +3,7 @@
   = javascript_include_tag 'instruments.js'
 
 :javascript
-  var events_path = "#{facility_instrument_reservations_url(current_facility, @instrument, :format => 'js')}";
+  var events_path = "#{facility_instrument_reservations_path(current_facility, @instrument, :format => 'js')}";
   var minTime         = #{@instrument.first_available_hour};
   var maxTime         = #{@instrument.last_available_hour+1};
 
