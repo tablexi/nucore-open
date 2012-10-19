@@ -18,6 +18,6 @@
       %td= link_to('Remove', affiliate_path(affiliate), :confirm => "Really remove affiliate #{affiliate.name}?", :method => :delete)
       %td.indented_lots
         = affiliate.name
-        %span.indented== (#{link_to('Edit', edit_affiliate_url(affiliate))})
+        %span.indented== (#{link_to('Edit', edit_affiliate_path(affiliate))})
 
 

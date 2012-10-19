@@ -49,7 +49,8 @@ class OrderStatusesController < ApplicationController
 
     if @order_status.update_attributes(params[:order_status])
       flash[:notice] = 'The Order Status was successfully updated.'
-      redirect_to facility_order_statuses_url
+      puts "path"
+      redirect_to facility_order_statuses_path
     else
       render :action => "edit"
     end
