@@ -209,6 +209,10 @@ class Order < ActiveRecord::Base
     order_details.any?{|od| od.has_subsidies?}
   end
 
+  def only_reservation
+    order_details.size == 1 && order_details.first.reservation
+  end
+
   # was originally used in OrdersController#add 
   #def auto_assign_account!(product)
     #return if self.account

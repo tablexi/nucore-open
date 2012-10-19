@@ -39,7 +39,10 @@ $(function() {
       });
     }
 
-    clicked.fadeOut();
+    if (!clicked.hasClass('persistent')) { 
+      clicked.fadeOut();
+    }
+
     // load pick_accessories_form into dialog
     dialog.load(
       url,

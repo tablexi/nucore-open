@@ -279,6 +279,7 @@ class ReservationsController < ApplicationController
     if params[:switch] == 'off'
       @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
       if @product_accessories.present?
+        flash.now[:notice] = t('reservations.finished')
         render 'pick_accessories', :layout => false and return
       end
     end
@@ -290,6 +291,11 @@ class ReservationsController < ApplicationController
     @error_status = nil
     @errors_by_id = {}
     @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
+
+    if request.get?
+      render 'pick_accessories', :layout => false and return
+    end
+
     @complete_state = OrderStatus.find_by_name!('Complete')
 
     @count = 0

@@ -327,6 +327,7 @@ en:
     delete:
       confirm: Are you sure you wish to cancel this reservation?
       link: Cancel
+    finished: Reservation Ended
 
   statements:
     index:
@@ -458,6 +459,10 @@ en:
       unassigned: "Unassigned"
 
   product_accessories:
+    pick_accessories:
+      link: Add Accessories to order...
+      instruct: If any of the following were used during this reservation please enter their quantities.
+    
     index:
       description: "Here you may define one or more accessories that can be used during a reservation of this product"
 
