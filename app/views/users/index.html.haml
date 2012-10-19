@@ -4,7 +4,7 @@
   = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'users' }
 
 %h2= t('.head.h2')
-= form_tag user_search_results_url, :id => 'ajax_form' do
+= form_tag user_search_results_path, :id => 'ajax_form' do
   = label_tag :search_term, t('.label.search_term')
   %br
   = text_field_tag :search_term, nil, :size => 30
