@@ -22,6 +22,9 @@ class Ability
     
     return unless resource
 
+    can :read, Product, :is_hidden => false
+    can :read, ProductAccessory, :product => { :is_hidden => false }
+
     if user.billing_administrator?
       
       # can manage orders / order_details / reservations

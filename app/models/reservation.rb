@@ -60,6 +60,7 @@ class Reservation < ActiveRecord::Base
   ## delegations
   delegate :note,     :to => :order_detail, :allow_nil => true
   delegate :ordered_on_behalf_of?, :to => :order_detail, :allow_nil => true
+  delegate :product,  :to => :order_detail
 
   ## AR Hooks
   after_save do

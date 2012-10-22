@@ -2,6 +2,7 @@ $(function() {
   var dialog = null;
 
   function pickAccessoriesHandleResponse(e, jqXHR, status) {
+    console.debug("got response", e, jqXHR.responseText, status);
     var response = jqXHR.responseText;
     
     dialog.html(response);
@@ -28,16 +29,16 @@ $(function() {
     if (dialog.length == 0) {
       dialog = $('<div id="pick_accessories_dialog" style="display:none"/>');
       $("body").append(dialog);
-      
-      // when the dialog closes, reload this page since the link shouldn't be there anymore
-      dialog.on('dialogclose', function() { window.location.reload(); return false; });
-      // call the response handler when the form inside submits
-      dialog.on('ajax:complete', 'form.pick_accessories_form', pickAccessoriesHandleResponse);
-      // Disable inputs
-      dialog.on('submit', 'form.pick_accessories_form', function() { 
-        $(this).find('input[type=submit]').prop('disabled', true); 
-      });
     }
+
+    // when the dialog closes, reload this page since the link shouldn't be there anymore
+    dialog.on('dialogclose', function() { window.location.reload(); return false; });
+    // call the response handler when the form inside submits
+    dialog.on('ajax:complete', 'form.pick_accessories_form', pickAccessoriesHandleResponse);
+    // Disable inputs
+    dialog.on('submit', 'form.pick_accessories_form', function() { 
+      $(this).find('input[type=submit]').prop('disabled', true); 
+    });
 
     clicked.fadeOut();
     // load pick_accessories_form into dialog
