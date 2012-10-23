@@ -8,6 +8,7 @@ describe PricePolicy do
   after :all do
     Settings.reload!
   end
+
   before :each do
     @facility         = Factory.create(:facility)
     @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
@@ -15,6 +16,10 @@ describe PricePolicy do
     @item             = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
   end
 
+  [:unit_cost, :unit_subsidy, :usage_rate, :usage_subsidy, :reservation_rate, :overage_rate, :overage_subsidy, :minimum_cost].each do |rate|
+    it { should validate_numericality_of(rate) }
+    it { should_not allow_value(-10).for(rate) }
+  end
 
   it "should not create using factory" do
     # putting inside begin/rescue as some PricePolicy validation functions throw exception if type is nil
