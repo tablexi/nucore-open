@@ -5,7 +5,7 @@
   =h current_facility
 
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => @product.class.name.pluralize.downcase }
+  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => @product.product_type }
 
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'restrictions'}
@@ -24,7 +24,7 @@
         %th Reservation Window
     - @price_group_products.each do |price_group_product|
       - price_group = price_group_product.price_group
-      - is_current = @active_price_groups.include? price_group
+      - is_current = @product.can_purchase?([price_group.id])
       %tr{:class => "#{'disabled' unless is_current}"}
         %td=h "#{price_group.name} (#{price_group.type_string})"
         - if @is_instrument
