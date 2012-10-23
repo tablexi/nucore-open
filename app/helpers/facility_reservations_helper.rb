@@ -24,7 +24,8 @@ module FacilityReservationsHelper
   end
 
   def visible_accessories(reservation)
-    reservation.product.product_accessories.accessible_by(current_ability)
+    ability = Ability.new(current_user, reservation, nil)
+    reservation.product.product_accessories.accessible_by(ability)
   end
 
   def link_to_cancel(reservation)

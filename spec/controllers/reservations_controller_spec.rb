@@ -694,6 +694,19 @@ describe ReservationsController do
             accessory = pa.accessory
             accessory.should == @item
           end
+
+          context 'with hidden accessory' do
+            before :each do
+              @item.update_attributes(:is_hidden => true)
+            end
+            it_should_allow :guest, 'to see the hidden accessory' do
+              assigns[:product_accessories].should_not be_empty
+            end
+
+            it_should_allow_all [:staff, :director, :admin], 'to see the hidden accessory' do
+              assigns[:product_accessories].should_not be_empty
+            end
+          end
         end
       end
     end
