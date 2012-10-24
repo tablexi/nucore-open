@@ -7,18 +7,20 @@ describe OrderDetailObserver do
     class DummyHook2; end
     class DummyHook3; end
   end
-  after :all do
-    Settings.reload_from_files(
-      Rails.root.join("config", "settings.yml").to_s,
-      Rails.root.join("config", "settings", "#{Rails.env}.yml").to_s,
-      Rails.root.join("config", "environments", "#{Rails.env}.yml").to_s
-    )
-  end
+
   context 'status change hooks' do
     # This before and after all is some nastiness to use a specific file for these tests, but
     # keep the original Settings for all other tests.
     before :all do
       Settings.reload_from_files(Rails.root.join("spec", "support", "order_detail_status_change_notification_test.yaml"))
+    end
+
+    after :all do
+      Settings.reload_from_files(
+        Rails.root.join("config", "settings.yml").to_s,
+        Rails.root.join("config", "settings", "#{Rails.env}.yml").to_s,
+        Rails.root.join("config", "environments", "#{Rails.env}.yml").to_s
+      )
     end
     
     before :each do
@@ -48,12 +50,14 @@ describe OrderDetailObserver do
 
   context 'order details changes statuses' do
     before :each do
+      Settings.reload!
       Settings.order_details.status_change_hooks = nil
       @facility = Factory.create(:facility)
       @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
       @user     = Factory.create(:user)
       @item     = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
       @item.should be_valid
+      Factory.create :item_price_policy, :product => @item, :price_group => PriceGroup.base.first
       @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
       define_open_account(@item.account, @account.account_number)
       @order    = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
