@@ -13,7 +13,7 @@
 
             row=[
                 # basic info
-                od.to_s, human_datetime(order.ordered_at), human_datetime(od.fulfilled_at), od.order_status.name, od.state,
+                od.facility, od.to_s, human_datetime(order.ordered_at), human_datetime(od.fulfilled_at), od.order_status.name, od.state,
 
                 # who placed the order
                 buyer.username, buyer.first_name, buyer.last_name, buyer.email,

@@ -17,7 +17,7 @@
         - if res.can_switch_instrument_on?
           = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'on')
         - elsif res.can_switch_instrument_off?
-          = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'off'), :class => (od.product.product_accessories.for_acting_as(acting_as?).any? ? :has_accessories : nil) 
+          = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'off'), :class => end_reservation_class(res) 
         - else
           - if res.can_cancel?
             - fee = od.cancellation_fee

@@ -43,7 +43,7 @@ class AccountPriceGroupMembersController < ApplicationController
     else
       flash[:error] = "An error was encountered while attempting to remove the account from the Price Group"
     end
-    redirect_to(facility_price_group_url(current_facility, @price_group))
+    redirect_to(facility_price_group_path(current_facility, @price_group))
   end
 
   def search_results

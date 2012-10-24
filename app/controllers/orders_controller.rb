@@ -17,7 +17,7 @@ class OrdersController < ApplicationController
 
   def protect_purchased_orders
     if @order.state == 'purchased'
-      redirect_to receipt_order_url(@order) and return
+      redirect_to receipt_order_path(@order) and return
     end
   end
 
@@ -79,7 +79,7 @@ class OrdersController < ApplicationController
     # if acting_as, make sure the session user can place orders for the facility
     if acting_as? && facility_ability.cannot?(:act_as, first_product.facility)
       flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{current_facility.try(:name)}."
-      redirect_to order_url(@order) and return
+      redirect_to order_path(@order) and return
     end
 
 
@@ -93,7 +93,7 @@ class OrdersController < ApplicationController
         @order.add(first_product, 1)
 
         # bypass cart kicking user over to new reservation screen
-        return redirect_to new_order_order_detail_reservation_url(@order.id, @order.order_details.first)
+        return redirect_to new_order_order_detail_reservation_path(@order.id, @order.order_details.first)
       end
     end
 
@@ -103,7 +103,7 @@ class OrdersController < ApplicationController
 
       ## save the state to the session and redirect
       session[:add_to_cart] = items
-      redirect_to choose_account_order_url(@order) and return
+      redirect_to choose_account_order_path(@order) and return
     end
 
     ## process each item
@@ -123,12 +123,12 @@ class OrdersController < ApplicationController
       end
 
       if @order.errors.any?
-        flash[:error] = "There were errors adding to your cart:<br>"+@order.errors.full_messages.join('<br>').html_safe
+        flash[:error] = "There were errors adding to your cart:<br>#{@order.errors.full_messages.join('<br>')}".html_safe
         raise ActiveRecord::Rollback
       end
     end
 
-    redirect_to order_url(@order)
+    redirect_to order_path(@order)
   end
 
   # PUT /orders/:id/remove/:order_detail_id
@@ -154,7 +154,7 @@ class OrdersController < ApplicationController
       end
     end
 
-    redirect_to params[:redirect_to].presence || order_url(@order)
+    redirect_to params[:redirect_to].presence || order_path(@order)
 
     # clear out account on the order if its now empty
     if  @order.order_details.empty?
@@ -187,9 +187,9 @@ class OrdersController < ApplicationController
 
       if success
         if session[:add_to_cart].nil?
-          redirect_to cart_url
+          redirect_to cart_path
         else
-          redirect_to add_order_url(@order)
+          redirect_to add_order_path(@order)
         end
         return
       else
@@ -271,7 +271,7 @@ class OrdersController < ApplicationController
 
           flash[:notice]='Reservation completed successfully'
         else
-          redirect_to receipt_order_url(@order)
+          redirect_to receipt_order_path(@order)
         end
 
         return
@@ -280,7 +280,7 @@ class OrdersController < ApplicationController
       flash[:error] = I18n.t('orders.purchase.error')
       flash[:error] += " #{e.message}" if e.message
       @order.reload.invalidate!
-      redirect_to order_url(@order) and return
+      redirect_to order_path(@order) and return
     end
   end
 

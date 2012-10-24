@@ -22,4 +22,4 @@
         %td.indented_lots
           =h child.name
           - if child.editable?
-            %span.indented (#{link_to('Edit', edit_facility_order_status_url(current_facility, child))})
+            %span.indented (#{link_to('Edit', edit_facility_order_status_path(current_facility, child))})

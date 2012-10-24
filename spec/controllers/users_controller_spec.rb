@@ -128,7 +128,7 @@ describe UsersController do
     it_should_allow_operators_only :redirect do
       assigns(:user).should == @guest
       session[:acting_user_id].should == @guest.id
-      session[:acting_ref_url].should == facility_users_url
+      session[:acting_ref_url].should == facility_users_path
       assert_redirected_to facility_path(@authable)
     end
 

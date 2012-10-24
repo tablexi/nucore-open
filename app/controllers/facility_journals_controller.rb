@@ -69,7 +69,7 @@ class FacilityJournalsController < ApplicationController
         end
 
         flash[:notice] = I18n.t 'controllers.facility_journals.update.notice'
-        redirect_to facility_journals_url(current_facility) and return
+        redirect_to facility_journals_path(current_facility) and return
       rescue Exception => e
         logger.error("ERROR: #{e.message}")
         @pending_journal.errors.add(:base, I18n.t('controllers.facility_journals.update.error.rescue'))
@@ -134,7 +134,7 @@ class FacilityJournalsController < ApplicationController
             # create the spreadsheet
             @journal.create_spreadsheet if Settings.financial.journal_format.xls
             flash[:notice] = I18n.t('controllers.facility_journals.create.notice')
-            redirect_to facility_journals_url(current_facility) and return
+            redirect_to facility_journals_path(current_facility) and return
           rescue Exception => e
             @journal.errors.add(:base, I18n.t('controllers.facility_journals.create.errors.rescue', :message => e.message))
             Rails.logger.error(e.backtrace.join("\n"))
@@ -174,19 +174,19 @@ class FacilityJournalsController < ApplicationController
   def reconcile
     if params[:order_detail_ids].blank?
       flash[:error] = 'No orders were selected to reconcile'
-      redirect_to facility_journal_url(current_facility, @journal) and return
+      redirect_to facility_journal_path(current_facility, @journal) and return
     end
     rec_status = OrderStatus.reconciled.first
     order_details = OrderDetail.for_facility(current_facility).where(:id => params[:order_detail_ids]).readonly(false)
     order_details.each do |od|
       if od.journal_id != @journal.id
         flash[:error] = "Order detail #{od.to_s} does not belong to this journal! Please reconcile without it."
-        redirect_to facility_journal_url(current_facility, @journal) and return
+        redirect_to facility_journal_path(current_facility, @journal) and return
       end
       od.change_status!(rec_status)
     end
     flash[:notice] = 'The selected orders have been reconciled successfully'
-    redirect_to facility_journal_url(current_facility, @journal) and return
+    redirect_to facility_journal_path(current_facility, @journal) and return
   end
 
 

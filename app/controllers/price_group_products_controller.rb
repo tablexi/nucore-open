@@ -70,8 +70,6 @@ class PriceGroupProductsController < ApplicationController
     end
     @price_group_product=@price_group_products.empty? ? PriceGroupProduct.new : @price_group_products.first # for CanCan authorization
 
-    # Price groups that currently have a policy that can purchase
-    @active_price_groups = @product.price_policies.current.where(:can_purchase => true).map(&:price_group)
   end
 
 end

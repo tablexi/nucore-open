@@ -75,7 +75,7 @@ class FacilitiesController < ApplicationController
 
     if @facility.save
       flash[:notice] = 'The facility was successfully created.'
-      redirect_to manage_facility_url(@facility)
+      redirect_to manage_facility_path(@facility)
     else
       render :action => "new", :layout => 'application'
     end
@@ -85,7 +85,7 @@ class FacilitiesController < ApplicationController
   def update
     if current_facility.update_attributes(params[:facility])
       flash[:notice] = 'The facility was successfully updated.'
-      redirect_to manage_facility_url(current_facility)
+      redirect_to manage_facility_path(current_facility)
     else
       render :action => "edit"
     end

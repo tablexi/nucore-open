@@ -162,6 +162,10 @@ class Product < ActiveRecord::Base
     groups.compact.uniq
   end
 
+  def product_type
+    self.class.name.underscore.pluralize
+  end
+
   private
 
   def account_required
