@@ -16,11 +16,7 @@ describe OrderDetailObserver do
     end
 
     after :all do
-      Settings.reload_from_files(
-        Rails.root.join("config", "settings.yml").to_s,
-        Rails.root.join("config", "settings", "#{Rails.env}.yml").to_s,
-        Rails.root.join("config", "environments", "#{Rails.env}.yml").to_s
-      )
+      reset_settings
     end
     
     before :each do
@@ -49,6 +45,10 @@ describe OrderDetailObserver do
   end
 
   context 'order details changes statuses' do
+    after :all do
+      reset_settings
+    end
+    
     before :each do
       Settings.reload!
       Settings.order_details.status_change_hooks = nil
