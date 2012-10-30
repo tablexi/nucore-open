@@ -31,7 +31,7 @@ class UserPriceGroupMembersController < ApplicationController
     else
       flash[:error] = "An error was encountered while trying to add #{@user_price_group_member.user.full_name} to the #{@price_group.name} Price Group"
     end
-    redirect_to(users_facility_price_group_url(current_facility, @price_group))
+    redirect_to(users_facility_price_group_path(current_facility, @price_group))
   end
 
   # DELETE /price_group_members/1
@@ -44,7 +44,7 @@ class UserPriceGroupMembersController < ApplicationController
    else
      flash[:error] = "An error was encountered while attempting to remove the user from the Price Group"
    end
-   redirect_to(users_facility_price_group_url(current_facility, @price_group))
+   redirect_to(users_facility_price_group_path(current_facility, @price_group))
   end
 
 end

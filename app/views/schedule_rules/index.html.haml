@@ -2,7 +2,7 @@
   = javascript_include_tag 'calendar/fullcalendar.min.js', 'schedule_rules.js'
   = stylesheet_link_tag 'calendar/fullcalendar.css', 'calendar/fullcalendar.extensions.css'
   :javascript
-    var events_path = "#{facility_instrument_schedule_rules_url(:format => 'js')}";
+    var events_path = "#{facility_instrument_schedule_rules_path(:format => 'js')}";
 
 = content_for :h1 do
   =h current_facility

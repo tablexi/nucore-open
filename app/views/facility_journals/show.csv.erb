@@ -1,6 +1,7 @@
 <%
 output = CSVHelper::generate do |csv|
-  headers =  [Order.model_name.human, 
+  headers =  [Facility.model_name.human,
+              Order.model_name.human, 
               Order.human_attribute_name(:ordered_at), 
               OrderDetail.human_attribute_name(:fulfilled_at)]
   headers <<  User.human_attribute_name(:uid) if @show_uid
@@ -47,7 +48,8 @@ output = CSVHelper::generate do |csv|
     product=od.product
     #bundle_desc=product.is_a?(Bundle) ? product.products.collect(&:name).join(' & ') : nil
 
-    row = [od.to_s,
+    row = [od.facility,
+           od.to_s,
            human_datetime(order.ordered_at), 
            human_datetime(od.fulfilled_at)]
            

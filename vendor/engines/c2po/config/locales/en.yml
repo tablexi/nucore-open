@@ -23,6 +23,12 @@ en:
     credit_card: Credit Card
     po: Purchase Order
 
+  users:
+    new_user:
+      success: You just created a new user
+      new_payment_source: Create a new payment source for this user
+      order_for: Order on behalf of this user
+
   active_record:
     models:
       credit_card_account:

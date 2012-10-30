@@ -176,7 +176,7 @@ describe GeneralReportsController do
       headers=[ label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
     else
       headers=[
-        'Order', 'Ordered At', 'Fulfilled At', 'Order Status', 'Order State',
+        'Facility', 'Order', 'Ordered At', 'Fulfilled At', 'Order Status', 'Order State',
         'Ordered By', 'First Name', 'Last Name', 'Email', 'Product ID', 'Product Type',
         'Product', 'Quantity', 'Bundled Products', 'Account Type', 'Affiliate', 'Account',
         'Account Description', 'Account Expiration', 'Account Owner', 'Owner First Name',

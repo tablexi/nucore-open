@@ -47,7 +47,7 @@ class ScheduleRulesController < ApplicationController
     respond_to do |format|
       if @schedule_rule.save
         flash[:notice] = 'Schedule Rule was successfully created.'
-        format.html { redirect_to(facility_instrument_schedule_rules_url(current_facility, @instrument)) }
+        format.html { redirect_to(facility_instrument_schedule_rules_path(current_facility, @instrument)) }
       else
         format.html { render :action => "new" }
       end
@@ -64,7 +64,7 @@ class ScheduleRulesController < ApplicationController
     respond_to do |format|
       if @schedule_rule.update_attributes(params[:schedule_rule])
         flash[:notice] = 'Schedule Rule was successfully updated.'
-        format.html { redirect_to(facility_instrument_schedule_rules_url(current_facility, @instrument)) }
+        format.html { redirect_to(facility_instrument_schedule_rules_path(current_facility, @instrument)) }
       else
         format.html { render :action => "edit" }
       end
@@ -78,7 +78,7 @@ class ScheduleRulesController < ApplicationController
     @schedule_rule.destroy
 
     respond_to do |format|
-      format.html { redirect_to(facility_instrument_schedule_rules_url(current_facility, @instrument)) }
+      format.html { redirect_to(facility_instrument_schedule_rules_path(current_facility, @instrument)) }
     end
   end
 

@@ -325,4 +325,13 @@ Spork.each_run do
     @order_detail     = @order.order_details.first
   end
 
+  # If you changed Settings anywhere in your spec, include this as
+  # in after :all to reset to the normal settings.
+  def reset_settings
+    Settings.reload_from_files(
+      Rails.root.join("config", "settings.yml").to_s,
+      Rails.root.join("config", "settings", "#{Rails.env}.yml").to_s,
+      Rails.root.join("config", "environments", "#{Rails.env}.yml").to_s
+    )
+  end
 end

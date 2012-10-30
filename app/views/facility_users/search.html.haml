@@ -4,7 +4,7 @@
   = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'staff' }
 
 %h2 Add a User
-= form_tag user_search_results_url, :id => 'ajax_form' do
+= form_tag user_search_results_path, :id => 'ajax_form' do
   %p.instructions= t('.instruct')
   = text_field_tag :search_term, nil, :size => 30
   = submit_tag "Search", :class => 'btn'

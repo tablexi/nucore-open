@@ -57,7 +57,7 @@
     = render :partial => 'reservation_fields', :locals => {:f => f}
   %ul.horiz
     %li= f.submit 'Create', :class => 'btn'
-    - url_after_action = facility_url(@instrument.facility)
+    - url_after_action = facility_path(@instrument.facility)
     - if @order_detail.bundled?
       %li= link_to 'Cancel', url_after_action
     - else 
