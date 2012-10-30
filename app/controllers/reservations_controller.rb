@@ -6,6 +6,7 @@ class ReservationsController < ApplicationController
   before_filter :load_and_check_resources, :only => [ :move, :switch_instrument, :pick_accessories ]
 
   include TranslationHelper
+  include FacilityReservationsHelper
 
   def initialize
     super
