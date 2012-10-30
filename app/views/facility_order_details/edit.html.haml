@@ -21,14 +21,14 @@
           'order_detail_id'    : '#{@order_detail.id}'
         }
       });
-      
+
       $("#quantity").change(function () {
         if($('#actual_cost').length == 0)
           return;
 
         $('#submit').attr('disabled', true);
         $.getJSON(
-          "#{facility_order_order_detail_new_price_url(current_facility, @order, @order_detail)}?quantity=" + this.value,
+          "#{facility_order_order_detail_new_price_path(current_facility, @order, @order_detail)}?quantity=" + this.value,
           function(data) {
             $("#actual_cost").val(new Number(data[0]).toFixed(2));
             $("#actual_subsidy").val(new Number(data[1]).toFixed(2));
@@ -149,7 +149,7 @@
           %li
             %label= t('.label.dispute.resolve')
             =h @order_detail.dispute_resolved_reason
-    
+
     - # Results Files
     - if @order_detail.product.is_a?(Service)
       .box
@@ -178,7 +178,10 @@
       %th{:colspan => 2}= t('.th.product')
       %th Status
       %th.currency= "#{@order_detail.cost_estimated? ? 'Estimated ' : '' }Cost"
-      %th.currency= "#{@order_detail.cost_estimated? ? 'Estimated ' : '' }Adjustment"
+      %th.currency.subsidy_header
+        = @order_detail.price_policy.price_group if @order_detail.price_policy
+        = "#{@order_detail.cost_estimated? ? 'Estimated' : ''} Subsidy"
+
       %th.currency= "#{@order_detail.cost_estimated? ? 'Estimated ' : '' }Total"
     %tr
       %td.centered
@@ -252,7 +255,7 @@
     %ul.horiz
       - attrs={:class => 'btn', :id => 'submit'}
       - attrs.merge!(:name => 'assign_price_policy') if @order_detail.price_policy.nil? && @order_detail.order_status.name == 'Complete'
-      %li= submit_tag 'Save', attrs             
+      %li= submit_tag 'Save', attrs
       %li= link_to 'Cancel', cancel_link
 
 - if @order_detail.bundle

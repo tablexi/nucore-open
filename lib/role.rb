@@ -36,8 +36,8 @@ module Role
         self.facilities.where("user_roles.role IN(?)", UserRole.facility_roles)
       end
     end
-      
-    
+
+
     #
     # Creates method #manageable_facilities
     # returns relation of facilities for which this user is a director or admin
@@ -57,7 +57,7 @@ module Role
 
 
   def manager?
-    facility_director? || facility_administrator? 
+    facility_director? || facility_administrator?
   end
 
 
@@ -72,6 +72,10 @@ module Role
 
   def can_override_restrictions?(product)
     operator_of? product.facility
+  end
+
+  def cannot_override_restrictions?(product)
+    !operator_of?(product.facility)
   end
 
   #

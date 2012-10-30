@@ -195,6 +195,11 @@ a.btn:hover,input.btn:hover {
 	cursor:hand;
 }
 
+h1 .btn {
+	float: right;
+	letter-spacing: 0;
+}
+
 
 .footnote {
 	font-size:10px;
@@ -295,7 +300,7 @@ main layout ids
 	background-repeat: no-repeat;
 	border-bottom:2px solid #1570a2;
 	font-size:15px;
-	font-weight:700;
+	font-weight:bold;
 	overflow:hidden;
 	text-align:center;
 }
@@ -306,9 +311,8 @@ main layout ids
 }
 
 #acting_as a {
-	color:#FFF;
 	font-size:12px;
-	font-weight:400;
+	font-weight:normal;
 }
 
 #logo {

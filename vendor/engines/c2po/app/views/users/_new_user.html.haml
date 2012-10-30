@@ -1,0 +1,4 @@
+.notice
+  %p= "#{t('users.new_user.success')} #{link_to "#{@new_user} (#{@new_user.username})", facility_user_path(current_facility, @new_user)}.".html_safe
+  %p= link_to t('users.new_user.new_payment_source'), new_facility_account_path(current_facility, {:owner_user_id => @new_user.id})
+  %p= link_to t('users.new_user.order_for'), facility_user_switch_to_path(current_facility, @new_user)

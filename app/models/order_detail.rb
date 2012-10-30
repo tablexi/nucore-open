@@ -2,7 +2,7 @@ class OrderDetail < ActiveRecord::Base
   include NUCore::Database::SortHelper
   include TranslationHelper
   include NotificationSubject
-  
+
   versioned
 
   # Used when ordering to override certain restrictions
@@ -25,7 +25,7 @@ class OrderDetail < ActiveRecord::Base
 
   delegate :user, :facility, :ordered_at, :to => :order
   delegate :journal_date, :to => :journal
-  
+
   alias_method :merge!, :save!
 
   validates_presence_of :product_id, :order_id, :created_by
@@ -384,19 +384,17 @@ class OrderDetail < ActiveRecord::Base
     return "The #{account.type_string} is not open for the required account" if account.is_a?(NufsAccount) && !account.account_open?(product.account)
 
     # is the user approved for the product
-    return "You are not approved to purchase this #{product.class.name.downcase}" unless product.can_be_used_by?(order.user) or order.created_by_user.can_override_restrictions?(product)
+    return "You are not approved to purchase this #{product.class.name.downcase}" unless product.can_be_used_by?(order.user) || order.created_by_user.can_override_restrictions?(product)
 
     # are reservation requirements met
     response = validate_reservation
-    return response unless response.nil?
+    return response if response
 
     # are survey requirements met
     response = validate_service_meta
-    return response unless response.nil?
+    return response if response
 
-    order.user.price_groups.each do |price_group|
-      return nil if PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
-    end
+    return nil if product.can_purchase? order.user.price_groups.map(&:id)
 
     return 'No assigned price groups allow purchase of this product'
   end

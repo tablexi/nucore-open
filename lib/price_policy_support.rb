@@ -16,6 +16,10 @@ module PricePolicySupport
         errors.add("unit_subsidy", "cannot be greater than the Unit cost") if (unit_subsidy > unit_cost)
       end
 
+      def has_subsidy?
+        unit_subsidy && unit_subsidy > 0
+      end
+
       def calculate_cost_and_subsidy_from_order_detail(order_detail)
         calculate_cost_and_subsidy(order_detail.quantity)
       end

@@ -11,7 +11,7 @@
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'reservations'}
 
 :javascript
-  var events_path = "#{facility_instrument_reservations_url(current_facility, @instrument, :format => 'js', :with_details => true, :all => true)}";
+  var events_path = "#{facility_instrument_reservations_path(current_facility, @instrument, :format => 'js', :with_details => true, :all => true)}";
   var withDetails     = true
 
 %h2= @instrument

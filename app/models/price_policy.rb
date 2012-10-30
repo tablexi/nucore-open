@@ -3,9 +3,13 @@ class PricePolicy < ActiveRecord::Base
 
   belongs_to :price_group
   belongs_to :product
+  has_many :order_details
+
   validates_presence_of :start_date, :price_group_id, :type
   validate :start_date_is_unique, :unless => lambda { |o| o.start_date.nil? }
-
+  
+  validates :unit_cost, :unit_subsidy, :usage_rate, :usage_subsidy, :reservation_rate, :overage_rate, :overage_subsidy, :minimum_cost, :numericality => { :greater_than_or_equal_to => 0 }, :allow_nil => true
+  
   validates_each :expire_date do |record,attr,value|
     unless value.blank?
       start_date=record.start_date

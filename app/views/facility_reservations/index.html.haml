@@ -59,7 +59,7 @@
               %br
               %span.very_dense
                 = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(od.order, od, od.reservation, :switch => 'on') if od.reservation.can_switch_instrument_on?
-                = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(od.order, od, od.reservation, :switch => 'off'), :class => (od.product.product_accessories.for_acting_as(acting_as?).any? ? :has_accessories : nil)  if od.reservation.can_switch_instrument_off?
+                = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(od.order, od, od.reservation, :switch => 'off'), :class => end_reservation_class(od.reservation) if od.reservation.can_switch_instrument_off?
           %td
             %ul
               - product_name = (od.bundle ? "#{h od.bundle} &mdash; ".html_safe : '') + h(od.product)

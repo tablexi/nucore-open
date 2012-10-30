@@ -13,7 +13,7 @@
 
     %li
       = label_tag :status
-      = select_tag(:order_status_id, options_for_select(@order_statuses.map {|s| [s.name_with_level, s.id] }))
+      = select_tag(:order_status_id, options_for_select(@order_statuses.nil? ? [] : @order_statuses.map {|s| [s.name_with_level, s.id] }))
     %li
       = label_tag :send_notification
       = check_box_tag :send_notification, 1, true

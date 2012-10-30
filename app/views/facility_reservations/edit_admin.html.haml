@@ -1,7 +1,7 @@
 = content_for :head_content do
   = render :partial => 'shared/headers/calendar'
   :javascript
-    var events_path     = "#{facility_instrument_reservations_url(@instrument.facility, @instrument, :format => 'js', :with_details => true)}";
+    var events_path     = "#{facility_instrument_reservations_path(@instrument.facility, @instrument, :format => 'js', :with_details => true)}";
     var minDate         = "#{@min_date}";
     var maxDate         = "#{@max_date}";
     var maxDaysFromNow  = #{@max_window}; //#{@instrument.max_reservation_window};

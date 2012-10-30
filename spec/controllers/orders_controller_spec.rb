@@ -78,6 +78,19 @@ describe OrdersController do
       should render_template 'choose_account'
     end
 
+    context 'staff logged in' do
+      before :each do
+        sign_in @staff
+      end
+      it 'should redirect to cart url if the cart is empty' do
+        @order2 = @staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account))
+        @order2.order_details.should be_empty
+        @params = { :id => @order2.id }
+        do_request
+        response.should redirect_to cart_path
+      end
+    end
+
     it 'should test more than auth'
   end
 

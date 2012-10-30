@@ -5,14 +5,14 @@
   = stylesheet_link_tag 'calendar/fullcalendar.extensions.css'
   - if @order_detail.complete?
     :javascript
-      var events_path     = "#{facility_instrument_reservations_url(current_facility, @instrument, :format => 'js')}";
+      var events_path     = "#{facility_instrument_reservations_path(current_facility, @instrument, :format => 'js')}";
       var maxDaysFromNow  = #{@max_window};
       var minDaysFromNow  = #{@max_days_ago};
       var minTime         = #{@instrument.first_available_hour};
       var maxTime         = #{@instrument.last_available_hour+1};
   - else
     :javascript
-      var events_path     = "#{facility_instrument_reservations_url(current_facility, @instrument, :format => 'js')}";
+      var events_path     = "#{facility_instrument_reservations_path(current_facility, @instrument, :format => 'js')}";
       var maxDaysFromNow  = #{@max_window};
       var minDaysFromNow  = #{@max_days_ago};
       var minTime         = #{@instrument.first_available_hour};

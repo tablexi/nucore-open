@@ -16,9 +16,32 @@ describe UsersController do
     before :each do
       @method=:get
       @action=:index
+      @inactive_user = Factory.create(:user, :first_name => 'Inactive')
+
+      @active_user = Factory.create(:user, :first_name => 'Active')
+      place_and_complete_item_order(@active_user, @authable)
+      # place two orders to make sure it only returns the user once
+      place_and_complete_item_order(@active_user, @authable)
+      
+      @lapsed_user = Factory.create(:user, :first_name => 'Lapsed')
+      @old_order_detail = place_and_complete_item_order(@lapsed_user, @authable)
+      @old_order_detail.order.update_attributes(:ordered_at => 400.days.ago)
     end
 
-    it_should_allow_operators_only
+    it_should_allow_operators_only :success, 'include the right users' do
+      assigns[:users].size.should == 1
+      assigns[:users].should include @active_user
+    end
+
+    context 'with newly created user' do
+      before :each do
+        @user = Factory.create(:user)
+        @params.merge!({ :user => @user.id })
+      end
+      it_should_allow_operators_only :success, 'set the user' do
+        assigns[:new_user].should == @user
+      end
+    end
 
   end
 
@@ -55,8 +78,7 @@ describe UsersController do
 
       it_should_allow_operators_only :redirect do
         should assign_to(:user).with_kind_of User
-        should set_the_flash
-        assert_redirected_to facility_users_url
+        assert_redirected_to facility_users_url(:user => assigns[:user].id)
       end
 
     end
@@ -106,7 +128,7 @@ describe UsersController do
     it_should_allow_operators_only :redirect do
       assigns(:user).should == @guest
       session[:acting_user_id].should == @guest.id
-      session[:acting_ref_url].should == facility_users_url
+      session[:acting_ref_url].should == facility_users_path
       assert_redirected_to facility_path(@authable)
     end
 

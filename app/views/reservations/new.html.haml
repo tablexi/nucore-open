@@ -3,7 +3,7 @@
   = javascript_include_tag 'reservations.js'
   
   :javascript
-    var events_path     = "#{facility_instrument_reservations_url(@instrument.facility, @instrument, :format => 'js', :with_details => @instrument.show_details?)}";
+    var events_path     = "#{facility_instrument_reservations_path(@instrument.facility, @instrument, :format => 'js', :with_details => @instrument.show_details?)}";
     var minDate         = "#{@min_date}";
     var maxDate         = "#{@max_date}";
     var maxDaysFromNow  = #{@max_window};
@@ -57,7 +57,7 @@
     = render :partial => 'reservation_fields', :locals => {:f => f}
   %ul.horiz
     %li= f.submit 'Create', :class => 'btn'
-    - url_after_action = facility_url(@instrument.facility)
+    - url_after_action = facility_path(@instrument.facility)
     - if @order_detail.bundled?
       %li= link_to 'Cancel', url_after_action
     - else 

@@ -105,7 +105,13 @@ class Ability
       end
 
     elsif resource.is_a?(Reservation)
-      can :manage, Reservation if user.operator_of?(resource.instrument.facility)
+      # TODO Add :accessory hash back in to hide hidden accessories from non-admin users
+      # See task #55479
+      can :read, ProductAccessory #, :accessory => { :is_hidden => false }
+      if user.operator_of?(resource.instrument.facility)
+        can :read, ProductAccessory
+        can :manage, Reservation 
+      end
       can :start_stop, Reservation if resource.order_detail.order.user_id == user.id
     end
 

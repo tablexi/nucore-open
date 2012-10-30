@@ -5,11 +5,11 @@ class UsersController < ApplicationController
         @user = User.where("LOWER(username) = ?", params[:username].downcase).first
         flash[:notice] = "The user has been added successfully."
         if session_user.manager_of?(current_facility)
-          flash[:notice]=(flash[:notice] + "  You may wish to <a href=\"#{facility_facility_user_map_user_url(current_facility, @user)}\">add a facility role</a> for this user.").html_safe
+          flash[:notice]=(flash[:notice] + "  You may wish to <a href=\"#{facility_facility_user_map_user_path(current_facility, @user)}\">add a facility role</a> for this user.").html_safe
         end
         # send email
         Notifier.new_user(:user => @user, :password => nil).deliver
-        redirect_to facility_users_url(current_facility)
+        redirect_to facility_users_path(current_facility)
       end
     end
 
@@ -39,9 +39,13 @@ class UsersController < ApplicationController
 
   # GET /facilities/:facility_id/users
   def index
-    @users = current_facility.orders.where('ordered_at > ?', Time.zone.now - 1.year).includes(:user).collect{|o| o.user}.uniq
-    @users.delete nil # on a dev db with screwy data nil can get ya
-    @users = @users.sort {|x,y| [x.last_name, x.first_name].join(' ') <=> [y.last_name, y.first_name].join(' ') }.paginate(:page => params[:page])
+    @new_user = User.find_by_id(params[:user])
+    @users = User.joins(:orders).
+                  where(:orders => { :facility_id => current_facility.id }).
+                  where('orders.ordered_at > ?', Time.zone.now - 1.year).
+                  order(:last_name, :first_name).
+                  select("DISTINCT users.*").
+                  paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/facility_users/new
@@ -58,8 +62,7 @@ class UsersController < ApplicationController
 
     begin
       @user.save!
-      flash[:notice] = 'The user was successfully created.'
-      redirect_to facility_users_url
+      redirect_to facility_users_path(:user => @user.id)
     rescue Exception => e
       @user.errors.add(:base, e) if @user.errors.empty?
       render :action => "new" and return
@@ -74,7 +77,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:user_id])
     unless session_user.id == @user.id
       session[:acting_user_id] = params[:user_id]
-      session[:acting_ref_url] = facility_users_url
+      session[:acting_ref_url] = facility_users_path
     end
     redirect_to facility_path(current_facility)
   end

@@ -29,10 +29,10 @@ en:
       name: "Name of the %{field} as displayed to the end user"
       description: "Description as it will appear on the product page"
       account: "Expense account from which fees will be withdrawn; must be open on purchaser's Chart String"
-      requires_approval: "Check to restrict access to approved users"
+      requires_approval: "Restrict access to approved users"
       initial_order_status: "Default status for new orders"
-      is_archived: "Check to inactivate the product, disallowing purchase and viewing"
-      is_hidden: "Check to hide %{field} from end users; visible to staff when \"ordering on behalf\" of another user"
+      is_archived: "Inactivate the product, disallowing purchase and viewing"
+      is_hidden: "Hide %{field} from end users; visible to staff when \"ordering on behalf\" of another user"
       contact_email: "If left blank, email will default to the facility's email address (%{facility_email})."
       deposit_account:
         label: "Recharge Chart String and Account"
@@ -327,6 +327,7 @@ en:
     delete:
       confirm: Are you sure you wish to cancel this reservation?
       link: Cancel
+    finished: Reservation Ended
 
   statements:
     index:
@@ -402,9 +403,9 @@ en:
       th:
         product: "Product"
         quantity: "Quantity"
-        cost: "Estimated Cost"
+        cost: "Estimated Price"
         adjust: "Estimated Adjustment"
-        extend: "Estimated Extended Cost"
+        extend: "Estimated Total"
       td:
         total: "Estimated Totals"
       foot:
@@ -458,6 +459,10 @@ en:
       unassigned: "Unassigned"
 
   product_accessories:
+    pick_accessories:
+      link: Add Accessories to order...
+      instruct: If any of the following were used during this reservation please enter their quantities.
+    
     index:
       description: "Here you may define one or more accessories that can be used during a reservation of this product"
 
@@ -711,9 +716,12 @@ en:
           user: "Relay Username"
           pass: "Relay Password"
           auto_logout: "Automatic Logout?"
+    public_schedule:
+      title: Schedule
+      place_reservation: Place Reservation
 
     instrument_fields:
-      show_details: "Check to show reservation details"
+      show_details: "Show reservation details (name, email, etc) on schedule"
       control_mechanism: "How the instrument and its time is managed"
       relay:
         intro: "(Optional) If the instrument is connected to an approved power relay, please enter the information below. Power relays must be purchased separately."
@@ -817,7 +825,7 @@ en:
     general_reports:
       headers:
         data: [
-        'Order', 'Ordered At', 'Fulfilled At', 'Order Status', 'Order State',
+        'Facility', 'Order', 'Ordered At', 'Fulfilled At', 'Order Status', 'Order State',
         'Ordered By', 'First Name', 'Last Name', 'Email', 'Product ID', 'Product Type',
         'Product', 'Quantity', 'Bundled Products', 'Account Type', 'Affiliate', 'Account',
         'Account Description', 'Account Expiration', 'Account Owner', 'Owner First Name',

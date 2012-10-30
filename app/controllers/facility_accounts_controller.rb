@@ -79,7 +79,7 @@ class FacilityAccountsController < ApplicationController
 
     if @account.update_attributes(class_params)
       flash[:notice] = I18n.t('controllers.facility_accounts.update')
-      redirect_to facility_account_url
+      redirect_to facility_account_path
     else
       render :action => "edit"
     end
@@ -106,7 +106,7 @@ class FacilityAccountsController < ApplicationController
 
     if @account.save
       flash[:notice] = 'Account was successfully created.'
-      redirect_to(user_accounts_url(current_facility, @account.owner_user)) and return
+      redirect_to(user_accounts_path(current_facility, @account.owner_user)) and return
     else
       render :action => 'new'
     end
