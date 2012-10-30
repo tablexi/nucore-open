@@ -219,6 +219,10 @@ Nucore::Application.routes.draw do |map|
   match 'reservations' => 'reservations#list', :as => 'reservations'
   match "reservations(/:status)" => 'reservations#list', :as => 'reservations_status'
 
+  # order import
+  match '/facilities/:facility_id/orders/import' => 'facility_orders_import#create', :via => :post, :as => 'facility_orders_import'
+  match '/facilities/:facility_id/orders/import/new' => 'facility_orders_import#new', :via => :get, :as => 'new_facility_orders_import'
+
   # file upload routes
   map.upload_product_file '/facilities/:facility_id/:product/:product_id/files/upload',
                           :controller => 'file_uploads', :action => 'upload', :conditions => {:method => :get}
