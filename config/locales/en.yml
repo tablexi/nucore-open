@@ -722,7 +722,7 @@ en:
 
     instrument_fields:
       show_details: "Show reservation details (name, email, etc) on schedule"
-      control_mechanism: "How the instrument and its time is managed"
+      control_mechanism: "How the instrument and its time is managed. Please be aware that if 'Reservation only' is selected the actual and overage rates of this instrument's pricing rules should be zero."
       relay:
         intro: "(Optional) If the instrument is connected to an approved power relay, please enter the information below. Power relays must be purchased separately."
         label:
