@@ -2,14 +2,13 @@ require 'spec_helper'
 require 'controller_spec_helper'
 
 
-describe FacilityOrdersImportController do
+describe OrderImportsController do
   render_views
 
   before(:all) { create_users }
 
   before(:each) do
     @authable=Factory.create(:facility)
-    @facility_account=Factory.create(:facility_account, :facility => @authable)
     @params={ :facility_id => @authable.url_name }
   end
 

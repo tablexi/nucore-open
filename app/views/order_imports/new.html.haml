@@ -7,7 +7,7 @@
 #bulk-import
   %h2= t '.h2'
   = t '.instructions_html'
-  = form_tag facility_orders_import_path, :multipart => true do
+  = form_tag facility_order_imports_path, :multipart => true do
     = file_field_tag 'import_csv'
     = label_tag 'no_save_on_error', "#{check_box_tag('no_save_on_error')} #{t '.no_save_on_error'}".html_safe
     = label_tag 'send_receipts', "#{check_box_tag('send_receipts')} #{t '.send_receipts'}".html_safe

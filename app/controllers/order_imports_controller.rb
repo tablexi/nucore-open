@@ -1,4 +1,4 @@
-class FacilityOrdersImportController < ApplicationController
+class OrderImportsController < ApplicationController
 
   admin_tab     :all
   before_filter :authenticate_user!

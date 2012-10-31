@@ -145,6 +145,8 @@ Nucore::Application.routes.draw do |map|
       end
     end
 
+    facility.resources :order_imports, :only => [ :new, :create ]
+
     facility.resources :reservations, :controller => 'facility_reservations', :only => :index, :collection => {:batch_update => :post, :show_problems => :get, :disputed => :get, :timeline => :get, :tab_counts => :get}
 
     facility.accounts_receivable '/accounts_receivable', :controller => 'facility_accounts', :action => 'accounts_receivable', :conditions => {:method => :get}
@@ -218,10 +220,6 @@ Nucore::Application.routes.draw do |map|
   # reservations
   match 'reservations' => 'reservations#list', :as => 'reservations'
   match "reservations(/:status)" => 'reservations#list', :as => 'reservations_status'
-
-  # order import
-  match '/facilities/:facility_id/orders/import' => 'facility_orders_import#create', :via => :post, :as => 'facility_orders_import'
-  match '/facilities/:facility_id/orders/import/new' => 'facility_orders_import#new', :via => :get, :as => 'new_facility_orders_import'
 
   # file upload routes
   map.upload_product_file '/facilities/:facility_id/:product/:product_id/files/upload',
