@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121031184855) do
+ActiveRecord::Schema.define(:version => 20121031193852) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -211,6 +211,14 @@ ActiveRecord::Schema.define(:version => 20121031184855) do
   add_index "order_details", ["order_id"], :name => "sys_c009172"
   add_index "order_details", ["price_policy_id"], :name => "sys_c009175"
   add_index "order_details", ["product_id"], :name => "sys_c009173"
+
+  create_table "order_imports", :force => true do |t|
+    t.integer  "upload_file_id", :null => false
+    t.integer  "error_file_id"
+    t.integer  "created_by",     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "order_statuses", :force => true do |t|
     t.string  "name",        :limit => 50, :null => false
