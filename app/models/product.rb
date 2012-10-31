@@ -5,7 +5,7 @@ class Product < ActiveRecord::Base
   belongs_to :facility_account
   has_many   :product_users
   has_many   :order_details
-  has_many   :file_uploads
+  has_many   :stored_files
   has_many   :price_groups, :through => :price_group_products
   has_many   :price_group_products
   has_many   :product_accessories, :dependent => :destroy

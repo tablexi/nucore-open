@@ -5,7 +5,7 @@ class FileUploadsController < ApplicationController
   before_filter       :init_current_facility
   skip_before_filter  :verify_authenticity_token, :only => :create
 
-  load_and_authorize_resource :except => :uploader_create
+  load_and_authorize_resource :class => StoredFile, :except => :uploader_create
 
   layout 'two_column'
 
@@ -20,7 +20,7 @@ class FileUploadsController < ApplicationController
   def upload
     @klass   = params[:product]
     @product = current_facility.send(@klass).find_by_url_name!(params[:product_id])
-    @file    = @product.file_uploads.new(:file_type => params[:file_type])
+    @file    = @product.stored_files.new(:file_type => params[:file_type])
   end
 
   # POST /facilities/1/services/3/files
@@ -28,7 +28,7 @@ class FileUploadsController < ApplicationController
     @klass   = params[:product]
     @product = current_facility.send(@klass).find_by_url_name!(params[:product_id])
 
-    @file = @product.file_uploads.new(params[:file_upload].merge(:created_by => session_user.id))
+    @file = @product.stored_files.new(params[:file_upload].merge(:created_by => session_user.id))
     if @file.save
       flash[:notice] = "File uploaded"
       redirect_to(upload_product_file_path(current_facility, @product.parameterize, @product, :file_type => @file.file_type)) and return
@@ -44,7 +44,7 @@ class FileUploadsController < ApplicationController
     @options = Hash[:swf_uploaded_data => params[:fileData], :name => params[:Filename],
                     :file_type => params[:file_type], :order_detail_id => params[:order_detail_id],
                     :created_by => session_user.id]
-    @upload = @product.file_uploads.new(@options)
+    @upload = @product.stored_files.new(@options)
     authorize! :uploader_create, @upload
     @upload.save!
 
@@ -54,7 +54,7 @@ class FileUploadsController < ApplicationController
   # GET /facilities/1/services/3/files/survey_upload
   def product_survey
     @product  = current_facility.services.find_by_url_name!(params[:product_id])
-    @file     = @product.file_uploads.new(:file_type => 'template')
+    @file     = @product.stored_files.new(:file_type => 'template')
     @survey = ExternalServiceManager.survey_service.new
   end
 
@@ -62,10 +62,10 @@ class FileUploadsController < ApplicationController
     @product = current_facility.services.find_by_url_name!(params[:product_id])
 
     if params[:file_upload]
-      @file = @product.file_uploads.new(params[:file_upload].merge(:created_by => session_user.id, :name => 'Order Form Template'))
+      @file = @product.stored_files.new(params[:file_upload].merge(:created_by => session_user.id, :name => 'Order Form Template'))
       @file.transaction do
         begin
-          unless @product.file_uploads.template.all? {|t| t.destroy}
+          unless @product.stored_files.template.all? {|t| t.destroy}
             raise ActiveRecord::Rollback
           end
           @file.save!
@@ -102,7 +102,7 @@ class FileUploadsController < ApplicationController
           @survey.errors.add(:base, "Online Order Form add error: #{e.message}")
         end
       end
-      @file = @product.file_uploads.new(:file_type => 'template')
+      @file = @product.stored_files.new(:file_type => 'template')
     end
     render :product_survey
   end
@@ -110,9 +110,9 @@ class FileUploadsController < ApplicationController
   def destroy
     @klass   = params[:product]
     @product = current_facility.send(@klass).find_by_url_name!(params[:product_id])
-    @file    = @product.file_uploads.find(params[:id])
+    @file    = @product.stored_files.find(params[:id])
 
-    if @product.file_uploads.destroy(@file)
+    if @product.stored_files.destroy(@file)
       flash[:notice] = 'The file was deleted successfully'
     else
       flash[:error] = 'An error was encountered while attempting to delete the file'

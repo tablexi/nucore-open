@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120824185714) do
+ActiveRecord::Schema.define(:version => 20121031184855) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -130,22 +130,6 @@ ActiveRecord::Schema.define(:version => 20120824185714) do
   end
 
   add_index "facility_accounts", ["facility_id"], :name => "fk_facilities"
-
-  create_table "file_uploads", :force => true do |t|
-    t.integer  "order_detail_id"
-    t.integer  "product_id"
-    t.string   "name",              :limit => 200, :null => false
-    t.string   "file_type",         :limit => 50,  :null => false
-    t.integer  "created_by",                       :null => false
-    t.datetime "created_at",                       :null => false
-    t.string   "file_file_name"
-    t.string   "file_content_type"
-    t.integer  "file_file_size"
-    t.datetime "file_updated_at"
-  end
-
-  add_index "file_uploads", ["order_detail_id"], :name => "fk_files_od"
-  add_index "file_uploads", ["product_id"], :name => "fk_files_product"
 
   create_table "instrument_statuses", :force => true do |t|
     t.integer  "instrument_id", :null => false
@@ -430,6 +414,22 @@ ActiveRecord::Schema.define(:version => 20120824185714) do
 
   add_index "statements", ["facility_id"], :name => "fk_statement_facilities"
 
+  create_table "stored_files", :force => true do |t|
+    t.integer  "order_detail_id"
+    t.integer  "product_id"
+    t.string   "name",              :limit => 200, :null => false
+    t.string   "file_type",         :limit => 50,  :null => false
+    t.integer  "created_by",                       :null => false
+    t.datetime "created_at",                       :null => false
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
+  end
+
+  add_index "stored_files", ["order_detail_id"], :name => "fk_files_od"
+  add_index "stored_files", ["product_id"], :name => "fk_files_product"
+
   create_table "user_roles", :force => true do |t|
     t.integer "user_id",     :null => false
     t.integer "facility_id"
@@ -494,9 +494,6 @@ ActiveRecord::Schema.define(:version => 20120824185714) do
 
   add_foreign_key "facility_accounts", "facilities", :name => "fk_facilities"
 
-  add_foreign_key "file_uploads", "order_details", :name => "fk_files_od"
-  add_foreign_key "file_uploads", "products", :name => "fk_files_product"
-
   add_foreign_key "instrument_statuses", "products", :name => "fk_int_stats_product", :column => "instrument_id"
 
   add_foreign_key "order_details", "accounts", :name => "fk_od_accounts"
@@ -528,5 +525,8 @@ ActiveRecord::Schema.define(:version => 20120824185714) do
   add_foreign_key "schedule_rules", "products", :name => "sys_c008573", :column => "instrument_id"
 
   add_foreign_key "statements", "facilities", :name => "fk_statement_facilities"
+
+  add_foreign_key "stored_files", "order_details", :name => "fk_files_od"
+  add_foreign_key "stored_files", "products", :name => "fk_files_product"
 
 end

@@ -24,8 +24,8 @@
     - else
       %li.indented= link_to('Complete Online Order Form', survey.new_url(order_detail))
 
-  - if order_detail.product.file_uploads.template.count > 0
-    - if order_detail.file_uploads.template_result.empty?
+  - if order_detail.product.stored_files.template.count > 0
+    - if order_detail.stored_files.template_result.empty?
       %li.indented= link_to('Upload Order Form', order_order_detail_order_file_path(order, order_detail))
     - else
-      %li.indented= "#{link_to('Uploaded Order Form', order_detail.file_uploads.template_result.first.file.url)} (#{link_to('Delete', order_order_detail_remove_order_file_path(order, order_detail))})".html_safe
+      %li.indented= "#{link_to('Uploaded Order Form', order_detail.stored_files.template_result.first.file.url)} (#{link_to('Delete', order_order_detail_remove_order_file_path(order, order_detail))})".html_safe

@@ -48,7 +48,7 @@ class Ability
 
         can [:index, :view_details, :schedule, :show], [Product]
 
-        can [:upload, :uploader_create, :destroy], FileUpload do |fileupload|
+        can [:upload, :uploader_create, :destroy], StoredFile do |fileupload|
           fileupload.file_type == 'sample_result'
         end
 
@@ -70,7 +70,7 @@ class Ability
       if user.manager_of?(resource)
         can :manage, [
           AccountUser, FacilityAccount, Journal,
-          Statement, FileUpload, PricePolicy, InstrumentPricePolicy,
+          Statement, StoredFile, PricePolicy, InstrumentPricePolicy,
           ItemPricePolicy, OrderStatus, PriceGroup, ReportsController,
           ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup,
           ProductAccessory, Product, BundleProduct
@@ -90,7 +90,7 @@ class Ability
       
       # Facility senior staff is based off of staff, but has a few more abilities
       if in_role?(user, resource, UserRole::FACILITY_SENIOR_STAFF)
-        can :manage, [ScheduleRule, ProductUser, ProductAccessGroup, FileUpload, ProductAccessory]
+        can :manage, [ScheduleRule, ProductUser, ProductAccessGroup, StoredFile, ProductAccessory]
         
         # they can get to reports controller, but they're not allowed to export all
         can :manage, ReportsController

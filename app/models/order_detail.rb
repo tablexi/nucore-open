@@ -21,7 +21,7 @@ class OrderDetail < ActiveRecord::Base
   has_one    :reservation, :dependent => :destroy
   has_one    :external_service_receiver, :as => :receiver, :dependent => :destroy
   has_many   :notifications, :as => :subject, :dependent => :destroy
-  has_many   :file_uploads, :dependent => :destroy
+  has_many   :stored_files, :dependent => :destroy
 
   delegate :user, :facility, :ordered_at, :to => :order
   delegate :journal_date, :to => :journal
@@ -417,7 +417,7 @@ class OrderDetail < ActiveRecord::Base
   def validate_service_meta
     return nil unless product.is_a?(Service)
 
-    requires_upload = !product.file_uploads.template.empty?
+    requires_upload = !product.stored_files.template.empty?
     requires_survey = product.active_survey?
     valid_upload    = requires_upload ? validate_uploaded_files : nil
     valid_survey    = requires_survey ? validate_survey         : nil
@@ -436,13 +436,13 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def validate_uploaded_files
-    templates = product.file_uploads.template
+    templates = product.stored_files.template
     case
     when templates.empty?
       nil # no file templates
     else
       # check for a template result
-      results = self.file_uploads.template_result
+      results = self.stored_files.template_result
       if results.empty?
         "Please upload an order form"
       else
