@@ -31,6 +31,8 @@ describe Order do
     @order.new?.should be true
   end
 
+  it { should belong_to :order_import }
+
   context 'total cost' do
 
     before :each do
