@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121031193852) do
+ActiveRecord::Schema.define(:version => 20121031230321) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -220,6 +220,10 @@ ActiveRecord::Schema.define(:version => 20121031193852) do
     t.datetime "updated_at"
   end
 
+  add_index "order_imports", ["created_by"], :name => "index_order_imports_on_created_by"
+  add_index "order_imports", ["error_file_id"], :name => "index_order_imports_on_error_file_id"
+  add_index "order_imports", ["upload_file_id"], :name => "index_order_imports_on_upload_file_id"
+
   create_table "order_statuses", :force => true do |t|
     t.string  "name",        :limit => 50, :null => false
     t.integer "facility_id"
@@ -240,10 +244,12 @@ ActiveRecord::Schema.define(:version => 20121031193852) do
     t.integer  "facility_id"
     t.string   "state",               :limit => 50
     t.integer  "merge_with_order_id"
+    t.integer  "order_import_id"
   end
 
   add_index "orders", ["account_id"], :name => "sys_c008808"
   add_index "orders", ["facility_id"], :name => "orders_facility_id_fk"
+  add_index "orders", ["order_import_id"], :name => "index_orders_on_order_import_id"
 
   create_table "price_group_members", :force => true do |t|
     t.string  "type",           :limit => 50, :null => false
