@@ -65,6 +65,17 @@ Devise.setup do |config|
   # Time interval to unlock the account if :time is enabled as unlock_strategy.
   # config.unlock_in = 1.hour
 
+  # ==> Navigation configuration
+  # Lists the formats that should be treated as navigational. Formats like
+  # :html, should redirect to the sign in page when the user does not have
+  # access, but formats like :xml or :json, should return 401.
+  #
+  # If you have any extra navigational formats, like :iphone or :mobile, you
+  # should add them to the navigational formats lists.
+  #
+  # The "*/*" below is required to match Internet Explorer requests.
+  config.navigational_formats = ["*/*", :html, :pdf]
+
   # ==> Configuration for :token_authenticatable
   # Defines name of the authentication token params key
   # config.token_authentication_key = :auth_token
