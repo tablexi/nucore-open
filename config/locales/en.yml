@@ -251,10 +251,10 @@ en:
         h1: "Summary Of Order #%{order_number}"
         h2: "Order Detail #%{order_number}"
 
-  facility_orders_import:
+  order_imports:
       new:
         h2: "Bulk Import"
-        no_save_on_error: "Save nothing on error"
+        fail_on_error: "Save nothing on error"
         send_receipts: "Send receipts"
         download_link: "Download import template"
         instructions_html: |
