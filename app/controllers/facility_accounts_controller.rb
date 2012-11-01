@@ -36,7 +36,9 @@ class FacilityAccountsController < ApplicationController
   before_filter :check_acting_as
   before_filter :init_current_facility
 
+  load_resource :class => Affiliate, :find_by => :name, :only => :create
   load_and_authorize_resource :class => Account
+
   before_filter :check_billing_access, :only => billing_access_checked_actions
 
   layout 'two_column'

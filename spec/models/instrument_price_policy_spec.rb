@@ -423,7 +423,7 @@ describe InstrumentPricePolicy do
       @facility         = Factory.create(:facility)
       @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create(Factory.attributes_for(:price_group))
-      @instrument       = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account => @facility_account))
+      @instrument       = Factory.create(:instrument, :facility_account => @facility_account, :facility => @facility)
       @ipp=@instrument.instrument_price_policies.create(ipp_attributes(
         :usage_rate => 100,
         :usage_subsidy => 99,

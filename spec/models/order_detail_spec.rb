@@ -254,6 +254,9 @@ describe OrderDetail do
         :facility_account => @facility_account,
         :facility => @facility
       )
+
+      @no_actuals_instrument.relay.destroy
+
       @instrument_wo_pp = Factory.create(:instrument,
         :facility_account => @facility_account,
         :facility => @facility

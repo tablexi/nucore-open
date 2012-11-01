@@ -131,7 +131,7 @@ describe Instrument do
     context "existing type: manual 'Reservation Only'" do
       before :each do
         @instrument.relay.destroy if @instrument.relay
-        @instrument.reload.control_mechanism.should == 'manual'
+        @instrument.reload.control_mechanism.should == Relay::CONTROL_MECHANISMS[:manual]
       end
 
       context "update with new control_mechanism: 'relay' (Timer with relay)" do

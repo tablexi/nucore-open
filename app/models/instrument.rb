@@ -25,7 +25,7 @@ class Instrument < Product
 
   # control mechanism for instrument
   def control_mechanism
-    return @control_mechanism || self.relay.try(:control_mechanism) || 'manual'
+    return @control_mechanism || self.relay.try(:control_mechanism)
   end
 
   def current_instrument_status

@@ -115,8 +115,8 @@ class InstrumentPricePolicy < PricePolicy
       return {:cost => actual_cost, :subsidy => actual_subsidy}
     end
 
-    ## the instrument has a reservation cost only
-    if usage_rate.to_f == 0 && overage_rate.to_f == 0
+    ## the instrument has a reservation cost only (i.e. is controlled manually)
+    if product.control_mechanism == Relay::CONTROL_MECHANISMS[:manual]
       reserve_mins = (res_end_at - res_start_at)/60
       reserve_intervals = (reserve_mins / reservation_mins).ceil
       reserve_discount = 0
