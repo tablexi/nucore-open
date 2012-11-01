@@ -213,9 +213,11 @@ ActiveRecord::Schema.define(:version => 20121031230321) do
   add_index "order_details", ["product_id"], :name => "sys_c009173"
 
   create_table "order_imports", :force => true do |t|
-    t.integer  "upload_file_id", :null => false
+    t.integer  "upload_file_id",                    :null => false
     t.integer  "error_file_id"
-    t.integer  "created_by",     :null => false
+    t.boolean  "fail_on_error",  :default => false
+    t.boolean  "send_receipts",  :default => false
+    t.integer  "created_by",                        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

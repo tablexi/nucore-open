@@ -7,10 +7,10 @@
 #bulk-import
   %h2= t '.h2'
   = t '.instructions_html'
-  = form_tag facility_order_imports_path, :multipart => true do
-    = file_field_tag 'import_csv'
-    = label_tag 'no_save_on_error', "#{check_box_tag('no_save_on_error')} #{t '.no_save_on_error'}".html_safe
-    = label_tag 'send_receipts', "#{check_box_tag('send_receipts')} #{t '.send_receipts'}".html_safe
+  = form_for [ :facility, @order_import ], :multipart => true do |f|
+    = f.file_field :upload_file
+    = f.label :fail_on_error, "#{f.check_box :fail_on_error } #{t '.fail_on_error'}".html_safe
+    = f.label :send_receipts, "#{f.check_box :send_receipts } #{t '.send_receipts'}".html_safe
     = submit_tag 'Import', :class => 'btn'
 
   = link_to t('.download_link'), '/templates/bulk_import_template.csv', :id => 'bulk-import-template'

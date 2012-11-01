@@ -20,8 +20,7 @@ describe OrderImportsController do
       @method=:get
     end
 
-    it_should_allow_operators_only
-
+    it_should_allow_operators_only { assigns(:order_import).should be_new_record }
   end
 
 
@@ -33,7 +32,6 @@ describe OrderImportsController do
     end
 
     it_should_allow_operators_only
-
   end
 
 end

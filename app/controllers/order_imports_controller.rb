@@ -15,6 +15,7 @@ class OrderImportsController < ApplicationController
 
 
   def new
+    @order_import=OrderImport.new
   end
 
 
