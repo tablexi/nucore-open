@@ -73,7 +73,7 @@ class FacilityAccountsController < ApplicationController
 
     if @account.is_a?(AffiliateAccount)
       class_params[:affiliate]=Affiliate.find_by_name(class_params[:affiliate])
-      class_params[:affiliate_other]=nil if class_params[:affiliate] != Affiliate::OTHER
+      class_params[:affiliate_other]=nil if class_params[:affiliate] != Affiliate.OTHER
     end
 
     if @account.update_attributes(class_params)
@@ -91,7 +91,7 @@ class FacilityAccountsController < ApplicationController
 
     if acct_class.included_modules.include?(AffiliateAccount)
       class_params[:affiliate]=Affiliate.find_by_name(class_params[:affiliate])
-      class_params[:affiliate_other]=nil if class_params[:affiliate] != Affiliate::OTHER
+      class_params[:affiliate_other]=nil if class_params[:affiliate] != Affiliate.OTHER
     end
 
     @owner_user         = User.find(params[:owner_user_id])
