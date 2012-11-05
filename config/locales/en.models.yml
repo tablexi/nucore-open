@@ -1,0 +1,144 @@
+#
+# Messages that come from models
+en:
+  models:
+      order:
+        auto_assign_account: "Could not find a valid payment source for purchasing %{product_name}"
+
+  activerecord:
+    errors:
+      # The values :model, :attribute and :value are always available for interpolation
+      # The value :count is available when applicable. Can be used for pluralization.
+      messages:
+        inclusion: "is not included in the list"
+        exclusion: "is reserved"
+        invalid: "is invalid"
+        confirmation: "doesn't match confirmation"
+        accepted: "must be accepted"
+        empty: "may not be empty"
+        blank: "may not be blank"
+        too_long: "is too long (maximum is %{count} characters)"
+        too_short: "is too short (minimum is %{count} characters)"
+        wrong_length: "is the wrong length (should be %{count} characters)"
+        taken: "has already been taken"
+        not_a_number: "is not a valid number"
+        greater_than: "must be greater than %{count}"
+        greater_than_or_equal_to: "must be greater than or equal to %{count}"
+        equal_to: "must be equal to %{count}"
+        less_than: "must be less than %{count}"
+        less_than_or_equal_to: "must be less than or equal to %{count}"
+        odd: "must be odd"
+        even: "must be even"
+        record_invalid: "Validation failed: %{errors}"
+        incorrect: "is incorrect"
+        bad_payment_source_format: "must be in format %{pattern_format}"
+        # Append your own errors here or at the model/attributes scope.
+      full_messages:
+        format: "%{attribute} %{message}"
+      template:
+        header:
+          one:    "1 error prohibited this %{model} from being saved"
+          other:  "%{count} errors prohibited this %{model} from being saved"
+        # The variable :count is also available
+        body: "There were problems with the following fields:"
+      models:
+        user:
+          password_not_updatable: You cannot change this user's password
+          password_too_short: must be at least 6 characters long
+          invalid_token: The token is either invalid or has expired.
+        product:
+          attributes:
+            contact_email:
+              required: must be set on either the product or the facility
+        instrument:
+          not_available: The %{instrument} instrument is currently unavailable for reservation online.
+          requires_approval_html: The %{instrument} instrument requires approval to reserve; please contact the facility for further information:<br/><br/> %{facility}<br/><a href=\"mailto:%{email}\">%{email}</a>
+          acting_as_not_on_approval_list: The user you are ordering for is not on the authorized list for this instrument.
+          no_accounts: "Sorry, but we could not find a valid payment source that you can use to reserve this instrument"
+        item:
+          not_available: This item is currently unavailable for purchase online.
+          requires_approval: This item requires approval to purchase; please contact the facility.
+          not_in_price_group: You are not in a price group that may purchase this item; please contact the facility.
+          not_authorized_acting_as: You are not authorized to order items from this facility on behalf of a user.
+          no_accounts: "Sorry, but we could not find a valid payment source that you can use to purchase this item"
+        service:
+          not_available: This service is currently unavailable for purchase online.
+          requires_approval: This service requires approval to purchase; please contact the facility.
+          not_in_price_group: You are not in a price group that may purchase this service; please contact the facility.
+          not_authorized_acting_as: You are not authorized to order services from this facility on behalf of a user.
+          no_accounts: "Sorry, but we could not find a valid payment source that you can use to purchase this service"
+        bundle:
+          not_available: This bundle is currently unavailable for purchase online.
+          requires_approval: This bundle requires approval to purchase; please contact the facility.
+          not_in_price_group: You are not in a price group that may purchase this bundle; please contact the facility.
+          not_authorized_acting_as: You are not authorized to order bundles from this facility on behalf of a user.
+          no_accounts: "Sorry, but we could not find a valid payment source that you can use to purchase this bundle"
+        reservation:
+          connot_be_completed_in_future: You cannot complete a future reservation.
+        account_user:
+          attributes:
+            user_id:
+              taken: "is already a member of this payment source"
+
+    # Model Names
+    models:
+      account:
+        one: Payment Source
+        other: Payment Sources
+        owner: Owner
+      nufs_account:
+        one: Chart String
+        other: Chart Strings
+      account user:
+        one: Account User
+        other: Account Users
+      reservation:
+        one: Reservation
+        other: Reservations
+      order:
+        one: Order
+        other: Orders
+      order_status:
+        one: Order Status
+        other: Order Statuses
+      facility:
+        one: Facility
+        other: Facilities
+      product_access_group: Scheduling Group
+    # Model Attributes
+    attributes:
+      user:
+        username: Username
+        password: Password
+        password_confirmation: Confirm password
+        current_password: Current password
+      facility:
+        url_name: URL name
+      product:
+        url_name: ID
+        requires_approval: Requires Approval
+      price_group:
+        is_internal: Is Internal?
+      user_role:
+        username: User
+      order_detail:
+        dispute_resolved_reason: Resolution Notes
+        description: Description
+        fulfilled_at: Fulfilled Date
+        ordered_at: Ordered Date
+        journal_date: Journal Date
+        user: Ordered For
+        created_by_user: Ordered By
+        reviewed_at: Review Closes
+        order_status: Status
+      journal:
+        description: Notes
+        journal_status: Status
+      statement:
+        created_by: Sent By
+        created_at: Sent At
+      account:
+        account_number: Number
+        expires_at: Expires
+      nufs_account:
+        account_number: Payment Source
