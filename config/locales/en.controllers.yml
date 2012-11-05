@@ -82,3 +82,10 @@ en:
 
     notifications:
       no_notices: "You have no notifications at this time"
+
+    order_imports:
+      create:
+        error: "Our apologies, but an error occurred while importing: %{error}"
+        success: "The import completed successfully. %{successes} orders were created."
+        blank: "The uploaded import file was blank. Please enter your orders and try the import again."
+        failure: "The import failed. %{successes} orders were created successfully, %{failures} failed. Please download the error report below, view each error message, correct the error, and try to import again."
