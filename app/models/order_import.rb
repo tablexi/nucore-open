@@ -6,16 +6,6 @@ class OrderImport < ActiveRecord::Base
   validates_presence_of :upload_file_id, :created_by
 
 
-  def upload_file=(file)
-    self[:upload_file_id]=StoredFile.create!(
-      :file => file,
-      :file_type => 'import_upload',
-      :name => file.original_filename,
-      :created_by => created_by
-    ).id
-  end
-
-
   #
   # Tries to import the orders defined in #upload_file.
   # [_returns_]
@@ -24,8 +14,19 @@ class OrderImport < ActiveRecord::Base
   #   Any encountered error
   def process!
     result=Result.new
-
-
+    # Process each line of CSV file in #upload_file.
+    #
+    # if fail_on_error
+    #   If an error is encountered create the exact
+    #   same CSV with the error annotated in a new error column.
+    #   Save error file to #error_file.
+    # else
+    #   Save all valid orders and keep track of any failures.
+    #   At end of processing create a #error_file out of the failures.
+    #   Include each failed line with the error annotated in a new error column.
+    # end
+    #
+    # Be sure to honor #send_receipts
     result
   end
 

@@ -24,12 +24,17 @@ class OrderImportsController < ApplicationController
       result=nil
 
       OrderImport.transaction do
-        # ensure created_by is in place before upload file creation
-        @order_import=OrderImport.new
-        @order_import.created_by=session_user.id
-        @order_import.upload_file=params[:order_import].delete(:upload_file)
-        @order_import.attributes=params[:order_import]
-        @order_import.save!
+        file=params[:order_import].delete(:upload_file)
+        stored_file=StoredFile.create!(
+          :file => file,
+          :file_type => 'import_upload',
+          :name => file.original_filename,
+          :created_by => session_user.id
+        )
+
+        @order_import=OrderImport.create!(
+          params[:order_import].merge(:created_by => session_user.id, :upload_file => stored_file)
+        )
 
         result=@order_import.process!
       end

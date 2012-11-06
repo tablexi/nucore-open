@@ -52,10 +52,12 @@ describe OrderImportsController do
       end
 
       it 'should create new OrderImport record' do
+        maybe_grant_always_sign_in :director
         lambda { do_request }.should change(OrderImport, :count).from(0).to(1)
       end
 
       it 'should create new StoredFile record' do
+        maybe_grant_always_sign_in :director
         lambda { do_request }.should change(StoredFile, :count).from(0).to(1)
       end
 
