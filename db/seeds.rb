@@ -12,6 +12,7 @@ OrderStatus.create(:name => 'Cancelled')
 OrderStatus.create(:name => 'Complete')
 OrderStatus.create(:name => 'Reconciled')
 
+Affiliate.find_or_create_by_name('Other')
 
 p = PriceGroup.new(:name => Settings.price_group.name.base, :is_internal => true, :display_order => 1)
 p.save(:validate => false)

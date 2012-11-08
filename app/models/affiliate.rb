@@ -2,11 +2,13 @@ class Affiliate < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name
 
-  OTHER=find_or_create_by_name('Other') #where(:name => 'Other').first
+  def self.OTHER
+    find_or_create_by_name('Other')
+  end
 
   before_destroy :destroyable?
 
   def destroyable?
-    self != OTHER
+    self != self.class.OTHER
   end
 end

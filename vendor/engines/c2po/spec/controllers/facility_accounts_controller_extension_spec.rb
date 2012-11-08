@@ -52,13 +52,13 @@ describe FacilityAccountsController do
         @params[:id]=@account.id
         @params[:class_type]='PurchaseOrderAccount'
         @params[:account]=@account.attributes
-        @params[:account][:affiliate]=Affiliate::OTHER.name
+        @params[:account][:affiliate]=Affiliate.OTHER.name
         @params[:account]['affiliate_other']='Jesus Charisma'
       end
 
       it_should_allow :director, 'to change affiliate to other' do
         assigns(:account).should == @account
-        assigns(:account).affiliate.should == Affiliate::OTHER
+        assigns(:account).affiliate.should == Affiliate.OTHER
         assigns(:account).affiliate_other.should == @params[:account]['affiliate_other']
         should set_the_flash
         assert_redirected_to facility_account_url
