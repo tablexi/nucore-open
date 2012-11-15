@@ -84,7 +84,7 @@ class OrderImport < ActiveRecord::Base
     return result
   end
 
-  def handle_continue_on_error(upload_file_path)
+  def handle_continue_on_error(upload_file_path, result)
     # build rows_by_order_key ( order_key => [row+] )
     rows_by_order_key = Hash.new{|h, k| h[k] = []} 
     CSV.open(upload_file_path, :headers => true).each do |row|
@@ -99,8 +99,8 @@ class OrderImport < ActiveRecord::Base
 
       # one transaction per order_key (per order effectively)
       Order.transaction do
-        rows.each_with_index do |row, index|
-          row_errors = order_keys
+        rows.each do |row|
+          row_errors = errors_for(row)
           
           # one row errored out
           if row_errors.length > 0 || in_error_mode
