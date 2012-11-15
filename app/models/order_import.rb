@@ -176,8 +176,7 @@ class OrderImport < ActiveRecord::Base
       end
 
       ods.each do |od|
-        #od.backdate_to_complete!(fulfillment_date)
-        od.change_status!(OrderStatus.complete.first)
+        od.backdate_to_complete!(fulfillment_date)
       end
       cache_order(order_key, order.id)
     end

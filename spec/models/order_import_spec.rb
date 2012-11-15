@@ -33,20 +33,23 @@ describe OrderImport do
   
   context "behavioral assertions" do
     before :each do
-      @authable         = Factory.create(:facility)
-      @facility_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
+      # clear Timecop's altering of time if active
+      Timecop.return
       
-      grant_role(@guest, @authable)
-      grant_role(@director, @authable)
-      
-      Timecop.travel(10.days.ago) do
-        @item             = @authable.items.create(Factory.attributes_for(:item,
+      before_import = 10.days.ago
+      Timecop.travel(before_import) do
+        @authable         = Factory.create(:facility)
+        @facility_account = @authable.facility_accounts.create!(Factory.attributes_for(:facility_account))
+        
+        grant_role(@guest, @authable)
+        grant_role(@director, @authable)
+        @item             = @authable.items.create!(Factory.attributes_for(:item,
           :facility_account_id => @facility_account.id,
           :name => "Example Item"
         ))
 
         # price stuff
-        @price_group      = @authable.price_groups.create(Factory.attributes_for(:price_group))
+        @price_group      = @authable.price_groups.create!(Factory.attributes_for(:price_group))
         @pg_member        = Factory.create(:user_price_group_member, :user => @guest, :price_group => @price_group)
         @item_pp=@item.item_price_policies.create!(Factory.attributes_for(:item_price_policy,
           :price_group_id => @price_group.id,
