@@ -48,10 +48,11 @@ class OrderImportsController < ApplicationController
           failure_msg_key = 'controllers.order_imports.create.fail_immediately'
         else
           failure_msg_key = 'controllers.order_imports.create.fail_continue_on_error'
+        end
 
-        flash.now[:error]=I18n.t failure_msg_key, :successes=> result.successes, :failures => result.failures
+        flash.now[:error]=I18n.t failure_msg_key, :successes => result.successes, :failures => result.failures
       else
-        flash.now[:notice]=I18n.t 'controllers.order_imports.create.success', :successes=> result.successes
+        flash.now[:notice]=I18n.t 'controllers.order_imports.create.success', :successes => result.successes
       end
     rescue => e
       Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"

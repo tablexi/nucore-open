@@ -37,7 +37,7 @@ class OrderImport < ActiveRecord::Base
     if fail_on_error
       result = handle_fail_on_error(upload_file_path, result)
     else
-      raise "only fail_on_error supported at the moment"
+      result = handle_continue_on_error(upload_file_path, result)
     end
 
     # save the error report if necessary
@@ -75,6 +75,7 @@ class OrderImport < ActiveRecord::Base
       if result.failed?
         raise ActiveRecord::Rollback
       else
+        # we didn't fail, throw away the error report/file
         self.error_file = nil
         self.error_report = nil
       end
@@ -84,10 +85,44 @@ class OrderImport < ActiveRecord::Base
   end
 
   def handle_continue_on_error(upload_file_path)
-    
+    # build rows_by_order_key ( order_key => [row+] )
+    rows_by_order_key = Hash.new{|h, k| h[k] = []} 
+    CSV.open(upload_file_path, :headers => true).each do |row|
+      order_key = [row[USER_HEADER], row[CHART_STRING_HEADER], row[ORDER_DATE_HEADER]]
+      rows_by_order_key[order_key] << row
+    end
+
+    # loop over the order keys
+    rows_by_order_key.each do |order_key, rows|
+      # reset error mode flag
+      in_error_mode = false
+
+      # one transaction per order_key (per order effectively)
+      Order.transaction do
+        rows.each_with_index do |row, index|
+          row_errors = order_keys
+          
+          # one row errored out
+          if row_errors.length > 0 || in_error_mode
+            write_to_error_report(row, row_errors.join(", "))
+            # make sure we stay in error mode
+            in_error_mode ||= true
+
+            result.failures  += 1
+          else
+            result.successes += 1
+          end
+        end
+        
+        # roll back the whole order
+        raise ActiveRecord::Rollback if in_error_mode
+      end
+    end
+
+    return result
   end
 
-  # FIXME: buffers all rows in a string in memory
+  # FIXME: buffers all error rows in a string in memory
   # should be storing to file instead
   def write_to_error_report(row, errors)
     if self.error_report.nil?
