@@ -76,7 +76,7 @@ describe OrderImport do
     end
 
     describe "error detection" do
-      it "should import a valid row" do
+      it "shouldn't have errors for a valid row" do
         errors_for_import_with_row.should == []
       end
 
@@ -113,9 +113,7 @@ describe OrderImport do
         @created_order.user.should == @guest
       end
 
-      it "should have state 'purchased'" do
-        @created_order.should be_purchased
-      end
+      it { @created_order.should be_purchased }
 
       context "created order_details" do
         it "should exist" do
@@ -152,12 +150,37 @@ describe OrderImport do
       end
     end
     
-    it "should merge orders when possible" do
-      lambda {
-        # import two identical rows
-        errors_for_import_with_row.should == []
-        errors_for_import_with_row.should == []
-      }.should change(Order, :count).from(0).to(1)
+    describe "multiple import row behavior" do
+      before :each do
+        @old_count = Order.count
+        errors_for_import_with_row(
+          :fullfillment_date => 2.days.ago.strftime("%m/%d/%Y"),
+          :quantity => 2
+        )
+        @first_od = OrderDetail.last
+        errors_for_import_with_row(
+          :fullfillment_date => 3.days.ago.strftime("%m/%d/%Y"),
+          :quantity => 3
+        )
+
+      end
+      it "should merge orders when possible" do
+        (Order.count - @old_count).should == 1
+      end
+
+      it "should not have problem orders" do
+        Order.last.order_details.each do |od|
+          od.should_not be_problem_order
+        end
+      end
+
+      it "should not change already attached details" do
+        @after_od = OrderDetail.find(@first_od.id)
+        @after_od.reload
+
+        @after_od.should == @first_od
+      end
+
     end
   end
 end

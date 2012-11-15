@@ -83,6 +83,10 @@ class OrderImport < ActiveRecord::Base
     return result
   end
 
+  def handle_continue_on_error(upload_file_path)
+    
+  end
+
   # FIXME: buffers all rows in a string in memory
   # should be storing to file instead
   def write_to_error_report(row, errors)
