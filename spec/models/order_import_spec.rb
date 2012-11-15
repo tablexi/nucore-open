@@ -162,13 +162,12 @@ describe OrderImport do
         errors_for_import_with_row(
           :fullfillment_date => 2.days.ago.strftime("%m/%d/%Y"),
           :quantity => 2
-        )
+        ).should == []
         @first_od = OrderDetail.last
         errors_for_import_with_row(
           :fullfillment_date => 3.days.ago.strftime("%m/%d/%Y"),
           :quantity => 3
-        )
-
+        ).should == []
       end
       it "should merge orders when possible" do
         (Order.count - @old_count).should == 1
