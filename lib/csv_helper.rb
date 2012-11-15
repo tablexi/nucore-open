@@ -1,11 +1,27 @@
-require 'csv'
 module CSVHelper
-  def self.generate(&block)
-    if defined? FasterCSV
-      FasterCSV.generate { |csv| block.call(csv) }
+  def self.get_csv
+    case RUBY_VERSION
+    when "1.8.7"
+      unless defined?(FasterCSV)
+        require 'faster_csv'
+      end
+
+      return FasterCSV
     else
-      CSV.generate { |csv| block.call(csv) }
+      unless defined?(CSV)
+        require 'csv'
+      end
+
+      return CSV
     end
+  end
+
+  def self.generate(&block)
+    self.get_csv.generate { |csv| block.call(csv) }
+  end
+
+  def self.parse(file_path, &block)
+    self.get_csv.parse(file_path, :headers => true, &block)
   end
 
   def set_csv_headers(filename)

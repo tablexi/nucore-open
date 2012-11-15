@@ -118,7 +118,7 @@ $(document).ready(function() {
       });
     }
   };
-  loadTabCounts();
+  //loadTabCounts();
   
   $("fieldset.collapsable").each(function() {
     $this = $(this);

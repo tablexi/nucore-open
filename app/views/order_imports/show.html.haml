@@ -4,4 +4,10 @@
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_order'
 
--# include link to @order_import.error_file
+-# debugging
+%pre= @order_import.error_report
+
+- if @order_import.error_file
+  %p
+  Download Error Report Here:
+  = link_to @order_import.error_file.name, @order_import.error_file.file.url
