@@ -180,7 +180,6 @@ describe OrderImport do
         end
       end
 
-
       it "should not change already attached details" do
         @after_od = OrderDetail.find(@first_od.id)
         @after_od.reload
@@ -206,8 +205,20 @@ describe OrderImport do
       end
 
       it "should not merge when users are different" do
-        debugger
         (Order.count - @old_count).should > 1
+      end
+
+      it "should not have problem orders" do
+        Order.last.order_details.each do |od|
+          od.should_not be_problem_order
+        end
+      end
+
+      it "should not change already attached details" do
+        @after_od = OrderDetail.find(@first_od.id)
+        @after_od.reload
+
+        @after_od.should == @first_od
       end
     end
   end
