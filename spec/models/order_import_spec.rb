@@ -31,7 +31,7 @@ describe OrderImport do
   it { should validate_presence_of :upload_file_id }
   it { should validate_presence_of :created_by }
   
-  context "behavioral assertions" do
+  context "errors_for(row) (low-level) behavior" do
     before :each do
       # clear Timecop's altering of time if active
       Timecop.return
@@ -54,10 +54,16 @@ describe OrderImport do
         @item_pp=@item.item_price_policies.create!(Factory.attributes_for(:item_price_policy,
           :price_group_id => @price_group.id,
         ))
+
+        @guest2 = Factory.create :user, :username => 'guest2'
+        @pg_member        = Factory.create(:user_price_group_member, :user => @guest2, :price_group => @price_group)
         @account          = Factory.create(:nufs_account,
           :description => "dummy account",
           :account_number => '111-2222222-33333333-01',
-          :account_users_attributes => [Hash[:user => @guest, :created_by => @guest, :user_role => 'Owner']]
+          :account_users_attributes => [
+            Hash[:user => @guest, :created_by => @guest, :user_role => 'Owner'],
+            Hash[:user => @guest2, :created_by => @guest, :user_role => 'Purchaser']
+          ]
         )
       end
       
@@ -150,7 +156,7 @@ describe OrderImport do
       end
     end
     
-    describe "multiple import row behavior" do
+    describe "multiple calls (same order_key)" do
       before :each do
         @old_count = Order.count
         errors_for_import_with_row(
@@ -174,6 +180,7 @@ describe OrderImport do
         end
       end
 
+
       it "should not change already attached details" do
         @after_od = OrderDetail.find(@first_od.id)
         @after_od.reload
@@ -181,6 +188,27 @@ describe OrderImport do
         @after_od.should == @first_od
       end
 
+    end
+    describe "multiple calls (diff order_key)" do
+      before :each do
+        @old_count = Order.count
+        errors_for_import_with_row(
+          :fullfillment_date => 2.days.ago.strftime("%m/%d/%Y"),
+          :quantity => 2,
+          :username => 'guest'
+        ).should == []
+        @first_od = OrderDetail.last
+        errors_for_import_with_row(
+          :fullfillment_date => 3.days.ago.strftime("%m/%d/%Y"),
+          :quantity => 3,
+          :username => 'guest2'
+        ).should == []
+      end
+
+      it "should not merge when users are different" do
+        debugger
+        (Order.count - @old_count).should > 1
+      end
     end
   end
 end
