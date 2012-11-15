@@ -44,7 +44,12 @@ class OrderImportsController < ApplicationController
       if result.blank?
         flash.now[:notice]=I18n.t 'controllers.order_imports.create.blank'
       elsif result.failed?
-        flash.now[:error]=I18n.t 'controllers.order_imports.create.failure', :successes=> result.successes, :failures => result.failures
+        if @order_import.fail_on_error
+          failure_msg_key = 'controllers.order_imports.create.fail_immediately'
+        else
+          failure_msg_key = 'controllers.order_imports.create.fail_continue_on_error'
+
+        flash.now[:error]=I18n.t failure_msg_key, :successes=> result.successes, :failures => result.failures
       else
         flash.now[:notice]=I18n.t 'controllers.order_imports.create.success', :successes=> result.successes
       end
