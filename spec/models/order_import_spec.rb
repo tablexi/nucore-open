@@ -273,10 +273,28 @@ end
       @order_import.process!
     end
 
-    it "should send notifications (save nothing on error mode)" do
+    it "should not send notifications if error occured (save nothing on error mode)" do
       import_file = generate_import_file(
         {},
-        {}
+        {:product_name => "Invalid Item Name"}
+      )
+      @order_import.send_receipts = true
+      @order_import.fail_on_error = true
+      @order_import.upload_file.file = import_file
+      @order_import.upload_file.save!
+      @order_import.save!
+
+      # expectations
+      Notifier.expects(:order_receipt).never
+
+      # run the import
+      @order_import.process!
+    end
+
+    it "should send notifications if no errors occured (save nothing on error mode)" do
+      import_file = generate_import_file(
+        {},
+        {:product_name => "Invalid Item Name"}
       )
       @order_import.send_receipts = true
       @order_import.fail_on_error = true
