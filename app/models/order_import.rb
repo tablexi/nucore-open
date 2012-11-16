@@ -1,5 +1,5 @@
-require 'date_helper'
-require 'csv'
+require 'date_helper' # parse_usa_date
+require 'csv_helper'
 
 USER_HEADER             = "Netid / Email"
 CHART_STRING_HEADER     = "Chart String"
@@ -13,6 +13,7 @@ HEADERS = [USER_HEADER, CHART_STRING_HEADER, PRODUCT_NAME_HEADER, QUANTITY_HEADE
 
 class OrderImport < ActiveRecord::Base
   include DateHelper
+  include CSVHelper
   
   belongs_to :upload_file, :class_name => 'StoredFile', :dependent => :destroy
   belongs_to :error_file, :class_name => 'StoredFile', :dependent => :destroy
@@ -35,9 +36,9 @@ class OrderImport < ActiveRecord::Base
     upload_file_path = upload_file.file.path
     
     if fail_on_error
-      result = handle_fail_on_error(upload_file_path, result)
+      result = handle_save_nothing_on_error(upload_file_path, result)
     else
-      result = handle_continue_on_error(upload_file_path, result)
+      result = handle_save_clean_orders(upload_file_path, result)
     end
 
     # save the error report if necessary
@@ -52,11 +53,11 @@ class OrderImport < ActiveRecord::Base
       self.error_file.file.instance_write(:file_name, "error_report.csv")
       self.save!
     end
-    
+ 
     return result
   end
 
-  def handle_fail_on_error(upload_file_path, result)
+  def handle_save_nothing_on_error(upload_file_path, result)
     # loop over non-header rows
     Order.transaction do
       CSV.open(upload_file_path, :headers => true).each do |row|
@@ -84,7 +85,7 @@ class OrderImport < ActiveRecord::Base
     return result
   end
 
-  def handle_continue_on_error(upload_file_path, result)
+  def handle_save_clean_orders(upload_file_path, result)
     # build rows_by_order_key ( order_key => [row+] )
     rows_by_order_key = Hash.new{|h, k| h[k] = []} 
     CSV.open(upload_file_path, :headers => true).each do |row|
@@ -113,9 +114,14 @@ class OrderImport < ActiveRecord::Base
             result.successes += 1
           end
         end
-        
-        # roll back the whole order
-        raise ActiveRecord::Rollback if in_error_mode
+
+        if in_error_mode
+          raise ActiveRecord::Rollback
+        else
+          # send out notifications
+          order = get_cached_order(order_key)
+          Notifier.order_receipt(:user => order.user, :order => order).deliver
+        end
       end
     end
 
@@ -184,7 +190,7 @@ class OrderImport < ActiveRecord::Base
 
 
     if errs.length == 0
-      order_key = [user, account, order_date]
+      order_key = [row[USER_HEADER], row[CHART_STRING_HEADER], row[ORDER_DATE_HEADER]]
       
       # basic error cases over.... try creating the order / order details
       unless order = get_cached_order(order_key)

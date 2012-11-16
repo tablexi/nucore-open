@@ -2,21 +2,22 @@ require 'spec_helper'
 require 'controller_spec_helper'
 
 require 'stringio'
-require 'csv'
+require 'csv_helper'
 
-
+include CSVHelper
 CSV_HEADERS = ["Netid / Email", "Chart String" , "Product Name" , "Quantity" , "Order Date" , "Fulfillment Date"]
 
-DEFAULT_ORDER_DATE = 4.days.ago.to_date.strftime("%m/%d/%Y")
-DEFAULT_FULLFILLED_DATE = 3.days.ago.to_date.strftime("%m/%d/%Y")
+DEFAULT_ORDER_DATE = 4.days.ago.to_date
+DEFAULT_FULLFILLED_DATE = 3.days.ago.to_date
+
 def errors_for_import_with_row(opts={})
   row = CSV::Row.new(CSV_HEADERS, [
     opts[:username]           || @guest.username,
     opts[:account_number]     || "111-2222222-33333333-01",
     opts[:product_name]       || "Example Item",
     opts[:quantity]           || 1,
-    opts[:order_date]         || DEFAULT_ORDER_DATE,
-    opts[:fullfillment_date]  || DEFAULT_FULLFILLED_DATE
+    opts[:order_date]         || DEFAULT_ORDER_DATE.strftime("%m/%d/%Y"),
+    opts[:fullfillment_date]  || DEFAULT_FULLFILLED_DATE.strftime("%m/%d/%Y")
   ])
 
   errs = @order_import.errors_for(row)
@@ -25,61 +26,63 @@ end
 describe OrderImport do
   before(:all) { create_users }
 
+  before :each do
+    # clear Timecop's altering of time if active
+    Timecop.return
+    
+    before_import = 10.days.ago
+    Timecop.travel(before_import) do
+      @authable         = Factory.create(:facility)
+      @facility_account = @authable.facility_accounts.create!(Factory.attributes_for(:facility_account))
+      
+      grant_role(@director, @authable)
+      @item             = @authable.items.create!(Factory.attributes_for(:item,
+        :facility_account_id => @facility_account.id,
+        :name => "Example Item"
+      ))
+
+      # price stuff
+      @price_group      = @authable.price_groups.create!(Factory.attributes_for(:price_group))
+      @pg_member        = Factory.create(:user_price_group_member, :user => @guest, :price_group => @price_group)
+      @item_pp=@item.item_price_policies.create!(Factory.attributes_for(:item_price_policy,
+        :price_group_id => @price_group.id,
+      ))
+
+      @guest2 = Factory.create :user, :username => 'guest2'
+      @pg_member        = Factory.create(:user_price_group_member, :user => @guest2, :price_group => @price_group)
+      @account          = Factory.create(:nufs_account,
+        :description => "dummy account",
+        :account_number => '111-2222222-33333333-01',
+        :account_users_attributes => [
+          Hash[:user => @guest, :created_by => @guest, :user_role => 'Owner'],
+          Hash[:user => @guest2, :created_by => @guest, :user_role => 'Purchaser']
+        ]
+      )
+    end
+    
+    stored_file = StoredFile.create!(
+      :file => StringIO.new("c,s,v"),
+      :file_type => 'import_upload',
+      :name => "clean_import.csv",
+      :created_by => @director.id
+    )
+    
+    @order_import=OrderImport.create!(
+      :created_by => @director.id,
+      :upload_file => stored_file,
+      :facility => @authable
+    )
+  end
+  
+  
+  # validation testing
   it { should belong_to :creator }
   it { should belong_to :upload_file }
   it { should belong_to :error_file }
   it { should validate_presence_of :upload_file_id }
   it { should validate_presence_of :created_by }
   
-  context "errors_for(row) (low-level) behavior" do
-    before :each do
-      # clear Timecop's altering of time if active
-      Timecop.return
-      
-      before_import = 10.days.ago
-      Timecop.travel(before_import) do
-        @authable         = Factory.create(:facility)
-        @facility_account = @authable.facility_accounts.create!(Factory.attributes_for(:facility_account))
-        
-        grant_role(@guest, @authable)
-        grant_role(@director, @authable)
-        @item             = @authable.items.create!(Factory.attributes_for(:item,
-          :facility_account_id => @facility_account.id,
-          :name => "Example Item"
-        ))
-
-        # price stuff
-        @price_group      = @authable.price_groups.create!(Factory.attributes_for(:price_group))
-        @pg_member        = Factory.create(:user_price_group_member, :user => @guest, :price_group => @price_group)
-        @item_pp=@item.item_price_policies.create!(Factory.attributes_for(:item_price_policy,
-          :price_group_id => @price_group.id,
-        ))
-
-        @guest2 = Factory.create :user, :username => 'guest2'
-        @pg_member        = Factory.create(:user_price_group_member, :user => @guest2, :price_group => @price_group)
-        @account          = Factory.create(:nufs_account,
-          :description => "dummy account",
-          :account_number => '111-2222222-33333333-01',
-          :account_users_attributes => [
-            Hash[:user => @guest, :created_by => @guest, :user_role => 'Owner'],
-            Hash[:user => @guest2, :created_by => @guest, :user_role => 'Purchaser']
-          ]
-        )
-      end
-      
-      stored_file = StoredFile.create!(
-        :file => StringIO.new("c,s,v"),
-        :file_type => 'import_upload',
-        :name => "clean_import.csv",
-        :created_by => @director.id
-      )
-      
-      @order_import=OrderImport.create!(
-        :created_by => @director.id,
-        :upload_file => stored_file,
-        :facility => @authable
-      )
-    end
+  describe "errors_for(row) (low-level) behavior" do
 
     describe "error detection" do
       it "shouldn't have errors for a valid row" do
@@ -99,7 +102,7 @@ describe OrderImport do
       end
     end
 
-    context "created order" do
+    describe "created order" do
       before :each do
         # run the import of row
         errors_for_import_with_row.should == []
@@ -108,7 +111,7 @@ describe OrderImport do
       end
 
       it "should have ordered_at set appropriately" do
-        @created_order.ordered_at.strftime("%m/%d/%Y").should == DEFAULT_ORDER_DATE
+        @created_order.ordered_at.to_date.should == DEFAULT_ORDER_DATE
       end
 
       it "should have created_by_user set to creator of import" do
@@ -150,7 +153,7 @@ describe OrderImport do
 
         it "should have right fullfilled_at" do
           @created_order.order_details.each do |od|
-            od.fulfilled_at.strftime("%m/%d/%Y").should == DEFAULT_FULLFILLED_DATE
+            od.fulfilled_at.to_date.should == DEFAULT_FULLFILLED_DATE
           end
         end
       end
@@ -160,12 +163,12 @@ describe OrderImport do
       before :each do
         @old_count = Order.count
         errors_for_import_with_row(
-          :fullfillment_date => 2.days.ago.strftime("%m/%d/%Y"),
+          :fullfillment_date => 2.days.ago,
           :quantity => 2
         ).should == []
         @first_od = OrderDetail.last
         errors_for_import_with_row(
-          :fullfillment_date => 3.days.ago.strftime("%m/%d/%Y"),
+          :fullfillment_date => 3.days.ago,
           :quantity => 3
         ).should == []
       end
@@ -187,17 +190,18 @@ describe OrderImport do
       end
 
     end
+
     describe "multiple calls (diff order_key)" do
       before :each do
         @old_count = Order.count
         errors_for_import_with_row(
-          :fullfillment_date => 2.days.ago.strftime("%m/%d/%Y"),
+          :fullfillment_date => 2.days.ago,
           :quantity => 2,
           :username => 'guest'
         ).should == []
         @first_od = OrderDetail.last
         errors_for_import_with_row(
-          :fullfillment_date => 3.days.ago.strftime("%m/%d/%Y"),
+          :fullfillment_date => 3.days.ago,
           :quantity => 3,
           :username => 'guest2'
         ).should == []
@@ -219,6 +223,72 @@ describe OrderImport do
 
         @after_od.should == @first_od
       end
+    end
+  end
+
+def generate_import_file(*args)
+  args = [{}] if args.length == 0 # default to at least one valid row
+
+  whole_csv = CSV.generate :headers => true do |csv|
+    csv << CSV_HEADERS
+    args.each do |opts|
+      row = CSV::Row.new(CSV_HEADERS, [
+        opts[:username]           || 'guest',
+        opts[:account_number]     || "111-2222222-33333333-01",
+        opts[:product_name]       || "Example Item",
+        opts[:quantity]           || 1,
+        opts[:order_date]         || DEFAULT_ORDER_DATE.strftime("%m/%d/%Y"),
+        opts[:fullfillment_date]  || DEFAULT_FULLFILLED_DATE.strftime("%m/%d/%Y")
+      ])
+      csv << row
+    end
+  end
+
+  return StringIO.new whole_csv
+end
+  
+  describe "high-level calls" do
+    it "should send notifications (save clean orders mode)" do
+      import_file = generate_import_file(
+        {:order_date => DEFAULT_ORDER_DATE}, # valid rows
+        {:order_date => DEFAULT_ORDER_DATE},
+        
+        
+        # diff order date (so will be diff order)
+        {
+          :order_date => DEFAULT_ORDER_DATE + 1.day,
+          :product_name => "Invalid Item Name"
+        }
+      )
+      @order_import.send_receipts = true
+      @order_import.fail_on_error = false
+      @order_import.upload_file.file = import_file
+      @order_import.upload_file.save!
+      @order_import.save!
+
+      # expectations
+      Notifier.expects(:order_receipt).once.returns( stub({:deliver => nil }) )
+
+      # run the import
+      @order_import.process!
+    end
+
+    it "should send notifications (save nothing on error mode)" do
+      import_file = generate_import_file(
+        {},
+        {}
+      )
+      @order_import.send_receipts = true
+      @order_import.fail_on_error = true
+      @order_import.upload_file.file = import_file
+      @order_import.upload_file.save!
+      @order_import.save!
+
+      # expectations
+      Notifier.expects(:order_receipt).once.returns( stub({:deliver => nil }) )
+
+      # run the import
+      @order_import.process!
     end
   end
 end
