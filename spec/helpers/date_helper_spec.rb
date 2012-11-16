@@ -5,7 +5,7 @@ describe DateHelper do
   describe "#parse_usa_date" do
 
     context "passed bad dates" do
-      ["05012012", "somegarbage", ""].each do |bad_date_string|
+      ["05012012", "somegarbage", "11/31/2012", nil, '9/'].each do |bad_date_string|
         it "should not raise error for: #{bad_date_string}" do
           lambda { parse_usa_date(bad_date_string) }.should_not raise_error
         end
