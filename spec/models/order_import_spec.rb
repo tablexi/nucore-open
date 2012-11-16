@@ -100,6 +100,14 @@ describe OrderImport do
       it "should have error when product isn't found" do
         errors_for_import_with_row(:product_name => "not_a_product_name").first.should match /find product/
       end
+
+      it "should handle bad order_date" do
+        errors_for_import_with_row(:order_date => "02/31/2012")
+      end
+
+      it "should handle bad fullfillment_date" do
+        errors_for_import_with_row(:fullfillment_date => "02/31/2012")
+      end
     end
 
     describe "created order" do

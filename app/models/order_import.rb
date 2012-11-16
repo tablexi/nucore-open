@@ -170,8 +170,17 @@ class OrderImport < ActiveRecord::Base
     qty = row[QUANTITY_HEADER].to_i
 
     # convert dates
-    fulfillment_date = parse_usa_date(row[FULFILLMENT_DATE_HEADER])
-    order_date = parse_usa_date(row[ORDER_DATE_HEADER])
+    begin
+      fulfillment_date = parse_usa_date(row[FULFILLMENT_DATE_HEADER])
+    rescue ArgumentError
+      errs << "Invalid Fullfillment Date"
+    end 
+    
+    begin
+      order_date = parse_usa_date(row[ORDER_DATE_HEADER])
+    rescue ArgumentError
+      errs << "Invalid Order Date"
+    end 
     
     # get user
     unless user = User.find_by_username(row[USER_HEADER].strip)
