@@ -261,7 +261,6 @@ end
         }
       )
       @order_import.send_receipts = true
-      @order_import.fail_on_error = false
       @order_import.upload_file.file = import_file
       @order_import.upload_file.save!
       @order_import.save!
@@ -294,7 +293,6 @@ end
     it "should send notifications if no errors occured (save nothing on error mode)" do
       import_file = generate_import_file(
         {},
-        {:product_name => "Invalid Item Name"}
       )
       @order_import.send_receipts = true
       @order_import.fail_on_error = true
@@ -307,6 +305,75 @@ end
 
       # run the import
       @order_import.process!
+    end
+  end
+
+  describe "import with two orders, first order has od with an error" do
+    before :each do
+      Order.destroy_all
+      @import_file = generate_import_file(
+        {:product_name => "Invalid Item Name"},
+        {}, # valid order_detail, but same order key as above
+        {:username => "guest2"} # diff user == diff order 
+      )
+      @order_import.upload_file.file = @import_file
+      @order_import.upload_file.save!
+      @order_import.send_receipts = true
+      @order_import.save!
+    end
+
+    context "save nothing on error mode" do
+      before :each do
+        @order_import.fail_on_error = true
+        @order_import.save!
+      end
+
+      it "shouldn't create any orders" do
+        lambda {
+          @order_import.process!
+        }.should_not change(Order, :count).from(0).to(1) 
+      end
+
+      it "shouldn't send out any notifications" do
+        Notifier.expects(:order_receipt).never
+        @order_import.process!
+      end
+
+      it "should have all rows in its error report" do
+        @order_import.process!
+        import_file_rows = @import_file.read.split("\n").length
+        error_file_rows = @order_import.error_file.file.to_file.read.split("\n").length
+        
+        error_file_rows.should == import_file_rows
+      end
+    end
+
+    context "save clean orders mode" do
+      before :each do
+        @order_import.fail_on_error = false
+        @order_import.save!
+      end
+
+      it "should create 1 order" do
+        lambda {
+          @order_import.process!
+        }.should change(Order, :count).from(0).to(1) 
+
+      end
+
+      it "should send out notification for second order" do
+        Notifier.expects(:order_receipt).once.returns( stub({:deliver => nil }) )
+        @order_import.process!
+      end
+
+      it "should have first two rows in its error report" do
+        @order_import.process!
+        import_file_rows = @import_file.read.split("\n").length
+        error_file_rows = @order_import.error_file.file.to_file.read.split("\n").length
+        
+        # minus one because one order (and order_detail) will have been created
+        error_file_rows.should == import_file_rows - 1
+      end
     end
   end
 end

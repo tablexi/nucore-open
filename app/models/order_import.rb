@@ -45,14 +45,14 @@ class OrderImport < ActiveRecord::Base
     if result.failed?
       self.error_file = StoredFile.new(
         :file       => StringIO.new(self.error_report),
-        :file_type  => "import_upload",
+        :file_type  => "import_error",
         :name => "error_report.csv",
         :created_by => creator.id
       )
 
       self.error_file.file.instance_write(:file_name, "error_report.csv")
-      self.save!
     end
+    self.save!
  
     return result
   end
@@ -73,13 +73,20 @@ class OrderImport < ActiveRecord::Base
         end
       end
 
-      if result.failed?
-        raise ActiveRecord::Rollback
-      else
+      raise ActiveRecord::Rollback if result.failed?
+    end
+
+    unless result.failed?
+        # send notifications
+        order_ids = @order_id_cache_by_order_key.values()
+        orders    = Order.where(:id => order_ids)
+        orders.each do |order|
+          Notifier.order_receipt(:user => order.user, :order => order).deliver
+        end
+
         # we didn't fail, throw away the error report/file
         self.error_file = nil
         self.error_report = nil
-      end
     end
 
     return result
@@ -115,13 +122,13 @@ class OrderImport < ActiveRecord::Base
           end
         end
 
-        if in_error_mode
-          raise ActiveRecord::Rollback
-        else
-          # send out notifications
-          order = get_cached_order(order_key)
-          Notifier.order_receipt(:user => order.user, :order => order).deliver
-        end
+        raise ActiveRecord::Rollback if in_error_mode
+      end
+
+      unless in_error_mode
+        # send out notifications
+        order = get_cached_order(order_key)
+        Notifier.order_receipt(:user => order.user, :order => order).deliver
       end
     end
 
@@ -223,7 +230,9 @@ class OrderImport < ActiveRecord::Base
       ods.each do |od|
         od.backdate_to_complete!(fulfillment_date)
       end
-      cache_order(order_key, order.id)
+
+      cache_order(order_key, order.id) if errs.length == 0
+
     end
 
     return errs
