@@ -45,7 +45,7 @@ describe OrderImport do
       @price_group      = @authable.price_groups.create!(Factory.attributes_for(:price_group))
       @pg_member        = Factory.create(:user_price_group_member, :user => @guest, :price_group => @price_group)
       @item_pp=@item.item_price_policies.create!(Factory.attributes_for(:item_price_policy,
-        :price_group_id => @price_group.id,
+        :price_group_id => @price_group.id
       ))
 
       @guest2 = Factory.create :user, :username => 'guest2'
@@ -300,7 +300,7 @@ end
 
     it "should send notifications if no errors occured (save nothing on error mode)" do
       import_file = generate_import_file(
-        {},
+        {}
       )
       @order_import.send_receipts = true
       @order_import.fail_on_error = true
