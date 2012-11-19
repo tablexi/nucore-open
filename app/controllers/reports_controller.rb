@@ -29,18 +29,19 @@ class ReportsController < ApplicationController
 
 
   def init_report_params
-    if params[:date_start].blank?
-      now=Date.today
-      @date_start=Date.new(now.year, now.month, 1) - 1.month
+    @date_start = params[:date_start].presence && parse_usa_date(params[:date_start])
+    if @date_start.blank?
+      @date_start = (Time.zone.now - 1.month).beginning_of_month
     else
       @date_start=parse_usa_date(params[:date_start]).beginning_of_day
     end
 
-    if params[:date_end].blank?
+    @date_end = params[:date_end].presence && parse_usa_date(params[:date_end])
+    if @date_end.blank?
       @date_end=@date_start + 42.days
       @date_end=Date.new(@date_end.year, @date_end.month) - 1.day
     else
-      @date_end=parse_usa_date(params[:date_end]).end_of_day
+      @date_end=@date_end.end_of_day
     end
   end
 

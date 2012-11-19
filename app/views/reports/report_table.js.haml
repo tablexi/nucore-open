@@ -1,3 +1,6 @@
+.updated_values{:style => 'display: none'}
+  .date_start= human_datetime(@date_start, :date_only => true)
+  .date_end= human_datetime(@date_end, :date_only => true)
 %table
   %tr
     - @headers.each do |heading|
