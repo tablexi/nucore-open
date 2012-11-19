@@ -11,7 +11,7 @@ $(function() {
       dialog.dialog('close');
     }
     return false;
-  };
+  }
 
   $('body').on('click', '.has_accessories', function() {
     
@@ -35,8 +35,8 @@ $(function() {
     // call the response handler when the form inside submits
     dialog.on('ajax:complete', 'form.pick_accessories_form', pickAccessoriesHandleResponse);
     // Disable inputs
-    dialog.on('submit', 'form.pick_accessories_form', function() { 
-      $(this).find('input[type=submit]').prop('disabled', true); 
+    dialog.on('submit', 'form.pick_accessories_form', function() {
+      $(this).find('input[type=submit]').prop('disabled', true);
     });
 
     if (!clicked.hasClass('persistent')) { 
@@ -55,9 +55,14 @@ $(function() {
           zIndex:         10000
         });
       }
-    ); 
+    );
 
     return false;
+  });
+
+  $(document).on('click', '#cancel-btn', function(e) {
+    e.preventDefault();
+    $('#pick_accessories_dialog').dialog('close');
   });
 
 });

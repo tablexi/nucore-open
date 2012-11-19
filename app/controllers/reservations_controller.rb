@@ -301,30 +301,27 @@ class ReservationsController < ApplicationController
 
     @count = 0
     params.each do |k, v|
-      if k =~ /quantity(\d+)/ and v.present?
-        OrderDetail.transaction do
-          product   = @facility.products.find_by_id!($1)
-          quantity  = v.to_i
-          new_od    = nil
+      next unless k =~ /quantity(\d+)/ && v.present? && v != '0'
 
-          begin
-            if quantity > 0
-              new_ods = @order.add(product, quantity)
-              new_ods.map{|od| od.change_status!(@complete_state)}
-              @count += quantity
-            else
-              raise ArgumentError.new
-            end
+      OrderDetail.transaction do
+        product   = @facility.products.find_by_id!($1)
+        quantity  = v.to_i
 
-            next
-          rescue ArgumentError
-            ## otherwise something's wrong w/ new_od... safe it for the view
-            @error_status = 406
-            @errors_by_id[product.id] = "Invalid Quantity"
-
-            ## all save or non save.
-            raise ActiveRecord::Rollback
+        begin
+          if quantity > 0
+            new_ods = @order.add(product, quantity)
+            new_ods.map{|od| od.change_status!(@complete_state)}
+            @count += quantity
+          else
+            raise ArgumentError.new
           end
+        rescue ArgumentError
+          ## otherwise something's wrong w/ new_od... safe it for the view
+          @error_status = 406
+          @errors_by_id[product.id] = "Invalid Quantity"
+
+          ## all save or non save.
+          raise ActiveRecord::Rollback
         end
       end
     end

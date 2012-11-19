@@ -816,6 +816,11 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
     margin-top: 1em;
 }
 
+#pick_accessories_dialog table tr,
+#pick_accessories_dialog table td {
+    border: none;
+}
+
 .product_quantity {
 	width: 3em;
 	margin-right: 0.5em;

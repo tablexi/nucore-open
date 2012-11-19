@@ -461,7 +461,7 @@ en:
   product_accessories:
     pick_accessories:
       link: Add Accessories to order...
-      instruct: If any of the following were used during this reservation please enter their quantities.
+      instruct: "Please enter a quantity for each accessory used during the reservation. If an accessory was not used please leave the quantity blank."
     
     index:
       description: "Here you may define one or more accessories that can be used during a reservation of this product"
