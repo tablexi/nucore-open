@@ -178,7 +178,7 @@ namespace :demo  do
     pgp.reservation_window=14
     pgp.save!
     
-    inpp = InstrumentPricePolicy.find_or_create_by_instrument_id_and_price_group_id({
+    inpp = InstrumentPricePolicy.find_or_create_by_product_id_and_price_group_id({
       :instrument_id        => instrument.id,
       :price_group_id       => pgnu.id,
       :start_date           => Time.zone.now-1.year,
@@ -196,7 +196,7 @@ namespace :demo  do
       :cancellation_cost    => 0,
     })
     inpp.save(:validate => false) # override date validator
-    itpp = ItemPricePolicy.find_or_create_by_item_id_and_price_group_id({
+    itpp = ItemPricePolicy.find_or_create_by_product_id_and_price_group_id({
       :item_id           => item.id,
       :price_group_id    => pgnu.id,
       :start_date        => Time.zone.now-1.year,
@@ -205,7 +205,7 @@ namespace :demo  do
       :unit_subsidy      => 0,
     })
     itpp.save(:validate => false) # override date validator
-    spp = ServicePricePolicy.find_or_create_by_service_id_and_price_group_id({
+    spp = ServicePricePolicy.find_or_create_by_product_id_and_price_group_id({
       :service_id        => service.id,
       :price_group_id    => pgnu.id,
       :start_date        => Time.zone.now-1.year,
@@ -298,17 +298,16 @@ namespace :demo  do
     nufsaccount = NufsAccount.find_by_account_number('111-2222222-33333333-01')
 
     unless nufsaccount
-      nufsaccount=NufsAccount.create({
+      nufsaccount=NufsAccount.create!({
         :account_number => '111-2222222-33333333-01',
         :description    => "Paul PI's Chart String",
         :expires_at     => Time.zone.now+1.year,
         :created_by     => user_director.id,
       })
-      nufsaccount.account_users_attributes = [{:user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id }]
-      nufsaccount.save!
-      nufsaccount.account_users.create(:user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id)
     end
 
+    nufsaccount.account_users.create :user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id
+    nufsaccount.account_users.create :user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id
 
     other_affiliate=Affiliate.find_or_create_by_name('Other')
 
@@ -327,10 +326,10 @@ namespace :demo  do
           :affiliate_id       => other_affiliate.id,
           :affiliate_other    => 'Some Affiliate'
         })
-        ccaccount.account_users_attributes = [{:user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id }]
-        ccaccount.save!
-        ccaccount.account_users.create(:user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id)
       end
+
+      ccaccount.account_users.create :user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id
+      ccaccount.account_users.create :user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id
 
       poaccount = PurchaseOrderAccount.find_by_account_number('12345')
 
@@ -345,10 +344,10 @@ namespace :demo  do
           :affiliate_other    => 'Some Affiliate',
           :remittance_information => "Billing Dept\nEdward External\n1702 E Research Dr\nAuburn, AL 36830"
         })
-        poaccount.account_users_attributes = [{:user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id }]
-        poaccount.save!
-        poaccount.account_users.create(:user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id)
       end
+
+      poaccount.account_users.create :user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id
+      poaccount.account_users.create :user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id
     end
 
     # purchased orders, complete, statements sent, 3 months ago
@@ -436,6 +435,7 @@ namespace :demo  do
         group_id   = (o.order_details.collect{|od| od.group_id || 0 }.max || 0) + 1
         product.bundle_products.each do |bp|
           od = OrderDetail.create!({
+            :created_by         => o.user.id,
             :order_id           => o.id,
             :product_id         => bp.product_id,
             :actual_cost     => rand(2),
@@ -452,6 +452,7 @@ namespace :demo  do
         end
       else
         od = OrderDetail.create!({
+          :created_by      => o.user.id,
           :order_id        => o.id,
           :product_id      => product.id,
           :actual_cost     => rand(2),
