@@ -1,7 +1,6 @@
 class CreateOrderImports < ActiveRecord::Migration
   def self.up
     create_table :order_imports do |t|
-      t.column :
       t.column :upload_file_id, :integer, :null => false
       t.column :error_file_id, :integer
       t.column :fail_on_error, :boolean, :default => false
