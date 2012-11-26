@@ -24,7 +24,9 @@ def errors_for_import_with_row(opts={})
 end
 
 describe OrderImport do
-  before(:all) { create_users }
+  before(:all) do
+    create_users
+  end
 
   before :each do
     # clear Timecop's altering of time if active
