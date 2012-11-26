@@ -4,14 +4,13 @@ require 'controller_spec_helper'
 require 'stringio'
 require 'csv_helper'
 
-include CSVHelper
 CSV_HEADERS = ["Netid / Email", "Chart String" , "Product Name" , "Quantity" , "Order Date" , "Fulfillment Date"]
 
 DEFAULT_ORDER_DATE = 4.days.ago.to_date
 DEFAULT_FULLFILLED_DATE = 3.days.ago.to_date
 
 def errors_for_import_with_row(opts={})
-  row = CSV::Row.new(CSV_HEADERS, [
+  row = CSVHelper::CSV::Row.new(CSV_HEADERS, [
     opts[:username]           || @guest.username,
     opts[:account_number]     || "111-2222222-33333333-01",
     opts[:product_name]       || "Example Item",
@@ -239,10 +238,10 @@ describe OrderImport do
 def generate_import_file(*args)
   args = [{}] if args.length == 0 # default to at least one valid row
 
-  whole_csv = CSV.generate :headers => true do |csv|
+  whole_csv = CSVHelper::CSV.generate :headers => true do |csv|
     csv << CSV_HEADERS
     args.each do |opts|
-      row = CSV::Row.new(CSV_HEADERS, [
+      row = CSVHelper::CSV::Row.new(CSV_HEADERS, [
         opts[:username]           || 'guest',
         opts[:account_number]     || "111-2222222-33333333-01",
         opts[:product_name]       || "Example Item",
