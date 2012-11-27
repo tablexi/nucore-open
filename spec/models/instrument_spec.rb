@@ -195,6 +195,7 @@ describe Instrument do
       # add rule, available every day from 9 to 5, 60 minutes duration
       @rule             = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
       assert @rule.valid?
+      Reservation.any_instance.stubs(:admin?).returns(false)
     end
     
     it "should not allow reservation in the past" do

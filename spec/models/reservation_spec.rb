@@ -9,6 +9,7 @@ describe Reservation do
     @instrument       = Factory.create(:instrument, :facility_account_id => @facility_account.id, :facility => @facility)
     # add rule, available every day from 12 am to 5 pm, 60 minutes duration
     @rule             = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17, :duration_mins => 15))
+    Reservation.any_instance.stubs(:admin?).returns(false)
   end
 
 
@@ -285,33 +286,141 @@ describe Reservation do
 
   end
 
+  context 'conflicting reservations' do
+    let!(:reservation) do
+      @instrument.reservations.create!(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+                                      :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                      :duration_value => '60', :duration_unit => 'minutes')
+    end
 
-  it "should not let reservations exceed the maximum length" do
-    @instrument.max_reserve_mins = 60
-    @instrument.save
-    @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                                   :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                   :duration_value => 61, :duration_unit => 'minutes')
-    assert @reservation.invalid?
-    assert_equal ["The reservation is too long"], @reservation.errors[:base]
-    @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                                   :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                   :duration_value => 60, :duration_unit => 'minutes')
-    assert @reservation.valid?
+    let (:conflicting_reservation) do
+      res = @instrument.reservations.build(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+                                      :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                      :duration_value => '60', :duration_unit => 'minutes')
+      res.valid?
+      res
+    end
+
+    let(:conflicting_admin_reservation) do
+      res = @instrument.reservations.build(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+                                      :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                      :duration_value => '60', :duration_unit => 'minutes')
+      res.valid?
+      res.stubs(:admin?).returns(true)
+      res
+    end
+
+    it 'should be a conflicting reservation' do
+      conflicting_reservation.should_not be_does_not_conflict_with_other_reservation
+    end
+
+    it 'should be invalid' do
+      conflicting_reservation.should_not be_valid
+      conflicting_reservation.errors[:base].should include 'The reservation conflicts with another reservation'
+    end
+
+    it 'should allow an admin reservation to overlap' do
+      conflicting_admin_reservation.should be_valid
+    end
+
+    context 'overlapping scheduling rules' do
+      context 'completely within a blacked out time' do
+        before :each do
+          @reservation = @instrument.reservations.build(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 6,
+                                      :reserve_start_min => 0, :reserve_start_meridian => 'pm',
+                                      :duration_value => '60', :duration_unit => 'minutes')
+        end  
+
+        it 'should allow an admin reservation' do
+          @reservation.stubs(:admin?).returns(true)
+          @reservation.should be_valid
+        end
+        
+        it 'should not allow a regular reservation' do
+          @reservation.should_not be_valid
+          @reservation.errors[:base].should include 'The reservation spans time that the instrument is unavailable for reservation'
+        end
+      end
+
+      context 'overlapping a border of blacked out time' do
+        before :each do
+          @reservation = @instrument.reservations.build(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 5,
+                                      :reserve_start_min => 30, :reserve_start_meridian => 'pm',
+                                      :duration_value => '60', :duration_unit => 'minutes')
+        end
+        
+        it 'should allow an admin reservation' do
+          @reservation.stubs(:admin?).returns(true)
+          @reservation.should be_valid
+        end
+        
+        it 'should not allow a regular reservation' do
+          @reservation.should_not be_valid
+          @reservation.errors[:base].should include 'The reservation spans time that the instrument is unavailable for reservation'
+        end
+      end
+    end
+
   end
 
-  it "should not let reservations be under the minimum length" do
-    @instrument.min_reserve_mins = 30
-    @instrument.save
-    @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+  context 'maximum reservation length' do
+    
+    before :each do
+      @instrument.update_attributes(:max_reserve_mins => 60)
+    end
+
+    it "should not let reservations exceed the maximum length" do
+      @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                    :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                   :duration_value => 29, :duration_unit => 'minutes')
-    assert @reservation.invalid?
-    assert_equal ["The reservation is too short"], @reservation.errors[:base]
-    @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+                                                   :duration_value => 61, :duration_unit => 'minutes')
+      @reservation.should_not be_valid
+      @reservation.errors[:base].should include "The reservation is too long"
+    end
+
+    it "should allow reservations that don't exceed the maximum length" do
+      @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                    :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                   :duration_value => 30, :duration_unit => 'minutes')
-    assert @reservation.valid?
+                                                   :duration_value => 60, :duration_unit => 'minutes')
+      @reservation.should be_valid
+    end
+
+    it 'should allow admin reservation to exceed the maximum length' do
+      @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+                                                   :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                                   :duration_value => 61, :duration_unit => 'minutes')
+      @reservation.stubs(:admin?).returns(true)
+      @reservation.should be_valid
+    end
+
+  end
+
+  context 'minimum reservation length' do
+    before :each do
+      @instrument.update_attributes(:min_reserve_mins => 30)
+    end
+
+    it "should not let reservations be under the minimum length" do
+      @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+                                                     :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                                     :duration_value => 29, :duration_unit => 'minutes')
+      @reservation.should_not be_valid
+      @reservation.errors[:base].should include "The reservation is too short"
+    end
+
+    it 'should let reservations be over the minimum length' do
+      @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+                                                     :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                                     :duration_value => 30, :duration_unit => 'minutes')
+      @reservation.should be_valid
+    end
+
+    it 'should allow admin reservations to be less than the minimum length' do
+      @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+                                                     :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                                     :duration_value => 29, :duration_unit => 'minutes')
+      @reservation.stubs(:admin?).returns(true)
+      @reservation.should be_valid
+    end
   end
    
   it "should allow multi-day registrations" do

@@ -240,7 +240,11 @@ describe FacilityReservationsController do
       end
 
       context 'fails validations' do
-        it 'should not allow a conflict with an existing reservation' do
+
+        it 'should not allow an invalid reservation' do
+          # Used to fail by overlapping existing reservation, but now admin reservations are
+          # allowed to per ticket 38975
+          Reservation.any_instance.stubs(:valid?).returns(false)
           @params[:reservation] = Factory.attributes_for(:reservation)
           parametrize_dates(@params[:reservation], :reserve)
           do_request
