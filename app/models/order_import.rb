@@ -262,7 +262,10 @@ class OrderImport < ActiveRecord::Base
       errs << "Service requires template" if product.active_template?
     end
     if product.is_a? Instrument
-      errs << "Instrument import not allowed at this time" 
+      errs << "import of Instrument orders not allowed at this time" 
+    end
+    if product.is_a? Bundle
+      errs << "import of Bundle orders not allowed at this time" 
     end
 
     errs
