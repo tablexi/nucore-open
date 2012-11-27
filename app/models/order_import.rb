@@ -170,14 +170,20 @@ class OrderImport < ActiveRecord::Base
     qty = row[QUANTITY_HEADER].to_i
 
     # convert dates
+    # parse_usa_date could either return nil... or raise an exception
     begin
-      fulfillment_date = parse_usa_date(row[FULFILLMENT_DATE_HEADER])
+      unless fulfillment_date = parse_usa_date(row[FULFILLMENT_DATE_HEADER])
+        errs << "Invalid Fulfillment Date"
+      end
     rescue ArgumentError
       errs << "Invalid Fulfillment Date"
     end 
     
+    # parse_usa_date could either return nil... or raise an exception
     begin
-      order_date = parse_usa_date(row[ORDER_DATE_HEADER])
+      unless order_date = parse_usa_date(row[ORDER_DATE_HEADER])
+        errs << "Invalid Order Date"
+      end
     rescue ArgumentError
       errs << "Invalid Order Date"
     end 

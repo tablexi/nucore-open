@@ -177,7 +177,7 @@ describe OrderImport do
           end
         end
 
-        it "should have right fullfilled_at" do
+        it "should have right fulfilled_at" do
           @created_order.order_details.each do |od|
             od.fulfilled_at.to_date.should == DEFAULT_FULLFILLED_DATE
           end
