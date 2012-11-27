@@ -16,7 +16,7 @@ def errors_for_import_with_row(opts={})
     opts[:product_name]       || "Example Item",
     opts[:quantity]           || 1,
     opts[:order_date]         || DEFAULT_ORDER_DATE.strftime("%m/%d/%Y"),
-    opts[:fullfillment_date]  || DEFAULT_FULLFILLED_DATE.strftime("%m/%d/%Y")
+    opts[:fulfillment_date]  || DEFAULT_FULLFILLED_DATE.strftime("%m/%d/%Y")
   ])
 
   errs = @order_import.errors_for(row)
@@ -41,11 +41,18 @@ describe OrderImport do
         :facility_account_id => @facility_account.id,
         :name => "Example Item"
       ))
+      @service          = @authable.services.create!(Factory.attributes_for(:service,
+        :facility_account_id => @facility_account.id,
+        :name => "Example Service"
+      ))
 
       # price stuff
       @price_group      = @authable.price_groups.create!(Factory.attributes_for(:price_group))
       @pg_member        = Factory.create(:user_price_group_member, :user => @guest, :price_group => @price_group)
       @item_pp=@item.item_price_policies.create!(Factory.attributes_for(:item_price_policy,
+        :price_group_id => @price_group.id
+      ))
+      @service_pp=@service.service_price_policies.create!(Factory.attributes_for(:service_price_policy,
         :price_group_id => @price_group.id
       ))
 
@@ -102,12 +109,22 @@ describe OrderImport do
         errors_for_import_with_row(:product_name => "not_a_product_name").first.should match /find product/
       end
 
+      it "should have error when product is service and has active survey" do
+        Service.any_instance.stubs(:active_survey?).returns(true)
+        errors_for_import_with_row(:product_name => "Example Service").first.should match /requires survey/
+      end
+
+      it "should have error when product is service and has active template" do
+        Service.any_instance.stubs(:active_template?).returns(true)
+        errors_for_import_with_row(:product_name => "Example Service").first.should match /requires template/
+      end
+
       it "should handle bad order_date" do
-        errors_for_import_with_row(:order_date => "02/31/2012")
+        errors_for_import_with_row(:order_date => "02/31/2012").first.should match /Order Date/
       end
 
       it "should handle bad fullfillment_date" do
-        errors_for_import_with_row(:fullfillment_date => "02/31/2012")
+        errors_for_import_with_row(:fulfillment_date => "02/31/2012").first.should match /Fulfillment Date/
       end
     end
 

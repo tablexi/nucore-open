@@ -173,7 +173,7 @@ class OrderImport < ActiveRecord::Base
     begin
       fulfillment_date = parse_usa_date(row[FULFILLMENT_DATE_HEADER])
     rescue ArgumentError
-      errs << "Invalid Fullfillment Date"
+      errs << "Invalid Fulfillment Date"
     end 
     
     begin
@@ -188,9 +188,11 @@ class OrderImport < ActiveRecord::Base
     end
 
     # get product
-    unless product = facility.items.find_by_name(row[PRODUCT_NAME_HEADER].strip)
+    unless product = facility.products.active.find_by_name(row[PRODUCT_NAME_HEADER].strip)
       errs << "couldn't find product by name: " + row[PRODUCT_NAME_HEADER]
     end
+
+    errs += check_if_product_importable(product)
 
     # cant find a 
     if user && product
@@ -245,6 +247,19 @@ class OrderImport < ActiveRecord::Base
     end
 
     return errs
+  end
+
+  def check_if_product_importable(product)
+    errs = []
+    if product.is_a? Service
+      errs << "Service requires survey" if product.active_survey?
+      errs << "Service requires template" if product.active_template?
+    end
+    if product.is_a? Instrument
+      errs << "Instrument import not allowed at this time" 
+    end
+
+    errs
   end
 
     # Process each line of CSV file in #upload_file.
