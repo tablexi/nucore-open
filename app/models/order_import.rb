@@ -144,7 +144,9 @@ class OrderImport < ActiveRecord::Base
       self.error_report = HEADERS.join(",") + "\n"
     end
 
-    self.error_report += (row << [ERRORS_HEADER, errors]).to_csv
+    row[ERRORS_HEADER] = errors
+    
+    self.error_report += row.to_csv
   end
 
   def get_cached_order(order_key)
