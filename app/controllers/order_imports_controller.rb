@@ -27,7 +27,7 @@ class OrderImportsController < ApplicationController
         stored_file=StoredFile.create!(
           :file => file,
           :file_type => 'import_upload',
-          :name => file.original_filename,
+          :name => file.try(:original_filename),
           :created_by => session_user.id
         )
 
