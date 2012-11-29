@@ -191,8 +191,9 @@ class OrderImport < ActiveRecord::Base
     end 
     
     # get user
-    unless user = User.find_by_username(row[USER_HEADER].strip)
-      errs << "invalid username"
+    unless user = (User.find_by_username(row[USER_HEADER].strip) or
+           User.find_by_email(row[USER_HEADER].strip))
+      errs << "invalid username or email"
     end
 
     # get product
