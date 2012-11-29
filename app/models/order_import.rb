@@ -11,6 +11,7 @@ ERRORS_HEADER           = "Errors"
 
 HEADERS = [USER_HEADER, CHART_STRING_HEADER, PRODUCT_NAME_HEADER, QUANTITY_HEADER, ORDER_DATE_HEADER, FULFILLMENT_DATE_HEADER, ERRORS_HEADER]
 
+
 class OrderImport < ActiveRecord::Base
   include DateHelper
   include CSVHelper
@@ -35,13 +36,16 @@ class OrderImport < ActiveRecord::Base
 
     upload_file_path = upload_file.file.path
     
+    # init error report
+    self.error_report = HEADERS.join(",") + "\n"
+
     if self.fail_on_error?
       result = handle_save_nothing_on_error(upload_file_path, result)
     else
       result = handle_save_clean_orders(upload_file_path, result)
     end
 
-    # save the error report if necessary
+    # write error_report to error_file if failed
     if result.failed?
       self.error_file = StoredFile.new(
         :file       => StringIO.new(self.error_report),
@@ -51,6 +55,7 @@ class OrderImport < ActiveRecord::Base
       )
 
       self.error_file.file.instance_write(:file_name, "error_report.csv")
+      self.error_file.save!
     end
     self.save!
  
@@ -64,8 +69,9 @@ class OrderImport < ActiveRecord::Base
         row_errors = errors_for(row)
 
         # write to error_report in case an error occurs
-        write_to_error_report(row, row_errors.join(", "))
-
+        row[ERRORS_HEADER] = row_errors.join(", ")
+        self.error_report += row.to_csv
+        
         if row_errors.length > 0 
           result.failures += 1
         else
@@ -102,29 +108,38 @@ class OrderImport < ActiveRecord::Base
       rows_by_order_key[order_key] << row
     end
 
+
     # loop over the order keys
     rows_by_order_key.each do |order_key, rows|
       # reset error mode flag
       in_error_mode = false
+      order_rows_so_far = ""
 
       # one transaction per order_key (per order effectively)
       Order.transaction do
         rows.each do |row|
           row_errors = errors_for(row)
           
-          # one row errored out
+          # one row actually errored out
           if row_errors.length > 0 || in_error_mode
-            write_to_error_report(row, row_errors.join(", "))
+            row[ERRORS_HEADER] = row_errors.join(", ")
             # make sure we stay in error mode
             in_error_mode ||= true
-
-            result.failures  += 1
-          else
-            result.successes += 1
           end
-        end
 
-        raise ActiveRecord::Rollback if in_error_mode
+          # store row incase other rows for same order error out
+          order_rows_so_far += row.to_csv
+        end
+        
+        if in_error_mode 
+          self.error_report += order_rows_so_far
+          # rollback the order
+          result.failures += rows.length
+          raise ActiveRecord::Rollback
+        else
+          result.successes += rows.length
+          # don't write anything from this order to the error_report
+        end
       end
 
       if !in_error_mode and self.send_receipts?
@@ -135,18 +150,6 @@ class OrderImport < ActiveRecord::Base
     end
 
     return result
-  end
-
-  # FIXME: buffers all error rows in a string in memory
-  # should be storing to file instead
-  def write_to_error_report(row, errors)
-    if self.error_report.nil?
-      self.error_report = HEADERS.join(",") + "\n"
-    end
-
-    row[ERRORS_HEADER] = errors
-    
-    self.error_report += row.to_csv
   end
 
   def get_cached_order(order_key)

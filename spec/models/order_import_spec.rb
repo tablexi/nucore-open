@@ -128,6 +128,10 @@ describe OrderImport do
       end
     end
 
+    it "should find user by email in addition to username" do
+      errors_for_import_with_row(:username => @guest.email).should be_empty
+    end
+
     describe "created order" do
       before :each do
         # run the import of row
@@ -274,63 +278,100 @@ def generate_import_file(*args)
 end
   
   describe "high-level calls" do
-    it "should send notifications (save clean orders mode)" do
-      import_file = generate_import_file(
-        {:order_date => DEFAULT_ORDER_DATE}, # valid rows
-        {:order_date => DEFAULT_ORDER_DATE},
-        
-        
-        # diff order date (so will be diff order)
-        {
-          :order_date => DEFAULT_ORDER_DATE + 1.day,
-          :product_name => "Invalid Item Name"
-        }
-      )
-      @order_import.send_receipts = true
-      @order_import.upload_file.file = import_file
-      @order_import.upload_file.save!
-      @order_import.save!
+    context "save clean orders mode" do
 
-      # expectations
-      Notifier.expects(:order_receipt).once.returns( stub({:deliver => nil }) )
+      before :each do
+        @order_import.fail_on_error = false
+      end
+      
+      it "should send notifications (save clean orders mode)" do
+        import_file = generate_import_file(
+          {:order_date => DEFAULT_ORDER_DATE}, # valid rows
+          {:order_date => DEFAULT_ORDER_DATE},
+          
+          
+          # diff order date (so will be diff order)
+          {
+            :order_date => DEFAULT_ORDER_DATE + 1.day,
+            :product_name => "Invalid Item Name"
+          }
+        )
+        @order_import.send_receipts = true
+        @order_import.upload_file.file = import_file
+        @order_import.upload_file.save!
+        @order_import.save!
 
-      # run the import
-      @order_import.process!
+        # expectations
+        Notifier.expects(:order_receipt).once.returns( stub({:deliver => nil }) )
+
+        # run the import
+        @order_import.process!
+      end
     end
 
-    it "should not send notifications if error occured (save nothing on error mode)" do
-      import_file = generate_import_file(
-        {},
-        {:product_name => "Invalid Item Name"}
-      )
-      @order_import.send_receipts = true
-      @order_import.fail_on_error = true
-      @order_import.upload_file.file = import_file
-      @order_import.upload_file.save!
-      @order_import.save!
+    context "save nothing on error mode" do
+      before :each do
+        @order_import.fail_on_error = true
+      end
 
-      # expectations
-      Notifier.expects(:order_receipt).never
+      context "notifications enabled" do
+        before :each do
+          @order_import.send_receipts = true
+        end
 
-      # run the import
-      @order_import.process!
-    end
+        it "should not send notifications if error occured" do
+          import_file = generate_import_file(
+            {},
+            {:product_name => "Invalid Item Name"}
+          )
+          @order_import.send_receipts = true
+          @order_import.upload_file.file = import_file
+          @order_import.upload_file.save!
+          @order_import.save!
 
-    it "should send notifications if no errors occured (save nothing on error mode)" do
-      import_file = generate_import_file(
-        {}
-      )
-      @order_import.send_receipts = true
-      @order_import.fail_on_error = true
-      @order_import.upload_file.file = import_file
-      @order_import.upload_file.save!
-      @order_import.save!
+          # expectations
+          Notifier.expects(:order_receipt).never
 
-      # expectations
-      Notifier.expects(:order_receipt).once.returns( stub({:deliver => nil }) )
+          # run the import
+          @order_import.process!
+        end
 
-      # run the import
-      @order_import.process!
+        it "should send notifications if no errors occured" do
+          import_file = generate_import_file(
+            {}
+          )
+          @order_import.upload_file.file = import_file
+          @order_import.upload_file.save!
+          @order_import.save!
+
+          # expectations
+          Notifier.expects(:order_receipt).once.returns( stub({:deliver => nil }) )
+
+          # run the import
+          @order_import.process!
+        end
+      end
+
+      context "notifications disabled" do
+        before :each do
+          @order_import.send_receipts = false
+        end
+
+        it "should not send notifications if notifications disabled" do
+          import_file = generate_import_file(
+            {}
+          )
+          @order_import.upload_file.file = import_file
+          @order_import.upload_file.save!
+          @order_import.save!
+          
+          # expectations
+          Notifier.expects(:order_receipt).never
+
+          # run the import
+          @order_import.process!
+        end
+      end
     end
   end
 
@@ -384,7 +425,6 @@ end
         lambda {
           @order_import.process!
         }.should change(Order, :count).from(0).to(1) 
-
       end
 
       it "should send out notification for second order" do
@@ -399,6 +439,73 @@ end
         
         # minus one because one order (and order_detail) will have been created
         error_file_rows.should == import_file_rows - 1
+      end
+    end
+  end
+
+  describe "import with two 1 order 2 ods, second od has an error" do
+    before :each do
+      Order.destroy_all
+      @import_file = generate_import_file(
+        {}, # valid order_detail
+        {:product_name => "Invalid Item Name"} # same order as above
+      )
+      @order_import.upload_file.file = @import_file
+      @order_import.upload_file.save!
+      @order_import.send_receipts = true
+      @order_import.save!
+    end
+
+    context "save clean orders mode" do
+      before :each do
+        @order_import.fail_on_error = false
+        @order_import.send_receipts = true
+        @order_import.save!
+      end
+
+      it "shouldn't create any orders" do
+        lambda {
+          @order_import.process!
+        }.should_not change(Order, :count)
+      end
+  
+      it "shouldn't send out any notifications" do
+        Notifier.expects(:order_receipt).never
+        @order_import.process!
+      end
+
+      it "error report should have all rows (since only one order)" do
+        @order_import.process!
+        import_file_rows = @import_file.read.split("\n").length
+        error_file_contents = @order_import.error_file.file.to_file.read
+        error_file_rows = error_file_contents.split("\n").length
+        error_file_rows.should == import_file_rows
+      end
+    end
+
+    context "save nothing on error mode" do
+      before :each do
+        @order_import.fail_on_error = true
+        @order_import.send_receipts = true
+        @order_import.save!
+      end
+
+      it "shouldn't create any orders" do
+        lambda {
+          @order_import.process!
+        }.should_not change(Order, :count)
+      end
+  
+      it "shouldn't send out any notifications" do
+        Notifier.expects(:order_receipt).never
+        @order_import.process!
+      end
+
+      it "error report should have all rows (since only one order)" do
+        @order_import.process!
+        import_file_rows = @import_file.read.split("\n").length
+        error_file_rows = @order_import.error_file.file.to_file.read.split("\n").length
+        error_file_rows.should == import_file_rows
       end
     end
   end
