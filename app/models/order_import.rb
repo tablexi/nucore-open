@@ -35,7 +35,7 @@ class OrderImport < ActiveRecord::Base
 
     upload_file_path = upload_file.file.path
     
-    if fail_on_error
+    if self.fail_on_error?
       result = handle_save_nothing_on_error(upload_file_path, result)
     else
       result = handle_save_clean_orders(upload_file_path, result)
@@ -77,16 +77,18 @@ class OrderImport < ActiveRecord::Base
     end
 
     unless result.failed?
+      if self.send_receipts?
         # send notifications
         order_ids = @order_id_cache_by_order_key.values()
         orders    = Order.where(:id => order_ids)
         orders.each do |order|
           Notifier.order_receipt(:user => order.user, :order => order).deliver
         end
+      end
 
-        # we didn't fail, throw away the error report/file
-        self.error_file = nil
-        self.error_report = nil
+      # we didn't fail, throw away the error report/file
+      self.error_file = nil
+      self.error_report = nil
     end
 
     return result
@@ -125,7 +127,7 @@ class OrderImport < ActiveRecord::Base
         raise ActiveRecord::Rollback if in_error_mode
       end
 
-      unless in_error_mode
+      if !in_error_mode and self.send_receipts?
         # send out notifications
         order = get_cached_order(order_key)
         Notifier.order_receipt(:user => order.user, :order => order).deliver
