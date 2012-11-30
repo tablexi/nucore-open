@@ -22,22 +22,22 @@ class OrderImportsController < ApplicationController
   def create
     begin
       result=nil
-      OrderImport.transaction do
-        file=params[:order_import].delete(:upload_file)
-        stored_file=StoredFile.create!(
-          :file => file,
-          :file_type => 'import_upload',
-          :name => file.try(:original_filename),
-          :created_by => session_user.id
-        )
+      file=params[:order_import].delete(:upload_file)
 
-        @order_import=OrderImport.create!(
+      if file
+        @order_import=OrderImport.new(
           params[:order_import].merge(
             :created_by => session_user.id,
-            :upload_file => stored_file,
+            :upload_file => StoredFile.new(
+              :file => file,
+              :file_type => 'import_upload',
+              :name => file.try(:original_filename),
+              :created_by => session_user.id
+            ),
             :facility => @current_facility)
         )
 
+        @order_import.save!
         result=@order_import.process!
       end
 

@@ -20,7 +20,7 @@ class OrderImport < ActiveRecord::Base
   belongs_to :error_file, :class_name => 'StoredFile', :dependent => :destroy
   belongs_to :creator, :class_name => 'User', :foreign_key => :created_by
 
-  validates_presence_of :upload_file_id, :created_by
+  validates_presence_of :upload_file, :created_by
   attr_accessor :facility
   attr_accessor :error_report
   attr_accessor :order_id_cache_by_order_key
@@ -233,7 +233,7 @@ class OrderImport < ActiveRecord::Base
           :created_by_user => creator,
           :ordered_at => order_date,
           :account    => account,
-          :order_import => self
+          :order_import_id => self.id
         )
       end
 
