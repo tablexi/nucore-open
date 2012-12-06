@@ -85,6 +85,14 @@ describe Reservation do
                                                        :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail1)
     end
 
+    context "#earliest_possible" do
+      it "shouldn't throw an exception if Instrument#next_available_reservation returns nil" do
+        Instrument.any_instance.stubs(:next_available_reservation).returns nil
+        @reservation1.earliest_possible
+
+      end
+    end
+
     it 'should be the same order' do
       @reservation1.order.should == @detail1.order
     end

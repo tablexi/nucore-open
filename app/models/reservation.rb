@@ -555,7 +555,7 @@ class Reservation < ActiveRecord::Base
     while true
       next_res=instrument.next_available_reservation(after, self)
 
-      return nil if next_res.reserve_start_at > reserve_start_at
+      return nil if next_res.nil? or next_res.reserve_start_at > reserve_start_at
 
       clone.reserve_start_at=next_res.reserve_start_at
       clone.reserve_end_at=next_res.reserve_start_at.advance(:minutes => duration_mins)
