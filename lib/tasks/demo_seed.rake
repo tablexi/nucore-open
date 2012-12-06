@@ -179,7 +179,7 @@ namespace :demo  do
     pgp.save!
     
     inpp = InstrumentPricePolicy.find_or_create_by_product_id_and_price_group_id({
-      :instrument_id        => instrument.id,
+      :product_id           => instrument.id,
       :price_group_id       => pgnu.id,
       :start_date           => Time.zone.now-1.year,
       :expire_date          => Time.zone.now+1.year,
@@ -197,7 +197,7 @@ namespace :demo  do
     })
     inpp.save(:validate => false) # override date validator
     itpp = ItemPricePolicy.find_or_create_by_product_id_and_price_group_id({
-      :item_id           => item.id,
+      :product_id        => item.id,
       :price_group_id    => pgnu.id,
       :start_date        => Time.zone.now-1.year,
       :expire_date       => Time.zone.now+1.year,
@@ -206,7 +206,7 @@ namespace :demo  do
     })
     itpp.save(:validate => false) # override date validator
     spp = ServicePricePolicy.find_or_create_by_product_id_and_price_group_id({
-      :service_id        => service.id,
+      :product_id        => service.id,
       :price_group_id    => pgnu.id,
       :start_date        => Time.zone.now-1.year,
       :expire_date       => Time.zone.now+1.year,
@@ -295,25 +295,30 @@ namespace :demo  do
       :price_group_id => pgnu.id,
     })
 
+    # account creation / setup
+    # see FacilityAccountsController#create
     nufsaccount = NufsAccount.find_by_account_number('111-2222222-33333333-01')
 
     unless nufsaccount
-      nufsaccount=NufsAccount.create!({
+      nufsaccount=NufsAccount.new({
         :account_number => '111-2222222-33333333-01',
         :description    => "Paul PI's Chart String",
         :expires_at     => Time.zone.now+1.year,
         :created_by     => user_director.id,
+        :account_users_attributes => [
+          { :user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id },
+          { :user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id }
+        ]
       })
+      nufsaccount.save!
+      nufsaccount.set_expires_at!
     end
-
-    nufsaccount.account_users.create :user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id
-    nufsaccount.account_users.create :user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id
 
     other_affiliate=Affiliate.find_or_create_by_name('Other')
 
     if EngineManager.engine_loaded? :c2po
       ccaccount = CreditCardAccount.find_by_account_number('xxxx-xxxx-xxxx-xxxx')
-
+      
       unless ccaccount
         ccaccount=CreditCardAccount.create({
           :account_number     => 'xxxx-xxxx-xxxx-xxxx',
@@ -324,12 +329,13 @@ namespace :demo  do
           :expiration_year    => '2014',
           :created_by         => user_director.id,
           :affiliate_id       => other_affiliate.id,
-          :affiliate_other    => 'Some Affiliate'
+          :affiliate_other    => 'Some Affiliate',
+          :account_users_attributes => [
+            { :user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id },
+            { :user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id }
+          ]
         })
       end
-
-      ccaccount.account_users.create :user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id
-      ccaccount.account_users.create :user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id
 
       poaccount = PurchaseOrderAccount.find_by_account_number('12345')
 
@@ -342,7 +348,11 @@ namespace :demo  do
           :facility_id    => facility.id,
           :affiliate_id       => other_affiliate.id,
           :affiliate_other    => 'Some Affiliate',
-          :remittance_information => "Billing Dept\nEdward External\n1702 E Research Dr\nAuburn, AL 36830"
+          :remittance_information => "Billing Dept\nEdward External\n1702 E Research Dr\nAuburn, AL 36830",
+          :account_users_attributes => [
+            { :user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id },
+            { :user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id }
+          ]
         })
       end
 
