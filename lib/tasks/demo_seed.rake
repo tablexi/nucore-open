@@ -355,9 +355,6 @@ namespace :demo  do
           ]
         })
       end
-
-      poaccount.account_users.create :user_id => user_pi.id, :user_role => 'Owner', :created_by => user_director.id
-      poaccount.account_users.create :user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id
     end
 
     # purchased orders, complete, statements sent, 3 months ago
