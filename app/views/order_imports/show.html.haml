@@ -1,0 +1,14 @@
+= content_for :h1 do
+  =h current_facility
+
+= content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_order'
+
+
+- if @order_import.try(:error_file)
+  %b Error Report Contents:
+  %pre= @order_import.error_report
+
+  %p
+  Download Error Report Here:
+  = link_to @order_import.error_file.name, @order_import.error_file.file.url

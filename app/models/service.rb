@@ -23,7 +23,7 @@ class Service < Product
 
   # returns true if there is an active template... false otherwise
   def active_template?
-    self.file_uploads.template.count > 0
+    self.stored_files.template.count > 0
   end
 
 end

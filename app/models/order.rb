@@ -4,6 +4,7 @@ class Order < ActiveRecord::Base
   belongs_to :merge_order, :class_name => 'Order', :foreign_key => :merge_with_order_id
   belongs_to :account
   belongs_to :facility
+  belongs_to :order_import
   has_many   :order_details, :dependent => :destroy
 
   validates_presence_of :user_id, :created_by

@@ -25,7 +25,7 @@
     %ul.horiz
       %li= f.submit('Upload', :disable_with => "Uploading...", :class => 'btn')
 %br
-- files = @product.file_uploads.send("#{@file.file_type || params[:file_type]}")
+- files = @product.stored_files.send("#{@file.file_type || params[:file_type]}")
 - if files.empty?
   %p.notice No documents have been uploaded yet
 - else
@@ -35,9 +35,9 @@
       %th File
       %th Date Uploaded
       %th Uploaded by
-    - files.each do |file_upload|
+    - files.each do |stored_file|
       %tr
-        %td= link_to 'Delete', remove_product_file_path(current_facility, @product.parameterize, @product, file_upload), :method => :delete, :confirm => 'Are you sure you wish to remove this file?' if can? :delete, file_upload
-        %td= link_to file_upload.name, file_upload.file.url
-        %td= human_datetime(file_upload.created_at)
-        %td= User.find(file_upload.created_by).full_name
+        %td= link_to 'Delete', remove_product_file_path(current_facility, @product.parameterize, @product, stored_file), :method => :delete, :confirm => 'Are you sure you wish to remove this file?' if can? :delete, stored_file
+        %td= link_to stored_file.name, stored_file.file.url
+        %td= human_datetime(stored_file.created_at)
+        %td= User.find(stored_file.created_by).full_name

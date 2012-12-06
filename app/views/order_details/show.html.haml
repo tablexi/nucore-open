@@ -46,13 +46,13 @@
         %ul.horiz
           %li= submit_tag t('.submit.dispute'), :class => 'btn'
 
-  - unless @order_detail.file_uploads.sample_result.empty?
+  - unless @order_detail.stored_files.sample_result.empty?
     .box
       %h3= t('.head.h3-2')
       %ul.form
         - i = 0
-        - @order_detail.file_uploads.sample_result.sort{|a,b| a.created_at <=> b.created_at}.each do |file_upload|
-          %li= "#{link_to("Results File #{i+=1}", file_upload.file.url)} - #{human_datetime(file_upload.created_at)}".html_safe
+        - @order_detail.stored_files.sample_result.sort{|a,b| a.created_at <=> b.created_at}.each do |stored_file|
+          %li= "#{link_to("Results File #{i+=1}", stored_file.file.url)} - #{human_datetime(stored_file.created_at)}".html_safe
 
   - if !@order_detail.dispute_at.nil?
     %ul.form.box
@@ -100,8 +100,8 @@
             %li.indented= link_to res, order_order_detail_reservation_path(@order, @order_detail, res)
         - if @order_detail.survey_completed?
           %li.indented= link_to(t('.link.view.order_form'), @order_detail.external_service_receiver.response_data, :target => '_blank')
-        - unless @order_detail.file_uploads.template_result.empty?
-          %li.indented= link_to(t('.link.view.order_file'), @order_detail.file_uploads.template_result.first.file.url)
+        - unless @order_detail.stored_files.template_result.empty?
+          %li.indented= link_to(t('.link.view.order_file'), @order_detail.stored_files.template_result.first.file.url)
         - unless @order_detail.note.blank?
           %li
             %i=h "Note: #{@order_detail.note}"
