@@ -891,3 +891,33 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
 }
 
 
+/***
+ * Bulk import
+ ***/
+
+#bulk-import h2 {
+  margin-top: 1em;
+}
+
+#bulk-import form, #bulk-import-template {
+  width: 20%;
+  margin: 0 auto;
+}
+
+#bulk-import label {
+  margin: .5em 0;
+}
+
+#bulk-import .btn {
+  margin: 1em 0 0 3em;
+}
+
+#bulk-import input[type=file] {
+  margin-bottom: 1em;
+}
+
+#bulk-import-template {
+  display: block;
+  margin-top: 3em;
+}
+

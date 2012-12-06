@@ -146,6 +146,8 @@ Nucore::Application.routes.draw do |map|
       end
     end
 
+    facility.resources :order_imports, :only => [ :new, :create ]
+
     facility.resources :reservations, :controller => 'facility_reservations', :only => :index, :collection => {:batch_update => :post, :show_problems => :get, :disputed => :get, :timeline => :get, :tab_counts => :get}
 
     facility.accounts_receivable '/accounts_receivable', :controller => 'facility_accounts', :action => 'accounts_receivable', :conditions => {:method => :get}

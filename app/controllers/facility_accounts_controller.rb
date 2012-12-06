@@ -224,9 +224,9 @@ class FacilityAccountsController < ApplicationController
     redirect_to facility_account_path(current_facility, @account)
   end
 
-
+  
   private
-
+  
   def init_account
     if params.has_key? :id
       @account=Account.find params[:id].to_i
@@ -234,5 +234,5 @@ class FacilityAccountsController < ApplicationController
       @account=Account.find params[:account_id].to_i
     end
   end
-
+  
 end

@@ -31,6 +31,8 @@ describe Order do
     @order.new?.should be true
   end
 
+  it { should belong_to :order_import }
+
   context 'total cost' do
 
     before :each do
@@ -313,7 +315,7 @@ describe Order do
         it "should add two order_details when has an active template and a quantity of 2" do
           # setup
           @service_w_active_template = @facility.services.create(Factory.attributes_for(:service, :initial_order_status_id => @order_status.id, :facility_account_id => @facility_account.id))
-          @service_w_active_template.file_uploads.create! Factory.attributes_for(:file_upload, :file_type => 'template', :created_by => @user.id)
+          @service_w_active_template.stored_files.create! Factory.attributes_for(:stored_file, :file_type => 'template', :created_by => @user.id)
 
           # doit
           @ods = @cart.add(@service_w_active_template, 2)

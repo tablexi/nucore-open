@@ -178,7 +178,7 @@ describe OrderDetail do
     it 'should not validate_extras for a service file template upload with no template results' do
       # add service file template
       @file1      = "#{Rails.root}/spec/files/template1.txt"
-      @template1  = @service.file_uploads.create(:name => "Template 1", :file => File.open(@file1), :file_type => "template",
+      @template1  = @service.stored_files.create(:name => "Template 1", :file => File.open(@file1), :file_type => "template",
                                                  :created_by => @user)
       @order_detail.valid_service_meta?.should be false
     end
@@ -186,10 +186,10 @@ describe OrderDetail do
     it 'should validate_extras for a service file template upload with template results' do
       # add service file template
       @file1      = "#{Rails.root}/spec/files/template1.txt"
-      @template1  = @service.file_uploads.create(:name => "Template 1", :file => File.open(@file1), :file_type => "template",
+      @template1  = @service.stored_files.create(:name => "Template 1", :file => File.open(@file1), :file_type => "template",
                                                  :created_by => @user)
       # add results for a specific order detail
-      @results1   = @service.file_uploads.create(:name => "Results 1", :file => File.open(@file1), :file_type => "template_result",
+      @results1   = @service.stored_files.create(:name => "Results 1", :file => File.open(@file1), :file_type => "template_result",
                                                  :order_detail => @order_detail, :created_by => @user)
       @order_detail.valid_service_meta?.should be true
     end

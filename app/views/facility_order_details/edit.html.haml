@@ -154,17 +154,17 @@
     - if @order_detail.product.is_a?(Service)
       .box
         %h3= t('.head.h3-3')
-        - @results = @order_detail.file_uploads.sample_result.sort{|a,b| a.created_at <=> b.created_at}
+        - @results = @order_detail.stored_files.sample_result.sort{|a,b| a.created_at <=> b.created_at}
         - if @results.empty?
           %p= t('.notice.no_results')
         - else
           %ul.form
             - i = 0
-            - @results.each do |file_upload|
+            - @results.each do |stored_file|
               %li
-                == #{link_to("Results File #{i+=1}", file_upload.file.url)}:
-                = human_datetime(file_upload.created_at)
-                == - (#{link_to('Remove', remove_product_file_path(current_facility, @order_detail.product.parameterize, @order_detail.product, file_upload, :return_to => request.fullpath), :method => :delete, :confirm => 'Are you sure?')})
+                == #{link_to("Results File #{i+=1}", stored_file.file.url)}:
+                = human_datetime(stored_file.created_at)
+                == - (#{link_to('Remove', remove_product_file_path(current_facility, @order_detail.product.parameterize, @order_detail.product, stored_file, :return_to => request.fullpath), :method => :delete, :confirm => 'Are you sure?')})
         %h3= t('.head.h3-4')
         #file_upload Please enable Javascript and install Adobe Flash Player.
         %br
@@ -199,8 +199,8 @@
             %li.indented= link_to(@order_detail.reservation, edit_facility_order_order_detail_reservation_path(current_facility, @order, @order_detail, @order_detail.reservation))
           - if @order_detail.survey_completed?
             %li.indented= link_to('View Order Form', @order_detail.external_service_receiver.response_data, :target => '_blank')
-          - unless @order_detail.file_uploads.template_result.empty?
-            %li.indented= link_to('View Order File', @order_detail.file_uploads.template_result.first.file.url)
+          - unless @order_detail.stored_files.template_result.empty?
+            %li.indented= link_to('View Order File', @order_detail.stored_files.template_result.first.file.url)
       %td
         - if @can_be_reconciled
           = f.collection_select(:order_status_id, [ OrderStatus.complete.first, OrderStatus.cancelled.first, OrderStatus.reconciled.first ], :id, :name_with_level)

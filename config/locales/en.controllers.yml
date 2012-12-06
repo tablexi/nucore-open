@@ -1,0 +1,92 @@
+#
+# Messages that come from controllers
+en:
+  controllers:
+    facility_accounts:
+      create:
+        expires_at_missing: "The chart string appears to be invalid. Either the fund, department, project, or activity could not be found."
+      update: "The payment source was successfully updated."
+      suspend:
+        success: "Payment source suspended successfully"
+        failure: "An error was encountered while suspending the payment source"
+      unsuspend:
+        success: "Payment source activated successfully"
+        failure: "An error was encountered while activating the payment source"
+
+    facility_notifications:
+      no_selection: No orders selected
+      errors_html: We experienced the following errors. Pease try again.<br/>%{errors}
+      send_notifications:
+        order_error: Order %{order_detail_id} was either not found or has already been notified.
+        success_html: Notifications sent successfully to:<br/>%{accounts}
+      mark_as_reviewed:
+        success: The selected orders have been marked as reviewed
+        errors: "An error was encountered while marking some orders as reviewed: %{errors}"
+
+    facility_statements:
+      errors_html: We experienced the following errors. Pease try again.<br/>%{errors}
+      send_statements:
+        order_error: Order %{order_detail_id} was either not found or cannot be statemented at this time.
+        no_selection: No orders selected
+        success_html: Notifications sent successfully to:<br/>%{accounts}
+
+    facility_journals:
+      update:
+        notice: "The journal file has been closed"
+        error:
+          status: "Please select a journal status"
+          rescue: "An error was encountered while trying to close the journal"
+      create:
+        notice: "The journal file has been created successfully"
+        errors:
+          rescue: "An error was encountered while trying to create the journal. %{message}"
+          no_orders: "No orders were selected to journal"
+          fiscal_span: "Journals may not span multiple fiscal years. Please select only orders in the same fiscal year."
+
+    facility_orders:
+      update:
+        zero_quantity: "Please enter a quantity for the product you'd like to add"
+        error: "An error was encountered while adding the product %{product}."
+        success: "%{product} was successfully added to this order."
+    facility_order_details:
+      edit:
+        notice:
+          open_journal: "You are unable to edit all aspects of this order because it is part of a pending journal. Please close the journal first."
+          no_actuals: "This order's reservation does not have an actual time. Please ensure that actual times are set and there is a price policy for the date this order was fulfilled. Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
+          no_policy: "This order does not have a price policy assigned. Please ensure that there is a price policy for the date this order was fulfilled. Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
+      remove_from_journal:
+        notice: "The order has been removed from its journal"
+      destroy:
+        notice: "You cannot delete an order detail that isn't being merged"
+        error: "Could not delete order detail %{order_detail_id}"
+        success: "The order detail was successfully removed"
+
+    reservations:
+      create:
+        no_selection: "You must select a payment source before reserving"
+        success: "The reservation was successfully created."
+
+    general_reports:
+      headers:
+        data: [
+        'Facility', 'Order', 'Ordered At', 'Fulfilled At', 'Order Status', 'Order State',
+        'Ordered By', 'First Name', 'Last Name', 'Email', 'Product ID', 'Product Type',
+        'Product', 'Quantity', 'Bundled Products', 'Account Type', 'Affiliate', 'Account',
+        'Account Description', 'Account Expiration', 'Account Owner', 'Owner First Name',
+        'Owner Last Name', 'Owner Email', 'Price Group', 'Estimated Cost', 'Estimated Subsidy',
+        'Estimated Total', 'Actual Cost', 'Actual Subsidy', 'Actual Total', 'Reservation Start Time', 'Reservation End Time',
+        'Reservation Minutes', 'Actual Start Time', 'Actual End Time', 'Actual Minutes', 'Disputed At',
+        'Dispute Reason', 'Dispute Resolved At', 'Dispute Resolved Reason', 'Reviewed At',
+        'Statemented On', 'Journal Date', 'Reconciled Note'
+      ]
+
+    notifications:
+      no_notices: "You have no notifications at this time"
+
+    order_imports:
+      create:
+        error: "Our apologies, but an error occurred while importing: %{error}"
+        success: "The import completed successfully. %{successes} line items were created."
+        blank: "The uploaded import file was blank. Please enter your orders and try the import again."
+        fail_immediately: "The import failed. %{successes} line item(s) would have been created successfully, but %{failures} failed. Please download the error report below, view each error message, correct the error, and try to import again."
+        fail_continue_on_error: "The import failed. %{successes} line item(s) created successfully, %{failures} failed. Please download the error report below, view each error message, correct the error, and try to import again."

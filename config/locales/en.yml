@@ -1,6 +1,5 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
+#
+# Messages for views
 en:
   app_name: NU Core
   app_admin_name: NU Core Admin
@@ -250,6 +249,21 @@ en:
       head:
         h1: "Summary Of Order #%{order_number}"
         h2: "Order Detail #%{order_number}"
+
+  order_imports:
+      new:
+        h2: "Bulk Import"
+        fail_on_error: "Save nothing on error"
+        send_receipts: "Send receipts"
+        download_link: "Download import template"
+        instructions_html: |
+          <p>Bulk imports are done using a CSV formatted file. Download the import template below by right clicking and choosing "Save as..".
+          Then follow the format to enter your order information. Once finished use the "Choose File" button to attach the file and then click
+          "Import" to add the orders to your facility.</p><p>By default all valid orders are saved and no receipts are sent to customers. Any
+          encountered errors are returned in a CSV file for you to correct and upload later. If you would like an error to halt the import process
+          entirely and not save any order information then check the "save nothing on error" box. If you would like receipts to be sent
+          to customers check the "send receipts" box.</p><p>For easy order entry we suggest using a spreadsheet program such as Microsoft
+          Excel to edit the import template. Once finished with entry simply "save as" a .csv file and then try to upload.</p>
 
   facility_order_details:
     edit:
@@ -756,227 +770,3 @@ en:
     mailer:
       reset_password_instructions:
         subject: "NU Core Password Reset Instructions"
-
-  controllers:
-    facility_accounts:
-      create:
-        expires_at_missing: "The chart string appears to be invalid. Either the fund, department, project, or activity could not be found."
-      update: "The payment source was successfully updated."
-      suspend:
-        success: "Payment source suspended successfully"
-        failure: "An error was encountered while suspending the payment source"
-      unsuspend:
-        success: "Payment source activated successfully"
-        failure: "An error was encountered while activating the payment source"
-
-    facility_notifications:
-      no_selection: No orders selected
-      errors_html: We experienced the following errors. Pease try again.<br/>%{errors}
-      send_notifications:
-        order_error: Order %{order_detail_id} was either not found or has already been notified.
-        success_html: Notifications sent successfully to:<br/>%{accounts}
-      mark_as_reviewed:
-        success: The selected orders have been marked as reviewed
-        errors: "An error was encountered while marking some orders as reviewed: %{errors}"
-
-    facility_statements:
-      errors_html: We experienced the following errors. Pease try again.<br/>%{errors}
-      send_statements:
-        order_error: Order %{order_detail_id} was either not found or cannot be statemented at this time.
-        no_selection: No orders selected
-        success_html: Notifications sent successfully to:<br/>%{accounts}
-
-    facility_journals:
-      update:
-        notice: "The journal file has been closed"
-        error:
-          status: "Please select a journal status"
-          rescue: "An error was encountered while trying to close the journal"
-      create:
-        notice: "The journal file has been created successfully"
-        errors:
-          rescue: "An error was encountered while trying to create the journal. %{message}"
-          no_orders: "No orders were selected to journal"
-          fiscal_span: "Journals may not span multiple fiscal years. Please select only orders in the same fiscal year."
-
-    facility_orders:
-      update:
-        zero_quantity: "Please enter a quantity for the product you'd like to add"
-        error: "An error was encountered while adding the product %{product}."
-        success: "%{product} was successfully added to this order."
-    facility_order_details:
-      edit:
-        notice:
-          open_journal: "You are unable to edit all aspects of this order because it is part of a pending journal. Please close the journal first."
-          no_actuals: "This order's reservation does not have an actual time. Please ensure that actual times are set and there is a price policy for the date this order was fulfilled. Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
-          no_policy: "This order does not have a price policy assigned. Please ensure that there is a price policy for the date this order was fulfilled. Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
-      remove_from_journal:
-        notice: "The order has been removed from its journal"
-      destroy:
-        notice: "You cannot delete an order detail that isn't being merged"
-        error: "Could not delete order detail %{order_detail_id}"
-        success: "The order detail was successfully removed"
-
-    reservations:
-      create:
-        no_selection: "You must select a payment source before reserving"
-        success: "The reservation was successfully created."
-
-    general_reports:
-      headers:
-        data: [
-        'Facility', 'Order', 'Ordered At', 'Fulfilled At', 'Order Status', 'Order State',
-        'Ordered By', 'First Name', 'Last Name', 'Email', 'Product ID', 'Product Type',
-        'Product', 'Quantity', 'Bundled Products', 'Account Type', 'Affiliate', 'Account',
-        'Account Description', 'Account Expiration', 'Account Owner', 'Owner First Name',
-        'Owner Last Name', 'Owner Email', 'Price Group', 'Estimated Cost', 'Estimated Subsidy',
-        'Estimated Total', 'Actual Cost', 'Actual Subsidy', 'Actual Total', 'Reservation Start Time', 'Reservation End Time',
-        'Reservation Minutes', 'Actual Start Time', 'Actual End Time', 'Actual Minutes', 'Disputed At',
-        'Dispute Reason', 'Dispute Resolved At', 'Dispute Resolved Reason', 'Reviewed At',
-        'Statemented On', 'Journal Date', 'Reconciled Note'
-      ]
-
-    notifications:
-      no_notices: "You have no notifications at this time"
-
-  models:
-    order:
-      auto_assign_account: "Could not find a valid payment source for purchasing %{product_name}"
-
-  activerecord:
-    errors:
-      # The values :model, :attribute and :value are always available for interpolation
-      # The value :count is available when applicable. Can be used for pluralization.
-      messages:
-        inclusion: "is not included in the list"
-        exclusion: "is reserved"
-        invalid: "is invalid"
-        confirmation: "doesn't match confirmation"
-        accepted: "must be accepted"
-        empty: "may not be empty"
-        blank: "may not be blank"
-        too_long: "is too long (maximum is %{count} characters)"
-        too_short: "is too short (minimum is %{count} characters)"
-        wrong_length: "is the wrong length (should be %{count} characters)"
-        taken: "has already been taken"
-        not_a_number: "is not a valid number"
-        greater_than: "must be greater than %{count}"
-        greater_than_or_equal_to: "must be greater than or equal to %{count}"
-        equal_to: "must be equal to %{count}"
-        less_than: "must be less than %{count}"
-        less_than_or_equal_to: "must be less than or equal to %{count}"
-        odd: "must be odd"
-        even: "must be even"
-        record_invalid: "Validation failed: %{errors}"
-        incorrect: "is incorrect"
-        bad_payment_source_format: "must be in format %{pattern_format}"
-        # Append your own errors here or at the model/attributes scope.
-      full_messages:
-        format: "%{attribute} %{message}"
-      template:
-        header:
-          one:    "1 error prohibited this %{model} from being saved"
-          other:  "%{count} errors prohibited this %{model} from being saved"
-        # The variable :count is also available
-        body: "There were problems with the following fields:"
-      models:
-        user:
-          password_not_updatable: You cannot change this user's password
-          password_too_short: must be at least 6 characters long
-          invalid_token: The token is either invalid or has expired.
-        product:
-          attributes:
-            contact_email:
-              required: must be set on either the product or the facility
-        instrument:
-          not_available: The %{instrument} instrument is currently unavailable for reservation online.
-          requires_approval_html: The %{instrument} instrument requires approval to reserve; please contact the facility for further information:<br/><br/> %{facility}<br/><a href=\"mailto:%{email}\">%{email}</a>
-          acting_as_not_on_approval_list: The user you are ordering for is not on the authorized list for this instrument.
-          no_accounts: "Sorry, but we could not find a valid payment source that you can use to reserve this instrument"
-        item:
-          not_available: This item is currently unavailable for purchase online.
-          requires_approval: This item requires approval to purchase; please contact the facility.
-          not_in_price_group: You are not in a price group that may purchase this item; please contact the facility.
-          not_authorized_acting_as: You are not authorized to order items from this facility on behalf of a user.
-          no_accounts: "Sorry, but we could not find a valid payment source that you can use to purchase this item"
-        service:
-          not_available: This service is currently unavailable for purchase online.
-          requires_approval: This service requires approval to purchase; please contact the facility.
-          not_in_price_group: You are not in a price group that may purchase this service; please contact the facility.
-          not_authorized_acting_as: You are not authorized to order services from this facility on behalf of a user.
-          no_accounts: "Sorry, but we could not find a valid payment source that you can use to purchase this service"
-        bundle:
-          not_available: This bundle is currently unavailable for purchase online.
-          requires_approval: This bundle requires approval to purchase; please contact the facility.
-          not_in_price_group: You are not in a price group that may purchase this bundle; please contact the facility.
-          not_authorized_acting_as: You are not authorized to order bundles from this facility on behalf of a user.
-          no_accounts: "Sorry, but we could not find a valid payment source that you can use to purchase this bundle"
-        reservation:
-          connot_be_completed_in_future: You cannot complete a future reservation.
-        account_user:
-          attributes:
-            user_id:
-              taken: "is already a member of this payment source"
-
-    # Model Names
-    models:
-      account:
-        one: Payment Source
-        other: Payment Sources
-        owner: Owner
-      nufs_account:
-        one: Chart String
-        other: Chart Strings
-      account user:
-        one: Account User
-        other: Account Users
-      reservation:
-        one: Reservation
-        other: Reservations
-      order:
-        one: Order
-        other: Orders
-      order_status:
-        one: Order Status
-        other: Order Statuses
-      facility:
-        one: Facility
-        other: Facilities
-      product_access_group: Scheduling Group
-    # Model Attributes
-    attributes:
-      user:
-        username: Username
-        password: Password
-        password_confirmation: Confirm password
-        current_password: Current password
-      facility:
-        url_name: URL name
-      product:
-        url_name: ID
-        requires_approval: Requires Approval
-      price_group:
-        is_internal: Is Internal?
-      user_role:
-        username: User
-      order_detail:
-        dispute_resolved_reason: Resolution Notes
-        description: Description
-        fulfilled_at: Fulfilled Date
-        ordered_at: Ordered Date
-        journal_date: Journal Date
-        user: Ordered For
-        created_by_user: Ordered By
-        reviewed_at: Review Closes
-        order_status: Status
-      journal:
-        description: Notes
-        journal_status: Status
-      statement:
-        created_by: Sent By
-        created_at: Sent At
-      account:
-        account_number: Number
-        expires_at: Expires
-      nufs_account:
-        account_number: Payment Source

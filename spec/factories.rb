@@ -220,7 +220,7 @@ Factory.define_default :journal do |j|
   j.is_successful true
 end
 
-Factory.define_default :file_upload do |f|
+Factory.define_default :stored_file do |f|
   f.swf_uploaded_data fixture_file_upload("#{Rails.root}/spec/files/flash_file.swf", 'application/x-shockwave-flash')
   f.name "#{Rails.root}/spec/files/flash_file.swf"
   f.file_type 'info'

@@ -60,8 +60,8 @@ describe FileUploadsController do
     it_should_allow_managers_and_senior_staff_only :redirect do
       assigns[:product].should == @service
       response.should redirect_to(upload_product_file_path(@authable, @service.parameterize, @service, :file_type => 'info'))
-      @service.reload.file_uploads.size.should == 1
-      @service.reload.file_uploads.collect(&:name).should == ['File 1']
+      @service.reload.stored_files.size.should == 1
+      @service.reload.stored_files.collect(&:name).should == ['File 1']
     end
 
     it "should render upload template when no file specified" do
@@ -118,7 +118,7 @@ describe FileUploadsController do
 
     it_should_allow_managers_and_senior_staff_only do
       assigns[:product].should == @service
-      assigns[:file].should be_kind_of FileUpload
+      assigns[:file].should be_kind_of StoredFile
       assigns[:file].should be_new_record
       assigns[:survey].should be_kind_of ExternalService
       assigns[:survey].should be_new_record
@@ -172,7 +172,7 @@ describe FileUploadsController do
       @action=:destroy
 
       create_order_detail
-      @file_upload=Factory.create(:file_upload,
+      @file_upload=Factory.create(:stored_file,
         :order_detail_id => @order_detail.id,
         :created_by => @admin.id,
         :product => @service
@@ -192,7 +192,7 @@ describe FileUploadsController do
 
     context 'sample_result' do
       before :each do
-        @sample_result=Factory.create(:file_upload,
+        @sample_result=Factory.create(:stored_file,
           :order_detail_id => @order_detail.id,
           :created_by => @staff.id,
           :product => @service,

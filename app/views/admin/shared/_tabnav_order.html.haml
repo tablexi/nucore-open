@@ -3,3 +3,4 @@
   - if current_user.manager_of?(current_facility)
     %li= display_tab "Problem Orders", show_problems_facility_orders_path, :action => :show_problems
     %li= display_tab "Disputed", disputed_facility_orders_path, :action => :disputed
+    %li= link_to "Add New", new_facility_order_import_path(current_facility), :class => (controller.controller_name == 'facility_orders_import' ? 'active' : '')

@@ -58,13 +58,13 @@ class OrderDetailsController < ApplicationController
 
   # GET /orders/:order_id/order_details/:order_detail_id/order_file
   def order_file
-    raise ActiveRecord::RecordNotFound if @order_detail.product.file_uploads.template.empty?
-    @file = @order_detail.file_uploads.new(:file_type => 'template_result')
+    raise ActiveRecord::RecordNotFound if @order_detail.product.stored_files.template.empty?
+    @file = @order_detail.stored_files.new(:file_type => 'template_result')
   end
 
   # POST /orders/:order_id/order_details/:order_detail_id/upload_order_file
   def upload_order_file
-    @file = @order_detail.file_uploads.new(params[:file_upload])
+    @file = @order_detail.stored_files.new(params[:file_upload])
     @file.file_type  = 'template_result'
     @file.name       = 'Order File'
     @file.created_by = session_user.id ## this is correct, session_user instead of acting_user
@@ -86,7 +86,7 @@ class OrderDetailsController < ApplicationController
 
   # GET /orders/:order_id/order_details/:order_detail_id/remove_order_file
   def remove_order_file
-    if @order_detail.file_uploads.template_result.all? {|file| file.destroy}
+    if @order_detail.stored_files.template_result.all? {|file| file.destroy}
       flash[:notice] = 'The uploaded Order File has been deleted successfully'
     else
       flash[:error] = 'An error was encountered while deleting the uploaded Order File'

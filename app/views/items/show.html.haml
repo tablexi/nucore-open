@@ -19,9 +19,9 @@
   %ul
     %li= link_to 'Add to cart', add_order_path(acting_user.cart(session_user), :order => {:order_details => [{:product_id => @item.id, :quantity => 1}] }), :method => :put, :class => 'btn'
 
-- docs = @item.file_uploads.info
+- docs = @item.stored_files.info
 - unless docs.empty?
   %h3 Documentation
   %ul
-    - docs.each do |file_upload|
-      %li.document= link_to file_upload.name, file_upload.file.url
+    - docs.each do |stored_file|
+      %li.document= link_to stored_file.name, stored_file.file.url
