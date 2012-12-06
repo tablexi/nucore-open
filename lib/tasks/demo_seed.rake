@@ -300,7 +300,7 @@ namespace :demo  do
     nufsaccount = NufsAccount.find_by_account_number('111-2222222-33333333-01')
 
     unless nufsaccount
-      nufsaccount=NufsAccount.new({
+      nufsaccount=NufsAccount.create!({
         :account_number => '111-2222222-33333333-01',
         :description    => "Paul PI's Chart String",
         :expires_at     => Time.zone.now+1.year,
@@ -310,7 +310,6 @@ namespace :demo  do
           { :user_id => user_student.id, :user_role => 'Purchaser', :created_by => user_director.id }
         ]
       })
-      nufsaccount.save!
       nufsaccount.set_expires_at!
     end
 
@@ -320,7 +319,7 @@ namespace :demo  do
       ccaccount = CreditCardAccount.find_by_account_number('xxxx-xxxx-xxxx-xxxx')
       
       unless ccaccount
-        ccaccount=CreditCardAccount.create({
+        ccaccount=CreditCardAccount.create!({
           :account_number     => 'xxxx-xxxx-xxxx-xxxx',
           :description        => "Paul PI's Credit Card",
           :expires_at         => Time.zone.now+1.year,
@@ -340,7 +339,7 @@ namespace :demo  do
       poaccount = PurchaseOrderAccount.find_by_account_number('12345')
 
       unless poaccount
-        poaccount=PurchaseOrderAccount.create({
+        poaccount=PurchaseOrderAccount.create!({
           :account_number => '12345',
           :description    => "Paul PI's Purchase Order",
           :expires_at     => Time.zone.now+1.year,
