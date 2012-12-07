@@ -200,7 +200,7 @@ Nucore::Application.routes.draw do |map|
   #match "/orders/all" => "orders#index", :status => "all", :as => "orders_all"
   map.remove_order '/orders/:id/remove/:order_detail_id', :controller => 'orders', :action => 'remove', :conditions => {:method => :put}
   map.add_account '/order/:id/add_account', :controller => 'orders', :action => 'add_account'
-  map.resources :orders, :member => {:add => [:get, :put], :purchase => [ :get, :put ], :receipt => :get, :clear => :put, :choose_account => [:get,:post]} do |order|
+  map.resources :orders, :member => {:add => [:get, :put], :purchase => [ :get, :put ], :update_or_purchase => [:put], :receipt => :get, :clear => :put, :choose_account => [:get,:post]} do |order|
     order.resources :order_details, :only => [:show, :update] do |order_detail|
       order_detail.order_file '/order_file', :controller => 'order_details', :action => 'order_file', :conditions => {:method => :get}
       order_detail.upload_order_file '/upload_order_file', :controller => 'order_details', :action => 'upload_order_file', :conditions => {:method => :post}

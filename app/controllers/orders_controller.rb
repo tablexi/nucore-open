@@ -2,7 +2,7 @@ class OrdersController < ApplicationController
   customer_tab  :all
 
   before_filter :authenticate_user!
-  before_filter :check_acting_as,          :except => [:cart, :add, :choose_account, :show, :remove, :purchase, :receipt, :update]
+  before_filter :check_acting_as,          :except => [:cart, :add, :choose_account, :show, :remove, :purchase, :update_or_purchase, :receipt, :update]
   before_filter :init_order,               :except => [:cart, :index, :receipt]
   before_filter :protect_purchased_orders, :except => [:cart, :receipt, :confirmed, :index]
 
@@ -37,20 +37,88 @@ class OrdersController < ApplicationController
 
   # PUT /orders/:id/update
   def update
-    order_detail_updates = {}
-    params.each do |key, value|
-      if /^(quantity|note)(\d+)$/ =~ key and value.present?
-        order_detail_updates[$2.to_i] ||= Hash.new
-        order_detail_updates[$2.to_i][$1.to_sym] = value
-      end
-    end
-    
-    if @order.update_details(order_detail_updates)
+    if self.update_order_details
       redirect_to order_path(@order) and return
     else
       logger.debug "errors #{@order.errors.full_messages}"
       flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
       render :show
+    end
+  end
+
+  def update_or_purchase
+    begin
+      # handle update only
+      if params[:commit] == "Update"
+        @order.transaction do
+          if self.update_order_details
+            return redirect_to order_path(@order)
+          else
+            logger.debug "errors #{@order.errors.full_messages}"
+             raise ActiveRecord::Rollback @order.errors.full_messages.join("<br/>").html_safe
+          end
+        end
+
+        return render :show 
+      end
+
+      facility_ability = Ability.new(session_user, @order.facility, self)
+      #revalidate the cart, but only if the user is not an admin
+      @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
+      
+      @order.ordered_at = parse_usa_date(params[:order_date], join_time_select_values(params[:order_time])) if params[:order_date].present? && params[:order_time].present? && acting_as?
+    
+      @order.transaction do
+        # try update
+        quantity_before = @order.order_details.sum(:quantity)
+        if update_order_details
+          quantity_after = @order.order_details.sum(:quantity)
+          
+          if quantity_after != quantity_before
+            flash[:notice] = "Quantities have changed, please review updated prices then click \"Purchase\""
+            render :show and return
+          end
+        else
+          logger.debug "errors #{@order.errors.full_messages}"
+          raise ActiveRecord::Rollback @order.errors.full_messages.join("<br/>").html_safe
+        end
+
+        # Empty message because validate_order! and purchase! don't give us useful messages as to why they failed
+        raise NUCore::PurchaseException.new("") unless @order.validate_order! && @order.purchase!
+        
+        if facility_ability.can? :order_in_past, @order 
+          # update order detail statuses if you've changed it while acting as
+          if acting_as? && params[:order_status_id].present?
+            @order.backdate_order_details!(session_user, params[:order_status_id])
+          else 
+            @order.complete_past_reservations!
+          end
+        end
+
+        Notifier.order_receipt(:user => @order.user, :order => @order).deliver unless acting_as? && !params[:send_notification]
+
+        # If we're only making a single reservation, we'll redirect
+        if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled? && !acting_as?
+          od=@order.order_details[0]
+
+          if od.reservation.can_switch_instrument_on?
+            redirect_to order_order_detail_reservation_switch_instrument_path(@order, od, od.reservation, :switch => 'on', :redirect_to => reservations_path)
+          else
+            redirect_to reservations_path
+          end
+
+          flash[:notice]='Reservation completed successfully'
+        else
+          redirect_to receipt_order_path(@order)
+        end
+
+        return
+      end
+    rescue Exception => e
+      flash[:error] = I18n.t('orders.purchase.error')
+      flash[:error] += " #{e.message}" if e.message
+      @order.reload.invalidate!
+      redirect_to order_path(@order) and return
     end
   end
 
@@ -235,6 +303,7 @@ class OrdersController < ApplicationController
     flash.now[:notice] = "This page is still in development; please add an account administratively"
   end
 
+
   # PUT /orders/1/purchase
   def purchase
     facility_ability = Ability.new(session_user, @order.facility, self)
@@ -320,4 +389,19 @@ class OrdersController < ApplicationController
       # order('orders.ordered_at DESC').
       # paginate(:page => params[:page])
   # end
+
+
+  private
+
+  def update_order_details
+    order_detail_updates = {}
+    params.each do |key, value|
+      if /^(quantity|note)(\d+)$/ =~ key and value.present?
+        order_detail_updates[$2.to_i] ||= Hash.new
+        order_detail_updates[$2.to_i][$1.to_sym] = value
+      end
+    end
+    
+    return @order.update_details(order_detail_updates)
+  end
 end
