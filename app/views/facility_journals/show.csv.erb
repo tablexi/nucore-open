@@ -1,5 +1,5 @@
 <%
-output = CSV::generate do |csv|
+output = CSVHelper::CSV.generate do |csv|
   headers =  [Facility.model_name.human,
               Order.model_name.human, 
               Order.human_attribute_name(:ordered_at), 
