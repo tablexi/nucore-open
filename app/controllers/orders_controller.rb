@@ -37,7 +37,7 @@ class OrdersController < ApplicationController
 
   # PUT /orders/:id/update
   def update
-    if self.update_order_details
+    if update_order_details
       redirect_to order_path(@order) and return
     else
       logger.debug "errors #{@order.errors.full_messages}"
@@ -51,7 +51,7 @@ class OrdersController < ApplicationController
       # handle update only
       if params[:commit] == "Update"
         @order.transaction do
-          if self.update_order_details
+          if update_order_details
             return redirect_to order_path(@order)
           else
             logger.debug "errors #{@order.errors.full_messages}"
