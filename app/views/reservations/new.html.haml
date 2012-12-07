@@ -13,6 +13,7 @@
     var withDetails     = #{@instrument.show_details? || false};
     var isBundle        = #{@order_detail.bundled?};
     var ctrlMechanism   = "#{@instrument.control_mechanism}";
+    var ordering_on_behalf = #{acting_as?};
 
 = content_for :breadcrumb do
   %ul.horiz

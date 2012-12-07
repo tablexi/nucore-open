@@ -93,7 +93,7 @@ $(document).ready(function() {
   }
 
   // change reservation creation button based on Reservation
-  if(typeof(isBundle) != 'undefined' && !isBundle) {
+  if(typeof(isBundle) != 'undefined' && !isBundle && !ordering_on_behalf) {
     $('#res-time-select select,#reservation_reserve_start_date').change(initReserveButton);
     initReserveButton();
   }
