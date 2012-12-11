@@ -251,11 +251,11 @@ class OrdersController < ApplicationController
     begin
       @order.transaction do
         # try update
-        quantity_before = @order.order_details.sum(:quantity)
+        quantities_before = @order.order_details.order("order_details.id").collect(&:quantity)
         if update_order_details
-          quantity_after = @order.order_details.sum(:quantity)
+          quantities_after = @order.order_details.order("order_details.id").collect(&:quantity)
           
-          if quantity_after != quantity_before
+          if quantities_after != quantities_before
             flash[:notice] = "Quantities have changed, please review updated prices then click \"Purchase\""
             return redirect_to order_path(@order)
           end
