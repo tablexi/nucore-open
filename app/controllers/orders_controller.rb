@@ -35,28 +35,6 @@ class OrdersController < ApplicationController
     @order.validate_order! if @order.new?
   end
 
-  # PUT /orders/:id/update
-  def update
-    @order.transaction do
-      if update_order_details
-        redirect_to order_path(@order)
-      else
-        logger.debug "errors #{@order.errors.full_messages}"
-        flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
-        return render :show
-      end
-    end
-  end
-
-  def update_or_purchase
-    # if update button was clicked
-    if params[:commit] == "Update"
-      update
-    else
-      purchase
-    end
-  end
-
   # PUT /orders/:id/clear
   def clear
     @order.clear!
@@ -239,6 +217,29 @@ class OrdersController < ApplicationController
   end
 
 
+  # PUT /orders/:id/update (submission from a cart)
+  def update_or_purchase
+    # if update button was clicked
+    if params[:commit] == "Update"
+      update
+    else
+      purchase
+    end
+  end
+
+  # PUT /orders/:id/update
+  def update
+    @order.transaction do
+      if update_order_details
+        redirect_to order_path(@order)
+      else
+        logger.debug "errors #{@order.errors.full_messages}"
+        flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
+        return render :show
+      end
+    end
+  end
+
   # PUT /orders/1/purchase
   def purchase
     facility_ability = Ability.new(session_user, @order.facility, self)
@@ -260,7 +261,8 @@ class OrdersController < ApplicationController
           end
         else
           logger.debug "errors #{@order.errors.full_messages}"
-          raise NUCore::PurchaseException.new @order.errors.full_messages.join("<br/>").html_safe
+          flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
+          return render :show
         end
 
         # Empty message because validate_order! and purchase! don't give us useful messages as to why they failed
