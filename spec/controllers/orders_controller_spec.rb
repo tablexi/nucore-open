@@ -95,11 +95,63 @@ describe OrdersController do
   end
 
 
+  context "update on purchase" do
+    before :each do
+      @order_detail = place_product_order(@staff, @authable, @item, @account, false)
+      @order_detail.order.validate_order!
+      @action = :purchase
+      @method = :put
+      @order = @order_detail.order
+      sign_in @staff
+      @params={ :id => @order.id, :order_id => @order.id }
+    end
+
+    context "update quantity" do
+      before :each do
+        #setup quantity update params
+        @params["quantity#{@order_detail.id}"] = 5
+        do_request
+      end
+
+      it "should update the quantity" do
+        @order_detail.reload
+        @order_detail.quantity.should == 5
+      end
+
+      it "should redirect to the cart" do
+        should redirect_to order_path(@order)
+      end
+
+      it "should not purchase" do
+        assigns[:order].state.should_not == "purchased"
+      end
+    end
+
+    context "update note" do
+      before :each do
+        #setup note update params (have to also setup quantity params)
+        @params["note#{@order_detail.id}"] = "note set on purchase"
+        do_request
+      end
+
+      it "should update the note" do
+        order_detail = assigns[:order].order_details.first
+        order_detail.reload
+        order_detail.note.should_not be_blank
+      end
+
+      it "should purchase the order" do
+        @order.reload
+        @order.state.should == 'purchased'
+      end
+    end
+  end
+
   context 'purchase' do
 
     before :each do
       @method=:put
-      @action=:purchase
+      @action=:update_or_purchase
     end
 
     it_should_require_login
