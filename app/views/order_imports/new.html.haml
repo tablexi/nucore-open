@@ -13,5 +13,5 @@
     = f.label :send_receipts, "#{f.check_box :send_receipts } #{t '.send_receipts'}".html_safe
     = submit_tag 'Import', :class => 'btn'
 
-  = link_to t('.download_link'), '/templates/bulk_import_template.csv', :id => 'bulk-import-template'
+  = link_to t('.download_link'), "#{root_path}templates/bulk_import_template.csv", :id => 'bulk-import-template'
 
