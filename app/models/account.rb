@@ -21,6 +21,36 @@ class Account < ActiveRecord::Base
     end
   end
 
+  def add_or_update_member(user, new_role, session_user)
+    Account.transaction do
+      # expire old owner if new 
+      if new_role == AccountUser::ACCOUNT_OWNER
+        # expire old owner record
+        @old_owner = self.owner
+        if @old_owner
+          @old_owner.deleted_at = Time.zone.now
+          @old_owner.deleted_by = session_user.id
+          @old_owner.save!
+        end
+      end
+      
+      # find non-deleted record for this user and account or init new one
+      # deleted_at MUST be nil to preserve existing audit trail
+      @account_user = AccountUser.find_or_initialize_by_account_id_and_user_id_and_deleted_at(
+        self.id,
+        user.id,
+        nil
+      )
+      # set (new?) role
+      @account_user.user_role = new_role
+      # set creation information
+      @account_user.created_by = session_user.id
+
+      raise ActiveRecord::Rollback unless @account_user.save
+    end
+
+    return @account_user
+  end
 
   def facility
     nil
