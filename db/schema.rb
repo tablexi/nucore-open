@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121031230321) do
+ActiveRecord::Schema.define(:version => 20130108190516) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -323,9 +323,6 @@ ActiveRecord::Schema.define(:version => 20121031230321) do
     t.integer "accessory_id", :null => false
   end
 
-  add_index "product_accessories", ["accessory_id"], :name => "product_accessories_accessory_id_fk"
-  add_index "product_accessories", ["product_id"], :name => "product_accessories_product_id_fk"
-
   create_table "product_users", :force => true do |t|
     t.integer  "product_id",              :null => false
     t.integer  "user_id",                 :null => false
@@ -342,6 +339,7 @@ ActiveRecord::Schema.define(:version => 20121031230321) do
     t.string   "name",                    :limit => 200,                    :null => false
     t.string   "url_name",                :limit => 50,                     :null => false
     t.text     "description"
+    t.integer  "schedule_id"
     t.boolean  "requires_approval",                                         :null => false
     t.integer  "initial_order_status_id"
     t.boolean  "is_archived",                                               :null => false
@@ -360,6 +358,7 @@ ActiveRecord::Schema.define(:version => 20121031230321) do
 
   add_index "products", ["facility_account_id"], :name => "fk_facility_accounts"
   add_index "products", ["facility_id"], :name => "sys_c008556"
+  add_index "products", ["schedule_id"], :name => "i_instruments_schedule_id"
 
   create_table "relays", :force => true do |t|
     t.integer  "instrument_id"
@@ -412,6 +411,15 @@ ActiveRecord::Schema.define(:version => 20121031230321) do
   end
 
   add_index "schedule_rules", ["instrument_id"], :name => "sys_c008573"
+
+  create_table "schedules", :force => true do |t|
+    t.string   "name"
+    t.integer  "facility_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "schedules", ["facility_id"], :name => "i_schedules_facility_id"
 
   create_table "statement_rows", :force => true do |t|
     t.integer  "statement_id",                                   :null => false
@@ -527,18 +535,18 @@ ActiveRecord::Schema.define(:version => 20121031230321) do
 
   add_foreign_key "price_policies", "price_groups", :name => "sys_c008589"
 
-  add_foreign_key "product_accessories", "products", :name => "product_accessories_accessory_id_fk", :column => "accessory_id"
-  add_foreign_key "product_accessories", "products", :name => "product_accessories_product_id_fk"
-
   add_foreign_key "product_users", "products", :name => "fk_products"
 
   add_foreign_key "products", "facilities", :name => "sys_c008556"
   add_foreign_key "products", "facility_accounts", :name => "fk_facility_accounts"
+  add_foreign_key "products", "schedules", :name => "fk_instruments_schedule"
 
   add_foreign_key "reservations", "order_details", :name => "res_ord_det_id_fk"
   add_foreign_key "reservations", "products", :name => "reservations_instrument_id_fk", :column => "instrument_id"
 
   add_foreign_key "schedule_rules", "products", :name => "sys_c008573", :column => "instrument_id"
+
+  add_foreign_key "schedules", "facilities", :name => "fk_schedules_facility"
 
   add_foreign_key "statements", "facilities", :name => "fk_statement_facilities"
 
