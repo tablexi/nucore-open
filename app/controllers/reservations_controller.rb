@@ -207,20 +207,13 @@ class ReservationsController < ApplicationController
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
   # this action should really respond to a PUT only but for some reason that doesn't work w/ jQuery UI popup
   def move
-    earlier=@reservation.earliest_possible
 
-    unless earlier
-      flash[:notice]='Sorry, but your reservation can no longer be moved.'
+    if @reservation.move_to_earliest
+      flash[:notice] = 'The reservation was moved successfully.'
     else
-      begin
-        @reservation.move_to!(earlier)
-        flash[:notice]='The reservation was moved successfully.'
-      rescue => e
-        flash[:error]='Sorry, but your reservation could not be moved. Please try again later.'
-        Rails.logger.error(e.backtrace.join("\n"))
-      end
+      flash[:error] = @reservation.errors.full_messages.join("<br/>")
     end
-
+    
     return redirect_to reservations_path
   end
 

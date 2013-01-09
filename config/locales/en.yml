@@ -764,6 +764,13 @@ en:
       head:
         h1: "Notices"
 
+  activerecord:
+    errors:
+      models:
+        reservation:
+          cannot_move: Sorry, but your reservation can no longer be moved.
+          move_failed: Sorry, but your reservation could not be moved. Please try again later.
+
   devise:
     failure:
       invalid: "Invalid username or password."

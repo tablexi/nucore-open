@@ -27,17 +27,20 @@ module Reservations::MovingUp
     end
   end
 
-  #
-  # Updates this reservation's reserve_*_at times
-  # to that of +reservation+'s.
-  # [_reservation_]
-  #   The reservation whose reserve times we want to adopt.
-  # [_exception_]
-  #   On anything that #save! raises for
-  def move_to!(reservation)
-    self.reserve_start_at=reservation.reserve_start_at
-    self.reserve_end_at=reservation.reserve_end_at
-    save!
+  def move_to_earliest
+    earliest_found = earliest_possible
+    if earliest_found
+      self.reserve_start_at = earliest_found.reserve_start_at
+      self.reserve_end_at = earliest_found.reserve_end_at
+      if save
+        return true
+      else
+        self.errors.add(:base, :move_failed)
+      end
+    else
+      self.errors.add(:base, :cannot_move)
+    end
+    false
   end
 
   #

@@ -186,17 +186,19 @@ describe Reservation do
 
       it 'should not be moveable if there is not a time slot earlier than this one' do
         @reservation1.should be_can_move
-        @reservation1.move_to!(@reservation1.earliest_possible)
+        @reservation1.move_to_earliest.should be_true
         @reservation1.should_not be_can_move
+        @reservation1.move_to_earliest.should be_false
+        @reservation1.errors.should == { :base => ['Sorry, but your reservation can no longer be moved.'] }
       end
 
       it 'should update the reservation to the earliest available' do
         earliest=@reservation1.earliest_possible
         @reservation1.reserve_start_at.should_not == earliest.reserve_start_at
         @reservation1.reserve_end_at.should_not == earliest.reserve_end_at
-        @reservation1.move_to!(earliest)
-        @reservation1.reserve_start_at.should == earliest.reserve_start_at
-        @reservation1.reserve_end_at.should == earliest.reserve_end_at
+        @reservation1.move_to_earliest.should be_true
+        @reservation1.reserve_start_at.to_i.should == earliest.reserve_start_at.to_i
+        @reservation1.reserve_end_at.to_i.should == earliest.reserve_end_at.to_i
       end
     end
 
