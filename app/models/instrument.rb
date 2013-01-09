@@ -1,8 +1,12 @@
 class Instrument < Product
+  
+  # Associations
+  # -------
+  
   has_one  :relay
   has_many :schedule_rules
   has_many :instrument_price_policies, :foreign_key => 'product_id'
-  has_many :reservations
+  has_many :reservations, :foreign_key => 'product_id'
   has_many :instrument_statuses, :foreign_key => 'instrument_id'
   has_many :product_access_groups, :foreign_key => 'product_id'
 
@@ -10,6 +14,8 @@ class Instrument < Product
 
   accepts_nested_attributes_for :relay
 
+  # Validations
+  # --------
   before_validation :init_or_destroy_relay
 
   validates_presence_of :initial_order_status_id
@@ -17,7 +23,13 @@ class Instrument < Product
   validates_numericality_of :min_reserve_mins, :max_reserve_mins, :auto_cancel_mins, :only_integer => true, :greater_than_or_equal_to => 0, :allow_nil => true
   validate :check_relay_with_right_type
   
+  # Callbacks
+  # --------
+
   after_create :set_default_pricing
+
+  # Instance methods
+  # -------
 
   def active_reservations
     self.reservations.active

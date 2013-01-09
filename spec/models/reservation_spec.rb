@@ -152,7 +152,7 @@ describe Reservation do
 
       @instrument2 = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
 
-      @reservation2.instrument=@instrument2
+      @reservation2.product=@instrument2
       @reservation2.should be_does_not_conflict_with_other_reservation
     end
 
@@ -286,7 +286,7 @@ describe Reservation do
         @reservation1.reload.should_not be_ordered_on_behalf_of
       end
       it 'should return false for admin reservations' do
-        @admin_reservation = Factory.create(:reservation, :instrument => @instrument)
+        @admin_reservation = Factory.create(:reservation, :product => @instrument)
         @admin_reservation.should_not be_ordered_on_behalf_of
       end
       
@@ -507,7 +507,7 @@ describe Reservation do
                                                       :duration_value => 1, 
                                                       :duration_unit => 'hours', 
                                                       :order_detail => @order_detail,
-                                                      :instrument => @instrument)          
+                                                      :product => @instrument)          
         end
         it "should allow a user to reserve if it doesn't require approval" do
           @instrument.update_attributes(:requires_approval => false)

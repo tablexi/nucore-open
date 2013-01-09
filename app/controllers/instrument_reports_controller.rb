@@ -3,19 +3,19 @@ class InstrumentReportsController < ReportsController
 
 
   def instrument
-    render_report(0, nil) {|r| [ r.instrument.name ] }
+    render_report(0, nil) {|r| [ r.product.name ] }
   end
 
 
   def account
-    render_report(1, 'Description') {|r| [ r.instrument.name, r.order_detail.account.to_s ]}
+    render_report(1, 'Description') {|r| [ r.product.name, r.order_detail.account.to_s ]}
   end
   
 
   def account_owner
     render_report(2, 'Name') do |r|
       owner=r.order_detail.account.owner.user
-      [ r.instrument.name, format_username(owner) ]
+      [ r.product.name, format_username(owner) ]
     end
   end
 
@@ -23,7 +23,7 @@ class InstrumentReportsController < ReportsController
   def purchaser
     render_report(3, 'Name') do |r|
       usr=r.order_detail.order.user
-      [ r.instrument.name, format_username(usr) ]
+      [ r.product.name, format_username(usr) ]
     end
   end
 
@@ -78,7 +78,7 @@ class InstrumentReportsController < ReportsController
     end
 
     reservation=@report_data.first
-    @headers += report_attributes(reservation, reservation.instrument)
+    @headers += report_attributes(reservation, reservation.product)
   end
 
 end

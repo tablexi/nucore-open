@@ -4,4 +4,4 @@
         stat=@report_on.call(res)
         row[stat[0]]=stat[1]
 
-    - csv << (row.unshift(res.instrument.name) + report_attribute_values(res, res.instrument))
+    - csv << (row.unshift(res.product.name) + report_attribute_values(res, res.product))

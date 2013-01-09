@@ -95,7 +95,7 @@ class ReservationsController < ApplicationController
   # POST /orders/1/order_details/1/reservations
   def create
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
-    @reservation = @order_detail.build_reservation(params[:reservation].merge(:instrument => @instrument))
+    @reservation = @order_detail.build_reservation(params[:reservation].merge(:product => @instrument))
 
     if !@order_detail.bundled? && params[:order_account].blank?
       flash.now[:error]=I18n.t 'controllers.reservations.create.no_selection'
@@ -152,7 +152,7 @@ class ReservationsController < ApplicationController
   # GET /orders/1/order_details/1/reservations/new
   def new
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
-    @reservation  = @instrument.next_available_reservation || Reservation.new(:instrument => @instrument, :duration_value => (@instrument.min_reserve_mins.to_i < 15 ? 15 : @instrument.min_reserve_mins), :duration_unit => 'minutes')
+    @reservation  = @instrument.next_available_reservation || Reservation.new(:product => @instrument, :duration_value => (@instrument.min_reserve_mins.to_i < 15 ? 15 : @instrument.min_reserve_mins), :duration_unit => 'minutes')
     flash[:notice] = t_model_error(Instrument, 'acting_as_not_on_approval_list') unless @instrument.is_approved_for?(acting_user)
     set_windows
 

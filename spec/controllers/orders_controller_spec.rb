@@ -152,7 +152,7 @@ describe OrdersController do
       it 'should redirect to receipt when purchasing multiple reservations' do
         @order.add(@instrument, 1)
         @order.order_details.size.should == 2
-        @reservation2 = Factory.create(:reservation, :order_detail => @order.order_details[1], :instrument => @instrument)
+        @reservation2 = Factory.create(:reservation, :order_detail => @order.order_details[1], :product => @instrument)
         Reservation.all.size.should == 2
 
         sign_in @staff

@@ -3,15 +3,15 @@ require "pp"
 class Reservation < ActiveRecord::Base
   include DateHelper
 
-  ## relationships
-  belongs_to :instrument
+  # Associations
+  #####
+  belongs_to :product
   belongs_to :order_detail
 
-  # used for overriding certain restrictions
-  attr_accessor :reserved_by_admin
-
+  # Validations
+  #####
   validates_uniqueness_of :order_detail_id, :allow_nil => true
-  validates_presence_of :instrument_id, :reserve_start_at, :reserve_end_at
+  validates_presence_of :product_id, :reserve_start_at, :reserve_end_at
   validate :does_not_conflict_with_other_reservation, 
            :instrument_is_available_to_reserve,
            :satisfies_minimum_length, 
@@ -26,12 +26,9 @@ class Reservation < ActiveRecord::Base
   end
 
   validate :starts_before_ends
-  #validate minimum_cost met
 
-  # validates for non_admins
-  #validate :in_window, :if => :has_order_detail?
-
-  # virtual attributes
+  ## Virtual attributes
+  #####
   attr_accessor     :duration_mins, :duration_value, :duration_unit,
                     :reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian,
                     :actual_start_date, :actual_start_hour, :actual_start_min, :actual_start_meridian,
@@ -40,10 +37,15 @@ class Reservation < ActiveRecord::Base
   # Used by timeline view
   attr_accessor     :blackout
   attr_writer       :note
+  
+  # used for overriding certain restrictions
+  attr_accessor :reserved_by_admin
+
   before_validation :set_reserve_start_at, :set_reserve_end_at, :set_actual_start_at, :set_actual_end_at
 
+  # Scopes
+  #####
   scope :active, :conditions => ["reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)"], :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id']
-  # scope :limit,    lambda { |n| {:limit => n}}
 
   def self.today
     for_date(Time.zone.now)
@@ -62,10 +64,37 @@ class Reservation < ActiveRecord::Base
     where('reserve_start_at < ?', end_time)
   end
 
-  ## delegations
+  def self.upcoming(t=Time.zone.now)
+    # If this is a named scope differences emerge between Oracle & MySQL on #reserve_end_at querying.
+    # Eliminate by letting Rails filter by #reserve_end_at
+    reservations=find(:all, :conditions => "reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)", :order => 'reserve_end_at asc', :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id'])
+    reservations.delete_if{|r| r.reserve_end_at < t}
+    reservations
+  end
+
+
+  # Delegations
+  #####
   delegate :note,     :to => :order_detail, :allow_nil => true
   delegate :ordered_on_behalf_of?, :to => :order_detail, :allow_nil => true
-  delegate :product,  :to => :order_detail
+  delegate :facility, :to => :product
+
+  # TODO turn into actual delegation
+  def order
+    order_detail.order if order_detail
+  end
+
+  def user
+    order.user if order
+  end
+
+  def account
+    order_detail.account if order_detail
+  end
+
+  def owner
+    account.owner if account
+  end
 
   ## AR Hooks
   after_save do
@@ -74,6 +103,9 @@ class Reservation < ActiveRecord::Base
       order_detail.save
     end
   end
+
+  # Instance Methods
+  #####
 
   def assign_actuals_off_reserve
     self.actual_start_at ||= self.reserve_start_at
@@ -93,41 +125,13 @@ class Reservation < ActiveRecord::Base
   end
 
   def save_as_user!(user)
-    if (user.operator_of?(instrument.facility))
+    if (user.operator_of?(product.facility))
       @reserved_by_admin = true
       self.save!
     else
       @reserved_by_admin = false
       self.save_extended_validations!
     end
-  end
-
-  def self.upcoming(t=Time.zone.now)
-    # If this is a named scope differences emerge between Oracle & MySQL on #reserve_end_at querying.
-    # Eliminate by letting Rails filter by #reserve_end_at
-    reservations=find(:all, :conditions => "reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)", :order => 'reserve_end_at asc', :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id'])
-    reservations.delete_if{|r| r.reserve_end_at < t}
-    reservations
-  end
-
-  # should perhaps be delegations above
-  def order
-    order_detail.order if order_detail
-  end
-
-
-  def user
-    order.user if order
-  end
-
-
-  def account
-    order_detail.account if order_detail
-  end
-
-
-  def owner
-    account.owner if account
   end
 
   def admin?
@@ -217,7 +221,7 @@ class Reservation < ActiveRecord::Base
     Reservation.
     joins('LEFT JOIN order_details ON order_details.id = reservations.order_detail_id',
           'LEFT JOIN orders ON orders.id = order_details.order_id').
-    where("reservations.instrument_id = ? AND
+    where("reservations.product_id = ? AND
           reservations.id <> ? AND
           reservations.canceled_at IS NULL AND
           reservations.actual_end_at IS NULL AND
@@ -227,12 +231,12 @@ class Reservation < ActiveRecord::Base
           (reserve_start_at <= ? AND reserve_end_at > ?) OR
           (reserve_start_at < ? AND reserve_end_at >= ?) OR
           (reserve_start_at = ? AND reserve_end_at = ?))",
-          instrument.id, id||0, order_id, tstart_at, tend_at, tstart_at, tend_at, tstart_at, tstart_at, tend_at, tend_at, tstart_at, tend_at).first
+          product.id, id||0, order_id, tstart_at, tend_at, tstart_at, tend_at, tstart_at, tstart_at, tend_at, tend_at, tstart_at, tend_at).first
   end
 
   def satisfies_minimum_length?
     diff = reserve_end_at - reserve_start_at # in seconds
-    return false unless instrument.min_reserve_mins.nil? || instrument.min_reserve_mins == 0 || diff/60 >= instrument.min_reserve_mins
+    return false unless product.min_reserve_mins.nil? || product.min_reserve_mins == 0 || diff/60 >= product.min_reserve_mins
     true
   end
 
@@ -242,7 +246,7 @@ class Reservation < ActiveRecord::Base
 
   def satisfies_maximum_length?
     diff = reserve_end_at - reserve_start_at # in seconds
-    return false unless instrument.max_reserve_mins.nil? || instrument.max_reserve_mins == 0 || diff/60 <= instrument.max_reserve_mins
+    return false unless product.max_reserve_mins.nil? || product.max_reserve_mins == 0 || diff/60 <= product.max_reserve_mins
     true
   end
 
@@ -279,9 +283,9 @@ class Reservation < ActiveRecord::Base
     # check for order_detail and order because some old specs don't set an order detail
     # if we're saving as an administrator, we want access to all schedule rules
     if (order_detail and order_detail.order and !@reserved_by_admin)
-      rules = instrument.available_schedule_rules(order_detail.order.user)
+      rules = product.available_schedule_rules(order_detail.order.user)
     else
-      rules = instrument.schedule_rules
+      rules = product.schedule_rules
     end
 
     mins  = (end_at - start_at)/60
@@ -539,7 +543,7 @@ class Reservation < ActiveRecord::Base
 
   # return the longest available reservation window for the groups
   def longest_reservation_window(groups = [])
-    pgps     = instrument.price_group_products.find(:all, :conditions => {:price_group_id => groups.collect{|pg| pg.id}})
+    pgps     = product.price_group_products.find(:all, :conditions => {:price_group_id => groups.collect{|pg| pg.id}})
     pgps.collect{|pgp| pgp.reservation_window}.max
   end
 
@@ -553,7 +557,7 @@ class Reservation < ActiveRecord::Base
     after=Time.zone.now+1.minute
 
     while true
-      next_res=instrument.next_available_reservation(after, self)
+      next_res=product.next_available_reservation(after, self)
 
       return nil if next_res.nil? or next_res.reserve_start_at > reserve_start_at
 
@@ -591,7 +595,7 @@ class Reservation < ActiveRecord::Base
 
   def can_switch_instrument_on?(check_off = true)
     return false if cancelled?
-    return false unless instrument.relay   # is relay controlled
+    return false unless product.relay   # is relay controlled
     return false if can_switch_instrument_off?(false) if check_off # mutually exclusive
     return false unless actual_start_at.nil?   # already turned on
     return false unless actual_end_at.nil?     # already turned off
@@ -601,7 +605,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def can_switch_instrument_off?(check_on = true)
-    return false unless instrument.relay  # is relay controlled
+    return false unless product.relay  # is relay controlled
     return false if can_switch_instrument_on?(false) if check_on  # mutually exclusive
     return false unless actual_end_at.nil?    # already ended
     return false if actual_start_at.nil?      # hasn't been started yet
@@ -614,7 +618,7 @@ class Reservation < ActiveRecord::Base
 
   def can_kill_power?
     return false if actual_start_at.nil?
-    return false unless Reservation.find(:first, :conditions => ['actual_start_at > ? AND instrument_id = ? AND id <> ? AND actual_end_at IS NULL', actual_start_at, instrument_id, id]).nil?
+    return false unless Reservation.find(:first, :conditions => ['actual_start_at > ? AND product_id = ? AND id <> ? AND actual_end_at IS NULL', actual_start_at, product_id, id]).nil?
     true
   end
 
@@ -622,7 +626,7 @@ class Reservation < ActiveRecord::Base
     return false if reserve_start_at > Time.zone.now.advance(:minutes => 5) # reserve start is more than 5 minutes in the future
     # no other reservation ongoing; no res between now and reserve_start;
     return false unless Reservation.find(:first,
-                                         :conditions => ["((reserve_start_at > ? AND reserve_start_at < ?) OR actual_start_at IS NOT NULL) AND reservations.instrument_id = ? AND actual_end_at IS NULL AND (order_detail_id IS NULL OR order_details.state = 'new' OR order_details.state = 'inprocess')", Time.zone.now, reserve_start_at, instrument_id],
+                                         :conditions => ["((reserve_start_at > ? AND reserve_start_at < ?) OR actual_start_at IS NOT NULL) AND reservations.product_id = ? AND actual_end_at IS NULL AND (order_detail_id IS NULL OR order_details.state = 'new' OR order_details.state = 'inprocess')", Time.zone.now, reserve_start_at, product_id],
                                          :joins => 'LEFT JOIN order_details ON order_details.id = reservations.order_detail_id').nil?
     # Unecessary check when early start time was reduced from 30 minutes to 2 minutes.  Uncomment to revert. JRG
     # no schedule rule breaks between now and reserve_start
@@ -713,7 +717,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def requires_but_missing_actuals?
-    !!(!cancelled? && instrument.control_mechanism != Relay::CONTROL_MECHANISMS[:manual] && !has_actuals?)
+    !!(!cancelled? && product.control_mechanism != Relay::CONTROL_MECHANISMS[:manual] && !has_actuals?)
   end
 
   protected

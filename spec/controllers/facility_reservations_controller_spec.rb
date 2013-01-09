@@ -25,7 +25,7 @@ describe FacilityReservationsController do
       :ordered_at => Time.zone.now,
       :state => 'purchased'
     )
-    @reservation=Factory.create(:reservation, :instrument => @product)
+    @reservation=Factory.create(:reservation, :product => @product)
     @reservation.should_not be_new_record
     @order_detail=Factory.create(:order_detail, :order => @order, :product => @product, :reservation => @reservation)
     @order_detail.set_default_status!
@@ -324,7 +324,7 @@ describe FacilityReservationsController do
         )
         # make sure the reservations are happening today
         @reservation.update_attributes!(:reserve_start_at => Time.zone.now, :reserve_end_at => 1.hour.from_now)
-        @unpurchased_reservation=Factory.create(:reservation, :instrument => @product, :reserve_start_at => 1.hour.from_now, :reserve_end_at => 2.hours.from_now)
+        @unpurchased_reservation=Factory.create(:reservation, :product => @product, :reserve_start_at => 1.hour.from_now, :reserve_end_at => 2.hours.from_now)
         @order_detail2=Factory.create(:order_detail, :order => @order2, :product => @product, :reservation => @unpurchased_reservation)
 
         maybe_grant_always_sign_in :director

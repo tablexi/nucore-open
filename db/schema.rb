@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130108190516) do
+ActiveRecord::Schema.define(:version => 20130108221731) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -376,7 +376,7 @@ ActiveRecord::Schema.define(:version => 20130108190516) do
 
   create_table "reservations", :force => true do |t|
     t.integer  "order_detail_id"
-    t.integer  "instrument_id",                  :null => false
+    t.integer  "product_id",                     :null => false
     t.datetime "reserve_start_at",               :null => false
     t.datetime "reserve_end_at",                 :null => false
     t.datetime "actual_start_at"
@@ -386,8 +386,8 @@ ActiveRecord::Schema.define(:version => 20130108190516) do
     t.string   "canceled_reason",  :limit => 50
   end
 
-  add_index "reservations", ["instrument_id"], :name => "reservations_instrument_id_fk"
   add_index "reservations", ["order_detail_id"], :name => "res_ord_det_id_fk"
+  add_index "reservations", ["product_id"], :name => "reservations_instrument_id_fk"
 
   create_table "roles", :force => true do |t|
     t.string "name"
@@ -542,7 +542,7 @@ ActiveRecord::Schema.define(:version => 20130108190516) do
   add_foreign_key "products", "schedules", :name => "fk_instruments_schedule"
 
   add_foreign_key "reservations", "order_details", :name => "res_ord_det_id_fk"
-  add_foreign_key "reservations", "products", :name => "reservations_instrument_id_fk", :column => "instrument_id"
+  add_foreign_key "reservations", "products", :name => "reservations_product_id_fk"
 
   add_foreign_key "schedule_rules", "products", :name => "sys_c008573", :column => "instrument_id"
 

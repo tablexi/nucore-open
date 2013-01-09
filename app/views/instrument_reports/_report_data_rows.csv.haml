@@ -1,4 +1,4 @@
 - @report_data.each do |res|
   - reserved_hours=to_hours(res.duration_mins)
   - actual_hours=to_hours(res.actual_duration_mins)
-  - csv << (@report_on.call(res) + [ 1, reserved_hours, reserved_hours / @totals[0], actual_hours, actual_hours / @totals[1] ] + report_attribute_values(res, res.instrument))
+  - csv << (@report_on.call(res) + [ 1, reserved_hours, reserved_hours / @totals[0], actual_hours, actual_hours / @totals[1] ] + report_attribute_values(res, res.product))

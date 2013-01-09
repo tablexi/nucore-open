@@ -36,7 +36,7 @@ class InstrumentDayReportsController < ReportsController
       stat=yield res
       next unless stat
       ndx, value=stat[0], stat[1]
-      instrument=res.instrument.name
+      instrument=res.product.name
       days=instruments[instrument]
 
       if days.blank?
@@ -61,7 +61,7 @@ class InstrumentDayReportsController < ReportsController
   def init_report_data(report_on_label, &report_on)
     @report_data=report_data.all
     reservation=@report_data.first
-    @headers += report_attributes(reservation, reservation.instrument)
+    @headers += report_attributes(reservation, reservation.product)
   end
 
 end
