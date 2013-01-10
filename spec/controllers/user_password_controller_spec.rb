@@ -17,12 +17,12 @@ describe UserPasswordController, :if => SettingsHelper.feature_on?(:password_upd
     before :each do
       @method = :get
       @action = :edit_current
-      @user = Factory.create(:user, :username => 'email@example.org', :email => 'email@example.org')
+      @user = FactoryGirl.create(:user, :username => 'email@example.org', :email => 'email@example.org')
     end
     it_should_require_login
     
     it "should not allow someone who is authenticated elsewhere" do
-      @user = Factory.create(:user)
+      @user = FactoryGirl.create(:user)
       sign_in(@user)
       do_request
       response.should render_template("user_password/no_password")
@@ -78,7 +78,7 @@ describe UserPasswordController, :if => SettingsHelper.feature_on?(:password_upd
     end
     
     it "should show for 'external' users" do
-      @user = Factory.create(:user, :username => 'email@example.org', :email => 'email@example.org')
+      @user = FactoryGirl.create(:user, :username => 'email@example.org', :email => 'email@example.org')
       @user.should be_external
       sign_in @user
       do_request
@@ -87,7 +87,7 @@ describe UserPasswordController, :if => SettingsHelper.feature_on?(:password_upd
     end
     
     it "should not show for netid or ldap people" do
-      @user = Factory.create(:user)
+      @user = FactoryGirl.create(:user)
       @user.should_not be_external
       sign_in @user
       do_request
@@ -100,8 +100,8 @@ describe UserPasswordController, :if => SettingsHelper.feature_on?(:password_upd
     before :each do
       @method = :post
       @action = :reset
-      @user = @db_user = Factory.create(:user, :username => 'email@example.org', :email => 'email@example.org')
-      @remote_authenticated_user = Factory.create(:user)
+      @user = @db_user = FactoryGirl.create(:user, :username => 'email@example.org', :email => 'email@example.org')
+      @remote_authenticated_user = FactoryGirl.create(:user)
     end
     it "should display the page on get" do
       @method = :get
@@ -150,7 +150,7 @@ describe UserPasswordController, :if => SettingsHelper.feature_on?(:password_upd
     before :each do
       @method = :get
       @action = :edit
-      @user = Factory.create(:user, :username => 'email@example.org', :email => 'email@example.org')
+      @user = FactoryGirl.create(:user, :username => 'email@example.org', :email => 'email@example.org')
       @user.send(:generate_reset_password_token!)
       @params = {:reset_password_token => @user.reset_password_token}
     end
@@ -181,7 +181,7 @@ describe UserPasswordController, :if => SettingsHelper.feature_on?(:password_upd
     before :each do
       @method = :put
       @action = :update
-      @user = Factory.create(:user, :username => 'email@example.org', :email => 'email@example.org')
+      @user = FactoryGirl.create(:user, :username => 'email@example.org', :email => 'email@example.org')
       @user.send(:generate_reset_password_token!)
       @params = {:user => {:reset_password_token => @user.reset_password_token}}
     end

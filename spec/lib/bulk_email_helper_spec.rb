@@ -11,19 +11,19 @@ describe BulkEmailHelper do
   end
 
   before :each do
-    @owner = Factory.create(:user)
+    @owner = FactoryGirl.create(:user)
     
-    @purchaser = Factory.create(:user)
-    @purchaser2 = Factory.create(:user)
-    @purchaser3 = Factory.create(:user)
+    @purchaser = FactoryGirl.create(:user)
+    @purchaser2 = FactoryGirl.create(:user)
+    @purchaser3 = FactoryGirl.create(:user)
 
-    @facility = Factory.create(:facility)
-    @facility_account=Factory.create(:facility_account, :facility => @facility)
-    @product=Factory.create(:item, :facility_account => @facility_account, :facility => @facility)
-    @product2=Factory.create(:item, :facility_account => @facility_account, :facility => @facility)
-    @product3=Factory.create(:item, :facility_account => @facility_account, :facility => @facility)
+    @facility = FactoryGirl.create(:facility)
+    @facility_account=FactoryGirl.create(:facility_account, :facility => @facility)
+    @product=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @facility)
+    @product2=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @facility)
+    @product3=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @facility)
 
-    @account = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner) ])
+    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner) ])
 
     @controller = BulkEmailTest.new
     @params = { :search_type => :customers, :facility_id => @facility.id }
@@ -67,7 +67,7 @@ describe BulkEmailHelper do
 
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
       @instrument=@facility.instruments.create(
-          Factory.attributes_for(
+          FactoryGirl.attributes_for(
             :instrument,
             :facility_account => @facility_account,
             :min_reserve_mins => 60,
@@ -128,10 +128,10 @@ describe BulkEmailHelper do
 
   context "account owners" do
     before :each do
-      @owner2 = Factory.create(:user)
-      @owner3 = Factory.create(:user)
-      @account2 = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner2) ])
-      @account3 = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner3) ])
+      @owner2 = FactoryGirl.create(:user)
+      @owner3 = FactoryGirl.create(:user)
+      @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner2) ])
+      @account3 = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner3) ])
       
       @od1 = place_product_order(@purchaser, @facility, @product, @account)
       @od2 = place_product_order(@purchaser, @facility, @product2, @account2)
@@ -156,10 +156,10 @@ describe BulkEmailHelper do
 
   context "customers_and_account_owners" do
     before :each do
-      @owner2 = Factory.create(:user)
-      @owner3 = Factory.create(:user)
-      @account2 = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner2) ])
-      @account3 = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner3) ])
+      @owner2 = FactoryGirl.create(:user)
+      @owner3 = FactoryGirl.create(:user)
+      @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner2) ])
+      @account3 = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner3) ])
       
       @od1 = place_product_order(@purchaser, @facility, @product, @account)
       @od2 = place_product_order(@purchaser2, @facility, @product2, @account2)
@@ -184,9 +184,9 @@ describe BulkEmailHelper do
 
   context "search authorized users" do
     before :each do
-      @user = Factory.create(:user)
-      @user2 = Factory.create(:user)
-      @user3 = Factory.create(:user)
+      @user = FactoryGirl.create(:user)
+      @user2 = FactoryGirl.create(:user)
+      @user3 = FactoryGirl.create(:user)
 
       @product.update_attributes(:requires_approval => true)
       @product2.update_attributes(:requires_approval => true)
@@ -221,7 +221,7 @@ describe BulkEmailHelper do
   #   before :each do
   #     puts "creating users"
   #     1001.times do
-  #       user = Factory.create(:user)
+  #       user = FactoryGirl.create(:user)
   #       od = place_product_order(user, @facility, @product, @account)
   #     end
   #     puts 'users created'

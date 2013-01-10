@@ -7,9 +7,9 @@ describe ApplicationHelper do
   	end
     
     before :each do      
-      @facility1 = Factory.create(:facility)
-      @facility2 = Factory.create(:facility)
-      @facility3 = Factory.create(:facility)
+      @facility1 = FactoryGirl.create(:facility)
+      @facility2 = FactoryGirl.create(:facility)
+      @facility3 = FactoryGirl.create(:facility)
     end
     def session_user
       @user

@@ -8,16 +8,16 @@ describe FacilityReservationsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable=Factory.create(:facility)
-    @facility_account=Factory.create(:facility_account, :facility => @authable)
-    @product=Factory.create(:instrument,
+    @authable=FactoryGirl.create(:facility)
+    @facility_account=FactoryGirl.create(:facility_account, :facility => @authable)
+    @product=FactoryGirl.create(:instrument,
       :facility_account => @facility_account,
       :facility => @authable
     )
-    @schedule_rule=Factory.create(:schedule_rule, :instrument => @product)
+    @schedule_rule=FactoryGirl.create(:schedule_rule, :instrument => @product)
     @product.reload
     @account=create_nufs_account_with_owner
-    @order=Factory.create(:order,
+    @order=FactoryGirl.create(:order,
       :facility => @authable,
       :user => @director,
       :created_by => @director.id,
@@ -25,9 +25,10 @@ describe FacilityReservationsController do
       :ordered_at => Time.zone.now,
       :state => 'purchased'
     )
-    @reservation=Factory.create(:reservation, :instrument => @product)
+
+    @reservation=FactoryGirl.create(:reservation, :instrument => @product)
     @reservation.should_not be_new_record
-    @order_detail=Factory.create(:order_detail, :order => @order, :product => @product, :reservation => @reservation)
+    @order_detail=FactoryGirl.create(:order_detail, :order => @order, :product => @product, :reservation => @reservation)
     @order_detail.set_default_status!
     @params={ :facility_id => @authable.url_name, :order_id => @order.id, :order_detail_id => @order_detail.id, :id => @reservation.id }
   end
@@ -77,7 +78,7 @@ describe FacilityReservationsController do
         # setup_reservation overwrites @order_detail
         @order_detail_reservation = @order_detail
         
-        @product=Factory.create(:item, :facility_account => @facility_account, :facility => @authable)
+        @product=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
         @order_detail_item = place_product_order(@director, @authable, @product, @account)
         @order_detail.order.update_attributes!(:state => 'purchased')   
 
@@ -96,7 +97,7 @@ describe FacilityReservationsController do
     before :each do
       @method=:put
       @action=:update
-      @params.merge!(:reservation => Factory.attributes_for(:reservation))
+      @params.merge!(:reservation => FactoryGirl.attributes_for(:reservation))
     end
 
 
@@ -112,9 +113,9 @@ describe FacilityReservationsController do
         @order_detail.price_policy.should be_nil
         @order_detail.account = @account
         @order_detail.save!
-        @price_group=Factory.create(:price_group, :facility => @authable)
-        Factory.create(:user_price_group_member, :user => @director, :price_group => @price_group)
-        @instrument_pp=@product.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id))
+        @price_group=FactoryGirl.create(:price_group, :facility => @authable)
+        FactoryGirl.create(:user_price_group_member, :user => @director, :price_group => @price_group)
+        @instrument_pp=@product.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id))
         @instrument_pp.reload.restrict_purchase=false
         @reservation.update_attributes(:actual_start_at => nil, :actual_end_at => nil)
         @params.merge!(:reservation => {
@@ -138,13 +139,13 @@ describe FacilityReservationsController do
 
       before :each do
         @order_detail.price_policy.should be_nil
-        @price_group=Factory.create(:price_group, :facility => @authable)
-        Factory.create(:user_price_group_member, :user => @director, :price_group => @price_group)
-        @instrument_pp=@product.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id))
+        @price_group=FactoryGirl.create(:price_group, :facility => @authable)
+        FactoryGirl.create(:user_price_group_member, :user => @director, :price_group => @price_group)
+        @instrument_pp=@product.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id))
         @instrument_pp.reload.restrict_purchase=false
         @reservation.update_attributes(:actual_start_at => nil, :actual_end_at => nil)
         @now=@reservation.reserve_start_at+3.hour
-        @reservation_attrs=Factory.attributes_for(
+        @reservation_attrs=FactoryGirl.attributes_for(
             :reservation,
             :actual_start_at => @now-2.hour,
             :actual_end_at => @now-1.hour
@@ -210,7 +211,7 @@ describe FacilityReservationsController do
       @params={
         :facility_id => @authable.url_name,
         :instrument_id => @product.url_name,
-        :reservation => Factory.attributes_for(:reservation, :reserve_start_at => @time, :reserve_end_at => @time + 1.hour)
+        :reservation => FactoryGirl.attributes_for(:reservation, :reserve_start_at => @time, :reserve_end_at => @time + 1.hour)
       }
       parametrize_dates(@params[:reservation], :reserve)
     end
@@ -245,7 +246,7 @@ describe FacilityReservationsController do
           # Used to fail by overlapping existing reservation, but now admin reservations are
           # allowed to per ticket 38975
           Reservation.any_instance.stubs(:valid?).returns(false)
-          @params[:reservation] = Factory.attributes_for(:reservation)
+          @params[:reservation] = FactoryGirl.attributes_for(:reservation)
           parametrize_dates(@params[:reservation], :reserve)
           do_request
           assigns[:reservation].should be_new_record
@@ -283,7 +284,7 @@ describe FacilityReservationsController do
       before :each do
         @method=:put
         @action=:update_admin
-        @params.merge!(:reservation => Factory.attributes_for(:reservation))
+        @params.merge!(:reservation => FactoryGirl.attributes_for(:reservation))
       end
 
       it_should_allow_operators_only :redirect
@@ -295,7 +296,7 @@ describe FacilityReservationsController do
   context 'timeline' do
     context 'instrument listing' do
       before :each do
-        @instrument2 = Factory.create(:instrument,
+        @instrument2 = FactoryGirl.create(:instrument,
                       :facility_account => @facility_account,
                       :facility => @authable,
                       :is_hidden => true)
@@ -314,7 +315,7 @@ describe FacilityReservationsController do
     context 'orders' do
       before :each do
         # create unpurchased reservation
-        @order2=Factory.create(:order,
+        @order2=FactoryGirl.create(:order,
         :facility => @authable,
         :user => @director,
         :created_by => @director.id,
@@ -324,8 +325,9 @@ describe FacilityReservationsController do
         )
         # make sure the reservations are happening today
         @reservation.update_attributes!(:reserve_start_at => Time.zone.now, :reserve_end_at => 1.hour.from_now)
-        @unpurchased_reservation=Factory.create(:reservation, :instrument => @product, :reserve_start_at => 1.hour.from_now, :reserve_end_at => 2.hours.from_now)
-        @order_detail2=Factory.create(:order_detail, :order => @order2, :product => @product, :reservation => @unpurchased_reservation)
+
+        @unpurchased_reservation=FactoryGirl.create(:reservation, :instrument => @product, :reserve_start_at => 1.hour.from_now, :reserve_end_at => 2.hours.from_now)
+        @order_detail2=FactoryGirl.create(:order_detail, :order => @order2, :product => @product, :reservation => @unpurchased_reservation)
 
         maybe_grant_always_sign_in :director
         @method = :get

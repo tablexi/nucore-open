@@ -34,10 +34,10 @@ describe StoredFile do
   end
 
   it "should create file and store on disk with partitioned path" do
-    @facility         = Factory.create(:facility)
-    @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @item             = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
-    @creator          = Factory.create(:user)
+    @facility         = FactoryGirl.create(:facility)
+    @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @item             = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+    @creator          = FactoryGirl.create(:user)
     @file1            = "#{Rails.root}/spec/files/alpha_survey.rb"
     @file_upload      = @item.stored_files.create(:name => "File 1", :file => File.open(@file1), :file_type => "info",
                                                   :created_by => @creator)

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe NufsAccount do
   context "account number validations" do
     before(:each) do
-      @user     = Factory.create(:user)
+      @user     = FactoryGirl.create(:user)
       @owner    = Hash[:user => @user, :created_by => @user, :user_role => 'Owner']
       @options  = Hash[:description => "account description", :expires_at => Time.zone.now+1.day, :created_by => @user,
                        :account_users_attributes => [@owner]]
@@ -19,7 +19,7 @@ describe NufsAccount do
     end
 
     it "should not have a facility" do
-      facility = Factory.create(:facility)
+      facility = FactoryGirl.create(:facility)
       account = NufsAccount.create(@options)
       account.facility.should be_nil
     end

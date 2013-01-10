@@ -4,7 +4,7 @@ def create_users
   @users=[]
 
   [ 'admin', 'director', 'staff', 'guest', 'owner', 'purchaser', 'senior_staff', 'billing_admin' ].each do |name|
-    user=Factory.create(:user, :username => name)
+    user=FactoryGirl.create(:user, :username => name)
     instance_variable_set("@#{name}".to_sym, user)
     @users << user
   end

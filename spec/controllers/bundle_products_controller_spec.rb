@@ -8,10 +8,10 @@ describe BundleProductsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable=Factory.create(:facility)
-    @facility_account=Factory.create(:facility_account, :facility => @authable)
-    @item=Factory.create(:item, :facility_account => @facility_account, :facility => @authable)
-    @bundle=Factory.create(:bundle, :facility_account => @facility_account, :facility => @authable)
+    @authable=FactoryGirl.create(:facility)
+    @facility_account=FactoryGirl.create(:facility_account, :facility => @authable)
+    @item=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
+    @bundle=FactoryGirl.create(:bundle, :facility_account => @facility_account, :facility => @authable)
     @bundle_product=BundleProduct.create!(:bundle => @bundle, :product => @item, :quantity => 1)
   end
 
@@ -39,7 +39,7 @@ describe BundleProductsController do
     before(:each) do
       @method=:post
       @action=:create
-      item2=Factory.create(:item, :facility_account => @facility_account, :facility => @authable)
+      item2=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
       @params={
         :facility_id => @authable.url_name,
         :bundle_id => @bundle.url_name,

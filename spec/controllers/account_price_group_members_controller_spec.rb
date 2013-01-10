@@ -6,8 +6,8 @@ describe AccountPriceGroupMembersController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable = Factory.create(:facility)
-    @price_group = @authable.price_groups.create(Factory.attributes_for(:price_group))
+    @authable = FactoryGirl.create(:facility)
+    @price_group = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
   end
 
   # allow admins

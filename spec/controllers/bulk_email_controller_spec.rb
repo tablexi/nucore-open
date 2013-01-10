@@ -7,12 +7,12 @@ describe BulkEmailController do
   before(:all) { create_users }
 
   before :each do
-    @authable = Factory.create(:facility)
-    @facility_account = Factory.create(:facility_account, :facility => @authable)
-    @item = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
-    @service = @authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
-    @instrument = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
-    @restricted_item = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id, :requires_approval => true))
+    @authable = FactoryGirl.create(:facility)
+    @facility_account = FactoryGirl.create(:facility_account, :facility => @authable)
+    @item = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+    @service = @authable.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
+    @instrument = @authable.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+    @restricted_item = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id, :requires_approval => true))
     @params={ :facility_id => @authable.url_name }
   end
 
@@ -67,13 +67,13 @@ describe BulkEmailController do
       end
       context 'product loading' do
         it 'should include hidden products' do
-          @item = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id, :is_hidden => true))
+          @item = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id, :is_hidden => true))
           do_request
           response.should be_success
           assigns[:products].should be_include @item
         end
         it 'should not include archived products' do
-          @item = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id, :is_archived => true))
+          @item = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id, :is_archived => true))
           do_request
           response.should be_success
           assigns[:products].should_not be_include @item

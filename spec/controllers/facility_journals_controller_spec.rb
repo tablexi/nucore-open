@@ -8,14 +8,14 @@ describe FacilityJournalsController do
   render_views
   
   def create_order_details
-    @user=Factory.create(:user)
+    @user=FactoryGirl.create(:user)
     @order_detail1 = place_and_complete_item_order(@user, @authable, @account, true)
     @order_detail2 = place_and_complete_item_order(@user, @authable, @account)
     # make sure order detail 2 is not reviewed (it is if a zero day review period)
     @order_detail2.update_attributes(:reviewed_at => nil)
     
-    @account2=Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']], :facility_id => @authable.id)
-    @authable_account2 = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
+    @account2=FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']], :facility_id => @authable.id)
+    @authable_account2 = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @order_detail3 = place_and_complete_item_order(@user, @authable, @account2, true)
 
     [@order_detail1, @order_detail3].each do |od|
@@ -28,9 +28,9 @@ describe FacilityJournalsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable=Factory.create(:facility)
-    @account = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @admin, :created_by => @admin, :user_role => 'Owner']], :facility_id => @authable.id)
-    @journal=Factory.create(:journal, :facility => @authable, :created_by => @admin.id, :journal_date => Time.zone.now)
+    @authable=FactoryGirl.create(:facility)
+    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @admin, :created_by => @admin, :user_role => 'Owner']], :facility_id => @authable.id)
+    @journal=FactoryGirl.create(:journal, :facility => @authable, :created_by => @admin.id, :journal_date => Time.zone.now)
   end
 
   context 'index' do
@@ -38,7 +38,7 @@ describe FacilityJournalsController do
       @method=:get
       @action=:index
       @params={ :facility_id => @authable.url_name }
-      @pending_journal=Factory.create(:journal, :facility => @authable, :created_by => @admin.id, :journal_date => Time.zone.now, :is_successful => nil)
+      @pending_journal=FactoryGirl.create(:journal, :facility => @authable, :created_by => @admin.id, :journal_date => Time.zone.now, :is_successful => nil)
     end
 
     it_should_deny_all [:staff, :senior_staff]
@@ -238,7 +238,7 @@ describe FacilityJournalsController do
     it "should not have different values if there is a pending journal" do
       
       # create and populate a journal
-      @pending_journal = Factory.create(:journal, :facility_id => @authable.id, :created_by => @admin.id, :journal_date => Time.zone.now, :is_successful => nil)
+      @pending_journal = FactoryGirl.create(:journal, :facility_id => @authable.id, :created_by => @admin.id, :journal_date => Time.zone.now, :is_successful => nil)
       @order_detail4 = place_and_complete_item_order(@user, @authable, @account)
 
       @pending_journal.create_journal_rows!([@order_detail4])

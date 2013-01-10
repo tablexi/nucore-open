@@ -52,16 +52,16 @@ describe OrderDetailObserver do
     before :each do
       Settings.reload!
       Settings.order_details.status_change_hooks = nil
-      @facility = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @user     = Factory.create(:user)
-      @item     = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @facility = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @user     = FactoryGirl.create(:user)
+      @item     = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
       @item.should be_valid
-      Factory.create :item_price_policy, :product => @item, :price_group => PriceGroup.base.first
-      @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      FactoryGirl.create :item_price_policy, :product => @item, :price_group => PriceGroup.base.first
+      @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
       define_open_account(@item.account, @account.account_number)
-      @order    = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
-      @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
+      @order    = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
+      @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
       @order_detail.state.should == 'new'
       @order_detail.version.should == 1
       @order_detail.order_status.should be_nil

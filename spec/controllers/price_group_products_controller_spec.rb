@@ -7,9 +7,9 @@ describe PriceGroupProductsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable=Factory.create(:facility)
-    @facility_account=@authable.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @product=@authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+    @authable=FactoryGirl.create(:facility)
+    @facility_account=@authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @product=@authable.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
     create_price_group_products
     @params={ :facility_id => @authable.url_name, :id => @product.url_name }
   end
@@ -88,7 +88,7 @@ describe PriceGroupProductsController do
 
 
     it 'should not error if no reservation window given on non-instrument' do
-      @product=@authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @product=@authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
       create_price_group_products
       pg=@price_group_products.first.price_group
       @params[pg_key(pg)][:reservation_window]=''

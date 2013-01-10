@@ -5,7 +5,7 @@ describe CreditCardAccount do
   include AffiliateAccountHelper
   
   before(:each) do
-    @user=Factory.create(:user)
+    @user=FactoryGirl.create(:user)
 
     @owner={
       :user => @user,
@@ -31,7 +31,7 @@ describe CreditCardAccount do
   end
   
   it "should take a facility" do
-    facility = Factory.create(:facility)
+    facility = FactoryGirl.create(:facility)
     @account_attrs[:facility] = facility
     account = CreditCardAccount.create(@account_attrs)
     account.facility.should == facility

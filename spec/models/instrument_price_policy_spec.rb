@@ -11,11 +11,11 @@ describe InstrumentPricePolicy do
   
   context "test requiring instruments" do
     before(:each) do
-      @facility         = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @price_group      = @facility.price_groups.create(Factory.attributes_for(:price_group))
-      @instrument       = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account => @facility_account))
-      @ipp=@instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group => @price_group))
+      @facility         = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+      @instrument       = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account))
+      @ipp=@instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group => @price_group))
     end
 
     it "should create using factory" do
@@ -48,31 +48,31 @@ describe InstrumentPricePolicy do
       should allow_value(Date.today).for(:start_date)
       @ipp.start_date=Date.today - 7.days
       @ipp.save(:validate => false) #save without validations
-      ipp_new = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today, :price_group => @price_group))
+      ipp_new = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :start_date => Date.today, :price_group => @price_group))
       ipp_new.errors_on(:start_date).should_not be_nil
     end
 
     it "should not create a price policy for a day that a policy already exists for" do
       @ipp.start_date=Date.today + 7.days
       assert @ipp.save
-      ipp_new = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
+      ipp_new = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
       ipp_new.errors_on(:start_date).should_not be_nil
     end
 
     it "should return the date for the current policies" do
       @ipp.start_date=Date.today - 7.days
       @ipp.save(:validate => false) #save without validations
-      @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
+      @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
       InstrumentPricePolicy.current_date(@instrument).to_date.should == @ipp.start_date.to_date
 
-      @ipp = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group => @price_group))
+      @ipp = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group => @price_group))
       InstrumentPricePolicy.current_date(@instrument).to_date.should == @ipp.start_date.to_date
     end
 
     it "should return the date for upcoming policies" do
-      @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today, :price_group => @price_group))
-      ipp2=@instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
-      ipp3=@instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :start_date => Date.today + 14.days, :price_group => @price_group))
+      @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :start_date => Date.today, :price_group => @price_group))
+      ipp2=@instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
+      ipp3=@instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :start_date => Date.today + 14.days, :price_group => @price_group))
 
       InstrumentPricePolicy.next_date(@instrument).to_date.should == ipp2.start_date.to_date
       next_dates = InstrumentPricePolicy.next_dates(@instrument)
@@ -88,13 +88,13 @@ describe InstrumentPricePolicy do
   # TODO TK: finish explaining equation
   context "cost estimate tests" do
     before(:each) do
-      @facility         = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @price_group      = @facility.price_groups.create(Factory.attributes_for(:price_group))
-      @instrument       = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account => @facility_account))
-      @price_group_product=Factory.create(:price_group_product, :price_group => @price_group, :product => @instrument)
+      @facility         = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+      @instrument       = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account))
+      @price_group_product=FactoryGirl.create(:price_group_product, :price_group => @price_group, :product => @instrument)
       # create rule every day from 9 am to 5 pm, no discount, duration= 30 minutes
-      @rule             = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :duration_mins => 30))
+      @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :duration_mins => 30))
     end
 
     it "should correctly estimate cost with usage cost" do
@@ -297,7 +297,7 @@ describe InstrumentPricePolicy do
 
     it "should correctly estimate cost across schedule rules" do
       # create adjacent schedule rule
-      @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :duration_mins => 30))
+      @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :duration_mins => 30))
       pp = @instrument.instrument_price_policies.create!(ipp_attributes)
     
       # 2 hour (8 intervals)
@@ -310,7 +310,7 @@ describe InstrumentPricePolicy do
 
     it "should correctly estimate cost for a schedule rule with a discount" do
       # create discount schedule rule
-      @discount_rule = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :duration_mins => 30, :discount_percent => 50))
+      @discount_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :duration_mins => 30, :discount_percent => 50))
       pp = @instrument.instrument_price_policies.create!(ipp_attributes)
     
       # 1 hour (4 intervals)
@@ -323,7 +323,7 @@ describe InstrumentPricePolicy do
 
     it "should correctly estimate cost across schedule rules with discounts" do
       # create discount schedule rule
-      @discount_rule = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :duration_mins => 30, :discount_percent => 50))
+      @discount_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :duration_mins => 30, :discount_percent => 50))
       pp = @instrument.instrument_price_policies.create!(ipp_attributes)
     
       # 2 hour (8 intervals); half of the time, 50% discount
@@ -367,12 +367,12 @@ describe InstrumentPricePolicy do
   
   context "cost estimate tests with all day schedule rules" do
     before(:each) do
-      @facility         = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create!(Factory.attributes_for(:facility_account))
-      @price_group      = @facility.price_groups.create!(Factory.attributes_for(:price_group))
-      @instrument       = @facility.instruments.create!(Factory.attributes_for(:instrument, :facility_account => @facility_account))
-      @price_group_product=Factory.create(:price_group_product, :price_group => @price_group, :product => @instrument)
-      @rule             = @instrument.schedule_rules.create!(Factory.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24, :duration_mins => 30))
+      @facility         = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
+      @price_group      = @facility.price_groups.create!(FactoryGirl.attributes_for(:price_group))
+      @instrument       = @facility.instruments.create!(FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account))
+      @price_group_product=FactoryGirl.create(:price_group_product, :price_group => @price_group, :product => @instrument)
+      @rule             = @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24, :duration_mins => 30))
       @pp = @instrument.instrument_price_policies.create!(ipp_attributes)
     end
   
@@ -420,10 +420,10 @@ describe InstrumentPricePolicy do
   
   context "actual cost calculation tests" do
     before :each do
-      @facility         = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @price_group      = @facility.price_groups.create(Factory.attributes_for(:price_group))
-      @instrument       = Factory.create(:instrument, :facility_account => @facility_account, :facility => @facility)
+      @facility         = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+      @instrument       = FactoryGirl.create(:instrument, :facility_account => @facility_account, :facility => @facility)
       @ipp=@instrument.instrument_price_policies.create(ipp_attributes(
         :usage_rate => 100,
         :usage_subsidy => 99,

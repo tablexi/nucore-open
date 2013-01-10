@@ -3,10 +3,10 @@ require 'spec_helper'
 describe ScheduleRule do
 
   it "should create using factory" do
-    @facility   = Factory.create(:facility)
-    @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
-    @rule       = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+    @facility   = FactoryGirl.create(:facility)
+    @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+    @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     @rule.should be_valid
   end
 
@@ -26,114 +26,114 @@ describe ScheduleRule do
     end
 
     it "should allow all day rule" do
-      @facility   = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @facility   = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
       @options    = Hash[:start_hour => 0, :start_min => 0, :end_hour => 24, :end_min => 0]
-      @rule       = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule).merge(@options))
+      @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(@options))
       assert @rule.valid?
     end
 
     it "should not allow end_hour == 24 and end_min != 0" do
-      @facility   = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @facility   = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
       @options    = Hash[:start_hour => 0, :start_min => 0, :end_hour => 24, :end_min => 1]
-      @rule       = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule).merge(@options))
+      @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(@options))
       assert @rule.invalid?
       assert_equal ["End time is invalid"], @rule.errors[:base]
     end
 
     it "should recognize inclusive datetimes" do
-      @facility   = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
-      @rule       = @instrument.schedule_rules.build(Factory.attributes_for(:schedule_rule))
+      @facility   = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @rule       = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
       @rule.includes_datetime(DateTime.new(1981, 9, 15, 12, 0, 0)).should == true
     end
     
     it "should not recognize non-inclusive datetimes" do
-      @facility   = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
-      @rule       = @instrument.schedule_rules.build(Factory.attributes_for(:schedule_rule))
+      @facility   = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @rule       = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
       @rule.includes_datetime(DateTime.new(1981, 9, 15, 3, 0, 0)).should == false
     end
   end
 
   it "should not allow rule conflicts" do
-    @facility   = Factory.create(:facility)
-    @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+    @facility   = FactoryGirl.create(:facility)
+    @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
     # create rule every day from 9 am to 5 pm
-    @rule       = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+    @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     assert @rule.valid?
 
     # not allow rule from 9 am to 5 pm
-    @options    = Factory.attributes_for(:schedule_rule).merge(:start_hour => 9, :end_hour => 17)
+    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 9, :end_hour => 17)
     @rule1      = @instrument.schedule_rules.create(@options)
     assert @rule1.errors[:base]
     
     # not allow rule from 9 am to 10 am
-    @options    = Factory.attributes_for(:schedule_rule).merge(:end_hour => 10)
+    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(:end_hour => 10)
     @rule1      = @instrument.schedule_rules.create(@options)
     assert @rule1.errors[:base]
 
     # not allow rule from 10 am to 11 am
-    @options    = Factory.attributes_for(:schedule_rule).merge(:start_hour => 10, :end_hour => 11)
+    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 10, :end_hour => 11)
     @rule1      = @instrument.schedule_rules.create(@options)
     assert @rule1.errors[:base]
 
     # not allow rule from 3 pm to 5 pm
-    @options    = Factory.attributes_for(:schedule_rule).merge(:start_hour => 15, :end_hour => 17)
+    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 15, :end_hour => 17)
     @rule1      = @instrument.schedule_rules.create(@options)
     assert @rule1.errors[:base]
 
     # not allow rule from 7 am to 10 am
-    @options    = Factory.attributes_for(:schedule_rule).merge(:start_hour => 7, :end_hour => 10)
+    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 7, :end_hour => 10)
     @rule1      = @instrument.schedule_rules.create(@options)
     assert @rule1.errors[:base]
 
     # not allow rule from 4 pm to 10 pm
-    @options    = Factory.attributes_for(:schedule_rule).merge(:start_hour => 16, :end_hour => 22)
+    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 16, :end_hour => 22)
     @rule1      = @instrument.schedule_rules.create(@options)
     assert @rule1.errors[:base]
 
     # not allow rule from 8 am to 8 pm
-    @options    = Factory.attributes_for(:schedule_rule).merge(:start_hour => 8, :end_hour => 20)
+    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 8, :end_hour => 20)
     @rule1      = @instrument.schedule_rules.create(@options)
     assert @rule1.errors[:base]
   end
 
   it "should allow adjacent rules" do
-    @facility   = Factory.create(:facility)
-    @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+    @facility   = FactoryGirl.create(:facility)
+    @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
     # create rule every day from 9 am to 5 pm
-    @rule       = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+    @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     assert @rule.valid?
 
     # allow rule from 7 am to 9 am
-    @options    = Factory.attributes_for(:schedule_rule).merge(:start_hour => 7, :end_hour => 9)
+    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 7, :end_hour => 9)
     @rule1      = @instrument.schedule_rules.create(@options)
     assert @rule1.valid?
 
     # allow rule from 5 pm to 12am
-    @options    = Factory.attributes_for(:schedule_rule).merge(:start_hour => 17, :end_hour => 24)
+    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 17, :end_hour => 24)
     @rule1      = @instrument.schedule_rules.create(@options)
     assert @rule1.valid?
   end
 
   # it "should not conflict with existing reservation" do
-  #   @facility   = Factory.create(:facility)
-  #   @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-  #   @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+  #   @facility   = FactoryGirl.create(:facility)
+  #   @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+  #   @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
   #   # create rule every day from 9 am to 5 pm
-  #   @rule1      = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+  #   @rule1      = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
   #   assert @rule1.valid?
   # 
   #   # start/end at the exact same time
-  #   @rule2      = @instrument.schedule_rules.build(Factory.attributes_for(:schedule_rule))
+  #   @rule2      = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
   #   @rule2.should_not be_valid
   # 
   #   # start/end one hour before valid rule, but times overlap
@@ -143,11 +143,11 @@ describe ScheduleRule do
   # end
 
   it "should not be valid with an end time after the start time" do
-    @facility   = Factory.create(:facility)
-    @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+    @facility   = FactoryGirl.create(:facility)
+    @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
     # create rule every day from 9 am to 5 pm
-    @rule       = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+    @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     assert @rule.valid?
     
     @rule.start_hour = 9
@@ -163,11 +163,11 @@ describe ScheduleRule do
 
   context "calendar object" do
     it "should build calendar object for 9-5 rule every day" do
-      @facility   = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @facility   = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
       # create rule every day from 9 am to 5 pm
-      @rule       = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+      @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       assert @rule.valid?
       
       # find past sunday, and build calendar object
@@ -216,9 +216,9 @@ describe ScheduleRule do
     end
 
     it "should build calendar object using multiple rules on the same day" do
-      @facility   = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @facility   = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
       # create rule tue 1 am - 3 am
       @options    = Hash[:on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
                          :start_hour => 1, :start_min => 0, :end_hour => 3, :end_min => 0,
@@ -268,9 +268,9 @@ describe ScheduleRule do
     end
 
     it "should build calendar object using adjacent rules across days" do
-      @facility   = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @facility   = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
       # create rule tue 9 pm - 12 am
       @options    = Hash[:on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
                          :start_hour => 21, :start_min => 0, :end_hour => 24, :end_min => 0,
@@ -304,11 +304,11 @@ describe ScheduleRule do
     end
 
     it "should build calendar object using start date" do
-      @facility   = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @facility   = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
       # create rule every day from 9 am to 5 pm
-      @rule       = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
+      @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       assert @rule.valid?
       
       # set start_date as wednesday
@@ -323,11 +323,11 @@ describe ScheduleRule do
   
   context 'available_to_user' do
     before :each do
-      @facility   = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id, :requires_approval => true))
-      @rule       = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
-      @user = Factory.create(:user)
+      @facility   = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id, :requires_approval => true))
+      @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+      @user = FactoryGirl.create(:user)
     end
     context 'if instrument has no levels' do
       it 'should not return a rule if the user is not added' do
@@ -342,7 +342,7 @@ describe ScheduleRule do
       before :each do
         @restriction_levels = []
         3.times do
-          @restriction_levels << Factory.create(:product_access_group, :product_id => @instrument.id)
+          @restriction_levels << FactoryGirl.create(:product_access_group, :product_id => @instrument.id)
         end
       end
       

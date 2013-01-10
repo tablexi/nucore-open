@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Journal do
 
   before :each do
-    @facility = Factory.create(:facility)
+    @facility = FactoryGirl.create(:facility)
     @journal  = Journal.new(:facility => @facility, :created_by => 1, :journal_date => Time.zone.now)
   end
 
@@ -15,12 +15,12 @@ describe Journal do
   
   context "journal creation" do
     before :each do
-      @admin = Factory(:user)
-      @facilitya = Factory.create(:facility, :abbreviation => "A")
-      @facilityb = Factory.create(:facility, :abbreviation => "B")
-      @facilityc = Factory.create(:facility, :abbreviation => "C")
-      @facilityd = Factory.create(:facility, :abbreviation => "D")
-      @account = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @admin, :created_by => @admin, :user_role => 'Owner']], :facility_id => @facilitya.id)
+      @admin = FactoryGirl.create(:user)
+      @facilitya = FactoryGirl.create(:facility, :abbreviation => "A")
+      @facilityb = FactoryGirl.create(:facility, :abbreviation => "B")
+      @facilityc = FactoryGirl.create(:facility, :abbreviation => "C")
+      @facilityd = FactoryGirl.create(:facility, :abbreviation => "D")
+      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @admin, :created_by => @admin, :user_role => 'Owner']], :facility_id => @facilitya.id)
       
       # little helper to create the calls which the controller performs 
       def create_pending_journal_for(*facilities_list)
@@ -130,9 +130,9 @@ describe Journal do
   it "should create and attach journal spreadsheet" do
     @journal.valid?
     # create nufs account
-    @owner    = Factory.create(:user)
+    @owner    = FactoryGirl.create(:user)
     hash      = Hash[:user => @owner, :created_by => @owner, :user_role => 'Owner']
-    @account  = Factory.create(:nufs_account, :account_users_attributes => [hash])
+    @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => [hash])
     @journal.create_spreadsheet
     # @journal.add_spreadsheet("#{Rails.root}/spec/files/nucore.journal.template.xls")
     @journal.file.url.should =~ /^\/files/
@@ -151,20 +151,20 @@ describe Journal do
   context 'order_details_span_fiscal_years?' do
     before :each do
       Settings.financial.fiscal_year_begins = '06-01'
-      @owner    = Factory.create(:user)
-      @account  = Factory.create(:nufs_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner) ])
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @item = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
-      @price_group = Factory.create(:price_group, :facility => @facility)
-      Factory.create(:user_price_group_member, :user => @owner, :price_group => @price_group)
-      @pp = @item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
+      @owner    = FactoryGirl.create(:user)
+      @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner) ])
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @item = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @price_group = FactoryGirl.create(:price_group, :facility => @facility)
+      FactoryGirl.create(:user_price_group_member, :user => @owner, :price_group => @price_group)
+      @pp = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
 
       # Create one order detail fulfulled in each month for a two year range
       d1 = Time.zone.parse('2020-01-01')
       @order_details = []
       (0..23).each do |i|
-        order=@owner.orders.create(Factory.attributes_for(:order, :created_by => @owner))
-        od = order.order_details.create(Factory.attributes_for(:order_detail, :product => @item))
+        order=@owner.orders.create(FactoryGirl.attributes_for(:order, :created_by => @owner))
+        od = order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product => @item))
         od.update_attributes(:actual_cost => 20, :actual_subsidy => 0)
         od.to_complete!
         od.update_attributes(:fulfilled_at => d1 + i.months)

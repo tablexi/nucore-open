@@ -21,17 +21,17 @@ describe TransactionSearch do
 
   end
   before :each do
-    @user = Factory.create(:user)
-    @staff = Factory.create(:user, :username => "staff")
-    @staff2 = Factory.create(:user, :username => "staff2")
+    @user = FactoryGirl.create(:user)
+    @staff = FactoryGirl.create(:user, :username => "staff")
+    @staff2 = FactoryGirl.create(:user, :username => "staff2")
     UserRole.grant(@staff, UserRole::FACILITY_DIRECTOR)
     @controller = TransactionSearcher.new
-    @authable         = Factory.create(:facility)
-    @facility_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @price_group      = @authable.price_groups.create(Factory.attributes_for(:price_group))
-    @account          = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
-    @order            = @staff.orders.create(Factory.attributes_for(:order, :created_by => @staff.id, :account => @account, :ordered_at => Time.now))
-    @item             = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+    @authable         = FactoryGirl.create(:facility)
+    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
+    @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
+    @order            = @staff.orders.create(FactoryGirl.attributes_for(:order, :created_by => @staff.id, :account => @account, :ordered_at => Time.now))
+    @item             = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
     @order_detail_complete = place_and_complete_item_order(@user, @authable, @account)
     @order_detail_new = place_product_order(@staff, @authable, @item)
 
@@ -62,7 +62,7 @@ describe TransactionSearch do
         @controller.accounts.should == [@account]
       end
       it 'should populate accounts based off order_details, not orders' do
-        @account2 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
+        @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
         Order.all.each { |o| o.update_attributes!(:account => @account) }
         OrderDetail.all.each { |od| od.update_attributes!(:account => @account2)}
         @order.reload.account.should == @account
@@ -71,7 +71,7 @@ describe TransactionSearch do
       end
 
       it 'should populate owners based off of order_details, not orders' do
-        @account2 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff2, :created_by => @staff2, :user_role => AccountUser::ACCOUNT_OWNER]])
+        @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff2, :created_by => @staff2, :user_role => AccountUser::ACCOUNT_OWNER]])
         Order.all.each { |o| o.update_attributes!(:account => @account) }
         OrderDetail.all.each { |od| od.update_attributes!(:account => @account2) }
         @order.reload.account.owner.user.should == @staff
@@ -81,8 +81,8 @@ describe TransactionSearch do
 
 
       it "should not populate an account for another facility" do
-        @facility2 = Factory.create(:facility)
-        @account2 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
+        @facility2 = FactoryGirl.create(:facility)
+        @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
 
         @controller.all_order_details
         @controller.current_facility.should == @authable
@@ -97,10 +97,10 @@ describe TransactionSearch do
 
     context "with account" do
       before :each do
-        @facility2 = Factory.create(:facility)
-        @credit_account = Factory.create(:nufs_account, :facility_id => @facility2.id, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
-        @facility_account2 = @facility2.facility_accounts.create(Factory.attributes_for(:facility_account))
-        @item2             = @facility2.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account2.id))
+        @facility2 = FactoryGirl.create(:facility)
+        @credit_account = FactoryGirl.create(:nufs_account, :facility_id => @facility2.id, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
+        @facility_account2 = @facility2.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+        @item2             = @facility2.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account2.id))
         @order_detail2 = place_and_complete_item_order(@user, @facility2, @credit_account)
       end
 
@@ -125,9 +125,9 @@ describe TransactionSearch do
     end
     context "account owners" do
       before :each do
-        @user2 = Factory.create(:user)
-        @user3 = Factory.create(:user)
-        @account2 = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user2, :created_by => @user2, :user_role => AccountUser::ACCOUNT_OWNER]])
+        @user2 = FactoryGirl.create(:user)
+        @user3 = FactoryGirl.create(:user)
+        @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user2, :created_by => @user2, :user_role => AccountUser::ACCOUNT_OWNER]])
         # account 2 needs to have an order detail for it to show up
         place_and_complete_item_order(@user2, @authable, @account2)
       end
@@ -141,10 +141,10 @@ describe TransactionSearch do
 
     context "products" do
       before :each do
-        @facility2 = Factory.create(:facility)
-        @instrument = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
-        @service = @authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
-        @other_item = @facility2.instruments.create(Factory.attributes_for(:item))
+        @facility2 = FactoryGirl.create(:facility)
+        @instrument = @authable.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+        @service = @authable.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
+        @other_item = @facility2.instruments.create(FactoryGirl.attributes_for(:item))
         # each product needs to have an order detail for it to show up
         [@item, @instrument, @service].each do |product|
           place_product_order(@staff, @authable, product, @account)

@@ -46,7 +46,7 @@ gem 'c2po',             '~> 1.0.0', :path => 'vendor/engines/c2po'
 
 group :development, :test do
   gem 'ci_reporter'
-  gem 'factory_girl_rails','1.0.1'
+  gem 'factory_girl_rails','4.1.0'
   gem 'mocha',             '0.9.7'
   gem 'rspec-rails',       '2.9'
   gem 'ruby-debug19',      '0.11.6'

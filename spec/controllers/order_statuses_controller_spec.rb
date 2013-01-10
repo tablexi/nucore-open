@@ -8,14 +8,14 @@ describe OrderStatusesController do
     OrderStatus.all.each { |os| os.destroy }
     OrderStatus.all.should be_empty
 
-    @authable = @facility = Factory.create(:facility)
+    @authable = @facility = FactoryGirl.create(:facility)
     
-    @root_status = Factory.create(:order_status)
+    @root_status = FactoryGirl.create(:order_status)
     @root_status.should be_root
-    @root_status2 = Factory.create(:order_status)
+    @root_status2 = FactoryGirl.create(:order_status)
     @root_status2.should be_root
-    @order_status = Factory.create(:order_status, :facility => @facility, :parent => @root_status)
-    @order_status2 = Factory.create(:order_status, :facility => @facility, :parent => @root_status)
+    @order_status = FactoryGirl.create(:order_status, :facility => @facility, :parent => @root_status)
+    @order_status2 = FactoryGirl.create(:order_status, :facility => @facility, :parent => @root_status)
     OrderStatus.all.size.should == 4
     @params = { :facility_id => @facility.url_name }
   end
@@ -79,7 +79,7 @@ describe OrderStatusesController do
     before :each do
       @action = :create
       @method = :post
-      @params.merge!(:order_status => Factory.attributes_for(:order_status, :parent_id => @root_status.id))
+      @params.merge!(:order_status => FactoryGirl.attributes_for(:order_status, :parent_id => @root_status.id))
     end
     it_should_allow_managers_only(:redirect) {}
     context 'signed_in' do
@@ -145,7 +145,7 @@ describe OrderStatusesController do
     before :each do
       @action = :update
       @method = :put
-      @params.merge!(:id => @order_status.id, :order_status =>  Factory.attributes_for(:order_status, :parent_id => @root_status.id))
+      @params.merge!(:id => @order_status.id, :order_status =>  FactoryGirl.attributes_for(:order_status, :parent_id => @root_status.id))
     end
     it_should_allow_managers_only :redirect
     it_should_disallow_editing_root_statuses
@@ -164,9 +164,9 @@ describe OrderStatusesController do
       before(:each) { maybe_grant_always_sign_in :director }
       context 'success' do
         before :each do
-          @user = Factory.create(:user)
-          @facility_account = Factory.create(:facility_account, :facility => @facility)
-          @product = Factory.create(:item, :facility => @facility, :facility_account => @facility_account)
+          @user = FactoryGirl.create(:user)
+          @facility_account = FactoryGirl.create(:facility_account, :facility => @facility)
+          @product = FactoryGirl.create(:item, :facility => @facility, :facility_account => @facility_account)
           @order_details = []
           3.times do
             order_detail = place_product_order(@user, @facility, @product)

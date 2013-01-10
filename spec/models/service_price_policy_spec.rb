@@ -19,7 +19,7 @@ describe ServicePricePolicy do
   context 'validations' do
     it { should validate_numericality_of :unit_cost }
     it 'should not allow a subsidy more than cost' do
-      pp = Factory.build(:item_price_policy, :unit_subsidy => 10, :unit_cost => 5)
+      pp = FactoryGirl.build(:item_price_policy, :unit_subsidy => 10, :unit_cost => 5)
       pp.should_not be_valid
       pp.errors.keys.should be_include :unit_subsidy
     end
@@ -27,21 +27,21 @@ describe ServicePricePolicy do
 
   context "test requiring services" do
     before(:each) do
-      @facility         = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @price_group      = @facility.price_groups.create(Factory.attributes_for(:price_group))
-      @service             = @facility.services.create(Factory.attributes_for(:service, :facility_account => @facility_account))
-      @price_group_product=Factory.create(:price_group_product, :product => @service, :price_group => @price_group, :reservation_window => nil)
+      @facility         = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+      @service             = @facility.services.create(FactoryGirl.attributes_for(:service, :facility_account => @facility_account))
+      @price_group_product=FactoryGirl.create(:price_group_product, :product => @service, :price_group => @price_group, :reservation_window => nil)
     end
 
     it "should create using factory" do
       # price policy belongs to an service and a price group
-      ipp = @service.service_price_policies.create(Factory.attributes_for(:service_price_policy, :price_group => @price_group))
+      ipp = @service.service_price_policies.create(FactoryGirl.attributes_for(:service_price_policy, :price_group => @price_group))
       ipp.should be_valid
     end
 
     it 'should return the item' do
-      ipp = @service.service_price_policies.create(Factory.attributes_for(:service_price_policy, :start_date => Date.today, :price_group_id => @price_group.id))
+      ipp = @service.service_price_policies.create(FactoryGirl.attributes_for(:service_price_policy, :start_date => Date.today, :price_group_id => @price_group.id))
       ipp.product.should == @service
     end
 
@@ -56,8 +56,8 @@ describe ServicePricePolicy do
     end
 
     it "should not create a price policy for a day that a policy already exists for" do
-      ipp     = @service.service_price_policies.create(Factory.attributes_for(:service_price_policy, :start_date => Date.today + 7, :price_group_id => @price_group.id))
-      ipp_new = @service.service_price_policies.create(Factory.attributes_for(:service_price_policy, :start_date => Date.today + 7, :price_group_id => @price_group.id))
+      ipp     = @service.service_price_policies.create(FactoryGirl.attributes_for(:service_price_policy, :start_date => Date.today + 7, :price_group_id => @price_group.id))
+      ipp_new = @service.service_price_policies.create(FactoryGirl.attributes_for(:service_price_policy, :start_date => Date.today + 7, :price_group_id => @price_group.id))
       ipp_new.errors_on(:start_date).should_not be_nil
     end
 

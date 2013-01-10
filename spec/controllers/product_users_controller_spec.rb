@@ -7,17 +7,17 @@ describe ProductUsersController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable         = Factory.create(:facility)
-    @facility_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @price_group      = @authable.price_groups.create(Factory.attributes_for(:price_group))
-    @instrument       = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id, :requires_approval => true))
-    @price_policy     = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id))
+    @authable         = FactoryGirl.create(:facility)
+    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
+    @instrument       = @authable.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id, :requires_approval => true))
+    @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id))
     @price_policy.should be_valid
     @params={ :facility_id => @authable.url_name, :instrument_id => @instrument.url_name }
     
-    @rule=@instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule))
-    @level = Factory.create(:product_access_group, :product_id => @instrument.id)
-    @level2 = Factory.create(:product_access_group, :product_id => @instrument.id)
+    @rule=@instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+    @level = FactoryGirl.create(:product_access_group, :product_id => @instrument.id)
+    @level2 = FactoryGirl.create(:product_access_group, :product_id => @instrument.id)
   end
   
   context "index" do

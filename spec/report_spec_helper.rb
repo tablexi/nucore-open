@@ -11,7 +11,7 @@ module ReportSpecHelper
 
     base.before(:each) do
       @method=:get
-      @authable=Factory.create(:facility)
+      @authable=FactoryGirl.create(:facility)
       @params={
         :facility_id => @authable.url_name,
         :date_start => Time.zone.now.strftime('%m/%d/%Y'),

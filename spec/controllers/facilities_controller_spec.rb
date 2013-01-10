@@ -14,7 +14,7 @@ describe FacilitiesController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable = Factory.create(:facility)
+    @authable = FactoryGirl.create(:facility)
   end
 
 
@@ -136,7 +136,7 @@ describe FacilitiesController do
     context "as facility operators with two facilities" do
 
       before(:each) do
-        @facility2 = Factory.create(:facility)
+        @facility2 = FactoryGirl.create(:facility)
         @controller.stubs(:current_facility).returns(@authable)
         @controller.stubs(:operable_facilities).returns([@authable, @facility2])
         @controller.expects(:init_current_facility).never
@@ -156,8 +156,8 @@ describe FacilitiesController do
       end
       context 'has instruments' do
         before :each do
-          @facility_account = Factory.create(:facility_account, :facility => @authable)
-          @authable.instruments.create!(Factory.attributes_for(:instrument, :facility_account => @facility_account))
+          @facility_account = FactoryGirl.create(:facility_account, :facility => @authable)
+          @authable.instruments.create!(FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account))
         end
         it_should_allow_all (facility_operators - [:admin]) do
           assigns(:facilities).should == [@authable]
@@ -178,7 +178,7 @@ describe FacilitiesController do
     context "as administrator" do
 
       before(:each) do
-        @facility2 = Factory.create(:facility)
+        @facility2 = FactoryGirl.create(:facility)
         @controller.stubs(:current_facility).returns(@authable)
       end
 
