@@ -371,6 +371,11 @@ describe Instrument do
       @instrument.first_available_hour.should == 9
       @instrument.last_available_hour.should == 16
     end
+
+    it 'should default to 0 and 23 if no schedule rules' do
+      @instrument.first_available_hour.should == 0
+      @instrument.last_available_hour.should == 23
+    end
   end
 
   context "last reserve dates, days from now" do

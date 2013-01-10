@@ -1,4 +1,4 @@
-module Instruments::RelaySupport
+module Products::RelaySupport
   extend ActiveSupport::Concern
 
   included do
@@ -6,6 +6,8 @@ module Instruments::RelaySupport
     has_many :instrument_statuses, :foreign_key => 'instrument_id'
 
     validate :check_relay_with_right_type
+
+    attr_writer :control_mechanism
   end
 
   # control mechanism for instrument
