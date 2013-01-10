@@ -25,12 +25,8 @@ describe FacilityReservationsController do
       :ordered_at => Time.zone.now,
       :state => 'purchased'
     )
-<<<<<<< HEAD
-    @reservation=Factory.create(:reservation, :product => @product)
-=======
 
-    @reservation=FactoryGirl.create(:reservation, :instrument => @product)
->>>>>>> factory_girl
+    @reservation=FactoryGirl.create(:reservation, :product => @product)
     @reservation.should_not be_new_record
     @order_detail=FactoryGirl.create(:order_detail, :order => @order, :product => @product, :reservation => @reservation)
     @order_detail.set_default_status!
