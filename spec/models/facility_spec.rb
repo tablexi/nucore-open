@@ -30,17 +30,17 @@ describe Facility do
     end
 
     it "is unique" do
-      @factory1 = Factory.create(:facility)
-      @factory2 = Factory.build(:facility, :url_name => @factory1.url_name)
+      @factory1 = FactoryGirl.create(:facility)
+      @factory2 = FactoryGirl.build(:facility, :url_name => @factory1.url_name)
       @factory2.should_not be_valid
     end
   end
   
   context "lookup ids by urls" do
     before :each do
-      @facility = Factory.create(:facility)
-      @facility2 = Factory.create(:facility)
-      @facility3 = Factory.create(:facility)
+      @facility = FactoryGirl.create(:facility)
+      @facility2 = FactoryGirl.create(:facility)
+      @facility3 = FactoryGirl.create(:facility)
     end
     it "should get back all the ids" do
       results = Facility.ids_from_urls([@facility.url_name, @facility2.url_name, @facility3.url_name])

@@ -1,14 +1,14 @@
 require 'spec_helper'
 describe StatusChangeNotifications do
   before :each do
-    @order_status = Factory.create(:order_status)
+    @order_status = FactoryGirl.create(:order_status)
     Settings.order_details ||= {}
     Settings.order_details.status_change_hooks = {
       :"#{@order_status.downcase_name}" => "StatusChangeNotifications::#{self.class.description}"
      }
     SettingsHelper.enable_feature(:product_specific_contacts)
-    @user = Factory.create(:user)
-    @facility = Factory.create(:facility, :email => 'notify-facility@example.org')
+    @user = FactoryGirl.create(:user)
+    @facility = FactoryGirl.create(:facility, :email => 'notify-facility@example.org')
     @order_detail = place_and_complete_item_order(@user, @facility)
     @order_detail.product.update_attributes!(:contact_email => 'notify-product@example.org')
     @initial_order_status = @order_detail.order_status

@@ -6,8 +6,8 @@ describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:
   before(:all) { create_users }
 
   before(:each) do
-    @authable=Factory.create(:facility)
-    @facility_account=Factory.create(:facility_account, :facility => @authable, :created_by => @admin.id)
+    @authable=FactoryGirl.create(:facility)
+    @facility_account=FactoryGirl.create(:facility_account, :facility => @authable, :created_by => @admin.id)
     @params={ :facility_id => @authable.url_name }
   end
 
@@ -50,7 +50,7 @@ describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:
     before :each do
       @method=:put
       @action=:update
-      @params.merge!(:id => @facility_account.id, :facility_account => Factory.attributes_for(:facility_account))
+      @params.merge!(:id => @facility_account.id, :facility_account => FactoryGirl.attributes_for(:facility_account))
     end
 
     it_should_allow_managers_only :redirect do
@@ -68,7 +68,7 @@ describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:
     before :each do
       @method=:post
       @action=:create
-      @params.merge!(:facility_account => Factory.attributes_for(:facility_account))
+      @params.merge!(:facility_account => FactoryGirl.attributes_for(:facility_account))
     end
 
     it_should_allow_managers_only :redirect do |user|

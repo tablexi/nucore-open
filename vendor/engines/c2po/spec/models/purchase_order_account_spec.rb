@@ -5,7 +5,7 @@ describe PurchaseOrderAccount do
   include AffiliateAccountHelper
 
   before(:each) do
-    @user=Factory.create(:user)
+    @user=FactoryGirl.create(:user)
 
     @owner={
         :user => @user,
@@ -29,7 +29,7 @@ describe PurchaseOrderAccount do
   end
   
   it "should take a facility" do
-    facility = Factory.create(:facility)
+    facility = FactoryGirl.create(:facility)
     @account_attrs[:facility] = facility
     account = PurchaseOrderAccount.create(@account_attrs)
     account.facility.should == facility

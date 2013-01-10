@@ -8,19 +8,19 @@ describe Product do
   end
   
   before :each do
-    @facility         = Factory.create(:facility)
-    @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
+    @facility         = FactoryGirl.create(:facility)
+    @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
   end
 
   it "should not create using factory" do
-    @product = Product.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+    @product = Product.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
     @product.errors[:type].should_not be_nil
   end
 
   context 'with item' do
 
     before :each do
-      @item = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @item = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
     end
 
     it "should create map to default price groups" do
@@ -48,7 +48,7 @@ describe Product do
   context 'email' do
     before :each do
       SettingsHelper::enable_feature(:expense_accounts, false)
-      @facility = Factory.create(:facility, :email => 'facility@example.com')
+      @facility = FactoryGirl.create(:facility, :email => 'facility@example.com')
       @product = TestProduct.create!(:contact_email => 'product@example.com', :facility => @facility, :name => 'Test Product', :url_name => 'test')
     end
     context 'product specific enabled' do
@@ -113,10 +113,10 @@ describe Product do
     end
     before :each do
       @product = TestProduct.create!(:facility => @facility, :name => 'Test Product', :url_name => 'test')
-      @price_group = Factory.create(:price_group, :facility => @facility)
-      @price_group2 = Factory.create(:price_group, :facility => @facility)
-      @user = Factory.create(:user)
-      Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
+      @price_group = FactoryGirl.create(:price_group, :facility => @facility)
+      @price_group2 = FactoryGirl.create(:price_group, :facility => @facility)
+      @user = FactoryGirl.create(:user)
+      FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @user.reload
 
       @user_price_group_ids = @user.price_groups.map(&:id)
@@ -243,7 +243,7 @@ describe Product do
                                                       :start_date => Time.zone.now + 2.day, 
                                                       :expire_date => Time.zone.now + 4.days + 1.second,
                                                       :can_purchase => false)
-      Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group2)
+      FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group2)
       @user_price_group_ids = @user.reload.price_groups.map(&:id)
       @product.should be_can_purchase(@user_price_group_ids)
     end
@@ -270,7 +270,7 @@ describe Product do
                                                   :start_date => Time.zone.now - 5.days, 
                                                   :expire_date => Time.zone.now - 4.days,
                                                   :can_purchase => false)
-      Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group2)
+      FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group2)
       @user_price_group_ids = @user.reload.price_groups.map(&:id)
       @product.should_not be_can_purchase(@user_price_group_ids)
 

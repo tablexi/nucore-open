@@ -7,14 +7,14 @@ describe FacilityAccountsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable=Factory.create(:facility)
-    @facility_account=Factory.create(:facility_account, :facility => @authable)
-    @item=Factory.create(:item, :facility_account => @facility_account, :facility => @authable)
+    @authable=FactoryGirl.create(:facility)
+    @facility_account=FactoryGirl.create(:facility_account, :facility => @authable)
+    @item=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
     @account=create_nufs_account_with_owner
     grant_role(@purchaser, @account)
     grant_role(@owner, @account)
-    @order=Factory.create(:order, :user => @purchaser, :created_by => @purchaser.id, :facility => @authable)
-    @order_detail=Factory.create(:order_detail, :product => @item, :order => @order, :account => @account)
+    @order=FactoryGirl.create(:order, :user => @purchaser, :created_by => @purchaser.id, :facility => @authable)
+    @order_detail=FactoryGirl.create(:order_detail, :product => @item, :order => @order, :account => @account)
   end
 
   context 'index' do
@@ -110,7 +110,7 @@ describe FacilityAccountsController do
         @params={
           :facility_id => @authable.url_name,
           :id => @account.id,
-          :account => Factory.attributes_for(:nufs_account)
+          :account => FactoryGirl.attributes_for(:nufs_account)
         }
       end
 
@@ -134,7 +134,7 @@ describe FacilityAccountsController do
       before :each do
         @method=:post
         @action=:create
-        @acct_attrs=Factory.attributes_for(:nufs_account)
+        @acct_attrs=FactoryGirl.attributes_for(:nufs_account)
         @params={
           :id => @account.id,
           :facility_id => @authable.url_name,
@@ -317,7 +317,7 @@ describe FacilityAccountsController do
       @action=:show_statement
 
       2.times do
-        @statement=Factory.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => @account)
+        @statement=FactoryGirl.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => @account)
         sleep 1 # need different timestamp on statement
       end
 

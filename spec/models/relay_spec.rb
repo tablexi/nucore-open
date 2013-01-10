@@ -13,10 +13,10 @@ describe Relay do
   context 'with relay' do
 
     before :each do
-      @facility         = Factory.create(:facility)
-      @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @instrument       = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
-      @relay            = Factory.create(:relay, :instrument => @instrument)
+      @facility         = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @instrument       = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @relay            = FactoryGirl.create(:relay, :instrument => @instrument)
     end
 
     it { should validate_uniqueness_of(:port).scoped_to(:ip) }

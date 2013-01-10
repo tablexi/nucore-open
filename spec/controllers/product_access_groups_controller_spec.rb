@@ -8,18 +8,18 @@ describe ProductAccessGroupsController do
   end  
   
   before :each do
-    @authable         = Factory.create(:facility)
-    @facility_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @instrument       = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+    @authable         = FactoryGirl.create(:facility)
+    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @instrument       = @authable.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
     @params={ :instrument_id => @instrument.url_name, :facility_id => @authable.url_name }    
   end
   
   context 'index' do
     before :each do
-      @level = Factory.create(:product_access_group, :product => @instrument)
-      @level2 = Factory.create(:product_access_group, :product => @instrument)
-      @instrument2 = @authable.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
-      @level3 = Factory.create(:product_access_group, :product => @instrument2)
+      @level = FactoryGirl.create(:product_access_group, :product => @instrument)
+      @level2 = FactoryGirl.create(:product_access_group, :product => @instrument)
+      @instrument2 = @authable.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @level3 = FactoryGirl.create(:product_access_group, :product => @instrument2)
       
       @action = :index
       @method = :get
@@ -51,7 +51,7 @@ describe ProductAccessGroupsController do
     end
     context 'correct info' do
       before :each do
-        @params.merge!({:product_access_group => Factory.attributes_for(:product_access_group)})
+        @params.merge!({:product_access_group => FactoryGirl.attributes_for(:product_access_group)})
       end
       it_should_allow_managers_and_senior_staff_only :redirect, 'do create' do
         assigns[:facility].should == @authable
@@ -63,7 +63,7 @@ describe ProductAccessGroupsController do
     end
     context 'missing data' do
       before :each do
-        @params.merge!({:product_access_group => Factory.attributes_for(:product_access_group, :name => '')})
+        @params.merge!({:product_access_group => FactoryGirl.attributes_for(:product_access_group, :name => '')})
       end
       it_should_allow_managers_and_senior_staff_only :success, 'do create' do
         assigns[:facility].should == @authable
@@ -79,7 +79,7 @@ describe ProductAccessGroupsController do
     before :each do
       @action = :edit
       @method = :get
-      @product_access_group = Factory.create(:product_access_group, :product_id => @instrument.id)
+      @product_access_group = FactoryGirl.create(:product_access_group, :product_id => @instrument.id)
       @params.merge!({:id => @product_access_group})
     end
     it_should_allow_managers_and_senior_staff_only :success, 'do edit' do
@@ -93,7 +93,7 @@ describe ProductAccessGroupsController do
     before :each do
       @action = :update
       @method = :post
-      @product_access_group = Factory.create(:product_access_group, :product_id => @instrument.id)
+      @product_access_group = FactoryGirl.create(:product_access_group, :product_id => @instrument.id)
       @params.merge!({:id => @product_access_group.id})
     end
     context 'correct info' do
@@ -127,7 +127,7 @@ describe ProductAccessGroupsController do
     before :each do
       @method=:delete
       @action=:destroy
-      @product_access_group = Factory.create(:product_access_group, :product => @instrument)
+      @product_access_group = FactoryGirl.create(:product_access_group, :product => @instrument)
       @params.merge!({:id => @product_access_group.id})
     end
     it_should_allow_managers_and_senior_staff_only :redirect, 'do delete' do

@@ -85,7 +85,7 @@ describe AccountUsersController do
     before :each do
       @method=:delete
       @action=:destroy
-      @account_user=Factory.create(:account_user, {
+      @account_user=FactoryGirl.create(:account_user, {
         :user_role => AccountUser::ACCOUNT_ADMINISTRATOR,
         :account_id => @authable.id,
         :user_id => @staff.id,

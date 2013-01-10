@@ -6,7 +6,7 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
   before(:all) { create_users }
 
   before(:each) do
-    @authable=Factory.create(:facility)
+    @authable=FactoryGirl.create(:facility)
     @account=create_nufs_account_with_owner
   end
 
@@ -111,7 +111,7 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
     before(:each) do
       @method=:delete
       @action=:destroy
-      @account_user=Factory.create(:account_user, {
+      @account_user=FactoryGirl.create(:account_user, {
         :user => @purchaser,
         :account => @account,
         :user_role => AccountUser::ACCOUNT_PURCHASER,

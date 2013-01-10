@@ -4,15 +4,15 @@ require 'timecop'
 describe OrderDetail do
   before(:each) do
     Settings.order_details.status_change_hooks = nil
-    @facility = Factory.create(:facility)
-    @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @user     = Factory.create(:user)
-    @item     = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+    @facility = FactoryGirl.create(:facility)
+    @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @user     = FactoryGirl.create(:user)
+    @item     = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
     @item.should be_valid
-    @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
-    @order    = @user.orders.create(Factory.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
+    @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+    @order    = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
     @order.should be_valid
-    @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
+    @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
     @order_detail.state.should == 'new'
     @order_detail.version.should == 1
     @order_detail.order_status.should be_nil
@@ -21,7 +21,7 @@ describe OrderDetail do
   context 'bundle' do
 
     before :each do
-      @bundle=Factory.create(:bundle, :facility_account => @facility_account, :facility => @facility)
+      @bundle=FactoryGirl.create(:bundle, :facility_account => @facility_account, :facility => @facility)
       @bundle_product=BundleProduct.create!(:bundle => @bundle, :product => @item, :quantity => 1)
       @order_detail.bundle=@bundle
       assert @order_detail.save
@@ -59,10 +59,10 @@ describe OrderDetail do
 
   context "update account" do
     before(:each) do
-      @price_group = Factory.create(:price_group, :facility => @facility)
-      Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
+      @price_group = FactoryGirl.create(:price_group, :facility => @facility)
+      FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
       UserPriceGroupMember.create!(:price_group => @price_group, :user => @user)
-      @pp=Factory.create(:item_price_policy, :product => @item, :price_group => @price_group)
+      @pp=FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group)
     end
 
     it 'should set estimated costs and assign account' do
@@ -79,13 +79,13 @@ describe OrderDetail do
     
     context "for reservations" do
       before(:each) do
-        @instrument = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
-        @price_group = Factory.create(:price_group, :facility => @facility)
-        Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
+        @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+        @price_group = FactoryGirl.create(:price_group, :facility => @facility)
+        FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => @price_group)
         UserPriceGroupMember.create!(:price_group => @price_group, :user => @user)
-        @pp=Factory.create(:instrument_price_policy, :product=> @instrument, :price_group => @price_group)
-        @rule = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 24, :duration_mins => 15))
-        @order_detail.reservation = Factory.create(:reservation,
+        @pp=FactoryGirl.create(:instrument_price_policy, :product=> @instrument, :price_group => @price_group)
+        @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 24, :duration_mins => 15))
+        @order_detail.reservation = FactoryGirl.create(:reservation,
                 :reserve_start_at => Time.now,
                 :reserve_end_at => Time.now+1.hour,
                 :product=> @instrument
@@ -114,10 +114,10 @@ describe OrderDetail do
 
   context "item purchase validation" do
     before(:each) do
-      @account        = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
-      @price_group    = Factory.create(:price_group, :facility => @facility)
-      @pg_user_member = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
-      @item_pp        = @item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
+      @account        = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      @price_group    = FactoryGirl.create(:price_group, :facility => @facility)
+      @pg_user_member = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
+      @item_pp        = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
       @order_detail.update_attributes(:actual_cost => 20, :actual_subsidy => 10, :price_policy_id => @item_pp.id)
     end
 
@@ -130,7 +130,7 @@ describe OrderDetail do
 
     context 'needs open account' do
       before :each do
-        Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
+        FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
         define_open_account(@order_detail.product.account, @order_detail.account.account_number)
       end
 
@@ -160,13 +160,13 @@ describe OrderDetail do
 
   context "service purchase validation" do
      before(:each) do
-      @account        = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
-      @price_group    = Factory.create(:price_group, :facility => @facility)
-      @pg_user_member = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
-      @order          = @user.orders.create(Factory.attributes_for(:order, :facility_id => @facility.id, :account_id => @account.id, :created_by => @user.id))
-      @service        = @facility.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
-      @service_pp     = @service.service_price_policies.create(Factory.attributes_for(:service_price_policy, :price_group_id => @price_group.id))
-      @order_detail   = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @service.id, :account_id => @account.id))
+      @account        = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      @price_group    = FactoryGirl.create(:price_group, :facility => @facility)
+      @pg_user_member = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
+      @order          = @user.orders.create(FactoryGirl.attributes_for(:order, :facility_id => @facility.id, :account_id => @account.id, :created_by => @user.id))
+      @service        = @facility.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
+      @service_pp     = @service.service_price_policies.create(FactoryGirl.attributes_for(:service_price_policy, :price_group_id => @price_group.id))
+      @order_detail   = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @service.id, :account_id => @account.id))
       @order_detail.update_attributes(:actual_cost => 20, :actual_subsidy => 10, :price_policy_id => @service_pp.id)
     end
 
@@ -198,26 +198,26 @@ describe OrderDetail do
   context 'instrument' do
 
 #    before :each do
-#      @price_group    = Factory.create(:price_group, :facility => @facility)
-#      @pg_user_member = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
-#      @order          = @user.orders.create(Factory.attributes_for(:order, :facility_id => @facility.id, :account_id => @account.id, :created_by => @user.id))
-#      @instrument     = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
-#      @order_detail   = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @instrument.id, :account_id => @account.id))
+#      @price_group    = FactoryGirl.create(:price_group, :facility => @facility)
+#      @pg_user_member = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
+#      @order          = @user.orders.create(FactoryGirl.attributes_for(:order, :facility_id => @facility.id, :account_id => @account.id, :created_by => @user.id))
+#      @instrument     = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+#      @order_detail   = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @instrument.id, :account_id => @account.id))
 #    end
 
 
     context 'problem orders' do
 
 #      before :each do
-#        @rule           = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17))
-#        @instrument_pp  = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id))
+#        @rule           = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17))
+#        @instrument_pp  = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id))
 #        @reservation    = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
 #                                                          :reserve_start_min => 0, :reserve_start_meridian => 'am',
 #                                                          :duration_value => 60, :duration_unit => 'minutes')
 #
 #        @order_detail.reservation=@reservation
 #        define_open_account(@order_detail.product.account, @order_detail.account.account_number)
-#        Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
+#        FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => @price_group)
 #
 #        @order_detail.to_inprocess!
 #        @order_detail.to_complete!
@@ -242,28 +242,28 @@ describe OrderDetail do
   describe "#problem_order?" do
     before :each do
       # create some instruments and schedule rules
-      @actuals_instrument=Factory.create(:instrument,
+      @actuals_instrument=FactoryGirl.create(:instrument,
         :facility_account => @facility_account,
         :facility => @facility
       )
-      @both_instrument = Factory.create(:instrument,
+      @both_instrument = FactoryGirl.create(:instrument,
         :facility_account => @facility_account,
         :facility => @facility
       )
-      @no_actuals_instrument = Factory.create(:instrument,
+      @no_actuals_instrument = FactoryGirl.create(:instrument,
         :facility_account => @facility_account,
         :facility => @facility
       )
 
       @no_actuals_instrument.relay.destroy
 
-      @instrument_wo_pp = Factory.create(:instrument,
+      @instrument_wo_pp = FactoryGirl.create(:instrument,
         :facility_account => @facility_account,
         :facility => @facility
       )
       
       [@no_actuals_instrument, @actuals_instrument, @both_instrument, @instrument_wo_pp].each do |instrument|
-        sr = Factory.create(:schedule_rule, :instrument => instrument)
+        sr = FactoryGirl.create(:schedule_rule, :instrument => instrument)
       end
 
       # refresh associations so the instruments will know about their shiny new schedule rules
@@ -272,21 +272,21 @@ describe OrderDetail do
       end
 
       # create the price policies
-      @no_actuals_instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy,
+      @no_actuals_instrument.instrument_price_policies.create!(FactoryGirl.attributes_for(:instrument_price_policy,
         :price_group  => @user.price_groups.first
       ))
-      @actuals_instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy,
+      @actuals_instrument.instrument_price_policies.create!(FactoryGirl.attributes_for(:instrument_price_policy,
         :price_group      => @user.price_groups.first,
         :usage_rate       => 1,
         :reservation_rate => nil
       ))
-      @both_instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy,
+      @both_instrument.instrument_price_policies.create!(FactoryGirl.attributes_for(:instrument_price_policy,
         :price_group      => @user.price_groups.first,
         :usage_rate       => 1
       ))
 
       # create an order and some order details 
-      @order=Factory.create(:order,
+      @order=FactoryGirl.create(:order,
         :facility => @facility,
         :user => @user,
         :created_by => @user.id,
@@ -295,19 +295,19 @@ describe OrderDetail do
       )
 
       # create the order_details
-      @no_actuals_od  = Factory.create(:order_detail, :order => @order, :product => @no_actuals_instrument)
-      @actuals_od     = Factory.create(:order_detail, :order => @order, :product => @actuals_instrument)
-      @both_od        = Factory.create(:order_detail, :order => @order, :product => @both_instrument)
-      @no_pp_od       = Factory.create(:order_detail, :order => @order, :product => @instrument_wo_pp)
+      @no_actuals_od  = FactoryGirl.create(:order_detail, :order => @order, :product => @no_actuals_instrument)
+      @actuals_od     = FactoryGirl.create(:order_detail, :order => @order, :product => @actuals_instrument)
+      @both_od        = FactoryGirl.create(:order_detail, :order => @order, :product => @both_instrument)
+      @no_pp_od       = FactoryGirl.create(:order_detail, :order => @order, :product => @instrument_wo_pp)
 
 
-      @no_actuals_od.reservation = Factory(:reservation, :product => @no_actuals_instrument)
+      @no_actuals_od.reservation = FactoryGirl.build(:reservation, :product => @no_actuals_instrument)
       @no_actuals_od.save!
-      @actuals_od.reservation = Factory(:reservation, :product => @actuals_instrument)
+      @actuals_od.reservation = FactoryGirl.build(:reservation, :product => @actuals_instrument)
       @actuals_od.save!
-      @both_od.reservation = Factory(:reservation, :product => @both_instrument)
+      @both_od.reservation = FactoryGirl.build(:reservation, :product => @both_instrument)
       @both_od.save!
-      @no_pp_od.reservation = Factory(:reservation, :product => @both_instrument)
+      @no_pp_od.reservation = FactoryGirl.build(:reservation, :product => @both_instrument)
       @no_pp_od.save!
       
       # travel to the future to complete the order_details
@@ -388,15 +388,15 @@ describe OrderDetail do
     context 'needs price policy' do
 
       before :each do
-        @price_group3 = Factory.create(:price_group, :facility => @facility)
+        @price_group3 = FactoryGirl.create(:price_group, :facility => @facility)
         UserPriceGroupMember.create!(:price_group => @price_group3, :user => @user)
-        Factory.create(:price_group_product, :product => @item, :price_group => @price_group3, :reservation_window => nil)
+        FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group3, :reservation_window => nil)
         @order_detail.reload
       end
 
 
       it 'should assign a price policy' do
-        pp=Factory.create(:item_price_policy, :product => @item, :price_group => @price_group3)
+        pp=FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group3)
         @order_detail.price_policy.should be_nil
         @order_detail.to_inprocess!
         @order_detail.to_complete!
@@ -430,7 +430,7 @@ describe OrderDetail do
       end
 
       it "should not transition to cancelled from reconciled" do
-        Factory.create(:item_price_policy, :product => @item, :price_group => @price_group3)
+        FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group3)
         @order_detail.to_inprocess!
         @order_detail.to_complete!
         @order_detail.to_reconciled!
@@ -440,7 +440,7 @@ describe OrderDetail do
       end
 
       it "should not transition to cancelled if part of journal" do
-        journal=Factory.create(:journal, :facility => @facility, :reference => 'xyz', :created_by => @user.id, :journal_date => Time.zone.now)
+        journal=FactoryGirl.create(:journal, :facility => @facility, :reference => 'xyz', :created_by => @user.id, :journal_date => Time.zone.now)
         @order_detail.update_attribute :journal_id, journal.id
         @order_detail.reload.journal.should == journal
         @order_detail.to_inprocess!
@@ -451,7 +451,7 @@ describe OrderDetail do
       end
 
       it "should not transition to cancelled if part of statement" do
-        statement=Factory.create(:statement, :facility => @facility, :created_by => @user.id, :account => @account)
+        statement=FactoryGirl.create(:statement, :facility => @facility, :created_by => @user.id, :account => @account)
         @order_detail.update_attribute :statement_id, statement.id
         @order_detail.reload.statement.should == statement
         @order_detail.to_inprocess!
@@ -462,7 +462,7 @@ describe OrderDetail do
       end
 
       it "should transition to reconciled" do
-        Factory.create(:item_price_policy, :product => @item, :price_group => @price_group3)
+        FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group3)
         @order_detail.to_inprocess!
         @order_detail.to_complete!
         @order_detail.state.should == 'complete'
@@ -490,7 +490,7 @@ describe OrderDetail do
 
   context 'statement' do
     before :each do
-      @statement=Factory.create(:statement, :facility => @facility, :created_by => @user.id, :account => @account)
+      @statement=FactoryGirl.create(:statement, :facility => @facility, :created_by => @user.id, :account => @account)
     end
 
     it { should allow_value(nil).for(:statement) }
@@ -500,7 +500,7 @@ describe OrderDetail do
 
   context 'journal' do
     before :each do
-      @journal=Factory.create(:journal, :facility => @facility, :reference => 'xyz', :created_by => @user.id, :journal_date => Time.zone.now)
+      @journal=FactoryGirl.create(:journal, :facility => @facility, :reference => 'xyz', :created_by => @user.id, :journal_date => Time.zone.now)
     end
 
     it { should allow_value(nil).for(:journal) }
@@ -561,14 +561,14 @@ describe OrderDetail do
       @order_detail.reviewed_at = 1.day.from_now
       @order_detail.save
       
-      @order_detail2 = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
+      @order_detail2 = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
       @order_detail2.to_complete
       @order_detail2.reviewed_at = 1.day.ago
       @order_detail2.save!
     end
     
     it 'should not be disputable if its not complete' do
-      @order_detail3 = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
+      @order_detail3 = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
       @order_detail3.should_not be_can_dispute
     end
     it 'should not be in dispute if the review date has passed' do
@@ -617,13 +617,13 @@ describe OrderDetail do
       assert @order.save
 
       # extra facility records to make sure we scope properly
-      @facility2 = Factory.create(:facility)
-      @facility_account2 = @facility2.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @user2     = Factory.create(:user)
-      @item2     = @facility2.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account2.id))
-      @account2  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user2, :created_by => @user2, :user_role => 'Owner']])
-      @order2    = @user2.orders.create(Factory.attributes_for(:order, :created_by => @user2.id, :facility => @facility2))
-      @order_detail2 = @order2.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @item2.id, :account_id => @account2.id))
+      @facility2 = FactoryGirl.create(:facility)
+      @facility_account2 = @facility2.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @user2     = FactoryGirl.create(:user)
+      @item2     = @facility2.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account2.id))
+      @account2  = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user2, :created_by => @user2, :user_role => 'Owner']])
+      @order2    = @user2.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user2.id, :facility => @facility2))
+      @order_detail2 = @order2.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @item2.id, :account_id => @account2.id))
     end
 
     it 'should give recent order details of given facility only' do
@@ -718,7 +718,7 @@ describe OrderDetail do
 
   context 'ordered_on_behalf_of?' do
     it 'should return true if the associated order was ordered by someone else' do
-      @user2 = Factory.create(:user)
+      @user2 = FactoryGirl.create(:user)
       @order_detail.order.update_attributes(:created_by_user => @user2)
       @order_detail.reload.should be_ordered_on_behalf_of
     end
@@ -732,7 +732,7 @@ describe OrderDetail do
   
   context 'ordered_or_reserved_in_range' do
     before :each do
-      @user = Factory.create(:user)
+      @user = FactoryGirl.create(:user)
       @od_yesterday = place_product_order(@user, @facility, @item, @account)
       @od_yesterday.order.update_attributes(:ordered_at => (Time.zone.now - 1.day))
       
@@ -743,7 +743,7 @@ describe OrderDetail do
 
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
       @instrument=@facility.instruments.create(
-          Factory.attributes_for(
+          FactoryGirl.attributes_for(
             :instrument,
             :facility_account => @facility_account,
             :min_reserve_mins => 60,
@@ -778,7 +778,7 @@ describe OrderDetail do
       setup_reservation @facility, @facility_account, @account, @user
       place_reservation @facility, @order_detail, start_date
       InstrumentPricePolicy.all.each{|pp| pp.update_attribute :cancellation_cost, 5.0}
-      Factory.create :user_price_group_member, :user_id => @user.id, :price_group_id => @price_group.id
+      FactoryGirl.create :user_price_group_member, :user_id => @user.id, :price_group_id => @price_group.id
     end
 
     it 'should cancel as admin and not have cancellation fee' do
@@ -835,9 +835,9 @@ describe OrderDetail do
         end
 
         it 'should not destroy merge order when there are other details' do
-          @service=@facility.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
+          @service=@facility.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
           Service.any_instance.stubs(:active_survey?).returns(true)
-          @order.order_details.create(Factory.attributes_for(:order_detail, :product_id => @service.id, :account_id => @account.id))
+          @order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product_id => @service.id, :account_id => @account.id))
           @order.order_details.size.should == 2
           @order_detail.destroy
           @order.reload.should_not be_frozen
@@ -864,9 +864,9 @@ describe OrderDetail do
         end
 
         it 'should update order_id but not delete merge order when there is another detail' do
-          @service=@facility.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
+          @service=@facility.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
           Service.any_instance.stubs(:active_survey?).returns(true)
-          @order.order_details.create(Factory.attributes_for(:order_detail, :product_id => @service.id, :account_id => @account.id))
+          @order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product_id => @service.id, :account_id => @account.id))
           assert @order_detail.reload.save
           @order_detail.reload.order.should == @merge_to_order
           assert_nothing_raised do
@@ -902,9 +902,9 @@ describe OrderDetail do
 
       context 'service' do
         before :each do
-          @service=@facility.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
+          @service=@facility.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
           Service.any_instance.stubs(:active_survey?).returns(true)
-          @service_order_detail=@order.order_details.create(Factory.attributes_for(:order_detail, :product_id => @service.id, :account_id => @account.id))
+          @service_order_detail=@order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product_id => @service.id, :account_id => @account.id))
         end
 
         it 'should not update order_id if there is an incomplete active survey' do
@@ -940,9 +940,9 @@ describe OrderDetail do
 
       context 'instrument' do
         before :each do
-          options=Factory.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
+          options=FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
           @instrument=@facility.instruments.create(options)
-          @instrument_order_detail=@order.order_details.create(Factory.attributes_for(:order_detail, :product_id => @instrument.id, :account_id => @account.id))
+          @instrument_order_detail=@order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product_id => @instrument.id, :account_id => @account.id))
         end
 
         it 'should not update order_id if there is an incomplete reservation' do
