@@ -58,9 +58,33 @@ class Reservation < ActiveRecord::Base
   # Scopes
   #####
   def self.active
-    where("reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)").
+    not_cancelled.
+    where("(orders.state = 'purchased' OR orders.state IS NULL)").
+    joins_order
+  end
+
+  def self.joins_order
     joins('LEFT JOIN order_details ON order_details.id = reservations.order_detail_id').
     joins('LEFT JOIN orders ON orders.id = order_details.order_id')
+  end
+
+  def self.not_cancelled
+    where(:canceled_at => nil)
+  end
+
+  def self.not_started
+    where(:actual_start_at => nil)
+  end
+
+  def self.not_this_reservation(reservation)
+    # old version
+    # where('reservations.id <> ?', id || 0)
+
+    if reservation.id
+      where('reservations.id <> ?', reservation.id)
+    else
+      scoped
+    end
   end
 
   def self.today
@@ -86,6 +110,19 @@ class Reservation < ActiveRecord::Base
     reservations=find(:all, :conditions => "reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)", :order => 'reserve_end_at asc', :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id'])
     reservations.delete_if{|r| r.reserve_end_at < t}
     reservations
+  end
+
+  def self.overlapping(start_at, end_at)
+    # remove millisecond precision from time
+    tstart_at = Time.zone.parse(start_at.to_s)
+    tend_at   = Time.zone.parse(end_at.to_s)
+    
+    where("((reserve_start_at <= :start AND reserve_end_at >= :end) OR
+          (reserve_start_at >= :start AND reserve_end_at <= :end) OR
+          (reserve_start_at <= :start AND reserve_end_at > :start) OR
+          (reserve_start_at < :end AND reserve_end_at >= :end) OR
+          (reserve_start_at = :start AND reserve_end_at = :end))",
+          :start => tstart_at, :end => tend_at)
   end
 
   # Instance Methods

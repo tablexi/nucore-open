@@ -50,25 +50,17 @@ module Reservations::Validations
   # purchased, admin, or in-cart reservation. Should not check reservations that
   # are unpurchased in other user's carts.
   def conflicting_reservation
-    # remove millisecond precision from time
-    tstart_at = Time.zone.parse(reserve_start_at.to_s)
-    tend_at   = Time.zone.parse(reserve_end_at.to_s)
-    order_id  = order_detail.nil? ? 0 : order_detail.order_id
+    # order_id  = order_detail.nil? ? 0 : order_detail.order_id
+    order_id = order_detail.try(:order_id) || 0
 
     Reservation.
-    joins('LEFT JOIN order_details ON order_details.id = reservations.order_detail_id',
-          'LEFT JOIN orders ON orders.id = order_details.order_id').
-    where("reservations.product_id = ? AND
-          reservations.id <> ? AND
-          reservations.canceled_at IS NULL AND
-          reservations.actual_end_at IS NULL AND
-          (orders.state = 'purchased' OR orders.state IS NULL OR orders.id = ?) AND
-          ((reserve_start_at <= ? AND reserve_end_at >= ?) OR
-          (reserve_start_at >= ? AND reserve_end_at <= ?) OR
-          (reserve_start_at <= ? AND reserve_end_at > ?) OR
-          (reserve_start_at < ? AND reserve_end_at >= ?) OR
-          (reserve_start_at = ? AND reserve_end_at = ?))",
-          product.id, id||0, order_id, tstart_at, tend_at, tstart_at, tend_at, tstart_at, tstart_at, tend_at, tend_at, tstart_at, tend_at).first
+      joins_order.
+      where(:product_id => product.id).
+      not_this_reservation(self).
+      not_cancelled.
+      not_started.
+      where("(orders.state = 'purchased' OR orders.state IS NULL OR orders.id = ?)", order_id).
+      overlapping(reserve_start_at, reserve_end_at).first
   end
 
   def satisfies_minimum_length?
