@@ -2,20 +2,20 @@ require 'spec_helper'
 
 describe ProductUser do
   it "can be created with valid attributes" do
-    @facility         = Factory.create(:facility)
-    @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @item             = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id, :requires_approval => true))
-    @user             = Factory.create(:user)
+    @facility         = FactoryGirl.create(:facility)
+    @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @item             = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id, :requires_approval => true))
+    @user             = FactoryGirl.create(:user)
 
     @product_user     = ProductUser.create({:product => @item, :user => @user, :approved_by => @user.id})
     @product_user.should be_valid
   end
   
   it "should assign approved_at on creation" do
-    @facility         = Factory.create(:facility)
-    @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @item             = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id, :requires_approval => true))
-    @user             = Factory.create(:user)
+    @facility         = FactoryGirl.create(:facility)
+    @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @item             = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id, :requires_approval => true))
+    @user             = FactoryGirl.create(:user)
 
     @product_user     = ProductUser.create({:product => @item, :user => @user, :approved_by => @user.id})
     @product_user.approved_at.should_not be_nil

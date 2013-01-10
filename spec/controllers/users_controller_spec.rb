@@ -6,7 +6,7 @@ describe UsersController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable = Factory.create(:facility)
+    @authable = FactoryGirl.create(:facility)
     @params={ :facility_id => @authable.url_name }
   end
 
@@ -16,14 +16,14 @@ describe UsersController do
     before :each do
       @method=:get
       @action=:index
-      @inactive_user = Factory.create(:user, :first_name => 'Inactive')
+      @inactive_user = FactoryGirl.create(:user, :first_name => 'Inactive')
 
-      @active_user = Factory.create(:user, :first_name => 'Active')
+      @active_user = FactoryGirl.create(:user, :first_name => 'Active')
       place_and_complete_item_order(@active_user, @authable)
       # place two orders to make sure it only returns the user once
       place_and_complete_item_order(@active_user, @authable)
       
-      @lapsed_user = Factory.create(:user, :first_name => 'Lapsed')
+      @lapsed_user = FactoryGirl.create(:user, :first_name => 'Lapsed')
       @old_order_detail = place_and_complete_item_order(@lapsed_user, @authable)
       @old_order_detail.order.update_attributes(:ordered_at => 400.days.ago)
     end
@@ -35,7 +35,7 @@ describe UsersController do
 
     context 'with newly created user' do
       before :each do
-        @user = Factory.create(:user)
+        @user = FactoryGirl.create(:user)
         @params.merge!({ :user => @user.id })
       end
       it_should_allow_operators_only :success, 'set the user' do
@@ -73,7 +73,7 @@ describe UsersController do
       before :each do
         @method=:post
         @action=:create
-        @params.merge!(:group_name => UserRole::FACILITY_DIRECTOR, :user => Factory.attributes_for(:user))
+        @params.merge!(:group_name => UserRole::FACILITY_DIRECTOR, :user => FactoryGirl.attributes_for(:user))
       end
 
       it_should_allow_operators_only :redirect do

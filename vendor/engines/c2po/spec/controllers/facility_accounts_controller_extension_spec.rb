@@ -7,14 +7,14 @@ describe FacilityAccountsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable=Factory.create(:facility)
-    @facility_account=Factory.create(:facility_account, :facility => @authable)
-    @item=Factory.create(:item, :facility_account => @facility_account, :facility => @authable)
-    @account=Factory.create(:credit_card_account, :account_users_attributes => [ Factory.attributes_for(:account_user, :user => @owner) ])
+    @authable=FactoryGirl.create(:facility)
+    @facility_account=FactoryGirl.create(:facility_account, :facility => @authable)
+    @item=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
+    @account=FactoryGirl.create(:credit_card_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner) ])
     grant_role(@purchaser, @account)
     grant_role(@owner, @account)
-    @order=Factory.create(:order, :user => @purchaser, :created_by => @purchaser.id, :facility => @authable)
-    @order_detail=Factory.create(:order_detail, :product => @item, :order => @order, :account => @account)
+    @order=FactoryGirl.create(:order, :user => @purchaser, :created_by => @purchaser.id, :facility => @authable)
+    @order_detail=FactoryGirl.create(:order_detail, :product => @item, :order => @order, :account => @account)
   end
 
 
@@ -26,7 +26,7 @@ describe FacilityAccountsController do
       @params={
         :facility_id => @authable.url_name,
         :id => @account.id,
-        :account => Factory.attributes_for(:purchase_order_account)
+        :account => FactoryGirl.attributes_for(:purchase_order_account)
       }
     end
 
@@ -34,7 +34,7 @@ describe FacilityAccountsController do
     context 'with affiliate' do
 
       before :each do
-        user=Factory.create(:user)
+        user=FactoryGirl.create(:user)
 
         owner={
           :user => user,
@@ -47,7 +47,7 @@ describe FacilityAccountsController do
           :account_users_attributes => [owner],
         }
 
-        @account=Factory.create(:purchase_order_account, account_attrs)
+        @account=FactoryGirl.create(:purchase_order_account, account_attrs)
 
         @params[:id]=@account.id
         @params[:class_type]='PurchaseOrderAccount'
@@ -90,7 +90,7 @@ describe FacilityAccountsController do
     before :each do
       @method=:post
       @action=:create
-      @acct_attrs=Factory.attributes_for(:purchase_order_account)
+      @acct_attrs=FactoryGirl.attributes_for(:purchase_order_account)
       @acct_attrs[:affiliate]=@acct_attrs[:affiliate].name
 
       @params={
@@ -124,7 +124,7 @@ describe FacilityAccountsController do
 
       before :each do
         @params[:class_type]='CreditCardAccount'
-        @acct_attrs=Factory.attributes_for(:credit_card_account)
+        @acct_attrs=FactoryGirl.attributes_for(:credit_card_account)
         @acct_attrs[:affiliate]=@acct_attrs[:affiliate].name
         @params[:account]=@acct_attrs
       end
@@ -143,7 +143,7 @@ describe FacilityAccountsController do
   context 'credit_cards with account' do
 
     before :each do
-      ccact=Factory.build(:credit_card_account)
+      ccact=FactoryGirl.build(:credit_card_account)
       prepare_for_account_show(:credit_cards, ccact)
       @params[:selected_account]=ccact.id
     end
@@ -189,7 +189,7 @@ describe FacilityAccountsController do
   context 'purchase_orders with account' do
 
     before :each do
-      poact=Factory.build(:purchase_order_account)
+      poact=FactoryGirl.build(:purchase_order_account)
       prepare_for_account_show(:purchase_orders, poact)
     end
 
@@ -234,7 +234,7 @@ describe FacilityAccountsController do
   context 'update_credit_cards' do
 
     before :each do
-      ccact=Factory.build(:credit_card_account)
+      ccact=FactoryGirl.build(:credit_card_account)
       prepare_for_account_update(:update_credit_cards, ccact)
     end
 
@@ -260,7 +260,7 @@ describe FacilityAccountsController do
   context 'update_purchase_orders' do
 
     before :each do
-      @poact=Factory.build(:purchase_order_account)
+      @poact=FactoryGirl.build(:purchase_order_account)
       prepare_for_account_update(:update_purchase_orders, @poact)
     end
 
@@ -291,8 +291,8 @@ describe FacilityAccountsController do
     @action=action
     account.account_users_attributes = [{:user_id => @purchaser.id, :user_role => AccountUser::ACCOUNT_OWNER, :created_by => @admin.id }]
     assert account.save
-    @price_policy=Factory.create(:item_price_policy, :item => @item, :price_group => @nupg)
-    @price_group_product=Factory.create(:price_group_product, :product => @item, :price_group => @nupg, :reservation_window => nil)
+    @price_policy=FactoryGirl.create(:item_price_policy, :item => @item, :price_group => @nupg)
+    @price_group_product=FactoryGirl.create(:price_group_product, :product => @item, :price_group => @nupg, :reservation_window => nil)
     @order_detail.account=account
     @order_detail.assign_price_policy
     assert @order_detail.save
@@ -317,7 +317,7 @@ describe FacilityAccountsController do
     @params={ :facility_id => @authable.url_name }
     account.account_users_attributes = [{:user_id => @purchaser.id, :user_role => AccountUser::ACCOUNT_OWNER, :created_by => @admin.id }]
     assert account.save
-    statement=Factory.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => account)
+    statement=FactoryGirl.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => account)
     @order_detail.to_complete!
     @order_detail.update_attributes(:account => account, :statement => statement, :fulfilled_at => Time.zone.now-1.day, :actual_cost => 10, :actual_subsidy => 2)
   end

@@ -19,10 +19,10 @@ describe GeneralReportsController do
     before :each do
       @complete_status = OrderStatus.complete.first
 
-      @user = Factory.create(:user)
-      @authable=Factory.create(:facility)
-      @facility_account=@authable.facility_accounts.create!(Factory.attributes_for(:facility_account))
-      @item = @authable.items.create!(Factory.attributes_for(:item, :facility_account => @facility_account))
+      @user = FactoryGirl.create(:user)
+      @authable=FactoryGirl.create(:facility)
+      @facility_account=@authable.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
+      @item = @authable.items.create!(FactoryGirl.attributes_for(:item, :facility_account => @facility_account))
 
       @account = create_nufs_account_with_owner :guest
       define_open_account @item.account, @account.account_number
@@ -43,14 +43,14 @@ describe GeneralReportsController do
       @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today = place_and_complete_item_order(@user, @authable, @account)
       @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today.order.update_attributes(:ordered_at => 1.day.ago)
       @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today.update_attributes(:fulfilled_at => 1.day.ago)
-      @journal_today = Factory.create(:journal, :facility => @authable, :created_by => @admin.id, :journal_date => Time.zone.now)
+      @journal_today = FactoryGirl.create(:journal, :facility => @authable, :created_by => @admin.id, :journal_date => Time.zone.now)
       @journal_today.create_journal_rows!([@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today])
       @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today.change_status!(OrderStatus.reconciled.first)
 
       @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday = place_and_complete_item_order(@user, @authable, @account)
       @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday.order.update_attributes(:ordered_at => 1.day.ago)
       @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday.update_attributes(:fulfilled_at => 1.day.ago)
-      @journal_yesterday = Factory.create(:journal, :facility => @authable, :created_by => @admin.id, :journal_date => 1.day.ago)
+      @journal_yesterday = FactoryGirl.create(:journal, :facility => @authable, :created_by => @admin.id, :journal_date => 1.day.ago)
       @journal_yesterday.create_journal_rows!([@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday])
       @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday.change_status!(OrderStatus.reconciled.first)
 

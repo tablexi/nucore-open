@@ -6,7 +6,7 @@ describe FacilityUsersController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable=Factory.create(:facility)
+    @authable=FactoryGirl.create(:facility)
     @params={ :facility_id => @authable.url_name }
   end
 

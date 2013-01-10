@@ -6,9 +6,9 @@ describe FacilityOrdersController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable=Factory.create(:facility)
-    @facility_account=Factory.create(:facility_account, :facility => @authable)
-    @product=Factory.create(:item,
+    @authable=FactoryGirl.create(:facility)
+    @facility_account=FactoryGirl.create(:facility_account, :facility => @authable)
+    @product=FactoryGirl.create(:item,
       :facility_account => @facility_account,
       :facility => @authable
     )
@@ -157,7 +157,7 @@ describe FacilityOrdersController do
 
       context 'with instrument' do
         before :each do
-          options=Factory.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
+          options=FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
           @instrument=@authable.instruments.create(options)
           @params[:product_add]=@instrument.id
         end
@@ -169,7 +169,7 @@ describe FacilityOrdersController do
 
       context 'with service' do
         before :each do
-          @service=@authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
+          @service=@authable.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
           @params[:product_add]=@service.id
         end
 
@@ -211,14 +211,14 @@ describe FacilityOrdersController do
 
       context 'with bundle' do
         before :each do
-          @bundle=@authable.bundles.create(Factory.attributes_for(:bundle, :facility_account_id => @facility_account.id))
+          @bundle=@authable.bundles.create(FactoryGirl.attributes_for(:bundle, :facility_account_id => @facility_account.id))
           @params[:product_add]=@bundle.id
           BundleProduct.create!(:bundle => @bundle, :product => @product, :quantity => 1)
         end
 
         context 'has items' do
           before :each do
-            item=Factory.create(:item, :facility_account => @facility_account, :facility => @authable)
+            item=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
             BundleProduct.create!(:bundle => @bundle, :product => item, :quantity => 1)
           end
 
@@ -229,7 +229,7 @@ describe FacilityOrdersController do
 
         context 'has instrument' do
           before :each do
-            options=Factory.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
+            options=FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
             @instrument=@authable.instruments.create(options)
             BundleProduct.create!(:bundle => @bundle, :product => @instrument, :quantity => 1)
           end
@@ -241,7 +241,7 @@ describe FacilityOrdersController do
 
         context 'has service' do
           before :each do
-            @service=@authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
+            @service=@authable.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
             BundleProduct.create!(:bundle => @bundle, :product => @service, :quantity => 1)
           end
 
@@ -327,7 +327,7 @@ describe FacilityOrdersController do
     before :each do
       @method = :get
       @action = :tab_counts
-      @order_detail2=Factory.create(:order_detail, :order => @order, :product => @product)
+      @order_detail2=FactoryGirl.create(:order_detail, :order => @order, :product => @product)
       
       @authable.order_details.non_reservations.new_or_inprocess.size.should == 2
 

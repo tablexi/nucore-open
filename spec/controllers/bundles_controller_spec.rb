@@ -6,13 +6,13 @@ describe BundlesController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable=Factory.create(:facility)
-    @facility_account=Factory.create(:facility_account, :facility => @authable)
-    @bundle=Factory.create(:bundle, :facility_account => @facility_account, :facility => @authable)
+    @authable=FactoryGirl.create(:facility)
+    @facility_account=FactoryGirl.create(:facility_account, :facility => @authable)
+    @bundle=FactoryGirl.create(:bundle, :facility_account => @facility_account, :facility => @authable)
     
     # Create at least one item in the bundle, otherwise bundle.can_purchase? will return false
-    item = Factory.create(:item, :facility_account => @facility_account, :facility => @authable)
-    price_policy = item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group => @nupg))
+    item = FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
+    price_policy = item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group => @nupg))
     bundle_product = BundleProduct.new(:bundle => @bundle, :product => item, :quantity => 1)
     bundle_product.save!
   end
@@ -201,7 +201,7 @@ describe BundlesController do
     before(:each) do
       @method=:post
       @action=:create
-      @params={ :facility_id => @authable.url_name, :bundle => Factory.attributes_for(:bundle) }
+      @params={ :facility_id => @authable.url_name, :bundle => FactoryGirl.attributes_for(:bundle) }
     end
 
     it_should_require_login
@@ -225,7 +225,7 @@ describe BundlesController do
       @params={
         :facility_id => @authable.url_name,
         :id => @bundle.url_name,
-        :bundle => Factory.attributes_for(:bundle, :url_name => @bundle.url_name)
+        :bundle => FactoryGirl.attributes_for(:bundle, :url_name => @bundle.url_name)
       }
     end
 

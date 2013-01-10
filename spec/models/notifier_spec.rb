@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Notifier do
   before :each do
-    @user = Factory.create(:user)
-    @facility = Factory.create(:facility)
+    @user = FactoryGirl.create(:user)
+    @facility = FactoryGirl.create(:facility)
     @order_detail = place_and_complete_item_order(@user, @facility)
   end
   

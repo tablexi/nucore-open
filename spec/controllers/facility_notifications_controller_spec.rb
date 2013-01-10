@@ -9,17 +9,17 @@ describe FacilityNotificationsController do
   
   before :each do
     Settings.billing.review_period = 7.days
-    @authable=Factory.create(:facility)
-    @user=Factory.create(:user)
-    @account=Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
-    @authable_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
+    @authable=FactoryGirl.create(:facility)
+    @user=FactoryGirl.create(:user)
+    @account=FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+    @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @params={ :facility_id => @authable.url_name }
     
     @order_detail1 = place_and_complete_item_order(@user, @authable, @account)
     @order_detail2 = place_and_complete_item_order(@user, @authable, @account)
     
-    @account2=Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
-    @authable_account2 = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
+    @account2=FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+    @authable_account2 = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @order_detail3 = place_and_complete_item_order(@user, @authable, @account2)
   end
   after :each do

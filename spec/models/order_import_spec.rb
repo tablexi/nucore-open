@@ -33,32 +33,32 @@ describe OrderImport do
     
     before_import = 10.days.ago
     Timecop.travel(before_import) do
-      @authable         = Factory.create(:facility)
-      @facility_account = @authable.facility_accounts.create!(Factory.attributes_for(:facility_account))
+      @authable         = FactoryGirl.create(:facility)
+      @facility_account = @authable.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
       
       grant_role(@director, @authable)
-      @item             = @authable.items.create!(Factory.attributes_for(:item,
+      @item             = @authable.items.create!(FactoryGirl.attributes_for(:item,
         :facility_account_id => @facility_account.id,
         :name => "Example Item"
       ))
-      @service          = @authable.services.create!(Factory.attributes_for(:service,
+      @service          = @authable.services.create!(FactoryGirl.attributes_for(:service,
         :facility_account_id => @facility_account.id,
         :name => "Example Service"
       ))
 
       # price stuff
-      @price_group      = @authable.price_groups.create!(Factory.attributes_for(:price_group))
-      @pg_member        = Factory.create(:user_price_group_member, :user => @guest, :price_group => @price_group)
-      @item_pp=@item.item_price_policies.create!(Factory.attributes_for(:item_price_policy,
+      @price_group      = @authable.price_groups.create!(FactoryGirl.attributes_for(:price_group))
+      @pg_member        = FactoryGirl.create(:user_price_group_member, :user => @guest, :price_group => @price_group)
+      @item_pp=@item.item_price_policies.create!(FactoryGirl.attributes_for(:item_price_policy,
         :price_group_id => @price_group.id
       ))
-      @service_pp=@service.service_price_policies.create!(Factory.attributes_for(:service_price_policy,
+      @service_pp=@service.service_price_policies.create!(FactoryGirl.attributes_for(:service_price_policy,
         :price_group_id => @price_group.id
       ))
 
-      @guest2 = Factory.create :user, :username => 'guest2'
-      @pg_member        = Factory.create(:user_price_group_member, :user => @guest2, :price_group => @price_group)
-      @account          = Factory.create(:nufs_account,
+      @guest2 = FactoryGirl.create :user, :username => 'guest2'
+      @pg_member        = FactoryGirl.create(:user_price_group_member, :user => @guest2, :price_group => @price_group)
+      @account          = FactoryGirl.create(:nufs_account,
         :description => "dummy account",
         :account_number => '111-2222222-33333333-01',
         :account_users_attributes => [

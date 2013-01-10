@@ -9,22 +9,22 @@ describe ReservationsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable         = Factory.create(:facility)
-    @facility_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @account          = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @guest, :created_by => @guest, :user_role => 'Owner']])
-    @price_group      = @authable.price_groups.create(Factory.attributes_for(:price_group))
-    @pg_member        = Factory.create(:user_price_group_member, :user => @guest, :price_group => @price_group)
+    @authable         = FactoryGirl.create(:facility)
+    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @guest, :created_by => @guest, :user_role => 'Owner']])
+    @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
+    @pg_member        = FactoryGirl.create(:user_price_group_member, :user => @guest, :price_group => @price_group)
     # create instrument, min reserve time is 60 minutes, max is 60 minutes
-    @options          = Factory.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
+    @options          = FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
     @instrument       = @authable.instruments.create(@options)
     assert @instrument.valid?
-    @price_group_product = Factory.create(:price_group_product, :product => @instrument, :price_group => @price_group)
+    @price_group_product = FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => @price_group)
     # add rule, available every day from 9 to 5, 60 minutes duration
-    @rule             = @instrument.schedule_rules.create(Factory.attributes_for(:schedule_rule, :end_hour => 23))
+    @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :end_hour => 23))
     # create price policy with default window of 1 day
-    @price_policy     = @instrument.instrument_price_policies.create(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id, :usage_rate => 1))
+    @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id, :usage_rate => 1))
     # create order, order detail
-    @order            = @guest.orders.create(Factory.attributes_for(:order, :created_by => @guest.id, :account => @account))
+    @order            = @guest.orders.create(FactoryGirl.attributes_for(:order, :created_by => @guest.id, :account => @account))
     @order.add(@instrument, 1)
     @order_detail     = @order.order_details.first
 
@@ -93,7 +93,7 @@ describe ReservationsController do
       context 'schedule rules' do
         before :each do
           @instrument.update_attributes(:requires_approval => true)
-          @restriction_level = Factory.create(:product_access_group, :product_id => @instrument.id)
+          @restriction_level = FactoryGirl.create(:product_access_group, :product_id => @instrument.id)
           @rule.product_access_groups = [@restriction_level]
           @rule.save!
         end
@@ -179,10 +179,10 @@ describe ReservationsController do
     before :each do
       @method=:post
       @action=:create
-      @order            = @guest.orders.create(Factory.attributes_for(:order, :created_by => @admin.id, :account => @account))
+      @order            = @guest.orders.create(FactoryGirl.attributes_for(:order, :created_by => @admin.id, :account => @account))
       @order.add(@instrument, 1)
       @order_detail     = @order.order_details.first
-      @price_policy_past = @instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id, :start_date => 7.days.ago, :expire_date => 1.day.ago, :usage_rate => 2, :reservation_rate => 0))
+      @price_policy_past = @instrument.instrument_price_policies.create!(FactoryGirl.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id, :start_date => 7.days.ago, :expire_date => 1.day.ago, :usage_rate => 2, :reservation_rate => 0))
       @params={
         :order_id => @order.id,
         :order_detail_id => @order_detail.id,
@@ -272,9 +272,9 @@ describe ReservationsController do
 
       context 'extra order details' do
         before :each do
-          @service=@authable.services.create(Factory.attributes_for(:service, :facility_account_id => @facility_account.id))
+          @service=@authable.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
           Service.any_instance.stubs(:active_survey?).returns(true)
-          @service_order_detail=@order.order_details.create(Factory.attributes_for(:order_detail, :product_id => @service.id, :account_id => @account.id))
+          @service_order_detail=@order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product_id => @service.id, :account_id => @account.id))
         end
 
         it_should_allow :director, 'to create a reservation on merge order detail and redirect to order summary when merge order is not destroyed' do
@@ -344,7 +344,7 @@ describe ReservationsController do
     context 'with new account' do
 
       before :each do
-        @account2=Factory.create(:nufs_account, :account_users_attributes => [{:user => @guest, :created_by => @guest, :user_role => 'Owner'}])
+        @account2=FactoryGirl.create(:nufs_account, :account_users_attributes => [{:user => @guest, :created_by => @guest, :user_role => 'Owner'}])
         define_open_account(@instrument.account, @account2.account_number)
         @params.merge!({ :order_account => @account2.id })
         @order.account.should == @account
@@ -364,9 +364,9 @@ describe ReservationsController do
         @order.account.should be_nil
         @order_detail.account.should be_nil
 
-        @price_group2      = @authable.price_groups.create(Factory.attributes_for(:price_group))
-        @pg_account        = Factory.create(:account_price_group_member, :account => @account, :price_group => @price_group2)
-        @price_policy2     = @instrument.instrument_price_policies.create!(Factory.attributes_for(:instrument_price_policy, :price_group_id => @price_group2.id, :usage_rate => 1, :usage_subsidy => 0.25))
+        @price_group2      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
+        @pg_account        = FactoryGirl.create(:account_price_group_member, :account => @account, :price_group => @price_group2)
+        @price_policy2     = @instrument.instrument_price_policies.create!(FactoryGirl.attributes_for(:instrument_price_policy, :price_group_id => @price_group2.id, :usage_rate => 1, :usage_subsidy => 0.25))
         sign_in @guest
       end
       it "should use the policy based on the account because it's cheaper" do
@@ -609,8 +609,8 @@ describe ReservationsController do
         @method=:get
         @action=:switch_instrument
         @params.merge!(:reservation_id => @reservation.id)
-        Factory.create(:relay, :instrument => @instrument)
-        @random_user = Factory.create(:user)
+        FactoryGirl.create(:relay, :instrument => @instrument)
+        @random_user = FactoryGirl.create(:user)
       end
 
       context 'on' do
@@ -667,8 +667,8 @@ describe ReservationsController do
           before :each do
             ## (setup stolen from orders_controller_spec)
             ## create a purchasable item
-            @item = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
-            @item_pp=@item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
+            @item = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+            @item_pp=@item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
             @item_pp.reload.restrict_purchase=false
 
             ## make it an accessory of the reserved product
@@ -719,8 +719,8 @@ describe ReservationsController do
         @params.merge!(:reservation_id => @reservation.id)
 
         ## create a purchasable item
-        @item = @authable.items.create!(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
-        @item_pp=@item.item_price_policies.create!(Factory.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
+        @item = @authable.items.create!(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+        @item_pp=@item.item_price_policies.create!(FactoryGirl.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
         @item_pp.reload.restrict_purchase=false
 
         # make it an accessory of the reserved product

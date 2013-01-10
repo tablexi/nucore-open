@@ -12,8 +12,8 @@ if AccountManager.using_statements?
       @order_detail2 = place_and_complete_item_order(@user, @authable, @account)
       @order_detail2.update_attributes(:reviewed_at => nil)
 
-      @account2=Factory.create(@account_sym, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']], :facility_id => @authable.id)
-      @authable_account2 = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
+      @account2=FactoryGirl.create(@account_sym, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']], :facility_id => @authable.id)
+      @authable_account2 = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @order_detail3 = place_and_complete_item_order(@user, @authable, @account2)
 
       [@order_detail1, @order_detail3].each do |od|
@@ -30,11 +30,11 @@ if AccountManager.using_statements?
     end
 
     before(:each) do
-      @authable=Factory.create(:facility)
-      @user=Factory.create(:user)
+      @authable=FactoryGirl.create(:facility)
+      @user=FactoryGirl.create(:user)
       UserRole.grant(@user, UserRole::ADMINISTRATOR)
-      @account=Factory.create(@account_sym, :account_users_attributes => [Hash[:user => @owner, :created_by => @user, :user_role => 'Owner']], :facility_id => @authable.id)
-      @statement=Factory.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => @account)
+      @account=FactoryGirl.create(@account_sym, :account_users_attributes => [Hash[:user => @owner, :created_by => @user, :user_role => 'Owner']], :facility_id => @authable.id)
+      @statement=FactoryGirl.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => @account)
       @params={ :facility_id => @authable.url_name }
     end
 

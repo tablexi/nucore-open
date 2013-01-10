@@ -1,15 +1,15 @@
 shared_examples_for PricePoliciesController do |product_type|
   before(:each) do
     @product_type = product_type
-    @authable         = Factory.create(:facility)
-    @facility_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
+    @authable         = FactoryGirl.create(:facility)
+    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
 
     # Delete the default price groups since they get in the way of testing
     PriceGroup.all.each { |pg| pg.delete }
 
-    @price_group      = @authable.price_groups.create(Factory.attributes_for(:price_group))
-    @price_group2     = @authable.price_groups.create(Factory.attributes_for(:price_group))
-    @product          = @authable.send(product_type.to_s.pluralize).create(Factory.attributes_for(product_type, :facility_account_id => @facility_account.id))
+    @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
+    @price_group2     = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
+    @product          = @authable.send(product_type.to_s.pluralize).create(FactoryGirl.attributes_for(product_type, :facility_account_id => @facility_account.id))
     @price_policy     = make_price_policy(@price_group)
     @price_policy.should be_valid
     @params={ :facility_id => @authable.url_name, :"#{product_type}_id" => @product.url_name }
@@ -102,7 +102,7 @@ shared_examples_for PricePoliciesController do |product_type|
           assigns[:price_policies][1].unit_cost.should == @price_group2_policy.unit_cost
         end
         it "should leave can_purchase as false if there isn't an existing policy for the group, but there are policies" do
-          @price_group3 = @authable.price_groups.create(Factory.attributes_for(:price_group))
+          @price_group3 = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
           do_request
           assigns[:price_policies].map(&:price_group).should == [@price_policy.price_group, @price_group2_policy.price_group, @price_group3]
           assigns[:price_policies].size.should == 3
@@ -164,9 +164,9 @@ shared_examples_for PricePoliciesController do |product_type|
 
 
     it 'should not allow edit of assigned effective price policy' do
-      @account  = Factory.create(:nufs_account, :account_users_attributes => [Hash[:user => @director, :created_by => @director, :user_role => 'Owner']])
-      @order    = @director.orders.create(Factory.attributes_for(:order, :created_by => @director.id))
-      @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail).update(:product_id => @product.id, :account_id => @account.id, :price_policy => @price_policy))
+      @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @director, :created_by => @director, :user_role => 'Owner']])
+      @order    = @director.orders.create(FactoryGirl.attributes_for(:order, :created_by => @director.id))
+      @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @product.id, :account_id => @account.id, :price_policy => @price_policy))
       UserPriceGroupMember.create!(:price_group => @price_group, :user => @director)
       maybe_grant_always_sign_in :director
       do_request
@@ -185,7 +185,7 @@ shared_examples_for PricePoliciesController do |product_type|
       })
 
       @authable.price_groups.each do |pg|
-        @params.merge!(:"price_policy_#{pg.id}" => Factory.attributes_for(:"#{@product_type}_price_policy"))
+        @params.merge!(:"price_policy_#{pg.id}" => FactoryGirl.attributes_for(:"#{@product_type}_price_policy"))
       end
     end
 
@@ -306,7 +306,7 @@ shared_examples_for PricePoliciesController do |product_type|
         end
 
         it 'should create a new price policy that cant be purchased for a new price group' do
-          @price_group3 = @authable.price_groups.create(Factory.attributes_for(:price_group))
+          @price_group3 = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
           do_request
           @product.price_policies.map(&:price_group).should be_include @price_group3
 
@@ -389,7 +389,7 @@ shared_examples_for PricePoliciesController do |product_type|
 
   def make_price_policy(price_group, extra_attr = {})
     extra_attr.merge!(:price_group_id => price_group.id)
-    @product.send(:"#{@product_type}_price_policies").create(Factory.attributes_for(:"#{@product_type}_price_policy", extra_attr))
+    @product.send(:"#{@product_type}_price_policies").create(FactoryGirl.attributes_for(:"#{@product_type}_price_policy", extra_attr))
   end
 
   def set_policy_date(time_in_future=0)

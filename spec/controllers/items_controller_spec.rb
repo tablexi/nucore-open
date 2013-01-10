@@ -11,10 +11,10 @@ describe ItemsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable         = Factory.create(:facility)
-    @facility_account = @authable.facility_accounts.create(Factory.attributes_for(:facility_account))
-    @item             = @authable.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
-    @item_pp          = @item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group => @nupg))
+    @authable         = FactoryGirl.create(:facility)
+    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @item             = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+    @item_pp          = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group => @nupg))
     @params={ :facility_id => @authable.url_name, :id => @item.url_name }
   end
 
@@ -166,7 +166,7 @@ describe ItemsController do
     before :each do
       @method=:post
       @action=:create
-      @params.merge!(:item => Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @params.merge!(:item => FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
     end
 
     it_should_allow_managers_only :redirect do
@@ -183,7 +183,7 @@ describe ItemsController do
     before :each do
       @method=:put
       @action=:update
-      @params.merge!(:item => Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @params.merge!(:item => FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
     end
 
     it_should_allow_managers_only :redirect do

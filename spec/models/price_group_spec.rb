@@ -3,8 +3,8 @@ require 'spec_helper'
 describe PriceGroup do
 
   before :each do
-    @facility     = Factory.create(:facility)
-    @price_group  = @facility.price_groups.create(Factory.attributes_for(:price_group))
+    @facility     = FactoryGirl.create(:facility)
+    @price_group  = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
   end
 
 
@@ -17,7 +17,7 @@ describe PriceGroup do
   end
 
   it "should require unique name within a facility" do
-    @price_group2 = @facility.price_groups.build(Factory.attributes_for(:price_group).update(:name => @price_group.name))
+    @price_group2 = @facility.price_groups.build(FactoryGirl.attributes_for(:price_group).update(:name => @price_group.name))
     @price_group2.should_not be_valid
     @price_group2.errors[:name].should_not be_nil
   end
@@ -26,8 +26,8 @@ describe PriceGroup do
   context 'can_purchase?' do
 
     before :each do
-      @facility_account=@facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-      @product=@facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @facility_account=@facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @product=@facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
     end
 
     it 'should not be able to purchase product' do
@@ -43,7 +43,7 @@ describe PriceGroup do
 
   describe 'can_delete?' do
     it 'should not be deletable if global' do
-      @global_price_group = Factory.build(:price_group)
+      @global_price_group = FactoryGirl.build(:price_group)
       @global_price_group.save(:validate => false)
       @global_price_group.should be_persisted
       @global_price_group.should_not be_can_delete
@@ -60,9 +60,9 @@ describe PriceGroup do
     
     context 'with price policy' do
       before :each do
-        @facility_account = @facility.facility_accounts.create(Factory.attributes_for(:facility_account))
-        @item = @facility.items.create(Factory.attributes_for(:item, :facility_account_id => @facility_account.id))
-        @price_policy = @item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group => @price_group))
+        @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+        @item = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+        @price_policy = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group => @price_group))
       end
 
       it 'should be deletable if no orders on policy' do
@@ -72,9 +72,9 @@ describe PriceGroup do
       end
     
       it 'should not be deletable if there are orders on a policy' do
-        @user = Factory.create(:user)
-        @order = Factory.create(:order, :user => @user, :created_by => @user )
-        @order_detail = @order.order_details.create(Factory.attributes_for(:order_detail, :product => @item, :price_policy => @price_policy))
+        @user = FactoryGirl.create(:user)
+        @order = FactoryGirl.create(:order, :user => @user, :created_by => @user )
+        @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product => @item, :price_policy => @price_policy))
         @order_detail.reload.price_policy.should == @price_policy
         @price_group.should_not be_can_delete
         lambda { @price_group.destroy }.should raise_error ActiveRecord::DeleteRestrictionError
@@ -86,7 +86,7 @@ describe PriceGroup do
 
   # global price groups are special cases; we don't test them here because price groups are required to have facilities
   # it "should not be deletable if its a global price group" do
-  #   @global_price_group = Factory.create(:price_group)
+  #   @global_price_group = FactoryGirl.create(:price_group)
   #   @global_price_group.should be_valid
   #   @global_price_group.destroy.should == false
   # end
