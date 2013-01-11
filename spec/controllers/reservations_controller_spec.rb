@@ -9,24 +9,13 @@ describe ReservationsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable         = FactoryGirl.create(:facility)
-    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @guest, :created_by => @guest, :user_role => 'Owner']])
-    @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    @pg_member        = FactoryGirl.create(:user_price_group_member, :user => @guest, :price_group => @price_group)
-    # create instrument, min reserve time is 60 minutes, max is 60 minutes
-    @options          = FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
-    @instrument       = @authable.instruments.create(@options)
-    assert @instrument.valid?
-    @price_group_product = FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => @price_group)
-    # add rule, available every day from 9 to 5, 60 minutes duration
-    @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :end_hour => 23))
-    # create price policy with default window of 1 day
-    @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id, :usage_rate => 1))
-    # create order, order detail
+    setup_instrument
+    setup_user_for_purchase(@guest, @price_group)
+
     @order            = @guest.orders.create(FactoryGirl.attributes_for(:order, :created_by => @guest.id, :account => @account))
     @order.add(@instrument, 1)
     @order_detail     = @order.order_details.first
+    assert @order_detail.persisted?
 
     @params={ :order_id => @order.id, :order_detail_id => @order_detail.id }
   end

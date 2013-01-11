@@ -324,6 +324,38 @@ Spork.each_run do
     @order_detail     = @order.order_details.first
   end
 
+  #
+  # Sets up an instrument and all the necessary environment to be ready for
+  # placing reservations. Assigns the following variables:
+  # - @instrument
+  # - @authable (aka facility)
+  # - @facility_account
+  # - @price_group
+  # - @rule (schedule rule)
+  # - @price_group_product
+  #
+  def setup_instrument
+    @instrument = FactoryGirl.create(:setup_instrument)
+    @authable = @instrument.facility
+    @facility_account = @instrument.facility.facility_accounts.first
+    @price_group = @instrument.price_groups.last
+    @price_policy = @instrument.price_policies.last
+    @rule = @instrument.schedule_rules.first
+    @price_group_product = @instrument.price_group_products.first
+    @instrument
+  end
+
+  #
+  # Sets up a user with an account and as part of a price group
+  # Sets the following instance variables
+  # - @account
+  # - @pg_member
+  def setup_user_for_purchase(user, price_group)
+    @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => user, :created_by => user, :user_role => 'Owner']])
+    @pg_member        = FactoryGirl.create(:user_price_group_member, :user => user, :price_group => price_group)
+  end
+
+
   # If you changed Settings anywhere in your spec, include this as
   # in after :all to reset to the normal settings.
   def reset_settings
