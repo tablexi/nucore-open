@@ -18,7 +18,6 @@ Spork.prefork do
   require 'factory_girl'
   require 'shoulda'
   require 'mocha'
-  # require 'factories'
 
   #
   # Check for engine factories. If they exist and the engine is in use load it up

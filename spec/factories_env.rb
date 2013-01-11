@@ -23,13 +23,11 @@ end
 
 #
 # Allows overriding of factories by engines, etc.
-# FactoryGirl.class_eval <<-METHOD
-#   def self.define_default(*args, &block)
-#     return if FactoryGirl.factories.registered? args[0]
-#     define do
-#       factory *args do
-#         block.call
-#       end
-#     end
-#   end
-# METHOD
+def overridable_factory(factory_name, *args, &block)
+  return if FactoryGirl.factories.registered? factory_name
+  FactoryGirl.define do
+    factory factory_name, *args do
+      instance_eval(&block)
+    end
+  end
+end

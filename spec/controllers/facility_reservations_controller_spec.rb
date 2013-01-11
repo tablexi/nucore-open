@@ -327,6 +327,7 @@ describe FacilityReservationsController do
         @reservation.update_attributes!(:reserve_start_at => Time.zone.now, :reserve_end_at => 1.hour.from_now)
 
         @unpurchased_reservation=FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => 1.hour.from_now, :reserve_end_at => 2.hours.from_now)
+
         @order_detail2=FactoryGirl.create(:order_detail, :order => @order2, :product => @product, :reservation => @unpurchased_reservation)
 
         maybe_grant_always_sign_in :director
