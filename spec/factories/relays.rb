@@ -16,5 +16,6 @@ FactoryGirl.define do
   end
 
   factory :relay_dummy, :class => RelayDummy do
+    type 'RelayDummy'
   end
 end

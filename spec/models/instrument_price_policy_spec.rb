@@ -14,7 +14,9 @@ describe InstrumentPricePolicy do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
-      @instrument       = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account))
+      @instrument       = FactoryGirl.create(:instrument,
+                                      :facility => @facility,
+                                      :facility_account => @facility_account)
       @ipp=@instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group => @price_group))
     end
 
@@ -91,7 +93,9 @@ describe InstrumentPricePolicy do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
-      @instrument       = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account))
+      @instrument       = FactoryGirl.create(:instrument,
+                                      :facility => @facility,
+                                      :facility_account => @facility_account)
       @price_group_product=FactoryGirl.create(:price_group_product, :price_group => @price_group, :product => @instrument)
       # create rule every day from 9 am to 5 pm, no discount, duration= 30 minutes
       @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :duration_mins => 30))
@@ -370,7 +374,9 @@ describe InstrumentPricePolicy do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create!(FactoryGirl.attributes_for(:price_group))
-      @instrument       = @facility.instruments.create!(FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account))
+      @instrument       = FactoryGirl.create(:instrument,
+                                      :facility => @facility,
+                                      :facility_account => @facility_account)
       @price_group_product=FactoryGirl.create(:price_group_product, :price_group => @price_group, :product => @instrument)
       @rule             = @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24, :duration_mins => 30))
       @pp = @instrument.instrument_price_policies.create!(ipp_attributes)

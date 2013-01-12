@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 def define_purchasable_instrument
-  @instrument    = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account))
+  @instrument    = FactoryGirl.create(:instrument,
+                                        :facility => @facility,
+                                        :facility_account => @facility_account)
   @instrument_pp = FactoryGirl.create(:instrument_price_policy, :product => @instrument, :price_group => @price_group)
   FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => @price_group)
   # default rule, 9am - 5pm all days
@@ -210,7 +212,9 @@ describe Order do
     end
 
     it "should check for schedule rule changes before purchase" do
-      @instrument    = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account))
+      @instrument    = FactoryGirl.create(:instrument,
+                                            :facility => @facility,
+                                            :facility_account => @facility_account)
       @instrument_pp = FactoryGirl.create(:instrument_price_policy, :product => @instrument, :price_group => @price_group)
       FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => @price_group)
       # default rule, 9am - 5pm all days

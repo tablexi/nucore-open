@@ -8,13 +8,20 @@ FactoryGirl.define do
     initial_order_status_id { |o| find_order_status('New').id }
 
     factory :instrument, :class => Instrument do
+      ignore do
+        no_relay false
+      end
+
+      schedule { Factory.create(:schedule, :facility => facility) if facility }
+      
+
       sequence(:name) { |n| "Instrument #{n}" }
       sequence(:url_name) { |n| "instrument#{n}"  }
       min_reserve_mins 60
       max_reserve_mins 120
 
-      after_create do |inst|
-        inst.relay = FactoryGirl.create(:relay_dummy, :instrument => inst)
+      after_create do |inst, evaluator|
+        inst.relay = Factory.create(:relay_dummy, :instrument => inst) unless evaluator.no_relay
       end
     end
 

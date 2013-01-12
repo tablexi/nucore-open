@@ -79,7 +79,9 @@ describe OrderDetail do
     
     context "for reservations" do
       before(:each) do
-        @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+        @instrument = FactoryGirl.create(:instrument,
+                                            :facility => @facility,
+                                            :facility_account_id => @facility_account.id)
         @price_group = FactoryGirl.create(:price_group, :facility => @facility)
         FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => @price_group)
         UserPriceGroupMember.create!(:price_group => @price_group, :user => @user)
@@ -742,14 +744,12 @@ describe OrderDetail do
       @od_today = place_product_order(@user, @facility, @item, @account)
 
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @instrument=@facility.instruments.create(
-          FactoryGirl.attributes_for(
-            :instrument,
-            :facility_account => @facility_account,
-            :min_reserve_mins => 60,
-            :max_reserve_mins => 60
-          )
-      )
+      @instrument=FactoryGirl.create(:instrument,
+                                      :facility => @facility,
+                                      :facility_account => @facility_account,
+                                      :min_reserve_mins => 60,
+                                      :max_reserve_mins => 60)
+      
       # all reservations get placed in today
       @reservation_yesterday = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now - 1.day)
       @reservation_tomorrow = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now + 1.day)      
@@ -940,8 +940,11 @@ describe OrderDetail do
 
       context 'instrument' do
         before :each do
-          options=FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
-          @instrument=@facility.instruments.create(options)
+          @instrument = FactoryGirl.create(:instrument,
+                                            :facility => @facility,
+                                            :facility_account_id => @facility_account.id,
+                                            :min_reserve_mins => 60, 
+                                            :max_reserve_mins => 60)
           @instrument_order_detail=@order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product_id => @instrument.id, :account_id => @account.id))
         end
 

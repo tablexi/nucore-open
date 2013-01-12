@@ -8,11 +8,8 @@ class Instrument < Product
   has_many :instrument_price_policies, :foreign_key => 'product_id'
   has_many :product_access_groups, :foreign_key => 'product_id'
 
-  accepts_nested_attributes_for :relay
-
   # Validations
   # --------
-  before_validation :init_or_destroy_relay
 
   validates_presence_of :initial_order_status_id
   validates_presence_of :facility_account_id if SettingsHelper.feature_on? :recharge_accounts

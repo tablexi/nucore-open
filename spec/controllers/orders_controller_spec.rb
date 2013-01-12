@@ -112,7 +112,10 @@ describe OrdersController do
 
     context 'success' do
       before :each do
-        @instrument = @authable.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+        @instrument = FactoryGirl.create(:instrument,
+                                            :facility => @authable,
+                                            :facility_account => @facility_account,
+                                            :no_relay => true)
         @instrument_pp = @instrument.instrument_price_policies.create!(FactoryGirl.attributes_for(:instrument_price_policy, :price_group => @nupg))
         define_open_account(@instrument.account, @account.account_number)
         @reservation = place_reservation_for_instrument(@staff, @instrument, @account, Time.zone.now)
@@ -149,6 +152,20 @@ describe OrdersController do
         flash[:notice].should == 'Reservation completed successfully'
         response.should redirect_to reservations_path
       end
+
+      it 'should redirect to switch on if the instrument has a relay' do
+        @instrument.update_attributes(:relay => FactoryGirl.create(:relay_dummy, :instrument => @instrument))
+        sign_in @staff
+        do_request
+        response.should redirect_to order_order_detail_reservation_switch_instrument_path(
+          @order,
+          @order_detail,
+          @reservation,
+          :switch => 'on',
+          :redirect_to => reservations_path
+          )       
+      end
+
       it 'should redirect to receipt when purchasing multiple reservations' do
         @order.add(@instrument, 1)
         @order.order_details.size.should == 2
@@ -309,7 +326,9 @@ describe OrdersController do
 
       context 'backdating a reservation' do
         before :each do
-          @instrument = @authable.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+          @instrument = FactoryGirl.create(:instrument,
+                                              :facility => @authable,
+                                              :facility_account => @facility_account)
           @instrument_pp = @instrument.instrument_price_policies.create!(FactoryGirl.attributes_for(:instrument_price_policy, :price_group => @price_group, :start_date => 7.day.ago, :expire_date => 1.day.from_now))
           define_open_account(@instrument.account, @account.account_number)
           @reservation = place_reservation_for_instrument(@staff, @instrument, @account, 3.days.ago)
@@ -435,9 +454,12 @@ describe OrdersController do
 
     context 'instrument' do
       before :each do
-        @options=FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
         @order.clear_cart?
-        @instrument=@authable.instruments.create(@options)
+        @instrument=FactoryGirl.create(:instrument,
+                                          :facility => @authable,
+                                          :facility_account => @facility_account,
+                                          :min_reserve_mins => 60,
+                                          :max_reserve_mins => 60)
         @params[:id]=@order.id
         @params[:order][:order_details].first[:product_id] = @instrument.id
       end
@@ -677,7 +699,10 @@ describe OrdersController do
 
   context "cart meta data" do
     before(:each) do
-      @instrument       = @authable.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @instrument   = FactoryGirl.create(:instrument,
+                                          :facility => @authable,
+                                          :facility_account => @facility_account)
+                    
       @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24))
       @instrument_pp = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id))
       @instrument_pp.restrict_purchase = false

@@ -157,7 +157,7 @@ describe FacilitiesController do
       context 'has instruments' do
         before :each do
           @facility_account = FactoryGirl.create(:facility_account, :facility => @authable)
-          @authable.instruments.create!(FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account))
+          FactoryGirl.create(:instrument, :facility => @authable, :facility_account => @facility_account)
         end
         it_should_allow_all (facility_operators - [:admin]) do
           assigns(:facilities).should == [@authable]

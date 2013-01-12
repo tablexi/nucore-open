@@ -50,17 +50,19 @@ module Reservations::Validations
   # purchased, admin, or in-cart reservation. Should not check reservations that
   # are unpurchased in other user's carts.
   def conflicting_reservation
-    # order_id  = order_detail.nil? ? 0 : order_detail.order_id
     order_id = order_detail.try(:order_id) || 0
 
-    Reservation.
-      joins_order.
-      where(:product_id => product.id).
-      not_this_reservation(self).
-      not_cancelled.
-      not_started.
-      where("(orders.state = 'purchased' OR orders.state IS NULL OR orders.id = ?)", order_id).
-      overlapping(reserve_start_at, reserve_end_at).first
+    conflicting_reservations =
+      Reservation.
+        joins_order.
+        where(:product_id => product.schedule.product_ids).
+        not_this_reservation(self).
+        not_cancelled.
+        not_started.
+        where("(orders.state = 'purchased' OR orders.state IS NULL OR orders.id = ?)", order_id).
+        overlapping(reserve_start_at, reserve_end_at)
+
+    conflicting_reservations.first
   end
 
   def satisfies_minimum_length?

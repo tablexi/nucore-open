@@ -150,7 +150,9 @@ describe Reservation do
 
       @reservation2.should_not be_does_not_conflict_with_other_reservation
 
-      @instrument2 = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @instrument2 = FactoryGirl.create(:instrument,
+                                        :facility => @facility,
+                                        :facility_account => @facility_account)
 
       @reservation2.product=@instrument2
       @reservation2.should be_does_not_conflict_with_other_reservation

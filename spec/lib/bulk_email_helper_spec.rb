@@ -66,14 +66,12 @@ describe BulkEmailHelper do
     before :each do
 
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @instrument=@facility.instruments.create(
-          FactoryGirl.attributes_for(
-            :instrument,
+      @instrument=FactoryGirl.create(:instrument,
+            :facility => @facility,
             :facility_account => @facility_account,
             :min_reserve_mins => 60,
-            :max_reserve_mins => 60
-          )
-      )
+            :max_reserve_mins => 60)
+      
       @reservation_yesterday = place_reservation_for_instrument(@purchaser, @instrument, @account, Time.zone.now - 1.day)
       @reservation_tomorrow = place_reservation_for_instrument(@purchaser2, @instrument, @account, Time.zone.now + 1.day)      
       @reservation_today = place_reservation_for_instrument(@purchaser3, @instrument, @account, Time.zone.now)

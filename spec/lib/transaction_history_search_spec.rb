@@ -142,7 +142,9 @@ describe TransactionSearch do
     context "products" do
       before :each do
         @facility2 = FactoryGirl.create(:facility)
-        @instrument = @authable.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+        @instrument = FactoryGirl.create(:instrument,
+                                      :facility => @authable,
+                                      :facility_account => @facility_account)
         @service = @authable.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
         @other_item = @facility2.instruments.create(FactoryGirl.attributes_for(:item))
         # each product needs to have an order detail for it to show up

@@ -8,7 +8,9 @@ describe Instrument do
     it "should create using factory" do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @instrument       = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @instrument       = FactoryGirl.create(:instrument,
+                                      :facility => @facility,
+                                      :facility_account => @facility_account)
       @instrument.should be_valid
       @instrument.type.should == 'Instrument'
     end
@@ -22,16 +24,47 @@ describe Instrument do
     end
   end
 
+  context 'default schedule' do
+    before :each do
+      @facility = FactoryGirl.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    end
+    
+    it 'should create a default schedule' do
+      @instrument = FactoryGirl.build(:instrument,
+                                        :facility => @facility,
+                                        :facility_account => @facility_account,
+                                        :schedule => nil)
+      @instrument.schedule.should be_nil
+      @instrument.save.should be_true
+      @instrument.schedule.should be
+    end
+
+    it 'should not create a new schedule when defined' do
+      @schedule = FactoryGirl.create(:schedule, :facility => @facility)
+      @instrument = FactoryGirl.build(:instrument,
+                                        :facility => @facility,
+                                        :facility_account => @facility_account,
+                                        :schedule => @schedule)
+      @instrument.schedule.should be
+      @instrument.save.should be_true
+      @instrument.schedule.should == @schedule
+    end
+  end
+
   context "updating nested relay" do
     before :each do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @instrument       = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @instrument       = FactoryGirl.create(:instrument,
+                                              :facility => @facility,
+                                              :facility_account => @facility_account,
+                                              :no_relay => true)
     end
 
     context "existing type: 'timer' (Timer without relay)" do
       before :each do
-        @instrument.relay = RelayDummy.new
+        @instrument.relay = RelayDummy.new(:instrument => @instrument)
         @instrument.relay.save!
         @instrument.control_mechanism.should == 'timer'
       end
@@ -188,9 +221,11 @@ describe Instrument do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @options          = FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id,
-                                                 :min_reserve_mins => 60, :max_reserve_mins => 60)
-      @instrument       = @facility.instruments.create(@options)
+      @instrument       = FactoryGirl.create(:instrument,
+                                      :facility => @facility,
+                                      :facility_account => @facility_account,
+                                      :min_reserve_mins => 60,
+                                      :max_reserve_mins => 60)
       assert @instrument.valid?
       # add rule, available every day from 9 to 5, 60 minutes duration
       @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
@@ -287,9 +322,11 @@ describe Instrument do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @options          = FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id,
-                                                 :min_reserve_mins => 60, :max_reserve_mins => 60)
-      @instrument       = @facility.instruments.create(@options)
+      @instrument       = FactoryGirl.create(:instrument,
+                                      :facility => @facility,
+                                      :facility_account => @facility_account,
+                                      :min_reserve_mins => 60,
+                                      :max_reserve_mins => 60)
       assert @instrument.valid?
     end
     
@@ -358,9 +395,11 @@ describe Instrument do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @options          = FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id,
-                                                 :min_reserve_mins => 60, :max_reserve_mins => 60)
-      @instrument       = @facility.instruments.create(@options)
+      @instrument       = FactoryGirl.create(:instrument,
+                                      :facility => @facility,
+                                      :facility_account => @facility_account,
+                                      :min_reserve_mins => 60,
+                                      :max_reserve_mins => 60)
       assert @instrument.valid?
     end
     
@@ -384,9 +423,11 @@ describe Instrument do
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @options          = FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id,
-                                                 :min_reserve_mins => 60, :max_reserve_mins => 60)
-      @instrument       = @facility.instruments.create(@options)
+      @instrument       = FactoryGirl.create(:instrument,
+                                      :facility => @facility,
+                                      :facility_account => @facility_account,
+                                      :min_reserve_mins => 60,
+                                      :max_reserve_mins => 60)
       @price_group_product=FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => @price_group)
       assert @instrument.valid?
       
@@ -416,7 +457,9 @@ describe Instrument do
     before :each do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @instrument       = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @instrument       = FactoryGirl.create(:instrument,
+                                      :facility => @facility,
+                                      :facility_account => @facility_account)
       @price_group = FactoryGirl.create(:price_group, :facility => @facility)
       @user = FactoryGirl.create(:user)
       FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)

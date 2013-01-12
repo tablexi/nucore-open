@@ -10,7 +10,9 @@ describe ProductAccessGroupsController do
   before :each do
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @instrument       = @authable.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+    @instrument       = FactoryGirl.create(:instrument,
+                                      :facility => @authable,
+                                      :facility_account => @facility_account)
     @params={ :instrument_id => @instrument.url_name, :facility_id => @authable.url_name }    
   end
   
@@ -18,7 +20,9 @@ describe ProductAccessGroupsController do
     before :each do
       @level = FactoryGirl.create(:product_access_group, :product => @instrument)
       @level2 = FactoryGirl.create(:product_access_group, :product => @instrument)
-      @instrument2 = @authable.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @instrument2 = FactoryGirl.create(:instrument,
+                                      :facility => @authable,
+                                      :facility_account => @facility_account)
       @level3 = FactoryGirl.create(:product_access_group, :product => @instrument2)
       
       @action = :index

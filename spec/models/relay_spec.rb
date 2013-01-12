@@ -15,7 +15,11 @@ describe Relay do
     before :each do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @instrument       = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+      @instrument       = FactoryGirl.create(:instrument,
+                                                :facility => @facility,
+                                                :facility_account => @facility_account,
+                                                :no_relay => true)
+
       @relay            = FactoryGirl.create(:relay, :instrument => @instrument)
     end
 

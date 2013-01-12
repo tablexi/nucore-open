@@ -5,9 +5,12 @@ module Products::RelaySupport
     has_one  :relay
     has_many :instrument_statuses, :foreign_key => 'instrument_id'
 
-    validate :check_relay_with_right_type
-
+    accepts_nested_attributes_for :relay
+    
     attr_writer :control_mechanism
+    before_validation :init_or_destroy_relay
+
+    validate :check_relay_with_right_type
   end
 
   # control mechanism for instrument
@@ -62,6 +65,7 @@ module Products::RelaySupport
     if @control_mechanism
       # destroy if manual
       self.relay.destroy if @control_mechanism == 'manual' and self.relay
+      
 
       # relay_attributes aren't passed in when control_mechanism isn't relay
       # may need to init the relay

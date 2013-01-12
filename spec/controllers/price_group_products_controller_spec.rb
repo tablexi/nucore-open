@@ -9,7 +9,7 @@ describe PriceGroupProductsController do
   before(:each) do
     @authable=FactoryGirl.create(:facility)
     @facility_account=@authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @product=@authable.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+    @product = Factory.create(:instrument, :facility_account_id => @facility_account.id, :facility => @authable)    
     create_price_group_products
     @params={ :facility_id => @authable.url_name, :id => @product.url_name }
   end

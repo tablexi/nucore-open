@@ -11,7 +11,7 @@ describe BulkEmailController do
     @facility_account = FactoryGirl.create(:facility_account, :facility => @authable)
     @item = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
     @service = @authable.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
-    @instrument = @authable.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
+    @instrument = FactoryGirl.create(:instrument, :facility => @authable, :facility_account_id => @facility_account.id)
     @restricted_item = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id, :requires_approval => true))
     @params={ :facility_id => @authable.url_name }
   end

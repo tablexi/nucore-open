@@ -13,7 +13,9 @@ shared_examples_for "NonReservationProduct" do |product_type|
     FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
     FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group2)
 
-    @product = @facility.send(product_type.to_s.pluralize).create!(FactoryGirl.attributes_for(@product_type, :facility_account_id => @facility_account.id))
+    @product = FactoryGirl.create(product_type,
+                                    :facility => @facility,
+                                    :facility_account => @facility_account)
     @order = FactoryGirl.create(:order, :created_by_user => @user, :user => @user)
     @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product => @product, :quantity => 1))
   end
@@ -125,7 +127,9 @@ shared_examples_for "ReservationProduct" do |product_type|
     FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
     FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group2)
 
-    @product = @facility.send(@product_type.to_s.pluralize).create!(FactoryGirl.attributes_for(@product_type, :facility_account_id => @facility_account.id))
+    @product = FactoryGirl.create(@product_type,
+                                    :facility => @facility,
+                                    :facility_account => @facility_account)
     @product.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule))
     
     @order = FactoryGirl.create(:order, :created_by_user => @user, :user => @user)

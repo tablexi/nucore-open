@@ -10,7 +10,10 @@ describe ProductUsersController do
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    @instrument       = @authable.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id, :requires_approval => true))
+    @instrument       = FactoryGirl.create(:instrument,
+                                      :facility => @authable,
+                                      :facility_account => @facility_account,
+                                      :requires_approval => true)
     @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id))
     @price_policy.should be_valid
     @params={ :facility_id => @authable.url_name, :instrument_id => @instrument.url_name }

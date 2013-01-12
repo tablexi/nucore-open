@@ -2,8 +2,14 @@ module Products::SchedulingSupport
   extend ActiveSupport::Concern
 
   included do
+    belongs_to :schedule, :inverse_of => :products
     has_many :schedule_rules
     has_many :reservations, :foreign_key => 'product_id'
+
+    delegate :reservations, :to => :schedule, :prefix => true
+
+    before_save :create_default_schedule, :unless => :schedule
+
   end
 
   def active_reservations
@@ -73,6 +79,12 @@ module Products::SchedulingSupport
     else
       self.schedule_rules
     end
+  end
+
+  private
+
+  def create_default_schedule
+    self.schedule = Schedule.create(:name => "#{self.name} Schedule", :facility => self.facility)
   end
 
 

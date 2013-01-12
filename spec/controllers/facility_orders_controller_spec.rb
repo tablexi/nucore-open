@@ -157,8 +157,11 @@ describe FacilityOrdersController do
 
       context 'with instrument' do
         before :each do
-          options=FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
-          @instrument=@authable.instruments.create(options)
+          @instrument=FactoryGirl.create(:instrument, 
+                                           :facility => @authable,
+                                           :facility_account => @facility_account, 
+                                           :min_reserve_mins => 60, 
+                                           :max_reserve_mins => 60)
           @params[:product_add]=@instrument.id
         end
 
@@ -229,8 +232,11 @@ describe FacilityOrdersController do
 
         context 'has instrument' do
           before :each do
-            options=FactoryGirl.attributes_for(:instrument, :facility_account => @facility_account, :min_reserve_mins => 60, :max_reserve_mins => 60)
-            @instrument=@authable.instruments.create(options)
+            @instrument = FactoryGirl.create(:instrument, 
+                                                :facility => @authable,
+                                                :facility_account => @facility_account,
+                                                :min_reserve_mins => 60,
+                                                :max_reserve_mins => 60)
             BundleProduct.create!(:bundle => @bundle, :product => @instrument, :quantity => 1)
           end
 
