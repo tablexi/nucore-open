@@ -31,7 +31,7 @@ module Products::SchedulingSupport
   
   def last_available_hour
     return 23 unless schedule_rules.any?
-    max_rule = schedule_rules.max { |a,b| hour_floor(a) <=> hour_floor(b) }
+    max_rule = schedule_rules.max { |a,b| a.hour_floor <=> b.hour_floor }
     max_rule.end_min == 0 ? max_rule.end_hour - 1 : max_rule.end_hour
   end
 

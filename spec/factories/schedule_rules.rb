@@ -13,5 +13,15 @@ FactoryGirl.define do
     on_thu true
     on_fri true
     on_sat true
+
+    factory :weekend_schedule_rule do
+      on_sun true
+      on_mon false
+      on_tue false
+      on_wed false
+      on_thu false
+      on_fri false
+      on_sat true
+    end
   end
 end

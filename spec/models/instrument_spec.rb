@@ -403,17 +403,36 @@ describe Instrument do
       assert @instrument.valid?
     end
     
-    it "should have first avail hour at 9 am, last avail hour at 4 pm, with every day rule from 9 to 5" do
-      # add rule, available every day from 9 to 5, 60 minutes duration
-      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
-      assert @rule.valid?
-      @instrument.first_available_hour.should == 9
-      @instrument.last_available_hour.should == 16
-    end
-
     it 'should default to 0 and 23 if no schedule rules' do
       @instrument.first_available_hour.should == 0
       @instrument.last_available_hour.should == 23
+    end
+
+    context 'with a mon-friday rule from 9-5' do
+      before :each do
+        # add rule, monday-friday from 9 to 5, 60 minutes duration
+        @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :on_sun => false, :on_sat => false))
+        assert @rule.valid?
+      end
+
+      it "should have first avail hour at 9 am, last avail hour at 4 pm" do
+        @instrument.first_available_hour.should == 9
+        @instrument.last_available_hour.should == 16
+      end
+
+      context 'with a weekend reservation going from 8-6' do
+        before :each do
+          @rule2 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:weekend_schedule_rule, 
+                                                                  :start_hour => 8,
+                                                                  :end_hour => 18))
+          assert @rule2.valid?
+        end
+
+        it "should have first avail hour at 8 am, last avail hour at 6 pm" do
+          @instrument.first_available_hour.should == 8
+          @instrument.last_available_hour.should == 17
+        end
+      end
     end
   end
 

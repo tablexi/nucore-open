@@ -235,4 +235,10 @@ class ScheduleRule < ActiveRecord::Base
     (today - today.wday.days).to_date
   end
 
+  # If we're at, say, 4:00, return 3. If we're at 4:01, return 4.
+  def hour_floor
+    end_min == 0 ? end_hour - 1 : end_hour
+  end
+  
+
 end
