@@ -653,6 +653,10 @@ describe Reservation do
     it "should have end set to actual_end_at timestamp" do
       @cal_obj_w_actual_end['end'].should == @actual_end_at_timestamp
     end
+
+    it 'should include the instrument name' do
+      @cal_obj_w_actual_end['product'].should == @instrument.name
+    end
   end
 
   context 'for_date' do

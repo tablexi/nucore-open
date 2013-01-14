@@ -53,6 +53,7 @@ module Reservations::Rendering
       "end"    => (actual_end_at || reserve_end_at).strftime("%a, %d %b %Y %H:%M:%S"),
       "allDay" => false,
       "title"  => "Reservation",
+      "product" => product.name
     }
 
     overrides = {}
@@ -62,13 +63,13 @@ module Reservations::Rendering
           "admin"       => false,
           "email"        => order.user.email,
           "name"        => "#{order.user.full_name}",
-          "title"       => "#{order.user.first_name}\n#{order.user.last_name}",
+          "title"       => "#{order.user.first_name}\n#{order.user.last_name}"
         }
       end
     else
       overrides = {
           "admin"       => true,
-          "title"       => "Admin\nReservation",
+          "title"       => "Admin\nReservation"
         }
     end
 
