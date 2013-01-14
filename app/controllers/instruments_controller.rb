@@ -83,7 +83,7 @@ class InstrumentsController < ProductsCommonController
 
   # GET /instruments/1/schedule
   def schedule
-    @admin_reservations = @instrument.reservations.find(:all, :conditions => ['reserve_end_at > ? AND order_detail_id IS NULL', Time.zone.now])
+    @admin_reservations = @instrument.schedule.reservations.find(:all, :conditions => ['reserve_end_at > ? AND order_detail_id IS NULL', Time.zone.now])
   end
 
   def public_schedule

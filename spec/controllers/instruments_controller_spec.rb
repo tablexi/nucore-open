@@ -430,6 +430,24 @@ describe InstrumentsController do
         should render_template 'schedule'
       end
 
+      describe 'schedule sharing' do
+        before :each do
+          @admin_reservation = FactoryGirl.create(:reservation, :product => @instrument)
+          @instrument2 = FactoryGirl.create(:setup_instrument, :facility => @authable, :schedule => @instrument.schedule)
+          @admin_reservation2 = FactoryGirl.create(:reservation, :product => @instrument2)
+          sign_in @admin
+          do_request
+        end
+
+        it "should show the primary instrument's admin reservation" do
+          assigns(:admin_reservations).should include @admin_reservation
+        end
+
+        it "should show the second instrument's admin reservation" do
+          assigns(:admin_reservations).should include @admin_reservation2
+        end
+      end
+
     end
 
     context "status" do

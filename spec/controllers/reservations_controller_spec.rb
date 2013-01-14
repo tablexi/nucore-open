@@ -110,6 +110,30 @@ describe ReservationsController do
       end
     end
 
+    describe 'shared scheduling' do
+      before :each do
+        @instrument2 = FactoryGirl.create(:setup_instrument, :facility => @authable, :schedule => @instrument.schedule)
+        @reservation = FactoryGirl.create(:purchased_reservation, :product => @instrument)
+        assert @reservation.valid?
+        # Second reservation that begins immediately after the first reservation
+        @reservation2 = FactoryGirl.create(:purchased_reservation, 
+                                              :product => @instrument2,
+                                              :reserve_start_at => @reservation.reserve_end_at,
+                                              :reserve_end_at => @reservation.reserve_end_at + 1.hour)
+        assert @reservation2.valid?
+        @params.merge!(:start => 1.day.from_now.to_i)
+        sign_in @admin
+        do_request
+      end
+
+      it 'should include reservation from instrument 1' do
+        assigns(:reservations).should include @reservation
+      end
+
+      it 'should include reservation from instrument 2' do
+        assigns(:reservations).should include @reservation2
+      end
+    end
   end
 
   context 'list' do

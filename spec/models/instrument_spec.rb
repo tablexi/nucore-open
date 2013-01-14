@@ -24,33 +24,59 @@ describe Instrument do
     end
   end
 
-  context 'default schedule' do
-    before :each do
-      @facility = FactoryGirl.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    end
-    
-    it 'should create a default schedule' do
-      @instrument = FactoryGirl.build(:instrument,
-                                        :facility => @facility,
-                                        :facility_account => @facility_account,
-                                        :schedule => nil)
-      @instrument.schedule.should be_nil
-      @instrument.save.should be_true
-      @instrument.schedule.should be
+  describe 'shared schedules' do
+    context 'default schedule' do
+      before :each do
+        @facility = FactoryGirl.create(:facility)
+        @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      end
+      
+      it 'should create a default schedule' do
+        @instrument = FactoryGirl.build(:instrument,
+                                          :facility => @facility,
+                                          :facility_account => @facility_account,
+                                          :schedule => nil)
+        @instrument.schedule.should be_nil
+        @instrument.save.should be_true
+        @instrument.schedule.should be
+      end
+
+      it 'should not create a new schedule when defined' do
+        @schedule = FactoryGirl.create(:schedule, :facility => @facility)
+        @instrument = FactoryGirl.build(:instrument,
+                                          :facility => @facility,
+                                          :facility_account => @facility_account,
+                                          :schedule => @schedule)
+        @instrument.schedule.should be
+        @instrument.save.should be_true
+        @instrument.schedule.should == @schedule
+      end
     end
 
-    it 'should not create a new schedule when defined' do
-      @schedule = FactoryGirl.create(:schedule, :facility => @facility)
-      @instrument = FactoryGirl.build(:instrument,
-                                        :facility => @facility,
-                                        :facility_account => @facility_account,
-                                        :schedule => @schedule)
-      @instrument.schedule.should be
-      @instrument.save.should be_true
-      @instrument.schedule.should == @schedule
+    describe 'schedule_sharing?' do
+      context 'one instrument' do
+        before :each do
+          @facility = FactoryGirl.create(:setup_facility)
+          @instrument = FactoryGirl.create(:setup_instrument, :facility => @facility)  
+        end
+
+        it 'should not be sharing' do
+          @instrument.should_not be_schedule_sharing
+        end
+
+        context 'two instruments' do
+          before :each do
+            @instrument2 = FactoryGirl.create(:setup_instrument, :facility => @facility, :schedule => @instrument.schedule)
+          end
+
+          it 'should be sharing' do
+            @instrument.should be_schedule_sharing
+          end
+        end
+      end
     end
   end
+
 
   context "updating nested relay" do
     before :each do

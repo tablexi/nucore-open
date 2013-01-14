@@ -24,6 +24,10 @@ module Products::SchedulingSupport
     end
   end
 
+  def schedule_sharing?
+    schedule.products.count > 1
+  end
+
   def first_available_hour
     return 0 unless schedule_rules.any?
     schedule_rules.min { |a,b| a.start_hour <=> b.start_hour }.start_hour
