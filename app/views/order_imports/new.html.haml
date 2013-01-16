@@ -8,10 +8,10 @@
   %h2= t '.h2'
   = t '.instructions_html'
   = form_for [ :facility, @order_import ], :html => {:multipart => true} do |f|
-    = f.file_field :upload_file
-    = f.label :fail_on_error, "#{f.check_box :fail_on_error } #{t '.fail_on_error'}".html_safe
-    = f.label :send_receipts, "#{f.check_box :send_receipts } #{t '.send_receipts'}".html_safe
-    = submit_tag 'Import', :class => 'btn'
-
-  = link_to t('.download_link'), "#{root_path}templates/bulk_import_template.csv", :id => 'bulk-import-template'
+    #bulk-import-fields
+      = f.file_field :upload_file
+      = f.label :fail_on_error, "#{f.check_box :fail_on_error } #{t '.fail_on_error'}".html_safe
+      = f.label :send_receipts, "#{f.check_box :send_receipts } #{t '.send_receipts'}".html_safe
+      = submit_tag 'Import', :class => 'btn'
+    = link_to t('.download_link'), "#{root_path}templates/bulk_import_template.csv", :id => 'bulk-import-template'
 
