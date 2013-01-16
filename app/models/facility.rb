@@ -18,6 +18,7 @@ class Facility < ActiveRecord::Base
   has_many :price_groups, :finder_sql => proc { "SELECT * FROM price_groups WHERE price_groups.facility_id = #{self.id} OR price_groups.facility_id IS NULL ORDER BY price_groups.is_internal DESC, price_groups.display_order ASC, price_groups.name ASC" }
   has_many :journals
   has_many :products
+  has_many :schedules
   has_many :statements
   has_many :order_details, :through => :products do
     # extend to find all accounts that have ordered from the facility

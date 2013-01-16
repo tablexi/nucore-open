@@ -87,5 +87,19 @@ describe Schedule do
     end
   end
 
+  describe 'active scope' do
+    let(:facility) { FactoryGirl.create(:setup_facility) }
+    let!(:instrument) { FactoryGirl.create(:setup_instrument, :facility => facility) }
+    let!(:archived_instrument) { FactoryGirl.create(:setup_instrument, :facility => facility, :is_archived => true) }
+
+    it 'should include non-archived schedule' do
+      Schedule.active.should include instrument.schedule
+    end
+
+    it 'should not include the archived schedule' do
+      Schedule.active.should_not include archived_instrument.schedule
+    end
+  end
+
 
 end

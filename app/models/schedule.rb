@@ -10,5 +10,33 @@ class Schedule < ActiveRecord::Base
   # Validations
   # --------
   validates_presence_of :facility
+
+  # Scopes
+  # -------
+
+  def self.active
+    where("schedules.id in
+      (select schedule_id
+       from products
+       where is_archived = false
+       and schedule_id is not null
+       group by schedule_id)")
+  end
+
+  def self.ordered
+    order(:name)
+  end
+
+  # Instance methods
+  # --------
+  
+  def shared?
+    products.count > 1
+  end
+
+  def display_name
+    key = "instruments.instrument_fields.schedule.#{shared? ? 'shared' : 'unshared'}"
+    "#{I18n.t(key)}: #{name}"
+  end
   
 end

@@ -75,6 +75,29 @@ describe Instrument do
         end
       end
     end
+
+    describe 'name updating' do
+      before :each do
+        @instrument = setup_instrument(:schedule => nil)
+        @instrument2 = FactoryGirl.create(:setup_instrument, :schedule => @instrument.schedule)
+        assert @instrument.schedule == @instrument2.schedule
+      end
+
+      it "should update the schedule's name when updating the primary instrument's name" do
+        @instrument.update_attributes(:name => 'New Name')
+        @instrument.schedule.reload.name.should == 'New Name Schedule'
+      end
+
+      it 'should not call update_schedule_name if name did not change' do
+        @instrument.expects(:update_schedule_name).never
+        @instrument.update_attributes(:description => 'a description')
+      end
+
+      it "should not update the schedule's name when updating the secondary instrument" do
+        @instrument2.update_attributes(:name => 'New Name')
+        @instrument2.schedule.reload.name.should == "#{@instrument.name} Schedule"
+      end
+    end
   end
 
 

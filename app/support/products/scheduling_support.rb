@@ -9,11 +9,12 @@ module Products::SchedulingSupport
     delegate :reservations, :to => :schedule, :prefix => true
 
     before_save :create_default_schedule, :unless => :schedule
+    before_save :update_schedule_name, :if => :name_changed?
 
   end
 
   def active_reservations
-    self.reservations.active
+    self.schedule.reservations.active
   end
 
   def can_purchase? (group_ids = nil)
@@ -25,7 +26,7 @@ module Products::SchedulingSupport
   end
 
   def schedule_sharing?
-    schedule.products.count > 1
+    schedule.shared?
   end
 
   def first_available_hour
@@ -91,5 +92,10 @@ module Products::SchedulingSupport
     self.schedule = Schedule.create(:name => "#{self.name} Schedule", :facility => self.facility)
   end
 
+  def update_schedule_name
+    if self.schedule.name == "#{self.name_was} Schedule"
+      self.schedule.update_attributes(:name => "#{self.name} Schedule")
+    end
+  end
 
 end

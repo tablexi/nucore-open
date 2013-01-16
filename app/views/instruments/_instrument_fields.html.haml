@@ -4,6 +4,15 @@
 %li
   = f.check_box :show_details
   %b= t 'instruments.instrument_fields.show_details'
+
+%li
+  = f.label :schedule_id
+  - if f.object.new_record?
+    %p.instruction= t 'instruments.instrument_fields.schedule.hint'
+    = f.select :schedule_id, options_from_collection_for_select(current_facility.schedules.active.ordered, :id, :name, f.object.schedule_id), :include_blank => t('instruments.instrument_fields.schedule.unshared')
+  - else
+    = f.object.schedule.display_name
+
 %li
   = label_tag :control_mechanism
   %p.instruction= t 'instruments.instrument_fields.control_mechanism'

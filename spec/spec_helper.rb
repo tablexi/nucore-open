@@ -336,9 +336,9 @@ Spork.each_run do
   # - @rule (schedule rule)
   # - @price_group_product
   #
-  def setup_instrument
-    @instrument = FactoryGirl.create(:setup_instrument)
-    @authable = @instrument.facility
+  def setup_instrument(instrument_options = {})
+    @instrument = FactoryGirl.create(:setup_instrument, instrument_options)
+    @facility = @authable = @instrument.facility
     @facility_account = @instrument.facility.facility_accounts.first
     @price_group = @instrument.price_groups.last
     @price_policy = @instrument.price_policies.last

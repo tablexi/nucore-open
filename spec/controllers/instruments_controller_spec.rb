@@ -273,6 +273,39 @@ describe InstrumentsController do
       end
     end
 
+    describe 'shared schedule' do
+      before :each do
+        @schedule = FactoryGirl.create(:schedule, :facility => @authable)
+        sign_in @admin
+      end
+
+      context 'when wanting a new schedule' do
+        before :each do
+          @params[:instrument][:schedule_id] = ''
+        end
+
+        it 'should create a new schedule' do
+          expect { do_request }.to change{ Schedule.count }.by(1)
+        end
+          
+        it 'should be the newest schedule' do
+          do_request
+          assigns(:instrument).schedule.should == Schedule.last
+        end
+      end
+
+      context 'when selecting an existing schedule' do
+        before :each do
+          @params[:instrument][:schedule_id] = @schedule.id.to_s
+        end
+
+        it 'should use the existing schedule' do
+          do_request
+          assigns(:instrument).schedule.should == @schedule
+        end
+      end
+    end
+
     context 'fail' do
 
       before :each do

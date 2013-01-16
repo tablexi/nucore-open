@@ -758,6 +758,10 @@ en:
           max_reserve: "Maximum (minutes)"
           cancel_hours: "Cancelation Minimum (hours)"
           auto_cancel: "Automatic Cancelation (minutes)"
+      schedule:
+        hint: You may share a schedule with other products. Choose an exisiting schedule or use an unshared schedule.
+        unshared: Unshared schedule
+        shared: Shared schedule
 
   notifications:
     index:

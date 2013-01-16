@@ -9,6 +9,9 @@
 %ul.form
   = render :partial => 'admin/shared/product_manage'
   %li
+    %label= Product.human_attribute_name(:schedule_id)
+    %p= @instrument.schedule.display_name
+  %li
     - if @instrument.relay.nil?
       %label= t '.label.control_mech'
       %p= t '.res_only'
