@@ -71,6 +71,11 @@ class OrdersController < ApplicationController
         
         # make a new cart w/ instrument (unless this order is empty.. then use that one)
         @order = acting_user.cart(session_user, @order.order_details.empty?)
+
+        # wipe out stale account info in temp cart to avoid account related errors
+        @order.account = nil
+        @order.account_id = nil
+
         @order.add(first_product, 1)
 
         # bypass cart kicking user over to new reservation screen
