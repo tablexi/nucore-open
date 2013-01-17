@@ -96,7 +96,8 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
         assigns(:account_user).user_role.should == AccountUser::ACCOUNT_OWNER
         assigns(:account_user).user.should == @purchaser
         assigns(:account_user).created_by.should == @director.id
-        AccountUser.where(:account_id => @account.id, :user_role => AccountUser::ACCOUNT_OWNER).all.size.should == 1
+        # there will be two because the old owner record will have been expired
+        AccountUser.where(:account_id => @account.id, :user_role => AccountUser::ACCOUNT_OWNER).all.size.should == 2
         assigns(:account).reload.owner_user.should == @purchaser
         should set_the_flash
         assert_redirected_to facility_account_members_path(@authable, @account)

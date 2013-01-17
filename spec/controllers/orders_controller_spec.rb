@@ -95,11 +95,105 @@ describe OrdersController do
   end
 
 
+  context "update on purchase" do
+    before :each do
+      @order_detail = place_product_order(@staff, @authable, @item, @account, false)
+      @order = @order_detail.order
+      
+      # mimic visiting the cart
+      @order.validate_order!
+
+      # setup params
+      @action = :purchase
+      @method = :put
+      @params={ :id => @order.id, :order_id => @order.id }
+
+      sign_in @staff
+    end
+
+    context "update quantity" do
+      before :each do
+        #setup quantity update params
+        @params["quantity#{@order_detail.id}"] = 5
+        do_request
+      end
+
+      it "should update the quantity" do
+        @order_detail.reload
+        @order_detail.quantity.should == 5
+      end
+
+      it "should redirect to the cart" do
+        should redirect_to order_path(@order)
+      end
+
+      it "should not purchase" do
+        assigns[:order].state.should_not == "purchased"
+      end
+    end
+
+
+    context "update quantities of multiple items while keeping total the same" do
+      before :each do
+        # modify first od quantity behind the scenes
+        @order_detail1 = @order_detail
+        @order_detail1.update_attributes(:quantity => 4)
+      
+        # add another item
+        @order_detail2 = @order_detail1.order.add(@item, 3).first
+
+        # mimic cart being visited
+        @order.reload
+        @order.validate_order!
+
+        # set new quantities which are swapped in params
+        @params["quantity#{@order_detail1.id}"] = @order_detail2.quantity
+        @params["quantity#{@order_detail2.id}"] = @order_detail1.quantity
+
+        do_request
+      end
+
+      it "should update the quantities" do
+        @order_detail1.reload
+        @order_detail1.quantity.should == 3
+        @order_detail2.reload
+        @order_detail2.quantity.should == 4
+      end
+
+      it "should redirect to the cart" do
+        should redirect_to order_path(@order)
+      end
+
+      it "should not purchase" do
+        assigns[:order].state.should_not == "purchased"
+      end
+    end
+
+    context "update note" do
+      before :each do
+        #setup note update params (have to also setup quantity params)
+        @params["note#{@order_detail.id}"] = "note set on purchase"
+        do_request
+      end
+
+      it "should update the note" do
+        order_detail = assigns[:order].order_details.first
+        order_detail.reload
+        order_detail.note.should_not be_blank
+      end
+
+      it "should purchase the order" do
+        @order.reload
+        @order.state.should == 'purchased'
+      end
+    end
+  end
+
   context 'purchase' do
 
     before :each do
       @method=:put
-      @action=:purchase
+      @action=:update_or_purchase
     end
 
     it_should_require_login

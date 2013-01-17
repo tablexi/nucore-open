@@ -21,6 +21,36 @@ class Account < ActiveRecord::Base
     end
   end
 
+  def add_or_update_member(user, new_role, session_user)
+    Account.transaction do
+      # expire old owner if new 
+      if new_role == AccountUser::ACCOUNT_OWNER
+        # expire old owner record
+        @old_owner = self.owner
+        if @old_owner
+          @old_owner.deleted_at = Time.zone.now
+          @old_owner.deleted_by = session_user.id
+          @old_owner.save!
+        end
+      end
+      
+      # find non-deleted record for this user and account or init new one
+      # deleted_at MUST be nil to preserve existing audit trail
+      @account_user = AccountUser.find_or_initialize_by_account_id_and_user_id_and_deleted_at(
+        self.id,
+        user.id,
+        nil
+      )
+      # set (new?) role
+      @account_user.user_role = new_role
+      # set creation information
+      @account_user.created_by = session_user.id
+
+      raise ActiveRecord::Rollback unless @account_user.save
+    end
+
+    return @account_user
+  end
 
   def facility
     nil
@@ -100,11 +130,9 @@ class Account < ActiveRecord::Base
   end
 
   def account_pretty
-    desc="#{description} (#{account_number})"
-    desc += " [#{owner_user.name}]" if owner_user
-    desc
+    to_s true
   end
-  
+
   def account_list_item
     "#{account_number} #{description}"
   end
@@ -177,10 +205,12 @@ class Account < ActiveRecord::Base
     expires_at > Time.zone.now && suspended_at.nil?
   end
 
-  def to_s
-    "#{description} (#{account_number})"
+  def to_s(with_owner = false)
+    desc = [ description, account_number ]
+    desc << owner_user.name if with_owner && owner_user
+    desc.join ' / '
   end
-  
+
   def price_groups
     (price_group_members.collect{ |pgm| pgm.price_group } + (owner_user ? owner_user.price_groups : [])).flatten.uniq
   end 

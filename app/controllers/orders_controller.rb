@@ -2,7 +2,7 @@ class OrdersController < ApplicationController
   customer_tab  :all
 
   before_filter :authenticate_user!
-  before_filter :check_acting_as,          :except => [:cart, :add, :choose_account, :show, :remove, :purchase, :receipt, :update]
+  before_filter :check_acting_as,          :except => [:cart, :add, :choose_account, :show, :remove, :purchase, :update_or_purchase, :receipt, :update]
   before_filter :init_order,               :except => [:cart, :index, :receipt]
   before_filter :protect_purchased_orders, :except => [:cart, :receipt, :confirmed, :index]
 
@@ -33,25 +33,6 @@ class OrdersController < ApplicationController
     facility_ability = Ability.new(session_user, @order.facility, self)
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
     @order.validate_order! if @order.new?
-  end
-
-  # PUT /orders/:id/update
-  def update
-    order_detail_updates = {}
-    params.each do |key, value|
-      if /^(quantity|note)(\d+)$/ =~ key and value.present?
-        order_detail_updates[$2.to_i] ||= Hash.new
-        order_detail_updates[$2.to_i][$1.to_sym] = value
-      end
-    end
-    
-    if @order.update_details(order_detail_updates)
-      redirect_to order_path(@order) and return
-    else
-      logger.debug "errors #{@order.errors.full_messages}"
-      flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
-      render :show
-    end
   end
 
   # PUT /orders/:id/clear
@@ -90,6 +71,11 @@ class OrdersController < ApplicationController
         
         # make a new cart w/ instrument (unless this order is empty.. then use that one)
         @order = acting_user.cart(session_user, @order.order_details.empty?)
+
+        # wipe out stale account info in temp cart to avoid account related errors
+        @order.account = nil
+        @order.account_id = nil
+
         @order.add(first_product, 1)
 
         # bypass cart kicking user over to new reservation screen
@@ -235,6 +221,30 @@ class OrdersController < ApplicationController
     flash.now[:notice] = "This page is still in development; please add an account administratively"
   end
 
+
+  # PUT /orders/:id/update (submission from a cart)
+  def update_or_purchase
+    # if update button was clicked
+    if params[:commit] == "Update"
+      update
+    else
+      purchase
+    end
+  end
+
+  # PUT /orders/:id/update
+  def update
+    @order.transaction do
+      if update_order_details
+        redirect_to order_path(@order)
+      else
+        logger.debug "errors #{@order.errors.full_messages}"
+        flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
+        return render :show
+      end
+    end
+  end
+
   # PUT /orders/1/purchase
   def purchase
     facility_ability = Ability.new(session_user, @order.facility, self)
@@ -245,6 +255,21 @@ class OrdersController < ApplicationController
     
     begin
       @order.transaction do
+        # try update
+        quantities_before = @order.order_details.order("order_details.id").collect(&:quantity)
+        if update_order_details
+          quantities_after = @order.order_details.order("order_details.id").collect(&:quantity)
+          
+          if quantities_after != quantities_before
+            flash[:notice] = "Quantities have changed, please review updated prices then click \"Purchase\""
+            return redirect_to order_path(@order)
+          end
+        else
+          logger.debug "errors #{@order.errors.full_messages}"
+          flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
+          return render :show
+        end
+
         # Empty message because validate_order! and purchase! don't give us useful messages as to why they failed
         raise NUCore::PurchaseException.new("") unless @order.validate_order! && @order.purchase!
         
@@ -320,4 +345,21 @@ class OrdersController < ApplicationController
       # order('orders.ordered_at DESC').
       # paginate(:page => params[:page])
   # end
+
+
+  private
+
+  def update_order_details
+    # don't run if no updates for order_details
+
+    order_detail_updates = {}
+    params.each do |key, value|
+      if /^(quantity|note)(\d+)$/ =~ key and value.present?
+        order_detail_updates[$2.to_i] ||= Hash.new
+        order_detail_updates[$2.to_i][$1.to_sym] = value
+      end
+    end
+    
+    return @order.update_details(order_detail_updates)
+  end
 end
