@@ -4,7 +4,7 @@
 
         begin
             order=od.order
-            buyer=order.user
+            ordered_by=order.created_by_user
             account=od.account
             owner=account.owner_user
             product=od.product
@@ -16,7 +16,7 @@
                 od.facility, od.to_s, human_datetime(order.ordered_at), human_datetime(od.fulfilled_at), od.order_status.name, od.state,
 
                 # who placed the order
-                buyer.username, buyer.first_name, buyer.last_name, buyer.email,
+                ordered_by.username, ordered_by.first_name, ordered_by.last_name, ordered_by.email,
 
                 # what was ordered
                 product.url_name, product.type.underscore.humanize, product.name, od.quantity, bundle_desc,
