@@ -31,7 +31,7 @@
     %li
       - if controller_name == 'general_reports' && can?(:export_all, ReportsController)
         - attrs={ :id => 'export-all' }
-        = link_to 'Export All', '#', attrs
+        = link_to 'Export Raw', '#', attrs
 
   %div#tabs
     = render :partial => 'report_tabs'

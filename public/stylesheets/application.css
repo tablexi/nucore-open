@@ -899,9 +899,21 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
   margin-top: 1em;
 }
 
-#bulk-import form, #bulk-import-template {
-  width: 20%;
+#bulk-import form {
+  width: 50%
+}
+
+#bulk-import form, #bulk-import-template, #bulk-import-fields {
   margin: 0 auto;
+}
+
+#bulk-import-fields {
+  width: 35%;
+  margin-top: 3em;
+}
+
+#bulk-import-template {
+  text-align: center;
 }
 
 #bulk-import label {

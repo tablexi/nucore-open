@@ -100,11 +100,9 @@ class Account < ActiveRecord::Base
   end
 
   def account_pretty
-    desc="#{description} (#{account_number})"
-    desc += " [#{owner_user.name}]" if owner_user
-    desc
+    to_s true
   end
-  
+
   def account_list_item
     "#{account_number} #{description}"
   end
@@ -177,10 +175,12 @@ class Account < ActiveRecord::Base
     expires_at > Time.zone.now && suspended_at.nil?
   end
 
-  def to_s
-    "#{description} (#{account_number})"
+  def to_s(with_owner = false)
+    desc = [ description, account_number ]
+    desc << owner_user.name if with_owner && owner_user
+    desc.join ' / '
   end
-  
+
   def price_groups
     (price_group_members.collect{ |pgm| pgm.price_group } + (owner_user ? owner_user.price_groups : [])).flatten.uniq
   end 
