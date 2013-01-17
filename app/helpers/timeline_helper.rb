@@ -1,7 +1,12 @@
 module TimelineHelper
-  def reservation_classes(reservation, classes=nil)
+  def reservation_classes(reservation, product=nil)
     classes = ['unit']
-    classes << 'tip' unless reservation.blackout?
+    if reservation.product == product
+      classes << 'tip' unless reservation.blackout?
+    else  
+      classes << 'other-product'
+    end
+    
     classes << 'blackout' if reservation.blackout?
     classes << 'admin' if reservation.admin?
     classes << 'behalf_of' if reservation.ordered_on_behalf_of?

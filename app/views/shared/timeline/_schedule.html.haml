@@ -1,0 +1,6 @@
+- if schedule.shared?
+  .timeline-schedule
+    %h3= schedule.name
+    = render :partial => 'shared/timeline/instrument', :collection => schedule.products, :as => :instrument
+- else
+  = render :partial => 'shared/timeline/instrument', :locals => { :instrument => schedule.products.first }

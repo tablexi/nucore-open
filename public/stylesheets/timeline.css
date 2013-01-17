@@ -10,6 +10,25 @@
   z-index:9999;
 }
 
+.timeline-schedule {
+  background-color: #ffffff;
+  background-image: -webkit-gradient(linear, left center, right center, from(rgba(255, 255, 255, 0.00)), to(rgba(238, 238, 238, 1.00)));
+  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0.00), rgba(238, 238, 238, 1.00));
+  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0.00), rgba(238, 238, 238, 1.00));
+  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0.00), rgba(238, 238, 238, 1.00));
+  background-image: -ms-linear-gradient(left, rgba(255, 255, 255, 0.00), rgba(238, 238, 238, 1.00));
+  background-image: linear-gradient(left, rgba(255, 255, 255, 0.00), rgba(238, 238, 238, 1.00));
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,StartColorStr='#ffffff', EndColorStr='#eeeeee');
+  border-radius: 0 10px 10px 0;
+  padding: 1em 0 1.5em;
+  margin-bottom: 1.5em;
+}
+
+/* To prevent double borders */
+/*.timeline-schedule + .timeline-schedule {
+  border-top: none;
+}
+*/
 .unit_container {
   bottom:19px;
   display:block;
@@ -85,6 +104,15 @@ body .unit {
 }
 .unit.status_complete:hover {
   box-shadow:0 0 10px #3a6d88;
+}
+
+.unit.other-product {
+  opacity: 0.2;
+}
+
+.unit.other-product:hover {
+  box-shadow: none !important;
+  cursor: default;
 }
 
 .unit.behalf_of {
@@ -189,7 +217,7 @@ body .unit {
 .relay_checkbox {
   float: right;
   position: relative;
-  right: -20px;
+  right: -12px;
 }
 
 .toggle_switch {

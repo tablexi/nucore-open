@@ -14,6 +14,10 @@ module Products::SchedulingSupport
   end
 
   def active_reservations
+    self.reservations.active
+  end
+
+  def active_schedule_reservations
     self.schedule.reservations.active
   end
 
