@@ -18,9 +18,10 @@ class Schedule < ActiveRecord::Base
     where("schedules.id in
       (select schedule_id
        from products
-       where is_archived = false
+       where is_archived = :archived
        and schedule_id is not null
-       group by schedule_id)")
+       group by schedule_id)",
+    :archived => false)
   end
 
   def self.ordered

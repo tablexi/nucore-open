@@ -8,6 +8,6 @@ class ReservationsChangeFromInstrumentToProduct < ActiveRecord::Migration
   def self.down
     remove_foreign_key :reservations, :name => 'reservations_product_id_fk'
     rename_column :reservations, :product_id, :instrument_id
-    add_foreign_key :reservations, 'instrument', :name => 'reservations_instrument_id_fk'
+    add_foreign_key :reservations, :products, :column => :instrument_id, :name => 'reservations_instrument_id_fk'
   end
 end

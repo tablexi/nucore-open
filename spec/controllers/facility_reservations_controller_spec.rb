@@ -307,8 +307,8 @@ describe FacilityReservationsController do
         do_request
       end
 
-      it 'should show hidden instruments' do
-        assigns(:instruments).should =~ [@product, @instrument2]
+      it 'should show schedules for hidden instruments' do
+        assigns(:schedules).should =~ [@product.schedule, @instrument2.schedule]
       end
 
     end
