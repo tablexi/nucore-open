@@ -124,7 +124,7 @@ describe Account do
     end
   end
 
-  context "validation against product/user" do
+  context do
     before(:each) do
       @facility          = FactoryGirl.create(:facility)
       @user              = FactoryGirl.create(:user)
@@ -137,40 +137,53 @@ describe Account do
       @pg_user_member    = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
     end
 
-    it "should return nil if all conditions are met for validation" do
-      define_open_account(@item.account, @nufs_account.account_number)
-      @nufs_account.validate_against_product(@item, @user).should == nil
+    context 'description' do
+      it 'override #to_s and not include owner' do
+        @nufs_account.to_s.should include(@nufs_account.account_number)
+        @nufs_account.to_s.should include(@nufs_account.description)
+        @nufs_account.to_s.should_not include(@nufs_account.owner_user.name)
+      end
+
+      it 'override #to_s and include owner' do
+        @nufs_account.to_s(true).should include(@nufs_account.owner_user.name)
+      end
     end
 
-    context 'bundles' do
-      before :each do
-        @item2 = @facility.items.create(FactoryGirl.attributes_for(:item, :account => 78960, :facility_account_id => @facility_account.id))
-        @bundle = @facility.bundles.create(FactoryGirl.attributes_for(:bundle, :facility_account_id => @facility_account.id))
-        [ @item, @item2 ].each do |item| 
-          price_policy = item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group => @price_group))
-          BundleProduct.create!(:quantity => 1, :product => item, :bundle => @bundle) 
+    context "validation against product/user" do
+      it "should return nil if all conditions are met for validation" do
+        define_open_account(@item.account, @nufs_account.account_number)
+        @nufs_account.validate_against_product(@item, @user).should == nil
+      end
+
+      context 'bundles' do
+        before :each do
+          @item2 = @facility.items.create(Factory.attributes_for(:item, :account => 78960, :facility_account_id => @facility_account.id))
+          @bundle = @facility.bundles.create(Factory.attributes_for(:bundle, :facility_account_id => @facility_account.id))
+          [ @item, @item2 ].each do |item|
+            price_policy = item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group => @price_group))
+            BundleProduct.create!(:quantity => 1, :product => item, :bundle => @bundle)
+          end
+        end
+
+        it "should not return error if the product is a bundle and both of the bundled product's accounts are open for a chart string" do
+          [ @item, @item2 ].each{|item| define_open_account(item.account, @nufs_account.account_number) }
+          @nufs_account.validate_against_product(@bundle, @user).should be_nil
         end
       end
-
-      it "should not return error if the product is a bundle and both of the bundled product's accounts are open for a chart string" do
-        [ @item, @item2 ].each{|item| define_open_account(item.account, @nufs_account.account_number) }
-        @nufs_account.validate_against_product(@bundle, @user).should be_nil
+    
+      it "should return error if the product does not have a price policy for the account or user price groups" do
+        define_open_account(@item.account, @nufs_account.account_number)
+        @nufs_account.validate_against_product(@item, @user).should == nil
+        @pg_user_member.destroy
+        @user.reload
+        @nufs_account.reload
+        @nufs_account.validate_against_product(@item, @user).should_not == nil
+        Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
+        @pg_account_member = Factory.create(:account_price_group_member, :account => @nufs_account, :price_group => @price_group)
+        @nufs_account.reload #load fresh account with updated relationships
+        @nufs_account.validate_against_product(@item, @user).should == nil
       end
     end
-
-    it "should return error if the product does not have a price policy for the account or user price groups" do
-      define_open_account(@item.account, @nufs_account.account_number)
-      @nufs_account.validate_against_product(@item, @user).should == nil
-      @pg_user_member.destroy
-      @user.reload
-      @nufs_account.reload
-      @nufs_account.validate_against_product(@item, @user).should_not == nil
-      FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
-      @pg_account_member = FactoryGirl.create(:account_price_group_member, :account => @nufs_account, :price_group => @price_group)
-      @nufs_account.reload #load fresh account with updated relationships
-      @nufs_account.validate_against_product(@item, @user).should == nil
-    end
-
   end
 
   it 'should update order details with statement' do

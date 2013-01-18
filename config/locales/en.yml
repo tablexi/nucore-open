@@ -253,17 +253,15 @@ en:
   order_imports:
       new:
         h2: "Bulk Import"
-        fail_on_error: "Save nothing on error"
+        fail_on_error: "Halt import on error"
         send_receipts: "Send receipts"
-        download_link: "Download import template"
+        download_link: "Right-click and choose 'save target' to download import template"
         instructions_html: |
-          <p>Bulk imports are done using a CSV formatted file. Download the import template below by right clicking and choosing "Save as..".
-          Then follow the format to enter your order information. Once finished use the "Choose File" button to attach the file and then click
-          "Import" to add the orders to your facility.</p><p>By default all valid orders are saved and no receipts are sent to customers. Any
-          encountered errors are returned in a CSV file for you to correct and upload later. If you would like an error to halt the import process
-          entirely and not save any order information then check the "save nothing on error" box. If you would like receipts to be sent
-          to customers check the "send receipts" box.</p><p>For easy order entry we suggest using a spreadsheet program such as Microsoft
-          Excel to edit the import template. Once finished with entry simply "save as" a .csv file and then try to upload.</p>
+          <p>Bulk imports are done using a CSV formatted file (from Excel, save as “CSV (Comma delimited)”). The required fields are defined in the template, downloadable below.</p>
+          <p>To upload the completed CSV file, click the "Choose File" button to select the file and then click the "Import" button to add the orders to your facility.</p>
+          <p>By default, if import errors occur the valid entries are imported and the failed entries are returned in a CSV file for you to correct and upload later.
+          If you prefer to halt the import process entirely when any import error occurs (allowing you to correct the file and try again), then check the "Save nothing on error" box.</p>
+          <p>By default receipts are NOT sent to customers for bulk imported orders. If you would like receipts to be sent to customers check the "send receipts" box.</p>
 
   facility_order_details:
     edit:

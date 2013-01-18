@@ -159,7 +159,8 @@ class Order < ActiveRecord::Base
     order_details = self.order_details.find(order_detail_updates.keys)
     order_details.each do |order_detail|
       updates = order_detail_updates[order_detail.id]
-      quantity = updates[:quantity].to_i
+      # reset quantity (if present)
+      quantity = updates[:quantity].present? ? updates[:quantity].to_i : order_detail.quantity
       
       # if quantity isn't there or is 0 (and not bundled), destroy and skip
       if (quantity == 0 && !order_detail.bundled?)
@@ -179,6 +180,7 @@ class Order < ActiveRecord::Base
       order_detail.assign_estimated_price if order_detail.cost_estimated?
       order_detail.save
     end
+
     return self.errors.empty?
 
   end

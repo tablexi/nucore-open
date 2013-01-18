@@ -16,6 +16,7 @@
     %th Order #
     %th Product
     %th Quantity
+    %th Status
     %th Estimated Price
     %th Estimated Adjustment
     %th Estimated Total
@@ -30,6 +31,7 @@
       - else
         %td= ((od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)).html_safe
       %td=h od.quantity
+      %td=h od.order_status.name
       - if od.cost_estimated?
         %td=h number_to_currency od.estimated_cost
         %td=h number_to_currency od.estimated_subsidy

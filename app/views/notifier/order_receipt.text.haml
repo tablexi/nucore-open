@@ -12,6 +12,7 @@
   - if od.reservation
     == Reservation: #{od.reservation}
   == Quantity: #{od.quantity}
+  == Status: #{od.order_status.name}
   - if od.cost_estimated?
     == Estimated Price: #{number_to_currency od.estimated_cost}
     == Estimated Subsidy #{number_to_currency od.estimated_subsidy}

@@ -29,24 +29,19 @@ class FacilityAccountUsersController < ApplicationController
   def create
     @account = Account.find(params[:account_id])
     @user = User.find(params[:user_id])
-    role = params[:account_user]
+    role = params[:account_user][:user_role]
+    
+    @account_user = @account.add_or_update_member(@user, role, session_user)
+    # account owner might've changed by earlier operation... reload it
+    @account.reload
 
-    if role[:user_role] == AccountUser::ACCOUNT_OWNER
-      # ensure that an account only ever has one owner
-      @account.owner.destroy if @account.owner
-    end
-
-    @account_user = @account.account_users.new(role)
-    @account_user.user = @user
-    @account_user.created_by = session_user.id
-
-    if @account_user.save
+    if @account_user.changed? # if changed then save wasn't successful
+      flash.now[:error] = "An error was encountered while trying to add #{@user.full_name} to the #{@account.type_string} Account"
+      render(:action => 'new')
+    else
       flash[:notice] = "#{@user.full_name} was added to the #{@account.type_string} Account"
       Notifier.user_update(:account => @account, :user => @user, :created_by => session_user).deliver
       redirect_to facility_account_members_path(current_facility, @account)
-    else
-      flash.now[:error] = "An error was encountered while trying to add #{@user.full_name} to the #{@account.type_string} Account"
-      render(:action => 'new')
     end
   end
 

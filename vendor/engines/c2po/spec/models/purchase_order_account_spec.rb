@@ -21,9 +21,9 @@ describe PurchaseOrderAccount do
         :account_users_attributes => [@owner],
     }
   end
-  
+
+
   it "should handle facilities" do
-    
     account1 = PurchaseOrderAccount.create(@account_attrs)
     account1.should respond_to(:facility)
   end
@@ -37,6 +37,23 @@ describe PurchaseOrderAccount do
   
   it "should be limited to a single facility" do
     PurchaseOrderAccount.limited_to_single_facility?.should be_true
+  end
+
+
+  context 'with facility' do
+    let(:facility) { Factory.create :facility }
+    let(:account) do
+      @account_attrs[:facility] = facility
+      PurchaseOrderAccount.create @account_attrs
+    end
+
+    it 'should include the facility in the description' do
+      account.to_s.should include(account.facility.name)
+    end
+
+    it "should take a facility" do
+      account.facility.should == facility
+    end
   end
 
 end

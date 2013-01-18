@@ -23,7 +23,7 @@
       %br
       = link_to t('.link.change_account'), choose_account_order_path(@order, :reset_account => true)
       
-  = form_tag order_path(@order), :method => :put do
+  = form_for @order, :url => {:action => :update_or_purchase} do |f|
     %table#cart
       %tr
         %th
@@ -55,10 +55,8 @@
     - if @order.order_details.size > 0
       %ul.horiz{:style => "float: left"}
         %li= submit_tag 'Update', :class => 'btn'
-  - if @order.validated?
-    = form_for @order, :url => { :action => "purchase" } do |f|
-      %ul.horiz{:style => "float: left"}
-        %li= f.submit 'Purchase', :class => 'btn', :confirm => t('.confirm')
+        - if @order.validated?
+          %li= f.submit 'Purchase', :class => 'btn', :confirm => t('.confirm')
       - if acting_as?
         .backdate_fields
           = render :partial => 'edit_date', :locals => { :f => f}

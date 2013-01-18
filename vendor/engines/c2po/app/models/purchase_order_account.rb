@@ -6,12 +6,10 @@ class PurchaseOrderAccount < Account
   validates_presence_of   :account_number
 
 
-  def to_s
-    string = "#{description} (#{account_number})"
-    if facility
-      string += " - #{facility.name}"
-    end
-    string
+  def to_s(with_owner = false)
+    desc = super
+    desc += " / #{facility.name}" if facility
+    desc
   end
 
 

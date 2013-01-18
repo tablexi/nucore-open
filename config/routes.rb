@@ -87,29 +87,6 @@ Nucore::Application.routes.draw do |map|
       bundle.resources :bundle_products, :controller => 'bundle_products', :except => [:show]
     end
 
-    facility.resources :general_reports, :collection => {
-        :product => [:get, :post],
-        :account => [:get, :post],
-        :account_owner => [:get, :post],
-        :purchaser => [:get, :post],
-        :price_group => [:get, :post],
-        :assigned_to => [:get, :post]
-    }
-
-    facility.resources :instrument_reports, :collection => {
-        :instrument => [:get, :post],
-        :account => [:get, :post],
-        :account_owner => [:get, :post],
-        :purchaser => [:get, :post]
-    }
-
-    facility.resources :instrument_day_reports, :collection => {
-        :actual_quantity => [:get, :post],
-        :reserved_quantity => [:get, :post],
-        :reserved_hours => [:get, :post],
-        :actual_hours => [:get, :post]
-    }
-
     facility.resources :price_group_products, :only => [ :edit, :update ]
 
     facility.schedule 'schedule', :controller => 'facilities', :action => 'schedule'
@@ -200,7 +177,7 @@ Nucore::Application.routes.draw do |map|
   #match "/orders/all" => "orders#index", :status => "all", :as => "orders_all"
   map.remove_order '/orders/:id/remove/:order_detail_id', :controller => 'orders', :action => 'remove', :conditions => {:method => :put}
   map.add_account '/order/:id/add_account', :controller => 'orders', :action => 'add_account'
-  map.resources :orders, :member => {:add => [:get, :put], :purchase => [ :get, :put ], :receipt => :get, :clear => :put, :choose_account => [:get,:post]} do |order|
+  map.resources :orders, :member => {:add => [:get, :put], :purchase => [ :get, :put ], :update_or_purchase => [:put], :receipt => :get, :clear => :put, :choose_account => [:get,:post]} do |order|
     order.resources :order_details, :only => [:show, :update] do |order_detail|
       order_detail.order_file '/order_file', :controller => 'order_details', :action => 'order_file', :conditions => {:method => :get}
       order_detail.upload_order_file '/upload_order_file', :controller => 'order_details', :action => 'upload_order_file', :conditions => {:method => :post}
@@ -242,6 +219,26 @@ Nucore::Application.routes.draw do |map|
                                 :controller => 'surveyors', :action => 'deactivate', :conditions => {:method => :put}
   map.complete_survey '/facilities/:facility_id/services/:service_id/surveys/:external_service_id/complete',
                                 :controller => 'surveyors', :action => 'complete', :conditions => {:method => [:get, :post]}
+
+  # general reports
+  match '/facilities/:facility_id/general_reports/assigned_to' => 'general_reports#assigned_to', :as => 'assigned_to_facility_general_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/general_reports/account' => 'general_reports#account', :as => 'account_facility_general_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/general_reports/price_group' => 'general_reports#price_group', :as => 'price_group_facility_general_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/general_reports/account_owner' => 'general_reports#account_owner', :as => 'account_owner_facility_general_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/general_reports/product' => 'general_reports#product', :as => 'product_facility_general_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/general_reports/purchaser' => 'general_reports#purchaser', :as => 'purchaser_facility_general_reports', :via => [ :get, :post ]
+
+  # instrument reports
+  match '/facilities/:facility_id/instrument_reports/account' => 'instrument_reports#account', :as => 'account_facility_instrument_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/instrument_reports/account_owner' => 'instrument_reports#account_owner', :as => 'account_owner_facility_instrument_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/instrument_reports/instrument' => 'instrument_reports#instrument', :as => 'instrument_facility_instrument_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/instrument_reports/purchaser' => 'instrument_reports#purchaser', :as => 'purchaser_facility_instrument_reports', :via => [ :get, :post ]
+
+  # instrument day reports
+  match '/facilities/:facility_id/instrument_day_reports/actual_quantity' => 'instrument_day_reports#actual_quantity', :as => 'actual_quantity_facility_instrument_day_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/instrument_day_reports/reserved_quantity' => 'instrument_day_reports#reserved_quantity', :as => 'reserved_quantity_facility_instrument_day_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/instrument_day_reports/reserved_hours' => 'instrument_day_reports#reserved_hours', :as => 'reserved_hours_facility_instrument_day_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/instrument_day_reports/actual_hours' => 'instrument_day_reports#actual_hours', :as => 'actual_hours_facility_instrument_day_reports', :via => [ :get, :post ]
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
