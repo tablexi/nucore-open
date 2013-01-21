@@ -157,10 +157,10 @@ describe Account do
 
       context 'bundles' do
         before :each do
-          @item2 = @facility.items.create(Factory.attributes_for(:item, :account => 78960, :facility_account_id => @facility_account.id))
-          @bundle = @facility.bundles.create(Factory.attributes_for(:bundle, :facility_account_id => @facility_account.id))
+          @item2 = @facility.items.create(FactoryGirl.attributes_for(:item, :account => 78960, :facility_account_id => @facility_account.id))
+          @bundle = @facility.bundles.create(FactoryGirl.attributes_for(:bundle, :facility_account_id => @facility_account.id))
           [ @item, @item2 ].each do |item|
-            price_policy = item.item_price_policies.create(Factory.attributes_for(:item_price_policy, :price_group => @price_group))
+            price_policy = item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group => @price_group))
             BundleProduct.create!(:quantity => 1, :product => item, :bundle => @bundle)
           end
         end
@@ -178,8 +178,8 @@ describe Account do
         @user.reload
         @nufs_account.reload
         @nufs_account.validate_against_product(@item, @user).should_not == nil
-        Factory.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
-        @pg_account_member = Factory.create(:account_price_group_member, :account => @nufs_account, :price_group => @price_group)
+        FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
+        @pg_account_member = FactoryGirl.create(:account_price_group_member, :account => @nufs_account, :price_group => @price_group)
         @nufs_account.reload #load fresh account with updated relationships
         @nufs_account.validate_against_product(@item, @user).should == nil
       end

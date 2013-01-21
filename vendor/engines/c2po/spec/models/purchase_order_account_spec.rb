@@ -41,7 +41,7 @@ describe PurchaseOrderAccount do
 
 
   context 'with facility' do
-    let(:facility) { Factory.create :facility }
+    let(:facility) { FactoryGirl.create :facility }
     let(:account) do
       @account_attrs[:facility] = facility
       PurchaseOrderAccount.create @account_attrs
