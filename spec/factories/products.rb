@@ -61,6 +61,13 @@ FactoryGirl.define do
                            :product => product, 
                            :price_group => product.facility.price_groups.last)
     end
+
+    factory :setup_service, :class => Service do
+    end
+
+    factory :setup_item, :class => Item do
+    end
+
   end
 
   factory :setup_instrument, :class => Instrument, :parent => :setup_product do
