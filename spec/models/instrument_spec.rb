@@ -414,20 +414,87 @@ describe Instrument do
       @instrument       = @facility.instruments.create(Factory.attributes_for(:instrument, :facility_account_id => @facility_account.id))
       @price_group = Factory.create(:price_group, :facility => @facility)
       @user = Factory.create(:user)
-      Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
+      @price_group_member = Factory.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @user.reload
       @user_price_policy_ids = @user.price_groups.map(&:id)
       @price_policy = Factory.create(:instrument_price_policy, :product => @instrument, :price_group => @price_group)
       #TODO remove this line
       Factory.create(:price_group_product, :price_group => @price_group, :product => @instrument)
     end
-    it 'should be purchasable if there are schedule rules' do
-      @schedule_rule = Factory.create(:schedule_rule, :instrument => @instrument)
-      @instrument.reload
-      @instrument.should be_can_purchase(@user_price_policy_ids)
-    end
+
     it 'should not be purchasable if there are no schedule rules' do
       @instrument.should_not be_can_purchase(@user_price_policy_ids)
     end
+
+    context 'with schedule rules' do
+      before :each do
+        @schedule_rule = Factory.create(:schedule_rule, :instrument => @instrument)
+        @instrument.reload
+      end
+      it 'should be purchasable if there are schedule rules' do
+        @instrument.should be_can_purchase(@user_price_policy_ids)
+      end
+
+      context 'with no price policies at all' do
+        before :each do
+          @instrument.price_policies.clear
+        end
+        it 'should have no price policies' do
+          @instrument.price_policies.should be_empty
+        end
+        it 'should not be purchasable' do
+          @instrument.should_not be_can_purchase(@user_price_policy_ids)
+        end
+      end
+
+      context 'with current price polices, but not for user' do
+        before :each do
+          @user.price_group_members.delete(@price_group_member)
+        end
+        it 'should be set up right' do
+          @instrument.price_policies.current.should_not be_empty
+          @user.price_groups.should_not include @price_group
+        end
+
+        it 'should not be purchasable' do
+          @instrument.should_not be_can_purchase(@user.price_groups.map(&:id))
+        end
+      end
+
+      context 'with expired price policies for user' do
+        before :each do
+          @price_policy.update_attributes(:start_date => 10.days.ago, :expire_date => 1.day.ago)
+        end
+
+        it 'should be set up right' do
+          @instrument.price_policies.current.should be_empty
+        end
+
+        it 'should be purchasable' do
+          @instrument.can_purchase?(@user_price_policy_ids).should be_true
+          @instrument.should be_can_purchase(@user_price_policy_ids)
+        end
+      end
+
+      context 'with expired price policies, but not for user' do
+        before :each do
+          @user.price_group_members.delete(@price_group_member)
+          @price_policy.update_attributes(:start_date => 10.days.ago, :expire_date => 1.day.ago)
+        end
+
+        it 'should be set up right' do
+          @instrument.price_policies.current.should be_empty
+          @instrument.price_policies.should_not be_empty
+          @user.price_groups.should_not include @price_groups
+        end
+
+        it 'should not be purchasable' do
+          @instrument.should_not be_can_purchase(@user.price_groups.map(&:id))
+        end
+
+      end
+    end
+    
   end
+
 end
