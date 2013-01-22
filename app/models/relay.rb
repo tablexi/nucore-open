@@ -11,11 +11,13 @@ class Relay < ActiveRecord::Base
   alias_attribute :host, :ip
 
 
-  CONTROL_MECHANISMS={
-    :manual => nil,
-    :timer => 'timer',
-    :relay => 'relay'
-  }
+  #TODO Change back to normal hash after dropping support for ruby 1.8
+  CONTROL_MECHANISMS=ActiveSupport::OrderedHash[
+    :manual, nil,
+    :timer, 'timer',
+    :relay, 'relay'
+  ]
+  
 
   # assume port numbering begins at 1 for public functions
   def get_status
