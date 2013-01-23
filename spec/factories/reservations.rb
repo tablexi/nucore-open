@@ -5,7 +5,7 @@ FactoryGirl.define do
   end
 
   factory :setup_reservation, :class => Reservation, :parent => :reservation do
-    product { FactoryGirl.create(:setup_instrument) }
+    product :factory => :setup_instrument
     
     order_detail { FactoryGirl.create(:setup_order, :product => product).order_details.first }
   end
