@@ -28,7 +28,7 @@ class FileUploadsController < ApplicationController
     @klass   = params[:product]
     @product = current_facility.send(@klass).find_by_url_name!(params[:product_id])
 
-    @file = @product.stored_files.new(params[:file_upload].merge(:created_by => session_user.id))
+    @file = @product.stored_files.new(params[:stored_file].merge(:created_by => session_user.id))
     if @file.save
       flash[:notice] = "File uploaded"
       redirect_to(upload_product_file_path(current_facility, @product.parameterize, @product, :file_type => @file.file_type)) and return
@@ -61,50 +61,12 @@ class FileUploadsController < ApplicationController
   def create_product_survey
     @product = current_facility.services.find_by_url_name!(params[:product_id])
 
-    if params[:file_upload]
-      @file = @product.stored_files.new(params[:file_upload].merge(:created_by => session_user.id, :name => 'Order Form Template'))
-      @file.transaction do
-        begin
-          unless @product.stored_files.template.all? {|t| t.destroy}
-            raise ActiveRecord::Rollback
-          end
-          @file.save!
-          flash[:notice] = "Order File Template uploaded"
-          redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) and return
-        rescue Exception => e
-          @file.errors.add(:base, "Order File Template delete error: #{e.message}")
-          raise ActiveRecord::Rollback
-        end
-      end
-      @survey = ExternalServiceManager.survey_service.new
+    if params[:stored_file]
+      create_product_survey_from_file
     else
-      survey_param=ExternalServiceManager.survey_service.name.downcase.to_sym
-
-      if params[survey_param].nil? || params[survey_param][:location].blank?
-        @survey = ExternalServiceManager.survey_service.new
-        @survey.errors.add(:base, "No location specified")
-      else
-        begin
-          url = params[survey_param][:location]
-          ext=ExternalServiceManager.survey_service.find_or_create_by_location(:location => url)
-          esp=ExternalServicePasser.find(:first, :conditions => [ 'passer_id = ? AND external_service_id = ?', @product.id, ext.id ])
-
-          if esp
-            flash[:notice] = "That Online Order Form already exists"
-          else
-            flash[:notice] = "Online Order Form added"
-            ExternalServicePasser.create!(:passer => @product, :external_service => ext)
-          end
-
-          redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) and return
-        rescue Exception => e
-          @survey ||= ExternalServiceManager.survey_service.new
-          @survey.errors.add(:base, "Online Order Form add error: #{e.message}")
-        end
-      end
-      @file = @product.stored_files.new(:file_type => 'template')
+      create_product_survey_from_url
     end
-    render :product_survey
+    render :product_survey unless performed?
   end
 
   def destroy
@@ -131,6 +93,54 @@ class FileUploadsController < ApplicationController
   
   def manage_path(facility, product)
     eval("manage_facility_#{@klass.singularize}_path(current_facility, @product)")
+  end
+
+  private
+
+  def create_product_survey_from_file
+    @file = @product.stored_files.new(params[:stored_file].merge(:created_by => session_user.id, :name => 'Order Form Template'))
+    @file.transaction do
+      begin
+        unless @product.stored_files.template.all? {|t| t.destroy}
+          raise ActiveRecord::Rollback
+        end
+        @file.save!
+        flash[:notice] = "Order File Template uploaded"
+        redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) and return
+      rescue Exception => e
+        @file.errors.add(:base, "Order File Template delete error: #{e.message}")
+        raise ActiveRecord::Rollback
+      end
+    end
+    @survey = ExternalServiceManager.survey_service.new
+  end
+
+  def create_product_survey_from_url
+    survey_param=ExternalServiceManager.survey_service.name.downcase.to_sym
+
+    if params[survey_param].nil? || params[survey_param][:location].blank?
+      @survey = ExternalServiceManager.survey_service.new
+      @survey.errors.add(:base, "No location specified")
+    else
+      begin
+        url = params[survey_param][:location]
+        ext=ExternalServiceManager.survey_service.find_or_create_by_location(:location => url)
+        esp=ExternalServicePasser.find(:first, :conditions => [ 'passer_id = ? AND external_service_id = ?', @product.id, ext.id ])
+
+        if esp
+          flash[:notice] = "That Online Order Form already exists"
+        else
+          flash[:notice] = "Online Order Form added"
+          ExternalServicePasser.create!(:passer => @product, :external_service => ext)
+        end
+
+        redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) and return
+      rescue Exception => e
+        @survey ||= ExternalServiceManager.survey_service.new
+        @survey.errors.add(:base, "Online Order Form add error: #{e.message}")
+      end
+    end
+    @file = @product.stored_files.new(:file_type => 'template')
   end
 
 end
