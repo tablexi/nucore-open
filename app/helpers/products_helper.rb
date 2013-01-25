@@ -14,4 +14,20 @@ module ProductsHelper
     end
     error_msg ? "<span class=\"price_policy_error\">#{error_msg}</span>".html_safe : ""
   end
+
+  def options_for_control_mechanism
+    Relay::CONTROL_MECHANISMS.inject(ActiveSupport::OrderedHash.new) do |hash, (key, v)|
+      human_value = t("instruments.instrument_fields.relay.control_mechanisms.#{key}")
+      hash[human_value] = key
+      hash
+    end
+  end
+
+  def options_for_relay
+    #TODO Replace with normal hash
+    ActiveSupport::OrderedHash[
+      RelaySynaccessRevA, RelaySynaccessRevA.name,
+      RelaySynaccessRevB, RelaySynaccessRevB.name
+    ]
+  end
 end

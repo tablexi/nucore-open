@@ -49,7 +49,7 @@ describe FileUploadsController do
         :facility_id => @authable.url_name,
         :product => 'services',
         :product_id => @service.url_name,
-        :file_upload => {
+        :stored_file => {
           :name => "File 1",
           :file_type => 'info',
           :file => File.new("#{Rails.root}/spec/files/alpha_survey.rb")
@@ -65,7 +65,7 @@ describe FileUploadsController do
     end
 
     it "should render upload template when no file specified" do
-      @params[:file_upload][:file]=''
+      @params[:stored_file][:file]=''
       sign_in @admin
       do_request
       should render_template('upload')
