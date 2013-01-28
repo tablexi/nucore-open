@@ -2,7 +2,7 @@ module DateHelper
 
   def parse_usa_date(date, extra_date_info=nil)
     begin
-      date_string=(date =~ /\d{1,2}\/\d{1,2}\/\d{4}/ ? Date.strptime(date, '%m/%d/%Y') : date).to_s
+      date_string=(date =~ /\d{1,2}\/\d{1,2}\/\d{4}/ ? Date.strptime($&, '%m/%d/%Y') : date).to_s
       date_string += " #{extra_date_info}" if extra_date_info
 
       Time.zone.parse(date_string)
