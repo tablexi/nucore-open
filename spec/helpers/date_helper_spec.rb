@@ -25,6 +25,10 @@ describe DateHelper do
         parse_usa_date("5/1/2012").should == Time.zone.parse('2012-05-01')
       end
 
+      it 'should truncate a date with more than four digits in year' do
+        parse_usa_date('5/1/20114').should == Time.zone.parse('2011-05-01')
+      end
+
     end
 
     it "should do something with extra_date_info (unknown)"
