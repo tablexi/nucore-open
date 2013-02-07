@@ -64,7 +64,7 @@ class OrderDetailsController < ApplicationController
 
   # POST /orders/:order_id/order_details/:order_detail_id/upload_order_file
   def upload_order_file
-    @file = @order_detail.stored_files.new(params[:file_upload])
+    @file = @order_detail.stored_files.new(params[:stored_file])
     @file.file_type  = 'template_result'
     @file.name       = 'Order File'
     @file.created_by = session_user.id ## this is correct, session_user instead of acting_user

@@ -13,6 +13,7 @@
     - res = od.reservation
     %tr
       %td.centered= link_to od, current_facility ? edit_facility_order_order_detail_path(current_facility, order, od) : order_order_detail_path(order, od)
+      - next unless res
       %td.centered
         - if res.can_switch_instrument_on?
           = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'on')
