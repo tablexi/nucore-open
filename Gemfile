@@ -49,7 +49,6 @@ group :development, :test do
   # TODO upgrade factory girl to 4.1 once we no longer need to support
   # ruby 1.8.7. FactoryGirl 3 only supports 1.9.2
   gem 'factory_girl_rails','1.7.0'
-  gem 'mocha',             '0.9.7'
   gem 'rspec-rails',       '2.9'
   gem 'ruby-debug19',      '0.11.6'
   gem 'shoulda',           '2.11.3'

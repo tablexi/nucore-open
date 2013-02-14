@@ -100,8 +100,6 @@ GEM
       treetop (~> 1.4.8)
     method_source (0.8.1)
     mime-types (1.19)
-    mocha (0.9.7)
-      rake
     mysql2 (0.2.11)
     net-ldap (0.2.2)
     net-scp (1.0.4)
@@ -216,7 +214,6 @@ DEPENDENCIES
   foreigner (= 1.1.1)
   haml (= 3.1.2)
   jquery-rails (= 1.0.12)
-  mocha (= 0.9.7)
   mysql2 (= 0.2.11)
   nokogiri (= 1.4.4)
   paperclip (= 2.3.12)
