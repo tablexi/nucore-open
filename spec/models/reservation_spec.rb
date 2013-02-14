@@ -9,7 +9,7 @@ describe Reservation do
     @instrument       = FactoryGirl.create(:instrument, :facility_account_id => @facility_account.id, :facility => @facility)
     # add rule, available every day from 12 am to 5 pm, 60 minutes duration
     @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17, :duration_mins => 15))
-    Reservation.any_instance.stubs(:admin?).returns(false)
+    Reservation.any_instance.stub(:admin?).and_return(false)
   end
 
 
@@ -86,8 +86,8 @@ describe Reservation do
     end
 
     context "#earliest_possible" do
-      it "shouldn't throw an exception if Instrument#next_available_reservation returns nil" do
-        Instrument.any_instance.stubs(:next_available_reservation).returns nil
+      it "shouldn't throw an exception if Instrument#next_available_reservation and_return nil" do
+        Instrument.any_instance.stub(:next_available_reservation).and_return nil
         @reservation1.earliest_possible
 
       end
@@ -318,7 +318,7 @@ describe Reservation do
                                       :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                       :duration_value => '60', :duration_unit => 'minutes')
       res.valid?
-      res.stubs(:admin?).returns(true)
+      res.stub(:admin?).and_return(true)
       res
     end
 
@@ -344,7 +344,7 @@ describe Reservation do
         end  
 
         it 'should allow an admin reservation' do
-          @reservation.stubs(:admin?).returns(true)
+          @reservation.stub(:admin?).and_return(true)
           @reservation.should be_valid
         end
         
@@ -362,7 +362,7 @@ describe Reservation do
         end
         
         it 'should allow an admin reservation' do
-          @reservation.stubs(:admin?).returns(true)
+          @reservation.stub(:admin?).and_return(true)
           @reservation.should be_valid
         end
         
@@ -400,7 +400,7 @@ describe Reservation do
       @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                    :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                    :duration_value => 61, :duration_unit => 'minutes')
-      @reservation.stubs(:admin?).returns(true)
+      @reservation.stub(:admin?).and_return(true)
       @reservation.should be_valid
     end
 
@@ -430,7 +430,7 @@ describe Reservation do
       @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                      :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                      :duration_value => 29, :duration_unit => 'minutes')
-      @reservation.stubs(:admin?).returns(true)
+      @reservation.stub(:admin?).and_return(true)
       @reservation.should be_valid
     end
   end

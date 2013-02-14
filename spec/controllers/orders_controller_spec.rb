@@ -277,18 +277,18 @@ describe OrdersController do
         response.should redirect_to receipt_order_url(@order)
       end
       it 'should send a notification' do
-        Notifier.expects(:order_receipt).once.returns(DummyNotifier.new)
+        Notifier.should_receive(:order_receipt).once.and_return(DummyNotifier.new)
         sign_in @admin
         do_request
       end
       it "should not send an email by default if you're acting as" do
-        Notifier.expects(:order_receipt).never
+        Notifier.should_receive(:order_receipt).never
         sign_in @admin
         switch_to @staff
         do_request
       end
       it "should send an email if you're acting as and set the parameter" do
-        Notifier.expects(:order_receipt).once.returns(DummyNotifier.new)
+        Notifier.should_receive(:order_receipt).once.and_return(DummyNotifier.new)
         sign_in @admin
         switch_to @staff
         @params.merge!(:send_notification => '1')

@@ -105,8 +105,8 @@ describe ServicesController do
       end
 
       it "should show the page if you're acting as a user" do
-        ServicesController.any_instance.stubs(:acting_user).returns(@guest)
-        ServicesController.any_instance.stubs(:acting_as?).returns(true)
+        ServicesController.any_instance.stub(:acting_user).and_return(@guest)
+        ServicesController.any_instance.stub(:acting_as?).and_return(true)
         sign_in @admin
         do_request
         response.should be_success

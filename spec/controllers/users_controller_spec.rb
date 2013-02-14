@@ -20,7 +20,7 @@ describe UsersController do
 
       @active_user = FactoryGirl.create(:user, :first_name => 'Active')
       place_and_complete_item_order(@active_user, @authable)
-      # place two orders to make sure it only returns the user once
+      # place two orders to make sure it only and_return the user once
       place_and_complete_item_order(@active_user, @authable)
       
       @lapsed_user = FactoryGirl.create(:user, :first_name => 'Lapsed')

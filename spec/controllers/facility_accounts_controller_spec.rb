@@ -142,7 +142,7 @@ describe FacilityAccountsController do
           :account => @acct_attrs,
           :class_type => 'NufsAccount'
         }
-        @controller.stubs(:current_facility).returns(@authable)
+        @controller.stub(:current_facility).and_return(@authable)
       end
 
       it_should_require_login

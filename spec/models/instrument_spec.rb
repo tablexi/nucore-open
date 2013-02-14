@@ -89,7 +89,7 @@ describe Instrument do
       end
 
       it 'should not call update_schedule_name if name did not change' do
-        @instrument.expects(:update_schedule_name).never
+        @instrument.should_receive(:update_schedule_name).never
         @instrument.update_attributes(:description => 'a description')
       end
 
@@ -279,7 +279,7 @@ describe Instrument do
       # add rule, available every day from 9 to 5, 60 minutes duration
       @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       assert @rule.valid?
-      Reservation.any_instance.stubs(:admin?).returns(false)
+      Reservation.any_instance.stub(:admin?).and_return(false)
     end
     
     it "should not allow reservation in the past" do
@@ -384,7 +384,7 @@ describe Instrument do
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       assert @rule.valid?
       # stub so today at 9 am is not in the future
-      Reservation.any_instance.stubs(:in_the_future).returns(true)
+      Reservation.any_instance.stub(:in_the_future).and_return(true)
       # find next reservation after 12 am at 9 am
       @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day
@@ -406,7 +406,7 @@ describe Instrument do
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :duration_mins => 5))
       assert @rule.valid?
       # stub so today at 9 am is not in the future
-      Reservation.any_instance.stubs(:in_the_future).returns(true)
+      Reservation.any_instance.stub(:in_the_future).and_return(true)
       # find next reservation after 12 am at 9 am
       @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day

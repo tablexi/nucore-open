@@ -178,9 +178,9 @@ describe FacilityOrdersController do
 
         context 'with active survey' do
           before :each do
-            Service.any_instance.stubs(:active_survey?).returns(true)
-            Service.any_instance.stubs(:active_template?).returns(false)
-            OrderDetail.any_instance.stubs(:valid_service_meta?).returns(false)
+            Service.any_instance.stub(:active_survey?).and_return(true)
+            Service.any_instance.stub(:active_template?).and_return(false)
+            OrderDetail.any_instance.stub(:valid_service_meta?).and_return(false)
           end
 
           it_should_allow :director, 'to add a service to existing order via merge' do
@@ -190,9 +190,9 @@ describe FacilityOrdersController do
 
         context 'with active template' do
           before :each do
-            Service.any_instance.stubs(:active_survey?).returns(false)
-            Service.any_instance.stubs(:active_template?).returns(true)
-            OrderDetail.any_instance.stubs(:valid_service_meta?).returns(false)
+            Service.any_instance.stub(:active_survey?).and_return(false)
+            Service.any_instance.stub(:active_template?).and_return(true)
+            OrderDetail.any_instance.stub(:valid_service_meta?).and_return(false)
           end
 
           it_should_allow :director, 'to add an service to existing order via merge' do
@@ -202,8 +202,8 @@ describe FacilityOrdersController do
 
         context 'with nothing active' do
           before :each do
-            Service.any_instance.stubs(:active_survey?).returns(false)
-            Service.any_instance.stubs(:active_template?).returns(false)
+            Service.any_instance.stub(:active_survey?).and_return(false)
+            Service.any_instance.stub(:active_template?).and_return(false)
           end
 
           it_should_allow :director, 'to add an service to existing order directly' do
@@ -253,9 +253,9 @@ describe FacilityOrdersController do
 
           context 'with active survey' do
             before :each do
-              Service.any_instance.stubs(:active_survey?).returns(true)
-              Service.any_instance.stubs(:active_template?).returns(false)
-              OrderDetail.any_instance.stubs(:valid_service_meta?).returns(false)
+              Service.any_instance.stub(:active_survey?).and_return(true)
+              Service.any_instance.stub(:active_template?).and_return(false)
+              OrderDetail.any_instance.stub(:valid_service_meta?).and_return(false)
             end
 
             it_should_allow :director, 'to add a bundle to existing order via merge' do
@@ -265,9 +265,9 @@ describe FacilityOrdersController do
 
           context 'with active template' do
             before :each do
-              Service.any_instance.stubs(:active_survey?).returns(false)
-              Service.any_instance.stubs(:active_template?).returns(true)
-              OrderDetail.any_instance.stubs(:valid_service_meta?).returns(false)
+              Service.any_instance.stub(:active_survey?).and_return(false)
+              Service.any_instance.stub(:active_template?).and_return(true)
+              OrderDetail.any_instance.stub(:valid_service_meta?).and_return(false)
             end
 
             it_should_allow :director, 'to add a bundle to existing order via merge' do
@@ -277,8 +277,8 @@ describe FacilityOrdersController do
 
           context 'with nothing active' do
             before :each do
-              Service.any_instance.stubs(:active_survey?).returns(false)
-              Service.any_instance.stubs(:active_template?).returns(false)
+              Service.any_instance.stub(:active_survey?).and_return(false)
+              Service.any_instance.stub(:active_template?).and_return(false)
             end
 
             it_should_allow :director, 'to add a bundle to existing order directly' do

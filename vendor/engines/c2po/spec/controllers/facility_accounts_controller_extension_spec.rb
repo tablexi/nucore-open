@@ -102,7 +102,7 @@ describe FacilityAccountsController do
       }
 
       @params[:account]=@acct_attrs
-      @controller.stubs(:current_facility).returns(@authable)
+      @controller.stub(:current_facility).and_return(@authable)
     end
 
 
