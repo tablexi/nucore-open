@@ -16,7 +16,7 @@ Spork.prefork do
 
   require 'rspec/rails'
   require 'factory_girl'
-  require 'shoulda'
+  require 'shoulda-matchers'
 
   #
   # Check for engine factories. If they exist and the engine is in use load it up
