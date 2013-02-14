@@ -51,7 +51,7 @@ group :development, :test do
   gem 'factory_girl_rails','1.7.0'
   gem 'rspec-rails',       '2.9'
   gem 'ruby-debug19',      '0.11.6'
-  gem 'shoulda',           '2.11.3'
+  gem 'shoulda-matchers',  '1.4.2'
   gem 'single_test',       '0.4.0'
   gem 'spork',             '0.9.0.rc9'
   gem 'timecop'
