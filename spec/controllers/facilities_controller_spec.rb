@@ -30,7 +30,7 @@ describe FacilitiesController do
     it_should_deny :director
 
     it_should_allow :admin do
-      @controller.expects(:init_current_facility).never
+      @controller.should_receive(:init_current_facility).never
       do_request
       response.should be_success
       response.should render_template('facilities/new')
@@ -137,9 +137,9 @@ describe FacilitiesController do
 
       before(:each) do
         @facility2 = FactoryGirl.create(:facility)
-        @controller.stubs(:current_facility).returns(@authable)
-        @controller.stubs(:operable_facilities).returns([@authable, @facility2])
-        @controller.expects(:init_current_facility).never
+        @controller.stub(:current_facility).and_return(@authable)
+        @controller.stub(:operable_facilities).and_return([@authable, @facility2])
+        @controller.should_receive(:init_current_facility).never
       end
 
       it_should_allow_all facility_operators do
@@ -151,8 +151,8 @@ describe FacilitiesController do
 
     context "as facility operators with one facility" do
       before(:each) do
-        @controller.stubs(:current_facility).returns(@authable)
-        @controller.expects(:init_current_facility).never
+        @controller.stub(:current_facility).and_return(@authable)
+        @controller.should_receive(:init_current_facility).never
       end
       context 'has instruments' do
         before :each do
@@ -179,7 +179,7 @@ describe FacilitiesController do
 
       before(:each) do
         @facility2 = FactoryGirl.create(:facility)
-        @controller.stubs(:current_facility).returns(@authable)
+        @controller.stub(:current_facility).and_return(@authable)
       end
 
       it_should_allow :admin do

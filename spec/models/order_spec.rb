@@ -306,7 +306,7 @@ describe Order do
         it "should add two order_details when has an active survey and a quantity of 2" do
           # setup
           @service_w_active_survey = @facility.services.create!(FactoryGirl.attributes_for(:service, :initial_order_status_id => @order_status.id, :facility_account_id => @facility_account.id))
-          @service_w_active_survey.stubs(:active_survey?).returns(true)
+          @service_w_active_survey.stub(:active_survey?).and_return(true)
 
           # doit
           @ods = @cart.add(@service_w_active_survey, 2)

@@ -165,7 +165,7 @@ describe InstrumentsController do
       it_should_allow_operators_only(:redirect) {}
 
       it "should show the page if you're acting as a user" do
-        Instrument.any_instance.stubs(:can_purchase?).returns(true)
+        Instrument.any_instance.stub(:can_purchase?).and_return(true)
         add_account_for_user :guest
         sign_in @admin
         switch_to @guest
@@ -497,7 +497,7 @@ describe InstrumentsController do
     context 'instrument statuses' do
       before :each do
         # So it doesn't try to actually connect
-        RelaySynaccessRevA.any_instance.stubs(:query_status).returns([false])
+        RelaySynaccessRevA.any_instance.stub(:query_status).and_return([false])
 
         @method=:get
         @action=:instrument_statuses

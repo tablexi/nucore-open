@@ -138,7 +138,7 @@ describe AccountsController do
       sign_in @user
       do_request
       response.should be_success
-      OrderDetail.any_instance.stubs(:can_dispute?).returns(true)
+      OrderDetail.any_instance.stub(:can_dispute?).and_return(true)
       assigns[:order_detail_link].should_not be_nil
       assigns[:order_detail_link][:text].should == "Dispute"
       assigns[:order_detail_link][:display?].call(OrderDetail.new).should be_true

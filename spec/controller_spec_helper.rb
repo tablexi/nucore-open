@@ -51,7 +51,7 @@ end
 #
 # Asserts that the request is redirected to the login page 
 def it_should_require_login
-  it 'should require login' do
+  it 'should require login', :auth => true do
     do_request
     should redirect_to(new_user_session_url)
   end

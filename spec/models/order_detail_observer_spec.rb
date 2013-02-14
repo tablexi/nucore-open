@@ -75,17 +75,17 @@ describe OrderDetailObserver do
       @order_detail.order_status.should == OrderStatus.new_os.first
     end
     it 'should trigger a notification on change to inprogress' do
-      DummyHooks::DummyHook1.any_instance.expects(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first).once
+      DummyHooks::DummyHook1.any_instance.should_receive(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first).once
       @order_detail.change_status!(OrderStatus.inprocess.first).should be_true
     end
     it 'should trigger a notification on change from in_process to new' do
-      DummyHooks::DummyHook1.any_instance.expects(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first)
+      DummyHooks::DummyHook1.any_instance.should_receive(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first)
       @order_detail.change_status!(OrderStatus.inprocess.first).should be_true
-      DummyHooks::DummyHook2.any_instance.expects(:on_status_change).once.with(@order_detail, OrderStatus.inprocess.first, OrderStatus.new_os.first)
+      DummyHooks::DummyHook2.any_instance.should_receive(:on_status_change).once.with(@order_detail, OrderStatus.inprocess.first, OrderStatus.new_os.first)
       @order_detail.change_status!(OrderStatus.new_os.first).should be_true
     end
     it 'should not trigger going from new to new' do
-      DummyHooks::DummyHook2.any_instance.expects(:on_status_change).never
+      DummyHooks::DummyHook2.any_instance.should_receive(:on_status_change).never
       @order_detail.change_status!(OrderStatus.new_os.first).should be_true
     end
   end

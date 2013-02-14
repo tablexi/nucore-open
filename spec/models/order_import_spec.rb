@@ -110,12 +110,12 @@ describe OrderImport do
       end
 
       it "should have error when product is service and has active survey" do
-        Service.any_instance.stubs(:active_survey?).returns(true)
+        Service.any_instance.stub(:active_survey?).and_return(true)
         errors_for_import_with_row(:product_name => "Example Service").first.should match /requires survey/
       end
 
       it "should have error when product is service and has active template" do
-        Service.any_instance.stubs(:active_template?).returns(true)
+        Service.any_instance.stub(:active_template?).and_return(true)
         errors_for_import_with_row(:product_name => "Example Service").first.should match /requires template/
       end
 
@@ -302,7 +302,7 @@ end
         @order_import.save!
 
         # expectations
-        Notifier.expects(:order_receipt).once.returns( stub({:deliver => nil }) )
+        Notifier.should_receive(:order_receipt).once.and_return( stub({:deliver => nil }) )
 
         # run the import
         @order_import.process!
@@ -330,7 +330,7 @@ end
           @order_import.save!
 
           # expectations
-          Notifier.expects(:order_receipt).never
+          Notifier.should_receive(:order_receipt).never
 
           # run the import
           @order_import.process!
@@ -345,7 +345,7 @@ end
           @order_import.save!
 
           # expectations
-          Notifier.expects(:order_receipt).once.returns( stub({:deliver => nil }) )
+          Notifier.should_receive(:order_receipt).once.and_return( stub({:deliver => nil }) )
 
           # run the import
           @order_import.process!
@@ -366,7 +366,7 @@ end
           @order_import.save!
           
           # expectations
-          Notifier.expects(:order_receipt).never
+          Notifier.should_receive(:order_receipt).never
 
           # run the import
           @order_import.process!
@@ -402,7 +402,7 @@ end
       end
 
       it "shouldn't send out any notifications" do
-        Notifier.expects(:order_receipt).never
+        Notifier.should_receive(:order_receipt).never
         @order_import.process!
       end
 
@@ -428,7 +428,7 @@ end
       end
 
       it "should send out notification for second order" do
-        Notifier.expects(:order_receipt).once.returns( stub({:deliver => nil }) )
+        Notifier.should_receive(:order_receipt).once.and_return( stub({:deliver => nil }) )
         @order_import.process!
       end
 
@@ -470,7 +470,7 @@ end
       end
   
       it "shouldn't send out any notifications" do
-        Notifier.expects(:order_receipt).never
+        Notifier.should_receive(:order_receipt).never
         @order_import.process!
       end
 
@@ -497,7 +497,7 @@ end
       end
   
       it "shouldn't send out any notifications" do
-        Notifier.expects(:order_receipt).never
+        Notifier.should_receive(:order_receipt).never
         @order_import.process!
       end
 

@@ -76,7 +76,7 @@ describe FacilityOrderDetailsController do
       context 'new' do
         before :each do
           @order_detail.update_attributes(:price_policy => nil)
-          Item.any_instance.stubs(:cheapest_price_policy).returns(@price_policy)
+          Item.any_instance.stub(:cheapest_price_policy).and_return(@price_policy)
           @order_detail.assign_estimated_price!
           @order_detail.estimated_cost.should be
           sign_in_and_do_request
@@ -251,7 +251,7 @@ describe FacilityOrderDetailsController do
       end
       it 'should render edit on failure' do
         maybe_grant_always_sign_in :director
-        OrderDetail.any_instance.stubs(:save!).raises(ActiveRecord::RecordInvalid)
+        OrderDetail.any_instance.stub(:save!).and_raise(ActiveRecord::RecordInvalid)
         do_request
         response.should render_template :edit
         should set_the_flash
@@ -364,7 +364,7 @@ describe FacilityOrderDetailsController do
                                             :usage_subsidy => 0)
     @instrument_price_policy.should be_persisted
     puts @instrument_price_policy.errors.full_messages
-    Instrument.any_instance.stubs(:cheapest_price_policy).returns(@instrument_price_policy)
+    Instrument.any_instance.stub(:cheapest_price_policy).and_return(@instrument_price_policy)
     @reservation = place_reservation @authable, @order_detail, 1.day.ago
     @order_detail.backdate_to_complete! @reservation.reserve_end_at
   end

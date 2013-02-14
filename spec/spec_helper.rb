@@ -17,7 +17,6 @@ Spork.prefork do
   require 'rspec/rails'
   require 'factory_girl'
   require 'shoulda'
-  require 'mocha'
 
   #
   # Check for engine factories. If they exist and the engine is in use load it up
@@ -64,7 +63,7 @@ Spork.prefork do
     # RSpec uses its own mocking framework by default. If you prefer to
     # use mocha, flexmock or RR, uncomment the appropriate line:
     #
-    config.mock_with :mocha
+    # config.mock_with :mocha
     # config.mock_with :flexmock
     # config.mock_with :rr
     #
@@ -228,7 +227,7 @@ Spork.each_run do
   # [_extra_reservation_attrs_]
   #   Other parameters for the reservation; will override the defaults defined below
   #
-  # Returns the reservation
+  # and_return the reservation
   def place_reservation_for_instrument(ordered_by, instrument, account, reserve_start, extra_reservation_attrs=nil)
     order_detail = place_product_order(ordered_by, instrument.facility, instrument, account, false)
 

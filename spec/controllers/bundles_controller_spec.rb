@@ -59,7 +59,7 @@ describe BundlesController do
 
     it 'should flash and falsify @add_to_cart if bundle cannot be purchased' do
       sign_in @guest
-      Bundle.any_instance.stubs(:available_for_purchase?).returns(false)
+      Bundle.any_instance.stub(:available_for_purchase?).and_return(false)
       do_request
       assigns[:add_to_cart].should be_false
       assigns[:error].should == 'not_available'
@@ -76,7 +76,7 @@ describe BundlesController do
     end
     
     it 'should falsify @add_to_cart if #acting_user is nil' do
-      BundlesController.any_instance.stubs(:acting_user).returns(nil)
+      BundlesController.any_instance.stub(:acting_user).and_return(nil)
       do_request
       assigns[:add_to_cart].should be_false
       assigns[:login_required].should be_true
@@ -86,7 +86,7 @@ describe BundlesController do
       nufs=create_nufs_account_with_owner :guest
       define_open_account @bundle.products.first.account, nufs.account_number
       switch_to @guest
-      BundlesController.any_instance.stubs(:price_policy_available_for_product?).returns(true)
+      BundlesController.any_instance.stub(:price_policy_available_for_product?).and_return(true)
       @bundle.update_attributes(:requires_approval => true)
       do_request
       assigns[:login_required].should be_false
@@ -99,7 +99,7 @@ describe BundlesController do
       nufs=create_nufs_account_with_owner :guest
       define_open_account @bundle.products.first.account, nufs.account_number
       sign_in @guest
-      BundlesController.any_instance.stubs(:price_policy_available_for_product?).returns(false)
+      BundlesController.any_instance.stub(:price_policy_available_for_product?).and_return(false)
       do_request
       assigns[:add_to_cart].should be_false
       assigns[:error].should == 'not_in_price_group'
@@ -127,7 +127,7 @@ describe BundlesController do
     context "restricted bundle" do
       before :each do
         @bundle.update_attributes(:requires_approval => true)
-        BundlesController.any_instance.stubs(:price_policy_available_for_product?).returns(true)
+        BundlesController.any_instance.stub(:price_policy_available_for_product?).and_return(true)
       end
       it "should show a notice if you're not approved" do
         sign_in @guest

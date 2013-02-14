@@ -120,8 +120,8 @@ describe ItemsController do
         response.should be_success
       end
       it "should show the page if you're acting as a user" do
-        ItemsController.any_instance.stubs(:acting_user).returns(@guest)
-        ItemsController.any_instance.stubs(:acting_as?).returns(true)
+        ItemsController.any_instance.stub(:acting_user).and_return(@guest)
+        ItemsController.any_instance.stub(:acting_as?).and_return(true)
         sign_in @admin
         do_request
         response.should be_success

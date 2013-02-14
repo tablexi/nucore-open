@@ -836,7 +836,7 @@ describe OrderDetail do
 
         it 'should not destroy merge order when there are other details' do
           @service=@facility.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
-          Service.any_instance.stubs(:active_survey?).returns(true)
+          Service.any_instance.stub(:active_survey?).and_return(true)
           @order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product_id => @service.id, :account_id => @account.id))
           @order.order_details.size.should == 2
           @order_detail.destroy
@@ -865,7 +865,7 @@ describe OrderDetail do
 
         it 'should update order_id but not delete merge order when there is another detail' do
           @service=@facility.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
-          Service.any_instance.stubs(:active_survey?).returns(true)
+          Service.any_instance.stub(:active_survey?).and_return(true)
           @order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product_id => @service.id, :account_id => @account.id))
           assert @order_detail.reload.save
           @order_detail.reload.order.should == @merge_to_order
@@ -903,7 +903,7 @@ describe OrderDetail do
       context 'service' do
         before :each do
           @service=@facility.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
-          Service.any_instance.stubs(:active_survey?).returns(true)
+          Service.any_instance.stub(:active_survey?).and_return(true)
           @service_order_detail=@order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product_id => @service.id, :account_id => @account.id))
         end
 
@@ -914,7 +914,7 @@ describe OrderDetail do
         end
 
         it 'should not affect non merge orders' do
-          OrderDetail.any_instance.stubs(:valid_service_meta?).returns(true)
+          OrderDetail.any_instance.stub(:valid_service_meta?).and_return(true)
           assert @service_order_detail.save
           @service_order_detail.reload.order.should == @merge_to_order
           assert @service_order_detail.save
@@ -922,7 +922,7 @@ describe OrderDetail do
         end
 
         it 'should update order_id but not destroy merge order if there is a complete active survey and other detail' do
-          OrderDetail.any_instance.stubs(:valid_service_meta?).returns(true)
+          OrderDetail.any_instance.stub(:valid_service_meta?).and_return(true)
           @order.reload.order_details.size.should == 2
           assert @service_order_detail.save
           @service_order_detail.reload.order.should == @merge_to_order
@@ -930,7 +930,7 @@ describe OrderDetail do
         end
 
         it 'should update order_id and destroy merge order if there is a complete active survey and no other details' do
-          OrderDetail.any_instance.stubs(:valid_service_meta?).returns(true)
+          OrderDetail.any_instance.stub(:valid_service_meta?).and_return(true)
           @order_detail.destroy
           assert @service_order_detail.save
           @service_order_detail.reload.order.should == @merge_to_order
@@ -955,7 +955,7 @@ describe OrderDetail do
         end
 
         it 'should not affect non merge orders' do
-          OrderDetail.any_instance.stubs(:valid_reservation?).returns(true)
+          OrderDetail.any_instance.stub(:valid_reservation?).and_return(true)
           assert @instrument_order_detail.save
           @instrument_order_detail.reload.order.should == @merge_to_order
           assert @instrument_order_detail.save
@@ -963,7 +963,7 @@ describe OrderDetail do
         end
 
         it 'should update order_id but not destroy merge order if there is a complete reservation and other detail' do
-          OrderDetail.any_instance.stubs(:valid_reservation?).returns(true)
+          OrderDetail.any_instance.stub(:valid_reservation?).and_return(true)
           @order.reload.order_details.size.should == 2
           assert @instrument_order_detail.save
           @instrument_order_detail.reload.order.should == @merge_to_order
@@ -971,7 +971,7 @@ describe OrderDetail do
         end
 
         it 'should update order_id and destroy merge order if there is a complete reservation and no other details' do
-          OrderDetail.any_instance.stubs(:valid_reservation?).returns(true)
+          OrderDetail.any_instance.stub(:valid_reservation?).and_return(true)
           @order_detail.destroy
           assert @instrument_order_detail.save
           @instrument_order_detail.reload.order.should == @merge_to_order

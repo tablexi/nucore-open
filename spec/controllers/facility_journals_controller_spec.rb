@@ -67,7 +67,7 @@ describe FacilityJournalsController do
         grant_and_sign_in @director
         create_order_details
         # Don't worry about account validation in these tests
-        Settings.validator.class_name.constantize.any_instance.stubs(:account_is_open!).returns(true)
+        Settings.validator.class_name.constantize.any_instance.stub(:account_is_open!).and_return(true)
         @creation_errors = @journal.create_journal_rows!([@order_detail1, @order_detail3])
       end
       it 'should have been set up properly' do
