@@ -51,7 +51,7 @@ describe FacilityOrderDetailsController do
     it_should_allow :staff, 'to acknowledge order detail is part of open journal' do
       assigns[:in_open_journal].should == true
       assigns[:can_be_reconciled].should == false
-      should set_the_flash
+      flash[:notice].should be_present
     end
 
     it 'should acknowledge order detail is not part of open journal and is reconcilable' do
@@ -254,7 +254,7 @@ describe FacilityOrderDetailsController do
         OrderDetail.any_instance.stub(:save!).and_raise(ActiveRecord::RecordInvalid)
         do_request
         response.should render_template :edit
-        should set_the_flash
+        flash[:error].should be_present
       end
       it 'should redirect to timeline view on success' do
         maybe_grant_always_sign_in :director

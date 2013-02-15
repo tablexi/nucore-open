@@ -535,7 +535,6 @@ describe OrdersController do
         assigns(:order).id.should == @order.id
         @order.reload.order_details.count.should == 1
         flash[:error].should be_nil
-        should set_the_flash
         response.should redirect_to "/orders/#{@order.id}"
       end
 

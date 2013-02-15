@@ -326,13 +326,12 @@ describe ReservationsController do
 
     context 'without account' do
       before :each do
-
         @params.delete :order_account
         sign_in @guest
         do_request
       end
       it 'should have a flash message and render :new' do
-        should set_the_flash
+        flash[:error].should be_present
         response.should render_template :new
       end
       it 'should maintain duration value and units' do
@@ -349,7 +348,7 @@ describe ReservationsController do
         assigns[:order].should == @order
         assigns[:order_detail].should == @order_detail
         assigns[:instrument].should == @instrument
-        should set_the_flash
+        flash[:error].should be_present
         should render_template :new
       end
     end

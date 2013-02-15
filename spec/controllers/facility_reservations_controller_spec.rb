@@ -167,7 +167,7 @@ describe FacilityReservationsController do
           assigns(:order_detail).price_policy.should == @instrument_pp
           assigns(:order_detail).actual_cost.should_not be_nil
           assigns(:order_detail).actual_subsidy.should_not be_nil
-          should set_the_flash
+          flash[:notice].should be_present
           should render_template 'edit'
         end
       end

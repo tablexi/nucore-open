@@ -150,7 +150,7 @@ describe AffiliatesController do
     @params[:affiliate]=nil
     maybe_grant_always_sign_in :admin
     do_request
-    should set_the_flash
+    flash[:error].should be_present
     yield if block_given?
   end
 end
