@@ -1,14 +1,13 @@
-- # keep this a partial because rake task nu:journal:render_and_move needs it to be
-- mask=journal.facility.journal_mask
+- mask=@journal.facility.journal_mask
 %JRNL_HDR_IMP
   %BUSINESS_UNIT== NWUNV
   %JOURNAL_ID== NEXT
-  %JOURNAL_DATE= journal.journal_date.strftime("%Y%m%d")
-  %DESCR254=h "#{mask}: Journal ##{ journal.id}, Created By: #{User.find(journal.created_by).username}"
+  %JOURNAL_DATE= @journal.journal_date.strftime("%Y%m%d")
+  %DESCR254=h "#{mask}: Journal ##{ @journal.id}, Created By: #{User.find(@journal.created_by).username}"
   %LEDGER_GROUP== ACTUALS
   %SOURCE== RSC
   %OPRID== GLBATCH
-  - journal_rows.each_with_index do |row, i|
+  - @journal_rows.each_with_index do |row, i|
     %JRNL_LN_IMP
       %JOURNAL_LINE= i+1
       %BUSINESS_UNIT== NWUNV
@@ -30,6 +29,6 @@
       - if row.reference
         %JRNL_LN_REF= row.reference #optional
   %NU_JRNL_TRL_IMP
-    %RECORD_COUNT= journal_rows.length
-    %TOTAL_CREDITS= number_to_currency journal_rows.inject(0) { |sum,row| sum += (row.amount < 0 ? row.amount : 0) }, :delimiter => '', :unit => '' # negative number
-    %TOTAL_DEBITS= number_to_currency journal_rows.inject(0) { |sum,row| sum += (row.amount > 0 ? row.amount : 0) }, :delimiter => '', :unit => '' # positive number
+    %RECORD_COUNT= @journal_rows.length
+    %TOTAL_CREDITS= number_to_currency @journal_rows.inject(0) { |sum,row| sum += (row.amount < 0 ? row.amount : 0) }, :delimiter => '', :unit => '' # negative number
+    %TOTAL_DEBITS= number_to_currency @journal_rows.inject(0) { |sum,row| sum += (row.amount > 0 ? row.amount : 0) }, :delimiter => '', :unit => '' # positive number

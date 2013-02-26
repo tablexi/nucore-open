@@ -158,8 +158,7 @@ class FacilityJournalsController < ApplicationController
 
     respond_to do |format|
       format.xml do
-        headers['Content-Disposition'] = "attachment; filename=\"@filename.xml\""
-        render :partial => 'rake_show', :locals => { :journal => @journal, :journal_rows => @journal_rows }, :layout => false
+        headers['Content-Disposition'] = "attachment; filename=\"#{@filename}.xml\""
       end
 
       format.csv do
