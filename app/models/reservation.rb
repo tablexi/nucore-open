@@ -100,7 +100,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def self.in_range(start_time, end_time)
-    where('reserve_start_at >= ?', start_time).
+    where('reserve_end_at >= ?', start_time).
     where('reserve_start_at < ?', end_time)
   end
 
