@@ -11,7 +11,7 @@ prawn_document pdf_config do |pdf|
 
   pdf.font_size = 10.5
 
-  pdf.text @facility.to_s, :size => 20, :style => :bold
+  pdf.text @facility.to_s, :size => 20, :font_style => :bold
   pdf.text "Invoice ##{@account.id}-#{@statement.id}"
 
   if @facility.has_contact_info?
@@ -24,7 +24,7 @@ prawn_document pdf_config do |pdf|
 
   if @account.remittance_information
     pdf.move_down(10)
-    pdf.text "Bill To:", :style => :bold
+    pdf.text "Bill To:", :font_style => :bold
     pdf.text @account.remittance_information
   end
 
@@ -39,12 +39,14 @@ prawn_document pdf_config do |pdf|
 
   pdf.move_down(30)
   pdf.table([headers] + rows, :header => true, :width => 510) do
-    row(0).style(:style => :bold, :background_color => 'cccccc')
+    row(0).style(:font_style => :bold, :background_color => 'cccccc')
     column(0).width = 125
     column(1).width = 300
     column(2).style(:align => :right)
   end
 
-  pdf.number_pages "Page <page> of <total>", [0, -15]
+  pdf.number_pages "Page <page> of <total>", {
+    :at => [0, -15]
+  }
 
 end
