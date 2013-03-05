@@ -202,7 +202,7 @@ describe FacilityAccountsController do
     end
   end
 
-  
+
   context 'accounts_receivable' do
 
     before :each do

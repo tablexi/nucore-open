@@ -33,6 +33,12 @@ Spork.prefork do
   # in ./support/ and its subdirectories.
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
+  # https://github.com/sporkrb/spork-rails/issues/6#issuecomment-11078788
+  full_names = Dir["#{Rails.root}/app/helpers/*.rb"]
+  full_names.collect do |full_name|
+      include Object.const_get(File.basename(full_name,'.rb').camelize)
+  end
+
   RSpec.configure do |config|
     # If you're not using ActiveRecord you should remove these
     # lines, delete config/database.yml and disable :active_record
@@ -265,7 +271,7 @@ Spork.each_run do
           :facility_account => facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)),
           :min_reserve_mins => 60,
           :max_reserve_mins => 60)
-    
+
 
     assert @instrument.valid?
     @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24)) if @instrument.schedule_rules.empty?
@@ -307,8 +313,8 @@ Spork.each_run do
   #   The +User+ that creates the @order
   def setup_reservation(facility, facility_account, account, user)
     # create instrument, min reserve time is 60 minutes, max is 60 minutes
-    @instrument       = FactoryGirl.create(:instrument, 
-                                             :facility => facility, 
+    @instrument       = FactoryGirl.create(:instrument,
+                                             :facility => facility,
                                              :facility_account => facility_account,
                                              :min_reserve_mins => 60,
                                              :max_reserve_mins => 60)
