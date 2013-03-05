@@ -61,7 +61,7 @@ end
 
 group :oracle do
   # ruby-oci8 won't compile on lion
-  unless RUBY_PLATFORM =~ /x86_64-darwin(11|12)/
+  unless RUBY_PLATFORM =~ /(?:i686|x86_64)-darwin(?:11|12)/
     gem 'ruby-oci8',        '2.0.4'
   end
 
