@@ -8,6 +8,14 @@ require 'spork'
 # - Place the rest under Spork.each_run block
 # - Any code that is left outside of the blocks will be ran during preforking
 #   and during each_run!
+
+# View helpers are not being loaded in when running spork. Once the pull request is
+# merged in and spork is upgraded, we should be able to remove this line.
+# https://github.com/sporkrb/spork/pull/140
+if Spork.using_spork?
+  AbstractController::Helpers::ClassMethods.module_eval do def helper(*args, &block); modules_for_helpers(args).each {|mod| add_template_helper(mod)}; _helpers.module_eval(&block) if block_given?; end end
+end
+
 Spork.prefork do
   # This file is copied to ~/spec when you run 'ruby script/generate rspec'
   # from the project root directory.
@@ -32,12 +40,6 @@ Spork.prefork do
   # Requires supporting files with custom matchers and macros, etc,
   # in ./support/ and its subdirectories.
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
-
-  # https://github.com/sporkrb/spork-rails/issues/6#issuecomment-11078788
-  full_names = Dir["#{Rails.root}/app/helpers/*.rb"]
-  full_names.collect do |full_name|
-      include Object.const_get(File.basename(full_name,'.rb').camelize)
-  end
 
   RSpec.configure do |config|
     # If you're not using ActiveRecord you should remove these

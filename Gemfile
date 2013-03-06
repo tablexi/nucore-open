@@ -53,7 +53,7 @@ group :development, :test do
   gem 'ruby-debug19',      '0.11.6'
   gem 'shoulda-matchers',  '1.4.2'
   gem 'single_test',       '0.4.0'
-  gem 'spork',             '0.9.0.rc9'
+  gem 'spork',             '0.9.2'
   gem 'timecop'
   gem "pry-rails",         '0.2.2'
   gem "awesome_print",     '1.1.0'
