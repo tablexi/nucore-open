@@ -16,6 +16,12 @@
     %label= t('.label.journal_date')
     =h human_date @journal.journal_date
   %li
+    %label= t('.label.reference')
+    =h @journal.reference
+  %li
+    %label= t('.label.description')
+    =h @journal.description
+  %li
     %label= t('.label.journal_status')
     =h @journal.status_string
   - if Settings.financial.journal_format.xls

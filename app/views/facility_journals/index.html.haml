@@ -7,14 +7,14 @@
 - if has_pending_journals?
   %h2= t(".head.pending")
 
-  
+
   - if @pending_journals.present?
     %div= t(".instructions_html")
-    
+
     - @pending_journals.each do |pending_journal|
       - facility_abbreviations = pending_journal.facility_abbreviations
       = form_for([current_facility, pending_journal]) do |f|
-        = f.error_messages 
+        = f.error_messages
         %table
           %tr
             %th= t(".th.download")
@@ -40,7 +40,7 @@
 
             - if all_facility?
               %td= facility_abbreviations.join("<br>").html_safe
-            
+
             %td=h number_to_currency(pending_journal.amount)
             %td= f.text_field :reference
             %td= f.text_field :description
@@ -61,6 +61,7 @@
       %th= Journal.human_attribute_name(:created_at).titlecase
       %th= Journal.human_attribute_name(:journal_date).titlecase
       %th= Journal.human_attribute_name(:reference)
+      %th= Journal.human_attribute_name(:description)
       %th= Journal.human_attribute_name(:journal_status)
     - @journals.each do |j|
       %tr
@@ -68,4 +69,5 @@
         %td=h human_datetime(j.created_at)
         %td=h human_date(j.journal_date)
         %td=h j.reference
+        %td=h j.description
         %td=h j.status_string
