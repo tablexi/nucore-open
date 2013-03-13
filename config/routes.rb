@@ -58,7 +58,7 @@ Nucore::Application.routes.draw do |map|
     end
 
     resources :products, :only => [:index] do
-      resources :product_accessories, :as => 'accessories', :only => [:index, :create, :destroy]
+      resources :product_accessories, :only => [:index, :create, :destroy]
     end
 
     match 'instrument_statuses', :to => 'instruments#instrument_statuses', :as => 'instrument_statuses'
@@ -68,10 +68,11 @@ Nucore::Application.routes.draw do |map|
         get 'manage'
       end
 
-      match 'schedule', :to => 'instruments#schedule'
-      match 'agenda',   :to => 'instruments#agenda'
-      match 'status',   :to => 'instruments#instrument_status'
-      match 'switch',   :to => 'instruments#switch'
+      match 'public_schedule', :to => 'instruments#public_schedule'
+      match 'schedule',        :to => 'instruments#schedule'
+      match 'agenda',          :to => 'instruments#agenda'
+      match 'status',          :to => 'instruments#instrument_status'
+      match 'switch',          :to => 'instruments#switch'
 
       resources :schedule_rules, :except => [:show]
       resources :product_access_groups
@@ -134,19 +135,19 @@ Nucore::Application.routes.draw do |map|
           post 'username_search'
           get  'new_search'
         end
-        get 'switch_to',    :to => 'users#switch_to'
-        get 'orders',       :to => 'users#orders'
-        get 'reservations', :to => 'users#reservations'
-        get 'accounts',     :to => 'users#accounts'
-        get 'instruments',  :to => 'users#instruments'
+        get   'switch_to',    :to => 'users#switch_to'
+        match 'orders',       :to => 'users#orders'
+        match 'reservations', :to => 'users#reservations'
+        match 'accounts',     :to => 'users#accounts'
+        match 'instruments',  :to => 'users#instruments'
       end
     else
       resources :users, :except => [:edit, :update, :new, :create] do
-        get 'switch_to',    :to => 'users#switch_to'
-        get 'orders',       :to => 'users#orders'
-        get 'reservations', :to => 'users#reservations'
-        get 'accounts',     :to => 'users#accounts'
-        get 'instruments',  :to => 'users#instruments'
+        get   'switch_to',    :to => 'users#switch_to'
+        match 'orders',       :to => 'users#orders'
+        match 'reservations', :to => 'users#reservations'
+        match 'accounts',     :to => 'users#accounts'
+        match 'instruments',  :to => 'users#instruments'
       end
     end
     ######
@@ -259,8 +260,8 @@ Nucore::Application.routes.draw do |map|
 
   # order process
   match '/orders/cart', :to => 'orders#cart', :as => 'cart'
+  match "/orders(\/:status)", :to => 'orders#index', :as => 'orders_status', :constraints => { :status => /pending|all/ } ## emacs quoting \/
 
-#TODO  match '/orders(/:status)', :to => 'orders#index', :status => /pending|all/, :as => 'orders_status'
 
   put '/orders/:id/remove/:order_detail_id', :to => 'orders#remove',      :as => 'remove_order'
   match '/order/:id/add_account',            :to => 'orders#add_account', :as => 'add_account'
