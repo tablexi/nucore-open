@@ -1,4 +1,4 @@
-Nucore::Application.routes.draw do |map|
+Nucore::Application.routes.draw do
   match '/users/sign_in.pdf' => redirect('/users/sign_in')
   devise_for :users, :skip => :passwords
 
