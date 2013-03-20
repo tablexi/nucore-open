@@ -54,6 +54,11 @@ describe InstrumentsController do
       do_request
       assigns[:instrument].should == @instrument
     end
+
+    it 'should not have html tags in title' do
+      do_request
+      response.body.should match('<title>[^<>]+</title>')
+    end
   end
 
 
@@ -287,7 +292,7 @@ describe InstrumentsController do
         it 'should create a new schedule' do
           expect { do_request }.to change{ Schedule.count }.by(1)
         end
-          
+
         it 'should be the newest schedule' do
           do_request
           assigns(:instrument).schedule.should == Schedule.last
@@ -506,7 +511,7 @@ describe InstrumentsController do
                                               :facility_account => @facility_account,
                                               :no_relay => true)
         @instrument_with_relay.update_attributes(:relay => FactoryGirl.create(:relay_syna, :instrument => @instrument_with_relay))
-        
+
         @instrument_with_dummy_relay = FactoryGirl.create(:instrument,
                                               :facility => @authable,
                                               :facility_account => @facility_account,
