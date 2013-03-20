@@ -33,8 +33,8 @@ order_details:
   #   new:
   #     - ApprovalNotification::NotifyPurchaser
   #     - ApprovalNotification::NotifyFacility
-  #   inprocess: 
-  #     - 
+  #   inprocess:
+  #     -
   #       class: ApprovalNotification::NotifyPurchaser
   #       setting_1: test3
   #     - ApprovalNotification::NotifyFacility
@@ -42,7 +42,7 @@ order_details:
   #   reconciled: ["ApprovalNotification::NotifyPurchaser", "ApprovalNotification::NotifyFacility"]
   status_change_hooks:
     pending_approval: StatusChangeNotifications::NotifyFacilityHook
-    approved: StatusChangeNotifications::NotifyPurchaserHook    
+    approved: StatusChangeNotifications::NotifyPurchaserHook
 
 billing:
   review_period: <%= 7.days %>
@@ -50,6 +50,9 @@ billing:
 external_services:
   survey: Surveyor
 
+relays:
+  # can also be NetBooter::Http
+  connect_module: NetBooter::Telnet
 #
 # For these settings use SettingsHelper#feature_on?
 feature:

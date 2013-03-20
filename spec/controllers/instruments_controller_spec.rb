@@ -502,7 +502,7 @@ describe InstrumentsController do
     context 'instrument statuses' do
       before :each do
         # So it doesn't try to actually connect
-        RelaySynaccessRevA.any_instance.stub(:query_status).and_return([false])
+        RelaySynaccessRevA.any_instance.stub(:query_status).and_return(false)
 
         @method=:get
         @action=:instrument_statuses
@@ -523,8 +523,9 @@ describe InstrumentsController do
                                               :facility => @authable,
                                               :facility_account => @facility_account,
                                               :no_relay => true)
-        # don't stub query status since this SynAcceesRevB will fail due to a bad IP address
+
         @instrument_with_bad_relay.update_attributes(:relay => FactoryGirl.create(:relay_synb, :instrument => @instrument_with_bad_relay))
+        RelaySynaccessRevB.any_instance.stub(:query_status).and_raise(Exception.new('Error!'))
         @instrument_with_bad_relay.relay.update_attribute(:ip, '')
       end
 

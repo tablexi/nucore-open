@@ -112,6 +112,9 @@ class InstrumentsController < ProductsCommonController
       # skip instruments with no relay
       next unless instrument.relay
 
+      # skip instruments with dummy relay
+      # next if instrument.relay.is_a? RelayDummy
+
       begin
         status = instrument.relay.get_status
         instrument_status = instrument.current_instrument_status
@@ -140,8 +143,7 @@ class InstrumentsController < ProductsCommonController
 
       unless Rails.env.test?
         port=@instrument.relay.port
-        params[:switch] == 'on' ? relay.activate : relay.deactivate
-        status = relay.get_status
+        status = (params[:switch] == 'on' ? relay.activate : relay.deactivate)
       end
 
       @status = @instrument.instrument_statuses.create!(:is_on => status)

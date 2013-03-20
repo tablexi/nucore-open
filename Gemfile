@@ -44,6 +44,8 @@ gem 'daemons',          '1.1.6'
 ## custom
 gem 'c2po',             '~> 1.0.0', :path => 'vendor/engines/c2po'
 
+gem 'synaccess_connect', '0.1.0', :git => 'git://github.com/tablexi/synaccess.git'
+
 group :development, :test do
   gem 'ci_reporter'
   # TODO upgrade factory girl to 4.1 once we no longer need to support

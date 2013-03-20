@@ -1,3 +1,5 @@
+# Including class must implement #connection
+# Port refers to the outlet, not the IP port
 module PowerRelay
   def self.included(base)
     ## validations
@@ -7,5 +9,20 @@ module PowerRelay
   ## instance methods
   def control_mechanism
     Relay::CONTROL_MECHANISMS[:relay]
+  end
+
+  def connection_options
+    options = {}
+    options[:username] = username if username.present?
+    options[:password] = password if password.present?
+    options
+  end
+
+  def toggle(status)
+    relay_connection.toggle(status, port)
+  end
+
+  def query_status
+    relay_connection.status(port)
   end
 end
