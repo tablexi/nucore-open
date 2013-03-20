@@ -10,7 +10,7 @@ class RelaySynaccessRevB < Relay
   end
 
   def relay_connection
-    # @relay_connection ||= NetBooter::Http::RevB.new(host, connection_options)
-    @relay_connection ||= NetBooter::Telnet::RevB.new(host, connection_options)
+    clazz = "#{Settings.relays.connect_module}::RevB".constantize
+    @relay_connection ||= clazz.new(host, connection_options)
   end
 end
