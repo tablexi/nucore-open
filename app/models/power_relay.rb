@@ -19,7 +19,7 @@ module PowerRelay
   end
 
   def toggle(status)
-    relay_connection.toggle(status, port)
+    relay_connection.toggle(port, status)
   end
 
   def query_status

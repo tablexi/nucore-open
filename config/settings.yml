@@ -51,8 +51,8 @@ external_services:
   survey: Surveyor
 
 relays:
-  # can also be NetBooter::Http
-  connect_module: NetBooter::Telnet
+  # can also be NetBooter::Telnet
+  connect_module: NetBooter::Http
 #
 # For these settings use SettingsHelper#feature_on?
 feature:

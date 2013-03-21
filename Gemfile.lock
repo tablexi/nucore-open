@@ -8,9 +8,10 @@ GIT
 
 GIT
   remote: git://github.com/tablexi/synaccess.git
-  revision: dd63b895dbd5923d43d8caa7e658744c23060aef
+  revision: 4fe19423c80d9f81b1bd5d9fecc8c2c219ccef9f
   specs:
-    synaccess_connect (0.1.0)
+    synaccess_connect (0.2.0)
+      nokogiri (~> 1.4.4)
 
 PATH
   remote: vendor/engines/c2po
@@ -253,7 +254,7 @@ DEPENDENCIES
   single_test (= 0.4.0)
   spork (= 0.9.2)
   spreadsheet (= 0.6.5.5)
-  synaccess_connect (= 0.1.0)!
+  synaccess_connect (= 0.2.0)!
   timecop
   vestal_versions (= 1.2.4.3)!
   will_paginate (= 3.0.2)
