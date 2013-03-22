@@ -10,6 +10,8 @@ class FacilityNotificationsController < ApplicationController
 
   include TransactionSearch
 
+  helper NUCore::Database::RelationHelper
+
   layout 'two_column_head'
 
   def initialize

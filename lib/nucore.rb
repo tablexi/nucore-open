@@ -24,6 +24,7 @@ module NUCore
       @@is_oracle ||= ActiveRecord::Base.connection.adapter_name == 'OracleEnhanced'
     end
 
+
     def self.boolean(value)
       # Oracle doesn't always properly handle boolean values correctly
       if self.oracle?
@@ -55,7 +56,42 @@ module NUCore
         end
       end
     end
-    
+
+
+    module RelationHelper
+      #
+      # If ActiveRecord might produce a query with a large IN clause (>= 1000)
+      # then use this method. It prevents Oracle from barfing up this error:
+      # OCIError: ORA-01795: maximum number of expressions in a list is 1000.
+      # Essentially the method "slices" the query into sizeable chunks it knows
+      # Oracle can handle.
+      # [_relation_]
+      #   An ActiveRecord::Relation
+      # [_slice_size_]
+      #   The number of results to fetch per query. Defaults to a size it knows
+      #   Oracle can handle.
+      # [_returns_]
+      #   The results of the relation in an +Array+
+      def query_in_slices(relation, slice_size = 999)
+        # We could slice for all DBs but we might as well
+        # do it all in 1 query if the DB (MySQL) can handle it
+        return relation.all unless NUCore::Database.oracle?
+
+        offset = 0
+        slice = []
+        results = []
+
+        begin
+          slice = relation.limit(slice_size).offset(offset).all
+          results += slice
+          offset += slice_size
+        end while slice.size == slice_size
+
+        results
+      end
+    end
+
+
     module SortHelper
       def self.included(base)
         base.extend ClassMethods
