@@ -18,7 +18,7 @@ class OrderDetail < ActiveRecord::Base
   belongs_to :order_status
   belongs_to :account
   belongs_to :bundle, :foreign_key => 'bundle_product_id'
-  has_one    :reservation, :dependent => :destroy
+  has_one    :reservation, :dependent => :destroy, :inverse_of => :order_detail
   has_one    :external_service_receiver, :as => :receiver, :dependent => :destroy
   has_many   :notifications, :as => :subject, :dependent => :destroy
   has_many   :stored_files, :dependent => :destroy

@@ -7,8 +7,6 @@ describe Reservation do
           :reserve_start_at => Time.zone.parse("#{Date.today.to_s} 10:00:00") - 2.days,
           :reserve_end_at => Time.zone.parse("#{Date.today.to_s} 10:00:00") - 2.days + 1.hour,
           :actual_start_at => Time.zone.parse("#{Date.today.to_s} 10:00:00") - 2.days
-      # Reload the order detail so it has the reservation associated with it
-      res.order_detail.reload
 
       # needs to have a relay
       res.product.relay = FactoryGirl.create(:relay_dummy, :instrument => res.product)
