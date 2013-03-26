@@ -64,6 +64,7 @@ function initReportsUI(selectedIndex)
             // before refreshing tab update the tab's URL with the current report params
             var url=getUpdateTabUrl(ui);
             $('#tabs').tabs('url', ui.index, url);
+            $('#error-msg').hide();
         },
 
         load: function(event, ui) {
@@ -75,13 +76,16 @@ function initReportsUI(selectedIndex)
             // Make sure to update the date params in case they were empty or invalid
             $('#date_start').val($(ui.panel).find('.updated_values .date_start').text())
             $('#date_end').val($(ui.panel).find('.updated_values .date_end').text())
-            
+
         },
 
         ajaxOptions: {
             dataType: "text html",
             error: function(xhr, status, error) {
-                $('#error-msg').html('Sorry, but the tab could not load. Please try again soon.').show();
+                // don't show error message if it's because of user aborting ajax request
+                if (status != 'abort') {
+                    $('#error-msg').html('Sorry, but the tab could not load. Please try again soon.').show();
+                }
             }
         }
     });
