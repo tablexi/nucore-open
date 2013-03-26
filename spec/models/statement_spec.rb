@@ -52,6 +52,17 @@ describe Statement do
       @order_details.each { |od| @statement.add_order_detail(od) }
     end
 
+    context 'with the ordered_at switched up' do
+      before :each do
+        @order_details[0].order.update_attributes(:ordered_at => 2.days.ago)
+        @order_details[1].order.update_attributes(:ordered_at => 3.days.ago)
+        @order_details[2].order.update_attributes(:ordered_at => 1.day.ago)
+      end
+      it 'should return the first date' do
+        @statement.first_order_detail_date.should == @order_details[1].ordered_at
+      end
+    end
+
     it 'should set the statement_id of each order detail' do
       @order_details.each { |od| od.statement_id.should_not be_nil }
     end
