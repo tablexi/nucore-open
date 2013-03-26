@@ -135,8 +135,11 @@ en:
         description: Notes
         journal_status: Status
       statement:
+        id: "Invoice #"
         created_by: Sent By
         created_at: Sent At
+        sent_to: Sent To
+        total_cost: Total
       account:
         account_number: Number
         expires_at: Expires
