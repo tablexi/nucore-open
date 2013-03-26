@@ -6,6 +6,7 @@ module TransactionSearch
 
   def self.included(base)
     base.extend(ClassMethods)
+    base.helper NUCore::Database::RelationHelper
   end
 
   module ClassMethods
