@@ -117,6 +117,8 @@ class InstrumentPricePolicy < PricePolicy
 
     ## the instrument has a reservation cost only (i.e. is controlled manually)
     if product.control_mechanism == Relay::CONTROL_MECHANISMS[:manual]
+      return nil if reservation_rate.nil? || reservation_subsidy.nil?
+
       reserve_mins = (res_end_at - res_start_at)/60
       reserve_intervals = (reserve_mins / reservation_mins).ceil
       reserve_discount = 0

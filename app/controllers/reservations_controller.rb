@@ -77,6 +77,7 @@ class ReservationsController < ApplicationController
 
     @order_details.each do |od|
       res = od.reservation
+      next unless res
       # do you need to click stop
       if res.can_switch_instrument_off?
         notices << "Do not forget to click the \"End Reservation\" link when you finished your #{res} reservation."
@@ -214,7 +215,7 @@ class ReservationsController < ApplicationController
     else
       flash[:error] = @reservation.errors.full_messages.join("<br/>")
     end
-    
+
     return redirect_to reservations_path
   end
 
@@ -286,11 +287,11 @@ class ReservationsController < ApplicationController
     @error_status = nil
     @errors_by_id = {}
     @product_accessories = visible_accessories(@reservation)
-    
+
     if request.get?
       render 'pick_accessories', :layout => false and return
     end
-    
+
     @complete_state = OrderStatus.find_by_name!('Complete')
 
     @count = 0
