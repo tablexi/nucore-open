@@ -1,21 +1,23 @@
-%fieldset.collapsable.collapsed
+- classes = ['collapsable']
+- classes << 'collapsed' if params['backdate_order'].blank?
+%fieldset{class: classes}
   %legend= t("orders.show.more_options")
   = hidden_field_tag :backdate_order, true
   %ul
     %li
       = label_tag :order_date
-      = text_field_tag :order_date, format_usa_date(Time.zone.now), :class => 'datepicker'
+      = text_field_tag :order_date, params[:order_date] || format_usa_date(Time.zone.now), :class => 'datepicker'
     %li
       = label_tag :order_time
       -# Switch to select_time in rails 3.1. Rails 3.0 doesn't support the :ampm option
       -# = select_time Time.zone.now, :prefix => :order_time, :ignore_date => true, :ampm => true
-      = time_select_tag :order_time, Time.zone.now
+      = time_select_tag :order_time, params[:order_datetime] || Time.zone.now
 
     %li
       = label_tag :status
-      = select_tag(:order_status_id, options_for_select(@order_statuses.nil? ? [] : @order_statuses.map {|s| [s.name_with_level, s.id] }))
+      = select_tag(:order_status_id, options_for_select(@order_statuses.nil? ? [] : @order_statuses.map {|s| [s.name_with_level, s.id] }, params[:order_status_id] || @order_statuses.first.try(:id)))
     %li
       = label_tag :send_notification
-      = check_box_tag :send_notification, 1, true
+      = check_box_tag :send_notification, 1, params[:send_notification]
   :javascript
     $(function() { $('.datepicker').datepicker({maxDate: '#{format_usa_date(Time.zone.now)}'}); });

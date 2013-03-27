@@ -7,7 +7,7 @@ module DateHelper
 
       Time.zone.parse(date_string)
      rescue
-       nil 
+       nil
      end
   end
 
