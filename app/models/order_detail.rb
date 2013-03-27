@@ -311,6 +311,11 @@ class OrderDetail < ActiveRecord::Base
     change_status! product.initial_order_status
   end
 
+  def save_as_user!(user)
+    @being_purchased_by_admin = user.operator_of?(product.facility)
+    save!
+  end
+
   def cancelable?
     # can't cancel if the reservation isn't already canceled or if this OD has been added to a statement or journal
     statement.nil? && journal.nil? && (reservation.nil? || reservation.canceled_at.present?)
