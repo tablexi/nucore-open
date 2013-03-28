@@ -1,7 +1,7 @@
 module TransactionSearch
   DATE_RANGE_FIELDS = [['Ordered', 'ordered_at'],
                        ['Fulfilled', 'fulfilled_at'],
-                       ['Journaled', 'journal_date']
+                       ['Journaled', 'journal_or_statement_date']
                       ]
 
   def self.included(base)
@@ -32,12 +32,20 @@ module TransactionSearch
           @search_fields = params.merge({})
           do_search(@search_fields)
           add_optimizations
-          @order_details = @order_details_sort ? @order_details.reorder(@order_details_sort) : @order_details.order_by_desc_nulls_first(@date_range_field)
+          @order_details = @order_details_sort ? @order_details.reorder(@order_details_sort) : order_by_desc
           @order_details = @order_details.paginate(:page => params[:page]) if @paginate_order_details
           render :layout => @layout if @layout
         end
       end
     end
+  end
+
+  def order_by_desc
+    field = @date_range_field
+    if @date_range_field.to_sym == :journal_or_statement_date
+      field = "COALESCE(journal_date, statements.created_at)"
+    end
+    @order_details.order_by_desc_nulls_first(field)
   end
 
   def init_order_details

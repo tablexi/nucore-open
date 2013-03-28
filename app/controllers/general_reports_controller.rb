@@ -54,7 +54,7 @@ class GeneralReportsController < ReportsController
       @status_ids += stat.children.collect(&:id) if stat.root?
     end
 
-    @date_range_field = params[:date_range_field] || 'journal_date'
+    @date_range_field = params[:date_range_field] || 'journal_or_statement_date'
     super
   end
 

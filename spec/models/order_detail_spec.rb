@@ -76,7 +76,7 @@ describe OrderDetail do
   end
 
   context "assigning estimated costs" do
-    
+
     context "for reservations" do
       before(:each) do
         @instrument = FactoryGirl.create(:instrument,
@@ -97,7 +97,7 @@ describe OrderDetail do
         assert @order_detail.reservation
         @start_stop = [Time.now, Time.now+1.hour]
       end
-      
+
       it "should assign_estimated_price" do
         @order_detail.estimated_cost.should be_nil
         # will be the cheapest price policy
@@ -263,7 +263,7 @@ describe OrderDetail do
         :facility_account => @facility_account,
         :facility => @facility
       )
-      
+
       [@no_actuals_instrument, @actuals_instrument, @both_instrument, @instrument_wo_pp].each do |instrument|
         sr = FactoryGirl.create(:schedule_rule, :instrument => instrument)
       end
@@ -287,7 +287,7 @@ describe OrderDetail do
         :usage_rate       => 1
       ))
 
-      # create an order and some order details 
+      # create an order and some order details
       @order=FactoryGirl.create(:order,
         :facility => @facility,
         :user => @user,
@@ -311,7 +311,7 @@ describe OrderDetail do
       @both_od.save!
       @no_pp_od.reservation = FactoryGirl.build(:reservation, :product => @both_instrument)
       @no_pp_od.save!
-      
+
       # travel to the future to complete the order_details
       Timecop.travel(2.days.from_now) do
         [@no_actuals_od, @actuals_od, @both_od, @no_pp_od].each do |od|
@@ -371,7 +371,7 @@ describe OrderDetail do
     end
 
   end
-  
+
   context "state management" do
 
     it "should not allow transition from 'new' to 'invoiced'" do
@@ -379,7 +379,7 @@ describe OrderDetail do
       @order_detail.state.should == 'new'
       @order_detail.version.should == 1
     end
-    
+
     it "should allow anyone to transition from 'new' to 'inprocess', increment version" do
       @order_detail.to_inprocess!
       @order_detail.state.should == 'inprocess'
@@ -556,19 +556,19 @@ describe OrderDetail do
     end
 
   end
-  
+
   context "can_dispute?" do
     before :each do
       @order_detail.to_complete
       @order_detail.reviewed_at = 1.day.from_now
       @order_detail.save
-      
+
       @order_detail2 = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
       @order_detail2.to_complete
       @order_detail2.reviewed_at = 1.day.ago
       @order_detail2.save!
     end
-    
+
     it 'should not be disputable if its not complete' do
       @order_detail3 = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
       @order_detail3.should_not be_can_dispute
@@ -577,7 +577,7 @@ describe OrderDetail do
       @order_detail.should be_can_dispute
       @order_detail2.should_not be_can_dispute
     end
-    
+
     it "should not be in dispute if it's already been disputed" do
       @order_detail.dispute_at = 1.hour.ago
       @order_detail.dispute_reason = "because"
@@ -610,7 +610,7 @@ describe OrderDetail do
     end
   end
 
-  
+
 
   context 'named scopes' do
 
@@ -716,6 +716,34 @@ describe OrderDetail do
 
     end
 
+    describe 'action_in_date_range' do
+      it 'should raise an error for bad action' do
+        expect { OrderDetail.action_in_date_range(:random_action, nil, nil) }.to raise_error(ArgumentError)
+      end
+
+      context 'journaled_or_statemented' do
+        before :each do
+          @journal=FactoryGirl.create(:journal, :facility => @facility, :reference => 'xyz', :created_by => @user.id, :journal_date => 2.day.ago)
+          @statement=FactoryGirl.create(:statement, :facility => @facility, :created_by => @user.id, :account => @account, :created_at => 1.day.ago)
+          @order_detail.to_complete!
+          @order_detail2.to_complete!
+          @order_detail.update_attribute :journal_id, @journal.id
+          @order_detail2.update_attribute :statement_id, @statement.id
+        end
+
+        it 'should return nothing when searching wrong date range' do
+          OrderDetail.action_in_date_range(:journal_or_statement_date, 7.days.ago, 6.days.ago).should be_empty
+        end
+
+        it 'should work for journal date' do
+          OrderDetail.action_in_date_range(:journal_date, 3.days.ago, 1.day.ago).should == [@order_detail]
+        end
+
+        it 'should return both statemented and journaled' do
+          OrderDetail.action_in_date_range(:journal_or_statement_date, 3.days.ago, Time.zone.now).should =~ [@order_detail, @order_detail2]
+        end
+      end
+    end
   end
 
   context 'ordered_on_behalf_of?' do
@@ -731,16 +759,16 @@ describe OrderDetail do
       @order_detail.reload.should_not be_ordered_on_behalf_of
     end
   end
-  
+
   context 'ordered_or_reserved_in_range' do
     before :each do
       @user = FactoryGirl.create(:user)
       @od_yesterday = place_product_order(@user, @facility, @item, @account)
       @od_yesterday.order.update_attributes(:ordered_at => (Time.zone.now - 1.day))
-      
+
       @od_tomorrow = place_product_order(@user, @facility, @item, @account)
       @od_tomorrow.order.update_attributes(:ordered_at => (Time.zone.now + 1.day))
-      
+
       @od_today = place_product_order(@user, @facility, @item, @account)
 
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
@@ -749,10 +777,10 @@ describe OrderDetail do
                                       :facility_account => @facility_account,
                                       :min_reserve_mins => 60,
                                       :max_reserve_mins => 60)
-      
+
       # all reservations get placed in today
       @reservation_yesterday = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now - 1.day)
-      @reservation_tomorrow = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now + 1.day)      
+      @reservation_tomorrow = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now + 1.day)
       @reservation_today = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now)
     end
 
@@ -760,7 +788,7 @@ describe OrderDetail do
       result = OrderDetail.ordered_or_reserved_in_range(Time.zone.now, nil)
       result.should contain_all [@od_today, @od_tomorrow, @reservation_today.order_detail, @reservation_tomorrow.order_detail]
     end
-    
+
     it "should only return the reservations and the orders from today and yesterday" do
       result = OrderDetail.ordered_or_reserved_in_range(nil, Time.zone.now)
       result.should contain_all [@od_yesterday, @od_today, @reservation_yesterday.order_detail, @reservation_today.order_detail]
@@ -813,7 +841,7 @@ describe OrderDetail do
       @order_detail.actual_cost.should == @order_detail.price_policy.cancellation_cost
       @order_detail.actual_subsidy.should == 0
     end
-    
+
   end
 
 
@@ -943,7 +971,7 @@ describe OrderDetail do
           @instrument = FactoryGirl.create(:instrument,
                                             :facility => @facility,
                                             :facility_account_id => @facility_account.id,
-                                            :min_reserve_mins => 60, 
+                                            :min_reserve_mins => 60,
                                             :max_reserve_mins => 60)
           @instrument_order_detail=@order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product_id => @instrument.id, :account_id => @account.id))
         end

@@ -127,6 +127,7 @@ en:
         fulfilled_at: Fulfilled Date
         ordered_at: Ordered Date
         journal_date: Journal Date
+        journal_or_statement_date: "Journal/Statement Date"
         user: Ordered For
         created_by_user: Ordered By
         reviewed_at: Review Closes

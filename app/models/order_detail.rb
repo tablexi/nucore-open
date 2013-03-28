@@ -24,7 +24,13 @@ class OrderDetail < ActiveRecord::Base
   has_many   :stored_files, :dependent => :destroy
 
   delegate :user, :facility, :ordered_at, :to => :order
-  delegate :journal_date, :to => :journal
+  delegate :journal_date, :to => :journal, :allow_nil => true
+  def statement_date
+    statement.try(:created_at)
+  end
+  def journal_or_statement_date
+    journal_date || statement_date
+  end
 
   alias_method :merge!, :save!
 
@@ -201,9 +207,12 @@ class OrderDetail < ActiveRecord::Base
   }
 
   scope :action_in_date_range, lambda {|action, start_date, end_date|
+    valid = TransactionSearch::DATE_RANGE_FIELDS.map { |arr| arr[1].to_sym } + [:journal_date]
+    raise ArgumentError.new("Invalid action: #{action}. Must be one of: #{valid}") unless valid.include? action.to_sym
     logger.debug("searching #{action} between #{start_date} and #{end_date}")
     search = scoped
 
+    return journaled_or_statemented_in_date_range(start_date, end_date) if action.to_sym == :journal_or_statement_date
     search = search.joins(:journal) if action.to_sym == :journal_date
 
     # If we're searching on fulfilled_at, ignore any order details that don't have a fulfilled date
@@ -217,6 +226,22 @@ class OrderDetail < ActiveRecord::Base
     end
     search
   }
+
+  def self.journaled_or_statemented_in_date_range(start_date, end_date)
+    search = joins("LEFT JOIN journals ON journals.id = order_details.journal_id")
+    search = search.joins("LEFT JOIN statements ON statements.id = order_details.statement_id")
+
+    journal_query = ["journal_id IS NOT NULL"]
+    journal_query << "journal_date > :start_date" if start_date
+    journal_query << "journal_date < :end_date" if end_date
+
+    statement_query = ["statement_id IS NOT NULL"]
+    statement_query << "statements.created_at > :start_date" if start_date
+    statement_query << "statements.created_at < :end_date" if end_date
+
+    search = search.where("(#{journal_query.join(' AND ')}) OR (#{statement_query.join(' AND ')})", :start_date => start_date, :end_date => end_date)
+    search
+  end
 
 
 
