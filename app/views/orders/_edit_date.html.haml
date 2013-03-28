@@ -1,6 +1,6 @@
 - classes = ['collapsable']
 - classes << 'collapsed' if params['backdate_order'].blank?
-%fieldset{class: classes}
+%fieldset{ :class => classes }
   %legend= t("orders.show.more_options")
   = hidden_field_tag :backdate_order, true
   %ul
