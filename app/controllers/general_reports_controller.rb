@@ -99,12 +99,7 @@ class GeneralReportsController < ReportsController
 
     rows.sort! {|a,b| a.first <=> b.first}
 
-    # only page results if we're not exporting
-    if params[:export_id].present?
-      @rows = rows
-    else
-      page_report(rows)
-    end
+    page_report(rows)
   end
 
 
