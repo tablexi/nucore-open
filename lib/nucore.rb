@@ -75,18 +75,26 @@ module NUCore
       def query_in_slices(relation, slice_size = 999)
         # We could slice for all DBs but we might as well
         # do it all in 1 query if the DB (MySQL) can handle it
-        return relation.all unless NUCore::Database.oracle?
+        return relation unless NUCore::Database.oracle?
 
         # If the limit has already been explicitly set, don't slice
         # Likely because the relation has already been paginated
-        return relation if relation.limit_value
+        return relation if relation.limit_value && relation.limit_value < slice_size
 
-        offset = 0
+        # If provided an offset already, use that as the base
+        offset = relation.offset_value || 0
         slice = []
         results = []
 
         begin
-          slice = relation.limit(slice_size).offset(offset).all
+          # If a limit has already been set, make sure we don't go over that limit
+          if relation.limit_value && results.size + slice_size > relation.limit_value
+            limit = relation.limit_value % slice_size
+          else
+            limit = slice_size
+          end
+
+          slice = relation.limit(limit).offset(offset).all
           results += slice
           offset += slice_size
         end while slice.size == slice_size
