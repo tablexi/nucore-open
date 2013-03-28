@@ -18,7 +18,7 @@
         - if res.can_switch_instrument_on?
           = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'on')
         - elsif res.can_switch_instrument_off?
-          = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'off'), :class => end_reservation_class(res) 
+          = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'off'), :class => end_reservation_class(res)
         - else
           - if res.can_cancel?
             - fee = od.cancellation_fee
@@ -46,14 +46,8 @@
               %i=h "Note: #{od.note}"
       %td.centered=h od.order_status.name
       %td.currency
-        - if od.reload.cost_estimated?
-          %span.estimated_cost
-            = show_estimated_total(od)
-        - elsif od.price_policy.nil?
-          Unassigned
-        - else
-          %span.actual_cost
-            = show_actual_total(od)
+        - od.send(:extend, PriceDisplayment)
+        = od.reload.wrapped_cost
 
 %p.footnote
   %span.estimated_cost
