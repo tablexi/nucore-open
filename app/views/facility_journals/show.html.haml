@@ -52,12 +52,14 @@
 - else
   = form_tag facility_journal_reconcile_path(current_facility, @journal), :method => :post do
     %table
-      - if @journal.is_successful? && !@journal.is_reconciled?
+      - is_submittable = @journal.is_successful? && !@journal.is_reconciled?
+      - if is_submittable
         %tr.borderless
-          %td{:colspan => 3}
+          %td{:colspan => 3}= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
           %td.currency{:colspan => 3}= submit_tag t('.submit')
       %tr
-        %th
+        - if is_submittable
+          %th
         %th= t('.th.order')
         %th= t('.th.fulfilled')
         %th= t('.th.account')
@@ -66,7 +68,8 @@
       - @order_details.each do |od|
         - disable = od.reconciled? || @journal.open?
         %tr
-          %td= check_box_tag "order_detail_ids[]", od.id, (od.reconciled? ? true : false), {:disabled => (od.reconciled? ? true : false)}
+          - if is_submittable
+            %td= check_box_tag "order_detail_ids[]", od.id, (od.reconciled? ? true : false), {:disabled => (od.reconciled? ? true : false), :class => (od.reconciled? ? '' : 'toggle')}
           %td
             %ul
               %li= link_to od, edit_facility_order_order_detail_path(od.order.facility.url_name, od.order_id, od)
@@ -76,7 +79,7 @@
           %td=h od.account
           %td=h number_to_currency od.total
           %td=h od.reconciled? ? 'Yes' : 'No'
-      - if @journal.is_successful? && !@journal.is_reconciled?
+      - if is_submittable
         %tr.borderless
           %td{:colspan => 3}
           %td.currency{:colspan => 3}= submit_tag t('.submit')
