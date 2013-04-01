@@ -93,11 +93,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def self.for_date(date)
-    where("(reserve_start_at > :start and reserve_start_at < :end) OR (reserve_end_at > :start and reserve_end_at < :end)",
-      { :start => date.beginning_of_day,
-        :end => date.end_of_day
-      }
-    )
+    in_range(date.beginning_of_day, date.end_of_day)
   end
 
   def self.in_range(start_time, end_time)
