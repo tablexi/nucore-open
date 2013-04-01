@@ -40,11 +40,11 @@ module PriceDisplayment
 
   def display_cost_class
     if actual_cost
-      :actual
+      'actual'
     elsif estimated_cost
-      :estimated
+      'estimated'
     else
-      :unassigned
+      'unassigned'
     end
   end
 

@@ -19,7 +19,7 @@
     %th Product
     %th Quantity
     %th Status
-    - text = @order.order_details.find { |od| od.display_cost_class != :unassigned }.display_cost_class.humanize
+    - text = @order.order_details.to_a.find { |od| od.display_cost_class != 'unassigned' }.display_cost_class.humanize
     %th= "#{text} Price"
     %th= "#{text} Adjustment"
     %th= "#{text} Total"
@@ -40,4 +40,4 @@
       %td= od.display_subsidy
       %td= od.display_total
 
-%p= t('.outro')
+%p= t('.outro') if @order.any_details_estimated?
