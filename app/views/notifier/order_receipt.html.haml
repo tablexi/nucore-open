@@ -19,7 +19,7 @@
     %th Product
     %th Quantity
     %th Status
-    - text = @order.order_details.to_a.find { |od| od.display_cost_class != 'unassigned' }.display_cost_class.humanize
+    - text = order_estimated_or_actual_text(@order)
     %th= "#{text} Price"
     %th= "#{text} Adjustment"
     %th= "#{text} Total"

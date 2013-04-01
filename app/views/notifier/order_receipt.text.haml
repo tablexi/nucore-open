@@ -15,9 +15,10 @@ Order Details
   Quantity: #{od.quantity}
   Status: #{od.order_status.name}
   - od.send(:extend, PriceDisplayment)
-  #{od.display_cost_class.humanize} Price: #{od.display_cost}
-  #{od.display_cost_class.humanize} Adjustment: #{od.display_subsidy}
-  #{od.display_cost_class.humanize} Total: #{od.display_total}
+  - text = od.display_cost_class == 'unassigned' ? '' : "#{od.display_cost_class.humanize} "
+  #{text}Price: #{od.display_cost}
+  #{text}Adjustment: #{od.display_subsidy}
+  #{text}Total: #{od.display_total}
   ==
 ==
 
