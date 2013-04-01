@@ -307,6 +307,8 @@ class OrdersController < ApplicationController
     rescue Exception => e
       flash[:error] = I18n.t('orders.purchase.error')
       flash[:error] += " #{e.message}" if e.message
+      puts e.message
+      puts e.backtrace.join("\n")
       @order.reload.invalidate!
       redirect_to order_path(@order) and return
     end
