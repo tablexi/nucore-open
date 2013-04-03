@@ -1,4 +1,4 @@
-= will_paginate(@order_details) if @order_details.respond_to? :total_pages
+= will_paginate(order_details) if order_details.respond_to? :total_pages
 %table.dense
   %tr
     -if @order_detail_action or @order_detail_link
@@ -7,19 +7,18 @@
     %th= "#{OrderDetail.model_name.human} #"
     %th.nowrap= OrderDetail.human_attribute_name(@date_range_field)
     - if @extra_date_column
-      %th.nowrap= OrderDetail.human_attribute_name(@extra_date_column)
+      %th.nowrap= OrderDetail.human_attribute_name(@extra_date_column_header || @extra_date_column)
     - if !current_facility || all_facility?
       %th= Facility.model_name.human
     %th= OrderDetail.human_attribute_name("description")
     %th.nowrap= OrderDetail.human_attribute_name("user")
-    -# %th= OrderDetail.human_attribute_name('created_by_user') #Ordered By
     - unless @account
       %th= Account.model_name.human
       %th= Account.human_attribute_name("owner")
     %th= OrderDetail.human_attribute_name("cost")
     %th= OrderDetail.human_attribute_name("order_status")
 
-  - query_in_slices(@order_details).each do |order_detail|
+  - query_in_slices(order_details).each do |order_detail|
     %tr{:class => row_class(order_detail)}
       - if @order_detail_action
         %td= check_box_tag "order_detail_ids[]", order_detail.id, false, {:class => 'toggle'}
@@ -53,4 +52,4 @@
         - order_detail.send(:extend, PriceDisplayment)
         = order_detail.wrapped_cost
       %td.nowrap= order_detail.order_status
-= will_paginate(@order_details) if @order_details.respond_to? :total_pages
+= will_paginate(order_details) if order_details.respond_to? :total_pages

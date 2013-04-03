@@ -131,6 +131,7 @@ en:
         user: Ordered For
         created_by_user: Ordered By
         reviewed_at: Review Closes
+        reviewed_at_past: Review Closed
         order_status: Status
       journal:
         description: Notes
