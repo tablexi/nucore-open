@@ -14,6 +14,6 @@
             &nbsp;
         .submit= submit_tag @order_detail_action.to_s.titleize
       %div{:style => "clear: both;"}
-      = render :partial => 'shared/transactions/table_inside', locals: { order_details: order_details }
+      = render :partial => 'shared/transactions/table_inside', :locals => { :order_details => order_details }
   - else
-    = render :partial => 'shared/transactions/table_inside', locals: { order_details: order_details }
+    = render :partial => 'shared/transactions/table_inside', :locals => { :order_details => order_details }
