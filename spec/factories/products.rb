@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :product do
     description 'Lorem ipsum...'
-    account 51234
+    account 71234
     requires_approval false
     is_archived false
     is_hidden false
@@ -10,7 +10,7 @@ FactoryGirl.define do
     factory :instrument, :class => Instrument do
       ignore do
         no_relay false
-      end    
+      end
 
       sequence(:name) { |n| "Instrument #{n}" }
       sequence(:url_name) { |n| "instrument#{n}"  }
@@ -40,25 +40,25 @@ FactoryGirl.define do
 
   factory :setup_product, :class => Product do
     facility :factory => :setup_facility
-    
+
     sequence(:name) { |n| "Product #{n}" }
     sequence(:url_name) { |n| "product-#{n}" }
     description "Product description"
-    account 51234
+    account 71234
     requires_approval false
     is_archived false
     is_hidden false
     initial_order_status { find_order_status('New') }
     min_reserve_mins 60
-    max_reserve_mins 120 
+    max_reserve_mins 120
 
     after_build do |product|
       product.facility_account = product.facility.facility_accounts.first
     end
 
     after_create do |product|
-      FactoryGirl.create(:price_group_product, 
-                           :product => product, 
+      FactoryGirl.create(:price_group_product,
+                           :product => product,
                            :price_group => product.facility.price_groups.last)
     end
 
@@ -78,5 +78,5 @@ FactoryGirl.define do
     end
   end
 
-  
+
 end
