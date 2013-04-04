@@ -1,3 +1,4 @@
+- order_details = local_assigns.has_key?(:order_details) ? order_details : @order_details
 #table_billing
   - if @order_detail_action
     -#= form_tag url_for(params.merge({:action => @order_detail_action})), :method => :post do
@@ -10,9 +11,9 @@
             = @action_date_field.keys.first.to_s.titleize
             = text_field_tag @action_date_field.keys.first, @action_date_field.values.first.strftime("%m/%d/%Y"), {:class => :datepicker}
           - else
-            &nbsp;  
+            &nbsp;
         .submit= submit_tag @order_detail_action.to_s.titleize
       %div{:style => "clear: both;"}
-      = render :partial => 'shared/transactions/table_inside'
+      = render :partial => 'shared/transactions/table_inside', :locals => { :order_details => order_details }
   - else
-    = render :partial => 'shared/transactions/table_inside'
+    = render :partial => 'shared/transactions/table_inside', :locals => { :order_details => order_details }
