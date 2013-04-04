@@ -120,6 +120,18 @@ class OrderDetail < ActiveRecord::Base
     where("order_details.reviewed_at > ?", Time.zone.now).
     where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   end
+
+  def self.recently_reviewed
+    where(:state => ['complete', 'reconciled']).
+    where("order_details.reviewed_at < ?", Time.zone.now).
+    where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL").
+    order(:reviewed_at).reverse_order
+  end
+
+  def self.in_review_or_reviewed
+
+  end
+
   def in_review?
     # check in the database if self.id is in the scope
     self.class.all_in_review.find_by_id(self.id) ? true :false
