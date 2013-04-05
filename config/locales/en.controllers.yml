@@ -19,6 +19,7 @@ en:
       send_notifications:
         order_error: Order %{order_detail_id} was either not found or has already been notified.
         success_html: Notifications sent successfully to:<br/>%{accounts}
+        success_count: Notifications sent successfully to %{accounts} accounts.
       mark_as_reviewed:
         success: The selected orders have been marked as reviewed
         errors: "An error was encountered while marking some orders as reviewed: %{errors}"
