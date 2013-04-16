@@ -13,6 +13,18 @@ class Order < ActiveRecord::Base
 
   scope :for_user, lambda { |user| { :conditions => ['user_id = ? AND ordered_at IS NOT NULL AND state = ?', user.id, 'purchased'] } }
 
+  def self.created_by_user(user)
+    where(:created_by => user.id)
+  end
+
+  def self.carts
+    where(:ordered_at => nil)
+  end
+
+  def self.for_facility(facility)
+    where(:facility_id => facility.id)
+  end
+
   attr_accessor :being_purchased_by_admin
 
   # BEGIN acts_as_state_machhine
@@ -107,50 +119,10 @@ class Order < ActiveRecord::Base
   end
 
   def add(product, quantity=1)
-    if self.facility && product.facility != self.facility && self.order_details.length > 0
-      raise NUCore::MixedFacilityCart
-    end
-    quantity = quantity.to_i
-    ods=[]
+    adder = Orders::ItemAdder.new(self)
+    ods = adder.add(product, quantity)
 
-    return [] if quantity <= 0
-
-    case
-    when product.is_a?(Bundle)
-      quantity.times do
-        group_id = max_group_id + 1
-        product.bundle_products.each do |bp|
-          order_detail = self.order_details.create!(:product_id => bp.product.id, :quantity => bp.quantity, :bundle_product_id => product.id, :group_id => group_id, :account => account, :created_by => created_by)
-          ods << order_detail
-        end
-      end
-    when product.is_a?(Service)
-      separate = (product.active_template? || product.active_survey?)
-
-      # can't add single order_detail for service when it requires a template or a survey.
-      # number of order details to add
-      repeat =              separate ? quantity : 1
-      # quantity to add them with
-      individual_quantity = separate ? 1        : quantity
-
-      repeat.times do
-        order_detail = self.order_details.create!(:product_id => product.id, :quantity => individual_quantity, :account => account, :created_by => created_by)
-        ods << order_detail
-      end
-
-    # products which have reservations (instruments) should each get their own order_detail
-    when (product.respond_to?(:reservations) and quantity > 1) then
-      quantity.times do
-        order_detail = order_details.create!(:product_id => product.id, :quantity => 1, :account => account, :created_by => created_by)
-        ods << order_detail
-      end
-    else
-      order_detail = order_details.create!(:product_id => product.id, :quantity => quantity, :account => account, :created_by => created_by)
-      ods << order_detail
-    end
     ods.each { |od| od.assign_estimated_price! }
-    self.facility_id = product.facility_id
-    save!
     return ods
   end
 
