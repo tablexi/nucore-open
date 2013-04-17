@@ -169,6 +169,10 @@ class Reservation < ActiveRecord::Base
     canceled_at.nil? && reserve_start_at > Time.zone.now && actual_start_at.nil? && actual_end_at.nil?
   end
 
+  def can_customer_edit?
+    !cancelled? && !complete? && reserve_start_at > Time.zone.now
+  end
+
   # can the ADMIN edit the reservation?
   def can_edit?
     return true if id.nil? # object is new and hasn't been saved to the DB successfully
