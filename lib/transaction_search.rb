@@ -1,7 +1,7 @@
 module TransactionSearch
   DATE_RANGE_FIELDS = [['Ordered', 'ordered_at'],
                        ['Fulfilled', 'fulfilled_at'],
-                       ['Journaled', 'journal_or_statement_date']
+                       ['Journaled/Statement', 'journal_or_statement_date']
                       ]
 
   def self.included(base)
