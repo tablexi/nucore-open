@@ -1,6 +1,6 @@
 class FacilityOrdersController < ApplicationController
   include TabCountHelper
-  
+
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -9,7 +9,7 @@ class FacilityOrdersController < ApplicationController
   load_and_authorize_resource :class => Order
 
   helper_method :sort_column, :sort_direction
-  
+
   include FacilityOrderStatusHelper
 
 
@@ -117,7 +117,6 @@ class FacilityOrdersController < ApplicationController
 
     redirect_to edit_facility_order_path(current_facility, original_order)
   end
-
 
   private
 
