@@ -10,12 +10,12 @@
 
     - current_facility.valid_account_types.each do |type|
       %li
-        %ul.form.account_type_fields.account_type_new_fields{ class: type.name }
+        %ul.form.account_type_fields.account_type_new_fields{ :class => type.name }
           = render :partial => "facility_accounts/account_fields/new_#{type.name.underscore}", :locals => { :f => f }
 
     - current_facility.valid_account_types.each do |type|
       %li
-        %ul.form.account_type_fields{ class: type.name }
+        %ul.form.account_type_fields{ :class => type.name }
           = render :partial => "facility_accounts/account_fields/#{type.name.underscore}", :locals => { :f => f }
   - else
     = render :partial => "facility_accounts/account_fields/#{@account.class.name.underscore}", :locals => { :f => f }
