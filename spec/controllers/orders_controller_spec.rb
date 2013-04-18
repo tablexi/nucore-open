@@ -35,7 +35,7 @@ describe OrdersController do
     define_open_account(@item.account, @account.account_number)
 
     FactoryGirl.create(:user_price_group_member, :user => @staff, :price_group => @price_group)
-    
+
     @item_pp=@item.item_price_policies.create!(FactoryGirl.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :start_date => 1.hour.ago))
 
     @params={ :id => @order.id, :order_id => @order.id }
@@ -55,7 +55,46 @@ describe OrdersController do
       assert_redirected_to order_url(@order)
     end
 
-    it 'should test more than auth'
+    context 'signed in' do
+      before(:each) { sign_in @staff }
+
+      context 'with an item' do
+        before :each do
+          @order.add(@item, 1)
+        end
+
+        it 'should redirect to the order' do
+          do_request
+          request.should redirect_to order_url(@order)
+        end
+      end
+
+      context 'cart with one reservation' do
+        before :each do
+          @instrument = FactoryGirl.create(:setup_instrument, :facility => @authable)
+          @order.add(@instrument, 1)
+          @res1 = FactoryGirl.create(:setup_reservation, :order_detail => @order.order_details[0], :product => @instrument)
+        end
+
+        it 'should redirect to a new cart' do
+          do_request
+          request.should_not redirect_to order_url(@order)
+        end
+
+        context 'with a second reservation' do
+          before :each do
+            @instrument2 = FactoryGirl.create(:setup_instrument, :facility => @authable)
+            @order.add(@instrument2, 1)
+            @res2 = FactoryGirl.create(:setup_reservation, :order_detail => @order.order_details[2], :product => @instrument)
+          end
+
+          it 'should redirect to the existing cart' do
+            do_request
+            request.should redirect_to order_url(@order)
+          end
+        end
+      end
+    end
   end
 
 
@@ -99,7 +138,7 @@ describe OrdersController do
     before :each do
       @order_detail = place_product_order(@staff, @authable, @item, @account, false)
       @order = @order_detail.order
-      
+
       # mimic visiting the cart
       @order.validate_order!
 
@@ -138,7 +177,7 @@ describe OrdersController do
         # modify first od quantity behind the scenes
         @order_detail1 = @order_detail
         @order_detail1.update_attributes(:quantity => 4)
-      
+
         # add another item
         @order_detail2 = @order_detail1.order.add(@item, 3).first
 
@@ -257,7 +296,7 @@ describe OrdersController do
           @reservation,
           :switch => 'on',
           :redirect_to => reservations_path
-          )       
+          )
       end
 
       it 'should redirect to receipt when purchasing multiple reservations' do
@@ -355,7 +394,7 @@ describe OrdersController do
           do_request
           assigns[:order].reload.order_details.all? { |od| od.state.should == 'cancelled' }
         end
-        
+
         context 'completed' do
           before :each do
             @params.merge!({:order_status_id => OrderStatus.complete.first.id})
@@ -414,7 +453,7 @@ describe OrdersController do
               response.should redirect_to receipt_order_url(@order)
             end
           end
-          
+
         end
       end
 
@@ -439,7 +478,7 @@ describe OrdersController do
         end
         it 'should set the fulfilment date to the order time' do
           do_request
-          assigns[:order].order_details.all? do |od| 
+          assigns[:order].order_details.all? do |od|
             od.fulfilled_at.should_not be_nil
             od.fulfilled_at.should match_date @reservation.reserve_end_at
           end
@@ -622,7 +661,7 @@ describe OrdersController do
           @facility_account2  = @facility2.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
           @account2           = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
           @item2              = @facility2.items.create!(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account2.id))
-          # add first item to cart 
+          # add first item to cart
           maybe_grant_always_sign_in :staff
           do_request
 
@@ -632,7 +671,7 @@ describe OrdersController do
 
           should set_the_flash.to(/can not/)
           should set_the_flash.to(/another/)
-          response.should redirect_to "/orders/#{@order.id}"  
+          response.should redirect_to "/orders/#{@order.id}"
         end
       end
     end
@@ -765,7 +804,7 @@ describe OrdersController do
         should set_the_flash.to(/integer/i)
         should render_template :show
       end
-      
+
 
     end
 
@@ -795,7 +834,7 @@ describe OrdersController do
       @instrument   = FactoryGirl.create(:instrument,
                                           :facility => @authable,
                                           :facility_account => @facility_account)
-                    
+
       @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24))
       @instrument_pp = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id))
       @instrument_pp.restrict_purchase = false
