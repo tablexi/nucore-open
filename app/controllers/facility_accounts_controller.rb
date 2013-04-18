@@ -86,8 +86,9 @@ class FacilityAccountsController < ApplicationController
 
   # POST /facilities/:facility_id/accounts
   def create
-    class_params        = account_class_params
-    acct_class=Class.const_get(params[:class_type])
+    class_params = account_class_params
+
+    acct_class  = Account.get_subclass(current_facility, params[:class_type])
 
     if acct_class.included_modules.include?(AffiliateAccount)
       class_params[:affiliate]=Affiliate.find_by_name(class_params[:affiliate])
@@ -143,12 +144,12 @@ class FacilityAccountsController < ApplicationController
         :term             => term,
         :acceptable_role  => 'Owner').
         order('users.last_name, users.first_name')
-      
+
       # retrieve accounts matched on account_number for this facility
       @accounts += Account.for_facility(current_facility).where(
         "LOWER(account_number) LIKE ?", term).
         order('type, account_number')
-      
+
       # only show an account once.
       @accounts = @accounts.uniq.paginate(:page => params[:page]) #hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
     else
@@ -177,7 +178,7 @@ class FacilityAccountsController < ApplicationController
     end
     @accounts = Account.find(@account_balances.keys)
   end
-  
+
   # GET /facilities/:facility_id/accounts/:account_id/statements/:statement_id
   def show_statement
     @facility = current_facility
@@ -199,7 +200,7 @@ class FacilityAccountsController < ApplicationController
       format.pdf  { render :template => '/statements/show.pdf.prawn' }
     end
   end
-  
+
   # GET /facilities/:facility_id/accounts/:account_id/suspend
   def suspend
     begin
@@ -224,9 +225,9 @@ class FacilityAccountsController < ApplicationController
     redirect_to facility_account_path(current_facility, @account)
   end
 
-  
+
   private
-  
+
   def init_account
     if params.has_key? :id
       @account=Account.find params[:id].to_i
@@ -234,5 +235,5 @@ class FacilityAccountsController < ApplicationController
       @account=Account.find params[:account_id].to_i
     end
   end
-  
+
 end

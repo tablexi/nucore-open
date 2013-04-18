@@ -21,9 +21,14 @@ class Account < ActiveRecord::Base
     end
   end
 
+  def self.get_subclass(facility, type_string)
+    str_valid_types = facility.valid_account_types.inject({}) { |hash, type| hash.update type.to_s => type }
+    str_valid_types.fetch type_string, Account
+  end
+
   def add_or_update_member(user, new_role, session_user)
     Account.transaction do
-      # expire old owner if new 
+      # expire old owner if new
       if new_role == AccountUser::ACCOUNT_OWNER
         # expire old owner record
         @old_owner = self.owner
@@ -33,7 +38,7 @@ class Account < ActiveRecord::Base
           @old_owner.save!
         end
       end
-      
+
       # find non-deleted record for this user and account or init new one
       # deleted_at MUST be nil to preserve existing audit trail
       @account_user = AccountUser.find_or_initialize_by_account_id_and_user_id_and_deleted_at(
@@ -72,7 +77,7 @@ class Account < ActiveRecord::Base
               :facility => facility})
     end
 
-    accounts  
+    accounts
   end
 
 
@@ -81,7 +86,7 @@ class Account < ActiveRecord::Base
     ids = OrderDetail.for_facility(facility).select("distinct order_details.account_id").collect(&:account_id)
     where(:id => ids)
   end
-  
+
   def facilities
     if facility_id
       # return a relation
@@ -213,6 +218,6 @@ class Account < ActiveRecord::Base
 
   def price_groups
     (price_group_members.collect{ |pgm| pgm.price_group } + (owner_user ? owner_user.price_groups : [])).flatten.uniq
-  end 
-  
+  end
+
 end
