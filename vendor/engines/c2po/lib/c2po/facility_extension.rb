@@ -8,6 +8,10 @@ module C2po
         return false if account.is_a?(CreditCardAccount) && !accepts_cc?
         true
       end
+
+      def valid_account_types
+        super + [CreditCardAccount, PurchaseOrderAccount]
+      end
     end
   end
 end
