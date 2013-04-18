@@ -11,7 +11,7 @@
 - if res
   = content_for :head_content do
     = javascript_include_tag 'pick_accessories'
-    
+
 
 .grid_6.alpha
   %ul.form
@@ -86,7 +86,7 @@
         - if res.can_switch_instrument_on?
           = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'on')
         - elsif res.can_switch_instrument_off?
-          = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'off'), :class => end_reservation_class(res) 
+          = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'off'), :class => end_reservation_class(res)
         - elsif res.can_cancel?
           = link_to t('.link.reservation.cancel'), "#"
     %td.centered=h @order_detail.quantity
@@ -94,7 +94,7 @@
       %ul
         %li= order_detail_description(@order_detail)
         - if res
-          - if res.can_edit?
+          - if res.can_customer_edit?
             %li.indented= link_to res, edit_order_order_detail_reservation_path(@order, @order_detail, res)
           - else
             %li.indented= link_to res, order_order_detail_reservation_path(@order, @order_detail, res)

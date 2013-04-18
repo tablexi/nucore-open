@@ -32,7 +32,7 @@
             = render :partial => 'shared/move_reservation', :locals => { :reservation => res }
             = link_to 'Begin Now', order_order_detail_reservation_move_reservation_path(order, od, res), :class => 'move-res', :id => res.id
       %td
-        - if res.can_edit?
+        - if res.can_customer_edit?
           = link_to res, current_facility ? edit_facility_order_order_detail_reservation_path(current_facility, order, od, res) : edit_order_order_detail_reservation_path(order, od, res)
         - else
           = link_to res, current_facility ? facility_order_order_detail_reservation_path(current_facility, order, od, res) : order_order_detail_reservation_path(order, od, res)
