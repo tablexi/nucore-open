@@ -1,7 +1,7 @@
 source :gemcutter
 
 ## base
-gem 'rails',            '3.0.19'
+gem 'rails',            '3.0.20'
 gem 'rails_config',     '0.2.5'
 
 ## database
