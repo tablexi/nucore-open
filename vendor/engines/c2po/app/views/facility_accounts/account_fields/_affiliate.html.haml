@@ -1,0 +1,9 @@
+- opts = {:include_blank => true}
+- opts.merge!(:selected => @account.affiliate.try(:name)) if @account
+%li
+  = f.label :affiliate, nil, :class => 'require'
+  = f.select :affiliate, Affiliate.all.collect(&:name).sort, opts, :class => 'affiliate'
+
+%li.affiliate_other
+  = f.label :affiliate_other, t('facility_accounts.account_fields.label.affiliate'), :class => 'require'
+  = f.text_field :affiliate_other

@@ -536,7 +536,7 @@ en:
         search: "Search by name, NetID, or username"
 
   accounts:
-    institution: Chart String
+    nufs_account: Chart String
     show:
       head: "Payment Source Details"
       label:

@@ -1,0 +1,8 @@
+%li
+  = f.label :description, nil, :class => 'require'
+  %p.instruction.CreditCardAccount
+    = t('facility_accounts.account_fields.label.all_instruct')
+  = f.text_field :description
+
+= render :partial => 'facility_accounts/account_fields/affiliate', :locals => { :f => f }
+= render :partial => 'facility_accounts/account_fields/remittance_information', :locals => { :f => f }

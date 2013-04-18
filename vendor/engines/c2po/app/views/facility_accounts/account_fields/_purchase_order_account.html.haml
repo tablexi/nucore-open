@@ -1,0 +1,7 @@
+%li
+  = f.label :description, nil, :class => 'require'
+  = f.text_field :description
+
+= render :partial => 'facility_accounts/account_fields/affiliate', :locals => { :f => f }
+
+= render :partial => 'facility_accounts/account_fields/remittance_information', :locals => { :f => f }
