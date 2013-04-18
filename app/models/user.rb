@@ -46,7 +46,7 @@ class User < ActiveRecord::Base
   end
 
   #
-  # Returns true if the user is authenticated against nucore's  
+  # Returns true if the user is authenticated against nucore's
   # user table, false if authenticated by an external system
   def authenticated_locally?
     encrypted_password.present? && password_salt.present?
@@ -57,7 +57,7 @@ class User < ActiveRecord::Base
   def external?
     username == email
   end
-  
+
   def password_updatable?
     external?
   end
@@ -74,20 +74,20 @@ class User < ActiveRecord::Base
       return false
     end
 
-    self.errors.add(:password, :empty) if params[:password].blank?    
-    self.errors.add(:password, :password_too_short) if params[:password] and params[:password].strip.length < 6    
+    self.errors.add(:password, :empty) if params[:password].blank?
+    self.errors.add(:password, :password_too_short) if params[:password] and params[:password].strip.length < 6
     self.errors.add(:password_confirmation, :confirmation) if params[:password] != params[:password_confirmation]
-    
+
     if self.errors.empty?
       self.password = params[:password].strip
       self.clear_reset_password_token
       self.save!
-      return true 
+      return true
     else
       return false
     end
-    
-    
+
+
   end
   # Find the users for a facility
   # TODO: move this to facility?
@@ -110,35 +110,13 @@ class User < ActiveRecord::Base
   #   true if we want to look in the DB for an order to add
   #   new +OrderDetail+s to, false if we want a brand new order
   def cart(created_by_user = nil, find_existing=true)
-
     if find_existing
-      created_by_id = created_by_user ? created_by_user.id : id
-      # filter out instrument/reservation orders. Each of those requires a brand new order.
-      # If any exist unordered it's because the user bailed on the reservation process.
-      # Such orders should be cleaned from the DB periodically.
-      if oid=OrderDetail.select(:order_id).joins(:order, :product).where(
-                        'orders.user_id = ? AND orders.created_by = ? AND orders.ordered_at IS NULL AND products.type != ?',
-                        id, created_by_user ? created_by_user.id : id, Instrument.name
-                      ).group(:order_id).first
-
-        return @order = Order.find(oid.order_id)
-      
-      ##find most recent unordered order 
-      elsif @order = self.orders.where( 
-          :state   => :new,
-          :user_id => self.id,
-          :ordered_at => nil,
-          :created_by => created_by_id
-        ).order("orders.updated_at DESC").try(:first)
-
-        return @order
-      end
+      Cart.new(self, created_by_user).order
+    else
+      Cart.new(self, created_by_user).new_cart
     end
-
-    @order = Order.create(:user => self, :created_by => created_by_user ? created_by_user.id : id) unless @order
-    @order
   end
-  
+
   def account_price_groups
     groups = self.accounts.active.collect{ |a| a.price_groups }.flatten.uniq
   end
