@@ -4,7 +4,9 @@ $(function(){
     var class_type   = class_select.val();
 
     $('.account_type_fields').each(function() {
-      $(this).toggle($(this).hasClass(class_type));
+      var visible = $(this).hasClass(class_type);
+      $(this).toggle(visible);
+      $(this).find('input, select').prop('disabled', !visible);
     });
 
     $('.' + class_type + ' .affiliate').trigger('change');
