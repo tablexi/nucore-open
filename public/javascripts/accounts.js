@@ -6,7 +6,7 @@ $(function(){
     $('.account_type_fields').each(function() {
       var visible = $(this).hasClass(class_type);
       $(this).toggle(visible);
-      $(this).find('input, select').prop('disabled', !visible);
+      $(this).find('input, select, textarea').prop('disabled', !visible);
     });
 
     $('.' + class_type + ' .affiliate').trigger('change');
