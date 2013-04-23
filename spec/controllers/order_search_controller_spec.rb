@@ -16,12 +16,61 @@ describe OrderSearchController do
       end
 
       it_should_require_login
-      it_should_deny(:guest)
     end
+
+    context 'signed in as a normal user' do
+      before :each do
+        sign_in @guest
+      end
+
+      it 'should return the order if it is assigned to the user' do
+        order.update_attributes(:user => @guest)
+        get :index, :search => order.id.to_s
+        assigns(:order_details).should == [order_detail]
+      end
+
+      it 'should not return the order if it is assigned to another user' do
+        order.update_attributes(:user => @admin)
+        get :index, :search => order.id.to_s
+        assigns(:order_details).should be_empty
+      end
+    end
+
+    context 'when signed in as a facility admin' do
+      before :each do
+        grant_role(@staff, facility)
+        sign_in @staff
+      end
+
+      it 'should return the order even if it is under a different user' do
+        get :index, :search => order.id.to_s
+        assigns(:order_details).should == [order_detail]
+      end
+    end
+
+    context 'when signed in as facility admin for a different facility' do
+      let(:facility2) { FactoryGirl.create :facility }
+      before :each do
+        grant_role(@staff, facility2)
+        sign_in @staff
+      end
+
+      it 'should not return the order' do
+        get :index, :search => order.id.to_s
+        assigns(:order_details).should be_empty
+      end
+    end
+
 
     context 'signed in as admin' do
       before :each do
         sign_in @admin
+      end
+
+      it 'should not return an unpurchased order' do
+        order2 = FactoryGirl.create(:setup_order, :product => product)
+        get :index, :search => order2.id.to_s
+        assigns(:order_details).should be_empty
       end
 
       it 'should return an order with the id' do
