@@ -291,7 +291,7 @@ describe FacilityAccountsController do
     @action=action
     account.account_users_attributes = [{:user_id => @purchaser.id, :user_role => AccountUser::ACCOUNT_OWNER, :created_by => @admin.id }]
     assert account.save
-    @price_policy=FactoryGirl.create(:item_price_policy, :item => @item, :price_group => @nupg)
+    @price_policy=FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @nupg)
     @price_group_product=FactoryGirl.create(:price_group_product, :product => @item, :price_group => @nupg, :reservation_window => nil)
     @order_detail.account=account
     @order_detail.assign_price_policy
