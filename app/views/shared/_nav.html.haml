@@ -33,7 +33,7 @@
       - if !acting_as? && current_user
         %li.right.search
           = form_tag order_search_path do
-            = text_field_tag :search
+            = text_field_tag :search, nil, :placeholder => t('order_search.search')
 
       - facilities = menu_facilities
 

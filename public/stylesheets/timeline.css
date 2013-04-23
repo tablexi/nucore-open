@@ -120,7 +120,7 @@ body .unit {
 }
 
 /* Tall blocks */
-.unit.blackout, 
+.unit.blackout,
 .unit.admin {
   display:inline-block;
   height:28px;
@@ -174,7 +174,7 @@ body .unit {
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, .5);
   box-shadow: 0 0 10px rgba(0, 0, 0, .5);
   text-shadow: none;
-  
+
   /* Moving the tooltip box 1px down so it's butted up with the reservation block and doesn't dissappear when you try to click on it. */
   position:relative;
   top:1px;
@@ -194,8 +194,12 @@ body .unit {
 }
 
 .timeline_instrument {
-  margin:15px 0;
+  margin: 15px 0 15px -10px;
 }
+.timeline-schedule h3 {
+  margin-left: -10px;
+}
+
 .timeline_options {
   float: right;
   position:relative;
@@ -243,7 +247,7 @@ body .unit {
 }
 .toggle_switch.disabled .bg {
   background-color: rgba(255,255,255,0.9);
-} 
+}
 .toggle_switch .switch {
   position: absolute;
   height: 100%;

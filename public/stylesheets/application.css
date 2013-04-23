@@ -597,7 +597,7 @@ body .search_form .chzn-container .chzn-drop {
 .search_form input[type=submit] {
 	clear:both;
 	float:right;
-	margin-top:20px;
+	font-size: 400%;
 }
 
 .order_action {
@@ -676,7 +676,7 @@ ul.tabs .updated {
 billing
 ***************************************/
 #header_billing {
-	background:url(../images/bg-search-form.jpg) top right repeat-y;
+	background:url(../images/bg-search-form.png) top right repeat-y;
 	border-top:1px solid #ccc;
 	padding-top:10px;
 }
