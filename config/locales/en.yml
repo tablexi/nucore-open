@@ -96,7 +96,8 @@ en:
       label:
         owner_user: "Owner User"
         payment_type: "Payment Source Type"
-        payment_number: "Payment Source Number"
+        account_number:
+          account_number: "Payment Source Number"
         affiliate: "Affiliate Name"
         remit: "Bill To"
         all_instruct: "Enter a text description to help you and the user identify this payment source."

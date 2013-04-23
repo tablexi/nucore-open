@@ -1,3 +1,8 @@
 %li
-  = f.label :account_number, t('facility_accounts.account_fields.label.payment_number'), :class => 'require'
-  = f.text_field :account_number
+  = f.fields_for :account_number_parts, f.object.account_number_parts do |p|
+    %ul
+      - NufsAccount.new.account_number_fields.each do |section, options|
+        %li.account_number_field
+          = p.label section, t("facility_accounts.account_fields.label.account_number.#{section}"), :class => options[:required] ? 'required' : ''
+          = p.text_field section
+    .clearfix

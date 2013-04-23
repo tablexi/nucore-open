@@ -1,4 +1,6 @@
 class Account < ActiveRecord::Base
+  include Accounts::AccountNumberSectionable
+
   has_many   :account_users
   has_one    :owner, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_OWNER, :deleted_at => nil}
   has_many   :business_admins, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_ADMINISTRATOR, :deleted_at => nil}
@@ -210,8 +212,12 @@ class Account < ActiveRecord::Base
     expires_at > Time.zone.now && suspended_at.nil?
   end
 
+  def account_number_to_s
+    self.account_number.to_s
+  end
+
   def to_s(with_owner = false)
-    desc = [ description, account_number ]
+    desc = [ description, account_number_to_s ]
     desc << owner_user.name if with_owner && owner_user
     desc.join ' / '
   end
