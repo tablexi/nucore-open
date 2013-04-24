@@ -1,6 +1,8 @@
 = f.fields_for :account_number_parts, f.object.account_number_parts do |p|
   %ul
-    - account_class.new.account_number_fields.each do |section, options|
+    - fields = account_class.new.account_number_fields
+    - fields.each_with_index do |(section, options), i|
       %li.account_number_field
         = p.label section, t("#{account_class.name.underscore}.account_fields.label.account_number.#{section}"), :class => options[:required] ? 'required' : ''
-        = p.text_field section
+        = p.text_field section, :size => (options[:length] || 30) + 2, :maxlength => options[:length] || 30, :tabindex => i+1
+        = "-&nbsp;".html_safe unless i >= fields.size - 1
