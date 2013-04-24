@@ -3,8 +3,7 @@
     %li
       %p.instruction= t('facility_facility_accounts.facility_account_fields.instruct')
     %li.left
-      = f.label :account_number, t('facility_facility_accounts.facility_account_fields.label.account_number'), :class => 'require'
-      = f.text_field :account_number
+      = render :partial => 'shared/account_fields', :locals => { :f => f, :account_class => FacilityAccount }
     %li.left
       =f.label :revenue_account, t('facility_facility_accounts.facility_account_fields.label.deposit_account'), :class => 'require'
       = f.text_field :revenue_account, :maxLength => 5, :size => 10

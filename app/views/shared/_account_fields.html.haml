@@ -1,0 +1,6 @@
+= f.fields_for :account_number_parts, f.object.account_number_parts do |p|
+  %ul
+    - account_class.new.account_number_fields.each do |section, options|
+      %li.account_number_field
+        = p.label section, t("#{account_class.name.underscore}.account_fields.label.account_number.#{section}"), :class => options[:required] ? 'required' : ''
+        = p.text_field section
