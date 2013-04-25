@@ -1,5 +1,6 @@
 class Account < ActiveRecord::Base
   include Accounts::AccountNumberSectionable
+  include DateHelper
 
   has_many   :account_users
   has_one    :owner, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_OWNER, :deleted_at => nil}
@@ -129,6 +130,14 @@ class Account < ActiveRecord::Base
 
   def expired?
     expires_at && expires_at <= Time.zone.now
+  end
+
+  def formatted_expires_at
+    expires_at.try(:strftime, "%m/%d/%Y")
+  end
+
+  def formatted_expires_at=(str)
+    self.expires_at = parse_usa_date(str) if str
   end
 
   def account_pretty

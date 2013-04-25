@@ -4,7 +4,7 @@ class Accounts::AccountBuilder
     @type = params[:class_type]
     @user = user
     @params = params
-    @class_params = params[:account] || params[@type.underscore]
+    @class_params = params[class_param_key]
   end
 
   def account
@@ -12,6 +12,12 @@ class Accounts::AccountBuilder
   end
 
 private
+
+  def class_param_key
+    valid_keys = ['account'] + AccountManager.new.valid_account_types.map { |t| t.name.underscore }
+    @params.keys.find { |key| valid_keys.include? key }
+  end
+
   def build_account
     acct_class = AccountManager.account_type_by_string(@type)
     update_affiliate_params if acct_class.included_modules.include?(AffiliateAccount)
