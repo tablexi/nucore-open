@@ -1,9 +1,9 @@
 %li
-  = f.label :account_number, t('facility_accounts.account_fields.label.payment_number'), :class => 'require'
+  = f.label :account_number, t('facility_accounts.purchase_orders.account_number'), :class => 'require'
   = f.text_field :account_number
 %li
   = f.label :expires_at, nil, :class => 'require'
-  = f.text_field :expires_at, :value => (begin @account.expires_at.strftime("%m/%d/%Y") rescue nil end), :id => 'datepicker'
+  = f.text_field :formatted_expires_at, :id => 'datepicker'
 
 %li
   = f.label :description, nil, :class => 'require'

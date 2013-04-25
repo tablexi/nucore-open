@@ -2,6 +2,8 @@
   =h current_facility
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'recharge_accounts' }
+= content_for :head_content do
+  = javascript_include_tag 'accounts.js'
 
 %h2= t('.head')
 = form_for @facility_account, :url => facility_facility_accounts_path do |f|
