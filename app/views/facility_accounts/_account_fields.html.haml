@@ -1,3 +1,4 @@
+- valid_account_types = AccountManager.new.valid_account_types
 %ul.form
   - if controller.action_name == 'new' || controller.action_name == 'create'
     = hidden_field_tag "owner_user_id", @owner_user.id, :class => 'NufsAccount'
@@ -6,14 +7,14 @@
       = text_field_tag 'owner_user_full_name', @owner_user.full_name, :disabled => true, :class => 'show_always'
     %li
       = label_tag :class_type, t('facility_accounts.account_fields.label.payment_type'), :class => 'require'
-      = select_tag 'class_type', options_for_select(current_facility.valid_account_types.map { |type| [t("accounts.#{type.name.underscore}"), type.name]}, :selected => params[:class_type]), :class => 'NufsAccount show_always'
+      = select_tag 'class_type', options_for_select(valid_account_types.map { |type| [t("accounts.#{type.name.underscore}"), type.name]}, :selected => params[:class_type]), :class => 'NufsAccount show_always'
 
-    - current_facility.valid_account_types.each do |type|
+    - valid_account_types.each do |type|
       %li
         %ul.form.account_type_fields.account_type_new_fields{ :class => type.name }
           = render :partial => "facility_accounts/account_fields/new_#{type.name.underscore}", :locals => { :f => f }
 
-    - current_facility.valid_account_types.each do |type|
+
       %li
         %ul.form.account_type_fields{ :class => type.name }
           = render :partial => "facility_accounts/account_fields/#{type.name.underscore}", :locals => { :f => f }
