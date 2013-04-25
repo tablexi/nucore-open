@@ -3,10 +3,6 @@ class Facility < ActiveRecord::Base
     def can_pay_with_account?(account)
       true
     end
-
-    def valid_account_types
-      [NufsAccount]
-    end
   end
 
   include Overridable

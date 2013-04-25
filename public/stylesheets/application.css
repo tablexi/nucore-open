@@ -934,3 +934,8 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
   margin-top: 3em;
 }
 
+/* Forms */
+.account_number_field {
+	float: left;
+}
+

@@ -5,6 +5,7 @@ module C2po
     config.to_prepare do
       Facility.send :include, C2po::FacilityExtension
       FacilityAccountsController.send :include, C2po::FacilityAccountsControllerExtension
+      AccountManager.send :include, C2po::AccountTypesExtension
 
       # make this engine's views override the main app's views
       paths=ActionController::Base.view_paths.dup

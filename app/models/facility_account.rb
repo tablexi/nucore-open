@@ -1,4 +1,6 @@
 class FacilityAccount < ActiveRecord::Base
+  include Accounts::AccountNumberSectionable
+
   belongs_to :facility
 
   validates_format_of       :account_number, :with => ValidatorFactory.pattern, :message => I18n.t('activerecord.errors.messages.bad_payment_source_format', :pattern_format => ValidatorFactory.pattern_format)
