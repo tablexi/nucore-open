@@ -23,11 +23,6 @@ class Account < ActiveRecord::Base
     end
   end
 
-  def self.get_subclass(facility, type_string)
-    str_valid_types = facility.valid_account_types.inject({}) { |hash, type| hash.update type.to_s => type }
-    str_valid_types.fetch type_string, Account
-  end
-
   def add_or_update_member(user, new_role, session_user)
     Account.transaction do
       # expire old owner if new

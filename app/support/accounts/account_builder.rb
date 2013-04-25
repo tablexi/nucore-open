@@ -13,7 +13,7 @@ class Accounts::AccountBuilder
 
 private
   def build_account
-    acct_class = Account.get_subclass(@facility, @type)
+    acct_class = AccountManager.account_type_by_string(@type)
     update_affiliate_params if acct_class.included_modules.include?(AffiliateAccount)
     @account = acct_class.new(new_class_params)
     @account.facility_id = @facility.id if @account.class.limited_to_single_facility?
