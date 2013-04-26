@@ -52,7 +52,7 @@ private
   end
 
   def add_bundles(product, quantity)
-    quantity.times.inject([]) { |ods| ods.concat create_bundle_order_detail(product) }
+    quantity.times.inject([]) { |ods, i| ods.concat create_bundle_order_detail(product) }
   end
 
   def create_bundle_order_detail(product)
