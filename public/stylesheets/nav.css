@@ -1,5 +1,5 @@
 #header {
-	
+
 	background: #eeeeee; /* Old browsers */
 	background: -moz-linear-gradient(top,  #ffffff 0%, #eeeeee 99%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(99%,#eeeeee)); /* Chrome,Safari4+ */
@@ -30,7 +30,7 @@
 	border-right:1px solid #000;
 
 	/* Nucore Colors border-right:1px solid #6F297E; */
-	
+
 	/* UIC Colors border-right:1px solid #ffffff; */
 	display:inline;
 	padding:0 10px;
@@ -95,6 +95,17 @@
 
 #nav li:hover,#nav li.active {
 	border-top:5px solid #666;
+}
+
+#nav li.search:hover {
+	border-top: 5px solid transparent;
+}
+#nav li.search {
+	padding-left: 0.5em;
+}
+#nav li.search input {
+	margin-top: -1px;
+	font-size: 1em;
 }
 
 #nav li.right li a {

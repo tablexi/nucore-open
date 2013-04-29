@@ -17,16 +17,16 @@ class Ability
       can :manage, :all
       return
     end
-    
+
     can :list, Facility if user.facilities.size > 0 and controller.is_a?(FacilitiesController)
-    
+
     return unless resource
 
     if user.billing_administrator?
-      
+
       # can manage orders / order_details / reservations
       can :manage, [Order, OrderDetail, Reservation]
-      
+
       # can manage all journals
       can :manage, Journal
 
@@ -37,9 +37,13 @@ class Ability
       can [:transactions, :manage_billing], Facility
     end
 
+    if resource.is_a?(OrderDetail)
+      order_details_ability(user, resource)
+    end
+
     if resource.is_a?(Facility)
       can :complete, Surveyor
-     
+
       if user.operator_of?(resource)
         can :manage, [
           AccountPriceGroupMember, OrderDetail, Order, Reservation,
@@ -86,12 +90,12 @@ class Ability
 
         can :show_problems, Order
         can [:update, :manage], Facility
-      end      
-      
+      end
+
       # Facility senior staff is based off of staff, but has a few more abilities
       if in_role?(user, resource, UserRole::FACILITY_SENIOR_STAFF)
         can :manage, [ScheduleRule, ProductUser, ProductAccessGroup, StoredFile, ProductAccessory]
-        
+
         # they can get to reports controller, but they're not allowed to export all
         can :manage, ReportsController
         cannot :export_all, ReportsController
@@ -110,7 +114,7 @@ class Ability
       can :read, ProductAccessory #, :accessory => { :is_hidden => false }
       if user.operator_of?(resource.product.facility)
         can :read, ProductAccessory
-        can :manage, Reservation 
+        can :manage, Reservation
       end
       can :start_stop, Reservation if resource.order_detail.order.user_id == user.id
     end
@@ -122,6 +126,14 @@ class Ability
     facility_roles = user.facility_user_roles(facility).map(&:role)
     # do the roles the user is part of match any of the potential roles
     (facility_roles & roles).any?
+  end
+
+private
+
+  def order_details_ability(user, resource)
+    can :show, OrderDetail, :order => { :user_id => user.id }
+    can :manage, OrderDetail, :order => { :facility_id => resource.order.facility_id } if user.operator_of?(resource.facility)
+    can :show, OrderDetail, :account => { :id => resource.account_id } if user.account_administrator_of?(resource.account)
   end
 
 end

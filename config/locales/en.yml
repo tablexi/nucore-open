@@ -74,6 +74,10 @@ en:
         account: "Search By Payment Source"
         add_account: "Add Payment Source"
 
+  order_search:
+    search: "Search by Order #"
+    results: Search Results
+    no_results: No orders found
   facility_accounts:
     index:
       head: "Recent Payment Sources"
