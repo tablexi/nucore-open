@@ -33,6 +33,10 @@ Nucore::Application.routes.draw do |map|
     account.resources :facilities, :only => [] do |facility|
       facility.resources :statements, :only => [:show]
     end
+    if SettingsHelper.feature_on? :suspend_accounts
+      account.suspend '/suspend', :controller => 'accounts', :action => 'suspend'
+      account.unsuspend '/unsuspend', :controller => 'accounts', :action => 'unsuspend'
+    end
   end
 
   # transaction searches

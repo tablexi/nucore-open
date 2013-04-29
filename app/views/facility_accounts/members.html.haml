@@ -11,25 +11,4 @@
 
 %h2= @account
 
-- if can_edit_accounts
-  %ul.horiz
-    %li= link_to 'Add Access', user_search_facility_account_account_users_path(current_facility, @account)
-
-%table
-  %tr
-    - if can_edit_accounts
-      %th
-    %th Name (username)
-    %th Email
-    %th Role
-  - @account.account_users.active.each do |au|
-    %tr
-      - if can_edit_accounts
-        -# remove access link is different if we have a current facility
-        %td= au.user == @account.owner_user ? '' : link_to('Remove Access', current_facility ? facility_account_account_user_path(current_facility, @account, au) : account_account_user_path(@account, au), :confirm => 'Are you sure?', :method => :delete)
-      %td
-        =h au.user.first_name
-        =h au.user.last_name
-        == (#{h au.user.username})
-      %td=h au.user.email
-      %td=h au.user_role
+= render :partial => 'accounts/member_table'
