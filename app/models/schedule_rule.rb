@@ -1,11 +1,11 @@
 class ScheduleRule < ActiveRecord::Base
   @@durations = [1, 5, 10, 15, 30, 60]
-  
+
   belongs_to :instrument
-  
+
   # oracle has a maximum table name length of 30, so we have to abbreviate it down
   has_and_belongs_to_many :product_access_groups, :join_table => 'product_access_schedule_rules'
-  
+
   attr_accessor :unavailable # virtual attribute
 
   validates_presence_of :instrument_id
@@ -16,12 +16,12 @@ class ScheduleRule < ActiveRecord::Base
 
   validate :at_least_one_day_selected, :end_time_is_after_start_time, :end_time_is_valid, :no_overlap_with_existing_rules, :no_conflict_with_existing_reservation
 
-  def self.available_to_user(user)    
+  def self.available_to_user(user)
     where(:product_users => {:user_id => user.id}).
-    joins(:instrument => :product_users).     
+    joins(:instrument => :product_users).
     # instrument doesn't have any restrictions at all, or has one that matches the product_user
     where("(not EXISTS (SELECT * FROM product_access_schedule_rules WHERE product_access_schedule_rules.schedule_rule_id = schedule_rules.id)
-     OR (exists (select * from product_access_schedule_rules 
+     OR (exists (select * from product_access_schedule_rules
          where product_access_schedule_rules.product_access_group_id = product_users.product_access_group_id
          and product_access_schedule_rules.schedule_rule_id = schedule_rules.id)))")
   end
@@ -44,10 +44,10 @@ class ScheduleRule < ActiveRecord::Base
   end
 
 
-   
+
   def at_least_one_day_selected
     errors.add(:base, "Please select at least one day") unless
-      on_sun || on_mon || on_tue || on_wed || on_thu || on_fri || on_sat
+      on_sun? || on_mon? || on_tue? || on_wed? || on_thu? || on_fri? || on_sat?
   end
 
   def end_time_is_after_start_time
@@ -66,9 +66,9 @@ class ScheduleRule < ActiveRecord::Base
     rules = instrument.schedule_rules.reject {|r| r.id == id} # select all rules except self
     Date::ABBR_DAYNAMES.each do |day|
       # skip unless this rule occurs on this day
-      next unless self.send("on_#{day.downcase}")
+      next unless self.send("on_#{day.downcase}?")
       # check all existing rules for this day
-      rules.select{ |r| r.send("on_#{day.downcase}") }.each do |rule|
+      rules.select{ |r| r.send("on_#{day.downcase}?") }.each do |rule|
         next if self.start_time_int == rule.end_time_int or self.end_time_int == rule.start_time_int # start and end times may touch
         if self.start_time_int.between?(rule.start_time_int, rule.end_time_int) or
            self.end_time_int.between?(rule.start_time_int, rule.end_time_int) or
@@ -117,17 +117,17 @@ class ScheduleRule < ActiveRecord::Base
 
   def end_time
     "#{end_hour}:#{sprintf '%02d', end_min}"
-  end 
-  
+  end
+
   def self.durations
     @@durations
   end
-  
+
   def includes_datetime(dt)
     dt_int = dt.hour * 100 + dt.min
-    self.send("on_#{dt.strftime("%a").downcase}") && dt_int >= start_time_int && dt_int <= end_time_int
+    self.send("on_#{dt.strftime("%a").downcase}?") && dt_int >= start_time_int && dt_int <= end_time_int
   end
-  
+
   # build weekly calendar object
   def as_calendar_object(options={})
     # parse options
@@ -171,7 +171,7 @@ class ScheduleRule < ActiveRecord::Base
     duration = (end_at - start_at)/60
     # TODO rewrite to be more efficient; don't iterate over every minute
     while (start_at < end_at)
-      if start_at.hour*100+start_at.min >= start_time_int && start_at.hour*100+start_at.min < end_time_int && self.send("on_#{start_at.strftime("%a").downcase}?")  
+      if start_at.hour*100+start_at.min >= start_time_int && start_at.hour*100+start_at.min < end_time_int && self.send("on_#{start_at.strftime("%a").downcase}?")
         overlap += 1
       end
       start_at += 60
@@ -226,7 +226,7 @@ class ScheduleRule < ActiveRecord::Base
         not_rules.push(not_rule)
       end
     end
-    
+
     not_rules
   end
 
@@ -239,6 +239,6 @@ class ScheduleRule < ActiveRecord::Base
   def hour_floor
     end_min == 0 ? end_hour - 1 : end_hour
   end
-  
+
 
 end

@@ -5,6 +5,7 @@
         begin
             order=od.order
             ordered_by=order.created_by_user
+            purchaser=order.user
             account=od.account
             owner=account.owner_user
             product=od.product
@@ -17,6 +18,8 @@
 
                 # who placed the order
                 ordered_by.username, ordered_by.first_name, ordered_by.last_name, ordered_by.email,
+
+                purchaser.username, purchaser.first_name, purchaser.last_name, purchaser.email,
 
                 # what was ordered
                 product.url_name, product.type.underscore.humanize, product.name, od.quantity, bundle_desc,
@@ -40,6 +43,8 @@
                 # leave blanks for non-reservations
                 row += [nil, nil, nil, nil, nil, nil]
             end
+
+            row += [od.note]
 
             # dispute info
             row += [ human_datetime(od.dispute_at), od.dispute_reason, human_datetime(od.dispute_resolved_at), od.dispute_resolved_reason ]

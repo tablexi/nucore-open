@@ -22,7 +22,6 @@ class NufsAccount < Account
     return true
   end
 
-
   private
 
   #
@@ -33,8 +32,9 @@ class NufsAccount < Account
   #   The Validator from which the components were retrieved
   def load_components
     validator=ValidatorFactory.instance(account_number, NUCore::COMMON_ACCOUNT)
+    @components = validator.components
 
-    validator.components.each do |k,v|
+    @components.each do |k,v|
       self.class.class_eval "attr_accessor :#{k}" unless respond_to? k
       send("#{k}=", v)
     end

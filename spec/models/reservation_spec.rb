@@ -683,4 +683,69 @@ describe Reservation do
     end
   end
 
+  describe 'finding reservations in a given range' do
+    let(:this_sunday) { Time.zone.at 1361685600 } # Sun, 24 Feb 2013 00:00:00
+    let(:next_sunday) { Time.zone.at 1362290400 } # Sun, 03 Mar 2013 00:00:00
+
+    let! :instrument do
+      @instrument.update_attribute :max_reserve_mins, nil
+      @instrument
+    end
+
+    let! :rule do
+      @rule.destroy
+      attrs = FactoryGirl.attributes_for :schedule_rule, :start_hour => 0, :end_hour => 24, :duration_mins => 15
+      @instrument.schedule_rules.create attrs
+    end
+
+    let! :weekend_res do
+      @instrument.reservations.create!(
+        :reserve_start_at => Time.zone.parse('2013-02-22 17:00:00'),
+        :duration_value => 4080,
+        :duration_unit => 'minutes'
+      )
+    end
+
+    let! :monday_res do
+      @instrument.reservations.create!(
+        :reserve_start_at => Time.zone.parse('2013-02-25 13:00:00'),
+        :duration_value => 180,
+        :duration_unit => 'minutes'
+      )
+    end
+
+    let! :next_weekend_res do
+      @instrument.reservations.create!(
+        :reserve_start_at => next_sunday - 7.hours,
+        :duration_value => 600,
+        :duration_unit => 'minutes'
+      )
+    end
+
+    let! :next_monday_res do
+      @instrument.reservations.create!(
+        :reserve_start_at => next_sunday + 7.hours,
+        :duration_value => 180,
+        :duration_unit => 'minutes'
+      )
+    end
+
+    let! :prior_friday_res do
+      @instrument.reservations.create!(
+        :reserve_start_at => weekend_res.reserve_start_at - 7.hours,
+        :duration_value => 180,
+        :duration_unit => 'minutes'
+      )
+    end
+
+    it 'should find the weekend reservation' do
+      reservations = Reservation.in_range this_sunday, next_sunday
+      reservations.should include weekend_res
+      reservations.should include monday_res
+      reservations.should include next_weekend_res
+      reservations.should_not include prior_friday_res
+      reservations.should_not include next_monday_res
+    end
+  end
+
 end

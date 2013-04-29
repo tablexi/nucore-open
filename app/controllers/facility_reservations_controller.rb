@@ -5,7 +5,7 @@ class FacilityReservationsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility
-  
+
   load_and_authorize_resource :class => Reservation
 
   helper_method :sort_column, :sort_direction
@@ -41,7 +41,7 @@ class FacilityReservationsController < ApplicationController
     @order_detail = @order.order_details.find(params[:order_detail_id])
     @reservation  = @order_detail.reservation
     @instrument   = @order_detail.product
-    
+
     raise ActiveRecord::RecordNotFound unless @reservation == Reservation.find(params[:id])
     set_windows
     unless @reservation.can_edit? || @reservation.can_edit_actuals?
@@ -119,7 +119,7 @@ class FacilityReservationsController < ApplicationController
 
     render :action => "edit"
   end
-  
+
   # GET /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/reservations/:id
   def show
     @order        = Order.find(params[:order_id])
@@ -186,7 +186,7 @@ class FacilityReservationsController < ApplicationController
   end
 
   # POST /facilities/:facility_id/reservations/batch_update
-  def batch_update 
+  def batch_update
     redirect_to facility_reservations_path
 
     msg_hash = OrderDetail.batch_update(params[:order_detail_ids], current_facility, session_user, params, 'reservations')
@@ -241,12 +241,13 @@ class FacilityReservationsController < ApplicationController
       where("reservations.id IS NOT NULL").
       order(order_by_clause)
   end
-  
+
   #TODO make problem_order an SQL relation to speet things up
   def problem_orders
     current_facility.order_details.
       reservations.
       complete.
+      joins(:reservation).order('reservations.reserve_start_at desc').
       reject{|od| !od.problem_order?}
   end
   def disputed_orders
@@ -262,7 +263,7 @@ class FacilityReservationsController < ApplicationController
   def sort_direction
     (params[:dir] || '') =~ /asc/i ? 'asc' : 'desc'
   end
-  
+
   def set_windows
     @max_window = 365
     @max_days_ago = -365

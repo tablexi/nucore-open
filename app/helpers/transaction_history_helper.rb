@@ -1,18 +1,13 @@
 module TransactionHistoryHelper
   def row_class(order_detail)
     needs_reconcile_warning?(order_detail) ? 'reconcile-warning' : ''
-    # if @warning_method
-      # @warning_method.call(self, order_detail) ? 'reconcile-warning' : ''
-    # else
-      # ''
-    # end
   end
-  
+
   def product_options(products, search_fields)
     search_fields.map! { |i| i.to_s } if search_fields
     options = []
     products.each do |product|
-      options << [product.name, product.id, { :"data-facility" => product.facility.id, 
+      options << [product.name, product.id, { :"data-facility" => product.facility.id,
                                               :"data-restricted" => product.requires_approval?,
                                               :"data-product-type" => product.type.downcase}]
     end
@@ -30,7 +25,7 @@ module TransactionHistoryHelper
     end
     options_for_select options, :selected => search_fields
   end
-  
+
   def chosen_field(field, label, value_field = "id", label_field = "name", from_collection_method = nil)
     var = instance_variable_get("@#{field}")
     enabled = var && var.size > 1
@@ -44,5 +39,5 @@ module TransactionHistoryHelper
     html << "</li>"
     html.html_safe
   end
-  
+
 end

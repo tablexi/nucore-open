@@ -8,7 +8,7 @@ Welcome to NU Core! This guide will help you get a development environment up an
 1. You write code on a Mac.
 2. You have a running Oracle or MySQL instance with two brand new databases.
 3. You have the following installed:
-* Ruby[http://www.ruby-lang.org/en] 1.8.7 or 1.9.2
+* Ruby[http://www.ruby-lang.org/en] 1.9.2
 * Ruby On Rails[http://rubyonrails.org] 3.0.10
 * Bundler[http://gembundler.com]
 * Git[http://git-scm.com]
@@ -34,7 +34,7 @@ Welcome to NU Core! This guide will help you get a development environment up an
 
 5. Create your databases
     rake db:schema:load
-    export RAILS_ENV=test; rake db:schema:load; export RAILS_ENV=development
+    export RAILS_ENV=test; rake db:schema:load; unset RAILS_ENV
 
 6. Seed your development database
     rake demo:seed

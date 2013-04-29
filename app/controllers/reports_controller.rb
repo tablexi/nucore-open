@@ -62,13 +62,11 @@ class ReportsController < ApplicationController
 
 
   def page_report(rows)
-    page_size=25
-    page=params[:page].blank? || rows.size < page_size ? 1 : params[:page].to_i
-    #page=1 if (rows.size / page_size).to_i < page
-
-    @rows=WillPaginate::Collection.create(page, page_size) do |pager|
-      pager.replace rows[ pager.offset, pager.per_page ]
-      pager.total_entries=rows.size unless pager.total_entries
+    # Don't paginate reports if we're exporting
+    if params[:export_id].present?
+      @rows = rows
+    else
+      @rows = rows.paginate(:page => params[:page], :per_page => 25)
     end
   end
 

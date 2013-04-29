@@ -7,4 +7,15 @@
   %h3= @facility.name if @facility
 #header_billing.grid_9
   = render :partial => 'shared/transactions/search'
-= render :partial => 'shared/transactions/table'  
+
+.clearfix
+
+.grid_12
+  = render :partial => 'shared/transactions/table', :locals => { :order_details => @order_details }
+
+- if @recently_reviewed.any?
+  .grid_12
+    - @order_detail_link = nil
+    - @extra_date_column_header = :reviewed_at_past
+    %h2 Recently Reviewed
+    = render :partial => 'shared/transactions/table', :locals => { :order_details => @recently_reviewed }

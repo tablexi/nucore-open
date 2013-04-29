@@ -77,6 +77,7 @@ class ReservationsController < ApplicationController
 
     @order_details.each do |od|
       res = od.reservation
+      next unless res
       # do you need to click stop
       if res.can_switch_instrument_off?
         notices << "Do not forget to click the \"End Reservation\" link when you finished your #{res} reservation."
@@ -116,16 +117,14 @@ class ReservationsController < ApplicationController
           end
         end
 
+        # merge state can change after call to #save! due to OrderDetailObserver#before_save
         mergeable=@order_detail.order.to_be_merged?
 
-        @reservation.save_as_user!(session_user)
-        @order_detail.reload.assign_estimated_price!(nil, @reservation.reserve_end_at)
-        @order_detail.save!
+        save_reservation_and_order_detail
 
         flash[:notice] = I18n.t 'controllers.reservations.create.success'
 
         if mergeable
-          # merge state can change after call to #save! due to OrderDetailObserver#before_save
           redirect_to edit_facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
         elsif @order_detail.product.is_a?(Instrument) && @order.order_details.count == 1
           # only trigger purchase if instrument
@@ -170,33 +169,37 @@ class ReservationsController < ApplicationController
 
   # GET /orders/1/order_details/1/reservations/1/edit
   def edit
-    # TODO you shouldn't be able to edit reservations that have passed or are outside of the cancellation period (check to make sure order has been placed)
-    raise ActiveRecord::RecordNotFound if (params[:id].to_i != @reservation.id || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
+    raise ActiveRecord::RecordNotFound if invalid_for_update?
     set_windows
   end
 
   # PUT  /orders/1/order_details/1/reservations/1
   def update
-    # TODO you shouldn't be able to edit reservations that have passed or are outside of the cancellation period (check to make sure order has been placed)
-    raise ActiveRecord::RecordNotFound if (params[:id].to_i != @reservation.id || @reservation.canceled_at || @reservation.actual_start_at || @reservation.actual_end_at)
+    raise ActiveRecord::RecordNotFound if invalid_for_update?
 
     # clear existing reservation attributes
-    [:reserve_start_at, :reserve_end_at].each do |k|
-      @reservation.send("#{k}=", nil)
-    end
-    # set new reservation attributes
-    params[:reservation].each_pair do |k, v|
-      @reservation.send("#{k}=", v)
-    end
+    @reservation.reserve_start_at = nil
+    @reservation.reserve_end_at = nil
 
+    # set new reservation attributes
+    # TODO use assign_attributes in Rails 3.1+
+    @reservation.attributes = params[:reservation]
 
     Reservation.transaction do
       begin
-        @reservation.save_as_user!(session_user)
-        @order_detail.assign_estimated_price(nil, @reservation.reserve_end_at)
-        @order_detail.save!
+
+        # merge state can change after call to #save! due to OrderDetailObserver#before_save
+        mergeable=@order_detail.order.to_be_merged?
+
+        save_reservation_and_order_detail
+
         flash[:notice] = 'The reservation was successfully updated.'
-        redirect_to (@order.purchased? ? reservations_path : cart_path) and return
+        if mergeable
+          redirect_to edit_facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
+        else
+          redirect_to (@order.purchased? ? reservations_path : cart_path)
+        end
+        return
       rescue ActiveRecord::RecordInvalid => e
         raise ActiveRecord::Rollback
       end
@@ -214,7 +217,7 @@ class ReservationsController < ApplicationController
     else
       flash[:error] = @reservation.errors.full_messages.join("<br/>")
     end
-    
+
     return redirect_to reservations_path
   end
 
@@ -286,11 +289,11 @@ class ReservationsController < ApplicationController
     @error_status = nil
     @errors_by_id = {}
     @product_accessories = visible_accessories(@reservation)
-    
+
     if request.get?
       render 'pick_accessories', :layout => false and return
     end
-    
+
     @complete_state = OrderStatus.find_by_name!('Complete')
 
     @count = 0
@@ -349,6 +352,17 @@ class ReservationsController < ApplicationController
     return @reservation
   end
 
+  # TODO you shouldn't be able to edit reservations that have passed or are outside of the cancellation period (check to make sure order has been placed)
+  def invalid_for_update?
+    params[:id].to_i != @reservation.id || !@reservation.can_customer_edit? || @reservation.actual_start_at || @reservation.actual_end_at
+  end
+
+  def save_reservation_and_order_detail
+    @reservation.save_as_user!(session_user)
+    @order_detail.reload.assign_estimated_price(nil, @reservation.reserve_end_at)
+    @order_detail.save_as_user!(session_user)
+  end
+
   def set_windows
     user_price_groups     = @order.user.price_groups.presence || []
     # @order.account could be nil if quick reservation
@@ -360,6 +374,7 @@ class ReservationsController < ApplicationController
     @min_date     = (Time.zone.now + @max_days_ago.days).strftime("%Y%m%d")
     @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
   end
+
   def helpers
     ActionController::Base.helpers
   end

@@ -29,19 +29,21 @@ gem 'will_paginate',    '3.0.2'
 gem 'jquery-rails',     '1.0.12'
 
 ## controllers
-gem 'prawn',            '0.11.1.pre'
+gem 'prawn',            '0.12'
 gem 'prawn_rails',      '0.0.5'
 
 ## other
 gem 'rake'
 gem 'spreadsheet',      '~> 0.6.5.5'
 gem 'fast-aes',         '0.1.1'
-gem 'pdf-reader',       '0.8.6'
+gem 'pdf-reader',       '1.3.2'
 gem 'exception_notification', :require => 'exception_notifier'
 gem 'daemons',          '1.1.6'
 
 ## custom
 gem 'c2po',             '~> 1.0.0', :path => 'vendor/engines/c2po'
+
+gem 'synaccess_connect', '0.2.0', :git => 'git://github.com/tablexi/synaccess.git'
 
 group :development, :test do
   gem 'ci_reporter'
@@ -52,7 +54,7 @@ group :development, :test do
   gem 'ruby-debug19',      '0.11.6'
   gem 'shoulda-matchers',  '1.4.2'
   gem 'single_test',       '0.4.0'
-  gem 'spork',             '0.9.0.rc9'
+  gem 'spork',             '0.9.2'
   gem 'timecop'
   gem "pry-rails",         '0.2.2'
   gem "awesome_print",     '1.1.0'
@@ -60,7 +62,7 @@ end
 
 group :oracle do
   # ruby-oci8 won't compile on lion
-  unless RUBY_PLATFORM =~ /x86_64-darwin(11|12)/
+  unless RUBY_PLATFORM =~ /(?:i686|x86_64)-darwin(?:11|12)/
     gem 'ruby-oci8',        '2.0.4'
   end
 

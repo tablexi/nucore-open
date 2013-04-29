@@ -21,14 +21,8 @@
                 %i=h "Note: #{od.note}"
       %td.centered=h od.order_status.name
       %td.currency
-        - if od.cost_estimated?
-          %span.estimated_cost
-            = show_estimated_total(od)
-        - elsif od.price_policy.nil?
-          Unassigned
-        - else
-          %span.actual_cost
-            = show_actual_total(od)
+        - od.send(:extend, PriceDisplayment)
+        = od.wrapped_total
 
 %p.footnote
   %span.estimated_cost

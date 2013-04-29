@@ -136,7 +136,6 @@ describe FacilityAccountsController do
         @action=:create
         @acct_attrs=FactoryGirl.attributes_for(:nufs_account)
         @params={
-          :id => @account.id,
           :facility_id => @authable.url_name,
           :owner_user_id => @owner.id,
           :account => @acct_attrs,
@@ -202,7 +201,7 @@ describe FacilityAccountsController do
     end
   end
 
-  
+
   context 'accounts_receivable' do
 
     before :each do

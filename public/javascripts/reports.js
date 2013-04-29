@@ -9,26 +9,24 @@
  */
 
 // get a query string with the most current report parameters
-function getQueryString()
-{
-    var paramString='?' + $('#refresh-form').serialize();
+function getQueryString() {
+  var paramString='?' + $('#refresh-form').serialize();
 
-    for(var param in arguments)
-        paramString += ('&' + param);
+  for(var param in arguments)
+    paramString += ('&' + param);
 
-    return paramString;
+  return paramString;
 }
 
 
 // update the given url with the most current report parameters
-function updateUrl(url)
-{
-    var pageParam=url.match(/page=\d+/);
+function updateUrl(url) {
+  var pageParam=url.match(/page=\d+/);
 
-    if(pageParam != null)
-        return url.substring(0, url.indexOf('?')) + getQueryString(pageParam[0]);
+  if(pageParam != null)
+    return url.substring(0, url.indexOf('?')) + getQueryString(pageParam[0]);
 
-    return url + getQueryString();
+  return url + getQueryString();
 }
 
 
@@ -37,73 +35,73 @@ function getSelectedTabIndex() { return $('#tabs').tabs().tabs('option', 'select
 
 
 // update and return the currently selected tab's URL
-function getUpdateTabUrl(ui)
-{
-    if(ui != null)
-        return updateUrl($.data(ui.tab, 'load.tabs'));
+function getUpdateTabUrl(ui) {
+  if(ui != null) { return updateUrl($.data(ui.tab, 'load.tabs')); }
 
-    var links=$("#tabs > ul").find("li a");
-    return updateUrl($.data(links[getSelectedTabIndex()], 'href.tabs'));
+  var links=$("#tabs > ul").find("li a");
+  return updateUrl($.data(links[getSelectedTabIndex()], 'href.tabs'));
 }
 
 
-function updateReport()
-{
-    var selected=getSelectedTabIndex();
-    $('#tabs').tabs('url', selected, getUpdateTabUrl()).tabs('load', selected);
+function updateReport() {
+  var selected=getSelectedTabIndex();
+  $('#tabs').tabs('url', selected, getUpdateTabUrl()).tabs('load', selected);
 }
 
 
-function initReportsUI(selectedIndex)
-{
-    // create reports tabs
-    $('#tabs').tabs({
-        selected: selectedIndex,
+function initReportsUI(selectedIndex) {
+  // create reports tabs
+  $('#tabs').tabs({
+    selected: selectedIndex,
 
-        select: function(event, ui) {
-            // before refreshing tab update the tab's URL with the current report params
-            var url=getUpdateTabUrl(ui);
-            $('#tabs').tabs('url', ui.index, url);
-        },
+    select: function(event, ui) {
+      // before refreshing tab update the tab's URL with the current report params
+      var url=getUpdateTabUrl(ui);
+      $('#tabs').tabs('url', ui.index, url);
+      $('#error-msg').fadeOut();
+    },
 
-        load: function(event, ui) {
-            // every time a tab loads make sure the export urls are set to export current report
-            var url=getUpdateTabUrl(ui);
-            $('#export').attr('href', url + '&export_id=report&format=csv');
-            $('#export-all').attr('href', url + '&export_id=report_data&format=csv');
+    load: function(event, ui) {
+      // every time a tab loads make sure the export urls are set to export current report
+      var url=getUpdateTabUrl(ui);
+      $('#export').attr('href', url + '&export_id=report&format=csv');
+      $('#export-all').attr('href', url + '&export_id=report_data&format=csv');
 
-            // Make sure to update the date params in case they were empty or invalid
-            $('#date_start').val($(ui.panel).find('.updated_values .date_start').text())
-            $('#date_end').val($(ui.panel).find('.updated_values .date_end').text())
-            
-        },
+      // Make sure to update the date params in case they were empty or invalid
+      $('#date_start').val($(ui.panel).find('.updated_values .date_start').text())
+      $('#date_end').val($(ui.panel).find('.updated_values .date_end').text())
 
-        ajaxOptions: {
-            dataType: "text html",
-            error: function(xhr, status, error) {
-                $('#error-msg').html('Sorry, but the tab could not load. Please try again soon.').show();
-            }
+    },
+
+    ajaxOptions: {
+      dataType: "text html",
+      error: function(xhr, status, error) {
+        // don't show error message if it's because of user aborting ajax request
+        if (status != 'abort') {
+          $('#error-msg').html('Sorry, but the tab could not load. Please try again soon.').show();
         }
-    });
+      }
+    }
+  });
 
-    // handle pagination requests
-    $(document).on('click', '.pagination a', function (){
-        var selected=getSelectedTabIndex();
-        $('#tabs').tabs('url', selected, this.href).tabs('load', selected);
-        return false;
-    });
+  // handle pagination requests
+  $(document).on('click', '.pagination a', function (){
+    var selected=getSelectedTabIndex();
+    $('#tabs').tabs('url', selected, this.href).tabs('load', selected);
+    return false;
+  });
 
-    // update report on parameter change
-    $('#refresh-form :input').change(updateReport);
+  // update report on parameter change
+  $('#refresh-form :input').change(updateReport);
 
-    // decorate order status drop down
-    if($('#status_filter').length)
-        $('#status_filter').chosen();
+  // decorate order status drop down
+  if($('#status_filter').length)
+    $('#status_filter').chosen();
 }
 
 
 $(function() {
-    $('.datepicker').each(function() {
-      $(this).datepicker();
-    });
+  $('.datepicker').each(function() {
+    $(this).datepicker();
+  });
 });

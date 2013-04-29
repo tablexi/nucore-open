@@ -38,7 +38,7 @@ class Facility < ActiveRecord::Base
   validates_format_of    :journal_mask, :with => /^C\d{2}$/, :message => "must be in the format C##"
 
   scope :active, :conditions => { :is_active => true }
-  
+
   def self.ids_from_urls(urls)
     where("url_name in (?)", urls).select(:id).map(&:id)
   end

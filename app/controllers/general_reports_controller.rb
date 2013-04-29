@@ -54,7 +54,7 @@ class GeneralReportsController < ReportsController
       @status_ids += stat.children.collect(&:id) if stat.root?
     end
 
-    @date_range_field = params[:date_range_field] || 'journal_date'
+    @date_range_field = params[:date_range_field] || 'journal_or_statement_date'
     super
   end
 
@@ -78,6 +78,9 @@ class GeneralReportsController < ReportsController
 
     report_data.each do |od|
       key=yield od
+
+      key = "Undefined" if key.blank?
+
       sums[key]=[0,0] unless sums.has_key?(key)
       sums[key][0] += od.quantity
       @total_quantity += od.quantity
@@ -99,12 +102,7 @@ class GeneralReportsController < ReportsController
 
     rows.sort! {|a,b| a.first <=> b.first}
 
-    # only page results if we're not exporting
-    if params[:export_id].present?
-      @rows = rows
-    else
-      page_report(rows)
-    end
+    page_report(rows)
   end
 
 

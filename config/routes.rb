@@ -20,6 +20,8 @@ Nucore::Application.routes.draw do
   match '/facilities/:facility_id/price_group/:price_group_id/account_price_group_members/search_results', :to => 'account_price_group_members#search_results'
   match '/facilities/:facility_id/accounts/user/:user_id', :to => 'facility_accounts#user_accounts', :as => 'user_accounts'
 
+  post  'order_search' => 'order_search#index', :as => 'order_search'
+
   # front-end accounts
   resources :accounts, :only => [:index, :show] do
     member do

@@ -1,24 +1,26 @@
-== #{t('.intro')}
+#{t('.intro')}
 ==
-== Ordered at: #{@order.ordered_at.strftime("%b %e, %Y %l:%M %p")}
-== Facility: #{@order.facility}
-== Ordered By: #{@order.created_by_user.full_name}
+
+Ordered at: #{@order.ordered_at.strftime("%b %e, %Y %l:%M %p")}
+Facility: #{@order.facility}
+Ordered By: #{@order.created_by_user.full_name}
 ==
-== Order Details
-== ========================================
+Order Details
+= "========================================"
 - @order.order_details.each do |od|
-  == Order #: #{od}
+  Order #: #{od}
   = (od.bundle ? "#{h od.bundle} -- " : '') + h(od.product)
   - if od.reservation
-    == Reservation: #{od.reservation}
-  == Quantity: #{od.quantity}
-  == Status: #{od.order_status.name}
-  - if od.cost_estimated?
-    == Estimated Price: #{number_to_currency od.estimated_cost}
-    == Estimated Subsidy #{number_to_currency od.estimated_subsidy}
-    == Estimated Total #{number_to_currency od.estimated_total}
-  - else
-    == Pricing is currently unassigned.
+    Reservation: #{od.reservation}
+  Quantity: #{od.quantity}
+  Status: #{od.order_status.name}
+  - od.send(:extend, PriceDisplayment)
+  - text = od.display_cost_class == 'unassigned' ? '' : "#{od.display_cost_class.humanize} "
+  #{text}Price: #{od.display_cost}
+  #{text}Adjustment: #{od.display_subsidy}
+  #{text}Total: #{od.display_total}
+  ==
 ==
-==
-== * #{t('.outro')}
+
+- if @order.any_details_estimated?
+  * #{t('.outro')} %p= t('.outro')

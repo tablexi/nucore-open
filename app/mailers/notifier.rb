@@ -1,5 +1,6 @@
 class Notifier < ActionMailer::Base
   add_template_helper TranslationHelper
+  add_template_helper OrdersHelper
 
   default :from => Settings.email.from, :content_type => 'multipart/alternative'
 

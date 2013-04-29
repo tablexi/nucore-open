@@ -56,15 +56,14 @@ class FacilityNotificationsController < ApplicationController
           end
         end
       end
+
       if @errors.any?
         flash[:error] = I18n.t('controllers.facility_notifications.errors_html', :errors => @errors.join('<br/>')).html_safe
         raise ActiveRecord::Rollback
       else
-        @accounts_to_notify.each do |account, facility|
-          account.notify_users.each {|u| Notifier.review_orders(:user => u, :facility => facility, :account => account).deliver }
-        end
+        notify_accounts
         account_list = @accounts_to_notify.map {|a, f| a.account_list_item }
-        flash[:notice] = I18n.t('controllers.facility_notifications.send_notifications.success_html', :accounts => account_list.join('<br/>')).html_safe
+        flash[:notice] = send_notification_success_message(account_list)
       end
     end
     redirect_to :action => :index
@@ -101,5 +100,23 @@ class FacilityNotificationsController < ApplicationController
       flash[:error] = I18n.t('controllers.facility_notifications.mark_as_reviewed.errors', :errors =>  @errors.join(', ')) if @errors.any?
     end
     redirect_to :action => :in_review
+  end
+
+private
+
+  def notify_accounts
+    @accounts_to_notify.each do |account, facility|
+      account.notify_users.each do |u|
+        Notifier.review_orders(:user => u, :facility => facility, :account => account).deliver
+      end
+    end
+  end
+
+  def send_notification_success_message(account_list)
+    if account_list.size > 10
+      I18n.t('controllers.facility_notifications.send_notifications.success_count', :accounts => account_list.size)
+    else
+      I18n.t('controllers.facility_notifications.send_notifications.success_html', :accounts => account_list.join('<br/>')).html_safe
+    end
   end
 end

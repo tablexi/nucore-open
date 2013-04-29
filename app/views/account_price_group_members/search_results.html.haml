@@ -5,9 +5,11 @@
     %p.error= t('.error.notfound')
   - else
     %h3= t('.head')
-    %p
-      = t('.main')
-      = link_to t('.create'), new_account_user_search_facility_accounts_path(current_facility)
+
+    - if SettingsHelper.feature_on?(:edit_accounts)
+      %p
+        = t('.main')
+        = link_to t('.create'), new_account_user_search_facility_accounts_path(current_facility)
     %table
       %tr
         %th Account Number

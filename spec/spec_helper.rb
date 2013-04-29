@@ -8,6 +8,14 @@ require 'spork'
 # - Place the rest under Spork.each_run block
 # - Any code that is left outside of the blocks will be ran during preforking
 #   and during each_run!
+
+# View helpers are not being loaded in when running spork. Once the pull request is
+# merged in and spork is upgraded, we should be able to remove this line.
+# https://github.com/sporkrb/spork/pull/140
+if Spork.using_spork?
+  AbstractController::Helpers::ClassMethods.module_eval do def helper(*args, &block); modules_for_helpers(args).each {|mod| add_template_helper(mod)}; _helpers.module_eval(&block) if block_given?; end end
+end
+
 Spork.prefork do
   # This file is copied to ~/spec when you run 'ruby script/generate rspec'
   # from the project root directory.
@@ -265,7 +273,7 @@ Spork.each_run do
           :facility_account => facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)),
           :min_reserve_mins => 60,
           :max_reserve_mins => 60)
-    
+
 
     assert @instrument.valid?
     @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24)) if @instrument.schedule_rules.empty?
@@ -307,8 +315,8 @@ Spork.each_run do
   #   The +User+ that creates the @order
   def setup_reservation(facility, facility_account, account, user)
     # create instrument, min reserve time is 60 minutes, max is 60 minutes
-    @instrument       = FactoryGirl.create(:instrument, 
-                                             :facility => facility, 
+    @instrument       = FactoryGirl.create(:instrument,
+                                             :facility => facility,
                                              :facility_account => facility_account,
                                              :min_reserve_mins => 60,
                                              :max_reserve_mins => 60)
