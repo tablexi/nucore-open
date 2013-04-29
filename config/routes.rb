@@ -13,7 +13,6 @@ Nucore::Application.routes.draw do
   root :to => 'public#index'
 
   # authentication
-  match 'logout_target', :to => 'public#index'
   match 'switch_back',   :to => 'public#switch_back'
 
   # shared searches
