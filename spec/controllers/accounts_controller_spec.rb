@@ -4,7 +4,7 @@ require 'transaction_search_spec_helper'
 
 describe AccountsController do
   render_views
-  
+
   it "should route" do
     { :get => "/accounts" }.should route_to(:controller => 'accounts', :action => 'index')
     { :get => "/accounts/1" }.should route_to(:controller => 'accounts', :action => 'show', :id => '1')
@@ -85,7 +85,7 @@ describe AccountsController do
     end
 
   end
-  
+
   context 'transactions' do
     before :each do
       @method = :get
@@ -101,11 +101,11 @@ describe AccountsController do
       # @authable is an nufs account, so it doesn't have a facility
       assigns[:facility].should be_nil
     end
-    
+
     it_should_support_searching
-    
+
   end
-  
+
   context 'transactions_in_review' do
     before :each do
       @method = :get
@@ -114,18 +114,18 @@ describe AccountsController do
       @user = @authable.owner.user
     end
     it_should_support_searching
-    
+
     it_should_require_login
-    
+
     it_should_deny :purchaser
-    
+
     it_should_allow :owner do
       assigns[:account].should == @authable
       assigns[:order_details].where_values_hash.should be_has_key(:account_id)
       assigns[:order_details].where_values_hash[:account_id].should == @authable.id
       assigns[:facility].should be_nil
     end
-    
+
     it "should use reviewed_at" do
       sign_in @user
       do_request
@@ -133,7 +133,7 @@ describe AccountsController do
       assigns[:extra_date_column].should == :reviewed_at
       assigns[:order_details].to_sql.should be_include("order_details.reviewed_at >")
     end
-    
+
     it "should add dispute links" do
       sign_in @user
       do_request
@@ -143,11 +143,53 @@ describe AccountsController do
       assigns[:order_detail_link][:text].should == "Dispute"
       assigns[:order_detail_link][:display?].call(OrderDetail.new).should be_true
     end
-    
-    
-  end
-  
 
+
+  end
+
+  context 'suspension', :if => SettingsHelper.feature_on?(:suspend_accounts) do
+    before :each do
+      @account = @authable
+    end
+
+    context 'suspend' do
+      before :each do
+        @method = :get
+        @action = :suspend
+        @params = { :account_id => @account.id }
+      end
+
+      it_should_require_login
+
+      it_should_deny_all [:purchaser]
+
+      it_should_allow_all [:owner, :business_admin] do
+        assigns(:account).should == @account
+        should set_the_flash
+        @account.reload.should be_suspended
+        assert_redirected_to account_path(@account)
+      end
+    end
+
+    context 'unsuspend' do
+      before :each do
+        @method = :get
+        @action = :unsuspend
+        @params = { :account_id => @account.id }
+      end
+
+      it_should_require_login
+
+      it_should_deny_all [:purchaser]
+
+      it_should_allow_all [:owner, :business_admin] do
+        assigns(:account).should == @account
+        should set_the_flash
+        assigns(:account).should_not be_suspended
+        assert_redirected_to account_path(@account)
+      end
+    end
+  end
 
   context "POST /accounts/create" do
     it "should 403 unless class_type is legit"

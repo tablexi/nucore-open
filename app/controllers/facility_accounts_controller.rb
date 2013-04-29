@@ -30,6 +30,7 @@ class FacilityAccountsController < ApplicationController
   end
 
   include Overridable
+  include AccountSuspendActions
 
   admin_tab     :all
   before_filter :authenticate_user!
@@ -188,31 +189,6 @@ class FacilityAccountsController < ApplicationController
       format.pdf  { render :template => '/statements/show.pdf.prawn' }
     end
   end
-
-  # GET /facilities/:facility_id/accounts/:account_id/suspend
-  def suspend
-    begin
-      @account.suspend!
-      flash[:notice] = I18n.t 'controllers.facility_accounts.suspend.success'
-    rescue => e
-      flash[:notice] = e.message || I18n.t('controllers.facility_accounts.suspend.failure')
-    end
-
-    redirect_to facility_account_path(current_facility, @account)
-  end
-
-  # GET /facilities/:facility_id/accounts/:account_id/unsuspend
-  def unsuspend
-    begin
-      @account.unsuspend!
-      flash[:notice] = I18n.t 'controllers.facility_accounts.unsuspend.success'
-    rescue => e
-      flash[:notice] = e.message || I18n.t('controllers.facility_accounts.unsuspend.failure')
-    end
-
-    redirect_to facility_account_path(current_facility, @account)
-  end
-
 
   private
 
