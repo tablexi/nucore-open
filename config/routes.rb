@@ -197,7 +197,7 @@ Nucore::Application.routes.draw do
         match 'search_results', :via => [:get, :post]
       end
       get '/members',                          :to => 'facility_accounts#members',        :as => 'members'
-      get '/statements/:statement_id.:format', :to => 'facility_accounts#show_statement', :as => 'statement' if AccountManager.using_statements?
+      get '/statements/:statement_id(.:format)', :to => 'facility_accounts#show_statement', :as => 'statement', :defaults => { :format => 'html' } if AccountManager.using_statements?
 
       if SettingsHelper.feature_on?(:suspend_accounts)
         match 'suspend',   :to => 'facility_accounts#suspend',   :as => 'suspend'
