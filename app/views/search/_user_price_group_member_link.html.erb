@@ -1,1 +1,1 @@
-<%= link_to "#{user.last_name}, #{user.first_name}", create_facility_price_group_user_price_group_members_path(@facility, @price_group.id, :user_id => user.id) %>
+<%= link_to "#{user.last_name}, #{user.first_name}", facility_price_group_user_price_group_members_path(@facility, @price_group.id, :user_id => user.id), :method => :post %>

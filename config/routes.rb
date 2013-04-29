@@ -232,17 +232,9 @@ Nucore::Application.routes.draw do
         get 'accounts'
       end
 
-      resources :user_price_group_members, :only => [:new, :destroy, :create] do
-        collection do
-          get 'create'
-        end
-      end
+      resources :user_price_group_members, :only => [:new, :destroy, :create]
 
-      resources :account_price_group_members, :only => [:new, :destroy, :create] do
-        collection do
-          get 'create'
-        end
-      end
+      resources :account_price_group_members, :only => [:new, :destroy, :create]
     end
 
     get 'notifications',       :to => 'facility_notifications#index'
