@@ -11,7 +11,10 @@
         = chosen_field(:order_statuses, OrderStatus.model_name.human, "id", nil, :order_statuses_options)
   %fieldset#calendar_filter
     %ul
-      %li= select_tag :date_range_field, options_for_select(TransactionSearch::DATE_RANGE_FIELDS, @date_range_field)
+      %li
+        -# skip a row to align with other fieldset label
+        %br
+        = select_tag :date_range_field, options_for_select(TransactionSearch::DATE_RANGE_FIELDS, @date_range_field)
       %li
         = label_tag :start_date, "Start Date"
         = text_field_tag :start_date, (@search_fields[:start_date] || "").gsub("-","/"), :class => 'datepicker in_past'

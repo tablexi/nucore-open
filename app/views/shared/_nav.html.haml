@@ -30,6 +30,11 @@
                 - link[:subnav].each do |sub_links|
                   %li= link_to sub_links[:text], sub_links[:url]
 
+      - if !acting_as? && current_user
+        %li.right.search
+          = form_tag order_search_path do
+            = text_field_tag :search, nil, :placeholder => t('order_search.search')
+
       - facilities = menu_facilities
 
       - if !acting_as? && current_user && current_user.administrator?
@@ -50,4 +55,6 @@
         %li.right{:class => !controller.active_tab.nil? && controller.active_tab == 'admin_billing' ? 'active' : ''}
           .divider
             = link_to t("pages.global_billing"), facility_transactions_path('all')
+
+
   .clear
