@@ -6,13 +6,6 @@
 %ul.form
   %li
     %label= t('.label.account')
-    =h @account.account_number
-  %li
-    %label= t('.label.type')
-    =h @account.type_string
-  %li
-    %label= t('.label.description')
-    =h @account.description
-  %li
-    %label= t('.label.expiration')
-    = human_datetime(@account.expires_at, :date_only => true)
+    = @account.account_number
+  = render :partial => 'accounts/account_fields'
+  = render :partial => 'accounts/suspend_button'

@@ -8,12 +8,13 @@ class ApplicationController < ActionController::Base
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
   # Make the following methods available to all views
-  helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :all_facility?, :backend? 
+  helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :all_facility?, :backend?
+  helper_method :open_or_facility_path
 
   # Navigation tabs configuration
   attr_accessor :active_tab
   include NavTab
-  
+
   # return whatever facility is indicated by the :facility_id or :id url parameter
   # UNLESS that url parameter has the value of 'all'
   # in which case, return the all facility
@@ -40,11 +41,11 @@ class ApplicationController < ActionController::Base
     raise ActiveRecord::RecordNotFound unless current_facility
   end
 
-  #TODO: refactor existing calls of this definition to use this helper 
+  #TODO: refactor existing calls of this definition to use this helper
   def current_cart
     acting_user.cart(session_user)
   end
-  
+
   def init_current_account
     @account = Account.find(params[:account_id] || params[:id])
   end
@@ -69,7 +70,7 @@ class ApplicationController < ActionController::Base
 
 
   # helper for actions in the 'Billing' manager tab
-  # 
+  #
   # Purpose:
   #   used to get facilities normally used to scope down
   #   which order_details / journals are shown within the tables
@@ -89,7 +90,7 @@ class ApplicationController < ActionController::Base
       # if client ever wants cross-facility billing for a subset of facilities,
       # make this return session_user.manageable_facilities in the case of all_facility
       Facility.scoped
-    when nil 
+    when nil
       session_user.manageable_facilities
     else # only facility that can be managed is the current facility
       Facility.where(:id => current_facility.id)
@@ -125,7 +126,7 @@ class ApplicationController < ActionController::Base
     Rails.logger.debug("#{exception.message}: #{exception.backtrace.join("\n")}") unless Rails.env.production?
     render_404
   end
-  
+
   rescue_from ActionController::RoutingError do |exception|
     Rails.logger.debug("#{exception.message}: #{exception.backtrace.join("\n")}") unless Rails.env.production?
     render_404
@@ -164,9 +165,26 @@ class ApplicationController < ActionController::Base
     session[:requested_params] || super
   end
 
+  #
+  # Will go to the facility version of the path if you are within a facility,
+  # otherwise go to the normal version. Useful for sharing views.
+  # E.g.:
+  # If you are in a facility, open_or_facility_path('account', @account) will link
+  # to facility_account_path(current_facility, @account), while if you are not, it will
+  # just go to account_path(@account).
+  def open_or_facility_path(path, *options)
+    path << '_path'
+    if current_facility
+      path = 'facility_' + path
+      send(path, current_facility, *options)
+    else
+      send(path, *options)
+    end
+  end
+
 
   private
-  
+
   def current_ability
     @current_ability ||= Ability.new(current_user, ability_resource, self)
   end
