@@ -130,9 +130,11 @@ class ReservationsController < ApplicationController
           backdate_reservation_if_necessary
           redirect_to edit_facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
         elsif @order_detail.product.is_a?(Instrument) && @order.order_details.count == 1
+          redirect_params = {}
+          redirect_params[:send_notification] = '1' if params[:send_notification] == '1'
           # only trigger purchase if instrument
           # and is only thing in cart (isn't bundled or on a multi-add order)
-          redirect_to purchase_order_path(@order)
+          redirect_to purchase_order_path(@order, redirect_params)
         else
           redirect_to cart_path
         end
