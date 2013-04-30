@@ -60,7 +60,7 @@
     %p
       = label_tag :send_notification
       = hidden_field_tag :send_notification, 0
-      = check_box_tag :send_notification, 1, params[:send_notification] != '0'
+      = check_box_tag :send_notification, 1, params[:send_notification] == '1'
   %ul.horiz
     %li= f.submit 'Create', :class => 'btn'
     - url_after_action = facility_path(@instrument.facility)
