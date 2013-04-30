@@ -271,6 +271,25 @@ describe ReservationsController do
       assert_redirected_to purchase_order_path(@order)
     end
 
+    context 'notifications when acting as' do
+      before :each do
+        sign_in @admin
+        switch_to @guest
+      end
+
+      it 'should set the option for sending notifications' do
+        @params.merge!(:send_notification => '1')
+        do_request
+        response.should redirect_to purchase_order_path(@order, :send_notification => '1')
+      end
+
+      it 'should set the option for not sending notifications' do
+        @params.merge!(:send_notification => '0')
+        do_request
+        response.should redirect_to purchase_order_path(@order)
+      end
+    end
+
     context 'merge order' do
       before :each do
         @merge_to_order=@order.clone
