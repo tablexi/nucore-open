@@ -1,7 +1,7 @@
 = content_for :head_content do
   = render :partial => 'shared/headers/calendar'
   = javascript_include_tag 'reservations.js'
-  
+
   :javascript
     var events_path     = "#{facility_instrument_reservations_path(@instrument.facility, @instrument, :format => 'js', :with_details => @instrument.show_details?)}";
     var minDate         = "#{@min_date}";
@@ -56,12 +56,17 @@
       %li.clear
   %ul.form.box
     = render :partial => 'reservation_fields', :locals => {:f => f}
+  - if acting_as? && @order.order_details.size == 1
+    %p
+      = label_tag :send_notification
+      = hidden_field_tag :send_notification, 0
+      = check_box_tag :send_notification, 1, params[:send_notification] == '1'
   %ul.horiz
     %li= f.submit 'Create', :class => 'btn'
     - url_after_action = facility_path(@instrument.facility)
     - if @order_detail.bundled?
       %li= link_to 'Cancel', url_after_action
-    - else 
+    - else
       %li= link_to 'Cancel', remove_order_path(@order, @order_detail, :redirect_to => url_after_action), :method => :put
 
 #overlay
