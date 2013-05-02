@@ -10,7 +10,7 @@ FactoryGirl.define do
   end
 
   factory :setup_facility, :class => Facility, :parent => :facility do
-    after_create do |facility|
+    after(:create) do |facility|
       facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       # user is_internal => false so that we can just use .last to access it
       facility.price_groups.create(FactoryGirl.attributes_for(:price_group, :is_internal => false))
