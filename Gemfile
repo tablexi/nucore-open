@@ -47,9 +47,7 @@ gem 'synaccess_connect', '0.2.0', :git => 'git://github.com/tablexi/synaccess.gi
 
 group :development, :test do
   gem 'ci_reporter'
-  # TODO upgrade factory girl to 4.1 once we no longer need to support
-  # ruby 1.8.7. FactoryGirl 3 only supports 1.9.2
-  gem 'factory_girl_rails','1.7.0'
+  gem 'factory_girl_rails','4.2.1'
   gem 'rspec-rails',       '2.9'
   gem 'ruby-debug19',      '0.11.6'
   gem 'shoulda-matchers',  '1.4.2'
@@ -63,7 +61,7 @@ end
 group :oracle do
   # ruby-oci8 won't compile on lion
   unless RUBY_PLATFORM =~ /(?:i686|x86_64)-darwin(?:11|12)/
-    gem 'ruby-oci8',        '2.0.4'
+    gem 'ruby-oci8',        '2.1.5'
   end
 
   gem 'activerecord-oracle_enhanced-adapter', '1.3.0'
