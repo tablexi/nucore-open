@@ -46,9 +46,4 @@
   - if SettingsHelper.feature_on? :edit_accounts
     %li
       = link_to t('.link.edit'), edit_facility_account_path(current_facility, @account), :class => 'btn'
-  - if SettingsHelper.feature_on? :suspend_accounts
-    %li
-      - if @account.suspended?
-        = link_to t('.link.activate'), facility_account_unsuspend_path(current_facility, @account), :class => 'btn'
-      - else
-        = link_to t('.link.suspend'), facility_account_suspend_path(current_facility, @account), :class => 'btn'
+  = render :partial => 'accounts/suspend_button'
