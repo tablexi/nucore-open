@@ -27,7 +27,8 @@ Devise::Strategies::LdapAuthenticatable.class_eval do
   end
 
   def valid?
-    @@ldap_enabled && valid_controller? && valid_params? && mapping.to.respond_to?(:authenticate_with_ldap)
+    enabled = ENV['RUBY_VERSION'] =~ /ruby-1.9/ ? self.class.class_variable_get(:@@ldap_enabled) : @@ldap_enabled
+    enabled && valid_controller? && valid_params? && mapping.to.respond_to?(:authenticate_with_ldap)
   end
 end
 
