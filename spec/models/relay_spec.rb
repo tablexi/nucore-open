@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe Relay do
-  it { should allow_mass_assignment_of :username }
-  it { should allow_mass_assignment_of :password }
-  it { should allow_mass_assignment_of :ip }
-  it { should allow_mass_assignment_of :port }
   it { should allow_mass_assignment_of :auto_logout }
   it { should allow_mass_assignment_of :instrument_id }
   it { should allow_mass_assignment_of :type }
@@ -20,10 +16,10 @@ describe Relay do
                                                 :facility_account => @facility_account,
                                                 :no_relay => true)
 
-      @relay            = FactoryGirl.create(:relay, :instrument => @instrument)
+      @relay            = FactoryGirl.create(:relay_syna, :instrument => @instrument)
     end
 
-    it { should validate_uniqueness_of(:port).scoped_to(:ip) }
+    # it { should validate_uniqueness_of(:port).scoped_to(:ip) }
 
     it 'should alias host to ip' do
       @relay.host.should == @relay.ip

@@ -1,0 +1,6 @@
+- if SettingsHelper.feature_on? :suspend_accounts
+  %li
+    - if @account.suspended?
+      = link_to t('.link.activate'), open_or_facility_path('account_unsuspend', @account), :class => 'btn'
+    - else
+      = link_to t('.link.suspend'), open_or_facility_path('account_suspend', @account), :class => 'btn'

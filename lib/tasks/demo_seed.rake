@@ -177,7 +177,7 @@ namespace :demo  do
     pgp=PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pgex.id, instrument.id)
     pgp.reservation_window=14
     pgp.save!
-    
+
     inpp = InstrumentPricePolicy.find_or_create_by_product_id_and_price_group_id({
       :product_id           => instrument.id,
       :price_group_id       => pgnu.id,
@@ -317,7 +317,7 @@ namespace :demo  do
 
     if EngineManager.engine_loaded? :c2po
       ccaccount = CreditCardAccount.find_by_account_number('xxxx-xxxx-xxxx-xxxx')
-      
+
       unless ccaccount
         ccaccount=CreditCardAccount.create!({
           :account_number     => 'xxxx-xxxx-xxxx-xxxx',
@@ -382,7 +382,7 @@ namespace :demo  do
       order.reload
       order.order_details.each do |od|
         # enter actuals for instruments
-        set_instrument_order_actual_cost(od) if od.reservation        
+        set_instrument_order_actual_cost(od) if od.reservation
         od.change_status!(complete)
       end
     end
@@ -472,7 +472,7 @@ namespace :demo  do
         if product.is_a?(Instrument)
           res = Reservation.create({
             :order_detail_id  => od.id,
-            :instrument_id    => product.id,
+            :product_id       => product.id,
             :reserve_start_at => Time.zone.parse((ordered_at + 1.days).strftime("%Y-%m-%d") + " #{i+8}:00"),
             :reserve_end_at   => Time.zone.parse((ordered_at + 1.days).strftime("%Y-%m-%d") + " #{i+9}:00"),
           })

@@ -1,0 +1,14 @@
+%li
+  = f.label :account_number, t('facility_accounts.purchase_orders.account_number'), :class => 'require'
+  = f.text_field :account_number
+%li
+  = f.label :expires_at, nil, :class => 'require'
+  = f.text_field :formatted_expires_at, :id => 'datepicker'
+
+%li
+  = f.label :description, nil, :class => 'require'
+  = f.text_field :description
+
+= render :partial => 'facility_accounts/account_fields/affiliate', :locals => { :f => f }
+
+= render :partial => 'facility_accounts/account_fields/remittance_information', :locals => { :f => f }

@@ -10,7 +10,7 @@ class OrderDetail < ActiveRecord::Base
 
   belongs_to :product
   belongs_to :price_policy
-  belongs_to :statement
+  belongs_to :statement, :inverse_of => :order_details
   belongs_to :journal
   belongs_to :order
   belongs_to :assigned_user, :class_name => 'User', :foreign_key => 'assigned_user_id'
@@ -18,13 +18,19 @@ class OrderDetail < ActiveRecord::Base
   belongs_to :order_status
   belongs_to :account
   belongs_to :bundle, :foreign_key => 'bundle_product_id'
-  has_one    :reservation, :dependent => :destroy
+  has_one    :reservation, :dependent => :destroy, :inverse_of => :order_detail
   has_one    :external_service_receiver, :as => :receiver, :dependent => :destroy
   has_many   :notifications, :as => :subject, :dependent => :destroy
   has_many   :stored_files, :dependent => :destroy
 
   delegate :user, :facility, :ordered_at, :to => :order
-  delegate :journal_date, :to => :journal
+  delegate :journal_date, :to => :journal, :allow_nil => true
+  def statement_date
+    statement.try(:created_at)
+  end
+  def journal_or_statement_date
+    journal_date || statement_date
+  end
 
   alias_method :merge!, :save!
 
@@ -114,6 +120,18 @@ class OrderDetail < ActiveRecord::Base
     where("order_details.reviewed_at > ?", Time.zone.now).
     where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   end
+
+  def self.recently_reviewed
+    where(:state => ['complete', 'reconciled']).
+    where("order_details.reviewed_at < ?", Time.zone.now).
+    where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL").
+    order(:reviewed_at).reverse_order
+  end
+
+  def self.in_review_or_reviewed
+
+  end
+
   def in_review?
     # check in the database if self.id is in the scope
     self.class.all_in_review.find_by_id(self.id) ? true :false
@@ -201,9 +219,12 @@ class OrderDetail < ActiveRecord::Base
   }
 
   scope :action_in_date_range, lambda {|action, start_date, end_date|
+    valid = TransactionSearch::DATE_RANGE_FIELDS.map { |arr| arr[1].to_sym } + [:journal_date]
+    raise ArgumentError.new("Invalid action: #{action}. Must be one of: #{valid}") unless valid.include? action.to_sym
     logger.debug("searching #{action} between #{start_date} and #{end_date}")
     search = scoped
 
+    return journaled_or_statemented_in_date_range(start_date, end_date) if action.to_sym == :journal_or_statement_date
     search = search.joins(:journal) if action.to_sym == :journal_date
 
     # If we're searching on fulfilled_at, ignore any order details that don't have a fulfilled date
@@ -217,6 +238,22 @@ class OrderDetail < ActiveRecord::Base
     end
     search
   }
+
+  def self.journaled_or_statemented_in_date_range(start_date, end_date)
+    search = joins("LEFT JOIN journals ON journals.id = order_details.journal_id")
+    search = search.joins("LEFT JOIN statements ON statements.id = order_details.statement_id")
+
+    journal_query = ["journal_id IS NOT NULL"]
+    journal_query << "journal_date > :start_date" if start_date
+    journal_query << "journal_date < :end_date" if end_date
+
+    statement_query = ["statement_id IS NOT NULL"]
+    statement_query << "statements.created_at > :start_date" if start_date
+    statement_query << "statements.created_at < :end_date" if end_date
+
+    search = search.where("(#{journal_query.join(' AND ')}) OR (#{statement_query.join(' AND ')})", :start_date => start_date, :end_date => end_date)
+    search
+  end
 
 
 
@@ -309,6 +346,11 @@ class OrderDetail < ActiveRecord::Base
 
   def set_default_status!
     change_status! product.initial_order_status
+  end
+
+  def save_as_user!(user)
+    @being_purchased_by_admin = user.operator_of?(product.facility)
+    save!
   end
 
   def cancelable?

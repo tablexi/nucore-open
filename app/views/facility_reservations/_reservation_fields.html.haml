@@ -41,9 +41,10 @@
       %span.start_date= @reservation.reserve_start_at #human_datetime(@reservation.reserve_start_at, :date_only => true)
       %span.end_date= @reservation.reserve_end_at #human_datetime(@reservation.reserve_end_at, :date_only => true)
   %li.clear
+  - if @instrument.reservation_only?
+    %li.warning This is a reservation only instrument. Pricing is determined by the reservation times.
 - else
   %li.left
     = f.label :actual_start_date, 'Actual Usage'
     =h @reservation.actuals_string
   %li.clear
-

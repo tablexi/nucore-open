@@ -3,12 +3,12 @@
 def create_users
   @users=[]
 
-  [ 'admin', 'director', 'staff', 'guest', 'owner', 'purchaser', 'senior_staff', 'billing_admin' ].each do |name|
+  [ 'admin', 'director', 'staff', 'guest', 'owner', 'purchaser', 'business_admin', 'senior_staff', 'billing_admin' ].each do |name|
     user=FactoryGirl.create(:user, :username => name)
     instance_variable_set("@#{name}".to_sym, user)
     @users << user
   end
-  
+
   UserRole.grant(@admin, UserRole::ADMINISTRATOR)
   UserRole.grant(@billing_admin, UserRole::BILLING_ADMINISTRATOR)
 end
@@ -33,7 +33,7 @@ end
 
 # This does what Users#switch_to does and sets the acting user.
 # This will make ApplicationController#acting_as? return true and
-# ApplicationController#acting_user return a user 
+# ApplicationController#acting_user return a user
 def switch_to(user)
   session[:acting_user_id] = user.id
 end
@@ -49,7 +49,7 @@ end
 #
 
 #
-# Asserts that the request is redirected to the login page 
+# Asserts that the request is redirected to the login page
 def it_should_require_login
   it 'should require login', :auth => true do
     do_request
@@ -239,6 +239,9 @@ def grant_role(user, authable=nil)
     when 'purchaser'
       AccountUser.grant(user, AccountUser::ACCOUNT_PURCHASER, authable, @admin)
       user.reload.should be_purchaser_of(authable)
+    when 'business_admin'
+      AccountUser.grant(user, AccountUser::ACCOUNT_ADMINISTRATOR, authable, @admin)
+      user.reload.should be_business_administrator_of(authable)
     when 'senior_staff'
       UserRole.grant(user, UserRole::FACILITY_SENIOR_STAFF, authable)
       user.reload.should be_facility_senior_staff_of(authable)
@@ -272,12 +275,12 @@ end
 def parametrize_dates(params, key)
   start_time = params[:"#{key}_start_at"]
   end_time = params[:"#{key}_end_at"]
-  
+
   params.merge!(split_date_to_params("#{key}_start", start_time))
   params.merge!(:duration_value => ((end_time - start_time) / 60).ceil.to_s, :duration_unit => 'minutes')
-  
+
   params.delete :"#{key}_start_at"
   params.delete :"#{key}_end_at"
-  
+
   params
 end
