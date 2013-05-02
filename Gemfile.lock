@@ -19,7 +19,7 @@ PATH
     c2po (1.0.0)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     Ascii85 (1.0.2)
     aasm (2.2.0)

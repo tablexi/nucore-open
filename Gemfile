@@ -1,4 +1,4 @@
-source :gemcutter
+source 'https://rubygems.org'
 
 ## base
 gem 'rails',            '3.0.20'
