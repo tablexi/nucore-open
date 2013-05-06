@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   module Overridable
     def new_search
       if params[:username]
-        @user = User.where("LOWER(username) = ?", params[:username].downcase).first
+        @user = username_lookup(params[:username])
         flash[:notice] = "The user has been added successfully."
         if session_user.manager_of?(current_facility)
           flash[:notice]=(flash[:notice] + "  You may wish to <a href=\"#{facility_facility_user_map_user_path(current_facility, @user)}\">add a facility role</a> for this user.").html_safe
@@ -15,8 +15,12 @@ class UsersController < ApplicationController
 
     # POST /facilities/:facility_id/users/netid_search
     def username_search
-      @user = User.find(:first, :conditions => ["LOWER(username) = ?", params[:username_lookup].downcase])
+      @user = username_lookup(params[:username_lookup])
       render :layout => false
+    end
+
+    def username_lookup(username)
+      User.where("LOWER(username) = ?", username.downcase).first
     end
   end
 
@@ -24,7 +28,7 @@ class UsersController < ApplicationController
 
   customer_tab :password
   admin_tab     :all
-  before_filter :init_current_facility, :except => [:password, :password_reset] 
+  before_filter :init_current_facility, :except => [:password, :password_reset]
   before_filter :authenticate_user!, :except => [:password_reset]
   before_filter :check_acting_as
 
@@ -32,7 +36,7 @@ class UsersController < ApplicationController
 
   layout 'two_column'
 
-  def initialize 
+  def initialize
     @active_tab = 'admin_users'
     super
   end
@@ -115,7 +119,7 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
   end
-  
+
   # GET /facilities/:facility_id/users/:user_id/instruments
   def instruments
     @user = User.find(params[:user_id])
@@ -124,5 +128,5 @@ class UsersController < ApplicationController
 
   def email
   end
-  
+
 end
