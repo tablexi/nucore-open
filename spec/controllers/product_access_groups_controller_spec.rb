@@ -5,17 +5,17 @@ describe ProductAccessGroupsController do
   render_views
   before :all do
     create_users
-  end  
-  
+  end
+
   before :each do
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @instrument       = FactoryGirl.create(:instrument,
                                       :facility => @authable,
                                       :facility_account => @facility_account)
-    @params={ :instrument_id => @instrument.url_name, :facility_id => @authable.url_name }    
+    @params={ :instrument_id => @instrument.url_name, :facility_id => @authable.url_name }
   end
-  
+
   context 'index' do
     before :each do
       @level = FactoryGirl.create(:product_access_group, :product => @instrument)
@@ -24,7 +24,7 @@ describe ProductAccessGroupsController do
                                       :facility => @authable,
                                       :facility_account => @facility_account)
       @level3 = FactoryGirl.create(:product_access_group, :product => @instrument2)
-      
+
       @action = :index
       @method = :get
     end
@@ -34,7 +34,7 @@ describe ProductAccessGroupsController do
       assigns[:product_access_groups].should == [@level, @level2]
     end
   end
-  
+
   context 'new' do
     before :each do
       @action = :new
@@ -47,7 +47,7 @@ describe ProductAccessGroupsController do
       response.should render_template :new
     end
   end
-  
+
   context 'create' do
     before :each do
       @action = :create
@@ -63,7 +63,7 @@ describe ProductAccessGroupsController do
         assigns[:product_access_group].should_not be_new_record
         flash[:notice].should_not be_nil
         response.should redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
-      end      
+      end
     end
     context 'missing data' do
       before :each do
@@ -78,13 +78,13 @@ describe ProductAccessGroupsController do
       end
     end
   end
-  
+
   context 'edit' do
     before :each do
       @action = :edit
       @method = :get
       @product_access_group = FactoryGirl.create(:product_access_group, :product_id => @instrument.id)
-      @params.merge!({:id => @product_access_group})
+      @params.merge!({:id => @product_access_group.id})
     end
     it_should_allow_managers_and_senior_staff_only :success, 'do edit' do
       assigns[:facility].should == @authable
@@ -111,7 +111,7 @@ describe ProductAccessGroupsController do
         assigns[:product_access_group].name.should == 'new name'
         flash[:notice].should_not be_nil
         response.should redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
-      end      
+      end
     end
     context 'missing data' do
       before :each do
@@ -126,7 +126,7 @@ describe ProductAccessGroupsController do
       end
     end
   end
-  
+
   context 'destroy' do
     before :each do
       @method=:delete
@@ -140,5 +140,5 @@ describe ProductAccessGroupsController do
       response.should redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
     end
   end
-  
+
 end
