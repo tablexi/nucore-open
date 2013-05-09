@@ -13,7 +13,8 @@
     %th Role
   - @account.account_users.active.each do |au|
     %tr
-      %td= au.user == @account.owner_user ? '' : link_to('Remove Access', open_or_facility_path('account_account_user', @account, au), :confirm => 'Are you sure?', :method => :delete)
+      - if can_edit_accounts
+        %td= au.user == @account.owner_user ? '' : link_to('Remove Access', open_or_facility_path('account_account_user', @account, au), :confirm => 'Are you sure?', :method => :delete)
       %td=h "#{au.user.full_name} (#{au.user.username})"
       %td=h au.user.email
       %td=h au.user_role
