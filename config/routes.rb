@@ -138,8 +138,8 @@ Nucore::Application.routes.draw do
     if SettingsHelper.feature_on?(:create_users)
       resources :users, :except => [:edit, :update] do
         collection do
-          post 'username_search'
-          get  'new_search'
+          get 'new_external'
+          post 'search'
         end
         get   'switch_to',    :to => 'users#switch_to'
         match 'orders',       :to => 'users#orders'
@@ -148,7 +148,7 @@ Nucore::Application.routes.draw do
         match 'instruments',  :to => 'users#instruments'
       end
     else
-      resources :users, :except => [:edit, :update, :new, :create] do
+      resources :users, :except => [:edit, :update, :new, :create], :constraints => {:id => /\d+/} do
         get   'switch_to',    :to => 'users#switch_to'
         match 'orders',       :to => 'users#orders'
         match 'reservations', :to => 'users#reservations'

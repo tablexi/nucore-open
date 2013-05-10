@@ -685,10 +685,10 @@ en:
         name: "Name"
         username: "Username or NetID"
         email: "Email"
-    new:
+    new_external:
       head: "Add External User"
       main: "You may use this to grant NU Core access to external users. The email address and username must match."
-    new_search:
+    new:
       js:
         id: "NetID"
         email: "Email Address"
@@ -700,11 +700,16 @@ en:
       label:
         id: "NetID"
         have_id: "Does the new user have a NetID?"
-    username_search:
+    create:
+      error: There was an error creating the user.
+      success: The user has been added successfully.
+
+    search:
       main_html: "You may add a new external user by clicking <a href=\"%{link}\">Add a new external user</a>."
-      notice1: "The user could no be located in the university database.  Please make sure you typed the NetID correctly."
+      notice1: "The user could not be located in the university database.  Please make sure you typed the NetID correctly."
       notice2: "No user information was found in the university databases."
       notice3: "The following user was found.  Click \"Add User\" to allow this user access to NU Core."
+      user_already_exists: The user %{username} already exists in NUCore
     accounts:
       h1: "%{user_name} Payment Sources"
       link: "Add Payment Source"
