@@ -5,7 +5,7 @@
     - if params[:create_link] == 'true' && SettingsHelper.feature_on?(:create_users)
       %p
         Can't find the user you're looking for?
-        = link_to 'Create a new user', new_search_facility_users_path(@facility)
+        = link_to 'Create a new user', new_facility_user_path(@facility)
     %p.notice No existing users found.
   - else
     %h3 Select an Existing User
@@ -27,4 +27,4 @@
     - if params[:create_link] == 'true' && SettingsHelper.feature_on?(:create_users)
       %p
         Can't find the user you're looking for?
-        = link_to 'Create a new user', new_search_facility_users_path(@facility)
+        = link_to 'Create a new user', new_facility_user_path(@facility.url_name)
