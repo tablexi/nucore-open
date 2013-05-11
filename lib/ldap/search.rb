@@ -3,7 +3,7 @@ module Ldap
     def search(query)
       return [] unless query
       escaped_query = Net::LDAP::Filter.escape(query)
-      ldap_users = admin_ldap.search(:base => admin_ldap.base, :filter => "cn=#{escaped_query}")
+      ldap_users = admin_ldap.search(:base => admin_ldap.base, :filter => "#{Settings.ldap.attribute_field}=#{escaped_query}")
       ldap_users.map { |u| make_user_from_ldap(u) }
     end
 
