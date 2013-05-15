@@ -1,34 +1,29 @@
-FOR OS X SNOW LEOPARD
+# FOR OS X MOUNTAIN LION
 
-# install XCode
-
-################################################################################
+#################################
 # Oracle SQL Developer
-################################################################################
-# download and install into /Applications
-from here: http://www.oracle.com/technology/software/products/sql/index.html
+#################################
 
-################################################################################
-# Oracle 10g Instant Client
-################################################################################
-# Instructions sourced from:
-# http://www.pixellatedvisions.com/2009/03/25/rails-on-oracle-part-1-installing-the-oracle-instant-client-on-mac-os-x
+download and install into /Applications
+http://www.oracle.com/technetwork/developer-tools/sql-developer/overview/index.html
 
-# download basic, sqlplus, sdk (64 bit)
-from here: http://www.oracle.com/technology/software/tech/oci/instantclient/htdocs/intel_macsoft.html
-### http://download.oracle.com/otn/mac/instantclient/10204/instantclient-basic-10.2.0.4.0-macosx-x64.zip
-### http://download.oracle.com/otn/mac/instantclient/10204/instantclient-sqlplus-10.2.0.4.0-macosx-x64.zip
-### http://download.oracle.com/otn/mac/instantclient/10204/instantclient-sdk-10.2.0.4.0-macosx-x64.zip
+#################################
+# Oracle 11.2 Instant Client
+#################################
 
-# install files
+Download Basic, SqlPlus, and SDK
+
+http://www.oracle.com/technetwork/topics/intel-macsoft-096467.html
+
 sudo mkdir -p /opt/oracle/
 cd /opt/oracle
 
 sudo mv ~/Downloads/instantclient-* /opt/oracle
-sudo unzip instantclient-basic-macosx-10.2.0.4.0.zip
-sudo unzip instantclient-sdk-macosx-10.2.0.4.0.zip
-sudo unzip instantclient-sqlplus-macosx-10.2.0.4.0.zip
-sudo ln -s instantclient_10_2 instantclient
+sudo unzip instantclient-basic-macos.x64-11.2.0.3.0.zip
+sudo unzip instantclient-sdk-macos.x64-11.2.0.3.0.zip
+sudo unzip instantclient-sqlplus-macos.x64-11.2.0.3.0.zip
+
+sudo ln -s instantclient_11_2 instantclient
 
 cd instantclient
 sudo ln -s libclntsh.dylib.10.1 libclntsh.dylib
@@ -63,11 +58,7 @@ sudo ln -s /opt/oracle/instantclient/sqlplus /usr/local/bin/sqlplus
 # Instructions sourced from:
 # http://blog.rayapps.com/2009/09/06/how-to-setup-ruby-and-oracle-instant-client-on-snow-leopard/
 
-# install ruby-oci8
-sudo env DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH ARCHFLAGS="-arch x86_64" gem install ruby-oci8
-
-# Install oracle_enhanced adapter
-sudo gem install activerecord-oracle_enhanced-adapter
+*** As of Instant client 11.2, you should not need to do anything special ***
 
 # configure database.yml in your rails project
 development:
