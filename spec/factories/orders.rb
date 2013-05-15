@@ -13,13 +13,13 @@ FactoryGirl.define do
     user { account.owner.user }
     created_by { user }
 
-    after_create do |order, evaluator|
+    after(:create) do |order, evaluator|
       FactoryGirl.create(:user_price_group_member, :user => evaluator.user, :price_group => evaluator.product.facility.price_groups.last)
       order.add(evaluator.product)
     end
 
     factory :purchased_order do
-      after_create do |order|
+      after(:create) do |order|
         order.stub(:cart_valid?).and_return(true) #so we don't have to worry about defining price groups, etc
         order.validate_order!
         order.purchase!

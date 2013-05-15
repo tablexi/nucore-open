@@ -17,7 +17,7 @@
         %th Email
       - @accounts.each do |account|
         %tr
-          %td= link_to account.account_number, create_facility_price_group_account_price_group_members_path(current_facility, @price_group, :account_id => account.id)
+          %td= link_to account.account_number, facility_price_group_account_price_group_members_path(current_facility, @price_group, :account_id => account.id), :method => :post
           - owner=account.owner_user
           %td=h owner.full_name if owner
           %td=h owner.email if owner

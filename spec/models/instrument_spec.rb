@@ -3,7 +3,7 @@ require 'product_shared_examples'
 
 describe Instrument do
   it_should_behave_like 'ReservationProduct', :instrument
-  
+
   context "factory" do
     it "should create using factory" do
       @facility         = FactoryGirl.create(:facility)
@@ -30,7 +30,7 @@ describe Instrument do
         @facility = FactoryGirl.create(:facility)
         @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       end
-      
+
       it 'should create a default schedule' do
         @instrument = FactoryGirl.build(:instrument,
                                           :facility => @facility,
@@ -57,7 +57,7 @@ describe Instrument do
       context 'one instrument' do
         before :each do
           @facility = FactoryGirl.create(:setup_facility)
-          @instrument = FactoryGirl.create(:setup_instrument, :facility => @facility)  
+          @instrument = FactoryGirl.create(:setup_instrument, :facility => @facility)
         end
 
         it 'should not be sharing' do
@@ -135,7 +135,7 @@ describe Instrument do
 
         context "when validations met" do
           before :each do
-            @updated = @instrument.update_attributes(:control_mechanism => "relay", :relay_attributes => FactoryGirl.attributes_for(:relay)) 
+            @updated = @instrument.update_attributes(:control_mechanism => "relay", :relay_attributes => FactoryGirl.attributes_for(:relay))
           end
 
           it "should succeed" do
@@ -145,7 +145,7 @@ describe Instrument do
           it "should have no errors" do
             @instrument.errors.full_messages.should == []
           end
-          
+
           it "should have control mechanism of relay" do
             @instrument.reload.control_mechanism.should == 'relay'
           end
@@ -219,7 +219,7 @@ describe Instrument do
       context "update with new control_mechanism: 'relay' (Timer with relay)" do
         context "when validations not met" do
           before :each do
-            @updated = @instrument.update_attributes(:control_mechanism => "relay", :relay_attributes => {:type => 'RelaySynaccessRevA'}) 
+            @updated = @instrument.update_attributes(:control_mechanism => "relay", :relay_attributes => {:type => 'RelaySynaccessRevA'})
           end
 
           it "should fail" do
@@ -233,7 +233,7 @@ describe Instrument do
 
         context "when validations met" do
           before :each do
-            @updated = @instrument.update_attributes(:control_mechanism => "relay", :relay_attributes => FactoryGirl.attributes_for(:relay)) 
+            @updated = @instrument.update_attributes(:control_mechanism => "relay", :relay_attributes => FactoryGirl.attributes_for(:relay))
           end
           it "should succeed" do
             @updated.should be_true
@@ -264,7 +264,7 @@ describe Instrument do
       end
     end
   end
-  
+
   context "reservations with schedule rules from 9 am to 5 pm every day, with 60 minute durations" do
     before(:each) do
       @facility         = FactoryGirl.create(:facility)
@@ -281,12 +281,12 @@ describe Instrument do
       assert @rule.valid?
       Reservation.any_instance.stub(:admin?).and_return(false)
     end
-    
+
     it "should not allow reservation in the past" do
       @reservation = @instrument.reservations.create(:reserve_start_at => Time.zone.now - 1.hour, :reserve_end_at => Time.zone.now)
       assert @reservation.errors[:reserve_start_at]
     end
-    
+
     it "should not allow 1 hour reservation for a time not between 9 and 5" do
       # 8 am - 9 am
       @start       = Time.zone.now.end_of_day + 1.second + 8.hours
@@ -378,7 +378,7 @@ describe Instrument do
                                       :max_reserve_mins => 60)
       assert @instrument.valid?
     end
-    
+
     it "should find next available reservation with 60 minute interval rule, without any pending reservations" do
       # add rule, available every day from 9 to 5, 60 minutes duration/interval
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
@@ -451,7 +451,7 @@ describe Instrument do
                                       :max_reserve_mins => 60)
       assert @instrument.valid?
     end
-    
+
     it 'should default to 0 and 23 if no schedule rules' do
       @instrument.first_available_hour.should == 0
       @instrument.last_available_hour.should == 23
@@ -471,7 +471,7 @@ describe Instrument do
 
       context 'with a weekend reservation going from 8-6' do
         before :each do
-          @rule2 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:weekend_schedule_rule, 
+          @rule2 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:weekend_schedule_rule,
                                                                   :start_hour => 8,
                                                                   :end_hour => 18))
           assert @rule2.valid?
@@ -498,7 +498,7 @@ describe Instrument do
                                       :max_reserve_mins => 60)
       @price_group_product=FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => @price_group)
       assert @instrument.valid?
-      
+
       # create price policy with default window of 1 day
       @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id))
     end
@@ -508,7 +508,7 @@ describe Instrument do
       assert_equal Time.zone.now.to_date + 1.day, @instrument.reload.last_reserve_date
       assert_equal 1, @instrument.max_reservation_window
     end
-    
+
     it "should use max window of all price polices to calculate dates" do
       # create price policy with window of 15 days
       @price_group_product.reservation_window=15
@@ -550,7 +550,7 @@ describe Instrument do
 
     context 'with schedule rules' do
       before :each do
-        @schedule_rule = Factory.create(:schedule_rule, :instrument => @instrument)
+        @schedule_rule = FactoryGirl.create(:schedule_rule, :instrument => @instrument)
         @instrument.reload
       end
       it 'should be purchasable if there are schedule rules' do
@@ -616,7 +616,7 @@ describe Instrument do
 
       end
     end
-    
+
   end
 
 end
