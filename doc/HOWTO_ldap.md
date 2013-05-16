@@ -1,11 +1,26 @@
 # HOWTO Configure LDAP For NUCore
 
-## Enabling LDAP Authentication On NucoreNucore uses [Devise](https://github.com/plataformatec/devise) for authentication, and the [ldap_authenticatable](https://github.com/cschiewek/devise_ldap_authenticatable) Devise module for LDAP authentication. When LDAP is enabled on Nucore Devise will try to authenticate users against both the LDAP server and the local users table. Whichever works first wins. If neither works login is denied.
-To configure Nucore to use LDAP you need to copy **config/ldap.yml.template** to **config/ldap.yml**. The mere existence of that file enables LDAP authentication. The default settings will work for the test LDAP server described in the previous sections of this document. You’ll need to change host: if you are using an existing LDAP server or if the test LDAP server is not on the same computer as Nucore.
-### Configuring The LDAP dn
-LDAP authenticates users with a distinguished name (dn). The dn is typically composed of multiple LDIF attributes. One of the attributes of the dn will specify the user’s login. The additional attributes of the dn, for Nucore, are expected to be consistent across all users.
-LDAP users allowed to access Nucore must have a password-less record in Nucore’s users table. The record’s username attribute must correspond to the login part of the user’s LDAP dn. The LDIF attribute identifying the login must be the value of ldap.yml’s attribute: key. The additional LDIF attributes that make up the remainder of the LDAP dn must be the value of the base: key.
-### Testing Nucore LDAP AuthenticationMake sure you have a password-less user in Nucore that corresponds to the LDAP user we created previously:From Nucore’s Rails.root...    script/console    > User.create!(:username => 'cgreen', :first_name    => 'Chico', :last_name => 'Green', :email => 'cgreen@example.com')Now fire up Nucore and try logging in with username ‘cgreen’ and password ‘secret’. You should login successfully. Now, check the standard output of the LDAP server and you should see the authentication query made by Nucore.
+## Enabling LDAP Authentication On Nucore
+
+Nucore uses [Devise](https://github.com/plataformatec/devise) for authentication, and the [ldap_authenticatable](https://github.com/cschiewek/devise_ldap_authenticatable) Devise module for LDAP authentication. When LDAP is enabled on Nucore Devise will try to authenticate users against both the LDAP server and the local users table. Whichever works first wins. If neither works login is denied.
+To configure Nucore to use LDAP you need to copy **config/ldap.yml.template** to **config/ldap.yml**. The mere existence of that file enables LDAP authentication. The default settings will work for the test LDAP server described in the previous sections of this document. You’ll need to change host: if you are using an existing LDAP server or if the test LDAP server is not on the same computer as Nucore.
+
+### Configuring The LDAP dn
+LDAP authenticates users with a distinguished name (dn). The dn is typically composed of multiple LDIF attributes. One of the attributes of the dn will specify the user’s login. The additional attributes of the dn, for Nucore, are expected to be consistent across all users.
+
+LDAP users allowed to access Nucore must have a password-less record in Nucore’s users table. The record’s username attribute must correspond to the login part of the user’s LDAP dn. The LDIF attribute identifying the login must be the value of ldap.yml’s attribute: key. The additional LDIF attributes that make up the remainder of the LDAP dn must be the value of the base: key.
+
+### Testing Nucore LDAP Authentication
+
+Make sure you have a password-less user in Nucore that corresponds to the LDAP user we created previously:
+
+From Nucore’s Rails.root...
+
+    script/console
+    > User.create!(:username => 'cgreen', :first_name
+    => 'Chico', :last_name => 'Green', :email => 'cgreen@example.com')
+
+Now fire up Nucore and try logging in with username ‘cgreen’ and password ‘secret’. You should login successfully. Now, check the standard output of the LDAP server and you should see the authentication query made by Nucore.
 
 ## Create a test LDAP Server locally on Mac OS X
 
@@ -150,7 +165,7 @@ You should get a result that looks similar to:
     result: 0 Success
     # numResponses: 2
     # numEntries: 1
-    
+
 
 
 ####org.ldif
