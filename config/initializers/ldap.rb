@@ -1,3 +1,5 @@
+require 'username_only_authenticatable'
+
 Rails.application.config.to_prepare do
   if File.exist?("#{Rails.root}/config/ldap.yml")
     User.send(:devise, :ldap_authenticatable)
