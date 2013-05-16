@@ -1,307 +1,332 @@
-Nucore::Application.routes.draw do |map|
-
+Nucore::Application.routes.draw do
   match '/users/sign_in.pdf' => redirect('/users/sign_in')
   devise_for :users, :skip => :passwords
 
-  if SettingsHelper.feature_on? :password_update
-    match '/users/password/edit_current' => 'user_password#edit_current', :as => 'edit_current_password'
-    match '/users/password/reset' => 'user_password#reset', :as => 'reset_password'
-    match '/users/password/edit' => 'user_password#edit', :as => 'edit_password'
-    match '/users/password/update' => 'user_password#update', :as => 'update_password'
+  if SettingsHelper.feature_on?(:password_update)
+    match '/users/password/edit_current', :to => 'user_password#edit_current', :as => 'edit_current_password'
+    match '/users/password/reset',        :to => 'user_password#reset',        :as => 'reset_password'
+    match '/users/password/edit',         :to => 'user_password#edit',         :as => 'edit_password'
+    match '/users/password/update',       :to => 'user_password#update',       :as => 'update_password'
   end
 
-  # The priority is based upon order of creation: first created -> highest priority.
+  # root route
+  root :to => 'public#index'
 
   # authentication
-  map.root :controller => "public", :action => "index"
-  map.logout_target '/', :controller => 'public', :action => 'index'
-  map.switch_back '/switch_back', :controller => 'public', :action => 'switch_back'
+  match 'switch_back',   :to => 'public#switch_back'
 
   # shared searches
-  map.user_search_results '/user_search_results', :controller =>'search', :action => 'user_search_results', :conditions => { :method => :post }
-  match "order_search" => "order_search#index", :as => "order_search", :via => :post
+  post  '/user_search_results', :to => 'search#user_search_results'
+  match '/facilities/:facility_id/price_group/:price_group_id/account_price_group_members/search_results', :to => 'account_price_group_members#search_results'
+  match '/facilities/:facility_id/accounts/user/:user_id', :to => 'facility_accounts#user_accounts', :as => 'user_accounts'
 
-  map.connect        '/facilities/:facility_id/price_group/:price_group_id/account_price_group_members/search_results', :controller =>'account_price_group_members', :action => 'search_results'
-
-  map.user_accounts  '/facilities/:facility_id/accounts/user/:user_id', :controller => 'facility_accounts', :action => 'user_accounts'
+  post  'order_search' => 'order_search#index', :as => 'order_search'
 
   # front-end accounts
-  map.resources :accounts, :only => [:index, :show], :member => {:user_search => :get, :transactions => :get, :transactions_in_review => :get} do |account|
-
-    account.resources :account_users, :only => [:new, :destroy, :create, :index], :collection => {:user_search => :get}
-    account.resources :statements, :only => [:index]
-    account.resources :facilities, :only => [] do |facility|
-      facility.resources :statements, :only => [:show]
+  resources :accounts, :only => [:index, :show] do
+    member do
+      get 'user_search'
+      get 'transactions'
+      get 'transactions_in_review'
     end
+
     if SettingsHelper.feature_on? :suspend_accounts
-      account.suspend '/suspend', :controller => 'accounts', :action => 'suspend'
-      account.unsuspend '/unsuspend', :controller => 'accounts', :action => 'unsuspend'
+      match 'suspend', :to => 'accounts#suspend', :as => 'suspend'
+      match 'unsuspend', :to => 'accounts#unsuspend', :as => 'unsuspend'
+    end
+
+    resources :account_users, :only => [:new, :destroy, :create, :index] do
+      collection do
+        get 'user_search'
+      end
+    end
+
+    resources :statements, :only => [:index]
+
+    resources :facilities, :only => [] do
+      resources :statements, :only => [:show]
     end
   end
 
   # transaction searches
-  #match "/accounts/:account_id/transactions" => 'transaction_history#account_history', :as => "account_transaction_history"
-  match "/transactions" => 'transaction_history#my_history', :as => "transaction_history"
-
-
+  match '/transactions', :to => 'transaction_history#my_history', :as => 'transaction_history'
 
   # global settings
   resources :affiliates, :except => :show
 
-  map.resources :facilities, :collection => {:list => :get}, :member => {:manage => :get}, :except => [:delete] do |facility|
-    facility
-    facility.resources :products, :only => [:index] do |product|
-      product.resources :product_accessories, :as => 'accessories', :only => [:index, :create, :destroy]
+  resources :facilities, :except => [:delete] do
+    collection do
+      get 'list'
     end
 
+    member do
+      get 'manage'
+    end
 
-    #facility.transactions '/transactions', :controller => 'transaction_history', :action => 'facility_history'
-    facility.instrument_statuses 'instrument_statuses', :controller => 'instruments', :action => 'instrument_statuses'
-    facility.resources :instruments, :member => {:manage => :get} do |instrument|
-      instrument.public_schedule 'public_schedule', :controller => 'instruments', :action => 'public_schedule'
+    resources :products, :only => [:index] do
+      resources :product_accessories, :only => [:index, :create, :destroy], :path => 'accessories'
+    end
 
-      instrument.schedule 'schedule', :controller => 'instruments', :action => 'schedule'
-      instrument.agenda   'agenda',   :controller => 'instruments', :action => 'agenda'
-      instrument.status   'status',   :controller => 'instruments', :action => 'instrument_status'
-      instrument.switch   'switch',   :controller => 'instruments', :action => 'switch'
-      instrument.resources :schedule_rules, :except => [:show]
-      instrument.resources :product_access_groups
-      instrument.resources :price_policies, :controller => 'instrument_price_policies', :except => [:show]
-      instrument.resources :reservations, :only => [:new, :create, :destroy], :controller => 'facility_reservations' do |reservation|
-        reservation.edit_admin '/edit_admin', :controller => 'facility_reservations', :action => 'edit_admin', :conditions => {:method => :get}
-        reservation.update_admin '/update_admin', :controller => 'facility_reservations', :action => 'update_admin', :conditions => {:method => :put}
+    match 'instrument_statuses', :to => 'instruments#instrument_statuses', :as => 'instrument_statuses'
+
+    resources :instruments do
+      member do
+        get 'manage'
       end
-      instrument.resources :reservations, :only => [:index]
-      instrument.resources :users, :controller => 'product_users', :except => [:show, :edit, :create]
-      instrument.connect '/users/user_search_results', :controller =>'product_users', :action => 'user_search_results'
-      instrument.update_restrictions '/update_restrictions', :controller => 'product_users', :action => 'update_restrictions'
-    end
 
-    facility.resources :services, :member => {:manage => :get} do |service|
-      service.resources :price_policies, :controller => 'service_price_policies', :except => [:show]
-      service.resources :users, :controller => 'product_users', :except => [:show, :edit, :create]
-      service.connect '/users/user_search_results', :controller =>'product_users', :action => 'user_search_results'
-    end
+      match 'public_schedule', :to => 'instruments#public_schedule'
+      match 'schedule',        :to => 'instruments#schedule'
+      match 'agenda',          :to => 'instruments#agenda'
+      match 'status',          :to => 'instruments#instrument_status'
+      match 'switch',          :to => 'instruments#switch'
 
-    facility.resources :items, :member => {:manage => :get} do |item|
-      item.resources :price_policies, :controller => 'item_price_policies', :except => [:show]
-      item.resources :users, :controller => 'product_users', :except => [:show, :edit, :create]
-      item.connect '/users/user_search_results', :controller =>'product_users', :action => 'user_search_results'
-    end
-
-    facility.resources :bundles, :member => {:manage => :get} do |bundle|
-      bundle.resources :users, :controller => 'product_users', :except => [:show, :edit, :create]
-      bundle.connect '/users/user_search_results', :controller =>'product_users', :action => 'user_search_results'
-      bundle.resources :bundle_products, :controller => 'bundle_products', :except => [:show]
-    end
-
-    facility.resources :price_group_products, :only => [ :edit, :update ]
-
-    facility.schedule 'schedule', :controller => 'facilities', :action => 'schedule'
-    facility.agenda   'agenda',   :controller => 'facilities', :action => 'agenda'
-    facility.resources :order_statuses, :except => [:show]
-
-    facility.resources :facility_users, :controller => 'facility_users', :only => [:index, :destroy], :collection => {:search => :get} do |user|
-      user.map_user '/map_user', :controller => 'facility_users', :action => 'map_user'
-    end
-
-    except=[ :edit, :update ]
-    collection={:username_search => :post, :new_search => :get}
-
-    unless SettingsHelper.feature_on?(:create_users)
-      except += [ :new, :create ]
-      collection.clear
-    end
-
-    facility.resources :users, :except => except, :collection => collection do |user|
-      user.switch_to   '/switch_to',  :controller => 'users', :action => 'switch_to', :conditions => {:method => :get}
-      user.orders       'orders',      :controller => 'users', :action => 'orders'
-      user.reservations 'reservations',      :controller => 'users', :action => 'reservations'
-      user.accounts     'accounts',    :controller => 'users', :action => 'accounts'
-      user.instruments  'instruments', :controller => 'users', :action => 'instruments'
-    end
-
-    facility.resources :facility_accounts, :controller => 'facility_facility_accounts', :only => [:index, :new, :create, :edit, :update] if SettingsHelper.feature_on? :recharge_accounts
-
-    facility.resources :orders, :controller => 'facility_orders', :only => [:index, :edit, :update], :member => { :send_receipt => :post }, :collection => {:batch_update => :post, :show_problems => :get, :disputed => :get, :tab_counts => :get, :search => :get } do |order|
-      order.resources :order_details, :controller => 'facility_order_details', :only => [:edit, :update, :destroy], :member => {:remove_from_journal => :get} do |order_detail|
-        order_detail.new_price '/new_price', :controller => 'facility_order_details', :action => 'new_price', :conditions => {:method => :get}
-        order_detail.resolve_dispute '/resolve_dispute', :controller => 'facility_order_details', :action => 'resolve_dispute', :conditions => {:method => :put}
-        order_detail.resources :reservations, :controller => 'facility_reservations', :only => [:edit, :update, :show]
+      resources :schedule_rules, :except => [:show]
+      resources :product_access_groups
+      resources :price_policies, :controller => 'instrument_price_policies', :except => [:show]
+      resources :reservations, :only => [:new, :create, :destroy], :controller => 'facility_reservations' do
+        get 'edit_admin',   :to => 'facility_reservations#edit_admin'
+        put 'update_admin', :to => 'facility_reservations#update_admin'
       end
+
+      resources :reservations, :only => [:index]
+      resources :users, :controller => 'product_users', :except => [:show, :edit, :create]
+      match '/users/user_search_results', :to => 'product_users#user_search_results'
+      match 'update_restrictions',        :to => 'product_users#update_restrictions'
     end
 
-    facility.resources :order_imports, :only => [ :new, :create ]
-
-    facility.resources :reservations, :controller => 'facility_reservations', :only => :index, :collection => {:batch_update => :post, :show_problems => :get, :disputed => :get, :timeline => :get, :tab_counts => :get}
-
-    facility.accounts_receivable '/accounts_receivable', :controller => 'facility_accounts', :action => 'accounts_receivable', :conditions => {:method => :get}
-
-    only=[ :index,  :show, ]
-    collection={ :search => :get, :search_results => [:get, :post] }
-    can_edit_accounts=SettingsHelper.feature_on? :edit_accounts
-
-    if can_edit_accounts
-      only += [:new, :create, :edit, :update ]
-      collection.merge!(:new_account_user_search => :get, :user_search => :get)
+    resources :services do
+      member do
+        get 'manage'
+      end
+      resources :price_policies, :controller => 'service_price_policies', :except => [:show]
+      resources :users, :controller => 'product_users', :except => [:show, :edit, :create]
+      match '/users/user_search_results', :to =>'product_users#user_search_results'
     end
 
-    facility.resources :accounts, :controller => 'facility_accounts', :only => only, :collection => collection do |account|
-      account.members '/members', :controller => 'facility_accounts', :action => 'members', :conditions => {:method => :get}
-      account.resources :account_users, :controller => 'facility_account_users', :only => [:new, :destroy, :create, :update], :collection => {:user_search => :get} if can_edit_accounts
-      account.statement  '/statements/:statement_id.:format', :controller => 'facility_accounts', :action => 'show_statement', :conditions => {:method => :get} if AccountManager.using_statements?
+    resources :items do
+      member do
+        get 'manage'
+      end
+      resources :price_policies, :controller => 'item_price_policies', :except => [:show]
+      resources :users, :controller => 'product_users', :except => [:show, :edit, :create]
+      match '/users/user_search_results', :to =>'product_users#user_search_results'
+    end
 
-      if SettingsHelper.feature_on? :suspend_accounts
-        account.suspend '/suspend', :controller => 'facility_accounts', :action => 'suspend'
-        account.unsuspend '/unsuspend', :controller => 'facility_accounts', :action => 'unsuspend'
+    resources :bundles do
+      member do
+        get 'manage'
+      end
+      resources :users, :controller => 'product_users', :except => [:show, :edit, :create]
+      match '/users/user_search_results', :to =>'product_users#user_search_results'
+      resources :bundle_products, :controller => 'bundle_products', :except => [:show]
+    end
+
+    resources :price_group_products, :only => [:edit, :update]
+
+    match 'schedule', :to => 'facilities#schedule'
+    match 'agenda',   :to => 'facilities#agenda'
+    resources :order_statuses, :except => [:show]
+
+    resources :facility_users, :controller => 'facility_users', :only => [:index, :destroy] do
+      collection do
+        get 'search'
+      end
+      match 'map_user', :to => 'facility_users#map_user'
+    end
+
+    ### Feature Toggle Create Users ###
+    if SettingsHelper.feature_on?(:create_users)
+      resources :users, :except => [:edit, :update] do
+        collection do
+          get 'new_external'
+          post 'search'
+        end
+        get   'switch_to',    :to => 'users#switch_to'
+        match 'orders',       :to => 'users#orders'
+        match 'reservations', :to => 'users#reservations'
+        match 'accounts',     :to => 'users#accounts'
+        match 'instruments',  :to => 'users#instruments'
+      end
+    else
+      resources :users, :except => [:edit, :update, :new, :create], :constraints => {:id => /\d+/} do
+        get   'switch_to',    :to => 'users#switch_to'
+        match 'orders',       :to => 'users#orders'
+        match 'reservations', :to => 'users#reservations'
+        match 'accounts',     :to => 'users#accounts'
+        match 'instruments',  :to => 'users#instruments'
       end
     end
+    ######
 
-    facility.resources :journals, :controller => 'facility_journals', :only => [:index, :new, :create, :update, :show] do |journal|
-      journal.reconcile '/reconcile', :controller => 'facility_journals', :action => 'reconcile', :conditions => {:method => :post}
+    resources :facility_accounts, :controller => 'facility_facility_accounts', :only => [:index, :new, :create, :edit, :update] if SettingsHelper.feature_on? :recharge_accounts
+
+    resources :orders, :controller => 'facility_orders', :only => [:index, :edit, :update] do
+      member do
+        post 'send_receipt'
+      end
+
+      collection do
+        post 'batch_update'
+        get 'show_problems'
+        get 'disputed'
+        get 'tab_counts'
+      end
+
+      resources :order_details, :controller => 'facility_order_details', :only => [:edit, :update, :destroy] do
+        member do
+          get 'remove_from_journal'
+        end
+        get 'new_price', :to => 'facility_order_details#new_price'
+        put 'resolve_dispute', :to => 'facility_order_details#resolve_dispute'
+        resources :reservations, :controller => 'facility_reservations', :only => [:edit, :update, :show]
+      end
     end
 
-    facility.bulk_email '/bulk_email', :controller => 'bulk_email', :action => 'search', :conditions => {:method => :get}
-    #resources :bulk_email, :member => { :search => [:get, :post]}, :only => [:search]
+    resources :order_imports, :only => [ :new, :create ]
 
-    facility.resources :price_groups, :member => {:users => :get, :accounts => :get} do |price_group|
-      price_group.resources :user_price_group_members,    :only => [:new, :destroy, :create], :collection => {:create => :get}
-      price_group.resources :account_price_group_members, :only => [:new, :destroy, :create], :collection => {:create => :get}
+    resources :reservations, :controller => 'facility_reservations', :only => :index do
+      collection do
+        post 'batch_update'
+        get 'show_problems'
+        get 'disputed'
+        get 'timeline'
+        get 'tab_counts'
+      end
     end
 
-    facility.notifications '/notifications', :controller => 'facility_notifications', :action => 'index', :conditions => {:method => :get}
-    facility.send_notifications 'notifications/send', :controller => 'facility_notifications', :action => 'send_notifications', :conditions => {:method => :post }
-    facility.transactions '/transactions', :controller => 'facilities', :action => 'transactions', :conditions => {:method => :get}
-    facility.notifications_in_review '/in_review', :controller => 'facility_notifications', :action => 'in_review', :conditions => {:method => [:get]}
-    facility.notifications_mark_as_reviewed '/in_review/mark', :controller => 'facility_notifications', :action => 'mark_as_reviewed', :conditions => {:method => [:post]}
+    get 'accounts_receivable', :to => 'facility_accounts#accounts_receivable'
 
-    facility.resources :statements, :controller => 'facility_statements', :only => [:index, :new, :show, :send_statements], :collection => {:send_statements => :post }
+    ### Feature Toggle Editing Accounts ###
+    resources :accounts, :controller => 'facility_accounts', :only => [:index, :show] do
+      collection do
+        get 'search'
+        match 'search_results', :via => [:get, :post]
+      end
+      get '/members',                          :to => 'facility_accounts#members',        :as => 'members'
+      get '/statements/:statement_id(.:format)', :to => 'facility_accounts#show_statement', :as => 'statement', :defaults => { :format => 'html' } if AccountManager.using_statements?
+
+      if SettingsHelper.feature_on?(:suspend_accounts)
+        match 'suspend',   :to => 'facility_accounts#suspend',   :as => 'suspend'
+        match 'unsuspend', :to => 'facility_accounts#unsuspend', :as => 'unsuspend'
+      end
+    end
+
+    if SettingsHelper.feature_on?(:edit_accounts)
+      resources :accounts, :controller => 'facility_accounts', :only => [:new, :create, :edit, :update] do
+        collection do
+          get 'new_account_user_search'
+          get 'user_search'
+        end
+        resources :account_users, :controller => 'facility_account_users', :only => [:new, :destroy, :create, :update] do
+          collection do
+            get 'user_search'
+          end
+        end
+      end
+    end
+    ######
+
+    resources :journals, :controller => 'facility_journals', :only => [:index, :new, :create, :update, :show] do
+      post 'reconcile', :to => 'facility_journals#reconcile'
+    end
+
+    get 'bulk_email', :to => 'bulk_email#search'
+
+    resources :price_groups do
+      member do
+        get 'users'
+        get 'accounts'
+      end
+
+      resources :user_price_group_members, :only => [:new, :destroy, :create]
+
+      resources :account_price_group_members, :only => [:new, :destroy, :create]
+    end
+
+    get 'notifications',       :to => 'facility_notifications#index'
+    post 'notifications/send', :to => 'facility_notifications#send_notifications', :as => 'send_notifications'
+    get 'transactions',        :to => 'facilities#transactions'
+    get 'in_review',           :to => 'facility_notifications#in_review',          :as => 'notifications_in_review'
+    post 'in_review/mark',     :to => 'facility_notifications#mark_as_reviewed',   :as => 'notifications_mark_as_reviewed'
+
+    resources :statements, :controller => 'facility_statements', :only => [:index, :new, :show] do
+      collection do
+        post 'send_statements'
+      end
+    end
   end
 
   # order process
-  map.cart '/orders/cart', :controller => 'orders', :action => 'cart'
+  match '/orders/cart', :to => 'orders#cart', :as => 'cart'
+  match "/orders(\/:status)", :to => 'orders#index', :as => 'orders_status', :constraints => { :status => /pending|all/ } ## emacs quoting \/
 
-  match "/orders(/:status)" => "orders#index", :status => /pending|all/, :as => "orders_status"
-  #match "/orders/all" => "orders#index", :status => "all", :as => "orders_all"
-  map.remove_order '/orders/:id/remove/:order_detail_id', :controller => 'orders', :action => 'remove', :conditions => {:method => :put}
-  map.add_account '/order/:id/add_account', :controller => 'orders', :action => 'add_account'
-  map.resources :orders, :member => {:add => [:get, :put], :purchase => [ :get, :put ], :update_or_purchase => [:put], :receipt => :get, :clear => :put, :choose_account => [:get,:post]} do |order|
-    order.resources :order_details, :only => [:show, :update] do |order_detail|
-      order_detail.order_file '/order_file', :controller => 'order_details', :action => 'order_file', :conditions => {:method => :get}
-      order_detail.upload_order_file '/upload_order_file', :controller => 'order_details', :action => 'upload_order_file', :conditions => {:method => :post}
-      order_detail.remove_order_file '/remove_order_file', :controller => 'order_details', :action => 'remove_order_file', :conditions => {:method => :get}
-      order_detail.resources :reservations, :except => [:index] do |reservation|
-        reservation.move_reservation '/move', :controller => 'reservations', :action => 'move', :conditions => {:method => :get}
-        reservation.switch_instrument '/switch_instrument', :controller => 'reservations', :action => 'switch_instrument', :conditions => {:method => :get}
-        reservation.pick_accessories '/pick_accessories', :controller => 'reservations', :action => 'pick_accessories', :conditions => {:method => [:get, :post]}
+
+  put '/orders/:id/remove/:order_detail_id', :to => 'orders#remove',      :as => 'remove_order'
+  match '/order/:id/add_account',            :to => 'orders#add_account', :as => 'add_account'
+
+  resources :orders do
+    member do
+      match 'add',            :via => [:get, :put]
+      match 'purchase',       :via => [:get, :put]
+      match 'choose_account', :via => [:get, :post]
+      put   'update_or_purchase'
+      get   'receipt'
+      put   'clear'
+    end
+
+    resources :order_details, :only => [:show, :update] do
+      get  '/order_file',        :to => 'order_details#order_file',        :as => 'order_file'
+      post '/upload_order_file', :to => 'order_details#upload_order_file', :as => 'upload_order_file'
+      get '/remove_order_file',  :to => 'order_details#remove_order_file', :as => 'remove_order_file'
+
+      resources :reservations, :except => [:index] do
+        get '/move',               :to => 'reservations#move',              :as => 'move_reservation'
+        get '/switch_instrument',  :to => 'reservations#switch_instrument', :as => 'switch_instrument'
+        match '/pick_accessories', :to => 'reservations#pick_accessories',  :as => 'pick_accessories', :via => [:get, :post]
       end
     end
   end
 
-  #notifications
+  # notifications
   resources :notifications, :only => [ :index ] do
-    collection { get :count }
+    collection do
+      get :count
+    end
   end
 
   # reservations
-  match 'reservations' => 'reservations#list', :as => 'reservations'
-  match "reservations(/:status)" => 'reservations#list', :as => 'reservations_status'
+  match 'reservations', :to => 'reservations#list', :as => 'reservations'
+  match 'reservations(/:status)', :to => 'reservations#list', :as => 'reservations_status'
 
   # file upload routes
-  map.upload_product_file '/facilities/:facility_id/:product/:product_id/files/upload',
-                          :controller => 'file_uploads', :action => 'upload', :conditions => {:method => :get}
-  map.add_product_file    '/facilities/:facility_id/:product/:product_id/files',
-                          :controller => 'file_uploads', :action => 'create', :conditions => {:method => :post}
-  map.add_uploader_file  '/facilities/:facility_id/:product/:product_id/uploader_files',
-                          :controller => 'file_uploads', :action => 'uploader_create', :conditions => {:method => :post}
-  map.remove_product_file '/facilities/:facility_id/:product/:product_id/files/:id',
-                          :controller => 'file_uploads', :action => 'destroy', :conditions => {:method => :delete}
-  map.product_survey '/facilities/:facility_id/:product/:product_id/files/product_survey',
-                          :controller => 'file_uploads', :action => 'product_survey', :conditions => {:method => :get}
-  map.create_product_survey    '/facilities/:facility_id/:product/:product_id/files/create_product_survey',
-                          :controller => 'file_uploads', :action => 'create_product_survey', :conditions => {:method => :post}
-
-  map.activate_survey '/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate',
-                              :controller => 'surveyors', :action => 'activate', :conditions => {:method => :put}
-  map.deactivate_survey '/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate',
-                                :controller => 'surveyors', :action => 'deactivate', :conditions => {:method => :put}
-  map.complete_survey '/facilities/:facility_id/services/:service_id/surveys/:external_service_id/complete',
-                                :controller => 'surveyors', :action => 'complete', :conditions => {:method => [:get, :post]}
+  get   '/facilities/:facility_id/:product/:product_id/files/upload',                                   :to => 'file_uploads#upload',                :as => 'upload_product_file'
+  post  '/facilities/:facility_id/:product/:product_id/files',                                          :to => 'file_uploads#create',                :as => 'add_product_file'
+  post  '/facilities/:facility_id/:product/:product_id/uploader_files',                                 :to => 'file_uploads#uploader_create',       :as => 'add_uploader_file'
+  match '/facilities/:facility_id/:product/:product_id/files/:id',                                      :to => 'file_uploads#destroy',               :as => 'remove_product_file', :via => :delete
+  get   '/facilities/:facility_id/:product/:product_id/files/product_survey',                           :to => 'file_uploads#product_survey',        :as => 'product_survey'
+  post  '/facilities/:facility_id/:product/:product_id/files/create_product_survey',                    :to => 'file_uploads#create_product_survey', :as => 'create_product_survey'
+  put   '/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate',   :to => 'surveyors#activate',                 :as => 'activate_survey'
+  put   '/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate', :to => 'surveyors#deactivate',               :as => 'deactivate_survey'
+  match '/facilities/:facility_id/services/:service_id/surveys/:external_service_id/complete',          :to => 'surveyors#complete',                 :as => 'complete_survey',     :via => [:get, :post]
 
   # general reports
-  match '/facilities/:facility_id/general_reports/assigned_to' => 'general_reports#assigned_to', :as => 'assigned_to_facility_general_reports', :via => [ :get, :post ]
-  match '/facilities/:facility_id/general_reports/account' => 'general_reports#account', :as => 'account_facility_general_reports', :via => [ :get, :post ]
-  match '/facilities/:facility_id/general_reports/price_group' => 'general_reports#price_group', :as => 'price_group_facility_general_reports', :via => [ :get, :post ]
-  match '/facilities/:facility_id/general_reports/account_owner' => 'general_reports#account_owner', :as => 'account_owner_facility_general_reports', :via => [ :get, :post ]
-  match '/facilities/:facility_id/general_reports/product' => 'general_reports#product', :as => 'product_facility_general_reports', :via => [ :get, :post ]
-  match '/facilities/:facility_id/general_reports/purchaser' => 'general_reports#purchaser', :as => 'purchaser_facility_general_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/general_reports/assigned_to',   :to => 'general_reports#assigned_to',   :as => 'assigned_to_facility_general_reports',   :via => [ :get, :post ]
+  match '/facilities/:facility_id/general_reports/account',       :to => 'general_reports#account',       :as => 'account_facility_general_reports',       :via => [ :get, :post ]
+  match '/facilities/:facility_id/general_reports/price_group',   :to => 'general_reports#price_group',   :as => 'price_group_facility_general_reports',   :via => [ :get, :post ]
+  match '/facilities/:facility_id/general_reports/account_owner', :to => 'general_reports#account_owner', :as => 'account_owner_facility_general_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/general_reports/product',       :to => 'general_reports#product',       :as => 'product_facility_general_reports',       :via => [ :get, :post ]
+  match '/facilities/:facility_id/general_reports/purchaser',     :to => 'general_reports#purchaser',     :as => 'purchaser_facility_general_reports',     :via => [ :get, :post ]
 
   # instrument reports
-  match '/facilities/:facility_id/instrument_reports/account' => 'instrument_reports#account', :as => 'account_facility_instrument_reports', :via => [ :get, :post ]
-  match '/facilities/:facility_id/instrument_reports/account_owner' => 'instrument_reports#account_owner', :as => 'account_owner_facility_instrument_reports', :via => [ :get, :post ]
-  match '/facilities/:facility_id/instrument_reports/instrument' => 'instrument_reports#instrument', :as => 'instrument_facility_instrument_reports', :via => [ :get, :post ]
-  match '/facilities/:facility_id/instrument_reports/purchaser' => 'instrument_reports#purchaser', :as => 'purchaser_facility_instrument_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/instrument_reports/account',       :to => 'instrument_reports#account',       :as => 'account_facility_instrument_reports',       :via => [ :get, :post ]
+  match '/facilities/:facility_id/instrument_reports/account_owner', :to => 'instrument_reports#account_owner', :as => 'account_owner_facility_instrument_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/instrument_reports/instrument',    :to => 'instrument_reports#instrument',    :as => 'instrument_facility_instrument_reports',    :via => [ :get, :post ]
+  match '/facilities/:facility_id/instrument_reports/purchaser',     :to => 'instrument_reports#purchaser',     :as => 'purchaser_facility_instrument_reports',     :via => [ :get, :post ]
 
   # instrument day reports
-  match '/facilities/:facility_id/instrument_day_reports/actual_quantity' => 'instrument_day_reports#actual_quantity', :as => 'actual_quantity_facility_instrument_day_reports', :via => [ :get, :post ]
-  match '/facilities/:facility_id/instrument_day_reports/reserved_quantity' => 'instrument_day_reports#reserved_quantity', :as => 'reserved_quantity_facility_instrument_day_reports', :via => [ :get, :post ]
-  match '/facilities/:facility_id/instrument_day_reports/reserved_hours' => 'instrument_day_reports#reserved_hours', :as => 'reserved_hours_facility_instrument_day_reports', :via => [ :get, :post ]
-  match '/facilities/:facility_id/instrument_day_reports/actual_hours' => 'instrument_day_reports#actual_hours', :as => 'actual_hours_facility_instrument_day_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/instrument_day_reports/actual_quantity',   :to => 'instrument_day_reports#actual_quantity',   :as => 'actual_quantity_facility_instrument_day_reports',   :via => [ :get, :post ]
+  match '/facilities/:facility_id/instrument_day_reports/reserved_quantity', :to => 'instrument_day_reports#reserved_quantity', :as => 'reserved_quantity_facility_instrument_day_reports', :via => [ :get, :post ]
+  match '/facilities/:facility_id/instrument_day_reports/reserved_hours',    :to => 'instrument_day_reports#reserved_hours',    :as => 'reserved_hours_facility_instrument_day_reports',    :via => [ :get, :post ]
+  match '/facilities/:facility_id/instrument_day_reports/actual_hours',      :to => 'instrument_day_reports#actual_hours',      :as => 'actual_hours_facility_instrument_day_reports',      :via => [ :get, :post ]
 
-  # The priority is based upon order of creation:
-  # first created -> highest priority.
-
-  # Sample of regular route:
-  #   match 'products/:id' => 'catalog#view'
-  # Keep in mind you can assign values other than :controller and :action
-
-  # Sample of named route:
-  #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
-  # This route can be invoked with purchase_url(:id => product.id)
-
-  # Sample resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
-
-  # Sample resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
-  #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
-
-  # Sample resource route with sub-resources:
-  #   resources :products do
-  #     resources :comments, :sales
-  #     resource :seller
-  #   end
-
-  # Sample resource route with more complex sub-resources
-  #   resources :products do
-  #     resources :comments
-  #     resources :sales do
-  #       get 'recent', :on => :collection
-  #     end
-  #   end
-
-  # Sample resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
-
-  # You can have the root of your site routed with "root"
-  # just remember to delete public/index.html.
-  # root :to => "welcome#index"
-
-  # See how all your routes lay out with "rake routes"
-
-  # This is a legacy wild controller route that's not recommended for RESTful applications.
-  # Note: This route will make all actions in every controller accessible via GET requests.
-  # match ':controller(/:action(/:id(.:format)))'
 end
