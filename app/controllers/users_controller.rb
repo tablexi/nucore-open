@@ -1,22 +1,8 @@
 class UsersController < ApplicationController
   module Overridable
-    def new_search
-      if params[:username]
-        @user = User.where("LOWER(username) = ?", params[:username].downcase).first
-        flash[:notice] = "The user has been added successfully."
-        if session_user.manager_of?(current_facility)
-          flash[:notice]=(flash[:notice] + "  You may wish to <a href=\"#{facility_facility_user_map_user_path(current_facility, @user)}\">add a facility role</a> for this user.").html_safe
-        end
-        # send email
-        Notifier.new_user(:user => @user, :password => nil).deliver
-        redirect_to facility_users_path(current_facility)
-      end
-    end
-
-    # POST /facilities/:facility_id/users/netid_search
-    def username_search
-      @user = User.find(:first, :conditions => ["LOWER(username) = ?", params[:username_lookup].downcase])
-      render :layout => false
+    # Should be overridden by custom lookups (e.g. LDAP)
+    def service_username_lookup(username)
+      nil
     end
   end
 
@@ -24,7 +10,7 @@ class UsersController < ApplicationController
 
   customer_tab :password
   admin_tab     :all
-  before_filter :init_current_facility, :except => [:password, :password_reset] 
+  before_filter :init_current_facility, :except => [:password, :password_reset]
   before_filter :authenticate_user!, :except => [:password_reset]
   before_filter :check_acting_as
 
@@ -32,7 +18,7 @@ class UsersController < ApplicationController
 
   layout 'two_column'
 
-  def initialize 
+  def initialize
     @active_tab = 'admin_users'
     super
   end
@@ -48,13 +34,31 @@ class UsersController < ApplicationController
                   paginate(:page => params[:page])
   end
 
-  # GET /facilities/:facility_id/facility_users/new
+  def search
+    @user = username_lookup(params[:username_lookup])
+    render :layout => false
+  end
+
+  # GET /facilities/:facility_id/users/new
   def new
+  end
+
+  def new_external
     @user = User.new
   end
 
-  # POST /facilities/:facility_id/facility_users
+  # POST /facilities/:facility_id/users
   def create
+    if params[:user]
+      create_external
+    elsif params[:username]
+      create_internal
+    else
+      redirect_to new_facility_user_path
+    end
+  end
+
+  def create_external
     @user   = User.new(params[:user])
     chars   = ("a".."z").to_a + ("1".."9").to_a + ("A".."Z").to_a
     newpass = Array.new(8, '').collect{chars[rand(chars.size)]}.join
@@ -65,11 +69,27 @@ class UsersController < ApplicationController
       redirect_to facility_users_path(:user => @user.id)
     rescue Exception => e
       @user.errors.add(:base, e) if @user.errors.empty?
-      render :action => "new" and return
+      render :action => "new_external" and return
     end
 
     # send email
     Notifier.new_user(:user => @user, :password => newpass).deliver
+  end
+
+  def create_internal
+    @user = username_lookup(params[:username])
+    if @user.nil?
+      flash[:error] = I18n.t('users.search.notice1')
+      redirect_to facility_users_path
+    elsif @user.persisted?
+      flash[:error] = I18n.t('users.search.user_already_exists', :username => @user.username)
+      redirect_to facility_users_path
+    elsif @user.save
+      save_user_success
+    else
+      flash[:error] = I18n.t('users.create.error')
+      redirect_to facility_users_path
+    end
   end
 
   # GET /facilities/:facility_id/users/:user_id/switch_to
@@ -115,7 +135,7 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
   end
-  
+
   # GET /facilities/:facility_id/users/:user_id/instruments
   def instruments
     @user = User.find(params[:user_id])
@@ -124,5 +144,25 @@ class UsersController < ApplicationController
 
   def email
   end
-  
+
+  private
+
+  def username_lookup(username)
+    return nil unless username.present?
+    username_database_lookup(username) || service_username_lookup(username)
+  end
+
+  def username_database_lookup(username)
+    User.where("LOWER(username) = ?", username.downcase).first
+  end
+
+  def save_user_success
+    flash[:notice] = I18n.t('users.create.success')
+    if session_user.manager_of?(current_facility)
+      flash[:notice]=(flash[:notice] + "  You may wish to <a href=\"#{facility_facility_user_map_user_path(current_facility, @user)}\">add a facility role</a> for this user.").html_safe
+    end
+    Notifier.new_user(:user => @user, :password => nil).deliver
+    redirect_to facility_users_path(:user => @user.id)
+  end
+
 end

@@ -12,9 +12,9 @@ class User < ActiveRecord::Base
   include Overridable
   include Role
 
-  devise :ldap_authenticatable, :database_authenticatable, :encryptable, :trackable, :recoverable
+  # ldap_authenticatable is included via a to_prepare hook if ldap is enabled
+  devise :database_authenticatable, :encryptable, :trackable, :recoverable
 
-  #has_many :accounts, :foreign_key => :owner_user_id, :order => :account_number
   has_many :accounts, :through => :account_users
   has_many :account_users, :conditions => {:deleted_at => nil}
   has_many :orders
