@@ -1,8 +1,10 @@
 module Ldap
   def self.attribute_field
-    # Get the search attribute defined in ldap.yml
-    # It might be brittle if they change the internal code, but there
-    # is no public API, and this is simpler than reloading the yaml file ourselves
-    Devise::LdapAdapter::LdapConnect.new.instance_variable_get :@attribute
+    config['attribute']
+  end
+
+  def self.config
+    # Taken from devise_ldap_authenticatable / ldap_adapter.rb
+    @@config ||= YAML.load(ERB.new(File.read(::Devise.ldap_config || "#{Rails.root}/config/ldap.yml")).result)[Rails.env]
   end
 end
