@@ -1,0 +1,4 @@
+# Be very careful with this setting. You are only allowed to use it in
+# the development environment. Changing it to true will allow you to log in
+# as any user without checking for a valid password.
+ignore_passwords: false
