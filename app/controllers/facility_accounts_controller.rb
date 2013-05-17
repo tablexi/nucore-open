@@ -182,6 +182,7 @@ class FacilityAccountsController < ApplicationController
         @order_details = @order_details.paginate(:page => params[:page])
       else
         @statement=Statement.find(params[:statement_id].to_i)
+        @order_details = @statement.order_details
     end
 
     respond_to do |format|
