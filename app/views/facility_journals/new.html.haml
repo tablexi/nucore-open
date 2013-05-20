@@ -7,15 +7,20 @@
       });
     });
 
+    $(function(){
+      $('#journals_create_form').submit(function(e) {
+        $(e.target).find(':submit').attr('disabled', 'true');
+      });
+    });
+
 = render :partial => "shared/transactions/headers"
 = content_for :h1 do
   = current_facility
 = content_for :h2 do
   %h2= t_create_model(Journal)
 
-= content_for :top_block do      
+= content_for :top_block do
   = render :partial => 'shared/transactions/top', :locals => { :tab => 'new_journal' }
-  
 - if @order_details.empty?
   %p.notice= t("facility_journals.new.no_orders")
 - else

@@ -2,7 +2,7 @@
 #table_billing
   - if @order_detail_action
     -#= form_tag url_for(params.merge({:action => @order_detail_action})), :method => :post do
-    = form_tag url_for(:controller => params[:controller], :action => @order_detail_action), :method => :post do
+    = form_tag url_for(:controller => params[:controller], :action => @order_detail_action), :id => "journals_create_form", :name => "journals_create_form", :method => :post do
       .order_action
         = yield :action_instructions
         .select_all_none= link_to 'Select All', '#', :class => 'select_all'
