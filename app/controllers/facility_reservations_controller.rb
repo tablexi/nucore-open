@@ -83,15 +83,10 @@ class FacilityReservationsController < ApplicationController
     @reservation.set_all_split_times
 
     if @order_detail.price_policy
-      if reserve_changed? || actual_changed?
-        @order_detail.assign_estimated_price_from_policy(@order_detail.price_policy)
+      update_prices
 
-        costs = @order_detail.price_policy.calculate_cost_and_subsidy(@reservation)
-        if costs
-          @order_detail.actual_cost    = costs[:cost]
-          @order_detail.actual_subsidy = costs[:subsidy]
-          additional_notice            = '  Order detail actual cost has been updated as well.'
-        end
+      if @order_detail.actual_cost_changed? || @order_detail.actual_subsidy_changed?
+        additional_notice          = '  Order detail actual cost has been updated as well.'
       end
     else
       # We're updating a reservation before it's been completed
@@ -238,6 +233,17 @@ class FacilityReservationsController < ApplicationController
 
   def actual_changed?
     @reservation.can_edit_actuals? && @reservation.changes.any? { |k,v| k == 'actual_start_at' || k == 'actual_end_at' }
+  end
+
+  def update_prices
+    if reserve_changed? || actual_changed?
+      @order_detail.assign_estimated_price_from_policy(@order_detail.price_policy)
+
+      if costs = @order_detail.price_policy.calculate_cost_and_subsidy(@reservation)
+        @order_detail.actual_cost    = costs[:cost]
+        @order_detail.actual_subsidy = costs[:subsidy]
+      end
+    end
   end
 
   def new_or_in_process_orders(order_by_clause = 'reservations.reserve_start_at')
