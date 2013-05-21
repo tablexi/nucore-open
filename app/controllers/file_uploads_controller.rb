@@ -29,6 +29,7 @@ class FileUploadsController < ApplicationController
     @product = current_facility.send(@klass).find_by_url_name!(params[:product_id])
 
     @file = @product.stored_files.new(params[:stored_file].merge(:created_by => session_user.id))
+
     if @file.save
       flash[:notice] = "File uploaded"
       redirect_to(upload_product_file_path(current_facility, @product.parameterize, @product, :file_type => @file.file_type)) and return
@@ -90,7 +91,7 @@ class FileUploadsController < ApplicationController
   end
 
   protected
-  
+
   def manage_path(facility, product)
     eval("manage_facility_#{@klass.singularize}_path(current_facility, @product)")
   end

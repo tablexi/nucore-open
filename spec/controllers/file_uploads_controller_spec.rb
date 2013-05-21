@@ -6,7 +6,7 @@ describe FileUploadsController do
   it "should route" do
     { :get => "/facilities/alpha/services/1/files/upload" }.should route_to(:controller => 'file_uploads', :action => 'upload', :facility_id => 'alpha', :product => 'services', :product_id => '1')
     { :post => "/facilities/alpha/services/1/files" }.should route_to(:controller => 'file_uploads', :action => 'create', :facility_id => 'alpha', :product => 'services', :product_id => '1')
-    # params_from(:post, "/facilities/alpha/services/1/yui_files").should == 
+    # params_from(:post, "/facilities/alpha/services/1/yui_files").should ==
     #   {:controller => 'file_uploads', :action => 'yui_create', :facility_id => 'alpha', :product => 'services', :product_id => '1'}
   end
 
@@ -52,7 +52,7 @@ describe FileUploadsController do
         :stored_file => {
           :name => "File 1",
           :file_type => 'info',
-          :file => File.new("#{Rails.root}/spec/files/alpha_survey.rb")
+          :file => fixture_file_upload("#{Rails.root}/spec/files/alpha_survey.rb", 'text/x-ruby-script')
         }
       }
     end
@@ -204,7 +204,7 @@ describe FileUploadsController do
       it_should_allow_all(facility_operators) do
         should respond_with :redirect
       end
-        
+
     end
   end
 

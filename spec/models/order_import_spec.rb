@@ -30,12 +30,12 @@ describe OrderImport do
   before :each do
     # clear Timecop's altering of time if active
     Timecop.return
-    
+
     before_import = 10.days.ago
     Timecop.travel(before_import) do
       @authable         = FactoryGirl.create(:facility)
       @facility_account = @authable.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
-      
+
       grant_role(@director, @authable)
       @item             = @authable.items.create!(FactoryGirl.attributes_for(:item,
         :facility_account_id => @facility_account.id,
@@ -67,29 +67,29 @@ describe OrderImport do
         ]
       )
     end
-    
+
     stored_file = StoredFile.create!(
       :file => StringIO.new("c,s,v"),
       :file_type => 'import_upload',
       :name => "clean_import.csv",
       :created_by => @director.id
     )
-    
+
     @order_import=OrderImport.create!(
       :created_by => @director.id,
       :upload_file => stored_file,
       :facility => @authable
     )
   end
-  
-  
+
+
   # validation testing
   it { should belong_to :creator }
   it { should belong_to :upload_file }
   it { should belong_to :error_file }
   it { should validate_presence_of :upload_file }
   it { should validate_presence_of :created_by }
-  
+
   describe "errors_for(row) (low-level) behavior" do
 
     describe "error detection" do
@@ -188,7 +188,7 @@ describe OrderImport do
         end
       end
     end
-    
+
     describe "multiple calls (same order_key)" do
       before :each do
         @old_count = Order.count
@@ -276,20 +276,20 @@ def generate_import_file(*args)
 
   return StringIO.new whole_csv
 end
-  
+
   describe "high-level calls" do
     context "save clean orders mode" do
 
       before :each do
         @order_import.fail_on_error = false
       end
-      
+
       it "should send notifications (save clean orders mode)" do
         import_file = generate_import_file(
           {:order_date => DEFAULT_ORDER_DATE}, # valid rows
           {:order_date => DEFAULT_ORDER_DATE},
-          
-          
+
+
           # diff order date (so will be diff order)
           {
             :order_date => DEFAULT_ORDER_DATE + 1.day,
@@ -364,7 +364,7 @@ end
           @order_import.upload_file.file = import_file
           @order_import.upload_file.save!
           @order_import.save!
-          
+
           # expectations
           Notifier.should_receive(:order_receipt).never
 
@@ -381,12 +381,15 @@ end
       @import_file = generate_import_file(
         {:product_name => "Invalid Item Name"},
         {}, # valid order_detail, but same order key as above
-        {:username => "guest2"} # diff user == diff order 
+        {:username => "guest2"} # diff user == diff order
       )
       @order_import.upload_file.file = @import_file
       @order_import.upload_file.save!
+
       @order_import.send_receipts = true
       @order_import.save!
+
+      @import_file.rewind # saving reads the file and we want to make sure we're at the beginning
     end
 
     context "save nothing on error mode" do
@@ -398,7 +401,7 @@ end
       it "shouldn't create any orders" do
         lambda {
           @order_import.process!
-        }.should_not change(Order, :count).from(0).to(1) 
+        }.should_not change(Order, :count).from(0).to(1)
       end
 
       it "shouldn't send out any notifications" do
@@ -410,7 +413,7 @@ end
         @order_import.process!
         import_file_rows = @import_file.read.split("\n").length
         error_file_rows = @order_import.error_file.file.to_file.read.split("\n").length
-        
+
         error_file_rows.should == import_file_rows
       end
     end
@@ -424,7 +427,7 @@ end
       it "should create 1 order" do
         lambda {
           @order_import.process!
-        }.should change(Order, :count).from(0).to(1) 
+        }.should change(Order, :count).from(0).to(1)
       end
 
       it "should send out notification for second order" do
@@ -436,7 +439,7 @@ end
         @order_import.process!
         import_file_rows = @import_file.read.split("\n").length
         error_file_rows = @order_import.error_file.file.to_file.read.split("\n").length
-        
+
         # minus one because one order (and order_detail) will have been created
         error_file_rows.should == import_file_rows - 1
       end
@@ -452,6 +455,8 @@ end
       )
       @order_import.upload_file.file = @import_file
       @order_import.upload_file.save!
+      @import_file.rewind
+
       @order_import.send_receipts = true
       @order_import.save!
     end
@@ -468,7 +473,7 @@ end
           @order_import.process!
         }.should_not change(Order, :count)
       end
-  
+
       it "shouldn't send out any notifications" do
         Notifier.should_receive(:order_receipt).never
         @order_import.process!
@@ -495,7 +500,7 @@ end
           @order_import.process!
         }.should_not change(Order, :count)
       end
-  
+
       it "shouldn't send out any notifications" do
         Notifier.should_receive(:order_receipt).never
         @order_import.process!
