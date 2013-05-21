@@ -1,0 +1,5 @@
+= f.fields_for field, f.object.send(field) do |d|
+  %li.left
+    = d.label :duration, 'Duration'
+    = d.text_field :duration, :size => '5'
+    = d.select :unit, ['minutes', 'hours']
