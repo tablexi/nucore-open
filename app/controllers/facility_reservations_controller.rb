@@ -60,6 +60,7 @@ class FacilityReservationsController < ApplicationController
     # clear existing reservation attributes
     can_edit_reserve = @reservation.can_edit?
     can_edit_actuals = @reservation.can_edit_actuals?
+
     if can_edit_reserve
       [:reserve_start_at, :reserve_end_at].each do |k|
         @reservation.send("#{k}=", nil)
@@ -82,19 +83,14 @@ class FacilityReservationsController < ApplicationController
     @reservation.set_all_split_times
 
     if @order_detail.price_policy
-      if can_edit_reserve && @reservation.changes.any? { |k,v| k == 'reserve_start_at' || k == 'reserve_end_at' }
-        @order_detail.assign_estimated_price_from_policy(@order_detail.price_policy)
-      elsif can_edit_actuals && @reservation.changes.any? { |k,v| k == 'actual_start_at' || k == 'actual_end_at' }
-        costs = @order_detail.price_policy.calculate_cost_and_subsidy(@reservation)
-        if costs
-          @order_detail.actual_cost    = costs[:cost]
-          @order_detail.actual_subsidy = costs[:subsidy]
-          additional_notice = '  Order detail actual cost has been updated as well.'
-        end
+      update_prices
+
+      if @order_detail.actual_cost_changed? || @order_detail.actual_subsidy_changed?
+        additional_notice          = '  Order detail actual cost has been updated as well.'
       end
     else
       # We're updating a reservation before it's been completed
-      if can_edit_reserve && @reservation.changes.any? { |k,v| k == 'reserve_start_at' || k == 'reserve_end_at' }
+      if reserve_changed?
         @order_detail.assign_estimated_price
         additional_notice = ' Estimated cost has been updated as well.'
       end
@@ -106,6 +102,7 @@ class FacilityReservationsController < ApplicationController
 
         unless @order_detail.price_policy
           old_pp = @order_detail.price_policy
+
           @order_detail.assign_price_policy
           additional_notice = '  Order detail price policy and actual cost have been updated as well.' unless old_pp == @order_detail.price_policy
         end
@@ -229,6 +226,25 @@ class FacilityReservationsController < ApplicationController
   end
 
   private
+
+  def reserve_changed?
+    @reservation.can_edit? && @reservation.changes.any? { |k,v| k == 'reserve_start_at' || k == 'reserve_end_at' }
+  end
+
+  def actual_changed?
+    @reservation.can_edit_actuals? && @reservation.changes.any? { |k,v| k == 'actual_start_at' || k == 'actual_end_at' }
+  end
+
+  def update_prices
+    if reserve_changed? || actual_changed?
+      @order_detail.assign_estimated_price_from_policy(@order_detail.price_policy)
+
+      if costs = @order_detail.price_policy.calculate_cost_and_subsidy(@reservation)
+        @order_detail.actual_cost    = costs[:cost]
+        @order_detail.actual_subsidy = costs[:subsidy]
+      end
+    end
+  end
 
   def new_or_in_process_orders(order_by_clause = 'reservations.reserve_start_at')
     current_facility.order_details.new_or_inprocess.reservations.
