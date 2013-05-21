@@ -340,7 +340,7 @@ describe FacilityOrderDetailsController do
 
     context 'merge order' do
       before :each do
-        @clone=@order.clone
+        @clone=@order.dup
         assert @clone.save
         @order.update_attribute :merge_with_order_id, @clone.id
       end

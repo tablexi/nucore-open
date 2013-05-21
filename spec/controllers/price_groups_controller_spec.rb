@@ -47,7 +47,7 @@ describe PriceGroupsController do
     before :each do
       @method=:post
       @action=:create
-      @params.merge!(:price_group => FactoryGirl.attributes_for(:price_group, :facility => @authable))
+      @params.merge!(:price_group => FactoryGirl.attributes_for(:price_group, :facility_id => @authable.id))
     end
 
     it_should_allow_managers_only :redirect do
@@ -132,7 +132,7 @@ describe PriceGroupsController do
       before :each do
         @method=:put
         @action=:update
-        @params.merge!(:price_group => FactoryGirl.attributes_for(:price_group, :facility => @authable))
+        @params.merge!(:price_group => FactoryGirl.attributes_for(:price_group, :facility_id => @authable.id))
       end
 
       it_should_allow_managers_only :redirect do

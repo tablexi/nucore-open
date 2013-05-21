@@ -567,7 +567,6 @@ describe OrdersController do
         @order.account = @account
         assert @order.save
         session[:add_to_cart] = nil
-        do_request
       end
 
       it_should_allow :staff, "to add a product with quantity to cart" do
@@ -645,7 +644,7 @@ describe OrdersController do
 
       it "should set session with contents of params[:order][:order_details]" do
         session[:add_to_cart].should_not be_empty
-        session[:add_to_cart].should == [{"product_id" => @item.id, "quantity" => 1}]
+        session[:add_to_cart].should =~ [{"product_id" => @item.id.to_s, "quantity" => 1}]
       end
     end
 

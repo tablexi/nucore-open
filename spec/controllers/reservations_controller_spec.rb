@@ -292,7 +292,7 @@ describe ReservationsController do
 
     context 'merge order' do
       before :each do
-        @merge_to_order=@order.clone
+        @merge_to_order=@order.dup
         assert @merge_to_order.save
         assert @order.update_attribute :merge_with_order_id, @merge_to_order.id
       end

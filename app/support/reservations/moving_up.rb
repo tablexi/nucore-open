@@ -7,7 +7,7 @@ module Reservations::MovingUp
   # if there is no such time slot. The clone is frozen so don't try to change
   # it. It's for read-only purposes.
   def earliest_possible
-    clone=self.clone
+    clone=self.dup
     after=Time.zone.now+1.minute
 
     while true
