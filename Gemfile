@@ -1,18 +1,18 @@
 source 'https://rubygems.org'
 
 ## base
-gem 'rails',            '3.0.20'
+gem 'rails',            '3.1.12'
 gem 'rails_config',     '0.2.5'
 
 ## database
-gem 'mysql2',           '~> 0.2.11'
+gem 'mysql2',           '~> 0.3.11'
 gem 'foreigner',        '1.1.1'
 
 ## deployment
 gem 'capistrano',       '2.6.0'
 
 ## auth
-gem 'devise',           '1.3.4'
+gem 'devise',           '1.5.4'
 gem 'cancan',           '1.6.8'
 gem 'devise_ldap_authenticatable', '0.4.4'
 
@@ -20,17 +20,17 @@ gem 'devise_ldap_authenticatable', '0.4.4'
 gem 'aasm',             '2.2.0'
 gem 'paperclip',        '~> 2.3.12'
 gem 'vestal_versions',  '1.2.4.3', :git => 'git://github.com/elzoiddy/vestal_versions.git'
-gem 'awesome_nested_set', '2.0.1'
+gem 'awesome_nested_set', '2.1.6'
 gem 'nokogiri',         '1.4.4'
 
 ## views
-gem 'haml',             '3.1.2'
-gem 'will_paginate',    '3.0.2'
+gem 'haml',             '4.0.2'
+gem 'will_paginate',    '3.0.4'
 gem 'jquery-rails',     '1.0.12'
 
 ## controllers
 gem 'prawn',            '0.12'
-gem 'prawn_rails',      '0.0.5'
+gem 'prawn_rails',      '0.0.11'
 
 ## other
 gem 'rake'
@@ -50,7 +50,7 @@ group :development, :test do
   gem 'factory_girl_rails','4.2.1'
   gem 'rspec-rails',       '2.9'
   gem 'ruby-debug19',      '0.11.6'
-  gem 'shoulda-matchers',  '1.4.2'
+  gem 'shoulda-matchers',  '1.5.6'
   gem 'single_test',       '0.4.0'
   gem 'spork',             '0.9.2'
   gem 'timecop'
