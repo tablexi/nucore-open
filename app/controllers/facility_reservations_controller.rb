@@ -57,30 +57,11 @@ class FacilityReservationsController < ApplicationController
     @instrument   = @order_detail.product
     raise ActiveRecord::RecordNotFound unless @reservation == Reservation.find(params[:id]) && (@reservation.can_edit? || @reservation.can_edit_actuals?)
     set_windows
-    # clear existing reservation attributes
-    can_edit_reserve = @reservation.can_edit?
-    can_edit_actuals = @reservation.can_edit_actuals?
 
-    if can_edit_reserve
-      [:reserve_start_at, :reserve_end_at].each do |k|
-        @reservation.send("#{k}=", nil)
-      end
-    end
-
-    # clear existing actuals attributes
-    if can_edit_actuals
-      [:actual_start_at, :actual_end_at].each do |k|
-        @reservation.send("#{k}=", nil)
-      end
-    end
-
-    # set new reservation attributes
-    params[:reservation].each_pair do |k, v|
-      @reservation.send("#{k}=", v)
-    end
+    @reservation.assign_times_from_params(params[:reservation])
 
     additional_notice = ''
-    @reservation.set_all_split_times
+
 
     if @order_detail.price_policy
       update_prices
@@ -164,15 +145,8 @@ class FacilityReservationsController < ApplicationController
     @reservation = @instrument.reservations.find(params[:reservation_id])
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
     set_windows
-    [:reserve_start_at, :reserve_end_at].each do |k|
-      @reservation.send("#{k}=", nil)
-    end
 
-    # set new reservation attributes
-    params[:reservation].each_pair do |k, v|
-      @reservation.send("#{k}=", v)
-    end
-    @reservation.set_all_split_times
+    @reservation.assign_times_from_params(params[:reservation])
 
     if @reservation.save
       flash[:notice] = 'The reservation has been updated successfully.'

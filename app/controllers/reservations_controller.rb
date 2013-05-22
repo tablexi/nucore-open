@@ -182,13 +182,7 @@ class ReservationsController < ApplicationController
   def update
     raise ActiveRecord::RecordNotFound if invalid_for_update?
 
-    # clear existing reservation attributes
-    @reservation.reserve_start_at = nil
-    @reservation.reserve_end_at = nil
-
-    # set new reservation attributes
-    # TODO use assign_attributes in Rails 3.1+
-    @reservation.attributes = params[:reservation]
+    @reservation.assign_times_from_params(params[:reservation])
 
     Reservation.transaction do
       begin

@@ -582,6 +582,7 @@ describe ReservationsController do
         assigns[:order_detail].should == @order_detail
         assigns[:instrument].should == @instrument
         assigns[:reservation].should be_valid
+        assigns[:reservation].should_not be_changed
         # should update reservation time
         @reservation.reload.reserve_start_hour.should == 10
         @reservation.reserve_end_hour.should == 11
@@ -593,18 +594,18 @@ describe ReservationsController do
       end
 
       context 'creating a reservation in the future' do
-      before :each do
-        @params.deep_merge!(:reservation => {:reserve_start_date => Time.zone.now.to_date + (PriceGroupProduct::DEFAULT_RESERVATION_WINDOW + 1).days })
+        before :each do
+          @params.deep_merge!(:reservation => {:reserve_start_date => Time.zone.now.to_date + (PriceGroupProduct::DEFAULT_RESERVATION_WINDOW + 1).days })
+        end
+        it_should_allow_all facility_operators, "to create a reservation beyond the default reservation window" do
+          assigns[:reservation].errors.should be_empty
+          assert_redirected_to cart_url
+        end
+        it_should_allow_all [:guest], "to receive an error that they are trying to reserve outside of the window" do
+          assigns[:reservation].errors.should_not be_empty
+          response.should render_template(:edit)
+        end
       end
-      it_should_allow_all facility_operators, "to create a reservation beyond the default reservation window" do
-        assigns[:reservation].errors.should be_empty
-        assert_redirected_to cart_url
-      end
-      it_should_allow_all [:guest], "to receive an error that they are trying to reserve outside of the window" do
-        assigns[:reservation].errors.should_not be_empty
-        response.should render_template(:edit)
-      end
-    end
 
     end
 
