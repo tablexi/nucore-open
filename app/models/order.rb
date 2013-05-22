@@ -25,6 +25,10 @@ class Order < ActiveRecord::Base
     where(:facility_id => facility.id)
   end
 
+  def self.recent
+    where('orders.ordered_at > ?', Time.zone.now - 1.year)
+  end
+
   attr_accessor :being_purchased_by_admin
 
   # BEGIN acts_as_state_machhine
