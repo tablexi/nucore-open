@@ -12,9 +12,9 @@ gem 'foreigner',        '1.1.1'
 gem 'capistrano',       '2.15.4'
 
 ## auth
-gem 'devise',           '1.5.4'
+gem 'devise',           '2.0.5'
 gem 'cancan',           '1.6.10'
-gem 'devise_ldap_authenticatable', '0.4.4'
+gem 'devise_ldap_authenticatable', '0.6.1'
 
 ## models
 gem 'aasm',             '2.2.0'
