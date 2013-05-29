@@ -4,8 +4,16 @@ class CreateUsers < ActiveRecord::Migration
       t.string :username, :null => false
       t.string :first_name
       t.string :last_name
-      t.database_authenticatable :null => false
-      t.trackable
+      t.string :email,              :null => false, :default => ""
+      t.string :encrypted_password, :null => false, :default => ""
+      t.string :password_salt
+
+      t.integer  :sign_in_count, :default => 0
+      t.datetime :current_sign_in_at
+      t.datetime :last_sign_in_at
+      t.string   :current_sign_in_ip
+      t.string   :last_sign_in_ip
+
       t.timestamps
     end
 

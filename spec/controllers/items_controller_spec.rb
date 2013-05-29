@@ -91,7 +91,7 @@ describe ItemsController do
         assigns[:add_to_cart].should be_false
         flash[:notice].should_not be_nil
       end
-      
+
       it "should not show a notice and show an add to cart" do
         @product_user = ProductUser.create(:product => @item, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
         nufs=create_nufs_account_with_owner :guest
@@ -101,7 +101,7 @@ describe ItemsController do
         flash.should be_empty
         assigns[:add_to_cart].should be_true
       end
-      
+
       it "should allow an admin to allow it to add to cart" do
         nufs=create_nufs_account_with_owner :admin
         define_open_account @item.account, nufs.account_number
@@ -111,7 +111,7 @@ describe ItemsController do
         assigns[:add_to_cart].should be_true
       end
     end
-    
+
     context "hidden item" do
       before :each do
         @item.update_attributes(:is_hidden => true)
@@ -140,7 +140,7 @@ describe ItemsController do
     end
 
     it_should_allow_managers_only do
-      should assign_to(:item).with_kind_of Item
+      expect(assigns(:item)).to be_kind_of Item
       should render_template 'new'
     end
 
@@ -170,7 +170,7 @@ describe ItemsController do
     end
 
     it_should_allow_managers_only :redirect do
-      should assign_to(:item).with_kind_of Item
+      expect(assigns(:item)).to be_kind_of Item
       should set_the_flash
       assert_redirected_to [:manage, @authable, assigns(:item)]
     end
@@ -187,7 +187,7 @@ describe ItemsController do
     end
 
     it_should_allow_managers_only :redirect do
-      should assign_to(:item).with_kind_of Item
+      expect(assigns(:item)).to be_kind_of Item
       assigns(:item).should == @item
       should set_the_flash
       assert_redirected_to manage_facility_item_url(@authable, assigns(:item))
@@ -204,7 +204,7 @@ describe ItemsController do
     end
 
     it_should_allow_managers_only :redirect do
-      should assign_to(:item).with_kind_of Item
+      expect(assigns(:item)).to be_kind_of Item
       should_be_destroyed @item
       assert_redirected_to facility_items_url
     end

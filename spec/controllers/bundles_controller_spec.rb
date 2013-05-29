@@ -9,7 +9,7 @@ describe BundlesController do
     @authable=FactoryGirl.create(:facility)
     @facility_account=FactoryGirl.create(:facility_account, :facility => @authable)
     @bundle=FactoryGirl.create(:bundle, :facility_account => @facility_account, :facility => @authable)
-    
+
     # Create at least one item in the bundle, otherwise bundle.can_purchase? will return false
     item = FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
     price_policy = item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group => @nupg))
@@ -29,9 +29,9 @@ describe BundlesController do
     it_should_require_login
 
     it_should_allow_all facility_operators do
-      should assign_to(:archived_product_count).with_kind_of(Fixnum)
-      should assign_to(:not_archived_product_count).with_kind_of(Fixnum)
-      should assign_to(:product_name).with_kind_of(String)
+      expect(assigns(:archived_product_count)).to be_kind_of Fixnum
+      expect(assigns(:not_archived_product_count)).to be_kind_of Fixnum
+      expect(assigns(:product_name)).to be_kind_of String
       assigns(:bundles).size.should == 1
       assigns(:bundles).should == @authable.bundles.not_archived
     end
@@ -64,7 +64,7 @@ describe BundlesController do
       assigns[:add_to_cart].should be_false
       assigns[:error].should == 'not_available'
       flash[:notice].should_not be_nil
-      
+
     end
 
     it "should fail without a valid account" do
@@ -74,14 +74,14 @@ describe BundlesController do
       assigns[:add_to_cart].should be_false
       assigns[:error].should == 'no_accounts'
     end
-    
+
     it 'should falsify @add_to_cart if #acting_user is nil' do
       BundlesController.any_instance.stub(:acting_user).and_return(nil)
       do_request
       assigns[:add_to_cart].should be_false
       assigns[:login_required].should be_true
     end
-    
+
     it 'should flash and falsify @add_to_cart if user is not approved' do
       nufs=create_nufs_account_with_owner :guest
       define_open_account @bundle.products.first.account, nufs.account_number
@@ -94,7 +94,7 @@ describe BundlesController do
       assigns[:error].should == 'requires_approval'
       flash[:notice].should_not be_nil
     end
-        
+
     it 'should flash and falsify @add_to_cart if there is no price group for user to purchase through' do
       nufs=create_nufs_account_with_owner :guest
       define_open_account @bundle.products.first.account, nufs.account_number
@@ -105,11 +105,11 @@ describe BundlesController do
       assigns[:error].should == 'not_in_price_group'
       flash[:notice].should_not be_nil
     end
-    
+
     it 'should flash and falsify @add_to_cart if user is not authorized to purchase on behalf of another user' do
       sign_in @guest
       switch_to @staff
-      
+
       do_request
       assigns[:add_to_cart].should be_false
       assigns[:error].should == 'not_authorized_acting_as'
@@ -118,12 +118,12 @@ describe BundlesController do
     it 'should not require login' do
       do_request
       assert_init_bundle
-      should assign_to(:add_to_cart)
-      should assign_to(:login_required)
+      expect(assigns(:add_to_cart)).to_not be_nil
+      expect(assigns(:login_required)).to_not be_nil
       should_not set_the_flash
       should render_template('show')
     end
-    
+
     context "restricted bundle" do
       before :each do
         @bundle.update_attributes(:requires_approval => true)
@@ -135,7 +135,7 @@ describe BundlesController do
         assigns[:add_to_cart].should be_false
         flash[:notice].should_not be_nil
       end
-      
+
       it "should not show a notice and show an add to cart" do
         @product_user = ProductUser.create(:product => @bundle, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
         nufs=create_nufs_account_with_owner :guest
@@ -145,7 +145,7 @@ describe BundlesController do
         flash.should be_empty
         assigns[:add_to_cart].should be_true
       end
-      
+
       it "should allow an admin to allow it to add to cart" do
         nufs=create_nufs_account_with_owner :admin
         define_open_account @bundle.products.first.account, nufs.account_number
@@ -170,7 +170,7 @@ describe BundlesController do
     it_should_require_login
 
     it_should_allow_managers_only do
-      should assign_to(:bundle).with_kind_of(Bundle)
+      expect(assigns(:bundle)).to be_kind_of Bundle
       assigns(:bundle).should be_new_record
       should render_template('new')
     end
@@ -207,7 +207,7 @@ describe BundlesController do
     it_should_require_login
 
     it_should_allow_managers_only :redirect do
-      should assign_to(:bundle).with_kind_of(Bundle)
+      expect(assigns(:bundle)).to be_kind_of Bundle
       assigns(:bundle).initial_order_status_id.should == OrderStatus.default_order_status.id
       assigns(:bundle).requires_approval.should == false
       should set_the_flash
@@ -241,7 +241,7 @@ describe BundlesController do
 
 
   def assert_init_bundle
-    should assign_to(:bundle)
+    expect(assigns(:bundle)).to_not be_nil
     assigns(:bundle).should == @bundle
   end
 end

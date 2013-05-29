@@ -27,7 +27,7 @@ describe BundleProductsController do
     it_should_require_login
 
     it_should_allow_all facility_operators do
-      should assign_to(:bundle_products).with_kind_of(Array)
+      expect(assigns(:bundle_products)).to be_kind_of Array
       should render_template('index')
     end
 
@@ -53,7 +53,7 @@ describe BundleProductsController do
     it_should_require_login
 
     it_should_allow_managers_only :redirect do
-      should assign_to(:bundle_product).with_kind_of(BundleProduct)
+      expect(assigns(:bundle_product)).to be_kind_of BundleProduct
       should set_the_flash
       assert_redirected_to facility_bundle_bundle_products_url(@authable, @bundle)
     end
@@ -72,7 +72,7 @@ describe BundleProductsController do
     it_should_require_login
 
     it_should_allow_managers_only do
-      should assign_to(:bundle_product).with_kind_of(BundleProduct)
+      expect(assigns(:bundle_product)).to be_kind_of BundleProduct
       assigns(:bundle_product).should be_new_record
       should render_template('new')
     end
@@ -117,7 +117,7 @@ describe BundleProductsController do
 
     it_should_allow_managers_only :redirect do
       assert_init_bundle
-      should assign_to(:bundle_product).with_kind_of(BundleProduct)
+      expect(assigns(:bundle_product)).to be_kind_of BundleProduct
       @bundle_product.quantity.should_not == assigns(:bundle_product).quantity
       should set_the_flash
       assert_redirected_to facility_bundle_bundle_products_url(@authable, @bundle)
@@ -154,7 +154,7 @@ describe BundleProductsController do
 
 
   def assert_init_bundle
-    should assign_to(:bundle)
+    expect(assigns(:bundle)).to_not be_nil
     assigns(:bundle).should == @bundle
   end
 

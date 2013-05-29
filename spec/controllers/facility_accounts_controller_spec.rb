@@ -30,7 +30,7 @@ describe FacilityAccountsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
-      should assign_to(:accounts).with_kind_of(ActiveRecord::Relation)
+      expect(assigns(:accounts)).to be_kind_of ActiveRecord::Relation
       assigns(:accounts).size.should == 1
       assigns(:accounts).first.should == @account
       should render_template('index')
@@ -149,7 +149,7 @@ describe FacilityAccountsController do
       it_should_deny_all [:staff, :senior_staff]
 
       it_should_allow_all facility_managers do |user|
-        should assign_to(:account).with_kind_of(NufsAccount)
+        expect(assigns(:account)).to be_kind_of NufsAccount
         assigns(:account).account_number.should == @acct_attrs[:account_number]
         assigns(:account).created_by.should == user.id
         assigns(:account).account_users.size.should == 1
@@ -330,7 +330,7 @@ describe FacilityAccountsController do
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
       assigns(:facility).should == @authable
-      should assign_to(:order_details).with_kind_of Array
+      expect(assigns(:order_details)).to be_kind_of Array
       assigns(:order_details).each{|od| od.order.facility.should == @authable }
       should render_template 'show_statement'
     end
@@ -341,7 +341,8 @@ describe FacilityAccountsController do
       do_request
       assigns(:account).should == @account
       assigns(:facility).should == @authable
-      should assign_to(:statements).with_kind_of Array
+      expect(assigns(:statements)).to be_kind_of Array
+      assigns(:statements).count.should == 2
       should render_template 'show_statement_list'
     end
 

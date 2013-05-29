@@ -128,7 +128,10 @@ describe FacilityReservationsController do
       it "should update estimated cost" do
         maybe_grant_always_sign_in :director
         do_request
-        assigns[:reservation].should_not be_reserve_start_at_changed
+        # In rails 3.1, assigning the same value is still triggering
+        # attr_will_change! so this breaks:
+        # assigns[:reservation].should_not be_reserve_start_at_changed
+        assigns[:reservation].reserve_start_at.should == assigns[:reservation].reserve_start_at_was
         assigns[:reservation].should be_reserve_end_at_changed
         assigns[:order_detail].should be_estimated_cost_changed
       end
@@ -143,7 +146,7 @@ describe FacilityReservationsController do
         @instrument_pp.reload.restrict_purchase=false
         @now=@reservation.reserve_start_at+3.hour
         maybe_grant_always_sign_in :director
-        @order_detail.to_complete!
+        Timecop.freeze(@now) { @order_detail.to_complete! }
       end
 
       context 'update actuals' do

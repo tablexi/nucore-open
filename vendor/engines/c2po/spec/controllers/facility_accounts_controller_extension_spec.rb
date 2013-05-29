@@ -153,9 +153,9 @@ describe FacilityAccountsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
-      should assign_to(:subnav)
-      should assign_to(:active_tab)
-      should assign_to(:accounts).with_kind_of(Array)
+      expect(assigns(:subnav)).to eq('billing_nav')
+      expect(assigns(:active_tab)).to eq('admin_billing')
+      expect(assigns(:accounts)).to be_kind_of Array
       assigns[:selected].should == assigns[:accounts].first
       assigns[:unreconciled_details].first.should == OrderDetail.account_unreconciled(@authable, assigns[:selected]).first
       should render_template('credit_cards')
@@ -175,11 +175,11 @@ describe FacilityAccountsController do
     end
 
     it_should_allow :director do
-      should assign_to(:subnav)
-      should assign_to(:active_tab)
+      expect(assigns(:subnav)).to eq('billing_nav')
+      expect(assigns(:active_tab)).to eq('admin_billing')
       assigns(:accounts).should be_empty
-      should_not assign_to :selected
-      should_not assign_to :unreconciled_details
+      expect(assigns(:selected)).to be_nil
+      expect(assigns(:unreconciled_details)).to be_nil
       should render_template('credit_cards')
     end
 
@@ -198,9 +198,9 @@ describe FacilityAccountsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
-      should assign_to(:subnav)
-      should assign_to(:active_tab)
-      should assign_to(:accounts).with_kind_of(Array)
+      expect(assigns(:subnav)).to eq('billing_nav')
+      expect(assigns(:active_tab)).to eq('admin_billing')
+      expect(assigns(:accounts)).to be_kind_of Array
       assigns[:selected].should == assigns[:accounts].first
       assigns[:unreconciled_details].should == OrderDetail.account_unreconciled(@authable, assigns[:selected])
       should render_template('purchase_orders')
@@ -220,11 +220,11 @@ describe FacilityAccountsController do
     end
 
     it_should_allow :director do
-      should assign_to(:subnav)
-      should assign_to(:active_tab)
+      expect(assigns(:subnav)).to eq('billing_nav')
+      expect(assigns(:active_tab)).to eq('admin_billing')
       assigns(:accounts).should be_empty
-      should_not assign_to :selected
-      should_not assign_to :unreconciled_details
+      expect(assigns(:selected)).to be_nil
+      expect(assigns(:unreconciled_details)).to be_nil
       should render_template('purchase_orders')
     end
 

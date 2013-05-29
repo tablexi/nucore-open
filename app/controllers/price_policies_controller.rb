@@ -32,14 +32,14 @@ class PricePoliciesController < ApplicationController
 
     @expire_date    = PricePolicy.generate_expire_date(@start_date)
     @max_expire_date = @expire_date
-    
+
     build_price_policies
 
     # Base the new policies off the most recent version
     new_price_policy_list = []
     @price_policies.each do |pp|
       existing_pp = @product.price_policies.where(:price_group_id => pp.price_group.id).order(:expire_date).last
-      new_price_policy_list << (existing_pp ? existing_pp.clone : pp)
+      new_price_policy_list << (existing_pp ? existing_pp.dup : pp)
     end
     # If it's all new policies (i.e. nothing changed in the list), make the default can_purchase true
     new_price_policy_list.each { |pp| pp.can_purchase = true } if @price_policies == new_price_policy_list
@@ -52,10 +52,10 @@ class PricePoliciesController < ApplicationController
   # POST /price_policies
   def create
     @start_date = start_date_from_params
-    @expire_date   = params[:expire_date]    
+    @expire_date   = params[:expire_date]
     build_price_policies
     update_policies_from_params
-    
+
     respond_to do |format|
       if ActiveRecord::Base.transaction do
           raise ActiveRecord::Rollback unless @price_policies.all?(&:save)
@@ -68,11 +68,11 @@ class PricePoliciesController < ApplicationController
       end
     end
   end
-  
+
   # GET /price_policies/1/edit
   def edit
     @start_date = start_date_from_params
-    
+
     build_price_policies
 
     @expire_date=@price_policies.map(&:expire_date).compact.first
@@ -83,7 +83,7 @@ class PricePoliciesController < ApplicationController
   # PUT /price_policies/1
   def update
     @start_date = start_date_from_params
-    
+
     build_price_policies
 
     @expire_date    = params[:expire_date]
@@ -103,7 +103,7 @@ class PricePoliciesController < ApplicationController
       end
     end
   end
-  
+
   # DELETE /price_policies/2010-01-01
   def destroy
     @start_date     = start_date_from_params
@@ -170,21 +170,21 @@ class PricePoliciesController < ApplicationController
       price_policy.attributes = pp_param
     end
   end
-  
-  
+
+
   def model_name
     self.class.name.gsub('Controller', '').singularize
   end
   def model_class
     model_name.constantize
   end
-  
+
 
   #
   # Override CanCan's find -- it won't properly search by zoned date
   def init_price_policy
     product_var="@#{model_name.gsub('PricePolicy', '').downcase}"
-    
+
     instance_variable_set(
       "@#{model_name.underscore}",
       instance_variable_get(product_var).price_policies.for_date(start_date_from_params).first

@@ -97,7 +97,7 @@ describe AccountsController do
     it_should_deny :purchaser
     it_should_allow :owner do
       assigns(:account).should == @authable
-      assigns[:order_details].where_values_hash.should == { :account_id => @authable.id }
+      assigns[:order_details].where_values_hash.should == { 'account_id' => @authable.id }
       # @authable is an nufs account, so it doesn't have a facility
       assigns[:facility].should be_nil
     end

@@ -17,7 +17,7 @@ describe AccountUsersController do
       @action=:user_search
       @params={ :account_id => @authable.id }
     end
-    
+
     it_should_require_login
 
     it_should_deny :purchaser
@@ -43,7 +43,7 @@ describe AccountUsersController do
 
     it_should_allow :owner do
       assigns(:user).should == @purchaser
-      should assign_to(:account_user).with_kind_of(AccountUser)
+      expect(assigns(:account_user)).to be_kind_of AccountUser
       assigns(:account_user).should be_new_record
       should render_template('new')
     end
@@ -69,7 +69,7 @@ describe AccountUsersController do
 
     it_should_allow :owner do
       assigns(:user).should == @purchaser
-      should assign_to(:account_user).with_kind_of(AccountUser)
+      expect(assigns(:account_user)).to be_kind_of AccountUser
       assigns(:account_user).user.should == @purchaser
       assigns(:account_user).created_by.should == @owner.id
       @purchaser.reload.should be_purchaser_of(@authable)
@@ -99,7 +99,7 @@ describe AccountUsersController do
     it_should_deny :purchaser
 
     it_should_allow :owner do
-      should assign_to(:account_user).with_kind_of(AccountUser)
+      expect(assigns(:account_user)).to be_kind_of AccountUser
       @account_user.reload
       @account_user.deleted_at.should_not be_nil
       @account_user.deleted_by.should == @owner.id

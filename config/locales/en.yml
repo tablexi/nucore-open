@@ -790,6 +790,7 @@ en:
   devise:
     failure:
       invalid: "Invalid username or password."
+      not_found_in_database: 'Invalid username or password.'
     mailer:
       reset_password_instructions:
         subject: "NU Core Password Reset Instructions"
