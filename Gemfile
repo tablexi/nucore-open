@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 ## base
-gem 'rails',            '3.1.12'
+gem 'rails',            '3.2.13'
 gem 'rails_config',     '0.3.3'
 
 ## database
@@ -28,6 +28,7 @@ gem 'nokogiri',         '1.4.4'
 gem 'haml',             '4.0.3'
 gem 'will_paginate',    '3.0.4'
 gem 'jquery-rails',     '1.0.12'
+gem 'dynamic_form',     '~> 1.1.4'
 
 ## controllers
 gem 'prawn',            '0.12'
