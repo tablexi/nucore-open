@@ -186,7 +186,7 @@ describe FacilityReservationsController do
               :reserve_start_at => @now-3.hour,
               :reserve_end_at   => @now-1.hour,
               :actual_start_at  => @reservation.reserve_start_at,
-              :actual_end_at    => @reservation.reserve_end_at,
+              :actual_end_at    => @reservation.reserve_end_at
           )
           @params[:reservation] = @reservation_attrs
         end
