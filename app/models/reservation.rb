@@ -1,5 +1,5 @@
 require "date"
-require "pp"
+
 class Reservation < ActiveRecord::Base
   include DateHelper
   include Reservations::DateSupport
