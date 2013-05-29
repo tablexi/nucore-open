@@ -163,7 +163,7 @@ describe ReservationsController do
         assigns(:available_statuses).size.should == 2
         assigns(:status).should == assigns(:available_statuses).first
         assigns(:order_details).should == (OrderDetail.upcoming_reservations.all + OrderDetail.in_progress_reservations.all)
-        should assign_to(:active_tab).with('reservations')
+        expect(assigns(:active_tab)).to eq('reservations')
         should render_template('list')
       end
     end
@@ -180,7 +180,7 @@ describe ReservationsController do
         assigns(:status).should == 'all'
         assigns(:available_statuses).size.should == 2
         assigns(:order_details).should == OrderDetail.all_reservations.all
-        should assign_to(:active_tab).with('reservations')
+        expect(assigns(:active_tab)).to eq('reservations')
         should render_template('list')
       end
     end
@@ -474,8 +474,8 @@ describe ReservationsController do
       assigns[:order].should == @order
       assigns[:order_detail].should == @order_detail
       assigns[:instrument].should == @instrument
-      should assign_to(:reservation).with_kind_of Reservation
-      should assign_to(:max_window).with_kind_of Integer
+      expect(assigns(:reservation)).to be_kind_of Reservation
+      expect(assigns(:max_window)).to be_kind_of Integer
 
       assigns[:max_date].should == (Time.zone.now+assigns[:max_window].days).strftime("%Y%m%d")
     end

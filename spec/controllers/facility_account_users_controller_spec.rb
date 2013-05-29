@@ -46,7 +46,7 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
     it_should_allow_all facility_managers do
       assigns(:account).should == @account
       assigns(:user).should == @guest
-      should assign_to(:account_user).with_kind_of(AccountUser)
+      expect(assigns(:account_user)).to be_kind_of AccountUser
       assigns(:account_user).should be_new_record
       should render_template('new')
     end

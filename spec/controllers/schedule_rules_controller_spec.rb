@@ -59,7 +59,7 @@ describe ScheduleRulesController do
     end
 
     it_should_allow_managers_and_senior_staff_only :redirect do
-      should assign_to(:schedule_rule).with_kind_of ScheduleRule
+      expect(assigns(:schedule_rule)).to be_kind_of ScheduleRule
       should set_the_flash
       assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
     end

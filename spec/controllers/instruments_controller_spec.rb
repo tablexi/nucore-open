@@ -191,7 +191,7 @@ describe InstrumentsController do
     end
 
     it_should_allow_managers_only do
-      should assign_to(:instrument).with_kind_of Instrument
+      expect(assigns(:instrument)).to be_kind_of Instrument
       assigns(:instrument).should be_new_record
       assigns(:instrument).facility.should == @authable
       should render_template 'new'
@@ -318,7 +318,7 @@ describe InstrumentsController do
       end
 
       it_should_allow :director, 'and fail when no name is given' do
-        should assign_to(:instrument).with_kind_of Instrument
+        expect(assigns(:instrument)).to be_kind_of Instrument
         assigns(:instrument).initial_order_status_id.should == OrderStatus.default_order_status.id
         should render_template 'new'
       end
@@ -327,7 +327,7 @@ describe InstrumentsController do
 
 
     def assert_successful_creation
-      should assign_to(:instrument).with_kind_of Instrument
+      expect(assigns(:instrument)).to be_kind_of Instrument
       assigns(:instrument).initial_order_status_id.should == OrderStatus.default_order_status.id
       yield
       should set_the_flash
@@ -431,7 +431,7 @@ describe InstrumentsController do
     end
 
     it_should_allow_managers_only :redirect do
-      should assign_to(:instrument).with_kind_of Instrument
+      expect(assigns(:instrument)).to be_kind_of Instrument
       #assert_redirected_to manage_facility_instrument_url(@authable, assigns(:instrument))
       assert_redirected_to facility_instruments_url
       dead=false
@@ -464,7 +464,7 @@ describe InstrumentsController do
       end
 
       it_should_allow_operators_only do
-        should assign_to(:admin_reservations).with_kind_of Array
+        expect(assigns(:admin_reservations)).to be_kind_of Array
         should render_template 'schedule'
       end
 

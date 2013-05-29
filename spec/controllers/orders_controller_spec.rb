@@ -112,7 +112,7 @@ describe OrdersController do
     it_should_require_login
 
     it_should_allow :staff do
-      should assign_to(:order).with_kind_of Order
+      expect(assigns(:order)).to be_kind_of Order
       assigns(:order).should == @order
       should render_template 'choose_account'
     end
@@ -238,7 +238,7 @@ describe OrdersController do
     it_should_require_login
 
     it_should_allow :staff do
-      should assign_to(:order).with_kind_of Order
+      expect(assigns(:order)).to be_kind_of Order
       assigns(:order).should == @order
       should respond_with :redirect
     end
@@ -526,7 +526,7 @@ describe OrdersController do
     it_should_require_login
 
     it_should_allow :staff do
-      should assign_to(:order).with_kind_of Order
+      expect(assigns(:order)).to be_kind_of Order
       assigns(:order).should == @complete_order
       should render_template 'receipt'
     end
@@ -545,7 +545,7 @@ describe OrdersController do
     it_should_require_login
 
     it_should_allow :staff do
-      should assign_to(:order_details).with_kind_of ActiveRecord::Relation
+      expect(assigns(:order_details)).to be_kind_of ActiveRecord::Relation
       should render_template 'index'
     end
 

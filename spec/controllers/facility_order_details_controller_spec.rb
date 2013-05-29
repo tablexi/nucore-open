@@ -44,7 +44,7 @@ describe FacilityOrderDetailsController do
       assigns[:can_be_reconciled].should == false
       assigns[:order].should == @order
       assigns[:order_detail].should == @order_detail
-      should assign_to :in_open_journal
+      expect(assigns(:in_open_journal)).to_not be_nil
       should render_template 'edit'
     end
 
