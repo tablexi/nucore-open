@@ -37,7 +37,7 @@ describe User do
   end
 
   it "should belong to price groups of accounts" do
-    cc       = FactoryGirl.create(:nufs_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
+    cc       = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
     facility = FactoryGirl.create(:facility)
     pg       = facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
     AccountPriceGroupMember.create(:account => cc, :price_group => pg)
@@ -46,12 +46,12 @@ describe User do
 
   it "should belong to price groups of account owner" do
     owner    = FactoryGirl.create(:user)
-    cc       = FactoryGirl.create(:nufs_account, :account_users_attributes => [{:user => owner, :created_by => owner, :user_role => 'Owner'}])
+    cc       = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => owner))
     facility = FactoryGirl.create(:facility)
     pg       = facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
     UserPriceGroupMember.create(:user => owner, :price_group => pg)
 
-    cc.account_users.create(:user => @user, :created_by => owner, :user_role => 'Purchaser')
+    cc.account_users.create(:user => @user, :created_by => owner.id, :user_role => 'Purchaser')
 
     @user.account_price_groups.include?(pg).should == true
   end

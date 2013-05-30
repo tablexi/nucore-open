@@ -12,7 +12,7 @@ if AccountManager.using_statements?
       @order_detail2 = place_and_complete_item_order(@user, @authable, @account)
       @order_detail2.update_attributes(:reviewed_at => nil)
 
-      @account2=FactoryGirl.create(@account_sym, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']], :facility_id => @authable.id)
+      @account2=FactoryGirl.create(@account_sym, :account_users_attributes => account_users_attributes_hash(:user => @user), :facility_id => @authable.id)
       @authable_account2 = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @order_detail3 = place_and_complete_item_order(@user, @authable, @account2)
 
@@ -33,7 +33,7 @@ if AccountManager.using_statements?
       @authable=FactoryGirl.create(:facility)
       @user=FactoryGirl.create(:user)
       UserRole.grant(@user, UserRole::ADMINISTRATOR)
-      @account=FactoryGirl.create(@account_sym, :account_users_attributes => [Hash[:user => @owner, :created_by => @user, :user_role => 'Owner']], :facility_id => @authable.id)
+      @account=FactoryGirl.create(@account_sym, :account_users_attributes => account_users_attributes_hash(:user => @user), :facility_id => @authable.id)
       @statement=FactoryGirl.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => @account)
       @params={ :facility_id => @authable.url_name }
     end

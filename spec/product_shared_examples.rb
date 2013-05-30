@@ -9,7 +9,7 @@ shared_examples_for "NonReservationProduct" do |product_type|
     @facility_account = @facility.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
     @price_group = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
     @price_group2 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    
+
     FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
     FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group2)
 
@@ -19,7 +19,7 @@ shared_examples_for "NonReservationProduct" do |product_type|
     @order = FactoryGirl.create(:order, :created_by_user => @user, :user => @user)
     @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product => @product, :quantity => 1))
   end
-  
+
   context '#cheapest_price_policy' do
     context 'current policies' do
       before :each do
@@ -58,7 +58,7 @@ shared_examples_for "NonReservationProduct" do |product_type|
       end
 
       it 'should find the cheapest price policy if the user is in one group, but the account is in another' do
-        @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+        @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
         AccountPriceGroupMember.create!(:price_group => @price_group3, :account => @account)
         @order_detail.update_attributes(:account => @account)
         @product.groups_for_order_detail(@order_detail).should == [@price_group, @price_group2, @price_group3]
@@ -123,7 +123,7 @@ shared_examples_for "ReservationProduct" do |product_type|
     @facility_account = @facility.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
     @price_group = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
     @price_group2 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    
+
     FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
     FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group2)
 
@@ -131,12 +131,12 @@ shared_examples_for "ReservationProduct" do |product_type|
                                     :facility => @facility,
                                     :facility_account => @facility_account)
     @product.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule))
-    
+
     @order = FactoryGirl.create(:order, :created_by_user => @user, :user => @user)
     @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product => @product))
-    
-    @reservation = FactoryGirl.create(:reservation, 
-                                  :product => @product,  
+
+    @reservation = FactoryGirl.create(:reservation,
+                                  :product => @product,
                                   :reserve_start_at => 1.hour.from_now,
                                   :reserve_end_at => 2.hours.from_now,
                                   :order_detail => @order_detail)
@@ -165,7 +165,7 @@ shared_examples_for "ReservationProduct" do |product_type|
       end
 
       it 'should find the cheapest price policy if the user is in one group, but the account is in another' do
-        @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+        @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
         AccountPriceGroupMember.create!(:price_group => @price_group3, :account => @account)
         @order_detail.update_attributes(:account => @account)
         @product.groups_for_order_detail(@order_detail).should == [@price_group, @price_group2, @price_group3]

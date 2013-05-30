@@ -3,10 +3,10 @@ require 'spec_helper'
 describe AccountUser do
   it "should create through account" do
     @user    = FactoryGirl.create(:user)
-    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user.id, :user_role => 'Owner']])
+    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
     @account.should be_valid
   end
-  
+
   it "should allow only predefined roles" do
     AccountUser.user_roles.each do |role|
       @au = AccountUser.new({:user_role => role})
@@ -20,27 +20,27 @@ describe AccountUser do
     @au = AccountUser.create({:user_role => 'NotAValidRole'})
     @au.errors[:user_id].should_not be_nil
   end
-  
+
   it "should allow only one active role per user per account" do
     @user    = FactoryGirl.create(:user)
-    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user.id, :user_role => 'Owner']])
-    
+    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
+
     @au      = @account.account_users.create({:user => @user, :user_role => 'Purchaser', :created_by => @user.id})
     @au.errors[:user_id].should_not be_nil
   end
 
   it "should allow multiple inactive entries for the same user / role" do
     @user    = FactoryGirl.create(:user)
-    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user.id, :user_role => 'Owner', :deleted_at => Time.zone.now, :deleted_by => @user.id]])
-    
+    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user, :deleted_at => Time.zone.now, :deleted_by => @user.id))
+
     @au      = @account.account_users.create({:user => @user, :user_role => 'Purchaser', :created_by => @user.id})
     @au.errors[:user_id].should be_empty
   end
-  
+
   it "should not allow multiple active account owners" do
     @user1   = FactoryGirl.create(:user)
-    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user1, :created_by => @user1.id, :user_role => 'Owner']])
-    
+    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user1))
+
     @user2   = FactoryGirl.create(:user)
     @au = @account.account_users.create({:user => @user2, :user_role => 'Owner', :created_by => @user1.id})
     @au.errors[:user_role].should_not be_nil
