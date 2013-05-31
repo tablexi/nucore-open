@@ -763,8 +763,8 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
     float: right;
 }
 
-#order_detail_edit {
-    margin-top: 1.5em;
+form.edit_order_detail {
+  margin-top: 1.5em;
 }
 
 /***
