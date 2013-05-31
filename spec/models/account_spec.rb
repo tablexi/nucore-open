@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'active_support/secure_random'
 
 describe Account do
   it "should not create using factory" do
@@ -33,7 +32,7 @@ describe Account do
     @user    = FactoryGirl.create(:user)
     hash     = Hash[:user => @user, :created_by => @user, :user_role => 'Owner']
     account = Account.new(FactoryGirl.attributes_for(:nufs_account, :account_users_attributes => [hash]))
-    account.description = random_string = ActiveSupport::SecureRandom.hex(51)
+    account.description = random_string = SecureRandom.hex(51)
     account.should_not be_valid
     account.should have(1).error_on(:description)
   end
@@ -170,7 +169,7 @@ describe Account do
           @nufs_account.validate_against_product(@bundle, @user).should be_nil
         end
       end
-    
+
       it "should return error if the product does not have a price policy for the account or user price groups" do
         define_open_account(@item.account, @nufs_account.account_number)
         @nufs_account.validate_against_product(@item, @user).should == nil

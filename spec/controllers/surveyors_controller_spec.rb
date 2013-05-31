@@ -79,7 +79,7 @@ describe SurveyorsController do
 
     context 'merge orders' do
       before :each do
-        @clone=@order.clone
+        @clone=@order.dup
         assert @clone.save
         @order.update_attribute :merge_with_order_id, @clone.id
         @order.should be_to_be_merged
@@ -128,5 +128,5 @@ describe SurveyorsController do
     @price_policy=FactoryGirl.create(:item_price_policy, :product => @product, :price_group => @price_group)
     @order_detail=FactoryGirl.create(:order_detail, :order => @order, :product => @product, :price_policy => @price_policy)
   end
-  
+
 end

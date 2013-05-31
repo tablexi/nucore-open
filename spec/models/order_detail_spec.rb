@@ -303,14 +303,10 @@ describe OrderDetail do
       @no_pp_od       = FactoryGirl.create(:order_detail, :order => @order, :product => @instrument_wo_pp)
 
 
-      @no_actuals_od.reservation = FactoryGirl.build(:reservation, :product => @no_actuals_instrument)
-      @no_actuals_od.save!
-      @actuals_od.reservation = FactoryGirl.build(:reservation, :product => @actuals_instrument)
-      @actuals_od.save!
-      @both_od.reservation = FactoryGirl.build(:reservation, :product => @both_instrument)
-      @both_od.save!
-      @no_pp_od.reservation = FactoryGirl.build(:reservation, :product => @both_instrument)
-      @no_pp_od.save!
+      @no_actuals_od.create_reservation FactoryGirl.attributes_for(:reservation, :product => @no_actuals_instrument)
+      @actuals_od.create_reservation FactoryGirl.attributes_for(:reservation, :product => @actuals_instrument)
+      @both_od.create_reservation FactoryGirl.attributes_for(:reservation, :product => @both_instrument)
+      @no_pp_od.create_reservation FactoryGirl.attributes_for(:reservation, :product => @both_instrument)
 
       # travel to the future to complete the order_details
       Timecop.travel(2.days.from_now) do
@@ -1009,7 +1005,7 @@ describe OrderDetail do
     end
 
     def setup_merge_order
-      @merge_to_order=@order.clone
+      @merge_to_order=@order.dup
       assert @merge_to_order.save
       @order.update_attribute :merge_with_order_id, @merge_to_order.id
       @order_detail.reload

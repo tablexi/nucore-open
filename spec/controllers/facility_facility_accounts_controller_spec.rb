@@ -20,7 +20,7 @@ describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:
     end
 
     it_should_allow_managers_only do
-      should assign_to(:accounts).with_kind_of Array
+      expect(assigns(:accounts)).to be_kind_of Array
       assigns(:accounts).size.should == 1
       assigns(:accounts)[0].should == @facility_account
       should render_template 'index'
@@ -37,7 +37,7 @@ describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:
     end
 
     it_should_allow_managers_only do
-      should assign_to(:facility_account).with_kind_of FacilityAccount
+      expect(assigns(:facility_account)).to be_kind_of FacilityAccount
       assigns(:facility_account).should be_new_record
       should render_template 'new'
     end
@@ -54,7 +54,7 @@ describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:
     end
 
     it_should_allow_managers_only :redirect do
-      should assign_to(:facility_account).with_kind_of FacilityAccount
+      expect(assigns(:facility_account)).to be_kind_of FacilityAccount
       assigns(:facility_account).should == @facility_account
       should set_the_flash
       assert_redirected_to facility_facility_accounts_path
@@ -72,7 +72,7 @@ describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:
     end
 
     it_should_allow_managers_only :redirect do |user|
-      should assign_to(:facility_account).with_kind_of FacilityAccount
+      expect(assigns(:facility_account)).to be_kind_of FacilityAccount
       assigns(:facility_account).created_by.should == user.id
       should set_the_flash
       assert_redirected_to facility_facility_accounts_path
@@ -90,7 +90,7 @@ describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:
     end
 
     it_should_allow_managers_only do
-      should assign_to(:facility_account).with_kind_of FacilityAccount
+      expect(assigns(:facility_account)).to be_kind_of FacilityAccount
       assigns(:facility_account).should == @facility_account
       should render_template 'edit'
     end

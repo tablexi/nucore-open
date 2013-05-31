@@ -4,9 +4,9 @@ module Reservations::Validations
   included do
     validates_uniqueness_of :order_detail_id, :allow_nil => true
     validates_presence_of :product_id, :reserve_start_at, :reserve_end_at
-    validate :does_not_conflict_with_other_reservation, 
+    validate :does_not_conflict_with_other_reservation,
              :instrument_is_available_to_reserve,
-             :satisfies_minimum_length, 
+             :satisfies_minimum_length,
              :satisfies_maximum_length,
              :if => :reserve_start_at && :reserve_end_at && :reservation_changed?,
              :unless => :admin?

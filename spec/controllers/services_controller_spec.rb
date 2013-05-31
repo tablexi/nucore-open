@@ -49,7 +49,7 @@ describe ServicesController do
       response.should be_success
       response.should render_template('services/show')
     end
-  
+
     it_should_allow_all facility_users do
       assigns[:service].should == @service
       response.should be_success
@@ -74,7 +74,7 @@ describe ServicesController do
         assigns[:add_to_cart].should be_false
         flash[:notice].should_not be_nil
       end
-      
+
       it "should not show a notice and show an add to cart" do
         @product_user = ProductUser.create(:product => @service, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
         nufs=create_nufs_account_with_owner :guest
@@ -84,7 +84,7 @@ describe ServicesController do
         flash.should be_empty
         assigns[:add_to_cart].should be_true
       end
-      
+
       it "should allow an admin to allow it to add to cart" do
         nufs=create_nufs_account_with_owner :admin
         define_open_account @service.account, nufs.account_number
@@ -94,12 +94,12 @@ describe ServicesController do
         assigns[:add_to_cart].should be_true
       end
     end
-    
+
     context "hidden service" do
       before :each do
         @service.update_attributes(:is_hidden => true)
       end
-      
+
       it_should_allow_operators_only do
         response.should be_success
       end
@@ -124,7 +124,7 @@ describe ServicesController do
     end
 
     it_should_allow_managers_only do
-      should assign_to(:service).with_kind_of Service
+      expect(assigns(:service)).to be_kind_of Service
       assigns(:service).facility.should == @authable
     end
 
@@ -155,7 +155,7 @@ describe ServicesController do
     end
 
     it_should_allow_managers_only :redirect do
-      should assign_to(:service).with_kind_of Service
+      expect(assigns(:service)).to be_kind_of Service
       assigns(:service).facility.should == @authable
       should set_the_flash
       assert_redirected_to [:manage, @authable, assigns(:service)]
@@ -173,7 +173,7 @@ describe ServicesController do
     end
 
     it_should_allow_managers_only :redirect do
-      should assign_to(:service).with_kind_of Service
+      expect(assigns(:service)).to be_kind_of Service
       should set_the_flash
       assert_redirected_to manage_facility_service_url(@authable, assigns(:service))
     end
@@ -212,6 +212,6 @@ describe ServicesController do
     end
 
   end
-  
+
 end
 

@@ -106,7 +106,7 @@ describe UsersController do
         end
 
         it_should_allow_operators_only do
-          should assign_to(:user).with_kind_of User
+          expect(assigns(:user)).to be_kind_of User
           assigns(:user).should be_new_record
         end
       end
@@ -125,7 +125,7 @@ describe UsersController do
             end
 
             it_should_allow_operators_only :redirect do
-              should assign_to(:user).with_kind_of User
+              expect(assigns(:user)).to be_kind_of User
               assigns(:user).should be_persisted
               assert_redirected_to facility_users_url(:user => assigns[:user].id)
             end
@@ -221,8 +221,8 @@ describe UsersController do
     end
 
     it_should_allow_operators_only do
-      should assign_to(:user).with(@guest)
-      should assign_to(:order_details).with_kind_of ActiveRecord::Relation
+      expect(assigns(:user)).to eq(@guest)
+      expect(assigns(:order_details)).to be_kind_of ActiveRecord::Relation
     end
   end
 
@@ -234,8 +234,8 @@ describe UsersController do
     end
 
     it_should_allow_operators_only do
-      should assign_to(:user).with(@guest)
-      should assign_to(:order_details).with_kind_of ActiveRecord::Relation
+      expect(assigns(:user)).to eq(@guest)
+      expect(assigns(:order_details)).to be_kind_of ActiveRecord::Relation
     end
   end
 

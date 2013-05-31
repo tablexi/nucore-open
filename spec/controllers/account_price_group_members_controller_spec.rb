@@ -14,7 +14,7 @@ describe AccountPriceGroupMembersController do
   # allow directors
   # allow staff
   # deny guests
-  
+
   context "new" do
 
     before :each do
@@ -29,8 +29,8 @@ describe AccountPriceGroupMembersController do
 
     it_should_allow_all facility_operators do
       should render_template('new')
-      should assign_to(:price_group).with_kind_of(PriceGroup)
-      should assign_to(:account_price_group_member).with_kind_of(AccountPriceGroupMember)
+      expect(assigns(:price_group)).to be_kind_of PriceGroup
+      expect(assigns(:account_price_group_member)).to be_kind_of AccountPriceGroupMember
       assigns(:account_price_group_member).should be_new_record
     end
   end
@@ -50,9 +50,9 @@ describe AccountPriceGroupMembersController do
     it_should_deny :guest
 
     it_should_allow_all facility_operators do
-      should assign_to(:price_group).with_kind_of(PriceGroup)
-      should assign_to(:account).with_kind_of(Account)
-      should assign_to(:account_price_group_member).with_kind_of(AccountPriceGroupMember)
+      expect(assigns(:price_group)).to be_kind_of PriceGroup
+      expect(assigns(:account)).to be_kind_of Account
+      expect(assigns(:account_price_group_member)).to be_kind_of AccountPriceGroupMember
       should set_the_flash
       assert_redirected_to([@authable, @price_group])
     end
@@ -74,8 +74,8 @@ describe AccountPriceGroupMembersController do
     it_should_deny :guest
 
     it_should_allow_all facility_operators do
-      should assign_to(:price_group).with_kind_of(PriceGroup)
-      should assign_to(:account_price_group_member).with_kind_of(AccountPriceGroupMember)
+      expect(assigns(:price_group)).to be_kind_of PriceGroup
+      expect(assigns(:account_price_group_member)).to be_kind_of AccountPriceGroupMember
       assigns(:account_price_group_member).should be_frozen
       should set_the_flash
       assert_redirected_to(facility_price_group_url(@authable, @price_group))
@@ -98,11 +98,11 @@ describe AccountPriceGroupMembersController do
 
     it_should_allow_all facility_operators do
       # TODO: test GET with valid search term
-      should assign_to(:limit).with_kind_of(Fixnum)
-      should assign_to(:price_group).with_kind_of(PriceGroup)
+      expect(assigns(:limit)).to be_kind_of Fixnum
+      expect(assigns(:price_group)).to be_kind_of PriceGroup
       should render_template('search_results')
     end
-    
+
   end
 
 end

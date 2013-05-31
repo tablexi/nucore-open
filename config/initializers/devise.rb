@@ -5,8 +5,8 @@ require 'devise/orm/active_record'
 Devise.setup do |config|
   # Configure the e-mail address which will be shown in DeviseMailer.
   config.mailer_sender = Settings.email.from
-  
-  
+
+
   # Configure the content type of DeviseMailer mails (defaults to text/html")
   # config.mailer_content_type = "text/plain"
 
@@ -32,6 +32,8 @@ Devise.setup do |config|
   # parameters are used only when authenticating and not when retrieving from
   # session. If you need permissions, you should implement that in a before filter.
   config.authentication_keys = [ :username ]
+
+  config.case_insensitive_keys = [ :username ]
 
   # The realm used in Http Basic Authentication
   # config.http_authentication_realm = "Application"
@@ -61,7 +63,7 @@ Devise.setup do |config|
   # config.unlock_strategy = :both
 
   config.reset_password_within = 1.day
-  
+
   # Time interval to unlock the account if :time is enabled as unlock_strategy.
   # config.unlock_in = 1.hour
 

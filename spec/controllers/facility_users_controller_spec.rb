@@ -20,7 +20,7 @@ describe FacilityUsersController do
     end
 
     it_should_allow_managers_only do |user|
-      should assign_to(:users).with_kind_of Array
+      expect(assigns(:users)).to be_kind_of Array
       assigns(:users).size.should >= 1
       assigns(:users).should be_include @staff
       assigns(:users).should be_include user unless user == @admin
@@ -39,7 +39,7 @@ describe FacilityUsersController do
     end
 
     it_should_allow_managers_only :redirect do
-      should assign_to(:user).with_kind_of User
+      expect(assigns(:user)).to be_kind_of User
       assigns(:user).should == @staff
       @staff.reload.facility_user_roles(@authable).should be_empty
       assert_redirected_to facility_facility_users_url
@@ -69,9 +69,9 @@ describe FacilityUsersController do
     end
 
     it_should_allow_managers_only :redirect do
-      should assign_to(:user).with_kind_of User
+      expect(assigns(:user)).to be_kind_of User
       assigns(:user).should == @staff
-      should assign_to(:user_role).with_kind_of UserRole
+      expect(assigns(:user_role)).to be_kind_of UserRole
       assigns(:user_role).user.should == @staff
       assigns(:user_role).facility.should == @authable
       assert_redirected_to facility_facility_users_url

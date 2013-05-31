@@ -2,12 +2,15 @@
 # up to that next time slot
 module Reservations::MovingUp
   #
-  # Returns a clone of this reservation with the reserve_*_at times updated
+  # Returns a new reservation with the reserve_*_at times updated
   # to the next accommodating time slot on the calendar from NOW. Returns nil
-  # if there is no such time slot. The clone is frozen so don't try to change
+  # if there is no such time slot. The reservation is frozen so don't try to change
   # it. It's for read-only purposes.
   def earliest_possible
-    clone=self.clone
+    # this used to be self.clone, but it causes problems in rails 3.1 and
+    # respec 2.11+. There is no need for it to be a clone/dup
+    early_reservation = Reservation.new
+
     after=Time.zone.now+1.minute
 
     while true
@@ -15,12 +18,12 @@ module Reservations::MovingUp
 
       return nil if next_res.nil? or next_res.reserve_start_at > reserve_start_at
 
-      clone.reserve_start_at=next_res.reserve_start_at
-      clone.reserve_end_at=next_res.reserve_start_at.advance(:minutes => duration_mins)
+      early_reservation.reserve_start_at=next_res.reserve_start_at
+      early_reservation.reserve_end_at=next_res.reserve_start_at.advance(:minutes => duration_mins)
 
       if instrument_is_available_to_reserve? && does_not_conflict_with_other_reservation?
-        clone.freeze
-        return clone
+        early_reservation.freeze
+        return early_reservation
       end
 
       after=next_res.reserve_end_at

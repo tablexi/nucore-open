@@ -89,7 +89,7 @@ class UsersController < ApplicationController
   def switch_to
     @user = User.find(params[:user_id])
     unless session_user.id == @user.id
-      session[:acting_user_id] = params[:user_id]
+      session[:acting_user_id] = @user.id
       session[:acting_ref_url] = facility_users_path
     end
     redirect_to facility_path(current_facility)
