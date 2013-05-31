@@ -7,7 +7,7 @@
 }
 
 #overlay.on #spinner #hide  {
-  background:url('../../images/transparent.png') top left repeat;
+  background:url('transparent.png') top left repeat;
   filter:alpha(opacity=30);
   opacity:0.3;
   overflow: hidden;
@@ -20,7 +20,7 @@
 }
 
 #overlay.on #spinner {
-  background:url('../../images/spinner.gif') top center no-repeat;
+  background: url('spinner.gif') top center no-repeat;
 }
 
 #calendar table.fc-header {
@@ -28,7 +28,7 @@
 }
 
 #calendar table.fc-header tr,
-#calendar table.fc-header th, 
+#calendar table.fc-header th,
 #calendar table.fc-header td {
 	border:1px solid white;
 }
