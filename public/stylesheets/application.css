@@ -597,7 +597,7 @@ body .search_form .chzn-container .chzn-drop {
 .search_form input[type=submit] {
 	clear:both;
 	float:right;
-	margin-bottom: 0.5em;
+	font-size: 400%;
 }
 
 .order_action {
