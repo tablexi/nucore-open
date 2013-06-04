@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Account do
   it "should not create using factory" do
     @user    = FactoryGirl.create(:user)
-    hash     = Hash[:user => @user, :created_by => @user, :user_role => 'Owner']
+    hash     = Hash[:user => @user, :created_by => @user.id, :user_role => 'Owner']
     @account = create_nufs_account_with_owner :user
 
     @account.errors[:type].should_not be_nil
@@ -21,8 +21,7 @@ describe Account do
 
   it 'should be expired' do
     owner   = FactoryGirl.create(:user)
-    hash     = Hash[:user => owner, :created_by => owner, :user_role => 'Owner']
-    account = FactoryGirl.create(:nufs_account, :account_users_attributes => [hash])
+    account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => owner))
     account.expires_at=Time.zone.now
     assert account.save
     account.should be_expired
@@ -30,8 +29,7 @@ describe Account do
 
   it "should validate description <= 50 chars" do
     @user    = FactoryGirl.create(:user)
-    hash     = Hash[:user => @user, :created_by => @user, :user_role => 'Owner']
-    account = Account.new(FactoryGirl.attributes_for(:nufs_account, :account_users_attributes => [hash]))
+    account = Account.new(FactoryGirl.attributes_for(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user)))
     account.description = random_string = SecureRandom.hex(51)
     account.should_not be_valid
     account.should have(1).error_on(:description)
@@ -39,8 +37,7 @@ describe Account do
 
   it "should set suspend_at on suspend and unsuspend" do
     @owner   = FactoryGirl.create(:user)
-    hash     = Hash[:user => @owner, :created_by => @owner, :user_role => 'Owner']
-    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [hash])
+    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @owner))
     assert_nothing_raised { @account.suspend! }
     @account.suspended_at.should_not == nil
     assert_nothing_raised { @account.unsuspend! }
@@ -50,8 +47,7 @@ describe Account do
   context "account users" do
     it "should find all the accounts a user has access to, default suspended? to false" do
       @user    = FactoryGirl.create(:user)
-      hash     = Hash[:user => @user, :created_by => @user, :user_role => 'Owner']
-      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [hash])
+      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
       @account.owner_user.should == @user
       @account.suspended?.should == false
     end
@@ -63,10 +59,8 @@ describe Account do
 
     it "should find the non-deleted account owner" do
       @user1   = FactoryGirl.create(:user)
-      hash1    = Hash[:user => @user1, :created_by => @user1, :user_role => 'Owner']
       @user2   = FactoryGirl.create(:user)
-      hash2    = Hash[:user => @user2, :created_by => @user2, :user_role => 'Owner']
-      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [hash1])
+      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user1))
 
       @account.owner_user.should == @user1
       @account.owner.update_attributes(:deleted_at => Time.zone.now, :deleted_by => @user1.id)
@@ -77,8 +71,7 @@ describe Account do
 
     it "should find all non-suspended account business admins" do
       @owner   = FactoryGirl.create(:user)
-      hash     = Hash[:user => @owner, :created_by => @owner, :user_role => 'Owner']
-      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [hash])
+      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @owner))
 
       @user1   = FactoryGirl.create(:user)
       @user2   = FactoryGirl.create(:user)
@@ -91,8 +84,7 @@ describe Account do
 
     it "should find all non-suspended business admins and the owner as notify users" do
       @owner   = FactoryGirl.create(:user)
-      hash     = Hash[:user => @owner, :created_by => @owner, :user_role => 'Owner']
-      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [hash])
+      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @owner))
 
       @user1   = FactoryGirl.create(:user)
       @user2   = FactoryGirl.create(:user)
@@ -106,8 +98,7 @@ describe Account do
 
     it "should verify if a user can purchase using the account" do
       @owner   = FactoryGirl.create(:user)
-      hash     = Hash[:user => @owner, :created_by => @owner, :user_role => 'Owner']
-      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [hash])
+      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @owner))
 
       @admin   = FactoryGirl.create(:user)
       @user    = FactoryGirl.create(:user)
@@ -127,7 +118,7 @@ describe Account do
     before(:each) do
       @facility          = FactoryGirl.create(:facility)
       @user              = FactoryGirl.create(:user)
-      @nufs_account      = FactoryGirl.create(:nufs_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
+      @nufs_account      = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
       @facility_account  = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @item              = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
       @price_group       = FactoryGirl.create(:price_group, :facility => @facility)
@@ -190,7 +181,7 @@ describe Account do
     facility_account = facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     user     = FactoryGirl.create(:user)
     item     = facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => facility_account.id))
-    account  = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => user, :created_by => user, :user_role => 'Owner']])
+    account  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => user))
     order    = user.orders.create(FactoryGirl.attributes_for(:order, :created_by => user.id, :facility => facility))
     order_detail = order.order_details.create!(FactoryGirl.attributes_for(:order_detail, :reviewed_at => (Time.zone.now-1.day)).update(:product_id => item.id, :account_id => account.id))
     statement = Statement.create({:facility => facility, :created_by => 1, :account => account})
@@ -204,7 +195,7 @@ describe Account do
       @facility1        = FactoryGirl.create(:facility)
       @facility2        = FactoryGirl.create(:facility)
       @user             = FactoryGirl.create(:user)
-      @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
+      @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
     end
 
     it "should find all accounts that need statements for a facility"
@@ -224,13 +215,13 @@ describe Account do
         @user             = FactoryGirl.create(:user)
         @facility1        = FactoryGirl.create(:facility)
         @facility2        = FactoryGirl.create(:facility)
-        @nufs_account = FactoryGirl.create(:nufs_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
+        @nufs_account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
         @facility1_accounts, @facility2_accounts=[ @nufs_account ], [ @nufs_account ]
 
         AccountManager::FACILITY_ACCOUNT_CLASSES.each do |class_name|
           class_sym=class_name.underscore.to_sym
-          @facility1_accounts << FactoryGirl.create(class_sym, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}], :facility => @facility1)
-          @facility2_accounts << FactoryGirl.create(class_sym, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}], :facility => @facility2)
+          @facility1_accounts << FactoryGirl.create(class_sym, :account_users_attributes => account_users_attributes_hash(:user => @user), :facility => @facility1)
+          @facility2_accounts << FactoryGirl.create(class_sym, :account_users_attributes => account_users_attributes_hash(:user => @user), :facility => @facility2)
         end
       end
 

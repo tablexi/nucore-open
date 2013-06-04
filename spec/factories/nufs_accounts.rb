@@ -14,7 +14,7 @@ FactoryGirl.define do
       owner { FactoryGirl.create(:user) }
     end
 
-    account_users_attributes { [Hash[:user => owner, :created_by => owner, :user_role => 'Owner']] }
+    account_users_attributes { account_users_attributes_hash(:user => owner) }
 
     after(:build) do |model|
       define_open_account '42345', model.account_number

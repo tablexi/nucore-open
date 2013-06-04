@@ -15,7 +15,7 @@ describe StoredFile do
       @fu = StoredFile.create(:file_type => 'info')
       @fu.should validate_presence_of(:product_id)
     end
-    
+
     it "should be required for 'template' file_type" do
       @fu = StoredFile.create(:file_type => 'template')
       @fu.should validate_presence_of(:product_id)
@@ -40,7 +40,7 @@ describe StoredFile do
     @creator          = FactoryGirl.create(:user)
     @file1            = "#{Rails.root}/spec/files/alpha_survey.rb"
     @file_upload      = @item.stored_files.create(:name => "File 1", :file => File.open(@file1), :file_type => "info",
-                                                  :created_by => @creator)
+                                                  :creator => @creator)
     assert @file_upload.valid?
     assert @file_upload.file.url.match(/^\/files\/\d+\/\d+\/\d+\//)
   end

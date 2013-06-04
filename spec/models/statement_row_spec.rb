@@ -5,7 +5,7 @@ describe StatementRow do
   before :each do
     @user=FactoryGirl.create(:user)
     @facility=FactoryGirl.create(:facility)
-    @account=FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+    @account=FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @service=@facility.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
     @order=@user.orders.create(FactoryGirl.attributes_for(:order, :facility_id => @facility.id, :account_id => @account.id, :created_by => @user.id))
@@ -24,5 +24,5 @@ describe StatementRow do
   it { should validate_presence_of :order_detail_id }
   it { should validate_presence_of :statement_id }
   it { should validate_numericality_of :amount }
-  
+
 end

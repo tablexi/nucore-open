@@ -6,7 +6,7 @@ describe FacilityAccount do
       @user     = FactoryGirl.create(:user)
       @facility = FactoryGirl.create(:facility)
       assert @facility.valid?
-      @options  = Hash[:is_active => 1, :created_by => @user, :facility_id => @facility.id, :revenue_account => 10000]
+      @options  = Hash[:is_active => 1, :created_by => @user.id, :facility_id => @facility.id, :revenue_account => 10000]
       @starts_at  = Time.zone.now-3.days
       @expires_at = Time.zone.now+3.days
     end
@@ -25,7 +25,7 @@ describe FacilityAccount do
         assert @account.invalid?
         assert @account.errors[:revenue_account]
       end
-      
+
       it "should not allow account > 5 digits" do
         @options[:revenue_account] = "111111"
         @account = FacilityAccount.create(@options)

@@ -18,7 +18,7 @@ describe OrderDetailObserver do
     after :all do
       reset_settings
     end
-    
+
     before :each do
       @hooks = OrderDetailObserver.send(:status_change_hooks)
     end
@@ -41,14 +41,14 @@ describe OrderDetailObserver do
     it 'should support simple array' do
       @hooks[:simple_array].size.should == 2
       @hooks[:simple_array].map(&:class).should == [DummyHooks::DummyHook1, DummyHooks::DummyHook2]
-    end    
+    end
   end
 
   context 'order details changes statuses' do
     after :all do
       reset_settings
     end
-    
+
     before :each do
       Settings.reload!
       Settings.order_details.status_change_hooks = nil
@@ -58,17 +58,17 @@ describe OrderDetailObserver do
       @item     = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
       @item.should be_valid
       FactoryGirl.create :item_price_policy, :product => @item, :price_group => PriceGroup.base.first
-      @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
       define_open_account(@item.account, @account.account_number)
       @order    = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
       @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
       @order_detail.state.should == 'new'
       @order_detail.version.should == 1
       @order_detail.order_status.should be_nil
-    
+
       @order.validate_order!.should be_true
       @order.purchase!.should be_true
-      
+
       @order_detail.reload.order.state.should == 'purchased'
 
       Settings.order_details.status_change_hooks = {:in_process => 'DummyHooks::DummyHook1', :new => 'DummyHooks::DummyHook2'}
