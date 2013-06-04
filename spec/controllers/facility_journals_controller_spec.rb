@@ -4,17 +4,17 @@ require 'transaction_search_spec_helper'
 
 describe FacilityJournalsController do
   include DateHelper
-  
+
   render_views
-  
+
   def create_order_details
     @user=FactoryGirl.create(:user)
     @order_detail1 = place_and_complete_item_order(@user, @authable, @account, true)
     @order_detail2 = place_and_complete_item_order(@user, @authable, @account)
     # make sure order detail 2 is not reviewed (it is if a zero day review period)
     @order_detail2.update_attributes(:reviewed_at => nil)
-    
-    @account2=FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']], :facility_id => @authable.id)
+
+    @account2=FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user), :facility_id => @authable.id)
     @authable_account2 = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @order_detail3 = place_and_complete_item_order(@user, @authable, @account2, true)
 
@@ -22,14 +22,14 @@ describe FacilityJournalsController do
       od.reviewed_at = 1.day.ago
       od.save!
     end
-  
+
   end
 
   before(:all) { create_users }
 
   before(:each) do
     @authable=FactoryGirl.create(:facility)
-    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @admin, :created_by => @admin, :user_role => 'Owner']], :facility_id => @authable.id)
+    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @admin), :facility_id => @authable.id)
     @journal=FactoryGirl.create(:journal, :facility => @authable, :created_by => @admin.id, :journal_date => Time.zone.now)
   end
 
@@ -187,7 +187,7 @@ describe FacilityJournalsController do
       journal_date=parse_usa_date(@journal_date)
       flash[:error].should_not be_nil
     end
-    
+
     context "searching" do
       before :each do
         @user = @admin
@@ -210,7 +210,7 @@ describe FacilityJournalsController do
     it_should_deny_all [:staff, :senior_staff]
 
   end
-  
+
   context 'new' do
     before :each do
       @method = :get
@@ -218,13 +218,13 @@ describe FacilityJournalsController do
       @params = { :facility_id => @authable.url_name }
       create_order_details
     end
-    
+
     it_should_deny_all [:staff, :senior_staff]
-    
+
     it_should_allow_managers_only do
       response.should be_success
     end
-    
+
     it "should set appropriate values" do
       sign_in @admin
       do_request
@@ -234,9 +234,9 @@ describe FacilityJournalsController do
       assigns(:pending_journals).should be_empty
       assigns(:order_detail_action).should == :create
     end
-    
+
     it "should not have different values if there is a pending journal" do
-      
+
       # create and populate a journal
       @pending_journal = FactoryGirl.create(:journal, :facility_id => @authable.id, :created_by => @admin.id, :journal_date => Time.zone.now, :is_successful => nil)
       @order_detail4 = place_and_complete_item_order(@user, @authable, @account)
@@ -249,7 +249,7 @@ describe FacilityJournalsController do
       assigns(:pending_journals).should == [@pending_journal]
       assigns(:order_detail_action).should be_nil
     end
-    
+
     context "searching" do
       before :each do
         @user = @admin

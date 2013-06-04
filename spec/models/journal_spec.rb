@@ -12,7 +12,7 @@ describe Journal do
     @journal.save
     @journal.id.should_not be_nil
   end
-  
+
   context "journal creation" do
     before :each do
       @admin = FactoryGirl.create(:user)
@@ -20,12 +20,12 @@ describe Journal do
       @facilityb = FactoryGirl.create(:facility, :abbreviation => "B")
       @facilityc = FactoryGirl.create(:facility, :abbreviation => "C")
       @facilityd = FactoryGirl.create(:facility, :abbreviation => "D")
-      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @admin, :created_by => @admin, :user_role => 'Owner']], :facility_id => @facilitya.id)
-      
-      # little helper to create the calls which the controller performs 
+      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @admin), :facility_id => @facilitya.id)
+
+      # little helper to create the calls which the controller performs
       def create_pending_journal_for(*facilities_list)
         @ods = []
-        
+
         facilities_list.each do |f|
           od = place_and_complete_item_order(@admin, f, @account, true)
           define_open_account(@item.account, @account.account_number)
@@ -41,7 +41,7 @@ describe Journal do
             :created_by => @admin.id,
             :journal_date => Time.zone.now
           )
-          
+
           journal.create_journal_rows!(@ods)
 
           journal
@@ -58,7 +58,7 @@ describe Journal do
         create_pending_journal_for( @facilitya).should_not raise_error(Exception, /pending journal/)
       end
     end
-      
+
 
     context "(with: pending journal for A & B)" do
       before :each do
@@ -74,7 +74,7 @@ describe Journal do
         create_pending_journal_for( @facilitya ).should raise_error(Exception, /pending journal/)
 
       end
-        
+
       it "should not allow creation of a journal for B (journal pending on B)" do
         create_pending_journal_for( @facilityb ).should raise_error(Exception, /pending journal/)
 
@@ -91,48 +91,47 @@ describe Journal do
     end
   end
 
-  
-  
+
+
   it "requires reference on update" do
     assert @journal.save
     assert !@journal.save
     @journal.errors[:reference].should_not be_nil
-    
+
     @journal.reference = '12345'
     @journal.valid?
     @journal.errors[:reference].should be_empty
   end
-  
+
   it "requires updated_by on update" do
     assert @journal.save
     assert !@journal.save
     @journal.errors[:updated_by].should_not be_nil
-    
+
     @journal.updated_by = '1'
     @journal.valid?
     @journal.errors[:updated_by].should be_empty
   end
-  
+
   it "requires a boolean value for is_successful on update" do
     assert @journal.save
     assert !@journal.save
     @journal.errors[:is_successful].should_not be_nil
-    
+
     @journal.is_successful = true
     @journal.valid?
     @journal.errors[:is_successful].should be_empty
-    
+
     @journal.is_successful = false
     @journal.valid?
     @journal.errors[:is_successful].should be_empty
   end
-  
+
   it "should create and attach journal spreadsheet" do
     @journal.valid?
     # create nufs account
     @owner    = FactoryGirl.create(:user)
-    hash      = Hash[:user => @owner, :created_by => @owner, :user_role => 'Owner']
-    @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => [hash])
+    @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @owner))
     @journal.create_spreadsheet
     # @journal.add_spreadsheet("#{Rails.root}/spec/files/nucore.journal.template.xls")
     @journal.file.url.should =~ /^\/files/
@@ -163,7 +162,7 @@ describe Journal do
       d1 = Time.zone.parse('2020-01-01')
       @order_details = []
       (0..23).each do |i|
-        order=@owner.orders.create(FactoryGirl.attributes_for(:order, :created_by => @owner))
+        order=@owner.orders.create(FactoryGirl.attributes_for(:order, :created_by => @owner.id))
         od = order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product => @item))
         od.update_attributes(:actual_cost => 20, :actual_subsidy => 0)
         od.to_complete!
@@ -175,7 +174,7 @@ describe Journal do
       # @order_details.each_with_index do |od, i|
       #   puts "#{i} #{od.fulfilled_at}"
       # end
-    end 
+    end
     it 'should not span fiscal years with everything in the same year' do
       Journal.order_details_span_fiscal_years?(@order_details[5..16]).should be_false
     end

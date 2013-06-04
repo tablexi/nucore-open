@@ -8,23 +8,21 @@ class FacilityAccountsController < ApplicationController
       end
     end
 
-    module InstanceMethods
-      def account_class_params
-        params[:account] || params[:nufs_account]
-      end
+    def account_class_params
+      params[:account] || params[:nufs_account]
+    end
 
-      def configure_new_account(account)
-        # set temporary expiration to be updated later
-        account.valid? # populate virtual charstring attributes required by set_expires_at
-        account.errors.clear
+    def configure_new_account(account)
+      # set temporary expiration to be updated later
+      account.valid? # populate virtual charstring attributes required by set_expires_at
+      account.errors.clear
 
-        # be verbose with failures. Too many tasks (#29563, #31873) need it
-        begin
-          account.set_expires_at!
-          account.errors.add(:base, I18n.t('controllers.facility_accounts.create.expires_at_missing')) unless account.expires_at
-        rescue ValidatorError => e
-          account.errors.add(:base, e.message)
-        end
+      # be verbose with failures. Too many tasks (#29563, #31873) need it
+      begin
+        account.set_expires_at!
+        account.errors.add(:base, I18n.t('controllers.facility_accounts.create.expires_at_missing')) unless account.expires_at
+      rescue ValidatorError => e
+        account.errors.add(:base, e.message)
       end
     end
   end
@@ -187,7 +185,7 @@ class FacilityAccountsController < ApplicationController
 
     respond_to do |format|
       format.html { render :action => action }
-      format.pdf  { render :template => '/statements/show.pdf.prawn' }
+      format.pdf  { render :template => '/statements/show' }
     end
   end
 

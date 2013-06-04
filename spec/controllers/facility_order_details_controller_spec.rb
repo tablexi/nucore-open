@@ -87,13 +87,13 @@ describe FacilityOrderDetailsController do
         end
 
         it 'should not have a field for subsidy' do
-          @dom.css('.order_detail_edit .estimated_subsidy').should_not be_empty
-          @dom.css('.order_detail_edit .actual_subsidy input').should be_empty
+          @dom.css('.edit_order_detail .estimated_subsidy').should_not be_empty
+          @dom.css('.edit_order_detail .actual_subsidy input').should be_empty
         end
 
         it 'should have the estimated price and subsidy' do
-          @dom.css('.order_detail_edit .estimated_cost').first.content.should == '$1.00'
-          @dom.css('.order_detail_edit .estimated_subsidy').first.content.should == '$0.00'
+          @dom.css('.edit_order_detail .estimated_cost').first.content.should == '$1.00'
+          @dom.css('.edit_order_detail .estimated_subsidy').first.content.should == '$0.00'
         end
       end
 
@@ -108,11 +108,11 @@ describe FacilityOrderDetailsController do
         end
 
         it 'should say "Unassigned"' do
-          @dom.css('.order_detail_edit .unassigned_subsidy').first.content.should == 'Unassigned'
+          @dom.css('.edit_order_detail .unassigned_subsidy').first.content.should == 'Unassigned'
         end
 
         it 'should not have a field for subsidy' do
-          @dom.css('.order_detail_edit .actual_subsidy input').should be_empty
+          @dom.css('.edit_order_detail .actual_subsidy input').should be_empty
         end
       end
 
@@ -130,11 +130,11 @@ describe FacilityOrderDetailsController do
           end
 
           it 'should include the price policy name' do
-            @dom.css('.order_detail_edit .subsidy_header').first.content.should include @instrument_price_policy.price_group.name
+            @dom.css('.edit_order_detail .subsidy_header').first.content.should include @instrument_price_policy.price_group.name
           end
 
           it 'should have the field disabled' do
-            @dom.css('.order_detail_edit .actual_subsidy input').first.should be_matches '[disabled]'
+            @dom.css('.edit_order_detail .actual_subsidy input').first.should be_matches '[disabled]'
           end
         end
         context 'item' do
@@ -144,10 +144,10 @@ describe FacilityOrderDetailsController do
             sign_in_and_do_request
           end
           it 'should include the price policy name' do
-            @dom.css('.order_detail_edit .subsidy_header').first.content.should include @price_policy.price_group.name
+            @dom.css('.edit_order_detail .subsidy_header').first.content.should include @price_policy.price_group.name
           end
           it 'should have the field disabled' do
-            @dom.css('.order_detail_edit .actual_subsidy input').first.should be_matches '[disabled]'
+            @dom.css('.edit_order_detail .actual_subsidy input').first.should be_matches '[disabled]'
           end
         end
       end
@@ -161,10 +161,10 @@ describe FacilityOrderDetailsController do
           end
 
           it 'should include the price policy name' do
-            @dom.css('.order_detail_edit .subsidy_header').first.content.should include @instrument_price_policy.price_group.name
+            @dom.css('.edit_order_detail .subsidy_header').first.content.should include @instrument_price_policy.price_group.name
           end
           it 'should have the field enabled' do
-            @dom.css('.order_detail_edit .actual_subsidy input').first.should_not be_matches '[disabled]'
+            @dom.css('.edit_order_detail .actual_subsidy input').first.should_not be_matches '[disabled]'
           end
         end
         context 'item' do
@@ -174,10 +174,10 @@ describe FacilityOrderDetailsController do
             sign_in_and_do_request
           end
           it 'should include the price policy name' do
-            @dom.css('.order_detail_edit .subsidy_header').first.content.should include @price_policy.price_group.name
+            @dom.css('.edit_order_detail .subsidy_header').first.content.should include @price_policy.price_group.name
           end
           it 'should have the field enabled' do
-            @dom.css('.order_detail_edit .actual_subsidy input').first.should_not be_matches '[disabled]'
+            @dom.css('.edit_order_detail .actual_subsidy input').first.should_not be_matches '[disabled]'
           end
         end
       end

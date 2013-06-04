@@ -52,7 +52,7 @@ describe PricePolicy do
                                  :start_date => @start_date,
                                  :expire_date => @start_date)
       )
-      
+
       assert !pp.save
       assert pp.errors[:expire_date]
     end
@@ -138,19 +138,19 @@ describe PricePolicy do
       should_be_destroyed @pgp
     end
   end
-  
+
   context "truncate old policies" do
     before :each do
       @user     = FactoryGirl.create(:user)
-      @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])      
+      @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
       @price_group = FactoryGirl.create(:price_group, :facility => @facility)
-      @item2    = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))   
+      @item2    = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
     end
     it "should truncate the old policy" do
       @today = Time.zone.local(2011, 06, 06, 12, 0, 0)
       Timecop.freeze(@today) do
         #@today = Time.zone.local(2011, 06, 06, 12, 0, 0)
-        
+
         @pp=FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group, :start_date => @today.beginning_of_day, :expire_date => @today + 30.days)
         @pp2=FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group, :start_date => @today + 2.days, :expire_date => @today + 30.days)
         @pp.reload.start_date.should == @today.beginning_of_day
@@ -161,10 +161,10 @@ describe PricePolicy do
         @pp2.expire_date.should == @today + 30.days
       end
     end
-    
+
     it "should not truncate any other policies" do
       @today = Time.zone.local(2011, 06, 06, 12, 0, 0)
-      
+
       Timecop.freeze(@today) do
         @pp=FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group, :start_date => @today.beginning_of_day, :expire_date => @today + 30.days)
         @pp3 = FactoryGirl.create(:item_price_policy, :product => @item2, :price_group => @price_group, :start_date => @today, :expire_date => @today + 30.days)
@@ -175,7 +175,7 @@ describe PricePolicy do
         ((@today.end_of_day + 1.day) - @pp.expire_date).abs.should < 1
         @pp2.reload.start_date.should == @today + 2.days
         @pp2.expire_date.should == @today + 30.days
-        
+
         @pp3.reload.start_date.should == @today
         @pp3.expire_date.should == @today + 30.days
       end
@@ -205,7 +205,7 @@ describe PricePolicy do
 
     before :each do
       @user     = FactoryGirl.create(:user)
-      @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
       @order    = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id))
       @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
       @price_group = FactoryGirl.create(:price_group, :facility => @facility)
@@ -214,7 +214,7 @@ describe PricePolicy do
       @pp=FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group)
     end
 
-    
+
     it 'should not be assigned' do
       @pp.should_not be_assigned_to_order
     end
@@ -228,8 +228,8 @@ describe PricePolicy do
     end
 
   end
-  
-  
+
+
   end
-  
+
 end

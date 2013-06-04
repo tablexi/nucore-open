@@ -29,7 +29,7 @@ describe OrdersController do
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
+    @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @staff))
     @order            = @staff.orders.create(FactoryGirl.attributes_for(:order, :created_by => @staff.id, :account => @account))
     @item             = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
     define_open_account(@item.account, @account.account_number)
@@ -658,7 +658,7 @@ describe OrdersController do
         it "should flash error message containing another" do
           @facility2          = FactoryGirl.create(:facility)
           @facility_account2  = @facility2.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
-          @account2           = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
+          @account2           = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @staff))
           @item2              = @facility2.items.create!(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account2.id))
           # add first item to cart
           maybe_grant_always_sign_in :staff
@@ -681,7 +681,7 @@ describe OrdersController do
         @order.save!
         @facility2          = FactoryGirl.create(:facility)
         @facility_account2  = @facility2.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
-        @account2           = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @staff, :created_by => @staff, :user_role => AccountUser::ACCOUNT_OWNER]])
+        @account2           = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @staff))
         @item2              = @facility2.items.create!(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account2.id))
       end
       context "in the right facility" do
@@ -743,8 +743,8 @@ describe OrdersController do
     end
 
     it "should 404 it the order_detail to be removed is not in the current cart" do
-      @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @director, :created_by => @director, :user_role => 'Owner']])
-      @order2   = @director.orders.create(FactoryGirl.attributes_for(:order, :user => @director, :created_by => @director, :account => @account2))
+      @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @director))
+      @order2   = @director.orders.create(FactoryGirl.attributes_for(:order, :user => @director, :created_by => @director.id, :account => @account2))
       @order2.add(@item)
       @order_detail2 = @order2.order_details[0]
       @params[:order_detail_id]=@order_detail2.id

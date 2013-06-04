@@ -61,10 +61,9 @@ describe OrderImport do
       @account          = FactoryGirl.create(:nufs_account,
         :description => "dummy account",
         :account_number => '111-2222222-33333333-01',
-        :account_users_attributes => [
-          Hash[:user => @guest, :created_by => @guest, :user_role => 'Owner'],
-          Hash[:user => @guest2, :created_by => @guest, :user_role => 'Purchaser']
-        ]
+        :account_users_attributes =>
+          (account_users_attributes_hash(:user => @guest) +
+           account_users_attributes_hash(:user => @guest2, :created_by => @guest, :user_role => AccountUser::ACCOUNT_PURCHASER))
       )
     end
 

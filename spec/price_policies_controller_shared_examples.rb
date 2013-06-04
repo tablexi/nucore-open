@@ -164,7 +164,7 @@ shared_examples_for PricePoliciesController do |product_type|
 
 
     it 'should not allow edit of assigned effective price policy' do
-      @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @director, :created_by => @director, :user_role => 'Owner']])
+      @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @director))
       @order    = @director.orders.create(FactoryGirl.attributes_for(:order, :created_by => @director.id))
       @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @product.id, :account_id => @account.id, :price_policy => @price_policy))
       UserPriceGroupMember.create!(:price_group => @price_group, :user => @director)
@@ -231,7 +231,7 @@ shared_examples_for PricePoliciesController do |product_type|
           price_policies_for_empty_group.size.should == 1
           price_policies_for_empty_group.first.should_not be_can_purchase
         end
-        
+
         it 'should reject everything if expire date is before start date' do
           @params[:expire_date] = (@start_date - 2.days).to_s
           do_request
@@ -297,7 +297,7 @@ shared_examples_for PricePoliciesController do |product_type|
             pp.start_date.should match_date @new_start_date
           end
         end
-        
+
         it 'should update the can_purchase for price policy' do
           last_price_group = @authable.price_groups.last
           @params[:"price_policy_#{last_price_group.id}"][:can_purchase] = false
@@ -370,7 +370,7 @@ shared_examples_for PricePoliciesController do |product_type|
           flash[:error].should_not be_nil
           response.should redirect_to price_policy_index_path
         end
-        
+
         it 'should raise a 404 if there are no price policies for that date' do
           @params.merge!(:id => (@price_policy.start_date + 1.day).to_s)
           do_request

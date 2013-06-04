@@ -9,7 +9,7 @@ describe OrderDetail do
     @user     = FactoryGirl.create(:user)
     @item     = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
     @item.should be_valid
-    @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+    @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
     @order    = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
     @order.should be_valid
     @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
@@ -116,7 +116,7 @@ describe OrderDetail do
 
   context "item purchase validation" do
     before(:each) do
-      @account        = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      @account        = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
       @price_group    = FactoryGirl.create(:price_group, :facility => @facility)
       @pg_user_member = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @item_pp        = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
@@ -162,7 +162,7 @@ describe OrderDetail do
 
   context "service purchase validation" do
      before(:each) do
-      @account        = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      @account        = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
       @price_group    = FactoryGirl.create(:price_group, :facility => @facility)
       @pg_user_member = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @order          = @user.orders.create(FactoryGirl.attributes_for(:order, :facility_id => @facility.id, :account_id => @account.id, :created_by => @user.id))
@@ -181,7 +181,7 @@ describe OrderDetail do
       # add service file template
       @file1      = "#{Rails.root}/spec/files/template1.txt"
       @template1  = @service.stored_files.create(:name => "Template 1", :file => File.open(@file1), :file_type => "template",
-                                                 :created_by => @user)
+                                                 :created_by => @user.id)
       @order_detail.valid_service_meta?.should be false
     end
 
@@ -619,7 +619,7 @@ describe OrderDetail do
       @facility_account2 = @facility2.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @user2     = FactoryGirl.create(:user)
       @item2     = @facility2.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account2.id))
-      @account2  = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user2, :created_by => @user2, :user_role => 'Owner']])
+      @account2  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user2))
       @order2    = @user2.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user2.id, :facility => @facility2))
       @order_detail2 = @order2.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @item2.id, :account_id => @account2.id))
     end

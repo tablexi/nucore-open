@@ -41,7 +41,7 @@ describe Order do
       @facility       = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @user           = FactoryGirl.create(:user)
-      @account        = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      @account        = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
       @order          = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id))
       @item           = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
     end
@@ -119,7 +119,7 @@ describe Order do
       @service_pp   = FactoryGirl.create(:service_price_policy, :product => @service, :price_group => @price_group)
       @user         = FactoryGirl.create(:user)
       @pg_member    = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
-      @account      = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      @account      = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
       @order        = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
     end
 
@@ -149,7 +149,7 @@ describe Order do
       @service_pp   = FactoryGirl.create(:service_price_policy, :product => @service, :price_group => @price_group)
       @user         = FactoryGirl.create(:user)
       @pg_member    = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
-      @account      = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      @account      = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
       @order        = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
     end
 
@@ -261,7 +261,7 @@ describe Order do
 
       @user            = FactoryGirl.create(:user)
       @pg_member       = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
-      @account         = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+      @account         = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
       @cart            = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @account))
 
       @item           = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
@@ -323,22 +323,22 @@ describe Order do
 
           # doit
           @ods = @cart.add(@service_w_active_template, 2)
-          
+
           #asserts
           @ods.should respond_to :each
           @ods.size.should == 2
         end
 
-        it "should add one order_detail when has a quantity of 2 and service doesn't have a template or survey" do 
+        it "should add one order_detail when has a quantity of 2 and service doesn't have a template or survey" do
           @ods = @cart.add(@service, 2)
           @ods.size.should == 1
         end
       end
 
-      
+
       it "should add two order_details when product responds to :reservations and quantity = 2" do
         define_purchasable_instrument
-        
+
         @ods = @cart.add(@instrument, 2)
         @ods.collect(&:product).should == [@instrument, @instrument]
         @ods.size.should == 2
@@ -392,7 +392,7 @@ describe Order do
         # quantity must be there, or we'll delete the order_detail
         @cart.update_details(@order_detail.id => {:quantity => 1, :note => 'new note value'})
         @order_detail = @cart.reload.order_details.first
-        @order_detail.note.should == 'new note value' 
+        @order_detail.note.should == 'new note value'
       end
 
       it "should update the child order_details' account on self's account change" do
@@ -401,9 +401,9 @@ describe Order do
         @cart.add(@service_same, 1)
         @cart.reload.order_details[0].account_id = @account.id
         @cart.order_details[1].account_id = @account.id
-        @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+        @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
         @cart.account = @account2
-        @cart.save        
+        @cart.save
         @cart.reload.order_details[0].account.should == @account2
         @cart.order_details[1].account.should == @account2
         @cart.account.should == @account2

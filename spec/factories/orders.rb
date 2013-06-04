@@ -11,7 +11,7 @@ FactoryGirl.define do
     facility { product.facility }
     association :account, :factory => :setup_account
     user { account.owner.user }
-    created_by { user }
+    created_by { account.owner.user.id }
 
     after(:create) do |order, evaluator|
       FactoryGirl.create(:user_price_group_member, :user => evaluator.user, :price_group => evaluator.product.facility.price_groups.last)
