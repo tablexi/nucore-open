@@ -4,7 +4,7 @@ describe Statement do
   before :each do
     @facility=FactoryGirl.create(:facility)
     @user=FactoryGirl.create(:user)
-    @account=FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])
+    @account=FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
   end
 
   it "can be created with valid attributes" do

@@ -409,7 +409,7 @@ describe ReservationsController do
     context 'with new account' do
 
       before :each do
-        @account2=FactoryGirl.create(:nufs_account, :account_users_attributes => [{:user => @guest, :created_by => @guest, :user_role => 'Owner'}])
+        @account2=FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @guest))
         define_open_account(@instrument.account, @account2.account_number)
         @params.merge!({ :order_account => @account2.id })
         @order.account.should == @account

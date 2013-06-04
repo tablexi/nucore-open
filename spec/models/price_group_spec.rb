@@ -57,7 +57,7 @@ describe PriceGroup do
       @price_group.destroy
       @price_group.should be_destroyed
     end
-    
+
     context 'with price policy' do
       before :each do
         @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
@@ -70,10 +70,10 @@ describe PriceGroup do
         @price_group.destroy
         @price_group.should be_destroyed
       end
-    
+
       it 'should not be deletable if there are orders on a policy' do
         @user = FactoryGirl.create(:user)
-        @order = FactoryGirl.create(:order, :user => @user, :created_by => @user )
+        @order = FactoryGirl.create(:order, :user => @user, :created_by => @user.id )
         @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product => @item, :price_policy => @price_policy))
         @order_detail.reload.price_policy.should == @price_policy
         @price_group.should_not be_can_delete

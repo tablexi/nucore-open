@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 ## base
-gem 'rails',            '3.1.12'
+gem 'rails',            '3.2.13'
 gem 'rails_config',     '0.3.3'
 
 ## database
@@ -21,14 +21,14 @@ gem 'cancan',           '1.6.10'
 gem 'aasm',             '2.2.0'
 gem 'paperclip',        '~> 2.7.5'
 gem 'vestal_versions',  '1.2.4.3', :git => 'git://github.com/elzoiddy/vestal_versions.git'
-# cannot upgrade any higher than 2.0.1 because it stops playing nicely with oracle
-gem 'awesome_nested_set', '2.0.1'
+gem 'awesome_nested_set', '2.1.6'
 gem 'nokogiri',         '1.4.4'
 
 ## views
 gem 'haml',             '4.0.3'
 gem 'will_paginate',    '3.0.4'
 gem 'jquery-rails',     '1.0.12'
+gem 'dynamic_form',     '~> 1.1.4'
 
 ## controllers
 gem 'prawn',            '0.12'

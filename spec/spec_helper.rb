@@ -354,13 +354,23 @@ Spork.each_run do
     @instrument
   end
 
+  def account_users_attributes_hash(options = {})
+    options[:user] ||= @user
+    options[:created_by] ||= options[:user].id
+    # force created_by to a fixnum id
+    options[:created_by] = options[:created_by].kind_of?(Fixnum) ? options[:created_by] : options[:created_by].id
+
+    options[:user_role] ||= AccountUser::ACCOUNT_OWNER
+    [Hash[options]]
+  end
+
   #
   # Sets up a user with an account and as part of a price group
   # Sets the following instance variables
   # - @account
   # - @pg_member
   def setup_user_for_purchase(user, price_group)
-    @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => user, :created_by => user, :user_role => 'Owner']])
+    @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => user))
     @pg_member        = FactoryGirl.create(:user_price_group_member, :user => user, :price_group => price_group)
   end
 
