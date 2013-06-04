@@ -1,8 +1,6 @@
 = content_for :head_content do
   = javascript_include_tag 'date.js'
   = javascript_include_tag 'calendar/fullcalendar.min.js'
-  = stylesheet_link_tag 'calendar/fullcalendar.css'
-  = stylesheet_link_tag 'calendar/fullcalendar.extensions.css'
   :javascript
     var events_path     = "#{facility_instrument_reservations_path(current_facility, @instrument, :format => 'js')}";
     var maxDaysFromNow  = #{@instrument.max_reservation_window};
