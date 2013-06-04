@@ -21,8 +21,7 @@ gem 'cancan',           '1.6.10'
 gem 'aasm',             '2.2.0'
 gem 'paperclip',        '~> 2.7.5'
 gem 'vestal_versions',  '1.2.4.3', :git => 'git://github.com/elzoiddy/vestal_versions.git'
-# cannot upgrade any higher than 2.0.1 because it stops playing nicely with oracle
-gem 'awesome_nested_set', '2.0.1'
+gem 'awesome_nested_set', '2.1.6'
 gem 'nokogiri',         '1.4.4'
 
 ## views
