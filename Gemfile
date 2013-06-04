@@ -56,7 +56,7 @@ group :development, :test do
   gem 'single_test',       '0.4.0'
   gem 'spork',             '0.9.2'
   gem 'timecop'
-  gem "pry-rails",         '0.2.2'
+  gem "pry-rails",         '0.3.0'
   gem "awesome_print",     '1.1.0'
 end
 
@@ -66,5 +66,5 @@ group :oracle do
     gem 'ruby-oci8',        '2.1.5'
   end
 
-  gem 'activerecord-oracle_enhanced-adapter', '1.3.0'
+  gem 'activerecord-oracle_enhanced-adapter', '1.4.2'
 end
