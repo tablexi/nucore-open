@@ -46,7 +46,8 @@ module ReportSpecHelper
 
           context 'ajax' do
             before :each do
-              @params.merge!(:format => :js)
+              @method = :xhr
+              # @params.merge!(:format => :js)
             end
 
             it_should_allow :director do
@@ -145,23 +146,24 @@ module ReportSpecHelper
     format=@params[:format]
     format=:html unless format
 
-    case format
-      when :html
-        should render_template 'reports/report'
-      when :js
+    if format == :html
+      if @method == :xhr
         assert_report_init label, &report_on
         should render_template 'reports/report_table'
-      when :csv
-        export_type=@params[:export_id]
+      else
+        should render_template 'reports/report'
+      end
+    elsif format == :csv
+      export_type=@params[:export_id]
 
-        case export_type
-          when 'report'
-            assert_report_init label, &report_on
-          when 'report_data'
-            assert_report_data_init label
-        end
+      case export_type
+        when 'report'
+          assert_report_init label, &report_on
+        when 'report_data'
+          assert_report_data_init label
+      end
 
-        assert_report_download_rendered "#{@action}_#{export_type}"
+      assert_report_download_rendered "#{@action}_#{export_type}"
     end
   end
 

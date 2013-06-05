@@ -48,7 +48,7 @@ class TabbableReports
     "?" + @$element.serialize()
 
   init_form: ->
-    $('#status_filter').chosen()
+    $('#status_filter').chosen() if $('#status_filter').length
     $('.datepicker').datepicker()
     self = this
     @$element.find(':input').change ->
