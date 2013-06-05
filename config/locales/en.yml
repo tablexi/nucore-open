@@ -294,6 +294,7 @@ en:
           resolve: "Resolution Notes"
         resolved: "Resolved At"
         reconcile: "Reconciliation Note:"
+        with_cancel_fee: Add reservation cost
       instruct:
         dispute: "To resolve the dispute, please make the necessary changes and click \"Resolve Dispute\"."
         bundle: "This order is part of a bundle.  Below is a summary of related bundle order line items."
@@ -757,7 +758,7 @@ en:
       reservation:
         intro: "(Optional)  Define minimum and maximum reservation limits below."
         instruct:
-          cancel_hours: "Minimum length of time before a reservation begins that a user may cancel a reservation without penalty"
+          cancel_hours: "Minimum length of time before a reservation begins that a user may cancel a reservation without invoking the reservation cost"
           auto_cancel: "The duration a due but unactivated reservation can exist before the system cancels it"
         label:
           restrict: "Reservation Restrictions"
