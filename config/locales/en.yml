@@ -294,6 +294,7 @@ en:
           resolve: "Resolution Notes"
         resolved: "Resolved At"
         reconcile: "Reconciliation Note:"
+        with_cancel_fee: Add reservation cost
       instruct:
         dispute: "To resolve the dispute, please make the necessary changes and click \"Resolve Dispute\"."
         bundle: "This order is part of a bundle.  Below is a summary of related bundle order line items."
