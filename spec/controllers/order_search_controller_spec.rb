@@ -15,6 +15,25 @@ def it_should_not_find_the_order(desc = '')
   end
 end
 
+def it_should_have_admin_edit_paths
+  render_views
+  it 'should have link to the admin path' do
+    get :index, :search => order.id.to_s
+    response.body.should include edit_facility_order_order_detail_path(order_detail.facility, order_detail.order, order_detail)
+    response.body.should include edit_facility_order_path(order.facility, order)
+  end
+end
+
+def it_should_have_customer_paths
+  render_views
+  it 'should have links to the customer view' do
+    get :index, :search => order.id.to_s
+    response.body.should include order_order_detail_path(order_detail.order, order_detail)
+    response.body.should include order_path(order)
+  end
+end
+
+
 describe OrderSearchController do
   before(:all) { create_users }
   let!(:product) { FactoryGirl.create(:setup_item) }
@@ -45,6 +64,7 @@ describe OrderSearchController do
         end
 
         it_should_find_the_order
+        it_should_have_customer_paths
       end
 
       context 'when it is purchased for another user' do
@@ -63,6 +83,7 @@ describe OrderSearchController do
       end
 
       it_should_find_the_order 'even if it is under a different user'
+      it_should_have_admin_edit_paths
     end
 
     context 'when signed in as facility admin for a different facility' do
@@ -75,12 +96,28 @@ describe OrderSearchController do
       it_should_not_find_the_order
     end
 
+    context 'when signed in as facility admin, but order was placed for the user in a different facility' do
+      let(:facility2) { FactoryGirl.create :setup_facility }
+      let!(:product) { FactoryGirl.create(:setup_item, :facility => facility2) }
+      let!(:order) { FactoryGirl.create(:purchased_order, :product => product) }
+      let!(:order_detail) { order.order_details.first }
+      let(:user) { order.user }
+      before :each do
+        grant_role user, facility
+        sign_in user
+      end
+
+      it_should_find_the_order
+      it_should_have_customer_paths
+    end
+
     context 'when signed in as a billing manager' do
       before :each do
         sign_in @billing_admin
       end
 
       it_should_find_the_order
+      it_should_have_admin_edit_paths
     end
 
     describe 'account roles' do
@@ -91,6 +128,7 @@ describe OrderSearchController do
         end
 
         it_should_find_the_order
+        it_should_have_customer_paths
       end
 
       context 'when signed in as a purchaser' do
@@ -109,6 +147,7 @@ describe OrderSearchController do
         end
 
         it_should_find_the_order
+        it_should_have_customer_paths
       end
     end
 
@@ -125,6 +164,7 @@ describe OrderSearchController do
       end
 
       it_should_find_the_order
+      it_should_have_admin_edit_paths
 
       it 'should return the order detail with the id' do
         get :index, :search => order_detail.id.to_s
