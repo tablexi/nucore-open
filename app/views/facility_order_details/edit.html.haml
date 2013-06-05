@@ -215,7 +215,7 @@
 
         - if @order_detail.product.is_a? Instrument
           %div#cancel-fee-opt
-            = label_tag 'with_cancel_fee', 'Add cancel fee'
+            = label_tag 'with_cancel_fee', t('.label.with_cancel_fee')
             = check_box_tag 'with_cancel_fee'
 
       - if @order_detail.product.is_a?(Instrument) && @order_detail.complete?
