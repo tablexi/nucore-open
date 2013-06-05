@@ -76,12 +76,14 @@ class ReportsController < ApplicationController
     init_report_headers report_on_label
 
     respond_to do |format|
-      format.js do
-        init_report(report_on_label, &report_on)
-        render :template => 'reports/report_table'
+      format.html do
+        if request.xhr?
+          init_report(report_on_label, &report_on)
+          render :template => 'reports/report_table', :layout => false
+        else
+          render :template => 'reports/report'
+        end
       end
-
-      format.html { render :template => 'reports/report' }
 
       format.csv do
         export_type=params[:export_id]

@@ -27,8 +27,10 @@ gem 'nokogiri',         '1.4.4'
 ## views
 gem 'haml',             '4.0.3'
 gem 'will_paginate',    '3.0.4'
-gem 'jquery-rails',     '1.0.12'
 gem 'dynamic_form',     '~> 1.1.4'
+gem "ckeditor"
+gem 'jquery-rails',     '~> 2.1.4'
+gem 'jquery-ui-sass-rails'
 
 ## controllers
 gem 'prawn',            '0.12'
@@ -62,7 +64,7 @@ group :development, :test do
 end
 
 group :assets do
-  gem 'sass-rails',   "~> 3.2.6", :require => :sass
+  gem 'sass-rails',   "~> 3.2.6"
   gem 'coffee-rails', "~> 3.2.2"
   gem 'uglifier',     ">= 2.1.1"
 end
