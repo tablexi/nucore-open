@@ -44,7 +44,7 @@ GEM
       activesupport (= 3.2.13)
       arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
-    activerecord-oracle_enhanced-adapter (1.3.0)
+    activerecord-oracle_enhanced-adapter (1.4.2)
     activeresource (3.2.13)
       activemodel (= 3.2.13)
       activesupport (= 3.2.13)
@@ -247,7 +247,7 @@ PLATFORMS
 
 DEPENDENCIES
   aasm (= 2.2.0)
-  activerecord-oracle_enhanced-adapter (= 1.3.0)
+  activerecord-oracle_enhanced-adapter (= 1.4.2)
   awesome_nested_set (= 2.1.6)
   awesome_print (= 1.1.0)
   c2po (~> 1.0.0)!

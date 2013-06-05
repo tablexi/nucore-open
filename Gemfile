@@ -73,5 +73,5 @@ group :oracle do
     gem 'ruby-oci8',        '2.1.5'
   end
 
-  gem 'activerecord-oracle_enhanced-adapter', '1.3.0'
+  gem 'activerecord-oracle_enhanced-adapter', '1.4.2'
 end
