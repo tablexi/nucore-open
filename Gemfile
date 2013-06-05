@@ -62,7 +62,7 @@ group :development, :test do
 end
 
 group :assets do
-  gem 'sass-rails',   "~> 3.2.6"
+  gem 'sass-rails',   "~> 3.2.6", :require => :sass
   gem 'coffee-rails', "~> 3.2.2"
   gem 'uglifier',     ">= 2.1.1"
 end
