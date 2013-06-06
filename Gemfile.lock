@@ -68,6 +68,9 @@ GEM
       net-ssh-gateway (>= 1.1.0)
     ci_reporter (1.8.4)
       builder (>= 2.1.2)
+    ckeditor (4.0.4)
+      mime-types
+      orm_adapter
     cocaine (0.3.2)
     coderay (1.0.9)
     coffee-rails (3.2.2)
@@ -111,9 +114,16 @@ GEM
     hike (1.2.2)
     i18n (0.6.1)
     journey (1.0.4)
-    jquery-rails (1.0.12)
-      railties (~> 3.0)
-      thor (~> 0.14)
+    jquery-rails (2.1.4)
+      railties (>= 3.0, < 5.0)
+      thor (>= 0.14, < 2.0)
+    jquery-ui-rails (4.0.3)
+      jquery-rails
+      railties (>= 3.1.0)
+    jquery-ui-sass-rails (4.0.3.0)
+      jquery-rails
+      jquery-ui-rails (= 4.0.3)
+      railties (>= 3.1.0)
     json (1.8.0)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
@@ -234,6 +244,9 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     ttfunk (1.0.3)
+    turbo-sprockets-rails3 (0.3.6)
+      railties (> 3.2.8, < 4.0.0)
+      sprockets (>= 2.0.0)
     tzinfo (0.3.37)
     uglifier (2.1.1)
       execjs (>= 0.3.0)
@@ -254,6 +267,7 @@ DEPENDENCIES
   cancan (= 1.6.10)
   capistrano (= 2.15.4)
   ci_reporter
+  ckeditor
   coffee-rails (~> 3.2.2)
   daemons (= 1.1.9)
   devise (= 2.2.4)
@@ -265,7 +279,8 @@ DEPENDENCIES
   fast-aes (= 0.1.1)
   foreigner (= 1.1.1)
   haml (= 4.0.3)
-  jquery-rails (= 1.0.12)
+  jquery-rails (~> 2.1.4)
+  jquery-ui-sass-rails
   mysql2 (~> 0.3.11)
   nokogiri (= 1.4.4)
   paperclip (~> 2.7.5)
@@ -286,6 +301,7 @@ DEPENDENCIES
   spreadsheet (~> 0.6.5.5)
   synaccess_connect (= 0.2.0)!
   timecop
+  turbo-sprockets-rails3
   uglifier (>= 2.1.1)
   vestal_versions (= 1.2.4.3)!
   will_paginate (= 3.0.4)

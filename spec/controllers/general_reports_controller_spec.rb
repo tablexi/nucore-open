@@ -55,13 +55,12 @@ describe GeneralReportsController do
       @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday.change_status!(OrderStatus.reconciled.first)
 
 
-      @method = :get
+      @method = :xhr
       @action = :product
       @params = {
         :facility_id => @authable.url_name,
         :date_start => Time.zone.now.strftime('%m/%d/%Y'),
         :date_end => 1.day.from_now.strftime('%m/%d/%Y'),
-        :format => :js
       }
 
       sign_in @admin
@@ -206,6 +205,7 @@ describe GeneralReportsController do
 
 
   def assert_report_init(label)
+    response.should be_success
     assigns(:total_quantity).should be_instance_of Fixnum
     assigns(:total_cost).should be_instance_of Float
 

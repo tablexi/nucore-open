@@ -53,7 +53,11 @@ end
 #   Overrides the @params variable
 def do_request(params=nil)
   params=@params unless params
-  method(@method).call(@action, params)
+  if @method == :xhr
+    xhr :get, @action, params
+  else
+    method(@method).call(@action, params)
+  end
 end
 
 # This does what Users#switch_to does and sets the acting user.

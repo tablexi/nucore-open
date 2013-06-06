@@ -1,10 +1,7 @@
 = content_for :head_content do
   = stylesheet_link_tag 'reports'
-  = render :partial => 'reports/report_head'
   :javascript
-    $(function() {
-      initReportsUI(#{@selected_index});
-    });
+    window.activeTab = #{@selected_index || 0}
 
 = content_for :h1 do
   =h current_facility

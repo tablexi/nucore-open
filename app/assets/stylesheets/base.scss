@@ -743,6 +743,10 @@ ul.form li.clear,table ul,.search_form fieldset li .chzn-container,.search_form 
     color: black;
 }
 
+#ui-datepicker-div {
+  z-index: 10 !important; /* was being hidden behind fullcalendar */
+}
+
 /***
  * Dialog boxes
  */
