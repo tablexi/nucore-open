@@ -1,7 +1,7 @@
 #ui-datepicker-div { display: none; }
 
 .timeline {
-  background:url(timeline.png) no-repeat;
+  background: image-url('timeline.png') no-repeat;
   display:block;
   height:44px;
   position:relative;
@@ -237,7 +237,7 @@ body .unit {
 }
 
 .toggle_switch .bg {
-   background:url(itoggle_border.png) top left no-repeat;
+   background: image-url("itoggle_border.png") top left no-repeat;
   z-index: 200;
   position: absolute;
   top: 0;
@@ -253,7 +253,7 @@ body .unit {
   height: 100%;
   width: 147px;
   left: -60px;
-  background: #FFF url(itoggle.png) no-repeat bottom left;
+  background: #FFF image-url("itoggle.png") no-repeat bottom left;
   z-index: 100;
 }
 
@@ -265,7 +265,7 @@ body .unit {
  * Relay switch overlays
  */
 .relay_checkbox .loading_box{
-  background-image: url(spinner-big.gif);
+  background-image: image-url("spinner-big.gif");
   width: 32px;
   height: 32px;
   position: absolute;
@@ -278,7 +278,7 @@ body .unit {
   display: block;
 }
 .relay_checkbox .error {
-  background: transparent url(icon-warning-48.png) no-repeat;
+  background: transparent image-url("icon-warning-48.png") no-repeat;
   display: block;
   width: 48px;
   height: 48px;
@@ -288,7 +288,7 @@ body .unit {
   z-index: 1000;
 }
 /*.relay_checkbox .error {
-  background: transparent url(icon-warning-32.png) no-repeat;
+  background: transparent image-url("icon-warning-32.png") no-repeat;
   margin-left: 14px;
   padding-left: 26px;
   line-height: 24px;
@@ -317,11 +317,11 @@ body .unit {
 }
 
 #reservation_date_container #reservation_left {
-  background:url(btn-left.jpg) top left no-repeat;
+  background: image-url("btn-left.jpg") top left no-repeat;
 }
 
 #reservation_date_container #reservation_right {
-  background:url(btn-right.jpg) top left no-repeat;
+  background: image-url("btn-right.jpg") top left no-repeat;
 }
 
  #reservation_date_container #reservation_date {

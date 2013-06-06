@@ -116,13 +116,13 @@ reusable classes
 }
 
 .document {
-  background:url(icon_file.jpg) no-repeat 0 0;
+  background: image-url("icon_file.jpg") no-repeat 0 0;
   line-height:24px;
   padding-left:28px;
 }
 
 .require,.required {
-  background:url("asterisk.png") no-repeat 0 0;
+  background: image-url("asterisk.png") no-repeat 0 0;
   padding-left:9px;
 }
 
@@ -248,7 +248,7 @@ fieldset.collapsable legend:before {
   height: 10px;
   left: 0;
   top: 3px;
-  background: url(sprite-collapse.png) no-repeat -10px 0;
+  background: image-url("sprite-collapse.png") no-repeat -10px 0;
 }
 fieldset.collapsable.collapsed legend:before {
   background-position: 0 0;
@@ -409,7 +409,7 @@ main layout ids
 }
 
 #sidebar li.sub_menu .icon {
-  background:url(icon-submenu.png) top left no-repeat;
+  background: image-url("icon-submenu.png") top left no-repeat;
   display:inline-block;
   height:12px;
   position:relative;
@@ -450,14 +450,14 @@ main layout ids
 }
 
 ul li.warning {
-  background:url(icon_warning.jpg) no-repeat 0 0;
+  background: image-url("icon_warning.jpg") no-repeat 0 0;
   color:#B44D4D;
   line-height:24px;
   padding-left:28px;
 }
 
 p.warning {
-  background:url(icon_warning.jpg) no-repeat 0 0;
+  background: image-url("icon_warning.jpg") no-repeat 0 0;
   color:#B44D4D;
   line-height:24px;
   margin-bottom:0;
@@ -494,21 +494,21 @@ th.actions, td.actions {
 }
 
 .sortable {
-  background-image:url(icon-sort.gif);
+  background-image: image-url("icon-sort.gif");
   background-position:right center;
   background-repeat:no-repeat;
   padding-right:10px;
 }
 
 .asc {
-  background-image:url(icon-sort-ascend.gif);
+  background-image: image-url("icon-sort-ascend.gif");
   background-position:right center;
   background-repeat:no-repeat;
   padding-right:10px;
 }
 
 .desc {
-  background-image:url(icon-sort-descend.gif);
+  background-image: image-url("icon-sort-descend.gif");
   background-position:right center;
   background-repeat:no-repeat;
   padding-right:10px;
@@ -663,7 +663,7 @@ ul.tabs .updated {
     text-decoration: none;
 }
 ul.tabs .updating {
-  background-image: url(spinner-arrow.gif);
+  background-image: image-url("spinner-arrow.gif");
   position: relative;
   top: 3px;
 }
@@ -676,7 +676,7 @@ ul.tabs .updated {
 billing
 ***************************************/
 #header_billing {
-  background:url(bg-search-form.png) top right repeat-y;
+  background: image-url("bg-search-form.png") top right repeat-y;
   border-top:1px solid #ccc;
   padding-top:10px;
 }
