@@ -67,6 +67,7 @@ group :assets do
   gem 'sass-rails',   "~> 3.2.6"
   gem 'coffee-rails', "~> 3.2.2"
   gem 'uglifier',     ">= 2.1.1"
+  gem 'turbo-sprockets-rails3'
 end
 
 group :oracle do

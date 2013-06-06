@@ -244,6 +244,9 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     ttfunk (1.0.3)
+    turbo-sprockets-rails3 (0.3.6)
+      railties (> 3.2.8, < 4.0.0)
+      sprockets (>= 2.0.0)
     tzinfo (0.3.37)
     uglifier (2.1.1)
       execjs (>= 0.3.0)
@@ -298,6 +301,7 @@ DEPENDENCIES
   spreadsheet (~> 0.6.5.5)
   synaccess_connect (= 0.2.0)!
   timecop
+  turbo-sprockets-rails3
   uglifier (>= 2.1.1)
   vestal_versions (= 1.2.4.3)!
   will_paginate (= 3.0.4)
