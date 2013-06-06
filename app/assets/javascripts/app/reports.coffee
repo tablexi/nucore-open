@@ -42,10 +42,14 @@ class TabbableReports
 
       load: (event, ui) ->
         self.fix_bad_dates(ui.panel)
+        self.update_export_urls()
     })
 
   build_query_string: ->
     "?" + @$element.serialize()
+
+  tab_url: (tab) ->
+    $(tab).data('base-href') + @build_query_string()
 
   init_form: ->
     $('#status_filter').chosen() if $('#status_filter').length
@@ -55,8 +59,7 @@ class TabbableReports
       self.update_parameters()
 
   update_href: (tab) ->
-    base_url = tab.data('base-href')
-    tab.find('a').attr('href', base_url + @build_query_string())
+    tab.find('a').attr('href', @tab_url(tab))
 
   # Make sure to update the date params in case they were empty or invalid
   fix_bad_dates: (panel) ->
@@ -65,10 +68,15 @@ class TabbableReports
 
   init_pagination: ->
     self = this
-    $(document).on 'click', '.pagination a', ->
-      self.current_tab().find('a').attr('href', $(this).attr('href'))
+    $(document).on 'click', '.pagination a', (evt) ->
+      evt.preventDefault()
+      $(self.current_tab()).find('a').attr('href', $(this).attr('href'))
       self.refresh_tab()
-      false
+
+  update_export_urls: ->
+    url = @tab_url(@current_tab())
+    $('#export').attr('href', url + '&export_id=report&format=csv');
+    $('#export-all').attr('href', url + '&export_id=report_data&format=csv');
 
 $ ->
   window.report = new TabbableReports($('#refresh-form'))
