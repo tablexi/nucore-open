@@ -195,12 +195,15 @@ describe Reservation do
       end
 
       it 'should update the reservation to the earliest available' do
-        earliest=@reservation1.earliest_possible
-        @reservation1.reserve_start_at.should_not == earliest.reserve_start_at
-        @reservation1.reserve_end_at.should_not == earliest.reserve_end_at
-        @reservation1.move_to_earliest.should be_true
-        @reservation1.reserve_start_at.to_i.should == earliest.reserve_start_at.to_i
-        @reservation1.reserve_end_at.to_i.should == earliest.reserve_end_at.to_i
+        # if earliest= and move_to_earliest span a second, the test fails
+        Timecop.freeze do
+          earliest=@reservation1.earliest_possible
+          @reservation1.reserve_start_at.should_not == earliest.reserve_start_at
+          @reservation1.reserve_end_at.should_not == earliest.reserve_end_at
+          @reservation1.move_to_earliest.should be_true
+          @reservation1.reserve_start_at.to_i.should == earliest.reserve_start_at.to_i
+          @reservation1.reserve_end_at.to_i.should == earliest.reserve_end_at.to_i
+        end
       end
     end
 
