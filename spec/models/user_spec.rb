@@ -12,6 +12,11 @@ describe User do
     should validate_uniqueness_of(:username)
   end
 
+  it 'should save the username as lowercase' do
+    @user = FactoryGirl.create(:user, :username => 'AnEmail@example.org')
+    @user.reload.username.should == 'anemail@example.org'
+  end
+
   it { should have_many(:notifications) }
 
   it "should use factory" do
