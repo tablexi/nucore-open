@@ -2,9 +2,9 @@
   = Facility.model_name.human.pluralize
 
 %p.box= t(".welcome")
-  
+
 - if @facilities.empty?
-  %p.notice= "No #{Facility.human_name.pluralize.downcase} are available at this time."
+  %p.notice= "No #{Facility.model_name.human.pluralize.downcase} are available at this time."
 - @facilities.sort.each do |facility|
   %h3= link_to h(facility), facility_path(facility)
   %p=h facility.short_description
