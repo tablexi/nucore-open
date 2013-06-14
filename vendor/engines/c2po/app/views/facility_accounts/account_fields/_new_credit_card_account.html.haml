@@ -1,0 +1,9 @@
+%li
+  = f.label :name_on_card, t('facility_accounts.account_fields.label.cc_name'), :class => 'require'
+  = f.text_field :name_on_card
+%li
+  = f.label :expiration_month, nil, :class => 'require'
+  = f.select :expiration_month, (1..12).to_a, {}
+%li
+  = f.label :expiration_year, nil, :class => 'require'
+  = f.select :expiration_year, (Time.zone.now.year..(Time.zone.now.year + 10)).to_a, {}

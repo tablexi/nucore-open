@@ -7,7 +7,7 @@ describe Order do
       @price_group  = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
       @order_status = FactoryGirl.create(:order_status)
       @service      = @facility.services.create(FactoryGirl.attributes_for(:service, :initial_order_status_id => @order_status.id, :facility_account_id => @facility_account.id))
-      @service_pp   = FactoryGirl.create(:service_price_policy, :service => @service, :price_group => @price_group)
+      @service_pp   = FactoryGirl.create(:service_price_policy, :product => @service, :price_group => @price_group)
       @user         = FactoryGirl.create(:user)
       @pg_member    = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @account      = FactoryGirl.create(:nufs_account, :account_users_attributes => [Hash[:user => @user, :created_by => @user, :user_role => 'Owner']])

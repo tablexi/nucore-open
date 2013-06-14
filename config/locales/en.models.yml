@@ -127,16 +127,21 @@ en:
         fulfilled_at: Fulfilled Date
         ordered_at: Ordered Date
         journal_date: Journal Date
+        journal_or_statement_date: "Journal/Statement Date"
         user: Ordered For
         created_by_user: Ordered By
         reviewed_at: Review Closes
+        reviewed_at_past: Review Closed
         order_status: Status
       journal:
         description: Notes
         journal_status: Status
       statement:
+        id: "Invoice #"
         created_by: Sent By
         created_at: Sent At
+        sent_to: Sent To
+        total_cost: Total
       account:
         account_number: Number
         expires_at: Expires

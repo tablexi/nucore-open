@@ -12,7 +12,7 @@ prawn_document pdf_config do |pdf|
   pdf.font_size = 10.5
 
   pdf.text @facility.to_s, :size => 20, :font_style => :bold
-  pdf.text "Invoice ##{@account.id}-#{@statement.id}"
+  pdf.text "Invoice ##{@statement.invoice_number}"
 
   if @facility.has_contact_info?
     pdf.text @facility.address if @facility.address

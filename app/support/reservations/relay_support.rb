@@ -15,6 +15,7 @@ module Reservations::RelaySupport
     return false if can_switch_instrument_on?(false) if check_on  # mutually exclusive
     return false unless actual_end_at.nil?    # already ended
     return false if actual_start_at.nil?      # hasn't been started yet
+    return false if order_detail.complete?
     true
   end
 

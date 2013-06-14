@@ -1,11 +1,11 @@
-source :gemcutter
+source 'https://rubygems.org'
 
 ## base
-gem 'rails',            '3.0.19'
+gem 'rails',            '3.0.20'
 gem 'rails_config',     '0.2.5'
 
 ## database
-gem 'mysql2',           '0.2.11'
+gem 'mysql2',           '~> 0.2.11'
 gem 'foreigner',        '1.1.1'
 
 ## deployment
@@ -18,7 +18,7 @@ gem 'devise_ldap_authenticatable', '0.4.4'
 
 ## models
 gem 'aasm',             '2.2.0'
-gem 'paperclip',        '2.3.12'
+gem 'paperclip',        '~> 2.3.12'
 gem 'vestal_versions',  '1.2.4.3', :git => 'git://github.com/elzoiddy/vestal_versions.git'
 gem 'awesome_nested_set', '2.0.1'
 gem 'nokogiri',         '1.4.4'
@@ -34,8 +34,7 @@ gem 'prawn_rails',      '0.0.5'
 
 ## other
 gem 'rake'
-gem 'ruby-ole',         '1.2.11.1'
-gem 'spreadsheet',      '0.6.5.5'
+gem 'spreadsheet',      '~> 0.6.5.5'
 gem 'fast-aes',         '0.1.1'
 gem 'pdf-reader',       '1.3.2'
 gem 'exception_notification', :require => 'exception_notifier'

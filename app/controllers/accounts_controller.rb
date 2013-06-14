@@ -2,10 +2,11 @@ class AccountsController < ApplicationController
   customer_tab  :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
-  before_filter :init_account, :only => [:show, :user_search, :transactions, :transactions_in_review ]
+  before_filter :init_account, :only => [:show, :user_search, :transactions, :transactions_in_review, :suspend, :unsuspend ]
 
   include TransactionSearch
-  load_and_authorize_resource :only => [:show, :user_search, :transactions, :transactions_in_review ]
+  include AccountSuspendActions
+  load_and_authorize_resource :only => [:show, :user_search, :transactions, :transactions_in_review, :suspend, :unsuspend ]
 
 
   def initialize
@@ -32,20 +33,22 @@ class AccountsController < ApplicationController
     paginate_order_details
     @active_tab = 'accounts'
   end
-  
+
   def transactions_in_review_with_search
-    @order_details = @order_details.where(:account_id => @account.id).all_in_review
+    @order_details = @order_details.where(:account_id => @account.id)
+    @recently_reviewed = @order_details.recently_reviewed.paginate(:page => params[:page])
+    @order_details = @order_details.all_in_review
+
     @extra_date_column = :reviewed_at
     @order_detail_link = {
       :text => "Dispute",
       :display? => Proc.new {|order_detail| order_detail.can_dispute?},
       :proc => Proc.new {|order_detail| order_order_detail_path(order_detail.order, order_detail)}
-    }                                    
-    paginate_order_details
+    }
   end
-  
+
   protected
-  
+
   def init_account
     @account = Account.find(params[:id] || params[:account_id])
   end

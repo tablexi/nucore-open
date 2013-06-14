@@ -19,6 +19,7 @@ Nucore::Application.routes.draw do |map|
 
   # shared searches
   map.user_search_results '/user_search_results', :controller =>'search', :action => 'user_search_results', :conditions => { :method => :post }
+  match "order_search" => "order_search#index", :as => "order_search", :via => :post
 
   map.connect        '/facilities/:facility_id/price_group/:price_group_id/account_price_group_members/search_results', :controller =>'account_price_group_members', :action => 'search_results'
 
@@ -32,16 +33,23 @@ Nucore::Application.routes.draw do |map|
     account.resources :facilities, :only => [] do |facility|
       facility.resources :statements, :only => [:show]
     end
+    if SettingsHelper.feature_on? :suspend_accounts
+      account.suspend '/suspend', :controller => 'accounts', :action => 'suspend'
+      account.unsuspend '/unsuspend', :controller => 'accounts', :action => 'unsuspend'
+    end
   end
 
   # transaction searches
   #match "/accounts/:account_id/transactions" => 'transaction_history#account_history', :as => "account_transaction_history"
   match "/transactions" => 'transaction_history#my_history', :as => "transaction_history"
 
+
+
   # global settings
   resources :affiliates, :except => :show
 
   map.resources :facilities, :collection => {:list => :get}, :member => {:manage => :get}, :except => [:delete] do |facility|
+    facility
     facility.resources :products, :only => [:index] do |product|
       product.resources :product_accessories, :as => 'accessories', :only => [:index, :create, :destroy]
     end
@@ -115,7 +123,7 @@ Nucore::Application.routes.draw do |map|
 
     facility.resources :facility_accounts, :controller => 'facility_facility_accounts', :only => [:index, :new, :create, :edit, :update] if SettingsHelper.feature_on? :recharge_accounts
 
-    facility.resources :orders, :controller => 'facility_orders', :only => [:index, :edit, :update], :member => { :send_receipt => :post }, :collection => {:batch_update => :post, :show_problems => :get, :disputed => :get, :tab_counts => :get } do |order|
+    facility.resources :orders, :controller => 'facility_orders', :only => [:index, :edit, :update], :member => { :send_receipt => :post }, :collection => {:batch_update => :post, :show_problems => :get, :disputed => :get, :tab_counts => :get, :search => :get } do |order|
       order.resources :order_details, :controller => 'facility_order_details', :only => [:edit, :update, :destroy], :member => {:remove_from_journal => :get} do |order_detail|
         order_detail.new_price '/new_price', :controller => 'facility_order_details', :action => 'new_price', :conditions => {:method => :get}
         order_detail.resolve_dispute '/resolve_dispute', :controller => 'facility_order_details', :action => 'resolve_dispute', :conditions => {:method => :put}

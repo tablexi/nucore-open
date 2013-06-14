@@ -13,6 +13,7 @@ public/files/
 spec/models/nucs/
 spec/controllers/nucs/
 vendor/bundle
+vendor/cache/
 vendor/engines/nucs/Gemfile
 vendor/engines/nucs/Gemfile.lock
 vendor/engines/nucs/config/database.yml
@@ -25,3 +26,5 @@ vendor/engines/nucs/config/database.yml
 config/settings.local.yml
 config/settings/*.local.yml
 config/environments/*.local.yml
+
+public/images/bg-search-form.pxm

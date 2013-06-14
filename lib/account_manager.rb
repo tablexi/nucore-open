@@ -27,4 +27,16 @@ class AccountManager
   def self.multiple_account_types?
     (GLOBAL_ACCOUNT_CLASSES + FACILITY_ACCOUNT_CLASSES).size > 1
   end
+
+  def self.account_type_by_string(type_string)
+    str_valid_types = AccountManager.new.valid_account_types.inject({}) { |hash, type| hash.update type.to_s => type }
+    str_valid_types.fetch type_string, Account
+  end
+
+  module Overridable
+    def valid_account_types
+      [ NufsAccount ]
+    end
+  end
+  include Overridable
 end

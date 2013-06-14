@@ -29,7 +29,7 @@ class OrdersController < ApplicationController
 
   # GET /orders/:id
   def show
-    @order_statuses = OrderStatus.non_protected_statuses(@order.facility)
+    load_statuses
     facility_ability = Ability.new(session_user, @order.facility, self)
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
     @order.validate_order! if @order.new?
@@ -68,7 +68,7 @@ class OrdersController < ApplicationController
     ## handle a single instrument reservation
     if items.size == 1 and (quantity = items.first[:quantity].to_i) == 1 #only one od w/ quantity of 1
       if first_product.respond_to?(:reservations)                              # and product is reservable
-        
+
         # make a new cart w/ instrument (unless this order is empty.. then use that one)
         @order = acting_user.cart(session_user, @order.order_details.empty?)
 
@@ -234,9 +234,12 @@ class OrdersController < ApplicationController
 
   # PUT /orders/:id/update
   def update
+    load_statuses
+    params[:order_datetime] = build_order_date if acting_as?
     @order.transaction do
       if update_order_details
-        redirect_to order_path(@order)
+        render :show
+        # redirect_to order_path(@order)
       else
         logger.debug "errors #{@order.errors.full_messages}"
         flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
@@ -250,16 +253,16 @@ class OrdersController < ApplicationController
     facility_ability = Ability.new(session_user, @order.facility, self)
     #revalidate the cart, but only if the user is not an admin
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
-    
-    @order.ordered_at = parse_usa_date(params[:order_date], join_time_select_values(params[:order_time])) if params[:order_date].present? && params[:order_time].present? && acting_as?
-    
+
+    @order.ordered_at = build_order_date if params[:order_date].present? && params[:order_time].present? && acting_as?
+
     begin
       @order.transaction do
         # try update
         quantities_before = @order.order_details.order("order_details.id").collect(&:quantity)
         if update_order_details
           quantities_after = @order.order_details.order("order_details.id").collect(&:quantity)
-          
+
           if quantities_after != quantities_before
             flash[:notice] = "Quantities have changed, please review updated prices then click \"Purchase\""
             return redirect_to order_path(@order)
@@ -272,12 +275,12 @@ class OrdersController < ApplicationController
 
         # Empty message because validate_order! and purchase! don't give us useful messages as to why they failed
         raise NUCore::PurchaseException.new("") unless @order.validate_order! && @order.purchase!
-        
-        if facility_ability.can? :order_in_past, @order 
+
+        if facility_ability.can? :order_in_past, @order
           # update order detail statuses if you've changed it while acting as
           if acting_as? && params[:order_status_id].present?
             @order.backdate_order_details!(session_user, params[:order_status_id])
-          else 
+          else
             @order.complete_past_reservations!
           end
         end
@@ -304,6 +307,7 @@ class OrdersController < ApplicationController
     rescue Exception => e
       flash[:error] = I18n.t('orders.purchase.error')
       flash[:error] += " #{e.message}" if e.message
+      puts e.message
       @order.reload.invalidate!
       redirect_to order_path(@order) and return
     end
@@ -359,7 +363,17 @@ class OrdersController < ApplicationController
         order_detail_updates[$2.to_i][$1.to_sym] = value
       end
     end
-    
+
     return @order.update_details(order_detail_updates)
+  end
+
+  def build_order_date
+    if params[:order_date].present? && params[:order_time].present?
+      parse_usa_date(params[:order_date], join_time_select_values(params[:order_time]))
+    end
+  end
+
+  def load_statuses
+    @order_statuses = OrderStatus.non_protected_statuses(@order.facility)
   end
 end

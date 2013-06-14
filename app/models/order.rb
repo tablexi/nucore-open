@@ -12,7 +12,19 @@ class Order < ActiveRecord::Base
   after_save :update_order_detail_accounts, :if => :account_id_changed?
 
   scope :for_user, lambda { |user| { :conditions => ['user_id = ? AND ordered_at IS NOT NULL AND state = ?', user.id, 'purchased'] } }
- 
+
+  def self.created_by_user(user)
+    where(:created_by => user.id)
+  end
+
+  def self.carts
+    where(:ordered_at => nil)
+  end
+
+  def self.for_facility(facility)
+    where(:facility_id => facility.id)
+  end
+
   attr_accessor :being_purchased_by_admin
 
   # BEGIN acts_as_state_machhine
@@ -107,50 +119,10 @@ class Order < ActiveRecord::Base
   end
 
   def add(product, quantity=1)
-    if self.facility && product.facility != self.facility && self.order_details.length > 0
-      raise NUCore::MixedFacilityCart
-    end
-    quantity = quantity.to_i
-    ods=[]
+    adder = Orders::ItemAdder.new(self)
+    ods = adder.add(product, quantity)
 
-    return [] if quantity <= 0
-    
-    case
-    when product.is_a?(Bundle)
-      quantity.times do
-        group_id = max_group_id + 1
-        product.bundle_products.each do |bp|
-          order_detail = self.order_details.create!(:product_id => bp.product.id, :quantity => bp.quantity, :bundle_product_id => product.id, :group_id => group_id, :account => account, :created_by => created_by)
-          ods << order_detail
-        end
-      end
-    when product.is_a?(Service)
-      separate = (product.active_template? || product.active_survey?)
-
-      # can't add single order_detail for service when it requires a template or a survey.
-      # number of order details to add
-      repeat =              separate ? quantity : 1
-      # quantity to add them with
-      individual_quantity = separate ? 1        : quantity
-      
-      repeat.times do
-        order_detail = self.order_details.create!(:product_id => product.id, :quantity => individual_quantity, :account => account, :created_by => created_by)
-        ods << order_detail
-      end
-
-    # products which have reservations (instruments) should each get their own order_detail
-    when (product.respond_to?(:reservations) and quantity > 1) then
-      quantity.times do
-        order_detail = order_details.create!(:product_id => product.id, :quantity => 1, :account => account, :created_by => created_by)
-        ods << order_detail
-      end
-    else
-      order_detail = order_details.create!(:product_id => product.id, :quantity => quantity, :account => account, :created_by => created_by)
-      ods << order_detail
-    end
     ods.each { |od| od.assign_estimated_price! }
-    self.facility_id = product.facility_id
-    save!
     return ods
   end
 
@@ -161,13 +133,13 @@ class Order < ActiveRecord::Base
       updates = order_detail_updates[order_detail.id]
       # reset quantity (if present)
       quantity = updates[:quantity].present? ? updates[:quantity].to_i : order_detail.quantity
-      
+
       # if quantity isn't there or is 0 (and not bundled), destroy and skip
       if (quantity == 0 && !order_detail.bundled?)
         order_detail.destroy
         next
       end
-      
+
       unless order_detail.update_attributes(updates)
         logger.debug "errors on #{order_detail.id}"
         order_detail.errors.each do |attr, error|
@@ -176,7 +148,7 @@ class Order < ActiveRecord::Base
         end
         next
       end
-      
+
       order_detail.assign_estimated_price if order_detail.cost_estimated?
       order_detail.save
     end
@@ -195,15 +167,15 @@ class Order < ActiveRecord::Base
       else
         od.update_order_status!(update_by, order_status, :admin => true)
       end
-    end      
+    end
   end
-  
+
   def complete_past_reservations!
     order_details.select {|od| od.reservation && od.reservation.reserve_end_at < Time.zone.now }.each do |od|
       od.backdate_to_complete! od.reservation.reserve_end_at
     end
   end
-  
+
   def max_group_id
     self.order_details.maximum(:group_id).to_i + 1
   end
@@ -216,7 +188,11 @@ class Order < ActiveRecord::Base
     order_details.size == 1 && order_details.first.reservation
   end
 
-  # was originally used in OrdersController#add 
+  def any_details_estimated?
+    order_details.any? &:cost_estimated?
+  end
+
+  # was originally used in OrdersController#add
   #def auto_assign_account!(product)
     #return if self.account
 
@@ -248,7 +224,7 @@ class Order < ActiveRecord::Base
 
   # If we update the account of the order, update the account of
   # each of the child order_details
-  def update_order_detail_accounts    
+  def update_order_detail_accounts
     order_details.each do |od|
       od.update_account(account)
       od.save!

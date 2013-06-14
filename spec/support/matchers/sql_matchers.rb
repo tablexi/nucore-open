@@ -6,13 +6,13 @@ if NUCore::Database.oracle?
     end
   end
   RSpec::Matchers.define :contain_end_of_day do |field, datetime|
-    expected = "#{field.to_s} < TO_TIMESTAMP('#{datetime.end_of_day.utc.strftime('%Y-%m-%d %H:%M:%S:999999')}','YYYY-MM-DD HH24:MI:SS:FF6')"
+    expected = %r[#{field.to_s} < TO_TIMESTAMP\('#{datetime.end_of_day.utc.strftime('%Y-%m-%d %H:%M:%S')}:\d{6}','YYYY-MM-DD HH24:MI:SS:FF6'\)]
     match do |actual|
-      actual.where_values.include? expected
+      actual.to_sql =~ expected
     end
   end
   RSpec::Matchers.define :contain_string_in_sql do |expected|
-    expected = expected.gsub("\`", "\"").upcase  
+    expected = expected.gsub("\`", "\"").upcase
     match do |actual|
       actual.to_sql.upcase.include? expected
     end

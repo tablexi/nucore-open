@@ -1,3 +1,5 @@
+- @order.order_details.each { |od| od.send(:extend, PriceDisplayment) }
+
 %p= t('.intro')
 
 %ul
@@ -17,10 +19,12 @@
     %th Product
     %th Quantity
     %th Status
-    %th Estimated Price
-    %th Estimated Adjustment
-    %th Estimated Total
+    - text = order_estimated_or_actual_text(@order)
+    %th= "#{text} Price"
+    %th= "#{text} Adjustment"
+    %th= "#{text} Total"
   - @order.order_details.each do |od|
+    - od.send(:extend, PriceDisplayment)
     %tr
       %td= od
       - if od.reservation
@@ -32,13 +36,8 @@
         %td= ((od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)).html_safe
       %td=h od.quantity
       %td=h od.order_status.name
-      - if od.cost_estimated?
-        %td=h number_to_currency od.estimated_cost
-        %td=h number_to_currency od.estimated_subsidy
-        %td=h number_to_currency od.estimated_total
-      - else
-        %td Unassigned
-        %td Unassigned
-        %td Unassigned
+      %td= od.display_cost
+      %td= od.display_subsidy
+      %td= od.display_total
 
-%p= t('.outro')
+%p= t('.outro') if @order.any_details_estimated?

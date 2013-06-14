@@ -116,7 +116,7 @@ describe ReservationsController do
         @reservation = FactoryGirl.create(:purchased_reservation, :product => @instrument)
         assert @reservation.valid?
         # Second reservation that begins immediately after the first reservation
-        @reservation2 = FactoryGirl.create(:purchased_reservation, 
+        @reservation2 = FactoryGirl.create(:purchased_reservation,
                                               :product => @instrument2,
                                               :reserve_start_at => @reservation.reserve_end_at,
                                               :reserve_end_at => @reservation.reserve_end_at + 1.hour)
@@ -271,6 +271,25 @@ describe ReservationsController do
       assert_redirected_to purchase_order_path(@order)
     end
 
+    context 'notifications when acting as' do
+      before :each do
+        sign_in @admin
+        switch_to @guest
+      end
+
+      it 'should set the option for sending notifications' do
+        @params.merge!(:send_notification => '1')
+        do_request
+        response.should redirect_to purchase_order_path(@order, :send_notification => '1')
+      end
+
+      it 'should set the option for not sending notifications' do
+        @params.merge!(:send_notification => '0')
+        do_request
+        response.should redirect_to purchase_order_path(@order)
+      end
+    end
+
     context 'merge order' do
       before :each do
         @merge_to_order=@order.clone
@@ -293,6 +312,41 @@ describe ReservationsController do
         it_should_allow :director, 'to create a reservation on merge order detail and redirect to order summary when merge order is not destroyed' do
           assert_redirected_to edit_facility_order_path(@authable, @merge_to_order)
           assert_nothing_raised { Order.find @order }
+        end
+      end
+
+      context 'creating a reservation in the past' do
+        before :each do
+          @params.deep_merge!(:reservation => {:reserve_start_date => 1.day.ago})
+        end
+
+        it_should_allow_all facility_operators, 'to create a reservation in the past and have it be complete' do
+          assigns(:reservation).errors.should be_empty
+          assigns(:order_detail).state.should == 'complete'
+          response.should redirect_to edit_facility_order_path(@authable, @merge_to_order)
+        end
+
+        context 'and there is no price policy' do
+          before :each do
+            @price_policy.update_attributes(:expire_date => 2.days.ago)
+          end
+
+          it_should_allow_all facility_operators, 'to create the reservation, but have it be a problem order' do
+            assigns(:order_detail).state.should == 'complete'
+            assigns(:order_detail).should be_problem_order
+          end
+        end
+      end
+
+      context 'creating a reservation in the future' do
+        before :each do
+          @params.deep_merge!(:reservation => {:reserve_start_date => 1.day.from_now})
+        end
+
+        it_should_allow_all facility_operators, 'to create a reservation in the future' do
+          assigns(:reservation).errors.should be_empty
+          assigns(:order_detail).state.should == 'new'
+          response.should redirect_to edit_facility_order_path(@authable, @merge_to_order)
         end
       end
     end
@@ -322,7 +376,6 @@ describe ReservationsController do
         assigns[:reservation].should_not be_new_record
       end
     end
-
 
     context 'without account' do
       before :each do

@@ -1,4 +1,7 @@
 class Account < ActiveRecord::Base
+  include Accounts::AccountNumberSectionable
+  include DateHelper
+
   has_many   :account_users
   has_one    :owner, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_OWNER, :deleted_at => nil}
   has_many   :business_admins, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_ADMINISTRATOR, :deleted_at => nil}
@@ -23,7 +26,7 @@ class Account < ActiveRecord::Base
 
   def add_or_update_member(user, new_role, session_user)
     Account.transaction do
-      # expire old owner if new 
+      # expire old owner if new
       if new_role == AccountUser::ACCOUNT_OWNER
         # expire old owner record
         @old_owner = self.owner
@@ -33,7 +36,7 @@ class Account < ActiveRecord::Base
           @old_owner.save!
         end
       end
-      
+
       # find non-deleted record for this user and account or init new one
       # deleted_at MUST be nil to preserve existing audit trail
       @account_user = AccountUser.find_or_initialize_by_account_id_and_user_id_and_deleted_at(
@@ -72,7 +75,7 @@ class Account < ActiveRecord::Base
               :facility => facility})
     end
 
-    accounts  
+    accounts
   end
 
 
@@ -81,7 +84,7 @@ class Account < ActiveRecord::Base
     ids = OrderDetail.for_facility(facility).select("distinct order_details.account_id").collect(&:account_id)
     where(:id => ids)
   end
-  
+
   def facilities
     if facility_id
       # return a relation
@@ -127,6 +130,14 @@ class Account < ActiveRecord::Base
 
   def expired?
     expires_at && expires_at <= Time.zone.now
+  end
+
+  def formatted_expires_at
+    expires_at.try(:strftime, "%m/%d/%Y")
+  end
+
+  def formatted_expires_at=(str)
+    self.expires_at = parse_usa_date(str) if str
   end
 
   def account_pretty
@@ -205,14 +216,18 @@ class Account < ActiveRecord::Base
     expires_at > Time.zone.now && suspended_at.nil?
   end
 
+  def account_number_to_s
+    self.account_number.to_s
+  end
+
   def to_s(with_owner = false)
-    desc = [ description, account_number ]
+    desc = [ description, account_number_to_s ]
     desc << owner_user.name if with_owner && owner_user
     desc.join ' / '
   end
 
   def price_groups
     (price_group_members.collect{ |pgm| pgm.price_group } + (owner_user ? owner_user.price_groups : [])).flatten.uniq
-  end 
-  
+  end
+
 end

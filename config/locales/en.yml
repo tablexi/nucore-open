@@ -74,6 +74,10 @@ en:
         account: "Search By Payment Source"
         add_account: "Add Payment Source"
 
+  order_search:
+    search: "Search by Order #"
+    results: Search Results
+    no_results: No orders found
   facility_accounts:
     index:
       head: "Recent Payment Sources"
@@ -96,7 +100,8 @@ en:
       label:
         owner_user: "Owner User"
         payment_type: "Payment Source Type"
-        payment_number: "Payment Source Number"
+        account_number:
+          account_number: "Payment Source Number"
         affiliate: "Affiliate Name"
         remit: "Bill To"
         all_instruct: "Enter a text description to help you and the user identify this payment source."
@@ -289,6 +294,7 @@ en:
           resolve: "Resolution Notes"
         resolved: "Resolved At"
         reconcile: "Reconciliation Note:"
+        with_cancel_fee: Add reservation cost
       instruct:
         dispute: "To resolve the dispute, please make the necessary changes and click \"Resolve Dispute\"."
         bundle: "This order is part of a bundle.  Below is a summary of related bundle order line items."
@@ -536,7 +542,7 @@ en:
         search: "Search by name, NetID, or username"
 
   accounts:
-    institution: Chart String
+    nufs_account: Chart String
     show:
       head: "Payment Source Details"
       label:
@@ -752,7 +758,7 @@ en:
       reservation:
         intro: "(Optional)  Define minimum and maximum reservation limits below."
         instruct:
-          cancel_hours: "Minimum length of time before a reservation begins that a user may cancel a reservation without penalty"
+          cancel_hours: "Minimum length of time before a reservation begins that a user may cancel a reservation without invoking the reservation cost"
           auto_cancel: "The duration a due but unactivated reservation can exist before the system cancels it"
         label:
           restrict: "Reservation Restrictions"

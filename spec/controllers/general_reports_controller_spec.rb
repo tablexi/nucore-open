@@ -172,20 +172,10 @@ describe GeneralReportsController do
 
 
   def report_headers(label)
-    if !export_all_request?
-      headers=[ label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
+    if export_all_request?
+      headers=I18n.t 'controllers.general_reports.headers.data'
     else
-      headers=[
-        'Facility', 'Order', 'Ordered At', 'Fulfilled At', 'Order Status', 'Order State',
-        'Ordered By', 'First Name', 'Last Name', 'Email', 'Product ID', 'Product Type',
-        'Product', 'Quantity', 'Bundled Products', 'Account Type', 'Affiliate', 'Account',
-        'Account Description', 'Account Expiration', 'Account Owner', 'Owner First Name',
-        'Owner Last Name', 'Owner Email', 'Price Group', 'Estimated Cost', 'Estimated Subsidy',
-        'Estimated Total', 'Actual Cost', 'Actual Subsidy', 'Actual Total', 'Reservation Start Time',
-        'Reservation End Time', 'Reservation Minutes', 'Actual Start Time', 'Actual End Time',
-        'Actual Minutes', 'Disputed At', 'Dispute Reason', 'Dispute Resolved At', 'Dispute Resolved Reason',
-        'Reviewed At', 'Statemented On', 'Journal Date', 'Reconciled Note'
-      ]
+      headers=[ label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
     end
 
     headers

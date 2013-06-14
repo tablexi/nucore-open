@@ -77,16 +77,16 @@ describe FacilityReservationsController do
       it 'should not return non-reservation order details' do
         # setup_reservation overwrites @order_detail
         @order_detail_reservation = @order_detail
-        
+
         @product=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
         @order_detail_item = place_product_order(@director, @authable, @product, @account)
-        @order_detail.order.update_attributes!(:state => 'purchased')   
+        @order_detail.order.update_attributes!(:state => 'purchased')
 
-        @authable.reload.order_details.should contain_all [@order_detail_reservation, @order_detail_item]     
+        @authable.reload.order_details.should contain_all [@order_detail_reservation, @order_detail_item]
         do_request
         assigns[:order_details].should == [@order_detail_reservation]
       end
-      
+
       it "provides sort headers that don't result in errors"
     end
   end
@@ -119,7 +119,7 @@ describe FacilityReservationsController do
         @instrument_pp.reload.restrict_purchase=false
         @reservation.update_attributes(:actual_start_at => nil, :actual_end_at => nil)
         @params.merge!(:reservation => {
-                :reserve_start_at => @reservation.reserve_start_at, 
+                :reserve_start_at => @reservation.reserve_start_at,
                 :reserve_end_at => @reservation.reserve_end_at - 15.minutes
               }
             )
@@ -134,46 +134,73 @@ describe FacilityReservationsController do
       end
     end
 
-
-    context 'update actuals' do
-
+    context 'completed order' do
       before :each do
         @order_detail.price_policy.should be_nil
         @price_group=FactoryGirl.create(:price_group, :facility => @authable)
         FactoryGirl.create(:user_price_group_member, :user => @director, :price_group => @price_group)
         @instrument_pp=@product.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id))
         @instrument_pp.reload.restrict_purchase=false
-        @reservation.update_attributes(:actual_start_at => nil, :actual_end_at => nil)
         @now=@reservation.reserve_start_at+3.hour
-        @reservation_attrs=FactoryGirl.attributes_for(
-            :reservation,
-            :actual_start_at => @now-2.hour,
-            :actual_end_at => @now-1.hour
-        )
-        @params.merge!(:reservation => @reservation_attrs)
+        maybe_grant_always_sign_in :director
+        @order_detail.to_complete!
       end
 
-      it 'should update the actuals and assign a price policy if there is none' do
-        Timecop.freeze(@now) do
-          maybe_grant_always_sign_in :director
-          @order_detail.to_complete!
-          do_request
-          assigns(:order).should == @order
-          assigns(:order_detail).should == @order_detail
-          assigns(:reservation).should == @reservation
-          assigns(:instrument).should == @product
-          assigns(:reservation).actual_start_at.should == @reservation_attrs[:actual_start_at]
-          assigns(:reservation).actual_end_at.should == @reservation_attrs[:actual_end_at]
-          assigns(:order_detail).price_policy.should == @instrument_pp
-          assigns(:order_detail).actual_cost.should_not be_nil
-          assigns(:order_detail).actual_subsidy.should_not be_nil
-          flash[:notice].should be_present
-          should render_template 'edit'
+      context 'update actuals' do
+        before :each do
+          @reservation.update_attributes(:actual_start_at => nil, :actual_end_at => nil)
+          @reservation_attrs=FactoryGirl.attributes_for(
+              :reservation,
+              :actual_start_at => @now-2.hour,
+              :actual_end_at => @now-1.hour
+          )
+          @params.merge!(:reservation => @reservation_attrs)
+        end
+
+        it 'should update the actuals and assign a price policy if there is none' do
+          Timecop.freeze(@now) do
+            do_request
+            assigns(:order).should == @order
+            assigns(:order_detail).should == @order_detail
+            assigns(:reservation).should == @reservation
+            assigns(:instrument).should == @product
+            assigns(:reservation).actual_start_at.should == @reservation_attrs[:actual_start_at]
+            assigns(:reservation).actual_end_at.should == @reservation_attrs[:actual_end_at]
+            assigns(:order_detail).price_policy.should == @instrument_pp
+            assigns(:order_detail).actual_cost.should_not be_nil
+            assigns(:order_detail).actual_subsidy.should_not be_nil
+            flash[:notice].should be_present
+            should render_template 'edit'
+          end
         end
       end
 
-    end
+      context 'update reserve' do
+        before :each do
+          @reservation.update_attributes(:actual_start_at => @reservation.reserve_start_at, :actual_end_at => @reservation.reserve_end_at)
+          @reservation_attrs=FactoryGirl.attributes_for(
+              :reservation,
+              :reserve_start_at => @now-3.hour,
+              :reserve_end_at   => @now-1.hour,
+              :actual_start_at  => @reservation.reserve_start_at,
+              :actual_end_at    => @reservation.reserve_end_at
+          )
+          @params[:reservation] = @reservation_attrs
+        end
 
+        it 'should update the actual cost' do
+          Timecop.freeze(@now) do
+            do_request
+            assigns(:reservation).actual_start_at.should  == @reservation_attrs[:actual_start_at]
+            assigns(:reservation).actual_end_at.should    == @reservation_attrs[:actual_end_at]
+            assigns(:order_detail).price_policy.should    == @instrument_pp
+            assigns(:order_detail).actual_cost.should_not == @order_detail.actual_cost
+            flash[:notice].should be_present
+            should render_template 'edit'
+          end
+        end
+      end
+    end
   end
 
 
@@ -217,7 +244,7 @@ describe FacilityReservationsController do
     end
 
     it_should_allow_operators_only(:redirect) {}
-    
+
     context 'while signed in' do
       before :each do
         maybe_grant_always_sign_in :director
@@ -266,7 +293,7 @@ describe FacilityReservationsController do
       @params={ :facility_id => @authable.url_name, :instrument_id => @product.url_name, :reservation_id => @reservation.id }
     end
 
-    
+
     context 'edit_admin' do
 
       before :each do
