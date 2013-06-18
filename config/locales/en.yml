@@ -154,6 +154,8 @@ en:
         search_term: "Search by name, NetID, or username"
     new:
       head: "Add Payment Source User"
+      messages:
+        current_user: "This user is the owner of the account. To change this user's role, you must replace the account owner first."
       label:
         account:
           type: "Payment Source Type"

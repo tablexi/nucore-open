@@ -159,21 +159,24 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
           before :each do
             @params[:user_id]                  = @owner.id
             @params[:account_user][:user_role] = AccountUser::ACCOUNT_PURCHASER
-
             @account.account_users.owners.map(&:user).should == [@owner]
             @account.account_users.purchasers.should_not be_any
-            do_request
           end
 
           it 'should be prevented' do
+            do_request
             assigns(:account).should == @account
             assigns(:account).owner_user.should == @owner
             @account.account_users.owners.map(&:user).should == [@owner]
             @account.account_users.purchasers.should_not be_any
-            flash[:notice].should be_present
-            # flash[:error].should be_present
 
-            assert_redirected_to facility_account_members_path(@authable, @account)
+            flash[:error].should be_present
+            response.should render_template :new
+          end
+
+          it 'should not send an email' do
+            Notifier.should_not_receive(:user_update)
+            do_request
           end
         end
       end
