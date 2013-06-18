@@ -2,7 +2,7 @@ class Account < ActiveRecord::Base
   include Accounts::AccountNumberSectionable
   include DateHelper
 
-  has_many   :account_users
+  has_many   :account_users, :inverse_of => :account
   has_one    :owner, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_OWNER, :deleted_at => nil}
   has_many   :business_admins, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_ADMINISTRATOR, :deleted_at => nil}
   has_many   :price_group_members
@@ -49,7 +49,9 @@ class Account < ActiveRecord::Base
       # set creation information
       @account_user.created_by = session_user.id
 
-      raise ActiveRecord::Rollback unless @account_user.save
+      self.account_users << @account_user
+
+      raise ActiveRecord::Rollback unless self.save
     end
 
     return @account_user
