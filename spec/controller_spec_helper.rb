@@ -91,6 +91,23 @@ def it_should_allow(user_sym, spec_desc='', &eval)
   end
 end
 
+#
+# Grants a user a role based on their username and signs them in
+# non-allowance of authorization is tested in the given block
+# [_user_sym_]
+#   The +Symbol+ic username of the #create_users user to test
+# [_spec_desc_]
+#   If present is passed to the spec as its description
+# [_eval_]
+#   block of tests to be evaluated after roles are
+#   granted and the user is signed in
+def it_should_not_allow(user_sym, spec_desc='', &eval)
+  it "should not allow #{user_sym.to_s} " + spec_desc, :auth => true do
+    maybe_grant_always_sign_in(user_sym)
+    do_request
+    instance_eval &eval
+  end
+end
 
 #
 # The *_all helpers are useful for testing multiple roles in one shot.

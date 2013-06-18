@@ -151,12 +151,23 @@ Spork.each_run do
     assert dead
   end
 
-
   #
   # Factory wrapper for creating an account with owner
   def create_nufs_account_with_owner(owner=:owner)
     owner=instance_variable_get("@#{owner.to_s}")
     FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => owner) ])
+  end
+
+  #
+  # Factory wrapper for creating an account with owner and business admin
+  def create_nufs_account_with_owner_and_business_admin(owner=:owner, business_admin=:business_admin)
+    owner          = instance_variable_get("@#{owner.to_s}")
+    business_admin = instance_variable_get("@#{business_admin.to_s}")
+
+    FactoryGirl.create(:nufs_account, :account_users_attributes => [
+      FactoryGirl.attributes_for(:account_user, :user => owner,          :user_role => "Owner"),
+      FactoryGirl.attributes_for(:account_user, :user => business_admin, :user_role => "Business Administrator")
+    ])
   end
 
   # Simulates placing an order for a product
