@@ -2,7 +2,7 @@ class Account < ActiveRecord::Base
   include Accounts::AccountNumberSectionable
   include DateHelper
 
-  has_many   :account_users
+  has_many   :account_users, :inverse_of => :account
   has_one    :owner, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_OWNER, :deleted_at => nil}
   has_many   :business_admins, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_ADMINISTRATOR, :deleted_at => nil}
   has_many   :price_group_members
@@ -18,8 +18,9 @@ class Account < ActiveRecord::Base
   validates_length_of :description, :maximum => 50
 
   validate do |acct|
-    # an account owner if required
-    unless acct.account_users.any?{ |au| au.user_role == AccountUser::ACCOUNT_OWNER }
+    # a current account owner if required
+    # don't use a scope so we can validate on nested attributes
+    unless acct.account_users.any?{ |au| au.deleted_at.nil? && au.user_role == AccountUser::ACCOUNT_OWNER }
       acct.errors.add(:base, "Must have an account owner")
     end
   end
@@ -49,7 +50,9 @@ class Account < ActiveRecord::Base
       # set creation information
       @account_user.created_by = session_user.id
 
-      raise ActiveRecord::Rollback unless @account_user.save
+      self.account_users << @account_user
+
+      raise ActiveRecord::Rollback unless self.save
     end
 
     return @account_user

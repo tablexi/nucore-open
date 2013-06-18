@@ -120,7 +120,6 @@ def it_should_allow(user_sym, spec_desc='', &eval)
   end
 end
 
-
 #
 # The *_all helpers are useful for testing multiple roles in one shot.
 # They generate a new spec for each role and behave just like their

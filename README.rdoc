@@ -1,5 +1,5 @@
-= NU Core
-Northwestern University Core Facility Management Software
+= NU Core Open
+Open source version of Northwestern University Core Facility Management Software
 
 == Quickstart
 
@@ -9,7 +9,6 @@ Welcome to NU Core! This guide will help you get a development environment up an
 2. You have a running Oracle or MySQL instance with two brand new databases.
 3. You have the following installed:
 * Ruby[http://www.ruby-lang.org/en] 1.9.2
-* Ruby On Rails[http://rubyonrails.org] 3.0.10
 * Bundler[http://gembundler.com]
 * Git[http://git-scm.com]
 

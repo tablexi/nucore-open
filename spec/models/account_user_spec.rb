@@ -31,9 +31,12 @@ describe AccountUser do
 
   it "should allow multiple inactive entries for the same user / role" do
     @user    = FactoryGirl.create(:user)
-    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user, :deleted_at => Time.zone.now, :deleted_by => @user.id))
+    @user2   = FactoryGirl.create(:user)
+    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
 
-    @au      = @account.account_users.create({:user => @user, :user_role => 'Purchaser', :created_by => @user.id})
+    @au_deleted = @account.account_users.create(:user => @user2, :user_role => 'Purchaser', :created_by => @user.id, :deleted_at => Time.zone.now, :deleted_by => @user.id)
+    @au         = @account.account_users.create(:user => @user2, :user_role => 'Purchaser', :created_by => @user.id)
+
     @au.errors[:user_id].should be_empty
   end
 
