@@ -18,8 +18,9 @@ class Account < ActiveRecord::Base
   validates_length_of :description, :maximum => 50
 
   validate do |acct|
-    # an account owner if required
-    unless acct.account_users.any?{ |au| au.user_role == AccountUser::ACCOUNT_OWNER }
+    # a current account owner if required
+    # don't use a scope so we can validate on nested attributes
+    unless acct.account_users.any?{ |au| au.deleted_at.nil? && au.user_role == AccountUser::ACCOUNT_OWNER }
       acct.errors.add(:base, "Must have an account owner")
     end
   end
