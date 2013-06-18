@@ -57,6 +57,7 @@ group :development, :test do
   gem 'spork',             '0.9.2'
   gem 'timecop'
   gem "pry-rails",         '0.2.2'
+  gem 'pry-debugger'
   gem "awesome_print",     '1.1.0'
 end
 
