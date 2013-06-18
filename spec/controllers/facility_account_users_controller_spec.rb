@@ -81,29 +81,106 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
       assert_redirected_to facility_account_members_path(@authable, @account)
     end
 
-
-    context 'change owner' do
-
+    context 'changing roles' do
       before :each do
-        @params[:account_user][:user_role]=AccountUser::ACCOUNT_OWNER
-        AccountUser.where(:account_id => @account.id, :user_role => AccountUser::ACCOUNT_OWNER).all.size.should == 1
-        @account.owner_user.should == @owner
+        maybe_grant_always_sign_in :director
       end
 
-      it_should_allow :director, 'to add a new account owner' do
-        assigns(:account).should == @account
-        assigns(:user).should == @purchaser
-        assigns(:account_user).user_role.should == AccountUser::ACCOUNT_OWNER
-        assigns(:account_user).user.should == @purchaser
-        assigns(:account_user).created_by.should == @director.id
-        # there will be two because the old owner record will have been expired
-        AccountUser.where(:account_id => @account.id, :user_role => AccountUser::ACCOUNT_OWNER).all.size.should == 2
-        assigns(:account).reload.owner_user.should == @purchaser
-        should set_the_flash
-        assert_redirected_to facility_account_members_path(@authable, @account)
+      context 'with an existing owner' do
+
+        before :each do
+          @params[:account_user][:user_role]=AccountUser::ACCOUNT_OWNER
+          @account.account_users.owners.should be_one
+          @account.owner_user.should == @owner
+          do_request
+        end
+
+        it 'changes the owner of an account' do
+          assigns(:account).should == @account
+          assigns(:user).should == @purchaser
+          assigns(:account_user).user_role.should == AccountUser::ACCOUNT_OWNER
+          assigns(:account_user).user.should == @purchaser
+          assigns(:account_user).created_by.should == @director.id
+          # there will be two because the old owner record will have been expired
+          @account.reload.account_users.owners.count.should == 2
+          @account.account_users.owners.active.should be_one
+          assigns(:account).reload.owner_user.should == @purchaser
+          should set_the_flash
+          assert_redirected_to facility_account_members_path(@authable, @account)
+        end
+      end
+
+
+      context 'with a missing owner' do
+
+        before :each do
+          @acount_user = @account.owner
+          AccountUser.delete(@acount_user.id)
+
+          @params[:account_user][:user_role]=AccountUser::ACCOUNT_OWNER
+          @account.account_users.owners.should_not be_any
+          do_request
+        end
+
+        it 'adds the owner' do
+          assigns(:account).should == @account
+          @account.account_users.owners.count.should == 1
+          should set_the_flash
+          assert_redirected_to facility_account_members_path(@authable, @account)
+        end
+      end
+
+      context "changing a user's role" do
+        context 'from business admin to purchaser' do
+          before :each do
+            @business_admin = FactoryGirl.create(:user)
+            FactoryGirl.create(:account_user, :account => @account, :user => @business_admin, :user_role => AccountUser::ACCOUNT_ADMINISTRATOR)
+            @params.merge!(
+              :account_id   => @account.id,
+              :user_id      => @business_admin.id,
+              :account_user => { :user_role => AccountUser::ACCOUNT_PURCHASER }
+            )
+            @account.account_users.purchasers.should_not be_any
+            @account.account_users.business_administrators.should be_one
+            do_request
+          end
+
+          it 'should change the role' do
+            assigns(:account).should == @account
+            @account.account_users.purchasers.map(&:user).should == [@business_admin]
+            @account.account_users.business_administrators.should_not be_any
+
+            should set_the_flash
+            assert_redirected_to facility_account_members_path(@authable, @account)
+          end
+        end
+
+        context 'from owner to purchaser' do
+          before :each do
+            @params[:user_id]                  = @owner.id
+            @params[:account_user][:user_role] = AccountUser::ACCOUNT_PURCHASER
+            @account.account_users.owners.map(&:user).should == [@owner]
+            @account.account_users.purchasers.should_not be_any
+          end
+
+          it 'should be prevented' do
+            do_request
+            assigns(:account).should == @account
+            assigns(:account).owner_user.should == @owner
+            @account.account_users.owners.map(&:user).should == [@owner]
+            @account.account_users.purchasers.should_not be_any
+
+            flash[:error].should be_present
+            response.should render_template :new
+          end
+
+          it 'should not send an email' do
+            Notifier.should_not_receive(:user_update)
+            do_request
+          end
+        end
       end
     end
-
   end
 
 

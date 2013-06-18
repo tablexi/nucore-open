@@ -151,7 +151,6 @@ Spork.each_run do
     assert dead
   end
 
-
   #
   # Factory wrapper for creating an account with owner
   def create_nufs_account_with_owner(owner=:owner)

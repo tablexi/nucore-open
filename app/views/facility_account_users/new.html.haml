@@ -8,9 +8,11 @@
   =h current_facility
 
 %h2= t('.head')
-
 = form_for(@account_user, :url => facility_account_account_users_path(current_facility, @account)) do |f|
   = f.error_messages
+
+  - if current_owner?
+    %p.error= t('.messages.current_user')
   %ul.form
     %li
       = label_tag :account_type, t('.label.account.type')
@@ -24,7 +26,7 @@
       = @user.full_name
     %li
       = f.label :user_role, 'User Role', :class => 'require'
-      = f.select :user_role, options_for_select(AccountUser.selectable_user_roles(current_user, current_facility), :selected => AccountUser::ACCOUNT_PURCHASER)
+      = f.select :user_role, options_for_select(AccountUser.selectable_user_roles(current_user, current_facility), :selected => @account_user.user_role), {}, :disabled => current_owner?
   %ul.horiz
-    %li= f.submit 'Create', :class => 'btn'
+    %li= f.submit 'Create', :class => 'btn' unless current_owner?
     %li= link_to 'Cancel', facility_account_path(current_facility, @account)
