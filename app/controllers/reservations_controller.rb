@@ -376,15 +376,23 @@ class ReservationsController < ApplicationController
   end
 
   def set_windows
-    user_price_groups     = @order.user.price_groups.presence || []
-    # @order.account could be nil if quick reservation
-    account_price_groups  = @order.account.try(:price_groups).presence || []
-    groups = (user_price_groups + account_price_groups).flatten.uniq
-    @max_window = session_user.operator_of?(@facility) ? 365 : @reservation.longest_reservation_window(groups)
+    @max_window = max_reservation_window
     @max_days_ago = session_user.operator_of?(@facility) ? -365 : 0
     # initialize calendar time constraints
     @min_date     = (Time.zone.now + @max_days_ago.days).strftime("%Y%m%d")
     @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
+  end
+
+  def max_reservation_window
+    return 365 if session_user.operator_of?(@facility)
+    @reservation.longest_reservation_window(order_price_groups)
+  end
+
+  def order_price_groups
+    user_price_groups     = @order.user.price_groups.presence || []
+    # @order.account could be nil if quick reservation
+    account_price_groups  = @order.account.try(:price_groups).presence || []
+    (user_price_groups + account_price_groups).flatten.uniq
   end
 
   def helpers

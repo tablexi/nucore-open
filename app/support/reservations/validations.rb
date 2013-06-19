@@ -4,9 +4,9 @@ module Reservations::Validations
   included do
     validates_uniqueness_of :order_detail_id, :allow_nil => true
     validates_presence_of :product_id, :reserve_start_at, :reserve_end_at
-    validate :does_not_conflict_with_other_reservation, 
+    validate :does_not_conflict_with_other_reservation,
              :instrument_is_available_to_reserve,
-             :satisfies_minimum_length, 
+             :satisfies_minimum_length,
              :satisfies_maximum_length,
              :if => :reserve_start_at && :reserve_end_at && :reservation_changed?,
              :unless => :admin?
@@ -151,8 +151,15 @@ module Reservations::Validations
 
   # return the longest available reservation window for the groups
   def longest_reservation_window(groups = [])
+    return default_reservation_window if groups.empty?
     pgps     = product.price_group_products.find(:all, :conditions => {:price_group_id => groups.collect{|pg| pg.id}})
     pgps.collect{|pgp| pgp.reservation_window}.max
+  end
+
+  private
+
+  def default_reservation_window
+    product.price_group_products.map(&:reservation_window).min
   end
 
 
