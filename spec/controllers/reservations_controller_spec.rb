@@ -495,6 +495,34 @@ describe ReservationsController do
       assigns[:min_date].should == Time.zone.now.strftime("%Y%m%d")
     end
 
+    context 'a user with no price groups' do
+      before :each do
+        sign_in @guest
+        User.any_instance.stub(:price_groups).and_return([])
+        @order_detail.update_attributes(:account => nil)
+        # Only worry about one price group product
+        @instrument.price_group_products.clear
+        pgp  = FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => FactoryGirl.create(:price_group, :facility => @authable), :reservation_window => 14)
+      end
+
+      it "does not have an account on the order detail" do
+        do_request
+        assigns(:order_detail).account.should be_nil
+      end
+
+      it 'is a successful page render' do
+        do_request
+        response.should be_success
+      end
+
+      it "uses the minimum reservation window" do
+        pgp2 = FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => FactoryGirl.create(:price_group, :facility => @authable), :reservation_window => 7)
+        pgp3 = FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => FactoryGirl.create(:price_group, :facility => @authable), :reservation_window => 21)
+        do_request
+        assigns(:max_window).should == 7
+      end
+    end
+
   end
 
 
