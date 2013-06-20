@@ -392,6 +392,12 @@ class OrderDetail < ActiveRecord::Base
     end
   end
 
+  def price_groups
+    groups = user.price_groups
+    groups += account.price_groups if account
+    groups.compact.uniq
+  end
+
   # set the object's response_set
   def response_set!(response_set)
     self.response_set = response_set
@@ -436,7 +442,7 @@ class OrderDetail < ActiveRecord::Base
     response = validate_service_meta
     return response if response
 
-    return nil if product.can_purchase? order.user.price_groups.map(&:id)
+    return nil if product.can_purchase_order_detail? self
 
     return 'No assigned price groups allow purchase of this product'
   end

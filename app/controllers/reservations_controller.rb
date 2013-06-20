@@ -385,14 +385,7 @@ class ReservationsController < ApplicationController
 
   def max_reservation_window
     return 365 if session_user.operator_of?(@facility)
-    @reservation.longest_reservation_window(order_price_groups)
-  end
-
-  def order_price_groups
-    user_price_groups     = @order.user.price_groups.presence || []
-    # @order.account could be nil if quick reservation
-    account_price_groups  = @order.account.try(:price_groups).presence || []
-    (user_price_groups + account_price_groups).flatten.uniq
+    @reservation.longest_reservation_window(@order_detail.price_groups)
   end
 
   def helpers
