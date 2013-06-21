@@ -2,6 +2,7 @@ class OrderDetail < ActiveRecord::Base
   include NUCore::Database::SortHelper
   include TranslationHelper
   include NotificationSubject
+  include OrderDetail::Accessorized
 
   versioned
 
@@ -544,6 +545,10 @@ class OrderDetail < ActiveRecord::Base
 
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
+    assign_actual_price(time)
+  end
+
+  def assign_actual_price(time = Time.zone.now)
     pp = product.cheapest_price_policy(self, time)
     return unless pp
     costs = pp.calculate_cost_and_subsidy_from_order_detail(self)

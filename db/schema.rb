@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130108221731) do
+ActiveRecord::Schema.define(:version => 20130621220044) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -177,6 +177,7 @@ ActiveRecord::Schema.define(:version => 20130108221731) do
 
   create_table "order_details", :force => true do |t|
     t.integer  "order_id",                                                              :null => false
+    t.integer  "parent_order_detail_id"
     t.integer  "product_id",                                                            :null => false
     t.integer  "quantity",                                                              :null => false
     t.integer  "price_policy_id"
@@ -209,6 +210,7 @@ ActiveRecord::Schema.define(:version => 20130108221731) do
   add_index "order_details", ["account_id"], :name => "fk_od_accounts"
   add_index "order_details", ["bundle_product_id"], :name => "fk_bundle_prod_id"
   add_index "order_details", ["order_id"], :name => "sys_c009172"
+  add_index "order_details", ["parent_order_detail_id"], :name => "order_details_parent_order_detail_id_fk"
   add_index "order_details", ["price_policy_id"], :name => "sys_c009175"
   add_index "order_details", ["product_id"], :name => "sys_c009173"
 
@@ -319,8 +321,9 @@ ActiveRecord::Schema.define(:version => 20130108221731) do
   end
 
   create_table "product_accessories", :force => true do |t|
-    t.integer "product_id",   :null => false
-    t.integer "accessory_id", :null => false
+    t.integer "product_id",                           :null => false
+    t.integer "accessory_id",                         :null => false
+    t.string  "scaling_type", :default => "quantity", :null => false
   end
 
   create_table "product_users", :force => true do |t|
@@ -354,6 +357,7 @@ ActiveRecord::Schema.define(:version => 20130108221731) do
     t.boolean  "show_details",                           :default => false, :null => false
     t.integer  "auto_cancel_mins"
     t.string   "contact_email"
+    t.boolean  "time_based",                             :default => false, :null => false
   end
 
   add_index "products", ["facility_account_id"], :name => "fk_facility_accounts"
@@ -521,6 +525,7 @@ ActiveRecord::Schema.define(:version => 20130108221731) do
   add_foreign_key "instrument_statuses", "products", :name => "fk_int_stats_product", :column => "instrument_id"
 
   add_foreign_key "order_details", "accounts", :name => "fk_od_accounts"
+  add_foreign_key "order_details", "order_details", :name => "order_details_parent_order_detail_id_fk", :column => "parent_order_detail_id"
   add_foreign_key "order_details", "orders", :name => "sys_c009172"
   add_foreign_key "order_details", "price_policies", :name => "sys_c009175"
   add_foreign_key "order_details", "products", :name => "fk_bundle_prod_id", :column => "bundle_product_id"
