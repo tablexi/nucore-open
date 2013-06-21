@@ -14,8 +14,9 @@ class AutoCanceller
 
   def cancelable_reservations
     @cancelable_reservations ||= Reservation.
-      joins(:product, :order_detail).
+      joins(:product, :order_detail => :order).
       where(build_sql, :now => Time.zone.now).
+      merge(Order.purchased).
       readonly(false)
   end
 
@@ -51,7 +52,7 @@ private
       AND
         auto_cancel_mins > 0
       AND
-        (state = 'new' OR state = 'inprocess')
+        (order_details.state = 'new' OR order_details.state = 'inprocess')
       AND
         #{time_condition}
     SQL
