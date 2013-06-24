@@ -32,6 +32,14 @@ class Product < ActiveRecord::Base
   scope :archived,           :conditions => { :is_archived => true }
   scope :not_archived,       :conditions => { :is_archived => false }
 
+  def self.non_instruments
+    where("products.type <> 'Instrument'")
+  end
+
+  def self.exclude(exclusion_list)
+    where("products.id NOT IN (?)", exclusion_list)
+  end
+
 
   ## AR Hooks
   before_validation do

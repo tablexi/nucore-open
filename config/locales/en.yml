@@ -487,6 +487,12 @@ en:
 
     index:
       description: "Here you may define one or more accessories that can be used during a reservation of this product"
+      no_accessories: No accessories defined for this product
+      add: Add as Accessory
+    create:
+      success: The accessory has been added.
+    destroy:
+      success: The accessory has been removed.
 
   product_users:
     new:
