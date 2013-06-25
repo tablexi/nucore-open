@@ -30,6 +30,7 @@ describe OrderDetail do
 
     it 'is complete' do
       expect(accessory_order_detail).to be_complete
+      expect(accessory_order_detail.order_status.name).to eq('Complete')
     end
 
     it 'has pricing' do
@@ -72,6 +73,12 @@ describe OrderDetail do
       expect(accessory_order_detail.quantity).to eq(reservation.actual_duration_mins)
     end
 
+    pending 'defaults to 1 if less than a minute' do
+      reservation.update_attributes(:actual_end_at => reservation.actual_start_at + 30.seconds)
+      expect(reservation.actual_duration_mins).to eq(0)
+      expect(accessory_order_detail.reload.quantity).to eq(1)
+    end
+
     context 'where the reservation time changes' do
       before :each do
         accessory_order_detail.update_attributes(:quantity => 1)
@@ -108,6 +115,12 @@ describe OrderDetail do
       expect(accessory_order_detail.quantity).to eq(reservation.actual_duration_mins)
     end
 
+    pending 'defaults to 1 if less than a minute' do
+      reservation.update_attributes(:actual_end_at => reservation.actual_start_at + 30.seconds)
+      expect(reservation.actual_duration_mins).to eq(0)
+      expect(accessory_order_detail.reload.quantity).to eq(1)
+    end
+
     context 'where the reservation time changes' do
       before :each do
         accessory_order_detail.update_attributes(:quantity => 1)
@@ -127,6 +140,21 @@ describe OrderDetail do
       it 'updates the quantity' do
         expect(accessory_order_detail.reload.quantity).to eq(reservation.actual_duration_mins)
       end
+    end
+  end
+
+  context 'accessory does not have a price policy' do
+    let(:accessory_order_detail) { accessorizer.add_accessory(accessory) }
+    before :each do
+      accessory.price_policies.destroy_all
+    end
+
+    it 'makes the order detail complete' do
+      expect(accessory_order_detail.order_status.name).to eq('Complete')
+    end
+
+    it 'makes the order detail a problem order' do
+      expect(accessory_order_detail).to be_problem_order
     end
   end
 end

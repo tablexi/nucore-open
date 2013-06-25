@@ -493,6 +493,10 @@ en:
       success: The accessory has been added.
     destroy:
       success: The accessory has been removed.
+    type:
+      auto: Auto-scaled
+      manual: Manual
+      quantity: Quantity
 
   product_users:
     new:

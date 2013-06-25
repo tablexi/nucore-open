@@ -2,10 +2,14 @@ module OrderDetail::Accessorized
   extend ActiveSupport::Concern
 
   included do
-    belongs_to :parent_order_detail, class_name: 'OrderDetail'
-    has_many   :child_order_details, class_name: 'OrderDetail', foreign_key: 'parent_order_detail_id'
+    belongs_to :product_accessory
+
+    belongs_to :parent_order_detail, class_name: 'OrderDetail', :inverse_of => :child_order_details
+    has_many   :child_order_details, class_name: 'OrderDetail', foreign_key: 'parent_order_detail_id', :inverse_of => :parent_order_detail
 
     after_save :update_children
+
+    delegate :scaling_type, :to => :product_accessory
   end
 
   def update_children

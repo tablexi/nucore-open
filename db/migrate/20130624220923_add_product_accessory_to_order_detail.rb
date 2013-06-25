@@ -1,0 +1,6 @@
+class AddProductAccessoryToOrderDetail < ActiveRecord::Migration
+  def change
+    add_column :order_details, :product_accessory_id, :integer
+    add_foreign_key :order_details, :product_accessories, column: :product_accessory_id
+  end
+end

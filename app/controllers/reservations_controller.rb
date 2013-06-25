@@ -276,8 +276,8 @@ class ReservationsController < ApplicationController
     if params[:switch] == 'off'
       @product_accessories = visible_accessories(@reservation)
       if @product_accessories.any?
-        flash.now[:notice] = t('reservations.finished')
-        render 'pick_accessories', :layout => false and return
+        redirect_to new_order_order_detail_accessory_path(@order, @order_detail)
+        return
       end
     end
 

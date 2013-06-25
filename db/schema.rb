@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130621220044) do
+ActiveRecord::Schema.define(:version => 20130624220923) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -205,6 +205,7 @@ ActiveRecord::Schema.define(:version => 20130621220044) do
     t.integer  "journal_id"
     t.string   "reconciled_note"
     t.integer  "created_by",                                                            :null => false
+    t.integer  "product_accessory_id"
   end
 
   add_index "order_details", ["account_id"], :name => "fk_od_accounts"
@@ -212,6 +213,7 @@ ActiveRecord::Schema.define(:version => 20130621220044) do
   add_index "order_details", ["order_id"], :name => "sys_c009172"
   add_index "order_details", ["parent_order_detail_id"], :name => "order_details_parent_order_detail_id_fk"
   add_index "order_details", ["price_policy_id"], :name => "sys_c009175"
+  add_index "order_details", ["product_accessory_id"], :name => "order_details_product_accessory_id_fk"
   add_index "order_details", ["product_id"], :name => "sys_c009173"
 
   create_table "order_imports", :force => true do |t|
@@ -528,6 +530,7 @@ ActiveRecord::Schema.define(:version => 20130621220044) do
   add_foreign_key "order_details", "order_details", :name => "order_details_parent_order_detail_id_fk", :column => "parent_order_detail_id"
   add_foreign_key "order_details", "orders", :name => "sys_c009172"
   add_foreign_key "order_details", "price_policies", :name => "sys_c009175"
+  add_foreign_key "order_details", "product_accessories", :name => "order_details_product_accessory_id_fk"
   add_foreign_key "order_details", "products", :name => "fk_bundle_prod_id", :column => "bundle_product_id"
   add_foreign_key "order_details", "products", :name => "sys_c009173"
 

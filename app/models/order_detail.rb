@@ -332,7 +332,7 @@ class OrderDetail < ActiveRecord::Base
     change_status! order_status, &block
   end
 
-  def backdate_to_complete!(event_time)
+  def backdate_to_complete!(event_time = Time.zone.now)
     # if we're setting it to compete, automatically set the actuals for a reservation
     if reservation
       raise NUCore::PurchaseException.new(t_model_error(Reservation, 'connot_be_completed_in_future')) if reservation.reserve_end_at > event_time

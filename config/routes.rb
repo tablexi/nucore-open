@@ -284,6 +284,8 @@ Nucore::Application.routes.draw do
         get '/switch_instrument',  :to => 'reservations#switch_instrument', :as => 'switch_instrument'
         match '/pick_accessories', :to => 'reservations#pick_accessories',  :as => 'pick_accessories', :via => [:get, :post]
       end
+
+      resources :accessories
     end
   end
 

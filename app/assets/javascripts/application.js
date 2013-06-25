@@ -10,3 +10,4 @@
 //= require jquery.ui.dialog
 //= require _common
 //= require_tree ./app
+//= require clockpunch
