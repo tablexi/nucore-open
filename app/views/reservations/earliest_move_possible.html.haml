@@ -1,0 +1,7 @@
+- if @formatted_dates[:start_date] == @formatted_dates[:end_date]
+  %p= t('reservations.moving_up.confirm_same_day', @formatted_dates)
+- else
+  %p= t('reservations.moving_up.confirm_different_day', @formatted_dates)
+
+%p= t('reservations.moving_up.confirm')
+= form_tag order_order_detail_reservation_move_reservation_path(@reservation.order, @reservation.order_detail, @reservation), :method => "post"

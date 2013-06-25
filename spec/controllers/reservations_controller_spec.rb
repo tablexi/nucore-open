@@ -641,7 +641,7 @@ describe ReservationsController do
 
   context 'move' do
     before :each do
-      @method=:get
+      @method=:post
       @action=:move
       @reservation  = @instrument.reservations.create(:reserve_start_at => Time.zone.now+1.day, :order_detail => @order_detail,
                                                       :duration_value => 60, :duration_unit => 'minutes')
@@ -659,7 +659,7 @@ describe ReservationsController do
       human_datetime(assigns(:reservation).reserve_start_at).should == human_datetime(@earliest.reserve_start_at)
       human_datetime(assigns(:reservation).reserve_end_at).should == human_datetime(@earliest.reserve_end_at)
       should set_the_flash
-      assert_redirected_to reservations_path
+      assert_redirected_to reservations_path(:status => 'upcoming')
     end
   end
 
@@ -676,7 +676,7 @@ describe ReservationsController do
 
     context 'move' do
       before :each do
-        @method=:get
+        @method=:post
         @action=:move
         @reservation.earliest_possible.should be_nil
         @orig_start_at=@reservation.reserve_start_at
@@ -692,7 +692,7 @@ describe ReservationsController do
         human_datetime(assigns(:reservation).reserve_start_at).should == human_datetime(@orig_start_at)
         human_datetime(assigns(:reservation).reserve_end_at).should == human_datetime(@orig_end_at)
         should set_the_flash
-        assert_redirected_to reservations_path
+        assert_redirected_to reservations_path(:status => 'upcoming')
       end
     end
 
