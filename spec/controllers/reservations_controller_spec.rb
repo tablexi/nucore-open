@@ -501,7 +501,7 @@ describe ReservationsController do
         User.any_instance.stub(:price_groups).and_return([])
         @order_detail.update_attributes(:account => nil)
         # Only worry about one price group product
-        @instrument.price_group_products.clear
+        @instrument.price_group_products.destroy_all
         pgp  = FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => FactoryGirl.create(:price_group, :facility => @authable), :reservation_window => 14)
       end
 
