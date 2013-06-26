@@ -638,10 +638,77 @@ describe ReservationsController do
 
   end
 
+  context 'earliest move possible' do
+    before :each do
+      @method = :get
+      @action = :earliest_move_possible
+
+      maybe_grant_always_sign_in :guest
+    end
+
+    context 'valid short reservation' do
+      before :each do
+        @reservation = @instrument.reservations.create(
+          :reserve_start_at => Time.zone.now+1.day,
+          :order_detail     => @order_detail,
+          :duration_value   => 60,
+          :duration_unit    => 'minutes'
+        )
+
+        @params.merge!(:reservation_id => @reservation.id)
+        do_request
+      end
+
+      it 'should get earliest move possible' do
+        response.code.should == "200"
+        response.headers['Content-Type'].should == 'text/html; charset=utf-8'
+        response.should render_template 'reservations/earliest_move_possible'
+        response.body.to_s.should =~ /The earliest time you can move this reservation to begins on [^<>]+ at [^<>]+ and ends at [^<>]+./
+      end
+    end
+
+    context 'valid long reservation' do
+      before :each do
+        # remove all scheduling rules/constraints to allow for the creation of a long reservation
+        @instrument.schedule_rules.destroy_all
+        @instrument.update_attributes :max_reserve_mins => nil
+        FactoryGirl.create(:all_day_schedule_rule, :instrument => @instrument)
+
+        @reservation = @instrument.reservations.create!(
+          :reserve_start_at => Time.zone.now+1.day,
+          :order_detail     => @order_detail,
+          :duration_value   => 24,
+          :duration_unit    => 'hours'
+        )
+
+        @params.merge!(:reservation_id => @reservation.id)
+        do_request
+      end
+
+      it 'should get earliest move possible' do
+        response.code.should == "200"
+        response.headers['Content-Type'].should == 'text/html; charset=utf-8'
+        response.should render_template 'reservations/earliest_move_possible'
+        response.body.to_s.should =~ /The earliest time you can move this reservation to begins on [^<>]+ at [^<>]+ and ends on [^<>]+ at [^<>]+./
+      end
+    end
+
+    context 'invalid reservation' do
+      before :each do
+        @params.merge!(:reservation_id => 999)
+        do_request
+      end
+
+      it 'should return a 404' do
+        response.code.should == "404"
+      end
+    end
+  end
+
 
   context 'move' do
     before :each do
-      @method=:get
+      @method=:post
       @action=:move
       @reservation  = @instrument.reservations.create(:reserve_start_at => Time.zone.now+1.day, :order_detail => @order_detail,
                                                       :duration_value => 60, :duration_unit => 'minutes')
@@ -659,9 +726,39 @@ describe ReservationsController do
       human_datetime(assigns(:reservation).reserve_start_at).should == human_datetime(@earliest.reserve_start_at)
       human_datetime(assigns(:reservation).reserve_end_at).should == human_datetime(@earliest.reserve_end_at)
       should set_the_flash
-      assert_redirected_to reservations_path
+      assert_redirected_to reservations_path(:status => 'upcoming')
     end
   end
+
+  context 'earliest move possible' do
+    before :each do
+      @method      = :get
+      @action      = :earliest_move_possible
+      @reservation = @instrument.reservations.create(
+        :reserve_start_at => Time.zone.now+1.day,
+        :order_detail     => @order_detail,
+        :duration_value   => 60,
+        :duration_unit    => 'minutes'
+      )
+      @earliest = @reservation.earliest_possible
+      @reservation.reserve_start_at.should_not == @earliest.reserve_start_at
+      @reservation.reserve_end_at.should_not == @earliest.reserve_end_at
+      @params.merge!(:reservation_id => @reservation.id)
+    end
+
+    it_should_allow :guest, 'to move a reservation' do
+      assigns(:order).should == @order
+      assigns(:order_detail).should == @order_detail
+      assigns(:instrument).should == @instrument
+      assigns(:reservation).should == @reservation
+      human_datetime(assigns(:reservation).reserve_start_at).should == human_datetime(@earliest.reserve_start_at)
+      human_datetime(assigns(:reservation).reserve_end_at).should == human_datetime(@earliest.reserve_end_at)
+      should set_the_flash
+      assert_redirected_to reservations_path(:status => 'upcoming')
+    end
+  end
+
+
 
 
   context 'needs now reservation' do
@@ -676,7 +773,7 @@ describe ReservationsController do
 
     context 'move' do
       before :each do
-        @method=:get
+        @method=:post
         @action=:move
         @reservation.earliest_possible.should be_nil
         @orig_start_at=@reservation.reserve_start_at
@@ -692,7 +789,7 @@ describe ReservationsController do
         human_datetime(assigns(:reservation).reserve_start_at).should == human_datetime(@orig_start_at)
         human_datetime(assigns(:reservation).reserve_end_at).should == human_datetime(@orig_end_at)
         should set_the_flash
-        assert_redirected_to reservations_path
+        assert_redirected_to reservations_path(:status => 'upcoming')
       end
     end
 

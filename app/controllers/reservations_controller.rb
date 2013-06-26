@@ -213,7 +213,7 @@ class ReservationsController < ApplicationController
     render :action => "edit"
   end
 
-  # GET /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
+  # POST /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
   # this action should really respond to a PUT only but for some reason that doesn't work w/ jQuery UI popup
   def move
 
@@ -223,7 +223,24 @@ class ReservationsController < ApplicationController
       flash[:error] = @reservation.errors.full_messages.join("<br/>")
     end
 
-    return redirect_to reservations_path
+    return redirect_to reservations_path(:status => 'upcoming')
+  end
+
+  # GET /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
+  def earliest_move_possible
+    @reservation       = Reservation.find(params[:reservation_id])
+    @earliest_possible = @reservation.earliest_possible
+    next_start         = @earliest_possible.reserve_start_at
+    next_end           = @earliest_possible.reserve_end_at
+
+    @formatted_dates = {
+      :start_date => human_date(next_start),
+      :start_time => human_time(next_start),
+      :end_date   => human_date(next_end),
+      :end_time   => human_time(next_end),
+    }
+
+    render :layout => false
   end
 
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/switch_instrument
