@@ -12,6 +12,10 @@ module OrderDetail::Accessorized
     delegate :scaling_type, :to => :product_accessory
   end
 
+  def accessories?
+    product.product_accessories.any?
+  end
+
   def update_children
     accessorizer = Accessories::Accessorizer.new(self)
     accessorizer.update_children

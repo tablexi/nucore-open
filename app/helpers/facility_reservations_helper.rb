@@ -1,7 +1,7 @@
 module FacilityReservationsHelper
   def reservation_links(reservation)
     links = []
-    if reservation.admin? 
+    if reservation.admin?
       links << link_to(I18n.t('reservations.edit.link'), edit_admin_reservation_path(reservation))
       links << link_to(I18n.t('reservations.delete.link'), facility_instrument_reservation_path(reservation.facility, reservation.product, reservation), :confirm => I18n.t('reservations.delete.confirm'), :method => :delete)
     else
@@ -14,18 +14,13 @@ module FacilityReservationsHelper
   end
 
   def edit_admin_reservation_path(reservation)
-    facility_instrument_reservation_edit_admin_path(reservation.facility, 
+    facility_instrument_reservation_edit_admin_path(reservation.facility,
                                                     reservation.product,
                                                     reservation)
   end
 
   def end_reservation_class(reservation)
-    visible_accessories(reservation).any? ? :has_accessories : nil
-  end
-
-  def visible_accessories(reservation)
-    ability = Ability.new(current_user, reservation, nil)
-    reservation.product.product_accessories.accessible_by(ability)
+    reservation.order_detail.accessories? ? :has_accessories : nil
   end
 
   def link_to_cancel(reservation)

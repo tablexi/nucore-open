@@ -10,6 +10,7 @@ class Accessories::Accessorizer
   end
 
   def build_accessory_order_detail(accessory, options = {})
+    return nil unless valid_accessory?(accessory)
     od = @order_detail.child_order_details.build(detail_attributes(accessory, options))
     decorated_od = decorate(od)
     decorated_od.update_quantity
@@ -50,6 +51,10 @@ class Accessories::Accessorizer
 
   def product_accessory(accessory)
     ProductAccessory.where(:product_id => @order_detail.product.id, :accessory_id => accessory.id).first
+  end
+
+  def valid_accessory?(accessory)
+    @order_detail.product.accessories.include? accessory
   end
 
   def decorate(order_detail)

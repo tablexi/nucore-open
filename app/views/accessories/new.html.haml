@@ -1,5 +1,5 @@
 %p= t('product_accessories.pick_accessories.instruct')
-= form_tag order_order_detail_accessories_path(@order, @order_detail), :remote => request.xhr?, 'data-type' => 'html', :id => 'accessory-form' do |f|
+= form_tag order_order_detail_accessories_path(@order, @order_detail), :remote => request.xhr?, 'data-type' => 'html', :id => 'accessory-form', :class => :pick_accessories_form do |f|
   %table
     - @order_details.each do |od|
       %tr{:class => ['accessory-row', "scaling-#{od.class.name.demodulize.underscore}"]}

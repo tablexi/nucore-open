@@ -3,7 +3,6 @@ $(function() {
 
   function pickAccessoriesHandleResponse(e, jqXHR, status) {
     var response = jqXHR.responseText;
-    
     dialog.html(response);
 
     // close dialog if ajax call succeeded
@@ -14,7 +13,7 @@ $(function() {
   }
 
   $('body').on('click', '.has_accessories', function() {
-    
+
     var clicked = $(this)
       , url = clicked.attr('href');
 
@@ -39,7 +38,7 @@ $(function() {
       $(this).find('input[type=submit]').prop('disabled', true);
     });
 
-    if (!clicked.hasClass('persistent')) { 
+    if (!clicked.hasClass('persistent')) {
       clicked.fadeOut();
     }
 

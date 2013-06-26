@@ -282,7 +282,6 @@ Nucore::Application.routes.draw do
       resources :reservations, :except => [:index] do
         get '/move',               :to => 'reservations#move',              :as => 'move_reservation'
         get '/switch_instrument',  :to => 'reservations#switch_instrument', :as => 'switch_instrument'
-        match '/pick_accessories', :to => 'reservations#pick_accessories',  :as => 'pick_accessories', :via => [:get, :post]
       end
 
       resources :accessories

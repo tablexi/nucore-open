@@ -10,15 +10,6 @@ class ProductAccessory < ActiveRecord::Base
   validates :accessory, :presence => true
   validates :scaling_type, :presence => true, :inclusion => SCALING_TYPES
 
-  ## scopes
-  def self.for_acting_as(is_acting_as)
-    if is_acting_as
-      scoped
-    else
-      joins(:accessory).where('products.is_hidden = ?', false)
-    end
-  end
-
   def self.scaling_types
     SCALING_TYPES
   end

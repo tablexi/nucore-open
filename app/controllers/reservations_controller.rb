@@ -273,63 +273,12 @@ class ReservationsController < ApplicationController
       flash[:error] = relay_error_msg
     end
 
-    if params[:switch] == 'off'
-      @product_accessories = visible_accessories(@reservation)
-      if @product_accessories.any?
-        redirect_to new_order_order_detail_accessory_path(@order, @order_detail)
-        return
-      end
+    if params[:switch] == 'off' && @order_detail.accessories?
+      redirect_to new_order_order_detail_accessory_path(@order, @order_detail)
+      return
     end
 
     redirect_to params[:redirect_to] || request.referer || order_order_detail_path(@order, @order_detail)
-  end
-
-  def pick_accessories
-    @error_status = nil
-    @errors_by_id = {}
-    @product_accessories = visible_accessories(@reservation)
-
-    if request.get?
-      render 'pick_accessories', :layout => false and return
-    end
-
-    @complete_state = OrderStatus.find_by_name!('Complete')
-
-    @count = 0
-    params.each do |k, v|
-      next unless k =~ /quantity(\d+)/ && v.present? && v != '0'
-
-      OrderDetail.transaction do
-        product   = @facility.products.find_by_id!($1)
-        quantity  = v.to_i
-
-        begin
-          if quantity > 0
-            new_ods = @order.add(product, quantity)
-            new_ods.map{|od| od.change_status!(@complete_state)}
-            @count += quantity
-          else
-            raise ArgumentError.new
-          end
-        rescue ArgumentError
-          ## otherwise something's wrong w/ new_od... safe it for the view
-          @error_status = 406
-          @errors_by_id[product.id] = "Invalid Quantity"
-
-          ## all save or non save.
-          raise ActiveRecord::Rollback
-        end
-      end
-    end
-
-    if @error_status
-      @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
-      render 'pick_accessories', :format => :html, :layout => false, :status => @error_status
-    else
-      flash[:notice] = "Reservation Ended, #{helpers.pluralize(@count, 'accessory')} added"
-      render :nothing => true, :status => 200
-    end
-
   end
 
   private
