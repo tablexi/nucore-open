@@ -214,7 +214,6 @@ class ReservationsController < ApplicationController
   end
 
   # POST /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
-  # this action should really respond to a PUT only but for some reason that doesn't work w/ jQuery UI popup
   def move
 
     if @reservation.move_to_earliest
