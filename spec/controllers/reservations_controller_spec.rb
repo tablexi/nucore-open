@@ -730,37 +730,6 @@ describe ReservationsController do
     end
   end
 
-  context 'earliest move possible' do
-    before :each do
-      @method      = :get
-      @action      = :earliest_move_possible
-      @reservation = @instrument.reservations.create(
-        :reserve_start_at => Time.zone.now+1.day,
-        :order_detail     => @order_detail,
-        :duration_value   => 60,
-        :duration_unit    => 'minutes'
-      )
-      @earliest = @reservation.earliest_possible
-      @reservation.reserve_start_at.should_not == @earliest.reserve_start_at
-      @reservation.reserve_end_at.should_not == @earliest.reserve_end_at
-      @params.merge!(:reservation_id => @reservation.id)
-    end
-
-    it_should_allow :guest, 'to move a reservation' do
-      assigns(:order).should == @order
-      assigns(:order_detail).should == @order_detail
-      assigns(:instrument).should == @instrument
-      assigns(:reservation).should == @reservation
-      human_datetime(assigns(:reservation).reserve_start_at).should == human_datetime(@earliest.reserve_start_at)
-      human_datetime(assigns(:reservation).reserve_end_at).should == human_datetime(@earliest.reserve_end_at)
-      should set_the_flash
-      assert_redirected_to reservations_path(:status => 'upcoming')
-    end
-  end
-
-
-
-
   context 'needs now reservation' do
 
     before :each do
