@@ -14,6 +14,7 @@ describe AccessoriesController do
   let(:order) { order_detail.order }
 
   before :each do
+    @authable = instrument.facility
     order_detail.backdate_to_complete!(Time.zone.now)
     @params = { :order_id => order.id, :order_detail_id => order_detail.id }
   end

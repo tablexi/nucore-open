@@ -2,6 +2,7 @@ class AccessoriesController < ApplicationController
   load_resource :order
   load_resource :order_detail, :through => :order
 
+  before_filter :authorize_order_detail
   before_filter :load_product
 
   def new
@@ -13,7 +14,7 @@ class AccessoriesController < ApplicationController
   def create
     accessorizer = Accessories::Accessorizer.new(@order_detail)
     @order_details = accessorizer.add_from_params(params[:accessories])
-    @count = @order_details.count { |od| od.persisted? }
+    @count = @order_details.count
 
     if @order_details.none? { |od| od.errors.any? }
       flash[:notice] = "Reservation Ended, #{helpers.pluralize(@count, 'accessory')} added"
@@ -28,6 +29,14 @@ class AccessoriesController < ApplicationController
   end
 
   private
+
+  def ability_resource
+    @order_detail
+  end
+
+  def authorize_order_detail
+    authorize! :add_accessories, @order_detail
+  end
 
   def load_product
     @product = @order_detail.product
