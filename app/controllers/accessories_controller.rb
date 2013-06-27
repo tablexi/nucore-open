@@ -23,7 +23,7 @@ class AccessoriesController < ApplicationController
         redirect_to reservations_path
       end
     else
-      render :new
+      render :new, :status => 406, :layout => !request.xhr?
     end
   end
 

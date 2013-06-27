@@ -3,7 +3,7 @@ class ReservationsController < ApplicationController
   before_filter :authenticate_user!, :except => [ :index ]
   before_filter :check_acting_as,  :only => [ :switch_instrument, :show, :list ]
   before_filter :load_basic_resources, :only => [:new, :create, :edit, :update]
-  before_filter :load_and_check_resources, :only => [ :move, :switch_instrument, :pick_accessories ]
+  before_filter :load_and_check_resources, :only => [ :move, :switch_instrument ]
 
   include TranslationHelper
   include FacilityReservationsHelper

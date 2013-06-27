@@ -6,6 +6,6 @@ module ReservationsHelper
   end
 
   def reservation_pick_accessories_path(reservation)
-    order_order_detail_reservation_pick_accessories_path(reservation.order_detail.order, reservation.order_detail, reservation)
- end
+    new_order_order_detail_accessory_path(reservation.order_detail.order, reservation.order_detail)
+  end
 end
