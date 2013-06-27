@@ -1,0 +1,17 @@
+dl {
+  dt {
+    font-weight: bold;
+    margin-top: 1em;
+  }
+  dd {
+    margin-bottom: 1em;
+  }
+}
+
+table.with-accessories {
+  tr.child {
+    .product, .order-id {
+      padding-left: 3em;
+    }
+  }
+}

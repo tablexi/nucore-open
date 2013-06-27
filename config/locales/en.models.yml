@@ -2,8 +2,8 @@
 # Messages that come from models
 en:
   models:
-      order:
-        auto_assign_account: "Could not find a valid payment source for purchasing %{product_name}"
+    order:
+      auto_assign_account: "Could not find a valid payment source for purchasing %{product_name}"
 
   activerecord:
     errors:
@@ -133,9 +133,13 @@ en:
         reviewed_at: Review Closes
         reviewed_at_past: Review Closed
         order_status: Status
+        id: "Order #"
       journal:
         description: Notes
         journal_status: Status
+      reservation:
+        duration_mins: Reserve
+        actual_duration_mins: Actual
       statement:
         id: "Invoice #"
         created_by: Sent By

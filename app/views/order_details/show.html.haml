@@ -7,6 +7,7 @@
 = content_for :h1 do
   = t('.head.h1', :order_number => @order_detail.to_s)
 
+- res = @order_detail.reservation
 .grid_6.alpha
   %ul.form
     %li= link_to t('.link.receipt'), receipt_order_path(@order)

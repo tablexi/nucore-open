@@ -39,11 +39,18 @@ class FacilityOrdersController < ApplicationController
 
   # GET /facilities/example/orders/2/edit
   def edit
-    @order=current_facility.orders.find params[:id]
-    @order_details=@order.order_details.paginate(:page => params[:page])
-    @merge_orders=Order.where(:merge_with_order_id => @order.id, :created_by => current_user.id).all
+    @order = current_facility.orders.find params[:id]
+    @order_details = @order.order_details.paginate(:page => params[:page])
+    @merge_orders = Order.where(:merge_with_order_id => @order.id, :created_by => current_user.id).all
   end
 
+  def show
+    @order = current_facility.orders.find params[:id]
+    @order_details = @order.order_details.ordered_by_parents
+    @order_details = @order_details.includes(:reservation, :order_status, :product, :order)
+
+    @merge_orders = Order.where(:merge_with_order_id => @order.id, :created_by => current_user.id).all
+  end
 
   ## POST /facilities/:facility_id/orders/batch_update
   def batch_update

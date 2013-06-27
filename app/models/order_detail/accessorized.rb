@@ -12,6 +12,13 @@ module OrderDetail::Accessorized
     delegate :scaling_type, :to => :product_accessory
   end
 
+  module ClassMethods
+    # Puts parent orders first, followed by their children. Children are ordered by id
+    def ordered_by_parents
+      order("COALESCE(order_details.parent_order_detail_id, order_details.id), order_details.parent_order_detail_id, order_details.id")
+    end
+  end
+
   def accessories?
     product.product_accessories.any?
   end

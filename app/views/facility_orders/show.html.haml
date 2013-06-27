@@ -1,0 +1,41 @@
+- content_for :h1 do
+  = current_facility
+%h2= "Order ##{@order.id}"
+
+%dl
+  %dt= OrderDetail.human_attribute_name(:ordered_at)
+  %dd= human_datetime @order.ordered_at
+
+  %dt= OrderDetail.human_attribute_name(:user)
+  %dd= @order.user
+
+  %dt= OrderDetail.human_attribute_name(:created_by_user)
+  %dd= @order.created_by_user
+
+%table.with-accessories
+  %thead
+    %tr
+      %th= OrderDetail.human_attribute_name(:id)
+      %th= Product.model_name.human
+      %th= OrderStatus.model_name.human
+      %th= Reservation.human_attribute_name(:duration_mins)
+      %th= Reservation.human_attribute_name(:actual_duration_mins)
+      %th= #clock
+      %th Cost
+      %th Subsidy
+      %th Total
+  %tbody
+    - @order_details.each do |od|
+      - od.send(:extend, PriceDisplayment)
+      %tr{:class => od.parent_order_detail_id ? 'child' : 'parent'}
+        %td.order-id= od
+        %td.product
+          = od.product
+          = link_to "+ Add accessory", new_order_order_detail_accessory_path(@order, od), :class => 'has_accessories' if od.product.accessories.count > od.child_order_details.count
+        %td= od.order_status
+        %td= od.reservation.try(:duration_mins)
+        %td= od.reservation.try(:actual_duration_mins) || od.quantity
+        %td clock
+        %td= od.wrapped_cost
+        %td= od.wrapped_subsidy
+        %td= od.wrapped_total
