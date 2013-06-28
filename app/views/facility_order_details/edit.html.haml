@@ -4,10 +4,10 @@
   :javascript
     $(document).ready(function() {
       $('#file_upload').uploadify({
-        'uploader'     : '#{ENV['RAILS_RELATIVE_URL_ROOT']}/javascripts/uploadify/uploadify.swf',
+        'uploader'     : '#{asset_path('uploadify/uploadify.swf')}',
         'fileDataName' : 'fileData',
         'script'       : "#{add_uploader_file_path(current_facility, @order_detail.product.parameterize, @order_detail.product.url_name)}",
-        'cancelImg'    : '#{ENV['RAILS_RELATIVE_URL_ROOT']}/javascripts/uploadify/cancel.png',
+        'cancelImg'    : "#{asset_path('uploadify/cancel.png')}",
         'auto'         : false,
         'method'       : 'get',
         'multi'        : true,
