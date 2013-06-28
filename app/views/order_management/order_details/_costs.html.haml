@@ -1,0 +1,26 @@
+- f.object.send(:extend, PriceDisplayment)
+- if f.object.actual_cost?
+  %table.table.cost-table
+    %thead
+      %tr
+        %td Cost
+        %td Subsidy
+        %td Total
+    %tbody
+      %tr
+        %td= f.text_field :actual_cost, :class => 'cost'
+        %td= f.text_field :actual_subsidy, :class => 'subsidy'
+        %td= f.text_field :actual_total, :disabled => true, :class => 'total'
+
+- else
+  %table.table.cost-table
+    %thead
+      %tr
+        %td Estimated Cost
+        %td Estimated Subsidy
+        %td Estimated Total
+    %tbody
+      %tr
+        %td= f.text_field :estimated_cost, :disabled => true, :class => 'cost'
+        %td= f.text_field :estimated_subsidy, :disabled => true, :class => 'subsidy'
+        %td= f.text_field :estimated_total, :disabled => true, :class => 'total'

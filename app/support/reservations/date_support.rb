@@ -7,7 +7,8 @@ module Reservations::DateSupport
     attr_writer :duration_mins, :duration_value, :duration_unit,
                 :reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian,
                 :actual_start_date, :actual_start_hour, :actual_start_min, :actual_start_meridian,
-                :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian
+                :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian,
+                :actual_duration_mins
 
     before_validation :set_all_split_times
   end
@@ -186,7 +187,7 @@ module Reservations::DateSupport
     self.actual_end_at   = nil
     reserve_attrs = params.slice(:actual_start_date, :actual_start_hour, :actual_start_min, :actual_start_meridian,
      :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian,
-     :actual_start_at, :actual_end_at)
+     :actual_start_at, :actual_end_at, :actual_duration_mins)
     self.assign_attributes reserve_attrs
   end
 
@@ -223,6 +224,8 @@ module Reservations::DateSupport
     return if self.actual_end_at.present?
     if @actual_end_date && @actual_end_hour && @actual_end_min && @actual_end_meridian
       self.actual_end_at = parse_usa_date(@actual_end_date, "#{@actual_end_hour.to_s}:#{@actual_end_min.to_s.rjust(2, '0')} #{@actual_end_meridian}")
+    elsif @actual_duration_mins
+      self.actual_end_at = self.actual_start_at + @actual_duration_mins.to_i.minutes
     end
   end
 end

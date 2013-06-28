@@ -48,6 +48,10 @@ module PriceDisplayment
     end
   end
 
+  def actual_cost?
+    actual_cost.present?
+  end
+
 private
   def empty_display
     'Unassigned'

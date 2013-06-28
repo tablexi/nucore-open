@@ -1,6 +1,8 @@
 - content_for :h1 do
   = "Order #{@order_detail}"
 
+%h3= @order_detail.product
+
 = form_for @order_detail, :url => manage_facility_order_order_detail_path(current_facility, @order, @order_detail) do |f|
   = f.label :account
   = f.collection_select :account_id, @available_accounts, :id, :account_pretty
@@ -11,7 +13,15 @@
   - else
     = @order_detail.order_status
 
-  = render :partial => 'reservation', :locals => { :f => f, :reservation => @order_detail.reservation } if @order_detail.reservation
+  - if @order_detail.reservation
+    = render :partial => 'reservation', :locals => { :f => f, :reservation => @order_detail.reservation }
+  - else
+    = f.label :quantity
+    = f.text_field :quantity
+
+  = render :partial => 'costs', :locals => { :f => f }
+
+  = render :partial => 'assigned_user', :locals => { :f => f }
 
   = f.label :note
   = f.text_area :note

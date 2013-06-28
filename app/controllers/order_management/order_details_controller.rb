@@ -10,6 +10,13 @@ class OrderManagement::OrderDetailsController < ApplicationController
   def edit
   end
 
+  def pricing
+    checker = OrderDetails::PriceChecker.new(@order_detail)
+    @prices = checker.prices_from_params(params[:order_detail])
+
+    render :json => prices.to_json
+  end
+
   private
 
   def ability_resource

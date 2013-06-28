@@ -8,6 +8,7 @@
 //= require jquery.ui.droppable
 //= require jquery.ui.tabs
 //= require jquery.ui.dialog
+//= require jquery.ui.effect
 //= require _common
 //= require date
 //= require_tree ./app
