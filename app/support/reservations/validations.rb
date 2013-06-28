@@ -139,7 +139,7 @@ module Reservations::Validations
 
   # checks that the reservation is within the longest window for the groups the user is in
   def in_window?
-    groups   = (order_detail.order.user.price_groups + order_detail.order.account.price_groups).flatten.uniq
+    groups   = order_detail.price_groups
     max_days = longest_reservation_window(groups)
     diff     = reserve_start_at.to_date - Date.today
     diff <= max_days
@@ -151,8 +151,15 @@ module Reservations::Validations
 
   # return the longest available reservation window for the groups
   def longest_reservation_window(groups = [])
+    return default_reservation_window if groups.empty?
     pgps     = product.price_group_products.find(:all, :conditions => {:price_group_id => groups.collect{|pg| pg.id}})
     pgps.collect{|pgp| pgp.reservation_window}.max
+  end
+
+  private
+
+  def default_reservation_window
+    product.price_group_products.map(&:reservation_window).min
   end
 
 

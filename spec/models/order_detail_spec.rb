@@ -199,6 +199,22 @@ describe OrderDetail do
 
   context 'instrument' do
 
+    context 'where the account has a price group, but the user does not' do
+      let(:reservation) { FactoryGirl.create(:setup_reservation) }
+      let(:order_detail) { reservation.order_detail }
+      let(:price_group) { FactoryGirl.create(:price_group, :facility => @facility) }
+      before :each do
+        FactoryGirl.create(:price_group_product, :product => order_detail.product, :price_group => price_group)
+        FactoryGirl.create(:instrument_price_policy, :product => order_detail.product, :price_group => price_group)
+        order_detail.user.stub(:price_groups).and_return([])
+        order_detail.account.stub(:price_groups).and_return([price_group])
+      end
+
+      it 'allows purchase' do
+        order_detail.should be_valid_for_purchase
+      end
+    end
+
 #    before :each do
 #      @price_group    = FactoryGirl.create(:price_group, :facility => @facility)
 #      @pg_user_member = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
