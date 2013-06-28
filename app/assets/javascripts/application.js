@@ -9,5 +9,6 @@
 //= require jquery.ui.tabs
 //= require jquery.ui.dialog
 //= require _common
+//= require date
 //= require_tree ./app
 //= require clockpunch
