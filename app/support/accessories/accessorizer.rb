@@ -58,7 +58,7 @@ class Accessories::Accessorizer
   end
 
   def decorate(order_detail)
-    case product_accessory(order_detail.product).scaling_type
+    case order_detail.product_accessory.try :scaling_type
     when 'manual'
       Accessories::Scaling::Manual.new(order_detail)
     when 'auto'

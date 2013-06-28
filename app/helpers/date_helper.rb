@@ -64,6 +64,15 @@ module DateHelper
     output.html_safe
   end
 
+  # This is to DRY up many of the legacy places where hour/min/meridian is used in forms
+  def time_select(f, field)
+    output = ""
+    output << f.select(:"#{field}_hour", (1..12).to_a)
+    output << f.select(:"#{field}_min", (0..59).step(5).map{|d| [sprintf('%02d', d),d]})
+    output << f.select(:"#{field}_meridian", ['AM', 'PM'])
+    output.html_safe
+  end
+
   def join_time_select_values(values)
     "#{values['hour']}:#{values['minute']} #{values['ampm']}"
   end

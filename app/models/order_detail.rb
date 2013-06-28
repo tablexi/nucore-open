@@ -140,6 +140,10 @@ class OrderDetail < ActiveRecord::Base
     # state == 'complete' and !reviewed_at.nil? and reviewed_at > Time.zone.now and (dispute_at.nil? or !dispute_resolved_at.nil?)
   end
 
+  def reviewed?
+    reviewed_at.present? && !in_review? && !in_dispute?
+  end
+
   def can_be_viewed_by?(user)
     self.order.user_id == user.id || self.account.owner_user.id == user.id || self.account.business_admins.any?{|au| au.user_id == user.id}
   end
@@ -632,6 +636,13 @@ class OrderDetail < ActiveRecord::Base
     !!(complete? && (price_policy.nil? || reservation.try(:requires_but_missing_actuals?)))
   end
 
+  def missing_price_policy?
+    complete? && price_policy.nil?
+  end
+
+  def can_reconcile?
+    complete? && !in_dispute? && account.can_reconcile?(self)
+  end
 
   def self.account_unreconciled(facility, account)
     if account.is_a?(NufsAccount)

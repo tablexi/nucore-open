@@ -22,6 +22,10 @@ class NufsAccount < Account
     return true
   end
 
+  def can_reconcile?(order_detail)
+    order_detail.journal.try(:is_successful) || OrderDetail.need_journal.include?(order_detail)
+  end
+
   private
 
   #

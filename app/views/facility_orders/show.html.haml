@@ -28,14 +28,17 @@
     - @order_details.each do |od|
       - od.send(:extend, PriceDisplayment)
       %tr{:class => od.parent_order_detail_id ? 'child' : 'parent'}
-        %td.order-id= od
+        %td= order_detail_notices(od)
+        %td.order-id
+          = link_to od, manage_order_detail_path(od)
+          = link_to "(old)", edit_facility_order_order_detail_path(current_facility, @order, od)
         %td.product
           = od.product
           = link_to "+ Add accessory", new_order_order_detail_accessory_path(@order, od), :class => 'has_accessories' if od.product.accessories.count > od.child_order_details.count
         %td= od.order_status
         %td= od.reservation.try(:duration_mins)
         %td= od.reservation.try(:actual_duration_mins) || od.quantity
-        %td clock
+        %td= "clock" if od.reservation
         %td= od.wrapped_cost
         %td= od.wrapped_subsidy
         %td= od.wrapped_total

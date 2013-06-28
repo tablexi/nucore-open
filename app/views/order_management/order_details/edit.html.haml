@@ -1,0 +1,17 @@
+- content_for :h1 do
+  = "Order #{@order_detail}"
+
+= form_for @order_detail, :url => manage_facility_order_order_detail_path(current_facility, @order, @order_detail) do |f|
+  = f.label :account
+  = f.collection_select :account_id, @available_accounts, :id, :account_pretty
+
+  = f.label :order_status
+  - if @order_statuses
+    = f.collection_select :order_status_id, @order_statuses, :id, :name_with_level
+  - else
+    = @order_detail.order_status
+
+  = render :partial => 'reservation', :locals => { :f => f, :reservation => @order_detail.reservation } if @order_detail.reservation
+
+  = f.label :note
+  = f.text_area :note

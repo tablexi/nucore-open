@@ -167,6 +167,10 @@ class Account < ActiveRecord::Base
     return nil
   end
 
+  def can_reconcile?(order_detail)
+    order_detail.statement_id.present?
+  end
+
   def self.need_statements (facility)
     # find details that are complete, not yet statemented, priced, and not in dispute
     details = OrderDetail.need_statement(facility)
