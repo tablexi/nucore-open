@@ -280,7 +280,8 @@ Nucore::Application.routes.draw do
       get '/remove_order_file',  :to => 'order_details#remove_order_file', :as => 'remove_order_file'
 
       resources :reservations, :except => [:index] do
-        get '/move',               :to => 'reservations#move',              :as => 'move_reservation'
+        get '/move',               :to => 'reservations#earliest_move_possible'
+        post '/move',              :to => 'reservations#move',              :as => 'move_reservation'
         get '/switch_instrument',  :to => 'reservations#switch_instrument', :as => 'switch_instrument'
       end
 

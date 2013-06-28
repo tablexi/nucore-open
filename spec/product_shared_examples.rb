@@ -32,13 +32,13 @@ shared_examples_for "NonReservationProduct" do |product_type|
         @pp_g4 = make_price_policy(:unit_cost => 4, :price_group => @price_group4)
       end
       it 'should find the cheapest price policy of the policies user is a member of' do
-        @product.groups_for_order_detail(@order_detail).should == [@price_group, @price_group2]
+        @order_detail.price_groups.should == [@price_group, @price_group2]
         @product.cheapest_price_policy(@order_detail).should == @pp_g1
       end
       it 'should find the cheapest price policy if the user is in all groups' do
         FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group3)
         FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group4)
-        @product.groups_for_order_detail(@order_detail).should == [@price_group, @price_group2, @price_group3, @price_group4]
+        @order_detail.price_groups.should == [@price_group, @price_group2, @price_group3, @price_group4]
         @product.cheapest_price_policy(@order_detail).should == @pp_g4
       end
 
@@ -61,7 +61,7 @@ shared_examples_for "NonReservationProduct" do |product_type|
         @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
         AccountPriceGroupMember.create!(:price_group => @price_group3, :account => @account)
         @order_detail.update_attributes(:account => @account)
-        @product.groups_for_order_detail(@order_detail).should == [@price_group, @price_group2, @price_group3]
+        @order_detail.price_groups.should == [@price_group, @price_group2, @price_group3]
         @product.cheapest_price_policy(@order_detail).should == @pp_g3
       end
 
@@ -154,13 +154,13 @@ shared_examples_for "ReservationProduct" do |product_type|
         @pp_g4 = make_price_policy(:usage_rate => 4, :price_group => @price_group4)
       end
       it 'should find the cheapest price policy of the policies user is a member of' do
-        @product.groups_for_order_detail(@order_detail).should == [@price_group, @price_group2]
+        @order_detail.price_groups.should == [@price_group, @price_group2]
         @product.cheapest_price_policy(@order_detail).should == @pp_g1
       end
       it 'should find the cheapest price policy if the user is in all groups' do
         FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group3)
         FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group4)
-        @product.groups_for_order_detail(@order_detail).should == [@price_group, @price_group2, @price_group3, @price_group4]
+        @order_detail.price_groups.should == [@price_group, @price_group2, @price_group3, @price_group4]
         @product.cheapest_price_policy(@order_detail).should == @pp_g4
       end
 
@@ -168,7 +168,7 @@ shared_examples_for "ReservationProduct" do |product_type|
         @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
         AccountPriceGroupMember.create!(:price_group => @price_group3, :account => @account)
         @order_detail.update_attributes(:account => @account)
-        @product.groups_for_order_detail(@order_detail).should == [@price_group, @price_group2, @price_group3]
+        @order_detail.price_groups.should == [@price_group, @price_group2, @price_group3]
         @product.cheapest_price_policy(@order_detail).should == @pp_g3
       end
 

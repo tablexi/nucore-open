@@ -23,5 +23,10 @@ FactoryGirl.define do
       on_fri false
       on_sat true
     end
+
+    factory :all_day_schedule_rule do
+      start_hour 0
+      end_hour 24
+    end
   end
 end
