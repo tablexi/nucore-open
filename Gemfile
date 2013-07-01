@@ -31,6 +31,7 @@ gem 'dynamic_form',     '~> 1.1.4'
 gem "ckeditor"
 gem 'jquery-rails',     '~> 2.1.4'
 gem 'jquery-ui-sass-rails'
+gem 'clockpunch',       '~> 0.1.0'
 
 ## controllers
 gem 'prawn',            '0.12'
