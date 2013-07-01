@@ -354,8 +354,12 @@ describe FacilityReservationsController do
         @reservation.update_attributes!(:reserve_start_at => Time.zone.now, :reserve_end_at => 1.hour.from_now)
 
         @unpurchased_reservation=FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => 1.hour.from_now, :reserve_end_at => 2.hours.from_now)
-
         @order_detail2=FactoryGirl.create(:order_detail, :order => @order2, :product => @product, :reservation => @unpurchased_reservation)
+
+        @cancelled_reservation = FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => 2.hours.from_now, :reserve_end_at => 3.hours.from_now)
+        @order_detail3 = FactoryGirl.create(:order_detail, :order => @order, :product => @product, :reservation => @cancelled_reservation)
+        @cancelled_reservation.should be_persisted
+        @order_detail3.update_order_status! @admin, OrderStatus.cancelled.first
 
         maybe_grant_always_sign_in :director
         @method = :get
@@ -370,14 +374,15 @@ describe FacilityReservationsController do
       end
 
       it 'should show reservation' do
-        # puts "paid: #{@reservation.id}"
-        # puts "unpaid: #{@unpurchased_reservation.id}"
-        # puts response.body
         response.body.should include "id='tooltip_reservation_#{@reservation.id}'"
       end
 
       it 'should not show unpaid reservation' do
         response.body.should_not include "id='tooltip_reservation_#{@unpurchased_reservation.id}'"
+      end
+
+      it 'should include cancelled reservation' do
+        response.body.should include "id='tooltip_reservation_#{@cancelled_reservation.id}'"
       end
     end
   end
