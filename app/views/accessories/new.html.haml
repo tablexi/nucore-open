@@ -1,5 +1,5 @@
 .modal-header
-  %button.close{:data => { :dismiss => 'modal' }, :aria_hidden => true, :type => 'button'} x
+  = modal_close_button
   %h3 Accessories Entry
 = form_tag order_order_detail_accessories_path(@order, @order_detail), :remote => request.xhr?, 'data-type' => 'html', :id => 'accessory-form', :class => :pick_accessories_form do |f|
   .modal-body
@@ -18,4 +18,4 @@
             %td{:colspan => 2, :class => 'errors'}= od.errors.full_messages.join('<br/>').html_safe
   .modal-footer
     = submit_tag 'Add Accessories', :class => 'btn btn-primary'
-    %button.btn{:data => { :dismiss => 'modal' }, 'aria_hidden' => true} Cancel
+    = modal_cancel_button

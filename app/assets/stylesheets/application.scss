@@ -85,6 +85,12 @@ footer .span8 {
   line-height: 75px;
 }
 
+/*
+ bootstrap overrides
+*/
+.modal form {
+  margin-bottom: 0;
+}
 
 // @import "base";
 // @import "override";

@@ -12,13 +12,12 @@
   %dt= OrderDetail.human_attribute_name(:created_by_user)
   %dd= @order.created_by_user
 
-%table.with-accessories.table.table-striped.table-hover
+%table.order-list.table.table-striped.table-hover#order-management
   %thead
     %tr
       %th
       %th= OrderDetail.human_attribute_name(:id)
       %th= Product.model_name.human
-      %th= OrderStatus.model_name.human
       %th= Reservation.human_attribute_name(:duration_mins)
       %th= Reservation.human_attribute_name(:actual_duration_mins)
       %th Cost
@@ -27,15 +26,16 @@
   %tbody
     - @order_details.each do |od|
       - od.send(:extend, PriceDisplayment)
-      %tr{:class => od.parent_order_detail_id ? 'child' : 'parent'}
-        %td= order_detail_badges(od)
+      %tr{:class => [od.parent_order_detail_id ? 'child' : 'parent', "status-#{od.order_status.root.name.underscore}"] }
+        %td
+          %span.label{:class => "status-#{od.order_status.root.name.underscore}"}= od.order_status
         %td.order-id
-          = link_to od, manage_order_detail_path(od)
+          = link_to od, manage_order_detail_path(od), :class => 'order-detail'
           = link_to "(old)", edit_facility_order_order_detail_path(current_facility, @order, od)
         %td.product
           = od.product
           = link_to "+ Add accessory", new_order_order_detail_accessory_path(@order, od), :class => ['has_accessories', 'persistent'] if od.product.accessories.count > od.child_order_details.count
-        %td= od.order_status
+
         %td.timeinput= od.reservation.try(:duration_mins)
         - if od.reservation.try(:actual_duration_mins)
           %td.timeinput= od.reservation.actual_duration_mins
@@ -43,4 +43,12 @@
           %td= od.quantity
         %td= od.wrapped_cost
         %td= od.wrapped_subsidy
-        %td= od.wrapped_total
+        %td
+          = od.wrapped_total
+        %td
+          - if od.cost_estimated?
+            %span.label.label-warning Estimated
+          = order_detail_badges(od)
+
+#order-detail-modal.modal.hide.fade
+

@@ -61,5 +61,9 @@ class OrderDetailManagement
     elem.animateHighlight()
 
 $ ->
-  new OrderDetailManagement($('.edit_order_detail'))
+  new AjaxModal('#order-management .order-detail', '#order-detail-modal', {
+    success: ->
+      new OrderDetailManagement($('#order-detail-modal .edit_order_detail'))
+    })
+
   $('.timeinput').timeinput()

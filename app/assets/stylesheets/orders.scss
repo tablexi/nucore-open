@@ -8,10 +8,25 @@ dl {
   }
 }
 
-table.with-accessories {
+table.order-list {
   tr.child {
     .product, .order-id {
       padding-left: 3em;
     }
+  }
+
+  tr.status-cancelled {
+    @extend .muted;
+  }
+
+}
+
+.label {
+  &.status-complete {
+    @extend .label-success;
+  }
+
+  &.status-cancelled {
+    @extend .label-important;
   }
 }

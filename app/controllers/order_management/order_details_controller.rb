@@ -8,6 +8,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
   before_filter :load_order_statuses, :only => [:edit]
 
   def edit
+    render :layout => false if request.xhr?
   end
 
   def pricing
