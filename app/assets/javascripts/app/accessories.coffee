@@ -70,6 +70,7 @@ class AccessoryPickerDialog
     @dialog.html(xhr.responseText)
     if status == 'success'
       @dialog.modal('hide')
+      window.location.reload()
     else
       @toggle_buttons true
 
