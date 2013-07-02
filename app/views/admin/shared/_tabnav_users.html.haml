@@ -1,4 +1,4 @@
-%ul.tabs
+%ul.nav.nav-tabs
   %li.first= link_to t('shared.tabnav_users.details'), facility_user_path(current_facility, @user), :class => (secondary_tab == 'details' ? 'active' : nil)
   %li= link_to t('shared.tabnav_users.orders'), facility_user_orders_path(current_facility, @user), :class => (secondary_tab == 'orders' ? 'active' : nil)
   %li= link_to t('shared.tabnav_users.reservations'), facility_user_reservations_path(current_facility, @user), :class => (secondary_tab == 'reservations' ? 'active' : nil)

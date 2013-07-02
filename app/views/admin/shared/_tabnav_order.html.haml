@@ -1,4 +1,4 @@
-%ul.tabs.tab_counts
+%ul.nav.nav-tabs.tab_counts
   %li.first= display_tab "New / In Process", facility_orders_path, :action => :index
   - if current_user.manager_of?(current_facility)
     %li= display_tab "Problem Orders", show_problems_facility_orders_path, :action => :show_problems

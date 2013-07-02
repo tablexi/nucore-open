@@ -1,7 +1,7 @@
 = content_for :h1 do
   = t_my(Order)
 = content_for :tabnav do
-  %ul.tabs
+  %ul.nav.nav-tabs
     - @available_statuses.each_with_index do |status, i|
       %li{:class => "#{'first' if i == 0}"}
         = link_to status.humanize, orders_status_path(:status => status), :class => "#{'active' if params[:status] == status}"

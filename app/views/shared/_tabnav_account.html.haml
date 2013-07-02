@@ -1,4 +1,4 @@
-%ul.tabs
+%ul.nav.nav-tabs
   %li.first= link_to t('shared.tabnav_account.details'), account_path(@account), :class => (secondary_tab == 'details' ? 'active' : nil)
   %li= link_to t('shared.tabnav_account.transact'), transactions_account_path(@account), :class => (secondary_tab == 'transactions' ? 'active' : nil)
   %li= link_to t('shared.tabnav_account.statement'), account_facility_statement_path(@account, @facility, 'list'), :class => (secondary_tab == 'statements' ? 'active' : nil) if @facility && !@account.is_a?(NufsAccount)
