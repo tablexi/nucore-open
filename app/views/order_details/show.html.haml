@@ -1,5 +1,5 @@
 = content_for :breadcrumb do
-  %ul.horiz
+  %ul.breadcrumb
     %li= link_to t('.link.orders'), orders_url
     %li &raquo;
     %li= t('.head.h1', :order_number => @order_detail.to_s)

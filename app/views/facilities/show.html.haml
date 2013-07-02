@@ -13,7 +13,7 @@
   - bundles     = current_facility.bundles.active.reject{|b| !b.products_active?}
 
 = content_for :breadcrumb do
-  %ul.horiz
+  %ul.breadcrumb
     %li= link_to 'Home', :root
     %li== &raquo;
     %li=h current_facility
@@ -33,4 +33,3 @@
   = render :partial => 'product_list', :locals => {:products => services}
   = render :partial => 'product_list', :locals => {:products => items}
   = render :partial => 'product_list', :locals => {:products => bundles}
-  

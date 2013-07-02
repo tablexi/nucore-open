@@ -1,7 +1,7 @@
 = content_for :h1 do
   = t('.h1')
 = content_for :breadcrumb do
-  %ul.horiz
+  %ul.breadcrumb
     %li= link_to t('.crumbs.home'), :root
     - detail = @order.order_details.first
     - unless detail.nil?
@@ -22,7 +22,7 @@
       =h @order.account
       %br
       = link_to t('.link.change_account'), choose_account_order_path(@order, :reset_account => true)
-      
+
   = form_for @order, :url => {:action => :update_or_purchase} do |f|
     %table#cart
       %tr
@@ -60,4 +60,3 @@
       - if acting_as?
         .backdate_fields
           = render :partial => 'edit_date', :locals => { :f => f}
-
