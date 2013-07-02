@@ -21,7 +21,6 @@
       %th= OrderStatus.model_name.human
       %th= Reservation.human_attribute_name(:duration_mins)
       %th= Reservation.human_attribute_name(:actual_duration_mins)
-      %th= #clock
       %th Cost
       %th Subsidy
       %th Total
@@ -37,9 +36,11 @@
           = od.product
           = link_to "+ Add accessory", new_order_order_detail_accessory_path(@order, od), :class => 'has_accessories' if od.product.accessories.count > od.child_order_details.count
         %td= od.order_status
-        %td= od.reservation.try(:duration_mins)
-        %td= od.reservation.try(:actual_duration_mins) || od.quantity
-        %td= "clock" if od.reservation
+        %td.timeinput= od.reservation.try(:duration_mins)
+        - if od.reservation.try(:actual_duration_mins)
+          %td.timeinput= od.reservation.actual_duration_mins
+        - else
+          %td= od.quantity
         %td= od.wrapped_cost
         %td= od.wrapped_subsidy
         %td= od.wrapped_total

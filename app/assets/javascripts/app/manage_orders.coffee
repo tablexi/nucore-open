@@ -62,3 +62,4 @@ class OrderDetailManagement
 
 $ ->
   new OrderDetailManagement($('.edit_order_detail'))
+  $('.timeinput').timeinput()
