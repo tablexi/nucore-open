@@ -25,6 +25,7 @@ gem 'awesome_nested_set', '2.1.6'
 gem 'nokogiri',         '1.5.9'
 
 ## views
+gem 'bootstrap-sass'
 gem 'haml',             '4.0.3'
 gem 'will_paginate',    '3.0.4'
 gem 'dynamic_form',     '~> 1.1.4'
