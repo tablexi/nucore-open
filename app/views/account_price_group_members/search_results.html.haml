@@ -10,16 +10,18 @@
       %p
         = t('.main')
         = link_to t('.create'), new_account_user_search_facility_accounts_path(current_facility)
-    %table
-      %tr
-        %th Account Number
-        %th Owner
-        %th Email
-      - @accounts.each do |account|
+    %table.table.table-striped.table-hover
+      %thead
         %tr
-          %td= link_to account.account_number, facility_price_group_account_price_group_members_path(current_facility, @price_group, :account_id => account.id), :method => :post
-          - owner=account.owner_user
-          %td=h owner.full_name if owner
-          %td=h owner.email if owner
+          %th Account Number
+          %th Owner
+          %th Email
+      %tbody
+        - @accounts.each do |account|
+          %tr
+            %td= link_to account.account_number, facility_price_group_account_price_group_members_path(current_facility, @price_group, :account_id => account.id), :method => :post
+            - owner=account.owner_user
+            %td=h owner.full_name if owner
+            %td=h owner.email if owner
     - if @count > @limit
       %p.notice= t('.notice', :count => @count-@limit)

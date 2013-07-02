@@ -2,30 +2,32 @@
   = t_my(Account)
 
 - if @account_users.empty?
-  %p.notice= "You do not have any #{Account.human_name.pluralize.downcase}."
+  %p.notice= "You do not have any #{Account.model_name.human.pluralize.downcase}."
 - else
-  %table
-    %tr
-      %th= Account.model_name.human
-      %th= Account.human_attribute_name(:description)
-      %th= Account.human_attribute_name(:type)
-      %th= Account.human_attribute_name(:expires_at)
-      %th= Facility.model_name.human
-      %th.hidden
-      %th.hidden
-    - show_th=false
-    - @account_users.each do |au|
-      - account = au.account
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td= account.account_number
-        %td= account.description
-        %td= account.type_string
-        %td= human_date(account.expires_at)
-        %td= account.facility || '<i>All</i>'.html_safe
-        - if au.can_administer? || session_user.administrator?
-          - show_th=true
-          %td= link_to "Transactions", transactions_account_path(account)
-          %td= link_to "Members", account_account_users_path(account)
+        %th= Account.model_name.human
+        %th= Account.human_attribute_name(:description)
+        %th= Account.human_attribute_name(:type)
+        %th= Account.human_attribute_name(:expires_at)
+        %th= Facility.model_name.human
+        %th.hidden
+        %th.hidden
+    %tbody
+      - show_th=false
+      - @account_users.each do |au|
+        - account = au.account
+        %tr
+          %td= account.account_number
+          %td= account.description
+          %td= account.type_string
+          %td= human_date(account.expires_at)
+          %td= account.facility || '<i>All</i>'.html_safe
+          - if au.can_administer? || session_user.administrator?
+            - show_th=true
+            %td= link_to "Transactions", transactions_account_path(account)
+            %td= link_to "Members", account_account_users_path(account)
 
     - if show_th
       = javascript_tag "$(function(){ $('th.hidden').show(); });"

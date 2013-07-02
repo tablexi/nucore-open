@@ -1,33 +1,29 @@
 <!DOCTYPE html>
 %html
   %head
-    %meta{ "http-equiv" => "content-type", "content" => "text/html; charset=UTF-8" }
-    = render :partial => '/shared/title', :locals => { :title =>  yield(:h1) }
     = render :partial => '/shared/head'
-    = yield :head_content
-    = render :partial => '/shared/google'
   %body
-    #header
+    %header
       = render :partial => '/shared/header'
-    #nav
+    %nav
       = render :partial => '/shared/nav'
     #content
-      .container_12
-        .grid_12
-          %h1= yield :h1
-        .clean
-        .grid_9.push_3
-          - if flash[:error]
-            %p.error= flash[:error]
-          - if flash[:notice]
-            %p.notice= flash[:notice]
-          - if flash[:info]
-            %p.info= flash[:info]
-          = yield :tabnav
-          = yield
-        #sidebar.grid_3.pull_9
-          = yield :sidebar
-        .clear
-    #footer
-      .container_12
-        = render :partial => '/shared/footer'
+      .container
+        .row
+          .span12
+            %h1= yield :h1
+        .row
+          .span9.pull-right
+            - if flash[:error]
+              %p.error= flash[:error]
+            - if flash[:notice]
+              %p.notice= flash[:notice]
+            - if flash[:info]
+              %p.info= flash[:info]
+            = yield :tabnav
+            = yield
+          .span3.pull-left
+            #sidebar
+              = yield :sidebar
+    %footer
+      = render :partial => '/shared/footer'

@@ -9,6 +9,7 @@
 //= require jquery.ui.tabs
 //= require jquery.ui.dialog
 //= require jquery.ui.effect
+//= require bootstrap
 //= require _common
 //= require date
 //= require_tree ./app

@@ -7,16 +7,18 @@
   %p.notice= t('.user_already_exists', username: @user.username)
 - else
   %p.notice= t('.notice3')
-  %table
-    %tr
-      %th
-      %th Username
-      %th Last Name
-      %th First Name
-      %th Email
-    %tr
-      %td= link_to 'Add User', facility_users_path(current_facility, :username => @user.username), :method => :post
-      %td= @user.username
-      %td= @user.last_name
-      %td= @user.first_name
-      %td= @user.email
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th
+        %th Username
+        %th Last Name
+        %th First Name
+        %th Email
+    %tbody
+      %tr
+        %td= link_to 'Add User', facility_users_path(current_facility, :username => @user.username), :method => :post
+        %td= @user.username
+        %td= @user.last_name
+        %td= @user.first_name
+        %td= @user.email

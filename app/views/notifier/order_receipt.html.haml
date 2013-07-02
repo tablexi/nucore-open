@@ -13,31 +13,33 @@
     %label Ordered By
     =h "#{@order.created_by_user.full_name}"
 
-%table
-  %tr
-    %th Order #
-    %th Product
-    %th Quantity
-    %th Status
-    - text = order_estimated_or_actual_text(@order)
-    %th= "#{text} Price"
-    %th= "#{text} Adjustment"
-    %th= "#{text} Total"
-  - @order.order_details.each do |od|
-    - od.send(:extend, PriceDisplayment)
+%table.table.table-striped.table-hover
+  %thead
     %tr
-      %td= od
-      - if od.reservation
-        %td
-          = ((od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)).html_safe
-          %br
-          =h od.reservation
-      - else
-        %td= ((od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)).html_safe
-      %td=h od.quantity
-      %td=h od.order_status.name
-      %td= od.display_cost
-      %td= od.display_subsidy
-      %td= od.display_total
+      %th Order #
+      %th Product
+      %th Quantity
+      %th Status
+      - text = order_estimated_or_actual_text(@order)
+      %th= "#{text} Price"
+      %th= "#{text} Adjustment"
+      %th= "#{text} Total"
+  %tbody
+    - @order.order_details.each do |od|
+      - od.send(:extend, PriceDisplayment)
+      %tr
+        %td= od
+        - if od.reservation
+          %td
+            = ((od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)).html_safe
+            %br
+            =h od.reservation
+        - else
+          %td= ((od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)).html_safe
+        %td=h od.quantity
+        %td=h od.order_status.name
+        %td= od.display_cost
+        %td= od.display_subsidy
+        %td= od.display_total
 
 %p= t('.outro') if @order.any_details_estimated?

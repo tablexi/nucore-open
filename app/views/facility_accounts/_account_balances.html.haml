@@ -1,16 +1,18 @@
 - if @accounts.blank?
   %p.notice= t('facility_accounts.account_balances.notice')
 - else
-  %table
-    %tr
-      %th= t('facility_accounts.account_balances.th.account')
-      %th= t('facility_accounts.account_balances.th.owner')
-      %th.currency= t('facility_accounts.account_balances.th.total')
-    - @accounts.each do |account|
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td= link_to account, facility_account_path(current_facility, account)
-        %td=h account.owner_user.full_name if account.owner_user
-        %td.currency=h number_to_currency account.unreconciled_total(current_facility)
+        %th= t('facility_accounts.account_balances.th.account')
+        %th= t('facility_accounts.account_balances.th.owner')
+        %th.currency= t('facility_accounts.account_balances.th.total')
+    %tbody
+      - @accounts.each do |account|
+        %tr
+          %td= link_to account, facility_account_path(current_facility, account)
+          %td=h account.owner_user.full_name if account.owner_user
+          %td.currency=h number_to_currency account.unreconciled_total(current_facility)
   - if params[:search_term].nil?
     = will_paginate(@accounts)
   - else

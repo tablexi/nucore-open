@@ -1,4 +1,4 @@
-%ul.tabs
+%ul.nav.nav-tabs
   %li.first= link_to t('shared.admin.tabnav_account.recent'), facility_accounts_path, :class => (secondary_tab == 'recent' ? 'active' : nil)
   - if SettingsHelper.feature_on? :edit_accounts
     %li= link_to t('shared.admin.tabnav_account.user'), user_search_facility_accounts_path, :class => (secondary_tab == 'search_by_user' ? 'active' : nil)

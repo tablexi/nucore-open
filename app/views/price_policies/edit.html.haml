@@ -17,6 +17,6 @@
     = error_messages_for :price_policy
   %ul.form
     = render :partial => "price_policies/#{@product.is_a?(Instrument) ? 'instrument_' : ''}price_policy_fields"
-  %ul.horiz
+  %ul.inline
     %li= submit_tag 'Save Rules', :class => 'btn'
     %li= link_to 'Cancel', price_policies_path

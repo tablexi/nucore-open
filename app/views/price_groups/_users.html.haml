@@ -5,18 +5,18 @@
 - if @user_members.empty?
   %p.notice No users have been added to this price group.
 - else
-  %table
-    %tr
-      %th
-      %th== Name
-      %th== Username
-      %th== Email
-    - @user_members.each do |user_price_group_member|
-      %tr{:class => cycle(:odd, :even)}
-        %td= link_to 'Remove', [current_facility, @price_group, user_price_group_member], :confirm => 'Are you sure?', :method => :delete
-        %td=h user_price_group_member.user.full_name
-        %td=h user_price_group_member.user.username
-        %td=h user_price_group_member.user.email
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th
+        %th== Name
+        %th== Username
+        %th== Email
+    %tbody
+      - @user_members.each do |user_price_group_member|
+        %tr{:class => cycle(:odd, :even)}
+          %td= link_to 'Remove', [current_facility, @price_group, user_price_group_member], :confirm => 'Are you sure?', :method => :delete
+          %td=h user_price_group_member.user.full_name
+          %td=h user_price_group_member.user.username
+          %td=h user_price_group_member.user.email
   = will_paginate(@user_members)
-
-

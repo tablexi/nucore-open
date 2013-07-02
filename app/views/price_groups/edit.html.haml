@@ -9,6 +9,6 @@
   = f.error_messages
   %ul.form
     = render :partial => 'price_group_fields', :locals => {:f => f}
-  %ul.horiz
+  %ul.inline
     %li= f.submit 'Update', :class => 'btn'
     %li= link_to 'Cancel', facility_price_group_path

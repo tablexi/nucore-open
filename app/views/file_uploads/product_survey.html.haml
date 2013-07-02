@@ -16,7 +16,7 @@
       %li
         = f.label :location, 'Service URL', :class => 'required'
         = f.text_field :location, :size => 60
-    %ul.horiz
+    %ul.inline
       %li
         = f.submit('Add', :disable_with => "Adding...", :class => 'btn')
   %br
@@ -24,22 +24,24 @@
   - if surveys.empty?
     %p.notice= t('.order_form.notice')
   - else
-    %table
-      %tr
-        %th
-        %th.centered Status
-        %th Service URL
-        %th Date Added
-      - surveys.each do |esp|
+    %table.table.table-striped.table-hover
+      %thead
         %tr
-          - if esp.active?
-            %td.centered= link_to 'Deactivate', deactivate_survey_path(current_facility, @product, esp), :method => :put
-            %td.centered Active
-          - else
-            %td.centered= link_to 'Activate', activate_survey_path(current_facility, @product, esp), :method => :put
-            %td.centered Inactive
-          %td= link_to truncate(esp.external_service.location, :length => 60), esp.external_service.location, :target => '_blank'
-          %td= human_datetime(esp.created_at)
+          %th
+          %th.centered Status
+          %th Service URL
+          %th Date Added
+      %tbody
+        - surveys.each do |esp|
+          %tr
+            - if esp.active?
+              %td.centered= link_to 'Deactivate', deactivate_survey_path(current_facility, @product, esp), :method => :put
+              %td.centered Active
+            - else
+              %td.centered= link_to 'Activate', activate_survey_path(current_facility, @product, esp), :method => :put
+              %td.centered Inactive
+            %td= link_to truncate(esp.external_service.location, :length => 60), esp.external_service.location, :target => '_blank'
+            %td= human_datetime(esp.created_at)
 
 .box_no_fill
   %h3= t('.download_form.head')
@@ -51,22 +53,24 @@
       %li
         = f.label :file, 'File', :class => 'required'
         = f.file_field :file
-    %ul.horiz
+    %ul.inline
       %li= f.submit('Upload', :disable_with => "Uploading...", :class => 'btn')
   %br
   - files = @product.stored_files.template
   - if files.empty?
     %p.notice= t('.download_form.notice')
   - else
-    %table
-      %tr
-        %th
-        %th File
-        %th Date Uploaded
-        %th Uploaded By
-      - files.each do |stored_file|
+    %table.table.table-striped.table-hover
+      %thead
         %tr
-          %td.centered= link_to 'Delete', remove_product_file_path(current_facility, @product.parameterize, @product, stored_file), :method => :delete, :confirm => t('.download_form.confirm')
-          %td= link_to stored_file.name, stored_file.file.url
-          %td= human_datetime(stored_file.created_at)
-          %td= User.find(stored_file.created_by).full_name
+          %th
+          %th File
+          %th Date Uploaded
+          %th Uploaded By
+      %tbody
+        - files.each do |stored_file|
+          %tr
+            %td.centered= link_to 'Delete', remove_product_file_path(current_facility, @product.parameterize, @product, stored_file), :method => :delete, :confirm => t('.download_form.confirm')
+            %td= link_to stored_file.name, stored_file.file.url
+            %td= human_datetime(stored_file.created_at)
+            %td= User.find(stored_file.created_by).full_name

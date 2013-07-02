@@ -2,31 +2,32 @@
   = t('order_search.results')
 
 - if @order_details.any?
-  %table.dense
-    %tr
-      %th= "#{Order.model_name.human} #"
-      %th= "#{OrderDetail.model_name.human} #"
-      %th.nowrap= OrderDetail.human_attribute_name(:ordered_at)
-      %th= Facility.model_name.human
-      %th= OrderDetail.human_attribute_name("description")
-      %th.nowrap= OrderDetail.human_attribute_name("user")
-      %th= OrderDetail.human_attribute_name("cost")
-      %th= OrderDetail.human_attribute_name("order_status")
-
-    - @order_details.each do |order_detail|
-      %tr{:class => row_class(order_detail)}
-        %td.nowrap= order_result_link order_detail
-        %td.nowrap= order_detail_result_link order_detail
-        %td= order_detail.ordered_at.try(:strftime, "%m/%d/%Y")
-        %td= order_detail.order.facility
-        %td
-          = order_detail_description(order_detail)
-          %br
-          %em= order_detail.reservation
-        %td= order_detail.order.user.full_name
-        %td.currency
-          - order_detail.send(:extend, PriceDisplayment)
-          = order_detail.wrapped_cost
-        %td.nowrap= order_detail.order_status
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th= "#{Order.model_name.human} #"
+        %th= "#{OrderDetail.model_name.human} #"
+        %th.nowrap= OrderDetail.human_attribute_name(:ordered_at)
+        %th= Facility.model_name.human
+        %th= OrderDetail.human_attribute_name("description")
+        %th.nowrap= OrderDetail.human_attribute_name("user")
+        %th= OrderDetail.human_attribute_name("cost")
+        %th= OrderDetail.human_attribute_name("order_status")
+    %tbody
+      - @order_details.each do |order_detail|
+        %tr{:class => row_class(order_detail)}
+          %td.nowrap= order_result_link order_detail
+          %td.nowrap= order_detail_result_link order_detail
+          %td= order_detail.ordered_at.try(:strftime, "%m/%d/%Y")
+          %td= order_detail.order.facility
+          %td
+            = order_detail_description(order_detail)
+            %br
+            %em= order_detail.reservation
+          %td= order_detail.order.user.full_name
+          %td.currency
+            - order_detail.send(:extend, PriceDisplayment)
+            = order_detail.wrapped_cost
+          %td.nowrap= order_detail.order_status
 - else
   .notice= t('order_search.no_results')

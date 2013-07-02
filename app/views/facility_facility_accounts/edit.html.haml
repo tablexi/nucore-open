@@ -11,6 +11,6 @@
   = f.error_messages
   %ul.form
     = render :partial => 'facility_account_fields', :locals => {:f => f}
-  %ul.horiz
+  %ul.inline
     %li= f.submit 'Save', :class => 'btn'
     %li= link_to 'Cancel', facility_facility_accounts_path

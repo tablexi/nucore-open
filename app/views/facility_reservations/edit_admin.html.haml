@@ -36,7 +36,7 @@
       = f.text_field :duration_value, :value => f.object.duration_value, :size => '5'
       = f.select :duration_unit, ['minutes', 'hours'], { :selected => f.object.duration_unit }
     %li.clear
-  %ul.horiz
+  %ul.inline
     %li= f.submit 'Save', :class => 'btn'
     %li= link_to 'Cancel', facility_instrument_schedule_path
 

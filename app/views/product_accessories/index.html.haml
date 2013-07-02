@@ -23,14 +23,17 @@
 - if @product_accessories.empty?
   %p.notice= t('.no_accessories')
 - else
-  %table
-    %tr
-      %th.actions
-      %th Accessory
-      %th Scaling Type
-    - @product_accessories.each do |pa|
-      - accessory = pa.accessory
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td.centered= link_to 'Remove', facility_product_product_accessory_path(current_facility, @product, pa), :method => :delete if can? :delete, pa
-        %td= link_to accessory.to_s_with_status, send("manage_facility_#{accessory.class.name.downcase}_path", current_facility, accessory)
-        %td.centered= t("product_accessories.type.#{pa.scaling_type}")
+        %th.actions
+        %th Accessory
+        %th Scaling Type
+    %tbody
+      - @product_accessories.each do |pa|
+        - accessory = pa.accessory
+        %tr
+          %td.centered= link_to 'Remove', facility_product_product_accessory_path(current_facility, @product, pa), :method => :delete if can? :delete, pa
+          %td= link_to accessory.to_s_with_status, send("manage_facility_#{accessory.class.name.downcase}_path", current_facility, accessory)
+          %td.centered= t("product_accessories.type.#{pa.scaling_type}")
+
