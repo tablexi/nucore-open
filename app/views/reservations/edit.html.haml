@@ -32,7 +32,7 @@
   = f.error_messages
   %ul.form.box
     = render :partial => 'reservation_fields', :locals => {:f => f}
-  %ul.horiz
+  %ul.inline
     %li= f.submit 'Save', :class => 'btn'
     - if @order.purchased?
       %li= link_to 'Cancel', reservations_path

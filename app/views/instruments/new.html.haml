@@ -11,6 +11,6 @@
   %ul.form
     = render :partial => 'admin/shared/product_details_fields', :locals => {:f => f}
     = render :partial => 'instrument_fields', :locals => {:f => f}
-  %ul.horiz
+  %ul.inline
     %li= f.submit 'Create', :class => 'btn'
     %li= link_to 'Cancel', facility_instruments_path

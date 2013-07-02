@@ -25,6 +25,6 @@
     %li
       = f.label :user_role, nil, :class => 'required'
       = f.select :user_role, options_for_select(AccountUser.selectable_user_roles, :selected => 'Purchaser')
-  %ul.horiz
+  %ul.inline
     %li= f.submit 'Create', :class => 'btn'
     %li= link_to 'Cancel', account_account_users_path(@account)

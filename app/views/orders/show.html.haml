@@ -54,7 +54,7 @@
     - if @order.instrument_order_details.count > 0
       %p.footnote= t('.foot.instrument')
     - if @order.order_details.size > 0
-      %ul.horiz{:style => "float: left"}
+      %ul.inline{:style => "float: left"}
         %li= submit_tag 'Update', :class => 'btn'
         - if @order.validated?
           %li= f.submit 'Purchase', :class => 'btn', :confirm => t('.confirm')

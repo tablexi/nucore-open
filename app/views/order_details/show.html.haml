@@ -43,7 +43,7 @@
           %li
             %label= t('.label.dispute.reason')
             = f.text_field :dispute_reason
-        %ul.horiz
+        %ul.inline
           %li= submit_tag t('.submit.dispute'), :class => 'btn'
 
   - unless @order_detail.stored_files.sample_result.empty?

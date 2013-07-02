@@ -22,7 +22,7 @@
         -# TK fix this working
         %p.instruction Name of the file as displayed on the product page
         = f.text_field :name, :value => ''
-    %ul.horiz
+    %ul.inline
       %li= f.submit('Upload', :disable_with => "Uploading...", :class => 'btn')
 %br
 - files = @product.stored_files.send("#{@file.file_type || params[:file_type]}")

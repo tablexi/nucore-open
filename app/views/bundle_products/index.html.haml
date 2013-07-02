@@ -15,7 +15,7 @@
 
 #admin-subnav
   - if can? :create, BundleProduct
-    %ul.horiz
+    %ul.inline
       %li= link_to 'Add Bundled Product', new_facility_bundle_bundle_product_path
 
 - if @bundle_products.empty?

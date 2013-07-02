@@ -10,7 +10,7 @@
 %p Bundles are collections of products that are ordered as a single purchase by the purchaser.
 
 - if current_user.manager_of?(current_facility)
-  %ul.horiz
+  %ul.inline
     %li= link_to 'Add Bundle', new_facility_bundle_path
 
 - if @bundles.empty?

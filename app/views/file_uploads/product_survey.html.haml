@@ -16,7 +16,7 @@
       %li
         = f.label :location, 'Service URL', :class => 'required'
         = f.text_field :location, :size => 60
-    %ul.horiz
+    %ul.inline
       %li
         = f.submit('Add', :disable_with => "Adding...", :class => 'btn')
   %br
@@ -53,7 +53,7 @@
       %li
         = f.label :file, 'File', :class => 'required'
         = f.file_field :file
-    %ul.horiz
+    %ul.inline
       %li= f.submit('Upload', :disable_with => "Uploading...", :class => 'btn')
   %br
   - files = @product.stored_files.template

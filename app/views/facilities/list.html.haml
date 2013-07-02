@@ -2,7 +2,7 @@
   == Manage Facilities
 
 - if current_user.administrator?
-  %ul.horiz
+  %ul.inline
     %li= link_to 'Add Facility', new_facility_path
 
 - if @facilities.any?

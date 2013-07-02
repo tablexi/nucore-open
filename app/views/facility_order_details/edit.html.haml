@@ -247,13 +247,13 @@
     %p.footnote= t('.foot.default')
 
   - if @order_detail.in_dispute?
-    %ul.horiz
+    %ul.inline
       %li= submit_tag 'Resolve Dispute', {:class => 'btn', :id => 'submit'}
       %li= link_to 'Cancel', disputed_facility_orders_path
   - else
     - cancel_link=request.referrer.blank? ? facility_transactions_path(current_facility) : request.referrer
     %p= t('.notice.save_html')
-    %ul.horiz
+    %ul.inline
       - attrs={:class => 'btn', :id => 'submit'}
       - attrs.merge!(:name => 'assign_price_policy') if @order_detail.price_policy.nil? && @order_detail.order_status.name == 'Complete'
       %li= submit_tag 'Save', attrs

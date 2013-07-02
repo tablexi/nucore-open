@@ -9,5 +9,5 @@
 %ul.form
   = render :partial => 'admin/shared/product_manage'
 - if session_user.manager_of?(current_facility)
-  %ul.horiz
+  %ul.inline
     %li= link_to 'Edit', edit_facility_item_path(current_facility, @item), :class => 'btn'

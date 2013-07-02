@@ -10,7 +10,7 @@
 %p Services are provided by the facility on behalf of the user.  Forms for collection of additional information may be attached to the service.  Results files may be returned to the user.
 
 - if current_user.manager_of?(current_facility)
-  %ul.horiz
+  %ul.inline
     %li= link_to 'Add Service', new_facility_service_path
 
 - if @services.empty?

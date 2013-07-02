@@ -10,6 +10,6 @@
 = form_for([current_facility, @account], :url => facility_account_path(current_facility, @account)) do |f|
   = f.error_messages
   = render :partial => 'account_fields', :locals => {:f => f, :instructions_for => @account.class.name}
-  %ul.horiz
+  %ul.inline
     %li= f.submit 'Save', :class => 'btn'
     %li= link_to 'Cancel', facility_account_path

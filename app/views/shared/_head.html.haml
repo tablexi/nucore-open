@@ -1,8 +1,11 @@
-= stylesheet_link_tag '960gs/reset', :media => :all
-= stylesheet_link_tag '960gs/960',   :media => :all
+%meta{ "http-equiv" => "content-type", "content" => "text/html; charset=UTF-8" }
+- # use gsub to strip out html tags in the title to prevent html from showing #62643
+= render :partial => '/shared/title', :locals => { :title => yield(:h1).gsub(/<[^>]*>/, ' ') }
 = stylesheet_link_tag 'application', :media => :all
 = javascript_include_tag 'application'
 = csrf_meta_tag
 :javascript
   var ROOT_PATH = '#{root_path}';
   var FACILITY_PATH = '#{current_facility ? facility_path(current_facility) : ''}';
+= yield :head_content
+= render :partial => '/shared/google'

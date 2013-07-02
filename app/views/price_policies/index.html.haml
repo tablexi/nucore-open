@@ -11,7 +11,7 @@
 %p Pricing rules determine the specific rate applied to each price group.
 
 - if session_user.manager_of?(current_facility)
-  %ul.horiz
+  %ul.inline
     %li= link_to 'Add Pricing Rules', new_price_policy_path(@product)
 
 - if @current_price_policies.empty?

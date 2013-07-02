@@ -11,7 +11,7 @@
 %p Items are fixed-price products that do not require a reservation or additional user information.
 
 - if session_user.manager_of?(current_facility)
-  %ul.horiz
+  %ul.inline
     %li= link_to 'Add Item', new_facility_item_path
 
 - if @items.empty?

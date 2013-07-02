@@ -53,5 +53,5 @@
     %label= t '.label.cancel_mins'
     %p= @instrument.auto_cancel_mins.to_i
 - if can? :edit, Product
-  %ul.horiz
+  %ul.inline
     %li= link_to 'Edit', edit_facility_instrument_path(current_facility, @instrument), :class => 'btn'

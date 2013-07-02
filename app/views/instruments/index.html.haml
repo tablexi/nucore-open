@@ -12,7 +12,7 @@
 %p Instruments are products that must be reserved; billing is based on reservation duration and/or actual time used.
 
 - if session_user.manager_of?(current_facility)
-  %ul.horiz
+  %ul.inline
     %li= link_to 'Add Instrument', new_facility_instrument_path
 
 - if @instruments.empty?
