@@ -14,9 +14,10 @@ class AccessoriesController < ApplicationController
   def create
     accessorizer = Accessories::Accessorizer.new(@order_detail)
     @order_details = accessorizer.add_from_params(params[:accessories])
-    @count = @order_details.count
 
     if @order_details.none? { |od| od.errors.any? }
+      @count = @order_details.count &:persisted?
+
       flash[:notice] = "Reservation Ended, #{helpers.pluralize(@count, 'accessory')} added"
       if request.xhr?
         render :nothing => true, :status => 200
