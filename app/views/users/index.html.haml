@@ -19,16 +19,18 @@
   - if @users.empty?
     %p.notice= t('.notice')
   - else
-    %table
-      %tr
-        %th
-        %th= t('.th.name')
-        %th= t('.th.username')
-        %th= t('.th.email')
-      - @users.each do |user|
+    %table.table.table-striped.table-hover
+      %thead
         %tr
-          %td.centered= link_to('Order For', facility_user_switch_to_path(current_facility, user))
-          %td= link_to "#{user.last_name}, #{user.first_name}", facility_user_path(current_facility, user)
-          %td=h user.username
-          %td=h user.email
+          %th
+          %th= t('.th.name')
+          %th= t('.th.username')
+          %th= t('.th.email')
+      %tbody
+        - @users.each do |user|
+          %tr
+            %td.centered= link_to('Order For', facility_user_switch_to_path(current_facility, user))
+            %td= link_to "#{user.last_name}, #{user.first_name}", facility_user_path(current_facility, user)
+            %td=h user.username
+            %td=h user.email
     = will_paginate(@users)

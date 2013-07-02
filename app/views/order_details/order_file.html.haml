@@ -15,19 +15,20 @@
 
 = form_for(@file, :url => order_order_detail_upload_order_file_path, :html => { :multipart => true, :method => :post }) do |f|
   = f.error_messages
-  %table
-    %tr
-      %td.one 1
-      %td
-        %p
-          %b Download and complete the template
-        %p.document= link_to "#{@order_detail.product.name} &mdash; Order Form Template".html_safe, @order_detail.product.stored_files.template.first.file.url
-    %tr
-      %td.two 2
-      %td
-        %p
-          %b Upload the completed order form
-        %p= f.file_field :file
+  %table.table.table-striped.table-hover
+    %tbody
+      %tr
+        %td.one 1
+        %td
+          %p
+            %b Download and complete the template
+          %p.document= link_to "#{@order_detail.product.name} &mdash; Order Form Template".html_safe, @order_detail.product.stored_files.template.first.file.url
+      %tr
+        %td.two 2
+        %td
+          %p
+            %b Upload the completed order form
+          %p= f.file_field :file
   %ul.horiz
     %li= f.submit('Upload', :disable_with => "Uploading...", :class => 'btn')
     %li= link_to('Cancel', order_path(@order))

@@ -7,22 +7,24 @@
   %p Usage, reservation, and overage time will be rounded up based on this selection.
   = select_tag "interval", options_for_select(InstrumentPricePolicy.intervals.map{|d| [ pluralize(d, 'minute'), d ]}, @price_policies.first.usage_mins)
 %li
-  %table
-    %tr
-      %th{:rowspan => 2} Price Group
-      %th{:rowspan => 2} Type
-      %th{:rowspan => 2} Can purchase?
-      %th.centered{:colspan => 3}
-        Rates per
-        %span.interval_replace
-      %th{:rowspan => 2} Minimum Cost
-      %th{:rowspan => 2} Reservation Cost
-    %tr
-      %th Actual
-      %th Scheduled
-      %th Overage 
-    - @price_policies.each do |pp|
-      - pg = pp.price_group
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th{:rowspan => 2} Price Group
+        %th{:rowspan => 2} Type
+        %th{:rowspan => 2} Can purchase?
+        %th.centered{:colspan => 3}
+          Rates per
+          %span.interval_replace
+        %th{:rowspan => 2} Minimum Cost
+        %th{:rowspan => 2} Reservation Cost
+      %tr
+        %th Actual
+        %th Scheduled
+        %th Overage
+        - @price_policies.each do |pp|
+          - pg = pp.price_group
+    %tbody
       %tr
         %td #{pg.name}
         %td #{pg.type_string}

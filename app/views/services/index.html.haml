@@ -16,11 +16,13 @@
 - if @services.empty?
   %p.notice== No #{params[:archived].nil? || params[:archived] != 'true' ? 'active' : 'inactive'} services exist for this facility.
 - else
-  %table.product_list
-    %tr
-      %th Service Name
-    - @services.each do |service|
+  %table.table.table-striped.table-hover.product_list
+    %thead
       %tr
-        %td
-          = link_to service.name, manage_facility_service_path(current_facility, service)
-          = price_policy_errors(service) unless params[:archived] == 'true'
+        %th Service Name
+    %tbody
+      - @services.each do |service|
+        %tr
+          %td
+            = link_to service.name, manage_facility_service_path(current_facility, service)
+            = price_policy_errors(service) unless params[:archived] == 'true'

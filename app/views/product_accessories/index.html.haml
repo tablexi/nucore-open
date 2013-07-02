@@ -23,12 +23,14 @@
 - if @product_accessories.empty?
   %p.notice No accessories defined for this product
 - else
-  %table
-    %tr
-      %th.actions
-      %th Accessory
-    - @product_accessories.each do |pa|
-      - accessory = pa.accessory
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td.centered= link_to 'Remove', facility_product_product_accessory_path(current_facility, @product, pa), :method => :delete if can? :delete, pa
-        %td= link_to accessory.to_s_with_status, send("manage_facility_#{accessory.class.name.downcase}_path", current_facility, accessory)
+        %th.actions
+        %th Accessory
+    %tbody
+      - @product_accessories.each do |pa|
+        - accessory = pa.accessory
+        %tr
+          %td.centered= link_to 'Remove', facility_product_product_accessory_path(current_facility, @product, pa), :method => :delete if can? :delete, pa
+          %td= link_to accessory.to_s_with_status, send("manage_facility_#{accessory.class.name.downcase}_path", current_facility, accessory)

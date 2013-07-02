@@ -6,11 +6,13 @@
 
 %p=h "Statement sent on #{human_datetime(@statement.created_at)} by #{begin User.find(@statement.created_by).full_name rescue 'Unknown' end}.  Notifications were emailed to the following accounts."
 
-%table
-  %tr
-    %th
-    %th Account
-    %th Owner
+%table.table.table-striped.table-hover
+  %thead
+    %tr
+      %th
+      %th Account
+      %th Owner
+  %tbody
     %tr
       %td.centered
         - if @statement.created_at < Time.zone.now

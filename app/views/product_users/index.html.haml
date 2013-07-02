@@ -18,24 +18,26 @@
   %p.notice== No users are currently approved.
 - else
   = form_for @product, :url => facility_instrument_update_restrictions_path(current_facility, @product), :method => :put do |f|
-    %table
-      %tr
-        %th
-        %th Name
-        %th User Name
-        %th Email
-        - if @show_levels
-          %th= "#{ProductAccessGroup.model_name.human}"
-      - @product_users.each do |product_user|
-        - user = product_user.user
+    %table.table.table-striped.table-hover
+      %thead
         %tr
-          %td.centered= link_to "Remove", self.send("facility_#{@product.class.name.downcase}_user_path", current_facility, @product, user), :method => :delete, :confirm => "Are you sure you wish to remove this user from this #{@product.class.name.downcase}?"
-          %td= link_to "#{user.last_name}, #{user.first_name}", [current_facility, user]
-          %td= user.username
-          %td= user.email
+          %th
+          %th Name
+          %th User Name
+          %th Email
           - if @show_levels
-            %td
-              = f.fields_for :product_users, product_user, :index => product_user.id do |pu|
-                = pu.select :product_access_group_id, options_from_collection_for_select(@product.product_access_groups, "id", "name", product_user.product_access_group_id), :include_blank => true
-    = f.submit "Update #{ProductAccessGroup.model_name.human.pluralize}" if @show_levels      
+            %th= "#{ProductAccessGroup.model_name.human}"
+      %tbody
+        - @product_users.each do |product_user|
+          - user = product_user.user
+          %tr
+            %td.centered= link_to "Remove", self.send("facility_#{@product.class.name.downcase}_user_path", current_facility, @product, user), :method => :delete, :confirm => "Are you sure you wish to remove this user from this #{@product.class.name.downcase}?"
+            %td= link_to "#{user.last_name}, #{user.first_name}", [current_facility, user]
+            %td= user.username
+            %td= user.email
+            - if @show_levels
+              %td
+                = f.fields_for :product_users, product_user, :index => product_user.id do |pu|
+                  = pu.select :product_access_group_id, options_from_collection_for_select(@product.product_access_groups, "id", "name", product_user.product_access_group_id), :include_blank => true
+    = f.submit "Update #{ProductAccessGroup.model_name.human.pluralize}" if @show_levels
   = will_paginate(@product_users)

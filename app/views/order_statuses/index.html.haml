@@ -8,14 +8,16 @@
 %ul.horiz
   %li= link_to 'Add Order Status', new_facility_order_status_path
 
-%table
-  %tr
-    %th
-    %th{:width => '100%'} Order Statuses
-  - OrderStatus.roots.each_with_index do |root, i|
+%table.table.table-striped.table-hover
+  %thead
     %tr
-      %td
-      %td=h root.name
+      %th
+      %th{:width => '100%'} Order Statuses
+    - OrderStatus.roots.each_with_index do |root, i|
+      %tr
+        %td
+        %td=h root.name
+  %tbody
     - children_for_facility(root, current_facility.id) do |child|
       %tr
         %td= link_to('Remove', facility_order_status_path(current_facility, child), :confirm => 'Are you sure?', :method => :delete) if child.editable?

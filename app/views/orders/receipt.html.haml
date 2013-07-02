@@ -32,29 +32,30 @@
     %label= t('.label.ordered.by')
     =h @order.created_by_user.full_name
 
-%table
-  %tr
-    %th.centered= t('.th.order_no')
-    %th{:colspan => 2}= t('.th.quantity')
-    %th.currency= t('.th.cost')
-    - if @order.has_subsidies?
-      %th.currency= t('.th.adjust')
-    %th.currency= t('.th.total')
-  - @order_details.each do |order_detail|
-    - order_detail.send(:extend, PriceDisplayment)
+%table.table.table-striped.table-hover
+  %thead
     %tr
-      - res = order_detail.reservation
-      %td.centered= link_to order_detail, order_order_detail_path(@order, order_detail)
-      %td.centered=h order_detail.quantity
-      %td
-        %ul
-          %li= order_detail_description(order_detail)
-          - if res
-            %li.indented= res
-
-      %td.currency=order_detail.wrapped_cost
+      %th.centered= t('.th.order_no')
+      %th{:colspan => 2}= t('.th.quantity')
+      %th.currency= t('.th.cost')
       - if @order.has_subsidies?
-        %td.currency= order_detail.wrapped_subsidy
-      %td.currency=order_detail.wrapped_total
+        %th.currency= t('.th.adjust')
+      %th.currency= t('.th.total')
+  %tbody
+    - @order_details.each do |order_detail|
+      - order_detail.send(:extend, PriceDisplayment)
+      %tr
+        - res = order_detail.reservation
+        %td.centered= link_to order_detail, order_order_detail_path(@order, order_detail)
+        %td.centered=h order_detail.quantity
+        %td
+          %ul
+            %li= order_detail_description(order_detail)
+            - if res
+              %li.indented= res
+        %td.currency=order_detail.wrapped_cost
+        - if @order.has_subsidies?
+          %td.currency= order_detail.wrapped_subsidy
+        %td.currency=order_detail.wrapped_total
 
 = render :partial => '/price_display_footnote'

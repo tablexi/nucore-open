@@ -16,9 +16,11 @@
 - if @bundles.empty?
   %p.notice== No #{params[:archived].nil? || params[:archived] != 'true' ? 'active' : 'inactive'} bundles exist for this facility.
 - else
-  %table
-    %tr
-      %th== Bundle Name
-    - @bundles.each do |bundle|
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td= link_to bundle.name, manage_facility_bundle_path(current_facility, bundle)
+        %th== Bundle Name
+    %tbody
+      - @bundles.each do |bundle|
+        %tr
+          %td= link_to bundle.name, manage_facility_bundle_path(current_facility, bundle)

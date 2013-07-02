@@ -1,15 +1,16 @@
 %h1= @order_detail.facility
 
 %p The following reservation has been approved.
-%table
-  %tr
-    %td= Order.model_name.human
-    %td= "##{@order_detail}"
-  %tr
-    %td= Instrument.model_name.human
-    %td= @order_detail.product
-  %tr
-    %td= Reservation.model_name.human
-    %td= @order_detail.reservation
+%table.table.table-striped.table-hover
+  %tbody
+    %tr
+      %td= Order.model_name.human
+      %td= "##{@order_detail}"
+    %tr
+      %td= Instrument.model_name.human
+      %td= @order_detail.product
+    %tr
+      %td= Reservation.model_name.human
+      %td= @order_detail.reservation
 
 %p= "You can modify your reservations at #{link_to t_my(Reservation), reservations_url}".html_safe

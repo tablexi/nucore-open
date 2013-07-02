@@ -12,16 +12,18 @@
 - if @statements.empty?
   %p.notice= t('.notice')
 - else
-  %table
-    %tr
-      %th
-      %th= t('.th.sent_at')
-      %th= t('.th.sent_by')
-      %th.currency= t('.th.orders')
-    - @statements.each do |s|
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td.centered= link_to 'Download', facility_account_statement_path(current_facility, @account, s, :format => :pdf)
-        %td=h human_datetime(s.created_at)
-        %td=h begin User.find(s.created_by).full_name rescue 'Unknown' end
-        %td.currency=h s.order_details.count
+        %th
+        %th= t('.th.sent_at')
+        %th= t('.th.sent_by')
+        %th.currency= t('.th.orders')
+    %tbody
+      - @statements.each do |s|
+        %tr
+          %td.centered= link_to 'Download', facility_account_statement_path(current_facility, @account, s, :format => :pdf)
+          %td=h human_datetime(s.created_at)
+          %td=h begin User.find(s.created_by).full_name rescue 'Unknown' end
+          %td.currency=h s.order_details.count
   = will_paginate(@statements)
