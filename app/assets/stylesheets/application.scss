@@ -92,6 +92,16 @@ footer .span8 {
   margin-bottom: 0;
 }
 
+#order-detail-modal {
+  width: 760px;
+  /* must be half of the width, minus scrollbar on the left (30px) */
+  margin-left: -380px;
+}
+
+.currency-input input {
+  width: 7em;
+}
+
 // @import "base";
 // @import "override";
 // @import "nav";

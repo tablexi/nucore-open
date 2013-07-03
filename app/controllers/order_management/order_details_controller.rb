@@ -15,7 +15,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
     checker = OrderDetails::PriceChecker.new(@order_detail)
     @prices = checker.prices_from_params(params[:order_detail])
 
-    render :json => prices.to_json
+    render :json => @prices.to_json
   end
 
   private

@@ -12,4 +12,17 @@ module BootstrapHelper
       :data => { :dismiss => 'modal' },
       :class => 'btn'
   end
+
+  def currency_input(form, field, options = {})
+    options.reverse_merge!({
+      :value => number_with_precision(form.object.send(field), :precision => 2),
+      :disabled => false,
+      :class => ''
+      })
+    html = "<div class='input-prepend currency-input'><span class='add-on'>$</span>"
+    html << form.text_field(field, options)
+    html << '</div>'
+    html.html_safe
+
+  end
 end
