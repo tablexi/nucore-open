@@ -129,10 +129,6 @@ class OrderDetail < ActiveRecord::Base
     order(:reviewed_at).reverse_order
   end
 
-  def self.in_review_or_reviewed
-
-  end
-
   def in_review?
     # check in the database if self.id is in the scope
     self.class.all_in_review.find_by_id(self.id) ? true :false
@@ -638,6 +634,10 @@ class OrderDetail < ActiveRecord::Base
 
   def missing_price_policy?
     complete? && price_policy.nil?
+  end
+
+  def in_open_journal?
+    self.journal && self.journal.open?
   end
 
   def can_reconcile?

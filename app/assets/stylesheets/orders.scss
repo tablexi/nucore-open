@@ -22,7 +22,8 @@ table.order-list {
 }
 
 .label {
-  &.status-complete {
+  &.status-complete,
+  &.status-reconciled {
     @extend .label-success;
   }
 

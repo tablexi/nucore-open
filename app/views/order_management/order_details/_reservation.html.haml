@@ -1,18 +1,25 @@
 = f.fields_for reservation do |r|
   = r.label :reserve_start_at
-  = r.text_field :reserve_start_date, :class => 'datepicker'
-  = time_select r, :reserve_start
-
-  = r.text_field :duration_mins, :class => 'timeinput'
+  - if reservation.can_edit?
+    = r.text_field :reserve_start_date, :class => 'datepicker'
+    = time_select r, :reserve_start
+    = r.text_field :duration_mins, :class => 'timeinput'
+  - else
+    = reservation.reserve_to_s
 
   = r.label :actual_start_at
-  = r.text_field :actual_start_date, :class => 'datepicker'
-  = time_select r, :actual_start
+  - if reservation.can_edit_actuals?
+    = r.text_field :actual_start_date, :class => 'datepicker'
+    = time_select r, :actual_start
+    = r.text_field :actual_duration_mins, :class => 'timeinput'
 
-  = r.text_field :actual_duration_mins, :class => 'timeinput'
+    - unless reservation.has_actuals?
+      .copy_actual_from_reservation
+        = link_to 'Copy from reservation','#'
+        %span.start_date= reservation.reserve_start_at
+        %span.end_date= reservation.reserve_end_at
 
-  - unless reservation.has_actuals?
-    .copy_actual_from_reservation
-      = link_to 'Copy from reservation','#'
-      %span.start_date= reservation.reserve_start_at
-      %span.end_date= reservation.reserve_end_at
+  - else
+    = reservation.actuals_string
+
+

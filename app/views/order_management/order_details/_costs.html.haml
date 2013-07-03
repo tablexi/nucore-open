@@ -4,12 +4,12 @@
     %thead
       %tr
         %td Cost
-        %td Subsidy
+        %td= "#{f.object.price_policy.price_group} Subsidy"
         %td Total
     %tbody
       %tr
         %td.cost= currency_input f, :actual_cost
-        %td.subsidy= currency_input f, :actual_subsidy
+        %td.subsidy= currency_input f, :actual_subsidy, :disabled => !f.object.price_policy.has_subsidy?
         %td.total= currency_input f, :actual_total, :disabled => true
 
 - else

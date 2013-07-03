@@ -6,9 +6,10 @@ module FacilityOrdersHelper
     notices << 'reviewed' if order_detail.reviewed?
     notices << 'in-dispute' if order_detail.in_dispute?
     notices << 'can-reconcile' if order_detail.can_reconcile?
+    notices << 'in-open-journal' if order_detail.in_open_journal?
 
     warnings = []
-    warnings << 'missing-actuals' if order_detail.reservation.try(:requires_but_missing_actuals?)
+    warnings << 'missing-actuals' if order_detail.complete? && order_detail.reservation.try(:requires_but_missing_actuals?)
     warnings << 'missing-price-policy' if order_detail.missing_price_policy?
 
     { :warnings => warnings, :notices => notices }
@@ -26,6 +27,4 @@ module FacilityOrdersHelper
     end
     output.join(' ').html_safe
   end
-
-
 end

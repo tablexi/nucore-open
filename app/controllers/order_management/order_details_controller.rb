@@ -6,6 +6,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
   before_filter :authorize_order_detail
   before_filter :load_accounts, :only => [:edit]
   before_filter :load_order_statuses, :only => [:edit]
+  before_filter :add_can_edit
 
   def edit
     render :layout => false if request.xhr?
@@ -40,6 +41,12 @@ class OrderManagement::OrderDetailsController < ApplicationController
       [ OrderStatus.complete.first, OrderStatus.cancelled.first ]
     else
       OrderStatus.non_protected_statuses(current_facility)
+    end
+  end
+
+  def add_can_edit
+    @order_detail.class.define_method :edit_disabled? do
+      self.in_open_journal? || self.reconciled?
     end
   end
 

@@ -1,0 +1,5 @@
+- warnings = order_detail_notices(@order_detail)[:warnings]
+- if warnings.any?
+  .alert.alert-error
+    - warnings.each do |warning|
+      = warning
