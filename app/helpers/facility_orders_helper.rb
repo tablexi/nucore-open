@@ -2,29 +2,33 @@ module FacilityOrdersHelper
   def order_detail_notices(order_detail)
     notices = []
 
-    notices << 'in-review' if order_detail.in_review?
-    notices << 'reviewed' if order_detail.reviewed?
-    notices << 'in-dispute' if order_detail.in_dispute?
-    notices << 'can-reconcile' if order_detail.can_reconcile?
-    notices << 'in-open-journal' if order_detail.in_open_journal?
+    notices << 'in_review' if order_detail.in_review?
+    # notices << 'reviewed' if order_detail.reviewed?
+    notices << 'in_dispute' if order_detail.in_dispute?
+    notices << 'can_reconcile' if order_detail.can_reconcile?
+    notices << 'in_open_journal' if order_detail.in_open_journal?
 
     warnings = []
-    warnings << 'missing-actuals' if order_detail.complete? && order_detail.reservation.try(:requires_but_missing_actuals?)
-    warnings << 'missing-price-policy' if order_detail.missing_price_policy?
+    warnings << 'missing_actuals' if order_detail.complete? && order_detail.reservation.try(:requires_but_missing_actuals?)
+    warnings << 'missing_price_policy' if order_detail.missing_price_policy? && !order_detail.reservation.try(:requires_but_missing_actuals?)
 
     { :warnings => warnings, :notices => notices }
   end
 
   def order_detail_badges(order_detail)
-    badges = order_detail_notices(order_detail)
-    output = []
-    badges[:warnings].each do |warning|
-      output << content_tag(:span, warning, :class => ['label', 'label-important'])
-    end
+    notices = order_detail_notices(order_detail)
 
-    badges[:notices].each do |notice|
-      output << content_tag(:span, notice, :class => ['label', 'label-info'])
-    end
+    output = build_badges(notices[:warnings], 'label-important')
+    output += build_badges(notices[:notices], 'label-info')
+
     output.join(' ').html_safe
+  end
+
+  private
+
+  def build_badges(notices, label_class)
+    notices.map do |notice|
+      content_tag(:span, t("order_details.notices.#{notice}.badge"), :class => ['label', label_class])
+    end
   end
 end
