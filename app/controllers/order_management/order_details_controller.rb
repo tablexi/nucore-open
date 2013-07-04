@@ -12,6 +12,33 @@ class OrderManagement::OrderDetailsController < ApplicationController
     render :layout => false if request.xhr?
   end
 
+  def update
+    checker = OrderDetails::ParamUpdater.new(@order_detail)
+
+    od_params = params[:order_detail].try(:dup)
+    od_params ||= {}
+
+    order_status_id = od_params.delete :order_status_id
+
+    checker.assign_attributes(od_params)
+
+    begin
+      if order_status_id
+        @order_detail.update_order_status! session_user,
+            OrderStatus.find(order_status_id),
+            :admin => true,
+            :apply_cancel_fee => params[:with_cancel_fee] == '1'
+      else
+        @order_detail.save!
+      end
+      redirect_to [:manage, current_facility, @order]
+    rescue StandardError => e
+      flash.now[:error] = 'Error while updating order'
+      render :edit
+    end
+
+  end
+
   def pricing
     checker = OrderDetails::PriceChecker.new(@order_detail)
     @prices = checker.prices_from_params(params[:order_detail])

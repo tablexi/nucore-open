@@ -325,9 +325,9 @@ class OrderDetail < ActiveRecord::Base
 
   # This method is a replacement for change_status! that also will cancel the associated reservation when necessary
   def update_order_status!(updated_by, order_status, options_args = {}, &block)
-    options = { :admin => false }.merge(options_args)
+    options = { :admin => false, :apply_cancel_fee => false }.merge(options_args)
 
-    cancel_reservation(updated_by, order_status, options[:admin]) if reservation && order_status.root == OrderStatus.cancelled.first
+    cancel_reservation(updated_by, order_status, options[:admin], options[:apply_cancel_fee]) if reservation && order_status.root == OrderStatus.cancelled.first
 
     change_status! order_status, &block
   end

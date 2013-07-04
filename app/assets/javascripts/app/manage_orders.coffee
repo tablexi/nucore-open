@@ -11,6 +11,7 @@ class OrderDetailManagement
     @$element.find('.copy_actual_from_reservation a').click(@copyReservationTimeIntoActual)
     @init_total_calcuating()
     @init_price_updating()
+    @init_cancel_fee_options()
 
   copyReservationTimeIntoActual: (e) ->
     e.preventDefault()
@@ -38,12 +39,14 @@ class OrderDetailManagement
       data: @$element.serialize(),
       type: 'get',
       success: (result, status) ->
-        for field, val of result
-          input_field = self.$element.find("[name='order_detail[#{field}]']")
+        for field in ['cost', 'subsidy', 'total']
+
+          input_field = self.$element.find("[name='order_detail[estimated_#{field}]'],[name='order_detail[actual_#{field}]']")
 
           old_val = input_field.val()
-          input_field.val(val)
-          input_field.animateHighlight() unless old_val == val
+          new_val = result["actual_#{field}"] || result["estimated_#{field}"]
+          input_field.val(new_val)
+          input_field.animateHighlight() unless old_val == new_val
 
 
     }
@@ -59,6 +62,17 @@ class OrderDetailManagement
 
   notify_of_update: (elem) ->
     elem.animateHighlight()
+
+  init_cancel_fee_options: ->
+    $('.cancel-fee-option').hide()
+    cancel_box = $('#with_cancel_fee')
+    cancel_id = parseInt(cancel_box.data('show-on'))
+    $(cancel_box.data('connect')).change ->
+      console.debug 'changed', $(this).val() == cancel_id
+      $('.cancel-fee-option').toggle(parseInt($(this).val()) == cancel_id)
+
+    $('#order_detail_order_status_id').change ->
+
 
 $ ->
   new AjaxModal('#order-management .order-detail', '#order-detail-modal', {

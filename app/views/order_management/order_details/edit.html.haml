@@ -13,6 +13,10 @@
       = f.collection_select :order_status_id, @order_statuses, :id, :name_with_level
     - else
       = @order_detail.order_status
+    - if @order_detail.reservation
+      .cancel-fee-option
+        = label_tag 'with_cancel_fee', t('facility_order_details.edit.label.with_cancel_fee')
+        = check_box_tag 'with_cancel_fee', 1, false, :data => { :connect => '#order_detail_order_status_id', :show_on => OrderStatus.cancelled.first.id }
 
     - if @order_detail.reservation
       = render :partial => 'reservation', :locals => { :f => f, :reservation => @order_detail.reservation }

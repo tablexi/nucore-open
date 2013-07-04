@@ -177,7 +177,7 @@ module Reservations::DateSupport
     self.reserve_start_at = nil
     self.reserve_end_at   = nil
     reserve_attrs = params.slice(:reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian,
-      :duration_value, :duration_unit,
+      :duration_value, :duration_unit, :duration_mins,
       :reserve_start_at, :reserve_end_at)
     self.assign_attributes reserve_attrs
   end
@@ -202,15 +202,17 @@ module Reservations::DateSupport
   # set reserve_end_at based on duration_value, duration_unit virtual attribute
   def set_reserve_end_at
     return unless self.reserve_end_at.blank?
-    case @duration_unit
-    when 'minutes', 'minute'
-      @duration_mins = @duration_value.to_i
-    when 'hours', 'hour'
-      @duration_mins = @duration_value.to_i * 60
-    else
-      @duration_mins = 0
+    unless @duration_mins
+      case @duration_unit
+      when 'minutes', 'minute'
+        @duration_mins = @duration_value.to_i
+      when 'hours', 'hour'
+        @duration_mins = @duration_value.to_i * 60
+      else
+        @duration_mins = 0
+      end
     end
-    self.reserve_end_at = self.reserve_start_at + @duration_mins.minutes
+    self.reserve_end_at = self.reserve_start_at + @duration_mins.to_i.minutes
   end
 
   def set_actual_start_at
