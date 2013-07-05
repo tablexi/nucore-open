@@ -47,8 +47,6 @@ class OrderDetailManagement
           new_val = result["actual_#{field}"] || result["estimated_#{field}"]
           input_field.val(new_val)
           input_field.animateHighlight() unless old_val == new_val
-
-
     }
 
   init_total_calcuating: ->
@@ -68,7 +66,6 @@ class OrderDetailManagement
     cancel_box = $('#with_cancel_fee')
     cancel_id = parseInt(cancel_box.data('show-on'))
     $(cancel_box.data('connect')).change ->
-      console.debug 'changed', $(this).val() == cancel_id
       $('.cancel-fee-option').toggle(parseInt($(this).val()) == cancel_id)
 
     $('#order_detail_order_status_id').change ->

@@ -4,39 +4,25 @@ class OrderManagement::OrderDetailsController < ApplicationController
   load_resource :order_detail, :through => :order
 
   before_filter :authorize_order_detail
-  before_filter :load_accounts, :only => [:edit]
-  before_filter :load_order_statuses, :only => [:edit]
-  before_filter :add_can_edit
+  before_filter :load_accounts, :only => [:edit, :update]
+  before_filter :load_order_statuses, :only => [:edit, :update]
+  before_filter :add_can_edit, :only => [:edit, :update]
 
   def edit
     render :layout => false if request.xhr?
   end
 
   def update
-    checker = OrderDetails::ParamUpdater.new(@order_detail)
+    updater = OrderDetails::ParamUpdater.new(@order_detail, :user => session_user, :cancel_fee => params[:with_cancel_fee] == '1')
 
-    od_params = params[:order_detail].try(:dup)
-    od_params ||= {}
-
-    order_status_id = od_params.delete :order_status_id
-
-    checker.assign_attributes(od_params)
-
-    begin
-      if order_status_id
-        @order_detail.update_order_status! session_user,
-            OrderStatus.find(order_status_id),
-            :admin => true,
-            :apply_cancel_fee => params[:with_cancel_fee] == '1'
-      else
-        @order_detail.save!
-      end
-      redirect_to [:manage, current_facility, @order]
-    rescue StandardError => e
+    if updater.update_attributes(params[:order_detail])
+      flash[:notice] = 'The order was successfully updated'
+      status = :success
+      render :nothing => true
+    else
       flash.now[:error] = 'Error while updating order'
-      render :edit
+      render :edit, :layout => false, :status => 406
     end
-
   end
 
   def pricing

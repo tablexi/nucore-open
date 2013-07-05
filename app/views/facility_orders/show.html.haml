@@ -35,6 +35,7 @@
         %td.product
           = od.product
           = link_to "+ Add accessory", new_order_order_detail_accessory_path(@order, od), :class => ['has_accessories', 'persistent'] if od.product.accessories.count > od.child_order_details.count
+          = "<br/>#{od.reservation}".html_safe if od.reservation
 
         %td.timeinput= od.reservation.try(:duration_mins)
         - if od.reservation.try(:actual_duration_mins)

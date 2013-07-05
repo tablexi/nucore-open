@@ -178,6 +178,7 @@ describe OrderManagement::OrderDetailsController do
 
         context 'reserve times on incomplete order' do
           before :each do
+            instrument.update_attributes(:min_reserve_mins => 1)
             @new_reserve_start = reservation.reserve_start_at + 1.hour
             @params[:order_detail] = {
               :reservation => {
@@ -205,7 +206,11 @@ describe OrderManagement::OrderDetailsController do
 
           context 'it conflicts with another reservation' do
             before :each do
-              other_reservation = FactoryGirl.create(:purchased_reservation, :reserve_start_at => @new_reserve_start, :reserve_end_at => @new_reserve_start + 1.hour)
+              @other_reservation = FactoryGirl.create(:purchased_reservation,
+                  :reserve_start_at => @new_reserve_start,
+                  :reserve_end_at => @new_reserve_start + 1.hour,
+                  :product => instrument)
+              @old_start_time = reservation.reserve_start_at
               do_request
             end
 

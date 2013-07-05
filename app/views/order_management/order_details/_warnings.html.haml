@@ -8,3 +8,7 @@
   .alert.alert-info
     - notices[:notices].each do |notice|
       = t("order_details.notices.#{notice}.alert")
+
+- if @order_detail.errors.any?
+  .alert.alert-error
+    = @order_detail.errors.full_messages.join('<br/>').html_safe
