@@ -17,11 +17,14 @@ class OrderManagement::OrderDetailsController < ApplicationController
 
     if updater.update_attributes(params[:order_detail])
       flash[:notice] = 'The order was successfully updated'
-      status = :success
-      render :nothing => true
+      if request.xhr?
+        render :nothing => true
+      else
+        redirect_to [current_facility, @order]
+      end
     else
       flash.now[:error] = 'Error while updating order'
-      render :edit, :layout => false, :status => 406
+      render :edit, :layout => !request.xhr?, :status => 406
     end
   end
 
