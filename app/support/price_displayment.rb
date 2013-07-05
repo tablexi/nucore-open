@@ -14,7 +14,13 @@
 module PriceDisplayment
   include ActionView::Helpers::NumberHelper
   def display_cost
-    format(actual_cost) || format(estimated_cost) || empty_display
+    format(actual_cost_subsidized) || format(estimated_cost) || empty_display
+  end
+
+  def actual_cost_subsidized
+    return unless actual_cost || has_subsidies?
+
+    (actual_cost ? actual_cost : 0) - (has_subsidies? ? actual_subsidy : 0)
   end
 
   def display_subsidy
