@@ -321,8 +321,10 @@ describe OrderDetail do
 
       @no_actuals_od.create_reservation FactoryGirl.attributes_for(:reservation, :product => @no_actuals_instrument)
       @actuals_od.create_reservation FactoryGirl.attributes_for(:reservation, :product => @actuals_instrument)
-      @both_od.create_reservation FactoryGirl.attributes_for(:reservation, :product => @both_instrument)
-      @no_pp_od.create_reservation FactoryGirl.attributes_for(:reservation, :product => @both_instrument)
+
+      # since these two are on the same instrument, make sure the reservations do not conflict
+      both_res = @both_od.create_reservation FactoryGirl.attributes_for(:reservation, :product => @both_instrument)
+      @no_pp_od.create_reservation FactoryGirl.attributes_for(:reservation, :product => @both_instrument, :reserve_start_at => both_res.reserve_start_at + 1.hour, :duration_mins => 60)
 
       # travel to the future to complete the order_details
       Timecop.travel(2.days.from_now) do
