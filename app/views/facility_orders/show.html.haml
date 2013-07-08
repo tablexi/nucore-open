@@ -26,7 +26,7 @@
   %tbody
     - @order_details.each do |od|
       - od.send(:extend, PriceDisplayment)
-      %tr{:class => [od.parent_order_detail_id ? 'child' : 'parent', "status-#{od.order_status.root.name.underscore}"] }
+      %tr{:class => [od.parent_order_detail_id ? 'child' : 'parent', "status-#{od.order_status.root.name.underscore}", flash[:updated_order_details].try(:include?, od.id) ? 'updated-order-detail' : ''] }
         %td
           %span.label{:class => "status-#{od.order_status.root.name.underscore}"}= od.order_status
         %td.order-id

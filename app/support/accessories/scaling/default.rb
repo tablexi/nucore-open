@@ -34,6 +34,10 @@ class Accessories::Scaling::Default
     @order_detail.to_param
   end
 
+  def eql?(other)
+    @order_detail == other
+  end
+
   private
 
   def method_missing(method, *args)

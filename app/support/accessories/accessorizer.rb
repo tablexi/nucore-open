@@ -18,11 +18,14 @@ class Accessories::Accessorizer
   end
 
   def update_children
+    changed = []
     # TODO skip statemented/journaled order details?
     @order_detail.child_order_details.each do |od|
       update_child_detail(od)
+      changed << od if od.changed?
       od.save
     end
+    changed
   end
 
   # Returns the accessories for the product, but excludes all the accessories that

@@ -56,6 +56,12 @@ class Reservation < ActiveRecord::Base
     end
   end
 
+  after_update do
+    if (['actual_start_at', 'actual_end_at', 'reserve_start_at', 'reserve_end_at'] & changes.keys).any?
+      order_detail.save if order_detail
+    end
+  end
+
   # Scopes
   #####
   def self.active

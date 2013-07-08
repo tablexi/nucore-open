@@ -75,9 +75,9 @@ module Reservations::DateSupport
     if @duration_mins
       @duration_mins.to_i
     elsif reserve_end_at and reserve_start_at
-      @duration_mins = ((reserve_end_at - reserve_start_at) / 60).floor
+      ((reserve_end_at - reserve_start_at) / 60).floor
     else
-      @duration_mins = 0
+      0
     end
   end
 
@@ -85,11 +85,12 @@ module Reservations::DateSupport
     if @actual_duration_mins
       @actual_duration_mins.to_i
     elsif actual_end_at && actual_start_at
-      @actual_duration_mins = ((actual_end_at - actual_start_at) / 60).floor
+      ((actual_end_at - actual_start_at) / 60).floor
     else
-      @duration_mins = 0
+      0
     end
   end
+
 
   def actual_start_date
     date_field(:actual_start)

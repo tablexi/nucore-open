@@ -39,8 +39,13 @@ module OrderDetail::Accessorized
   end
 
   def update_children
+    return unless child_order_details.any?
     accessorizer = Accessories::Accessorizer.new(self)
-    accessorizer.update_children
+    @updated_children = accessorizer.update_children
+  end
+
+  def updated_children
+    @updated_children || []
   end
 
   private

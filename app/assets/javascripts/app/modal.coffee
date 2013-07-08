@@ -8,7 +8,7 @@ class window.AjaxModal
     $link.click (e) ->
       e.preventDefault()
       $modal.modal('show')
-      $modal.html('') # clear it out
+      $modal.html('<div class="modal-body"><h3>Loading...</h3></div>') # clear it out
       $.ajax {
         url: $(e.target).attr('href')
         dataType: 'html'

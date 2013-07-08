@@ -16,7 +16,11 @@ class OrderManagement::OrderDetailsController < ApplicationController
     updater = OrderDetails::ParamUpdater.new(@order_detail, :user => session_user, :cancel_fee => params[:with_cancel_fee] == '1')
 
     if updater.update_attributes(params[:order_detail])
-      flash[:notice] = 'The order was successfully updated'
+      flash[:notice] = 'The order was successfully updated.'
+      if @order_detail.updated_children.any?
+        flash[:notice] << " Auto-scaled accessories have been updated as well."
+        flash[:updated_order_details] = @order_detail.updated_children.map &:id
+      end
       if request.xhr?
         render :nothing => true
       else

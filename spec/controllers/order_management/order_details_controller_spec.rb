@@ -219,10 +219,13 @@ describe OrderManagement::OrderDetailsController do
             end
 
             it 'sets the flash' do
-              expect(flash).to be
+              expect(flash[:error]).to be_present
             end
 
-            it 'redirects or returns error?'
+            it 'renders error' do
+              expect(response).to render_template(:edit)
+              expect(response.code).to eq('406')
+            end
           end
         end
 

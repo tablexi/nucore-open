@@ -73,12 +73,14 @@ en:
           not_in_price_group: You are not in a price group that may purchase this bundle; please contact the facility.
           not_authorized_acting_as: You are not authorized to order bundles from this facility on behalf of a user.
           no_accounts: "Sorry, but we could not find a valid payment source that you can use to purchase this bundle"
+        order_detail:
+          changing_status: There was an error trying to change the status of the order.
         reservation:
           connot_be_completed_in_future: You cannot complete a future reservation.
           attributes:
             base:
-              conflict: conflicts with another reservation.
-              conflict_in_cart: conflicts with another reservation in your cart.
+              conflict: The reservation conflicts with another reservation.
+              conflict_in_cart: The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue.
         account_user:
           attributes:
             user_id:
@@ -142,7 +144,7 @@ en:
         description: Notes
         journal_status: Status
       reservation:
-        base: The reservation
+        base: '' #handled by actual messages
         duration_mins: Reserve
         actual_duration_mins: Actual
       statement:

@@ -1,8 +1,20 @@
-$.fn.animateHighlight = (highlightColor, duration) ->
-    highlightBg = highlightColor || "#FFFF9C"
-    animateMs = duration || 2500;
-    originalBg = this.css("backgroundColor")
-    this.stop().css("background-color", highlightBg).animate({backgroundColor: originalBg}, animateMs)
+$.fn.animateHighlight = (options = {}) ->
+  options = $.extend {}, {
+      highlightClass: null
+      highlightColor: "#FFFF9C",
+      solidDuration: 0,
+      fadeDuration: 2500 }, options
+  if options.highlightClass?
+    new_item = $("<div class='#{options.highlightClass}'></div>").hide().appendTo('body')
+    options.highlightColor = new_item.css('backgroundColor')
+    new_item.remove()
+
+  originalBg = this.css("backgroundColor")
+  this.stop()
+    .css("background-color", options.highlightColor)
+    .delay(options.solidDuration)
+    .animate({backgroundColor: originalBg}, options.fadeDuration)
+
 
 class OrderDetailManagement
   constructor: (@$element) ->
@@ -53,8 +65,8 @@ class OrderDetailManagement
     self = this
     $('.cost-table .cost, .cost-table .subsidy').change ->
       row = $(this).closest('.cost-table')
-      total = row.find('.cost').val() - row.find('.subsidy').val()
-      row.find('.total').val(total)
+      total = row.find('.cost input').val() - row.find('.subsidy input').val()
+      row.find('.total input').val(total)
       self.notify_of_update $(row).find('input')
 
 
@@ -76,5 +88,7 @@ $ ->
     success: ->
       new OrderDetailManagement($('#order-detail-modal .edit_order_detail'))
     })
+
+  $('.updated-order-detail').animateHighlight({ highlightClass: 'alert-info', solidDuration: 5000 })
 
   $('.timeinput').timeinput()

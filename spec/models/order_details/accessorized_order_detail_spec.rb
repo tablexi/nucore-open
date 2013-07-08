@@ -123,12 +123,15 @@ describe OrderDetail do
 
     context 'where the reservation time changes' do
       before :each do
-        accessory_order_detail.update_attributes(:quantity => 1)
         reservation.update_attributes(:reserve_end_at => reservation.reserve_end_at + 30.minutes)
       end
 
       it 'does not update the quantity' do
-        expect(accessory_order_detail.reload.quantity).to eq(1)
+        expect(accessory_order_detail.reload.quantity).to eq(60)
+      end
+
+      it 'does not mark anything as changed' do
+        expect(order_detail.updated_children).to be_empty
       end
     end
 
@@ -138,7 +141,12 @@ describe OrderDetail do
       end
 
       it 'updates the quantity' do
-        expect(accessory_order_detail.reload.quantity).to eq(reservation.actual_duration_mins)
+        expect(accessory_order_detail.reload.quantity).to eq(90)
+      end
+
+      it 'marks as changed' do
+        # accessory_order_detail might be decorated at this point, so reload
+        expect(order_detail.updated_children).to eq([accessory_order_detail.reload])
       end
     end
   end

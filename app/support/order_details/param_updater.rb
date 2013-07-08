@@ -22,11 +22,17 @@ class OrderDetails::ParamUpdater
 
     assign_attributes(params)
 
-    if order_status_id && order_status_id.to_i != @order_detail.order_status_id
-      change_order_status(order_status_id, @options[:cancel_fee])
-    else
-      @order_detail.save
+    @order_detail.transaction do
+      @order_detail.reservation.save if @order_detail.reservation
+      if order_status_id && order_status_id.to_i != @order_detail.order_status_id
+        change_order_status(order_status_id, @options[:cancel_fee]) || raise(ActiveRecord::Rollback)
+      else
+        @order_detail.save || raise(ActiveRecord::Rollback)
+      end
     end
+
+    merge_reservation_errors if @order_detail.reservation
+    is_order_detail_clean
   end
 
   private
@@ -50,7 +56,18 @@ class OrderDetails::ParamUpdater
             :apply_cancel_fee => apply_cancel_fee
       true
     rescue StandardError => e
+      @order_detail.errors.add(:base, :changing_status)
       # returns nil
     end
+  end
+
+  def merge_reservation_errors
+    @order_detail.reservation.errors.each do |error, message|
+      @order_detail.errors.add('reservation.base', message)
+    end
+  end
+
+  def is_order_detail_clean
+    @order_detail.errors.none? && (@order_detail.reservation.nil? || @order_detail.reservation.errors.none?)
   end
 end
