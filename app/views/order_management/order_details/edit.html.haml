@@ -22,7 +22,7 @@
       = render :partial => 'reservation', :locals => { :f => f, :reservation => @order_detail.reservation }
     - else
       = f.label :quantity
-      = f.text_field :quantity
+      = f.text_field :quantity, :class => @order_detail.quantity_as_time? ? 'timeinput' : '', :disabled => !@order_detail.quantity_editable?
 
     = render :partial => 'costs', :locals => { :f => f }
 

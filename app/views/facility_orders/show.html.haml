@@ -34,12 +34,14 @@
           = link_to "(old)", edit_facility_order_order_detail_path(current_facility, @order, od)
         %td.product
           = od.product
-          = link_to "+ Add accessory", new_order_order_detail_accessory_path(@order, od), :class => ['has_accessories', 'persistent'] if od.product.accessories.count > od.child_order_details.count
+          = link_to "+ Add accessory", new_order_order_detail_accessory_path(@order, od), :class => ['has_accessories', 'persistent'] if od.add_accessories?
           = "<br/>#{od.reservation}".html_safe if od.reservation
 
         %td.timeinput= od.reservation.try(:duration_mins)
         - if od.reservation.try(:actual_duration_mins)
           %td.timeinput= od.reservation.actual_duration_mins
+        - elsif od.quantity_as_time?
+          %td.timeinput= od.quantity
         - else
           %td= od.quantity
         %td= od.wrapped_cost

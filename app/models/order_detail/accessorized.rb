@@ -23,8 +23,29 @@ module OrderDetail::Accessorized
     product.product_accessories.any?
   end
 
+  # Can add accessories only if the order is complete
+  # and there are still accessories that haven't been added
+  # (i.e. you can't add two of the same accessories--use quantity instead)
+  def add_accessories?
+    complete? && product.accessories.count > child_order_details.count
+  end
+
+  def quantity_as_time?
+    decorated_self.quantity_as_time? #if product_accessory_id
+  end
+
+  def quantity_editable?
+    decorated_self.quantity_editable?
+  end
+
   def update_children
     accessorizer = Accessories::Accessorizer.new(self)
     accessorizer.update_children
+  end
+
+  private
+
+  def decorated_self
+    @decorated_self ||= Accessories::Scaling.decorate(self)
   end
 end

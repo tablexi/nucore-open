@@ -26,6 +26,14 @@ class Accessories::Scaling::Default
     @order_detail.assign_attributes(attrs)
   end
 
+  def to_s
+    @order_detail.to_s
+  end
+
+  def to_param
+    @order_detail.to_param
+  end
+
   private
 
   def method_missing(method, *args)
