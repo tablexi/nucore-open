@@ -13,4 +13,6 @@
 //= require _common
 //= require date
 //= require_tree ./app
+//= require uploadify/jquery.uploadify.v2.1.0.min
+//= require uploadify/swfobject
 //= require clockpunch

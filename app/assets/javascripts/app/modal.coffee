@@ -8,19 +8,16 @@ class window.AjaxModal
     success = @options['success']
     form_prepare = @form_prepare
 
-    loading_text = @options.loading_text || 'Loading...'
+    @loading_text = @options.loading_text || 'Loading...'
+
+    self = this
     
     $link.click (e) ->
       e.preventDefault()
       $modal.modal('show')
-      $modal.html("<div class='modal-body'><h3>#{loading_text}</h3></div>")
-      $.ajax {
-        url: $(e.target).attr('href')
-        dataType: 'html'
-        success: (body) ->
-          $modal.html(body)
-          form_prepare()
-      }
+      $modal.data('href', $(e.target).attr('href'))
+      $modal.data('modalObject', self)
+      self.reload()
 
 
   form_prepare: =>
@@ -35,7 +32,7 @@ class window.AjaxModal
       self.form_success(xhr.responseText)
 
     success = @options['success']
-    success() if success?
+    success(self) if success?
 
   form_success: (body) =>
     window.location.reload()
@@ -46,3 +43,15 @@ class window.AjaxModal
 
   build_new_modal: ->
     $('<div class="modal hide fade"></div>').appendTo('body')
+
+  reload: =>
+    $modal = @$modal
+    self = this
+    $modal.html("<div class='modal-body'><h3>#{@loading_text}</h3></div>")
+    $.ajax {
+      url: $modal.data('href')
+      dataType: 'html'
+      success: (body) ->
+        $modal.html(body)
+        self.form_prepare()
+    }

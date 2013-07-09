@@ -278,8 +278,6 @@ en:
         h2: "Edit Order # %{order_number}"
         h3: "Resolve Dispute"
         h3-2: "Dispute Information"
-        h3-3: "Results Files"
-        h3-4: "Upload Results"
         h3-5: "Bundle Summary"
       label:
         ordered:
@@ -688,6 +686,14 @@ en:
       subject: "%{user} has made a reservation for %{product}. Please approve."
 
   file_uploads:
+    widget:
+      error_loading: Please enable Javascript and install Adobe Flash Player.
+      start: Start Upload
+      clear_queue: Clear Queue
+    sample_result:
+      title: Results Files
+      upload: Upload Results
+      none: No results have been uploaded yet.
     product_survey:
       intro: "You may provide an Online Order Form and/or an Order File Template.  If provided, the user must complete one before placing an order."
       order_form:
