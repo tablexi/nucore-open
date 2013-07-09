@@ -216,22 +216,22 @@ class ReservationsController < ApplicationController
       flash[:error] = @reservation.errors.full_messages.join("<br/>")
     end
 
-    return redirect_to reservations_path(:status => 'upcoming')
+    redirect_to reservations_status_path(:status => 'upcoming')
   end
 
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
   def earliest_move_possible
     @reservation       = Reservation.find(params[:reservation_id])
     @earliest_possible = @reservation.earliest_possible
-    next_start         = @earliest_possible.reserve_start_at
-    next_end           = @earliest_possible.reserve_end_at
 
-    @formatted_dates = {
-      :start_date => human_date(next_start),
-      :start_time => human_time(next_start),
-      :end_date   => human_date(next_end),
-      :end_time   => human_time(next_end),
-    }
+    if @earliest_possible
+      @formatted_dates = {
+        :start_date => human_date(@earliest_possible.reserve_start_at),
+        :start_time => human_time(@earliest_possible.reserve_start_at),
+        :end_date   => human_date(@earliest_possible.reserve_end_at),
+        :end_time   => human_time(@earliest_possible.reserve_end_at),
+      }
+    end
 
     render :layout => false
   end
