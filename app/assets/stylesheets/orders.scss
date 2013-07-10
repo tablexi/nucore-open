@@ -1,16 +1,17 @@
-dl {
-  dt {
-    font-weight: bold;
-    margin-top: 1em;
-  }
-  dd {
-    margin-bottom: 1em;
+.banner-list {
+  dl {
+    dt {
+      font-weight: bold;
+    }
+    dd {
+      margin-left: 0;
+    }
   }
 }
 
 table.order-list {
   tr.child {
-    .product, .order-id {
+    .product {
       padding-left: 3em;
     }
   }
@@ -19,6 +20,47 @@ table.order-list {
     @extend .muted;
   }
 
+  th {
+    text-align: center;
+
+    &.order-id {
+      text-align: left;
+    }
+  }
+
+
+  th.currency,
+  th.time,
+  td.currency,
+  td.time {
+    border-left: 1px solid $tableBorder;
+    border-right: 1px solid $tableBorder;
+    width: 70px;
+  }
+
+  td.currency,
+  td.time {
+    text-align: right;
+  }
+
+  td {
+    &.badges,
+    &.order-id {
+      width: 70px;
+    }
+
+    &.badges {
+      text-align: center;
+    }
+  }
+
+  .estimated_cost {
+    @extend .label;
+  }
+
+  [class^="icon-"], [class*=" icon-"] {
+    font-size: 125%;
+  }
 }
 
 .label {
@@ -29,5 +71,34 @@ table.order-list {
 
   &.status-cancelled {
     @extend .label-important;
+  }
+}
+
+
+
+.edit_order_detail {
+  .timeinput {
+    width: 5em;
+  }
+  .datepicker {
+    width: 7em;
+  }
+
+  .datetime-block {
+    .control-group {
+      float: left;
+      margin-right: 1em;
+    }
+    clear: both;
+  }
+  .time-select {
+    select {
+      width: 5em;
+      height: 2em;
+    }
+  }
+  textarea {
+    height: 3em;
+    width: 100%;
   }
 }

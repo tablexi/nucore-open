@@ -2,57 +2,64 @@
   = current_facility
 %h2= "Order ##{@order.id}"
 
-%dl
-  %dt= OrderDetail.human_attribute_name(:ordered_at)
-  %dd= human_datetime @order.ordered_at
-
-  %dt= OrderDetail.human_attribute_name(:user)
-  %dd= @order.user
-
-  %dt= OrderDetail.human_attribute_name(:created_by_user)
-  %dd= @order.created_by_user
+.container.banner-list
+  .row
+    %dl.span2
+      %dt= OrderDetail.human_attribute_name(:ordered_at)
+      %dd= human_datetime @order.ordered_at
+    %dl.span2
+      %dt= OrderDetail.human_attribute_name(:user)
+      %dd= @order.user
+    %dl.span2
+      %dt= OrderDetail.human_attribute_name(:created_by_user)
+      %dd= @order.created_by_user
 
 %table.order-list.table.table-striped.table-hover#order-management
   %thead
     %tr
-      %th
-      %th= OrderDetail.human_attribute_name(:id)
+      %th{:colspan => 4}
+      %th{:colspan => 2}= OrderDetail.human_attribute_name(:quantity)
+      %th{:colspan => 3} Pricing
+    %tr
+      %th.order-id= OrderDetail.human_attribute_name(:id)
+      %th.badges Status
       %th= Product.model_name.human
-      %th= Reservation.human_attribute_name(:duration_mins)
-      %th= Reservation.human_attribute_name(:actual_duration_mins)
-      %th Cost
-      %th Subsidy
-      %th Total
+      %th
+      %th.time Reserved
+      %th.time Actual
+      %th.currency Cost
+      %th.currency Subsidy
+      %th.currency Total
+      %th.badges
   %tbody
     - @order_details.each do |od|
       - od.send(:extend, PriceDisplayment)
       %tr{:class => [od.parent_order_detail_id ? 'child' : 'parent', "status-#{od.order_status.root.name.underscore}", flash[:updated_order_details].try(:include?, od.id) ? 'updated-order-detail' : ''] }
-        %td
-          %span.label{:class => "status-#{od.order_status.root.name.underscore}"}= od.order_status
         %td.order-id
           = link_to od, manage_order_detail_path(od), :class => 'order-detail'
-          = link_to "(old)", edit_facility_order_order_detail_path(current_facility, @order, od)
+          -# = link_to "(old)", edit_facility_order_order_detail_path(current_facility, @order, od)
+        %td.badges
+          %span.label{:class => "status-#{od.order_status.root.name.underscore}"}= od.order_status
         %td.product
           = od.product
-          = link_to "+ Add accessory", new_order_order_detail_accessory_path(@order, od), :class => ['has_accessories', 'persistent'] if od.add_accessories?
           = "<br/>#{od.reservation}".html_safe if od.reservation
+        %td.action
+          - if od.add_accessories?
+            = link_to new_order_order_detail_accessory_path(@order, od), :class => ['has_accessories', 'persistent'] do
+              %i.icon-plus-sign-alt{ :data => { :toggle => 'tooltip' }, :title => t('product_accessories.pick_accessories.title') }
           = render :partial => 'result_file_icon', :locals => { :od => od }
 
-        %td.timeinput= od.reservation.try(:duration_mins)
+        %td.currency.timeinput= od.reservation.try(:duration_mins)
         - if od.reservation.try(:actual_duration_mins)
-          %td.timeinput= od.reservation.actual_duration_mins
+          %td.currency.timeinput= od.reservation.actual_duration_mins
         - elsif od.quantity_as_time?
-          %td.timeinput= od.quantity
+          %td.currency.timeinput= od.quantity
         - else
-          %td= od.quantity
-        %td= od.wrapped_cost
-        %td= od.wrapped_subsidy
-        %td
-          = od.wrapped_total
-        %td
-          - if od.cost_estimated?
-            %span.label.label-warning Estimated
-          = order_detail_badges(od)
+          %td.currency= od.quantity
+        %td.currency= od.wrapped_cost
+        %td.currency= od.wrapped_subsidy
+        %td.currency= od.wrapped_total
+        %td.badges= order_detail_badges(od)
 
 #order-detail-modal.modal.hide.fade
 

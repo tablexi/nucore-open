@@ -70,7 +70,7 @@ module DateHelper
     output << f.select(:"#{field}_hour", (1..12).to_a)
     output << f.select(:"#{field}_min", (0..59).step(5).map{|d| [sprintf('%02d', d),d]})
     output << f.select(:"#{field}_meridian", ['AM', 'PM'])
-    output.html_safe
+    content_tag :div, output.html_safe, :class => 'time-select'
   end
 
   def join_time_select_values(values)

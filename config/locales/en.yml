@@ -505,6 +505,7 @@ en:
 
   product_accessories:
     pick_accessories:
+      title: Add Accessories
       link: Add Accessories to order...
       instruct: "Please enter a quantity for each accessory used during the reservation. If an accessory was not used please leave the quantity blank."
 
@@ -692,6 +693,7 @@ en:
       clear_queue: Clear Queue
     sample_result:
       title: Results Files
+      count: "%{count} Results Files"
       upload: Upload Results
       none: No results have been uploaded yet.
     product_survey:

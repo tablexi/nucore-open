@@ -140,13 +140,17 @@ en:
         reviewed_at_past: Review Closed
         order_status: Status
         id: "Order #"
+        account: Payment Source
+        order_status: Order Status
       journal:
         description: Notes
         journal_status: Status
       reservation:
         base: '' #handled by actual messages
-        duration_mins: Reserve
-        actual_duration_mins: Actual
+        reserve_start_date: Reserve Start
+        duration_mins: Reserve Duration
+        actual_start_date: Actual Start
+        actual_duration_mins: Actual Duration
       statement:
         id: "Invoice #"
         created_by: Sent By

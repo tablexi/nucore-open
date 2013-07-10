@@ -1,6 +1,6 @@
 .modal-header
   = modal_close_button
-  %h3 Accessories Entry
+  %h3= t('product_accessories.pick_accessories.title')
 = simple_form_for :accessories, :url => order_order_detail_accessories_path(@order, @order_detail), :remote => request.xhr?, :html => { 'data-type' => 'html', :id => 'accessory-form', :class => :pick_accessories_form } do |f|
   .modal-body
     %p= t('product_accessories.pick_accessories.instruct')
