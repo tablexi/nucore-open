@@ -34,6 +34,7 @@ gem 'jquery-rails',     '~> 2.1.4'
 gem 'jquery-ui-sass-rails'
 gem 'clockpunch',       '~> 0.1.0'
 gem 'simple_form'
+gem 'font-awesome-rails'
 
 ## controllers
 gem 'prawn',            '0.12'
