@@ -73,7 +73,7 @@ class Accessories::Accessorizer
 
   def update_order_detail_from_params(od, params)
     product_id = od.product_id.to_s
-    if params[product_id] && params[product_id][:enabled] == 'true'
+    if params[product_id] && params[product_id][:enabled]
       od.assign_attributes(params[product_id])
       make_order_detail_complete(od)
     end

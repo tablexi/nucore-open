@@ -53,26 +53,30 @@ class AccessoryPickerDialog
       self.toggle_buttons(false)
 
   show_dialog: ->
+    self = this
     $.ajax {
       url: @$link.attr('href')
       dataType: 'html'
       success: (body) ->
-        $('#pick_accessories_dialog').html(body).modal('show')
-
-        @picker = new AccessoryPicker($('#accessory-form'));
+        self.load_dialog body
     }
+
+  load_dialog: (body) =>
+    @dialog.html(body).modal('show')
+    @picker = new AccessoryPicker($('#accessory-form'))
+    @toggle_buttons true
 
   toggle_buttons: (value) ->
     @dialog.find('input[type=submit]').prop('disabled', !value)
 
   handle_response: (e, xhr, status) ->
     e.preventDefault();
-    @dialog.html(xhr.responseText)
     if status == 'success'
       @dialog.modal('hide')
       window.location.reload()
     else
-      @toggle_buttons true
+      @load_dialog(xhr.responseText)
+      
 
   fade_out: ->
     @$link.fadeOut() unless @$link.hasClass('persistent')

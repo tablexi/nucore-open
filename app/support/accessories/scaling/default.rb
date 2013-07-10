@@ -1,6 +1,9 @@
 class Accessories::Scaling::Default
   attr_accessor :enabled
 
+  # We need to respond_to? these as opposed to sending them to method_missing
+  delegate :to_s, :to_param, :errors, :to => :@order_detail
+
   def initialize(order_detail)
     @order_detail = order_detail
   end
@@ -24,18 +27,6 @@ class Accessories::Scaling::Default
   def assign_attributes(attrs)
     self.enabled = attrs.delete :enabled if attrs[:enabled]
     @order_detail.assign_attributes(attrs)
-  end
-
-  def to_s
-    @order_detail.to_s
-  end
-
-  def to_param
-    @order_detail.to_param
-  end
-
-  def eql?(other)
-    @order_detail == other
   end
 
   private
