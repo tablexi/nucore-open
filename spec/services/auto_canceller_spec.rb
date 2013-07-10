@@ -61,6 +61,17 @@ describe AutoCanceller do
       completed_reservation.order_detail.reload.order_status.should_not == cancelled_status
     end
 
+    it 'should not cancel a past reservation in the cart' do
+      cart_reservation = FactoryGirl.create(:setup_reservation,
+        :product => instrument,
+        :reserve_start_at => base_date - 1.day,
+        :reserve_end_at => base_date - 1.day + 1.hour,
+        :reserved_by_admin => true)
+
+      canceller.cancel_reservations
+      cart_reservation.order_detail.reload.order_status.should_not == cancelled_status
+    end
+
     context 'with cancellation fee' do
       before :each do
         instrument.price_policies.first.update_attributes(:cancellation_cost => 10)

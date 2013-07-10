@@ -1,6 +1,6 @@
 class AccountUser < ActiveRecord::Base
   belongs_to :user
-  belongs_to :account
+  belongs_to :account, :inverse_of => :account_users
 
   scope :active, :conditions => {:deleted_at => nil}
 
@@ -24,6 +24,21 @@ class AccountUser < ActiveRecord::Base
     admin_user_roles + read_only_user_roles
   end
 
+  def self.owners
+    where(:user_role => ACCOUNT_OWNER)
+  end
+
+  def self.business_administrators
+    where(:user_role => ACCOUNT_ADMINISTRATOR)
+  end
+
+  def self.purchasers
+    where(:user_role => ACCOUNT_PURCHASER)
+  end
+
+  def self.active
+    where(:deleted_at => nil)
+  end
 
   #
   # Provides an +Array+ of roles that can be assigned

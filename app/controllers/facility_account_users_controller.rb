@@ -8,11 +8,13 @@ class FacilityAccountUsersController < ApplicationController
 
   layout 'two_column'
 
+  helper_method :current_owner?
+
   def initialize
     @active_tab = 'admin_billing'
     super
   end
-  
+
   # GET /facilities/:facility_id/accounts/:account_id/account_users/user_search
   def user_search
     @account = Account.find(params[:account_id])
@@ -22,7 +24,8 @@ class FacilityAccountUsersController < ApplicationController
   def new
     @account      = Account.find(params[:account_id])
     @user         = User.find(params[:user_id])
-    @account_user = AccountUser.new
+    role = current_owner? ? AccountUser::ACCOUNT_OWNER : AccountUser::ACCOUNT_PURCHASER
+    @account_user = AccountUser.new(:user_role => role)
   end
 
   # POST /facilities/:facility_id/accounts/:account_id/account_users
@@ -30,12 +33,12 @@ class FacilityAccountUsersController < ApplicationController
     @account = Account.find(params[:account_id])
     @user = User.find(params[:user_id])
     role = params[:account_user][:user_role]
-    
+
     @account_user = @account.add_or_update_member(@user, role, session_user)
     # account owner might've changed by earlier operation... reload it
     @account.reload
 
-    if @account_user.changed? # if changed then save wasn't successful
+    if @account.errors.any?
       flash.now[:error] = "An error was encountered while trying to add #{@user.full_name} to the #{@account.type_string} Account"
       render(:action => 'new')
     else
@@ -58,5 +61,11 @@ class FacilityAccountUsersController < ApplicationController
       flash[:error] = "An error was encountered while attempting to remove the user from the payment method"
     end
     redirect_to facility_account_members_path(current_facility, @account)
+  end
+
+  private
+
+  def current_owner?
+    @account.owner_user == @user
   end
 end

@@ -207,8 +207,7 @@ class ReservationsController < ApplicationController
     render :action => "edit"
   end
 
-  # GET /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
-  # this action should really respond to a PUT only but for some reason that doesn't work w/ jQuery UI popup
+  # POST /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
   def move
 
     if @reservation.move_to_earliest
@@ -217,7 +216,24 @@ class ReservationsController < ApplicationController
       flash[:error] = @reservation.errors.full_messages.join("<br/>")
     end
 
-    return redirect_to reservations_path
+    return redirect_to reservations_path(:status => 'upcoming')
+  end
+
+  # GET /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
+  def earliest_move_possible
+    @reservation       = Reservation.find(params[:reservation_id])
+    @earliest_possible = @reservation.earliest_possible
+    next_start         = @earliest_possible.reserve_start_at
+    next_end           = @earliest_possible.reserve_end_at
+
+    @formatted_dates = {
+      :start_date => human_date(next_start),
+      :start_time => human_time(next_start),
+      :end_date   => human_date(next_end),
+      :end_time   => human_time(next_end),
+    }
+
+    render :layout => false
   end
 
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/switch_instrument
@@ -370,15 +386,16 @@ class ReservationsController < ApplicationController
   end
 
   def set_windows
-    user_price_groups     = @order.user.price_groups.presence || []
-    # @order.account could be nil if quick reservation
-    account_price_groups  = @order.account.try(:price_groups).presence || []
-    groups = (user_price_groups + account_price_groups).flatten.uniq
-    @max_window = session_user.operator_of?(@facility) ? 365 : @reservation.longest_reservation_window(groups)
+    @max_window = max_reservation_window
     @max_days_ago = session_user.operator_of?(@facility) ? -365 : 0
     # initialize calendar time constraints
     @min_date     = (Time.zone.now + @max_days_ago.days).strftime("%Y%m%d")
     @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
+  end
+
+  def max_reservation_window
+    return 365 if session_user.operator_of?(@facility)
+    @reservation.longest_reservation_window(@order_detail.price_groups)
   end
 
   def helpers

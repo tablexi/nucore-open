@@ -154,6 +154,8 @@ en:
         search_term: "Search by name, NetID, or username"
     new:
       head: "Add Payment Source User"
+      messages:
+        current_user: "This user is the owner of the account. To change this user's role, you must replace the account owner first."
       label:
         account:
           type: "Payment Source Type"
@@ -348,6 +350,10 @@ en:
       confirm: Are you sure you wish to cancel this reservation?
       link: Cancel
     finished: Reservation Ended
+    moving_up:
+      confirm_same_day: The earliest time you can move this reservation to begins on %{start_date} at %{start_time} and ends at %{end_time}.
+      confirm_different_day: The earliest time you can move this reservation to begins on %{start_date} at %{start_time} and ends on %{end_date} at %{end_time}.
+      confirm: Would you like to move your reservation?
 
   statements:
     index:
