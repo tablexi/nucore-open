@@ -351,9 +351,12 @@ en:
       link: Cancel
     finished: Reservation Ended
     moving_up:
+      title: Move Reservation
+      button: Move
       confirm_same_day: The earliest time you can move this reservation to begins on %{start_date} at %{start_time} and ends at %{end_time}.
       confirm_different_day: The earliest time you can move this reservation to begins on %{start_date} at %{start_time} and ends on %{end_date} at %{end_time}.
       confirm: Would you like to move your reservation?
+      error: There was an error retrieving earliest possible move date.
 
   statements:
     index:

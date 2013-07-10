@@ -727,7 +727,7 @@ describe ReservationsController do
       human_datetime(assigns(:reservation).reserve_start_at).should == human_datetime(@earliest.reserve_start_at)
       human_datetime(assigns(:reservation).reserve_end_at).should == human_datetime(@earliest.reserve_end_at)
       should set_the_flash
-      assert_redirected_to reservations_path(:status => 'upcoming')
+      assert_redirected_to reservations_status_path(:status => 'upcoming')
     end
   end
 
@@ -759,7 +759,7 @@ describe ReservationsController do
         human_datetime(assigns(:reservation).reserve_start_at).should == human_datetime(@orig_start_at)
         human_datetime(assigns(:reservation).reserve_end_at).should == human_datetime(@orig_end_at)
         should set_the_flash
-        assert_redirected_to reservations_path(:status => 'upcoming')
+        assert_redirected_to reservations_status_path(:status => 'upcoming')
       end
     end
 
