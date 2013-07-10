@@ -7,8 +7,9 @@ module BootstrapHelper
       :type => 'button'
   end
 
-  def modal_cancel_button
-    content_tag :button, 'Cancel',
+  def modal_cancel_button(options = {})
+    content_tag :button, 
+      options[:text] || 'Cancel',
       :data => { :dismiss => 'modal' },
       :class => 'btn'
   end
