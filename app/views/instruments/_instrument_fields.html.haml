@@ -1,67 +1,40 @@
 - content_for :head_content do
   = javascript_include_tag 'power_relay'
 
-%li
-  = f.check_box :show_details
-  %b= t 'instruments.instrument_fields.show_details'
+= f.input :show_details, :as => :boolean, :label => false, :inline_label => t('instruments.instrument_fields.show_details')
 
-%li
-  = f.label :schedule_id
-  - if f.object.new_record?
-    %p.instruction= t 'instruments.instrument_fields.schedule.hint'
-    = f.select :schedule_id, options_from_collection_for_select(current_facility.schedules.active.ordered, :id, :name, f.object.schedule_id), :include_blank => t('instruments.instrument_fields.schedule.unshared')
-  - else
-    = f.object.schedule.display_name
+-# TODO
+- if f.object.new_record?
+  %p.instruction= t('instruments.instrument_fields.schedule.hint')
+  = f.select :schedule_id, options_from_collection_for_select(current_facility.schedules.active.ordered, :id, :name, f.object.schedule_id), :include_blank => t('instruments.instrument_fields.schedule.unshared')
+- else
+  = f.object.schedule.display_name
 
-%li
-  = label_tag :control_mechanism
-  %p.instruction= t 'instruments.instrument_fields.control_mechanism'
-  - selection = @instrument.control_mechanism || :manual
-  = f.select :control_mechanism, options_for_select(options_for_control_mechanism, selection)
-%li#power-relay{:class => "box#{selection == 'relay' ? '' : ' hidden'}"}
-  = f.label t('instruments.instrument_fields.relay.label.relay')
+-# TODO
+= label_tag :control_mechanism
+%p.instruction= t 'instruments.instrument_fields.control_mechanism'
+- selection = @instrument.control_mechanism || :manual
+= f.select :control_mechanism, options_for_select(options_for_control_mechanism, selection)
+
+- # TODO
+.well#power-relay{:class => "box#{selection == 'relay' ? '' : ' hidden'}"}
+  %h3= t('instruments.instrument_fields.relay.label.relay')
   %p= t 'instruments.instrument_fields.relay.intro'
-  %br
+
   = f.fields_for :relay, @instrument.relay || @instrument.build_relay do |rf|
-    %ul
-      %li.left
-        = rf.label :type, t('instruments.instrument_fields.relay.label.type')
-        = rf.select :type, options_for_select(options_for_relay, rf.object.type)
-      %li.clear
-      %li.left
-        = rf.label :ip, t('instruments.instrument_fields.relay.label.ip')
-        = rf.text_field :ip
-      %li.left
-        = rf.label :port, t('instruments.instrument_fields.relay.label.port')
-        = rf.text_field :port, :size => 5, :limit => 2
-      %li.clear
-      %li.left
-        = rf.label :username, t('instruments.instrument_fields.relay.label.user')
-        = rf.text_field :username
-      %li.left
-        = rf.label :password, t('instruments.instrument_fields.relay.label.pass')
-        = rf.text_field :password
-      %li.clear
-      %li
-        = rf.check_box :auto_logout
-        %b= t 'instruments.instrument_fields.relay.label.auto_logout'
-%li.box
-  = f.label t('instruments.instrument_fields.reservation.label.restrict')
+    = rf.label :type, t('instruments.instrument_fields.relay.label.type')
+    = rf.select :type, options_for_select(options_for_relay, rf.object.type)
+    = rf.input :ip, :label => t('instruments.instrument_fields.relay.label.ip')
+    = rf.input :port, :label => t('instruments.instrument_fields.relay.label.port')
+    = rf.input :username, :label => t('instruments.instrument_fields.relay.label.user')
+    = rf.input :password, :label => t('instruments.instrument_fields.relay.label.pass')
+    = rf.input :auto_logout, :as => :boolean, :label => false, :inline_label => t('instruments.instrument_fields.relay.label.auto_logout')
+
+.well
+  %h3= t('instruments.instrument_fields.reservation.label.restrict')
   %p= t 'instruments.instrument_fields.reservation.intro'
-  %br
-  %ul
-    %li.left
-      = f.label :min_reserve_mins, t('instruments.instrument_fields.reservation.label.min_reserve')
-      = f.text_field :min_reserve_mins
-    %li.left
-      = f.label :max_reserve_mins, t('instruments.instrument_fields.reservation.label.max_reserve')
-      = f.text_field :max_reserve_mins
-    %li.clear
-    %li
-      = f.label :min_cancel_hours, t('instruments.instrument_fields.reservation.label.cancel_hours')
-      %p.instruction= t('instruments.instrument_fields.reservation.instruct.cancel_hours')
-      = f.text_field :min_cancel_hours
-    %li
-      = f.label :auto_cancel_mins, t('instruments.instrument_fields.reservation.label.auto_cancel')
-      %p.instruction= t('instruments.instrument_fields.reservation.instruct.auto_cancel')
-      = f.text_field :auto_cancel_mins
+
+  = f.input :min_reserve_mins, :label => t('instruments.instrument_fields.reservation.label.min_reserve')
+  = f.input :max_reserve_mins, :label => t('instruments.instrument_fields.reservation.label.max_reserve')
+  = f.input :min_cancel_hours, :label => t('instruments.instrument_fields.reservation.label.cancel_hours'), :hint => t('instruments.instrument_fields.reservation.instruct.cancel_hours')
+  = f.input :auto_cancel_mins, :label => t('instruments.instrument_fields.reservation.label.auto_cancel'),  :hint => t('instruments.instrument_fields.reservation.instruct.auto_cancel')
