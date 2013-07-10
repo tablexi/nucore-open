@@ -152,10 +152,10 @@
     - # Results Files
     - if @order_detail.product.is_a?(Service)
       .box
-        %h3= t('.head.h3-3')
+        %h3= t('file_uploads.sample_result.title')
         - @results = @order_detail.stored_files.sample_result.sort{|a,b| a.created_at <=> b.created_at}
         - if @results.empty?
-          %p= t('.notice.no_results')
+          %p= t('file_uploads.sample_result.none')
         - else
           %ul.form
             - i = 0
@@ -164,12 +164,12 @@
                 == #{link_to("Results File #{i+=1}", stored_file.file.url)}:
                 = human_datetime(stored_file.created_at)
                 == - (#{link_to('Remove', remove_product_file_path(current_facility, @order_detail.product.parameterize, @order_detail.product, stored_file, :return_to => request.fullpath), :method => :delete, :confirm => 'Are you sure?')})
-        %h3= t('.head.h3-4')
-        #file_upload Please enable Javascript and install Adobe Flash Player.
+        %h3= t('file_uploads.sample_result.upload')
+        #file_upload= t('file_uploads.widget.error_loading')
         %br
-        = link_to "Start Upload", "javascript:$('#file_upload').uploadifyUpload();"
+        = link_to t('file_uploads.widget.start'), "javascript:$('#file_upload').uploadifyUpload();"
         == &nbsp;&nbsp;|&nbsp;&nbsp;
-        = link_to "Clear Queue", "javascript:$('#file_upload').uploadifyClearQueue()"
+        = link_to t('file_uploads.widget.clear_queue'), "javascript:$('#file_upload').uploadifyClearQueue()"
   .clear
   - # Product table
   %table.table.table-striped.table-hover

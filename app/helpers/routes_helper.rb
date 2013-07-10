@@ -4,4 +4,8 @@ module RoutesHelper
   def manage_order_detail_path(order_detail)
     manage_facility_order_order_detail_path(order_detail.facility, order_detail.order, order_detail)
   end
+
+  def admin_order_detail_path(action, order_detail)
+    send("#{action}_facility_order_order_detail_path", order_detail.facility, order_detail.order, order_detail)
+  end
 end

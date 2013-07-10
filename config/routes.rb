@@ -182,6 +182,7 @@ Nucore::Application.routes.draw do
         get 'manage', :to => 'order_management/order_details#edit', :on => :member
         put 'manage', :to => 'order_management/order_details#update', :on => :member
         get 'pricing', :to => 'order_management/order_details#pricing', :on => :member
+        get 'files', :to => 'order_management/order_details#files', :on => :member
       end
     end
 

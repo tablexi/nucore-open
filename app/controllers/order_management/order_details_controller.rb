@@ -39,6 +39,11 @@ class OrderManagement::OrderDetailsController < ApplicationController
     render :json => @prices.to_json
   end
 
+  def files
+    @files = @order_detail.stored_files.sample_result.order(:created_at)
+    render :layout => false if request.xhr?
+  end
+
   private
 
   def ability_resource

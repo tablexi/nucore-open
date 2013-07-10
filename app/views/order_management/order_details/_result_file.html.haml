@@ -1,0 +1,5 @@
+%li
+  = link_to "Results File #{result_file_counter + 1}", result_file.file.url
+  = human_datetime(result_file.created_at)
+  = link_to remove_product_file_path(current_facility, @order_detail.product.parameterize, @order_detail.product, result_file, :return_to => facility_order_path(current_facility, @order)), :method => :delete, :confirm => 'Are you sure?', :remote => request.xhr?, :class => 'remove-file' do
+    %i.icon-remove
