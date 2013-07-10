@@ -15,7 +15,7 @@ class window.AjaxModal
     $link.click (e) ->
       e.preventDefault()
       $modal.modal('show')
-      $modal.data('href', $(e.target).attr('href'))
+      $modal.data('href', $(this).attr('href'))
       $modal.data('modalObject', self)
       self.reload()
 

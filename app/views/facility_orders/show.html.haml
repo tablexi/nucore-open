@@ -36,7 +36,7 @@
           = od.product
           = link_to "+ Add accessory", new_order_order_detail_accessory_path(@order, od), :class => ['has_accessories', 'persistent'] if od.add_accessories?
           = "<br/>#{od.reservation}".html_safe if od.reservation
-          = link_to "Results", admin_order_detail_path(:files, od), :class => 'results-file-upload' if od.product.is_a?(Service)
+          = render :partial => 'result_file_icon', :locals => { :od => od }
 
         %td.timeinput= od.reservation.try(:duration_mins)
         - if od.reservation.try(:actual_duration_mins)

@@ -1,0 +1,3 @@
+- if od.product.is_a?(Service)
+  = link_to admin_order_detail_path(:files, od), :class => 'results-file-upload' do
+    %i{:class => od.stored_files.sample_result.any? ? 'icon-file' : 'icon-file-alt'}

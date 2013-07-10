@@ -2,6 +2,7 @@ $baseFontSize: 12px;
 
 @import "bootstrap";
 @import "bootstrap-responsive";
+@import "font-awesome";
 
 /*
  bootstrap overrides
@@ -16,6 +17,13 @@ a:hover {
 
 a.btn {
  text-decoration: none;
+}
+
+// Icons within links should not be underlined
+a {
+  [class^="icon-"], [class*=" icon-"] {
+    text-decoration: none;
+  }
 }
 
 .navbar-inverse .brand {
