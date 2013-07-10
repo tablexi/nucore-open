@@ -53,5 +53,4 @@
           - order_detail.send(:extend, PriceDisplayment)
           = order_detail.wrapped_total
         %td.nowrap= order_detail.order_status
-
 = will_paginate(order_details) if order_details.respond_to? :total_pages

@@ -33,6 +33,7 @@ gem 'ckeditor'
 gem 'jquery-rails',     '~> 2.1.4'
 gem 'jquery-ui-sass-rails'
 gem 'clockpunch',       '~> 0.1.0'
+gem 'simple_form'
 
 ## controllers
 gem 'prawn',            '0.12'
