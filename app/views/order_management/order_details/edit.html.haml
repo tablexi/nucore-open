@@ -2,35 +2,37 @@
   = modal_close_button
   %h3= "Order ##{@order_detail} #{@order_detail.product}"
 
-= form_for @order_detail, :url => manage_facility_order_order_detail_path(current_facility, @order, @order_detail), :remote => true do |f|
+= simple_form_for @order_detail, :url => manage_facility_order_order_detail_path(current_facility, @order, @order_detail), :remote => true do |f|
   .modal-body
     = render :partial => 'warnings'
 
-    = f.label :account
-    = f.collection_select :account_id, @available_accounts, :id, :account_pretty, :disabled => @order_detail.edit_disabled?
-
+    = f.association :account, :collection => @available_accounts, :label_method => :account_pretty, :include_blank => false, :disabled => @order_detail.edit_disabled?
+    
+    
     = f.label :order_status
     - if @order_statuses
-      = f.collection_select :order_status_id, @order_statuses, :id, :name_with_level
+      = f.association :order_status, :collection => @order_statuses, :label_method => :name_with_level, :include_blank => false, :label => false
     - else
       = @order_detail.order_status
     - if @order_detail.reservation
       .cancel-fee-option
-        = label_tag 'with_cancel_fee', t('facility_order_details.edit.label.with_cancel_fee')
-        = check_box_tag 'with_cancel_fee', 1, false, :data => { :connect => '#order_detail_order_status_id', :show_on => OrderStatus.cancelled.first.id }
+        = label_tag 'with_cancel_fee' do
+          = check_box_tag 'with_cancel_fee', 1, false, :data => { :connect => '#order_detail_order_status_id', :show_on => OrderStatus.cancelled.first.id }
+          = t('facility_order_details.edit.label.with_cancel_fee')
+          
 
     - if @order_detail.reservation
       = render :partial => 'reservation', :locals => { :f => f, :reservation => @order_detail.reservation }
     - else
-      = f.label :quantity
-      = f.text_field :quantity, :class => @order_detail.quantity_as_time? ? 'timeinput' : '', :disabled => !@order_detail.quantity_editable?
+      = f.input :quantity, 
+        :input_html => { :class => @order_detail.quantity_as_time? ? 'timeinput' : '' },
+        :disabled => !@order_detail.quantity_editable?
 
     = render :partial => 'costs', :locals => { :f => f }
 
     = render :partial => 'assigned_user', :locals => { :f => f }
 
-    = f.label :note
-    = f.text_area :note
+    = f.input :note, :as => :text
 
   .modal-footer
     = f.submit 'Save', :class => ['btn', 'btn-primary'] unless @order_detail.edit_disabled?

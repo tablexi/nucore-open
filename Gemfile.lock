@@ -73,7 +73,7 @@ GEM
     ckeditor (4.0.4)
       mime-types
       orm_adapter
-    clockpunch (0.1.3)
+    clockpunch (0.1.4)
       coffee-script
       railties (~> 3.1)
       sass
@@ -85,7 +85,7 @@ GEM
     coffee-script (2.2.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.6.2)
+    coffee-script-source (1.6.3)
     columnize (0.3.6)
     daemons (1.1.9)
     devise (2.2.4)
