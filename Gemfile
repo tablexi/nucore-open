@@ -32,6 +32,7 @@ gem 'dynamic_form',     '~> 1.1.4'
 gem 'ckeditor'
 gem 'jquery-rails',     '~> 2.1.4'
 gem 'jquery-ui-sass-rails'
+gem 'simple_form'
 
 ## controllers
 gem 'prawn',            '0.12'
