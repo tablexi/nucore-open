@@ -36,11 +36,7 @@
         .span5= render :partial => 'reservation', :locals => { :f => f, :reservation => @order_detail.reservation }
       - else
         .span5
-          - options = { :input_html => { :class => @order_detail.quantity_as_time? ? 'timeinput' : '' },
-            :disabled => !@order_detail.quantity_editable?,
-            :hint_html => { :class => 'help-inline' } }
-          - options[:hint] = t("product_accessories.type.#{@order_detail.scaling_type}") if @order_detail.scaling_type && !@order_detail.quantity_editable?
-          = f.input :quantity, options
+          = f.input :quantity, :as => :order_detail_quantity, :hint_html => { :class => 'help-inline' }
 
       .span5
         = render :partial => 'costs', :locals => { :f => f }

@@ -16,18 +16,6 @@ module BootstrapHelper
     end
   end
 
-  def currency_input(form, field, options = {})
-    options.reverse_merge!({
-      :value => number_with_precision(form.object.send(field), :precision => 2),
-      :disabled => false,
-      :class => ''
-      })
-    html = "<div class='input-prepend currency-input'><span class='add-on'>$</span>"
-    html << form.text_field(field, options)
-    html << '</div>'
-    html.html_safe
-  end
-
   def status_badge(order_detail)
     classes = ['label', "status-#{order_detail.order_status.root.name.underscore}"]
     content_tag :span, order_detail.order_status, :class => classes

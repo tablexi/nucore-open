@@ -78,12 +78,17 @@
     i {
       font-size: 160%;
     }
-    
+
   }
   .cost-table {
-    th, td {
-      padding: 0;
-      border: none;
+    .cost, .subsidy, .total {
+      float: left;
+      width: 30%;
+    }
+    .subsidy {
+      .help-block {
+        @extend .muted;
+      }
     }
   }
 }
