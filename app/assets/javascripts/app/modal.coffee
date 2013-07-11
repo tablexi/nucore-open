@@ -31,6 +31,8 @@ class window.AjaxModal
     form.bind 'ajax:success', (evt, xhr, c) ->
       self.form_success(xhr.responseText)
 
+    @$modal.trigger('modal:loaded')
+
     success = @options['success']
     success(self) if success?
 

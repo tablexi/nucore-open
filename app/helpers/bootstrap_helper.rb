@@ -8,10 +8,12 @@ module BootstrapHelper
   end
 
   def modal_cancel_button(options = {})
-    content_tag :button, 
-      options[:text] || 'Cancel',
-      :data => { :dismiss => 'modal' },
-      :class => 'btn'
+    if request.xhr?
+      content_tag :button, 
+        options[:text] || 'Cancel',
+        :data => { :dismiss => 'modal' },
+        :class => 'btn' 
+    end
   end
 
   def currency_input(form, field, options = {})
@@ -24,6 +26,9 @@ module BootstrapHelper
     html << form.text_field(field, options)
     html << '</div>'
     html.html_safe
+  end
 
+  def tooltip_icon(icon_class, tooltip)
+    content_tag :i, '', :class => icon_class, :data => { :toggle => 'tooltip' }, :title => tooltip
   end
 end

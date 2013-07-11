@@ -1,5 +1,6 @@
 = f.simple_fields_for reservation do |r|
-  .datetime-block
+  
+  .datetime-block.span5
     - if reservation.can_edit?
       = r.input :reserve_start_date, :input_html => { :class => 'datepicker' }
       .control-group
@@ -8,24 +9,29 @@
           = time_select r, :reserve_start
       = r.input :duration_mins, :input_html => { :class => 'timeinput' }
     - else
+      = r.label :reserve_start_date
       = reservation.reserve_to_s
+    
+    - if reservation.can_edit_actuals? && !reservation.has_actuals?
+      .copy_actual_from_reservation
+        = link_to '#' do #'Copy from reservation'
+          = tooltip_icon 'icon-circle-arrow-right', 'Copy from reservation'
+        %span.hidden.start_date= reservation.reserve_start_at
+        %span.hidden.end_date= reservation.reserve_end_at
 
-  .datetime-block
+  .datetime-block.span5
     - if reservation.can_edit_actuals?
       = r.input :actual_start_date, :input_html => { :class => 'datepicker' }
       .control-group
         .controls
           = r.label '&nbsp;'
           = time_select r, :actual_start
-      = r.input :actual_duration_mins, :input_html => { :class => 'timeinput' }
-
-      - unless reservation.has_actuals?
-        .copy_actual_from_reservation
-          = link_to 'Copy from reservation','#'
-          %span.hidden.start_date= reservation.reserve_start_at
-          %span.hidden.end_date= reservation.reserve_end_at
+      - options = { :class => 'timeinput' }
+      - options[:value] = '' if r.object.actual_duration_mins == 0
+      = r.input :actual_duration_mins, :input_html => options
 
     - else
+      = r.label :actual_start_date
       = reservation.actuals_string
 
 

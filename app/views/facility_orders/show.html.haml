@@ -4,15 +4,9 @@
 
 .container.banner-list
   .row
-    %dl.span2
-      %dt= OrderDetail.human_attribute_name(:ordered_at)
-      %dd= human_datetime @order.ordered_at
-    %dl.span2
-      %dt= OrderDetail.human_attribute_name(:user)
-      %dd= @order.user
-    %dl.span2
-      %dt= OrderDetail.human_attribute_name(:created_by_user)
-      %dd= @order.created_by_user
+    = banner_date_label @order, :ordered_at
+    = banner_label @order, :user
+    = banner_label @order, :created_by_user
 
 %table.order-list.table.table-striped.table-hover#order-management
   %thead
@@ -37,7 +31,7 @@
       %tr{:class => [od.parent_order_detail_id ? 'child' : 'parent', "status-#{od.order_status.root.name.underscore}", flash[:updated_order_details].try(:include?, od.id) ? 'updated-order-detail' : ''] }
         %td.order-id
           = link_to od, manage_order_detail_path(od), :class => 'order-detail'
-          -# = link_to "(old)", edit_facility_order_order_detail_path(current_facility, @order, od)
+          = link_to "(old)", edit_facility_order_order_detail_path(current_facility, @order, od)
         %td.badges
           %span.label{:class => "status-#{od.order_status.root.name.underscore}"}= od.order_status
         %td.product
@@ -46,7 +40,7 @@
         %td.action
           - if od.add_accessories?
             = link_to new_order_order_detail_accessory_path(@order, od), :class => ['has_accessories', 'persistent'] do
-              %i.icon-plus-sign-alt{ :data => { :toggle => 'tooltip' }, :title => t('product_accessories.pick_accessories.title') }
+              = tooltip_icon 'icon-plus-sign-alt', t('product_accessories.pick_accessories.title')
           = render :partial => 'result_file_icon', :locals => { :od => od }
 
         %td.currency.timeinput= od.reservation.try(:duration_mins)

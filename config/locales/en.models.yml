@@ -127,6 +127,10 @@ en:
         is_internal: Is Internal?
       user_role:
         username: User
+      order:
+        user: Ordered For
+        created_by_user: Ordered By
+        ordered_at: Ordered Date
       order_detail:
         dispute_resolved_reason: Resolution Notes
         description: Description
@@ -142,6 +146,12 @@ en:
         id: "Order #"
         account: Payment Source
         order_status: Order Status
+        estimated_cost: Estimated Price
+        estimated_subsidy: Estimated Adjustment
+        estimated_total: Estimated Total
+        actual_cost: Price
+        actual_subsidy: Adjustment
+        actual_total: Total
       journal:
         description: Notes
         journal_status: Status
@@ -151,6 +161,7 @@ en:
         duration_mins: Reserve Duration
         actual_start_date: Actual Start
         actual_duration_mins: Actual Duration
+        canceled_by_user: Canceled By
       statement:
         id: "Invoice #"
         created_by: Sent By

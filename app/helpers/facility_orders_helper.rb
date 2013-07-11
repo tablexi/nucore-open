@@ -24,6 +24,25 @@ module FacilityOrdersHelper
     output.join(' ').html_safe
   end
 
+  def banner_date_label(object, field)
+    banner_label(object, field) do |value|
+      human_datetime value
+    end
+  end
+
+  def banner_label(object, field)
+    if object.send(:try, field)
+      value = object.send(field)
+      value = yield(value) if block_given?
+      
+      content_tag :dl, :class => 'span2' do
+        content_tag(:dt, object.class.human_attribute_name(field)) +
+        content_tag(:dd, value)
+      end
+    end
+  end
+
+
   private
 
   def build_badges(notices, label_class)

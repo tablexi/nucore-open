@@ -1,5 +1,17 @@
+.modal-body {
+  max-height: 800px;
+}
+
+#order-detail-modal {
+  width: 1000px;
+  /* must be half of the width, minus scrollbar on the left (30px) */
+  margin-left: -500px;
+}
+
 .banner-list {
   dl {
+    margin-top: 0;
+
     dt {
       font-weight: bold;
     }
@@ -9,6 +21,72 @@
   }
 }
 
+/* Generic Form Overrides */
+.edit_order_detail {
+  input[type=text],
+  .input-prepend .add-on {
+    padding: 1px 6px !important;
+  }
+  select {
+    height: 2em;
+  }
+  .input-prepend .add-on {
+    padding: 1px 3px !important;
+  }
+  label {
+    font-weight: bold;
+    margin-bottom: 1px;
+  }
+  th {
+    padding-bottom: 1px;
+  }
+
+  .timeinput {
+    width: 5em;
+  }
+  .datepicker {
+    width: 7em;
+  }
+
+  .datetime-block {
+    .control-group {
+      float: left;
+      margin-right: 1em;
+    }
+  }
+  .time-select {
+    select {
+      width: 5em;
+    }
+  }
+  textarea {
+    height: 3em;
+    width: 100%;
+  }
+}
+
+/* Specific Form Overrides */
+.edit_order_detail {
+  .order_detail_order_status {
+    float: left;
+  }
+
+  .cancel-fee-option {
+    margin-top: 1.5em;
+  }
+
+  .copy_actual_from_reservation {
+    margin-top: 1.5em;
+    float: right;
+    i {
+      font-size: 200%;
+    }
+    
+  }
+}
+
+
+/* Order Management Page */
 table.order-list {
   tr.child {
     .product {
@@ -76,29 +154,3 @@ table.order-list {
 
 
 
-.edit_order_detail {
-  .timeinput {
-    width: 5em;
-  }
-  .datepicker {
-    width: 7em;
-  }
-
-  .datetime-block {
-    .control-group {
-      float: left;
-      margin-right: 1em;
-    }
-    clear: both;
-  }
-  .time-select {
-    select {
-      width: 5em;
-      height: 2em;
-    }
-  }
-  textarea {
-    height: 3em;
-    width: 100%;
-  }
-}

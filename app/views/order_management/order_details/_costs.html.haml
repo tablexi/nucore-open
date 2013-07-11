@@ -1,11 +1,14 @@
 - f.object.send(:extend, PriceDisplayment)
 - if f.object.actual_cost?
-  %table.table.cost-table
+  %table.table.table-condensed.cost-table
     %thead
       %tr
-        %td Cost
-        %td= "#{f.object.price_policy.try :price_group} Subsidy"
-        %td Total
+        %th= f.label :actual_cost
+        %th
+          %label
+            = "#{f.object.price_policy.try :price_group} "
+            = f.object.class.human_attribute_name(:actual_subsidy)
+        %th= f.label :actual_total
     %tbody
       %tr
         %td.cost= currency_input f, :actual_cost
@@ -13,12 +16,12 @@
         %td.total= currency_input f, :actual_total, :disabled => true
 
 - else
-  %table.table.cost-table
+  %table.table.table-condensed.cost-table
     %thead
       %tr
-        %td Estimated Cost
-        %td Estimated Subsidy
-        %td Estimated Total
+        %td= f.label :estimated_cost
+        %td= f.label :estimated_subsidy
+        %td= f.label :estimated_total
     %tbody
       %tr
         %td.cost= currency_input f, :estimated_cost, :disabled => true
