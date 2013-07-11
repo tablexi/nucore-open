@@ -86,12 +86,13 @@ describe FacilityAccountsController do
 
 
   context 'create' do
-
     before :each do
       @method=:post
       @action=:create
+      @expiration_year=Time.zone.now.year+1
       @acct_attrs=FactoryGirl.attributes_for(:purchase_order_account)
       @acct_attrs[:affiliate]=@acct_attrs[:affiliate].name
+      @acct_attrs.delete :expires_at
 
       @params={
         :id => @account.id,
@@ -105,10 +106,13 @@ describe FacilityAccountsController do
       @controller.stub(:current_facility).and_return(@authable)
     end
 
-
     context 'PurchaseOrderAccount' do
+      before :each do
+        @acct_attrs[:expires_at] = "12/5/#{@expiration_year}"
+      end
 
       it_should_allow :director do
+        assigns(:account).expires_at.should == Time.zone.parse("#{@expiration_year}-5-12").end_of_day
         assigns(:account).facility_id.should == @authable.id
         assigns(:account).should be_kind_of PurchaseOrderAccount
         assigns(:account).affiliate.name.should == @acct_attrs[:affiliate]
@@ -116,29 +120,24 @@ describe FacilityAccountsController do
         should set_the_flash
         assert_redirected_to user_accounts_url(@authable, @owner)
       end
-
     end
 
-
     context 'CreditCardAccount' do
-
       before :each do
         @params[:class_type]='CreditCardAccount'
         @acct_attrs=FactoryGirl.attributes_for(:credit_card_account)
         @acct_attrs[:affiliate]=@acct_attrs[:affiliate].name
+        @acct_attrs[:expiration_month]="5"
+        @acct_attrs[:expiration_year]=@expiration_year.to_s
         @params[:account]=@acct_attrs
       end
 
       it_should_allow :director do
-        assigns(:account).expires_at.should_not be_nil
+        assigns(:account).expires_at.should  == Time.zone.parse("#{@expiration_year}-5-1").end_of_month.end_of_day
         assigns(:account).facility.id.should == @authable.id
       end
-
     end
-
   end
-
-
 
   context 'credit_cards with account' do
 
