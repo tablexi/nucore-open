@@ -33,7 +33,7 @@
           = link_to od, manage_order_detail_path(od), :class => 'order-detail'
           = link_to "(old)", edit_facility_order_order_detail_path(current_facility, @order, od)
         %td.badges
-          %span.label{:class => "status-#{od.order_status.root.name.underscore}"}= od.order_status
+          = status_badge(od)
         %td.product
           = od.product
           = "<br/>#{od.reservation}".html_safe if od.reservation

@@ -189,6 +189,9 @@ module Reservations::DateSupport
     reserve_attrs = params.slice(:actual_start_date, :actual_start_hour, :actual_start_min, :actual_start_meridian,
      :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian,
      :actual_start_at, :actual_end_at, :actual_duration_mins)
+
+    reserve_attrs.reject! { |key,value| value.blank? }
+
     self.assign_attributes reserve_attrs
   end
 
@@ -202,7 +205,7 @@ module Reservations::DateSupport
 
   # set reserve_end_at based on duration_value, duration_unit virtual attribute
   def set_reserve_end_at
-    return unless self.reserve_end_at.blank?
+    return if self.reserve_end_at.present? || self.reserve_start_at.blank?
     unless @duration_mins
       case @duration_unit
       when 'minutes', 'minute'
@@ -227,7 +230,7 @@ module Reservations::DateSupport
     return if self.actual_end_at.present?
     if @actual_end_date && @actual_end_hour && @actual_end_min && @actual_end_meridian
       self.actual_end_at = parse_usa_date(@actual_end_date, "#{@actual_end_hour.to_s}:#{@actual_end_min.to_s.rjust(2, '0')} #{@actual_end_meridian}")
-    elsif @actual_duration_mins
+    elsif @actual_duration_mins && self.actual_start_at
       self.actual_end_at = self.actual_start_at + @actual_duration_mins.to_i.minutes
     end
   end

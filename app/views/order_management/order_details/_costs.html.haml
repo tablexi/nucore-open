@@ -19,9 +19,9 @@
   %table.table.table-condensed.cost-table
     %thead
       %tr
-        %td= f.label :estimated_cost
-        %td= f.label :estimated_subsidy
-        %td= f.label :estimated_total
+        %th= f.label :estimated_cost
+        %th= f.label :estimated_subsidy
+        %th= f.label :estimated_total
     %tbody
       %tr
         %td.cost= currency_input f, :estimated_cost, :disabled => true

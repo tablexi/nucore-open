@@ -9,7 +9,7 @@ module OrderDetail::Accessorized
 
     after_save :update_children
 
-    delegate :scaling_type, :to => :product_accessory
+    delegate :scaling_type, :to => :product_accessory, :allow_nil => true
   end
 
   module ClassMethods

@@ -1,0 +1,6 @@
+- if reservation.can_edit_actuals? && !reservation.has_actuals?
+  .copy_actual_from_reservation
+    -# = link_to 'Copy from reservation', '#'
+    = link_to tooltip_icon('icon-copy', 'Copy actual times from reservation')
+    %span.hidden.start_date= reservation.reserve_start_at
+    %span.hidden.end_date= reservation.reserve_end_at

@@ -37,9 +37,6 @@
     font-weight: bold;
     margin-bottom: 1px;
   }
-  th {
-    padding-bottom: 1px;
-  }
 
   .timeinput {
     width: 5em;
@@ -49,6 +46,7 @@
   }
 
   .datetime-block {
+    clear: both;
     .control-group {
       float: left;
       margin-right: 1em;
@@ -76,12 +74,17 @@
   }
 
   .copy_actual_from_reservation {
-    margin-top: 1.5em;
-    float: right;
+    padding-top: 1.7em;
     i {
-      font-size: 200%;
+      font-size: 160%;
     }
     
+  }
+  .cost-table {
+    th, td {
+      padding: 0;
+      border: none;
+    }
   }
 }
 

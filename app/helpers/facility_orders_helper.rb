@@ -34,12 +34,23 @@ module FacilityOrdersHelper
     if object.send(:try, field)
       value = object.send(field)
       value = yield(value) if block_given?
-      
+
       content_tag :dl, :class => 'span2' do
         content_tag(:dt, object.class.human_attribute_name(field)) +
         content_tag(:dd, value)
       end
     end
+  end
+
+  def quantity_input(form, order_detail)
+    options = { :input_html => { :class => order_detail.quantity_as_time? ? 'timeinput' : '' },
+            :disabled => !order_detail.quantity_editable?,
+            :hint_html => { :class => 'help-inline' } }
+    # Show scaling type if the quantity is non-editable
+    if @order_detail.scaling_type && !@order_detail.quantity_editable?
+      options[:hint] = t("product_accessories.type.#{order_detail.scaling_type}")
+    end
+    f.input :quantity, options
   end
 
 

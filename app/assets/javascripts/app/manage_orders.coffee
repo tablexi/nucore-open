@@ -35,7 +35,7 @@ class OrderDetailManagement
 
     # duration_mins doesn't follow the same pattern, so do it separately
     newval = $('[name="order_detail[reservation][duration_mins]"]').val()
-    # TODO: fix clockpunch to support changes
+
     $('[name="order_detail[reservation][actual_duration_mins]_display"]').val(newval).trigger('change')
 
   init_price_updating: ->
