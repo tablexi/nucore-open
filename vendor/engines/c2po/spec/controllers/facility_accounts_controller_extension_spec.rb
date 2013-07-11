@@ -87,22 +87,24 @@ describe FacilityAccountsController do
 
   context 'create' do
     before :each do
-      @method=:post
-      @action=:create
-      @expiration_year=Time.zone.now.year+1
-      @acct_attrs=FactoryGirl.attributes_for(:purchase_order_account)
-      @acct_attrs[:affiliate]=@acct_attrs[:affiliate].name
+      @method = :post
+      @action = :create
+
+      @expiration_year        = Time.zone.now.year+1
+      @acct_attrs             = FactoryGirl.attributes_for(:purchase_order_account)
+      @acct_attrs[:affiliate] = @acct_attrs[:affiliate].name
+
       @acct_attrs.delete :expires_at
 
-      @params={
-        :id => @account.id,
-        :facility_id => @authable.url_name,
+      @params = {
+        :id            => @account.id,
+        :facility_id   => @authable.url_name,
         :owner_user_id => @owner.id,
-        :account => @acct_attrs,
-        :class_type => 'PurchaseOrderAccount'
+        :account       => @acct_attrs,
+        :class_type    => 'PurchaseOrderAccount'
       }
 
-      @params[:account]=@acct_attrs
+      @params[:account] = @acct_attrs
       @controller.stub(:current_facility).and_return(@authable)
     end
 
@@ -124,12 +126,12 @@ describe FacilityAccountsController do
 
     context 'CreditCardAccount' do
       before :each do
-        @params[:class_type]='CreditCardAccount'
-        @acct_attrs=FactoryGirl.attributes_for(:credit_card_account)
-        @acct_attrs[:affiliate]=@acct_attrs[:affiliate].name
-        @acct_attrs[:expiration_month]="5"
-        @acct_attrs[:expiration_year]=@expiration_year.to_s
-        @params[:account]=@acct_attrs
+        @params[:class_type]           = 'CreditCardAccount'
+        @acct_attrs                    = FactoryGirl.attributes_for(:credit_card_account)
+        @acct_attrs[:affiliate]        = @acct_attrs[:affiliate].name
+        @acct_attrs[:expiration_month] = "5"
+        @acct_attrs[:expiration_year]  = @expiration_year.to_s
+        @params[:account]              = @acct_attrs
       end
 
       it_should_allow :director do
