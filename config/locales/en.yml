@@ -501,6 +501,7 @@ en:
         badge: Open Journal
         alert: You are unable to edit all aspects of this order because it is part of a pending journal. Please close the journal first.
       can_reconcile:
+        alert: This order can be reconciled
         badge: Can Reconcile
 
   product_accessories:

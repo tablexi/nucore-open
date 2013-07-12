@@ -26,13 +26,14 @@ module FacilityOrdersHelper
 
   def banner_date_label(object, field)
     banner_label(object, field) do |value|
-      human_datetime value
+      value = human_datetime value
+      value = yield(value) if value && block_given?
+      value
     end
   end
 
   def banner_label(object, field)
-    if object.send(:try, field)
-      value = object.send(field)
+    if value = object.send(:try, field)
       value = yield(value) if block_given?
 
       content_tag :dl, :class => 'span2' do
