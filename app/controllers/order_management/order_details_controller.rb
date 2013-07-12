@@ -66,7 +66,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
       @order_statuses = [ OrderStatus.complete.first, OrderStatus.cancelled.first ]
       @order_statuses << OrderStatus.reconciled.first if @order_detail.can_reconcile?
     else
-      OrderStatus.non_protected_statuses(current_facility)
+      @order_statuses = OrderStatus.non_protected_statuses(current_facility)
     end
   end
 
