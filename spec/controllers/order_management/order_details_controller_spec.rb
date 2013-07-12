@@ -152,7 +152,7 @@ describe OrderManagement::OrderDetailsController do
     end
   end
 
-  describe 'update' do
+  describe 'update reservation' do
     let(:reservation) { FactoryGirl.create(:purchased_reservation, :product => instrument) }
     let(:order_detail) { reservation.order_detail }
 
@@ -272,7 +272,42 @@ describe OrderManagement::OrderDetailsController do
         end
       end
 
+    end
+  end
 
+  describe 'updating item' do
+    let(:order) { FactoryGirl.create(:purchased_order, :product => item) }
+    let(:order_detail) { order.order_details.first }
+
+    before :each do
+      sign_in @admin
+      @action = :update
+      @method = :post
+      @params = { :facility_id => facility.url_name, :order_id => order_detail.order_id, :id => order_detail.id }
+    end
+
+    describe 'updating pricing' do
+      before :each do
+        order_detail.change_status!(OrderStatus.complete.first)
+      end
+
+      it 'updates the price manually' do
+        @params[:order_detail] = {
+          :actual_cost    => "20.00",
+          :actual_subsidy => "4.00"
+        }
+        do_request
+        expect(order_detail.reload.actual_total).to eq(16.00)
+      end
+
+      it 'returns an error when trying to set subsidy more than quantity' do
+        @params[:order_detail] = {
+            :actual_cost    => "10.00",
+            :actual_subsidy => "11.00"
+        }
+        do_request
+        expect(assigns(:order_detail).errors).to include(:actual_total)
+      end
     end
   end
 

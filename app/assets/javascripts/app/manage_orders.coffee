@@ -53,14 +53,20 @@ class OrderDetailManagement
       data: @$element.serialize(),
       type: 'get',
       success: (result, status) ->
-        for field in ['cost', 'subsidy', 'total']
+        # Update price group text
+        self.$element.find('.subsidy .help-block').text(result['price_group'])
+        subsidy = result['actual_subsidy'] || result['estimated_subsidy']
+        self.$element.find('.subsidy input').prop('disabled', subsidy <= 0).css('backgroundColor', '')
 
+        for field in ['cost', 'subsidy', 'total']
           input_field = self.$element.find("[name='order_detail[estimated_#{field}]'],[name='order_detail[actual_#{field}]']")
 
           old_val = input_field.val()
           new_val = result["actual_#{field}"] || result["estimated_#{field}"]
           input_field.val(new_val)
           input_field.animateHighlight() unless old_val == new_val
+
+
     }
 
   init_total_calcuating: ->
@@ -68,8 +74,8 @@ class OrderDetailManagement
     $('.cost-table .cost, .cost-table .subsidy').change ->
       row = $(this).closest('.cost-table')
       total = row.find('.cost input').val() - row.find('.subsidy input').val()
-      row.find('.total input').val(total)
-      self.notify_of_update $(row).find('input')
+      row.find('.total input').val(total.toFixed(2))
+      self.notify_of_update $(row).find('input[name*=total]')
 
 
   notify_of_update: (elem) ->

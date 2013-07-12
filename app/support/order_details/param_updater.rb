@@ -7,8 +7,14 @@ class OrderDetails::ParamUpdater
 
   def assign_attributes(params)
     params = params.try(:dup) || {}
-    assign_self_and_reservation_attributes(params)
+
+    cost_params = [:actual_cost, :actual_subsidy]
+    assign_self_and_reservation_attributes(params.except(*cost_params))
+    # this will overwrite the prices, so if we got cost/subsidy as parameters,
+    # we need to use them instead
     assign_policy_and_prices
+    @order_detail.assign_attributes(params.slice(*cost_params))
+
     @order_detail
   end
 

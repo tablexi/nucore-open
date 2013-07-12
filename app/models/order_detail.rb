@@ -9,6 +9,9 @@ class OrderDetail < ActiveRecord::Base
   # Used when ordering to override certain restrictions
   attr_accessor :being_purchased_by_admin
 
+  # So you can see what price policy was used in the price estimation
+  attr_reader :estimated_price_policy
+
   belongs_to :product
   belongs_to :price_policy
   belongs_to :statement, :inverse_of => :order_details
@@ -25,6 +28,11 @@ class OrderDetail < ActiveRecord::Base
   has_many   :stored_files, :dependent => :destroy
 
   delegate :user, :facility, :ordered_at, :to => :order
+  delegate :price_group, :to => :price_policy, :allow_nil => true
+  def estimated_price_group
+    estimated_price_policy.try(:price_group)
+  end
+
   delegate :journal_date, :to => :journal, :allow_nil => true
   def statement_date
     statement.try(:created_at)
@@ -39,6 +47,7 @@ class OrderDetail < ActiveRecord::Base
   validates_numericality_of :quantity, :only_integer => true, :greater_than_or_equal_to => 1
   validates_numericality_of :actual_cost, :greater_than_or_equal_to => 0, :if => lambda { |o| o.actual_cost_changed? && !o.actual_cost.nil?}
   validates_numericality_of :actual_subsidy, :greater_than_or_equal_to => 0, :if => lambda { |o| o.actual_subsidy_changed? && !o.actual_cost.nil?}
+  validates_numericality_of :actual_total, :greater_than_or_equal_to => 0, :allow_nil => true
   validates_presence_of :dispute_reason, :if => :dispute_at
   validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, :if => :dispute_resolved_reason || :dispute_resolved_at
   # only do this validation if it hasn't been ordered yet. Update errors caused by notification sending
@@ -525,8 +534,9 @@ class OrderDetail < ActiveRecord::Base
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
 
-    pp = product.cheapest_price_policy(self, date)
-    assign_estimated_price_from_policy pp
+
+    @estimated_price_policy = product.cheapest_price_policy(self, date)
+    assign_estimated_price_from_policy @estimated_price_policy
   end
 
   def assign_estimated_price!(second_account=nil, date = Time.zone.now)
