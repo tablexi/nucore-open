@@ -309,6 +309,43 @@ describe OrderManagement::OrderDetailsController do
         expect(assigns(:order_detail).errors).to include(:actual_total)
       end
     end
+
+    describe 'resolving dispute' do
+      before :each do
+        order_detail.change_status!(OrderStatus.complete.first)
+        order_detail.update_attributes(:reviewed_at => Time.zone.now, :dispute_at => Time.zone.now, :dispute_reason => 'silly reason')
+        @params[:order_detail] = {}
+      end
+
+      context 'checked' do
+        before :each do
+          @params[:order_detail][:resolve_dispute] = '1'
+        end
+
+        it 'resolves the dispute if checked and noted' do
+          @params[:order_detail][:dispute_resolved_reason] = 'dispute resolved'
+          do_request
+          expect(assigns(:order_detail).dispute_resolved_at).to be
+          expect(order_detail.reload.dispute_resolved_at).to be
+          expect(order_detail.dispute_resolved_reason).to eq('dispute resolved')
+        end
+
+        it 'errors if checked and not noted' do
+          @params[:order_detail][:dispute_resolved_reason] = ''
+          do_request
+          expect(response).to render_template(:edit)
+          expect(assigns(:order_detail).errors).to include(:dispute_resolved_reason)
+          expect(assigns(:order_detail).dispute_resolved_at).to be_nil
+        end
+      end
+
+      it 'does not resolve if not checked' do
+        @params[:order_detail][:resolve_dispute] = "0"
+        do_request
+        expect(assigns(:order_detail).dispute_resolved_at).to be_nil
+        expect(order_detail.reload.dispute_resolved_at).to be_nil
+      end
+    end
   end
 
   describe 'pricing' do

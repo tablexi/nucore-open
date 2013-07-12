@@ -12,6 +12,11 @@ class OrderDetail < ActiveRecord::Base
   # So you can see what price policy was used in the price estimation
   attr_reader :estimated_price_policy
 
+  # Used to mark a dispute as resolved
+  attr_accessor :resolve_dispute
+  before_validation :mark_dispute_resolved, :if => :resolve_dispute
+  after_validation :reset_dispute
+
   belongs_to :product
   belongs_to :price_policy
   belongs_to :statement, :inverse_of => :order_details
@@ -49,7 +54,7 @@ class OrderDetail < ActiveRecord::Base
   validates_numericality_of :actual_subsidy, :greater_than_or_equal_to => 0, :if => lambda { |o| o.actual_subsidy_changed? && !o.actual_cost.nil?}
   validates_numericality_of :actual_total, :greater_than_or_equal_to => 0, :allow_nil => true
   validates_presence_of :dispute_reason, :if => :dispute_at
-  validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, :if => :dispute_resolved_reason || :dispute_resolved_at
+  validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, :if => Proc.new { dispute_resolved_reason.present? || dispute_resolved_at.present? }
   # only do this validation if it hasn't been ordered yet. Update errors caused by notification sending
   # were being triggered on orders where the orderer had been removed from the account.
   validate :account_usable_by_order_owner?, :if => lambda { |o| o.order.nil? or o.order.ordered_at.nil? }
@@ -590,6 +595,10 @@ class OrderDetail < ActiveRecord::Base
     dispute_at && dispute_resolved_at.nil? && !cancelled?
   end
 
+  def disputed?
+    dispute_at.present? && !cancelled?
+  end
+
   def cancel_reservation(canceled_by, order_status = OrderStatus.cancelled.first, admin_cancellation = false, admin_with_cancel_fee=false)
     res = self.reservation
     res.canceled_by = canceled_by.id
@@ -796,6 +805,24 @@ class OrderDetail < ActiveRecord::Base
     self.actual_cost = fee
     self.actual_subsidy = 0
     self.change_status!(fee > 0 ? OrderStatus.complete.first : order_status)
+  end
+
+  def mark_dispute_resolved
+    if resolve_dispute == true || resolve_dispute == '1'
+      self.dispute_resolved_at = Time.zone.now
+      self.reviewed_at         = Time.zone.now
+    else
+      resolve_dispute = '0'
+    end
+  end
+
+  def reset_dispute
+    if dispute_resolved_at_changed?
+      if errors.any?
+        self.dispute_resolved_at = dispute_resolved_at_was
+        self.reviewed_at         = reviewed_at_was
+      end
+    end
   end
 
 end

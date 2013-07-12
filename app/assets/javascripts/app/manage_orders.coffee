@@ -25,6 +25,7 @@ class OrderDetailManagement
     @init_price_updating()
     @init_cancel_fee_options()
     @init_reconcile_note()
+    @init_resolution_note()
     @disable_form() if @$element.hasClass('disabled')
 
   copyReservationTimeIntoActual: (e) ->
@@ -102,6 +103,17 @@ class OrderDetailManagement
       reconciled = $(this).find('option:selected').text() == 'Reconciled'
       $('.order_detail_reconciled_note').toggle(reconciled)
     .trigger('change')
+
+  init_resolution_note: ->
+    original_button_string = $('input[type=submit]').val()
+    $('#order_detail_dispute_resolved_reason').keyup ->
+      if $(this).val().length > 0
+        $('#order_detail_resolve_dispute').val('1')
+        $('input[type=submit]').val('Resolve Dispute')
+      else
+        $('#order_detail_resolve_dispute').val('0')
+        $('input[type=submit]').val(original_button_string)
+    .trigger('keyup')
 
 
 $ ->

@@ -1,0 +1,13 @@
+- if @order_detail.dispute_resolved_at
+  %h3= t('facility_order_details.edit.head.h3-2')
+  = banner_date_label @order_detail, :dispute_at
+  = banner_label      @order_detail, :dispute_reason
+  = banner_date_label @order_detail, :dispute_resolved_at
+  = banner_label      @order_detail, :dispute_resolved_reason
+- else
+  %h3= t('facility_order_details.edit.head.h3')
+  %p= t('facility_order_details.edit.instruct.dispute')
+  = f.input :resolve_dispute, :as => :hidden
+  = f.input :dispute_reason, :disabled => true, :input_html => { :class => 'note' }
+  = f.input :dispute_resolved_reason, :input_html => { :class => 'note' }
+
