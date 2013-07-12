@@ -22,6 +22,7 @@ vendor/engines/nucs/config/database.yml
 .*~
 *.swp
 .project
+.sass-cache/
 
 config/settings.local.yml
 config/settings/*.local.yml
