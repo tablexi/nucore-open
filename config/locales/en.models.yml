@@ -162,7 +162,9 @@ en:
         duration_mins: Reserve Duration
         actual_start_date: Actual Start
         actual_duration_mins: Actual Duration
-        canceled_by_user: Canceled By
+        canceled_by_user: Cancelled By
+        canceled_by: Cancelled By
+        canceled_at: Cancelled At
       statement:
         id: "Invoice #"
         created_by: Sent By
