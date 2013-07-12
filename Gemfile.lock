@@ -73,7 +73,7 @@ GEM
     ckeditor (4.0.4)
       mime-types
       orm_adapter
-    clockpunch (0.1.4)
+    clockpunch (0.1.6)
       coffee-script
       railties (~> 3.1)
       sass

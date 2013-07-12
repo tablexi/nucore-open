@@ -22,7 +22,7 @@
 }
 
 /* Generic Form Overrides */
-.edit_order_detail {
+.manage_order_detail {
   input[type=text],
   .input-prepend .add-on {
     padding: 1px 6px !important;
@@ -52,19 +52,21 @@
       margin-right: 1em;
     }
   }
+
   .time-select {
     select {
       width: 5em;
     }
   }
-  textarea {
-    height: 3em;
-    width: 100%;
+
+
+  .note {
+    width: 80%;
   }
 }
 
 /* Specific Form Overrides */
-.edit_order_detail {
+.manage_order_detail {
   .order_detail_order_status {
     float: left;
   }

@@ -152,6 +152,7 @@ en:
         actual_cost: Price
         actual_subsidy: Adjustment
         actual_total: Total
+        reconciled_note: Reconciliation Note
       journal:
         description: Notes
         journal_status: Status

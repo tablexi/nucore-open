@@ -24,6 +24,8 @@ class OrderDetailManagement
     @init_total_calcuating()
     @init_price_updating()
     @init_cancel_fee_options()
+    @init_reconcile_note()
+    @disable_form() if @$element.hasClass('disabled')
 
   copyReservationTimeIntoActual: (e) ->
     e.preventDefault()
@@ -80,15 +82,31 @@ class OrderDetailManagement
     $(cancel_box.data('connect')).change ->
       $('.cancel-fee-option').toggle(parseInt($(this).val()) == cancel_id)
 
+  disable_form: ->
+    form_elements = @$element.find('select,textarea,input')
+    form_elements.prop 'disabled', ->
+      !($(this).hasClass('js-always-enabled') || $(this).is('[type=submit]'))
+
+    # remove the submit button if all form elements are disabled
+    any_enabled = form_elements.filter(':not([type=submit])').is(':not(:disabled)')
+    form_elements.filter('[type=submit]').remove() unless any_enabled
+
+  init_reconcile_note: ->
     $('#order_detail_order_status_id').change ->
+      reconciled = $(this).find('option:selected').text() == 'Reconciled'
+      $('.order_detail_reconciled_note').toggle(reconciled)
+    .trigger('change')
 
 
 $ ->
+  prepare_form = ->
+    elem = $('form.manage_order_detail')
+    new OrderDetailManagement(elem) if elem.length > 0
+
   new AjaxModal('#order-management .order-detail', '#order-detail-modal', {
-    success: ->
-      new OrderDetailManagement($('#order-detail-modal .edit_order_detail'))
+    success: prepare_form
     })
 
-  $('.updated-order-detail').animateHighlight({ highlightClass: 'alert-info', solidDuration: 5000 })
+  prepare_form()
 
-  $('.timeinput').timeinput()
+  $('.updated-order-detail').animateHighlight({ highlightClass: 'alert-info', solidDuration: 5000 })
