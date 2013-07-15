@@ -277,7 +277,9 @@ en:
       head:
         h2: "Edit Order # %{order_number}"
         h3: "Resolve Dispute"
+        resolve_dispute: Resolve Dispute
         h3-2: "Dispute Information"
+        dispute_information: Dispute Information
         h3-5: "Bundle Summary"
       label:
         ordered:

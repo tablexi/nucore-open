@@ -132,6 +132,7 @@ en:
         created_by_user: Ordered By
         ordered_at: Ordered Date
       order_detail:
+        dispute_reason: Dispute Reason
         dispute_resolved_reason: Resolution Notes
         description: Description
         fulfilled_at: Fulfilled Date

@@ -54,10 +54,11 @@
 
       .span5
         = render :partial => 'assigned_user', :locals => { :f => f }
+
     - if @order_detail.disputed?
       .row
-        .span10
-          = render :partial => 'dispute', :locals => { :f => f }
+        = render :partial => 'dispute', :locals => { :f => f }
+
 
   .modal-footer
     = f.submit 'Save', :class => ['btn', 'btn-primary']
