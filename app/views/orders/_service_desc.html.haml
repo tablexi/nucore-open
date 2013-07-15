@@ -13,7 +13,7 @@
       = link_to 'Complete Online Order Form', survey.new_url(order_detail)
 
 - if order_detail.product.stored_files.template.count > 0
-  .order_action
+  .order-action
     - if order_detail.stored_files.template_result.empty?
       = link_to 'Upload Order Form', order_order_detail_order_file_path(order_detail.order, order_detail)
     - else

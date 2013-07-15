@@ -87,33 +87,10 @@ class FacilityOrdersController < ApplicationController
     if quantity <= 0
       flash[:notice] = I18n.t 'controllers.facility_orders.update.zero_quantity'
     else
-      if merge?(product)
-        @order=Order.create!(
-          :merge_with_order_id => original_order.id,
-          :facility_id => original_order.facility_id,
-          :account_id => original_order.account_id,
-          :user_id => original_order.user_id,
-          :created_by => current_user.id,
-          :ordered_at => Time.zone.now
-        )
-      end
+      if add_to_order(product, quantity)
 
-      begin
-        details = @order.add product, quantity
+      else
 
-        details.each do |d|
-          d.set_default_status!
-
-          if @order.to_be_merged? && ((d.product.is_a?(Instrument) && !d.valid_reservation?) || (d.product.is_a?(Service) && !d.valid_service_meta?))
-            MergeNotification.create_for! current_user, d
-          end
-        end
-
-        flash[:notice] = I18n.t 'controllers.facility_orders.update.success', :product => product.name
-      rescue Exception => e
-        Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-        order.destroy if @order != original_order
-        flash[:error] = I18n.t 'controllers.facility_orders.update.error', :product => product.name
       end
     end
 
@@ -130,6 +107,43 @@ class FacilityOrdersController < ApplicationController
     end
 
     false
+  end
+
+  def add_to_order(product, quantity)
+    @order = build_merge_order if merge?(product)
+
+    begin
+      details = @order.add product, quantity
+      notifications = false
+      details.each do |d|
+        d.set_default_status!
+        if @order.to_be_merged? && !d.valid_for_purchase?
+          notifications = true
+          MergeNotification.create_for! current_user, d
+        end
+      end
+
+      if notifications
+        flash[:error] = I18n.t 'controllers.facility_orders.update.notices', :product => product.name
+      else
+        flash[:notice] = I18n.t 'controllers.facility_orders.update.success', :product => product.name
+      end
+    rescue Exception => e
+      Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
+      order.destroy if @order != original_order
+      flash[:error] = I18n.t 'controllers.facility_orders.update.error', :product => product.name
+    end
+  end
+
+  def build_merge_order
+    Order.create!(
+      :merge_with_order_id => @order.id,
+      :facility_id => @order.facility_id,
+      :account_id => @order.account_id,
+      :user_id => @order.user_id,
+      :created_by => current_user.id,
+      :ordered_at => Time.zone.now
+    )
   end
 
   def load_order

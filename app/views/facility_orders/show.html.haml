@@ -10,6 +10,8 @@
     - if @merge_orders.blank?
       .pull-right= render :partial => 'send_receipt'
 
+= render :partial => 'merge_order'
+
 %table.order-list.table.table-striped.table-hover#order-management
   %thead
     %tr
@@ -57,7 +59,7 @@
         %td.currency= od.wrapped_total
         %td.badges= order_detail_badges(od)
 
-= render :partial => 'merge_order'
+= render :partial => 'merge_order_form'
 
 #order-detail-modal.modal.hide.fade
 

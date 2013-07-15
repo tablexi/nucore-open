@@ -35,7 +35,7 @@ describe FacilityOrdersController do
         it "should not blow up for sort by #{sort}" do
           @params[:sort] = sort
           do_request
-          response.should be_success          
+          response.should be_success
           assigns[:order_details].should_not be_nil
           assigns[:order_details].first.should_not be_nil
         end
@@ -157,10 +157,10 @@ describe FacilityOrdersController do
 
       context 'with instrument' do
         before :each do
-          @instrument=FactoryGirl.create(:instrument, 
+          @instrument=FactoryGirl.create(:instrument,
                                            :facility => @authable,
-                                           :facility_account => @facility_account, 
-                                           :min_reserve_mins => 60, 
+                                           :facility_account => @facility_account,
+                                           :min_reserve_mins => 60,
                                            :max_reserve_mins => 60)
           @params[:product_add]=@instrument.id
         end
@@ -232,7 +232,7 @@ describe FacilityOrdersController do
 
         context 'has instrument' do
           before :each do
-            @instrument = FactoryGirl.create(:instrument, 
+            @instrument = FactoryGirl.create(:instrument,
                                                 :facility => @authable,
                                                 :facility_account => @facility_account,
                                                 :min_reserve_mins => 60,
@@ -301,7 +301,12 @@ describe FacilityOrdersController do
         order_detail.order_status.should == OrderStatus.default_order_status
       end
 
-      flash[:notice].should be_present
+      if order.to_be_merged?
+        flash[:error].should be_present
+      else
+        flash[:notice].should be_present
+      end
+
       assert_redirected_to edit_facility_order_path(@authable, order.to_be_merged? ? order.merge_order : order)
     end
 
@@ -334,7 +339,7 @@ describe FacilityOrdersController do
       @method = :get
       @action = :tab_counts
       @order_detail2=FactoryGirl.create(:order_detail, :order => @order, :product => @product)
-      
+
       @authable.order_details.non_reservations.new_or_inprocess.size.should == 2
 
       @problem_order_details = (1..3).map do |i|
@@ -342,7 +347,7 @@ describe FacilityOrdersController do
         order_detail.update_attributes(:price_policy_id => nil)
         order_detail
       end
-      
+
 
       @disputed_order_details = (1..4).map do |i|
         order_detail = place_and_complete_item_order(@staff, @authable)
@@ -359,7 +364,7 @@ describe FacilityOrdersController do
     end
 
     it_should_allow_operators_only {}
-    
+
     context 'signed in' do
       before :each do
         maybe_grant_always_sign_in :director

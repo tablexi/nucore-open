@@ -2,6 +2,13 @@
   max-height: 800px;
 }
 
+.order-action {
+  margin-top: 1em;
+  a {
+    @extend .btn;
+  }
+}
+
 #order-detail-modal {
   width: 1000px;
   /* must be half of the width, minus scrollbar on the left (30px) */
@@ -19,6 +26,13 @@
       margin-left: 0;
     }
   }
+}
+
+#product_add_quantity {
+  width: 3em;
+}
+#product_add_chzn {
+  top: -3px;
 }
 
 /* Generic Form Overrides */
@@ -95,7 +109,6 @@
   }
 }
 
-
 /* Order Management Page */
 table.order-list {
   tr.child {
@@ -115,7 +128,6 @@ table.order-list {
       text-align: left;
     }
   }
-
 
   th.currency,
   th.time,
