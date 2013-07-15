@@ -129,4 +129,5 @@ $ ->
 
   $('.updated-order-detail').animateHighlight({ highlightClass: 'alert-info', solidDuration: 5000 })
 
+  $('.timeinput').timeinput();
   $('#product_add').chosen();
