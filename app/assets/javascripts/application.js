@@ -10,6 +10,7 @@
 //= require jquery.ui.dialog
 //= require jquery.ui.effect
 //= require bootstrap
+//= require chosen.jquery.min
 //= require _common
 //= require date
 //= require_tree ./app
