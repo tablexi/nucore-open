@@ -37,7 +37,7 @@
     .box_no_fill.margin_bottom
       %h3= t('.head.h3')
       %p= t('.instruct.dispute')
-      = form_for(:order_detail, @order_detail, :url => order_order_detail_path, :html => {:method => :put}) do |f|
+      = form_for(@order_detail, :url => order_order_detail_path, :html => {:method => :put}) do |f|
         = f.error_messages
         %ul.form
           %li
