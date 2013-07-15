@@ -9,8 +9,6 @@ module C2po
       end
     end
 
-
-
     def account_class_params
       params[:account] || params[:credit_card_account] || params[:purchase_order_account] || params[:nufs_account]
     end
@@ -18,10 +16,10 @@ module C2po
     def configure_new_account(account)
       case account
         when PurchaseOrderAccount
-          account.expires_at=parse_usa_date(account.expires_at)
+          account.expires_at = parse_usa_date(account.expires_at).end_of_day
         when CreditCardAccount
           begin
-            account.expires_at = Date.civil(account.expiration_year.to_i, account.expiration_month.to_i, -1)
+            account.expires_at = Date.civil(account.expiration_year.to_i, account.expiration_month.to_i).end_of_month.end_of_day
           rescue Exception => e
              account.errors.add(:base, e.message)
           end
