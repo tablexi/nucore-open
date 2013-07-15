@@ -199,9 +199,9 @@ describe BundlesController do
   context 'create' do
 
     before(:each) do
-      @method=:post
-      @action=:create
-      @params={ :facility_id => @authable.url_name, :bundle => FactoryGirl.attributes_for(:bundle) }
+      @method = :post
+      @action = :create
+      @params = { :facility_id => @authable.url_name, :bundle => FactoryGirl.attributes_for(:bundle) }
     end
 
     it_should_require_login
@@ -210,6 +210,7 @@ describe BundlesController do
       expect(assigns(:bundle)).to be_kind_of Bundle
       assigns(:bundle).initial_order_status_id.should == OrderStatus.default_order_status.id
       assigns(:bundle).requires_approval.should == false
+      assigns(:bundle).should be_persisted
       should set_the_flash
       assert_redirected_to [ :manage, @authable, assigns(:bundle) ]
     end
