@@ -1,14 +1,1 @@
-- order=local_assigns[:local_order] || @order
-%ul
-  %li
-    - if order_detail.bundle
-      = link_to order_detail.bundle, facility_bundle_path(order_detail.bundle.facility, order_detail.bundle)
-      == &ndash;
-
-    - if order_detail.product.is_hidden?
-      = order_detail.product
-    - else
-      = link_to order_detail.product, self.send("facility_#{order_detail.product.class.name.underscore}_path", order_detail.product.facility, order_detail.product)
-
-  - if !order.validated? && order_detail.validate_for_purchase
-    %li.warning=h order_detail.validate_for_purchase
+= render :partial => 'orders/product_description', :locals => { :order_detail => order_detail }

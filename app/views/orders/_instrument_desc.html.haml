@@ -1,19 +1,7 @@
-- order=local_assigns[:local_order] || @order
-%ul
-  %li
-    - if order_detail.bundle
-      = link_to order_detail.bundle, facility_bundle_path(order_detail.bundle.facility, order_detail.bundle)
-      == &ndash;
+= render :partial => 'orders/product_description', :locals => { :order_detail => order_detail }
 
-    - if order_detail.product.is_hidden?
-      = order_detail.product
-    - else
-      = link_to order_detail.product, self.send("facility_#{order_detail.product.class.name.underscore}_path", order_detail.product.facility, order_detail.product)
-
-  - unless order.validated?
-    %li.warning=h order_detail.validate_for_purchase
-
+.order-action
   - if order_detail.reservation
-    %li.indented= link_to(order_detail.reservation, edit_order_order_detail_reservation_path(order, order_detail, order_detail.reservation))
+    = link_to order_detail.reservation, edit_order_order_detail_reservation_path(order_detail.order, order_detail, order_detail.reservation)
   - else
-    %li.indented= link_to('Make a Reservation', new_order_order_detail_reservation_path(order, order_detail))
+    = link_to 'Make a Reservation', new_order_order_detail_reservation_path(order_detail.order, order_detail)
