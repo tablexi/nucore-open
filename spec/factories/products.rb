@@ -33,6 +33,7 @@ FactoryGirl.define do
     end
 
     factory :bundle, :class => Bundle do
+      account nil # bundles don't have accounts
       sequence(:name) {|n| "Bundle #{n}" }
       sequence(:url_name) {|n| "bundle-#{n}" }
     end

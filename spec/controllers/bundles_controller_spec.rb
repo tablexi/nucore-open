@@ -9,7 +9,7 @@ describe BundlesController do
     @authable=FactoryGirl.create(:facility)
     @facility_account=FactoryGirl.create(:facility_account, :facility => @authable)
     @bundle=FactoryGirl.create(:bundle, :facility_account => @facility_account, :facility => @authable)
-    
+
     # Create at least one item in the bundle, otherwise bundle.can_purchase? will return false
     item = FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
     price_policy = item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group => @nupg))
@@ -64,7 +64,7 @@ describe BundlesController do
       assigns[:add_to_cart].should be_false
       assigns[:error].should == 'not_available'
       flash[:notice].should_not be_nil
-      
+
     end
 
     it "should fail without a valid account" do
@@ -74,14 +74,14 @@ describe BundlesController do
       assigns[:add_to_cart].should be_false
       assigns[:error].should == 'no_accounts'
     end
-    
+
     it 'should falsify @add_to_cart if #acting_user is nil' do
       BundlesController.any_instance.stub(:acting_user).and_return(nil)
       do_request
       assigns[:add_to_cart].should be_false
       assigns[:login_required].should be_true
     end
-    
+
     it 'should flash and falsify @add_to_cart if user is not approved' do
       nufs=create_nufs_account_with_owner :guest
       define_open_account @bundle.products.first.account, nufs.account_number
@@ -94,7 +94,7 @@ describe BundlesController do
       assigns[:error].should == 'requires_approval'
       flash[:notice].should_not be_nil
     end
-        
+
     it 'should flash and falsify @add_to_cart if there is no price group for user to purchase through' do
       nufs=create_nufs_account_with_owner :guest
       define_open_account @bundle.products.first.account, nufs.account_number
@@ -105,11 +105,11 @@ describe BundlesController do
       assigns[:error].should == 'not_in_price_group'
       flash[:notice].should_not be_nil
     end
-    
+
     it 'should flash and falsify @add_to_cart if user is not authorized to purchase on behalf of another user' do
       sign_in @guest
       switch_to @staff
-      
+
       do_request
       assigns[:add_to_cart].should be_false
       assigns[:error].should == 'not_authorized_acting_as'
@@ -123,7 +123,7 @@ describe BundlesController do
       should_not set_the_flash
       should render_template('show')
     end
-    
+
     context "restricted bundle" do
       before :each do
         @bundle.update_attributes(:requires_approval => true)
@@ -135,7 +135,7 @@ describe BundlesController do
         assigns[:add_to_cart].should be_false
         flash[:notice].should_not be_nil
       end
-      
+
       it "should not show a notice and show an add to cart" do
         @product_user = ProductUser.create(:product => @bundle, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
         nufs=create_nufs_account_with_owner :guest
@@ -145,7 +145,7 @@ describe BundlesController do
         flash.should be_empty
         assigns[:add_to_cart].should be_true
       end
-      
+
       it "should allow an admin to allow it to add to cart" do
         nufs=create_nufs_account_with_owner :admin
         define_open_account @bundle.products.first.account, nufs.account_number
@@ -199,9 +199,9 @@ describe BundlesController do
   context 'create' do
 
     before(:each) do
-      @method=:post
-      @action=:create
-      @params={ :facility_id => @authable.url_name, :bundle => FactoryGirl.attributes_for(:bundle) }
+      @method = :post
+      @action = :create
+      @params = { :facility_id => @authable.url_name, :bundle => FactoryGirl.attributes_for(:bundle) }
     end
 
     it_should_require_login
@@ -210,6 +210,7 @@ describe BundlesController do
       should assign_to(:bundle).with_kind_of(Bundle)
       assigns(:bundle).initial_order_status_id.should == OrderStatus.default_order_status.id
       assigns(:bundle).requires_approval.should == false
+      assigns(:bundle).should be_persisted
       should set_the_flash
       assert_redirected_to [ :manage, @authable, assigns(:bundle) ]
     end
