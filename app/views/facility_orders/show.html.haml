@@ -7,6 +7,8 @@
     = banner_date_label @order, :ordered_at
     = banner_label @order, :user
     = banner_label @order, :created_by_user
+    - if @merge_orders.blank?
+      .pull-right= render :partial => 'send_receipt'
 
 %table.order-list.table.table-striped.table-hover#order-management
   %thead
