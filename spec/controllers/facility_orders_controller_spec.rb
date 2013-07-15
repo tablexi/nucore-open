@@ -114,7 +114,7 @@ describe FacilityOrdersController do
       @method=:post
       @action=:send_receipt
       @params.merge! :id => @order.id
-      request.env['HTTP_REFERRER']=edit_facility_order_path @authable, @order
+      request.env['HTTP_REFERRER']=facility_order_path @authable, @order
       ActionMailer::Base.deliveries.clear
     end
 
@@ -124,7 +124,7 @@ describe FacilityOrdersController do
       mail=ActionMailer::Base.deliveries.first
       mail.subject.should == I18n.t('notifier.order_receipt.subject')
       mail.from.first.should == Settings.email.from
-      assert_redirected_to edit_facility_order_path(@authable, @order)
+      assert_redirected_to facility_order_path(@authable, @order)
     end
   end
 
@@ -142,7 +142,7 @@ describe FacilityOrdersController do
 
     it_should_allow_operators_only :redirect, 'to submit product quantity 0 and get failure notice' do
       flash[:notice].should be_present
-      assert_redirected_to edit_facility_order_path(@authable, @order)
+      assert_redirected_to facility_order_path(@authable, @order)
     end
 
     context 'with quantity' do
@@ -307,7 +307,7 @@ describe FacilityOrdersController do
         flash[:notice].should be_present
       end
 
-      assert_redirected_to edit_facility_order_path(@authable, order.to_be_merged? ? order.merge_order : order)
+      assert_redirected_to facility_order_path(@authable, order.to_be_merged? ? order.merge_order : order)
     end
 
     def assert_no_merge_order original_order, product, detail_count=1

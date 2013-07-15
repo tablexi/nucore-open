@@ -44,7 +44,7 @@
           - order = od.order
           %tr
             %td.centered= check_box_tag("order_detail_ids[]", od.id, false, {:class => 'toggle', :id => nil })
-            %td.centered= link_to od, edit_facility_order_order_detail_path(current_facility, order, od)
+            %td.centered= link_to od, facility_order_path(current_facility, order)
             %td=h human_datetime(order.ordered_at)
             %td= order.user.full_name
             %td.centered= od.quantity

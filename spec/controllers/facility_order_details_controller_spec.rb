@@ -198,7 +198,7 @@ describe FacilityOrderDetailsController do
 
     context 'from summary' do
       before :each do
-        @path=edit_facility_order_path(@authable, @order)
+        @path=facility_order_path(@authable, @order)
         @params[:return_to]=@path
         @params[:order_detail]={
           :order_status_id => OrderStatus.new_os.first.id,
@@ -320,7 +320,7 @@ describe FacilityOrderDetailsController do
     it_should_allow_operators_only :redirect do
       @order_detail.reload.journal.should be_nil
       should set_the_flash
-      assert_redirected_to edit_facility_order_order_detail_path(@authable, @order_detail.order, @order_detail)
+      assert_redirected_to facility_order_path(@authable, @order_detail.order)
     end
 
   end
@@ -335,7 +335,7 @@ describe FacilityOrderDetailsController do
     it_should_allow_operators_only :redirect do
       flash[:notice].should be_present
       @order_detail.reload.should_not be_frozen
-      assert_redirected_to edit_facility_order_path(@authable, @order)
+      assert_redirected_to facility_order_path(@authable, @order)
     end
 
     context 'merge order' do
@@ -348,7 +348,7 @@ describe FacilityOrderDetailsController do
       it_should_allow :director, 'to destroy a detail that is part of a merge order' do
         assert_raises(ActiveRecord::RecordNotFound) { OrderDetail.find @order_detail.id }
         flash[:notice].should be_present
-        assert_redirected_to edit_facility_order_path(@authable, @clone)
+        assert_redirected_to facility_order_path(@authable, @clone)
       end
     end
   end

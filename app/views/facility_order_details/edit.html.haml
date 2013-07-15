@@ -86,7 +86,7 @@
   .grid_6.alpha
     %ul.form
       %li
-        %label= link_to t('.label.ordered.summary', :order_number => @order.id), edit_facility_order_path(current_facility, @order)
+        %label= link_to t('.label.ordered.summary', :order_number => @order.id), facility_order_path(current_facility, @order)
       %li
         %label= t('.label.ordered.at')
         =h human_datetime(@order.ordered_at)
@@ -277,7 +277,7 @@
       - @order.order_details.find(:all, :conditions => {:group_id => @order_detail.group_id}).each do |od|
         - product_name = order_detail_description(od)
         %tr
-          %td= link_to od, edit_facility_order_order_detail_path(current_facility, @order, od)
+          %td= link_to od, facility_order_path(current_facility, @order)
           %td= od.quantity
           %td= product_name
           %td=h od.order_status

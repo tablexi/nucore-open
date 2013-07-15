@@ -23,7 +23,7 @@
         - o = od.order
         - product_name = order_detail_description(od)
         %tr
-          %td= link_to od, edit_facility_order_order_detail_path(current_facility, o, od)
+          %td= link_to od, facility_order_path(current_facility, o)
           %td=h human_datetime(o.ordered_at)
           %td=h User.find(o.created_by).full_name
           %td=h User.find(o.user_id).full_name

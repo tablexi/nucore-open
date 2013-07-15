@@ -19,8 +19,7 @@ def it_should_have_admin_edit_paths
   render_views
   it 'should have link to the admin path' do
     get :index, :search => order.id.to_s
-    response.body.should include edit_facility_order_order_detail_path(order_detail.facility, order_detail.order, order_detail)
-    response.body.should include edit_facility_order_path(order.facility, order)
+    response.body.should include facility_order_path(order_detail.facility, order_detail.order)
   end
 end
 

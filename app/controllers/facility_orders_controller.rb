@@ -74,7 +74,7 @@ class FacilityOrdersController < ApplicationController
     begin
       redirect_to :back
     rescue ActionController::RedirectBackError
-      redirect_to @order ? edit_facility_order_path(current_facility, @order) : root_path
+      redirect_to @order ? facility_order_path(current_facility, @order) : root_path
     end
   end
 
@@ -94,7 +94,7 @@ class FacilityOrdersController < ApplicationController
       end
     end
 
-    redirect_to edit_facility_order_path(current_facility, original_order)
+    redirect_to facility_order_path(current_facility, original_order)
   end
 
   private

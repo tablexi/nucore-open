@@ -9,7 +9,7 @@ class FacilityOrderDetailsController < ApplicationController
 
   include FacilityOrderStatusHelper
   helper_method :new_or_in_process_orders, :problem_orders, :disputed_orders
-  
+
   def initialize
     @active_tab = 'admin_orders'
     super
@@ -149,7 +149,7 @@ class FacilityOrderDetailsController < ApplicationController
     end
 
     flash[:notice]=I18n.t 'controllers.facility_order_details.remove_from_journal.notice'
-    redirect_to edit_facility_order_order_detail_path(current_facility, od.order, od)
+    redirect_to facility_order_path(current_facility, od.order)
   end
 
 
@@ -164,12 +164,12 @@ class FacilityOrderDetailsController < ApplicationController
       end
     else
       flash[:notice]=I18n.t 'controllers.facility_order_details.destroy.notice'
-      return redirect_to edit_facility_order_path(current_facility, @order)
+      return redirect_to facility_order_path(current_facility, @order)
     end
 
-    redirect_to edit_facility_order_path(current_facility, @order.merge_order)
+    redirect_to facility_order_path(current_facility, @order.merge_order)
   end
-  
+
 
   private
 

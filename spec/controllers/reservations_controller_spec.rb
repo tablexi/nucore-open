@@ -298,7 +298,7 @@ describe ReservationsController do
       end
 
       it_should_allow :director, 'to create a reservation on merge order detail and redirect to order summary when merge order is destroyed' do
-        assert_redirected_to edit_facility_order_path(@authable, @merge_to_order)
+        assert_redirected_to facility_order_path(@authable, @merge_to_order)
         assert_raises(ActiveRecord::RecordNotFound) { Order.find @order }
       end
 
@@ -310,7 +310,7 @@ describe ReservationsController do
         end
 
         it_should_allow :director, 'to create a reservation on merge order detail and redirect to order summary when merge order is not destroyed' do
-          assert_redirected_to edit_facility_order_path(@authable, @merge_to_order)
+          assert_redirected_to facility_order_path(@authable, @merge_to_order)
           assert_nothing_raised { Order.find @order }
         end
       end
@@ -323,7 +323,7 @@ describe ReservationsController do
         it_should_allow_all facility_operators, 'to create a reservation in the past and have it be complete' do
           assigns(:reservation).errors.should be_empty
           assigns(:order_detail).state.should == 'complete'
-          response.should redirect_to edit_facility_order_path(@authable, @merge_to_order)
+          response.should redirect_to facility_order_path(@authable, @merge_to_order)
         end
 
         context 'and there is no price policy' do
@@ -346,7 +346,7 @@ describe ReservationsController do
         it_should_allow_all facility_operators, 'to create a reservation in the future' do
           assigns(:reservation).errors.should be_empty
           assigns(:order_detail).state.should == 'new'
-          response.should redirect_to edit_facility_order_path(@authable, @merge_to_order)
+          response.should redirect_to facility_order_path(@authable, @merge_to_order)
         end
       end
     end

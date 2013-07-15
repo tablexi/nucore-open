@@ -128,7 +128,7 @@ class ReservationsController < ApplicationController
           # The purchase_order_path or cart_path will handle the backdating, but we need
           # to do this here for merged reservations.
           backdate_reservation_if_necessary
-          redirect_to edit_facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
+          redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
         elsif @order_detail.product.is_a?(Instrument) && @order.order_details.count == 1
           redirect_params = {}
           redirect_params[:send_notification] = '1' if params[:send_notification] == '1'
@@ -194,7 +194,7 @@ class ReservationsController < ApplicationController
 
         flash[:notice] = 'The reservation was successfully updated.'
         if mergeable
-          redirect_to edit_facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
+          redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
         else
           redirect_to (@order.purchased? ? reservations_path : cart_path)
         end
