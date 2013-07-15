@@ -9,7 +9,7 @@
 
 %h2=h @service
 
-= form_for([current_facility, @service]) do |f|
+= simple_form_for([current_facility, @service]) do |f|
   = f.error_messages
   %ul.form
     = render :partial => 'admin/shared/product_details_fields', :locals => {:f => f}

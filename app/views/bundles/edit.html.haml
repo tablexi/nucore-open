@@ -8,7 +8,7 @@
 
 %h2=h @bundle
 
-= form_for([current_facility, @bundle]) do |f|
+= simple_form_for([current_facility, @bundle]) do |f|
   = f.error_messages
   %ul.form
     %li= render :partial => 'admin/shared/product_details_fields', :locals => {:f => f}
