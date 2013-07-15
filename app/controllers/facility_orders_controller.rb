@@ -87,11 +87,7 @@ class FacilityOrdersController < ApplicationController
     if quantity <= 0
       flash[:notice] = I18n.t 'controllers.facility_orders.update.zero_quantity'
     else
-      if add_to_order(product, quantity)
-
-      else
-
-      end
+      add_to_order(product, quantity)
     end
 
     redirect_to facility_order_path(current_facility, original_order)
@@ -102,11 +98,9 @@ class FacilityOrdersController < ApplicationController
   def merge?(product)
     products=product.is_a?(Bundle) ? product.products : [ product ]
 
-    products.each do |p|
-      return true if p.is_a?(Instrument) || (p.is_a?(Service) && (p.active_survey? || p.active_template?))
+    products.any? do |p|
+      p.is_a?(Instrument) || (p.is_a?(Service) && (p.active_survey? || p.active_template?))
     end
-
-    false
   end
 
   def add_to_order(product, quantity)
