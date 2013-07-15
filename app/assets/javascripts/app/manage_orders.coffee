@@ -128,3 +128,5 @@ $ ->
   prepare_form()
 
   $('.updated-order-detail').animateHighlight({ highlightClass: 'alert-info', solidDuration: 5000 })
+
+  $('#product_add').chosen();

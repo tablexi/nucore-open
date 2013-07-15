@@ -1,0 +1,6 @@
+- if @merge_orders.blank?
+  = form_for [current_facility, @order], :method => :put do |f|
+    = text_field_tag :product_add_quantity, 1
+    = select_tag :product_add, options_for_select(current_facility.products.active_plus_hidden.collect{|p| [ p.name, p.id ]}), :class => 'chosen'
+    %br
+    = submit_tag 'Add To Order', :class => 'btn', :id => :product_add_btn

@@ -8,6 +8,9 @@ class FacilityOrdersController < ApplicationController
 
   load_and_authorize_resource :class => Order
 
+  before_filter :load_order, :only => [:edit, :show, :update, :send_receipt]
+  before_filter :load_merge_orders, :only => [:edit, :show]
+
   helper_method :sort_column, :sort_direction
 
   include FacilityOrderStatusHelper
@@ -39,17 +42,12 @@ class FacilityOrdersController < ApplicationController
 
   # GET /facilities/example/orders/2/edit
   def edit
-    @order = current_facility.orders.find params[:id]
     @order_details = @order.order_details.paginate(:page => params[:page])
-    @merge_orders = Order.where(:merge_with_order_id => @order.id, :created_by => current_user.id).all
   end
 
   def show
-    @order = current_facility.orders.find params[:id]
     @order_details = @order.order_details.ordered_by_parents
     @order_details = @order_details.includes(:reservation, :order_status, :product, :order)
-
-    @merge_orders = Order.where(:merge_with_order_id => @order.id, :created_by => current_user.id).all
   end
 
   ## POST /facilities/:facility_id/orders/batch_update
@@ -67,7 +65,6 @@ class FacilityOrdersController < ApplicationController
 
   def send_receipt
     begin
-      @order = current_facility.orders.find params[:id]
       Notifier.order_receipt(:order => @order, :user => @order.user ).deliver
       flash[:notice]="Receipt sent successfully."
     rescue => e
@@ -83,15 +80,15 @@ class FacilityOrdersController < ApplicationController
 
 
   def update
-    product=Product.find(params[:product_add].to_i)
-    order=original_order=Order.find(params[:id].to_i)
-    quantity=params[:product_add_quantity].to_i
+    product = Product.find(params[:product_add].to_i)
+    original_order = @order
+    quantity = params[:product_add_quantity].to_i
 
     if quantity <= 0
-      flash[:notice]=I18n.t 'controllers.facility_orders.update.zero_quantity'
+      flash[:notice] = I18n.t 'controllers.facility_orders.update.zero_quantity'
     else
       if merge?(product)
-        order=Order.create!(
+        @order=Order.create!(
           :merge_with_order_id => original_order.id,
           :facility_id => original_order.facility_id,
           :account_id => original_order.account_id,
@@ -102,21 +99,21 @@ class FacilityOrdersController < ApplicationController
       end
 
       begin
-        details=order.add product, quantity
+        details = @order.add product, quantity
 
         details.each do |d|
           d.set_default_status!
 
-          if order.to_be_merged? && ((d.product.is_a?(Instrument) && !d.valid_reservation?) || (d.product.is_a?(Service) && !d.valid_service_meta?))
+          if @order.to_be_merged? && ((d.product.is_a?(Instrument) && !d.valid_reservation?) || (d.product.is_a?(Service) && !d.valid_service_meta?))
             MergeNotification.create_for! current_user, d
           end
         end
 
-        flash[:notice]=I18n.t 'controllers.facility_orders.update.success', :product => product.name
+        flash[:notice] = I18n.t 'controllers.facility_orders.update.success', :product => product.name
       rescue Exception => e
         Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-        order.destroy if order != original_order
-        flash[:error]=I18n.t 'controllers.facility_orders.update.error', :product => product.name
+        order.destroy if @order != original_order
+        flash[:error] = I18n.t 'controllers.facility_orders.update.error', :product => product.name
       end
     end
 
@@ -133,5 +130,13 @@ class FacilityOrdersController < ApplicationController
     end
 
     false
+  end
+
+  def load_order
+    @order = current_facility.orders.find params[:id]
+  end
+
+  def load_merge_orders
+    @merge_orders = Order.where(:merge_with_order_id => @order.id, :created_by => current_user.id).all
   end
 end
