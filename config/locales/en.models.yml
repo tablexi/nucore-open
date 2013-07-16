@@ -110,6 +110,9 @@ en:
       facility:
         one: Facility
         other: Facilities
+      product:
+        one: Product
+        other: Products
       product_access_group: Scheduling Group
     # Model Attributes
     attributes:

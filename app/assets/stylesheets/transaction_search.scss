@@ -1,0 +1,29 @@
+/***********************
+* Search forms
+*/
+.search_form {
+  fieldset#search {
+    input, select {
+      width: 100%;
+    }
+  }
+}
+.search_form input[type=submit] {
+  clear:both;
+  float:right;
+  margin-bottom: 0.5em;
+}
+
+.order_action {
+  overflow:hidden;
+  padding-bottom:10px;
+}
+
+.order_action div {
+  float:left;
+  width:50%;
+}
+
+.order_action .select_all_none,.order_action .submit {
+  width:25%;
+}
