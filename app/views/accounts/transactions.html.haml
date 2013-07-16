@@ -3,8 +3,9 @@
   Transaction History
 = content_for :tabnav do
   = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'transactions'}
-  %h2= @account.account_number
-  %p= @account.description
+  %header.account
+    %h3= @account.account_number
+    %p= @account.description
   %h3= @facility.name if @facility
 #header_billing.grid_9
   = render :partial => 'shared/transactions/search'
