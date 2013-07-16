@@ -21,7 +21,7 @@
               - unless od.note.blank?
                 %li
                   %i=h "Note: #{od.note}"
-        %td.centered=h od.order_status.name
+        %td.centered=h od.order_status.try(:name)
         %td.currency
           - od.send(:extend, PriceDisplayment)
           = od.wrapped_total
