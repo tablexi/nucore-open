@@ -62,3 +62,23 @@ footer .span8 {
   margin: 0;
   text-align: center;
 }
+
+.btn-add {
+  @extend .btn;
+  @extend .btn-success;
+}
+/*
+  Errors
+*/
+
+.errorExplanation {
+  @extend .alert;
+  @extend .alert-error;
+  @extend .alert-block;
+  h2 {
+    font-size: 16px;
+    line-height: 1em;
+    margin-top: 0;
+  }
+
+}
