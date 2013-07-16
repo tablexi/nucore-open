@@ -135,8 +135,10 @@ en:
         created_by_user: Ordered By
         ordered_at: Ordered Date
       order_detail:
+        dispute_at: Disputed At
         dispute_reason: Dispute Reason
         dispute_resolved_reason: Resolution Notes
+        dispute_resolved_at: Dispute Resolved At
         description: Description
         fulfilled_at: Fulfilled Date
         ordered_at: Ordered Date

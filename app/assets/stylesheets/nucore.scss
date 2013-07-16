@@ -67,10 +67,10 @@ footer .span8 {
   @extend .btn;
   @extend .btn-success;
 }
+
 /*
   Errors
 */
-
 .errorExplanation {
   @extend .alert;
   @extend .alert-error;
@@ -80,5 +80,5 @@ footer .span8 {
     line-height: 1em;
     margin-top: 0;
   }
-
 }
+

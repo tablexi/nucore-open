@@ -452,20 +452,11 @@ en:
     show:
       head:
         h1: "Order # %{order_number}"
-        h3: "Dispute Order"
-        h3-2: "Download Results"
+        dispute: "Dispute Order"
+        results: "Download Results"
       label:
         facility: "Facility"
         account: "Payment Source"
-        dispute:
-          at: "Disputed At"
-          reason: "Dispute Reason"
-          resolved_at: "Dispute Resolved At"
-          notes: "Dispute Resolution Notes"
-        ordered:
-          at: "Ordered At"
-          for: "Ordered For"
-          by: "Ordered By"
       instruct:
         dispute: "If you wish to dispute the charges for this purchase, please explain the issue with the charges and click \"Dispute Purchase\"."
       link:
