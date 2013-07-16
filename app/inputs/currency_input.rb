@@ -1,4 +1,4 @@
-class CurrencyInput < SimpleForm::Inputs::FileInput
+class CurrencyInput < SimpleForm::Inputs::Base
   include ActionView::Helpers::NumberHelper
 
   def input
