@@ -3,7 +3,8 @@
     %tr
       %th.centered Order #
       %th Ordered On
-      %th{ :colspan => 2 } Quantity / Product
+      %th Quantity
+      %th Product
       %th.centered Status
       %th.currency Total
   %tbody
@@ -14,14 +15,14 @@
         %td=h human_datetime(order.ordered_at)
         %td.centered=h od.quantity
         %td
-          %ul
+          %ul.unstyled
             %li
               - product_name = order_detail_description(od)
               = "#{h od.product.facility.abbreviation} / #{product_name}".html_safe
-              - unless od.note.blank?
-                %li
-                  %i=h "Note: #{od.note}"
-        %td.centered=h od.order_status.name
+            - unless od.note.blank?
+              %li
+                %i=h "Note: #{od.note}"
+        %td.centered=h od.order_status.try(:name)
         %td.currency
           - od.send(:extend, PriceDisplayment)
           = od.wrapped_total
