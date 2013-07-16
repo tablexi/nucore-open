@@ -1,9 +1,0 @@
-%li
-  %label= t('.label.type')
-  = @account.type_string
-%li
-  %label= t('.label.description')
-  = @account.description
-%li
-  %label= t('.label.expiration')
-  = human_datetime(@account.expires_at, :date_only => true)

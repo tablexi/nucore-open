@@ -581,14 +581,8 @@ en:
         search: "Search by name, NetID, or username"
 
   accounts:
-    nufs_account: Chart String
     show:
       head: "Payment Source Details"
-      label:
-        account: "Payment Source Number"
-        type: "Type"
-        description: "Description"
-        expiration: "Expiration"
 
   facilities:
     index:

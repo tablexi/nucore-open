@@ -1,0 +1,48 @@
+/*
+ header
+*/
+header .navbar-inner {
+  padding: 10px 0;
+}
+
+/*
+ nav
+*/
+nav ul.nav > li.active,
+nav ul.nav > li:hover {
+  border-top: 5px solid rgb(172, 166, 108);
+  margin-top: -5px;
+}
+
+/*
+ breadcrumb nav
+*/
+#breadcrumb {
+  font-size: 85%;
+  border-bottom: 1px solid #ddd;
+}
+#breadcrumb .breadcrumb {
+  margin: 1em 0;
+  padding: 0;
+  background: inherit;
+}
+
+/*
+ footer
+*/
+footer .container {
+  border-top: 1px solid #ddd;
+  padding-top: 1em;
+  margin-top: 5em;
+}
+
+footer .span8 {
+  font-size: 85%;
+  color: #919191;
+  text-align: right;
+  line-height: 75px;
+}
+
+.currency-input input {
+  width: 7em;
+}
