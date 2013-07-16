@@ -48,6 +48,7 @@ class OrderDetailsController < ApplicationController
   # GET /orders/:order_id/order_details/:id
   def show
     set_active_tab
+    @order_detail.send(:extend, PriceDisplayment)
   end
 
   def init_order_detail

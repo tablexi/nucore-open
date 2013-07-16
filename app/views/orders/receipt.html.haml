@@ -12,23 +12,13 @@
 - if reservation = @order.only_reservation
   %p= add_accessories_link(reservation)
 
-%ul.form
-  %li
-    %label= t('.label.facility')
-    =h @order.facility
-  %li
-    %label= t('.label.account')
-    - @accounts.each do |account|
-      =h account
-  %li
-    %label= t('.label.ordered.at')
-    =h human_datetime(@order.ordered_at)
-  %li
-    %label= t('.label.ordered.for')
-    =h @order.user.full_name
-  %li
-    %label= t('.label.ordered.by')
-    =h @order.created_by_user.full_name
+= readonly_form_for :order do |f|
+  = f.input :facility
+
+  = f.input :account, :input_html => { :value => @accounts.join(', ') }
+  = f.input :ordered_at
+  = f.input :user
+  = f.input :created_by_user
 
 %table.table.table-striped.table-hover
   %thead
@@ -45,12 +35,11 @@
       %tr
         - res = order_detail.reservation
         %td.centered= link_to order_detail, order_order_detail_path(@order, order_detail)
-        %td.centered=h order_detail.quantity
-        %td
-          %ul
-            %li= order_detail_description(order_detail)
-            - if res
-              %li.indented= res
+        %td.centered= order_detail.wrapped_quantity
+        %td.user-order-detail
+          .order-detail-description= order_detail_description(order_detail)
+          - if res
+            .order-detail-extra= res
         %td.currency=order_detail.wrapped_cost
         - if @order.has_subsidies?
           %td.currency= order_detail.wrapped_subsidy

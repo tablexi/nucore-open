@@ -6,7 +6,7 @@ class ReadonlyInput < SimpleForm::Inputs::Base
   def input
 
     template.content_tag :div, :class => 'readonly' do
-      value = object.send(attribute_name)
+      value = input_html_options[:value] || object.send(attribute_name)
       value = process_datetime(value) if value.class <= ActiveSupport::TimeWithZone
       value.send(options[:value_method] || :to_s)
     end
