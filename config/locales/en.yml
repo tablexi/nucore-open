@@ -742,9 +742,9 @@ en:
 
     search:
       main_html: "You may add a new external user by clicking <a href=\"%{link}\">Add a new external user</a>."
-      notice1: "The user could not be located in the university database.  Please make sure you typed the NetID correctly."
-      notice2: "No user information was found in the university databases."
-      notice3: "The following user was found.  Click \"Add User\" to allow this user access to NU Core."
+      netid_not_found: "The user could not be located in the university database.  Please make sure you typed the NetID correctly."
+      email_not_found: "No user information was found in the university databases."
+      found: "The following user was found.  Click \"Add User\" to allow this user access to NU Core."
       user_already_exists: The user %{username} already exists in NUCore
     accounts:
       h1: "%{user_name} Payment Sources"
