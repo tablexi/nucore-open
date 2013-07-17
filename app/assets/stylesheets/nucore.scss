@@ -39,6 +39,16 @@ nav ul.nav > li:hover {
 }
 
 /*
+  Sidebar navigation
+*/
+.sidebar-nav {
+  @extend .well;
+  @extend .well-small;
+  @extend .nav;
+  @extend .nav-list;
+}
+
+/*
  footer
 */
 footer .container {

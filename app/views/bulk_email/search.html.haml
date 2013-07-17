@@ -13,5 +13,4 @@
   = render :partial =>'results'
 - elsif @users
   .clear
-  .notice= t('bulk_email.no_results')
-  
+  .alert.alert-info= t('bulk_email.no_results')

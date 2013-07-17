@@ -6,4 +6,5 @@
   - if @search_fields[:products]
     - @search_fields[:products].each do |product_id|
       = hidden_field_tag 'products[]', product_id
-  = link_to 'Export', '#', :class => 'submit_link'
+  = link_to t('bulk_email.export_html'), '#', :class => 'submit_link'
+

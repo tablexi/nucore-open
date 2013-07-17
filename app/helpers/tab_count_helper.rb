@@ -29,7 +29,8 @@ module TabCountHelper
     params[:action].to_sym == action.to_sym
   end
 
-  def tab(title, link, active)
+  def tab(title, link, active = nil)
+    active ||= request.path == link
     content_tag(:li, :class => active ? 'active' : nil) do
       link_to title, link
     end
