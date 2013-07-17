@@ -1,5 +1,5 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 - if acting_as? || session_user.try(:operator_of?, current_facility)
   - instruments = current_facility.instruments.active_plus_hidden
@@ -27,7 +27,7 @@
     = render :partial => 'product_list', :locals => {:products => items, :f => f}
     = render :partial => 'product_list', :locals => {:products => bundles, :f => f}
 
-    = f.submit
+    = f.submit :class => ['btn', 'btn-primary']
 - else
   = render :partial => 'product_list', :locals => {:products => instruments}
   = render :partial => 'product_list', :locals => {:products => services}

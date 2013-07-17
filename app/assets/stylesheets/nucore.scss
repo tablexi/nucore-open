@@ -68,6 +68,13 @@ footer .span8 {
   @extend .btn-success;
 }
 
+.unstyled_list {
+  ul {
+    list-style: none;
+    margin-left: 0;
+  }
+}
+
 /* Acting As Banner */
 #acting_as {
   @include gradient-vertical(#268BD2, #6ebdf3);
@@ -100,5 +107,22 @@ footer .span8 {
     font-size: 16px;
     line-height: 1em;
     margin-top: 0;
+  }
+}
+
+/*
+  Product List
+*/
+
+.product_list {
+  @extend .unstyled_list;
+  input {
+    width: 2em;
+    padding: 0 3px;
+  }
+  a.icon-calendar {
+    text-decoration: none;
+    color: $textColor;
+    font-size: 175%;
   }
 }
