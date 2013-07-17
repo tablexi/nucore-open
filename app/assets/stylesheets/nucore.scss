@@ -46,6 +46,17 @@ nav ul.nav > li:hover {
   @extend .well-small;
   @extend .nav;
   @extend .nav-list;
+
+  li {
+    line-height: 1.3em;
+    &.nav-header {
+      line-height: 2em;
+      margin-top: 0;
+    }
+    &.divider {
+      margin: 0.5em 1px;
+    }
+  }
 }
 
 /*
@@ -118,6 +129,11 @@ footer .span8 {
     line-height: 1em;
     margin-top: 0;
   }
+}
+
+.notice {
+  @extend .alert;
+  @extend .alert-info;
 }
 
 /*

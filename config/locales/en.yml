@@ -241,14 +241,14 @@ en:
   facility_notifications:
     in_review:
       head: "Orders In Review"
-      notice: "No orders are currently in review"
+      no_orders: "No orders are currently in review"
       instructions: |
         The orders listed below are still in review by the customer.  The time the review window will close is listed.
         You may manually mark an order as reviewed, allowing you to create a statement for or journal the order immediately.
       submit: "Mark As Reviewed"
     index:
       head: "Send Notifications"
-      notice: "No notifications are currently pending"
+      no_orders: "No notifications are currently pending"
       foot: "* Reflects only orders that the user has not been notified of yet."
       submit: "Send Notifications"
 
@@ -591,6 +591,8 @@ en:
       inactive: "Uncheck this box to prevent end users from viewing or purchasing from this facility:"
       is_active: "Is Active?"
       contact: "The following contact information will appear on statements and should indicate where payment should be sent"
+    transactions:
+      no_orders: There are no orders in this facility
 
   price_policies:
     instructional_text:

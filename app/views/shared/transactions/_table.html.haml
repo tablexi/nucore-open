@@ -12,7 +12,7 @@
               = text_field_tag @action_date_field.keys.first, @action_date_field.values.first.strftime("%m/%d/%Y"), {:class => :datepicker}
             - else
               &nbsp;
-          .submit= submit_tag @order_detail_action.to_s.titleize
+          .submit= submit_tag @order_detail_action.to_s.titleize, :class => ['btn', 'btn-primary']
         %div{:style => "clear: both;"}
         = render :partial => 'shared/transactions/table_inside', :locals => { :order_details => order_details }
     - else

@@ -15,15 +15,13 @@
 }
 
 .order_action {
-  overflow:hidden;
-  padding-bottom:10px;
-}
+  margin-top: 1em;
 
-.order_action div {
-  float:left;
-  width:50%;
-}
+  .submit {
+    float: right;
+  }
 
-.order_action .select_all_none,.order_action .submit {
-  width:25%;
+  .select_all_none, .center_fields {
+    float: left;
+  }
 }
