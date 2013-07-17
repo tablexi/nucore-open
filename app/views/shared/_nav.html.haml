@@ -34,31 +34,16 @@
             - else
               = link.has_key?(:url) ? link_to(link[:text], link[:url]) : link[:text]
 
-            <!-- = link.has_key?(:url) ? link_to(link[:text], link[:url]) : link[:text] -->
-            <!-- - if link[:subnav] -->
-            <!--   .dropdown -->
-            <!--   %ul.subnav -->
-            <!--     - link[:subnav].each do |sub_links| -->
-            <!--       %li= link_to sub_links[:text], sub_links[:url] -->
-
-      - facilities = menu_facilities
-
       - if !acting_as? && current_user
         = form_tag order_search_path, class: 'navbar-search pull-right' do
           = text_field_tag :search, nil, :placeholder => t('order_search.search'), :class => 'search-query span2'
 
       %ul.nav.pull-right
+        = render :partial => 'shared/nav/manage_facilities'
+
         - if !acting_as? && current_user && current_user.administrator?
           %li{:class => controller.active_tab == 'global_settings' ? 'active' : ''}
             = link_to t('pages.global_settings'), affiliates_path
-
-        - if !acting_as? && (facilities.any? || (current_user && current_user.administrator?))
-          %li.pull-right{:class => controller.active_tab == 'manage_facilites' ? 'active' : ''}
-            = link_to t("pages.manage", :model => t('activerecord.models.facility', :count => 2)), :list_facilities
-            - unless facilities.empty?
-              %ul.subnav
-                - facilities.each do |facility|
-                  %li= link_to facility.name, facility_default_admin_path(facility)
 
         - if !acting_as? && current_user && current_user.billing_administrator?
           %li.pull-right{:class => !controller.active_tab.nil? && controller.active_tab == 'admin_billing' ? 'active' : ''}
