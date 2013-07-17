@@ -5,11 +5,11 @@
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => "accounts_receivable" }
 
 %h2= t(".head")
-%ul
-  - if params[:show_all]
-    %li= link_to t(".show_with_balance", :model => Account.model_name.human.pluralize.downcase), facility_accounts_receivable_path
-  - else
-    %li= link_to t(".show_all", :model => Account.model_name.human.pluralize.downcase), facility_accounts_receivable_path(:show_all => '1')
+
+- if params[:show_all]
+  = link_to t(".show_with_balance", :model => Account.model_name.human.pluralize.downcase), facility_accounts_receivable_path
+- else
+  = link_to t(".show_all", :model => Account.model_name.human.pluralize.downcase), facility_accounts_receivable_path(:show_all => '1')
 
 %table.table.table-striped.table-hover
   %thead
