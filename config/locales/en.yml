@@ -5,6 +5,11 @@ en:
   app_admin_name: NU Core Admin
   institution_name: Northwestern
 
+  boolean:
+    # need to be enclosed in quotes because yes/no are yaml reserved words
+    "true": "Yes"
+    "false": "No"
+
   sessions:
     new:
       help_text: "If you do not have a NU Core account, please contact the facility manager."

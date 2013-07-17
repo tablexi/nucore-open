@@ -134,7 +134,12 @@ en:
         password_confirmation: Confirm password
         current_password: Current password
       facility:
-        url_name: URL name
+        fax_number: Fax Number
+        is_active: Is Active?
+        journal_mask: CoreID
+        phone_number: Phone Number
+        short_description: Short Description
+        url_name: URL Name
       product:
         url_name: ID
         requires_approval: Requires Approval

@@ -5,10 +5,14 @@ class ReadonlyInput < SimpleForm::Inputs::Base
 
   def input
 
-    template.content_tag :div, :class => 'readonly' do
+    classes = [*input_html_options[:class]]
+    template.content_tag :div, :class => classes do
       value = input_html_options[:value] || object.send(attribute_name)
       value = process_datetime(value) if value.class <= ActiveSupport::TimeWithZone
-      value.send(options[:value_method] || :to_s)
+      value = process_boolean(value)  if !!value == value # is it a boolean
+      value = options.delete(:value_method).call(value) if options[:value_method].is_a?(Proc)
+      value = value.send(options[:value_method] || :to_s)
+      value.presence || options[:default_value]
     end
   end
 
@@ -16,6 +20,10 @@ class ReadonlyInput < SimpleForm::Inputs::Base
 
   def process_datetime(value)
     human_datetime(value, options.slice(:date_only))
+  end
+
+  def process_boolean(value)
+    value ? I18n.t('boolean.true') : I18n.t('boolean.false')
   end
 
 end
