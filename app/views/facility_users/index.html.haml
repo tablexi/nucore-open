@@ -3,10 +3,10 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'staff' }
 
-%h2== Facility Staff
+%h2 Facility Staff
 
 %ul.inline
-  %li= link_to 'Add Facility Staff', search_facility_facility_users_path
+  %li= link_to 'Add Facility Staff', search_facility_facility_users_path, :class => 'btn-add'
 
 - if @users.empty?
   %p.notice No staff has been added to this facility.

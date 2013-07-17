@@ -1,6 +1,5 @@
-%p== Pricing policies apply to orders placed by the the following users:
-%ul
-  %li= link_to 'Add User', new_facility_price_group_user_price_group_member_path(current_facility, @price_group)
+%p Pricing policies apply to orders placed by the the following users:
+%p= link_to 'Add User', new_facility_price_group_user_price_group_member_path(current_facility, @price_group), :class => 'btn-add'
 
 - if @user_members.empty?
   %p.notice No users have been added to this price group.

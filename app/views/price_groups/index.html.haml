@@ -8,10 +8,10 @@
 %p= t('.intro')
 
 %ul.inline
-  %li= link_to t('.link.add'), new_facility_price_group_path
+  %li= link_to t('.link.add'), new_facility_price_group_path, :class => 'btn-add'
 
 - if @price_groups.empty?
-  %p.notice= t('.notice')
+  %p.alert.alert-info= t('.notice')
 - else
   %table.table.table-striped.table-hover
     %thead

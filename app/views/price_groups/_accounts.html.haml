@@ -1,6 +1,5 @@
 %p= t('price_groups.accounts.intro')
-%ul
-  %li= link_to t('price_groups.accounts.link.add'), new_facility_price_group_account_price_group_member_path(current_facility, @price_group)
+%p= link_to t('price_groups.accounts.link.add'), new_facility_price_group_account_price_group_member_path(current_facility, @price_group), :class => 'btn-add'
 
 - unless @account_members.empty?
   %table.table.table-striped.table-hover
