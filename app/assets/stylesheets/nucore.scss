@@ -68,6 +68,27 @@ footer .span8 {
   @extend .btn-success;
 }
 
+/* Acting As Banner */
+#acting_as {
+  @include gradient-vertical(#268BD2, #6ebdf3);
+
+  border-bottom:2px solid #1570a2;
+  font-size:15px;
+  overflow:hidden;
+  text-align:center;
+
+  p {
+    font-weight:bold;
+    margin:3px 0;
+  }
+
+  a {
+    font-weight: normal;
+  }
+}
+
+
+
 /*
   Errors
 */
