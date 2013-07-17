@@ -113,6 +113,18 @@ en:
       product:
         one: Product
         other: Products
+      instrument:
+        one: Instrument
+        other: Instruments
+      service:
+        one: Services
+        other: Services
+      item:
+        one: Item
+        other: Items
+      bundle:
+        one: Bundle
+        other: Bundles
       product_access_group: Scheduling Group
     # Model Attributes
     attributes:
