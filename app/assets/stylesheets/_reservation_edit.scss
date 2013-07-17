@@ -1,0 +1,22 @@
+.datetime-block {
+  clear: both;
+  .control-group {
+    float: left;
+    margin-right: 1em;
+  }
+}
+
+.time-select {
+  select {
+    width: 5em;
+    margin-right: 0.5em;
+  }
+}
+
+.send-notification {
+  margin-bottom: 1em;
+
+  label {
+    margin-left: 5px;
+  }
+}

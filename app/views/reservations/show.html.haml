@@ -3,10 +3,6 @@
 
 %h2= @reservation.product
 
-%ul
-  %li
-    %label Reservation
-    %p=h @reservation
-  %li
-    %label Actual Usage
-    %p=h @reservation.actuals_string
+= readonly_form_for :reservation do |f|
+  = f.input :to_s
+  = f.input :actuals_string

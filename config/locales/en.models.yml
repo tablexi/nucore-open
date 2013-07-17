@@ -134,6 +134,7 @@ en:
         user: Ordered For
         created_by_user: Ordered By
         ordered_at: Ordered Date
+        account: Payment Source
       order_detail:
         dispute_at: Disputed At
         dispute_reason: Dispute Reason
@@ -164,8 +165,10 @@ en:
         journal_status: Status
       reservation:
         base: '' #handled by actual messages
+        to_s: Reservation
         reserve_start_date: Reserve Start
-        duration_mins: Reserve Duration
+        duration_mins: Duration
+        actuals_string: Actual Usage
         actual_start_date: Actual Start
         actual_duration_mins: Actual Duration
         canceled_by_user: Cancelled By

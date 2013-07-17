@@ -339,8 +339,9 @@ en:
   reservations:
     new:
       label: "Payment source"
-      h3: "Documentation"
+      documentation: "Documentation"
       crumb: "Create Reservation"
+      notify: Send Notification
     switch:
       start: "Begin Reservation"
       end: "End Reservation"
