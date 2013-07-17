@@ -28,10 +28,12 @@
 
 %h2=h @instrument
 
-= form_for([@order, @order_detail, @reservation]) do |f|
+= simple_form_for([@order, @order_detail, @reservation]) do |f|
   = f.error_messages
-  %ul.form.box
-    = render :partial => 'reservation_fields', :locals => {:f => f}
+
+  .row
+    .well.span12
+      = render :partial => 'reservation_fields', :locals => {:f => f}
   %ul.inline
     %li= f.submit 'Save', :class => 'btn'
     - if @order.purchased?
