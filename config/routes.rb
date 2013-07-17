@@ -201,6 +201,20 @@ Nucore::Application.routes.draw do
     get 'accounts_receivable', :to => 'facility_accounts#accounts_receivable'
 
     ### Feature Toggle Editing Accounts ###
+    if SettingsHelper.feature_on?(:edit_accounts)
+      resources :accounts, :controller => 'facility_accounts', :only => [:new, :create, :edit, :update] do
+        collection do
+          get 'new_account_user_search'
+          get 'user_search'
+        end
+        resources :account_users, :controller => 'facility_account_users', :only => [:new, :destroy, :create, :update] do
+          collection do
+            get 'user_search'
+          end
+        end
+      end
+    end
+
     resources :accounts, :controller => 'facility_accounts', :only => [:index, :show] do
       collection do
         get 'search'
@@ -215,19 +229,6 @@ Nucore::Application.routes.draw do
       end
     end
 
-    if SettingsHelper.feature_on?(:edit_accounts)
-      resources :accounts, :controller => 'facility_accounts', :only => [:new, :create, :edit, :update] do
-        collection do
-          get 'new_account_user_search'
-          get 'user_search'
-        end
-        resources :account_users, :controller => 'facility_account_users', :only => [:new, :destroy, :create, :update] do
-          collection do
-            get 'user_search'
-          end
-        end
-      end
-    end
     ######
 
     resources :journals, :controller => 'facility_journals', :only => [:index, :new, :create, :update, :show] do
