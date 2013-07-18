@@ -57,7 +57,7 @@
       %ul.inline{:style => "float: left"}
         %li= submit_tag 'Update', :class => 'btn'
         - if @order.validated?
-          %li= f.submit 'Purchase', :class => 'btn', :confirm => t('.confirm')
+          %li= f.submit 'Purchase', :class => ['btn', 'btn-primary'], :confirm => t('.confirm')
       - if acting_as?
         .backdate_fields
           = render :partial => 'edit_date', :locals => { :f => f}

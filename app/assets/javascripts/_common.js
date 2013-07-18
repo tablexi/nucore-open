@@ -98,7 +98,7 @@ $(document).ready(function() {
     if (tabs.length > 0) {
       var base = FACILITY_PATH;
       var active_tab = $('#main_navigation .active').attr('id')
-      if (active_tab === undefined) return 
+      if (active_tab === undefined) return
       if (active_tab.indexOf('reservations') > -1) {
         base += '/reservations/';
       } else if (active_tab.indexOf('orders') > -1) {
@@ -118,20 +118,6 @@ $(document).ready(function() {
   };
   loadTabCounts();
 
-  $("fieldset.collapsable").each(function() {
-    $this = $(this);
-    $this.find("> :not(legend)").toggle(!$this.hasClass("collapsed"));
-    $this.enableDisableFields = function() {
-      this.find("input, select").prop('disabled', $this.hasClass('collapsed'));
-    }
-    $this.enableDisableFields();
-    $this.find("legend").click(function() {
-      // $this is still the fieldset, but 'this' is legend
-      $this.toggleClass("collapsed").find("> :not(legend)").slideToggle();
-      $this.enableDisableFields();
-    });
-
-  });
 });
 
 String.prototype.endsWith = function(suffix) {
