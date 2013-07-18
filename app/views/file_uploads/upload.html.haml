@@ -10,18 +10,13 @@
 %h2= @product
 %p If provided, documentation will be available for download from the product page.
 - if can? :create, @file
-  = form_for(@file, :url => add_product_file_path(current_facility, @product.parameterize, @product), :html => { :multipart => true, :method => :post }) do |f|
+  = simple_form_for(@file, :url => add_product_file_path(current_facility, @product.parameterize, @product), :html => { :multipart => true, :method => :post }) do |f|
     = f.error_messages
     = f.hidden_field :file_type
-    %ul.form
-      %li
-        = f.label :file, 'File', :class => 'required'
-        = f.file_field :file
-      %li
-        = f.label :upload, 'Name', :class => 'required'
-        -# TK fix this working
-        %p.instruction Name of the file as displayed on the product page
-        = f.text_field :name, :value => ''
+
+    = f.input :file, :required => true
+    = f.input :name, :hint => 'Name of the file as displayed on the product page', :hint_html => { :class => 'help-inline' }
+
     %ul.inline
       %li= f.submit('Upload', :disable_with => "Uploading...", :class => 'btn')
 %br
