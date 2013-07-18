@@ -715,6 +715,14 @@ en:
       success: Instructions on how to reset your password have been sent to %{email}
       not_found: We cannot find %{email} in our records.
 
+  reports:
+    fields:
+      date_start: Start Date
+      date_end: End Date
+    export:
+      export: Export
+      raw: Export Raw
+
   users:
     index:
       head:

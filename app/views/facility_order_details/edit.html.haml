@@ -80,40 +80,30 @@
   = render :partial => "admin/shared/tabnav_#{@order_detail.reservation ? 'reservation' : 'order'}", :locals => { :secondary_tab => tab }
 
 %h2= t('.head.h2', :order_number => @order_detail.to_s)
-= form_for(@order_detail, :url => (@order_detail.in_dispute? ? facility_order_order_detail_resolve_dispute_path(current_facility, @order, @order_detail) : facility_order_order_detail_path(current_facility, @order, @order_detail)), :html => {:method => :put}) do |f|
+= simple_form_for(@order_detail, :url => (@order_detail.in_dispute? ? facility_order_order_detail_resolve_dispute_path(current_facility, @order, @order_detail) : facility_order_order_detail_path(current_facility, @order, @order_detail)), :html => {:method => :put}) do |f|
   = hidden_field_tag :return_to, request.referer if request.referer =~ /\/facilities\/.+\/orders\/[0-9]+\/edit/
   = f.error_messages
-  .grid_6.alpha
-    %ul.form
-      %li
-        %label= link_to t('.label.ordered.summary', :order_number => @order.id), facility_order_path(current_facility, @order)
-      %li
-        %label= t('.label.ordered.at')
-        =h human_datetime(@order.ordered_at)
-      %li
-        %label= t('.label.ordered.for')
-        =h @order.user.full_name
-      %li
-        %label= t('.label.ordered.by')
-        =h @order.created_by_user.full_name
-      - if @order_detail.fulfilled_at
-        %li
-          %label= t('.label.fulfilled')
-          =h human_datetime(@order_detail.fulfilled_at)
-      %li
-        %label= t('.label.account')
-        - html_opts=@in_open_journal ? { :disabled => 'disabled' } : {}
-        - # make sure that the account it was purchased under is available, even if it's no
-        - # longer available for the owner
-        - available_accounts = @order.user.account_users.active.collect{|au| au.account}
-        - available_accounts << @order.account if available_accounts.index(@order.account).nil?
-        = f.collection_select(:account_id, available_accounts, :id, :account_pretty, {}, html_opts)
-      %li
-        %label= t('.label.assigned')
-        - if @order_detail.complete?
-          =h @order_detail.assigned_user ? @order_detail.assigned_user.full_name : 'Unassigned'
-        - else
-          = f.collection_select(:assigned_user_id, User.find_users_by_facility(current_facility), :id, :full_name, :prompt => 'Unassigned')
+  %label= link_to t('.label.ordered.summary', :order_number => @order.id), facility_order_path(current_facility, @order)
+
+  = f.input :ordered_at, :as => :readonly, :label => t('.label.ordered.at')
+  = f.input :user, :as => :readonly
+  = f.input :created_by_user, :as => :readonly
+  = f.input :fulfilled_at, :as => :readonly if @order_detail.fulfilled_at
+
+  %label= t('.label.account')
+  - html_opts=@in_open_journal ? { :disabled => 'disabled' } : {}
+  - # make sure that the account it was purchased under is available, even if it's no
+  - # longer available for the owner
+  - available_accounts = @order.user.account_users.active.collect{|au| au.account}
+  - available_accounts << @order.account if available_accounts.index(@order.account).nil?
+  = f.collection_select(:account_id, available_accounts, :id, :account_pretty, {}, html_opts)
+
+
+  %label= t('.label.assigned')
+  - if @order_detail.complete?
+    =h @order_detail.assigned_user ? @order_detail.assigned_user.full_name : 'Unassigned'
+  - else
+    = f.collection_select(:assigned_user_id, User.find_users_by_facility(current_facility), :id, :full_name, :prompt => 'Unassigned')
   .grid_6.omega.margin_bottom
     - # Dispute form
     - if @order_detail.in_dispute?

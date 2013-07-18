@@ -5,4 +5,9 @@ module FormHelper
     options.merge! :builder => ReadonlyFormBuilder
     simple_fields_for(record_name, record, options, &block)
   end
+
+  def modelless_form_for(options = {}, &block)
+    options.merge! :builder => ModelLessFormBuilder
+    simple_form_for('', options, &block)
+  end
 end
