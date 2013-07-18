@@ -3,15 +3,15 @@
 %h3 #{ProductAccessGroup.model_name.human}
 
 - if can? :add, ProductAccessGroup
-  %p= link_to "Add #{ProductAccessGroup.model_name.human}", new_facility_instrument_product_access_group_path(@facility, @instrument) 
+  %p= link_to "Add #{ProductAccessGroup.model_name.human}", new_facility_instrument_product_access_group_path(@facility, @instrument), :class => ['btn', 'btn-add']
 
 
 %table.table.table-striped.table-hover
   %thead
     %tr
       %th
-      %th #{ProductAccessGroup.human_attribute_name(:name)}
-      %th #{User.model_name.human.pluralize}
+      %th= ProductAccessGroup.human_attribute_name(:name)
+      %th= User.model_name.human.pluralize
   %tbody
     - @product_access_groups.each do |level|
       %tr
