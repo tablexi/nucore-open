@@ -75,6 +75,9 @@ footer .span8 {
   line-height: 75px;
 }
 
+td.currency {
+  text-align: right;
+}
 .currency-input input {
   width: 7em;
 }
@@ -203,6 +206,10 @@ footer .span8 {
   }
 }
 
+.table .super-th {
+  text-align: center;
+}
+
 /* Schedule Rules */
 .inline-checkbox-list {
   .controls label {
@@ -210,4 +217,8 @@ footer .span8 {
     font-weight: normal;
     margin-right: 1em;
   }
+}
+
+.price-policy-table input[type=text] {
+  width: 50%;
 }

@@ -1,4 +1,4 @@
-%table.table.table-striped.table-hover
+%table.table
   %thead
     %tr
       %th.actions
@@ -13,15 +13,14 @@
       %tr
         - if price_policies_to_show.first == price_policy
           %td.centered{ :rowspan => price_policies_to_show.length }
-            %ul.form
-              - unless price_policies.all?{|pp| pp.editable?}
-                %li.disabled Edit
-                %li.disabled Remove
-              - else
-                %li= link_to 'Edit', edit_price_policy_path(price_policy, url_date)
-                %li= link_to 'Remove', price_policy_path(price_policy, url_date), :confirm => 'Are you sure?', :method => :delete
-        %td=h price_policy.price_group.name
-        %td=h price_policy.price_group.type_string
+            - unless price_policies.all?{|pp| pp.editable?}
+              %p.muted Edit
+              %p.muted Remove
+            - else
+              %p= link_to 'Edit', edit_price_policy_path(price_policy, url_date)
+              %p= link_to 'Remove', price_policy_path(price_policy, url_date), :confirm => 'Are you sure?', :method => :delete
+        %td= price_policy.price_group.name
+        %td= price_policy.price_group.type_string
         - if price_policy.valid?
           %td.currency= number_to_currency price_policy.unit_cost
           %td.currency= number_to_currency price_policy.unit_subsidy
