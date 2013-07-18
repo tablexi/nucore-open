@@ -8,24 +8,13 @@
   %p.notice There are no "New" or "In Process" Reservations.
 - else
   = form_tag(batch_update_facility_reservations_path, :method => :post) do
-    - facility_users = User.find_users_by_facility(current_facility)
+
     %table.table.table-striped.table-hover.reservations
       %thead
         -## THE HEADER CONTROL ROW
         %tr.borderless
           %td{ :colspan => 8 }= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
-          %td
-            - if facility_users.empty?
-              = select_tag :assigned_user_id, options_for_select([['Assign to...', nil], ['Unassign', 'unassign']]), :class => 'sync_select', :id => nil
-            - else
-              = select_tag :assigned_user_id, options_for_select(facility_users.map{ |u| [u.full_name, u.id] }.unshift(['Assign to...', nil], ['Unassign', 'unassign'])), :class => 'sync_select', :id => nil
-          %td
-            %select{ :name => "order_status_id", :class => 'sync_select', :id => nil }
-              = options_for_select([['Status...', nil]])
-              - OrderStatus.non_protected_statuses(current_facility).each do |os|
-                = options_for_select([[os.name_with_level, os.id]])
-          %td
-            = submit_tag "Update Reservations"
+          = render :partial => 'shared/order_detail_action_form', :locals => { :button_label => 'Update Reservations' }
         -## THE HEADER ROW
         %tr
           %th
@@ -59,19 +48,7 @@
                 %span.very_dense
                   = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(od.order, od, od.reservation, :switch => 'on') if od.reservation.can_switch_instrument_on?
                   = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(od.order, od, od.reservation, :switch => 'off'), :class => end_reservation_class(od.reservation) if od.reservation.can_switch_instrument_off?
-            %td
-              %ul
-                - product_name = (od.bundle ? "#{h od.bundle} &mdash; ".html_safe : '') + h(od.product)
-                %li= product_name
-                - if od.survey_completed?
-                  - receiver = od.external_service_receiver
-                  %li.indented= link_to 'View Order Form', receiver.response_data, :target => '_blank'
-                - if !od.stored_files.template_result.empty?
-                  - od.stored_files.template_result.each do |stored_file|
-                    %li.indented= link_to 'View Order File', stored_file.file.url
-                - unless od.note.blank?
-                  %li
-                    %i=h "Note: #{od.note}"
+            = render :partial => 'shared/order_detail_cell', :locals => { :od => od }
             %td=h od.assigned_user.nil? ? '' : od.assigned_user.full_name
             %td
               = od.order_status.name
@@ -89,18 +66,7 @@
           %td
           %td
           %td
-          %td
-            - if facility_users.empty?
-              = select_tag :assigned_user_id, options_for_select([['Assign to...', nil], ['Unassign', 'unassign']]), :class => 'sync_select', :id => nil
-            - else
-              = select_tag :assigned_user_id, options_for_select(facility_users.map{ |u| [u.full_name, u.id] }.unshift(['Assign to...', nil], ['Unassign', 'unassign'])), :class => 'sync_select', :id => nil
-          %td
-            %select{ :name => "order_status_id", :class => 'sync_select', :id => nil }
-              = options_for_select([['Status...', nil]])
-              - OrderStatus.non_protected_statuses(current_facility).each do |os|
-                = options_for_select([[os.name_with_level, os.id]])
-          %td
-            = submit_tag "Update Reservations"
+          = render :partial => 'shared/order_detail_action_form', :locals => { :button_label => 'Update Reservations' }
   = will_paginate(@order_details)
   = render :partial => '/price_display_footnote', :locals => { :admin => true }
   #pick_accessories_dialog

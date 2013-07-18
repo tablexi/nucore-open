@@ -1,0 +1,13 @@
+- @facility_users ||= User.find_users_by_facility(current_facility)
+%td.action-form
+  - if @facility_users.empty?
+    = select_tag :assigned_user_id, options_for_select([['Assign to...', nil], ['Unassign', 'unassign']]), :class => 'sync_select', :id => nil
+  - else
+    = select_tag :assigned_user_id, options_for_select(@facility_users.map{ |u| [u.full_name, u.id] }.unshift(['Assign to...', nil], ['Unassign', 'unassign'])), :class => 'sync_select', :id => nil
+%td.action-form
+  %select{ :name => "order_status_id", :class => 'sync_select', :id => nil }
+    = options_for_select([['Status...', nil]])
+    - OrderStatus.non_protected_statuses(current_facility).each do |os|
+      = options_for_select([[os.name_with_level, os.id]])
+
+%td= submit_tag button_label, :class => ['btn', 'btn-primary']

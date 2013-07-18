@@ -1,0 +1,20 @@
+.sortable {
+  background-image: image-url("icon-sort.gif");
+  background-position:right center;
+  background-repeat:no-repeat;
+  padding-right:10px;
+}
+
+.asc {
+  background-image: image-url("icon-sort-ascend.gif");
+  background-position:right center;
+  background-repeat:no-repeat;
+  padding-right:10px;
+}
+
+.desc {
+  background-image: image-url("icon-sort-descend.gif");
+  background-position:right center;
+  background-repeat:no-repeat;
+  padding-right:10px;
+}
