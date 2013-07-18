@@ -143,8 +143,17 @@ en:
         short_description: Short Description
         url_name: URL Name
       product:
-        url_name: ID
-        requires_approval: Requires Approval
+        url: URL
+        url_name: URL Name
+        requires_approval: Requires Approval?
+        initial_order_status: Initial Order Status
+        is_archived: Is Inactive?
+        is_hidden: Is Hidden?
+      instrument:
+        min_reserve_mins: Minimum Reservation Minutes
+        max_reserve_mins: Maximum Reservation Minutes
+        min_cancel_hours: Minimum Cancelation Hours
+        auto_cancel_mins: Automatic Cancelation Minutes
       price_group:
         is_internal: Is Internal?
       user_role:
@@ -183,6 +192,13 @@ en:
       journal:
         description: Notes
         journal_status: Status
+      relay:
+        type: Relay Type
+        ip: Relay IP Address
+        port: Relay Port
+        username: Relay Username
+        password: Relay Password
+        auto_logout: Automatic Logout?
       reservation:
         base: '' #handled by actual messages
         to_s: Reservation

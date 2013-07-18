@@ -7,7 +7,7 @@
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'details'}
 
-%h2=h @service
+%h2= @service
 
 = simple_form_for([current_facility, @service]) do |f|
   = f.error_messages
