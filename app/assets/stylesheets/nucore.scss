@@ -173,3 +173,29 @@ footer .span8 {
 #ui-datepicker-div {
   z-index: 10 !important; /* was being hidden behind fullcalendar */
 }
+
+.document {
+  background: image-url("icon_file.jpg") no-repeat 0 0;
+  line-height:24px;
+  padding-left:28px;
+}
+
+.old-table,
+.footnote {
+  .estimated_cost {
+    color: $warningText;
+  }
+
+  .actual_cost {
+    color: $successText;
+  }
+
+  .reconcile-note {
+    color:#dbbfc6;
+  }
+
+  tr.reconcile-warning td {
+    background-color: $errorBackground !important;
+  }
+
+}

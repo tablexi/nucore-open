@@ -9,7 +9,7 @@
 - else
   = form_tag(batch_update_facility_orders_path, :method => :post) do
     - facility_users = User.find_users_by_facility(current_facility)
-    %table.table.table-striped.table-hover
+    %table.table.table-striped.table-hover.old-table
       %thead
         %tr.borderless
           %td{ :colspan => 6 }= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
