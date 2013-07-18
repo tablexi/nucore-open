@@ -159,3 +159,13 @@ footer .span8 {
 .wysiwyg {
   float: left;
 }
+
+.order-statuses-table {
+  .action-column {
+    width: 5em;
+    border-right: 1px solid $tableBorder;
+  }
+  .child {
+    padding-left: 3em;
+  }
+}

@@ -177,6 +177,8 @@ en:
         actual_subsidy: Adjustment
         actual_total: Total
         reconciled_note: Reconciliation Note
+      order_status:
+        parent: Status of
       journal:
         description: Notes
         journal_status: Status
