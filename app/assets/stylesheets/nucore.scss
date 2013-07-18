@@ -89,13 +89,6 @@ footer .span8 {
   @extend .btn-success;
 }
 
-.unstyled_list {
-  ul {
-    list-style: none;
-    margin-left: 0;
-  }
-}
-
 /* Acting As Banner */
 #acting_as {
   @include gradient-vertical(#268BD2, #6ebdf3);
@@ -141,7 +134,9 @@ footer .span8 {
 */
 
 .product_list {
-  @extend .unstyled_list;
+  ul {
+    @extend ul.unstyled;
+  }
   input {
     width: 2em;
     padding: 0 3px;
