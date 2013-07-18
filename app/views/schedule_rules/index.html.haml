@@ -17,8 +17,7 @@
 %p You may define one or more non-overlapping schedule rules.  Schedule rules define how and when an instrument is available for reservation.
 
 - if can? :add, ScheduleRule
-  %ul
-    %li= link_to 'Add Schedule Rule', new_facility_instrument_schedule_rule_path
+  = link_to 'Add Schedule Rule', new_facility_instrument_schedule_rule_path, :class => 'btn-add'
 
 - if !@schedule_rules.blank?
   %table.table.table-striped.table-hover

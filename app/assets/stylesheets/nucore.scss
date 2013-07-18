@@ -201,5 +201,13 @@ footer .span8 {
   tr.reconcile-warning td {
     background-color: $errorBackground !important;
   }
+}
 
+/* Schedule Rules */
+.inline-checkbox-list {
+  .controls label {
+    display: inline-block;
+    font-weight: normal;
+    margin-right: 1em;
+  }
 }

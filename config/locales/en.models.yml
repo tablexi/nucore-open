@@ -128,6 +128,11 @@ en:
       product_access_group: Scheduling Group
     # Model Attributes
     attributes:
+      schedule_rule:
+        start_time: Start Time
+        end_time: End Time
+        duration_mins: Appointments Start Every
+        product_access_groups: "Restricted to only these groups:"
       user:
         username: Username
         password: Password

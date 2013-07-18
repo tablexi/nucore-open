@@ -9,7 +9,7 @@ class ScheduleRulesController < ApplicationController
 
   layout 'two_column'
 
-  def initialize 
+  def initialize
     @active_tab = 'admin_products'
     super
   end
@@ -29,10 +29,13 @@ class ScheduleRulesController < ApplicationController
   # GET /schedule_rules/new
   def new
     @schedule_rule  = ScheduleRule.new
-    @schedule_rule.start_hour= 9
-    @schedule_rule.start_min= 0
-    @schedule_rule.end_hour= 17
-    @schedule_rule.end_min= 0
+    @schedule_rule.duration_mins = 5
+
+    @schedule_rule.start_hour    = 9
+    @schedule_rule.start_min     = 0
+
+    @schedule_rule.end_hour      = 17
+    @schedule_rule.end_min       = 0
   end
 
   # GET /schedule_rules/1/edit
@@ -58,7 +61,7 @@ class ScheduleRulesController < ApplicationController
   def update
     @schedule_rule  = ScheduleRule.find(params[:id])
     # TODO: 404 protection for non inst, facil rules
-    
+
     # if there are no boxes checked, remove them all
     params[:schedule_rule][:product_access_group_ids] ||= []
     respond_to do |format|
