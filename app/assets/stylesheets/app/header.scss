@@ -22,6 +22,7 @@ header {
   .navbar .nav {
     .divider-vertical {
       border-right: none;
+      border-left: 1px solid $usernavDividerColor;
     }
     > li > a {
       color: $usernavColor;
@@ -34,7 +35,7 @@ header {
     }
 
     > .navbar-text {
-      color: $usernavColorHover;
+      color: $usernavColor;
     }
   }
 
