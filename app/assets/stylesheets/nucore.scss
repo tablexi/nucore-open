@@ -1,34 +1,6 @@
 /*
- header
-*/
-
-header .navbar-inner {
-  padding: 10px 0;
-}
-
-header.account {
-  h3 {
-    line-height: 1em;
-  }
-  h3, p {
-    margin-bottom: 0;
-    margin-top: 0;
-  }
-  margin-bottom: 1em;
-}
-
-/*
  nav
 */
-.navbar {
-  background-color: $headerBackgroundColor;
-  .brand {
-    font-family: $headerFont;
-    text-decoration: none;
-    font-size: 27px;
-    color: $headerColor;
-  }
-}
 
 nav ul.nav > li.active,
 nav ul.nav > li:hover {

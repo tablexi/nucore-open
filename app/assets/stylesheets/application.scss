@@ -7,9 +7,11 @@ $baseFontSize: 12px;
 @import "bootstrap-overrides";
 
 @import "nucore-variables";
+@import "override";
 @import "nucore";
 
-@import "_reservation_edit";
+@import "app/reservation_edit";
+@import "app/header.scss";
 @import "app/collapsable";
 @import "app/sortable";
 @import "app/tab_count";

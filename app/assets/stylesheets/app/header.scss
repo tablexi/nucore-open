@@ -1,0 +1,53 @@
+/*
+ header
+*/
+
+header {
+
+  .navbar {
+    .brand {
+      font-family: $headerFont;
+      text-decoration: none;
+      text-shadow: none;
+      font-size: 27px;
+      color: $headerColor;
+    }
+  }
+
+  .navbar-inner {
+    padding: 10px 0;
+    @include gradient-vertical(darken($headerBackgroundColor, 5%), $headerBackgroundColor);
+  }
+
+  .navbar .nav {
+    .divider-vertical {
+      border-right: none;
+      opacity: 0.1;
+    }
+    > li > a {
+      color: $usernavColor;
+      text-shadow: none;
+      padding: 10px 0;
+
+      &:hover {
+        color: $usernavColorHover;
+      }
+    }
+
+    > .navbar-text {
+      color: $usernavColorHover;
+    }
+  }
+
+  &.account {
+    h3 {
+      line-height: 1em;
+    }
+    h3, p {
+      margin-bottom: 0;
+      margin-top: 0;
+    }
+    margin-bottom: 1em;
+  }
+}
+
