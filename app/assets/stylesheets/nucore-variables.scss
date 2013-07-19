@@ -1,9 +1,17 @@
+/* Header */
 $headerFont: Georgia, 'Times New Roman', Times, serif;
 $headerColor: black;
 $headerBackgroundColor: white;
-$navbarActiveBorderHeight: 5px;
-$navbarActiveBorderColor: #AAA;
+
+/* Login, Cart, etc Links */
 $usernavColor: $navbarLinkColor;
 $usernavColorHover: $navbarLinkColorHover;
+$usernavDividerColor: transparentize($grayDark, 0.2);
+
+/* Primary Navbar */
+$navbarActiveBorderHeight: 5px;
+$navbarActiveBorderColor: #AAA;
+
+/* Sidebar Colors */
 $sidebarActiveBackgroundColor: $linkColor;
 $sidebarActiveColor: $white;
