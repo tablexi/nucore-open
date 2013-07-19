@@ -5,7 +5,7 @@
   = render :partial => 'admin/shared/sidenav_global', :locals => { :sidenav_tab => 'affiliates' }
 
 %h2 Affiliates
-= link_to 'Add Affiliate', new_affiliate_path
+= link_to 'Add Affiliate', new_affiliate_path, :class => 'btn-add'
 
 %table.table.table-striped.table-hover
   %thead

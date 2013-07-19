@@ -1,6 +1,5 @@
 = simple_form_for(@affiliate) do |f|
-  .form-inputs
-    = f.input :name
-  .form-actions
-    = f.button :submit
-    = link_to 'Cancel', affiliates_path
+  = f.input :name
+
+  = f.button :submit, :class => ['btn', 'btn-primary']
+  = link_to 'Cancel', affiliates_path

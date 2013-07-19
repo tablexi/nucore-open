@@ -1,2 +1,2 @@
-%ul.sidenav
-  %li= link_to 'Affiliates', affiliates_path, :class => (sidenav_tab == 'affiliates' ? 'active' : '')
+%ul.sidebar-nav
+  = tab 'Affiliates', affiliates_path, sidenav_tab == 'affiliates'
