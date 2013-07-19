@@ -11,8 +11,7 @@
 %p Items are fixed-price products that do not require a reservation or additional user information.
 
 - if session_user.manager_of?(current_facility)
-  %ul.inline
-    %li= link_to 'Add Item', new_facility_item_path
+  %p= link_to 'Add Item', new_facility_item_path, :class => 'btn-add'
 
 - if @items.empty?
   %p.notice== No #{params[:archived].nil? || params[:archived] != 'true' ? 'active' : 'inactive'} items exist for this facility.

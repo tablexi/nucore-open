@@ -15,8 +15,8 @@
 %h2= @instrument
 
 %h3 Administrative Reservations
-%ul.inline
-  %li= link_to 'Add Admin Reservation', new_facility_instrument_reservation_path
+
+%p= link_to 'Add Admin Reservation', new_facility_instrument_reservation_path, :class => 'btn-add'
 
 - if @admin_reservations.empty?
   %p.notice There are no upcoming administrative reservations.
