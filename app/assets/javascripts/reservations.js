@@ -65,15 +65,15 @@ $(document).ready(function() {
         } catch(error) {}
       }
     }
-    
+
   };
   if (window.initialDate) {
 	  var d = new Date(Date.parse(initialDate));
 	  $.extend(calendarOptions, {year: d.getFullYear(), month: d.getMonth(), date: d.getDate()});
   }
-  
+
   $('#calendar').fullCalendar(calendarOptions);
-  
+
 
 
   function initReserveButton()
@@ -112,24 +112,28 @@ $(document).ready(function() {
       		.change(function() {
       			var d = new Date(Date.parse($(this).val()));
       			$('#calendar').fullCalendar('gotoDate', d);
-    	
-    
+
+
       		});
     });
   }
 
   /* Copy in actual times from reservation time */
-  function copyReservationTimeIntoActual() {
-    var parent = $(this).parents('.copy_actual_from_reservation');
-    var startDate = Date.parse(parent.find('.start_date').text());
-    var endDate = Date.parse(parent.find('.end_date').text());
-    setDateInPicker($('#reservation_actual_start_date'), startDate);
-    setTimeInPickers('reservation_actual_start', startDate);
-    setDateInPicker($('#reservation_actual_end_date'), endDate);
-    setTimeInPickers('reservation_actual_end', endDate);
-    $(this).remove();
-    return false;
+  function copyReservationTimeIntoActual(e) {
+    e.preventDefault()
+    $(this).fadeOut('fast');
+    // copy each reserve_xxx field to actual_xxx
+    $('[name^="reservation[reserve_"]').each(function() {
+      var actual_name = this.name.replace(/reserve_(.*)$/, "actual_$1");
+      $("[name='" + actual_name + "']").val($(this).val());
+    });
+
+    // duration_mins doesn't follow the same pattern, so do it separately
+    var newval = $('[name="reservation[duration_mins]"]').val();
+
+    $('[name="reservation[actual_duration_mins]_display"]').val(newval).trigger('change');
   }
+
   function setDateInPicker(picker, date) {
     var dateFormat = picker.datepicker('option', 'dateFormat');
     picker.val($.datepicker.formatDate(dateFormat, date));
