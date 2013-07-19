@@ -1,4 +1,4 @@
-%ul.nav.nav-tabs.tab_counts
+%ul.nav.nav-tabs
   = tab "Daily View", timeline_facility_reservations_path(current_facility), tab_active?(:timeline)
   = display_tab "New / In Process", facility_reservations_path, :action => :index
   - if current_user.manager_of?(current_facility)
