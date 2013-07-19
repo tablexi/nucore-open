@@ -237,4 +237,10 @@ class Account < ActiveRecord::Base
     (price_group_members.collect{ |pgm| pgm.price_group } + (owner_user ? owner_user.price_groups : [])).flatten.uniq
   end
 
+  def affiliate_to_s
+    affiliate_name = affiliate.name
+    affiliate_name += " (#{affiliate_other})" if affiliate == Affiliate.OTHER
+    affiliate_name
+  end
+
 end

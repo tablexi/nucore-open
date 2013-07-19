@@ -224,7 +224,10 @@ en:
       account:
         account_number: Number
         expires_at: Expiration
+        formatted_expires_at: Expiration
         description: Description
-        type_string: Type
+        type_string: Payment Source Type
+        owner_user: Owner
+        remittance_information: Bill To
       nufs_account:
         account_number: Payment Source Number
