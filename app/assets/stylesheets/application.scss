@@ -4,12 +4,11 @@ $baseFontSize: 12px;
 @import "bootstrap-responsive";
 @import "font-awesome";
 @import "chosen";
-
 @import "bootstrap-overrides";
+
+@import "nucore-variables";
 @import "nucore";
 
-// @import "base";
-// @import "override";
 @import "_reservation_edit";
 @import "app/collapsable";
 @import "app/sortable";

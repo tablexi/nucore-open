@@ -1,6 +1,7 @@
 /*
  header
 */
+
 header .navbar-inner {
   padding: 10px 0;
 }
@@ -19,10 +20,26 @@ header.account {
 /*
  nav
 */
+.navbar {
+  background-color: $headerBackgroundColor;
+  .brand {
+    font-family: $headerFont;
+    text-decoration: none;
+    font-size: 27px;
+    color: $headerColor;
+  }
+}
+
 nav ul.nav > li.active,
 nav ul.nav > li:hover {
-  border-top: 5px solid rgb(172, 166, 108);
-  margin-top: -5px;
+  border-top: $navbarActiveBorderHeight solid $navbarActiveBorderColor;
+  margin-top: -$navbarActiveBorderHeight;
+}
+
+.sidebar-nav > .active > a,
+.sidebar-nav > .active > a:hover {
+  background-color: $sidebarActiveBackgroundColor;
+  color: $sidebarActiveColor;
 }
 
 /*
