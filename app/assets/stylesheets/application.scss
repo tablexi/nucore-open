@@ -13,10 +13,11 @@ $baseFontSize: 12px;
 @import "app/collapsable";
 @import "app/sortable";
 @import "app/tab_count";
-@import "timeline";
-@import "order_management";
-@import "order_details";
-@import "transaction_search";
+@import "app/timeline";
+@import "app/order_management";
+@import "app/order_details";
+@import "app/transaction_search";
+
 @import "uploadify";
 @import "calendar/fullcalendar";
 @import "calendar/fullcalendar.extensions";
