@@ -5,7 +5,7 @@
   = f.input :owner, :as => :readonly, :input_html => { :class => 'show_always', :value => @owner_user.full_name }
 
   = label_tag :class_type, t('facility_accounts.account_fields.label.payment_type'), :class => 'require'
-  = select_tag 'class_type', options_for_select(valid_account_types.map { |type| [t("accounts.#{type.name.underscore}"), type.name]}, :selected => params[:class_type]), :class => 'NufsAccount show_always'
+  = select_tag 'class_type', options_for_select(valid_account_types.map { |type| [type.model_name.human, type.name]}, :selected => params[:class_type]), :class => 'NufsAccount show_always'
 
   - valid_account_types.each do |type|
     .account_type_fields.account_type_new_fields{ :class => type.name }

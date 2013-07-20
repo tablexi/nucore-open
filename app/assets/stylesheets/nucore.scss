@@ -238,3 +238,14 @@ td.currency {
 .price-policy-table input[type=text] {
   width: 50%;
 }
+
+/* Account Fields */
+ul.inline > li, ol.inline > li {
+  &.account_number_field {
+    padding: 0;
+    input {
+      width: inherit;
+    }
+  }
+}
+
