@@ -8,12 +8,6 @@ nav ul.nav > li:hover {
   margin-top: -$navbarActiveBorderHeight;
 }
 
-.sidebar-nav > .active > a,
-.sidebar-nav > .active > a:hover {
-  background-color: $sidebarActiveBackgroundColor;
-  color: $sidebarActiveColor;
-}
-
 /*
  breadcrumb nav
 */
@@ -46,6 +40,17 @@ nav ul.nav > li:hover {
       margin: 0.5em 1px;
     }
   }
+
+
+  > .active > a,
+  > .active > a:hover {
+    background-color: $sidebarActiveBackgroundColor;
+    color: $sidebarActiveColor;
+  }
+}
+
+li.nav-spacer {
+  margin: 1em;
 }
 
 /*
@@ -62,23 +67,6 @@ footer .span8 {
   color: #919191;
   text-align: right;
   line-height: 75px;
-}
-
-td.currency {
-  text-align: right;
-}
-.currency-input input {
-  width: 7em;
-}
-
-.pagination {
-  margin: 0;
-  text-align: center;
-}
-
-.btn-add {
-  @extend .btn;
-  @extend .btn-success;
 }
 
 /* Acting As Banner */
@@ -174,6 +162,45 @@ td.currency {
   background: image-url("icon_file.jpg") no-repeat 0 0;
   line-height:24px;
   padding-left:28px;
+}
+
+/* Various Styles */
+ul.unstyled {
+  list-style: none;
+  margin-left: 0;
+}
+
+.modal form,
+.well form {
+  margin-bottom: 0;
+}
+
+.well {
+  padding: 8px 19px;
+  h2, h3 {
+    margin-top: 0;
+  }
+}
+
+td.currency {
+  text-align: right;
+}
+.currency-input input {
+  width: 7em;
+}
+
+.pagination {
+  margin: 0;
+  text-align: center;
+}
+
+.btn-add {
+  @extend .btn;
+  @extend .btn-success;
+}
+
+.btn-inline {
+  margin-top: -10px;
 }
 
 .old-table,

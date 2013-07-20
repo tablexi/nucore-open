@@ -1,7 +1,3 @@
-/*
- bootstrap overrides
-*/
-
 a {
   text-decoration: underline;
 }
@@ -19,15 +15,6 @@ a {
   [class^="icon-"], [class*=" icon-"] {
     text-decoration: none;
   }
-}
-
-li.nav-spacer {
-  margin: 1em;
-}
-
-ul.unstyled {
-  list-style: none;
-  margin-left: 0;
 }
 
 h1, h2, h3, h4, h5 {
@@ -53,18 +40,3 @@ label {
   margin-bottom: 0;
 }
 
-.modal form,
-.well form {
-  margin-bottom: 0;
-}
-
-.well {
-  padding: 8px 19px;
-  h2, h3 {
-    margin-top: 0;
-  }
-}
-
-.btn-inline {
-  margin-top: -10px;
-}
