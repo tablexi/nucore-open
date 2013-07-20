@@ -9,7 +9,7 @@ $ ->
 
     if tabs.length > 0
       base = FACILITY_PATH
-      active_tab = $('.js-tab-counts').closest('.nav').find('.active a').attr('id')
+      active_tab = $('.js-tab-counts').closest('.nav').find('a[id]').attr('id')
       return unless active_tab?
 
       if active_tab.indexOf('reservations') > -1
