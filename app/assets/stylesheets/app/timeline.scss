@@ -11,39 +11,27 @@
 }
 
 .timeline-schedule {
-  background-color: #ffffff;
-  background-image: -webkit-gradient(linear, left center, right center, from(rgba(255, 255, 255, 0.00)), to(rgba(238, 238, 238, 1.00)));
-  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0.00), rgba(238, 238, 238, 1.00));
-  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0.00), rgba(238, 238, 238, 1.00));
-  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0.00), rgba(238, 238, 238, 1.00));
-  background-image: -ms-linear-gradient(left, rgba(255, 255, 255, 0.00), rgba(238, 238, 238, 1.00));
-  background-image: linear-gradient(left, rgba(255, 255, 255, 0.00), rgba(238, 238, 238, 1.00));
-  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,StartColorStr='#ffffff', EndColorStr='#eeeeee');
+  @include gradient-horizontal(#FFF, #EEE);
   border-radius: 0 10px 10px 0;
   padding: 1em 0 1.5em;
   margin-bottom: 1.5em;
 }
 
-/* To prevent double borders */
-/*.timeline-schedule + .timeline-schedule {
-  border-top: none;
-}
-*/
 .unit_container {
-  bottom:19px;
-  display:block;
-  left:0;
-  height:44px;
-  position:absolute;
-  width:870px;
+  bottom: 19px;
+  display: block;
+  left: 0;
+  height: 44px;
+  position: absolute;
+  width: 870px;
   z-index: 20;
 }
 
 body .unit {
-  cursor:pointer;
-  display:inline-block;
-  height:24px;
-  position:absolute;
+  cursor: pointer;
+  display: inline-block;
+  height: 24px;
+  position: absolute;
   top: 19px;
   z-index: 20;
 }
@@ -64,14 +52,7 @@ body .unit {
 
 /* Default block is green-NEW */
 .unit {
-  background-color: #3a7e31;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(58, 126, 49)), to(rgb(92, 154, 91)));
-  background-image: -webkit-linear-gradient(top, rgb(58, 126, 49), rgb(92, 154, 91));
-  background-image: -moz-linear-gradient(top, rgb(58, 126, 49), rgb(92, 154, 91));
-  background-image: -o-linear-gradient(top, rgb(58, 126, 49), rgb(92, 154, 91));
-  background-image: -ms-linear-gradient(top, rgb(58, 126, 49), rgb(92, 154, 91));
-  background-image: linear-gradient(top, rgb(58, 126, 49), rgb(92, 154, 91));
-  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#3a7e31', EndColorStr='#5c9a5b');
+  @include gradient-vertical(#3A7E31, #5C9A5B);
   border-left: 1px solid #CCC;
 }
 .unit:hover {
@@ -79,28 +60,14 @@ body .unit {
 }
 
 .unit.status_cancelled {
-  background-color: #772311;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(119, 35, 17)), to(rgb(165, 52, 27)));
-  background-image: -webkit-linear-gradient(top, rgb(119, 35, 17), rgb(165, 52, 27));
-  background-image: -moz-linear-gradient(top, rgb(119, 35, 17), rgb(165, 52, 27));
-  background-image: -o-linear-gradient(top, rgb(119, 35, 17), rgb(165, 52, 27));
-  background-image: -ms-linear-gradient(top, rgb(119, 35, 17), rgb(165, 52, 27));
-  background-image: linear-gradient(top, rgb(119, 35, 17), rgb(165, 52, 27));
-  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#772311', EndColorStr='#a5341b');
+  @include gradient-vertical(#772311, #A5341B);
 }
 .unit.status_cancelled:hover {
   box-shadow: 0 0 10px #a5341b;
 }
 
 .unit.status_complete {
-  background-color: #3a6d88;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(58, 109, 136)), to(rgb(92, 133, 155)));
-  background-image: -webkit-linear-gradient(top, rgb(58, 109, 136), rgb(92, 133, 155));
-  background-image: -moz-linear-gradient(top, rgb(58, 109, 136), rgb(92, 133, 155));
-  background-image: -o-linear-gradient(top, rgb(58, 109, 136), rgb(92, 133, 155));
-  background-image: -ms-linear-gradient(top, rgb(58, 109, 136), rgb(92, 133, 155));
-  background-image: linear-gradient(top, rgb(58, 109, 136), rgb(92, 133, 155));
-  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#3a6d88', EndColorStr='#5c859b');
+  @include gradient-vertical(#3A6D88, #5C859B);
 }
 .unit.status_complete:hover {
   box-shadow:0 0 10px #3a6d88;
@@ -287,17 +254,6 @@ body .unit {
   left: 8px;
   z-index: 1000;
 }
-/*.relay_checkbox .error {
-  background: transparent image-url("icon-warning-32.png") no-repeat;
-  margin-left: 14px;
-  padding-left: 26px;
-  line-height: 24px;
-  height: 16px;
-  color: red;
-  display: block;
-  z-index: 1000;
-
-}*/
 
 #reservation_date_container {
   overflow:hidden;
