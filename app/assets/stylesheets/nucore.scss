@@ -8,6 +8,14 @@ nav ul.nav > li:hover {
   margin-top: -$navbarActiveBorderHeight;
 }
 
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus,
+.dropdown-submenu:hover > a,
+.dropdown-submenu:focus > a {
+  @include gradient-vertical(lighten($sidebarActiveBackgroundColor, 5%), $sidebarActiveBackgroundColor);
+  color: $sidebarActiveColor;
+}
+
 /*
  breadcrumb nav
 */
@@ -44,7 +52,7 @@ nav ul.nav > li:hover {
 
   > .active > a,
   > .active > a:hover {
-    background-color: $sidebarActiveBackgroundColor;
+    @include gradient-vertical(lighten($sidebarActiveBackgroundColor, 5%), $sidebarActiveBackgroundColor);
     color: $sidebarActiveColor;
   }
 }
