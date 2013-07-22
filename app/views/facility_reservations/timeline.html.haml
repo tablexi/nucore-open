@@ -1,5 +1,4 @@
 = content_for :head_content do
-  = javascript_include_tag 'pick_accessories'
   = javascript_include_tag "tooltipsy.min.js"
   = javascript_include_tag "timeline.js"
   = javascript_include_tag "jquery.toggleswitch.js"
@@ -23,5 +22,5 @@
       = check_box_tag :show_cancelled, 1, params[:show_cancelled]
       = label_tag :show_cancelled
 .clear
-.grid_10.push_1
+.span10.offset1
   = render :partial => 'shared/timeline/schedule', :collection => @schedules, :as => :schedule

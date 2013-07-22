@@ -8,10 +8,10 @@
 
 %h2=h @bundle
 
-= form_for([current_facility, @bundle]) do |f|
+= simple_form_for([current_facility, @bundle]) do |f|
   = f.error_messages
   %ul.form
     %li= render :partial => 'admin/shared/product_details_fields', :locals => {:f => f}
-  %ul.horiz
+  %ul.inline
     %li= f.submit 'Save', :class => 'btn'
     %li= link_to 'Cancel', manage_facility_bundle_path(current_facility, @bundle)

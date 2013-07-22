@@ -1,0 +1,162 @@
+.modal-body {
+  max-height: 800px;
+}
+
+.order-action {
+  margin-top: 1em;
+  a {
+    @extend .btn;
+  }
+}
+
+#order-detail-modal {
+  width: 1000px;
+  /* must be half of the width, minus scrollbar on the left (30px) */
+  margin-left: -500px;
+}
+
+.banner-list {
+  dl {
+    margin-top: 0;
+
+    dt {
+      font-weight: bold;
+    }
+    dd {
+      margin-left: 0;
+    }
+  }
+}
+
+#product_add_quantity {
+  width: 3em;
+}
+#product_add_chzn {
+  top: -3px;
+}
+
+/* Generic Form Overrides */
+.manage_order_detail {
+  input[type=text],
+  .input-prepend .add-on {
+    padding: 1px 6px !important;
+  }
+  select {
+    height: 2em;
+  }
+  .input-prepend .add-on {
+    padding: 1px 3px !important;
+  }
+  label {
+    font-weight: bold;
+    margin-bottom: 1px;
+  }
+
+  .timeinput {
+    width: 5em;
+  }
+  .datepicker {
+    width: 7em;
+  }
+
+  .note {
+    width: 80%;
+  }
+}
+
+/* Specific Form Overrides */
+.manage_order_detail {
+  .order_detail_order_status {
+    float: left;
+  }
+
+  .cancel-fee-option {
+    margin-top: 1.5em;
+  }
+
+  .copy_actual_from_reservation {
+    padding-top: 1.7em;
+    i {
+      font-size: 160%;
+    }
+
+  }
+  .cost-table {
+    .cost, .subsidy, .total {
+      float: left;
+      width: 30%;
+    }
+    .subsidy {
+      .help-block {
+        @extend .muted;
+      }
+    }
+  }
+}
+
+/* Order Management Page */
+table.order-list {
+  tr.child {
+    .product {
+      padding-left: 3em;
+    }
+  }
+
+  tr.status-cancelled {
+    @extend .muted;
+  }
+
+  th {
+    text-align: center;
+
+    &.order-id {
+      text-align: left;
+    }
+  }
+
+  th.currency,
+  th.time,
+  td.currency,
+  td.time {
+    border-left: 1px solid $tableBorder;
+    border-right: 1px solid $tableBorder;
+    width: 70px;
+  }
+
+  td.time {
+    text-align: right;
+  }
+
+  td {
+    &.badges,
+    &.order-id {
+      width: 70px;
+    }
+
+    &.badges {
+      text-align: center;
+    }
+  }
+
+  .estimated_cost {
+    @extend .label;
+  }
+
+  [class^="icon-"], [class*=" icon-"] {
+    font-size: 125%;
+  }
+}
+
+.label {
+  &.status-complete,
+  &.status-reconciled {
+    @extend .label-success;
+  }
+
+  &.status-cancelled {
+    @extend .label-important;
+  }
+}
+
+
+

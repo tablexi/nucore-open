@@ -4,14 +4,12 @@
 = content_for :h2 do
   %h2= t(".head")
 
-= content_for :top_block do      
+= content_for :top_block do
   = render :partial => 'shared/transactions/top', :locals => { :tab => "notifications" }
 
-- if @order_details.empty?
-  %p.notice No notifications are currently pending
-- else
+- if @order_details.any?
   = render :partial => 'shared/transactions/table'
   = render :partial => 'shared/reconcile_footnote'
 
-    
+
 

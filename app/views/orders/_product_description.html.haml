@@ -1,0 +1,8 @@
+- unless order_detail.order.validated?
+  .label.label-warning= order_detail.validate_for_purchase
+
+- if order_detail.bundle
+  = link_to order_detail.bundle, facility_bundle_path(order_detail.bundle.facility, order_detail.bundle)
+  &ndash;
+
+= link_to_unless order_detail.product.is_hidden?, order_detail.product, self.send("facility_#{order_detail.product.class.name.underscore}_path", order_detail.product.facility, order_detail.product)

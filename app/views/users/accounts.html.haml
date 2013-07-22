@@ -3,13 +3,13 @@
 
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'users' }
-  
+
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_users', :locals => { :secondary_tab => 'accounts' }
-  
+
 %h1= t('.h1', :user_name => @user.full_name)
 - if SettingsHelper.feature_on? :recharge_accounts
-  %p= link_to t('.link'), new_facility_account_path(current_facility, :owner_user_id => @user.id)
+  %p= link_to t('.link'), new_facility_account_path(current_facility, :owner_user_id => @user.id), :class => 'btn-add'
 - if @user.accounts.empty?
   %p.notice= t('.notice', :user_name => @user.full_name)
 - else

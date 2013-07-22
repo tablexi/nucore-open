@@ -1,60 +1,48 @@
 = content_for :breadcrumb do
-  %ul.horiz
+  %ul.breadcrumb
     %li= link_to t('.crumbs.orders'), orders_url
     %li &raquo;
     %li= t('.crumbs.receipt')
 
 = content_for :h1 do
   = t('.h1')
-= content_for :head_content do
-  = javascript_include_tag 'pick_accessories'
 
 %p= t('.intro')
 
 - if reservation = @order.only_reservation
   %p= add_accessories_link(reservation)
 
-%ul.form
-  %li
-    %label= t('.label.facility')
-    =h @order.facility
-  %li
-    %label= t('.label.account')
-    - @accounts.each do |account|
-      =h account
-  %li
-    %label= t('.label.ordered.at')
-    =h human_datetime(@order.ordered_at)
-  %li
-    %label= t('.label.ordered.for')
-    =h @order.user.full_name
-  %li
-    %label= t('.label.ordered.by')
-    =h @order.created_by_user.full_name
+= readonly_form_for :order do |f|
+  = f.input :facility
 
-%table
-  %tr
-    %th.centered= t('.th.order_no')
-    %th{:colspan => 2}= t('.th.quantity')
-    %th.currency= t('.th.cost')
-    - if @order.has_subsidies?
-      %th.currency= t('.th.adjust')
-    %th.currency= t('.th.total')
-  - @order_details.each do |order_detail|
-    - order_detail.send(:extend, PriceDisplayment)
+  = f.input :account, :input_html => { :value => @accounts.join(', ') }
+  = f.input :ordered_at
+  = f.input :user
+  = f.input :created_by_user
+
+%table.table.table-striped.table-hover.old-table
+  %thead
     %tr
-      - res = order_detail.reservation
-      %td.centered= link_to order_detail, order_order_detail_path(@order, order_detail)
-      %td.centered=h order_detail.quantity
-      %td
-        %ul
-          %li= order_detail_description(order_detail)
-          - if res
-            %li.indented= res
-
-      %td.currency=order_detail.wrapped_cost
+      %th.centered= t('.th.order_no')
+      %th{:colspan => 2}= t('.th.quantity')
+      %th.currency= t('.th.cost')
       - if @order.has_subsidies?
-        %td.currency= order_detail.wrapped_subsidy
-      %td.currency=order_detail.wrapped_total
+        %th.currency= t('.th.adjust')
+      %th.currency= t('.th.total')
+  %tbody
+    - @order_details.each do |order_detail|
+      - order_detail.send(:extend, PriceDisplayment)
+      %tr
+        - res = order_detail.reservation
+        %td.centered= link_to order_detail, order_order_detail_path(@order, order_detail)
+        %td.centered= order_detail.wrapped_quantity
+        %td.user-order-detail
+          .order-detail-description= order_detail_description(order_detail)
+          - if res
+            .order-detail-extra= res
+        %td.currency=order_detail.wrapped_cost
+        - if @order.has_subsidies?
+          %td.currency= order_detail.wrapped_subsidy
+        %td.currency=order_detail.wrapped_total
 
 = render :partial => '/price_display_footnote'

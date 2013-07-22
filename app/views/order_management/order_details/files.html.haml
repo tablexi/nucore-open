@@ -1,0 +1,40 @@
+:javascript
+  $(function() {
+    $('#file_upload').uploadify({
+      uploader     : '#{asset_path('uploadify/uploadify.swf')}',
+      fileDataName : 'fileData',
+      script       : "#{add_uploader_file_path(current_facility, @order_detail.product.parameterize, @order_detail.product.url_name)}",
+      cancelImg    : "#{asset_path('uploadify/cancel.png')}",
+      auto         : false,
+      method       : 'get',
+      multi        : true,
+      folder       : '/uploads',
+      onAllComplete : function (event,data) {  $(event.target).closest('.modal').data('modalObject').reload() },
+      scriptData   : {
+        _nucore_session    : '#{u cookies['_nucore_session']}',
+        authenticity_token : encodeURIComponent('#{u form_authenticity_token if protect_against_forgery?}'),
+        file_type          : 'sample_result',
+        order_detail_id    : '#{@order_detail.id}'
+      }
+    });
+  });
+.modal-header
+  = modal_close_button
+  %h3= t('file_uploads.sample_result.title')
+
+.modal-body
+
+  - if @files.any?
+    %ul= render :partial => 'result_file', :collection => @files
+  - else
+    %p= t('file_uploads.sample_result.none')
+    
+  %h4= t('file_uploads.sample_result.upload')
+  #file_upload= t('file_uploads.widget.error_loading')
+  %br
+  = link_to t('file_uploads.widget.start'), "javascript:$('#file_upload').uploadifyUpload();", :class => 'btn btn-primary'
+  = link_to t('file_uploads.widget.clear_queue'), "javascript:$('#file_upload').uploadifyClearQueue()", :class => 'btn'
+
+.modal-footer
+  = modal_cancel_button :text => 'Done'
+        

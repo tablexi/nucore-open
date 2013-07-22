@@ -1,15 +1,15 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
 
 = content_for :head_content do
   = javascript_include_tag 'accounts.js'
 
-%h2== Edit #{@account}
-= form_for([current_facility, @account], :url => facility_account_path(current_facility, @account)) do |f|
+%h2 Edit #{@account}
+= simple_form_for([current_facility, @account], :url => facility_account_path(current_facility, @account)) do |f|
   = f.error_messages
   = render :partial => 'account_fields', :locals => {:f => f, :instructions_for => @account.class.name}
-  %ul.horiz
-    %li= f.submit 'Save', :class => 'btn'
+  %ul.inline
+    %li= f.submit 'Save', :class => ['btn', 'btn-primary']
     %li= link_to 'Cancel', facility_account_path

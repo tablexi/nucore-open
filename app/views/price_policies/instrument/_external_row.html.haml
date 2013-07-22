@@ -1,0 +1,22 @@
+%td
+  Rate
+  %br
+  = text_field_tag "price_policy_#{pg.id}[usage_rate]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:usage_rate] : number_to_currency(pp.usage_rate, :unit => ''), :size => 8
+  %br
+%td
+  Rate
+  %br
+  = text_field_tag "price_policy_#{pg.id}[reservation_rate]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:reservation_rate] : number_to_currency(pp.reservation_rate, :unit => ''), :size => 8
+%td
+  Rate
+  %br
+  = text_field_tag "price_policy_#{pg.id}[overage_rate]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:overage_rate] : number_to_currency(pp.overage_rate, :unit => ''), :size => 8
+%td
+  Amount
+  %br
+  = text_field_tag "price_policy_#{pg.id}[minimum_cost]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:minimum_cost] : number_to_currency(pp.minimum_cost, :unit => ''), :size => 8
+
+%td
+  Amount
+  %br
+  = text_field_tag "price_policy_#{pg.id}[cancellation_cost]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:cancellation_cost] : number_to_currency(pp.cancellation_cost, :unit => ''), :size => 8

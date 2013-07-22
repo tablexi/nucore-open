@@ -1,5 +1,5 @@
 = content_for :breadcrumb do
-  %ul.horiz
+  %ul.breadcrumb
     %li= link_to t('.link.orders'), orders_url
     %li &raquo;
     %li= t('.head.h1', :order_number => @order_detail.to_s)
@@ -8,116 +8,94 @@
   = t('.head.h1', :order_number => @order_detail.to_s)
 
 - res = @order_detail.reservation
-- if res
-  = content_for :head_content do
-    = javascript_include_tag 'pick_accessories'
+.row
+  .span6
+    %p= link_to t('.link.receipt'), receipt_order_path(@order)
 
+    = readonly_form_for :order do |f|
+      = f.input :facility
+      = f.input :account
+      = f.input :ordered_at
+      = f.input :user
+      = f.input :created_by_user
 
-.grid_6.alpha
-  %ul.form
-    %li= link_to t('.link.receipt'), receipt_order_path(@order)
-    %li
-      %label= t('.label.facility')
-      =h @order.facility
-    %li
-      %label= t('.label.account')
-      =h @order_detail.account
-    %li
-      %label= t('.label.ordered.at')
-      =h human_datetime(@order.ordered_at)
-    %li
-      %label= t('.label.ordered.for')
-      =h @order.user.full_name
-    %li
-      %label= t('.label.ordered.by')
-      =h @order.created_by_user.full_name
+  .span6
+    - if @order_detail.can_dispute?
+      .well
+        %h3= t('.head.dispute')
+        %p= t('.instruct.dispute')
+        = simple_form_for(@order_detail, :url => order_order_detail_path, :html => {:method => :put}) do |f|
+          = f.input :dispute_reason
 
-.grid_6.omega.margin_bottom
-  - if @order_detail.can_dispute?
-    .box_no_fill.margin_bottom
-      %h3= t('.head.h3')
-      %p= t('.instruct.dispute')
-      = form_for(:order_detail, @order_detail, :url => order_order_detail_path, :html => {:method => :put}) do |f|
-        = f.error_messages
-        %ul.form
-          %li
-            %label= t('.label.dispute.reason')
-            = f.text_field :dispute_reason
-        %ul.horiz
-          %li= submit_tag t('.submit.dispute'), :class => 'btn'
+          = f.submit t('.submit.dispute'), :class => 'btn'
 
-  - unless @order_detail.stored_files.sample_result.empty?
-    .box
-      %h3= t('.head.h3-2')
-      %ul.form
-        - i = 0
-        - @order_detail.stored_files.sample_result.sort{|a,b| a.created_at <=> b.created_at}.each do |stored_file|
-          %li= "#{link_to("Results File #{i+=1}", stored_file.file.url)} - #{human_datetime(stored_file.created_at)}".html_safe
+    - if @order_detail.dispute_at
+      .well
+        = readonly_form_for :order_detail do |f|
+          .container
+            .row
+              .span3
+                = f.input :dispute_at
+                = f.input :dispute_reason
+              .span3
+                = f.input :dispute_resolved_at if @order_detail.dispute_resolved_at
+                = f.input :dispute_resolved_reason if @order_detail.dispute_resolved_reason.present?
 
-  - if !@order_detail.dispute_at.nil?
-    %ul.form.box
-      %li
-        %label= t('.label.dispute.at')
-        =h human_datetime(@order_detail.dispute_at)
-      %li
-        %label= t('.label.dispute.reason')
-        =h @order_detail.dispute_reason
-    - if !@order_detail.dispute_resolved_at.nil?
-      %li
-        %label= t('.label.dispute.resolved_at')
-        =h human_datetime(@order_detail.dispute_resolved_at)
-      %li
-        %label= t('.label.dispute.notes')
-        =h @order_detail.dispute_resolved_reason
+    - if @order_detail.stored_files.sample_result.any?
+      .well
+        %h3= t('.head.results')
+        %ul= render :partial => 'result_file', :collection => @order_detail.stored_files.sample_result
 
-.clear
-%table
-  %tr
-    %th.centered= t('.th.action')
-    %th{:colspan => 2}= t('.th.quantity')
-    %th= t('.th.status')
-    %th.currency= t('.th.cost')
-    - if @order_detail.has_subsidies?
-      %th.currency= t('.th.adjust')
-    %th.currency= t('.th.total')
-  %tr
-    %td.centered
-      - if res
-        - if res.can_switch_instrument_on?
-          = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'on')
-        - elsif res.can_switch_instrument_off?
-          = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'off'), :class => end_reservation_class(res)
-        - elsif res.can_cancel?
-          = link_to t('.link.reservation.cancel'), "#"
-    %td.centered=h @order_detail.quantity
-    %td
-      %ul
-        %li= order_detail_description(@order_detail)
-        - if res
-          - if res.can_customer_edit?
-            %li.indented= link_to res, edit_order_order_detail_reservation_path(@order, @order_detail, res)
+.row
+  .span12
+    %table.table.table-striped.table-hover.old-table.old-table
+      %thead
+        %tr
+          %th.centered= t('.th.action')
+          %th{:colspan => 2}= t('.th.quantity')
+          %th= t('.th.status')
+          %th.currency= t('.th.cost')
+          - if @order_detail.has_subsidies?
+            %th.currency= t('.th.adjust')
+          %th.currency= t('.th.total')
+      %tbody
+        %tr
+          %td.centered
+            - if res
+              - if res.can_switch_instrument_on?
+                = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'on')
+              - elsif res.can_switch_instrument_off?
+                = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'off'), :class => end_reservation_class(res)
+              - elsif res.can_cancel?
+                = link_to t('.link.reservation.cancel'), "#"
+          %td.centered=h @order_detail.wrapped_quantity
+          %td.user-order-detail
+            .order-detail-description= order_detail_description(@order_detail)
+            - if res
+              .order-detail-extra
+                - if res.can_customer_edit?
+                  = link_to res, edit_order_order_detail_reservation_path(@order, @order_detail, res)
+                - else
+                  = link_to res, order_order_detail_reservation_path(@order, @order_detail, res)
+            - if @order_detail.survey_completed?
+              .order-detail-extra= link_to(t('.link.view.order_form'), @order_detail.external_service_receiver.response_data, :target => '_blank')
+            - unless @order_detail.stored_files.template_result.empty?
+              .order-detail-extra= link_to(t('.link.view.order_file'), @order_detail.stored_files.template_result.first.file.url)
+            - unless @order_detail.note.blank?
+              .order-detail-extra.order-detail-note= "Note: #{@order_detail.note}"
+          %td=h @order_detail.order_status
+          - if @order_detail.cost_estimated?
+            %td.estimated_cost.currency=show_estimated_cost(@order_detail)
+            - if @order_detail.has_subsidies?
+              %td.estimated_cost.currency=show_estimated_subsidy(@order_detail)
+            %td.estimated_cost.currency=show_estimated_total(@order_detail)
+          - elsif @order_detail.price_policy.nil?
+            %td{:colspan => 2}= t('.unassigned')
+
           - else
-            %li.indented= link_to res, order_order_detail_reservation_path(@order, @order_detail, res)
-        - if @order_detail.survey_completed?
-          %li.indented= link_to(t('.link.view.order_form'), @order_detail.external_service_receiver.response_data, :target => '_blank')
-        - unless @order_detail.stored_files.template_result.empty?
-          %li.indented= link_to(t('.link.view.order_file'), @order_detail.stored_files.template_result.first.file.url)
-        - unless @order_detail.note.blank?
-          %li
-            %i=h "Note: #{@order_detail.note}"
-    %td=h @order_detail.order_status
-    - if @order_detail.cost_estimated?
-      %td.estimated_cost.currency=show_estimated_cost(@order_detail)
-      - if @order_detail.has_subsidies?
-        %td.estimated_cost.currency=show_estimated_subsidy(@order_detail)
-      %td.estimated_cost.currency=show_estimated_total(@order_detail)
-    - elsif @order_detail.price_policy.nil?
-      %td{:colspan => 2}= t('.unassigned')
-
-    - else
-      %td.actual_cost.currency=show_actual_cost(@order_detail)
-      - if @order_detail.has_subsidies?
-        %td.actual_cost.currency=show_actual_subsidy(@order_detail)
-      %td.actual_cost.currency=show_actual_total(@order_detail)
+            %td.actual_cost.currency=show_actual_cost(@order_detail)
+            - if @order_detail.has_subsidies?
+              %td.actual_cost.currency=show_actual_subsidy(@order_detail)
+            %td.actual_cost.currency=show_actual_total(@order_detail)
 
 = render :partial => '/price_display_footnote'

@@ -1,10 +1,11 @@
 = content_for :h1 do
   = Facility.model_name.human.pluralize
 
-%p.box= t(".welcome")
-  
+.alert.alert-info= t(".welcome")
+
 - if @facilities.empty?
-  %p.notice= "No #{Facility.human_name.pluralize.downcase} are available at this time."
+  .alert.alert-info= "No #{Facility.model_name.human.pluralize.downcase} are available at this time."
+
 - @facilities.sort.each do |facility|
   %h3= link_to h(facility), facility_path(facility)
   %p=h facility.short_description

@@ -1,31 +1,31 @@
-%table
-  %tr
-    %th.actions
-    %th Price Group
-    %th Type
-    %th.currency Unit Cost
-    %th.currency Unit Adjustment
-    %th.currency Unit Net Cost
-  - price_policies_to_show = price_policies.select { |pp| pp.can_purchase? }
-  - price_policies_to_show.each do |price_policy|
+%table.table
+  %thead
     %tr
-      - if price_policies_to_show.first == price_policy
-        %td.centered{ :rowspan => price_policies_to_show.length }
-          %ul.form
+      %th.actions
+      %th Price Group
+      %th Type
+      %th.currency Unit Cost
+      %th.currency Unit Adjustment
+      %th.currency Unit Net Cost
+  %tbody
+    - price_policies_to_show = price_policies.select { |pp| pp.can_purchase? }
+    - price_policies_to_show.each do |price_policy|
+      %tr
+        - if price_policies_to_show.first == price_policy
+          %td.centered{ :rowspan => price_policies_to_show.length }
             - unless price_policies.all?{|pp| pp.editable?}
-              %li.disabled Edit
-              %li.disabled Remove
+              %p.muted Edit
+              %p.muted Remove
             - else
-              %li= link_to 'Edit', edit_price_policy_path(price_policy, url_date)
-              %li= link_to 'Remove', price_policy_path(price_policy, url_date), :confirm => 'Are you sure?', :method => :delete
-      %td=h price_policy.price_group.name
-      %td=h price_policy.price_group.type_string
-      - if price_policy.valid?
-        %td.currency= number_to_currency price_policy.unit_cost
-        %td.currency= number_to_currency price_policy.unit_subsidy
-        %td.currency= number_to_currency(price_policy.unit_cost - price_policy.unit_subsidy)
-      - else
-        %td.centered{ :colspan => 3 }
-          = t('price_policies.problem')
-          = price_policy.errors.full_messages.to_sentence
-
+              %p= link_to 'Edit', edit_price_policy_path(price_policy, url_date)
+              %p= link_to 'Remove', price_policy_path(price_policy, url_date), :confirm => 'Are you sure?', :method => :delete
+        %td= price_policy.price_group.name
+        %td= price_policy.price_group.type_string
+        - if price_policy.valid?
+          %td.currency= number_to_currency price_policy.unit_cost
+          %td.currency= number_to_currency price_policy.unit_subsidy
+          %td.currency= number_to_currency(price_policy.unit_cost - price_policy.unit_subsidy)
+        - else
+          %td.centered{ :colspan => 3 }
+            = t('price_policies.problem')
+            = price_policy.errors.full_messages.to_sentence

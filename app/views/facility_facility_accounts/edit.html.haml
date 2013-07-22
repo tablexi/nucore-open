@@ -9,8 +9,7 @@
 %p= t('.main')
 = form_for @facility_account, :url => facility_facility_account_path do |f|
   = f.error_messages
-  %ul.form
-    = render :partial => 'facility_account_fields', :locals => {:f => f}
-  %ul.horiz
+  = render :partial => 'facility_account_fields', :locals => {:f => f}
+  %ul.inline
     %li= f.submit 'Save', :class => 'btn'
     %li= link_to 'Cancel', facility_facility_accounts_path

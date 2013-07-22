@@ -1,50 +1,32 @@
 - if @reservation.can_edit?
-  %li.left
-    = f.label :reserve_start_date, 'Reservation Date'
-    = f.text_field :reserve_start_date, :class => 'datepicker'
-  %li.left
-    = f.label  :reserve_start_hour, 'Starting At'
-    = f.select :reserve_start_hour, (1..12).to_a
-    = f.select :reserve_start_min, (0..59).step(5).map{|d| [sprintf('%02d', d),d]}
-    = f.select :reserve_start_meridian, ['AM', 'PM']
-  %li.left
-    = f.label :duration_value, 'Duration'
-    = f.text_field :duration_value, :value => f.object.duration_value, :size => '5'
-    = f.select :duration_unit, ['minutes', 'hours'], { :selected => f.object.duration_unit }
-  %li.clear
+  .datetime-block
+    = f.input :reserve_start_date, :input_html => { :class => 'datepicker' }
+    .control-group
+      .controls
+        = f.label '&nbsp;'
+        = time_select f, :reserve_start
+    = f.input :duration_mins, :input_html => { :class => 'timeinput' }
+
 - else
-  %li.left
-    = f.label :reserve_start_date, 'Reservation'
-    = @reservation.reserve_to_s
-  %li.clear
+  = f.input :reserve_start_date, :label => 'Reservation', :as => :readonly, :input_html => { :value => @reservation.reserve_to_s }
+.clearfix
 
 - if @reservation.can_edit_actuals?
-  %li.left
-    = f.label :actual_start_date, 'Actual Start Date'
-    = f.text_field :actual_start_date, :class => 'datepicker'
-  %li.left
-    = f.label  :actual_start_hour, 'Starting At'
-    = f.select :actual_start_hour, (1..12).to_a
-    = f.select :actual_start_min, (0..59).map{|d| [sprintf('%02d', d),d]}
-    = f.select :actual_start_meridian, ['AM', 'PM']
-  %li.left
-    = f.label :actual_end_date, 'Actual End Date'
-    = f.text_field :actual_end_date, :class => 'datepicker'
-  %li.left
-    = f.label  :actual_end_hour, 'Ending At'
-    = f.select :actual_end_hour, (1..12).to_a
-    = f.select :actual_end_min, (0..59).map{|d| [sprintf('%02d', d),d]}
-    = f.select :actual_end_meridian, ['AM', 'PM']
+  .datetime-block
+    = f.input :actual_start_date, :input_html => { :class => 'datepicker' }
+    .control-group
+      .controls
+        = f.label '&nbsp;'
+        = time_select f, :actual_start
+    = f.input :actual_duration_mins, :input_html => { :class => 'timeinput' }
   - unless @reservation.has_actuals?
-    %li.left.copy_actual_from_reservation
+    .copy_actual_from_reservation
       = link_to 'Copy from reservation','#'
-      %span.start_date= @reservation.reserve_start_at #human_datetime(@reservation.reserve_start_at, :date_only => true)
-      %span.end_date= @reservation.reserve_end_at #human_datetime(@reservation.reserve_end_at, :date_only => true)
-  %li.clear
+      %span.start_date.hidden= @reservation.reserve_start_at
+      %span.end_date.hidden= @reservation.reserve_end_at
   - if @instrument.reservation_only?
-    %li.warning This is a reservation only instrument. Pricing is determined by the reservation times.
+    %li.alert This is a reservation only instrument. Pricing is determined by the reservation times.
 - else
-  %li.left
-    = f.label :actual_start_date, 'Actual Usage'
-    =h @reservation.actuals_string
-  %li.clear
+  = f.input :actual_start_date, :as => :readonly, :input_html => { :value => @reservation.actuals_string }
+
+.clearfix

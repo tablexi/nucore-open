@@ -7,7 +7,6 @@
       = @order_detail_action.to_s.titleize
     - else
       Transaction History
-= content_for :top_block do      
+= content_for :top_block do
   = render :partial => 'shared/transactions/top', :locals => { :tab => "transactions" }
-= render :partial => 'shared/transactions/table'  
-
+= render :partial => 'shared/transactions/table'

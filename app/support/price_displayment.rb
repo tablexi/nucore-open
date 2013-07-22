@@ -13,6 +13,8 @@
 
 module PriceDisplayment
   include ActionView::Helpers::NumberHelper
+  include ActionView::Helpers::TagHelper
+
   def display_cost
     format(actual_cost) || format(estimated_cost) || empty_display
   end
@@ -27,15 +29,15 @@ module PriceDisplayment
   end
 
   def wrapped_cost
-    %(<span class="#{display_cost_class}_cost">#{display_cost}</span>).html_safe
+    content_tag :span, display_cost, :class => "#{display_cost_class}_cost"
   end
 
   def wrapped_subsidy
-    %(<span class="#{display_cost_class}_cost">#{display_subsidy}</span>).html_safe
+    content_tag :span, display_subsidy, :class => "#{display_cost_class}_cost"
   end
 
   def wrapped_total
-    %(<span class="#{display_cost_class}_cost">#{display_total}</span>).html_safe
+    content_tag :span, display_total, :class => "#{display_cost_class}_cost"
   end
 
   def display_cost_class
@@ -45,6 +47,20 @@ module PriceDisplayment
       'estimated'
     else
       'unassigned'
+    end
+  end
+
+  def actual_cost?
+    actual_cost.present?
+  end
+
+  def wrapped_quantity
+    if reservation.try(:actual_duration_mins)
+      content_tag :span, reservation.actual_duration_mins, :class => 'timeinput'
+    elsif quantity_as_time?
+      content_tag :span, quantity, :class => 'timeinput'
+    else
+      quantity
     end
   end
 

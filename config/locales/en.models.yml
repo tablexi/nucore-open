@@ -2,8 +2,8 @@
 # Messages that come from models
 en:
   models:
-      order:
-        auto_assign_account: "Could not find a valid payment source for purchasing %{product_name}"
+    order:
+      auto_assign_account: "Could not find a valid payment source for purchasing %{product_name}"
 
   activerecord:
     errors:
@@ -73,8 +73,14 @@ en:
           not_in_price_group: You are not in a price group that may purchase this bundle; please contact the facility.
           not_authorized_acting_as: You are not authorized to order bundles from this facility on behalf of a user.
           no_accounts: "Sorry, but we could not find a valid payment source that you can use to purchase this bundle"
+        order_detail:
+          changing_status: There was an error trying to change the status of the order.
         reservation:
           connot_be_completed_in_future: You cannot complete a future reservation.
+          attributes:
+            base:
+              conflict: The reservation conflicts with another reservation.
+              conflict_in_cart: The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue.
         account_user:
           attributes:
             user_id:
@@ -104,25 +110,69 @@ en:
       facility:
         one: Facility
         other: Facilities
+      product:
+        one: Product
+        other: Products
+      instrument:
+        one: Instrument
+        other: Instruments
+      service:
+        one: Services
+        other: Services
+      item:
+        one: Item
+        other: Items
+      bundle:
+        one: Bundle
+        other: Bundles
       product_access_group: Scheduling Group
     # Model Attributes
     attributes:
+      schedule_rule:
+        start_time: Start Time
+        end_time: End Time
+        duration_mins: Appointments Start Every
+        product_access_groups: "Restricted to only these groups:"
       user:
         username: Username
         password: Password
         password_confirmation: Confirm password
         current_password: Current password
+        last_sign_in_at: Last Login
+        full_name: Full Name
       facility:
-        url_name: URL name
+        fax_number: Fax Number
+        is_active: Is Active?
+        journal_mask: CoreID
+        phone_number: Phone Number
+        short_description: Short Description
+        url_name: URL Name
       product:
-        url_name: ID
-        requires_approval: Requires Approval
+        url: URL
+        url_name: URL Name
+        requires_approval: Requires Approval?
+        initial_order_status: Initial Order Status
+        is_archived: Is Inactive?
+        is_hidden: Is Hidden?
+      instrument:
+        min_reserve_mins: Minimum Reservation Minutes
+        max_reserve_mins: Maximum Reservation Minutes
+        min_cancel_hours: Minimum Cancelation Hours
+        auto_cancel_mins: Automatic Cancelation Minutes
       price_group:
         is_internal: Is Internal?
       user_role:
         username: User
+      order:
+        user: Ordered For
+        created_by_user: Ordered By
+        ordered_at: Ordered Date
+        account: Payment Source
       order_detail:
+        dispute_at: Disputed At
+        dispute_reason: Dispute Reason
         dispute_resolved_reason: Resolution Notes
+        dispute_resolved_at: Dispute Resolved At
         description: Description
         fulfilled_at: Fulfilled Date
         ordered_at: Ordered Date
@@ -132,10 +182,39 @@ en:
         created_by_user: Ordered By
         reviewed_at: Review Closes
         reviewed_at_past: Review Closed
-        order_status: Status
+        id: "Order #"
+        account: Payment Source
+        order_status: Order Status
+        estimated_cost: Estimated Price
+        estimated_subsidy: Estimated Adjustment
+        estimated_total: Estimated Total
+        actual_cost: Price
+        actual_subsidy: Adjustment
+        actual_total: Total
+        reconciled_note: Reconciliation Note
+      order_status:
+        parent: Status of
       journal:
         description: Notes
         journal_status: Status
+      relay:
+        type: Relay Type
+        ip: Relay IP Address
+        port: Relay Port
+        username: Relay Username
+        password: Relay Password
+        auto_logout: Automatic Logout?
+      reservation:
+        base: '' #handled by actual messages
+        to_s: Reservation
+        reserve_start_date: Reserve Start
+        duration_mins: Duration
+        actuals_string: Actual Usage
+        actual_start_date: Actual Start
+        actual_duration_mins: Actual Duration
+        canceled_by_user: Cancelled By
+        canceled_by: Cancelled By
+        canceled_at: Cancelled At
       statement:
         id: "Invoice #"
         created_by: Sent By
@@ -144,6 +223,11 @@ en:
         total_cost: Total
       account:
         account_number: Number
-        expires_at: Expires
+        expires_at: Expiration
+        formatted_expires_at: Expiration
+        description: Description
+        type_string: Payment Source Type
+        owner_user: Owner
+        remittance_information: Bill To
       nufs_account:
-        account_number: Payment Source
+        account_number: Payment Source Number

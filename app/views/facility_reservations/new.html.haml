@@ -18,13 +18,13 @@
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'reservations'}
 
-%h2=h @instrument
+%h2= @instrument
 
-= form_for([@instrument, @reservation], :url => facility_instrument_reservations_path) do |f|
+= simple_form_for([@instrument, @reservation], :url => facility_instrument_reservations_path) do |f|
   = f.error_messages
-  %ul.form
-    = render :partial => 'reservation_fields', :locals => {:f => f}
-  %ul.horiz
+  = render :partial => 'reservation_fields', :locals => {:f => f}
+  .clearfix
+  %ul.inline
     %li= f.submit 'Create', :class => 'btn'
     %li= link_to 'Cancel', facility_instrument_schedule_path
 

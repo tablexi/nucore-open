@@ -3,21 +3,21 @@
 %h3 #{ProductAccessGroup.model_name.human}
 
 - if can? :add, ProductAccessGroup
-  %p= link_to "Add #{ProductAccessGroup.model_name.human}", new_facility_instrument_product_access_group_path(@facility, @instrument) 
+  %p= link_to "Add #{ProductAccessGroup.model_name.human}", new_facility_instrument_product_access_group_path(@facility, @instrument), :class => ['btn', 'btn-add']
 
 
-%table
-  %tr
-    %th
-    %th #{ProductAccessGroup.human_attribute_name(:name)}
-    %th #{User.model_name.human.pluralize}
-  - @product_access_groups.each do |level|
+%table.table.table-striped.table-hover
+  %thead
     %tr
-      %td= link_to "Remove", facility_instrument_product_access_group_path(@facility, @instrument, level), :method => :delete, :confirm => 'Are you sure?' if can? :delete, level
-      - if can? :edit, level
-        %td= link_to level.name, edit_facility_instrument_product_access_group_path(@facility, @instrument, level)
-      - else
-        %td= level.name
-      %td= level.users.size
-
-
+      %th
+      %th= ProductAccessGroup.human_attribute_name(:name)
+      %th= User.model_name.human.pluralize
+  %tbody
+    - @product_access_groups.each do |level|
+      %tr
+        %td= link_to "Remove", facility_instrument_product_access_group_path(@facility, @instrument, level), :method => :delete, :confirm => 'Are you sure?' if can? :delete, level
+        - if can? :edit, level
+          %td= link_to level.name, edit_facility_instrument_product_access_group_path(@facility, @instrument, level)
+        - else
+          %td= level.name
+        %td= level.users.size

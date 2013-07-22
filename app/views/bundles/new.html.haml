@@ -5,10 +5,10 @@
   = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'bundles' }
 
 %h2== Add Bundle
-= form_for([current_facility, @bundle]) do |f|
+= simple_form_for([current_facility, @bundle]) do |f|
   = f.error_messages
   %ul.form
     = render :partial => 'admin/shared/product_details_fields', :locals => {:f => f}
-  %ul.horiz
+  %ul.inline
     %li= f.submit 'Create', :class => 'btn'
     %li= link_to 'Cancel', facility_bundles_path

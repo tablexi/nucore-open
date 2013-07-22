@@ -1,25 +1,13 @@
 = content_for :h1 do
   = t('pages.login')
 
-- notice=t('sessions.new.help_text')
-- unless notice.blank?
-  %p.notice=notice
-
-- if flash[:error]
-  %p.error= flash[:error]
-- if flash[:info]
-  %p.info= flash[:info]
-
-= form_for resource, :as => resource_name, :url => session_path(resource_name) do |f|
-  %ul.form
-    %li
-      %label= User.human_attribute_name(:username)
-      = f.text_field :username, :size => 30
-    %li
-      %label= User.human_attribute_name(:password)
-      = f.password_field :password, :size => 15
-  %ul.horiz
-    %li= submit_tag t('pages.login'), :class => 'btn'
+= simple_form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
+  .form-inputs
+    = f.input :username, :required => true, :autofocus => true
+    = f.input :password, :required => true
+    = f.input :remember_me, :as => :boolean if devise_mapping.rememberable?
+  .form-actions
+    = f.button :submit, t('pages.login')
 
 - if SettingsHelper.feature_on? :password_update
   = link_to "Forgot password?", :reset_password

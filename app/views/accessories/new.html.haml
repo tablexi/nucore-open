@@ -1,0 +1,26 @@
+.modal-header
+  = modal_close_button
+  %h3= t('product_accessories.pick_accessories.title')
+= simple_form_for :accessories, :url => order_order_detail_accessories_path(@order, @order_detail), :remote => request.xhr?, :html => { 'data-type' => 'html', :id => 'accessory-form', :class => :pick_accessories_form } do |f|
+  .modal-body
+    %p= t('product_accessories.pick_accessories.instruct')
+
+    %table.table
+      - @order_details.each do |od|
+        = f.simple_fields_for od.product.id.to_s, od do |p|
+          %tr{:class => ['accessory-row', "scaling-#{od.class.name.demodulize.underscore}"]}
+            %td
+              = p.input :enabled, :as => :boolean, :label => false, :inline_label =>  "#{od.product.to_s} (#{t("product_accessories.type.#{od.scaling_type}")})"
+
+            %td= p.input :quantity, 
+                :disabled => !od.quantity_editable?,
+                :label => false,
+                :input_html => { :value => od.quantity,
+                                 :class => od.quantity_as_time? ? 'timeinput' : '',
+                                 :data => { :always_disabled => !od.quantity_editable? } }
+
+
+  .modal-footer
+    = f.button :submit, :class => 'btn-primary', :value => 'Add Accessories'
+    -# = submit_tag 'Add Accessories', :class => 'btn btn-primary'
+    = modal_cancel_button

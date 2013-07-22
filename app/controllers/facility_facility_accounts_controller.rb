@@ -7,17 +7,17 @@ class FacilityFacilityAccountsController < ApplicationController
   load_and_authorize_resource :class => FacilityAccount
 
   layout 'two_column'
-  
+
   def initialize
     @active_tab = 'admin_facility'
     super
   end
-  
+
   # GET /facilities/:facility_id/facility_accounts(.:format)
   def index
     @accounts = current_facility.facility_accounts
   end
-  
+
   # GET /facilities/:facility_id/facility_accounts/new(.:format)
   def new
     @facility_account = current_facility.facility_accounts.new(:is_active => true, :revenue_account => '50617')
@@ -44,7 +44,7 @@ class FacilityFacilityAccountsController < ApplicationController
   # PUT /facilities/:facility_id/facility_accounts/:id(.:format)
   def update
     @facility_account = current_facility.facility_accounts.find(params[:id])
-    
+
     if @facility_account.update_attributes(params[:facility_account])
       flash[:notice] = 'Facility account was successfully updated.'
       redirect_to facility_facility_accounts_path

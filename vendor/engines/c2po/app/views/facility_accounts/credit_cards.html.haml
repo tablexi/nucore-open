@@ -23,29 +23,31 @@
   %p= t(".instructions")
 
   = form_tag(update_credit_cards_facility_accounts_path, :method => :post) do
-    %table
-      %tr.borderless
-        %td{:colspan => 2}= link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
-        %td.currency{:colspan => 2}= submit_tag "Reconcile Orders"
-      %tr
-        %th
-        %th Order
-        %th Total
-        %th Reconcile Note
-      - @unreconciled_details.each do |od|
+    %table.table.table-striped.table-hover
+      %thead
         %tr
-          %td.centered= check_box_tag "order_detail[#{od.id}][reconciled]", '1', true, {:class => 'toggle'}
-          %td
-            %ul
-              %li== #{link_to "##{od}", edit_facility_order_order_detail_path(current_facility, od.order_id, od)}: #{od.product}
-              - if od.note
-                %li.indented
-                  %i=h od.note
+          %th{:colspan => 3}= link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
+          %th.pull-right= submit_tag "Reconcile Orders", :class => ['btn', 'btn-primary']
+        %tr
+          %th
+          %th Order
+          %th Total
+          %th Reconcile Note
+      %tbody
+        - @unreconciled_details.each do |od|
+          %tr
+            %td.centered= check_box_tag "order_detail[#{od.id}][reconciled]", '1', true, {:class => 'toggle'}
+            %td.user-order-detail
+              .order-detail-description
+                = link_to "##{od}", facility_order_path(current_facility, od.order_id)
+                = ": #{od.product}"
+                - if od.note
+                  .order-detail-extra.order-detail-note= od.note
 
-          %td= show_actual_total(od)
-          %td= text_field_tag "order_detail[#{od.id}][notes]", begin params[:order_detail][od.id.to_s][:notes] rescue '' end
-      %tr.borderless
-        %td{:colspan => 2}= link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
-        %td.currency{:colspan => 2}= submit_tag "Reconcile Orders"
+            %td= show_actual_total(od)
+            %td= text_field_tag "order_detail[#{od.id}][notes]", begin params[:order_detail][od.id.to_s][:notes] rescue '' end
+        %tr.borderless
+          %td{:colspan => 3}= link_to('Select None', 'JavaScript:void(0);', :class => 'select_all')
+          %td.pull-right= submit_tag "Reconcile Orders", :class => ['btn', 'btn-primary']
 
   %p= will_paginate(@unreconciled_details)

@@ -1,7 +1,8 @@
-%ul.sidenav
-  %li= link_to t('shared.sidenav_admin.overview'), manage_facility_path(current_facility), :class => (sidenav_tab == 'overview' ? 'active' : '')
+%ul.sidebar-nav
+  = tab t('shared.sidenav_admin.overview'), manage_facility_path(current_facility), sidenav_tab == 'overview'
+
   - if SettingsHelper.feature_on? :recharge_accounts
-    %li= link_to t('shared.sidenav_admin.deposit_accounts'), facility_facility_accounts_path(current_facility), :class => (sidenav_tab == 'recharge_accounts' ? 'active' : '')
-  %li= link_to t('shared.sidenav_admin.facility_staff'), facility_facility_users_path(current_facility), :class => (sidenav_tab == 'staff' ? 'active' : '')
-  %li= link_to t('shared.sidenav_admin.price_groups'), facility_price_groups_path(current_facility), :class => (sidenav_tab == 'price_groups' ? 'active' : '')
-  %li= link_to t('shared.sidenav_admin.statuses'), facility_order_statuses_path(current_facility), :class => (sidenav_tab == 'statuses' ? 'active' : '')
+    = tab t('shared.sidenav_admin.deposit_accounts'), facility_facility_accounts_path(current_facility), sidenav_tab == 'recharge_accounts'
+  = tab t('shared.sidenav_admin.facility_staff'), facility_facility_users_path(current_facility), sidenav_tab == 'staff'
+  = tab t('shared.sidenav_admin.price_groups'), facility_price_groups_path(current_facility), sidenav_tab == 'price_groups'
+  = tab t('shared.sidenav_admin.statuses'), facility_order_statuses_path(current_facility), sidenav_tab == 'statuses'

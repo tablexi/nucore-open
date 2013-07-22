@@ -4,14 +4,12 @@
 
 = content_for :h2 do
   %h2= t(".head")
-= content_for :top_block do      
+= content_for :top_block do
   = render :partial => 'shared/transactions/top', :locals => { :tab => "in_review" }
 
-- if @order_details.empty?
-  %p.notice= t(".notice")
-- else
+- if @order_details.any?
   = content_for :action_instructions do
-    %p= t(".instructions")
-      
+    %p.alert.alert-info= t(".instructions")
+
   = render :partial => 'shared/transactions/table'
-  = render :partial => 'shared/reconcile_footnote'    
+  = render :partial => 'shared/reconcile_footnote'

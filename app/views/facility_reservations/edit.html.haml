@@ -1,5 +1,4 @@
 = content_for :head_content do
-  = javascript_include_tag 'date.js'
   = javascript_include_tag 'calendar/fullcalendar.min.js'
   - if @order_detail.complete?
     :javascript
@@ -23,11 +22,11 @@
 
 %h2=h @instrument.name
 
-= form_for(@reservation, :url => facility_order_order_detail_reservation_path, :html => {:method => :put}) do |f|
+= simple_form_for(@reservation, :url => facility_order_order_detail_reservation_path, :html => {:method => :put}) do |f|
   = f.error_messages
-  %ul.form
-    = render :partial => 'reservation_fields', :locals => {:f => f}
-  %ul.horiz
+  = render :partial => 'reservation_fields', :locals => {:f => f}
+  .clearfix
+  %ul.inline
     %li= f.submit 'Save', :class => 'btn'
     - if @order_detail.complete?
       %li= link_to 'Cancel', show_problems_facility_reservations_path

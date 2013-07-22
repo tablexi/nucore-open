@@ -7,17 +7,19 @@
 
 %p= t('.main')
 
-%ul.horiz
-  %li= link_to t('.add'), new_facility_facility_account_path
+%ul.inline
+  %li= link_to t('.add'), new_facility_facility_account_path, :class => 'btn-add'
 
 - if @accounts.empty?
   %p.notice= t('.notice')
 - else
-  %table
-    %tr
-      %th
-      %th= t('.th')
-    - @accounts.each do |a|
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td= link_to 'Edit', edit_facility_facility_account_path(current_facility, a)
-        %td=h a.to_s + (a.is_active? ? '' : ' (inactive)')
+        %th
+        %th= t('.th')
+    %tbody
+      - @accounts.each do |a|
+        %tr
+          %td= link_to 'Edit', edit_facility_facility_account_path(current_facility, a)
+          %td=h a.to_s + (a.is_active? ? '' : ' (inactive)')

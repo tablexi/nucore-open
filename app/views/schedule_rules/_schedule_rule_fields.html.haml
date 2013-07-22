@@ -1,38 +1,27 @@
-%li
-  %ul.form.box
-    %li
-      %b.require Effective Days of Week
+.well
+  %h4 Effective Days of Week
+  %ul.inline
     - ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].each do |day|
-      %li.left
-        = f.label "on_#{day.downcase}".to_sym, day
-        = f.check_box "on_#{day.downcase}".to_sym
-    %li.clear
-%li
-  %ul.form.box
+      %li= f.input "on_#{day.downcase}", :label => day
+
+.well
+  = f.hint :end_time
+  %ul.inline
     %li
-      %p.instructions== Start and end times are in 24-hour time format.
-    %li.left
-      = label_tag :start_time, nil, :class => 'require'
-      = f.select :start_hour, (0..23).to_a
-      ==:
-      = f.select :start_min, (0..59).step(5).map{|d| [sprintf('%02d', d),d]}
-    %li.left
-      = f.label :duration_mins, 'Appointments Start Every', :class => 'require'
-      = f.select :duration_mins, ScheduleRule.durations.map{|d| [(d == 1 ? "1 minute" : "#{d} minutes"), d]}, schedule_rule.duration_mins ? { } : { :selected => 5 }
-    %li.clear
+      = f.label :start_time
+      = time_select24(f, :start)
     %li
-      = label_tag :end_time, nil, :class => 'require'
-      = f.select :end_hour, (0..24).to_a
-      ==:
-      = f.select :end_min, (0..59).step(5).map{|d| [sprintf('%02d', d),d]}
-%li
+      = f.input :duration_mins, :collection => ScheduleRule.durations.map{|d| [(d == 1 ? "1 minute" : "#{d} minutes"), d]}
+  %ul.inline
+    %li
+      = f.label :end_time
+      = time_select24(f, :end)
+
+= f.input :discount_percent, :label => false, :hint => false do
   = f.label :discount_percent
-  %p.instruction During the period covered by this schedule rule, overall cost will be discounted by
-  = f.text_field :discount_percent, :size => 4
-  ='%'
+  = f.hint :discount_percent
+  = f.number_field :discount_percent, :size => 4
+  = "%"
+
 - if @instrument.product_access_groups.any?
-  %li
-    = label_tag "Restricted to only these groups:"
-    - @instrument.product_access_groups.each do |level|
-      = check_box_tag "schedule_rule[product_access_group_ids][]", level.id, @schedule_rule.product_access_groups.include?(level)
-      = level.name
+  = f.association :product_access_groups, :as => :check_boxes, :collection => @instrument.product_access_groups, :wrapper_html => { :class => 'inline-checkbox-list'}

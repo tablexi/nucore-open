@@ -8,31 +8,26 @@
   %p.notice There are no problem orders.
 - else
   %p The order line items below are complete and either do not have a price policy or are instrument orders without usage information. Each will need to be corrected.
-  %table
-    %tr
-      %th Order #
-      %th Date
-      %th{ :colspan => 2 } Quantity / Product
-      %th Account
-      %th Problem
-    - @order_details.each do |od|
-      - product_name = order_detail_description(od)
-      %tr{:class => needs_reconcile_warning?(od) ? 'reconcile-warning' : ''}
-        %td.centered= link_to od, edit_facility_order_order_detail_path(current_facility, od.order, od)
-        %td=h human_datetime(od.order.ordered_at)
-        %td.centered=h od.quantity
-        %td= product_name
-        %td=h od.account
-        - if od.reservation.try(:requires_but_missing_actuals?)
-          %td.centered= "Actual Usage Missing #{link_to 'Enter', edit_facility_order_order_detail_reservation_path(current_facility, od.order, od, od.reservation)}".html_safe
-        - else
-          %td.centered= "Price Policy Missing #{link_to 'Assign', edit_facility_order_order_detail_path(current_facility, od.order, od)}".html_safe
-    %tr.borderless
-      %td
-      %td
-      %td
-      %td
-      %td
-      %td
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th Order #
+        %th Date
+        %th{ :colspan => 2 } Quantity / Product
+        %th Account
+        %th Problem
+    %tbody
+      - @order_details.each do |od|
+        - product_name = order_detail_description(od)
+        %tr{:class => needs_reconcile_warning?(od) ? 'reconcile-warning' : ''}
+          %td.centered= link_to od, facility_order_path(current_facility, od.order)
+          %td=h human_datetime(od.order.ordered_at)
+          %td.centered=h od.quantity
+          %td= product_name
+          %td=h od.account
+          - if od.reservation.try(:requires_but_missing_actuals?)
+            %td.centered= "Actual Usage Missing #{link_to 'Enter', edit_facility_order_order_detail_reservation_path(current_facility, od.order, od, od.reservation)}".html_safe
+          - else
+            %td.centered= "Price Policy Missing #{link_to 'Assign', facility_order_path(current_facility, od.order)}".html_safe
   = will_paginate(@order_details)
   = render :partial => 'shared/reconcile_footnote'

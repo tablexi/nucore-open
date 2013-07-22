@@ -1,0 +1,4 @@
+%li
+  = link_to "Results File #{result_file_counter + 1}", result_file.file.url
+  &mdash;
+  = human_datetime(result_file.created_at)

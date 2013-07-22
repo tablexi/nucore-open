@@ -9,17 +9,19 @@
 - if @journals.empty?
   %p.notice= t('.notice')
 - else
-  %table
-    %tr
-      %th
-      %th= t('.th.created_at')
-      %th= t('.th.journal')
-      %th= t('.th.reference')
-      %th= t('.th.status')
-    - @journals.each do |j|
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td.centered= link_to 'View', facility_journal_path(current_facility, j)
-        %td=h human_datetime(j.created_at)
-        %td=h human_date(j.journal_date)
-        %td=h j.reference
-        %td=h j.status_string
+        %th
+        %th= t('.th.created_at')
+        %th= t('.th.journal')
+        %th= t('.th.reference')
+        %th= t('.th.status')
+    %tbody
+      - @journals.each do |j|
+        %tr
+          %td.centered= link_to 'View', facility_journal_path(current_facility, j)
+          %td=h human_datetime(j.created_at)
+          %td=h human_date(j.journal_date)
+          %td=h j.reference
+          %td=h j.status_string

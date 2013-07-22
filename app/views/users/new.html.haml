@@ -61,18 +61,16 @@
       });
 
 %h2= t('.head')
-= form_tag(search_facility_users_path, :id => 'username_search_form') do
+= simple_form_for :search, :url => search_facility_users_path, :html => { :id => 'username_search_form', :class => 'form-inline' }, :defaults => { :required => false } do |f|
   #error_result
-  %ul.form.box_no_fill
-    %li
-      %p= t('.intro')
-    %li
-      %label= t('.label.have_id')
-      = select_tag :has_netid, options_for_select([['Yes','yes'],['No','no']], params[:hidden_has_netid] || 'yes')
-    %li#username_lookup
-      %label= t('.label.id')
-      %p.instruction= t('.instruct')
-      = text_field_tag :username_lookup
-      = submit_tag t('.submit'), :class => 'btn'
+
+  %p= t('.intro')
+
+  = f.input :has_netid, :collection => [['Yes','yes'],['No','no']], :selected => params[:hidden_has_netid] || 'yes', :label => t('.label.have_id'), :input_html => { :id => 'has_netid', :name => 'has_netid' }
+
+  #username_lookup
+    = f.input :username_lookup, :label => t('.label.id'), :hint => t('.instruct'), :input_html => { :name => 'username_lookup' }
+    = submit_tag t('.submit'), :class => 'btn'
+
 
 #search_results

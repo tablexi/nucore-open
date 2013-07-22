@@ -1,7 +1,20 @@
-- if @formatted_dates[:start_date] == @formatted_dates[:end_date]
-  %p= t('reservations.moving_up.confirm_same_day', @formatted_dates)
-- else
-  %p= t('reservations.moving_up.confirm_different_day', @formatted_dates)
+.modal-header
+  = modal_close_button
+  %h3= t('reservations.moving_up.title')
 
-%p= t('reservations.moving_up.confirm')
-= form_tag order_order_detail_reservation_move_reservation_path(@reservation.order, @reservation.order_detail, @reservation), :method => "post"
+- if @earliest_possible
+  .modal-body
+    - if @formatted_dates[:start_date] == @formatted_dates[:end_date]
+      %p= t('reservations.moving_up.confirm_same_day', @formatted_dates)
+    - else
+      %p= t('reservations.moving_up.confirm_different_day', @formatted_dates)
+
+    %p= t('reservations.moving_up.confirm')
+  .modal-footer
+    = form_for :reservation, :url => order_order_detail_reservation_move_reservation_path(@reservation.order, @reservation.order_detail, @reservation), :method => "post" do |f|
+      = f.submit t('reservations.moving_up.button'), :class => ['btn', 'btn-primary']
+      = modal_cancel_button
+
+- else
+  .modal-body
+    = t('reservations.moving_up.error')

@@ -16,45 +16,36 @@
     - links.push({:text => 'Reports',  :tab_name => 'admin_reports', :subnav => reports_sub}) if can? :manage, ReportsController
     - if can? :edit, current_facility
       - links.push({:url => manage_facility_path(current_facility), :text => 'Admin', :tab_name => 'admin_facility'})
-.container_12
-  .grid_12
-    %ul#main_navigation
-      - links.each do |link|
-        %li{:class => !controller.active_tab.nil? && controller.active_tab == link[:tab_name] ? 'active' : '', :id => "#{link[:tab_name]}_tab"}
-          .divider
-            .button_text
-              = link.has_key?(:url) ? link_to(link[:text], link[:url]) : link[:text]
+
+.navbar.navbar-static-top
+  .navbar-inner
+    .container
+      %ul.nav
+        - links.each do |link|
+          %li{:class => !controller.active_tab.nil? && controller.active_tab == link[:tab_name] ? 'active' : '', :id => "#{link[:tab_name]}_tab"}
             - if link[:subnav]
-              .dropdown
-              %ul.subnav
-                - link[:subnav].each do |sub_links|
-                  %li= link_to sub_links[:text], sub_links[:url]
+              %li.dropdown
+                = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown' do
+                  = link[:text]
+                  %b.caret
+                %ul.dropdown-menu
+                  - link[:subnav].each do |sub_links|
+                    %li= link_to sub_links[:text], sub_links[:url]
+            - else
+              = link.has_key?(:url) ? link_to(link[:text], link[:url]) : link[:text]
 
       - if !acting_as? && current_user
-        %li.right.search
-          = form_tag order_search_path do
-            = text_field_tag :search, nil, :placeholder => t('order_search.search')
+        = form_tag order_search_path, class: 'navbar-search pull-right' do
+          = text_field_tag :search, nil, :placeholder => t('order_search.search'), :class => 'search-query span2'
 
-      - facilities = menu_facilities
+      %ul.nav.pull-right
+        = render :partial => 'shared/nav/manage_facilities'
 
-      - if !acting_as? && current_user && current_user.administrator?
-        %li.right{:class => controller.active_tab == 'global_settings' ? 'active' : ''}
-          .divider
+        - if !acting_as? && current_user && current_user.administrator?
+          %li{:class => controller.active_tab == 'global_settings' ? 'active' : ''}
             = link_to t('pages.global_settings'), affiliates_path
 
-      - if !acting_as? && (facilities.any? || (current_user && current_user.administrator?))
-        %li.right{:class => controller.active_tab == 'manage_facilites' ? 'active' : ''}
-          .divider
-            = link_to t("pages.manage", :model => t('activerecord.models.facility', :count => 2)), :list_facilities
-            - unless facilities.empty?
-              %ul.subnav
-                - facilities.each do |facility|
-                  %li= link_to facility.name, facility_default_admin_path(facility)
-
-      - if !acting_as? && current_user && current_user.billing_administrator?
-        %li.right{:class => !controller.active_tab.nil? && controller.active_tab == 'admin_billing' ? 'active' : ''}
-          .divider
+        - if !acting_as? && current_user && current_user.billing_administrator?
+          %li.pull-right{:class => !controller.active_tab.nil? && controller.active_tab == 'admin_billing' ? 'active' : ''}
             = link_to t("pages.global_billing"), facility_transactions_path('all')
 
-
-  .clear

@@ -1,13 +1,8 @@
-%li
-  = f.label :account_number, t('facility_accounts.purchase_orders.account_number'), :class => 'require'
-  = f.text_field :account_number
-%li
-  = f.label :expires_at, nil, :class => 'require'
-  = f.text_field :formatted_expires_at, :id => 'datepicker'
+= f.input :account_number, :label => t('facility_accounts.purchase_orders.account_number'), :required => true
 
-%li
-  = f.label :description, nil, :class => 'require'
-  = f.text_field :description
+= f.input :formatted_expires_at, :required => true, :input_html => { :class => 'datepicker' }, :label => Account.human_attribute_name(:expires_at)
+
+= f.input :description, :required => true
 
 = render :partial => 'facility_accounts/account_fields/affiliate', :locals => { :f => f }
 

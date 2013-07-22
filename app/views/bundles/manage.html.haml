@@ -5,9 +5,9 @@
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'details'}
 
-%h2=h @bundle
-%ul.form
-  = render :partial => 'admin/shared/product_manage'
+%h2= @bundle
+= readonly_form_for :bundle do |f|
+  = render :partial => 'admin/shared/product_manage', :locals => { :f => f }
 - if session_user.manager_of?(current_facility)
-  %ul.horiz
+  %ul.inline
     %li= link_to 'Edit', edit_facility_bundle_path(current_facility, @bundle), :class => 'btn'

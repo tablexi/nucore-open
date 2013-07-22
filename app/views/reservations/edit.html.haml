@@ -1,7 +1,7 @@
 = content_for :head_content do
   = render :partial => 'shared/headers/calendar'
   = javascript_include_tag 'reservations.js'
-  
+
   :javascript
     var events_path     = "#{facility_instrument_reservations_path(@instrument.facility, @instrument, :format => 'js', :with_details => @instrument.show_details?)}";
     var minDate         = "#{@min_date}";
@@ -13,7 +13,7 @@
 
 - unless @order.purchased?
   = content_for :breadcrumb do
-    %ul.horiz
+    %ul.bredcrumb
       %li= link_to 'Home', facilities_path
       %li &raquo;
       %li= link_to @instrument.facility, facility_path(@instrument.facility)
@@ -28,11 +28,13 @@
 
 %h2=h @instrument
 
-= form_for([@order, @order_detail, @reservation]) do |f|
+= simple_form_for([@order, @order_detail, @reservation]) do |f|
   = f.error_messages
-  %ul.form.box
-    = render :partial => 'reservation_fields', :locals => {:f => f}
-  %ul.horiz
+
+  .row
+    .well.span12
+      = render :partial => 'reservation_fields', :locals => {:f => f}
+  %ul.inline
     %li= f.submit 'Save', :class => 'btn'
     - if @order.purchased?
       %li= link_to 'Cancel', reservations_path

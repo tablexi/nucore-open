@@ -1,0 +1,33 @@
+- if @merge_orders.present?
+  .well
+    %p.alert.alert-info= t 'facility_orders.edit.attention'
+    %table.table.table-striped.table-hover
+      %thead
+        %tr
+          %th
+          %th= t('orders.show.th.product')
+          %th.centered= t('orders.show.th.quantity')
+          %th.currency= t('orders.show.th.cost')
+          - if @order.has_subsidies?
+            %th.currency= t('orders.show.th.adjust')
+          %th.currency= t('orders.show.th.extend')
+
+      %tbody
+        - @merge_orders.each do |order|
+          - order.order_details.each do |detail|
+            %tr
+              %td.centered= link_to 'Remove', facility_order_order_detail_path(current_facility, order, detail), :method => :delete
+              %td
+                = render :partial => "orders/#{detail.product.class.name.downcase}_desc", :locals => { :order_detail => detail }
+              %td.centered
+                = detail.quantity
+              - if detail.cost_estimated?
+                %td.currency= show_estimated_cost(detail)
+                - if @order.has_subsidies?
+                  %td.currency= show_estimated_subsidy(detail)
+                %td.currency= show_estimated_total(detail)
+              - else
+                %td.currency Unassigned
+                - if @order.has_subsidies?
+                  %td.currency Unassigned
+                %td.currency Unassigned

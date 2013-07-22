@@ -12,7 +12,7 @@ module ProductsHelper
       # a price policy and we don't want to scare people
       #error_msg = t('price_policies.errors.fewer_than_price_groups')
     end
-    error_msg ? "<span class=\"price_policy_error\">#{error_msg}</span>".html_safe : ""
+    content_tag :span, error_msg, :class => ['label', 'label-important', 'pull-right'] if error_msg
   end
 
   def options_for_control_mechanism

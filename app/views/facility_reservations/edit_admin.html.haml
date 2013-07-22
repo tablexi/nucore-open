@@ -10,7 +10,7 @@
     var withDetails     = true;
     var initialDate     = "#{@reservation.reserve_start_at.strftime('%Y-%m-%d')}";
   = javascript_include_tag 'reservations.js'
-      
+
 = content_for :h1 do
   =h current_facility
 = content_for :sidebar do
@@ -18,25 +18,13 @@
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'reservations'}
 
-%h2=h @instrument
+%h2= @instrument
 
-= form_for([@instrument, @reservation], :url => facility_instrument_reservation_update_admin_path) do |f|
+= simple_form_for([@instrument, @reservation], :url => facility_instrument_reservation_update_admin_path) do |f|
   = f.error_messages
-  %ul.form
-    %li.left
-      = f.label :reserve_start_date, 'Reservation Date'
-      = f.text_field :reserve_start_date, :class => 'datepicker'
-    %li.left
-      = f.label  :reserve_start_hour, 'Starting At'
-      = f.select :reserve_start_hour, (1..12).to_a
-      = f.select :reserve_start_min, (0..59).step(5).map{|d| [sprintf('%02d', d),d]}
-      = f.select :reserve_start_meridian, ['AM', 'PM']
-    %li.left
-      = f.label :duration_value, 'Duration'
-      = f.text_field :duration_value, :value => f.object.duration_value, :size => '5'
-      = f.select :duration_unit, ['minutes', 'hours'], { :selected => f.object.duration_unit }
-    %li.clear
-  %ul.horiz
+  = render :partial => 'reservation_fields', :locals => { :f => f }
+  .clearfix
+  %ul.inline
     %li= f.submit 'Save', :class => 'btn'
     %li= link_to 'Cancel', facility_instrument_schedule_path
 

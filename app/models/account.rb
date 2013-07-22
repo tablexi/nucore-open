@@ -167,6 +167,10 @@ class Account < ActiveRecord::Base
     return nil
   end
 
+  def can_reconcile?(order_detail)
+    order_detail.statement_id.present?
+  end
+
   def self.need_statements (facility)
     # find details that are complete, not yet statemented, priced, and not in dispute
     details = OrderDetail.need_statement(facility)
@@ -231,6 +235,12 @@ class Account < ActiveRecord::Base
 
   def price_groups
     (price_group_members.collect{ |pgm| pgm.price_group } + (owner_user ? owner_user.price_groups : [])).flatten.uniq
+  end
+
+  def affiliate_to_s
+    affiliate_name = affiliate.name
+    affiliate_name += " (#{affiliate_other})" if affiliate == Affiliate.OTHER
+    affiliate_name
   end
 
 end

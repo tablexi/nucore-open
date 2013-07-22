@@ -6,11 +6,13 @@
 - if @facilities.empty?
   %p.notice= t('.notice')
 - else
-  %table
-    %tr
-      %th= t('.th.facility')
-      %th.centered= t('.th.total')
-    - @facilities.each do |facility|
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td= facility
-        %td.currency= link_to number_to_currency(@account.unreconciled_total(facility)), account_facility_statement_path(@account, facility, 'recent')
+        %th= t('.th.facility')
+        %th.centered= t('.th.total')
+    %tbody
+      - @facilities.each do |facility|
+        %tr
+          %td= facility
+          %td.currency= link_to number_to_currency(@account.unreconciled_total(facility)), account_facility_statement_path(@account, facility, 'recent')

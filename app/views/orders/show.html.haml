@@ -1,7 +1,7 @@
 = content_for :h1 do
   = t('.h1')
 = content_for :breadcrumb do
-  %ul.horiz
+  %ul.breadcrumb
     %li= link_to t('.crumbs.home'), :root
     - detail = @order.order_details.first
     - unless detail.nil?
@@ -22,42 +22,42 @@
       =h @order.account
       %br
       = link_to t('.link.change_account'), choose_account_order_path(@order, :reset_account => true)
-      
-  = form_for @order, :url => {:action => :update_or_purchase} do |f|
-    %table#cart
-      %tr
-        %th
-        %th= t('.th.product')
-        %th.centered= t('.th.quantity')
-        %th.currency= t('.th.cost')
-        - if @order.has_subsidies?
-          %th.currency= t('.th.adjust')
-        %th.currency= t('.th.extend')
 
-      - prev_group_id = nil
-      - @order.order_details.find(:all, :order => :group_id).each do |order_detail|
-        = render :partial => 'cart_row', :locals => { :order_detail => order_detail, :first_of_group => order_detail.group_id && (prev_group_id != order_detail.group_id) }
-        - prev_group_id = order_detail.group_id
-      %tr
-        %td.currency{:colspan => "3"}
-          %b= t('.td.total')
-        %td.currency
-          %b= number_to_currency @order.estimated_cost
-        - if @order.has_subsidies?
+  = form_for @order, :url => {:action => :update_or_purchase} do |f|
+    %table.table.table-striped.table-hover#cart
+      %thead
+        %tr
+          %th
+          %th= t('.th.product')
+          %th.centered= t('.th.quantity')
+          %th.currency= t('.th.cost')
+          - if @order.has_subsidies?
+            %th.currency= t('.th.adjust')
+          %th.currency= t('.th.extend')
+      %tbody
+        - prev_group_id = nil
+        - @order.order_details.find(:all, :order => :group_id).each do |order_detail|
+          = render :partial => 'cart_row', :locals => { :order_detail => order_detail, :first_of_group => order_detail.group_id && (prev_group_id != order_detail.group_id) }
+          - prev_group_id = order_detail.group_id
+        %tr
+          %td.currency{:colspan => "3"}
+            %b= t('.td.total')
           %td.currency
-            %b= number_to_currency @order.estimated_subsidy
-        %td.currency
-          %b= number_to_currency @order.estimated_total
+            %b= number_to_currency @order.estimated_cost
+          - if @order.has_subsidies?
+            %td.currency
+              %b= number_to_currency @order.estimated_subsidy
+          %td.currency
+            %b= number_to_currency @order.estimated_total
 
     %p.footnote= t('.foot.all')
     - if @order.instrument_order_details.count > 0
       %p.footnote= t('.foot.instrument')
     - if @order.order_details.size > 0
-      %ul.horiz{:style => "float: left"}
+      %ul.inline{:style => "float: left"}
         %li= submit_tag 'Update', :class => 'btn'
         - if @order.validated?
-          %li= f.submit 'Purchase', :class => 'btn', :confirm => t('.confirm')
+          %li= f.submit 'Purchase', :class => ['btn', 'btn-primary'], :confirm => t('.confirm')
       - if acting_as?
         .backdate_fields
           = render :partial => 'edit_date', :locals => { :f => f}
-

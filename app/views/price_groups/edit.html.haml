@@ -5,10 +5,10 @@
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_price_group', :locals => { :secondary_tab => 'edit' }
 
-= form_for([current_facility, @price_group]) do |f|
+= simple_form_for([current_facility, @price_group]) do |f|
   = f.error_messages
   %ul.form
     = render :partial => 'price_group_fields', :locals => {:f => f}
-  %ul.horiz
-    %li= f.submit 'Update', :class => 'btn'
+  %ul.inline
+    %li= f.submit 'Update', :class => ['btn', 'btn-primary']
     %li= link_to 'Cancel', facility_price_group_path

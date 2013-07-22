@@ -3,18 +3,13 @@
 
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'users' }
-  
+
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_users', :locals => {:secondary_tab => 'details'}
-  
-%h1 #{@user.full_name}
-%ul.form
-  %li
-    %label Full Name
-    =h @user.full_name
-  %li
-    %label Email Address
-    =h @user.email
-  %li
-    %label Last Login
-    =h human_datetime(@user.last_sign_in_at) || 'none'
+
+%h1= @user.full_name
+
+= readonly_form_for :user do |f|
+  = f.input :full_name
+  = f.input :email
+  = f.input :last_sign_in_at, :default_value => 'none'

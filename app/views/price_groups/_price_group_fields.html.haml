@@ -1,8 +1,7 @@
-%li
-  = f.label :name, :class => 'required'
-  = f.text_field :name
-%li.box
-  %p.instruction= t(".internal_instruction")
-  %br
-  = f.check_box :is_internal
-  %b= PriceGroup.human_attribute_name(:is_internal)
+= f.input :name
+
+.well.well-small
+  %p.help-block= t(".internal_instruction")
+
+  = f.input :is_internal, :as => :boolean, :inline_label => true, :label => false
+

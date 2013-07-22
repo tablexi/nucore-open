@@ -9,10 +9,10 @@
 
 %h2=h @item
 
-= form_for([current_facility, @item]) do |f|
+= simple_form_for([current_facility, @item]) do |f|
   = f.error_messages
   %ul.form
     %li= render :partial => 'admin/shared/product_details_fields', :locals => {:f => f}
-  %ul.horiz
+  %ul.inline
     %li= f.submit 'Save', :class => 'btn'
     %li= link_to 'Cancel', manage_facility_item_path(current_facility, @item)

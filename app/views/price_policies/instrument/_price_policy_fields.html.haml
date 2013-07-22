@@ -1,0 +1,35 @@
+= content_for :head_content do
+  = javascript_include_tag 'price_policy'
+
+= render :partial => 'price_policies/dates', :locals => { :f => f }
+= f.input :interval, :label => 'Calculate Rates per', :hint => "Usage, reservation, and overage time will be rounded up based on this selection.", :collection => InstrumentPricePolicy.intervals.map{|d| [ pluralize(d, 'minute'), d ]}, :selected => @price_policies.first.usage_mins
+
+
+%table.table.table-striped.table-hover.price-policy-table
+  %thead
+    %tr
+      %th{:rowspan => 2} Price Group
+      %th{:rowspan => 2} Type
+      %th{:rowspan => 2} Can purchase?
+      %th.super-th{:colspan => 3}
+        Rates per
+        %span.interval_replace
+      %th{:rowspan => 2} Minimum Cost
+      %th{:rowspan => 2} Reservation Cost
+    %tr
+      %th Actual
+      %th Scheduled
+      %th Overage
+  %tbody
+    - @price_policies.each do |pp|
+      - pg = pp.price_group
+      %tr
+        %td= pg.name
+        %td= pg.type_string
+        %td= check_box_tag "price_policy_#{pg.id}[can_purchase]", '1', pp.can_purchase?, :class => 'can_purchase'
+        - if !pg.is_internal?
+          = render :partial => 'price_policies/instrument/external_row', :locals => { :pg => pg, :pp => pp }
+        - elsif pg.is_master_internal?
+          = render :partial => 'price_policies/instrument/master_internal_row', :locals => { :pg => pg, :pp => pp }
+        - else
+          = render :partial => 'price_policies/instrument/internal_row', :locals => { :pg => pg, :pp => pp }

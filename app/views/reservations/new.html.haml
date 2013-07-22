@@ -16,7 +16,7 @@
     var ordering_on_behalf = #{acting_as?};
 
 = content_for :breadcrumb do
-  %ul.horiz
+  %ul.breadcrumb
     %li= link_to 'Home', facilities_path
     %li &raquo;
     %li= link_to @instrument.facility, facility_path(@instrument.facility)
@@ -32,36 +32,25 @@
 
 .wysiwyg= @instrument.description
 
-- docs = @instrument.stored_files.info
-- unless docs.empty?
-  %h3= t('.h3')
-  %ul
-    - docs.each do |stored_file|
-      %li.document= link_to stored_file.name, stored_file.file.url, :target => '_blank'
+= render :partial => 'documentation'
 
-= form_for([@order, @order_detail, @reservation]) do |f|
+= simple_form_for([@order, @order_detail, @reservation]) do |f|
   = f.error_messages
-  - unless @order_detail.bundled?
-    %ul.form.box
-      %li.left
-        = label_tag 'order_account', t('.label')
-        - options=@order.user.accounts_for_product @instrument
-        - options.collect!{|acct| [acct.to_s ,acct.id] }
-        - options.unshift(Array.new(2)) if options.size > 1
-        = select_tag 'order_account', options_for_select(options, @order.account_id)
-      - if acting_as?
-        %li.left
-          = f.label       :note
-          = f.text_field  :note, :size => 100, :maxlength => 100
-      %li.clear
-  %ul.form.box
-    = render :partial => 'reservation_fields', :locals => {:f => f}
+  = render :partial => 'account_field', :locals => { :f => f } unless @order_detail.bundled?
+
+  .row
+    .well.span12
+      = render :partial => 'reservation_fields', :locals => {:f => f}
+
   - if acting_as? && @order.order_details.size == 1
-    %p
-      = label_tag :send_notification
-      = hidden_field_tag :send_notification, 0
-      = check_box_tag :send_notification, 1, params[:send_notification] == '1'
-  %ul.horiz
+    .row
+      .span12.send-notification
+        = label_tag :send_notification, :class => 'checkbox' do
+          = hidden_field_tag :send_notification, 0
+          = check_box_tag :send_notification, 1, params[:send_notification] == '1'
+          = t('reservations.new.notify')
+
+  %ul.inline
     %li= f.submit 'Create', :class => 'btn'
     - url_after_action = facility_path(@instrument.facility)
     - if @order_detail.bundled?

@@ -11,18 +11,18 @@
 %p Items are fixed-price products that do not require a reservation or additional user information.
 
 - if session_user.manager_of?(current_facility)
-  %ul.horiz
-    %li= link_to 'Add Item', new_facility_item_path
+  %p= link_to 'Add Item', new_facility_item_path, :class => 'btn-add'
 
 - if @items.empty?
   %p.notice== No #{params[:archived].nil? || params[:archived] != 'true' ? 'active' : 'inactive'} items exist for this facility.
 - else
-  %table.product_list
-    %tr
-      %th== Item Name
-    - @items.each do |item|
+  %table.table.table-striped.table-hover.product_list
+    %thead
       %tr
-        %td
-          = link_to item.name, manage_facility_item_path(current_facility, item)
-          = price_policy_errors(item) unless params[:archived] == 'true'
-
+        %th== Item Name
+    %tbody
+      - @items.each do |item|
+        %tr
+          %td
+            = link_to item.name, manage_facility_item_path(current_facility, item)
+            = price_policy_errors(item) unless params[:archived] == 'true'

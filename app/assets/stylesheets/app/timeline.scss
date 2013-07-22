@@ -1,0 +1,287 @@
+#ui-datepicker-div { display: none; }
+
+.timeline {
+  background: image-url('timeline.png') no-repeat;
+  display:block;
+  height:44px;
+  position:relative;
+  margin-top:8px;
+  width:920px;
+  z-index:9999;
+}
+
+.timeline-schedule {
+  @include gradient-horizontal(#FFF, #EEE);
+  border-radius: 0 10px 10px 0;
+  padding: 1em 0 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.unit_container {
+  bottom: 19px;
+  display: block;
+  left: 0;
+  height: 44px;
+  position: absolute;
+  width: 870px;
+  z-index: 20;
+}
+
+body .unit {
+  cursor: pointer;
+  display: inline-block;
+  height: 24px;
+  position: absolute;
+  top: 19px;
+  z-index: 20;
+}
+
+.unit {
+  color: white;
+  font-size: 8px;
+  overflow: hidden;
+}
+
+.unit.ui-draggable-dragging {
+  z-index:99999;
+}
+
+.unit.invalid {
+  opacity: 0.5;
+}
+
+/* Default block is green-NEW */
+.unit {
+  @include gradient-vertical(#3A7E31, #5C9A5B);
+  border-left: 1px solid #CCC;
+}
+.unit:hover {
+  box-shadow: 0 0 10px #3a7e31;
+}
+
+.unit.status_cancelled {
+  @include gradient-vertical(#772311, #A5341B);
+}
+.unit.status_cancelled:hover {
+  box-shadow: 0 0 10px #a5341b;
+}
+
+.unit.status_complete {
+  @include gradient-vertical(#3A6D88, #5C859B);
+}
+.unit.status_complete:hover {
+  box-shadow:0 0 10px #3a6d88;
+}
+
+.unit.other-product {
+  opacity: 0.2;
+}
+
+.unit.other-product:hover {
+  box-shadow: none !important;
+  cursor: default;
+}
+
+.unit.behalf_of {
+  /* do something here for ordered on behalf of */
+}
+
+/* Tall blocks */
+.unit.blackout,
+.unit.admin {
+  display:inline-block;
+  height:28px;
+  opacity:0.5;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
+  top:10px;
+  width:110px;
+  z-index: 10;
+  border-radius: 3px 3px 0 0;
+  border: none;
+  box-shadow: none;
+}
+.unit.blackout {
+  cursor: default;
+}
+
+.unit.blackout {
+  background:#ccc;
+  border-top:5px solid #000;
+}
+
+.unit.admin {
+  background: #ECC;
+  border-top:5px solid #F00;
+}
+
+.current_time {
+  background:#f00;
+  display:inline-block;
+  height:35px;
+  opacity:.4;
+  position:relative;
+  top:8px;
+  width:2px;
+  z-index: 0;
+}
+
+/* tooltip_reservation should be hidden until it gets pulled into the popup */
+.tooltip_reservation {
+  display: none;
+}
+
+.tooltipsy {
+  padding: 5px;
+  max-width: 200px;
+  color: #303030;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius : 5px;
+  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+  box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+  text-shadow: none;
+
+  /* Moving the tooltip box 1px down so it's butted up with the reservation block and doesn't dissappear when you try to click on it. */
+  position:relative;
+  top:1px;
+}
+
+.tooltip_stay:hover, .tooltip_stay:focus {
+    display:block !important;
+}
+
+.timeline_header {
+  text-align: center;
+}
+
+/* Center the text excluding the calendar icon. The margin-left should be the width of the icon */
+.timeline_header h3 {
+  margin-left: 16px;
+}
+
+.timeline_instrument {
+  margin: 15px 0 15px -10px;
+}
+.timeline-schedule h3 {
+  margin-left: -10px;
+}
+
+.timeline_options {
+  float: right;
+  position:relative;
+  top:-17px;
+}
+.timeline_options label {
+  color: #777;
+  font-weight: normal;
+  display: inline;
+}
+
+.ui-datepicker-trigger {
+  cursor: pointer;
+}
+
+/***
+ * Relay switch checkboxes
+ */
+.relay_checkbox {
+  float: right;
+  position: relative;
+  right: -12px;
+}
+
+.toggle_switch {
+  position: relative;
+  width: 60px;
+  height:20px;
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 0;
+}
+.toggle_switch.disabled {
+  cursor: default;
+}
+
+.toggle_switch .bg {
+   background: image-url("itoggle_border.png") top left no-repeat;
+  z-index: 200;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.toggle_switch.disabled .bg {
+  background-color: rgba(255,255,255,0.9);
+}
+.toggle_switch .switch {
+  position: absolute;
+  height: 100%;
+  width: 147px;
+  left: -60px;
+  background: #FFF image-url("itoggle.png") no-repeat bottom left;
+  z-index: 100;
+}
+
+.toggle_switch .switch.toggle_on {
+  left: 0;
+}
+
+/***
+ * Relay switch overlays
+ */
+.relay_checkbox .loading_box{
+  background-image: image-url("spinner-big.gif");
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  top: -6px;
+  left: 12px;
+  z-index: 1000;
+  display: none;
+}
+.relay_checkbox.loading .loading_box {
+  display: block;
+}
+.relay_checkbox .error {
+  background: transparent image-url("icon-warning-48.png") no-repeat;
+  display: block;
+  width: 48px;
+  height: 48px;
+  position: absolute;
+  top: -16px;
+  left: 8px;
+  z-index: 1000;
+}
+
+#reservation_date_container {
+  overflow:hidden;
+  margin:0 auto;
+  width:325px;
+}
+
+#reservation_date_container #reservation_left, #reservation_date_container #reservation_date, #reservation_date_container #reservation_right {
+  float:left;
+}
+
+#reservation_date_container #reservation_left, #reservation_date_container #reservation_right {
+  display:block;
+  height:20px;
+  text-indent:-9999px;
+  width:20px;
+}
+
+#reservation_date_container #reservation_left {
+  background: image-url("btn-left.jpg") top left no-repeat;
+}
+
+#reservation_date_container #reservation_right {
+  background: image-url("btn-right.jpg") top left no-repeat;
+}
+
+ #reservation_date_container #reservation_date {
+   font-size:18px;
+   text-align:center;
+   width:280px;
+ }

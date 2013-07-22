@@ -5,6 +5,11 @@ en:
   app_admin_name: NU Core Admin
   institution_name: Northwestern
 
+  boolean:
+    # need to be enclosed in quotes because yes/no are yaml reserved words
+    "true": "Yes"
+    "false": "No"
+
   sessions:
     new:
       help_text: "If you do not have a NU Core account, please contact the facility manager."
@@ -241,14 +246,14 @@ en:
   facility_notifications:
     in_review:
       head: "Orders In Review"
-      notice: "No orders are currently in review"
+      no_orders: "No orders are currently in review"
       instructions: |
         The orders listed below are still in review by the customer.  The time the review window will close is listed.
         You may manually mark an order as reviewed, allowing you to create a statement for or journal the order immediately.
       submit: "Mark As Reviewed"
     index:
       head: "Send Notifications"
-      notice: "No notifications are currently pending"
+      no_orders: "No notifications are currently pending"
       foot: "* Reflects only orders that the user has not been notified of yet."
       submit: "Send Notifications"
 
@@ -277,9 +282,9 @@ en:
       head:
         h2: "Edit Order # %{order_number}"
         h3: "Resolve Dispute"
+        resolve_dispute: Resolve Dispute
         h3-2: "Dispute Information"
-        h3-3: "Results Files"
-        h3-4: "Upload Results"
+        dispute_information: Dispute Information
         h3-5: "Bundle Summary"
       label:
         ordered:
@@ -339,8 +344,9 @@ en:
   reservations:
     new:
       label: "Payment source"
-      h3: "Documentation"
+      documentation: "Documentation"
       crumb: "Create Reservation"
+      notify: Send Notification
     switch:
       start: "Begin Reservation"
       end: "End Reservation"
@@ -351,9 +357,12 @@ en:
       link: Cancel
     finished: Reservation Ended
     moving_up:
+      title: Move Reservation
+      button: Move
       confirm_same_day: The earliest time you can move this reservation to begins on %{start_date} at %{start_time} and ends at %{end_time}.
       confirm_different_day: The earliest time you can move this reservation to begins on %{start_date} at %{start_time} and ends on %{end_date} at %{end_time}.
       confirm: Would you like to move your reservation?
+      error: There was an error retrieving earliest possible move date.
 
   statements:
     index:
@@ -449,20 +458,11 @@ en:
     show:
       head:
         h1: "Order # %{order_number}"
-        h3: "Dispute Order"
-        h3-2: "Download Results"
+        dispute: "Dispute Order"
+        results: "Download Results"
       label:
         facility: "Facility"
         account: "Payment Source"
-        dispute:
-          at: "Disputed At"
-          reason: "Dispute Reason"
-          resolved_at: "Dispute Resolved At"
-          notes: "Dispute Resolution Notes"
-        ordered:
-          at: "Ordered At"
-          for: "Ordered For"
-          by: "Ordered By"
       instruct:
         dispute: "If you wish to dispute the charges for this purchase, please explain the issue with the charges and click \"Dispute Purchase\"."
       link:
@@ -483,14 +483,44 @@ en:
         adjust: "Adjustment"
         total: "Total"
       unassigned: "Unassigned"
+    notices:
+      missing_actuals:
+        badge: Missing Actuals
+        alert: This order's reservation does not have an actual time. Please ensure that actual times are set and there is a price policy for the date this order was fulfilled.
+      missing_price_policy:
+        badge: Missing Price Policy
+        alert: This order does not have a price policy assigned. Please ensure that there is a price policy for the date this order was fulfilled. Saving will attempt to assign a price policy.
+      in_review:
+        badge: In Review
+        alert: This order is currently in review.
+      in_dispute:
+        badge: In Dispute
+        alert: 'To resolve the dispute, please make the necessary changes and click "Resolve Dispute".'
+      in_open_journal:
+        badge: Open Journal
+        alert: You are unable to edit all aspects of this order because it is part of a pending journal. Please close the journal first.
+      can_reconcile:
+        alert: This order can be reconciled
+        badge: Can Reconcile
 
   product_accessories:
     pick_accessories:
+      title: Add Accessories
       link: Add Accessories to order...
       instruct: "Please enter a quantity for each accessory used during the reservation. If an accessory was not used please leave the quantity blank."
 
     index:
       description: "Here you may define one or more accessories that can be used during a reservation of this product"
+      no_accessories: No accessories defined for this product
+      add: Add as Accessory
+    create:
+      success: The accessory has been added.
+    destroy:
+      success: The accessory has been removed.
+    type:
+      auto: Auto-scaled
+      manual: Manual
+      quantity: Quantity
 
   product_users:
     new:
@@ -548,14 +578,8 @@ en:
         search: "Search by name, NetID, or username"
 
   accounts:
-    nufs_account: Chart String
     show:
       head: "Payment Source Details"
-      label:
-        account: "Payment Source Number"
-        type: "Type"
-        description: "Description"
-        expiration: "Expiration"
 
   facilities:
     index:
@@ -572,6 +596,8 @@ en:
       inactive: "Uncheck this box to prevent end users from viewing or purchasing from this facility:"
       is_active: "Is Active?"
       contact: "The following contact information will appear on statements and should indicate where payment should be sent"
+    transactions:
+      no_orders: There are no orders in this facility
 
   price_policies:
     instructional_text:
@@ -620,6 +646,7 @@ en:
       start: Starting
       end: Ending
     no_results: No users found
+    export_html: Export
 
   notifier:
     new_user:
@@ -657,6 +684,15 @@ en:
       subject: "%{user} has made a reservation for %{product}. Please approve."
 
   file_uploads:
+    widget:
+      error_loading: Please enable Javascript and install Adobe Flash Player.
+      start: Start Upload
+      clear_queue: Clear Queue
+    sample_result:
+      title: Results Files
+      count: "%{count} Results Files"
+      upload: Upload Results
+      none: No results have been uploaded yet.
     product_survey:
       intro: "You may provide an Online Order Form and/or an Order File Template.  If provided, the user must complete one before placing an order."
       order_form:
@@ -678,6 +714,14 @@ en:
       instructions_html: Please enter your email address below. If you use a NetID, please reset it through <a href="https://validate.it.northwestern.edu/idm/user/login.jsp">NUVALIDATE</a>
       success: Instructions on how to reset your password have been sent to %{email}
       not_found: We cannot find %{email} in our records.
+
+  reports:
+    fields:
+      date_start: Start Date
+      date_end: End Date
+    export:
+      export: Export
+      raw: Export Raw
 
   users:
     index:
@@ -713,9 +757,9 @@ en:
 
     search:
       main_html: "You may add a new external user by clicking <a href=\"%{link}\">Add a new external user</a>."
-      notice1: "The user could not be located in the university database.  Please make sure you typed the NetID correctly."
-      notice2: "No user information was found in the university databases."
-      notice3: "The following user was found.  Click \"Add User\" to allow this user access to NU Core."
+      netid_not_found: "The user could not be located in the university database.  Please make sure you typed the NetID correctly."
+      email_not_found: "No user information was found in the university databases."
+      found: "The following user was found.  Click \"Add User\" to allow this user access to NU Core."
       user_already_exists: The user %{username} already exists in NUCore
     accounts:
       h1: "%{user_name} Payment Sources"

@@ -5,10 +5,9 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'overview' }
 
-= form_for([current_facility]) do |f|
-  = f.error_messages
-  %ul.form
+= simple_form_for([current_facility]) do |f|
+  .form-inputs
     = render :partial => 'facility_fields', :locals => {:f => f}
-  %ul.horiz
-    %li= f.submit 'Save', :class => 'btn'
-    %li= link_to 'Cancel', manage_facility_path(current_facility)
+  .form-actions
+    = f.button :submit, 'Save'
+    = link_to 'Cancel', manage_facility_path(current_facility)

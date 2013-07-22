@@ -1,0 +1,21 @@
+fieldset.collapsable {
+  .legend {
+    padding-left: 12px;
+    position: relative;
+
+    &:before {
+      content: '';
+      position: absolute;
+      z-index: 1;
+      width: 10px;
+      height: 10px;
+      left: 0;
+      top: 3px;
+      background: image-url("sprite-collapse.png") no-repeat -10px 0;
+    }
+  }
+
+  &.collapsed .legend:before {
+    background-position: 0 0;
+  }
+}

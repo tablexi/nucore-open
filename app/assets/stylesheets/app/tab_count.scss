@@ -1,0 +1,22 @@
+ul.nav {
+  .updating,
+  .updated {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 0.4em;
+    margin-right: 4px;
+    text-decoration: none;
+  }
+
+  .updating {
+    background-image: image-url("spinner-arrow.gif");
+    position: relative;
+    top: 3px;
+  }
+
+  .updated {
+    padding-bottom: 4px;
+  }
+}
+

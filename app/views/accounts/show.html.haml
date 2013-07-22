@@ -3,9 +3,10 @@
 = content_for :h1 do
   = t('.head')
 
-%ul.form
-  %li
-    %label= t('.label.account')
-    = @account.account_number
-  = render :partial => 'accounts/account_fields'
+= readonly_form_for :account do |f|
+  = f.input :account_number
+  = f.input :type_string
+  = f.input :description
+  = f.input :expires_at, :date_only => true
+
   = render :partial => 'accounts/suspend_button'

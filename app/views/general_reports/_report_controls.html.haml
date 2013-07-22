@@ -1,8 +1,2 @@
-= content_for :head_content do
-  = stylesheet_link_tag 'chosen'
-  = javascript_include_tag 'chosen.jquery.min.js'
-
 %li
-  %label Order Status
-  %select{ :name => "status_filter[]", :'data-placeholder' => 'Choose...', :multiple => true, :id => 'status_filter' }
-    = options_for_select(OrderStatus.root_statuses.collect{|stat| [ stat.name_with_level, stat.id ] }, @status_ids)
+  = f.input 'status_filter', :collection => OrderStatus.root_statuses, :selected => @status_ids, :label_method => :name_with_level, :input_html => { :data => { :placeholder => 'Choose...'}, :multiple => true }, :label => OrderStatus.model_name.human

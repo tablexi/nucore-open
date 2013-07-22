@@ -1,0 +1,25 @@
+%td
+  = hidden_field_tag "price_policy_#{pg.id}[usage_rate]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:usage_rate] : number_to_currency(pp.usage_rate, :unit => ''), :class => "usage_cost"
+  Adjustment
+  %br
+  = text_field_tag "price_policy_#{pg.id}[usage_subsidy]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:usage_subsidy] : number_to_currency(pp.usage_subsidy, :unit => ''), :size => 8
+%td
+  = hidden_field_tag "price_policy_#{pg.id}[reservation_rate]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:reservation_rate] : number_to_currency(pp.reservation_rate, :unit => ''), :class => "reservation_cost"
+  Adjustment
+  %br
+  = text_field_tag "price_policy_#{pg.id}[reservation_subsidy]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:reservation_subsidy] : number_to_currency(pp.reservation_subsidy, :unit => ''), :size => 8
+%td
+  = hidden_field_tag "price_policy_#{pg.id}[overage_rate]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:overage_rate] : number_to_currency(pp.overage_rate, :unit => ''), :class => "overage_cost"
+  Adjustment
+  %br
+  = text_field_tag "price_policy_#{pg.id}[overage_subsidy]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:overage_subsidy] : number_to_currency(pp.overage_subsidy, :unit => ''), :size => 8
+%td
+  Amount
+  %br
+  %span.minimum_cost
+  = hidden_field_tag "price_policy_#{pg.id}[minimum_cost]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:minimum_cost] : number_to_currency(pp.minimum_cost, :unit => ''), :size => 8, :class => 'minimum_cost'
+%td
+  Amount
+  %br
+  %span.cancellation_cost
+  = hidden_field_tag "price_policy_#{pg.id}[cancellation_cost]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:cancellation_cost] : number_to_currency(pp.cancellation_cost, :unit => ''), :size => 8, :class => 'cancellation_cost'

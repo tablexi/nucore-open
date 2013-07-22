@@ -49,6 +49,7 @@ en:
         zero_quantity: "Please enter a quantity for the product you'd like to add"
         error: "An error was encountered while adding the product %{product}."
         success: "%{product} was successfully added to this order."
+        notices: "%{product} needs your attention before it is added to the order."
     facility_order_details:
       edit:
         notice:

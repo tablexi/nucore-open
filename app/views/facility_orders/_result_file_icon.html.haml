@@ -1,0 +1,4 @@
+- if od.product.is_a?(Service)
+  = link_to admin_order_detail_path(:files, od), :class => 'results-file-upload' do
+    - result_file_count = od.stored_files.sample_result.count
+    %i{:class => result_file_count > 0 ? 'icon-file' : 'icon-file-alt', :data => { :toggle => 'tooltip' }, :title => t('file_uploads.sample_result.count', :count => result_file_count) }

@@ -15,38 +15,40 @@
       - facility_abbreviations = pending_journal.facility_abbreviations
       = form_for([current_facility, pending_journal]) do |f|
         = f.error_messages
-        %table
-          %tr
-            %th= t(".th.download")
-            %th= t(".th.journaled_at")
-            - if all_facility?
-              %th Facility
-            %th= Journal.human_attribute_name(:amount)
-            %th
-              %span.require= Journal.human_attribute_name(:reference)
-            %th= Journal.human_attribute_name(:description)
-            %th
-              %span.require= Journal.human_attribute_name(:journal_status)
-          %tr
-            %td
-              %ul
-                - if Settings.financial.journal_format.xls
-                  %li=link_to 'XLS File', pending_journal.file.url
-                - if Settings.financial.journal_format.xml
-                  %li=link_to 'XML File', facility_journal_path(current_facility, pending_journal, :format => 'xml')
-                - if Settings.financial.journal_format.csv
-                  %li=link_to 'CSV File', facility_journal_path(current_facility, pending_journal, :format => 'csv')
-            %td=h human_datetime(pending_journal.created_at)
+        %table.table.table-striped.table-hover
+          %thead
+            %tr
+              %th= t(".th.download")
+              %th= t(".th.journaled_at")
+              - if all_facility?
+                %th Facility
+              %th= Journal.human_attribute_name(:amount)
+              %th
+                %span.require= Journal.human_attribute_name(:reference)
+              %th= Journal.human_attribute_name(:description)
+              %th
+                %span.require= Journal.human_attribute_name(:journal_status)
+          %tbody
+            %tr
+              %td
+                %ul
+                  - if Settings.financial.journal_format.xls
+                    %li=link_to 'XLS File', pending_journal.file.url
+                  - if Settings.financial.journal_format.xml
+                    %li=link_to 'XML File', facility_journal_path(current_facility, pending_journal, :format => 'xml')
+                  - if Settings.financial.journal_format.csv
+                    %li=link_to 'CSV File', facility_journal_path(current_facility, pending_journal, :format => 'csv')
+              %td=h human_datetime(pending_journal.created_at)
 
-            - if all_facility?
-              %td= facility_abbreviations.join("<br>").html_safe
+              - if all_facility?
+                %td= facility_abbreviations.join("<br>").html_safe
 
-            %td=h number_to_currency(pending_journal.amount)
-            %td= f.text_field :reference
-            %td= f.text_field :description
-            %td
-              = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']], params[:journal_status])
-              = submit_tag t(".journal.close"), :confirm => t(".journal.confirm")
+              %td=h number_to_currency(pending_journal.amount)
+              %td= f.text_field :reference
+              %td= f.text_field :description
+              %td
+                = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']], params[:journal_status])
+                = submit_tag t(".journal.close"), :confirm => t(".journal.confirm")
 
   - else    # there's pending journals, but user can't edit
     %p.notice= t(".notice.no_editable")
@@ -55,19 +57,21 @@
 - if @journals.blank?
   %p.notice= t(".notice.no_journals")
 - else
-  %table
-    %tr
-      %th
-      %th= Journal.human_attribute_name(:created_at).titlecase
-      %th= Journal.human_attribute_name(:journal_date).titlecase
-      %th= Journal.human_attribute_name(:reference)
-      %th= Journal.human_attribute_name(:description)
-      %th= Journal.human_attribute_name(:journal_status)
-    - @journals.each do |j|
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td.centered= link_to 'View', facility_journal_path(current_facility, j)
-        %td=h human_datetime(j.created_at)
-        %td=h human_date(j.journal_date)
-        %td=h j.reference
-        %td=h j.description
-        %td=h j.status_string
+        %th
+        %th= Journal.human_attribute_name(:created_at).titlecase
+        %th= Journal.human_attribute_name(:journal_date).titlecase
+        %th= Journal.human_attribute_name(:reference)
+        %th= Journal.human_attribute_name(:description)
+        %th= Journal.human_attribute_name(:journal_status)
+    %tbody
+      - @journals.each do |j|
+        %tr
+          %td.centered= link_to 'View', facility_journal_path(current_facility, j)
+          %td=h human_datetime(j.created_at)
+          %td=h human_date(j.journal_date)
+          %td=h j.reference
+          %td=h j.description
+          %td=h j.status_string

@@ -3,4 +3,7 @@
 = content_for :h1 do
   = t('.head')
 
+%header.account
+  %h3= @account.account_number
+  %p= @account.description
 = render :partial => 'accounts/member_table'
