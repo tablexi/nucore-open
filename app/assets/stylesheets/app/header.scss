@@ -16,7 +16,7 @@ header {
 
   .navbar-inner {
     padding: 10px 0;
-    @include gradient-vertical(darken($headerBackgroundColor, 5%), $headerBackgroundColor);
+    @include gradient-vertical($headerBackgroundColorHighLight, $headerBackgroundColor);
   }
 
   .navbar .nav {
