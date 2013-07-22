@@ -1,9 +1,29 @@
-@import "base";
-@import "override";
-@import "nav";
-@import "timeline";
+$baseFontSize: 12px;
+
+@import "bootstrap-variables";
+@import "bootstrap";
+@import "bootstrap-responsive";
+@import "font-awesome";
+@import "chosen";
+
+@import "nucore-variables";
+@import "nucore-overrides";
+@import "nucore";
+
+@import "app/typography";
+@import "app/reservation_edit";
+@import "app/header.scss";
+@import "app/collapsable";
+@import "app/sortable";
+@import "app/tab_count";
+@import "app/timeline";
+@import "app/order_management";
+@import "app/order_details";
+@import "app/transaction_search";
+
 @import "uploadify";
 @import "calendar/fullcalendar";
 @import "calendar/fullcalendar.extensions";
+@import "clockpunch";
 @import "jquery.ui.all";
-@import "jquery-ui.eggplant";
+// @import "jquery-ui.eggplant";

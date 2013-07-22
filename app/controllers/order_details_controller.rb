@@ -1,11 +1,11 @@
 class OrderDetailsController < ApplicationController
   customer_tab  :all
-  
+
   before_filter :authenticate_user!
   before_filter :check_acting_as,  :except => [:order_file, :upload_order_file, :remove_order_file]
   before_filter :init_order_detail
   after_filter :set_active_tab
-  
+
   def initialize
     @active_tab = 'orders'
     super
@@ -44,12 +44,13 @@ class OrderDetailsController < ApplicationController
     end
     raise ActiveRecord::RecordNotFound
   end
-  
+
   # GET /orders/:order_id/order_details/:id
   def show
     set_active_tab
+    @order_detail.send(:extend, PriceDisplayment)
   end
-  
+
   def init_order_detail
     @order = Order.find(params[:order_id])
     @order_detail = @order.order_details.find(params[:id] || params[:order_detail_id])
@@ -74,7 +75,7 @@ class OrderDetailsController < ApplicationController
 
       if @order_detail.order.to_be_merged?
         @order_detail.merge! # trigger the OrderDetailObserver callbacks
-        redirect_to edit_facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
+        redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
       else
         redirect_to(order_path(@order))
       end
@@ -94,13 +95,13 @@ class OrderDetailsController < ApplicationController
     @order.invalidate!
     redirect_to(order_path(@order))
   end
-  
+
   def set_active_tab
     if @order_detail.reservation.nil?
-      @active_tab = "orders"      
+      @active_tab = "orders"
     else
       @active_tab = "reservations"
     end
   end
-  
+
 end

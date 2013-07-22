@@ -86,51 +86,6 @@ $(document).ready(function() {
      $('#filter_container').toggle('fast');
    });
 
-  function loadTabCounts() {
-    var tabs = [];
-    $('.tab_counts a:not(.active)').each(function() {
-      if (this.id) {
-        tabs.push(this.id);
-        // Add a spinner
-        $(this).append('<span class="updating"></span>');
-      }
-    });
-    if (tabs.length > 0) {
-      var base = FACILITY_PATH;
-      var active_tab = $('#main_navigation .active').attr('id')
-      if (active_tab.indexOf('reservations') > -1) {
-        base += '/reservations/';
-      } else if (active_tab.indexOf('orders') > -1) {
-        base += '/orders/';
-      }
-      $.ajax({
-        url: base + 'tab_counts',
-        dataType: 'json',
-        data: { tabs: tabs },
-        success: function(data, textStatus, xhr) {
-          for (i in tabs) {
-            $('.tab_counts').find('a#' + tabs[i] + ' .updating').text("(" + data[tabs[i]] + ")").removeClass('updating').addClass('updated');
-          }
-        }
-      });
-    }
-  };
-  loadTabCounts();
-
-  $("fieldset.collapsable").each(function() {
-    $this = $(this);
-    $this.find("> :not(legend)").toggle(!$this.hasClass("collapsed"));
-    $this.enableDisableFields = function() {
-      this.find("input, select").prop('disabled', $this.hasClass('collapsed'));
-    }
-    $this.enableDisableFields();
-    $this.find("legend").click(function() {
-      // $this is still the fieldset, but 'this' is legend
-      $this.toggleClass("collapsed").find("> :not(legend)").slideToggle();
-      $this.enableDisableFields();
-    });
-
-  });
 });
 
 String.prototype.endsWith = function(suffix) {

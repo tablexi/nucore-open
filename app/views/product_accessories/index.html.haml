@@ -12,23 +12,28 @@
 %p= t('product_accessories.index.description')
 
 - if can? :edit, ProductAccessory
-  - selectable_products = current_facility.products.where("products.type <> 'Instrument' AND products.id NOT IN (?)", @product.accessory_ids+[@product.id]).order(:name)
-  - if selectable_products.count > 0
-    = form_for @product_accessory, :url => facility_product_product_accessories_path(current_facility, @product, @product_accessory) do |f|
-      %p
-        %label.required Product
-        = f.collection_select :accessory_id, selectable_products, :id, :to_s
-        = f.submit "Add as Accessory"
+  - if @available_accessories.count > 0
+    = simple_form_for @product_accessory, :url => facility_product_product_accessories_path(current_facility, @product, @product_accessory), :defaults => { :required => false } do |f|
+      %ul.inline
+        %li= f.association :accessory, :collection => @available_accessories, :include_blank => false
+        %li= f.input :scaling_type, :collection => ProductAccessory.scaling_types, :label_method => Proc.new { |t| t("product_accessories.type.#{t}") }, :include_blank => false
+        %li= f.submit t('.add'), :class => ['btn', 'btn-primary', 'btn-inline']
+
 
 - if @product_accessories.empty?
-  %p.notice No accessories defined for this product
+  %p.notice= t('.no_accessories')
 - else
-  %table
-    %tr
-      %th.actions
-      %th Accessory
-    - @product_accessories.each do |pa|
-      - accessory = pa.accessory
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td.centered= link_to 'Remove', facility_product_product_accessory_path(current_facility, @product, pa), :method => :delete if can? :delete, pa
-        %td= link_to accessory.to_s_with_status, send("manage_facility_#{accessory.class.name.downcase}_path", current_facility, accessory)
+        %th.actions
+        %th Accessory
+        %th Scaling Type
+    %tbody
+      - @product_accessories.each do |pa|
+        - accessory = pa.accessory
+        %tr
+          %td.centered= link_to 'Remove', facility_product_product_accessory_path(current_facility, @product, pa), :method => :delete if can? :delete, pa
+          %td= link_to accessory.to_s_with_status, send("manage_facility_#{accessory.class.name.downcase}_path", current_facility, accessory)
+          %td.centered= t("product_accessories.type.#{pa.scaling_type}")
+

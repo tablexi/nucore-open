@@ -3,7 +3,7 @@ class ReservationsController < ApplicationController
   before_filter :authenticate_user!, :except => [ :index ]
   before_filter :check_acting_as,  :only => [ :switch_instrument, :show, :list ]
   before_filter :load_basic_resources, :only => [:new, :create, :edit, :update]
-  before_filter :load_and_check_resources, :only => [ :move, :switch_instrument, :pick_accessories ]
+  before_filter :load_and_check_resources, :only => [ :move, :switch_instrument ]
 
   include TranslationHelper
   include FacilityReservationsHelper
@@ -128,7 +128,7 @@ class ReservationsController < ApplicationController
           # The purchase_order_path or cart_path will handle the backdating, but we need
           # to do this here for merged reservations.
           backdate_reservation_if_necessary
-          redirect_to edit_facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
+          redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
         elsif @order_detail.product.is_a?(Instrument) && @order.order_details.count == 1
           redirect_params = {}
           redirect_params[:send_notification] = '1' if params[:send_notification] == '1'
@@ -194,7 +194,7 @@ class ReservationsController < ApplicationController
 
         flash[:notice] = 'The reservation was successfully updated.'
         if mergeable
-          redirect_to edit_facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
+          redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
         else
           redirect_to (@order.purchased? ? reservations_path : cart_path)
         end
@@ -216,22 +216,22 @@ class ReservationsController < ApplicationController
       flash[:error] = @reservation.errors.full_messages.join("<br/>")
     end
 
-    return redirect_to reservations_path(:status => 'upcoming')
+    redirect_to reservations_status_path(:status => 'upcoming')
   end
 
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
   def earliest_move_possible
     @reservation       = Reservation.find(params[:reservation_id])
     @earliest_possible = @reservation.earliest_possible
-    next_start         = @earliest_possible.reserve_start_at
-    next_end           = @earliest_possible.reserve_end_at
 
-    @formatted_dates = {
-      :start_date => human_date(next_start),
-      :start_time => human_time(next_start),
-      :end_date   => human_date(next_end),
-      :end_time   => human_time(next_end),
-    }
+    if @earliest_possible
+      @formatted_dates = {
+        :start_date => human_date(@earliest_possible.reserve_start_at),
+        :start_time => human_time(@earliest_possible.reserve_start_at),
+        :end_date   => human_date(@earliest_possible.reserve_end_at),
+        :end_time   => human_time(@earliest_possible.reserve_end_at),
+      }
+    end
 
     render :layout => false
   end
@@ -289,63 +289,12 @@ class ReservationsController < ApplicationController
       flash[:error] = relay_error_msg
     end
 
-    if params[:switch] == 'off'
-      @product_accessories = visible_accessories(@reservation)
-      if @product_accessories.any?
-        flash.now[:notice] = t('reservations.finished')
-        render 'pick_accessories', :layout => false and return
-      end
+    if params[:switch] == 'off' && @order_detail.accessories?
+      redirect_to new_order_order_detail_accessory_path(@order, @order_detail)
+      return
     end
 
     redirect_to params[:redirect_to] || request.referer || order_order_detail_path(@order, @order_detail)
-  end
-
-  def pick_accessories
-    @error_status = nil
-    @errors_by_id = {}
-    @product_accessories = visible_accessories(@reservation)
-
-    if request.get?
-      render 'pick_accessories', :layout => false and return
-    end
-
-    @complete_state = OrderStatus.find_by_name!('Complete')
-
-    @count = 0
-    params.each do |k, v|
-      next unless k =~ /quantity(\d+)/ && v.present? && v != '0'
-
-      OrderDetail.transaction do
-        product   = @facility.products.find_by_id!($1)
-        quantity  = v.to_i
-
-        begin
-          if quantity > 0
-            new_ods = @order.add(product, quantity)
-            new_ods.map{|od| od.change_status!(@complete_state)}
-            @count += quantity
-          else
-            raise ArgumentError.new
-          end
-        rescue ArgumentError
-          ## otherwise something's wrong w/ new_od... safe it for the view
-          @error_status = 406
-          @errors_by_id[product.id] = "Invalid Quantity"
-
-          ## all save or non save.
-          raise ActiveRecord::Rollback
-        end
-      end
-    end
-
-    if @error_status
-      @product_accessories = @instrument.product_accessories.for_acting_as(acting_as?)
-      render 'pick_accessories', :format => :html, :layout => false, :status => @error_status
-    else
-      flash[:notice] = "Reservation Ended, #{helpers.pluralize(@count, 'accessory')} added"
-      render :nothing => true, :status => 200
-    end
-
   end
 
   private

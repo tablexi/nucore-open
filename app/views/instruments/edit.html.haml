@@ -7,11 +7,11 @@
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'details'}
 
-= form_for([current_facility, @instrument]) do |f|
-  = f.error_messages
-  %ul.form
+= simple_form_for([current_facility, @instrument]) do |f|
+  = f.error_notification
+  .form-inputs
     = render :partial => 'admin/shared/product_details_fields', :locals => {:f => f}
     = render :partial => 'instrument_fields', :locals => {:f => f}
-  %ul.horiz
-    %li= f.submit 'Save', :class => 'btn'
-    %li= link_to 'Cancel', manage_facility_instrument_path(current_facility, @instrument)
+  .form-actions
+    = f.button :submit, 'Save'
+    = link_to 'Cancel', manage_facility_instrument_path(current_facility, @instrument)

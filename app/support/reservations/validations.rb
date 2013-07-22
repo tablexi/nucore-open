@@ -39,9 +39,8 @@ module Reservations::Validations
     res=conflicting_reservation
 
     if res
-      msg='The reservation conflicts with another reservation'
-      msg += ' in your cart. Please purchase or remove it then continue.' if res.order.try(:==, order)
-      errors.add(:base, msg.html_safe)
+      msg = res.order.try(:==, order) ? :conflict_in_cart : :conflict
+      errors.add(:base, msg)
     end
   end
 

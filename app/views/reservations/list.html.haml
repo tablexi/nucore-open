@@ -1,12 +1,10 @@
 = content_for :h1 do
   = t_my(Reservation)
 = content_for :tabnav do
-  %ul.tabs
-    - @available_statuses.each_with_index do |status, i|
-      %li{:class => "#{'first' if i == 0}"}
-        = link_to status.humanize.html_safe, reservations_status_path(:status => status), :class => "#{'active' if @status == status}"
+  %ul.nav.nav-tabs
+    - @available_statuses.each do |status|
+      = tab status.humanize.html_safe, reservations_status_path(:status => status), (params[:status] == status)
 - if @order_details.empty?
   %p.notice= "You have not made any #{Reservation.model_name.human.pluralize.downcase}."
 - else
-  = render :partial => 'shared/reservations_table', :locals => { :order_details => @order_details } 
-
+  = render :partial => 'shared/reservations_table', :locals => { :order_details => @order_details }

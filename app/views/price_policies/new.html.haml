@@ -11,12 +11,12 @@
 %h3 Add Pricing Rules
 = render :partial => 'price_policies/instructional_text'
 
-= form_tag price_policies_path do
+= modelless_form_for :url => price_policies_path do |f|
   - @price_policies.each do |pp|
     - @price_policy = pp
     = error_messages_for :price_policy
-  %ul.form
-    = render :partial => "price_policies/#{@product.is_a?(Instrument) ? 'instrument_' : ''}price_policy_fields"
-  %ul.horiz
+
+  = render :partial => "price_policies/#{@product.is_a?(Instrument) ? 'instrument/' : ''}price_policy_fields", :locals => { :f => f }
+  %ul.inline
     %li= submit_tag 'Add Price Rules', :class => 'btn'
     %li= link_to 'Cancel', price_policies_path

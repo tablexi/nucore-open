@@ -1,17 +1,10 @@
-.grid_12
-  - if flash[:error]
-    %p.error= flash[:error]
-  - if flash[:notice]
-    %p.notice= flash[:notice]
-  - if flash[:info]
-    %p.info= flash[:info]
-.grid_12#header_billing
-  .grid_3.alpha
+.row#header_billing
+  .span3
     #sidebar
       = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => tab }
-  - unless @empty_orders
-    .grid_9.omega
+  - if @empty_orders
+    .span9
+      %p.alert.alert-info= t("#{controller_name}.#{action_name}.no_orders")
+  - else
+    .span9
       = render :partial => 'shared/transactions/search'
-    .clear
-
-  

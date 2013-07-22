@@ -7,18 +7,20 @@
   %p.notice= t('.notice')
 - else
   = form_tag({}, :id => 'choose-account-frm') do
-    %table
-      %tr
-        %th
-        %th= t('.th.account')
-        %th= t('.th.owner')
-      - @accounts.each do |a|
+    %table.table.table-striped.table-hover
+      %thead
         %tr
-          %td= @errors[a.id] ? radio_button('', 'account_id', a.id, :disabled => 'disabled') : radio_button('', 'account_id', a.id)
-          %td
-            = a
-            - if @errors[a.id]
-              %p.warning=h @errors[a.id]
-          %td= "#{a.owner_user}"
-    %ul.horiz
+          %th
+          %th= t('.th.account')
+          %th= t('.th.owner')
+      %tbody
+        - @accounts.each do |a|
+          %tr
+            %td= @errors[a.id] ? radio_button('', 'account_id', a.id, :disabled => 'disabled') : radio_button('', 'account_id', a.id)
+            %td
+              = a
+              - if @errors[a.id]
+                %p.warning=h @errors[a.id]
+            %td= "#{a.owner_user}"
+    %ul.inline
       %li= submit_tag 'Continue', :class => 'btn'

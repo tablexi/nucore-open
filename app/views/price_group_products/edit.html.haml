@@ -17,17 +17,19 @@
 %p=notice
 
 = form_tag(facility_price_group_product_path(current_facility, @product), :method => :put) do
-  %table
-    %tr
-      %th Price Group (Type)
-      - if @is_instrument
-        %th Reservation Window
-    - @price_group_products.each do |price_group_product|
-      - price_group = price_group_product.price_group
-      - is_current = @product.can_purchase?([price_group.id])
-      %tr{:class => "#{'disabled' unless is_current}"}
-        %td=h "#{price_group.name} (#{price_group.type_string})"
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th Price Group (Type)
         - if @is_instrument
-          %td=text_field_tag "price_group_#{price_group.id}[reservation_window]", price_group_product.reservation_window, :disabled => !is_current || cannot?(:update, PriceGroupProduct)
+          %th Reservation Window
+    %tbody
+      - @price_group_products.each do |price_group_product|
+        - price_group = price_group_product.price_group
+        - is_current = @product.can_purchase?([price_group.id])
+        %tr{:class => "#{'disabled' unless is_current}"}
+          %td=h "#{price_group.name} (#{price_group.type_string})"
+          - if @is_instrument
+            %td=text_field_tag "price_group_#{price_group.id}[reservation_window]", price_group_product.reservation_window, :disabled => !is_current || cannot?(:update, PriceGroupProduct)
 
   = submit_tag 'Save restrictions', :class => :btn if can? :update, PriceGroupProduct

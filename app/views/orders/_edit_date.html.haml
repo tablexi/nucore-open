@@ -1,23 +1,23 @@
 - classes = ['collapsable']
 - classes << 'collapsed' if params['backdate_order'].blank?
-%fieldset{ :class => classes }
-  %legend= t("orders.show.more_options")
+%fieldset#backdate-orders{ :class => classes }
+  %label.legend= t("orders.show.more_options")
   = hidden_field_tag :backdate_order, true
-  %ul
-    %li
-      = label_tag :order_date
-      = text_field_tag :order_date, params[:order_date] || format_usa_date(Time.zone.now), :class => 'datepicker'
-    %li
-      = label_tag :order_time
-      -# Switch to select_time in rails 3.1. Rails 3.0 doesn't support the :ampm option
-      -# = select_time Time.zone.now, :prefix => :order_time, :ignore_date => true, :ampm => true
-      = time_select_tag :order_time, params[:order_datetime] || Time.zone.now
 
-    %li
-      = label_tag :status
-      = select_tag(:order_status_id, options_for_select(@order_statuses.nil? ? [] : @order_statuses.map {|s| [s.name_with_level, s.id] }, params[:order_status_id] || @order_statuses.first.try(:id)))
-    %li
-      = label_tag :send_notification
-      = check_box_tag :send_notification, 1, params[:send_notification]
+  = simple_fields_for :backdate, :builder => ModelLessFormBuilder, :defaults => { :required => false } do |f|
+    = f.input :order_date, :input_html => { :value => params[:order_date] || format_usa_date(Time.zone.now), :class => 'datepicker' }
+
+    = label_tag :order_time
+    .time-select= time_select_tag :order_time, params[:order_datetime] || Time.zone.now
+
+    = f.input :order_status_id, :collection => @order_statuses, :label_method => :name_with_level, :selected => params[:order_status_id] || @order_statuses.first.try(:id), :label => OrderDetail.human_attribute_name(:order_status)
+
+    = f.input :send_notification, :as => :boolean, :input_html => { :value => 1 }, :default => params[:send_notification], :label => false, :inline_label => true
+
+  %ul
+
+    -# %li
+    -#   = label_tag :send_notification
+    -#   = check_box_tag :send_notification, 1, params[:send_notification]
   :javascript
     $(function() { $('.datepicker').datepicker({maxDate: '#{format_usa_date(Time.zone.now)}'}); });

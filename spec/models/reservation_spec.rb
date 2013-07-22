@@ -331,7 +331,7 @@ describe Reservation do
 
     it 'should be invalid' do
       conflicting_reservation.should_not be_valid
-      conflicting_reservation.errors[:base].should include 'The reservation conflicts with another reservation'
+      conflicting_reservation.errors[:base].should include 'The reservation conflicts with another reservation.'
     end
 
     it 'should allow an admin reservation to overlap' do

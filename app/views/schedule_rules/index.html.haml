@@ -17,30 +17,31 @@
 %p You may define one or more non-overlapping schedule rules.  Schedule rules define how and when an instrument is available for reservation.
 
 - if can? :add, ScheduleRule
-  %ul
-    %li= link_to 'Add Schedule Rule', new_facility_instrument_schedule_rule_path
+  = link_to 'Add Schedule Rule', new_facility_instrument_schedule_rule_path, :class => 'btn-add'
 
 - if !@schedule_rules.blank?
-  %table
-    %tr
-      %th.actions
-      %th Days of Week
-      %th Start Time
-      %th End Time
-      %th Interval
-      %th.currency Discount (%)
-    - @schedule_rules.each do |schedule_rule|
-      %tr{:class => cycle('odd', 'even')}
-        %td.centered
-          - if can? :edit, ScheduleRule
-            = link_to 'Edit', edit_facility_instrument_schedule_rule_path(current_facility, @instrument, schedule_rule)
-            %br
-            = link_to 'Remove', facility_instrument_schedule_rule_path(current_facility, @instrument, schedule_rule), :confirm => 'Are you sure?', :method => :delete
-        %td= schedule_rule.days_string
-        %td= human_time(Time.zone.parse(schedule_rule.start_time))
-        %td= human_time(Time.zone.parse(schedule_rule.end_time))
-        %td= pluralize(schedule_rule.duration_mins, 'minute')
-        %td.currency=h sprintf '%.2f', schedule_rule.discount_percent
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th.actions
+        %th Days of Week
+        %th Start Time
+        %th End Time
+        %th Interval
+        %th.currency Discount (%)
+    %tbody
+      - @schedule_rules.each do |schedule_rule|
+        %tr{:class => cycle('odd', 'even')}
+          %td.centered
+            - if can? :edit, ScheduleRule
+              = link_to 'Edit', edit_facility_instrument_schedule_rule_path(current_facility, @instrument, schedule_rule)
+              %br
+              = link_to 'Remove', facility_instrument_schedule_rule_path(current_facility, @instrument, schedule_rule), :confirm => 'Are you sure?', :method => :delete
+          %td= schedule_rule.days_string
+          %td= human_time(Time.zone.parse(schedule_rule.start_time))
+          %td= human_time(Time.zone.parse(schedule_rule.end_time))
+          %td= pluralize(schedule_rule.duration_mins, 'minute')
+          %td.currency=h sprintf '%.2f', schedule_rule.discount_percent
 - else
   %br
   %p.notice No Schedule Rules exist yet.

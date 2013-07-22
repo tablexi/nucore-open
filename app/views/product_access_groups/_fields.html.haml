@@ -1,7 +1,5 @@
-%ul
-  %li
-    = f.label :name
-    = f.text_field :name
-%ul.horiz
-  %li= f.submit :class => 'btn'
+= f.input :name
+
+%ul.inline
+  %li= f.submit :class => ['btn', 'btn-primary']
   %li= link_to 'Cancel', facility_instrument_product_access_groups_path(@facility, @instrument)

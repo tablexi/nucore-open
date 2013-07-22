@@ -1,28 +1,16 @@
 - product = @instrument || @service || @item || @bundle
-%li
-  %label= t('shared.product_manage.label.url')
-  = link_to send("facility_#{product.class.name.downcase}_url", current_facility, product), send("facility_#{product.class.name.downcase}_url", current_facility, product)
+= f.input :url_name, :input_html => { :value => link_to(send("facility_#{product.class.name.downcase}_url", current_facility, product), send("facility_#{product.class.name.downcase}_url", current_facility, product))}
+
 - if SettingsHelper::feature_on? :product_specific_contacts
-  %li
-    %label= Product.human_attribute_name(:email)
-    = product.email
-%li
-  %label= t('shared.product_manage.label.description')
-  .wysiwyg= product.description
+  = f.input :email
+
+= f.input :description, :input_html => { :class => 'wysiwyg' }
+
 - unless product.is_a?(Bundle)
   - if SettingsHelper.feature_on? :recharge_accounts
-    %li
-      %label= t('shared.product_manage.label.deposit')
-      =h product.facility_account.account_number + (product.facility_account.is_active? ? '' : ' (inactive)')
-  %li
-    %label= t('shared.product_manage.label.initial_status')
-    =h product.initial_order_status.name
-  %li
-    %label= t('shared.product_manage.label.requires_approval')
-    =h product.requires_approval? ? 'Yes' : 'No'
-%li
-  %label= t('shared.product_manage.label.inactive')
-  =h product.is_archived? ? 'Yes' : 'No'
-%li
-  %label= t('shared.product_manage.label.hidden')
-  =h product.is_hidden? ? 'Yes' : 'No'
+    = f.input :facility_account, :label => t('shared.product_manage.label.deposit'), :input_html => { :value => product.facility_account.account_number + (product.facility_account.is_active? ? '' : ' (inactive)') }
+
+  = f.input :initial_order_status
+  = f.input :requires_approval
+= f.input :is_archived
+= f.input :is_hidden

@@ -11,6 +11,7 @@ class Ability
   #   a context for the sticky situation that is multiple controllers managing one
   #   one model each with their own authorization rules.
   def initialize(user, resource, controller)
+
     return unless user
 
     if user.administrator?
@@ -131,7 +132,7 @@ class Ability
 private
 
   def order_details_ability(user, resource)
-    can :show, OrderDetail, :order => { :user_id => user.id }
+    can [:show, :add_accessories], OrderDetail, :order => { :user_id => user.id }
     can :manage, OrderDetail, :order => { :facility_id => resource.order.facility_id } if user.operator_of?(resource.facility)
     can :show, OrderDetail, :account => { :id => resource.account_id } if user.account_administrator_of?(resource.account)
   end

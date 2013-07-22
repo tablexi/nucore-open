@@ -6,11 +6,11 @@
   = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
 
 %h2 Add Instrument
-= form_for([current_facility, @instrument]) do |f|
-  = f.error_messages
-  %ul.form
+= simple_form_for([current_facility, @instrument]) do |f|
+  = f.error_notification
+  .form-inputs
     = render :partial => 'admin/shared/product_details_fields', :locals => {:f => f}
     = render :partial => 'instrument_fields', :locals => {:f => f}
-  %ul.horiz
-    %li= f.submit 'Create', :class => 'btn'
-    %li= link_to 'Cancel', facility_instruments_path
+  .form-actions
+    = f.button :submit, 'Create'
+    = link_to 'Cancel', facility_instruments_path

@@ -25,45 +25,45 @@
         =h @facility.email
   .clear
 
-    
 - if @order_details.blank?
   %p.notice= t('.notice')
 - else
-  %table
-    %tr
-      %th= t('.th.transact')
-      %th= t('.th.purchaser')
-      %th= t('.th.order')
-      %th= t('.th.desc')
-      %th.centered= t('.th.dispute')
-      %th.currency= t('.th.amount')
-    - @order_details.each do |od|
+  %table.table.table-striped.table-hover.old-table
+    %thead
       %tr
-        %td= human_datetime(od.order.ordered_at)
-        %td= od.order.user
-        %td= link_to od, order_order_detail_path(od.order, od)
-        %td
-          %ul
-            %li= order_detail_description(od)
-            - unless od.note.blank?
-              %li
-                %i=h "Note: #{od.note}"
-        %td.centered
-          - if od.in_dispute?
-            = t('.td.dispute')
-          - elsif od.can_dispute?
-            = link_to('Dispute', order_order_detail_path(od.order, od))
-        %td.currency
-          - if od.cost_estimated?
-            %span.estimated_cost
-              = show_estimated_total(od)
-          - elsif od.price_policy.nil?
-            = t('.td.unassigned')
-          - else
-            %span.actual_cost
-              = show_actual_total(od)
-    %tr
-      %td.centered{:colspan =>6}= will_paginate(@order_details)
+        %th= t('.th.transact')
+        %th= t('.th.purchaser')
+        %th= t('.th.order')
+        %th= t('.th.desc')
+        %th.centered= t('.th.dispute')
+        %th.currency= t('.th.amount')
+    %tbody
+      - @order_details.each do |od|
+        %tr
+          %td= human_datetime(od.order.ordered_at)
+          %td= od.order.user
+          %td= link_to od, order_order_detail_path(od.order, od)
+          %td
+            %ul
+              %li= order_detail_description(od)
+              - unless od.note.blank?
+                %li
+                  %i=h "Note: #{od.note}"
+          %td.centered
+            - if od.in_dispute?
+              = t('.td.dispute')
+            - elsif od.can_dispute?
+              = link_to('Dispute', order_order_detail_path(od.order, od))
+          %td.currency
+            - if od.cost_estimated?
+              %span.estimated_cost
+                = show_estimated_total(od)
+            - elsif od.price_policy.nil?
+              = t('.td.unassigned')
+            - else
+              %span.actual_cost
+                = show_actual_total(od)
+      %tr
+        %td.centered{:colspan =>6}= will_paginate(@order_details)
 
   = render :partial => '/price_display_footnote'
-

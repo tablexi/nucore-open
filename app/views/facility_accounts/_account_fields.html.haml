@@ -1,22 +1,18 @@
 - valid_account_types = AccountManager.new.valid_account_types
-%ul.form
-  - if controller.action_name == 'new' || controller.action_name == 'create'
-    = hidden_field_tag "owner_user_id", @owner_user.id, :class => 'NufsAccount'
-    %li
-      = label_tag :owner_user_id, t('facility_accounts.account_fields.label.owner_user'), :class => 'require'
-      = text_field_tag 'owner_user_full_name', @owner_user.full_name, :disabled => true, :class => 'show_always'
-    %li
-      = label_tag :class_type, t('facility_accounts.account_fields.label.payment_type'), :class => 'require'
-      = select_tag 'class_type', options_for_select(valid_account_types.map { |type| [t("accounts.#{type.name.underscore}"), type.name]}, :selected => params[:class_type]), :class => 'NufsAccount show_always'
 
-    - valid_account_types.each do |type|
-      %li
-        %ul.form.account_type_fields.account_type_new_fields{ :class => type.name }
-          = render :partial => "facility_accounts/account_fields/new_#{type.name.underscore}", :locals => { :f => f }
+- if controller.action_name == 'new' || controller.action_name == 'create'
+  = hidden_field_tag "owner_user_id", @owner_user.id, :class => 'NufsAccount'
+  = f.input :owner, :as => :readonly, :input_html => { :class => 'show_always', :value => @owner_user.full_name }
+
+  = label_tag :class_type, t('facility_accounts.account_fields.label.payment_type'), :class => 'require'
+  = select_tag 'class_type', options_for_select(valid_account_types.map { |type| [type.model_name.human, type.name]}, :selected => params[:class_type]), :class => 'NufsAccount show_always'
+
+  - valid_account_types.each do |type|
+    .account_type_fields.account_type_new_fields{ :class => type.name }
+      = render :partial => "facility_accounts/account_fields/new_#{type.name.underscore}", :locals => { :f => f }
 
 
-      %li
-        %ul.form.account_type_fields{ :class => type.name }
-          = render :partial => "facility_accounts/account_fields/#{type.name.underscore}", :locals => { :f => f }
-  - else
-    = render :partial => "facility_accounts/account_fields/#{@account.class.name.underscore}", :locals => { :f => f }
+    .account_type_fields{ :class => type.name }
+      = render :partial => "facility_accounts/account_fields/#{type.name.underscore}", :locals => { :f => f }
+- else
+  = render :partial => "facility_accounts/account_fields/#{@account.class.name.underscore}", :locals => { :f => f }

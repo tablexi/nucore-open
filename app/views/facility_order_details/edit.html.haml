@@ -80,40 +80,30 @@
   = render :partial => "admin/shared/tabnav_#{@order_detail.reservation ? 'reservation' : 'order'}", :locals => { :secondary_tab => tab }
 
 %h2= t('.head.h2', :order_number => @order_detail.to_s)
-= form_for(@order_detail, :url => (@order_detail.in_dispute? ? facility_order_order_detail_resolve_dispute_path(current_facility, @order, @order_detail) : facility_order_order_detail_path(current_facility, @order, @order_detail)), :html => {:method => :put}) do |f|
+= simple_form_for(@order_detail, :url => (@order_detail.in_dispute? ? facility_order_order_detail_resolve_dispute_path(current_facility, @order, @order_detail) : facility_order_order_detail_path(current_facility, @order, @order_detail)), :html => {:method => :put}) do |f|
   = hidden_field_tag :return_to, request.referer if request.referer =~ /\/facilities\/.+\/orders\/[0-9]+\/edit/
   = f.error_messages
-  .grid_6.alpha
-    %ul.form
-      %li
-        %label= link_to t('.label.ordered.summary', :order_number => @order.id), edit_facility_order_path(current_facility, @order)
-      %li
-        %label= t('.label.ordered.at')
-        =h human_datetime(@order.ordered_at)
-      %li
-        %label= t('.label.ordered.for')
-        =h @order.user.full_name
-      %li
-        %label= t('.label.ordered.by')
-        =h @order.created_by_user.full_name
-      - if @order_detail.fulfilled_at
-        %li
-          %label= t('.label.fulfilled')
-          =h human_datetime(@order_detail.fulfilled_at)
-      %li
-        %label= t('.label.account')
-        - html_opts=@in_open_journal ? { :disabled => 'disabled' } : {}
-        - # make sure that the account it was purchased under is available, even if it's no
-        - # longer available for the owner
-        - available_accounts = @order.user.account_users.active.collect{|au| au.account}
-        - available_accounts << @order.account if available_accounts.index(@order.account).nil?
-        = f.collection_select(:account_id, available_accounts, :id, :account_pretty, {}, html_opts)
-      %li
-        %label= t('.label.assigned')
-        - if @order_detail.complete?
-          =h @order_detail.assigned_user ? @order_detail.assigned_user.full_name : 'Unassigned'
-        - else
-          = f.collection_select(:assigned_user_id, User.find_users_by_facility(current_facility), :id, :full_name, :prompt => 'Unassigned')
+  %label= link_to t('.label.ordered.summary', :order_number => @order.id), facility_order_path(current_facility, @order)
+
+  = f.input :ordered_at, :as => :readonly, :label => t('.label.ordered.at')
+  = f.input :user, :as => :readonly
+  = f.input :created_by_user, :as => :readonly
+  = f.input :fulfilled_at, :as => :readonly if @order_detail.fulfilled_at
+
+  %label= t('.label.account')
+  - html_opts=@in_open_journal ? { :disabled => 'disabled' } : {}
+  - # make sure that the account it was purchased under is available, even if it's no
+  - # longer available for the owner
+  - available_accounts = @order.user.account_users.active.collect{|au| au.account}
+  - available_accounts << @order.account if available_accounts.index(@order.account).nil?
+  = f.collection_select(:account_id, available_accounts, :id, :account_pretty, {}, html_opts)
+
+
+  %label= t('.label.assigned')
+  - if @order_detail.complete?
+    =h @order_detail.assigned_user ? @order_detail.assigned_user.full_name : 'Unassigned'
+  - else
+    = f.collection_select(:assigned_user_id, User.find_users_by_facility(current_facility), :id, :full_name, :prompt => 'Unassigned')
   .grid_6.omega.margin_bottom
     - # Dispute form
     - if @order_detail.in_dispute?
@@ -152,10 +142,10 @@
     - # Results Files
     - if @order_detail.product.is_a?(Service)
       .box
-        %h3= t('.head.h3-3')
+        %h3= t('file_uploads.sample_result.title')
         - @results = @order_detail.stored_files.sample_result.sort{|a,b| a.created_at <=> b.created_at}
         - if @results.empty?
-          %p= t('.notice.no_results')
+          %p= t('file_uploads.sample_result.none')
         - else
           %ul.form
             - i = 0
@@ -164,78 +154,80 @@
                 == #{link_to("Results File #{i+=1}", stored_file.file.url)}:
                 = human_datetime(stored_file.created_at)
                 == - (#{link_to('Remove', remove_product_file_path(current_facility, @order_detail.product.parameterize, @order_detail.product, stored_file, :return_to => request.fullpath), :method => :delete, :confirm => 'Are you sure?')})
-        %h3= t('.head.h3-4')
-        #file_upload Please enable Javascript and install Adobe Flash Player.
+        %h3= t('file_uploads.sample_result.upload')
+        #file_upload= t('file_uploads.widget.error_loading')
         %br
-        = link_to "Start Upload", "javascript:$('#file_upload').uploadifyUpload();"
+        = link_to t('file_uploads.widget.start'), "javascript:$('#file_upload').uploadifyUpload();"
         == &nbsp;&nbsp;|&nbsp;&nbsp;
-        = link_to "Clear Queue", "javascript:$('#file_upload').uploadifyClearQueue()"
+        = link_to t('file_uploads.widget.clear_queue'), "javascript:$('#file_upload').uploadifyClearQueue()"
   .clear
   - # Product table
-  %table
-    %tr
-      %th{:colspan => 2}= t('.th.product')
-      %th Status
-      %th.currency= "#{@order_detail.cost_estimated? ? 'Estimated ' : '' }Cost"
-      %th.currency.subsidy_header
-        = @order_detail.price_policy.price_group if @order_detail.price_policy
-        = "#{@order_detail.cost_estimated? ? 'Estimated' : ''} Subsidy"
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th{:colspan => 2}= t('.th.product')
+        %th Status
+        %th.currency= "#{@order_detail.cost_estimated? ? 'Estimated ' : '' }Cost"
+        %th.currency.subsidy_header
+          = @order_detail.price_policy.price_group if @order_detail.price_policy
+          = "#{@order_detail.cost_estimated? ? 'Estimated' : ''} Subsidy"
 
-      %th.currency= "#{@order_detail.cost_estimated? ? 'Estimated ' : '' }Total"
-    %tr
-      %td.centered
-        - if @order_detail.product.is_a?(Instrument)
-          =h @order_detail.quantity
-        - else
-          - html_opts={ :id => 'quantity', :size => 3 }
-          - html_opts.merge!(:disabled => 'disabled') if @in_open_journal || @order_detail.reconciled?
-          = f.text_field :quantity, html_opts
-      %td
-        %ul
-          - product_name = order_detail_description(@order_detail)
-          %li= product_name
-          - if @order_detail.reservation
-            %li.indented= link_to(@order_detail.reservation, edit_facility_order_order_detail_reservation_path(current_facility, @order, @order_detail, @order_detail.reservation))
-          - if @order_detail.survey_completed?
-            %li.indented= link_to('View Order Form', @order_detail.external_service_receiver.response_data, :target => '_blank')
-          - unless @order_detail.stored_files.template_result.empty?
-            %li.indented= link_to('View Order File', @order_detail.stored_files.template_result.first.file.url)
-      %td
-        - if @can_be_reconciled
-          = f.collection_select(:order_status_id, [ OrderStatus.complete.first, OrderStatus.cancelled.first, OrderStatus.reconciled.first ], :id, :name_with_level)
-          - if @order_detail.account.is_a?(NufsAccount) && @order_detail.journal
-            == <br/><br/>#{link_to t('.link.remove'), remove_from_journal_facility_order_order_detail_path(current_facility, @order, @order_detail)}
-        - elsif @order_detail.complete?
-          = f.collection_select(:order_status_id, [ OrderStatus.complete.first, OrderStatus.cancelled.first ], :id, :name_with_level)
-        - elsif @order_detail.reconciled?
-          =h @order_detail.order_status
-        - else
-          = f.collection_select(:order_status_id, OrderStatus.non_protected_statuses(current_facility), :id, :name_with_level)
+        %th.currency= "#{@order_detail.cost_estimated? ? 'Estimated ' : '' }Total"
+    %tbody
+      %tr
+        %td.centered
+          - if @order_detail.product.is_a?(Instrument)
+            =h @order_detail.quantity
+          - else
+            - html_opts={ :id => 'quantity', :size => 3 }
+            - html_opts.merge!(:disabled => 'disabled') if @in_open_journal || @order_detail.reconciled?
+            = f.text_field :quantity, html_opts
+        %td
+          %ul
+            - product_name = order_detail_description(@order_detail)
+            %li= product_name
+            - if @order_detail.reservation
+              %li.indented= link_to(@order_detail.reservation, edit_facility_order_order_detail_reservation_path(current_facility, @order, @order_detail, @order_detail.reservation))
+            - if @order_detail.survey_completed?
+              %li.indented= link_to('View Order Form', @order_detail.external_service_receiver.response_data, :target => '_blank')
+            - unless @order_detail.stored_files.template_result.empty?
+              %li.indented= link_to('View Order File', @order_detail.stored_files.template_result.first.file.url)
+        %td
+          - if @can_be_reconciled
+            = f.collection_select(:order_status_id, [ OrderStatus.complete.first, OrderStatus.cancelled.first, OrderStatus.reconciled.first ], :id, :name_with_level)
+            - if @order_detail.account.is_a?(NufsAccount) && @order_detail.journal
+              == <br/><br/>#{link_to t('.link.remove'), remove_from_journal_facility_order_order_detail_path(current_facility, @order, @order_detail)}
+          - elsif @order_detail.complete?
+            = f.collection_select(:order_status_id, [ OrderStatus.complete.first, OrderStatus.cancelled.first ], :id, :name_with_level)
+          - elsif @order_detail.reconciled?
+            =h @order_detail.order_status
+          - else
+            = f.collection_select(:order_status_id, OrderStatus.non_protected_statuses(current_facility), :id, :name_with_level)
 
-        - if @order_detail.product.is_a? Instrument
-          %div#cancel-fee-opt
-            = label_tag 'with_cancel_fee', t('.label.with_cancel_fee')
-            = check_box_tag 'with_cancel_fee'
+          - if @order_detail.product.is_a? Instrument
+            %div#cancel-fee-opt
+              = label_tag 'with_cancel_fee', t('.label.with_cancel_fee')
+              = check_box_tag 'with_cancel_fee'
 
-      - if @order_detail.product.is_a?(Instrument) && @order_detail.complete?
-        - res = @order_detail.reservation
-        - if res && res.requires_but_missing_actuals?
-          %td.centered{:colspan => '3'}= t('.notice.no_time')
+        - if @order_detail.product.is_a?(Instrument) && @order_detail.complete?
+          - res = @order_detail.reservation
+          - if res && res.requires_but_missing_actuals?
+            %td.centered{:colspan => '3'}= t('.notice.no_time')
+          - else
+            = render :partial => 'price_row', :locals => { :form => f }
         - else
           = render :partial => 'price_row', :locals => { :form => f }
-      - else
-        = render :partial => 'price_row', :locals => { :form => f }
-    %tr
-      %td{:colspan => '6'}
-        %label.inline_wide Note:
-        - opts={ :maxlength => 100, :size => 100 }
-        - opts.merge!(:disabled => 'disabled') if @order_detail.reconciled?
-        = f.text_field(:note, opts)
-        - if @can_be_reconciled || @order_detail.reconciled?
-          %br/
-          %span#reconcile-note
-            %label.inline_wide= t('.label.reconcile')
-            = f.text_field(:reconciled_note, {:maxlength => 255, :size => 100})
+      %tr
+        %td{:colspan => '6'}
+          %label.inline_wide Note:
+          - opts={ :maxlength => 100, :size => 100 }
+          - opts.merge!(:disabled => 'disabled') if @order_detail.reconciled?
+          = f.text_field(:note, opts)
+          - if @can_be_reconciled || @order_detail.reconciled?
+            %br/
+            %span#reconcile-note
+              %label.inline_wide= t('.label.reconcile')
+              = f.text_field(:reconciled_note, {:maxlength => 255, :size => 100})
 
   - if @order_detail.cost_estimated?
     %p.footnote= t('.foot.estimated')
@@ -245,13 +237,13 @@
     %p.footnote= t('.foot.default')
 
   - if @order_detail.in_dispute?
-    %ul.horiz
+    %ul.inline
       %li= submit_tag 'Resolve Dispute', {:class => 'btn', :id => 'submit'}
       %li= link_to 'Cancel', disputed_facility_orders_path
   - else
     - cancel_link=request.referrer.blank? ? facility_transactions_path(current_facility) : request.referrer
     %p= t('.notice.save_html')
-    %ul.horiz
+    %ul.inline
       - attrs={:class => 'btn', :id => 'submit'}
       - attrs.merge!(:name => 'assign_price_policy') if @order_detail.price_policy.nil? && @order_detail.order_status.name == 'Complete'
       %li= submit_tag 'Save', attrs
@@ -264,17 +256,19 @@
   %br
   %h3= t('.head.h3-5')
   %p= t('.instruct.bundle')
-  %table
-    %tr
-      %th= t('.th.order')
-      %th{:colspan => 2}= t('.th.quantity')
-      %th= t('.th.status')
-      %th= t('.th.assigned')
-    - @order.order_details.find(:all, :conditions => {:group_id => @order_detail.group_id}).each do |od|
-      - product_name = order_detail_description(od)
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td= link_to od, edit_facility_order_order_detail_path(current_facility, @order, od)
-        %td= od.quantity
-        %td= product_name
-        %td=h od.order_status
-        %td=h od.assigned_user.nil? ? '' : od.assigned_user.full_name
+        %th= t('.th.order')
+        %th{:colspan => 2}= t('.th.quantity')
+        %th= t('.th.status')
+        %th= t('.th.assigned')
+    %tbody
+      - @order.order_details.find(:all, :conditions => {:group_id => @order_detail.group_id}).each do |od|
+        - product_name = order_detail_description(od)
+        %tr
+          %td= link_to od, facility_order_path(current_facility, @order)
+          %td= od.quantity
+          %td= product_name
+          %td=h od.order_status
+          %td=h od.assigned_user.nil? ? '' : od.assigned_user.full_name

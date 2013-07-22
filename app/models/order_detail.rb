@@ -2,11 +2,20 @@ class OrderDetail < ActiveRecord::Base
   include NUCore::Database::SortHelper
   include TranslationHelper
   include NotificationSubject
+  include OrderDetail::Accessorized
 
   versioned
 
   # Used when ordering to override certain restrictions
   attr_accessor :being_purchased_by_admin
+
+  # So you can see what price policy was used in the price estimation
+  attr_reader :estimated_price_policy
+
+  # Used to mark a dispute as resolved
+  attr_accessor :resolve_dispute
+  before_validation :mark_dispute_resolved, :if => :resolve_dispute
+  after_validation :reset_dispute
 
   belongs_to :product
   belongs_to :price_policy
@@ -24,6 +33,11 @@ class OrderDetail < ActiveRecord::Base
   has_many   :stored_files, :dependent => :destroy
 
   delegate :user, :facility, :ordered_at, :to => :order
+  delegate :price_group, :to => :price_policy, :allow_nil => true
+  def estimated_price_group
+    estimated_price_policy.try(:price_group)
+  end
+
   delegate :journal_date, :to => :journal, :allow_nil => true
   def statement_date
     statement.try(:created_at)
@@ -38,8 +52,9 @@ class OrderDetail < ActiveRecord::Base
   validates_numericality_of :quantity, :only_integer => true, :greater_than_or_equal_to => 1
   validates_numericality_of :actual_cost, :greater_than_or_equal_to => 0, :if => lambda { |o| o.actual_cost_changed? && !o.actual_cost.nil?}
   validates_numericality_of :actual_subsidy, :greater_than_or_equal_to => 0, :if => lambda { |o| o.actual_subsidy_changed? && !o.actual_cost.nil?}
+  validates_numericality_of :actual_total, :greater_than_or_equal_to => 0, :allow_nil => true
   validates_presence_of :dispute_reason, :if => :dispute_at
-  validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, :if => :dispute_resolved_reason || :dispute_resolved_at
+  validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, :if => Proc.new { dispute_resolved_reason.present? || dispute_resolved_at.present? }
   # only do this validation if it hasn't been ordered yet. Update errors caused by notification sending
   # were being triggered on orders where the orderer had been removed from the account.
   validate :account_usable_by_order_owner?, :if => lambda { |o| o.order.nil? or o.order.ordered_at.nil? }
@@ -128,15 +143,15 @@ class OrderDetail < ActiveRecord::Base
     order(:reviewed_at).reverse_order
   end
 
-  def self.in_review_or_reviewed
-
-  end
-
   def in_review?
     # check in the database if self.id is in the scope
     self.class.all_in_review.find_by_id(self.id) ? true :false
     # this would work without hitting the database again, but duplicates the functionality of the scope
     # state == 'complete' and !reviewed_at.nil? and reviewed_at > Time.zone.now and (dispute_at.nil? or !dispute_resolved_at.nil?)
+  end
+
+  def reviewed?
+    reviewed_at.present? && !in_review? && !in_dispute?
   end
 
   def can_be_viewed_by?(user)
@@ -324,14 +339,14 @@ class OrderDetail < ActiveRecord::Base
 
   # This method is a replacement for change_status! that also will cancel the associated reservation when necessary
   def update_order_status!(updated_by, order_status, options_args = {}, &block)
-    options = { :admin => false }.merge(options_args)
+    options = { :admin => false, :apply_cancel_fee => false }.merge(options_args)
 
-    cancel_reservation(updated_by, order_status, options[:admin]) if reservation && order_status.root == OrderStatus.cancelled.first
+    cancel_reservation(updated_by, order_status, options[:admin], options[:apply_cancel_fee]) if reservation && order_status.root == OrderStatus.cancelled.first
 
     change_status! order_status, &block
   end
 
-  def backdate_to_complete!(event_time)
+  def backdate_to_complete!(event_time = Time.zone.now)
     # if we're setting it to compete, automatically set the actuals for a reservation
     if reservation
       raise NUCore::PurchaseException.new(t_model_error(Reservation, 'connot_be_completed_in_future')) if reservation.reserve_end_at > event_time
@@ -524,8 +539,9 @@ class OrderDetail < ActiveRecord::Base
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
 
-    pp = product.cheapest_price_policy(self, date)
-    assign_estimated_price_from_policy pp
+
+    @estimated_price_policy = product.cheapest_price_policy(self, date)
+    assign_estimated_price_from_policy @estimated_price_policy
   end
 
   def assign_estimated_price!(second_account=nil, date = Time.zone.now)
@@ -550,6 +566,10 @@ class OrderDetail < ActiveRecord::Base
 
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
+    assign_actual_price(time)
+  end
+
+  def assign_actual_price(time = Time.zone.now)
     pp = product.cheapest_price_policy(self, time)
     return unless pp
     costs = pp.calculate_cost_and_subsidy_from_order_detail(self)
@@ -573,6 +593,10 @@ class OrderDetail < ActiveRecord::Base
 
   def in_dispute?
     dispute_at && dispute_resolved_at.nil? && !cancelled?
+  end
+
+  def disputed?
+    dispute_at.present? && !cancelled?
   end
 
   def cancel_reservation(canceled_by, order_status = OrderStatus.cancelled.first, admin_cancellation = false, admin_with_cancel_fee=false)
@@ -627,6 +651,17 @@ class OrderDetail < ActiveRecord::Base
     !!(complete? && (price_policy.nil? || reservation.try(:requires_but_missing_actuals?)))
   end
 
+  def missing_price_policy?
+    complete? && price_policy.nil?
+  end
+
+  def in_open_journal?
+    self.journal && self.journal.open?
+  end
+
+  def can_reconcile?
+    complete? && !in_dispute? && account.can_reconcile?(self)
+  end
 
   def self.account_unreconciled(facility, account)
     if account.is_a?(NufsAccount)
@@ -649,7 +684,7 @@ class OrderDetail < ActiveRecord::Base
   def to_notice(notification_class, *args)
     case notification_class.name
       when MergeNotification.name
-        notice="<a href=\"#{edit_facility_order_path(order.facility, order.merge_order)}\">Order ##{order.merge_order.id}</a> needs your attention. A line item was added after purchase and "
+        notice="<a href=\"#{facility_order_path(order.facility, order.merge_order)}\">Order ##{order.merge_order.id}</a> needs your attention. A line item was added after purchase and "
 
         notice += case product
           when Instrument then 'has an incomplete reservation.'
@@ -770,6 +805,24 @@ class OrderDetail < ActiveRecord::Base
     self.actual_cost = fee
     self.actual_subsidy = 0
     self.change_status!(fee > 0 ? OrderStatus.complete.first : order_status)
+  end
+
+  def mark_dispute_resolved
+    if resolve_dispute == true || resolve_dispute == '1'
+      self.dispute_resolved_at = Time.zone.now
+      self.reviewed_at         = Time.zone.now
+    else
+      resolve_dispute = '0'
+    end
+  end
+
+  def reset_dispute
+    if dispute_resolved_at_changed?
+      if errors.any?
+        self.dispute_resolved_at = dispute_resolved_at_was
+        self.reviewed_at         = reviewed_at_was
+      end
+    end
   end
 
 end

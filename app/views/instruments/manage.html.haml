@@ -5,53 +5,19 @@
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'details'}
 
-%h2=h @instrument
-%ul.form
-  = render :partial => 'admin/shared/product_manage'
-  %li
-    %label= Product.human_attribute_name(:schedule_id)
-    %p= @instrument.schedule.display_name
-  %li
-    - if @instrument.relay.nil?
-      %label= t '.label.control_mech'
-      %p= t 'instruments.instrument_fields.relay.control_mechanisms.manual'
-    - elsif @instrument.relay.is_a?(RelayDummy)
-      %label= t '.label.control_mech'
-      %p= t 'instruments.instrument_fields.relay.control_mechanisms.timer'
-    - elsif @instrument.relay.is_a?(PowerRelay)
-      %ul.box
-        %li
-          %label= t '.label.relay.type'
-          %p= @instrument.relay.class.presence || 'N/A'
-        %li
-          %label= t '.label.relay.ip'
-          %p= @instrument.relay.ip.presence || 'N/A'
-        %li
-          %label= t '.label.relay.port'
-          %p= @instrument.relay.port || 'N/A'
-        %li
-          %label= t '.label.relay.user'
-          %p= @instrument.relay.username.presence || 'N/A'
-        %li
-          %label= t '.label.relay.pass'
-          %p= @instrument.relay.password.presence || 'N/A'
-        %li
-          %label= t '.label.relay.auto_logout'
-          %p= @instrument.relay.auto_logout? ? 'Yes' : 'No'
-    - else
-      %p UNKNOWN RELAY TYPE
-  %li
-    %label= t '.label.min_res'
-    %p= @instrument.min_reserve_mins.to_i
-  %li
-    %label= t '.label.max_res'
-    %p= @instrument.max_reserve_mins || 'None'
-  %li
-    %label= t '.label.cancel_hours'
-    %p= @instrument.min_cancel_hours.to_i
-  %li
-    %label= t '.label.cancel_mins'
-    %p= @instrument.auto_cancel_mins.to_i
+%h2= @instrument
+= readonly_form_for :instrument do |f|
+  = render :partial => 'admin/shared/product_manage', :locals => { :f => f }
+
+  = f.input :schedule, :input_html => { :value => @instrument.schedule.display_name}
+
+  = render :partial => 'relay_manage', :locals => { :f => f }
+
+  = f.input :min_reserve_mins, :value_method => :to_i
+  = f.input :max_reserve_mins, :default_value => 'None'
+  = f.input :min_cancel_hours, :value_method => :to_i
+  = f.input :auto_cancel_mins, :value_method => :to_i
+
 - if can? :edit, Product
-  %ul.horiz
+  %ul.inline
     %li= link_to 'Edit', edit_facility_instrument_path(current_facility, @instrument), :class => 'btn'

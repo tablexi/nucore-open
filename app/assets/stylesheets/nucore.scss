@@ -1,0 +1,262 @@
+.highlighted {
+  @include gradient-vertical($sidebarActiveBackgroundColorHighlight, $sidebarActiveBackgroundColor);
+  color: $sidebarActiveColor;
+}
+
+/*
+ nav
+*/
+
+nav ul.nav > li.active,
+nav ul.nav > li:hover {
+  border-top: $navbarActiveBorderHeight solid $navbarActiveBorderColor;
+  margin-top: -$navbarActiveBorderHeight;
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus,
+.dropdown-submenu:hover > a,
+.dropdown-submenu:focus > a {
+  @extend .highlighted;
+}
+
+/*
+ breadcrumb nav
+*/
+#breadcrumb {
+  font-size: 85%;
+  border-bottom: 1px solid #ddd;
+}
+#breadcrumb .breadcrumb {
+  margin: 1em 0;
+  padding: 0;
+  background: inherit;
+}
+
+/*
+  Sidebar navigation
+*/
+.sidebar-nav {
+  @extend .well;
+  @extend .well-small;
+  @extend .nav;
+  @extend .nav-list;
+
+  li {
+    line-height: 1.3em;
+    &.nav-header {
+      line-height: 2em;
+      margin-top: 0;
+    }
+    &.divider {
+      margin: 0.5em 1px;
+    }
+  }
+
+
+  > .active > a,
+  > .active > a:hover {
+    @extend .highlighted;
+  }
+}
+
+li.nav-spacer {
+  margin: 1em;
+}
+
+/*
+ footer
+*/
+footer .container {
+  border-top: 1px solid #ddd;
+  padding-top: 1em;
+  margin-top: 5em;
+}
+
+footer .span8 {
+  font-size: 85%;
+  color: #919191;
+  text-align: right;
+  line-height: 75px;
+}
+
+/* Acting As Banner */
+#acting_as {
+  @include gradient-vertical(#268BD2, #6ebdf3);
+
+  border-bottom:2px solid #1570a2;
+  font-size:15px;
+  overflow:hidden;
+  text-align:center;
+
+  p {
+    font-weight:bold;
+    margin:3px 0;
+  }
+
+  a {
+    font-weight: normal;
+  }
+}
+
+
+
+/*
+  Errors
+*/
+.errorExplanation {
+  @extend .alert;
+  @extend .alert-error;
+  @extend .alert-block;
+  h2 {
+    font-size: 16px;
+    line-height: 1em;
+    margin-top: 0;
+  }
+}
+
+.notice {
+  @extend .alert;
+  @extend .alert-info;
+}
+
+/*
+  Product List
+*/
+
+.product_list {
+  ul {
+    @extend ul.unstyled;
+  }
+  input {
+    width: 2em;
+    padding: 0 3px;
+  }
+  a.icon-calendar {
+    text-decoration: none;
+    color: $textColor;
+    font-size: 175%;
+  }
+}
+
+/*
+  Product View
+*/
+.wysiwyg {
+  float: left;
+}
+
+.controls .wysiwyg {
+  float: none;
+}
+
+.order-statuses-table {
+  .action-column {
+    width: 5em;
+    border-right: 1px solid $tableBorder;
+  }
+  .child {
+    padding-left: 3em;
+  }
+}
+
+.backdate_fields {
+  float: left;
+  padding: 8px 0 0 6px;
+}
+
+#ui-datepicker-div {
+  z-index: 10 !important; /* was being hidden behind fullcalendar */
+}
+
+.document {
+  background: image-url("icon_file.jpg") no-repeat 0 0;
+  line-height:24px;
+  padding-left:28px;
+}
+
+/* Various Styles */
+ul.unstyled {
+  list-style: none;
+  margin-left: 0;
+}
+
+.modal form,
+.well form {
+  margin-bottom: 0;
+}
+
+.well {
+  padding: 8px 19px;
+  h2, h3 {
+    margin-top: 0;
+  }
+}
+
+td.currency {
+  text-align: right;
+}
+.currency-input input {
+  width: 7em;
+}
+
+.pagination {
+  margin: 0;
+  text-align: center;
+}
+
+.btn-add {
+  @extend .btn;
+  @extend .btn-success;
+}
+
+.btn-inline {
+  margin-top: -10px;
+}
+
+.old-table,
+.footnote {
+  .estimated_cost {
+    color: $warningText;
+  }
+
+  .actual_cost {
+    color: $successText;
+  }
+
+  .reconcile-note {
+    color:#dbbfc6;
+  }
+
+  tr.reconcile-warning td {
+    background-color: $errorBackground !important;
+  }
+}
+
+.table .super-th {
+  text-align: center;
+}
+
+/* Schedule Rules */
+.inline-checkbox-list {
+  .controls label {
+    display: inline-block;
+    font-weight: normal;
+    margin-right: 1em;
+  }
+}
+
+.price-policy-table input[type=text] {
+  width: 50%;
+}
+
+/* Account Fields */
+ul.inline > li, ol.inline > li {
+  &.account_number_field {
+    padding: 0;
+    input {
+      width: inherit;
+    }
+  }
+}
+

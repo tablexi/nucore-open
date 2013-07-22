@@ -10,17 +10,18 @@
 %p Services are provided by the facility on behalf of the user.  Forms for collection of additional information may be attached to the service.  Results files may be returned to the user.
 
 - if current_user.manager_of?(current_facility)
-  %ul.horiz
-    %li= link_to 'Add Service', new_facility_service_path
+  %p= link_to 'Add Service', new_facility_service_path, :class => 'btn-add'
 
 - if @services.empty?
   %p.notice== No #{params[:archived].nil? || params[:archived] != 'true' ? 'active' : 'inactive'} services exist for this facility.
 - else
-  %table.product_list
-    %tr
-      %th Service Name
-    - @services.each do |service|
+  %table.table.table-striped.table-hover.product_list
+    %thead
       %tr
-        %td
-          = link_to service.name, manage_facility_service_path(current_facility, service)
-          = price_policy_errors(service) unless params[:archived] == 'true'
+        %th Service Name
+    %tbody
+      - @services.each do |service|
+        %tr
+          %td
+            = link_to service.name, manage_facility_service_path(current_facility, service)
+            = price_policy_errors(service) unless params[:archived] == 'true'

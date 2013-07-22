@@ -160,7 +160,7 @@ Nucore::Application.routes.draw do
 
     resources :facility_accounts, :controller => 'facility_facility_accounts', :only => [:index, :new, :create, :edit, :update] if SettingsHelper.feature_on? :recharge_accounts
 
-    resources :orders, :controller => 'facility_orders', :only => [:index, :edit, :update] do
+    resources :orders, :controller => 'facility_orders', :only => [:index, :edit, :update, :show] do
       member do
         post 'send_receipt'
       end
@@ -179,6 +179,10 @@ Nucore::Application.routes.draw do
         get 'new_price', :to => 'facility_order_details#new_price'
         put 'resolve_dispute', :to => 'facility_order_details#resolve_dispute'
         resources :reservations, :controller => 'facility_reservations', :only => [:edit, :update, :show]
+        get 'manage', :to => 'order_management/order_details#edit', :on => :member
+        put 'manage', :to => 'order_management/order_details#update', :on => :member
+        get 'pricing', :to => 'order_management/order_details#pricing', :on => :member
+        get 'files', :to => 'order_management/order_details#files', :on => :member
       end
     end
 
@@ -197,6 +201,20 @@ Nucore::Application.routes.draw do
     get 'accounts_receivable', :to => 'facility_accounts#accounts_receivable'
 
     ### Feature Toggle Editing Accounts ###
+    if SettingsHelper.feature_on?(:edit_accounts)
+      resources :accounts, :controller => 'facility_accounts', :only => [:new, :create, :edit, :update] do
+        collection do
+          get 'new_account_user_search'
+          get 'user_search'
+        end
+        resources :account_users, :controller => 'facility_account_users', :only => [:new, :destroy, :create, :update] do
+          collection do
+            get 'user_search'
+          end
+        end
+      end
+    end
+
     resources :accounts, :controller => 'facility_accounts', :only => [:index, :show] do
       collection do
         get 'search'
@@ -211,19 +229,6 @@ Nucore::Application.routes.draw do
       end
     end
 
-    if SettingsHelper.feature_on?(:edit_accounts)
-      resources :accounts, :controller => 'facility_accounts', :only => [:new, :create, :edit, :update] do
-        collection do
-          get 'new_account_user_search'
-          get 'user_search'
-        end
-        resources :account_users, :controller => 'facility_account_users', :only => [:new, :destroy, :create, :update] do
-          collection do
-            get 'user_search'
-          end
-        end
-      end
-    end
     ######
 
     resources :journals, :controller => 'facility_journals', :only => [:index, :new, :create, :update, :show] do
@@ -283,9 +288,9 @@ Nucore::Application.routes.draw do
         get '/move',               :to => 'reservations#earliest_move_possible'
         post '/move',              :to => 'reservations#move',              :as => 'move_reservation'
         get '/switch_instrument',  :to => 'reservations#switch_instrument', :as => 'switch_instrument'
-        match '/pick_accessories', :to => 'reservations#pick_accessories',  :as => 'pick_accessories', :via => [:get, :post]
-
       end
+
+      resources :accessories
     end
   end
 

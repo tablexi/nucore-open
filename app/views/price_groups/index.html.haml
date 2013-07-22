@@ -7,26 +7,28 @@
 
 %p= t('.intro')
 
-%ul.horiz
-  %li= link_to t('.link.add'), new_facility_price_group_path
+%ul.inline
+  %li= link_to t('.link.add'), new_facility_price_group_path, :class => 'btn-add'
 
 - if @price_groups.empty?
-  %p.notice= t('.notice')
+  %p.alert.alert-info= t('.notice')
 - else
-  %table
-    %tr
-      %th
-      %th= t('.th.pg')
-      %th= t('.th.type')
-      %th= t('.th.users')
-      %th= t('.th.accounts')
-    - @price_groups.each do |price_group|
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td= link_to('Remove', [current_facility, price_group], :confirm => 'Are you sure?', :method => :delete) if price_group.can_delete?
-        %td= link_to price_group.name, facility_price_group_path(current_facility, price_group)
-        %td= price_group.type_string
-        - if price_group.facility_id
-          %td= price_group.user_price_group_members.count
-        - else
-          %td N/A
-        %td= price_group.account_price_group_members.count
+        %th
+        %th= t('.th.pg')
+        %th= t('.th.type')
+        %th= t('.th.users')
+        %th= t('.th.accounts')
+    %tbody
+      - @price_groups.each do |price_group|
+        %tr
+          %td= link_to('Remove', [current_facility, price_group], :confirm => 'Are you sure?', :method => :delete) if price_group.can_delete?
+          %td= link_to price_group.name, facility_price_group_path(current_facility, price_group)
+          %td= price_group.type_string
+          - if price_group.facility_id
+            %td= price_group.user_price_group_members.count
+          - else
+            %td N/A
+          %td= price_group.account_price_group_members.count

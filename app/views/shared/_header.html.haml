@@ -1,31 +1,26 @@
-.container_12
-  .grid_3
-    = link_to (current_user && current_user.operator? ? t(:app_admin_name) : t(:app_name)), :root, :id => 'logo'
-  .grid_9
-    %ul
-      - if session_user.nil?
-        %li.last= link_to t("pages.login"), :new_user_session
-      - elsif acting_as?
-        %li#user= "#{acting_user.full_name} (#{acting_user.username})"
-        %li.last
-          = link_to t('pages.cart'), :cart
-          (
-          = current_cart.order_details.sum(:quantity)
-          )
-      - else
-        %li#user= "#{session_user.full_name} (#{session_user.username})"
-        - if current_user.external? && SettingsHelper.feature_on?(:password_update)
-          %li= link_to t("user_password.edit.head"), :edit_current_password 
-        %li
-          = link_to t('pages.cart'), :cart
-          = "(#{current_cart.order_details.sum(:quantity)})"
-        - if current_user.operator? || current_user.administrator?
-          - n_count=current_user.notifications.active.count
-          - if n_count > 0
-            %li
-              = link_to t('pages.notices'), notifications_path
-              %span#notice-count
-                = "(#{n_count})"
-
-        %li.last= link_to t('pages.logout'), :destroy_user_session
-  .clear
+.navbar.navbar-static-top
+  .navbar-inner
+    .container
+      .row
+        .span12
+          = link_to (current_user && current_user.operator? ? t(:app_admin_name) : t(:app_name)), :root, :class => 'brand'
+          %ul.nav.pull-right
+            - if session_user.nil?
+              %li= link_to t("pages.login"), :new_user_session
+            - elsif acting_as?
+              %li.navbar-text= "#{acting_user.full_name} (#{acting_user.username})"
+              %li= link_to "#{t('pages.cart')} (#{current_cart.order_details.sum(:quantity)})", :cart
+            - else
+              %li.navbar-text= "#{session_user.full_name} (#{session_user.username})"
+              %li.divider-vertical
+              - if current_user.external? && SettingsHelper.feature_on?(:password_update)
+                %li= link_to t("user_password.edit.head"), :edit_current_password
+                %li.divider-vertical
+              %li= link_to t('pages.cart') + " (#{current_cart.order_details.sum(:quantity)})", :cart
+              %li.divider-vertical
+              - if current_user.operator? || current_user.administrator?
+                - n_count=current_user.notifications.active.count
+                - if n_count > 0
+                  %li= link_to t('pages.notices') + " (#{n_count})", notifications_path
+                  %li.divider-vertical
+              %li= link_to t('pages.logout'), :destroy_user_session

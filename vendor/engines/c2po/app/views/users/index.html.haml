@@ -9,7 +9,7 @@
 = form_tag user_search_results_path, :id => 'ajax_form' do
   = label_tag :search_term, t('.label.search_term')
   %br
-  = text_field_tag :search_term, nil, :size => 30
+  = text_field_tag :search_term, nil, :size => 30, :class => 'search-query'
   = submit_tag "Search", :class => 'btn'
   = hidden_field_tag :facility_id, current_facility.id
   = hidden_field_tag :search_type, 'manage_user'
@@ -21,16 +21,18 @@
   - if @users.empty?
     %p.notice= t('.notice')
   - else
-    %table
-      %tr
-        %th
-        %th= t('.th.name')
-        %th= t('.th.username')
-        %th= t('.th.email')
-      - @users.each do |user|
+    %table.table.table-striped.table-hover
+      %thead
         %tr
-          %td.centered= link_to('Order For', facility_user_switch_to_path(current_facility, user))
-          %td= link_to "#{user.last_name}, #{user.first_name}", facility_user_path(current_facility, user)
-          %td=h user.username
-          %td=h user.email
+          %th
+          %th= t('.th.name')
+          %th= t('.th.username')
+          %th= t('.th.email')
+      %tbody
+        - @users.each do |user|
+          %tr
+            %td.centered= link_to('Order For', facility_user_switch_to_path(current_facility, user))
+            %td= link_to "#{user.last_name}, #{user.first_name}", facility_user_path(current_facility, user)
+            %td=h user.username
+            %td=h user.email
     = will_paginate(@users)

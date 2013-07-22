@@ -1,0 +1,65 @@
+- content_for :h1 do
+  = current_facility
+%h2= "Order ##{@order.id}"
+
+.container.banner-list
+  .row
+    = banner_date_label @order, :ordered_at
+    = banner_label @order, :user
+    = banner_label @order, :created_by_user
+    - if @merge_orders.blank?
+      .pull-right= render :partial => 'send_receipt'
+
+= render :partial => 'merge_order'
+
+%table.order-list.table.table-striped.table-hover#order-management
+  %thead
+    %tr
+      %th{:colspan => 4}
+      %th{:colspan => 2}= OrderDetail.human_attribute_name(:quantity)
+      %th{:colspan => 3} Pricing
+    %tr
+      %th.order-id= OrderDetail.human_attribute_name(:id)
+      %th.badges Status
+      %th= Product.model_name.human
+      %th
+      %th.time Reserved
+      %th.time Actual
+      %th.currency Cost
+      %th.currency Subsidy
+      %th.currency Total
+      %th.badges
+  %tbody
+    - @order_details.each do |od|
+      - od.send(:extend, PriceDisplayment)
+      %tr{:class => [od.parent_order_detail_id ? 'child' : 'parent', "status-#{od.order_status.root.name.underscore}", flash[:updated_order_details].try(:include?, od.id) ? 'updated-order-detail' : ''] }
+        %td.order-id
+          = link_to od, manage_order_detail_path(od), :class => 'order-detail'
+        %td.badges
+          = status_badge(od)
+        %td.product
+          = od.product
+          = "<br/>#{od.reservation}".html_safe if od.reservation
+        %td.action
+          - if od.add_accessories?
+            = link_to new_order_order_detail_accessory_path(@order, od), :class => ['has_accessories', 'persistent'] do
+              = tooltip_icon 'icon-plus-sign-alt', t('product_accessories.pick_accessories.title')
+          = render :partial => 'result_file_icon', :locals => { :od => od }
+
+        %td.currency.timeinput= od.reservation.try(:duration_mins)
+        - if od.reservation.try(:actual_duration_mins)
+          %td.currency.timeinput= od.reservation.actual_duration_mins
+        - elsif od.quantity_as_time?
+          %td.currency.timeinput= od.quantity
+        - else
+          %td.currency= od.quantity
+        %td.currency= od.wrapped_cost
+        %td.currency= od.wrapped_subsidy
+        %td.currency= od.wrapped_total
+        %td.badges= order_detail_badges(od)
+
+= render :partial => 'merge_order_form'
+
+#order-detail-modal.modal.hide.fade
+
+

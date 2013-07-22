@@ -1,11 +1,10 @@
 = content_for :h1 do
   = t_my(Order)
 = content_for :tabnav do
-  %ul.tabs
-    - @available_statuses.each_with_index do |status, i|
-      %li{:class => "#{'first' if i == 0}"}
-        = link_to status.humanize, orders_status_path(:status => status), :class => "#{'active' if params[:status] == status}"
+  %ul.nav.nav-tabs
+    - @available_statuses.each do |status|
+      = tab status.humanize.html_safe, orders_status_path(:status => status), (params[:status] == status)
 - if @order_details.empty?
   %p.notice= "You have not placed any #{Order.model_name.human.pluralize.downcase}."
 - else
-  =render :partial => 'shared/order_details_table', :locals => { :order_details => @order_details }
+  = render :partial => 'shared/order_details_table', :locals => { :order_details => @order_details }

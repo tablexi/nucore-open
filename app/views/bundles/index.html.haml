@@ -10,15 +10,16 @@
 %p Bundles are collections of products that are ordered as a single purchase by the purchaser.
 
 - if current_user.manager_of?(current_facility)
-  %ul.horiz
-    %li= link_to 'Add Bundle', new_facility_bundle_path
+  %p= link_to 'Add Bundle', new_facility_bundle_path, :class => 'btn-add'
 
 - if @bundles.empty?
-  %p.notice== No #{params[:archived].nil? || params[:archived] != 'true' ? 'active' : 'inactive'} bundles exist for this facility.
+  %p.notice No #{params[:archived].nil? || params[:archived] != 'true' ? 'active' : 'inactive'} bundles exist for this facility.
 - else
-  %table
-    %tr
-      %th== Bundle Name
-    - @bundles.each do |bundle|
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td= link_to bundle.name, manage_facility_bundle_path(current_facility, bundle)
+        %th Bundle Name
+    %tbody
+      - @bundles.each do |bundle|
+        %tr
+          %td= link_to bundle.name, manage_facility_bundle_path(current_facility, bundle)

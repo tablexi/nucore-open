@@ -1,0 +1,18 @@
+- if @order_detail.dispute_resolved_at
+  .banner-list
+    = banner_date_label @order_detail, :dispute_at
+    = banner_label      @order_detail, :dispute_reason
+    = banner_date_label @order_detail, :dispute_resolved_at
+    = banner_label      @order_detail, :dispute_resolved_reason
+- else
+  .span10
+    .well.well-small
+      .container
+        %h4= t('facility_order_details.edit.head.resolve_dispute')
+        = f.input :resolve_dispute, :as => :hidden
+        .row
+          .span5
+            = f.input :dispute_reason, :disabled => true, :input_html => { :class => 'note' }
+          .span5
+            = f.input :dispute_resolved_reason, :input_html => { :class => 'note' }
+

@@ -29,7 +29,8 @@ module TransactionSearch
           send(:"#{$&}")
           load_search_options
           @empty_orders = @order_details.empty?
-          @search_fields = params.merge({})
+          # simple_form will wrap in :transactions object
+          @search_fields = (params[:transactions] || params).merge({})
           do_search(@search_fields)
           add_optimizations
           @order_details = @order_details_sort ? @order_details.reorder(@order_details_sort) : order_by_desc

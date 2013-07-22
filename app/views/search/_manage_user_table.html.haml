@@ -1,14 +1,16 @@
-%table
-  %tr
-    %th
-    %th= t('search.manage_user_table.th.name')
-    %th= t('search.manage_user_table.th.username')
-    %th= t('search.manage_user_table.th.email')
-  - @users.each do |user|
+%table.table.table-striped.table-hover
+  %thead
     %tr
-      %td.centered= link_to('Order For', facility_user_switch_to_path(@facility, user))
-      %td= link_to "#{user.last_name}, #{user.first_name}", facility_user_path(@facility, user)
-      %td=h user.username
-      %td=h user.email
+      %th
+      %th= t('search.manage_user_table.th.name')
+      %th= t('search.manage_user_table.th.username')
+      %th= t('search.manage_user_table.th.email')
+  %tbody
+    - @users.each do |user|
+      %tr
+        %td.centered= link_to('Order For', facility_user_switch_to_path(@facility, user))
+        %td= link_to "#{user.last_name}, #{user.first_name}", facility_user_path(@facility, user)
+        %td=h user.username
+        %td=h user.email
 - if @count > @limit
   %p.notice= t('search.manage_user_table.notice', :count => @count-@limit)

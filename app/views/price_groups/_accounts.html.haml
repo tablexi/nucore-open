@@ -1,21 +1,22 @@
 %p= t('price_groups.accounts.intro')
-%ul
-  %li= link_to t('price_groups.accounts.link.add'), new_facility_price_group_account_price_group_member_path(current_facility, @price_group)
+%p= link_to t('price_groups.accounts.link.add'), new_facility_price_group_account_price_group_member_path(current_facility, @price_group), :class => 'btn-add'
 
 - unless @account_members.empty?
-  %table
-    %tr
-      %th
-      %th= t('price_groups.accounts.th.number')
-      %th= t('price_groups.accounts.th.owner')
-      %th= t('price_groups.accounts.th.email')
-    - @account_members.each do |account_price_group_member|
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td= link_to 'Remove', [current_facility, @price_group, account_price_group_member], :confirm => 'Are you sure?', :method => :delete
-        %td=h account_price_group_member.account.account_number
-        - owner=account_price_group_member.account.owner_user
-        %td=h owner.full_name if owner
-        %td=h owner.email if owner
+        %th
+        %th= t('price_groups.accounts.th.number')
+        %th= t('price_groups.accounts.th.owner')
+        %th= t('price_groups.accounts.th.email')
+    %tbody
+      - @account_members.each do |account_price_group_member|
+        %tr
+          %td= link_to 'Remove', [current_facility, @price_group, account_price_group_member], :confirm => 'Are you sure?', :method => :delete
+          %td=h account_price_group_member.account.account_number
+          - owner=account_price_group_member.account.owner_user
+          %td=h owner.full_name if owner
+          %td=h owner.email if owner
   = will_paginate(@account_members)
 - else
   %p.notice= t('price_groups.accounts.notice')

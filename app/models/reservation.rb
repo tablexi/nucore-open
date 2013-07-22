@@ -12,6 +12,7 @@ class Reservation < ActiveRecord::Base
   #####
   belongs_to :product
   belongs_to :order_detail, :inverse_of => :reservation
+  belongs_to :canceled_by_user, :foreign_key => :canceled_by, :class_name => 'User'
 
   ## Virtual attributes
   #####
@@ -26,33 +27,25 @@ class Reservation < ActiveRecord::Base
 
   # Delegations
   #####
-  delegate :note, :to => :order_detail, :allow_nil => true
-  delegate :ordered_on_behalf_of?, :to => :order_detail, :allow_nil => true
-  delegate :complete?, :to => :order_detail, :allow_nil => true
-  delegate :facility, :to => :product
+  delegate :note, :ordered_on_behalf_of?, :complete?, :account, :order,
+      :to => :order_detail, :allow_nil => true
 
-  # TODO turn into actual delegation
-  def order
-    order_detail.order if order_detail
-  end
+  delegate :user, :account, :to => :order, :allow_nil => true
+  delegate :facility, :to => :product, :allow_nil => true
+  delegate :owner, :to => :account, :allow_nil => true
 
-  def user
-    order.user if order
-  end
-
-  def account
-    order_detail.account if order_detail
-  end
-
-  def owner
-    account.owner if account
-  end
 
   ## AR Hooks
   after_save do
     if order_detail && @note
       order_detail.note = @note
       order_detail.save
+    end
+  end
+
+  after_update do
+    if (['actual_start_at', 'actual_end_at', 'reserve_start_at', 'reserve_end_at'] & changes.keys).any?
+      order_detail.save if order_detail
     end
   end
 

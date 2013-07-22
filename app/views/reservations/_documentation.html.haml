@@ -1,0 +1,8 @@
+- docs = @instrument.stored_files.info
+- if docs.any?
+  .row
+    .well.span4
+      %h3= t('reservations.new.documentation')
+      %ul
+        - docs.each do |stored_file|
+          %li.document= link_to stored_file.name, stored_file.file.url, :target => '_blank'

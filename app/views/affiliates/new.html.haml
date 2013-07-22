@@ -4,13 +4,4 @@
   = render :partial => 'admin/shared/sidenav_global', :locals => { :sidenav_tab => 'affiliates' }
 
 %h2 New Affiliate
-
-= form_for @affiliate, :url => affiliates_path do |f|
-  = f.error_messages
-  %ul.form
-    %li
-      = f.label :name, 'Name', :class => 'required'
-      = f.text_field :name
-  %ul.horiz
-    %li= f.submit 'Create', :class => 'btn'
-    %li= link_to 'Cancel', affiliates_path
+= render :partial => 'form'

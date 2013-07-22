@@ -8,7 +8,7 @@
   var maxTime         = #{@instrument.last_available_hour+1};
 
 = content_for :breadcrumb do
-  %ul.horiz
+  %ul.breadcrumb
     %li= link_to 'Home', facilities_path
     %li &raquo;
     %li= link_to @instrument.facility, facility_path(@instrument.facility)

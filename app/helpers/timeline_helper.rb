@@ -44,8 +44,8 @@ module TimelineHelper
 
   def spans_midnight_class(datetime_start, datetime_end)
     classes = []
-    classes << 'spans_into_tomorrow' if datetime_end > @display_date.end_of_day
-    classes << 'spans_into_yesterday' if datetime_start < @display_date.beginning_of_day
+    classes << 'runs_into_tomorrow' if datetime_end > @display_date.end_of_day
+    classes << 'runs_into_yesterday' if datetime_start < @display_date.beginning_of_day
     return classes
   end
 

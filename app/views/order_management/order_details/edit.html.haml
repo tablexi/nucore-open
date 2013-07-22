@@ -1,0 +1,65 @@
+.modal-header
+  = modal_close_button
+  %h3= "Order ##{@order_detail} #{@order_detail.product}"
+
+= simple_form_for @order_detail,
+    :url => manage_facility_order_order_detail_path(current_facility, @order, @order_detail),
+    :remote => request.xhr?,
+    :html => { :class => ['manage_order_detail', @order_detail.edit_disabled? ? 'disabled' : ''] } do |f|
+  .modal-body.container
+    .row
+      .span10
+        = render :partial => 'warnings'
+
+    .container.banner-list
+      .row
+        = banner_date_label @order_detail.reservation, :canceled_at
+        = banner_label @order_detail.reservation, :canceled_by_user
+        = banner_label @order_detail.reservation, :canceled_reason
+        = banner_date_label @order_detail, :fulfilled_at
+        = banner_date_label @order_detail, :reviewed_at
+        = banner_date_label @order_detail, :statement_date do |date|
+          - link_to date, statement_path(@order_detail.statement)
+        = banner_date_label @order_detail, :journal_date
+
+    .row
+      .span5
+        = f.association :account, :collection => @available_accounts, :label_method => :account_pretty, :include_blank => false, :disabled => @order_detail.edit_disabled?
+      .span3
+        - if @order_statuses
+          = f.association :order_status, :collection => @order_statuses, :label_method => :name_with_level, :include_blank => false
+        - else
+          = f.label :order_status
+          = @order_detail.order_status
+      - if @order_detail.reservation
+        .cancel-fee-option.span2
+          = label_tag 'with_cancel_fee', :class => 'checkbox' do
+            = check_box_tag 'with_cancel_fee', 1, false, :data => { :connect => '#order_detail_order_status_id', :show_on => OrderStatus.cancelled.first.id }
+            = t('facility_order_details.edit.label.with_cancel_fee')
+
+    .row
+      - if @order_detail.reservation
+        .span5= render :partial => 'reservation', :locals => { :f => f, :reservation => @order_detail.reservation }
+      - else
+        .span5
+          = f.input :quantity, :as => :order_detail_quantity, :hint_html => { :class => 'help-inline' }
+
+      .span5
+        = render :partial => 'costs', :locals => { :f => f }
+
+    .row
+      .span5
+        = f.input :note, :input_html => { :class => 'note' }
+        = render :partial => 'reconcile_note', :locals => { :f => f }
+
+      .span5
+        = render :partial => 'assigned_user', :locals => { :f => f }
+
+    - if @order_detail.disputed?
+      .row
+        = render :partial => 'dispute', :locals => { :f => f }
+
+
+  .modal-footer
+    = f.submit 'Save', :class => ['btn', 'btn-primary']
+    = modal_cancel_button

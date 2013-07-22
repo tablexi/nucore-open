@@ -1,20 +1,21 @@
 - can_edit_accounts=SettingsHelper.feature_on? :edit_accounts
 
 - if can_edit_accounts
-  %ul.horiz
-    %li= link_to 'Add Access', current_facility ? user_search_facility_account_account_users_path(current_facility, @account) : user_search_account_path(@account)
+  %p= link_to 'Add Access', current_facility ? user_search_facility_account_account_users_path(current_facility, @account) : user_search_account_path(@account), :class => 'btn-add'
 
-%table
-  %tr
-    - if can_edit_accounts
-      %th
-    %th Name (username)
-    %th Email
-    %th Role
-  - @account.account_users.active.each do |au|
+%table.table.table-striped.table-hover
+  %thead
     %tr
       - if can_edit_accounts
-        %td= au.user == @account.owner_user ? '' : link_to('Remove Access', open_or_facility_path('account_account_user', @account, au), :confirm => 'Are you sure?', :method => :delete)
-      %td=h "#{au.user.full_name} (#{au.user.username})"
-      %td=h au.user.email
-      %td=h au.user_role
+        %th
+      %th Name (username)
+      %th Email
+      %th Role
+  %tbody
+    - @account.account_users.active.each do |au|
+      %tr
+        - if can_edit_accounts
+          %td= au.user == @account.owner_user ? '' : link_to('Remove Access', open_or_facility_path('account_account_user', @account, au), :confirm => 'Are you sure?', :method => :delete)
+        %td=h "#{au.user.full_name} (#{au.user.username})"
+        %td=h au.user.email
+        %td=h au.user_role

@@ -3,8 +3,8 @@
 
 - content_for(:h1) { t '.head.h1' }
 
-%ul#notifications
+%ul.unstyled#notifications
   - @notices.each do |notice|
-    %li
+    %li.alert
       = notice.notice
       =# link_to 'Dismiss', notification_path(notice), :method => :put, :class => 'dismiss-notice', :remote => true

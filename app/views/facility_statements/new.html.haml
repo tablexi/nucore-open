@@ -5,13 +5,11 @@
 =content_for :h2 do
   %h2= t_create_models(Statement)
 
-= content_for :top_block do      
+= content_for :top_block do
   = render :partial => 'shared/transactions/top', :locals => { :tab => 'statements' }
-- if @order_details.empty?
-  %p.notice= t("facility_statements.new.no_orders")
-- else
+- if @order_details.any?
   = content_for :action_instructions do
-    %p= t("facility_statements.new.instructions")
-      
+    %p.notice.notice-info= t("facility_statements.new.instructions")
+
   = render :partial => 'shared/transactions/table'
   = render :partial => 'shared/reconcile_footnote'

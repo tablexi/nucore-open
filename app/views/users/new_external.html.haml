@@ -18,22 +18,12 @@
 
 %h2= t('.head')
 %p= t('.main')
-= form_for(@user, :url => facility_users_path, :method => :post) do |f|
-  = f.error_messages
-  %ul.form
-    %li.left
-      = f.label :first_name, nil, :class => 'require'
-      = f.text_field :first_name
-    %li.left
-      = f.label :last_name, nil, :class => 'require'
-      = f.text_field :last_name
-    %li.clear
-    %li
-      = f.label :email, nil, :class => 'require'
-      = f.text_field :email
-    %li
-      = f.label :username, 'Username', :class => 'require'
-      = f.text_field :username, :readonly => true
-  %ul.horiz
-    %li= f.submit 'Create', :class => 'btn'
-    %li= link_to 'Cancel', facility_users_path
+= simple_form_for(@user, :url => facility_users_path, :method => :post) do |f|
+  .form-inputs
+    = f.input :first_name
+    = f.input :last_name
+    = f.input :email
+    = f.input :username, :readonly => true
+  .form-actions
+    = f.button :submit, 'Create'
+    = link_to 'Cancel', facility_users_path

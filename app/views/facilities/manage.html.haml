@@ -3,43 +3,19 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'overview' }
 
-%ul.form
-  %li
-    %label== Name
-    %p=h current_facility.name
-  %li
-    %label== Abbreviation
-    %p=h current_facility.abbreviation
-  %li
-    %label== URL Name
-    %p= link_to facility_url(current_facility), facility_url(current_facility)
-  %li
-    %label== Short Description
-    =h current_facility.short_description
-  %li
-    %label== Description
-    .wysiwyg= current_facility.description.nil? ? '--' : current_facility.description
-  %li
-    %label= t('facilities.facility_fields.accepts_multi_add')
-    %p= h current_facility.accepts_multi_add ? 'Yes' : 'No'
-    
-  %li
-    %label== Is Active?
-    %p=h current_facility.is_active == true ? 'Yes' : 'No'
-  %li
-    %label== Address
-    = current_facility.address ? simple_format(h current_facility.address) : '<p>None Entered</p>'.html_safe
-  %li
-    %label== Phone Number
-    %p=h current_facility.phone_number || 'None Entered'
-  %li
-    %label== Fax Number
-    %p=h current_facility.fax_number || 'None Entered'
-  %li
-    %label== Email
-    %p=h current_facility.email || 'None Entered'
-  %li
-    %label== CoreID
-    %p=h current_facility.journal_mask
-  %ul.horiz
+= readonly_form_for current_facility do |f|
+  = f.input :name
+  = f.input :abbreviation
+  = f.input :url_name
+  = f.input :short_description
+  = f.input :description
+  = f.input :accepts_multi_add, :label => t('facilities.facility_fields.accepts_multi_add')
+  = f.input :is_active
+  = f.input :address, :value_method => Proc.new { |value| value.present? ? simple_format(value) : '<p>None Entered</p>'.html_safe}
+  = f.input :phone_number, :default_value => 'None Entered'
+  = f.input :fax_number, :default_value => 'None Entered'
+  = f.input :email, :default_value => 'None Entered'
+  = f.input :journal_mask
+
+  %ul.inline
     %li= link_to 'Edit', edit_facility_path(current_facility), :class => 'btn'

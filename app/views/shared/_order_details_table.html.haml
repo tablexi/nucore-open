@@ -1,28 +1,31 @@
-%table
-  %tr
-    %th.centered Order #
-    %th Ordered On
-    %th{ :colspan => 2 } Quantity / Product
-    %th.centered Status
-    %th.currency Total
-  - @order_details.each do |od|
-    - order = od.order
+%table.table.table-striped.table-hover.old-table
+  %thead
     %tr
-      %td.centered= link_to od, current_facility ? edit_facility_order_order_detail_path(current_facility, order, od) : order_order_detail_path(order, od)
-      %td=h human_datetime(order.ordered_at)
-      %td.centered=h od.quantity
-      %td
-        %ul
-          %li
-            - product_name = order_detail_description(od)
-            = "#{h od.product.facility.abbreviation} / #{product_name}".html_safe
+      %th.centered Order #
+      %th Ordered On
+      %th Quantity
+      %th Product
+      %th.centered Status
+      %th.currency Total
+  %tbody
+    - @order_details.each do |od|
+      - order = od.order
+      %tr
+        %td.centered= link_to od, current_facility ? facility_order_path(current_facility, order) : order_order_detail_path(order, od)
+        %td=h human_datetime(order.ordered_at)
+        %td.centered=h od.quantity
+        %td
+          %ul.unstyled
+            %li
+              - product_name = order_detail_description(od)
+              = "#{h od.product.facility.abbreviation} / #{product_name}".html_safe
             - unless od.note.blank?
               %li
                 %i=h "Note: #{od.note}"
-      %td.centered=h od.order_status.name
-      %td.currency
-        - od.send(:extend, PriceDisplayment)
-        = od.wrapped_total
+        %td.centered=h od.order_status.try(:name)
+        %td.currency
+          - od.send(:extend, PriceDisplayment)
+          = od.wrapped_total
 
 %p.footnote
   %span.estimated_cost

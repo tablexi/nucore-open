@@ -1,12 +1,11 @@
 = render :partial => 'shared/headers/ckeditor'
 
 = content_for :h1 do
-  == Add Facility
+  Add Facility
 
-= form_for @facility do |f|
-  = f.error_messages
-  %ul.form
+= simple_form_for @facility do |f|
+  .form-inputs
     = render :partial => 'facility_fields', :locals => {:f => f}
-  %ul.horiz
-    %li= f.submit 'Add Facility', :class => 'btn'
-    %li= link_to 'Cancel', :controller => :facilities, :action => :list
+  .form-actions
+    = f.button :submit, 'Add Facility'
+    = link_to 'Cancel', :controller => :facilities, :action => :list

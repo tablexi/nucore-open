@@ -30,7 +30,7 @@ en:
       new_payment_source: Create a new payment source for this user
       order_for: Order on behalf of this user
 
-  active_record:
+  activerecord:
     models:
       credit_card_account:
         one: Credit Card
@@ -43,5 +43,6 @@ en:
         account_number: Payment Source
       credit_card_account:
         account_number: Payment Source
+        name_on_card: Name On Card
 
 

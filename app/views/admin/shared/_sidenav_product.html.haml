@@ -1,5 +1,5 @@
-%ul
-  %li= link_to "Instruments (#{current_facility.instruments.count})", facility_instruments_path(current_facility), :class => (sidenav_tab == 'instruments' ? 'active' : '')
-  %li= link_to "Services (#{current_facility.services.count})", facility_services_path(current_facility), :class => (sidenav_tab == 'services' ? 'active' : '')
-  %li= link_to "Items (#{current_facility.items.count})", facility_items_path(current_facility), :class => (sidenav_tab == 'items' ? 'active' : '')
-  %li= link_to "Bundles (#{current_facility.bundles.count})", facility_bundles_path(current_facility), :class => (sidenav_tab == 'bundles' ? 'active' : '')
+%ul.sidebar-nav
+  = tab "Instruments (#{current_facility.instruments.count})", facility_instruments_path(current_facility), sidenav_tab == 'instruments'
+  = tab "Services (#{current_facility.services.count})", facility_services_path(current_facility), sidenav_tab == 'services'
+  = tab "Items (#{current_facility.items.count})", facility_items_path(current_facility), sidenav_tab == 'items'
+  = tab "Bundles (#{current_facility.bundles.count})", facility_bundles_path(current_facility), sidenav_tab == 'bundles'

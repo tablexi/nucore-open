@@ -6,10 +6,10 @@
   = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'services' }
 
 %h2== Add Service
-= form_for([current_facility, @service]) do |f|
+= simple_form_for([current_facility, @service]) do |f|
   = f.error_messages
   %ul.form
     = render :partial => 'admin/shared/product_details_fields', :locals => {:f => f}
-  %ul.horiz
+  %ul.inline
     %li= f.submit 'Create', :class => 'btn'
     %li= link_to 'Cancel', facility_services_path

@@ -9,25 +9,27 @@
 - if @statements.empty?
   %p.notice= t(".no_statements")
 - else
-  %table
-    %tr
-      %th= Statement.human_attribute_name(:invoice_number)
-      %th= Statement.human_attribute_name(:created_at) #Sent At
-      %th= Statement.human_attribute_name(:sent_to)
-      %th= Account.model_name.human
-      %th.currency # of #{Order.model_name.human.pluralize}
-      %th.currency= Statement.human_attribute_name(:total_cost)
-      %th= Statement.human_attribute_name(:status)
-    - @statements.each do |s|
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td.centered
-          = "##{s.invoice_number}"
-          %br
-          = link_to 'Download', facility_account_statement_path(current_facility, s.account_id, s, :format => :pdf)
-        %td= human_datetime(s.created_at)
-        %td= s.account.notify_users.map(&:full_name).join(', ')
-        %td= link_to s.account, facility_account_path(current_facility, s.account)
-        %td.currency=h s.order_details.count
-        %td.currency= number_to_currency(s.total_cost)
-        %td= s.reconciled? ? 'Reconciled' : 'Unreconciled'
+        %th= Statement.human_attribute_name(:invoice_number)
+        %th= Statement.human_attribute_name(:created_at) #Sent At
+        %th= Statement.human_attribute_name(:sent_to)
+        %th= Account.model_name.human
+        %th.currency # of #{Order.model_name.human.pluralize}
+        %th.currency= Statement.human_attribute_name(:total_cost)
+        %th= Statement.human_attribute_name(:status)
+    %tbody
+      - @statements.each do |s|
+        %tr
+          %td.centered
+            = "##{s.invoice_number}"
+            %br
+            = link_to 'Download', statement_path(s)
+          %td= human_datetime(s.created_at)
+          %td= s.account.notify_users.map(&:full_name).join(', ')
+          %td= link_to s.account, facility_account_path(current_facility, s.account)
+          %td.currency=h s.order_details.count
+          %td.currency= number_to_currency(s.total_cost)
+          %td= s.reconciled? ? 'Reconciled' : 'Unreconciled'
   = will_paginate(@statements)

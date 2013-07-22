@@ -5,12 +5,10 @@
 
 %h2 Edit Order Status
 
-= form_for(@order_status, :url => facility_order_status_url, :method => 'put') do |f|
+= simple_form_for(@order_status, :url => facility_order_status_url, :method => 'put') do |f|
   = f.error_messages
-  %ul.form
-    %li
-      = f.label :name, 'Name', :class => 'required'
-      = f.text_field :name
-  %ul.horiz
-    %li= f.submit 'Save', :class => 'btn'
+  = f.input :name
+
+  %ul.inline
+    %li= f.submit 'Save', :class => ['btn', 'btn-primary']
     %li= link_to 'Cancel', facility_order_statuses_path

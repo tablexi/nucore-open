@@ -6,8 +6,9 @@
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'details'}
 
 %h2=h @service
-%ul.form
-  = render :partial => 'admin/shared/product_manage'
+= readonly_form_for :service do |f|
+
+  = render :partial => 'admin/shared/product_manage', :locals => { :f => f }
 - if current_user.manager_of?(current_facility)
-  %ul.horiz
+  %ul.inline
     %li= link_to 'Edit', edit_facility_service_path(current_facility, @service), :class => 'btn'

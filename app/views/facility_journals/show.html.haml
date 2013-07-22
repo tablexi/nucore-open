@@ -51,35 +51,37 @@
   %p.notice= t('.notice')
 - else
   = form_tag facility_journal_reconcile_path(current_facility, @journal), :method => :post do
-    %table
-      - is_submittable = @journal.is_successful? && !@journal.is_reconciled?
-      - if is_submittable
-        %tr.borderless
-          %td{:colspan => 3}= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
-          %td.currency{:colspan => 3}= submit_tag t('.submit')
-      %tr
+    %table.table.table-striped.table-hover
+      %thead
+        - is_submittable = @journal.is_successful? && !@journal.is_reconciled?
         - if is_submittable
-          %th
-        %th= t('.th.order')
-        %th= t('.th.fulfilled')
-        %th= t('.th.account')
-        %th= t('.th.total')
-        %th= t('.th.reconciled')
-      - @order_details.each do |od|
-        - disable = od.reconciled? || @journal.open?
+          %tr.borderless
+            %th{:colspan => 3}= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
+            %th.currency{:colspan => 3}= submit_tag t('.submit')
         %tr
           - if is_submittable
-            %td= check_box_tag "order_detail_ids[]", od.id, (od.reconciled? ? true : false), {:disabled => (od.reconciled? ? true : false), :class => (od.reconciled? ? '' : 'toggle')}
-          %td
-            %ul
-              %li= link_to od, edit_facility_order_order_detail_path(od.order.facility.url_name, od.order_id, od)
-              - unless od.note.blank?
-                %li=h od.note
-          %td=h human_datetime(od.fulfilled_at)
-          %td=h od.account
-          %td=h number_to_currency od.total
-          %td=h od.reconciled? ? 'Yes' : 'No'
-      - if is_submittable
-        %tr.borderless
-          %td{:colspan => 3}
-          %td.currency{:colspan => 3}= submit_tag t('.submit')
+            %th
+          %th= t('.th.order')
+          %th= t('.th.fulfilled')
+          %th= t('.th.account')
+          %th= t('.th.total')
+          %th= t('.th.reconciled')
+      %tbody
+        - @order_details.each do |od|
+          - disable = od.reconciled? || @journal.open?
+          %tr
+            - if is_submittable
+              %td= check_box_tag "order_detail_ids[]", od.id, (od.reconciled? ? true : false), {:disabled => (od.reconciled? ? true : false), :class => (od.reconciled? ? '' : 'toggle')}
+            %td
+              %ul
+                %li= link_to od, facility_order_path(od.order.facility.url_name, od.order_id)
+                - unless od.note.blank?
+                  %li=h od.note
+            %td=h human_datetime(od.fulfilled_at)
+            %td=h od.account
+            %td=h number_to_currency od.total
+            %td=h od.reconciled? ? 'Yes' : 'No'
+        - if is_submittable
+          %tr.borderless
+            %td{:colspan => 3}
+            %td.currency{:colspan => 3}= submit_tag t('.submit')

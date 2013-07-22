@@ -1,41 +1,28 @@
 <!DOCTYPE html>
 %html
   %head
-    %meta{ "http-equiv" => "content-type", "content" => "text/html; charset=UTF-8" }
-    - # use gsub to strip out html tags in the title to prevent html from showing #62643
-    = render :partial => '/shared/title', :locals => { :title => yield(:h1).gsub(/<[^>]*>/, ' ') }
     = render :partial => '/shared/head'
-    = yield :head_content
-    = render :partial => '/shared/google'
   %body
-    - if acting_as?
-      #acting_as
-        .container_12
-          .grid_12
-            %p
-              = "You are ordering for #{acting_user.full_name} (#{acting_user.username})"
-              %br
-              = link_to "Exit", switch_back_path
-    #header
+    %header
+      = render :partial => '/shared/acting_as'
       = render :partial => '/shared/header'
-    #nav
+    %nav
       = render :partial => '/shared/nav'
     = render :partial => '/shared/breadcrumb', :locals => { :breadcrumb => yield(:breadcrumb) }
     #content
-      .container_12
-        .grid_12
-          %h1= yield :h1
-          = yield :tabnav
-          - if flash[:error]
-            %p.error= flash[:error]
-          - if flash[:notice]
-            %p.notice= flash[:notice]
-          - if flash[:info]
-            %p.info= flash[:info]
-          - if flash[:alert]
-            %p.error= flash[:alert]
-          = yield
-        .clear
-    #footer
-      .container_12
-        = render :partial => '/shared/footer'
+      .container
+        .row
+          .span12
+            %h1= yield :h1
+            = yield :tabnav
+            - if flash[:error]
+              .alert.alert-error= flash[:error]
+            - if flash[:notice]
+              .alert.alert-info= flash[:notice]
+            - if flash[:info]
+              .alert.alert-info= flash[:info]
+            - if flash[:alert]
+              .alert.alert-error= flash[:alert]
+            = yield
+    %footer
+      = render :partial => '/shared/footer'

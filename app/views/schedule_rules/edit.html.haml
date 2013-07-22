@@ -5,14 +5,13 @@
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'schedule_rules'}
 
-%h2=h @instrument
+%h2= @instrument
 %h3 Editing Schedule Rule
 
 #schedule_rule_form
-  = form_for([current_facility, @instrument, @schedule_rule]) do |f|
+  = simple_form_for([current_facility, @instrument, @schedule_rule]) do |f|
     = f.error_messages
-    %ul.form
-      = render :partial => 'schedule_rule_fields', :locals => {:f => f, :schedule_rule => @schedule_rule}
-    %ul.horiz
+    = render :partial => 'schedule_rule_fields', :locals => {:f => f }
+    %ul.inline
       %li= f.submit 'Update', :class => 'btn'
       %li= link_to 'Cancel', facility_instrument_schedule_rules_path

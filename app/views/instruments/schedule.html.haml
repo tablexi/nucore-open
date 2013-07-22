@@ -1,8 +1,6 @@
 = content_for :head_content do
   = render :partial => 'shared/headers/calendar'
   = javascript_include_tag 'instruments.js'
-  
-
 = content_for :h1 do
   =h current_facility
 = content_for :sidebar do
@@ -17,20 +15,23 @@
 %h2= @instrument
 
 %h3 Administrative Reservations
-%ul.horiz
-  %li= link_to 'Add Admin Reservation', new_facility_instrument_reservation_path
+
+%p= link_to 'Add Admin Reservation', new_facility_instrument_reservation_path, :class => 'btn-add'
 
 - if @admin_reservations.empty?
   %p.notice There are no upcoming administrative reservations.
 - else
-  %table
-    %tr
-      %th
-      %th Reservation
-    - @admin_reservations.each do |r|
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td= link_to 'Remove Reservation', facility_instrument_reservation_path(current_facility, @instrument, r), :confirm => 'Are you sure?', :method => :delete
-        %td= link_to r, facility_instrument_reservation_edit_admin_path(current_facility, @instrument, r)
+        %th
+        %th Reservation
+    %tbody
+      - @admin_reservations.each do |r|
+        %tr
+          %td= link_to 'Remove Reservation', facility_instrument_reservation_path(current_facility, @instrument, r), :confirm => 'Are you sure?', :method => :delete
+          %td= link_to r, facility_instrument_reservation_edit_admin_path(current_facility, @instrument, r)
+
 %br
 %br
 %br
@@ -41,4 +42,3 @@
   #spinner
     #hide
       #calendar
-

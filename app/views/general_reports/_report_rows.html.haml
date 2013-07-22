@@ -1,11 +1,12 @@
-- @rows.each do |row|
-  %tr
-    - row.each_with_index do |col, i|
-      %td{:class => i == 0 ? '' : 'currency'}= i == 2 ? number_to_currency(col) : i == 3 ? number_to_percentage(col, :precision => 1) : col
+%tbody
+  - @rows.each do |row|
+    %tr
+      - row.each_with_index do |col, i|
+        %td{:class => i == 0 ? '' : 'currency'}= i == 2 ? number_to_currency(col) : i == 3 ? number_to_percentage(col, :precision => 1) : col
 
-- if @rows.size > 1
-  %tr
-    %td.bold Total
-    %td.bold.currency= @total_quantity
-    %td.bold.currency= number_to_currency(@total_cost)
-    %td.bold.currency 100%
+  - if @rows.size > 1
+    %tr
+      %td.bold Total
+      %td.bold.currency= @total_quantity
+      %td.bold.currency= number_to_currency(@total_cost)
+      %td.bold.currency 100%

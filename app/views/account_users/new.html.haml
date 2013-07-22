@@ -3,28 +3,21 @@
 = content_for :h1 do
   = t('.head')
 
-= form_for(@account_user, :url => account_account_users_path(@account)) do |f|
+= simple_form_for(@account_user, :url => account_account_users_path(@account)) do |f|
   = f.error_messages
-  %ul.form
-    %li
-      %label= t('.label.account')
-      =h @account.account_number
-    %li
-      %label= t('.label.type')
-      =h @account.type_string
-    %li
-      %label= t('.label.description')
-      =h @account.description
-    %li
-      %label= t('.label.expiration')
-      =h human_datetime(@account.expires_at, :date_only => true)
-    %li
-      = label_tag :user
-      =h @user.full_name
-      = hidden_field_tag "user_id", @user.id
-    %li
-      = f.label :user_role, nil, :class => 'required'
-      = f.select :user_role, options_for_select(AccountUser.selectable_user_roles, :selected => 'Purchaser')
-  %ul.horiz
+
+  = f.simple_fields_for @account do |a|
+    = a.input :account_number, :as => :readonly
+    = a.input :type_string, :as => :readonly
+    = a.input :description, :as => :readonly
+    = a.input :expires_at, :as => :readonly, :date_only => true
+
+  = f.simple_fields_for @user do |u|
+    = u.input :full_name, :as => :readonly, :label => Account.human_attribute_name(:user)
+  = f.input :user_id, :as => :hidden, :input_html => { :value => @user.id, :name => 'user_id' }
+
+  = f.input :user_role, :collection => AccountUser.selectable_user_roles, :selected => 'Purchaser'
+
+  %ul.inline
     %li= f.submit 'Create', :class => 'btn'
     %li= link_to 'Cancel', account_account_users_path(@account)

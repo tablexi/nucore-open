@@ -9,25 +9,20 @@
 
 %h2= @account
 
-%ul.form
-  %li
-    %label= t('.label.owner')
-    =h @account.owner_user
-  = render :partial => 'accounts/account_fields'
-
+= readonly_form_for :account do |f|
+  = f.input :owner_user
+  = f.input :type_string
+  = f.input :description
+  = f.input :formatted_expires_at
+  - if lookup_context.exists? "facility_accounts/#{@account.class.name.underscore}/show", [], true
+    = render :partial => "facility_accounts/#{@account.class.name.underscore}/show", :locals => { :f => f }
   - if @account.affiliate
-    %li
-      %label= t('.label.affiliate')
-      - affiliate_name=@account.affiliate.name
-      - affiliate_name += " (#{@account.affiliate_other})" if @account.affiliate == Affiliate.OTHER
-      = affiliate_name
+    = f.input :affiliate, :input_html => { :value => @account.affiliate_to_s }
 
   - unless @account.is_a?(NufsAccount)
-    %li
-      %label= t('.label.bill_to')
-      = @account.remittance_information ? simple_format(h @account.remittance_information) : '<p>None Entered</p>'.html_safe
-%ul.horiz
+    = f.input :remittance_information, :value_method => Proc.new { |value| value.present? ? simple_format(value) : 'None Entered'}
+
+%ul.inline
   - if SettingsHelper.feature_on? :edit_accounts
-    %li
-      = link_to t('.link.edit'), edit_facility_account_path(current_facility, @account), :class => 'btn'
+    = link_to t('.link.edit'), edit_facility_account_path(current_facility, @account), :class => ['btn', 'btn-primary']
   = render :partial => 'accounts/suspend_button'

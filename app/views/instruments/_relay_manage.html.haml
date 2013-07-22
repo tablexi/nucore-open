@@ -1,0 +1,17 @@
+- if @instrument.relay.nil?
+  %label= t 'instruments.manage.label.control_mech'
+  %p= t 'instruments.instrument_fields.relay.control_mechanisms.manual'
+- elsif @instrument.relay.is_a?(RelayDummy)
+  %label= t 'instruments.manage..label.control_mech'
+  %p= t 'instruments.instrument_fields.relay.control_mechanisms.timer'
+- elsif @instrument.relay.is_a?(PowerRelay)
+  .well.well-small
+    = f.simple_fields_for @instrument.relay, :defaults => { :default_value => 'N/A'} do |r|
+      = r.input :type, :input_html => { :value => @instrument.relay.class.presence || 'N/A' }
+      = r.input :ip
+      = r.input :port
+      = r.input :username
+      = r.input :password
+      = r.input :auto_logout
+- else
+  %p UNKNOWN RELAY TYPE

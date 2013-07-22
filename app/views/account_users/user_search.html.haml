@@ -3,14 +3,13 @@
 = content_for :h1 do
   = t('.head')
 
--# show account context
-%p= t('.instruct', :account_type => @account.type_string, :account => @account.to_s)
-%br
+%header.account
+  %h3= @account.account_number
+  %p= @account.description
 
 = form_tag user_search_results_path, :id => "ajax_form" do
   = label_tag :search_term, t('.label.search')
-  %br
-  = text_field_tag :search_term, nil, :size => 30
+  = text_field_tag :search_term, nil, :size => 30, :class => 'search-query'
   = submit_tag "Search", :class => 'btn'
   = hidden_field_tag :account_id, @account.id
   = hidden_field_tag :search_type, 'account_account_user'

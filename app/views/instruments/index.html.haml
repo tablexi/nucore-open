@@ -12,20 +12,19 @@
 %p Instruments are products that must be reserved; billing is based on reservation duration and/or actual time used.
 
 - if session_user.manager_of?(current_facility)
-  %ul.horiz
-    %li= link_to 'Add Instrument', new_facility_instrument_path
+  = link_to 'Add Instrument', new_facility_instrument_path, :class => 'btn-add'
 
 - if @instruments.empty?
   %p.notice No #{params[:archived].nil? || params[:archived] != 'true' ? 'active' : 'inactive'} instruments exist for this facility.
 - else
-  %table.product_list
-    %tr
-      %th Instrument Name
-    - price_group_count = current_facility.price_groups.count
-    - @instruments.each do |instrument|
+  %table.table.table-striped.table-hover.product_list
+    %thead
       %tr
-        %td
-          = link_to instrument.name, facility_instrument_schedule_path(current_facility, instrument)
-          = price_policy_errors(instrument) unless params[:archived] == 'true'
-
-  
+        %th Instrument Name
+    %tbody
+      - price_group_count = current_facility.price_groups.count
+      - @instruments.each do |instrument|
+        %tr
+          %td
+            = link_to instrument.name, facility_instrument_schedule_path(current_facility, instrument)
+            = price_policy_errors(instrument) unless params[:archived] == 'true'
