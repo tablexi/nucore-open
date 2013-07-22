@@ -17,4 +17,6 @@ $navbarActiveBorderColor: #AAA;
 
 /* Sidebar Colors */
 $sidebarActiveBackgroundColor: $linkColor;
+$sidebarActiveBackgroundColorHighlight: darken($sidebarActiveBackgroundColor, 5%);
+
 $sidebarActiveColor: $white;
