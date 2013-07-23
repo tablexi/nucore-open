@@ -3,10 +3,11 @@ class OrderManagement::OrderDetailsController < ApplicationController
   load_resource :order, :through => :facility
   load_resource :order_detail, :through => :order
 
+  helper_method :edit_disabled?
+
   before_filter :authorize_order_detail
   before_filter :load_accounts, :only => [:edit, :update]
   before_filter :load_order_statuses, :only => [:edit, :update]
-  before_filter :add_can_edit, :only => [:edit, :update]
 
   def edit
     render :layout => false if request.xhr?
@@ -70,10 +71,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
     end
   end
 
-  def add_can_edit
-    @order_detail.class.define_method :edit_disabled? do
-      self.in_open_journal? || self.reconciled?
-    end
+  def edit_disabled?
+    @order_detail.in_open_journal? || @order_detail.reconciled?
   end
-
 end

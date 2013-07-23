@@ -5,7 +5,7 @@
 = simple_form_for @order_detail,
     :url => manage_facility_order_order_detail_path(current_facility, @order, @order_detail),
     :remote => request.xhr?,
-    :html => { :class => ['manage_order_detail', @order_detail.edit_disabled? ? 'disabled' : ''] } do |f|
+    :html => { :class => ['manage_order_detail', edit_disabled? ? 'disabled' : ''] } do |f|
   .modal-body.container
     .row
       .span10
@@ -24,7 +24,7 @@
 
     .row
       .span5
-        = f.association :account, :collection => @available_accounts, :label_method => :account_pretty, :include_blank => false, :disabled => @order_detail.edit_disabled?
+        = f.association :account, :collection => @available_accounts, :label_method => :account_pretty, :include_blank => false, :disabled => edit_disabled?
       .span3
         - if @order_statuses
           = f.association :order_status, :collection => @order_statuses, :label_method => :name_with_level, :include_blank => false
