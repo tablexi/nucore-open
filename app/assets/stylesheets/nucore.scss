@@ -166,7 +166,7 @@ footer .span8 {
 }
 
 #ui-datepicker-div {
-  z-index: 10 !important; /* was being hidden behind fullcalendar */
+  z-index: 100 !important; /* was being hidden behind fullcalendar */
 }
 
 .document {
