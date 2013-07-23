@@ -44,7 +44,7 @@ class GeneralReportsController < ReportsController
       stati=[]
     else
       # user filters
-      stati=status_ids.collect{|si| OrderStatus.find(si.to_i) }
+      stati=status_ids.reject(&:blank?).collect{|si| OrderStatus.find(si.to_i) }
     end
 
     @status_ids=[]
