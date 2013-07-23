@@ -1,97 +1,97 @@
-#control {
+.reports-form {
+  #control {
     float: right;
-}
+  }
 
-#filter {
+  #filter {
     float: left;
-}
+  }
 
-.options {
+  .options {
     margin-top: 1em;
-}
+  }
 
-.options a {
+  .options a {
     display: block;
     padding-top: 23px;
-}
+  }
 
-.options a:hover {
+  .options a:hover {
     text-decoration: underline;
-}
+  }
 
-.options li {
+  .options li {
     float: left;
     padding-right: 10px;
-}
+  }
 
-.options li label {
+  .options li label {
     padding-left: 2px;
-}
+  }
 
-.options ul {
+  .options ul {
     display: none;
-    position: absolute;
     z-index: 2;
-}
+  }
 
-.chzn-container ul {
+  .chzn-container ul {
     display: block;
-}
+  }
 
-.chzn-container a {
+  .chzn-container a {
     padding: 0;
-}
+  }
 
-.chzn-container-multi .chzn-choices {
+  .chzn-container-multi .chzn-choices {
     width: 210px;
-}
+  }
 
-.chzn-results li {
+  .chzn-results li {
     float: none;
-}
+  }
 
-.chzn-container-multi .chzn-choices .search-choice {
+  .chzn-container-multi .chzn-choices .search-choice {
     padding-top: 2px !important;
     padding-bottom: 2px !important;
-}
+  }
 
-.datepicker, #date_range_field {
+  .datepicker, #date_range_field {
     height: 23px;
     border: 1px solid #AAAAAA;
-}
-#date_range_field {
+  }
+  #date_range_field {
     margin-top: 3px;
-}
-button {
+  }
+  button {
     margin-top: 1em;
     color: black !important;
     font-weight: normal !important;
     background: #EFEFEF !important;
     border: 1px solid #C1C1C1 !important;
-}
+  }
 
-#tabs {
+  #tabs {
     clear: both;
-}
+  }
 
-#error-msg {
+  #error-msg {
     display: none;
-}
+  }
 
-#tabs .ui-widget-content {
+  #tabs .ui-widget-content {
     color: black;
     background-color: white;
-}
+  }
 
-.pagination {
+  .pagination {
     text-align: center;
-}
+  }
 
-.pagination a {
+  .pagination a {
     color: blue !important;
-}
+  }
 
-.ui-widget {
+  .ui-widget {
     border-radius: 0 !important;
+  }
 }
-

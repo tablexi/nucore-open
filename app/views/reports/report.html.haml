@@ -1,5 +1,4 @@
 = content_for :head_content do
-  = stylesheet_link_tag 'reports'
   :javascript
     window.activeTab = #{@selected_index || 0}
 
@@ -8,7 +7,7 @@
 
 %p.error#error-msg
 
-= modelless_form_for :url => request.fullpath, :remote => true, :html => { :id => 'refresh-form' }, :defaults => { :required => false }  do |f|
+= modelless_form_for :url => request.fullpath, :remote => true, :html => { :id => 'refresh-form', :class => 'reports-form' }, :defaults => { :required => false }  do |f|
   %ul.inline.options#filter
     %li= f.input :date_range_field, :collection => TransactionSearch::DATE_RANGE_FIELDS, :selected => @date_range_field, :label => '&nbsp;'
 
