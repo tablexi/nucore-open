@@ -24,19 +24,24 @@ module TransactionSearch
       if (name.to_s =~ /(.*)_with_search$/)
         @@methods_with_remove_ugly_filter << $1
         self.before_filter :remove_ugly_params_and_redirect, :only => @@methods_with_remove_ugly_filter
-        define_method($1) do
-          init_order_details
-          send(:"#{$&}")
-          load_search_options
-          @empty_orders = @order_details.empty?
-          # simple_form will wrap in :transactions object
-          @search_fields = (params[:transactions] || params).merge({})
-          do_search(@search_fields)
-          add_optimizations
-          @order_details = @order_details_sort ? @order_details.reorder(@order_details_sort) : order_by_desc
-          @order_details = @order_details.paginate(:page => params[:page]) if @paginate_order_details
-          render :layout => @layout if @layout
-        end
+        define_search_method($1, $&)
+      end
+    end
+
+    private
+
+    def define_search_method(new_method_name, old_method_name)
+      define_method(new_method_name) do
+        init_order_details
+        send(:"#{old_method_name}")
+        load_search_options
+        @empty_orders = @order_details.empty?
+        # simple_form will wrap in :transactions object
+        @search_fields = params[:transactions] || params
+        do_search(@search_fields)
+        add_optimizations
+        sort_and_paginate
+        render :layout => @layout if @layout
       end
     end
   end
@@ -119,5 +124,8 @@ module TransactionSearch
         includes(:price_policy)
   end
 
-
+  def sort_and_paginate
+    @order_details = @order_details_sort ? @order_details.reorder(@order_details_sort) : order_by_desc
+    @order_details = @order_details.paginate(:page => params[:page]) if @paginate_order_details
+  end
 end
