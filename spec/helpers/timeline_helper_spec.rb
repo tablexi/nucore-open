@@ -58,10 +58,10 @@ describe TimelineHelper do
     end
 
     it 'should return the right class for one that spans yesterday' do
-      spans_midnight_class(@reservation_spans_yesterday.reserve_start_at, @reservation_spans_yesterday.reserve_end_at).should == ['spans_into_yesterday']
+      spans_midnight_class(@reservation_spans_yesterday.reserve_start_at, @reservation_spans_yesterday.reserve_end_at).should == ['runs_into_yesterday']
     end
     it 'should return the right class for one that spans tomorrow' do
-      spans_midnight_class(@reservation_spans_tomorrow.reserve_start_at, @reservation_spans_tomorrow.reserve_end_at).should == ['spans_into_tomorrow']
+      spans_midnight_class(@reservation_spans_tomorrow.reserve_start_at, @reservation_spans_tomorrow.reserve_end_at).should == ['runs_into_tomorrow']
     end
   end
 
