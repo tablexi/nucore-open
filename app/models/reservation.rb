@@ -36,18 +36,8 @@ class Reservation < ActiveRecord::Base
 
 
   ## AR Hooks
-  after_save do
-    if order_detail && @note
-      order_detail.note = @note
-      order_detail.save
-    end
-  end
-
-  after_update do
-    if (['actual_start_at', 'actual_end_at', 'reserve_start_at', 'reserve_end_at'] & changes.keys).any?
-      order_detail.save if order_detail
-    end
-  end
+  after_save :save_note
+  after_update :auto_save_order_detail, :if => :order_detail
 
   # Scopes
   #####
@@ -204,6 +194,21 @@ class Reservation < ActiveRecord::Base
 
   def has_order_detail?
     !self.order_detail.nil?
+  end
+
+  private
+
+  def auto_save_order_detail
+    if (['actual_start_at', 'actual_end_at', 'reserve_start_at', 'reserve_end_at'] & changes.keys).any?
+      order_detail.save
+    end
+  end
+
+  def save_note
+    if order_detail && @note
+      order_detail.note = @note
+      order_detail.save
+    end
   end
 
 end
