@@ -11,7 +11,7 @@
     var minTime         = #{@instrument.first_available_hour};
     var maxTime         = #{@instrument.last_available_hour+1};
     var withDetails     = #{@instrument.show_details? || false};
-    var isBundle        = #{@order_detail.bundled?};
+    var isBundle        = #{@order_detail.bundled? || @order.order_details.count > 1};
     var ctrlMechanism   = "#{@instrument.control_mechanism}";
     var ordering_on_behalf = #{acting_as?};
 
@@ -51,7 +51,7 @@
           = t('reservations.new.notify')
 
   %ul.inline
-    %li= f.submit 'Create', :class => 'btn'
+    %li= f.submit 'Create', :class => 'btn', :id => 'reservation_submit'
     - url_after_action = facility_path(@instrument.facility)
     - if @order_detail.bundled?
       %li= link_to 'Cancel', url_after_action
