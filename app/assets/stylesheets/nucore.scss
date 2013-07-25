@@ -198,7 +198,8 @@ ul.unstyled {
   }
 }
 
-td.currency {
+td.currency,
+th.currency {
   text-align: right;
 }
 .currency-input input {
