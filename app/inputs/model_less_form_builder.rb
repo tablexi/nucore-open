@@ -1,6 +1,7 @@
 class ModelLessFormBuilder < SimpleForm::FormBuilder
   def input(attribute_name, options = {}, &block)
-    options.deep_merge! :input_html => { :id => attribute_name, :name => attribute_name }
+    merged_options = { :input_html => { :id => attribute_name, :name => attribute_name } }.deep_merge!(options)
+    options.replace(merged_options)
     super
   end
 end

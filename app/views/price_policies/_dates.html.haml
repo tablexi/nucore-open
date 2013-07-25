@@ -1,9 +1,8 @@
-= f.input :start_date, :input_html => { :id => 'start_datepicker', :value => format_date(@start_date) }, :label => 'Effective'
+= f.input :start_date, :input_html => { :value => format_date(@start_date), :id => 'start_datepicker' }, :label => 'Effective'
 = f.input :expire_date, :input_html => { :id => 'expire_datepicker', :value => format_date(@expire_date) }, :label => 'Expires'
 
-%script
-  :plain
-    $(function() {
-      $("#start_datepicker").datepicker("option", {minDate: new Date()});
-      $("#expire_datepicker").datepicker("option", {maxDate: "#{@max_expire_date}"});
-    });
+:javascript
+  $(function() {
+    $("#start_datepicker").datepicker("option", {minDate: new Date()});
+    $("#expire_datepicker").datepicker("option", {maxDate: "#{@max_expire_date}"});
+  });
