@@ -1,6 +1,6 @@
 = f.input :name,         :hint => t('facilities.facility_fields.name')
 = f.input :abbreviation, :hint => t('facilities.facility_fields.abbreviation')
-= f.input :url_name,     :hint => begin facility_url(f.object) rescue facility_url('url-name') end
+= f.input :url_name,     :hint => begin facility_url(f.object) rescue facility_url('url-name') end, :as => :string
 = f.input :short_description, :input_html => {:cols => 86, :rows => 4}, :hint => t('facilities.facility_fields.short_description')
 = f.input :description,       :input_html => {:class => 'editor'},      :hint => t('facilities.facility_fields.description')
 

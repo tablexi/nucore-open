@@ -1,7 +1,7 @@
 = f.input :name, :hint => t('shared.product_details_fields.name', :field => f.object.class.name.downcase)
 
 - url_name_hint = begin send("facility_#{f.object.class.name.downcase}_url", current_facility, f.object) rescue send("facility_#{f.object.class.name.downcase}_url", current_facility, 'url-name') end
-= f.input :url_name, :label => 'URL Name', :hint => url_name_hint
+= f.input :url_name, :label => 'URL Name', :hint => url_name_hint, :as => :string
 
 - if SettingsHelper.feature_on? :product_specific_contacts
   = f.input :contact_email, :hint => t('shared.product_details_fields.contact_email', :facility_email => current_facility.email)
