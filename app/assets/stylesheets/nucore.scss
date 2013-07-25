@@ -257,6 +257,13 @@ th.currency {
 }
 
 /* Account Fields */
+.order_account,
+.order_detail_account {
+  select {
+    width: inherit;
+  }
+}
+
 ul.inline > li, ol.inline > li {
   &.account_number_field {
     padding: 0;
