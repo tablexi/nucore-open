@@ -1,9 +1,8 @@
 = content_for :h1 do
-  == Manage Facilities
+  Manage Facilities
 
 - if current_user.administrator?
-  %ul.inline
-    %li= link_to 'Add Facility', new_facility_path
+  %p= link_to 'Add Facility', new_facility_path, :class => 'btn-add'
 
 - if @facilities.any?
   %table.table.table-striped.table-hover

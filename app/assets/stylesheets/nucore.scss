@@ -176,6 +176,11 @@ footer .span8 {
 }
 
 /* Various Styles */
+
+abbr[title=required] {
+  border-bottom: none;
+}
+
 ul.unstyled {
   list-style: none;
   margin-left: 0;
