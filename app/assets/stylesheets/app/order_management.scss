@@ -2,11 +2,8 @@
   max-height: 800px;
 }
 
-.order-action {
+.order-action .btn {
   margin-top: 1em;
-  a {
-    @extend .btn;
-  }
 }
 
 #order-detail-modal {

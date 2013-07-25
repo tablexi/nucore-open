@@ -13,7 +13,7 @@
 
 - unless @order.purchased?
   = content_for :breadcrumb do
-    %ul.bredcrumb
+    %ul.breadcrumb
       %li= link_to 'Home', facilities_path
       %li &raquo;
       %li= link_to @instrument.facility, facility_path(@instrument.facility)
