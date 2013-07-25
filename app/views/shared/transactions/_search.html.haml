@@ -1,4 +1,4 @@
-= simple_form_for :transactions, :as => '', :url => url_for(params), :method => :get, :html => { :class => "search_form" }, :defaults => { :required => false } do |f|
+= modelless_form_for :url => url_for(params), :method => :get, :html => { :class => "search_form" }, :defaults => { :required => false } do |f|
   .container
     .row
       %fieldset.span6#search
