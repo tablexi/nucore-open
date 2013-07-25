@@ -1,8 +1,6 @@
 - if acting_as?
   #acting_as
-    .row
-      .span12
-        %p
-          = "You are ordering for #{acting_user.full_name} (#{acting_user.username})"
-        %p
-          = link_to "Exit", switch_back_path, :class => ['btn']
+    %p
+      = "You are ordering for #{acting_user.full_name} (#{acting_user.username})"
+    %p
+      = link_to "Exit", switch_back_path, :class => ['btn']
