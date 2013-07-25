@@ -15,7 +15,7 @@
   %ul.inline
     %li
       = f.label :end_time
-      = time_select24(f, :end)
+      = time_select24(f, :end, :hours => (0..24))
 
 = f.input :discount_percent, :label => false, :hint => false do
   = f.label :discount_percent
