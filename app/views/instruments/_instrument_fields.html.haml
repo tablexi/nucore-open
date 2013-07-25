@@ -17,7 +17,7 @@
 = f.select :control_mechanism, options_for_select(options_for_control_mechanism, selection)
 
 - # TODO
-.well#power-relay{:class => "box#{selection == 'relay' ? '' : ' hidden'}"}
+.well#power-relay
   %h3= t('instruments.instrument_fields.relay.label.relay')
   %p= t 'instruments.instrument_fields.relay.intro'
 
