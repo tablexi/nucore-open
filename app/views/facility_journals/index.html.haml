@@ -13,7 +13,7 @@
 
     - @pending_journals.each do |pending_journal|
       - facility_abbreviations = pending_journal.facility_abbreviations
-      = form_for([current_facility, pending_journal]) do |f|
+      = simple_form_for([current_facility, pending_journal]) do |f|
         = f.error_messages
         %table.table.table-striped.table-hover
           %thead
@@ -22,16 +22,14 @@
               %th= t(".th.journaled_at")
               - if all_facility?
                 %th Facility
-              %th= Journal.human_attribute_name(:amount)
-              %th
-                %span.require= Journal.human_attribute_name(:reference)
-              %th= Journal.human_attribute_name(:description)
-              %th
-                %span.require= Journal.human_attribute_name(:journal_status)
+              %th= f.label :amount
+              %th= f.label :reference
+              %th= f.label :description
+              %th= f.label :journal_status, :required => true
           %tbody
             %tr
               %td
-                %ul
+                %ul.unstyled
                   - if Settings.financial.journal_format.xls
                     %li=link_to 'XLS File', pending_journal.file.url
                   - if Settings.financial.journal_format.xml
@@ -48,7 +46,7 @@
               %td= f.text_field :description
               %td
                 = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']], params[:journal_status])
-                = submit_tag t(".journal.close"), :confirm => t(".journal.confirm")
+                = submit_tag t(".journal.close"), :confirm => t(".journal.confirm"), :class => ['btn', 'btn-primary']
 
   - else    # there's pending journals, but user can't edit
     %p.notice= t(".notice.no_editable")

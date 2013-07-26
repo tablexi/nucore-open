@@ -1,19 +1,27 @@
 - order_details = local_assigns.has_key?(:order_details) ? order_details : @order_details
-.row#table_billing
-  .span12
-    - if @order_detail_action
-      = form_tag url_for(:controller => params[:controller], :action => @order_detail_action), :id => "journals_create_form", :name => "journals_create_form", :method => :post do
-        .order_action
-          = yield :action_instructions
-          .select_all_none= link_to 'Select All', '#', :class => 'select_all'
-          .center_fields
-            - if @action_date_field
-              = @action_date_field.keys.first.to_s.titleize
-              = text_field_tag @action_date_field.keys.first, @action_date_field.values.first.strftime("%m/%d/%Y"), {:class => :datepicker}
-            - else
-              &nbsp;
-          .submit= submit_tag @order_detail_action.to_s.titleize, :class => ['btn', 'btn-primary']
-        %div{:style => "clear: both;"}
-        = render :partial => 'shared/transactions/table_inside', :locals => { :order_details => order_details }
-    - else
-      = render :partial => 'shared/transactions/table_inside', :locals => { :order_details => order_details }
+#table_billing
+  - if @order_detail_action
+
+    = form_tag url_for(:controller => params[:controller], :action => @order_detail_action), :id => "journals_create_form", :name => "journals_create_form", :method => :post, :class => 'form-horizontal' do
+      .row
+        .span12= yield :action_instructions
+      .row.table-actions
+        .span1.select_all_none= link_to 'Select All', '#', :class => 'select_all'
+        .span9
+          - if @action_date_field
+            .control-group.fields
+              %label.control-label{ :for => @action_date_field.keys.first }= @action_date_field.keys.first.to_s.titleize
+              .controls
+                = text_field_tag @action_date_field.keys.first, @action_date_field.values.first.strftime("%m/%d/%Y"), {:class => :datepicker}
+          - else
+            &nbsp;
+        .span2
+          .submit
+            = submit_tag @order_detail_action.to_s.titleize, :class => ['btn', 'btn-primary']
+      .row
+        .span12= render :partial => 'shared/transactions/table_inside', :locals => { :order_details => order_details }
+  - else
+    .row
+      .span12= render :partial => 'shared/transactions/table_inside', :locals => { :order_details => order_details }
+
+

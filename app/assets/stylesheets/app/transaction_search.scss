@@ -8,20 +8,24 @@
     }
   }
 }
+
 .search_form input[type=submit] {
   clear:both;
   float:right;
   margin-bottom: 0.5em;
 }
 
-.order_action {
+#table_billing {
   margin-top: 1em;
 
-  .submit {
-    float: right;
+  .table-actions {
+    .control-group.fields {
+      width: 60%;
+      margin: auto;
+    }
   }
 
-  .select_all_none, .center_fields {
-    float: left;
+  .submit {
+    text-align: right;
   }
 }

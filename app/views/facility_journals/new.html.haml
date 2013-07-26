@@ -23,10 +23,9 @@
   = render :partial => 'shared/transactions/top', :locals => { :tab => 'new_journal' }
 - if @order_details.any?
   - if has_pending_journals?
-    .order_action
-      %p.notice= t("facility_journals.new.not_closed_html", :link => facility_journals_path)
+    %p.notice= t("facility_journals.new.not_closed_html", :link => facility_journals_path)
   = content_for :action_instructions do
-    %p
+    %p.notice
       = t("facility_journals.new.instructions")
   = render :partial => 'shared/transactions/table'
   = render :partial => 'shared/reconcile_footnote'
