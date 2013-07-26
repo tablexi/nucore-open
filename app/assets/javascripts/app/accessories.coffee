@@ -20,6 +20,8 @@ class window.AccessoryPicker
     $row.toggleClass('disabled', !enabled)
     $input = $row.find('input').not(checkbox).not('[type=hidden]')
     $input.prop('disabled', !enabled || $input.data('always-disabled') == true)
+    # use visibility instead of show/hide so it maintains the same spacing
+    $input.css('visibility', if enabled then 'visible' else 'hidden')
 
 class AccessoryPickerDialog
   constructor: (@$link) ->
