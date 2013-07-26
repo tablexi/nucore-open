@@ -106,6 +106,10 @@ table.order-list {
   th {
     text-align: center;
 
+    &.currency, &.time {
+      text-align: right;
+    }
+
     &.order-id {
       text-align: left;
     }

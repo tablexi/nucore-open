@@ -17,7 +17,7 @@
       - unless @account
         %th= Account.model_name.human
         %th= Account.human_attribute_name("owner")
-      %th= OrderDetail.human_attribute_name("cost")
+      %th.currency= OrderDetail.human_attribute_name("cost")
       %th= OrderDetail.human_attribute_name("order_status")
   %tbody
     - query_in_slices(order_details).each do |order_detail|
