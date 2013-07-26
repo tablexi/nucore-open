@@ -18,7 +18,7 @@ class window.AccessoryPicker
     $row = $checkbox.closest('.accessory-row')
 
     $row.toggleClass('disabled', !enabled)
-    $input = $row.find('input').not(checkbox)
+    $input = $row.find('input').not(checkbox).not('[type=hidden]')
     $input.prop('disabled', !enabled || $input.data('always-disabled') == true)
 
 class AccessoryPickerDialog
@@ -76,7 +76,7 @@ class AccessoryPickerDialog
       window.location.reload()
     else
       @load_dialog(xhr.responseText)
-      
+
 
   fade_out: ->
     @$link.fadeOut() unless @$link.hasClass('persistent')
