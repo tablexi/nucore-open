@@ -2,7 +2,7 @@
   %p.alert.alert-info= t('.netid_not_found')
 - elsif @user.nil?
   %p.alert.alert-info= t('.email_not_found')
-  %p= t('.main_html', :link => new_external_facility_users_path(current_facility))
+  %p= t('.main_html', :link => new_external_facility_users_path(current_facility, :email => params[:username_lookup]))
 - elsif @user.persisted?
   %p.alert.alert-info= t('.user_already_exists', username: @user.username)
 - else

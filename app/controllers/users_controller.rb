@@ -42,7 +42,7 @@ class UsersController < ApplicationController
   end
 
   def new_external
-    @user = User.new
+    @user = User.new(:email => params[:email], :username => params[:email])
   end
 
   # POST /facilities/:facility_id/users

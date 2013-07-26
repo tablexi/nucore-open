@@ -24,6 +24,6 @@
     = f.input :last_name
     = f.input :email
     = f.input :username, :readonly => true
-  .form-actions
-    = f.button :submit, 'Create'
+    = f.button :submit, 'Create', :class => ['btn', 'btn-primary']
+    &nbsp;
     = link_to 'Cancel', facility_users_path

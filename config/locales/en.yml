@@ -747,7 +747,7 @@ en:
       head: "Add User"
       intro: "Some information about this user may already exist in university databases.  Please choose whether the user you wish to add has a NetID and enter the requested information.  If the user exists already, you will be able to add her with a single click."
       instruct: "Enter the user's NetID"
-      submit: "Lookup NetID"
+      submit: "Look up NetID"
       label:
         id: "NetID"
         have_id: "Does the new user have a NetID?"
