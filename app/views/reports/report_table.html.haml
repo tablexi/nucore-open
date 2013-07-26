@@ -4,8 +4,11 @@
 %table.table.table-striped.table-hover
   %thead
     %tr
-      - @headers.each do |heading|
-        %th.centered= heading
+      - @headers.each_with_index do |heading, i|
+        - if i == 0
+          %th= heading
+        - else
+          %th.currency= heading
   = render :partial => 'report_rows'
 
 = will_paginate @rows
