@@ -1,4 +1,15 @@
 $ ->
+
+  # Look at the main navigation bar to see if we're in orders or reservations
+  currentSection = () ->
+    active_tab = $('.navbar-static-top .active').attr('id')
+    return unless active_tab?
+
+    if active_tab.indexOf('reservations') > -1
+      'reservations'
+    else
+      'orders'
+
   loadTabCounts = () ->
     tabs = []
     $('li:not(.active) .js-tab-counts').each ->
@@ -9,13 +20,11 @@ $ ->
 
     if tabs.length > 0
       base = FACILITY_PATH
-      active_tab = $('.js-tab-counts').closest('.nav').find('a[id]').attr('id')
-      return unless active_tab?
 
-      if active_tab.indexOf('reservations') > -1
-        base += '/reservations/'
-      else if active_tab.indexOf('orders') > -1
-        base += '/orders/'
+      section = currentSection()
+      return unless section
+
+      base += "/#{section}/"
 
       $.ajax {
         url: base + 'tab_counts',
