@@ -11,7 +11,7 @@ class window.AjaxModal
     @loading_text = @options.loading_text || 'Loading...'
 
     self = this
-    
+
     $link.click (e) ->
       e.preventDefault()
       $modal.modal('show')
@@ -44,7 +44,7 @@ class window.AjaxModal
     @form_prepare()
 
   build_new_modal: ->
-    $('<div class="modal hide fade"></div>').appendTo('body')
+    $('<div class="modal hide fade" data-backdrop="static"></div>').appendTo('body')
 
   reload: =>
     $modal = @$modal
