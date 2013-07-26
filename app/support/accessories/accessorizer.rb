@@ -40,6 +40,8 @@ class Accessories::Accessorizer
     result = []
     params = params.to_hash.stringify_keys # make sure integer keys get converted to strings
 
+    params.select! { |product_id, product_params| ['true', '1'].include? product_params[:enabled] }
+
     @order_detail.transaction do
       result = available_accessory_order_details.collect do |od|
         update_order_detail_from_params(od, params)

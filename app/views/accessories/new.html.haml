@@ -10,9 +10,9 @@
         = f.simple_fields_for od.product.id.to_s, od do |p|
           %tr{:class => ['accessory-row', "scaling-#{od.class.name.demodulize.underscore}"]}
             %td
-              = p.input :enabled, :as => :boolean, :label => false, :inline_label =>  "#{od.product.to_s} (#{t("product_accessories.type.#{od.scaling_type}")})"
+              = p.input :enabled, :as => :boolean, :label => false, :inline_label =>  "#{od.product.to_s} (#{t("product_accessories.type.#{od.scaling_type}")})", :checked_value => 'true', :unchecked_value => 'false'
 
-            %td= p.input :quantity, 
+            %td= p.input :quantity,
                 :disabled => !od.quantity_editable?,
                 :label => false,
                 :input_html => { :value => od.quantity,
