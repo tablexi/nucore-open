@@ -21,8 +21,9 @@
     %li &raquo;
     %li= link_to @instrument.facility, facility_path(@instrument.facility)
     %li &raquo;
-    %li= link_to 'Cart', order_path(@order)
-    %li &raquo;
+    - if @order.order_details.count > 1
+      %li= link_to 'Cart', order_path(@order)
+      %li &raquo;
     %li= t('.crumb')
 
 = content_for :h1 do
