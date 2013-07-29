@@ -3,6 +3,6 @@
   .row
     .well.span4
       %h3= t('reservations.new.documentation')
-      %ul
+      %ul.unstyled
         - docs.each do |stored_file|
           %li.document= link_to stored_file.name, stored_file.file.url, :target => '_blank'
