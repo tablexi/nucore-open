@@ -261,6 +261,7 @@ th.currency {
 .order_detail_account {
   select {
     width: inherit;
+    max-width: 100%;
   }
 }
 
