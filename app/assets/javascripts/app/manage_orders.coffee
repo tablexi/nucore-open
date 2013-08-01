@@ -23,8 +23,8 @@ class OrderDetailManagement
     @$element.find('.copy_actual_from_reservation a').click(@copyReservationTimeIntoActual)
     @init_total_calcuating()
     @init_price_updating()
-    @init_cancel_fee_options()
     @init_reconcile_note()
+    @init_cancel_fee_options()
     @init_resolution_note()
     @disable_form() if @$element.hasClass('disabled')
 
