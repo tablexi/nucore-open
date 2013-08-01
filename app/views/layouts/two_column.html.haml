@@ -15,11 +15,9 @@
         .row
           .span9.pull-right
             - if flash[:error]
-              %p.error= flash[:error]
+              %p.alert.alert-error= flash[:error]
             - if flash[:notice]
               %p.notice= flash[:notice]
-            - if flash[:info]
-              %p.info= flash[:info]
             = yield :tabnav
             = yield
           .span3.pull-left
