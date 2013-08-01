@@ -38,7 +38,9 @@
             %td.centered= check_box_tag "order_detail[#{od.id}][reconciled]", '1', true, {:class => 'toggle'}
             %td.user-order-detail
               .order-detail-description
-                = link_to "##{od}", facility_order_path(current_facility, od.order_id)
+                = link_to "##{od.order_id}", facility_order_path(current_facility, od.order_id)
+                = "-"
+                = link_to "#{od.id}", manage_order_detail_path(od), :class => 'manage-order-detail'
                 = ": #{od.product}"
                 - if od.note
                   .order-detail-extra.order-detail-note= od.note
