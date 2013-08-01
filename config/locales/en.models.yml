@@ -104,6 +104,9 @@ en:
       order:
         one: Order
         other: Orders
+      order_detail:
+        one: Order Detail
+        other: Order Details
       order_status:
         one: Order Status
         other: Order Statuses

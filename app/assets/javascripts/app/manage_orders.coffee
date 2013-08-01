@@ -121,7 +121,7 @@ $ ->
     elem = $('form.manage_order_detail')
     new OrderDetailManagement(elem) if elem.length > 0
 
-  new AjaxModal('#order-management .order-detail', '#order-detail-modal', {
+  new AjaxModal('.manage-order-detail', '#order-detail-modal', {
     success: prepare_form
     })
 

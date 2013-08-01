@@ -12,12 +12,13 @@
     %table.table.table-striped.table-hover.old-table
       %thead
         %tr.borderless
-          %td{ :colspan => 6 }= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
+          %td{ :colspan => 7 }= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
           = render :partial => 'shared/order_detail_action_form', :locals => { :button_label => 'Update Orders' }
         -## THE HEADER ROW
         %tr
           %th
-          %th.order_num_width.centered= sortable 'order_number', 'Order #'
+          %th.order_num_width.centered= sortable 'order_number', 'Order'
+          %th.order_num_width.centered= 'Order Detail'
           %th.ordered_on_width= sortable 'date', 'Ordered On'
           %th User Name
           %th{ :colspan => 2 }== Quantity / #{sortable 'product'}
@@ -31,7 +32,8 @@
           - order = od.order
           %tr
             %td.centered= check_box_tag("order_detail_ids[]", od.id, false, {:class => 'toggle', :id => nil })
-            %td.centered= link_to od, facility_order_path(current_facility, order)
+            %td.centered= link_to od.order_id, facility_order_path(current_facility, order)
+            %td.centered= link_to od.id, manage_order_detail_path(od), :class => 'manage-order-detail'
             %td=h human_datetime(order.ordered_at)
             %td= order.user.full_name
             %td.centered= od.quantity

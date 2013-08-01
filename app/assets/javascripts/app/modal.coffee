@@ -44,7 +44,9 @@ class window.AjaxModal
     @form_prepare()
 
   build_new_modal: ->
-    $('<div class="modal hide fade" data-backdrop="static"></div>').appendTo('body')
+    modal = $('<div class="modal hide fade" data-backdrop="static"></div>')
+    modal.attr('id', @modal_selector.replace('#', ''))
+    modal.appendTo('body')
 
   reload: =>
     $modal = @$modal

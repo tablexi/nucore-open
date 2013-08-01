@@ -4,7 +4,8 @@
     %tr
       -if @order_detail_action or @order_detail_link
         %th
-      %th= "#{Order.model_name.human} #"
+      %th= Order.model_name.human
+      %th= OrderDetail.model_name.human
       - unless backend?
         %th= "#{OrderDetail.model_name.human} #"
       %th.nowrap= OrderDetail.human_attribute_name(@date_range_field)
@@ -27,7 +28,8 @@
         - if @order_detail_link
           %td.nowrap= link_to @order_detail_link[:text], @order_detail_link[:proc].call(order_detail) if @order_detail_link[:display?].call(order_detail)
         - if backend?
-          %td.nowrap= link_to order_detail, facility_order_path(order_detail.order.facility, order_detail.order)
+          %td.nowrap= link_to order_detail.order.id, facility_order_path(order_detail.order.facility, order_detail.order)
+          %td.nowrap= link_to order_detail.id, manage_order_detail_path(order_detail), :class => 'manage-order-detail'
         - else
           %td.nowrap= link_to order_detail.order.id, order_path(order_detail.order)
           %td.nowrap= link_to order_detail.id, order_order_detail_path(order_detail.order, order_detail)

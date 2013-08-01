@@ -34,7 +34,7 @@
       - od.send(:extend, PriceDisplayment)
       %tr{:class => [od.parent_order_detail_id ? 'child' : 'parent', "status-#{od.order_status.root.name.underscore}", flash[:updated_order_details].try(:include?, od.id) ? 'updated-order-detail' : ''] }
         %td.order-id
-          = link_to od, manage_order_detail_path(od), :class => 'order-detail'
+          = link_to od, manage_order_detail_path(od), :class => 'manage-order-detail'
         %td.badges
           = status_badge(od)
         %td.product
