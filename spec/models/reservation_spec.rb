@@ -296,7 +296,7 @@ describe Reservation do
         @admin_reservation = FactoryGirl.create(:reservation, :product => @instrument)
         @admin_reservation.should_not be_ordered_on_behalf_of
       end
-      
+
     end
 
   end
@@ -345,8 +345,9 @@ describe Reservation do
                                        :reserve_end_at   => 30.minutes.from_now,
                                        :actual_start_at  => 30.minutes.ago
 
-        conflicting_reservation.assign_attributes :reserve_start_at => 30.minutes.ago,
-                                                  :reserve_end_at   => 30.minutes.from_now
+        # TODO: Replace with assign_attributes in rails 3.1 upgrade
+        conflicting_reservation.attributes = { :reserve_start_at => 30.minutes.ago,
+                                               :reserve_end_at   => 30.minutes.from_now }
       end
 
       it 'should be a conflict' do
@@ -370,13 +371,13 @@ describe Reservation do
           @reservation = @instrument.reservations.build(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 6,
                                       :reserve_start_min => 0, :reserve_start_meridian => 'pm',
                                       :duration_value => '60', :duration_unit => 'minutes')
-        end  
+        end
 
         it 'should allow an admin reservation' do
           @reservation.stub(:admin?).and_return(true)
           @reservation.should be_valid
         end
-        
+
         it 'should not allow a regular reservation' do
           @reservation.should_not be_valid
           @reservation.errors[:base].should include 'The reservation spans time that the instrument is unavailable for reservation'
@@ -389,12 +390,12 @@ describe Reservation do
                                       :reserve_start_min => 30, :reserve_start_meridian => 'pm',
                                       :duration_value => '60', :duration_unit => 'minutes')
         end
-        
+
         it 'should allow an admin reservation' do
           @reservation.stub(:admin?).and_return(true)
           @reservation.should be_valid
         end
-        
+
         it 'should not allow a regular reservation' do
           @reservation.should_not be_valid
           @reservation.errors[:base].should include 'The reservation spans time that the instrument is unavailable for reservation'
@@ -405,7 +406,7 @@ describe Reservation do
   end
 
   context 'maximum reservation length' do
-    
+
     before :each do
       @instrument.update_attributes(:max_reserve_mins => 60)
     end
@@ -463,7 +464,7 @@ describe Reservation do
       @reservation.should be_valid
     end
   end
-   
+
   it "should allow multi-day registrations" do
     # set max reserve to 4 hours
     @instrument.max_reserve_mins = 240
@@ -503,9 +504,9 @@ describe Reservation do
         @rule_9_to_5 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 9, :end_hour => 17, :duration_mins => 15))
         @rule_5_to_7 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 17, :end_hour => 19, :duration_mins => 15))
       end
-      
+
       it "should allow a reservation within the schedule rules" do
-        
+
         @reservation = @instrument.reservations.new(:reserve_start_date => Date.today + 1, :reserve_start_hour => 6, :reserve_start_min => 0, :reserve_start_meridian => 'pm', :duration_value => 1, :duration_unit => 'hours')
         @reservation.should be_valid
         @reservation2 = @instrument.reservations.new(:reserve_start_date => Date.today + 1, :reserve_start_hour => 10, :reserve_start_min => 0, :reserve_start_meridian => 'am', :duration_value => 1, :duration_unit => 'hours')
@@ -519,35 +520,35 @@ describe Reservation do
         @reservation = @instrument.reservations.new(:reserve_start_date => Date.today + 1, :reserve_start_hour => 5, :reserve_start_min => 0, :reserve_start_meridian => 'am', :duration_value => 1, :duration_unit => 'hours')
         @reservation.should be_invalid
       end
-      
+
       context "schedule rules with restrictions" do
         before :each do
           @user = FactoryGirl.create(:user)
           @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [{:user => @user, :created_by => @user, :user_role => 'Owner'}])
-          
+
           @instrument.update_attributes(:requires_approval => true)
-            
+
           @order = FactoryGirl.create(:order, :user => @user, :created_by => @user.id, :account => @account, :facility => @facility)
           @order_detail = FactoryGirl.create(:order_detail, :order => @order, :product => @instrument)
           # @instrument.update_attributes(:requires_approval => true)
-          
+
           @restriction_level = @rule_5_to_7.product_access_groups.create(FactoryGirl.attributes_for(:product_access_group, :product => @instrument))
           @instrument.reload
-          @reservation = Reservation.new(:reserve_start_date => Date.today + 1, 
-                                                      :reserve_start_hour => 6, 
-                                                      :reserve_start_min => 0, 
-                                                      :reserve_start_meridian => 'pm', 
-                                                      :duration_value => 1, 
-                                                      :duration_unit => 'hours', 
+          @reservation = Reservation.new(:reserve_start_date => Date.today + 1,
+                                                      :reserve_start_hour => 6,
+                                                      :reserve_start_min => 0,
+                                                      :reserve_start_meridian => 'pm',
+                                                      :duration_value => 1,
+                                                      :duration_unit => 'hours',
                                                       :order_detail => @order_detail,
-                                                      :product => @instrument)          
+                                                      :product => @instrument)
         end
         it "should allow a user to reserve if it doesn't require approval" do
           @instrument.update_attributes(:requires_approval => false)
           @reservation.should be_valid
-        end    
-        
-        it "should not allow a user who is not approved to reserve" do          
+        end
+
+        it "should not allow a user who is not approved to reserve" do
           @reservation.should_not be_valid
         end
         it "should not allow a user who is approved, but not in the group" do
@@ -558,10 +559,10 @@ describe Reservation do
         it "should allow a user who is approved and part of the restriction group" do
           @product_user = @user.product_users.create(:product => @instrument, :product_access_group => @restriction_level, :approved_by => @user.id)
           @product_user.should_not be_new_record
-          
+
           @reservation.should be_valid
         end
-        
+
         context "admin overrides" do
           before :each do
             # user is not in the restricted group
@@ -572,18 +573,18 @@ describe Reservation do
 
           it "should allow an administrator to save in one of the restricted scheduling rules" do
             @reservation.save_as_user!(@admin)
-            # if it raises an exception, we're in trouble            
+            # if it raises an exception, we're in trouble
           end
           it "should not allow a regular user to save in a restricted scheduling rule" do
             lambda { @reservation.save_as_user!(@user) }.should raise_error(ActiveRecord::RecordInvalid)
           end
           it "should not allow an administrator to save outside of scheduling rules" do
-            @reservation.update_attributes(:reserve_start_hour => 10)            
+            @reservation.update_attributes(:reserve_start_hour => 10)
             lambda { @reservation.save_as_user!(@admin) }.should raise_error(ActiveRecord::RecordInvalid)
           end
         end
       end
-      
+
     end
   end
 
@@ -656,10 +657,10 @@ describe Reservation do
       @reserve_end_at_timestamp = @reservation.reserve_end_at.strftime("%a, %d %b %Y %H:%M:%S")
 
       @cal_obj_wo_actual_end = @reservation.as_calendar_object
-      
+
       @reservation.actual_start_at = 1.minute.from_now
       @reservation.actual_end_at = 5.minutes.from_now
-      
+
       @cal_obj_w_actual_end = @reservation.as_calendar_object
 
       @actual_start_at_timestamp = @reservation.actual_start_at.strftime("%a, %d %b %Y %H:%M:%S")
