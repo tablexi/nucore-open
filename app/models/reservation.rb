@@ -69,6 +69,10 @@ class Reservation < ActiveRecord::Base
     joins('LEFT JOIN orders ON orders.id = order_details.order_id')
   end
 
+  def self.admin
+    where(:order_detail_id => nil)
+  end
+
   def self.not_cancelled
     where(:canceled_at => nil)
   end
