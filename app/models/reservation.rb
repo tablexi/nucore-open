@@ -77,6 +77,10 @@ class Reservation < ActiveRecord::Base
     where(:actual_start_at => nil)
   end
 
+  def self.not_ended
+    where(:actual_end_at => nil)
+  end
+
   def self.not_this_reservation(reservation)
     # old version
     # where('reservations.id <> ?', id || 0)

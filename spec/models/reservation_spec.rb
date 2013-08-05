@@ -338,6 +338,32 @@ describe Reservation do
       conflicting_admin_reservation.should be_valid
     end
 
+    context 'and the reservation has started' do
+      before :each do
+        # Actual start must be in the past
+        reservation.update_attributes! :reserve_start_at => 30.minutes.ago,
+                                       :reserve_end_at   => 30.minutes.from_now,
+                                       :actual_start_at  => 30.minutes.ago
+
+        conflicting_reservation.assign_attributes :reserve_start_at => 30.minutes.ago,
+                                                  :reserve_end_at   => 30.minutes.from_now
+      end
+
+      it 'should be a conflict' do
+        conflicting_reservation.should_not be_valid
+      end
+
+      context 'and ended' do
+        before :each do
+          reservation.update_attributes!(:actual_end_at => 20.minutes.ago)
+        end
+
+        it 'should not conflict' do
+          conflicting_reservation.should be_valid
+        end
+      end
+    end
+
     context 'overlapping scheduling rules' do
       context 'completely within a blacked out time' do
         before :each do

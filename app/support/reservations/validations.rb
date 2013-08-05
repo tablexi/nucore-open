@@ -58,7 +58,7 @@ module Reservations::Validations
         where(:product_id => product.schedule.product_ids).
         not_this_reservation(self).
         not_cancelled.
-        not_started.
+        not_ended.
         where("(orders.state = 'purchased' OR orders.state IS NULL OR orders.id = ?)", order_id).
         overlapping(reserve_start_at, reserve_end_at)
 
@@ -90,7 +90,6 @@ module Reservations::Validations
   end
 
   def instrument_is_available_to_reserve? (start_at = self.reserve_start_at, end_at = self.reserve_end_at)
-
     # check for order_detail and order because some old specs don't set an order detail
     # if we're saving as an administrator, we want access to all schedule rules
     if (order_detail and order_detail.order and !@reserved_by_admin)
