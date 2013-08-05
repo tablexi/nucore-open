@@ -136,6 +136,12 @@ footer .span8 {
     text-decoration: none;
     color: $textColor;
     font-size: 175%;
+    &.available {
+      color: $successText;
+    }
+    &.in-use {
+      color: $errorText;
+    }
   }
 }
 

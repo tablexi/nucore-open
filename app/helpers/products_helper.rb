@@ -30,4 +30,12 @@ module ProductsHelper
       RelaySynaccessRevB, RelaySynaccessRevB.name
     ]
   end
+
+  def public_calendar_link(product)
+    if product.respond_to? :reservations
+      classes = ['icon-calendar']
+      classes << (product.available? ? 'available' : 'in-use')
+      link_to '', facility_instrument_public_schedule_path(current_facility, product), :class => classes
+    end
+  end
 end
