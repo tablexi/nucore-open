@@ -125,6 +125,11 @@ class Reservation < ActiveRecord::Base
   # Instance Methods
   #####
 
+  def round_reservation_times
+    self.reserve_start_at = time_ceil(self.reserve_start_at)
+    self.reserve_end_at   = time_ceil(self.reserve_end_at)
+  end
+
   def assign_actuals_off_reserve
     self.actual_start_at ||= self.reserve_start_at
     self.actual_end_at   ||= self.reserve_end_at

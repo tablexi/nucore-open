@@ -53,6 +53,11 @@ module DateHelper
     end
   end
 
+  def time_ceil(time, precision = 5.minutes)
+    time = time.dup.change(:sec => 0)
+    Time.zone.at((time.to_f / precision).ceil * precision)
+  end
+
   #TODO Replace calls to this with select_time(default_time, :ignore_date => true, :prefix => field, :ampm => true)
   # once we've migrated to Rails 3.1.
   # 3.0 doesn't support the :ampm option
