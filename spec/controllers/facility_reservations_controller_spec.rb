@@ -361,6 +361,8 @@ describe FacilityReservationsController do
         @cancelled_reservation.should be_persisted
         @order_detail3.update_order_status! @admin, OrderStatus.cancelled.first
 
+        @admin_reservation = FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => Time.zone.now, :reserve_end_at => 1.hour.from_now)
+
         maybe_grant_always_sign_in :director
         @method = :get
         @action = :timeline
@@ -371,6 +373,7 @@ describe FacilityReservationsController do
       it 'should not be admin reservations' do
         @reservation.should_not be_admin
         @unpurchased_reservation.should_not be_admin
+        @admin_reservation.should be_admin
       end
 
       it 'should show reservation' do
@@ -383,6 +386,10 @@ describe FacilityReservationsController do
 
       it 'should include cancelled reservation' do
         response.body.should include "id='tooltip_reservation_#{@cancelled_reservation.id}'"
+      end
+
+      it 'should include admin reservation' do
+        response.body.should include "id='tooltip_reservation_#{@admin_reservation.id}'"
       end
     end
   end
