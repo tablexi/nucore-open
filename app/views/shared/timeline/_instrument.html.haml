@@ -3,9 +3,7 @@
   -# Add .reschedulable to enable drag/drop
   .timeline
     .unit_container
-      -# Change collection to instrument.active_schedule_reservations to include
-      -# reservations from other instruments on the same schedule
-      = render :partial => "shared/timeline/reservation", :collection => (instrument.purchased_reservations.for_date(@display_date).order(:reserve_start_at) + ScheduleRule.unavailable_for_date(instrument, @display_date)), :as => :reservation, :locals => { :product => instrument }
+      = render :partial => "shared/timeline/reservation", :collection => ( instrument.visible_reservations(@display_date) + ScheduleRule.unavailable_for_date(instrument, @display_date)), :as => :reservation, :locals => { :product => instrument }
       - if @display_date.beginning_of_day == Time.zone.now.beginning_of_day
         .current_time{:style => "left: #{datetime_left_position(@display_date, Time.zone.now)}"}
     - if instrument.has_real_relay?

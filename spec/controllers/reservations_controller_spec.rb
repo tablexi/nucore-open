@@ -495,6 +495,45 @@ describe ReservationsController do
       assigns[:min_date].should == Time.zone.now.strftime("%Y%m%d")
     end
 
+    context 'rounding times' do
+      before :each do
+        sign_in @guest
+        controller.stub :set_windows
+        Instrument.any_instance.stub(:next_available_reservation).and_return(next_reservation)
+        do_request
+      end
+
+      context 'next reservation is between 5 minutes' do
+        let(:next_reservation) do
+          Reservation.new :reserve_start_at => Time.zone.parse('2013-08-15 12:02'),
+                          :reserve_end_at   => Time.zone.parse('2013-08-15 12:17')
+        end
+
+        it 'should round up to the nearest 5 minutes' do
+          assigns(:reservation).reserve_start_min.should == 5
+        end
+
+        it 'should default the duration mins to minimum duration' do
+          assigns(:reservation).duration_mins.should == 15
+        end
+      end
+
+      context 'next reservation is on a 5 minute, but with seconds' do
+        let(:next_reservation) do
+          Reservation.new :reserve_start_at => Time.zone.parse('2013-08-15 12:05:30'),
+                          :reserve_end_at   => Time.zone.parse('2013-08-15 12:20:30')
+        end
+
+        it 'should round up to the nearest 5 minutes' do
+          assigns(:reservation).reserve_start_min.should == 5
+        end
+
+        it 'should default the duration mins to minimum duration' do
+          assigns(:reservation).duration_mins.should == 15
+        end
+      end
+    end
+
     context 'a user with no price groups' do
       before :each do
         sign_in @guest

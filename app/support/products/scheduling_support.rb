@@ -21,6 +21,20 @@ module Products::SchedulingSupport
     self.reservations.joins(:order_detail => :order).merge(Order.purchased)
   end
 
+  def admin_reservations
+    self.reservations.admin
+  end
+
+  def visible_reservations(date = nil)
+    purchased = self.purchased_reservations.order(:reserve_start_at)
+    admin = self.admin_reservations
+    if date
+      purchased = purchased.for_date(date)
+      admin = admin.for_date(date)
+    end
+    purchased + admin
+  end
+
   def active_schedule_reservations
     self.schedule.reservations.active
   end
