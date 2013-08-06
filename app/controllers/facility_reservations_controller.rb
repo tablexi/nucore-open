@@ -129,7 +129,7 @@ class FacilityReservationsController < ApplicationController
   def new
     @instrument   = current_facility.instruments.find_by_url_name!(params[:instrument_id])
     @reservation  = @instrument.next_available_reservation || Reservation.new(:duration_value => @instrument.min_reserve_mins, :duration_unit => 'minutes')
-
+    @reservation.round_reservation_times
     set_windows
 
     render :layout => 'two_column'
