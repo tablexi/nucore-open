@@ -37,4 +37,26 @@ describe DateHelper do
   describe "#human_date"
   describe "#human_time"
 
+  describe 'time_ceil' do
+    it 'rounds up to the nearest 5 minute' do
+      time_ceil(Time.zone.parse('2013-08-15 12:03')).should == Time.zone.parse('2013-08-15 12:05')
+    end
+
+    it 'drops the seconds before rounding' do
+      time_ceil(Time.zone.parse('2013-08-15 12:05:30')).should == Time.zone.parse('2013-08-15 12:05')
+    end
+
+    it 'does not round up if already at 5 minutes' do
+      time_ceil(Time.zone.parse('2013-08-15 12:05')).should == Time.zone.parse('2013-08-15 12:05')
+    end
+
+    it 'rounds up to 15 minute' do
+      time_ceil(Time.zone.parse('2013-08-15 12:05'), 15.minutes).should == Time.zone.parse('2013-08-15 12:15')
+    end
+
+    it 'rounds up to an hour' do
+      time_ceil(Time.zone.parse('2013-08-15 12:05'), 1.hour).should == Time.zone.parse('2013-08-15 13:00')
+    end
+  end
+
 end
