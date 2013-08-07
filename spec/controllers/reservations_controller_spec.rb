@@ -155,6 +155,10 @@ describe ReservationsController do
     context "upcoming" do
       before :each do
         @params = {:status => 'upcoming'}
+        @upcoming = FactoryGirl.create(:purchased_reservation, :product => @instrument)
+        @in_progress = FactoryGirl.create(:purchased_reservation, :product => @instrument, :reserve_start_at => Time.zone.now, :reserve_end_at => 1.hour.from_now)
+        @in_progress.update_attributes!(:actual_start_at => Time.zone.now)
+        [@in_progress, @upcoming].each { |res| res.order_detail.order.update_attributes!(:user => @staff) }
       end
 
       it_should_require_login
@@ -162,9 +166,27 @@ describe ReservationsController do
       it_should_allow :staff do
         assigns(:available_statuses).size.should == 2
         assigns(:status).should == assigns(:available_statuses).first
-        assigns(:order_details).should == (OrderDetail.upcoming_reservations.all + OrderDetail.in_progress_reservations.all)
+        assigns(:order_details).map(&:id).should =~ [@in_progress.order_detail, @upcoming.order_detail].map(&:id)
         should assign_to(:active_tab).with('reservations')
         should render_template('list')
+      end
+
+      context 'moving forward' do
+        before :each do
+          sign_in @staff
+        end
+
+        it 'should not show Begin Now if there is no time to move it forward to' do
+          Reservation.any_instance.stub(:earliest_possible).and_return(nil)
+          do_request
+          response.body.should_not include('Begin Now')
+        end
+
+        it 'should show Begin Now if there is a time to move it forward to' do
+          Reservation.any_instance.stub(:earliest_possible).and_return(Reservation.new)
+          do_request
+          response.body.should include('Begin Now')
+        end
       end
     end
 
