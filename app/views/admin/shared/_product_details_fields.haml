@@ -10,7 +10,7 @@
 
 - unless f.object.is_a?(Bundle)
   - if SettingsHelper.feature_on? :recharge_accounts
-    = f.input :facility_account_id, :collection => current_facility.facility_accounts.active.collect {|fa| [ fa, fa.id ] }, :hint => t('shared.product_details_fields.deposit_account.instruct')
+    = f.input :facility_account_id, :collection => current_facility.facility_accounts.active.collect {|fa| [ fa, fa.id ] }, :hint => t('shared.product_details_fields.deposit_account.instruct'), :include_blank => false
     -# TODO
     %p= link_to t('shared.product_details_fields.deposit_account.add'), :facility_facility_accounts
   - if SettingsHelper.feature_on? :expense_accounts
