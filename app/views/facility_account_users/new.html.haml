@@ -8,25 +8,23 @@
   =h current_facility
 
 %h2= t('.head')
-= form_for(@account_user, :url => facility_account_account_users_path(current_facility, @account)) do |f|
+= simple_form_for(@account_user, :url => facility_account_account_users_path(current_facility, @account)) do |f|
   = f.error_messages
 
   - if current_owner?
     %p.error= t('.messages.current_user')
-  %ul.form
-    %li
-      = label_tag :account_type, t('.label.account.type')
-      = @account.type_string
-    %li
-      = label_tag :account_number, t('.label.account.number')
-      = @account.account_number
-    = hidden_field_tag "user_id", @user.id
-    %li
-      = label_tag :user
-      = @user.full_name
-    %li
-      = f.label :user_role, 'User Role', :class => 'require'
-      = f.select :user_role, options_for_select(AccountUser.selectable_user_roles(current_user, current_facility), :selected => @account_user.user_role), {}, :disabled => current_owner?
+  = f.simple_fields_for @account do |a|
+    = a.input :type_string, :as => :readonly
+    = a.input :account_number, :as => :readonly
+    = a.input :description, :as => :readonly
+    = a.input :expires_at, :as => :readonly, :date_only => true
+
+  = f.simple_fields_for @user do |u|
+    = u.input :full_name, :as => :readonly, :label => Account.human_attribute_name(:user)
+  = f.input :user_id, :as => :hidden, :input_html => { :value => @user.id, :name => 'user_id' }
+
+  = f.input :user_role, :collection => AccountUser.selectable_user_roles(current_user, current_facility), :selected => @account_user.user_role, :disabled => current_owner?
+
   %ul.inline
     %li= f.submit 'Create', :class => 'btn' unless current_owner?
     %li= link_to 'Cancel', facility_account_path(current_facility, @account)
