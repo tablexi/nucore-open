@@ -48,7 +48,7 @@
       %td.centered=h od.order_status.name
       %td.currency
         - od.send(:extend, PriceDisplayment)
-        = od.reload.wrapped_cost
+        = od.reload.wrapped_total
 
 %p.footnote
   %span.estimated_cost

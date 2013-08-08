@@ -26,7 +26,7 @@
         %td= order_detail.order.user.full_name
         %td.currency
           - order_detail.send(:extend, PriceDisplayment)
-          = order_detail.wrapped_cost
+          = order_detail.wrapped_total
         %td.nowrap= order_detail.order_status
 - else
   .notice= t('order_search.no_results')
