@@ -586,6 +586,7 @@ en:
       welcome: |
         Welcome to NU Core, the centralized ordering system for all shared facilities at Northwestern University.
         Please select the shared facility below to view and purchase services and products offered by the facility.
+
     facility_fields:
       name: "Name of the facility as displayed to the end user"
       abbreviation: "Abbreviated name or acronym for the facility"
@@ -596,6 +597,7 @@ en:
       inactive: "Uncheck this box to prevent end users from viewing or purchasing from this facility:"
       is_active: "Is Active?"
       contact: "The following contact information will appear on statements and should indicate where payment should be sent"
+      show_instrument_availability: Show Instrument Availability Status?
     transactions:
       no_orders: There are no orders in this facility
 
@@ -792,6 +794,9 @@ en:
     public_schedule:
       title: Schedule
       place_reservation: Place Reservation
+      icon: Public Schedule
+      available: Available
+      in-use: In Use
 
     instrument_fields:
       show_details: "Show reservation details (name, email, etc) on schedule"

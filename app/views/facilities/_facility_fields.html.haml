@@ -7,6 +7,8 @@
 .well
   %p
     = f.input :accepts_multi_add, :as => :boolean, :label => false, :inline_label => t('facilities.facility_fields.accepts_multi_add')
+  %p
+    = f.input :show_instrument_availability, :as => :boolean, :label => false, :inline_label => t('facilities.facility_fields.show_instrument_availability')
 
 .well
   %p= t('facilities.facility_fields.inactive')
