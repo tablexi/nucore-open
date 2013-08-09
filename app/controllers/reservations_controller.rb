@@ -58,7 +58,7 @@ class ReservationsController < ApplicationController
   # All My Resesrvations
   def list
     notices = []
-    now = Time.zone.now
+
     relation=acting_user.order_details
     in_progress=relation.in_progress_reservations.all
     @status=params[:status]
@@ -75,21 +75,10 @@ class ReservationsController < ApplicationController
 
     @order_details = @order_details.paginate(:page => params[:page])
 
-    @order_details.each do |od|
-      res = od.reservation
-      next unless res
-      # do you need to click stop
-      if res.can_switch_instrument_off?
-        notices << "Do not forget to click the \"End Reservation\" link when you finished your #{res} reservation."
-      # do you need to begin your reservation
-      elsif res.can_switch_instrument_on?
-        notices << "You may click the \"Begin Reservation\" link when you are ready to begin your #{res} reservation."
-      # do you have a reservation for today
-      elsif (res.reserve_start_at.to_s[0..9] == now.to_s[0..9] || res.reserve_start_at < now) && res.reserve_end_at > now
-        notices << "You have an upcoming reservation for #{res}."
-      end
+    notices = @order_details.collect do |od|
+      notice_for_reservation od.reservation
     end
-
+    notices.compact!
     existing_notices = flash[:notice].presence ? [flash[:notice]] : []
     flash.now[:notice] = existing_notices.concat(notices).join('<br />').html_safe unless notices.empty?
   end
@@ -346,6 +335,26 @@ class ReservationsController < ApplicationController
   def max_reservation_window
     return 365 if session_user.operator_of?(@facility)
     @reservation.longest_reservation_window(@order_detail.price_groups)
+  end
+
+  def notice_for_reservation(reservation)
+    return unless reservation
+
+    if reservation.can_switch_instrument_off? # do you need to click stop
+      I18n.t('reservations.notices.can_switch_off', :reservation => reservation)
+    elsif reservation.can_switch_instrument_on? # do you need to begin your reservation
+      I18n.t('reservations.notices.can_switch_on', :reservation => reservation)
+    elsif reservation.cancelled?
+      # no message
+    # do you have a reservation for today that hasn't ended
+    elsif upcoming_today? reservation
+      I18n.t('reservations.notices.upcoming', :reservation => reservation)
+    end
+  end
+
+  def upcoming_today?(reservation)
+    now = Time.zone.now
+    (reservation.reserve_start_at.to_date == now.to_date || reservation.reserve_start_at < now) && reservation.reserve_end_at > now
   end
 
   def helpers

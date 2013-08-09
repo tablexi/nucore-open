@@ -363,6 +363,10 @@ en:
       confirm_different_day: The earliest time you can move this reservation to begins on %{start_date} at %{start_time} and ends on %{end_date} at %{end_time}.
       confirm: Would you like to move your reservation?
       error: There was an error retrieving earliest possible move date.
+    notices:
+      can_switch_off: Do not forget to click the "End Reservation" link when you finished your %{reservation} reservation.
+      can_switch_on: You may click the "Begin Reservation" link when you are ready to begin your %{reservation} reservation.
+      upcoming: You have an upcoming reservation for %{reservation}.
 
   statements:
     index:
