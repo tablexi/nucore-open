@@ -55,8 +55,10 @@ module PriceDisplayment
   end
 
   def wrapped_quantity
-    if reservation.try(:actual_duration_mins)
+    if reservation.try(:actual_duration_mins) && reservation.actual_duration_mins > 0
       content_tag :span, reservation.actual_duration_mins, :class => 'timeinput'
+    elsif reservation.try(:duration_mins)
+      content_tag :span, reservation.duration_mins, :class => 'timeinput'
     elsif quantity_as_time?
       content_tag :span, quantity, :class => 'timeinput'
     else
