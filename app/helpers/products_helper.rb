@@ -30,4 +30,35 @@ module ProductsHelper
       RelaySynaccessRevB, RelaySynaccessRevB.name
     ]
   end
+
+  def public_calendar_link(product)
+    if product.respond_to? :reservations
+      opts = public_calendar_options(product)
+      link_to '', facility_instrument_public_schedule_path(current_facility, product), opts
+    end
+  end
+
+  private
+
+  def public_calendar_options(product)
+    if current_facility.show_instrument_availability?
+      public_calendar_availability_options(product)
+    else
+      { :class => ['icon-calendar'],
+        :title => t('instruments.public_schedule.icon') }
+    end
+
+  end
+
+  def public_calendar_availability_options(product)
+    if product.available?
+      { :class => ['icon-calendar', 'available'],
+        :title => t('instruments.public_schedule.available') }
+    else
+      { :class => ['icon-calendar', 'in-use'],
+        :title => t('instruments.public_schedule.in-use') }
+    end
+  end
+
+
 end
