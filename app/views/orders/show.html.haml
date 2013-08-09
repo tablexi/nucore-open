@@ -16,12 +16,11 @@
   %div
     %p.notice= t('.notice')
 - else
-  %ul.form
-    %li
-      %label= t('.label.account')
-      =h @order.account
-      %br
-      = link_to t('.link.change_account'), choose_account_order_path(@order, :reset_account => true)
+  %p
+    %label= t('.label.account')
+    = @order.account
+    %br
+    = link_to t('.link.change_account'), choose_account_order_path(@order, :reset_account => true)
 
   = form_for @order, :url => {:action => :update_or_purchase} do |f|
     %table.table.table-striped.table-hover#cart
