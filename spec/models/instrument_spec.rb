@@ -619,4 +619,80 @@ describe Instrument do
 
   end
 
+  describe 'available?' do
+    subject(:instrument) { FactoryGirl.create :setup_instrument }
+
+    it { should be_available }
+
+    context 'there is not a current schedule rule' do
+      before :each do
+        instrument.schedule_rules.destroy_all
+      end
+
+      it { should_not be_available }
+    end
+
+    context 'reservation only instrument' do
+      context 'with a current reservation' do
+        let!(:reservation) { FactoryGirl.create :purchased_reservation,
+                :reserve_start_at => 30.minutes.ago,
+                :reserve_end_at   => 30.minutes.from_now,
+                :product => instrument }
+
+        it { should_not be_available }
+
+        context 'but it was cancelled' do
+          let(:user) { FactoryGirl.build :user }
+          before :each do
+            Timecop.travel(60.minutes.ago) do
+              reservation.order_detail.update_order_status! user, OrderStatus.cancelled.first
+              reservation.should be_cancelled
+            end
+          end
+
+          it { should be_available }
+        end
+      end
+
+      context 'with no minimum reservation' do
+        before :each do
+          instrument.update_attributes!(:min_reserve_mins => nil)
+        end
+
+        it { should be_available }
+      end
+    end
+
+    context 'instrument with timer' do
+      before :each do
+        instrument.update_attributes!(:control_mechanism => 'manual')
+      end
+
+      context 'with a current reservation' do
+        let!(:reservation) { FactoryGirl.create :purchased_reservation,
+                :reserve_start_at => 30.minutes.ago,
+                :reserve_end_at   => 30.minutes.from_now,
+                :product => instrument }
+
+        context 'and is started' do
+          before :each do
+            reservation.update_attributes(:reserved_by_admin => true,
+                                          :actual_start_at => 30.minutes.ago)
+          end
+
+          it { should_not be_available }
+
+          context 'but it was ended already' do
+            before :each do
+              reservation.update_attributes(:reserved_by_admin => true,
+                                            :actual_end_at => 10.minutes.ago)
+            end
+
+            it { should be_available }
+          end
+        end
+      end
+    end
+  end
+
 end

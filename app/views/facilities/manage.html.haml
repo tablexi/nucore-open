@@ -3,13 +3,14 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'overview' }
 
-= readonly_form_for current_facility do |f|
+= readonly_form_for current_facility, :defaults => { :hint => false } do |f|
   = f.input :name
   = f.input :abbreviation
   = f.input :url_name
   = f.input :short_description
   = f.input :description
   = f.input :accepts_multi_add, :label => t('facilities.facility_fields.accepts_multi_add')
+  = f.input :show_instrument_availability, :label => t('facilities.facility_fields.show_instrument_availability')
   = f.input :is_active
   = f.input :address, :value_method => Proc.new { |value| value.present? ? simple_format(value) : '<p>None Entered</p>'.html_safe}
   = f.input :phone_number, :default_value => 'None Entered'
