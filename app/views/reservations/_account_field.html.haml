@@ -4,7 +4,7 @@
       .row
         .span6
           = simple_fields_for @order do |o|
-            = o.input :account, :collection => @order.user.accounts_for_product(@instrument), :input_html => { :name => 'order_account' }
+            = o.input :account, :collection => @order.user.accounts_for_product(@instrument), :input_html => { :name => 'order_account' }, :selected => @order.account_id || params[:order_account]
         - if acting_as?
           .span6= f.input :note
 
