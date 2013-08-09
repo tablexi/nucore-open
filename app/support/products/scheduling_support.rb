@@ -62,6 +62,15 @@ module Products::SchedulingSupport
     max_rule.end_min == 0 ? max_rule.end_hour - 1 : max_rule.end_hour
   end
 
+  def available?(time = Time.zone.now)
+    reservation_length = self.min_reserve_mins || 1
+    reservation = Reservation.new :product => self,
+        :reserve_start_at => time,
+        :reserve_end_at   => time + reservation_length.minutes,
+        :blackout => true # so it's not considered an admin and allowed to overlap
+    reservation.valid?
+  end
+
   # find the next available reservation based on schedule rules and existing reservations
   def next_available_reservation(after = Time.zone.now, not_a_conflict=nil)
     reservation = nil

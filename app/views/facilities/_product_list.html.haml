@@ -4,7 +4,7 @@
     %ul
       - products.sort.each_with_index do |product, index|
         %li{:class => product.class.model_name.downcase}
-          = link_to '', facility_instrument_public_schedule_path(current_facility, product), :class => 'icon-calendar' if product.respond_to? :reservations
+          = public_calendar_link(product)
           - if local_assigns[:f]
             = f.fields_for :order_details do |builder|
               - if session_user.can_override_restrictions?(product) || product.is_approved_for?(acting_user)
