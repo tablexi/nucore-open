@@ -171,6 +171,41 @@ describe ReservationsController do
         should render_template('list')
       end
 
+      context 'notices' do
+        before :each do
+          sign_in @staff
+        end
+
+        it 'should have message if you can switch on' do
+          Reservation.any_instance.stub(:can_switch_instrument_on?).and_return(true)
+          do_request
+          expect(response.body).to include I18n.t('reservations.notices.can_switch_on', :reservation => @upcoming)
+        end
+
+        it 'should have message if you can switch off' do
+          Reservation.any_instance.stub(:can_switch_instrument_off?).and_return(true)
+          do_request
+          expect(response.body).to include I18n.t('reservations.notices.can_switch_off', :reservation => @upcoming)
+        end
+
+        it 'should have a message for todays reservations' do
+          @upcoming.update_attributes(:reserve_start_at => 1.hour.from_now, :reserve_end_at => 2.hours.from_now)
+          tomorrow_reservation = FactoryGirl.create(:purchased_reservation, :product => @instrument, :reserve_start_at => 1.day.from_now, :reserve_end_at => 1.day.from_now + 1.hour)
+          tomorrow_reservation.order_detail.order.update_attributes(:user => @staff)
+          do_request
+          expect(response.body).to include I18n.t('reservations.notices.upcoming', :reservation => @upcoming)
+          expect(response.body).to_not include I18n.t('reservations.notices.upcoming', :reservation => @tomorrow)
+        end
+
+        it 'should not have an upcoming message for a cancelled reservation' do
+          @upcoming.update_attributes(:reserve_start_at => 1.hour.from_now, :reserve_end_at => 2.hours.from_now)
+          @upcoming.order_detail.update_order_status!(@staff, OrderStatus.cancelled.first)
+          do_request
+          expect(response.body).to_not include I18n.t('reservations.notices.upcoming', :reservation => @upcoming)
+        end
+
+      end
+
       context 'moving forward' do
         before :each do
           sign_in @staff
