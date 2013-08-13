@@ -8,6 +8,5 @@
 = simple_form_for([current_facility]) do |f|
   .form-inputs
     = render :partial => 'facility_fields', :locals => {:f => f}
-  .form-actions
-    = f.button :submit, 'Save'
-    = link_to 'Cancel', manage_facility_path(current_facility)
+  = f.button :submit, 'Save', :class => ['btn', 'btn-primary']
+  = link_to 'Cancel', manage_facility_path(current_facility)

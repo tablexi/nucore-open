@@ -9,7 +9,7 @@
 = content_for :h1 do
   = product.name
 
-.wysiwyg
+.wysiwyg.pull-left
   = product.description
   - if @login_required
     - session[:requested_params] = request.fullpath
@@ -21,7 +21,7 @@
 - unless docs.empty?
   .well.pull-right.span4
     %h3 Documentation
-    %ul
+    %ul.unstyled
       - docs.each do |stored_file|
         %li.document= link_to stored_file.name, stored_file.file.url
 
