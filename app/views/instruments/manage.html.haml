@@ -9,6 +9,8 @@
 = readonly_form_for :instrument do |f|
   = render :partial => 'admin/shared/product_manage', :locals => { :f => f }
 
+  = f.input :show_details, :label => t('instruments.instrument_fields.show_details')
+
   = f.input :schedule, :input_html => { :value => @instrument.schedule.display_name}
 
   = render :partial => 'relay_manage', :locals => { :f => f }
