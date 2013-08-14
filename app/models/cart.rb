@@ -17,7 +17,7 @@ class Cart
     count = 0
     total = Cart.abandoned_carts.count
     # limit to 100 for better ability to watch progress
-    while (cart = abandoned_carts(100).where('updated_at < ?', before)).any?
+    while (cart = abandoned_carts(100).where('orders.updated_at < ?', before)).any?
       destroyed = cart.destroy_all
       Rails.logger.info "Removed #{count += destroyed.count} of #{total} carts"
     end
