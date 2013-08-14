@@ -6,8 +6,6 @@
         %th
       %th= Order.model_name.human
       %th= OrderDetail.model_name.human
-      - unless backend?
-        %th= "#{OrderDetail.model_name.human} #"
       %th.nowrap= OrderDetail.human_attribute_name(@date_range_field)
       - if @extra_date_column
         %th.nowrap= OrderDetail.human_attribute_name(@extra_date_column_header || @extra_date_column)
