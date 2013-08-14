@@ -11,7 +11,7 @@
       = f.label :start_time
       = time_select24(f, :start)
     %li
-      = f.input :duration_mins, :collection => ScheduleRule.durations.map{|d| [(d == 1 ? "1 minute" : "#{d} minutes"), d]}
+      = f.input :duration_mins, :collection => ScheduleRule.durations.map{|d| [(d == 1 ? "1 minute" : "#{d} minutes"), d]}, :include_blank => false
   %ul.inline
     %li
       = f.label :end_time
