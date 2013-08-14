@@ -63,7 +63,8 @@ module Products::SchedulingSupport
   end
 
   def available?(time = Time.zone.now)
-    reservation_length = self.min_reserve_mins || 1
+    # zero and nil should default to 1 minute
+    reservation_length = [self.min_reserve_mins.to_i, 1].max
     reservation = Reservation.new :product => self,
         :reserve_start_at => time,
         :reserve_end_at   => time + reservation_length.minutes,

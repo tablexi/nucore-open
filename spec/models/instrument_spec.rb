@@ -632,6 +632,20 @@ describe Instrument do
       it { should_not be_available }
     end
 
+    context 'zero minimum reservation' do
+      before :each do
+        instrument.update_attributes(:min_reserve_mins => 0)
+      end
+      it { should be_available }
+    end
+
+    context 'with nil minimum reservation' do
+      before :each do
+        instrument.update_attributes(:min_reserve_mins => nil)
+      end
+      it { should be_available }
+    end
+
     context 'reservation only instrument' do
       context 'with a current reservation' do
         let!(:reservation) { FactoryGirl.create :purchased_reservation,
