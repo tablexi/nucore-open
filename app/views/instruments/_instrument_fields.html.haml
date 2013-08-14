@@ -27,7 +27,7 @@
     = rf.input :ip, :label => t('instruments.instrument_fields.relay.label.ip')
     = rf.input :port, :label => t('instruments.instrument_fields.relay.label.port')
     = rf.input :username, :label => t('instruments.instrument_fields.relay.label.user')
-    = rf.input :password, :label => t('instruments.instrument_fields.relay.label.pass')
+    = rf.input :password, :as => :string, :label => t('instruments.instrument_fields.relay.label.pass')
     = rf.input :auto_logout, :as => :boolean, :label => false, :inline_label => t('instruments.instrument_fields.relay.label.auto_logout')
 
 .well

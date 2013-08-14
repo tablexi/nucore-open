@@ -12,6 +12,6 @@
   .form-inputs
     = render :partial => 'admin/shared/product_details_fields', :locals => {:f => f}
     = render :partial => 'instrument_fields', :locals => {:f => f}
-  .form-actions
-    = f.button :submit, 'Save'
-    = link_to 'Cancel', manage_facility_instrument_path(current_facility, @instrument)
+
+  = f.button :submit, 'Save', :class => ['btn', 'btn-primary']
+  = link_to 'Cancel', manage_facility_instrument_path(current_facility, @instrument)
