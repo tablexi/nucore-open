@@ -341,9 +341,11 @@ class OrderDetail < ActiveRecord::Base
   def update_order_status!(updated_by, order_status, options_args = {}, &block)
     options = { :admin => false, :apply_cancel_fee => false }.merge(options_args)
 
-    cancel_reservation(updated_by, order_status, options[:admin], options[:apply_cancel_fee]) if reservation && order_status.root == OrderStatus.cancelled.first
-
-    change_status! order_status, &block
+    if reservation && order_status.root == OrderStatus.cancelled.first
+      cancel_reservation(updated_by, order_status, options[:admin], options[:apply_cancel_fee])
+    else
+      change_status! order_status, &block
+    end
   end
 
   def backdate_to_complete!(event_time = Time.zone.now)

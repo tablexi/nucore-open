@@ -247,7 +247,7 @@ describe OrderManagement::OrderDetailsController do
           end
 
           it 'cancels the order detail and reservation' do
-            expect(assigns(:order_detail).order_status.name).to eq('Cancelled')
+            expect(assigns(:order_detail).order_status.name).to eq('Complete')
             expect(assigns(:order_detail).reservation).to be_cancelled
           end
 
