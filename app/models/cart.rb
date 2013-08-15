@@ -31,12 +31,10 @@ class Cart
                            having("count(*) = 1").
                            select(:order_id)
 
-    # TODO Rails 3.1+ can use where(:id => subquery) and it will
-    # create the subquery correctly. 3.0 does converts to an array
-    # for the "in clause"
     orders = Order.joins(:order_details => :product).
                    where(:products => { :type => 'Instrument' }).
-                   where("orders.id in (#{subquery.to_sql})")
+                   where(:id => subquery)
+
     orders = orders.limit(limit) if limit
     orders
   end

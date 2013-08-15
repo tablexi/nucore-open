@@ -50,7 +50,7 @@ describe Cart do
       end
 
       it 'should destroy if the order has not been updated since the time' do
-        Cart.destroy_all_instrument_only_carts(Time.zone.now)
+        Cart.destroy_all_instrument_only_carts(1.minute.from_now)
         Order.all.should_not include @instrument_order
       end
     end
