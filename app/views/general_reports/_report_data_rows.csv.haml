@@ -36,9 +36,9 @@
             if reservation
                 # reservation info
                 row += [human_datetime(reservation.reserve_start_at), human_datetime(reservation.reserve_end_at),
-                time_difference(reservation.reserve_end_at, reservation.reserve_start_at),
+                reservation.duration_mins,
                 human_datetime(reservation.actual_start_at), human_datetime(reservation.actual_end_at),
-                time_difference(reservation.actual_end_at, reservation.actual_start_at)]
+                reservation.actual_duration_mins]
             else
                 # leave blanks for non-reservations
                 row += [nil, nil, nil, nil, nil, nil]
