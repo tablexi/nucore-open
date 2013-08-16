@@ -289,3 +289,9 @@ textarea.wide {
   width: 99%;
   height: 4em;
 }
+
+.compressed-inline {
+  label {
+    padding-left: 0;
+  }
+}

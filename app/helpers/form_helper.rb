@@ -8,6 +8,6 @@ module FormHelper
 
   def modelless_form_for(options = {}, &block)
     options.merge! :builder => ModelLessFormBuilder
-    simple_form_for('', options, &block)
+    simple_form_for(options[:object] || '', options, &block)
   end
 end
