@@ -10,7 +10,7 @@ class InstrumentReportsController < ReportsController
   def account
     render_report(1, 'Description') {|r| [ r.product.name, r.order_detail.account.to_s ]}
   end
-  
+
 
   def account_owner
     render_report(2, 'Name') do |r|
@@ -41,6 +41,7 @@ class InstrumentReportsController < ReportsController
 
     report_data.all.each do |res|
       key=yield res
+      @label_columns = key.length
       sums[key]=[0,0,0] unless sums.has_key?(key)
 
       # number of reservations

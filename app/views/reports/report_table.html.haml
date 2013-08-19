@@ -5,7 +5,7 @@
   %thead
     %tr
       - @headers.each_with_index do |heading, i|
-        - if i == 0
+        - if i < (@label_columns || 1)
           %th= heading
         - else
           %th.currency= heading
