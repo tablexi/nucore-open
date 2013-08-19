@@ -1,5 +1,5 @@
 = f.simple_fields_for reservation do |r|
-  
+
   .datetime-block
     - if reservation.can_edit?
       = r.input :reserve_start_date, :input_html => { :class => 'datepicker' }
@@ -11,9 +11,9 @@
     - else
       = r.label :reserve_start_date
       = reservation.reserve_to_s
-    
+
   .datetime-block
-    - if reservation.can_edit_actuals?
+    - if reservation.can_edit_actuals? && !reservation.cancelled?
       = r.input :actual_start_date, :input_html => { :class => 'datepicker' }
       .control-group
         .controls

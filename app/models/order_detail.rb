@@ -579,6 +579,7 @@ class OrderDetail < ActiveRecord::Base
     self.price_policy_id = pp.id
     self.actual_cost     = costs[:cost]
     self.actual_subsidy  = costs[:subsidy]
+    pp
   end
 
   def to_s
@@ -807,6 +808,8 @@ class OrderDetail < ActiveRecord::Base
     self.actual_cost = fee
     self.actual_subsidy = 0
     self.change_status!(fee > 0 ? OrderStatus.complete.first : order_status)
+    self.save! if self.changed? # If the cancel goes from complete => complete, change status doesn't save
+    true
   end
 
   def mark_dispute_resolved

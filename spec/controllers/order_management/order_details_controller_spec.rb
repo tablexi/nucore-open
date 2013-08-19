@@ -256,6 +256,33 @@ describe OrderManagement::OrderDetailsController do
           end
         end
 
+        context 'with a cancellation fee and was completed' do
+          before :each do
+            reservation.update_attributes(:reserve_start_at => 24.hours.ago,
+              :reserve_end_at => 23.hours.ago,
+              :actual_start_at => nil,
+              :actual_end_at => nil)
+            Timecop.travel(7.days.from_now) do
+              order_detail.change_status!(OrderStatus.find_by_name!('Complete'))
+            end
+            @params[:with_cancel_fee] = "1"
+            do_request
+          end
+
+          it 'cancels the order detail and reservation' do
+            expect(assigns(:order_detail).order_status.name).to eq('Complete')
+            expect(assigns(:order_detail).reservation).to be_cancelled
+          end
+
+          it 'assigns the cancellation fee' do
+            expect(assigns(:order_detail).actual_total).to eq(100)
+          end
+
+          it 'assigns a price policy' do
+            expect(assigns(:order_detail).price_policy).to be
+          end
+        end
+
         context 'without cancellation fee' do
           before :each do
             do_request
