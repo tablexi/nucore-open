@@ -105,14 +105,15 @@ class OrderDetailManagement
     .trigger('change')
 
   init_resolution_note: ->
-    original_button_string = $('input[type=submit]').val()
+    $modal_save_button = @$element.find('input[type=submit]')
+    original_button_string = $modal_save_button.val()
     $('#order_detail_dispute_resolved_reason').keyup ->
       if $(this).val().length > 0
         $('#order_detail_resolve_dispute').val('1')
-        $('input[type=submit]').val('Resolve Dispute')
+        $modal_save_button.val('Resolve Dispute')
       else
         $('#order_detail_resolve_dispute').val('0')
-        $('input[type=submit]').val(original_button_string)
+        $modal_save_button.val(original_button_string)
     .trigger('keyup')
 
 
