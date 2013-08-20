@@ -1,4 +1,4 @@
-= f.association :affiliate, :collection => Affiliate.all.sort, :input_html => { :class => 'affiliate' }, :include_blank => true, :required => true
+= f.association :affiliate, :collection => Affiliate.ordered_by_name, :input_html => { :class => 'affiliate' }, :include_blank => true, :required => true
 
 .affiliate_other
   = f.input :affiliate_other, :required => true, :label => t('facility_accounts.account_fields.label.affiliate')

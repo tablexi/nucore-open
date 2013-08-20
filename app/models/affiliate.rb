@@ -6,6 +6,10 @@ class Affiliate < ActiveRecord::Base
     find_or_create_by_name('Other')
   end
 
+  def self.ordered_by_name
+    order(:name)
+  end
+
   before_destroy :destroyable?
 
   def destroyable?
