@@ -3,13 +3,13 @@ require 'affiliate_account_helper'
 
 describe CreditCardAccount do
   include AffiliateAccountHelper
-  
+
   before(:each) do
     @user=FactoryGirl.create(:user)
 
     @owner={
       :user => @user,
-      :created_by => @user,
+      :created_by => @user.id,
       :user_role => 'Owner'
     }
 
@@ -19,24 +19,24 @@ describe CreditCardAccount do
       :expires_at => Time.zone.now + 1.year,
       :description => "account description",
       :name_on_card => 'Person',
-      :created_by => @user,
+      :created_by => @user.id,
       :account_users_attributes => [@owner]
     }
   end
-  
+
   it "should handle facilities" do
-    
+
     account1 = CreditCardAccount.create(@account_attrs)
     account1.should respond_to(:facility)
   end
-  
+
   it "should take a facility" do
     facility = FactoryGirl.create(:facility)
     @account_attrs[:facility] = facility
     account = CreditCardAccount.create(@account_attrs)
     account.facility.should == facility
   end
-  
+
   it "should be limited to a single facility" do
     CreditCardAccount.limited_to_single_facility?.should be_true
   end

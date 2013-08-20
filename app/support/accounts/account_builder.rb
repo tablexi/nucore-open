@@ -27,8 +27,7 @@ private
   end
 
   def update_affiliate_params
-    @class_params[:affiliate] = Affiliate.find_by_name(@class_params[:affiliate])
-    @class_params[:affiliate_other] = nil if @class_params[:affiliate] != Affiliate.OTHER
+    @class_params[:affiliate_other] = nil if @class_params[:affiliate_id] != Affiliate.OTHER.id.to_s
   end
 
   def new_class_params

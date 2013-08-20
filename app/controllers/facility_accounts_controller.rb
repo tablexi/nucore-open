@@ -71,8 +71,7 @@ class FacilityAccountsController < ApplicationController
     class_params = account_class_params
 
     if @account.is_a?(AffiliateAccount)
-      class_params[:affiliate]=Affiliate.find_by_name(class_params[:affiliate])
-      class_params[:affiliate_other]=nil if class_params[:affiliate] != Affiliate.OTHER
+      class_params[:affiliate_other] = nil if class_params[:affiliate_id] != Affiliate.OTHER.id.to_s
     end
 
     if @account.update_attributes(class_params)
