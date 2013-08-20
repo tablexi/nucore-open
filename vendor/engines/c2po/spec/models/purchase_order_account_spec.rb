@@ -9,7 +9,7 @@ describe PurchaseOrderAccount do
 
     @owner={
         :user => @user,
-        :created_by => @user,
+        :created_by => @user.id,
         :user_role => 'Owner'
     }
 
@@ -17,7 +17,7 @@ describe PurchaseOrderAccount do
         :account_number => '4111-1111-1111-1111',
         :description => "account description",
         :expires_at => Time.zone.now + 1.year,
-        :created_by => @user,
+        :created_by => @user.id,
         :account_users_attributes => [@owner],
     }
   end
@@ -27,14 +27,14 @@ describe PurchaseOrderAccount do
     account1 = PurchaseOrderAccount.create(@account_attrs)
     account1.should respond_to(:facility)
   end
-  
+
   it "should take a facility" do
     facility = FactoryGirl.create(:facility)
     @account_attrs[:facility] = facility
     account = PurchaseOrderAccount.create(@account_attrs)
     account.facility.should == facility
   end
-  
+
   it "should be limited to a single facility" do
     PurchaseOrderAccount.limited_to_single_facility?.should be_true
   end

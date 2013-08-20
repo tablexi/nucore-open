@@ -28,6 +28,7 @@ describe FacilityAccountsController do
         :id => @account.id,
         :account => FactoryGirl.attributes_for(:purchase_order_account)
       }
+      @params[:account][:affiliate_id] = @params[:account].delete(:affiliate).id
     end
 
 
@@ -38,28 +39,29 @@ describe FacilityAccountsController do
 
         owner={
           :user => user,
-          :created_by => user,
+          :created_by => user.id,
           :user_role => 'Owner'
         }
 
         account_attrs={
-          :created_by => user,
+          :created_by => user.id,
           :account_users_attributes => [owner],
         }
 
         @account=FactoryGirl.create(:purchase_order_account, account_attrs)
 
-        @params[:id]=@account.id
-        @params[:class_type]='PurchaseOrderAccount'
-        @params[:account]=@account.attributes
-        @params[:account][:affiliate]=Affiliate.OTHER.name
-        @params[:account]['affiliate_other']='Jesus Charisma'
+        @params[:id] = @account.id
+        @params[:class_type] = 'PurchaseOrderAccount'
+        @params[:account] = @account.attributes
+
+        @params[:account][:affiliate_id] = Affiliate.OTHER.id.to_s
+        @params[:account][:affiliate_other] ='Jesus Charisma'
       end
 
       it_should_allow :director, 'to change affiliate to other' do
         assigns(:account).should == @account
         assigns(:account).affiliate.should == Affiliate.OTHER
-        assigns(:account).affiliate_other.should == @params[:account]['affiliate_other']
+        assigns(:account).affiliate_other.should == @params[:account][:affiliate_other]
         should set_the_flash
         assert_redirected_to facility_account_url
       end
@@ -68,7 +70,7 @@ describe FacilityAccountsController do
 
         before :each do
           @affiliate=Affiliate.create!(:name => 'Rod Blagojevich')
-          @params[:account][:affiliate]=@affiliate.name
+          @params[:account][:affiliate_id] = @affiliate.id
         end
 
         it_should_allow :director do
@@ -92,7 +94,7 @@ describe FacilityAccountsController do
 
       @expiration_year        = Time.zone.now.year+1
       @acct_attrs             = FactoryGirl.attributes_for(:purchase_order_account)
-      @acct_attrs[:affiliate] = @acct_attrs[:affiliate].name
+      @acct_attrs[:affiliate_id] = @acct_attrs.delete(:affiliate).id.to_s
 
       @acct_attrs.delete :expires_at
 
@@ -117,7 +119,7 @@ describe FacilityAccountsController do
         assigns(:account).expires_at.should == Time.zone.parse("#{@expiration_year}-5-12").end_of_day
         assigns(:account).facility_id.should == @authable.id
         assigns(:account).should be_kind_of PurchaseOrderAccount
-        assigns(:account).affiliate.name.should == @acct_attrs[:affiliate]
+        assigns(:account).affiliate.should == Affiliate.find(@acct_attrs[:affiliate_id])
         assigns(:account).affiliate_other.should be_nil
         should set_the_flash
         assert_redirected_to user_accounts_url(@authable, @owner)
@@ -128,7 +130,7 @@ describe FacilityAccountsController do
       before :each do
         @params[:class_type]           = 'CreditCardAccount'
         @acct_attrs                    = FactoryGirl.attributes_for(:credit_card_account)
-        @acct_attrs[:affiliate]        = @acct_attrs[:affiliate].name
+        @acct_attrs[:affiliate_id]     = @acct_attrs.delete(:affiliate).id.to_s
         @acct_attrs[:expiration_month] = "5"
         @acct_attrs[:expiration_year]  = @expiration_year.to_s
         @params[:account]              = @acct_attrs
