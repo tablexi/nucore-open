@@ -38,12 +38,12 @@ describe FacilityAccountsController do
 
         owner={
           :user => user,
-          :created_by => user,
+          :created_by => user.id,
           :user_role => 'Owner'
         }
 
         account_attrs={
-          :created_by => user,
+          :created_by => user.id,
           :account_users_attributes => [owner],
         }
 

@@ -9,7 +9,7 @@ describe Facility do
       owner=FactoryGirl.create(:user)
       @owner_attrs=[{
         :user => owner,
-        :created_by => owner,
+        :created_by => owner.id,
         :user_role => 'Owner'
       }]
     end
