@@ -208,15 +208,14 @@ describe FacilityJournalsController do
         sign_in @admin
       end
 
-      context 'error on journal row creation' do
+      context 'order detail is already journaled' do
         before :each do
           @params[:order_detail_ids] = [@order_detail1.id]
-          OrderDetail.any_instance.stub(:journal_id).and_return 1
+          @order_detail1.update_attributes(:journal_id => 1)
         end
 
         it_behaves_like 'journal error', "is already journaled in journal"
       end
-
 
       context 'spans fiscal year' do
         before :each do
@@ -233,6 +232,22 @@ describe FacilityJournalsController do
         end
 
         it_behaves_like 'journal error', "Journal date may not be in the future"
+      end
+
+      context 'trying to put journal date before fulfillment date' do
+        before :each do
+          @order_detail1.update_attributes(:fulfilled_at => 5.days.ago)
+          @order_detail3.update_attributes(:fulfilled_at => 3.days.ago)
+          @params[:journal_date] = format_usa_date(4.days.ago)
+        end
+
+        it_behaves_like 'journal error', "Journal date may not be before the latest fulfillment date."
+
+        it 'does allow to be the same day' do
+          @params[:journal_date] = format_usa_date(3.day.ago)
+          do_request
+          expect(assigns(:journal)).to be_persisted
+        end
       end
     end
 

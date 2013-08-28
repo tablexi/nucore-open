@@ -95,6 +95,7 @@ class Journal < ActiveRecord::Base
   validate :journal_date_cannot_be_in_future
   validate :must_have_order_details, :on => :create, :if => :order_details_for_creation
   validate :must_not_span_fiscal_years, :on => :create, :if => :has_order_details_for_creation?
+  validate :journal_date_cannot_be_before_last_fulfillment, :on => :create, :if => :has_order_details_for_creation?
 
   before_validation :set_facility_id, :on => :create, :if => :has_order_details_for_creation?
   after_create :create_new_journal_rows, :if => :has_order_details_for_creation?
@@ -221,6 +222,11 @@ class Journal < ActiveRecord::Base
 
   def journal_date_cannot_be_in_future
     errors.add(:journal_date, :cannot_be_in_future) if journal_date > Time.zone.now.end_of_day
+  end
+
+  def journal_date_cannot_be_before_last_fulfillment
+    last_fulfilled = @order_details_for_creation.collect(&:fulfilled_at).max
+    errors.add(:journal_date, :cannot_be_before_last_fulfillment) if journal_date.end_of_day < last_fulfilled
   end
 
   def set_facility_id
