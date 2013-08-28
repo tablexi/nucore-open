@@ -188,6 +188,49 @@ describe FacilityJournalsController do
       flash[:error].should_not be_nil
     end
 
+    context 'error on journal row creation' do
+      before :each do
+        create_order_details
+        @params[:order_detail_ids] = [@order_detail1.id]
+        sign_in @admin
+        OrderDetail.any_instance.stub(:journal_id).and_return 1
+        do_request
+      end
+
+      it 'should not create a journal' do
+        expect(Journal.count).to eq(1)
+      end
+
+      it 'should set an error' do
+        expect(flash[:error]).to be_present
+      end
+    end
+
+    context 'validations' do
+      before :each do
+        create_order_details
+        @params[:order_detail_ids] = [@order_detail1.id, @order_detail3.id]
+        sign_in @admin
+      end
+
+      context 'spans fiscal year' do
+        before :each do
+          @order_detail1.update_attributes(:fulfilled_at => SettingsHelper::fiscal_year_end - 1.day)
+          @order_detail3.update_attributes(:fulfilled_at => SettingsHelper::fiscal_year_end + 1.day)
+          do_request
+        end
+
+        it 'should not create a journal' do
+          expect(assigns(:journal)).to be_new_record
+        end
+
+        it 'has an error' do
+          expect(assigns(:journal).errors[:fiscal_year_span]).to be
+        end
+      end
+
+    end
+
     context "searching" do
       before :each do
         @user = @admin
@@ -195,6 +238,24 @@ describe FacilityJournalsController do
       it_should_support_searching
     end
 
+    context 'with a mixed facility journal' do
+      before :each do
+        create_order_details
+
+        @facility2 = FactoryGirl.create(:facility)
+        @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @admin), :facility_id => @facility2.id)
+        @facility2_order_detail = place_and_complete_item_order(@user, @facility2, @account2, true)
+
+        @params[:facility_id] = 'all'
+        @params[:order_detail_ids] = [@order_detail1.id, @facility2_order_detail.id]
+        sign_in @admin
+        do_request
+      end
+
+      it 'should set the facility id to nil' do
+        expect(assigns(:journal).facility_id).to be_nil
+      end
+    end
   end
 
 

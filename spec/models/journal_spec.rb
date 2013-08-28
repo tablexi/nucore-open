@@ -176,16 +176,16 @@ describe Journal do
       # end
     end
     it 'should not span fiscal years with everything in the same year' do
-      Journal.order_details_span_fiscal_years?(@order_details[5..16]).should be_false
+      @journal.order_details_span_fiscal_years?(@order_details[5..16]).should be_false
     end
     it 'should span fiscal years when it goes over the beginning' do
-      Journal.order_details_span_fiscal_years?([@order_details[6], @order_details[5], @order_details[4]]).should be_true
+      @journal.order_details_span_fiscal_years?([@order_details[6], @order_details[5], @order_details[4]]).should be_true
     end
     it 'should span fiscal years when it goes over the end' do
-      Journal.order_details_span_fiscal_years?(@order_details[16..17]).should be_true
+      @journal.order_details_span_fiscal_years?(@order_details[16..17]).should be_true
     end
     it 'should return false with just one order detail' do
-      Journal.order_details_span_fiscal_years?([@order_details[3]])
+      @journal.order_details_span_fiscal_years?([@order_details[3]])
     end
   end
 end
