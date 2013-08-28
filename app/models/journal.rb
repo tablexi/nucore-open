@@ -92,6 +92,7 @@ class Journal < ActiveRecord::Base
   validates_presence_of   :reference, :updated_by, :on => :update
   validates_presence_of   :created_by
   validates_presence_of   :journal_date
+  validate :journal_date_cannot_be_in_future
   validate :must_have_order_details, :on => :create, :if => :order_details_for_creation
   validate :must_not_span_fiscal_years, :on => :create, :if => :has_order_details_for_creation?
 
@@ -218,6 +219,10 @@ class Journal < ActiveRecord::Base
     errors.add(:base, :no_orders) if @order_details_for_creation.none?
   end
 
+  def journal_date_cannot_be_in_future
+    errors.add(:journal_date, :cannot_be_in_future) if journal_date > Time.zone.now.end_of_day
+  end
+
   def set_facility_id
     # detect if this should be a multi-facility journal, set facility_id appropriately
     if @order_details_for_creation.collect{|od|od.order.facility_id}.uniq.size > 1
@@ -231,6 +236,7 @@ class Journal < ActiveRecord::Base
     row_errors = create_journal_rows!(@order_details_for_creation)
     if row_errors.any?
       row_errors.each { |e| errors.add(:base, e) }
+      self.destroy # so it's treated as a new record
       raise ActiveRecord::RecordInvalid.new(self)
     end
   end

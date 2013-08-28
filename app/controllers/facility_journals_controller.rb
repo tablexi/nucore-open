@@ -113,7 +113,7 @@ class FacilityJournalsController < ApplicationController
       flash[:notice] = I18n.t('controllers.facility_journals.create.notice')
       redirect_to facility_journals_path(current_facility)
     else
-      flash[:error] = @journal.errors.values.join("<br/>").html_safe
+      flash[:error] = @journal.errors.full_messages.join("<br/>").html_safe
       remove_ugly_params
       redirect_to new_facility_journal_path
     end

@@ -188,47 +188,52 @@ describe FacilityJournalsController do
       flash[:error].should_not be_nil
     end
 
-    context 'error on journal row creation' do
-      before :each do
-        create_order_details
-        @params[:order_detail_ids] = [@order_detail1.id]
-        sign_in @admin
-        OrderDetail.any_instance.stub(:journal_id).and_return 1
-        do_request
-      end
-
-      it 'should not create a journal' do
-        expect(Journal.count).to eq(1)
-      end
-
-      it 'should set an error' do
-        expect(flash[:error]).to be_present
-      end
-    end
-
     context 'validations' do
+      shared_examples_for 'journal error' do |error_message|
+        before :each do
+          do_request
+        end
+        it 'should not create a journal' do
+          expect(assigns(:journal)).to be_new_record
+        end
+
+        it 'has an error' do
+          expect(assigns(:journal).errors.full_messages.join).to include error_message
+        end
+      end
+
       before :each do
         create_order_details
         @params[:order_detail_ids] = [@order_detail1.id, @order_detail3.id]
         sign_in @admin
       end
 
+      context 'error on journal row creation' do
+        before :each do
+          @params[:order_detail_ids] = [@order_detail1.id]
+          OrderDetail.any_instance.stub(:journal_id).and_return 1
+        end
+
+        it_behaves_like 'journal error', "is already journaled in journal"
+      end
+
+
       context 'spans fiscal year' do
         before :each do
           @order_detail1.update_attributes(:fulfilled_at => SettingsHelper::fiscal_year_end - 1.day)
           @order_detail3.update_attributes(:fulfilled_at => SettingsHelper::fiscal_year_end + 1.day)
-          do_request
         end
 
-        it 'should not create a journal' do
-          expect(assigns(:journal)).to be_new_record
-        end
-
-        it 'has an error' do
-          expect(assigns(:journal).errors[:fiscal_year_span]).to be
-        end
+        it_behaves_like 'journal error', "Journals may not span multiple fiscal years."
       end
 
+      context 'trying to journal in the future' do
+        before :each do
+          @params[:journal_date] = format_usa_date(1.day.from_now)
+        end
+
+        it_behaves_like 'journal error', "Journal date may not be in the future"
+      end
     end
 
     context "searching" do

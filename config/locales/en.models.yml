@@ -88,6 +88,7 @@ en:
         journal:
           fiscal_year_span: "Journals may not span multiple fiscal years. Please select only orders in the same fiscal year."
           no_orders: "No orders were selected to journal"
+          cannot_be_in_future: may not be in the future.
 
     # Model Names
     models:
