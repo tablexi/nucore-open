@@ -25,7 +25,7 @@
                 product.url_name, product.type.underscore.humanize, product.name, od.quantity, bundle_desc,
 
                 # what account this order detail is for
-                account.type.underscore.humanize, account.affiliate.try(:name), account.account_number, account.description, human_datetime(account.expires_at),
+                account.type.underscore.humanize, account.affiliate_to_s, account.account_number, account.description, human_datetime(account.expires_at),
                 owner.username, owner.first_name, owner.last_name, owner.email,
 
                 # pricing info

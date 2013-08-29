@@ -238,8 +238,9 @@ class Account < ActiveRecord::Base
   end
 
   def affiliate_to_s
+    return unless affiliate
     affiliate_name = affiliate.name
-    affiliate_name += " (#{affiliate_other})" if affiliate == Affiliate.OTHER
+    affiliate_name += ": #{affiliate_other}" if affiliate == Affiliate.OTHER
     affiliate_name
   end
 
