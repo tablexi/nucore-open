@@ -188,6 +188,69 @@ describe FacilityJournalsController do
       flash[:error].should_not be_nil
     end
 
+    context 'validations' do
+      shared_examples_for 'journal error' do |error_message|
+        before :each do
+          do_request
+        end
+        it 'should not create a journal' do
+          expect(assigns(:journal)).to be_new_record
+        end
+
+        it 'has an error' do
+          expect(assigns(:journal).errors.full_messages.join).to include error_message
+        end
+      end
+
+      before :each do
+        create_order_details
+        @params[:order_detail_ids] = [@order_detail1.id, @order_detail3.id]
+        sign_in @admin
+      end
+
+      context 'order detail is already journaled' do
+        before :each do
+          @params[:order_detail_ids] = [@order_detail1.id]
+          @order_detail1.update_attributes(:journal_id => 1)
+        end
+
+        it_behaves_like 'journal error', "is already journaled in journal"
+      end
+
+      context 'spans fiscal year' do
+        before :each do
+          @order_detail1.update_attributes(:fulfilled_at => SettingsHelper::fiscal_year_end - 1.day)
+          @order_detail3.update_attributes(:fulfilled_at => SettingsHelper::fiscal_year_end + 1.day)
+        end
+
+        it_behaves_like 'journal error', "Journals may not span multiple fiscal years."
+      end
+
+      context 'trying to journal in the future' do
+        before :each do
+          @params[:journal_date] = format_usa_date(1.day.from_now)
+        end
+
+        it_behaves_like 'journal error', "Journal date may not be in the future"
+      end
+
+      context 'trying to put journal date before fulfillment date' do
+        before :each do
+          @order_detail1.update_attributes(:fulfilled_at => 5.days.ago)
+          @order_detail3.update_attributes(:fulfilled_at => 3.days.ago)
+          @params[:journal_date] = format_usa_date(4.days.ago)
+        end
+
+        it_behaves_like 'journal error', "Journal date may not be before the latest fulfillment date."
+
+        it 'does allow to be the same day' do
+          @params[:journal_date] = format_usa_date(3.day.ago)
+          do_request
+          expect(assigns(:journal)).to be_persisted
+        end
+      end
+    end
+
     context "searching" do
       before :each do
         @user = @admin
@@ -195,6 +258,24 @@ describe FacilityJournalsController do
       it_should_support_searching
     end
 
+    context 'with a mixed facility journal' do
+      before :each do
+        create_order_details
+
+        @facility2 = FactoryGirl.create(:facility)
+        @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @admin), :facility_id => @facility2.id)
+        @facility2_order_detail = place_and_complete_item_order(@user, @facility2, @account2, true)
+
+        @params[:facility_id] = 'all'
+        @params[:order_detail_ids] = [@order_detail1.id, @facility2_order_detail.id]
+        sign_in @admin
+        do_request
+      end
+
+      it 'should set the facility id to nil' do
+        expect(assigns(:journal).facility_id).to be_nil
+      end
+    end
   end
 
 

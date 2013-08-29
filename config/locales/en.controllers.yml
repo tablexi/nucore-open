@@ -39,10 +39,7 @@ en:
           rescue: "An error was encountered while trying to close the journal"
       create:
         notice: "The journal file has been created successfully"
-        errors:
-          rescue: "An error was encountered while trying to create the journal. %{message}"
-          no_orders: "No orders were selected to journal"
-          fiscal_span: "Journals may not span multiple fiscal years. Please select only orders in the same fiscal year."
+
 
     facility_orders:
       update:
