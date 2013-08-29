@@ -7,27 +7,4 @@
 - if @order_details.empty?
   %p.notice There are no "Disputed" orders.
 - else
-  %p Please review the following disputes.
-  %table.table.table-striped.table-hover
-    %thead
-      %tr
-        %th.small Order #
-        %th.med Order On
-        %th.med Ordered By
-        %th.med Ordered For
-        %th.med Product
-        %th.med Disputed On
-        %th.auto Dispute Reason
-    %tbody
-      - @order_details.each do |od|
-        - o = od.order
-        - product_name = order_detail_description(od)
-        %tr
-          %td= link_to od, facility_order_path(current_facility, o)
-          %td=h human_datetime(o.ordered_at)
-          %td=h User.find(o.created_by).full_name
-          %td=h User.find(o.user_id).full_name
-          %td= product_name
-          %td=h human_datetime(od.dispute_at)
-          %td=h od.dispute_reason
-  = will_paginate(@order_details)
+  = render :partial => 'facility_orders/disputed_table'
