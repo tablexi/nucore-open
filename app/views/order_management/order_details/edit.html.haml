@@ -6,12 +6,12 @@
     :url => manage_facility_order_order_detail_path(current_facility, @order, @order_detail),
     :remote => request.xhr?,
     :html => { :class => ['manage_order_detail', edit_disabled? ? 'disabled' : ''] } do |f|
-  .modal-body.container
+  .modal-body
     .row
       .span10
         = render :partial => 'warnings'
 
-    .container.banner-list
+    .banner-list
       .row
         = banner_date_label @order_detail.reservation, :canceled_at
         = banner_label @order_detail.reservation, :canceled_by_user
