@@ -28,6 +28,7 @@ en:
     new_user:
       success: You just created a new user
       new_payment_source: Create a new payment source for this user
+      add_to_payment_source: Add this user to a payment source
       order_for: Order on behalf of this user
 
   activerecord:
