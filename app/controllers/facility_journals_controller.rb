@@ -91,15 +91,15 @@ class FacilityJournalsController < ApplicationController
 
   # POST /facilities/journals
   def create_with_search
-    @journal = Journal.new
-    @journal.created_by = session_user.id
-    @journal.journal_date = parse_usa_date(params[:journal_date])
-
     if params[:order_detail_ids].present?
-      @update_order_details = @order_details.includes(:order).where(:id => params[:order_detail_ids])
+      order_details = @order_details.includes(:order).where(:id => params[:order_detail_ids])
     else
-      @update_order_details = []
+      order_details = []
     end
+
+    @journal = Journal.new(:created_by => session_user.id,
+                           :journal_date => parse_usa_date(params[:journal_date]),
+                           :order_details_for_creation => order_details)
 
     # The referer can have a crazy long query string depending on how many checkboxes
     # are selected. We've seen Apache not like stuff like that and give a "malformed
@@ -108,47 +108,15 @@ class FacilityJournalsController < ApplicationController
     referer=response.headers['Referer']
     response.headers['Referer']=referer[0..referrer.index('?')] if referer.present?
 
-    @update_order_details = OrderDetail.find(params[:order_detail_ids] || [])
-    if @update_order_details.empty?
-      @journal.errors.add(:base, I18n.t('controllers.facility_journals.create.errors.no_orders'))
+    if @journal.save
+      @journal.create_spreadsheet if Settings.financial.journal_format.xls
+      flash[:notice] = I18n.t('controllers.facility_journals.create.notice')
+      redirect_to facility_journals_path(current_facility)
     else
-      if Journal.order_details_span_fiscal_years?(@update_order_details)
-        @journal.errors.add(:base, I18n.t('controllers.facility_journals.create.errors.fiscal_span'))
-      else
-        # detect if this should be a multi-facility journal, set facility_id appropriately
-        if @update_order_details.collect{|od|od.order.facility_id}.uniq.size > 1
-          @journal.facility_id = nil
-        else
-          @journal.facility_id = @update_order_details.first.order.facility_id
-        end
-        Journal.transaction do
-          begin
-            @journal.save!
-
-            # try to create the journal rows.
-            # TK: if any journal_row creation/validation errors occur,
-            # create_journal_rows blindly raises an exception
-            row_errors = @journal.create_journal_rows!(@update_order_details)
-            raise "<br/>"+row_errors.join('<br/>') if row_errors.present?
-
-            # create the spreadsheet
-            @journal.create_spreadsheet if Settings.financial.journal_format.xls
-            flash[:notice] = I18n.t('controllers.facility_journals.create.notice')
-            redirect_to facility_journals_path(current_facility) and return
-          rescue Exception => e
-            @journal.errors.add(:base, I18n.t('controllers.facility_journals.create.errors.rescue', :message => e.message))
-            Rails.logger.error(e.backtrace.join("\n"))
-            raise ActiveRecord::Rollback
-          end
-        end
-      end
-    end
-    if @journal.errors.any?
-      flash[:error] = @journal.errors.values.join("<br/>").html_safe
+      flash[:error] = @journal.errors.full_messages.join("<br/>").html_safe
       remove_ugly_params
-      redirect_to new_facility_journal_path and return
+      redirect_to new_facility_journal_path
     end
-    @layout = "two_column_head"
   end
 
   # GET /facilities/journals/:id
