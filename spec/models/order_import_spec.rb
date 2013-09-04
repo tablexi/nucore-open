@@ -31,7 +31,7 @@ describe OrderImport do
     # clear Timecop's altering of time if active
     Timecop.return
 
-    before_import = 10.days.ago
+    before_import = SettingsHelper::fiscal_year_beginning
     Timecop.travel(before_import) do
       @authable         = FactoryGirl.create(:facility)
       @facility_account = @authable.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
