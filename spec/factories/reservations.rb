@@ -20,5 +20,15 @@ FactoryGirl.define do
     after(:create) do |reservation|
       reservation.order.purchase!
     end
+
+    factory :completed_reservation do
+      reserve_start_at { Time.zone.parse("#{Date.today.to_s} 10:00:00") - 1.day }
+      reserve_end_at { Time.zone.parse("#{Date.today.to_s} 10:00:00") - 23.hours }
+      reserved_by_admin true
+
+      after(:create) do |reservation|
+        reservation.order_detail.backdate_to_complete! reservation.reserve_end_at
+      end
+    end
   end
 end

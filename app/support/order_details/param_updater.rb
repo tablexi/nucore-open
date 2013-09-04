@@ -50,8 +50,8 @@ class OrderDetails::ParamUpdater
   end
 
   def assign_policy_and_prices
-    @order_detail.assign_price_policy if @order_detail.complete?
-    @order_detail.assign_estimated_price unless @order_detail.price_policy && @order_detail.actual_cost
+    @order_detail.assign_price_policy(@order_detail.fulfilled_at) if @order_detail.complete?
+    @order_detail.assign_estimated_price(nil, @order_detail.fulfilled_at || Time.zone.now) unless @order_detail.price_policy && @order_detail.actual_cost
   end
 
   def change_order_status(order_status_id, apply_cancel_fee)
