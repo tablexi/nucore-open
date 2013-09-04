@@ -298,7 +298,7 @@ class OrderDetail < ActiveRecord::Base
   aasm_state            :inprocess
   aasm_state            :complete, :enter => :make_complete
   aasm_state            :reconciled
-  aasm_state            :cancelled
+  aasm_state            :cancelled, :enter => :clear_costs
 
   aasm_event :to_new do
     transitions :to => :new, :from => :inprocess
@@ -562,9 +562,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def assign_price_policy(time = Time.zone.now)
-    self.actual_cost       = nil
-    self.actual_subsidy    = nil
-    self.price_policy_id   = nil
+    clear_costs
 
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
@@ -819,6 +817,12 @@ class OrderDetail < ActiveRecord::Base
     else
       resolve_dispute = '0'
     end
+  end
+
+  def clear_costs
+    self.actual_cost     = nil
+    self.actual_subsidy  = nil
+    self.price_policy_id = nil
   end
 
   def reset_dispute

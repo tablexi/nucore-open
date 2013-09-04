@@ -299,6 +299,90 @@ describe OrderManagement::OrderDetailsController do
         end
       end
 
+      context 'across fiscal year/price policy expiration lines' do
+        let(:reservation) { FactoryGirl.create(:completed_reservation, :product => instrument) }
+        let(:order_detail) { reservation.order_detail }
+
+        before :each do
+          @action = :update
+          @method = :post
+          @params = { :facility_id => facility.url_name, :order_id => order_detail.order_id, :id => order_detail.id }
+        end
+
+        before :each do
+          order_detail.product.price_policies.first.update_attributes!(:start_date => order_detail.fulfilled_at - 1.hour, :expire_date => 1.hour.ago)
+        end
+
+        context 'changing account' do
+          let(:account2) { FactoryGirl.create(:setup_account, :owner => order_detail.user) }
+          before :each do
+            FactoryGirl.create(:account_price_group_member, :account => account2, :price_group => order_detail.account.price_groups.first)
+            @params[:order_detail] = {
+              :account_id => account2.id
+            }
+            do_request
+          end
+
+          it 'has no errors' do
+            expect(assigns(:order_detail).errors).to be_empty
+          end
+
+          it 'updates the account' do
+            expect(order_detail.reload.account).to eq(account2)
+          end
+
+          it 'still has a price policy' do
+            expect(order_detail.reload.price_policy).to be
+          end
+        end
+
+        context 'cancelling' do
+          before :each do
+            @params[:order_detail] = {
+              :order_status_id => OrderStatus.cancelled.first.id.to_s
+            }
+          end
+
+          context 'with a cancellation fee' do
+            before :each do
+              @params[:with_cancel_fee] = "1"
+              instrument.update_attributes!(:min_cancel_hours => 72)
+              instrument.price_policies.first.update_attributes(:cancellation_cost => 100, :reservation_rate => 0, :reservation_subsidy => 0)
+              do_request
+            end
+
+            it 'should cancel' do
+              expect(order_detail.reload).to be_complete
+            end
+
+            it 'should have a price policy' do
+              expect(order_detail.reload.price_policy).to be
+            end
+
+            it 'should be priced at the price policy' do
+              expect(order_detail.reload.actual_total).to eq(100)
+            end
+          end
+
+          context 'without a cancellation fee' do
+            before :each do
+              do_request
+            end
+
+            it 'should cancel' do
+              expect(order_detail.reload).to be_cancelled
+            end
+
+            it 'should no longer have a price policy' do
+              expect(order_detail.reload.price_policy).to be_nil
+            end
+
+            it 'should not have a price' do
+              expect(order_detail.reload.actual_total).to be_nil
+            end
+          end
+        end
+      end
     end
   end
 
