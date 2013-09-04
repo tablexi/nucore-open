@@ -820,9 +820,9 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def clear_costs
-    self.actual_cost    = nil
-    self.actual_subsidy = nil
-    self.price_policy   = nil
+    self.actual_cost     = nil
+    self.actual_subsidy  = nil
+    self.price_policy_id = nil
   end
 
   def reset_dispute
