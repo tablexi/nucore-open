@@ -560,6 +560,22 @@ describe OrderManagement::OrderDetailsController do
           end
         end
 
+        context 'with a price policy that expired, but was in effect when the order was fulfilled' do
+          before :each do
+            instrument.price_policies.update_all(:start_date => 3.days.ago, :expire_date => 1.day.ago)
+            order_detail.update_attributes(:fulfilled_at => 2.days.ago)
+            order_detail.assign_price_policy
+            order_detail.save!
+            expect(order_detail.price_policy).to be_blank
+            do_request
+          end
+
+          it 'returns an actual price' do
+            expect(json_response['actual_total']).to be_present
+            expect(json_response['price_group']).to be_present
+          end
+        end
+
         context 'without a valid price policy' do
           before :each do
             instrument.price_policies.delete_all

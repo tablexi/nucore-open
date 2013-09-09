@@ -8,7 +8,7 @@ class OrderDetails::PriceChecker
   def prices_from_params(params)
     updater = OrderDetails::ParamUpdater.new(@order_detail)
     updater.assign_attributes(params)
-    @order_detail.assign_price_policy
+    @order_detail.assign_price_policy(@order_detail.fulfilled_at || Time.zone.now)
 
     fields = [:estimated_cost, :estimated_subsidy, :estimated_total,
               :actual_cost,    :actual_subsidy,    :actual_total]
