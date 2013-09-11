@@ -6,66 +6,67 @@ require 'csv_helper'
 
 CSV_HEADERS = ["Netid / Email", "Chart String" , "Product Name" , "Quantity" , "Order Date" , "Fulfillment Date"]
 
-DEFAULT_ORDER_DATE = 4.days.ago.to_date
-DEFAULT_FULLFILLED_DATE = 3.days.ago.to_date
-
 def errors_for_import_with_row(opts={})
   row = CSVHelper::CSV::Row.new(CSV_HEADERS, [
     opts[:username]           || @guest.username,
     opts[:account_number]     || "111-2222222-33333333-01",
     opts[:product_name]       || "Example Item",
     opts[:quantity]           || 1,
-    opts[:order_date]         || DEFAULT_ORDER_DATE.strftime("%m/%d/%Y"),
-    opts[:fulfillment_date]  || DEFAULT_FULLFILLED_DATE.strftime("%m/%d/%Y")
+    opts[:order_date]         || default_order_date.strftime("%m/%d/%Y"),
+    opts[:fulfillment_date]   || default_fulfilled_date.strftime("%m/%d/%Y")
   ])
 
   errs = @order_import.errors_for(row)
 end
 
 describe OrderImport do
+  let(:default_order_date) { 4.days.ago.to_date }
+  let(:default_fulfilled_date) { 3.days.ago.to_date }
+  let(:fiscal_year_beginning) { SettingsHelper::fiscal_year_beginning }
+
   before(:all) do
     create_users
   end
 
   before :each do
-    # clear Timecop's altering of time if active
-    Timecop.return
+    Timecop.freeze(fiscal_year_beginning + 5.days)
 
-    before_import = SettingsHelper::fiscal_year_beginning
-    Timecop.travel(before_import) do
-      @authable         = FactoryGirl.create(:facility)
-      @facility_account = @authable.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
+    @authable         = FactoryGirl.create(:facility)
+    @facility_account = @authable.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
 
-      grant_role(@director, @authable)
-      @item             = @authable.items.create!(FactoryGirl.attributes_for(:item,
-        :facility_account_id => @facility_account.id,
-        :name => "Example Item"
-      ))
-      @service          = @authable.services.create!(FactoryGirl.attributes_for(:service,
-        :facility_account_id => @facility_account.id,
-        :name => "Example Service"
-      ))
+    grant_role(@director, @authable)
+    @item             = @authable.items.create!(FactoryGirl.attributes_for(:item,
+      :facility_account_id => @facility_account.id,
+      :name => "Example Item"
+    ))
+    @service          = @authable.services.create!(FactoryGirl.attributes_for(:service,
+      :facility_account_id => @facility_account.id,
+      :name => "Example Service"
+    ))
 
-      # price stuff
-      @price_group      = @authable.price_groups.create!(FactoryGirl.attributes_for(:price_group))
-      @pg_member        = FactoryGirl.create(:user_price_group_member, :user => @guest, :price_group => @price_group)
-      @item_pp=@item.item_price_policies.create!(FactoryGirl.attributes_for(:item_price_policy,
-        :price_group_id => @price_group.id
-      ))
-      @service_pp=@service.service_price_policies.create!(FactoryGirl.attributes_for(:service_price_policy,
-        :price_group_id => @price_group.id
-      ))
+    # price stuff
+    @price_group      = @authable.price_groups.create!(FactoryGirl.attributes_for(:price_group))
+    @pg_member        = FactoryGirl.create(:user_price_group_member, :user => @guest, :price_group => @price_group)
+    @item_pp=@item.item_price_policies.create!(FactoryGirl.attributes_for(:item_price_policy,
+      :price_group_id => @price_group.id,
+      :start_date => fiscal_year_beginning
 
-      @guest2 = FactoryGirl.create :user, :username => 'guest2'
-      @pg_member        = FactoryGirl.create(:user_price_group_member, :user => @guest2, :price_group => @price_group)
-      @account          = FactoryGirl.create(:nufs_account,
-        :description => "dummy account",
-        :account_number => '111-2222222-33333333-01',
-        :account_users_attributes =>
-          (account_users_attributes_hash(:user => @guest) +
-           account_users_attributes_hash(:user => @guest2, :created_by => @guest, :user_role => AccountUser::ACCOUNT_PURCHASER))
-      )
-    end
+    ))
+    @service_pp=@service.service_price_policies.create!(FactoryGirl.attributes_for(:service_price_policy,
+      :price_group_id => @price_group.id,
+      :start_date => fiscal_year_beginning
+    ))
+
+    @guest2 = FactoryGirl.create :user, :username => 'guest2'
+    @pg_member        = FactoryGirl.create(:user_price_group_member, :user => @guest2, :price_group => @price_group)
+    @account          = FactoryGirl.create(:nufs_account,
+      :description => "dummy account",
+      :account_number => '111-2222222-33333333-01',
+      :account_users_attributes =>
+        (account_users_attributes_hash(:user => @guest) +
+         account_users_attributes_hash(:user => @guest2, :created_by => @guest, :user_role => AccountUser::ACCOUNT_PURCHASER))
+    )
+
 
     stored_file = StoredFile.create!(
       :file => StringIO.new("c,s,v"),
@@ -79,6 +80,10 @@ describe OrderImport do
       :upload_file => stored_file,
       :facility => @authable
     )
+  end
+
+  after :each do
+    Timecop.return
   end
 
 
@@ -140,7 +145,7 @@ describe OrderImport do
       end
 
       it "should have ordered_at set appropriately" do
-        @created_order.ordered_at.to_date.should == DEFAULT_ORDER_DATE
+        @created_order.ordered_at.to_date.should == default_order_date
       end
 
       it "should have created_by_user set to creator of import" do
@@ -182,7 +187,7 @@ describe OrderImport do
 
         it "should have right fulfilled_at" do
           @created_order.order_details.each do |od|
-            od.fulfilled_at.to_date.should == DEFAULT_FULLFILLED_DATE
+            od.fulfilled_at.to_date.should == default_fulfilled_date
           end
         end
       end
@@ -266,8 +271,8 @@ def generate_import_file(*args)
         opts[:account_number]     || "111-2222222-33333333-01",
         opts[:product_name]       || "Example Item",
         opts[:quantity]           || 1,
-        opts[:order_date]         || DEFAULT_ORDER_DATE.strftime("%m/%d/%Y"),
-        opts[:fullfillment_date]  || DEFAULT_FULLFILLED_DATE.strftime("%m/%d/%Y")
+        opts[:order_date]         || default_order_date.strftime("%m/%d/%Y"),
+        opts[:fullfillment_date]  || default_fulfilled_date.strftime("%m/%d/%Y")
       ])
       csv << row
     end
@@ -285,13 +290,13 @@ end
 
       it "should send notifications (save clean orders mode)" do
         import_file = generate_import_file(
-          {:order_date => DEFAULT_ORDER_DATE}, # valid rows
-          {:order_date => DEFAULT_ORDER_DATE},
+          {:order_date => default_order_date}, # valid rows
+          {:order_date => default_order_date},
 
 
           # diff order date (so will be diff order)
           {
-            :order_date => DEFAULT_ORDER_DATE + 1.day,
+            :order_date => default_order_date + 1.day,
             :product_name => "Invalid Item Name"
           }
         )
