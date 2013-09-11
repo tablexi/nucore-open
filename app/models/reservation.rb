@@ -126,14 +126,18 @@ class Reservation < ActiveRecord::Base
     self.actual_end_at   ||= self.reserve_end_at
   end
 
-  def save_as_user!(user)
+  def save_as_user(user)
     if (user.operator_of?(product.facility))
       @reserved_by_admin = true
-      self.save!
+      self.save
     else
       @reserved_by_admin = false
-      self.save_extended_validations!
+      self.save_extended_validations
     end
+  end
+
+  def save_as_user!(user)
+    raise ActiveRecord::RecordInvalid.new(self) unless save_as_user(user)
   end
 
   def admin?

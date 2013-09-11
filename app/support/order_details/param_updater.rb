@@ -29,11 +29,11 @@ class OrderDetails::ParamUpdater
     assign_attributes(params)
 
     @order_detail.transaction do
-      @order_detail.reservation.save if @order_detail.reservation
+      @order_detail.reservation.save_as_user(@editing_user) if @order_detail.reservation
       if order_status_id && order_status_id.to_i != @order_detail.order_status_id
         change_order_status(order_status_id, @options[:cancel_fee]) || raise(ActiveRecord::Rollback)
       else
-        @order_detail.save || raise(ActiveRecord::Rollback)
+        @order_detail.save_as_user(@editing_user) || raise(ActiveRecord::Rollback)
       end
     end
 
