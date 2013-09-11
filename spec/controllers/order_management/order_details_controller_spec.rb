@@ -229,6 +229,25 @@ describe OrderManagement::OrderDetailsController do
           end
         end
 
+        context 'and it is a restricted instrument' do
+          before :each do
+            instrument.update_attributes(:requires_approval => true, :min_reserve_mins => 10)
+            @params[:order_detail] = {
+              :reservation => {
+                :reserve_start_at => reservation.reserve_start_at,
+                :duration_mins => 30
+              }
+            }
+          end
+
+          it 'should allow editing' do
+            do_request
+            expect(assigns(:order_detail)).to_not be_changed
+            expect(assigns(:order_detail).reservation).to_not be_changed
+            expect(flash[:error]).to be_blank
+          end
+        end
+
       end
 
       describe 'cancelling an order' do

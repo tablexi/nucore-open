@@ -365,9 +365,13 @@ class OrderDetail < ActiveRecord::Base
     change_status! product.initial_order_status
   end
 
-  def save_as_user!(user)
+  def save_as_user(user)
     @being_purchased_by_admin = user.operator_of?(product.facility)
-    save!
+    save
+  end
+
+  def save_as_user!(user)
+    raise ActiveRecord::RecordInvalid.new(self) unless save_as_user(user)
   end
 
   def cancelable?
