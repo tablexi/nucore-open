@@ -55,7 +55,7 @@
       .span5
         = render :partial => 'assigned_user', :locals => { :f => f }
 
-    - if @order_detail.disputed?
+    - if @order_detail.dispute_at
       .row
         = render :partial => 'dispute', :locals => { :f => f }
 
