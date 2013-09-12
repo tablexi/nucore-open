@@ -52,8 +52,11 @@
         = f.input :note, :input_html => { :class => 'note' }
         = render :partial => 'reconcile_note', :locals => { :f => f }
 
-      .span5
+      .span4
         = render :partial => 'assigned_user', :locals => { :f => f }
+      .span1= render :partial => 'facility_orders/order_file_icon', :locals => { :od => @order_detail }
+
+
 
     - if @order_detail.dispute_at
       .row

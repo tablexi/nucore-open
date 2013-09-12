@@ -37,13 +37,8 @@
         - if !current_facility || all_facility?
 
           %td= order_detail.order.facility
-        %td
-          = order_detail_description(order_detail)
-          %br
-          %em= order_detail.reservation
-          - if order_detail.note.present?
-            %br
-            %em= "Note: #{order_detail.note}"
+        = render :partial => 'shared/order_detail_cell', :locals => { :od => order_detail }
+
         %td= order_detail.order.user.full_name
         -# %td= order_detail.order.created_by_user.full_name
         - unless @account

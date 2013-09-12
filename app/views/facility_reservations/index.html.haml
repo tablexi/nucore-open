@@ -50,7 +50,7 @@
                 %span.very_dense
                   = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(od.order, od, od.reservation, :switch => 'on') if od.reservation.can_switch_instrument_on?
                   = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(od.order, od, od.reservation, :switch => 'off'), :class => end_reservation_class(od.reservation) if od.reservation.can_switch_instrument_off?
-            = render :partial => 'shared/order_detail_cell', :locals => { :od => od }
+            = render :partial => 'shared/order_detail_cell', :locals => { :od => od, :show_reservation => false }
             %td=h od.assigned_user.nil? ? '' : od.assigned_user.full_name
             %td
               = od.order_status.name

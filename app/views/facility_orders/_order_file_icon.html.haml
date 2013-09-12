@@ -1,0 +1,6 @@
+- if od.survey_completed?
+  .inline-icons= link_to 'View Order Form', od.external_service_receiver.response_data, :target => '_blank'
+- od.stored_files.template_result.each do |stored_file|
+  .inline-icons
+    = link_to stored_file.file.url do
+      %i.icon-file-text{:data => { :toggle => 'tooltip' }, :title => t('order_details.show.link.view.order_file') }

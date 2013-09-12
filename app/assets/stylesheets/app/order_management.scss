@@ -89,6 +89,11 @@
       }
     }
   }
+
+  .inline-icons {
+    font-size: 200%;
+    margin-top: 0.75em;
+  }
 }
 
 /* Order Management Page */
@@ -145,6 +150,11 @@ table.order-list {
 
   [class^="icon-"], [class*=" icon-"] {
     font-size: 125%;
+  }
+
+  .inline-icons {
+    float: left;
+    margin-left: 0.75em;
   }
 }
 

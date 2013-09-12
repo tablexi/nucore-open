@@ -1,5 +1,11 @@
+- unless defined?(show_reservation)
+  - show_reservation = true
 %td.user-order-detail
-  .order-detail-description= order_detail_description(od)
+  .order-detail-description
+    = order_detail_description(od)
+    - if show_reservation && od.reservation
+      %br
+      %em= od.reservation
   - if od.survey_completed?
     .order-detail-extra= link_to 'View Order Form', od.external_service_receiver.response_data, :target => '_blank'
   - od.stored_files.template_result.each do |stored_file|
