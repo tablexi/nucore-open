@@ -7,8 +7,8 @@ module Dataprobe
     def initialize(host, options = {})
       @ip = host
       @port = options[:port] || 9100
-      @username = options[:username].presence || 'user'.ljust(21, "\x00")
-      @password = options[:password].presence || 'user'.ljust(21, "\x00")
+      @username = (options[:username].presence || 'user').ljust(21, "\x00")
+      @password = (options[:password].presence || 'user').ljust(21, "\x00")
     end
 
 
