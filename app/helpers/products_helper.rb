@@ -24,11 +24,11 @@ module ProductsHelper
   end
 
   def options_for_relay
-    #TODO Replace with normal hash
-    ActiveSupport::OrderedHash[
-      RelaySynaccessRevA, RelaySynaccessRevA.name,
-      RelaySynaccessRevB, RelaySynaccessRevB.name
-    ]
+    {
+      RelaySynaccessRevA => RelaySynaccessRevA.name,
+      RelaySynaccessRevB => RelaySynaccessRevB.name,
+      RelayDataprobe => RelayDataprobe.name
+    }
   end
 
   def public_calendar_link(product)
