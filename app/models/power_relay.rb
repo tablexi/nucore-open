@@ -1,4 +1,4 @@
-# Including class must implement #connection
+# Including class must implement #relay_connection
 # Port refers to the outlet, not the IP port
 module PowerRelay
   def self.included(base)
@@ -24,5 +24,9 @@ module PowerRelay
 
   def query_status
     relay_connection.status(port)
+  end
+
+  def relay_connection
+    raise NotImplementedError.new('Subclass must define')
   end
 end

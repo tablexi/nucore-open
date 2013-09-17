@@ -11,12 +11,11 @@ class Relay < ActiveRecord::Base
   alias_attribute :host, :ip
 
 
-  #TODO Change back to normal hash after dropping support for ruby 1.8
-  CONTROL_MECHANISMS=ActiveSupport::OrderedHash[
-    :manual, nil,
-    :timer, 'timer',
-    :relay, 'relay'
-  ]
+  CONTROL_MECHANISMS = {
+    manual: nil,
+    timer: 'timer',
+    relay: 'relay'
+  }
 
 
   def get_status
@@ -38,10 +37,10 @@ class Relay < ActiveRecord::Base
   private
 
   def toggle(status)
-    raise 'Including class must define'
+    raise NotImplementedError.new('Subclass must define')
   end
 
   def query_status
-    raise 'Including class must define'
+    raise NotImplementedError.new('Subclass must define')
   end
 end
