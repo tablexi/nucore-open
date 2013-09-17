@@ -46,9 +46,12 @@ class OrderDetailManagement
     @$element.find('[name^="order_detail[reservation]"]:not([name$=_display]),[name="order_detail[quantity]"],[name="order_detail[account_id]"]').change (evt) ->
       self.update_pricing(evt)
 
+
   update_pricing: (e) ->
     self = this
     url = @$element.attr('action').replace('/manage', '/pricing')
+    @disable_submit()
+
     $.ajax {
       url: url,
       data: @$element.serialize(),
@@ -67,7 +70,7 @@ class OrderDetailManagement
           input_field.val(new_val)
           input_field.animateHighlight() unless old_val == new_val
 
-
+        self.enable_submit()
     }
 
   init_total_calcuating: ->
@@ -78,6 +81,17 @@ class OrderDetailManagement
       row.find('.total input').val(total.toFixed(2))
       self.notify_of_update $(row).find('input[name*=total]')
 
+  disable_submit: ->
+    @waiting_requests ||= 0
+    @waiting_requests += 1
+    @$element.find('.updating-message').removeClass('hidden')
+    @$element.find('[type=submit]').prop('disabled', true)
+
+  enable_submit: ->
+    @waiting_requests -= 1
+    if @waiting_requests <= 0
+      @$element.find('.updating-message').addClass('hidden')
+      @$element.find('[type=submit]').prop('disabled', false)
 
   notify_of_update: (elem) ->
     elem.animateHighlight()

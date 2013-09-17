@@ -64,5 +64,7 @@
 
 
   .modal-footer
+    .hidden.updating-message= t('facility_order_details.edit.label.updating')
     = f.submit 'Save', :class => ['btn', 'btn-primary']
     = modal_cancel_button
+
