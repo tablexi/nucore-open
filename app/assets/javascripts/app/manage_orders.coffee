@@ -46,7 +46,6 @@ class OrderDetailManagement
     @$element.find('[name^="order_detail[reservation]"]:not([name$=_display]),[name="order_detail[quantity]"],[name="order_detail[account_id]"]').change (evt) ->
       self.update_pricing(evt)
 
-
   update_pricing: (e) ->
     self = this
     url = @$element.attr('action').replace('/manage', '/pricing')
