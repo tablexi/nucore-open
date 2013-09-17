@@ -50,7 +50,7 @@ gem 'daemons',          '1.1.9'
 
 ## custom
 gem 'c2po',             '~> 1.0.0', :path => 'vendor/engines/c2po'
-
+gem 'dataprobe',        '~> 1.0.0', :path => 'vendor/engines/dataprobe'
 gem 'synaccess_connect', '0.2.1', :git => 'git://github.com/tablexi/synaccess.git'
 
 group :development, :test do
