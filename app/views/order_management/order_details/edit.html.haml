@@ -56,13 +56,11 @@
         = render :partial => 'assigned_user', :locals => { :f => f }
       .span1= render :partial => 'facility_orders/order_file_icon', :locals => { :od => @order_detail }
 
-
-
     - if @order_detail.dispute_at
       .row
         = render :partial => 'dispute', :locals => { :f => f }
 
-
   .modal-footer
+    .hidden.updating-message= t('facility_order_details.edit.label.updating')
     = f.submit 'Save', :class => ['btn', 'btn-primary']
     = modal_cancel_button

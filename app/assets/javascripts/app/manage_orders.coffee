@@ -21,12 +21,12 @@ class OrderDetailManagement
     @$element.find('.datepicker').datepicker()
     @$element.find('.timeinput').timeinput();
     @$element.find('.copy_actual_from_reservation a').click(@copyReservationTimeIntoActual)
-    @init_total_calcuating()
-    @init_price_updating()
-    @init_reconcile_note()
-    @init_cancel_fee_options()
-    @init_resolution_note()
-    @disable_form() if @$element.hasClass('disabled')
+    @initTotalCalculating()
+    @initPriceUpdating()
+    @initReconcileNote()
+    @initCancelFeeOptions()
+    @initResolutionNote()
+    @disableForm() if @$element.hasClass('disabled')
 
   copyReservationTimeIntoActual: (e) ->
     e.preventDefault()
@@ -41,14 +41,16 @@ class OrderDetailManagement
 
     $('[name="order_detail[reservation][actual_duration_mins]_display"]').val(newval).trigger('change')
 
-  init_price_updating: ->
+  initPriceUpdating: ->
     self = this
     @$element.find('[name^="order_detail[reservation]"]:not([name$=_display]),[name="order_detail[quantity]"],[name="order_detail[account_id]"]').change (evt) ->
-      self.update_pricing(evt)
+      self.updatePricing(evt)
 
-  update_pricing: (e) ->
+  updatePricing: (e) ->
     self = this
     url = @$element.attr('action').replace('/manage', '/pricing')
+    @disableSubmit()
+
     $.ajax {
       url: url,
       data: @$element.serialize(),
@@ -67,10 +69,10 @@ class OrderDetailManagement
           input_field.val(new_val)
           input_field.animateHighlight() unless old_val == new_val
 
-
+        self.enableSubmit()
     }
 
-  init_total_calcuating: ->
+  initTotalCalculating: ->
     self = this
     $('.cost-table .cost, .cost-table .subsidy').change ->
       row = $(this).closest('.cost-table')
@@ -78,18 +80,29 @@ class OrderDetailManagement
       row.find('.total input').val(total.toFixed(2))
       self.notify_of_update $(row).find('input[name*=total]')
 
+  disableSubmit: ->
+    @waiting_requests ||= 0
+    @waiting_requests += 1
+    @$element.find('.updating-message').removeClass('hidden')
+    @$element.find('[type=submit]').prop('disabled', true)
+
+  enableSubmit: ->
+    @waiting_requests -= 1
+    if @waiting_requests <= 0
+      @$element.find('.updating-message').addClass('hidden')
+      @$element.find('[type=submit]').prop('disabled', false)
 
   notify_of_update: (elem) ->
     elem.animateHighlight()
 
-  init_cancel_fee_options: ->
+  initCancelFeeOptions: ->
     $('.cancel-fee-option').hide()
     cancel_box = $('#with_cancel_fee')
     cancel_id = parseInt(cancel_box.data('show-on'))
     $(cancel_box.data('connect')).change ->
       $('.cancel-fee-option').toggle(parseInt($(this).val()) == cancel_id)
 
-  disable_form: ->
+  disableForm: ->
     form_elements = @$element.find('select,textarea,input')
     form_elements.prop 'disabled', ->
       !($(this).hasClass('js-always-enabled') || $(this).is('[type=submit]'))
@@ -98,13 +111,13 @@ class OrderDetailManagement
     any_enabled = form_elements.filter(':not([type=submit])').is(':not(:disabled)')
     form_elements.filter('[type=submit]').remove() unless any_enabled
 
-  init_reconcile_note: ->
+  initReconcileNote: ->
     $('#order_detail_order_status_id').change ->
       reconciled = $(this).find('option:selected').text() == 'Reconciled'
       $('.order_detail_reconciled_note').toggle(reconciled)
     .trigger('change')
 
-  init_resolution_note: ->
+  initResolutionNote: ->
     $modal_save_button = @$element.find('input[type=submit]')
     original_button_string = $modal_save_button.val()
     $('#order_detail_dispute_resolved_reason').keyup ->
@@ -118,15 +131,15 @@ class OrderDetailManagement
 
 
 $ ->
-  prepare_form = ->
+  prepareForm = ->
     elem = $('form.manage_order_detail')
     new OrderDetailManagement(elem) if elem.length > 0
 
   new AjaxModal('.manage-order-detail', '#order-detail-modal', {
-    success: prepare_form
+    success: prepareForm
     })
 
-  prepare_form()
+  prepareForm()
 
   $('.updated-order-detail').animateHighlight({ highlightClass: 'alert-info', solidDuration: 5000 })
 
