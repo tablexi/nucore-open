@@ -26,8 +26,8 @@ describe Dataprobe::Ipio do
     relay = described_class.new ip, opts
     expect(relay.ip).to eq ip
     expect(relay.port).to eq opts[:port]
-    expect(relay.username).to eq opts[:username]
-    expect(relay.password).to eq opts[:password]
+    expect(relay.username).to match /\A#{opts[:username]}/
+    expect(relay.password).to match /\A#{opts[:password]}/
   end
 
   it 'turns the relay on' do

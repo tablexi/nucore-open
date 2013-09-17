@@ -34,18 +34,7 @@ module Dataprobe
 
 
     def hex_s(int)
-      case int
-        when 0 then "\x00"
-        when 1 then "\x01"
-        when 2 then "\x02"
-        when 3 then "\x03"
-        when 4 then "\x04"
-        when 5 then "\x05"
-        when 6 then "\x06"
-        when 7 then "\x07"
-        when 8 then "\x08"
-        when 9 then "\x09"
-      end
+      [ int ].pack 'C'
     end
 
 
