@@ -91,6 +91,8 @@ class OrderDetailManagement
     if @waiting_requests <= 0
       @$element.find('.updating-message').addClass('hidden')
       @$element.find('[type=submit]').prop('disabled', false)
+    if @$element.find(':focus').length == 0
+      @$element.find('[type=submit]').focus()
 
   notify_of_update: (elem) ->
     elem.animateHighlight()
