@@ -151,13 +151,15 @@ class Reservation < ActiveRecord::Base
   def can_start_early?
     return false if reserve_start_at > Time.zone.now.advance(:minutes => 5) # reserve start is more than 5 minutes in the future
     # no other reservation ongoing; no res between now and reserve_start;
-    return false unless Reservation.find(:first,
-                                         :conditions => ["((reserve_start_at > ? AND reserve_start_at < ?) OR actual_start_at IS NOT NULL) AND reservations.product_id = ? AND actual_end_at IS NULL AND (order_detail_id IS NULL OR order_details.state = 'new' OR order_details.state = 'inprocess')", Time.zone.now, reserve_start_at, product_id],
-                                         :joins => 'LEFT JOIN order_details ON order_details.id = reservations.order_detail_id').nil?
-    # Unecessary check when early start time was reduced from 30 minutes to 2 minutes.  Uncomment to revert. JRG
-    # no schedule rule breaks between now and reserve_start
-    # return instrument_is_available_to_reserve?(Time.zone.now, reserve_start_at)
-    true
+    where = <<-SQL
+      reserve_start_at > ?
+      AND reserve_start_at < ?
+      AND actual_start_at IS NULL
+      AND reservations.product_id = ?
+      AND (order_detail_id IS NULL OR order_details.state = 'new' OR order_details.state = 'inprocess')
+    SQL
+
+    Reservation.joins(:order_detail).where(where, Time.zone.now, reserve_start_at, product_id).first.nil?
   end
 
   def cancelled?
