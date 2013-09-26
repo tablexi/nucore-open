@@ -484,6 +484,18 @@ describe Reservation do
     assert @reservation.valid?
   end
 
+  it 'allows starting of an instrument even though another reservation is running but over end time' do
+    now = Time.zone.now
+    next_hour = now + 1.hour
+    hour_ago = now - 1.hour
+    two_hour_ago = hour_ago - 1.hour
+    reservation = @instrument.reservations.create reserve_start_at: two_hour_ago, reserve_end_at: hour_ago, actual_start_at: two_hour_ago
+    expect(reservation.actual_end_at).to be_nil
+    expect(reservation).to be_valid
+    reservation = @instrument.reservations.create reserve_start_at: now, reserve_end_at: next_hour
+    expect(reservation).to be_can_start_early
+  end
+
   context "basic reservation rules" do
     it "should not allow reservations starting before now" do
       @earlier = Date.today - 1
