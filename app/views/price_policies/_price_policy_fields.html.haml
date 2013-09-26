@@ -19,13 +19,13 @@
         %td= pg.type_string
         %td= check_box_tag "price_policy_#{pg.id}[can_purchase]", '1', pp.can_purchase?, :class => 'can_purchase'
         - if !pg.is_internal?
-          %td.centered= text_field_tag "price_policy_#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => ''), :size => 8
+          %td.centered= text_field_tag "price_policy_#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => '', :delimiter => ''), :size => 8
           %td.centered
         - elsif pg.is_master_internal?
-          %td.centered= text_field_tag "price_policy_#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => ''), :size => 8, :class => 'master_unit_cost'
+          %td.centered= text_field_tag "price_policy_#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => '', :delimiter => ''), :size => 8, :class => 'master_unit_cost'
           %td
         - else
           %td.centered
             %span.unit_cost
-            = hidden_field_tag "price_policy_#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => ''), :class => "unit_cost"
-          %td.centered= text_field_tag "price_policy_#{pg.id}[unit_subsidy]", number_to_currency(pp.unit_subsidy, :unit => ''), :size => 8
+            = hidden_field_tag "price_policy_#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => '', :delimiter => ''), :class => "unit_cost"
+          %td.centered= text_field_tag "price_policy_#{pg.id}[unit_subsidy]", number_to_currency(pp.unit_subsidy, :unit => '', :delimiter => ''), :size => 8
