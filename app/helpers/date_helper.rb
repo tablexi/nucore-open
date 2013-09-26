@@ -50,6 +50,11 @@ module DateHelper
     Time.zone.at((time.to_f / precision).ceil * precision)
   end
 
+  def time_floor(time, precision = 5.minutes)
+    time = time.dup.change(:sec => 0)
+    Time.zone.at((time.to_f / precision).floor * precision)
+  end
+
   def time_select_tag(field, default_time = Time.zone.now)
     output = ""
     output << select_tag("#{field}[hour]", options_for_select(hour_options, default_time.strftime('%I').to_i))
