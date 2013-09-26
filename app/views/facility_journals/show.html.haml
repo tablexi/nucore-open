@@ -57,7 +57,7 @@
         - if is_submittable
           %tr.borderless
             %th{:colspan => 3}= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
-            %th.currency{:colspan => 3}= submit_tag t('.submit')
+            %th.currency{:colspan => 3}= submit_tag t('.submit'), class: 'btn btn-primary'
         %tr
           - if is_submittable
             %th
