@@ -208,6 +208,10 @@ en:
       journal:
         description: Notes
         journal_status: Status
+        created_at: Created At
+        created_by_user: Created By
+        journal_date: Journal Date
+        status_string: Journal Status
       relay:
         type: Relay Type
         ip: Relay IP Address

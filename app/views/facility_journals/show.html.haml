@@ -5,35 +5,25 @@
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'journals' }
 
 %h2= t('.head.h2', :journal => @journal)
-%ul.form
-  %li
-    %label= t('.label.created_at')
-    =h human_datetime @journal.created_at
-  %li
-    %label= t('.label.created_by')
-    =h @journal.created_by_user
-  %li
-    %label= t('.label.journal_date')
-    =h human_date @journal.journal_date
-  %li
-    %label= t('.label.reference')
-    =h @journal.reference
-  %li
-    %label= t('.label.description')
-    =h @journal.description
-  %li
-    %label= t('.label.journal_status')
-    =h @journal.status_string
-  - if Settings.financial.journal_format.xls
-    %li=link_to 'Download XLS File', @journal.file.url
-  - if Settings.financial.journal_format.xml
-    %li=link_to 'Download XML File', facility_journal_path(current_facility, @journal, :format => 'xml')
-  - if Settings.financial.journal_format.csv
-    %li=link_to 'Download CSV File', facility_journal_path(current_facility, @journal, :format => 'csv')
+.row
+  .span5
+    = readonly_form_for :journal do |f|
+      = f.input :created_at
+      = f.input :created_by_user
+      = f.input :journal_date
+      = f.input :reference
+      = f.input :description
+      = f.input :status_string
+  .span4
+    .well
+      - if Settings.financial.journal_format.xls
+        %p=link_to 'Download XLS File', @journal.file.url
+      - if Settings.financial.journal_format.xml
+        %p=link_to 'Download XML File', facility_journal_path(current_facility, @journal, :format => 'xml')
+      - if Settings.financial.journal_format.csv
+        %p=link_to 'Download CSV File', facility_journal_path(current_facility, @journal, :format => 'csv')
 
-%br
 %hr
-%br
 
 %h3= t('.head.h3')
 %p= t('.instruct.orders')
@@ -73,14 +63,14 @@
             - if is_submittable
               %td= check_box_tag "order_detail_ids[]", od.id, (od.reconciled? ? true : false), {:disabled => (od.reconciled? ? true : false), :class => (od.reconciled? ? '' : 'toggle')}
             %td
-              %ul
-                %li= link_to od, facility_order_path(od.order.facility.url_name, od.order_id)
-                - unless od.note.blank?
-                  %li=h od.note
-            %td=h human_datetime(od.fulfilled_at)
-            %td=h od.account
-            %td=h number_to_currency od.total
-            %td=h od.reconciled? ? 'Yes' : 'No'
+              = link_to od, facility_order_path(od.order.facility.url_name, od.order_id)
+              - if od.note.present?
+                %br
+                = od.note
+            %td= human_datetime(od.fulfilled_at)
+            %td= od.account
+            %td= number_to_currency od.total
+            %td= od.reconciled? ? 'Yes' : 'No'
         - if is_submittable
           %tr.borderless
             %td{:colspan => 3}
