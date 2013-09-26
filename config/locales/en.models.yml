@@ -76,7 +76,7 @@ en:
         order_detail:
           changing_status: There was an error trying to change the status of the order.
         reservation:
-          connot_be_completed_in_future: You cannot complete a future reservation.
+          cannot_be_completed_in_future: You cannot complete a future reservation.
           attributes:
             base:
               conflict: The reservation conflicts with another reservation.
