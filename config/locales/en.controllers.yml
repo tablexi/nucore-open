@@ -87,6 +87,10 @@ en:
       errors:
         remove_active_policy: "Sorry, but you cannot remove an active price policy. If you really want to do so move the start date to the future and try again."
 
+    orders:
+      purchase:
+        future_dating_error: "Order dates in the future are not allowed"
+
     order_imports:
       create:
         error: "Our apologies, but an error occurred while importing: %{error}"

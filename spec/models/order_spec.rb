@@ -13,10 +13,11 @@ end
 
 
 describe Order do
+  let(:user) { FactoryGirl.create(:user) }
+  let(:order) { user.orders.create FactoryGirl.attributes_for(:order, :created_by => user.id) }
+
   it "should create using factory" do
-    @user  = FactoryGirl.create(:user)
-    @order = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id))
-    @order.should be_valid
+    order.should be_valid
   end
 
   it "should require user" do
@@ -28,9 +29,17 @@ describe Order do
   end
 
   it "should create in new state" do
-    @user  = FactoryGirl.create(:user)
-    @order = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id))
-    @order.new?.should be true
+    order.should be_new
+  end
+
+  it 'does not allow backdating with future dates' do
+    order.ordered_at = 1.day.from_now
+    expect(order).to_not be_can_backdate_order_details
+  end
+
+  it 'does allow backdating with past dates' do
+    order.ordered_at = 1.day.ago
+    expect(order).to be_can_backdate_order_details
   end
 
   it { should belong_to :order_import }

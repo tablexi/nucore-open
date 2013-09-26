@@ -277,6 +277,8 @@ class OrdersController < ApplicationController
         raise NUCore::PurchaseException.new("") unless @order.validate_order! && @order.purchase!
 
         if facility_ability.can? :order_in_past, @order
+          raise NUCore::PurchaseException.new(I18n.t('controllers.orders.purchase.future_dating_error')) unless @order.can_backdate_order_details?
+
           # update order detail statuses if you've changed it while acting as
           if acting_as? && params[:order_status_id].present?
             @order.backdate_order_details!(session_user, params[:order_status_id])

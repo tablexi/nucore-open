@@ -161,6 +161,10 @@ class Order < ActiveRecord::Base
 
   end
 
+  def can_backdate_order_details?
+    ordered_at <= Time.zone.now
+  end
+
   def backdate_order_details!(update_by, order_status)
     # can accept either an order status or an id
     order_status = order_status.is_a?(OrderStatus) ? order_status : OrderStatus.find(order_status)
