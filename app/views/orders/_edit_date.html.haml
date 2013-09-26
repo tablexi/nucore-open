@@ -14,10 +14,5 @@
 
     = f.input :send_notification, :as => :boolean, :input_html => { :value => 1 }, :default => params[:send_notification], :label => false, :inline_label => true
 
-  %ul
-
-    -# %li
-    -#   = label_tag :send_notification
-    -#   = check_box_tag :send_notification, 1, params[:send_notification]
   :javascript
     $(function() { $('.datepicker').datepicker({maxDate: '#{format_usa_date(Time.zone.now)}'}); });

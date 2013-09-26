@@ -29,7 +29,7 @@ describe Order do
   end
 
   it "should create in new state" do
-    order.new?.should be true
+    order.should be_new
   end
 
   it 'does not allow backdating with future dates' do
