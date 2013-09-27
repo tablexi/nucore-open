@@ -426,7 +426,7 @@ describe OrdersController do
               @item.item_price_policies.clear
               @item_pp = @item.item_price_policies.create!(FactoryGirl.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :start_date => 1.day.ago, :expire_date => 1.day.from_now))
               @item_past_pp=@item.item_price_policies.create!(FactoryGirl.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :start_date => 7.days.ago, :expire_date => 1.day.ago))
-              @params.merge!(:order_time => {:hour => '8', :minute => '30', :ampm => 'AM'})
+              @params.merge!(:order_time => {:hour => '10', :minute => '00', :ampm => 'AM'})
             end
             it 'should use the current price policy for dates in that policy' do
               @params.merge!({:order_date => format_usa_date(1.day.ago)})
