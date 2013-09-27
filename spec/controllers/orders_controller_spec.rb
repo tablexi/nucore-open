@@ -429,7 +429,7 @@ describe OrdersController do
               @params.merge!(:order_time => {:hour => '10', :minute => '00', :ampm => 'AM'})
             end
             it 'should use the current price policy for dates in that policy' do
-              @params.merge!({:order_date => format_usa_date(Time.zone.now)})
+              @params.merge!({:order_date => format_usa_date(1.day.ago)})
               do_request
               assigns[:order].reload.order_details.all? { |od| od.price_policy.should == @item_pp }
             end

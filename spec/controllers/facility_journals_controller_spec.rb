@@ -198,7 +198,7 @@ describe FacilityJournalsController do
         end
 
         it 'has an error' do
-          expect(assigns(:journal).errors.full_messages.join).to include error_message
+          expect(assigns(:journal).errors.full_messages.join).to match /#{error_message}/i
         end
       end
 
