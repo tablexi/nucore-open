@@ -14,24 +14,26 @@ module ApplicationHelper
   end
 
   def order_detail_description(order_detail)
-    name = "";
+    name = ""
+
     if order_detail.bundle
-      name << "#{h order_detail.bundle}";
+      name << "#{h order_detail.bundle}"
       name << " &mdash; "
     end
+
     name << h(order_detail.product)
     name.html_safe
   end
 
   def human_rate_calculation(rate, subsidy)
     # handle nil input
-    rate    = 0 if rate.nil?
+    rate    = -1 if rate.nil?
     subsidy = 0 if subsidy.nil?
 
     # render appropriate string
     if subsidy > 0
       "#{number_to_currency rate}<br />-#{number_to_currency subsidy}<br /> =<b>#{number_to_currency rate-subsidy}</b>".html_safe
-    elsif rate > 0
+    elsif rate > -1
       number_to_currency rate
     else
       ""
