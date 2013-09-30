@@ -39,7 +39,8 @@ en:
           rescue: "An error was encountered while trying to close the journal"
       create:
         notice: "The journal file has been created successfully"
-
+      create_with_search:
+        more_errors: "There are more errors. Please resolve those above to see those that remain."
 
     facility_orders:
       update:
