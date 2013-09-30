@@ -208,6 +208,21 @@ describe FacilityJournalsController do
         sign_in @admin
       end
 
+      it 'throttles the error message size' do
+        msgs = []
+        err = ''
+        500.times { err += 'x' }
+        10.times { msgs << err }
+        errors = double 'ActiveModel::Errors', full_messages: msgs
+        Journal.any_instance.stub(:errors).and_return errors
+        Journal.any_instance.stub(:save).and_return false
+        do_request
+        expect(response).to redirect_to new_facility_journal_path
+        expect(flash[:error]).to be_present
+        expect(flash[:error].length).to be < 4000
+        expect(flash[:error]).to end_with I18n.t 'controllers.facility_journals.create_with_search.more_errors'
+      end
+
       context 'order detail is already journaled' do
         before :each do
           @params[:order_detail_ids] = [@order_detail1.id]
