@@ -680,6 +680,13 @@ describe ReservationsController do
         response.response_code.should == 404
       end
 
+      it "allows editing of reservations in the past by an admin" do
+        expect(@reservation.update_attribute :reserve_start_at, Time.zone.now - 1.day).to be_true
+        sign_in @admin
+        do_request
+        expect(response.response_code).to eq 200
+      end
+
     end
 
 
