@@ -3,7 +3,7 @@
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'overview' }
 
-= readonly_form_for current_facility, :defaults => { :hint => false } do |f|
+= readonly_form_for :facility, current_facility, :defaults => { :hint => false } do |f|
   = f.input :name
   = f.input :abbreviation
   = f.input :url_name
