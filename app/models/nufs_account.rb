@@ -44,6 +44,8 @@ class NufsAccount < Account
     end
 
     validator
+  rescue => e
+    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
   end
 
 
