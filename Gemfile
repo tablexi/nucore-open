@@ -60,7 +60,7 @@ group :development, :test do
   gem 'pry-rails',         '0.2.2'
   gem 'quiet_assets'
   gem 'rspec-rails',       '2.13.2'
-  gem 'ruby-debug19',      '0.11.6'
+  gem 'ruby-debug19',      '0.11.6', :platforms => :ruby_19
   gem 'shoulda-matchers',  '2.1'
   gem 'single_test',       '0.4.0'
   gem 'spork',             '0.9.2'
