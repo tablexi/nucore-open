@@ -73,40 +73,24 @@ module Products::SchedulingSupport
   end
 
   # find the next available reservation based on schedule rules and existing reservations
-  def next_available_reservation(after = Time.zone.now, not_a_conflict=nil)
+  def next_available_reservation(after = Time.zone.now, duration = 1.minute)
     reservation = nil
     day_of_week = after.wday
+
     0.upto(6) do |i|
-      day_of_week = (day_of_week+i) % 6
-      # find rules for day of week, sort by start hour
-      rules = self.schedule_rules.select { |r| r.send("on_#{Date::ABBR_DAYNAMES[day_of_week].downcase}".to_sym) }.sort_by{ |r| r.start_hour }
-      rules.each do |rule|
-        # build rule start and end times
-        tstart = Time.zone.local(after.year, after.month, after.day, rule.start_hour, rule.start_min, 0)
-        tend   = Time.zone.local(after.year, after.month, after.day, rule.end_hour, rule.end_min, 0)
-        # we can't start before tstart
-        after  = tstart if after < tstart
-        # check for conflicts with rule interval/duration time
-        if (after.min % rule.duration_mins.to_i) != 0
-          # adjust to next interval
-          after += (rule.duration_mins.to_i - (after.min % rule.duration_mins.to_i)).minutes
-        end
-        while (after < tend)
-          duration = self.min_reserve_mins.to_i < 15 ? 15.minutes : self.min_reserve_mins.to_i.minutes
-          # build reservation
-          reservation = self.reservations.new(:reserve_start_at => after, :reserve_end_at => after+duration)
-          # check for conflicts with an existing reservation
-          conflict=reservation.conflicting_reservation
-          return reservation if conflict.nil? || not_a_conflict == conflict
-          # we have a conflict, reset reservation and increment after by the rule's interval/duration time
-          reservation = nil
-          # after += self.min_reserve_mins.to_i.minutes
-          after += duration
-        end
+      day_of_week = (day_of_week + i) % 6
+
+      rules_for_day(day_of_week).each do |rule|
+        finder = ReservationFinder.new(after, rule)
+        finder.adjust_time
+        reservation = finder.next_reservation self, duration
+        return reservation if reservation
       end
+
       # advance to start of next day
-      after = after.end_of_day+1.second
+      after = after.end_of_day + 1.second
     end
+
     reservation
   end
 
@@ -118,7 +102,15 @@ module Products::SchedulingSupport
     end
   end
 
+
   private
+
+  #
+  # find rules for day of week, sort by start hour
+  def rules_for_day(day_of_week)
+    rules = schedule_rules.select{|r| r.send("on_#{Date::ABBR_DAYNAMES[day_of_week].downcase}".to_sym) }
+    rules.sort_by{ |r| r.start_hour }
+  end
 
   def create_default_schedule
     self.schedule = Schedule.create(:name => "#{self.name} Schedule", :facility => self.facility)
@@ -127,6 +119,40 @@ module Products::SchedulingSupport
   def update_schedule_name
     if self.schedule.name == "#{self.name_was} Schedule"
       self.schedule.update_attributes(:name => "#{self.name} Schedule")
+    end
+  end
+
+
+  class ReservationFinder
+    attr_accessor :time, :rule, :day_start, :day_end
+
+    def initialize(time, rule)
+      self.time = time
+      self.rule = rule
+      self.day_start = Time.zone.local(time.year, time.month, time.day, rule.start_hour, rule.start_min, 0)
+      self.day_end   = Time.zone.local(time.year, time.month, time.day, rule.end_hour, rule.end_min, 0)
+    end
+
+    def adjust_time
+      # we can't start before the rules say we can
+      self.time = day_start if time < day_start
+
+      # check for conflicts with rule interval/duration time and adjust to next interval if necessary
+      duration_mins = rule.duration_mins.to_i
+      self.time += (duration_mins - time.min % duration_mins).minutes unless time.min % duration_mins == 0
+    end
+
+    def next_reservation(reserver, duration)
+      start_time = time
+
+      while start_time < day_end
+        reservation = reserver.reservations.new(:reserve_start_at => start_time, :reserve_end_at => start_time + duration)
+
+        conflict = reservation.conflicting_reservation
+        return reservation if conflict.nil?
+
+        start_time = conflict.reserve_end_at
+      end
     end
   end
 
