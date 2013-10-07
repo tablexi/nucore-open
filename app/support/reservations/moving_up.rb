@@ -7,26 +7,22 @@ module Reservations::MovingUp
   # if there is no such time slot. The reservation is frozen so don't try to change
   # it. It's for read-only purposes.
   def earliest_possible
-    # this used to be self.clone, but it causes problems in rails 3.1 and
-    # respec 2.11+. There is no need for it to be a clone/dup
     early_reservation = Reservation.new
+    after = Time.zone.now + 1.minute
 
-    after=Time.zone.now+1.minute
+    loop do
+      next_res = product.next_available_reservation(after, duration_mins.minutes)
+      return nil if next_res.nil? || next_res.reserve_start_at > reserve_start_at
 
-    while true
-      next_res=product.next_available_reservation(after, self)
-
-      return nil if next_res.nil? or next_res.reserve_start_at > reserve_start_at
-
-      early_reservation.reserve_start_at=next_res.reserve_start_at
-      early_reservation.reserve_end_at=next_res.reserve_start_at.advance(:minutes => duration_mins)
+      early_reservation.reserve_start_at = next_res.reserve_start_at
+      early_reservation.reserve_end_at = next_res.reserve_start_at.advance(:minutes => duration_mins)
 
       if instrument_is_available_to_reserve? && does_not_conflict_with_other_reservation?
         early_reservation.freeze
         return early_reservation
       end
 
-      after=next_res.reserve_end_at
+      after = next_res.reserve_end_at
     end
   end
 
