@@ -194,6 +194,7 @@ en:
         reviewed_at: Review Closes
         reviewed_at_past: Review Closed
         id: "Order #"
+        assigned_user: Assigned Staff
         account: Payment Source
         order_status: Order Status
         estimated_cost: Estimated Price
