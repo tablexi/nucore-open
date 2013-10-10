@@ -552,6 +552,45 @@ describe ReservationsController do
       assigns[:min_date].should == Time.zone.now.strftime("%Y%m%d")
     end
 
+    describe 'default reservation time' do
+      before :each do
+        sign_in @guest
+        controller.stub :set_windows
+      end
+      context 'the instrument has a minimum reservation time' do
+        before :each do
+          @instrument.update_attributes(:min_reserve_mins => 35)
+          do_request
+        end
+
+        it 'should set the time to the minimum reservation time' do
+          expect(assigns(:reservation).duration_mins).to eq(35)
+        end
+      end
+
+      context 'the instrument has zero minimum reservation minutes' do
+        before :each do
+          @instrument.update_attributes(:min_reserve_mins => 0)
+          do_request
+        end
+
+        it 'should default to 30 minutes' do
+          expect(assigns(:reservation).duration_mins).to eq(30)
+        end
+      end
+
+      context 'the instrument has nil minimum reservation minutes' do
+        before :each do
+          @instrument.update_attributes(:min_reserve_mins => nil)
+          do_request
+        end
+
+        it 'should default to 30 minutes' do
+          expect(assigns(:reservation).duration_mins).to eq(30)
+        end
+      end
+    end
+
     context 'rounding times' do
       before :each do
         sign_in @guest
