@@ -13,6 +13,9 @@
 
     .banner-list
       .row
+        = banner_date_label @order_detail, :ordered_at
+        = banner_label @order_detail, :created_by_user
+        = banner_label @order_detail, :user
         = banner_date_label @order_detail.reservation, :canceled_at
         = banner_label @order_detail.reservation, :canceled_by_user
         = banner_label @order_detail.reservation, :canceled_reason
@@ -24,7 +27,8 @@
 
     .row
       .span5
-        = f.association :account, :collection => @available_accounts, :label_method => :account_pretty, :include_blank => false, :disabled => edit_disabled?
+        = account_input(f)
+
       .span3
         - if @order_statuses
           = f.association :order_status, :collection => @order_statuses, :label_method => :name_with_level, :include_blank => false

@@ -26,6 +26,7 @@ class OrderDetailManagement
     @initReconcileNote()
     @initCancelFeeOptions()
     @initResolutionNote()
+    @initAccountOwnerUpdate()
     @disableForm() if @$element.hasClass('disabled')
 
   copyReservationTimeIntoActual: (e) ->
@@ -130,6 +131,11 @@ class OrderDetailManagement
         $('#order_detail_resolve_dispute').val('0')
         $modal_save_button.val(original_button_string)
     .trigger('keyup')
+
+  initAccountOwnerUpdate: ->
+    $('#order_detail_account_id').change ->
+      owner_name = $(this).find(':selected').data('account-owner')
+      $(this).closest('.control-group').find('.account-owner').text(owner_name)
 
 
 $ ->
