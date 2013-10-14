@@ -13,7 +13,7 @@ module Dataprobe
 
 
     def toggle(outlet, status)
-      mode = status ? 0 : 1
+      mode = status ? 1 : 0
       socket = hello_socket
       write_control_cmd socket, mode, outlet
       raise "Error while toggling outlet #{outlet}" unless socket.recv(1) == "\x00"
@@ -25,9 +25,9 @@ module Dataprobe
     def status(outlet)
       socket = hello_socket
       write_status_cmd socket
-      reply = socket.recv 8
-      stats = reply.unpack 'C'
-      stats[outlet-1] != 1
+      reply = socket.recv 100
+      stats = reply.unpack 'C*'
+      stats[outlet-1] == 1
     ensure
       socket.close
     end
