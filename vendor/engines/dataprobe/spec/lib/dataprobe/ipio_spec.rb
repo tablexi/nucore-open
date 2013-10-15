@@ -36,12 +36,12 @@ describe Dataprobe::Ipio do
   end
 
   it 'turns the relay off' do
-    should_toggle "\x01"
+    should_toggle "\x00"
     relay.toggle 4, false
   end
 
   it 'raises an error if an unexpected response was given by the socket' do
-    should_toggle "\x01", "\x01"
+    should_toggle "\x00", "\x01"
     expect { relay.toggle 4, false }.to raise_error
   end
 
@@ -67,7 +67,7 @@ describe Dataprobe::Ipio do
     fake_sequence.should_receive(:pack).with('s<').and_return "\x01"
   end
 
-  def should_toggle(state_code = "\x00", socket_reply = "\x00")
+  def should_toggle(state_code = "\x01", socket_reply = "\x00")
     should_write_hello
     should_update_sequence
     fake_socket.should_receive(:write).with "\x03#{relay.username}#{relay.password}\x01\x00\x01\x04#{state_code}"
@@ -81,8 +81,8 @@ describe Dataprobe::Ipio do
     should_update_sequence
     fake_socket.should_receive(:write).with "\x03#{relay.username}#{relay.password}\x04\x00\x01"
     fake_reply = double 'String', unpack: []
-    fake_socket.should_receive(:recv).with(8).and_return fake_reply
-    fake_reply.should_receive(:unpack).with('C').and_return bool ? [0] : [1]
+    fake_socket.should_receive(:recv).with(100).and_return fake_reply
+    fake_reply.should_receive(:unpack).with('C*').and_return bool ? [1] : [0]
     fake_socket.should_receive :close
     expect(relay.status 1).to eq bool
   end
