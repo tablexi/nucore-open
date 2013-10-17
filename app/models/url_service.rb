@@ -2,6 +2,7 @@
 # A UrlService is an +ExternalService+ that is
 # accessed via HTTP/URLs.
 class UrlService < ExternalService
+  attr_accessor :request
 
   #
   # Provides a URL for editing data at this +ExternalService+
