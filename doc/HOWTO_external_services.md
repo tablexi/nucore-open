@@ -1,0 +1,38 @@
+# External Services — Order Forms
+
+Services can require a completed order form which can be hosted through an external service. By default, NUCore uses Surveyor as its external service, but it should be simple to integrate another service.
+
+Currently, you can only use one external service at a time.
+
+## Default: Surveyor
+
+[Surveyor](https://github.com/NUBIC/surveyor) is a tool for developing surveys in Rails applications. We have built a [wrapper application](https://github.com/tablexi/nucore-surveyor) around Surveyor for integration with NUCore. [`SurveyorController`](https://github.com/tablexi/nucore-surveyor/blob/master/app/controllers/surveyor_controller.rb) in that application is a good example of this process.
+
+You can change the default external service by creating a new class that extends from [`ExternalService`](../app/models/external_service.rb) and changing the value of external_services.survey in settings.yml. The default [`Surveyor`](../app/models/surveyor.rb) class extends from [`UrlService`](../app/models/url_service.rb), which provides the majority of functionality.
+
+## Process
+
+1. Add the URL to the product under Products > Services > Order Forms and activate the form. This should be the URL for taking a new survey
+
+    For Surveyor, this link is `http://[yourdomain.com]/surveys/[survey-path]`
+
+2. User adds the service to their cart
+   ![Screenshot](images/complete-online-order-form.png)
+   
+3. This links to the URL added to the product. It also includes the following parameters:
+   * `success_url` The URL that the external service should redirect to upon completion of the survey
+     
+     e.g. `http://[yourdomain.com]/facilities/[facility_url]/services/[service_url]/surveys/[external_service_id]/complete?receiver_id=[order_detail_id]`
+   
+   * `receiver_id` The OrderDetail ID
+
+4. Once the user completes the survey, the external service should redirect the user to `success_url`. The URL should have the following additional parameters:
+    * `receiver_id` Was passed to the external service
+    * `survey_url` This is the URL to view the completed survey.
+
+5. The user may go and edit their order form
+    ![Screenshot](images/edit-online-order-form.png)
+    
+    The link to this will be the `survey_url` passed back unless you have overridden `edit_url` in a subclass of `UrlService`. For example, Surveyor appends "/take" to the end of the URL for editing.
+
+6. Once the user has purchased the product, administrators will see a link to "View Order Form" under the order. This links to the `survey_url` that was passed back. 
