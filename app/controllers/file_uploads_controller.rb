@@ -117,7 +117,7 @@ class FileUploadsController < ApplicationController
   end
 
   def create_product_survey_from_url
-    survey_param=ExternalServiceManager.survey_service.name.downcase.to_sym
+    survey_param=ExternalServiceManager.survey_service.name.underscore.to_sym
 
     if params[survey_param].nil? || params[survey_param][:location].blank?
       @survey = ExternalServiceManager.survey_service.new

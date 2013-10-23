@@ -5,7 +5,7 @@ class SurveyorsController < ApplicationController
   before_filter :init_current_facility
   before_filter :init_service
 
-  load_and_authorize_resource
+  load_and_authorize_resource :class => 'ExternalService'
 
   def initialize
     @active_tab = 'admin_products'
@@ -31,7 +31,7 @@ class SurveyorsController < ApplicationController
 
       ExternalServiceReceiver.create!(
           :receiver => od,
-          :external_service => Surveyor.find(params[:external_service_id].to_i),
+          :external_service => ExternalService.find(params[:external_service_id].to_i),
           :response_data => params[:survey_url]
       )
 
@@ -45,7 +45,7 @@ class SurveyorsController < ApplicationController
 
 
   private
-  
+
   def change_state(state)
     @esp=@service.external_service_passers.find_by_id(params[:external_service_passer_id].to_i)
     activate=state == :activate
@@ -56,7 +56,7 @@ class SurveyorsController < ApplicationController
     end
 
     @esp.update_attribute(:active, activate)
-    flash[:notice] = activate ? "Survey activated" : "Survey de-activated"        
+    flash[:notice] = activate ? "Survey activated" : "Survey de-activated"
     redirect_to(request.referer) and return
   end
 

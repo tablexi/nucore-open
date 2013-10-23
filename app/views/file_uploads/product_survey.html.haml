@@ -10,15 +10,11 @@
 .box_no_fill.margin_bottom
   %h3= t('.order_form.head')
   %p= t('.order_form.main')
-  = form_for(@survey, :url => create_product_survey_path(current_facility, @product.parameterize, @product), :html => { :multipart => true }) do |f|
+  = simple_form_for(@survey, :url => create_product_survey_path(current_facility, @product.parameterize, @product), :html => { :multipart => true }) do |f|
     = f.error_messages
-    %ul.form
-      %li
-        = f.label :location, 'Service URL', :class => 'required'
-        = f.text_field :location, :size => 60
-    %ul.inline
-      %li
-        = f.submit('Add', :disable_with => "Adding...", :class => 'btn')
+    = f.input :location, :label => 'Service URL', :required => true, :input_html => { :size => 60 }
+
+    = f.submit('Add', :disable_with => "Adding...", :class => 'btn')
   %br
   - surveys = @product.external_service_passers
   - if surveys.empty?

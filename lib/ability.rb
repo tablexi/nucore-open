@@ -43,7 +43,7 @@ class Ability
     end
 
     if resource.is_a?(Facility)
-      can :complete, Surveyor
+      can :complete, ExternalService
 
       if user.operator_of?(resource)
         can :manage, [
@@ -69,7 +69,7 @@ class Ability
       end
 
       if user.facility_director_of?(resource)
-        can [ :activate, :deactivate ], Surveyor
+        can [ :activate, :deactivate ], ExternalService
       end
 
       if user.manager_of?(resource)
