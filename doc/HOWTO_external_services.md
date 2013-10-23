@@ -22,16 +22,16 @@ You can change the default external service by creating a new class that extends
    
 3. The "Complete Online Order Form" button links (via GET) to the URL added to the product. It also includes the following parameters:
 
-    * `success_url` The URL that the external service should redirect to upon completion of the survey
-     
+   `success_url` The URL that the external service should redirect to upon completion of the survey.
     e.g. `http://[yourdomain.com]/facilities/[facility_url]/services/[service_url]/surveys/[external_service_id]/complete?receiver_id=[order_detail_id]`
    
-    * `receiver_id` The OrderDetail ID
+   `receiver_id` The OrderDetail ID
 
 4. Once the user completes the survey, the external service should redirect the user to `success_url`. The URL should have the following additional parameters:
 
-    * `receiver_id` Was passed to the external service
-    * `survey_url` This is the URL to view the completed survey.
+   `receiver_id` Was passed to the external service
+   
+   `survey_url` This is the URL to view the completed survey.
 
 5. The user may go and edit their order form
     
