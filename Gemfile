@@ -64,6 +64,7 @@ group :development, :test do
   gem 'shoulda-matchers',  '2.1'
   gem 'single_test',       '0.4.0'
   gem 'spork',             '0.9.2'
+  gem 'thin'
   gem 'timecop'
 end
 
