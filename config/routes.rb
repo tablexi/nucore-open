@@ -160,7 +160,7 @@ Nucore::Application.routes.draw do
 
     resources :facility_accounts, :controller => 'facility_facility_accounts', :only => [:index, :new, :create, :edit, :update] if SettingsHelper.feature_on? :recharge_accounts
 
-    resources :orders, :controller => 'facility_orders', :only => [:index, :edit, :update, :show] do
+    resources :orders, :controller => 'facility_orders', :only => [:index, :update, :show] do
       member do
         post 'send_receipt'
       end

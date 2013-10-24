@@ -55,24 +55,6 @@ describe FacilityOrdersController do
   end
 
 
-  context 'edit' do
-
-    before :each do
-      @method=:get
-      @action=:edit
-      @params.merge!(:id => @order.id)
-    end
-
-    it_should_require_login
-
-    it_should_allow_all facility_operators do
-      assigns(:order).should == @order
-      should render_template 'edit'
-    end
-
-  end
-
-
   context 'batch_update' do
 
     before :each do
