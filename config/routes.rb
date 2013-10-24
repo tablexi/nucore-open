@@ -172,7 +172,7 @@ Nucore::Application.routes.draw do
         get 'tab_counts'
       end
 
-      resources :order_details, :controller => 'facility_order_details', :only => [:edit, :update, :destroy] do
+      resources :order_details, :controller => 'facility_order_details', :only => [:destroy] do
         member do
           get 'remove_from_journal'
         end
