@@ -45,18 +45,6 @@ class FacilityOrderDetailsController < ApplicationController
   end
 
 
-  # GET /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/new_price
-  def new_price
-    qty           = params[:quantity].to_i
-
-    cost    = qty * @order_detail.price_policy.unit_cost
-    subsidy = qty * @order_detail.price_policy.unit_subsidy
-    total   = cost - subsidy
-
-    render :json => [cost, subsidy, total]
-  end
-
-
   def remove_from_journal
     oid=params[:id]
     return redirect_to :back if oid.blank?

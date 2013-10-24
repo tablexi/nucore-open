@@ -53,21 +53,6 @@ describe FacilityOrderDetailsController do
 
   end
 
-
-  context 'new_price' do
-
-    before :each do
-      @method=:get
-      @action=:new_price
-      @params[:order_detail_id]=@params[:id]
-      @params.delete(:id)
-    end
-
-    it_should_allow_operators_only
-
-  end
-
-
   context 'remove_from_journal' do
 
     before :each do
