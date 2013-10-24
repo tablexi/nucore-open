@@ -176,7 +176,6 @@ Nucore::Application.routes.draw do
         member do
           get 'remove_from_journal'
         end
-        put 'resolve_dispute', :to => 'facility_order_details#resolve_dispute'
         resources :reservations, :controller => 'facility_reservations', :only => [:edit, :update, :show]
         get 'manage', :to => 'order_management/order_details#edit', :on => :member
         put 'manage', :to => 'order_management/order_details#update', :on => :member

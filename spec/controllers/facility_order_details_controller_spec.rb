@@ -28,31 +28,6 @@ describe FacilityOrderDetailsController do
     @params={ :facility_id => @authable.url_name, :order_id => @order.id, :id => @order_detail.id }
   end
 
-  context 'resolve_dispute' do
-
-    before :each do
-      @method=:post
-      @action=:resolve_dispute
-      @order_detail.dispute_at=Time.zone.now
-      @order_detail.dispute_reason='got charged too much'
-      assert @order_detail.save
-      @params[:order_detail_id]=@params[:id]
-      @params.delete(:id)
-    end
-
-    it_should_require_login
-
-    it_should_allow :staff do
-      # abuse of API since we're not expecting success
-      should render_template('404')
-    end
-
-    it_should_allow_all facility_managers do
-      should respond_with :success
-    end
-
-  end
-
   context 'remove_from_journal' do
 
     before :each do

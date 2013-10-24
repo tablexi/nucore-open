@@ -15,36 +15,6 @@ class FacilityOrderDetailsController < ApplicationController
     super
   end
 
-  # POST /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/resolve_dispute
-  def resolve_dispute
-    unless current_user.manager_of?(current_facility) && @order_detail.dispute_at && @order_detail.dispute_resolved_at.nil?
-      raise ActiveRecord::RecordNotFound
-    end
-
-    @order_detail.transaction do
-      begin
-        # process account change
-        process_account_change
-
-        # update order detail
-        @order_detail.attributes          = params[:order_detail]
-        @order_detail.updated_by          = session_user.id
-        @order_detail.dispute_resolved_at = Time.zone.now
-        @order_detail.reviewed_at         = Time.zone.now
-        @order_detail.save!
-
-        flash[:notice] = 'The dispute has been resolved successfully'
-        redirect_to (@order_detail.reservation ? disputed_facility_reservations_path : disputed_facility_orders_path) and return
-      rescue Exception => e
-        flash.now[:error] = "An error was encountered while resolving the dispute"
-        raise ActiveRecord::Rollback
-      end
-    end
-    @order_detail.dispute_resolved_at = nil #rollback does not reset the un-saved value, so have to manually set to the view will render correctly
-    render :action => 'edit'
-  end
-
-
   def remove_from_journal
     oid=params[:id]
     return redirect_to :back if oid.blank?
