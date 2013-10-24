@@ -26,8 +26,8 @@ sudo unzip instantclient-sqlplus-macos.x64-11.2.0.3.0.zip
 sudo ln -s instantclient_11_2 instantclient
 
 cd instantclient
-sudo ln -s libclntsh.dylib.10.1 libclntsh.dylib
-sudo ln -s libocci.dylib.10.1   libocci.dylib
+sudo ln -s libclntsh.dylib.11.1 libclntsh.dylib
+sudo ln -s libocci.dylib.11.1   libocci.dylib
 
 ########################################
 # Add to (bash) ~/.profile
