@@ -160,7 +160,7 @@ Nucore::Application.routes.draw do
 
     resources :facility_accounts, :controller => 'facility_facility_accounts', :only => [:index, :new, :create, :edit, :update] if SettingsHelper.feature_on? :recharge_accounts
 
-    resources :orders, :controller => 'facility_orders', :only => [:index, :edit, :update, :show] do
+    resources :orders, :controller => 'facility_orders', :only => [:index, :update, :show] do
       member do
         post 'send_receipt'
       end
@@ -172,12 +172,10 @@ Nucore::Application.routes.draw do
         get 'tab_counts'
       end
 
-      resources :order_details, :controller => 'facility_order_details', :only => [:edit, :update, :destroy] do
+      resources :order_details, :controller => 'facility_order_details', :only => [:destroy] do
         member do
           get 'remove_from_journal'
         end
-        get 'new_price', :to => 'facility_order_details#new_price'
-        put 'resolve_dispute', :to => 'facility_order_details#resolve_dispute'
         resources :reservations, :controller => 'facility_reservations', :only => [:edit, :update, :show]
         get 'manage', :to => 'order_management/order_details#edit', :on => :member
         put 'manage', :to => 'order_management/order_details#update', :on => :member

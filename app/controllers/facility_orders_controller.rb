@@ -21,28 +21,19 @@ class FacilityOrdersController < ApplicationController
     super
   end
 
-
   # GET /facility/1/orders
   def index
     @order_details = new_or_in_process_orders.paginate(:page => params[:page])
   end
-
 
   # GET /facilities/:facility_id/orders/review
   def show_problems
     @order_details = problem_orders.paginate(:page => params[:page])
   end
 
-
   # GET /facilities/:facility_id/orders/disputed
   def disputed
     @order_details = disputed_orders.paginate(:page => params[:page])
-  end
-
-
-  # GET /facilities/example/orders/2/edit
-  def edit
-    @order_details = @order.order_details.paginate(:page => params[:page])
   end
 
   def show
