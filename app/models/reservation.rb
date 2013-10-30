@@ -69,9 +69,6 @@ class Reservation < ActiveRecord::Base
   end
 
   def self.not_this_reservation(reservation)
-    # old version
-    # where('reservations.id <> ?', id || 0)
-
     if reservation.id
       where('reservations.id <> ?', reservation.id)
     else

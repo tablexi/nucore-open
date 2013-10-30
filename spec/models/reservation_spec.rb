@@ -205,6 +205,15 @@ describe Reservation do
           @reservation1.reserve_end_at.to_i.should == earliest.reserve_end_at.to_i
         end
       end
+
+      it 'should be able to move to now, but overlapping the current' do
+        @reservation1.update_attributes!(:reserve_start_at => 30.minutes.from_now, :reserve_end_at => 60.minutes.from_now)
+        @reservation1.order.stub(:cart_valid?).and_return(true)
+        @reservation1.order.validate_order!
+        @reservation1.order.purchase!
+
+        expect(@reservation1.earliest_possible).to be
+      end
     end
 
     context 'requires_but_missing_actuals?' do
