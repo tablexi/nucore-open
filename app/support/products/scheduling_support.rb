@@ -80,7 +80,7 @@ module Products::SchedulingSupport
     0.upto(6) do |i|
       day_of_week = (day_of_week + i) % 6
 
-      rules_for_day(day_of_week).each do |rule|
+      rules_for_day(day_of_week, options[:user]).each do |rule|
         finder = ReservationFinder.new(after, rule, options)
         reservation = finder.next_reservation self, duration
         return reservation if reservation
@@ -94,7 +94,7 @@ module Products::SchedulingSupport
   end
 
   def available_schedule_rules(user)
-    if requires_approval?
+    if requires_approval? && user
       self.schedule_rules.available_to_user user
     else
       self.schedule_rules
@@ -106,8 +106,8 @@ module Products::SchedulingSupport
 
   #
   # find rules for day of week, sort by start hour
-  def rules_for_day(day_of_week)
-    rules = schedule_rules.select{|r| r.send("on_#{Date::ABBR_DAYNAMES[day_of_week].downcase}".to_sym) }
+  def rules_for_day(day_of_week, user)
+    rules = available_schedule_rules(user).select{|r| r.send("on_#{Date::ABBR_DAYNAMES[day_of_week].downcase}".to_sym) }
     rules.sort_by{ |r| r.start_hour }
   end
 

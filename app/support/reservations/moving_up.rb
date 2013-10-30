@@ -4,12 +4,11 @@ module Reservations::MovingUp
   #
   # Returns a new reservation with the reserve_*_at times updated
   # to the next accommodating time slot on the calendar from NOW. Returns nil
-  # if there is no such time slot. The reservation is frozen so don't try to change
-  # it. It's for read-only purposes.
+  # if there is no such time slot. For read-only purposes.
   def earliest_possible
     after = 1.minute.from_now
 
-    next_res = product.next_available_reservation(after, duration_mins.minutes, :exclude => self)
+    next_res = product.next_available_reservation(after, duration_mins.minutes, :exclude => self, :user => user)
     return nil if next_res.nil? || next_res.reserve_start_at > reserve_start_at
     next_res
   end
