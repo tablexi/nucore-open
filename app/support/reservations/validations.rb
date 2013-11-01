@@ -48,14 +48,14 @@ module Reservations::Validations
   # Look for a reservation on the same instrument that conflicts in time with a
   # purchased, admin, or in-cart reservation. Should not check reservations that
   # are unpurchased in other user's carts.
-  def conflicting_reservation
+  def conflicting_reservation(options = {})
     order_id = order_detail.try(:order_id) || 0
 
     conflicting_reservations =
       Reservation.
         joins_order.
         where(:product_id => product.schedule.product_ids).
-        not_this_reservation(self).
+        not_this_reservation(options[:exclude] || self).
         not_cancelled.
         not_ended.
         where("(orders.state = 'purchased' OR orders.state IS NULL OR orders.id = ?)", order_id).

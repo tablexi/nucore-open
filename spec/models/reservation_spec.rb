@@ -205,6 +205,38 @@ describe Reservation do
           @reservation1.reserve_end_at.to_i.should == earliest.reserve_end_at.to_i
         end
       end
+
+      it 'should be able to move to now, but overlapping the current' do
+        @reservation1.update_attributes!(:reserve_start_at => 30.minutes.from_now, :reserve_end_at => 60.minutes.from_now)
+        @reservation1.order.stub(:cart_valid?).and_return(true)
+        @reservation1.order.validate_order!
+        @reservation1.order.purchase!
+
+        expect(@reservation1.earliest_possible).to be
+      end
+
+      context 'with schedule rules' do
+        let(:tomorrow_noon) { 1.day.from_now.change(hour: 12, min: 00) }
+        before do
+          ScheduleRule.destroy_all
+          @instrument.update_attributes(requires_approval: true)
+          @everybody_schedule_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+          group1 = FactoryGirl.create(:product_access_group, product: @instrument)
+          @everybody_schedule_rule.product_access_groups << group1
+          group1.product_users.create(:product => @instrument, :user => @user, :approved_by => @user.id)
+          @restricted_schedule_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: 17, end_hour: 24))
+          @restricted_schedule_rule.product_access_groups << FactoryGirl.create(:product_access_group, product: @instrument)
+          @reservation1.reload
+        end
+
+        it 'should not be able to move to a schedule rule the user is not part of' do
+          @reservation1.update_attributes!(reserve_start_at: tomorrow_noon, reserve_end_at: tomorrow_noon + 30.minutes)
+          # 4:45pm today will be in the restricted schedule rule
+          Timecop.travel(Time.zone.now.change(hour: 16, min: 45, sec: 0)) do
+            expect(@reservation1.earliest_possible.reserve_start_at).to eq(1.day.from_now.change(hour: 9, min: 0, sec: 0))
+          end
+        end
+      end
     end
 
     context 'requires_but_missing_actuals?' do

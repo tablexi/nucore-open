@@ -146,7 +146,7 @@ class ReservationsController < ApplicationController
   # GET /orders/1/order_details/1/reservations/new
   def new
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
-    next_available = @instrument.next_available_reservation(Time.zone.now, default_reservation_mins.minutes)
+    next_available = @instrument.next_available_reservation(1.minute.from_now, default_reservation_mins.minutes, :user => acting_user)
     @reservation  = next_available || default_reservation
     @reservation.round_reservation_times
     flash[:notice] = t_model_error(Instrument, 'acting_as_not_on_approval_list') unless @instrument.is_approved_for?(acting_user)

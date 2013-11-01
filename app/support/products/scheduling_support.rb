@@ -73,16 +73,15 @@ module Products::SchedulingSupport
   end
 
   # find the next available reservation based on schedule rules and existing reservations
-  def next_available_reservation(after = Time.zone.now, duration = 1.minute)
+  def next_available_reservation(after = Time.zone.now, duration = 1.minute, options = {})
     reservation = nil
     day_of_week = after.wday
 
     0.upto(6) do |i|
       day_of_week = (day_of_week + i) % 6
 
-      rules_for_day(day_of_week).each do |rule|
-        finder = ReservationFinder.new(after, rule)
-        finder.adjust_time
+      rules_for_day(day_of_week, options[:user]).each do |rule|
+        finder = ReservationFinder.new(after, rule, options)
         reservation = finder.next_reservation self, duration
         return reservation if reservation
       end
@@ -95,7 +94,7 @@ module Products::SchedulingSupport
   end
 
   def available_schedule_rules(user)
-    if requires_approval?
+    if requires_approval? && user
       self.schedule_rules.available_to_user user
     else
       self.schedule_rules
@@ -107,8 +106,8 @@ module Products::SchedulingSupport
 
   #
   # find rules for day of week, sort by start hour
-  def rules_for_day(day_of_week)
-    rules = schedule_rules.select{|r| r.send("on_#{Date::ABBR_DAYNAMES[day_of_week].downcase}".to_sym) }
+  def rules_for_day(day_of_week, user)
+    rules = available_schedule_rules(user).select{|r| r.send("on_#{Date::ABBR_DAYNAMES[day_of_week].downcase}".to_sym) }
     rules.sort_by{ |r| r.start_hour }
   end
 
@@ -124,13 +123,15 @@ module Products::SchedulingSupport
 
 
   class ReservationFinder
-    attr_accessor :time, :rule, :day_start, :day_end
+    attr_accessor :time, :rule, :day_start, :day_end, :options
 
-    def initialize(time, rule)
+    def initialize(time, rule, options = {})
       self.time = time
       self.rule = rule
       self.day_start = Time.zone.local(time.year, time.month, time.day, rule.start_hour, rule.start_min, 0)
       self.day_end   = Time.zone.local(time.year, time.month, time.day, rule.end_hour, rule.end_min, 0)
+      self.options   = options
+      adjust_time
     end
 
     def adjust_time
@@ -148,7 +149,7 @@ module Products::SchedulingSupport
       while start_time < day_end
         reservation = reserver.reservations.new(:reserve_start_at => start_time, :reserve_end_at => start_time + duration)
 
-        conflict = reservation.conflicting_reservation
+        conflict = reservation.conflicting_reservation(:exclude => options[:exclude])
         return reservation if conflict.nil?
 
         start_time = conflict.reserve_end_at
