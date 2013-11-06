@@ -73,8 +73,8 @@ describe ReservationsController do
         assigns[:reservations].should_not include @reservation
       end
 
-      it 'should not contain @unavailable if more than a week' do
-        @params.merge!(:start => 1.day.ago.to_i, :end => 7.days.from_now.to_i)
+      it 'should not contain @unavailable if month view' do
+        @params.merge!(:start => 1.day.ago.to_i, :end => 30.days.from_now.to_i)
         do_request
         assigns[:unavailable].should == []
       end
