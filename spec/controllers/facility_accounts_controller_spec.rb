@@ -309,7 +309,7 @@ describe FacilityAccountsController do
   end
 
 
-  context 'show_statement', :if => AccountManager.using_statements? do
+  context 'show_statement', :timecop_freeze, :if => AccountManager.using_statements? do
 
     before :each do
       @method=:get
@@ -317,7 +317,7 @@ describe FacilityAccountsController do
 
       2.times do
         @statement=FactoryGirl.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => @account)
-        sleep 1 # need different timestamp on statement
+        Timecop.travel(1.second.from_now) # need different timestamp on statement
       end
 
       @params={ :facility_id => @authable.url_name, :account_id => @account.id, :statement_id => 'recent' }
