@@ -17,6 +17,7 @@ module Dataprobe
       socket = hello_socket
       write_control_cmd socket, mode, outlet
       raise "Error while toggling outlet #{outlet}" unless socket.recv(1) == "\x00"
+      status
     ensure
       socket.close
     end

@@ -32,12 +32,14 @@ describe Dataprobe::Ipio do
 
   it 'turns the relay on' do
     should_toggle
-    relay.toggle 4, true
+    state = relay.toggle 4, true
+    expect(state).to eq(true)
   end
 
   it 'turns the relay off' do
     should_toggle "\x00"
-    relay.toggle 4, false
+    state = relay.toggle 4, false
+    expect(state).to eq(false)
   end
 
   it 'raises an error if an unexpected response was given by the socket' do
