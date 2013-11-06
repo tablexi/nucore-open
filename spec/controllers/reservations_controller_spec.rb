@@ -905,37 +905,85 @@ describe ReservationsController do
       end
     end
 
-    context 'switch_instrument' do
-
+    context 'switch_instrument', :timecop_freeze do
       before :each do
-        @method=:get
-        @action=:switch_instrument
+        @method = :get
+        @action=  :switch_instrument
         @params.merge!(:reservation_id => @reservation.id)
-        FactoryGirl.create(:relay, :instrument => @instrument)
-        @random_user = FactoryGirl.create(:user)
+        create(:relay, :instrument => @instrument)
+        @random_user = create(:user)
       end
 
       context 'on' do
-         before :each do
-           @params.merge!(:switch => 'on')
-         end
+        before :each do
+          @params.merge!(:switch => 'on')
+        end
 
-        it_should_allow :guest do
-          assigns(:order).should == @order
-          assigns(:order_detail).should == @order_detail
-          assigns(:instrument).should == @instrument
-          assigns(:reservation).should == @reservation
-          assigns(:reservation).actual_start_at.should < Time.zone.now
-          assigns(:instrument).instrument_statuses.size.should == 1
-          assigns(:instrument).instrument_statuses[0].is_on.should == true
-          should set_the_flash
-          should respond_with :redirect
+        context 'as the user' do
+          before :each do
+            sign_in @guest
+            do_request
+          end
+
+          it 'assigns the proper variables' do
+            assigns(:order).should == @order
+            assigns(:order_detail).should == @order_detail
+            assigns(:instrument).should == @instrument
+            assigns(:reservation).should == @reservation
+          end
+
+          it 'updates the instrument status' do
+            assigns(:instrument).instrument_statuses.size.should == 1
+            assigns(:instrument).instrument_statuses[0].is_on.should == true
+          end
+
+          it 'responds properly' do
+            should set_the_flash
+            should respond_with :redirect
+          end
+
+          it 'starts the reservation' do
+            assigns(:reservation).actual_start_at.should == Time.zone.now
+          end
         end
 
         it_should_allow_all facility_operators, 'turn on instrument from someone elses reservation' do
           should respond_with :redirect
         end
+
         it_should_deny :random_user
+
+        context 'before the reservation start' do
+          let(:start_at) { 3.minutes.from_now.change(usec: 0) }
+          let(:end_at) { 63.minutes.from_now.change(usec: 0) }
+
+          before :each do
+            @reservation.update_attributes!(reserve_start_at: start_at, reserve_end_at: end_at)
+            sign_in @guest
+            do_request
+          end
+
+          it 'moves the reservation start time up' do
+            expect(assigns(:reservation).reserve_start_at).to eq(Time.zone.now)
+            expect(assigns(:reservation).reserve_end_at).to eq(end_at)
+          end
+        end
+
+        context 'after the reservation starts' do
+          let(:start_at) { 3.minutes.ago.change(usec: 0) }
+          let(:end_at) { 57.minutes.from_now.change(usec: 0) }
+
+          before :each do
+            @reservation.update_attributes!(reserve_start_at: start_at, reserve_end_at: end_at)
+            sign_in @guest
+            do_request
+          end
+
+          it 'does not change the reservation start time' do
+            expect(assigns(:reservation).reserve_start_at).to eq(start_at)
+            expect(assigns(:reservation).reserve_end_at).to eq(end_at)
+          end
+        end
 
       end
 
@@ -943,7 +991,7 @@ describe ReservationsController do
          before :each do
            @reservation.update_attribute(:actual_start_at, @start)
            @params.merge!(:switch => 'off')
-           sleep 2 # because res start time is now + 1 second. Need to make time validations pass.
+           Timecop.travel(2.seconds.from_now)
            @reservation.order_detail.price_policy.should be_nil
          end
 

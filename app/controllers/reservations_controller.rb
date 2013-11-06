@@ -244,6 +244,9 @@ class ReservationsController < ApplicationController
 
         if status
           @reservation.actual_start_at = Time.zone.now
+          # If starting in the 5 minute grace period, move the reservation forward so other
+          # reservations can't overlap with this one.
+          @reservation.reserve_start_at = @reservation.actual_start_at if @reservation.reserve_start_at > @reservation.actual_start_at
           @reservation.save!
           flash[:notice] = 'The instrument has been activated successfully'
         else

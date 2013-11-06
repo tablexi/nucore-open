@@ -42,6 +42,7 @@ Spork.prefork do
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
   RSpec.configure do |config|
+    config.treat_symbols_as_metadata_keys_with_true_values = true
     # If you're not using ActiveRecord you should remove these
     # lines, delete config/database.yml and disable :active_record
     # in your config/boot.rb
@@ -80,6 +81,7 @@ Spork.prefork do
     # For more information take a look at Spec::Runner::Configuration and Spec::Runner
 
     config.include Devise::TestHelpers, :type => :controller
+    config.include FactoryGirl::Syntax::Methods
 
     config.before(:all) do
       # users are not created within transactions, so delete them all here before running tests
@@ -109,6 +111,12 @@ Spork.prefork do
       now=(SettingsHelper::fiscal_year_beginning(Date.today) + 1.year + 10.days).change(:hour => 9, :min => 30)
       #puts "travelling to #{now}"
       Timecop.travel(now)
+    end
+
+    config.around(:each, :timecop_freeze) do |example|
+      Timecop.freeze do
+        example.call
+      end
     end
   end
 end
