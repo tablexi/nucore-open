@@ -1,11 +1,9 @@
 class NufsAccount < Account
-  validates_format_of     :account_number, :with => ValidatorFactory.pattern, :message => I18n.t('activerecord.errors.messages.bad_payment_source_format', :pattern_format => ValidatorFactory.pattern_format)
   validates_uniqueness_of :account_number, :message => "already exists"
 
   validate { validate_account_number }
 
   after_find :load_components
-
 
   def set_expires_at!
     self.expires_at = ValidatorFactory.instance(account_number).latest_expiration
@@ -35,7 +33,7 @@ class NufsAccount < Account
   # [_return_]
   #   The Validator from which the components were retrieved
   def load_components
-    validator=ValidatorFactory.instance(account_number, NUCore::COMMON_ACCOUNT)
+    validator = ValidatorFactory.instance(account_number, NUCore::COMMON_ACCOUNT)
     @components = validator.components
 
     @components.each do |k,v|
@@ -44,6 +42,8 @@ class NufsAccount < Account
     end
 
     validator
+  rescue AccountNumberFormatError => e
+    raise e
   rescue => e
     Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
     raise ValidatorError.new(e)
@@ -53,6 +53,9 @@ class NufsAccount < Account
   def validate_account_number
     begin
       validator = load_components
+    rescue AccountNumberFormatError => e
+      e.apply_to_model(self)
+      return
     rescue ValidatorError => e
       self.errors.add(:account_number, e.message)
       return

@@ -21,6 +21,8 @@ class FacilityAccountsController < ApplicationController
       begin
         account.set_expires_at!
         account.errors.add(:base, I18n.t('controllers.facility_accounts.create.expires_at_missing')) unless account.expires_at
+      rescue AccountNumberFormatError => e
+        account.expires_at = Time.zone.now # Prevent expires_at missing message
       rescue ValidatorError => e
         account.errors.add(:base, e.message)
       end

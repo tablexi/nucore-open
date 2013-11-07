@@ -3,7 +3,6 @@ class FacilityAccount < ActiveRecord::Base
 
   belongs_to :facility
 
-  validates_format_of       :account_number, :with => ValidatorFactory.pattern, :message => I18n.t('activerecord.errors.messages.bad_payment_source_format', :pattern_format => ValidatorFactory.pattern_format)
   validates_numericality_of :revenue_account, :only_integer => true, :greater_than_or_equal_to => 10000, :less_than_or_equal_to => 99999
   validates_uniqueness_of   :account_number, :scope => [:revenue_account, :facility_id]
 
@@ -45,6 +44,8 @@ class FacilityAccount < ActiveRecord::Base
 
     begin
       ValidatorFactory.instance(account_number, revenue_account).account_is_open!
+    rescue AccountNumberFormatError => e
+      e.apply_to_model(self)
     rescue ValidatorError => e
       errors.add(:account_number, e.message)
     end
