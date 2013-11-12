@@ -18,7 +18,7 @@
       .control-group
         .controls
           = r.label '&nbsp;'
-          = time_select r, :actual_start
+          = time_select r, :actual_start, :minute_step => 1
       - options = { :class => 'timeinput' }
       - options[:value] = '' if r.object.actual_duration_mins == 0
       = r.input :actual_duration_mins, :input_html => options

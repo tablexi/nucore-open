@@ -64,9 +64,9 @@ module DateHelper
   end
 
   # This is to DRY up many of the legacy places where hour/min/meridian is used in forms
-  def time_select(f, field)
+  def time_select(f, field, options = {})
     output =  f.select(:"#{field}_hour", (1..12).to_a)
-    output << f.select(:"#{field}_min", minute_options)
+    output << f.select(:"#{field}_min", minute_options(options[:minute_step]))
     output << f.select(:"#{field}_meridian", ['AM', 'PM'])
     content_tag :div, output.html_safe, :class => 'time-select'
   end
@@ -74,7 +74,7 @@ module DateHelper
   def time_select24(f, field, options = {})
     options.reverse_merge! :hours => (0..23)
     output =  f.select(:"#{field}_hour", options[:hours].to_a)
-    output << f.select(:"#{field}_min",minute_options)
+    output << f.select(:"#{field}_min",minute_options(options[:minute_step]))
     content_tag :div, output, :class => 'time-select'
   end
 
@@ -84,7 +84,8 @@ module DateHelper
 
   private
 
-  def minute_options(step = 5)
+  def minute_options(step)
+    step ||= 5
     (0..59).step(step).map { |d| ['%02d' % d, d] }
   end
 
