@@ -6,7 +6,7 @@ describe FacilityAccount do
       @user     = FactoryGirl.create(:user)
       @facility = FactoryGirl.create(:facility)
       assert @facility.valid?
-      @options  = Hash[:is_active => 1, :created_by => @user.id, :facility_id => @facility.id, :revenue_account => 10000]
+      @options  = Hash[:is_active => 1, :created_by => @user.id, :facility_id => @facility.id, :revenue_account => 51234]
       @starts_at  = Time.zone.now-3.days
       @expires_at = Time.zone.now+3.days
     end
@@ -55,7 +55,7 @@ describe FacilityAccount do
       assert @account.valid?
     end
 
-    it "should not allow format fund3-dept7-project8-activity2-program4" do
+    it "should allow format fund3-dept7-project8-activity2-program4" do
       # create chart string without program value
       @options[:account_number] = '123-1234567-12345678-12-1234'
       define_open_account(@options[:revenue_account], @options[:account_number])

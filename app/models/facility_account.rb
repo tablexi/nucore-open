@@ -40,8 +40,6 @@ class FacilityAccount < ActiveRecord::Base
 
 
   def validate_chartstring
-    return if Rails.env.test?
-
     begin
       ValidatorFactory.instance(account_number, revenue_account).account_is_open!
     rescue AccountNumberFormatError => e
