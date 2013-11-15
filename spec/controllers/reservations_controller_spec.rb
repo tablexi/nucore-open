@@ -658,6 +658,23 @@ describe ReservationsController do
       end
     end
 
+    describe 'restricted instrument' do
+      before :each do
+        @instrument.update_attributes(:requires_approval => true)
+      end
+
+      context 'acting as non-authorized user' do
+        before :each do
+          sign_in @admin
+          switch_to @guest
+        end
+
+        it 'shows correctly' do
+          do_request
+          expect(response).to be_success
+        end
+      end
+    end
   end
 
 
