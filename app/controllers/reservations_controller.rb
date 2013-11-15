@@ -145,7 +145,8 @@ class ReservationsController < ApplicationController
   # GET /orders/1/order_details/1/reservations/new
   def new
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
-    next_available = @instrument.next_available_reservation(1.minute.from_now, default_reservation_mins.minutes, :user => acting_user)
+    options = current_user.can_override_restrictions?(@instrument) ? {} : { user: acting_user }
+    next_available = @instrument.next_available_reservation(1.minute.from_now, default_reservation_mins.minutes, options)
     @reservation  = next_available || default_reservation
     @reservation.round_reservation_times
     flash[:notice] = t_model_error(Instrument, 'acting_as_not_on_approval_list') unless @instrument.is_approved_for?(acting_user)
@@ -374,8 +375,8 @@ class ReservationsController < ApplicationController
 
   def default_reservation
     Reservation.new(:product => @instrument,
-                    :duration_value => default_reservation_mins,
-                    :duration_unit => 'minutes')
+                    :reserve_start_at => Time.zone.now,
+                    :reserve_end_at => default_reservation_mins.minutes.from_now)
   end
 
   def month_view?
