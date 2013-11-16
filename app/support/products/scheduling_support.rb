@@ -74,23 +74,8 @@ module Products::SchedulingSupport
 
   # find the next available reservation based on schedule rules and existing reservations
   def next_available_reservation(after = Time.zone.now, duration = 1.minute, options = {})
-    reservation = nil
-    day_of_week = after.wday
-
-    0.upto(6) do |i|
-      day_of_week = (day_of_week + i) % 6
-
-      rules_for_day(day_of_week, options[:user]).each do |rule|
-        finder = ReservationFinder.new(after, rule, options)
-        reservation = finder.next_reservation self, duration
-        return reservation if reservation
-      end
-
-      # advance to start of next day
-      after = after.end_of_day + 1.second
-    end
-
-    reservation
+    rules = rules_for_day after.wday, options[:user]
+    reservation_in_week after, duration, rules, options
   end
 
   def available_schedule_rules(user)
@@ -103,6 +88,26 @@ module Products::SchedulingSupport
 
 
   private
+
+  def reservation_in_week(after, duration, rules, options)
+    day_of_week = after.wday
+
+    0.upto(6) do |i|
+      day_of_week = (day_of_week + i) % 6
+
+      rules.each do |rule|
+        finder = ReservationFinder.new(after, rule, options)
+        reservation = finder.next_reservation self, duration
+        return reservation if reservation
+      end
+
+      # advance to start of next day
+      after = after.end_of_day + 1.second
+    end
+
+    # no availability found in this week; check next week
+    reservation_in_week after, duration, rules, options
+  end
 
   #
   # find rules for day of week, sort by start hour

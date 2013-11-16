@@ -377,14 +377,14 @@ describe Instrument do
                                       :min_reserve_mins => 60,
                                       :max_reserve_mins => 60)
       assert @instrument.valid?
-    end
-
-    it "should find next available reservation with 60 minute interval rule, without any pending reservations" do
       # add rule, available every day from 9 to 5, 60 minutes duration/interval
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       assert @rule.valid?
       # stub so today at 9 am is not in the future
       Reservation.any_instance.stub(:in_the_future).and_return(true)
+    end
+
+    it "should find next available reservation with 60 minute interval rule, without any pending reservations" do
       # find next reservation after 12 am at 9 am
       @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day
@@ -401,12 +401,18 @@ describe Instrument do
       assert_equal 0, @next_reservation.reserve_start_at.min
     end
 
+    it 'should find the next available reservation even if it is far in the future' do
+      res_start = Time.zone.now.beginning_of_day
+      res_end = res_start + 10.days
+      reservation = @instrument.reservations.create :reserve_start_at => res_start, :reserve_end_at => res_end
+      expect(reservation).to be_valid
+      next_reservation = @instrument.next_available_reservation res_start
+      expect(next_reservation.reserve_start_at).to be > res_end
+      expect(next_reservation.reserve_start_at).to eq @instrument.next_available_reservation(res_end).reserve_start_at
+    end
+
     it "should find next available reservation with 5 minute interval rule, without any pending reservations" do
-      # add rule, available every day from 9 to 5, 5 minute duration/interval
-      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :duration_mins => 5))
-      assert @rule.valid?
-      # stub so today at 9 am is not in the future
-      Reservation.any_instance.stub(:in_the_future).and_return(true)
+      @rule.update_attribute :duration_mins, 5
       # find next reservation after 12 am at 9 am
       @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day
@@ -425,9 +431,6 @@ describe Instrument do
     end
 
     it "should find next available reservation with pending reservations" do
-      # add rule, available every day from 9 to 5, 60 minutes duration
-      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
-      assert @rule.valid?
       # add reservation for tomorrow morning at 9 am
       @start        = Time.zone.now.end_of_day + 1.second + 9.hours
       @reservation1 = @instrument.reservations.create(:reserve_start_at => @start, :duration_value => 60, :duration_unit => 'minutes')
