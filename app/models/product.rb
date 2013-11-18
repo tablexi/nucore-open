@@ -64,6 +64,14 @@ class Product < ActiveRecord::Base
     name.casecmp obj.name
   end
 
+  def active_product_accessories
+    product_accessories.delete_if{|pa| pa.deleted_at.present? }
+  end
+
+  def active_accessories
+    active_product_accessories.map &:accessory
+  end
+
   # If there isn't an email specific to the product, fall back to the facility's email
   def email
     # If product_specific_contacts is off, always return the facility's email
