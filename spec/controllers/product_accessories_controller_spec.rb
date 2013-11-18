@@ -46,6 +46,15 @@ describe ProductAccessoriesController do
         expect(assigns(:available_accessories)).to_not include(instrument)
       end
     end
+
+    it 'only includes active accessories' do
+      maybe_grant_always_sign_in :admin
+      instrument.accessories << accessory
+      ProductAccessory.first.soft_delete
+      instrument.accessories << unchosen_accessory
+      do_request
+      expect(assigns(:product_accessories)).to_not include accessory
+    end
   end
 
   describe 'create' do
@@ -118,8 +127,8 @@ describe ProductAccessoriesController do
         do_request
       end
 
-      it 'destroys the accessory' do
-        expect(assigns(:product_accessory)).to be_destroyed
+      it 'soft deletes the accessory' do
+        expect(assigns(:product_accessory)).to be_deleted
       end
 
       it 'redirects to index' do
