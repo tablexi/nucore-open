@@ -13,4 +13,12 @@ class ProductAccessory < ActiveRecord::Base
   def self.scaling_types
     SCALING_TYPES
   end
+
+  def soft_delete
+    update_attribute :deleted_at, Time.zone.now
+  end
+
+  def deleted?
+    self.deleted_at.present?
+  end
 end
