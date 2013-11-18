@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130808193707) do
+ActiveRecord::Schema.define(:version => 20131118175503) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -324,9 +324,10 @@ ActiveRecord::Schema.define(:version => 20130808193707) do
   end
 
   create_table "product_accessories", :force => true do |t|
-    t.integer "product_id",                           :null => false
-    t.integer "accessory_id",                         :null => false
-    t.string  "scaling_type", :default => "quantity", :null => false
+    t.integer  "product_id",                           :null => false
+    t.integer  "accessory_id",                         :null => false
+    t.string   "scaling_type", :default => "quantity", :null => false
+    t.datetime "deleted_at"
   end
 
   create_table "product_users", :force => true do |t|
