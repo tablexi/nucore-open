@@ -20,14 +20,14 @@ module OrderDetail::Accessorized
   end
 
   def accessories?
-    product.product_accessories.any?
+    product.active_product_accessories.any?
   end
 
   # Can add accessories only if the order is complete
   # and there are still accessories that haven't been added
   # (i.e. you can't add two of the same accessories--use quantity instead)
   def add_accessories?
-    complete? && product.accessories.count > child_order_details.count
+    complete? && product.active_accessories.count > child_order_details.count
   end
 
   def quantity_as_time?
