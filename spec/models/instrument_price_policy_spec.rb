@@ -440,19 +440,43 @@ describe InstrumentPricePolicy do
       ))
       @now = Time.zone.now
       # set reservation window to usage minutes from the price policy
-      @reservation = Reservation.new(:reserve_start_at => @now,
-                                     :reserve_end_at => @now + @ipp.usage_mins.minutes)
+      @reservation = Reservation.new(
+        :product => @instrument,
+        :reserve_start_at => @now,
+        :reserve_end_at => @now + @ipp.usage_mins.minutes
+      )
     end
 
-    it 'should return zero for zero priced policy' do
-      @ipp.update_attributes(:usage_rate => 0, :usage_subsidy => 0)
-      @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-      @costs.should == {:cost => 0, :subsidy => 0}
+
+    context 'free with actuals' do
+      before :each do
+        @ipp.update_attributes(:usage_rate => 0, :usage_subsidy => 0)
+        yesterday = @now - 1.day
+        end_time = yesterday + 1.hour
+        @reservation.update_attributes(
+          reserve_start_at: yesterday,
+          reserve_end_at: end_time,
+          actual_start_at: yesterday,
+          actual_end_at: end_time
+        )
+      end
+
+      it 'should return zero for zero priced policy' do
+        @costs = @ipp.calculate_cost_and_subsidy(@reservation)
+        @costs.should == {:cost => 0, :subsidy => 0}
+      end
+
+      it 'should return minimum cost for a zero priced policy' do
+        @ipp.update_attribute :minimum_cost, 20
+        @costs = @ipp.calculate_cost_and_subsidy(@reservation)
+        @costs.should == {:cost => 20, :subsidy => 0}
+      end
     end
-    it 'should return minimum cost for a zero priced policy' do
-      @ipp.update_attributes(:usage_rate => 0, :usage_subsidy => 0, :minimum_cost => 20)
-      @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-      @costs.should == {:cost => 20, :subsidy => 0}
+
+    it 'should return nil if an instrument is free and the reservation requires but is missing actuals' do
+      @ipp.update_attributes(:usage_rate => 0, :usage_subsidy => 0)
+      expect(@reservation).to be_requires_but_missing_actuals
+      expect(@ipp.calculate_cost_and_subsidy(@reservation)).to be_nil
     end
 
     it "should correctly calculate cost with usage rate and subsidy" do
