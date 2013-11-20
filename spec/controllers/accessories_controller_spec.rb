@@ -97,6 +97,18 @@ describe AccessoriesController do
           expect(assigns(:order_details).first).to be_persisted
         end
 
+        it 'allows a soft deleted accessory to be accessed through the order detail' do
+          do_request
+          expect(assigns(:order_details).size).to eq 1
+          detail = assigns(:order_details).first
+          expect(detail.product_accessory.accessory).to eq quantity_accessory
+          expect(instrument.product_accessories.size).to eq 1
+          expect(instrument.product_accessories.first.accessory).to eq quantity_accessory
+          instrument.product_accessories.first.soft_delete
+          expect(instrument.product_accessories.size).to eq 0
+          expect(detail.reload.product_accessory.accessory).to eq quantity_accessory
+        end
+
         it 'creates the order detail with the correct quantity' do
           do_request
           expect(assigns(:order_details).first.quantity).to eq(3)

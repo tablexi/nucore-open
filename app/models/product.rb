@@ -8,7 +8,7 @@ class Product < ActiveRecord::Base
   has_many   :stored_files
   has_many   :price_groups, :through => :price_group_products
   has_many   :price_group_products
-  has_many   :product_accessories, :dependent => :destroy
+  has_many   :product_accessories, conditions: { deleted_at: nil }, dependent: :destroy
   has_many   :accessories, :through => :product_accessories, :class_name => 'Product'
   has_many   :price_policies
 

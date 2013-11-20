@@ -285,4 +285,24 @@ describe Product do
     end
 
   end
+
+  describe 'accessories' do
+    before :each do
+      create :accessory
+      dup = ProductAccessory.first.dup
+      dup.deleted_at = Time.zone.now
+      dup.save!
+    end
+
+    let(:product) { ProductAccessory.first.product }
+
+    it 'has 1 active accessory' do
+      expect(product.accessories.size).to eq 1
+    end
+
+    it 'has 1 active product accessory' do
+      expect(product.product_accessories.size).to eq 1
+    end
+  end
+
 end

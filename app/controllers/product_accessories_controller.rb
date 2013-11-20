@@ -14,7 +14,7 @@ class ProductAccessoriesController < ApplicationController
   end
 
   def index
-    @product_accessory = @product.product_accessories.new
+    @product_accessory = ProductAccessory.new product: @product
     set_available_accessories
   end
 
@@ -25,7 +25,7 @@ class ProductAccessoriesController < ApplicationController
   end
 
   def destroy
-    @product_accessory.destroy
+    @product_accessory.soft_delete
     flash[:notice] = I18n.t('product_accessories.destroy.success')
     redirect_to :action => :index
   end
@@ -37,8 +37,9 @@ class ProductAccessoriesController < ApplicationController
   end
 
   def set_available_accessories
-    # Already set as an accessory, or is this this instrument
-    non_available_accessories = @product.accessory_ids + [@product.id]
-    @available_accessories = current_facility.products.non_instruments.exclude(non_available_accessories).order(:name)
+    # Already set as an accessory, or is this instrument
+    non_available_accessories = [ @product.id ]
+    non_available_accessories += @product_accessories.map{|pa| pa.accessory_id } if @product_accessories.present?
+    @available_accessories = current_facility.products.non_instruments.exclude(non_available_accessories).order(:name).all
   end
 end
