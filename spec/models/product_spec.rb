@@ -296,20 +296,12 @@ describe Product do
 
     let(:product) { ProductAccessory.first.product }
 
-    it 'has 2 accessories' do
-      expect(product.accessories.size).to eq 2
-    end
-
     it 'has 1 active accessory' do
-      expect(product.active_accessories.size).to eq 1
-    end
-
-    it 'has 2 product accessories' do
-      expect(product.product_accessories.size).to eq 2
+      expect(product.accessories.size).to eq 1
     end
 
     it 'has 1 active product accessory' do
-      expect(product.active_product_accessories.size).to eq 1
+      expect(product.product_accessories.size).to eq 1
     end
   end
 

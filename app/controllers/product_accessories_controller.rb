@@ -4,7 +4,6 @@ class ProductAccessoriesController < ApplicationController
   before_filter :check_acting_as
   before_filter :init_current_facility
   before_filter :init_product
-  before_filter :init_accessories
   load_and_authorize_resource :through => :product
 
   layout 'two_column'
@@ -33,10 +32,6 @@ class ProductAccessoriesController < ApplicationController
 
   private
 
-  def init_accessories
-    @product_accessories = @product.active_product_accessories
-  end
-
   def init_product
     @product = current_facility.products.find_by_url_name!(params[:product_id])
   end
@@ -44,7 +39,7 @@ class ProductAccessoriesController < ApplicationController
   def set_available_accessories
     # Already set as an accessory, or is this instrument
     non_available_accessories = [ @product.id ]
-    non_available_accessories += @product_accessories.map{|pa| pa.accessory.id } if @product_accessories.present?
+    non_available_accessories += @product_accessories.map{|pa| pa.accessory_id } if @product_accessories.present?
     @available_accessories = current_facility.products.non_instruments.exclude(non_available_accessories).order(:name).all
   end
 end

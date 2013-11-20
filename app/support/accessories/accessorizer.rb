@@ -32,7 +32,7 @@ class Accessories::Accessorizer
   # have already been ordered
   def available_accessory_order_details
     current_accessories = @order_detail.child_order_details.map(&:product)
-    accessories = @order_detail.product.active_accessories.reject { |a| current_accessories.include? a }
+    accessories = @order_detail.product.accessories.reject { |a| current_accessories.include? a }
     accessories.map { |a| self.build_accessory_order_detail(a) }
   end
 
@@ -59,7 +59,7 @@ class Accessories::Accessorizer
   end
 
   def valid_accessory?(accessory)
-    @order_detail.product.active_accessories.include? accessory
+    @order_detail.product.accessories.include? accessory
   end
 
   def decorate(order_detail)

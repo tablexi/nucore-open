@@ -8,7 +8,7 @@ class Product < ActiveRecord::Base
   has_many   :stored_files
   has_many   :price_groups, :through => :price_group_products
   has_many   :price_group_products
-  has_many   :product_accessories, :dependent => :destroy
+  has_many   :product_accessories, conditions: { deleted_at: nil }, dependent: :destroy
   has_many   :accessories, :through => :product_accessories, :class_name => 'Product'
   has_many   :price_policies
 
@@ -62,14 +62,6 @@ class Product < ActiveRecord::Base
 
   def <=> (obj)
     name.casecmp obj.name
-  end
-
-  def active_product_accessories
-    product_accessories.delete_if{|pa| pa.deleted_at.present? }
-  end
-
-  def active_accessories
-    active_product_accessories.map &:accessory
   end
 
   # If there isn't an email specific to the product, fall back to the facility's email
