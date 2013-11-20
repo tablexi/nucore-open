@@ -60,12 +60,16 @@ class InstrumentPricePolicy < PricePolicy
     estimate_cost_and_subsidy(order_detail.reservation.reserve_start_at, order_detail.reservation.reserve_end_at)
   end
 
+  def free?
+    @is_free ||= (reservation_rate.to_f == 0 && usage_rate.to_f == 0 && overage_rate.to_f == 0)
+  end
+
   def estimate_cost_and_subsidy (start_at, end_at)
     return nil if restrict_purchase? || end_at <= start_at
     costs = {}
 
     ## the instrument is free to use
-    if reservation_rate.to_f == 0 && usage_rate.to_f == 0 && overage_rate.to_f == 0
+    if free?
       costs[:cost]    = minimum_cost || 0
       costs[:subsidy] = 0
       return costs
@@ -108,13 +112,6 @@ class InstrumentPricePolicy < PricePolicy
       end
     end
 
-    ## the instrument is free to use, so no costs matter
-    if reservation_rate.to_f == 0 && usage_rate.to_f == 0 && overage_rate.to_f == 0
-      actual_cost = minimum_cost || 0
-      actual_subsidy = 0
-      return {:cost => actual_cost, :subsidy => actual_subsidy}
-    end
-
     ## the instrument has a reservation cost only (i.e. is controlled manually)
     if product.control_mechanism == Relay::CONTROL_MECHANISMS[:manual]
       return nil if reservation_rate.nil? || reservation_subsidy.nil?
@@ -137,6 +134,13 @@ class InstrumentPricePolicy < PricePolicy
 
     ## make sure actuals are entered
     return nil unless (reservation.actual_start_at && reservation.actual_end_at)
+
+    ## the instrument is free to use, so no costs matter
+    if free?
+      actual_cost = minimum_cost || 0
+      actual_subsidy = 0
+      return {:cost => actual_cost, :subsidy => actual_subsidy}
+    end
 
     act_end_at=strip_seconds reservation.actual_end_at
     act_start_at=strip_seconds reservation.actual_start_at
