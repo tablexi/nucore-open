@@ -248,7 +248,9 @@ class ReservationsController < ApplicationController
           # If starting in the 5 minute grace period, move the reservation forward so other
           # reservations can't overlap with this one.
           @reservation.reserve_start_at = @reservation.actual_start_at if @reservation.reserve_start_at > @reservation.actual_start_at
-          @reservation.save!
+          # Don't validate so we don't have to worry about being slightly larger that max_reservation
+          # or any scheduling rule conflics.
+          @reservation.save! validate: false
           flash[:notice] = 'The instrument has been activated successfully'
         else
           raise Exception
