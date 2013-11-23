@@ -75,6 +75,9 @@ module Products::SchedulingSupport
   # find the next available reservation based on schedule rules and existing reservations
   def next_available_reservation(after = Time.zone.now, duration = 1.minute, options = {})
     rules = rules_for_day after.wday, options[:user]
+    # if the user has no schedule rules, there will be no time that they can
+    # move the reservation to
+    return nil unless rules.any?
     reservation_in_week after, duration, rules, options
   end
 
@@ -90,6 +93,7 @@ module Products::SchedulingSupport
   private
 
   def reservation_in_week(after, duration, rules, options)
+
     day_of_week = after.wday
 
     0.upto(6) do |i|
@@ -103,6 +107,7 @@ module Products::SchedulingSupport
 
       # advance to start of next day
       after = after.end_of_day + 1.second
+      return nil if options[:until] && after >= options[:until]
     end
 
     # no availability found in this week; check next week

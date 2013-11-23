@@ -89,7 +89,27 @@ describe Reservation do
       it "shouldn't throw an exception if Instrument#next_available_reservation and_return nil" do
         Instrument.any_instance.stub(:next_available_reservation).and_return nil
         @reservation1.earliest_possible
+      end
 
+      it 'does not hang on restricted instrument if user does not have access' do
+        expect(@reservation1.earliest_possible).to be
+        @instrument.update_attributes(requires_approval: true)
+        expect(@reservation1.reload.earliest_possible).to be_nil
+      end
+
+      it 'does not look at time after the reservation' do
+        @instrument.update_attributes(max_reserve_mins: nil)
+        @instrument.schedule_rules.update_all(start_hour: 0, end_hour: 24)
+        # Make sure there is no time between now and the reservation
+        order         = @user.orders.create(attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
+        order_attrs   = attributes_for(:order_detail, :product_id => @instrument.id, :quantity => 1, :account => @account)
+        detail1       = order.order_details.create(order_attrs)
+        res = @instrument.reservations.create(reserve_start_at: Time.zone.now, reserve_end_at: @reservation1.reserve_start_at, order_detail: detail1)
+        detail2       = order.order_details.create(order_attrs)
+        res2 = @instrument.reservations.create(reserve_start_at: @reservation1.reserve_end_at, reserve_end_at: @reservation1.reserve_end_at + 1.day, order_detail: detail2)
+        res.order.validate_order!
+        res.order.purchase!
+        expect(@reservation1.reload.earliest_possible).to be_nil
       end
     end
 
