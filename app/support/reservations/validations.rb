@@ -75,11 +75,11 @@ module Reservations::Validations
   end
 
   def satisfies_maximum_length?
-    return true if product.max_reserve_mins.nil? || product.max_reserve_mins == 0
+    return true if product.max_reserve_mins.to_i == 0
     diff = reserve_end_at - reserve_start_at # in seconds
 
     # If this is updating because we're in the grace period, use the old value for checking duration
-    if grace_period_update && actual_start_at && reserve_start_at_changed?
+    if in_grace_period? && actual_start_at && reserve_start_at_changed?
       diff = reserve_end_at - reserve_start_at_was
     end
 
@@ -98,7 +98,7 @@ module Reservations::Validations
     # check for order_detail and order because some old specs don't set an order detail
     # if we're saving as an administrator, or doing a starting in the grace period,
     # we want access to all schedule rules
-    if order_detail.try(:order).nil? || reserved_by_admin || grace_period_update
+    if order_detail.try(:order).nil? || reserved_by_admin || in_grace_period?
       rules = product.schedule_rules
     else
       rules = product.available_schedule_rules(order_detail.order.user)

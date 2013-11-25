@@ -7,7 +7,7 @@ module SettingsHelper
 
   def self.fiscal_year_beginning(date=nil)
     date ||= Time.zone.now
-    fiscal_year_starts = fiscal_year(date.year) 
+    fiscal_year_starts = fiscal_year(date.year)
     date.to_time >= fiscal_year_starts ? fiscal_year_starts : fiscal_year_starts - 1.year
   end
 
@@ -39,6 +39,14 @@ module SettingsHelper
     Settings.feature.send(:"#{feature}_on=", !!value) # !! forces to boolean
   end
 
-
-
+  #
+  # Used for looking up a setting where parts of the chain might not be there.
+  # Setting is accessed like "reservations.grace_period"
+  def self.setting(setting)
+    current = Settings
+    setting.split('.').each do |s|
+      current = current.try(:[], s)
+    end
+    current
+  end
 end
