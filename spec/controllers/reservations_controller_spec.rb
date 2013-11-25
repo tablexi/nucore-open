@@ -996,22 +996,31 @@ describe ReservationsController do
           end
 
           context 'and the reservation is already at maximum length' do
-            before { @instrument.update_attributes(max_reserve_mins: 60) }
-            it 'allows it to start' do
+            before do
+              @instrument.update_attributes(max_reserve_mins: 60)
               do_request
+            end
+            it 'allows it to start' do
               expect(assigns(:reservation)).to_not be_changed
               expect(assigns(:reservation).reserve_start_at).to eq(Time.zone.now)
             end
+
+            it 'then allows it to end' do
+              @params[:switch] = 'off'
+            end
+
+
           end
 
           context 'and there is another reservation still going on' do
             let!(:reservation2) { create(:purchased_reservation, product: @instrument,
               reserve_start_at: start_at - 30.minutes, reserve_end_at: start_at) }
 
-            it 'allows it to start' do
+            it 'allows it to start, but does not move the reservation time' do
               do_request
               expect(assigns(:reservation)).to_not be_changed
-              expect(assigns(:reservation).reserve_start_at).to eq(Time.zone.now)
+              expect(assigns(:reservation).reserve_start_at).to eq(start_at)
+              expect(assigns(:reservation).actual_start_at).to eq(Time.zone.now)
             end
           end
         end

@@ -24,6 +24,7 @@ class Reservation < ActiveRecord::Base
 
   # used for overriding certain restrictions
   attr_accessor :reserved_by_admin
+  attr_accessor :grace_period_update
 
   # Delegations
   #####
