@@ -259,6 +259,33 @@ describe InstrumentsController do
         end
       end
 
+      describe 'relay validations' do
+        let!(:instrument2) { create(:instrument, facility: @authable, facility_account: @facility_account, no_relay: true) }
+        let!(:old_relay) { create(:relay_syna, :instrument => instrument2) }
+
+        before :each do
+          sign_in @admin
+          @params[:instrument][:relay_attributes][:ip] = old_relay.ip
+          @params[:instrument][:relay_attributes][:port] = old_relay.port
+        end
+
+        context "and the relay is taken by a different instrument" do
+          it 'does not allow the relay to be used again' do
+            do_request
+            expect(assigns(:instrument)).to_not be_persisted
+            expect(assigns(:instrument).errors).to include(:relay)
+          end
+        end
+
+        context "and the relay is taken, but on the same shared schedule" do
+          it 'allows creation' do
+            @params[:instrument][:schedule_id] = instrument2.schedule_id
+            do_request
+            expect(assigns(:instrument)).to be_persisted
+            expect(assigns(:instrument).relay).to be_persisted
+          end
+        end
+      end
 
     end
 
