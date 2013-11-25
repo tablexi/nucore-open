@@ -287,7 +287,7 @@ class OrdersController < ApplicationController
           end
         end
 
-        Notifier.order_receipt(:user => @order.user, :order => @order).deliver unless acting_as? && !params[:send_notification]
+        Notifier.order_receipt(:user => @order.user, :order => @order).deliver if should_send_notification?
 
         # If we're only making a single reservation, we'll redirect
         if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled? && !acting_as?
@@ -343,15 +343,6 @@ class OrdersController < ApplicationController
     end
     @order_details = @order_details. order('order_details.created_at DESC').paginate(:page => params[:page])
   end
-  # def index_all
-    # # won't show instrument order_details
-    # @order_details = session_user.order_details.
-      # non_reservations.
-      # where("orders.ordered_at IS NOT NULL").
-      # order('orders.ordered_at DESC').
-      # paginate(:page => params[:page])
-  # end
-
 
   private
 
@@ -377,5 +368,9 @@ class OrdersController < ApplicationController
 
   def load_statuses
     @order_statuses = OrderStatus.non_protected_statuses(@order.facility)
+  end
+
+  def should_send_notification?
+    !acting_as? || params[:send_notification] == '1'
   end
 end
