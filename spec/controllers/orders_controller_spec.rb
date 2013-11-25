@@ -315,25 +315,37 @@ describe OrdersController do
         do_request
         response.should redirect_to receipt_order_url(@order)
       end
-      it 'should send a notification' do
-        Notifier.should_receive(:order_receipt).once.and_return(DummyNotifier.new)
-        sign_in @admin
-        do_request
-      end
-      it "should not send an email by default if you're acting as" do
-        Notifier.should_receive(:order_receipt).never
-        sign_in @admin
-        switch_to @staff
-        do_request
-      end
-      it "should send an email if you're acting as and set the parameter" do
-        Notifier.should_receive(:order_receipt).once.and_return(DummyNotifier.new)
-        sign_in @admin
-        switch_to @staff
-        @params.merge!(:send_notification => '1')
-        do_request
-      end
 
+      describe 'notification sending' do
+        it 'should send a notification' do
+          Notifier.should_receive(:order_receipt).once.and_return(DummyNotifier.new)
+          sign_in @admin
+          do_request
+        end
+
+        it "should not send an email by default if you're acting as" do
+          Notifier.should_receive(:order_receipt).never
+          sign_in @admin
+          switch_to @staff
+          do_request
+        end
+
+        it "should not send an email if you're acting as and have the checkbox unchecked" do
+          Notifier.should_receive(:order_receipt).never
+          sign_in @admin
+          switch_to @staff
+          @params.merge!(:send_notification => '0')
+          do_request
+        end
+
+        it "should send an email if you're acting as and set the parameter" do
+          Notifier.should_receive(:order_receipt).once.and_return(DummyNotifier.new)
+          sign_in @admin
+          switch_to @staff
+          @params.merge!(:send_notification => '1')
+          do_request
+        end
+      end
     end
 
     context 'backdating' do
