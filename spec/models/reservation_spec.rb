@@ -516,7 +516,7 @@ describe Reservation do
     assert @reservation.valid?
   end
 
-  it 'allows starting of an instrument even though another reservation is running but over end time' do
+  it 'allows starting of an instrument even though another reservation is running but over end time', :timecop_freeze  do
     now = Time.zone.now
     next_hour = now + 1.hour
     hour_ago = now - 1.hour
