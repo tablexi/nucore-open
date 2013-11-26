@@ -113,6 +113,21 @@ class Reservation < ActiveRecord::Base
   # Instance Methods
   #####
 
+  def start_reservation!
+    self.actual_start_at = Time.zone.now
+    start_in_grace_period if in_grace_period?
+    save!
+  end
+
+  def end_reservation!
+    self.actual_end_at = Time.zone.now
+    save!
+    # reservation is done, now give the best price
+    order_detail.assign_price_policy
+    order_detail.save!
+  end
+
+
   def round_reservation_times
     self.reserve_start_at = time_ceil(self.reserve_start_at) if self.reserve_start_at
     self.reserve_end_at   = time_ceil(self.reserve_end_at) if self.reserve_end_at
@@ -146,7 +161,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def can_start_early?
-    return false if reserve_start_at > Time.zone.now.advance(:minutes => 5) # reserve start is more than 5 minutes in the future
+    return false unless in_grace_period?
     # no other reservation ongoing; no res between now and reserve_start;
     where = <<-SQL
       reserve_start_at > ?
@@ -227,4 +242,24 @@ class Reservation < ActiveRecord::Base
     end
   end
 
+  def in_grace_period?(at = Time.zone.now)
+    grace_period_begin = reserve_start_at - grace_period_duration
+    grace_period_end = reserve_start_at
+    at >= grace_period_begin && at <= grace_period_end
+  end
+
+  def grace_period_duration
+    SettingsHelper.setting('reservations.grace_period') || 5.minutes
+  end
+
+  def start_in_grace_period
+    # Move the reservation time forward so other reservations can't overlap
+    # with this one, but only move it forward if there's not already a reservation
+    # currently in progress.
+    original_start_at = reserve_start_at
+    self.reserve_start_at = actual_start_at
+    unless does_not_conflict_with_other_reservation?
+      self.reserve_start_at = original_start_at
+    end
+  end
 end

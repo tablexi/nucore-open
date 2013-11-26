@@ -230,56 +230,19 @@ class ReservationsController < ApplicationController
   def switch_instrument
     authorize! :start_stop, @reservation
 
-    relay_error_msg = 'An error was encountered while attempted to toggle the instrument. Please try again.'
     raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == 'on' || params[:switch] == 'off')
 
     begin
-      relay = @instrument.relay
-      if (params[:switch] == 'on' && @reservation.can_switch_instrument_on?)
-        status=Rails.env.production? ? nil : true
-
-        if status.nil?
-          relay.activate
-          status = relay.get_status
-        end
-
-        if status
-          @reservation.actual_start_at = Time.zone.now
-          # If starting in the 5 minute grace period, move the reservation forward so other
-          # reservations can't overlap with this one.
-          @reservation.reserve_start_at = @reservation.actual_start_at if @reservation.reserve_start_at > @reservation.actual_start_at
-          @reservation.save!
-          flash[:notice] = 'The instrument has been activated successfully'
-        else
-          raise Exception
-        end
-        @instrument.instrument_statuses.create(:is_on => status)
-      elsif (params[:switch] == 'off' && @reservation.can_switch_instrument_off?)
-        status=Rails.env.production? ? nil : false
-
-        if status.nil?
-          port=@instrument.relay.port
-          relay.deactivate
-          status = relay.get_status
-        end
-
-        if status == false
-          @reservation.actual_end_at = Time.zone.now
-          @reservation.save!
-          flash[:notice] = 'The instrument has been deactivated successfully'
-        else
-          raise Exception
-        end
-        @instrument.instrument_statuses.create(:is_on => status)
-
-        # reservation is done, now give the best price
-        @reservation.order_detail.assign_price_policy
-        @reservation.order_detail.save!
-      else
-        raise Exception
+      switcher = ReservationInstrumentSwitcher.new(@reservation)
+      if (params[:switch] == 'on')
+        switcher.switch_on!
+        flash[:notice] = 'The instrument has been activated successfully'
+      elsif (params[:switch] == 'off')
+        switcher.switch_off!
+        flash[:notice] = 'The instrument has been deactivated successfully'
       end
-    rescue Exception => e
-      flash[:error] = relay_error_msg
+    rescue => e
+      flash[:error] = e.message
     end
 
     if params[:switch] == 'off' && @order_detail.accessories?
@@ -291,6 +254,7 @@ class ReservationsController < ApplicationController
   end
 
   private
+
   def load_basic_resources
     @order_detail = Order.find(params[:order_id]).order_details.find(params[:order_detail_id])
     @order = @order_detail.order

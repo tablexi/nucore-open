@@ -44,6 +44,9 @@ order_details:
     pending_approval: StatusChangeNotifications::NotifyFacilityHook
     approved: StatusChangeNotifications::NotifyPurchaserHook
 
+reservations:
+  grace_period: <%= 5.minutes %>
+
 billing:
   review_period: <%= 7.days %>
 
