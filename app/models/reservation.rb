@@ -243,7 +243,9 @@ class Reservation < ActiveRecord::Base
   end
 
   def in_grace_period?(at = Time.zone.now)
-    reserve_start_at >= at && reserve_start_at <= at + grace_period_duration
+    grace_period_begin = reserve_start_at - grace_period_duration
+    grace_period_end = reserve_start_at
+    at >= grace_period_begin && at <= grace_period_end
   end
 
   def grace_period_duration
