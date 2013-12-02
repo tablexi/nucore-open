@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe InstrumentPricePolicy do
-  it "should create a price policy for tomorrow if no policies already exist for that day" do
-    should allow_value(Date.today+1).for(:start_date)
-  end
+  it { should allow_value(Date.today+1).for(:start_date) }
 
-  it "should create a price policy for yesterday" do
-    should allow_value(Date.today - 1).for(:start_date)
-  end
+  it { should allow_value(Date.today - 1).for(:start_date) }
+
+  it { should allow_value(123.4567).for :usage_rate }
+
+  it { should allow_value(123.4567).for :usage_subsidy }
 
   context "test requiring instruments" do
     before(:each) do
