@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131118175503) do
+ActiveRecord::Schema.define(:version => 20131202225331) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -295,7 +295,7 @@ ActiveRecord::Schema.define(:version => 20131118175503) do
     t.datetime "start_date",                                                                          :null => false
     t.decimal  "unit_cost",                         :precision => 10, :scale => 2
     t.decimal  "unit_subsidy",                      :precision => 10, :scale => 2
-    t.decimal  "usage_rate",                        :precision => 10, :scale => 2
+    t.decimal  "usage_rate",                        :precision => 12, :scale => 4
     t.integer  "usage_mins"
     t.decimal  "reservation_rate",                  :precision => 10, :scale => 2
     t.integer  "reservation_mins"
@@ -303,7 +303,7 @@ ActiveRecord::Schema.define(:version => 20131118175503) do
     t.integer  "overage_mins"
     t.decimal  "minimum_cost",                      :precision => 10, :scale => 2
     t.decimal  "cancellation_cost",                 :precision => 10, :scale => 2
-    t.decimal  "usage_subsidy",                     :precision => 10, :scale => 2
+    t.decimal  "usage_subsidy",                     :precision => 12, :scale => 4
     t.decimal  "reservation_subsidy",               :precision => 10, :scale => 2
     t.decimal  "overage_subsidy",                   :precision => 10, :scale => 2
     t.datetime "expire_date",                                                                         :null => false
@@ -362,6 +362,7 @@ ActiveRecord::Schema.define(:version => 20131118175503) do
     t.integer  "auto_cancel_mins"
     t.string   "contact_email"
     t.boolean  "time_based",                             :default => false, :null => false
+    t.integer  "reserve_interval"
   end
 
   add_index "products", ["facility_account_id"], :name => "fk_facility_accounts"
