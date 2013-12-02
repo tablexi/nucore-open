@@ -61,7 +61,7 @@ group :development, :test do
   gem 'quiet_assets'
   gem 'rspec-rails',       '2.13.2'
   gem 'ruby-debug19',      '0.11.6', :platforms => :ruby_19
-  gem 'shoulda-matchers',  '2.1'
+  gem 'shoulda-matchers',  '2.4'
   gem 'single_test',       '0.4.0'
   gem 'spork',             '0.9.2'
   gem 'thin'
