@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OldInstrumentPricePolicy do
+describe InstrumentPricePolicy do
   it "should create a price policy for tomorrow if no policies already exist for that day" do
     should allow_value(Date.today+1).for(:start_date)
   end
@@ -65,10 +65,10 @@ describe OldInstrumentPricePolicy do
       @ipp.start_date=Date.today - 7.days
       @ipp.save(:validate => false) #save without validations
       @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
-      described_class.current_date(@instrument).to_date.should == @ipp.start_date.to_date
+      InstrumentPricePolicy.current_date(@instrument).to_date.should == @ipp.start_date.to_date
 
       @ipp = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group => @price_group))
-      described_class.current_date(@instrument).to_date.should == @ipp.start_date.to_date
+      InstrumentPricePolicy.current_date(@instrument).to_date.should == @ipp.start_date.to_date
     end
 
     it "should return the date for upcoming policies" do
@@ -76,8 +76,8 @@ describe OldInstrumentPricePolicy do
       ipp2=@instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
       ipp3=@instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :start_date => Date.today + 14.days, :price_group => @price_group))
 
-      described_class.next_date(@instrument).to_date.should == ipp2.start_date.to_date
-      next_dates = described_class.next_dates(@instrument)
+      InstrumentPricePolicy.next_date(@instrument).to_date.should == ipp2.start_date.to_date
+      next_dates = InstrumentPricePolicy.next_dates(@instrument)
       next_dates.length.should == 2
       next_dates.include?(ipp2.start_date.to_date).should be_true
       next_dates.include?(ipp3.start_date.to_date).should be_true
