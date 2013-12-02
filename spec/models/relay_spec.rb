@@ -40,7 +40,6 @@ describe Relay do
       end
 
     end
-    # it { should validate_uniqueness_of(:port).scoped_to(:ip) }
 
     it 'should alias host to ip' do
       @relay.host.should == @relay.ip
