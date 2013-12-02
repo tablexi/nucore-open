@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe InstrumentPricePolicy do
+describe OldInstrumentPricePolicy do
   before :each do
     @instrument = FactoryGirl.create(:setup_instrument)
     @instrument.price_policies.count.should == 1
