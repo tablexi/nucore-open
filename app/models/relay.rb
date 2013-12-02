@@ -1,10 +1,10 @@
 require "net/http"
 
 class Relay < ActiveRecord::Base
-  belongs_to :instrument
+  belongs_to :instrument, :inverse_of => :relay
 
   validates_presence_of :instrument_id, :on => :update
-  validates_uniqueness_of :port, :scope => :ip, :allow_blank => true
+  validate :unique_ip
 
   attr_accessible :type, :username, :password, :ip, :port, :auto_logout, :instrument_id
 
@@ -42,5 +42,15 @@ class Relay < ActiveRecord::Base
 
   def query_status
     raise NotImplementedError.new('Subclass must define')
+  end
+
+  def unique_ip
+    return unless ip.present?
+    scope = Relay.unscoped.where(ip: ip, port: port)
+    scope = scope.joins(:instrument).where("products.schedule_id != ?", instrument.schedule_id) if instrument.try(:schedule_id)
+    scope = scope.where('relays.id != ?', id) if persisted?
+    if scope.exists?
+      errors.add :port, :taken
+    end
   end
 end

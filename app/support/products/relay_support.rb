@@ -2,7 +2,7 @@ module Products::RelaySupport
   extend ActiveSupport::Concern
 
   included do
-    has_one  :relay, :dependent => :destroy
+    has_one  :relay, :inverse_of => :instrument, :dependent => :destroy
     has_many :instrument_statuses, :foreign_key => 'instrument_id'
 
     accepts_nested_attributes_for :relay
@@ -48,16 +48,18 @@ module Products::RelaySupport
 
       # transform to right type
       a_relay = self.relay.becomes(self.relay.type.constantize)
+      # relay loses reference to instrument after #becomes
+      a_relay.instrument = self
 
       # trigger validation of relay
-      a_relay.valid?
+      valid = a_relay.valid?
 
       # stuff relay's error messages into self.errors
       a_relay.errors.full_messages.each do |error_msg|
         self.errors[:relay] << error_msg
       end
 
-      return a_relay.valid?
+      return valid
     end
     true
   end
@@ -66,7 +68,6 @@ module Products::RelaySupport
     if @control_mechanism
       # destroy if manual
       self.relay.destroy if @control_mechanism == 'manual' and self.relay
-
 
       # relay_attributes aren't passed in when control_mechanism isn't relay
       # may need to init the relay
