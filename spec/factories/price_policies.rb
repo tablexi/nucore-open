@@ -15,6 +15,7 @@ FactoryGirl.define do
 
   factory :simple_instrument_price_policy do
     price_group
+    association :product, factory: :setup_instrument
     usage_rate 1
     usage_subsidy 0
     minimum_cost 1
