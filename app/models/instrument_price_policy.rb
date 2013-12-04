@@ -25,7 +25,12 @@ class InstrumentPricePolicy < PricePolicy
   end
 
   def self.next_dates(product)
-    ipps = product.price_policies.find(:all, :conditions => [dateize('start_date', ' > ?'), Time.zone.now], :order => 'start_date', :select => 'DISTINCT(start_date) AS start_date')
+    ipps = product.price_policies
+                  .where(dateize('start_date', ' > ?'), Time.zone.now)
+                  .order(:start_date)
+                  .select('DISTINCT(start_date) AS start_date')
+                  .all
+
     ipps.collect{|ipp| ipp.start_date.to_date}.uniq
   end
 
