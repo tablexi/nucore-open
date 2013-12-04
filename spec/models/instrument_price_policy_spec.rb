@@ -72,15 +72,15 @@ describe InstrumentPricePolicy do
     end
 
     it "should return the date for upcoming policies" do
-      @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :start_date => Date.today, :price_group => @price_group))
-      ipp2=@instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :start_date => Date.today + 7.days, :price_group => @price_group))
-      ipp3=@instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :start_date => Date.today + 14.days, :price_group => @price_group))
+      @instrument.instrument_price_policies.create( attributes_for(:instrument_price_policy, start_date: Date.today, price_group: @price_group) )
+      ipp2 = @instrument.instrument_price_policies.create( attributes_for(:instrument_price_policy, start_date: Date.today + 7.days, price_group: @price_group) )
+      ipp3 = @instrument.instrument_price_policies.create( attributes_for(:instrument_price_policy, start_date: Date.today + 14.days, price_group: @price_group) )
 
-      InstrumentPricePolicy.next_date(@instrument).to_date.should == ipp2.start_date.to_date
-      next_dates = InstrumentPricePolicy.next_dates(@instrument)
-      next_dates.length.should == 2
-      next_dates.include?(ipp2.start_date.to_date).should be_true
-      next_dates.include?(ipp3.start_date.to_date).should be_true
+      expect(described_class.next_date(@instrument).to_date).to eq ipp2.start_date.to_date
+      next_dates = described_class.next_dates @instrument
+      expect(next_dates.size).to eq 2
+      expect(next_dates).to include ipp2.start_date.to_date
+      expect(next_dates).to include ipp3.start_date.to_date
     end
   end
 
