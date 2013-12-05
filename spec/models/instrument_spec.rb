@@ -415,7 +415,7 @@ describe Instrument do
     end
 
     it "should find next available reservation with 5 minute interval rule, without any pending reservations" do
-      @rule.update_attribute :duration_mins, 5
+      @rule.instrument.update_attribute :reserve_interval, 5
       # find next reservation after 12 am at 9 am
       @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day

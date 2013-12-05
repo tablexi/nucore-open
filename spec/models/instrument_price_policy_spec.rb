@@ -95,10 +95,11 @@ describe InstrumentPricePolicy do
       @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
       @instrument       = FactoryGirl.create(:instrument,
                                       :facility => @facility,
+                                      :reserve_interval => 30,
                                       :facility_account => @facility_account)
       @price_group_product=FactoryGirl.create(:price_group_product, :price_group => @price_group, :product => @instrument)
       # create rule every day from 9 am to 5 pm, no discount, duration= 30 minutes
-      @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :duration_mins => 30))
+      @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     end
 
     it "should correctly estimate cost with usage cost" do
@@ -301,7 +302,8 @@ describe InstrumentPricePolicy do
 
     it "should correctly estimate cost across schedule rules" do
       # create adjacent schedule rule
-      @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :duration_mins => 30))
+      @instrument.update_attribute :reserve_interval, 30
+      @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1))
       pp = @instrument.instrument_price_policies.create!(ipp_attributes)
 
       # 2 hour (8 intervals)
@@ -314,7 +316,8 @@ describe InstrumentPricePolicy do
 
     it "should correctly estimate cost for a schedule rule with a discount" do
       # create discount schedule rule
-      @discount_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :duration_mins => 30, :discount_percent => 50))
+      @instrument.update_attribute :reserve_interval, 30
+      @discount_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :discount_percent => 50))
       pp = @instrument.instrument_price_policies.create!(ipp_attributes)
 
       # 1 hour (4 intervals)
@@ -327,7 +330,8 @@ describe InstrumentPricePolicy do
 
     it "should correctly estimate cost across schedule rules with discounts" do
       # create discount schedule rule
-      @discount_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :duration_mins => 30, :discount_percent => 50))
+      @instrument.update_attribute :reserve_interval, 30
+      @discount_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :discount_percent => 50))
       pp = @instrument.instrument_price_policies.create!(ipp_attributes)
 
       # 2 hour (8 intervals); half of the time, 50% discount
@@ -376,9 +380,10 @@ describe InstrumentPricePolicy do
       @price_group      = @facility.price_groups.create!(FactoryGirl.attributes_for(:price_group))
       @instrument       = FactoryGirl.create(:instrument,
                                       :facility => @facility,
+                                      :reserve_interval => 30,
                                       :facility_account => @facility_account)
       @price_group_product=FactoryGirl.create(:price_group_product, :price_group => @price_group, :product => @instrument)
-      @rule             = @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24, :duration_mins => 30))
+      @rule             = @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24))
       @pp = @instrument.instrument_price_policies.create!(ipp_attributes)
     end
 

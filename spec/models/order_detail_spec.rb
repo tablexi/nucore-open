@@ -81,12 +81,13 @@ describe OrderDetail do
       before(:each) do
         @instrument = FactoryGirl.create(:instrument,
                                             :facility => @facility,
+                                            :reserve_interval => 15,
                                             :facility_account_id => @facility_account.id)
         @price_group = FactoryGirl.create(:price_group, :facility => @facility)
         FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => @price_group)
         UserPriceGroupMember.create!(:price_group => @price_group, :user => @user)
         @pp=FactoryGirl.create(:instrument_price_policy, :product=> @instrument, :price_group => @price_group)
-        @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 24, :duration_mins => 15))
+        @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 24))
         @order_detail.reservation = FactoryGirl.create(:reservation,
                 :reserve_start_at => Time.now,
                 :reserve_end_at => Time.now+1.hour,

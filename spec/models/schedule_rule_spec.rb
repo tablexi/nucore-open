@@ -238,17 +238,23 @@ describe ScheduleRule do
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
                                         :facility => @facility,
+                                        :reserve_interval => 60,
                                         :facility_account => @facility_account)
       # create rule tue 1 am - 3 am
-      @options    = Hash[:on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
-                         :start_hour => 1, :start_min => 0, :end_hour => 3, :end_min => 0,
-                         :duration_mins => 60, :discount_percent => 0]
+      @options = {
+        :on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
+        :start_hour => 1, :start_min => 0, :end_hour => 3, :end_min => 0, :discount_percent => 0
+      }
+
       @rule1      = @instrument.schedule_rules.create(@options)
       assert @rule1.valid?
+
       # create rule tue 7 am - 9 am
-      @options    = Hash[:on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
-                         :start_hour => 7, :start_min => 0, :end_hour => 9, :end_min => 0,
-                         :duration_mins => 60, :discount_percent => 0]
+      @options = {
+        :on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
+        :start_hour => 7, :start_min => 0, :end_hour => 9, :end_min => 0, :discount_percent => 0
+      }
+
       @rule2      = @instrument.schedule_rules.create(@options)
       assert @rule2.valid?
 
@@ -292,17 +298,22 @@ describe ScheduleRule do
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
                                         :facility => @facility,
+                                        :reserve_interval => 60,
                                         :facility_account => @facility_account)
       # create rule tue 9 pm - 12 am
-      @options    = Hash[:on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
-                         :start_hour => 21, :start_min => 0, :end_hour => 24, :end_min => 0,
-                         :duration_mins => 60, :discount_percent => 0]
+      @options = {
+        :on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
+        :start_hour => 21, :start_min => 0, :end_hour => 24, :end_min => 0, :discount_percent => 0
+      }
+
       @rule1      = @instrument.schedule_rules.create(@options)
       assert @rule1.valid?
       # create rule wed 12 am - 9 am
-      @options    = Hash[:on_mon => false, :on_tue => false, :on_wed => true, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
-                         :start_hour => 0, :start_min => 0, :end_hour => 9, :end_min => 0,
-                         :duration_mins => 60, :discount_percent => 0]
+      @options = {
+        :on_mon => false, :on_tue => false, :on_wed => true, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
+        :start_hour => 0, :start_min => 0, :end_hour => 9, :end_min => 0, :discount_percent => 0
+      }
+
       @rule2      = @instrument.schedule_rules.create(@options)
       assert @rule2.valid?
 

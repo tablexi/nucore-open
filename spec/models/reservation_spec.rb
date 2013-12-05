@@ -6,9 +6,9 @@ describe Reservation do
   before(:each) do
     @facility         = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @instrument       = FactoryGirl.create(:instrument, :facility_account_id => @facility_account.id, :facility => @facility)
+    @instrument       = FactoryGirl.create(:instrument, :facility_account_id => @facility_account.id, :facility => @facility, :reserve_interval => 15)
     # add rule, available every day from 12 am to 5 pm, 60 minutes duration
-    @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17, :duration_mins => 15))
+    @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17))
     Reservation.any_instance.stub(:admin?).and_return(false)
   end
 
@@ -193,7 +193,7 @@ describe Reservation do
 
         (@morning.min..60).each do |min|
           new_min=min == 60 ? 0 : min
-          earliest.reserve_start_at.min.should == new_min and break if new_min % @rule.duration_mins == 0
+          earliest.reserve_start_at.min.should == new_min and break if new_min % @rule.instrument.reserve_interval == 0
         end
 
         earliest.reserve_start_at.hour.should == (new_min == 0 ? @morning.hour+1 : @morning.hour)
@@ -564,8 +564,9 @@ describe Reservation do
     context "schedule rules" do
       before :each do
         @rule.destroy
-        @rule_9_to_5 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 9, :end_hour => 17, :duration_mins => 15))
-        @rule_5_to_7 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 17, :end_hour => 19, :duration_mins => 15))
+        @instrument.update_attribute :reserve_interval, 15
+        @rule_9_to_5 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 9, :end_hour => 17))
+        @rule_5_to_7 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 17, :end_hour => 19))
       end
 
       it "should allow a reservation within the schedule rules" do
@@ -755,7 +756,8 @@ describe Reservation do
   context 'for_date' do
     before :each do
       @rule.destroy
-      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 24, :duration_mins => 15))
+      @instrument.update_attribute :reserve_interval, 15
+      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 24))
       @spans_day_reservation = @instrument.reservations.create!(:reserve_start_at => Time.zone.now.end_of_day - 1.hour,
                                                      :duration_value => 120, :duration_unit => 'minutes')
       @today_reservation = @instrument.reservations.create!(:reserve_start_at => Time.zone.now.beginning_of_day + 8.hours,
@@ -781,13 +783,13 @@ describe Reservation do
     let(:next_sunday) { Time.zone.at 1362290400 } # Sun, 03 Mar 2013 00:00:00
 
     let! :instrument do
-      @instrument.update_attribute :max_reserve_mins, nil
+      @instrument.update_attributes max_reserve_mins: nil, reserve_interval: 15
       @instrument
     end
 
     let! :rule do
       @rule.destroy
-      attrs = FactoryGirl.attributes_for :schedule_rule, :start_hour => 0, :end_hour => 24, :duration_mins => 15
+      attrs = FactoryGirl.attributes_for :schedule_rule, :start_hour => 0, :end_hour => 24
       @instrument.schedule_rules.create attrs
     end
 
