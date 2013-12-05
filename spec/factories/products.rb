@@ -16,6 +16,7 @@ FactoryGirl.define do
       sequence(:url_name) { |n| "instrument#{n}"  }
       min_reserve_mins 60
       max_reserve_mins 120
+      reserve_interval 5
 
       after(:create) do |inst, evaluator|
         inst.relay = FactoryGirl.create(:relay_dummy, :instrument => inst) unless evaluator.no_relay

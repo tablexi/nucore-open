@@ -29,11 +29,8 @@ class ScheduleRulesController < ApplicationController
   # GET /schedule_rules/new
   def new
     @schedule_rule  = ScheduleRule.new
-    @schedule_rule.duration_mins = 5
-
     @schedule_rule.start_hour    = 9
     @schedule_rule.start_min     = 0
-
     @schedule_rule.end_hour      = 17
     @schedule_rule.end_min       = 0
   end

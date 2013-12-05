@@ -2,6 +2,9 @@ class Instrument < Product
   include Products::RelaySupport
   include Products::SchedulingSupport
 
+  RESERVE_INTERVALS = [ 1, 5, 10, 15, 30, 60 ]
+
+
   # Associations
   # -------
 
@@ -12,11 +15,11 @@ class Instrument < Product
   # --------
 
   validates :initial_order_status_id, presence: true
+  validates :reserve_interval, inclusion: { in: RESERVE_INTERVALS, allow_nil: true }
   validates :facility_account_id, presence: true if SettingsHelper.feature_on? :recharge_accounts
   validates :min_reserve_mins,
             :max_reserve_mins,
             :auto_cancel_mins,
-            :reserve_interval,
             numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
 
   # Callbacks
