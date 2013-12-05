@@ -149,7 +149,7 @@ module Products::SchedulingSupport
       self.time = day_start if time < day_start
 
       # check for conflicts with rule interval/duration time and adjust to next interval if necessary
-      duration_mins = rule.duration_mins.to_i
+      duration_mins = rule.instrument.reserve_interval.to_i
       self.time += (duration_mins - time.min % duration_mins).minutes unless time.min % duration_mins == 0
     end
 

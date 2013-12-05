@@ -16,7 +16,7 @@ describe Instrument do
     end
   end
 
-  [ :min_reserve_mins, :max_reserve_mins, :auto_cancel_mins, :reserve_interval ].each do |attr|
+  [ :min_reserve_mins, :max_reserve_mins, :auto_cancel_mins ].each do |attr|
     it "should require #{attr} to be >= 0 and integers only" do
       should allow_value(0).for(attr)
       should allow_value(nil).for(attr)
@@ -24,6 +24,8 @@ describe Instrument do
       should_not allow_value(5.0).for(attr)
     end
   end
+
+  it { should ensure_inclusion_of(:reserve_interval).in_array Instrument::RESERVE_INTERVALS }
 
   describe 'shared schedules' do
     context 'default schedule' do

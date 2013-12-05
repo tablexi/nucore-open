@@ -194,7 +194,7 @@ describe ScheduleRule do
 
       # each title should be the same
       @calendar.each do |hash|
-        hash["title"].should == 'Interval: 60 minutes'
+        hash["title"].should == "Interval: #{@instrument.reserve_interval} minutes"
         hash["allDay"].should == false
       end
 
