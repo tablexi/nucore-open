@@ -43,7 +43,7 @@ describe PriceGroup do
 
   describe 'can_delete?' do
     it 'should not be deletable if global' do
-      @global_price_group = FactoryGirl.build(:price_group)
+      @global_price_group = FactoryGirl.build(:price_group, facility: nil)
       @global_price_group.save(:validate => false)
       @global_price_group.should be_persisted
       @global_price_group.should_not be_can_delete

@@ -77,11 +77,11 @@ describe Schedule do
         end
 
         it 'should have both reservations under the schedule' do
-          schedule.reservations.should =~ [reservation, reservation2]
+          schedule.reservations.should == [reservation, reservation2]
         end
 
         it 'should be able to access the schedule reservations through the instrument' do
-          instruments[0].schedule_reservations.should =~ [reservation, reservation2]
+          instruments[0].schedule_reservations.should == [reservation, reservation2]
         end
       end
     end
