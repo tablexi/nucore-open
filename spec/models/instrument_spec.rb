@@ -371,14 +371,15 @@ describe Instrument do
 
   context "next available reservation based on schedule rules" do
     before(:each) do
-      @facility         = FactoryGirl.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @facility         = create :facility
+      @facility_account = @facility.facility_accounts.create attributes_for(:facility_account)
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @instrument       = FactoryGirl.create(:instrument,
-                                      :facility => @facility,
-                                      :facility_account => @facility_account,
-                                      :min_reserve_mins => 60,
-                                      :max_reserve_mins => 60)
+      @instrument       = create(:instrument,
+                                 :facility => @facility,
+                                 :facility_account => @facility_account,
+                                 :min_reserve_mins => 60,
+                                 :reserve_interval => 60,
+                                 :max_reserve_mins => 60)
       assert @instrument.valid?
       # add rule, available every day from 9 to 5, 60 minutes duration/interval
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
@@ -415,6 +416,7 @@ describe Instrument do
     end
 
     it "should find next available reservation with 5 minute interval rule, without any pending reservations" do
+      expect(@rule.instrument.update_attribute :reserve_interval, 5).to be_true
       # find next reservation after 12 am at 9 am
       @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day
