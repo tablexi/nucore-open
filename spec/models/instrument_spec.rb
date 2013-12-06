@@ -16,9 +16,10 @@ describe Instrument do
     end
   end
 
-  [ :min_reserve_mins, :max_reserve_mins, :auto_cancel_mins ].each do |attr|
+  [ :min_reserve_mins, :max_reserve_mins, :auto_cancel_mins, :reserve_interval ].each do |attr|
     it "should require #{attr} to be >= 0 and integers only" do
       should allow_value(0).for(attr)
+      should allow_value(nil).for(attr)
       should_not allow_value(-1).for(attr)
       should_not allow_value(5.0).for(attr)
     end

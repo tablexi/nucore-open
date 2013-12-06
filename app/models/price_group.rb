@@ -20,11 +20,11 @@ class PriceGroup < ActiveRecord::Base
   scope :globals, :conditions => { :facility_id => nil }
 
   def user_price_group_members
-    UserPriceGroupMember.find(:all, :conditions => { :price_group_id => id, :type => 'UserPriceGroupMember' })
+    UserPriceGroupMember.where(:price_group_id => id, :type => 'UserPriceGroupMember').all
   end
 
   def account_price_group_members
-    AccountPriceGroupMember.find(:all, :conditions => { :price_group_id => id, :type => 'AccountPriceGroupMember' })
+    AccountPriceGroupMember.where(:price_group_id => id, :type => 'AccountPriceGroupMember').all
   end
 
   def is_not_global
