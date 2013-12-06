@@ -5,7 +5,7 @@ class SimpleInstrumentPricePolicy < PricePolicy
   validates :usage_rate, presence: true, unless: :restrict_purchase?
   validate :subsidy_less_than_rate?, unless: :restrict_purchase?
 
-  before_save {|pp| pp.usage_subsidy ||= 0 if pp.usage_rate }
+  before_save :set_subsidy
 
   after_create do |pp|
     # Make sure we have a default reservation window for this price group and product
@@ -16,17 +16,6 @@ class SimpleInstrumentPricePolicy < PricePolicy
       product: pp.product,
       reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
     ) unless pgp
-  end
-
-
-  def self.next_dates(product)
-    ipps = product.price_policies
-                  .where(dateize('start_date', ' > ?'), Time.zone.now)
-                  .order(:start_date)
-                  .select('DISTINCT(start_date) AS start_date')
-                  .all
-
-    ipps.collect{|ipp| ipp.start_date.to_date}.uniq
   end
 
 
@@ -69,6 +58,13 @@ class SimpleInstrumentPricePolicy < PricePolicy
 
 
   def calculate_cost_and_subsidy(reservation)
+  end
+
+
+  private
+
+  def set_subsidy
+    self.usage_subsidy ||= 0 if usage_rate
   end
 
 end

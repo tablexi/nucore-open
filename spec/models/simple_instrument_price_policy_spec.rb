@@ -80,7 +80,7 @@ describe SimpleInstrumentPricePolicy do
       expect(pgp).to be_nil
       expect(policy.save).to be_true
       pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, policy.product.id)
-      expect(pgp).to be_present
+      expect(pgp.reservation_window).to eq PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
     end
 
     it 'does not create a PriceGroupProduct with default reservation window if one exists' do

@@ -24,16 +24,6 @@ class InstrumentPricePolicy < PricePolicy
     errors.add(:base, "You must enter a reservation rate or usage rate for all price groups") if usage_rate.nil? && reservation_rate.nil?
   end
 
-  def self.next_dates(product)
-    ipps = product.price_policies
-                  .where(dateize('start_date', ' > ?'), Time.zone.now)
-                  .order(:start_date)
-                  .select('DISTINCT(start_date) AS start_date')
-                  .all
-
-    ipps.collect{|ipp| ipp.start_date.to_date}.uniq
-  end
-
   def self.intervals
     @@intervals
   end

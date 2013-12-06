@@ -58,14 +58,12 @@ class PricePolicy < ActiveRecord::Base
   end
 
   def self.next_dates(product)
-    ipps = []
-
-    product.price_policies.each do |pp|
-      sdate=pp.start_date
-      ipps << sdate.to_date if sdate > Time.zone.now && !ipps.include?(sdate)
-    end
-
-    ipps.uniq
+    product.price_policies
+           .where('start_date > ?', Time.zone.now.beginning_of_day)
+           .order(:start_date)
+           .uniq
+           .pluck(:start_date)
+           .map &:to_date
   end
 
   
