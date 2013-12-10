@@ -94,6 +94,8 @@ class ScheduleRule < ActiveRecord::Base
     start_hour*100+start_min
   end
 
+  # multiplying by 100 means 8:00 is 800 -- it's time on a clock face minus the formatting and meridian
+
   def end_time_int
     end_hour*100+end_min
   end
