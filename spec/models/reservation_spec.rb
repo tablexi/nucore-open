@@ -12,20 +12,27 @@ describe Reservation do
     Reservation.any_instance.stub(:admin?).and_return(false)
   end
 
+  let(:reservation) do
+    @instrument.reservations.create(
+      :reserve_start_date => Date.today+1.day,
+      :reserve_start_hour => 10,
+      :reserve_start_min => 0,
+      :reserve_start_meridian => 'am',
+      :duration_value => 60,
+      :duration_unit => 'minutes'
+    )
+  end
 
   context "create using virtual attributes" do
     it "should create using date, integer values" do
-      @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                                     :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                     :duration_value => 60, :duration_unit => 'minutes')
-      assert @reservation.valid?
-      @reservation.reload.duration_value.should == 60
-      @reservation.reserve_start_hour.should == 10
-      @reservation.reserve_start_min.should == 0
-      @reservation.reserve_start_meridian.should == 'am'
-      @reservation.reserve_end_hour.should == 11
-      @reservation.reserve_end_min.should == 0
-      @reservation.reserve_end_meridian.should == 'AM'
+      assert reservation.valid?
+      reservation.reload.duration_value.should == 60
+      reservation.reserve_start_hour.should == 10
+      reservation.reserve_start_min.should == 0
+      reservation.reserve_start_meridian.should == 'am'
+      reservation.reserve_end_hour.should == 11
+      reservation.reserve_end_min.should == 0
+      reservation.reserve_end_meridian.should == 'AM'
     end
 
     it "should create using string values" do
@@ -671,12 +678,8 @@ describe Reservation do
       # Order against the first account
       @order = Order.create(FactoryGirl.attributes_for(:order).merge(:user => @user, :account => @account1, :created_by => @user.id))
       @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).merge(:product => @instrument, :order_status => @os_new))
-
-      @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                                     :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                     :duration_value => 60, :duration_unit => 'minutes')
-      @reservation.order_detail = @order_detail
-      @reservation.save
+      reservation.order_detail = @order_detail
+      reservation.save
     end
 
     it "should find the best reservation window" do
@@ -690,25 +693,20 @@ describe Reservation do
       @nupg.price_policies         << @pp_long
 
       groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
-      assert_equal @pp_long.reservation_window, @reservation.longest_reservation_window(groups)
+      assert_equal @pp_long.reservation_window, reservation.longest_reservation_window(groups)
     end
   end
 
   context 'has_actuals?' do
-    before :each do
-      @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                                     :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                     :duration_value => 60, :duration_unit => 'minutes')
-    end
 
     it 'should not have actuals' do
-      @reservation.should_not be_has_actuals
+      reservation.should_not be_has_actuals
     end
 
     it 'should have actuals' do
-      @reservation.actual_start_at=Time.zone.now
-      @reservation.actual_end_at=Time.zone.now
-      @reservation.should be_has_actuals
+      reservation.actual_start_at=Time.zone.now
+      reservation.actual_end_at=Time.zone.now
+      reservation.should be_has_actuals
     end
 
   end
