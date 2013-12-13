@@ -68,6 +68,25 @@ describe AccessoriesController do
         expect(od.quantity).to eq(order_detail.reservation.actual_duration_mins)
       end
     end
+
+    context 'with a deleted accessory' do
+      before :each do
+        item = quantity_accessory
+        instrument.product_accessories.first.soft_delete
+        instrument.product_accessories.create(accessory: item, scaling_type: 'auto')
+
+        expect(instrument.reload.product_accessories.count).to eq(1)
+        expect(ProductAccessory.where(product_id: instrument.id, accessory_id: item.id).count).to eq(2)
+      end
+
+      it 'returns the second accessory' do
+        maybe_grant_always_sign_in :admin
+        do_request
+
+        expect(assigns(:order_details)).to be_one
+        expect(assigns(:order_details).first.scaling_type).to eq('auto')
+      end
+    end
   end
 
   describe 'create' do

@@ -55,7 +55,7 @@ class Accessories::Accessorizer
   private
 
   def product_accessory(accessory)
-    ProductAccessory.where(:product_id => @order_detail.product.id, :accessory_id => accessory.id).first
+    @order_detail.product.product_accessories.where(:accessory_id => accessory.id).first
   end
 
   def valid_accessory?(accessory)
