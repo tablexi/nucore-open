@@ -125,8 +125,7 @@ class ScheduleRule < ActiveRecord::Base
 
   # build weekly calendar object
   def as_calendar_object(options={})
-    start_date = options[:start_date].presence || :sunday_last
-    start_date = self.class.sunday_last if start_date == :sunday_last
+    start_date = options[:start_date].presence || self.class.sunday_last
     num_days = options[:num_days] ? options[:num_days].to_i : 7
     title = ''
     date_format = "%a, %d %b %Y %H:%M:%S"
