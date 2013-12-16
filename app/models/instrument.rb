@@ -60,7 +60,7 @@ class Instrument < Product
 
   def minimum_reservation_is_interval
     if min_reserve_mins.to_i > 0 && min_reserve_mins % reserve_interval != 0
-      self.errors.add :min_reserve_mins, I18n.t('activerecord.errors.models.instrument.min_not_interval', reserve_interval: reserve_interval)
+      self.errors.add :min_reserve_mins, :min_not_interval, reserve_interval: reserve_interval
     end
   end
 
