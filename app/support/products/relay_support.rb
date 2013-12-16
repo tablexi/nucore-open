@@ -8,14 +8,15 @@ module Products::RelaySupport
     accepts_nested_attributes_for :relay
 
     attr_writer :control_mechanism
-    before_validation :init_or_destroy_relay
 
-    validate :check_relay_with_right_type
+    before_validation :destroy_and_init_relay, if: :control_mechanism
+
+    validate :check_relay_with_right_type, if: :control_mechanism
   end
 
   # control mechanism for instrument
   def control_mechanism
-    return @control_mechanism || self.relay.try(:control_mechanism)
+    @control_mechanism || self.relay.try(:control_mechanism)
   end
 
   def current_instrument_status
@@ -30,6 +31,7 @@ module Products::RelaySupport
     relay && !relay.is_a?(RelayDummy) && relay.ip && relay.port
   end
 
+
   private ###################################
 
   # this is necessary because when rails builds the attached relay
@@ -42,40 +44,36 @@ module Products::RelaySupport
   # and populate self.errors ourselves
   def check_relay_with_right_type
     # only run this if passed in control_mechanism and relay
-    # (if type didn't change, we'll already be running with the proper validations)
-    if @control_mechanism and self.relay and self.relay.type_changed?
-      return if @control_mechanism == 'manual'
+    return true if self.relay.nil? || control_mechanism == 'manual'
 
-      # transform to right type
-      a_relay = self.relay.becomes(self.relay.type.constantize)
-      # relay loses reference to instrument after #becomes
-      a_relay.instrument = self
+    # transform to right type
+    a_relay = self.relay.becomes(self.relay.type.constantize)
+    # relay loses reference to instrument after #becomes
+    a_relay.instrument = self
 
-      # trigger validation of relay
-      valid = a_relay.valid?
+    # trigger validation of relay
+    valid = a_relay.valid?
 
-      # stuff relay's error messages into self.errors
-      a_relay.errors.full_messages.each do |error_msg|
-        self.errors[:relay] << error_msg
-      end
-
-      return valid
+    # stuff relay's error messages into self.errors
+    a_relay.errors.full_messages.each do |error_msg|
+      self.errors[:relay] << error_msg
     end
-    true
+
+    return valid
   end
 
-  def init_or_destroy_relay
-    if @control_mechanism
-      # destroy if manual
-      self.relay.destroy if @control_mechanism == 'manual' and self.relay
+  # Don't bother with relay updates. STI + nested attributes
+  # causes too much trouble. Just get rid of the old relay and
+  # setup from scratch.
+  def destroy_and_init_relay
+    attrs = relay.try(:attributes) || {}
+    self.relay.try :destroy
 
-      # relay_attributes aren't passed in when control_mechanism isn't relay
-      # may need to init the relay
-      if @control_mechanism == Relay::CONTROL_MECHANISMS[:timer]
-        self.relay      ||= RelayDummy.new
-        self.relay.type =   'RelayDummy'
-      end
+    case control_mechanism
+      when Relay::CONTROL_MECHANISMS[:timer]
+        self.relay = RelayDummy.new
+      when Relay::CONTROL_MECHANISMS[:relay]
+        self.build_relay attrs
     end
-    true
   end
 end
