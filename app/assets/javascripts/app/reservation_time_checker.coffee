@@ -34,14 +34,14 @@ class window.ReservationTimeChecker
 
 
   showError: ->
-    $(@selector).css 'color', 'red'
+    $(@selector).addClass 'interval-error'
     @setAlert @currentErrorMessage()
     $("##{@alertId}").removeClass 'hidden'
 
 
   hideError: ->
     $("##{@alertId}").addClass 'hidden'
-    $(@selector).css 'color', 'black'
+    $(@selector).removeClass 'interval-error'
 
 
   respondToChange: ->
