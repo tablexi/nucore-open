@@ -128,7 +128,6 @@ class ScheduleRule < ActiveRecord::Base
     start_date = options[:start_date].presence || self.class.sunday_last
     num_days = options[:num_days] ? options[:num_days].to_i : 7
     title = ''
-    date_format = "%a, %d %b %Y %H:%M:%S"
 
     if instrument && !unavailable
       duration_mins = instrument.reserve_interval
@@ -145,8 +144,8 @@ class ScheduleRule < ActiveRecord::Base
         array << {
           "className" => unavailable ? 'unavailable' : 'default',
           "title"  => title,
-          "start"  => start_at.strftime(date_format),
-          "end"    => end_at.strftime(date_format),
+          "start"  => I18n.l(start_at, format: :calendar),
+          "end"    => I18n.l(end_at, format: :calendar),
           "allDay" => false
         }
       end
