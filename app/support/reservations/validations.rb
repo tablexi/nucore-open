@@ -35,10 +35,7 @@ module Reservations::Validations
   def duration_is_interval
     return unless product.reserve_interval && reserve_end_at && reserve_start_at
     diff = (reserve_end_at - reserve_start_at) / 60
-    errors.add(:base, I18n.t(
-      'activerecord.errors.models.reservation.duration_not_interval',
-      reserve_interval: product.reserve_interval
-    )) unless diff % product.reserve_interval == 0
+    errors.add :base, :duration_not_interval, reserve_interval: product.reserve_interval unless diff % product.reserve_interval == 0
   end
 
   def does_not_conflict_with_other_reservation?
