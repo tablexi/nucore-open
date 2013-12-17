@@ -9,16 +9,22 @@ class window.ReservationTimeChecker
     parser.to_minutes $(@selector).val()
 
 
+  hasMinimumRestriction: -> reserveMinimum > 0
+
+
+  hasMaximumRestriction: -> reserveMaximum > 0
+
+
   isViolatingInterval: -> @duration() % reserveInterval != 0
 
 
-  isExceedingMaximum: -> @duration() > reserveMaximum
+  isExceedingMaximum: -> @hasMaximumRestriction() and @duration() > reserveMaximum
 
 
-  isUnderMinimum: -> @duration() < reserveMinimum
+  isUnderMinimum: -> @hasMinimumRestriction() and @duration() < reserveMinimum
 
 
-  hasError: -> @isViolatingInterval() || @isExceedingMaximum() || @isUnderMinimum()
+  hasError: -> @isViolatingInterval() or @isExceedingMaximum() or @isUnderMinimum()
 
 
   initAlert: -> $(@selector).after "<p id=\"#{@alertId}\" class=\"alert alert-danger hidden\"/>"
