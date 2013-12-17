@@ -27,7 +27,6 @@
         %th Days of Week
         %th Start Time
         %th End Time
-        %th Interval
         %th.currency Discount (%)
     %tbody
       - @schedule_rules.each do |schedule_rule|
@@ -40,7 +39,6 @@
           %td= schedule_rule.days_string
           %td= human_time(Time.zone.parse(schedule_rule.start_time))
           %td= human_time(Time.zone.parse(schedule_rule.end_time))
-          %td= pluralize(schedule_rule.duration_mins, 'minute')
           %td.currency=h sprintf '%.2f', schedule_rule.discount_percent
 - else
   %br

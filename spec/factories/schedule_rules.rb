@@ -5,7 +5,6 @@ FactoryGirl.define do
     start_min 00
     end_hour 17
     end_min 00
-    duration_mins 60
     on_sun true
     on_mon true
     on_tue true

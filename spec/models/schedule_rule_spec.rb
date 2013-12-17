@@ -190,11 +190,11 @@ describe ScheduleRule do
       
       # find past sunday, and build calendar object
       @sunday   = ScheduleRule.sunday_last
-      @calendar = @rule.as_calendar_object(:start_date => :sunday_last)
+      @calendar = @rule.as_calendar_object
 
       # each title should be the same
       @calendar.each do |hash|
-        hash["title"].should == 'Interval: 60 minutes'
+        hash["title"].should == "Interval: #{@instrument.reserve_interval} minutes"
         hash["allDay"].should == false
       end
 
@@ -209,7 +209,7 @@ describe ScheduleRule do
       @not_available.size.should == 14
       # should mark each rule as unavailable
       assert_equal true, @not_available.first.unavailable
-      @not_calendar  = @not_available.collect{ |na| na.as_calendar_object(:start_date => :sunday_last) }.flatten
+      @not_calendar  = @not_available.collect{ |na| na.as_calendar_object }.flatten
 
       # days should be same as above
       # even times should be 12 am to 9 am
@@ -238,17 +238,23 @@ describe ScheduleRule do
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
                                         :facility => @facility,
+                                        :reserve_interval => 60,
                                         :facility_account => @facility_account)
       # create rule tue 1 am - 3 am
-      @options    = Hash[:on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
-                         :start_hour => 1, :start_min => 0, :end_hour => 3, :end_min => 0,
-                         :duration_mins => 60, :discount_percent => 0]
+      @options = {
+        :on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
+        :start_hour => 1, :start_min => 0, :end_hour => 3, :end_min => 0, :discount_percent => 0
+      }
+
       @rule1      = @instrument.schedule_rules.create(@options)
       assert @rule1.valid?
+
       # create rule tue 7 am - 9 am
-      @options    = Hash[:on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
-                         :start_hour => 7, :start_min => 0, :end_hour => 9, :end_min => 0,
-                         :duration_mins => 60, :discount_percent => 0]
+      @options = {
+        :on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
+        :start_hour => 7, :start_min => 0, :end_hour => 9, :end_min => 0, :discount_percent => 0
+      }
+
       @rule2      = @instrument.schedule_rules.create(@options)
       assert @rule2.valid?
 
@@ -256,14 +262,14 @@ describe ScheduleRule do
       @tuesday    = ScheduleRule.sunday_last + 2.days
 
       # times should be tue 1 am - 3 am
-      @calendar1  = @rule1.as_calendar_object(:start_date => :sunday_last)
+      @calendar1  = @rule1.as_calendar_object
       @calendar1.each_with_index do |hash, i|
         Time.zone.parse(hash['start']).should == (@tuesday + 1.hour)
         Time.zone.parse(hash['end']).should == (@tuesday + 3.hours)
       end
 
       # times should be tue 7 am - 9 am
-      @calendar2  = @rule2.as_calendar_object(:start_date => :sunday_last)
+      @calendar2  = @rule2.as_calendar_object
       @calendar2.each_with_index do |hash, i|
         Time.zone.parse(hash['start']).should == (@tuesday + 7.hours)
         Time.zone.parse(hash['end']).should == (@tuesday + 9.hours)
@@ -272,7 +278,7 @@ describe ScheduleRule do
       # build not available rules from the available rules collection, 3 for tue and 1 each for rest of days
       @not_available = ScheduleRule.unavailable([@rule1, @rule2])
       @not_available.size.should == 9
-      @not_calendar  = @not_available.collect{ |na| na.as_calendar_object(:start_date => :sunday_last) }.flatten
+      @not_calendar  = @not_available.collect{ |na| na.as_calendar_object }.flatten
       
       # rules for tuesday should be 12am-1am, 3am-7am, 9pm-12pm
       @tuesday_times = @not_calendar.select{ |hash| Time.zone.parse(hash['start']).to_date == @tuesday }.collect do |hash|
@@ -292,17 +298,22 @@ describe ScheduleRule do
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
                                         :facility => @facility,
+                                        :reserve_interval => 60,
                                         :facility_account => @facility_account)
       # create rule tue 9 pm - 12 am
-      @options    = Hash[:on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
-                         :start_hour => 21, :start_min => 0, :end_hour => 24, :end_min => 0,
-                         :duration_mins => 60, :discount_percent => 0]
+      @options = {
+        :on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
+        :start_hour => 21, :start_min => 0, :end_hour => 24, :end_min => 0, :discount_percent => 0
+      }
+
       @rule1      = @instrument.schedule_rules.create(@options)
       assert @rule1.valid?
       # create rule wed 12 am - 9 am
-      @options    = Hash[:on_mon => false, :on_tue => false, :on_wed => true, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
-                         :start_hour => 0, :start_min => 0, :end_hour => 9, :end_min => 0,
-                         :duration_mins => 60, :discount_percent => 0]
+      @options = {
+        :on_mon => false, :on_tue => false, :on_wed => true, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
+        :start_hour => 0, :start_min => 0, :end_hour => 9, :end_min => 0, :discount_percent => 0
+      }
+
       @rule2      = @instrument.schedule_rules.create(@options)
       assert @rule2.valid?
 
@@ -311,14 +322,14 @@ describe ScheduleRule do
       @wednesday  = @tuesday + 1.day
 
       # times should be tue 9 pm - 12 am
-      @calendar1  = @rule1.as_calendar_object(:start_date => :sunday_last)
+      @calendar1  = @rule1.as_calendar_object
       @calendar1.each_with_index do |hash, i|
         Time.zone.parse(hash['start']).should == (@tuesday + 21.hours)
         Time.zone.parse(hash['end']).should == (@tuesday + 24.hours)
       end
 
       # times should be tue 12 am - 9 am
-      @calendar2  = @rule2.as_calendar_object(:start_date => :sunday_last)
+      @calendar2  = @rule2.as_calendar_object
       @calendar2.each_with_index do |hash, i|
         Time.zone.parse(hash['start']).should == (@wednesday + 0.hours)
         Time.zone.parse(hash['end']).should == (@wednesday + 9.hours)

@@ -14,6 +14,10 @@ en:
     new:
       help_text: "If you do not have a NU Core account, please contact the facility manager."
 
+  time:
+    formats:
+      calendar: "%a, %d %b %Y %H:%M:%S"
+
   pages:
     my_tab: My %{model}
     create: Create %{model}
@@ -822,12 +826,15 @@ en:
           pass: "Password"
           auto_logout: "Automatically power off the relay 60 minutes after the reservation is scheduled to end"
       reservation:
-        intro: "(Optional)  Define minimum and maximum reservation limits below."
         instruct:
+          reserve_interval: "The minutes of an hour on which a reservation is allowed to begin (e.g. if 5 reservations can be scheduled every 5 minutes)"
+          min_reserve: "Minimum amount of time for a reservation (optional; must be a multiple of the reservation interval)"
+          max_reserve: "Maximum amount of time for a reservation (optional)"
           cancel_hours: "Minimum length of time before a reservation begins that a user may cancel a reservation without invoking the reservation cost"
           auto_cancel: "The duration a due but unactivated reservation can exist before the system cancels it"
         label:
           restrict: "Reservation Restrictions"
+          reserve_interval: "Interval (minutes)"
           min_reserve: "Minimum (minutes)"
           max_reserve: "Maximum (minutes)"
           cancel_hours: "Cancelation Minimum (hours)"

@@ -1,6 +1,4 @@
 class ScheduleRule < ActiveRecord::Base
-  @@durations = [1, 5, 10, 15, 30, 60]
-
   belongs_to :instrument
 
   # oracle has a maximum table name length of 30, so we have to abbreviate it down
@@ -9,7 +7,6 @@ class ScheduleRule < ActiveRecord::Base
   attr_accessor :unavailable # virtual attribute
 
   validates_presence_of :instrument_id
-  validates_inclusion_of :duration_mins, :in => @@durations
   validates_numericality_of :discount_percent, :greater_than_or_equal_to => 0, :less_than => 100
   validates_numericality_of :start_hour, :end_hour, :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 24
   validates_numericality_of :start_min,  :end_min, :only_integer => true, :greater_than_or_equal_to => 0, :less_than => 60
@@ -97,6 +94,8 @@ class ScheduleRule < ActiveRecord::Base
     start_hour*100+start_min
   end
 
+  # multiplying by 100 means 8:00 is 800 -- it's time on a clock face minus the formatting and meridian
+
   def end_time_int
     end_hour*100+end_min
   end
@@ -119,10 +118,6 @@ class ScheduleRule < ActiveRecord::Base
     "#{end_hour}:#{sprintf '%02d', end_min}"
   end
 
-  def self.durations
-    @@durations
-  end
-
   def includes_datetime(dt)
     dt_int = dt.hour * 100 + dt.min
     self.send("on_#{dt.strftime("%a").downcase}?") && dt_int >= start_time_int && dt_int <= end_time_int
@@ -130,39 +125,33 @@ class ScheduleRule < ActiveRecord::Base
 
   # build weekly calendar object
   def as_calendar_object(options={})
-    # parse options
-    case
-    when !options[:start_date].blank?
-      start_date = options[:start_date]
-    else
-      # default
-      start_date = :sunday_last
-    end
-
+    start_date = options[:start_date].presence || self.class.sunday_last
     num_days = options[:num_days] ? options[:num_days].to_i : 7
+    title = ''
 
-    case start_date
-    when :sunday_last
-      # find last sunday
-      start_date = self.class.sunday_last
+    if instrument && !unavailable
+      duration_mins = instrument.reserve_interval
+      title = "Interval: #{duration_mins} minute#{duration_mins == 1 ? '' : 's'}"
     end
 
-    rules = Range.new(0,num_days-1).inject([]) do |array, i|
-      date = start_date + i.days
+    Range.new(0, num_days-1).inject([]) do |array, i|
+      date = (start_date + i.days).to_datetime
+      start_at = date.change hour: start_hour, min: start_min
+      end_at = date.change hour: end_hour, min: end_min
+
       # check if rule occurs on this day
       if self.send("on_#{Date::ABBR_DAYNAMES[date.wday].downcase}?")
         array << {
           "className" => unavailable ? 'unavailable' : 'default',
-          "title"  => unavailable ? '' : "Interval: #{duration_mins.to_s} minute" + (duration_mins == 1 ? '' : 's'),
-          "start"  => Time.zone.parse("#{date.year}-#{date.month}-#{date.day} #{start_hour}:#{start_min}").strftime("%a, %d %b %Y %H:%M:%S"),
-          "end"    => Time.zone.parse("#{date.year}-#{date.month}-#{date.day} #{end_hour}:#{end_min}").strftime("%a, %d %b %Y %H:%M:%S"),
+          "title"  => title,
+          "start"  => I18n.l(start_at, format: :calendar),
+          "end"    => I18n.l(end_at, format: :calendar),
           "allDay" => false
         }
       end
+
       array
     end
-
-    rules
   end
 
   def percent_overlap (start_at, end_at)
@@ -179,7 +168,7 @@ class ScheduleRule < ActiveRecord::Base
     overlap / duration
   end
 
-  def self.unavailable(rules, options={})
+  def self.unavailable(rules)
     # rules is always a collection
     rules     = Array(rules)
     not_rules = []
@@ -187,6 +176,7 @@ class ScheduleRule < ActiveRecord::Base
     # group rules by day, sort by start_hour
     Date::ABBR_DAYNAMES.each do |day|
       day_rules = rules.select{ |rule| rule.send("on_#{day.downcase}?") }.sort_by{ |rule| rule.start_hour }
+
       if day_rules.empty?
         # build entire day not rule
         not_rule = ScheduleRule.new("on_#{day.downcase}" => true, :start_hour => 0, :start_min => 0, :end_hour => 24, :end_min => 0,
@@ -195,11 +185,13 @@ class ScheduleRule < ActiveRecord::Base
         not_rules.push(not_rule)
         next
       end
+
       # build not available rules as contiguous blocks between existing rules
       not_start_hour = 0
       not_start_min  = 0
+
       day_rules.each do |day_rule|
-        if day_rule.start_hour == not_start_hour and day_rule.start_min == not_start_min
+        if day_rule.start_hour == not_start_hour && day_rule.start_min == not_start_min
           # adjust not times, but don't build a not rule
           not_start_hour  = day_rule.end_hour
           not_start_min   = day_rule.end_min
@@ -215,7 +207,8 @@ class ScheduleRule < ActiveRecord::Base
         not_rule.freeze
         not_rules.push(not_rule)
       end
-      unless not_start_hour == 24 and not_start_min == 0
+
+      unless not_start_hour == 24 && not_start_min == 0
         # build not rule for last part of day
         not_rule = ScheduleRule.new("on_#{day.downcase}" => true, :unavailable => true)
         not_rule.start_hour = not_start_hour

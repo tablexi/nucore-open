@@ -8,4 +8,10 @@ module ReservationsHelper
   def reservation_pick_accessories_path(reservation)
     new_order_order_detail_accessory_path(reservation.order_detail.order, reservation.order_detail)
   end
+
+  def default_duration
+    default = @instrument.min_reserve_mins || @instrument.reserve_interval
+    default = 15 if default < 15
+    default
+  end
 end

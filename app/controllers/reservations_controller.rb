@@ -46,7 +46,6 @@ class ReservationsController < ApplicationController
     end
 
     respond_to do |format|
-      as_calendar_object_options = {:start_date => @start_date, :with_details => current_user && params[:with_details]}
       as_calendar_object_options = {:start_date => @start_date, :with_details => params[:with_details]}
       format.js { render :json => @reservations.map{|r| r.as_calendar_object(as_calendar_object_options)}.flatten +
                                   @unavailable.map{ |r| r.as_calendar_object(as_calendar_object_options)}.flatten }

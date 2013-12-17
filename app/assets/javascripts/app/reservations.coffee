@@ -1,27 +1,32 @@
 $ ->
-  if isBundle? && !isBundle && !ordering_on_behalf
-    $('#new_reservation .datetime-block select, #new_reservation #reservation_reserve_start_date').change ->
+  target = '#new_reservation #reservation_duration_mins'
 
-      return if ctrlMechanism == 'manual'
+  if $(target).length
+    new ReservationTimeChecker(target)
 
-      now = new Date()
-      future = now.clone().addMinutes(5)
-      date = $('#reservation_reserve_start_date').val()
-      hour = $('#reservation_reserve_start_hour').val()
-      hour = "0#{hour}" if hour < 10
-      mins = $('#reservation_reserve_start_min').val()
-      mins = "0#{mins}" if mins < 10
-      meridian = $('#reservation_reserve_start_meridian').val()
+    if isBundle? && !isBundle && !ordering_on_behalf
+      $('#new_reservation .datetime-block select, #new_reservation #reservation_reserve_start_date').change ->
 
-      date_string = "#{date} #{hour}:#{mins}:00 #{meridian}"
+        return if ctrlMechanism == 'manual'
 
-      picked = new Date(date_string)
+        now = new Date()
+        future = now.clone().addMinutes(5)
+        date = $('#reservation_reserve_start_date').val()
+        hour = $('#reservation_reserve_start_hour').val()
+        hour = "0#{hour}" if hour < 10
+        mins = $('#reservation_reserve_start_min').val()
+        mins = "0#{mins}" if mins < 10
+        meridian = $('#reservation_reserve_start_meridian').val()
 
-      # change reservation creation button based on Reservation
-      text = if picked.between(now, future) then 'Create & Start' else 'Create'
-      $('#reservation_submit').attr('value', text);
+        date_string = "#{date} #{hour}:#{mins}:00 #{meridian}"
 
-    .trigger('change')
+        picked = new Date(date_string)
+
+        # change reservation creation button based on Reservation
+        text = if picked.between(now, future) then 'Create & Start' else 'Create'
+        $('#reservation_submit').attr('value', text);
+
+      .trigger('change')
 
 
 

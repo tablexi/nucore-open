@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131202225331) do
+ActiveRecord::Schema.define(:version => 20131205230514) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -409,7 +409,6 @@ ActiveRecord::Schema.define(:version => 20131202225331) do
     t.integer "start_min",                                                        :null => false
     t.integer "end_hour",                                                         :null => false
     t.integer "end_min",                                                          :null => false
-    t.integer "duration_mins",                                                    :null => false
     t.boolean "on_sun",                                                           :null => false
     t.boolean "on_mon",                                                           :null => false
     t.boolean "on_tue",                                                           :null => false

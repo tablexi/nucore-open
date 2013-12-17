@@ -32,9 +32,8 @@
 
 .well
   %h3= t('instruments.instrument_fields.reservation.label.restrict')
-  %p= t 'instruments.instrument_fields.reservation.intro'
-
-  = f.input :min_reserve_mins, :label => t('instruments.instrument_fields.reservation.label.min_reserve')
-  = f.input :max_reserve_mins, :label => t('instruments.instrument_fields.reservation.label.max_reserve')
+  = f.input :reserve_interval, :collection => Instrument::RESERVE_INTERVALS, :label => t('instruments.instrument_fields.reservation.label.reserve_interval'), :hint => t('instruments.instrument_fields.reservation.instruct.reserve_interval')
+  = f.input :min_reserve_mins, :label => t('instruments.instrument_fields.reservation.label.min_reserve'), :hint => t('instruments.instrument_fields.reservation.instruct.min_reserve')
+  = f.input :max_reserve_mins, :label => t('instruments.instrument_fields.reservation.label.max_reserve'), :hint => t('instruments.instrument_fields.reservation.instruct.max_reserve')
   = f.input :min_cancel_hours, :label => t('instruments.instrument_fields.reservation.label.cancel_hours'), :hint => t('instruments.instrument_fields.reservation.instruct.cancel_hours')
   = f.input :auto_cancel_mins, :label => t('instruments.instrument_fields.reservation.label.auto_cancel'),  :hint => t('instruments.instrument_fields.reservation.instruct.auto_cancel')

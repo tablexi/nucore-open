@@ -18,6 +18,7 @@ module Reservations::Validations
     end
 
     validate :starts_before_ends
+    validate :duration_is_interval, on: :create
   end
 
   # Validation Methods
@@ -29,6 +30,12 @@ module Reservations::Validations
     if actual_start_at && actual_end_at
       errors.add('actual_end_date','must be after the actual start time') if actual_end_at <= actual_start_at
     end
+  end
+
+  def duration_is_interval
+    return unless product.reserve_interval && reserve_end_at && reserve_start_at
+    diff = (reserve_end_at - reserve_start_at) / 60
+    errors.add :base, :duration_not_interval, reserve_interval: product.reserve_interval unless diff % product.reserve_interval == 0
   end
 
   def does_not_conflict_with_other_reservation?

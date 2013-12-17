@@ -9,13 +9,11 @@
   %ul.inline
     %li
       = f.label :start_time
-      = time_select24(f, :start)
-    %li
-      = f.input :duration_mins, :collection => ScheduleRule.durations.map{|d| [(d == 1 ? "1 minute" : "#{d} minutes"), d]}, :include_blank => false
+      = time_select24(f, :start, :minute_step => @instrument.reserve_interval)
   %ul.inline
     %li
       = f.label :end_time
-      = time_select24(f, :end, :hours => (0..24))
+      = time_select24(f, :end, :hours => (0..24), :minute_step => @instrument.reserve_interval)
 
 = f.input :discount_percent, :label => false, :hint => false do
   = f.label :discount_percent

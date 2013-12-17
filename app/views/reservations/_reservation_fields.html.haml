@@ -3,5 +3,6 @@
   .control-group
     .controls
       = f.label '&nbsp;'
-      = time_select f, :reserve_start
-  = f.input :duration_mins, :input_html => { :class => 'timeinput' }
+      = time_select f, :reserve_start, minute_step: @instrument.reserve_interval
+
+  = f.input :duration_mins, input_html: { value: default_duration, class: 'timeinput' }

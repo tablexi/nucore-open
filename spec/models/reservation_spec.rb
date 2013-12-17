@@ -6,26 +6,33 @@ describe Reservation do
   before(:each) do
     @facility         = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @instrument       = FactoryGirl.create(:instrument, :facility_account_id => @facility_account.id, :facility => @facility)
+    @instrument       = FactoryGirl.create(:instrument, :facility_account_id => @facility_account.id, :facility => @facility, :reserve_interval => 15)
     # add rule, available every day from 12 am to 5 pm, 60 minutes duration
-    @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17, :duration_mins => 15))
+    @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17))
     Reservation.any_instance.stub(:admin?).and_return(false)
   end
 
+  let(:reservation) do
+    @instrument.reservations.create(
+      :reserve_start_date => Date.today+1.day,
+      :reserve_start_hour => 10,
+      :reserve_start_min => 0,
+      :reserve_start_meridian => 'am',
+      :duration_value => 60,
+      :duration_unit => 'minutes'
+    )
+  end
 
   context "create using virtual attributes" do
     it "should create using date, integer values" do
-      @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                                     :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                     :duration_value => 60, :duration_unit => 'minutes')
-      assert @reservation.valid?
-      @reservation.reload.duration_value.should == 60
-      @reservation.reserve_start_hour.should == 10
-      @reservation.reserve_start_min.should == 0
-      @reservation.reserve_start_meridian.should == 'am'
-      @reservation.reserve_end_hour.should == 11
-      @reservation.reserve_end_min.should == 0
-      @reservation.reserve_end_meridian.should == 'AM'
+      assert reservation.valid?
+      reservation.reload.duration_value.should == 60
+      reservation.reserve_start_hour.should == 10
+      reservation.reserve_start_min.should == 0
+      reservation.reserve_start_meridian.should == 'am'
+      reservation.reserve_end_hour.should == 11
+      reservation.reserve_end_min.should == 0
+      reservation.reserve_end_meridian.should == 'AM'
     end
 
     it "should create using string values" do
@@ -193,7 +200,7 @@ describe Reservation do
 
         (@morning.min..60).each do |min|
           new_min=min == 60 ? 0 : min
-          earliest.reserve_start_at.min.should == new_min and break if new_min % @rule.duration_mins == 0
+          earliest.reserve_start_at.min.should == new_min and break if new_min % @rule.instrument.reserve_interval == 0
         end
 
         earliest.reserve_start_at.hour.should == (new_min == 0 ? @morning.hour+1 : @morning.hour)
@@ -564,8 +571,9 @@ describe Reservation do
     context "schedule rules" do
       before :each do
         @rule.destroy
-        @rule_9_to_5 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 9, :end_hour => 17, :duration_mins => 15))
-        @rule_5_to_7 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 17, :end_hour => 19, :duration_mins => 15))
+        @instrument.update_attribute :reserve_interval, 15
+        @rule_9_to_5 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 9, :end_hour => 17))
+        @rule_5_to_7 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 17, :end_hour => 19))
       end
 
       it "should allow a reservation within the schedule rules" do
@@ -670,12 +678,8 @@ describe Reservation do
       # Order against the first account
       @order = Order.create(FactoryGirl.attributes_for(:order).merge(:user => @user, :account => @account1, :created_by => @user.id))
       @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).merge(:product => @instrument, :order_status => @os_new))
-
-      @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                                     :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                     :duration_value => 60, :duration_unit => 'minutes')
-      @reservation.order_detail = @order_detail
-      @reservation.save
+      reservation.order_detail = @order_detail
+      reservation.save
     end
 
     it "should find the best reservation window" do
@@ -689,25 +693,20 @@ describe Reservation do
       @nupg.price_policies         << @pp_long
 
       groups = (@order.user.price_groups + @order.account.price_groups).flatten.uniq
-      assert_equal @pp_long.reservation_window, @reservation.longest_reservation_window(groups)
+      assert_equal @pp_long.reservation_window, reservation.longest_reservation_window(groups)
     end
   end
 
   context 'has_actuals?' do
-    before :each do
-      @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                                     :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                     :duration_value => 60, :duration_unit => 'minutes')
-    end
 
     it 'should not have actuals' do
-      @reservation.should_not be_has_actuals
+      reservation.should_not be_has_actuals
     end
 
     it 'should have actuals' do
-      @reservation.actual_start_at=Time.zone.now
-      @reservation.actual_end_at=Time.zone.now
-      @reservation.should be_has_actuals
+      reservation.actual_start_at=Time.zone.now
+      reservation.actual_end_at=Time.zone.now
+      reservation.should be_has_actuals
     end
 
   end
@@ -755,7 +754,8 @@ describe Reservation do
   context 'for_date' do
     before :each do
       @rule.destroy
-      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 24, :duration_mins => 15))
+      @instrument.update_attribute :reserve_interval, 15
+      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 24))
       @spans_day_reservation = @instrument.reservations.create!(:reserve_start_at => Time.zone.now.end_of_day - 1.hour,
                                                      :duration_value => 120, :duration_unit => 'minutes')
       @today_reservation = @instrument.reservations.create!(:reserve_start_at => Time.zone.now.beginning_of_day + 8.hours,
@@ -781,13 +781,13 @@ describe Reservation do
     let(:next_sunday) { Time.zone.at 1362290400 } # Sun, 03 Mar 2013 00:00:00
 
     let! :instrument do
-      @instrument.update_attribute :max_reserve_mins, nil
+      @instrument.update_attributes max_reserve_mins: nil, reserve_interval: 15
       @instrument
     end
 
     let! :rule do
       @rule.destroy
-      attrs = FactoryGirl.attributes_for :schedule_rule, :start_hour => 0, :end_hour => 24, :duration_mins => 15
+      attrs = FactoryGirl.attributes_for :schedule_rule, :start_hour => 0, :end_hour => 24
       @instrument.schedule_rules.create attrs
     end
 

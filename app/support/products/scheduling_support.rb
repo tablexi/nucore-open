@@ -64,11 +64,13 @@ module Products::SchedulingSupport
 
   def available?(time = Time.zone.now)
     # zero and nil should default to 1 minute
-    reservation_length = [self.min_reserve_mins.to_i, 1].max
-    reservation = Reservation.new :product => self,
-        :reserve_start_at => time,
-        :reserve_end_at   => time + reservation_length.minutes,
-        :blackout => true # so it's not considered an admin and allowed to overlap
+    reservation_length = [ min_reserve_mins.to_i, reserve_interval.to_i ].max
+    reservation = Reservation.new(
+      :product => self,
+      :reserve_start_at => time,
+      :reserve_end_at   => time + reservation_length.minutes,
+      :blackout => true # so it's not considered an admin and allowed to overlap
+    )
     reservation.valid?
   end
 
@@ -149,7 +151,7 @@ module Products::SchedulingSupport
       self.time = day_start if time < day_start
 
       # check for conflicts with rule interval/duration time and adjust to next interval if necessary
-      duration_mins = rule.duration_mins.to_i
+      duration_mins = rule.instrument.reserve_interval.to_i
       self.time += (duration_mins - time.min % duration_mins).minutes unless time.min % duration_mins == 0
     end
 

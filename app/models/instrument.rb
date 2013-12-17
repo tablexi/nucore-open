@@ -2,6 +2,9 @@ class Instrument < Product
   include Products::RelaySupport
   include Products::SchedulingSupport
 
+  RESERVE_INTERVALS = [ 1, 5, 10, 15, 30, 60 ]
+
+
   # Associations
   # -------
 
@@ -12,12 +15,14 @@ class Instrument < Product
   # --------
 
   validates :initial_order_status_id, presence: true
+  validates :reserve_interval, inclusion: { in: RESERVE_INTERVALS }
   validates :facility_account_id, presence: true if SettingsHelper.feature_on? :recharge_accounts
   validates :min_reserve_mins,
             :max_reserve_mins,
             :auto_cancel_mins,
-            :reserve_interval,
             numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
+
+  validate :minimum_reservation_is_interval
 
   # Callbacks
   # --------
@@ -48,6 +53,15 @@ class Instrument < Product
 
   def reservation_only?
     control_mechanism == Relay::CONTROL_MECHANISMS[:manual]
+  end
+
+
+  private
+
+  def minimum_reservation_is_interval
+    if min_reserve_mins.to_i > 0 && min_reserve_mins % reserve_interval != 0
+      self.errors.add :min_reserve_mins, :min_not_interval, reserve_interval: reserve_interval
+    end
   end
 
 end
