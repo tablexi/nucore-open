@@ -135,9 +135,9 @@ class ScheduleRule < ActiveRecord::Base
     end
 
     Range.new(0, num_days-1).inject([]) do |array, i|
-      date = start_date + i.days
-      start_at = Time.zone.parse "#{date.year}-#{date.month}-#{date.day} #{start_hour}:#{start_min}"
-      end_at = Time.zone.parse "#{date.year}-#{date.month}-#{date.day} #{end_hour}:#{end_min}"
+      date = (start_date + i.days).to_datetime
+      start_at = date.change hour: start_hour, min: start_min
+      end_at = date.change hour: end_hour, min: end_min
 
       # check if rule occurs on this day
       if self.send("on_#{Date::ABBR_DAYNAMES[date.wday].downcase}?")
