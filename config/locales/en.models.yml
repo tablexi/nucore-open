@@ -78,7 +78,7 @@ en:
           changing_status: There was an error trying to change the status of the order.
         reservation:
           cannot_be_completed_in_future: You cannot complete a future reservation.
-          duration_not_interval: "The duration of the reservation must a multiple of %{reserve_interval}"
+          duration_not_interval: "The duration of the reservation must be a multiple of %{reserve_interval}"
           attributes:
             base:
               conflict: The reservation conflicts with another reservation.
