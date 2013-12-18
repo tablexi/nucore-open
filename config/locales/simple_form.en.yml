@@ -11,6 +11,8 @@ en:
     error_notification:
       default_message: "Please review the problems below:"
     hints:
+      defaults:
+        charge_for: "Select 'Usage' to charge for real time used, 'Reservation' for reserved time only, 'Overage' for reserved time plus additional time"
       facility:
         show_instrument_availability: Public schedule icon on facility page will show current availability.
       schedule_rule:
