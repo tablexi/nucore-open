@@ -1,8 +1,15 @@
 class SimpleInstrumentPricePolicy < PricePolicy
 
+  CHARGE_FOR = {
+    usage: 1,
+    overage: 2,
+    reservation: 3
+  }
+
   validates :usage_rate, :minimum_cost, :usage_subsidy, :cancellation_cost, numericality: { allow_nil: true, greater_than_or_equal_to: 0 }
   validates :reservation_rate, :reservation_subsidy, :overage_rate, :overage_subsidy, inclusion: [ nil ]
   validates :usage_rate, presence: true, unless: :restrict_purchase?
+  validates :charge_for, inclusion: CHARGE_FOR.values
   validate :subsidy_less_than_rate?, unless: :restrict_purchase?
 
   before_save :set_subsidy
