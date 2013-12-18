@@ -16,7 +16,7 @@ FactoryGirl.define do
       sequence(:url_name) { |n| "instrument#{n}"  }
       min_reserve_mins 60
       max_reserve_mins 120
-      reserve_interval 5
+      reserve_interval 1
 
       after(:create) do |inst, evaluator|
         inst.relay = FactoryGirl.create(:relay_dummy, :instrument => inst) unless evaluator.no_relay
@@ -76,7 +76,7 @@ FactoryGirl.define do
   end
 
   factory :setup_instrument, :class => Instrument, :parent => :setup_product do
-    reserve_interval 5
+    reserve_interval 1
 
     schedule { FactoryGirl.create(:schedule, :facility => facility) }
     after(:create) do |product|
