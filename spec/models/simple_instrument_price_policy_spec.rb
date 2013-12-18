@@ -13,7 +13,9 @@ describe SimpleInstrumentPricePolicy do
     it { should_not allow_value(5.0).for attr.to_sym }
     it { should allow_value(nil).for attr.to_sym }
   end
-  
+
+  it { should ensure_inclusion_of(:charge_for).in_array described_class::CHARGE_FOR.values }
+
 
   describe 'usage rate validations' do
     it { should validate_numericality_of(:usage_rate).is_greater_than_or_equal_to 0 }
