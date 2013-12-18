@@ -105,7 +105,7 @@ describe Reservation do
       end
 
       it 'does not look at time after the reservation' do
-        @instrument.update_attributes(max_reserve_mins: nil)
+        @instrument.update_attributes(max_reserve_mins: nil, reserve_interval: 1)
         @instrument.schedule_rules.update_all(start_hour: 0, end_hour: 24)
         # Make sure there is no time between now and the reservation
         order         = @user.orders.create(attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
@@ -487,7 +487,7 @@ describe Reservation do
     it 'should allow admin reservation to exceed the maximum length' do
       @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                    :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                   :duration_value => 61, :duration_unit => 'minutes')
+                                                   :duration_value => 75, :duration_unit => 'minutes')
       @reservation.stub(:admin?).and_return(true)
       @reservation.should be_valid
     end
@@ -517,7 +517,7 @@ describe Reservation do
     it 'should allow admin reservations to be less than the minimum length' do
       @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                      :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                     :duration_value => 29, :duration_unit => 'minutes')
+                                                     :duration_value => 15, :duration_unit => 'minutes')
       @reservation.stub(:admin?).and_return(true)
       @reservation.should be_valid
     end
