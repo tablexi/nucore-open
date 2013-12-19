@@ -109,9 +109,22 @@ describe OrderImport do
         errors_for_import_with_row(:account_number => "not_an_account_number").first.should match /find account/
       end
 
-      it "should have error when product isn't found" do
-        errors_for_import_with_row(:product_name => "not_a_product_name").first.should match /find product/
+      context 'product' do
+        it "should have error when product isn't found" do
+          errors_for_import_with_row(:product_name => "not_a_product_name").first.should match /find product/
+        end
+
+        it 'should have error when the product is deactivated' do
+          @item.update_attributes(:is_archived => true)
+          errors_for_import_with_row(:product_name => @item.name).first.should match /find product/
+        end
+
+        it 'should not have an error when the product is hidden' do
+          @item.update_attributes(:is_hidden => true)
+          errors_for_import_with_row(:product_name => @item.name).should be_empty
+        end
       end
+
 
       it "should have error when product is service and has active survey" do
         Service.any_instance.stub(:active_survey?).and_return(true)
