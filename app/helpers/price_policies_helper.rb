@@ -24,7 +24,7 @@ module PricePoliciesHelper
   end
 
   def charge_for_options
-    SimpleInstrumentPricePolicy::CHARGE_FOR.to_a.map do |opt|
+    InstrumentPricePolicy::CHARGE_FOR.to_a.map do |opt|
       [ opt[0].to_s.titleize, opt[1] ]
     end
   end
