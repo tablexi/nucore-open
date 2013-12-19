@@ -78,10 +78,12 @@ FactoryGirl.define do
   factory :setup_instrument, :class => Instrument, :parent => :setup_product do
     reserve_interval 1
 
-    schedule { FactoryGirl.create(:schedule, :facility => facility) }
+    schedule { create :schedule, facility: facility }
+
     after(:create) do |product|
-      product.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group => product.facility.price_groups.last, :usage_rate => 1))
-      product.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+      create :schedule_rule, instrument: product
+      create :instrument_price_policy, price_group: product.facility.price_groups.last, usage_rate: 1, product: product
+      product.reload
     end
   end
 

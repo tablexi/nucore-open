@@ -215,7 +215,7 @@ shared_examples_for "ReservationProduct" do |product_type|
 
   private
   def make_price_policy(attr={})
-    @product.send(:"#{@product_type}_price_policies").create!(FactoryGirl.attributes_for(:"#{@product_type}_price_policy", attr))
+    create :"#{@product_type}_price_policy", attr.merge(product: @product)
   end
 end
 

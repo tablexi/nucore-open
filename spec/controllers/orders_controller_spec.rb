@@ -249,7 +249,7 @@ describe OrdersController do
                                             :facility => @authable,
                                             :facility_account => @facility_account,
                                             :no_relay => true)
-        @instrument_pp = @instrument.instrument_price_policies.create!(FactoryGirl.attributes_for(:instrument_price_policy, :price_group => @nupg))
+        @instrument_pp = create :instrument_price_policy, :price_group => @nupg, product: @instrument
         define_open_account(@instrument.account, @account.account_number)
         @reservation = place_reservation_for_instrument(@staff, @instrument, @account, Time.zone.now)
         @order = @reservation.order_detail.order
@@ -474,7 +474,7 @@ describe OrdersController do
           @instrument = FactoryGirl.create(:instrument,
                                               :facility => @authable,
                                               :facility_account => @facility_account)
-          @instrument_pp = @instrument.instrument_price_policies.create!(FactoryGirl.attributes_for(:instrument_price_policy, :price_group => @price_group, :start_date => 7.day.ago, :expire_date => 1.day.from_now))
+          @instrument_pp = create :instrument_price_policy, price_group: @price_group, start_date: 7.day.ago, expire_date: 1.day.from_now, product: @instrument
           define_open_account(@instrument.account, @account.account_number)
           @reservation = place_reservation_for_instrument(@staff, @instrument, @account, 3.days.ago)
           @reservation.should_not be_nil
