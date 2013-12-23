@@ -16,12 +16,13 @@ class InstrumentPricePolicy < PricePolicy
             :overage_subsidy,
             :reservation_mins,
             :overage_mins,
+            :usage_mins,
             inclusion: [ nil ]
 
   validate :subsidy_less_than_rate?, unless: :restrict_purchase?
 
 
-  before_save :set_subsidy, :set_usage_mins
+  before_save :set_subsidy
 
   after_create do |pp|
     # Make sure we have a default reservation window for this price group and product
@@ -62,10 +63,5 @@ class InstrumentPricePolicy < PricePolicy
 
   def set_subsidy
     self.usage_subsidy ||= 0 if usage_rate
-  end
-
-
-  def set_usage_mins
-    self.usage_mins = 60
   end
 end

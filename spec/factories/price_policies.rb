@@ -20,7 +20,6 @@ FactoryGirl.define do
     usage_rate 1
     usage_subsidy 0
     minimum_cost 1
-    usage_mins 60
     can_purchase true
     start_date { Time.zone.now.beginning_of_day }
     expire_date { PricePolicy.generate_expire_date(Time.zone.now.beginning_of_day) }

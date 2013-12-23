@@ -9,7 +9,7 @@ describe InstrumentPricePolicy do
     it { should allow_value(nil).for attr.to_sym }
   end
 
-  %w(reservation_rate reservation_subsidy overage_rate overage_subsidy reservation_mins overage_mins).each do |attr|
+  %w(reservation_rate reservation_subsidy overage_rate overage_subsidy reservation_mins overage_mins usage_mins).each do |attr|
     it { should_not allow_value(5.0).for attr.to_sym }
     it { should allow_value(nil).for attr.to_sym }
   end
@@ -72,12 +72,6 @@ describe InstrumentPricePolicy do
       policy.usage_subsidy = nil
       expect(policy.save).to be_true
       expect(policy.reload.usage_subsidy).to be_nil
-    end
-
-    it 'always sets usage_mins to 60' do
-      policy.usage_mins = 0
-      expect(policy.save).to be_true
-      expect(policy.usage_mins).to eq 60
     end
   end
 
