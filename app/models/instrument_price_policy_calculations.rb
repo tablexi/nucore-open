@@ -32,13 +32,13 @@ module InstrumentPricePolicyCalculations
   end
 
 
-  def calculate_cost(duration, discount)
-    ((duration / usage_mins).ceil * usage_rate.to_f) * discount
+  def calculate_cost(duration_mins, discount)
+    duration_mins * rate_per_minute * discount
   end
 
 
-  def calculate_subsidy(duration, discount)
-    ((duration / usage_mins).ceil * usage_subsidy.to_f) * discount
+  def calculate_subsidy(duration_mins, discount)
+    duration_mins * subsidy_per_minute * discount
   end
 
 
@@ -59,6 +59,25 @@ module InstrumentPricePolicyCalculations
 
 
   def calculate_cost_and_subsidy(reservation)
+    case charge_for
+      when CHARGE_FOR[:usage] then calculate_usage(reservation)
+      when CHARGE_FOR[:overage] then calculate_overage(reservation)
+      when CHARGE_FOR[:reservation] then calculate_reservation(reservation)
+    end
   end
 
+
+  def calculate_usage(reservation)
+
+  end
+
+
+  def calculate_overage(reservation)
+
+  end
+
+
+  def calculate_reservation(reservation)
+
+  end
 end

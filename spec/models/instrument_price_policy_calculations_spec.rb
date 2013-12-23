@@ -13,22 +13,32 @@ describe InstrumentPricePolicyCalculations do
 
   it 'calculates cost based on the given duration and discount' do
     policy.usage_rate = 5
-    expect(policy.usage_mins).to eq 60
     expect(policy.calculate_cost 120, 0.15).to eq 1.5
   end
 
   it 'calculates subsidy based on the given duration and discount' do
     policy.usage_subsidy = 5
-    expect(policy.usage_mins).to eq 60
     expect(policy.calculate_subsidy 120, 0.15).to eq 1.5
   end
 
-  it 'calculates a discount based on the given time and configured schedule rules' do
-    policy.product.schedule_rules.first.update_attributes! start_hour: 0, end_hour: 24, on_sat: false, on_sun: false
-    policy.product.schedule_rules << create(:weekend_schedule_rule, instrument: policy.product, discount_percent: 0.25, start_hour: 0, end_hour: 24)
-    start_at = Time.zone.parse '2013-12-13 09:00'
-    end_at = Time.zone.parse '2013-12-14 12:00'
-    expect(policy.calculate_discount(start_at, end_at).round 3).to eq 0.999
+
+  describe 'calculating with two effective schedule rules, one discounting one not' do
+    let(:start_at) { Time.zone.parse '2013-12-13 09:00' }
+    let(:end_at) { Time.zone.parse '2013-12-14 12:00' }
+
+    before :each do
+      policy.product.schedule_rules.first.update_attributes! start_hour: 0, end_hour: 24, on_sat: false, on_sun: false
+      policy.product.schedule_rules << create(:weekend_schedule_rule, instrument: policy.product, discount_percent: 0.25, start_hour: 0, end_hour: 24)
+    end
+
+    it 'calculates a discount based on the given time and configured schedule rules' do
+      expect(policy.calculate_discount(start_at, end_at).round 3).to eq 0.999
+    end
+
+    it 'calculates the same as the old instrument price policy' do
+      old_policy = create :old_instrument_price_policy, policy.attributes.merge('usage_mins' => 60, 'reservation_mins' => 60, 'overage_mins' => 60)
+      expect(policy.estimate_cost_and_subsidy start_at, end_at).to eq old_policy.estimate_cost_and_subsidy(start_at, end_at)
+    end
   end
 
 
@@ -107,6 +117,11 @@ describe InstrumentPricePolicyCalculations do
       expect(results[:cost]).to eq min_cost
       expect(results[:subsidy]).to eq 0
     end
+  end
+
+
+  describe 'calculating cost and subsidy' do
+
   end
 
 
