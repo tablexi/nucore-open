@@ -156,4 +156,17 @@ describe InstrumentPricePolicy do
     end
   end
 
+
+  describe 'costs per minute' do
+    it 'divides the hourly rate' do
+      policy.usage_rate = 120
+      expect(policy.rate_per_minute).to eq 2
+    end
+
+    it 'divides the hourly subsidy' do
+      policy.usage_subsidy = 120
+      expect(policy.subsidy_per_minute).to eq 2
+    end
+  end
+
 end

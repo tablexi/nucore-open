@@ -21,7 +21,6 @@ class InstrumentPricePolicy < PricePolicy
 
   validate :subsidy_less_than_rate?, unless: :restrict_purchase?
 
-
   before_save :set_subsidy
 
   after_create do |pp|
@@ -56,6 +55,16 @@ class InstrumentPricePolicy < PricePolicy
 
   def free?
     usage_rate.to_f == 0
+  end
+
+
+  def rate_per_minute
+    usage_rate.to_f / 60
+  end
+
+
+  def subsidy_per_minute
+    usage_subsidy.to_f / 60
   end
 
 
