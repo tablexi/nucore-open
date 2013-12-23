@@ -1,4 +1,4 @@
-module InstrumentPricePolicyCalculations
+module OldInstrumentPricePolicyCalculations
 
   def estimate_cost_and_subsidy_from_order_detail(order_detail)
     reservation = order_detail.reservation

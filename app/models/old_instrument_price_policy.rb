@@ -1,5 +1,5 @@
 class OldInstrumentPricePolicy < PricePolicy
-  include InstrumentPricePolicyCalculations
+  include OldInstrumentPricePolicyCalculations
 
   @@intervals = [1, 5, 10, 15, 30, 60]
 
