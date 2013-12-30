@@ -228,7 +228,7 @@ describe InstrumentPricePolicyCalculations do
       old_policy.attributes = attrs
       old_policy.product.control_mechanism = Relay::CONTROL_MECHANISMS[:relay]
       reservation.actual_start_at = reservation.reserve_start_at
-      reservation.actual_end_at = reservation.reserve_end_at
+      reservation.actual_end_at = reservation.reserve_end_at - 10.minutes
       new_costs = policy.calculate_cost_and_subsidy reservation
       old_policy.reservation_rate = nil
       old_policy.overage_rate = nil
@@ -237,7 +237,7 @@ describe InstrumentPricePolicyCalculations do
       expect(new_costs).to eq old_costs
     end
 
-    it 'calculates the same reservation costs' do
+    it 'calculates the same overage costs' do
       attrs = {
         usage_subsidy: 0.50,
         usage_rate: 10
@@ -248,7 +248,7 @@ describe InstrumentPricePolicyCalculations do
       old_policy.attributes = attrs
       old_policy.product.control_mechanism = Relay::CONTROL_MECHANISMS[:relay]
       reservation.actual_start_at = reservation.reserve_start_at
-      reservation.actual_end_at = reservation.actual_start_at + 30.minutes
+      reservation.actual_end_at = reservation.reserve_end_at + 9.minutes
       new_costs = policy.calculate_cost_and_subsidy reservation
       old_policy.reservation_rate = nil
       old_policy.overage_rate = nil

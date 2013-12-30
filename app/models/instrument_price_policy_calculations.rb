@@ -7,6 +7,8 @@ module InstrumentPricePolicyCalculations
 
 
   def estimate_cost_and_subsidy(start_at, end_at)
+    start_at = start_at.change sec: 0
+    end_at = end_at.change sec: 0
     return nil if restrict_purchase? || end_at <= start_at
 
     return { cost: minimum_cost || 0, subsidy: 0 } if free?
@@ -77,23 +79,18 @@ module InstrumentPricePolicyCalculations
   def calculate_usage(reservation)
     act_end_at = reservation.actual_end_at.change sec: 0
     act_start_at = reservation.actual_start_at.change sec: 0
-    res_end_at = reservation.reserve_end_at.change sec: 0
-    usage_minutes = ([ act_end_at, res_end_at ].min - act_start_at) / 60
+    usage_minutes = (act_end_at - act_start_at) / 60
     discount = calculate_discount act_start_at, act_end_at
     cost_and_subsidy usage_minutes, discount
   end
 
 
   def calculate_overage(reservation)
-    act_end_at = reservation.actual_end_at.change sec: 0
-    res_end_at = reservation.reserve_end_at.change sec: 0
-    usage = calculate_usage reservation
-    return usage if act_end_at <= res_end_at
-
-    over_minutes = (act_end_at - res_end_at) / 60
-    discount = calculate_discount res_end_at, act_end_at
-    overage = cost_and_subsidy over_minutes, discount
-    { cost: usage[:cost] + overage[:cost], subsidy: usage[:subsidy] + overage[:subsidy] }
+    if over_reservation? reservation
+      calculate_usage reservation
+    else
+      calculate_reservation reservation
+    end
   end
 
 
@@ -115,5 +112,14 @@ module InstrumentPricePolicyCalculations
     end
 
     costs
+  end
+
+
+  def over_reservation?(reservation)
+    usage_start = reservation.actual_start_at.change sec: 0
+    usage_end = reservation.actual_end_at.change sec: 0
+    reserve_start = reservation.reserve_start_at.change sec: 0
+    reserve_end = reservation.reserve_end_at.change sec: 0
+    (usage_end - usage_start) > (reserve_end - reserve_start)
   end
 end
