@@ -301,7 +301,7 @@ describe Reservation do
 
 
       it 'should be false when price policy has no usage rate' do
-        @instrument_pp.usage_rate.should_not be_present
+        @instrument_pp.update_attribute :usage_rate, 0
 
         @reservation1.order_detail.price_policy=@instrument_pp
         @reservation1.actual_start_at=1.day.ago
