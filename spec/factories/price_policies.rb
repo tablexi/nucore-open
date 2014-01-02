@@ -15,7 +15,7 @@ FactoryGirl.define do
 
   factory :instrument_price_policy do
     price_group
-    charge_for 1
+    charge_for InstrumentPricePolicy::CHARGE_FOR[:reservation]
     association :product, factory: :setup_instrument
     usage_rate 1
     usage_subsidy 0
