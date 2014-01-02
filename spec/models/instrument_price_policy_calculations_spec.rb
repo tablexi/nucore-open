@@ -204,11 +204,8 @@ describe InstrumentPricePolicyCalculations do
       policy.stub(:minimum_cost).and_return nil
       expect(policy.calculate_cost_and_subsidy reservation).to eq({ cost: 0, subsidy: 0 })
     end
-  end
 
-
-  describe 'calculations compared to old price policy' do
-    it 'calculates the same reservation costs' do
+    it 'calculates reservation costs same as the old policy' do
       old_policy.product.control_mechanism = Relay::CONTROL_MECHANISMS[:manual]
       policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:reservation]
       new_costs = policy.calculate_cost_and_subsidy reservation
@@ -217,44 +214,32 @@ describe InstrumentPricePolicyCalculations do
       expect(new_costs).to eq old_costs
     end
 
-    it 'calculates the same usage costs' do
-      attrs = {
-        usage_subsidy: 0.50,
-        usage_rate: 10
+    it 'calculates usage costs precisely' do
+      policy.attributes = {
+        usage_subsidy: 10.33,
+        usage_rate: 73.20
       }
 
-      policy.attributes = attrs
       policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:usage]
-      old_policy.attributes = attrs
-      old_policy.product.control_mechanism = Relay::CONTROL_MECHANISMS[:relay]
       reservation.actual_start_at = reservation.reserve_start_at
       reservation.actual_end_at = reservation.reserve_end_at - 10.minutes
       new_costs = policy.calculate_cost_and_subsidy reservation
-      old_policy.reservation_rate = nil
-      old_policy.overage_rate = nil
-      old_costs = old_policy.calculate_cost_and_subsidy reservation
-      expect(new_costs).to_not be_nil
-      expect(new_costs).to eq old_costs
+      expect(new_costs[:cost].round 4).to eq 61
+      expect(new_costs[:subsidy].round 4).to eq 8.6083
     end
 
-    it 'calculates the same overage costs' do
-      attrs = {
-        usage_subsidy: 0.50,
-        usage_rate: 10
+    it 'calculates overage costs precisely' do
+      policy.attributes = {
+        usage_subsidy: 7,
+        usage_rate: 25
       }
 
-      policy.attributes = attrs
       policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:overage]
-      old_policy.attributes = attrs
-      old_policy.product.control_mechanism = Relay::CONTROL_MECHANISMS[:relay]
       reservation.actual_start_at = reservation.reserve_start_at
-      reservation.actual_end_at = reservation.reserve_end_at + 9.minutes
+      reservation.actual_end_at = reservation.reserve_end_at + 10.minutes
       new_costs = policy.calculate_cost_and_subsidy reservation
-      old_policy.reservation_rate = nil
-      old_policy.overage_rate = nil
-      old_costs = old_policy.calculate_cost_and_subsidy reservation
-      expect(new_costs).to_not be_nil
-      expect(new_costs).to eq old_costs
+      expect(new_costs[:cost].round 4).to eq 29.1667
+      expect(new_costs[:subsidy].round 4).to eq 8.1667
     end
   end
 
