@@ -48,11 +48,11 @@ module InstrumentPricePolicyCalculations
   def calculate_cost_and_subsidy(reservation)
     return calculate_cancellation_costs(reservation) if reservation.canceled_at
 
+    return { cost: minimum_cost || 0, subsidy: 0 } if free?
+
     return calculate_reservation(reservation) if charge_for == InstrumentPricePolicy::CHARGE_FOR[:reservation]
 
     return nil unless reservation.actual_start_at && reservation.actual_end_at
-
-    return { cost: minimum_cost || 0, subsidy: 0 } if free?
 
     case charge_for
       when InstrumentPricePolicy::CHARGE_FOR[:usage]
