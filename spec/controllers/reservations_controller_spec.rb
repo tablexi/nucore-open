@@ -252,7 +252,7 @@ describe ReservationsController do
       @order            = @guest.orders.create(FactoryGirl.attributes_for(:order, :created_by => @admin.id, :account => @account))
       @order.add(@instrument, 1)
       @order_detail     = @order.order_details.first
-      @price_policy_past = @instrument.instrument_price_policies.create!(FactoryGirl.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id, :start_date => 7.days.ago, :expire_date => 1.day.ago, :usage_rate => 2, :reservation_rate => 0))
+      @price_policy_past = create(:instrument_price_policy, :product => @instrument, :price_group_id => @price_group.id, :start_date => 7.days.ago, :expire_date => 1.day.ago, :usage_rate => 120, :charge_for => InstrumentPricePolicy::CHARGE_FOR[:usage])
       @params={
         :order_id => @order.id,
         :order_detail_id => @order_detail.id,
@@ -485,14 +485,15 @@ describe ReservationsController do
         @order.update_attributes(:account => nil)
         @order.account.should be_nil
         @order_detail.account.should be_nil
-
+        @instrument.price_policies.first.update_attributes usage_rate: 240
         @price_group2      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
         @pg_account        = FactoryGirl.create(:account_price_group_member, :account => @account, :price_group => @price_group2)
-        @price_policy2     = @instrument.instrument_price_policies.create!(FactoryGirl.attributes_for(:instrument_price_policy, :price_group_id => @price_group2.id, :usage_rate => 1, :usage_subsidy => 0.25))
+        @price_policy2     = create :instrument_price_policy, :product => @instrument, :price_group_id => @price_group2.id, :usage_rate => 120, :usage_subsidy => 15
         sign_in @guest
       end
       it "should use the policy based on the account because it's cheaper" do
         do_request
+        puts assigns[:order_detail].estimated_cost.to_f
         assigns[:order_detail].estimated_cost.should == 120.0
         assigns[:order_detail].estimated_subsidy.should == 15
       end

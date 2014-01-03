@@ -18,7 +18,7 @@ describe InstrumentsController do
                                               :facility_account => @facility_account,
                                               :no_relay => true)
     @params={ :id => @instrument.url_name, :facility_id => @authable.url_name }
-    @instrument_pp    = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group => @nupg))
+    @instrument_pp = create :instrument_price_policy, product: @instrument, price_group: @nupg
   end
 
 
