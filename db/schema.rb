@@ -307,7 +307,7 @@ ActiveRecord::Schema.define(:version => 20131218205335) do
     t.decimal  "reservation_subsidy",               :precision => 10, :scale => 2
     t.decimal  "overage_subsidy",                   :precision => 10, :scale => 2
     t.datetime "expire_date",                                                                         :null => false
-    t.integer  "charge_for"
+    t.string   "charge_for"
   end
 
   add_index "price_policies", ["price_group_id"], :name => "sys_c008589"

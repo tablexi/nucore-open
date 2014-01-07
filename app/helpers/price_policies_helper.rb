@@ -24,7 +24,7 @@ module PricePoliciesHelper
   end
 
   def charge_for_options
-    InstrumentPricePolicy::CHARGE_FOR.each{|k, v| [ k.to_s.titleize, v ] }
+    InstrumentPricePolicy::CHARGE_FOR.map{|k, v| [ k.to_s.titleize, v ] }
   end
 
 end
