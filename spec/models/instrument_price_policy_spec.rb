@@ -17,6 +17,18 @@ describe InstrumentPricePolicy do
   it { should ensure_inclusion_of(:charge_for).in_array described_class::CHARGE_FOR.values }
 
 
+  it 'converts the given hourly usage_rate to a per minute rate' do
+    policy.usage_rate = 10
+    expect(policy.usage_rate.round(4)).to eq (10 / 60.0).round(4)
+  end
+
+
+  it 'converts the given hourly usage_subsidy to a per minute rate' do
+    policy.usage_subsidy = 10
+    expect(policy.usage_subsidy.round(4)).to eq (10 / 60.0).round(4)
+  end
+
+
   describe 'usage rate validations' do
     it { should validate_numericality_of(:usage_rate).is_greater_than_or_equal_to 0 }
 
@@ -59,11 +71,10 @@ describe InstrumentPricePolicy do
     end
 
     it 'does not set the usage subsidy before save if there is a usage_rate and it is already set' do
-      expect(policy.usage_rate).to be_present
-      subsidy = policy.usage_rate - 0.25
-      policy.usage_subsidy = subsidy
+      policy.usage_rate = 50
+      policy.usage_subsidy = 5
       expect(policy.save).to be_true
-      expect(policy.reload.usage_subsidy).to eq subsidy
+      expect(policy.reload.usage_subsidy).to eq (5 / 60.0).round(4)
     end
 
     it 'does not set the usage subsidy before save if there is no usage_rate' do
@@ -153,19 +164,6 @@ describe InstrumentPricePolicy do
     it 'is not free if the usage rate is greater than 0' do
       policy.usage_rate = 5.0
       expect(policy).to_not be_free
-    end
-  end
-
-
-  describe 'costs per minute' do
-    it 'divides the hourly rate' do
-      policy.usage_rate = 120
-      expect(policy.rate_per_minute).to eq 2
-    end
-
-    it 'divides the hourly subsidy' do
-      policy.usage_subsidy = 120
-      expect(policy.subsidy_per_minute).to eq 2
     end
   end
 

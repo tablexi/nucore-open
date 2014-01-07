@@ -12,9 +12,9 @@ describe InstrumentPricePolicyCalculations do
 
   let :old_policy do
     create :old_instrument_price_policy, policy.attributes.merge(
-      'usage_mins' => 60,
-      'reservation_mins' => 60,
-      'overage_mins' => 60,
+      'usage_mins' => 1,
+      'reservation_mins' => 1,
+      'overage_mins' => 1,
       'reservation_rate' => policy.usage_rate,
       'overage_rate' => policy.usage_rate
     )
@@ -29,12 +29,12 @@ describe InstrumentPricePolicyCalculations do
 
   it 'calculates cost based on the given duration and discount' do
     policy.usage_rate = 5
-    expect(policy.calculate_cost 120, 0.15).to eq 1.5
+    expect(policy.calculate_cost(120, 0.15).to_f).to eq 1.5
   end
 
   it 'calculates subsidy based on the given duration and discount' do
     policy.usage_subsidy = 5
-    expect(policy.calculate_subsidy 120, 0.15).to eq 1.5
+    expect(policy.calculate_subsidy(120, 0.15).to_f).to eq 1.5
   end
 
 

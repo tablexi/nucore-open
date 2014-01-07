@@ -17,7 +17,7 @@ FactoryGirl.define do
     price_group
     charge_for InstrumentPricePolicy::CHARGE_FOR[:reservation]
     association :product, factory: :setup_instrument
-    usage_rate 1
+    usage_rate 10 / 60.0
     usage_subsidy 0
     minimum_cost 1
     can_purchase true

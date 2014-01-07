@@ -20,12 +20,12 @@ module InstrumentPricePolicyCalculations
 
 
   def calculate_cost(duration_mins, discount)
-    duration_mins * rate_per_minute * discount
+    duration_mins * usage_rate * discount
   end
 
 
   def calculate_subsidy(duration_mins, discount)
-    duration_mins * subsidy_per_minute * discount
+    duration_mins * usage_subsidy * discount
   end
 
 

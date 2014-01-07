@@ -142,7 +142,7 @@ describe FacilityReservationsController do
         @order_detail.price_policy.should be_nil
         @price_group=FactoryGirl.create(:price_group, :facility => @authable)
         FactoryGirl.create(:user_price_group_member, :user => @director, :price_group => @price_group)
-        @instrument_pp=@product.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id))
+        @instrument_pp=create(:instrument_price_policy, :product => @product, :price_group_id => @price_group.id, :usage_rate => 2)
         @instrument_pp.reload.restrict_purchase=false
         @now=@reservation.reserve_start_at+3.hour
         maybe_grant_always_sign_in :director
