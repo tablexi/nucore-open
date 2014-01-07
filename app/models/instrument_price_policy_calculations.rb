@@ -7,8 +7,8 @@ module InstrumentPricePolicyCalculations
 
 
   def estimate_cost_and_subsidy(start_at, end_at)
-    start_at = start_at.change sec: 0
-    end_at = end_at.change sec: 0
+    start_at = strip_seconds start_at
+    end_at = strip_seconds end_at
     return nil if restrict_purchase? || end_at <= start_at
 
     return { cost: minimum_cost || 0, subsidy: 0 } if free?
@@ -65,8 +65,8 @@ module InstrumentPricePolicyCalculations
 
   def cancellation_penalty?(reservation)
     return false unless product.min_cancel_hours
-    res_start_at = reservation.reserve_start_at.change sec: 0
-    cancelled_at = reservation.canceled_at.change sec: 0
+    res_start_at = strip_seconds reservation.reserve_start_at
+    cancelled_at = strip_seconds reservation.canceled_at
     (res_start_at - cancelled_at) / 3600 <= product.min_cancel_hours
   end
 
@@ -77,8 +77,8 @@ module InstrumentPricePolicyCalculations
 
 
   def calculate_usage(reservation)
-    act_end_at = reservation.actual_end_at.change sec: 0
-    act_start_at = reservation.actual_start_at.change sec: 0
+    act_end_at = strip_seconds reservation.actual_end_at
+    act_start_at = strip_seconds reservation.actual_start_at
     usage_minutes = (act_end_at - act_start_at) / 60
     discount = calculate_discount act_start_at, act_end_at
     cost_and_subsidy usage_minutes, discount
@@ -116,10 +116,15 @@ module InstrumentPricePolicyCalculations
 
 
   def over_reservation?(reservation)
-    usage_start = reservation.actual_start_at.change sec: 0
-    usage_end = reservation.actual_end_at.change sec: 0
-    reserve_start = reservation.reserve_start_at.change sec: 0
-    reserve_end = reservation.reserve_end_at.change sec: 0
+    usage_start = strip_seconds reservation.actual_start_at
+    usage_end = strip_seconds reservation.actual_end_at
+    reserve_start = strip_seconds reservation.reserve_start_at
+    reserve_end = strip_seconds reservation.reserve_end_at
     (usage_end - usage_start) > (reserve_end - reserve_start)
+  end
+
+
+  def strip_seconds(datetime)
+    datetime.change sec: 0
   end
 end
