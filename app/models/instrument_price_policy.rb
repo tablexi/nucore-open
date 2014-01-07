@@ -34,7 +34,7 @@ class InstrumentPricePolicy < PricePolicy
 
   def subsidy_less_than_rate?
     if usage_subsidy && usage_rate && usage_subsidy > usage_rate
-      errors.add("usage_subsidy", "cannot be greater than the Usage cost")
+      errors.add :usage_subsidy, I18n.t('activerecord.errors.models.instrument_price_policy.usage_subsidy')
     end
   end
 
