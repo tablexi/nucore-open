@@ -67,7 +67,7 @@ module InstrumentPricePolicyCalculations
     return false unless product.min_cancel_hours
     res_start_at = strip_seconds reservation.reserve_start_at
     cancelled_at = strip_seconds reservation.canceled_at
-    (res_start_at - cancelled_at) / 3600 <= product.min_cancel_hours
+    res_start_at - cancelled_at <= product.min_cancel_hours.hours
   end
 
 
