@@ -39,28 +39,30 @@ class InstrumentPricePolicyComparator
     old_policy = detail.price_policy
     attrs = old_policy.attributes
 
-    if detail.product.reservation_only?
+    if detail.product.reservation_only? && old_policy.reservation_rate && old_policy.reservation_mins
       attrs.merge!(
-        usage_rate: old_policy.reservation_rate / old_policy.reservation_mins,
-        charge_for: InstrumentPricePolicy::CHARGE_FOR[:reservation]
+        'usage_rate' => old_policy.reservation_rate * (60 / old_policy.reservation_mins),
+        'charge_for' => InstrumentPricePolicy::CHARGE_FOR[:reservation]
+      )
+    elsif old_policy.usage_rate && old_policy.usage_mins
+      attrs.merge!(
+        'usage_rate' => old_policy.usage_rate * (60 / old_policy.usage_mins),
+        'charge_for' => InstrumentPricePolicy::CHARGE_FOR[:usage]
       )
     else
-      attrs.merge!(
-        usage_rate: old_policy.usage_rate / old_policy.usage_mins,
-        charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage]
-      )
+      raise "Cannot determine calculation type of policy #{old_policy.id}!"
     end
 
     attrs.merge! charge_for: InstrumentPricePolicy::CHARGE_FOR[:overage] if old_policy.overage_rate
 
     attrs.merge!(
-      reservation_rate: nil,
-      reservation_subsidy: nil,
-      overage_rate: nil,
-      overage_subsidy: nil,
-      reservation_mins: nil,
-      overage_mins: nil,
-      usage_mins: nil
+      'reservation_rate' => nil,
+      'reservation_subsidy' => nil,
+      'overage_rate' => nil,
+      'overage_subsidy' => nil,
+      'reservation_mins' => nil,
+      'overage_mins' => nil,
+      'usage_mins' => nil
     )
 
     InstrumentPricePolicy.new attrs
@@ -76,12 +78,15 @@ class InstrumentPricePolicyComparator
 
 
   def report(detail, actuals, estimates)
+    reservation = detail.reservation
+
     puts <<-REPORT
-      #{detail.to_s}
-      [ EST. COST ] old: #{detail.estimated_cost.to_f}     new: #{estimates[:cost].to_f}
-      [ EST. SUB  ] old: #{detail.estimated_subsidy.to_f}  new: #{estimates[:subsidy].to_f}
-      [ ACT. COST ] old: #{detail.actual_cost.to_f}        new: #{actuals[:cost].to_f}
-      [ ACT. SUB  ] old: #{detail.actual_subsidy.to_f}     new: #{actuals[:subsidy].to_f}
+      [ EST. MINS  ] #{(reservation.reserve_end_at - reservation.reserve_start_at) / 60}
+      [ EST. COST  ] old: #{detail.estimated_cost.to_f}     new: #{estimates[:cost].to_f}
+      [ EST. SUB   ] old: #{detail.estimated_subsidy.to_f}  new: #{estimates[:subsidy].to_f}
+      [ ACT. MINS  ] #{(reservation.actual_end_at - reservation.actual_start_at) / 60}
+      [ ACT. COST  ] old: #{detail.actual_cost.to_f}        new: #{actuals[:cost].to_f}
+      [ ACT. SUB   ] old: #{detail.actual_subsidy.to_f}     new: #{actuals[:subsidy].to_f}
 
     REPORT
   end
