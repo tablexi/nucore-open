@@ -23,16 +23,7 @@ class InstrumentPricePolicy < PricePolicy
 
   before_save :set_subsidy
 
-  after_create do |pp|
-    # Make sure we have a default reservation window for this price group and product
-    pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(pp.price_group.id, pp.product.id)
-
-    PriceGroupProduct.create(
-      price_group: pp.price_group,
-      product: pp.product,
-      reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
-    ) unless pgp
-  end
+  after_create {|pp| ensure_reservation_window(pp) }
 
 
   def reservation_window
@@ -72,5 +63,16 @@ class InstrumentPricePolicy < PricePolicy
 
   def set_subsidy
     self.usage_subsidy ||= 0 if usage_rate
+  end
+
+
+  def ensure_reservation_window(price_policy)
+    pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(price_policy.price_group.id, price_policy.product.id)
+
+    PriceGroupProduct.create(
+      price_group: price_policy.price_group,
+      product: price_policy.product,
+      reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
+    ) unless pgp
   end
 end
