@@ -8,12 +8,12 @@
 %table.table.table-striped.table-hover.price-policy-table
   %thead
     %tr
-      %th{:rowspan => 2} Price Group
-      %th{:rowspan => 2} Type
-      %th{:rowspan => 2} Can Purchase?
-      %th{:rowspan => 2} Rate Per Hour
-      %th{:rowspan => 2} Minimum Cost
-      %th{:rowspan => 2} Reservation Cost
+      %th Price Group
+      %th Type
+      %th Can Purchase?
+      %th Rate Per Hour
+      %th Minimum Cost
+      %th Reservation Cost
   %tbody
     - @price_policies.each do |pp|
       - pg = pp.price_group
