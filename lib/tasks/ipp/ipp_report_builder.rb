@@ -8,6 +8,7 @@ class IppReportBuilder
 
   def initialize
     @html = Nokogiri::HTML::Document.new
+
     Nokogiri::HTML::Builder.with(html) do |doc|
       doc.html {
         doc.body {
@@ -22,7 +23,7 @@ class IppReportBuilder
   def report(detail, actuals, estimates)
     reservation = detail.reservation
 
-    Nokogiri::HTML::Builder.with(html.at('article')) do |doc|
+    append_to_article do |doc|
       doc.section.comparison {
         doc.h2 detail.to_s
         doc.p "Reserved for #{(reservation.reserve_end_at - reservation.reserve_start_at) / 60} minutes"
@@ -63,7 +64,7 @@ class IppReportBuilder
 
 
   def summarize(reporter)
-    Nokogiri::HTML::Builder.with(html.at('article')) do |doc|
+    append_to_article do |doc|
       doc.section.summary! {
         doc.h2 'Summary'
         doc.p "#{reporter.details.size} new, in process, or completed reservations processed"
@@ -74,7 +75,7 @@ class IppReportBuilder
 
 
   def report_errors(reporter)
-    Nokogiri::HTML::Builder.with(html.at('article')) do |doc|
+    append_to_article do |doc|
       doc.section.errors! {
         doc.details {
           doc.summary 'Errors'
@@ -89,4 +90,8 @@ class IppReportBuilder
     "<!DOCTYPE html>#{html.root.to_s}"
   end
 
+
+  def append_to_article
+    Nokogiri::HTML::Builder.with(html.at('article')) {|doc| yield doc }
+  end
 end
