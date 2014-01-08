@@ -157,15 +157,12 @@ class PricePoliciesController < ApplicationController
 
   def update_policies_from_params
     @price_policies.each do |price_policy|
-      pp_param=params["price_policy_#{price_policy.price_group.id}"]
-      pp_param ||= {:can_purchase => false}
+      pp_param = params["price_policy_#{price_policy.price_group.id}"] || {:can_purchase => false}
       pp_param.merge!(
-            :start_date => parse_usa_date(params[:start_date]).beginning_of_day,
-            :expire_date => parse_usa_date(@expire_date).end_of_day)
-      @interval = params[:interval].to_i if params[:interval]
-      pp_param.merge!(:usage_mins => @interval,
-                      :reservation_mins => @interval,
-                      :overage_mins => @interval) if @interval
+        start_date: parse_usa_date(params[:start_date]).beginning_of_day,
+        expire_date: parse_usa_date(@expire_date).end_of_day
+      )
+      pp_param.merge! charge_for: params[:charge_for] if params[:charge_for].present?
       price_policy.attributes = pp_param
     end
   end

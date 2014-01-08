@@ -32,6 +32,7 @@ en:
         record_invalid: "Validation failed: %{errors}"
         incorrect: "is incorrect"
         bad_payment_source_format: "must be in format %{pattern_format}"
+        subsidy_greater_than_cost: "cannot be greater than the Usage cost"
         # Append your own errors here or at the model/attributes scope.
       full_messages:
         format: "%{attribute} %{message}"

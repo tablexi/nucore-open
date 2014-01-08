@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :instrument_price_policy do
+  factory :old_instrument_price_policy do
     unit_cost 1
     unit_subsidy 0
     reservation_rate 1
@@ -13,15 +13,13 @@ FactoryGirl.define do
     expire_date { PricePolicy.generate_expire_date(Time.zone.now.beginning_of_day) }
   end
 
-  factory :simple_instrument_price_policy do
+  factory :instrument_price_policy do
     price_group
+    charge_for InstrumentPricePolicy::CHARGE_FOR[:reservation]
     association :product, factory: :setup_instrument
-    usage_rate 1
+    usage_rate 10 / 60.0
     usage_subsidy 0
     minimum_cost 1
-    reservation_mins 1
-    usage_mins 1
-    overage_mins 1
     can_purchase true
     start_date { Time.zone.now.beginning_of_day }
     expire_date { PricePolicy.generate_expire_date(Time.zone.now.beginning_of_day) }

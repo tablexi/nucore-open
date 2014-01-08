@@ -173,7 +173,11 @@ describe OrderManagement::OrderDetailsController do
 
       describe 'updating reservation times' do
         before :each do
-          instrument.price_policies.first.update_attributes(:reservation_rate => 0, :reservation_subsidy => 0, :usage_rate => 2, :usage_subsidy => 1)
+          instrument.price_policies.first.update_attributes(
+            :usage_rate => 120,
+            :usage_subsidy => 60,
+            :charge_for => InstrumentPricePolicy::CHARGE_FOR[:usage]
+          )
         end
 
         context 'reserve times on incomplete order' do
@@ -253,7 +257,11 @@ describe OrderManagement::OrderDetailsController do
       describe 'cancelling an order' do
         before :each do
           instrument.update_attributes!(:min_cancel_hours => 72)
-          instrument.price_policies.first.update_attributes(:cancellation_cost => 100, :reservation_rate => 0, :reservation_subsidy => 0)
+          instrument.price_policies.first.update_attributes(
+            :cancellation_cost => 100,
+            :charge_for => InstrumentPricePolicy::CHARGE_FOR[:usage]
+          )
+
           @params[:order_detail] = {
             :order_status_id => OrderStatus.cancelled.first.id.to_s
           }
@@ -366,7 +374,11 @@ describe OrderManagement::OrderDetailsController do
             before :each do
               @params[:with_cancel_fee] = "1"
               instrument.update_attributes!(:min_cancel_hours => 72)
-              instrument.price_policies.first.update_attributes(:cancellation_cost => 100, :reservation_rate => 0, :reservation_subsidy => 0)
+              instrument.price_policies.first.update_attributes(
+                :cancellation_cost => 100,
+                :charge_for => InstrumentPricePolicy::CHARGE_FOR[:usage]
+              )
+
               do_request
             end
 
@@ -497,7 +509,12 @@ describe OrderManagement::OrderDetailsController do
       before :each do
         sign_in @admin
         expect(instrument.price_policies).to be_one
-        price_policy.update_attributes(:reservation_rate => 0, :reservation_subsidy => 0, :usage_rate => 2, :usage_subsidy => 1)
+        price_policy.update_attributes(
+          :charge_for => InstrumentPricePolicy::CHARGE_FOR[:usage],
+          :usage_rate => 120,
+          :usage_subsidy => 60
+        )
+
         order_detail.assign_estimated_price
         order_detail.save
       end

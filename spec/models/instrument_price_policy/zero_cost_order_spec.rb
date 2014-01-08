@@ -5,12 +5,8 @@ describe InstrumentPricePolicy do
     @instrument = FactoryGirl.create(:setup_instrument)
     @instrument.price_policies.count.should == 1
     @price_policy = @instrument.price_policies.first
-    @price_policy.update_attributes(:usage_rate => nil,
-                                    :usage_subsidy => nil,
-                                    :reservation_rate => 0,
-                                    :reservation_subsidy => 0,
-                                    :overage_rate => nil,
-                                    :overage_subsidy => nil,
+    @price_policy.update_attributes(:usage_rate => 0,
+                                    :usage_subsidy => 0,
                                     :minimum_cost => 0,
                                     :cancellation_cost => 0)
     

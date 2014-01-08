@@ -2,24 +2,18 @@
   = javascript_include_tag 'price_policy'
 
 = render :partial => 'price_policies/dates', :locals => { :f => f }
-= f.input :interval, :label => 'Calculate Rates per', :hint => "Usage, reservation, and overage time will be rounded up based on this selection.", :collection => InstrumentPricePolicy.intervals.map{|d| [ pluralize(d, 'minute'), d ]}, :selected => @price_policies.first.usage_mins
+= f.input :charge_for, :collection => charge_for_options, :selected => @price_policies.first.charge_for
 
 
 %table.table.table-striped.table-hover.price-policy-table
   %thead
     %tr
-      %th{:rowspan => 2} Price Group
-      %th{:rowspan => 2} Type
-      %th{:rowspan => 2} Can purchase?
-      %th.super-th{:colspan => 3}
-        Rates per
-        %span.interval_replace
-      %th{:rowspan => 2} Minimum Cost
-      %th{:rowspan => 2} Reservation Cost
-    %tr
-      %th Actual
-      %th Scheduled
-      %th Overage
+      %th Price Group
+      %th Type
+      %th Can Purchase?
+      %th Rate Per Hour
+      %th Minimum Cost
+      %th Reservation Cost
   %tbody
     - @price_policies.each do |pp|
       - pg = pp.price_group

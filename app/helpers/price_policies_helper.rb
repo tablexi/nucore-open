@@ -23,4 +23,8 @@ module PricePoliciesHelper
     send :"facility_#{@product.class.name.downcase}_price_policies_path"
   end
 
+  def charge_for_options
+    InstrumentPricePolicy::CHARGE_FOR.map{|k, v| [ k.to_s.titleize, v ] }
+  end
+
 end

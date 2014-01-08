@@ -7,7 +7,13 @@ describe InstrumentPricePoliciesController do
   
   before(:all) { create_users }
 
-  it_should_behave_like PricePoliciesController, :instrument
+  params_modifier = Class.new do
+    def before_create(params)
+      params.merge! charge_for: InstrumentPricePolicy::CHARGE_FOR[:reservation]
+    end
 
+    alias_method :before_update, :before_create
+  end
+
+  it_should_behave_like PricePoliciesController, :instrument, params_modifier.new
 end
- 

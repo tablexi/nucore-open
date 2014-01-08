@@ -1,6 +1,7 @@
-shared_examples_for PricePoliciesController do |product_type|
+shared_examples_for PricePoliciesController do |product_type, params_modifier = nil|
   before(:each) do
     @product_type = product_type
+    @params_modifier = params_modifier
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
 
@@ -9,7 +10,7 @@ shared_examples_for PricePoliciesController do |product_type|
 
     @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
     @price_group2     = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    @product          = @authable.send(product_type.to_s.pluralize).create(FactoryGirl.attributes_for(product_type, :facility_account_id => @facility_account.id))
+    @product          = create product_type, :facility_account_id => @facility_account.id, facility: @authable
     @price_policy     = make_price_policy(@price_group)
     @price_policy.should be_valid
     @params={ :facility_id => @authable.url_name, :"#{product_type}_id" => @product.url_name }
@@ -201,6 +202,8 @@ shared_examples_for PricePoliciesController do |product_type|
           :start_date => @start_date.to_s,
           :expire_date => @expire_date.to_s
         })
+
+        @params_modifier.before_create @params if @params_modifier.try :respond_to?, :before_create
       end
 
       it_should_allow_managers_only(:redirect) {}
@@ -266,6 +269,8 @@ shared_examples_for PricePoliciesController do |product_type|
         @params.merge!(:id => @price_policy.start_date.to_s,
           :start_date => @price_policy.start_date.to_s,
           :expire_date => @price_policy.expire_date.to_s)
+
+        @params_modifier.before_update @params if @params_modifier.try :respond_to?, :before_update
       end
 
       it_should_allow_managers_only(:redirect) {}
@@ -388,13 +393,12 @@ shared_examples_for PricePoliciesController do |product_type|
   end
 
   def make_price_policy(price_group, extra_attr = {})
-    extra_attr.merge!(:price_group_id => price_group.id)
-    @product.send(:"#{@product_type}_price_policies").create(FactoryGirl.attributes_for(:"#{@product_type}_price_policy", extra_attr))
+    create :"#{@product_type}_price_policy", extra_attr.merge(price_group: price_group, product: @product)
   end
 
   def set_policy_date(time_in_future=0)
-    @price_policy.start_date=Time.zone.now.beginning_of_day + time_in_future
-    @price_policy.expire_date=PricePolicy.generate_expire_date(@price_policy)
+    @price_policy.start_date = Time.zone.now.beginning_of_day + time_in_future
+    @price_policy.expire_date = PricePolicy.generate_expire_date(@price_policy)
     assert @price_policy.save
   end
 

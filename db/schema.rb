@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131205230514) do
+ActiveRecord::Schema.define(:version => 20131218205335) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -307,6 +307,7 @@ ActiveRecord::Schema.define(:version => 20131205230514) do
     t.decimal  "reservation_subsidy",               :precision => 10, :scale => 2
     t.decimal  "overage_subsidy",                   :precision => 10, :scale => 2
     t.datetime "expire_date",                                                                         :null => false
+    t.string   "charge_for"
   end
 
   add_index "price_policies", ["price_group_id"], :name => "sys_c008589"
