@@ -22,9 +22,7 @@ class InstrumentPricePolicy < PricePolicy
   validate :subsidy_less_than_rate?, unless: :restrict_purchase?
 
   before_save :set_subsidy
-
-  after_create {|pp| ensure_reservation_window(pp) }
-
+  after_create :ensure_reservation_window
 
   def reservation_window
     pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
@@ -34,7 +32,7 @@ class InstrumentPricePolicy < PricePolicy
 
   def subsidy_less_than_rate?
     if usage_subsidy && usage_rate && usage_subsidy > usage_rate
-      errors.add :usage_subsidy, I18n.t('activerecord.errors.models.instrument_price_policy.usage_subsidy')
+      errors.add :usage_subsidy, :subsidy_greater_than_cost
     end
   end
 
@@ -68,12 +66,12 @@ class InstrumentPricePolicy < PricePolicy
   end
 
 
-  def ensure_reservation_window(price_policy)
-    pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(price_policy.price_group.id, price_policy.product.id)
+  def ensure_reservation_window
+    pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
 
     PriceGroupProduct.create(
-      price_group: price_policy.price_group,
-      product: price_policy.product,
+      price_group: price_group,
+      product: product,
       reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
     ) unless pgp
   end
