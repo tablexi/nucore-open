@@ -11,6 +11,9 @@ class IppReportBuilder
 
     Nokogiri::HTML::Builder.with(html) do |doc|
       doc.html {
+        doc.head {
+          doc.link rel: 'stylesheet', type: 'text/css', href: File.expand_path('report.css', File.dirname(__FILE__))
+        }
         doc.body {
           doc.article {
           }
@@ -28,32 +31,33 @@ class IppReportBuilder
         doc.h2 detail.to_s
         doc.p "Reserved for #{(reservation.reserve_end_at - reservation.reserve_start_at) / 60} minutes"
         doc.p "Used for #{(reservation.actual_end_at - reservation.actual_start_at) / 60} minutes"
-        doc.table {
+        doc.table(border: 1) {
           doc.tr {
-            doc.th 'Old Policy', colspan: 2
-            doc.th 'New Policy'
+            doc.th
+            doc.th 'Old'
+            doc.th 'New'
           }
 
           doc.tr {
-            doc.td 'Estimated Cost'
+            doc.td.label 'Estimated Cost'
             doc.td detail.estimated_cost.to_f
             doc.td estimates[:cost].to_f
           }
 
           doc.tr {
-            doc.td 'Estimated Subsidy'
+            doc.td.label 'Estimated Subsidy'
             doc.td detail.estimated_subsidy.to_f
             doc.td estimates[:subsidy].to_f
           }
 
           doc.tr {
-            doc.td 'Actual Cost'
+            doc.td.label 'Actual Cost'
             doc.td detail.actual_cost.to_f
             doc.td actuals[:cost].to_f
           }
 
           doc.tr {
-            doc.td 'Actual Subsidy'
+            doc.td.label 'Actual Subsidy'
             doc.td detail.actual_subsidy.to_f
             doc.td actuals[:subsidy].to_f
           }
