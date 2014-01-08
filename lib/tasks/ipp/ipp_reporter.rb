@@ -15,7 +15,7 @@ class IppReporter
     @report_builder = IppReportBuilder.new
     @details = OrderDetail.joins(:reservation)
                           .where('price_policy_id IS NOT NULL')
-                          .where(state: [ 'New', 'In Process', 'Complete' ])
+                          .where(state: %w(new inprocess complete))
   end
 
 
