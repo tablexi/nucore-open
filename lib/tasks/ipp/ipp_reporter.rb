@@ -1,21 +1,34 @@
+require_relative 'ipp_report_builder'
+
 #
 # This class and it's usages can be removed after
 # move to the new instrument price policy is complete
-class InstrumentPricePolicyComparator
+class IppReporter
 
-  attr_reader :details
   attr_accessor :changed
+  attr_reader :details, :errors, :report_builder
 
 
   def initialize
     @changed = 0
-    @details = OrderDetail.joins(:reservation)
-                          .where('price_policy_id IS NOT NULL')
-                          .where(state: [ 'New', 'In Process', 'Complete' ])
+    @errors = []
+    @report_builder = IppReportBuilder.new
+    #@details = OrderDetail.joins(:reservation)
+    #                      .where('price_policy_id IS NOT NULL')
+    #                      .where(state: [ 'New', 'In Process', 'Complete' ])
+    @details = Order.where id: 56
   end
 
 
   def report_changes
+    build_report
+    report_builder.summarize self
+    report_builder.report_errors self
+    File.write 'price_change_report.html', report_builder.render
+  end
+
+
+  def build_report
     details.find_each do |detail|
       begin
         new_price_policy = new_policy_from detail
@@ -24,14 +37,12 @@ class InstrumentPricePolicyComparator
 
         unless same? detail, actuals, estimates
           self.changed += 1
-          report detail, actuals, estimates
+          report_builder.report detail, actuals, estimates
         end
       rescue => e
-        puts "#{detail.to_s} :: #{e.message}\n#{e.backtrace.join("\n")}"
+        errors << "#{detail.to_s} :: #{e.message}\n#{e.backtrace.keep_if{|t| t =~ /nucore-open/ }.join("\n")}"
       end
     end
-
-    summarize
   end
 
 
@@ -55,7 +66,7 @@ class InstrumentPricePolicyComparator
 
     attrs.merge! charge_for: InstrumentPricePolicy::CHARGE_FOR[:overage] if old_policy.overage_rate
 
-    attrs.merge!(
+    InstrumentPricePolicy.new attrs.merge(
       'reservation_rate' => nil,
       'reservation_subsidy' => nil,
       'overage_rate' => nil,
@@ -64,8 +75,6 @@ class InstrumentPricePolicyComparator
       'overage_mins' => nil,
       'usage_mins' => nil
     )
-
-    InstrumentPricePolicy.new attrs
   end
 
 
@@ -74,27 +83,6 @@ class InstrumentPricePolicyComparator
     detail.estimated_subsidy == estimates[:subsidy] &&
     detail.actual_cost == actuals[:cost] &&
     detail.actual_subsidy == actuals[:subsidy]
-  end
-
-
-  def report(detail, actuals, estimates)
-    reservation = detail.reservation
-
-    puts <<-REPORT
-      [ EST. MINS  ] #{(reservation.reserve_end_at - reservation.reserve_start_at) / 60}
-      [ EST. COST  ] old: #{detail.estimated_cost.to_f}     new: #{estimates[:cost].to_f}
-      [ EST. SUB   ] old: #{detail.estimated_subsidy.to_f}  new: #{estimates[:subsidy].to_f}
-      [ ACT. MINS  ] #{(reservation.actual_end_at - reservation.actual_start_at) / 60}
-      [ ACT. COST  ] old: #{detail.actual_cost.to_f}        new: #{actuals[:cost].to_f}
-      [ ACT. SUB   ] old: #{detail.actual_subsidy.to_f}     new: #{actuals[:subsidy].to_f}
-
-    REPORT
-  end
-
-
-  def summarize
-    puts "#{details.size} new, in process, or completed reservations processed"
-    puts "#{changed} had different prices while #{details.size - changed} were the same"
   end
 
 end
