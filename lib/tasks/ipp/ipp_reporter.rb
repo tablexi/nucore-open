@@ -13,10 +13,9 @@ class IppReporter
     @changed = 0
     @errors = []
     @report_builder = IppReportBuilder.new
-    #@details = OrderDetail.joins(:reservation)
-    #                      .where('price_policy_id IS NOT NULL')
-    #                      .where(state: [ 'New', 'In Process', 'Complete' ])
-    @details = Order.where id: 56
+    @details = OrderDetail.joins(:reservation)
+                          .where('price_policy_id IS NOT NULL')
+                          .where(state: [ 'New', 'In Process', 'Complete' ])
   end
 
 
