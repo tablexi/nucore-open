@@ -43,7 +43,7 @@ class IppReporter
           csv_builder.report detail, actuals, estimates
         end
       rescue => e
-        errors << "#{detail.to_s} :: #{e.message}\n#{e.backtrace.keep_if{|t| t =~ /nucore-open/ }.join("\n")}"
+        errors << error_line(e, detail)
       end
     end
   end
@@ -88,6 +88,11 @@ class IppReporter
     detail.estimated_subsidy == estimates[:subsidy] &&
     detail.actual_cost == actuals[:cost] &&
     detail.actual_subsidy == actuals[:subsidy]
+  end
+
+
+  def error_line(e, detail)
+    "#{detail.to_s} :: #{e.message}\n#{e.backtrace.keep_if{|t| t =~ /nucore-/ }.join("\n")}"
   end
 
 end
