@@ -1,7 +1,7 @@
 #
 # This class and it's usages can be removed after
 # move to the new instrument price policy is complete
-class IppReportBuilder
+class IppHtmlBuilder
 
   attr_reader :html
 
@@ -25,10 +25,11 @@ class IppReportBuilder
 
   def report(detail, actuals, estimates)
     reservation = detail.reservation
+    product = detail.product
 
     append_to_article do |doc|
       doc.section.comparison {
-        doc.h2 detail.to_s
+        doc.h2 "#{product.facility.name} | #{product.name} | #{detail.to_s}"
         doc.p "Reserved for #{(reservation.reserve_end_at - reservation.reserve_start_at) / 60} minutes"
         doc.p "Used for #{(reservation.actual_end_at - reservation.actual_start_at) / 60} minutes"
         doc.table(border: 1) {
@@ -91,7 +92,7 @@ class IppReportBuilder
 
 
   def render
-    "<!DOCTYPE html>#{html.root.to_s}"
+    File.write 'price_change_report.html', "<!DOCTYPE html>#{html.root.to_s}"
   end
 
 
