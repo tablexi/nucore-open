@@ -1,4 +1,5 @@
-require_relative 'ipp_report_builder'
+require_relative 'ipp_csv_builder'
+require_relative 'ipp_html_builder'
 
 #
 # This class and it's usages can be removed after
@@ -6,13 +7,14 @@ require_relative 'ipp_report_builder'
 class IppReporter
 
   attr_accessor :changed
-  attr_reader :details, :errors, :report_builder
+  attr_reader :details, :errors, :html_builder, :csv_builder
 
 
   def initialize
     @changed = 0
     @errors = []
-    @report_builder = IppReportBuilder.new
+    @csv_builder = IppCsvBuilder.new
+    @html_builder = IppHtmlBuilder.new
     @details = OrderDetail.joins(:reservation)
                           .where('price_policy_id IS NOT NULL')
                           .where(state: %w(new inprocess complete))
@@ -21,9 +23,10 @@ class IppReporter
 
   def report_changes
     build_report
-    report_builder.summarize self
-    report_builder.report_errors self
-    File.write 'price_change_report.html', report_builder.render
+    html_builder.summarize self
+    html_builder.report_errors self
+    html_builder.render
+    csv_builder.render
   end
 
 
@@ -36,7 +39,8 @@ class IppReporter
 
         unless same? detail, actuals, estimates
           self.changed += 1
-          report_builder.report detail, actuals, estimates
+          html_builder.report detail, actuals, estimates
+          csv_builder.report detail, actuals, estimates
         end
       rescue => e
         errors << "#{detail.to_s} :: #{e.message}\n#{e.backtrace.keep_if{|t| t =~ /nucore-open/ }.join("\n")}"
