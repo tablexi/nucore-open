@@ -52,11 +52,13 @@ class IppReporter
     if detail.product.reservation_only? && old_policy.reservation_rate && old_policy.reservation_mins
       attrs.merge!(
         'usage_rate' => old_policy.reservation_rate * (60 / old_policy.reservation_mins),
+        'usage_subsidy' => old_policy.reservation_subsidy * (60 / old_policy.reservation_mins),
         'charge_for' => InstrumentPricePolicy::CHARGE_FOR[:reservation]
       )
     elsif old_policy.usage_rate && old_policy.usage_mins
       attrs.merge!(
         'usage_rate' => old_policy.usage_rate * (60 / old_policy.usage_mins),
+        'usage_subsidy' => old_policy.usage_subsidy * (60 / old_policy.usage_mins),
         'charge_for' => InstrumentPricePolicy::CHARGE_FOR[:usage]
       )
     else
