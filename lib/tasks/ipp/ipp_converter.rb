@@ -21,11 +21,11 @@ class IppConverter
 
 
   def new_policy_from(detail)
-    convert_policy detail.price_policy
+    InstrumentPricePolicy.new new_policy_attributes_from(detail.price_policy)
   end
 
 
-  def convert_policy(old_policy)
+  def new_policy_attributes_from(old_policy)
     attrs = old_policy.attributes
 
     if !old_policy.can_purchase? && old_policy.usage_rate.nil? && old_policy.reservation_rate.nil? && old_policy.overage_rate.nil?
@@ -50,7 +50,7 @@ class IppConverter
 
     attrs.merge! charge_for: InstrumentPricePolicy::CHARGE_FOR[:overage] if old_policy.overage_rate
 
-    InstrumentPricePolicy.new attrs.merge(
+    attrs.merge(
       'reservation_rate' => nil,
       'reservation_subsidy' => nil,
       'overage_rate' => nil,

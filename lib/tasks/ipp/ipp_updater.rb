@@ -32,8 +32,7 @@ class IppUpdater
 
 
   def update_price_policy(policy)
-    new_policy = converter.convert_policy policy
-    policy.update_attributes! new_policy.attributes
+    policy.update_attributes! converter.new_policy_attributes_from(policy)
   end
 
 
