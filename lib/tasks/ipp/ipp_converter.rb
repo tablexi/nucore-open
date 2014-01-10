@@ -28,7 +28,11 @@ class IppConverter
   def convert_policy(old_policy)
     attrs = old_policy.attributes
 
-    if old_policy.product.reservation_only? && old_policy.reservation_rate && old_policy.reservation_mins
+    if !old_policy.can_purchase? && old_policy.usage_rate.nil? && old_policy.reservation_rate.nil? && old_policy.overage_rate.nil?
+      attrs.merge!(
+        'charge_for' => InstrumentPricePolicy::CHARGE_FOR[:reservation]
+      )
+    elsif old_policy.product.reservation_only? && old_policy.reservation_rate && old_policy.reservation_mins
       attrs.merge!(
         'usage_rate' => old_policy.reservation_rate * (60 / old_policy.reservation_mins),
         'usage_subsidy' => old_policy.reservation_subsidy * (60 / old_policy.reservation_mins),
