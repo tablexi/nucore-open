@@ -4,7 +4,7 @@ describe InstrumentPricePolicy do
 
   subject(:policy) { build :instrument_price_policy }
 
-  %w(minimum_cost usage_subsidy cancellation_cost).each do |attr|
+  %w(minimum_cost cancellation_cost).each do |attr|
     it { should validate_numericality_of(attr.to_sym).is_greater_than_or_equal_to 0 }
     it { should allow_value(nil).for attr.to_sym }
   end
@@ -29,8 +29,22 @@ describe InstrumentPricePolicy do
   end
 
 
+  it { should allow_value(nil).for :usage_subsidy }
+
+
+  it 'ensures that usage subsidy is greater than 0' do
+    policy.usage_subsidy = -1
+    expect(policy).to_not be_valid
+    expect(policy.errors[:usage_subsidy]).to be_present
+  end
+
+
   describe 'usage rate validations' do
-    it { should validate_numericality_of(:usage_rate).is_greater_than_or_equal_to 0 }
+    it 'ensures that usage rate is greater than 0' do
+      policy.usage_rate = -1
+      expect(policy).to_not be_valid
+      expect(policy.errors[:usage_rate]).to be_present
+    end
 
     it 'validates presence of usage rate if purchase is not restricted' do
       policy.stub(:restrict_purchase?).and_return false
