@@ -1,8 +1,8 @@
 %td
-  = hidden_field_tag "price_policy_#{pg.id}[usage_rate]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:usage_rate] : number_to_currency(pp.usage_rate, :unit => '', :delimiter => ''), :class => "usage_cost"
+  = hidden_field_tag "price_policy_#{pg.id}[usage_rate]", display_usage_rate(pg, pp), :class => "usage_cost"
   Adjustment
   %br
-  = text_field_tag "price_policy_#{pg.id}[usage_subsidy]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:usage_subsidy] : number_to_currency(pp.usage_subsidy, :unit => '', :delimiter => ''), :size => 8
+  = text_field_tag "price_policy_#{pg.id}[usage_subsidy]", display_usage_subsidy(pg, pp), :size => 8
 %td
   Amount
   %br
