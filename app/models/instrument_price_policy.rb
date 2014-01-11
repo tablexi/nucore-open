@@ -59,6 +59,16 @@ class InstrumentPricePolicy < PricePolicy
   end
 
 
+  def hourly_usage_rate
+    usage_rate.try :*, 60
+  end
+
+
+  def hourly_usage_subsidy
+    usage_subsidy.try :*, 60
+  end
+
+
   private
 
   def set_subsidy

@@ -27,4 +27,23 @@ module PricePoliciesHelper
     InstrumentPricePolicy::CHARGE_FOR.map{|k, v| [ k.to_s.titleize, v ] }
   end
 
+  def display_usage_rate(price_group, price_policy)
+     if params["price_policy_#{price_group.id}"].present?
+       rate = params["price_policy_#{price_group.id}"][:usage_rate] * 60
+     else
+       rate = price_policy.hourly_usage_rate
+     end
+
+     number_to_currency rate, :unit => '', :delimiter => ''
+  end
+
+  def display_usage_subsidy(price_group, price_policy)
+    if params["price_policy_#{price_group.id}"].present?
+      sub = params["price_policy_#{price_group.id}"][:usage_subsidy] * 60
+    else
+      sub = price_policy.hourly_usage_subsidy
+    end
+
+    number_to_currency sub, :unit => '', :delimiter => ''
+  end
 end

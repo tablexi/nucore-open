@@ -181,4 +181,25 @@ describe InstrumentPricePolicy do
     end
   end
 
+
+  describe 'hourly rates' do
+    it 'gives the hourly version of the usage rate' do
+      expect(policy.hourly_usage_rate).to eq policy.usage_rate * 60
+    end
+
+    it 'gives the hourly version of the usage subsidy' do
+      expect(policy.hourly_usage_subsidy).to eq policy.usage_subsidy * 60
+    end
+
+    it 'returns nil if usage rate is nil' do
+      policy.usage_rate = nil
+      expect(policy.hourly_usage_rate).to be_nil
+    end
+
+    it 'returns nil if usage subsidy is nil' do
+      policy.usage_subsidy = nil
+      expect(policy.hourly_usage_subsidy).to be_nil
+    end
+  end
+
 end
