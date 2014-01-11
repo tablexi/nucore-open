@@ -1,0 +1,19 @@
+table {
+  width: 20em;
+}
+
+td, th {
+  text-align: center;
+}
+
+.label {
+  text-align: left;
+}
+
+.comparison {
+  margin-bottom: 3em;
+}
+
+#errors {
+  margin-top: 2em;
+}
