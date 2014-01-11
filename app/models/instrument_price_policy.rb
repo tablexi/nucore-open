@@ -48,14 +48,14 @@ class InstrumentPricePolicy < PricePolicy
 
 
   def usage_rate=(hourly_rate)
-    self[:usage_rate] = hourly_rate
-    self[:usage_rate] /= 60.0 if hourly_rate.respond_to? :/
+    super
+    self[:usage_rate] /= 60.0 if self[:usage_rate].respond_to? :/
   end
 
 
   def usage_subsidy=(hourly_subsidy)
-    self[:usage_subsidy] = hourly_subsidy
-    self[:usage_subsidy] /= 60.0 if hourly_subsidy.respond_to? :/
+    super
+    self[:usage_subsidy] /= 60.0 if self[:usage_subsidy].respond_to? :/
   end
 
 
