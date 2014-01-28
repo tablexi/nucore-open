@@ -3,31 +3,25 @@
 
 = f.input :show_details, :as => :boolean, :label => false, :inline_label => t('instruments.instrument_fields.show_details')
 
--# TODO
 - if f.object.new_record?
-  %p.instruction= t('instruments.instrument_fields.schedule.hint')
-  = f.select :schedule_id, options_from_collection_for_select(current_facility.schedules.active.ordered, :id, :name, f.object.schedule_id), :include_blank => t('instruments.instrument_fields.schedule.unshared')
+  = f.association :schedule, collection: current_facility.schedules.active.ordered, include_blank: t('instruments.instrument_fields.schedule.unshared')
 - else
-  = f.object.schedule.display_name
+  = f.input :schedule, as: :readonly, value_method: :display_name, hint: false
 
--# TODO
-= label_tag :control_mechanism
-%p.instruction= t 'instruments.instrument_fields.control_mechanism'
-- selection = @instrument.control_mechanism || :manual
-= f.select :control_mechanism, options_for_select(options_for_control_mechanism, selection)
+-# - selection = @instrument.control_mechanism || :manual
+= f.input :control_mechanism, collection: options_for_control_mechanism, include_blank: false, selected: @instrument.control_mechanism || :manual
 
 - # TODO
 .well#power-relay
   %h3= t('instruments.instrument_fields.relay.label.relay')
   %p= t 'instruments.instrument_fields.relay.intro'
 
-  = f.fields_for :relay, @instrument.relay || @instrument.build_relay do |rf|
-    = rf.label :type, t('instruments.instrument_fields.relay.label.type')
-    = rf.select :type, options_for_select(options_for_relay, rf.object.type)
-    = rf.input :ip, :label => t('instruments.instrument_fields.relay.label.ip')
-    = rf.input :port, :label => t('instruments.instrument_fields.relay.label.port')
-    = rf.input :username, :label => t('instruments.instrument_fields.relay.label.user')
-    = rf.input :password, :as => :string, :label => t('instruments.instrument_fields.relay.label.pass')
+  = f.simple_fields_for :relay, @instrument.relay || @instrument.build_relay do |rf|
+    = rf.input :type, collection: options_for_relay, include_blank: false
+    = rf.input :ip
+    = rf.input :port
+    = rf.input :username
+    = rf.input :password, as: :string
     = rf.input :auto_logout, :as => :boolean, :label => false, :inline_label => t('instruments.instrument_fields.relay.label.auto_logout')
 
 .well

@@ -10,6 +10,12 @@ en:
       # html: '<abbr title="required">*</abbr>'
     error_notification:
       default_message: "Please review the problems below:"
+    labels:
+      relay:
+        ip: "IP Address"
+        port: "Device Port"
+        username: "Username"
+        password: "Password"
     hints:
       defaults:
         charge_for: "Select 'Usage' to charge for real time used, 'Reservation' for reserved time only, 'Overage' for reserved time plus additional time"
@@ -18,6 +24,10 @@ en:
       schedule_rule:
         discount_percent: "During the period covered by this schedule rule, overall cost will be discounted by"
         end_time: Start and end times are in 24-hour time format.
+      instrument:
+        schedule: You may share a schedule with other products. Choose an exisiting schedule or use an unshared schedule.
+        control_mechanism: "How the instrument and its time is managed. Please be aware that if 'Reservation only' is selected the actual and overage rates of this instrument's pricing rules should be zero."
+
     # Labels and hints examples
     # labels:
     #   defaults:
