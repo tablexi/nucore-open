@@ -11,7 +11,7 @@
 
   = f.input :show_details, :label => t('instruments.instrument_fields.show_details')
 
-  = f.input :schedule, :input_html => { :value => @instrument.schedule.display_name}
+  = f.input :schedule, :input_html => { :value => @instrument.schedule.display_name}, hint: false
 
   = render :partial => 'relay_manage', :locals => { :f => f }
 
