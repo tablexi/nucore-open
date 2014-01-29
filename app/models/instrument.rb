@@ -22,7 +22,7 @@ class Instrument < Product
             :auto_cancel_mins,
             numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
 
-  validate :minimum_reservation_is_interval
+  validate :minimum_reservation_is_interval, :max_reservation_not_less_than_min
 
   # Callbacks
   # --------
@@ -61,6 +61,12 @@ class Instrument < Product
   def minimum_reservation_is_interval
     if min_reserve_mins.to_i > 0 && min_reserve_mins % reserve_interval != 0
       self.errors.add :min_reserve_mins, :min_not_interval, reserve_interval: reserve_interval
+    end
+  end
+
+  def max_reservation_not_less_than_min
+    if max_reserve_mins.try :<, min_reserve_mins
+      self.errors.add :max_reserve_mins, :max_less_than_min
     end
   end
 

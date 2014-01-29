@@ -29,6 +29,13 @@ describe Instrument do
     expect(instrument).to be_valid
   end
 
+  it 'ensures that the maximum reservation time is not less than the minimum reservation time' do
+    instrument.min_reserve_mins = 10
+    instrument.max_reserve_mins = 5
+    expect(instrument).to_not be_valid
+    expect(instrument.errors[:max_reserve_mins]).to be_present
+  end
+
   it 'is not valid if the minimum reservation time is not a multiple of the reservation interval' do
     expect(instrument).to be_valid
     instrument.reserve_interval = 3
