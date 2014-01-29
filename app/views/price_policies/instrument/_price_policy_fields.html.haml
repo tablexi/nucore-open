@@ -2,7 +2,9 @@
   = javascript_include_tag 'price_policy'
 
 = render :partial => 'price_policies/dates', :locals => { :f => f }
-= f.input :charge_for, :collection => charge_for_options, :selected => @price_policies.first.charge_for
+
+- policy = @price_policies.first
+= f.input :charge_for, :collection => charge_for_options(policy.product), :selected => policy.charge_for
 
 
 %table.table.table-striped.table-hover.price-policy-table
