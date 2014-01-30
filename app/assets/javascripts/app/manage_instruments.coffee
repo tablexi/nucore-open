@@ -1,5 +1,5 @@
 $ ->
-  target = '.edit_instrument #instrument_min_reserve_mins'
+  target = '.edit_instrument #instrument_min_reserve_mins,.edit_instrument #instrument_max_reserve_mins'
 
   if $(target).length
     $(target).bind 'keyup mouseup', ->

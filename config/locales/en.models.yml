@@ -56,7 +56,8 @@ en:
           requires_approval_html: The %{instrument} instrument requires approval to reserve; please contact the facility for further information:<br/><br/> %{facility}<br/><a href=\"mailto:%{email}\">%{email}</a>
           acting_as_not_on_approval_list: The user you are ordering for is not on the authorized list for this instrument.
           no_accounts: "Sorry, but we could not find a valid payment source that you can use to reserve this instrument"
-          min_not_interval: "must be a multiple of the interval (%{reserve_interval})"
+          not_interval: "must be a multiple of the interval (%{reserve_interval})"
+          max_less_than_min: "must be greater than or equal to minimum reservation minutes"
         item:
           not_available: This item is currently unavailable for purchase online.
           requires_approval: This item requires approval to purchase; please contact the facility.

@@ -14,8 +14,9 @@ describe Instrument do
     instrument.type.should == 'Instrument'
   end
 
-  [ :min_reserve_mins, :max_reserve_mins, :auto_cancel_mins ].each do |attr|
+  [ :min_reserve_mins, :auto_cancel_mins ].each do |attr|
     it "should require #{attr} to be >= 0 and integers only" do
+      instrument.min_reserve_mins = 0
       should allow_value(0).for(attr)
       should allow_value(nil).for(attr)
       should_not allow_value(-1).for(attr)
@@ -35,6 +36,29 @@ describe Instrument do
     instrument.min_reserve_mins = 10
     expect(instrument).to_not be_valid
     expect(instrument.errors[:min_reserve_mins]).to be_present
+  end
+
+  it 'ensures that the maximum reservation time is a multiple of the reservation interval' do
+    instrument.reserve_interval = 5
+    instrument.min_reserve_mins = 10
+    instrument.max_reserve_mins = 10
+    expect(instrument).to be_valid
+  end
+
+  it 'is not valid if the maximum reservation time is not a multiple of the reservation interval' do
+    expect(instrument).to be_valid
+    instrument.reserve_interval = 3
+    instrument.min_reserve_mins = 10
+    instrument.max_reserve_mins = 10
+    expect(instrument).to_not be_valid
+    expect(instrument.errors[:max_reserve_mins]).to be_present
+  end
+
+  it 'ensures that the maximum reservation time is not less than the minimum reservation time' do
+    instrument.min_reserve_mins = 10
+    instrument.max_reserve_mins = 5
+    expect(instrument).to_not be_valid
+    expect(instrument.errors[:max_reserve_mins]).to be_present
   end
 
   it { should ensure_inclusion_of(:reserve_interval).in_array Instrument::RESERVE_INTERVALS }

@@ -257,6 +257,19 @@ th.currency {
   width: 50%;
 }
 
+/* Price policies */
+
+p.charge-for {
+  font-style: italic;
+}
+
+p.per-minute {
+  font-style: italic;
+  @extend .muted;
+  font-size: 85%;
+  margin-top: -0.75em;
+}
+
 /* Account Fields */
 .order_account,
 .order_detail_account {
