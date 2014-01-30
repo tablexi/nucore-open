@@ -2,7 +2,7 @@
   = hidden_field_tag "price_policy_#{pg.id}[usage_rate]", display_usage_rate(pg, pp), :class => "usage_cost"
   Adjustment
   %br
-  = text_field_tag "price_policy_#{pg.id}[usage_subsidy]", display_usage_subsidy(pg, pp), :size => 8
+  = text_field_tag "price_policy_#{pg.id}[usage_subsidy]", display_usage_subsidy(pg, pp), :size => 8, :class => "usage_adjustment"
 %td
   Amount
   %br
