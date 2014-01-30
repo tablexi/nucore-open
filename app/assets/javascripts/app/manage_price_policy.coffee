@@ -41,7 +41,7 @@ class window.RateWatcher
 
   displayRate: ($input, rate)->
     $input.next('.per-minute').remove()
-    $input.after "<p class=\"per-minute\">#{rate.toFixed(4)} per minute</p>" if @hasValue($input)
+    $input.after "<p class=\"per-minute\">$#{rate.toFixed(4)} / minute</p>" if @hasValue($input)
 
 
 $ ->
