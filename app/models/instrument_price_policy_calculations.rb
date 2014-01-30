@@ -102,6 +102,8 @@ module InstrumentPricePolicyCalculations
   private
 
   def cost_and_subsidy(duration, discount)
+    duration = 1 if duration <= 0
+
     costs = {}
     costs[:cost] = calculate_cost duration, discount
     costs[:subsidy] = calculate_subsidy duration, discount
