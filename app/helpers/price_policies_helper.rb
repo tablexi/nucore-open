@@ -23,8 +23,12 @@ module PricePoliciesHelper
     send :"facility_#{@product.class.name.downcase}_price_policies_path"
   end
 
-  def charge_for_options
-    InstrumentPricePolicy::CHARGE_FOR.map{|k, v| [ k.to_s.titleize, v ] }
+  def charge_for_options(instrument)
+    if instrument.reservation_only?
+      [ [ 'Reservation', InstrumentPricePolicy::CHARGE_FOR[:reservation] ] ]
+    else
+      InstrumentPricePolicy::CHARGE_FOR.map{|k, v| [ k.to_s.titleize, v ] }
+    end
   end
 
   def display_usage_rate(price_group, price_policy)

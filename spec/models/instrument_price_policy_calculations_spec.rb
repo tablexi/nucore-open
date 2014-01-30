@@ -214,6 +214,21 @@ describe InstrumentPricePolicyCalculations do
       expect(new_costs).to eq old_costs
     end
 
+    it 'charges for at least 1 minute of time' do
+      policy.attributes = {
+        minimum_cost: nil,
+        charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage]
+      }
+
+      reservation.attributes = {
+        actual_start_at: reservation.reserve_start_at,
+        actual_end_at: reservation.reserve_start_at + 5.seconds
+      }
+
+      new_costs = policy.calculate_cost_and_subsidy reservation
+      expect(new_costs[:cost]).to be > 0
+    end
+
     it 'calculates usage costs precisely' do
       policy.attributes = {
         usage_subsidy: 10.33,

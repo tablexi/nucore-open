@@ -1,8 +1,8 @@
 %td
   Rate
   %br
-  = text_field_tag "price_policy_#{pg.id}[usage_rate]", display_usage_rate(pg, pp), :size => 8
-  %br
+  = text_field_tag "price_policy_#{pg.id}[usage_rate]", display_usage_rate(pg, pp), :size => 8, :class => "usage_rate"
+
 %td
   Amount
   %br
