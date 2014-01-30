@@ -1,34 +1,13 @@
-- mask=@journal.facility.journal_mask
-%JRNL_HDR_IMP
-  %BUSINESS_UNIT== NWUNV
-  %JOURNAL_ID== NEXT
-  %JOURNAL_DATE= @journal.journal_date.strftime("%Y%m%d")
-  %DESCR254=h "#{mask}: Journal ##{ @journal.id}, Created By: #{User.find(@journal.created_by).username}"
-  %LEDGER_GROUP== ACTUALS
-  %SOURCE== RSC
-  %OPRID== GLBATCH
+%journal{id: @journal.id}
+  %date= @journal.journal_date.strftime("%Y%m%d")
+  %description= "Journal ##{@journal.id}, Created By: #{@journal.created_by_user.username}"
   - @journal_rows.each_with_index do |row, i|
-    %JRNL_LN_IMP
-      %JOURNAL_LINE= i+1
-      %BUSINESS_UNIT== NWUNV
-      %LEDGER== ACTUALS
-      %ACCOUNT= row.account
-      %FOREIGN_AMOUNT= number_to_currency row.amount, :delimiter => '', :unit => ''
-      - line_desc="#{mask}:#{row.description}"
-      - line_desc="#{mask}:#{row.order_detail.to_s}:#{row.order_detail.product.name}" if row.order_detail
-      - line_desc=line_desc[0..29] if line_desc.size > 30
-      %LINE_DESCR=h line_desc
-      %FUND_CODE= row.fund
-      %DEPTID= row.dept
-      - if row.project
-        %PROJECT_ID= row.project # optional
-      - if row.program
-        %PROGRAM_CODE= row.program # optional
-      - if row.activity
-        %ACTIVITY_ID= row.activity # optional
-      - if row.reference
-        %JRNL_LN_REF= row.reference #optional
-  %NU_JRNL_TRL_IMP
-    %RECORD_COUNT= @journal_rows.length
-    %TOTAL_CREDITS= number_to_currency @journal_rows.inject(0) { |sum,row| sum += (row.amount < 0 ? row.amount : 0) }, :delimiter => '', :unit => '' # negative number
+    %journal_row
+      %journal_line= i + 1
+      %account= row.account
+      %amount= number_to_currency row.amount, :delimiter => '', :unit => ''
+
+  %totals
+    %record_count= @journal_rows.length
+    %total_credits= number_to_currency @journal_rows.inject(0) { |sum,row| sum += (row.amount < 0 ? row.amount : 0) }, :delimiter => '', :unit => '' # negative number
     %TOTAL_DEBITS= number_to_currency @journal_rows.inject(0) { |sum,row| sum += (row.amount > 0 ? row.amount : 0) }, :delimiter => '', :unit => '' # positive number
