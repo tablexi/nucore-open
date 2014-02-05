@@ -5,14 +5,14 @@ gem 'rails',            '3.2.13'
 gem 'rails_config',     '0.3.3'
 
 ## database
-gem 'mysql2',           '~> 0.3.11'
+gem 'mysql2',           '~> 0.3.15'
 gem 'foreigner',        '1.1.1'
 
 ## deployment
 gem 'capistrano',       '2.15.4'
 
 ## auth
-gem 'devise',           '~>2.2.4'
+gem 'devise',           '~>2.2.8'
 gem 'devise-encryptable', '0.1.2'
 gem 'devise_ldap_authenticatable', '~>0.7.0'
 gem 'cancan',           '1.6.10'
@@ -25,16 +25,16 @@ gem 'awesome_nested_set', '2.1.6'
 gem 'nokogiri',         '1.5.9'
 
 ## views
-gem 'bootstrap-sass'
-gem 'haml',             '4.0.3'
+gem 'bootstrap-sass',   '~> 2.3.2'
+gem 'haml',             '~> 4.0.5'
 gem 'will_paginate',    '3.0.4'
 gem 'dynamic_form',     '~> 1.1.4'
-gem 'ckeditor'
+gem 'ckeditor',         '~> 4.0.9'
 gem 'jquery-rails',     '~> 2.1.4'
 gem 'jquery-ui-sass-rails'
 gem 'clockpunch',       '~> 0.1.0'
-gem 'simple_form'
-gem 'font-awesome-rails'
+gem 'simple_form',      '~> 2.1.1'
+gem 'font-awesome-rails', '~> 3.2.0'
 
 ## controllers
 gem 'prawn',            '0.12'
@@ -57,14 +57,14 @@ group :development, :test do
   gem 'awesome_print',     '1.1.0'
   gem 'ci_reporter'
   gem 'factory_girl_rails','4.2.1'
-  gem 'pry-rails',         '0.2.2'
+  gem 'pry-rails',         '~> 0.3.2'
   gem 'quiet_assets'
   gem 'rspec-rails',       '2.14.0'
   gem 'ruby-debug19',      '0.11.6', :platforms => :ruby_19
   gem 'shoulda-matchers',  '2.4'
   gem 'single_test',       '0.4.0'
   gem 'thin'
-  gem 'timecop'
+  gem 'timecop',           '~> 0.6.3'
 end
 
 group :assets do
