@@ -25,8 +25,8 @@ gem 'awesome_nested_set', '2.1.6'
 gem 'nokogiri',         '1.5.9'
 
 ## views
-gem 'bootstrap-sass'
-gem 'haml',             '4.0.3'
+gem 'bootstrap-sass',   '~> 2.3.2'
+gem 'haml',             '~> 4.0.3'
 gem 'will_paginate',    '3.0.4'
 gem 'dynamic_form',     '~> 1.1.4'
 gem 'ckeditor'
@@ -34,7 +34,7 @@ gem 'jquery-rails',     '~> 2.1.4'
 gem 'jquery-ui-sass-rails'
 gem 'clockpunch',       '~> 0.1.0'
 gem 'simple_form'
-gem 'font-awesome-rails'
+gem 'font-awesome-rails', '~> 3.2.0'
 
 ## controllers
 gem 'prawn',            '0.12'
