@@ -10,8 +10,6 @@ module ReservationsHelper
   end
 
   def default_duration
-    default = @instrument.min_reserve_mins || @instrument.reserve_interval
-    default = 15 if default < 15
-    default
+    @instrument.min_reserve_mins || @instrument.reserve_interval
   end
 end
