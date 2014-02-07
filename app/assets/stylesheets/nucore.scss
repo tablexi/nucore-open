@@ -270,6 +270,11 @@ p.per-minute {
   margin-top: -0.75em;
 }
 
+p.per-minute-show {
+  @extend p.per-minute;
+  margin-top: 0;
+}
+
 /* Account Fields */
 .order_account,
 .order_detail_account {
