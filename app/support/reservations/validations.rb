@@ -86,9 +86,7 @@ module Reservations::Validations
     diff = reserve_end_at - reserve_start_at # in seconds
 
     # If this is updating because we're in the grace period, use the old value for checking duration
-    if in_grace_period? && actual_start_at && reserve_start_at_changed?
-      diff = reserve_end_at - reserve_start_at_was
-    end
+    diff = reserve_end_at - reserve_start_at_was if started_in_grace_period?
 
     diff <= product.max_reserve_mins.minutes
   end
@@ -174,5 +172,8 @@ module Reservations::Validations
     product.price_group_products.map(&:reservation_window).min
   end
 
-
+  # true if Reservation#start_in_grace_period altered #reserve_start_at and we are in the grace period
+  def started_in_grace_period?
+    actual_start_at && reserve_start_at_changed? && in_grace_period?(Time.zone.now, reserve_start_at_was)
+  end
 end
