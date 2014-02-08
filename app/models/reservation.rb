@@ -246,6 +246,9 @@ class Reservation < ActiveRecord::Base
     at = at.to_i
     grace_period_end = reserve_start_at.to_i
     grace_period_begin = (reserve_start_at - grace_period_duration).to_i
+
+    # Compare int values, not timestamps. If you do the
+    # latter fractions of a second can cause false positives.
     at >= grace_period_begin && at <= grace_period_end
   end
 
