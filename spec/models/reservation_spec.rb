@@ -23,6 +23,15 @@ describe Reservation do
     )
   end
 
+  it 'allows starting of a reservation, whose duration is equal to the max duration, within the grace period' do
+    reservation.product.update_attribute :max_reserve_mins, reservation.duration_mins
+
+    Timecop.freeze(reservation.reserve_start_at - 2.minutes) do  # in grace period
+      expect{ reservation.start_reservation! }.to_not raise_error
+      expect(reservation.errors).to be_empty
+    end
+  end
+
   context "create using virtual attributes" do
     it "should create using date, integer values" do
       assert reservation.valid?

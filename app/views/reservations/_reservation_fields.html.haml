@@ -2,7 +2,7 @@
   = f.input :reserve_start_date, :input_html => { :class => 'datepicker' }
   .control-group
     .controls
-      = f.label '&nbsp;'
+      .string.optional.control-label &nbsp;
       = time_select f, :reserve_start, minute_step: @instrument.reserve_interval
 
   = f.input :duration_mins, input_html: { value: default_duration, class: 'timeinput' }
