@@ -1,6 +1,6 @@
 # Support for displaying Reservations in various formats
 module Reservations::Rendering
-  
+
   # Will display the actual start time if it's available, otherwise fall back to reserve time
   def display_start_at
     actual_start_at || reserve_start_at
@@ -24,9 +24,9 @@ module Reservations::Rendering
 
   def range_to_s(start_at, end_at)
     if start_at.day == end_at.day
-      "#{start_at.strftime("%a, %m/%d/%Y %l:%M %p")} - #{end_at.strftime("%l:%M %p")}"
+      "#{I18n.l(start_at)} - #{I18n.l(end_at, format: :timeonly)}"
     else
-      "#{start_at.strftime("%a, %m/%d/%Y %l:%M %p")} - #{end_at.strftime("%a, %m/%d/%Y %l:%M %p")}"
+      "#{I18n.l(start_at)} - #{I18n.l(end_at)}"
     end
   end
 
@@ -34,23 +34,19 @@ module Reservations::Rendering
     if actual_start_at.nil? && actual_end_at.nil?
       "No actual times recorded"
     elsif actual_start_at.nil?
-      "??? - #{actual_end_at.strftime("%m/%d/%Y %l:%M %p")} "
+      "??? - #{I18n.l(actual_end_at)} "
     elsif actual_end_at.nil?
-      "#{actual_start_at.strftime("%m/%d/%Y %l:%M %p")} - ???"
+      "#{I18n.l(actual_start_at)} - ???"
     else
-      if actual_start_at.day == actual_end_at.day
-        "#{actual_start_at.strftime("%m/%d/%Y %l:%M %p")} - #{actual_end_at.strftime("%l:%M %p")}"
-      else
-        "#{actual_start_at.strftime("%m/%d/%Y %l:%M %p")} - #{actual_end_at.strftime("%m/%d/%Y %l:%M %p")}"
-      end
+      range_to_s(actual_start_at, actual_end_at)
     end
   end
 
   def as_calendar_object(options={})
     # initialize result with defaults
     calendar_object = {
-      "start"  => (actual_start_at || reserve_start_at).strftime("%a, %d %b %Y %H:%M:%S"),
-      "end"    => (actual_end_at || reserve_end_at).strftime("%a, %d %b %Y %H:%M:%S"),
+      "start"  => I18n.l(actual_start_at || reserve_start_at, format: :calendar),
+      "end"    => I18n.l(actual_end_at || reserve_end_at, format: :calendar),
       "allDay" => false,
       "title"  => "Reservation",
       "product" => product.name
