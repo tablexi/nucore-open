@@ -86,7 +86,7 @@ module Reservations::Validations
     diff = reserve_end_at - reserve_start_at # in seconds
 
     # If this is updating because we're in the grace period, use the old value for checking duration
-    if in_grace_period? && actual_start_at && reserve_start_at_changed?
+    if in_grace_period? && actual_start_at && reserve_start_at_changed? && reserve_start_at_was
       diff = reserve_end_at - reserve_start_at_was
     end
 
