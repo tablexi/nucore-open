@@ -19,10 +19,6 @@ module FacilityReservationsHelper
                                                     reservation)
   end
 
-  def end_reservation_class(reservation)
-    reservation.order_detail.accessories? ? :has_accessories : nil
-  end
-
   def link_to_cancel(reservation)
     od = reservation.order_detail
     fee = od.cancellation_fee
