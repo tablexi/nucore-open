@@ -63,6 +63,8 @@ group :development, :test do
   gem 'ruby-debug19',      '0.11.6', :platforms => :ruby_19
   gem 'shoulda-matchers',  '2.4'
   gem 'single_test',       '0.4.0'
+  gem 'spring'
+  gem 'spring-commands-rspec'
   gem 'thin'
   gem 'timecop',           '~> 0.6.3'
 end
