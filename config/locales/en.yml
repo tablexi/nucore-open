@@ -14,9 +14,15 @@ en:
     new:
       help_text: "If you do not have a NU Core account, please contact the facility manager."
 
+  date:
+    formats:
+
   time:
     formats:
+      default: "%a, %m/%d/%Y %-l:%M %p"
+      timeonly: "%-l:%M %p"
       calendar: "%a, %d %b %Y %H:%M:%S"
+
 
   pages:
     my_tab: My %{model}
