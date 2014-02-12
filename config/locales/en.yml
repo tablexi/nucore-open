@@ -366,9 +366,11 @@ en:
       link: Edit
     delete:
       confirm: Are you sure you wish to cancel this reservation?
+      confirm_with_fee: "Canceling this reservation will incur a %{fee} fee.  Are you sure you wish to cancel this reservation?"
       link: Cancel
     finished: Reservation Ended
     moving_up:
+      link: Begin Now
       title: Move Reservation
       button: Move
       confirm_same_day: The earliest time you can move this reservation to begins on %{start_date} at %{start_time} and ends at %{end_time}.
@@ -469,8 +471,6 @@ en:
 
 
   order_details:
-    cancel:
-      confirm: "Canceling this reservation will incur a %{fee} fee.  Are you sure you wish to cancel this reservation?"
     show:
       head:
         h1: "Order # %{order_number}"

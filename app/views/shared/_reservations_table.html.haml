@@ -15,26 +15,9 @@
         %td.centered= link_to od, current_facility ? facility_order_path(current_facility, order) : order_order_detail_path(order, od)
         - next unless res
         %td.centered
-          - if res.can_switch_instrument_on?
-            = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'on')
-          - elsif res.can_switch_instrument_off?
-            = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(order, od, res, :switch => 'off'), :class => end_reservation_class(res), :data => { :refresh_on_cancel => true }
-          - else
-            - if res.can_cancel?
-              - fee = od.cancellation_fee
-              - if fee > 0
-                = link_to "Cancel", order_order_detail_path(order, od, :cancel => 'cancel'), :method => :put, :confirm => "Canceling this reservation will incur a #{number_to_currency fee} fee.  Are you sure you wish to cancel this reservation?"
-              - else
-                = link_to "Cancel", order_order_detail_path(order, od, :cancel => 'cancel'), :method => :put
-            - if res.can_move?
-              - if res.can_cancel?
-                = ' | '
-              = link_to 'Begin Now', order_order_detail_reservation_move_reservation_path(order, od, res), :class => 'move-res', :data => { :reservation_id => res.id }
+          = reservation_actions(res)
         %td
-          - if res.can_customer_edit?
-            = link_to res, current_facility ? edit_facility_order_order_detail_reservation_path(current_facility, order, od, res) : edit_order_order_detail_reservation_path(order, od, res)
-          - else
-            = link_to res, current_facility ? facility_order_order_detail_reservation_path(current_facility, order, od, res) : order_order_detail_reservation_path(order, od, res)
+          = reservation_view_edit_link(res)
         %td.user-order-detail
           .order-detail-description
             - product_name = order_detail_description(od)
