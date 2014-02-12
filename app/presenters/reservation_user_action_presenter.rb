@@ -44,30 +44,31 @@ class ReservationUserActionPresenter
   def switch_actions
     if can_switch_instrument_on?
       link_to I18n.t('reservations.switch.start'),
-              order_order_detail_reservation_switch_instrument_path(order, order_detail, reservation, :switch => 'on')
+              order_order_detail_reservation_switch_instrument_path(order, order_detail, reservation, switch: 'on')
     elsif can_switch_instrument_off?
       link_to I18n.t('reservations.switch.end'),
-              order_order_detail_reservation_switch_instrument_path(order, order_detail, reservation, :switch => 'off'),
-              :class => end_reservation_class(reservation),
-              :data => { :refresh_on_cancel => true }
+              order_order_detail_reservation_switch_instrument_path(order, order_detail, reservation, switch: 'off'),
+              class: end_reservation_class(reservation),
+              data: { refresh_on_cancel: true }
     end
   end
 
   def cancel_link
     fee = order_detail.cancellation_fee
     if fee > 0
-      link_to("Cancel", order_order_detail_path(order, order_detail, :cancel => 'cancel'),
-        :method => :put,
-        :confirm => "Canceling this reservation will incur a #{number_to_currency fee} fee.  Are you sure you wish to cancel this reservation?")
+      link_to I18n.t('reservations.delete.link'), order_order_detail_path(order, order_detail, cancel: 'cancel'),
+        method: :put,
+        confirm: I18n.t('reservations.delete.confirm_with_fee', fee: number_to_currency(fee))
     else
-      link_to("Cancel", order_order_detail_path(order, order_detail, :cancel => 'cancel'),
-        :method => :put)
+      link_to I18n.t('reservations.delete.link'), order_order_detail_path(order, order_detail, cancel: 'cancel'),
+        method: :put,
+        confirm: I18n.t('reservations.delete.confirm')
     end
   end
 
   def move_link
-    link_to('Begin Now', order_order_detail_reservation_move_reservation_path(order, order_detail, reservation),
-      :class => 'move-res',
-      :data => { :reservation_id => reservation.id })
+    link_to I18n.t('reservations.moving_up.link'), order_order_detail_reservation_move_reservation_path(order, order_detail, reservation),
+      class: 'move-res',
+      data: { reservation_id: reservation.id }
   end
 end

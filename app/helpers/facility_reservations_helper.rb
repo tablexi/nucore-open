@@ -22,7 +22,7 @@ module FacilityReservationsHelper
   def link_to_cancel(reservation)
     od = reservation.order_detail
     fee = od.cancellation_fee
-    confirmation_message = fee > 0 ? I18n.t('order_details.order_details.cancel.confirm', :fee => number_to_currency(fee)) : I18n.t('reservations.delete.confirm')
+    confirmation_message = fee > 0 ? I18n.t('reservations.delete.confirm_with_fee', :fee => number_to_currency(fee)) : I18n.t('reservations.delete.confirm')
     link_to I18n.t('reservations.delete.link'), order_order_detail_path(od.order, od, :cancel => 'cancel'), :method => :put, :confirm => confirmation_message
   end
 

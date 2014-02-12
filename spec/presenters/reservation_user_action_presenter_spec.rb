@@ -103,7 +103,8 @@ describe ReservationUserActionPresenter do
         it 'includes a cancelation link without a confirmation' do
           link = order_order_detail_path(order, order_detail, cancel: 'cancel')
           expect(text).to include link
-          expect(text).to_not include "confirm="
+          expect(text).to include "confirm="
+          expect(text).to_not include "will incur a $"
         end
       end
     end
