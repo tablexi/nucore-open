@@ -9,6 +9,10 @@ module ReservationsHelper
     new_order_order_detail_accessory_path(reservation.order_detail.order, reservation.order_detail)
   end
 
+  def reservation_edit_accessories_path(reservation)
+    edit_order_order_detail_accessories_path(reservation.order_detail.order, reservation.order_detail)
+  end
+
   def default_duration
     min_reserve_mins = @instrument.min_reserve_mins
     min_reserve_mins = nil if min_reserve_mins == 0

@@ -58,6 +58,19 @@ describe Accessories::Accessorizer do
     end
   end
 
+  describe 'accessory_order_details' do
+    context 'and it already has an order detail' do
+      let(:child_order_detail) { mock_model OrderDetail, product: accessory1, order: order }
+      before { allow(order_detail).to receive(:child_order_details).and_return [child_order_detail] }
+
+      it 'returns the existing detail and builds an orderdetail for the other' do
+        od = double 'existing', product_accessory: product_accessory2
+        expect(accessorizer).to receive(:build_accessory_order_detail).with(accessory2).and_return(od)
+        expect(accessorizer.accessory_order_details).to eq([child_order_detail, od])
+      end
+    end
+  end
+
   describe 'build_accessory_order_detail' do
     context 'an invalid accessory' do
       let(:invalid_accessory) { mock_model Product }

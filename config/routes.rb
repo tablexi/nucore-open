@@ -288,7 +288,9 @@ Nucore::Application.routes.draw do
         get '/switch_instrument',  :to => 'reservations#switch_instrument', :as => 'switch_instrument'
       end
 
-      resources :accessories
+      resources :accessories, except: [:edit] do
+        get 'edit', on: :collection
+      end
     end
   end
 

@@ -29,7 +29,6 @@ class Accessories::Accessorizer
   end
 
   def available_accessories
-    current_accessories = @order_detail.child_order_details.map(&:product)
     accessories = @order_detail.product.accessories.reject { |a| current_accessories.include? a }
   end
 
@@ -37,6 +36,10 @@ class Accessories::Accessorizer
   # have already been ordered
   def available_accessory_order_details
     available_accessories.map { |a| self.build_accessory_order_detail(a) }
+  end
+
+  def accessory_order_details
+    @order_detail.product.accessories.map { |a| find_or_build_accessory_order_detail(a) }
   end
 
   def add_from_params(params)
@@ -98,5 +101,19 @@ class Accessories::Accessorizer
       :quantity => options[:quantity],
       :product_accessory => product_accessory(accessory)
     })
+  end
+
+  def current_accessories
+    @order_detail.child_order_details.map(&:product)
+  end
+
+  def find_or_build_accessory_order_detail(accessory)
+    if existing_od = @order_detail.child_order_details.find { |od| od.product == accessory }
+      decorated = decorate(existing_od)
+      decorated.enabled = true
+      decorated
+    else
+      build_accessory_order_detail(accessory)
+    end
   end
 end

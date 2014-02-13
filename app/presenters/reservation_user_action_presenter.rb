@@ -40,7 +40,7 @@ class ReservationUserActionPresenter
   end
 
   def accessories_link
-    link_to I18n.t('product_accessories.pick_accessories.title'), reservation_pick_accessories_path(reservation), class: 'has_accessories persistent'
+    link_to I18n.t('product_accessories.pick_accessories.title'), reservation_edit_accessories_path(reservation), class: 'has_accessories persistent'
   end
 
   def edit_reservation_path
