@@ -28,12 +28,15 @@ class Accessories::Accessorizer
     changed
   end
 
+  def available_accessories
+    current_accessories = @order_detail.child_order_details.map(&:product)
+    accessories = @order_detail.product.accessories.reject { |a| current_accessories.include? a }
+  end
+
   # Returns the accessories for the product, but excludes all the accessories that
   # have already been ordered
   def available_accessory_order_details
-    current_accessories = @order_detail.child_order_details.map(&:product)
-    accessories = @order_detail.product.accessories.reject { |a| current_accessories.include? a }
-    accessories.map { |a| self.build_accessory_order_detail(a) }
+    available_accessories.map { |a| self.build_accessory_order_detail(a) }
   end
 
   def add_from_params(params)
@@ -55,7 +58,7 @@ class Accessories::Accessorizer
   private
 
   def product_accessory(accessory)
-    @order_detail.product.product_accessories.where(:accessory_id => accessory.id).first
+    @order_detail.product.product_accessory_by_id(accessory.id) #product_accessories.where(:accessory_id => accessory.id).first
   end
 
   def valid_accessory?(accessory)

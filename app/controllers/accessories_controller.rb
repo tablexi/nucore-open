@@ -29,6 +29,12 @@ class AccessoriesController < ApplicationController
     end
   end
 
+  def edit
+    accessorizer = Accessories::Accessorizer.new(@order_detail)
+    @order_details = accessorizer.edit_accessory_order_details
+    render layout: false if request.xhr?
+  end
+
   private
 
   def ability_resource

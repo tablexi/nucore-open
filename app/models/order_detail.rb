@@ -585,7 +585,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def to_s
-    "#{order.id}-#{id}"
+    "#{order_id}-#{id}"
   end
 
   def description
