@@ -115,7 +115,6 @@ class Reservation < ActiveRecord::Base
 
   def start_reservation!
     self.actual_start_at = Time.zone.now
-    start_in_grace_period if in_grace_period?
     save!
   end
 
@@ -254,16 +253,5 @@ class Reservation < ActiveRecord::Base
 
   def grace_period_duration
     SettingsHelper.setting('reservations.grace_period') || 5.minutes
-  end
-
-  def start_in_grace_period
-    # Move the reservation time forward so other reservations can't overlap
-    # with this one, but only move it forward if there's not already a reservation
-    # currently in progress.
-    original_start_at = reserve_start_at
-    self.reserve_start_at = actual_start_at
-    unless does_not_conflict_with_other_reservation?
-      self.reserve_start_at = original_start_at
-    end
   end
 end
