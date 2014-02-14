@@ -971,7 +971,7 @@ describe ReservationsController do
 
         it_should_deny :random_user
 
-        context 'before the reservation start' do
+        context 'before the reservation start (in grace period)' do
           let(:start_at) { 3.minutes.from_now.change(usec: 0) }
           let(:end_at) { 63.minutes.from_now.change(usec: 0) }
 
@@ -981,18 +981,12 @@ describe ReservationsController do
             sign_in @guest
           end
 
-          it 'moves the reservation start time up' do
-            do_request
-            expect(assigns(:reservation).reserve_start_at).to eq(Time.zone.now)
-            expect(assigns(:reservation).reserve_end_at).to eq(end_at)
-          end
-
           context 'for a restricted instrument' do
             before { @instrument.update_attributes(requires_approval: true) }
             it 'allows it to start' do
               do_request
               expect(assigns(:reservation)).to_not be_changed
-              expect(assigns(:reservation).reserve_start_at).to eq(Time.zone.now)
+              expect(assigns(:reservation).actual_start_at).to eq(Time.zone.now)
             end
           end
 
@@ -1001,23 +995,18 @@ describe ReservationsController do
               @instrument.update_attributes(max_reserve_mins: 60)
               do_request
             end
+
             it 'allows it to start' do
               expect(assigns(:reservation)).to_not be_changed
-              expect(assigns(:reservation).reserve_start_at).to eq(Time.zone.now)
+              expect(assigns(:reservation).actual_start_at).to eq(Time.zone.now)
             end
-
-            it 'then allows it to end' do
-              @params[:switch] = 'off'
-            end
-
-
           end
 
           context 'and there is another reservation still going on' do
             let!(:reservation2) { create(:purchased_reservation, product: @instrument,
               reserve_start_at: start_at - 30.minutes, reserve_end_at: start_at) }
 
-            it 'allows it to start, but does not move the reservation time' do
+            it 'allows it to start' do
               do_request
               expect(assigns(:reservation)).to_not be_changed
               expect(assigns(:reservation).reserve_start_at).to eq(start_at)

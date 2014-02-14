@@ -5,8 +5,8 @@
       = r.input :reserve_start_date, :input_html => { :class => 'datepicker' }
       .control-group
         .controls
-          = r.label '&nbsp;'
-          = time_select r, :reserve_start
+          %label &nbsp;
+          = time_select r, :reserve_start, minute_step: reservation.product.reserve_interval
       = r.input :duration_mins, :input_html => { :class => 'timeinput' }
     - else
       = r.label :reserve_start_date
@@ -17,7 +17,7 @@
       = r.input :actual_start_date, :input_html => { :class => 'datepicker' }
       .control-group
         .controls
-          = r.label '&nbsp;'
+          %label &nbsp;
           = time_select r, :actual_start, :minute_step => 1
       - options = { :class => 'timeinput' }
       - options[:value] = '' if r.object.actual_duration_mins == 0
