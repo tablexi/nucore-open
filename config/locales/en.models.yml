@@ -227,6 +227,7 @@ en:
       reservation:
         base: '' #handled by actual messages
         to_s: Reservation
+        reserve_to_s: Reservation
         reserve_start_date: Reserve Start
         duration_mins: Duration
         actuals_string: Actual Usage
