@@ -163,13 +163,16 @@ class ReservationsController < ApplicationController
 
   # GET /orders/1/order_details/1/reservations/1/edit
   def edit
-    raise ActiveRecord::RecordNotFound if invalid_for_update?
+    redirect_to [@order, @order_detail, @reservation] if invalid_for_update?
     set_windows
   end
 
   # PUT  /orders/1/order_details/1/reservations/1
   def update
-    raise ActiveRecord::RecordNotFound if invalid_for_update?
+    if invalid_for_update?
+      redirect_to [@order, @order_detail, @reservation], notice: I18n.t('controllers.reservations.update.failure')
+      return
+    end
 
     @reservation.assign_times_from_params(params[:reservation])
 
@@ -177,7 +180,7 @@ class ReservationsController < ApplicationController
       begin
 
         # merge state can change after call to #save! due to OrderDetailObserver#before_save
-        mergeable=@order_detail.order.to_be_merged?
+        mergeable = @order_detail.order.to_be_merged?
 
         save_reservation_and_order_detail
 

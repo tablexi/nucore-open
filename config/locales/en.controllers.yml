@@ -65,6 +65,8 @@ en:
       create:
         no_selection: "You must select a payment source before reserving"
         success: "The reservation was successfully created."
+      update:
+        failure: The reservation cannot be updated.
 
     general_reports:
       headers:
