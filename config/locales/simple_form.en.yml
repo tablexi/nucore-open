@@ -26,7 +26,7 @@ en:
         end_time: Start and end times are in 24-hour time format.
       instrument:
         schedule: You may share a schedule with other products. Choose an exisiting schedule or use an unshared schedule.
-        control_mechanism: "How the instrument and its time is managed. Please be aware that if 'Reservation only' is selected the actual and overage rates of this instrument's pricing rules should be zero."
+        control_mechanism: Time management options for the Instrument. 'Reservation' tracks reserved time only. Both 'Timer' settings track actual usage time.
 
     # Labels and hints examples
     # labels:
