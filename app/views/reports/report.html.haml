@@ -9,12 +9,6 @@
 
 = modelless_form_for :url => request.fullpath, :remote => true, :html => { :id => 'refresh-form', :class => 'reports-form' }, :defaults => { :required => false }  do |f|
   %ul.inline.options#filter
-    %li= f.input :date_range_field, :collection => TransactionSearch::DATE_RANGE_FIELDS, :selected => @date_range_field, :label => '&nbsp;'
-
-    %li= f.input :date_start, :label => t('reports.fields.date_start'), :input_html => { :value => human_datetime(@date_start, :date_only => true), :class => 'datepicker' }
-
-    %li= f.input :date_end, :label => t('reports.fields.date_end'), :input_html => { :value => human_datetime(@date_end, :date_only => true), :class => 'datepicker' }
-
     = render :partial => 'report_controls', :locals => { :f => f }
 
   %ul#control.options.inline
@@ -22,8 +16,7 @@
       = link_to t('reports.export.export'), '#', :id => 'export'
     %li
       - if controller_name == 'general_reports' && can?(:export_all, ReportsController)
-        - attrs={ :id => 'export-all' }
-        = link_to t('reports.export.raw'), '#', attrs
+        = link_to t('reports.export.raw'), '#', :id => 'export-all'
 
   %div#tabs
     = render :partial => 'report_tabs'

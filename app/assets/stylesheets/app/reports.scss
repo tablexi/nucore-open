@@ -79,4 +79,13 @@
   .ui-widget {
     border-radius: 0 !important;
   }
+
+  .updating {
+    background-image: image-url("spinner-arrow.gif");
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    position: relative;
+    top: 3px;
+  }
 }

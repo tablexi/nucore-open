@@ -1,2 +1,3 @@
-%li
-  = f.input 'status_filter', :collection => OrderStatus.root_statuses, :selected => @status_ids, :label_method => :name_with_level, :input_html => { :data => { :placeholder => 'Choose...'}, :multiple => true }, :label => OrderStatus.model_name.human
+%li= f.input :date_range_field, collection: TransactionSearch::DATE_RANGE_FIELDS, selected: @date_range_field, label: '&nbsp;'.html_safe
+= render partial: 'reports/date_range_fields', locals: { f: f }
+%li= f.input 'status_filter', collection: OrderStatus.root_statuses, selected: @status_ids, label_method: :name_with_level, input_html: { data: { placeholder: 'Choose...'}, multiple: true }, label: OrderStatus.model_name.human

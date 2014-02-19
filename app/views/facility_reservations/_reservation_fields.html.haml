@@ -3,7 +3,7 @@
     = f.input :reserve_start_date, :input_html => { :class => 'datepicker' }
     .control-group
       .controls
-        = f.label '&nbsp;'
+        .string.optional.control-label &nbsp;
         = time_select f, :reserve_start
     = f.input :duration_mins, :input_html => { :class => 'timeinput' }
 
@@ -16,7 +16,7 @@
     = f.input :actual_start_date, :input_html => { :class => 'datepicker' }
     .control-group
       .controls
-        = f.label '&nbsp;'
+        .string.optional.control-label &nbsp;
         = time_select f, :actual_start
     = f.input :actual_duration_mins, :input_html => { :class => 'timeinput' }
   - unless @reservation.has_actuals?
