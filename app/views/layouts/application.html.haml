@@ -15,14 +15,8 @@
           .span12
             %h1= yield :h1
             = yield :tabnav
-            - if flash[:error]
-              .alert.alert-error= flash[:error]
-            - if flash[:notice]
-              .alert.alert-info= flash[:notice]
-            - if flash[:info]
-              .alert.alert-info= flash[:info]
-            - if flash[:alert]
-              .alert.alert-error= flash[:alert]
+            = render partial: 'shared/flashes'
+
             = yield
     %footer
       = render :partial => '/shared/footer'

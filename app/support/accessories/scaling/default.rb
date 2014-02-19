@@ -29,6 +29,14 @@ class Accessories::Scaling::Default
     @order_detail.assign_attributes(attrs)
   end
 
+  def ==(other)
+    if other.is_a? OrderDetail
+      @order_detail == other
+    else
+      self.equal? other
+    end
+  end
+
   private
 
   def method_missing(method, *args)

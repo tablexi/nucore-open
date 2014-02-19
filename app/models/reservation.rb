@@ -221,6 +221,10 @@ class Reservation < ActiveRecord::Base
     !!actual_start_at
   end
 
+  def ongoing?
+    started? && !actual_end_at
+  end
+
   def requires_but_missing_actuals?
     !!(!cancelled? && product.control_mechanism != Relay::CONTROL_MECHANISMS[:manual] && !has_actuals?)
   end

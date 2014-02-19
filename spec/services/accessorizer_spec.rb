@@ -3,22 +3,27 @@ require 'spec_helper'
 describe Accessories::Accessorizer do
   let(:accessory1) { mock_model Product }
   let(:product_accessory1) { mock_model ProductAccessory, scaling_type: 'quantity', accessory: accessory1 }
-  let(:accessory2) { mock_model Product }
-  let(:product_accessory2) { mock_model ProductAccessory, scaling_type: 'auto', accessory: accessory2 }
+  let(:auto_scaled_accessory) { mock_model Product }
+  let(:product_auto_scaled_accessory) { mock_model ProductAccessory, scaling_type: 'auto', accessory: auto_scaled_accessory }
 
-  let(:product) { mock_model Instrument, accessories: [accessory1, accessory2] }
+  let(:product) { mock_model Instrument, accessories: [accessory1, auto_scaled_accessory] }
   before do
     allow(product).to receive(:product_accessory_by_id).with(accessory1.id).and_return product_accessory1
-    allow(product).to receive(:product_accessory_by_id).with(accessory2.id).and_return product_accessory2
+    allow(product).to receive(:product_accessory_by_id).with(auto_scaled_accessory.id).and_return product_auto_scaled_accessory
   end
 
-  let(:order) { mock_model Order }
+  let(:order) { build_stubbed :order }
+  let(:reservation) do
+    build_stubbed :reservation, reserve_start_at: 30.minutes.ago, reserve_end_at: 1.minute.ago, actual_duration_mins: 30
+  end
+  let(:child_order_detail) { nil }
+  let(:child_order_details) { [child_order_detail].compact }
   let(:order_detail) do
-    # mock_model OrderDetail,
     build_stubbed :order_detail,
                product: product,
                order: order,
-               child_order_details: [],
+               reservation: reservation,
+               child_order_details: child_order_details,
                attributes: {
                 order_id: order.id
                }
@@ -30,29 +35,28 @@ describe Accessories::Accessorizer do
     context 'when no accessories have been added' do
 
       it 'has both accessories as avaiable' do
-        expect(accessorizer.available_accessories).to eq([accessory1, accessory2])
+        expect(accessorizer.available_accessories).to eq([accessory1, auto_scaled_accessory])
       end
 
       it 'builds an order detail for both accessories' do
         od1 = double 'OD1'
         od2 = double 'OD2'
         expect(accessorizer).to receive(:build_accessory_order_detail).with(accessory1).and_return od1
-        expect(accessorizer).to receive(:build_accessory_order_detail).with(accessory2).and_return od2
+        expect(accessorizer).to receive(:build_accessory_order_detail).with(auto_scaled_accessory).and_return od2
         expect(accessorizer.available_accessory_order_details).to eq([od1, od2])
       end
     end
 
     context 'when the order already has an accessory' do
-      let(:child_order_detail) { mock_model OrderDetail, product: accessory1, order: order }
-      before { allow(order_detail).to receive(:child_order_details).and_return [child_order_detail] }
+      let(:child_order_detail) { build_stubbed :order_detail, product: accessory1, order: order }
 
-      it 'only has accessory2 as an available accessory' do
-        expect(accessorizer.available_accessories).to eq([accessory2])
+      it 'only has auto_scaled_accessory as an available accessory' do
+        expect(accessorizer.available_accessories).to eq([auto_scaled_accessory])
       end
 
-      it 'builds an order detail or accessory2' do
+      it 'builds an order detail or auto_scaled_accessory' do
         od = double
-        expect(accessorizer).to receive(:build_accessory_order_detail).with(accessory2).and_return(od)
+        expect(accessorizer).to receive(:build_accessory_order_detail).with(auto_scaled_accessory).and_return(od)
         expect(accessorizer.available_accessory_order_details).to eq([od])
       end
     end
@@ -60,12 +64,11 @@ describe Accessories::Accessorizer do
 
   describe 'accessory_order_details' do
     context 'and it already has an order detail' do
-      let(:child_order_detail) { mock_model OrderDetail, product: accessory1, order: order }
-      before { allow(order_detail).to receive(:child_order_details).and_return [child_order_detail] }
+      let(:child_order_detail) { build_stubbed :order_detail, product: accessory1, order: order }
 
       it 'returns the existing detail and builds an orderdetail for the other' do
-        od = double 'existing', product_accessory: product_accessory2
-        expect(accessorizer).to receive(:build_accessory_order_detail).with(accessory2).and_return(od)
+        od = double 'existing', product_accessory: product_auto_scaled_accessory
+        expect(accessorizer).to receive(:build_accessory_order_detail).with(auto_scaled_accessory).and_return(od)
         expect(accessorizer.accessory_order_details).to eq([child_order_detail, od])
       end
     end
@@ -87,6 +90,71 @@ describe Accessories::Accessorizer do
       expect(od.order_id).to eq(order.id)
       expect(od.quantity).to eq(1)
       expect(od).to_not be_quantity_as_time
+    end
+  end
+
+  describe 'update_attributes' do
+    before do
+      allow_any_instance_of(OrderDetail).to receive(:assign_estimated_price)
+      allow_any_instance_of(OrderDetail).to receive(:save!)
+    end
+
+    context 'a quantity accessory' do
+      let(:params) do
+        HashWithIndifferentAccess.new(accessory1.id.to_s => { enabled: 'true', quantity: '3' })
+      end
+      context 'creating' do
+        it 'sets the attributes' do
+          results = accessorizer.update_attributes(params).order_details
+          expect(results.first.product).to eq(accessory1)
+          expect(results.first.enabled).to be true
+          expect(results.first.quantity).to eq(3)
+          expect(allow_any_instance_of(OrderDetail).to receive(:assign_estimated_price))
+        end
+      end
+
+      context 'updating' do
+        let(:child_order_detail) { build_stubbed :order_detail, product: accessory1, order: order, quantity: 1 }
+
+        it 'updates the attributes' do
+          results = accessorizer.update_attributes(params).order_details
+          expect(results.first.product).to eq(accessory1)
+          expect(results.first.enabled).to be true
+          expect(results.first.quantity).to eq(3)
+        end
+      end
+
+      context 'removing' do
+        let(:child_order_detail) { build_stubbed :order_detail, product: accessory1, order: order, quantity: 1 }
+
+        let(:params) do
+          HashWithIndifferentAccess.new(accessory1.id.to_s => { enabled: 'false', quantity: '3' })
+        end
+
+        it 'removes the order detail' do
+          expect(child_order_detail).to receive(:destroy)
+          accessorizer.update_attributes(params)
+        end
+      end
+
+    end
+
+    context 'a completed order' do
+      let(:params) do
+        HashWithIndifferentAccess.new(accessory1.id.to_s => { enabled: 'true', quantity: '3' })
+      end
+      before do
+        reservation.order_detail = order_detail
+        allow_any_instance_of(OrderDetail).to receive(:assign_price_policy)
+        allow(order_detail).to receive(:state).and_return('complete')
+        allow(order_detail).to receive(:fulfilled_at).and_return 1.hour.ago
+      end
+
+      it 'marks the children as complete' do
+        expect_any_instance_of(OrderDetail).to receive(:backdate_to_complete!).with(order_detail.fulfilled_at)
+        accessorizer.update_attributes(params).order_details
+
+      end
     end
   end
 end

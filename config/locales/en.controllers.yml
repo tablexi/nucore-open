@@ -2,6 +2,9 @@
 # Messages that come from controllers
 en:
   controllers:
+    accessories:
+      create:
+        success: "%{accessories} added"
     facility_accounts:
       create:
         expires_at_missing: "The chart string appears to be invalid. Either the fund, department, project, or activity could not be found."

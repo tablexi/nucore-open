@@ -3,10 +3,18 @@ class Accessories::Accessorizer
     @order_detail = order_detail
   end
 
-  def add_accessory(accessory, options = {})
-    new_order_detail = build_accessory_order_detail(accessory, options)
-    make_order_detail_complete(new_order_detail)
-    new_order_detail
+  def available_accessories
+    accessories = @order_detail.product.accessories.reject { |a| current_accessories.include? a }
+  end
+
+  # Returns the accessories for the product, but excludes all the accessories that
+  # have already been ordered
+  def available_accessory_order_details
+    available_accessories.map { |a| build_accessory_order_detail(a) }
+  end
+
+  def accessory_order_details
+    @order_detail.product.accessories.map { |a| find_or_build_accessory_order_detail(a) }
   end
 
   def build_accessory_order_detail(accessory, options = {})
@@ -17,51 +25,46 @@ class Accessories::Accessorizer
     decorated_od
   end
 
-  def update_children
-    changed = []
-    # TODO skip statemented/journaled order details?
-    @order_detail.child_order_details.each do |od|
-      update_child_detail(od)
-      changed << od if od.changed?
-      od.save
-    end
-    changed
-  end
-
-  def available_accessories
-    accessories = @order_detail.product.accessories.reject { |a| current_accessories.include? a }
-  end
-
-  # Returns the accessories for the product, but excludes all the accessories that
-  # have already been ordered
-  def available_accessory_order_details
-    available_accessories.map { |a| self.build_accessory_order_detail(a) }
-  end
-
-  def accessory_order_details
-    @order_detail.product.accessories.map { |a| find_or_build_accessory_order_detail(a) }
-  end
-
-  def add_from_params(params)
-    result = []
-    params = params.to_hash.stringify_keys # make sure integer keys get converted to strings
-
-    params.select! { |product_id, product_params| ['true', '1'].include? product_params[:enabled] }
-
+  def update_attributes(params)
+    response = nil
     @order_detail.transaction do
-      result = available_accessory_order_details.collect do |od|
-        update_order_detail_from_params(od, params)
+      order_details = accessory_order_details.collect do |od|
+        detail_params = params[od.product_id.to_s]
+        update_order_detail(od, detail_params) if detail_params
+        od
       end
 
-      raise ActiveRecord::Rollback if result.any? { |od| od.errors.any? }
+      response = Accessories::UpdateResponse.new(order_details)
+      raise ActiveRecord::Rollback unless response.valid?
     end
-    result
+    response
+  end
+
+  def update_order_detail(od, params)
+    if ['true', '1'].include? params[:enabled]
+      assign_attributes_and_save(od, params)
+    else
+      od.destroy
+    end
+    od
   end
 
   private
 
+  def assign_attributes_and_save(od, params)
+    od.assign_attributes(params.slice('quantity'))
+    od.order_status_id = @order_detail.order_status_id
+    od.assign_estimated_price
+    od.enabled = true
+    if @order_detail.complete?
+      od.backdate_to_complete! @order_detail.fulfilled_at
+    else
+      od.save!
+    end
+  end
+
   def product_accessory(accessory)
-    @order_detail.product.product_accessory_by_id(accessory.id) #product_accessories.where(:accessory_id => accessory.id).first
+    @order_detail.product.product_accessory_by_id(accessory.id)
   end
 
   def valid_accessory?(accessory)
@@ -72,34 +75,14 @@ class Accessories::Accessorizer
     Accessories::Scaling.decorate(order_detail)
   end
 
-  def update_child_detail(od)
-    decorated_od = decorate(od)
-    od.account = @order_detail.account
-    decorated_od.update_quantity
-    od.assign_actual_price
-  end
-
-  def update_order_detail_from_params(od, params)
-    product_id = od.product_id.to_s
-    if params[product_id] && params[product_id][:enabled]
-      od.assign_attributes(params[product_id])
-      make_order_detail_complete(od)
-    end
-    od
-  end
-
-  def make_order_detail_complete(od)
-    od.update_quantity
-    # save first so state/status are set before marking complete
-    od.backdate_to_complete! if od.save
-  end
-
   def detail_attributes(accessory, options)
-    attrs = @order_detail.attributes.slice('order_id', 'account_id', 'created_by')
+    attrs = @order_detail.attributes.slice('account_id', 'created_by')
     attrs.merge({
-      :product  => accessory,
-      :quantity => options[:quantity],
-      :product_accessory => product_accessory(accessory)
+      order: @order_detail.order,
+      product: accessory,
+      quantity: options[:quantity],
+      product_accessory: product_accessory(accessory),
+      state: 'new'
     })
   end
 
@@ -111,6 +94,7 @@ class Accessories::Accessorizer
     if existing_od = @order_detail.child_order_details.find { |od| od.product == accessory }
       decorated = decorate(existing_od)
       decorated.enabled = true
+      decorated.update_quantity
       decorated
     else
       build_accessory_order_detail(accessory)

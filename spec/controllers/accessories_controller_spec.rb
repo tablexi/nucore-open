@@ -5,17 +5,16 @@ describe AccessoriesController do
   render_views
   before(:all) { create_users }
 
-  let(:instrument) { FactoryGirl.create(:instrument_with_accessory) }
+  let(:instrument) { create(:instrument_with_accessory) }
   let(:quantity_accessory) { instrument.accessories.first }
-  let(:auto_accessory) { FactoryGirl.create(:accessory, :parent => instrument, :scaling_type => 'auto') }
-  let(:manual_accessory) { FactoryGirl.create(:accessory, :parent => instrument, :scaling_type => 'manual') }
-  let(:reservation) { FactoryGirl.create(:purchased_reservation, :product => instrument, :reserve_start_at => 1.day.ago) }
+  let(:auto_accessory) { create(:accessory, :parent => instrument, :scaling_type => 'auto') }
+  let(:manual_accessory) { create(:accessory, :parent => instrument, :scaling_type => 'manual') }
+  let(:reservation) { create(:purchased_reservation, :product => instrument, :reserve_start_at => 1.day.ago) }
   let(:order_detail) { reservation.order_detail }
   let(:order) { order_detail.order }
 
   before :each do
     @authable = instrument.facility
-    order_detail.backdate_to_complete!(Time.zone.now)
     @params = { :order_id => order.id, :order_detail_id => order_detail.id }
   end
 

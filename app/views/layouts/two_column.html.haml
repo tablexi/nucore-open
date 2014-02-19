@@ -14,10 +14,7 @@
             %h1= yield :h1
         .row
           .span9.pull-right
-            - if flash[:error]
-              %p.alert.alert-error= flash[:error]
-            - if flash[:notice]
-              %p.notice= flash[:notice]
+            = render partial: 'shared/flashes'
             = yield :tabnav
             = yield
           .span3.pull-left
