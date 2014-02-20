@@ -9,7 +9,7 @@
 
 = modelless_form_for :url => request.fullpath, :remote => true, :html => { :id => 'refresh-form', :class => 'reports-form' }, :defaults => { :required => false }  do |f|
   %ul.inline.options#filter
-    = render :partial => 'report_controls', :locals => { :f => f }
+    = render :partial => 'report_controls', :locals => { :form => f }
 
   %ul#control.options.inline
     %li
