@@ -729,12 +729,14 @@ en:
       success: Your password has been updated
     reset:
       head: Reset Password
-      instructions_html: Please enter your email address below. If you use a NetID, please reset it through <a href="https://validate.it.northwestern.edu/idm/user/login.jsp">NUVALIDATE</a>
+      instructions_html: 'Please enter your email address below. If you use a NetID, please reset it through <a href="https://validate.it.northwestern.edu/idm/user/login.jsp">NUVALIDATE</a>'
       success: Instructions on how to reset your password have been sent to %{email}
       not_found: We cannot find %{email} in our records.
 
   reports:
     fields:
+      instrument_reports:
+        date_start: Fulfilled Start Date
       date_start: Start Date
       date_end: End Date
     export:
