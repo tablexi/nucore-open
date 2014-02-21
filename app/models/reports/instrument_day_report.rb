@@ -45,8 +45,8 @@ class Reports::InstrumentDayReport
       @reservation = reservation
     end
 
-    def day; raise "Subclass must implement"; end
-    def value; raise "Subclass must implement"; end
+    def day; raise NotImplementedError.new("Subclass must implement"); end
+    def value; raise NotImplementedError.new("Subclass must implement"); end
 
     def transform(data)
       data
@@ -55,7 +55,7 @@ class Reports::InstrumentDayReport
 
   class ReservedQuantity < DayValue
     def day; @reservation.reserve_start_at.wday; end
-    def value; 1 end
+    def value; 1; end
   end
 
   class ReservedHours < DayValue
@@ -71,8 +71,14 @@ class Reports::InstrumentDayReport
 
   class ActualHours < DayValue
     include ReportsHelper
-    def day; @reservation.reserve_start_at.try(:wday) || 0; end
-    def value; @reservation.actual_start_at.present? ? @reservation.duration_mins : 0; end
+
+    def day
+      @reservation.reserve_start_at.try(:wday) || 0
+    end
+
+    def value
+      @reservation.actual_start_at.present? ? @reservation.duration_mins : 0
+    end
 
     def transform(data)
       to_hours(data, 1)
@@ -80,8 +86,13 @@ class Reports::InstrumentDayReport
   end
 
   class ActualQuantity < DayValue
-    def day; @reservation.actual_start_at.try(:wday) || 0; end
-    def value; @reservation.actual_start_at.present? ? 1 : 0; end
+    def day
+      @reservation.actual_start_at.try(:wday) || 0
+    end
+
+    def value
+      @reservation.actual_start_at.present? ? 1 : 0
+    end
   end
 
 
