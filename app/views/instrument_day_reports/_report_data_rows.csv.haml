@@ -1,7 +1,7 @@
 - @report_data.each do |res|
-    :ruby
-        row=Array.new(7)
-        stat=@report_on.call(res)
-        row[stat[0]]=stat[1]
+  :ruby
+    row = Array.new(7)
+    stat = @report_on.call(res)
+    row[stat.day] = stat.value
 
-    - csv << (row.unshift(res.product.name) + report_attribute_values(res, res.product))
+  - csv << (row.unshift(res.product.name) + report_attribute_values(res, res.product))

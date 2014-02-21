@@ -1,26 +1,21 @@
 class InstrumentDayReportsController < ReportsController
   include InstrumentReporter
 
-
   def reserved_quantity
-    render_report(4, nil) {|res| [ res.reserve_start_at.wday, 1 ] }
+    render_report(4, nil) { |res| Reports::InstrumentDayReport::ReservedQuantity.new(res) }
   end
-
 
   def reserved_hours
-    render_report(5, nil) {|res| [ res.reserve_start_at.wday, to_hours(res.duration_mins) ] }
+    render_report(5, nil) { |res| Reports::InstrumentDayReport::ReservedHours.new(res) }
   end
-
 
   def actual_quantity
-    render_report(6, nil) {|res| res.actual_start_at ? [ res.actual_start_at.wday, 1 ] : nil }
+    render_report(6, nil) { |res| Reports::InstrumentDayReport::ActualQuantity.new(res) }
   end
-
 
   def actual_hours
-    render_report(7, nil) {|res| res.actual_start_at ? [ res.actual_start_at.wday, to_hours(res.actual_duration_mins) ] : nil }
+    render_report(7, nil) { |res| Reports::InstrumentDayReport::ActualHours.new(res) }
   end
-
 
   private
 
@@ -28,35 +23,14 @@ class InstrumentDayReportsController < ReportsController
     @headers ||= [ 'Instrument', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]
   end
 
-
   def init_report(report_on_label, &report_on)
-    instruments={}
-
-    report_data.all.each do |res|
-      stat=yield res
-      next unless stat
-      ndx, value=stat[0], stat[1]
-      instrument=res.product.name
-      days=instruments[instrument]
-
-      if days.blank?
-        instruments[instrument]=[0,0,0,0,0,0,0]
-        instruments[instrument][ndx]=value
-      else
-        days[ndx]+=value
-      end
-    end
-
-    rows, @totals=[], [0,0,0,0,0,0,0]
-
-    instruments.each do |k,v|
-      @totals.each_index{|i| @totals[i] += v[i]}
-      rows << v.unshift(k)
-    end
+    report = Reports::InstrumentDayReport.new(report_data)
+    report.build_report &report_on
+    @totals = report.totals
+    rows = report.rows
 
     page_report rows
   end
-
 
   def init_report_data(report_on_label, &report_on)
     @report_data=report_data.all
