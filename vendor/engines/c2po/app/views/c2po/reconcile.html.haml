@@ -1,0 +1,26 @@
+= javascript_include_tag 'account_mgmt'
+
+= content_for :h1 do
+  = current_facility
+
+= content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => action_name }
+
+%h2= t(:head, scope: "facility_accounts.#{action_name}")
+
+- if @accounts.empty?
+  %p.notice= t(:none, scope: "facility_accounts.#{action_name}")
+- else
+  = form_tag([action_name, FacilityAccount], :method => :get) do
+    %p= select_tag :selected_account, options_from_collection_for_select(@accounts, :id, :to_s, @selected.id)
+
+  - if @selected.owner_user
+    %h3= t('.owner', owner: @selected.owner_user.full_name)
+  %h3= t('.balance', balance: number_to_currency(@selected.unreconciled_total(current_facility)))
+
+  %p= t('.instructions')
+
+  = form_tag([:update, action_name, FacilityAccount], :method => :post) do
+    = render partial: 'c2po/reconcile_table'
+
+  %p= will_paginate(@unreconciled_details)

@@ -31,6 +31,7 @@ module C2po
     # GET /facilities/:facility_id/accounts/credit_cards
     def credit_cards
       show_account(CreditCardAccount)
+      render 'c2po/reconcile'
     end
 
     #POST /facilities/:facility_id/accounts/update_credit_cards
@@ -41,6 +42,7 @@ module C2po
     # GET /facilities/:facility_id/accounts/purchase_orders
     def purchase_orders
       show_account(PurchaseOrderAccount)
+      render 'c2po/reconcile'
     end
 
     # POST /facilities/:facility_id/accounts/update_purchase_orders
