@@ -6,6 +6,8 @@
 
   - if @rows.size > 1
     %tr
-      %td.bold Total
+      %td
+        %strong Total
       - @totals.each do |sum|
-        %td.currency= sum
+        %td.currency
+          %strong= sum

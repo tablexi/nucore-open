@@ -3,16 +3,14 @@
   - @rows.each do |row|
     %tr
       - row.each_with_index do |col, i|
-        - percent_col=(i == (long_report ? 4 : 3)) || (i == (long_report ? 6 : 5))
-        %td{:class => i > (long_report ? 1 : 0) ? 'currency' : ''}= percent_col ? number_to_percentage(col, :precision => 1) : col
+        %td{:class => i > (long_report ? 1 : 0) ? 'currency' : ''}= col
 
   - if @rows.size > 1
     %tr
-      %td.bold Total
+      %td
+        %strong Total
       - if long_report
         %td
-      %td.currency.bold= @totals[0]
-      %td.currency.bold= @totals[1]
-      %td.currency.bold 100%
-      %td.currency.bold= @totals[2]
-      %td.currency.bold 100%
+      - @totals.each do |total|
+        %td.currency
+          %strong= total

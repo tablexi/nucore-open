@@ -37,35 +37,13 @@ class InstrumentReportsController < ReportsController
 
 
   def init_report(report_on_label, &report_on)
-    sums, rows, @totals={}, [], [0,0,0]
+    report = Reports::InstrumentUtilizationReport.new(report_data)
+    report.build_report &report_on
 
-    report_data.all.each do |res|
-      key=yield res
-      @label_columns = key.length
-      sums[key]=[0,0,0] unless sums.has_key?(key)
+    @totals = report.totals
+    @label_columns = report.key_length
 
-      # number of reservations
-      sums[key][0] += 1
-      @totals[0] += 1
-
-      # total reserved minutes of reservations
-      reserved_hours=to_hours(res.duration_mins)
-      sums[key][1] += reserved_hours
-      @totals[1] += reserved_hours
-
-      # total actual minutes of reservations
-      actual_hours=to_hours(res.actual_duration_mins)
-      sums[key][2] += actual_hours
-      @totals[2] += actual_hours
-    end
-
-    sums.each do |k,v|
-      percent_reserved=to_percent(@totals[1] > 0 ? v[1] / @totals[1] : 1)
-      percent_actual=to_percent(@totals[2] > 0 ? v[2] / @totals[2] : 1)
-      rows << (k + v.insert(2, percent_reserved).push(percent_actual))
-    end
-
-    rows.sort! {|a,b| a.first <=> b.first}
+    rows = report.rows
     page_report(rows)
   end
 

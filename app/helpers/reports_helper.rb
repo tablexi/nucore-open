@@ -1,8 +1,8 @@
 module ReportsHelper
   include DateHelper
 
-  def to_hours(minutes)
-    (minutes / 60).round(2)
+  def to_hours(minutes, precision = 2)
+    (minutes / 60.0).round(precision)
   end
 
   def truncate_seconds(datetime)
@@ -13,6 +13,9 @@ module ReportsHelper
     (decimal * 100).round(1)
   end
 
+  def format_percent(percent)
+    "#{percent}%"
+  end
 
   def report_attributes(*records)
     combine_attributes(*records) do |ar|
