@@ -1,0 +1,4 @@
+%thead
+  %tr.borderless
+    %td{ :colspan => 9 }= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
+    = render :partial => 'shared/order_detail_action_form', :locals => { :button_label => 'Update Reservations' }

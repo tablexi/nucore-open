@@ -1,13 +1,16 @@
 en:
+  c2po:
+    reconcile:
+      instructions: Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'.
+      owner: "Owner: %{owner}"
+      balance: "Balance: %{balance}"
   facility_accounts:
     credit_cards:
       head: Reconcile Credit Cards
       none: There are no credit cards with completed orders to be reconciled at this time
-      instructions: Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'.
     purchase_orders:
       head: Reconcile Purchase Orders
       none: There are no purchase orders with completed orders to be reconciled at this time
-      instructions: Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'.
       account_number: Purchase Order Number
     account_fields:
       label:
