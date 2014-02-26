@@ -87,6 +87,8 @@ module InstrumentPricePolicyCalculations
 
   def calculate_overage(reservation)
     if over_reservation? reservation
+      # for a good explanation of overage see http://pm.tablexi.com/issues/79737#note-5
+      reservation.actual_start_at = reservation.reserve_start_at
       calculate_usage reservation
     else
       calculate_reservation reservation
