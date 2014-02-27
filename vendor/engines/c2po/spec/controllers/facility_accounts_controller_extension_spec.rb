@@ -161,7 +161,7 @@ describe FacilityAccountsController do
       expect(assigns(:accounts)).to be_kind_of Array
       assigns[:selected].should == assigns[:accounts].first
       assigns[:unreconciled_details].first.should == OrderDetail.account_unreconciled(@authable, assigns[:selected]).first
-      should render_template('credit_cards')
+      should render_template('c2po/reconcile')
     end
 
     it 'should test selected_account param'
@@ -183,7 +183,7 @@ describe FacilityAccountsController do
       assigns(:accounts).should be_empty
       expect(assigns(:selected)).to be_nil
       expect(assigns(:unreconciled_details)).to be_nil
-      should render_template('credit_cards')
+      should render_template('c2po/reconcile')
     end
 
   end
@@ -206,7 +206,7 @@ describe FacilityAccountsController do
       expect(assigns(:accounts)).to be_kind_of Array
       assigns[:selected].should == assigns[:accounts].first
       assigns[:unreconciled_details].should == OrderDetail.account_unreconciled(@authable, assigns[:selected])
-      should render_template('purchase_orders')
+      should render_template('c2po/reconcile')
     end
 
     it 'should test selected_account param'
@@ -228,7 +228,7 @@ describe FacilityAccountsController do
       assigns(:accounts).should be_empty
       expect(assigns(:selected)).to be_nil
       expect(assigns(:unreconciled_details)).to be_nil
-      should render_template('purchase_orders')
+      should render_template('c2po/reconcile')
     end
 
   end
