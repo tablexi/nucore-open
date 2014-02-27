@@ -127,6 +127,8 @@ module InstrumentPricePolicyCalculations
 
 
   def sum_costs(cost1, cost2)
+    return nil unless cost1 && cost2
+
     price = {}
     price[:cost] = cost1[:cost] + cost2[:cost]
     price[:subsidy] = cost1[:subsidy] + cost2[:subsidy]
