@@ -256,6 +256,38 @@ describe InstrumentPricePolicyCalculations do
       expect(new_costs[:cost].round 4).to eq 29.1667
       expect(new_costs[:subsidy].round 4).to eq 8.1667
     end
+
+    it 'charges for 90 minutes when an hour reservation is started 15 minutes late and goes over the reserved end time by 30 minutes' do
+      policy.attributes = {
+        usage_subsidy: 0,
+        usage_rate: 60
+      }
+
+      policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:overage]
+      reservation.reserve_start_at = now.change hour: 15, min: 0
+      reservation.reserve_end_at = now.change hour: 16, min: 0
+      reservation.actual_start_at = reservation.reserve_start_at + 15.minutes
+      reservation.actual_end_at = reservation.reserve_end_at + 30.minutes
+      new_costs = policy.calculate_cost_and_subsidy reservation
+      expect(new_costs[:cost].round 4).to eq 90
+      expect(new_costs[:subsidy].round 4).to eq 0
+    end
+
+    it 'charges for overage even if the the usage is less than reservation' do
+      policy.attributes = {
+        usage_subsidy: 0,
+        usage_rate: 60
+      }
+
+      policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:overage]
+      reservation.reserve_start_at = now.change hour: 15, min: 0
+      reservation.reserve_end_at = now.change hour: 16, min: 0
+      reservation.actual_start_at = reservation.reserve_start_at + 45.minutes
+      reservation.actual_end_at = reservation.reserve_end_at + 15.minutes # 30 minutes of use
+      new_costs = policy.calculate_cost_and_subsidy reservation
+      expect(new_costs[:cost].round 4).to eq 75
+      expect(new_costs[:subsidy].round 4).to eq 0
+    end
   end
 
 

@@ -79,18 +79,20 @@ module InstrumentPricePolicyCalculations
   def calculate_usage(reservation)
     act_end_at = strip_seconds reservation.actual_end_at
     act_start_at = strip_seconds reservation.actual_start_at
-    usage_minutes = (act_end_at - act_start_at) / 60
-    discount = calculate_discount act_start_at, act_end_at
-    cost_and_subsidy usage_minutes, discount
+    cost_and_subsidy_from act_start_at, act_end_at
   end
 
 
+  #
+  # for a good explanation of overage see http://pm.tablexi.com/issues/79737#note-5
   def calculate_overage(reservation)
-    if over_reservation? reservation
-      calculate_usage reservation
-    else
-      calculate_reservation reservation
-    end
+    reservation_costs = calculate_reservation reservation
+    usage_end = strip_seconds reservation.actual_end_at
+    reserve_end = strip_seconds reservation.reserve_end_at
+    return reservation_costs if usage_end <= reserve_end
+
+    overage_costs = cost_and_subsidy_from reserve_end, usage_end
+    sum_costs reservation_costs, overage_costs
   end
 
 
@@ -117,12 +119,20 @@ module InstrumentPricePolicyCalculations
   end
 
 
-  def over_reservation?(reservation)
-    usage_start = strip_seconds reservation.actual_start_at
-    usage_end = strip_seconds reservation.actual_end_at
-    reserve_start = strip_seconds reservation.reserve_start_at
-    reserve_end = strip_seconds reservation.reserve_end_at
-    (usage_end - usage_start) > (reserve_end - reserve_start)
+  def cost_and_subsidy_from(start_at, end_at)
+    usage_minutes = (end_at - start_at) / 60
+    discount = calculate_discount start_at, end_at
+    cost_and_subsidy usage_minutes, discount
+  end
+
+
+  def sum_costs(cost1, cost2)
+    return nil unless cost1 && cost2
+
+    price = {}
+    price[:cost] = cost1[:cost] + cost2[:cost]
+    price[:subsidy] = cost1[:subsidy] + cost2[:subsidy]
+    price
   end
 
 
