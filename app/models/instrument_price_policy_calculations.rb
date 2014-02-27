@@ -119,11 +119,9 @@ module InstrumentPricePolicyCalculations
 
 
   def over_reservation?(reservation)
-    usage_start = strip_seconds reservation.actual_start_at
     usage_end = strip_seconds reservation.actual_end_at
-    reserve_start = strip_seconds reservation.reserve_start_at
     reserve_end = strip_seconds reservation.reserve_end_at
-    (usage_end - usage_start) > (reserve_end - reserve_start)
+    usage_end > reserve_end
   end
 
 
