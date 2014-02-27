@@ -31,11 +31,11 @@ describe Accessories::Accessorizer do
 
   subject(:accessorizer) { described_class.new(order_detail) }
 
-  describe 'available_accessory_order_details' do
+  describe 'unpurchased_accessory_order_details' do
     context 'when no accessories have been added' do
 
       it 'has both accessories as avaiable' do
-        expect(accessorizer.available_accessories).to eq([accessory1, auto_scaled_accessory])
+        expect(accessorizer.unpurchased_accessories).to eq([accessory1, auto_scaled_accessory])
       end
 
       it 'builds an order detail for both accessories' do
@@ -43,7 +43,7 @@ describe Accessories::Accessorizer do
         od2 = double 'OD2'
         expect(accessorizer).to receive(:build_accessory_order_detail).with(accessory1).and_return od1
         expect(accessorizer).to receive(:build_accessory_order_detail).with(auto_scaled_accessory).and_return od2
-        expect(accessorizer.available_accessory_order_details).to eq([od1, od2])
+        expect(accessorizer.unpurchased_accessory_order_details).to eq([od1, od2])
       end
     end
 
@@ -51,13 +51,13 @@ describe Accessories::Accessorizer do
       let(:child_order_detail) { build_stubbed :order_detail, product: accessory1, order: order }
 
       it 'only has auto_scaled_accessory as an available accessory' do
-        expect(accessorizer.available_accessories).to eq([auto_scaled_accessory])
+        expect(accessorizer.unpurchased_accessories).to eq([auto_scaled_accessory])
       end
 
       it 'builds an order detail or auto_scaled_accessory' do
         od = double
         expect(accessorizer).to receive(:build_accessory_order_detail).with(auto_scaled_accessory).and_return(od)
-        expect(accessorizer.available_accessory_order_details).to eq([od])
+        expect(accessorizer.unpurchased_accessory_order_details).to eq([od])
       end
     end
   end
@@ -110,6 +110,16 @@ describe Accessories::Accessorizer do
           expect(results.first.enabled).to be true
           expect(results.first.quantity).to eq(3)
           expect(allow_any_instance_of(OrderDetail).to receive(:assign_estimated_price))
+        end
+
+        context 'with an invalid entry' do
+          let(:results) { accessorizer.update_attributes(params) }
+
+          it 'is not valid' do
+            expect_any_instance_of(OrderDetail).to receive(:save!) { raise ActiveRecord::RecordInvalid.new(mock_model OrderDetail) }
+            allow_any_instance_of(OrderDetail).to receive(:errors).and_return [:error]
+            expect(results).to_not be_valid
+          end
         end
       end
 

@@ -7,13 +7,21 @@ class AccessoriesController < ApplicationController
 
   def new
     accessorizer = Accessories::Accessorizer.new(@order_detail)
-    @order_details = @order_detail.complete? ? accessorizer.available_accessory_order_details : accessorizer.accessory_order_details
+    # If being done by a facility admin, only show the accessories that haven't already been
+    # added. To update accessories already added, they should use the normal order view.
+    @order_details = current_facility ? accessorizer.unpurchased_accessory_order_details : accessorizer.accessory_order_details
     render :layout => false if request.xhr?
   end
 
   def create
     accessorizer = Accessories::Accessorizer.new(@order_detail)
-    update_response = accessorizer.update_attributes(params[:accessories])
+
+    update_response = if current_facility
+      accessorizer.update_unpurchased_attributes(params[:accessories])
+    else
+      accessorizer.update_attributes(params[:accessories])
+    end
+
     @order_details = update_response.order_details
 
     if update_response.valid?
@@ -30,7 +38,7 @@ class AccessoriesController < ApplicationController
     if request.xhr?
       render :nothing => true, :status => 200
     else
-      redirect_to reservations_path
+      redirect_to current_facility ? [current_facility, @order] : reservations_path
     end
   end
 

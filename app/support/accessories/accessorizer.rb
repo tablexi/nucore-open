@@ -3,14 +3,14 @@ class Accessories::Accessorizer
     @order_detail = order_detail
   end
 
-  def available_accessories
+  def unpurchased_accessories
     accessories = @order_detail.product.accessories.reject { |a| current_accessories.include? a }
   end
 
   # Returns the accessories for the product, but excludes all the accessories that
   # have already been ordered
-  def available_accessory_order_details
-    available_accessories.map { |a| build_accessory_order_detail(a) }
+  def unpurchased_accessory_order_details
+    unpurchased_accessories.map { |a| build_accessory_order_detail(a) }
   end
 
   def accessory_order_details
@@ -25,19 +25,12 @@ class Accessories::Accessorizer
     decorated_od
   end
 
-  def update_attributes(params)
-    response = nil
-    @order_detail.transaction do
-      order_details = accessory_order_details.collect do |od|
-        detail_params = params[od.product_id.to_s]
-        update_order_detail(od, detail_params) if detail_params
-        od
-      end
+  def update_unpurchased_attributes(params)
+    update_attributes_of(unpurchased_accessory_order_details, params)
+  end
 
-      response = Accessories::UpdateResponse.new(order_details)
-      raise ActiveRecord::Rollback unless response.valid?
-    end
-    response
+  def update_attributes(params)
+    update_attributes_of(accessory_order_details, params)
   end
 
   def update_order_detail(od, params)
@@ -51,12 +44,36 @@ class Accessories::Accessorizer
 
   private
 
+  def update_attributes_of(order_details, params)
+    response = nil
+    @order_detail.transaction do
+      order_details = order_details.collect do |od|
+        # begin/rescue each to make sure that validations happen
+        # for all order details
+        begin
+          detail_params = params[od.product_id.to_s]
+          update_order_detail(od, detail_params) if detail_params
+        rescue ActiveRecord::RecordInvalid
+          # UpdateResponse will check #errors on each od
+        end
+        od
+      end
+
+      response = Accessories::UpdateResponse.new(order_details)
+      raise ActiveRecord::Rollback unless response.valid?
+    end
+    response
+  end
+
   def assign_attributes_and_save(od, params)
     od.assign_attributes(params.slice('quantity'))
+    od.update_quantity # so auto-scaled overrides the parameter
     od.order_status_id = @order_detail.order_status_id
     od.assign_estimated_price
     od.enabled = true
+
     if @order_detail.complete?
+      od.save! # do validations before trying to backdate
       od.backdate_to_complete! @order_detail.fulfilled_at
     else
       od.save!
