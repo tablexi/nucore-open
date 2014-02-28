@@ -121,7 +121,7 @@ module InstrumentPricePolicyCalculations
 
 
   def apply_minimum?(costs)
-    costs && costs[:cost] - costs[:subsidy] < minimum_cost.to_f
+    costs && ((costs[:cost] - costs[:subsidy]) < minimum_cost.to_f)
   end
 
 
