@@ -288,6 +288,23 @@ describe InstrumentPricePolicyCalculations do
       expect(new_costs[:cost].round 4).to eq 75
       expect(new_costs[:subsidy].round 4).to eq 0
     end
+
+    it 'applies the minimum cost once when in overage' do
+      policy.attributes = {
+        usage_subsidy: 0,
+        usage_rate: 60,
+        minimum_cost: 100
+      }
+
+      policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:overage]
+      reservation.reserve_start_at = now.change hour: 15, min: 0
+      reservation.reserve_end_at = now.change hour: 17, min: 0
+      reservation.actual_start_at = reservation.reserve_start_at + 15.minutes
+      reservation.actual_end_at = reservation.reserve_end_at + 30.minutes
+      new_costs = policy.calculate_cost_and_subsidy reservation
+      expect(new_costs[:cost].round 4).to eq 150
+      expect(new_costs[:subsidy].round 4).to eq 0
+    end
   end
 
 
