@@ -15,7 +15,7 @@ module InstrumentPricePolicyCalculations
 
     duration = (end_at - start_at) / 60
     discount = calculate_discount start_at, end_at
-    cost_and_subsidy duration, discount
+    factor_minimum cost_and_subsidy(duration, discount)
   end
 
 
@@ -79,7 +79,7 @@ module InstrumentPricePolicyCalculations
   def calculate_usage(reservation)
     act_end_at = strip_seconds reservation.actual_end_at
     act_start_at = strip_seconds reservation.actual_start_at
-    cost_and_subsidy_from act_start_at, act_end_at
+    factor_minimum cost_and_subsidy_from(act_start_at, act_end_at)
   end
 
 
@@ -92,7 +92,7 @@ module InstrumentPricePolicyCalculations
     return reservation_costs if usage_end <= reserve_end
 
     overage_costs = cost_and_subsidy_from reserve_end, usage_end
-    sum_costs reservation_costs, overage_costs
+    factor_minimum  sum_costs(reservation_costs, overage_costs)
   end
 
 
@@ -105,17 +105,23 @@ module InstrumentPricePolicyCalculations
 
   def cost_and_subsidy(duration, discount)
     duration = 1 if duration <= 0
-
     costs = {}
     costs[:cost] = calculate_cost duration, discount
     costs[:subsidy] = calculate_subsidy duration, discount
-
-    if (costs[:cost] - costs[:subsidy]) < minimum_cost.to_f
-      costs[:cost] = minimum_cost
-      costs[:subsidy] = 0
-    end
-
     costs
+  end
+
+
+  def factor_minimum(costs)
+    return costs unless apply_minimum? costs
+    costs[:cost] = minimum_cost
+    costs[:subsidy] = 0
+    costs
+  end
+
+
+  def apply_minimum?(costs)
+    costs && ((costs[:cost] - costs[:subsidy]) < minimum_cost.to_f)
   end
 
 
