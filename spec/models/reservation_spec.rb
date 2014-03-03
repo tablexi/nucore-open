@@ -216,6 +216,14 @@ describe Reservation do
         (earliest.reserve_end_at-earliest.reserve_start_at).should == (@reservation1.reserve_end_at-@reservation1.reserve_start_at)
       end
 
+      it 'should not be moveable if the reservation is in the grace period' do
+        @instrument.update_attributes(reserve_interval: 1)
+        @reservation1.duration_mins = 1
+        Timecop.freeze(@reservation1.reserve_start_at - 4.minutes) do
+          expect(@reservation1).to_not be_can_move
+        end
+      end
+
       it 'should not be moveable if the reservation is cancelled' do
         @reservation1.should be_can_move
         @reservation1.canceled_at=Time.zone.now
