@@ -17,9 +17,14 @@ class ReservationUserActionPresenter
 
   def user_actions
     actions = []
-    actions << switch_actions if can_switch_instrument?
+
+    if can_switch_instrument?
+      actions << switch_actions
+    elsif can_move?
+      actions << move_link
+    end
+
     actions << cancel_link if can_cancel?
-    actions << move_link if can_move?
     actions.compact.join('&nbsp;|&nbsp;').html_safe
   end
 
