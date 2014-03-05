@@ -25,6 +25,18 @@ class IppMigrationReporter
   end
 
 
+  def report_journaled_details(oids_to_attrs)
+    headers = %w(id facility instrument actual_cost actual_subsidy estimated_cost estimated_subsidy
+                 old_actual_cost old_actual_subsidy old_estimated_cost old_estimated_subsidy journaled_amount)
+
+    details = OrderDetail.find oids_to_attrs.keys
+
+    create_csv 'journaled_details', headers do |csv|
+      details.each {|od| csv << journal_detail_row(od, oids_to_attrs[od.id]) }
+    end
+  end
+
+
   private
 
   def create_csv(filename, headers)
@@ -55,6 +67,26 @@ class IppMigrationReporter
       reservation.reserve_end_at,
       reservation.actual_start_at,
       reservation.actual_end_at
+    ]
+  end
+
+
+  def journal_detail_row(od, old_attrs)
+    product = od.product
+
+    [
+      od.to_s,
+      product.facility.name,
+      product.name,
+      od.actual_cost,
+      od.actual_subsidy,
+      od.estimated_cost,
+      od.estimated_subsidy,
+      old_attrs['actual_cost'],
+      old_attrs['actual_subsidy'],
+      old_attrs['estimated_cost'],
+      old_attrs['estimated_subsidy'],
+      od.journal.journal_rows.where(order_detail_id: od.id).first.amount
     ]
   end
 
