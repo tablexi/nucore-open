@@ -25,6 +25,27 @@ namespace :price_policies do
     end
 
 
+    desc 'updates order details from attributes in a json file'
+    task :update_journaled_details, [:json_file] => :environment do |t, args|
+      oids_to_attrs = IppJsonBuilder.new.parse_json_file args.json_file
+      IppUpdater.new.update_journaled_details oids_to_attrs
+    end
+
+
+    desc 'creates a json file of order details that are journaled but still complete'
+    task serialize_journaled_details: :environment do
+      ods = OrderDetail.joins(:product).where('products.type = ?', Instrument.name).where('journal_id IS NOT NULL').where state: 'complete'
+      IppJsonBuilder.new.build_json_file ods
+    end
+
+
+    desc 'creates a report of order details that are journaled but still complete using attributes from a json file'
+    task :report_journaled_details, [:json_file] => :environment do |t, args|
+      oids_to_attrs = IppJsonBuilder.new.parse_json_file args.json_file
+      IppMigrationReporter.new.report_journaled_details oids_to_attrs
+    end
+
+
     desc 'creates a post-migration report of price policy and order details failures'
     task report_migration: :environment do
       pp_ids = [ 937, 938, 939, 940, 1122, 1123, 1124, 1125, 2604, 2605, 2606, 2607, 3986, 3987, 3988, 3989,
