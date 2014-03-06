@@ -33,19 +33,15 @@ describe Journal do
           @ods << od
         end
 
-        # .should raise_error and .should_not raise_error
-        # expect to be called on a block / Proc
-        return Proc.new do
-          journal  = Journal.create!(
-            :facility_id => (facilities_list.size == 1 ? facilities_list.first.id : nil),
-            :created_by => @admin.id,
-            :journal_date => Time.zone.now
-          )
+        journal = Journal.create!(
+          :facility_id => (facilities_list.size == 1 ? facilities_list.first.id : nil),
+          :created_by => @admin.id,
+          :journal_date => Time.zone.now
+        )
 
-          journal.create_journal_rows!(@ods)
+        journal.create_journal_rows!(@ods)
 
-          journal
-        end
+        journal
       end
     end
 
@@ -55,38 +51,34 @@ describe Journal do
       end
 
       it "should not allow creation of a journal for A" do
-        create_pending_journal_for( @facilitya).should_not raise_error(Exception, /pending journal/)
+        expect { create_pending_journal_for( @facilitya) }.to raise_error(Exception, /pending journal/)
       end
     end
 
 
     context "(with: pending journal for A & B)" do
       before :each do
-        create_pending_journal_for( @facilitya, @facilityb ).should_not raise_error(Exception, /pending journal/)
+        create_pending_journal_for( @facilitya, @facilityb )
       end
 
       it "should not allow creation of a journal for B & C (journal pending on B)" do
-        create_pending_journal_for( @facilityb, @facilityc ).should raise_error(Exception, /pending journal/)
-
+        expect { create_pending_journal_for( @facilityb, @facilityc ) }.to raise_error
       end
 
       it "should not allow creation of a journal for A (journal pending on A)" do
-        create_pending_journal_for( @facilitya ).should raise_error(Exception, /pending journal/)
-
+        expect { create_pending_journal_for( @facilitya ) }.to raise_error
       end
 
       it "should not allow creation of a journal for B (journal pending on B)" do
-        create_pending_journal_for( @facilityb ).should raise_error(Exception, /pending journal/)
-
+        expect { create_pending_journal_for( @facilityb ) }.to raise_error
       end
 
       it "should allow creation of a journal for C" do
-        create_pending_journal_for( @facilityc ).should_not raise_error(Exception, /pending journal/)
-
+        expect { create_pending_journal_for( @facilityc ) }.to_not raise_error
       end
 
       it "should allow creation of a journal for C & D (no journals on either C or D)" do
-        create_pending_journal_for( @facilityc, @facilityd ).should_not raise_error(Exception, /pending journal/)
+        expect { create_pending_journal_for( @facilityc, @facilityd ) }.to_not raise_error
       end
     end
   end
