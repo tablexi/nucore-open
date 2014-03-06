@@ -51,7 +51,7 @@ describe Journal do
       end
 
       it "should not allow creation of a journal for A" do
-        expect { create_pending_journal_for( @facilitya) }.to raise_error(Exception, /pending journal/)
+        expect { create_pending_journal_for( @facilitya) }.to raise_error
       end
     end
 
