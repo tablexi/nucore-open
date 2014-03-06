@@ -27,7 +27,9 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 
   config.around(:each, :timecop_freeze) do |example|
-    Timecop.freeze do
+    # freeze time to specific time by defining let(:now)
+    time = defined?(now) ? now : Time.zone.now
+    Timecop.freeze time do
       example.call
     end
   end
