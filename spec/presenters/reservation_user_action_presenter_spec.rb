@@ -110,7 +110,11 @@ describe ReservationUserActionPresenter do
     end
 
     describe 'moving' do
-      before { expect(reservation).to receive(:can_move?).and_return true }
+      before do
+        expect(reservation).to receive(:can_switch_instrument?).and_return false
+        expect(reservation).to receive(:can_move?).and_return true
+      end
+
       it 'includes the move link' do
         link = order_order_detail_reservation_move_reservation_path(order, order_detail, reservation)
         expect(text).to include link

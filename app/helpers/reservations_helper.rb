@@ -10,9 +10,10 @@ module ReservationsHelper
   end
 
   def default_duration
-    min_reserve_mins = @instrument.min_reserve_mins
-    min_reserve_mins = nil if min_reserve_mins == 0
-    min_reserve_mins || @instrument.reserve_interval
+    duration = @instrument.min_reserve_mins
+    duration = nil if duration == 0
+    duration ||= 30 if @instrument.reserve_interval < 30
+    duration ||= @instrument.reserve_interval
   end
 
   def end_reservation_class(reservation)

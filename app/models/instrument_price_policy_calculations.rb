@@ -76,9 +76,9 @@ module InstrumentPricePolicyCalculations
   end
 
 
-  def calculate_usage(reservation)
+  def calculate_usage(reservation, start_at = nil)
     act_end_at = strip_seconds reservation.actual_end_at
-    act_start_at = strip_seconds reservation.actual_start_at
+    act_start_at = strip_seconds (start_at || reservation.actual_start_at)
     usage_minutes = (act_end_at - act_start_at) / 60
     discount = calculate_discount act_start_at, act_end_at
     cost_and_subsidy usage_minutes, discount
@@ -87,7 +87,8 @@ module InstrumentPricePolicyCalculations
 
   def calculate_overage(reservation)
     if over_reservation? reservation
-      calculate_usage reservation
+      # for a good explanation of overage see http://pm.tablexi.com/issues/79737#note-5
+      calculate_usage reservation, reservation.reserve_start_at
     else
       calculate_reservation reservation
     end
@@ -118,11 +119,9 @@ module InstrumentPricePolicyCalculations
 
 
   def over_reservation?(reservation)
-    usage_start = strip_seconds reservation.actual_start_at
     usage_end = strip_seconds reservation.actual_end_at
-    reserve_start = strip_seconds reservation.reserve_start_at
     reserve_end = strip_seconds reservation.reserve_end_at
-    (usage_end - usage_start) > (reserve_end - reserve_start)
+    usage_end > reserve_end
   end
 
 

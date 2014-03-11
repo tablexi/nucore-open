@@ -711,8 +711,8 @@ describe ReservationsController do
     context 'edit' do
 
       before :each do
-        @method=:get
-        @action=:edit
+        @method = :get
+        @action = :edit
         @params.merge!(:id => @reservation.id)
       end
 
@@ -723,18 +723,18 @@ describe ReservationsController do
         should respond_with :success
       end
 
-      it "should throw 404 if reservation is cancelled" do
+      it "redirects to show page if reservation is cancelled" do
         @reservation.update_attributes(:canceled_at => Time.zone.now - 1.day)
         sign_in @admin
         do_request
-        response.response_code.should == 404
+        expect(response).to redirect_to [@order, @order_detail, @reservation]
       end
 
-      it "should throw 404 if reservation happened" do
+      it "redirects to show page if reservation happened" do
         @reservation.update_attributes(:actual_start_at => Time.zone.now - 1.day)
         sign_in @admin
         do_request
-        response.response_code.should == 404
+        expect(response).to redirect_to [@order, @order_detail, @reservation]
       end
 
       it "allows editing of reservations in the past by an admin" do
@@ -779,6 +779,20 @@ describe ReservationsController do
         assigns[:order_detail].estimated_subsidy.should_not be_nil
         should set_the_flash
         assert_redirected_to cart_url
+      end
+
+      describe 'trying to update a started reservation' do
+        before :each do
+          sign_in @admin
+          expect(controller).to receive(:invalid_for_update?).and_return true
+        end
+
+        it 'redirects to the show page' do
+          do_request
+          expect(response).to redirect_to [@order, @order_detail, @reservation]
+          expect(flash[:notice]).to be_present
+        end
+
       end
 
       context 'creating a reservation in the future' do
@@ -971,7 +985,7 @@ describe ReservationsController do
 
         it_should_deny :random_user
 
-        context 'before the reservation start' do
+        context 'before the reservation start (in grace period)' do
           let(:start_at) { 3.minutes.from_now.change(usec: 0) }
           let(:end_at) { 63.minutes.from_now.change(usec: 0) }
 
@@ -981,18 +995,12 @@ describe ReservationsController do
             sign_in @guest
           end
 
-          it 'moves the reservation start time up' do
-            do_request
-            expect(assigns(:reservation).reserve_start_at).to eq(Time.zone.now)
-            expect(assigns(:reservation).reserve_end_at).to eq(end_at)
-          end
-
           context 'for a restricted instrument' do
             before { @instrument.update_attributes(requires_approval: true) }
             it 'allows it to start' do
               do_request
               expect(assigns(:reservation)).to_not be_changed
-              expect(assigns(:reservation).reserve_start_at).to eq(Time.zone.now)
+              expect(assigns(:reservation).actual_start_at).to eq(Time.zone.now)
             end
           end
 
@@ -1001,23 +1009,18 @@ describe ReservationsController do
               @instrument.update_attributes(max_reserve_mins: 60)
               do_request
             end
+
             it 'allows it to start' do
               expect(assigns(:reservation)).to_not be_changed
-              expect(assigns(:reservation).reserve_start_at).to eq(Time.zone.now)
+              expect(assigns(:reservation).actual_start_at).to eq(Time.zone.now)
             end
-
-            it 'then allows it to end' do
-              @params[:switch] = 'off'
-            end
-
-
           end
 
           context 'and there is another reservation still going on' do
             let!(:reservation2) { create(:purchased_reservation, product: @instrument,
               reserve_start_at: start_at - 30.minutes, reserve_end_at: start_at) }
 
-            it 'allows it to start, but does not move the reservation time' do
+            it 'allows it to start' do
               do_request
               expect(assigns(:reservation)).to_not be_changed
               expect(assigns(:reservation).reserve_start_at).to eq(start_at)

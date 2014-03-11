@@ -10,10 +10,8 @@
   = form_tag(batch_update_facility_orders_path, :method => :post) do
     - facility_users = User.find_users_by_facility(current_facility)
     %table.table.table-striped.table-hover.old-table
+      = render partial: 'table_controls'
       %thead
-        %tr.borderless
-          %td{ :colspan => 7 }= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
-          = render :partial => 'shared/order_detail_action_form', :locals => { :button_label => 'Update Orders' }
         -## THE HEADER ROW
         %tr
           %th
@@ -44,13 +42,7 @@
               - od.send(:extend, PriceDisplayment)
               = od.wrapped_total
         -## THE FOOTER CONTROL ROW
-        %tr.borderless
-          %td
-          %td
-          %td
-          %td
-          %td
-          %td
-          = render :partial => 'shared/order_detail_action_form', :locals => { :button_label => 'Update Orders' }
+      = render partial: 'table_controls'
+
   = will_paginate(@order_details)
   = render :partial => '/price_display_footnote', :locals => { :admin => true }

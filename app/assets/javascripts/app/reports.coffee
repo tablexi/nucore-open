@@ -34,6 +34,9 @@ class TabbableReports
         true
 
       beforeLoad: (event, ui) ->
+        # Show a loading message so the user sees immediate feedback
+        # that their action is being applied
+        ui.panel.html('<span class="updating"></span> Loading...')
         ui.ajaxSettings.dataType = 'text/html'
         ui.jqXHR.error (xhr, status, error) ->
           # don't show error message if it's because of user aborting ajax request

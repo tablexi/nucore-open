@@ -14,6 +14,39 @@ describe GeneralReportsController do
     { :action => :price_group, :index => 4, :report_on_label => 'Name', :report_on => Proc.new{|od| od.price_policy ? od.price_policy.price_group.name : 'Unassigned'} }
   ])
 
+  describe 'time parameters', :timecop_freeze do
+    let(:now) { Time.zone.parse('2014-03-06 12:00') }
+
+    before do
+      allow(controller).to receive(:authenticate_user!).and_return true
+      allow(controller).to receive(:current_user).and_return build_stubbed(:user) #mock_model(User, administrator?: true, operator?: true, full_name: 'name')
+      allow(controller).to receive(:current_facility).and_return mock_model(Facility)
+    end
+
+    context 'defaults' do
+      before { get :product }
+
+      it 'assigns the proper start date' do
+        expect(assigns(:date_start)).to eq(Time.zone.local(2014, 2, 1))
+      end
+
+      it 'assigns the proper end date' do
+        expect(assigns(:date_end).to_i).to eq(Time.zone.local(2014, 2, 28, 23, 59, 59).to_i)
+      end
+    end
+
+    context 'with date parameters' do
+      before { get :product, date_start: '01/01/2014', date_end: '01/31/2014' }
+
+      it 'assigns the start date to the beginning of the day' do
+        expect(assigns(:date_start)).to eq(Time.zone.local(2014, 1, 1))
+      end
+
+      it 'assigns the end date to the end of the day' do
+        expect(assigns(:date_end).to_i).to eq(Time.zone.local(2014, 1, 31, 23, 59, 59).to_i)
+      end
+    end
+  end
 
   context 'report searching' do
     before :each do
