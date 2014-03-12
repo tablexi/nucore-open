@@ -12,6 +12,8 @@ class OrderDetail < ActiveRecord::Base
   # So you can see what price policy was used in the price estimation
   attr_reader :estimated_price_policy
 
+  attr_accessor :order_status_updated_by
+
   # Used to mark a dispute as resolved
   attr_accessor :resolve_dispute
   before_validation :mark_dispute_resolved, :if => :resolve_dispute
@@ -339,6 +341,7 @@ class OrderDetail < ActiveRecord::Base
 
   # This method is a replacement for change_status! that also will cancel the associated reservation when necessary
   def update_order_status!(updated_by, order_status, options_args = {}, &block)
+    @order_status_updated_by = updated_by
     options = { :admin => false, :apply_cancel_fee => false }.merge(options_args)
 
     if reservation && order_status.root == OrderStatus.cancelled.first

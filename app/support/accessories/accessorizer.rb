@@ -3,6 +3,13 @@ class Accessories::Accessorizer
     @order_detail = order_detail
   end
 
+  def add_accessory(accessory, options = {})
+    new_order_detail = build_accessory_order_detail(accessory, options)
+    # match the order status to that of the parent
+    new_order_detail.update_order_status! nil, @order_detail.order_status
+    new_order_detail
+  end
+
   def unpurchased_accessories
     accessories = @order_detail.product.accessories.reject { |a| current_accessories.include? a }
   end
