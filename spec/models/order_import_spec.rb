@@ -319,7 +319,7 @@ end
         @order_import.save!
 
         # expectations
-        Notifier.should_receive(:order_receipt).once.and_return( stub({:deliver => nil }) )
+        expect(Notifier).to receive(:order_receipt).once.and_return(double(deliver: nil))
 
         # run the import
         @order_import.process!
@@ -362,7 +362,7 @@ end
           @order_import.save!
 
           # expectations
-          Notifier.should_receive(:order_receipt).once.and_return( stub({:deliver => nil }) )
+          expect(Notifier).to receive(:order_receipt).once.and_return(double(deliver: nil))
 
           # run the import
           @order_import.process!
@@ -448,7 +448,7 @@ end
       end
 
       it "should send out notification for second order" do
-        Notifier.should_receive(:order_receipt).once.and_return( stub({:deliver => nil }) )
+        expect(Notifier).to receive(:order_receipt).once.and_return(double(deliver: nil))
         @order_import.process!
       end
 
