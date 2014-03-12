@@ -739,6 +739,7 @@ en:
         date_start: Fulfilled Start Date
       date_start: Start Date
       date_end: End Date
+      auto_cancel_name: 'Auto Cancel'
     export:
       export: Export
       raw: Export Raw
