@@ -772,7 +772,7 @@ class OrderDetail < ActiveRecord::Base
               od.change_status!(os)
             end
           end
-        rescue Exception => e
+        rescue => e
           msg_hash[:error] = "There was an error updating the selected #{msg_type}.  #{e.message}"
           raise ActiveRecord::Rollback
         end

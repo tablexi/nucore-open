@@ -58,15 +58,15 @@ class FacilityJournalsController < ApplicationController
           @pending_journal.update_attributes!(params[:journal])
           reconciled_status = OrderStatus.reconciled.first
           @pending_journal.order_details.each do |od|
-            raise Exception unless od.change_status!(reconciled_status)
+            raise StandardError unless od.change_status!(reconciled_status)
           end
         else
-          raise Exception
+          raise StandardError
         end
 
         flash[:notice] = I18n.t 'controllers.facility_journals.update.notice'
         redirect_to facility_journals_path(current_facility) and return
-      rescue Exception => e
+      rescue => e
         logger.error("ERROR: #{e.message}")
         @pending_journal.errors.add(:base, I18n.t('controllers.facility_journals.update.error.rescue'))
         raise ActiveRecord::Rollback

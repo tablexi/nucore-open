@@ -96,7 +96,7 @@ class InstrumentsController < ProductsCommonController
       @relay  = @instrument.relay
       status = Rails.env.test? ? true : @relay.get_status
       @status = @instrument.instrument_statuses.create!(:is_on => status)
-    rescue Exception => e
+    rescue => e
       logger.error e
       raise ActiveRecord::RecordNotFound
     end
@@ -125,7 +125,7 @@ class InstrumentsController < ProductsCommonController
           # || false will ensure that the value of is_on is not nil (causes a DB error)
           @instrument_statuses << instrument.instrument_statuses.create!(:is_on => status || NUCore::Database.boolean(false))
         end
-      rescue Exception => e
+      rescue => e
         logger.error e.message
         @instrument_statuses << InstrumentStatus.new(:instrument => instrument, :error_message => e.message)
       end
@@ -147,7 +147,7 @@ class InstrumentsController < ProductsCommonController
       end
 
       @status = @instrument.instrument_statuses.create!(:is_on => status)
-    rescue Exception => e
+    rescue => e
       logger.error "ERROR: #{e.message}"
       @status = InstrumentStatus.new(:instrument => @instrument, :error_message => e.message)
       #raise ActiveRecord::RecordNotFound

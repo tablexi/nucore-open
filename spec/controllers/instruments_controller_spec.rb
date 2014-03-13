@@ -552,7 +552,7 @@ describe InstrumentsController do
                                               :no_relay => true)
 
         @instrument_with_bad_relay.update_attributes(:relay => FactoryGirl.create(:relay_synb, :instrument => @instrument_with_bad_relay))
-        RelaySynaccessRevB.any_instance.stub(:query_status).and_raise(Exception.new('Error!'))
+        RelaySynaccessRevB.any_instance.stub(:query_status).and_raise(StandardError.new('Error!'))
         @instrument_with_bad_relay.relay.update_attribute(:ip, '')
       end
 

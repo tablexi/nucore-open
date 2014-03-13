@@ -9,7 +9,7 @@ class OrderStatus < ActiveRecord::Base
   validates_each :parent_id do |model, attr, value|
     begin
       model.errors.add(attr, 'must be a root') unless (value.nil? || OrderStatus.find(value).root?)
-    rescue Exception => e
+    rescue => e
       model.errors.add(attr, 'must be a valid root')
     end
   end

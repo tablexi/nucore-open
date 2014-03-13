@@ -113,7 +113,7 @@ class FacilityOrdersController < ApplicationController
       else
         flash[:notice] = I18n.t 'controllers.facility_orders.update.success', :product => product.name
       end
-    rescue Exception => e
+    rescue => e
       Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
       order.destroy if @order != original_order
       flash[:error] = I18n.t 'controllers.facility_orders.update.error', :product => product.name

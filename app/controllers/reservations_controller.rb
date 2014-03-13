@@ -130,7 +130,7 @@ class ReservationsController < ApplicationController
       rescue ActiveRecord::RecordInvalid => e
         logger.error e.message
         raise ActiveRecord::Rollback
-      rescue Exception => e
+      rescue => e
         logger.error e.message
         flash.now[:error] = I18n.t('orders.purchase.error')
         flash.now[:error] += " #{e.message}" if e.message

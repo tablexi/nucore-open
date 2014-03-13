@@ -34,7 +34,7 @@ class OrderDetailsController < ApplicationController
           @order_detail.save!
           flash[:notice] = 'Your purchase has been disputed'
           redirect_to (@order_detail.reservation ? reservations_path : orders_path) and return
-        rescue Exception => e
+        rescue => e
           flash.now[:error] = "An error was encountered while disputing the order."
           raise ActiveRecord::Rollback
         end

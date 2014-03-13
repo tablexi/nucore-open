@@ -43,7 +43,7 @@ class FacilityNotificationsController < ApplicationController
         od = nil
         begin
           od = OrderDetail.for_facility(current_facility).need_notification.find(order_detail_id, :readonly => false)
-        rescue Exception => e
+        rescue => e
           @errors << I18n.t('controllers.facility_notifications.send_notifications.order_error', :order_detail_id => order_detail_id)
         end
         if od
@@ -91,7 +91,7 @@ class FacilityNotificationsController < ApplicationController
           od.reviewed_at = Time.zone.now
           od.save!
           @order_details_updated << od
-        rescue Exception => e
+        rescue => e
           logger.error(e.message)
           @errors << order_detail_id
         end
