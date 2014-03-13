@@ -29,8 +29,8 @@ describe StatusChangeNotifications do
   private
 
   def notifier_should_receive_email(email)
-    Notifier.should_receive(:order_detail_status_change).with(@order_detail, @initial_order_status, @order_status, email).once.and_return(stub(:deliver => true))
+    expect(Notifier).to receive(:order_detail_status_change).with(@order_detail, @initial_order_status, @order_status, email).once.and_return(double deliver: true)
     @order_detail.change_status!(@order_status)
   end
-  
+
 end
