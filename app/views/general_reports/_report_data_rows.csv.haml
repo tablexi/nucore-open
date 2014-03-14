@@ -38,7 +38,7 @@
                 row += [human_datetime(reservation.reserve_start_at), human_datetime(reservation.reserve_end_at),
                 reservation.duration_mins,
                 human_datetime(reservation.actual_start_at), human_datetime(reservation.actual_end_at),
-                reservation.actual_duration_mins, canceled_at_date(reservation.canceled_at), canceled_by_name(reservation)]
+                reservation.actual_duration_mins, canceled_at_date(reservation), canceled_by_name(reservation)]
             else
                 # leave blanks for non-reservations
                 row += [nil, nil, nil, nil, nil, nil, nil, nil]
