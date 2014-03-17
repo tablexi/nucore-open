@@ -29,6 +29,7 @@ class Accessories::Scaling::Default
     @order_detail.assign_attributes(attrs)
   end
 
+  # Since this is a decorator, allow comparison with the base OrderDetail
   def ==(other)
     if other.is_a? OrderDetail
       @order_detail == other

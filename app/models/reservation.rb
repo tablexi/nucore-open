@@ -213,11 +213,11 @@ class Reservation < ActiveRecord::Base
   end
 
   def has_actuals?
-    !!(actual_start_at && actual_end_at)
+    actual_start_at.present? && actual_end_at.present?
   end
 
   def started?
-    !!actual_start_at
+    actual_start_at.present?
   end
 
   def ongoing?
