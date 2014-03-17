@@ -101,7 +101,7 @@ class OrdersController < ApplicationController
           @order.invalidate! ## this is because we just added an order_detail
         rescue NUCore::MixedFacilityCart
           @order.errors.add(:base, "You can not add a product from another facility; please clear your cart or place a separate order.")
-        rescue Exception => e
+        rescue => e
           @order.errors.add(:base, "An error was encountered while adding the product #{@product}.")
           Rails.logger.error(e.message)
           Rails.logger.error(e.backtrace.join("\n"))
@@ -164,7 +164,7 @@ class OrdersController < ApplicationController
           begin
             @order.invalidate
             @order.update_attributes!(:account => account)
-          rescue Exception => e
+          rescue => e
             success = false
             raise ActiveRecord::Rollback
           end
@@ -306,7 +306,7 @@ class OrdersController < ApplicationController
 
         return
       end
-    rescue Exception => e
+    rescue => e
       flash[:error] = I18n.t('orders.purchase.error')
       flash[:error] += " #{e.message}" if e.message
       puts e.message

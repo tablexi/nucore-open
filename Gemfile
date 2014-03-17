@@ -22,7 +22,7 @@ gem 'aasm',             '2.2.0'
 gem 'paperclip',        '~> 2.7.5'
 gem 'vestal_versions',  '1.2.4.3', :git => 'git://github.com/elzoiddy/vestal_versions.git'
 gem 'awesome_nested_set', '2.1.6'
-gem 'nokogiri',         '1.5.9'
+gem 'nokogiri',         '~> 1.6.1'
 
 ## views
 gem 'bootstrap-sass',   '~> 2.3.2'
@@ -51,7 +51,7 @@ gem 'daemons',          '1.1.9'
 ## custom
 gem 'c2po',             '~> 1.0.0', :path => 'vendor/engines/c2po'
 gem 'dataprobe',        '~> 1.0.0', :path => 'vendor/engines/dataprobe'
-gem 'synaccess_connect', '0.2.1', :git => 'git://github.com/tablexi/synaccess.git'
+gem 'synaccess_connect', '0.2.2', :git => 'git://github.com/tablexi/synaccess.git'
 
 group :development, :test do
   gem 'awesome_print',     '1.1.0'
