@@ -20,7 +20,7 @@ module C2po
         when CreditCardAccount
           begin
             account.expires_at = Date.civil(account.expiration_year.to_i, account.expiration_month.to_i).end_of_month.end_of_day
-          rescue Exception => e
+          rescue => e
              account.errors.add(:base, e.message)
           end
         else
