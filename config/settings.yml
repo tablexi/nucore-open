@@ -56,14 +56,6 @@ external_services:
 relays:
   # can also be NetBooter::Telnet
   connect_module: NetBooter::Http
-  test:
-    enabled: false
-  development:
-    enabled: false
-  staging:
-    enabled: true
-  production:
-    enabled: true
 #
 # For these settings use SettingsHelper#feature_on?
 feature:
