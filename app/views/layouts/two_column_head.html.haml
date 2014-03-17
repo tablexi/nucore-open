@@ -14,10 +14,7 @@
           .span12
             %h1= yield :h1
             %h2= yield :h2
-            - if flash[:error]
-              %p.alert.alert-error= flash[:error]
-            - if flash[:notice]
-              %p.notice= flash[:notice]
+            = render partial: 'shared/flashes'
         = yield :top_block
         .row
           .span12

@@ -12,7 +12,8 @@ describe ReservationUserActionPresenter do
        can_switch_instrument_off?: false,
        can_switch_instrument_on?: false,
        can_move?: false,
-       can_cancel?: false
+       can_cancel?: false,
+       ongoing?: false
   end
   let(:template) { double('template') }
 
@@ -117,6 +118,19 @@ describe ReservationUserActionPresenter do
 
       it 'includes the move link' do
         link = order_order_detail_reservation_move_reservation_path(order, order_detail, reservation)
+        expect(text).to include link
+      end
+    end
+
+    describe 'accessories' do
+      include ReservationsHelper
+      before do
+        expect(reservation).to receive(:ongoing?).and_return true
+        expect(order_detail).to receive(:accessories?).and_return true
+      end
+
+      it 'includes the accessories link' do
+        link = reservation_pick_accessories_path(reservation)
         expect(text).to include link
       end
     end

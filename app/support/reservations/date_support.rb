@@ -86,6 +86,8 @@ module Reservations::DateSupport
       @actual_duration_mins.to_i
     elsif actual_end_at && actual_start_at
       [((actual_end_at - actual_start_at) / 60).floor, 1].max
+    elsif actual_start_at
+      [((Time.zone.now - actual_start_at) / 60).floor, 1].max
     else
       0
     end

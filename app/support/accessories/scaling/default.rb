@@ -1,8 +1,8 @@
 class Accessories::Scaling::Default
-  attr_accessor :enabled
+  attr_accessor :enabled, :order_detail
 
   # We need to respond_to? these as opposed to sending them to method_missing
-  delegate :to_s, :to_param, :errors, :to => :@order_detail
+  delegate :to_s, :to_param, :errors, :to => :order_detail
 
   def initialize(order_detail)
     @order_detail = order_detail
@@ -27,6 +27,15 @@ class Accessories::Scaling::Default
   def assign_attributes(attrs)
     self.enabled = attrs.delete :enabled if attrs[:enabled]
     @order_detail.assign_attributes(attrs)
+  end
+
+  # Since this is a decorator, allow comparison with the base OrderDetail
+  def ==(other)
+    if other.is_a? OrderDetail
+      @order_detail == other
+    else
+      self.equal? other
+    end
   end
 
   private

@@ -523,8 +523,9 @@ en:
     pick_accessories:
       title: Add Accessories
       link: Add Accessories to order...
-      instruct: "Please enter a quantity for each accessory used during the reservation. If an accessory was not used please leave the quantity blank."
+      instruct: "Please check the box for each accessory used during the reservation, and update the quantity for the total amount used."
       actual_time_html: The actual usage for this reservation was <span class="timeinput" data-format="long">%{time}</span>.
+      actual_time_ongoing_html: The current usage for this reservation is <span class="timeinput" data-format="long">%{time}</span>.
     index:
       description: "Here you may define one or more accessories that can be used during a reservation of this product"
       no_accessories: No accessories defined for this product

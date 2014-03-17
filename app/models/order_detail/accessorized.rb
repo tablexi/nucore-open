@@ -40,7 +40,7 @@ module OrderDetail::Accessorized
 
   def update_children
     return unless child_order_details.any?
-    accessorizer = Accessories::Accessorizer.new(self)
+    accessorizer = Accessories::ChildUpdater.new(self)
     @updated_children = accessorizer.update_children
   end
 

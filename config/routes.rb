@@ -177,6 +177,7 @@ Nucore::Application.routes.draw do
           get 'remove_from_journal'
         end
         resources :reservations, :controller => 'facility_reservations', :only => [:edit, :update, :show]
+        resources :accessories, only: [:new, :create]
         get 'manage', :to => 'order_management/order_details#edit', :on => :member
         put 'manage', :to => 'order_management/order_details#update', :on => :member
         get 'pricing', :to => 'order_management/order_details#pricing', :on => :member
@@ -288,7 +289,7 @@ Nucore::Application.routes.draw do
         get '/switch_instrument',  :to => 'reservations#switch_instrument', :as => 'switch_instrument'
       end
 
-      resources :accessories
+      resources :accessories, only: [:new, :create]
     end
   end
 

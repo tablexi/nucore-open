@@ -2,7 +2,8 @@ class ReservationUserActionPresenter
   attr_accessor :reservation, :controller
   delegate :order_detail, :order,
            :can_switch_instrument?, :can_switch_instrument_on?, :can_switch_instrument_off?,
-           :can_cancel?, :can_move?, :can_customer_edit?, to: :reservation
+           :can_cancel?, :can_move?, :can_customer_edit?, :started?, :ongoing?, to: :reservation
+
   delegate :current_facility, to: :controller
 
   delegate :link_to, to: 'ActionController::Base.helpers'
@@ -17,6 +18,7 @@ class ReservationUserActionPresenter
 
   def user_actions
     actions = []
+    actions << accessories_link if accessories?
 
     if can_switch_instrument?
       actions << switch_actions
@@ -37,6 +39,14 @@ class ReservationUserActionPresenter
   end
 
   private
+
+  def accessories?
+    ongoing? && order_detail.accessories?
+  end
+
+  def accessories_link
+    link_to I18n.t('product_accessories.pick_accessories.title'), reservation_pick_accessories_path(reservation), class: 'has_accessories persistent'
+  end
 
   def edit_reservation_path
     current_facility ? edit_facility_order_order_detail_reservation_path(current_facility, order, order_detail, reservation) : edit_order_order_detail_reservation_path(order, order_detail, reservation)

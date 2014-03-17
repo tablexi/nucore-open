@@ -1,10 +1,14 @@
 .modal-header
   = modal_close_button
   %h3= t('product_accessories.pick_accessories.title')
-= simple_form_for :accessories, :url => order_order_detail_accessories_path(@order, @order_detail), :remote => request.xhr?, :html => { 'data-type' => 'html', :id => 'accessory-form', :class => :pick_accessories_form } do |f|
+= simple_form_for :accessories, :url => url_for(action: :create), :remote => request.xhr?, :html => { 'data-type' => 'html', :id => 'accessory-form', :class => :pick_accessories_form } do |f|
   .modal-body
+    = render partial: 'shared/flashes'
     %p= t('product_accessories.pick_accessories.instruct')
-    %p= t('product_accessories.pick_accessories.actual_time_html', :time => @order_detail.reservation.actual_duration_mins)
+    - if @order_detail.reservation.ongoing?
+      %p= t('product_accessories.pick_accessories.actual_time_ongoing_html', :time => @order_detail.reservation.actual_duration_mins)
+    - else
+      %p= t('product_accessories.pick_accessories.actual_time_html', :time => @order_detail.reservation.actual_duration_mins)
 
     %table.table
       - @order_details.each do |od|

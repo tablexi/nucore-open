@@ -5,17 +5,21 @@ describe AccessoriesController do
   render_views
   before(:all) { create_users }
 
-  let(:instrument) { FactoryGirl.create(:instrument_with_accessory) }
+
+  let(:instrument) { create(:instrument_with_accessory) }
+  let(:facility) { instrument.facility }
   let(:quantity_accessory) { instrument.accessories.first }
-  let(:auto_accessory) { FactoryGirl.create(:accessory, :parent => instrument, :scaling_type => 'auto') }
-  let(:manual_accessory) { FactoryGirl.create(:accessory, :parent => instrument, :scaling_type => 'manual') }
-  let(:reservation) { FactoryGirl.create(:purchased_reservation, :product => instrument, :reserve_start_at => 1.day.ago) }
+  let(:auto_accessory) { create(:accessory, :parent => instrument, :scaling_type => 'auto') }
+  let(:manual_accessory) { create(:accessory, :parent => instrument, :scaling_type => 'manual') }
+  let(:reservation) { create(:purchased_reservation, :product => instrument, :reserve_start_at => 1.day.ago) }
   let(:order_detail) { reservation.order_detail }
   let(:order) { order_detail.order }
+  let(:new_order_status) { OrderStatus.new_os.first }
 
   before :each do
+    order_detail.change_status! new_order_status
+    reservation.update_attributes(actual_start_at: 1.day.ago, actual_end_at: 1.day.ago + 30.minutes)
     @authable = instrument.facility
-    order_detail.backdate_to_complete!(Time.zone.now)
     @params = { :order_id => order.id, :order_detail_id => order_detail.id }
   end
 
@@ -40,6 +44,7 @@ describe AccessoriesController do
 
     context 'as a facility admin' do
       before :each do
+        @params[:facility_id] = facility.id
         # make sure accessories are initialized
         quantity_accessory
         auto_accessory
@@ -103,7 +108,7 @@ describe AccessoriesController do
       describe 'adding a quantity-based accessory' do
         before :each do
           @params.merge! :accessories => {
-            quantity_accessory.id => {
+            quantity_accessory.id.to_s => {
               :quantity => '3',
               :enabled => 'true'
             }
@@ -133,14 +138,20 @@ describe AccessoriesController do
           expect(assigns(:order_details).first.quantity).to eq(3)
         end
 
-        it 'creates the order detail as completed' do
+        it 'creates the order detail as the same status as the parent' do
+          do_request
+          expect(assigns(:order_details).first.order_status).to eq(order_detail.order_status)
+        end
+
+        it 'creates the order detail as completed if the original is' do
+          order_detail.backdate_to_complete!
           do_request
           expect(assigns(:order_details).first).to be_complete
         end
 
         context 'adding a disabled accessory' do
           before :each do
-            @params[:accessories][quantity_accessory.id][:enabled] = 'false'
+            @params[:accessories][quantity_accessory.id.to_s][:enabled] = 'false'
           end
 
           it 'does not add the accessory' do
@@ -150,7 +161,7 @@ describe AccessoriesController do
 
         context 'trying to add a negative quantity' do
           before :each do
-            @params[:accessories][quantity_accessory.id][:quantity] = '-1'
+            @params[:accessories][quantity_accessory.id.to_s][:quantity] = '-1'
             do_request
           end
 
@@ -169,7 +180,7 @@ describe AccessoriesController do
           instrument.product_accessories.first.update_attributes(:scaling_type => 'manual')
 
           @params.merge! :accessories => {
-            quantity_accessory.id => {
+            quantity_accessory.id.to_s => {
               :quantity => '30',
               :enabled => 'true'
             }
@@ -187,14 +198,20 @@ describe AccessoriesController do
           expect(assigns(:order_details).first.quantity).to eq(30)
         end
 
-        it 'creates the order detail as completed' do
+        it 'creates the order detail as the same status as the parent' do
+          do_request
+          expect(assigns(:order_details).first.order_status).to eq(order_detail.order_status)
+        end
+
+        it 'creates the order detail as completed if the original is' do
+          order_detail.backdate_to_complete!
           do_request
           expect(assigns(:order_details).first).to be_complete
         end
 
         context 'adding a disabled accessory' do
           before :each do
-            @params[:accessories][quantity_accessory.id][:enabled] = 'false'
+            @params[:accessories][quantity_accessory.id.to_s][:enabled] = 'false'
           end
 
           it 'does not add the accessory' do
@@ -208,7 +225,7 @@ describe AccessoriesController do
           instrument.product_accessories.first.update_attributes(:scaling_type => 'auto')
 
           @params.merge! :accessories => {
-            quantity_accessory.id => {
+            quantity_accessory.id.to_s => {
               :quantity => '40',
               :enabled => 'true'
             }
@@ -226,14 +243,20 @@ describe AccessoriesController do
           expect(assigns(:order_details).first.quantity).to eq(reservation.actual_duration_mins)
         end
 
-        it 'creates the order detail as completed' do
+        it 'creates the order detail as the same status as the parent' do
+          do_request
+          expect(assigns(:order_details).first.order_status).to eq(order_detail.order_status)
+        end
+
+        it 'creates the order detail as completed if the original is' do
+          order_detail.backdate_to_complete!
           do_request
           expect(assigns(:order_details).first).to be_complete
         end
 
         context 'adding a disabled accessory' do
           before :each do
-            @params[:accessories][quantity_accessory.id][:enabled] = 'false'
+            @params[:accessories][quantity_accessory.id.to_s][:enabled] = 'false'
           end
 
           it 'does not add the accessory' do

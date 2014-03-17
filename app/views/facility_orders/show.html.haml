@@ -42,7 +42,7 @@
           = "<br/>#{od.reservation}".html_safe if od.reservation
         %td.action
           - if od.add_accessories?
-            = link_to new_order_order_detail_accessory_path(@order, od), :class => ['has_accessories', 'persistent'] do
+            = link_to new_facility_order_order_detail_accessory_path(current_facility, @order, od), :class => ['has_accessories', 'persistent'] do
               = tooltip_icon 'icon-plus-sign-alt', t('product_accessories.pick_accessories.title')
           = render :partial => 'order_file_icon', :locals => { :od => od }
           = render :partial => 'result_file_icon', :locals => { :od => od }
