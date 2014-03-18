@@ -104,12 +104,18 @@ shared_examples_for PricePoliciesController do |product_type, params_modifier = 
         end
         it "should leave can_purchase as false if there isn't an existing policy for the group, but there are policies" do
           @price_group3 = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
+
           do_request
-          assigns[:price_policies].map(&:price_group).should == [@price_policy.price_group, @price_group2_policy.price_group, @price_group3]
-          assigns[:price_policies].size.should == 3
-          assigns[:price_policies][0].should be_can_purchase
-          assigns[:price_policies][1].should_not be_can_purchase
-          assigns[:price_policies][2].should_not be_can_purchase
+          expect(assigns[:price_policies].size).to eq 3
+
+          price_policy = assigns[:price_policies].select{|pp| pp.price_group_id == @price_policy.price_group_id}.first
+          expect(price_policy).to be_can_purchase
+
+          price_group2_policy = assigns[:price_policies].select{|pp| pp.price_group_id == @price_group2_policy.price_group_id}.first
+          expect(price_group2_policy).to_not be_can_purchase
+
+          price_group3_policy = assigns[:price_policies].select{|pp| pp.price_group_id == @price_group3.id}.first
+          expect(price_group3_policy).to_not be_can_purchase
         end
         it 'should use the policy with the furthest out expiration date' do
           @price_policy.update_attributes(:unit_cost => 16.0)
