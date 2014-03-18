@@ -141,7 +141,7 @@ class InstrumentsController < ProductsCommonController
       relay = @instrument.relay
       status=true
 
-      if SettingsHelper.setting "relays.#{Rails.env}.enabled"
+      if SettingsHelper.relays_enabled?
         status = (params[:switch] == 'on' ? relay.activate : relay.deactivate)
       end
 

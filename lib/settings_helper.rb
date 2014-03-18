@@ -19,6 +19,10 @@ module SettingsHelper
     Settings.billing.review_period > 0
   end
 
+  def self.relays_enabled?
+    setting "relays.#{Rails.env}.enabled"
+  end
+
   #
   # Used to query the +Settings+ under feature:
   # [_feature_]
