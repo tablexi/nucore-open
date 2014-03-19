@@ -33,18 +33,12 @@ class UrlService < ExternalService
   #   to the external service.
   def new_url(receiver)
     params = {
-      :success_url => success_path(receiver)
-    }.merge(url_params(receiver))
+      success_url: success_path(receiver)
+    }
 
     "#{location}?#{params.to_query}"
   end
 
-  #
-  # Additional url parameters to be included in the new_url
-  # Can be overridden in subclasses
-  def url_params
-    {}
-  end
 
   private
 
