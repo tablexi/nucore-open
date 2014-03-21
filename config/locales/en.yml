@@ -359,6 +359,11 @@ en:
       documentation: "Documentation"
       crumb: "Create Reservation"
       notify: Send Notification
+    list:
+      status:
+        upcoming: Upcoming
+        upcoming_and_in_progress: "Upcoming & In Progress"
+        all: All
     switch:
       start: "Begin Reservation"
       end: "End Reservation"
@@ -523,7 +528,7 @@ en:
     pick_accessories:
       title: Add Accessories
       link: Add Accessories to order...
-      instruct: "Please check the box for each accessory used during the reservation, and update the quantity for the total amount used."
+      instruct: "Please check the box for each accessory used during the reservation, and update the quantity to the total amount used so far. Please check each quantity for accuracy at the end of the reservation."
       actual_time_html: The actual usage for this reservation was <span class="timeinput" data-format="long">%{time}</span>.
       actual_time_ongoing_html: The current usage for this reservation is <span class="timeinput" data-format="long">%{time}</span>.
     index:
