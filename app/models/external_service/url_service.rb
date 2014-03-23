@@ -12,7 +12,7 @@ class UrlService < ExternalService
   #   Is the receiver in a polymorphic +ExternalServiceReceiver+
   #   relationship. Often its #response_data is useful
   def edit_url(receiver)
-    show_url(receiver)
+    deserialize(receiver)[:edit_url]
   end
 
 
@@ -21,7 +21,7 @@ class UrlService < ExternalService
   #   Is the receiver in a polymorphic +ExternalServiceReceiver+
   #   relationship. Often its #response_data is useful
   def show_url(receiver)
-    receiver.external_service_receiver.response_data
+    deserialize(receiver)[:show_url]
   end
 
 
@@ -50,5 +50,11 @@ class UrlService < ExternalService
               }
     params.merge!(:host => request.host, :port => request.port, :protocol => request.protocol) if request
     complete_survey_url(params)
+  end
+
+
+  def deserialize(receiver)
+    json = receiver.external_service_receiver.response_data
+    JSON.parse(json).symbolize_keys
   end
 end
