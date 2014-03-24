@@ -221,7 +221,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def ongoing?
-    started? && !actual_end_at
+    !complete? && started? && actual_end_at.blank?
   end
 
   def requires_but_missing_actuals?

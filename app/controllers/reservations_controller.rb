@@ -60,7 +60,7 @@ class ReservationsController < ApplicationController
     relation=acting_user.order_details
     in_progress=relation.in_progress_reservations.all
     @status=params[:status]
-    @available_statuses = [ in_progress.blank? ? 'upcoming' : 'upcoming &amp; in progress', 'all' ]
+    @available_statuses = [ in_progress.blank? ? 'upcoming' : 'upcoming_and_in_progress', 'all' ]
 
     if @status == 'all'
       @order_details = relation.all_reservations.all

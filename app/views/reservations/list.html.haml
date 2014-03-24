@@ -3,7 +3,7 @@
 = content_for :tabnav do
   %ul.nav.nav-tabs
     - @available_statuses.each do |status|
-      = tab status.humanize.html_safe, reservations_status_path(:status => status), (params[:status] == status)
+      = tab I18n.t("reservations.list.status.#{status}"), reservations_status_path(:status => status), (@status == status)
 - if @order_details.empty?
   %p.notice= "You have not made any #{Reservation.model_name.human.pluralize.downcase}."
 - else
