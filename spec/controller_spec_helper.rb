@@ -250,7 +250,10 @@ end
 #
 
 def grant_role(user, authable=nil)
-  authable = @authable || try(:authable) if authable.nil?
+  if authable.nil?
+    authable = @authable
+    authable = send(:authable) if authable.nil? && respond_to?(:authable)
+  end
 
   case user.username
     when 'director'
