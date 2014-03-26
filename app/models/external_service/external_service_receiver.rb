@@ -24,6 +24,7 @@ class ExternalServiceReceiver < ActiveRecord::Base
 
 
   def parsed_response_data
+    return {} unless response_data
     JSON.parse(response_data).symbolize_keys
   end
 
