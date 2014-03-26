@@ -1,4 +1,4 @@
-class Survey < UrlService
+class Survey
 
   attr_reader :service, :params
 

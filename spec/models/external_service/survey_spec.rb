@@ -64,7 +64,7 @@ describe Survey do
   end
 
   it 'creates an external service receiver' do
-    expect(survey).to_not be_new_record
+    expect(survey).to_not be_nil
     expect { survey.save! }.to change{ ExternalServiceReceiver.count }.by 1
     esr = ExternalServiceReceiver.last
     expect(esr.receiver).to eq external_service_receiver.receiver
