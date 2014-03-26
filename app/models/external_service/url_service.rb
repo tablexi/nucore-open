@@ -4,26 +4,6 @@
 class UrlService < ExternalService
   include Rails.application.routes.url_helpers
 
-  attr_accessor :request
-
-  #
-  # Provides a URL for editing data at this +ExternalService+
-  # [_receiver_]
-  #   Is the receiver in a polymorphic +ExternalServiceReceiver+
-  #   relationship. Often its #response_data is useful
-  def edit_url(receiver)
-    deserialize(receiver)[:edit_url]
-  end
-
-
-  # Provides a URL for displaying data at this +ExternalService+
-  # [_receiver_]
-  #   Is the receiver in a polymorphic +ExternalServiceReceiver+
-  #   relationship. Often its #response_data is useful
-  def show_url(receiver)
-    deserialize(receiver)[:show_url]
-  end
-
 
   #
   # Provides a URL for entering new data at this +ExternalService+
@@ -31,9 +11,9 @@ class UrlService < ExternalService
   #   Is the receiver of a polymorphic +ExternalServiceReceiver+
   #   relationship. Useful for providing pass-thru HTTP param data
   #   to the external service.
-  def new_url(receiver)
+  def new_url(receiver, request = nil)
     params = {
-      success_url: success_path(receiver)
+      success_url: success_path(receiver, request)
     }
 
     "#{location}?#{params.to_query}"
@@ -42,7 +22,7 @@ class UrlService < ExternalService
 
   private
 
-  def success_path(receiver)
+  def success_path(receiver, request = nil)
     params = {  :facility_id => receiver.product.facility.url_name,
                 :service_id => receiver.product.url_name,
                 :external_service_id => id,
@@ -52,9 +32,4 @@ class UrlService < ExternalService
     complete_survey_url(params)
   end
 
-
-  def deserialize(receiver)
-    json = receiver.external_service_receiver.response_data
-    JSON.parse(json).symbolize_keys
-  end
 end
