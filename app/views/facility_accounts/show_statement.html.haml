@@ -35,8 +35,7 @@
                 - else
                   %li.indented= link_to od.reservation, facility_order_order_detail_reservation_path(current_facility, od.order, od, od.reservation)
               - if od.survey_completed?
-                - receiver = od.external_service_receiver
-                %li.indented= link_to 'View Order Form', receiver.response_data, :target => '_blank'
+                %li.indented= link_to 'View Order Form', od.external_service_receiver.show_url, :target => '_blank'
               - if !od.stored_files.template_result.empty?
                 - od.stored_files.template_result.each do |stored_file|
                   %li.indented= link_to 'View Order File', stored_file.file.url
