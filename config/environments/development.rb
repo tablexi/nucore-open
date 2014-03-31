@@ -37,9 +37,6 @@ Nucore::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
-
-  # Where a surveyor external service redirects to when a survey is completed
-  config.surveyor_redirects_to='http://0.0.0.0:3000'
 end
 
 # What's this for?

@@ -126,7 +126,7 @@ class FileUploadsController < ApplicationController
       begin
         url = params[survey_param][:location]
         ext=ExternalServiceManager.survey_service.find_or_create_by_location(:location => url)
-        esp=ExternalServicePasser.find(:first, :conditions => [ 'passer_id = ? AND external_service_id = ?', @product.id, ext.id ])
+        esp=ExternalServicePasser.where(passer_id: @product.id, external_service_id: ext.id).first
 
         if esp
           flash[:notice] = "That Online Order Form already exists"

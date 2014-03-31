@@ -51,7 +51,7 @@ billing:
   review_period: <%= 7.days %>
 
 external_services:
-  survey: Surveyor
+  survey: UrlService
 
 relays:
   # can also be NetBooter::Telnet

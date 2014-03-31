@@ -18,7 +18,9 @@ module Nucore
     # -- all .rb files in that directory are automatically loaded.
 
     # Custom directories with classes and modules you want to be autoloadable.
-    config.autoload_paths += (Dir["#{config.root}/lib/**/"] + %W(#{config.root}/app/middleware #{config.root}/config))
+    config.autoload_paths += %W(#{config.root}/config)
+    config.autoload_paths += Dir["#{config.root}/lib/**/"]
+    config.autoload_paths += Dir["#{config.root}/app/models/**/"]
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.

@@ -78,7 +78,7 @@
                 - else
                   = link_to res, order_order_detail_reservation_path(@order, @order_detail, res)
             - if @order_detail.survey_completed?
-              .order-detail-extra= link_to(t('.link.view.order_form'), @order_detail.external_service_receiver.response_data, :target => '_blank')
+              .order-detail-extra= link_to(t('.link.view.order_form'), @order_detail.external_service_receiver.show_url, :target => '_blank')
             - unless @order_detail.stored_files.template_result.empty?
               .order-detail-extra= link_to(t('.link.view.order_file'), @order_detail.stored_files.template_result.first.file.url)
             - unless @order_detail.note.blank?
