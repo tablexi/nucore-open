@@ -4,7 +4,7 @@ class SurveysController < ApplicationController
   before_filter :check_acting_as
   before_filter :init_current_facility
   before_filter :init_service
-  before_filter :init_survey, only: [ :activate, :deactivate, :complete ]
+  before_filter :init_survey, only: [ :activate, :deactivate ]
 
   load_and_authorize_resource :class => 'ExternalService'
 
@@ -33,7 +33,7 @@ class SurveysController < ApplicationController
 
   def complete
     begin
-      @survey.save!
+      SurveyResponse.new(params).save!
     rescue => e
       Rails.logger.error("Could not save external surveyor response! #{e.message}\n#{e.backtrace.join("\n")}")
     end
