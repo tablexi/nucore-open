@@ -132,7 +132,7 @@ describe FileUploadsController do
     before :each do
       @method=:post
       @action=:create_product_survey
-      @survey_param=ExternalServiceManager.survey_service.name.downcase.to_sym
+      @survey_param=ExternalServiceManager.survey_service.name.underscore.to_sym
       @ext_service_location='http://remote.surveysystem.com/surveys'
       @params={
         :facility_id => @authable.url_name,

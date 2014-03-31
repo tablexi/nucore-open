@@ -71,10 +71,11 @@ end
 #
 # The helpers below are useful for testing the authentication
 # and authorization frameworks. They rely on the existence
-# of instance variable @authable, which is the resource passed
-# to +Ability#initialize+. They make requests for you using
-# #do_request, so just set instance variables for it and you're
-# good to go
+# of let(:authable), which is the resource passed to +Ability#initialize+.
+# They make requests for you using #do_request, so just set instance
+# variables for it and you're good to go
+#
+# Note: instance variable @authable, also works for setup, but is deprecated
 #
 
 #
@@ -249,7 +250,10 @@ end
 #
 
 def grant_role(user, authable=nil)
-  authable=@authable unless authable
+  if authable.nil?
+    authable = @authable
+    authable = send(:authable) if authable.nil? && respond_to?(:authable)
+  end
 
   case user.username
     when 'director'

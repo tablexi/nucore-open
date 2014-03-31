@@ -13,14 +13,8 @@ class ExternalServiceManager
   # for handling that service type. Services are defined under
   # external_services: of settings.yml.
   Settings.external_services.to_hash.each do |k, v|
-    @@services[k]=v.constantize
-
-    # when we no longer have to support Ruby 1.8.7 use #define_singleton_method
-    class_eval %Q[
-      def self.#{k}_service
-        @@services[:#{k}]
-      end
-    ]
+    @@services[k] = v.constantize
+    define_singleton_method("#{k}_service".to_sym) { @@services[k.to_sym] }
   end
 
 end

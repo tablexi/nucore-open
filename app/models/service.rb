@@ -7,11 +7,9 @@ class Service < Product
   validates_presence_of :facility_account_id if SettingsHelper.feature_on? :recharge_accounts
 
   def active_survey
-    active=external_service_passers.find(
-            :first,
-            :joins => 'INNER JOIN external_services ON external_services.id=external_service_id',
-            :conditions => [ 'active = 1 AND external_services.type = ?', ExternalServiceManager.survey_service.name ]
-    )
+    active=external_service_passers.joins(:external_service)
+                                   .where('active = 1 AND external_services.type = ?', ExternalServiceManager.survey_service.name)
+                                   .first
 
     active ? active.external_service : nil
   end

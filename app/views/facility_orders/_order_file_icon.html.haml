@@ -1,6 +1,6 @@
 - if od.survey_completed?
   .inline-icons
-    = link_to od.external_service_receiver.response_data, :target => '_blank' do
+    = link_to od.external_service_receiver.show_url, :target => '_blank' do
       %i.icon-file-text{:data => { :toggle => 'tooltip' }, :title => t('order_details.show.link.view.order_form') }
 - od.stored_files.template_result.each do |stored_file|
   .inline-icons

@@ -1,17 +1,16 @@
 = render :partial => 'orders/product_description', :locals => { :order_detail => order_detail }
 
+- # if active_survey doesn't match response set survey, blow away the response set
 - if survey = order_detail.product.active_survey
-  - survey.request = request if survey.respond_to?(:request)
-  - # if active_survey doesn't match response set survey, blow away the response set
   - if order_detail.external_service_receiver && survey != order_detail.external_service_receiver.external_service
     - order_detail.external_service_receiver.destroy
     - order_detail.reload
 
   .order-action
     - if order_detail.survey_completed?
-      = link_to 'Edit Online Order Form', survey.edit_url(order_detail), :class => 'btn'
+      = link_to 'Edit Online Order Form', order_detail.external_service_receiver.edit_url, :class => 'btn'
     - else
-      = link_to 'Complete Online Order Form', survey.new_url(order_detail), :class => 'btn'
+      = link_to 'Complete Online Order Form', survey.new_url(order_detail, request), :class => 'btn'
 
 - if order_detail.product.stored_files.template.count > 0
   .order-action
