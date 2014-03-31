@@ -47,7 +47,7 @@ class ReservationInstrumentSwitcher
   end
 
   def relays_enabled?
-    Rails.env.production?
+    SettingsHelper.relays_enabled_for_reservation?
   end
 
   def instrument

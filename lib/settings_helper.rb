@@ -19,6 +19,14 @@ module SettingsHelper
     Settings.billing.review_period > 0
   end
 
+  def self.relays_enabled_for_admin?
+    setting "relays.#{Rails.env}.admin_enabled"
+  end
+
+  def self.relays_enabled_for_reservation?
+    setting "relays.#{Rails.env}.reservation_enabled"
+  end
+
   #
   # Used to query the +Settings+ under feature:
   # [_feature_]
