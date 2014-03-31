@@ -1,4 +1,12 @@
 class Account < ActiveRecord::Base
+
+  module Overridable
+    def price_groups
+      (price_group_members.collect{ |pgm| pgm.price_group } + (owner_user ? owner_user.price_groups : [])).flatten.uniq
+    end
+  end
+
+  include Overridable
   include Accounts::AccountNumberSectionable
   include DateHelper
 
@@ -231,10 +239,6 @@ class Account < ActiveRecord::Base
     desc = [ description, account_number_to_s ]
     desc << owner_user.name if with_owner && owner_user
     desc.join ' / '
-  end
-
-  def price_groups
-    (price_group_members.collect{ |pgm| pgm.price_group } + (owner_user ? owner_user.price_groups : [])).flatten.uniq
   end
 
   def affiliate_to_s
