@@ -57,13 +57,17 @@ relays:
   # can also be NetBooter::Telnet
   connect_module: NetBooter::Http
   test:
-    enabled: false
+    admin_enabled: false
+    reservation_enabled: false
   development:
-    enabled: false
+    admin_enabled: false
+    reservation_enabled: false
   staging:
-    enabled: true
+    admin_enabled: true
+    reservation_enabled: false
   production:
-    enabled: true
+    admin_enabled: true
+    reservation_enabled: true
 #
 # For these settings use SettingsHelper#feature_on?
 feature:
