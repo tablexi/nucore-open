@@ -42,4 +42,16 @@ describe SurveyResponse do
     survey_response.save!
   end
 
+  it 'reuses existing ExternalServiceReceivers and always updates the response_data' do
+    new_survey_url = 'http://yippee.kid'
+
+    expect {
+      receiver = survey_response.save!
+      expect(receiver.show_url).to_not eq new_survey_url
+      params[:survey_url] = new_survey_url
+      receiver = described_class.new(params).save!
+      expect(receiver.show_url).to eq new_survey_url
+    }.to change(ExternalServiceReceiver, :count).by 1
+  end
+
 end

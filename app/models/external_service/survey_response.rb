@@ -11,14 +11,10 @@ class SurveyResponse
   def save!
     od = OrderDetail.find params[:receiver_id]
     external_service = ExternalService.find params[:external_service_id]
-
-    ExternalServiceReceiver.create!(
-      receiver: od,
-      external_service: external_service,
-      response_data: response_data
-    )
-
+    receiver = ExternalServiceReceiver.find_or_create_by_receiver_id_and_external_service_id! od.id, external_service.id
+    receiver.update_attribute :response_data, response_data
     od.merge!
+    receiver
   end
 
 
