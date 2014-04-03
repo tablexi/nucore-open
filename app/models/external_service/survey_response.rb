@@ -14,6 +14,7 @@ class SurveyResponse
 
     ExternalServiceReceiver.transaction do
       receiver = ExternalServiceReceiver.find_or_initialize_by_receiver_id_and_external_service_id od.id, external_service.id
+      receiver.receiver = od # must assign so receiver type is stored
       receiver.response_data = response_data
       receiver.save!
       od.merge!
