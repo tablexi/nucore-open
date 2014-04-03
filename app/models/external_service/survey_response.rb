@@ -11,24 +11,20 @@ class SurveyResponse
   def save!
     od = OrderDetail.find params[:receiver_id]
     external_service = ExternalService.find params[:external_service_id]
-    receiver = ExternalServiceReceiver.where(receiver_id: od.id, external_service_id: external_service.id).first
-    json = response_data
 
     ExternalServiceReceiver.transaction do
-      if receiver
-        receiver.update_attribute :response_data, json unless receiver.response_data == json
-      else
-        receiver = ExternalServiceReceiver.create(
-          receiver: od,
-          external_service: external_service,
-          response_data: json
-        )
+      json = response_data
+      receiver = ExternalServiceReceiver.find_or_initialize_by_receiver_id_and_external_service_id od.id, external_service.id, response_data: json
+
+      if receiver.new_record?
+        receiver.save!
+      elsif receiver.response_data != json
+        receiver.update_attribute :response_data, json
       end
 
       od.merge!
+      receiver
     end
-
-    receiver
   end
 
 
