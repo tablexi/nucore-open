@@ -27,7 +27,6 @@ describe SurveyResponse do
   end
 
   it 'creates an external service receiver' do
-    expect(survey_response).to_not be_nil
     expect { survey_response.save! }.to change{ ExternalServiceReceiver.count }.by 1
     esr = ExternalServiceReceiver.last
     expect(esr.receiver).to eq external_service_receiver.receiver
@@ -40,6 +39,25 @@ describe SurveyResponse do
     expect(OrderDetail).to receive(:find).and_return od
     expect(od).to receive :merge!
     survey_response.save!
+  end
+
+  it 'reuses existing ExternalServiceReceivers' do
+    expect {
+      survey_response.save!
+      survey_response.save!
+    }.to change{ ExternalServiceReceiver.count }.by 1
+  end
+
+  it 'updates the response_data if it has changed' do
+    new_survey_url = 'http://yippee.kid'
+
+    expect {
+      receiver = survey_response.save!
+      expect(receiver.show_url).to_not eq new_survey_url
+      params[:survey_url] = new_survey_url
+      receiver = described_class.new(params).save!
+      expect(receiver.show_url).to eq new_survey_url
+    }.to change{ ExternalServiceReceiver.count }.by 1
   end
 
 end
