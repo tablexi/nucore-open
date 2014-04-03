@@ -60,12 +60,4 @@ describe SurveyResponse do
     }.to change{ ExternalServiceReceiver.count }.by 1
   end
 
-  it 'does not update the existing record if the response has not changed' do
-    expect {
-      survey_response.save!
-      expect_any_instance_of(ExternalServiceReceiver).to_not receive :update_attribute
-      described_class.new(params).save!
-    }.to change{ ExternalServiceReceiver.count }.by 1
-  end
-
 end
