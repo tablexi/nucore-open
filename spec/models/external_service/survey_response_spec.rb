@@ -60,4 +60,9 @@ describe SurveyResponse do
     }.to change{ ExternalServiceReceiver.count }.by 1
   end
 
+  it 'stores the survey_id as the external_id' do
+    receiver = survey_response.save!
+    expect(receiver.external_id).to eq params[:survey_id]
+  end
+
 end
