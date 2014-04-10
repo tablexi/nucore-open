@@ -4,14 +4,17 @@ class OrderSearcher
   end
 
   def search(query)
-    return [] if query.nil?
+    relation = nil
+
     if query =~ /\d+-\d+/
       relation = search_full(query)
     elsif query =~ /[A-Z]+-\d+/
       relation = search_external query
-    else
+    elsif query =~ /\d+/
       relation = OrderDetail.where("order_details.id = :id OR order_details.order_id = :id", :id => query)
     end
+
+    return [] unless relation
     restrict_to_user(relation.joins(:order).ordered)
   end
 
