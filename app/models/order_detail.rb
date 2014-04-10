@@ -535,6 +535,18 @@ class OrderDetail < ActiveRecord::Base
     end
   end
 
+  def update_quantity(quantity)
+    self.quantity = quantity
+
+    if cost_estimated?
+      assign_estimated_price
+    elsif actual_cost
+      assign_actual_price
+    end
+
+    save! if persisted?
+  end
+
   def update_account(new_account)
     self.account = new_account
     assign_estimated_price(account)
