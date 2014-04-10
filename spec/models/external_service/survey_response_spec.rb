@@ -65,4 +65,23 @@ describe SurveyResponse do
     expect(receiver.external_id).to eq params[:survey_id]
   end
 
+  describe 'quantity updates' do
+    let(:order_detail) { external_service_receiver.receiver }
+
+    it 'updates the receiver quantity' do
+      params[:quantity] += 3
+      expect_any_instance_of(OrderDetail).to receive(:update_quantity).with(params[:quantity]).and_call_original
+      receiver = survey_response.save!
+      expect(receiver.receiver.quantity).to eq params[:quantity]
+    end
+
+    it 'does not change the quantity if no quantity is given' do
+      params[:quantity] = nil
+      quantity = order_detail.quantity
+      expect_any_instance_of(OrderDetail).to_not receive :update_quantity
+      receiver = survey_response.save!
+      expect(receiver.receiver.quantity).to eq quantity
+    end
+  end
+
 end
