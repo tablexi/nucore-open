@@ -57,6 +57,34 @@ describe OrderDetail do
     should allow_value(1).for(:quantity)
   end
 
+  context "update quantity" do
+    let(:new_quantity) { @order_detail.quantity + 4 }
+
+    it 're-estimates pricing if cost was estimated' do
+      expect(@order_detail).to receive(:cost_estimated?).and_return true
+      expect(@order_detail).to receive :assign_estimated_price
+      expect(@order_detail).to receive :save!
+      @order_detail.update_quantity new_quantity
+      expect(@order_detail.quantity).to eq new_quantity
+    end
+
+    it 're-assigns pricing if cost was actual' do
+      expect(@order_detail).to receive(:cost_estimated?).and_return false
+      expect(@order_detail).to receive(:actual_cost).and_return 50
+      expect(@order_detail).to receive :assign_actual_price
+      expect(@order_detail).to receive :save!
+      @order_detail.update_quantity new_quantity
+      expect(@order_detail.quantity).to eq new_quantity
+    end
+
+    it 'does not save! if the record was not persisted' do
+      expect(@order_detail).to receive(:persisted?).and_return false
+      expect(@order_detail).to_not receive :save!
+      @order_detail.update_quantity new_quantity
+      expect(@order_detail.quantity).to eq new_quantity
+    end
+  end
+
   context "update account" do
     before(:each) do
       @price_group = create(:price_group, facility: @facility)
