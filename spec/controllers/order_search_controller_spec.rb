@@ -194,6 +194,16 @@ describe OrderSearchController do
           assigns(:order_details).should == [order_detail]
         end
       end
+
+      context 'when searching by external id' do
+        let(:external_id) { 'CX-2323' }
+        let!(:external_service_receiver) { create :external_service_receiver, external_id: external_id }
+
+        it 'finds the correct order detail and renders the index page' do
+          get :index, search: external_id
+          expect(assigns[:order_details]).to eq [external_service_receiver.receiver]
+        end
+      end
     end
   end
 end
