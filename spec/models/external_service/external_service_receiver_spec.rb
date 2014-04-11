@@ -25,4 +25,16 @@ describe ExternalServiceReceiver do
       expect(receiver.send(key)).to eq value
     end
   end
+
+  describe 'error handling' do
+    it 'does not raise an error when response_data is nil' do
+      receiver.response_data = nil
+      expect(receiver).to_not respond_to :foo
+    end
+
+    it 'does not raise an error when response_data is not JSON' do
+      receiver.response_data = 'a random string'
+      expect(receiver).to_not respond_to :foo
+    end
+  end
 end
