@@ -13,7 +13,8 @@ class UrlService < ExternalService
   #   to the external service.
   def new_url(receiver, request = nil)
     params = {
-      success_url: success_path(receiver, request)
+      success_url: success_path(receiver, request),
+      referer: referer_url(request)
     }
 
     "#{location}?#{params.to_query}"
@@ -21,6 +22,11 @@ class UrlService < ExternalService
 
 
   private
+
+  def referer_url(request)
+    "#{request.protocol}#{request.host_with_port}#{request.fullpath}"
+  end
+
 
   def success_path(receiver, request = nil)
     params = {  :facility_id => receiver.product.facility.url_name,
