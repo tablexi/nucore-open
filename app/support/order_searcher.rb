@@ -8,7 +8,7 @@ class OrderSearcher
 
     if query =~ /\d+-\d+/
       relation = search_full(query)
-    elsif query =~ /[A-Z]+-\d+/
+    elsif query =~ /[A-Za-z]+-\d+/
       relation = search_external query
     elsif query =~ /\d+/
       relation = OrderDetail.where("order_details.id = :id OR order_details.order_id = :id", :id => query)

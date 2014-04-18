@@ -12,4 +12,10 @@ describe OrderSearcher do
     expect(searcher.search(nil)).to eq []
   end
 
+  it 'searches externally when lowercase prefix is given' do
+    query = 'cx-36'
+    expect(searcher).to receive(:search_external).with query
+    searcher.search query
+  end
+
 end
