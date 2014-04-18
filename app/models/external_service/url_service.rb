@@ -24,11 +24,11 @@ class UrlService < ExternalService
   private
 
   def referer_url(request)
-    "#{request.protocol}#{request.host_with_port}#{request.fullpath}"
+    "#{request.protocol}#{request.host_with_port}#{request.fullpath}" if request
   end
 
 
-  def success_path(receiver, request = nil)
+  def success_path(receiver, request)
     params = {  :facility_id => receiver.product.facility.url_name,
                 :service_id => receiver.product.url_name,
                 :external_service_id => id,
