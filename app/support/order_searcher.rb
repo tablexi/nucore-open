@@ -1,4 +1,6 @@
 class OrderSearcher
+  include NUCore::Database::CaseSensitivityHelper
+
   def initialize(user)
     @user = user
   end
@@ -24,7 +26,7 @@ class OrderSearcher
   end
 
   def search_external(query)
-    OrderDetail.joins(:external_service_receiver).where('external_service_receivers.external_id = ?', query)
+    insensitive_where OrderDetail.joins(:external_service_receiver), 'external_service_receivers.external_id', query
   end
 
   def restrict_to_user(order_details)
