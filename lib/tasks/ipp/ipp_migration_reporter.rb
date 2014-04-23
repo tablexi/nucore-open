@@ -26,14 +26,12 @@ class IppMigrationReporter
 
 
   def report_journaled_details(oids_to_attrs)
-    headers = %w(id facility instrument actual_cost actual_subsidy estimated_cost estimated_subsidy
-                 old_actual_cost old_actual_subsidy old_estimated_cost old_estimated_subsidy journaled_amount)
+    report_journal_details oids_to_attrs, 'journaled_details', :journaled_details_row
+  end
 
-    details = OrderDetail.find oids_to_attrs.keys
 
-    create_csv 'journaled_details', headers do |csv|
-      details.each {|od| csv << journal_detail_row(od, oids_to_attrs[od.id]) }
-    end
+  def report_statemented_details(oids_to_attrs)
+    report_journal_details oids_to_attrs, 'statemented_details', :statemented_detail_row
   end
 
 
@@ -71,6 +69,32 @@ class IppMigrationReporter
   end
 
 
+  def report_journal_details(oids_to_attrs, csv_name, row_method)
+    headers = %w(id facility instrument actual_cost actual_subsidy estimated_cost estimated_subsidy
+                 old_actual_cost old_actual_subsidy old_estimated_cost old_estimated_subsidy final_amount)
+
+    details = OrderDetail.find oids_to_attrs.keys
+
+    create_csv csv_name, headers do |csv|
+      details.each {|od| csv << send(row_method, od, oids_to_attrs[od.id]) }
+    end
+  end
+
+
+  def journaled_detail_row(od, old_attrs)
+    row = journal_detail_row od, old_attrs
+    row << od.journal.journal_rows.where(order_detail_id: od.id).first.amount
+    row
+  end
+
+
+  def statemented_detail_row(od, old_attrs)
+    row = journal_detail_row od, old_attrs
+    row << od.statement.statement_rows.where(order_detail_id: od.id).first.amount
+    row
+  end
+
+
   def journal_detail_row(od, old_attrs)
     product = od.product
 
@@ -85,8 +109,7 @@ class IppMigrationReporter
       old_attrs['actual_cost'],
       old_attrs['actual_subsidy'],
       old_attrs['estimated_cost'],
-      old_attrs['estimated_subsidy'],
-      od.journal.journal_rows.where(order_detail_id: od.id).first.amount
+      old_attrs['estimated_subsidy']
     ]
   end
 

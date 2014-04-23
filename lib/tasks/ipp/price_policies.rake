@@ -39,10 +39,24 @@ namespace :price_policies do
     end
 
 
+    desc 'creates a json file of order details that are journaled but still complete'
+    task serialize_statemented_details: :environment do
+      ods = OrderDetail.joins(:product).where('products.type = ?', Instrument.name).where('statement_id IS NOT NULL').where state: 'complete'
+      IppJsonBuilder.new.build_json_file ods
+    end
+
+
     desc 'creates a report of order details that are journaled but still complete using attributes from a json file'
     task :report_journaled_details, [:json_file] => :environment do |t, args|
       oids_to_attrs = IppJsonBuilder.new.parse_json_file args.json_file
       IppMigrationReporter.new.report_journaled_details oids_to_attrs
+    end
+
+
+    desc 'creates a report of order details that are statemented but still complete using attributes from a json file'
+    task :report_statemented_details, [:json_file] => :environment do |t, args|
+      oids_to_attrs = IppJsonBuilder.new.parse_json_file args.json_file
+      IppMigrationReporter.new.report_statemented_details oids_to_attrs
     end
 
 
