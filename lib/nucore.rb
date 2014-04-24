@@ -115,6 +115,13 @@ module NUCore
       end
     end
 
+
+    module CaseSensitivityHelper
+      def insensitive_where(relation, column, value)
+        relation.where("UPPER(#{column}) = UPPER(?)", value)
+      end
+    end
+
   end
 
 end

@@ -14,7 +14,8 @@ describe OrderSearcher do
 
   it 'searches externally when lowercase prefix is given' do
     query = 'cx-36'
-    expect(searcher).to receive(:search_external).with query
+    expect(searcher).to receive(:search_external).with(query).and_call_original
+    expect(searcher).to receive :insensitive_where
     searcher.search query
   end
 
