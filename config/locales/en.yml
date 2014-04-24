@@ -608,6 +608,8 @@ en:
       welcome: |
         Welcome to NU Core, the centralized ordering system for all shared facilities at Northwestern University.
         Please select the shared facility below to view and purchase services and products offered by the facility.
+    show:
+      daily_view: 'daily view'
 
     facility_fields:
       name: "Name of the facility as displayed to the end user"
