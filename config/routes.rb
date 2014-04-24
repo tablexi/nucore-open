@@ -197,6 +197,7 @@ Nucore::Application.routes.draw do
       end
     end
 
+    get 'public_timeline', to: 'reservations#public_timeline', as: 'public_timeline'
     get 'accounts_receivable', :to => 'facility_accounts#accounts_receivable'
 
     ### Feature Toggle Editing Accounts ###

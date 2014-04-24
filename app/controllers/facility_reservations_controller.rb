@@ -1,5 +1,6 @@
 class FacilityReservationsController < ApplicationController
   include TabCountHelper
+  include Timelineable
 
   admin_tab     :all
   before_filter :authenticate_user!
@@ -191,13 +192,6 @@ class FacilityReservationsController < ApplicationController
     redirect_to facility_instrument_schedule_url
   end
 
-  def timeline
-    @display_date = parse_usa_date(params[:date]) if params[:date]
-    @display_date ||= Time.zone.now
-
-    @schedules = current_facility.schedules.active.order(:name)
-    # @instruments = current_facility.instruments.active_plus_hidden.order(:name)
-  end
 
   private
 
