@@ -1,4 +1,4 @@
-- unless instrument.is_hidden? && @public_timeline
+- unless instrument.is_hidden? && public_timeline?
   .timeline_instrument
     %h4= link_to instrument, facility_instrument_path(current_facility, instrument)
     -# Add .reschedulable to enable drag/drop
@@ -8,6 +8,6 @@
         - if @display_date.beginning_of_day == Time.zone.now.beginning_of_day
           .current_time{:style => "left: #{datetime_left_position(@display_date, Time.zone.now)}"}
 
-      - if !@public_timeline && instrument.has_real_relay?
+      - if !public_timeline? && instrument.has_real_relay?
         = render partial: 'shared/timeline/relay_switch', locals: { instrument: instrument }
 

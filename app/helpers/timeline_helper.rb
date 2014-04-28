@@ -61,4 +61,8 @@ module TimelineHelper
       human_datetime(reservation_date)
     end
   end
+
+  def public_timeline?
+    @public_timeline ||= false
+  end
 end
