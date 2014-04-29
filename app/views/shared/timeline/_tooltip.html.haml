@@ -1,8 +1,6 @@
 %div[reservation, :tooltip]
-  %strong= reservation.admin? ? 'Administrative Reservation' : reservation.user
-  %br/
-  %span= reservation_date_range_display(@display_date, reservation)
-  - if reservation.order_detail
-    %span{:class => reservation.order_detail.order_status.to_s.downcase}= "- #{reservation.order_detail.order_status}"
-  %br/
-  = reservation_links(reservation)
+  - if public_timeline?
+    %span= reservation_date_range_display(@display_date, reservation)
+  - else
+    = render partial: 'shared/timeline/facility_tooltip', locals: { reservation: reservation }
+

@@ -160,7 +160,11 @@ body .unit {
 }
 
 .timeline_instrument {
-  margin: 15px 0 15px -10px;
+  margin: 15px 0 22px -10px;
+
+  h4 {
+    padding-bottom: 7px;
+  }
 }
 .timeline-schedule h3 {
   margin-left: -10px;

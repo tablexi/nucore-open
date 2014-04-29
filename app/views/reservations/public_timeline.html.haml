@@ -1,0 +1,22 @@
+= content_for :head_content do
+  = javascript_include_tag "tooltipsy.min"
+  = javascript_include_tag "timeline"
+  = javascript_include_tag "jquery.toggleswitch"
+  :javascript
+    window.calendar_image_path = '#{image_path('icon-calendar.gif')}';
+
+= content_for :h1 do
+  = current_facility
+
+.timeline_header
+  = modelless_form_for :url => facility_public_timeline_path(current_facility), :method => :get, :id => "timeline_date_search" do |f|
+    #reservation_date_container
+      = link_to "&laquo;".html_safe, facility_public_timeline_path(current_facility, :date => format_usa_date(@display_date - 1.day)), :id => 'reservation_left'
+      #reservation_date
+        = human_date_with_day(@display_date)
+        = hidden_field_tag 'date', format_usa_date(@display_date), :class => 'datepicker'
+      = link_to "&raquo;".html_safe, facility_public_timeline_path(current_facility, :date => format_usa_date(@display_date + 1.day)), :id => 'reservation_right'
+
+.clear
+.span10.offset1
+  = render :partial => 'shared/timeline/schedule', :collection => @schedules, :as => :schedule

@@ -1092,4 +1092,42 @@ describe ReservationsController do
       end
     end
   end
+
+  describe 'timeline as guest' do
+    let!(:hidden_instrument) do
+      create(
+        :instrument,
+        :facility_account => @facility_account,
+        :facility => @authable,
+        :is_hidden => true
+      )
+    end
+
+    before :each do
+      maybe_grant_always_sign_in :guest
+      @method = :get
+      @action = :public_timeline
+      @params={ :facility_id => @authable.url_name }
+      do_request
+      expect(assigns[:public_timeline]).to be_true
+      expect(response).to render_template :timeline
+    end
+
+    it 'considers display for every active schedule' do
+      expect(assigns(:schedules)).to match_array [ @instrument.schedule, hidden_instrument.schedule ]
+    end
+
+    it 'displays visible instruments only' do
+      expect(response.body).to include @instrument.name
+      expect(response.body).to_not include hidden_instrument.name
+    end
+
+    it 'does not allow controlling of relays' do
+      expect(response.body).to_not include "relay[#{@instrument.id}]"
+    end
+
+    it 'does not allow showing of cancelled reservations' do
+      expect(response.body).to_not include 'show_cancelled'
+    end
+  end
 end

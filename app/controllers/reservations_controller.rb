@@ -1,4 +1,6 @@
 class ReservationsController < ApplicationController
+  include Timelineable
+
   customer_tab  :all
   before_filter :authenticate_user!, :except => [ :index ]
   before_filter :check_acting_as,  :only => [ :switch_instrument, :show, :list ]
@@ -11,6 +13,11 @@ class ReservationsController < ApplicationController
   def initialize
     super
     @active_tab = 'reservations'
+  end
+
+  def public_timeline
+    @public_timeline = true
+    timeline
   end
 
   # GET /facilities/1/instruments/1/reservations.js?_=1279579838269&start=1279429200&end=1280034000

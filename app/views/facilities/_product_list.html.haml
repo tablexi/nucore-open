@@ -1,6 +1,6 @@
 - if products.any?
   .product_list{:class => products.first.class.model_name.pluralize.downcase}
-    %h3= products.first.class.model_name.human.pluralize
+    %h3= product_list_title products, local_assigns[:title_extra]
     %ul
       - products.sort.each_with_index do |product, index|
         %li{:class => product.class.model_name.downcase}

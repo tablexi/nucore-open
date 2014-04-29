@@ -20,16 +20,17 @@
 
 .wysiwyg= current_facility.description
 
+- daily_link = link_to t('facilities.show.daily_view'), facility_public_timeline_path(current_facility)
 - if @order_form
-  = form_for @order_form, :url => add_order_path(acting_user.cart(session_user)), :html => {:method => :put } do |f|
-    = render :partial => 'product_list', :locals => {:products => instruments, :f => f}
-    = render :partial => 'product_list', :locals => {:products => services, :f => f}
-    = render :partial => 'product_list', :locals => {:products => items, :f => f}
-    = render :partial => 'product_list', :locals => {:products => bundles, :f => f}
+  = form_for @order_form, url: add_order_path(acting_user.cart(session_user)), html: {method: :put } do |f|
+    = render partial: 'product_list', locals: {products: instruments, f: f, title_extra: daily_link }
+    = render partial: 'product_list', locals: {products: services, f: f}
+    = render partial: 'product_list', locals: {products: items, f: f}
+    = render partial: 'product_list', locals: {products: bundles, f: f}
 
-    = f.submit :class => ['btn', 'btn-primary']
+    = f.submit class: ['btn', 'btn-primary']
 - else
-  = render :partial => 'product_list', :locals => {:products => instruments}
-  = render :partial => 'product_list', :locals => {:products => services}
-  = render :partial => 'product_list', :locals => {:products => items}
-  = render :partial => 'product_list', :locals => {:products => bundles}
+  = render partial: 'product_list', locals: {products: instruments, title_extra: daily_link }
+  = render partial: 'product_list', locals: {products: services}
+  = render partial: 'product_list', locals: {products: items}
+  = render partial: 'product_list', locals: {products: bundles}
