@@ -1,6 +1,10 @@
 - unless instrument.is_hidden? && public_timeline?
   .timeline_instrument
-    %h4= link_to instrument, facility_instrument_path(current_facility, instrument)
+    - if public_timeline?
+      %h4= link_to instrument, facility_instrument_path(current_facility, instrument)
+    - else
+      %h4= link_to instrument, facility_instrument_schedule_path(current_facility, instrument)
+
     -# Add .reschedulable to enable drag/drop
     .timeline
       .unit_container
