@@ -109,9 +109,8 @@ module InstrumentPricePolicyCalculations
     costs[:cost] = calculate_cost duration, discount
     costs[:subsidy] = calculate_subsidy duration, discount
 
-    if (costs[:cost] - costs[:subsidy]) < minimum_cost.to_f
-      costs[:cost] = minimum_cost
-      costs[:subsidy] = 0
+    if (costs[:cost] + costs[:subsidy]) < minimum_cost.to_f
+      costs[:cost] = minimum_cost - costs[:subsidy]
     end
 
     costs
