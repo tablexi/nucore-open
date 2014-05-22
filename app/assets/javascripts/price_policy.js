@@ -33,15 +33,23 @@ $(document).ready(function() {
     setinternalcost(this);
   });
 
+  function deriveAdjustedCost(unadjustedCost, usageSubsidyString) {
+    var usageSubsidy = parseFloat(usageSubsidyString);
+    if (isFinite(usageSubsidy)) {
+      return (unadjustedCost * (1.0 - usageSubsidy)).toFixed(2);
+    }
+    else {
+      return unadjustedCost;
+    }
+  }
+
   function setinternalcost(o) {
     if (o.className.match(/master_(\S+_cost)/)) {
       var desiredClass = RegExp.$1;
-      $('span.' + desiredClass).each(function(i, element) {
-        element.innerHTML = o.value;
-      });
-      $('input[type=hidden].' + desiredClass).each(function(i, element) {
-        element.value = o.value;
-      });
+      var $spanElements = $('span.' + desiredClass);
+      var cost = deriveAdjustedCost(o.value, $spanElements.data('usageSubsidy'));
+      $spanElements.html(cost);
+      $('input[type=hidden].' + desiredClass).val(cost);
     }
   }
 
