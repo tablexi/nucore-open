@@ -114,21 +114,38 @@ describe InstrumentPricePolicyCalculations do
       expect(results[:subsidy]).to eq subsidy
     end
 
-    it 'gives the minimum cost and zero subsidy if below minimum cost' do
+    it 'gives the minimum cost with subsidies' do
       discount = 0
+      duration = 61.0
+      end_at = start_at + duration.minutes
       expect(policy).to receive(:calculate_discount).with(start_at, end_at).and_return discount
-      cost = 5.00
+      cost = 60.0
       expect(policy).to receive(:calculate_cost).with(duration, discount).and_return cost
-      subsidy = 6.00
+      subsidy = 12.20
       expect(policy).to receive(:calculate_subsidy).with(duration, discount).and_return subsidy
-      min_cost = 3.00
+      min_cost = 60.0
+      policy.stub(:minimum_cost).and_return min_cost
+      results = policy.estimate_cost_and_subsidy start_at, end_at
+      expect(results[:cost]).to eq cost
+      expect(results[:subsidy]).to eq subsidy
+    end
+
+    it 'gives the minimum cost without subsidies' do
+      discount = 0
+      duration = 15.0
+      end_at = start_at + duration.minutes
+      expect(policy).to receive(:calculate_discount).with(start_at, end_at).and_return discount
+      cost = 15.0
+      expect(policy).to receive(:calculate_cost).with(duration, discount).and_return cost
+      subsidy = 0.0
+      min_cost = 60.0
+      expect(policy).to receive(:calculate_subsidy_for_cost).with(min_cost, discount).and_return subsidy
       policy.stub(:minimum_cost).and_return min_cost
       results = policy.estimate_cost_and_subsidy start_at, end_at
       expect(results[:cost]).to eq min_cost
-      expect(results[:subsidy]).to eq 0
+      expect(results[:subsidy]).to eq subsidy
     end
   end
-
 
   describe 'calculating cost and subsidy' do
     before :each do
