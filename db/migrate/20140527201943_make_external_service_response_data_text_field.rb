@@ -1,9 +1,15 @@
 class MakeExternalServiceResponseDataTextField < ActiveRecord::Migration
   def up
-    change_column :external_service_receivers, :response_data, :text
+    add_column :external_service_receivers, :response_data_text, :text
+    execute "UPDATE external_service_receivers SET response_data_text = response_data"
+    remove_column :external_service_receivers, :response_data
+    rename_column :external_service_receivers, :response_data_text, :response_data
   end
 
   def down
-    change_column :external_service_receivers, :response_data, :string
+    add_column :external_service_receivers, :response_data_varchar, :string
+    execute "UPDATE external_service_receivers SET response_data_varchar = response_data"
+    remove_column :external_service_receivers, :response_data
+    rename_column :external_service_receivers, :response_data_varchar, :response_data
   end
 end
