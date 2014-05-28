@@ -79,6 +79,17 @@ describe SurveysController do
       should redirect_to @params[:referer]
     end
 
+    it 'allows acting-as' do
+      maybe_grant_always_sign_in :admin
+      switch_to @guest
+      expect { do_request }.to change {ExternalServiceReceiver.count}.by(1)
+      esr = ExternalServiceReceiver.last
+      expect(esr.receiver).to eq @order_detail
+      expect(esr.external_service).to eq external_service
+      expect(esr.response_data).to include survey_url
+      should redirect_to @params[:referer]
+    end
+
     context 'merge orders' do
       before :each do
         @clone = @order.dup
