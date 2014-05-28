@@ -33,15 +33,54 @@ $(document).ready(function() {
     setinternalcost(this);
   });
 
+  function getMasterUsageRate() {
+    return parseFloat($('input.master_usage_cost.usage_rate').val());
+  }
+
+  function refreshCosts() {
+    $('.master_minimum_cost').each(function (index, element) {
+      setinternalcost(element);
+    });
+  }
+
+  function setUsageSubsidy(usageAdjustmentElement, usageSubsidy) {
+    $(usageAdjustmentElement).parents('tr').find('span.minimum_cost').data('usageSubsidy', usageSubsidy.toFixed(2));
+  }
+
+  function updateUsageSubsidy(usageAdjustmentElement) {
+    var usageAdjustment = parseFloat(usageAdjustmentElement.value)
+    if (isFinite(usageAdjustment)) {
+      var usageRate = getMasterUsageRate();
+      if (isFinite(usageRate)) {
+        var usageSubsidy = usageAdjustment / usageRate;
+        if (isFinite(usageSubsidy)) {
+          setUsageSubsidy(usageAdjustmentElement, usageSubsidy);
+          refreshCosts();
+        }
+      }
+    }
+  }
+
+  function deriveAdjustedCost(unadjustedCost, usageSubsidyString) {
+    var usageSubsidy = parseFloat(usageSubsidyString);
+    if (isFinite(usageSubsidy)) {
+      return (unadjustedCost * (1.0 - usageSubsidy)).toFixed(2);
+    }
+    else {
+      return unadjustedCost;
+    }
+  }
+
   function setinternalcost(o) {
     if (o.className.match(/master_(\S+_cost)/)) {
       var desiredClass = RegExp.$1;
-      $('span.' + desiredClass).each(function(i, element) {
-        element.innerHTML = o.value;
-      });
-      $('input[type=hidden].' + desiredClass).each(function(i, element) {
-        element.value = o.value;
-      });
+      var $spanElements = $('span.' + desiredClass);
+      var cost = deriveAdjustedCost(o.value, $spanElements.data('usageSubsidy'));
+      $spanElements.html(cost);
+      $('input[type=hidden].' + desiredClass).val(cost);
+    }
+    else if (o.className.match(/\busage_adjustment\b/)) {
+      updateUsageSubsidy(o);
     }
   }
 
