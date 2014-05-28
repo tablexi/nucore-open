@@ -1,5 +1,29 @@
 module RateDisplayHelper
 
+  def human_cost_calculation(cost, subsidy)
+    cost = 0 if cost.nil?
+    subsidy = 0 if subsidy.nil?
+
+    display = if cost > 0 && subsidy > 0
+      subsidized_cost_display cost, subsidy
+    else
+      number_to_currency cost
+    end
+
+    display.html_safe
+  end
+
+  def subsidized_cost_display(cost, subsidy)
+    subsidized_cost = cost * subsidy
+    <<-FORMAT
+      #{number_to_currency cost}
+      <br/>
+      -#{number_to_currency subsidized_cost}
+      <br/>
+      =<b>#{number_to_currency cost-subsidized_cost}</b>
+    FORMAT
+  end
+
   def human_rate_calculation(rate, subsidy)
     display = ''
 
