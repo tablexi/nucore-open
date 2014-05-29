@@ -17,6 +17,8 @@ $(document).ready ->
     interval += "s" if int_value > 1
     $("span.interval_replace").each -> $(this).html(interval)
 
+  isFiniteAndPositive = (number)-> isFinite(number) && number > 0
+
   toggleGroupFields = ($checkbox)->
     $cells = $checkbox.parents("tr").find("td")
     isDisabled = !$checkbox.prop "checked"
@@ -24,23 +26,24 @@ $(document).ready ->
     $cells.find("input[type=text], input[type=hidden]").each ->
       # If we're hiding the value, store it so we can retreive it later
       $inputElement = $(this)
-      if $inputElement.val()
-        $inputElement.data "original-value", $inputElement.val()
-      if isDisabled
-        $inputElement.val ""
-      else
-        $inputElement.val $inputElement.data("original-value")
+      $inputElement.data "original-value", $inputElement.val() if $inputElement.val()
+      $inputElement.val if isDisabled then "" else $inputElement.data("original-value")
       $inputElement.prop "disabled", isDisabled
 
   deriveAdjustedCost = (unadjustedCost, usageSubsidyString)->
     usageSubsidy = parseFloat usageSubsidyString
-    if isFinite usageSubsidy
+    if isFiniteAndPositive usageSubsidy
       (unadjustedCost * (1.0 - usageSubsidy)).toFixed 2
     else
       unadjustedCost
 
   getMasterUsageRate = ->
-    parseFloat $("input.master_usage_cost.usage_rate").val()
+    rate = parseFloat $("input.master_usage_cost.usage_rate").val()
+    if isFiniteAndPositive rate then rate else 0
+
+  getUsageAdjustment = (usageAdjustmentElement)->
+    usageAdjustment = parseFloat usageAdjustmentElement.value
+    if isFiniteAndPositive usageAdjustment then usageAdjustment else 0
 
   setUsageSubsidy = (usageAdjustmentElement, usageSubsidy)->
     $(usageAdjustmentElement).parents("tr").find("span.minimum_cost").data("usageSubsidy", usageSubsidy.toFixed(2))
@@ -49,14 +52,14 @@ $(document).ready ->
     $(".master_minimum_cost").each (index, element)-> setInternalCost element
 
   updateUsageSubsidy = (usageAdjustmentElement)->
-    usageAdjustment = parseFloat usageAdjustmentElement.value
-    if isFinite usageAdjustment
-      usageRate = getMasterUsageRate()
-      if isFinite usageRate
-        usageSubsidy = usageAdjustment / usageRate
-        if isFinite usageSubsidy
-          setUsageSubsidy usageAdjustmentElement, usageSubsidy
-          refreshCosts()
+    usageAdjustment = getUsageAdjustment usageAdjustmentElement
+    usageRate = getMasterUsageRate()
+    setUsageSubsidy usageAdjustmentElement,
+      if usageAdjustment > 0 && usageRate > 0
+        usageAdjustment / usageRate
+      else
+        0
+    refreshCosts()
 
   setInternalCost = (o)->
     if o.className.match /master_(\S+_cost)/
