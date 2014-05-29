@@ -65,8 +65,6 @@ $(document).ready ->
       cost = deriveAdjustedCost o.value, $spanElements.data("usageSubsidy")
       $spanElements.html cost
       $("input[type=hidden].#{desiredClass}").val cost
-    else if o.className.match /\busage_adjustment\b/
-      updateUsageSubsidy o
 
   $(".can_purchase").change(->
     toggleGroupFields $(this)
@@ -74,4 +72,5 @@ $(document).ready ->
 
   $("input[type=text]").change(->
     setInternalCost this
+    $(".usage_adjustment").each -> updateUsageSubsidy(this)
   ).trigger("change").keyup(-> setInternalCost(this))
