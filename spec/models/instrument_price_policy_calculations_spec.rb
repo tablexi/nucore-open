@@ -185,7 +185,7 @@ describe InstrumentPricePolicyCalculations do
       cost = 15.0
       expect(policy).to receive(:calculate_cost).with(duration, discount).and_return cost
       subsidy = 0.0
-      expect(policy).to receive(:calculate_subsidy_for_cost).with(policy.minimum_cost, discount).and_return subsidy
+      expect(policy).to receive(:calculate_subsidy_for_cost).with(policy.minimum_cost).and_return subsidy
       results = policy.estimate_cost_and_subsidy start_at, end_at
       expect(results[:cost]).to eq policy.minimum_cost
       expect(results[:subsidy]).to eq subsidy

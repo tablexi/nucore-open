@@ -109,7 +109,7 @@ module InstrumentPricePolicyCalculations
 
     if costs[:cost] < minimum_cost.to_f
       costs[:cost] = minimum_cost
-      costs[:subsidy] = calculate_subsidy_for_cost minimum_cost, discount
+      costs[:subsidy] = calculate_subsidy_for_cost minimum_cost
     else
       costs[:subsidy] = calculate_subsidy duration, discount
     end
@@ -118,7 +118,7 @@ module InstrumentPricePolicyCalculations
   end
 
 
-  def calculate_subsidy_for_cost(cost, discount)
+  def calculate_subsidy_for_cost(cost)
     usage_subsidy.present? ? (cost * usage_subsidy / usage_rate) : 0
   end
 
