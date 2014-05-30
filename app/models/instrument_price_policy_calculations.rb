@@ -36,7 +36,7 @@ module InstrumentPricePolicyCalculations
       discount += sr.discount_for(start_at, end_at)
     end
 
-    1 - discount
+    1 - (discount / 100)
   end
 
 
@@ -100,6 +100,11 @@ module InstrumentPricePolicyCalculations
   end
 
 
+  def minimum_cost_ratio
+    usage_subsidy / usage_rate
+  end
+
+
   private
 
   def cost_and_subsidy(duration, discount)
@@ -119,7 +124,7 @@ module InstrumentPricePolicyCalculations
 
 
   def calculate_subsidy_for_cost(cost)
-    usage_subsidy.present? ? (cost * usage_subsidy / usage_rate) : 0
+    usage_subsidy.present? ? (cost * minimum_cost_ratio) : 0
   end
 
 

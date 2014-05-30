@@ -21,7 +21,7 @@
         %td= "#{price_policy.price_group.name} (#{price_policy.price_group.type_string})"
         - if price_policy.valid?
           %td.currency{colspan: 2}= human_rate_calculation(price_policy.hourly_usage_rate, price_policy.hourly_usage_subsidy)
-          %td.currency= human_cost_calculation(price_policy.minimum_cost, price_policy.usage_subsidy)
+          %td.currency= number_to_currency price_policy.minimum_cost
           %td.currency= number_to_currency price_policy.cancellation_cost
         - else
           %td.centered{:colspan => 5}
