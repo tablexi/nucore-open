@@ -36,7 +36,7 @@ module InstrumentPricePolicyCalculations
       discount += sr.discount_for(start_at, end_at)
     end
 
-    1 - discount / 100
+    1 - discount
   end
 
 
@@ -119,7 +119,7 @@ module InstrumentPricePolicyCalculations
 
 
   def calculate_subsidy_for_cost(cost, discount)
-    usage_subsidy.present? ? (cost * usage_subsidy * discount) : 0
+    usage_subsidy.present? ? (cost * usage_subsidy / usage_rate) : 0
   end
 
 

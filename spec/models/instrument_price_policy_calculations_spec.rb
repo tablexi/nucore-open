@@ -56,7 +56,7 @@ describe InstrumentPricePolicyCalculations do
       end
 
       it 'calculates a discount based on the given time and configured schedule rules' do
-        expect(policy.calculate_discount(start_at, end_at).round 3).to eq 0.999
+        expect(policy.calculate_discount(start_at, end_at).round 3).to eq 0.889
       end
 
       it 'estimates the same as the old instrument price policy' do
@@ -70,20 +70,35 @@ describe InstrumentPricePolicyCalculations do
     context 'usage cost is less than the policy minimum' do
       before :each do
         policy.minimum_cost = 100.00
+        policy.usage_rate = 60.00
         policy.product.schedule_rules << create(:schedule_rule,
           instrument: policy.product,
           discount_percent: 0.2,
           start_hour: 17,
           end_hour: 24
         )
+        @reservation_start = 1.day.from_now.change hour: 16, min: 15, sec: 0
+        @reservation_end = @reservation_start + 1.hour + 30.minutes
       end
 
-      it 'applies the policy minimum cost' do
-        reservation_start = 1.day.from_now.change hour: 16, min: 0
-        reservation_end = reservation_start + 1.hour + 49.minutes
-        costs = policy.estimate_cost_and_subsidy reservation_start, reservation_end
-        expect(costs[:cost]).to eq policy.minimum_cost
-        expect(costs[:subsidy]).to eq 0
+      context 'without usage subsidies' do
+        it 'applies the policy minimum cost' do
+          costs = policy.estimate_cost_and_subsidy @reservation_start, @reservation_end
+          expect(costs[:cost]).to eq policy.minimum_cost
+          expect(costs[:subsidy]).to eq 0
+        end
+      end
+
+      context 'with usage subsidies' do
+        it 'applies the policy minimum cost' do
+          expect(policy.usage_rate).to eq(1)
+          policy.usage_subsidy = 12.00
+          expect(policy.calculate_discount(@reservation_start, @reservation_end)).to eq(0.90)
+          expect(policy.usage_rate).to eq(1)
+          costs = policy.estimate_cost_and_subsidy @reservation_start, @reservation_end
+          expect(costs[:cost]).to eq policy.minimum_cost
+          expect(costs[:subsidy]).to eq 20.00
+        end
       end
     end
   end
