@@ -39,20 +39,67 @@ describe InstrumentPricePolicyCalculations do
 
 
   describe 'calculating with two effective schedule rules, one discounting one not' do
-    before :each do
-      policy.product.schedule_rules.first.update_attributes! start_hour: 0, end_hour: 24, on_sat: false, on_sun: false
-      policy.product.schedule_rules << create(:weekend_schedule_rule, instrument: policy.product, discount_percent: 0.25, start_hour: 0, end_hour: 24)
+    context 'usage cost is more than the policy minimum' do
+      before :each do
+        policy.product.schedule_rules.first.update_attributes!(
+          start_hour: 0,
+          end_hour: 24,
+          on_sat: false,
+          on_sun: false
+        )
+        policy.product.schedule_rules << create(:weekend_schedule_rule,
+          instrument: policy.product,
+          discount_percent: 25,
+          start_hour: 0,
+          end_hour: 24
+        )
+      end
+
+      it 'calculates a discount based on the given time and configured schedule rules' do
+        expect(policy.calculate_discount(start_at, end_at).round 3).to eq 0.889
+      end
+
+      it 'estimates the same as the old instrument price policy' do
+        new_estimate = policy.estimate_cost_and_subsidy start_at, end_at
+        old_policy.usage_rate = 0
+        old_estimate = old_policy.estimate_cost_and_subsidy start_at, end_at
+        expect(new_estimate).to eq old_estimate
+      end
     end
 
-    it 'calculates a discount based on the given time and configured schedule rules' do
-      expect(policy.calculate_discount(start_at, end_at).round 3).to eq 0.999
-    end
+    context 'usage cost is less than the policy minimum' do
+      before :each do
+        policy.minimum_cost = 100.00
+        policy.usage_rate = 60.00
+        policy.product.schedule_rules << create(:schedule_rule,
+          instrument: policy.product,
+          discount_percent: 20,
+          start_hour: 17,
+          end_hour: 24
+        )
+        @reservation_start = 1.day.from_now.change hour: 16, min: 15, sec: 0
+        @reservation_end = @reservation_start + 1.hour + 30.minutes
+      end
 
-    it 'estimates the same as the old instrument price policy' do
-      new_estimate = policy.estimate_cost_and_subsidy start_at, end_at
-      old_policy.usage_rate = 0
-      old_estimate = old_policy.estimate_cost_and_subsidy start_at, end_at
-      expect(new_estimate).to eq old_estimate
+      context 'without usage subsidies' do
+        it 'applies the policy minimum cost' do
+          costs = policy.estimate_cost_and_subsidy @reservation_start, @reservation_end
+          expect(costs[:cost]).to eq policy.minimum_cost
+          expect(costs[:subsidy]).to eq 0
+        end
+      end
+
+      context 'with usage subsidies' do
+        it 'applies the policy minimum cost' do
+          expect(policy.usage_rate).to eq(1)
+          policy.usage_subsidy = 12.00
+          expect(policy.calculate_discount(@reservation_start, @reservation_end)).to eq(0.90)
+          expect(policy.usage_rate).to eq(1)
+          costs = policy.estimate_cost_and_subsidy @reservation_start, @reservation_end
+          expect(costs[:cost]).to eq policy.minimum_cost
+          expect(costs[:subsidy]).to eq 20.00
+        end
+      end
     end
   end
 
@@ -114,18 +161,34 @@ describe InstrumentPricePolicyCalculations do
       expect(results[:subsidy]).to eq subsidy
     end
 
-    it 'gives the minimum cost and zero subsidy if below minimum cost' do
+    it 'gives the minimum cost with subsidies' do
       discount = 0
+      duration = 61.0
+      end_at = start_at + duration.minutes
+      policy.minimum_cost = 60.0
       expect(policy).to receive(:calculate_discount).with(start_at, end_at).and_return discount
-      cost = 5.00
+      cost = 60.0
       expect(policy).to receive(:calculate_cost).with(duration, discount).and_return cost
-      subsidy = 6.00
+      subsidy = 12.20
       expect(policy).to receive(:calculate_subsidy).with(duration, discount).and_return subsidy
-      min_cost = 3.00
-      policy.stub(:minimum_cost).and_return min_cost
       results = policy.estimate_cost_and_subsidy start_at, end_at
-      expect(results[:cost]).to eq min_cost
-      expect(results[:subsidy]).to eq 0
+      expect(results[:cost]).to eq cost
+      expect(results[:subsidy]).to eq subsidy
+    end
+
+    it 'gives the minimum cost without subsidies' do
+      discount = 0
+      duration = 15.0
+      end_at = start_at + duration.minutes
+      policy.minimum_cost = 60.0
+      expect(policy).to receive(:calculate_discount).with(start_at, end_at).and_return discount
+      cost = 15.0
+      expect(policy).to receive(:calculate_cost).with(duration, discount).and_return cost
+      subsidy = 0.0
+      expect(policy).to receive(:calculate_subsidy_for_cost).with(policy.minimum_cost).and_return subsidy
+      results = policy.estimate_cost_and_subsidy start_at, end_at
+      expect(results[:cost]).to eq policy.minimum_cost
+      expect(results[:subsidy]).to eq subsidy
     end
   end
 

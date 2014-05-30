@@ -22,7 +22,7 @@ module OldInstrumentPricePolicyCalculations
     product.schedule_rules.each do |sr|
       discount += sr.percent_overlap(start_at, end_at) * sr.discount_percent.to_f
     end
-    discount = 1 - discount/100
+    discount = 1 - (discount / 100)
 
     costs[:cost] = ((duration/reservation_mins).ceil * reservation_rate.to_f + (duration/usage_mins).ceil * usage_rate.to_f) * discount
     costs[:subsidy] = ((duration/reservation_mins).ceil * reservation_subsidy.to_f + (duration/usage_mins).ceil * usage_subsidy.to_f) * discount
