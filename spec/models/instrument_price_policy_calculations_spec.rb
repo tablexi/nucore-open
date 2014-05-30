@@ -39,20 +39,52 @@ describe InstrumentPricePolicyCalculations do
 
 
   describe 'calculating with two effective schedule rules, one discounting one not' do
-    before :each do
-      policy.product.schedule_rules.first.update_attributes! start_hour: 0, end_hour: 24, on_sat: false, on_sun: false
-      policy.product.schedule_rules << create(:weekend_schedule_rule, instrument: policy.product, discount_percent: 0.25, start_hour: 0, end_hour: 24)
+    context 'usage cost is more than the policy minimum' do
+      before :each do
+        policy.product.schedule_rules.first.update_attributes!(
+          start_hour: 0,
+          end_hour: 24,
+          on_sat: false,
+          on_sun: false
+        )
+        policy.product.schedule_rules << create(:weekend_schedule_rule,
+          instrument: policy.product,
+          discount_percent: 0.25,
+          start_hour: 0,
+          end_hour: 24
+        )
+      end
+
+      it 'calculates a discount based on the given time and configured schedule rules' do
+        expect(policy.calculate_discount(start_at, end_at).round 3).to eq 0.999
+      end
+
+      it 'estimates the same as the old instrument price policy' do
+        new_estimate = policy.estimate_cost_and_subsidy start_at, end_at
+        old_policy.usage_rate = 0
+        old_estimate = old_policy.estimate_cost_and_subsidy start_at, end_at
+        expect(new_estimate).to eq old_estimate
+      end
     end
 
-    it 'calculates a discount based on the given time and configured schedule rules' do
-      expect(policy.calculate_discount(start_at, end_at).round 3).to eq 0.999
-    end
+    context 'usage cost is less than the policy minimum' do
+      before :each do
+        policy.minimum_cost = 100.00
+        policy.product.schedule_rules << create(:schedule_rule,
+          instrument: policy.product,
+          discount_percent: 0.2,
+          start_hour: 17,
+          end_hour: 24
+        )
+      end
 
-    it 'estimates the same as the old instrument price policy' do
-      new_estimate = policy.estimate_cost_and_subsidy start_at, end_at
-      old_policy.usage_rate = 0
-      old_estimate = old_policy.estimate_cost_and_subsidy start_at, end_at
-      expect(new_estimate).to eq old_estimate
+      it 'applies the policy minimum cost' do
+        reservation_start = 1.day.from_now.change hour: 16, min: 0
+        reservation_end = reservation_start + 1.hour + 49.minutes
+        costs = policy.estimate_cost_and_subsidy reservation_start, reservation_end
+        expect(costs[:cost]).to eq policy.minimum_cost
+        expect(costs[:subsidy]).to eq 0
+      end
     end
   end
 
