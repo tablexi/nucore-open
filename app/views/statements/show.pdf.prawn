@@ -28,14 +28,14 @@ prawn_document pdf_config do |pdf|
     pdf.text @account.remittance_information
   end
 
-  rows = @statement.order_details.sort{|d,o| d.order.ordered_at<=>o.order.ordered_at}.reverse.map do |od|
+  rows = @statement.order_details.sort_by(&:fulfilled_at).reverse.map do |od|
     [
-      human_datetime(od.order.ordered_at),
+      human_datetime(od.fulfilled_at),
       "##{od}: #{od.product}" + (od.note.blank? ? '' : "\n#{od.note}"),
       number_to_currency(od.actual_total)
     ]
   end
-  headers = ["Transaction Date", "Order", "Amount"]
+  headers = ["Fulfillment Date", "Order", "Amount"]
 
   pdf.move_down(30)
   pdf.table([headers] + rows, :header => true, :width => 510) do
