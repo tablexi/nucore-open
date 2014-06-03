@@ -1,9 +1,5 @@
 module RateDisplayHelper
 
-  def subsidized_cost_display(cost, subsidy)
-    "#{cost_display cost, subsidy} = #{bold_number_as_currency cost}"
-  end
-
   def human_rate_calculation(rate, subsidy)
     # handle nil input
     rate    = -1 if rate.nil?
