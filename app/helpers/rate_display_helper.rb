@@ -24,7 +24,7 @@ module RateDisplayHelper
   end
 
   def subsidized_rate_display(rate, subsidy)
-    "#{cost_display rate, subsidy}= #{bold_number_as_currency rate - subsidy}" \
+    "#{cost_display rate, subsidy} = #{bold_number_as_currency rate - subsidy}" \
     "#{rate_per_minute_display rate - subsidy}"
   end
 
