@@ -28,14 +28,14 @@ $(document).ready ->
 
   deriveAdjustedCost = (unadjustedCost, usageSubsidyString)->
     usageSubsidy = parseFloat usageSubsidyString
-    if isFiniteAndPositive usageSubsidy
+    if isFiniteAndPositive(usageSubsidy)
       (unadjustedCost * (1.0 - usageSubsidy)).toFixed 2
     else
       unadjustedCost
 
   getMasterUsageRate = ->
     rate = parseFloat $("input.master_usage_cost.usage_rate").val()
-    if isFiniteAndPositive rate then rate else 0
+    if isFiniteAndPositive(rate) then rate else 0
 
   getUsageAdjustment = (usageAdjustmentElement)->
     usageAdjustment = parseFloat usageAdjustmentElement.value
