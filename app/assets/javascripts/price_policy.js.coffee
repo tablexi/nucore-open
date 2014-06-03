@@ -11,11 +11,7 @@ $(document).ready ->
     interval += "s" if int_value > 1
     $("span.interval_replace").each -> $(this).html(interval)
 
-  if $interval.length > 0
-    int_value = $interval.val()
-    interval = "#{int_value} minute"
-    interval += "s" if int_value > 1
-    $("span.interval_replace").each -> $(this).html(interval)
+  $interval.trigger('change')
 
   isFiniteAndPositive = (number)-> isFinite(number) && number > 0
 
@@ -27,7 +23,7 @@ $(document).ready ->
       # If we're hiding the value, store it so we can retreive it later
       $inputElement = $(this)
       $inputElement.data "original-value", $inputElement.val() if $inputElement.val()
-      $inputElement.val if isDisabled then "" else $inputElement.data("original-value")
+      $inputElement.val(if isDisabled then "" else $inputElement.data("original-value"))
       $inputElement.prop "disabled", isDisabled
 
   deriveAdjustedCost = (unadjustedCost, usageSubsidyString)->
@@ -43,7 +39,7 @@ $(document).ready ->
 
   getUsageAdjustment = (usageAdjustmentElement)->
     usageAdjustment = parseFloat usageAdjustmentElement.value
-    if isFiniteAndPositive usageAdjustment then usageAdjustment else 0
+    if isFiniteAndPositive(usageAdjustment) then usageAdjustment else 0
 
   setUsageSubsidy = (usageAdjustmentElement, usageSubsidy)->
     $(usageAdjustmentElement).parents("tr").find("span.minimum_cost").data("usageSubsidy", usageSubsidy.toFixed(2))
