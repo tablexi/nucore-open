@@ -28,7 +28,7 @@ prawn_document pdf_config do |pdf|
     pdf.text @account.remittance_information
   end
 
-  rows = @statement.order_details.sort_by(&:fulfilled_at).reverse.map do |od|
+  rows = @statement.order_details.order("fulfilled_at DESC").map do |od|
     [
       human_datetime(od.fulfilled_at),
       "##{od}: #{od.product}" + (od.note.blank? ? '' : "\n#{od.note}"),
