@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 ## base
-gem 'rails',            '3.2.13'
+gem 'rails',            '3.2.18'
 gem 'rails_config',     '0.3.3'
 
 ## database
