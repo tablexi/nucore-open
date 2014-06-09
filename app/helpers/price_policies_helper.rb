@@ -31,14 +31,21 @@ module PricePoliciesHelper
     end
   end
 
-  def display_usage_rate(price_group, price_policy)
-     if params["price_policy_#{price_group.id}"].present?
-       rate = params["price_policy_#{price_group.id}"][:usage_rate] * 60
-     else
-       rate = price_policy.hourly_usage_rate
-     end
+  def usage_rate_from_params(price_group, price_policy)
+    if params["price_policy_#{price_group.id}"].present?
+      params["price_policy_#{price_group.id}"][:usage_rate] * 60
+    elsif price_policy.hourly_usage_rate.present?
+      price_policy.hourly_usage_rate
+    else
+      price_group.master_usage_rate * 60
+    end
+  end
 
-     number_to_currency rate, :unit => '', :delimiter => ''
+  def display_usage_rate(price_group, price_policy)
+    number_to_currency(usage_rate_from_params(price_group, price_policy),
+      unit: '',
+      delimiter: ''
+    )
   end
 
   def display_usage_subsidy(price_group, price_policy)
