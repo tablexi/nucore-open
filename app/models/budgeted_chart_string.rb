@@ -5,14 +5,14 @@ class BudgetedChartString < ActiveRecord::Base
   validates_length_of   :project, :is => 8, :allow_blank => true
   validates_length_of   :activity, :is => 2, :allow_blank => true
   validates_length_of   :account, :is => 5, :allow_blank => true
-  
+
   def self.import(filename)
     file = File.open(filename, 'r') rescue nil
     if file.blank?
       puts "error: Invalid file #{filename}"
       return
     end
-    
+
     deleted   = self.count
     imported  = 0
     skipped   = 0
@@ -72,6 +72,7 @@ class BudgetedChartString < ActiveRecord::Base
     end
   end
 
+  # Parses strings of the format DDMMMYY (e.g. 31AUG08) to dates
   def self.parse_2_digit_year_date(date_string)
     Time.zone.parse(date_string.sub(/\A(\d{1,2})([A-Z]{3})(\d\d)\z/, '\1 \2 20\3'))
   end
