@@ -5,14 +5,14 @@ class BudgetedChartString < ActiveRecord::Base
   validates_length_of   :project, :is => 8, :allow_blank => true
   validates_length_of   :activity, :is => 2, :allow_blank => true
   validates_length_of   :account, :is => 5, :allow_blank => true
-  
+
   def self.import(filename)
     file = File.open(filename, 'r') rescue nil
     if file.blank?
       puts "error: Invalid file #{filename}"
       return
     end
-    
+
     deleted   = self.count
     imported  = 0
     skipped   = 0
@@ -33,10 +33,10 @@ class BudgetedChartString < ActiveRecord::Base
                                    :starts_at => Time.zone.now-1.week, :expires_at => Time.zone.now+1.year)
         BudgetedChartString.create(:fund => '111', :dept => '2222222', :project => '33333333', :account => '50617',
                                    :starts_at => Time.zone.now-1.week, :expires_at => Time.zone.now+1.year)
-        while line = file.readline
+        while line = file.readline.strip
           # parse, import line
           case
-          when line.strip.match(/^\d{4,4}\|/)
+          when line.match(/^\d{4,4}\|/)
             # chart string with fiscal year
             tokens = line.split('|').map{ |s| s.gsub('-', '') }
             # build start_at, expires_at from fiscal year
@@ -45,12 +45,12 @@ class BudgetedChartString < ActiveRecord::Base
             expires_at  = starts_at + 1.year - 1.second
             # parse fields
             fund, dept, project, activity, account = tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]
-          when line.strip.match(/\d{2,2}-[A-Z]{3,3}-\d{2,2}\|\d{2,2}-[A-Z]{3,3}-\d{2,2}$/)
+          when line.match(/\d{2,2}-[A-Z]{3,3}-\d{2,2}\|\d{2,2}-[A-Z]{3,3}-\d{2,2}$/)
             # chart string with start and expire dates
             tokens = line.split('|').map{ |s| s.gsub('-', '') }
             # parse fields
             fund, dept, project, activity, account = tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]
-            starts_at, expires_at = Time.zone.parse(tokens[6]), Time.zone.parse(tokens[7])
+            starts_at, expires_at = parse_2_digit_year_date(tokens[6]), parse_2_digit_year_date(tokens[7])
           else
             # invalid line
             puts "error: skipping - #{line}"
@@ -70,5 +70,10 @@ class BudgetedChartString < ActiveRecord::Base
         logger.info "notice: imported #{imported} records, skipped #{skipped} records, found #{invalid} invalid records"
       end
     end
+  end
+
+  # Parses strings of the format DDMMMYY (e.g. 31AUG08) to dates
+  def self.parse_2_digit_year_date(date_string)
+    Time.zone.parse(date_string.sub(/\A(\d{1,2})([A-Z]{3})(\d\d)\z/, '\1 \2 20\3'))
   end
 end
