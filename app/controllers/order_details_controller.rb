@@ -40,6 +40,7 @@ class OrderDetailsController < ApplicationController
         end
       end
       @order_detail.dispute_at = nil #rollback does not reset the un-saved value, so have to manually set to the view will render correctly
+      @order_detail.send(:extend, PriceDisplayment)
       render :show and return
     end
     raise ActiveRecord::RecordNotFound
