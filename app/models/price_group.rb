@@ -63,4 +63,12 @@ class PriceGroup < ActiveRecord::Base
     # use !.any? because it uses SQL count(), unlike none?
     !global? && !order_details.any?
   end
+
+  def master_price_policy
+    price_policies.find { |policy| policy.usage_rate.present? }
+  end
+
+  def master_usage_rate
+    master_price_policy.usage_rate
+  end
 end

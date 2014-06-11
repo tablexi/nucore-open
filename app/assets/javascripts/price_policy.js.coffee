@@ -60,10 +60,11 @@ $(document).ready ->
   setInternalCost = (o)->
     if o.className.match /master_(\S+_cost)/
       desiredClass = RegExp.$1
-      $spanElements = $("span.#{desiredClass}")
-      cost = deriveAdjustedCost o.value, $spanElements.data("usageSubsidy")
-      $spanElements.html cost
-      $("input[type=hidden].#{desiredClass}").val cost
+      $("span.#{desiredClass}").each ->
+        $costElement = $(this)
+        cost = deriveAdjustedCost(o.value, $costElement.data("usageSubsidy"))
+        $costElement.html(cost)
+        $costElement.siblings("input[type=hidden].#{desiredClass}").val(cost)
 
   $(".can_purchase").change(->
     toggleGroupFields $(this)
