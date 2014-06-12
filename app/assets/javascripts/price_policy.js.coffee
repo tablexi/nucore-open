@@ -42,10 +42,11 @@ $(document).ready ->
     if isFiniteAndPositive(usageAdjustment) then usageAdjustment else 0
 
   setUsageSubsidy = (usageAdjustmentElement, usageSubsidy)->
-    $(usageAdjustmentElement).parents("tr").find("span.minimum_cost").data("usageSubsidy", usageSubsidy.toFixed(2))
+    $(usageAdjustmentElement).parents("tr").find("span.minimum_cost").data("usageSubsidy", usageSubsidy)
 
   refreshCosts = ->
     $(".master_minimum_cost").each (index, element)-> setInternalCost element
+    $("input[type=hidden].usage_cost").val(getMasterUsageRate())
 
   updateUsageSubsidy = (usageAdjustmentElement)->
     usageAdjustment = getUsageAdjustment usageAdjustmentElement
@@ -60,10 +61,11 @@ $(document).ready ->
   setInternalCost = (o)->
     if o.className.match /master_(\S+_cost)/
       desiredClass = RegExp.$1
-      $spanElements = $("span.#{desiredClass}")
-      cost = deriveAdjustedCost o.value, $spanElements.data("usageSubsidy")
-      $spanElements.html cost
-      $("input[type=hidden].#{desiredClass}").val cost
+      $("span.#{desiredClass}").each ->
+        $costElement = $(this)
+        cost = deriveAdjustedCost(o.value, $costElement.data("usageSubsidy"))
+        $costElement.html(cost)
+        $costElement.siblings("input[type=hidden].#{desiredClass}").val(cost)
 
   $(".can_purchase").change(->
     toggleGroupFields $(this)
