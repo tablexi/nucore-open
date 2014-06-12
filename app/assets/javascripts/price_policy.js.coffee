@@ -42,7 +42,7 @@ $(document).ready ->
     if isFiniteAndPositive(usageAdjustment) then usageAdjustment else 0
 
   setUsageSubsidy = (usageAdjustmentElement, usageSubsidy)->
-    $(usageAdjustmentElement).parents("tr").find("span.minimum_cost").data("usageSubsidy", usageSubsidy.toFixed(2))
+    $(usageAdjustmentElement).parents("tr").find("span.minimum_cost").data("usageSubsidy", usageSubsidy)
 
   refreshCosts = ->
     $(".master_minimum_cost").each (index, element)-> setInternalCost element
