@@ -71,7 +71,7 @@ $(document).ready ->
     toggleGroupFields $(this)
   ).trigger("change")
 
-  $("input[type=text]").change(->
+  $("input[type=text]").keyup(->
     setInternalCost this
     $(".usage_adjustment").each -> updateUsageSubsidy(this)
-  ).trigger("change").keyup(-> setInternalCost(this))
+  ).trigger("keyup")
