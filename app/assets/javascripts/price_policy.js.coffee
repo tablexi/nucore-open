@@ -26,13 +26,6 @@ $(document).ready ->
       $inputElement.val(if isDisabled then "" else $inputElement.data("original-value"))
       $inputElement.prop "disabled", isDisabled
 
-  deriveAdjustedCost = (unadjustedCost, usageSubsidyString)->
-    usageSubsidy = parseFloat usageSubsidyString
-    if isFiniteAndPositive(usageSubsidy)
-      (unadjustedCost * (1.0 - usageSubsidy)).toFixed 2
-    else
-      unadjustedCost
-
   getMasterUsageRate = ->
     rate = parseFloat $("input.master_usage_cost.usage_rate").val()
     if isFiniteAndPositive(rate) then rate else 0
@@ -63,9 +56,8 @@ $(document).ready ->
       desiredClass = RegExp.$1
       $("span.#{desiredClass}").each ->
         $costElement = $(this)
-        cost = deriveAdjustedCost(o.value, $costElement.data("usageSubsidy"))
-        $costElement.html(cost)
-        $costElement.siblings("input[type=hidden].#{desiredClass}").val(cost)
+        $costElement.html(o.value)
+        $costElement.siblings("input[type=hidden].#{desiredClass}").val(o.value)
 
   $(".can_purchase").change(->
     toggleGroupFields $(this)
