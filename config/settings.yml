@@ -68,6 +68,11 @@ relays:
   production:
     admin_enabled: true
     reservation_enabled: true
+
+api:
+  basic_auth_name: ''
+  basic_auth_password: ''
+
 #
 # For these settings use SettingsHelper#feature_on?
 feature:
