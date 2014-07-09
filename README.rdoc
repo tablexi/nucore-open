@@ -18,8 +18,8 @@ Welcome to NU Core! This guide will help you get a development environment up an
     git clone git@github.com:tablexi/nucore-open.git nucore
 
 2. Install dependencies
-    cd nucore
-    bundle install
+    `cd nucore`
+    `bundle install --without oracle`
 
 3. Configure your local settings
     cd config/settings
