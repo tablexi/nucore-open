@@ -49,6 +49,7 @@ GEM
       activesupport (= 3.2.18)
       arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
+    activerecord-oracle_enhanced-adapter (1.4.2)
     activeresource (3.2.18)
       activemodel (= 3.2.18)
       activesupport (= 3.2.18)
@@ -234,6 +235,7 @@ GEM
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
       ruby-debug-base19 (>= 0.11.19)
+    ruby-oci8 (2.1.5)
     ruby-ole (1.2.11.7)
     ruby-rc4 (0.1.5)
     ruby_core_source (0.1.5)
@@ -290,6 +292,7 @@ PLATFORMS
 
 DEPENDENCIES
   aasm (= 2.2.0)
+  activerecord-oracle_enhanced-adapter (= 1.4.2)
   awesome_nested_set (= 2.1.6)
   awesome_print (= 1.1.0)
   bootstrap-sass (~> 2.3.2)
@@ -327,6 +330,7 @@ DEPENDENCIES
   rake
   rspec-rails (= 2.14.0)
   ruby-debug19 (= 0.11.6)
+  ruby-oci8 (= 2.1.5)
   sass-rails (~> 3.2.6)
   shoulda-matchers (= 2.4)
   simple_form (~> 2.1.1)
