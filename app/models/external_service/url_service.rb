@@ -14,7 +14,8 @@ class UrlService < ExternalService
   def new_url(receiver, request = nil)
     params = {
       success_url: success_path(receiver, request),
-      referer: referer_url(request)
+      referer: referer_url(request),
+      receiver_id: receiver.id,
     }
 
     "#{location}?#{params.to_query}"
