@@ -539,6 +539,9 @@ en:
       success: The accessory has been added.
     destroy:
       success: The accessory has been removed.
+    button:
+      cancel: Discard Changes
+      submit: Save Changes
     type:
       auto: Auto-scaled
       manual: Manual
