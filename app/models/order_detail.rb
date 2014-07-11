@@ -248,10 +248,10 @@ class OrderDetail < ActiveRecord::Base
     search = search.where('fulfilled_at IS NOT NULL') if action.to_sym == :fulfilled_at
 
     if start_date
-      search = search.where("#{action} > ?", start_date.beginning_of_day)
+      search = search.where("#{action} >= ?", start_date.beginning_of_day)
     end
     if end_date
-      search = search.where("#{action} < ?", end_date.end_of_day)
+      search = search.where("#{action} <= ?", end_date.end_of_day)
     end
     search
   }
