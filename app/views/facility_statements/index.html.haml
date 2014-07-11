@@ -13,7 +13,7 @@
     %thead
       %tr
         %th= Statement.human_attribute_name(:invoice_number)
-        %th= Statement.human_attribute_name(:created_at) #Sent At
+        %th= Statement.human_attribute_name(:created_at)
         %th= Statement.human_attribute_name(:sent_to)
         %th= Account.model_name.human
         %th.currency # of #{Order.model_name.human.pluralize}
