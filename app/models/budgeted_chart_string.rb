@@ -1,4 +1,6 @@
 class BudgetedChartString < ActiveRecord::Base
+  include NUCore::Database::DateHelper
+
   validates_presence_of :fund, :dept, :starts_at, :expires_at
   validates_length_of   :fund, :is => 3
   validates_length_of   :dept, :is => 7
@@ -70,10 +72,5 @@ class BudgetedChartString < ActiveRecord::Base
         logger.info "notice: imported #{imported} records, skipped #{skipped} records, found #{invalid} invalid records"
       end
     end
-  end
-
-  # Parses strings of the format DDMMMYY (e.g. 31AUG08) to dates
-  def self.parse_2_digit_year_date(date_string)
-    Time.zone.parse(date_string.sub(/\A(\d{1,2})([A-Z]{3})(\d\d)\z/, '\1 \2 20\3'))
   end
 end
