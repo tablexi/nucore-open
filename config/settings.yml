@@ -68,6 +68,12 @@ relays:
   production:
     admin_enabled: true
     reservation_enabled: true
+
+# You should change this if you want to be able to access the API
+api:
+  basic_auth_name: <%= SecureRandom.hex %>
+  basic_auth_password: <%= SecureRandom.hex %>
+
 #
 # For these settings use SettingsHelper#feature_on?
 feature:
