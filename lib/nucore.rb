@@ -54,6 +54,10 @@ module NUCore
           col_sql=NUCore::Database.oracle? ? "TRUNC(#{date_column_name})" : "DATE(#{date_column_name})"
           sql_fragment ? col_sql + sql_fragment : col_sql
         end
+
+        def parse_2_digit_year_date(date_string)
+          Time.zone.parse(date_string.sub(/\A(\d{1,2})\-?([A-Z]{3})\-?(\d\d)\z/, '\1 \2 20\3'))
+        end
       end
     end
 
