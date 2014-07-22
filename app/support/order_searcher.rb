@@ -6,13 +6,15 @@ class OrderSearcher
   end
 
   def search(query)
-    relation = nil
+    return [] unless query
+    query.gsub!(/\s/,"")
 
-    if query =~ /\d+-\d+/
+    relation = nil
+    if query =~ /\A\d+-\d+\z/
       relation = search_full(query)
-    elsif query =~ /[A-Za-z]+-\d+/
+    elsif query =~ /\A[A-Za-z]+-\d+\z/
       relation = search_external query
-    elsif query =~ /\d+/
+    elsif query =~ /\A\d+\z/
       relation = OrderDetail.where("order_details.id = :id OR order_details.order_id = :id", :id => query)
     end
 
