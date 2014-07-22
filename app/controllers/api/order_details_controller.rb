@@ -12,19 +12,20 @@ class Api::OrderDetailsController < ApplicationController
     render json: {
       account: {
         id: account.id,
-        owner: {
-          id: owner.id,
-          name: owner.name,
-          username: owner.username,
-          email: owner.email,
-        },
+        owner: user_to_hash(owner),
       },
-      ordered_for: {
-        id: ordered_for.id,
-        name: ordered_for.name,
-        username: ordered_for.username,
-        email: ordered_for.email,
-      },
+      ordered_for: user_to_hash(ordered_for),
+    }
+  end
+
+  private
+
+  def user_to_hash(user)
+    {
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      email: user.email,
     }
   end
 end
