@@ -19,7 +19,7 @@ Welcome to NU Core! This guide will help you get a development environment up an
 
 2. Install dependencies
     cd nucore
-    bundle install
+    bundle install --without oracle
 
 3. Configure your local settings
     cd config/settings
