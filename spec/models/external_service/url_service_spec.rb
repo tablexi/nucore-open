@@ -21,11 +21,10 @@ describe UrlService do
     :receiver_id => order_detail.id
   } end
 
-
   it 'uses the default host, port, and protocol if there is no request' do
     url_service.default_url_options[:host] = 'localhost'
     complete_survey_url = url_service.complete_survey_url url_components
-    url = "#{url_service.location}?#{{ success_url: complete_survey_url, referer: nil}.to_query}"
+    url = "#{url_service.location}?#{{ success_url: complete_survey_url, referer: nil, receiver_id: order_detail.id}.to_query}"
     expect(url_service.new_url(order_detail)).to eq url
   end
 
@@ -34,7 +33,7 @@ describe UrlService do
     host_params[:host_with_port] = "#{host_params[:host]}:#{host_params[:port]}"
     host_params[:fullpath] = '/path/to/somewhere'
     referer_url = "#{host_params[:protocol]}#{host_params[:host_with_port]}#{host_params[:fullpath]}"
-    url = "#{url_service.location}?#{{ success_url: complete_survey_url, referer: referer_url}.to_query}"
+    url = "#{url_service.location}?#{{ success_url: complete_survey_url, referer: referer_url, receiver_id: order_detail.id}.to_query}"
     expect(url_service.new_url(order_detail, double(host_params))).to eq url
   end
 
