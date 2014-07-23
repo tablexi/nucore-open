@@ -318,11 +318,11 @@ class OrderDetail < ActiveRecord::Base
     transitions :to => :reconciled, :from => :complete, :guard => :actual_total
   end
 
+  CANCELABLE_STATES = [:new, :inprocess, :complete]
   aasm_event :to_cancelled do
-    transitions :to => :cancelled, :from => [:new, :inprocess, :complete], :guard => :cancelable?
+    transitions :to => :cancelled, :from => CANCELABLE_STATES, :guard => :cancelable?
   end
 
-  CANCELABLE_STATES = %w(new inprocess complete)
   # END acts_as_state_machine
 
   # block will be called after the transition, but before the save
@@ -380,7 +380,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def state_is_cancelable?
-    CANCELABLE_STATES.include?(state)
+    CANCELABLE_STATES.include?(state.to_sym)
   end
 
   def has_uncanceled_reservation?
