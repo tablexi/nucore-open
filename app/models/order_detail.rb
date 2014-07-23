@@ -559,6 +559,7 @@ class OrderDetail < ActiveRecord::Base
 
   def update_account(new_account)
     self.account = new_account
+    clear_statement
     assign_estimated_price(account)
   end
 
@@ -861,6 +862,10 @@ class OrderDetail < ActiveRecord::Base
         self.reviewed_at         = reviewed_at_was
       end
     end
+  end
+
+  def clear_statement
+    self.statement = nil
   end
 
 end
