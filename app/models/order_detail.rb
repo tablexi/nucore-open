@@ -321,6 +321,8 @@ class OrderDetail < ActiveRecord::Base
   aasm_event :to_cancelled do
     transitions :to => :cancelled, :from => [:new, :inprocess, :complete], :guard => :cancelable?
   end
+
+  CANCELABLE_STATES = %w(new inprocess complete)
   # END acts_as_state_machine
 
   # block will be called after the transition, but before the save
@@ -377,9 +379,17 @@ class OrderDetail < ActiveRecord::Base
     raise ActiveRecord::RecordInvalid.new(self) unless save_as_user(user)
   end
 
+  def state_is_cancelable?
+    CANCELABLE_STATES.include?(state)
+  end
+
+  def has_uncanceled_reservation?
+    reservation.present? && reservation.canceled_at.blank?
+  end
+
   def cancelable?
-    # can't cancel if the reservation isn't already canceled or if this OD has been added to a statement or journal
-    statement.nil? && journal.nil? && (reservation.nil? || reservation.canceled_at.present?)
+    # can't cancel if the reservation isn't already canceled or if this OD has been added to a journal
+    state_is_cancelable? && journal.nil? && ! has_uncanceled_reservation?
   end
 
   delegate :ordered_on_behalf_of?, :to => :order

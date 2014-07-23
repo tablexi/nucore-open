@@ -464,15 +464,34 @@ describe OrderDetail do
         @order_detail.version.should == 4
       end
 
-      it "should not transition to cancelled if part of statement" do
-        statement=create(:statement, facility: @facility, created_by: @user.id, account: @account)
-        @order_detail.update_attribute :statement_id, statement.id
-        @order_detail.reload.statement.should == statement
-        @order_detail.to_inprocess!
-        @order_detail.to_complete!
-        @order_detail.to_cancelled!
-        @order_detail.state.should == 'complete'
-        @order_detail.version.should == 4
+      context "transitioning to cancelled when statemented" do
+        let(:statement) { create(:statement, facility: @facility, created_by: @user.id, account: @account) }
+
+        before :each do
+          @order_detail.update_attribute :statement_id, statement.id
+          @order_detail.reload
+          @order_detail.to_inprocess!
+          @order_detail.to_complete!
+          @order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10)
+          expect(@order_detail.statement.present?).to be_true
+          expect(@order_detail.actual_total).to_not be_nil
+        end
+
+        it "should transition if not reconciled" do
+          expect(@order_detail.cancelable?).to be_true
+          @order_detail.to_cancelled!
+          expect(@order_detail.reconciled?).to be_false
+          expect(@order_detail.cancelled?).to be_true
+        end
+
+        it "should not transition if reconciled" do
+          @order_detail.to_reconciled!
+          expect(@order_detail.reconciled?).to be_true
+          expect(@order_detail.cancelable?).to be_false
+          expect { @order_detail.to_cancelled! }.to raise_exception AASM::InvalidTransition
+          expect(@order_detail.reconciled?).to be_true
+          expect(@order_detail.cancelled?).to be_false
+        end
       end
 
       it "should transition to reconciled" do
