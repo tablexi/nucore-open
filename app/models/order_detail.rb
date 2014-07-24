@@ -868,7 +868,10 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def clear_statement
-    self.statement = nil
+    if statement.present?
+      statement.remove_order_detail(self)
+      self.statement = nil
+    end
   end
 
 end

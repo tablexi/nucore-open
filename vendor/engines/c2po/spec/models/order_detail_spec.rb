@@ -12,6 +12,7 @@ describe OrderDetail do
 
   before :each do
     Settings.order_details.status_change_hooks = nil
+
     expect(item).to be_valid
     expect(order).to be_valid
     expect(order_detail.state).to eq 'new'
@@ -32,28 +33,49 @@ describe OrderDetail do
       let(:new_account) { create(:purchase_order_account, account_users_attributes: account_users_attributes_hash(user: user)) }
       let(:original_statement) { create(:statement, facility: facility, created_by: user.id, account: account) }
 
-      before :each do
-        order_detail.update_attribute :statement_id, original_statement.id
+      def move_to_new_account
         expect { order_detail.update_account(new_account) }
           .to change{order_detail.statement}.from(original_statement).to(nil)
         expect(order_detail.account).to be new_account
+        original_statement.reload
       end
 
-      it 'should set estimated costs and assign account' do
-        costs = price_policy.estimate_cost_and_subsidy(order_detail.quantity)
-        expect(order_detail.estimated_cost).to eq costs[:cost]
-        expect(order_detail.estimated_subsidy).to eq costs[:subsidy]
-        expect(order_detail).to be_cost_estimated
+      context 'with estimated costs' do
+        before :each do
+          order_detail.update_attribute :statement_id, original_statement.id
+          move_to_new_account
+        end
+
+        it 'should set estimated costs and assign account' do
+          costs = price_policy.estimate_cost_and_subsidy(order_detail.quantity)
+          expect(order_detail.estimated_cost).to eq costs[:cost]
+          expect(order_detail.estimated_subsidy).to eq costs[:subsidy]
+          expect(order_detail).to be_cost_estimated
+        end
       end
 
-      it 'should remove itself from its statement' do
-        expect(order_detail.statement).to be_nil
-        expect(original_statement.statement_rows.map(&:order_detail))
-          .to_not include(order_detail)
-      end
+      context 'with actual costs' do
+        before :each do
+          order_detail.update_attribute :statement_id, original_statement.id
+          order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10)
+          order_detail.save!
+          original_statement.add_order_detail(order_detail)
+          original_statement.save!
 
-      it 'should not have a statement date' do
-        expect(order_detail.statement_date).to be_nil
+          expect(original_statement.rows_for_order_detail(order_detail).count).to eq 1
+        end
+
+        it 'should remove itself from its statement' do
+          expect { move_to_new_account }.to change{order_detail.statement}
+            .from(original_statement).to(nil)
+          expect(original_statement.rows_for_order_detail(order_detail).count).to eq 0
+        end
+
+        it 'should not have a statement date' do
+          original_statement_date = order_detail.statement_date
+          expect { move_to_new_account }.to change{order_detail.statement_date}
+            .from(original_statement_date).to(nil)
+        end
       end
 
       context 'state is complete' do
