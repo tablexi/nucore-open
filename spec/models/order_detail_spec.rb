@@ -2,6 +2,12 @@ require 'spec_helper'
 require 'timecop'
 
 describe OrderDetail do
+  let(:account) { @account }
+  let(:facility) { @facility }
+  let(:facility_account) { @facility_account }
+  let(:order_detail) { @order_detail }
+  let(:user) { @user }
+
   before(:each) do
     Settings.order_details.status_change_hooks = nil
     @facility = create(:facility)
@@ -447,32 +453,32 @@ describe OrderDetail do
       end
 
       context "transitioning to cancelled when statemented" do
-        let(:statement) { create(:statement, facility: @facility, created_by: @user.id, account: @account) }
+        let(:statement) { create(:statement, facility: facility, created_by: user.id, account: account) }
 
         before :each do
-          @order_detail.update_attribute :statement_id, statement.id
-          @order_detail.reload
-          @order_detail.to_inprocess!
-          @order_detail.to_complete!
-          @order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10)
-          expect(@order_detail.statement.present?).to be_true
-          expect(@order_detail.actual_total).to_not be_nil
+          order_detail.update_attribute :statement_id, statement.id
+          order_detail.reload
+          order_detail.to_inprocess!
+          order_detail.to_complete!
+          order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10)
+          expect(order_detail.statement).to be_present
+          expect(order_detail.actual_total).to_not be_nil
         end
 
         it "should transition if not reconciled" do
-          expect(@order_detail.cancelable?).to be_true
-          @order_detail.to_cancelled!
-          expect(@order_detail.reconciled?).to be_false
-          expect(@order_detail.cancelled?).to be_true
+          expect(order_detail).to be_cancelable
+          order_detail.to_cancelled!
+          expect(order_detail).to_not be_reconciled
+          expect(order_detail).to be_cancelled
         end
 
         it "should not transition if reconciled" do
-          @order_detail.to_reconciled!
-          expect(@order_detail.reconciled?).to be_true
-          expect(@order_detail.cancelable?).to be_false
-          expect { @order_detail.to_cancelled! }.to raise_exception AASM::InvalidTransition
-          expect(@order_detail.reconciled?).to be_true
-          expect(@order_detail.cancelled?).to be_false
+          order_detail.to_reconciled!
+          expect(order_detail).to be_reconciled
+          expect(order_detail).to_not be_cancelable
+          expect { order_detail.to_cancelled! }.to raise_exception AASM::InvalidTransition
+          expect(order_detail).to be_reconciled
+          expect(order_detail).to_not be_cancelled
         end
       end
 
@@ -814,29 +820,30 @@ describe OrderDetail do
   end
 
   context '#cancel_reservation' do
-    let(:statement) { create(:statement, facility: @facility, created_by: @user.id, account: @account) }
+    let(:statement) { create(:statement, facility: facility, created_by: user.id, account: account) }
 
     before :each do
       start_date = Time.zone.now + 1.day
-      setup_reservation @facility, @facility_account, @account, @user
-      place_reservation @facility, @order_detail, start_date
+      setup_reservation facility, facility_account, account, user
+      place_reservation facility, order_detail, start_date
       InstrumentPricePolicy.all.each do |price_policy|
         price_policy.update_attribute :cancellation_cost, 5.0
       end
-      create :user_price_group_member, user_id: @user.id, price_group_id: @price_group.id
-      @order_detail.update_attribute :statement_id, statement.id
+      create :user_price_group_member, user_id: user.id, price_group_id: @price_group.id
+      order_detail.update_attribute :statement_id, statement.id
     end
 
     context 'as admin' do
-      it 'should cancel without cancellation fee' do
-        original_statement = @order_detail.statement
-        expect { admin_cancel_with_fee_waived(@user, OrderStatus.cancelled.first) }
-          .to change{@order_detail.statement}.from(original_statement).to(nil)
+      it 'should cancel and waive the cancellation fee' do
+        original_statement = order_detail.statement
+        expect { admin_cancel_with_fee_waived(user, OrderStatus.cancelled.first) }
+          .to change{order_detail.statement}.from(original_statement).to(nil)
+        expect(original_statement.order_details).to_not include(order_detail)
       end
 
       it 'should cancel with a cancellation fee' do
-        expect { cancel_with_fee @user, OrderStatus.cancelled.first, true, true }
-          .to_not change{@order_detail.statement}
+        expect { cancel_with_fee user, OrderStatus.cancelled.first, true, true }
+          .to_not change{order_detail.statement}
       end
     end
 
@@ -844,33 +851,33 @@ describe OrderDetail do
       it 'should not cancel if reservation was already cancelled' do
         @instrument.update_attribute :min_cancel_hours, 25
         @reservation.update_attribute :canceled_at, Time.zone.now
-        expect(@order_detail.cancel_reservation(@user)).to be_false
+        expect(order_detail.cancel_reservation(user)).to be_false
       end
 
       it 'should cancel and add cancellation fee' do
-        expect { cancel_with_fee @user }.to_not change{@order_detail.statement}
+        expect { cancel_with_fee user }.to_not change{order_detail.statement}
       end
     end
 
     def admin_cancel_with_fee_waived(user, order_status)
-      expect(@order_detail.cancel_reservation(user, order_status, true, false)).to be_true
-      expect(@reservation.reload.canceled_by).to eq @user.id
+      expect(order_detail.cancel_reservation(user, order_status, true, false)).to be_true
+      expect(@reservation.reload.canceled_by).to eq user.id
       expect(@reservation.canceled_at).to_not be_nil
-      expect(@order_detail.reload.state).to eq 'cancelled'
-      expect(@order_detail.actual_cost).to be_nil
-      expect(@order_detail.actual_subsidy).to be_nil
+      expect(order_detail.reload.state).to eq 'cancelled'
+      expect(order_detail.actual_cost).to be_nil
+      expect(order_detail.actual_subsidy).to be_nil
     end
 
     def cancel_with_fee(*cancel_reservation_args)
       @instrument.update_attribute :min_cancel_hours, 25
       # make sure the @order_detail's product is up to date with the new min_cancel_hours
-      @order_detail.reload
-      expect(@order_detail.cancel_reservation(*cancel_reservation_args)).to be_true
-      expect(@reservation.reload.canceled_by).to eq @user.id
+      order_detail.reload
+      expect(order_detail.cancel_reservation(*cancel_reservation_args)).to be_true
+      expect(@reservation.reload.canceled_by).to eq user.id
       expect(@reservation.canceled_at).to_not be_nil
-      expect(@order_detail.reload.state).to eq 'complete'
-      expect(@order_detail.actual_cost).to eq @order_detail.price_policy.cancellation_cost
-      expect(@order_detail.actual_subsidy).to eq 0
+      expect(order_detail.reload.state).to eq 'complete'
+      expect(order_detail.actual_cost).to eq order_detail.price_policy.cancellation_cost
+      expect(order_detail.actual_subsidy).to eq 0
     end
   end
 

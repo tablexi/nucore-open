@@ -389,7 +389,7 @@ class OrderDetail < ActiveRecord::Base
 
   def cancelable?
     # can't cancel if the reservation isn't already canceled or if this OD has been added to a journal
-    state_is_cancelable? && journal.nil? && ! has_uncanceled_reservation?
+    state_is_cancelable? && journal.nil? && !has_uncanceled_reservation?
   end
 
   delegate :ordered_on_behalf_of?, :to => :order
