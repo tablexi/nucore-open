@@ -47,12 +47,6 @@ class Statement < ActiveRecord::Base
   end
 
   def rows_for_order_detail(order_detail)
-    if statement_rows.present?
-      statement_rows.find_all do |statement_row|
-        statement_row.order_detail == order_detail
-      end
-    else
-      []
-    end
+    statement_rows.where(order_detail_id: order_detail.id)
   end
 end
