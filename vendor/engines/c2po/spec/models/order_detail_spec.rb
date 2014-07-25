@@ -62,13 +62,13 @@ describe OrderDetail do
           original_statement.add_order_detail(order_detail)
           original_statement.save!
 
-          expect(original_statement.rows_for_order_detail(order_detail).count).to eq 1
+          expect(original_statement.rows_for_order_detail(order_detail)).to be_one
         end
 
         it 'should remove itself from its statement' do
           expect { move_to_new_account }.to change{order_detail.statement}
             .from(original_statement).to(nil)
-          expect(original_statement.rows_for_order_detail(order_detail).count).to eq 0
+          expect(original_statement.rows_for_order_detail(order_detail)).to be_none
         end
 
         it 'should not have a statement date' do

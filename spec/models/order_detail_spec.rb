@@ -85,7 +85,7 @@ describe OrderDetail do
 
     it 'does not save! if the record was not persisted' do
       expect(@order_detail).to receive(:persisted?).and_return false
-      expect(@order_detail).to_not receive :save!
+      expect(@order_detail).not_to receive :save!
       @order_detail.update_quantity new_quantity
       expect(@order_detail.quantity).to eq new_quantity
     end
@@ -462,23 +462,23 @@ describe OrderDetail do
           order_detail.to_complete!
           order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10)
           expect(order_detail.statement).to be_present
-          expect(order_detail.actual_total).to_not be_nil
+          expect(order_detail.actual_total).to be_present
         end
 
         it "should transition if not reconciled" do
           expect(order_detail).to be_cancelable
           order_detail.to_cancelled!
-          expect(order_detail).to_not be_reconciled
+          expect(order_detail).not_to be_reconciled
           expect(order_detail).to be_cancelled
         end
 
         it "should not transition if reconciled" do
           order_detail.to_reconciled!
           expect(order_detail).to be_reconciled
-          expect(order_detail).to_not be_cancelable
+          expect(order_detail).not_to be_cancelable
           expect { order_detail.to_cancelled! }.to raise_exception AASM::InvalidTransition
           expect(order_detail).to be_reconciled
-          expect(order_detail).to_not be_cancelled
+          expect(order_detail).not_to be_cancelled
         end
       end
 
@@ -887,7 +887,7 @@ describe OrderDetail do
     def admin_cancel_with_fee_waived(user, order_status)
       expect(order_detail.cancel_reservation(user, order_status, true, false)).to be_true
       expect(@reservation.reload.canceled_by).to eq user.id
-      expect(@reservation.canceled_at).to_not be_nil
+      expect(@reservation.canceled_at).to be_present
       expect(order_detail.reload.state).to eq 'cancelled'
       expect(order_detail.actual_cost).to be_nil
       expect(order_detail.actual_subsidy).to be_nil
@@ -899,7 +899,7 @@ describe OrderDetail do
       order_detail.reload
       expect(order_detail.cancel_reservation(*cancel_reservation_args)).to be_true
       expect(@reservation.reload.canceled_by).to eq user.id
-      expect(@reservation.canceled_at).to_not be_nil
+      expect(@reservation.canceled_at).to be_present
       order_detail.reload
       if order_detail.price_policy.present? && order_detail.price_policy.cancellation_cost > 0
         expect(order_detail.state).to eq 'complete'
