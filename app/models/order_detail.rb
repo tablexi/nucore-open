@@ -124,6 +124,11 @@ class OrderDetail < ActiveRecord::Base
     where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   end
 
+  def self.all_movable
+    where(journal_id: nil)
+    .where("order_details.state NOT IN('cancelled', 'reconciled')")
+  end
+
   scope :in_review, lambda { |facility|
     scoped.joins(:product).
     where(:products => {:facility_id => facility.id}).
@@ -143,6 +148,15 @@ class OrderDetail < ActiveRecord::Base
     where("order_details.reviewed_at < ?", Time.zone.now).
     where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL").
     order(:reviewed_at).reverse_order
+  end
+
+  def self.reassign_account!(account, order_details)
+    OrderDetail.transaction do
+      order_details.each do |order_detail|
+        order_detail.update_account(account)
+        order_detail.save!
+      end
+    end
   end
 
   def in_review?
@@ -820,6 +834,10 @@ class OrderDetail < ActiveRecord::Base
     end
 
     return msg_hash
+  end
+
+  def can_be_assigned_to_account?(account)
+    user.accounts.include?(account)
   end
 
   private
