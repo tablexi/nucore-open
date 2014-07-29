@@ -1,0 +1,19 @@
+= render partial: 'shared/transactions/headers'
+= content_for :h1 do
+  = current_facility
+= content_for :h2 do
+  %h2= t('.head')
+
+= content_for :sidebar do
+  = render partial: 'admin/shared/sidenav_billing', locals: { sidenav_tab: 'movable_transactions' }
+
+= simple_form_for @chart_string_reassignment_form, url: facility_movable_transactions_confirm_path do |form|
+  - @chart_string_reassignment_form.order_details.each do |order_detail|
+    = hidden_field_tag :'order_detail_ids[]', order_detail.id
+  = available_account_select_tag(form, @chart_string_reassignment_form.available_accounts)
+  %p= t('.account_select.explanation')
+  = submit_tag t('.submit'), class: 'btn btn-primary'
+
+.row
+  .span9
+    = render partial: 'shared/transactions/table_inside', locals: { order_details: @order_details }
