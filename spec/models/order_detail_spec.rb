@@ -2,6 +2,12 @@ require 'spec_helper'
 require 'timecop'
 
 describe OrderDetail do
+  let(:account) { @account }
+  let(:facility) { @facility }
+  let(:facility_account) { @facility_account }
+  let(:order_detail) { @order_detail }
+  let(:user) { @user }
+
   before(:each) do
     Settings.order_details.status_change_hooks = nil
     @facility = create(:facility)
@@ -79,27 +85,9 @@ describe OrderDetail do
 
     it 'does not save! if the record was not persisted' do
       expect(@order_detail).to receive(:persisted?).and_return false
-      expect(@order_detail).to_not receive :save!
+      expect(@order_detail).not_to receive :save!
       @order_detail.update_quantity new_quantity
       expect(@order_detail.quantity).to eq new_quantity
-    end
-  end
-
-  context "update account" do
-    before(:each) do
-      @price_group = create(:price_group, facility: @facility)
-      create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
-      UserPriceGroupMember.create!(price_group: @price_group, user: @user)
-      @pp=create(:item_price_policy, product: @item, price_group: @price_group)
-    end
-
-    it 'should set estimated costs and assign account' do
-      @order_detail.update_account(@account)
-      @order_detail.account.should == @account
-      costs=@pp.estimate_cost_and_subsidy(@order_detail.quantity)
-      @order_detail.estimated_cost.should == costs[:cost]
-      @order_detail.estimated_subsidy.should == costs[:subsidy]
-      @order_detail.should be_cost_estimated
     end
   end
 
@@ -464,15 +452,34 @@ describe OrderDetail do
         @order_detail.version.should == 4
       end
 
-      it "should not transition to cancelled if part of statement" do
-        statement=create(:statement, facility: @facility, created_by: @user.id, account: @account)
-        @order_detail.update_attribute :statement_id, statement.id
-        @order_detail.reload.statement.should == statement
-        @order_detail.to_inprocess!
-        @order_detail.to_complete!
-        @order_detail.to_cancelled!
-        @order_detail.state.should == 'complete'
-        @order_detail.version.should == 4
+      context "transitioning to cancelled when statemented" do
+        let(:statement) { create(:statement, facility: facility, created_by: user.id, account: account) }
+
+        before :each do
+          order_detail.update_attribute :statement_id, statement.id
+          order_detail.reload
+          order_detail.to_inprocess!
+          order_detail.to_complete!
+          order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10)
+          expect(order_detail.statement).to be_present
+          expect(order_detail.actual_total).to be_present
+        end
+
+        context 'when not reconciled' do
+          it 'should transition to cancelled' do
+            expect { order_detail.to_cancelled! }.not_to raise_error
+          end
+        end
+
+        context 'when reconciled' do
+          before :each do
+            order_detail.to_reconciled!
+          end
+
+          it 'should not transition to cancelled' do
+            expect { order_detail.to_cancelled! }.to raise_exception AASM::InvalidTransition
+          end
+        end
       end
 
       it "should transition to reconciled" do
@@ -812,48 +819,150 @@ describe OrderDetail do
     end
   end
 
-  context 'cancel_reservation' do
+  context '#cancel_reservation' do
+    let(:statement) { create(:statement, facility: facility, created_by: user.id, account: account) }
+
     before :each do
-      start_date=Time.zone.now+1.day
-      setup_reservation @facility, @facility_account, @account, @user
-      place_reservation @facility, @order_detail, start_date
-      InstrumentPricePolicy.all.each{|pp| pp.update_attribute :cancellation_cost, 5.0}
-      create :user_price_group_member, user_id: @user.id, price_group_id: @price_group.id
+      start_date = Time.zone.now + 1.day
+      setup_reservation facility, facility_account, account, user
+      place_reservation facility, order_detail, start_date
+      create :user_price_group_member, user_id: user.id, price_group_id: @price_group.id
+      order_detail.update_attribute :statement_id, statement.id
     end
 
-    it 'should cancel as admin and not have cancellation fee' do
-      @order_detail.cancel_reservation(@user, OrderStatus.cancelled.first, true).should be_true
-      @reservation.reload.canceled_by.should == @user.id
-      @reservation.canceled_at.should_not be_nil
-      @order_detail.reload.state.should == 'cancelled'
+    shared_context 'instrument minimum cancel hours' do
+      before :each do
+        @instrument.update_attribute :min_cancel_hours, 25
+        order_detail.reload
+      end
     end
 
-    it 'should not cancel as user if reservation was already cancelled' do
-      @instrument.update_attribute :min_cancel_hours, 25
-      @reservation.update_attribute :canceled_at, Time.zone.now
-      @order_detail.cancel_reservation(@user).should be_false
+    shared_examples 'a cancellation without fees' do
+      it 'should be removed from the statement' do
+        expect(@original_statement.order_details).not_to include(order_detail)
+        expect(order_detail.statement).to be_blank
+      end
+
+      it 'cancelled its reservation' do
+        @reservation.reload
+        expect(@reservation.canceled_by).to eq user.id
+        expect(@reservation.canceled_at).to be_present
+      end
+
+      it 'is in a cancelled state' do
+        expect(order_detail.state).to eq 'cancelled'
+      end
+
+      it 'has no actual cost' do
+        expect(order_detail.actual_cost).to be_blank
+      end
+
+      it 'has no actual subsidy' do
+        expect(order_detail.actual_subsidy).to be_blank
+      end
     end
 
-    it 'should cancel as admin and add cancellation fee' do
-      cancel_with_fee @user, OrderStatus.cancelled.first, true, true
+    context 'with a cancellation fee' do
+      shared_examples 'a cancellation with fees applied' do
+        it 'should remain on the statement' do
+          expect(order_detail.statement).to eq @original_statement
+        end
+
+        it 'is in "complete" state' do
+          expect(order_detail.state).to eq 'complete'
+        end
+
+        it 'has its cancellation cost applied to its statement' do
+          expect(order_detail.actual_cost)
+            .to eq order_detail.price_policy.cancellation_cost
+        end
+
+        it 'has no actual subsidy' do
+          expect(order_detail.actual_subsidy).to eq 0
+        end
+      end
+
+      before :each do
+        set_cancellation_cost_for_all_policies 5.0
+      end
+
+      context 'as admin' do
+        context 'when waiving the cancellation fee' do
+          before :each do
+            @original_statement = order_detail.statement
+            order_detail.cancel_reservation(user, OrderStatus.cancelled.first, true, false)
+            order_detail.reload
+            @reservation.reload
+          end
+
+          it_should_behave_like 'a cancellation without fees'
+        end
+
+        context 'when applying the cancellation fee' do
+          include_context 'instrument minimum cancel hours'
+
+          before :each do
+            @original_statement = order_detail.statement
+            order_detail.cancel_reservation(user, OrderStatus.cancelled.first, true, true)
+          end
+
+          it_should_behave_like 'a cancellation with fees applied'
+        end
+      end
+
+      context 'as user' do
+        include_context 'instrument minimum cancel hours'
+
+        context 'the reservation was already cancelled' do
+
+          it 'should not cancel' do
+            @reservation.update_attribute :canceled_at, Time.zone.now
+            expect(order_detail.cancel_reservation(user)).to be_false
+          end
+        end
+
+        context 'when applying the cancellation fee' do
+
+          before :each do
+            @original_statement = order_detail.statement
+            order_detail.cancel_reservation(user)
+          end
+
+          it_should_behave_like 'a cancellation with fees applied'
+        end
+      end
     end
 
-    it 'should cancel as user and add cancellation fee' do
-      cancel_with_fee @user
+    context 'without a cancellation fee' do
+      include_context 'instrument minimum cancel hours'
+
+      before :each do
+        set_cancellation_cost_for_all_policies 0
+        @original_statement = order_detail.statement
+      end
+
+      context 'as admin' do
+        before :each do
+          order_detail.cancel_reservation(user, OrderStatus.cancelled.first, true, true)
+        end
+
+        it_should_behave_like 'a cancellation without fees'
+      end
+
+      context 'as user' do
+        before :each do
+          order_detail.cancel_reservation(user, OrderStatus.cancelled.first, false, true)
+        end
+
+        it_should_behave_like 'a cancellation without fees'
+      end
     end
 
-    def cancel_with_fee(*cancel_reservation_args)
-      @instrument.update_attribute :min_cancel_hours, 25
-      # make sure the @order_detail's product is up to date with the new min_cancel_hours
-      @order_detail.reload
-      @order_detail.cancel_reservation(*cancel_reservation_args).should be_true
-      @reservation.reload.canceled_by.should == @user.id
-      @reservation.canceled_at.should_not be_nil
-      @order_detail.reload.state.should == 'complete'
-      @order_detail.actual_cost.should == @order_detail.price_policy.cancellation_cost
-      @order_detail.actual_subsidy.should == 0
+    def set_cancellation_cost_for_all_policies(cost)
+      InstrumentPricePolicy.all.each do |price_policy|
+        price_policy.update_attribute :cancellation_cost, cost
+      end
     end
-
   end
 
 

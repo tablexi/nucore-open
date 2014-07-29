@@ -39,4 +39,14 @@ class Statement < ActiveRecord::Base
     self.statement_rows << StatementRow.new(:amount => order_detail.total, :order_detail => order_detail)
     self.order_details << order_detail
   end
+
+  def remove_order_detail(order_detail)
+    rows_for_order_detail(order_detail).each do |statement_row|
+      statement_row.destroy
+    end
+  end
+
+  def rows_for_order_detail(order_detail)
+    statement_rows.where(order_detail_id: order_detail.id)
+  end
 end

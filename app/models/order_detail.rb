@@ -318,9 +318,11 @@ class OrderDetail < ActiveRecord::Base
     transitions :to => :reconciled, :from => :complete, :guard => :actual_total
   end
 
+  CANCELABLE_STATES = [:new, :inprocess, :complete]
   aasm_event :to_cancelled do
-    transitions :to => :cancelled, :from => [:new, :inprocess, :complete], :guard => :cancelable?
+    transitions :to => :cancelled, :from => CANCELABLE_STATES, :guard => :cancelable?
   end
+
   # END acts_as_state_machine
 
   # block will be called after the transition, but before the save
@@ -377,9 +379,17 @@ class OrderDetail < ActiveRecord::Base
     raise ActiveRecord::RecordInvalid.new(self) unless save_as_user(user)
   end
 
+  def state_is_cancelable?
+    CANCELABLE_STATES.include?(state.to_sym)
+  end
+
+  def has_uncanceled_reservation?
+    reservation.present? && reservation.canceled_at.blank?
+  end
+
   def cancelable?
-    # can't cancel if the reservation isn't already canceled or if this OD has been added to a statement or journal
-    statement.nil? && journal.nil? && (reservation.nil? || reservation.canceled_at.present?)
+    # can't cancel if the reservation isn't already canceled or if this OD has been added to a journal
+    state_is_cancelable? && journal.nil? && !has_uncanceled_reservation?
   end
 
   delegate :ordered_on_behalf_of?, :to => :order
@@ -549,6 +559,7 @@ class OrderDetail < ActiveRecord::Base
 
   def update_account(new_account)
     self.account = new_account
+    clear_statement
     assign_estimated_price(account)
   end
 
@@ -628,14 +639,17 @@ class OrderDetail < ActiveRecord::Base
       return false unless res.save
 
       if admin_with_cancel_fee
+        clear_statement if cancellation_fee == 0
         cancel_with_fee order_status
       else
+        clear_statement
         change_status! order_status
       end
     else
       return false unless res && res.can_cancel?
       res.canceled_at = Time.zone.now # must set canceled_at after calling #can_cancel?
       return false unless res.save
+      clear_statement if cancellation_fee == 0
       cancel_with_fee order_status
     end
   end
@@ -850,6 +864,13 @@ class OrderDetail < ActiveRecord::Base
         self.dispute_resolved_at = dispute_resolved_at_was
         self.reviewed_at         = reviewed_at_was
       end
+    end
+  end
+
+  def clear_statement
+    if statement.present?
+      statement.remove_order_detail(self)
+      self.statement = nil
     end
   end
 
