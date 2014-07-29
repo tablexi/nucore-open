@@ -781,6 +781,7 @@ describe OrderDetail do
 
   context 'ordered_or_reserved_in_range' do
     before :each do
+      ignore_order_detail_account_validations
       @user = create(:user)
       @od_yesterday = place_product_order(@user, @facility, @item, @account)
       @od_yesterday.order.update_attributes(ordered_at: (Time.zone.now - 1.day))
@@ -964,7 +965,6 @@ describe OrderDetail do
       end
     end
   end
-
 
   context 'OrderDetailObserver' do
 

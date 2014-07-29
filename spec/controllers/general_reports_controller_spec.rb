@@ -57,7 +57,7 @@ describe GeneralReportsController do
       @facility_account=@authable.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
       @item = @authable.items.create!(FactoryGirl.attributes_for(:item, :facility_account => @facility_account))
 
-      @account = create_nufs_account_with_owner :guest
+      @account = create_nufs_account_with_owner :user
       define_open_account @item.account, @account.account_number
 
       @order_detail_ordered_today_unfulfilled = place_product_order(@user, @authable, @item)

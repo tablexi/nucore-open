@@ -65,9 +65,8 @@ describe FacilityJournalsController do
     context 'signed in' do
       before :each do
         grant_and_sign_in @director
+        ignore_account_validations
         create_order_details
-        # Don't worry about account validation in these tests
-        Settings.validator.class_name.constantize.any_instance.stub(:account_is_open!).and_return(true)
         @creation_errors = @journal.create_journal_rows!([@order_detail1, @order_detail3])
       end
       it 'should have been set up properly' do
@@ -203,6 +202,7 @@ describe FacilityJournalsController do
       end
 
       before :each do
+        ignore_account_validations
         create_order_details
         @params[:order_detail_ids] = [@order_detail1.id, @order_detail3.id]
         sign_in @admin
@@ -275,6 +275,7 @@ describe FacilityJournalsController do
 
     context 'with a mixed facility journal' do
       before :each do
+        ignore_account_validations
         create_order_details
 
         @facility2 = FactoryGirl.create(:facility)
@@ -312,6 +313,7 @@ describe FacilityJournalsController do
       @method = :get
       @action=:new
       @params = { :facility_id => @authable.url_name }
+      ignore_account_validations
       create_order_details
     end
 

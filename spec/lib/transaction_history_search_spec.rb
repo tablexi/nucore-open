@@ -21,6 +21,7 @@ describe TransactionSearch do
 
   end
   before :each do
+    ignore_order_detail_account_validations
     @user = FactoryGirl.create(:user)
     @staff = FactoryGirl.create(:user, :username => "staff")
     @staff2 = FactoryGirl.create(:user, :username => "staff2")
