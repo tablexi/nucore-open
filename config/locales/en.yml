@@ -81,7 +81,7 @@ en:
       orders: "Orders"
       reservations: "Reservations"
       accounts: "Payment Sources"
-      instruments: "Access List"
+      access_list: "Access List"
     admin:
       tabnav_account:
         recent: "Recent Payment Sources"
@@ -787,10 +787,10 @@ en:
         name: "Name"
         username: "Username or NetID"
         email: "Email"
-    instruments:
+    access_list:
       th:
         approval_received: "Approved?"
-        instrument_name: "Product"
+        product_name: "Product"
       update_approvals:
         submit: "Update Access List"
     new_external:

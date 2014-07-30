@@ -13,7 +13,7 @@ class UsersController < ApplicationController
   before_filter :init_current_facility, :except => [:password, :password_reset]
   before_filter :authenticate_user!, :except => [:password_reset]
   before_filter :check_acting_as
-  before_filter :load_user_from_user_id_param, only: [:accounts, :instruments, :instruments_approvals, :orders, :reservations, :switch_to]
+  before_filter :load_user_from_user_id_param, only: [:access_list, :access_list_approvals, :accounts, :orders, :reservations, :switch_to]
 
   load_and_authorize_resource :except => [:password, :password_reset]
 
@@ -126,21 +126,21 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
-  # GET /facilities/:facility_id/users/:user_id/instruments
-  def instruments
+  # GET /facilities/:facility_id/users/:user_id/access_list
+  def access_list
     @facility = current_facility
-    @instruments = @facility.products_requiring_approval.sort_by(&:name)
+    @products = @facility.products_requiring_approval.sort_by(&:name)
   end
 
-  # POST /facilities/:facility_id/users/:user_id/instruments/approvals
-  def instruments_approvals
+  # POST /facilities/:facility_id/users/:user_id/access_list/approvals
+  def access_list_approvals
     if update_approvals.any_changed?
-      flash[:notice] = I18n.t 'controllers.users.instruments_approvals.update.notice',
+      flash[:notice] = I18n.t 'controllers.users.access_list.update.notice',
         granted: update_approvals.granted, revoked: update_approvals.revoked
     else
-      flash[:alert] = I18n.t 'controllers.users.instruments_approvals.update.no_change'
+      flash[:alert] = I18n.t 'controllers.users.access_list.update.no_change'
     end
-    redirect_to facility_user_instruments_path(current_facility, @user)
+    redirect_to facility_user_access_list_path(current_facility, @user)
   end
 
   def email
@@ -153,12 +153,12 @@ class UsersController < ApplicationController
       current_facility.products_requiring_approval,
       @user,
       session_user
-    ).update_approvals(approved_instruments_from_params)
+    ).update_approvals(approved_products_from_params)
   end
 
-  def approved_instruments_from_params
-    if params[:approved_instruments].present?
-      Instrument.find(params[:approved_instruments])
+  def approved_products_from_params
+    if params[:approved_products].present?
+      Product.find(params[:approved_products])
     else
       []
     end
