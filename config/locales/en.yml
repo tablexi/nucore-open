@@ -787,6 +787,12 @@ en:
         name: "Name"
         username: "Username or NetID"
         email: "Email"
+    instruments:
+      th:
+        approval_received: "Approved?"
+        instrument_name: "Instrument"
+      update_approvals:
+        submit: "Update Instrument Approvals"
     new_external:
       head: "Add External User"
       main: "You may use this to grant NU Core access to external users. The email address and username must match."

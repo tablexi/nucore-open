@@ -146,6 +146,7 @@ Nucore::Application.routes.draw do
         match 'reservations', :to => 'users#reservations'
         match 'accounts',     :to => 'users#accounts'
         match 'instruments',  :to => 'users#instruments'
+        post  'instruments/approvals', :to => 'users#instruments_approvals'
       end
     else
       resources :users, :except => [:edit, :update, :new, :create], :constraints => {:id => /\d+/} do
@@ -154,6 +155,7 @@ Nucore::Application.routes.draw do
         match 'reservations', :to => 'users#reservations'
         match 'accounts',     :to => 'users#accounts'
         match 'instruments',  :to => 'users#instruments'
+        post  'instruments/approvals', :to => 'users#instruments_approvals'
       end
     end
     ######

@@ -40,6 +40,10 @@ class Product < ActiveRecord::Base
     where("products.id NOT IN (?)", exclusion_list)
   end
 
+  def self.requiring_approval
+    where(requires_approval: true)
+  end
+
 
   ## AR Hooks
   before_validation do
