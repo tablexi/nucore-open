@@ -19,6 +19,12 @@ class OrderDetail < ActiveRecord::Base
   before_validation :mark_dispute_resolved, :if => :resolve_dispute
   after_validation :reset_dispute
 
+  before_save :set_problem_order
+  def set_problem_order
+    self.problem = !!(complete? && (price_policy.nil? || reservation.try(:requires_but_missing_actuals?)))
+    true # problem might be false; we need the callback chain to continue
+  end
+
   belongs_to :product
   belongs_to :price_policy
   belongs_to :statement, :inverse_of => :order_details
@@ -689,14 +695,13 @@ class OrderDetail < ActiveRecord::Base
     actual_subsidy.to_f > 0 || estimated_subsidy.to_f > 0
   end
 
-
   #
   # If this +OrderDetail+ is #complete? and either:
   #   A) Does not have a +PricePolicy+ or
   #   B) Has a reservation with missing usage information
   # the method will return true, otherwise false
   def problem_order?
-    !!(complete? && (price_policy.nil? || reservation.try(:requires_but_missing_actuals?)))
+    self.problem
   end
 
   def missing_price_policy?

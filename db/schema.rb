@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140527201943) do
+ActiveRecord::Schema.define(:version => 20140730222842) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -85,10 +85,10 @@ ActiveRecord::Schema.define(:version => 20140527201943) do
     t.integer  "external_service_id"
     t.integer  "receiver_id"
     t.string   "receiver_type"
-    t.text     "response_data"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "external_id"
+    t.text     "response_data"
   end
 
   create_table "external_services", :force => true do |t|
@@ -208,6 +208,7 @@ ActiveRecord::Schema.define(:version => 20140527201943) do
     t.string   "reconciled_note"
     t.integer  "created_by",                                                            :null => false
     t.integer  "product_accessory_id"
+    t.boolean  "problem",                                                               :null => false
   end
 
   add_index "order_details", ["account_id"], :name => "fk_od_accounts"
