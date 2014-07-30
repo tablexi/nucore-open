@@ -87,5 +87,8 @@ FactoryGirl.define do
     end
   end
 
+  factory :instrument_requiring_approval, parent: :setup_instrument do
+    requires_approval { true }
+  end
 
 end
