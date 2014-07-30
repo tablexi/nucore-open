@@ -13,6 +13,7 @@ class UsersController < ApplicationController
   before_filter :init_current_facility, :except => [:password, :password_reset]
   before_filter :authenticate_user!, :except => [:password_reset]
   before_filter :check_acting_as
+  before_filter :load_user_from_user_id_param, only: [:access_list, :access_list_approvals, :accounts, :orders, :reservations, :switch_to]
 
   load_and_authorize_resource :except => [:password, :password_reset]
 
@@ -87,7 +88,6 @@ class UsersController < ApplicationController
 
   # GET /facilities/:facility_id/users/:user_id/switch_to
   def switch_to
-    @user = User.find(params[:user_id])
     unless session_user.id == @user.id
       session[:acting_user_id] = @user.id
       session[:acting_ref_url] = facility_users_path
@@ -97,7 +97,6 @@ class UsersController < ApplicationController
 
   # GET /facilities/:facility_id/users/:user_id/orders
   def orders
-    @user = User.find(params[:user_id])
     # order details for this facility
     @order_details = @user.order_details.
       non_reservations.
@@ -108,7 +107,6 @@ class UsersController < ApplicationController
 
   # GET /facilities/:facility_id/users/:user_id/reservations
   def reservations
-    @user = User.find(params[:user_id])
     # order details for this facility
     @order_details = @user.order_details.
       reservations.
@@ -119,7 +117,6 @@ class UsersController < ApplicationController
 
   # GET /facilities/:facility_id/users/:user_id/accounts
   def accounts
-    @user = User.find(params[:user_id])
     # accounts for this facility
     @account_users = @user.account_users.active
   end
@@ -129,16 +126,47 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
-  # GET /facilities/:facility_id/users/:user_id/instruments
-  def instruments
-    @user = User.find(params[:user_id])
-    @approved_instruments = current_facility.instruments.select{ |inst| inst.is_approved_for?(@user) }
+  # GET /facilities/:facility_id/users/:user_id/access_list
+  def access_list
+    @facility = current_facility
+    @products = @facility.products_requiring_approval.sort_by(&:name)
+  end
+
+  # POST /facilities/:facility_id/users/:user_id/access_list/approvals
+  def access_list_approvals
+    if update_approvals.any_changed?
+      flash[:notice] = I18n.t 'controllers.users.access_list.update.notice',
+        granted: update_approvals.granted, revoked: update_approvals.revoked
+    else
+      flash[:alert] = I18n.t 'controllers.users.access_list.update.no_change'
+    end
+    redirect_to facility_user_access_list_path(current_facility, @user)
   end
 
   def email
   end
 
   private
+
+  def update_approvals
+    @update_approvals ||= ProductApprover.new(
+      current_facility.products_requiring_approval,
+      @user,
+      session_user
+    ).update_approvals(approved_products_from_params)
+  end
+
+  def approved_products_from_params
+    if params[:approved_products].present?
+      Product.find(params[:approved_products])
+    else
+      []
+    end
+  end
+
+  def load_user_from_user_id_param
+    @user = User.find(params[:user_id])
+  end
 
   def username_lookup(username)
     return nil unless username.present?

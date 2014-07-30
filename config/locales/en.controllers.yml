@@ -110,3 +110,9 @@ en:
         blank: "The uploaded import file was blank. Please enter your orders and try the import again."
         fail_immediately: "The import failed. %{successes} line item(s) would have been created successfully, but %{failures} failed. Please download the error report below, view each error message, correct the error, and try to import again."
         fail_continue_on_error: "The import failed. %{successes} line item(s) created successfully, %{failures} failed. Please download the error report below, view each error message, correct the error, and try to import again."
+
+    users:
+      access_list:
+        update:
+          notice: "Product approvals updated: %{granted} granted, %{revoked} revoked."
+          no_change: "No product approvals were changed."

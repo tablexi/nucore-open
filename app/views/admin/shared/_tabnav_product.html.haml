@@ -5,7 +5,7 @@
   - if product.is_a?(Instrument)
     = tab 'Scheduling', facility_instrument_schedule_rules_path(current_facility, product), (secondary_tab == 'schedule_rules')
   - if product.requires_approval?
-    = tab 'Users', facility_instrument_users_path(current_facility, product), (secondary_tab == 'users')
+    = tab 'Access List', [current_facility, product, :users], (secondary_tab == 'users')
   - if product.requires_approval? && product.is_a?(Instrument)
     = tab ProductAccessGroup.model_name.human.pluralize, facility_instrument_product_access_groups_path(current_facility, product), (secondary_tab == 'restriction_levels')
   - if product.is_a?(Bundle)

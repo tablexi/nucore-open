@@ -1,0 +1,26 @@
+= content_for :h1 do
+  =h current_facility
+
+= content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'users' }
+
+= content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_users', :locals => { :secondary_tab => 'access_list' }
+
+%h1 #{@user.full_name} Access List
+- if @products.blank?
+  %p.notice #{@user.full_name} does not have any available products.
+- else
+  = form_for :user, url: facility_user_access_list_approvals_path(@facility, @user) do |form|
+    %table.table.table-striped.table-hover
+      %thead
+        %tr
+          %th.approval-column= t('.th.approval_received')
+          %th= t('.th.product_name')
+      %tbody
+        - @products.each do |product|
+          %tr
+            %td.approval-checkbox
+              = check_box_tag "approved_products[]", product.id, product.is_approved_for?(@user)
+            %td= link_to product, [product.facility, product, :users]
+    = submit_tag t('.update_approvals.submit'), class: ['btn', 'btn-primary']
