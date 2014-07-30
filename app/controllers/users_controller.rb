@@ -129,7 +129,7 @@ class UsersController < ApplicationController
   # GET /facilities/:facility_id/users/:user_id/instruments
   def instruments
     @facility = current_facility
-    @instruments = @facility.instruments_requiring_approval.sort_by(&:name)
+    @instruments = @facility.products_requiring_approval.sort_by(&:name)
   end
 
   # POST /facilities/:facility_id/users/:user_id/instruments/approvals
@@ -150,7 +150,7 @@ class UsersController < ApplicationController
 
   def update_approvals
     @update_approvals ||= ProductApprover.new(
-      current_facility.instruments_requiring_approval,
+      current_facility.products_requiring_approval,
       @user,
       session_user
     ).update_approvals(approved_instruments_from_params)
