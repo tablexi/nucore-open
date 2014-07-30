@@ -114,5 +114,5 @@ en:
     users:
       instruments_approvals:
         update:
-          notice: "Instrument approvals updated: %{granted} granted, %{revoked} revoked."
-          no_change: "No instrument approvals were changed."
+          notice: "Product approvals updated: %{granted} granted, %{revoked} revoked."
+          no_change: "No product approvals were changed."

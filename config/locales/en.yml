@@ -81,7 +81,7 @@ en:
       orders: "Orders"
       reservations: "Reservations"
       accounts: "Payment Sources"
-      instruments: "Available Instruments"
+      instruments: "Access List"
     admin:
       tabnav_account:
         recent: "Recent Payment Sources"
@@ -790,9 +790,9 @@ en:
     instruments:
       th:
         approval_received: "Approved?"
-        instrument_name: "Instrument"
+        instrument_name: "Product"
       update_approvals:
-        submit: "Update Instrument Approvals"
+        submit: "Update Access List"
     new_external:
       head: "Add External User"
       main: "You may use this to grant NU Core access to external users. The email address and username must match."

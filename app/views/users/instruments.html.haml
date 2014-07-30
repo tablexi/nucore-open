@@ -7,7 +7,7 @@
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_users', :locals => { :secondary_tab => 'instruments' }
 
-%h1 #{@user.full_name} Available Instruments
+%h1 #{@user.full_name} Access List
 - if @instruments.blank?
   %p.notice #{@user.full_name} does not have any available instruments.
 - else
