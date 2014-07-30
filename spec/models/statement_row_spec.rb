@@ -16,13 +16,12 @@ describe StatementRow do
 
   it 'should create' do
     assert_nothing_raised do
-      StatementRow.create!(:statement => @statement, :amount => 9.23, :order_detail => @order_detail)
+      StatementRow.create!(statement: @statement, order_detail: @order_detail)
     end
   end
 
 
   it { should validate_presence_of :order_detail_id }
   it { should validate_presence_of :statement_id }
-  it { should validate_numericality_of :amount }
 
 end
