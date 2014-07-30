@@ -6,6 +6,7 @@
     = tab t('facility_notifications.in_review.head'), facility_notifications_in_review_path, (sidenav_tab == 'in_review')
   - else
     = tab 'All Transactions', facility_transactions_path, (sidenav_tab == 'transactions')
+  = tab t('facilities.movable_transactions.head'), facility_movable_transactions_path, (sidenav_tab == 'movable_transactions')
   %li.divider
   = tab t('facility_accounts.accounts_receivable.head'), facility_accounts_receivable_path, (sidenav_tab == 'accounts_receivable')
   %li.divider

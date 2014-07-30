@@ -1,8 +1,12 @@
 class FacilitiesController < ApplicationController
   customer_tab  :index, :list, :show
   admin_tab     :edit, :manage, :schedule, :update, :agenda, :transactions
+  admin_tab     :reassign_chart_strings, :movable_transactions, :confirm_transactions, :move_transactions
   before_filter :authenticate_user!, :except => [:index, :show]  # public pages do not require authentication
   before_filter :check_acting_as, :except => [:index, :show]
+  before_filter :load_order_details, only: [:confirm_transactions, :move_transactions, :reassign_chart_strings]
+  before_filter :set_admin_billing_tab, only: [:confirm_transactions, :movable_transactions, :transactions]
+  before_filter :set_two_column_head_layout, only: [:movable_transactions, :transactions]
 
   load_and_authorize_resource :find_by => :url_name
   skip_load_and_authorize_resource :only => [:index, :show]
@@ -103,8 +107,90 @@ class FacilitiesController < ApplicationController
 
   # GET /facilities/transactions
   def transactions_with_search
-    @active_tab = 'admin_billing'
-    @layout = "two_column_head"
     paginate_order_details
+  end
+
+  # GET /facilities/1/movable_transactions
+  def movable_transactions_with_search
+    @order_details = @order_details.all_movable
+    @order_detail_action = :reassign_chart_strings
+    paginate_order_details 100
+  end
+
+  # POST /facilities/1/movable_transactions/reassign_chart_strings
+  def reassign_chart_strings
+    ensure_order_details_selected
+    initialize_chart_string_reassignment_form
+  end
+
+  # POST /facilities/1/movable_transactions/confirm
+  def confirm_transactions
+    load_transactions
+    initialize_chart_string_reassignment_form
+  end
+
+  # POST /facilities/1/movable_transactions/move
+  def move_transactions
+    begin
+      reassign_account_from_params!
+      bulk_reassignment_success
+    rescue ActiveRecord::RecordInvalid => reassignment_error
+      bulk_reassignment_failure(reassignment_error)
+    end
+    redirect_to facility_movable_transactions_path
+  end
+
+  def get_movable_transactions(account)
+    @order_details.find_all do |order_detail|
+      order_detail.can_be_assigned_to_account?(account)
+    end
+  end
+
+  private
+
+  def ensure_order_details_selected
+    if @order_details.count < 1
+      flash[:alert] = I18n.t('controllers.facilities.bulk_reassignment.no_transactions_selected')
+      redirect_to facility_movable_transactions_path(params[:facility_id])
+    end
+  end
+
+  def initialize_chart_string_reassignment_form
+    @chart_string_reassignment_form = ChartStringReassignmentForm.new(@order_details)
+    @date_range_field = 'journal_or_statement_date'
+  end
+
+  def load_order_details
+    @order_details = OrderDetail.where(id: params[:order_detail_ids])
+  end
+
+  def load_transactions
+    @selected_account = Account.find(params[:chart_string_reassignment_form][:account_id])
+    @movable_transactions = get_movable_transactions(@selected_account)
+    @unmovable_transactions = @order_details - @movable_transactions
+  end
+
+  def bulk_reassignment_success
+    flash[:notice] = I18n.t('controllers.facilities.bulk_reassignment.move.success',
+      count: @order_details.count)
+  end
+
+  def bulk_reassignment_failure(reassignment_error)
+    flash[:alert] = I18n.t 'controllers.facilities.bulk_reassignment.move.failure',
+      reassignment_error: reassignment_error,
+      order_detail_id: reassignment_error.record.id
+  end
+
+  def reassign_account_from_params!
+    account = Account.find(params[:account_id])
+    OrderDetail.reassign_account!(account, @order_details)
+  end
+
+  def set_admin_billing_tab
+    @active_tab = 'admin_billing'
+  end
+
+  def set_two_column_head_layout
+    @layout = 'two_column_head'
   end
 end

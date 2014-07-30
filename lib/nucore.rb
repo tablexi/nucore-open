@@ -81,6 +81,8 @@ module NUCore
         # do it all in 1 query if the DB (MySQL) can handle it
         return relation unless NUCore::Database.oracle?
 
+        return relation if relation.is_a? Array
+
         # If the limit has already been explicitly set, don't slice
         # Likely because the relation has already been paginated
         return relation if relation.limit_value && relation.limit_value < slice_size

@@ -5,6 +5,12 @@ en:
     accessories:
       create:
         success: "%{accessories} added"
+    facilities:
+      bulk_reassignment:
+        no_transactions_selected: Please select at least one transaction to move.
+        move:
+          success: "%{count} transactions were reassigned."
+          failure: "No transactions were reassigned. %{reassignment_error} on Order Detail #%{order_detail_id}."
     facility_accounts:
       create:
         expires_at_missing: "The chart string appears to be invalid. Either the fund, department, project, or activity could not be found."

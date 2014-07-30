@@ -12,7 +12,7 @@ describe FacilityOrdersController do
       :facility_account => @facility_account,
       :facility => @authable
     )
-    @account=create_nufs_account_with_owner
+    @account = create_nufs_account_with_owner :director
     @order_detail = place_product_order(@director, @authable, @product, @account)
     @order_detail.order.update_attributes!(:state => 'purchased')
     @params={ :facility_id => @authable.url_name }

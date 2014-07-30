@@ -625,6 +625,25 @@ en:
       is_active: "Is Active?"
       contact: "The following contact information will appear on statements and should indicate where payment should be sent"
       show_instrument_availability: Show Instrument Availability Status?
+
+    movable_transactions:
+      head: "Move Transactions"
+
+    confirm_transactions:
+      head: "Confirm Transaction Moves"
+      movable_transactions:
+        label: "Transactions that will be moved:"
+      unmovable_transactions:
+        label: "Transactions that will not be moved:"
+      submit: "Reassign chart string"
+
+    reassign_chart_strings:
+      account_select:
+        placeholder: "Select a chart string"
+        explanation: "All chart strings listed above are available to reassign to at least one of the selected transactions below."
+      head: "Move Transactions"
+      submit: "Reassign chart string"
+
     transactions:
       no_orders: There are no orders in this facility
 

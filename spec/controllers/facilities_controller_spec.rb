@@ -191,11 +191,11 @@ describe FacilitiesController do
 
   end
 
-  context "transactions" do
-    before(:each) do
-      @action = :transactions
+  shared_context "transactions" do |action|
+    before :each do
+      @action = action
       @method = :get
-      @params = { :facility_id => @authable.url_name }
+      @params = { facility_id: @authable.url_name }
       @user = @admin
     end
 
@@ -204,17 +204,24 @@ describe FacilitiesController do
     it "should use two column head" do
       sign_in @admin
       do_request
-      assigns[:layout].should == 'two_column_head'
+      expect(assigns[:layout]).to eq "two_column_head"
     end
 
     it "should query against the facility" do
       sign_in @admin
       do_request
-      assigns(:order_details).should contain_string_in_sql("`orders`.`facility_id` = ")
+      expect(assigns(:order_details)).to contain_string_in_sql "`orders`.`facility_id` = "
     end
 
-    it_should_deny_all [:senior_staff, :staff]
+    it_should_allow_managers_only
+  end
 
+  context "transactions" do
+    it_behaves_like "transactions", :transactions
+  end
+
+  context "movable_transactions" do
+    it_behaves_like "transactions", :movable_transactions
   end
 
 end

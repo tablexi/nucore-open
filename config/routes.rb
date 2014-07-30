@@ -253,6 +253,10 @@ Nucore::Application.routes.draw do
     get 'transactions',        :to => 'facilities#transactions'
     get 'in_review',           :to => 'facility_notifications#in_review',          :as => 'notifications_in_review'
     post 'in_review/mark',     :to => 'facility_notifications#mark_as_reviewed',   :as => 'notifications_mark_as_reviewed'
+    get 'movable_transactions', :to => 'facilities#movable_transactions'
+    post 'movable_transactions/reassign_chart_strings', :to => 'facilities#reassign_chart_strings'
+    post 'movable_transactions/confirm', :to => 'facilities#confirm_transactions'
+    post 'movable_transactions/move', :to => 'facilities#move_transactions'
 
     resources :statements, :controller => 'facility_statements', :only => [:index, :new, :show] do
       collection do

@@ -87,7 +87,8 @@ module TransactionSearch
 
   end
 
-  def paginate_order_details
+  def paginate_order_details(per_page = nil)
+    @per_page = per_page if per_page.present?
     @paginate_order_details = true
   end
 
@@ -126,6 +127,14 @@ module TransactionSearch
 
   def sort_and_paginate
     @order_details = @order_details_sort ? @order_details.reorder(@order_details_sort) : order_by_desc
-    @order_details = @order_details.paginate(:page => params[:page]) if @paginate_order_details
+    @order_details = @order_details.paginate(pagination_args) if @paginate_order_details
+  end
+
+  private
+
+  def pagination_args
+    args = { page: params[:page] }
+    args[:per_page] = @per_page if @per_page.present?
+    args
   end
 end

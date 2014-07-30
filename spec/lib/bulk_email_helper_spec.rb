@@ -11,8 +11,8 @@ describe BulkEmailHelper do
   end
 
   before :each do
+    ignore_order_detail_account_validations
     @owner = FactoryGirl.create(:user)
-    
     @purchaser = FactoryGirl.create(:user)
     @purchaser2 = FactoryGirl.create(:user)
     @purchaser3 = FactoryGirl.create(:user)

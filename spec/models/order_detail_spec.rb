@@ -15,13 +15,52 @@ describe OrderDetail do
     @user     = create(:user)
     @item     = @facility.items.create(attributes_for(:item, facility_account_id: @facility_account.id))
     @item.should be_valid
-    @account  = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
+    @user_accounts = create_list(:nufs_account, 5, account_users_attributes: account_users_attributes_hash(user: @user))
+    @account = @user_accounts.first
     @order    = @user.orders.create(attributes_for(:order, created_by: @user.id, account: @account, facility: @facility))
     @order.should be_valid
     @order_detail = @order.order_details.create(attributes_for(:order_detail).update(product_id: @item.id, account_id: @account.id))
     @order_detail.state.should == 'new'
     @order_detail.version.should == 1
     @order_detail.order_status.should be_nil
+  end
+
+  context 'account reassignment' do
+    let(:unassociated_account) { build_stubbed(:setup_account) }
+
+    describe '#can_be_assigned_to_account?' do
+      it 'may be reassigned to its current account' do
+        expect(@order_detail.can_be_assigned_to_account?(@order_detail.account))
+          .to be_true
+      end
+
+      it "may assign to any of its user's accounts" do
+        @user_accounts.each do |account|
+          expect(@order_detail.can_be_assigned_to_account?(account)).to be_true
+        end
+      end
+      it 'may not assign to an account its user does not have' do
+        expect(@order_detail.can_be_assigned_to_account?(unassociated_account))
+          .to be_false
+      end
+    end
+
+    describe '.reassign_account!' do
+      context 'the account is valid for all order_details' do
+        it 'reassigns them' do
+          @user_accounts.reverse.each do |account|
+            expect { OrderDetail.reassign_account!(account, [@order_detail]) }
+              .to change{@order_detail.account}.to account
+          end
+        end
+      end
+      context 'the account is not valid for all order_details' do
+        it 'raises ActiveRecord::RecordInvalid' do
+          expect { OrderDetail.reassign_account!(unassociated_account, [@order_detail]) }
+            .to raise_error ActiveRecord::RecordInvalid
+        end
+      end
+    end
   end
 
   context 'bundle' do
@@ -781,6 +820,7 @@ describe OrderDetail do
 
   context 'ordered_or_reserved_in_range' do
     before :each do
+      ignore_order_detail_account_validations
       @user = create(:user)
       @od_yesterday = place_product_order(@user, @facility, @item, @account)
       @od_yesterday.order.update_attributes(ordered_at: (Time.zone.now - 1.day))
@@ -964,7 +1004,6 @@ describe OrderDetail do
       end
     end
   end
-
 
   context 'OrderDetailObserver' do
 

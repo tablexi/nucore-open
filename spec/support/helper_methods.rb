@@ -34,6 +34,15 @@ def should_be_destroyed(var)
   assert dead
 end
 
+def ignore_order_detail_account_validations
+  OrderDetail.any_instance.stub(:account_usable_by_order_owner?).and_return(true)
+end
+
+def ignore_account_validations
+  Settings.validator.class_name.constantize.any_instance.stub(:account_is_open!).and_return(true)
+  ignore_order_detail_account_validations
+end
+
 #
 # Factory wrapper for creating an account with owner
 def create_nufs_account_with_owner(owner=:owner)
