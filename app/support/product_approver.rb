@@ -42,15 +42,17 @@ class ProductApprover
   end
 
   def revoke_access(product)
-    if product.is_approved_for?(@user)
-      get_product_user(product).try(:destroy)
-    end
+    destroy_product_user(product) if product.is_approved_for?(@user)
   end
 
   private
 
   def create_product_user(product)
-    ProductUser.new(product: product, user: @user, approved_by: @approver.id).save
+    ProductUser.create(product: product, user: @user, approved_by: @approver.id)
+  end
+
+  def destroy_product_user(product)
+    get_product_user(product).try(:destroy)
   end
 
   def get_product_user(product)
