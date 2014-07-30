@@ -165,8 +165,8 @@ class FacilitiesController < ApplicationController
   end
 
   def load_transactions
-    @account = Account.find(params[:chart_string_reassignment_form][:account_id])
-    @movable_transactions = get_movable_transactions(@account)
+    @selected_account = Account.find(params[:chart_string_reassignment_form][:account_id])
+    @movable_transactions = get_movable_transactions(@selected_account)
     @unmovable_transactions = @order_details - @movable_transactions
   end
 

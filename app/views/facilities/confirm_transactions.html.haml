@@ -7,7 +7,7 @@
 = content_for :sidebar do
   = render partial: 'admin/shared/sidenav_billing', locals: { sidenav_tab: 'movable_transactions' }
 
-%h3= @account
+%h3= @selected_account
 
 %h3= t('.movable_transactions.label')
 .row
@@ -15,7 +15,7 @@
     = render partial: 'shared/transactions/table_inside', locals: { order_details: @movable_transactions }
 
 = simple_form_for @chart_string_reassignment_form, url: facility_movable_transactions_move_path do |form|
-  = hidden_field_tag :account_id, @account.id
+  = hidden_field_tag :account_id, @selected_account.id
   - @movable_transactions.each do |order_detail|
     = hidden_field_tag :'order_detail_ids[]', order_detail.id
   = submit_tag t('.submit'), class: 'btn btn-primary'
