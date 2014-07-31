@@ -7,7 +7,6 @@ en:
     reconcile_table:
       th:
         order: "Order"
-        total: "Total"
         reconcile_note: "Reconcile Note"
   facility_accounts:
     credit_cards:
