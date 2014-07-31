@@ -53,22 +53,32 @@ module C2po
 
     private
 
-    def show_account(model_class)
-      @subnav     = 'billing_nav'
+    def set_billing_navigation # TODO potential before_filter: only: [:credit_cards, :purchase_orders]
+      @subnav = 'billing_nav'
       @active_tab = 'admin_billing'
-      @accounts   = model_class.need_reconciling(current_facility)
+    end
 
-      unless @accounts.empty?
-        selected_id=params[:selected_account]
+    def set_unreconciled_details
+      @unreconciled_details = OrderDetail
+        .account_unreconciled(current_facility, @selected)
+        .paginate(page: params[:page])
+    end
 
-        if selected_id.blank?
-          @selected=@accounts.first
-        else
-          @accounts.each{|a| @selected=a and break if a.id == selected_id.to_i }
-        end
+    def get_selected_account(selected_id)
+      if selected_id.present?
+        @accounts.find { |account| account.id == selected_id.to_i }
+      else
+        @accounts.first
+      end
+    end
 
-        @unreconciled_details=OrderDetail.account_unreconciled(current_facility, @selected)
-        @unreconciled_details=@unreconciled_details.paginate(:page => params[:page])
+    def show_account(model_class)
+      set_billing_navigation
+      @accounts = model_class.need_reconciling(current_facility)
+
+      if @accounts.present?
+        @selected = get_selected_account(params[:selected_account])
+        set_unreconciled_details
       end
     end
 
