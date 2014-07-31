@@ -4,6 +4,11 @@ en:
       instructions: Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'.
       owner: "Owner: %{owner}"
       balance: "Balance: %{balance}"
+    reconcile_table:
+      th:
+        order: "Order"
+        total: "Total"
+        reconcile_note: "Reconcile Note"
   facility_accounts:
     credit_cards:
       head: Reconcile Credit Cards

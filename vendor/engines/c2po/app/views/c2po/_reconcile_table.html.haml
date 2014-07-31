@@ -3,9 +3,9 @@
   %thead
     %tr
       %th
-      %th Order
-      %th Total
-      %th Reconcile Note
+      %th= t('.th.order')
+      %th= t('.th.total')
+      %th= t('.th.reconcile_note')
   %tbody
     - @unreconciled_details.each do |od|
       %tr
