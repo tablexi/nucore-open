@@ -60,6 +60,7 @@ module C2po
 
     def set_unreconciled_details
       @unreconciled_details = OrderDetail
+        .order([:account_id, :statement_id, :order_id, :id])
         .account_unreconciled(current_facility, @selected)
         .paginate(page: params[:page])
     end
