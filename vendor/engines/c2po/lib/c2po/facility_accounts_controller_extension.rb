@@ -58,13 +58,6 @@ module C2po
       @active_tab = 'admin_billing'
     end
 
-    def set_unreconciled_details
-      @unreconciled_details = OrderDetail
-        .order([:account_id, :statement_id, :order_id, :id])
-        .account_unreconciled(current_facility, @selected)
-        .paginate(page: params[:page])
-    end
-
     def get_selected_account(selected_id)
       if selected_id.present?
         @accounts.find { |account| account.id == selected_id.to_i }
@@ -73,13 +66,20 @@ module C2po
       end
     end
 
+    def get_unreconciled_details
+      OrderDetail
+        .order([:account_id, :statement_id, :order_id, :id])
+        .account_unreconciled(current_facility, @selected)
+        .paginate(page: params[:page])
+    end
+
     def show_account(model_class)
       set_billing_navigation
       @accounts = model_class.need_reconciling(current_facility)
 
       if @accounts.present?
         @selected = get_selected_account(params[:selected_account])
-        set_unreconciled_details
+        @unreconciled_details = get_unreconciled_details
       end
     end
 
