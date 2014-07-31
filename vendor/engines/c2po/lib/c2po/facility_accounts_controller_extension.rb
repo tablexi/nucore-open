@@ -30,8 +30,8 @@ module C2po
 
     # GET /facilities/:facility_id/accounts/credit_cards
     def credit_cards
-      show_account(CreditCardAccount)
-      render 'c2po/reconcile'
+      @accounts = CreditCardAccount.need_reconciling(current_facility)
+      render_account_reconcile
     end
 
     #POST /facilities/:facility_id/accounts/update_credit_cards
@@ -41,8 +41,8 @@ module C2po
 
     # GET /facilities/:facility_id/accounts/purchase_orders
     def purchase_orders
-      show_account(PurchaseOrderAccount)
-      render 'c2po/reconcile'
+      @accounts = PurchaseOrderAccount.need_reconciling(current_facility)
+      render_account_reconcile
     end
 
     # POST /facilities/:facility_id/accounts/update_purchase_orders
@@ -50,8 +50,18 @@ module C2po
       update_account(PurchaseOrderAccount, purchase_orders_facility_accounts_path)
     end
 
-
     private
+
+    def set_selected_account_and_order_details
+      @selected = get_selected_account(params[:selected_account])
+      @unreconciled_details = get_unreconciled_details
+    end
+
+    def render_account_reconcile
+      set_billing_navigation
+      set_selected_account_and_order_details if @accounts.present?
+      render 'c2po/reconcile'
+    end
 
     def set_billing_navigation # TODO potential before_filter: only: [:credit_cards, :purchase_orders]
       @subnav = 'billing_nav'
@@ -72,17 +82,6 @@ module C2po
         .account_unreconciled(current_facility, @selected)
         .paginate(page: params[:page])
     end
-
-    def show_account(model_class)
-      set_billing_navigation
-      @accounts = model_class.need_reconciling(current_facility)
-
-      if @accounts.present?
-        @selected = get_selected_account(params[:selected_account])
-        @unreconciled_details = get_unreconciled_details
-      end
-    end
-
 
     def update_account(model_class, redirect_path)
       @error_fields = {}
