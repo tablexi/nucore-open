@@ -4,7 +4,11 @@ class DropAmountFromStatementRow < ActiveRecord::Migration
   end
 
   def down
-    raise ActiveRecord::IrreversibleMigration
-    add_column :statement_rows, :amount # TODO repopulate from OrderDetail#total
+    add_column :statement_rows, :amount, :decimal, precision: 10, scale: 2,
+      null: false, after: :statement_id
+
+    StatementRow.all.each do |statement_row|
+      statement_row.update_attributes(amount: statement_row.order_detail.total)
+    end
   end
 end
