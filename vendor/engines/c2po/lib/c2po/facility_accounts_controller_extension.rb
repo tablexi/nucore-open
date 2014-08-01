@@ -2,6 +2,9 @@ module C2po
   module FacilityAccountsControllerExtension
     extend ActiveSupport::Concern
 
+    included do
+      before_filter :set_billing_navigation, only: [:credit_cards, :purchase_orders]
+    end
 
     module ClassMethods
       def billing_access_checked_actions
@@ -30,8 +33,8 @@ module C2po
 
     # GET /facilities/:facility_id/accounts/credit_cards
     def credit_cards
-      show_account(CreditCardAccount)
-      render 'c2po/reconcile'
+      @accounts = CreditCardAccount.need_reconciling(current_facility)
+      render_account_reconcile
     end
 
     #POST /facilities/:facility_id/accounts/update_credit_cards
@@ -41,8 +44,8 @@ module C2po
 
     # GET /facilities/:facility_id/accounts/purchase_orders
     def purchase_orders
-      show_account(PurchaseOrderAccount)
-      render 'c2po/reconcile'
+      @accounts = PurchaseOrderAccount.need_reconciling(current_facility)
+      render_account_reconcile
     end
 
     # POST /facilities/:facility_id/accounts/update_purchase_orders
@@ -50,28 +53,37 @@ module C2po
       update_account(PurchaseOrderAccount, purchase_orders_facility_accounts_path)
     end
 
-
     private
 
-    def show_account(model_class)
-      @subnav     = 'billing_nav'
+    def set_selected_account_and_order_details
+      @selected = get_selected_account(params[:selected_account])
+      @unreconciled_details = get_unreconciled_details
+    end
+
+    def render_account_reconcile
+      set_selected_account_and_order_details if @accounts.present?
+      render 'c2po/reconcile'
+    end
+
+    def set_billing_navigation
+      @subnav = 'billing_nav'
       @active_tab = 'admin_billing'
-      @accounts   = model_class.need_reconciling(current_facility)
+    end
 
-      unless @accounts.empty?
-        selected_id=params[:selected_account]
-
-        if selected_id.blank?
-          @selected=@accounts.first
-        else
-          @accounts.each{|a| @selected=a and break if a.id == selected_id.to_i }
-        end
-
-        @unreconciled_details=OrderDetail.account_unreconciled(current_facility, @selected)
-        @unreconciled_details=@unreconciled_details.paginate(:page => params[:page])
+    def get_selected_account(selected_id)
+      if selected_id.present?
+        @accounts.find_by(id: selected_id.to_i)
+      else
+        @accounts.first
       end
     end
 
+    def get_unreconciled_details
+      OrderDetail
+        .order([:account_id, :statement_id, :order_id, :id])
+        .account_unreconciled(current_facility, @selected)
+        .paginate(page: params[:page])
+    end
 
     def update_account(model_class, redirect_path)
       @error_fields = {}

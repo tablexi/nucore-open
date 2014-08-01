@@ -34,6 +34,8 @@ class OrderDetail < ActiveRecord::Base
   has_many   :notifications, :as => :subject, :dependent => :destroy
   has_many   :stored_files, :dependent => :destroy
 
+  delegate :invoice_number, to: :statement, prefix: true
+
   delegate :user, :facility, :ordered_at, :to => :order
   delegate :price_group, :to => :price_policy, :allow_nil => true
   def estimated_price_group

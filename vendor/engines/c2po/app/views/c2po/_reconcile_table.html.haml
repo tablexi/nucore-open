@@ -3,22 +3,24 @@
   %thead
     %tr
       %th
-      %th Order
-      %th Total
-      %th Reconcile Note
+      %th= Statement.human_attribute_name(:invoice_number)
+      %th= t('.th.order')
+      %th= Statement.human_attribute_name(:total_cost)
+      %th= t('.th.reconcile_note')
   %tbody
-    - @unreconciled_details.each do |od|
+    - @unreconciled_details.each do |order_detail|
       %tr
-        %td.centered= check_box_tag "order_detail[#{od.id}][reconciled]", '1', true, {:class => 'toggle'}
+        %td.centered= check_box_tag "order_detail[#{order_detail.id}][reconciled]", '1', true, class: 'toggle'
+        %td= "##{order_detail.statement_invoice_number}"
         %td.user-order-detail
           .order-detail-description
-            = link_to "##{od.order_id}", facility_order_path(current_facility, od.order_id)
-            = "-"
-            = link_to "#{od.id}", manage_order_detail_path(od), :class => 'manage-order-detail'
-            = ": #{od.product}"
-            - if od.note
-              .order-detail-extra.order-detail-note= od.note
+            = link_to "##{order_detail.order_id}", facility_order_path(current_facility, order_detail.order_id)
+            = '-'
+            = link_to "#{order_detail.id}", manage_order_detail_path(order_detail), class: 'manage-order-detail'
+            = ": #{order_detail.product}"
+            - if order_detail.note.present?
+              .order-detail-extra.order-detail-note= order_detail.note
 
-        %td= show_actual_total(od)
-        %td= text_field_tag "order_detail[#{od.id}][notes]", begin params[:order_detail][od.id.to_s][:notes] rescue '' end
+        %td= show_actual_total(order_detail)
+        %td= text_field_tag "order_detail[#{order_detail.id}][notes]", begin params[:order_detail][order_detail.id.to_s][:notes] rescue '' end
   = render partial: 'c2po/reconcile_action_row'
