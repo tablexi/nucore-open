@@ -36,9 +36,9 @@ module FacilityOrderStatusHelper
 
   def problem_orders
     current_facility.order_details.
+      problem_orders.
       non_reservations.
-      complete.
-      where(order_details: { problem: true })
+      complete
   end
 
   def disputed_orders

@@ -165,6 +165,10 @@ class OrderDetail < ActiveRecord::Base
     end
   end
 
+  def self.problem_order
+    where(problem: true)
+  end
+
   def in_review?
     # check in the database if self.id is in the scope
     self.class.all_in_review.find_by_id(self.id) ? true :false

@@ -433,8 +433,7 @@ ActiveRecord::Schema.define(:version => 20140730222842) do
   add_index "schedules", ["facility_id"], :name => "i_schedules_facility_id"
 
   create_table "statement_rows", :force => true do |t|
-    t.integer  "statement_id",                                   :null => false
-    t.decimal  "amount",          :precision => 10, :scale => 2, :null => false
+    t.integer  "statement_id",    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "order_detail_id"
