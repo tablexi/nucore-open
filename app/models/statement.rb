@@ -36,7 +36,7 @@ class Statement < ActiveRecord::Base
   end
 
   def add_order_detail(order_detail)
-    self.statement_rows << StatementRow.new(:amount => order_detail.total, :order_detail => order_detail)
+    self.statement_rows << StatementRow.new(order_detail: order_detail)
     self.order_details << order_detail
   end
 
