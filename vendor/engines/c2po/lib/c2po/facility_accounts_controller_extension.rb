@@ -2,6 +2,9 @@ module C2po
   module FacilityAccountsControllerExtension
     extend ActiveSupport::Concern
 
+    included do
+      before_filter :set_billing_navigation, only: [:credit_cards, :purchase_orders]
+    end
 
     module ClassMethods
       def billing_access_checked_actions
@@ -58,12 +61,11 @@ module C2po
     end
 
     def render_account_reconcile
-      set_billing_navigation
       set_selected_account_and_order_details if @accounts.present?
       render 'c2po/reconcile'
     end
 
-    def set_billing_navigation # TODO potential before_filter: only: [:credit_cards, :purchase_orders]
+    def set_billing_navigation
       @subnav = 'billing_nav'
       @active_tab = 'admin_billing'
     end
