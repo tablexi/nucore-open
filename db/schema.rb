@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140527201943) do
+ActiveRecord::Schema.define(:version => 20140730215658) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -433,7 +433,6 @@ ActiveRecord::Schema.define(:version => 20140527201943) do
 
   create_table "statement_rows", :force => true do |t|
     t.integer  "statement_id",                                   :null => false
-    t.decimal  "amount",          :precision => 10, :scale => 2, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "order_detail_id"
