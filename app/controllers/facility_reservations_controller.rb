@@ -228,10 +228,10 @@ class FacilityReservationsController < ApplicationController
 
   def problem_orders
     current_facility.order_details.
+      problem_orders.
       reservations.
       complete.
       joins(:reservation).order('reservations.reserve_start_at desc').
-      where(order_details: { problem: true })
   end
 
   def disputed_orders
