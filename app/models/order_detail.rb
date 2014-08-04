@@ -167,7 +167,7 @@ class OrderDetail < ActiveRecord::Base
     end
   end
 
-  def self.problem_order
+  def self.problem_orders
     where(problem: true)
   end
 
