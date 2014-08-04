@@ -178,10 +178,10 @@ ActiveRecord::Schema.define(:version => 20140730222842) do
   end
 
   create_table "order_details", :force => true do |t|
-    t.integer  "order_id",                                                              :null => false
+    t.integer  "order_id",                                                                                 :null => false
     t.integer  "parent_order_detail_id"
-    t.integer  "product_id",                                                            :null => false
-    t.integer  "quantity",                                                              :null => false
+    t.integer  "product_id",                                                                               :null => false
+    t.integer  "quantity",                                                                                 :null => false
     t.integer  "price_policy_id"
     t.decimal  "actual_cost",                            :precision => 10, :scale => 2
     t.decimal  "actual_subsidy",                         :precision => 10, :scale => 2
@@ -206,9 +206,9 @@ ActiveRecord::Schema.define(:version => 20140730222842) do
     t.integer  "statement_id"
     t.integer  "journal_id"
     t.string   "reconciled_note"
-    t.integer  "created_by",                                                            :null => false
+    t.integer  "created_by",                                                                               :null => false
     t.integer  "product_accessory_id"
-    t.boolean  "problem",                                                               :null => false
+    t.boolean  "problem",                                                               :default => false, :null => false
   end
 
   add_index "order_details", ["account_id"], :name => "fk_od_accounts"
