@@ -33,15 +33,14 @@ module FacilityOrderStatusHelper
         facility_ods.new_or_inprocess
     end
   end
-  
-  #TODO make problem_order an SQL relation to speet things up
+
   def problem_orders
     current_facility.order_details.
+      problem_orders.
       non_reservations.
-      complete.
-      reject{|od| !od.problem_order?}
+      complete
   end
-  
+
   def disputed_orders
     current_facility.order_details.
       non_reservations.
@@ -50,7 +49,7 @@ module FacilityOrderStatusHelper
   def sort_column
     params[:sort] || 'order_number'
   end
-  
+
   def sort_direction
     (params[:dir] || '') == 'desc' ? 'desc' : 'asc'
   end

@@ -226,19 +226,20 @@ class FacilityReservationsController < ApplicationController
       order(order_by_clause)
   end
 
-  #TODO make problem_order an SQL relation to speet things up
   def problem_orders
     current_facility.order_details.
+      problem_orders.
       reservations.
       complete.
       joins(:reservation).order('reservations.reserve_start_at desc').
-      reject{|od| !od.problem_order?}
   end
+
   def disputed_orders
     current_facility.order_details.
       reservations.
       in_dispute
   end
+
   def sort_column
     # TK: check against a whitelist
     params[:sort] || 'date'
