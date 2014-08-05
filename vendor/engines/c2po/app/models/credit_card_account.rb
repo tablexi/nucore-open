@@ -24,6 +24,7 @@ class CreditCardAccount < Account
       .where('orders.facility_id' => facility.id)
       .where('accounts.type' => model_name)
       .where('order_details.state' => 'complete')
+      .where('statement_id IS NOT NULL')
       .map(&:account_id))
   end
 
