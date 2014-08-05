@@ -4,12 +4,12 @@ require 'controller_spec_helper'
 describe FacilityAccountsController do
   render_views
 
-  let(:authable) { @authable }
+  let(:facility) { FactoryGirl.create(:facility) }
 
   before(:all) { create_users }
 
   before(:each) do
-    @authable=FactoryGirl.create(:facility)
+    @authable = facility # TODO replace '@authable' with 'facility' throughout
     @facility_account=FactoryGirl.create(:facility_account, :facility => @authable)
     @item=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
     @account=FactoryGirl.create(:credit_card_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner) ])
@@ -156,7 +156,7 @@ describe FacilityAccountsController do
       expect(assigns :accounts).to be_kind_of ActiveRecord::Relation
       expect(assigns :selected).to eq assigns(:accounts).first
       expect(assigns :unreconciled_details)
-        .to eq OrderDetail.account_unreconciled(authable, assigns(:selected))
+        .to eq OrderDetail.account_unreconciled(facility, assigns(:selected))
       should render_template('c2po/reconcile')
     end
 
