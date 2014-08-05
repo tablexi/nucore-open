@@ -25,7 +25,7 @@ class CreditCardAccount < Account
       .where('accounts.type' => model_name)
       .where('order_details.state' => 'complete')
       .where('statement_id IS NOT NULL')
-      .map(&:account_id))
+      .pluck(:account_id))
   end
 
   def formatted_expires_at
