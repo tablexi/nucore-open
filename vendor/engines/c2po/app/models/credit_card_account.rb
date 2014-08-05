@@ -18,14 +18,8 @@ class CreditCardAccount < Account
   end
 
   def self.need_reconciling(facility)
-    where(id: OrderDetail
-      .joins(:order, :account)
-      .select('DISTINCT(order_details.account_id) AS account_id')
-      .where('orders.facility_id' => facility.id)
-      .where('accounts.type' => model_name)
-      .where('order_details.state' => 'complete')
-      .where('statement_id IS NOT NULL')
-      .pluck(:account_id))
+    accounts = OrderDetail.unreconciled_accounts(facility, model_name)
+    where(id: accounts.pluck(:account_id))
   end
 
   def formatted_expires_at
