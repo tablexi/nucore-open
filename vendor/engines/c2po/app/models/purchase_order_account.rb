@@ -12,13 +12,14 @@ class PurchaseOrderAccount < Account
     desc
   end
 
-
   def self.need_reconciling(facility)
-    account_ids = OrderDetail.joins(:order, :account).
-                              select('DISTINCT(order_details.account_id) AS account_id').
-                              where('orders.facility_id = ? AND accounts.type = ? AND order_details.state = ? AND statement_id IS NOT NULL', facility.id, model_name, 'complete').
-                              all
-
-    find(account_ids.collect{|a| a.account_id})
+    where(id: OrderDetail
+      .joins(:order, :account)
+      .select('DISTINCT(order_details.account_id) AS account_id')
+      .where('orders.facility_id' => facility.id)
+      .where('accounts.type' => model_name)
+      .where('order_details.state' => 'complete')
+      .where('statement_id IS NOT NULL')
+      .pluck(:account_id))
   end
 end
