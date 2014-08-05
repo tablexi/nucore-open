@@ -145,14 +145,7 @@ describe FacilityAccountsController do
     end
   end
 
-  context 'credit_cards with account' do
-
-    before :each do
-      ccact=FactoryGirl.build(:credit_card_account)
-      prepare_for_account_show(:credit_cards, ccact)
-      @params[:selected_account]=ccact.id
-    end
-
+  shared_examples 'an authable account' do
     it_should_require_login
 
     it_should_deny_all [:staff, :senior_staff]
@@ -168,7 +161,16 @@ describe FacilityAccountsController do
     end
 
     it 'should test selected_account param'
+  end
 
+  context 'credit_cards with account' do
+    before :each do
+      cc_account = FactoryGirl.build(:credit_card_account)
+      prepare_for_account_show(:credit_cards, cc_account)
+      @params[:selected_account] = cc_account.id
+    end
+
+    it_behaves_like 'an authable account'
   end
 
 
@@ -193,28 +195,12 @@ describe FacilityAccountsController do
 
 
   context 'purchase_orders with account' do
-
     before :each do
-      poact=FactoryGirl.build(:purchase_order_account)
-      prepare_for_account_show(:purchase_orders, poact)
+      po_account = FactoryGirl.build(:purchase_order_account)
+      prepare_for_account_show(:purchase_orders, po_account)
     end
 
-    it_should_require_login
-
-    it_should_deny_all [:staff, :senior_staff]
-
-    it_should_allow_all facility_managers do
-      expect(assigns :subnav).to eq 'billing_nav'
-      expect(assigns :active_tab).to eq 'admin_billing'
-      expect(assigns :accounts).to be_kind_of ActiveRecord::Relation
-      expect(assigns :selected).to eq assigns(:accounts).first
-      expect(assigns :unreconciled_details)
-        .to eq OrderDetail.account_unreconciled(authable, assigns(:selected))
-      should render_template('c2po/reconcile')
-    end
-
-    it 'should test selected_account param'
-
+    it_behaves_like 'an authable account'
   end
 
 
