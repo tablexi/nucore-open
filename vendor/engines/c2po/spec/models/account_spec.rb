@@ -1,26 +1,48 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Account do
-  before(:each) do
-    @facility          = FactoryGirl.create(:facility)
-    @user              = FactoryGirl.create(:user)
-    @facility_account  = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @item              = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+  let(:account_users_attributes) { [{ user: user, created_by: user.id, user_role: "Owner" }] }
+  let(:cc_account) { create(:credit_card_account, account_users_attributes: account_users_attributes) }
+  let(:facility) { create(:setup_facility) }
+  let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
+  let(:item) { create(:setup_item, facility: facility) }
+  let(:po_account) { create(:purchase_order_account, account_users_attributes: account_users_attributes) }
+  let(:user) { create(:user) }
+
+  before :each do
+    facility.update_attributes(accepts_cc: true, accepts_po: true)
+    item.reload
   end
 
-  it "should return error if the product facility does not accept purchase orders" do
-    po_account = FactoryGirl.create(:purchase_order_account, :account_users_attributes => [{:user => @user, :created_by => @user.id, :user_role => 'Owner'}])
-    po_account.validate_against_product(@item, @user).should == nil
-    @facility.update_attributes(:accepts_po => false)
-    @item.reload #load fresh facility with update attributes
-    po_account.validate_against_product(@item, @user).should_not == nil
+  context "product facility does not accept purchase orders" do
+    before :each do
+      po_account.price_group_members = item.price_groups.map do |price_group|
+        AccountPriceGroupMember.create!(account_id: po_account.id, price_group_id: price_group.id)
+      end
+      expect(po_account.validate_against_product(item, user)).to be_nil
+      facility.update_attributes(accepts_po: false)
+      item.reload
+    end
+
+    it "should produce an error string" do
+      expect(po_account.validate_against_product(item, user))
+        .to match /\bdoes not accept\b/
+    end
   end
 
-  it "should return error if the product facility does not accept credit cards" do
-    cc_account=FactoryGirl.create(:credit_card_account, :account_users_attributes => [{:user => @user, :created_by => @user.id, :user_role => 'Owner'}])
-    cc_account.validate_against_product(@item, @user).should == nil
-    @facility.update_attributes(:accepts_cc => false)
-    @item.reload #load fresh facility with update attributes
-    cc_account.validate_against_product(@item, @user).should_not == nil
+  context "product facility does not accept credit cards" do
+    before :each do
+      cc_account.price_group_members = item.price_groups.map do |price_group|
+        AccountPriceGroupMember.create!(account_id: cc_account.id, price_group_id: price_group.id)
+      end
+      expect(cc_account.validate_against_product(item, user)).to be_nil
+      facility.update_attributes(accepts_cc: false)
+      item.reload
+    end
+
+    it "should produce an error string" do
+      expect(cc_account.validate_against_product(item, user))
+        .to match /\bdoes not accept\b/
+    end
   end
 end

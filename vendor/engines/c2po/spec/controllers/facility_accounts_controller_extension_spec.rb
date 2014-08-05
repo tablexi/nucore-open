@@ -156,11 +156,12 @@ describe FacilityAccountsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
-      expect(assigns(:subnav)).to eq('billing_nav')
-      expect(assigns(:active_tab)).to eq('admin_billing')
-      expect(assigns(:accounts)).to be_kind_of Array
-      assigns[:selected].should == assigns[:accounts].first
-      assigns[:unreconciled_details].first.should == OrderDetail.account_unreconciled(@authable, assigns[:selected]).first
+      expect(assigns :subnav).to eq('billing_nav')
+      expect(assigns :active_tab).to eq('admin_billing')
+      expect(assigns :accounts).to be_kind_of ActiveRecord::Relation
+      expect(assigns :selected).to eq assigns(:accounts).first
+      expect(assigns(:unreconciled_details).first)
+        .to eq OrderDetail.account_unreconciled(@authable, assigns(:selected)).first
       should render_template('c2po/reconcile')
     end
 
