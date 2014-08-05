@@ -1,5 +1,6 @@
 class PurchaseOrderAccount < Account
   include AffiliateAccount
+  include ReconcilableAccount
 
   belongs_to :facility
 
@@ -10,10 +11,5 @@ class PurchaseOrderAccount < Account
     desc = super
     desc += " / #{facility.name}" if facility
     desc
-  end
-
-  def self.need_reconciling(facility)
-    accounts = OrderDetail.unreconciled_accounts(facility, model_name)
-    where(id: accounts.pluck(:account_id))
   end
 end
