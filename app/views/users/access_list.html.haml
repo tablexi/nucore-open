@@ -20,7 +20,7 @@
           %th Scheduling Group
       %tbody
         - @products.each do |product|
-          %tr
+          %tr.js--access-list-row
             %td.approval-checkbox
               = check_box_tag "approved_products[]", product.id, product.is_approved_for?(@user)
             %td= link_to product, [product.facility, product, :users]
