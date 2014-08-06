@@ -84,8 +84,11 @@ class Product < ActiveRecord::Base
   end
 
   def can_be_used_by?(user)
-    return true unless requires_approval?
-    !(product_users.find_by_user_id(user.id).nil?)
+    if requires_approval?
+      product_user_exists?(user)
+    else
+      true
+    end
   end
 
   def to_param
@@ -110,10 +113,12 @@ class Product < ActiveRecord::Base
     end
   end
 
-  def is_approved_for? (user)
-    return true if user.nil?
-    if requires_approval?
-      return requires_approval? && !product_users.find_by_user_id(user.id).nil?
+  def is_approved_for?(user)
+    case
+    when user.blank?
+      true
+    when requires_approval?
+      product_user_exists?(user)
     else
       true
     end
@@ -180,10 +185,25 @@ class Product < ActiveRecord::Base
     product_accessories.where(accessory_id: id).first
   end
 
+  def has_access_list?
+    respond_to?(:product_access_groups) && product_access_groups.any?
+  end
+
+  def access_group_for_user(user)
+    find_product_user(user).try(:product_access_group)
+  end
+
+  def find_product_user(user)
+    product_users.find_by_user_id(user.id)
+  end
+
   private
 
   def account_required
     true
   end
 
+  def product_user_exists?(user)
+    find_product_user(user).present?
+  end
 end
