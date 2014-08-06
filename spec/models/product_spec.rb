@@ -1,6 +1,13 @@
 require 'spec_helper'
 
 describe Product do
+
+  subject(:product) { create(:instrument_requiring_approval) }
+
+  let(:access_group) { create(:product_access_group, product: product) }
+  let(:schedule_rule) { product.schedule_rules.create(attributes_for :schedule_rule) }
+  let(:user) { create(:user) }
+
   class TestProduct < Product
     def account_required
       false
@@ -305,4 +312,35 @@ describe Product do
     end
   end
 
+  context '#access_group_for_user' do
+    context 'with an access group' do
+      before :each do
+        schedule_rule.product_access_groups = [ access_group ]
+      end
+
+      context 'with a user in the access group' do
+        before :each do
+          product_user = product
+            .product_users
+            .create(product: product, user: user, approved_by: user.id)
+          product_user.product_access_group = access_group
+          product_user.save
+        end
+
+        it 'returns the access group' do
+          expect(product.access_group_for_user(user)).to eq access_group
+        end
+      end
+
+      context 'with a user not in the access group' do
+        it 'returns no access group' do
+          expect(product.access_group_for_user(user)).to be_nil
+        end
+      end
+    end
+
+    it 'without an access group' do
+      expect(product.access_group_for_user(user)).to be_nil
+    end
+  end
 end
