@@ -134,12 +134,8 @@ class UsersController < ApplicationController
 
   # POST /facilities/:facility_id/users/:user_id/access_list/approvals
   def access_list_approvals
-    if update_approvals.any_changed?
-      flash[:notice] = I18n.t 'controllers.users.access_list.update.notice',
-        granted: update_approvals.granted, revoked: update_approvals.revoked
-    else
-      flash[:alert] = I18n.t 'controllers.users.access_list.update.no_change'
-    end
+    update_access_list_approvals
+    update_scheduling_groups
     redirect_to facility_user_access_list_path(current_facility, @user)
   end
 
@@ -147,6 +143,28 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def update_access_list_approvals
+    if update_approvals.any_changed?
+      flash[:notice] = I18n.t 'controllers.users.access_list.approval_update.notice',
+        granted: update_approvals.granted, revoked: update_approvals.revoked
+    end
+  end
+
+  def update_scheduling_groups
+    update_count = update_scheduling_groups_from_params
+    if update_count > 0
+      add_flash(:notice, I18n.t('controllers.users.access_list.scheduling_group_update.notice', update_count: update_count))
+    end
+  end
+
+  def update_scheduling_groups_from_params
+    params[:product_access_group].inject(0) do |update_count, (product_id, access_group_id)|
+      updater = SchedulingGroupUpdater.new(product_id, @user)
+      updater.update_access_group(access_group_id) && update_count += 1
+      update_count
+    end
+  end
 
   def update_approvals
     @update_approvals ||= ProductApprover.new(
@@ -189,6 +207,14 @@ class UsersController < ApplicationController
     end
     Notifier.new_user(:user => @user, :password => nil).deliver
     redirect_to facility_users_path(:user => @user.id)
+  end
+
+  def add_flash(key, message)
+    if flash[key].present?
+      flash[key] += " #{message}"
+    else
+      flash[key] = message
+    end
   end
 
 end
