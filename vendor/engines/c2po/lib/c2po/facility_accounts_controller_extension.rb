@@ -72,7 +72,7 @@ module C2po
 
     def get_selected_account(selected_id)
       if selected_id.present?
-        @accounts.find_by(id: selected_id.to_i)
+        @accounts.find_by_id(selected_id)
       else
         @accounts.first
       end

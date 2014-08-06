@@ -1,5 +1,6 @@
 class CreditCardAccount < Account
   include AffiliateAccount
+  include ReconcilableAccount
 
   belongs_to :facility
 
@@ -15,15 +16,6 @@ class CreditCardAccount < Account
     if expiration_year.nil? || expiration_year < Time.zone.now.year || expiration_year > Time.zone.now.year + 20
       self.errors.add(:expiration_year, "must be between #{Time.zone.now.year} and #{Time.zone.now.year + 20}")
     end
-  end
-
-  def self.need_reconciling(facility)
-    account_ids = OrderDetail.joins(:order, :account).
-                              select('DISTINCT(order_details.account_id) AS account_id').
-                              where('orders.facility_id = ? AND accounts.type = ? AND order_details.state = ? AND statement_id IS NOT NULL', facility.id, model_name, 'complete').
-                              all
-
-    find(account_ids.collect{|a| a.account_id})
   end
 
   def formatted_expires_at
