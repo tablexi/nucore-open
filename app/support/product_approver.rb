@@ -38,11 +38,11 @@ class ProductApprover
   end
 
   def approve_access(product)
-    create_product_user(product) unless product.is_approved_for?(@user)
+    create_product_user(product) unless product.can_be_used_by?(@user)
   end
 
   def revoke_access(product)
-    destroy_product_user(product) if product.is_approved_for?(@user)
+    destroy_product_user(product) if product.can_be_used_by?(@user)
   end
 
   private

@@ -74,7 +74,7 @@ class ProductsCommonController < ApplicationController
     end
 
     # is the user approved?
-    if @add_to_cart && !@product.is_approved_for?(acting_user)
+    if @add_to_cart && !@product.can_be_used_by?(acting_user)
       @add_to_cart       = false unless session_user and session_user.can_override_restrictions?(@product)
       @error = 'requires_approval'
     end

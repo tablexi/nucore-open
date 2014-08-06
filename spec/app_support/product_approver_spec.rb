@@ -11,7 +11,7 @@ describe ProductApprover do
   context '#approve_access' do
     it 'grants usage approval to a product' do
       expect { product_approver.approve_access(product) }
-        .to change{product.is_approved_for?(user)}.from(false).to(true)
+        .to change{product.can_be_used_by?(user)}.from(false).to(true)
       end
     end
 
@@ -22,7 +22,7 @@ describe ProductApprover do
 
     it 'revokes usage approval to a product' do
       expect { product_approver.revoke_access(product) }
-        .to change{product.is_approved_for?(user)}.from(true).to(false)
+        .to change{product.can_be_used_by?(user)}.from(true).to(false)
     end
   end
 
@@ -31,9 +31,9 @@ describe ProductApprover do
     def verify_approvals(approved_products)
       all_products.each do |product|
         if approved_products.include?(product)
-          expect(product.is_approved_for?(user)).to be_true
+          expect(product.can_be_used_by?(user)).to be_true
         else
-          expect(product.is_approved_for?(user)).to be_false
+          expect(product.can_be_used_by?(user)).to be_false
         end
       end
     end

@@ -113,17 +113,6 @@ class Product < ActiveRecord::Base
     end
   end
 
-  def is_approved_for?(user)
-    case
-    when user.blank?
-      true
-    when requires_approval?
-      product_user_exists?(user)
-    else
-      true
-    end
-  end
-
   def available_for_purchase?
     !is_archived? && facility.is_active?
   end
