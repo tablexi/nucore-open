@@ -381,4 +381,32 @@ describe Product do
       end
     end
   end
+
+  context '#has_access_list?' do
+    context 'when its type supports access groups' do
+      context 'when it has an access group' do
+        before :each do
+          product.product_access_groups = [ access_group ]
+        end
+
+        it 'has an access list' do
+          expect(product.has_access_list?).to be_true
+        end
+      end
+
+      context 'when it has no access groups' do
+        it 'does not have an access list' do
+          expect(product.has_access_list?).to be_false
+        end
+      end
+    end
+
+    context 'when its type does not support access groups' do
+      let(:generic_item) { build(:setup_item) }
+
+      it 'does not have an access list' do
+        expect(generic_item.has_access_list?).to be_false
+      end
+    end
+  end
 end
