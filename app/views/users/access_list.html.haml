@@ -2,14 +2,14 @@
   =h current_facility
 
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'users' }
+  = render partial: 'admin/shared/sidenav_users', locals: { sidenav_tab: 'users' }
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_users', :locals => { :secondary_tab => 'access_list' }
+  = render partial: 'admin/shared/tabnav_users', locals: { secondary_tab: 'access_list' }
 
 %h1 #{@user.full_name} Access List
 - if @products.blank?
-  %p.notice #{@user.full_name} does not have any available products.
+  %p.notice= t('.no_products', name: @user.full_name)
 - else
   = form_for :user, url: facility_user_access_list_approvals_path(@facility, @user) do |form|
     %table.table.table-striped.table-hover
@@ -17,7 +17,7 @@
         %tr
           %th.approval-column= t('.th.approval_received')
           %th= t('.th.product_name')
-          %th Scheduling Group
+          %th= t('.th.scheduling_group')
       %tbody
         - @products.each do |product|
           %tr.js--access-list-row
