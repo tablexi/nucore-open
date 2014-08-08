@@ -129,7 +129,7 @@ class UsersController < ApplicationController
   # GET /facilities/:facility_id/users/:user_id/access_list
   def access_list
     @facility = current_facility
-    @products = @facility.products_requiring_approval.sort_by(&:name)
+    @products_by_type = @facility.products_requiring_approval_by_type
   end
 
   # POST /facilities/:facility_id/users/:user_id/access_list/approvals

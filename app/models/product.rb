@@ -44,6 +44,9 @@ class Product < ActiveRecord::Base
     where(requires_approval: true)
   end
 
+  def self.requiring_approval_by_type
+    requiring_approval.order([:type, :name]).group_by(&:type)
+  end
 
   ## AR Hooks
   before_validation do

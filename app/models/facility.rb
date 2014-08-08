@@ -37,7 +37,7 @@ class Facility < ActiveRecord::Base
   validates_format_of    :abbreviation, :with => /^[a-zA-Z\d\-\.\s]+$/, :message => "may include letters, numbers, hyphens, spaces, or periods only"
   validates_format_of    :journal_mask, :with => /^C\d{2}$/, :message => "must be in the format C##"
 
-  delegate :requiring_approval, to: :products, prefix: true
+  delegate :requiring_approval, :requiring_approval_by_type, to: :products, prefix: true
 
   scope :active, :conditions => { :is_active => true }
 
