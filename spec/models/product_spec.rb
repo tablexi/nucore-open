@@ -382,6 +382,22 @@ describe Product do
     end
   end
 
+  context '#find_product_user' do
+    context 'when a user is a product user' do
+      it 'finds the product_user' do
+        expect(product.find_product_user(user)).to eq product_user
+      end
+    end
+
+    context 'when a user is not a product user' do
+      let(:other_user) { create(:user) }
+
+      it 'does not find a product_user' do
+        expect(product.find_product_user(other_user)).to be_nil
+      end
+    end
+  end
+
   context '#has_access_list?' do
     context 'when its type supports access groups' do
       context 'when it has an access group' do
