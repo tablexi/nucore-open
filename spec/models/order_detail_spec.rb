@@ -952,6 +952,7 @@ describe OrderDetail do
             order_detail.cancel_reservation(user, OrderStatus.cancelled.first, true, true)
           end
 
+          it_should_behave_like 'it was removed from its statement'
           it_should_behave_like 'a cancellation with fees applied'
         end
       end
