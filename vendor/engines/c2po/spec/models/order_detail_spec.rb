@@ -7,7 +7,7 @@ describe OrderDetail do
   let(:facility) { create :facility }
   let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
   let(:item) { setup_item_from_facility_account(facility_account) }
-  let(:order) { setup_order(user, account) }
+  let(:order) { create(:setup_order, account: account, product: item) }
   let(:user) { create :user }
 
   before :each do

@@ -289,16 +289,6 @@ def setup_item_from_facility_account(facility_account)
   )
 end
 
-def setup_order(user, account)
-  user.orders.create(
-    FactoryGirl.attributes_for(:order,
-      created_by: user.id,
-      account: account,
-      facility: account.facility
-    )
-  )
-end
-
 def setup_order_detail(order, product)
   order.order_details.create(
     FactoryGirl.attributes_for(:order_detail).update(
