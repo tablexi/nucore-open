@@ -584,20 +584,22 @@ class OrderDetail < ActiveRecord::Base
 
   def update_quantity(quantity)
     self.quantity = quantity
-
-    if cost_estimated?
-      assign_estimated_price
-    elsif actual_cost
-      assign_actual_price
-    end
-
+    reassign_price
     save! if persisted?
   end
 
   def update_account(new_account)
     self.account = new_account
     clear_statement
-    assign_estimated_price(account)
+    reassign_price
+  end
+
+  def reassign_price
+    if cost_estimated?
+      assign_estimated_price
+    elsif actual_cost
+      assign_actual_price
+    end
   end
 
   def assign_estimated_price(second_account=nil, date = Time.zone.now)

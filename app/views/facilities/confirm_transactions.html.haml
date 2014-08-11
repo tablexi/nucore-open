@@ -19,6 +19,7 @@
   - @movable_transactions.each do |order_detail|
     = hidden_field_tag :'order_detail_ids[]', order_detail.id
   = submit_tag t('.submit'), class: 'btn btn-primary'
+  = link_to 'Cancel', facility_movable_transactions_path(current_facility), class: 'btn'
 
 - if @unmovable_transactions.present?
   %h3= t('.unmovable_transactions.label')

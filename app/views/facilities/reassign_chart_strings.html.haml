@@ -13,6 +13,7 @@
   = available_account_select_tag(form, @chart_string_reassignment_form.available_accounts)
   %p= t('.account_select.explanation')
   = submit_tag t('.submit'), class: 'btn btn-primary'
+  = link_to 'Cancel', facility_movable_transactions_path(current_facility), class: 'btn'
 
 .row
   .span9

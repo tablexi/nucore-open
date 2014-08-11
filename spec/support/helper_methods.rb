@@ -275,3 +275,25 @@ def reset_settings
     Rails.root.join("config", "environments", "#{Rails.env}.yml").to_s
   )
 end
+
+def setup_account(factory, facility, user)
+  FactoryGirl.create(factory,
+    facility: facility,
+    account_users_attributes: account_users_attributes_hash(user: user)
+  )
+end
+
+def setup_item_from_facility_account(facility_account)
+  facility_account.facility.items.create(
+    FactoryGirl.attributes_for(:item, facility_account_id: facility_account.id)
+  )
+end
+
+def setup_order_detail(order, product)
+  order.order_details.create(
+    FactoryGirl.attributes_for(:order_detail).update(
+      product_id: product.id,
+      account_id: order.account.id
+    )
+  )
+end
