@@ -877,12 +877,19 @@ describe OrderDetail do
       end
     end
 
-    shared_examples 'a cancellation without fees' do
+    shared_examples 'it was removed from its statement' do
       it 'should be removed from the statement' do
         expect(@original_statement.order_details).not_to include(order_detail)
         expect(order_detail.statement).to be_blank
       end
 
+      it 'should have no #statement_date' do
+        expect(order_detail.statement_date).to be_blank
+      end
+    end
+
+    shared_examples 'a cancellation without fees' do
+      it_should_behave_like 'it was removed from its statement'
       it 'cancelled its reservation' do
         @reservation.reload
         expect(@reservation.canceled_by).to eq user.id
@@ -904,9 +911,7 @@ describe OrderDetail do
 
     context 'with a cancellation fee' do
       shared_examples 'a cancellation with fees applied' do
-        it 'should remain on the statement' do
-          expect(order_detail.statement).to eq @original_statement
-        end
+        it_should_behave_like 'it was removed from its statement'
 
         it 'is in "complete" state' do
           expect(order_detail.state).to eq 'complete'
@@ -935,6 +940,7 @@ describe OrderDetail do
             @reservation.reload
           end
 
+          it_should_behave_like 'it was removed from its statement'
           it_should_behave_like 'a cancellation without fees'
         end
 
@@ -946,6 +952,7 @@ describe OrderDetail do
             order_detail.cancel_reservation(user, OrderStatus.cancelled.first, true, true)
           end
 
+          it_should_behave_like 'it was removed from its statement'
           it_should_behave_like 'a cancellation with fees applied'
         end
       end
