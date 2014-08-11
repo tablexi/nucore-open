@@ -591,12 +591,12 @@ class OrderDetail < ActiveRecord::Base
   def update_account(new_account)
     self.account = new_account
     clear_statement
-    reassign_price(new_account)
+    reassign_price
   end
 
-  def reassign_price(new_account = nil)
+  def reassign_price
     if cost_estimated?
-      assign_estimated_price(new_account)
+      assign_estimated_price
     elsif actual_cost
       assign_actual_price
     end
