@@ -47,7 +47,7 @@ describe OrderDetail do
         original_statement.reload
       end
 
-      shared_examples_for 'its estimated costs were recalcualted' do
+      shared_examples_for 'its estimated costs were recalculated' do
         it 'should set the estimated cost' do
           expect(order_detail.estimated_cost).to eq costs[:cost]
         end
@@ -74,7 +74,7 @@ describe OrderDetail do
             move_to_new_account
           end
 
-          it_behaves_like 'its estimated costs were recalcualted'
+          it_behaves_like 'its estimated costs were recalculated'
         end
 
         context 'moving to an account that is eligible for its current price policy' do
@@ -90,11 +90,11 @@ describe OrderDetail do
             move_to_new_account
           end
 
-          it_behaves_like 'its estimated costs were recalcualted'
+          it_behaves_like 'its estimated costs were recalculated'
         end
       end
 
-      shared_examples_for 'its actual costs were recalcualted' do
+      shared_examples_for 'its actual costs were recalculated' do
         it 'should set the actual cost' do
           expect(order_detail.actual_cost).to eq costs[:cost]
         end
@@ -134,7 +134,7 @@ describe OrderDetail do
             move_to_new_account
           end
 
-          it_behaves_like 'its actual costs were recalcualted'
+          it_behaves_like 'its actual costs were recalculated'
         end
 
         context 'moving to an account that is eligible for its current price policy' do
@@ -145,7 +145,7 @@ describe OrderDetail do
             move_to_new_account
           end
 
-          it_behaves_like 'its actual costs were recalcualted'
+          it_behaves_like 'its actual costs were recalculated'
         end
       end
 
