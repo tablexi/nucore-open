@@ -6,6 +6,12 @@ describe OrderManagement::OrderDetailsController do
   let(:facility) { FactoryGirl.create(:setup_facility) }
   let(:item) { FactoryGirl.create(:setup_item, :facility => facility) }
   let(:instrument) { FactoryGirl.create(:setup_instrument, :facility => facility, :control_mechanism => 'timer') }
+  let(:new_account) { create(:setup_account, owner: order_detail.user) }
+  let(:order_detail) { reservation.order_detail }
+  let(:original_account) { create(:setup_account, owner: order_detail.user) }
+  let(:price_group) { original_account.price_groups.first }
+  let(:reservation) { create(:purchased_reservation, product: instrument) }
+  let(:statement) { create(:statement, facility: facility, created_by: order_detail.user.id, account: original_account) }
 
   before :each do
     @authable = facility
@@ -152,10 +158,20 @@ describe OrderManagement::OrderDetailsController do
     end
   end
 
-  describe 'update reservation' do
-    let(:reservation) { FactoryGirl.create(:purchased_reservation, :product => instrument) }
-    let(:order_detail) { reservation.order_detail }
+  shared_examples_for 'it was removed from its statement' do
+    it 'should no longer be statemented' do
+      expect { do_request }.to change{order_detail.reload.statement}
+        .from(statement).to(nil)
+    end
 
+    it 'should no longer have a statement date' do
+      original_statement_date = order_detail.statement_date
+      expect { do_request }.to change{order_detail.reload.statement_date}
+        .from(original_statement_date).to(nil)
+    end
+  end
+
+  describe 'update reservation' do
     before :each do
       @action = :update
       @method = :post
@@ -341,76 +357,94 @@ describe OrderManagement::OrderDetailsController do
         end
 
         context 'changing account' do
-          let(:account2) { FactoryGirl.create(:setup_account, :owner => order_detail.user) }
           before :each do
-            FactoryGirl.create(:account_price_group_member, :account => account2, :price_group => order_detail.account.price_groups.first)
-            @params[:order_detail] = {
-              :account_id => account2.id
-            }
-            do_request
+            AccountPriceGroupMember.create! price_group: price_group, account: original_account
+            AccountPriceGroupMember.create! price_group: price_group, account: new_account
+            order_detail.update_account(original_account)
+            order_detail.save
+            order_detail.update_attributes(statement_id: statement.id, price_policy_id: PricePolicy.first.id)
+
+            @params[:order_detail] = { account_id: new_account.id }
           end
 
           it 'has no errors' do
+            do_request
             expect(assigns(:order_detail).errors).to be_empty
           end
 
           it 'updates the account' do
-            expect(order_detail.reload.account).to eq(account2)
+            expect { do_request }.to change{order_detail.reload.account}
+              .from(original_account).to(new_account)
           end
 
-          it 'still has a price policy' do
-            expect(order_detail.reload.price_policy).to be
+          it 'should still have a price policy' do
+            expect { do_request }
+              .to_not change{order_detail.reload.price_policy.present?}
           end
+
+          it_behaves_like 'it was removed from its statement'
         end
 
         context 'cancelling' do
           before :each do
-            @params[:order_detail] = {
-              :order_status_id => OrderStatus.cancelled.first.id.to_s
-            }
+            AccountPriceGroupMember.create! price_group: price_group, account: original_account
+            AccountPriceGroupMember.create! price_group: price_group, account: new_account
+            order_detail.update_account(original_account)
+            order_detail.save
+            order_detail.update_attributes(statement_id: statement.id, price_policy_id: PricePolicy.first.id)
+
+            @params[:order_detail] = { order_status_id: OrderStatus.cancelled.first.id.to_s }
           end
 
           context 'with a cancellation fee' do
             before :each do
-              @params[:with_cancel_fee] = "1"
-              instrument.update_attributes!(:min_cancel_hours => 72)
+              @params[:with_cancel_fee] = '1'
+              instrument.update_attributes!(min_cancel_hours: 72)
               instrument.price_policies.first.update_attributes(
-                :cancellation_cost => 100,
-                :charge_for => InstrumentPricePolicy::CHARGE_FOR[:usage]
+                cancellation_cost: 100,
+                charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage]
               )
-
-              do_request
             end
 
             it 'should cancel' do
+              do_request
               expect(order_detail.reload).to be_complete
             end
 
-            it 'should have a price policy' do
-              expect(order_detail.reload.price_policy).to be
+            it 'should still have a price policy' do
+              expect { do_request }
+                .to_not change{order_detail.reload.price_policy.present?}
             end
 
             it 'should be priced at the price policy' do
-              expect(order_detail.reload.actual_total).to eq(100)
+              original_actual_total = order_detail.actual_total
+              expect { do_request }
+                .to change{order_detail.reload.actual_total}
+                .from(original_actual_total).to(100)
             end
+
+            it_behaves_like 'it was removed from its statement'
           end
 
           context 'without a cancellation fee' do
-            before :each do
-              do_request
-            end
-
             it 'should cancel' do
+              do_request
               expect(order_detail.reload).to be_cancelled
             end
 
             it 'should no longer have a price policy' do
-              expect(order_detail.reload.price_policy).to be_nil
+              original_price_policy = order_detail.price_policy
+              expect { do_request }
+                .to change{order_detail.reload.price_policy}
+                .from(original_price_policy).to(nil)
             end
 
             it 'should not have a price' do
+              do_request
               expect(order_detail.reload.actual_total).to be_nil
             end
+
+            it_behaves_like 'it was removed from its statement'
           end
         end
       end

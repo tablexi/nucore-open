@@ -289,11 +289,12 @@ def setup_item_from_facility_account(facility_account)
   )
 end
 
-def setup_order_detail(order, product)
+def setup_order_detail(order, product, statement = nil)
   order.order_details.create(
     FactoryGirl.attributes_for(:order_detail).update(
       product_id: product.id,
-      account_id: order.account.id
+      account_id: order.account.id,
+      statement_id: statement.try(:id)
     )
   )
 end

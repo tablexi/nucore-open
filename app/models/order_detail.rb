@@ -19,6 +19,8 @@ class OrderDetail < ActiveRecord::Base
   before_validation :mark_dispute_resolved, :if => :resolve_dispute
   after_validation :reset_dispute
 
+  before_save :clear_statement, if: :account_id_changed?
+
   before_save :set_problem_order
   def set_problem_order
     self.problem = !!(complete? && (price_policy.nil? || reservation.try(:requires_but_missing_actuals?)))
@@ -590,7 +592,6 @@ class OrderDetail < ActiveRecord::Base
 
   def update_account(new_account)
     self.account = new_account
-    clear_statement
     reassign_price
   end
 

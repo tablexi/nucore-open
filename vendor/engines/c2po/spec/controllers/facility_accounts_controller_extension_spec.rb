@@ -312,7 +312,9 @@ describe FacilityAccountsController do
     assert account.save
     statement=FactoryGirl.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => account)
     @order_detail.to_complete!
-    @order_detail.update_attributes(:account => account, :statement => statement, :fulfilled_at => Time.zone.now-1.day, :actual_cost => 10, :actual_subsidy => 2)
+    @order_detail.update_attributes(account: account, fulfilled_at: 1.day.ago, actual_cost: 10, actual_subsidy: 2)
+    @order_detail.statement = statement
+    @order_detail.save
   end
 
 end
