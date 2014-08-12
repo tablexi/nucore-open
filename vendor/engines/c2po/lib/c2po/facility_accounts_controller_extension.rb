@@ -80,12 +80,12 @@ module C2po
 
     def get_unreconciled_details
       OrderDetail
+        .account_unreconciled(current_facility, @selected)
         .order(%w(
           orders.account_id
           order_details.statement_id
           order_details.order_id
           order_details.id))
-        .account_unreconciled(current_facility, @selected)
         .paginate(page: params[:page])
     end
 

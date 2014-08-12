@@ -739,11 +739,11 @@ class OrderDetail < ActiveRecord::Base
     if account.is_a?(NufsAccount)
       joins(:journal).for_facility(facility).where("order_details.account_id = ?  AND order_details.state = ?  AND journals.is_successful = ?",
           account.id, 'complete', true
-        ).all
+        )
     else
       for_facility(facility).where("order_details.account_id = ?  AND order_details.state = ?  AND order_details.statement_id IS NOT NULL",
           account.id, 'complete'
-       ).all
+       )
     end
   end
 
