@@ -7,8 +7,10 @@ describe OrderManagement::OrderDetailsController do
   let(:item) { FactoryGirl.create(:setup_item, :facility => facility) }
   let(:instrument) { FactoryGirl.create(:setup_instrument, :facility => facility, :control_mechanism => 'timer') }
   let(:new_account) { create(:setup_account, owner: order_detail.user) }
+  let(:order_detail) { reservation.order_detail }
   let(:original_account) { create(:setup_account, owner: order_detail.user) }
   let(:price_group) { original_account.price_groups.first }
+  let(:reservation) { create(:purchased_reservation, product: instrument) }
   let(:statement) { create(:statement, facility: facility, created_by: order_detail.user.id, account: original_account) }
 
   before :each do
@@ -170,9 +172,6 @@ describe OrderManagement::OrderDetailsController do
   end
 
   describe 'update reservation' do
-    let(:reservation) { FactoryGirl.create(:purchased_reservation, :product => instrument) }
-    let(:order_detail) { reservation.order_detail }
-
     before :each do
       @action = :update
       @method = :post
@@ -362,6 +361,7 @@ describe OrderManagement::OrderDetailsController do
             AccountPriceGroupMember.create! price_group: price_group, account: original_account
             AccountPriceGroupMember.create! price_group: price_group, account: new_account
             order_detail.update_account(original_account)
+            order_detail.save
             order_detail.update_attributes(statement_id: statement.id, price_policy_id: PricePolicy.first.id)
 
             @params[:order_detail] = { account_id: new_account.id }
@@ -390,6 +390,7 @@ describe OrderManagement::OrderDetailsController do
             AccountPriceGroupMember.create! price_group: price_group, account: original_account
             AccountPriceGroupMember.create! price_group: price_group, account: new_account
             order_detail.update_account(original_account)
+            order_detail.save
             order_detail.update_attributes(statement_id: statement.id, price_policy_id: PricePolicy.first.id)
 
             @params[:order_detail] = { order_status_id: OrderStatus.cancelled.first.id.to_s }

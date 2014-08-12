@@ -1,13 +1,14 @@
 require 'spec_helper'
 
 describe OrderDetail do
-  subject(:order_detail) { setup_order_detail(order, item) }
+  subject(:order_detail) { setup_order_detail(order, item, original_statement) }
 
   let(:account) { setup_account(:purchase_order_account, facility, user) }
   let(:facility) { create :facility }
   let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
   let(:item) { setup_item_from_facility_account(facility_account) }
   let(:order) { create(:setup_order, account: account, product: item) }
+  let(:original_statement) { create(:statement, facility: facility, created_by: user.id, account: account) }
   let(:user) { create :user }
 
   before :each do
@@ -34,17 +35,16 @@ describe OrderDetail do
 
     context 'account is valid for the facility' do
       let(:new_account) { setup_account(:purchase_order_account, facility, user) }
-      let(:original_statement) { create(:statement, facility: facility, created_by: user.id, account: account) }
 
       before :each do
         AccountPriceGroupMember.create! price_group: base_price_group, account: new_account
       end
 
       def move_to_new_account
-        expect { order_detail.update_account(new_account) }
+        order_detail.update_account(new_account)
+        expect { order_detail.save }
           .to change{order_detail.statement}.from(original_statement).to(nil)
         expect(order_detail.account).to be new_account
-        original_statement.reload
       end
 
       shared_examples_for 'its estimated costs were recalculated' do
@@ -96,17 +96,16 @@ describe OrderDetail do
 
       shared_examples_for 'its actual costs were recalculated' do
         it 'should set the actual cost' do
-          expect(order_detail.actual_cost).to eq costs[:cost]
+          expect(order_detail.reload.actual_cost).to eq costs[:cost]
         end
 
         it 'should set the actual subsidy' do
-          expect(order_detail.actual_subsidy).to eq costs[:subsidy]
+          expect(order_detail.reload.actual_subsidy).to eq costs[:subsidy]
         end
       end
 
       context 'with actual costs' do
         before :each do
-          order_detail.update_attribute :statement_id, original_statement.id
           order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10)
           order_detail.save!
           original_statement.add_order_detail(order_detail)

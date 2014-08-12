@@ -592,7 +592,6 @@ class OrderDetail < ActiveRecord::Base
 
   def update_account(new_account)
     self.account = new_account
-    save if persisted?
     reassign_price
   end
 
