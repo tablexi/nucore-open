@@ -2,6 +2,30 @@ require 'spec_helper'
 
 describe DateHelper do
 
+  describe "#parse_usa_import_date" do
+    context "with bad dates" do
+      %w(05012012 garbage 11/31/2012 5-Apr-13 31/1/2014 2014-Jan-1 3/3/13).each do |date_string|
+        it "considers '#{date_string}' a bad date" do
+          expect(parse_usa_import_date(date_string)).to be_nil
+        end
+      end
+    end
+
+    context "with valid dates" do
+      %w(1/1/2014 3/31/2014 10/2/2014 12/31/2014).each do |date_string|
+        it "considers '#{date_string}' a valid date" do
+          expect(parse_usa_import_date(date_string))
+            .to eq DateTime.strptime(date_string, '%m/%d/%Y').to_time_in_current_zone
+        end
+      end
+
+      it "reads dates in USA-style MM/DD/YYYY format" do
+        expect(parse_usa_import_date("12/8/2014").month).to be 12
+        expect(parse_usa_import_date("8/12/2014").month).to be 8
+      end
+    end
+  end
+
   describe "#parse_usa_date" do
 
     context "passed bad dates" do
