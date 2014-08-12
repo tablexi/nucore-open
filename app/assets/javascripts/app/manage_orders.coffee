@@ -44,7 +44,7 @@ class OrderDetailManagement
 
   initPriceUpdating: ->
     self = this
-    @$element.find('[name^="order_detail[reservation]"]:not([name$=_display]),[name="order_detail[quantity]"],[name="order_detail[account_id]"]').change (evt) ->
+    @$element.find('[name^="order_detail[reservation]"]:not([name$=_display]),[name="order_detail[quantity]"],[name="order_detail[account_id]"]').bind "change mouseleave", (evt) ->
       self.updatePricing(evt) if this.value.match(/^\d+$/)
 
   updatePricing: (e) ->
