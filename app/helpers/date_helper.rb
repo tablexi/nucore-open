@@ -5,7 +5,7 @@ module DateHelper
     begin
       parse_mmddyyyy_in_current_zone!(date_string)
     rescue ArgumentError
-        nil
+      nil
     end
   end
 
