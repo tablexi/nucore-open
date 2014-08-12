@@ -12,11 +12,15 @@ def errors_for_import_with_row(opts={})
     opts[:account_number]     || "111-2222222-33333333-01",
     opts[:product_name]       || "Example Item",
     opts[:quantity]           || 1,
-    opts[:order_date]         || default_order_date.strftime("%m/%d/%Y"),
-    opts[:fulfillment_date]   || default_fulfilled_date.strftime("%m/%d/%Y")
+    opts[:order_date]         || nucore_format_date(default_order_date),
+    opts[:fulfillment_date]   || nucore_format_date(default_fulfilled_date)
   ])
 
-  errs = @order_import.errors_for(row)
+  @order_import.errors_for(row)
+end
+
+def nucore_format_date(date)
+  date.strftime("%m/%d/%Y")
 end
 
 describe OrderImport do
@@ -98,50 +102,103 @@ describe OrderImport do
 
     describe "error detection" do
       it "shouldn't have errors for a valid row" do
-        errors_for_import_with_row.should == []
+        expect(errors_for_import_with_row).to eq []
       end
 
       it "should have error when user isn't found" do
-        errors_for_import_with_row(:username => "username_that_wont_be_there").first.should match /user/
+        expect(errors_for_import_with_row(username: "invalid_username").first)
+          .to match /user/
       end
 
       it "should have error when account isn't found" do
-        errors_for_import_with_row(:account_number => "not_an_account_number").first.should match /find account/
+        expect(errors_for_import_with_row(account_number: "invalid_account").first)
+          .to match /find account/
       end
 
-      context 'product' do
-        it "should have error when product isn't found" do
-          errors_for_import_with_row(:product_name => "not_a_product_name").first.should match /find product/
-        end
-
-        it 'should have error when the product is deactivated' do
-          @item.update_attributes(:is_archived => true)
-          errors_for_import_with_row(:product_name => @item.name).first.should match /find product/
-        end
-
-        it 'should not have an error when the product is hidden' do
-          @item.update_attributes(:is_hidden => true)
-          errors_for_import_with_row(:product_name => @item.name).should be_empty
+      context "product is not found" do
+        it "should error" do
+          expect(errors_for_import_with_row(product_name: "invalid_product").first)
+            .to match /find product/
         end
       end
 
+      context "product is deactivated (archived)" do
+        before :each do
+          @item.update_attributes(is_archived: true)
+        end
 
-      it "should have error when product is service and has active survey" do
-        Service.any_instance.stub(:active_survey?).and_return(true)
-        errors_for_import_with_row(:product_name => "Example Service").first.should match /requires survey/
+        it "should error" do
+          expect(errors_for_import_with_row(product_name: @item.name).first)
+            .to match /find product/
+        end
       end
 
-      it "should have error when product is service and has active template" do
-        Service.any_instance.stub(:active_template?).and_return(true)
-        errors_for_import_with_row(:product_name => "Example Service").first.should match /requires template/
+      context "product is hidden" do
+        before :each do
+          @item.update_attributes(is_hidden: true)
+        end
+
+        it "should not error" do
+          expect(errors_for_import_with_row(product_name: @item.name)).to be_empty
+        end
       end
 
-      it "should handle bad order_date" do
-        errors_for_import_with_row(:order_date => "02/31/2012").first.should match /Order Date/
+      context "product is a service" do
+        context "with an active survey" do
+          before :each do
+            Service.any_instance.stub(:active_survey?).and_return(true)
+          end
+
+          it "should error" do
+            expect(errors_for_import_with_row(product_name: "Example Service").first)
+              .to match /requires survey/
+          end
+        end
+
+        context "with an active template" do
+          before :each do
+            Service.any_instance.stub(:active_template?).and_return(true)
+          end
+
+          it "should error" do
+            expect(errors_for_import_with_row(product_name: "Example Service").first)
+              .to match /requires template/
+          end
+        end
       end
 
-      it "should handle bad fullfillment_date" do
-        errors_for_import_with_row(:fulfillment_date => "02/31/2012").first.should match /Fulfillment Date/
+      context "bad dates" do
+        context "impossible dates" do
+          context "order_date" do
+            it "should error" do
+              expect(errors_for_import_with_row(order_date: "02/31/2012").first)
+                .to match /Order Date/
+            end
+          end
+
+          context "fulfillment_date" do
+            it "should error" do
+              expect(errors_for_import_with_row(fulfillment_date: "02/31/2012").first)
+                .to match /Fulfillment Date/
+            end
+          end
+        end
+
+        context "badly formatted dates" do
+          context "order_date" do
+            it "should error" do
+              expect(errors_for_import_with_row(order_date: "4-Apr-13").first)
+                .to match /Order Date/
+            end
+          end
+
+          context "fulfillment_date" do
+            it "should error" do
+              expect(errors_for_import_with_row(fulfillment_date: "4-Apr-13").first)
+                .to match /Fulfillment Date/
+            end
+          end
+        end
       end
     end
 
@@ -284,8 +341,8 @@ def generate_import_file(*args)
         opts[:account_number]     || "111-2222222-33333333-01",
         opts[:product_name]       || "Example Item",
         opts[:quantity]           || 1,
-        opts[:order_date]         || default_order_date.strftime("%m/%d/%Y"),
-        opts[:fullfillment_date]  || default_fulfilled_date.strftime("%m/%d/%Y")
+        opts[:order_date]         || nucore_format_date(default_order_date),
+        opts[:fullfillment_date]  || nucore_format_date(default_fulfilled_date)
       ])
       csv << row
     end
@@ -303,14 +360,14 @@ end
 
       it "should send notifications (save clean orders mode)" do
         import_file = generate_import_file(
-          {:order_date => default_order_date}, # valid rows
-          {:order_date => default_order_date},
+          { order_date: nucore_format_date(default_order_date) },
+          { order_date: nucore_format_date(default_order_date) },
 
 
           # diff order date (so will be diff order)
           {
-            :order_date => default_order_date + 1.day,
-            :product_name => "Invalid Item Name"
+            order_date: nucore_format_date(default_order_date + 1.day),
+            product_name: "Invalid Item Name"
           }
         )
         @order_import.send_receipts = true

@@ -1,5 +1,14 @@
 module DateHelper
 
+  def parse_usa_import_date(date_string)
+    return nil unless date_string =~ %r(\A\d{1,2}/\d{1,2}/\d{4}\z)
+    begin
+      parse_mmddyyyy_in_current_zone!(date_string)
+    rescue ArgumentError
+      nil
+    end
+  end
+
   def parse_usa_date(date, extra_date_info=nil)
     begin
       date_string=(date =~ /\d{1,2}\/\d{1,2}\/\d{4}/ ? Date.strptime($&, '%m/%d/%Y') : date).to_s
@@ -91,5 +100,9 @@ module DateHelper
 
   def hour_options
     (1..12).map {|x| [x,x]}
+  end
+
+  def parse_mmddyyyy_in_current_zone!(date_string)
+    DateTime.strptime(date_string, '%m/%d/%Y').to_time_in_current_zone
   end
 end

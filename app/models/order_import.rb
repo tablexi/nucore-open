@@ -1,4 +1,4 @@
-require 'date_helper' # parse_usa_date
+require 'date_helper' # parse_usa_import_date
 require 'csv_helper'
 
 USER_HEADER             = "Netid / Email"
@@ -177,22 +177,12 @@ class OrderImport < ActiveRecord::Base
     qty = row[QUANTITY_HEADER].to_i
 
     # convert dates
-    # parse_usa_date could either return nil... or raise an exception
-    begin
-      unless fulfillment_date = parse_usa_date(row[FULFILLMENT_DATE_HEADER])
-        errs << "Invalid Fulfillment Date"
-      end
-    rescue ArgumentError
-      errs << "Invalid Fulfillment Date"
+    unless fulfillment_date = parse_usa_import_date(row[FULFILLMENT_DATE_HEADER])
+      errs << "Invalid Fulfillment Date: Please use MM/DD/YYYY format"
     end
 
-    # parse_usa_date could either return nil... or raise an exception
-    begin
-      unless order_date = parse_usa_date(row[ORDER_DATE_HEADER])
-        errs << "Invalid Order Date"
-      end
-    rescue ArgumentError
-      errs << "Invalid Order Date"
+    unless order_date = parse_usa_import_date(row[ORDER_DATE_HEADER])
+      errs << "Invalid Order Date: Please use MM/DD/YYYY format"
     end
 
     # get user
