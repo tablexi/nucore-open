@@ -36,7 +36,7 @@ class Reports::InstrumentDayReport
     end
 
     def to_ary
-      @data.map { |value| @report_type.transform(value) }
+      @data.map { |value| @report_type.try(:transform, value) }
     end
   end
 
