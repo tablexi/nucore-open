@@ -12,11 +12,15 @@ def errors_for_import_with_row(opts={})
     opts[:account_number]     || "111-2222222-33333333-01",
     opts[:product_name]       || "Example Item",
     opts[:quantity]           || 1,
-    opts[:order_date]         || default_order_date.strftime("%m/%d/%Y"),
-    opts[:fulfillment_date]   || default_fulfilled_date.strftime("%m/%d/%Y")
+    opts[:order_date]         || nucore_format_date(default_order_date),
+    opts[:fulfillment_date]   || nucore_format_date(default_fulfilled_date)
   ])
 
-  errs = @order_import.errors_for(row)
+  @order_import.errors_for(row)
+end
+
+def nucore_format_date(date)
+  date.strftime("%m/%d/%Y")
 end
 
 describe OrderImport do
@@ -284,8 +288,8 @@ def generate_import_file(*args)
         opts[:account_number]     || "111-2222222-33333333-01",
         opts[:product_name]       || "Example Item",
         opts[:quantity]           || 1,
-        opts[:order_date]         || default_order_date.strftime("%m/%d/%Y"),
-        opts[:fullfillment_date]  || default_fulfilled_date.strftime("%m/%d/%Y")
+        opts[:order_date]         || nucore_format_date(default_order_date),
+        opts[:fullfillment_date]  || nucore_format_date(default_fulfilled_date)
       ])
       csv << row
     end
@@ -303,14 +307,14 @@ end
 
       it "should send notifications (save clean orders mode)" do
         import_file = generate_import_file(
-          {:order_date => default_order_date}, # valid rows
-          {:order_date => default_order_date},
+          { order_date: nucore_format_date(default_order_date) },
+          { order_date: nucore_format_date(default_order_date) },
 
 
           # diff order date (so will be diff order)
           {
-            :order_date => default_order_date + 1.day,
-            :product_name => "Invalid Item Name"
+            order_date: nucore_format_date(default_order_date + 1.day),
+            product_name: "Invalid Item Name"
           }
         )
         @order_import.send_receipts = true
