@@ -4,6 +4,9 @@ class StatementRow < ActiveRecord::Base
 
   validates_presence_of :order_detail_id, :statement_id
 
+  before_destroy { @parent_statement = self.statement }
+  after_destroy { @parent_statement.destroy if @parent_statement.statement_rows.empty? }
+
   def amount
     order_detail.total
   end
