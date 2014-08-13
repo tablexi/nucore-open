@@ -21,6 +21,27 @@ describe OrderDetail do
     expect(order_detail.order_status).to be_nil
   end
 
+  context '.account_unreconciled' do
+    context 'where the account is not a NufsAccount' do
+      let(:unreconciled_order_details) { OrderDetail.account_unreconciled(facility, account) }
+
+      before :each do
+        @order_details = 3.times.map do
+          order_detail = order.order_details.create(attributes_for(:order_detail)
+            .update(product_id: item.id, account_id: account.id))
+          order_detail.change_status!(OrderStatus.find_by_name('In Process'))
+          order_detail.change_status!(OrderStatus.find_by_name('Complete'))
+          order_detail.update_attribute :statement_id, original_statement.id
+          order_detail.reload
+        end
+      end
+
+      it 'should find order details ready to be reconciled' do
+        expect(unreconciled_order_details.to_a).to eq @order_details.to_a
+      end
+    end
+  end
+
   context '#update_account' do
     let(:base_price_group) { create(:price_group, name: 'Base', facility: facility) }
     let!(:base_price_policy) { create :item_price_policy, unit_cost: 20, product: item, price_group: base_price_group }

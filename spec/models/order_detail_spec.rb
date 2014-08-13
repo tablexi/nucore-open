@@ -5,6 +5,8 @@ describe OrderDetail do
   let(:account) { @account }
   let(:facility) { @facility }
   let(:facility_account) { @facility_account }
+  let(:item) { @item }
+  let(:order) { @order }
   let(:order_detail) { @order_detail }
   let(:user) { @user }
 
@@ -1008,6 +1010,27 @@ describe OrderDetail do
     def set_cancellation_cost_for_all_policies(cost)
       InstrumentPricePolicy.all.each do |price_policy|
         price_policy.update_attribute :cancellation_cost, cost
+      end
+    end
+  end
+
+  context '.account_unreconciled' do
+    context 'where the account is a NufsAccount' do
+      let(:journal) { create(:journal, facility: facility, reference: 'xyz', created_by: user.id, journal_date: Time.zone.now) }
+      let(:unreconciled_order_details) { OrderDetail.account_unreconciled(facility, account) }
+
+      before :each do
+        @order_details = 3.times.map do
+          order_detail = order.order_details.create(attributes_for(:order_detail)
+            .update(product_id: item.id, account_id: account.id, journal_id: journal.id))
+          order_detail.change_status!(OrderStatus.find_by_name('In Process'))
+          order_detail.change_status!(OrderStatus.find_by_name('Complete'))
+          order_detail.reload
+        end
+      end
+
+      it 'should find order details ready to be reconciled' do
+        expect(unreconciled_order_details.to_a).to eq @order_details.to_a
       end
     end
   end
