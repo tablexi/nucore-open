@@ -4,6 +4,7 @@ require 'controller_spec_helper'
 describe FacilityAccountsController do
   render_views
 
+  let(:account) { @account }
   let(:facility) { FactoryGirl.create(:facility) }
 
   before(:all) { create_users }
@@ -150,24 +151,47 @@ describe FacilityAccountsController do
 
     it_should_deny_all [:staff, :senior_staff]
 
-    it_should_allow_all facility_managers do
-      expect(assigns :subnav).to eq('billing_nav')
-      expect(assigns :active_tab).to eq('admin_billing')
-      expect(assigns :accounts).to be_kind_of ActiveRecord::Relation
-      expect(assigns :selected).to eq assigns(:accounts).first
-      expect(assigns(:unreconciled_details).to_a)
-        .to eq OrderDetail.account_unreconciled(facility, assigns(:selected)).to_a
-      should render_template('c2po/reconcile')
+    context 'the selected_account param is set' do
+      context 'selected_account is valid' do
+        before :each do
+          @params[:selected_account] = unreconciled_account.id
+        end
+
+        it_should_allow_all facility_managers do
+          should render_template 'c2po/reconcile'
+        end
+      end
+
+      context 'selected_account is invalid' do
+        before :each do
+          @params[:selected_account] = account.id
+        end
+
+        it_should_allow_all facility_managers do
+          should redirect_to redirect_path
+        end
+      end
     end
 
-    it 'should test selected_account param'
+    context 'the selected_account param is not set' do
+      it_should_allow_all facility_managers do
+        expect(assigns :subnav).to eq('billing_nav')
+        expect(assigns :active_tab).to eq('admin_billing')
+        expect(assigns :accounts).to be_kind_of ActiveRecord::Relation
+        expect(assigns :selected).to eq assigns(:accounts).first
+        expect(assigns(:unreconciled_details).to_a)
+          .to eq OrderDetail.account_unreconciled(facility, assigns(:selected)).to_a
+        should render_template('c2po/reconcile')
+      end
+    end
   end
 
   context 'credit_cards with account' do
+    let(:unreconciled_account) { build(:credit_card_account) }
+    let(:redirect_path) { credit_cards_facility_accounts_path }
+
     before :each do
-      cc_account = FactoryGirl.build(:credit_card_account)
-      prepare_for_account_show(:credit_cards, cc_account)
-      @params[:selected_account] = cc_account.id
+      prepare_for_account_show(:credit_cards, unreconciled_account)
     end
 
     it_behaves_like 'an authable account'
@@ -195,9 +219,11 @@ describe FacilityAccountsController do
 
 
   context 'purchase_orders with account' do
+    let(:unreconciled_account) { build(:purchase_order_account) }
+    let(:redirect_path) { purchase_orders_facility_accounts_path }
+
     before :each do
-      po_account = FactoryGirl.build(:purchase_order_account)
-      prepare_for_account_show(:purchase_orders, po_account)
+      prepare_for_account_show(:purchase_orders, unreconciled_account)
     end
 
     it_behaves_like 'an authable account'
