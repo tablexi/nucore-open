@@ -1,7 +1,7 @@
 class FacilitiesController < ApplicationController
   customer_tab  :index, :list, :show
-  admin_tab     :edit, :manage, :schedule, :update, :agenda, :transactions
-  admin_tab     :reassign_chart_strings, :movable_transactions, :confirm_transactions, :move_transactions
+  admin_tab     :edit, :manage, :schedule, :update, :agenda, :transactions,
+                :reassign_chart_strings, :movable_transactions, :confirm_transactions, :move_transactions
   before_filter :authenticate_user!, :except => [:index, :show]  # public pages do not require authentication
   before_filter :check_acting_as, :except => [:index, :show]
   before_filter :load_order_details, only: [:confirm_transactions, :move_transactions, :reassign_chart_strings]
