@@ -34,7 +34,7 @@ module C2po
     # GET /facilities/:facility_id/accounts/credit_cards
     def credit_cards
       @accounts = CreditCardAccount.need_reconciling(current_facility)
-      render_account_reconcile
+      render_account_reconcile || redirect_to(credit_cards_facility_accounts_path)
     end
 
     #POST /facilities/:facility_id/accounts/update_credit_cards
@@ -45,7 +45,7 @@ module C2po
     # GET /facilities/:facility_id/accounts/purchase_orders
     def purchase_orders
       @accounts = PurchaseOrderAccount.need_reconciling(current_facility)
-      render_account_reconcile
+      render_account_reconcile || redirect_to(purchase_orders_facility_accounts_path)
     end
 
     # POST /facilities/:facility_id/accounts/update_purchase_orders
@@ -55,14 +55,19 @@ module C2po
 
     private
 
+    def selected_account_not_found?
+      @selected.blank? && params[:selected_account].present?
+    end
+
     def set_selected_account_and_order_details
-      @selected = get_selected_account(params[:selected_account])
+      @selected = get_selected_account(params[:selected_account]) || return
       @unreconciled_details = get_unreconciled_details
-      @balance = @selected.unreconciled_total(current_facility, @unreconciled_details) if @selected.present?
+      @balance = @selected.unreconciled_total(current_facility, @unreconciled_details)
     end
 
     def render_account_reconcile
       set_selected_account_and_order_details if @accounts.present?
+      return nil if selected_account_not_found?
       render 'c2po/reconcile'
     end
 
