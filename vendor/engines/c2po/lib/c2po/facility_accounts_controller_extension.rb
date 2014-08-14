@@ -58,6 +58,7 @@ module C2po
     def set_selected_account_and_order_details
       @selected = get_selected_account(params[:selected_account])
       @unreconciled_details = get_unreconciled_details
+      @balance = @selected.unreconciled_total(current_facility, @unreconciled_details) if @selected.present?
     end
 
     def render_account_reconcile
