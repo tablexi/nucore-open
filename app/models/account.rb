@@ -197,12 +197,12 @@ class Account < ActiveRecord::Base
   end
 
   # this will return the balance of orders that have been statemented or journaled (successfully) but not reconciled
-  def unreconciled_total(facility)
-    details=OrderDetail.account_unreconciled(facility, self)
+  def unreconciled_total(facility, unreconciled_order_details = nil)
+    unreconciled_order_details ||= OrderDetail.account_unreconciled(facility, self)
 
     unreconciled_total=0
 
-    details.each do |od|
+    unreconciled_order_details.each do |od|
       total=od.cost_estimated? ? od.estimated_total : od.actual_total
       unreconciled_total += total if total
     end
