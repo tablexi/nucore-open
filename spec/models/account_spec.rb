@@ -1,6 +1,48 @@
 require 'spec_helper'
 
 describe Account do
+  let(:account) { create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user)) }
+  let(:facility) { create(:facility) }
+  let(:user) { create(:user) }
+
+  context '#unreconciled_total' do
+    context 'without unreconciled order_details' do
+      it 'should total 0' do
+        expect(account.unreconciled_total(facility)).to eq 0
+      end
+    end
+
+    context 'with unreconciled order_details' do
+      let(:order_details) { 5.times.map { double OrderDetail } }
+
+      context 'with estimated totals' do
+        before :each do
+          order_details.each_with_index do |order_detail, n|
+            order_detail.stub(:cost_estimated?).and_return true
+            order_detail.stub(:estimated_total).and_return(n + 1)
+          end
+        end
+
+        it 'should produce the expected total' do
+          expect(account.unreconciled_total(facility, order_details)).to eq(15)
+        end
+      end
+
+      context 'with actual totals' do
+        before :each do
+          order_details.each_with_index do |order_detail, n|
+            order_detail.stub(:cost_estimated?).and_return false
+            order_detail.stub(:actual_total).and_return(n + 1)
+          end
+        end
+
+        it 'should produce the expected total' do
+          expect(account.unreconciled_total(facility, order_details)).to eq(15)
+        end
+      end
+    end
+  end
+
   it "should not create using factory" do
     @user    = FactoryGirl.create(:user)
     hash     = Hash[:user => @user, :created_by => @user.id, :user_role => 'Owner']

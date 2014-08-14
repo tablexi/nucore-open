@@ -16,7 +16,7 @@
 
   - if @selected.owner_user
     %h3= t('.owner', owner: @selected.owner_user.full_name)
-  %h3= t('.balance', balance: number_to_currency(@selected.unreconciled_total(current_facility)))
+  %h3= t('.balance', balance: number_to_currency(@balance))
 
   %p= t('.instructions')
 

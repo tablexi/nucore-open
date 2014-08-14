@@ -155,8 +155,8 @@ describe FacilityAccountsController do
       expect(assigns :active_tab).to eq('admin_billing')
       expect(assigns :accounts).to be_kind_of ActiveRecord::Relation
       expect(assigns :selected).to eq assigns(:accounts).first
-      expect(assigns :unreconciled_details)
-        .to eq OrderDetail.account_unreconciled(facility, assigns(:selected))
+      expect(assigns(:unreconciled_details).to_a)
+        .to eq OrderDetail.account_unreconciled(facility, assigns(:selected)).to_a
       should render_template('c2po/reconcile')
     end
 

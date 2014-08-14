@@ -737,14 +737,19 @@ class OrderDetail < ActiveRecord::Base
 
   def self.account_unreconciled(facility, account)
     if account.is_a?(NufsAccount)
-      joins(:journal).for_facility(facility).where("order_details.account_id = ?  AND order_details.state = ?  AND journals.is_successful = ?",
-          account.id, 'complete', true
-        ).all
+      joins(:journal)
+      .complete_for_facility_and_account(facility, account)
+      .where('journals.is_successful' => true)
     else
-      for_facility(facility).where("order_details.account_id = ?  AND order_details.state = ?  AND order_details.statement_id IS NOT NULL",
-          account.id, 'complete'
-       ).all
+      complete_for_facility_and_account(facility, account)
+      .where('order_details.statement_id IS NOT NULL')
     end
+  end
+
+  def self.complete_for_facility_and_account(facility, account)
+    for_facility(facility)
+    .where('order_details.account_id' => account.id)
+    .where('order_details.state' => 'complete')
   end
 
   #
