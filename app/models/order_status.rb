@@ -48,6 +48,10 @@ class OrderStatus < ActiveRecord::Base
     name
   end
 
+  def root_cancelled?
+    root == OrderStatus.cancelled.first
+  end
+
   class << self
     def root_statuses
       roots.sort {|a,b| a.lft <=> b.lft }

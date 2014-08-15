@@ -385,10 +385,10 @@ class OrderDetail < ActiveRecord::Base
     @order_status_updated_by = updated_by
     options = { :admin => false, :apply_cancel_fee => false }.merge(options_args)
 
-    if reservation && order_status.root == OrderStatus.cancelled.first
+    if reservation && order_status.root_cancelled?
       cancel_reservation(updated_by, order_status, options[:admin], options[:apply_cancel_fee])
     else
-      clear_statement if order_status.root == OrderStatus.cancelled.first
+      clear_statement if order_status.root_cancelled?
       change_status! order_status, &block
     end
   end
