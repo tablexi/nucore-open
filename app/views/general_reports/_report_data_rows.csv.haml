@@ -51,10 +51,12 @@
             row += [ human_datetime(od.reviewed_at) ]
 
             statement=od.statement
-            row += [ statement ? human_datetime(statement.created_at) : nil ]
+            row += statement ? human_datetime(statement.created_at) : nil
 
             journal=od.journal
-            row += journal ? [ human_datetime(journal.journal_date), od.reconciled_note ] : [nil, nil]
+            row += journal ? human_datetime(journal.journal_date) : nil
+
+            row += od.reconciled_note
 
         rescue => e
             row=[ "*** ERROR WHEN REPORTING ON ORDER DETAIL #{od.to_s}: #{e.message} ***" ]
