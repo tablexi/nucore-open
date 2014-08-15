@@ -881,7 +881,7 @@ describe OrderDetail do
 
     shared_examples 'it was removed from its statement' do
       it 'should be removed from the statement' do
-        expect(@original_statement.order_details).not_to include(order_detail)
+        expect(original_statement.order_details).not_to include(order_detail)
         expect(order_detail.statement).to be_blank
       end
 
@@ -892,6 +892,7 @@ describe OrderDetail do
 
     shared_examples 'a cancellation without fees' do
       it_should_behave_like 'it was removed from its statement'
+
       it 'cancelled its reservation' do
         @reservation.reload
         expect(@reservation.canceled_by).to eq user.id
@@ -934,9 +935,10 @@ describe OrderDetail do
       end
 
       context 'as admin' do
+        let!(:original_statement) { order_detail.statement }
+
         context 'when waiving the cancellation fee' do
           before :each do
-            @original_statement = order_detail.statement
             order_detail.cancel_reservation(user, OrderStatus.cancelled.first, true, false)
             order_detail.reload
             @reservation.reload
@@ -950,7 +952,6 @@ describe OrderDetail do
           include_context 'instrument minimum cancel hours'
 
           before :each do
-            @original_statement = order_detail.statement
             order_detail.cancel_reservation(user, OrderStatus.cancelled.first, true, true)
           end
 
@@ -963,7 +964,6 @@ describe OrderDetail do
         include_context 'instrument minimum cancel hours'
 
         context 'the reservation was already cancelled' do
-
           it 'should not cancel' do
             @reservation.update_attribute :canceled_at, Time.zone.now
             expect(order_detail.cancel_reservation(user)).to be_false
@@ -971,9 +971,9 @@ describe OrderDetail do
         end
 
         context 'when applying the cancellation fee' do
+          let!(:original_statement) { order_detail.statement }
 
           before :each do
-            @original_statement = order_detail.statement
             order_detail.cancel_reservation(user)
           end
 
@@ -983,11 +983,12 @@ describe OrderDetail do
     end
 
     context 'without a cancellation fee' do
+      let!(:original_statement) { order_detail.statement }
+
       include_context 'instrument minimum cancel hours'
 
       before :each do
         set_cancellation_cost_for_all_policies 0
-        @original_statement = order_detail.statement
       end
 
       context 'as admin' do
