@@ -388,7 +388,7 @@ class OrderDetail < ActiveRecord::Base
     if reservation && order_status.root_cancelled?
       cancel_reservation(updated_by, order_status, options[:admin], options[:apply_cancel_fee])
     else
-      clear_statement if order_status.root_cancelled? && cancellation_fee == 0
+      clear_statement if order_status.root_cancelled?
       change_status! order_status, &block
     end
   end
