@@ -423,7 +423,9 @@ describe OrderManagement::OrderDetailsController do
                 .from(original_actual_total).to(100)
             end
 
-            it_behaves_like 'it was removed from its statement'
+            it 'should remain on its statement' do
+              expect { do_request }.to_not change{order_detail.reload.statement}
+            end
           end
 
           context 'without a cancellation fee' do

@@ -5,9 +5,11 @@ describe OrderDetail do
   let(:account) { @account }
   let(:facility) { @facility }
   let(:facility_account) { @facility_account }
+  let(:instrument) { create(:instrument, facility: facility, facility_account_id: facility_account.id) }
   let(:item) { @item }
   let(:order) { @order }
   let(:order_detail) { @order_detail }
+  let(:price_group) { create(:price_group, facility: facility) }
   let(:user) { @user }
 
   before(:each) do
@@ -881,7 +883,7 @@ describe OrderDetail do
 
     shared_examples 'it was removed from its statement' do
       it 'should be removed from the statement' do
-        expect(@original_statement.order_details).not_to include(order_detail)
+        expect(original_statement.order_details).not_to include(order_detail)
         expect(order_detail.statement).to be_blank
       end
 
@@ -892,6 +894,7 @@ describe OrderDetail do
 
     shared_examples 'a cancellation without fees' do
       it_should_behave_like 'it was removed from its statement'
+
       it 'cancelled its reservation' do
         @reservation.reload
         expect(@reservation.canceled_by).to eq user.id
@@ -913,7 +916,10 @@ describe OrderDetail do
 
     context 'with a cancellation fee' do
       shared_examples 'a cancellation with fees applied' do
-        it_should_behave_like 'it was removed from its statement'
+
+        it 'should remain on its statement' do
+          expect(order_detail.statement).to eq original_statement
+        end
 
         it 'is in "complete" state' do
           expect(order_detail.state).to eq 'complete'
@@ -934,15 +940,15 @@ describe OrderDetail do
       end
 
       context 'as admin' do
+        let!(:original_statement) { order_detail.statement }
+
         context 'when waiving the cancellation fee' do
           before :each do
-            @original_statement = order_detail.statement
             order_detail.cancel_reservation(user, OrderStatus.cancelled.first, true, false)
             order_detail.reload
             @reservation.reload
           end
 
-          it_should_behave_like 'it was removed from its statement'
           it_should_behave_like 'a cancellation without fees'
         end
 
@@ -950,11 +956,11 @@ describe OrderDetail do
           include_context 'instrument minimum cancel hours'
 
           before :each do
-            @original_statement = order_detail.statement
             order_detail.cancel_reservation(user, OrderStatus.cancelled.first, true, true)
+            order_detail.reload
+            @reservation.reload
           end
 
-          it_should_behave_like 'it was removed from its statement'
           it_should_behave_like 'a cancellation with fees applied'
         end
       end
@@ -963,7 +969,6 @@ describe OrderDetail do
         include_context 'instrument minimum cancel hours'
 
         context 'the reservation was already cancelled' do
-
           it 'should not cancel' do
             @reservation.update_attribute :canceled_at, Time.zone.now
             expect(order_detail.cancel_reservation(user)).to be_false
@@ -971,9 +976,9 @@ describe OrderDetail do
         end
 
         context 'when applying the cancellation fee' do
+          let!(:original_statement) { order_detail.statement }
 
           before :each do
-            @original_statement = order_detail.statement
             order_detail.cancel_reservation(user)
           end
 
@@ -983,11 +988,12 @@ describe OrderDetail do
     end
 
     context 'without a cancellation fee' do
+      let!(:original_statement) { order_detail.statement }
+
       include_context 'instrument minimum cancel hours'
 
       before :each do
         set_cancellation_cost_for_all_policies 0
-        @original_statement = order_detail.statement
       end
 
       context 'as admin' do
@@ -1004,12 +1010,6 @@ describe OrderDetail do
         end
 
         it_should_behave_like 'a cancellation without fees'
-      end
-    end
-
-    def set_cancellation_cost_for_all_policies(cost)
-      InstrumentPricePolicy.all.each do |price_policy|
-        price_policy.update_attribute :cancellation_cost, cost
       end
     end
   end
@@ -1031,6 +1031,84 @@ describe OrderDetail do
 
       it 'should find order details ready to be reconciled' do
         expect(unreconciled_order_details.to_a).to eq @order_details.to_a
+      end
+    end
+  end
+
+  context '#update_order_status!' do
+    context 'when setting order status to Cancelled' do
+
+      def cancel_order_detail(options)
+        order_detail.update_order_status!(user, OrderStatus.cancelled.first, options)
+      end
+
+      context 'is statemented' do
+        let(:statement) { create(:statement, facility: facility, created_by: user.id, account: account) }
+
+        before :each do
+          order_detail.update_attribute :statement_id, statement.id
+        end
+
+        context 'product has a reservation' do
+          before :each do
+            instrument.update_attribute :min_cancel_hours, 25
+            order_detail.reservation = create(:reservation, product: instrument)
+            order_detail.product = instrument.reload
+            order_detail.price_policy = instrument.instrument_price_policies
+              .create(attributes_for(:instrument_price_policy, price_group_id: price_group.id))
+            order_detail.save!
+          end
+
+          context 'has a cancellation fee' do
+            before :each do
+              set_cancellation_cost_for_all_policies 5.0
+              order_detail.price_policy.reload
+            end
+
+            context 'admin waives the fee' do
+              it 'is removed from its statement' do
+                expect { cancel_order_detail(admin: true, apply_cancel_fee: false) }
+                  .to change{order_detail.statement}.from(statement).to(nil)
+              end
+            end
+
+            context 'admin does not waive the fee' do
+              it 'remains on its statement' do
+                expect { cancel_order_detail(admin: true, apply_cancel_fee: true) }
+                  .not_to change{order_detail.statement}
+              end
+            end
+          end
+
+          context 'has no cancellation fee' do
+            before :each do
+              set_cancellation_cost_for_all_policies 0
+            end
+
+            it 'is removed from its statement' do
+              expect { cancel_order_detail(admin: true, apply_cancel_fee: true) }
+                .to change{order_detail.statement}.from(statement).to(nil)
+            end
+          end
+        end
+
+        context 'product has no reservation' do
+          before :each do
+            order_detail.price_policy = item.item_price_policies
+              .create(attributes_for(:item_price_policy, price_group_id: price_group.id))
+            order_detail.product = item
+            order_detail.save!
+          end
+
+          it 'has no cancellation fee' do
+            expect(order_detail.cancellation_fee).to eq 0
+          end
+
+          it 'is removed from its statement' do
+            expect { cancel_order_detail(admin: true, apply_cancel_fee: true) }
+              .to change{order_detail.statement}.from(statement).to(nil)
+          end
+        end
       end
     end
   end
@@ -1206,4 +1284,9 @@ describe OrderDetail do
     end
   end
 
+  def set_cancellation_cost_for_all_policies(cost)
+    PricePolicy.all.each do |price_policy|
+      price_policy.update_attribute :cancellation_cost, cost
+    end
+  end
 end
