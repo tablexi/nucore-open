@@ -41,6 +41,7 @@ gem 'prawn',            '0.12'
 gem 'prawn_rails',      '0.0.11'
 
 ## other
+gem 'delayed_job_active_record', '~> 4.0.1'
 gem 'rake'
 gem 'spreadsheet',      '~> 0.6.5.5'
 gem 'fast-aes',         '0.1.1'
