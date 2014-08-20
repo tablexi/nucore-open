@@ -16,6 +16,7 @@ en:
 
   date:
     formats:
+      usa: "%m/%d/%Y"
       usa_filename_safe: "%m-%d-%Y"
 
   time:
@@ -23,6 +24,7 @@ en:
       default: "%a, %m/%d/%Y %-l:%M %p"
       timeonly: "%-l:%M %p"
       calendar: "%a, %d %b %Y %H:%M:%S"
+      usa: "%m/%d/%Y %l:%M %p"
 
 
   pages:
