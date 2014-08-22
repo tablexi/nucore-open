@@ -53,6 +53,11 @@ gem 'c2po',             '~> 1.0.0', :path => 'vendor/engines/c2po'
 gem 'dataprobe',        '~> 1.0.0', :path => 'vendor/engines/dataprobe'
 gem 'synaccess_connect', '0.2.2', :git => 'git://github.com/tablexi/synaccess.git'
 
+group :development do
+  gem 'better_errors'
+  gem 'binding_of_caller'
+end
+
 group :development, :test do
   gem 'awesome_print',     '1.1.0'
   gem 'ci_reporter'
