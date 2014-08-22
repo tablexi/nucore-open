@@ -163,7 +163,7 @@ describe GeneralReportsController do
       end
     end
 
-    context 'journed_at search' do
+    context 'journaled_at search' do
       before :each do
         # change start date so we get an order detail
         @params.merge!(:date_range_field => :journal_date)
