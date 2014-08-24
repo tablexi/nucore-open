@@ -270,16 +270,16 @@ describe OrderManagement::OrderDetailsController do
 
       end
 
-      describe 'cancelling an order' do
+      describe 'canceling an order' do
         before :each do
           instrument.update_attributes!(:min_cancel_hours => 72)
           instrument.price_policies.first.update_attributes(
-            :cancellation_cost => 100,
-            :charge_for => InstrumentPricePolicy::CHARGE_FOR[:usage]
+            cancellation_cost: 100,
+            charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage]
           )
 
           @params[:order_detail] = {
-            :order_status_id => OrderStatus.cancelled.first.id.to_s
+            :order_status_id => OrderStatus.canceled.first.id.to_s
           }
         end
 
@@ -291,7 +291,7 @@ describe OrderManagement::OrderDetailsController do
 
           it 'cancels the order detail and reservation' do
             expect(assigns(:order_detail).order_status.name).to eq('Complete')
-            expect(assigns(:order_detail).reservation).to be_cancelled
+            expect(assigns(:order_detail).reservation).to be_canceled
           end
 
           it 'assigns the cancellation fee' do
@@ -314,7 +314,7 @@ describe OrderManagement::OrderDetailsController do
 
           it 'cancels the order detail and reservation' do
             expect(assigns(:order_detail).order_status.name).to eq('Complete')
-            expect(assigns(:order_detail).reservation).to be_cancelled
+            expect(assigns(:order_detail).reservation).to be_canceled
           end
 
           it 'assigns the cancellation fee' do
@@ -332,8 +332,8 @@ describe OrderManagement::OrderDetailsController do
           end
 
           it 'cancels the order detail and reservation' do
-            expect(assigns(:order_detail).order_status.name).to eq('Cancelled')
-            expect(assigns(:order_detail).reservation).to be_cancelled
+            expect(assigns(:order_detail).order_status.name).to eq('Canceled')
+            expect(assigns(:order_detail).reservation).to be_canceled
           end
 
           it 'does not assign the cancellation fee' do
@@ -385,7 +385,7 @@ describe OrderManagement::OrderDetailsController do
           it_behaves_like 'it was removed from its statement'
         end
 
-        context 'cancelling' do
+        context 'canceling' do
           before :each do
             AccountPriceGroupMember.create! price_group: price_group, account: original_account
             AccountPriceGroupMember.create! price_group: price_group, account: new_account
@@ -393,7 +393,7 @@ describe OrderManagement::OrderDetailsController do
             order_detail.save
             order_detail.update_attributes(statement_id: statement.id, price_policy_id: PricePolicy.first.id)
 
-            @params[:order_detail] = { order_status_id: OrderStatus.cancelled.first.id.to_s }
+            @params[:order_detail] = { order_status_id: OrderStatus.canceled.first.id.to_s }
           end
 
           context 'with a cancellation fee' do
@@ -431,7 +431,7 @@ describe OrderManagement::OrderDetailsController do
           context 'without a cancellation fee' do
             it 'should cancel' do
               do_request
-              expect(order_detail.reload).to be_cancelled
+              expect(order_detail.reload).to be_canceled
             end
 
             it 'should no longer have a price policy' do

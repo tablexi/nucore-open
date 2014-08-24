@@ -17,9 +17,9 @@ class OrderDetailsController < ApplicationController
     if params[:cancel] && @order_detail.reservation && @order_detail.reservation.can_cancel?
       @order_detail.transaction do
         if @order_detail.cancel_reservation(session_user)
-          flash[:notice] = "The reservation has been cancelled successfully."
+          flash[:notice] = "The reservation has been canceled successfully." # TODO I18n
         else
-          flash[:error] = "An error was encountered while cancelling the order."
+          flash[:error] = "An error was encountered while canceling the order." # TODO I18n
           raise ActiveRecord::Rollback
         end
       end

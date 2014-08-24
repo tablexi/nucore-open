@@ -44,7 +44,7 @@ module OldInstrumentPricePolicyCalculations
     res_start_at=strip_seconds reservation.reserve_start_at
 
     ## TODO update cancellation costs
-    ## calculate actuals for cancelled reservations
+    ## calculate actuals for canceled reservations
     if reservation.canceled_at
       if product.min_cancel_hours && (res_start_at - strip_seconds(reservation.canceled_at))/3600 <= product.min_cancel_hours
         actual_cost = cancellation_cost

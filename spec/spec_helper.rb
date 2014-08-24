@@ -43,8 +43,8 @@ RSpec.configure do |config|
     @os_new        = OrderStatus.find_or_create_by_name('New')
     @os_in_process = OrderStatus.find_or_create_by_name('In Process')
     @os_complete   = OrderStatus.find_or_create_by_name('Complete')
-    @os_cancelled  = OrderStatus.find_or_create_by_name('Cancelled')
-    @os_reconciled  = OrderStatus.find_or_create_by_name('Reconciled')
+    @os_canceled   = OrderStatus.find_or_create_by_name('Canceled')
+    @os_reconciled = OrderStatus.find_or_create_by_name('Reconciled')
 
     # initialize affiliates
     Affiliate.find_or_create_by_name('Other')

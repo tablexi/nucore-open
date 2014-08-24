@@ -8,11 +8,11 @@ namespace :demo  do
   desc "bootstrap db with data appropriate for demonstration"
 
   task :seed => :environment do
-    new        = OrderStatus.find_or_create_by_name(:name => 'New')
-    in_process = OrderStatus.find_or_create_by_name(:name => 'In Process')
-    cancelled  = OrderStatus.find_or_create_by_name(:name => 'Cancelled')
-    complete   = OrderStatus.find_or_create_by_name(:name => 'Complete')
-    reconciled = OrderStatus.find_or_create_by_name(:name => 'Reconciled')
+    new        = OrderStatus.find_or_create_by_name(name: 'New')
+    in_process = OrderStatus.find_or_create_by_name(name: 'In Process')
+    canceled   = OrderStatus.find_or_create_by_name(name: 'Canceled')
+    complete   = OrderStatus.find_or_create_by_name(name: 'Complete')
+    reconciled = OrderStatus.find_or_create_by_name(name: 'Reconciled')
 
     facility = Facility.find_or_create_by_name({
       :name              => 'Example Facility',

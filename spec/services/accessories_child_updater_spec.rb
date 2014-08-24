@@ -52,28 +52,28 @@ describe Accessories::ChildUpdater do
       end
     end
 
-    context 'when the parent moves from complete to cancelled' do
+    context 'when the parent moves from complete to canceled' do
       before do
         allow_any_instance_of(Reservation).to receive(:can_cancel?).and_return true
         reservation.end_reservation!
         order_detail.update_order_status! user, OrderStatus.complete.first
-        order_detail.update_order_status! user, OrderStatus.cancelled.first
+        order_detail.update_order_status! user, OrderStatus.canceled.first
       end
 
-      it 'moves the child to cancelled' do
-        expect(child_order_detail).to be_cancelled
+      it 'moves the child to canceled' do
+        expect(child_order_detail).to be_canceled
       end
     end
 
-    context 'when the child has been cancelled, but the parent is still new and moves to completed' do
+    context 'when the child has been canceled, but the parent is still new and moves to completed' do
       before do
-        child_order_detail.update_order_status! user, OrderStatus.cancelled.first
+        child_order_detail.update_order_status! user, OrderStatus.canceled.first
         reservation.end_reservation!
         order_detail.update_order_status! user, OrderStatus.complete.first
       end
 
       it 'does not move the child' do
-        expect(child_order_detail).to be_cancelled
+        expect(child_order_detail).to be_canceled
       end
     end
   end

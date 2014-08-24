@@ -1,12 +1,12 @@
 class OrderUncanceler
   def initialize
     @complete_status = OrderStatus.complete.first
-    @canceled_status = OrderStatus.cancelled.first
+    @canceled_status = OrderStatus.canceled.first
   end
 
   def uncancel_to_complete(order_detail)
-    unless order_detail.cancelled?
-      puts "#{order_detail} was not in cancelled state"
+    unless order_detail.canceled?
+      puts "#{order_detail} was not in canceled state"
       return
     end
 
@@ -31,7 +31,7 @@ class OrderUncanceler
 
         order_detail.assign_price_policy(fulfilled_at)
         order_detail.save!
-        puts "#{order_detail} was uncancelled"
+        puts "#{order_detail} was uncanceled"
         true
       rescue => e
         puts "Could not save #{order_detail} because #{e.message}"

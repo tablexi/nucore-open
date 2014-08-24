@@ -104,7 +104,7 @@ table.order-list {
     }
   }
 
-  tr.status-cancelled {
+  tr.status-canceled {
     @extend .muted;
   }
 
@@ -164,7 +164,7 @@ table.order-list {
     @extend .label-success;
   }
 
-  &.status-cancelled {
+  &.status-canceled {
     @extend .label-important;
   }
 }

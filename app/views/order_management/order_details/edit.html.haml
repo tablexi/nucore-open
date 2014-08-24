@@ -38,7 +38,7 @@
       - if @order_detail.reservation
         .cancel-fee-option.span2
           = label_tag 'with_cancel_fee', :class => 'checkbox' do
-            = check_box_tag 'with_cancel_fee', 1, false, :data => { :connect => '#order_detail_order_status_id', :show_on => OrderStatus.cancelled.first.id }
+            = check_box_tag 'with_cancel_fee', 1, false, data: { connect: '#order_detail_order_status_id', show_on: OrderStatus.canceled.first.id }
             = t('facility_order_details.edit.label.with_cancel_fee')
 
     .row

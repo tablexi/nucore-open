@@ -466,36 +466,36 @@ describe OrderDetail do
         @order_detail.should be_problem_order
       end
 
-      it "should transition to cancelled" do
+      it "should transition to canceled" do
         @order_detail.to_inprocess!
         @order_detail.to_complete!
-        @order_detail.to_cancelled!
-        @order_detail.state.should == 'cancelled'
+        @order_detail.to_canceled!
+        expect(@order_detail.state).to eq 'canceled'
         @order_detail.version.should == 4
       end
 
-      it "should not transition to cancelled from reconciled" do
+      it "should not transition to canceled from reconciled" do
         create(:item_price_policy, product: @item, price_group: @price_group3)
         @order_detail.to_inprocess!
         @order_detail.to_complete!
         @order_detail.to_reconciled!
-        lambda { @order_detail.to_cancelled! }.should raise_exception AASM::InvalidTransition
+        expect { @order_detail.to_canceled! }.to raise_exception AASM::InvalidTransition
         @order_detail.state.should == 'reconciled'
         @order_detail.version.should == 4
       end
 
-      it "should not transition to cancelled if part of journal" do
+      it "should not transition to canceled if part of journal" do
         journal=create(:journal, facility: @facility, reference: 'xyz', created_by: @user.id, journal_date: Time.zone.now)
         @order_detail.update_attribute :journal_id, journal.id
         @order_detail.reload.journal.should == journal
         @order_detail.to_inprocess!
         @order_detail.to_complete!
-        @order_detail.to_cancelled!
+        @order_detail.to_canceled!
         @order_detail.state.should == 'complete'
         @order_detail.version.should == 4
       end
 
-      context "transitioning to cancelled when statemented" do
+      context "transitioning to canceled when statemented" do
         let(:statement) { create(:statement, facility: facility, created_by: user.id, account: account) }
 
         before :each do
@@ -509,8 +509,8 @@ describe OrderDetail do
         end
 
         context 'when not reconciled' do
-          it 'should transition to cancelled' do
-            expect { order_detail.to_cancelled! }.not_to raise_error
+          it 'should transition to canceled' do
+            expect { order_detail.to_canceled! }.not_to raise_error
           end
         end
 
@@ -519,8 +519,8 @@ describe OrderDetail do
             order_detail.to_reconciled!
           end
 
-          it 'should not transition to cancelled' do
-            expect { order_detail.to_cancelled! }.to raise_exception AASM::InvalidTransition
+          it 'should not transition to canceled' do
+            expect { order_detail.to_canceled! }.to raise_exception AASM::InvalidTransition
           end
         end
       end
@@ -610,8 +610,8 @@ describe OrderDetail do
     end
 
 
-    it 'should not be in dispute if order detail is cancelled' do
-      @order_detail.to_cancelled!
+    it 'should not be in dispute if order detail is canceled' do
+      @order_detail.to_canceled!
       @order_detail.dispute_at=Time.zone.now
       @order_detail.dispute_resolved_at=nil
       @order_detail.should_not be_in_dispute
@@ -895,14 +895,14 @@ describe OrderDetail do
     shared_examples 'a cancellation without fees' do
       it_should_behave_like 'it was removed from its statement'
 
-      it 'cancelled its reservation' do
+      it 'canceled its reservation' do
         @reservation.reload
         expect(@reservation.canceled_by).to eq user.id
         expect(@reservation.canceled_at).to be_present
       end
 
-      it 'is in a cancelled state' do
-        expect(order_detail.state).to eq 'cancelled'
+      it 'is in a canceled state' do
+        expect(order_detail.state).to eq 'canceled'
       end
 
       it 'has no actual cost' do
@@ -944,7 +944,7 @@ describe OrderDetail do
 
         context 'when waiving the cancellation fee' do
           before :each do
-            order_detail.cancel_reservation(user, OrderStatus.cancelled.first, true, false)
+            order_detail.cancel_reservation(user, OrderStatus.canceled.first, true, false)
             order_detail.reload
             @reservation.reload
           end
@@ -956,7 +956,7 @@ describe OrderDetail do
           include_context 'instrument minimum cancel hours'
 
           before :each do
-            order_detail.cancel_reservation(user, OrderStatus.cancelled.first, true, true)
+            order_detail.cancel_reservation(user, OrderStatus.canceled.first, true, true)
             order_detail.reload
             @reservation.reload
           end
@@ -968,7 +968,7 @@ describe OrderDetail do
       context 'as user' do
         include_context 'instrument minimum cancel hours'
 
-        context 'the reservation was already cancelled' do
+        context 'the reservation was already canceled' do
           it 'should not cancel' do
             @reservation.update_attribute :canceled_at, Time.zone.now
             expect(order_detail.cancel_reservation(user)).to be_false
@@ -998,7 +998,7 @@ describe OrderDetail do
 
       context 'as admin' do
         before :each do
-          order_detail.cancel_reservation(user, OrderStatus.cancelled.first, true, true)
+          order_detail.cancel_reservation(user, OrderStatus.canceled.first, true, true)
         end
 
         it_should_behave_like 'a cancellation without fees'
@@ -1006,7 +1006,7 @@ describe OrderDetail do
 
       context 'as user' do
         before :each do
-          order_detail.cancel_reservation(user, OrderStatus.cancelled.first, false, true)
+          order_detail.cancel_reservation(user, OrderStatus.canceled.first, false, true)
         end
 
         it_should_behave_like 'a cancellation without fees'
@@ -1036,10 +1036,10 @@ describe OrderDetail do
   end
 
   context '#update_order_status!' do
-    context 'when setting order status to Cancelled' do
+    context 'when setting order status to Canceled' do
 
       def cancel_order_detail(options)
-        order_detail.update_order_status!(user, OrderStatus.cancelled.first, options)
+        order_detail.update_order_status!(user, OrderStatus.canceled.first, options)
       end
 
       context 'is statemented' do

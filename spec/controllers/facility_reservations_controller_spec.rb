@@ -359,10 +359,10 @@ describe FacilityReservationsController do
         @unpurchased_reservation=FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => 1.hour.from_now, :reserve_end_at => 2.hours.from_now)
         @order_detail2=FactoryGirl.create(:order_detail, :order => @order2, :product => @product, :reservation => @unpurchased_reservation)
 
-        @cancelled_reservation = FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => 2.hours.from_now, :reserve_end_at => 3.hours.from_now)
-        @order_detail3 = FactoryGirl.create(:order_detail, :order => @order, :product => @product, :reservation => @cancelled_reservation)
-        @cancelled_reservation.should be_persisted
-        @order_detail3.update_order_status! @admin, OrderStatus.cancelled.first
+        @canceled_reservation = FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => 2.hours.from_now, :reserve_end_at => 3.hours.from_now)
+        @order_detail3 = FactoryGirl.create(:order_detail, :order => @order, :product => @product, :reservation => @canceled_reservation)
+        @canceled_reservation.should be_persisted
+        @order_detail3.update_order_status! @admin, OrderStatus.canceled.first
 
         @admin_reservation = FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => Time.zone.now, :reserve_end_at => 1.hour.from_now)
 
@@ -387,8 +387,8 @@ describe FacilityReservationsController do
         response.body.should_not include "id='tooltip_reservation_#{@unpurchased_reservation.id}'"
       end
 
-      it 'should include cancelled reservation' do
-        response.body.should include "id='tooltip_reservation_#{@cancelled_reservation.id}'"
+      it 'should include canceled reservation' do
+        response.body.should include "id='tooltip_reservation_#{@canceled_reservation.id}'"
       end
 
       it 'should include admin reservation' do

@@ -15,7 +15,7 @@ module Reservations::Rendering
 
     str = range_to_s(display_start_at, display_end_at)
 
-    str + (canceled_at ? ' (Cancelled)' : '')
+    str + (canceled_at ? ' (Canceled)' : '')
   end
 
   def reserve_to_s

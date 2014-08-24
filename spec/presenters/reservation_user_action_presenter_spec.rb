@@ -86,13 +86,13 @@ describe ReservationUserActionPresenter do
       end
     end
 
-    describe 'cancelling' do
+    describe 'canceling' do
       before { expect(reservation).to receive(:can_cancel?).and_return true }
 
       context 'there is a fee' do
         before { expect(order_detail).to receive(:cancellation_fee).and_return 10 }
 
-        it 'includes a cancelation link with a confirmation' do
+        it 'includes a cancellation link with a confirmation' do
           link = order_order_detail_path(order, order_detail, cancel: 'cancel')
           expect(text).to include link
           expect(text).to include 'confirm="Canceling this reservation will incur a $10'
@@ -101,7 +101,7 @@ describe ReservationUserActionPresenter do
 
       context 'there is not a fee' do
         before { expect(order_detail).to receive(:cancellation_fee).and_return 0 }
-        it 'includes a cancelation link without a confirmation' do
+        it 'includes a cancellation link without a confirmation' do
           link = order_order_detail_path(order, order_detail, cancel: 'cancel')
           expect(text).to include link
           expect(text).to include "confirm="

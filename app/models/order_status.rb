@@ -14,11 +14,11 @@ class OrderStatus < ActiveRecord::Base
     end
   end
 
-  scope :new_os,     :conditions => {:name => 'New'},        :limit => 1
-  scope :inprocess,  :conditions => {:name => 'In Process'}, :limit => 1
-  scope :cancelled,  :conditions => {:name => 'Cancelled'},  :limit => 1
-  scope :complete,   :conditions => {:name => 'Complete'},   :limit => 1
-  scope :reconciled, :conditions => {:name => 'Reconciled'}, :limit => 1
+  scope :new_os, conditions: { name: 'New' }, limit: 1
+  scope :inprocess, conditions: { name: 'In Process' }, limit: 1
+  scope :canceled, conditions: { name: 'Canceled' }, limit: 1
+  scope :complete, conditions: { name: 'Complete' }, limit: 1
+  scope :reconciled, conditions: { name: 'Reconciled' }, limit: 1
 
   def editable?
     !!facility
@@ -48,8 +48,8 @@ class OrderStatus < ActiveRecord::Base
     name
   end
 
-  def root_cancelled?
-    root == OrderStatus.cancelled.first
+  def root_canceled?
+    root == OrderStatus.canceled.first
   end
 
   class << self
@@ -62,7 +62,7 @@ class OrderStatus < ActiveRecord::Base
     end
 
     def initial_statuses (facility)
-      first_invalid_status = self.find_by_name('Cancelled')
+      first_invalid_status = self.find_by_name('Canceled')
       statuses = self.find(:all).sort {|a,b| a.lft <=> b.lft }.reject {|os|
         !os.is_left_of?(first_invalid_status)
       }

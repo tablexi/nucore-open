@@ -9,4 +9,4 @@
 %td
   Amount
   %br
-  = text_field_tag "price_policy_#{pg.id}[cancellation_cost]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:cancellation_cost] : number_to_currency(pp.cancellation_cost, :unit => '', :delimiter => ''), :size => 8, :class => 'master_cancellation_cost'
+  = text_field_tag "price_policy_#{pg.id}[cancellation_cost]", params["price_policy_#{pg.id}"] ? params["price_policy_#{pg.id}"][:cancellation_cost] : number_to_currency(pp.cancellation_cost, unit: '', delimiter: ''), size: 8, class: 'master_cancellation_cost'

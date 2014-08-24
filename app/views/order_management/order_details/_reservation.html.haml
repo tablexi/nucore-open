@@ -13,7 +13,7 @@
       = reservation.reserve_to_s
 
   .datetime-block
-    - if reservation.can_edit_actuals? && !reservation.cancelled?
+    - if reservation.can_edit_actuals? && !reservation.canceled?
       = r.input :actual_start_date, :input_html => { :class => 'datepicker' }
       .control-group
         .controls

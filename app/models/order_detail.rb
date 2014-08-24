@@ -77,7 +77,7 @@ class OrderDetail < ActiveRecord::Base
   ## TODO validate which fields can be edited for which states
 
   scope :with_product_type, lambda { |s| {:joins => :product, :conditions => ["products.type = ?", s.to_s.capitalize]} }
-  scope :in_dispute, :conditions => ['dispute_at IS NOT NULL AND dispute_resolved_at IS NULL AND STATE != ?', 'cancelled'], :order => 'dispute_at'
+  scope :in_dispute, :conditions => ['dispute_at IS NOT NULL AND dispute_resolved_at IS NULL AND STATE != ?', 'canceled'], :order => 'dispute_at'
   scope :new_or_inprocess, :conditions => ["order_details.state IN ('new', 'inprocess') AND orders.ordered_at IS NOT NULL"], :include => :order
 
   scope :facility_recent, lambda { |facility|
@@ -136,7 +136,7 @@ class OrderDetail < ActiveRecord::Base
 
   def self.all_movable
     where(journal_id: nil)
-    .where("order_details.state NOT IN('cancelled', 'reconciled')")
+    .where("order_details.state NOT IN('canceled', 'reconciled')")
   end
 
   def self.unreconciled_accounts(facility, account_type)
@@ -339,7 +339,7 @@ class OrderDetail < ActiveRecord::Base
   aasm_state            :inprocess
   aasm_state            :complete, :enter => :make_complete
   aasm_state            :reconciled
-  aasm_state            :cancelled, :enter => :clear_costs
+  aasm_state            :canceled, :enter => :clear_costs
 
   aasm_event :to_new do
     transitions :to => :new, :from => :inprocess
@@ -358,8 +358,8 @@ class OrderDetail < ActiveRecord::Base
   end
 
   CANCELABLE_STATES = [:new, :inprocess, :complete]
-  aasm_event :to_cancelled do
-    transitions :to => :cancelled, :from => CANCELABLE_STATES, :guard => :cancelable?
+  aasm_event :to_canceled do
+    transitions :to => :canceled, :from => CANCELABLE_STATES, :guard => :cancelable?
   end
 
   # END acts_as_state_machine
@@ -385,10 +385,10 @@ class OrderDetail < ActiveRecord::Base
     @order_status_updated_by = updated_by
     options = { :admin => false, :apply_cancel_fee => false }.merge(options_args)
 
-    if reservation && order_status.root_cancelled?
+    if reservation && order_status.root_canceled?
       cancel_reservation(updated_by, order_status, options[:admin], options[:apply_cancel_fee])
     else
-      clear_statement if order_status.root_cancelled?
+      clear_statement if order_status.root_canceled?
       change_status! order_status, &block
     end
   end
@@ -664,14 +664,14 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def in_dispute?
-    dispute_at && dispute_resolved_at.nil? && !cancelled?
+    dispute_at && dispute_resolved_at.nil? && !canceled?
   end
 
   def disputed?
-    dispute_at.present? && !cancelled?
+    dispute_at.present? && !canceled?
   end
 
-  def cancel_reservation(canceled_by, order_status = OrderStatus.cancelled.first, admin_cancellation = false, admin_with_cancel_fee=false)
+  def cancel_reservation(canceled_by, order_status = OrderStatus.canceled.first, admin_cancellation = false, admin_with_cancel_fee=false)
     res = self.reservation
     res.canceled_by = canceled_by.id
 
@@ -839,7 +839,7 @@ class OrderDetail < ActiveRecord::Base
           os = OrderStatus.find(update_params[:order_status_id])
           order_details.each do |od|
             # cancel reservation order details
-            if os.id == OrderStatus.cancelled.first.id && od.reservation
+            if os.id == OrderStatus.canceled.first.id && od.reservation
               raise "#{msg_type} ##{od} failed cancellation." unless od.cancel_reservation(session_user, os, true)
             # cancel other orders or change status of any order
             else

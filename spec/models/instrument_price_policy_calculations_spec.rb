@@ -199,7 +199,7 @@ describe InstrumentPricePolicyCalculations do
       reservation.actual_end_at = now + 1.hour
     end
 
-    it 'returns #calculate_cancellation_costs if the reservation was cancelled' do
+    it 'returns #calculate_cancellation_costs if the reservation was canceled' do
       expect(reservation).to receive(:canceled_at).and_return Time.zone.now
       expect(policy).to receive(:calculate_cancellation_costs).with reservation
       expect(policy).to_not receive :calculate_overage

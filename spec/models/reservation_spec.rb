@@ -60,7 +60,7 @@ describe Reservation do
   end
 
 
-  context 'cancelled?' do
+  context 'canceled?' do
     before :each do
       @reservation = @instrument.reservations.create(:reserve_start_date => (Date.today+1.day).to_s, :reserve_start_hour => '10',
                                                      :reserve_start_min => '0', :reserve_start_meridian => 'am',
@@ -69,11 +69,11 @@ describe Reservation do
     end
 
 
-    it('should not be cancelled') { @reservation.should_not be_cancelled }
+    it('should not be canceled') { @reservation.should_not be_canceled }
 
-    it 'should be cancelled' do
+    it 'should be canceled' do
       @reservation.canceled_at=Time.zone.now
-      @reservation.should be_cancelled
+      @reservation.should be_canceled
     end
   end
 
@@ -224,7 +224,7 @@ describe Reservation do
         end
       end
 
-      it 'should not be moveable if the reservation is cancelled' do
+      it 'should not be moveable if the reservation is canceled' do
         @reservation1.should be_can_move
         @reservation1.canceled_at=Time.zone.now
         @reservation1.should_not be_can_move

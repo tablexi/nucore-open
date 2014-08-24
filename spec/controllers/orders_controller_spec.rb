@@ -401,10 +401,10 @@ describe OrdersController do
           do_request
           assigns[:order].reload.order_details.all? { |od| od.state.should == 'new' }
         end
-        it 'should be able to set to cancelled' do
-          @params.merge!({:order_status_id => OrderStatus.cancelled.first.id})
+        it 'should be able to set to canceled' do
+          @params.merge!({:order_status_id => OrderStatus.canceled.first.id})
           do_request
-          assigns[:order].reload.order_details.all? { |od| od.state.should == 'cancelled' }
+          assigns[:order].reload.order_details.all? { |od| od.state.should == 'canceled' }
         end
 
         context 'completed' do
@@ -505,15 +505,15 @@ describe OrdersController do
           @order_detail.reload.price_policy.should_not be_nil
           @order_detail.actual_cost.should_not be_nil
         end
-        context 'cancelled' do
+        context 'canceled' do
           before :each do
-            @params.merge!({:order_status_id => OrderStatus.cancelled.first.id})
+            @params.merge!({:order_status_id => OrderStatus.canceled.first.id})
             do_request
           end
-          it 'should be able to be set to cancelled' do
-            assigns[:order].order_details.all? { |od| od.state.should == 'cancelled' }
+          it 'should be able to be set to canceled' do
+            assigns[:order].order_details.all? { |od| od.state.should == 'canceled' }
           end
-          it 'should set the cancelled time on the reservation' do
+          it 'should set the canceled time on the reservation' do
             assigns[:order].order_details.all? { |od| od.reservation.canceled_at.should_not be_nil }
             @reservation.reload.canceled_at.should_not be_nil
             # Should this match the date put in the form, or the date when the action took place

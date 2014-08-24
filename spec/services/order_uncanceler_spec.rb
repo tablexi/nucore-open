@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe OrderUncanceler do
-  let(:cancel_status) { OrderStatus.cancelled.first }
+  let(:cancel_status) { OrderStatus.canceled.first }
   let(:uncanceler) { OrderUncanceler.new }
 
   context 'with an item' do
@@ -12,13 +12,13 @@ describe OrderUncanceler do
     it 'should not uncancel a not-canceled order' do
       uncanceler.uncancel_to_complete(order_detail)
       order_detail.should_not be_changed
-      order_detail.should_not be_cancelled
+      order_detail.should_not be_canceled
     end
 
     context 'with a canceled order' do
       before :each do
         order_detail.update_order_status!(order.user, cancel_status)
-        order_detail.should be_cancelled
+        order_detail.should be_canceled
         uncanceler.uncancel_to_complete(order_detail)
       end
 
@@ -48,7 +48,7 @@ describe OrderUncanceler do
     context 'and the reservation is canceled' do
       before :each do
         order_detail.update_order_status!(order_detail.user, cancel_status, :admin => true)
-        order_detail.should be_cancelled
+        expect(order_detail).to be_canceled
         uncanceler.uncancel_to_complete(order_detail)
       end
 

@@ -681,12 +681,12 @@ describe Instrument do
 
         it { should_not be_available }
 
-        context 'but it was cancelled' do
+        context 'but it was canceled' do
           let(:user) { FactoryGirl.build :user }
           before :each do
             Timecop.travel(60.minutes.ago) do
-              reservation.order_detail.update_order_status! user, OrderStatus.cancelled.first
-              reservation.should be_cancelled
+              reservation.order_detail.update_order_status! user, OrderStatus.canceled.first
+              reservation.should be_canceled
             end
           end
 

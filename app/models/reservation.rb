@@ -42,7 +42,7 @@ class Reservation < ActiveRecord::Base
   # Scopes
   #####
   def self.active
-    not_cancelled.
+    not_canceled.
     where("(orders.state = 'purchased' OR orders.state IS NULL)").
     joins_order
   end
@@ -56,7 +56,7 @@ class Reservation < ActiveRecord::Base
     where(:order_detail_id => nil)
   end
 
-  def self.not_cancelled
+  def self.not_canceled
     where(:canceled_at => nil)
   end
 
@@ -173,8 +173,8 @@ class Reservation < ActiveRecord::Base
     Reservation.joins(:order_detail).where(where, Time.zone.now, reserve_start_at, product_id).first.nil?
   end
 
-  def cancelled?
-    !canceled_at.nil?
+  def canceled?
+    canceled_at.present?
   end
 
   # can the CUSTOMER cancel the order
@@ -183,16 +183,16 @@ class Reservation < ActiveRecord::Base
   end
 
   def can_customer_edit?
-    !cancelled? && !complete? && reserve_start_at > Time.zone.now
+    !canceled? && !complete? && reserve_start_at > Time.zone.now
   end
 
   # can the ADMIN edit the reservation?
   def can_edit?
     return true if id.nil? # object is new and hasn't been saved to the DB successfully
 
-    # an admin can edit the reservation times as long as the reservation has not been cancelled,
+    # an admin can edit the reservation times as long as the reservation has not been canceled,
     # even if it is in the past.
-    !cancelled?
+    !canceled?
   end
 
   # TODO does this need to be more robust?
@@ -225,7 +225,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def requires_but_missing_actuals?
-    !!(!cancelled? && product.control_mechanism != Relay::CONTROL_MECHANISMS[:manual] && !has_actuals?)
+    !!(!canceled? && product.control_mechanism != Relay::CONTROL_MECHANISMS[:manual] && !has_actuals?) # TODO refactor?
   end
 
   protected

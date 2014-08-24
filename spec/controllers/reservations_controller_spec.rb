@@ -197,9 +197,9 @@ describe ReservationsController do
           expect(response.body).to_not include I18n.t('reservations.notices.upcoming', :reservation => @tomorrow)
         end
 
-        it 'should not have an upcoming message for a cancelled reservation' do
+        it 'should not have an upcoming message for a canceled reservation' do
           @upcoming.update_attributes(:reserve_start_at => 1.hour.from_now, :reserve_end_at => 2.hours.from_now)
-          @upcoming.order_detail.update_order_status!(@staff, OrderStatus.cancelled.first)
+          @upcoming.order_detail.update_order_status!(@staff, OrderStatus.canceled.first)
           do_request
           expect(response.body).to_not include I18n.t('reservations.notices.upcoming', :reservation => @upcoming)
         end
@@ -723,7 +723,7 @@ describe ReservationsController do
         should respond_with :success
       end
 
-      it "redirects to show page if reservation is cancelled" do
+      it "redirects to show page if reservation is canceled" do
         @reservation.update_attributes(:canceled_at => Time.zone.now - 1.day)
         sign_in @admin
         do_request
@@ -1126,8 +1126,8 @@ describe ReservationsController do
       expect(response.body).to_not include "relay[#{@instrument.id}]"
     end
 
-    it 'does not allow showing of cancelled reservations' do
-      expect(response.body).to_not include 'show_cancelled'
+    it 'does not allow showing of canceled reservations' do
+      expect(response.body).to_not include 'show_canceled'
     end
   end
 end

@@ -170,8 +170,8 @@ en:
       instrument:
         min_reserve_mins: Minimum Reservation Minutes
         max_reserve_mins: Maximum Reservation Minutes
-        min_cancel_hours: Minimum Cancelation Hours
-        auto_cancel_mins: Automatic Cancelation Minutes
+        min_cancel_hours: Minimum Cancellation Hours
+        auto_cancel_mins: Automatic Cancellation Minutes
       price_group:
         is_internal: Is Internal?
       price_policy:
@@ -233,9 +233,9 @@ en:
         actuals_string: Actual Usage
         actual_start_date: Actual Start
         actual_duration_mins: Actual Duration
-        canceled_by_user: Cancelled By
-        canceled_by: Cancelled By
-        canceled_at: Cancelled At
+        canceled_by_user: Canceled By
+        canceled_by: Canceled By
+        canceled_at: Canceled At
       statement:
         id: "Invoice #"
         created_by: Sent By
