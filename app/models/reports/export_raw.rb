@@ -1,4 +1,5 @@
 class Reports::ExportRaw
+  include DateHelper
 
   def initialize(facility, date_range_field = 'journal_or_statement_date', date_start, date_end, order_status_ids, headers, action_name)
     @action_name = action_name
@@ -27,7 +28,7 @@ class Reports::ExportRaw
   end
 
   def formatted_date_range
-    "#{formatted_date(@date_start)} - #{formatted_date(@date_end)}"
+    "#{format_usa_date(@date_start)} - #{format_usa_date(@date_end)}"
   end
 
   def formatted_compact_date_range
@@ -44,8 +45,8 @@ class Reports::ExportRaw
     [
       order_detail.facility,
       order_detail.to_s,
-      formatted_datetime(order_detail.order.ordered_at),
-      formatted_datetime(order_detail.fulfilled_at),
+      format_usa_datetime(order_detail.order.ordered_at),
+      format_usa_datetime(order_detail.fulfilled_at),
       order_detail.order_status.name,
       order_detail.state,
     ]
@@ -78,7 +79,7 @@ class Reports::ExportRaw
       account.affiliate_to_s,
       account.account_number,
       account.description,
-      formatted_datetime(account.expires_at)
+      format_usa_datetime(account.expires_at)
     ]
   end
 
@@ -97,13 +98,13 @@ class Reports::ExportRaw
   def reservation_info_columns(reservation)
     if reservation.present?
       [
-        formatted_datetime(reservation.reserve_start_at),
-        formatted_datetime(reservation.reserve_end_at),
+        format_usa_datetime(reservation.reserve_start_at),
+        format_usa_datetime(reservation.reserve_end_at),
         reservation.duration_mins,
-        formatted_datetime(reservation.actual_start_at),
-        formatted_datetime(reservation.actual_end_at),
+        format_usa_datetime(reservation.actual_start_at),
+        format_usa_datetime(reservation.actual_end_at),
         reservation.actual_duration_mins,
-        formatted_datetime(reservation.canceled_at),
+        format_usa_datetime(reservation.canceled_at),
         canceled_by_name(reservation),
       ]
     else
@@ -113,19 +114,19 @@ class Reports::ExportRaw
 
   def dispute_info_columns(order_detail)
     [
-      formatted_datetime(order_detail.dispute_at),
+      format_usa_datetime(order_detail.dispute_at),
       order_detail.dispute_reason,
-      formatted_datetime(order_detail.dispute_resolved_at),
+      format_usa_datetime(order_detail.dispute_resolved_at),
       order_detail.dispute_resolved_reason,
     ]
   end
 
   def statement_datetime_column(statement)
-    [ statement.present? ? formatted_datetime(statement.created_at) : nil ]
+    [ statement.present? ? format_usa_datetime(statement.created_at) : nil ]
   end
 
   def journal_datetime_column(journal)
-    [ journal.present? ? formatted_datetime(journal.created_at) : nil ]
+    [ journal.present? ? format_usa_datetime(journal.created_at) : nil ]
   end
 
   def order_detail_row(order_detail)
@@ -140,7 +141,7 @@ class Reports::ExportRaw
       reservation_info_columns(order_detail.reservation) +
       [ order_detail.note ] +
       dispute_info_columns(order_detail) +
-      [ formatted_datetime(order_detail.reviewed_at) ] +
+      [ format_usa_datetime(order_detail.reviewed_at) ] +
       statement_datetime_column(order_detail.statement) +
       journal_datetime_column(order_detail.journal) +
       [ order_detail.reconciled_note ]
@@ -164,14 +165,6 @@ class Reports::ExportRaw
       .for_facility(@facility)
       .action_in_date_range(@date_range_field, @date_start, @date_end)
       .includes(:account, :order, :order_status, :price_policy, :product, :reservation, :statement)
-  end
-
-  def formatted_datetime(datetime)
-    datetime.present? ? I18n.l(datetime, format: :usa) : ''
-  end
-
-  def formatted_date(datetime)
-    I18n.l(datetime.to_date, format: :usa)
   end
 
   def as_currency(number)
