@@ -160,10 +160,14 @@ class UsersController < ApplicationController
 
   def update_scheduling_groups_from_params
     params[:product_access_group].inject(0) do |update_count, (product_id, access_group_id)|
-      updater = SchedulingGroupUpdater.new(product_id, @user)
-      updater.update_access_group(access_group_id) && update_count += 1
+      update_scheduling_group(product_id, access_group_id) && update_count += 1
       update_count
     end
+  end
+
+  def update_scheduling_group(product_id, access_group_id)
+    SchedulingGroupUpdater.new(product_id, @user)
+      .update_access_group(access_group_id)
   end
 
   def update_approvals
