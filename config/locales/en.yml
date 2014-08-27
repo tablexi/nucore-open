@@ -792,8 +792,6 @@ en:
       no_products: "%{name} does not have any available products."
       th:
         approval_received: "Approved?"
-        product_name: "Product"
-        scheduling_group: "Scheduling Group"
       update_approvals:
         submit: "Update Access List"
     new_external:

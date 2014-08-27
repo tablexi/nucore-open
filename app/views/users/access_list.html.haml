@@ -19,8 +19,8 @@
         %thead
           %tr
             %th.approval-column= t('.th.approval_received')
-            %th.product-column= t('.th.product_name')
-            %th.scheduling-group-column= t('.th.scheduling_group')
+            %th.product-column= Product.model_name.human
+            %th.scheduling-group-column= ProductAccessGroup.model_name.human
         %tbody
           - products.each do |product|
             %tr.js--access-list-row
