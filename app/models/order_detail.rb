@@ -20,6 +20,7 @@ class OrderDetail < ActiveRecord::Base
   after_validation :reset_dispute
 
   before_save :clear_statement, if: :account_id_changed?
+  before_save :reassign_price, if: :quantity_changed?
 
   before_save :set_problem_order
   def set_problem_order
