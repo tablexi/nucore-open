@@ -34,7 +34,7 @@ class GeneralReportsController < ReportsController
   private
 
   def init_report_params
-    status_ids=params[:status_filter]
+    status_ids = Array(params[:status_filter])
 
     if params[:date_start].blank? && params[:date_end].blank?
       # page load -- default to most interesting/common statuses
