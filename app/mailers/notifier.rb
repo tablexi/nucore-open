@@ -1,4 +1,5 @@
 class Notifier < ActionMailer::Base
+  include DateHelper
   add_template_helper TranslationHelper
   add_template_helper OrdersHelper
 
@@ -62,6 +63,7 @@ class Notifier < ActionMailer::Base
     @facility=args[:facility]
     @account=args[:account]
     @statement=args[:statement]
+    attach_statement_pdf
     send_nucore_mail args[:user].email, t('notifier.statement.subject')
   end
 
@@ -74,6 +76,17 @@ class Notifier < ActionMailer::Base
   end
 
   private
+
+  def attach_statement_pdf
+    attachments[statement_pdf.filename] = {
+      mime_type: 'application/pdf',
+      content: statement_pdf.render,
+    }
+  end
+
+  def statement_pdf
+    @statement_pdf ||= StatementPdf.new(@statement)
+  end
 
   def send_nucore_mail(to, subject, template_name=nil)
     mail(:subject => subject, :to => Settings.email.fake.enabled ? Settings.email.fake.to : to, :template_name => template_name)
