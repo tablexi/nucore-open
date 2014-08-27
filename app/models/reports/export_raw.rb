@@ -40,111 +40,119 @@ class Reports::ExportRaw
     @headers.to_csv
   end
 
+  def basic_info_columns(order_detail)
+    [
+      order_detail.facility,
+      order_detail.to_s,
+      formatted_datetime(order_detail.order.ordered_at),
+      formatted_datetime(order_detail.fulfilled_at),
+      order_detail.order_status.name,
+      order_detail.state,
+    ]
+  end
+
+  def user_info_columns(user)
+    [
+      user.username,
+      user.first_name,
+      user.last_name,
+      user.email,
+    ]
+  end
+
+  def product_info_columns(order_detail)
+    product = order_detail.product
+    bundle_desc = product.is_a?(Bundle) ? product.products.collect(&:name).join(' & ') : nil
+    [
+      product.url_name,
+      product.type.underscore.humanize,
+      product.name,
+      order_detail.quantity,
+      bundle_desc,
+    ]
+  end
+
+  def account_info_columns(account)
+    [
+      account.type.underscore.humanize,
+      account.affiliate_to_s,
+      account.account_number,
+      account.description,
+      formatted_datetime(account.expires_at)
+    ]
+  end
+
+  def pricing_info_columns(order_detail)
+    [
+      order_detail.price_policy.try(:price_group).try(:name),
+      as_currency(order_detail.estimated_cost),
+      as_currency(order_detail.estimated_subsidy),
+      as_currency(order_detail.estimated_total),
+      as_currency(order_detail.actual_cost),
+      as_currency(order_detail.actual_subsidy),
+      as_currency(order_detail.actual_total),
+    ]
+  end
+
+  def reservation_info_columns(reservation)
+    if reservation.present?
+      [
+        formatted_datetime(reservation.reserve_start_at),
+        formatted_datetime(reservation.reserve_end_at),
+        reservation.duration_mins,
+        formatted_datetime(reservation.actual_start_at),
+        formatted_datetime(reservation.actual_end_at),
+        reservation.actual_duration_mins,
+        formatted_datetime(reservation.canceled_at),
+        canceled_by_name(reservation),
+      ]
+    else
+      [nil, nil, nil, nil, nil, nil, nil, nil]
+    end
+  end
+
+  def dispute_info_columns(order_detail)
+    [
+      formatted_datetime(order_detail.dispute_at),
+      order_detail.dispute_reason,
+      formatted_datetime(order_detail.dispute_resolved_at),
+      order_detail.dispute_resolved_reason,
+    ]
+  end
+
+  def statement_datetime_column(statement)
+    [ statement.present? ? formatted_datetime(statement.created_at) : nil ]
+  end
+
+  def journal_datetime_column(journal)
+    [ journal.present? ? formatted_datetime(journal.created_at) : nil ]
+  end
+
+  def order_detail_row(order_detail)
+    begin
+      basic_info_columns(order_detail) +
+      user_info_columns(order_detail.order.created_by_user) +
+      user_info_columns(order_detail.order.user) +
+      product_info_columns(order_detail) +
+      account_info_columns(order_detail.account) +
+      user_info_columns(order_detail.account.owner_user) +
+      pricing_info_columns(order_detail) +
+      reservation_info_columns(order_detail.reservation) +
+      [ order_detail.note ] +
+      dispute_info_columns(order_detail) +
+      [ formatted_datetime(order_detail.reviewed_at) ] +
+      statement_datetime_column(order_detail.statement) +
+      journal_datetime_column(order_detail.journal) +
+      [ order_detail.reconciled_note ]
+    rescue => e
+      [ "*** ERROR WHEN REPORTING ON ORDER DETAIL #{order_detail}: #{e.message} ***" ]
+    end
+  end
+
   def csv_body
     CSVHelper::CSV.generate do |csv|
       report_data.each do |order_detail|
-        row = nil
-
-        begin
-          order = order_detail.order
-          ordered_by = order.created_by_user
-          purchaser = order.user
-          account = order_detail.account
-          owner = account.owner_user
-          product = order_detail.product
-          bundle_desc = product.is_a?(Bundle) ? product.products.collect(&:name).join(' & ') : nil
-          reservation = order_detail.reservation
-
-          row = [
-            # basic info
-            order_detail.facility,
-            order_detail.to_s,
-            formatted_datetime(order.ordered_at),
-            formatted_datetime(order_detail.fulfilled_at),
-            order_detail.order_status.name,
-            order_detail.state,
-
-            # who placed the order
-            ordered_by.username,
-            ordered_by.first_name,
-            ordered_by.last_name,
-            ordered_by.email,
-
-            purchaser.username,
-            purchaser.first_name,
-            purchaser.last_name,
-            purchaser.email,
-
-            # what was ordered
-            product.url_name,
-            product.type.underscore.humanize,
-            product.name,
-            order_detail.quantity,
-            bundle_desc,
-
-            # what account this order detail is for
-            account.type.underscore.humanize,
-            account.affiliate_to_s,
-            account.account_number,
-            account.description,
-            formatted_datetime(account.expires_at),
-            owner.username,
-            owner.first_name,
-            owner.last_name,
-            owner.email,
-
-            # pricing info
-            order_detail.price_policy.try(:price_group).try(:name),
-            as_currency(order_detail.estimated_cost),
-            as_currency(order_detail.estimated_subsidy),
-            as_currency(order_detail.estimated_total),
-            as_currency(order_detail.actual_cost),
-            as_currency(order_detail.actual_subsidy),
-            as_currency(order_detail.actual_total),
-          ]
-
-          if reservation.present?
-            row += [
-              formatted_datetime(reservation.reserve_start_at),
-              formatted_datetime(reservation.reserve_end_at),
-              reservation.duration_mins,
-              formatted_datetime(reservation.actual_start_at),
-              formatted_datetime(reservation.actual_end_at),
-              reservation.actual_duration_mins,
-              formatted_datetime(reservation.canceled_at),
-              canceled_by_name(reservation),
-            ]
-            else
-              # leave blanks for non-reservations
-              row += [nil, nil, nil, nil, nil, nil, nil, nil]
-            end
-
-          row += [ order_detail.note ]
-
-          # dispute info
-          row += [
-            formatted_datetime(order_detail.dispute_at),
-            order_detail.dispute_reason,
-            formatted_datetime(order_detail.dispute_resolved_at),
-            order_detail.dispute_resolved_reason,
-          ]
-          row += [ formatted_datetime(order_detail.reviewed_at) ]
-
-          statement = order_detail.statement
-          row << (statement ? formatted_datetime(statement.created_at) : nil)
-
-          journal = order_detail.journal
-          row << (journal ? formatted_datetime(journal.journal_date) : nil)
-
-          row << order_detail.reconciled_note
-
-        rescue => e
-          row = [
-            "*** ERROR WHEN REPORTING ON ORDER DETAIL #{order_detail}: #{e.message} ***"
-          ]
-        end
-
-        csv << row
+        csv << order_detail_row(order_detail)
       end
     end
   end
