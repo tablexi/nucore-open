@@ -186,11 +186,16 @@ class FacilityAccountsController < ApplicationController
 
     respond_to do |format|
       format.html { render :action => action }
-      format.pdf  { render :template => '/statements/show' }
+      format.pdf { render_statement_pdf }
     end
   end
 
   private
+
+  def render_statement_pdf
+    @statement_pdf = StatementPdf.new(@statement)
+    render template: '/statements/show'
+  end
 
   def init_account
     if params.has_key? :id
