@@ -1,14 +1,15 @@
 class Reports::ExportRaw
   include DateHelper
 
-  def initialize(facility, date_range_field = 'journal_or_statement_date', date_start, date_end, order_status_ids, headers, action_name)
-    @action_name = action_name
-    @date_end = date_end
-    @date_range_field = date_range_field
-    @date_start = date_start
-    @headers = headers
-    @facility = facility
-    @order_status_ids = order_status_ids
+  def initialize(arguments)
+    [:action_name, :date_end, :date_start, :headers, :facility, :order_status_ids].each do |property|
+      if arguments[property].present?
+        instance_variable_set("@#{property}".to_sym, arguments[property])
+      else
+        raise ArgumentError, "Required argument '#{property}' is missing"
+      end
+    end
+    @date_range_field = arguments[:date_range_field] || 'journal_or_statement_date'
   end
 
   def report_data

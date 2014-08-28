@@ -41,13 +41,13 @@ class GeneralReportsController < ReportsController
 
   def raw_report
     Reports::ExportRaw.new(
-      current_facility,
-      params[:date_range_field],
-      @date_start,
-      @date_end,
-      @status_ids,
-      @headers,
-      action_name,
+      facility: current_facility,
+      date_range_field: params[:date_range_field],
+      date_start: @date_start,
+      date_end: @date_end,
+      order_status_ids: @status_ids,
+      headers: @headers,
+      action_name: action_name,
     )
   end
 
