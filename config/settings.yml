@@ -12,6 +12,9 @@ financial:
     csv: true
     xml: true
 
+statement_pdf:
+  class_name: StatementPdf
+
 validator:
   class_name: ValidatorDefault
   test:

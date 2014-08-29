@@ -193,7 +193,7 @@ class FacilityAccountsController < ApplicationController
   private
 
   def render_statement_pdf
-    @statement_pdf = StatementPdf.new(@statement, params[:show].blank?)
+    @statement_pdf = StatementPdfFactory.instance(@statement, params[:show].blank?)
     render template: '/statements/show'
   end
 
