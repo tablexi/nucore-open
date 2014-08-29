@@ -2,21 +2,32 @@ class StatementPdf
   include ActionView::Helpers::NumberHelper
   include DateHelper
 
+  LABEL_ROW_STYLE = { font_style: :bold, background_color: 'cccccc' }
+
+  DEFAULT_OPTIONS = {
+    left_margin: 50,
+    right_margin: 50,
+    top_margin: 50,
+    bottom_margin: 75,
+  }
+
   def options
-    {
-      left_margin: 50,
-      right_margin: 50,
-      top_margin: 50,
-      bottom_margin: 75,
-      filename: filename,
-      force_download: true,
-    }
+    if download?
+      DEFAULT_OPTIONS.merge(filename: filename, force_download: true)
+    else
+      DEFAULT_OPTIONS
+    end
   end
 
-  def initialize(statement)
+  def initialize(statement, download = false)
     @statement = statement
     @account = statement.account
     @facility = statement.facility
+    @download = download
+  end
+
+  def download?
+    @download
   end
 
   def filename
@@ -68,7 +79,7 @@ class StatementPdf
   def generate_order_detail_rows(pdf)
     pdf.move_down(30)
     pdf.table([order_detail_headers] + order_detail_rows, header: true, width: 510) do
-      row(0).style(font_style: :bold, background_color: 'cccccc')
+      row(0).style(LABEL_ROW_STYLE)
       column(0).width = 125
       column(1).width = 300
       column(2).style(align: :right)
