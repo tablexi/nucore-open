@@ -85,7 +85,7 @@ class Notifier < ActionMailer::Base
   end
 
   def statement_pdf
-    @statement_pdf ||= StatementPdf.new(@statement)
+    @statement_pdf ||= StatementPdfFactory.instance(@statement)
   end
 
   def send_nucore_mail(to, subject, template_name=nil)
