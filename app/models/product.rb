@@ -45,7 +45,11 @@ class Product < ActiveRecord::Base
   end
 
   def self.requiring_approval_by_type
-    requiring_approval.order([:type, :name]).group_by(&:type)
+    requiring_approval.group_by_type
+  end
+
+  def self.group_by_type
+    scoped.order(:type, :name).group_by(&:type)
   end
 
   ## AR Hooks
