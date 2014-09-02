@@ -135,7 +135,6 @@ class UsersController < ApplicationController
   # POST /facilities/:facility_id/users/:user_id/access_list/approvals
   def access_list_approvals
     update_access_list_approvals
-    update_scheduling_groups
     redirect_to facility_user_access_list_path(current_facility, @user)
   end
 
@@ -145,29 +144,15 @@ class UsersController < ApplicationController
   private
 
   def update_access_list_approvals
-    if update_approvals.any_changed?
+    if update_approvals.grants_changed?
       flash[:notice] = I18n.t 'controllers.users.access_list.approval_update.notice',
         granted: update_approvals.granted, revoked: update_approvals.revoked
     end
-  end
-
-  def update_scheduling_groups
-    update_count = update_scheduling_groups_from_params
-    if update_count > 0
-      add_flash(:notice, I18n.t('controllers.users.access_list.scheduling_group_update.notice', update_count: update_count))
+    if update_approvals.access_groups_changed?
+      add_flash(:notice,
+        I18n.t('controllers.users.access_list.scheduling_group_update.notice',
+          update_count: update_approvals.access_groups_changed))
     end
-  end
-
-  def update_scheduling_groups_from_params
-    params[:product_access_group].inject(0) do |update_count, (product_id, access_group_id)|
-      update_scheduling_group(product_id, access_group_id) && update_count += 1
-      update_count
-    end
-  end
-
-  def update_scheduling_group(product_id, access_group_id)
-    SchedulingGroupUpdater.new(product_id, @user)
-      .update_access_group(access_group_id)
   end
 
   def update_approvals
@@ -175,7 +160,7 @@ class UsersController < ApplicationController
       current_facility.products_requiring_approval,
       @user,
       session_user
-    ).update_approvals(approved_products_from_params)
+    ).update_approvals(approved_products_from_params, params[:product_access_group])
   end
 
   def approved_products_from_params
