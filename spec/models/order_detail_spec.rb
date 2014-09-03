@@ -107,30 +107,27 @@ describe OrderDetail do
   end
 
   context "update quantity" do
-    let(:new_quantity) { @order_detail.quantity + 4 }
+    let(:new_quantity) { order_detail.quantity + 4 }
 
-    it 're-estimates pricing if cost was estimated' do
-      expect(@order_detail).to receive(:cost_estimated?).and_return true
-      expect(@order_detail).to receive :assign_estimated_price
-      expect(@order_detail).to receive :save!
-      @order_detail.update_quantity new_quantity
-      expect(@order_detail.quantity).to eq new_quantity
+    context 'with estimated costs' do
+      it 're-estimates pricing' do
+        expect(order_detail).to receive(:cost_estimated?).and_return true
+        expect(order_detail).to receive :assign_estimated_price
+        order_detail.quantity = new_quantity
+        order_detail.save!
+        expect(order_detail.reload.quantity).to eq new_quantity
+      end
     end
 
-    it 're-assigns pricing if cost was actual' do
-      expect(@order_detail).to receive(:cost_estimated?).and_return false
-      expect(@order_detail).to receive(:actual_cost).and_return 50
-      expect(@order_detail).to receive :assign_actual_price
-      expect(@order_detail).to receive :save!
-      @order_detail.update_quantity new_quantity
-      expect(@order_detail.quantity).to eq new_quantity
-    end
-
-    it 'does not save! if the record was not persisted' do
-      expect(@order_detail).to receive(:persisted?).and_return false
-      expect(@order_detail).not_to receive :save!
-      @order_detail.update_quantity new_quantity
-      expect(@order_detail.quantity).to eq new_quantity
+    context 'with actual costs' do
+      it 're-assigns actual pricing' do
+        expect(order_detail).to receive(:cost_estimated?).and_return false
+        expect(order_detail).to receive(:actual_cost).exactly(2).times.and_return 50
+        expect(order_detail).to receive :assign_actual_price
+        order_detail.quantity = new_quantity
+        order_detail.save!
+        expect(order_detail.reload.quantity).to eq new_quantity
+      end
     end
   end
 

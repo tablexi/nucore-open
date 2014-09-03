@@ -234,7 +234,7 @@ class Order < ActiveRecord::Base
   # each of the child order_details
   def update_order_detail_accounts
     order_details.each do |od|
-      od.update_account(account)
+      od.account = account
       od.save!
     end
   end

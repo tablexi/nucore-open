@@ -70,7 +70,8 @@ describe SurveyResponse do
 
     it 'updates the receiver quantity' do
       params[:quantity] += 3
-      expect_any_instance_of(OrderDetail).to receive(:update_quantity).with(params[:quantity]).and_call_original
+      expect_any_instance_of(OrderDetail)
+        .to receive('quantity='.to_sym).with(params[:quantity]).and_call_original
       receiver = survey_response.save!
       expect(receiver.receiver.quantity).to eq params[:quantity]
     end
@@ -78,7 +79,7 @@ describe SurveyResponse do
     it 'does not change the quantity if no quantity is given' do
       params[:quantity] = nil
       quantity = order_detail.quantity
-      expect_any_instance_of(OrderDetail).to_not receive :update_quantity
+      expect_any_instance_of(OrderDetail).to_not receive 'quantity='.to_sym
       receiver = survey_response.save!
       expect(receiver.receiver.quantity).to eq quantity
     end
