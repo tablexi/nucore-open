@@ -20,6 +20,7 @@ class OrderDetail < ActiveRecord::Base
   after_validation :reset_dispute
 
   before_save :clear_statement, if: :account_id_changed?
+  before_save :reassign_price, if: lambda { |o| o.account_id_changed? || o.quantity_changed? }
 
   before_save :set_problem_order
   def set_problem_order
@@ -172,7 +173,7 @@ class OrderDetail < ActiveRecord::Base
   def self.reassign_account!(account, order_details)
     OrderDetail.transaction do
       order_details.each do |order_detail|
-        order_detail.update_account(account)
+        order_detail.account = account
         order_detail.save!
       end
     end
@@ -583,17 +584,6 @@ class OrderDetail < ActiveRecord::Base
       # active survey but no response
       "Please complete the online order form"
     end
-  end
-
-  def update_quantity(quantity)
-    self.quantity = quantity
-    reassign_price
-    save! if persisted?
-  end
-
-  def update_account(new_account)
-    self.account = new_account
-    reassign_price
   end
 
   def reassign_price

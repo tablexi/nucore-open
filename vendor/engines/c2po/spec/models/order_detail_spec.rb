@@ -42,7 +42,7 @@ describe OrderDetail do
     end
   end
 
-  context '#update_account' do
+  context 'update account' do
     let(:base_price_group) { create(:price_group, name: 'Base', facility: facility) }
     let!(:base_price_policy) { create :item_price_policy, unit_cost: 20, product: item, price_group: base_price_group }
     let(:discount_price_group) { create(:price_group, name: 'Discount', facility: facility) }
@@ -62,7 +62,7 @@ describe OrderDetail do
       end
 
       def move_to_new_account
-        order_detail.update_account(new_account)
+        order_detail.account = new_account
         expect { order_detail.save }
           .to change{order_detail.statement}.from(original_statement).to(nil)
         expect(order_detail.account).to be new_account
@@ -189,11 +189,14 @@ describe OrderDetail do
 
       before :each do
         order_detail.facility.update_attributes(accepts_cc: false)
+        order_detail.account = cc_account
+        order_detail.save!
       end
 
       it 'should assign the account but not set estimated costs' do # TODO is this behavior correct?
-        expect(order_detail.update_account(cc_account)).to be_nil
         expect(order_detail.account).to eq cc_account
+        expect(order_detail.estimated_cost).to be_blank
+        expect(order_detail.estimated_subsidy).to be_blank
       end
     end
   end

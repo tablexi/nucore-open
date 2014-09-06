@@ -18,7 +18,7 @@ class SurveyResponse
       receiver.response_data = response_data
       receiver.external_id = params[:survey_id].presence
       receiver.save!
-      od.update_quantity params[:quantity].to_i if params[:quantity].present?
+      od.quantity = params[:quantity].to_i if params[:quantity].present?
       od.merge!
       receiver
     end

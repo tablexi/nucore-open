@@ -45,71 +45,78 @@ describe Order do
   it { should belong_to :order_import }
 
   context 'total cost' do
-
-    before :each do
-      @facility       = FactoryGirl.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @user           = FactoryGirl.create(:user)
-      @account        = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
-      @order          = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id))
-      @item           = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
-    end
+    let(:account) { create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user)) }
+    let(:facility) { create(:facility) }
+    let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
+    let(:item) { facility.items.create(attributes_for(:item, facility_account_id: facility_account.id)) }
+    let(:order) { user.orders.create(attributes_for(:order, created_by: user.id)) }
+    let(:price_group) { facility.price_groups.create(attributes_for(:price_group)) }
+    let!(:price_policy) { item.item_price_policies.create(attributes_for(:item_price_policy, price_group_id: price_group.id)) }
+    let(:user) { create(:user) }
 
     context 'actual' do
       before :each do
-        @cost=@subsidy=0
+        @cost = @subsidy = 0
 
         (1..4).each do |i|
-          cost, subsidy=10 * i, 5 * i
+          cost, subsidy = 10 * i, 5 * i
           @cost += cost
           @subsidy += subsidy
-          @order.order_details.create(
-            FactoryGirl.attributes_for(
-              :order_detail,
-              :product_id => @item.id,
-              :account_id => @account.id,
-              :actual_cost => cost,
-              :actual_subsidy => subsidy
-            )
-          )
+          order.order_details.create(attributes_for(:order_detail,
+            product_id: item.id,
+            account_id: account.id,
+            actual_cost: cost,
+            actual_subsidy: subsidy,
+            price_policy_id: price_policy.id,
+          ))
         end
 
-        @total=@cost-@subsidy
+        @total = @cost - @subsidy
       end
 
-      [ :total, :subsidy, :cost ].each do |method_name|
-        it "should have equal #{method_name}" do
-          @order.method(method_name).call.should == instance_variable_get("@#{method_name}".to_sym)
-        end
+      it 'should have the expected cost' do
+        expect(order.cost).to eq @cost
+      end
+
+      it 'should have the expected subsidy' do
+        expect(order.subsidy).to eq @subsidy
+      end
+
+      it 'should have the expected total' do
+        expect(order.total).to eq @total
       end
     end
 
     context 'estimated' do
       before :each do
-        @estimated_cost=@estimated_subsidy=0
+        @estimated_cost = @estimated_subsidy = 0
 
         (1..4).each do |i|
-          cost, subsidy=10 * i, 5 * i
+          cost, subsidy = 10 * i, 5 * i
           @estimated_cost += cost
           @estimated_subsidy += subsidy
-          @order.order_details.create(
-            FactoryGirl.attributes_for(
-              :order_detail,
-              :product_id => @item.id,
-              :account_id => @account.id,
-              :estimated_cost => cost,
-              :estimated_subsidy => subsidy
-            )
-          )
+          order.order_details.create(attributes_for(:order_detail,
+            product_id: item.id,
+            account_id: account.id,
+            estimated_cost: cost,
+            estimated_subsidy: subsidy,
+            price_policy_id: price_policy.id,
+          ))
         end
 
-        @estimated_total=@estimated_cost-@estimated_subsidy
+        @estimated_total = @estimated_cost - @estimated_subsidy
       end
 
-      [ :estimated_total, :estimated_subsidy, :estimated_cost ].each do |method_name|
-        it "should have equal #{method_name}" do
-          @order.method(method_name).call.should == instance_variable_get("@#{method_name}".to_sym)
-        end
+      it 'should have the expected estimated_cost' do
+        expect(order.estimated_cost).to eq @estimated_cost
+      end
+
+      it 'should have the expected estimated_subsidy' do
+        expect(order.estimated_subsidy).to eq @estimated_subsidy
+      end
+
+      it 'should have the expected estimated_total' do
+        expect(order.estimated_total).to eq @estimated_total
       end
     end
   end

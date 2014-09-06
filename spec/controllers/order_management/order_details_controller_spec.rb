@@ -360,7 +360,7 @@ describe OrderManagement::OrderDetailsController do
           before :each do
             AccountPriceGroupMember.create! price_group: price_group, account: original_account
             AccountPriceGroupMember.create! price_group: price_group, account: new_account
-            order_detail.update_account(original_account)
+            order_detail.account = original_account
             order_detail.save
             order_detail.update_attributes(statement_id: statement.id, price_policy_id: PricePolicy.first.id)
 
@@ -389,7 +389,7 @@ describe OrderManagement::OrderDetailsController do
           before :each do
             AccountPriceGroupMember.create! price_group: price_group, account: original_account
             AccountPriceGroupMember.create! price_group: price_group, account: new_account
-            order_detail.update_account(original_account)
+            order_detail.account = original_account
             order_detail.save
             order_detail.update_attributes(statement_id: statement.id, price_policy_id: PricePolicy.first.id)
 

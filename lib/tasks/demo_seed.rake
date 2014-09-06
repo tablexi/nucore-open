@@ -453,7 +453,7 @@ namespace :demo  do
             :bundle_product_id  => product.id,
             :group_id           => group_id
           })
-          od.update_account(account)
+          od.account = account
           od.save!
         end
       else
@@ -479,7 +479,7 @@ namespace :demo  do
           res.save(:validate => false)
           i += 1
         end
-        od.update_account(account)
+        od.account = account
 
         od.price_policy=case od.product
                           when Instrument then InstrumentPricePolicy.first
