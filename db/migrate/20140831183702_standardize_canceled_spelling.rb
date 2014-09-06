@@ -18,9 +18,6 @@ class StandardizeCanceledSpelling < ActiveRecord::Migration
   end
 
   def change_spelling(model, property, from, to)
-    model.where(property => from).each do |row|
-      row.send("#{property}=".to_sym, to)
-      row.save!(validate: false)
-    end
+    model.where(property => from).update_all(property => to)
   end
 end
