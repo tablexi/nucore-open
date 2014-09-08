@@ -33,9 +33,17 @@ class GeneralReportsController < ReportsController
 
   private
 
+  def email_to_address
+    if Settings.email.fake.enabled
+      Settings.email.fake.to
+    else
+      current_user.email
+    end
+  end
+
   def generate_report_data_csv
-    ExportRawReportMailer.delay.raw_report_email(current_user.email, raw_report)
-    flash[:notice] = I18n.t('controllers.reports.mail_queued', email: current_user.email)
+    ExportRawReportMailer.delay.raw_report_email(email_to_address, raw_report)
+    flash[:notice] = I18n.t('controllers.reports.mail_queued', email: email_to_address)
     redirect_to send("#{action_name}_facility_general_reports_path", current_facility)
   end
 
