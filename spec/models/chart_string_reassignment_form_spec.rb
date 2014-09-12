@@ -2,10 +2,19 @@ require 'spec_helper'
 
 describe ChartStringReassignmentForm do
 
+  def create_order_detail
+    product = create(:setup_item)
+    create(:order_detail, order: create(:purchased_order, product: product), product: product)
+  end
+
+  def create_order_details(n)
+    n.times.map { create_order_detail }
+  end
+
   describe '#available_accounts' do
-    let(:accounts) { (0..8).map { |n| double Account, description: "Account #{n}" } }
-    let(:order_details) { (0..8).map { double OrderDetail } }
-    let(:users) { (0..2).map { double User } }
+    let(:accounts) { create_list(:setup_account, 9) }
+    let(:order_details) { create_order_details(9) }
+    let(:users) { create_list(:user, 3) }
 
     def random_items(list, count)
       list.shuffle.slice(0, count)
@@ -16,19 +25,22 @@ describe ChartStringReassignmentForm do
     end
 
     context 'with a single User' do
+      subject(:form) { ChartStringReassignmentForm.new([order_detail]) }
+      let(:order_detail) { create_order_detail }
+      let(:user) { users.first }
+
       it 'determines available accounts' do
-        order_detail = order_details.first
         order_detail.stub(:account) { accounts.first }
-        user = users.first
         user.stub(:accounts) { accounts }
         order_detail.stub(:user) { user }
 
-        form = ChartStringReassignmentForm.new([order_detail])
         expect(form.available_accounts).to eq(user.accounts)
       end
     end
 
     context 'with multiple Users' do
+      subject(:form) { ChartStringReassignmentForm.new(order_details) }
+
       context 'Users have all accounts in common' do
         it 'determines available_accounts' do
           users.each do |user|
@@ -39,14 +51,14 @@ describe ChartStringReassignmentForm do
             order_detail.stub(:user) { users[n % users.length] }
           end
 
-          form = ChartStringReassignmentForm.new(order_details)
           expect(form.available_accounts).to eq(accounts)
         end
       end
 
       context 'Users have some accounts in common' do
+        let(:common_accounts) { [ accounts.first, accounts.last ] }
+
         it 'determines available_accounts' do
-          common_accounts = [ accounts.first, accounts.last ]
           all_user_accounts = Set.new
           users.each do |user|
             user_accounts = (common_accounts + random_items(accounts, 4)).uniq
@@ -59,7 +71,6 @@ describe ChartStringReassignmentForm do
             order_detail.stub(:user) { users[n % users.length] }
           end
 
-          form = ChartStringReassignmentForm.new(order_details)
           expect(form.available_accounts).to eq all_user_accounts.sort_by(&:description)
         end
       end
@@ -76,7 +87,6 @@ describe ChartStringReassignmentForm do
             order_detail.stub(:user) { users[n % users.length] }
           end
 
-          form = ChartStringReassignmentForm.new(order_details)
           expect(form.available_accounts).to eq accounts
         end
       end
