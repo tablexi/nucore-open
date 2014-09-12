@@ -1,10 +1,11 @@
 require 'spec_helper'
 
 describe ChartStringReassignmentForm do
+  let(:order) { create(:purchased_order, product: product) }
+  let(:product) { create(:setup_item) }
 
   def create_order_detail
-    product = create(:setup_item)
-    create(:order_detail, order: create(:purchased_order, product: product), product: product)
+    create(:order_detail, order: order, product: product)
   end
 
   def create_order_details(n)
@@ -12,7 +13,7 @@ describe ChartStringReassignmentForm do
   end
 
   describe '#available_accounts' do
-    let(:accounts) { create_list(:setup_account, 9) }
+    let(:accounts) { create_list(:setup_account, 9, owner: users.first) }
     let(:order_details) { create_order_details(9) }
     let(:users) { create_list(:user, 3) }
 
@@ -29,11 +30,16 @@ describe ChartStringReassignmentForm do
       let(:order_detail) { create_order_detail }
       let(:user) { users.first }
 
-      it 'determines available accounts' do
-        order_detail.stub(:account) { accounts.first }
-        user.stub(:accounts) { accounts }
-        order_detail.stub(:user) { user }
+      before :each do
+        order.update_attribute(:user_id, user.id)
+        order_detail.update_attribute(:account_id, accounts.first.id)
+      end
 
+      it 'has available accounts' do
+        expect(form.available_accounts.count).to eq accounts.count
+      end
+
+      it 'determines available accounts' do
         expect(form.available_accounts).to eq(user.accounts)
       end
     end
