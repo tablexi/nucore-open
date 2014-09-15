@@ -789,9 +789,9 @@ en:
         username: "Username or NetID"
         email: "Email"
     access_list:
+      no_products: "%{name} does not have any available products."
       th:
         approval_received: "Approved?"
-        product_name: "Product"
       update_approvals:
         submit: "Update Access List"
     new_external:

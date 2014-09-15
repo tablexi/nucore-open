@@ -129,17 +129,12 @@ class UsersController < ApplicationController
   # GET /facilities/:facility_id/users/:user_id/access_list
   def access_list
     @facility = current_facility
-    @products = @facility.products_requiring_approval.sort_by(&:name)
+    @products_by_type = @facility.products_requiring_approval_by_type
   end
 
   # POST /facilities/:facility_id/users/:user_id/access_list/approvals
   def access_list_approvals
-    if update_approvals.any_changed?
-      flash[:notice] = I18n.t 'controllers.users.access_list.update.notice',
-        granted: update_approvals.granted, revoked: update_approvals.revoked
-    else
-      flash[:alert] = I18n.t 'controllers.users.access_list.update.no_change'
-    end
+    update_access_list_approvals
     redirect_to facility_user_access_list_path(current_facility, @user)
   end
 
@@ -148,12 +143,24 @@ class UsersController < ApplicationController
 
   private
 
+  def update_access_list_approvals
+    if update_approvals.grants_changed?
+      flash[:notice] = I18n.t 'controllers.users.access_list.approval_update.notice',
+        granted: update_approvals.granted, revoked: update_approvals.revoked
+    end
+    if update_approvals.access_groups_changed?
+      add_flash(:notice,
+        I18n.t('controllers.users.access_list.scheduling_group_update.notice',
+          update_count: update_approvals.access_groups_changed))
+    end
+  end
+
   def update_approvals
     @update_approvals ||= ProductApprover.new(
       current_facility.products_requiring_approval,
       @user,
       session_user
-    ).update_approvals(approved_products_from_params)
+    ).update_approvals(approved_products_from_params, params[:product_access_group])
   end
 
   def approved_products_from_params
@@ -189,6 +196,14 @@ class UsersController < ApplicationController
     end
     Notifier.new_user(:user => @user, :password => nil).deliver
     redirect_to facility_users_path(:user => @user.id)
+  end
+
+  def add_flash(key, message)
+    if flash[key].present?
+      flash[key] += " #{message}"
+    else
+      flash[key] = message
+    end
   end
 
 end

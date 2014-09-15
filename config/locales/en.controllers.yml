@@ -113,6 +113,7 @@ en:
 
     users:
       access_list:
-        update:
+        approval_update:
           notice: "Product approvals updated: %{granted} granted, %{revoked} revoked."
-          no_change: "No product approvals were changed."
+        scheduling_group_update:
+          notice: "Scheduling groups updated: %{update_count}."

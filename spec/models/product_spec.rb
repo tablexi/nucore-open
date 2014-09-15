@@ -1,6 +1,14 @@
 require 'spec_helper'
 
 describe Product do
+
+  subject(:product) { create(:instrument_requiring_approval) }
+
+  let(:access_group) { create(:product_access_group, product: product) }
+  let!(:product_user) { product.product_users.create(product: product, user: user, approved_by: user.id) }
+  let(:schedule_rule) { product.schedule_rules.create(attributes_for :schedule_rule) }
+  let(:user) { create(:user) }
+
   class TestProduct < Product
     def account_required
       false
@@ -24,7 +32,8 @@ describe Product do
     end
 
     it "should create map to default price groups" do
-      PriceGroupProduct.count.should == PriceGroup.globals.count
+      expect(PriceGroupProduct.where(product_id: @item.id).count)
+        .to eq PriceGroup.globals.count
       PriceGroupProduct.find_by_product_id_and_price_group_id(@item.id, PriceGroup.base.first.id).should_not be_nil
       PriceGroupProduct.find_by_product_id_and_price_group_id(@item.id, PriceGroup.external.first.id).should_not be_nil
     end
@@ -294,15 +303,126 @@ describe Product do
       dup.save!
     end
 
-    let(:product) { ProductAccessory.first.product }
+    let(:product_accessory) { ProductAccessory.first.product }
 
     it 'has 1 active accessory' do
-      expect(product.accessories.size).to eq 1
+      expect(product_accessory.accessories.size).to eq 1
     end
 
     it 'has 1 active product accessory' do
-      expect(product.product_accessories.size).to eq 1
+      expect(product_accessory.product_accessories.size).to eq 1
     end
   end
 
+  context '#access_group_for_user' do
+    context 'with an access group' do
+      before :each do
+        schedule_rule.product_access_groups = [ access_group ]
+      end
+
+      context 'with a user in the access group' do
+        before :each do
+          product_user.product_access_group = access_group
+          product_user.save
+        end
+
+        it 'returns the access group' do
+          expect(product.access_group_for_user(user)).to eq access_group
+        end
+      end
+
+      context 'with a user not in the access group' do
+        it 'returns no access group' do
+          expect(product.access_group_for_user(user)).to be_nil
+        end
+      end
+    end
+
+    it 'without an access group' do
+      expect(product.access_group_for_user(user)).to be_nil
+    end
+  end
+
+  context '#can_be_used_by?' do
+    context 'when product requires approval' do
+      before :each do
+        schedule_rule.product_access_groups = [ access_group ]
+      end
+
+      context 'an access list exists for the user' do
+        before :each do
+          product_user = product_access_group = access_group
+          product_user.save
+        end
+
+        it 'allows access' do
+          expect(product.can_be_used_by?(user)).to be_true
+        end
+      end
+
+      context 'an access list does not exist for the user' do
+        let(:denied_user) { build_stubbed(:user) }
+
+        it 'denies access' do
+          expect(product.can_be_used_by?(denied_user)).to be_false
+        end
+      end
+    end
+
+    context 'when product does not require approval' do
+      before :each do
+        product.requires_approval = false
+        product.save
+        product.reload
+      end
+
+      it 'allows access' do
+        expect(product.can_be_used_by?(user)).to be_true
+      end
+    end
+  end
+
+  context '#find_product_user' do
+    context 'when a user is a product user' do
+      it 'finds the product_user' do
+        expect(product.find_product_user(user)).to eq product_user
+      end
+    end
+
+    context 'when a user is not a product user' do
+      let(:other_user) { create(:user) }
+
+      it 'does not find a product_user' do
+        expect(product.find_product_user(other_user)).to be_nil
+      end
+    end
+  end
+
+  context '#has_access_list?' do
+    context 'when its type supports access groups' do
+      context 'when it has an access group' do
+        before :each do
+          product.product_access_groups = [ access_group ]
+        end
+
+        it 'has an access list' do
+          expect(product.has_access_list?).to be_true
+        end
+      end
+
+      context 'when it has no access groups' do
+        it 'does not have an access list' do
+          expect(product.has_access_list?).to be_false
+        end
+      end
+    end
+
+    context 'when its type does not support access groups' do
+      let(:generic_item) { build(:setup_item) }
+
+      it 'does not have an access list' do
+        expect(generic_item.has_access_list?).to be_false
+      end
+    end
+  end
 end

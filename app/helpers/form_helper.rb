@@ -10,4 +10,14 @@ module FormHelper
     options.merge! :builder => ModelLessFormBuilder
     simple_form_for(options[:object] || '', options, &block)
   end
+
+  def scheduling_group_select(product, user)
+    select_tag "product_access_group[#{product.id}]",
+      scheduling_group_options(product.product_access_groups, product.access_group_for_user(user)),
+      include_blank: true
+  end
+
+  def scheduling_group_options(access_groups, selected_access_group)
+    options_from_collection_for_select(access_groups, :id, :name, selected_access_group.try(:id))
+  end
 end
