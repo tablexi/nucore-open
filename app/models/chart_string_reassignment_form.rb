@@ -14,10 +14,20 @@ class ChartStringReassignmentForm
   end
 
   def available_accounts
-    @order_details.map(&:user).map(&:accounts).flatten.uniq.sort_by(&:description)
+    @order_details
+    .map(&:user)
+    .map(&:accounts)
+    .flatten
+    .uniq
+    .select { |account| account.facility.nil? || account.facility == facility }
+    .sort_by(&:description)
   end
 
   def persisted?
     false
+  end
+
+  def facility
+    @facility ||= @order_details.first.facility
   end
 end
