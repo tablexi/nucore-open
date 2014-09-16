@@ -298,7 +298,7 @@ class OrderDetail < ActiveRecord::Base
 
   def self.journaled_or_statemented_in_date_range(start_date, end_date)
     search = joins("LEFT JOIN journals ON journals.id = order_details.journal_id")
-      .joins("LEFT JOIN statements AS in_range_statements ON in_range_statements.id = order_details.statement_id")
+      .joins("LEFT JOIN statements in_range_statements ON in_range_statements.id = order_details.statement_id")
 
     journal_query = ["journal_id IS NOT NULL"]
     journal_query << "journal_date > :start_date" if start_date
