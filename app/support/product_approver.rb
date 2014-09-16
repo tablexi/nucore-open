@@ -36,7 +36,8 @@ class ProductApprover
     @approver = approver
   end
 
-  def update_approvals(products_to_approve, access_group_hash = {})
+  def update_approvals(products_to_approve, access_group_hash = nil)
+    access_group_hash ||= {}
     @all_products.each_with_object(Stats.new) do |product, stats|
       if products_to_approve.include?(product)
         approve_access(product) && stats.grant
