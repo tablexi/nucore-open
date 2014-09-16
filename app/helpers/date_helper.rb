@@ -36,13 +36,13 @@ module DateHelper
     date.strftime("%A, %B %e, %Y")
   end
 
-  def human_datetime(dt, args = {})
-    return nil if dt.nil?
+  def human_datetime(datetime, args = {})
+    return nil if datetime.blank?
     begin
       if args[:date_only]
-        format_usa_date(dt)
+        format_usa_date(datetime)
       else
-        dt.strftime("%m/%d/%Y %l:%M %p")
+        format_usa_datetime(datetime)
       end
     rescue
       ''
