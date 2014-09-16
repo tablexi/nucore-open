@@ -34,14 +34,7 @@ class GeneralReportsController < ReportsController
   private
 
   def email_to_address
-    case
-    when Settings.email.fake.enabled
-      Settings.email.fake.to
-    when params[:email_to_address].present?
-      params[:email_to_address]
-    else
-      current_user.email
-    end
+    params[:email_to_address].presence || current_user.email
   end
 
   def generate_report_data_csv
