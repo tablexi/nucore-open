@@ -23,7 +23,7 @@ class StoredFile < ActiveRecord::Base
   # Thanks to bug in Flash 8 the content type is always set to application/octet-stream.
   # From: http://blog.airbladesoftware.com/2007/8/8/uploading-files-with-swfupload
   def swf_uploaded_data=(data)
-    data.content_type = MIME::Types.type_for(data.original_filename)
+    data.content_type = MIME::Types.type_for(data.original_filename).first.to_s
     self.file = data
   end
 
