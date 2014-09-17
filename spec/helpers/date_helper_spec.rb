@@ -58,6 +58,39 @@ describe DateHelper do
     it "should do something with extra_date_info (unknown)"
   end
 
+  describe "#human_datetime" do
+    context "without a datetime" do
+      it "returns nil" do
+        expect(human_datetime(nil)).to be_nil
+      end
+    end
+
+    context "with a datetime" do
+      context "that is valid" do
+        context "when requesting date only" do
+
+          it "produces the expected formatted date" do
+            expect(human_datetime(Time.zone.parse("2012-05-10 13:13"), date_only: true))
+              .to eq "05/10/2012"
+          end
+        end
+
+        context "when not requesting date only" do
+          it "produces the expected formatted date" do
+            expect(human_datetime(Time.zone.parse("2012-05-10 13:13"), date_only: false))
+              .to eq "05/10/2012  1:13 PM"
+          end
+        end
+      end
+
+      context "that is invalid" do
+        it "returns an empty string" do
+          expect(human_datetime("not a datetime object")).to eq ""
+        end
+      end
+    end
+  end
+
   describe "#human_date"
   describe "#human_time"
 

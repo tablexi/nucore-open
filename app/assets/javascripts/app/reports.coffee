@@ -5,6 +5,7 @@ class TabbableReports
     @init_tabs()
     @init_form()
     @init_pagination()
+    @init_export_all_handler()
 
   update_parameters: ->
     @update_href $(@current_tab())
@@ -28,7 +29,7 @@ class TabbableReports
       active: window.activeTab
       beforeActivate: (event, ui) ->
         # if there was an old error message, fade it out now
-        $('#error-msg').fadeOut();
+        $('#error-msg').fadeOut()
 
         self.update_href ui.newTab
         true
@@ -41,7 +42,7 @@ class TabbableReports
         ui.jqXHR.error (xhr, status, error) ->
           # don't show error message if it's because of user aborting ajax request
           if status != 'abort'
-            $('#error-msg').html('Sorry, but the tab could not load. Please try again soon.').show();
+            $('#error-msg').html('Sorry, but the tab could not load. Please try again soon.').show()
 
       load: (event, ui) ->
         self.fix_bad_dates(ui.panel)
@@ -78,8 +79,20 @@ class TabbableReports
 
   update_export_urls: ->
     url = @tab_url(@current_tab())
-    $('#export').attr('href', url + '&export_id=report&format=csv');
-    $('#export-all').attr('href', url + '&export_id=report_data&format=csv');
+    $('#export').attr('href', url + '&export_id=report&format=csv')
+    $('#export-all').attr('href', url + '&export_id=report_data&format=csv')
+
+  init_export_all_handler: ->
+    @$emailToAddressField = $('#email_to_address')
+    $('#export-all').click (event) => @export_all_email_confirm(event)
+
+  export_all_email_confirm: (event) ->
+    new_to = prompt 'Have the report emailed to this address:', @$emailToAddressField.val()
+    if new_to
+      @$emailToAddressField.val(new_to)
+      @update_export_urls()
+    else
+      event.preventDefault()
 
 $ ->
   window.report = new TabbableReports($('#refresh-form'))

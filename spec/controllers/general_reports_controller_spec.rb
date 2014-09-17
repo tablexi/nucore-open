@@ -163,7 +163,7 @@ describe GeneralReportsController do
       end
     end
 
-    context 'journed_at search' do
+    context 'journaled_at search' do
       before :each do
         # change start date so we get an order detail
         @params.merge!(:date_range_field => :journal_date)
@@ -260,10 +260,20 @@ describe GeneralReportsController do
     end
   end
 
+  def assert_report_rendered_csv(label, &report_on)
+    export_type = @params[:export_id]
+
+    case export_type
+    when 'report'
+      assert_report_init label, &report_on
+      assert_report_download_rendered "#{@action}_report"
+    when 'report_data'
+      assert_report_data_init label
+    end
+  end
 
   def assert_report_data_init(label)
-    assigns(:report_on).should be_instance_of Proc
-    assigns(:report_data).should == OrderDetail.all
+    expect(assigns :report_on).to be_a Proc
   end
 
 end

@@ -131,7 +131,7 @@ module ReportSpecHelper
 
 
   def assert_report_download_rendered(filename)
-    @response.headers['Content-Type'].should == 'text/csv'
+    expect(@response.headers['Content-Type']).to match %r(\Atext/csv\b)
     filename += "_#{assigns(:date_start).strftime("%Y%m%d")}-#{assigns(:date_end).strftime("%Y%m%d")}.csv"
     @response.headers["Content-Disposition"].should == "attachment; filename=\"#{filename}\""
     should respond_with :success
@@ -140,31 +140,38 @@ module ReportSpecHelper
 
   def assert_report_rendered(tab_index, label, &report_on)
     assert_report_params_init
-    assigns(:headers).should == report_headers(label)
-    assigns(:selected_index).should == tab_index
+    expect(assigns :headers).to eq report_headers(label)
+    expect(assigns :selected_index).to eq tab_index
 
-    format=@params[:format]
-    format=:html unless format
+    format = @params[:format] || :html
 
-    if format == :html
-      if @method == :xhr
-        assert_report_init label, &report_on
-        should render_template 'reports/report_table'
-      else
-        should render_template 'reports/report'
-      end
-    elsif format == :csv
-      export_type=@params[:export_id]
-
-      case export_type
-        when 'report'
-          assert_report_init label, &report_on
-        when 'report_data'
-          assert_report_data_init label
-      end
-
-      assert_report_download_rendered "#{@action}_#{export_type}"
+    case format
+    when :html
+      assert_report_rendered_html(label, &report_on)
+    when :csv
+      assert_report_rendered_csv(label, &report_on)
     end
   end
 
+  def assert_report_rendered_html(label, &report_on)
+    if @method == :xhr
+      assert_report_init label, &report_on
+      should render_template 'reports/report_table'
+    else
+      should render_template 'reports/report'
+    end
+  end
+
+  def assert_report_rendered_csv(label, &report_on)
+    export_type = @params[:export_id]
+
+    case export_type
+    when 'report'
+      assert_report_init label, &report_on
+    when 'report_data'
+      assert_report_data_init label
+    end
+
+    assert_report_download_rendered "#{@action}_#{export_type}"
+  end
 end

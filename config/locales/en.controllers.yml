@@ -70,6 +70,8 @@ en:
         error: "Could not delete order detail %{order_detail_id}"
         success: "The order detail was successfully removed"
 
+    reports:
+      mail_queued: "A report is being prepared and will be emailed to %{email} when complete"
     reservations:
       create:
         no_selection: "You must select a payment source before reserving"

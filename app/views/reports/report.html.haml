@@ -17,6 +17,7 @@
     %li
       - if controller_name == 'general_reports' && can?(:export_all, ReportsController)
         = link_to t('reports.export.raw'), '#', :id => 'export-all'
+        = hidden_field_tag :email_to_address, current_user.email
 
   %div#tabs
     = render :partial => 'report_tabs'

@@ -33,6 +33,28 @@ class GeneralReportsController < ReportsController
 
   private
 
+  def email_to_address
+    params[:email_to_address].presence || current_user.email
+  end
+
+  def generate_report_data_csv
+    ExportRawReportMailer.delay.raw_report_email(email_to_address, raw_report)
+    flash[:notice] = I18n.t('controllers.reports.mail_queued', email: email_to_address)
+    redirect_to send("#{action_name}_facility_general_reports_path", current_facility)
+  end
+
+  def raw_report
+    Reports::ExportRawFactory.instance(
+      facility: current_facility,
+      date_range_field: params[:date_range_field],
+      date_start: @date_start,
+      date_end: @date_end,
+      order_status_ids: @status_ids,
+      headers: @headers,
+      action_name: action_name,
+    )
+  end
+
   def init_report_params
     status_ids = Array(params[:status_filter])
 

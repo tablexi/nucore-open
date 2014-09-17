@@ -20,8 +20,12 @@ module DateHelper
      end
   end
 
-  def format_usa_date(date)
-    date.strftime("%m/%d/%Y")
+  def format_usa_date(datetime)
+    format_usa_datetime(datetime.try(:to_date))
+  end
+
+  def format_usa_datetime(datetime)
+    datetime.present? ? I18n.l(datetime, format: :usa) : ''
   end
 
   def human_date(date)
@@ -32,13 +36,13 @@ module DateHelper
     date.strftime("%A, %B %e, %Y")
   end
 
-  def human_datetime(dt, args = {})
-    return nil if dt.nil?
+  def human_datetime(datetime, args = {})
+    return nil if datetime.blank?
     begin
       if args[:date_only]
-        dt.strftime("%m/%d/%Y")
+        format_usa_date(datetime)
       else
-        dt.strftime("%m/%d/%Y %l:%M %p")
+        format_usa_datetime(datetime)
       end
     rescue
       ''
