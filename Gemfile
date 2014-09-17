@@ -86,7 +86,7 @@ end
 group :oracle do
   # ruby-oci8 won't compile on lion
   unless RUBY_PLATFORM =~ /(?:i686|x86_64)-darwin(?:11|12)/
-    gem 'ruby-oci8',        '2.1.5'
+    gem 'ruby-oci8',        '2.1.7'
   end
 
   gem 'activerecord-oracle_enhanced-adapter', '1.4.2'
