@@ -503,15 +503,15 @@ describe InstrumentsController do
         end
 
         it "should show the primary instrument's admin reservation" do
-          assigns(:admin_reservations).should include @admin_reservation
+          expect(assigns(:admin_reservations)).to include admin_reservation
         end
 
         it "should show the second instrument's admin reservation" do
-          assigns(:admin_reservations).should include @admin_reservation2
+          expect(assigns(:admin_reservations)).to include admin_reservation2
         end
 
         it "should_allow_operators_only" do
-          expect(assigns(:admin_reservations)).to eq([@admin_reservation2, @admin_reservation])
+          expect(assigns(:admin_reservations)).to eq([admin_reservation2, admin_reservation])
           should render_template 'schedule'
         end
       end
