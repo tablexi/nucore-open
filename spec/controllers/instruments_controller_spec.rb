@@ -494,9 +494,9 @@ describe InstrumentsController do
         let(:instrument2) { FactoryGirl.create(:setup_instrument, facility: @authable,
             schedule: @instrument.schedule) }
         let(:admin_reservation) { FactoryGirl.create(:reservation, product: instrument2,
-            reserve_start_at: Time.zone.parse("#{Date.today.to_s} 11:00:00") + 1.day) }
+          reserve_start_at: 2.days.from_now) }
         let(:admin_reservation2) { FactoryGirl.create(:reservation, product: instrument2,
-            reserve_start_at: Time.zone.parse("#{Date.today.to_s} 10:00:00") + 1.day) }
+          reserve_start_at: 1.day.from_now) }
         before :each do
           sign_in @admin
           do_request
