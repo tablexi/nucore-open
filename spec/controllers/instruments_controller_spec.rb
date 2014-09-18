@@ -490,16 +490,11 @@ describe InstrumentsController do
         @action=:schedule
       end
 
-      it_should_allow_operators_only do
-        expect(assigns(:admin_reservations)).to be_kind_of Array
-        should render_template 'schedule'
-      end
-
       describe 'schedule sharing' do
         before :each do
-          @admin_reservation = FactoryGirl.create(:reservation, :product => @instrument)
+          @admin_reservation = FactoryGirl.create(:reservation, :product => @instrument, :reserve_start_at => Time.zone.parse("#{Date.today.to_s} 11:00:00") + 1.day)
           @instrument2 = FactoryGirl.create(:setup_instrument, :facility => @authable, :schedule => @instrument.schedule)
-          @admin_reservation2 = FactoryGirl.create(:reservation, :product => @instrument2)
+          @admin_reservation2 = FactoryGirl.create(:reservation, :product => @instrument2, :reserve_start_at => Time.zone.parse("#{Date.today.to_s} 10:00:00") + 1.day)
           sign_in @admin
           do_request
         end
@@ -510,6 +505,11 @@ describe InstrumentsController do
 
         it "should show the second instrument's admin reservation" do
           assigns(:admin_reservations).should include @admin_reservation2
+        end
+
+        it "should_allow_operators_only" do
+          expect(assigns(:admin_reservations)).to eq([@admin_reservation2, @admin_reservation])
+          should render_template 'schedule'
         end
       end
 
