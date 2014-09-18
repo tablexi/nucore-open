@@ -491,10 +491,13 @@ describe InstrumentsController do
       end
 
       describe 'schedule sharing' do
+        let(:instrument2) { FactoryGirl.create(:setup_instrument, facility: @authable,
+            schedule: @instrument.schedule) }
+        let(:admin_reservation) { FactoryGirl.create(:reservation, product: instrument2,
+            reserve_start_at: Time.zone.parse("#{Date.today.to_s} 11:00:00") + 1.day) }
+        let(:admin_reservation2) { FactoryGirl.create(:reservation, product: instrument2,
+            reserve_start_at: Time.zone.parse("#{Date.today.to_s} 10:00:00") + 1.day) }
         before :each do
-          @admin_reservation = FactoryGirl.create(:reservation, :product => @instrument, :reserve_start_at => Time.zone.parse("#{Date.today.to_s} 11:00:00") + 1.day)
-          @instrument2 = FactoryGirl.create(:setup_instrument, :facility => @authable, :schedule => @instrument.schedule)
-          @admin_reservation2 = FactoryGirl.create(:reservation, :product => @instrument2, :reserve_start_at => Time.zone.parse("#{Date.today.to_s} 10:00:00") + 1.day)
           sign_in @admin
           do_request
         end
