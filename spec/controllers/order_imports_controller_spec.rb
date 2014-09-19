@@ -31,6 +31,10 @@ describe OrderImportsController do
     it "imported no orders" do
       expect(order_count).to eq 0
     end
+
+    it "flashes an import failure message" do
+      expect(flash[:error]).to match /\bimport failed\b/
+    end
   end
 
   context "starting an import" do
@@ -140,6 +144,10 @@ describe OrderImportsController do
           let(:upload_file) { fixture_file("first_od_error.csv") }
 
           before(:each) { do_request }
+
+          it "flashes import statistics" do
+            expect(flash[:error]).to match /\b1 line item\b.+ success.+ 1 failed\b/
+          end
 
           it_behaves_like "it imported no orders"
         end
