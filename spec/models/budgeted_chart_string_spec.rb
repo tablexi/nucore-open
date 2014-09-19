@@ -37,15 +37,15 @@ describe BudgetedChartString do
     end
 
     it 'should set fields correctly' do
-      assert_equal "2008-09-10", @bcs1.starts_at.strftime("%Y-%m-%d")
-      assert_equal "2009-08-31", @bcs1.expires_at.strftime("%Y-%m-%d")
+      assert_equal "2008-09-10 00:00:00", @bcs1.starts_at.strftime("%Y-%m-%d %H:%M:%S")
+      assert_equal "2009-08-31 23:59:59", @bcs1.expires_at.strftime("%Y-%m-%d %H:%M:%S")
       assert_equal "191", @bcs1.fund
       assert_equal "1000000", @bcs1.dept
     end
 
     it 'should set fields correctly including defaulting to fiscal year' do
-      assert_equal "2009-04-01", @bcs2.starts_at.strftime("%Y-%m-%d")
-      assert_equal "2010-03-31", @bcs2.expires_at.strftime("%Y-%m-%d")
+      assert_equal "2009-04-01 00:00:00", @bcs2.starts_at.strftime("%Y-%m-%d %H:%M:%S")
+      assert_equal "2010-03-31 23:59:59", @bcs2.expires_at.strftime("%Y-%m-%d %H:%M:%S")
       assert_equal "732", @bcs2.fund
       assert_equal "2105600", @bcs2.dept
     end
