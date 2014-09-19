@@ -39,11 +39,9 @@ module InstrumentPricePolicyCalculations
     1 - (discount / 100)
   end
 
-
   def calculate_cost_and_subsidy_from_order_detail(order_detail)
     calculate_cost_and_subsidy order_detail.reservation
   end
-
 
   def calculate_cost_and_subsidy(reservation)
     return calculate_cancellation_costs(reservation) if reservation.canceled_at
