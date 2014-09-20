@@ -63,7 +63,9 @@ describe InstrumentPricePolicyCalculations do
         new_estimate = policy.estimate_cost_and_subsidy start_at, end_at
         old_policy.usage_rate = 0
         old_estimate = old_policy.estimate_cost_and_subsidy start_at, end_at
-        expect(new_estimate).to eq old_estimate
+
+        expect(new_estimate[:cost].round 4).to eq old_estimate[:cost].round(4)
+        expect(new_estimate[:subsidy].round 4).to eq old_estimate[:subsidy].round(4)
       end
     end
 
@@ -316,8 +318,8 @@ describe InstrumentPricePolicyCalculations do
       reservation.actual_start_at = reservation.reserve_start_at
       reservation.actual_end_at = reservation.reserve_end_at + 10.minutes
       new_costs = policy.calculate_cost_and_subsidy reservation
-      expect(new_costs[:cost].round 4).to eq 29.1667
-      expect(new_costs[:subsidy].round 4).to eq 8.1667
+      expect(new_costs[:cost].round(4).to_s).to eq "29.1667"
+      expect(new_costs[:subsidy].round(4).to_s).to eq "8.1667"
     end
 
     it 'charges for 90 minutes when an hour reservation is started 15 minutes late and goes over the reserved end time by 30 minutes' do
