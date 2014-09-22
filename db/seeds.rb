@@ -20,3 +20,4 @@ p = PriceGroup.new(:name => Settings.price_group.name.cancer_center, :is_interna
 p.save(:validate => false)
 p = PriceGroup.new(:name => Settings.price_group.name.external, :is_internal => false, :display_order => 3)
 p.save(:validate => false)
+

@@ -91,6 +91,7 @@ namespace :demo  do
       :is_hidden           => false,
       :facility_account_id => fa.id,
     })
+
     service = Service.find_or_create_by_url_name({
       :facility_id         => facility.id,
       :account             => '75340',
@@ -103,6 +104,7 @@ namespace :demo  do
       :is_hidden           => false,
       :facility_account_id => fa.id,
     })
+
     instrument = Instrument.find_or_create_by_url_name({
       :facility_id         => facility.id,
       :account             => '75340',
@@ -113,7 +115,8 @@ namespace :demo  do
       :requires_approval   => false,
       :is_archived         => false,
       :is_hidden           => false,
-      :facility_account_id => fa.id
+      :facility_account_id => fa.id,
+      :reserve_interval    => 5,
     })
 
     RelaySynaccessRevB.find_or_create_by_instrument_id({
@@ -155,7 +158,6 @@ namespace :demo  do
       :start_min          => 0,
       :end_hour           => 19,
       :end_min            => 0,
-      :duration_mins      => 5,
       :on_sun             => true,
       :on_mon             => true,
       :on_tue             => true,
@@ -170,33 +172,30 @@ namespace :demo  do
       PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pgex.id, product.id)
     end
 
-    pgp=PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pgnu.id, instrument.id)
+    pgp = PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pgnu.id, instrument.id)
     pgp.reservation_window=14
     pgp.save!
 
-    pgp=PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pgex.id, instrument.id)
+    pgp = PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pgex.id, instrument.id)
     pgp.reservation_window=14
     pgp.save!
 
     inpp = InstrumentPricePolicy.find_or_create_by_product_id_and_price_group_id({
+      :can_purchase         => true,
       :product_id           => instrument.id,
       :price_group_id       => pgnu.id,
-      :start_date           => Time.zone.now-1.year,
-      :expire_date          => Time.zone.now+1.year,
+      :start_date           => SettingsHelper.fiscal_year_beginning,
+      :expire_date          => SettingsHelper.fiscal_year_end,
       :usage_rate           => 20,
-      :usage_mins           => 15,
       :usage_subsidy        => 0,
-      :reservation_rate     => 0,
-      :reservation_mins     => 15,
-      :reservation_subsidy  => 0,
-      :overage_rate         => 0,
-      :overage_mins         => 15,
-      :overage_subsidy      => 0,
       :minimum_cost         => 0,
       :cancellation_cost    => 0,
+      :charge_for          => 'usage'
     })
     inpp.save(:validate => false) # override date validator
+
     itpp = ItemPricePolicy.find_or_create_by_product_id_and_price_group_id({
+      :can_purchase         => true,
       :product_id        => item.id,
       :price_group_id    => pgnu.id,
       :start_date        => Time.zone.now-1.year,
@@ -205,7 +204,9 @@ namespace :demo  do
       :unit_subsidy      => 0,
     })
     itpp.save(:validate => false) # override date validator
+
     spp = ServicePricePolicy.find_or_create_by_product_id_and_price_group_id({
+      :can_purchase         => true,
       :product_id        => service.id,
       :price_group_id    => pgnu.id,
       :start_date        => Time.zone.now-1.year,
@@ -457,7 +458,7 @@ namespace :demo  do
           od.save!
         end
       else
-        od = OrderDetail.create!({
+        od = OrderDetail.new(
           :created_by      => o.user.id,
           :order_id        => o.id,
           :product_id      => product.id,
@@ -467,21 +468,19 @@ namespace :demo  do
           :estimated_subsidy  => 0,
           :quantity        => product.is_a?(Item) ? (rand(3) + 1) : 1,
           :created_at      => (ordered_at - (60*rand(60) + 1)),
-        })
+        )
         # create a reservation
         if product.is_a?(Instrument)
-          res = Reservation.create({
-            :order_detail_id  => od.id,
+          res = od.build_reservation(
             :product_id       => product.id,
             :reserve_start_at => Time.zone.parse((ordered_at + 1.days).strftime("%Y-%m-%d") + " #{i+8}:00"),
             :reserve_end_at   => Time.zone.parse((ordered_at + 1.days).strftime("%Y-%m-%d") + " #{i+9}:00"),
-          })
-          res.save(:validate => false)
+          )
           i += 1
         end
         od.account = account
 
-        od.price_policy=case od.product
+        od.price_policy = case od.product
                           when Instrument then InstrumentPricePolicy.first
                           when Item then ItemPricePolicy.first
                           when Service then ServicePricePolicy.first

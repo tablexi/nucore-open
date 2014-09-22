@@ -1,0 +1,15 @@
+defaults: &defaults
+  adapter: oracle_enhanced
+  database: 10.114.22.3:1521/xe
+  encoding: utf8
+
+development:
+  <<: *defaults
+  username: nucore_development
+  password:
+
+test:
+  <<: *defaults
+  username: nucore_test
+  password:
+
