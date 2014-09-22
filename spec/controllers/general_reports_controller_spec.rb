@@ -240,7 +240,6 @@ describe GeneralReportsController do
   def assert_report_init(label)
     response.should be_success
     assigns(:total_quantity).should be_instance_of Fixnum
-    assigns(:total_cost).should be_instance_of Float
 
     rows, ods=assigns(:rows), OrderDetail.all
     rows.size.should == ods.size
