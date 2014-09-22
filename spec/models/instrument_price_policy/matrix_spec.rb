@@ -61,17 +61,26 @@ describe InstrumentPricePolicy do
     describe times do
       describe 'overage' do
         include_context 'overage'
-        it { should eq(overage) }
+        it 'calculates cost and subsidy' do
+          expect(subject[:cost].round 4).to eq overage[:cost]
+          expect(subject[:subsidy].round 4).to eq overage[:subsidy]
+        end
       end
 
       describe 'usage' do
         include_context 'usage'
-        it { should eq(usage) }
+        it 'calculates cost and subsidy' do
+          expect(subject[:cost].round 4).to eq usage[:cost]
+          expect(subject[:subsidy].round 4).to eq usage[:subsidy]
+        end
       end
 
       describe 'reservation' do
         include_context 'reservation'
-        it { should eq(reservation_cost) }
+        it 'calculates cost and subsidy' do
+          expect(subject[:cost].round 4).to eq reservation_cost[:cost]
+          expect(subject[:subsidy].round 4).to eq reservation_cost[:subsidy]
+        end
       end
     end
   end
