@@ -1,32 +1,34 @@
 - if @reservation.can_edit?
   .datetime-block
-    = f.input :reserve_start_date, :input_html => { :class => 'datepicker' }
+    = f.input :reserve_start_date, input_html: { class: 'datepicker' }
     .control-group
       .controls
         .string.optional.control-label &nbsp;
         = time_select f, :reserve_start
-    = f.input :duration_mins, :input_html => { :class => 'timeinput' }
+    = f.input :duration_mins, input_html: { class: 'timeinput' }
+    = f.input :admin_note, input_html: { class: 'span6' } unless @order_detail
 
 - else
-  = f.input :reserve_start_date, :label => 'Reservation', :as => :readonly, :input_html => { :value => @reservation.reserve_to_s }
+  = f.input :reserve_start_date, label: 'Reservation', as: :readonly, input_html: { value: @reservation.reserve_to_s }
 .clearfix
 
-- if @reservation.can_edit_actuals?
-  .datetime-block
-    = f.input :actual_start_date, :input_html => { :class => 'datepicker' }
-    .control-group
-      .controls
-        .string.optional.control-label &nbsp;
-        = time_select f, :actual_start
-    = f.input :actual_duration_mins, :input_html => { :class => 'timeinput' }
-  - unless @reservation.has_actuals?
-    .copy_actual_from_reservation
-      = link_to 'Copy from reservation','#'
-      %span.start_date.hidden= @reservation.reserve_start_at
-      %span.end_date.hidden= @reservation.reserve_end_at
-  - if @instrument.reservation_only?
-    %li.alert This is a reservation only instrument. Pricing is determined by the reservation times.
-- else
-  = f.input :actual_start_date, :as => :readonly, :input_html => { :value => @reservation.actuals_string }
+- if @order_detail
+  - if @reservation.can_edit_actuals?
+    .datetime-block
+      = f.input :actual_start_date, input_html: { class: 'datepicker' }
+      .control-group
+        .controls
+          .string.optional.control-label &nbsp;
+          = time_select f, :actual_start
+      = f.input :actual_duration_mins, input_html: { class: 'timeinput' }
+    - unless @reservation.has_actuals?
+      .copy_actual_from_reservation
+        = link_to 'Copy from reservation','#'
+        %span.start_date.hidden= @reservation.reserve_start_at
+        %span.end_date.hidden= @reservation.reserve_end_at
+    - if @instrument.reservation_only?
+      %li.alert This is a reservation only instrument. Pricing is determined by the reservation times.
+  - else
+    = f.input :actual_start_date, as: :readonly, input_html: { value: @reservation.actuals_string }
 
 .clearfix
