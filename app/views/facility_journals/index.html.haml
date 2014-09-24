@@ -1,12 +1,11 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'journals' }
+  = render partial: 'admin/shared/sidenav_billing', locals: { sidenav_tab: 'journals' }
 
 - if has_pending_journals?
   %h2= t(".head.pending")
-
 
   - if @pending_journals.present?
     %div= t(".instructions_html")
@@ -22,10 +21,10 @@
               %th= t(".th.journaled_at")
               - if all_facility?
                 %th Facility
-              %th= f.label :amount
               %th= f.label :reference
               %th= f.label :description
-              %th= f.label :journal_status, :required => true
+              %th= f.label :journal_status, required: true
+              %th= f.label :amount
           %tbody
             %tr
               %td
@@ -33,20 +32,18 @@
                   - if Settings.financial.journal_format.xls
                     %li=link_to 'XLS File', pending_journal.file.url
                   - if Settings.financial.journal_format.xml
-                    %li=link_to 'XML File', facility_journal_path(current_facility, pending_journal, :format => 'xml')
+                    %li=link_to 'XML File', facility_journal_path(current_facility, pending_journal, format: 'xml')
                   - if Settings.financial.journal_format.csv
-                    %li=link_to 'CSV File', facility_journal_path(current_facility, pending_journal, :format => 'csv')
-              %td=h human_datetime(pending_journal.created_at)
-
+                    %li=link_to 'CSV File', facility_journal_path(current_facility, pending_journal, format: 'csv')
+              %td= human_datetime(pending_journal.created_at)
               - if all_facility?
                 %td= facility_abbreviations.join("<br>").html_safe
-
-              %td=h number_to_currency(pending_journal.amount)
-              %td= f.text_field :reference
-              %td= f.text_field :description
+              %td= f.text_field :reference, class: 'input-medium'
+              %td= f.text_field :description, class: 'input-medium'
               %td
-                = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']], params[:journal_status])
-                = submit_tag t(".journal.close"), :confirm => t(".journal.confirm"), :class => ['btn', 'btn-primary']
+                = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']], params[:journal_status]), class: 'input-medium'
+                = submit_tag t(".journal.close"), confirm: t(".journal.confirm"), class: ['btn', 'btn-primary']
+              %td= number_to_currency(pending_journal.amount)
 
   - else    # there's pending journals, but user can't edit
     %p.notice= t(".notice.no_editable")
@@ -64,13 +61,15 @@
         %th= Journal.human_attribute_name(:reference)
         %th= Journal.human_attribute_name(:description)
         %th= Journal.human_attribute_name(:journal_status)
+        %th= Journal.human_attribute_name(:amount)
     %tbody
       - @journals.each do |j|
         %tr
           %td.centered= link_to 'View', facility_journal_path(current_facility, j)
-          %td=h human_datetime(j.created_at)
-          %td=h human_date(j.journal_date)
-          %td=h j.reference
-          %td=h j.description
-          %td=h j.status_string
+          %td= human_datetime(j.created_at)
+          %td= human_date(j.journal_date)
+          %td= j.reference
+          %td= j.description
+          %td= j.status_string
+          %td= number_to_currency(j.amount)
   = will_paginate(@journals)
