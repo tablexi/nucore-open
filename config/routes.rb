@@ -286,6 +286,7 @@ Nucore::Application.routes.draw do
     end
 
     resources :order_details, :only => [:show, :update] do
+      put :dispute, on: :member
       get  '/order_file',        :to => 'order_details#order_file',        :as => 'order_file'
       post '/upload_order_file', :to => 'order_details#upload_order_file', :as => 'upload_order_file'
       get '/remove_order_file',  :to => 'order_details#remove_order_file', :as => 'remove_order_file'

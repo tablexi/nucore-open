@@ -1,0 +1,6 @@
+class AddDisputedByToOrderDetail < ActiveRecord::Migration
+  def change
+    add_column :order_details, :dispute_by_id, :integer, after: :dispute_at
+    add_foreign_key :order_details, :users, column: :dispute_by_id
+  end
+end

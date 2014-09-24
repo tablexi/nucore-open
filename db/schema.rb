@@ -205,6 +205,7 @@ ActiveRecord::Schema.define(:version => 20140924204847) do
     t.decimal  "estimated_subsidy",                      :precision => 10, :scale => 2
     t.integer  "account_id"
     t.datetime "dispute_at"
+    t.integer  "dispute_by_id"
     t.string   "dispute_reason",          :limit => 200
     t.datetime "dispute_resolved_at"
     t.string   "dispute_resolved_reason", :limit => 200
@@ -228,6 +229,7 @@ ActiveRecord::Schema.define(:version => 20140924204847) do
 
   add_index "order_details", ["account_id"], :name => "fk_od_accounts"
   add_index "order_details", ["bundle_product_id"], :name => "fk_bundle_prod_id"
+  add_index "order_details", ["dispute_by_id"], :name => "order_details_dispute_by_id_fk"
   add_index "order_details", ["order_id"], :name => "sys_c009172"
   add_index "order_details", ["parent_order_detail_id"], :name => "order_details_parent_order_detail_id_fk"
   add_index "order_details", ["price_policy_id"], :name => "sys_c009175"
@@ -552,6 +554,7 @@ ActiveRecord::Schema.define(:version => 20140924204847) do
   add_foreign_key "order_details", "product_accessories", :name => "order_details_product_accessory_id_fk"
   add_foreign_key "order_details", "products", :name => "fk_bundle_prod_id", :column => "bundle_product_id"
   add_foreign_key "order_details", "products", :name => "sys_c009173"
+  add_foreign_key "order_details", "users", :name => "order_details_dispute_by_id_fk", :column => "dispute_by_id"
 
   add_foreign_key "orders", "accounts", :name => "sys_c008808"
   add_foreign_key "orders", "facilities", :name => "orders_facility_id_fk"
