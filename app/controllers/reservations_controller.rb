@@ -244,13 +244,11 @@ class ReservationsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == 'on' || params[:switch] == 'off')
 
     begin
-      switcher = ReservationInstrumentSwitcher.new(@reservation)
-      if (params[:switch] == 'on')
-        switcher.switch_on!
-        flash[:notice] = 'The instrument has been activated successfully'
-      elsif (params[:switch] == 'off')
-        switcher.switch_off!
-        flash[:notice] = 'The instrument has been deactivated successfully'
+      case
+      when params[:switch] == 'on'
+        switch_instrument_on!
+      when params[:switch] == 'off'
+        switch_instrument_off!
       end
     rescue => e
       flash[:error] = e.message
@@ -265,6 +263,17 @@ class ReservationsController < ApplicationController
   end
 
   private
+
+  def switch_instrument_off!
+    ReservationInstrumentSwitcher.new(@reservation).switch_off!
+    flash[:notice] = 'The instrument has been deactivated successfully'
+    session[:reservation_ended] = true if params[:reservation_ended].present?
+  end
+
+  def switch_instrument_on!
+    ReservationInstrumentSwitcher.new(@reservation).switch_on!
+    flash[:notice] = 'The instrument has been activated successfully'
+  end
 
   def load_basic_resources
     @order_detail = Order.find(params[:order_id]).order_details.find(params[:order_detail_id])

@@ -8,3 +8,11 @@
   %p.notice= "You have not made any #{Reservation.model_name.human.pluralize.downcase}."
 - else
   = render :partial => 'shared/reservations_table', :locals => { :order_details => @order_details }
+
+- if session[:reservation_ended]
+  - session.delete(:reservation_ended)
+  #logout_modal.modal.hide.fade
+    .modal-body= t("reservations.logout.body")
+    .modal-footer
+      =link_to t("reservations.logout.cancel"), reservations_path, class: "btn"
+      =link_to t("pages.logout"), :destroy_user_session, class: "btn btn-primary logout"

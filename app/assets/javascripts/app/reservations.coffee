@@ -24,10 +24,12 @@ $ ->
 
         # change reservation creation button based on Reservation
         text = if picked.between(now, future) then 'Create & Start' else 'Create'
-        $('#reservation_submit').attr('value', text);
+        $('#reservation_submit').attr('value', text)
 
       .trigger('change')
 
-
-
-
+  $logoutModal = $("#logout_modal")
+  if $logoutModal.length > 0
+    $logoutModal.modal("show")
+    logoutLink = $logoutModal.find(".logout").attr("href")
+    window.setTimeout((-> window.location.href = logoutLink), 60000)

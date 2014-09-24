@@ -62,7 +62,7 @@ class ReservationUserActionPresenter
               order_order_detail_reservation_switch_instrument_path(order, order_detail, reservation, switch: 'on')
     elsif can_switch_instrument_off?
       link_to I18n.t('reservations.switch.end'),
-              order_order_detail_reservation_switch_instrument_path(order, order_detail, reservation, switch: 'off'),
+              order_order_detail_reservation_switch_instrument_path(order, order_detail, reservation, switch: 'off', reservation_ended: 'on'),
               class: end_reservation_class(reservation),
               data: { refresh_on_cancel: true }
     end
