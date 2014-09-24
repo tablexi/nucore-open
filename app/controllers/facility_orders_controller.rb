@@ -78,7 +78,7 @@ class FacilityOrdersController < ApplicationController
     if quantity <= 0
       flash[:notice] = I18n.t 'controllers.facility_orders.update.zero_quantity'
     else
-      add_to_order(product, quantity)
+      add_to_order(product, quantity, original_order)
     end
 
     redirect_to facility_order_path(current_facility, original_order)
@@ -94,7 +94,7 @@ class FacilityOrdersController < ApplicationController
     end
   end
 
-  def add_to_order(product, quantity)
+  def add_to_order(product, quantity, original_order)
     @order = build_merge_order if merge?(product)
 
     begin
@@ -115,7 +115,7 @@ class FacilityOrdersController < ApplicationController
       end
     rescue => e
       Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-      order.destroy if @order != original_order
+      @order.destroy if @order != original_order
       flash[:error] = I18n.t 'controllers.facility_orders.update.error', :product => product.name
     end
   end
