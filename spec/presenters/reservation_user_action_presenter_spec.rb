@@ -78,10 +78,15 @@ describe ReservationUserActionPresenter do
       end
 
       describe 'can switch off' do
-        before { expect(reservation).to receive(:can_switch_instrument_off?).and_return true }
+        let(:encoded_link) { CGI::escapeHTML(link) }
+        let(:link) { order_order_detail_reservation_switch_instrument_path(order, order_detail, reservation, switch: 'off', reservation_ended: 'on') }
+
+        before :each do
+          expect(reservation).to receive(:can_switch_instrument_off?).and_return true
+        end
+
         it 'includes the switch off event' do
-          link = order_order_detail_reservation_switch_instrument_path(order, order_detail, reservation, :switch => 'off')
-          expect(text).to include link
+          expect(text).to include encoded_link
         end
       end
     end
