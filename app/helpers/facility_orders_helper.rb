@@ -5,7 +5,7 @@ module FacilityOrdersHelper
     notices << 'in_review' if order_detail.in_review?
     # notices << 'reviewed' if order_detail.reviewed?
     notices << 'in_dispute' if order_detail.in_dispute?
-    notices << 'can_reconcile' if order_detail.can_reconcile?
+    notices << 'can_reconcile' if order_detail.can_reconcile_journaled?
     notices << 'in_open_journal' if order_detail.in_open_journal?
 
     warnings = []

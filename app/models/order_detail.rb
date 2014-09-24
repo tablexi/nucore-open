@@ -726,8 +726,16 @@ class OrderDetail < ActiveRecord::Base
     self.journal && self.journal.open?
   end
 
+  def in_closed_journal?
+    self.journal && !self.journal.open?
+  end
+
   def can_reconcile?
     complete? && !in_dispute? && account.can_reconcile?(self)
+  end
+
+  def can_reconcile_journaled?
+    can_reconcile? && in_closed_journal?
   end
 
   def self.account_unreconciled(facility, account)
