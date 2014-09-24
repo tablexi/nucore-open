@@ -165,6 +165,14 @@ class ApplicationController < ActionController::Base
     session[:requested_params] || super
   end
 
+  def after_sign_out_path_for(_)
+    if current_facility.present?
+      facility_path(current_facility)
+    else
+      super
+    end
+  end
+
   #
   # Will go to the facility version of the path if you are within a facility,
   # otherwise go to the normal version. Useful for sharing views.
@@ -182,6 +190,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def store_fullpath_in_session
+    session[:requested_params] = request.fullpath
+  end
 
   private
 

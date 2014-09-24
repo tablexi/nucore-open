@@ -7,6 +7,7 @@ class FacilitiesController < ApplicationController
   before_filter :load_order_details, only: [:confirm_transactions, :move_transactions, :reassign_chart_strings]
   before_filter :set_admin_billing_tab, only: [:confirm_transactions, :movable_transactions, :transactions]
   before_filter :set_two_column_head_layout, only: [:movable_transactions, :transactions]
+  before_filter :store_fullpath_in_session, only: [:index, :show]
 
   load_and_authorize_resource :find_by => :url_name
   skip_load_and_authorize_resource :only => [:index, :show]
