@@ -5,6 +5,7 @@ describe Product do
   subject(:product) { create(:instrument_requiring_approval) }
 
   let(:access_group) { create(:product_access_group, product: product) }
+  let(:facility) { @facility }
   let!(:product_user) { product.product_users.create(product: product, user: user, approved_by: user.id) }
   let(:schedule_rule) { product.schedule_rules.create(attributes_for :schedule_rule) }
   let(:user) { create(:user) }
@@ -422,6 +423,31 @@ describe Product do
 
       it 'does not have an access list' do
         expect(generic_item.has_access_list?).to be_false
+      end
+    end
+  end
+
+  context "url_name collisions" do
+    context "when a product's url_name exists in its facility" do
+      let(:new_product) { build(:instrument_requiring_approval, url_name: product.url_name, facility: product.facility) }
+
+      it "is invalid" do
+        expect(new_product).to_not be_valid
+        expect(new_product.errors.messages).to include :url_name
+      end
+    end
+
+    context "when a product's url_name exists in another facility" do
+      let(:other_facility) { create(:facility) }
+      let(:new_product) { build(:instrument_requiring_approval, url_name: "product_name", facility: facility) }
+
+      before :each do
+        other_facility.facility_accounts.create(attributes_for(:facility_account))
+        create(:instrument_requiring_approval, url_name: "product_name", facility: other_facility)
+      end
+
+      it "is valid" do
+        expect(new_product).to be_valid
       end
     end
   end

@@ -13,7 +13,7 @@ class Product < ActiveRecord::Base
   has_many   :price_policies
 
   validates_presence_of :name, :type
-  validate_url_name :url_name
+  validate_url_name :url_name, :facility_id
   validates_numericality_of(
       :account,
       :only_integer => true,
