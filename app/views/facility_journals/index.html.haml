@@ -7,7 +7,6 @@
 - if has_pending_journals?
   %h2= t(".head.pending")
 
-
   - if @pending_journals.present?
     %div= t(".instructions_html")
 
@@ -22,10 +21,10 @@
               %th= t(".th.journaled_at")
               - if all_facility?
                 %th Facility
-              %th= f.label :amount
               %th= f.label :reference
               %th= f.label :description
               %th= f.label :journal_status, :required => true
+              %th= f.label :amount
           %tbody
             %tr
               %td
@@ -41,12 +40,12 @@
               - if all_facility?
                 %td= facility_abbreviations.join("<br>").html_safe
 
-              %td=h number_to_currency(pending_journal.amount)
-              %td= f.text_field :reference
-              %td= f.text_field :description
+              %td= f.text_field :reference, :class => 'input-medium'
+              %td= f.text_field :description, :class => 'input-medium'
               %td
-                = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']], params[:journal_status])
+                = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']], params[:journal_status]), :class => 'input-medium'
                 = submit_tag t(".journal.close"), :confirm => t(".journal.confirm"), :class => ['btn', 'btn-primary']
+              %td=h number_to_currency(pending_journal.amount)
 
   - else    # there's pending journals, but user can't edit
     %p.notice= t(".notice.no_editable")
@@ -64,6 +63,7 @@
         %th= Journal.human_attribute_name(:reference)
         %th= Journal.human_attribute_name(:description)
         %th= Journal.human_attribute_name(:journal_status)
+        %th= Journal.human_attribute_name(:amount)
     %tbody
       - @journals.each do |j|
         %tr
@@ -73,4 +73,5 @@
           %td=h j.reference
           %td=h j.description
           %td=h j.status_string
+          %td=h number_to_currency(j.amount)
   = will_paginate(@journals)
