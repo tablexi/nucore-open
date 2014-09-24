@@ -7,9 +7,9 @@ class PricePolicy < ActiveRecord::Base
 
   validates_presence_of :start_date, :price_group_id, :type
   validate :start_date_is_unique, :unless => lambda { |o| o.start_date.nil? }
-  
+
   validates :unit_cost, :unit_subsidy, :usage_rate, :usage_subsidy, :reservation_rate, :overage_rate, :overage_subsidy, :minimum_cost, :numericality => { :greater_than_or_equal_to => 0 }, :allow_nil => true
-  
+
   validates_each :expire_date do |record,attr,value|
     unless value.blank?
       start_date=record.start_date
@@ -19,7 +19,7 @@ class PricePolicy < ActiveRecord::Base
       end
     end
   end
-  
+
   before_create :set_expire_date
   before_create :truncate_existing_policies
 
@@ -43,10 +43,14 @@ class PricePolicy < ActiveRecord::Base
     where("start_date > :now", {:now => Time.zone.now})
   end
 
+  def self.past
+    where("expire_date < :now", {:now => Time.zone.now})
+  end
+
   def self.for_price_groups(price_groups)
     where(:price_group_id => price_groups)
   end
-  
+
   def self.current_date(product)
     ipp = product.price_policies.find(:first, :conditions => [dateize('start_date', ' <= ? AND ') + dateize('expire_date', ' > ?'), Time.zone.now, Time.zone.now], :order => 'start_date DESC')
     ipp ? ipp.start_date.to_date : nil
@@ -66,26 +70,26 @@ class PricePolicy < ActiveRecord::Base
            .map &:to_date
   end
 
-  
+
   def truncate_existing_policies
     logger.debug("Truncating existing policies")
-    existing_policies = PricePolicy.current.where(:type => self.class.name, 
+    existing_policies = PricePolicy.current.where(:type => self.class.name,
                                                   :price_group_id => price_group_id,
                                                   :product_id => product_id)
-    
+
     existing_policies = existing_policies.where("id != ?", id) unless id.nil?
-    
+
     existing_policies.each do |policy|
       policy.expire_date = (start_date - 1.day).end_of_day
       policy.save
     end
-    
+
   end
-  
+
   def product_type
     self.class.name.gsub("PricePolicy", "").downcase
   end
- 
+
   #
   # A price estimate for a +Product+.
   # Must return { :cost => estimated_cost, :subsidy => estimated_subsidy }
@@ -128,7 +132,7 @@ class PricePolicy < ActiveRecord::Base
     end
   end
 
-  
+
   #
   # Returns true if this +PricePolicy+ is assigned
   # to any order, false otherwise
