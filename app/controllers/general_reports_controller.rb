@@ -132,27 +132,13 @@ class GeneralReportsController < ReportsController
     @report_data = report_data_query(@status_ids, @date_range_field)
   end
 
-
   def report_data_query(stati, date_column)
     return [] if stati.blank?
     # default to using fulfilled_at
-    result = OrderDetail.where(:order_status_id => stati).
-                        for_facility(current_facility).
-                        action_in_date_range(date_column, @date_start, @date_end)
-
-    ## TODO
-    # there is a bug in activerecord-oracle-enhanced 1.3.0 and rails 3.0.x that causes an ORA-01795: maximum number of expressions in a list is 1000
-    # error if we're trying to join more than 1000 orders. oracle-enhanced 1.3.2 contains a fix, but only works in Rails 3.1.
-    # We've removed :orders from the includes to prevent the SQL error, but it results in N+1 on orders. Make sure
-    # to put it back when we upgrade to Rails 3.1/3.2
-
-    if NUCore::Database.oracle?
-      result = result.includes(:account, :price_policy, :product, :order_status)
-    else
-      result = result.includes(:order, :account, :price_policy, :product, :order_status)
-    end
-
-    result
+    result = OrderDetail.where(:order_status_id => stati)
+                        .for_facility(current_facility)
+                        .action_in_date_range(date_column, @date_start, @date_end)
+                        .includes(:order, :account, :price_policy, :product, :order_status)
   end
 
 end
