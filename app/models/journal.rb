@@ -152,7 +152,7 @@ class Journal < ActiveRecord::Base
 
   def amount
     # only sum positive amounts since this is a double entry journal
-    journal_rows.inject(0) {|sum, row| sum + row.amount > 0 ? row.amount : 0}
+    journal_rows.inject(0) {|sum, row| sum + (row.amount > 0 ? row.amount : 0)}
   end
 
   def open?
