@@ -36,10 +36,8 @@
                   - if Settings.financial.journal_format.csv
                     %li=link_to 'CSV File', facility_journal_path(current_facility, pending_journal, format: 'csv')
               %td= human_datetime(pending_journal.created_at)
-
               - if all_facility?
                 %td= facility_abbreviations.join("<br>").html_safe
-
               %td= f.text_field :reference, class: 'input-medium'
               %td= f.text_field :description, class: 'input-medium'
               %td
