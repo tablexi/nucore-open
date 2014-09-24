@@ -178,7 +178,7 @@ class FacilityJournalsController < ApplicationController
   end
 
   def init_journals
-    @journals = Journal.for_facilities(manageable_facilities, manageable_facilities.size > 1).order("journals.created_at DESC")
+    @journals = Journal.for_facilities(manageable_facilities, manageable_facilities.size > 1).includes(:journal_rows).order("journals.created_at DESC")
     jid=params[:id] || params[:journal_id]
     @journal = @journals.find(jid) if jid
     @journals = @journals.paginate(:page => params[:page], :per_page => 10)
