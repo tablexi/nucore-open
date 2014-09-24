@@ -357,6 +357,9 @@ en:
       head: "Add Recharge Chart String"
 
   reservations:
+    logout:
+      body: "You will be logged out automatically in 60 seconds. Would you like to remain logged in?"
+      cancel_button: "Stay logged in"
     new:
       label: "Payment source"
       documentation: "Documentation"
