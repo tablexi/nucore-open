@@ -5,6 +5,7 @@ class ProductsCommonController < ApplicationController
   before_filter :check_acting_as, :except => [:show]
   before_filter :init_current_facility
   before_filter :init_product, :except => [:index, :new, :create]
+  before_filter :store_fullpath_in_session
 
   include TranslationHelper
   load_and_authorize_resource :except => [:show, :manage]

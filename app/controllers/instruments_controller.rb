@@ -2,6 +2,8 @@ class InstrumentsController < ProductsCommonController
   customer_tab  :show, :public_schedule
   admin_tab     :create, :edit, :index, :manage, :new, :schedule, :update
 
+  before_filter :store_fullpath_in_session, only: [:index, :show]
+
   # public_schedule does not require login
   skip_before_filter :authenticate_user!, :only => [:public_schedule]
   skip_authorize_resource :only => [:public_schedule]
@@ -60,7 +62,6 @@ class InstrumentsController < ProductsCommonController
     @add_to_cart = add_to_cart
 
     if login_required
-      session[:requested_params]=request.fullpath
       return redirect_to new_user_session_path
     elsif !add_to_cart
       return redirect_to facility_path(current_facility)

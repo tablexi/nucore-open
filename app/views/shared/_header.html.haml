@@ -23,4 +23,4 @@
                 - if n_count > 0
                   %li= link_to t('pages.notices') + " (#{n_count})", notifications_path
                   %li.divider-vertical
-              %li= link_to t('pages.logout'), :destroy_user_session
+              %li= link_to t('pages.logout'), sign_out_user_path
