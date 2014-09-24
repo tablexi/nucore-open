@@ -40,6 +40,9 @@ module NUCore
         base.extend ClassMethods
       end
 
+      # Two digit years gte this value will be treated as 19XX
+      Y2K_CUTOFF = 86
+
       module ClassMethods
         #
         # This method should be used anytime you need to reference a date column in a
@@ -56,7 +59,9 @@ module NUCore
         end
 
         def parse_2_digit_year_date(date_string)
-          Time.zone.parse(date_string.sub(/\A(\d{1,2})\-?([A-Z]{3})\-?(\d\d)\z/, '\1 \2 20\3'))
+          day, month, year = date_string.match(/\A(\d{1,2})\-?([A-Z]{3})\-?(\d\d)\z/).captures
+          year = year.to_i >= Y2K_CUTOFF ? "19#{year}" : "20#{year}"
+          Time.zone.parse("#{day} #{month} #{year}")
         end
       end
     end

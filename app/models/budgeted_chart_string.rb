@@ -52,7 +52,7 @@ class BudgetedChartString < ActiveRecord::Base
             tokens = line.split('|').map{ |s| s.gsub('-', '') }
             # parse fields
             fund, dept, project, activity, account = tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]
-            starts_at, expires_at = parse_2_digit_year_date(tokens[6]), parse_2_digit_year_date(tokens[7])
+            starts_at, expires_at = parse_2_digit_year_date(tokens[6]), parse_2_digit_year_date(tokens[7]).end_of_day
           else
             # invalid line
             puts "error: skipping - #{line}"
