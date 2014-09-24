@@ -1,7 +1,7 @@
 require 'spreadsheet'
 
 class JournalSpreadsheet
-  
+
   def self.template_file
     "#{Rails.root}/public/templates/nucore.journal.template.xls"
   end
@@ -28,7 +28,7 @@ class JournalSpreadsheet
         line[0] = row.account
         line[1] = sprintf("%.2f", row.amount)
         line[2] = row.description
-        line[3] = row.reference
+        line[3] = row.fulfilled_at
       end
 
       # increment row
