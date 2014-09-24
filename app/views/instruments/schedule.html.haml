@@ -1,22 +1,22 @@
 = content_for :head_content do
-  = render :partial => 'shared/headers/calendar'
+  = render partial: 'shared/headers/calendar'
   = javascript_include_tag 'instruments.js'
 = content_for :h1 do
   =h current_facility
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
+  = render partial: 'admin/shared/sidenav_product', locals: { sidenav_tab: 'instruments' }
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'reservations'}
+  = render partial: 'admin/shared/tabnav_product', locals: { secondary_tab: 'reservations'}
 
 :javascript
-  var events_path = "#{facility_instrument_reservations_path(current_facility, @instrument, :format => 'js', :with_details => true, :all => true)}";
-  var withDetails     = true
+  var events_path = "#{facility_instrument_reservations_path(current_facility, @instrument, format: 'js', with_details: true, all: true)}";
+  var withDetails = true
 
 %h2= @instrument
 
 %h3 Administrative Reservations
 
-%p= link_to 'Add Admin Reservation', new_facility_instrument_reservation_path, :class => 'btn-add'
+%p= link_to 'Add Admin Reservation', new_facility_instrument_reservation_path, class: 'btn-add'
 
 - if @admin_reservations.empty?
   %p.notice There are no upcoming administrative reservations.
@@ -26,15 +26,13 @@
       %tr
         %th
         %th Reservation
+        %th= Reservation.human_attribute_name(:admin_note)
     %tbody
       - @admin_reservations.each do |r|
         %tr
-          %td= link_to 'Remove Reservation', facility_instrument_reservation_path(current_facility, @instrument, r), :confirm => 'Are you sure?', :method => :delete
+          %td= link_to 'Remove', facility_instrument_reservation_path(current_facility, @instrument, r), confirm: 'Are you sure?', method: :delete
           %td= link_to r, facility_instrument_reservation_edit_admin_path(current_facility, @instrument, r)
-
-%br
-%br
-%br
+          %td= r.admin_note
 
 %h3 Reservations Calendar
 

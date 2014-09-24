@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140924204847) do
+ActiveRecord::Schema.define(:version => 20140924211413) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -411,6 +411,7 @@ ActiveRecord::Schema.define(:version => 20140924204847) do
     t.datetime "canceled_at"
     t.integer  "canceled_by"
     t.string   "canceled_reason",  :limit => 50
+    t.string   "admin_note"
   end
 
   add_index "reservations", ["order_detail_id"], :name => "res_ord_det_id_fk"
