@@ -8,7 +8,7 @@ namespace :demo  do
   desc "bootstrap db with data appropriate for demonstration"
 
   task :seed => :environment do
-    new        = OrderStatus.find_or_create_by_name(name: 'New')
+    new_status        = OrderStatus.find_or_create_by_name(name: 'New')
     in_process = OrderStatus.find_or_create_by_name(name: 'In Process')
     canceled   = OrderStatus.find_or_create_by_name(name: 'Canceled')
     complete   = OrderStatus.find_or_create_by_name(name: 'Complete')
@@ -86,7 +86,7 @@ namespace :demo  do
       :url_name            => 'example-item',
       :description         => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non ipsum id odio cursus euismod eu bibendum nisl. Sed nec.</p>',
       :requires_approval   => false,
-      :initial_order_status_id => new.id,
+      :initial_order_status_id => new_status.id,
       :is_archived         => false,
       :is_hidden           => false,
       :facility_account_id => fa.id,
@@ -111,7 +111,7 @@ namespace :demo  do
       :name                => 'Example Instrument',
       :url_name            => 'example-instrument',
       :description         => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non ipsum id odio cursus euismod eu bibendum nisl. Sed nec.</p>',
-      :initial_order_status_id => new.id,
+      :initial_order_status_id => new_status.id,
       :requires_approval   => false,
       :is_archived         => false,
       :is_hidden           => false,
@@ -469,6 +469,7 @@ namespace :demo  do
           :quantity        => product.is_a?(Item) ? (rand(3) + 1) : 1,
           :created_at      => (ordered_at - (60*rand(60) + 1)),
         )
+
         # create a reservation
         if product.is_a?(Instrument)
           res = od.build_reservation(
@@ -485,6 +486,8 @@ namespace :demo  do
                           when Item then ItemPricePolicy.first
                           when Service then ServicePricePolicy.first
                         end
+
+        od.order_status_id ||= od.product.initial_order_status_id
         od.save!
       end
     end until rand(5) > 0
