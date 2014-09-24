@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140924211413) do
+ActiveRecord::Schema.define(:version => 20140924222724) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -383,6 +383,7 @@ ActiveRecord::Schema.define(:version => 20140924211413) do
     t.string   "contact_email"
     t.boolean  "time_based",                             :default => false, :null => false
     t.integer  "reserve_interval"
+    t.integer  "lock_window",                            :default => 0,     :null => false
   end
 
   add_index "products", ["facility_account_id"], :name => "fk_facility_accounts"
