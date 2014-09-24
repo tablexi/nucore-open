@@ -1273,6 +1273,22 @@ describe OrderDetail do
       end
     end
 
+    context "with 1001 orders" do
+      let(:user) { FactoryGirl.create(:user) }
+
+      before do
+        1000.times do
+          user.orders.create! FactoryGirl.attributes_for(:order, :created_by => user.id)
+        end
+      end
+
+      it "should not throw ORA-01795 error" do
+        ids = Order.pluck(:id)
+        expect( Order.count ).to be > 1000
+        expect{ Order.where(id: ids) }.to_not raise_error
+      end
+    end
+
     def setup_merge_order
       @merge_to_order=@order.dup
       assert @merge_to_order.save
