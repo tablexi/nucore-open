@@ -3,6 +3,19 @@ require 'spec_helper'
 describe Reservation do
   include DateHelper
 
+  subject(:reservation) do
+    instrument.reservations.create(
+      reserve_start_date: 1.day.from_now.to_date,
+      reserve_start_hour: 10,
+      reserve_start_min: 0,
+      reserve_start_meridian: "am",
+      duration_value: 60,
+      duration_unit: "minutes",
+    )
+  end
+
+  let(:instrument) { @instrument }
+
   before(:each) do
     @facility         = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
@@ -10,17 +23,6 @@ describe Reservation do
     # add rule, available every day from 12 am to 5 pm, 60 minutes duration
     @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17))
     Reservation.any_instance.stub(:admin?).and_return(false)
-  end
-
-  let(:reservation) do
-    @instrument.reservations.create(
-      :reserve_start_date => Date.today+1.day,
-      :reserve_start_hour => 10,
-      :reserve_start_min => 0,
-      :reserve_start_meridian => 'am',
-      :duration_value => 60,
-      :duration_unit => 'minutes'
-    )
   end
 
   it 'allows starting of a reservation, whose duration is equal to the max duration, within the grace period' do
@@ -79,6 +81,8 @@ describe Reservation do
 
 
   context 'with order details' do
+    subject(:reservation) { @reservation1 }
+    let(:instrument) { @instrument }
 
     before :each do
       @facility      = FactoryGirl.create(:facility)
@@ -99,6 +103,94 @@ describe Reservation do
       @reservation1  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                        :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                        :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail1)
+    end
+
+    context "#can_customer_edit?" do
+      shared_examples_for "a customer is allowed to edit" do
+        it "allows a customer to edit" do
+          expect(reservation.can_customer_edit?).to eq true
+        end
+      end
+
+      shared_examples_for "a customer is not allowed to edit" do
+        it "does not allow a customer to edit" do
+          expect(reservation.can_customer_edit?).to eq false
+        end
+      end
+
+      context "the reservation has been canceled" do
+        before { reservation.update_attribute(:canceled_at, 1.hour.ago) }
+
+        it_behaves_like "a customer is not allowed to edit"
+      end
+
+      context "the reservation has not been canceled" do
+        before { reservation.update_attribute(:canceled_at, nil) }
+
+        context "it is complete" do
+          before :each do
+            reservation.order_detail.update_attribute(:state, "complete")
+          end
+
+          it_behaves_like "a customer is not allowed to edit"
+        end
+
+        context "the reservation is not complete" do
+          before { reservation.order_detail.update_attribute(:state, "new") }
+
+          context "the reservation has begun" do
+            before :each do
+              reservation.update_attribute(:reserve_start_at, 3.hours.ago)
+            end
+
+            it_behaves_like "a customer is not allowed to edit"
+          end
+
+          context "the reservation has not yet begun" do
+            before :each do
+              reservation.update_attribute(:reserve_start_at, 6.hours.from_now)
+            end
+
+            context "the instrument has no lock window" do
+              before { instrument.update_attribute(:lock_window, 0) }
+
+              it_behaves_like "a customer is allowed to edit"
+            end
+
+            context "the instrument has a reservation lock window" do
+              let(:window_hours) { 12 }
+
+              before :each do
+                @current_time = Time.zone.now
+                instrument.update_attribute(:lock_window, window_hours)
+                reservation.reload
+              end
+
+              after { Timecop.freeze(@current_time) }
+
+              context "before the lock window begins" do
+                before :each do
+                  Timecop.freeze(
+                    reservation.reserve_start_at - (window_hours + 2).hours
+                  )
+                end
+
+                it_behaves_like "a customer is allowed to edit"
+              end
+
+              context "after the lock window has begun" do
+                before :each do
+                  Timecop.freeze(
+                    reservation.reserve_start_at - (window_hours - 2).hours
+                  )
+                end
+
+                it_behaves_like "a customer is not allowed to edit"
+              end
+            end
+          end
+        end
+      end
     end
 
     context "#earliest_possible" do
