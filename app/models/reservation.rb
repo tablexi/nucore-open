@@ -32,6 +32,7 @@ class Reservation < ActiveRecord::Base
 
   delegate :user, :account, :to => :order, :allow_nil => true
   delegate :facility, :to => :product, :allow_nil => true
+  delegate :lock_window, to: :product, prefix: true
   delegate :owner, :to => :account, :allow_nil => true
 
 
@@ -183,7 +184,11 @@ class Reservation < ActiveRecord::Base
   end
 
   def can_customer_edit?
-    !canceled? && !complete? && reserve_start_at > Time.zone.now
+    !canceled? && !complete? && before_lock_window?
+  end
+
+  def before_lock_window?
+    Time.zone.now < reserve_start_at - product_lock_window.hours
   end
 
   # can the ADMIN edit the reservation?
