@@ -15,4 +15,4 @@
     .modal-body= t("reservations.logout.body")
     .modal-footer
       =link_to t("reservations.logout.cancel"), reservations_path, class: "btn"
-      =link_to t("pages.logout"), :destroy_user_session, class: "btn btn-primary logout"
+      =link_to t("pages.logout"), sign_out_user_path, class: "btn btn-primary logout"
