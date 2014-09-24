@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140917204555) do
+ActiveRecord::Schema.define(:version => 20140924204847) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -162,7 +162,6 @@ ActiveRecord::Schema.define(:version => 20140917204555) do
     t.integer "order_detail_id"
     t.decimal "amount",                         :precision => 9, :scale => 2, :null => false
     t.string  "description",     :limit => 200
-    t.string  "reference",       :limit => 50
     t.string  "account",         :limit => 5
   end
 

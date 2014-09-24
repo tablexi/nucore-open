@@ -4,4 +4,6 @@ class JournalRow < ActiveRecord::Base
 
   validates_presence_of :journal_id, :amount
   validates_presence_of :account if SettingsHelper.feature_on? :expense_accounts
+
+  delegate :fulfilled_at, to: :order_detail
 end
