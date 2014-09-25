@@ -13,8 +13,7 @@
       .row
         .span2
           = f.input :dispute_by, as: :readonly, value_method: ->(user) { "#{user.name} (#{user.email})" }
-        .span4
-          = f.input :dispute_reason, disabled: true, input_html: { class: 'note' }
         .span3
+          = f.input :dispute_reason, as: :readonly
+        .span4
           = f.input :dispute_resolved_reason, input_html: { class: 'note' }
-
