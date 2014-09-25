@@ -41,6 +41,8 @@ describe OrdersController do
     @params={ :id => @order.id, :order_id => @order.id }
   end
 
+  let(:params) { @params }
+  let(:order) { @order }
 
   context 'cart' do
 
@@ -224,6 +226,20 @@ describe OrdersController do
       it "should purchase the order" do
         @order.reload
         @order.state.should == 'purchased'
+      end
+    end
+
+    context 'remove note' do
+      let(:order_detail) { order.order_details.first }
+      before do
+        order_detail.update_attributes(note: 'old note')
+        @action = :update
+        params["note#{@order_detail.id}"] = ""
+      end
+
+      it 'removes the note' do
+        do_request
+        expect(order_detail.reload.note).to be_blank
       end
     end
   end
