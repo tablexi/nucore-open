@@ -24,26 +24,30 @@ class OrderDetailsController < ApplicationController
         end
       end
       redirect_to reservations_path and return
-
-    # handle order disputes
-    elsif @order_detail.can_dispute?
-      @order_detail.transaction do
-        begin
-          @order_detail.dispute_reason = params[:order_detail][:dispute_reason]
-          @order_detail.dispute_at = Time.zone.now
-          @order_detail.save!
-          flash[:notice] = 'Your purchase has been disputed'
-          redirect_to (@order_detail.reservation ? reservations_path : orders_path) and return
-        rescue => e
-          flash.now[:error] = "An error was encountered while disputing the order."
-          raise ActiveRecord::Rollback
-        end
-      end
-      @order_detail.dispute_at = nil #rollback does not reset the un-saved value, so have to manually set to the view will render correctly
-      @order_detail.send(:extend, PriceDisplayment)
-      render :show and return
     end
     raise ActiveRecord::RecordNotFound
+  end
+
+  def dispute
+    raise ActiveRecord::RecordNotFound unless @order_detail.can_dispute?
+
+    @order_detail.transaction do
+      begin
+        @order_detail.dispute_reason = params[:order_detail][:dispute_reason]
+        @order_detail.dispute_at = Time.zone.now
+        @order_detail.dispute_by = current_user
+        @order_detail.save!
+        flash[:notice] = 'Your purchase has been disputed'
+        return_path = @order_detail.reservation ? reservations_path : orders_path
+        redirect_to return_path
+      rescue => e
+        flash.now[:error] = "An error was encountered while disputing the order."
+        @order_detail.dispute_at = nil #rollback does not reset the un-saved value, so have to manually set to the view will render correctly
+        @order_detail.send(:extend, PriceDisplayment)
+        render :show
+        raise ActiveRecord::Rollback
+      end
+    end
   end
 
   # GET /orders/:order_id/order_details/:id

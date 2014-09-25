@@ -24,7 +24,7 @@
       .well
         %h3= t('.head.dispute')
         %p= t('.instruct.dispute')
-        = simple_form_for(@order_detail, :url => order_order_detail_path, :html => {:method => :put}) do |f|
+        = simple_form_for(@order_detail, :url => dispute_order_order_detail_path, :html => {:method => :put}) do |f|
           = f.input :dispute_reason
 
           = f.submit t('.submit.dispute'), :class => 'btn'

@@ -186,6 +186,7 @@ en:
       order_detail:
         dispute_at: Disputed At
         dispute_reason: Dispute Reason
+        dispute_by: Dispute By
         dispute_resolved_reason: Resolution Notes
         dispute_resolved_at: Dispute Resolved At
         description: Description
