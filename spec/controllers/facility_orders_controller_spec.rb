@@ -55,6 +55,23 @@ describe FacilityOrdersController do
   end
 
 
+  describe '#show' do
+    before do
+      maybe_grant_always_sign_in :admin
+      @method = :get
+      @action = :show
+      @params.merge!(id: @order_detail.order.id)
+    end
+
+    describe 'with an order detail with no cost assigned' do
+      it 'renders' do
+        expect(@order_detail.cost).to be_nil
+        expect { do_request }.not_to raise_error
+      end
+    end
+
+  end
+
   context 'batch_update' do
 
     before :each do
