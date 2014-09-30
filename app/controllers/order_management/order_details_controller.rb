@@ -56,7 +56,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
   end
 
   def load_accounts
-    @available_accounts = @order.user.accounts.to_a
+    @available_accounts = @order_detail.available_accounts.to_a
     @available_accounts << @order.account unless @available_accounts.include?(@order.account)
   end
 

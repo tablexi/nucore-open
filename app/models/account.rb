@@ -89,6 +89,14 @@ class Account < ActiveRecord::Base
     accounts
   end
 
+  def self.for_user(user)
+    joins(:account_users).where("account_users.user_id = ?", user.id)
+  end
+
+  def self.for_order_detail(order_detail)
+    for_user(order_detail.user)
+    .where("accounts.facility_id IS NULL OR accounts.facility_id = ?", order_detail.facility.id)
+  end
 
   # find all accounts that have ordered fror a facility
   def self.has_orders_for_facility(facility)

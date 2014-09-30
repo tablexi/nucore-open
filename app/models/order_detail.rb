@@ -645,6 +645,10 @@ class OrderDetail < ActiveRecord::Base
     pp
   end
 
+  def available_accounts
+    Account.for_order_detail(self)
+  end
+
   def to_s
     "#{order_id}-#{id}"
   end
