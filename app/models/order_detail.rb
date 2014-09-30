@@ -645,6 +645,13 @@ class OrderDetail < ActiveRecord::Base
     pp
   end
 
+  def available_accounts
+    user
+    .accounts
+    .uniq
+    .select { |account| account.facility.nil? || account.facility == facility }
+  end
+
   def to_s
     "#{order_id}-#{id}"
   end

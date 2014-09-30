@@ -8,10 +8,17 @@ module AccountsHelper
 
   private
 
-  def available_accounts_options
-    available_accounts_array = @available_accounts.map do |a|
-      [a.to_s, a.id, { 'data-account-owner' => a.owner_user.name}]
+  def available_accounts_array
+    @available_accounts.map do |account|
+      [
+        account.to_s,
+        account.id,
+        { 'data-account-owner' => account.owner_user.name },
+      ]
     end
+  end
+
+  def available_accounts_options
     options_for_select(available_accounts_array, @order_detail.account_id)
   end
 end
