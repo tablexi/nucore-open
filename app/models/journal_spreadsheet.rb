@@ -28,7 +28,12 @@ class JournalSpreadsheet
         line[0] = row.account
         line[1] = sprintf("%.2f", row.amount)
         line[2] = row.description
-        line[3] = row.fulfilled_at
+        line[3] =
+          if row.fulfilled_at.present?
+            I18n.l(row.fulfilled_at.to_date, format: :journal_line_reference)
+          else
+            ""
+          end
       end
 
       # increment row
