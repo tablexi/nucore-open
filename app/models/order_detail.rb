@@ -646,10 +646,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def available_accounts
-    user
-    .accounts
-    .uniq
-    .select { |account| account.facility.nil? || account.facility == facility }
+    Account.for_order_detail(self)
   end
 
   def to_s
