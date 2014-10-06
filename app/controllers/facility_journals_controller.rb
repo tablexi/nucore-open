@@ -87,15 +87,11 @@ class FacilityJournalsController < ApplicationController
 
   # POST /facilities/journals
   def create_with_search
-    if params[:order_detail_ids].present?
-      order_details = @order_details.includes(:order).where(:id => params[:order_detail_ids])
-    else
-      order_details = []
-    end
-
-    @journal = Journal.new(:created_by => session_user.id,
-                           :journal_date => parse_usa_date(params[:journal_date]),
-                           :order_details_for_creation => order_details)
+    @journal = Journal.new(
+      created_by: session_user.id,
+      journal_date: parse_usa_date(params[:journal_date]),
+      order_details_for_creation: order_details_for_creation,
+    )
 
     # The referer can have a crazy long query string depending on how many checkboxes
     # are selected. We've seen Apache not like stuff like that and give a "malformed
@@ -154,6 +150,17 @@ class FacilityJournalsController < ApplicationController
 
 
   private
+
+  def order_details_for_creation
+    order_details = []
+    if params[:order_detail_ids].present?
+      # This works around Oracle's "IN" clause limit of 1000:
+      params[:order_detail_ids].each_slice(1000) do |order_detail_ids|
+        order_details += @order_details.includes(:order).where(id: order_detail_ids).to_a
+      end
+    end
+    order_details
+  end
 
   def set_pending_journals
     @pending_journals = @journals.where(:is_successful => nil)
