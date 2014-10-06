@@ -3,6 +3,10 @@ require 'controller_spec_helper'
 require 'transaction_search_spec_helper'
 
 describe FacilityJournalsController do
+  let(:account) { @account }
+  let(:admin_user) { @admin }
+  let(:facility) { @authable }
+
   include DateHelper
 
   render_views
@@ -290,6 +294,50 @@ describe FacilityJournalsController do
 
       it 'should set the facility id to nil' do
         expect(assigns(:journal).facility_id).to be_nil
+      end
+    end
+
+    context 'with over 1000 order details' do
+      let(:facility_account) do
+        facility.facility_accounts.create(attributes_for(:facility_account))
+      end
+
+      let(:item) do
+        facility
+        .items
+        .create(attributes_for(:item, facility_account_id: facility_account.id))
+      end
+
+      let(:order_details) do
+        1001.times.map do
+          place_product_order(admin_user, facility, item, account)
+        end
+      end
+
+      before :each do
+        @params[:order_detail_ids] = order_details.map(&:id)
+        @order.state = 'validated'
+        @order.purchase!
+        complete_status = OrderStatus.complete.first
+
+        order_details.each do |order_detail|
+          order_detail.update_attributes(
+            actual_cost: 20,
+            actual_subsidy: 10,
+            fulfilled_at: 2.days.ago,
+            order_status_id: complete_status.id,
+            price_policy_id: @item_pp.id,
+            reviewed_at: 1.day.ago,
+            state: complete_status.state_name,
+          )
+        end
+
+        sign_in admin_user
+        do_request
+      end
+
+      it 'successfully creates a journal' do
+        expect(response).to redirect_to facility_journals_path(facility)
       end
     end
   end

@@ -1,4 +1,5 @@
 class FacilityJournalsController < ApplicationController
+  include NUCore::Database::ArrayHelper
   include DateHelper
   include CSVHelper
 
@@ -87,15 +88,11 @@ class FacilityJournalsController < ApplicationController
 
   # POST /facilities/journals
   def create_with_search
-    if params[:order_detail_ids].present?
-      order_details = @order_details.includes(:order).where(:id => params[:order_detail_ids])
-    else
-      order_details = []
-    end
-
-    @journal = Journal.new(:created_by => session_user.id,
-                           :journal_date => parse_usa_date(params[:journal_date]),
-                           :order_details_for_creation => order_details)
+    @journal = Journal.new(
+      created_by: session_user.id,
+      journal_date: parse_usa_date(params[:journal_date]),
+      order_details_for_creation: order_details_for_creation,
+    )
 
     # The referer can have a crazy long query string depending on how many checkboxes
     # are selected. We've seen Apache not like stuff like that and give a "malformed
@@ -154,6 +151,13 @@ class FacilityJournalsController < ApplicationController
 
 
   private
+
+  def order_details_for_creation
+    return [] unless params[:order_detail_ids].present?
+    array_slice(params[:order_detail_ids]).inject([]) do |order_details, order_detail_ids|
+      order_details.concat(@order_details.includes(:order).where(id: order_detail_ids).to_a)
+    end
+  end
 
   def set_pending_journals
     @pending_journals = @journals.where(:is_successful => nil)
