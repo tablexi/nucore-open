@@ -152,14 +152,11 @@ class FacilityJournalsController < ApplicationController
   private
 
   def order_details_for_creation
-    order_details = []
-    if params[:order_detail_ids].present?
-      # This works around Oracle's "IN" clause limit of 1000:
-      params[:order_detail_ids].each_slice(1000) do |order_detail_ids|
-        order_details += @order_details.includes(:order).where(id: order_detail_ids).to_a
-      end
+    return [] unless params[:order_detail_ids].present?
+    # This works around Oracle's "IN" clause limit of 1000:
+    params[:order_detail_ids].each_slice(1000).inject([]) do |order_details, order_detail_ids|
+      order_details.concat(@order_details.includes(:order).where(id: order_detail_ids).to_a)
     end
-    order_details
   end
 
   def set_pending_journals
