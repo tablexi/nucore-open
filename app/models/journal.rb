@@ -247,7 +247,7 @@ class Journal < ActiveRecord::Base
   end
 
   def set_journal_for_order_details(order_detail_ids)
-    array_slicer(order_detail_ids) do |id_slice|
+    array_slice(order_detail_ids) do |id_slice|
       OrderDetail.where(id: id_slice).update_all(journal_id: self.id)
     end
   end

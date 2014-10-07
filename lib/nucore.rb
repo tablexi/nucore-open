@@ -35,19 +35,11 @@ module NUCore
     end
 
     module ArrayHelper
-      def array_slicer(array, slice_size=999)
+      def array_slice(array, slice_size=999, &block)
         if NUCore::Database.oracle?
-          if block_given?
-            array.each_slice(slice_size) { |slice| yield slice }
-          else
-            array.each_slice(slice_size)
-          end
+          array.each_slice(slice_size, &block)
         else
-          if block_given?
-            yield array
-          else
-            array
-          end
+          array.each(&block)
         end
       end
     end

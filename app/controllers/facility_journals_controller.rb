@@ -154,7 +154,7 @@ class FacilityJournalsController < ApplicationController
 
   def order_details_for_creation
     return [] unless params[:order_detail_ids].present?
-    array_slicer(params[:order_detail_ids]).inject([]) do |order_details, order_detail_ids|
+    array_slice(params[:order_detail_ids]).inject([]) do |order_details, order_detail_ids|
       order_details.concat(@order_details.includes(:order).where(id: order_detail_ids).to_a)
     end
   end
