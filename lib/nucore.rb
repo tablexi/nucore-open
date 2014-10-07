@@ -34,6 +34,23 @@ module NUCore
       end
     end
 
+    module ArrayHelper
+      def array_slicer(array, slice_size=999)
+        if NUCore::Database.oracle?
+          if block_given?
+            array.each_slice(slice_size) { |slice| yield slice }
+          else
+            array.each_slice(slice_size)
+          end
+        else
+          if block_given?
+            yield array
+          else
+            array
+          end
+        end
+      end
+    end
 
     module DateHelper
       def self.included(base)

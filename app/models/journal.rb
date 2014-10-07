@@ -80,6 +80,7 @@ class Journal < ActiveRecord::Base
     end
   end
 
+  include NUCore::Database::ArrayHelper
   include Overridable
 
   attr_accessor :order_details_for_creation
@@ -246,8 +247,7 @@ class Journal < ActiveRecord::Base
   end
 
   def set_journal_for_order_details(order_detail_ids)
-    # This works around Oracle's "IN" clause limit of 1000:
-    order_detail_ids.each_slice(1000) do |id_slice|
+    array_slicer(order_detail_ids) do |id_slice|
       OrderDetail.where(id: id_slice).update_all(journal_id: self.id)
     end
   end

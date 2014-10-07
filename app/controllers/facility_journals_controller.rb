@@ -1,4 +1,5 @@
 class FacilityJournalsController < ApplicationController
+  include NUCore::Database::ArrayHelper
   include DateHelper
   include CSVHelper
 
@@ -153,8 +154,7 @@ class FacilityJournalsController < ApplicationController
 
   def order_details_for_creation
     return [] unless params[:order_detail_ids].present?
-    # This works around Oracle's "IN" clause limit of 1000:
-    params[:order_detail_ids].each_slice(1000).inject([]) do |order_details, order_detail_ids|
+    array_slicer(params[:order_detail_ids]).inject([]) do |order_details, order_detail_ids|
       order_details.concat(@order_details.includes(:order).where(id: order_detail_ids).to_a)
     end
   end
