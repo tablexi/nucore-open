@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Product do
-
   subject(:product) { create(:instrument_requiring_approval) }
 
   let(:access_group) { create(:product_access_group, product: product) }
@@ -51,8 +50,74 @@ describe Product do
 
   end
 
-  context 'current_price_policies' do
-    it "should return all current price policies"
+  context "with price policies" do
+    subject(:instrument) { create(:instrument_requiring_approval) }
+
+    before { instrument.price_policies.each(&:delete) }
+
+    let!(:current_price_policies) do
+      3.times.map do
+        create(:instrument_price_policy,
+          product: instrument,
+          start_date: 3.days.ago,
+          expire_date: 3.days.from_now,
+        )
+      end
+    end
+
+    let!(:past_price_policies) do
+      [4,1,5,3,2].map do |n|
+        create(:instrument_price_policy,
+          product: instrument,
+          start_date: n.months.ago,
+          expire_date: n.months.ago + 2.weeks,
+        )
+      end
+    end
+
+    let!(:upcoming_price_policies) do
+      [4,1,5,3,2].map do |n|
+        create(:instrument_price_policy,
+          product: instrument,
+          start_date: n.months.from_now,
+          expire_date: n.months.from_now + 2.weeks,
+        )
+      end
+    end
+
+    context "#current_price_policies" do
+      it "returns current price policies" do
+        expect(instrument.current_price_policies).to eq current_price_policies
+      end
+    end
+
+    context "#past_price_policies" do
+      it "returns past_price_policies" do
+        expect(instrument.past_price_policies).to eq past_price_policies
+      end
+    end
+
+    context "#past_price_policies_grouped_by_start_date" do
+      let(:policies) { instrument.past_price_policies_grouped_by_start_date }
+
+      it "groups and sorts policies in descending chronological order" do
+        expect(policies.keys).to eq policies.keys.sort.reverse
+      end
+    end
+
+    context "#upcoming_price_policies" do
+      it "returns upcoming_price_policies" do
+        expect(instrument.upcoming_price_policies).to eq upcoming_price_policies
+      end
+    end
+
+    context "#upcoming_price_policies_grouped_by_start_date" do
+      let(:policies) { instrument.upcoming_price_policies_grouped_by_start_date }
+
+      it "groups and sorts policies in ascending chronological order" do
+        expect(policies.keys).to eq policies.keys.sort
+      end
+    end
   end
 
   context 'email' do
