@@ -72,17 +72,17 @@ $(function() {
   time();
   setInterval(time, 30000);
 
-  showOrHideCancelled = function() {
-    if ($('#show_cancelled').is(':checked')) {
-      $('.status_cancelled').fadeIn('fast');
+  showOrHideCanceled = function() {
+    if ($('#show_canceled').is(':checked')) {
+      $('.status_canceled').fadeIn('fast');
     } else {
-      $('.status_cancelled').fadeOut('fast');  
+      $('.status_canceled').fadeOut('fast');
     }
     
   }
-  $('#show_cancelled').change(showOrHideCancelled);
+  $('#show_canceled').change(showOrHideCanceled);
   // no animation when first loading
-  $('.status_cancelled').toggle($('#show_cancelled').is(':checked'));
+  $('.status_canceled').toggle($('#show_canceled').is(':checked'));
   
 
   $('.relay_checkbox :checkbox')

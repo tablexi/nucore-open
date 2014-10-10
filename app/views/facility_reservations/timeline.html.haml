@@ -19,7 +19,7 @@
         = hidden_field_tag 'date', format_usa_date(@display_date), :class => 'datepicker'
       = link_to "&raquo;".html_safe, timeline_facility_reservations_path(current_facility, :date => format_usa_date(@display_date + 1.day)), :id => 'reservation_right'
     .timeline_options
-      = f.input :show_cancelled, :as => :boolean, :input_html => { :value => 1 }, :checked => params[:show_cancelled] == '1', :inline_label => true, :label => false, :wrapper_html => { :class => 'compressed-inline' }
+      = f.input :show_canceled, :as => :boolean, :input_html => { :value => 1 }, :checked => params[:show_canceled] == '1', :inline_label => true, :label => false, :wrapper_html => { :class => 'compressed-inline' }
 
 .clear
 .span10.offset1

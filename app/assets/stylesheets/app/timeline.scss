@@ -58,10 +58,10 @@ body .unit {
   box-shadow: 0 0 10px #3a7e31;
 }
 
-.unit.status_cancelled {
+.unit.status_canceled {
   @include gradient-vertical(#772311, #A5341B);
 }
-.unit.status_cancelled:hover {
+.unit.status_canceled:hover {
   box-shadow: 0 0 10px #a5341b;
 }
 
