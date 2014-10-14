@@ -1,17 +1,17 @@
 $(function() {
   //Set Draggable Unit, grid and axis
-	$( ".reschedulable .unit:not(.blackout)" ).draggable({
-	  axis: "x",
-	  containment: "parent",
-	  grid: [ 2, 0],
-	  opacity: 0.7,
-	  revert: 'invalid',
-	    stop: function(){
-          $(this).draggable('option','revert','invalid');  
+  $( ".reschedulable .unit:not(.blackout)" ).draggable({
+    axis: "x",
+    containment: "parent",
+    grid: [ 2, 0],
+    opacity: 0.7,
+    revert: 'invalid',
+      stop: function(){
+          $(this).draggable('option','revert','invalid');
       }
-	});
-  //The unit container will fit the units. 
-	$('.reschedulable .unit_container').droppable({
+  });
+  //The unit container will fit the units.
+  $('.reschedulable .unit_container').droppable({
       tolerance: 'fit'
   });
   //Do not allow the overlap, yell at me if I try to drop a reservation on a reservation
@@ -36,15 +36,8 @@ $(function() {
       hide: function (e, $el) {
              $el.delay(500),
              $el.fadeOut(10)
-         } 
+         }
   });
-
- /*  $(".tooltip_stay").mouseenter( function(){
-      setTimeout( function(){
-        $('.tooltip_stay').css('background','red');
-      },1500);
-   }); */
-
 
   // Date select calendar
   $(".datepicker").datepicker({
@@ -68,22 +61,22 @@ $(function() {
     }
     var pixels = Math.floor(minutes * PIXEL_TO_MINUTE_RATIO) + 'px'
     $e.css('left', pixels);
-  };  
+  };
   time();
   setInterval(time, 30000);
 
-  showOrHideCancelled = function() {
-    if ($('#show_cancelled').is(':checked')) {
-      $('.status_cancelled').fadeIn('fast');
+  showOrHideCanceled = function() {
+    if ($('#show_canceled').is(':checked')) {
+      $('.status_canceled').fadeIn('fast');
     } else {
-      $('.status_cancelled').fadeOut('fast');  
+      $('.status_canceled').fadeOut('fast');
     }
-    
+
   }
-  $('#show_cancelled').change(showOrHideCancelled);
+  $('#show_canceled').change(showOrHideCanceled);
   // no animation when first loading
-  $('.status_cancelled').toggle($('#show_cancelled').is(':checked'));
-  
+  $('.status_canceled').toggle($('#show_canceled').is(':checked'));
+
 
   $('.relay_checkbox :checkbox')
   .bind('click', function(e) {
@@ -112,15 +105,15 @@ $(function() {
       success: function(data) {
         for(var i = 0; i < data.length; i++) {
           updateRelayStatus(data[i].instrument_status);
-          
+
         }
         // Refresh 2 minutes after updating
         setTimeout(loadRelayStatuses, 120000);
       },
       dataType: 'json'
     });
-  }    
-  
+  }
+
   function updateRelayStatus(stat) {
     $checkbox = $("#relay_" + stat.instrument_id);
     // remove pre-existing errors
