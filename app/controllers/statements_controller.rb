@@ -34,7 +34,10 @@ class StatementsController < ApplicationController
 
     respond_to do |format|
       format.html { render :action => action }
-      format.pdf  { render :action => 'show' }
+      format.pdf do
+        @statement_pdf = StatementPdfFactory.instance(@statement, params[:show].blank?)
+        render action: 'show'
+      end
     end
   end
 
