@@ -71,6 +71,22 @@ class Product < ActiveRecord::Base
     price_policies.current_for_date(date).purchaseable
   end
 
+  def past_price_policies
+    price_policies.past
+  end
+
+  def past_price_policies_grouped_by_start_date
+    past_price_policies.order("start_date DESC").group_by(&:start_date)
+  end
+
+  def upcoming_price_policies
+    price_policies.upcoming
+  end
+
+  def upcoming_price_policies_grouped_by_start_date
+    upcoming_price_policies.order("start_date ASC").group_by(&:start_date)
+  end
+
   def <=> (obj)
     name.casecmp obj.name
   end

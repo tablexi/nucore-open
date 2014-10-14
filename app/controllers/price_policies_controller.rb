@@ -20,8 +20,8 @@ class PricePoliciesController < ApplicationController
   def index
     @current_price_policies = @product.price_policies.current
     @current_start_date = @current_price_policies.first ? @current_price_policies.first.start_date : nil
-    @past_price_policies_by_date = @product.price_policies.past.group_by(&:start_date)
-    @next_price_policies_by_date = @product.price_policies.upcoming.group_by(&:start_date)
+    @past_price_policies_by_date = @product.past_price_policies_grouped_by_start_date
+    @next_price_policies_by_date = @product.upcoming_price_policies_grouped_by_start_date
     render 'price_policies/index'
   end
 
