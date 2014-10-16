@@ -12,7 +12,9 @@
       = f.input :resolve_dispute, as: :hidden
       .row
         .span2
-          = f.input :dispute_by, as: :readonly, value_method: ->(user) { "#{user.name} (#{user.email})" }
+          = f.input :dispute_by,
+                    as: :readonly,
+                    value_method: ->(user) { user.present? ? "#{user.name} (#{user.email})" : "" }
         .span3
           = f.input :dispute_reason, as: :readonly
         .span4
