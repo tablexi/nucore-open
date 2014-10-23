@@ -718,7 +718,7 @@ en:
     review_orders:
       subject: "NU Core Orders For Review"
       body: "New transactions for %{facility} have been posted to \"%{account}\". Please log in to NU Core and review these charges."
-      body_html: "New transactions for %{facility} have been posted to \"%{account}\"."
+      body_html: "New transactions for %{facility} have been posted to \"%{account}\".<br/><br/>Please %{login_link} and review these charges."
     statement:
       subject: "NU Core Statement"
       body: "A new statement from %{facility} has been created for your payment source, \"%{account}\"."
