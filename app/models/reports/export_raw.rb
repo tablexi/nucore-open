@@ -12,6 +12,14 @@ class Reports::ExportRaw
     @date_range_field = arguments[:date_range_field] || 'journal_or_statement_date'
   end
 
+  def date_start
+    @date_start.in_time_zone
+  end
+
+  def date_end
+    @date_end.in_time_zone
+  end
+
   def report_data
     @report_data ||= report_data_query
   end
@@ -29,11 +37,11 @@ class Reports::ExportRaw
   end
 
   def formatted_date_range
-    "#{format_usa_date(@date_start)} - #{format_usa_date(@date_end)}"
+    "#{format_usa_date(date_start)} - #{format_usa_date(date_end)}"
   end
 
   def formatted_compact_date_range
-    "#{@date_start.strftime("%Y%m%d")}-#{@date_end.strftime("%Y%m%d")}"
+    "#{date_start.strftime("%Y%m%d")}-#{date_end.strftime("%Y%m%d")}"
   end
 
   private
@@ -164,7 +172,7 @@ class Reports::ExportRaw
 
     OrderDetail.where(order_status_id: @order_status_ids)
       .for_facility(@facility)
-      .action_in_date_range(@date_range_field, @date_start, @date_end)
+      .action_in_date_range(@date_range_field, date_start, date_end)
       .includes(:account, :order, :order_status, :price_policy, :product, :reservation, :statement)
   end
 
