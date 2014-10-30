@@ -49,7 +49,7 @@ module TransactionSearch
   def order_by_desc
     field = @date_range_field
     if @date_range_field.to_sym == :journal_or_statement_date
-      field = "COALESCE(journal_date, statements.created_at)"
+      field = "COALESCE(journal_date, in_range_statements.created_at)"
     end
     @order_details.order_by_desc_nulls_first(field)
   end

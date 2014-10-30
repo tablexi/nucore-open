@@ -1,6 +1,12 @@
 require 'spec_helper'
 
 describe TransactionSearch do
+  let(:account) { @account }
+  let(:facility) { @authable }
+  let(:order_detail_complete) { @order_detail_complete }
+  let(:order_detail_new) { @order_detail_new }
+  let(:user) { @user }
+
   class TransactionSearcher < ApplicationController
     attr_reader :facility, :facilities, :account, :accounts, :account_owners, :products, :order_statuses
     attr_writer :facility, :account
@@ -18,8 +24,8 @@ describe TransactionSearch do
     def all_order_details_with_search
       # everything that needs to be done will be done by the module
     end
-
   end
+
   before :each do
     ignore_order_detail_account_validations
     @user = FactoryGirl.create(:user)
@@ -41,7 +47,7 @@ describe TransactionSearch do
   end
 
   context "wrapping" do
-    it "should responsd to all_order_details" do
+    it "responds to all_order_details" do
       @controller.should respond_to(:all_order_details)
     end
   end
@@ -52,17 +58,20 @@ describe TransactionSearch do
         @controller.params = { :facility_id => @authable.url_name }
         @controller.init_current_facility
       end
+
       it "should populate facility" do
         @controller.all_order_details
         @controller.current_facility.should == @authable
         @controller.facilities.should == [@authable]
       end
+
       it "should populate accounts" do
         @controller.all_order_details
         @controller.account.should be_nil
         @controller.accounts.should == [@account]
       end
-      it 'should populate accounts based off order_details, not orders' do
+
+      it "populates accounts based off order_details, not orders" do
         @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @staff))
         Order.all.each { |o| o.update_attributes!(:account => @account) }
         OrderDetail.all.each { |od| od.update_attributes!(:account => @account2)}
@@ -71,7 +80,7 @@ describe TransactionSearch do
         @controller.accounts.should == [@account2]
       end
 
-      it 'should populate owners based off of order_details, not orders' do
+      it "populates owners based off of order_details, not orders" do
         @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @staff2))
         Order.all.each { |o| o.update_attributes!(:account => @account) }
         OrderDetail.all.each { |od| od.update_attributes!(:account => @account2) }
@@ -79,7 +88,6 @@ describe TransactionSearch do
         @controller.all_order_details
         @controller.account_owners.should == [@staff2]
       end
-
 
       it "should not populate an account for another facility" do
         @facility2 = FactoryGirl.create(:facility)
@@ -163,30 +171,79 @@ describe TransactionSearch do
     end
   end
 
-  context "searching" do
-    context "order statuses" do
-      before :each do
-        @order_detail_complete.order_status.should == @os_complete
-        @order_detail_new.order_status.should == @os_new
-        @controller.params = { :facility_id => @authable.url_name, :date_range_field => :ordered_at }
-        @controller.init_current_facility
-      end
-      it 'should return all with no status' do
-        @controller.all_order_details
-        @controller.order_details.should contain_all [@order_detail_new, @order_detail_complete]
-      end
-      it 'should return just new' do
-        @controller.params.merge!({:order_statuses => [@os_new.id]})
-        @controller.all_order_details
-        @controller.order_details.should == [@order_detail_new]
-      end
-      it 'should return just complete' do
-        @controller.params.merge!({:order_statuses => [@os_complete.id]})
-        @controller.all_order_details
-        @controller.order_details.should == [@order_detail_complete]
-      end
+  shared_context "it filters by order status" do |date_range_field|
+    let(:params) do
+      { facility_id: facility.url_name, date_range_field: date_range_field }
+    end
 
+    before :each do
+      expect(order_detail_complete.order_status).to eq @os_complete
+      expect(order_detail_new.order_status).to eq @os_new
+      @controller.params = params
+      @controller.init_current_facility
+      @controller.params.merge!(order_statuses: order_statuses)
+      @controller.all_order_details
+    end
+
+    context "with no order statuses specified" do
+      let(:order_statuses) { nil }
+
+      it "returns all" do
+        expect(@controller.order_details)
+          .to contain_all [order_detail_new, order_detail_complete]
+      end
+    end
+
+    context "with new status specified" do
+      let(:order_statuses) { [@os_new.id] }
+
+      it "returns only new order_details" do
+        expect(@controller.order_details).to eq [order_detail_new]
+      end
+    end
+
+    context "with complete status specified" do
+      let(:order_statuses) { [@os_complete.id] }
+
+      it "returns only complete order_details" do
+        expect(@controller.order_details).to eq [order_detail_complete]
+      end
     end
   end
 
+  context "searching" do
+    context "when filtering by date range" do
+      before :each do
+        order_detail_new.stub(:total).and_return(100)
+        order_detail_new.update_attribute(:fulfilled_at, Time.zone.now)
+        order_detail_complete.stub(:total).and_return(100)
+        order_detail_complete.update_attribute(:fulfilled_at, Time.zone.now)
+      end
+
+      context "using fulfilled_at date" do
+        it_behaves_like "it filters by order status", :fulfilled_at
+      end
+
+      context "using journal_or_statement_date" do
+        let(:journal) do
+          Journal.create!(
+            created_by: user.id,
+            facility_id: facility.id,
+            journal_date: Time.zone.now,
+          )
+        end
+
+        before :each do
+          order_detail_new.update_attribute(:account_id, account.id)
+          journal.create_journal_rows!([order_detail_new, order_detail_complete])
+        end
+
+        it_behaves_like "it filters by order status", :journal_or_statement_date
+      end
+
+      context "using ordered_at date" do
+        it_behaves_like "it filters by order status", :ordered_at
+      end
+    end
+  end
 end
