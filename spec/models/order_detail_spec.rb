@@ -315,101 +315,139 @@ describe OrderDetail do
   end
 
   describe "#problem_order?" do
-    before :each do
-      # create some instruments and schedule rules
-      @actuals_instrument = create :instrument, facility_account: @facility_account, facility: @facility
-      @both_instrument = create :instrument, facility_account: @facility_account, facility: @facility
-      @no_actuals_instrument = create :instrument, facility_account: @facility_account, facility: @facility
-      @no_actuals_instrument.relay.destroy
-      @instrument_wo_pp = create :instrument, facility_account: @facility_account, facility: @facility
+    let(:instruments) do
+      create_list(:instrument, 4, facility_account: facility_account, facility: facility)
+    end
 
-      [ @no_actuals_instrument, @actuals_instrument, @both_instrument, @instrument_wo_pp ].each do |instrument|
-        create :schedule_rule, instrument: instrument
+    let(:instrument_with_actuals) { instruments[0] }
+    let(:instrument_with_actuals_and_price_policy) { instruments[1] }
+    let(:instrument_without_actuals) { instruments[2] }
+    let(:instrument_without_price_policy) { instruments[3] }
+
+    let(:order) do
+      create(:order,
+        facility: facility,
+        user: user,
+        created_by: user.id,
+        account: account,
+        ordered_at: Time.zone.now,
+      )
+    end
+
+    let(:order_details) do
+      instruments.map do |instrument|
+        create(:order_detail, order: order, product: instrument)
+      end
+    end
+
+    let(:order_detail_without_actuals) { order_details[0] }
+    let(:order_detail_with_actuals) { order_details[1] }
+    let(:order_detail_with_actuals_and_price_policy) { order_details[2] }
+    let(:order_detail_without_price_policy) { order_details[3] }
+
+    let(:reservation_for_instrument_with_actuals_and_price_policy) do
+      create(:reservation,
+        order_detail: order_detail_with_actuals_and_price_policy,
+        product: instrument_with_actuals_and_price_policy,
+      )
+    end
+
+    before :each do
+      instrument_without_actuals.relay.destroy
+
+      instruments.each do |instrument|
+        create(:schedule_rule, instrument: instrument)
         instrument.reload
       end
 
-      # create the price policies
-      create :instrument_price_policy, price_group: @user.price_groups.first, product: @no_actuals_instrument
-      create :instrument_price_policy, price_group: @user.price_groups.first, usage_rate: 1, product: @actuals_instrument
-      create :instrument_price_policy, price_group: @user.price_groups.first, usage_rate: 1, product: @both_instrument
-
-      # create an order and some order details
-      @order = create(
-        :order,
-        facility: @facility,
-        user: @user,
-        created_by: @user.id,
-        account: @account,
-        ordered_at: Time.zone.now
+      create(:instrument_price_policy,
+        price_group: user.price_groups.first,
+        product: instrument_without_actuals,
+      )
+      create(:instrument_price_policy,
+        price_group: user.price_groups.first,
+        product: instrument_with_actuals,
+        usage_rate: 1,
+      )
+      create(:instrument_price_policy,
+        price_group: user.price_groups.first,
+        product: instrument_with_actuals_and_price_policy,
+        usage_rate: 1,
       )
 
-      # create the order_details
-      @no_actuals_od  = create :order_detail, order: @order, product: @no_actuals_instrument
-      @actuals_od     = create :order_detail, order: @order, product: @actuals_instrument
-      @both_od        = create :order_detail, order: @order, product: @both_instrument
-      @no_pp_od       = create :order_detail, order: @order, product: @instrument_wo_pp
+      create(:reservation,
+        product: instrument_without_actuals,
+        order_detail: order_detail_without_actuals,
+      )
+      create(:reservation,
+        product: instrument_with_actuals,
+        order_detail: order_detail_with_actuals,
+      )
 
-      create :reservation, product: @no_actuals_instrument, order_detail: @no_actuals_od
-      create :reservation, product: @actuals_instrument, order_detail: @actuals_od
+      create(:reservation,
+        product: instrument_with_actuals_and_price_policy,
+        reserve_start_at: reservation_for_instrument_with_actuals_and_price_policy.reserve_start_at + 1.hour,
+        duration_mins: 60,
+        order_detail: order_detail_without_price_policy,
+      )
 
-      # since these two are on the same instrument, make sure the reservations do not conflict
-      both_res = create :reservation, product: @both_instrument, order_detail: @both_od
-      create :reservation, product: @both_instrument, reserve_start_at: both_res.reserve_start_at + 1.hour, duration_mins: 60, order_detail: @no_pp_od
-
-      # travel to the future to complete the order_details
       Timecop.travel(2.days.from_now) do
-        [ @no_actuals_od, @actuals_od, @both_od, @no_pp_od ].each do |od|
-          od.change_status!(OrderStatus.find_by_name('In Process'))
-          od.state.should == 'inprocess'
-          od.change_status!(OrderStatus.find_by_name('Complete'))
-          od.state.should == 'complete'
-          od.reload
+        order_details.each do |order_detail|
+          order_detail.change_status!(OrderStatus.find_by_name("In Process"))
+          order_detail.change_status!(OrderStatus.find_by_name("Complete"))
+          order_detail.reload
         end
       end
     end
 
-    context "run on an order_detail for an instrument who's price policy" do
-      context "does not require actuals" do
-        it "should complete" do
-          @no_actuals_od.state.should == 'complete'
-        end
-
-        it "should not be a problem order" do
-          @no_actuals_od.problem_order?.should be_false
-        end
-      end
-
-      context "requires actuals" do
-        it "should complete" do
-          @actuals_od.state.should == 'complete'
-        end
-
-        it "should be a problem order" do
-          @actuals_od.problem_order?.should be_true
-        end
-      end
-
-      context "requires actuals and has a reservation_rate" do
-        it "should complete" do
-          @both_od.state.should == 'complete'
-        end
-
-        it "should be a problem order" do
-          @both_od.problem_order?.should be_true
-        end
-      end
-
-      context "doesn't exist" do
-        it "should complete" do
-          @no_pp_od.state.should == 'complete'
-        end
-
-        it "should be a problem order" do
-          @no_pp_od.problem_order?.should be_true
-        end
+    shared_context "it is complete" do
+      it "is complete" do
+        expect(order_detail.state).to eq "complete"
+        expect(order_detail).to be_complete
       end
     end
 
+    shared_context "it is a problem order" do
+      it "is a problem order" do
+        expect(order_detail).to be_problem_order
+      end
+    end
+
+    shared_context "it is not a problem order" do
+      it "is not a problem order" do
+        expect(order_detail).not_to be_problem_order
+      end
+    end
+
+    context "with an order_detail for an instrument" do
+      context "with a price policy not requiring actuals" do
+        let(:order_detail) { order_detail_without_actuals }
+
+        it_behaves_like "it is complete"
+        it_behaves_like "it is not a problem order"
+      end
+
+      context "with a price policy requiring actuals" do
+        let(:order_detail) { order_detail_with_actuals }
+
+        it_behaves_like "it is complete"
+        it_behaves_like "it is a problem order"
+
+        context "and has a reservation_rate" do
+          let(:order_detail) { order_detail_with_actuals_and_price_policy }
+
+          it_behaves_like "it is complete"
+          it_behaves_like "it is a problem order"
+        end
+      end
+
+      context "with no price policy" do
+        let(:order_detail) { order_detail_without_price_policy }
+
+        it_behaves_like "it is complete"
+        it_behaves_like "it is a problem order"
+      end
+    end
   end
 
   context "state management" do
