@@ -16,7 +16,7 @@ $(function(){
     $('.affiliate_other').toggle($('.affiliate:visible option:selected').text() == 'Other')
   }
 
-  $("#datepicker").datepicker({minDate:+0, maxDate:'+3y', dateFormat: 'mm/dd/yy'});
+  $(".datepicker").datepicker({minDate:+0, maxDate:'+3y', dateFormat: 'mm/dd/yy'});
 
   $("#class_type").change(function() {
     toggleInputs();
