@@ -88,11 +88,8 @@ class FacilityJournalsController < ApplicationController
 
   # POST /facilities/journals
   def create_with_search
-    @journal = Journal.new(
-      created_by: session_user.id,
-      journal_date: parse_usa_date(params[:journal_date]),
-      order_details_for_creation: order_details_for_creation,
-    )
+    new_journal_from_params
+    verify_journal_date_format
 
     # The referer can have a crazy long query string depending on how many checkboxes
     # are selected. We've seen Apache not like stuff like that and give a "malformed
@@ -101,7 +98,7 @@ class FacilityJournalsController < ApplicationController
     referer=response.headers['Referer']
     response.headers['Referer']=referer[0..referrer.index('?')] if referer.present?
 
-    if @journal.save
+    if @journal.errors.blank? && @journal.save
       @journal.create_spreadsheet if Settings.financial.journal_format.xls
       flash[:notice] = I18n.t('controllers.facility_journals.create.notice')
       redirect_to facility_journals_path(current_facility)
@@ -151,6 +148,20 @@ class FacilityJournalsController < ApplicationController
 
 
   private
+
+  def new_journal_from_params
+    @journal = Journal.new(
+      created_by: session_user.id,
+      journal_date: parse_usa_date(params[:journal_date]),
+      order_details_for_creation: order_details_for_creation,
+    )
+  end
+
+  def verify_journal_date_format
+    if params[:journal_date].present? && !usa_formatted_date?(params[:journal_date])
+      @journal.errors.add(:journal_date, :blank)
+    end
+  end
 
   def order_details_for_creation
     return [] unless params[:order_detail_ids].present?
