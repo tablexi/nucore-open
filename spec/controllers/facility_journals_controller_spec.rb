@@ -173,14 +173,14 @@ describe FacilityJournalsController do
 
 
   context 'create' do
+    let(:journal_date) { I18n.l(Date.today, format: :usa) }
 
     before :each do
-      @method=:post
-      @action=:create
-      @journal_date=DateTime.now.strftime('%m/%d/%Y')
-      @params={
-        :facility_id => @authable.url_name,
-        :journal_date => @journal_date
+      @method = :post
+      @action = :create
+      @params = {
+        facility_id: facility.url_name,
+        journal_date: journal_date,
       }
     end
 
@@ -193,9 +193,8 @@ describe FacilityJournalsController do
 
     context 'validations' do
       shared_examples_for 'journal error' do |error_message|
-        before :each do
-          do_request
-        end
+        before { do_request }
+
         it 'should not create a journal' do
           expect(assigns(:journal)).to be_new_record
         end
@@ -210,6 +209,18 @@ describe FacilityJournalsController do
         create_order_details
         @params[:order_detail_ids] = [@order_detail1.id, @order_detail3.id]
         sign_in @admin
+      end
+
+      context 'when the journal_date is blank' do
+        let(:journal_date) { '' }
+
+        it_behaves_like 'journal error', 'may not be blank'
+      end
+
+      context 'when the journal_date is in MM/YY/DD format' do
+        let(:journal_date) { '1/1/11' }
+
+        it_behaves_like 'journal error', 'must be in MM/DD/YYYY format'
       end
 
       it 'throttles the error message size' do

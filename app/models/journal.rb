@@ -224,6 +224,7 @@ class Journal < ActiveRecord::Base
   end
 
   def journal_date_cannot_be_before_last_fulfillment
+    return unless journal_date.present?
     last_fulfilled = @order_details_for_creation.collect(&:fulfilled_at).max
     errors.add(:journal_date, :cannot_be_before_last_fulfillment) if journal_date.end_of_day < last_fulfilled
   end

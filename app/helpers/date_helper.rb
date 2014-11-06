@@ -1,7 +1,11 @@
 module DateHelper
 
+  def usa_formatted_date?(date_string)
+    date_string.present? && date_string =~ %r(\A\d{1,2}/\d{1,2}/\d{4}\z)
+  end
+
   def parse_usa_import_date(date_string)
-    return nil unless date_string =~ %r(\A\d{1,2}/\d{1,2}/\d{4}\z)
+    return nil unless usa_formatted_date?(date_string)
     begin
       parse_mmddyyyy_in_current_zone!(date_string)
     rescue ArgumentError
