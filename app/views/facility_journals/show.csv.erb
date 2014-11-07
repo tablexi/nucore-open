@@ -72,7 +72,7 @@ output = CSVHelper::CSV.generate do |csv|
     row << account.affiliate.try(:name) if AccountManager::using_affiliates?
 
     row +=[account.account_number,
-           account.description,
+           account.description_to_s,
            human_datetime(account.expires_at),
 
            # account owner information

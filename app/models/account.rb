@@ -241,10 +241,11 @@ class Account < ActiveRecord::Base
     self.account_number.to_s
   end
 
-  def to_s(with_owner = false)
-    desc = [ description, account_number_to_s ]
-    desc << owner_user.name if with_owner && owner_user
-    desc.join ' / '
+  def to_s(with_owner = false, flag_suspended = true)
+    desc = "#{description} / #{account_number}"
+    desc += " / #{owner_user.name}" if with_owner && owner_user
+    desc += " (suspended)" if flag_suspended && suspended?
+    desc
   end
 
   def affiliate_to_s
@@ -252,6 +253,14 @@ class Account < ActiveRecord::Base
     affiliate_name = affiliate.name
     affiliate_name += ": #{affiliate_other}" if affiliate == Affiliate.OTHER
     affiliate_name
+  end
+
+  def description_to_s
+    if suspended?
+      "#{description} (suspended)"
+    else
+      description
+    end
   end
 
 end

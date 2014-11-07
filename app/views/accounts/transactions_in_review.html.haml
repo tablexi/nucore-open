@@ -3,7 +3,7 @@
   Transactions in Review
 = content_for :tabnav do
   %h2= @account.account_number
-  %p= @account.description
+  %p= @account.description_to_s
   %h3= @facility.name if @facility
 #header_billing.grid_9
   = render :partial => 'shared/transactions/search'

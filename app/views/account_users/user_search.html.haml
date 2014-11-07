@@ -5,7 +5,7 @@
 
 %header.account
   %h3= @account.account_number
-  %p= @account.description
+  %p= @account.description_to_s
 
 = form_tag user_search_results_path, :id => "ajax_form" do
   = label_tag :search_term, t('.label.search')

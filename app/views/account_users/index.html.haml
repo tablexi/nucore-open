@@ -5,5 +5,5 @@
 
 %header.account
   %h3= @account.account_number
-  %p= @account.description
+  %p= @account.description_to_s
 = render :partial => 'accounts/member_table'

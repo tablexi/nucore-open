@@ -6,10 +6,10 @@ class PurchaseOrderAccount < Account
 
   validates_presence_of   :account_number
 
-
-  def to_s(with_owner = false)
-    desc = super
+  def to_s(with_owner = false, flag_suspended = true)
+    desc = super(with_owner, false)
     desc += " / #{facility.name}" if facility
+    desc += " (suspended)" if flag_suspended && suspended?
     desc
   end
 end

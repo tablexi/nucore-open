@@ -20,7 +20,7 @@
         - account = au.account
         %tr
           %td= account.account_number_to_s
-          %td= account.description
+          %td= account.description_to_s
           %td= account.type_string
           %td= human_date(account.expires_at)
           %td= account.facility || '<i>All</i>'.html_safe

@@ -5,6 +5,8 @@ describe Account do
   let(:facility) { create(:facility) }
   let(:user) { create(:user) }
 
+  it_should_behave_like "an Account"
+
   context '#unreconciled_total' do
     context 'without unreconciled order_details' do
       it 'should total 0' do
