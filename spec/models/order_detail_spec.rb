@@ -68,7 +68,6 @@ describe OrderDetail do
   end
 
   context 'bundle' do
-
     before :each do
       @bundle=create(:bundle, facility_account: @facility_account, facility: @facility)
       @bundle_product=BundleProduct.create!(bundle: @bundle, product: @item, quantity: 1)
@@ -85,7 +84,6 @@ describe OrderDetail do
       assert @order_detail.save
       @order_detail.should_not be_bundled
     end
-
   end
 
   it 'should have a created_by' do
@@ -132,7 +130,6 @@ describe OrderDetail do
   end
 
   context "assigning estimated costs" do
-
     context "for reservations" do
       before(:each) do
         @instrument = create(:instrument,
@@ -169,7 +166,6 @@ describe OrderDetail do
       end
     end
   end
-
 
   context "item purchase validation" do
     before(:each) do
@@ -255,7 +251,6 @@ describe OrderDetail do
   end
 
   context 'instrument' do
-
     context 'where the account has a price group, but the user does not' do
       let(:reservation) { create(:setup_reservation) }
       let(:order_detail) { reservation.order_detail }
@@ -311,7 +306,6 @@ describe OrderDetail do
       it "should not be valid if an instrument reservation is not valid"
       it "should not be valid if there is no estimated or actual price"
     end
-
   end
 
   describe "#problem_order?" do
@@ -526,7 +520,6 @@ describe OrderDetail do
   end
 
   context "state management" do
-
     it "should not allow transition from 'new' to 'invoiced'" do
       @order_detail.invoice! rescue nil
       @order_detail.state.should == 'new'
@@ -658,9 +651,7 @@ describe OrderDetail do
       end
 
     end
-
   end
-
 
   context 'statement' do
     before :each do
@@ -671,7 +662,6 @@ describe OrderDetail do
     it { should allow_value(@statement).for(:statement) }
   end
 
-
   context 'journal' do
     before :each do
       @journal=create(:journal, facility: @facility, reference: 'xyz', created_by: @user.id, journal_date: Time.zone.now)
@@ -681,7 +671,6 @@ describe OrderDetail do
     it { should allow_value(@journal).for(:journal) }
   end
 
-
   context 'date attributes' do
     [ :fulfilled_at, :reviewed_at ].each do |attr|
       it { should allow_value(nil).for(attr) }
@@ -689,16 +678,13 @@ describe OrderDetail do
     end
   end
 
-
   it "should include ids in description" do
     desc=@order_detail.to_s
     desc.should match(/#{@order_detail.id}/)
     desc.should match(/#{@order_detail.order.id}/)
   end
 
-
   context 'is_in_dispute?' do
-
     it 'should be in dispute' do
       @order_detail.dispute_at=Time.zone.now
       @order_detail.dispute_resolved_at=nil
@@ -726,7 +712,6 @@ describe OrderDetail do
       @order_detail.dispute_resolved_at=nil
       @order_detail.should_not be_in_dispute
     end
-
   end
 
   context "can_dispute?" do
@@ -782,10 +767,7 @@ describe OrderDetail do
     end
   end
 
-
-
   context 'named scopes' do
-
     before :each do
       @order.facility=@facility
       assert @order.save
@@ -1124,6 +1106,148 @@ describe OrderDetail do
     end
   end
 
+  context '#cancellation_fee' do
+    shared_examples_for 'it charges a cancellation fee' do
+      it 'has a cancellation fee' do
+        expect(order_detail.cancellation_fee).to be > 0
+      end
+    end
+
+    shared_examples_for 'it charges no cancellation fee' do
+      it 'has no cancellation fee' do
+        expect(order_detail.cancellation_fee).to eq 0
+      end
+    end
+
+    shared_examples_for 'it charges cancellation fees appropriately' do
+      context 'with a limited no-fee cancellation period' do
+        before :each do
+          instrument.update_attribute(:min_cancel_hours, 2)
+          order_detail.reload
+          reservation.update_attribute(:canceled_at, Time.zone.now)
+        end
+
+        context 'when in the no-fee period' do
+          it_behaves_like 'it charges no cancellation fee'
+        end
+
+        context 'when after the time when the cancellation fee applies' do
+          before :each do
+            @current_time = Time.now
+            Timecop.freeze(3.hours.from_now)
+            reservation.update_attribute(:canceled_at, Time.zone.now)
+          end
+
+          after { Timecop.freeze(@current_time) }
+
+          it_behaves_like 'it charges a cancellation fee'
+        end
+      end
+
+      context 'without minimum cancellation hours' do
+        before { instrument.update_attribute(:min_cancel_hours, 0) }
+
+        it_behaves_like 'it charges no cancellation fee'
+      end
+    end
+
+    shared_examples_for 'it charges for overage' do
+      let!(:price_policy) { instrument_overage_price_policy }
+
+      it_should_behave_like 'it charges cancellation fees appropriately'
+    end
+
+    shared_examples_for 'it charges for reservation' do
+      let!(:price_policy)  { instrument_reservation_price_policy }
+
+      context 'when the reservation has been canceled' do
+        before { reservation.update_attribute(:canceled_at, Time.zone.now) }
+
+        it_should_behave_like 'it charges cancellation fees appropriately'
+      end
+
+      context 'when the reservation has been completed' do
+        before :each do
+          reservation.update_attributes(
+            actual_start_at: 1.hour.ago,
+            actual_end_at: Time.zone.now,
+          )
+        end
+
+        it_should_behave_like 'it charges cancellation fees appropriately'
+      end
+    end
+
+    shared_examples_for 'it charges for usage' do
+      let!(:price_policy) { instrument_usage_price_policy }
+
+      it_should_behave_like 'it charges cancellation fees appropriately'
+    end
+
+    shared_examples_for 'it charges for overage, reservation, and usage' do
+      it_behaves_like 'it charges for overage'
+      it_behaves_like 'it charges for reservation'
+      it_behaves_like 'it charges for usage'
+    end
+
+    let(:instrument_overage_price_policy) do
+      create(:instrument_overage_price_policy,
+        cancellation_cost: 100,
+        price_group: price_group,
+        product: instrument,
+      )
+    end
+
+    let(:instrument_reservation_price_policy) do
+      create(:instrument_price_policy,
+        cancellation_cost: 100,
+        price_group: price_group,
+        product: instrument,
+      )
+    end
+
+    let(:instrument_usage_price_policy) do
+      create(:instrument_usage_price_policy,
+        cancellation_cost: 100,
+        price_group: price_group,
+        product: instrument,
+      )
+    end
+
+    let(:reservation) do
+      create(:reservation,
+        reserve_start_at: 4.hours.from_now,
+        reserve_end_at: 5.hours.from_now,
+        product: instrument,
+      )
+    end
+
+    before :each do
+      order_detail.update_attribute(:product_id, instrument.id)
+      order_detail.reservation = reservation
+      create(:user_price_group_member, user: user, price_group: price_group)
+      order_detail.reload
+    end
+
+    context 'with a price policy' do
+      before :each do
+        order_detail.update_attribute(:price_policy_id, price_policy.id)
+      end
+
+      it_behaves_like 'it charges for overage, reservation, and usage'
+    end
+
+    context 'without a price policy' do
+      context 'when no compatible price policies exist' do
+        it_behaves_like 'it charges no cancellation fee'
+      end
+
+      context 'when a compatible price policy exists' do
+        it_behaves_like 'it charges for overage, reservation, and usage'
+      end
+    end
+  end
+
   context '.account_unreconciled' do
     context 'where the account is a NufsAccount' do
       let(:journal) { create(:journal, facility: facility, reference: 'xyz', created_by: user.id, journal_date: Time.zone.now) }
@@ -1224,7 +1348,6 @@ describe OrderDetail do
   end
 
   context 'OrderDetailObserver' do
-
     context 'after_destroy' do
       it 'should not destroy order if order is not a merge and there are no more details' do
         @order_detail.destroy

@@ -695,20 +695,19 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def cancellation_fee
-    res    = reservation
-    policy = price_policy
 
-    unless policy
-      assign_price_policy
-      policy=price_policy
-    end
+    assign_price_policy unless price_policy
 
-    return 0 unless res && policy && self.product.min_cancel_hours.to_i > 0
-    if (res.reserve_start_at - Time.zone.now)/3600 > self.product.min_cancel_hours
-      return 0
+    return 0 unless reservation && price_policy && product.min_cancel_hours.to_i > 0
+    if outside_cancellation_window?
+      0
     else
-      return policy.cancellation_cost.to_f
+      price_policy.cancellation_cost.to_f
     end
+  end
+
+  def outside_cancellation_window?(time = Time.current)
+    reservation.reserve_start_at - time > product.min_cancel_hours.hours
   end
 
   def has_subsidies?

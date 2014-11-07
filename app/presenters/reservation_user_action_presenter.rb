@@ -69,7 +69,10 @@ class ReservationUserActionPresenter
   end
 
   def cancel_link
+    order_detail.reservation.canceled_at = Time.zone.now
+
     fee = order_detail.cancellation_fee
+
     if fee > 0
       link_to I18n.t('reservations.delete.link'), order_order_detail_path(order, order_detail, cancel: 'cancel'),
         method: :put,

@@ -3,86 +3,143 @@ require 'spec_helper'
 describe ReservationUserActionPresenter do
   include Rails.application.routes.url_helpers
 
-  let(:facility) { mock_model Facility }
-  let(:order) { mock_model Order, facility: facility }
-  let(:order_detail) { mock_model OrderDetail, order: order, accessories?: false }
-  let(:reservation) do
-    mock_model Reservation, order_detail: order_detail, order: order,
-       can_switch_instrument?: true,
-       can_switch_instrument_off?: false,
-       can_switch_instrument_on?: false,
-       can_move?: false,
-       can_cancel?: false,
-       ongoing?: false
-  end
+  let(:facility) { build_stubbed(:facility) }
+  let(:order) { build_stubbed(:order, facility: facility) }
+  let(:order_detail) { build_stubbed(:order_detail, order: order) }
+  let(:reservation) { build_stubbed(:reservation, order_detail: order_detail) }
   let(:template) { double('template') }
 
   subject(:presenter) { described_class.new(template, reservation) }
 
-  describe 'view_edit_link' do
-    describe 'when in a current facility' do
-      before { allow(template).to receive(:current_facility).and_return facility }
+  before :each do
+    allow(order_detail).to receive(:accessories?).and_return false
+    allow(reservation).to receive(:can_switch_instrument?).and_return true
+    allow(reservation).to receive(:can_switch_instrument_off?).and_return false
+    allow(reservation).to receive(:can_switch_instrument_on?).and_return false
+    allow(reservation).to receive(:can_move?).and_return false
+    allow(reservation).to receive(:can_cancel?).and_return false
+    allow(reservation).to receive(:ongoing?).and_return false
+  end
 
-      it 'returns an edit link when the user can edit' do
-        expect(reservation).to receive(:can_customer_edit?).and_return true
-        path = edit_facility_order_order_detail_reservation_path(facility, order, order_detail, reservation)
-        link = double 'link'
-        expect(presenter).to receive(:link_to).with(reservation, path).and_return link
-        expect(presenter.view_edit_link).to eq(link)
+  context '#view_edit_link' do
+    let(:link) { double 'link' }
+
+    context 'when in a current facility' do
+      before :each do
+        allow(template).to receive(:current_facility).and_return facility
       end
 
-      it 'returns a view link if the user cannot edit' do
-        expect(reservation).to receive(:can_customer_edit?).and_return false
-        path = facility_order_order_detail_reservation_path(facility, order, order_detail, reservation)
-        link = double 'link'
-        expect(presenter).to receive(:link_to).with(reservation, path).and_return link
-        expect(presenter.view_edit_link).to eq(link)
+      context 'when the user can edit' do
+        let(:path) do
+          edit_facility_order_order_detail_reservation_path(
+            facility,
+            order,
+            order_detail,
+            reservation,
+          )
+        end
+
+        it 'returns an edit link' do
+          expect(reservation).to receive(:can_customer_edit?).and_return true
+          expect(presenter).to receive(:link_to).with(reservation, path).and_return link
+          expect(presenter.view_edit_link).to eq link
+        end
+      end
+
+      context 'when the user cannot edit' do
+        let(:path) do
+          facility_order_order_detail_reservation_path(
+            facility,
+            order,
+            order_detail,
+            reservation,
+          )
+        end
+
+        it 'returns a view link' do
+          expect(reservation).to receive(:can_customer_edit?).and_return false
+          expect(presenter).to receive(:link_to).with(reservation, path).and_return link
+          expect(presenter.view_edit_link).to eq link
+        end
       end
     end
 
-    describe 'when not in a current facility' do
+    context 'when not in a current facility' do
       before { allow(template).to receive(:current_facility).and_return nil }
 
-      it 'returns an edit link when the user can edit' do
-        expect(reservation).to receive(:can_customer_edit?).and_return true
-        path = edit_order_order_detail_reservation_path(order, order_detail, reservation)
-        link = double 'link'
-        expect(presenter).to receive(:link_to).with(reservation, path).and_return link
-        expect(presenter.view_edit_link).to eq(link)
+      context 'when the user can edit' do
+        let(:path) do
+          edit_order_order_detail_reservation_path(
+            order,
+            order_detail,
+            reservation,
+          )
+        end
+
+        it 'returns an edit link' do
+          expect(reservation).to receive(:can_customer_edit?).and_return true
+          expect(presenter).to receive(:link_to).with(reservation, path).and_return link
+          expect(presenter.view_edit_link).to eq link
+        end
       end
 
-      it 'returns a view link if the user cannot edit' do
-        expect(reservation).to receive(:can_customer_edit?).and_return false
-        path = order_order_detail_reservation_path(order, order_detail, reservation)
-        link = double 'link'
-        expect(presenter).to receive(:link_to).with(reservation, path).and_return link
-        expect(presenter.view_edit_link).to eq(link)
+      context 'when the user cannot edit' do
+        let(:path) do
+          order_order_detail_reservation_path(order, order_detail, reservation)
+        end
+
+        it 'returns a view link' do
+          expect(reservation).to receive(:can_customer_edit?).and_return false
+          expect(presenter).to receive(:link_to).with(reservation, path).and_return link
+          expect(presenter.view_edit_link).to eq link
+        end
       end
     end
   end
 
-  describe 'user_actions' do
+  context '#user_actions' do
+    before :each do
+      allow(order_detail).to receive(:reservation).and_return reservation
+    end
+
     subject(:text) { presenter.user_actions }
+
     it 'is blank by default' do
       expect(text).to be_blank
     end
 
     describe 'switching' do
-      describe 'can switch on' do
-        before { expect(reservation).to receive(:can_switch_instrument_on?).and_return true }
+      let(:encoded_link) { CGI::escapeHTML(link) }
+      let(:link) do
+        order_order_detail_reservation_switch_instrument_path(
+          order,
+          order_detail,
+          reservation,
+          link_args,
+        )
+      end
+
+      context 'can switch on' do
+        let(:link_args) { { switch: 'on' } }
+
+        before :each do
+          expect(reservation)
+          .to receive(:can_switch_instrument_on?)
+          .and_return true
+        end
 
         it 'includes the switch on event' do
-          link = order_order_detail_reservation_switch_instrument_path(order, order_detail, reservation, :switch => 'on')
-          expect(text).to include link
+          expect(text).to include encoded_link
         end
       end
 
-      describe 'can switch off' do
-        let(:encoded_link) { CGI::escapeHTML(link) }
-        let(:link) { order_order_detail_reservation_switch_instrument_path(order, order_detail, reservation, switch: 'off', reservation_ended: 'on') }
+      context 'can switch off' do
+        let(:link_args) { { switch: 'off', reservation_ended: 'on' } }
 
         before :each do
-          expect(reservation).to receive(:can_switch_instrument_off?).and_return true
+          expect(reservation)
+          .to receive(:can_switch_instrument_off?)
+          .and_return true
         end
 
         it 'includes the switch off event' do
@@ -92,50 +149,83 @@ describe ReservationUserActionPresenter do
     end
 
     describe 'canceling' do
-      before { expect(reservation).to receive(:can_cancel?).and_return true }
+      before :each do
+        expect(reservation).to receive(:can_cancel?).and_return true
+      end
+
+      shared_examples_for 'it has a cancellation link with a confirmation' do
+        it 'includes a cancellation link' do
+          expect(text).to include link
+        end
+
+        it 'includes a confirmation' do
+          expect(text).to include 'confirm='
+        end
+      end
 
       context 'there is a fee' do
-        before { expect(order_detail).to receive(:cancellation_fee).and_return 10 }
+        let(:link) do
+          order_order_detail_path(order, order_detail, cancel: 'cancel')
+        end
 
-        it 'includes a cancellation link with a confirmation' do
-          link = order_order_detail_path(order, order_detail, cancel: 'cancel')
-          expect(text).to include link
-          expect(text).to include 'confirm="Canceling this reservation will incur a $10'
+        before :each do
+          expect(order_detail).to receive(:cancellation_fee).and_return 10
+        end
+
+        it_behaves_like 'it has a cancellation link with a confirmation'
+
+        it 'mentions the cancellation fee' do
+          expect(text).to include 'Canceling this reservation will incur a $10'
         end
       end
 
       context 'there is not a fee' do
-        before { expect(order_detail).to receive(:cancellation_fee).and_return 0 }
-        it 'includes a cancellation link without a confirmation' do
-          link = order_order_detail_path(order, order_detail, cancel: 'cancel')
-          expect(text).to include link
-          expect(text).to include "confirm="
-          expect(text).to_not include "will incur a $"
+        let(:link) do
+          order_order_detail_path(order, order_detail, cancel: 'cancel')
+        end
+
+        before :each do
+          expect(order_detail).to receive(:cancellation_fee).and_return 0
+        end
+
+        it_behaves_like 'it has a cancellation link with a confirmation'
+
+        it 'does not mention a cancellation fee' do
+          expect(text).not_to include 'Canceling this reservation will incur a $'
         end
       end
     end
 
     describe 'moving' do
+      let(:link) do
+        order_order_detail_reservation_move_reservation_path(
+          order,
+          order_detail,
+          reservation,
+        )
+      end
+
       before do
         expect(reservation).to receive(:can_switch_instrument?).and_return false
         expect(reservation).to receive(:can_move?).and_return true
       end
 
       it 'includes the move link' do
-        link = order_order_detail_reservation_move_reservation_path(order, order_detail, reservation)
         expect(text).to include link
       end
     end
 
     describe 'accessories' do
       include ReservationsHelper
+
+      let(:link) { reservation_pick_accessories_path(reservation) }
+
       before do
         expect(reservation).to receive(:ongoing?).and_return true
         expect(order_detail).to receive(:accessories?).and_return true
       end
 
       it 'includes the accessories link' do
-        link = reservation_pick_accessories_path(reservation)
         expect(text).to include link
       end
     end
