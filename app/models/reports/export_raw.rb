@@ -87,7 +87,7 @@ class Reports::ExportRaw
       account.type.underscore.humanize,
       account.affiliate_to_s,
       account.account_number,
-      account.description,
+      account.description_to_s,
       format_usa_datetime(account.expires_at)
     ]
   end
