@@ -159,7 +159,7 @@ class FacilityJournalsController < ApplicationController
 
   def verify_journal_date_format
     if params[:journal_date].present? && !usa_formatted_date?(params[:journal_date])
-      @journal.errors.add(:journal_date, I18n.t('controllers.facility_journals.create.error.date_format'))
+      @journal.errors.add(:journal_date, :blank)
     end
   end
 
