@@ -34,9 +34,7 @@ describe Journal do
 
     it "is invalid" do
       expect(journal).not_to be_valid
-      expect(journal.errors[:journal_date]).to satisfy do |errors|
-        errors.grep(/\bmay not be blank\b/).present?
-      end
+      expect(journal.errors[:journal_date].to_s).to match /may not be blank/
     end
   end
 
