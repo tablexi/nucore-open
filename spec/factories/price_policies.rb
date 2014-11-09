@@ -25,6 +25,14 @@ FactoryGirl.define do
     expire_date { PricePolicy.generate_expire_date(Time.zone.now.beginning_of_day) }
   end
 
+  factory :instrument_usage_price_policy, parent: :instrument_price_policy do
+    charge_for { InstrumentPricePolicy::CHARGE_FOR[:usage] }
+  end
+
+  factory :instrument_overage_price_policy, parent: :instrument_price_policy do
+    charge_for { InstrumentPricePolicy::CHARGE_FOR[:overage] }
+  end
+
   factory :item_price_policy do
     can_purchase true
     unit_cost 1

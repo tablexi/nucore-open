@@ -69,7 +69,7 @@ class ReservationUserActionPresenter
   end
 
   def cancel_link
-    order_detail.reservation.canceled_at = order_detail.reservation.reserve_start_at
+    order_detail.reservation.canceled_at = Time.zone.now
 
     fee = order_detail.cancellation_fee
 

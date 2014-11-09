@@ -19,6 +19,10 @@ describe ReservationUserActionPresenter do
 
   subject(:presenter) { described_class.new(template, reservation) }
 
+  before :each do
+    allow(order_detail).to receive(:accessories?).and_return false
+  end
+
   describe 'view_edit_link' do
     describe 'when in a current facility' do
       before { allow(template).to receive(:current_facility).and_return facility }
@@ -62,6 +66,10 @@ describe ReservationUserActionPresenter do
   end
 
   describe 'user_actions' do
+    before :each do
+      allow(order_detail).to receive(:reservation).and_return reservation
+    end
+
     subject(:text) { presenter.user_actions }
     it 'is blank by default' do
       expect(text).to be_blank
@@ -92,7 +100,10 @@ describe ReservationUserActionPresenter do
     end
 
     describe 'canceling' do
-      before { expect(reservation).to receive(:can_cancel?).and_return true }
+      before :each do
+        expect(reservation).to receive(:can_cancel?).and_return true
+        expect(reservation).to receive(:canceled_at=).and_return true
+      end
 
       context 'there is a fee' do
         before { expect(order_detail).to receive(:cancellation_fee).and_return 10 }
