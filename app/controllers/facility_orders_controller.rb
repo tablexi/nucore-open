@@ -1,4 +1,5 @@
 class FacilityOrdersController < ApplicationController
+  include ProblemOrderDetailsController
   include TabCountHelper
 
   admin_tab     :all
@@ -24,11 +25,6 @@ class FacilityOrdersController < ApplicationController
   # GET /facility/1/orders
   def index
     @order_details = new_or_in_process_orders.paginate(:page => params[:page])
-  end
-
-  # GET /facilities/:facility_id/orders/review
-  def show_problems
-    @order_details = problem_orders.paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/orders/disputed
@@ -82,6 +78,12 @@ class FacilityOrdersController < ApplicationController
     end
 
     redirect_to facility_order_path(current_facility, original_order)
+  end
+
+  protected
+
+  def show_problems_path
+    show_problems_facility_orders_path
   end
 
   private

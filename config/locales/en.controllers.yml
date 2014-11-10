@@ -24,7 +24,7 @@ en:
 
     facility_notifications:
       no_selection: No orders selected
-      errors_html: We experienced the following errors. Pease try again.<br/>%{errors}
+      errors_html: We experienced the following errors. Please try again.<br/>%{errors}
       send_notifications:
         order_error: Order %{order_detail_id} was either not found or has already been notified.
         success_html: Notifications sent successfully to:<br/>%{accounts}
@@ -34,7 +34,7 @@ en:
         errors: "An error was encountered while marking some orders as reviewed: %{errors}"
 
     facility_statements:
-      errors_html: We experienced the following errors. Pease try again.<br/>%{errors}
+      errors_html: We experienced the following errors. Please try again.<br/>%{errors}
       send_statements:
         order_error: Order %{order_detail_id} was either not found or cannot be statemented at this time.
         no_selection: No orders selected
@@ -57,6 +57,7 @@ en:
         error: "An error was encountered while adding the product %{product}."
         success: "%{product} was successfully added to this order."
         notices: "%{product} needs your attention before it is added to the order."
+
     facility_order_details:
       edit:
         notice:
@@ -69,6 +70,12 @@ en:
         notice: "You cannot delete an order detail that isn't being merged"
         error: "Could not delete order detail %{order_detail_id}"
         success: "The order detail was successfully removed"
+
+    problem_order_details:
+      assign_price_policies:
+        success:
+          one: "A price policy was successfully assigned to one order"
+          other: "Price policies were successfully assigned to %{count} orders"
 
     reports:
       mail_queued: "A report is being prepared and will be emailed to %{email} when complete"

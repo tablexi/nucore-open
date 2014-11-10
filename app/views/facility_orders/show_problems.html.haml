@@ -2,35 +2,12 @@
   =h current_facility
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_order', :locals => { :secondary_tab => 'problem'}
+  = render partial: "admin/shared/tabnav_order",
+    locals: { secondary_tab: "problem" }
 
 - if @order_details.empty?
-  %p.notice There are no problem orders.
+  %p.notice= t(".no_problem_orders")
 - else
-  %p.notice The order line items below are complete and either do not have a price policy or are instrument orders without usage information. Each will need to be corrected.
-  %table.table.table-striped.table-hover
-    %thead
-      %tr
-        %th Order
-        %th Order Detail
-        %th Date
-        %th{ :colspan => 2 } Quantity / Product
-        %th Account
-        %th Problem
-    %tbody
-      - @order_details.each do |od|
-        - product_name = order_detail_description(od)
-        %tr{:class => needs_reconcile_warning?(od) ? 'reconcile-warning' : ''}
-          %td.centered= link_to od.order_id, facility_order_path(current_facility, od.order)
-          %td.centered= link_to od.id, manage_order_detail_path(od), :class => 'manage-order-detail'
-
-          %td=h human_datetime(od.order.ordered_at)
-          %td.centered=h od.quantity
-          %td= product_name
-          %td=h od.account
-          - if od.reservation.try(:requires_but_missing_actuals?)
-            %td.centered= "Actual Usage Missing #{link_to 'Enter', manage_order_detail_path(od), :class => 'manage-order-detail'}".html_safe
-          - else
-            %td.centered= "Price Policy Missing #{link_to 'Assign', manage_order_detail_path(od), :class => 'manage-order-detail'}".html_safe
-  = will_paginate(@order_details)
-  = render :partial => 'shared/reconcile_footnote'
+  %p.notice= t(".instructions")
+  = render partial: "shared/problem_order_details",
+    locals: { assign_price_policies_path: assign_price_policies_to_problem_orders_facility_orders_path }

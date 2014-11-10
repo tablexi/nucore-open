@@ -46,6 +46,7 @@ class OrderDetail < ActiveRecord::Base
   has_many   :stored_files, :dependent => :destroy
 
   delegate :invoice_number, to: :statement, prefix: true
+  delegate :requires_but_missing_actuals?, to: :reservation, allow_nil: true
 
   delegate :user, :facility, :ordered_at, :to => :order
   delegate :price_group, :to => :price_policy, :allow_nil => true

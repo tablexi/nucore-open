@@ -1,4 +1,5 @@
 class FacilityReservationsController < ApplicationController
+  include ProblemOrderDetailsController
   include TabCountHelper
   include Timelineable
 
@@ -170,13 +171,7 @@ class FacilityReservationsController < ApplicationController
     end
   end
 
-  # GET /facilities/:facility_id/orders/review
-  def show_problems
-    @order_details = problem_orders.
-      paginate(:page => params[:page])
-  end
-
-  # GET /facilities/:facility_id/orders/disputed
+  # GET /facilities/:facility_id/reservations/disputed
   def disputed
     @order_details = disputed_orders.
       paginate(:page => params[:page])
@@ -193,6 +188,11 @@ class FacilityReservationsController < ApplicationController
     redirect_to facility_instrument_schedule_url
   end
 
+  protected
+
+  def show_problems_path
+    show_problems_facility_reservations_path
+  end
 
   private
 
