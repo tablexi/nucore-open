@@ -277,6 +277,12 @@ en:
       head:
         h1: "Summary Of Order #%{order_number}"
         h2: "Order Detail #%{order_number}"
+    show_problems:
+      instructions: |
+        The order line items below are complete and either do not have a price
+        policy or are instrument orders without usage information.
+        Each will need to be corrected.
+      no_problem_orders: There are no problem orders.
 
   order_imports:
       new:

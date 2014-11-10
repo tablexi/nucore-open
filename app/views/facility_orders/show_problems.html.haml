@@ -2,35 +2,34 @@
   =h current_facility
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_order', :locals => { :secondary_tab => 'problem'}
+  = render partial: "admin/shared/tabnav_order", locals: { secondary_tab: "problem" }
 
 - if @order_details.empty?
-  %p.notice There are no problem orders.
+  %p.notice= t(".no_problem_orders")
 - else
-  %p.notice The order line items below are complete and either do not have a price policy or are instrument orders without usage information. Each will need to be corrected.
+  %p.notice= t(".instructions")
   %table.table.table-striped.table-hover
     %thead
       %tr
-        %th Order
-        %th Order Detail
-        %th Date
-        %th{ :colspan => 2 } Quantity / Product
-        %th Account
+        %th= Order.model_name.human
+        %th= OrderDetail.model_name.human
+        %th= Order.human_attribute_name(:ordered_at)
+        %th{ colspan: 2 } Quantity / Product
+        %th= Account.model_name.human
         %th Problem
     %tbody
-      - @order_details.each do |od|
-        - product_name = order_detail_description(od)
-        %tr{:class => needs_reconcile_warning?(od) ? 'reconcile-warning' : ''}
-          %td.centered= link_to od.order_id, facility_order_path(current_facility, od.order)
-          %td.centered= link_to od.id, manage_order_detail_path(od), :class => 'manage-order-detail'
+      - @order_details.each do |order_detail|
+        %tr{class: needs_reconcile_warning?(order_detail) ? "reconcile-warning" : ""}
+          %td.centered= link_to order_detail.order_id, facility_order_path(current_facility, order_detail.order)
+          %td.centered= link_to order_detail.id, manage_order_detail_path(order_detail), class: "manage-order-detail"
 
-          %td=h human_datetime(od.order.ordered_at)
-          %td.centered=h od.quantity
-          %td= product_name
-          %td=h od.account
-          - if od.reservation.try(:requires_but_missing_actuals?)
-            %td.centered= "Actual Usage Missing #{link_to 'Enter', manage_order_detail_path(od), :class => 'manage-order-detail'}".html_safe
+          %td= h human_datetime(order_detail.order.ordered_at)
+          %td.centered= h order_detail.quantity
+          %td= order_detail_description(order_detail)
+          %td= h order_detail.account
+          - if order_detail.reservation.try(:requires_but_missing_actuals?)
+            %td.centered= "Actual Usage Missing #{link_to "Enter", manage_order_detail_path(order_detail), class: "manage-order-detail"}".html_safe
           - else
-            %td.centered= "Price Policy Missing #{link_to 'Assign', manage_order_detail_path(od), :class => 'manage-order-detail'}".html_safe
+            %td.centered= "Price Policy Missing #{link_to "Assign", manage_order_detail_path(order_detail), class: "manage-order-detail"}".html_safe
   = will_paginate(@order_details)
-  = render :partial => 'shared/reconcile_footnote'
+  = render partial: "shared/reconcile_footnote"
