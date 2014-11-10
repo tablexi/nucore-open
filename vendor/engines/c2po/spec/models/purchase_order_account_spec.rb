@@ -19,6 +19,8 @@ describe PurchaseOrderAccount do
     }
   end
 
+  it_should_behave_like "an Account"
+
   it "handles facilities" do
     expect(account).to respond_to :facility
   end
