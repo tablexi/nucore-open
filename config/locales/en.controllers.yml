@@ -24,7 +24,7 @@ en:
 
     facility_notifications:
       no_selection: No orders selected
-      errors_html: We experienced the following errors. Pease try again.<br/>%{errors}
+      errors_html: We experienced the following errors. Please try again.<br/>%{errors}
       send_notifications:
         order_error: Order %{order_detail_id} was either not found or has already been notified.
         success_html: Notifications sent successfully to:<br/>%{accounts}
@@ -34,7 +34,7 @@ en:
         errors: "An error was encountered while marking some orders as reviewed: %{errors}"
 
     facility_statements:
-      errors_html: We experienced the following errors. Pease try again.<br/>%{errors}
+      errors_html: We experienced the following errors. Please try again.<br/>%{errors}
       send_statements:
         order_error: Order %{order_detail_id} was either not found or cannot be statemented at this time.
         no_selection: No orders selected
