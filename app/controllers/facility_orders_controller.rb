@@ -31,9 +31,9 @@ class FacilityOrdersController < ApplicationController
     @order_details = problem_orders.paginate(:page => params[:page])
   end
 
-  # POST /facilities/:facility_id/orders/assign_price_policies
-  def assign_price_policies
-    successfully_assigned = OrderDetail.assign_price_policies_by_id(params[:order_detail_ids])
+  # POST /facilities/:facility_id/orders/assign_price_policies_to_problem_orders
+  def assign_price_policies_to_problem_orders
+    successfully_assigned = current_facility.assign_price_policies_to_problem_orders
     flash[:notice] = I18n.t("controllers.facility_orders.assign_price_policies.success", count: successfully_assigned.count)
     redirect_to show_problems_facility_orders_path
   end

@@ -8,29 +8,27 @@
   %p.notice= t(".no_problem_orders")
 - else
   %p.notice= t(".instructions")
-  = form_tag(assign_price_policies_facility_orders_path, method: :post) do
+  = form_tag(assign_price_policies_to_problem_orders_facility_orders_path, method: :post) do
     %table.table.table-striped.table-hover
       %thead
         %tr.borderless
-          %td{colspan: 7}= link_to "Select All", "javascript:void(0);", class: "select_all"
+          %td{colspan: 6}
           %td= submit_tag t(".assign_price_policies"), class: %w(btn btn-primary)
         %tr
-          %th
           %th= Order.model_name.human
           %th= OrderDetail.model_name.human
           %th= Order.human_attribute_name(:ordered_at)
-          %th{ colspan: 2 } Quantity / Product
+          %th{ colspan: 2 }= t(".th.quantity_and_product")
           %th= Account.model_name.human
-          %th Problem
+          %th= t(".th.problem")
       %tbody
         - @order_details.each do |order_detail|
           %tr{class: needs_reconcile_warning?(order_detail) ? "reconcile-warning" : ""}
-            - if order_detail.requires_but_missing_actuals?
-              %td
-            - else
-              %td.centered= check_box_tag("order_detail_ids[]", order_detail.id, false, class: "toggle", id: nil)
-            %td.centered= link_to order_detail.order_id, facility_order_path(current_facility, order_detail.order)
-            %td.centered= link_to order_detail.id, manage_order_detail_path(order_detail), class: "manage-order-detail"
+            %td.centered= link_to order_detail.order_id,
+              facility_order_path(current_facility, order_detail.order)
+            %td.centered= link_to order_detail.id,
+              manage_order_detail_path(order_detail),
+              class: "manage-order-detail"
 
             %td= h human_datetime(order_detail.order.ordered_at)
             %td.centered= h order_detail.quantity
@@ -39,6 +37,6 @@
             - if order_detail.requires_but_missing_actuals?
               %td.centered= "#{t ".actual_usage_missing"} #{link_to "Enter", manage_order_detail_path(order_detail), class: "manage-order-detail"}".html_safe
             - else
-              %td.centered= t(".price_policy_missing")
+              %td.centered= "#{t ".price_policy_missing"} #{link_to "Assign", manage_order_detail_path(order_detail), class: "manage-order-detail"}".html_safe
   = will_paginate(@order_details)
   = render partial: "shared/reconcile_footnote"

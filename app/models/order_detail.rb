@@ -636,8 +636,8 @@ class OrderDetail < ActiveRecord::Base
     assign_actual_price(time)
   end
 
-  def self.assign_price_policies(order_details)
-    order_details.select do |order_detail|
+  def self.assign_price_policies
+    select do |order_detail|
       if order_detail.assign_price_policy
         order_detail.save
       else
@@ -646,8 +646,14 @@ class OrderDetail < ActiveRecord::Base
     end
   end
 
-  def self.assign_price_policies_by_id(order_detail_ids)
-    assign_price_policies(OrderDetail.where(id: order_detail_ids))
+  def self.problem_orders_missing_price_policies
+    problem_orders.where(price_policy_id: nil).non_reservations.complete
+  end
+
+  def self.assign_price_policies_to_problem_orders
+    problem_orders_missing_price_policies
+    .readonly(false)
+    .assign_price_policies
   end
 
   def assign_actual_price(time = Time.zone.now)

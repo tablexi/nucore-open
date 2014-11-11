@@ -22,7 +22,7 @@ describe FacilityOrdersController do
     @params={ :facility_id => @authable.url_name }
   end
 
-  context '#assign_price_policies' do
+  context '#assign_price_policies_to_problem_orders' do
     let(:order_details) do
       3.times.map do
         order_detail = place_and_complete_item_order(@director, facility)
@@ -35,8 +35,7 @@ describe FacilityOrdersController do
 
     before :each do
       @method = :post
-      @action = :assign_price_policies
-      @params.merge!(order_detail_ids: order_detail_ids)
+      @action = :assign_price_policies_to_problem_orders
     end
 
     context 'when compatible price policies exist' do

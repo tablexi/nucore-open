@@ -99,6 +99,10 @@ class Facility < ActiveRecord::Base
     "#{name} (#{abbreviation})"
   end
 
+  def assign_price_policies_to_problem_orders
+    order_details.assign_price_policies_to_problem_orders
+  end
+
   private
   def set_journal_mask
     f = Facility.find(:all, :limit => 1, :order => 'journal_mask DESC').first
