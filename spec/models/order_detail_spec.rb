@@ -29,6 +29,46 @@ describe OrderDetail do
     @order_detail.order_status.should be_nil
   end
 
+  context '#assign_price_policy' do
+    before { order_detail.update_attribute(:price_policy_id, nil) }
+
+    context 'when a compatible price policy exists' do
+      before :each do
+        create(:user_price_group_member, user: user, price_group: price_group)
+      end
+
+      let!(:price_policy) do
+        item.item_price_policies.create(attributes_for(:item_price_policy,
+          unit_cost: 10.00,
+          unit_subsidy: 2.00,
+          price_group_id: price_group.id,
+        ))
+      end
+
+      it 'assigns a price policy' do
+        expect { order_detail.assign_price_policy }
+        .to change { order_detail.price_policy }.from(nil).to(price_policy)
+      end
+
+      it 'assigns an actual cost' do
+        expect { order_detail.assign_price_policy }
+        .to change { order_detail.actual_cost }.from(nil).to(10.00)
+      end
+
+      it 'assigns an actual subsidy' do
+        expect { order_detail.assign_price_policy }
+        .to change { order_detail.actual_subsidy }.from(nil).to(2.00)
+      end
+    end
+
+    context 'when no compatible price policies exist' do
+      it 'it does not assign a price policy' do
+        expect { order_detail.assign_price_policy }
+        .not_to change { order_detail.price_policy }
+      end
+    end
+  end
+
   context 'account reassignment' do
     let(:unassociated_account) { build_stubbed(:setup_account) }
 
