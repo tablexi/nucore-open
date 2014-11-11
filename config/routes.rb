@@ -168,6 +168,7 @@ Nucore::Application.routes.draw do
       end
 
       collection do
+        post 'assign_price_policies'
         post 'batch_update'
         get 'show_problems'
         get 'disputed'

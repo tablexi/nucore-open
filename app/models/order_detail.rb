@@ -46,6 +46,7 @@ class OrderDetail < ActiveRecord::Base
   has_many   :stored_files, :dependent => :destroy
 
   delegate :invoice_number, to: :statement, prefix: true
+  delegate :requires_but_missing_actuals?, to: :reservation, allow_nil: true
 
   delegate :user, :facility, :ordered_at, :to => :order
   delegate :price_group, :to => :price_policy, :allow_nil => true
@@ -633,6 +634,20 @@ class OrderDetail < ActiveRecord::Base
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
     assign_actual_price(time)
+  end
+
+  def self.assign_price_policies(order_details)
+    order_details.select do |order_detail|
+      if order_detail.assign_price_policy
+        order_detail.save
+      else
+        false
+      end
+    end
+  end
+
+  def self.assign_price_policies_by_id(order_detail_ids)
+    assign_price_policies(OrderDetail.where(id: order_detail_ids))
   end
 
   def assign_actual_price(time = Time.zone.now)

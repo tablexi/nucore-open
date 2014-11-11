@@ -278,11 +278,17 @@ en:
         h1: "Summary Of Order #%{order_number}"
         h2: "Order Detail #%{order_number}"
     show_problems:
+      actual_usage_missing: Actual Usage Missing
+      assign_price_policies: Assign Price Policies
       instructions: |
         The order line items below are complete and either do not have a price
         policy or are instrument orders without usage information.
         Each will need to be corrected.
       no_problem_orders: There are no problem orders.
+      price_policy_missing: Price Policy Missing
+      th:
+        quantity_and_product: "Quantity / Product"
+        problem: Problem
 
   order_imports:
       new:
