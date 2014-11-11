@@ -1,6 +1,10 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe FacilityOrdersController do
+  let(:account) { @account }
+  let(:facility) { @authable }
+  let(:product) { @product }
+
   render_views
 
   before(:all) { create_users }
@@ -18,8 +22,55 @@ describe FacilityOrdersController do
     @params={ :facility_id => @authable.url_name }
   end
 
-  context 'index' do
+  context '#assign_price_policies' do
+    let(:order_details) do
+      3.times.map do
+        order_detail = place_and_complete_item_order(@director, facility)
+        order_detail.update_attribute(:price_policy_id, nil)
+        order_detail
+      end
+    end
 
+    let(:order_detail_ids) { order_details.map(&:id) }
+
+    before :each do
+      @method = :post
+      @action = :assign_price_policies
+      @params.merge!(order_detail_ids: order_detail_ids)
+    end
+
+    context 'when compatible price policies exist' do
+      let(:price_group) { create(:price_group, facility: facility) }
+
+      before :each do
+        create(:user_price_group_member, user: @director, price_group: price_group)
+
+        order_details.first.product.item_price_policies.create(attributes_for(
+          :item_price_policy, price_group_id: price_group.id))
+
+        do_request
+      end
+
+      it_should_allow_operators_only :redirect do
+        expect(OrderDetail.where(id: order_detail_ids, problem: false).count)
+        .to eq order_details.count
+      end
+    end
+
+    context 'when no compatible price policies exist' do
+      before :each do
+        ItemPricePolicy.all.each(&:destroy)
+        do_request
+      end
+
+      it_should_allow_operators_only :redirect do
+        expect(OrderDetail.where(id: order_detail_ids, problem: true).count)
+        .to eq order_details.count
+      end
+    end
+  end
+
+  context 'index' do
     before :each do
       @method=:get
       @action=:index
@@ -54,7 +105,6 @@ describe FacilityOrdersController do
     end
   end
 
-
   describe '#show' do
     before do
       maybe_grant_always_sign_in :admin
@@ -69,44 +119,34 @@ describe FacilityOrdersController do
         expect { do_request }.not_to raise_error
       end
     end
-
   end
 
   context 'batch_update' do
-
     before :each do
       @method=:post
       @action=:batch_update
     end
 
     it_should_allow_operators_only :redirect
-
   end
 
-
   context 'show_problems' do
-
     before :each do
       @method=:get
       @action=:show_problems
     end
 
     it_should_allow_managers_only
-
   end
 
-
   context 'disputed' do
-
     before :each do
       @method=:get
       @action=:disputed
     end
 
     it_should_allow_operators_only
-
   end
-
 
   context 'send_receipt' do
     before :each do
@@ -126,7 +166,6 @@ describe FacilityOrdersController do
       assert_redirected_to facility_order_path(@authable, @order)
     end
   end
-
 
   context 'update' do
     before :each do
@@ -329,9 +368,7 @@ describe FacilityOrdersController do
       MergeNotification.count.should == detail_count
       assert_update_success merge_order, product
     end
-
   end
-
 
   context 'tab_counts' do
     before :each do
@@ -346,7 +383,6 @@ describe FacilityOrdersController do
         order_detail.update_attributes(:price_policy_id => nil)
         order_detail
       end
-
 
       @disputed_order_details = (1..4).map do |i|
         order_detail = place_and_complete_item_order(@staff, @authable)
@@ -389,5 +425,4 @@ describe FacilityOrdersController do
       end
     end
   end
-
 end
