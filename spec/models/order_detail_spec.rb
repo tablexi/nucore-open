@@ -1106,84 +1106,90 @@ describe OrderDetail do
     end
   end
 
-  shared_examples_for 'it charges a cancellation fee' do
-    it 'has a cancellation fee' do
-      expect(order_detail.cancellation_fee).to be > 0
-    end
-  end
-
-  shared_examples_for 'it charges no cancellation fee' do
-    it 'has no cancellation fee' do
-      expect(order_detail.cancellation_fee).to eq 0
-    end
-  end
-
-  shared_examples_for 'it has a price policy' do
-    context 'with a limited no-fee cancellation period' do
-      before :each do
-        instrument.update_attribute(:min_cancel_hours, 2)
-        order_detail.reload
-        reservation.update_attribute(:canceled_at, Time.zone.now)
+  context '#cancellation_fee' do
+    shared_examples_for 'it charges a cancellation fee' do
+      it 'has a cancellation fee' do
+        expect(order_detail.cancellation_fee).to be > 0
       end
+    end
 
-      context 'when in the no-fee period' do
-        it_behaves_like 'it charges no cancellation fee'
+    shared_examples_for 'it charges no cancellation fee' do
+      it 'has no cancellation fee' do
+        expect(order_detail.cancellation_fee).to eq 0
       end
+    end
 
-      context 'when after the time when the cancellation fee applies' do
+    shared_examples_for 'it charges cancellation fees appropriately' do
+      context 'with a limited no-fee cancellation period' do
         before :each do
-          @current_time = Time.now
-          Timecop.freeze(3.hours.from_now)
+          instrument.update_attribute(:min_cancel_hours, 2)
+          order_detail.reload
           reservation.update_attribute(:canceled_at, Time.zone.now)
         end
 
-        after { Timecop.freeze(@current_time) }
+        context 'when in the no-fee period' do
+          it_behaves_like 'it charges no cancellation fee'
+        end
 
-        it_behaves_like 'it charges a cancellation fee'
+        context 'when after the time when the cancellation fee applies' do
+          before :each do
+            @current_time = Time.now
+            Timecop.freeze(3.hours.from_now)
+            reservation.update_attribute(:canceled_at, Time.zone.now)
+          end
+
+          after { Timecop.freeze(@current_time) }
+
+          it_behaves_like 'it charges a cancellation fee'
+        end
+      end
+
+      context 'without minimum cancellation hours' do
+        before { instrument.update_attribute(:min_cancel_hours, 0) }
+
+        it_behaves_like 'it charges no cancellation fee'
       end
     end
 
-    context 'without minimum cancellation hours' do
-      before { instrument.update_attribute(:min_cancel_hours, 0) }
+    shared_examples_for 'it charges for overage' do
+      let!(:price_policy) { instrument_overage_price_policy }
 
-      it_behaves_like 'it charges no cancellation fee'
-    end
-  end
-
-  shared_examples_for 'it charges for overage' do
-    let!(:price_policy) { instrument_overage_price_policy }
-
-    it_should_behave_like 'it has a price policy'
-  end
-
-  shared_examples_for 'it charges for reservation' do
-    let!(:price_policy)  { instrument_reservation_price_policy }
-
-    context 'when the reservation has been canceled' do
-      before { reservation.update_attribute(:canceled_at, Time.zone.now) }
-
-      it_should_behave_like 'it has a price policy'
+      it_should_behave_like 'it charges cancellation fees appropriately'
     end
 
-    context 'when the reservation has been completed' do
-      before :each do
-        reservation.update_attributes(
-          actual_start_at: 1.hour.ago,
-          actual_end_at: Time.zone.now,
-        )
+    shared_examples_for 'it charges for reservation' do
+      let!(:price_policy)  { instrument_reservation_price_policy }
+
+      context 'when the reservation has been canceled' do
+        before { reservation.update_attribute(:canceled_at, Time.zone.now) }
+
+        it_should_behave_like 'it charges cancellation fees appropriately'
       end
 
-      it_should_behave_like 'it has a price policy'
+      context 'when the reservation has been completed' do
+        before :each do
+          reservation.update_attributes(
+            actual_start_at: 1.hour.ago,
+            actual_end_at: Time.zone.now,
+          )
+        end
+
+        it_should_behave_like 'it charges cancellation fees appropriately'
+      end
     end
-  end
 
-  shared_examples_for 'it charges for usage' do
-    let!(:price_policy) { instrument_usage_price_policy }
+    shared_examples_for 'it charges for usage' do
+      let!(:price_policy) { instrument_usage_price_policy }
 
-    it_should_behave_like 'it has a price policy'
-  end
+      it_should_behave_like 'it charges cancellation fees appropriately'
+    end
 
-  context '#cancellation_fee' do
+    shared_examples_for 'it charges for overage, reservation, and usage' do
+      it_behaves_like 'it charges for overage'
+      it_behaves_like 'it charges for reservation'
+      it_behaves_like 'it charges for usage'
+    end
+
     let(:instrument_overage_price_policy) do
       create(:instrument_overage_price_policy,
         cancellation_cost: 100,
@@ -1208,7 +1214,6 @@ describe OrderDetail do
       )
     end
 
-
     let(:reservation) do
       create(:reservation,
         reserve_start_at: 4.hours.from_now,
@@ -1229,9 +1234,7 @@ describe OrderDetail do
         order_detail.update_attribute(:price_policy_id, price_policy.id)
       end
 
-      it_behaves_like 'it charges for overage'
-      it_behaves_like 'it charges for reservation'
-      it_behaves_like 'it charges for usage'
+      it_behaves_like 'it charges for overage, reservation, and usage'
     end
 
     context 'without a price policy' do
@@ -1240,9 +1243,7 @@ describe OrderDetail do
       end
 
       context 'when a compatible price policy exists' do
-        it_behaves_like 'it charges for overage'
-        it_behaves_like 'it charges for reservation'
-        it_behaves_like 'it charges for usage'
+        it_behaves_like 'it charges for overage, reservation, and usage'
       end
     end
   end
