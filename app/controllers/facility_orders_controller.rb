@@ -33,7 +33,8 @@ class FacilityOrdersController < ApplicationController
 
   # POST /facilities/:facility_id/orders/assign_price_policies_to_problem_orders
   def assign_price_policies_to_problem_orders
-    successfully_assigned = current_facility.assign_price_policies_to_problem_orders
+    successfully_assigned =
+      PricePolicyMassAssigner.assign_price_policies(problem_orders.readonly(false))
     flash[:notice] = I18n.t("controllers.facility_orders.assign_price_policies.success", count: successfully_assigned.count)
     redirect_to show_problems_facility_orders_path
   end
