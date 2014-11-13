@@ -357,8 +357,6 @@ en:
         estimated: "* Clicking 'Save' will update the cost estimate by quantity"
         price_policy: "* Clicking 'Save' will attempt to estimate the cost by quantity"
         default: "* Changing the quantity will automatically update the price fields"
-      link:
-        remove: " Remove From Journal"
 
   facility_facility_accounts:
     facility_account_fields:
@@ -378,6 +376,11 @@ en:
       add: "Add Recharge Chart String"
     new:
       head: "Add Recharge Chart String"
+
+  order_management:
+    order_details:
+      edit:
+        remove_from_journal: "Remove From Journal"
 
   reservations:
     logout:

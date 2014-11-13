@@ -176,15 +176,15 @@ Nucore::Application.routes.draw do
       end
 
       resources :order_details, :controller => 'facility_order_details', :only => [:destroy] do
-        member do
-          get 'remove_from_journal'
-        end
         resources :reservations, :controller => 'facility_reservations', :only => [:edit, :update, :show]
         resources :accessories, only: [:new, :create]
-        get 'manage', :to => 'order_management/order_details#edit', :on => :member
-        put 'manage', :to => 'order_management/order_details#update', :on => :member
-        get 'pricing', :to => 'order_management/order_details#pricing', :on => :member
-        get 'files', :to => 'order_management/order_details#files', :on => :member
+        member do
+          get 'manage', to: 'order_management/order_details#edit'
+          put 'manage', to: 'order_management/order_details#update'
+          get 'pricing', to: 'order_management/order_details#pricing'
+          get 'files', to: 'order_management/order_details#files'
+          post 'remove_from_journal', to: 'order_management/order_details#remove_from_journal'
+        end
       end
     end
 

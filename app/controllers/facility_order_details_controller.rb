@@ -15,23 +15,6 @@ class FacilityOrderDetailsController < ApplicationController
     super
   end
 
-  def remove_from_journal
-    oid=params[:id]
-    return redirect_to :back if oid.blank?
-
-    od=OrderDetail.find(oid.to_i)
-
-    OrderDetail.transaction do
-      jr=JournalRow.where(:journal_id => od.journal_id, :order_detail_id => od.id).first
-      jr.try :destroy
-      od.update_attributes! :journal_id => nil
-    end
-
-    flash[:notice]=I18n.t 'controllers.facility_order_details.remove_from_journal.notice'
-    redirect_to facility_order_path(current_facility, od.order)
-  end
-
-
   def destroy
     if @order.to_be_merged?
       begin
@@ -48,7 +31,6 @@ class FacilityOrderDetailsController < ApplicationController
 
     redirect_to facility_order_path(current_facility, @order.merge_order)
   end
-
 
   private
 

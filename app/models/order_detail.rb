@@ -62,6 +62,8 @@ class OrderDetail < ActiveRecord::Base
     journal_date || statement_date
   end
 
+  delegate :journal_rows, to: :journal, allow_nil: true
+
   alias_method :merge!, :save!
 
   validates_presence_of :product_id, :order_id, :created_by
@@ -876,6 +878,10 @@ class OrderDetail < ActiveRecord::Base
 
   def can_be_assigned_to_account?(account)
     user.accounts.include?(account)
+  end
+
+  def removable_from_journal?
+    journal.present? && account.is_a?(NufsAccount) && can_reconcile?
   end
 
   private

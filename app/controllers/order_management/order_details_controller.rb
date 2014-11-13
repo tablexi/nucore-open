@@ -9,10 +9,12 @@ class OrderManagement::OrderDetailsController < ApplicationController
   before_filter :load_accounts, :only => [:edit, :update]
   before_filter :load_order_statuses, :only => [:edit, :update]
 
+  # GET /facilities/:facility_id/orders/:order_id/order_details/:id/manage
   def edit
     render :layout => false if request.xhr?
   end
 
+  # PUT /facilities/:facility_id/orders/:order_id/order_details/:id/manage
   def update
     updater = OrderDetails::ParamUpdater.new(@order_detail, :user => session_user, :cancel_fee => params[:with_cancel_fee] == '1')
 
@@ -33,6 +35,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
     end
   end
 
+  # GET /facilities/:facility_id/orders/:order_id/order_details/:id/pricing
   def pricing
     checker = OrderDetails::PriceChecker.new(@order_detail)
     @prices = checker.prices_from_params(params[:order_detail])
@@ -40,9 +43,24 @@ class OrderManagement::OrderDetailsController < ApplicationController
     render :json => @prices.to_json
   end
 
+  # GET /facilities/:facility_id/orders/:order_id/order_details/:id/files
   def files
     @files = @order_detail.stored_files.sample_result.order(:created_at)
     render :layout => false if request.xhr?
+  end
+
+  # POST /facilities/:facility_id/orders/:order_id/order_details/:id/remove_from_journal
+  def remove_from_journal
+    OrderDetailJournalRemover.remove_from_journal(@order_detail)
+
+    flash[:notice] =
+      I18n.t 'controllers.order_management.order_details.remove_from_journal.notice'
+
+    if request.xhr?
+      render nothing: true
+    else
+      redirect_to [current_facility, @order]
+    end
   end
 
   private
