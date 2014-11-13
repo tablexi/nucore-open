@@ -681,4 +681,30 @@ describe OrderManagement::OrderDetailsController do
       end
     end
   end
+
+  context '#remove_from_journal' do
+    let(:journal) do
+      create(:journal, facility: facility, updated_by: 1, reference: 'xyz')
+    end
+
+    before :each do
+      @method = :post
+      @action = :remove_from_journal
+      @params = {
+        facility_id: facility.url_name,
+        order_id: order_detail.order.id,
+        id: order_detail.id,
+      }
+
+      order_detail.journal = journal
+      create(:journal_row, journal: journal, order_detail: order_detail)
+      order_detail.save!
+    end
+
+    it_should_allow_operators_only :redirect do
+      expect(order_detail.reload.journal).to be_nil
+      should set_the_flash
+      assert_redirected_to facility_order_path(facility, order_detail.order)
+    end
+  end
 end

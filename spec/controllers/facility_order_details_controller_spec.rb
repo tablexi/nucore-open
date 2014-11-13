@@ -28,26 +28,6 @@ describe FacilityOrderDetailsController do
     @params={ :facility_id => @authable.url_name, :order_id => @order.id, :id => @order_detail.id }
   end
 
-  context 'remove_from_journal' do
-
-    before :each do
-      @method=:get
-      @action=:remove_from_journal
-      @journal=Journal.new(:facility => @authable, :created_by => 1, :updated_by => 1, :reference => 'xyz', :journal_date => Time.zone.now)
-      assert @journal.save
-      @order_detail.journal=@journal
-      assert @order_detail.save
-    end
-
-    it_should_allow_operators_only :redirect do
-      @order_detail.reload.journal.should be_nil
-      should set_the_flash
-      assert_redirected_to facility_order_path(@authable, @order_detail.order)
-    end
-
-  end
-
-
   context 'destroy' do
     before :each do
       @method=:delete
@@ -90,5 +70,4 @@ describe FacilityOrderDetailsController do
     @reservation = place_reservation @authable, @order_detail, 1.day.ago
     @order_detail.backdate_to_complete! @reservation.reserve_end_at
   end
-
 end
