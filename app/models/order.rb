@@ -122,9 +122,9 @@ class Order < ActiveRecord::Base
     self.order_details.find(:all, :joins => 'LEFT JOIN products p ON p.id = order_details.product_id', :conditions => { 'p.type' => 'Item' })
   end
 
-  def add(product, quantity=1)
+  def add(product, quantity=1, attributes={})
     adder = Orders::ItemAdder.new(self)
-    ods = adder.add(product, quantity)
+    ods = adder.add(product, quantity, attributes)
 
     ods.each { |od| od.assign_estimated_price! }
     return ods
