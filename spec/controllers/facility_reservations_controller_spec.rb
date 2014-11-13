@@ -3,6 +3,11 @@ require 'spec_helper'; require 'controller_spec_helper'
 describe FacilityReservationsController do
   include DateHelper
 
+  let(:account) { @account }
+  let(:facility) { @authable }
+  let(:product) { @product }
+  let(:schedule_rule) { @schedule_rule }
+
   render_views
 
   before(:all) { create_users }
@@ -33,9 +38,121 @@ describe FacilityReservationsController do
     @params={ :facility_id => @authable.url_name, :order_id => @order.id, :order_detail_id => @order_detail.id, :id => @reservation.id }
   end
 
+  context '#assign_price_policies_to_problem_orders' do
+    let(:order_details) { [ @order_detail ] }
+    let(:order_detail_ids) { order_details.map(&:id) }
 
-  context 'edit' do
+    before :each do
+      @method = :post
+      @action = :assign_price_policies_to_problem_orders
 
+      start_time = 1.week.ago + schedule_rule.start_hour
+      end_time = start_time + 1.hour
+
+      order_details.each do |order_detail|
+        order_detail.reservation.update_attributes(
+          reserve_start_at: start_time,
+          reserve_end_at: end_time,
+          actual_start_at: start_time,
+          actual_end_at: end_time,
+        )
+        order_detail.backdate_to_complete!
+      end
+    end
+
+    context 'when compatible price policies exist' do
+      let(:price_group) { create(:price_group, facility: facility) }
+
+      before :each do
+        create(:user_price_group_member, user: @director, price_group: price_group)
+
+        order_details.first.product.instrument_price_policies.create(attributes_for(
+          :instrument_price_policy, price_group_id: price_group.id))
+
+        do_request
+      end
+
+      it_should_allow_operators_only :redirect do
+        expect(OrderDetail.where(id: order_detail_ids, problem: false).count)
+        .to eq order_details.count
+      end
+    end
+
+    context 'when no compatible price policies exist' do
+      before :each do
+        InstrumentPricePolicy.all.each(&:destroy)
+        do_request
+      end
+
+      it_should_allow_operators_only :redirect do
+        expect(OrderDetail.where(id: order_detail_ids, problem: true).count)
+        .to eq order_details.count
+      end
+    end
+  end
+
+  context '#batch_update' do
+    pending "TODO test exists for the FacilityOrdersController version"
+  end
+
+  context '#create' do
+    before :each do
+      @method=:post
+      @action=:create
+      @time = 1.hour.from_now.change(:sec => 0)
+      @params={
+        :facility_id => @authable.url_name,
+        :instrument_id => @product.url_name,
+        :reservation => FactoryGirl.attributes_for(:reservation, :reserve_start_at => @time, :reserve_end_at => @time + 1.hour)
+      }
+      parametrize_dates(@params[:reservation], :reserve)
+    end
+
+    it_should_allow_operators_only(:redirect) {}
+
+    context 'while signed in' do
+      before :each do
+        maybe_grant_always_sign_in :director
+      end
+      context 'a success' do
+        before(:each) { do_request }
+        it 'should create the reservation' do
+          assigns[:reservation].should_not be_nil
+          assigns[:reservation].should_not be_new_record
+        end
+        it 'should be an admin reservation' do
+          assigns[:reservation].should be_admin
+        end
+        it 'should set the times' do
+          assigns[:reservation].reserve_start_at.should == @time
+          assigns[:reservation].reserve_end_at.should == (@time + 1.hour)
+        end
+        it "should redirect to the facility's schedule page" do
+          response.should redirect_to facility_instrument_schedule_path
+        end
+      end
+
+      context 'fails validations' do
+
+        it 'should not allow an invalid reservation' do
+          # Used to fail by overlapping existing reservation, but now admin reservations are
+          # allowed to per ticket 38975
+          Reservation.any_instance.stub(:valid?).and_return(false)
+          @params[:reservation] = FactoryGirl.attributes_for(:reservation)
+          parametrize_dates(@params[:reservation], :reserve)
+          do_request
+          assigns[:reservation].should be_new_record
+          response.should render_template :new
+        end
+      end
+    end
+  end
+
+  context '#disputed' do
+    pending "TODO test exists for the FacilityOrdersController version"
+  end
+
+  context '#edit' do
     before :each do
       @method=:get
       @action=:edit
@@ -58,10 +175,9 @@ describe FacilityReservationsController do
         assert_redirected_to facility_order_order_detail_reservation_path(@authable, @order, @order_detail, @reservation)
       end
     end
-
   end
 
-  context 'index' do
+  context '#index' do
     before :each do
       @method=:get
       @action=:index
@@ -91,9 +207,104 @@ describe FacilityReservationsController do
     end
   end
 
+  context '#new' do
+    before :each do
+      @method=:get
+      @action=:new
+      @params={ :facility_id => @authable.url_name, :instrument_id => @product.url_name }
+    end
 
-  context 'update' do
+    it_should_allow_operators_only
+  end
 
+  context '#show' do
+    before :each do
+      @method=:get
+      @action=:show
+    end
+
+    it_should_allow_operators_only
+  end
+
+  context '#show_problems' do
+    pending "TODO test exists for the FacilityOrdersController version"
+  end
+
+  context '#timeline' do
+    context 'instrument listing' do
+      before :each do
+        @instrument2 = FactoryGirl.create(:instrument,
+                      :facility_account => @facility_account,
+                      :facility => @authable,
+                      :is_hidden => true)
+        maybe_grant_always_sign_in :director
+        @method = :get
+        @action = :timeline
+        @params={ :facility_id => @authable.url_name }
+        do_request
+      end
+
+      it 'should show schedules for hidden instruments' do
+        assigns(:schedules).should =~ [@product.schedule, @instrument2.schedule]
+      end
+
+    end
+    context 'orders' do
+      before :each do
+        # create unpurchased reservation
+        @order2=FactoryGirl.create(:order,
+        :facility => @authable,
+        :user => @director,
+        :created_by => @director.id,
+        :account => @account,
+        :ordered_at => nil,
+        :state => 'new'
+        )
+        # make sure the reservations are happening today
+        @reservation.update_attributes!(:reserve_start_at => Time.zone.now, :reserve_end_at => 1.hour.from_now)
+
+        @unpurchased_reservation=FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => 1.hour.from_now, :reserve_end_at => 2.hours.from_now)
+        @order_detail2=FactoryGirl.create(:order_detail, :order => @order2, :product => @product, :reservation => @unpurchased_reservation)
+
+        @canceled_reservation = FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => 2.hours.from_now, :reserve_end_at => 3.hours.from_now)
+        @order_detail3 = FactoryGirl.create(:order_detail, :order => @order, :product => @product, :reservation => @canceled_reservation)
+        @canceled_reservation.should be_persisted
+        @order_detail3.update_order_status! @admin, OrderStatus.canceled.first
+
+        @admin_reservation = FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => Time.zone.now, :reserve_end_at => 1.hour.from_now)
+
+        maybe_grant_always_sign_in :director
+        @method = :get
+        @action = :timeline
+        @params={ :facility_id => @authable.url_name }
+        do_request
+      end
+
+      it 'should not be admin reservations' do
+        @reservation.should_not be_admin
+        @unpurchased_reservation.should_not be_admin
+        @admin_reservation.should be_admin
+      end
+
+      it 'should show reservation' do
+        response.body.should include "id='tooltip_reservation_#{@reservation.id}'"
+      end
+
+      it 'should not show unpaid reservation' do
+        response.body.should_not include "id='tooltip_reservation_#{@unpurchased_reservation.id}'"
+      end
+
+      it 'should include canceled reservation' do
+        response.body.should include "id='tooltip_reservation_#{@canceled_reservation.id}'"
+      end
+
+      it 'should include admin reservation' do
+        response.body.should include "id='tooltip_reservation_#{@admin_reservation.id}'"
+      end
+    end
+  end
+
+  context '#update' do
     before :each do
       @method=:put
       @action=:update
@@ -206,89 +417,11 @@ describe FacilityReservationsController do
     end
   end
 
-
-  context 'show' do
-
-    before :each do
-      @method=:get
-      @action=:show
-    end
-
-    it_should_allow_operators_only
-
+  context '#tab_counts' do
+    pending "TODO test exists for the FacilityOrdersController version"
   end
-
-
-  context 'new' do
-
-    before :each do
-      @method=:get
-      @action=:new
-      @params={ :facility_id => @authable.url_name, :instrument_id => @product.url_name }
-    end
-
-    it_should_allow_operators_only
-
-  end
-
-
-  context 'create' do
-
-    before :each do
-      @method=:post
-      @action=:create
-      @time = 1.hour.from_now.change(:sec => 0)
-      @params={
-        :facility_id => @authable.url_name,
-        :instrument_id => @product.url_name,
-        :reservation => FactoryGirl.attributes_for(:reservation, :reserve_start_at => @time, :reserve_end_at => @time + 1.hour)
-      }
-      parametrize_dates(@params[:reservation], :reserve)
-    end
-
-    it_should_allow_operators_only(:redirect) {}
-
-    context 'while signed in' do
-      before :each do
-        maybe_grant_always_sign_in :director
-      end
-      context 'a success' do
-        before(:each) { do_request }
-        it 'should create the reservation' do
-          assigns[:reservation].should_not be_nil
-          assigns[:reservation].should_not be_new_record
-        end
-        it 'should be an admin reservation' do
-          assigns[:reservation].should be_admin
-        end
-        it 'should set the times' do
-          assigns[:reservation].reserve_start_at.should == @time
-          assigns[:reservation].reserve_end_at.should == (@time + 1.hour)
-        end
-        it "should redirect to the facility's schedule page" do
-          response.should redirect_to facility_instrument_schedule_path
-        end
-      end
-
-      context 'fails validations' do
-
-        it 'should not allow an invalid reservation' do
-          # Used to fail by overlapping existing reservation, but now admin reservations are
-          # allowed to per ticket 38975
-          Reservation.any_instance.stub(:valid?).and_return(false)
-          @params[:reservation] = FactoryGirl.attributes_for(:reservation)
-          parametrize_dates(@params[:reservation], :reserve)
-          do_request
-          assigns[:reservation].should be_new_record
-          response.should render_template :new
-        end
-      end
-    end
-  end
-
 
   context 'admin' do
-
     before :each do
       @reservation.order_detail_id=nil
       @reservation.save
@@ -296,21 +429,16 @@ describe FacilityReservationsController do
       @params={ :facility_id => @authable.url_name, :instrument_id => @product.url_name, :reservation_id => @reservation.id }
     end
 
-
-    context 'edit_admin' do
-
+    context '#edit_admin' do
       before :each do
         @method=:get
         @action=:edit_admin
       end
 
       it_should_allow_operators_only
-
     end
 
-
-    context 'update_admin' do
-
+    context '#update_admin' do
       before :each do
         @method=:put
         @action=:update_admin
@@ -318,83 +446,6 @@ describe FacilityReservationsController do
       end
 
       it_should_allow_operators_only :redirect
-
-    end
-
-  end
-
-  context 'timeline' do
-    context 'instrument listing' do
-      before :each do
-        @instrument2 = FactoryGirl.create(:instrument,
-                      :facility_account => @facility_account,
-                      :facility => @authable,
-                      :is_hidden => true)
-        maybe_grant_always_sign_in :director
-        @method = :get
-        @action = :timeline
-        @params={ :facility_id => @authable.url_name }
-        do_request
-      end
-
-      it 'should show schedules for hidden instruments' do
-        assigns(:schedules).should =~ [@product.schedule, @instrument2.schedule]
-      end
-
-    end
-    context 'orders' do
-      before :each do
-        # create unpurchased reservation
-        @order2=FactoryGirl.create(:order,
-        :facility => @authable,
-        :user => @director,
-        :created_by => @director.id,
-        :account => @account,
-        :ordered_at => nil,
-        :state => 'new'
-        )
-        # make sure the reservations are happening today
-        @reservation.update_attributes!(:reserve_start_at => Time.zone.now, :reserve_end_at => 1.hour.from_now)
-
-        @unpurchased_reservation=FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => 1.hour.from_now, :reserve_end_at => 2.hours.from_now)
-        @order_detail2=FactoryGirl.create(:order_detail, :order => @order2, :product => @product, :reservation => @unpurchased_reservation)
-
-        @canceled_reservation = FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => 2.hours.from_now, :reserve_end_at => 3.hours.from_now)
-        @order_detail3 = FactoryGirl.create(:order_detail, :order => @order, :product => @product, :reservation => @canceled_reservation)
-        @canceled_reservation.should be_persisted
-        @order_detail3.update_order_status! @admin, OrderStatus.canceled.first
-
-        @admin_reservation = FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => Time.zone.now, :reserve_end_at => 1.hour.from_now)
-
-        maybe_grant_always_sign_in :director
-        @method = :get
-        @action = :timeline
-        @params={ :facility_id => @authable.url_name }
-        do_request
-      end
-
-      it 'should not be admin reservations' do
-        @reservation.should_not be_admin
-        @unpurchased_reservation.should_not be_admin
-        @admin_reservation.should be_admin
-      end
-
-      it 'should show reservation' do
-        response.body.should include "id='tooltip_reservation_#{@reservation.id}'"
-      end
-
-      it 'should not show unpaid reservation' do
-        response.body.should_not include "id='tooltip_reservation_#{@unpurchased_reservation.id}'"
-      end
-
-      it 'should include canceled reservation' do
-        response.body.should include "id='tooltip_reservation_#{@canceled_reservation.id}'"
-      end
-
-      it 'should include admin reservation' do
-        response.body.should include "id='tooltip_reservation_#{@admin_reservation.id}'"
-      end
     end
   end
-
 end

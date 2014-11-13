@@ -69,7 +69,25 @@ describe FacilityOrdersController do
     end
   end
 
-  context 'index' do
+  context '#batch_update' do
+    before :each do
+      @method=:post
+      @action=:batch_update
+    end
+
+    it_should_allow_operators_only :redirect
+  end
+
+  context '#disputed' do
+    before :each do
+      @method=:get
+      @action=:disputed
+    end
+
+    it_should_allow_operators_only
+  end
+
+  context '#index' do
     before :each do
       @method=:get
       @action=:index
@@ -120,16 +138,7 @@ describe FacilityOrdersController do
     end
   end
 
-  context 'batch_update' do
-    before :each do
-      @method=:post
-      @action=:batch_update
-    end
-
-    it_should_allow_operators_only :redirect
-  end
-
-  context 'show_problems' do
+  context '#show_problems' do
     before :each do
       @method=:get
       @action=:show_problems
@@ -138,16 +147,7 @@ describe FacilityOrdersController do
     it_should_allow_managers_only
   end
 
-  context 'disputed' do
-    before :each do
-      @method=:get
-      @action=:disputed
-    end
-
-    it_should_allow_operators_only
-  end
-
-  context 'send_receipt' do
+  context '#send_receipt' do
     before :each do
       @method=:post
       @action=:send_receipt
@@ -166,7 +166,7 @@ describe FacilityOrdersController do
     end
   end
 
-  context 'update' do
+  context '#update' do
     before :each do
       @method=:put
       @action=:update
@@ -369,7 +369,7 @@ describe FacilityOrdersController do
     end
   end
 
-  context 'tab_counts' do
+  context '#tab_counts' do
     before :each do
       @method = :get
       @action = :tab_counts
