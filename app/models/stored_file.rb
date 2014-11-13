@@ -4,13 +4,16 @@ class StoredFile < ActiveRecord::Base
   belongs_to              :order_detail
   validates_presence_of   :name, :file_type, :created_by
   validates_presence_of   :product_id,      :if => lambda {|o| o.file_type == 'info' || o.file_type == 'template'}
-  validates_presence_of   :order_detail_id, :if => lambda {|o| o.file_type == 'template_result' || o.file_type == 'sample_result'} 
+  validates_presence_of   :order_detail_id, :if => lambda {|o| o.file_type == 'template_result' || o.file_type == 'sample_result'}
   validates_inclusion_of  :file_type, :in => %w(info template template_result sample_result import_error import_upload)
   has_attached_file       :file,
                           :storage => :filesystem,
                           :url => "#{ENV['RAILS_RELATIVE_URL_ROOT']}/:attachment/:id_partition/:style/:safe_filename",
                           :path => ":rails_root/public/:attachment/:id_partition/:style/:safe_filename"
   validates_attachment_presence :file
+
+  # TODO Limit attachment types for safe uploads
+  do_not_validate_attachment_file_type :file
 
   scope :info,              :conditions => {:file_type => 'info'}
   scope :template,          :conditions => {:file_type => 'template'}

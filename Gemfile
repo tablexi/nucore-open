@@ -1,11 +1,11 @@
 source 'https://rubygems.org'
 
 ## base
-gem 'rails',            '3.2.19'
+gem 'rails',            '3.2.21'
 gem 'rails_config',     '0.3.3'
 
 ## database
-gem 'mysql2',           '~> 0.3.15'
+gem 'mysql2',           '~> 0.3.17'
 gem 'foreigner',        '1.1.1'
 
 ## deployment
@@ -19,15 +19,15 @@ gem 'cancan',           '1.6.10'
 
 ## models
 gem 'aasm',             '2.2.0'
-gem 'paperclip',        '~> 2.7.5'
-gem 'vestal_versions',  '1.2.4.3', :git => 'git://github.com/elzoiddy/vestal_versions.git'
+gem 'paperclip',        '~> 4.2.0'
+gem 'vestal_versions',  '1.2.4.3', github: 'elzoiddy/vestal_versions'
 gem 'awesome_nested_set', '2.1.6'
 gem 'nokogiri',         '~> 1.6.1'
 
 ## views
 gem 'bootstrap-sass',   '~> 2.3.2'
 gem 'haml',             '~> 4.0.5'
-gem 'will_paginate',    '3.0.4'
+gem 'will_paginate',    '~> 3.0.5'
 gem 'dynamic_form',     '~> 1.1.4'
 gem 'ckeditor',         '~> 4.0.10'
 gem 'jquery-rails',     '~> 2.1.4'
@@ -50,9 +50,9 @@ gem 'exception_notification', '~> 4.0.1'
 gem 'daemons',          '1.1.9'
 
 ## custom
-gem 'c2po',             '~> 1.0.0', :path => 'vendor/engines/c2po'
-gem 'dataprobe',        '~> 1.0.0', :path => 'vendor/engines/dataprobe'
-gem 'synaccess_connect', '0.2.2', :git => 'git://github.com/tablexi/synaccess.git'
+gem 'c2po',             '~> 1.0.0', path: 'vendor/engines/c2po'
+gem 'dataprobe',        '~> 1.0.0', path: 'vendor/engines/dataprobe'
+gem 'synaccess_connect', '0.2.2', github: 'tablexi/synaccess'
 
 group :development do
   gem 'better_errors'
