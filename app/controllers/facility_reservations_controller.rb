@@ -1,4 +1,5 @@
 class FacilityReservationsController < ApplicationController
+  include ProblemOrderDetailsController
   include TabCountHelper
   include Timelineable
 
@@ -159,7 +160,7 @@ class FacilityReservationsController < ApplicationController
   end
 
   # POST /facilities/:facility_id/reservations/batch_update
-  def batch_update # TODO very similar to FacilityOrdersController#batch_update
+  def batch_update
     redirect_to facility_reservations_path
 
     msg_hash = OrderDetail.batch_update(params[:order_detail_ids], current_facility, session_user, params, 'reservations')
@@ -170,23 +171,8 @@ class FacilityReservationsController < ApplicationController
     end
   end
 
-  # GET /facilities/:facility_id/reservations/review
-  def show_problems # TODO identical to FacilityOrdersController#show_problems
-    @order_details = problem_orders.
-      paginate(:page => params[:page])
-  end
-
-  # POST /facilities/:facility_id/reservations/assign_price_policies_to_problem_orders
-  def assign_price_policies_to_problem_orders # TODO very similar to FacilityOrdersController#assign_price_policies_to_problem_orders
-    successfully_assigned =
-      PricePolicyMassAssigner.assign_price_policies(problem_orders.readonly(false))
-    flash[:notice] = I18n.t("controllers.facility_reservations.assign_price_policies.success", count: successfully_assigned.count)
-    redirect_to show_problems_facility_reservations_path
-  end
-
-
   # GET /facilities/:facility_id/reservations/disputed
-  def disputed # TODO identical to FacilityOrdersController#disputed
+  def disputed
     @order_details = disputed_orders.
       paginate(:page => params[:page])
   end
@@ -202,6 +188,11 @@ class FacilityReservationsController < ApplicationController
     redirect_to facility_instrument_schedule_url
   end
 
+  protected
+
+  def show_problems_path
+    show_problems_facility_reservations_path
+  end
 
   private
 

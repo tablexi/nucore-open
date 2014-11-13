@@ -52,10 +52,6 @@ en:
         more_errors: "There are more errors. Please resolve those above to see those that remain."
 
     facility_orders:
-      assign_price_policies:
-        success:
-          one: "A price policy was successfully assigned to one order"
-          other: "Price policies were successfully assigned to %{count} orders"
       update:
         zero_quantity: "Please enter a quantity for the product you'd like to add"
         error: "An error was encountered while adding the product %{product}."
@@ -75,7 +71,7 @@ en:
         error: "Could not delete order detail %{order_detail_id}"
         success: "The order detail was successfully removed"
 
-    facility_reservations:
+    problem_order_details:
       assign_price_policies:
         success:
           one: "A price policy was successfully assigned to one order"
