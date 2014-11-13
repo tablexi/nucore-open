@@ -66,7 +66,7 @@ class OrderImport < ActiveRecord::Base
     # loop over non-header rows
     Order.transaction do
       CSV.open(upload_file_path, :headers => true).each do |row|
-        row_errors = parse_row(row)[:errors]
+        row_errors = errors_for(row)
 
         # write to error_report in case an error occurs
         row[ERRORS_HEADER] = row_errors.join(", ")
@@ -118,15 +118,13 @@ class OrderImport < ActiveRecord::Base
       # one transaction per order_key (per order effectively)
       Order.transaction do
         rows.each do |row|
-          row_results = parse_row(row)
+          row_errors = errors_for(row)
 
           # one row actually errored out
-          if row_results[:errors].length > 0 || in_error_mode
-            row[ERRORS_HEADER] = row_results[:errors].join(", ")
+          if row_errors.length > 0 || in_error_mode
+            row[ERRORS_HEADER] = row_errors.join(", ")
             # make sure we stay in error mode
             in_error_mode ||= true
-          else
-            order_key = create_order(row_results[:order])
           end
 
           # store row incase other rows for same order error out
@@ -155,7 +153,9 @@ class OrderImport < ActiveRecord::Base
   end
 
   def get_cached_order(order_key)
-    @order_id_cache_by_order_key ||= {}
+    unless defined? @order_id_cache_by_order_key
+      @order_id_cache_by_order_key = {}
+    end
 
     if order_id = @order_id_cache_by_order_key[order_key]
       return Order.find(order_id)
@@ -165,89 +165,92 @@ class OrderImport < ActiveRecord::Base
   end
 
   def cache_order(order_key, order_id)
-    @order_id_cache_by_order_key ||= {}
     @order_id_cache_by_order_key[order_key] = order_id
   end
 
-  def parse_row(row)
-    results = {errors: [], order: {}}
-    order = results[:order]
-    order[:key] = [row[USER_HEADER], row[CHART_STRING_HEADER], row[ORDER_DATE_HEADER]]
+
+  def errors_for(row)
+    errs = []
     account_number = row[CHART_STRING_HEADER].strip
 
     # convert quantity
-    order[:qty] = row[QUANTITY_HEADER].to_i
+    qty = row[QUANTITY_HEADER].to_i
 
     # convert dates
-    unless order[:fulfillment_date] = parse_usa_import_date(row[FULFILLMENT_DATE_HEADER])
-      results[:errors] << "Invalid Fulfillment Date: Please use MM/DD/YYYY format"
+    unless fulfillment_date = parse_usa_import_date(row[FULFILLMENT_DATE_HEADER])
+      errs << "Invalid Fulfillment Date: Please use MM/DD/YYYY format"
     end
 
-    unless order[:order_date] = parse_usa_import_date(row[ORDER_DATE_HEADER])
-      results[:errors] << "Invalid Order Date: Please use MM/DD/YYYY format"
+    unless order_date = parse_usa_import_date(row[ORDER_DATE_HEADER])
+      errs << "Invalid Order Date: Please use MM/DD/YYYY format"
     end
 
     # get user
-    unless order[:user] = (User.find_by_username(row[USER_HEADER].strip) or
+    unless user = (User.find_by_username(row[USER_HEADER].strip) or
            User.find_by_email(row[USER_HEADER].strip))
-      results[:errors] << "invalid username or email"
+      errs << "invalid username or email"
     end
 
     # get product
-    unless order[:product] = facility.products.active_plus_hidden.find_by_name(row[PRODUCT_NAME_HEADER].strip)
-      results[:errors] << "couldn't find product by name: " + row[PRODUCT_NAME_HEADER]
+    unless product = facility.products.active_plus_hidden.find_by_name(row[PRODUCT_NAME_HEADER].strip)
+      errs << "couldn't find product by name: " + row[PRODUCT_NAME_HEADER]
     end
 
-    results[:errors] += check_if_product_importable(order[:product])
+    errs += check_if_product_importable(product)
 
     # cant find a
-    if order[:user] && order[:product]
+    if user && product
       # account finder from OrdersController#choose_account
-      if order[:account] = order[:user].accounts.for_facility(order[:product].facility).active.find_by_account_number(account_number)
+      if account = user.accounts.for_facility(product.facility).active.find_by_account_number(account_number)
         # account checker from OrdersController#choose_account
-        error = order[:account].validate_against_product(order[:product], order[:user])
-        results[:errors] << error if error
+        error = account.validate_against_product(product, user)
+        errs << error if error
       else
-        results[:errors] << "Can't find account"
+        errs << "Can't find account"
       end
     end
-    return results
-  end
 
-  def create_order(order_attributes)
-    # basic error cases over.... try creating the order / order details
 
-    order = Order.create!(
-      :facility   => facility,
-      :account    => order_attributes[:account],
-      :user       => order_attributes[:user],
-      :created_by_user => creator,
-      :ordered_at => order_attributes[:order_date],
-      :account    => order_attributes[:account],
-      :order_import_id => self.id
-    )
+    if errs.length == 0
+      order_key = [row[USER_HEADER], row[CHART_STRING_HEADER], row[ORDER_DATE_HEADER]]
 
-    # add product (creates order details or raises exceptions)
-    ods = order.add(order_attributes[:product], order_attributes[:qty])
+      # basic error cases over.... try creating the order / order details
+      unless order = get_cached_order(order_key)
+        order = Order.create!(
+          :facility   => facility,
+          :account    => account,
+          :user       => user,
+          :created_by_user => creator,
+          :ordered_at => order_date,
+          :account    => account,
+          :order_import_id => self.id
+        )
+      end
 
-    # skip validation / purchase
-    unless order.purchased?
-      if order.validate_order!
-        unless order.purchase!
-          errs << "Couldn't purchase order"
+      # add product (creates order details or raises exceptions)
+      ods = order.add(product, qty)
+
+      # skip validation / purchase
+      unless order.purchased?
+        if order.validate_order!
+          unless order.purchase!
+            errs << "Couldn't purchase order"
+          end
+        else
+          errs << "Couldn't validate order"
         end
-      else
-        errs << "Couldn't validate order"
+
       end
 
+      ods.each do |od|
+        od.backdate_to_complete!(fulfillment_date)
+      end
+
+      cache_order(order_key, order.id) if errs.length == 0
+
     end
 
-    ods.each do |od|
-      od.backdate_to_complete!(order_attributes[:fulfillment_date])
-    end
-
-    cache_order(order_attributes[:key], order.id)
-    order_attributes[:key]
+    return errs
   end
 
   def check_if_product_importable(product)
