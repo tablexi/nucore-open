@@ -6,7 +6,7 @@ require 'csv_helper'
 
 CSV_HEADERS = ["Netid / Email", "Chart String" , "Product Name" , "Quantity" , "Order Date" , "Fulfillment Date"]
 
-def errors_for_import_with_row(opts={})
+def results_for_row(opts={})
   row = CSVHelper::CSV::Row.new(CSV_HEADERS, [
     opts[:username]           || @guest.username,
     opts[:account_number]     || "111-2222222-33333333-01",
@@ -16,7 +16,11 @@ def errors_for_import_with_row(opts={})
     opts[:fulfillment_date]   || nucore_format_date(default_fulfilled_date)
   ])
 
-  @order_import.errors_for(row)
+  @order_import.parse_row(row)
+end
+
+def errors_for_import_with_row(opts={})
+  results_for_row(opts)[:errors]
 end
 
 def nucore_format_date(date)
@@ -208,9 +212,10 @@ describe OrderImport do
 
     describe "created order" do
       before :each do
-        # run the import of row
-        errors_for_import_with_row.should == []
+        results = results_for_row
+        @order_import.create_order(results[:order])
 
+        results[:errors].should == []
         @created_order = Order.last
       end
 
