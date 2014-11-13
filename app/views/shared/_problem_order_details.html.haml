@@ -1,0 +1,34 @@
+%table.table.table-striped.table-hover
+  %thead
+    %tr.borderless
+      %td{colspan: 6}
+      %td= link_to t(".assign_price_policies"),
+        assign_price_policies_path,
+        method: :post,
+        class: %w(btn btn-primary)
+    %tr
+      %th= Order.model_name.human
+      %th= OrderDetail.model_name.human
+      %th= Order.human_attribute_name(:ordered_at)
+      %th{ colspan: 2 }= t(".th.quantity_and_product")
+      %th= Account.model_name.human
+      %th= t(".th.problem")
+  %tbody
+    - @order_details.each do |order_detail|
+      %tr{class: needs_reconcile_warning?(order_detail) ? "reconcile-warning" : ""}
+        %td.centered= link_to order_detail.order_id,
+          facility_order_path(current_facility, order_detail.order)
+        %td.centered= link_to order_detail.id,
+          manage_order_detail_path(order_detail),
+          class: "manage-order-detail"
+
+        %td= human_datetime(order_detail.order.ordered_at)
+        %td.centered= order_detail.quantity
+        %td= order_detail_description(order_detail)
+        %td= order_detail.account
+        - if order_detail.requires_but_missing_actuals?
+          %td.centered= "#{t ".actual_usage_missing"} #{link_to "Enter", manage_order_detail_path(order_detail), class: "manage-order-detail"}".html_safe
+        - else
+          %td.centered= "#{t ".price_policy_missing"} #{link_to "Assign", manage_order_detail_path(order_detail), class: "manage-order-detail"}".html_safe
+= will_paginate(@order_details)
+= render partial: "shared/reconcile_footnote"

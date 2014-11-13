@@ -43,6 +43,14 @@ en:
     footer:
       copyright_html: "&copy; Copyright 2010%{to_date} Northwestern University"
       logo_alt: "Northwestern Logo"
+    problem_order_details:
+      actual_usage_missing: Actual Usage Missing
+      assign_price_policies: Assign Price Policies
+      price_policy_missing: Price Policy Missing
+      th:
+        quantity_and_product: "Quantity / Product"
+        problem: Problem
+
     product_details_fields:
       name: "Name of the %{field} as displayed to the end user"
       description: "Description as it will appear on the product page"
@@ -278,17 +286,19 @@ en:
         h1: "Summary Of Order #%{order_number}"
         h2: "Order Detail #%{order_number}"
     show_problems:
-      actual_usage_missing: Actual Usage Missing
-      assign_price_policies: Assign Price Policies
       instructions: |
         The order line items below are complete and either do not have a price
         policy or are instrument orders without usage information.
         Each will need to be corrected.
       no_problem_orders: There are no problem orders.
-      price_policy_missing: Price Policy Missing
-      th:
-        quantity_and_product: "Quantity / Product"
-        problem: Problem
+
+  facility_reservations:
+    show_problems:
+      instructions: |
+        The reservation line items below are complete and either do not have a
+        price policy or are reservations without usage information.
+        Each will need to be corrected.
+      no_problem_reservations: There are no problem reservations.
 
   order_imports:
       new:
