@@ -4,7 +4,8 @@ require 'controller_spec_helper'
 require 'stringio'
 require 'csv_helper'
 
-CSV_HEADERS = ["Netid / Email", "Chart String" , "Product Name" , "Quantity" , "Order Date" , "Fulfillment Date"]
+CSV_HEADERS = ["Netid / Email", "Chart String", "Product Name", "Quantity",
+  "Order Date" , "Fulfillment Date", "Note"]
 
 def errors_for_import_with_row(opts={})
   row = CSVHelper::CSV::Row.new(CSV_HEADERS, [
@@ -13,10 +14,15 @@ def errors_for_import_with_row(opts={})
     opts[:product_name]       || "Example Item",
     opts[:quantity]           || 1,
     opts[:order_date]         || nucore_format_date(default_order_date),
-    opts[:fulfillment_date]   || nucore_format_date(default_fulfilled_date)
+    opts[:fulfillment_date]   || nucore_format_date(default_fulfilled_date),
+    opts[:note]               || "Test note"
   ])
 
   @order_import.errors_for(row)
+end
+
+def import_without_note
+  errors_for_import_with_row(note: nil)
 end
 
 def nucore_format_date(date)
@@ -260,6 +266,12 @@ describe OrderImport do
             od.fulfilled_at.to_date.should == default_fulfilled_date
           end
         end
+
+        it "has notes for each order_detail" do
+          @created_order.order_details.each do |order_detail|
+            expect(order_detail.note).to_not be_nil
+          end
+        end
       end
     end
 
@@ -342,7 +354,8 @@ def generate_import_file(*args)
         opts[:product_name]       || "Example Item",
         opts[:quantity]           || 1,
         opts[:order_date]         || nucore_format_date(default_order_date),
-        opts[:fullfillment_date]  || nucore_format_date(default_fulfilled_date)
+        opts[:fullfillment_date]  || nucore_format_date(default_fulfilled_date),
+        opts[:note]               || "Test Note"
       ])
       csv << row
     end

@@ -8,8 +8,10 @@ QUANTITY_HEADER         = "Quantity"
 ORDER_DATE_HEADER       = "Order Date"
 FULFILLMENT_DATE_HEADER = "Fulfillment Date"
 ERRORS_HEADER           = "Errors"
+NOTES_HEADER            = "Note"
 
-HEADERS = [USER_HEADER, CHART_STRING_HEADER, PRODUCT_NAME_HEADER, QUANTITY_HEADER, ORDER_DATE_HEADER, FULFILLMENT_DATE_HEADER, ERRORS_HEADER]
+HEADERS = [USER_HEADER, CHART_STRING_HEADER, PRODUCT_NAME_HEADER,
+  QUANTITY_HEADER, ORDER_DATE_HEADER, FULFILLMENT_DATE_HEADER, ERRORS_HEADER]
 
 
 class OrderImport < ActiveRecord::Base
@@ -196,6 +198,9 @@ class OrderImport < ActiveRecord::Base
       errs << "couldn't find product by name: " + row[PRODUCT_NAME_HEADER]
     end
 
+    #get notes
+    note = row[NOTES_HEADER].try(:strip)
+
     errs += check_if_product_importable(product)
 
     # cant find a
@@ -228,7 +233,7 @@ class OrderImport < ActiveRecord::Base
       end
 
       # add product (creates order details or raises exceptions)
-      ods = order.add(product, qty)
+      ods = order.add(product, qty, note)
 
       # skip validation / purchase
       unless order.purchased?
