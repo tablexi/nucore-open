@@ -233,7 +233,7 @@ class OrderImport < ActiveRecord::Base
       end
 
       # add product (creates order details or raises exceptions)
-      ods = order.add(product, qty, note)
+      ods = order.add(product, qty, note: note)
 
       # skip validation / purchase
       unless order.purchased?

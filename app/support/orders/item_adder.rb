@@ -3,20 +3,20 @@ class Orders::ItemAdder
     @order = order
   end
 
-  def add(product, quantity = 1, note=nil)
+  def add(product, quantity = 1, **attributes)
     check_for_mixed_facility! product
     @quantity = quantity.to_i
     return [] if quantity <= 0
 
     if product.is_a? Bundle
-      ods = add_bundles(product, @quantity, note)
+      ods = add_bundles(product, @quantity, **attributes)
     elsif product.is_a? Service
-      ods = add_services(product, @quantity, note)
+      ods = add_services(product, @quantity, attributes)
     # products which have reservations (instruments) should each get their own order_detail
     elsif (product.respond_to?(:reservations) and quantity > 1) then
-      ods = add_instruments(product, @quantity, note)
+      ods = add_instruments(product, @quantity, attributes)
     else
-      ods = [create_order_detail(product_id: product.id, quantity: @quantity, note: note)]
+      ods = [create_order_detail(product_id: product.id, quantity: @quantity, **attributes)]
     end
     ods || []
   end
@@ -32,13 +32,13 @@ private
     end
   end
 
-  def add_instruments(product, quantity, note)
+  def add_instruments(product, quantity, **attributes)
     quantity.times.collect do
-      create_order_detail(product_id: product.id, quantity: 1, note: note)
+      create_order_detail(product_id: product.id, quantity: 1, **attributes)
     end
   end
 
-  def add_services(product, quantity, note)
+  def add_services(product, quantity, **attributes)
     separate = (product.active_template? || product.active_survey?)
     # can't add single order_detail for service when it requires a template or a survey.
     # number of order details to add
@@ -47,15 +47,15 @@ private
     individual_quantity = separate ? 1 : quantity
 
     repeat.times.collect do
-      create_order_detail(product_id: product.id, quantity: individual_quantity, note: note)
+      create_order_detail(product_id: product.id, quantity: individual_quantity, **attributes)
     end
   end
 
-  def add_bundles(product, quantity, note)
-    quantity.times.inject([]) { |ods, i| ods.concat create_bundle_order_detail(product, note) }
+  def add_bundles(product, quantity, **attributes)
+    quantity.times.inject([]) { |ods, i| ods.concat create_bundle_order_detail(product, **attributes) }
   end
 
-  def create_bundle_order_detail(product, note)
+  def create_bundle_order_detail(product, **attributes)
     group_id = @order.max_group_id + 1
     product.bundle_products.collect do |bp|
       create_order_detail(
@@ -63,7 +63,7 @@ private
         quantity: bp.quantity,
         bundle_product_id: product.id,
         group_id: group_id,
-        note: note)
+        **attributes)
     end
   end
 
