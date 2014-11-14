@@ -21,10 +21,6 @@ def errors_for_import_with_row(opts={})
   @order_import.errors_for(row)
 end
 
-def import_without_note
-  errors_for_import_with_row(note: nil)
-end
-
 def nucore_format_date(date)
   date.strftime("%m/%d/%Y")
 end
