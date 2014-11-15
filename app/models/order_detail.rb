@@ -880,6 +880,10 @@ class OrderDetail < ActiveRecord::Base
     user.accounts.include?(account)
   end
 
+  def removable_from_journal?
+    journal.present? && account.is_a?(NufsAccount) && can_reconcile?
+  end
+
   private
 
   def has_completed_reservation?

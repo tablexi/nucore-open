@@ -25,7 +25,7 @@
           - link_to date, statement_path(@order_detail.statement)
         = banner_date_label @order_detail, :journal_date
 
-        - if @order_detail.can_reconcile? && @order_detail.account.is_a?(NufsAccount) && @order_detail.journal.present?
+        - if @order_detail.removable_from_journal?
           .row
             = link_to t('.remove_from_journal'),
               remove_from_journal_facility_order_order_detail_path(current_facility, @order, @order_detail),
