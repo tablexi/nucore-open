@@ -148,7 +148,7 @@ describe OrderImport do
       context "product is a service" do
         context "with an active survey" do
           before :each do
-            Service.any_instance.stub(:active_survey?).and_return(true)
+            allow_any_instance_of(Service).to receive(:active_survey?).and_return(true)
           end
 
           it "should error" do
@@ -159,7 +159,7 @@ describe OrderImport do
 
         context "with an active template" do
           before :each do
-            Service.any_instance.stub(:active_template?).and_return(true)
+            allow_any_instance_of(Service).to receive(:active_template?).and_return(true)
           end
 
           it "should error" do
@@ -205,7 +205,7 @@ describe OrderImport do
     end
 
     it "should find user by email in addition to username" do
-      errors_for_import_with_row(:username => @guest.email).should be_empty
+      expect(errors_for_import_with_row(:username => @guest.email)).to be_empty
     end
 
     describe "created order" do
@@ -218,18 +218,18 @@ describe OrderImport do
       end
 
       it "should have ordered_at set appropriately" do
-        @created_order.ordered_at.to_date.should == default_order_date
+        expect(@created_order.ordered_at.to_date).to eq(default_order_date)
       end
 
       it "should have created_by_user set to creator of import" do
-        @created_order.created_by_user.should == @director
+        expect(@created_order.created_by_user).to eq(@director)
       end
 
       it "should have user set to user in line of import" do
-        @created_order.user.should == @guest
+        expect(@created_order.user).to eq(@guest)
       end
 
-      it { @created_order.should be_purchased }
+      it { expect(@created_order).to be_purchased }
 
       context "created order_details" do
         let(:opts) { { note: 'This is a note' } }
@@ -239,30 +239,30 @@ describe OrderImport do
         end
 
         it "should have the right product" do
-          @created_order.order_details.first.product.should == @item
+          expect(@created_order.order_details.first.product).to eq(@item)
         end
 
         it "should have status complete" do
           @created_order.order_details.each do |od|
-            od.state.should == "complete"
+            expect(od.state).to eq("complete")
           end
         end
 
         it "should have price policies" do
           @created_order.order_details.each do |od|
-            od.price_policy.should_not be nil
+            expect(od.price_policy).not_to be nil
           end
         end
 
         it "should not be problem orders" do
           @created_order.order_details.each do |od|
-            od.should_not be_problem_order
+            expect(od).not_to be_problem_order
           end
         end
 
         it "should have right fulfilled_at" do
           @created_order.order_details.each do |od|
-            od.fulfilled_at.to_date.should == default_fulfilled_date
+            expect(od.fulfilled_at.to_date).to eq(default_fulfilled_date)
           end
         end
 
@@ -277,23 +277,23 @@ describe OrderImport do
     describe "multiple calls (same order_key)" do
       before :each do
         @old_count = Order.count
-        errors_for_import_with_row(
+        expect(errors_for_import_with_row(
           :fullfillment_date => 2.days.ago,
           :quantity => 2
-        ).should == []
+        )).to eq([])
         @first_od = OrderDetail.last
-        errors_for_import_with_row(
+        expect(errors_for_import_with_row(
           :fullfillment_date => 3.days.ago,
           :quantity => 3
-        ).should == []
+        )).to eq([])
       end
       it "should merge orders when possible" do
-        (Order.count - @old_count).should == 1
+        expect(Order.count - @old_count).to eq(1)
       end
 
       it "should not have problem orders" do
         Order.last.order_details.each do |od|
-          od.should_not be_problem_order
+          expect(od).not_to be_problem_order
         end
       end
 
@@ -301,7 +301,7 @@ describe OrderImport do
         @after_od = OrderDetail.find(@first_od.id)
         @after_od.reload
 
-        @after_od.should == @first_od
+        expect(@after_od).to eq(@first_od)
       end
 
     end
@@ -309,26 +309,26 @@ describe OrderImport do
     describe "multiple calls (diff order_key)" do
       before :each do
         @old_count = Order.count
-        errors_for_import_with_row(
+        expect(errors_for_import_with_row(
           :fullfillment_date => 2.days.ago,
           :quantity => 2,
           :username => 'guest'
-        ).should == []
+        )).to eq([])
         @first_od = OrderDetail.last
-        errors_for_import_with_row(
+        expect(errors_for_import_with_row(
           :fullfillment_date => 3.days.ago,
           :quantity => 3,
           :username => 'guest2'
-        ).should == []
+        )).to eq([])
       end
 
       it "should not merge when users are different" do
-        (Order.count - @old_count).should > 1
+        expect(Order.count - @old_count).to be > 1
       end
 
       it "should not have problem orders" do
         Order.last.order_details.each do |od|
-          od.should_not be_problem_order
+          expect(od).not_to be_problem_order
         end
       end
 
@@ -336,7 +336,7 @@ describe OrderImport do
         @after_od = OrderDetail.find(@first_od.id)
         @after_od.reload
 
-        @after_od.should == @first_od
+        expect(@after_od).to eq(@first_od)
       end
     end
   end
@@ -416,7 +416,7 @@ end
           @order_import.save!
 
           # expectations
-          Notifier.should_receive(:order_receipt).never
+          expect(Notifier).to receive(:order_receipt).never
 
           # run the import
           @order_import.process!
@@ -452,7 +452,7 @@ end
           @order_import.save!
 
           # expectations
-          Notifier.should_receive(:order_receipt).never
+          expect(Notifier).to receive(:order_receipt).never
 
           # run the import
           @order_import.process!
@@ -485,13 +485,13 @@ end
       end
 
       it "shouldn't create any orders" do
-        lambda {
+        expect {
           @order_import.process!
-        }.should_not change(Order, :count).from(0).to(1)
+        }.not_to change(Order, :count).from(0).to(1)
       end
 
       it "shouldn't send out any notifications" do
-        Notifier.should_receive(:order_receipt).never
+        expect(Notifier).to receive(:order_receipt).never
         @order_import.process!
       end
 
@@ -500,7 +500,7 @@ end
         import_file_rows = @import_file.read.split("\n").length
         error_file_rows = @order_import.error_file.file.to_file.read.split("\n").length
 
-        error_file_rows.should == import_file_rows
+        expect(error_file_rows).to eq(import_file_rows)
       end
     end
 
@@ -511,9 +511,9 @@ end
       end
 
       it "should create 1 order" do
-        lambda {
+        expect {
           @order_import.process!
-        }.should change(Order, :count).from(0).to(1)
+        }.to change(Order, :count).from(0).to(1)
       end
 
       it "should send out notification for second order" do
@@ -527,7 +527,7 @@ end
         error_file_rows = @order_import.error_file.file.to_file.read.split("\n").length
 
         # minus one because one order (and order_detail) will have been created
-        error_file_rows.should == import_file_rows - 1
+        expect(error_file_rows).to eq(import_file_rows - 1)
       end
     end
   end
@@ -555,13 +555,13 @@ end
       end
 
       it "shouldn't create any orders" do
-        lambda {
+        expect {
           @order_import.process!
-        }.should_not change(Order, :count)
+        }.not_to change(Order, :count)
       end
 
       it "shouldn't send out any notifications" do
-        Notifier.should_receive(:order_receipt).never
+        expect(Notifier).to receive(:order_receipt).never
         @order_import.process!
       end
 
@@ -570,7 +570,7 @@ end
         import_file_rows = @import_file.read.split("\n").length
         error_file_contents = @order_import.error_file.file.to_file.read
         error_file_rows = error_file_contents.split("\n").length
-        error_file_rows.should == import_file_rows
+        expect(error_file_rows).to eq(import_file_rows)
       end
     end
 
@@ -582,13 +582,13 @@ end
       end
 
       it "shouldn't create any orders" do
-        lambda {
+        expect {
           @order_import.process!
-        }.should_not change(Order, :count)
+        }.not_to change(Order, :count)
       end
 
       it "shouldn't send out any notifications" do
-        Notifier.should_receive(:order_receipt).never
+        expect(Notifier).to receive(:order_receipt).never
         @order_import.process!
       end
 
@@ -596,7 +596,7 @@ end
         @order_import.process!
         import_file_rows = @import_file.read.split("\n").length
         error_file_rows = @order_import.error_file.file.to_file.read.split("\n").length
-        error_file_rows.should == import_file_rows
+        expect(error_file_rows).to eq(import_file_rows)
       end
     end
   end
