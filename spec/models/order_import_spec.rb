@@ -209,9 +209,10 @@ describe OrderImport do
     end
 
     describe "created order" do
+      let(:opts) { {} }
       before :each do
         # run the import of row
-        errors_for_import_with_row.should == []
+        expect(errors_for_import_with_row(opts)).to eq([])
 
         @created_order = Order.last
       end
@@ -231,8 +232,10 @@ describe OrderImport do
       it { @created_order.should be_purchased }
 
       context "created order_details" do
+        let(:opts) { { note: 'This is a note' } }
+
         it "should exist" do
-          assert @created_order.has_details?
+          expect(@created_order).to have_details
         end
 
         it "should have the right product" do
@@ -265,7 +268,7 @@ describe OrderImport do
 
         it "has notes for each order_detail" do
           @created_order.order_details.each do |order_detail|
-            expect(order_detail.note).to_not be_nil
+            expect(order_detail.note).to eq('This is a note')
           end
         end
       end
