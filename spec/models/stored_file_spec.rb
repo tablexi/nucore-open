@@ -13,23 +13,23 @@ describe StoredFile do
   context "product_id" do
     it "should be required for 'info' file_type" do
       @fu = StoredFile.create(:file_type => 'info')
-      @fu.should validate_presence_of(:product_id)
+      expect(@fu).to validate_presence_of(:product_id)
     end
 
     it "should be required for 'template' file_type" do
       @fu = StoredFile.create(:file_type => 'template')
-      @fu.should validate_presence_of(:product_id)
+      expect(@fu).to validate_presence_of(:product_id)
     end
   end
 
   context "order_detail_id" do
     it "should be required for 'template_result' file_type" do
       @fu = StoredFile.create(:file_type => 'template_result')
-      @fu.should validate_presence_of(:order_detail_id)
+      expect(@fu).to validate_presence_of(:order_detail_id)
     end
     it "should be required for 'sample_result' file_type" do
       @fu = StoredFile.create(:file_type => 'sample_result')
-      @fu.should validate_presence_of(:order_detail_id)
+      expect(@fu).to validate_presence_of(:order_detail_id)
     end
   end
 
