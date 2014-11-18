@@ -52,7 +52,7 @@ describe FileUploadsController do
         :stored_file => {
           :name => "File 1",
           :file_type => 'info',
-          :file => fixture_file_upload("#{Rails.root}/spec/files/alpha_survey.rb", 'text/x-ruby-script')
+          :file => fixture_file_upload("#{Rails.root}/spec/files/template1.txt")
         }
       }
     end

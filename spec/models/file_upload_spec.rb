@@ -38,7 +38,7 @@ describe StoredFile do
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @item             = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
     @creator          = FactoryGirl.create(:user)
-    @file1            = "#{Rails.root}/spec/files/alpha_survey.rb"
+    @file1            = "#{Rails.root}/spec/files/template1.txt"
     @file_upload      = @item.stored_files.create(:name => "File 1", :file => File.open(@file1), :file_type => "info",
                                                   :creator => @creator)
     assert @file_upload.valid?
