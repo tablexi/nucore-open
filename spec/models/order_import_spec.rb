@@ -498,7 +498,8 @@ end
       it "should have all rows in its error report" do
         @order_import.process!
         import_file_rows = @import_file.read.split("\n").length
-        error_file_rows = @order_import.error_file.file.to_file.read.split("\n").length
+
+        error_file_rows = Paperclip.io_adapters.for(@order_import.error_file.file).read.split("\n").length
 
         expect(error_file_rows).to eq(import_file_rows)
       end
@@ -524,7 +525,7 @@ end
       it "should have first two rows in its error report" do
         @order_import.process!
         import_file_rows = @import_file.read.split("\n").length
-        error_file_rows = @order_import.error_file.file.to_file.read.split("\n").length
+        error_file_rows = Paperclip.io_adapters.for(@order_import.error_file.file).read.split("\n").length
 
         # minus one because one order (and order_detail) will have been created
         expect(error_file_rows).to eq(import_file_rows - 1)
@@ -568,7 +569,7 @@ end
       it "error report should have all rows (since only one order)" do
         @order_import.process!
         import_file_rows = @import_file.read.split("\n").length
-        error_file_contents = @order_import.error_file.file.to_file.read
+        error_file_contents = Paperclip.io_adapters.for(@order_import.error_file.file).read
         error_file_rows = error_file_contents.split("\n").length
         expect(error_file_rows).to eq(import_file_rows)
       end
@@ -595,7 +596,7 @@ end
       it "error report should have all rows (since only one order)" do
         @order_import.process!
         import_file_rows = @import_file.read.split("\n").length
-        error_file_rows = @order_import.error_file.file.to_file.read.split("\n").length
+        error_file_rows = Paperclip.io_adapters.for(@order_import.error_file.file).read.split("\n").length
         expect(error_file_rows).to eq(import_file_rows)
       end
     end
