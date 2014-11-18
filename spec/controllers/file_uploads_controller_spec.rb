@@ -4,8 +4,8 @@ describe FileUploadsController do
   render_views
 
   it "should route" do
-    { :get => "/facilities/alpha/services/1/files/upload" }.should route_to(:controller => 'file_uploads', :action => 'upload', :facility_id => 'alpha', :product => 'services', :product_id => '1')
-    { :post => "/facilities/alpha/services/1/files" }.should route_to(:controller => 'file_uploads', :action => 'create', :facility_id => 'alpha', :product => 'services', :product_id => '1')
+    expect({ :get => "/facilities/alpha/services/1/files/upload" }).to route_to(:controller => 'file_uploads', :action => 'upload', :facility_id => 'alpha', :product => 'services', :product_id => '1')
+    expect({ :post => "/facilities/alpha/services/1/files" }).to route_to(:controller => 'file_uploads', :action => 'create', :facility_id => 'alpha', :product => 'services', :product_id => '1')
     # params_from(:post, "/facilities/alpha/services/1/yui_files").should ==
     #   {:controller => 'file_uploads', :action => 'yui_create', :facility_id => 'alpha', :product => 'services', :product_id => '1'}
   end
@@ -34,7 +34,7 @@ describe FileUploadsController do
     end
 
     it_should_allow_operators_only do
-      response.should be_success
+      expect(response).to be_success
     end
 
   end
@@ -52,16 +52,16 @@ describe FileUploadsController do
         :stored_file => {
           :name => "File 1",
           :file_type => 'info',
-          :file => fixture_file_upload("#{Rails.root}/spec/files/alpha_survey.rb", 'text/x-ruby-script')
+          :file => fixture_file_upload("#{Rails.root}/spec/files/template1.txt")
         }
       }
     end
 
     it_should_allow_managers_and_senior_staff_only :redirect do
-      assigns[:product].should == @service
-      response.should redirect_to(upload_product_file_path(@authable, @service.parameterize, @service, :file_type => 'info'))
-      @service.reload.stored_files.size.should == 1
-      @service.reload.stored_files.collect(&:name).should == ['File 1']
+      expect(assigns[:product]).to eq(@service)
+      expect(response).to redirect_to(upload_product_file_path(@authable, @service.parameterize, @service, :file_type => 'info'))
+      expect(@service.reload.stored_files.size).to eq(1)
+      expect(@service.reload.stored_files.collect(&:name)).to eq(['File 1'])
     end
 
     it "should render upload template when no file specified" do
@@ -117,11 +117,11 @@ describe FileUploadsController do
     end
 
     it_should_allow_managers_and_senior_staff_only do
-      assigns[:product].should == @service
-      assigns[:file].should be_kind_of StoredFile
-      assigns[:file].should be_new_record
-      assigns[:survey].should be_kind_of ExternalService
-      assigns[:survey].should be_new_record
+      expect(assigns[:product]).to eq(@service)
+      expect(assigns[:file]).to be_kind_of StoredFile
+      expect(assigns[:file]).to be_new_record
+      expect(assigns[:survey]).to be_kind_of ExternalService
+      expect(assigns[:survey]).to be_new_record
     end
 
   end
@@ -148,16 +148,16 @@ describe FileUploadsController do
       @params[@survey_param]=nil
       maybe_grant_always_sign_in :director
       do_request
-      assigns[:product].should == @service
-      assigns[:survey].should be_kind_of ExternalService
-      assigns[:survey].should be_new_record
-      assigns[:survey].errors[:base].should_not be_empty
+      expect(assigns[:product]).to eq(@service)
+      expect(assigns[:survey]).to be_kind_of ExternalService
+      expect(assigns[:survey]).to be_new_record
+      expect(assigns[:survey].errors[:base]).not_to be_empty
     end
 
     it_should_allow_managers_and_senior_staff_only :redirect do
-      assigns[:product].should == @service
-      @service.reload.external_services.size.should == 1
-      @service.external_services[0].location.should == @ext_service_location
+      expect(assigns[:product]).to eq(@service)
+      expect(@service.reload.external_services.size).to eq(1)
+      expect(@service.external_services[0].location).to eq(@ext_service_location)
       should set_the_flash
       assert_redirected_to product_survey_path(@authable, @service.parameterize, @service)
     end
