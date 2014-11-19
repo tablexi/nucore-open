@@ -105,7 +105,8 @@ class Journal < ActiveRecord::Base
                           :storage => :filesystem,
                           :url => "#{ENV['RAILS_RELATIVE_URL_ROOT']}/:attachment/:id_partition/:style/:basename.:extension",
                           :path => ":rails_root/public/:attachment/:id_partition/:style/:basename.:extension"
-  validates_attachment_content_type :file, content_type: ['application/vnd.ms-excel']
+  # The CDF type is set on files created by the spreadsheet gem
+  validates_attachment_content_type :file, content_type: ['application/vnd.ms-excel', 'CDF']
 
   # Digs up journals pertaining to the passed in facilities
   #
