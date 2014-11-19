@@ -72,7 +72,9 @@ describe FacilityJournalsController do
         ignore_account_validations
         create_order_details
         @creation_errors = @journal.create_journal_rows!([@order_detail1, @order_detail3])
+        @journal.create_spreadsheet if Settings.financial.journal_format.xls
       end
+
       it 'should have been set up properly' do
         @creation_errors.should be_empty
         @order_detail1.reload.journal_id.should_not be_nil
@@ -85,12 +87,14 @@ describe FacilityJournalsController do
         do_request
         flash[:error].should include 'Please select a journal status'
       end
+
       it 'should throw an error if :reference is empty' do
         @params[:journal_status] = 'succeeded'
         @params[:journal].delete :reference
         do_request
         flash[:error].should include "Reference may not be blank"
       end
+
       it 'should leave success as nil' do
         do_request
         @journal.reload.is_successful.should be_nil
@@ -101,17 +105,21 @@ describe FacilityJournalsController do
           @params.merge!({:journal_status => 'succeeded'})
           do_request
         end
+
         it 'should not have any errors' do
           assigns[:journal].errors.should be_empty
           flash[:error].should be_nil
         end
+
         it 'should set the updated by to the logged in user and leave created by alone' do
           assigns[:journal].updated_by.should == @director.id
           assigns[:journal].created_by.should == @admin.id
         end
+
         it 'should have an is_successful value of true' do
           assigns[:journal].is_successful? == true
         end
+
         it 'should set all the order details to reconciled' do
           reconciled_status = OrderStatus.reconciled.first
           @order_detail1.reload.order_status.should == reconciled_status
@@ -209,6 +217,17 @@ describe FacilityJournalsController do
         create_order_details
         @params[:order_detail_ids] = [@order_detail1.id, @order_detail3.id]
         sign_in @admin
+      end
+
+      context 'when it is successful' do
+        it 'creates a new journal' do
+          expect { do_request }.to change(Journal, :count).by(1)
+        end
+
+        it 'is valid' do
+          do_request
+          expect(assigns(:journal).errors).to be_empty
+        end
       end
 
       context 'when the journal_date is blank' do
