@@ -29,42 +29,151 @@ describe OrderDetail do
     @order_detail.order_status.should be_nil
   end
 
-  context '#assign_price_policy' do
-    before { order_detail.update_attribute(:price_policy_id, nil) }
+  context "#assign_price_policy" do
+    before :each do
+      create(:user_price_group_member, user: user, price_group: price_group)
+      order_detail.update_attribute(:price_policy_id, nil)
+    end
 
-    context 'when a compatible price policy exists' do
-      before :each do
-        create(:user_price_group_member, user: user, price_group: price_group)
-      end
-
-      let!(:price_policy) do
+    shared_context "define price policies" do
+      let!(:previous_price_policy) do
         item.item_price_policies.create(attributes_for(:item_price_policy,
           unit_cost: 10.00,
           unit_subsidy: 2.00,
           price_group_id: price_group.id,
+          start_date: 8.years.ago,
+          expire_date: nil,
         ))
       end
 
-      it 'assigns a price policy' do
-        expect { order_detail.assign_price_policy }
-        .to change { order_detail.price_policy }.from(nil).to(price_policy)
-      end
-
-      it 'assigns an actual cost' do
-        expect { order_detail.assign_price_policy }
-        .to change { order_detail.actual_cost }.from(nil).to(10.00)
-      end
-
-      it 'assigns an actual subsidy' do
-        expect { order_detail.assign_price_policy }
-        .to change { order_detail.actual_subsidy }.from(nil).to(2.00)
+      let!(:current_price_policy) do
+        item.item_price_policies.create(attributes_for(:item_price_policy,
+          unit_cost: 20.00,
+          unit_subsidy: 3.00,
+          price_group_id: price_group.id,
+          start_date: 1.day.ago,
+          expire_date: nil,
+        ))
       end
     end
 
-    context 'when no compatible price policies exist' do
-      it 'it does not assign a price policy' do
-        expect { order_detail.assign_price_policy }
-        .not_to change { order_detail.price_policy }
+    context "when assigning policies based on a time in the past" do
+      context "when compatible price policies exist" do
+        include_context "define price policies"
+
+        context "when fulfilled_at matches the current policy date range" do
+          before :each do
+            order_detail.update_attribute(
+              :fulfilled_at,
+              current_price_policy.expire_date - 1.week,
+            )
+          end
+
+          it "assigns the expected price policy" do
+            expect { order_detail.assign_price_policy(order_detail.fulfilled_at) }
+            .to change { order_detail.price_policy }
+            .from(nil).to(current_price_policy)
+          end
+
+          it 'assigns an actual cost' do
+            expect { order_detail.assign_price_policy(order_detail.fulfilled_at) }
+            .to change { order_detail.actual_cost }
+            .from(nil)
+            .to(current_price_policy.unit_cost)
+          end
+
+          it 'assigns an actual subsidy' do
+            expect { order_detail.assign_price_policy(order_detail.fulfilled_at) }
+            .to change { order_detail.actual_subsidy }
+            .from(nil)
+            .to(current_price_policy.unit_subsidy)
+          end
+        end
+
+        context "when fulfilled_at matches the previous policy date range" do
+          before :each do
+            order_detail.update_attribute(
+              :fulfilled_at,
+              previous_price_policy.start_date + 1.month,
+            )
+          end
+
+          it "assigns the expected price policy" do
+            expect { order_detail.assign_price_policy(order_detail.fulfilled_at) }
+            .to change { order_detail.price_policy }
+            .from(nil).to(previous_price_policy)
+          end
+
+          it 'assigns an actual cost' do
+            expect { order_detail.assign_price_policy(order_detail.fulfilled_at) }
+            .to change { order_detail.actual_cost }
+            .from(nil)
+            .to(previous_price_policy.unit_cost)
+          end
+
+          it 'assigns an actual subsidy' do
+            expect { order_detail.assign_price_policy(order_detail.fulfilled_at) }
+            .to change { order_detail.actual_subsidy }
+            .from(nil)
+            .to(previous_price_policy.unit_subsidy)
+          end
+        end
+
+        context "when fulfilled_at matches no policy date ranges" do
+          before :each do
+            order_detail.update_attribute(
+              :fulfilled_at,
+              previous_price_policy.expire_date + 1.day,
+            )
+          end
+
+          it 'it does not assign a price policy' do
+            expect { order_detail.assign_price_policy(order_detail.fulfilled_at) }
+            .not_to change { order_detail.price_policy }
+          end
+        end
+      end
+
+      context "when no compatible price policies exist" do
+        it 'it does not assign a price policy' do
+          expect { order_detail.assign_price_policy }
+          .not_to change { order_detail.price_policy }
+        end
+      end
+    end
+
+    context "when assigning policies based on the current time" do
+      context "when compatible price policies exist" do
+        include_context "define price policies"
+
+        context "when fulfilled_at matches the current policy date range" do
+          it "assigns the expected price policy" do
+            expect { order_detail.assign_price_policy }
+            .to change { order_detail.price_policy }
+            .from(nil).to(current_price_policy)
+          end
+
+          it 'assigns an actual cost' do
+            expect { order_detail.assign_price_policy }
+            .to change { order_detail.actual_cost }
+            .from(nil)
+            .to(current_price_policy.unit_cost)
+          end
+
+          it 'assigns an actual subsidy' do
+            expect { order_detail.assign_price_policy }
+            .to change { order_detail.actual_subsidy }
+            .from(nil)
+            .to(current_price_policy.unit_subsidy)
+          end
+        end
+      end
+
+      context "when no compatible price policies exist" do
+        it 'it does not assign a price policy' do
+          expect { order_detail.assign_price_policy }
+          .not_to change { order_detail.price_policy }
+        end
       end
     end
   end
