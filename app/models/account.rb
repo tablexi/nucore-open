@@ -143,6 +143,10 @@ class Account < ActiveRecord::Base
     self.save!
   end
 
+  def display_status
+    suspended? ? "Suspended" : "Active"
+  end
+
   def suspended?
     !self.suspended_at.blank?
   end
