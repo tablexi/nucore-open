@@ -9,7 +9,7 @@ class PurchaseOrderAccount < Account
   def to_s(with_owner = false, flag_suspended = true)
     desc = super(with_owner, false)
     desc += " / #{facility.name}" if facility
-    desc += " (suspended)" if flag_suspended && suspended?
+    desc += " (#{display_status.upcase})" if flag_suspended && suspended?
     desc
   end
 end

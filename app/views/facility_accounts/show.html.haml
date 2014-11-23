@@ -18,6 +18,8 @@
     = render :partial => "facility_accounts/#{@account.class.name.underscore}/show", :locals => { :f => f }
   - if @account.affiliate
     = f.input :affiliate, :input_html => { :value => @account.affiliate_to_s }
+  = f.input :display_status,
+    input_html: { class: @account.suspended? ? "suspended-account" : "" }
 
   - unless @account.is_a?(NufsAccount)
     = f.input :remittance_information, :value_method => Proc.new { |value| value.present? ? simple_format(value) : 'None Entered'}
