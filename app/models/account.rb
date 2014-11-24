@@ -144,7 +144,11 @@ class Account < ActiveRecord::Base
   end
 
   def display_status
-    suspended? ? "Suspended" : "Active"
+    if suspended?
+      I18n.t("activerecord.models.account.statuses.suspended")
+    else
+      I18n.t("activerecord.models.account.statuses.active")
+    end
   end
 
   def suspended?
@@ -248,7 +252,7 @@ class Account < ActiveRecord::Base
   def to_s(with_owner = false, flag_suspended = true)
     desc = "#{description} / #{account_number_to_s}"
     desc += " / #{owner_user.name}" if with_owner && owner_user
-    desc += " (SUSPENDED)" if flag_suspended && suspended?
+    desc += " (#{display_status.upcase})" if flag_suspended && suspended?
     desc
   end
 
@@ -261,7 +265,7 @@ class Account < ActiveRecord::Base
 
   def description_to_s
     if suspended?
-      "#{description} (SUSPENDED)"
+      "#{description} (#{display_status.upcase})"
     else
       description
     end
