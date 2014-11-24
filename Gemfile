@@ -6,8 +6,7 @@ gem 'rails_config',     '0.3.3'
 
 ## database
 gem 'mysql2',           '~> 0.3.17'
-gem 'foreigner',        '1.6.1'
-gem 'immigrant' # finding missing foreign keys
+gem 'foreigner',        '1.1.1'
 
 ## deployment
 gem 'capistrano',       '2.15.4'

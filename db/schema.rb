@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141124232553) do
+ActiveRecord::Schema.define(:version => 20140924222724) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -24,7 +24,6 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
   end
 
   add_index "account_users", ["account_id"], :name => "fk_accounts"
-  add_index "account_users", ["user_id"], :name => "account_users_user_id_fk"
 
   create_table "accounts", :force => true do |t|
     t.string   "type",                   :limit => 50,  :null => false
@@ -98,8 +97,6 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
     t.datetime "updated_at"
   end
 
-  add_index "external_service_passers", ["external_service_id"], :name => "external_service_passers_external_service_id_fk"
-
   create_table "external_service_receivers", :force => true do |t|
     t.integer  "external_service_id"
     t.integer  "receiver_id"
@@ -109,8 +106,6 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
     t.string   "external_id"
     t.text     "response_data"
   end
-
-  add_index "external_service_receivers", ["external_service_id"], :name => "external_service_receivers_external_service_id_fk"
 
   create_table "external_services", :force => true do |t|
     t.string   "type"
@@ -170,9 +165,6 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
     t.string  "account",         :limit => 5
   end
 
-  add_index "journal_rows", ["journal_id"], :name => "journal_rows_journal_id_fk"
-  add_index "journal_rows", ["order_detail_id"], :name => "journal_rows_order_detail_id_fk"
-
   create_table "journals", :force => true do |t|
     t.integer  "facility_id"
     t.string   "reference",         :limit => 50
@@ -189,9 +181,6 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
     t.datetime "journal_date",                     :null => false
   end
 
-  add_index "journals", ["created_by"], :name => "journals_created_by_fk"
-  add_index "journals", ["facility_id"], :name => "journals_facility_id_fk"
-
   create_table "notifications", :force => true do |t|
     t.string   "type",         :null => false
     t.integer  "subject_id",   :null => false
@@ -202,8 +191,6 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "notifications", ["user_id"], :name => "notifications_user_id_fk"
 
   create_table "order_details", :force => true do |t|
     t.integer  "order_id",                                                                                 :null => false
@@ -241,19 +228,13 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
   end
 
   add_index "order_details", ["account_id"], :name => "fk_od_accounts"
-  add_index "order_details", ["assigned_user_id"], :name => "order_details_assigned_user_id_fk"
   add_index "order_details", ["bundle_product_id"], :name => "fk_bundle_prod_id"
-  add_index "order_details", ["created_by"], :name => "order_details_created_by_fk"
   add_index "order_details", ["dispute_by_id"], :name => "order_details_dispute_by_id_fk"
-  add_index "order_details", ["journal_id"], :name => "order_details_journal_id_fk"
   add_index "order_details", ["order_id"], :name => "sys_c009172"
-  add_index "order_details", ["order_status_id"], :name => "order_details_order_status_id_fk"
   add_index "order_details", ["parent_order_detail_id"], :name => "order_details_parent_order_detail_id_fk"
   add_index "order_details", ["price_policy_id"], :name => "sys_c009175"
   add_index "order_details", ["product_accessory_id"], :name => "order_details_product_accessory_id_fk"
   add_index "order_details", ["product_id"], :name => "sys_c009173"
-  add_index "order_details", ["state"], :name => "index_order_details_on_state"
-  add_index "order_details", ["statement_id"], :name => "order_details_statement_id_fk"
 
   create_table "order_imports", :force => true do |t|
     t.integer  "upload_file_id",                    :null => false
@@ -278,7 +259,6 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
   end
 
   add_index "order_statuses", ["facility_id", "parent_id", "name"], :name => "sys_c008542", :unique => true
-  add_index "order_statuses", ["parent_id"], :name => "order_statuses_parent_id_fk"
 
   create_table "orders", :force => true do |t|
     t.integer  "account_id"
@@ -294,11 +274,8 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
   end
 
   add_index "orders", ["account_id"], :name => "sys_c008808"
-  add_index "orders", ["created_by"], :name => "orders_created_by_fk"
   add_index "orders", ["facility_id"], :name => "orders_facility_id_fk"
-  add_index "orders", ["merge_with_order_id"], :name => "orders_merge_with_order_id_fk"
   add_index "orders", ["order_import_id"], :name => "index_orders_on_order_import_id"
-  add_index "orders", ["user_id"], :name => "orders_user_id_fk"
 
   create_table "price_group_members", :force => true do |t|
     t.string  "type",           :limit => 50, :null => false
@@ -307,9 +284,7 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
     t.integer "account_id"
   end
 
-  add_index "price_group_members", ["account_id"], :name => "price_group_members_account_id_fk"
   add_index "price_group_members", ["price_group_id"], :name => "sys_c008583"
-  add_index "price_group_members", ["user_id"], :name => "price_group_members_user_id_fk"
 
   create_table "price_group_products", :force => true do |t|
     t.integer  "price_group_id",     :null => false
@@ -355,7 +330,6 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
   end
 
   add_index "price_policies", ["price_group_id"], :name => "sys_c008589"
-  add_index "price_policies", ["product_id"], :name => "price_policies_product_id_fk"
 
   create_table "product_access_groups", :force => true do |t|
     t.integer  "product_id", :null => false
@@ -364,15 +338,10 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
     t.datetime "updated_at"
   end
 
-  add_index "product_access_groups", ["product_id"], :name => "product_access_groups_product_id_fk"
-
   create_table "product_access_schedule_rules", :id => false, :force => true do |t|
     t.integer "product_access_group_id", :null => false
     t.integer "schedule_rule_id",        :null => false
   end
-
-  add_index "product_access_schedule_rules", ["product_access_group_id"], :name => "product_access_schedule_rules_product_access_group_id_fk"
-  add_index "product_access_schedule_rules", ["schedule_rule_id"], :name => "product_access_schedule_rules_schedule_rule_id_fk"
 
   create_table "product_accessories", :force => true do |t|
     t.integer  "product_id",                           :null => false
@@ -380,9 +349,6 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
     t.string   "scaling_type", :default => "quantity", :null => false
     t.datetime "deleted_at"
   end
-
-  add_index "product_accessories", ["accessory_id"], :name => "product_accessories_accessory_id_fk"
-  add_index "product_accessories", ["product_id"], :name => "product_accessories_product_id_fk"
 
   create_table "product_users", :force => true do |t|
     t.integer  "product_id",              :null => false
@@ -392,9 +358,7 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
     t.integer  "product_access_group_id"
   end
 
-  add_index "product_users", ["product_access_group_id"], :name => "product_users_product_access_group_id_fk"
   add_index "product_users", ["product_id"], :name => "fk_products"
-  add_index "product_users", ["user_id"], :name => "product_users_user_id_fk"
 
   create_table "products", :force => true do |t|
     t.string   "type",                    :limit => 50,                     :null => false
@@ -424,7 +388,6 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
 
   add_index "products", ["facility_account_id"], :name => "fk_facility_accounts"
   add_index "products", ["facility_id"], :name => "sys_c008556"
-  add_index "products", ["initial_order_status_id"], :name => "products_initial_order_status_id_fk"
   add_index "products", ["schedule_id"], :name => "i_instruments_schedule_id"
 
   create_table "relays", :force => true do |t|
@@ -454,7 +417,6 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
     t.string   "admin_note"
   end
 
-  add_index "reservations", ["canceled_by"], :name => "reservations_canceled_by_fk"
   add_index "reservations", ["order_detail_id"], :name => "res_ord_det_id_fk"
   add_index "reservations", ["product_id"], :name => "reservations_instrument_id_fk"
 
@@ -496,9 +458,6 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
     t.integer  "order_detail_id"
   end
 
-  add_index "statement_rows", ["order_detail_id"], :name => "statement_rows_order_detail_id_fk"
-  add_index "statement_rows", ["statement_id"], :name => "statement_rows_statement_id_fk"
-
   create_table "statements", :force => true do |t|
     t.integer  "facility_id", :null => false
     t.integer  "created_by",  :null => false
@@ -506,8 +465,6 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
     t.integer  "account_id"
   end
 
-  add_index "statements", ["account_id"], :name => "statements_account_id_fk"
-  add_index "statements", ["created_by"], :name => "statements_created_by_fk"
   add_index "statements", ["facility_id"], :name => "fk_statement_facilities"
 
   create_table "stored_files", :force => true do |t|
@@ -523,7 +480,6 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
     t.datetime "file_updated_at"
   end
 
-  add_index "stored_files", ["created_by"], :name => "stored_files_created_by_fk"
   add_index "stored_files", ["order_detail_id"], :name => "fk_files_od"
   add_index "stored_files", ["product_id"], :name => "fk_files_product"
 
@@ -533,7 +489,6 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
     t.string  "role",        :null => false
   end
 
-  add_index "user_roles", ["facility_id"], :name => "user_roles_facility_id_fk"
   add_index "user_roles", ["user_id", "facility_id", "role"], :name => "i_use_rol_use_id_fac_id_rol"
 
   create_table "users", :force => true do |t|
@@ -583,110 +538,51 @@ ActiveRecord::Schema.define(:version => 20141124232553) do
   add_index "versions", ["version_number"], :name => "index_versions_on_number"
   add_index "versions", ["versioned_id", "versioned_type"], :name => "i_ver_ver_id_ver_typ"
 
-  add_foreign_key "account_users", "accounts", name: "fk_accounts"
-  add_foreign_key "account_users", "users", name: "account_users_user_id_fk"
+  add_foreign_key "account_users", "accounts", :name => "fk_accounts"
 
-  add_foreign_key "accounts", "affiliates", name: "accounts_affiliate_id_fk"
-  add_foreign_key "accounts", "facilities", name: "fk_account_facility_id"
+  add_foreign_key "accounts", "facilities", :name => "fk_account_facility_id"
 
-  add_foreign_key "bundle_products", "products", name: "fk_bundle_prod_bundle"
-  add_foreign_key "bundle_products", "products", name: "fk_bundle_prod_prod", column: "bundle_product_id"
+  add_foreign_key "bundle_products", "products", :name => "fk_bundle_prod_bundle"
+  add_foreign_key "bundle_products", "products", :name => "fk_bundle_prod_prod", :column => "bundle_product_id"
 
-  add_foreign_key "external_service_passers", "external_services", name: "external_service_passers_external_service_id_fk"
+  add_foreign_key "facility_accounts", "facilities", :name => "fk_facilities"
 
-  add_foreign_key "external_service_receivers", "external_services", name: "external_service_receivers_external_service_id_fk"
+  add_foreign_key "instrument_statuses", "products", :name => "fk_int_stats_product", :column => "instrument_id"
 
-  add_foreign_key "facility_accounts", "facilities", name: "fk_facilities"
+  add_foreign_key "order_details", "accounts", :name => "fk_od_accounts"
+  add_foreign_key "order_details", "order_details", :name => "order_details_parent_order_detail_id_fk", :column => "parent_order_detail_id"
+  add_foreign_key "order_details", "orders", :name => "sys_c009172"
+  add_foreign_key "order_details", "price_policies", :name => "sys_c009175"
+  add_foreign_key "order_details", "product_accessories", :name => "order_details_product_accessory_id_fk"
+  add_foreign_key "order_details", "products", :name => "fk_bundle_prod_id", :column => "bundle_product_id"
+  add_foreign_key "order_details", "products", :name => "sys_c009173"
+  add_foreign_key "order_details", "users", :name => "order_details_dispute_by_id_fk", :column => "dispute_by_id"
 
-  add_foreign_key "instrument_statuses", "products", name: "fk_int_stats_product", column: "instrument_id"
+  add_foreign_key "orders", "accounts", :name => "sys_c008808"
+  add_foreign_key "orders", "facilities", :name => "orders_facility_id_fk"
 
-  add_foreign_key "journal_rows", "journals", name: "journal_rows_journal_id_fk"
-  add_foreign_key "journal_rows", "order_details", name: "journal_rows_order_detail_id_fk"
+  add_foreign_key "price_group_members", "price_groups", :name => "sys_c008583"
 
-  add_foreign_key "journals", "facilities", name: "journals_facility_id_fk"
-  add_foreign_key "journals", "users", name: "journals_created_by_fk", column: "created_by"
+  add_foreign_key "price_groups", "facilities", :name => "sys_c008578"
 
-  add_foreign_key "notifications", "users", name: "notifications_user_id_fk"
+  add_foreign_key "price_policies", "price_groups", :name => "sys_c008589"
 
-  add_foreign_key "order_details", "accounts", name: "fk_od_accounts"
-  add_foreign_key "order_details", "journals", name: "order_details_journal_id_fk"
-  add_foreign_key "order_details", "order_details", name: "order_details_parent_order_detail_id_fk", column: "parent_order_detail_id"
-  add_foreign_key "order_details", "order_statuses", name: "order_details_order_status_id_fk"
-  add_foreign_key "order_details", "orders", name: "sys_c009172"
-  add_foreign_key "order_details", "price_policies", name: "sys_c009175"
-  add_foreign_key "order_details", "product_accessories", name: "order_details_product_accessory_id_fk"
-  add_foreign_key "order_details", "products", name: "fk_bundle_prod_id", column: "bundle_product_id"
-  add_foreign_key "order_details", "products", name: "sys_c009173"
-  add_foreign_key "order_details", "statements", name: "order_details_statement_id_fk"
-  add_foreign_key "order_details", "users", name: "order_details_assigned_user_id_fk", column: "assigned_user_id"
-  add_foreign_key "order_details", "users", name: "order_details_created_by_fk", column: "created_by"
-  add_foreign_key "order_details", "users", name: "order_details_dispute_by_id_fk", column: "dispute_by_id"
+  add_foreign_key "product_users", "products", :name => "fk_products"
 
-  add_foreign_key "order_imports", "stored_files", name: "order_imports_error_file_id_fk", column: "error_file_id"
-  add_foreign_key "order_imports", "stored_files", name: "order_imports_upload_file_id_fk", column: "upload_file_id"
-  add_foreign_key "order_imports", "users", name: "order_imports_created_by_fk", column: "created_by"
+  add_foreign_key "products", "facilities", :name => "sys_c008556"
+  add_foreign_key "products", "facility_accounts", :name => "fk_facility_accounts"
+  add_foreign_key "products", "schedules", :name => "fk_instruments_schedule"
 
-  add_foreign_key "order_statuses", "facilities", name: "order_statuses_facility_id_fk"
-  add_foreign_key "order_statuses", "order_statuses", name: "order_statuses_parent_id_fk", column: "parent_id"
+  add_foreign_key "reservations", "order_details", :name => "res_ord_det_id_fk"
+  add_foreign_key "reservations", "products", :name => "reservations_product_id_fk"
 
-  add_foreign_key "orders", "accounts", name: "sys_c008808"
-  add_foreign_key "orders", "facilities", name: "orders_facility_id_fk"
-  add_foreign_key "orders", "order_imports", name: "orders_order_import_id_fk"
-  add_foreign_key "orders", "orders", name: "orders_merge_with_order_id_fk", column: "merge_with_order_id"
-  add_foreign_key "orders", "users", name: "orders_created_by_fk", column: "created_by"
-  add_foreign_key "orders", "users", name: "orders_user_id_fk"
+  add_foreign_key "schedule_rules", "products", :name => "sys_c008573", :column => "instrument_id"
 
-  add_foreign_key "price_group_members", "accounts", name: "price_group_members_account_id_fk"
-  add_foreign_key "price_group_members", "price_groups", name: "sys_c008583"
-  add_foreign_key "price_group_members", "users", name: "price_group_members_user_id_fk"
+  add_foreign_key "schedules", "facilities", :name => "fk_schedules_facility"
 
-  add_foreign_key "price_group_products", "price_groups", name: "price_group_products_price_group_id_fk"
-  add_foreign_key "price_group_products", "products", name: "price_group_products_product_id_fk"
+  add_foreign_key "statements", "facilities", :name => "fk_statement_facilities"
 
-  add_foreign_key "price_groups", "facilities", name: "sys_c008578"
-
-  add_foreign_key "price_policies", "price_groups", name: "sys_c008589"
-  add_foreign_key "price_policies", "products", name: "price_policies_product_id_fk"
-
-  add_foreign_key "product_access_groups", "products", name: "product_access_groups_product_id_fk"
-
-  add_foreign_key "product_access_schedule_rules", "product_access_groups", name: "product_access_schedule_rules_product_access_group_id_fk"
-  add_foreign_key "product_access_schedule_rules", "schedule_rules", name: "product_access_schedule_rules_schedule_rule_id_fk"
-
-  add_foreign_key "product_accessories", "products", name: "product_accessories_accessory_id_fk", column: "accessory_id"
-  add_foreign_key "product_accessories", "products", name: "product_accessories_product_id_fk"
-
-  add_foreign_key "product_users", "product_access_groups", name: "product_users_product_access_group_id_fk"
-  add_foreign_key "product_users", "products", name: "fk_products"
-  add_foreign_key "product_users", "users", name: "product_users_user_id_fk"
-
-  add_foreign_key "products", "facilities", name: "sys_c008556"
-  add_foreign_key "products", "facility_accounts", name: "fk_facility_accounts"
-  add_foreign_key "products", "order_statuses", name: "products_initial_order_status_id_fk", column: "initial_order_status_id"
-  add_foreign_key "products", "schedules", name: "fk_instruments_schedule"
-
-  add_foreign_key "relays", "products", name: "relays_instrument_id_fk", column: "instrument_id"
-
-  add_foreign_key "reservations", "order_details", name: "res_ord_det_id_fk"
-  add_foreign_key "reservations", "products", name: "reservations_product_id_fk"
-  add_foreign_key "reservations", "users", name: "reservations_canceled_by_fk", column: "canceled_by"
-
-  add_foreign_key "schedule_rules", "products", name: "sys_c008573", column: "instrument_id"
-
-  add_foreign_key "schedules", "facilities", name: "fk_schedules_facility"
-
-  add_foreign_key "statement_rows", "order_details", name: "statement_rows_order_detail_id_fk"
-  add_foreign_key "statement_rows", "statements", name: "statement_rows_statement_id_fk"
-
-  add_foreign_key "statements", "accounts", name: "statements_account_id_fk"
-  add_foreign_key "statements", "facilities", name: "fk_statement_facilities"
-  add_foreign_key "statements", "users", name: "statements_created_by_fk", column: "created_by"
-
-  add_foreign_key "stored_files", "order_details", name: "fk_files_od"
-  add_foreign_key "stored_files", "products", name: "fk_files_product"
-  add_foreign_key "stored_files", "users", name: "stored_files_created_by_fk", column: "created_by"
-
-  add_foreign_key "user_roles", "facilities", name: "user_roles_facility_id_fk"
-  add_foreign_key "user_roles", "users", name: "user_roles_user_id_fk"
+  add_foreign_key "stored_files", "order_details", :name => "fk_files_od"
+  add_foreign_key "stored_files", "products", :name => "fk_files_product"
 
 end
