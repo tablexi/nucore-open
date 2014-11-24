@@ -42,6 +42,7 @@ class OrderDetail < ActiveRecord::Base
   belongs_to :bundle, :foreign_key => 'bundle_product_id'
   has_one    :reservation, :dependent => :destroy, :inverse_of => :order_detail
   has_one    :external_service_receiver, :as => :receiver, :dependent => :destroy
+  has_many   :journal_rows, inverse_of: :order_detail
   has_many   :notifications, :as => :subject, :dependent => :destroy
   has_many   :stored_files, :dependent => :destroy
 
@@ -54,6 +55,12 @@ class OrderDetail < ActiveRecord::Base
     estimated_price_policy.try(:price_group)
   end
 
+  # consider changing in Rails 4 to
+  # `has_many :current_journal_rows, -> { where(journal_id: journal_id) }`
+  def current_journal_rows
+    journal_rows.where(journal_id: journal_id)
+  end
+
   delegate :journal_date, :to => :journal, :allow_nil => true
   def statement_date
     statement.try(:created_at)
@@ -62,7 +69,7 @@ class OrderDetail < ActiveRecord::Base
     journal_date || statement_date
   end
 
-  delegate :journal_rows, to: :journal, allow_nil: true
+
 
   alias_method :merge!, :save!
 
