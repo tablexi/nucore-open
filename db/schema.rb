@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140924222724) do
+ActiveRecord::Schema.define(:version => 20141120172247) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(:version => 20140924222724) do
   end
 
   add_index "account_users", ["account_id"], :name => "fk_accounts"
+  add_index "account_users", ["user_id"], :name => "index_account_users_on_user_id"
 
   create_table "accounts", :force => true do |t|
     t.string   "type",                   :limit => 50,  :null => false
@@ -97,6 +98,9 @@ ActiveRecord::Schema.define(:version => 20140924222724) do
     t.datetime "updated_at"
   end
 
+  add_index "external_service_passers", ["external_service_id"], :name => "index_external_service_passers_on_external_service_id"
+  add_index "external_service_passers", ["passer_id", "passer_type"], :name => "i_external_passer_id"
+
   create_table "external_service_receivers", :force => true do |t|
     t.integer  "external_service_id"
     t.integer  "receiver_id"
@@ -106,6 +110,9 @@ ActiveRecord::Schema.define(:version => 20140924222724) do
     t.string   "external_id"
     t.text     "response_data"
   end
+
+  add_index "external_service_receivers", ["external_service_id"], :name => "index_external_service_receivers_on_external_service_id"
+  add_index "external_service_receivers", ["receiver_id", "receiver_type"], :name => "i_external_receiver_id"
 
   create_table "external_services", :force => true do |t|
     t.string   "type"
@@ -165,6 +172,9 @@ ActiveRecord::Schema.define(:version => 20140924222724) do
     t.string  "account",         :limit => 5
   end
 
+  add_index "journal_rows", ["journal_id"], :name => "index_journal_rows_on_journal_id"
+  add_index "journal_rows", ["order_detail_id"], :name => "index_journal_rows_on_order_detail_id"
+
   create_table "journals", :force => true do |t|
     t.integer  "facility_id"
     t.string   "reference",         :limit => 50
@@ -191,6 +201,8 @@ ActiveRecord::Schema.define(:version => 20140924222724) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "notifications", ["user_id"], :name => "index_notifications_on_user_id"
 
   create_table "order_details", :force => true do |t|
     t.integer  "order_id",                                                                                 :null => false
@@ -233,6 +245,7 @@ ActiveRecord::Schema.define(:version => 20140924222724) do
   add_index "order_details", ["order_id"], :name => "sys_c009172"
   add_index "order_details", ["parent_order_detail_id"], :name => "order_details_parent_order_detail_id_fk"
   add_index "order_details", ["price_policy_id"], :name => "sys_c009175"
+  add_index "order_details", ["problem"], :name => "index_order_details_on_problem"
   add_index "order_details", ["product_accessory_id"], :name => "order_details_product_accessory_id_fk"
   add_index "order_details", ["product_id"], :name => "sys_c009173"
 
@@ -274,8 +287,10 @@ ActiveRecord::Schema.define(:version => 20140924222724) do
   end
 
   add_index "orders", ["account_id"], :name => "sys_c008808"
+  add_index "orders", ["facility_id"], :name => "index_orders_on_facility_id"
   add_index "orders", ["facility_id"], :name => "orders_facility_id_fk"
   add_index "orders", ["order_import_id"], :name => "index_orders_on_order_import_id"
+  add_index "orders", ["state"], :name => "index_orders_on_state"
 
   create_table "price_group_members", :force => true do |t|
     t.string  "type",           :limit => 50, :null => false
@@ -330,6 +345,7 @@ ActiveRecord::Schema.define(:version => 20140924222724) do
   end
 
   add_index "price_policies", ["price_group_id"], :name => "sys_c008589"
+  add_index "price_policies", ["product_id"], :name => "index_price_policies_on_product_id"
 
   create_table "product_access_groups", :force => true do |t|
     t.integer  "product_id", :null => false
@@ -338,10 +354,15 @@ ActiveRecord::Schema.define(:version => 20140924222724) do
     t.datetime "updated_at"
   end
 
+  add_index "product_access_groups", ["product_id"], :name => "index_product_access_groups_on_product_id"
+
   create_table "product_access_schedule_rules", :id => false, :force => true do |t|
     t.integer "product_access_group_id", :null => false
     t.integer "schedule_rule_id",        :null => false
   end
+
+  add_index "product_access_schedule_rules", ["product_access_group_id"], :name => "index_product_access_schedule_rules_on_product_access_group_id"
+  add_index "product_access_schedule_rules", ["schedule_rule_id"], :name => "index_product_access_schedule_rules_on_schedule_rule_id"
 
   create_table "product_accessories", :force => true do |t|
     t.integer  "product_id",                           :null => false
@@ -349,6 +370,9 @@ ActiveRecord::Schema.define(:version => 20140924222724) do
     t.string   "scaling_type", :default => "quantity", :null => false
     t.datetime "deleted_at"
   end
+
+  add_index "product_accessories", ["accessory_id"], :name => "index_product_accessories_on_accessory_id"
+  add_index "product_accessories", ["product_id"], :name => "index_product_accessories_on_product_id"
 
   create_table "product_users", :force => true do |t|
     t.integer  "product_id",              :null => false
@@ -359,6 +383,7 @@ ActiveRecord::Schema.define(:version => 20140924222724) do
   end
 
   add_index "product_users", ["product_id"], :name => "fk_products"
+  add_index "product_users", ["user_id"], :name => "index_product_users_on_user_id"
 
   create_table "products", :force => true do |t|
     t.string   "type",                    :limit => 50,                     :null => false
@@ -389,6 +414,7 @@ ActiveRecord::Schema.define(:version => 20140924222724) do
   add_index "products", ["facility_account_id"], :name => "fk_facility_accounts"
   add_index "products", ["facility_id"], :name => "sys_c008556"
   add_index "products", ["schedule_id"], :name => "i_instruments_schedule_id"
+  add_index "products", ["url_name"], :name => "index_products_on_url_name"
 
   create_table "relays", :force => true do |t|
     t.integer  "instrument_id"
@@ -418,6 +444,7 @@ ActiveRecord::Schema.define(:version => 20140924222724) do
   end
 
   add_index "reservations", ["order_detail_id"], :name => "res_ord_det_id_fk"
+  add_index "reservations", ["product_id", "reserve_start_at"], :name => "index_reservations_on_product_id_and_reserve_start_at"
   add_index "reservations", ["product_id"], :name => "reservations_instrument_id_fk"
 
   create_table "roles", :force => true do |t|
@@ -458,6 +485,9 @@ ActiveRecord::Schema.define(:version => 20140924222724) do
     t.integer  "order_detail_id"
   end
 
+  add_index "statement_rows", ["order_detail_id"], :name => "index_statement_rows_on_order_detail_id"
+  add_index "statement_rows", ["statement_id"], :name => "index_statement_rows_on_statement_id"
+
   create_table "statements", :force => true do |t|
     t.integer  "facility_id", :null => false
     t.integer  "created_by",  :null => false
@@ -465,6 +495,7 @@ ActiveRecord::Schema.define(:version => 20140924222724) do
     t.integer  "account_id"
   end
 
+  add_index "statements", ["account_id"], :name => "index_statements_on_account_id"
   add_index "statements", ["facility_id"], :name => "fk_statement_facilities"
 
   create_table "stored_files", :force => true do |t|
