@@ -161,6 +161,11 @@ describe ReservationUserActionPresenter do
         it 'includes a confirmation' do
           expect(text).to include 'confirm='
         end
+
+        it 'returns canceled_at to what it was before' do
+          text
+          expect(reservation.canceled_at).to be_blank
+        end
       end
 
       context 'there is a fee' do
