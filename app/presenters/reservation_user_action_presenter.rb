@@ -69,9 +69,7 @@ class ReservationUserActionPresenter
   end
 
   def cancel_link
-    order_detail.reservation.canceled_at = Time.zone.now
-
-    fee = order_detail.cancellation_fee
+    fee = with_cancelation_now { order_detail.cancellation_fee }
 
     if fee > 0
       link_to I18n.t('reservations.delete.link'), order_order_detail_path(order, order_detail, cancel: 'cancel'),
@@ -88,5 +86,16 @@ class ReservationUserActionPresenter
     link_to I18n.t('reservations.moving_up.link'), order_order_detail_reservation_move_reservation_path(order, order_detail, reservation),
       class: 'move-res',
       data: { reservation_id: reservation.id }
+  end
+
+  private
+
+  # Yields with canceled_at set to now, but returns it to the previous value
+  def with_cancelation_now
+    old_value = order_detail.reservation.canceled_at
+    order_detail.reservation.canceled_at = Time.zone.now
+    result = yield
+    order_detail.reservation.canceled_at = old_value
+    result
   end
 end
