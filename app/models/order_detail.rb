@@ -46,6 +46,7 @@ class OrderDetail < ActiveRecord::Base
   has_many   :notifications, :as => :subject, :dependent => :destroy
   has_many   :stored_files, :dependent => :destroy
 
+  delegate :edit_url, to: :external_service_receiver, allow_nil: true
   delegate :invoice_number, to: :statement, prefix: true
   delegate :requires_but_missing_actuals?, to: :reservation, allow_nil: true
 

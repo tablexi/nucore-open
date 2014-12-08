@@ -8,9 +8,11 @@
 
   .order-action
     - if order_detail.survey_completed?
-      = link_to 'Edit Online Order Form', order_detail.external_service_receiver.edit_url, :class => 'btn'
+      = link_to t('orders.show.order_form.edit'),
+        survey.edit_url(order_detail, request), class: 'btn'
     - else
-      = link_to 'Complete Online Order Form', survey.new_url(order_detail, request), :class => 'btn'
+      = link_to t('orders.show.order_form.new'),
+        survey.new_url(order_detail, request), class: 'btn'
 
 - if order_detail.product.stored_files.template.count > 0
   .order-action

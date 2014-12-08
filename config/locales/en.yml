@@ -503,6 +503,9 @@ en:
         instrument: "* Instrument pricing is estimated; the final price may vary based on actual time used."
       more_options: More options
       confirm: "Are you sure you wish to place this order?"
+      order_form:
+        edit: "Edit Online Order Form"
+        new: "Complete Online Order Form"
     purchase:
       error: Unable to place order.
 
