@@ -21,6 +21,7 @@ class OrderDetail < ActiveRecord::Base
 
   before_save :clear_statement, if: :account_id_changed?
   before_save :reassign_price, if: lambda { |o| o.account_id_changed? || o.quantity_changed? }
+  before_save :update_journal_row_amounts, if: :actual_cost_changed?
 
   before_save :set_problem_order
   def set_problem_order
@@ -608,6 +609,10 @@ class OrderDetail < ActiveRecord::Base
     elsif actual_cost
       assign_actual_price
     end
+  end
+
+  def update_journal_row_amounts
+    journal_rows.each(&:update_amount)
   end
 
   def assign_estimated_price(second_account=nil, date = Time.zone.now)

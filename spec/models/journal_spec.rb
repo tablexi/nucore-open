@@ -10,7 +10,27 @@ describe Journal do
   end
 
   let(:facility) { create(:facility) }
+  let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
   let(:journal_date) { Time.zone.now }
+  let(:order) { create(:purchased_order, product: product) }
+  let(:product) { create(:setup_item, facility: facility, facility_account: facility_account) }
+
+  context "#amount" do
+    context "when its order detail quantities change" do
+      let(:order_details) { order.order_details }
+
+      before :each do
+        order_details.each(&:to_complete!)
+        journal.save!
+        journal.create_journal_rows!(order_details)
+      end
+
+      it "updates its total" do
+        expect { journal.order_details.first.increment!(:quantity) }
+          .to change { journal.reload.amount }.from(1).to(2)
+      end
+    end
+  end
 
   context "with valid attributes" do
     it "can be created" do

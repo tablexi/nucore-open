@@ -6,4 +6,8 @@ class JournalRow < ActiveRecord::Base
   validates_presence_of :account if SettingsHelper.feature_on? :expense_accounts
 
   delegate :fulfilled_at, to: :order_detail, allow_nil: true
+
+  def update_amount
+    update_attributes(amount: order_detail.actual_cost)
+  end
 end
