@@ -14,6 +14,10 @@ class UrlService < ExternalService
     "#{location}?#{query_string(receiver, request)}"
   end
 
+  def edit_url(receiver, request)
+    "#{receiver.edit_url}?#{query_string(receiver, request)}"
+  end
+
   def query_string(receiver, request)
     {
       success_url: success_path(receiver, request),

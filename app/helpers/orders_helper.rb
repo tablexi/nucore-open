@@ -3,8 +3,4 @@ module OrdersHelper
     best_status = order.order_details.to_a.find { |od| od.display_cost_class != 'unassigned' }
     best_status ? best_status.display_cost_class.humanize : ''
   end
-
-  def edit_order_form_url(order_detail, survey, request)
-    "#{order_detail.edit_url}?#{survey.query_string(order_detail, request)}"
-  end
 end

@@ -9,7 +9,7 @@
   .order-action
     - if order_detail.survey_completed?
       = link_to t('orders.show.order_form.edit'),
-        edit_order_form_url(order_detail, survey, request), class: 'btn'
+        survey.edit_url(order_detail, request), class: 'btn'
     - else
       = link_to t('orders.show.order_form.new'),
         survey.new_url(order_detail, request), class: 'btn'
