@@ -1,4 +1,5 @@
 class OrderImportsController < ApplicationController
+  include ActionView::Helpers::TextHelper
 
   admin_tab     :all
   before_filter :authenticate_user!
@@ -29,6 +30,10 @@ class OrderImportsController < ApplicationController
 
   private
 
+  def flash_now(key, message)
+    flash.now[key] = truncate(message, length: 2048)
+  end
+
   def create_order_import!
     OrderImport.create!(
       params[:order_import].merge(
@@ -42,11 +47,11 @@ class OrderImportsController < ApplicationController
   def flash_import_result
     case
     when @import_result.blank?
-      flash.now[:notice] = I18n.t 'controllers.order_imports.create.blank'
+      flash_now(:notice, I18n.t('controllers.order_imports.create.blank'))
     when @import_result.failed?
-      flash.now[:error] = import_error_message
+      flash_now(:error, import_error_message)
     else
-      flash.now[:notice] = import_success_message
+      flash_now(:notice, import_success_message)
     end
   end
 
@@ -68,7 +73,11 @@ class OrderImportsController < ApplicationController
 
   def import_exception_alert(exception)
     Rails.logger.error "#{exception.message}\n#{exception.backtrace.join("\n")}"
-    flash.now[:error] = I18n.t 'controllers.order_imports.create.error', error: exception.message
+    flash_now(:error, import_exception_message(exception))
+  end
+
+  def import_exception_message(exception)
+    I18n.t('controllers.order_imports.create.error', error: exception.message)
   end
 
   def import_success_message
