@@ -118,11 +118,12 @@ module TransactionSearch
     @order_details = @order_details.
         includes(:order => :facility).
         includes(:account).
-        includes(:product).
-        includes(:order_status).
+        preload(:product).
+        preload(:order_status).
         includes(:reservation).
         includes(:order => :user).
-        includes(:price_policy)
+        includes(:price_policy).
+        preload(:bundle)
   end
 
   def sort_and_paginate
