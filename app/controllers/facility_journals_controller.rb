@@ -209,7 +209,7 @@ class FacilityJournalsController < ApplicationController
     @journal.errors.full_messages.each do |error|
       msg += "#{error}<br/>"
 
-      if msg.size > 3000 # don't overflow session (flash) cookie
+      if msg.size > 2000 # don't overflow session (flash) cookie
         msg += I18n.t 'controllers.facility_journals.create_with_search.more_errors'
         break
       end

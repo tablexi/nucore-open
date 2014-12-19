@@ -31,7 +31,7 @@ class Journal < ActiveRecord::Base
         begin
           ValidatorFactory.instance(account.account_number, od.product.account).account_is_open!
         rescue ValidatorError => e
-          row_errors << "Account #{account} on order detail ##{od} is invalid. #{e.message}."
+          row_errors << "Account #{account.account_number_to_s} on order detail ##{od} is invalid. #{e.message}."
         end
 
 
