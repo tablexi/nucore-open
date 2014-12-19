@@ -22,14 +22,10 @@ describe OrderImportsController do
 
   shared_examples_for "it imported no orders" do
     let(:import_id) { assigns(:order_import).id }
-    let(:order_count) do
-      ActiveRecord::Base.connection.select_value(
-        "SELECT COUNT(*) FROM orders WHERE order_import_id = #{import_id}"
-      )
-    end
+    let(:orders) { Order.where(order_import_id: import_id) }
 
     it "imported no orders" do
-      expect(order_count).to eq 0
+      expect(orders).to be_empty
     end
 
     it "flashes an import failure message" do
