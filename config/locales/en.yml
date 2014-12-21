@@ -921,6 +921,7 @@ en:
     errors:
       models:
         journal:
+          invalid_account: "Account %{account_number} is invalid. %{validation_error}."
           pending_overlap: "%{label}: Facility %{facility} already has a pending journal"
         reservation:
           cannot_move: Sorry, but your reservation can no longer be moved.

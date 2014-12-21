@@ -31,7 +31,10 @@ class Journal < ActiveRecord::Base
         begin
           validate_account_is_open!(account.account_number, od.product.account)
         rescue ValidatorError => e
-          row_errors << "Account #{account.account_number_to_s} on order detail ##{od} is invalid. #{e.message}."
+          row_errors << I18n.t("activerecord.errors.models.journal.invalid_account",
+            account_number: account.account_number_to_s,
+            validation_error: e.message
+          )
         end
 
         create_journal_row_for_order_detail!(od)
@@ -47,7 +50,7 @@ class Journal < ActiveRecord::Base
 
       set_journal_for_order_details(order_detail_ids) if row_errors.blank?
 
-      return row_errors
+      row_errors.uniq
     end
 
     def create_spreadsheet
