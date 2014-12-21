@@ -921,7 +921,7 @@ en:
     errors:
       models:
         journal:
-          pending_overlap: "This journal date overlaps with a pending journal. You may not generate a new journal until the pending journal is closed."
+          pending_overlap: "%{label}: Facility %{facility} already has a pending journal"
         reservation:
           cannot_move: Sorry, but your reservation can no longer be moved.
           move_failed: Sorry, but your reservation could not be moved. Please try again later.
