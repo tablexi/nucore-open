@@ -29,7 +29,7 @@ class Journal < ActiveRecord::Base
         end
 
         begin
-          validate_account_is_open!(account.account_number, od.product.account)
+          ValidatorFactory.instance(account.account_number, od.product.account).account_is_open!
         rescue ValidatorError => e
           row_errors << I18n.t("activerecord.errors.models.journal.invalid_account",
             account_number: account.account_number_to_s,
@@ -37,7 +37,7 @@ class Journal < ActiveRecord::Base
           )
         end
 
-        create_journal_row_for_order_detail!(od)
+        JournalRow.create!(journal_row_attributes_from_order_detail(od))
         order_detail_ids << od.id
         recharge_by_product[od.product_id] = recharge_by_product[od.product_id].to_f + od.total if recharge_enabled
       end
@@ -45,7 +45,7 @@ class Journal < ActiveRecord::Base
       # create rows for each recharge chart string
       recharge_by_product.each_pair do |product_id, total|
         product = Product.find(product_id)
-        create_journal_row_for_product_and_total!(product, total)
+        JournalRow.create!(journal_row_attributes_from_product_and_total(product, total))
       end
 
       set_journal_for_order_details(order_detail_ids) if row_errors.blank?
@@ -70,27 +70,23 @@ class Journal < ActiveRecord::Base
 
     private
 
-    def create_journal_row_for_order_detail!(order_detail)
-      JournalRow.create!(
+    def journal_row_attributes_from_order_detail(order_detail)
+      {
         account: order_detail.product.account,
         amount: order_detail.total,
         description: order_detail.long_description,
         journal_id: id,
         order_detail_id: order_detail.id,
-      )
+      }
     end
 
-    def create_journal_row_for_product_and_total!(product, total)
-      JournalRow.create!(
+    def journal_row_attributes_from_product_and_total(product, total)
+      {
         account: product.facility_account.revenue_account,
         amount: total * -1,
         description: product.to_s,
         journal_id: id,
-      )
-    end
-
-    def validate_account_is_open!(account_number, product_account)
-      ValidatorFactory.instance(account_number, product_account).account_is_open!
+      }
     end
   end
 
