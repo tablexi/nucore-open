@@ -674,6 +674,11 @@ class OrderDetail < ActiveRecord::Base
     "Order # #{to_s}"
   end
 
+  def long_description
+    "##{self}: #{order.user}: #{I18n.l(fulfilled_at.to_date, format: :usa)}: "\
+    "#{product} x#{quantity}"
+  end
+
   def cost_estimated?
     price_policy.nil? && estimated_cost && estimated_subsidy && actual_cost.nil? && actual_subsidy.nil?
   end

@@ -23,7 +23,7 @@ class Journal < ActiveRecord::Base
           # check against facility_ids which actually have pending journals
           # in the DB
           if pending_facility_ids.member? od_facility_id
-            raise  "This journal date overlaps with a pending journal. You may not generate a new journal until the pending journal is closed."
+            raise I18n.t("activerecord.errors.models.journal.pending_overlap", label: od.to_s, facility: Facility.find(od_facility_id))
           end
           facility_ids_already_in_journal.add(od_facility_id)
         end
@@ -31,17 +31,13 @@ class Journal < ActiveRecord::Base
         begin
           ValidatorFactory.instance(account.account_number, od.product.account).account_is_open!
         rescue ValidatorError => e
-          row_errors << "Account #{account} on order detail ##{od} is invalid. #{e.message}."
+          row_errors << I18n.t("activerecord.errors.models.journal.invalid_account",
+            account_number: account.account_number_to_s,
+            validation_error: e.message
+          )
         end
 
-
-        JournalRow.create!(
-          :journal_id      => id,
-          :order_detail_id => od.id,
-          :amount          => od.total,
-          :description     => "##{od}: #{od.order.user}: #{od.fulfilled_at.strftime("%m/%d/%Y")}: #{od.product} x#{od.quantity}",
-          :account         => od.product.account
-        )
+        JournalRow.create!(journal_row_attributes_from_order_detail(od))
         order_detail_ids << od.id
         recharge_by_product[od.product_id] = recharge_by_product[od.product_id].to_f + od.total if recharge_enabled
       end
@@ -49,20 +45,13 @@ class Journal < ActiveRecord::Base
       # create rows for each recharge chart string
       recharge_by_product.each_pair do |product_id, total|
         product = Product.find(product_id)
-        fa      = product.facility_account
-        JournalRow.create!(
-          :journal_id      => id,
-          :account         => fa.revenue_account,
-          :amount          => total * -1,
-          :description     => product.to_s
-        )
+        JournalRow.create!(journal_row_attributes_from_product_and_total(product, total))
       end
 
       set_journal_for_order_details(order_detail_ids) if row_errors.blank?
 
-      return row_errors
+      row_errors.uniq
     end
-
 
     def create_spreadsheet
       rows = journal_rows
@@ -77,6 +66,27 @@ class Journal < ActiveRecord::Base
       # remove temp file
       File.unlink(temp_file.path) rescue nil
       status
+    end
+
+    private
+
+    def journal_row_attributes_from_order_detail(order_detail)
+      {
+        account: order_detail.product.account,
+        amount: order_detail.total,
+        description: order_detail.long_description,
+        journal_id: id,
+        order_detail_id: order_detail.id,
+      }
+    end
+
+    def journal_row_attributes_from_product_and_total(product, total)
+      {
+        account: product.facility_account.revenue_account,
+        amount: total * -1,
+        description: product.to_s,
+        journal_id: id,
+      }
     end
   end
 
