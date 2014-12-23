@@ -304,5 +304,9 @@ class OrderImport < ActiveRecord::Base
     def blank?
       successes == 0 && failures == 0
     end
+
+    def to_h
+      { successes: successes, failures: failures }
+    end
   end
 end
