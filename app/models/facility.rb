@@ -26,6 +26,7 @@ class Facility < ActiveRecord::Base
       self.collect(&:account).compact.uniq
     end
   end
+  has_many :order_imports, dependent: :destroy
   has_many :orders, :conditions => 'ordered_at IS NOT NULL'
   has_many :facility_accounts
   has_many :user_roles, :dependent => :destroy
@@ -100,6 +101,7 @@ class Facility < ActiveRecord::Base
   end
 
   private
+
   def set_journal_mask
     f = Facility.find(:all, :limit => 1, :order => 'journal_mask DESC').first
     if f && f.journal_mask.match(/^C(\d{2})$/)

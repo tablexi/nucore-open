@@ -1,5 +1,5 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 = content_for :tabnav do
   = render partial: "admin/shared/tabnav_order"
@@ -14,4 +14,32 @@
       = f.file_field :upload_file
       = f.input :fail_on_error, inline_label: t(".fail_on_error"), label: false
       = f.input :send_receipts, inline_label: t(".send_receipts"), label: false
+      %label
+        = t(".send_report_to")
+        = text_field_tag :report_recipient, @current_user.email
       = submit_tag "Import", class: ["btn", "btn-primary"]
+
+- if @order_imports.any?
+  %h3= t ".history.head"
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th= OrderImport.human_attribute_name(:created_at)
+        %th= OrderImport.human_attribute_name(:creator)
+        %th= OrderImport.human_attribute_name(:processed_at)
+        %th= OrderImport.human_attribute_name(:error_file)
+    %tbody
+      - @order_imports.each do |order_import|
+        %tr
+          %td= l(order_import.created_at, format: :usa)
+          %td= order_import.creator
+          %td
+            - if order_import.processed?
+              = l(order_import.processed_at, format: :usa)
+            - else
+              = t(".in_process")
+          %td
+            - if order_import.error_file_present?
+              = link_to order_import.error_file.name, order_import.error_file.file.url
+
+  %p= will_paginate(@order_imports)

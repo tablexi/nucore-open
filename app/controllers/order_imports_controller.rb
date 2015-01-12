@@ -15,24 +15,20 @@ class OrderImportsController < ApplicationController
 
   def new
     @order_import = OrderImport.new
+    @order_imports = get_order_imports.paginate(page: params[:page])
   end
 
   def create
     begin
       process_order_import!
-      flash_import_result
     rescue => e
       import_exception_alert(e)
     end
 
-    render action: 'show'
+    redirect_to new_facility_order_import_path
   end
 
   private
-
-  def flash_now(key, message)
-    flash.now[key] = truncate(message, length: 2048)
-  end
 
   def create_order_import!
     OrderImport.create!(
@@ -44,51 +40,32 @@ class OrderImportsController < ApplicationController
     )
   end
 
-  def flash_import_result
-    case
-    when @import_result.blank?
-      flash_now(:notice, I18n.t('controllers.order_imports.create.blank'))
-    when @import_result.failed?
-      flash_now(:error, import_error_message)
-    else
-      flash_now(:notice, import_success_message)
-    end
-  end
-
-  def fail_on_error?
-    @order_import.try(:fail_on_error).present?
-  end
-
-  def failure_msg_key
-    if fail_on_error?
-      'controllers.order_imports.create.fail_immediately'
-    else
-      'controllers.order_imports.create.fail_continue_on_error'
-    end
-  end
-
-  def import_error_message
-    I18n.t failure_msg_key, @import_result.to_h
-  end
-
   def import_exception_alert(exception)
     Rails.logger.error "#{exception.message}\n#{exception.backtrace.join("\n")}"
-    flash_now(:error, import_exception_message(exception))
+    flash[:error] = import_exception_message(exception)
   end
 
   def import_exception_message(exception)
     I18n.t('controllers.order_imports.create.error', error: exception.message)
   end
 
-  def import_success_message
-    I18n.t 'controllers.order_imports.create.success', @import_result.to_h
+  def get_order_imports
+    @current_facility.order_imports.order("created_at DESC")
   end
 
   def process_order_import!
-    @import_result = if upload_file.present?
-      @order_import = create_order_import!
-      @order_import.process!
-    end
+    raise "Please upload a valid import file" if upload_file.blank?
+    @order_import = create_order_import!
+    report.delay.deliver!(report_recipient)
+    flash[:notice] = t("controllers.order_imports.create.job_is_queued", email: @report_recipient)
+  end
+
+  def report_recipient
+    @report_recipient ||= params[:report_recipient].presence || @order_import.creator.email
+  end
+
+  def report
+    @report ||= Reports::OrderImport.new(@order_import)
   end
 
   def stored_file

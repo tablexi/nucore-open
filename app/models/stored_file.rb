@@ -22,6 +22,10 @@ class StoredFile < ActiveRecord::Base
   scope :import_upload,     :conditions => {:file_type => 'import_upload'}
   scope :import_error,      :conditions => {:file_type => 'import_error'}
 
+  def read
+    Paperclip.io_adapters.for(file).read
+  end
+
   # Map file extensions to mime types.
   # Thanks to bug in Flash 8 the content type is always set to application/octet-stream.
   # From: http://blog.airbladesoftware.com/2007/8/8/uploading-files-with-swfupload
@@ -29,5 +33,4 @@ class StoredFile < ActiveRecord::Base
     data.content_type = MIME::Types.type_for(data.original_filename).first.to_s
     self.file = data
   end
-
 end

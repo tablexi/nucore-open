@@ -215,6 +215,11 @@ en:
         actual_subsidy: Adjustment
         actual_total: Total
         reconciled_note: Reconciliation Note
+      order_import:
+        created_at: Uploaded at
+        creator: Imported by
+        error_file: Error report
+        processed_at: Processed at
       order_status:
         parent: Status of
       journal:

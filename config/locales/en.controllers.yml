@@ -118,10 +118,7 @@ en:
     order_imports:
       create:
         error: "Our apologies, but an error occurred while importing: %{error}"
-        success: "The import completed successfully. %{successes} line items were created."
-        blank: "The uploaded import file was blank. Please enter your orders and try the import again."
-        fail_immediately: "The import failed. %{successes} line item(s) would have been created successfully, but %{failures} failed. Please download the error report below, view each error message, correct the error, and try to import again."
-        fail_continue_on_error: "The import failed. %{successes} line item(s) created successfully, %{failures} failed. Please download the error report below, view each error message, correct the error, and try to import again."
+        job_is_queued: "The bulk import is being processed. A report will be sent to %{email} when complete."
 
     users:
       access_list:
