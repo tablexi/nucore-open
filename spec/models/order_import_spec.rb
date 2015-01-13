@@ -54,7 +54,7 @@ describe OrderImport do
   let(:fiscal_year_beginning) { SettingsHelper::fiscal_year_beginning }
   let(:guest) { @guest }
   let(:guest2) { create(:user, username: "guest2") }
-  let(:import_errors) { order_import.import_row(csv_row) }
+  let(:import_errors) { order_import.import_row(csv_row).errors }
   let(:import_file_row_count) { import_file.read.split("\n").count }
   let(:item) do
     facility.items.create!(attributes_for(:item,
@@ -118,7 +118,7 @@ describe OrderImport do
   shared_examples_for "it does not send notifications" do
     it "does not send notifications" do
       expect(Notifier).to receive(:order_receipt).never
-      order_import.process!
+      order_import.process_upload!
     end
   end
 
@@ -322,7 +322,9 @@ describe OrderImport do
       let(:reloaded_order_detail) { OrderDetail.find(OrderDetail.first.id).reload }
 
       before :each do
-        csv_rows.each { |row| expect(order_import.import_row(row)).to be_empty }
+        csv_rows.each do |row|
+          expect(order_import.import_row(row).errors).to be_empty
+        end
       end
 
       describe "with the same order_key" do
@@ -424,7 +426,7 @@ end
           .once
           .and_return(double(deliver: nil))
 
-        order_import.process!
+        order_import.process_upload!
       end
     end
 
@@ -457,7 +459,7 @@ end
               .once
               .and_return(double(deliver: nil))
 
-            order_import.process!
+            order_import.process_upload!
           end
         end
       end
@@ -501,13 +503,13 @@ end
         end
 
         it "creates no orders" do
-          expect { order_import.process! }.not_to change(Order, :count)
+          expect { order_import.process_upload! }.not_to change(Order, :count)
         end
 
         it_behaves_like "it does not send notifications"
 
         it "includes all rows in its error report" do
-          order_import.process!
+          order_import.process_upload!
           expect(error_file_row_count).to eq(import_file_row_count)
         end
       end
@@ -519,7 +521,7 @@ end
         end
 
         it "creates an order" do
-          expect { order_import.process! }.to change(Order, :count).by(1)
+          expect { order_import.process_upload! }.to change(Order, :count).by(1)
         end
 
         it "sends a notification for second order" do
@@ -528,11 +530,11 @@ end
             .once
             .and_return(double(deliver: nil))
 
-          order_import.process!
+          order_import.process_upload!
         end
 
         it "has the first two rows in its error report" do
-          order_import.process!
+          order_import.process_upload!
 
           # minus one because one order (and order_detail) will succeed
           expect(error_file_row_count).to eq(import_file_row_count - 1)
@@ -560,13 +562,13 @@ end
 
       shared_examples_for "an import failure" do
         it "creates no orders" do
-          expect { order_import.process! }.not_to change(Order, :count)
+          expect { order_import.process_upload! }.not_to change(Order, :count)
         end
 
         it_behaves_like "it does not send notifications"
 
         it "includes all rows in its error report (as there's only one order)" do
-          order_import.process!
+          order_import.process_upload!
           expect(error_file_row_count).to eq(import_file_row_count)
         end
       end

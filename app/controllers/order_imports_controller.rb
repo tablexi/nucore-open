@@ -85,10 +85,12 @@ class OrderImportsController < ApplicationController
   end
 
   def process_order_import!
-    @import_result = if upload_file.present?
-      @order_import = create_order_import!
-      @order_import.process!
-    end
+    @import_result =
+      if upload_file.present?
+        @order_import = create_order_import!
+        @order_import.process_upload!
+        @order_import.result
+      end
   end
 
   def stored_file
