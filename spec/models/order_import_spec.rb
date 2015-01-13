@@ -54,7 +54,7 @@ describe OrderImport do
   let(:fiscal_year_beginning) { SettingsHelper::fiscal_year_beginning }
   let(:guest) { @guest }
   let(:guest2) { create(:user, username: "guest2") }
-  let(:import_errors) { order_import.errors_for(csv_row) }
+  let(:import_errors) { order_import.import_row(csv_row) }
   let(:import_file_row_count) { import_file.read.split("\n").count }
   let(:item) do
     facility.items.create!(attributes_for(:item,
@@ -130,7 +130,7 @@ describe OrderImport do
     it { should validate_presence_of :created_by }
   end
 
-  describe "errors_for(csv_row) (low-level) behavior" do
+  describe "#import_row (low-level behavior)" do
     context "with a valid row" do
       it "has no errors" do
         expect(import_errors).to be_empty
@@ -322,7 +322,7 @@ describe OrderImport do
       let(:reloaded_order_detail) { OrderDetail.find(OrderDetail.first.id).reload }
 
       before :each do
-        csv_rows.each { |row| expect(order_import.errors_for(row)).to be_empty }
+        csv_rows.each { |row| expect(order_import.import_row(row)).to be_empty }
       end
 
       describe "with the same order_key" do

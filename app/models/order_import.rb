@@ -26,7 +26,6 @@ class OrderImport < ActiveRecord::Base
   validates_presence_of :upload_file, :created_by
   attr_accessor :facility
   attr_accessor :error_report
-  attr_accessor :order_id_cache_by_order_key
 
   #
   # Tries to import the orders defined in #upload_file.
@@ -69,7 +68,7 @@ class OrderImport < ActiveRecord::Base
     # loop over non-header rows
     Order.transaction do
       CSV.open(upload_file_path, :headers => true).each do |row|
-        row_errors = errors_for(row)
+        row_errors = import_row(row)
 
         # write to error_report in case an error occurs
         row[ERRORS_HEADER] = row_errors.join(", ")
@@ -121,7 +120,7 @@ class OrderImport < ActiveRecord::Base
       # one transaction per order_key (per order effectively)
       Order.transaction do
         rows.each do |row|
-          row_errors = errors_for(row)
+          row_errors = import_row(row)
 
           # one row actually errored out
           if row_errors.length > 0 || in_error_mode
@@ -172,7 +171,7 @@ class OrderImport < ActiveRecord::Base
   end
 
 
-  def errors_for(row)
+  def import_row(row)
     errs = []
     account_number = row[CHART_STRING_HEADER].strip
 
