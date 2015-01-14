@@ -15,6 +15,7 @@ class OrderImportsController < ApplicationController
 
   def new
     @order_import = OrderImport.new
+    @order_imports = get_order_imports.paginate(page: params[:page])
   end
 
   def create
@@ -82,6 +83,10 @@ class OrderImportsController < ApplicationController
 
   def import_success_message
     I18n.t 'controllers.order_imports.create.success', @import_result.to_h
+  end
+
+  def get_order_imports
+    @current_facility.order_imports.order("created_at DESC")
   end
 
   def process_order_import!

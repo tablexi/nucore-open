@@ -73,6 +73,10 @@ class Facility < ActiveRecord::Base
     is_active? ? 'Active' : 'Inactive'
   end
 
+  def order_imports
+    OrderImport.where(id: order_import_ids)
+  end
+
   def order_notification_email
     #TODO: generate an email address to send the order notifications to
     nil
@@ -100,6 +104,11 @@ class Facility < ActiveRecord::Base
   end
 
   private
+
+  def order_import_ids
+    orders.where("order_import_id IS NOT NULL").pluck(:order_import_id)
+  end
+
   def set_journal_mask
     f = Facility.find(:all, :limit => 1, :order => 'journal_mask DESC').first
     if f && f.journal_mask.match(/^C(\d{2})$/)
