@@ -59,6 +59,10 @@ class OrderImport < ActiveRecord::Base
     @result ||= Result.new
   end
 
+  def error_file_content
+    error_file.try(:read)
+  end
+
   private
 
   def create_order_from_imported_row!(row_importer)
