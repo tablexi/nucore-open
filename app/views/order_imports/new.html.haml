@@ -14,6 +14,9 @@
       = f.file_field :upload_file
       = f.input :fail_on_error, inline_label: t(".fail_on_error"), label: false
       = f.input :send_receipts, inline_label: t(".send_receipts"), label: false
+      %label
+        = t(".send_report_to")
+        = text_field_tag :report_recipient, @current_user.email
       = submit_tag "Import", class: ["btn", "btn-primary"]
 
 - if @order_imports.any?

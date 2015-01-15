@@ -1,4 +1,4 @@
-class ExportRawReportMailer < ActionMailer::Base
+class ExportRawReportMailer < ActionMailer::Base # TODO use CsvReportMailer instead
   default from: Settings.email.from
 
   def raw_report_email(to_address, report)
