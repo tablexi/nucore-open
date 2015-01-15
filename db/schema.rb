@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141125002918) do
+ActiveRecord::Schema.define(:version => 20150115151805) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -259,6 +259,7 @@ ActiveRecord::Schema.define(:version => 20141125002918) do
   add_index "order_details", ["statement_id"], :name => "index_order_details_on_statement_id"
 
   create_table "order_imports", :force => true do |t|
+    t.integer  "facility_id"
     t.integer  "upload_file_id",                    :null => false
     t.integer  "error_file_id"
     t.boolean  "fail_on_error",  :default => true
@@ -270,6 +271,7 @@ ActiveRecord::Schema.define(:version => 20141125002918) do
 
   add_index "order_imports", ["created_by"], :name => "index_order_imports_on_created_by"
   add_index "order_imports", ["error_file_id"], :name => "index_order_imports_on_error_file_id"
+  add_index "order_imports", ["facility_id"], :name => "i_order_imports_facility_id"
   add_index "order_imports", ["upload_file_id"], :name => "index_order_imports_on_upload_file_id"
 
   create_table "order_statuses", :force => true do |t|
@@ -600,6 +602,8 @@ ActiveRecord::Schema.define(:version => 20141125002918) do
   add_foreign_key "order_details", "products", :name => "fk_bundle_prod_id", :column => "bundle_product_id"
   add_foreign_key "order_details", "products", :name => "sys_c009173"
   add_foreign_key "order_details", "users", :name => "order_details_dispute_by_id_fk", :column => "dispute_by_id"
+
+  add_foreign_key "order_imports", "facilities", :name => "fk_order_imports_facilities"
 
   add_foreign_key "orders", "accounts", :name => "sys_c008808"
   add_foreign_key "orders", "facilities", :name => "orders_facility_id_fk"

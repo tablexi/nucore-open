@@ -3,12 +3,12 @@ require "csv_helper"
 class OrderImport < ActiveRecord::Base
   include CSVHelper
 
+  belongs_to :facility
   belongs_to :upload_file, class_name: "StoredFile", dependent: :destroy
   belongs_to :error_file, class_name: "StoredFile", dependent: :destroy
   belongs_to :creator, class_name: "User", foreign_key: :created_by
 
   validates_presence_of :upload_file, :created_by
-  attr_accessor :facility
   attr_accessor :error_report
 
   def fetch_or_create_order!(row_importer)
