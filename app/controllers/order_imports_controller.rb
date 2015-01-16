@@ -30,10 +30,6 @@ class OrderImportsController < ApplicationController
 
   private
 
-  def set_flash(key, message)
-    flash[key] = truncate(message, length: 2048)
-  end
-
   def create_order_import!
     OrderImport.create!(
       params[:order_import].merge(
@@ -46,7 +42,7 @@ class OrderImportsController < ApplicationController
 
   def import_exception_alert(exception)
     Rails.logger.error "#{exception.message}\n#{exception.backtrace.join("\n")}"
-    set_flash(:error, import_exception_message(exception))
+    flash[:error] = import_exception_message(exception)
   end
 
   def import_exception_message(exception)
@@ -66,7 +62,7 @@ class OrderImportsController < ApplicationController
 
   def queue_report
     CsvReportMailer.delay.csv_report_email(report_recipient, report)
-    set_flash(:notice, t("controllers.order_imports.create.job_is_queued", email: @report_recipient))
+    flash[:notice] = t("controllers.order_imports.create.job_is_queued", email: @report_recipient)
   end
 
   def report_recipient
