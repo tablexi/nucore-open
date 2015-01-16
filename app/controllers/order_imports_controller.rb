@@ -70,7 +70,7 @@ class OrderImportsController < ApplicationController
   end
 
   def report_recipient
-    @report_recipient ||= params[:report_recipient] ||= @order_import.creator.email
+    @report_recipient ||= params[:report_recipient].presence || @order_import.creator.email
   end
 
   def report
