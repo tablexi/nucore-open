@@ -18,7 +18,9 @@ def nucore_format_date(date)
   date.strftime("%m/%d/%Y")
 end
 
-describe OrderImport do
+describe OrderImport, :timecop_freeze do
+  let(:now) { fiscal_year_beginning + 5.days }
+
   subject(:order_import) do
     OrderImport.create!(
       created_by: director.id,
@@ -89,8 +91,6 @@ describe OrderImport do
   before(:all) { create_users }
 
   before :each do
-    Timecop.freeze(fiscal_year_beginning + 5.days)
-
     grant_role(director, facility)
 
     price_group = facility.price_groups.create!(attributes_for(:price_group))
@@ -112,8 +112,6 @@ describe OrderImport do
       account_users_attributes: account_users_attributes,
     )
   end
-
-  after { Timecop.return }
 
   shared_examples_for "it does not send notifications" do
     it "does not send notifications" do
