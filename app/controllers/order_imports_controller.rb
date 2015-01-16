@@ -61,10 +61,10 @@ class OrderImportsController < ApplicationController
     raise "Please upload a valid import file" if upload_file.blank?
     @order_import = create_order_import!
     @order_import.process_upload!
-    deliver_report
+    queue_report
   end
 
-  def deliver_report
+  def queue_report
     CsvReportMailer.delay.csv_report_email(report_recipient, report)
     set_flash(:notice, t("controllers.order_imports.create.job_is_queued", email: @report_recipient))
   end
