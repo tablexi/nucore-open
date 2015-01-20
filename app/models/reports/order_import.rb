@@ -36,7 +36,3 @@ class Reports::OrderImport
     end
   end
 end
-__END__
-    "The results of your bulk order upload were:\n"\
-    "  Sucessful imports: #{@order_import.result.successes}\n"\
-    "  Failed imports: #{@order_import.result.failures}\n"
