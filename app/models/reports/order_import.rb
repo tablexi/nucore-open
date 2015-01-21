@@ -31,6 +31,10 @@ class Reports::OrderImport
     CsvReportMailer.csv_report_email(recipient, self).deliver
   end
 
+  def has_attachment?
+    @order_import.error_file_present?
+  end
+
   private
 
   def failure_message_key
