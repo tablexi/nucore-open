@@ -41,6 +41,7 @@ class OrderImport < ActiveRecord::Base
     end
 
     store_error_report if result.failed?
+    self.processed_at = Time.zone.now
     self.save!
   end
 

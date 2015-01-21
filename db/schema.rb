@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150115151805) do
+ActiveRecord::Schema.define(:version => 20150121202952) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -265,6 +265,7 @@ ActiveRecord::Schema.define(:version => 20150115151805) do
     t.boolean  "fail_on_error",  :default => true
     t.boolean  "send_receipts",  :default => false
     t.integer  "created_by",                        :null => false
+    t.datetime "processed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
