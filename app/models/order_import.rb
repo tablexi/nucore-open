@@ -15,17 +15,6 @@ class OrderImport < ActiveRecord::Base
     order_cache[row_importer.order_key] || create_order_from_imported_row!(row_importer)
   end
 
-  def import_row(row) # TODO refactor
-    row_importer = OrderRowImporter.new(row, self)
-    row_importer.import
-    if row_importer.errors?
-      set_error_mode
-    else
-      order_cache[row_importer.order_key] = row_importer.order_id
-    end
-    row_importer
-  end
-
   #
   # Process each line of CSV file in #upload_file.
   #
@@ -130,6 +119,17 @@ class OrderImport < ActiveRecord::Base
       send_notifications(processed_orders) if self.send_receipts?
       discard_error_report
     end
+  end
+
+  def import_row(row) # TODO refactor
+    row_importer = OrderRowImporter.new(row, self)
+    row_importer.import
+    if row_importer.errors?
+      set_error_mode
+    else
+      order_cache[row_importer.order_key] = row_importer.order_id
+    end
+    row_importer
   end
 
   def init_error_report

@@ -1,6 +1,8 @@
 require "spec_helper"
 
 describe OrderRowImporter do
+  include DateHelper
+
   subject { OrderRowImporter.new(row, order_import) }
   let(:account) do
     create(:nufs_account,
@@ -45,6 +47,24 @@ describe OrderRowImporter do
       it "creates an order" do
         expect { subject.import }.to change(Order, :count).by(1)
       end
+
+      context "verifying the order" do
+        let(:order) { Order.last }
+
+        before { subject.import }
+
+        it "has the expected ordered_at" do
+          expect(order.ordered_at).to eq parse_usa_date(order_date)
+        end
+
+        it "has the expected creator" do
+          expect(order.created_by_user).to eq user
+        end
+
+        it "has the expected user" do
+          expect(order.user).to eq user
+        end
+      end
     end
 
     shared_examples_for "an order was not created" do
@@ -57,56 +77,100 @@ describe OrderRowImporter do
       end
     end
 
-    context "when the fulfillment date is invalid" do
-      it_behaves_like "an order was not created"
+    shared_examples_for "it has an error message" do |message|
+      before { subject.import }
 
-      it "flags the fulfillment date as invalid" do
+      it "has the error message '#{message}'" do
+        expect(subject.errors.any? { |error| error.include?(message) })
+          .to be_true
+      end
+    end
+
+    context "with a valid row" do
+      let(:username) { user.username }
+      let(:chart_string) { account.account_number }
+      let(:product_name) { service.name }
+      let(:quantity) { 1 }
+      let(:order_date) { "1/1/2015" }
+      let(:fulfillment_date) { "1/2/2015" }
+
+      before(:each) do
+        Product.any_instance.stub(:can_purchase?).and_return(true)
+      end
+
+      it_behaves_like "an order was created"
+
+      it "has no errors" do
         subject.import
-        expect(subject.errors)
-          .to include_a_string_matching(/Invalid Fulfillment Date/)
+        expect(subject.errors).to be_empty
+      end
+    end
+
+    context "when the fulfillment date" do
+      shared_examples_for "an invalid fulfillment_date" do
+        it_behaves_like "an order was not created"
+        it_behaves_like "it has an error message", "Invalid Fulfillment Date"
+      end
+
+      context "is incorrectly formatted" do
+        let(:fulfillment_date) { "4-Apr-13" }
+
+        it_behaves_like "an invalid fulfillment_date"
+      end
+
+      context "has a 2-digit year" do
+        let(:fulfillment_date) { "1/1/15" }
+
+        it_behaves_like "an invalid fulfillment_date"
+      end
+
+      context "is impossible" do
+        let(:fulfillment_date) { "02/31/2012" }
+
+        it_behaves_like "an invalid fulfillment_date"
       end
     end
 
     context "when the order date is invalid" do
-      it_behaves_like "an order was not created"
+      shared_examples_for "an invalid order_date" do
+        it_behaves_like "an order was not created"
+        it_behaves_like "it has an error message", "Invalid Order Date"
+      end
 
-      it "flags the order date as invalid" do
-        subject.import
-        expect(subject.errors)
-          .to include_a_string_matching(/Invalid Order Date/)
+      context "is incorrectly formatted" do
+        let(:order_date) { "4-Apr-13" }
+
+        it_behaves_like "an invalid order_date"
+      end
+
+      context "has a 2-digit year" do
+        let(:order_date) { "1/1/15" }
+
+        it_behaves_like "an invalid order_date"
+      end
+
+      context "is impossible" do
+        let(:order_date) { "02/31/2012" }
+
+        it_behaves_like "an invalid order_date"
       end
     end
 
     context "when the user is invalid" do
       context "when looking up by username" do
         it_behaves_like "an order was not created"
-
-        it "flags the username as invalid" do
-          subject.import
-          expect(subject.errors)
-            .to include_a_string_matching(/Invalid username/)
-        end
+        it_behaves_like "it has an error message", "Invalid username"
       end
 
       context "when looking up by email address" do
         it_behaves_like "an order was not created"
-
-        it "flags the username as invalid" do
-          subject.import
-          expect(subject.errors)
-            .to include_a_string_matching(/Invalid username/)
-        end
+        it_behaves_like "it has an error message", "Invalid username"
       end
     end
 
     context "when the product name is invalid" do
       it_behaves_like "an order was not created"
-
-      it "flags the product name as invalid" do
-        subject.import
-        expect(subject.errors)
-          .to include_a_string_matching(/Couldn't find product by name/)
-      end
+      it_behaves_like "it has an error message", "Couldn't find product by name"
     end
 
     context "when the product is a service" do
@@ -127,24 +191,14 @@ describe OrderRowImporter do
         before { Service.any_instance.stub(:active_survey?).and_return(true) }
 
         it_behaves_like "an order was not created"
-
-        it "flags the service as requiring a survey" do
-          subject.import
-          expect(subject.errors)
-            .to include_a_string_matching(/Service requires survey/)
-        end
+        it_behaves_like "it has an error message", "Service requires survey"
       end
 
       context "and it requires a template" do
         before { Service.any_instance.stub(:active_template?).and_return(true) }
 
         it_behaves_like "an order was not created"
-
-        it "flags the service as requiring a template" do
-          subject.import
-          expect(subject.errors)
-            .to include_a_string_matching(/Service requires template/)
-        end
+        it_behaves_like "it has an error message", "Service requires template"
       end
     end
 
@@ -170,12 +224,7 @@ describe OrderRowImporter do
           end
 
           it_behaves_like "an order was not created"
-
-          it "flags the account as invalid" do
-            subject.import
-            expect(subject.errors)
-              .to include_a_string_matching(/does not accept.+payment/)
-          end
+          it_behaves_like "it has an error message", "does not accept Chart String payment"
         end
 
         context "and the account is valid for the product" do
@@ -196,11 +245,27 @@ describe OrderRowImporter do
                 # Creating an Order in this case is existing behavior.
                 # In practice we run the import in a transaction and roll back.
                 it_behaves_like "an order was created"
+                it_behaves_like "it has an error message", "Couldn't purchase order"
+              end
 
-                it "flags the order as not purchaseable" do
+              context "and the product is deactivated (archived)" do
+                before { product.update_attribute(:is_archived, true) }
+
+                it_behaves_like "an order was not created"
+                it_behaves_like "it has an error message", "Couldn't find product"
+              end
+
+              context "and the product is hidden" do
+                before(:each) do
+                  product.update_attribute(:is_hidden, true)
+                  Order.any_instance.stub(:purchase!).and_return(true)
+                end
+
+                it_behaves_like "an order was created"
+
+                it "has no errors" do
                   subject.import
-                  expect(subject.errors)
-                    .to include_a_string_matching(/Couldn't purchase order/)
+                  expect(subject.errors).to be_empty
                 end
               end
             end
@@ -209,12 +274,7 @@ describe OrderRowImporter do
               # Creating an Order in this case is existing behavior.
               # In practice we run the import in a transaction and roll back.
               it_behaves_like "an order was created"
-
-              it "flags the order as invalid" do
-                subject.import
-                expect(subject.errors)
-                  .to include_a_string_matching(/Couldn't validate order/)
-              end
+              it_behaves_like "it has an error message", "Couldn't validate order"
             end
           end
         end
@@ -224,12 +284,7 @@ describe OrderRowImporter do
         before { account.update_attribute(:suspended_at, 1.year.ago) }
 
         it_behaves_like "an order was not created"
-
-        it "flags that it cannot find an account" do
-          subject.import
-          expect(subject.errors)
-            .to include_a_string_matching(/Can't find account/)
-        end
+        it_behaves_like "it has an error message", "Can't find account"
       end
     end
   end
