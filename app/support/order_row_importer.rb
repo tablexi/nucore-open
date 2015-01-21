@@ -10,8 +10,8 @@ class OrderRowImporter
     quantity: "Quantity",
     order_date: "Order Date",
     fulfillment_date: "Fulfillment Date",
-    errors: "Errors",
     notes: "Note",
+    errors: "Errors",
   }
 
   def self.order_key_for_row(row)
