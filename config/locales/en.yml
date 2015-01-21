@@ -304,6 +304,7 @@ en:
     new:
       h2: "Bulk Import"
       fail_on_error: "Halt import on error"
+      in_process: "In process"
       send_receipts: "Send receipts"
       send_report_to: "Send results to"
       download_link: "Right-click and choose 'save target' to download import template"

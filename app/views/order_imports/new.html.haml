@@ -26,6 +26,7 @@
       %tr
         %th= OrderImport.human_attribute_name(:created_at)
         %th= OrderImport.human_attribute_name(:creator)
+        %th= OrderImport.human_attribute_name(:processed_at)
         %th= OrderImport.human_attribute_name(:error_file)
     %tbody
       - @order_imports.each do |order_import|
@@ -33,7 +34,12 @@
           %td= l(order_import.created_at, format: :usa)
           %td= order_import.creator
           %td
-            - if order_import.error_file_id.present?
+            - if order_import.processed?
+              = l(order_import.processed_at, format: :usa)
+            - else
+              = t(".in_process")
+          %td
+            - if order_import.error_file_present?
               = link_to order_import.error_file.name, order_import.error_file.file.url
 
   %p= will_paginate(@order_imports)

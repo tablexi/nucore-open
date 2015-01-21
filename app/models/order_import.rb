@@ -53,6 +53,14 @@ class OrderImport < ActiveRecord::Base
     error_file.try(:read)
   end
 
+  def error_file_present?
+    error_file_id.present?
+  end
+
+  def processed?
+    processed_at.present?
+  end
+
   private
 
   def create_order_from_imported_row!(row_importer)
