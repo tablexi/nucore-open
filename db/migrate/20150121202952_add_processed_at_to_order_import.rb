@@ -2,7 +2,7 @@ class AddProcessedAtToOrderImport < ActiveRecord::Migration
   def up
     add_column :order_imports, :processed_at, :timestamp, after: :created_by
 
-    OrderImport.where("error_file_id IS NOT NULL").each do |order_import|
+    OrderImport.all.each do |order_import|
       order_import.update_attribute(:processed_at, order_import.created_at)
     end
   end
