@@ -1,5 +1,6 @@
 class Api::OrderDetailsController < ApplicationController
   respond_to :json
+  rescue_from ActiveRecord::RecordNotFound, with: :order_detail_not_found
 
   http_basic_authenticate_with name: Settings.api.basic_auth_name, password: Settings.api.basic_auth_password
 
@@ -31,8 +32,13 @@ class Api::OrderDetailsController < ApplicationController
   end
 
   def order_detail
-    @order_detail = OrderDetail.find_by_id(params[:id]) unless defined?(@order_detail)
-    @order_detail
+    @order_detail ||= OrderDetail.find(params[:id])
+  end
+
+  def order_detail_not_found
+    respond_to do |format|
+      format.json { render text: { error: "not found" }.to_json, status: 404 }
+    end
   end
 
   def user_to_hash(user)
