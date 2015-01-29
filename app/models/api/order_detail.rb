@@ -10,8 +10,7 @@ class Api::OrderDetail
   private
 
   def account
-    @account = @order_detail.try(:account) unless defined?(@account)
-    @account
+    @account ||= @order_detail.account
   end
 
   def account_to_hash
