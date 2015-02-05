@@ -1,50 +1,55 @@
 class UserPriceGroupMembersController < ApplicationController
-  admin_tab     :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_current_facility
-  
-  layout 'two_column'
+  include PriceGroupMembersController
 
-  load_and_authorize_resource
-
-  def initialize
-    @active_tab = 'admin_facility'
-    super
-  end
+  before_filter :require_manage_members_ability!
 
   # GET /price_group_members/new
-  def new
-    @price_group = current_facility.price_groups.find(params[:price_group_id])
-  end
+  def new; end
 
   # GET /facilities/:facility_id/price_groups/:price_group_id/user_price_group_members/create
   def create
-    @price_group = current_facility.price_groups.find(params[:price_group_id])
-    raise ActiveRecord::RecordNotFound if @price_group.facility_id.nil?
-    
-    @user = User.find(params[:user_id])
-    @user_price_group_member = UserPriceGroupMember.new(:price_group => @price_group, :user => @user)
-
-    if @user_price_group_member.save
-      flash[:notice] = "#{@user_price_group_member.user.full_name} was added to the #{@price_group.name} Price Group"
+    if price_group_member.save
+      flash[:notice] = I18n.t("controllers.user_price_group_members.create.notice", create_flash_arguments)
     else
-      flash[:error] = "An error was encountered while trying to add #{@user_price_group_member.user.full_name} to the #{@price_group.name} Price Group"
+      flash[:error] = I18n.t("controllers.user_price_group_members.create.error", create_flash_arguments)
     end
-    redirect_to(users_facility_price_group_path(current_facility, @price_group))
+    redirect_to users_facility_price_group_path(current_facility, @price_group)
   end
 
-  # DELETE /price_group_members/1
+  # DELETE /price_group_members/:id
   def destroy
-    @price_group = current_facility.price_groups.find(params[:price_group_id])
-    @user_price_group_member = UserPriceGroupMember.find(:first, :conditions => { :price_group_id => @price_group.id, :id =>params[:id]} )
+    if destroy_price_group_member!
+      flash[:notice] = I18n.t("controllers.user_price_group_members.destroy.notice")
+    else
+      flash[:error] = I18n.t("controllers.user_price_group_members.destroy.error")
+    end
 
-   if @user_price_group_member.destroy
-     flash[:notice] = "The user was successfully removed from the Price Group"
-   else
-     flash[:error] = "An error was encountered while attempting to remove the user from the Price Group"
-   end
-   redirect_to(users_facility_price_group_path(current_facility, @price_group))
+    redirect_to users_facility_price_group_path(current_facility, @price_group)
   end
 
+  private
+
+  def create_flash_arguments
+    {
+      full_name: price_group_member.user.full_name,
+      price_group_name: @price_group.name,
+    }
+  end
+
+  def destroy_user_price_group_member!
+    UserPriceGroupMember
+    .find(:first, conditions: { price_group_id: @price_group.id, id: params[:id] })
+    .destroy
+  end
+
+  def price_group_member
+    @user_price_group_member.user ||= User.find(params[:user_id])
+    @user_price_group_member.price_group ||= @price_group
+    @user_price_group_member
+  end
+
+  def require_manage_members_ability!
+    return if @price_group_ability.can?(:manage_members, @price_group)
+    raise ActiveRecord::RecordNotFound
+  end
 end

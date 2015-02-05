@@ -15,8 +15,16 @@ class Ability
     return unless user
 
     if user.administrator?
-      can :manage, :all
+      if resource.is_a?(PriceGroup)
+        can :manage_members, resource if resource.admin_editable?
+      else
+        can :manage, :all
+      end
       return
+    end
+
+    if resource.is_a?(PriceGroup) && !resource.global? && user.manager_of?(resource.facility)
+      can :manage_members, resource
     end
 
     can :list, Facility if user.facilities.size > 0 and controller.is_a?(FacilitiesController)

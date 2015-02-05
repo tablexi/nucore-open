@@ -7,4 +7,19 @@ FactoryGirl.define do
     sequence(:last_name) { |n| "#{n}" }
     sequence(:email) { |n| "user#{n}@example.com" }
   end
+
+  trait :administrator do
+    after(:create) do |user, _|
+      UserRole.grant(user, UserRole::ADMINISTRATOR)
+    end
+  end
+
+  trait :facility_director do
+    transient { facility nil }
+
+    after(:create) do |user, evaluator|
+      UserRole.grant(user, UserRole::FACILITY_DIRECTOR)
+      user.user_roles.last.update_attribute(:facility, evaluator.facility)
+    end
+  end
 end

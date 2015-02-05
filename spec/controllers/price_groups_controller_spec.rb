@@ -11,9 +11,7 @@ describe PriceGroupsController do
     @params={ :facility_id => @authable.url_name }
   end
 
-
   context 'index' do
-
     before :each do
       @method=:get
       @action=:index
@@ -23,12 +21,9 @@ describe PriceGroupsController do
       expect(assigns(:price_groups)).to be_kind_of Array
       assigns(:price_groups).should == @authable.price_groups
     end
-
   end
 
-
   context 'new' do
-
     before :each do
       @method=:get
       @action=:new
@@ -38,12 +33,9 @@ describe PriceGroupsController do
       expect(assigns(:price_group)).to be_kind_of PriceGroup
       should render_template 'new'
     end
-
   end
 
-
   context 'create' do
-
     before :each do
       @method=:post
       @action=:create
@@ -55,12 +47,9 @@ describe PriceGroupsController do
       should set_the_flash
       assert_redirected_to [@authable, assigns(:price_group)]
     end
-
   end
 
-
   context 'with price group id' do
-
     before(:each) { @params.merge!(:id => @price_group.id) }
 
     context 'show' do
@@ -160,7 +149,5 @@ describe PriceGroupsController do
       end
 
     end
-
   end
-
 end

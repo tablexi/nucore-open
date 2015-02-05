@@ -27,7 +27,7 @@
           %td= link_to('Remove', [current_facility, price_group], :confirm => 'Are you sure?', :method => :delete) if price_group.can_delete?
           %td= link_to price_group.name, facility_price_group_path(current_facility, price_group)
           %td= price_group.type_string
-          - if price_group.facility_id
+          - if price_group.admin_editable?
             %td= price_group.user_price_group_members.count
           - else
             %td N/A
