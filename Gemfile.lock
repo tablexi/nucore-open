@@ -74,7 +74,7 @@ GEM
       columnize (~> 0.8)
       debugger-linecache (~> 1.2)
       slop (~> 3.6)
-    cancan (1.6.10)
+    cancancan (1.10.0)
     capistrano (2.15.4)
       highline
       net-scp (>= 1.0.0)
@@ -336,7 +336,7 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-sass (~> 2.3.2)
   c2po (~> 1.0.0)!
-  cancan (= 1.6.10)
+  cancancan (= 1.10)
   capistrano (= 2.15.4)
   ci_reporter
   ckeditor (~> 4.0.10)

@@ -15,7 +15,7 @@ gem 'capistrano',       '2.15.4'
 gem 'devise',           '~>2.2.8'
 gem 'devise-encryptable', '0.1.2'
 gem 'devise_ldap_authenticatable', '~>0.7.0'
-gem 'cancan',           '1.6.10'
+gem 'cancancan',        '1.10'
 
 ## models
 gem 'aasm',             '2.2.0'
