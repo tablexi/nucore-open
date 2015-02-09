@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150121202952) do
+ActiveRecord::Schema.define(:version => 20150204174650) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -331,6 +331,7 @@ ActiveRecord::Schema.define(:version => 20150121202952) do
     t.string  "name",          :limit => 50, :null => false
     t.integer "display_order",               :null => false
     t.boolean "is_internal",                 :null => false
+    t.boolean "admin_editable",               :default => true, :null => false
   end
 
   add_index "price_groups", ["facility_id", "name"], :name => "sys_c008577", :unique => true

@@ -1,63 +1,54 @@
 class AccountPriceGroupMembersController < ApplicationController
-  admin_tab     :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_current_facility
+  include PriceGroupMembersController
 
-  load_and_authorize_resource
-  
-  layout 'two_column'
-  
-  def initialize
-    @active_tab = 'admin_facility'
-    super
-  end
-
-  # GET /price_group_members/new
-  def new
-    @price_group = current_facility.price_groups.find(params[:price_group_id])
-    @account_price_group_member = AccountPriceGroupMember.new
-  end
-
-  # GET /facilities/:facility_id/price_groups/:price_group_id/account_price_group_members/create
-  def create
-    @price_group = current_facility.price_groups.find(params[:price_group_id])
-    @account     = Account.find(params[:account_id])
-    @account_price_group_member = AccountPriceGroupMember.new(:price_group => @price_group, :account => @account)
-
-   if @account_price_group_member.save
-     flash[:notice] = "#{@account_price_group_member.account.account_number} was added to the #{@price_group.name} Price Group."
-   else
-     flash[:error] = "An error was encountered while trying to add account #{@account_price_group_member.account.account_number} to the #{@price_group.name} Price Group."
-   end
-   redirect_to([current_facility, @price_group])
-  end
-
-  # DELETE /price_group_members/1
-  def destroy
-    @price_group = current_facility.price_groups.find(params[:price_group_id])
-    @account_price_group_member = AccountPriceGroupMember.find(:first, :conditions => { :price_group_id => @price_group.id, :id =>params[:id]} )
-
-    if @account_price_group_member.destroy
-     flash[:notice] = "The account was successfully removed from the Price Group"
-    else
-      flash[:error] = "An error was encountered while attempting to remove the account from the Price Group"
-    end
-    redirect_to(facility_price_group_path(current_facility, @price_group))
-  end
-
+  # POST /facilities/:facility_id/price_groups/:price_group_id/account_price_group_members/search_results
   def search_results
     @limit = 25
-    @price_group = current_facility.price_groups.find(params[:price_group_id])
+    set_search_conditions if params[:search_term].present?
+    render layout: false
+  end
 
-    term = generate_multipart_like_search_term(params[:search_term])
-    if params[:search_term].length > 0
-      conditions = ["LOWER(account_number) LIKE ?", term]
-      @accounts = Account.find(:all, :conditions => conditions, :order => "account_number", :limit => @limit)
-      @count = Account.count(:all, :conditions => conditions)
-    end
-    respond_to do |format|
-      format.html { render :layout => false }
-    end
+  private
+
+  def account
+    @account ||= Account.find(params[:account_id])
+  end
+
+  def after_create_redirect
+    redirect_to [current_facility, @price_group]
+  end
+
+  def after_destroy_redirect
+    redirect_to facility_price_group_path(current_facility, @price_group)
+  end
+
+  def create_flash_arguments # TODO very similar to UserPriceGroupMembersController#create_flash_arguments
+    {
+      account_number: price_group_member.account.account_number,
+      price_group_name: @price_group.name
+    }
+  end
+
+  def price_group_member # TODO very similar to UserPriceGroupMembersController#price_group_member
+    @account_price_group_member.account ||= account
+    @account_price_group_member.price_group ||= @price_group
+    @account_price_group_member
+  end
+
+  def search_conditions
+    @search_conditions ||= [
+      "LOWER(account_number) LIKE ?",
+      generate_multipart_like_search_term(params[:search_term])
+    ]
+  end
+
+  def set_search_conditions
+    @accounts = Account.find(
+      :all,
+      conditions: search_conditions,
+      order: "account_number",
+      limit: @limit
+    )
+    @count = Account.count(:all, conditions: search_conditions)
   end
 end

@@ -15,7 +15,7 @@ gem 'capistrano',       '2.15.4'
 gem 'devise',           '~>2.2.8'
 gem 'devise-encryptable', '0.1.2'
 gem 'devise_ldap_authenticatable', '~>0.7.0'
-gem 'cancan',           '1.6.10'
+gem 'cancancan',        '1.10'
 
 ## models
 gem 'aasm',             '2.2.0'
@@ -62,7 +62,7 @@ end
 group :development, :test do
   gem 'awesome_print',     '1.1.0'
   gem 'ci_reporter'
-  gem 'factory_girl_rails','4.2.1'
+  gem 'factory_girl_rails', '~> 4.5.0'
   gem 'guard-rspec', require: false
   gem 'pry-rails',         '~> 0.3.2'
   gem 'pry-byebug',        '~> 2.0.0'

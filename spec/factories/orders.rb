@@ -5,7 +5,7 @@ FactoryGirl.define do
 
   # Must define product or facility
   factory :setup_order, :class => Order do
-    ignore do
+    transient do
       product { nil }
     end
     facility { product.facility }

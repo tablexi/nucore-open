@@ -10,7 +10,7 @@ end
 
 FactoryGirl.define do
   factory :setup_account, :class => NufsAccount, :parent => :nufs_account do
-    ignore do
+    transient do
       owner { FactoryGirl.create(:user) }
     end
 

@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :instrument_with_accessory, parent: :setup_instrument do
-    ignore do
+    transient do
       accessory { create :setup_item, facility: facility }
     end
 
@@ -10,7 +10,7 @@ FactoryGirl.define do
   end
 
   factory :accessory, parent: :setup_item do
-    ignore do
+    transient do
       parent { create :setup_instrument, facility: facility }
       scaling_type 'quantity'
     end

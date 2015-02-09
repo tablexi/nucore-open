@@ -5,6 +5,15 @@ en:
     accessories:
       create:
         success: "%{accessories} added"
+
+    account_price_group_members:
+      create:
+        notice: "%{account_number} was added to the %{price_group_name} Price Group"
+        error: "An error was encountered while trying to add account %{account_number} to the %{price_group_name} Price Group"
+      destroy:
+        notice: "The account was successfully removed from the Price Group"
+        error: "An error was encountered while attempting to remove the account from the Price Group"
+
     facilities:
       bulk_reassignment:
         no_transactions_selected: Please select at least one transaction to move.
@@ -74,6 +83,15 @@ en:
         remove_from_journal:
           notice: "The order has been removed from its journal"
 
+    price_groups:
+      create:
+        notice: "Price Group was successfully created"
+      update:
+        notice: "Price Group was successfully updated"
+      destroy:
+        notice: "Price Group was successfully deleted"
+        error: "The price group could not be deleted"
+
     problem_order_details:
       assign_price_policies:
         success:
@@ -126,3 +144,11 @@ en:
           notice: "Product approvals updated: %{granted} granted, %{revoked} revoked."
         scheduling_group_update:
           notice: "Scheduling groups updated: %{update_count}."
+
+    user_price_group_members:
+      create:
+        notice: "%{full_name} was added to the %{price_group_name} Price Group"
+        error: "An error was encountered while trying to add %{full_name} to the %{price_group_name} Price Group"
+      destroy:
+        notice: "The user was successfully removed from the Price Group"
+        error: "An error was encountered while attempting to remove the user from the Price Group"

@@ -16,7 +16,6 @@ describe AccountPriceGroupMembersController do
   # deny guests
 
   context "new" do
-
     before :each do
       @method=:get
       @action=:new
@@ -35,9 +34,7 @@ describe AccountPriceGroupMembersController do
     end
   end
 
-
   context "create" do
-
     before :each do
       @method=:post
       @action=:create
@@ -58,9 +55,7 @@ describe AccountPriceGroupMembersController do
     end
   end
 
-
   context "destroy" do
-
     before(:each) do
       @method=:delete
       @action=:destroy
@@ -76,16 +71,12 @@ describe AccountPriceGroupMembersController do
     it_should_allow_all facility_operators do
       expect(assigns(:price_group)).to be_kind_of PriceGroup
       expect(assigns(:account_price_group_member)).to be_kind_of AccountPriceGroupMember
-      assigns(:account_price_group_member).should be_frozen
       should set_the_flash
       assert_redirected_to(facility_price_group_url(@authable, @price_group))
     end
-
   end
 
-
   context "search_results" do
-
     before :each do
       @method=:get
       @action=:search_results
@@ -102,7 +93,5 @@ describe AccountPriceGroupMembersController do
       expect(assigns(:price_group)).to be_kind_of PriceGroup
       should render_template('search_results')
     end
-
   end
-
 end
