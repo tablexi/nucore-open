@@ -8,7 +8,7 @@ FactoryGirl.define do
     initial_order_status_id { |o| find_order_status('New').id }
 
     factory :instrument, :class => Instrument do
-      ignore do
+      transient do
         no_relay false
       end
 
