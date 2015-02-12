@@ -18,8 +18,7 @@ FactoryGirl.define do
     transient { facility nil }
 
     after(:create) do |user, evaluator|
-      UserRole.grant(user, UserRole::FACILITY_DIRECTOR)
-      user.user_roles.last.update_attribute(:facility, evaluator.facility)
+      UserRole.grant(user, UserRole::FACILITY_DIRECTOR, evaluator.facility)
     end
   end
 end
