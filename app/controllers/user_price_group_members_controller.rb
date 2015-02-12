@@ -3,43 +3,21 @@ class UserPriceGroupMembersController < ApplicationController
 
   before_filter :require_manage_members_ability!
 
-  # GET /price_group_members/new
-  def new; end
-
-  # GET /facilities/:facility_id/price_groups/:price_group_id/user_price_group_members/create
-  def create
-    if price_group_member.save
-      flash[:notice] = I18n.t("controllers.user_price_group_members.create.notice", create_flash_arguments)
-    else
-      flash[:error] = I18n.t("controllers.user_price_group_members.create.error", create_flash_arguments)
-    end
-    redirect_to users_facility_price_group_path(current_facility, @price_group)
-  end
-
-  # DELETE /price_group_members/:id
-  def destroy
-    if destroy_price_group_member!
-      flash[:notice] = I18n.t("controllers.user_price_group_members.destroy.notice")
-    else
-      flash[:error] = I18n.t("controllers.user_price_group_members.destroy.error")
-    end
-
-    redirect_to users_facility_price_group_path(current_facility, @price_group)
-  end
-
   private
+
+  def after_create_redirect
+    redirect_to users_facility_price_group_path(current_facility, @price_group)
+  end
+
+  def after_destroy_redirect
+    redirect_to users_facility_price_group_path(current_facility, @price_group)
+  end
 
   def create_flash_arguments
     {
       full_name: price_group_member.user.full_name,
-      price_group_name: @price_group.name,
+      price_group_name: @price_group.name
     }
-  end
-
-  def destroy_user_price_group_member!
-    UserPriceGroupMember
-    .find(:first, conditions: { price_group_id: @price_group.id, id: params[:id] })
-    .destroy
   end
 
   def price_group_member
