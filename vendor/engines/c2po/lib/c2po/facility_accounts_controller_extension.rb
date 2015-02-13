@@ -18,17 +18,26 @@ module C2po
 
     def configure_new_account(account)
       case account
-        when PurchaseOrderAccount
-          account.expires_at = parse_usa_date(account.expires_at).end_of_day
-        when CreditCardAccount
-          begin
-            account.expires_at = Date.civil(account.expiration_year.to_i, account.expiration_month.to_i).end_of_month.end_of_day
-          rescue => e
-             account.errors.add(:base, e.message)
-          end
-        else
-          super
+      when PurchaseOrderAccount
+        configure_new_purchase_order_account(account)
+      when CreditCardAccount
+        configure_new_credit_card_account(account)
+      else
+        super
       end
+    end
+
+    def configure_new_purchase_order_account(account)
+      account.expires_at = parse_usa_date(account.expires_at).try(:end_of_day)
+      if account.expires_at.blank?
+        account.errors.add(:base, I18n.t("facility_accounts.account_fields.errors.expires_at"))
+      end
+    end
+
+    def configure_new_credit_card_account(account)
+      account.expires_at = Date.civil(account.expiration_year.to_i, account.expiration_month.to_i).end_of_month.end_of_day
+    rescue => e
+      account.errors.add(:base, e.message)
     end
 
     # GET /facilities/:facility_id/accounts/credit_cards
@@ -37,7 +46,7 @@ module C2po
       render_account_reconcile || redirect_to(credit_cards_facility_accounts_path)
     end
 
-    #POST /facilities/:facility_id/accounts/update_credit_cards
+    # POST /facilities/:facility_id/accounts/update_credit_cards
     def update_credit_cards
       update_account(CreditCardAccount, credit_cards_facility_accounts_path)
     end
