@@ -129,6 +129,13 @@ class OrderDetail < ActiveRecord::Base
     details
   end
 
+  def self.purchased_active_reservations
+    where(state: ['new', 'inprocess'])
+      .where('order_status_id IS NOT NULL')
+      .where(reservations: { canceled_at: nil})
+      .joins(:reservation)
+  end
+
   scope :for_facility_with_price_policy, lambda { |facility| {
     :joins => :order,
     :conditions => [ 'orders.facility_id = ? AND price_policy_id IS NOT NULL', facility.id ], :order => 'order_details.fulfilled_at DESC' }

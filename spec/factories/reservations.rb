@@ -2,6 +2,10 @@ FactoryGirl.define do
   factory :reservation do
     reserve_start_at { Time.zone.parse("#{Date.today.to_s} 10:00:00") + 1.day }
     reserve_end_at { reserve_start_at + 1.hour }
+
+    trait :yesterday do
+      reserve_start_at { Time.zone.parse("#{Date.today.to_s} 10:00:00") - 1.day }
+    end
   end
 
   factory :setup_reservation, :class => Reservation, :parent => :reservation do
