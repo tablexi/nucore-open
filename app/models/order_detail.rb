@@ -132,7 +132,7 @@ class OrderDetail < ActiveRecord::Base
   def self.purchased_active_reservations
     where(state: ['new', 'inprocess'])
       .where('order_status_id IS NOT NULL')
-      .where(reservations: { canceled_at: nil})
+      .where(reservations: { canceled_at: nil })
       .joins(:reservation)
   end
 
