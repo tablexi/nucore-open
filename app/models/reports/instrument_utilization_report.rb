@@ -15,7 +15,7 @@ class Reports::InstrumentUtilizationReport
   end
 
   def rows
-    @data.sort.map do |key, data_row|
+    sorted_data.map do |key, data_row|
       key + data_row.row_with_percents(@totals)
     end
   end
@@ -65,5 +65,11 @@ class Reports::InstrumentUtilizationReport
         to_hours(actual_mins, 1),
         format_percent(percent.actual_mins)]
     end
+  end
+
+  private
+
+  def sorted_data
+    @data.sort { |(a, _), (b, _)| a.compact <=> b.compact }
   end
 end
