@@ -483,6 +483,7 @@ en:
         cost: "Cost"
         adjust: "Adjustment"
         total: "Total"
+      total: "Total"
     show:
       h1: "Cart"
       intro: "Your cart will be saved between visits and can be added to, or your order completed at a later time."
