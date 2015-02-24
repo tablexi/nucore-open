@@ -326,7 +326,7 @@ namespace :demo  do
           :expires_at         => Time.zone.now+1.year,
           :name_on_card       => 'Paul PI',
           :expiration_month   => '10',
-          :expiration_year    => '2014',
+          :expiration_year    => '2020',
           :created_by         => user_director.id,
           :affiliate_id       => other_affiliate.id,
           :affiliate_other    => 'Some Affiliate',
