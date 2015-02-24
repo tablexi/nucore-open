@@ -44,5 +44,9 @@
         - if @order.has_subsidies?
           %td.currency= order_detail.wrapped_subsidy
         %td.currency=order_detail.wrapped_total
+    %tr
+      - colspan = @order.has_subsidies? ? 5 : 4
+      %td.total{colspan: colspan}= t('.total')
+      %td.currency= @order_details_cost.display_final_total
 
 = render :partial => '/price_display_footnote'
