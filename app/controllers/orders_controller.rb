@@ -323,8 +323,6 @@ class OrdersController < ApplicationController
     @order_details = @order.order_details.select{|od| od.can_be_viewed_by?(acting_user) }
     raise ActiveRecord::RecordNotFound if @order_details.empty?
 
-    @order_details_cost = OrderDetails::Cost.new(@order_details)
-
     @accounts = @order_details.collect(&:account).uniq
   end
 
