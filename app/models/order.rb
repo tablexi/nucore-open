@@ -57,7 +57,7 @@ class Order < ActiveRecord::Base
   end
 
   [ :total, :cost, :subsidy, :estimated_total, :estimated_cost, :estimated_subsidy ].each do |method_name|
-    define_method(method_name) { |acting_user = nil| total_cost method_name, acting_user }
+    define_method(method_name) { total_cost method_name }
   end
 
   def move_order_details_to_default_status
@@ -239,13 +239,9 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def total_cost(order_detail_method, acting_user = nil)
+  def total_cost(order_detail_method)
     cost = 0
-    viewable = order_details
-    if acting_user
-      viewable = viewable.select{|od| od.can_be_viewed_by?(acting_user) }
-    end
-    viewable.each { |od|
+    order_details.each { |od|
       od_cost=od.method(order_detail_method.to_sym).call
       cost += od_cost if od_cost
     }
