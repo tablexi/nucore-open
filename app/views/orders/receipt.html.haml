@@ -47,6 +47,6 @@
     %tr
       - colspan = @order.has_subsidies? ? 5 : 4
       %td.total{colspan: colspan}= t('.total')
-      %td.currency= number_to_currency(@order_details.sum { |d| d.total.to_i })
+      %td.currency= number_to_currency(@order_details.sum { |d| d.total || 0 })
 
 = render :partial => '/price_display_footnote'
