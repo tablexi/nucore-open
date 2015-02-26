@@ -9,9 +9,9 @@ Welcome to NU Core! This guide will help you get a development environment up an
 1. You write code on a Mac.
 2. You have a running Oracle or MySQL instance with two brand new databases.
 3. You have the following installed:
-    * [Ruby](http://www.ruby-lang.org/en) 2.1
+    * [Ruby 2.1](http://www.ruby-lang.org/en)
     * [Bundler](http://gembundler.com)
-    * [Git]()http://git-scm.com)
+    * [Git](http://git-scm.com)
 
 ### Spin it up
 
@@ -22,18 +22,18 @@ Welcome to NU Core! This guide will help you get a development environment up an
     ```
 
 2. Install dependencies
-    
+
     ```
     cd nucore
     bundle install --without oracle
     ```
-    
+
 3. Configure your databases
-    
+
     ```
     cp config/database.yml.mysql.template config/database.yml
     ```
-    
+
     Edit the adapter, database, username, and password settings for both the development and test DBs to match your database instance
 
 4. Create your databases
@@ -50,7 +50,7 @@ Welcome to NU Core! This guide will help you get a development environment up an
     rake db:seed
     rake demo:seed
     ```
-    
+
 6. Start your server
 
     ```
@@ -62,7 +62,7 @@ Welcome to NU Core! This guide will help you get a development environment up an
     Visit http://localhost:3000
 
     `demo:seed` creates several users with various permissions. All users have the default password of `password`
-    
+
     | Email/username     | Role |
     | ------------------ | ---- |
     | admin@example.com  | Admin|
@@ -92,10 +92,12 @@ NU Core uses [Rspec](http://rspec.info) to run tests. Try any of the following f
 
 There are valuable resources in the NU Core's doc directory.
 
-* Need help getting Oracle running on your Mac? **See HOWTO_oracle.txt**
+* Need to move changes between nucore-open and your fork? [**See HOWTO_forks.txt**](doc/HOWTO_forks.md)
 
-* Want to authenticate users against your institution's LDAP server? **See HOWTO_ldap.txt**
+* Need help getting Oracle running on your Mac? [**See HOWTO_oracle.txt**](doc/HOWTO_oracle.txt)
 
-* Need to use a 3rd party service with your NU Core? **See HOWTO_external_services.txt**
+* Want to authenticate users against your institution's LDAP server? [**See HOWTO_ldap.txt**](doc/HOWTO_ldap.md)
 
-* Need to asynchronously monitor some aspect of NU Core? **See HOWTO_daemons.txt**
+* Need to use a 3rd party service with your NU Core? [**See HOWTO_external_services.txt**](doc/HOWTO_external_services.md)
+
+* Need to asynchronously monitor some aspect of NU Core? [**See HOWTO_daemons.txt**](doc/HOWTO_daemons.txt)
