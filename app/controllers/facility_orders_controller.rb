@@ -12,8 +12,6 @@ class FacilityOrdersController < ApplicationController
   before_filter :load_order, :only => [:edit, :show, :update, :send_receipt]
   before_filter :load_merge_orders, :only => [:edit, :show]
 
-  helper_method :sort_column, :sort_direction
-
   include FacilityOrderStatusHelper
 
 
