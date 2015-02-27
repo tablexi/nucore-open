@@ -10,4 +10,5 @@
 - else
   %p.notice= t(".instructions")
   = render partial: "shared/problem_order_details",
-    locals: { assign_price_policies_path: assign_price_policies_to_problem_orders_facility_reservations_path }
+    locals: { assign_price_policies_path: assign_price_policies_to_problem_orders_facility_reservations_path,
+    show_reservation_start_at: true }

@@ -34,13 +34,6 @@ module FacilityOrderStatusHelper
     end
   end
 
-  def problem_orders
-    current_facility.order_details.
-      problem_orders.
-      non_reservations.
-      complete
-  end
-
   def disputed_orders
     current_facility.order_details.
       non_reservations.

@@ -12,8 +12,6 @@ class FacilityOrdersController < ApplicationController
   before_filter :load_order, :only => [:edit, :show, :update, :send_receipt]
   before_filter :load_merge_orders, :only => [:edit, :show]
 
-  helper_method :sort_column, :sort_direction
-
   include FacilityOrderStatusHelper
 
 
@@ -84,6 +82,13 @@ class FacilityOrdersController < ApplicationController
 
   def show_problems_path
     show_problems_facility_orders_path
+  end
+
+  def problem_order_details
+    current_facility.order_details.
+      problem_orders.
+      non_reservations.
+      complete
   end
 
   private
