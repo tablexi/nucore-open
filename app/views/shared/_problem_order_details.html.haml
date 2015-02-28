@@ -10,7 +10,7 @@
     %tr
       %th= Order.model_name.human
       %th= OrderDetail.model_name.human
-      %th= Order.human_attribute_name(:ordered_at)
+      %th= problem_order_date_header(local_assigns[:reservation_list_page])
       %th= Order.human_attribute_name(:created_by_user)
       %th{ colspan: 2 }= t(".th.quantity_and_product")
       %th= Account.model_name.human
