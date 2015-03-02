@@ -41,5 +41,9 @@
         %td= od.display_cost
         %td= od.display_subsidy
         %td= od.display_total
+    %tr
+      %td{colspan: 6}
+        %strong= t('.total')
+      %td.currency= number_to_currency(@order.order_details.sum { |d| d.total || 0 })
 
 %p= t('.outro') if @order.any_details_estimated?

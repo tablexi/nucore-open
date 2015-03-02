@@ -748,6 +748,7 @@ en:
       subject: "NU Core Order Receipt"
       intro: "Thank you for your order on the NU Core website."
       outro: "All prices are estimates. Actual cost is assigned when the order is complete."
+      total: Total
     review_orders:
       subject: "NU Core Orders For Review"
       body: "New transactions for %{facility} have been posted to \"%{account}\". Please log in to NU Core and review these charges."
