@@ -36,11 +36,13 @@ class InstrumentPricePolicy < PricePolicy
     end
   end
 
+  def has_rate?
+    usage_rate && usage_rate > -1
+  end
 
   def has_subsidy?
     usage_subsidy && usage_subsidy > 0
   end
-
 
   def free?
     usage_rate.to_f == 0
@@ -68,6 +70,17 @@ class InstrumentPricePolicy < PricePolicy
     usage_subsidy.try :*, 60
   end
 
+  def subsidized_hourly_usage_cost
+    hourly_usage_rate - hourly_usage_subsidy
+  end
+
+  def minimum_cost_subsidy
+    minimum_cost * subsidy_ratio
+  end
+
+  def subsidized_minimum_cost
+    minimum_cost - minimum_cost_subsidy
+  end
 
   private
 
