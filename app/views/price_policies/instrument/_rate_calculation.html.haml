@@ -1,0 +1,10 @@
+- if price_policy.has_rate?
+  .rate= number_to_currency price_policy.hourly_usage_rate
+
+  - if price_policy.has_subsidy?
+    .subsidy= "- #{number_to_currency price_policy.hourly_usage_subsidy}"
+    %strong= "= #{number_to_currency price_policy.subsidized_hourly_usage_cost}"
+
+  %p.per-minute-show
+    = number_to_currency price_policy.subsidized_hourly_usage_cost / 60, precision: 4
+    \/ minute

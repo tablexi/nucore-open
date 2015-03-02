@@ -20,8 +20,10 @@
               %p= link_to('Remove', facility_instrument_price_policy_path(current_facility, @product, url_date), :confirm => 'Are you sure?', :method => :delete)
         %td= "#{price_policy.price_group.name} (#{price_policy.price_group.type_string})"
         - if price_policy.valid?
-          %td.currency{colspan: 2}= human_rate_calculation(price_policy.hourly_usage_rate, price_policy.hourly_usage_subsidy)
-          %td.currency= number_to_currency price_policy.minimum_cost
+          %td.currency{colspan: 2}
+            = render partial: 'price_policies/instrument/rate_calculation', locals: { price_policy: price_policy }
+          %td.currency
+            = render partial: 'price_policies/instrument/minimum_calculation', locals: { price_policy: price_policy }
           %td.currency= number_to_currency price_policy.cancellation_cost
         - else
           %td.centered{:colspan => 5}
