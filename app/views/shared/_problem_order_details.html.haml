@@ -10,7 +10,7 @@
     %tr
       %th= Order.model_name.human
       %th= OrderDetail.model_name.human
-      %th= problem_order_date_header(local_assigns[:reservation_list_page])
+      %th= problem_order_date_header(local_assigns[:show_reservation_start_at])
       %th= Order.human_attribute_name(:created_by_user)
       %th{ colspan: 2 }= t(".th.quantity_and_product")
       %th= Account.model_name.human
@@ -23,7 +23,7 @@
         %td.centered= link_to order_detail.id,
           manage_order_detail_path(order_detail),
           class: "manage-order-detail"
-        %td= problem_order_date(order_detail, local_assigns[:reservation_list_page])
+        %td= problem_order_date(order_detail, local_assigns[:show_reservation_start_at])
         %td= order_detail.order.created_by_user
         %td.centered= order_detail.quantity
         %td= order_detail_description(order_detail)
