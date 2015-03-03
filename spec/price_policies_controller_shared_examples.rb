@@ -98,7 +98,7 @@ shared_examples_for PricePoliciesController do |product_type, params_modifier = 
         end
         it 'should set fields based off the old policy' do
           do_request
-          assigns[:price_policies].map(&:price_group).should == [@price_policy.price_group, @price_group2_policy.price_group]
+          assigns[:price_policies].map(&:price_group).sort.should == [@price_policy.price_group, @price_group2_policy.price_group]
           assigns[:price_policies][0].unit_cost.should == @price_policy.unit_cost
           assigns[:price_policies][1].unit_cost.should == @price_group2_policy.unit_cost
         end
