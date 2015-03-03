@@ -31,6 +31,13 @@ class Instrument < Product
 
   after_create :set_default_pricing
 
+  # Scopes
+  # --------
+  def self.reservation_only
+    joins('LEFT OUTER JOIN relays ON relays.instrument_id = products.id')
+      .where('relays.instrument_id IS NULL')
+  end
+
   # Instance methods
   # -------
 

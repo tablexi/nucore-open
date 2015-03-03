@@ -43,7 +43,6 @@ describe Accessories::ChildUpdater do
     context 'when the parent moves from new to complete' do
       before do
         reservation.end_reservation!
-        order_detail.update_order_status! user, OrderStatus.complete.first
       end
 
       it 'moves the child to complete as well' do
@@ -56,7 +55,6 @@ describe Accessories::ChildUpdater do
       before do
         allow_any_instance_of(Reservation).to receive(:can_cancel?).and_return true
         reservation.end_reservation!
-        order_detail.update_order_status! user, OrderStatus.complete.first
         order_detail.update_order_status! user, OrderStatus.canceled.first
       end
 
@@ -69,7 +67,6 @@ describe Accessories::ChildUpdater do
       before do
         child_order_detail.update_order_status! user, OrderStatus.canceled.first
         reservation.end_reservation!
-        order_detail.update_order_status! user, OrderStatus.complete.first
       end
 
       it 'does not move the child' do
