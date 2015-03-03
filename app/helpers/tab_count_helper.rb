@@ -1,7 +1,7 @@
 module TabCountHelper
   ACTIONS_TO_COUNT_TYPE = {
   	:index => :new_or_in_process_orders,
-  	:show_problems => :problem_orders,
+  	:show_problems => :problem_order_details,
   	:disputed => :disputed_orders
   }
 

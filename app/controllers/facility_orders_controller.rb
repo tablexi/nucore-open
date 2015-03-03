@@ -84,7 +84,7 @@ class FacilityOrdersController < ApplicationController
     show_problems_facility_orders_path
   end
 
-  def problem_orders_details
+  def problem_order_details
     current_facility.order_details.
       problem_orders.
       non_reservations.

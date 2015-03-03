@@ -394,7 +394,7 @@ describe FacilityOrdersController do
       end
       @authable.order_details.in_dispute.size.should == 4
 
-      @params.merge!(:tabs => ['new_or_in_process_orders', 'disputed_orders', 'problem_orders'])
+      @params.merge!(:tabs => ['new_or_in_process_orders', 'disputed_orders', 'problem_order_details'])
     end
 
     it_should_allow_operators_only {}
@@ -417,9 +417,9 @@ describe FacilityOrdersController do
         do_request
         response.should be_success
         body = JSON.parse(response.body)
-        body.keys.should contain_all ['new_or_in_process_orders', 'disputed_orders', 'problem_orders']
+        body.keys.should contain_all ['new_or_in_process_orders', 'disputed_orders', 'problem_order_details']
         body['new_or_in_process_orders'].should == 2
-        body['problem_orders'].should == 3
+        body['problem_order_details'].should == 3
         body['disputed_orders'].should == 4
       end
     end
