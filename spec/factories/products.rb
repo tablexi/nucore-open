@@ -85,6 +85,12 @@ FactoryGirl.define do
       create :instrument_price_policy, price_group: product.facility.price_groups.last, usage_rate: 1, product: product
       product.reload
     end
+
+    trait :reservation_only do
+      after(:create) do |inst, evaluator|
+        inst.relay = FactoryGirl.create(:relay, :manual_control, :instrument => inst)
+      end
+    end
   end
 
   factory :instrument_requiring_approval, parent: :setup_instrument do

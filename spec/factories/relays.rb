@@ -13,6 +13,9 @@ FactoryGirl.define do
       type 'RelaySynaccessRevB'
     end
 
+    trait :manual_control do
+      type 'Relay'
+    end
   end
 
   factory :relay_dummy, :class => RelayDummy do

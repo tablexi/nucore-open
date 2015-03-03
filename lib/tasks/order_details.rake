@@ -1,26 +1,7 @@
 namespace :order_details  do
   desc "mark order_details with past reservations as complete"
   task :expire_reservations => :environment do
-    complete    = OrderStatus.find_by_name!('Complete')
-    order_details = OrderDetail.purchased_active_reservations.where("reservations.reserve_end_at < ?", Time.zone.now - 12.hours).
-                               readonly(false).all
-    order_details.each do |od|
-      od.transaction do
-        begin
-          od.change_status!(complete)
-          od.fulfilled_at = od.reservation.reserve_end_at
-          next unless od.price_policy
-          costs = od.price_policy.calculate_cost_and_subsidy(od.reservation)
-          next if costs.blank?
-          od.actual_cost    = costs[:cost]
-          od.actual_subsidy = costs[:subsidy]
-          od.save!
-        rescue Exception => e
-          STDERR.puts "Error on Order # #{od} - #{e}\n#{e.backtrace.join("\n")}"
-          raise ActiveRecord::Rollback
-        end
-      end
-    end
+    AutoExpire.new.perform
   end
 
   desc "automatically switch off auto_logout instrument"

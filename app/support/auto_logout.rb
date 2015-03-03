@@ -23,6 +23,7 @@ class AutoLogout
   end
 
   def complete_reservation(od)
+    # TODO: I think this logic is the same as Reservation#end_reservation
     od.reservation.actual_end_at = Time.zone.now
     od.change_status!(complete_status)
     return unless od.price_policy
