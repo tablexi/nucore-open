@@ -326,4 +326,32 @@ end
       end
     end
   end
+
+  describe "#process_upload!" do
+    subject(:import) { create(:order_import) }
+
+    context "an exception is thrown" do
+      before do
+        OrderRowImporter.any_instance.stub(:import).and_raise("Something unknown happened")
+        import.upload_file.file = generate_import_file
+        import.upload_file.save!
+        import.process_upload!
+      end
+
+      it "produces an error report" do
+        expect(import.error_file_content).to include("Failed to import row")
+      end
+
+      it "sets error flags" do
+        expect(import).to be_error_mode
+        expect(import.result).to be_failed
+      end
+
+      it "sends an exception notification" do
+        actual = ActionMailer::Base.deliveries.first.body.raw_source
+        expect(actual).to include("Failed to bulk import")
+        expect(actual).to include("Something unknown happened")
+      end
+    end
+  end
 end

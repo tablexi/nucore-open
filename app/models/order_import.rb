@@ -131,8 +131,16 @@ class OrderImport < ActiveRecord::Base
   end
 
   def import_row(row) # TODO refactor
-    row_importer = OrderRowImporter.new(row, self)
-    row_importer.import
+    begin
+      row_importer = OrderRowImporter.new(row, self)
+      row_importer.import
+    rescue => e
+      ActiveRecord::Base.logger.error("Failed to bulk import: #{upload_file_path}")
+      ActiveRecord::Base.logger.error(e.backtrace)
+      ExceptionNotifier.notify_exception(e, :data => {:message => "Failed to bulk import: #{upload_file_path}"})
+      row_importer.add_error("Failed to import row")
+      set_error_mode
+    end
     if row_importer.errors?
       set_error_mode
     else

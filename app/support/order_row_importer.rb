@@ -45,7 +45,7 @@ class OrderRowImporter
   end
 
   def import
-    add_product_to_order if has_valid_fields?
+    add_product_to_order if has_valid_headers? && has_valid_fields?
   end
 
   def order_date
@@ -71,14 +71,15 @@ class OrderRowImporter
       User.find_by_username(user_field) || User.find_by_email(user_field)
   end
 
+
+  def add_error(message)
+    @errors.add(message) if message.present?
+  end
+
   private
 
   def account_number
     @account_number ||= @row[HEADERS[:chart_string]].strip
-  end
-
-  def add_error(message)
-    @errors.add(message) if message.present?
   end
 
   def add_product_to_order
@@ -103,6 +104,11 @@ class OrderRowImporter
 
   def fulfillment_date_field
     @fulfillment_date_field ||= @row[HEADERS[:fulfillment_date]].strip
+  end
+
+  def has_valid_headers?
+    validate_headers
+    !errors?
   end
 
   def has_valid_fields?
@@ -158,6 +164,11 @@ class OrderRowImporter
     else
       add_error("Can't find account")
     end
+  end
+
+  def validate_headers
+    unkown_headers = (@row.headers - HEADERS.values)
+    add_error("Unknown headers: #{unkown_headers.join('/')}") if unkown_headers.present?
   end
 
   def validate_fields
