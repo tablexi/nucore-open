@@ -22,16 +22,19 @@ describe OrderRowImporter do
   end
   let(:user) { create(:user) }
 
-  let(:row) {{
-    "Netid / Email" => username,
-    "Chart String" => chart_string,
-    "Product Name" => product_name,
-    "Quantity" => quantity,
-    "Order Date" => order_date,
-    "Fulfillment Date" => fulfillment_date,
-    "Errors" => errors,
-    "Note" => notes,
-  }}
+  let(:row) do
+    ref = {
+      "Netid / Email" => username,
+      "Chart String" => chart_string,
+      "Product Name" => product_name,
+      "Quantity" => quantity,
+      "Order Date" => order_date,
+      "Fulfillment Date" => fulfillment_date,
+      "Errors" => errors,
+      "Note" => notes,
+    }
+    CSV::Row.new(ref.keys, ref.values)
+  end
 
   let(:username) { "column1" }
   let(:chart_string) { "column2" }
@@ -286,6 +289,36 @@ describe OrderRowImporter do
         it_behaves_like "an order was not created"
         it_behaves_like "it has an error message", "Can't find account"
       end
+    end
+
+    context "when the headers are invalid" do
+      let(:row) do
+        ref = {
+          "Netid / Email" => username,
+          "acct" => chart_string,
+          "Product Name" => product_name,
+          "Quantity" => quantity,
+          "Order Date" => order_date,
+          "Fulfillment Date" => fulfillment_date,
+          "Errors" => errors,
+          "Note" => notes,
+        }
+        CSV::Row.new(ref.keys, ref.values)
+      end
+
+      let(:username) { user.username }
+      let(:chart_string) { account.account_number }
+      let(:product_name) { service.name }
+      let(:quantity) { 1 }
+      let(:order_date) { "1/1/2015" }
+      let(:fulfillment_date) { "1/2/2015" }
+
+      before(:each) do
+        Product.any_instance.stub(:can_purchase?).and_return(true)
+      end
+
+      it_behaves_like "an order was not created"
+      it_behaves_like "it has an error message", "Missing headers: Chart String"
     end
   end
 
