@@ -348,9 +348,8 @@ end
       end
 
       it "sends an exception notification" do
-        email_body = ActionMailer::Base.deliveries.first.body.raw_source
-        expect(email_body).to include("Failed to bulk import")
-        expect(email_body).to include("Something unknown happened")
+        expect(ActiveSupport::Notifications).to receive(:instrument).with('external_error', anything)
+        import.process_upload!
       end
     end
   end
