@@ -34,7 +34,7 @@ class ValidatorDefault
   # Validates a payment source. Returns nil and raises
   # no +Exception+ if a payment source is open to new
   # payments. Otherwise a +ValidatorError+ will be raised.
-  def account_is_open!
+  def account_is_open!(fulfilled_at = nil)
   end
 
 
