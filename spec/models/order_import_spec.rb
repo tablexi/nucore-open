@@ -348,9 +348,9 @@ end
       end
 
       it "sends an exception notification" do
-        actual = ActionMailer::Base.deliveries.first.body.raw_source
-        expect(actual).to include("Failed to bulk import")
-        expect(actual).to include("Something unknown happened")
+        email_body = ActionMailer::Base.deliveries.first.body.raw_source
+        expect(email_body).to include("Failed to bulk import")
+        expect(email_body).to include("Something unknown happened")
       end
     end
   end
