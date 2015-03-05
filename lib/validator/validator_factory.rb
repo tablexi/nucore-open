@@ -1,10 +1,13 @@
 class ValidatorFactory
 
-  @@validator_class=Settings.validator.class_name.constantize
+  @@validator_class = Settings.validator.class_name.constantize
 
+  def self.validator_class
+    @@validator_class
+  end
 
   def self.instance(*args)
-    @@validator_class.new(*args)
+    validator_class.new(*args)
   end
 
 
@@ -13,11 +16,11 @@ class ValidatorFactory
   #
 
   def self.method_missing(method_sym, *arguments, &block)
-    @@validator_class.send(method_sym, *arguments, &block)
+    validator_class.send(method_sym, *arguments, &block)
   end
 
 
   def self.respond_to?(method_sym, include_private = false)
-    @@validator_class.respond_to? method_sym, include_private
+    validator_class.respond_to? method_sym, include_private
   end
 end
