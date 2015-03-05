@@ -167,8 +167,8 @@ class OrderRowImporter
   end
 
   def validate_headers
-    unkown_headers = (@row.headers - HEADERS.values)
-    add_error("Unknown headers: #{unkown_headers.join('/')}") if unkown_headers.present?
+    unknown_headers = (@row.headers - HEADERS.values)
+    add_error("Unknown headers: #{unknown_headers.join(' | ')}") if unknown_headers.present?
   end
 
   def validate_fields
