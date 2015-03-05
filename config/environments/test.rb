@@ -43,9 +43,9 @@ Nucore::Application.configure do
   config.action_mailer.default_url_options = { :host => "localhost", :port => 3000 }
 
   config.middleware.use ExceptionNotification::Rack,
-    :email => {
-      :sender_address       => Settings.email.exceptions.sender,
-      :exception_recipients => Settings.email.exceptions.recipients
+    email: {
+      sender_address: "exception@test.com",
+      exception_recipients: ["fake_developer@test.com"]
     }
 end
 
