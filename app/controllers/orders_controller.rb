@@ -224,6 +224,10 @@ class OrdersController < ApplicationController
 
   # PUT /orders/:id/update (submission from a cart)
   def update_or_purchase
+    # When returning from an external service, we may be called with a get; in that
+    # case, we should just redirect to the show path
+    redirect_to action: :show and return if request.get?
+
     # if update button was clicked
     if params[:commit] == "Update"
       update
@@ -238,8 +242,9 @@ class OrdersController < ApplicationController
     params[:order_datetime] = build_order_date if acting_as?
     @order.transaction do
       if update_order_details
+        # Must show instead of render to maintain "more options" state when
+        # ordering on behalf of
         render :show
-        # redirect_to order_path(@order)
       else
         logger.debug "errors #{@order.errors.full_messages}"
         flash[:error] = @order.errors.full_messages.join("<br/>").html_safe

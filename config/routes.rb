@@ -282,7 +282,7 @@ Nucore::Application.routes.draw do
       match 'add',            :via => [:get, :put]
       match 'purchase',       :via => [:get, :put]
       match 'choose_account', :via => [:get, :post]
-      put   'update_or_purchase'
+      match 'update_or_purchase', via: [:get, :put]
       get   'receipt'
       put   'clear'
     end
