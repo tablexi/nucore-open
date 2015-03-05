@@ -44,8 +44,8 @@ Nucore::Application.configure do
 
   config.middleware.use ExceptionNotification::Rack,
     email: {
-      sender_address: "exception@test.com",
-      exception_recipients: ["fake_developer@test.com"]
+      sender_address: "exception@example.com",
+      exception_recipients: ["fake_developer@example.com"]
     }
 end
 
