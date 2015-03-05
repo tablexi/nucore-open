@@ -41,12 +41,6 @@ Nucore::Application.configure do
   # config.active_record.mass_assignment_sanitizer = :strict
 
   config.action_mailer.default_url_options = { :host => "localhost", :port => 3000 }
-
-  config.middleware.use ExceptionNotification::Rack,
-    email: {
-      sender_address: "exception@example.com",
-      exception_recipients: ["fake_developer@example.com"]
-    }
 end
 
 GOOGLE_ANALYTICS_KEY = nil
