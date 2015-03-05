@@ -63,4 +63,6 @@ RSpec.configure do |config|
     #puts "travelling to #{now}"
     Timecop.travel(now)
   end
+
+  config.before(:each) { ActionMailer::Base.deliveries.clear }
 end
