@@ -1,5 +1,5 @@
 .rate= number_to_currency price_policy.minimum_cost
 
-- if price_policy.has_subsidy?
+- if price_policy.has_minimum_cost? && price_policy.has_subsidy?
   .subsidy= "- #{number_to_currency price_policy.minimum_cost_subsidy}"
   %strong= "= #{number_to_currency price_policy.subsidized_minimum_cost}"

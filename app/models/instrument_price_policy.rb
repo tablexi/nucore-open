@@ -40,6 +40,10 @@ class InstrumentPricePolicy < PricePolicy
     usage_rate && usage_rate > -1
   end
 
+  def has_minimum_cost?
+    minimum_cost && minimum_cost > -1
+  end
+
   def has_subsidy?
     usage_subsidy && usage_subsidy > 0
   end
@@ -75,10 +79,12 @@ class InstrumentPricePolicy < PricePolicy
   end
 
   def minimum_cost_subsidy
+    return unless has_minimum_cost?
     minimum_cost * subsidy_ratio
   end
 
   def subsidized_minimum_cost
+    return unless has_minimum_cost?
     minimum_cost - minimum_cost_subsidy
   end
 
