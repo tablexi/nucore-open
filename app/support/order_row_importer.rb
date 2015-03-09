@@ -14,6 +14,15 @@ class OrderRowImporter
     errors: "Errors",
   }
 
+  REQUIRED_HEADERS = [
+    :user,
+    :chart_string,
+    :product_name,
+    :quantity,
+    :order_date,
+    :fulfillment_date
+    ].map{ |k| HEADERS[k] }
+
   def self.order_key_for_row(row)
     self.new(row, nil).order_key
   end
@@ -167,8 +176,8 @@ class OrderRowImporter
   end
 
   def validate_headers
-    unknown_headers = (@row.headers - HEADERS.values)
-    add_error("Unknown headers: #{unknown_headers.join(' | ')}") if unknown_headers.present?
+    missing_headers = REQUIRED_HEADERS - @row.headers
+    add_error("Missing headers: #{missing_headers.join(' | ')}") if missing_headers.present?
   end
 
   def validate_fields

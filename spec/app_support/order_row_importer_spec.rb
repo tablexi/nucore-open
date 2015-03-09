@@ -318,7 +318,7 @@ describe OrderRowImporter do
       end
 
       it_behaves_like "an order was not created"
-      it_behaves_like "it has an error message", "Unknown headers: acct"
+      it_behaves_like "it has an error message", "Missing headers: Chart String"
     end
   end
 
