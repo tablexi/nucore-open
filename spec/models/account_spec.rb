@@ -274,5 +274,35 @@ describe Account do
         Account.for_facility(@facility2).should contain_all @facility2_accounts
       end
     end
+
+    describe "#for_facility" do
+      let!(:user) { create :user }
+      let!(:facility) { create :facility}
+      let!(:po_show) { create_po_for(user, facility) }
+      let!(:po_hidden) { create_po_for(user, create(:facility)) }
+      let!(:po_deleted) { create_po_for(user, facility, Time.now - 1.day) }
+
+      it "filters by facility" do
+        expect(user.accounts.for_facility(facility)).to match_array([po_show])
+      end
+
+      it "filters deleted accounts" do
+        expect(user.accounts.for_facility(facility)).to_not include(po_deleted)
+      end
+
+      def create_po_for(user, facility, deleted_at = nil)
+        account = create(:purchase_order_account,
+                    facility: facility,
+                    account_users: [build(:account_user, user_role: 'Owner', user: create(:user))])
+
+        create(:account_user,
+          user: user,
+          deleted_at: deleted_at,
+          user_role: AccountUser::ACCOUNT_PURCHASER,
+          account: account)
+
+        account
+      end
+    end
   end
 end
