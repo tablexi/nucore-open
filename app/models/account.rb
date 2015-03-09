@@ -21,6 +21,18 @@ class Account < ActiveRecord::Base
   accepts_nested_attributes_for :account_users
 
   scope :active, lambda {{ :conditions => ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] }}
+  scope :for_facility, ->(facility) do
+    accounts = scoped
+
+    unless facility.all_facility?
+      accounts = accounts.where("accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)",
+            {:allow_all => AccountManager::GLOBAL_ACCOUNT_CLASSES,
+              :limit_one => AccountManager::FACILITY_ACCOUNT_CLASSES,
+              :facility => facility})
+    end
+
+    accounts
+  end
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
   validates_length_of :description, :maximum => 50
@@ -73,20 +85,6 @@ class Account < ActiveRecord::Base
 
   def self.limited_to_single_facility?
     AccountManager::FACILITY_ACCOUNT_CLASSES.include? self.name
-  end
-
-
-  def self.for_facility(facility)
-    accounts = scoped
-
-    unless facility.all_facility?
-      accounts = accounts.where("accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)",
-            {:allow_all => AccountManager::GLOBAL_ACCOUNT_CLASSES,
-              :limit_one => AccountManager::FACILITY_ACCOUNT_CLASSES,
-              :facility => facility})
-    end
-
-    accounts
   end
 
   def self.for_user(user)

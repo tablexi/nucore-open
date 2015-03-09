@@ -4,8 +4,7 @@
       %th= Account.model_name.human
       %th.centered= Facility.model_name.human
   %tbody
-    - @account_users.each do |au|
-      - a = au.account
+    - @accounts.each do |a|
       %tr
         - if can?(:manage, a) || session_user.administrator? #au.can_administer? || session_user.administrator?
           - if current_facility && AccountManager.using_statements?

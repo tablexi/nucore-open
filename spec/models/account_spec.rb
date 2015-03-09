@@ -274,5 +274,33 @@ describe Account do
         Account.for_facility(@facility2).should contain_all @facility2_accounts
       end
     end
+
+    describe "#for_facility" do
+      let!(:user) { create :user }
+      let!(:facility) { create :facility}
+      let!(:account_show) do
+        create(:account_user,
+          user: user,
+          user_role: AccountUser::ACCOUNT_PURCHASER,
+          account: create(:purchase_order_account,
+                      facility: facility,
+                      account_users: [
+                        build(:account_user, user_role: 'Owner', user: create(:user))])).account
+      end
+
+      let!(:account_hide) do
+        create(:account_user,
+          user: user,
+          user_role: AccountUser::ACCOUNT_PURCHASER,
+          account: create(:purchase_order_account,
+                    facility: create(:facility),
+                    account_users: [
+                      build(:account_user, user_role: 'Owner', user: create(:user))])).account
+      end
+
+      it "filters by facility" do
+        expect(user.accounts.for_facility(facility)).to match_array([account_show])
+      end
+    end
   end
 end

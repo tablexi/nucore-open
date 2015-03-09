@@ -118,8 +118,7 @@ class UsersController < ApplicationController
   # GET /facilities/:facility_id/users/:user_id/accounts
   def accounts
     # accounts for this facility
-    facility_accounts = Account.for_facility(current_facility)
-    @account_users = @user.account_users.active.select { |ua| facility_accounts.include?(ua.account) }
+    @accounts = @user.accounts.for_facility(current_facility)
   end
 
   # GET /facilities/:facility_id/users/:id

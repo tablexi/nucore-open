@@ -240,38 +240,15 @@ describe UsersController do
   end
 
   context "accounts" do
-    let!(:user) { @purchaser }
-    let!(:account_user_show) do
-      create(:account_user,
-        user: user,
-        user_role: AccountUser::ACCOUNT_PURCHASER,
-        account: create(:purchase_order_account,
-                    facility: @authable,
-                    account_users: [
-                      build(:account_user, user_role: 'Owner', user: create(:user))]))
-    end
-
-    let!(:account_user_hide) do
-      create(:account_user,
-        user: user,
-        user_role: AccountUser::ACCOUNT_PURCHASER,
-        account: create(:purchase_order_account,
-                  facility: create(:facility),
-                  account_users: [
-                    build(:account_user, user_role: 'Owner', user: create(:user))]))
-    end
-
     before :each do
       @method=:get
       @action=:accounts
-      @params.merge!(:user_id => user.id)
-      sign_in @admin
-
-      do_request
+      @params.merge!(:user_id => @guest.id)
     end
 
-    it "filters POs by facility and user"  do
-      expect(assigns(:account_users)).to match_array([account_user_show])
+    it_should_allow_operators_only do
+      expect(assigns(:user)).to eq(@guest)
+      expect(assigns(:accounts)).to be_kind_of ActiveRecord::Relation
     end
   end
 
