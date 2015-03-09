@@ -348,7 +348,7 @@ end
       end
 
       it "sends an exception notification" do
-        expect(ActiveSupport::Notifications).to receive(:instrument).with('external_error', anything)
+        expect(ActiveSupport::Notifications).to receive(:instrument).with('background_error', anything)
         import.process_upload!
       end
     end
