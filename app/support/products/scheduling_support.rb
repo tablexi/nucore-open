@@ -25,6 +25,10 @@ module Products::SchedulingSupport
     self.reservations.admin
   end
 
+  def started_reservations
+    self.reservations.where("reservations.actual_start_at IS NOT NULL")
+  end
+
   def visible_reservations(date = nil)
     purchased = self.purchased_reservations.order(:reserve_start_at)
     admin = self.admin_reservations

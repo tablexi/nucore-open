@@ -115,6 +115,7 @@ class Reservation < ActiveRecord::Base
   #####
 
   def start_reservation!
+    product.started_reservations.each(&:end_reservation!)
     self.actual_start_at = Time.zone.now
     save!
   end

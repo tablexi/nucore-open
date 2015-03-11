@@ -664,6 +664,34 @@ describe Reservation do
     expect(reservation).to be_can_start_early
   end
 
+  describe '#start_reservation!' do
+    it 'sets actual start time', :timecop_freeze do
+      reservation.start_reservation!
+      expect(reservation.actual_start_at).to eq(Time.now)
+    end
+
+    context 'with a running reservation' do
+      let!(:running) { create :setup_reservation, product: instrument, reserve_start_at: (Time.now - 1.hour), reserve_end_at: Time.now, actual_start_at: (Time.now - 1.hour) }
+
+      it 'ends the running reservation' do
+        reservation.start_reservation!
+        expect(running.reload.actual_end_at).to_not be_nil
+      end
+
+      # This depends on https://github.com/tablexi/nucore-open/pull/256
+      pending 'completes running reservation order details' do
+        reservation.start_reservation!
+        expect(running).to be_complete
+      end
+
+      # This depends on https://github.com/tablexi/nucore-open/pull/256
+      pending 'sets running reservations order detail to problem' do
+        reservation.start_reservation!
+        expect(running).to be_problem
+      end
+    end
+  end
+
   context "basic reservation rules" do
     it "should not allow reservations starting before now" do
       @earlier = Date.today - 1
