@@ -664,6 +664,52 @@ describe Reservation do
     expect(reservation).to be_can_start_early
   end
 
+  describe '#start_reservation!' do
+    it 'sets actual start time', :timecop_freeze do
+      reservation.start_reservation!
+      expect(reservation.actual_start_at).to eq(Time.now)
+    end
+
+    context 'with a running reservation' do
+      let!(:running) { create :setup_reservation, product: instrument, reserve_start_at: 1.hour.ago, reserve_end_at: Time.now, actual_start_at: 1.hour.ago }
+
+      before do
+        order = running.order_detail.order
+        order.state = 'validated'
+        order.purchase!
+
+        reservation.start_reservation!
+      end
+
+      it 'completes the running reservation' do
+        expect(running.reload).to be_complete
+      end
+
+      it 'sets the orders as a problem order' do
+        expect(running.reload).to be_problem
+      end
+
+      it 'does not set actual_end_at' do
+        expect(running.reload.actual_end_at).to be_nil
+      end
+    end
+
+    context 'with an complete reservation' do
+      let!(:complete) { create :setup_reservation, product: instrument, reserve_start_at: 2.hours.ago, reserve_end_at: 1.hour.ago, actual_start_at: 2.hours.ago, actual_end_at: 1.hour.ago }
+
+      before do
+        order = complete.order_detail.order
+        order.state = 'validated'
+        order.purchase!
+      end
+
+      it 'does nothing' do
+        expect{ reservation.start_reservation! }
+          .to_not change{ complete.reload.attributes }
+      end
+    end
+  end
+
   context "basic reservation rules" do
     it "should not allow reservations starting before now" do
       @earlier = Date.today - 1

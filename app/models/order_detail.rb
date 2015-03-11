@@ -130,10 +130,9 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def self.purchased_active_reservations
-    where(state: ['new', 'inprocess'])
-      .where('order_status_id IS NOT NULL')
-      .where(reservations: { canceled_at: nil })
+    scoped.pending
       .joins(:reservation)
+      .merge(Reservation.not_canceled)
   end
 
   scope :for_facility_with_price_policy, lambda { |facility| {
@@ -254,7 +253,7 @@ class OrderDetail < ActiveRecord::Base
   scope :non_reservations, joins(:product).where("products.type <> 'Instrument'")
   scope :reservations, joins(:product).where("products.type = 'Instrument'")
 
-  scope :ordered, where("orders.ordered_at IS NOT NULL")
+  scope :ordered, joins(:order).merge(Order.purchased)
   scope :pending, joins(:order).where(:state => ['new', 'inprocess']).ordered
   scope :confirmed_reservations,  reservations.
                                  joins(:order).
@@ -266,9 +265,9 @@ class OrderDetail < ActiveRecord::Base
                                         order('reservations.reserve_start_at ASC')
                                       }
 
-  scope :in_progress_reservations, confirmed_reservations.
-                                  where("reservations.actual_start_at IS NOT NULL AND reservations.actual_end_at IS NULL").
-                                  order('reservations.reserve_start_at ASC')
+  scope :in_progress_reservations, confirmed_reservations
+    .merge(Reservation.relay_in_progress)
+    .order('reservations.reserve_start_at ASC')
 
   scope :all_reservations, confirmed_reservations.
                            order('reservations.reserve_start_at DESC')
@@ -416,6 +415,12 @@ class OrderDetail < ActiveRecord::Base
       clear_statement if order_status.root_canceled?
       change_status! order_status, &block
     end
+  end
+
+  # OrderDetail#complete! should be used to complete an OrderDetail instead of
+  # OrderDetail#to_complete
+  def complete!
+    change_status!(OrderStatus.complete_status)
   end
 
   def backdate_to_complete!(event_time = Time.zone.now)
