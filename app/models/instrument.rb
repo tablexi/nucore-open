@@ -31,6 +31,10 @@ class Instrument < Product
 
   after_create :set_default_pricing
 
+  # Scopes
+  # --------
+  scope :reservation_only, where(control_mechanism: Relay::CONTROL_MECHANISMS[:manual])
+
   # Instance methods
   # -------
 

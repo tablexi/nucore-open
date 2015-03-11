@@ -21,7 +21,11 @@ class AutoExpire
   end
 
   def non_reservation_order_details
-    OrderDetail.purchased_active_reservations.readonly(false).select { |od| od.product.try(:reservation_only?) }
+    OrderDetail.purchased_active_reservations
+      .reservation_only
+      .where("reservations.reserve_end_at < ?", Time.zone.now)
+      .readonly(false)
+      .all
   end
 
   def expire_reservation(od)
