@@ -34,12 +34,6 @@ FactoryGirl.define do
     journal_date { Time.zone.now }
   end
 
-  factory :stored_file do
-    swf_uploaded_data { fixture_file_upload("#{Rails.root}/spec/files/flash_file.swf", 'application/x-shockwave-flash') }
-    name "#{Rails.root}/spec/files/flash_file.swf"
-    file_type 'info'
-  end
-
   factory :response_set do
     sequence(:access_code) { |n| "#{n}#{n}#{n}" }
   end
