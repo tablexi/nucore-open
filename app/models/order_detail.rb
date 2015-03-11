@@ -418,6 +418,12 @@ class OrderDetail < ActiveRecord::Base
     end
   end
 
+  # OrderDetail#complete! should be used to complete an OrderDetail instead of
+  # OrderDetail#to_complete
+  def complete!
+    change_status!(OrderStatus.complete_status)
+  end
+
   def backdate_to_complete!(event_time = Time.zone.now)
     # if we're setting it to compete, automatically set the actuals for a reservation
     if reservation

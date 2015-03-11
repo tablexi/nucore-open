@@ -24,12 +24,8 @@ class AutoExpire
     OrderDetail.purchased_active_reservations.readonly(false).select { |od| od.product.try(:reservation_only?) }
   end
 
-  def complete_status
-    @complete_status ||= OrderStatus.find_by_name!('Complete')
-  end
-
   def expire_reservation(od)
-    od.change_status!(complete_status)
+    od.change_status!(OrderStatus.complete_status)
     od.fulfilled_at = od.reservation.reserve_end_at
     return unless od.price_policy
     costs = od.price_policy.calculate_cost_and_subsidy(od.reservation)

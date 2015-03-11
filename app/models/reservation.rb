@@ -124,8 +124,7 @@ class Reservation < ActiveRecord::Base
     save!
     # reservation is done, now give the best price
     order_detail.assign_price_policy
-    order_detail.change_status!(OrderStatus.complete.first)
-    order_detail.save!
+    order_detail.complete!
   end
 
 
