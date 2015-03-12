@@ -1676,6 +1676,10 @@ describe OrderDetail do
     it 'sets status to complete' do
       expect(order_detail.order_status).to eq(OrderStatus.complete_status)
     end
+
+    it 'fulfills the order' do
+      expect(order_detail.fulfilled_at).to be_present
+    end
   end
 
   def set_cancellation_cost_for_all_policies(cost)
