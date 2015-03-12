@@ -22,10 +22,10 @@ class AutoExpire
 
   def non_reservation_order_details
     OrderDetail.purchased_active_reservations
-      .reservation_only
       .where("reservations.reserve_end_at < ?", Time.zone.now)
+      .joins(:product)
+      .merge(Instrument.reservation_only)
       .readonly(false)
-      .all
   end
 
   def expire_reservation(od)

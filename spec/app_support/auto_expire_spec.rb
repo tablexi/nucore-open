@@ -29,7 +29,7 @@ describe AutoExpire do
         end_at = start_at + 30.minutes
 
         create(:purchased_reservation,
-            product: create(:setup_instrument, :reservation_only, min_reserve_mins: 30),
+            product: create(:setup_instrument, min_reserve_mins: 1),
             reserve_start_at: start_at,
             reserve_end_at: end_at)
       end
@@ -46,7 +46,7 @@ describe AutoExpire do
         end_at = start_at + 30.minutes
 
         create(:setup_reservation,
-            product: create(:setup_instrument, :reservation_only, min_reserve_mins: 30),
+            product: create(:setup_instrument, min_reserve_mins: 1),
             reserve_start_at: start_at,
             reserve_end_at: end_at)
       end

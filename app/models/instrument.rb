@@ -33,7 +33,10 @@ class Instrument < Product
 
   # Scopes
   # --------
-  scope :reservation_only, where(control_mechanism: Relay::CONTROL_MECHANISMS[:manual])
+  scope :reservation_only, lambda {
+    joins('LEFT OUTER JOIN relays ON relays.instrument_id = products.id')
+      .where('relays.instrument_id IS NULL')
+  }
 
   # Instance methods
   # -------
