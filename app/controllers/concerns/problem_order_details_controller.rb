@@ -2,12 +2,12 @@ module ProblemOrderDetailsController
   extend ActiveSupport::Concern
 
   def assign_price_policies_to_problem_orders
-    assign_missing_price_policies(problem_orders.readonly(false))
+    assign_missing_price_policies(problem_order_details.readonly(false))
     redirect_to show_problems_path
   end
 
   def show_problems
-    @order_details = problem_orders.paginate(page: params[:page])
+    @order_details = problem_order_details.paginate(page: params[:page])
   end
 
   private

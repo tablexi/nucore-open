@@ -96,15 +96,6 @@ class Order < ActiveRecord::Base
     # set the ordered_at date
     self.ordered_at ||= Time.zone.now
     self.save
-#    #send email to ordering user
-#    unless self.user.email.nil?
-#      OrderMailer.deliver_order_receipt(self)
-#    end
-#
-#    # send email to facility order confimation address
-#    unless self.facility.order_notification_email.nil?
-#      OrderMailer.deliver_facility_order_notification(self)
-#    end
   end
   #####
   # END acts_as_state_machine

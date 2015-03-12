@@ -50,6 +50,7 @@ en:
       th:
         quantity_and_product: "Quantity / Product"
         problem: Problem
+        actual_start: Actual Start Date
 
     product_details_fields:
       name: "Name of the %{field} as displayed to the end user"

@@ -227,7 +227,7 @@ class FacilityReservationsController < ApplicationController
       order(order_by_clause)
   end
 
-  def problem_orders
+  def problem_order_details
     current_facility.order_details.
       problem_orders.
       reservations.

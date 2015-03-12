@@ -75,7 +75,6 @@ class Account < ActiveRecord::Base
     AccountManager::FACILITY_ACCOUNT_CLASSES.include? self.name
   end
 
-
   def self.for_facility(facility)
     accounts = scoped
 

@@ -118,7 +118,7 @@ class UsersController < ApplicationController
   # GET /facilities/:facility_id/users/:user_id/accounts
   def accounts
     # accounts for this facility
-    @account_users = @user.account_users.active
+    @accounts = @user.accounts.for_facility(current_facility)
   end
 
   # GET /facilities/:facility_id/users/:id

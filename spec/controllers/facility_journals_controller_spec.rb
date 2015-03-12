@@ -298,6 +298,16 @@ describe FacilityJournalsController do
           expect(assigns(:journal)).to be_persisted
         end
       end
+
+      context 'when the account is not open' do
+        let(:fulfilled_at) { @order_detail.fulfilled_at.change(usec: 0) }
+        before do
+          @params[:order_detail_ids] = [@order_detail.id]
+          expect_any_instance_of(ValidatorFactory.validator_class).to receive(:account_is_open!).with(fulfilled_at).and_raise(ValidatorError, "Not open")
+        end
+
+        it_behaves_like 'journal error', "is invalid. Not open"
+      end
     end
 
     context "searching" do
