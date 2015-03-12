@@ -33,7 +33,8 @@ class AutoExpire
     od.assign_actual_price
     od.complete!
   rescue => e
-    STDERR.puts "Error on Order # #{od} - #{e}\n#{e.backtrace.join("\n")}"
+    ActiveSupport::Notifications.instrument('background_error',
+        exception: e, information: "Failed expire reservation order detail with id: #{od.id}")
     raise ActiveRecord::Rollback
   end
 end
