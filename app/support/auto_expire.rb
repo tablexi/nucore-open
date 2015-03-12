@@ -29,14 +29,13 @@ class AutoExpire
   end
 
   def expire_reservation(od)
-    od.complete!
     od.fulfilled_at = od.reservation.reserve_end_at
     return unless od.price_policy
     costs = od.price_policy.calculate_cost_and_subsidy(od.reservation)
     return if costs.blank?
     od.actual_cost    = costs[:cost]
     od.actual_subsidy = costs[:subsidy]
-    od.save!
+    od.complete!
   rescue => e
     STDERR.puts "Error on Order # #{od} - #{e}\n#{e.backtrace.join("\n")}"
     raise ActiveRecord::Rollback
