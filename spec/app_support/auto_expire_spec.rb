@@ -1,6 +1,8 @@
 require 'spec_helper'
 
-describe AutoExpire do
+describe AutoExpire, :timecop_freeze do
+  let(:now) { DateTime.now.change(hour: 9, min: 31)  }
+
   let(:action) { described_class.new }
   let(:order_detail) { reservation.order_detail }
 
@@ -25,8 +27,8 @@ describe AutoExpire do
 
     context 'a new reservation only instrument' do
       let!(:reservation) do
-        start_at = Time.zone.parse("#{Date.today} 9:00:00")
-        end_at = start_at + 30.minutes
+        start_at = 30.minutes.ago
+        end_at = 1.minute.ago
 
         create(:purchased_reservation,
             product: create(:setup_instrument, min_reserve_mins: 1),
@@ -42,8 +44,8 @@ describe AutoExpire do
 
     context 'an unpurchased reservation only instrument' do
       let!(:reservation) do
-        start_at = Time.zone.parse("#{Date.today} 9:00:00")
-        end_at = start_at + 30.minutes
+        start_at = 30.minutes.ago
+        end_at = 1.minute.ago
 
         create(:setup_reservation,
             product: create(:setup_instrument, min_reserve_mins: 1),
