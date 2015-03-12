@@ -26,7 +26,8 @@ module Products::SchedulingSupport
   end
 
   def started_reservations
-    self.reservations.where("reservations.actual_start_at IS NOT NULL")
+    self.purchased_reservations
+      .where("reservations.actual_start_at IS NOT NULL AND reservations.actual_end_at IS NULL")
   end
 
   def visible_reservations(date = nil)

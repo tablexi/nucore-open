@@ -672,22 +672,34 @@ describe Reservation do
 
     context 'with a running reservation' do
       let!(:running) { create :setup_reservation, product: instrument, reserve_start_at: (Time.now - 1.hour), reserve_end_at: Time.now, actual_start_at: (Time.now - 1.hour) }
-
-      it 'ends the running reservation' do
-        reservation.start_reservation!
-        expect(running.reload.actual_end_at).to_not be_nil
+      before do
+        order = running.order_detail.order
+        order.state = 'validated'
+        order.purchase!
       end
 
-      # This depends on https://github.com/tablexi/nucore-open/pull/256
-      pending 'completes running reservation order details' do
+      it 'completes the running reservation' do
         reservation.start_reservation!
-        expect(running).to be_complete
+        expect(running.reload).to be_complete
       end
 
-      # This depends on https://github.com/tablexi/nucore-open/pull/256
-      pending 'sets running reservations order detail to problem' do
+      it 'sets the orders as a problem order' do
         reservation.start_reservation!
-        expect(running).to be_problem
+        expect(running.reload).to be_problem
+      end
+    end
+
+    context 'with an complete reservation' do
+      let!(:complete) { create :setup_reservation, product: instrument, reserve_start_at: 2.hours.ago, reserve_end_at: 1.hour.ago, actual_start_at: 2.hours.ago, actual_end_at: 1.hour.ago }
+      before do
+        order = complete.order_detail.order
+        order.state = 'validated'
+        order.purchase!
+      end
+
+      it 'does nothing' do
+        expect{ reservation.start_reservation! }
+          .to_not change{ complete.reload.attributes }
       end
     end
   end
