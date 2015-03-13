@@ -266,9 +266,9 @@ class OrderDetail < ActiveRecord::Base
                                         order('reservations.reserve_start_at ASC')
                                       }
 
-  scope :in_progress_reservations, confirmed_reservations.
-                                  where("reservations.actual_start_at IS NOT NULL AND reservations.actual_end_at IS NULL").
-                                  order('reservations.reserve_start_at ASC')
+ scope :in_progress_reservations, confirmed_reservations
+   .merge(Reservation.in_progress)
+   .order('reservations.reserve_start_at ASC')
 
   scope :all_reservations, confirmed_reservations.
                            order('reservations.reserve_start_at DESC')

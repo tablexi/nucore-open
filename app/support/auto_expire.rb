@@ -15,6 +15,7 @@ class AutoExpire
 
   def purchased_active_order_details
     OrderDetail.purchased_active_reservations
+      .merge(Reservation.in_progress)
       .where("reservations.reserve_end_at < ?", Time.zone.now - 12.hours)
       .readonly(false)
       .all

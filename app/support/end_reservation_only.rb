@@ -15,6 +15,7 @@ class EndReservationOnly
 
   def reservation_only_order_details
     OrderDetail.purchased_active_reservations
+      .merge(Reservation.in_progress)
       .where("reservations.reserve_end_at < ?", Time.zone.now)
       .joins(:product)
       .merge(Instrument.reservation_only)

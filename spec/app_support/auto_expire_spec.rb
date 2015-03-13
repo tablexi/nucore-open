@@ -8,7 +8,7 @@ describe AutoExpire, :timecop_freeze do
 
   describe '#perform' do
     context 'a new reservation' do
-      let!(:reservation) { create(:purchased_reservation, :yesterday) }
+      let!(:reservation) { create(:purchased_reservation, :yesterday, actual_start_at: 1.hour.ago) }
 
       it 'completes the reservation' do
         expect { action.perform }.to change { order_detail.reload.state }.from('new').to('complete')
@@ -16,7 +16,7 @@ describe AutoExpire, :timecop_freeze do
     end
 
     context 'an unpurchased reservation' do
-      let!(:reservation) { create(:setup_reservation, :yesterday) }
+      let!(:reservation) { create(:setup_reservation, :yesterday, actual_start_at: 1.hour.ago) }
 
       it 'does not do anything' do
         expect { action.perform }.not_to change { reservation.reload.actual_end_at }
@@ -32,6 +32,7 @@ describe AutoExpire, :timecop_freeze do
 
         create(:purchased_reservation,
             product: create(:setup_instrument, min_reserve_mins: 1),
+            actual_start_at: 30.minutes.ago,
             reserve_start_at: start_at,
             reserve_end_at: end_at)
       end
