@@ -10,7 +10,7 @@ class AutoExpire
   private
 
   def order_details
-    purchased_active_order_details | non_reservation_order_details
+    purchased_active_order_details | reservation_only_order_details
   end
 
   def purchased_active_order_details
@@ -20,7 +20,7 @@ class AutoExpire
       .all
   end
 
-  def non_reservation_order_details
+  def reservation_only_order_details
     OrderDetail.purchased_active_reservations
       .where("reservations.reserve_end_at < ?", Time.zone.now)
       .joins(:product)
