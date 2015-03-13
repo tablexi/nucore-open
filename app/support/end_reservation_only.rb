@@ -1,4 +1,4 @@
-class AutoExpire
+class EndReservationOnly
   def perform
     order_details.each do |od|
       od.transaction do
@@ -10,14 +10,15 @@ class AutoExpire
   private
 
   def order_details
-    purchased_active_order_details
+    reservation_only_order_details
   end
 
-  def purchased_active_order_details
+  def reservation_only_order_details
     OrderDetail.purchased_active_reservations
-      .where("reservations.reserve_end_at < ?", Time.zone.now - 12.hours)
+      .where("reservations.reserve_end_at < ?", Time.zone.now)
+      .joins(:product)
+      .merge(Instrument.reservation_only)
       .readonly(false)
-      .all
   end
 
   def expire_reservation(od)
