@@ -27,7 +27,7 @@ module Products::SchedulingSupport
 
   def started_reservations
     self.purchased_reservations
-      .where("reservations.actual_start_at IS NOT NULL AND reservations.actual_end_at IS NULL")
+      .merge(Reservation.in_progress)
   end
 
   def visible_reservations(date = nil)
