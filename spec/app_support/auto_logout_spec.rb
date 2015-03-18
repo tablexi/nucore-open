@@ -7,10 +7,19 @@ describe AutoLogout do
   before { allow_any_instance_of(Instrument).to receive(:relay).and_return relay }
 
   describe 'a new reservation' do
-    let!(:reservation) { create(:purchased_reservation, :yesterday) }
+    let!(:reservation) { create(:purchased_reservation, :yesterday, actual_start_at: 1.day.ago) }
+
+    before do
+      expect(relay).to receive(:deactivate)
+    end
 
     it 'completes the reservation' do
       expect { action.perform }.to change { order_detail.reload.state }.from('new').to('complete')
+    end
+
+    it 'deactivates the relay' do
+      # see before block for deactivate expectation
+      action.perform
     end
   end
 
