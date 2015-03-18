@@ -236,6 +236,7 @@ en:
         username: Relay Username
         password: Relay Password
         auto_logout: Automatic Logout?
+        auto_logout_minutes: Automatic Logout After Minutes
       reservation:
         base: '' #handled by actual messages
         to_s: Reservation

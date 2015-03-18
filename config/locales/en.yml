@@ -904,7 +904,8 @@ en:
         intro: "(Optional) If the instrument is connected to an approved power relay, please enter the information below. Power relays must be purchased separately."
         label:
           relay: "Power Relay Information"
-          auto_logout: "Automatically power off the relay 60 minutes after the reservation is scheduled to end"
+          auto_logout_1: "Automatically power off the relay"
+          auto_logout_2: "minutes after the reservation is scheduled to end"
       reservation:
         instruct:
           reserve_interval: "The minutes of an hour on which a reservation is allowed to begin (e.g. if 5 reservations can be scheduled every 5 minutes)"

@@ -22,7 +22,11 @@
     = rf.input :port
     = rf.input :username
     = rf.input :password, as: :string
-    = rf.input :auto_logout, :as => :boolean, :label => false, :inline_label => t('instruments.instrument_fields.relay.label.auto_logout')
+    = rf.input :auto_logout do
+      = rf.check_box :auto_logout
+      = t('instruments.instrument_fields.relay.label.auto_logout_1')
+      = rf.input :auto_logout_minutes, label: false, error: false, wrapper_html: { class: 'input-inline' } , input_html: { style: 'width: 38px' }
+      = t('instruments.instrument_fields.relay.label.auto_logout_2')
 
 .well
   %h3= t('instruments.instrument_fields.reservation.label.restrict')

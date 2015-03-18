@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Relay do
   it { should allow_mass_assignment_of :auto_logout }
+  it { should allow_mass_assignment_of :auto_logout_minutes }
   it { should allow_mass_assignment_of :instrument_id }
   it { should allow_mass_assignment_of :type }
 
