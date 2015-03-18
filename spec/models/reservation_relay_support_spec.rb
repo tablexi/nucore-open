@@ -28,4 +28,23 @@ describe Reservation do
     it { should_not be_can_switch_instrument_on }
     it { should_not be_can_switch_instrument_off }
   end
+
+  context '#other_reservations_using_relay' do
+    context 'with no other running reservations' do
+      let!(:reservation_done) { create(:purchased_reservation, :yesterday, actual_start_at: 1.day.ago) }
+
+      it 'returns nothing' do
+        expect(reservation_done.other_reservations_using_relay).to be_empty
+      end
+    end
+
+    context 'with one other running reservation' do
+      let!(:reservation_done) { create(:purchased_reservation, :yesterday, actual_start_at: 1.day.ago) }
+      let!(:reservation_running) { create(:purchased_reservation, product: reservation_done.product, reserve_start_at: 30.minutes.ago, reserve_end_at: 30.minutes.from_now, actual_start_at: 30.minutes.ago) }
+
+      it 'returns the other relay' do
+        expect(reservation_done.other_reservations_using_relay).to match_array([reservation_running])
+      end
+    end
+  end
 end
