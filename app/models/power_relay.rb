@@ -4,6 +4,7 @@ module PowerRelay
   def self.included(base)
     ## validations
     base.validates_presence_of :ip, :port, :username, :password
+    base.validates :auto_logout_minutes, :presence => { :if => :auto_logout }
   end
 
   ## instance methods

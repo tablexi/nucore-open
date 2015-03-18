@@ -1,7 +1,9 @@
 class AutoLogout
   def perform
     order_details.each do |od|
-      next unless od.product.relay.try(:auto_logout) == true
+      relay = od.product.relay
+      next unless relay.try(:auto_logout) == true
+      next unless auto_logout_time?(od.reservation.try(:reserve_end_at), relay.try(:auto_logout_minutes))
 
       od.transaction do
         complete_reservation(od)
@@ -13,9 +15,14 @@ class AutoLogout
 
   def order_details
     OrderDetail.purchased_active_reservations.
-      where("reservations.actual_end_at IS NULL AND reserve_end_at < ?", Time.zone.now - 1.hour).
+      where("reservations.actual_end_at IS NULL AND reserve_end_at < ?", Time.zone.now).
       includes(:product).
       readonly(false).all
+  end
+
+  def auto_logout_time?(reserve_end_at, auto_logout_minutes)
+    return false if reserve_end_at.nil? || auto_logout_minutes.nil?
+    (reserve_end_at + auto_logout_minutes.minutes) < Time.now
   end
 
   def complete_status
@@ -31,6 +38,7 @@ class AutoLogout
     od.actual_cost    = costs[:cost]
     od.actual_subsidy = costs[:subsidy]
     od.save!
+    od.reservation.save!
   rescue => e
     STDERR.puts "Error on Order # #{od} - #{e}"
     raise ActiveRecord::Rollback

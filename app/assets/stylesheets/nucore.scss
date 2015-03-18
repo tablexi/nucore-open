@@ -315,3 +315,10 @@ textarea.wide {
     padding-left: 0;
   }
 }
+
+.input-inline {
+  display: inline;
+  .controls {
+    display: inherit;
+  }
+}
