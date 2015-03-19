@@ -140,10 +140,24 @@ describe Reservation do
 
           context "the reservation has begun" do
             before :each do
-              reservation.update_attribute(:reserve_start_at, 3.hours.ago)
+              reservation.assign_attributes(reserve_start_at: 3.hours.ago, actual_start_at: 3.hours.ago)
+              reservation.save(validate: false)
             end
 
-            it_behaves_like "a customer is not allowed to edit"
+            context "there is a following reservation" do
+              before do
+                instrument.reservations.create!(
+                  reserve_start_at: reservation.reserve_end_at,
+                  reserve_end_at: reservation.reserve_end_at + 1.hour
+                )
+              end
+
+              it_behaves_like "a customer is not allowed to edit"
+            end
+
+            context "there is no following reservation" do
+              it_behaves_like "a customer is allowed to edit"
+            end
           end
 
           context "the reservation has not yet begun" do
@@ -466,7 +480,6 @@ describe Reservation do
       end
 
     end
-
   end
 
   context 'conflicting reservations' do
@@ -1024,4 +1037,38 @@ describe Reservation do
     end
   end
 
+  describe "#next_duration_available?" do
+    subject(:reservation) { create(:purchased_reservation) }
+
+    it "has an available next duration" do
+      expect(reservation.next_duration_available?).to eq(true)
+    end
+
+    context "with another reservation following" do
+      before do
+        create(:purchased_reservation,
+          reserve_start_at: reservation.reserve_end_at,
+          reserve_end_at: reservation.reserve_end_at + 1.hour,
+          product: reservation.product)
+      end
+
+      it "has no available next duration" do
+        expect(reservation.next_duration_available?).to eq(false)
+      end
+    end
+
+    context "with a reservation at the end of a day" do
+      before do
+        reservation.product.schedule_rules[0].tap do |rule|
+          reservation.reserve_start_at = reservation.reserve_start_at.change(hour: rule.end_hour - 1, min: rule.end_min)
+          reservation.reserve_end_at = reservation.reserve_end_at.change(hour: rule.end_hour, min: rule.end_min)
+          reservation.save!
+        end
+      end
+
+      it "has no available next duration" do
+        expect(reservation.next_duration_available?).to eq(false)
+      end
+    end
+  end
 end

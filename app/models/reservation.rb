@@ -191,11 +191,34 @@ class Reservation < ActiveRecord::Base
   end
 
   def can_customer_edit?
-    !canceled? && !complete? && before_lock_window?
+    !canceled? && !complete? && (reserve_start_at_editable? || reserve_end_at_editable?)
+  end
+
+  def reserve_start_at_editable?
+    before_lock_window? && actual_start_at.blank?
+  end
+
+  def reserve_end_at_editable?
+    outside_lock_window? && Time.zone.now <= reserve_end_at && next_duration_available? && actual_end_at.blank?
+  end
+
+  def next_duration_available?
+    next_available = product.next_available_reservation(reserve_end_at)
+
+    return false unless next_available
+
+    current_end_at = reserve_end_at.change(:sec => 0)
+    next_start_at = next_available.reserve_start_at.change(sec: 0)
+
+    current_end_at == next_start_at
   end
 
   def before_lock_window?
     Time.zone.now < reserve_start_at - product_lock_window.hours
+  end
+
+  def outside_lock_window?
+    before_lock_window? || Time.zone.now >= reserve_start_at
   end
 
   # can the ADMIN edit the reservation?
