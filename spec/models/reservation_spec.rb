@@ -696,6 +696,7 @@ describe Reservation do
 
     context 'with an complete reservation' do
       let!(:complete) { create :setup_reservation, product: instrument, reserve_start_at: 2.hours.ago, reserve_end_at: 1.hour.ago, actual_start_at: 2.hours.ago, actual_end_at: 1.hour.ago }
+
       before do
         order = complete.order_detail.order
         order.state = 'validated'
