@@ -13,6 +13,19 @@ describe AutoExpireReservation, :timecop_freeze do
       it 'completes the reservation' do
         expect { action.perform }.to change { order_detail.reload.state }.from('new').to('complete')
       end
+
+      it 'sets this to a problem reservation' do
+        expect { action.perform }.to change { order_detail.reload.problem }.to(true)
+      end
+
+      it 'does not assign pricing' do
+        action.perform
+        expect(order_detail.reload.price_policy).to be_nil
+      end
+
+      it 'sets the reservation fulfilled at time' do
+        expect { action.perform }.to change { order_detail.reload.fulfilled_at }.to(reservation.reserve_end_at)
+      end
     end
 
     context 'an unpurchased reservation' do

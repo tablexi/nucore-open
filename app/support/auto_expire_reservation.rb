@@ -15,16 +15,20 @@ class AutoExpireReservation
 
   def purchased_active_order_details
     OrderDetail.purchased_active_reservations
-      .merge(Reservation.in_progress)
+      .merge(Reservation.relay_in_progress)
       .where("reservations.reserve_end_at < ?", Time.zone.now - 12.hours)
       .readonly(false)
       .all
   end
 
   def expire_reservation(od)
-    od.fulfilled_at = od.reservation.reserve_end_at
-    od.assign_actual_price
     od.complete!
+
+    # OrderDetail#complete! sets fulfilled_at and price policy,
+    # so we have to reset them.
+    od.fulfilled_at = od.reservation.reserve_end_at
+    od.clear_costs
+    od.save!
   rescue => e
     ActiveSupport::Notifications.instrument('background_error',
         exception: e, information: "Failed expire reservation order detail with id: #{od.id}")

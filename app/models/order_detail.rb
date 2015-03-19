@@ -915,6 +915,13 @@ class OrderDetail < ActiveRecord::Base
     journal.present? && account.is_a?(NufsAccount) && can_reconcile?
   end
 
+  # Double check that you want to use this method before using it
+  def clear_costs
+    self.actual_cost     = nil
+    self.actual_subsidy  = nil
+    self.price_policy_id = nil
+  end
+
   private
 
   def has_completed_reservation?
@@ -943,12 +950,6 @@ class OrderDetail < ActiveRecord::Base
     else
       resolve_dispute = '0'
     end
-  end
-
-  def clear_costs
-    self.actual_cost     = nil
-    self.actual_subsidy  = nil
-    self.price_policy_id = nil
   end
 
   def reset_dispute
