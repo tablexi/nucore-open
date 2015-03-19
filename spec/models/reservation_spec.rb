@@ -671,7 +671,7 @@ describe Reservation do
     end
 
     context 'with a running reservation' do
-      let!(:running) { create :setup_reservation, product: instrument, reserve_start_at: (Time.now - 1.hour), reserve_end_at: Time.now, actual_start_at: (Time.now - 1.hour) }
+      let!(:running) { create :setup_reservation, product: instrument, reserve_start_at: 1.hour.ago, reserve_end_at: Time.now, actual_start_at: 1.hour.ago }
       before do
         order = running.order_detail.order
         order.state = 'validated'
