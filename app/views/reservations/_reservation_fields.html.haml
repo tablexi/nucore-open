@@ -1,8 +1,20 @@
+- start_editable = !f.object.persisted? || f.object.reserve_start_at_editable?
 .datetime-block
-  = f.input :reserve_start_date, :input_html => { :class => 'datepicker' }
+  - if start_editable
+    = f.input :reserve_start_date, :input_html => { :class => 'datepicker' }
+  - else
+    .control-group
+      %span
+        %b Reserve Start
+      .controls
+        = f.object.reserve_start_date
   .control-group
     .controls
       .string.optional.control-label &nbsp;
-      = time_select f, :reserve_start, minute_step: @instrument.reserve_interval
+      - if start_editable
+        = time_select f, :reserve_start, minute_step: @instrument.reserve_interval
+      - else
+        .controls
+          = l(f.object.reserve_start_at, format: :timeonly)
 
   = f.input :duration_mins, input_html: { value: default_duration, class: 'timeinput' }

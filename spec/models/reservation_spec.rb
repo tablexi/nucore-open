@@ -140,10 +140,24 @@ describe Reservation do
 
           context "the reservation has begun" do
             before :each do
-              reservation.update_attribute(:reserve_start_at, 3.hours.ago)
+              reservation.assign_attributes(reserve_start_at: 3.hours.ago, actual_start_at: 3.hours.ago)
+              reservation.save(validate: false)
             end
 
-            it_behaves_like "a customer is not allowed to edit"
+            context "there is a following reservation" do
+              before do
+                instrument.reservations.create!(
+                  reserve_start_at: reservation.reserve_end_at,
+                  reserve_end_at: reservation.reserve_end_at + 1.hour
+                )
+              end
+
+              it_behaves_like "a customer is not allowed to edit"
+            end
+
+            context "there is no following reservation" do
+              it_behaves_like "a customer is allowed to edit"
+            end
           end
 
           context "the reservation has not yet begun" do

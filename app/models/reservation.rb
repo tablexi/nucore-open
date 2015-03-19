@@ -189,7 +189,22 @@ class Reservation < ActiveRecord::Base
   end
 
   def can_customer_edit?
-    !canceled? && !complete? && before_lock_window?
+    !canceled? && !complete? && (reserve_start_at_editable? || reserve_end_at_editable?)
+  end
+
+  def reserve_start_at_editable?
+    Time.zone.now < reserve_start_at && before_lock_window?
+  end
+
+  def reserve_end_at_editable?
+    Time.zone.now <= reserve_end_at && next_duration_available?
+  end
+
+  def next_duration_available?
+    potential = self.dup
+    potential.reserve_start_at = reserve_end_at
+    potential.reserve_end_at = reserve_end_at + product.reserve_interval.to_i.minutes
+    potential.conflicting_reservation(exclude: self).nil?
   end
 
   def before_lock_window?
