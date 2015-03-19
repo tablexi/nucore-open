@@ -111,12 +111,6 @@ class Reservation < ActiveRecord::Base
           :start => tstart_at, :end => tend_at)
   end
 
-  def self.reservation_only_in_progress
-    now = Time.zone.now
-    where('reserve_start_at >= ?', now).
-    where('reserve_end_at < ?', now)
-  end
-
   def self.relay_in_progress
     where("actual_start_at IS NOT NULL AND actual_end_at IS NULL")
   end

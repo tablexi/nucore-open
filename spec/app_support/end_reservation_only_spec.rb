@@ -8,7 +8,7 @@ describe EndReservationOnly, :timecop_freeze do
 
   describe '#perform' do
     context 'an unpurchased reservation' do
-      let!(:reservation) { create(:setup_reservation, :yesterday, actual_start_at: 1.hour.ago) }
+      let!(:reservation) { create(:setup_reservation, :yesterday) }
 
       it 'does not do anything' do
         expect { action.perform }.not_to change { reservation.reload.actual_end_at }
@@ -24,13 +24,22 @@ describe EndReservationOnly, :timecop_freeze do
 
         create(:purchased_reservation,
             product: create(:setup_instrument, min_reserve_mins: 1),
-            actual_start_at: start_at,
             reserve_start_at: start_at,
             reserve_end_at: end_at)
       end
 
       it 'completes reservation' do
         expect { action.perform }.to change { order_detail.reload.state }.from('new').to('complete')
+      end
+
+      it 'sets fulfilled at to end reservation time' do
+        action.perform
+        expect(order_detail.reload.fulfilled_at).to eq(reservation.reserve_end_at)
+      end
+
+      it 'sets price policy' do
+        action.perform
+        expect(order_detail.reload.price_policy).to_not be_nil
       end
     end
 
@@ -41,7 +50,6 @@ describe EndReservationOnly, :timecop_freeze do
 
         create(:setup_reservation,
             product: create(:setup_instrument, min_reserve_mins: 1),
-            actual_start_at: start_at,
             reserve_start_at: start_at,
             reserve_end_at: end_at)
       end

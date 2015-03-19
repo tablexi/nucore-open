@@ -15,7 +15,6 @@ class EndReservationOnly
 
   def reservation_only_order_details
     OrderDetail.purchased_active_reservations
-      .merge(Reservation.reservation_only_in_progress)
       .where("reservations.reserve_end_at < ?", Time.zone.now)
       .joins(:product)
       .merge(Instrument.reservation_only)
@@ -23,9 +22,13 @@ class EndReservationOnly
   end
 
   def expire_reservation(od)
-    od.fulfilled_at = od.reservation.reserve_end_at
     od.assign_actual_price
     od.complete!
+
+    # OrderDetail#complete! sets fulfilled_at
+    # so we have to reset it.
+    od.fulfilled_at = od.reservation.reserve_end_at
+    od.save!
   rescue => e
     ActiveSupport::Notifications.instrument('background_error',
         exception: e, information: "Failed expire reservation order detail with id: #{od.id}")
