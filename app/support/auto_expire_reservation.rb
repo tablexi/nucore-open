@@ -1,4 +1,4 @@
-class AutoExpire
+class AutoExpireReservation
   def perform
     order_details.each do |od|
       od.transaction do

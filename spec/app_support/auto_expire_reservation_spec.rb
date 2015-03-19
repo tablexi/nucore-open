@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AutoExpire, :timecop_freeze do
+describe AutoExpireReservation, :timecop_freeze do
   let(:now) { DateTime.now.change(hour: 9, min: 31)  }
 
   let(:action) { described_class.new }
