@@ -23,6 +23,23 @@ describe AutoLogout do
     end
   end
 
+  describe 'a running new reservation' do
+    let!(:reservation) { create(:purchased_reservation, reserve_start_at: 30.minutes.ago, reserve_end_at: 30.minutes.from_now, actual_start_at: 30.minutes.ago) }
+
+    before do
+      expect(relay).to_not receive(:deactivate)
+    end
+
+    it 'does not complete the reservation' do
+      expect { action.perform }.to_not change { order_detail.reload.state }
+    end
+
+    it 'does not deactivate the relay' do
+      # see before block for deactivate expectation
+      action.perform
+    end
+  end
+
   describe 'an unpurchased reservation' do
     let!(:reservation) { create(:setup_reservation, :yesterday) }
 
