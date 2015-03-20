@@ -12,6 +12,10 @@ describe EndReservationOnly, :timecop_freeze do
 
       before { action.perform }
 
+      it 'uses a reservation only reservation' do
+        expect(reservation.product).to be_reservation_only
+      end
+
       include_examples 'it does not complete order' do
         it 'leaves state as new' do
           expect(order_detail.state).to eq('new')
@@ -37,6 +41,10 @@ describe EndReservationOnly, :timecop_freeze do
       before do
         expect(order_detail.reload.state).to eq('new')
         action.perform
+      end
+
+      it 'uses a reservation only reservation' do
+        expect(reservation.product).to be_reservation_only
       end
 
       it 'completes reservation' do
@@ -69,6 +77,10 @@ describe EndReservationOnly, :timecop_freeze do
 
       before { action.perform }
 
+      it 'uses a reservation only reservation' do
+        expect(reservation.product).to be_reservation_only
+      end
+
       include_examples 'it does not complete order' do
         it 'leaves state as new' do
           expect(order_detail.state).to eq('new')
@@ -92,6 +104,40 @@ describe EndReservationOnly, :timecop_freeze do
       end
 
       before { action.perform }
+
+      it 'uses a reservation only reservation' do
+        expect(reservation.product).to be_reservation_only
+      end
+
+      include_examples 'it does not complete order' do
+        it 'leaves state as new' do
+          expect(order_detail.state).to eq('new')
+        end
+
+        it 'leaves order status nil' do
+          expect(order_detail.reload.order_status.name).to eq('New')
+        end
+      end
+    end
+
+    context 'a power relay reservation' do
+      let!(:reservation) do
+        start_at = 30.minutes.ago
+        end_at = 1.minute.ago
+
+        create(:purchased_reservation,
+            product: create(:setup_instrument, min_reserve_mins: 1, relay: create(:relay_syna)),
+            reserve_start_at: start_at,
+            reserve_end_at: end_at)
+      end
+
+      before do
+        action.perform
+      end
+
+      it 'uses a non-reservation only reservation' do
+        expect(reservation.product).to_not be_reservation_only
+      end
 
       include_examples 'it does not complete order' do
         it 'leaves state as new' do
