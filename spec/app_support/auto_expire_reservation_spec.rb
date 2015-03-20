@@ -31,10 +31,24 @@ describe AutoExpireReservation, :timecop_freeze do
     context 'an unpurchased reservation' do
       let!(:reservation) { create(:setup_reservation, :yesterday, actual_start_at: 1.hour.ago) }
 
-      it 'does not do anything' do
-        expect { action.perform }.not_to change { reservation.reload.actual_end_at }
-        expect(order_detail.state).to eq('new')
-        expect(order_detail.order_status_id).to be_blank
+      before do
+        action.perform
+        order_detail.reload
+        reservation.reload
+      end
+
+      include_examples 'it does not complete order' do
+        it 'leaves state as new' do
+          expect(order_detail.state).to eq('new')
+        end
+
+        it 'leaves order status nil' do
+          expect(reservation.actual_end_at).to be_nil
+        end
+
+        it 'leaves order status nil' do
+          expect(order_detail.order_status).to eq(nil)
+        end
       end
     end
 
@@ -50,9 +64,26 @@ describe AutoExpireReservation, :timecop_freeze do
             reserve_end_at: end_at)
       end
 
-      it 'does not do anything' do
-        expect { action.perform }.not_to change { reservation.reload.actual_end_at }
-        expect(order_detail.state).to eq('new')
+      before do
+        action.perform
+        order_detail.reload
+        reservation.reload
+      end
+
+      include_examples 'it does not complete order' do
+        it 'leaves state as new' do
+          expect(order_detail.state).to eq('new')
+        end
+
+        it 'leaves order status nil' do
+          expect(reservation.actual_end_at).to be_nil
+        end
+
+        it 'leaves order status nil' do
+          expect(order_detail.order_status.name).to eq('New')
+        end
+      end
+    end
       end
     end
   end
