@@ -10,7 +10,11 @@ describe EndReservationOnly, :timecop_freeze do
     context 'an unpurchased reservation' do
       let!(:reservation) { create(:setup_reservation, :yesterday) }
 
-      before { action.perform }
+      before do
+       action.perform
+       order_detail.reload
+       reservation.reload
+      end
 
       it 'uses a reservation only reservation' do
         expect(reservation.product).to be_reservation_only
@@ -22,7 +26,7 @@ describe EndReservationOnly, :timecop_freeze do
         end
 
         it 'leaves order status nil' do
-          expect(order_detail.reload.order_status_id).to be_nil
+          expect(order_detail.order_status_id).to be_nil
         end
       end
     end
@@ -41,6 +45,8 @@ describe EndReservationOnly, :timecop_freeze do
       before do
         expect(order_detail.reload.state).to eq('new')
         action.perform
+        order_detail.reload
+        reservation.reload
       end
 
       it 'uses a reservation only reservation' do
@@ -48,19 +54,23 @@ describe EndReservationOnly, :timecop_freeze do
       end
 
       it 'completes reservation' do
-        expect(order_detail.reload.state).to eq('complete')
+        expect(order_detail.state).to eq('complete')
       end
 
       it 'sets fulfilled at to end reservation time' do
-        expect(order_detail.reload.fulfilled_at).to eq(reservation.reserve_end_at)
+        expect(order_detail.fulfilled_at).to eq(reservation.reserve_end_at)
       end
 
       it 'sets price policy' do
-        expect(order_detail.reload.price_policy).to_not be_nil
+        expect(order_detail.price_policy).to_not be_nil
       end
 
       it 'is not a problem reservation' do
-        expect(order_detail.reload).to_not be_problem
+        expect(order_detail).to_not be_problem
+      end
+
+      it 'is has actual cost' do
+        expect(order_detail.actual_cost).to_not be_nil
       end
     end
 
@@ -75,7 +85,11 @@ describe EndReservationOnly, :timecop_freeze do
             reserve_end_at: end_at)
       end
 
-      before { action.perform }
+      before do
+        action.perform
+        order_detail.reload
+        reservation.reload
+      end
 
       it 'uses a reservation only reservation' do
         expect(reservation.product).to be_reservation_only
@@ -87,7 +101,7 @@ describe EndReservationOnly, :timecop_freeze do
         end
 
         it 'leaves order status nil' do
-          expect(order_detail.reload.order_status_id).to be_nil
+          expect(order_detail.order_status_id).to be_nil
         end
       end
     end
@@ -103,7 +117,11 @@ describe EndReservationOnly, :timecop_freeze do
             reserve_end_at: end_at)
       end
 
-      before { action.perform }
+      before do
+        action.perform
+        order_detail.reload
+        reservation.reload
+      end
 
       it 'uses a reservation only reservation' do
         expect(reservation.product).to be_reservation_only
@@ -115,7 +133,7 @@ describe EndReservationOnly, :timecop_freeze do
         end
 
         it 'leaves order status nil' do
-          expect(order_detail.reload.order_status.name).to eq('New')
+          expect(order_detail.order_status.name).to eq('New')
         end
       end
     end
@@ -133,6 +151,8 @@ describe EndReservationOnly, :timecop_freeze do
 
       before do
         action.perform
+        order_detail.reload
+        reservation.reload
       end
 
       it 'uses a non-reservation only reservation' do
@@ -145,7 +165,7 @@ describe EndReservationOnly, :timecop_freeze do
         end
 
         it 'leaves order status nil' do
-          expect(order_detail.reload.order_status.name).to eq('New')
+          expect(order_detail.order_status.name).to eq('New')
         end
       end
     end
