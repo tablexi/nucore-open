@@ -29,4 +29,8 @@ module Reservations::RelaySupport
     true
   end
   deprecate :can_kill_power? => 'Most likely not used anywhere'
+
+  def other_reservations_using_relay
+    od.reservation.product.active_reservations - [self]
+  end
 end

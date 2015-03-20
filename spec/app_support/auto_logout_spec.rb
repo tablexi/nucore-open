@@ -49,4 +49,18 @@ describe AutoLogout do
       expect(order_detail.order_status_id).to be_blank
     end
   end
+
+  describe 'the following running reservation' do
+    let!(:reservation_done) { create(:purchased_reservation, :yesterday, actual_start_at: 1.day.ago) }
+    let!(:reservation_running) { create(:purchased_reservation, product: reservation_done.product, reserve_start_at: 30.minutes.ago, reserve_end_at: 30.minutes.from_now, actual_start_at: 30.minutes.ago) }
+
+    before do
+      expect(relay).to_not receive(:deactivate)
+    end
+
+    it 'does not deactivate the relay' do
+      # see before block for deactivate expectation
+      action.perform
+    end
+  end
 end

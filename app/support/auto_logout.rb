@@ -23,7 +23,8 @@ class AutoLogout
   end
 
   def complete_reservation(od)
-    od.reservation.product.relay.deactivate if od.reservation.can_switch_instrument_off?
+    deactivate_relay = od.reservation.can_switch_instrument_off? && od.reservation.other_reservations_using_relay.count == 0
+    od.reservation.product.relay.deactivate if deactivate_relay
     od.reservation.actual_end_at = Time.zone.now
     od.change_status!(complete_status)
     return unless od.price_policy
