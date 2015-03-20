@@ -84,6 +84,26 @@ describe AutoExpireReservation, :timecop_freeze do
         end
       end
     end
+
+    context 'a reservation only reservation' do
+      let!(:reservation) do
+        create(:purchased_reservation, :yesterday,
+          actual_start_at: 1.hour.ago,
+          product: create(:setup_instrument, min_reserve_mins: 1, relay: create(:relay_syna)))
+      end
+
+      include_examples 'it does not complete order' do
+        it 'leaves state as new' do
+          expect(order_detail.state).to eq('new')
+        end
+
+        it 'leaves order status nil' do
+          expect(reservation.actual_end_at).to be_nil
+        end
+
+        it 'leaves order status nil' do
+          expect(order_detail.order_status).to eq(nil)
+        end
       end
     end
   end
