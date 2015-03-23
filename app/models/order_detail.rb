@@ -915,13 +915,6 @@ class OrderDetail < ActiveRecord::Base
     journal.present? && account.is_a?(NufsAccount) && can_reconcile?
   end
 
-  # Double check that you want to use this method before using it
-  def clear_costs
-    self.actual_cost     = nil
-    self.actual_subsidy  = nil
-    self.price_policy_id = nil
-  end
-
   private
 
   def has_completed_reservation?
@@ -941,6 +934,12 @@ class OrderDetail < ActiveRecord::Base
     self.change_status!(fee > 0 ? OrderStatus.complete.first : order_status)
     self.save! if self.changed? # If the cancel goes from complete => complete, change status doesn't save
     true
+  end
+
+  def clear_costs
+    self.actual_cost     = nil
+    self.actual_subsidy  = nil
+    self.price_policy_id = nil
   end
 
   def mark_dispute_resolved

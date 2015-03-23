@@ -27,7 +27,6 @@ class AutoExpireReservation
     # OrderDetail#complete! sets fulfilled_at and price policy,
     # so we have to reset them.
     od.fulfilled_at = od.reservation.reserve_end_at
-    od.clear_costs
     od.save!
   rescue => e
     ActiveSupport::Notifications.instrument('background_error',
