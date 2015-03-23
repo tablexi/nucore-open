@@ -3,7 +3,7 @@ class AutoLogout
     order_details.each do |od|
       relay = od.product.relay
       next unless relay.try(:auto_logout) == true
-      next unless auto_logout_time?(od.reservation.reserve_end_at, relay.try(:auto_logout_minutes))
+      next unless can_auto_logout?(od.reservation.reserve_end_at, relay.try(:auto_logout_minutes))
 
       od.transaction do
         complete_reservation(od)
@@ -22,7 +22,7 @@ class AutoLogout
       .all
   end
 
-  def auto_logout_time?(reserve_end_at, auto_logout_minutes)
+  def can_auto_logout?(reserve_end_at, auto_logout_minutes)
     return false if reserve_end_at.nil? || auto_logout_minutes.nil?
     (reserve_end_at + auto_logout_minutes.minutes) < Time.zone.now
   end
