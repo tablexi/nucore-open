@@ -18,5 +18,9 @@ shared_examples 'it does not complete order' do
   it 'does not set actual end at' do
     expect(order_detail.reservation.actual_end_at).to be_nil
   end
+
+  it 'leaves state as new' do
+    expect(order_detail.state).to eq('new')
+  end
 end
 

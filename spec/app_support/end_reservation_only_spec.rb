@@ -21,10 +21,6 @@ describe EndReservationOnly, :timecop_freeze do
       end
 
       include_examples 'it does not complete order' do
-        it 'leaves state as new' do
-          expect(order_detail.state).to eq('new')
-        end
-
         it 'leaves order status nil' do
           expect(order_detail.order_status_id).to be_nil
         end
@@ -96,10 +92,6 @@ describe EndReservationOnly, :timecop_freeze do
       end
 
       include_examples 'it does not complete order' do
-        it 'leaves state as new' do
-          expect(order_detail.state).to eq('new')
-        end
-
         it 'leaves order status nil' do
           expect(order_detail.order_status_id).to be_nil
         end
@@ -128,10 +120,6 @@ describe EndReservationOnly, :timecop_freeze do
       end
 
       include_examples 'it does not complete order' do
-        it 'leaves state as new' do
-          expect(order_detail.state).to eq('new')
-        end
-
         it 'leaves order status nil' do
           expect(order_detail.order_status.name).to eq('New')
         end
@@ -160,11 +148,7 @@ describe EndReservationOnly, :timecop_freeze do
       end
 
       include_examples 'it does not complete order' do
-        it 'leaves state as new' do
-          expect(order_detail.state).to eq('new')
-        end
-
-        it 'leaves order status nil' do
+        it 'leaves order status as new' do
           expect(order_detail.order_status.name).to eq('New')
         end
       end

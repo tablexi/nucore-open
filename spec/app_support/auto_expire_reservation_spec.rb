@@ -38,10 +38,6 @@ describe AutoExpireReservation, :timecop_freeze do
       end
 
       include_examples 'it does not complete order' do
-        it 'leaves state as new' do
-          expect(order_detail.state).to eq('new')
-        end
-
         it 'leaves order status nil' do
           expect(reservation.actual_end_at).to be_nil
         end
@@ -71,10 +67,6 @@ describe AutoExpireReservation, :timecop_freeze do
       end
 
       include_examples 'it does not complete order' do
-        it 'leaves state as new' do
-          expect(order_detail.state).to eq('new')
-        end
-
         it 'leaves order status nil' do
           expect(reservation.actual_end_at).to be_nil
         end
@@ -93,10 +85,6 @@ describe AutoExpireReservation, :timecop_freeze do
       end
 
       include_examples 'it does not complete order' do
-        it 'leaves state as new' do
-          expect(order_detail.state).to eq('new')
-        end
-
         it 'leaves order status nil' do
           expect(reservation.actual_end_at).to be_nil
         end
