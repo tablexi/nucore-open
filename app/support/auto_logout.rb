@@ -24,7 +24,7 @@ class AutoLogout
 
   def can_auto_logout?(reserve_end_at, auto_logout_minutes)
     return false if reserve_end_at.nil? || auto_logout_minutes.nil?
-    (reserve_end_at + auto_logout_minutes.minutes) < Time.zone.now
+    reserve_end_at < auto_logout_minutes.minutes.ago
   end
 
   def complete_status
