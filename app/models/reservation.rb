@@ -111,7 +111,7 @@ class Reservation < ActiveRecord::Base
           :start => tstart_at, :end => tend_at)
   end
 
-  def self.in_progress
+  def self.relay_in_progress
     where("actual_start_at IS NOT NULL AND actual_end_at IS NULL")
   end
 

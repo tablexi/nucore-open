@@ -266,7 +266,7 @@ class OrderDetail < ActiveRecord::Base
                                       }
 
   scope :in_progress_reservations, confirmed_reservations
-    .merge(Reservation.in_progress)
+    .merge(Reservation.relay_in_progress)
     .order('reservations.reserve_start_at ASC')
 
   scope :all_reservations, confirmed_reservations.

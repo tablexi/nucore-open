@@ -27,7 +27,7 @@ module Products::SchedulingSupport
 
   def started_reservations
     self.purchased_reservations
-      .merge(Reservation.in_progress)
+      .merge(Reservation.relay_in_progress)
   end
 
   def visible_reservations(date = nil)
