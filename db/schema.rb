@@ -442,7 +442,7 @@ ActiveRecord::Schema.define(:version => 20150318015754) do
     t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "auto_logout_minutes",               :default => 60, :null => false
+    t.integer  "auto_logout_minutes",               :default => 60
   end
 
   add_index "relays", ["instrument_id"], :name => "index_relays_on_instrument_id"
