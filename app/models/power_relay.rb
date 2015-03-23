@@ -1,10 +1,14 @@
+require 'active_support/concern'
+
 # Including class must implement #relay_connection
 # Port refers to the outlet, not the IP port
 module PowerRelay
-  def self.included(base)
+  extend ActiveSupport::Concern
+
+  included do
     ## validations
-    base.validates_presence_of :ip, :port, :username, :password
-    base.validates :auto_logout_minutes, :presence => { :if => :auto_logout }
+    validates_presence_of :ip, :port, :username, :password
+    validates :auto_logout_minutes, presence: { if: :auto_logout }
   end
 
   ## instance methods
