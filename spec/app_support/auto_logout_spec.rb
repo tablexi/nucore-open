@@ -8,8 +8,8 @@ describe AutoLogout, :timecop_freeze do
   let(:relay) { build_stubbed(:relay, auto_logout: true, auto_logout_minutes: 10) }
   before { allow_any_instance_of(Instrument).to receive(:relay).and_return relay }
 
-  describe 'a new reservation past log out time' do
-    let!(:reservation) { create(:purchased_reservation, :yesterday) }
+  describe 'a started reservation past log out time' do
+    let!(:reservation) { create(:purchased_reservation, :yesterday, actual_start_at: 1.hour.ago) }
 
     it 'completes the reservation' do
       expect { action.perform }.to change { order_detail.reload.state }.from('new').to('complete')

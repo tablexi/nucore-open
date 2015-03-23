@@ -14,15 +14,17 @@ class AutoLogout
   private
 
   def order_details
-    OrderDetail.purchased_active_reservations.
-      where("reservations.actual_end_at IS NULL AND reserve_end_at < ?", Time.zone.now).
-      includes(:product).
-      readonly(false).all
+    OrderDetail.purchased_active_reservations
+      .merge(Reservation.relay_in_progress)
+      .where('reserve_end_at < ?', Time.zone.now)
+      .includes(:product)
+      .readonly(false)
+      .all
   end
 
   def auto_logout_time?(reserve_end_at, auto_logout_minutes)
     return false if reserve_end_at.nil? || auto_logout_minutes.nil?
-    (reserve_end_at + auto_logout_minutes.minutes) < Time.now
+    (reserve_end_at + auto_logout_minutes.minutes) < Time.zone.now
   end
 
   def complete_status
