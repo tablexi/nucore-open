@@ -25,6 +25,8 @@ describe AutoLogout, :timecop_freeze do
       start_at = 30.minutes.ago # 9:01am
       end_at = 1.minute.ago    # 9:30am
 
+      # Auto-logout is at 9:40
+
       create(:purchased_reservation,
           product: create(:setup_instrument, min_reserve_mins: 1),
           actual_start_at: 30.minutes.ago,
@@ -32,20 +34,24 @@ describe AutoLogout, :timecop_freeze do
           reserve_end_at: end_at)
     end
 
-    it 'does not do anything' do
-      # Auto-logout is at 9:40
-      expect { action.perform }.not_to change { reservation.reload.actual_end_at }
-      expect { action.perform }.not_to change { order_detail.reload.state }
+    before do
+      action.perform
+      reservation.reload
+      order_detail.reload
     end
+
+    include_examples 'it does not complete order'
   end
 
   describe 'an unpurchased reservation' do
     let!(:reservation) { create(:setup_reservation, :yesterday) }
 
-    it 'does not do anything' do
-      expect { action.perform }.not_to change { reservation.reload.actual_end_at }
-      expect { action.perform }.not_to change { order_detail.reload.state }
-      expect { action.perform }.not_to change { order_detail.reload.order_status_id }
+    before do
+      action.perform
+      reservation.reload
+      order_detail.reload
     end
+
+    include_examples 'it does not complete order'
   end
 end
