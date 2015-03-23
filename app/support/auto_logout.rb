@@ -1,9 +1,7 @@
 class AutoLogout
   def perform
     order_details.each do |od|
-      relay = od.product.relay
-      next unless relay.try(:auto_logout) == true
-      next unless can_auto_logout?(od.reservation.reserve_end_at, relay.try(:auto_logout_minutes))
+      next unless should_auto_logout?(od)
 
       od.transaction do
         complete_reservation(od)
@@ -22,9 +20,19 @@ class AutoLogout
       .all
   end
 
-  def can_auto_logout?(reserve_end_at, auto_logout_minutes)
-    return false if reserve_end_at.nil? || auto_logout_minutes.nil?
-    reserve_end_at < auto_logout_minutes.minutes.ago
+  def should_auto_logout?(order_detail)
+    reserve_end_at = order_detail.reservation.reserve_end_at
+    relay = order_detail.product.relay
+    auto_logout_minutes = relay.try(:auto_logout_minutes)
+
+    configured = [
+      reserve_end_at,
+      auto_logout_minutes,
+      relay.try(:auto_logout)
+    ].all?
+
+
+    configured && (reserve_end_at < auto_logout_minutes.minutes.ago)
   end
 
   def complete_status
@@ -32,15 +40,7 @@ class AutoLogout
   end
 
   def complete_reservation(od)
-    od.reservation.actual_end_at = Time.zone.now
-    od.change_status!(complete_status)
-    return unless od.price_policy
-    costs = od.price_policy.calculate_cost_and_subsidy(od.reservation)
-    return if costs.blank?
-    od.actual_cost    = costs[:cost]
-    od.actual_subsidy = costs[:subsidy]
-    od.save!
-    od.reservation.save!
+    od.reservation.end_reservation!
   rescue => e
     STDERR.puts "Error on Order # #{od} - #{e}"
     raise ActiveRecord::Rollback
