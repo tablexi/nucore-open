@@ -2,16 +2,12 @@ namespace :order_details  do
   desc "mark order_details with past reservations as complete"
   task :expire_reservations => :environment do
     AutoExpireReservation.new.perform
+    EndReservationOnly.new.perform
   end
 
   desc "automatically switch off auto_logout instrument"
   task :auto_logout => :environment do
     AutoLogout.new.perform
-  end
-
-  desc "mark order details with reservation only reservations as complete"
-  task :expire_reservation_only => :environment do
-    EndReservationOnly.new.perform
   end
 
   desc "task to remove merge orders that have been abandoned. See Task #48377"
