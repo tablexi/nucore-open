@@ -23,7 +23,7 @@ class AutoLogout
   end
 
   def complete_reservation(od)
-    deactivate_relay = od.reservation.other_reservation_using_relay?
+    deactivate_relay = !od.reservation.other_reservation_using_relay?
     od.reservation.product.relay.deactivate if deactivate_relay
     od.reservation.end_reservation!
   rescue => e

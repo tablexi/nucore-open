@@ -35,6 +35,6 @@ module Reservations::RelaySupport
   end
 
   def other_reservation_using_relay?
-    order_detail.reservation.can_switch_instrument_off? && order_detail.reservation.other_reservations_using_relay.count == 0
+    !order_detail.reservation.can_switch_instrument_off? || order_detail.reservation.other_reservations_using_relay.count > 0
   end
 end
