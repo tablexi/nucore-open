@@ -98,9 +98,9 @@ shared_examples_for PricePoliciesController do |product_type, params_modifier = 
         end
         it 'should set fields based off the old policy' do
           do_request
-          assigns[:price_policies].map(&:price_group).should == [@price_policy.price_group, @price_group2_policy.price_group]
-          assigns[:price_policies][0].unit_cost.should == @price_policy.unit_cost
-          assigns[:price_policies][1].unit_cost.should == @price_group2_policy.unit_cost
+          expect(assigns[:price_policies].map(&:price_group)).to match_array([@price_policy.price_group, @price_group2_policy.price_group])
+          expect(assigns[:price_policies][0].unit_cost).to eq(@price_policy.unit_cost)
+          expect(assigns[:price_policies][1].unit_cost).to eq(@price_group2_policy.unit_cost)
         end
         it "should leave can_purchase as false if there isn't an existing policy for the group, but there are policies" do
           @price_group3 = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))

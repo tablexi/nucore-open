@@ -25,14 +25,7 @@ class AutoLogout
   def complete_reservation(od)
     deactivate_relay = od.reservation.other_reservation_using_relay?
     od.reservation.product.relay.deactivate if deactivate_relay
-    od.reservation.actual_end_at = Time.zone.now
-    od.change_status!(complete_status)
-    return unless od.price_policy
-    costs = od.price_policy.calculate_cost_and_subsidy(od.reservation)
-    return if costs.blank?
-    od.actual_cost    = costs[:cost]
-    od.actual_subsidy = costs[:subsidy]
-    od.save!
+    od.reservation.end_reservation!
   rescue => e
     STDERR.puts "Error on Order # #{od} - #{e}"
     raise ActiveRecord::Rollback

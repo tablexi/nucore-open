@@ -1062,6 +1062,7 @@ describe ReservationsController do
           assigns(:reservation).should == @reservation
           assigns(:reservation).order_detail.price_policy.should_not be_nil
           assigns(:reservation).actual_end_at.should < Time.zone.now
+          assigns(:reservation).should be_complete
           assigns(:instrument).instrument_statuses.size.should == 1
           assigns(:instrument).instrument_statuses[0].is_on.should == false
           should set_the_flash

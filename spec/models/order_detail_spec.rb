@@ -1666,6 +1666,22 @@ describe OrderDetail do
     end
   end
 
+  describe '#complete!' do
+    before { order_detail.complete! }
+
+    it 'saved' do
+      expect(order_detail).to_not be_changed
+    end
+
+    it 'sets status to complete' do
+      expect(order_detail.order_status).to eq(OrderStatus.complete_status)
+    end
+
+    it 'fulfills the order' do
+      expect(order_detail.fulfilled_at).to be_present
+    end
+  end
+
   def set_cancellation_cost_for_all_policies(cost)
     PricePolicy.all.each do |price_policy|
       price_policy.update_attribute :cancellation_cost, cost

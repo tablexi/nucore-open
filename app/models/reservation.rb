@@ -28,7 +28,7 @@ class Reservation < ActiveRecord::Base
   # Delegations
   #####
   delegate :note, :ordered_on_behalf_of?, :complete?, :account, :order,
-      :to => :order_detail, :allow_nil => true
+      :problem?, :complete!, :to => :order_detail, :allow_nil => true
 
   delegate :user, :account, :to => :order, :allow_nil => true
   delegate :facility, :to => :product, :allow_nil => true
@@ -111,10 +111,15 @@ class Reservation < ActiveRecord::Base
           :start => tstart_at, :end => tend_at)
   end
 
+  def self.relay_in_progress
+    where("actual_start_at IS NOT NULL AND actual_end_at IS NULL")
+  end
+
   # Instance Methods
   #####
 
   def start_reservation!
+    product.started_reservations.each(&:complete!)
     self.actual_start_at = Time.zone.now
     save!
   end
@@ -124,7 +129,7 @@ class Reservation < ActiveRecord::Base
     save!
     # reservation is done, now give the best price
     order_detail.assign_price_policy
-    order_detail.save!
+    order_detail.complete!
   end
 
 
