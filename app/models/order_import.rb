@@ -110,7 +110,7 @@ class OrderImport < ActiveRecord::Base
 
   def handle_save_nothing_on_error # TODO refactor and rename
     Order.transaction do
-      CSV.open(upload_file_path, headers: true).each do |row|
+      CSV.open(upload_file_path, headers: true, skip_lines: /^,*$/).each do |row|
         row_importer = import_row(row)
         self.error_report += row_importer.row_with_errors.to_csv
 
@@ -170,7 +170,7 @@ class OrderImport < ActiveRecord::Base
 
   def rows_by_order_key # TODO refactor
     rows = Hash.new { |hash, key| hash[key] = [] }
-    CSV.open(upload_file_path, headers: true).each do |row|
+    CSV.open(upload_file_path, headers: true, skip_lines: /^,*$/).each do |row|
       order_key = OrderRowImporter.order_key_for_row(row)
       rows[order_key] << row
     end
