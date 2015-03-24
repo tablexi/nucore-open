@@ -935,6 +935,12 @@ class OrderDetail < ActiveRecord::Base
     true
   end
 
+  def clear_costs
+    self.actual_cost     = nil
+    self.actual_subsidy  = nil
+    self.price_policy_id = nil
+  end
+
   def mark_dispute_resolved
     if resolve_dispute == true || resolve_dispute == '1'
       self.dispute_resolved_at = Time.zone.now
@@ -942,12 +948,6 @@ class OrderDetail < ActiveRecord::Base
     else
       resolve_dispute = '0'
     end
-  end
-
-  def clear_costs
-    self.actual_cost     = nil
-    self.actual_subsidy  = nil
-    self.price_policy_id = nil
   end
 
   def reset_dispute
