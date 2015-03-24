@@ -8,7 +8,14 @@ describe AutoExpireReservation, :timecop_freeze do
 
   describe '#perform' do
     context 'a new reservation' do
-      let!(:reservation) { create(:purchased_reservation, :yesterday, actual_start_at: 1.hour.ago) }
+      let!(:reservation) { create(:purchased_reservation, :yesterday, actual_start_at: 1.hour.ago,
+        product: create(:setup_instrument, min_reserve_mins: 1, relay: create(:relay_syna))) }
+
+      before do
+        reservation.product.price_policies.destroy_all
+        create :instrument_usage_price_policy, price_group: reservation.product.facility.price_groups.last, usage_rate: 1, product: reservation.product
+        reservation.reload
+      end
 
       it 'completes the reservation' do
         expect { action.perform }.to change { order_detail.reload.state }.from('new').to('complete')
@@ -29,9 +36,14 @@ describe AutoExpireReservation, :timecop_freeze do
     end
 
     context 'an unpurchased reservation' do
-      let!(:reservation) { create(:setup_reservation, :yesterday, actual_start_at: 1.hour.ago) }
+      let!(:reservation) { create(:setup_reservation, :yesterday, actual_start_at: 1.hour.ago,
+        product: create(:setup_instrument, min_reserve_mins: 1, relay: create(:relay_syna))) }
 
       before do
+        reservation.product.price_policies.destroy_all
+        create :instrument_usage_price_policy, price_group: reservation.product.facility.price_groups.last, usage_rate: 1, product: reservation.product
+        reservation.reload
+
         action.perform
         order_detail.reload
         reservation.reload
@@ -54,13 +66,17 @@ describe AutoExpireReservation, :timecop_freeze do
         end_at = 1.minute.from_now
 
         create(:purchased_reservation,
-            product: create(:setup_instrument, min_reserve_mins: 1),
+            product: create(:setup_instrument, min_reserve_mins: 1, relay: create(:relay_syna)),
             actual_start_at: 30.minutes.ago,
             reserve_start_at: start_at,
             reserve_end_at: end_at)
       end
 
       before do
+        reservation.product.price_policies.destroy_all
+        create :instrument_usage_price_policy, price_group: reservation.product.facility.price_groups.last, usage_rate: 1, product: reservation.product
+        reservation.reload
+
         action.perform
         order_detail.reload
         reservation.reload
@@ -80,8 +96,15 @@ describe AutoExpireReservation, :timecop_freeze do
     context 'a reservation only reservation' do
       let!(:reservation) do
         create(:purchased_reservation, :yesterday,
-          actual_start_at: 1.hour.ago,
-          product: create(:setup_instrument, min_reserve_mins: 1, relay: create(:relay_syna)))
+          product: create(:setup_instrument, min_reserve_mins: 1))
+      end
+
+      before do
+        reservation.reload
+
+        action.perform
+        order_detail.reload
+        reservation.reload
       end
 
       include_examples 'it does not complete order' do
@@ -90,7 +113,7 @@ describe AutoExpireReservation, :timecop_freeze do
         end
 
         it 'leaves order status nil' do
-          expect(order_detail.order_status).to eq(nil)
+          expect(order_detail.order_status.name).to eq('New')
         end
       end
     end
