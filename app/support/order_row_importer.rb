@@ -88,7 +88,7 @@ class OrderRowImporter
   private
 
   def account_number
-    @account_number ||= @row[HEADERS[:chart_string]].strip
+    @account_number ||= @row[HEADERS[:chart_string]].try(:strip)
   end
 
   def add_product_to_order
@@ -104,7 +104,7 @@ class OrderRowImporter
   end
 
   def chart_string_field
-    @chart_string_field ||= @row[HEADERS[:chart_string]].strip
+    @chart_string_field ||= @row[HEADERS[:chart_string]].try(:strip)
   end
 
   def fulfillment_date
@@ -112,7 +112,7 @@ class OrderRowImporter
   end
 
   def fulfillment_date_field
-    @fulfillment_date_field ||= @row[HEADERS[:fulfillment_date]].strip
+    @fulfillment_date_field ||= @row[HEADERS[:fulfillment_date]].try(:strip)
   end
 
   def has_valid_headers?
@@ -134,7 +134,7 @@ class OrderRowImporter
   end
 
   def order_date_field
-    @order_date_field ||= @row[HEADERS[:order_date]].strip
+    @order_date_field ||= @row[HEADERS[:order_date]].try(:strip)
   end
 
   def product
@@ -147,7 +147,7 @@ class OrderRowImporter
   end
 
   def product_field
-    @product_field ||= @row[HEADERS[:product_name]].strip
+    @product_field ||= @row[HEADERS[:product_name]].try(:strip)
   end
 
   def purchase_order!
@@ -163,7 +163,7 @@ class OrderRowImporter
   end
 
   def user_field
-    @user_field ||= @row[HEADERS[:user]].strip
+    @user_field ||= @row[HEADERS[:user]].try(:strip)
   end
 
   def validate_account

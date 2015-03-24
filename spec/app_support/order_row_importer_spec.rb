@@ -132,6 +132,22 @@ describe OrderRowImporter do
 
         it_behaves_like "an invalid fulfillment_date"
       end
+
+      context "is nil" do
+        let(:fulfillment_date) { nil }
+
+        it_behaves_like "an invalid fulfillment_date"
+      end
+    end
+
+    context "when the chart string" do
+      context "is nil" do
+        let(:username) { user.username }
+        let(:product_name) { service.name }
+        let(:chart_string) { nil }
+
+        it_behaves_like "it has an error message", "Can't find account"
+      end
     end
 
     context "when the order date is invalid" do
@@ -157,6 +173,12 @@ describe OrderRowImporter do
 
         it_behaves_like "an invalid order_date"
       end
+
+      context "is nil" do
+        let(:order_date) { nil }
+
+        it_behaves_like "an invalid order_date"
+      end
     end
 
     context "when the user is invalid" do
@@ -169,11 +191,25 @@ describe OrderRowImporter do
         it_behaves_like "an order was not created"
         it_behaves_like "it has an error message", "Invalid username"
       end
+
+      context "is nil" do
+        let(:username) { nil }
+
+        it_behaves_like "an order was not created"
+        it_behaves_like "it has an error message", "Invalid username"
+      end
     end
 
     context "when the product name is invalid" do
       it_behaves_like "an order was not created"
       it_behaves_like "it has an error message", "Couldn't find product by name"
+
+      context "is nil" do
+        let(:product_name) { nil }
+
+        it_behaves_like "an order was not created"
+        it_behaves_like "it has an error message", "Couldn't find product by name"
+      end
     end
 
     context "when the product is a service" do
