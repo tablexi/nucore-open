@@ -28,7 +28,7 @@ class Reservation < ActiveRecord::Base
   # Delegations
   #####
   delegate :note, :ordered_on_behalf_of?, :complete?, :account, :order,
-      :to => :order_detail, :allow_nil => true
+      :problem?, :complete!, :to => :order_detail, :allow_nil => true
 
   delegate :user, :account, :to => :order, :allow_nil => true
   delegate :facility, :to => :product, :allow_nil => true
@@ -119,6 +119,7 @@ class Reservation < ActiveRecord::Base
   #####
 
   def start_reservation!
+    product.started_reservations.each(&:complete!)
     self.actual_start_at = Time.zone.now
     save!
   end
