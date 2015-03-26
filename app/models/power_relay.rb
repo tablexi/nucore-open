@@ -1,5 +1,3 @@
-require 'active_support/concern'
-
 # Including class must implement #relay_connection
 # Port refers to the outlet, not the IP port
 module PowerRelay
