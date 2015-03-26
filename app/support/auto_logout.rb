@@ -42,7 +42,7 @@ class AutoLogout
   def complete_reservation(od)
     reservation = od.reservation
     reservation.product.relay.deactivate unless reservation.other_reservation_using_relay?
-    reservation.end_reservation!
+    reservation.order_detail.complete!
   rescue => e
     STDERR.puts "Error on Order # #{od} - #{e}"
     raise ActiveRecord::Rollback

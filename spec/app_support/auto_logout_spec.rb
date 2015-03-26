@@ -12,6 +12,10 @@ describe AutoLogout, :timecop_freeze do
     let!(:reservation) { create(:purchased_reservation, :yesterday, actual_start_at: 1.day.ago) }
 
     before do
+      reservation.product.price_policies.destroy_all
+      create :instrument_usage_price_policy, price_group: reservation.product.facility.price_groups.last, usage_rate: 1, product: reservation.product
+      reservation.reload
+
       expect(relay).to receive(:deactivate)
     end
 
@@ -19,8 +23,16 @@ describe AutoLogout, :timecop_freeze do
       expect { action.perform }.to change { order_detail.reload.state }.from('new').to('complete')
     end
 
-    it 'sets the reservation actual end at' do
-      expect { action.perform }.to change { reservation.reload.actual_end_at }
+    it 'does not set the reservation actual end at' do
+      expect { action.perform }.to_not change { order_detail.reservation.reload.actual_end_at }.from(nil)
+    end
+
+    it 'does not set the reservation price policy' do
+      expect { action.perform }.to_not change { order_detail.reload.price_policy }.from(nil)
+    end
+
+    it 'is a problem order' do
+      expect { action.perform }.to change { order_detail.reload.problem_order? }.to(true)
     end
 
     it 'deactivates the relay' do
