@@ -13,7 +13,9 @@ describe Reservations::DurationChangeValidations do
           reserve_end_at: 61.minutes.from_now)
       end
 
-      it { expect(validator).to be_valid }
+      pending 'change start time'
+      pending 'shorten end time'
+      pending 'extend end time'
     end
 
     context "with an ongoing reseration" do
@@ -21,9 +23,40 @@ describe Reservations::DurationChangeValidations do
         reservation.assign_attributes(
           reserve_start_at: 30.minutes.ago,
           reserve_end_at: 30.minutes.from_now)
+        reservation.save(validate: false)
       end
 
-      it { expect(validator).to be_invalid }
+      context "change start time" do
+        before do
+          reservation.assign_attributes(reserve_start_at: 31.minutes.ago)
+          validator.valid?
+        end
+
+        it 'has an error' do
+          expect(validator.errors.full_messages)
+            .to include('Reserve start at cannot change once the reservation has started')
+        end
+      end
+
+      context 'extend end time' do
+        before do
+          reservation.assign_attributes(reserve_end_at: 31.minutes.from_now)
+        end
+
+        it { expect(validator).to be_valid }
+      end
+
+      context 'shorten end time' do
+        before do
+          reservation.assign_attributes(reserve_end_at: 29.minutes.from_now)
+          validator.valid?
+        end
+
+        it 'has an error' do
+          expect(validator.errors.full_messages)
+            .to include('Reserve end at cannot shorten once the reservation has started')
+        end
+      end
     end
 
     context "with a past reservation" do
@@ -33,7 +66,9 @@ describe Reservations::DurationChangeValidations do
           reserve_end_at: 1.minute.ago)
       end
 
-      it { expect(validator).to be_invalid }
+      pending 'change start time'
+      pending 'shorten end time'
+      pending 'extend end time'
     end
   end
 
