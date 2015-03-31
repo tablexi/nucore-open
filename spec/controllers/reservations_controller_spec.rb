@@ -804,16 +804,6 @@ describe ReservationsController do
       end
 
       describe 'update a running reservation' do
-        context 'with an admin' do
-          it 'skips validations' do
-            sign_in @admin
-            do_request
-
-            expect_any_instance_of(Reservations::DurationChangeValidations)
-              .to_not receive(:invalid?)
-          end
-        end
-
         context 'with staff' do
           after do
             sign_in @staff
