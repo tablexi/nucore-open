@@ -1,15 +1,13 @@
 class Reservations::DurationChangeValidations
   include ActiveModel::Validations
 
+  attr_reader :reservation
+
   validate :start_time_not_changed, unless: Proc.new { |r| r.reservation.reserve_start_at_editable? }
   validate :duration_not_shortened, if: Proc.new { |r| Time.zone.now >= r.reservation.reserve_start_at }
 
   def initialize(reservation)
     @reservation = reservation
-  end
-
-  def reservation
-    @reservation
   end
 
   def copy_errors!
