@@ -18,6 +18,16 @@ class Reservations::DurationChangeValidations
     end
   end
 
+  def invalid?(context = nil)
+    super(context)
+    copy_errors!
+  end
+
+  def valid?(context = nil)
+    super(context)
+    copy_errors!
+  end
+
   def start_time_not_changed
     if reservation.reserve_start_at_changed?
       errors.add(:reserve_start_at, "cannot change once the reservation has started")

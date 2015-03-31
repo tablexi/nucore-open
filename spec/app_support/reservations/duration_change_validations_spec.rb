@@ -48,6 +48,17 @@ describe Reservations::DurationChangeValidations do
     end
   end
 
+  describe "#invalid?" do
+    before do
+      validator.errors.add(:base, 'I am an error')
+      validator.invalid?
+    end
+
+    it "copies errors to reservation" do
+      reservation.errors.full_messages.include?('I am an error')
+    end
+  end
+
   describe "#duration_not_shortened" do
     context "with an upcoming reservation" do
       before do
