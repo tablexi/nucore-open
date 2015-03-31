@@ -183,6 +183,8 @@ class ReservationsController < ApplicationController
       return
     end
 
+    @reservation.assign_times_from_params(params[:reservation])
+
     if !current_user.administrator?
       validator = Reservations::DurationChangeValidations.new(@reservation)
       if validator.invalid?
@@ -191,8 +193,6 @@ class ReservationsController < ApplicationController
         return
       end
     end
-
-    @reservation.assign_times_from_params(params[:reservation])
 
     Reservation.transaction do
       begin
