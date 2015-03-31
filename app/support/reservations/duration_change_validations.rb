@@ -28,13 +28,13 @@ class Reservations::DurationChangeValidations
 
   def start_time_not_changed
     if reservation.reserve_start_at_changed?
-      errors.add(:reserve_start_at, "cannot change once the reservation has started")
+      errors.add(:reserve_start_at, I18n.t('activerecord.errors.models.reservation.change_reserve_start_at'))
     end
   end
 
   def duration_not_shortened
     if reservation.reserve_end_at_changed? && reservation.reserve_end_at < reservation.reserve_end_at_was
-      errors.add(:reserve_end_at, "cannot shorten once the reservation has started")
+      errors.add(:reserve_end_at, I18n.t('activerecord.errors.models.reservation.shorten_reserve_end_at'))
     end
   end
 end
