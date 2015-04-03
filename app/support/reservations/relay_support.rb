@@ -31,7 +31,10 @@ module Reservations::RelaySupport
   deprecate :can_kill_power? => 'Most likely not used anywhere'
 
   def other_reservations_using_relay
-    order_detail.reservation.product.active_reservations - [self]
+    order_detail.reservation.product.reservations
+      .active_without_admin
+      .relay_in_progress
+      .not_this_reservation(self)
   end
 
   def other_reservation_using_relay?
