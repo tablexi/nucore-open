@@ -12,6 +12,7 @@ class Reservation < ActiveRecord::Base
   #####
   belongs_to :product
   belongs_to :order_detail, :inverse_of => :reservation
+  has_one :order, through: :order_detail
   belongs_to :canceled_by_user, :foreign_key => :canceled_by, :class_name => 'User'
 
   ## Virtual attributes
