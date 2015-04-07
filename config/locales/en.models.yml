@@ -235,8 +235,8 @@ en:
         port: Relay Port
         username: Relay Username
         password: Relay Password
-        auto_logout: Automatic Logout?
-        auto_logout_minutes: Automatic Logout After Minutes
+        auto_logout: Auto-Relay Shutoff?
+        auto_logout_minutes: Auto-Relay Shutoff After X Minutes
       reservation:
         base: '' #handled by actual messages
         to_s: Reservation
