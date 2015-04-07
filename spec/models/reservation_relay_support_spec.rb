@@ -41,16 +41,16 @@ describe Reservation do
     context 'with one other running reservation' do
       let!(:reservation_running) { create(:purchased_reservation, product: reservation_done.product, reserve_start_at: 30.minutes.ago, reserve_end_at: 30.minutes.from_now, actual_start_at: 30.minutes.ago) }
 
-      it 'returns the other relay' do
+      it 'returns the running reservation' do
         expect(reservation_done.other_reservations_using_relay).to match_array([reservation_running])
       end
     end
 
-    context 'with a shared calendar' do
+    context 'with a running reservation for another product using the same schedule' do
       let!(:product_shared) { create(:setup_instrument, schedule: reservation_done.product.schedule) }
       let!(:reservation_shared_running) { create(:purchased_reservation, product: product_shared, reserve_start_at: 30.minutes.ago, reserve_end_at: 30.minutes.from_now, actual_start_at: 30.minutes.ago) }
 
-      it 'returns the other relay' do
+      it 'returns the running reservation' do
         expect(reservation_done.other_reservations_using_relay).to match_array([reservation_shared_running])
       end
     end
