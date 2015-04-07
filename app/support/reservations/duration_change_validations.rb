@@ -11,14 +11,9 @@ class Reservations::DurationChangeValidations
   end
 
   def copy_errors!
-    errors.each do |e|
-      reservation.errors.add(e)
+    errors.each do |field, message|
+      reservation.errors.add(field, message)
     end
-  end
-
-  def invalid?(context = nil)
-    super(context)
-    copy_errors!
   end
 
   def valid?(context = nil)

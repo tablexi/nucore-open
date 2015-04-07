@@ -187,7 +187,7 @@ class ReservationsController < ApplicationController
 
     validator = Reservations::DurationChangeValidations.new(@reservation)
     if validator.invalid?
-      validator.copy_errors!
+      set_windows
       render :action => "edit"
       return
     end
