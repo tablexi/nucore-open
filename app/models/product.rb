@@ -3,7 +3,6 @@ class Product < ActiveRecord::Base
   belongs_to :facility
   belongs_to :initial_order_status, :class_name => 'OrderStatus'
   belongs_to :facility_account
-  belongs_to :schedule
   has_many   :product_users
   has_many   :order_details
   has_many   :stored_files
