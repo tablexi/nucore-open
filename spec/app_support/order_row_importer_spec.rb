@@ -356,6 +356,15 @@ describe OrderRowImporter do
       it_behaves_like "an order was not created"
       it_behaves_like "it has an error message", "Missing headers: Chart String"
     end
+
+    context "when the note field is invalid" do
+      context "it is too long" do
+        let(:notes) { "a" * 101 }
+
+        it_behaves_like "an order was not created"
+        it_behaves_like "it has an error message", "Invalid note, 100 characters max"
+      end
+    end
   end
 
   context "order key construction" do

@@ -186,6 +186,7 @@ class OrderRowImporter
     validate_user
     validate_product
     validate_account
+    validate_notes
   end
 
   def validate_fulfillment_date
@@ -222,5 +223,9 @@ class OrderRowImporter
 
   def validate_user
     add_error("Invalid username or email") if user.blank?
+  end
+
+  def validate_notes
+    add_error("Invalid note, 100 characters max") if note.present? && note.size > 100
   end
 end
