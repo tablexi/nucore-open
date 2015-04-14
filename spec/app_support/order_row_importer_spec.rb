@@ -22,6 +22,19 @@ describe OrderRowImporter do
   end
   let(:user) { create(:user) }
 
+  shared_context "valid row values" do
+    let(:username) { user.username }
+    let(:chart_string) { account.account_number }
+    let(:product_name) { service.name }
+    let(:quantity) { 1 }
+    let(:order_date) { "1/1/2015" }
+    let(:fulfillment_date) { "1/2/2015" }
+
+    before(:each) do
+      Product.any_instance.stub(:can_purchase?).and_return(true)
+    end
+  end
+
   let(:row) do
     ref = {
       "Netid / Email" => username,
@@ -84,23 +97,12 @@ describe OrderRowImporter do
       before { subject.import }
 
       it "has the error message '#{message}'" do
-        expect(subject.errors.any? { |error| error.include?(message) })
-          .to be_true
+        expect(subject.errors).to include(match /#{message}/)
       end
     end
 
     context "with a valid row" do
-      let(:username) { user.username }
-      let(:chart_string) { account.account_number }
-      let(:product_name) { service.name }
-      let(:quantity) { 1 }
-      let(:order_date) { "1/1/2015" }
-      let(:fulfillment_date) { "1/2/2015" }
-
-      before(:each) do
-        Product.any_instance.stub(:can_purchase?).and_return(true)
-      end
-
+      include_context "valid row values"
       it_behaves_like "an order was created"
 
       it "has no errors" do
@@ -355,6 +357,17 @@ describe OrderRowImporter do
 
       it_behaves_like "an order was not created"
       it_behaves_like "it has an error message", "Missing headers: Chart String"
+    end
+
+    context "when the note field is invalid" do
+      include_context "valid row values"
+
+      context "it is too long" do
+        let(:notes) { "a" * 101 }
+
+        it_behaves_like "an order was not created"
+        it_behaves_like "it has an error message", "Note is too long"
+      end
     end
   end
 

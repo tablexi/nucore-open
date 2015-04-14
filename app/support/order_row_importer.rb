@@ -92,9 +92,16 @@ class OrderRowImporter
   end
 
   def add_product_to_order
-    @order_details = order.add(product, quantity, note: note)
-    purchase_order! unless order.purchased?
-    backdate_order_details_to_complete!
+    ActiveRecord::Base.transaction do
+      begin
+        @order_details = order.add(product, quantity, note: note)
+        purchase_order! unless order.purchased?
+        backdate_order_details_to_complete!
+      rescue ActiveRecord::RecordInvalid => e
+        add_error(e.message)
+        raise ActiveRecord::Rollback
+      end
+    end
   end
 
   def backdate_order_details_to_complete!
