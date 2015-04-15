@@ -110,18 +110,26 @@ class OrderImport < ActiveRecord::Base
 
   def handle_save_nothing_on_error # TODO refactor and rename
     Order.transaction do
-      CSV.open(upload_file_path, headers: true, skip_lines: /^,*$/).each do |row|
-        row_importer = import_row(row)
-        self.error_report += row_importer.row_with_errors.to_csv
+      begin
+        CSV.open(upload_file_path, headers: true, skip_lines: /^,*$/).each do |row|
+          row_importer = import_row(row)
+          self.error_report += row_importer.row_with_errors.to_csv
 
-        if row_importer.errors?
-          result.failures += 1
-        else
-          result.successes += 1
+          if row_importer.errors?
+            result.failures += 1
+          else
+            result.successes += 1
+          end
         end
-      end
 
-      raise ActiveRecord::Rollback if result.failed?
+        raise ActiveRecord::Rollback if result.failed?
+      rescue ArgumentError => e
+        set_error_mode
+        result.failures += 1
+        self.error_report += "Unable to open CSV File: #{e.message}"
+        ActiveSupport::Notifications.instrument('background_error',
+          exception: e, information: "Failed to bulk import: #{upload_file_path}")
+      end
     end
 
     if result.succeeded?

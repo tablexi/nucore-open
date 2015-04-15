@@ -330,7 +330,7 @@ end
   describe "#process_upload!" do
     subject(:import) { create(:order_import) }
 
-    context "an exception is thrown" do
+    context "an exception is raise in import" do
       before do
         OrderRowImporter.any_instance.stub(:import).and_raise("Something unknown happened")
         import.upload_file.file = generate_import_file
@@ -340,6 +340,29 @@ end
 
       it "produces an error report" do
         expect(import.error_file_content).to include("Failed to import row")
+      end
+
+      it "sets error flags" do
+        expect(import).to be_error_mode
+        expect(import.result).to be_failed
+      end
+
+      it "sends an exception notification" do
+        expect(ActiveSupport::Notifications).to receive(:instrument).with('background_error', anything)
+        import.process_upload!
+      end
+    end
+
+    context "an excetion is raised when opening the CSV" do
+      before do
+        CSV.stub(:open).and_raise(ArgumentError, "invalid byte sequence in UTF-8")
+        import.upload_file.file = generate_import_file
+        import.upload_file.save!
+        import.process_upload!
+      end
+
+      it "produces an error report" do
+        expect(import.error_file_content).to include("Invalid CSV File")
       end
 
       it "sets error flags" do
