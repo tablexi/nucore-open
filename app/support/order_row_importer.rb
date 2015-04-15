@@ -92,9 +92,16 @@ class OrderRowImporter
   end
 
   def add_product_to_order
-    @order_details = order.add(product, quantity, note: note)
-    purchase_order! unless order.purchased?
-    backdate_order_details_to_complete!
+    ActiveRecord::Base.transaction do
+      begin
+        @order_details = order.add(product, quantity, note: note)
+        purchase_order! unless order.purchased?
+        backdate_order_details_to_complete!
+      rescue ActiveRecord::RecordInvalid => e
+        add_error(e.message)
+        raise ActiveRecord::Rollback
+      end
+    end
   end
 
   def backdate_order_details_to_complete!
@@ -186,7 +193,6 @@ class OrderRowImporter
     validate_user
     validate_product
     validate_account
-    validate_notes
   end
 
   def validate_fulfillment_date
@@ -223,9 +229,5 @@ class OrderRowImporter
 
   def validate_user
     add_error("Invalid username or email") if user.blank?
-  end
-
-  def validate_notes
-    add_error("Invalid note, 100 characters max") if note.present? && note.size > 100
   end
 end
