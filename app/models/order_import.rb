@@ -127,8 +127,6 @@ class OrderImport < ActiveRecord::Base
         set_error_mode
         result.failures += 1
         self.error_report += "Unable to open CSV File: #{e.message}"
-        ActiveSupport::Notifications.instrument('background_error',
-          exception: e, information: "Failed to bulk import: #{upload_file_path}")
       end
     end
 

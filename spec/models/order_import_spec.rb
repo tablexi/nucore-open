@@ -369,11 +369,6 @@ end
         expect(import).to be_error_mode
         expect(import.result).to be_failed
       end
-
-      it "sends an exception notification" do
-        expect(ActiveSupport::Notifications).to receive(:instrument).with('background_error', anything)
-        import.process_upload!
-      end
     end
   end
 end
