@@ -121,13 +121,13 @@ class OrderImport < ActiveRecord::Base
             result.successes += 1
           end
         end
-
-        raise ActiveRecord::Rollback if result.failed?
-      rescue ArgumentError => e
+      rescue Exception => e
         set_error_mode
         result.failures += 1
         self.error_report += "Unable to open CSV File: #{e.message}"
       end
+
+      raise ActiveRecord::Rollback if result.failed?
     end
 
     if result.succeeded?

@@ -362,7 +362,7 @@ end
       end
 
       it "produces an error report" do
-        expect(import.error_file_content).to include("Invalid CSV File")
+        expect(import.error_file_content).to include("Unable to open CSV File")
       end
 
       it "sets error flags" do
