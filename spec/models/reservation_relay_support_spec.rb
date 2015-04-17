@@ -39,7 +39,7 @@ describe Reservation do
     end
 
     context 'with one other running reservation' do
-      let!(:reservation_running) { create(:purchased_reservation, product: reservation_done.product, reserve_start_at: 30.minutes.ago, reserve_end_at: 30.minutes.from_now, actual_start_at: 30.minutes.ago) }
+      let!(:reservation_running) { create(:purchased_reservation, :running, product: reservation_done.product) }
 
       it 'returns the running reservation' do
         expect(reservation_done.other_reservations_using_relay).to match_array([reservation_running])
@@ -48,10 +48,38 @@ describe Reservation do
 
     context 'with a running reservation for another product using the same schedule' do
       let!(:product_shared) { create(:setup_instrument, schedule: reservation_done.product.schedule) }
-      let!(:reservation_shared_running) { create(:purchased_reservation, product: product_shared, reserve_start_at: 30.minutes.ago, reserve_end_at: 30.minutes.from_now, actual_start_at: 30.minutes.ago) }
+      let!(:reservation_shared_running) { create(:purchased_reservation, :running, product: product_shared) }
 
       it 'returns the running reservation' do
         expect(reservation_done.other_reservations_using_relay).to match_array([reservation_shared_running])
+      end
+    end
+
+    context 'with a running admin reservation' do
+      let!(:reservation_admin_running) { create(:reservation, :running, product: reservation_done.product) }
+
+      it 'returns the running reservation' do
+        expect(reservation_done.other_reservations_using_relay).to match_array([reservation_admin_running])
+      end
+    end
+
+    context 'with completed reservations' do
+      let!(:reservation_done_2) { create(:purchased_reservation, :later_yesterday, product: reservation_done.product) }
+
+      it 'returns nothing' do
+        expect(reservation_done.other_reservations_using_relay).to be_empty
+      end
+    end
+
+    context 'with one other running reservation is canceled' do
+      let!(:canceled_reservation) { create(:purchased_reservation, product: reservation_done.product) }
+
+      before do
+        canceled_reservation.order_detail.cancel_reservation(canceled_reservation.user)
+      end
+
+      it 'does not return canceled reservation' do
+        expect(reservation_done.other_reservations_using_relay).to match_array([])
       end
     end
   end

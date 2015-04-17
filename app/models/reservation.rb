@@ -122,7 +122,6 @@ class Reservation < ActiveRecord::Base
 
   def self.relay_in_progress
     where("actual_start_at IS NOT NULL AND actual_end_at IS NULL")
-      .merge(OrderDetail.pending)
   end
 
   # Instance Methods

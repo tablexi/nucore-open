@@ -6,6 +6,19 @@ FactoryGirl.define do
     trait :yesterday do
       reserve_start_at { Time.zone.parse("#{Date.today} 10:00:00") - 1.day }
     end
+
+    trait :later_yesterday do
+      reserve_start_at { Time.zone.parse("#{Date.today} 10:00:00") - 1.day + 1.hour }
+    end
+
+    trait :running do
+      after(:create) do |reservation|
+        reservation.reserve_start_at = 30.minutes.ago
+        reservation.reserve_end_at  = 30.minutes.from_now
+        reservation.actual_start_at = 30.minutes.ago
+        reservation.save!
+      end
+    end
   end
 
   factory :setup_reservation, :class => Reservation, :parent => :reservation do
