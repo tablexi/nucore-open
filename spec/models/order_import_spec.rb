@@ -330,7 +330,7 @@ end
   describe "#process_upload!" do
     subject(:import) { create(:order_import) }
 
-    context "an exception is raise in import" do
+    context "an exception is raised in import" do
       before do
         OrderRowImporter.any_instance.stub(:import).and_raise("Something unknown happened")
         import.upload_file.file = generate_import_file
