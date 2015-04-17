@@ -14,7 +14,7 @@ module Products::SchedulingSupport
   end
 
   def active_reservations
-    self.reservations.active_with_admin
+    self.reservations.active
   end
 
   def purchased_reservations

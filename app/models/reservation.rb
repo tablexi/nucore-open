@@ -44,17 +44,10 @@ class Reservation < ActiveRecord::Base
   # Scopes
   #####
 
-  def self.active_without_admin
-    not_canceled.where(orders: { state: 'purchased' } )
-  end
-
-  def self.active_with_admin
+  def self.active
     not_canceled
       .where({orders: { state: ['purchased', nil] }})
       .joins_order
-  end
-  class << self
-    alias_method :active, :active_with_admin
   end
 
   def self.joins_order
@@ -122,7 +115,6 @@ class Reservation < ActiveRecord::Base
 
   def self.relay_in_progress
     where("actual_start_at IS NOT NULL AND actual_end_at IS NULL")
-      .merge(OrderDetail.pending)
   end
 
   # Instance Methods

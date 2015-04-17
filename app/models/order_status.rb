@@ -24,6 +24,10 @@ class OrderStatus < ActiveRecord::Base
     complete.first
   end
 
+  def self.canceled_status
+    canceled.first
+  end
+
   def editable?
     !!facility
   end
