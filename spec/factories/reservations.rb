@@ -12,12 +12,9 @@ FactoryGirl.define do
     end
 
     trait :running do
-      after(:create) do |reservation|
-        reservation.reserve_start_at = 30.minutes.ago
-        reservation.reserve_end_at  = 30.minutes.from_now
-        reservation.actual_start_at = 30.minutes.ago
-        reservation.save!
-      end
+      reserve_start_at { 15.minutes.ago }
+      reserve_end_at { 45.minutes.from_now }
+      actual_start_at { 15.minutes.ago }
     end
   end
 
