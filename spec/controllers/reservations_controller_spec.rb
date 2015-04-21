@@ -602,9 +602,9 @@ describe ReservationsController do
 
       context 'next reservation is between 5 minutes' do
         let(:next_reservation) do
-          Reservation.new :reserve_start_at => Time.zone.parse('2013-08-15 12:02'),
-                          :reserve_end_at   => Time.zone.parse('2013-08-15 12:17'),
-                          :product => create(:setup_instrument)
+          Reservation.new reserve_start_at: Time.zone.parse('2013-08-15 12:02'),
+                          reserve_end_at: Time.zone.parse('2013-08-15 12:17'),
+                          product: create(:setup_instrument)
         end
 
         it 'should round up to the nearest 5 minutes' do
