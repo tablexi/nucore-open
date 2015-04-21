@@ -1,3 +1,7 @@
+####################################################################
+# We only want to validate reservation duration changes made through
+# the UI but not in specs
+####################################################################
 class Reservations::DurationChangeValidations
   include ActiveModel::Validations
 
