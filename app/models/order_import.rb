@@ -121,7 +121,7 @@ class OrderImport < ActiveRecord::Base
             result.successes += 1
           end
         end
-      rescue Exception => e
+      rescue => e
         set_error_mode
         result.failures += 1
         self.error_report += "Unable to open CSV File: #{e.message}"
