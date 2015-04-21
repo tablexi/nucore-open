@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe AutoLogout, :timecop_freeze do
-  let(:now) { DateTime.now.change(hour: 9, min: 31)  }
+  let(:now) { Time.zone.now.change(hour: 9, min: 31)  }
 
   let(:action) { described_class.new }
   let(:order_detail) { reservation.order_detail }
