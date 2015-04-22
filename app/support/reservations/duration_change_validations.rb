@@ -4,11 +4,14 @@
 ####################################################################
 class Reservations::DurationChangeValidations
   include ActiveModel::Validations
+  include ActiveModel::Validations::Callbacks
 
   attr_reader :reservation
 
   validate :start_time_not_changed
   validate :duration_not_shortened
+
+  after_validation :copy_errors!
 
   def initialize(reservation)
     @reservation = reservation
@@ -17,12 +20,6 @@ class Reservations::DurationChangeValidations
   def copy_errors!
     errors.each do |field, message|
       reservation.errors.add(field, message)
-    end
-  end
-
-  def valid?(context = nil)
-    super(context).tap do
-      copy_errors!
     end
   end
 
