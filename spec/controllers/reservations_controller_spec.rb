@@ -805,15 +805,15 @@ describe ReservationsController do
 
       describe 'update a running reservation' do
         context 'with staff' do
-          after do
+          before do
             sign_in @staff
-            do_request
           end
 
           it 'runs validations' do
             expect_any_instance_of(Reservations::DurationChangeValidations)
               .to receive(:invalid?)
               .and_return(false)
+            do_request
           end
 
           context 'with errors' do
@@ -821,6 +821,7 @@ describe ReservationsController do
               expect_any_instance_of(Reservations::DurationChangeValidations)
                 .to receive(:invalid?)
                 .and_return(true)
+              do_request
               expect(response).to render_template :edit
             end
           end
