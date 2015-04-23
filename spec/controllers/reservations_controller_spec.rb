@@ -807,6 +807,8 @@ describe ReservationsController do
         context 'with staff' do
           before do
             sign_in @staff
+            @reservation.actual_start_at = @start.to_date
+            @reservation.save(validate: false)
           end
 
           it 'runs validations' do
@@ -814,6 +816,17 @@ describe ReservationsController do
               .to receive(:invalid?)
               .and_return(false)
             do_request
+          end
+
+          it 'ignores start fields' do
+            expect_any_instance_of(Reservations::DurationChangeValidations)
+              .to receive(:invalid?)
+              .and_return(false)
+            do_request
+            expect(@reservation.reload.reserve_start_date).to eq(@start.strftime('%m/%d/%Y'))
+            expect(@reservation.reload.reserve_start_hour).to eq(9)
+            expect(@reservation.reload.reserve_start_min).to eq(0)
+            expect(@reservation.reload.reserve_start_meridian).to eq('AM')
           end
 
           context 'with errors' do
