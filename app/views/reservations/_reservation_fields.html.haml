@@ -1,5 +1,5 @@
 .datetime-block
-  - start_disabled = f.object.persisted? && !f.object.reserve_start_at_editable?
+  - start_disabled = start_time_disabled(f.object)
   = f.input :reserve_start_date, :input_html => { :class => 'datepicker', disabled: start_disabled }
   .control-group
     .controls
@@ -10,6 +10,6 @@
         = f.input :reserve_start_hour, as: :hidden
         = f.input :reserve_start_min, as: :hidden
         = f.input :reserve_start_meridian, as: :hidden
-  = f.input :duration_mins, input_html: { value: f.object.new_record? ? default_duration : f.object.duration_mins, class: 'timeinput', disabled: (f.object.persisted? && !f.object.reserve_end_at_editable?) }
+  = f.input :duration_mins, input_html: { value: f.object.new_record? ? default_duration : f.object.duration_mins, class: 'timeinput', disabled: end_time_disabled(f.object) }
 
 
