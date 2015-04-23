@@ -3,6 +3,7 @@ class InstrumentsController < ProductsCommonController
   admin_tab     :create, :edit, :index, :manage, :new, :schedule, :update
 
   before_filter :store_fullpath_in_session, only: [:index, :show]
+  before_filter :set_default_lock_window, only: [:create, :update]
 
   # public_schedule does not require login
   skip_before_filter :authenticate_user!, :only => [:public_schedule]
@@ -89,6 +90,12 @@ class InstrumentsController < ProductsCommonController
 
   def public_schedule
     render :layout => 'application'
+  end
+
+  def set_default_lock_window
+    if params[:instrument][:lock_window].blank?
+      params[:instrument][:lock_window] = 0
+    end
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/status
