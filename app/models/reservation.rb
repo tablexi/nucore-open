@@ -197,7 +197,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def reserve_end_at_editable?
-    Time.zone.now <= reserve_end_at && next_duration_available?
+    outside_lock_window? && Time.zone.now <= reserve_end_at && next_duration_available?
   end
 
   def next_duration_available?
@@ -209,6 +209,10 @@ class Reservation < ActiveRecord::Base
 
   def before_lock_window?
     Time.zone.now < reserve_start_at - product_lock_window.hours
+  end
+
+  def outside_lock_window?
+    before_lock_window? || Time.zone.now >= reserve_start_at
   end
 
   # can the ADMIN edit the reservation?
