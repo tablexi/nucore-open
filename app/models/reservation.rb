@@ -193,11 +193,11 @@ class Reservation < ActiveRecord::Base
   end
 
   def reserve_start_at_editable?
-    before_lock_window?
+    before_lock_window? && actual_start_at.blank?
   end
 
   def reserve_end_at_editable?
-    outside_lock_window? && Time.zone.now <= reserve_end_at && next_duration_available?
+    outside_lock_window? && Time.zone.now <= reserve_end_at && next_duration_available? && actual_end_at.blank?
   end
 
   def next_duration_available?
