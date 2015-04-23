@@ -184,7 +184,6 @@ class ReservationsController < ApplicationController
     end
 
     reservation_params = params[:reservation]
-    binding.pry
     if !@reservation.reserve_start_at_editable?
       reservation_params.tap do |p|
         p[:reserve_start_date] = @reservation.reserve_start_date
