@@ -306,7 +306,6 @@ class ReservationsController < ApplicationController
     can_edit &&= @reservation.can_customer_edit? unless current_user.administrator?
     params[:id].to_i != @reservation.id ||
     @reservation.actual_end_at ||
-    @reservation.actual_start_at ||
     !can_edit
   end
 
