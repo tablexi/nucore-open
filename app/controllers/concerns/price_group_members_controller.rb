@@ -13,7 +13,9 @@ module PriceGroupMembersController
     load_and_authorize_resource
   end
 
-  def new; end
+  def new
+    @price_group_ability.authorize! :create, PriceGroupMember
+  end
 
   def initialize
     @active_tab = "admin_facility"
@@ -21,6 +23,8 @@ module PriceGroupMembersController
   end
 
   def create
+    @price_group_ability.authorize! :create, PriceGroupMember
+
     if price_group_member.save
       set_flash(:notice, :create, create_flash_arguments)
     else
@@ -30,6 +34,8 @@ module PriceGroupMembersController
   end
 
   def destroy
+    @price_group_ability.authorize! :destroy, price_group_member
+
     if destroy_price_group_member!
       set_flash(:notice, :destroy)
     else

@@ -11,12 +11,12 @@ class Ability
   #   a context for the sticky situation that is multiple controllers managing one
   #   one model each with their own authorization rules.
   def initialize(user, resource, controller)
-
     return unless user
 
     if user.administrator?
       if resource.is_a?(PriceGroup)
         can :manage_members, resource if resource.admin_editable?
+        can :manage, PriceGroupMember
       else
         can :manage, :all
       end
@@ -24,6 +24,7 @@ class Ability
     end
 
     if resource.is_a?(PriceGroup) && !resource.global? && user.manager_of?(resource.facility)
+      can :manage, PriceGroupMember
       can :manage_members, resource
     end
 
