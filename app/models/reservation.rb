@@ -121,7 +121,7 @@ class Reservation < ActiveRecord::Base
   #####
 
   def start_reservation!
-    product.started_reservations.each(&:complete!)
+    product.schedule.products.map(&:started_reservations).flatten.each(&:complete!)
     self.actual_start_at = Time.zone.now
     save!
   end

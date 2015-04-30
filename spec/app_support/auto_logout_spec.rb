@@ -6,12 +6,19 @@ describe AutoLogout, :timecop_freeze do
   let(:action) { described_class.new }
   let(:order_detail) { reservation.order_detail }
   let(:relay) { build_stubbed(:relay, auto_logout: true, auto_logout_minutes: 10) }
-  before { allow_any_instance_of(Instrument).to receive(:relay).and_return relay }
+
+  shared_context "all instruments return a relay" do
+    before { allow_any_instance_of(Instrument).to receive(:relay).and_return relay }
+  end
 
   describe 'a started reservation past log out time' do
     let!(:reservation) { create(:purchased_reservation, :yesterday, actual_start_at: 1.day.ago) }
 
+    include_context "all instruments return a relay"
+
     before do
+      allow_any_instance_of(Instrument).to receive(:relay).and_return relay
+
       reservation.product.price_policies.destroy_all
       create :instrument_usage_price_policy, price_group: reservation.product.facility.price_groups.last, usage_rate: 1, product: reservation.product
       reservation.reload
@@ -56,6 +63,8 @@ describe AutoLogout, :timecop_freeze do
           reserve_end_at: end_at)
     end
 
+    include_context "all instruments return a relay"
+
     before do
       expect(relay).to_not receive(:deactivate)
 
@@ -74,6 +83,8 @@ describe AutoLogout, :timecop_freeze do
 
   describe 'a running new reservation' do
     let!(:reservation) { create(:purchased_reservation, reserve_start_at: 30.minutes.ago, reserve_end_at: 30.minutes.from_now, actual_start_at: 30.minutes.ago) }
+
+    include_context "all instruments return a relay"
 
     before do
       expect(relay).to_not receive(:deactivate)
@@ -94,6 +105,8 @@ describe AutoLogout, :timecop_freeze do
   describe 'an unpurchased reservation' do
     let!(:reservation) { create(:setup_reservation, :yesterday) }
 
+    include_context "all instruments return a relay"
+
     before do
       action.perform
       reservation.reload
@@ -106,6 +119,8 @@ describe AutoLogout, :timecop_freeze do
   describe 'the following running reservation' do
     let!(:reservation_done) { create(:purchased_reservation, :yesterday, actual_start_at: 1.day.ago) }
     let!(:reservation_running) { create(:purchased_reservation, product: reservation_done.product, reserve_start_at: 30.minutes.ago, reserve_end_at: 30.minutes.from_now, actual_start_at: 30.minutes.ago) }
+
+    include_context "all instruments return a relay"
 
     before do
       expect(relay).to_not receive(:deactivate)
@@ -122,6 +137,8 @@ describe AutoLogout, :timecop_freeze do
     let!(:reservation_problem) { create(:purchased_reservation, :yesterday, product: product, actual_start_at: 1.day.ago, actual_end_at: nil) }
     let!(:reservation_running) { create(:purchased_reservation, product: product, reserve_start_at: 30. minutes.ago, reserve_end_at: 11.minute.ago, actual_start_at: 30.minutes.ago) }
 
+    include_context "all instruments return a relay"
+
     before do
       reservation_problem.complete!
       expect(relay).to receive(:deactivate)
@@ -129,6 +146,20 @@ describe AutoLogout, :timecop_freeze do
 
     it 'deactivates the relay' do
       # see before block for deactivate expectation
+      action.perform
+    end
+  end
+
+  describe 'two reservations with unique instruments sharing a calendar' do
+    let!(:shared_instrument_1) { create(:setup_instrument, min_reserve_mins: 1, relay: create(:relay_syna, auto_logout: true)) }
+    let!(:shared_instrument_2) { create(:setup_instrument, min_reserve_mins: 1, schedule: shared_instrument_1.schedule, relay: create(:relay_syna, auto_logout: true)) }
+    let!(:reservation_done) { create(:purchased_reservation, :yesterday, product: shared_instrument_1, actual_start_at: 1.day.ago) }
+    let!(:reservation_running) { create(:purchased_reservation, product: shared_instrument_2, reserve_start_at: 30.minutes.ago, reserve_end_at: 30.minutes.from_now, actual_start_at: 30.minutes.ago) }
+
+    it 'does not deactivate the relay' do
+      expect(shared_instrument_1.relay).to_not receive(:deactivate)
+      expect(shared_instrument_2.relay).to_not receive(:deactivate)
+
       action.perform
     end
   end

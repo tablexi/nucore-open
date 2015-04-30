@@ -694,6 +694,34 @@ describe Reservation do
       end
     end
 
+    context 'with a running reservation on a shared calendar' do
+      let(:running_instrument) { create(:setup_instrument, schedule: reservation.product.schedule, min_reserve_mins: 1) }
+      let!(:running) { create :setup_reservation, product: running_instrument, reserve_start_at: 30.minutes.ago, reserve_end_at: 1.minute.ago, actual_start_at: 30.minutes.ago }
+
+      before do
+        order = running.order_detail.order
+        order.state = 'validated'
+        order.purchase!
+
+        running_instrument.instrument_price_policies.destroy_all
+        create(:instrument_usage_price_policy, product: running_instrument)
+
+        reservation.start_reservation!
+      end
+
+      it 'completes the running reservation' do
+        expect(running.reload).to be_complete
+      end
+
+      it 'sets the orders as a problem order' do
+        expect(running.reload).to be_problem
+      end
+
+      it 'does not set actual_end_at' do
+        expect(running.reload.actual_end_at).to be_nil
+      end
+    end
+
     context 'with an complete reservation' do
       let!(:complete) { create :setup_reservation, product: instrument, reserve_start_at: 2.hours.ago, reserve_end_at: 1.hour.ago, actual_start_at: 2.hours.ago, actual_end_at: 1.hour.ago }
 
