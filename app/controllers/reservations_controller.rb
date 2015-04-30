@@ -265,8 +265,10 @@ class ReservationsController < ApplicationController
   private
 
   def switch_instrument_off!
-    ReservationInstrumentSwitcher.new(@reservation).switch_off!
-    flash[:notice] = 'The instrument has been deactivated successfully'
+    unless @reservation.other_reservation_using_relay?
+      ReservationInstrumentSwitcher.new(@reservation).switch_off!
+      flash[:notice] = 'The instrument has been deactivated successfully'
+    end
     session[:reservation_ended] = true if params[:reservation_ended].present?
   end
 

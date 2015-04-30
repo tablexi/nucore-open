@@ -1090,6 +1090,21 @@ describe ReservationsController do
             should redirect_to new_order_order_detail_accessory_path(@order, @order_detail)
           end
         end
+
+        context 'and a reservation using the same relay as another running reservation' do
+          let!(:reservation_running) { create(:purchased_reservation, product: @instrument,
+            actual_start_at: 30.minutes.ago, reserve_start_at: 30.minutes.ago,
+            reserve_end_at: 30.minutes.from_now) }
+
+          before { @params[:reservation_id] = reservation_running.id }
+
+          it 'does not switch off the relay' do
+            expect_any_instance_of(ReservationInstrumentSwitcher).to_not receive(:switch_off!)
+
+            sign_in @guest
+            do_request
+          end
+        end
       end
     end
   end
