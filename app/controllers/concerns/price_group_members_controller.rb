@@ -7,15 +7,14 @@ module PriceGroupMembersController
     before_filter :check_acting_as
     before_filter :init_current_facility
     before_filter :load_price_group_and_ability!
+    before_filter :authorize_price_group_member, only: [:new, :create, :destroy]
 
     layout "two_column"
 
     load_and_authorize_resource
   end
 
-  def new
-    @price_group_ability.authorize! :create, PriceGroupMember
-  end
+  def new; end
 
   def initialize
     @active_tab = "admin_facility"
@@ -23,8 +22,6 @@ module PriceGroupMembersController
   end
 
   def create
-    @price_group_ability.authorize! :create, PriceGroupMember
-
     if price_group_member.save
       set_flash(:notice, :create, create_flash_arguments)
     else
@@ -34,8 +31,6 @@ module PriceGroupMembersController
   end
 
   def destroy
-    @price_group_ability.authorize! :destroy, price_group_member
-
     if destroy_price_group_member!
       set_flash(:notice, :destroy)
     else
@@ -61,5 +56,9 @@ module PriceGroupMembersController
   def load_price_group_and_ability!
     @price_group = current_facility.price_groups.find(params[:price_group_id])
     @price_group_ability = Ability.new(current_user, @price_group, self)
+  end
+
+  def authorize_price_group_member
+    @price_group_ability.authorize! :create, PriceGroupMember
   end
 end
