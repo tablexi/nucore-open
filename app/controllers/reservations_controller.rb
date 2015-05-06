@@ -183,16 +183,6 @@ class ReservationsController < ApplicationController
       return
     end
 
-    reservation_params = params[:reservation]
-    if !@reservation.reserve_start_at_editable?
-      reservation_params.tap do |p|
-        p[:reserve_start_date] = @reservation.reserve_start_date
-        p[:reserve_start_hour] = @reservation.reserve_start_hour
-        p[:reserve_start_min] = @reservation.reserve_start_min
-        p[:reserve_start_meridian] = @reservation.reserve_start_meridian
-      end
-    end
-
     @reservation.assign_times_from_params(reservation_params)
 
     validator = Reservations::DurationChangeValidations.new(@reservation)
@@ -280,6 +270,18 @@ class ReservationsController < ApplicationController
   end
 
   private
+
+  def reservation_params
+    reservation_params = params[:reservation]
+    if !@reservation.reserve_start_at_editable?
+      reservation_params.tap do |p|
+        p[:reserve_start_date] = @reservation.reserve_start_date
+        p[:reserve_start_hour] = @reservation.reserve_start_hour
+        p[:reserve_start_min] = @reservation.reserve_start_min
+        p[:reserve_start_meridian] = @reservation.reserve_start_meridian
+      end
+    end
+  end
 
   def switch_instrument_off!
     ReservationInstrumentSwitcher.new(@reservation).switch_off!

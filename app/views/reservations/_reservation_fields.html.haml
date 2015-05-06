@@ -5,11 +5,6 @@
     .controls
       .string.optional.control-label &nbsp;
       = time_select f, :reserve_start, { minute_step: @instrument.reserve_interval }, disabled: start_disabled
-      - if start_disabled
-        = f.input :reserve_start_date, as: :hidden
-        = f.input :reserve_start_hour, as: :hidden
-        = f.input :reserve_start_min, as: :hidden
-        = f.input :reserve_start_meridian, as: :hidden
   = f.input :duration_mins, input_html: { value: f.object.new_record? ? default_duration : f.object.duration_mins, class: 'timeinput', disabled: end_time_disabled(f.object) }
 
 
