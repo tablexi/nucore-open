@@ -59,6 +59,6 @@ module PriceGroupMembersController
   end
 
   def authorize_price_group_member
-    @price_group_ability.authorize! :create, PriceGroupMember
+    @price_group_ability.authorize! action_name, PriceGroupMember
   end
 end
