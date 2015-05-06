@@ -185,12 +185,7 @@ class ReservationsController < ApplicationController
 
     @reservation.assign_times_from_params(reservation_params)
 
-    validator = Reservations::DurationChangeValidations.new(@reservation)
-    if validator.invalid?
-      set_windows
-      render :action => "edit"
-      return
-    end
+    render_edit and return unless duration_change_valid?
 
     Reservation.transaction do
       begin
@@ -211,8 +206,7 @@ class ReservationsController < ApplicationController
         raise ActiveRecord::Rollback
       end
     end
-    set_windows
-    render :action => "edit"
+    render_edit
   end
 
   # POST /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
@@ -273,6 +267,7 @@ class ReservationsController < ApplicationController
 
   def reservation_params
     reservation_params = params[:reservation]
+
     if !@reservation.reserve_start_at_editable?
       reservation_params.tap do |p|
         p[:reserve_start_date] = @reservation.reserve_start_date
@@ -281,6 +276,8 @@ class ReservationsController < ApplicationController
         p[:reserve_start_meridian] = @reservation.reserve_start_meridian
       end
     end
+
+    reservation_params
   end
 
   def switch_instrument_off!
@@ -387,5 +384,15 @@ class ReservationsController < ApplicationController
     # 1.week causes a problem with daylight saving week since it's technically longer
     # than a week
     @end_at - @start_at > 8.days
+  end
+
+  def render_edit
+    set_windows
+    render :action => "edit"
+  end
+
+  def duration_change_valid?
+    validator = Reservations::DurationChangeValidations.new(@reservation)
+    validator.valid?
   end
 end

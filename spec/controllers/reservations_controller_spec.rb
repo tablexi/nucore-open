@@ -813,14 +813,14 @@ describe ReservationsController do
 
           it 'runs validations' do
             expect_any_instance_of(Reservations::DurationChangeValidations)
-              .to receive(:invalid?)
+              .to receive(:valid?)
               .and_return(false)
             do_request
           end
 
           it 'ignores start fields' do
             expect_any_instance_of(Reservations::DurationChangeValidations)
-              .to receive(:invalid?)
+              .to receive(:valid?)
               .and_return(false)
             do_request
             expect(@reservation.reload.reserve_start_date).to eq(@start.strftime('%m/%d/%Y'))
@@ -832,7 +832,7 @@ describe ReservationsController do
           context 'with errors' do
             it 'renders edit' do
               expect_any_instance_of(Reservations::DurationChangeValidations)
-                .to receive(:invalid?)
+                .to receive(:valid?)
                 .and_return(true)
               do_request
               expect(response).to render_template :edit

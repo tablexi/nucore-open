@@ -201,10 +201,14 @@ class Reservation < ActiveRecord::Base
   end
 
   def next_duration_available?
-    potential = self.dup
-    potential.reserve_start_at = reserve_end_at
-    potential.reserve_end_at = reserve_end_at + product.reserve_interval.to_i.minutes
-    potential.conflicting_reservation(exclude: self).nil?
+    next_available = product.next_available_reservation(reserve_end_at)
+
+    return false unless next_available
+
+    current_end_at = reserve_end_at.change(:sec => 0)
+    next_start_at = next_available.reserve_start_at.change(sec: 0)
+
+    current_end_at == next_start_at
   end
 
   def before_lock_window?

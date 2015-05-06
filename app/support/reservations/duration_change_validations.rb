@@ -30,7 +30,7 @@ class Reservations::DurationChangeValidations
   end
 
   def duration_not_shortened
-    reservation_started = Time.zone.now >= reservation.reserve_start_at
+    reservation_started = reservation.actual_start_at.present?
     reservation_shortened = reservation.reserve_end_at_changed? && reservation.reserve_end_at < reservation.reserve_end_at_was
     if reservation_started && reservation_shortened
       errors.add(:reserve_end_at, I18n.t('activerecord.errors.models.reservation.shorten_reserve_end_at'))
