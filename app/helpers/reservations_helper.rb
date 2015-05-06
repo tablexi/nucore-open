@@ -28,14 +28,14 @@ module ReservationsHelper
     ReservationUserActionPresenter.new(self, reservation).view_edit_link
   end
 
-  def start_time_disabled(reservation)
+  def start_time_disabled?(reservation)
     return false unless reservation.persisted?
 
     original = Reservation.find(reservation)
     !original.reserve_start_at_editable?
   end
 
-  def end_time_disabled(reservation)
+  def end_time_disabled?(reservation)
     return false unless reservation.persisted?
 
     original = Reservation.find(reservation)
