@@ -203,6 +203,10 @@ class OrderDetail < ActiveRecord::Base
     where(problem: true)
   end
 
+  def self.joins_relay
+    joins("INNER JOIN relays ON relays.instrument_id = products.id")
+  end
+
   def in_review?
     # check in the database if self.id is in the scope
     self.class.all_in_review.find_by_id(self.id) ? true :false

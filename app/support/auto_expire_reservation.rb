@@ -15,7 +15,8 @@ class AutoExpireReservation
 
   def purchased_active_order_details
     OrderDetail.purchased_active_reservations
-      .merge(Reservation.relay_in_progress)
+      .joins(:product)
+      .joins_relay
       .where("reservations.reserve_end_at < ?", Time.zone.now - 12.hours)
       .readonly(false)
       .all
