@@ -15,7 +15,8 @@ class AutoExpireReservation
 
   def purchased_active_order_details
     OrderDetail.purchased_active_reservations
-      .merge(Reservation.relay_in_progress)
+      .joins("INNER JOIN products ON order_details.product_id = products.id")
+      .joins("INNER JOIN relays ON relays.instrument_id = products.id")
       .where("reservations.reserve_end_at < ?", Time.zone.now - 12.hours)
       .readonly(false)
       .all
