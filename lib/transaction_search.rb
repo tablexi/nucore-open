@@ -41,7 +41,10 @@ module TransactionSearch
         do_search(@search_fields)
         add_optimizations
         sort_and_paginate
-        render :layout => @layout if @layout
+        respond_to do |format|
+          format.html { render layout: @layout if @layout }
+          format.csv { render text: Reports::AccountTransactionsReport.new(@order_details, date_range_field: @date_range_field).to_csv }
+        end
       end
     end
   end
@@ -109,7 +112,7 @@ module TransactionSearch
     end_date = parse_usa_date(search_params[:end_date].to_s.gsub("-", "/"))
 
     @order_details = @order_details.for_facilities(search_params[:facilities])
-    @date_range_field = search_params[:date_range_field] || 'fulfilled_at'
+    @date_range_field = date_range_field(search_params[:date_range_field])
     @order_details = @order_details.action_in_date_range(@date_range_field, start_date, end_date)
   end
 
@@ -137,5 +140,10 @@ module TransactionSearch
     args = { page: params[:page] }
     args[:per_page] = @per_page if @per_page.present?
     args
+  end
+
+  def date_range_field(field)
+    whitelist = TransactionSearch::DATE_RANGE_FIELDS.map(&:last)
+    whitelist.include?(field) ? field : 'fulfilled_at'
   end
 end

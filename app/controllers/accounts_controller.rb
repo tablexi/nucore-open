@@ -8,7 +8,6 @@ class AccountsController < ApplicationController
   include AccountSuspendActions
   load_and_authorize_resource :only => [:show, :user_search, :transactions, :transactions_in_review, :suspend, :unsuspend ]
 
-
   def initialize
     @active_tab = 'accounts'
     super

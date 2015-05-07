@@ -40,6 +40,8 @@
         %td.user-order-detail
           .order-detail-description
             = order_detail_description(order_detail)
+            - order_detail.extend PriceDisplayment
+            = "(#{order_detail.wrapped_quantity})".html_safe unless order_detail.problem?
             - if order_detail.reservation
               %br
               %em= order_detail.reservation
