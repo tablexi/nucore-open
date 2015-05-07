@@ -41,7 +41,10 @@ module TransactionSearch
         do_search(@search_fields)
         add_optimizations
         sort_and_paginate
-        render :layout => @layout if @layout
+        respond_with(@order_details) do |format|
+          format.html { render layout: @layout if @layout }
+          format.csv { render text: Reports::AccountTransactionsReport.new(@order_details, date_range_field: @date_range_field).to_csv }
+        end
       end
     end
   end

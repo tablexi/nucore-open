@@ -54,16 +54,32 @@ module PriceDisplayment
     actual_cost.present?
   end
 
-  def wrapped_quantity
+  class QuantityDisplay < Struct.new(:value, :type)
+    include ActionView::Helpers::TagHelper
+
+    def time_quantity_html
+      content_tag :span, value, :class => 'timeinput'
+    end
+
+    def output
+      type == :timeinput ? time_quantity_html : value
+    end
+  end
+
+  def quantity_display
     if reservation.try(:actual_duration_mins) && reservation.actual_duration_mins > 0
-      content_tag :span, reservation.actual_duration_mins, :class => 'timeinput'
+      QuantityDisplay.new(reservation.actual_duration_mins, :timeinput)
     elsif reservation.try(:duration_mins)
-      content_tag :span, reservation.duration_mins, :class => 'timeinput'
+      QuantityDisplay.new(reservation.duration_mins, :timeinput)
     elsif quantity_as_time?
-      content_tag :span, quantity, :class => 'timeinput'
+      QuantityDisplay.new(quantity, :timeinput)
     else
       quantity
     end
+  end
+
+  def wrapped_quantity
+    quantity_display.output
   end
 
 private
