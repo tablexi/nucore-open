@@ -24,5 +24,4 @@ describe Reservations::Validations do
     reservation.update_attributes reserve_start_at: now, reserve_end_at: now + 1.hour + 5.minutes
     expect(reservation.errors[:base]).to be_present
   end
-
 end

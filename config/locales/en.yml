@@ -940,6 +940,8 @@ en:
         reservation:
           cannot_move: Sorry, but your reservation can no longer be moved.
           move_failed: Sorry, but your reservation could not be moved. Please try again later.
+          change_reserve_start_at: cannot change once the reservation has started
+          shorten_reserve_end_at: cannot be shortened once the reservation has started
 
   devise:
     failure:
