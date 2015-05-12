@@ -120,5 +120,19 @@ describe Reservations::DurationChangeValidations do
 
       it { expect(validator).to be_invalid }
     end
+
+    context "with a relay reservation started early" do
+      before do
+        reservation.assign_attributes(
+          reserve_start_at: 1.minute.from_now,
+          reserve_end_at: 61.minutes.from_now,
+          actual_start_at: 1.minute.ago)
+        reservation.save(validate: false)
+
+        reservation.assign_attributes(reserve_end_at: 30.minutes.from_now)
+      end
+
+      it { expect(validator).to be_invalid }
+    end
   end
 end
