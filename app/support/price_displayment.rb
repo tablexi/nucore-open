@@ -66,7 +66,7 @@ module PriceDisplayment
     end
   end
 
-  def quantity_display
+  def display_quantity
     if reservation.try(:actual_duration_mins) && reservation.actual_duration_mins > 0
       QuantityDisplay.new(reservation.actual_duration_mins, :timeinput)
     elsif reservation.try(:duration_mins)
@@ -79,7 +79,7 @@ module PriceDisplayment
   end
 
   def wrapped_quantity
-    quantity_display.output
+    display_quantity.output
   end
 
 private
