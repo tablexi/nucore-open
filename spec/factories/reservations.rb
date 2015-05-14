@@ -20,6 +20,12 @@ FactoryGirl.define do
       reserve_end_at { 45.minutes.from_now }
       actual_start_at { 15.minutes.ago }
     end
+
+    trait :long_running do
+      yesterday
+      actual_start_at { reserve_start_at }
+      actual_end_at nil
+    end
   end
 
   factory :setup_reservation, :class => Reservation, :parent => :reservation do
