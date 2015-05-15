@@ -74,6 +74,9 @@ module Reservations::DateSupport
   def duration_mins
     if @duration_mins
       @duration_mins.to_i
+    elsif reserve_end_at and actual_start_at
+      actual_start = actual_start_at.change(sec: 0)
+      ((reserve_end_at - actual_start) / 60).floor
     elsif reserve_end_at and reserve_start_at
       ((reserve_end_at - reserve_start_at) / 60).floor
     else
