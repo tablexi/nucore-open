@@ -38,6 +38,19 @@ describe Reservations::DurationChangeValidations do
         expect(validator.errors.full_messages)
           .to include('Reserve end at cannot be shortened once the reservation has started')
       end
+
+      context "with start time containing seconds" do
+        before do
+          reservation.reserve_start_at = reservation.reserve_start_at.change(sec: 45)
+          reservation.save!
+        end
+
+        it 'does not think start time changed' do
+          reservation.reserve_start_at = 30.minutes.ago
+          validator.valid?
+          expect(validator.errors).to be_empty
+        end
+      end
     end
 
     context "with a past reservation" do
