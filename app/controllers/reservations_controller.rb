@@ -268,6 +268,13 @@ class ReservationsController < ApplicationController
   def reservation_params
     reservation_params = params[:reservation]
 
+    reservation_params.except!(
+      :actual_start_date,
+      :actual_start_hour,
+      :actual_start_min,
+      :actual_start_meridian
+    )
+
     if !@reservation.reserve_start_at_editable?
       reservation_params.tap do |p|
         p[:reserve_start_date] = @reservation.reserve_start_date
