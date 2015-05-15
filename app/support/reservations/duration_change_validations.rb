@@ -25,7 +25,7 @@ class Reservations::DurationChangeValidations
 
   def start_time_not_changed
     if !reservation.reserve_start_at_editable? && reservation.reserve_start_at_changed?
-      previous_time = reservation.changes[:reserve_start_at][0].change(sec: 0)
+      previous_time = reservation.reserve_start_at_was.change(sec: 0)
       updated_time = reservation.reserve_start_at.change(sec: 0)
       if previous_time != updated_time
         errors.add(:reserve_start_at, I18n.t('activerecord.errors.models.reservation.change_reserve_start_at'))
