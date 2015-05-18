@@ -19,8 +19,8 @@ module Reservations::MovingUp
   def move_to_earliest
     earliest_found = earliest_possible
     if earliest_found
-      self.reserve_start_at = earliest_found.reserve_start_at
-      self.reserve_end_at = earliest_found.reserve_end_at
+      self.reserve_start_at = earliest_found.reserve_start_at.change(sec: 0)
+      self.reserve_end_at = earliest_found.reserve_end_at.change(sec: 0)
       if save
         return true
       else
