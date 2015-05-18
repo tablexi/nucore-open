@@ -351,7 +351,7 @@ describe Reservation do
           @reservation1.reserve_start_at.should_not == earliest.reserve_start_at
           @reservation1.reserve_end_at.should_not == earliest.reserve_end_at
           @reservation1.move_to_earliest.should be_true
-          @reservation1.reserve_start_at.to_i.should == earliest.reserve_start_at.to_i
+          @reservation1.reserve_start_at.change(sec: 0).to_i.should == earliest.reserve_start_at.change(sec: 0).to_i
           @reservation1.reserve_end_at.to_i.should == earliest.reserve_end_at.to_i
         end
       end
