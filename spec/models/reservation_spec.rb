@@ -1078,16 +1078,5 @@ describe Reservation do
         expect(reservation.duration_mins).to eq(60)
       end
     end
-
-    context "with actual start time" do
-      before do
-        reservation.update_column(:actual_start_at, reservation.reserve_start_at + 30.minutes)
-        reservation.duration_mins = nil
-      end
-
-      it "calcuates duration using actual start time" do
-        expect(reservation.reload.duration_mins).to eq(30)
-      end
-    end
   end
 end
