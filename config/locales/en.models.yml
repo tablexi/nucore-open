@@ -242,6 +242,7 @@ en:
         to_s: Reservation
         reserve_to_s: Reservation
         reserve_start_date: Reserve Start
+        reserve_end_date: Reserve End
         duration_mins: Duration
         actuals_string: Actual Usage
         actual_start_date: Actual Start
