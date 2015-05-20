@@ -1,7 +1,7 @@
 class UserPriceGroupMembersController < ApplicationController
   include PriceGroupMembersController
 
-  before_filter :require_manage_members_ability!
+  before_filter :authorize_user_price_group_member!
 
   private
 
@@ -26,8 +26,7 @@ class UserPriceGroupMembersController < ApplicationController
     @user_price_group_member
   end
 
-  def require_manage_members_ability!
-    return if @price_group_ability.can?(:manage_members, @price_group)
-    raise ActiveRecord::RecordNotFound
+  def authorize_user_price_group_member!
+    @price_group_ability.authorize!(action_name, UserPriceGroupMember)
   end
 end

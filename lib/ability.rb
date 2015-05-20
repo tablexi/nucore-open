@@ -15,17 +15,22 @@ class Ability
 
     if user.administrator?
       if resource.is_a?(PriceGroup)
-        can :manage_members, resource if resource.admin_editable?
-        can :manage, PriceGroupMember
+        can :manage, UserPriceGroupMember if resource.admin_editable?
+        can :manage, AccountPriceGroupMember
       else
         can :manage, :all
       end
       return
     end
 
-    if resource.is_a?(PriceGroup) && !resource.global? && user.manager_of?(resource.facility)
-      can :manage, PriceGroupMember
-      can :manage_members, resource
+    if resource.is_a?(PriceGroup)
+      if !resource.global? && user.manager_of?(resource.facility)
+        can :manage, [AccountPriceGroupMember, UserPriceGroupMember]
+      end
+
+      if resource.global? && (user.user_roles.map(&:role) & UserRole.facility_roles).any?
+        can :read, UserPriceGroupMember
+      end
     end
 
     can :list, Facility if user.facilities.size > 0 and controller.is_a?(FacilitiesController)

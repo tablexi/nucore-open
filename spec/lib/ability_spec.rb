@@ -7,13 +7,13 @@ describe Ability do
 
   shared_examples_for "it can manage price group members" do
     it "can manage its members" do
-      expect(ability.can?(:manage_members, price_group)).to be true
+      expect(ability.can?(:manage, UserPriceGroupMember)).to be true
     end
   end
 
   shared_examples_for "it cannot manage price group members" do
     it "can manage its members" do
-      expect(ability.can?(:manage_members, price_group)).to be false
+      expect(ability.can?(:manage, UserPriceGroupMember)).to be false
     end
   end
 

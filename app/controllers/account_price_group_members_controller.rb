@@ -1,6 +1,8 @@
 class AccountPriceGroupMembersController < ApplicationController
   include PriceGroupMembersController
 
+  before_filter :authorize_account_price_group_member!, only: [:new, :create, :destroy]
+
   # POST /facilities/:facility_id/price_groups/:price_group_id/account_price_group_members/search_results
   def search_results
     @limit = 25
@@ -50,5 +52,9 @@ class AccountPriceGroupMembersController < ApplicationController
       limit: @limit
     )
     @count = Account.count(:all, conditions: search_conditions)
+  end
+
+  def authorize_account_price_group_member!
+    @price_group_ability.authorize! action_name, AccountPriceGroupMember
   end
 end

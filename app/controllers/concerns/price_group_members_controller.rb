@@ -7,7 +7,6 @@ module PriceGroupMembersController
     before_filter :check_acting_as
     before_filter :init_current_facility
     before_filter :load_price_group_and_ability!
-    before_filter :authorize_price_group_member, only: [:new, :create, :destroy]
 
     layout "two_column"
 
@@ -56,9 +55,5 @@ module PriceGroupMembersController
   def load_price_group_and_ability!
     @price_group = current_facility.price_groups.find(params[:price_group_id])
     @price_group_ability = Ability.new(current_user, @price_group, self)
-  end
-
-  def authorize_price_group_member
-    @price_group_ability.authorize! action_name, PriceGroupMember
   end
 end
