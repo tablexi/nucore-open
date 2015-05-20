@@ -272,9 +272,7 @@ class ReservationsController < ApplicationController
   private
 
   def reservation_params
-    reservation_params = params[:reservation]
-
-    reservation_params.except!(
+    reservation_params = params[:reservation].except(
       :actual_start_date,
       :actual_start_hour,
       :actual_start_min,
