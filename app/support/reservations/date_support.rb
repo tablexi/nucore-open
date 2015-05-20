@@ -21,7 +21,6 @@ module Reservations::DateSupport
   end
 
   def assign_reserve_end_from_actual_duration_mins(duration_mins_param)
-    offset = 0
     if actual_start_at
       actual_start = actual_start_at.change(sec: 0)
       reserve_start = reserve_start_at.change(sec: 0)
