@@ -7,7 +7,7 @@ class ReservationsController < ApplicationController
   before_filter :load_basic_resources, :only => [:new, :create, :edit, :update]
   before_filter :load_and_check_resources, :only => [ :move, :switch_instrument ]
 
-  helper_method :show_scheduled_reserve_times
+  helper_method :show_scheduled_reserve_times?
 
   include TranslationHelper
   include FacilityReservationsHelper
@@ -185,7 +185,7 @@ class ReservationsController < ApplicationController
       return
     end
 
-    if show_scheduled_reserve_times
+    if show_scheduled_reserve_times?
       @reservation.assign_times_from_params(reservation_params)
     else
       @reservation.assign_reserve_end_from_actual_duration_mins(reservation_params[:actual_duration_mins])
@@ -409,7 +409,7 @@ class ReservationsController < ApplicationController
     validator.valid?
   end
 
-  def show_scheduled_reserve_times
+  def show_scheduled_reserve_times?
     !@reservation.actual_start_at
   end
 end

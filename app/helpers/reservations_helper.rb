@@ -43,7 +43,7 @@ module ReservationsHelper
   end
 
   def duration(reservation)
-    if show_scheduled_reserve_times
+    if show_scheduled_reserve_times?
       reservation.duration_mins
     else
       reservation.actual_duration_mins(reservation.reserve_end_at)
