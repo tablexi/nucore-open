@@ -208,7 +208,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def self.unreconciled
-    where("order_details.state <> ?", 'reconciled')
+    where("order_details.state <> ?", "reconciled")
   end
 
   def in_review?
