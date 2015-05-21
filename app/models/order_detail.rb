@@ -207,6 +207,10 @@ class OrderDetail < ActiveRecord::Base
     joins("INNER JOIN relays ON relays.instrument_id = products.id")
   end
 
+  def self.unreconciled
+    where("order_details.state <> ?", 'reconciled')
+  end
+
   def in_review?
     # check in the database if self.id is in the scope
     self.class.all_in_review.find_by_id(self.id) ? true :false
