@@ -18,7 +18,7 @@ module Reservations::Validations
     end
 
     validate :starts_before_ends
-    validate :duration_is_interval, on: :create
+    validate :duration_is_interval
   end
 
   # Validation Methods

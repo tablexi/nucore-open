@@ -20,6 +20,15 @@ module Reservations::DateSupport
     set_all_split_times
   end
 
+  def assign_reserve_end_from_actual_duration_mins(duration_mins_param)
+    if actual_start_at
+      actual_start = actual_start_at.change(sec: 0)
+      reserve_start = reserve_start_at.change(sec: 0)
+      offset = ((actual_start - reserve_start) / 60).floor
+      self.reserve_end_at = reserve_start_at + (offset + duration_mins_param.to_i).minutes
+    end
+  end
+
   #
   # Virtual attributes
   #
@@ -81,13 +90,13 @@ module Reservations::DateSupport
     end
   end
 
-  def actual_duration_mins
+  def actual_duration_mins(base_time = Time.zone.now)
     if @actual_duration_mins
       @actual_duration_mins.to_i
     elsif actual_end_at && actual_start_at
       [((actual_end_at - actual_start_at) / 60).floor, 1].max
     elsif actual_start_at
-      [((Time.zone.now - actual_start_at) / 60).floor, 1].max
+      [((base_time - actual_start_at.change(sec: 0)) / 60).floor, 1].max
     else
       0
     end

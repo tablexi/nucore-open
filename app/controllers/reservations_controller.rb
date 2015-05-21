@@ -7,6 +7,8 @@ class ReservationsController < ApplicationController
   before_filter :load_basic_resources, :only => [:new, :create, :edit, :update]
   before_filter :load_and_check_resources, :only => [ :move, :switch_instrument ]
 
+  helper_method :show_scheduled_reserve_times?
+
   include TranslationHelper
   include FacilityReservationsHelper
 
@@ -183,7 +185,11 @@ class ReservationsController < ApplicationController
       return
     end
 
-    @reservation.assign_times_from_params(reservation_params)
+    if show_scheduled_reserve_times?
+      @reservation.assign_times_from_params(reservation_params)
+    else
+      @reservation.assign_reserve_end_from_actual_duration_mins(reservation_params[:actual_duration_mins])
+    end
 
     render_edit and return unless duration_change_valid?
 
@@ -266,7 +272,12 @@ class ReservationsController < ApplicationController
   private
 
   def reservation_params
-    reservation_params = params[:reservation]
+    reservation_params = params[:reservation].except(
+      :actual_start_date,
+      :actual_start_hour,
+      :actual_start_min,
+      :actual_start_meridian
+    )
 
     if !@reservation.reserve_start_at_editable?
       reservation_params.tap do |p|
@@ -396,5 +407,9 @@ class ReservationsController < ApplicationController
   def duration_change_valid?
     validator = Reservations::DurationChangeValidations.new(@reservation)
     validator.valid?
+  end
+
+  def show_scheduled_reserve_times?
+    !@reservation.actual_start_at
   end
 end
