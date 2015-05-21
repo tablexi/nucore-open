@@ -112,7 +112,7 @@ module TransactionSearch
     end_date = parse_usa_date(search_params[:end_date].to_s.gsub("-", "/"))
 
     @order_details = @order_details.for_facilities(search_params[:facilities])
-    @date_range_field = search_params[:date_range_field] || 'fulfilled_at'
+    @date_range_field = date_range_field(search_params[:date_range_field])
     @order_details = @order_details.action_in_date_range(@date_range_field, start_date, end_date)
   end
 
@@ -140,5 +140,10 @@ module TransactionSearch
     args = { page: params[:page] }
     args[:per_page] = @per_page if @per_page.present?
     args
+  end
+
+  def date_range_field(field)
+    whitelist = TransactionSearch::DATE_RANGE_FIELDS.map(&:last)
+    whitelist.include?(field) ? field : 'fulfilled_at'
   end
 end
