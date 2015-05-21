@@ -36,5 +36,17 @@ RSpec.describe ReservationInstrumentSwitcher do
         expect { do_action }.not_to change { running_reservation.reload }
       end
     end
+
+    context 'with a problem reservation that got reconciled' do
+      let!(:running_reservation) { FactoryGirl.create(:purchased_reservation, :long_running, product: instrument) }
+      before do
+        running_reservation.order_detail.update_order_status! running_reservation.user, OrderStatus.complete_status, admin: true
+        running_reservation.order_detail.update_order_status! running_reservation.user, OrderStatus.reconciled_status, admin: true
+      end
+
+      it 'does not do anything to the canceled reservation' do
+        expect { do_action }.not_to change { running_reservation.reload }
+      end
+    end
   end
 end
