@@ -43,14 +43,4 @@ describe Reservations::DateSupport do
       end
     end
   end
-
-  context '#assign_reserve_end_from_actual_duration_mins' do
-    before do
-      reservation.assign_reserve_end_from_actual_duration_mins(70)
-    end
-
-    it 'assigns reserve_end_at' do
-      expect(reservation.reserve_end_at).to eq(reservation.reserve_start_at + 65.minutes)
-    end
-  end
 end

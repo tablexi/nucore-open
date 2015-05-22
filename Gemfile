@@ -72,6 +72,7 @@ group :development, :test do
   gem 'single_test',       '0.4.0'
   gem 'spring'
   gem 'spring-commands-rspec'
+  gem 'teaspoon-jasmine'
   gem 'thin'
   gem 'timecop',           '~> 0.6.3'
 end

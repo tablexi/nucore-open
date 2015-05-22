@@ -1,15 +1,7 @@
 = content_for :head_content do
-  = render :partial => 'shared/headers/calendar'
+  = render partial: 'shared/headers/calendar'
   = javascript_include_tag 'reservations.js'
-
-  :javascript
-    var events_path     = "#{facility_instrument_reservations_path(@instrument.facility, @instrument, :format => 'js', :with_details => @instrument.show_details?)}";
-    var minDate         = "#{@min_date}";
-    var maxDate         = "#{@max_date}";
-    var maxDaysFromNow  = #{@max_window};
-    var minTime         = #{@instrument.first_available_hour};
-    var maxTime         = #{@instrument.last_available_hour+1};
-    var withDetails     = #{@instrument.show_details? || false};
+  = render partial: 'js_variables'
 
 - unless @order.purchased?
   = content_for :breadcrumb do
@@ -33,9 +25,9 @@
 
   .row
     .well.span12
-      = render :partial => 'reservation_fields', :locals => {:f => f}
+      = render partial: 'reservation_fields', locals: { f: f }
   %ul.inline
-    %li= f.submit 'Save', :class => 'btn'
+    %li= f.submit 'Save', class: 'btn'
     - if @order.purchased?
       %li= link_to 'Cancel', reservations_path
     - else
