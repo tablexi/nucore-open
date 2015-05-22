@@ -19,7 +19,7 @@ $.fn.animateHighlight = (options = {}) ->
 class OrderDetailManagement
   constructor: (@$element) ->
     @$element.find('.datepicker').datepicker()
-    @$element.find('.timeinput').timeinput();
+    @$element.find('.timeinput').timeinput()
     @$element.find('.copy_actual_from_reservation a').click(@copyReservationTimeIntoActual)
     @initTotalCalculating()
     @initPriceUpdating()
@@ -151,5 +151,5 @@ $ ->
 
   $('.updated-order-detail').animateHighlight({ highlightClass: 'alert-info', solidDuration: 5000 })
 
-  $('.timeinput').timeinput();
-  $('#product_add').chosen();
+  $('.timeinput').timeinput()
+  $('#product_add').chosen()
