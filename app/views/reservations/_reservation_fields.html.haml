@@ -1,7 +1,7 @@
 .datetime-block
   - start_disabled = f.object.persisted? && !f.object.reserve_start_at_editable?
   - date_field = show_scheduled_reserve_times? ? :reserve_start_date : :actual_start_date
-  = f.input date_field, :input_html => { :class => 'datepicker', disabled: start_disabled }
+  = f.input date_field, input_html: { class: "datepicker", disabled: start_disabled }
   .control-group
     .controls
       .string.optional.control-label &nbsp;
@@ -10,4 +10,9 @@
   - duration_field = show_scheduled_reserve_times? ? :duration_mins : :actual_duration_mins
   = f.input duration_field, input_html: { value: f.object.new_record? ? default_duration : duration(f.object), class: 'timeinput', disabled: end_time_disabled?(f.object) }
 
-
+.datetime-block
+  = f.input :reserve_end_date, input_html: { class: "datepicker" }
+  .control-group
+    .controls
+      .string.optional.control-label &nbsp;
+      = time_select f, :reserve_end, { minute_step: @instrument.reserve_interval }

@@ -93,7 +93,7 @@ class ReservationsController < ApplicationController
   # POST /orders/1/order_details/1/reservations
   def create
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
-    @reservation = @order_detail.build_reservation(params[:reservation].merge(:product => @instrument))
+    @reservation = @order_detail.build_reservation(reservation_create_params)
 
     if !@order_detail.bundled? && params[:order_account].blank?
       flash.now[:error]=I18n.t 'controllers.reservations.create.no_selection'
@@ -407,6 +407,12 @@ class ReservationsController < ApplicationController
   def duration_change_valid?
     validator = Reservations::DurationChangeValidations.new(@reservation)
     validator.valid?
+  end
+
+  def reservation_create_params
+    params[:reservation]
+    .except(:reserve_end_date, :reserve_end_hour, :reserve_end_min, :reserve_end_meridian)
+    .merge(product: @instrument)
   end
 
   def show_scheduled_reserve_times?
