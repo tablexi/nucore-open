@@ -32,13 +32,41 @@ describe "DateTimeSelectionWidgetGroup", ->
         expect(@subject.getDateTime()).toEqual(new Date(2016, 2, 2, 9, 15))
 
     describe "when the hour value is changed", ->
-      for hour in [1..12]
-        describe "to #{hour}", ->
-          beforeEach -> $("input[name=hour]", fixture.el).val(hour)
+      describe "3 AM", ->
+        beforeEach ->
+          $("input[name=hour]", fixture.el).val(3)
+          $("input[name=meridian]", fixture.el).val("AM")
 
-          it "converts the new field values into the expected Date object", ->
-            expect(@subject.getDateTime())
-              .toEqual(new Date(2015, 10, 13, hour, 15))
+        it "converts the new field values into the expected Date object", ->
+          expect(@subject.getDateTime())
+            .toEqual(new Date(2015, 10, 13, 3, 15))
+
+      describe "4 PM", ->
+        beforeEach ->
+          $("input[name=hour]", fixture.el).val(4)
+          $("input[name=meridian]", fixture.el).val("PM")
+
+        it "converts the new field values into the expected Date object", ->
+          expect(@subject.getDateTime())
+            .toEqual(new Date(2015, 10, 13, 16, 15))
+
+      describe "midnight", ->
+        beforeEach ->
+          $("input[name=hour]", fixture.el).val(12)
+          $("input[name=meridian]", fixture.el).val("AM")
+
+        it "converts the new field values into the expected Date object", ->
+          expect(@subject.getDateTime())
+            .toEqual(new Date(2015, 10, 13, 0, 15))
+
+      describe "noon", ->
+        beforeEach ->
+          $("input[name=hour]", fixture.el).val(12)
+          $("input[name=meridian]", fixture.el).val("PM")
+
+        it "converts the new field values into the expected Date object", ->
+          expect(@subject.getDateTime())
+            .toEqual(new Date(2015, 10, 13, 12, 15))
 
     describe "when the minute value is changed", ->
       for minute in [0..59] by 15
@@ -85,6 +113,22 @@ describe "DateTimeSelectionWidgetGroup", ->
 
       it "sets the meridian field", ->
         expect($("input[name=meridian]", fixture.el).val()).toEqual("PM")
+
+    describe "when the time is noon hour", ->
+      beforeEach -> @subject.setDateTime(new Date(2016, 2, 2, 12, 45))
+
+      it "sets itself to the right datetime", ->
+        expect($("input[name=date]", fixture.el).val()).toEqual("3/2/2016")
+        expect($("input[name=hour]", fixture.el).val()).toEqual("12")
+        expect($("input[name=meridian]", fixture.el).val()).toEqual("PM")
+
+    describe "when the time is midnight hour", ->
+      beforeEach -> @subject.setDateTime(new Date(2016, 2, 2, 0, 45))
+
+      it "sets itself to the right datetime", ->
+        expect($("input[name=date]", fixture.el).val()).toEqual("3/2/2016")
+        expect($("input[name=hour]", fixture.el).val()).toEqual("12")
+        expect($("input[name=meridian]", fixture.el).val()).toEqual("AM")
 
     describe "when the time is not aligned to the reserveInterval", ->
       beforeEach -> @subject.setDateTime(new Date(2016, 2, 2, 13, 39))

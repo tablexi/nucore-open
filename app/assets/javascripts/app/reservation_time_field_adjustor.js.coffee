@@ -8,7 +8,7 @@ class window.DateTimeSelectionWidgetGroup
   day: -> parseInt(@_splitDate()[1], 10)
 
   hour: ->
-    hour = parseInt(@$hourField.val(), 10)
+    hour = parseInt(@$hourField.val(), 10) % 12
     hour += 12 if @$meridianField.val() == "PM"
     hour
 
@@ -16,54 +16,42 @@ class window.DateTimeSelectionWidgetGroup
 
   setDateTime: (dateTime) ->
     @$dateField.val(dateTime.toString("M/d/yyyy"))
-    if dateTime.getHours() > 12
-      @$hourField.val(dateTime.getHours() - 12)
-      @$meridianField.val("PM")
-    else
-      @$hourField.val(dateTime.getHours())
-      @$meridianField.val("AM")
+
+    hour = dateTime.getHours() % 12
+    meridian = if dateTime.getHours() < 12 then 'AM' else 'PM'
+    hour = 12 if hour == 0
+
+    @$hourField.val(hour)
+    @$meridianField.val(meridian)
+
     @$minuteField
       .val(dateTime.getMinutes() - (dateTime.getMinutes() % @reserveInterval))
+
     @change()
 
   change: (callback) ->
     fields = [@$dateField, @$hourField, @$minuteField, @$meridianField]
-    if callback
-      $field.change(callback) for $field in fields
-    else
-      $field.change() for $field in fields
+    $field.change(callback) for $field in fields
 
   _splitDate: -> @$dateField.val().split("/")
 
 class window.ReservationTimeFieldAdjustor
   constructor: (@$form, @reserveInterval) ->
-    @timeParser = new TimeParser()
+    @timeParser = new TimeParser() # From clockpunch
     @addListeners()
 
   addListeners: ->
-    @reserveStart = new DateTimeSelectionWidgetGroup(
-      @$form.find('[name="reservation[reserve_start_date]"]')
-      @$form.find('[name="reservation[reserve_start_hour]"]')
-      @$form.find('[name="reservation[reserve_start_min]"]')
-      @$form.find('[name="reservation[reserve_start_meridian]"]')
-      @reserveInterval
-    )
+    @reserveStart = @_widgetGroup('reserve_start')
+    @reserveStart.change(@_reserveStartChangeCallback)
 
-    @reserveEnd = new DateTimeSelectionWidgetGroup(
-      @$form.find('[name="reservation[reserve_end_date]"]')
-      @$form.find('[name="reservation[reserve_end_hour]"]')
-      @$form.find('[name="reservation[reserve_end_min]"]')
-      @$form.find('[name="reservation[reserve_end_meridian]"]')
-      @reserveInterval
-    )
+    @reserveEnd = @_widgetGroup('reserve_end')
+    @reserveEnd.change(@_reserveEndChangeCallback)
 
     @$durationField = @$form.find('[name="reservation[duration_mins]"]')
+    @$durationField.change(@_durationChangeCallback)
+
     @$durationDisplayField =
       @$form.find('[name="reservation[duration_mins]_display"]')
-
-    @$durationField.change(@_durationChangeCallback)
-    @reserveStart.change(@_reserveStartChangeCallback)
-    @reserveEnd.change(@_reserveEndChangeCallback)
 
   _durationChangeCallback: =>
     durationMinutes = @timeParser.to_minutes(@$durationDisplayField.val())
@@ -73,12 +61,14 @@ class window.ReservationTimeFieldAdjustor
 
   _getDuration: -> @reserveEnd.getDateTime() - @reserveStart.getDateTime()
 
-  minimumDuration: -> @reserveInterval * 60 * 1000
+  _minimumDuration: -> @reserveInterval * 60 * 1000
 
   _reserveEndChangeCallback: =>
     duration = @_getDuration()
+
     if duration < 0
-      duration = @minimumDuration()
+      duration = @_minimumDuration()
+      console.debug @reserveEnd.getDateTime()
       @reserveStart
         .setDateTime(@reserveEnd.getDateTime()
         .addMilliseconds(-1 * duration))
@@ -87,7 +77,7 @@ class window.ReservationTimeFieldAdjustor
   _reserveStartChangeCallback: =>
     duration = @_getDuration()
     if duration < 0
-      duration = @minimumDuration()
+      duration = @_minimumDuration()
       @reserveEnd
         .setDateTime(@reserveStart.getDateTime()
         .addMilliseconds(duration))
@@ -99,6 +89,15 @@ class window.ReservationTimeFieldAdjustor
       .val(@timeParser.from_minutes(durationMinutes))
       .trigger("keyup")
     @$durationField.val(durationMinutes)
+
+  _widgetGroup: (field) =>
+    new DateTimeSelectionWidgetGroup(
+      @$form.find("[name=\"reservation[#{field}_date]\"]")
+      @$form.find("[name=\"reservation[#{field}_hour]\"]")
+      @$form.find("[name=\"reservation[#{field}_min]\"]")
+      @$form.find("[name=\"reservation[#{field}_meridian]\"]")
+      @reserveInterval
+    )
 
 $ ->
   $("form.new_reservation, form.edit_reservation").each ->
