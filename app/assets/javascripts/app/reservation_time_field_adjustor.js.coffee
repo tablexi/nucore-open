@@ -1,28 +1,16 @@
 class window.DateTimeSelectionWidgetGroup
   constructor: (@$dateField, @$hourField, @$minuteField, @$meridianField, @reserveInterval) ->
 
-  getDateTime: -> new Date(@year(), @month(), @day(), @hour(), @minute())
-
-  year: -> parseInt(@_splitDate()[2], 10)
-  month: -> parseInt(@_splitDate()[0], 10) - 1
-  day: -> parseInt(@_splitDate()[1], 10)
-
-  hour: ->
-    hour = parseInt(@$hourField.val(), 10) % 12
-    hour += 12 if @$meridianField.val() == "PM"
-    hour
-
-  minute: -> parseInt(@$minuteField.val(), 10)
+  getDateTime: ->
+    formatter = TimeFormatter.fromString(@$dateField.val(), @$hourField.val(), @$minuteField.val(), @$meridianField.val())
+    formatter.toDateTime()
 
   setDateTime: (dateTime) ->
-    @$dateField.val(dateTime.toString("M/d/yyyy"))
+    formatter = new TimeFormatter(dateTime)
 
-    hour = dateTime.getHours() % 12
-    meridian = if dateTime.getHours() < 12 then 'AM' else 'PM'
-    hour = 12 if hour == 0
-
-    @$hourField.val(hour)
-    @$meridianField.val(meridian)
+    @$dateField.val(formatter.dateString())
+    @$hourField.val(formatter.hour12())
+    @$meridianField.val(formatter.meridian())
 
     @$minuteField
       .val(dateTime.getMinutes() - (dateTime.getMinutes() % @reserveInterval))
@@ -32,8 +20,6 @@ class window.DateTimeSelectionWidgetGroup
   change: (callback) ->
     fields = [@$dateField, @$hourField, @$minuteField, @$meridianField]
     $field.change(callback) for $field in fields
-
-  _splitDate: -> @$dateField.val().split("/")
 
 class window.ReservationTimeFieldAdjustor
   constructor: (@$form, @reserveInterval) ->
@@ -68,7 +54,6 @@ class window.ReservationTimeFieldAdjustor
 
     if duration < 0
       duration = @_minimumDuration()
-      console.debug @reserveEnd.getDateTime()
       @reserveStart
         .setDateTime(@reserveEnd.getDateTime()
         .addMilliseconds(-1 * duration))
