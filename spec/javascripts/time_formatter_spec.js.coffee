@@ -1,4 +1,6 @@
 describe "TimeFormatter", ->
+  it 'fails on CI', ->
+    expect(true).toEqual(false)
 
   describe 'fromString', ->
     describe 'date parsing', ->
