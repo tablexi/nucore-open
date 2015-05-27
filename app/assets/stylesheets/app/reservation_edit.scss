@@ -4,6 +4,12 @@
     float: left;
     margin-right: 1em;
   }
+
+  .started-at {
+    @extend .control-group;
+    margin-top: -16px;
+    font-style: italic;
+  }
 }
 
 .time-select {

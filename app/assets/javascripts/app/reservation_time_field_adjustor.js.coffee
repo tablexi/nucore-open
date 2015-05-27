@@ -40,36 +40,40 @@ class window.ReservationTimeFieldAdjustor
       @$form.find('[name="reservation[duration_mins]_display"]')
 
   _durationChangeCallback: =>
-    durationMinutes = @timeParser.to_minutes(@$durationDisplayField.val())
+    durationMinutes = @_durationMinutes()
     if durationMinutes % @reserveInterval == 0
       @reserveEnd
         .setDateTime(@reserveStart.getDateTime().addMinutes(durationMinutes))
 
   _getDuration: -> @reserveEnd.getDateTime() - @reserveStart.getDateTime()
 
-  _minimumDuration: -> @reserveInterval * 60 * 1000
+  _durationMinutes: -> @timeParser.to_minutes(@$durationDisplayField.val())
 
   _reserveEndChangeCallback: =>
     duration = @_getDuration()
 
     if duration < 0
-      duration = @_minimumDuration()
-      @reserveStart
-        .setDateTime(@reserveEnd.getDateTime()
-        .addMilliseconds(-1 * duration))
-    @_setDurationFields(duration)
+      # If the duration ends up negative, i.e. end is before start,
+      # set the end to the start time plus the duration specified in the box
+      duration = @_durationMinutes()
+      @reserveEnd
+        .setDateTime(@reserveStart.getDateTime()
+        .addMinutes(duration))
+    @_setDurationFields()
 
   _reserveStartChangeCallback: =>
     duration = @_getDuration()
+
     if duration < 0
-      duration = @_minimumDuration()
+      duration = @_durationMinutes()
       @reserveEnd
         .setDateTime(@reserveStart.getDateTime()
-        .addMilliseconds(duration))
-    @_setDurationFields(duration)
+        .addMinutes(duration))
+    @_setDurationFields
 
-  _setDurationFields: (duration) ->
-    durationMinutes = duration / 60000
+  _setDurationFields:  ->
+    durationMinutes = @_getDuration() / 60 / 1000
+
     @$durationDisplayField
       .val(@timeParser.from_minutes(durationMinutes))
       .trigger("keyup")

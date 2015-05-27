@@ -41,12 +41,4 @@ module ReservationsHelper
     original = Reservation.find(reservation)
     !original.reserve_end_at_editable?
   end
-
-  def duration(reservation)
-    if show_scheduled_reserve_times?
-      reservation.duration_mins
-    else
-      reservation.actual_duration_mins(reservation.reserve_end_at)
-    end
-  end
 end
