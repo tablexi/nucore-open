@@ -1,5 +1,5 @@
 $ ->
-  target = '#new_reservation #reservation_duration_mins'
+  target = '#new_reservation #reservation_duration_mins, .edit_reservation #reservation_duration_mins'
 
   if $(target).length
     new ReservationTimeChecker(target)
