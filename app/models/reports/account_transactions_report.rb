@@ -35,6 +35,7 @@ class Reports::AccountTransactionsReport
       Reservation.human_attribute_name('actual_start_at'),
       Reservation.human_attribute_name('actual_end_at'),
       OrderDetail.human_attribute_name('quantity'),
+      OrderDetail.human_attribute_name('duration'),
       OrderDetail.human_attribute_name('user'),
       OrderDetail.human_attribute_name('cost'),
       OrderDetail.human_attribute_name('subsidy'),
@@ -56,7 +57,8 @@ class Reports::AccountTransactionsReport
       format_usa_datetime(reservation.reserve_end_at),
       format_usa_datetime(reservation.actual_start_at),
       format_usa_datetime(reservation.actual_end_at),
-      order_detail_quantity(order_detail),
+      order_detail.quantity,
+      order_detail_duration(order_detail),
       order_detail.order.user.full_name,
       order_detail_cost(order_detail),
       order_detail_subsidy(order_detail),
@@ -82,7 +84,7 @@ class Reports::AccountTransactionsReport
     order_detail.display_total
   end
 
-  def order_detail_quantity(order_detail)
+  def order_detail_duration(order_detail)
     out = ''
     unless order_detail.problem?
       order_detail.extend(PriceDisplayment)
