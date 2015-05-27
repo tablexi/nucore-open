@@ -54,15 +54,22 @@ module PriceDisplayment
     actual_cost.present?
   end
 
-  class QuantityDisplay < Struct.new(:value)
+  class QuantityDisplay
     include ActionView::Helpers::TagHelper
+
+    attr_reader :value, :wrapped
+
+    def initialize(value, wrapped = true)
+      @value = value
+      @wrapped = wrapped
+    end
 
     def time_quantity_html
       content_tag :span, value, :class => 'timeinput'
     end
 
     def output
-      time_quantity_html
+      wrapped ? time_quantity_html : value
     end
   end
 
@@ -74,7 +81,7 @@ module PriceDisplayment
     elsif quantity_as_time?
       QuantityDisplay.new(quantity)
     else
-      quantity
+      QuantityDisplay.new(quantity, false)
     end
   end
 
