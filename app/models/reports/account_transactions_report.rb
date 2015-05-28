@@ -74,7 +74,7 @@ class Reports::AccountTransactionsReport
     if order_detail.problem?
       ''
     else
-      order_detail.display_quantity.value
+      order_detail.display_quantity
     end
   end
 end
