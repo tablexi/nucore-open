@@ -136,8 +136,10 @@ class Reservation < ActiveRecord::Base
 
 
   def round_reservation_times
-    self.reserve_start_at = time_ceil(self.reserve_start_at) if self.reserve_start_at
-    self.reserve_end_at   = time_ceil(self.reserve_end_at) if self.reserve_end_at
+    interval = product.reserve_interval.minutes # Round to the nearest reservation interval
+    self.reserve_start_at = time_ceil(self.reserve_start_at, interval) if self.reserve_start_at
+    self.reserve_end_at   = time_ceil(self.reserve_end_at, interval) if self.reserve_end_at
+    self
   end
 
   def assign_actuals_off_reserve
