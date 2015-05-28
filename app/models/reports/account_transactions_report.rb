@@ -46,6 +46,7 @@ class Reports::AccountTransactionsReport
 
   def build_row(order_detail)
     reservation = order_detail.reservation
+    order_detail.extend(PriceDisplayment)
 
     [
       order_detail.order.id,
@@ -60,34 +61,18 @@ class Reports::AccountTransactionsReport
       order_detail.quantity,
       order_detail_duration(order_detail),
       order_detail.order.user.full_name,
-      order_detail_cost(order_detail),
-      order_detail_subsidy(order_detail),
-      order_detail_total(order_detail),
+      order_detail.display_cost,
+      order_detail.display_subsidy,
+      order_detail.display_total,
       order_detail.order_status
     ]
   end
 
   private
 
-  def order_detail_cost(order_detail)
-    order_detail.extend(PriceDisplayment)
-    order_detail.display_cost
-  end
-
-  def order_detail_subsidy(order_detail)
-    order_detail.extend(PriceDisplayment)
-    order_detail.display_subsidy
-  end
-
-  def order_detail_total(order_detail)
-    order_detail.extend(PriceDisplayment)
-    order_detail.display_total
-  end
-
   def order_detail_duration(order_detail)
     out = ''
     unless order_detail.problem?
-      order_detail.extend(PriceDisplayment)
       out = order_detail.display_quantity.value
     end
     out
