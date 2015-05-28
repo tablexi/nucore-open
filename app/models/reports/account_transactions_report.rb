@@ -71,10 +71,10 @@ class Reports::AccountTransactionsReport
   private
 
   def order_detail_duration(order_detail)
-    out = ''
-    unless order_detail.problem?
-      out = order_detail.display_quantity.value
+    if order_detail.problem?
+      ''
+    else
+      order_detail.display_quantity.value
     end
-    out
   end
 end
