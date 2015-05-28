@@ -44,6 +44,8 @@ describe TransactionSearch do
 
     # fake signing in as staff
     @controller.session_user = @staff
+    @controller.response = ActionDispatch::Response.new
+    @controller.request = ActionDispatch::Request.new('rack.input' => StringIO.new, content_type: 'html')
   end
 
   context "wrapping" do
