@@ -601,18 +601,39 @@ describe ReservationsController do
       end
 
       context 'next reservation is between 5 minutes' do
+        let(:reserve_interval) { 1 }
+
         let(:next_reservation) do
           Reservation.new reserve_start_at: Time.zone.parse('2013-08-15 12:02'),
                           reserve_end_at: Time.zone.parse('2013-08-15 12:17'),
-                          product: create(:setup_instrument)
-        end
-
-        it 'should round up to the nearest 5 minutes' do
-          assigns(:reservation).reserve_start_min.should == 5
+                          product: create(:setup_instrument, reserve_interval: reserve_interval)
         end
 
         it 'should default the duration mins to minimum duration' do
           assigns(:reservation).duration_mins.should == 15
+        end
+
+        describe 'and the instrument has a one minute interval' do
+          let(:reserve_interval) { 1 }
+
+          it 'should not do any additional rounding' do
+            expect(assigns(:reservation).reserve_start_min).to eq(2)
+          end
+        end
+
+        describe 'and the instrument has a 5 minute interval' do
+          let(:reserve_interval) { 5 }
+
+          it 'should round up to the nearest 5 minutes' do
+            expect(assigns(:reservation).reserve_start_min).to eq(5)
+          end
+        end
+
+        describe 'and the instrument has a 15 minute interval' do
+          let(:reserve_interval) { 15 }
+          it 'should round up to the nearest 15 minutes' do
+            expect(assigns(:reservation).reserve_start_min).to eq(15)
+          end
         end
       end
 
