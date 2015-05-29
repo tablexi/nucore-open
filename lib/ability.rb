@@ -28,7 +28,7 @@ class Ability
         can :manage, [AccountPriceGroupMember, UserPriceGroupMember]
       end
 
-      if resource.global? && (user.user_roles.map(&:role) & UserRole.facility_roles).any?
+      if user_has_facility_role?(user) && editable_global_group?(resource)
         can :read, UserPriceGroupMember
       end
     end
@@ -151,4 +151,11 @@ private
     can :show, OrderDetail, :account => { :id => resource.account_id } if user.account_administrator_of?(resource.account)
   end
 
+  def user_has_facility_role?(user)
+    (user.user_roles.map(&:role) & UserRole.facility_roles).any?
+  end
+
+  def editable_global_group?(resource)
+    resource.global? && resource.admin_editable?
+  end
 end
