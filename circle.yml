@@ -1,0 +1,22 @@
+machine:
+  ruby:
+    version: 2.1.6
+  timezone: "America/Chicago"
+
+
+dependencies:
+  bundler:
+    without: [oracle]
+
+test:
+  pre:
+    - bundle exec rake db:reset
+  override:
+    - mkdir -p $CIRCLE_TEST_REPORTS/teaspoon
+    - bundle exec rspec spec vendor/engines/**/spec
+      --format RspecJunitFormatter
+      --out $CIRCLE_TEST_REPORTS/rspec.xml
+      --format progress
+    - bundle exec teaspoon
+      --suppress-log
+      --format junit > $CIRCLE_TEST_REPORTS/teaspoon.xml

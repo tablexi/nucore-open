@@ -272,6 +272,9 @@ GEM
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
       rspec-mocks (~> 2.14.0)
+    rspec_junit_formatter (0.2.2)
+      builder (< 4)
+      rspec-core (>= 2, < 4, != 2.12.0)
     ruby-oci8 (2.1.7)
     ruby-ole (1.2.11.7)
     ruby-rc4 (0.1.5)
@@ -375,6 +378,7 @@ DEPENDENCIES
   rails_config (= 0.3.3)
   rake
   rspec-rails (= 2.14.0)
+  rspec_junit_formatter (= 0.2.2)
   ruby-oci8 (= 2.1.7)
   sass-rails (~> 3.2.6)
   shoulda-matchers (= 2.4)
