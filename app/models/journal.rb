@@ -115,9 +115,8 @@ class Journal < ActiveRecord::Base
                           :storage => :filesystem,
                           :url => "#{ENV['RAILS_RELATIVE_URL_ROOT']}/:attachment/:id_partition/:style/:basename.:extension",
                           :path => ":rails_root/public/:attachment/:id_partition/:style/:basename.:extension"
-  # The CDF type is set on files created by the spreadsheet gem
-  # FIXME CDFV2-corrupt, and sometimes CDFV2-encrypted is what's being created on CI
-  validates_attachment_content_type :file, content_type: ['application/vnd.ms-excel', 'CDF', /application\/CDFV2-\w+/]
+
+  do_not_validate_attachment_file_type :file
 
   # Digs up journals pertaining to the passed in facilities
   #

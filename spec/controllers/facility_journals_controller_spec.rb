@@ -201,13 +201,17 @@ describe FacilityJournalsController do
 
     context 'validations' do
       shared_examples_for 'journal error' do |error_message|
-        before { do_request }
+        it 'does not create a journal' do
+          expect { do_request }.not_to change(Journal, :count)
+        end
 
-        it 'should not create a journal' do
+        it 'does not persist the journal' do
+          do_request
           expect(assigns(:journal)).to be_new_record
         end
 
         it 'has an error' do
+          do_request
           expect(assigns(:journal).errors.full_messages.join).to match /#{error_message}/i
         end
       end
@@ -222,11 +226,6 @@ describe FacilityJournalsController do
       context 'when it is successful' do
         it 'creates a new journal' do
           expect { do_request }.to change(Journal, :count).by(1)
-        end
-
-        it 'is valid' do
-          do_request
-          expect(assigns(:journal).errors).to be_empty
         end
       end
 
