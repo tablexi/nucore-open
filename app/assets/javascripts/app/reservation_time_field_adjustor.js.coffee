@@ -62,14 +62,11 @@ class window.ReservationTimeFieldAdjustor
     @_setDurationFields()
 
   _reserveStartChangeCallback: =>
-    duration = @_getDuration()
-
-    if duration < 0
-      duration = @_durationMinutes()
-      @reserveEnd
-        .setDateTime(@reserveStart.getDateTime()
-        .addMinutes(duration))
-    @_setDurationFields
+    duration = @_durationMinutes()
+    # Changing the start time will leave the duration alone, but change the
+    # end time to X minutes after the start time
+    endTime = @reserveStart.getDateTime().addMinutes(duration)
+    @reserveEnd.setDateTime(endTime)
 
   _setDurationFields:  ->
     durationMinutes = @_getDuration() / 60 / 1000
