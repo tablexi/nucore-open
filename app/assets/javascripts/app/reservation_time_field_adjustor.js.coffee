@@ -67,7 +67,6 @@ class window.ReservationTimeFieldAdjustor
     # end time to X minutes after the start time
     endTime = @reserveStart.getDateTime().addMinutes(duration)
     @reserveEnd.setDateTime(endTime)
-    @_setDurationFields()
 
   _setDurationFields:  ->
     durationMinutes = @_getDuration() / 60 / 1000
