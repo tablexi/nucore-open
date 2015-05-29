@@ -28,7 +28,7 @@ class Ability
         can :manage, [AccountPriceGroupMember, UserPriceGroupMember]
       end
 
-      if resource.global? && (user.user_roles.map(&:role) & UserRole.facility_roles).any?
+      if resource.global? && (user.user_roles.map(&:role) & UserRole.facility_roles).any? && resource.admin_editable?
         can :read, UserPriceGroupMember
       end
     end
