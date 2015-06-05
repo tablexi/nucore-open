@@ -1,0 +1,8 @@
+= content_for :h1 do
+  = current_facility
+
+= t("activerecord.errors.models.product.requires_approval", product: @product)
+
+= form_tag facility_product_training_requests_path do
+  = submit_tag t("boolean.true"), class: "btn"
+  = link_to t("boolean.false"), facility_path(current_facility), class: "btn"

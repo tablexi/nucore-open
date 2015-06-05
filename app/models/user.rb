@@ -26,6 +26,7 @@ class User < ActiveRecord::Base
   has_many :assigned_order_details, :class_name => 'OrderDetail', :foreign_key => 'assigned_user_id'
   has_many :user_roles, :dependent => :destroy
   has_many :facilities, :through => :user_roles
+  has_many :training_requests, dependent: :destroy
 
   validates_presence_of :username, :first_name, :last_name
   validates_format_of :email, :with => /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,6}$/i

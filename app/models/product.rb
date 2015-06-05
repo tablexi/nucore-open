@@ -11,6 +11,7 @@ class Product < ActiveRecord::Base
   has_many   :product_accessories, conditions: { deleted_at: nil }, dependent: :destroy
   has_many   :accessories, :through => :product_accessories, :class_name => 'Product'
   has_many   :price_policies
+  has_many   :training_requests, dependent: :destroy
 
   validates_presence_of :name, :type
   validate_url_name :url_name, :facility_id

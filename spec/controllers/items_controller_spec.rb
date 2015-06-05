@@ -1,6 +1,10 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "spec_helper"
+require "controller_spec_helper"
 
 describe ItemsController do
+  let(:item) { @item }
+  let(:facility) { @authable }
+
   render_views
 
   it "should route" do
@@ -18,9 +22,7 @@ describe ItemsController do
     @params={ :facility_id => @authable.url_name, :id => @item.url_name }
   end
 
-
   context "index" do
-
     before :each do
       @method=:get
       @action=:index
@@ -32,12 +34,9 @@ describe ItemsController do
       response.should be_success
       response.should render_template('items/index')
     end
-
   end
 
-
   context "manage" do
-
     before :each do
       @method=:get
       @action=:manage
@@ -48,12 +47,9 @@ describe ItemsController do
       response.should be_success
       response.should render_template('items/manage')
     end
-
   end
 
-
   context "show" do
-
     before :each do
       @method=:get
       @action=:show
@@ -81,15 +77,22 @@ describe ItemsController do
       assigns[:error].should == 'no_accounts'
     end
 
-    context "restricted item" do
+    context "when the item requires approval" do
       before :each do
-        @item.update_attributes(:requires_approval => true)
+        add_account_for_user(:guest, item)
+        item.update_attributes(requires_approval: true)
       end
-      it "should show a notice if you're not approved" do
-        sign_in @guest
-        do_request
-        assigns[:add_to_cart].should be_false
-        flash[:notice].should_not be_nil
+
+      context "if the user is not approved" do
+        before(:each) do
+          sign_in @guest
+          do_request
+        end
+
+        it "gives the user the option to submit a request for approval" do
+          expect(assigns[:add_to_cart]).to be_blank
+          assert_redirected_to(new_facility_product_training_request_path(facility, item))
+        end
       end
 
       it "should not show a notice and show an add to cart" do
@@ -102,13 +105,16 @@ describe ItemsController do
         assigns[:add_to_cart].should be_true
       end
 
-      it "should allow an admin to allow it to add to cart" do
-        nufs=create_nufs_account_with_owner :admin
-        define_open_account @item.account, nufs.account_number
-        sign_in @admin
-        do_request
-        flash.should_not be_empty
-        assigns[:add_to_cart].should be_true
+      context "when the user is an admin" do
+        before(:each) do
+          add_account_for_user(:admin, item)
+          sign_in @admin
+          do_request
+        end
+
+        it "adds the item to the cart" do
+          expect(assigns[:add_to_cart]).to be true
+        end
       end
     end
 
@@ -128,12 +134,9 @@ describe ItemsController do
         assigns[:item].should == @item
       end
     end
-
   end
 
-
   context "new" do
-
     before :each do
       @method=:get
       @action=:new
@@ -143,12 +146,9 @@ describe ItemsController do
       expect(assigns(:item)).to be_kind_of Item
       should render_template 'new'
     end
-
   end
 
-
   context "edit" do
-
     before :each do
       @method=:get
       @action=:edit
@@ -157,12 +157,9 @@ describe ItemsController do
     it_should_allow_managers_only do
       should render_template 'edit'
     end
-
   end
 
-
   context "create" do
-
     before :each do
       @method=:post
       @action=:create
@@ -174,12 +171,9 @@ describe ItemsController do
       should set_the_flash
       assert_redirected_to [:manage, @authable, assigns(:item)]
     end
-
   end
 
-
   context "update" do
-
     before :each do
       @method=:put
       @action=:update
@@ -192,12 +186,9 @@ describe ItemsController do
       should set_the_flash
       assert_redirected_to manage_facility_item_url(@authable, assigns(:item))
     end
-
   end
 
-
   context "destroy" do
-
     before :each do
       @method=:delete
       @action=:destroy
@@ -208,7 +199,5 @@ describe ItemsController do
       should_be_destroyed @item
       assert_redirected_to facility_items_url
     end
-
   end
-
 end

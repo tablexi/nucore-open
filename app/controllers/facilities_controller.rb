@@ -26,7 +26,7 @@ class FacilitiesController < ApplicationController
     render :layout => 'application'
   end
 
-  # GET /facilities/abc123
+  # GET /facilities/:facility_id
   def show
     raise ActiveRecord::RecordNotFound unless current_facility && current_facility.is_active?
     @order_form = nil
@@ -54,7 +54,7 @@ class FacilitiesController < ApplicationController
     render :layout => 'application'
   end
 
-  # GET /facilities/1/manage
+  # GET /facilities/:facility_id/manage
   def manage
     @active_tab = 'admin_facility'
   end
@@ -68,7 +68,7 @@ class FacilitiesController < ApplicationController
     render :layout => 'application'
   end
 
-  # GET /facilities/1/edit
+  # GET /facilities/:facility_id/edit
   def edit
     @active_tab = 'admin_facility'
   end
@@ -86,7 +86,7 @@ class FacilitiesController < ApplicationController
     end
   end
 
-  # PUT /facilities/abc123
+  # PUT /facilities/:facility_id
   def update
     if current_facility.update_attributes(params[:facility])
       flash[:notice] = 'The facility was successfully updated.'
@@ -111,26 +111,26 @@ class FacilitiesController < ApplicationController
     paginate_order_details
   end
 
-  # GET /facilities/1/movable_transactions
+  # GET /facilities/:facility_id/movable_transactions
   def movable_transactions_with_search
     @order_details = @order_details.all_movable
     @order_detail_action = :reassign_chart_strings
     paginate_order_details 100
   end
 
-  # POST /facilities/1/movable_transactions/reassign_chart_strings
+  # POST /facilities/:facility_id/movable_transactions/reassign_chart_strings
   def reassign_chart_strings
     ensure_order_details_selected
     initialize_chart_string_reassignment_form
   end
 
-  # POST /facilities/1/movable_transactions/confirm
+  # POST /facilities/:facility_id/movable_transactions/confirm
   def confirm_transactions
     load_transactions
     initialize_chart_string_reassignment_form
   end
 
-  # POST /facilities/1/movable_transactions/move
+  # POST /facilities/:facility_id/movable_transactions/move
   def move_transactions
     begin
       reassign_account_from_params!

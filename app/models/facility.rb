@@ -29,6 +29,7 @@ class Facility < ActiveRecord::Base
   has_many :order_imports, dependent: :destroy
   has_many :orders, :conditions => 'ordered_at IS NOT NULL'
   has_many :facility_accounts
+  has_many :training_requests, through: :products
   has_many :user_roles, :dependent => :destroy
   has_many :users, :through => :user_roles
 

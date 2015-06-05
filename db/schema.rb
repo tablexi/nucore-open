@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150318015754) do
+ActiveRecord::Schema.define(:version => 20150611175130) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -328,9 +328,9 @@ ActiveRecord::Schema.define(:version => 20150318015754) do
 
   create_table "price_groups", :force => true do |t|
     t.integer "facility_id"
-    t.string  "name",          :limit => 50, :null => false
-    t.integer "display_order",               :null => false
-    t.boolean "is_internal",                 :null => false
+    t.string  "name",           :limit => 50,                   :null => false
+    t.integer "display_order",                                  :null => false
+    t.boolean "is_internal",                                    :null => false
     t.boolean "admin_editable",               :default => true, :null => false
   end
 
@@ -395,6 +395,7 @@ ActiveRecord::Schema.define(:version => 20150318015754) do
     t.integer  "approved_by",             :null => false
     t.datetime "approved_at",             :null => false
     t.integer  "product_access_group_id"
+    t.datetime "requested_at"
   end
 
   add_index "product_users", ["product_access_group_id"], :name => "index_product_users_on_product_access_group_id"
@@ -530,6 +531,16 @@ ActiveRecord::Schema.define(:version => 20150318015754) do
 
   add_index "stored_files", ["order_detail_id"], :name => "fk_files_od"
   add_index "stored_files", ["product_id"], :name => "fk_files_product"
+
+  create_table "training_requests", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "product_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "training_requests", ["product_id"], :name => "index_training_requests_on_product_id"
+  add_index "training_requests", ["user_id"], :name => "index_training_requests_on_user_id"
 
   create_table "user_roles", :force => true do |t|
     t.integer "user_id",     :null => false

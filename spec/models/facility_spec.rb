@@ -1,13 +1,27 @@
 require 'spec_helper'
 
 describe Facility do
-
   it "should require name" do
     should validate_presence_of(:name)
   end
 
   it "should require abbreviation" do
     should validate_presence_of(:abbreviation)
+  end
+
+  describe ".training_requests" do
+    let(:products) { create_list(:instrument_requiring_approval, 3) }
+
+    before(:each) do
+      products.each { |product| create(:training_request, product: product) }
+    end
+
+    it "scopes training requests to a facility" do
+      products.each do |product|
+        expect(product.facility.training_requests.map(&:product))
+          .to match_array([product])
+      end
+    end
   end
 
   context "url_name" do
@@ -35,21 +49,22 @@ describe Facility do
       @factory2.should_not be_valid
     end
   end
-  
-  context "lookup ids by urls" do
-    before :each do
-      @facility = FactoryGirl.create(:facility)
-      @facility2 = FactoryGirl.create(:facility)
-      @facility3 = FactoryGirl.create(:facility)
+
+  context "when looking up ids or urls" do
+    let!(:facilities) { create_list(:facility, 3) }
+
+    describe ".ids_from_urls" do
+      it "returns the expected ids" do
+        expect(Facility.ids_from_urls(facilities.map(&:url_name)))
+          .to match_array(facilities.map(&:id))
+      end
     end
-    it "should get back all the ids" do
-      results = Facility.ids_from_urls([@facility.url_name, @facility2.url_name, @facility3.url_name])
-      results.should == [@facility.id, @facility2.id, @facility3.id]
-    end
-    it "should also work id to url" do
-      results = Facility.urls_from_ids([@facility.id, @facility2.id, @facility3.id])
-      results.should == [@facility.url_name, @facility2.url_name, @facility3.url_name]
+
+    describe ".urls_from_ids" do
+      it "returns the expected url_names" do
+        expect(Facility.urls_from_ids(facilities.map(&:id)))
+          .to match_array(facilities.map(&:url_name))
+      end
     end
   end
-  
 end

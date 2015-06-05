@@ -1,6 +1,9 @@
 require 'spec_helper'; require 'controller_spec_helper'
 
 describe BundlesController do
+  let(:bundle) { @bundle }
+  let(:facility) { @authable }
+
   render_views
 
   before(:all) { create_users }
@@ -17,9 +20,7 @@ describe BundlesController do
     bundle_product.save!
   end
 
-
   context 'index' do
-
     before(:each) do
       @method=:get
       @action=:index
@@ -45,12 +46,9 @@ describe BundlesController do
       assigns(:bundles).size.should == 1
       assigns(:bundles).should == @authable.bundles.archived
     end
-
   end
 
-
   context 'show' do
-
     before(:each) do
       @method=:get
       @action=:show
@@ -82,17 +80,24 @@ describe BundlesController do
       assigns[:login_required].should be_true
     end
 
-    it 'should flash and falsify @add_to_cart if user is not approved' do
-      nufs=create_nufs_account_with_owner :guest
-      define_open_account @bundle.products.first.account, nufs.account_number
-      switch_to @guest
-      BundlesController.any_instance.stub(:price_policy_available_for_product?).and_return(true)
-      @bundle.update_attributes(:requires_approval => true)
-      do_request
-      assigns[:login_required].should be_false
-      assigns[:add_to_cart].should be_false
-      assigns[:error].should == 'requires_approval'
-      flash[:notice].should_not be_nil
+    context "when the bundle requires approval" do
+      before(:each) do
+        add_account_for_user(:guest, bundle)
+        BundlesController.any_instance.stub(:price_policy_available_for_product?).and_return(true)
+        bundle.update_attributes(requires_approval: true)
+      end
+
+      context "if the user is not approved" do
+        before(:each) do
+          sign_in @guest
+          do_request
+        end
+
+        it "gives the user the option to submit a request for approval" do
+          expect(assigns[:add_to_cart]).to be_blank
+          assert_redirected_to(new_facility_product_training_request_path(facility, bundle))
+        end
+      end
     end
 
     it 'should flash and falsify @add_to_cart if there is no price group for user to purchase through' do
@@ -146,21 +151,21 @@ describe BundlesController do
         assigns[:add_to_cart].should be_true
       end
 
-      it "should allow an admin to allow it to add to cart" do
-        nufs=create_nufs_account_with_owner :admin
-        define_open_account @bundle.products.first.account, nufs.account_number
-        sign_in @admin
-        do_request
-        flash.should_not be_empty
-        assigns[:add_to_cart].should be_true
+      context "when the user is an admin" do
+        before(:each) do
+          add_account_for_user(:admin, bundle)
+          sign_in @admin
+          do_request
+        end
+
+        it "adds the bundle to the cart" do
+          expect(assigns[:add_to_cart]).to be true
+        end
       end
     end
-
   end
 
-
   context 'new' do
-
     before(:each) do
       @method=:get
       @action=:new
@@ -174,12 +179,9 @@ describe BundlesController do
       assigns(:bundle).should be_new_record
       should render_template('new')
     end
-
   end
 
-
   context 'edit' do
-
     before(:each) do
       @method=:get
       @action=:edit
@@ -192,12 +194,9 @@ describe BundlesController do
       assert_init_bundle
       should render_template('edit')
     end
-
   end
 
-
   context 'create' do
-
     before(:each) do
       @method = :post
       @action = :create
@@ -214,12 +213,9 @@ describe BundlesController do
       should set_the_flash
       assert_redirected_to [ :manage, @authable, assigns(:bundle) ]
     end
-
   end
 
-
   context 'update' do
-
     before(:each) do
       @method=:put
       @action=:update
@@ -237,9 +233,7 @@ describe BundlesController do
       should set_the_flash
       assert_redirected_to manage_facility_bundle_url(@authable, @bundle)
     end
-
   end
-
 
   def assert_init_bundle
     expect(assigns(:bundle)).to_not be_nil

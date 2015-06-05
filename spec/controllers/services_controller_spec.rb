@@ -1,6 +1,10 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "spec_helper"
+require "controller_spec_helper"
 
 describe ServicesController do
+  let(:service) { @service }
+  let(:facility) { @authable }
+
   render_views
 
   it "should route" do
@@ -18,9 +22,7 @@ describe ServicesController do
     @params={ :facility_id => @authable.url_name }
   end
 
-
   context "index" do
-
     before :each do
       @method=:get
       @action=:index
@@ -31,12 +33,9 @@ describe ServicesController do
       response.should be_success
       response.should render_template('services/index')
     end
-
   end
 
-
   context "show" do
-
     before :each do
       @method=:get
       @action=:show
@@ -64,15 +63,22 @@ describe ServicesController do
       assigns[:error].should == 'no_accounts'
     end
 
-    context "restricted service" do
-      before :each do
-        @service.update_attributes(:requires_approval => true)
+    context "when the service requires approval" do
+      before(:each) do
+        add_account_for_user(:guest, service)
+        service.update_attributes(requires_approval: true)
       end
-      it "should show a notice if you're not approved" do
-        sign_in @guest
-        do_request
-        assigns[:add_to_cart].should be_false
-        flash[:notice].should_not be_nil
+
+      context "if the user is not approved" do
+        before(:each) do
+          sign_in @guest
+          do_request
+        end
+
+        it "gives the user the option to submit a request for approval" do
+          expect(assigns[:add_to_cart]).to be_blank
+          assert_redirected_to(new_facility_product_training_request_path(facility, service))
+        end
       end
 
       it "should not show a notice and show an add to cart" do
@@ -85,13 +91,16 @@ describe ServicesController do
         assigns[:add_to_cart].should be_true
       end
 
-      it "should allow an admin to allow it to add to cart" do
-        nufs=create_nufs_account_with_owner :admin
-        define_open_account @service.account, nufs.account_number
-        sign_in @admin
-        do_request
-        flash.should_not be_empty
-        assigns[:add_to_cart].should be_true
+      context "when the user is an admin" do
+        before(:each) do
+          add_account_for_user(:admin, service)
+          sign_in @admin
+          do_request
+        end
+
+        it "adds the service to the cart" do
+          expect(assigns[:add_to_cart]).to be true
+        end
       end
     end
 
@@ -115,9 +124,7 @@ describe ServicesController do
     end
   end
 
-
   context 'new' do
-
     before :each do
       @method=:get
       @action=:new
@@ -127,12 +134,9 @@ describe ServicesController do
       expect(assigns(:service)).to be_kind_of Service
       assigns(:service).facility.should == @authable
     end
-
   end
 
-
   context 'edit' do
-
     before :each do
       @method=:get
       @action=:edit
@@ -142,12 +146,9 @@ describe ServicesController do
     it_should_allow_managers_only do
       should render_template 'edit'
     end
-
   end
 
-
   context 'create' do
-
     before :each do
       @method=:post
       @action=:create
@@ -160,12 +161,9 @@ describe ServicesController do
       should set_the_flash
       assert_redirected_to [:manage, @authable, assigns(:service)]
     end
-
   end
 
-
   context 'update' do
-
     before :each do
       @method=:put
       @action=:update
@@ -177,12 +175,9 @@ describe ServicesController do
       should set_the_flash
       assert_redirected_to manage_facility_service_url(@authable, assigns(:service))
     end
-
   end
 
-
   context 'destroy' do
-
     before :each do
       @method=:delete
       @action=:destroy
@@ -194,12 +189,9 @@ describe ServicesController do
       should_be_destroyed @service
       assert_redirected_to facility_services_url
     end
-
   end
 
-
   context "manage" do
-
     before :each do
       @method=:get
       @action=:manage
@@ -210,8 +202,5 @@ describe ServicesController do
       response.should be_success
       response.should render_template('services/manage')
     end
-
   end
-
 end
-

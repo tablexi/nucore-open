@@ -22,6 +22,10 @@ shared_context "feature disabled" do |feature|
   end
 end
 
+def add_account_for_user(user_sym, product)
+  nufs_account = create_nufs_account_with_owner(user_sym)
+  define_open_account(product.account, nufs_account.account_number)
+end
 
 #
 # Call this method in a before(:all) block at the top of your +describe+

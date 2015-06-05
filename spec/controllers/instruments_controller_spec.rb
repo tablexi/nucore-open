@@ -1,6 +1,10 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "spec_helper"
+require "controller_spec_helper"
 
 describe InstrumentsController do
+  let(:facility) { @authable }
+  let(:instrument) { @instrument }
+
   render_views
 
   it "should route" do
@@ -21,9 +25,7 @@ describe InstrumentsController do
     @instrument_pp = create :instrument_price_policy, product: @instrument, price_group: @nupg
   end
 
-
   context "index" do
-
     before :each do
       @method=:get
       @action=:index
@@ -34,10 +36,9 @@ describe InstrumentsController do
       assigns[:instruments].should == [@instrument]
       response.should render_template('instruments/index')
     end
-
   end
 
-  describe 'public_schedule' do
+  describe "public_schedule" do
     before :each do
       @method = :get
       @action = :public_schedule
@@ -61,9 +62,7 @@ describe InstrumentsController do
     end
   end
 
-
   context "manage" do
-
     before :each do
       @method=:get
       @action=:manage
@@ -72,119 +71,155 @@ describe InstrumentsController do
     it_should_allow_operators_only do |user|
       response.should render_template('instruments/manage')
     end
-
   end
 
-
   context "show" do
-
-    def add_account_for_user(user_sym)
-      nufs=create_nufs_account_with_owner user_sym
-      define_open_account @instrument.account, nufs.account_number
-    end
-
     before :each do
-      @method=:get
-      @action=:show
+      @method = :get
+      @action = :show
     end
 
-    it_should_allow :guest, 'but should not add to cart' do
-      assigns[:instrument].should == @instrument
-      assert_redirected_to facility_path(@authable)
+    it_should_allow :guest, "but not add to cart" do
+      expect(assigns[:instrument]).to eq(instrument)
+      assert_redirected_to facility_path(facility)
     end
 
-    context 'needs valid account' do
+    context "when it needs a valid account" do
       before :each do
-        @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+        instrument.schedule_rules.create(attributes_for(:schedule_rule))
       end
 
-      it "should fail without a valid account" do
-        maybe_grant_always_sign_in :director
-        do_request
-        flash.should_not be_empty
-        assert_redirected_to facility_path(@authable)
+      context "without a valid account" do
+        before(:each) do
+          maybe_grant_always_sign_in :director
+          do_request
+        end
+
+        it "fails" do
+          expect(flash).to be_present
+          assert_redirected_to facility_path(facility)
+        end
       end
 
-      it "should succeed with valid account" do
-        add_account_for_user :director
-        maybe_grant_always_sign_in :director
-        do_request
-        flash.should be_empty
-        assert_redirected_to add_order_path(Order.all.last, :order => {:order_details => [{:product_id => @instrument.id, :quantity => 1}]})
+      context "with a valid account" do
+        before(:each) do
+          add_account_for_user(:director, instrument)
+          maybe_grant_always_sign_in :director
+          do_request
+        end
+
+        it "succeeds" do
+          expect(flash).to be_empty
+          assert_redirected_to(
+            add_order_path(
+              Order.all.last,
+              order: { order_details: [ product_id: instrument.id, quantity: 1 ] },
+            )
+          )
+        end
       end
     end
 
-    context 'needs schedule rules' do
+    context "when it needs schedule rules" do
       before :each do
-        facility_operators.each {|op| add_account_for_user op}
-        @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+        facility_operators.each do |operator|
+          add_account_for_user(operator, instrument)
+        end
+        instrument.schedule_rules.create(attributes_for(:schedule_rule))
       end
 
-      it "should require sign in" do
+      it "requires sign in" do
         do_request
-        assigns[:instrument].should == @instrument
-        session[:requested_params].should_not be_empty
+        expect(assigns[:instrument]).to eq(instrument)
+        expect(session[:requested_params]).to be_present
         assert_redirected_to new_user_session_path
       end
 
       it_should_allow_all(facility_operators) do
-        assigns[:instrument].should == @instrument
-        assert_redirected_to add_order_path(Order.all.last, :order => {:order_details => [{:product_id => @instrument.id, :quantity => 1}]})
+        expect(assigns[:instrument]).to eq(instrument)
+        assert_redirected_to(
+          add_order_path(
+            Order.all.last,
+            order: { order_details: [ product_id: instrument.id, quantity: 1 ] },
+          )
+        )
       end
     end
 
-    context "restricted instrument" do
+    context "when the instrument requires approval" do
       before :each do
-        @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
-        @instrument.update_attributes(:requires_approval => true)
-      end
-      it "should show a notice if you're not approved" do
-        sign_in @guest
-        do_request
-        assigns[:add_to_cart].should be_false
-        flash[:notice].should_not be_nil
+        instrument.schedule_rules.create(attributes_for(:schedule_rule))
+        instrument.update_attributes(requires_approval: true)
       end
 
-      it "should not show a notice and show an add to cart" do
-        @product_user = ProductUser.create(:product => @instrument, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
-        add_account_for_user :guest
-        sign_in @guest
-        do_request
-        flash.should be_empty
-        assigns[:add_to_cart].should be_true
+      context "if the user is not approved" do
+        before(:each) do
+          sign_in @guest
+          do_request
+        end
+
+        it "gives the user the option to submit a request for approval" do
+          expect(assigns[:add_to_cart]).to be_blank
+          assert_redirected_to(new_facility_product_training_request_path(facility, instrument))
+        end
       end
 
-      it "should allow an admin to allow it to add to cart" do
-        add_account_for_user :admin
-        sign_in @admin
-        do_request
-        flash.should_not be_empty
-        assigns[:add_to_cart].should be_true
+      context "if the user is approved" do
+        before(:each) do
+          @product_user = ProductUser.create(
+            product: instrument,
+            user: @guest,
+            approved_by: @admin.id,
+            approved_at: Time.zone.now,
+          )
+          add_account_for_user(:guest, instrument)
+          sign_in @guest
+          do_request
+        end
+
+        it "adds the instrument to the cart" do
+          expect(flash).to be_empty
+          expect(assigns[:add_to_cart]).to be true
+        end
+      end
+
+      context "if the user is an admin" do
+        before(:each) do
+          add_account_for_user(:admin, instrument)
+          sign_in @admin
+          do_request
+        end
+
+        it "adds the instrument to the cart" do
+          expect(assigns[:add_to_cart]).to be true
+        end
       end
     end
 
-     context "hidden instrument" do
-      before :each do
-        @instrument.update_attributes(:is_hidden => true)
-      end
+    context "when the instrument is hidden" do
+      before { instrument.update_attribute(:is_hidden, true) }
+
       it_should_allow_operators_only(:redirect) {}
 
-      it "should show the page if you're acting as a user" do
-        Instrument.any_instance.stub(:can_purchase?).and_return(true)
-        add_account_for_user :guest
-        sign_in @admin
-        switch_to @guest
-        do_request
-        assigns[:instrument].should == @instrument
-        assigns[:add_to_cart].should == true
-        response.should be_redirect
+      context "if acting as a user" do
+        before(:each) do
+          Instrument.any_instance.stub(:can_purchase?).and_return(true)
+          add_account_for_user(:guest, instrument)
+          sign_in @admin
+          switch_to @guest
+          do_request
+        end
+
+        it "shows the page if acting as a user" do
+          expect(assigns[:instrument]).to eq(instrument)
+          expect(assigns[:add_to_cart]).to be true
+          expect(response).to be_redirect
+        end
       end
     end
   end
 
-
   context "new" do
-
     before :each do
       @method=:get
       @action=:new
@@ -196,12 +231,9 @@ describe InstrumentsController do
       assigns(:instrument).facility.should == @authable
       should render_template 'new'
     end
-
   end
 
-
   context "edit" do
-
     before :each do
       @method=:get
       @action=:edit
@@ -210,12 +242,9 @@ describe InstrumentsController do
     it_should_allow_managers_only do
       should render_template 'edit'
     end
-
   end
 
-
   context "create" do
-
     before :each do
       @method=:post
       @action=:create
@@ -360,12 +389,9 @@ describe InstrumentsController do
       should set_the_flash
       assert_redirected_to manage_facility_instrument_url(@authable, assigns(:instrument))
     end
-
   end
 
-
   context "update" do
-
     before :each do
       @method=:put
       @action=:update
@@ -446,12 +472,9 @@ describe InstrumentsController do
       should set_the_flash
       assert_redirected_to manage_facility_instrument_url(@authable, assigns(:instrument))
     end
-
   end
 
-
   context "destroy" do
-
     before :each do
       @method=:delete
       @action=:destroy
@@ -471,12 +494,9 @@ describe InstrumentsController do
 
       assert dead
     end
-
   end
 
-
-  context 'instrument id' do
-
+  context "instrument id" do
     before :each do
       @params.merge!(:instrument_id => @params[:id])
       @params.delete(:id)
@@ -622,8 +642,5 @@ describe InstrumentsController do
       it_should_allow_operators_only
 
     end
-
   end
-
 end
-

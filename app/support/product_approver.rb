@@ -73,7 +73,7 @@ class ProductApprover
   private
 
   def create_product_user(product)
-    ProductUser.create(product: product, user: @user, approved_by: @approver.id)
+    ProductUserCreator.create(product: product, user: @user, approver: @approver)
   end
 
   def destroy_product_user(product)

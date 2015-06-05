@@ -1,0 +1,30 @@
+= content_for :h1 do
+  = current_facility
+= content_for :sidebar do
+  = render "admin/shared/sidenav_product", sidenav_tab: TrainingRequest.model_name.plural
+
+%h2= TrainingRequest.model_name.titleize.pluralize
+
+- if @training_requests.any?
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th= TrainingRequest.human_attribute_name(:user)
+        %th= TrainingRequest.human_attribute_name(:product)
+        %th= TrainingRequest.human_attribute_name(:created_at)
+        %th
+    %tbody
+      - @training_requests.each do |training_request|
+        - user = training_request.user
+        - product = training_request.product
+        - requested_at = training_request.created_at
+
+        %tr
+          %td= link_to user.to_s, facility_user_access_list_path(current_facility, user)
+          %td= product.name
+          %td= l(requested_at)
+          %td
+            = form_for([current_facility, training_request], method: :delete, html: { class: "compact" }) do
+              = submit_tag t("training_requests.delete"), class: "btn"
+- else
+  %p.notice= t("training_requests.no_requests")

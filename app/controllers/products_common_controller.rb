@@ -38,52 +38,58 @@ class ProductsCommonController < ApplicationController
     instance_variable_set("@#{plural_object_name}", @products)
   end
 
-  # GET /(services|items|instruments|bundles)/1
+  # GET /facilities/:facility_id/(services|items|bundles)/:(service|item|bundle)_id
+  # TODO InstrumentsController#show has a lot in common; refactor/extract/consolidate
   def show
     assert_product_is_accessible!
-    @add_to_cart = true
+    add_to_cart = true
     @login_required = false
 
-    # do the product have active price policies
+    # does the product have active price policies?
     unless @product.available_for_purchase?
-      @add_to_cart       = false
-      @error = 'not_available'
+      add_to_cart = false
+      @error = "not_available"
     end
 
     # is user logged in?
-    if @add_to_cart && acting_user.nil?
+    if add_to_cart && acting_user.blank?
       @login_required = true
-      @add_to_cart = false
+      add_to_cart = false
     end
 
     # when ordering on behalf of, does the staff have permissions for this facility?
-    if @add_to_cart && acting_as? && !session_user.operator_of?(@product.facility)
-      @add_to_cart = false
-      @error = 'not_authorized_acting_as'
+    if add_to_cart && acting_as? && !session_user.operator_of?(@product.facility)
+      add_to_cart = false
+      @error = "not_authorized_acting_as"
     end
 
     # does the user have a valid payment source for purchasing this reservation?
-    if @add_to_cart && acting_user.accounts_for_product(@product).blank?
-      @add_to_cart=false
-      @error='no_accounts'
+    if add_to_cart && acting_user.accounts_for_product(@product).blank?
+      add_to_cart = false
+      @error = "no_accounts"
     end
 
     # does the product have any price policies for any of the groups the user is a member of?
-    if @add_to_cart && !price_policy_available_for_product?
-      @add_to_cart       = false
-      @error = 'not_in_price_group'
+    if add_to_cart && !price_policy_available_for_product?
+      add_to_cart = false
+      @error = "not_in_price_group"
     end
 
     # is the user approved?
-    if @add_to_cart && !@product.can_be_used_by?(acting_user)
-      @add_to_cart       = false unless session_user and session_user.can_override_restrictions?(@product)
-      @error = 'requires_approval'
+    if add_to_cart && !@product.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?(@product)
+      if TrainingRequest.submitted?(session_user, @product)
+        flash[:notice] = t_model_error(Product, "already_requested_access", product: @product)
+        return redirect_to facility_path(current_facility)
+      else
+        return redirect_to new_facility_product_training_request_path(current_facility, @product)
+      end
     end
 
     flash.now[:notice] = t_model_error(@product.class, @error) if @error
 
-    @active_tab = 'home'
-    render :layout => 'application'
+    @add_to_cart = add_to_cart
+    @active_tab = "home"
+    render layout: "application"
   end
 
   # GET /services/new
@@ -175,4 +181,7 @@ class ProductsCommonController < ApplicationController
     plural_object_name.singularize
   end
 
+  def session_user_can_override_restrictions?(product)
+    session_user.present? && session_user.can_override_restrictions?(product)
+  end
 end

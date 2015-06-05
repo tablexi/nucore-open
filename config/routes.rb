@@ -65,9 +65,12 @@ Nucore::Application.routes.draw do
 
     resources :products, :only => [:index] do
       resources :product_accessories, :only => [:index, :create, :destroy], :path => 'accessories'
+      resources :training_requests, :only => [:new, :create]
     end
 
     match 'instrument_statuses', :to => 'instruments#instrument_statuses', :as => 'instrument_statuses'
+
+    resources :training_requests, :only => [:index, :destroy]
 
     resources :instruments do
       member do

@@ -26,7 +26,6 @@ describe Product do
   end
 
   context 'with item' do
-
     before :each do
       @item = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
     end
@@ -47,7 +46,6 @@ describe Product do
     it 'should give default order status if status not set' do
       Item.new.initial_order_status.should == OrderStatus.default_order_status
     end
-
   end
 
   context "with price policies" do
@@ -191,7 +189,6 @@ describe Product do
   end
 
   context 'can_purchase?' do
-
     class TestPricePolicy < PricePolicy
     end
     before :each do
@@ -358,7 +355,6 @@ describe Product do
       @product.should_not be_can_purchase(@user_price_group_ids)
 
     end
-
   end
 
   describe 'accessories' do
@@ -409,41 +405,35 @@ describe Product do
     end
   end
 
-  context '#can_be_used_by?' do
-    context 'when product requires approval' do
-      before :each do
-        schedule_rule.product_access_groups = [ access_group ]
-      end
+  describe "#can_be_used_by?" do
+    context "when the product requires approval" do
+      before { schedule_rule.product_access_groups = [access_group] }
 
-      context 'an access list exists for the user' do
+      context "an access list exists for the user" do
         before :each do
           product_user = product_access_group = access_group
           product_user.save
         end
 
-        it 'allows access' do
-          expect(product.can_be_used_by?(user)).to be_true
+        it "allows access" do
+          expect(product.can_be_used_by?(user)).to be true
         end
       end
 
-      context 'an access list does not exist for the user' do
+      context "an access list does not exist for the user" do
         let(:denied_user) { build_stubbed(:user) }
 
-        it 'denies access' do
-          expect(product.can_be_used_by?(denied_user)).to be_false
+        it "denies access" do
+          expect(product.can_be_used_by?(denied_user)).to be false
         end
       end
     end
 
-    context 'when product does not require approval' do
-      before :each do
-        product.requires_approval = false
-        product.save
-        product.reload
-      end
+    context "when the product does not require approval" do
+      before { product.update_attribute(:requires_approval, false) }
 
-      it 'allows access' do
-        expect(product.can_be_used_by?(user)).to be_true
+      it "allows access" do
+        expect(product.can_be_used_by?(user)).to be true
       end
     end
   end

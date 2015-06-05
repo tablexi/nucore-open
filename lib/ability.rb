@@ -58,11 +58,12 @@ class Ability
 
     if resource.is_a?(Facility)
       can :complete, ExternalService
+      can :create, TrainingRequest
 
       if user.operator_of?(resource)
         can :manage, [
           AccountPriceGroupMember, OrderDetail, Order, Reservation,
-          UserPriceGroupMember, ProductUser
+          UserPriceGroupMember, ProductUser, TrainingRequest
         ]
 
         can [:index, :view_details, :schedule, :show], [Product]
@@ -84,6 +85,7 @@ class Ability
 
       if user.facility_director_of?(resource)
         can [ :activate, :deactivate ], ExternalService
+        can :manage, TrainingRequest
       end
 
       if user.manager_of?(resource)
@@ -92,7 +94,7 @@ class Ability
           Statement, StoredFile, PricePolicy, InstrumentPricePolicy,
           ItemPricePolicy, OrderStatus, PriceGroup, ReportsController,
           ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup,
-          ProductAccessory, Product, BundleProduct
+          ProductAccessory, Product, BundleProduct, TrainingRequest
         ]
 
         can :manage, User if controller.is_a?(FacilityUsersController)
@@ -109,7 +111,7 @@ class Ability
 
       # Facility senior staff is based off of staff, but has a few more abilities
       if in_role?(user, resource, UserRole::FACILITY_SENIOR_STAFF)
-        can :manage, [ScheduleRule, ProductUser, ProductAccessGroup, StoredFile, ProductAccessory]
+        can :manage, [ScheduleRule, ProductUser, ProductAccessGroup, StoredFile, ProductAccessory, TrainingRequest]
 
         # they can get to reports controller, but they're not allowed to export all
         can :manage, ReportsController
@@ -132,8 +134,15 @@ class Ability
         can :manage, Reservation
       end
       can :start_stop, Reservation if resource.order_detail.order.user_id == user.id
-    end
 
+    elsif resource.is_a?(TrainingRequest)
+      can :create, TrainingRequest
+
+      if user.facility_director_of?(resource.product.facility) ||
+          in_role?(user, resource.product.facility, UserRole::FACILITY_SENIOR_STAFF)
+        can :manage, TrainingRequest
+      end
+    end
   end
 
   def in_role?(user, facility, *roles)

@@ -1,0 +1,12 @@
+class CreateTrainingRequests < ActiveRecord::Migration
+  def change
+    create_table :training_requests do |t|
+      t.references :user
+      t.references :product
+
+      t.timestamps
+    end
+    add_index :training_requests, :user_id
+    add_index :training_requests, :product_id
+  end
+end
