@@ -11,7 +11,7 @@ class InstrumentsController < ProductsCommonController
 
   skip_before_filter :init_product, :only => [:instrument_statuses]
 
-  # GET /instruments
+  # GET /facilities/:facility_id/instruments
   def index
     super
     # find current and next upcoming reservations for each instrument
@@ -19,7 +19,7 @@ class InstrumentsController < ProductsCommonController
     @instruments.each { |i| @reservations[i.id] = i.reservations.upcoming[0..2]}
   end
 
-  # GET /instruments/1
+  # GET /facilities/:facility_id/instruments/:instrument_id
   def show
     assert_product_is_accessible!
     add_to_cart = true
@@ -71,7 +71,7 @@ class InstrumentsController < ProductsCommonController
     redirect_to add_order_path(acting_user.cart(session_user), :order => {:order_details => [{:product_id => @instrument.id, :quantity => 1}]})
   end
 
-  # PUT /instruments/1
+  # PUT /facilities/:facility_id/instruments/:instrument_id
   def update
     @header_prefix = "Edit"
 
@@ -83,7 +83,7 @@ class InstrumentsController < ProductsCommonController
     render :action => "edit"
   end
 
-  # GET /instruments/1/schedule
+  # GET /facilities/:facility_id/instruments/:instrument_id/schedule
   def schedule
     @admin_reservations = @instrument.schedule.reservations.where('reserve_end_at > ? AND order_detail_id IS NULL', Time.zone.now).order("reserve_start_at ASC")
   end
