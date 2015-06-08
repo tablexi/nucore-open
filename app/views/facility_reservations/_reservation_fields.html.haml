@@ -7,11 +7,10 @@
         = time_select f, :reserve_start
     = f.input :duration_mins, input_html: { class: "timeinput" }
     = f.input :admin_note, input_html: { class: "span6" } unless @order_detail
-    = f.input :reserve_end_date, input_html: { class: "datepicker" }
 
 - else
   = f.input :reserve_start_date, label: "Reservation", as: :readonly, input_html: { value: @reservation.reserve_to_s }
-  = f.input :reserve_end_date, input_html: { class: "datepicker" }
+
 .clearfix
 
 - if @order_detail
