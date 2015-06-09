@@ -4,14 +4,14 @@ describe TrainingRequest do
   let(:user) { create(:user) }
 
   describe "#new" do
-    subject { TrainingRequest.new(user: user, product: product) }
+    subject { build(:training_request, user: user, product: product) }
 
     context "when the product has restricted access" do
       let(:product) { create(:instrument_requiring_approval) }
 
       context "when the user is already on the list" do
         let!(:previous_training_request) do
-          TrainingRequest.create!(user: user, product: product)
+          create(:training_request, user: user, product: product)
         end
 
         it "does not add the user to the list" do
