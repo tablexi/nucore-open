@@ -25,41 +25,48 @@ class InstrumentsController < ProductsCommonController
     add_to_cart = true
     login_required = false
 
-    # do the product have active price policies && schedule rules
+    # does the product have active price policies and schedule rules?
     unless @instrument.available_for_purchase?
       add_to_cart = false
-      flash[:notice] = t_model_error(Instrument, 'not_available', :instrument => @instrument)
+      flash[:notice] =
+        t_model_error(@instrument.class, "not_available", instrument: @instrument)
     end
 
     # is user logged in?
-    if add_to_cart && acting_user.nil?
+    if add_to_cart && acting_user.blank?
       login_required = true
       add_to_cart = false
     end
 
-    # is the user approved? or is the logged in user an operator of the facility (logged in user can override restrictions)
+    # is the user approved or is the logged in user an operator of the facility? (logged in user can override restrictions)
     if add_to_cart && !@instrument.can_be_used_by?(acting_user)
-      add_to_cart = false unless session_user and session_user.can_override_restrictions?(@instrument)
-      flash[:notice] = t_model_error(Instrument, 'requires_approval_html', :instrument => @instrument, :facility => @instrument.facility, :email => @instrument.email).html_safe
+      add_to_cart = false unless session_user_can_override_restrictions?
+      flash[:notice] = instrument_requires_approval_message
     end
 
     # does the user have a valid payment source for purchasing this reservation?
     if add_to_cart && acting_user.accounts_for_product(@instrument).blank?
-      add_to_cart=false
-      flash[:notice]=t_model_error @instrument.class, 'no_accounts'
+      add_to_cart = false
+      flash[:notice] = t_model_error(@instrument.class, "no_accounts")
     end
 
     # does the product have any price policies for any of the groups the user is a member of?
-    if add_to_cart && !(@instrument.can_purchase?((acting_user.price_groups + acting_user.account_price_groups).flatten.uniq.collect{ |pg| pg.id }))
+    if add_to_cart && !acting_user_can_purchase?
       add_to_cart = false
-      flash[:notice] = "You are not in a price group that may reserve instrument #{@instrument.to_s}; please contact the facility."
+      flash[:notice] = t_model_error(
+        @instrument.class,
+        "no_price_groups",
+        instrument_name: @instrument.to_s,
+      )
     end
 
     # when ordering on behalf of, does the staff have permissions for this facility?
     if add_to_cart && acting_as? && !session_user.operator_of?(@instrument.facility)
       add_to_cart = false
-      flash[:notice] = 'You are not authorized to order instruments from this facility on behalf of a user.'
+      flash[:notice] =
+        t_model_error(@instrument.class, "not_authorized_to_order_on_behalf")
     end
+
     @add_to_cart = add_to_cart
 
     if login_required
@@ -68,7 +75,10 @@ class InstrumentsController < ProductsCommonController
       return redirect_to facility_path(current_facility)
     end
 
-    redirect_to add_order_path(acting_user.cart(session_user), :order => {:order_details => [{:product_id => @instrument.id, :quantity => 1}]})
+    redirect_to add_order_path(
+      acting_user.cart(session_user),
+      order: { order_details: [ { product_id: @instrument.id, quantity: 1} ] },
+    )
   end
 
   # PUT /facilities/:facility_id/instruments/:instrument_id
@@ -163,5 +173,32 @@ class InstrumentsController < ProductsCommonController
       format.html { render :action => :instrument_status, :layout => false }
       format.json { render :json => @status }
     end
+  end
+
+  private
+
+  def acting_user_can_purchase?
+    @instrument.can_purchase?(acting_user_price_group_ids)
+  end
+
+  def acting_user_price_group_ids
+    (acting_user.price_groups + acting_user.account_price_groups)
+    .flatten
+    .uniq
+    .map(&:id)
+  end
+
+  def instrument_requires_approval_message
+    t_model_error(
+      Instrument,
+      "requires_approval_html",
+      instrument: @instrument,
+      facility: @instrument.facility,
+      email: @instrument.email
+    ).html_safe
+  end
+
+  def session_user_can_override_restrictions?
+    session_user.present? && session_user.can_override_restrictions?(@instrument)
   end
 end
