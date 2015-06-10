@@ -94,19 +94,34 @@ describe InstrumentsController do
         instrument.schedule_rules.create(attributes_for(:schedule_rule))
       end
 
-      it "fails without a valid account" do
-        maybe_grant_always_sign_in :director
-        do_request
-        expect(flash).to be_present
-        assert_redirected_to facility_path(facility)
+      context "without a valid account" do
+        before(:each) do
+          maybe_grant_always_sign_in :director
+          do_request
+        end
+
+        it "fails" do
+          expect(flash).to be_present
+          assert_redirected_to facility_path(facility)
+        end
       end
 
-      it "succeeds with a valid account" do
-        add_account_for_user :director
-        maybe_grant_always_sign_in :director
-        do_request
-        expect(flash).to be_empty
-        assert_redirected_to add_order_path(Order.all.last, order: { order_details: [{ product_id: instrument.id, quantity: 1 }]})
+      context "with a valid account" do
+        before(:each) do
+          add_account_for_user :director
+          maybe_grant_always_sign_in :director
+          do_request
+        end
+
+        it "succeeds" do
+          expect(flash).to be_empty
+          assert_redirected_to(
+            add_order_path(
+              Order.all.last,
+              order: { order_details: [ product_id: instrument.id, quantity: 1 ] },
+            )
+          )
+        end
       end
     end
 
@@ -125,7 +140,12 @@ describe InstrumentsController do
 
       it_should_allow_all(facility_operators) do
         expect(assigns[:instrument]).to eq(instrument)
-        assert_redirected_to add_order_path(Order.all.last, order: { order_details: [{ product_id: instrument.id, quantity: 1 }]})
+        assert_redirected_to(
+          add_order_path(
+            Order.all.last,
+            order: { order_details: [ product_id: instrument.id, quantity: 1 ] },
+          )
+        )
       end
     end
 
@@ -135,28 +155,48 @@ describe InstrumentsController do
         instrument.update_attributes(requires_approval: true)
       end
 
-      it "shows a notice if the user is not approved" do
-        sign_in @guest
-        do_request
-        expect(assigns[:add_to_cart]).to be false
-        expect(flash[:notice]).to be_present
+      context "if the user is not approved" do
+        before(:each) do
+          sign_in @guest
+          do_request
+        end
+
+        it "shows a notice" do
+          expect(assigns[:add_to_cart]).to be false
+          expect(flash[:notice]).to be_present
+        end
       end
 
-      it "adds the instrument to the cart if the user is approved" do
-        @product_user = ProductUser.create(product: instrument, user: @guest, approved_by: @admin.id, approved_at: Time.zone.now)
-        add_account_for_user :guest
-        sign_in @guest
-        do_request
-        expect(flash).to be_empty
-        expect(assigns[:add_to_cart]).to be true
+      context "if the user is approved" do
+        before(:each) do
+          @product_user = ProductUser.create(
+            product: instrument,
+            user: @guest,
+            approved_by: @admin.id,
+            approved_at: Time.zone.now,
+          )
+          add_account_for_user :guest
+          sign_in @guest
+          do_request
+        end
+
+        it "adds the instrument to the cart" do
+          expect(flash).to be_empty
+          expect(assigns[:add_to_cart]).to be true
+        end
       end
 
-      it "allows an admin to allow it to add to cart" do
-        add_account_for_user :admin
-        sign_in @admin
-        do_request
-        expect(flash).to be_present
-        expect(assigns[:add_to_cart]).to be true
+      context "if the user is an admin" do
+        before(:each) do
+          add_account_for_user :admin
+          sign_in @admin
+          do_request
+        end
+
+        it "adds the instrument to the cart" do
+          expect(flash).to be_present
+          expect(assigns[:add_to_cart]).to be true
+        end
       end
     end
 
@@ -165,15 +205,20 @@ describe InstrumentsController do
 
       it_should_allow_operators_only(:redirect) {}
 
-      it "shows the page if acting as a user" do
-        Instrument.any_instance.stub(:can_purchase?).and_return(true)
-        add_account_for_user :guest
-        sign_in @admin
-        switch_to @guest
-        do_request
-        expect(assigns[:instrument]).to eq(instrument)
-        expect(assigns[:add_to_cart]).to be true
-        expect(response).to be_redirect
+      context "if acting as a user" do
+        before(:each) do
+          Instrument.any_instance.stub(:can_purchase?).and_return(true)
+          add_account_for_user :guest
+          sign_in @admin
+          switch_to @guest
+          do_request
+        end
+
+        it "shows the page if acting as a user" do
+          expect(assigns[:instrument]).to eq(instrument)
+          expect(assigns[:add_to_cart]).to be true
+          expect(response).to be_redirect
+        end
       end
     end
   end
