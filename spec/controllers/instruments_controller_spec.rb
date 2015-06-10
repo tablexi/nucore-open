@@ -161,9 +161,9 @@ describe InstrumentsController do
           do_request
         end
 
-        it "shows a notice" do
-          expect(assigns[:add_to_cart]).to be false
-          expect(flash[:notice]).to be_present
+        it "gives the user the option to submit a request for approval" do
+          expect(assigns[:add_to_cart]).to be_blank
+          assert_redirected_to(new_facility_instrument_request_approval_path(facility, instrument))
         end
       end
 
@@ -194,7 +194,6 @@ describe InstrumentsController do
         end
 
         it "adds the instrument to the cart" do
-          expect(flash).to be_present
           expect(assigns[:add_to_cart]).to be true
         end
       end

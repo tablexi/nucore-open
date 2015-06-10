@@ -6,4 +6,8 @@ class TrainingRequest < ActiveRecord::Base
   validates :user_id, uniqueness: { scope: :product_id }
 
   validates_with ProductRequiresApprovalValidator
+
+  def self.submitted?(user, product)
+    where(product_id: product.id, user_id: user.id).present?
+  end
 end

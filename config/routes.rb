@@ -83,6 +83,7 @@ Nucore::Application.routes.draw do
       resources :schedule_rules, :except => [:show]
       resources :product_access_groups
       resources :price_policies, :controller => 'instrument_price_policies', :except => [:show]
+      resources :request_approval, :only => [:new, :create], :controller => 'instrument_request_approval'
       resources :reservations, :only => [:new, :create, :destroy], :controller => 'facility_reservations' do
         get 'edit_admin',   :to => 'facility_reservations#edit_admin'
         put 'update_admin', :to => 'facility_reservations#update_admin'

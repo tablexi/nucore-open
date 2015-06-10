@@ -38,10 +38,13 @@ class InstrumentsController < ProductsCommonController
       add_to_cart = false
     end
 
-    # is the user approved or is the logged in user an operator of the facility? (logged in user can override restrictions)
-    if add_to_cart && !@instrument.can_be_used_by?(acting_user)
-      add_to_cart = false unless session_user_can_override_restrictions?
-      flash[:notice] = instrument_requires_approval_message
+    if add_to_cart && !@instrument.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?
+      if TrainingRequest.submitted?(current_user, @instrument)
+        flash[:notice] = t_model_error(@instrument.class, "already_requested_access", instrument: @instrument)
+        return redirect_to facility_path(current_facility)
+      else
+        return redirect_to new_facility_instrument_request_approval_path(current_facility, @instrument)
+      end
     end
 
     # does the user have a valid payment source for purchasing this reservation?
@@ -186,16 +189,6 @@ class InstrumentsController < ProductsCommonController
     .flatten
     .uniq
     .map(&:id)
-  end
-
-  def instrument_requires_approval_message
-    t_model_error(
-      Instrument,
-      "requires_approval_html",
-      instrument: @instrument,
-      facility: @instrument.facility,
-      email: @instrument.email
-    ).html_safe
   end
 
   def session_user_can_override_restrictions?

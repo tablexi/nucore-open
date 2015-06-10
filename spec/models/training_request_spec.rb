@@ -42,4 +42,22 @@ describe TrainingRequest do
       end
     end
   end
+
+  describe ".submitted?" do
+    let(:product) { create(:instrument_requiring_approval) }
+
+    context "when the user has not submitted a request for access" do
+      it "returns false" do
+        expect(TrainingRequest.submitted?(user, product)).to be false
+      end
+    end
+
+    context "when the user has submitted a request for access" do
+      before { create(:training_request, user: user, product: product) }
+
+      it "returns true" do
+        expect(TrainingRequest.submitted?(user, product)).to be true
+      end
+    end
+  end
 end

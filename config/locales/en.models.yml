@@ -52,8 +52,9 @@ en:
             contact_email:
               required: must be set on either the product or the facility
         instrument:
+          already_requested_access: You have requested that the core contact you regarding access or training for %{instrument}.
           not_available: The %{instrument} instrument is currently unavailable for reservation online.
-          requires_approval_html: The %{instrument} instrument requires approval to reserve; please contact the facility for further information:<br/><br/> %{facility}<br/><a href=\"mailto:%{email}\">%{email}</a>
+          requires_approval: The %{instrument} instrument requires approval to reserve. Would you like to be contacted by the core for access or training?
           acting_as_not_on_approval_list: The user you are ordering for is not on the authorized list for this instrument.
           no_accounts: "Sorry, but we could not find a valid payment source that you can use to reserve this instrument"
           no_price_groups: "You are not in a price group that may reserve instrument %{instrument_name}; please contact the facility."
