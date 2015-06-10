@@ -1,15 +1,8 @@
-class ExportRawReportMailer < ActionMailer::Base # TODO use CsvReportMailer instead
-  default from: Settings.email.from
-
+class ExportRawReportMailer < BaseMailer # TODO use CsvReportMailer instead
   def raw_report_email(to_address, report)
     attachments[report.filename] = report.to_csv
     mail(to: to_address, subject: report.description) do |format|
       format.text { render(text: "") }
     end
-  end
-
-  def mail(arguments)
-    arguments[:to] = Settings.email.fake.to if Settings.email.fake.enabled
-    super
   end
 end
