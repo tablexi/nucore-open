@@ -26,7 +26,7 @@ Nucore::Application.routes.draw do
   resources :accounts, :only => [:index, :show] do
     member do
       get 'user_search'
-      get 'transactions'
+      match 'transactions', via: [:get, :post]
       get 'transactions_in_review'
     end
 
@@ -254,7 +254,7 @@ Nucore::Application.routes.draw do
 
     get 'notifications',       :to => 'facility_notifications#index'
     post 'notifications/send', :to => 'facility_notifications#send_notifications', :as => 'send_notifications'
-    get 'transactions',        :to => 'facilities#transactions'
+    match  'transactions',     :to => 'facilities#transactions', via: [:get, :post]
     get 'in_review',           :to => 'facility_notifications#in_review',          :as => 'notifications_in_review'
     post 'in_review/mark',     :to => 'facility_notifications#mark_as_reviewed',   :as => 'notifications_mark_as_reviewed'
     get 'movable_transactions', :to => 'facilities#movable_transactions'
