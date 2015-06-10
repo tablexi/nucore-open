@@ -58,10 +58,19 @@ module PriceDisplayment
     def html
       value
     end
+
+    def csv
+      value.to_s
+    end
   end
 
   class TimeQuantityDisplay < QuantityDisplay
     include ActionView::Helpers::TagHelper
+
+    def csv
+      # equal sign and quotes prevent Excel from formatting as a date/time
+      %(="#{MinutesToTimeFormatter.new(value)}")
+    end
 
     def html
       content_tag :span, value, :class => 'timeinput'
@@ -88,7 +97,12 @@ module PriceDisplayment
     build_quantity_presenter.html
   end
 
-private
+  def csv_quantity
+    build_quantity_presenter.csv
+  end
+
+  private
+
   def empty_display
     'Unassigned'
   end

@@ -14,11 +14,27 @@ class Reports::AccountTransactionsReport
 
     report << CSV.generate_line(headers)
 
-    @order_details.each do |od|
+    @order_details.find_each do |od|
       report << CSV.generate_line(build_row(od))
     end
 
     report.join
+  end
+
+  def filename
+    'transaction_report.csv'
+  end
+
+  def description
+    I18n.t('reports.account_transactions.subject')
+  end
+
+  def text_content
+    I18n.t('reports.account_transactions.body')
+  end
+
+  def has_attachment?
+    true
   end
 
   private
@@ -35,7 +51,6 @@ class Reports::AccountTransactionsReport
       Reservation.human_attribute_name('actual_start_at'),
       Reservation.human_attribute_name('actual_end_at'),
       OrderDetail.human_attribute_name('quantity'),
-      OrderDetail.human_attribute_name('duration'),
       OrderDetail.human_attribute_name('user'),
       OrderDetail.human_attribute_name('cost'),
       OrderDetail.human_attribute_name('subsidy'),
@@ -45,7 +60,8 @@ class Reports::AccountTransactionsReport
   end
 
   def build_row(order_detail)
-    reservation = order_detail.reservation
+    # Reservation.new acts as null object
+    reservation = order_detail.reservation || Reservation.new
     order_detail.extend(PriceDisplayment)
 
     [
@@ -58,7 +74,6 @@ class Reports::AccountTransactionsReport
       format_usa_datetime(reservation.reserve_end_at),
       format_usa_datetime(reservation.actual_start_at),
       format_usa_datetime(reservation.actual_end_at),
-      order_detail.quantity,
       order_detail_duration(order_detail),
       order_detail.order.user.full_name,
       order_detail.display_cost,
@@ -74,7 +89,7 @@ class Reports::AccountTransactionsReport
     if order_detail.problem?
       ''
     else
-      order_detail.display_quantity
+      order_detail.csv_quantity
     end
   end
 end

@@ -1,5 +1,8 @@
 - order_details = local_assigns.has_key?(:order_details) ? order_details : @order_details
 #table_billing
+  - if @export_enabled
+    = link_to t('reports.account_transactions.export'), url_for(params.merge(format: :csv)), class: 'js--exportSearchResults pull-right', data: { form: '.search_form' }
+
   - if @order_detail_action
 
     = form_tag url_for(:controller => params[:controller], :action => @order_detail_action), :id => "journals_create_form", :name => "journals_create_form", :method => :post, :class => 'form-horizontal' do

@@ -40,10 +40,11 @@ module TransactionSearch
         @search_fields = params[:transactions] || params
         do_search(@search_fields)
         add_optimizations
+        @paginate_order_details = false if request.format.csv?
         sort_and_paginate
         respond_to do |format|
           format.html { render layout: @layout if @layout }
-          format.csv { render text: Reports::AccountTransactionsReport.new(@order_details, date_range_field: @date_range_field).to_csv }
+          format.csv { handle_csv_search }
         end
       end
     end
@@ -99,6 +100,10 @@ module TransactionSearch
     @order_details_sort = field
   end
 
+  def set_default_start_date
+    params[:start_date] = format_usa_date(1.month.ago.beginning_of_month) unless params[:start_date].present?
+  end
+
   private
 
   def do_search(search_params)
@@ -145,5 +150,24 @@ module TransactionSearch
   def date_range_field(field)
     whitelist = TransactionSearch::DATE_RANGE_FIELDS.map(&:last)
     whitelist.include?(field) ? field : 'fulfilled_at'
+  end
+
+  def handle_csv_search
+    email_csv_export
+
+    if request.xhr?
+      render text: I18n.t('controllers.reports.mail_queued', email: to_email)
+    else
+      flash[:notice] = I18n.t('controllers.reports.mail_queued', email: to_email)
+      redirect_to url_for(params.merge(format: nil, email: nil))
+    end
+  end
+
+  def email_csv_export
+    AccountTransactionReportMailer.delay.csv_report_email(to_email, @order_details.pluck(:id), @date_range_field)
+  end
+
+  def to_email
+    params[:email] || current_user.email
   end
 end
