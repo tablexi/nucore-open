@@ -41,9 +41,10 @@ module TransactionSearch
         do_search(@search_fields)
         add_optimizations
         sort_and_paginate
+        email_raw_export(params[:to_email], account_transaction_report) if params[:to_email]
         respond_to do |format|
           format.html { render layout: @layout if @layout }
-          format.csv { render text: Reports::AccountTransactionsReport.new(@order_details, date_range_field: @date_range_field).to_csv }
+          format.csv { render text: account_transaction_report.to_csv }
         end
       end
     end
@@ -145,5 +146,13 @@ module TransactionSearch
   def date_range_field(field)
     whitelist = TransactionSearch::DATE_RANGE_FIELDS.map(&:last)
     whitelist.include?(field) ? field : 'fulfilled_at'
+  end
+
+  def account_transaction_report
+    Reports::AccountTransactionsReport.new(@order_details, date_range_field: @date_range_field)
+  end
+
+  def email_raw_export(to_email, report)
+    AccountTransactionReportMailer.delay.csv_report_email(to_email, @order_details.map(&:id), @date_range_field)
   end
 end
