@@ -268,6 +268,8 @@ Nucore::Application.routes.draw do
         post 'send_statements'
       end
     end
+
+    resources :training_requests, :only => [:index]
   end
 
   # order process

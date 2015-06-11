@@ -270,3 +270,7 @@ en:
         remittance_information: Bill To
       nufs_account:
         account_number: Payment Source Number
+      training_request:
+        user: Name
+        product: Instrument
+        created_at: Requested on

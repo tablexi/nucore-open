@@ -3,3 +3,6 @@
   = tab "#{Service.model_name.pluralize} (#{current_facility.services.count})", facility_services_path(current_facility), sidenav_tab == Service.model_name.plural
   = tab "#{Item.model_name.pluralize} (#{current_facility.items.count})", facility_items_path(current_facility), sidenav_tab == Item.model_name.plural
   = tab "#{Bundle.model_name.pluralize} (#{current_facility.bundles.count})", facility_bundles_path(current_facility), sidenav_tab == Bundle.model_name.plural
+
+%ul.sidebar-nav
+  = tab "#{TrainingRequest.model_name.titleize.pluralize} (#{TrainingRequest.for_facility(current_facility).count})", facility_training_requests_path(current_facility) , sidenav_tab == TrainingRequest.model_name.plural
