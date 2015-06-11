@@ -1,53 +1,59 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe ProductUser do
-  it "can be created with valid attributes" do
-    @facility         = FactoryGirl.create(:facility)
-    @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @item             = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id, :requires_approval => true))
-    @user             = FactoryGirl.create(:user)
+  let(:facility) { create(:facility) }
+  let(:facility_account) do
+    facility.facility_accounts.create(attributes_for(:facility_account))
+  end
+  let(:item) { facility.items.create(item_attributes) }
+  let(:item_attributes) do
+    attributes_for(
+      :item,
+      facility_account_id: facility_account.id,
+      requires_approval: true,
+    )
+  end
+  let(:user) { create(:user) }
 
-    @product_user     = ProductUser.create({:product => @item, :user => @user, :approved_by => @user.id})
-    @product_user.should be_valid
-  end
-  
-  it "should assign approved_at on creation" do
-    @facility         = FactoryGirl.create(:facility)
-    @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @item             = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id, :requires_approval => true))
-    @user             = FactoryGirl.create(:user)
+  context "when creating with valid attributes" do
+    subject(:product_user) do
+      ProductUser.create(product: item, user: user, approved_by: user.id)
+    end
 
-    @product_user     = ProductUser.create({:product => @item, :user => @user, :approved_by => @user.id})
-    @product_user.approved_at.should_not be_nil
+    it "is valid" do
+      expect(product_user).to be_valid
+      expect(product_user.errors).to be_empty
+    end
+
+    it "assigns approved_at" do
+      expect(product_user.approved_at).to be_present
+    end
   end
-  
-  it "requires approved_by" do
-    @product_user = ProductUser.new({:approved_by => nil})
-    @product_user.should_not be_valid
-    @product_user.errors[:approved_by].should_not be_nil
-    
-    @product_user = ProductUser.new({:approved_by => 1})
-    @product_user.valid?
-    @product_user.errors[:approved_by].should be_empty
+
+  context "when approved_by is missing" do
+    subject(:product_user) { ProductUser.new(approved_by: nil) }
+
+    it "is invalid" do
+      expect(product_user).to_not be_valid
+      expect(product_user.errors[:approved_by]).to be_present
+    end
   end
-  
-  it "requires product_id" do
-    @product_user = ProductUser.new({:product_id => nil})
-    @product_user.should_not be_valid
-    @product_user.errors[:product_id].should_not be_nil
-    
-    @product_user = ProductUser.new({:product_id => 1})
-    @product_user.valid?
-    @product_user.errors[:product_id].should be_empty
+
+  context "when product_id is missing" do
+    subject(:product_user) { ProductUser.new(product_id: nil) }
+
+    it "is invalid" do
+      expect(product_user).to_not be_valid
+      expect(product_user.errors[:product_id]).to be_present
+    end
   end
-  
-  it "requires user_id" do
-    @product_user = ProductUser.new({:user_id => nil})
-    @product_user.should_not be_valid
-    @product_user.errors[:user_id].should_not be_nil
-    
-    @product_user = ProductUser.new({:user_id => 1})
-    @product_user.valid?
-    @product_user.errors[:user_id].should be_empty
+
+  context "when user_id is missing" do
+    subject(:product_user) { ProductUser.new(user_id: nil) }
+
+    it "is invalid" do
+      expect(product_user).to_not be_valid
+      expect(product_user.errors[:user_id]).to be_present
+    end
   end
 end
