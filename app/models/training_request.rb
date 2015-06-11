@@ -10,4 +10,8 @@ class TrainingRequest < ActiveRecord::Base
   def self.submitted?(user, product)
     where(product_id: product.id, user_id: user.id).present?
   end
+
+  def self.for_facility(facility)
+    joins(:product).where(products: { facility_id: facility.id })
+  end
 end

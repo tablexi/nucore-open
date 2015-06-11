@@ -43,6 +43,21 @@ describe TrainingRequest do
     end
   end
 
+  describe ".for_facility" do
+    let(:products) { create_list(:instrument_requiring_approval, 3) }
+
+    before(:each) do
+      products.each { |product| create(:training_request, product: product) }
+    end
+
+    it "scopes training requests to a facility" do
+      products.each do |product|
+        expect(TrainingRequest.for_facility(product.facility).map(&:product))
+          .to match_array([product])
+      end
+    end
+  end
+
   describe ".submitted?" do
     let(:product) { create(:instrument_requiring_approval) }
 
