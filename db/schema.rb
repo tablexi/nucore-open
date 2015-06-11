@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150605165610) do
+ActiveRecord::Schema.define(:version => 20150611175130) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -395,6 +395,7 @@ ActiveRecord::Schema.define(:version => 20150605165610) do
     t.integer  "approved_by",             :null => false
     t.datetime "approved_at",             :null => false
     t.integer  "product_access_group_id"
+    t.datetime "requested_at"
   end
 
   add_index "product_users", ["product_access_group_id"], :name => "index_product_users_on_product_access_group_id"
