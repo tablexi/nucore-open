@@ -35,21 +35,21 @@ describe Facility do
     end
   end
 
-  context "lookup ids by urls" do
-    before :each do
-      @facility = FactoryGirl.create(:facility)
-      @facility2 = FactoryGirl.create(:facility)
-      @facility3 = FactoryGirl.create(:facility)
+  context "when looking up ids or urls" do
+    let!(:facilities) { create_list(:facility, 3) }
+
+    describe ".ids_from_urls" do
+      it "returns the expected ids" do
+        expect(Facility.ids_from_urls(facilities.map(&:url_name)))
+          .to match_array(facilities.map(&:id))
+      end
     end
 
-    it "should get back all the ids" do
-      results = Facility.ids_from_urls([@facility.url_name, @facility2.url_name, @facility3.url_name])
-      results.should == [@facility.id, @facility2.id, @facility3.id]
-    end
-
-    it "should also work id to url" do
-      results = Facility.urls_from_ids([@facility.id, @facility2.id, @facility3.id])
-      results.should == [@facility.url_name, @facility2.url_name, @facility3.url_name]
+    describe ".urls_from_ids" do
+      it "returns the expected url_names" do
+        expect(Facility.urls_from_ids(facilities.map(&:id)))
+          .to match_array(facilities.map(&:url_name))
+      end
     end
   end
 end
