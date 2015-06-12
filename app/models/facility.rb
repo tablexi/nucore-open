@@ -29,6 +29,7 @@ class Facility < ActiveRecord::Base
   has_many :order_imports, dependent: :destroy
   has_many :orders, :conditions => 'ordered_at IS NOT NULL'
   has_many :facility_accounts
+  has_many :training_requests, finder_sql: proc { "SELECT training_requests.* FROM training_requests INNER JOIN products ON products.id = training_requests.product_id WHERE products.facility_id = #{self.id}" }
   has_many :user_roles, :dependent => :destroy
   has_many :users, :through => :user_roles
 

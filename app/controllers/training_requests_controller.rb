@@ -9,7 +9,7 @@ class TrainingRequestsController < ApplicationController
   layout "two_column"
 
   def index
-    @training_requests = TrainingRequest.for_facility(current_facility)
+    @training_requests = current_facility.training_requests
   end
 
   def destroy

@@ -9,6 +9,21 @@ describe Facility do
     should validate_presence_of(:abbreviation)
   end
 
+  describe ".training_requests" do
+    let(:products) { create_list(:instrument_requiring_approval, 3) }
+
+    before(:each) do
+      products.each { |product| create(:training_request, product: product) }
+    end
+
+    it "scopes training requests to a facility" do
+      products.each do |product|
+        expect(product.facility.training_requests.map(&:product))
+          .to match_array([product])
+      end
+    end
+  end
+
   context "url_name" do
     it "is only valid with alphanumeric and -_ characters" do
       should_not allow_value('abc 123').for(:url_name)
