@@ -21,6 +21,22 @@ class Reports::AccountTransactionsReport
     report.join
   end
 
+  def filename
+    'transaction_report.csv'
+  end
+
+  def description
+    I18n.t('reports.account_transactions.subject')
+  end
+
+  def text_content
+    I18n.t('reports.account_transactions.body')
+  end
+
+  def has_attachment?
+    true
+  end
+
   private
 
   def headers

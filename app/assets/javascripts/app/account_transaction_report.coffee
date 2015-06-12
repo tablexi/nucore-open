@@ -18,7 +18,13 @@ class AccountTransactionReport
       $form.find('[name=format]').val('csv').prop('disabled', false)
       $emailField.prop('disabled', false)
 
-      $form.submit()
+      # Do an ajax request so we don't need to re-render this search page
+      $.ajax(
+        type: $form.attr('method'),
+        url: $form.attr('action'),
+        data: $form.serialize()
+      ).success (responseText) ->
+        Flash.info(responseText)
 
       # since the submit doesn't reload the page when you download the CSV, we need
       # to reset format so the normal search submit works properly
