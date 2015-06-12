@@ -1,8 +1,12 @@
 class window.ReservationTimeChecker
   constructor: (@selector, @alertId = 'duration-alert')->
-    @initAlert()
-    @respondToChange()
+    if @validPage()
+      @initAlert()
+      @respondToChange()
 
+  validPage: ->
+    # These variable are not set on the admin reservation pages
+    reserveInterval? && reserveMinimum? && reserveMaximum?
 
   duration: ->
     parser = new TimeParser()

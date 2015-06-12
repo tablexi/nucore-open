@@ -86,5 +86,7 @@ class window.ReservationTimeFieldAdjustor
     )
 
 $ ->
-  $("form.new_reservation, form.edit_reservation").each ->
-    new ReservationTimeFieldAdjustor($(this), reserveInterval)
+  # reserveInterval is not set on admin reservation pages, and we don't need these handlers there
+  if reserveInterval?
+    $("form.new_reservation, form.edit_reservation").each ->
+      new ReservationTimeFieldAdjustor($(this), reserveInterval)
