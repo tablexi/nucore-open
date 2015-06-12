@@ -269,7 +269,7 @@ Nucore::Application.routes.draw do
       end
     end
 
-    resources :training_requests, :only => [:index]
+    resources :training_requests, :only => [:index, :destroy]
   end
 
   # order process

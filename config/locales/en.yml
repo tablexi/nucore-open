@@ -932,6 +932,10 @@ en:
         h1: "Notices"
 
   training_requests:
+    delete: Remove
+    destroy:
+      success: "The request from %{user} for %{product} has been removed."
+      failure: "The request from %{user} for %{product} was not able to be removed."
     no_requests: There are no outstanding training requests.
 
   activerecord:
