@@ -822,6 +822,7 @@ en:
       fail_continue_on_error: "The import failed. %{successes} line item(s) created successfully, %{failures} failed. Please download the error report below, view each error message, correct the error, and try to import again."
       success: "The import completed successfully. %{successes} line items were created."
     account_transactions:
+      export: Export as CSV
       subject: NUCore Transaction Export
       body: Your export is ready. Please see the attached file.
 
