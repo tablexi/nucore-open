@@ -40,8 +40,8 @@ module TransactionSearch
         @search_fields = params[:transactions] || params
         do_search(@search_fields)
         add_optimizations
+        @paginate_order_details = false if params[:format] == 'csv'
         sort_and_paginate
-        email_raw_export(params[:to_email], account_transaction_report) if params[:to_email]
         respond_to do |format|
           format.html { render layout: @layout if @layout }
           format.csv { render text: account_transaction_report.to_csv }

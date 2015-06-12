@@ -1,26 +1,29 @@
 class AccountTransactionReport
   constructor: (@$element) ->
-    return unless @$element.length > 0
-    @registerExportAllHandler()
 
-  registerExportAllHandler: ->
-    $('#js--exportAll').click (event) => @exportAllClicked(event)
+  init: ->
+    @$element.click @exportAllClicked
 
   exportAllClicked: (event) ->
-    newTo = prompt 'Have the report emailed to this address:', $('#js--toEmail').val()
-
-    if newTo
-      url = event.target.href
-      $.post(url, { to_email: newTo }, ->
-        $status = $('#js--exportStatus')
-        $status.text("Successfully sent report")
-        $status.show()
-        setTimeout( ->
-          $status.fadeOut()
-        , 5000);
-      )
-
     event.preventDefault()
 
+    $form = $($(event.target).data('form'))
+    $emailField = $form.find('[name=email]')
+    defaultEmail = $emailField.val()
+
+    toAddress = prompt 'Have the report emailed to this address:', defaultEmail
+
+    if toAddress
+      $emailField.val(toAddress)
+      $form.find('[name=format]').val('csv').prop('disabled', false)
+      $emailField.prop('disabled', false)
+
+      $form.submit()
+
+      # since the submit doesn't reload the page when you download the CSV, we need
+      # to reset format so the normal search submit works properly
+      $form.find('[name=format]').val(null).prop('disabled', true)
+      $emailField.prop('disabled', true)
+
 $ ->
-  window.report = new AccountTransactionReport($('#table_billing'))
+  window.report = new AccountTransactionReport($('.js--exportSearchResults')).init()

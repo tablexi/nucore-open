@@ -108,6 +108,7 @@ class FacilitiesController < ApplicationController
 
   # GET /facilities/transactions
   def transactions_with_search
+    @export_enabled = true
     paginate_order_details
   end
 
