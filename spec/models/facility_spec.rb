@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Facility do
-
   it "should require name" do
     should validate_presence_of(:name)
   end
@@ -35,21 +34,22 @@ describe Facility do
       @factory2.should_not be_valid
     end
   end
-  
+
   context "lookup ids by urls" do
     before :each do
       @facility = FactoryGirl.create(:facility)
       @facility2 = FactoryGirl.create(:facility)
       @facility3 = FactoryGirl.create(:facility)
     end
+
     it "should get back all the ids" do
       results = Facility.ids_from_urls([@facility.url_name, @facility2.url_name, @facility3.url_name])
       results.should == [@facility.id, @facility2.id, @facility3.id]
     end
+
     it "should also work id to url" do
       results = Facility.urls_from_ids([@facility.id, @facility2.id, @facility3.id])
       results.should == [@facility.url_name, @facility2.url_name, @facility3.url_name]
     end
   end
-  
 end
