@@ -14,11 +14,73 @@ FactoryGirl.define do
     end
   end
 
+  trait :billing_administrator do
+    after(:create) do |user, _|
+      UserRole.grant(user, UserRole::BILLING_ADMINISTRATOR)
+    end
+  end
+
+  trait :business_administrator do
+    transient do
+      account nil
+      administrator nil
+    end
+
+    after(:create) do |user, evaluator|
+      AccountUser.grant(
+        user,
+        AccountUser::ACCOUNT_ADMINISTRATOR,
+        evaluator.account,
+        evaluator.administrator,
+      )
+    end
+  end
+
+  trait :facility_administrator do
+    transient { facility nil }
+
+    after(:create) do |user, evaluator|
+      UserRole.grant(user, UserRole::FACILITY_ADMINISTRATOR, evaluator.facility)
+    end
+  end
+
   trait :facility_director do
     transient { facility nil }
 
     after(:create) do |user, evaluator|
       UserRole.grant(user, UserRole::FACILITY_DIRECTOR, evaluator.facility)
+    end
+  end
+
+  trait :purchaser do
+    transient do
+      account nil
+      administrator nil
+    end
+
+    after(:create) do |user, evaluator|
+      AccountUser.grant(
+        user,
+        AccountUser::ACCOUNT_PURCHASER,
+        evaluator.account,
+        evaluator.administrator,
+      )
+    end
+  end
+
+  trait :senior_staff do
+    transient { facility nil }
+
+    after(:create) do |user, evaluator|
+      UserRole.grant(user, UserRole::FACILITY_SENIOR_STAFF, evaluator.facility)
+    end
+  end
+
+  trait :staff do
+    transient { facility nil }
+
+    after(:create) do |user, evaluator|
+      UserRole.grant(user, UserRole::FACILITY_STAFF, evaluator.facility)
     end
   end
 end
