@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :training_request do
     user
-    product
+    association :product, factory: :instrument_requiring_approval
   end
 end
