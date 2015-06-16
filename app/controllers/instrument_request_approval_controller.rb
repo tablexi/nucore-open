@@ -4,7 +4,7 @@ class InstrumentRequestApprovalController < ApplicationController
   def new; end
 
   def create
-    TrainingRequest.create!(user: current_user, product: @instrument)
+    TrainingRequest.create(user: current_user, product: @instrument)
     flash[:notice] = I18n.t(
       "controllers.instrument_request_approval.create.notice",
       instrument: @instrument,
@@ -15,6 +15,6 @@ class InstrumentRequestApprovalController < ApplicationController
   private
 
   def load_instrument
-    @instrument = Instrument.find_by_url_name(params[:instrument_id])
+    @instrument = Instrument.find_by_url_name!(params[:instrument_id])
   end
 end
