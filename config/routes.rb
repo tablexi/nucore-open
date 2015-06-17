@@ -65,6 +65,7 @@ Nucore::Application.routes.draw do
 
     resources :products, :only => [:index] do
       resources :product_accessories, :only => [:index, :create, :destroy], :path => 'accessories'
+      resources :training_requests, :only => [:new, :create]
     end
 
     match 'instrument_statuses', :to => 'instruments#instrument_statuses', :as => 'instrument_statuses'
@@ -91,7 +92,6 @@ Nucore::Application.routes.draw do
       end
 
       resources :reservations, :only => [:index]
-      resources :training_requests, :only => [:new, :create, :destroy]
       resources :users, :controller => 'product_users', :except => [:show, :edit, :create]
       match '/users/user_search_results', :to => 'product_users#user_search_results'
       match 'update_restrictions',        :to => 'product_users#update_restrictions'

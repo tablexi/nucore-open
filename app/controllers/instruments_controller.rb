@@ -43,7 +43,7 @@ class InstrumentsController < ProductsCommonController
         flash[:notice] = t_model_error(@instrument.class, "already_requested_access", instrument: @instrument)
         return redirect_to facility_path(current_facility)
       else
-        return redirect_to new_facility_instrument_training_request_path(current_facility, @instrument)
+        return redirect_to new_facility_product_training_request_path(current_facility, @instrument)
       end
     end
 

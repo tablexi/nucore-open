@@ -1,4 +1,4 @@
-= t_model_error(@instrument.class, :requires_approval, instrument: @instrument)
-= form_tag facility_instrument_training_requests_path do
+= t("activerecord.errors.models.product.requires_approval", product: @product)
+= form_tag facility_product_training_requests_path do
   = submit_tag t("boolean.true"), class: "btn"
   = link_to t("boolean.false"), facility_path(current_facility), class: "btn"

@@ -4,28 +4,32 @@ class TrainingRequestsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
 
-  load_and_authorize_resource except: :index
+  load_and_authorize_resource
 
   layout "two_column"
 
+  # GET /facilities/:facility_id/products/:product_id/training_requests/new
   def new
-    @instrument = Instrument.new
+    load_product
   end
 
+  # POST /facilities/:facility_id/products/:product_id/training_requests
   def create
-    load_instrument
-    if TrainingRequest.create(user: current_user, product: @instrument)
-      flash[:notice] = t("training_requests.create.success", product: @instrument)
+    load_product
+    if TrainingRequest.create(user: current_user, product: @product)
+      flash[:notice] = t("training_requests.create.success", product: @product)
     else
-      flash[:error] = t("training_requests.create.failure", product: @instrument)
+      flash[:error] = t("training_requests.create.failure", product: @product)
     end
     redirect_to facility_path(current_facility)
   end
 
+  # GET /facilities/:facility_id/training_requests
   def index
     @training_requests = current_facility.training_requests
   end
 
+  # DELETE /facilities/:facility_id/training_requests/:id
   def destroy
     if @training_request.destroy
       flash[:notice] = t("training_requests.destroy.success", flash_arguments)
@@ -44,7 +48,7 @@ class TrainingRequestsController < ApplicationController
     }
   end
 
-  def load_instrument
-    @instrument = Instrument.find_by_url_name!(params[:instrument_id])
+  def load_product
+    @product = Product.find_by_url_name!(params[:product_id])
   end
 end
