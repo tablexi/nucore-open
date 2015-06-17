@@ -38,9 +38,9 @@ class InstrumentsController < ProductsCommonController
       add_to_cart = false
     end
 
-    if add_to_cart && !@instrument.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?
+    if add_to_cart && !@instrument.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?(@instrument)
       if TrainingRequest.submitted?(current_user, @instrument)
-        flash[:notice] = t_model_error(@instrument.class, "already_requested_access", instrument: @instrument)
+        flash[:notice] = t_model_error(Product, "already_requested_access", product: @instrument)
         return redirect_to facility_path(current_facility)
       else
         return redirect_to new_facility_product_training_request_path(current_facility, @instrument)
@@ -189,9 +189,5 @@ class InstrumentsController < ProductsCommonController
     .flatten
     .uniq
     .map(&:id)
-  end
-
-  def session_user_can_override_restrictions?
-    session_user.present? && session_user.can_override_restrictions?(@instrument)
   end
 end
