@@ -69,6 +69,8 @@ Nucore::Application.routes.draw do
 
     match 'instrument_statuses', :to => 'instruments#instrument_statuses', :as => 'instrument_statuses'
 
+    resources :training_requests, :only => [:index, :destroy]
+
     resources :instruments do
       member do
         get 'manage'
@@ -83,13 +85,13 @@ Nucore::Application.routes.draw do
       resources :schedule_rules, :except => [:show]
       resources :product_access_groups
       resources :price_policies, :controller => 'instrument_price_policies', :except => [:show]
-      resources :request_approval, :only => [:new, :create], :controller => 'instrument_request_approval'
       resources :reservations, :only => [:new, :create, :destroy], :controller => 'facility_reservations' do
         get 'edit_admin',   :to => 'facility_reservations#edit_admin'
         put 'update_admin', :to => 'facility_reservations#update_admin'
       end
 
       resources :reservations, :only => [:index]
+      resources :training_requests, :only => [:new, :create, :destroy]
       resources :users, :controller => 'product_users', :except => [:show, :edit, :create]
       match '/users/user_search_results', :to => 'product_users#user_search_results'
       match 'update_restrictions',        :to => 'product_users#update_restrictions'
@@ -268,8 +270,6 @@ Nucore::Application.routes.draw do
         post 'send_statements'
       end
     end
-
-    resources :training_requests, :only => [:index, :destroy]
   end
 
   # order process

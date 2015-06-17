@@ -932,6 +932,9 @@ en:
         h1: "Notices"
 
   training_requests:
+    create:
+      success: A request that the core contact you regarding access or training for %{product} has been submitted.
+      failure: Your request regarding access or training for %{product} was not able to be submitted.
     delete: Remove
     destroy:
       success: "The request from %{user} for %{product} has been removed."

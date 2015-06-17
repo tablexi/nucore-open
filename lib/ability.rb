@@ -58,6 +58,7 @@ class Ability
 
     if resource.is_a?(Facility)
       can :complete, ExternalService
+      can :create, TrainingRequest
 
       if user.operator_of?(resource)
         can :manage, [
@@ -142,7 +143,6 @@ class Ability
         can :manage, TrainingRequest
       end
     end
-
   end
 
   def in_role?(user, facility, *roles)

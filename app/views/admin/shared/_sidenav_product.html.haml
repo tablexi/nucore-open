@@ -6,4 +6,4 @@
 
   - if current_ability.can?(:index, TrainingRequest)
     %li.divider
-    = tab "#{TrainingRequest.model_name.titleize.pluralize} (#{current_facility.training_requests.count})", facility_training_requests_path(current_facility) , sidenav_tab == TrainingRequest.model_name.plural
+    = tab "#{TrainingRequest.model_name.titleize.pluralize} (#{current_facility.training_requests.count})", facility_training_requests_path(current_facility), sidenav_tab == TrainingRequest.model_name.plural

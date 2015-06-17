@@ -78,10 +78,6 @@ en:
         error: "Could not delete order detail %{order_detail_id}"
         success: "The order detail was successfully removed"
 
-    instrument_request_approval:
-      create:
-        notice: A request that the core contact you regarding access or training for %{instrument} has been submitted.
-
     order_management:
       order_details:
         remove_from_journal:
