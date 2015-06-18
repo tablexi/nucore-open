@@ -74,11 +74,6 @@ describe InstrumentsController do
   end
 
   context "show" do
-    def add_account_for_user(user_sym)
-      nufs_account = create_nufs_account_with_owner(user_sym)
-      define_open_account(instrument.account, nufs_account.account_number)
-    end
-
     before :each do
       @method = :get
       @action = :show
@@ -108,7 +103,7 @@ describe InstrumentsController do
 
       context "with a valid account" do
         before(:each) do
-          add_account_for_user :director
+          add_account_for_user(:director, instrument)
           maybe_grant_always_sign_in :director
           do_request
         end
@@ -127,7 +122,9 @@ describe InstrumentsController do
 
     context "when it needs schedule rules" do
       before :each do
-        facility_operators.each { |operator| add_account_for_user(operator) }
+        facility_operators.each do |operator|
+          add_account_for_user(operator, instrument)
+        end
         instrument.schedule_rules.create(attributes_for(:schedule_rule))
       end
 
@@ -163,7 +160,7 @@ describe InstrumentsController do
 
         it "gives the user the option to submit a request for approval" do
           expect(assigns[:add_to_cart]).to be_blank
-          assert_redirected_to(new_facility_instrument_request_approval_path(facility, instrument))
+          assert_redirected_to(new_facility_product_training_request_path(facility, instrument))
         end
       end
 
@@ -175,7 +172,7 @@ describe InstrumentsController do
             approved_by: @admin.id,
             approved_at: Time.zone.now,
           )
-          add_account_for_user :guest
+          add_account_for_user(:guest, instrument)
           sign_in @guest
           do_request
         end
@@ -188,7 +185,7 @@ describe InstrumentsController do
 
       context "if the user is an admin" do
         before(:each) do
-          add_account_for_user :admin
+          add_account_for_user(:admin, instrument)
           sign_in @admin
           do_request
         end
@@ -207,7 +204,7 @@ describe InstrumentsController do
       context "if acting as a user" do
         before(:each) do
           Instrument.any_instance.stub(:can_purchase?).and_return(true)
-          add_account_for_user :guest
+          add_account_for_user(:guest, instrument)
           sign_in @admin
           switch_to @guest
           do_request

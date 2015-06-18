@@ -1,6 +1,10 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "spec_helper"
+require "controller_spec_helper"
 
 describe ServicesController do
+  let(:service) { @service }
+  let(:facility) { @authable }
+
   render_views
 
   it "should route" do
@@ -59,15 +63,22 @@ describe ServicesController do
       assigns[:error].should == 'no_accounts'
     end
 
-    context "restricted service" do
-      before :each do
-        @service.update_attributes(:requires_approval => true)
+    context "when the service requires approval" do
+      before(:each) do
+        add_account_for_user(:guest, service)
+        service.update_attributes(requires_approval: true)
       end
-      it "should show a notice if you're not approved" do
-        sign_in @guest
-        do_request
-        assigns[:add_to_cart].should be_false
-        flash[:notice].should_not be_nil
+
+      context "if the user is not approved" do
+        before(:each) do
+          sign_in @guest
+          do_request
+        end
+
+        it "gives the user the option to submit a request for approval" do
+          expect(assigns[:add_to_cart]).to be_blank
+          assert_redirected_to(new_facility_product_training_request_path(facility, service))
+        end
       end
 
       it "should not show a notice and show an add to cart" do
@@ -80,13 +91,16 @@ describe ServicesController do
         assigns[:add_to_cart].should be_true
       end
 
-      it "should allow an admin to allow it to add to cart" do
-        nufs=create_nufs_account_with_owner :admin
-        define_open_account @service.account, nufs.account_number
-        sign_in @admin
-        do_request
-        flash.should_not be_empty
-        assigns[:add_to_cart].should be_true
+      context "when the user is an admin" do
+        before(:each) do
+          add_account_for_user(:admin, service)
+          sign_in @admin
+          do_request
+        end
+
+        it "adds the service to the cart" do
+          expect(assigns[:add_to_cart]).to be true
+        end
       end
     end
 

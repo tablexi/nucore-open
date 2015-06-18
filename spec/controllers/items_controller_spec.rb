@@ -2,6 +2,8 @@ require "spec_helper"
 require "controller_spec_helper"
 
 describe ItemsController do
+  let(:item) { @item }
+
   render_views
 
   it "should route" do
@@ -74,10 +76,11 @@ describe ItemsController do
       assigns[:error].should == 'no_accounts'
     end
 
-    context "restricted item" do
+    context "when the item requires approval" do
       before :each do
-        @item.update_attributes(:requires_approval => true)
+        @item.update_attributes(requires_approval: true)
       end
+
       it "should show a notice if you're not approved" do
         sign_in @guest
         do_request
@@ -95,13 +98,16 @@ describe ItemsController do
         assigns[:add_to_cart].should be_true
       end
 
-      it "should allow an admin to allow it to add to cart" do
-        nufs=create_nufs_account_with_owner :admin
-        define_open_account @item.account, nufs.account_number
-        sign_in @admin
-        do_request
-        flash.should_not be_empty
-        assigns[:add_to_cart].should be_true
+      context "when the user is an admin" do
+        before(:each) do
+          add_account_for_user(:admin, item)
+          sign_in @admin
+          do_request
+        end
+
+        it "adds the item to the cart" do
+          expect(assigns[:add_to_cart]).to be true
+        end
       end
     end
 
