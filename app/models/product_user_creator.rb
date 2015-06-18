@@ -7,7 +7,9 @@ class ProductUserCreator
       approved_at: Time.zone.now,
     )
 
-    product_user.save && manage_training_request(product_user)
+    product_user.transaction do
+      product_user.save && manage_training_request(product_user)
+    end
     product_user
   end
 
