@@ -147,6 +147,9 @@ en:
         one: Bundle
         other: Bundles
       product_access_group: Scheduling Group
+      training_request:
+        one: Training Request
+        other: Training Requests
     # Model Attributes
     attributes:
       schedule_rule:
