@@ -33,16 +33,14 @@ class ProductUsersController < ApplicationController
   # GET /facilities/:facility_id/items/item_id/users/new
   # GET /facilities/:facility_id/services/service_id/users/new
   def new
-    if params[:user]
-      user = User.find(params[:user])
-      pu   = ProductUser.new(:product => @product, :user => user, :approved_by => session_user.id, :approved_at => Time.zone.now)
-      if pu.save
-        flash[:notice] = "The user has been successfully authorized for this #{@product.class.name.downcase}"
-      else
-        flash[:error] = pu.errors.full_messages
-      end
-      redirect_to(self.send("facility_#{@product.class.name.downcase}_users_url", current_facility, @product))
+    return unless params[:user]
+    product_user = ProductUserCreator.create(user: User.find(params[:user]), product: @product, approver: session_user)
+    if product_user.persisted?
+      flash[:notice] = "The user has been successfully authorized for this #{@product.class.name.downcase}"
+    else
+      flash[:error] = product_user.errors.full_messages
     end
+    redirect_to(send("facility_#{@product.class.name.downcase}_users_url", current_facility, @product))
   end
 
   # DELETE /facilities/:facility_id/bundles/bundle_id/users/:id
