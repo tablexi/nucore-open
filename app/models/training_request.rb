@@ -10,4 +10,8 @@ class TrainingRequest < ActiveRecord::Base
   def self.submitted?(user, product)
     where(product_id: product.id, user_id: user.id).present?
   end
+
+  def self.from_product_user(product_user)
+    where(user_id: product_user.user_id, product_id: product_user.product_id)
+  end
 end

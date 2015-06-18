@@ -12,7 +12,7 @@ class ProductUserCreator
   end
 
   def self.manage_training_request(product_user)
-    training_request = product_user.training_request || return
+    training_request = TrainingRequest.from_product_user(product_user).first || return
     product_user.update_attribute(:requested_at, training_request.created_at)
     training_request.destroy
   end
