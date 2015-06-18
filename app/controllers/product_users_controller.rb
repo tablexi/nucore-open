@@ -14,7 +14,10 @@ class ProductUsersController < ApplicationController
     super
   end
 
-  # GET /users
+  # GET /facilities/:facility_id/bundles/bundle_id/users
+  # GET /facilities/:facility_id/instruments/instrument_id/users
+  # GET /facilities/:facility_id/items/item_id/users
+  # GET /facilities/:facility_id/services/service_id/users
   def index
     if @product.requires_approval?
       @product_users = @product.product_users.includes(:user).order(:user => [:last_name, :first_name])
@@ -25,7 +28,10 @@ class ProductUsersController < ApplicationController
     end
   end
 
-  # GET /users/new
+  # GET /facilities/:facility_id/bundles/bundle_id/users/new
+  # GET /facilities/:facility_id/instruments/instrument_id/users/new
+  # GET /facilities/:facility_id/items/item_id/users/new
+  # GET /facilities/:facility_id/services/service_id/users/new
   def new
     if params[:user]
       user = User.find(params[:user])
@@ -39,6 +45,10 @@ class ProductUsersController < ApplicationController
     end
   end
 
+  # DELETE /facilities/:facility_id/bundles/bundle_id/users/:id
+  # DELETE /facilities/:facility_id/instruments/instrument_id/users/:id
+  # DELETE /facilities/:facility_id/items/item_id/users/:id
+  # DELETE /facilities/:facility_id/services/service_id/users/:id
   def destroy
     product_user = ProductUser.find(:first, :conditions => { :product_id => @product.id, :user_id => params[:id] })
     product_user.destroy
@@ -52,6 +62,7 @@ class ProductUsersController < ApplicationController
     redirect_to(self.send("facility_#{@product.class.name.downcase}_users_url", current_facility, @product))
   end
 
+  # /facilities/:facility_id/services/:service_id/users/user_search_results
   def user_search_results
     @limit = 25
 
@@ -61,21 +72,22 @@ class ProductUsersController < ApplicationController
       @users = User.find(:all, :conditions => conditions, :order => "last_name, first_name", :limit => @limit)
       @count = @users.length
     end
-    
+
     render :layout => false
   end
-  
+
+  # PUT /facilities/:facility_id/instruments/:instrument_id/update_restrictions
   def update_restrictions
-    product_param_name = @product.class.name.underscore.downcase 
+    product_param_name = @product.class.name.underscore.downcase
     unless params[product_param_name]
       redirect_to self.send("facility_#{product_param_name}_users_url", current_facility, @product)
       return
     end
     params[product_param_name][:product_users].each do |key, value|
       product_user = @product.product_users.find(key)
-      product_user.update_attributes(value)  
+      product_user.update_attributes(value)
     end
-    
+
     flash[:notice] = t("product_users.update_restrictions.notice")
     redirect_to self.send("facility_#{product_param_name}_users_url", current_facility, @product)
   end
