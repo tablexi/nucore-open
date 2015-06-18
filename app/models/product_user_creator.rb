@@ -1,0 +1,20 @@
+class ProductUserCreator
+  def self.create(user:, product:, approver:)
+    product_user = ProductUser.new(
+      product: product,
+      user: user,
+      approved_by: approver.id,
+      approved_at: Time.zone.now,
+    )
+
+    product_user.save
+    manage_training_request(product_user)
+    product_user
+  end
+
+  def self.manage_training_request(product_user)
+    training_request = product_user.training_request || return
+    product_user.update_attribute(:requested_at, training_request.created_at)
+    training_request.destroy
+  end
+end

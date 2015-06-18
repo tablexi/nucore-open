@@ -7,4 +7,9 @@ class ProductUser < ActiveRecord::Base
   validates_uniqueness_of :user_id, scope: :product_id, message: "is already approved"
 
   before_create -> (product_user) { product_user.approved_at = Time.zone.now }
+
+  def training_request
+    @training_request ||=
+      TrainingRequest.where(user_id: user_id, product_id: product_id).first
+  end
 end
