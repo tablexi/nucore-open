@@ -3,6 +3,7 @@ require "controller_spec_helper"
 
 describe ItemsController do
   let(:item) { @item }
+  let(:facility) { @authable }
 
   render_views
 
@@ -78,14 +79,20 @@ describe ItemsController do
 
     context "when the item requires approval" do
       before :each do
-        @item.update_attributes(requires_approval: true)
+        add_account_for_user(:guest, item)
+        item.update_attributes(requires_approval: true)
       end
 
-      it "should show a notice if you're not approved" do
-        sign_in @guest
-        do_request
-        assigns[:add_to_cart].should be_false
-        flash[:notice].should_not be_nil
+      context "if the user is not approved" do
+        before(:each) do
+          sign_in @guest
+          do_request
+        end
+
+        it "gives the user the option to submit a request for approval" do
+          expect(assigns[:add_to_cart]).to be_blank
+          assert_redirected_to(new_facility_product_training_request_path(facility, item))
+        end
       end
 
       it "should not show a notice and show an add to cart" do
