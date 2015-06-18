@@ -1,18 +1,19 @@
 require "spec_helper"
 
 describe ProductUserCreator do
-  subject do
-    -> { ProductUserCreator.create(user: user, product: product, approver: approver) }
+  def create_product_user
+    ProductUserCreator.create(user: user, product: product, approver: approver)
   end
+
   let(:user) { create(:user) }
   let(:product) { create(:instrument_requiring_approval) }
   let(:approver) { create(:user, :administrator) }
 
   describe ".create" do
-    let(:product_user) { subject.call }
+    let(:product_user) { create_product_user }
 
     it "creates a ProductUser" do
-      expect { subject.call }.to change(ProductUser, :count).by(1)
+      expect { create_product_user }.to change(ProductUser, :count).by(1)
     end
 
     context "when there is a pending training request" do
@@ -26,7 +27,7 @@ describe ProductUserCreator do
       end
 
       it "destroys the training request" do
-        expect { subject.call }.to change(TrainingRequest, :count).by(-1)
+        expect { create_product_user }.to change(TrainingRequest, :count).by(-1)
       end
     end
 
@@ -36,7 +37,7 @@ describe ProductUserCreator do
       end
 
       it "does not destroy training requests" do
-        expect { subject.call }.not_to change(TrainingRequest, :count)
+        expect { create_product_user }.not_to change(TrainingRequest, :count)
       end
     end
   end
