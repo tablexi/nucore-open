@@ -17,9 +17,7 @@ describe BundlesController do
     bundle_product.save!
   end
 
-
   context 'index' do
-
     before(:each) do
       @method=:get
       @action=:index
@@ -45,12 +43,9 @@ describe BundlesController do
       assigns(:bundles).size.should == 1
       assigns(:bundles).should == @authable.bundles.archived
     end
-
   end
 
-
   context 'show' do
-
     before(:each) do
       @method=:get
       @action=:show
@@ -155,12 +150,9 @@ describe BundlesController do
         assigns[:add_to_cart].should be_true
       end
     end
-
   end
 
-
   context 'new' do
-
     before(:each) do
       @method=:get
       @action=:new
@@ -174,12 +166,9 @@ describe BundlesController do
       assigns(:bundle).should be_new_record
       should render_template('new')
     end
-
   end
 
-
   context 'edit' do
-
     before(:each) do
       @method=:get
       @action=:edit
@@ -192,12 +181,9 @@ describe BundlesController do
       assert_init_bundle
       should render_template('edit')
     end
-
   end
 
-
   context 'create' do
-
     before(:each) do
       @method = :post
       @action = :create
@@ -214,12 +200,9 @@ describe BundlesController do
       should set_the_flash
       assert_redirected_to [ :manage, @authable, assigns(:bundle) ]
     end
-
   end
 
-
   context 'update' do
-
     before(:each) do
       @method=:put
       @action=:update
@@ -237,9 +220,7 @@ describe BundlesController do
       should set_the_flash
       assert_redirected_to manage_facility_bundle_url(@authable, @bundle)
     end
-
   end
-
 
   def assert_init_bundle
     expect(assigns(:bundle)).to_not be_nil
