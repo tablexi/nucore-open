@@ -6,8 +6,6 @@ class TrainingRequestsController < ApplicationController
 
   load_and_authorize_resource
 
-  layout "two_column"
-
   # GET /facilities/:facility_id/products/:product_id/training_requests/new
   def new
     load_product
@@ -27,6 +25,8 @@ class TrainingRequestsController < ApplicationController
   # GET /facilities/:facility_id/training_requests
   def index
     @training_requests = current_facility.training_requests
+
+    render layout: "two_column"
   end
 
   # DELETE /facilities/:facility_id/training_requests/:id
