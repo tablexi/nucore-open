@@ -1,7 +1,6 @@
 # Support for displaying Reservations in various formats
 module Reservations::Rendering
 
-  # Will display the actual start time if it's available, otherwise fall back to reserve time
   def display_start_at
     actual_start_at || reserve_start_at
   end
@@ -12,10 +11,9 @@ module Reservations::Rendering
 
   def to_s
     return super unless reserve_start_at && reserve_end_at
-
-    str = range_to_s(display_start_at, display_end_at)
-
-    str + (canceled_at ? ' (Canceled)' : '')
+    range = range_to_s(display_start_at, display_end_at)
+    range += " (Canceled)" if canceled_at.present?
+    range
   end
 
   def reserve_to_s
@@ -31,46 +29,45 @@ module Reservations::Rendering
   end
 
   def actuals_string
-    if actual_start_at.nil? && actual_end_at.nil?
+    if actual_start_at.blank? && actual_end_at.blank?
       "No actual times recorded"
-    elsif actual_start_at.nil?
+    elsif !started?
       "??? - #{I18n.l(actual_end_at)} "
-    elsif actual_end_at.nil?
+    elsif actual_end_at.blank?
       "#{I18n.l(actual_start_at)} - ???"
     else
       range_to_s(actual_start_at, actual_end_at)
     end
   end
 
-  def as_calendar_object(options={})
-    # initialize result with defaults
-    calendar_object = {
-      "start"  => I18n.l(actual_start_at || reserve_start_at, format: :calendar),
-      "end"    => I18n.l(actual_end_at || reserve_end_at, format: :calendar),
-      "allDay" => false,
-      "title"  => "Reservation",
-      "product" => product.name
-    }
-
-    overrides = {}
-    if order
-      if options[:with_details]
-        overrides = {
-          "admin"       => false,
-          "email"        => order.user.email,
-          "name"        => "#{order.user.full_name}",
-          "title"       => "#{order.user.first_name}\n#{order.user.last_name}"
-        }
+  def as_calendar_object(options = {})
+    calendar_object_default.merge(
+      if order.present?
+        if options[:with_details].present?
+          {
+            "admin" => false,
+            "email" => order.user.email,
+            "name"  => "#{order.user.full_name}",
+            "title" => "#{order.user.first_name}\n#{order.user.last_name}",
+          }
+        else
+          {}
+        end
+      else
+        { "admin" => true, "title" => "Admin\nReservation" }
       end
-    else
-      overrides = {
-          "admin"       => true,
-          "title"       => "Admin\nReservation"
-        }
-    end
+    )
+  end
 
-    calendar_object.merge!(overrides)
+  private
 
-    calendar_object
+  def calendar_object_default
+    {
+      "start" => I18n.l(display_start_at, format: :calendar),
+      "end" => I18n.l(display_end_at, format: :calendar),
+      "allDay" => false,
+      "title" => "Reservation",
+      "product" => product.name,
+    }
   end
 end
