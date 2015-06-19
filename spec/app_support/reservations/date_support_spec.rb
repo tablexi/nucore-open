@@ -48,16 +48,16 @@ describe Reservations::DateSupport do
         context "where the fraction is 0.5" do
           let(:minutes) { 1.5 }
 
-          it "rounds down to the minute" do
-            expect(reservation.actual_duration_mins).to eq(1)
+          it "rounds up to the next minute" do
+            expect(reservation.actual_duration_mins).to eq(2)
           end
         end
 
         context "where the fraction is > 0.5" do
           let(:minutes) { 1.75 }
 
-          it "rounds down to the minute" do
-            expect(reservation.actual_duration_mins).to eq(1)
+          it "rounds up to the next minute" do
+            expect(reservation.actual_duration_mins).to eq(2)
           end
         end
       end
@@ -85,16 +85,16 @@ describe Reservations::DateSupport do
       context "and the difference to actual_end_at's seconds is 30" do
         let(:actual_end_at) { actual_start_at + 1.minute + 30.seconds }
 
-        it "rounds down to the minute" do
-          expect(reservation.actual_duration_mins).to eq(1)
+        it "rounds up to the next minute" do
+          expect(reservation.actual_duration_mins).to eq(2)
         end
       end
 
       context "and the difference to actual_end_at's seconds is > 30" do
         let(:actual_end_at) { actual_start_at + 1.minute + 31.seconds }
 
-        it "rounds down to the minute" do
-          expect(reservation.actual_duration_mins).to eq(1)
+        it "rounds up to the next minute" do
+          expect(reservation.actual_duration_mins).to eq(2)
         end
       end
 
@@ -110,16 +110,16 @@ describe Reservations::DateSupport do
         context "and the difference to the base time's seconds is 30" do
           let(:base_time) { actual_start_at + 1.minute + 30.seconds }
 
-          it "rounds down to the minute" do
-            expect(reservation.actual_duration_mins(base_time)).to eq(1)
+          it "rounds up to the next minute" do
+            expect(reservation.actual_duration_mins(base_time)).to eq(2)
           end
         end
 
         context "and the difference to the base time's seconds is > 30" do
           let(:base_time) { actual_start_at + 1.minute + 31.seconds }
 
-          it "rounds down to the minute" do
-            expect(reservation.actual_duration_mins(base_time)).to eq(1)
+          it "rounds up to the next minute" do
+            expect(reservation.actual_duration_mins(base_time)).to eq(2)
           end
         end
       end
@@ -156,16 +156,16 @@ describe Reservations::DateSupport do
         context "where the fraction is 0.5" do
           let(:minutes) { 1.5 }
 
-          it "rounds down to the minute" do
-            expect(reservation.duration_mins).to eq(1)
+          it "rounds up to the next minute" do
+            expect(reservation.duration_mins).to eq(2)
           end
         end
 
         context "where the fraction is > 0.5" do
           let(:minutes) { 1.75 }
 
-          it "rounds down to the minute" do
-            expect(reservation.duration_mins).to eq(1)
+          it "rounds up to the next minute" do
+            expect(reservation.duration_mins).to eq(2)
           end
         end
       end
@@ -194,16 +194,16 @@ describe Reservations::DateSupport do
         context "and the difference to reserve_end_at's seconds is 30" do
           let(:reserve_end_at) { reserve_start_at + 1.minute + 30.seconds }
 
-          it "rounds down to the minute" do
-            expect(reservation.duration_mins).to eq(1)
+          it "rounds up to the next minute" do
+            expect(reservation.duration_mins).to eq(2)
           end
         end
 
         context "and the difference to reserve_end_at's seconds is > 30" do
           let(:reserve_end_at) { reserve_start_at + 1.minute + 31.seconds }
 
-          it "rounds down to the minute" do
-            expect(reservation.duration_mins).to eq(1)
+          it "rounds up to the next minute" do
+            expect(reservation.duration_mins).to eq(2)
           end
         end
 

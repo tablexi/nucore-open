@@ -73,9 +73,9 @@ module Reservations::DateSupport
 
   def duration_mins
     if @duration_mins
-      @duration_mins.to_i
+      @duration_mins.round
     elsif reserve_end_at and reserve_start_at
-      ((reserve_end_at - reserve_start_at) / 60).floor
+      ((reserve_end_at - reserve_start_at) / 60).round
     else
       0
     end
@@ -83,11 +83,11 @@ module Reservations::DateSupport
 
   def actual_duration_mins(base_time = Time.zone.now)
     if @actual_duration_mins
-      @actual_duration_mins.to_i
+      @actual_duration_mins.round
     elsif actual_end_at && actual_start_at
-      [((actual_end_at - actual_start_at) / 60).floor, 1].max
+      [((actual_end_at - actual_start_at) / 60).round, 1].max
     elsif actual_start_at
-      [((base_time - actual_start_at.change(sec: 0)) / 60).floor, 1].max
+      [((base_time - actual_start_at.change(sec: 0)) / 60).round, 1].max
     else
       0
     end
