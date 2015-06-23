@@ -8,7 +8,7 @@ class ProductUserCreator
     )
 
     product_user.transaction do
-      product_user.save && manage_training_request(product_user)
+      product_user.save! && manage_training_request(product_user)
     end
     product_user
   end
@@ -16,6 +16,6 @@ class ProductUserCreator
   def self.manage_training_request(product_user)
     training_request = TrainingRequest.from_product_user(product_user).first || return
     product_user.update_attribute(:requested_at, training_request.created_at)
-    training_request.destroy
+    training_request.destroy || raise(ActiveRecord::Rollback)
   end
 end
