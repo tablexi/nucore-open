@@ -100,6 +100,10 @@ module TransactionSearch
     @order_details_sort = field
   end
 
+  def set_default_start_date
+    params[:start_date] = format_usa_date(1.month.ago.beginning_of_month) unless params[:start_date].present?
+  end
+
   private
 
   def do_search(search_params)
