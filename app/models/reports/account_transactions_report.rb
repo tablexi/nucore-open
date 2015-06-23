@@ -14,7 +14,7 @@ class Reports::AccountTransactionsReport
 
     report << CSV.generate_line(headers)
 
-    @order_details.each do |od|
+    @order_details.find_each do |od|
       report << CSV.generate_line(build_row(od))
     end
 
