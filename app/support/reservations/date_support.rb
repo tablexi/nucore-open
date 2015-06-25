@@ -234,6 +234,6 @@ module Reservations::DateSupport
   end
 
   def duration_with_seconds_stripped(start_time, end_time)
-    (end_time.change(sec: 0) - start_time.change(sec: 0)) / 60
+    ((end_time.change(sec: 0) - start_time.change(sec: 0)) / 60).to_i
   end
 end
