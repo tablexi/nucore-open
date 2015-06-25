@@ -73,9 +73,9 @@ module Reservations::DateSupport
 
   def duration_mins
     if @duration_mins
-      @duration_mins.to_f.round
-    elsif reserve_end_at and reserve_start_at
-      ((reserve_end_at - reserve_start_at) / 60).round
+      @duration_mins.to_i
+    elsif reserve_end_at && reserve_start_at
+      duration_with_seconds_stripped(reserve_start_at, reserve_end_at) / 60
     else
       0
     end
@@ -83,11 +83,11 @@ module Reservations::DateSupport
 
   def actual_duration_mins(base_time = Time.zone.now)
     if @actual_duration_mins
-      @actual_duration_mins.to_f.round
+      @actual_duration_mins.to_i
     elsif actual_end_at && actual_start_at
-      [((actual_end_at - actual_start_at) / 60).round, 1].max
+      [(duration_with_seconds_stripped(actual_start_at, actual_end_at) / 60), 1].max
     elsif actual_start_at
-      [((base_time - actual_start_at.change(sec: 0)) / 60).round, 1].max
+      [(duration_with_seconds_stripped(actual_start_at, base_time) / 60), 1].max
     else
       0
     end
@@ -235,5 +235,9 @@ module Reservations::DateSupport
     elsif @actual_duration_mins && self.actual_start_at
       self.actual_end_at = self.actual_start_at + @actual_duration_mins.to_i.minutes
     end
+  end
+
+  def duration_with_seconds_stripped(start_time, end_time)
+    end_time.change(sec: 0) - start_time.change(sec: 0)
   end
 end

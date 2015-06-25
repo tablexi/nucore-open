@@ -20,17 +20,17 @@ describe Reservations::DateSupport do
     context "when @actual_duration_mins is set" do
       before { reservation.actual_duration_mins = minutes }
 
-      context "to an integer" do
-        let(:minutes) { 1 }
+      context "to a string representation of an integer" do
+        let(:minutes) { "5" }
 
-        it "returns @actual_duration_mins as-is" do
-          expect(reservation.actual_duration_mins).to eq(1)
+        it "converts @actual_duration_mins to an integer, as-is" do
+          expect(reservation.actual_duration_mins).to eq(5)
         end
       end
 
-      context "to a float" do
+      context "to a string representation of a float" do
         context "where the difference is < 0.5" do
-          let(:minutes) { 0.25 }
+          let(:minutes) { "0.25" }
 
           it "has no minimum and rounds down to 0" do
             expect(reservation.actual_duration_mins).to eq(0)
@@ -38,96 +38,77 @@ describe Reservations::DateSupport do
         end
 
         context "where the fraction is < 0.5" do
-          let(:minutes) { 1.25 }
+          let(:minutes) { "1.25" }
 
-          it "rounds down to the minute" do
+          it "truncates the fraction" do
             expect(reservation.actual_duration_mins).to eq(1)
           end
         end
 
         context "where the fraction is 0.5" do
-          let(:minutes) { 1.5 }
+          let(:minutes) { "1.5" }
 
-          it "rounds up to the next minute" do
-            expect(reservation.actual_duration_mins).to eq(2)
+          it "truncates the fraction" do
+            expect(reservation.actual_duration_mins).to eq(1)
           end
         end
 
         context "where the fraction is > 0.5" do
-          let(:minutes) { 1.75 }
+          let(:minutes) { "1.99" }
 
-          it "rounds up to the next minute" do
-            expect(reservation.actual_duration_mins).to eq(2)
+          it "truncates the fraction" do
+            expect(reservation.actual_duration_mins).to eq(1)
           end
         end
       end
     end
 
-    context "when actual_start_at is set" do
-      let(:actual_start_at) { 1.day.ago }
+    context "when @actual_duration_mins is unset" do
+      context "and actual_start_at is set to 00:00:59" do
+        let(:actual_start_at) { Time.zone.parse("2015-01-01T00:00:59") }
 
-      context "and the actual duration is < 30 seconds" do
-        let(:actual_end_at) { actual_start_at + 29.seconds }
+        [
+          ["2015-01-01T00:01:01", 1],
+          ["2015-01-01T00:01:59", 1],
+          ["2015-01-01T00:02:01", 2],
+          ["2015-01-01T00:02:59", 2],
+          ["2015-01-01T01:00:00", 60],
+          ["2015-01-01T01:00:59", 60],
+        ]
+        .each do |timestring, expected_minutes|
+          context "and the actual_end_at is #{timestring}" do
+            let(:actual_end_at) { Time.zone.parse(timestring) }
 
-        it "has a 1 minute minimum" do
-          expect(reservation.actual_duration_mins).to eq(1)
-        end
-      end
-
-      context "and the difference to actual_end_at's seconds is < 30" do
-        let(:actual_end_at) { actual_start_at + 1.minute + 29.seconds }
-
-        it "rounds down to the minute" do
-          expect(reservation.actual_duration_mins).to eq(1)
-        end
-      end
-
-      context "and the difference to actual_end_at's seconds is 30" do
-        let(:actual_end_at) { actual_start_at + 1.minute + 30.seconds }
-
-        it "rounds up to the next minute" do
-          expect(reservation.actual_duration_mins).to eq(2)
-        end
-      end
-
-      context "and the difference to actual_end_at's seconds is > 30" do
-        let(:actual_end_at) { actual_start_at + 1.minute + 31.seconds }
-
-        it "rounds up to the next minute" do
-          expect(reservation.actual_duration_mins).to eq(2)
-        end
-      end
-
-      context "but actual_end_at is unset" do
-        context "and the difference to the base time's seconds is < 30" do
-          let(:base_time) { actual_start_at + 1.minute + 29.seconds }
-
-          it "rounds down to the minute" do
-            expect(reservation.actual_duration_mins(base_time)).to eq(1)
+            it "returns #{expected_minutes}" do
+              expect(reservation.actual_duration_mins).to eq(expected_minutes)
+            end
           end
         end
 
-        context "and the difference to the base time's seconds is 30" do
-          let(:base_time) { actual_start_at + 1.minute + 30.seconds }
-
-          it "rounds up to the next minute" do
-            expect(reservation.actual_duration_mins(base_time)).to eq(2)
-          end
-        end
-
-        context "and the difference to the base time's seconds is > 30" do
-          let(:base_time) { actual_start_at + 1.minute + 31.seconds }
-
-          it "rounds up to the next minute" do
-            expect(reservation.actual_duration_mins(base_time)).to eq(2)
+        context "and actual_end_at is unset" do
+          [
+            ["2015-01-01T00:01:01", 1],
+            ["2015-01-01T00:01:59", 1],
+            ["2015-01-01T00:02:01", 2],
+            ["2015-01-01T00:02:59", 2],
+            ["2015-01-01T01:00:00", 60],
+            ["2015-01-01T01:00:59", 60],
+          ]
+          .each do |timestring, expected_minutes|
+            context "and the base_time is #{timestring}" do
+              it "returns #{expected_minutes}" do
+                expect(reservation.actual_duration_mins(Time.zone.parse(timestring)))
+                  .to eq(expected_minutes)
+              end
+            end
           end
         end
       end
-    end
 
-    context "when both actuals are unset" do
-      it "is 0" do
-        expect(reservation.actual_duration_mins).to eq(0)
+      context "and actual_start_at is unset" do
+        it "returns 0" do
+          expect(reservation.actual_duration_mins).to eq(0)
+        end
       end
     end
   end
@@ -181,74 +162,60 @@ describe Reservations::DateSupport do
     context "when @duration_mins is set" do
       before { reservation.duration_mins = minutes }
 
-      context "to an integer" do
-        let(:minutes) { 1 }
+      context "to the string representation of an integer" do
+        let(:minutes) { "5" }
 
         it "returns @duration_mins as-is" do
-          expect(reservation.duration_mins).to eq(1)
+          expect(reservation.duration_mins).to eq(5)
         end
       end
 
-      context "to a float" do
+      context "to the string reservation of a float" do
         context "where the fraction is < 0.5" do
-          let(:minutes) { 1.25 }
+          let(:minutes) { "1.25" }
 
-          it "rounds down to the minute" do
+          it "truncates the fraction" do
             expect(reservation.duration_mins).to eq(1)
           end
         end
 
         context "where the fraction is 0.5" do
-          let(:minutes) { 1.5 }
+          let(:minutes) { "1.5" }
 
-          it "rounds up to the next minute" do
-            expect(reservation.duration_mins).to eq(2)
+          it "truncates the fraction" do
+            expect(reservation.duration_mins).to eq(1)
           end
         end
 
         context "where the fraction is > 0.5" do
-          let(:minutes) { 1.75 }
+          let(:minutes) { "1.99" }
 
-          it "rounds up to the next minute" do
-            expect(reservation.duration_mins).to eq(2)
+          it "truncates the fraction" do
+            expect(reservation.duration_mins).to eq(1)
           end
         end
       end
     end
 
     context "when @duration_mins is unset" do
-      context "when reserve_start_at is set" do
-        let(:reserve_start_at) { 1.day.ago }
+      context "when reserve_start_at is set to 00:00:59" do
+        let(:reserve_start_at) { Time.zone.parse("2015-01-01T00:00:59") }
 
-        context "and the reservation duration is < 30 seconds" do
-          let(:reserve_end_at) { reserve_start_at + 29.seconds }
+        [
+          ["2015-01-01T00:01:01", 1],
+          ["2015-01-01T00:01:59", 1],
+          ["2015-01-01T00:02:01", 2],
+          ["2015-01-01T00:02:59", 2],
+          ["2015-01-01T01:00:00", 60],
+          ["2015-01-01T01:00:59", 60],
+        ]
+        .each do |timestring, expected_minutes|
+          context "and reserve_end_at is #{timestring}" do
+            let(:reserve_end_at) { Time.zone.parse(timestring) }
 
-          it "has no minimum and rounds down to 0" do
-            expect(reservation.duration_mins).to eq(0)
-          end
-        end
-
-        context "and the difference to reserve_end_at's seconds is < 30" do
-          let(:reserve_end_at) { reserve_start_at + 1.minute + 29.seconds }
-
-          it "rounds down to the minute" do
-            expect(reservation.duration_mins).to eq(1)
-          end
-        end
-
-        context "and the difference to reserve_end_at's seconds is 30" do
-          let(:reserve_end_at) { reserve_start_at + 1.minute + 30.seconds }
-
-          it "rounds up to the next minute" do
-            expect(reservation.duration_mins).to eq(2)
-          end
-        end
-
-        context "and the difference to reserve_end_at's seconds is > 30" do
-          let(:reserve_end_at) { reserve_start_at + 1.minute + 31.seconds }
-
-          it "rounds up to the next minute" do
-            expect(reservation.duration_mins).to eq(2)
+            it "returns #{expected_minutes}" do
+              expect(reservation.duration_mins).to eq(expected_minutes)
+            end
           end
         end
 
