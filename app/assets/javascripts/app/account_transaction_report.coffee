@@ -32,4 +32,4 @@ class AccountTransactionReport
       $emailField.prop('disabled', true)
 
 $ ->
-  window.transactionReport = new AccountTransactionReport($('.js--exportSearchResults')).init()
+  new AccountTransactionReport($('.js--exportSearchResults')).init()
