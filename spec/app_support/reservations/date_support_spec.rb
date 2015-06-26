@@ -1,34 +1,6 @@
 require "spec_helper"
 
 describe Reservations::DateSupport do
-  class DummyPricePolicy
-    include InstrumentPricePolicyCalculations
-
-    def free?
-      false
-    end
-
-    def minimum_cost
-      0
-    end
-
-    def product
-      OpenStruct.new(schedule_rules: [])
-    end
-
-    def restrict_purchase?
-      false
-    end
-
-    def usage_rate
-      1
-    end
-
-    def usage_subsidy
-      0
-    end
-  end
-
   subject(:reservation) do
     build_stubbed(
       :reservation,
@@ -106,16 +78,9 @@ describe Reservations::DateSupport do
         .each do |timestring, expected_minutes|
           context "and the actual_end_at is #{timestring}" do
             let(:actual_end_at) { Time.zone.parse(timestring) }
-            let(:price_policy_calculation) do
-              DummyPricePolicy.new.estimate_cost_and_subsidy(actual_start_at, actual_end_at)
-            end
 
             it "returns #{expected_minutes}" do
               expect(reservation.actual_duration_mins).to eq(expected_minutes)
-            end
-
-            it "matches InstrumentPricePolicyCalculations' cost at $1 per minute" do
-              expect(price_policy_calculation[:cost]).to eq(expected_minutes)
             end
           end
         end
