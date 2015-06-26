@@ -82,7 +82,7 @@ describe BundlesController do
 
     context "when the bundle requires approval" do
       before(:each) do
-        add_account_for_user(:guest, bundle)
+        add_account_for_user(:guest, bundle.products.first)
         BundlesController.any_instance.stub(:price_policy_available_for_product?).and_return(true)
         bundle.update_attributes(requires_approval: true)
       end
@@ -153,7 +153,7 @@ describe BundlesController do
 
       context "when the user is an admin" do
         before(:each) do
-          add_account_for_user(:admin, bundle)
+          add_account_for_user(:admin, bundle.products.first)
           sign_in @admin
           do_request
         end
