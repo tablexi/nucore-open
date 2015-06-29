@@ -807,8 +807,9 @@ en:
 
   reports:
     fields:
+      between: between
       instrument_reports:
-        date_start: Fulfilled Start Date
+        between: Fulfilled between
       date_start: Start Date
       date_end: End Date
       auto_cancel_name: 'Auto Cancel'

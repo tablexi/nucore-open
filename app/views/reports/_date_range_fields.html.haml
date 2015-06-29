@@ -1,3 +1,14 @@
-%li= form.input :date_start, label: t("reports.fields.#{controller_name}.date_start", default: t('reports.fields.date_start')), input_html: { value: human_datetime(@date_start, date_only: true), class: 'datepicker' }
+%li
+  .field-clarifier
+    = t("reports.fields.#{controller_name}.between", default: t("reports.fields.between"))
 
-%li= form.input :date_end, label: t("reports.fields.#{controller_name}.date_end", default: t('reports.fields.date_end')), input_html: { value: human_datetime(@date_end, date_only: true), class: 'datepicker' }
+%li= form.input :date_start,
+  label: t("reports.fields.date_start"),
+  input_html: { value: human_datetime(@date_start, date_only: true), class: "datepicker" }
+
+%li
+  .field-clarifier= t("support.array.two_words_connector")
+
+%li= form.input :date_end,
+  label: t("reports.fields.#{controller_name}.date_end", default: t("reports.fields.date_end")),
+  input_html: { value: human_datetime(@date_end, date_only: true), class: "datepicker" }
