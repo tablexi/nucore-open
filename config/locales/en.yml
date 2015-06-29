@@ -10,6 +10,9 @@ en:
     "true": "Yes"
     "false": "No"
 
+  preposition:
+    between: between
+
   sessions:
     new:
       help_text: "If you do not have a NU Core account, please contact the facility manager."
