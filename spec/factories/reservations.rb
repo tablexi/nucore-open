@@ -3,6 +3,10 @@ FactoryGirl.define do
     reserve_start_at { Time.zone.parse("#{Date.today} 10:00:00") + 1.day }
     reserve_end_at { reserve_start_at + 1.hour }
 
+    trait :canceled do
+      canceled_at { 1.minute.ago }
+    end
+
     trait :yesterday do
       reserve_start_at { Time.zone.parse("#{Date.today} 10:00:00") - 1.day }
     end
@@ -30,6 +34,10 @@ FactoryGirl.define do
     trait :started_early do
       running
       actual_start_at { reserve_start_at - 5.minutes }
+    end
+
+    trait :tomorrow do
+      reserve_start_at { 1.day.from_now }
     end
   end
 

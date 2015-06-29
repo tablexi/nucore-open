@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Reservations::DurationChangeValidations do
 
@@ -6,37 +6,80 @@ describe Reservations::DurationChangeValidations do
   let(:reservation) { create :setup_reservation }
 
   describe "#start_time_not_changed" do
-    context "with an upcoming reservation" do
-      let(:reservation) { create :setup_reservation, reserve_start_at: 5.minute.from_now, reserve_end_at: 70.minutes.from_now }
+    let(:instrument) { create(:setup_instrument, :always_available) }
+    let(:reservation) do
+      create(
+        :setup_reservation,
+        product: instrument,
+        reserve_start_at: reserve_start_at,
+        reserve_end_at: reserve_end_at,
+      )
+    end
 
-      it 'allows changing start time' do
+    context "with an upcoming reservation" do
+      let(:reserve_start_at) { 5.minutes.from_now }
+      let(:reserve_end_at) { 70.minutes.from_now }
+
+      it "allows changing start time" do
         reservation.reserve_start_at = 10.minutes.from_now
         validator.valid?
         expect(validator.errors).to be_empty
       end
 
-      it 'allows shortening end time' do
+      it "allows shortening end time" do
         reservation.reserve_end_at = 65.minutes.from_now
         validator.valid?
         expect(validator.errors).to be_empty
       end
+
+      context "when the product has a lock window" do
+        let(:reserve_end_at) { reserve_start_at + 1.hour }
+
+        before { reservation.product.update_attribute(:lock_window, 24) }
+
+        context "and the original start time is outside the window" do
+          let(:reserve_start_at) { 25.hours.from_now }
+
+          context "when changing to a time inside the window" do
+            before { reservation.reserve_start_at -= 2.hours }
+
+            it "allows changing the start time" do
+              expect(validator).to be_valid
+              expect(validator.errors).to be_empty
+            end
+          end
+        end
+
+        context "and the original start time is inside the window" do
+          let(:reserve_start_at) { 23.hours.from_now }
+
+          before { reservation.reserve_start_at -= 2.hours }
+
+          it "does not allow changing the start time" do
+            expect(validator).not_to be_valid
+            expect(validator.errors.full_messages)
+              .to include("Reserve start at cannot change once the reservation has started")
+          end
+        end
+      end
     end
 
-    context "with an ongoing reseration" do
-      let(:reservation) { create :setup_reservation, reserve_start_at: 30.minutes.ago, reserve_end_at: 40.minutes.from_now }
+    context "with an ongoing reservation" do
+      let(:reserve_start_at) { 30.minutes.ago }
+      let(:reserve_end_at) { 40.minutes.from_now }
 
-      it 'denies changing start time' do
+      it "denies changing start time" do
         reservation.reserve_start_at = 40.minutes.ago
         validator.valid?
         expect(validator.errors.full_messages)
-          .to include('Reserve start at cannot change once the reservation has started')
+          .to include("Reserve start at cannot change once the reservation has started")
       end
 
-      it 'denies shortening end time' do
+      it "denies shortening end time" do
         reservation.reserve_end_at = 35.minutes.from_now
         validator.valid?
         expect(validator.errors.full_messages)
-          .to include('Reserve end at cannot be shortened once the reservation has started')
+          .to include("Reserve end at cannot be shortened once the reservation has started")
       end
 
       context "with start time containing seconds" do
@@ -45,7 +88,7 @@ describe Reservations::DurationChangeValidations do
           reservation.save!
         end
 
-        it 'does not think start time changed' do
+        it "does not think start time changed" do
           reservation.reserve_start_at = 30.minutes.ago
           validator.valid?
           expect(validator.errors).to be_empty
@@ -56,41 +99,41 @@ describe Reservations::DurationChangeValidations do
     context "with a past reservation" do
       let(:reservation) { create :setup_reservation, reserve_start_at: 15.minutes.ago, reserve_end_at: 5.minutes.ago, product: create(:setup_instrument, min_reserve_mins: 5) }
 
-      it 'denies changing start time' do
+      it "denies changing start time" do
         reservation.reserve_start_at = 10.minutes.ago
         validator.valid?
         expect(validator.errors.full_messages)
-          .to include('Reserve start at cannot change once the reservation has started')
+          .to include("Reserve start at cannot change once the reservation has started")
       end
 
-      it 'denies shortening end time' do
+      it "denies shortening end time" do
         reservation.reserve_end_at = 10.minutes.ago
         validator.valid?
         expect(validator.errors.full_messages)
-          .to include('Reserve end at cannot be shortened once the reservation has started')
+          .to include("Reserve end at cannot be shortened once the reservation has started")
       end
     end
   end
 
   describe "#copy_errors!" do
     before do
-      validator.errors.add(:base, 'I am an error')
+      validator.errors.add(:base, "I am an error")
       validator.copy_errors!
     end
 
     it "copies errors to reservation" do
-      reservation.errors.full_messages.include?('I am an error')
+      reservation.errors.full_messages.include?("I am an error")
     end
   end
 
   describe "#invalid?" do
     before do
-      validator.errors.add(:base, 'I am an error')
+      validator.errors.add(:base, "I am an error")
       validator.invalid?
     end
 
     it "copies errors to reservation" do
-      reservation.errors.full_messages.include?('I am an error')
+      reservation.errors.full_messages.include?("I am an error")
     end
   end
 
@@ -108,7 +151,7 @@ describe Reservations::DurationChangeValidations do
       it { expect(validator).to be_valid }
     end
 
-    context "with an ongoing reseration" do
+    context "with an ongoing reservation" do
       before do
         reservation.assign_attributes(
           reserve_start_at: 30.minutes.ago,

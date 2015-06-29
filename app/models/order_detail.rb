@@ -51,7 +51,7 @@ class OrderDetail < ActiveRecord::Base
   delegate :invoice_number, to: :statement, prefix: true
   delegate :requires_but_missing_actuals?, to: :reservation, allow_nil: true
 
-  delegate :user, :facility, :ordered_at, :to => :order
+  delegate :in_cart?, :facility, :ordered_at, :user, to: :order
   delegate :price_group, :to => :price_policy, :allow_nil => true
   def estimated_price_group
     estimated_price_policy.try(:price_group)

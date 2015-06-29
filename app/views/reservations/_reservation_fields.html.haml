@@ -1,5 +1,5 @@
 .datetime-block
-  - start_disabled = f.object.persisted? && !f.object.reserve_start_at_editable?
+  - start_disabled = start_time_disabled?(f.object)
   = f.input :reserve_start_date, input_html: { class: "datepicker", disabled: start_disabled }
   .control-group
     .controls

@@ -4,6 +4,11 @@ require 'controller_spec_helper'
 describe ReservationsController do
   include DateHelper
 
+  let(:instrument) { @instrument }
+  let(:order) { @order }
+  let(:order_detail) { order.order_details.first }
+  let(:reservation) { @reservation }
+
   render_views
 
   before(:all) { create_users }
@@ -21,9 +26,7 @@ describe ReservationsController do
     create(:account_price_group_member, account: @account, price_group: @price_group)
   end
 
-
   context 'index' do
-
     before :each do
       @order.stub(:cart_valid?).and_return(true)
       @order.stub(:place_order?).and_return(true)
@@ -144,14 +147,12 @@ describe ReservationsController do
       @params = {}
     end
 
-
     it "should redirect to default view" do
       maybe_grant_always_sign_in(:staff)
       @params.merge!(:status => 'junk')
       do_request
       should redirect_to "/reservations/upcoming"
     end
-
 
     context "upcoming" do
       before :each do
@@ -226,7 +227,6 @@ describe ReservationsController do
       end
     end
 
-
     context 'all' do
       before :each do
         @params = {:status => 'all'}
@@ -242,9 +242,7 @@ describe ReservationsController do
         should render_template('list')
       end
     end
-
   end
-
 
   context 'creating a reservation in the past' do
     before :each do
@@ -297,11 +295,9 @@ describe ReservationsController do
     it_should_allow_all facility_operators, 'set the right estimated price' do
       assigns[:reservation].order_detail.reload.estimated_cost.should == 120
     end
-
   end
 
   context 'create' do
-
     before :each do
       @method=:post
       @action=:create
@@ -500,7 +496,6 @@ describe ReservationsController do
       end
     end
 
-
     context 'with other things in the cart (bundle or multi-add)' do
 
       before :each do
@@ -518,12 +513,9 @@ describe ReservationsController do
         assert_redirected_to cart_path
       end
     end
-
   end
 
-
   context 'new' do
-
     before :each do
       @method=:get
       @action=:new
@@ -546,6 +538,7 @@ describe ReservationsController do
       assigns[:min_date].should == (Time.zone.now+assigns[:max_days_ago].days).strftime("%Y%m%d")
       assigns[:max_date].should == (Time.zone.now + 365.days).strftime("%Y%m%d")
     end
+
     # guests should only be able to go the default reservation window into the future
     it_should_allow_all [:guest] do
       assigns[:max_window].should == PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
@@ -702,9 +695,7 @@ describe ReservationsController do
     end
   end
 
-
   context 'needs future reservation' do
-
     before :each do
       # create reservation for tomorrow @ 9 am for 60 minutes, with order detail reference
       @start        = Time.zone.now.end_of_day + 1.second + 9.hours
@@ -713,9 +704,7 @@ describe ReservationsController do
       assert @reservation.valid?
     end
 
-
     context 'show' do
-
       before :each do
         @method=:get
         @action=:show
@@ -728,58 +717,62 @@ describe ReservationsController do
         assigns[:order].should == @reservation.order_detail.order
         should respond_with :success
       end
-
     end
 
-
-    context 'edit' do
-
-      before :each do
+    describe "#edit" do
+      before(:each) do
         @method = :get
         @action = :edit
-        @params.merge!(:id => @reservation.id)
+        @params.merge!(id: reservation.id)
       end
 
       it_should_allow_all facility_users do
-        assigns[:reservation].should == @reservation
-        assigns[:order_detail].should == @reservation.order_detail
-        assigns[:order].should == @reservation.order_detail.order
+        expect(assigns[:reservation]).to eq(reservation)
+        expect(assigns[:order_detail]).to eq(reservation.order_detail)
+        expect(assigns[:order]).to eq(reservation.order_detail.order)
         should respond_with :success
       end
 
-      it "redirects to show page if reservation is canceled" do
-        @reservation.update_attributes(:canceled_at => Time.zone.now - 1.day)
-        sign_in @admin
-        do_request
-        expect(response).to redirect_to [@order, @order_detail, @reservation]
-      end
-
-      context "with a past reservation" do
-        before do
-          @reservation.assign_attributes(
-            reserve_start_at: Time.zone.now - 1.day,
-            reserve_end_at: Time.zone.now - 1.day + 1.hour
-          )
-          @reservation.save(validate: false)
-        end
-
-        it "allows editing by an admin" do
+      context "when the reservation is canceled" do
+        before(:each) do
+          reservation.update_attribute(:canceled_at, 1.day.ago)
           sign_in @admin
           do_request
-          expect(response.response_code).to eq 200
         end
 
-        it "redirects non-admins" do
-          sign_in @staff
-          do_request
-          expect(response.response_code).to eq 302
+        it "redirects to the show page" do
+          expect(response).to redirect_to([order, order_detail, reservation])
+        end
+      end
+
+      context "when the reservation is in the past" do
+        before(:each) do
+          reservation.reserve_start_at = 24.hours.ago
+          reservation.reserve_end_at = 23.hours.ago
+          reservation.save(validate: false)
+        end
+
+        context "when the user is an admin" do
+          before(:each) do
+            sign_in @admin
+            do_request
+          end
+
+          it { expect(response.response_code).to eq(200) }
+        end
+
+        context "when the user is not an admin" do
+          before(:each) do
+            sign_in @staff
+            do_request
+          end
+
+          it { expect(response.response_code).to eq(302) }
         end
       end
     end
 
-
     context 'update' do
-
       before :each do
         @method=:put
         @action=:update
@@ -876,9 +869,7 @@ describe ReservationsController do
           response.should render_template(:edit)
         end
       end
-
     end
-
   end
 
   context 'earliest move possible' do
@@ -948,33 +939,36 @@ describe ReservationsController do
     end
   end
 
-
-  context 'move' do
-    before :each do
-      @method=:post
-      @action=:move
-      @reservation  = @instrument.reservations.create(:reserve_start_at => Time.zone.now+1.day, :order_detail => @order_detail,
-                                                      :duration_value => 60, :duration_unit => 'minutes')
-      @earliest=@reservation.earliest_possible
-      @reservation.reserve_start_at.should_not == @earliest.reserve_start_at
-      @reservation.reserve_end_at.should_not == @earliest.reserve_end_at
-      @params.merge!(:reservation_id => @reservation.id)
+  describe "#move" do
+    let(:reservation) do
+      create(:reservation, :tomorrow, product: instrument, order_detail: order_detail)
     end
 
-    it_should_allow :guest, 'to move a reservation' do
-      assigns(:order).should == @order
-      assigns(:order_detail).should == @order_detail
-      assigns(:instrument).should == @instrument
-      assigns(:reservation).should == @reservation
-      human_datetime(assigns(:reservation).reserve_start_at).should == human_datetime(@earliest.reserve_start_at)
-      human_datetime(assigns(:reservation).reserve_end_at).should == human_datetime(@earliest.reserve_end_at)
+    before(:each) do
+      @method = :post
+      @action = :move
+      expect(reservation.reserve_start_at)
+        .not_to eq(reservation.earliest_possible.reserve_start_at)
+      expect(reservation.reserve_end_at)
+        .not_to eq(reservation.earliest_possible.reserve_end_at)
+      @params.merge!(reservation_id: reservation.id)
+    end
+
+    it_should_allow :guest, "to move a reservation" do
+      expect(assigns(:order)).to eq(order)
+      expect(assigns(:order_detail)).to eq(order_detail)
+      expect(assigns(:instrument)).to eq(instrument)
+      expect(assigns(:reservation)).to eq(reservation)
+      expect(human_datetime(assigns(:reservation).reserve_start_at))
+        .to eq(human_datetime(reservation.earliest_possible.reserve_start_at))
+      expect(human_datetime(assigns(:reservation).reserve_end_at))
+        .to eq(human_datetime(reservation.earliest_possible.reserve_end_at))
       should set_the_flash
-      assert_redirected_to reservations_status_path(:status => 'upcoming')
+      assert_redirected_to reservations_status_path(status: "upcoming")
     end
   end
 
   context 'needs now reservation' do
-
     before :each do
       # create reservation for tomorrow @ 9 am for 60 minutes, with order detail reference
       @start        = Time.zone.now + 1.second

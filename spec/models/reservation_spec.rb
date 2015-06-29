@@ -14,15 +14,39 @@ describe Reservation do
     )
   end
 
+  let(:facility) { create(:facility) }
+  let(:facility_account) do
+    facility.facility_accounts.create(attributes_for(:facility_account))
+  end
   let(:instrument) { @instrument }
 
   before(:each) do
-    @facility         = FactoryGirl.create(:facility)
-    @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @instrument       = FactoryGirl.create(:instrument, :facility_account_id => @facility_account.id, :facility => @facility, :reserve_interval => 15)
+    @instrument = create(:instrument, facility_account_id: facility_account.id, facility: facility, reserve_interval: 15)
     # add rule, available every day from 12 am to 5 pm, 60 minutes duration
     @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17))
     Reservation.any_instance.stub(:admin?).and_return(false)
+  end
+
+  describe "#can_edit?" do
+    context "when the reservation has been persisted" do
+      context "and has been canceled" do
+        subject(:reservation) { create(:setup_reservation, :canceled) }
+
+        it { expect(reservation).not_to be_can_edit }
+      end
+
+      context "and has not been canceled" do
+        subject(:reservation) { create(:setup_reservation) }
+
+        it { expect(reservation).to be_can_edit }
+      end
+    end
+
+    context "when the reservation has not been persisted" do
+      subject(:reservation) { build(:reservation) }
+
+      it { expect(reservation).to be_can_edit }
+    end
   end
 
   it 'allows starting of a reservation, whose duration is equal to the max duration, within the grace period' do
@@ -61,7 +85,6 @@ describe Reservation do
     end
   end
 
-
   context 'canceled?' do
     before :each do
       @reservation = @instrument.reservations.create(:reserve_start_date => (Date.today+1.day).to_s, :reserve_start_hour => '10',
@@ -79,20 +102,17 @@ describe Reservation do
     end
   end
 
-
   context 'with order details' do
     subject(:reservation) { @reservation1 }
     let(:instrument) { @instrument }
 
     before :each do
-      @facility      = FactoryGirl.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @price_group   = FactoryGirl.create(:price_group, :facility => @facility)
+      @price_group = create(:price_group, facility: facility)
       @instrument_pp = FactoryGirl.create(:instrument_price_policy, :product => @instrument, :price_group => @price_group)
       @user          = FactoryGirl.create(:user)
       @account       = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
       create(:account_price_group_member, account: @account, price_group: @price_group)
-      @order         = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
+      @order = @user.orders.create(attributes_for(:order, created_by: @user.id, account: @account, facility: facility))
       order_attrs    = FactoryGirl.attributes_for(:order_detail, :product_id => @instrument.id, :quantity => 1)
       @detail1       = @order.order_details.create(order_attrs.merge(:account => @account))
       @detail2       = @order.order_details.create(order_attrs)
@@ -223,7 +243,7 @@ describe Reservation do
         @instrument.update_attributes(max_reserve_mins: nil, reserve_interval: 1)
         @instrument.schedule_rules.update_all(start_hour: 0, end_hour: 24)
         # Make sure there is no time between now and the reservation
-        order         = @user.orders.create(attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
+        order = @user.orders.create(attributes_for(:order, created_by: @user.id, account: @account, facility: facility))
         order_attrs   = attributes_for(:order_detail, :product_id => @instrument.id, :quantity => 1, :account => @account)
         detail1       = order.order_details.create(order_attrs)
         res = @instrument.reservations.create(reserve_start_at: Time.zone.now, reserve_end_at: @reservation1.reserve_start_at, order_detail: detail1)
@@ -292,9 +312,7 @@ describe Reservation do
 
       @reservation2.should_not be_does_not_conflict_with_other_reservation
 
-      @instrument2 = FactoryGirl.create(:instrument,
-                                        :facility => @facility,
-                                        :facility_account => @facility_account)
+      @instrument2 = create(:instrument, facility: facility, facility_account: facility_account)
 
       @reservation2.product=@instrument2
       @reservation2.should be_does_not_conflict_with_other_reservation
@@ -582,11 +600,9 @@ describe Reservation do
         end
       end
     end
-
   end
 
   context 'maximum reservation length' do
-
     before :each do
       @instrument.update_attributes(:max_reserve_mins => 60)
     end
@@ -613,7 +629,6 @@ describe Reservation do
       @reservation.stub(:admin?).and_return(true)
       @reservation.should be_valid
     end
-
   end
 
   context 'minimum reservation length' do
@@ -795,7 +810,7 @@ describe Reservation do
 
           @instrument.update_attributes(:requires_approval => true)
 
-          @order = FactoryGirl.create(:order, :user => @user, :created_by => @user.id, :account => @account, :facility => @facility)
+          @order = create(:order, user: @user, created_by: @user.id, account: @account, facility: facility)
           @order_detail = FactoryGirl.create(:order_detail, :order => @order, :product => @instrument)
           # @instrument.update_attributes(:requires_approval => true)
 
@@ -863,7 +878,7 @@ describe Reservation do
       @nupg_pgp=FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => @nupg)
 
       # Setup a price group with an account for this user
-      @price_group1 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+      @price_group1 = facility.price_groups.create(attributes_for(:price_group))
       @pg1_pgp=FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => @price_group1)
       @account1 = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
       @account_price_group_member1 = AccountPriceGroupMember.create(FactoryGirl.attributes_for(:account_price_group_member).merge(:account => @account1, :price_group => @price_group1))
@@ -895,7 +910,6 @@ describe Reservation do
   end
 
   context 'has_actuals?' do
-
     it 'should not have actuals' do
       reservation.should_not be_has_actuals
     end
@@ -905,7 +919,6 @@ describe Reservation do
       reservation.actual_end_at=Time.zone.now
       reservation.should be_has_actuals
     end
-
   end
 
   context "as_calendar_obj" do

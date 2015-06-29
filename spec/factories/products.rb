@@ -85,6 +85,14 @@ FactoryGirl.define do
       create :instrument_price_policy, price_group: product.facility.price_groups.last, usage_rate: 1, product: product
       product.reload
     end
+
+    trait :always_available do
+      after(:create) do |product|
+        product.schedule_rules.destroy_all
+        create(:all_day_schedule_rule, instrument: product)
+        product.reload
+      end
+    end
   end
 
   factory :instrument_requiring_approval, parent: :setup_instrument do

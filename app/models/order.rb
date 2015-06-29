@@ -60,6 +60,10 @@ class Order < ActiveRecord::Base
     define_method(method_name) { total_cost method_name }
   end
 
+  def in_cart?
+    !ordered_at?
+  end
+
   def move_order_details_to_default_status
     order_details.each { |od| od.set_default_status! }
   end
