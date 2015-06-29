@@ -61,7 +61,6 @@ describe Reservation do
     end
   end
 
-
   context 'canceled?' do
     before :each do
       @reservation = @instrument.reservations.create(:reserve_start_date => (Date.today+1.day).to_s, :reserve_start_hour => '10',
@@ -78,7 +77,6 @@ describe Reservation do
       @reservation.should be_canceled
     end
   end
-
 
   context 'with order details' do
     subject(:reservation) { @reservation1 }
@@ -582,11 +580,9 @@ describe Reservation do
         end
       end
     end
-
   end
 
   context 'maximum reservation length' do
-
     before :each do
       @instrument.update_attributes(:max_reserve_mins => 60)
     end
@@ -613,7 +609,6 @@ describe Reservation do
       @reservation.stub(:admin?).and_return(true)
       @reservation.should be_valid
     end
-
   end
 
   context 'minimum reservation length' do
@@ -895,7 +890,6 @@ describe Reservation do
   end
 
   context 'has_actuals?' do
-
     it 'should not have actuals' do
       reservation.should_not be_has_actuals
     end
@@ -905,7 +899,6 @@ describe Reservation do
       reservation.actual_end_at=Time.zone.now
       reservation.should be_has_actuals
     end
-
   end
 
   context "as_calendar_obj" do
