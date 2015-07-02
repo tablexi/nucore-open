@@ -40,5 +40,26 @@ describe ProductUserCreator do
         expect { create_product_user }.not_to change(TrainingRequest, :count)
       end
     end
+
+    describe "when the user is already approved" do
+      before { ProductUser.create!(user: user, product: product, approved_by: 0) }
+      let(:duplicate_product_user) { create_product_user }
+
+      it "does not save" do
+        expect(duplicate_product_user).to be_new_record
+      end
+
+      it "has an error message" do
+        expect(duplicate_product_user.errors).to be_present
+      end
+    end
+
+    describe "when there is an error on the training request destruction" do
+      it "does not save the product_user" do
+        expect(ProductUserCreator).to receive(:manage_training_request).and_raise(ActiveRecord::Rollback)
+        pu = create_product_user
+        expect(pu).not_to be_persisted
+      end
+    end
   end
 end

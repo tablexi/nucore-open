@@ -38,7 +38,7 @@ class ProductUsersController < ApplicationController
     if product_user.persisted?
       flash[:notice] = "The user has been successfully authorized for this #{@product.class.name.downcase}"
     else
-      flash[:error] = product_user.errors.full_messages
+      flash[:error] = product_user.errors.full_messages.to_sentence
     end
     redirect_to(send("facility_#{@product.class.name.downcase}_users_url", current_facility, @product))
   end

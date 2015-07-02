@@ -8,7 +8,7 @@ class ProductUserCreator
     )
 
     product_user.transaction do
-      product_user.save! && manage_training_request(product_user)
+      product_user.save && manage_training_request(product_user)
     end
     product_user
   end
