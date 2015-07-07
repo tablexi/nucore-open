@@ -51,13 +51,30 @@ Welcome to NU Core! This guide will help you get a development environment up an
     rake demo:seed
     ```
 
-6. Start your server
+6. Configure your file storage
+
+    By default, files are stored on the local filesystem. If you wish to use
+    Amazon's S3 instead, create a local settings override file such as
+    `config/settings/development.local.yml` or `config/settings/production.local.yml`
+    and include the following, substituting your AWS settings:
+
+    ```
+    paperclip:
+      storage: fog
+      fog_credentials:
+        provider: AWS
+        aws_access_key_id: YOUR_S3_KEY_GOES_HERE
+        aws_secret_access_key: YOUR_S3_SECRET_KEY_GOES_HERE
+      fog_directory: YOUR_S3_BUCKET_NAME_GOES_HERE
+    ```
+
+7. Start your server
 
     ```
     bin/rails s
     ```
 
-7. Log in
+8. Log in
 
     Visit http://localhost:3000
 
@@ -71,7 +88,7 @@ Welcome to NU Core! This guide will help you get a development environment up an
     | ast123@example.com | Facility Staff |
     | ddi123@example.com | Facility Director |
 
-8. Play around! You're running NU Core!
+9. Play around! You're running NU Core!
 
 
 ### Test it

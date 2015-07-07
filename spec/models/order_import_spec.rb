@@ -355,7 +355,7 @@ end
 
     context "an excetion is raised when opening the CSV" do
       before do
-        CSV.stub(:open).and_raise(ArgumentError, "invalid byte sequence in UTF-8")
+        CSV.stub(:parse).and_raise(ArgumentError, "invalid byte sequence in UTF-8")
         import.upload_file.file = generate_import_file
         import.upload_file.save!
         import.process_upload!

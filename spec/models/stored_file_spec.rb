@@ -60,5 +60,9 @@ describe StoredFile do
     it "is stored with a partitioned path" do
       expect(file_upload.file.url.match(%r(\A/files/\d+/\d+/\d+/)))
     end
+
+    it "stored the file content" do
+      expect(file_upload.read).to eq(File.read(file1))
+    end
   end
 end
