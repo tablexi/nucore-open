@@ -13,29 +13,34 @@ namespace :paperclip do
     false
   end
 
+  def push_to_s3(item, filename)
+    id_partition = ("%09d" % item.id).scan(/\d{3}/).join("/")
+    local_filepath = "#{Rails.root}/public/files/#{id_partition}/original/#{filename}"
+
+    print "Processing #{local_filepath}"
+
+    File.open(local_filepath) do |filehandle|
+      item.file.assign(filehandle)
+      if item.file.save
+        puts "; stored to #{item.file.url}"
+      else
+        puts "; S3 store failed!"
+      end
+    end
+  rescue Errno::ENOENT => e
+    puts ": Skipping! File does not exist."
+  end
+
   desc "Move files from local to S3"
   task move_to_s3: :environment do
     next unless allow_task?
 
-    StoredFile.all.each do |stored_file|
-      id_partition = ("%09d" % stored_file.id).scan(/\d{3}/).join("/")
-      filename = stored_file.file_file_name.gsub(/#/, "-")
-      local_filepath = "#{Rails.root}/public/files/#{id_partition}/original/#{filename}"
+    Journal.where("file_file_name IS NOT NULL").each do |journal|
+      push_to_s3(journal, journal.file_file_name)
+    end
 
-      print "Processing #{local_filepath}"
-
-      begin
-        File.open(local_filepath) do |filehandle|
-          stored_file.file.assign(filehandle)
-          if stored_file.file.save
-            puts "; stored to #{stored_file.file.url}"
-          else
-            puts "; S3 store failed!"
-          end
-        end
-      rescue Errno::ENOENT => e
-        puts ": Skipping! File does not exist."
-      end
+    StoredFile.where("file_file_name IS NOT NULL").each do |stored_file|
+      push_to_s3(stored_file, stored_file.file_file_name.gsub(/#/, "-"))
     end
   end
 end
