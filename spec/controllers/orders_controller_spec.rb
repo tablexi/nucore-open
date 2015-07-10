@@ -29,12 +29,9 @@ describe OrdersController do
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @staff))
+    @item = @authable.items.create(attributes_for(:item, facility_account_id: @facility_account.id))
+    @account = add_account_for_user(:staff, @item, @price_group)
     @order            = @staff.orders.create(FactoryGirl.attributes_for(:order, :created_by => @staff.id, :account => @account))
-    @item             = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
-    define_open_account(@item.account, @account.account_number)
-
-    FactoryGirl.create(:user_price_group_member, :user => @staff, :price_group => @price_group)
 
     @item_pp=@item.item_price_policies.create!(FactoryGirl.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :start_date => 1.hour.ago))
 

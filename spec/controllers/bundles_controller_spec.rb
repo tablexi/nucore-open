@@ -101,8 +101,7 @@ describe BundlesController do
     end
 
     it 'should flash and falsify @add_to_cart if there is no price group for user to purchase through' do
-      nufs=create_nufs_account_with_owner :guest
-      define_open_account @bundle.products.first.account, nufs.account_number
+      add_account_for_user(:guest, @bundle.products.first, @nupg)
       sign_in @guest
       BundlesController.any_instance.stub(:price_policy_available_for_product?).and_return(false)
       do_request
@@ -143,8 +142,7 @@ describe BundlesController do
 
       it "should not show a notice and show an add to cart" do
         @product_user = ProductUser.create(:product => @bundle, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
-        nufs=create_nufs_account_with_owner :guest
-        define_open_account @bundle.products.first.account, nufs.account_number
+        add_account_for_user(:guest, @bundle.products.first, @nupg)
         sign_in @guest
         do_request
         flash.should be_empty
