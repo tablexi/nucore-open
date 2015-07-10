@@ -236,6 +236,4 @@ class ScheduleRule < ActiveRecord::Base
   def hour_floor
     end_min == 0 ? end_hour - 1 : end_hour
   end
-
-
 end
