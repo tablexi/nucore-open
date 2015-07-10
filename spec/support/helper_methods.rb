@@ -68,6 +68,7 @@ def place_product_order(ordered_by, facility, product, account=nil, purchased=tr
   @order=ordered_by.orders.create(FactoryGirl.attributes_for(:order, o_attrs))
 
   FactoryGirl.create(:user_price_group_member, :user => ordered_by, :price_group => @price_group)
+  create(:account_price_group_member, account: account, price_group: @price_group) if account.present?
   @item_pp=product.send(:"#{product.class.name.downcase}_price_policies").create(FactoryGirl.attributes_for(:"#{product.class.name.downcase}_price_policy", :price_group_id => @price_group.id))
   @item_pp.reload.restrict_purchase=false
   od_attrs={ :product_id => product.id }
@@ -263,6 +264,7 @@ end
 def setup_user_for_purchase(user, price_group)
   @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => user))
   @pg_member        = FactoryGirl.create(:user_price_group_member, :user => user, :price_group => price_group)
+  create(:account_price_group_member, account: @account, price_group: PriceGroup.base.first)
 end
 
 
@@ -297,4 +299,11 @@ def setup_order_detail(order, product, statement = nil)
       statement_id: statement.try(:id)
     )
   )
+end
+
+def add_account_for_user(user_sym, product, price_group = PriceGroup.base.first)
+  nufs_account = create_nufs_account_with_owner(user_sym)
+  define_open_account(product.account, nufs_account.account_number)
+  create(:account_price_group_member, account: nufs_account, price_group: price_group)
+  nufs_account
 end

@@ -145,14 +145,14 @@ describe User do
       @facility_account=@facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @item=@facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
       @price_group=FactoryGirl.create(:price_group, :facility => @facility)
-      FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @item_pp=@item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
       @item_pp.reload.restrict_purchase=false
       @account=FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @user) ])
+      create(:account_price_group_member, account: @account, price_group: @price_group)
     end
 
     it 'should not have an account because there is no price group' do
-      UserPriceGroupMember.where(:price_group_id => @price_group.id, :user_id => @user.id).first.destroy
+      AccountPriceGroupMember.where(account_id: @account.id, price_group_id: @price_group.id).first.destroy
       @user.accounts_for_product(@item).should be_empty
     end
 

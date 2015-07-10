@@ -9,7 +9,8 @@ describe OrderManagement::OrderDetailsController do
   let(:new_account) { create(:setup_account, owner: order_detail.user) }
   let(:order_detail) { reservation.order_detail }
   let(:original_account) { create(:setup_account, owner: order_detail.user) }
-  let(:price_group) { original_account.price_groups.first }
+  let(:price_group) { facility.price_groups.find(&:is_not_global) }
+  let(:base_price_group) { PriceGroup.base.first }
   let(:reservation) { create(:purchased_reservation, product: instrument) }
   let(:statement) { create(:statement, facility: facility, created_by: order_detail.user.id, account: original_account) }
 
@@ -358,6 +359,8 @@ describe OrderManagement::OrderDetailsController do
 
         context 'changing account' do
           before :each do
+            AccountPriceGroupMember.create! price_group: base_price_group, account: original_account
+            AccountPriceGroupMember.create! price_group: base_price_group, account: new_account
             AccountPriceGroupMember.create! price_group: price_group, account: original_account
             AccountPriceGroupMember.create! price_group: price_group, account: new_account
             order_detail.account = original_account
@@ -387,6 +390,8 @@ describe OrderManagement::OrderDetailsController do
 
         context 'canceling' do
           before :each do
+            AccountPriceGroupMember.create! price_group: base_price_group, account: original_account
+            AccountPriceGroupMember.create! price_group: base_price_group, account: new_account
             AccountPriceGroupMember.create! price_group: price_group, account: original_account
             AccountPriceGroupMember.create! price_group: price_group, account: new_account
             order_detail.account = original_account

@@ -58,8 +58,7 @@ describe OrderDetailObserver do
       @item     = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
       @item.should be_valid
       FactoryGirl.create :item_price_policy, :product => @item, :price_group => PriceGroup.base.first
-      @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
-      define_open_account(@item.account, @account.account_number)
+      @account = add_account_for_user(:user, @item)
       @order    = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
       @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
       @order_detail.state.should == 'new'

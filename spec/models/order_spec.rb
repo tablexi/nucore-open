@@ -134,8 +134,8 @@ describe Order do
       @service      = @facility.services.create(FactoryGirl.attributes_for(:service, :initial_order_status_id => @order_status.id, :facility_account_id => @facility_account.id))
       @service_pp   = FactoryGirl.create(:service_price_policy, :product => @service, :price_group => @price_group)
       @user         = FactoryGirl.create(:user)
-      @pg_member    = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @account      = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
+      create(:account_price_group_member, account: @account, price_group: @price_group)
       @order        = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
     end
 
@@ -164,8 +164,8 @@ describe Order do
       FactoryGirl.create(:price_group_product, :product => @service, :price_group => @price_group, :reservation_window => nil)
       @service_pp   = FactoryGirl.create(:service_price_policy, :product => @service, :price_group => @price_group)
       @user         = FactoryGirl.create(:user)
-      @pg_member    = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @account      = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
+      create(:account_price_group_member, account: @account, price_group: @price_group)
       @order        = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
     end
 
@@ -276,8 +276,8 @@ describe Order do
       @service2_pp       = FactoryGirl.create(:service_price_policy, :product => @service2, :price_group => @price_group2)
 
       @user            = FactoryGirl.create(:user)
-      @pg_member       = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @account         = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
+      create(:account_price_group_member, account: @account, price_group: @price_group)
       @cart            = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @account))
 
       @item           = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))

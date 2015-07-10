@@ -83,8 +83,7 @@ describe ServicesController do
 
       it "should not show a notice and show an add to cart" do
         @product_user = ProductUser.create(:product => @service, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
-        nufs=create_nufs_account_with_owner :guest
-        define_open_account @service.account, nufs.account_number
+        add_account_for_user(:guest, @service, @nupg)
         sign_in @guest
         do_request
         flash.should be_empty

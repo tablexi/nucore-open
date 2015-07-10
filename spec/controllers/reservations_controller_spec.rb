@@ -18,6 +18,7 @@ describe ReservationsController do
     assert @order_detail.persisted?
 
     @params={ :order_id => @order.id, :order_detail_id => @order_detail.id }
+    create(:account_price_group_member, account: @account, price_group: @price_group)
   end
 
 

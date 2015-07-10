@@ -49,4 +49,3 @@ class window.TimeFormatter
 
     date = new Date(parsedYear, parsedMonth, parsedDay, parsedHour, parsedMinute)
     new TimeFormatter(date)
-

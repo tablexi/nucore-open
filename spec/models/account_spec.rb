@@ -168,7 +168,7 @@ describe Account do
       @price_group       = FactoryGirl.create(:price_group, :facility => @facility)
       @price_group_product=FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
       @price_policy      = FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group)
-      @pg_user_member    = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
+      @price_group_member = create(:account_price_group_member, account: @nufs_account, price_group: @price_group)
     end
 
     context 'description' do
@@ -208,7 +208,7 @@ describe Account do
       it "should return error if the product does not have a price policy for the account or user price groups" do
         define_open_account(@item.account, @nufs_account.account_number)
         @nufs_account.validate_against_product(@item, @user).should == nil
-        @pg_user_member.destroy
+        @price_group_member.destroy
         @user.reload
         @nufs_account.reload
         @nufs_account.validate_against_product(@item, @user).should_not == nil

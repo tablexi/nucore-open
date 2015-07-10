@@ -33,7 +33,7 @@ describe FacilityReservationsController do
 
     @reservation=FactoryGirl.create(:reservation, :product => @product)
     @reservation.should_not be_new_record
-    @order_detail=FactoryGirl.create(:order_detail, :order => @order, :product => @product, :reservation => @reservation)
+    @order_detail = create(:order_detail, account: account, order: @order, product: product, reservation: @reservation)
     @order_detail.set_default_status!
     @params={ :facility_id => @authable.url_name, :order_id => @order.id, :order_detail_id => @order_detail.id, :id => @reservation.id }
   end
@@ -64,7 +64,7 @@ describe FacilityReservationsController do
       let(:price_group) { create(:price_group, facility: facility) }
 
       before :each do
-        create(:user_price_group_member, user: @director, price_group: price_group)
+        create(:account_price_group_member, account: account, price_group: price_group)
 
         order_details.first.product.instrument_price_policies.create(attributes_for(
           :instrument_price_policy, price_group_id: price_group.id))
@@ -325,7 +325,7 @@ describe FacilityReservationsController do
         @order_detail.account = @account
         @order_detail.save!
         @price_group=FactoryGirl.create(:price_group, :facility => @authable)
-        FactoryGirl.create(:user_price_group_member, :user => @director, :price_group => @price_group)
+        create(:account_price_group_member, account: account, price_group: @price_group)
         @instrument_pp=@product.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, :price_group_id => @price_group.id))
         @instrument_pp.reload.restrict_purchase=false
         @reservation.update_attributes(:actual_start_at => nil, :actual_end_at => nil)
@@ -352,7 +352,7 @@ describe FacilityReservationsController do
       before :each do
         @order_detail.price_policy.should be_nil
         @price_group=FactoryGirl.create(:price_group, :facility => @authable)
-        FactoryGirl.create(:user_price_group_member, :user => @director, :price_group => @price_group)
+        create(:account_price_group_member, account: account, price_group: @price_group)
         @instrument_pp=create(:instrument_price_policy, :product => @product, :price_group_id => @price_group.id, :usage_rate => 2)
         @instrument_pp.reload.restrict_purchase=false
         @now=@reservation.reserve_start_at+3.hour
