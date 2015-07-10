@@ -550,15 +550,17 @@ describe Instrument do
   end
 
   context 'can_purchase?' do
+    let(:account) { create(:setup_account) }
+    let(:price_policy_ids) { account.price_groups.map(&:id) }
+
     before :each do
       @instrument       = FactoryGirl.create(:instrument,
                                       :facility => facility,
                                       :facility_account => facility_account)
       @price_group = FactoryGirl.create(:price_group, :facility => facility)
       @user = FactoryGirl.create(:user)
-      @price_group_member = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
+      @price_group_member = create(:account_price_group_member, account: account, price_group: @price_group)
       @user.reload
-      @user_price_policy_ids = @user.price_groups.map(&:id)
       @price_policy = FactoryGirl.create(:instrument_price_policy, :product => @instrument, :price_group => @price_group)
       #TODO remove this line
       FactoryGirl.create(:price_group_product, :price_group => @price_group, :product => @instrument)
@@ -566,12 +568,11 @@ describe Instrument do
 
     it 'should be purchasable if there are schedule rules' do
       @schedule_rule = FactoryGirl.create(:schedule_rule, :instrument => @instrument)
-      @instrument.reload
-      @instrument.should be_can_purchase(@user_price_policy_ids)
+      expect(@instrument.reload).to be_can_purchase(price_policy_ids)
     end
 
     it 'should not be purchasable if there are no schedule rules' do
-      @instrument.should_not be_can_purchase(@user_price_policy_ids)
+      expect(@instrument).not_to be_can_purchase(price_policy_ids)
     end
 
     context 'with schedule rules' do
@@ -580,7 +581,7 @@ describe Instrument do
         @instrument.reload
       end
       it 'should be purchasable if there are schedule rules' do
-        @instrument.should be_can_purchase(@user_price_policy_ids)
+        expect(@instrument).to be_can_purchase(price_policy_ids)
       end
 
       context 'with no price policies at all' do
@@ -591,7 +592,7 @@ describe Instrument do
           @instrument.price_policies.should be_empty
         end
         it 'should not be purchasable' do
-          @instrument.should_not be_can_purchase(@user_price_policy_ids)
+          expect(@instrument).not_to be_can_purchase(price_policy_ids)
         end
       end
 
@@ -619,8 +620,7 @@ describe Instrument do
         end
 
         it 'should be purchasable' do
-          @instrument.can_purchase?(@user_price_policy_ids).should be_true
-          @instrument.should be_can_purchase(@user_price_policy_ids)
+          expect(@instrument).to be_can_purchase(price_policy_ids)
         end
       end
 

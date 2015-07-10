@@ -90,8 +90,8 @@ describe Reservation do
       @price_group   = FactoryGirl.create(:price_group, :facility => @facility)
       @instrument_pp = FactoryGirl.create(:instrument_price_policy, :product => @instrument, :price_group => @price_group)
       @user          = FactoryGirl.create(:user)
-      @pg_member     = FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
       @account       = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
+      create(:account_price_group_member, account: @account, price_group: @price_group)
       @order         = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
       order_attrs    = FactoryGirl.attributes_for(:order_detail, :product_id => @instrument.id, :quantity => 1)
       @detail1       = @order.order_details.create(order_attrs.merge(:account => @account))
@@ -869,6 +869,7 @@ describe Reservation do
       @account_price_group_member1 = AccountPriceGroupMember.create(FactoryGirl.attributes_for(:account_price_group_member).merge(:account => @account1, :price_group => @price_group1))
 
       # Setup a second price groups with another account for this user
+      create(:account_price_group_member, account: @account1, price_group: @nupg)
       @user_price_group_member = UserPriceGroupMember.create(FactoryGirl.attributes_for(:user_price_group_member).merge(:user => @user, :price_group => @nupg))
 
       # Order against the first account

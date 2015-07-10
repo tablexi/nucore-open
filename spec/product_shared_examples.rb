@@ -1,4 +1,6 @@
 shared_examples_for "NonReservationProduct" do |product_type|
+  let(:account) { create(:setup_account) }
+
   before :each do
     # clear out default price groups so they don't get in the way
     PriceGroup.all.each { |pg| pg.delete }
@@ -16,8 +18,11 @@ shared_examples_for "NonReservationProduct" do |product_type|
     @product = FactoryGirl.create(product_type,
                                     :facility => @facility,
                                     :facility_account => @facility_account)
-    @order = FactoryGirl.create(:order, :created_by_user => @user, :user => @user)
-    @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product => @product, :quantity => 1))
+    @order = create(:order, account: account, created_by_user: @user, user: @user)
+    @order_detail = @order.order_details.create(attributes_for(:order_detail, account: account, product: @product, quantity: 1))
+
+    create(:account_price_group_member, account: @order.account, price_group: @price_group)
+    create(:account_price_group_member, account: @order.account, price_group: @price_group2)
   end
 
   context '#cheapest_price_policy' do
@@ -38,7 +43,7 @@ shared_examples_for "NonReservationProduct" do |product_type|
       it 'should find the cheapest price policy if the user is in all groups' do
         FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group3)
         FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group4)
-        @order_detail.price_groups.should == [@price_group, @price_group2, @price_group3, @price_group4]
+        expect(@order_detail.price_groups).to match_array([@price_group, @price_group2, @price_group3, @price_group4])
         @product.cheapest_price_policy(@order_detail).should == @pp_g4
       end
 
@@ -48,7 +53,7 @@ shared_examples_for "NonReservationProduct" do |product_type|
         base_pp=make_price_policy(:unit_cost => 1, :price_group => base_pg)
 
         [ base_pg , @price_group3, @price_group4 ].each do |pg|
-          FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => pg)
+          create(:account_price_group_member, account: account, price_group: pg)
         end
 
         [ @pp_g1, @pp_g2, @pp_g3, @pp_g4 ].each do |pp|
@@ -113,6 +118,9 @@ shared_examples_for "NonReservationProduct" do |product_type|
 end
 
 shared_examples_for "ReservationProduct" do |product_type|
+  let(:account) { create(:setup_account, owner: user) }
+  let(:user) { @user }
+
   before :each do
     # clear out default price groups so they don't get in the way
     PriceGroup.all.each { |pg| pg.delete }
@@ -132,8 +140,11 @@ shared_examples_for "ReservationProduct" do |product_type|
                                     :facility_account => @facility_account)
     @product.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule))
 
-    @order = FactoryGirl.create(:order, :created_by_user => @user, :user => @user)
-    @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product => @product))
+    @order = create(:order, account: account, created_by_user: @user, user: @user)
+    @order_detail = @order.order_details.create(attributes_for(:order_detail, account: account, product: @product))
+
+    create(:account_price_group_member, account: account, price_group: @price_group)
+    create(:account_price_group_member, account: account, price_group: @price_group2)
 
     @reservation = FactoryGirl.create(:reservation,
                                   :product => @product,
@@ -160,7 +171,7 @@ shared_examples_for "ReservationProduct" do |product_type|
       it 'should find the cheapest price policy if the user is in all groups' do
         FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group3)
         FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group4)
-        @order_detail.price_groups.should == [@price_group, @price_group2, @price_group3, @price_group4]
+        expect(@order_detail.price_groups).to match_array([@price_group, @price_group2, @price_group3, @price_group4])
         @product.cheapest_price_policy(@order_detail).should == @pp_g4
       end
 

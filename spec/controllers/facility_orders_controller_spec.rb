@@ -42,10 +42,13 @@ describe FacilityOrdersController do
       let(:price_group) { create(:price_group, facility: facility) }
 
       before :each do
-        create(:user_price_group_member, user: @director, price_group: price_group)
+        create(:account_price_group_member, account: account, price_group: price_group)
 
-        order_details.first.product.item_price_policies.create(attributes_for(
-          :item_price_policy, price_group_id: price_group.id))
+        order_details.each do |order_detail|
+          order_detail.update_attribute(:account_id, account.id)
+          order_detail.product.item_price_policies.create(attributes_for(
+            :item_price_policy, price_group_id: price_group.id))
+        end
 
         do_request
       end

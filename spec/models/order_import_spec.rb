@@ -29,6 +29,14 @@ describe OrderImport, :timecop_freeze do
     )
   end
 
+  let(:account) do
+    create(:nufs_account,
+      description: "dummy account",
+      account_number: '111-2222222-33333333-01',
+      account_users_attributes: account_users_attributes,
+    )
+  end
+
   let(:account_users_attributes) do
     account_users_attributes_hash(user: guest) +
     account_users_attributes_hash(
@@ -83,7 +91,7 @@ describe OrderImport, :timecop_freeze do
     grant_role(director, facility)
 
     price_group = facility.price_groups.create!(attributes_for(:price_group))
-    create(:user_price_group_member, user: guest, price_group: price_group)
+    create(:account_price_group_member, account: account, price_group: price_group)
     item.item_price_policies.create!(attributes_for(:item_price_policy,
       price_group_id: price_group.id,
       start_date: fiscal_year_beginning,
@@ -92,14 +100,6 @@ describe OrderImport, :timecop_freeze do
       price_group_id: price_group.id,
       start_date: fiscal_year_beginning,
     ))
-
-    create(:user_price_group_member, user: guest2, price_group: price_group)
-
-    create(:nufs_account,
-      description: "dummy account",
-      account_number: '111-2222222-33333333-01',
-      account_users_attributes: account_users_attributes,
-    )
   end
 
   shared_examples_for "it does not send notifications" do

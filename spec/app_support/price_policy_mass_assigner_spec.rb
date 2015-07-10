@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe PricePolicyMassAssigner do
   context ".assign_price_policies" do
-    let(:account) { create(:setup_account) }
+    let(:account) { create(:setup_account, owner: user) }
     let(:facility) { create(:facility) }
     let(:facility_account) do
       facility.facility_accounts.create(facility_account_attributes)
@@ -22,6 +22,7 @@ describe PricePolicyMassAssigner do
     end
     let(:order_detail) do
       create(:order_detail,
+        account: account,
         fulfilled_at: fulfilled_at,
         order: order,
         product: product,
@@ -37,7 +38,7 @@ describe PricePolicyMassAssigner do
 
     context "when compatible price policies exist" do
       before :each do
-        create(:user_price_group_member, user: user, price_group: price_group)
+        create(:account_price_group_member, account: account, price_group: price_group)
       end
 
       let!(:previous_price_policy) do

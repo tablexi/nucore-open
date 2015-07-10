@@ -31,7 +31,7 @@ describe OrderDetail do
 
   context "#assign_price_policy" do
     before :each do
-      create(:user_price_group_member, user: user, price_group: price_group)
+      create(:account_price_group_member, account: account, price_group: price_group)
       order_detail.update_attribute(:price_policy_id, nil)
     end
 
@@ -287,7 +287,7 @@ describe OrderDetail do
                                             facility_account_id: @facility_account.id)
         @price_group = create(:price_group, facility: @facility)
         create(:price_group_product, product: @instrument, price_group: @price_group)
-        UserPriceGroupMember.create!(price_group: @price_group, user: @user)
+        create(:account_price_group_member, account: account, price_group: @price_group)
         @pp=create(:instrument_price_policy, :product=> @instrument, price_group: @price_group)
         @rule = @instrument.schedule_rules.create(attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 24))
         @order_detail.reservation = create(:reservation,
@@ -320,7 +320,7 @@ describe OrderDetail do
     before(:each) do
       @account        = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
       @price_group    = create(:price_group, facility: @facility)
-      @pg_user_member = create(:user_price_group_member, user: @user, price_group: @price_group)
+      create(:account_price_group_member, account: account, price_group: @price_group)
       @item_pp        = @item.item_price_policies.create(attributes_for(:item_price_policy, price_group_id: @price_group.id))
       @order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10, price_policy_id: @item_pp.id)
     end
@@ -335,6 +335,7 @@ describe OrderDetail do
     context 'needs open account' do
       before :each do
         create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
+        create(:account_price_group_member, account: @order_detail.account, price_group: @price_group)
         define_open_account(@order_detail.product.account, @order_detail.account.account_number)
       end
 
@@ -366,7 +367,7 @@ describe OrderDetail do
      before(:each) do
       @account        = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
       @price_group    = create(:price_group, facility: @facility)
-      @pg_user_member = create(:user_price_group_member, user: @user, price_group: @price_group)
+      create(:account_price_group_member, account: account, price_group: @price_group)
       @order          = @user.orders.create(attributes_for(:order, facility_id: @facility.id, account_id: @account.id, created_by: @user.id))
       @service        = @facility.services.create(attributes_for(:service, facility_account_id: @facility_account.id))
       @service_pp     = @service.service_price_policies.create(attributes_for(:service_price_policy, price_group_id: @price_group.id))
@@ -499,7 +500,7 @@ describe OrderDetail do
 
       let(:order_details) do
         instruments.map do |instrument|
-          create(:order_detail, order: order, product: instrument)
+          create(:order_detail, account: order.account, order: order, product: instrument)
         end
       end
 
@@ -516,7 +517,7 @@ describe OrderDetail do
       end
 
       def create_price_policy(params)
-        create(:instrument_price_policy, { price_group: user.price_groups.first }.merge(params))
+        create(:instrument_price_policy, { price_group: account.price_groups.first }.merge(params))
       end
 
       before :each do
@@ -527,6 +528,7 @@ describe OrderDetail do
           instrument.reload
         end
 
+        create(:account_price_group_member, account: account, price_group: price_group)
         create_price_policy(product: instrument_without_actuals)
         create_price_policy(product: instrument_with_actuals, usage_rate: 1)
         create_price_policy(product: instrument_with_actuals_and_price_policy, usage_rate: 1)
@@ -612,7 +614,7 @@ describe OrderDetail do
 
     shared_examples_for "a product without reservations" do
       subject(:order_detail) do
-        create(:order_detail, order: order, product: product)
+        create(:order_detail, account: order.account, order: order, product: product)
       end
 
       context "with no price policy" do
@@ -628,10 +630,8 @@ describe OrderDetail do
 
         context "when adding a compatible price policy" do
           let!(:price_policy) do
-            create(price_policy_type,
-              price_group: user.price_groups.first,
-              product: product,
-            )
+            create(:account_price_group_member, account: account, price_group: price_group)
+            create(price_policy_type, price_group: price_group, product: product)
           end
 
           def assign_price_policy
@@ -686,7 +686,7 @@ describe OrderDetail do
 
       before :each do
         @price_group3 = create(:price_group, facility: @facility)
-        UserPriceGroupMember.create!(price_group: @price_group3, user: @user)
+        create(:account_price_group_member, account: account, price_group: @price_group3)
         create(:price_group_product, product: @item, price_group: @price_group3, reservation_window: nil)
         @order_detail.reload
       end
@@ -1111,7 +1111,7 @@ describe OrderDetail do
       start_date = Time.zone.now + 1.day
       setup_reservation facility, facility_account, account, user
       place_reservation facility, order_detail, start_date
-      create :user_price_group_member, user_id: user.id, price_group_id: @price_group.id
+      create(:account_price_group_member, account: account, price_group: @price_group)
       order_detail.update_attribute :statement_id, statement.id
     end
 
@@ -1374,7 +1374,7 @@ describe OrderDetail do
     before :each do
       order_detail.update_attribute(:product_id, instrument.id)
       order_detail.reservation = reservation
-      create(:user_price_group_member, user: user, price_group: price_group)
+      create(:account_price_group_member, account: account, price_group: price_group)
       order_detail.reload
     end
 

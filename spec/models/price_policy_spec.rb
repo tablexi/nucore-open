@@ -209,7 +209,7 @@ describe PricePolicy do
       @order    = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id))
       @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
       @price_group = FactoryGirl.create(:price_group, :facility => @facility)
-      UserPriceGroupMember.create!(:price_group => @price_group, :user => @user)
+      create(:account_price_group_member, account: @account, price_group: @price_group)
       FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
       @pp=FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group)
     end
