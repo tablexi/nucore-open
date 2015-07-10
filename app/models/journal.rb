@@ -111,10 +111,7 @@ class Journal < ActiveRecord::Base
   before_validation :set_facility_id, :on => :create, :if => :has_order_details_for_creation?
   after_create :create_new_journal_rows, :if => :has_order_details_for_creation?
 
-  has_attached_file       :file,
-                          :storage => :filesystem,
-                          :url => "#{ENV['RAILS_RELATIVE_URL_ROOT']}/:attachment/:id_partition/:style/:basename.:extension",
-                          :path => ":rails_root/public/:attachment/:id_partition/:style/:basename.:extension"
+  has_attached_file :file, Settings.paperclip.to_hash
 
   do_not_validate_attachment_file_type :file
 

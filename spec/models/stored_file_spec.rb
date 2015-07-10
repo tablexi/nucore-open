@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe StoredFile do
 
@@ -33,15 +33,36 @@ describe StoredFile do
     end
   end
 
-  it "should create file and store on disk with partitioned path" do
-    @facility         = FactoryGirl.create(:facility)
-    @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @item             = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
-    @creator          = FactoryGirl.create(:user)
-    @file1            = "#{Rails.root}/spec/files/template1.txt"
-    @file_upload      = @item.stored_files.create(:name => "File 1", :file => File.open(@file1), :file_type => "info",
-                                                  :creator => @creator)
-    assert @file_upload.valid?
-    assert @file_upload.file.url.match(/^\/files\/\d+\/\d+\/\d+\//)
+  context "when uploading" do
+    let(:facility) { create(:facility) }
+    let(:facility_account) do
+      facility.facility_accounts.create(attributes_for(:facility_account))
+    end
+    let(:item) do
+      facility.items.create(
+        attributes_for(:item, facility_account_id: facility_account.id)
+      )
+    end
+    let(:file1) { "#{Rails.root}/spec/files/template1.txt" }
+    let(:file_upload) do
+      item.stored_files.create(
+        name: "File 1",
+        file: File.open(file1),
+        file_type: "info",
+        creator: create(:user),
+      )
+    end
+
+    it "is valid" do
+      expect(file_upload).to be_valid
+    end
+
+    it "is stored with a partitioned path" do
+      expect(file_upload.file.url).to match(%r(\A/files/\d+/\d+/\d+/))
+    end
+
+    it "stored the file content" do
+      expect(file_upload.read).to eq(File.read(file1))
+    end
   end
 end
