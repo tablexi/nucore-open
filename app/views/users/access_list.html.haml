@@ -7,7 +7,7 @@
 = content_for :tabnav do
   = render partial: 'admin/shared/tabnav_users', locals: { secondary_tab: 'access_list' }
 
-%h1 #{@user.full_name} Access List
+%h1= t(:head, scope: 'users.access_list', name: @user.full_name)
 - if @products_by_type.blank?
   %p.notice= t('.no_products', name: @user.full_name)
 - else
@@ -26,6 +26,9 @@
             %tr.js--access-list-row
               %td.approval-column.approval-checkbox
                 = check_box_tag "approved_products[]", product.id, product.can_be_used_by?(@user)
-              %td.product-column= link_to product, [product.facility, product, :users]
+              %td.product-column
+                - if training_requested_for?(product)
+                  %span.label.label-important= t(:training_requested, scope: 'users.access_list')
+                = link_to product, [product.facility, product, :users]
               %td.scheduling-group-column= scheduling_group_select(product, @user) if product.has_access_list?
     = submit_tag t('.update_approvals.submit'), class: ['btn', 'btn-primary']

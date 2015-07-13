@@ -130,7 +130,13 @@ class UsersController < ApplicationController
   def access_list
     @facility = current_facility
     @products_by_type = @facility.products_requiring_approval_by_type
+    @training_requested_product_ids = @user.training_requests.pluck(:product_id)
   end
+
+  def training_requested_for?(product)
+    @training_requested_product_ids.include? product.id
+  end
+  helper_method :training_requested_for?
 
   # POST /facilities/:facility_id/users/:user_id/access_list/approvals
   def access_list_approvals
