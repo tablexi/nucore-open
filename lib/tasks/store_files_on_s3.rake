@@ -1,5 +1,5 @@
 namespace :paperclip do
-  def allow_task?
+  def paperclip_allow_task?
     if Settings.paperclip.storage == "fog"
       true
     else
@@ -33,7 +33,7 @@ namespace :paperclip do
 
   desc "Move files from local to S3"
   task move_to_s3: :environment do
-    next unless allow_task?
+    next unless paperclip_allow_task?
 
     Journal.where("file_file_name IS NOT NULL").each do |journal|
       push_to_s3(journal, journal.file_file_name)
