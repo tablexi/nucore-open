@@ -53,4 +53,37 @@ namespace :paperclip do
       push_to_s3(stored_file, stored_file.file_file_name.gsub(/#/, "-"))
     end
   end
+
+  namespace :mime do
+    desc "Derive MIME types from file extensions"
+    task update_from_file_extensions: :environment do
+      (Journal.where("file_file_name IS NOT NULL") + StoredFile.where("file_file_name IS NOT NULL")).each do |file|
+
+        print "#{file.class} #{file.id}: #{file.file_file_name} "
+
+        extension = File.extname(file.file_file_name).sub(/^\./, "")
+        if extension.blank?
+          puts "WARNING: the file extension is blank!"
+          next
+        end
+
+        mime_type = Mime::Type.lookup_by_extension(extension)
+        if mime_type.blank?
+          puts "WARNING: cannot look up extension #{extension}"
+          next
+        end
+
+        if file.file_content_type == mime_type.to_s
+          puts "is already set correctly to #{mime_type}"
+          next
+        end
+
+        if file.update_attribute(:file_content_type, mime_type.to_s)
+          puts "content type set to #{mime_type}"
+        else
+          puts "WARNING: COULD NOT set content type to #{mime_type}"
+        end
+      end
+    end
+  end
 end

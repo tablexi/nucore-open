@@ -155,7 +155,7 @@ class Ability
 private
 
   def order_details_ability(user, resource)
-    can [:show, :add_accessories], OrderDetail, :order => { :user_id => user.id }
+    can %i(add_accessories sample_results show template_results), OrderDetail, order: { user_id: user.id }
     can :manage, OrderDetail, :order => { :facility_id => resource.order.facility_id } if user.operator_of?(resource.facility)
     can :show, OrderDetail, :account => { :id => resource.account_id } if user.account_administrator_of?(resource.account)
   end

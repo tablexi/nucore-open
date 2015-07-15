@@ -187,11 +187,15 @@ Nucore::Application.routes.draw do
           get 'pricing', to: 'order_management/order_details#pricing'
           get 'files', to: 'order_management/order_details#files'
           post 'remove_from_journal', to: 'order_management/order_details#remove_from_journal'
+          get 'sample_results/:stored_file_id', to: 'order_management/order_details#sample_results', as: 'sample_results'
+          get 'template_results/:stored_file_id', to: 'order_management/order_details#template_results', as: 'template_results'
         end
       end
     end
 
-    resources :order_imports, :only => [ :new, :create ]
+    resources :order_imports, only: [:new, :create] do
+      get "error_report", to: "order_imports#error_report", on: :member
+    end
 
     resources :reservations, :controller => 'facility_reservations', :only => :index do
       collection do
@@ -295,6 +299,8 @@ Nucore::Application.routes.draw do
       get  '/order_file',        :to => 'order_details#order_file',        :as => 'order_file'
       post '/upload_order_file', :to => 'order_details#upload_order_file', :as => 'upload_order_file'
       get '/remove_order_file',  :to => 'order_details#remove_order_file', :as => 'remove_order_file'
+      get "sample_results/:stored_file_id", to: "order_details#sample_results", as: "sample_results"
+      get "template_results/:stored_file_id", to: "order_details#template_results", as: "template_results"
 
       resources :reservations, :except => [:index] do
         get '/move',               :to => 'reservations#earliest_move_possible'
@@ -322,6 +328,7 @@ Nucore::Application.routes.draw do
   post  '/facilities/:facility_id/:product/:product_id/files',                                          :to => 'file_uploads#create',                :as => 'add_product_file'
   post  '/facilities/:facility_id/:product/:product_id/uploader_files',                                 :to => 'file_uploads#uploader_create',       :as => 'add_uploader_file'
   match '/facilities/:facility_id/:product/:product_id/files/:id',                                      :to => 'file_uploads#destroy',               :as => 'remove_product_file', :via => :delete
+  get   '/facilities/:facility_id/:product/:product_id/files/:file_type/:id',                           :to => 'file_uploads#download',              :as => 'download_product_file'
   get   '/facilities/:facility_id/:product/:product_id/files/product_survey',                           :to => 'file_uploads#product_survey',        :as => 'product_survey'
   post  '/facilities/:facility_id/:product/:product_id/files/create_product_survey',                    :to => 'file_uploads#create_product_survey', :as => 'create_product_survey'
   put   '/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate',   :to => 'surveys#activate',                 :as => 'activate_survey'

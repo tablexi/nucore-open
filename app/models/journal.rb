@@ -90,6 +90,7 @@ class Journal < ActiveRecord::Base
     end
   end
 
+  include DownloadableFile
   include NUCore::Database::ArrayHelper
   include Overridable
 
@@ -110,10 +111,6 @@ class Journal < ActiveRecord::Base
 
   before_validation :set_facility_id, :on => :create, :if => :has_order_details_for_creation?
   after_create :create_new_journal_rows, :if => :has_order_details_for_creation?
-
-  has_attached_file :file, Settings.paperclip.to_hash
-
-  do_not_validate_attachment_file_type :file
 
   # Digs up journals pertaining to the passed in facilities
   #
@@ -179,19 +176,14 @@ class Journal < ActiveRecord::Base
     elsif is_successful? == false
       'Failed'
     else
-      is_reconciled? ? 'Successful, reconciled' : 'Successful, not reconciled'
+      reconciled? ? "Successful, reconciled" : "Successful, not reconciled"
     end
   end
 
-  def is_reconciled?
-    reconciled?
-  end
-
-  # Use this instead.
   def reconciled?
     if is_successful.nil?
       false
-    elsif is_successful? == false
+    elsif !successful?
       true
     else
       details = OrderDetail.find(:all, :conditions => ['journal_id = ? AND state <> ?', id, 'reconciled'])
@@ -207,6 +199,14 @@ class Journal < ActiveRecord::Base
       return true if (od.fulfilled_at < start_fy || od.fulfilled_at >= end_fy)
     end
     false
+  end
+
+  def submittable?
+    successful? && !reconciled?
+  end
+
+  def successful? # TODO Keep until we rename the is_successful column to successful
+    is_successful?
   end
 
   def to_s

@@ -4,5 +4,5 @@
       %i.icon-file-text{:data => { :toggle => 'tooltip' }, :title => t('order_details.show.link.view.order_form') }
 - od.stored_files.template_result.each do |stored_file|
   .inline-icons
-    = link_to stored_file.file.url do
+    = link_to template_result_path(stored_file) do
       %i.icon-file-text{:data => { :toggle => 'tooltip' }, :title => t('order_details.show.link.view.order_file') }

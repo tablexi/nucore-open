@@ -40,6 +40,6 @@
               = t(".in_process")
           %td
             - if order_import.error_file_present?
-              = link_to order_import.error_file.name, order_import.error_file.file.url
+              = link_to order_import.error_file.name, error_report_facility_order_import_path(current_facility, order_import)
 
   %p= will_paginate(@order_imports)

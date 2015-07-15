@@ -32,6 +32,60 @@ describe Journal do
     end
   end
 
+  describe "#submittable?" do
+    context "when is_successful is true" do
+      before { journal.is_successful = true }
+
+      context "when not reconciled" do
+        before { journal.stub(:reconciled?).and_return(false) }
+
+        it { expect(journal).to be_submittable }
+      end
+
+      context "when reconciled" do
+        before { journal.stub(:reconciled?).and_return(true) }
+
+        it { expect(journal).not_to be_submittable }
+      end
+    end
+
+    context "when is_successful is false" do
+      before { journal.is_successful = false }
+
+      context "when not reconciled" do
+        before { journal.stub(:reconciled?).and_return(false) }
+
+        it { expect(journal).not_to be_submittable }
+      end
+
+      context "when reconciled" do
+        before { journal.stub(:reconciled?).and_return(true) }
+
+        it { expect(journal).not_to be_submittable }
+      end
+    end
+  end
+
+  describe "#successful?" do
+    context "when is_successful is true" do
+      before { journal.is_successful = true }
+
+      it { expect(journal).to be_successful }
+    end
+
+    context "when is_successful is false" do
+      before { journal.is_successful = false }
+
+      it { expect(journal).not_to be_successful }
+    end
+
+    context "when is_successful is nil" do
+      before { journal.is_successful = nil }
+
+      it { expect(journal).not_to be_successful }
+    end
+  end
+
   context "with valid attributes" do
     it "can be created" do
       expect(journal).to be_valid

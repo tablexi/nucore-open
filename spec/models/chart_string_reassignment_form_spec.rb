@@ -44,7 +44,7 @@ describe ChartStringReassignmentForm do
       end
 
       it 'determines available accounts' do
-        expect(form.available_accounts).to eq(user.accounts)
+        expect(form.available_accounts).to match_array(user.accounts)
       end
     end
 

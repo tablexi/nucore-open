@@ -29,12 +29,7 @@
             %tr
               %td
                 %ul.unstyled
-                  - if Settings.financial.journal_format.xls
-                    %li=link_to 'XLS File', pending_journal.file.url
-                  - if Settings.financial.journal_format.xml
-                    %li=link_to 'XML File', facility_journal_path(current_facility, pending_journal, format: 'xml')
-                  - if Settings.financial.journal_format.csv
-                    %li=link_to 'CSV File', facility_journal_path(current_facility, pending_journal, format: 'csv')
+                  = render "downloads", facility: current_facility, journal: pending_journal, label_size: :short
               %td= human_datetime(pending_journal.created_at)
               - if all_facility?
                 %td= facility_abbreviations.join("<br>").html_safe

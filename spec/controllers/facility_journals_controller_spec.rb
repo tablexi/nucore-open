@@ -116,8 +116,9 @@ describe FacilityJournalsController do
           assigns[:journal].created_by.should == @admin.id
         end
 
-        it 'should have an is_successful value of true' do
-          assigns[:journal].is_successful? == true
+        it "has an is_successful value of true" do
+          expect(assigns[:journal].is_successful?).to be true
+          expect(assigns[:journal]).to be_successful
         end
 
         it 'should set all the order details to reconciled' do
@@ -140,9 +141,12 @@ describe FacilityJournalsController do
           assigns[:journal].updated_by.should == @director.id
           assigns[:journal].created_by.should == @admin.id
         end
-        it 'should have an is_successful value of true' do
-          assigns[:journal].is_successful == true
+
+        it "has an is_successful value of true" do
+          expect(assigns[:journal].is_successful).to be true
+          expect(assigns[:journal]).to be_successful
         end
+
         it 'should leave the orders as complete' do
           completed_status = OrderStatus.complete.first
           @order_detail1.reload.order_status.should == completed_status
@@ -163,13 +167,21 @@ describe FacilityJournalsController do
           assigns[:journal].updated_by.should == @director.id
           assigns[:journal].created_by.should == @admin.id
         end
-        it 'should have a successful value of false' do
-          assigns[:journal].is_successful.should_not be_nil
-          assigns[:journal].is_successful.should == false
-          # make sure it's really false, even in the database
-          @journal.reload.is_successful.should_not be_nil
-          @journal.reload.is_successful.should == false
+
+        it "has a successful value of false" do
+          expect(assigns[:journal].is_successful).not_to be_nil
+          expect(assigns[:journal].is_successful).to be false
+          expect(assigns[:journal]).not_to be_successful
         end
+
+        context "when reloading from the database" do
+          it "still has a successful value of false" do
+            expect(@journal.reload.is_successful).not_to be_nil
+            expect(@journal.reload.is_successful).to be false
+            expect(assigns[:journal].reload).not_to be_successful
+          end
+        end
+
         it 'should set all journal ids to nil for all order_details in a failed journal' do
           @order_detail1.reload.journal_id.should be_nil
           @order_detail3.reload.journal_id.should be_nil

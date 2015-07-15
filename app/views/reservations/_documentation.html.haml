@@ -5,4 +5,5 @@
       %h3= t('reservations.new.documentation')
       %ul.unstyled
         - docs.each do |stored_file|
-          %li.document= link_to stored_file.name, stored_file.file.url, :target => '_blank'
+          %li.document
+            = link_to stored_file.name, product_file_path(stored_file)

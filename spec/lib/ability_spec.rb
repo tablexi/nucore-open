@@ -63,6 +63,14 @@ describe Ability do
       end
     end
 
+    describe StoredFile do
+      describe "#download" do
+        let(:subject_resource) { build_stubbed(:stored_file) }
+
+        it { expect(ability.can?(:download, StoredFile)).to be true }
+      end
+    end
+
     it_behaves_like "it can manage training requests"
   end
 
@@ -108,5 +116,39 @@ describe Ability do
     let(:user) { create(:user) }
 
     it_behaves_like "it can create but not manage training requests"
+
+    %i(sample_result template_result).each do |file_type|
+      describe "downloading a #{file_type}" do
+        let(:controller_method) { file_type.to_s.pluralize.to_sym }
+        let(:subject_resource) { order_detail }
+
+        let(:stored_file) do
+          build(:stored_file,
+            file_type: file_type,
+            order_detail: order_detail,
+            product: product,
+          )
+        end
+        let(:order_detail) { order.order_details.first }
+        let(:order) { create(:purchased_order, product: product) }
+        let(:product) { create(:setup_instrument, facility: facility) }
+
+        context "for an order belonging to the user" do
+          let(:user) { order.user }
+
+          it "is allowed to download" do
+            expect(ability.can?(controller_method, order_detail)).to be true
+          end
+        end
+
+        context "for an order that does not belong to the user" do
+          let(:user) { create(:user) }
+
+          it "is not allowed to download" do
+            expect(ability.can?(controller_method, order_detail)).to be false
+          end
+        end
+      end
+    end
   end
 end

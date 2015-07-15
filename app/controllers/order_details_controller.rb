@@ -1,4 +1,6 @@
 class OrderDetailsController < ApplicationController
+  include OrderDetailFileDownload
+
   customer_tab  :all
 
   before_filter :authenticate_user!
@@ -109,4 +111,9 @@ class OrderDetailsController < ApplicationController
     end
   end
 
+  private
+
+  def ability_resource
+    @order_detail
+  end
 end

@@ -1,11 +1,13 @@
 class OrderManagement::OrderDetailsController < ApplicationController
+  include OrderDetailFileDownload
+
   load_resource :facility, :find_by => :url_name
   load_resource :order, :through => :facility
   load_resource :order_detail, :through => :order
 
   helper_method :edit_disabled?
 
-  before_filter :authorize_order_detail
+  before_filter :authorize_order_detail, except: %i(sample_results template_results)
   before_filter :load_accounts, :only => [:edit, :update]
   before_filter :load_order_statuses, :only => [:edit, :update]
 

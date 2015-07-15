@@ -191,6 +191,16 @@ en:
           number: "Account Number"
 
   facility_journals:
+    downloads:
+      csv:
+        short: CSV
+        long: "Download CSV File"
+      xls:
+        short: XLS
+        long: "Download XLS File"
+      xml:
+        short: XML
+        long: "Download XML File"
     new:
       instructions: Select the orders that you wish to journal. Only one journal per-facility may be pending at a time. Please note that selected orders may not span multiple fiscal years.
       not_closed: You may not generate a new journal until the pending journal is closed.

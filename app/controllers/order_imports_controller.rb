@@ -28,6 +28,14 @@ class OrderImportsController < ApplicationController
     redirect_to new_facility_order_import_path
   end
 
+  def error_report
+    if order_import.error_file_present?
+      redirect_to order_import.error_file_download_url
+    else
+      raise ActiveRecord::RecordNotFound
+    end
+  end
+
   private
 
   def create_order_import!
@@ -51,6 +59,10 @@ class OrderImportsController < ApplicationController
 
   def get_order_imports
     @current_facility.order_imports.order("created_at DESC")
+  end
+
+  def order_import
+    @order_import ||= current_facility.order_imports.find(params[:id])
   end
 
   def process_order_import!

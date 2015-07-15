@@ -1,10 +1,10 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'journals' }
+  = render "admin/shared/sidenav_billing", sidenav_tab: "journals"
 
-%h2= t('.head.h2', :journal => @journal)
+%h2= t(".head.h2", journal: @journal)
 .row
   .span5
     = readonly_form_for :journal do |f|
@@ -16,62 +16,57 @@
       = f.input :status_string
   .span4
     .well
-      - if Settings.financial.journal_format.xls
-        %p=link_to 'Download XLS File', @journal.file.url
-      - if Settings.financial.journal_format.xml
-        %p=link_to 'Download XML File', facility_journal_path(current_facility, @journal, :format => 'xml')
-      - if Settings.financial.journal_format.csv
-        %p=link_to 'Download CSV File', facility_journal_path(current_facility, @journal, :format => 'csv')
+      = render "downloads", facility: current_facility, journal: @journal, label_size: :long
 
 %hr
 
-%h3= t('.head.h3')
-%p= t('.instruct.orders')
+%h3= t(".head.h3")
+%p= t(".instruct.orders")
 
 - if @journal.open?
-  %p= t('.journal.pending')
-- elsif !@journal.is_successful?
-  %p= t('.journal.failed')
-- elsif @journal.is_successful? && @journal.is_reconciled?
-  %p= t('.journal.success')
+  %p= t(".journal.pending")
+- elsif !@journal.successful?
+  %p= t(".journal.failed")
+- elsif @journal.successful? && @journal.reconciled?
+  %p= t(".journal.success")
 - else
-  %p= t('.instruct.reconcile')
+  %p= t(".instruct.reconcile")
 
 - if @order_details.empty?
-  %p.notice= t('.notice')
+  %p.notice= t(".notice")
 - else
-  = form_tag facility_journal_reconcile_path(current_facility, @journal), :method => :post do
+  = form_tag facility_journal_reconcile_path(current_facility, @journal), method: :post do
+    - journal_is_submittable = @journal.submittable?
     %table.table.table-striped.table-hover
       %thead
-        - is_submittable = @journal.is_successful? && !@journal.is_reconciled?
-        - if is_submittable
+        - if journal_is_submittable
           %tr.borderless
-            %th{:colspan => 3}= link_to 'Select All', 'JavaScript:void(0);', :class => 'select_all'
-            %th.currency{:colspan => 3}= submit_tag t('.submit'), class: 'btn btn-primary'
+            %th{colspan: 3}= link_to "Select All", "JavaScript:void(0);", class: "select_all"
+            %th.currency{colspan: 3}= submit_tag t(".submit"), class: "btn btn-primary"
         %tr
-          - if is_submittable
+          - if journal_is_submittable
             %th
-          %th= t('.th.order')
-          %th= t('.th.fulfilled')
-          %th= t('.th.account')
-          %th= t('.th.total')
-          %th= t('.th.reconciled')
+          %th= t(".th.order")
+          %th= t(".th.fulfilled")
+          %th= t(".th.account")
+          %th= t(".th.total")
+          %th= t(".th.reconciled")
       %tbody
-        - @order_details.each do |od|
-          - disable = od.reconciled? || @journal.open?
+        - @order_details.each do |order_detail|
+          - disable = order_detail.reconciled? || @journal.open?
           %tr
-            - if is_submittable
-              %td= check_box_tag "order_detail_ids[]", od.id, (od.reconciled? ? true : false), {:disabled => (od.reconciled? ? true : false), :class => (od.reconciled? ? '' : 'toggle')}
+            - if journal_is_submittable
+              %td= check_box_tag "order_detail_ids[]", order_detail.id, (order_detail.reconciled? ? true : false), disabled: (order_detail.reconciled? ? true : false), class: (order_detail.reconciled? ? "" : "toggle")
             %td
-              = link_to od, facility_order_path(od.order.facility.url_name, od.order_id)
-              - if od.note.present?
+              = link_to order_detail, facility_order_path(order_detail.order.facility.url_name, order_detail.order_id)
+              - if order_detail.note?
                 %br
-                = od.note
-            %td= human_datetime(od.fulfilled_at)
-            %td= od.account
-            %td= number_to_currency od.total
-            %td= od.reconciled? ? 'Yes' : 'No'
-        - if is_submittable
+                = order_detail.note
+            %td= human_datetime(order_detail.fulfilled_at)
+            %td= order_detail.account
+            %td= number_to_currency(order_detail.total)
+            %td= order_detail.reconciled? ? t("boolean.true") : t("boolean.false")
+        - if journal_is_submittable
           %tr.borderless
-            %td{:colspan => 3}
-            %td.currency{:colspan => 3}= submit_tag t('.submit')
+            %td{colspan: 3}
+            %td.currency{colspan: 3}= submit_tag t(".submit")

@@ -11,6 +11,8 @@ class OrderImport < ActiveRecord::Base
   validates_presence_of :upload_file, :created_by
   attr_accessor :error_report
 
+  delegate :download_url, to: :error_file, prefix: true, allow_nil: true
+
   def fetch_or_create_order!(row_importer)
     order_cache[row_importer.order_key] || create_order_from_imported_row!(row_importer)
   end
@@ -196,6 +198,7 @@ class OrderImport < ActiveRecord::Base
   def store_error_report
     self.error_file = StoredFile.new(
       file: StringIO.new(self.error_report),
+      file_content_type: "text/csv",
       file_type: "import_error",
       name: "error_report.csv",
       created_by: creator.id,

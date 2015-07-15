@@ -5,7 +5,7 @@ class FileUploadsController < ApplicationController
   before_filter       :init_current_facility
   skip_before_filter  :verify_authenticity_token, :only => :create
 
-  load_and_authorize_resource :class => StoredFile, :except => :uploader_create
+  load_and_authorize_resource class: StoredFile, except: [:download, :uploader_create]
 
   layout 'two_column'
 
@@ -21,6 +21,20 @@ class FileUploadsController < ApplicationController
     @klass   = params[:product]
     @product = current_facility.send(@klass).find_by_url_name!(params[:product_id])
     @file    = @product.stored_files.new(:file_type => params[:file_type])
+  end
+
+  # GET /facilities/:facility_id/:product/:product_id/files/:file_type/:id
+  def download
+    redirect_to(
+      current_facility
+        .products
+        .where(type: params[:product].capitalize.singularize)
+        .find_by_url_name!(params[:product_id]) # TODO update to #find_by for Rails 4
+        .stored_files
+        .where(file_type: params[:file_type])
+        .find(params[:id])
+        .download_url
+    )
   end
 
   # POST /facilities/1/services/3/files
@@ -49,7 +63,7 @@ class FileUploadsController < ApplicationController
     authorize! :uploader_create, @upload
     @upload.save!
 
-    render :text => @upload.file.url
+    render text: @upload.download_url
   end
 
   # GET /facilities/1/services/3/files/survey_upload

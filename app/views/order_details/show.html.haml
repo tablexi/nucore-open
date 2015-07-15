@@ -80,7 +80,8 @@
             - if @order_detail.survey_completed?
               .order-detail-extra= link_to(t('.link.view.order_form'), @order_detail.external_service_receiver.show_url, :target => '_blank')
             - unless @order_detail.stored_files.template_result.empty?
-              .order-detail-extra= link_to(t('.link.view.order_file'), @order_detail.stored_files.template_result.first.file.url)
+              .order-detail-extra
+                =link_to t(".link.view.order_file"), order_detail_first_template_result_path(@order_detail)
             - unless @order_detail.note.blank?
               .order-detail-extra.order-detail-note= "Note: #{@order_detail.note}"
           %td=h @order_detail.order_status

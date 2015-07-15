@@ -1,0 +1,3 @@
+- %i(xls xml csv).each do |format|
+  - if Settings.financial.journal_format.public_send(format)
+    %p= link_to t(".#{format}.#{label_size}"), facility_journal_path(facility, journal, format: format)
