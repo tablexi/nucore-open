@@ -3,25 +3,21 @@
     window.activeTab = #{@selected_index || 0}
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 %p.error#error-msg
 
-= modelless_form_for :url => request.fullpath, :remote => true, :html => { :id => 'refresh-form', :class => 'reports-form' }, :defaults => { :required => false }  do |f|
+= modelless_form_for url: request.fullpath, remote: true, html: { id: "refresh-form", class: "reports-form" }, defaults: { required: false } do |f|
   %ul.inline.options#filter
-    = render :partial => 'report_controls', :locals => { :form => f }
+    = render "report_controls", form: f
 
   %ul#control.options.inline
     %li
-      = link_to t('reports.export.export'), '#', :id => 'export'
+      = link_to t("reports.export.export"), "#", id: "export"
     %li
-      - if controller_name == 'general_reports' && can?(:export_all, ReportsController)
-        = link_to t('reports.export.raw'), '#', :id => 'export-all'
+      - if controller_name == "general_reports" && can?(:export_all, ReportsController)
+        = link_to t("reports.export.raw"), "#", id: "export-all"
         = hidden_field_tag :email_to_address, current_user.email
 
   %div#tabs
-    = render :partial => 'report_tabs'
-
-
-
-
+    = render "report_tabs"
