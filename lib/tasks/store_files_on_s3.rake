@@ -35,11 +35,21 @@ namespace :paperclip do
   task move_to_s3: :environment do
     next unless paperclip_allow_task?
 
-    Journal.where("file_file_name IS NOT NULL").each do |journal|
+    journals = Journal.where("file_file_name IS NOT NULL")
+    stored_files = StoredFile.where("file_file_name IS NOT NULL")
+
+    file_index = 0
+    file_count = journals.count + stored_files.count
+
+    journals.each do |journal|
+      file_index += 1
+      puts "File #{file_index} of #{file_count}"
       push_to_s3(journal, journal.file_file_name)
     end
 
-    StoredFile.where("file_file_name IS NOT NULL").each do |stored_file|
+    stored_files.each do |stored_file|
+      file_index += 1
+      puts "File #{file_index} of #{file_count}"
       push_to_s3(stored_file, stored_file.file_file_name.gsub(/#/, "-"))
     end
   end
