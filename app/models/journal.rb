@@ -176,15 +176,10 @@ class Journal < ActiveRecord::Base
     elsif is_successful? == false
       'Failed'
     else
-      is_reconciled? ? 'Successful, reconciled' : 'Successful, not reconciled'
+      reconciled? ? "Successful, reconciled" : "Successful, not reconciled"
     end
   end
 
-  def is_reconciled?
-    reconciled?
-  end
-
-  # Use this instead.
   def reconciled?
     if is_successful.nil?
       false
