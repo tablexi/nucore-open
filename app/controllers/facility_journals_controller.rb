@@ -124,6 +124,8 @@ class FacilityJournalsController < ApplicationController
         set_csv_headers("#{@filename}.csv")
       end
 
+      format.xls { redirect_to @journal.download_url }
+
       format.any { @order_details = @journal.order_details }
     end
   end

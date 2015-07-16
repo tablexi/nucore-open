@@ -17,7 +17,7 @@
   .span4
     .well
       - if Settings.financial.journal_format.xls
-        %p=link_to t(".download.xls"), @journal.file.url
+        %p=link_to t(".download.xls"), facility_journal_path(current_facility, @journal, format: :xls)
       - if Settings.financial.journal_format.xml
         %p=link_to t(".download.xml"), facility_journal_path(current_facility, @journal, format: "xml")
       - if Settings.financial.journal_format.csv

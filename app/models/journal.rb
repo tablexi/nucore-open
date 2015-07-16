@@ -144,6 +144,14 @@ class Journal < ActiveRecord::Base
     return pending_facility_ids
   end
 
+  def download_url
+    file.send(:directory).files.get_url(
+      file.path,
+      10.seconds.from_now,
+      query: { "response-content-disposition" => "attachment" },
+    )
+  end
+
   def facility_ids
     if facility_id?
       [facility_id]
