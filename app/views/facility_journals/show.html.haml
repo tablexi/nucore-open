@@ -16,12 +16,9 @@
       = f.input :status_string
   .span4
     .well
-      - if Settings.financial.journal_format.xls
-        %p=link_to t(".download.xls"), facility_journal_path(current_facility, @journal, format: :xls)
-      - if Settings.financial.journal_format.xml
-        %p=link_to t(".download.xml"), facility_journal_path(current_facility, @journal, format: "xml")
-      - if Settings.financial.journal_format.csv
-        %p=link_to t(".download.csv"), facility_journal_path(current_facility, @journal, format: "csv")
+      - %i(xls xml csv).each do |format|
+        - if Settings.financial.journal_format.public_send(format)
+          %p= link_to t(".download.#{format}"), facility_journal_path(current_facility, @journal, format: format)
 
 %hr
 
