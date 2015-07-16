@@ -9,10 +9,20 @@ module DownloadableFile
   end
 
   def download_url
-    file.send(:directory).files.get_url(
-      file.path,
-      10.seconds.from_now,
-      query: { "response-content-disposition" => "attachment" },
-    )
+    if fog?
+      file.send(:directory).files.get_url(
+        file.path,
+        10.seconds.from_now,
+        query: { "response-content-disposition" => "attachment" },
+      )
+    else
+      file.url
+    end
+  end
+
+  private
+
+  def fog?
+    Settings.paperclip.storage == "fog"
   end
 end
