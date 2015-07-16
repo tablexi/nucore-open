@@ -209,6 +209,10 @@ class Journal < ActiveRecord::Base
     false
   end
 
+  def submittable?
+    is_successful? && !reconciled?
+  end
+
   def to_s
     id.to_s
   end
