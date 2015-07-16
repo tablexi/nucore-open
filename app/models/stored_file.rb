@@ -19,6 +19,14 @@ class StoredFile < ActiveRecord::Base
   scope :import_upload,     :conditions => {:file_type => 'import_upload'}
   scope :import_error,      :conditions => {:file_type => 'import_error'}
 
+  def download_url
+    file.send(:directory).files.get_url(
+      file.path,
+      10.seconds.from_now,
+      query: { "response-content-disposition" => "attachment" },
+    )
+  end
+
   def read
     Paperclip.io_adapters.for(file).read
   end

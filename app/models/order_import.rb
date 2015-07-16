@@ -11,6 +11,8 @@ class OrderImport < ActiveRecord::Base
   validates_presence_of :upload_file, :created_by
   attr_accessor :error_report
 
+  delegate :download_url, to: :error_file, prefix: true, allow_nil: true
+
   def fetch_or_create_order!(row_importer)
     order_cache[row_importer.order_key] || create_order_from_imported_row!(row_importer)
   end

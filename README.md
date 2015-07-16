@@ -66,6 +66,7 @@ Welcome to NU Core! This guide will help you get a development environment up an
         aws_access_key_id: YOUR_S3_KEY_GOES_HERE
         aws_secret_access_key: YOUR_S3_SECRET_KEY_GOES_HERE
       fog_directory: YOUR_S3_BUCKET_NAME_GOES_HERE
+      fog_public: false
       path: ":class/:attachment/:id_partition/:style/:safe_filename"
     ```
 

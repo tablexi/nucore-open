@@ -191,7 +191,11 @@ Nucore::Application.routes.draw do
       end
     end
 
-    resources :order_imports, :only => [ :new, :create ]
+    resources :order_imports, only: [:new, :create] do
+      member do
+        get "error_report", to: "order_imports#error_report"
+      end
+    end
 
     resources :reservations, :controller => 'facility_reservations', :only => :index do
       collection do
