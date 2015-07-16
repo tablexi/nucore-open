@@ -225,6 +225,10 @@ en:
         suspended: "Account is suspended"
         expired: "Account is expired"
     show:
+      download:
+        csv: "Download CSV File"
+        xls: "Download XLS File"
+        xml: "Download XML File"
       head:
         h2: "Journal #%{journal} Details"
         h3: "Reconcile Orders"
