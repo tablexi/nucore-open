@@ -90,6 +90,7 @@ class Journal < ActiveRecord::Base
     end
   end
 
+  include DownloadableFile
   include NUCore::Database::ArrayHelper
   include Overridable
 
@@ -110,10 +111,6 @@ class Journal < ActiveRecord::Base
 
   before_validation :set_facility_id, :on => :create, :if => :has_order_details_for_creation?
   after_create :create_new_journal_rows, :if => :has_order_details_for_creation?
-
-  has_attached_file :file, Settings.paperclip.to_hash
-
-  do_not_validate_attachment_file_type :file
 
   # Digs up journals pertaining to the passed in facilities
   #
@@ -142,14 +139,6 @@ class Journal < ActiveRecord::Base
     pending_facility_ids = Journal.connection.select_values(pending_facility_ids_sql)
 
     return pending_facility_ids
-  end
-
-  def download_url
-    file.send(:directory).files.get_url(
-      file.path,
-      10.seconds.from_now,
-      query: { "response-content-disposition" => "attachment" },
-    )
   end
 
   def facility_ids
