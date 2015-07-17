@@ -31,7 +31,7 @@ describe Reservations::DurationChangeValidations do
       end
     end
 
-    context "with an ongoing reseration" do
+    context "with an ongoing reservation" do
       let(:reserve_start_at) { 30.minutes.ago }
       let(:reserve_end_at) { 40.minutes.from_now }
 
@@ -118,7 +118,7 @@ describe Reservations::DurationChangeValidations do
       it { expect(validator).to be_valid }
     end
 
-    context "with an ongoing reseration" do
+    context "with an ongoing reservation" do
       before do
         reservation.assign_attributes(
           reserve_start_at: 30.minutes.ago,
