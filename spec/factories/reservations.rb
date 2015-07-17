@@ -31,6 +31,10 @@ FactoryGirl.define do
       running
       actual_start_at { reserve_start_at - 5.minutes }
     end
+
+    trait :tomorrow do
+      reserve_start_at { 1.day.from_now }
+    end
   end
 
   factory :setup_reservation, :class => Reservation, :parent => :reservation do

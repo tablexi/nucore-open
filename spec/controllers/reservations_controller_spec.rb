@@ -4,6 +4,10 @@ require 'controller_spec_helper'
 describe ReservationsController do
   include DateHelper
 
+  let(:instrument) { @instrument }
+  let(:order) { @order }
+  let(:order_detail) { order.order_details.first }
+
   render_views
 
   before(:all) { create_users }
@@ -948,28 +952,32 @@ describe ReservationsController do
     end
   end
 
-
-  context 'move' do
-    before :each do
-      @method=:post
-      @action=:move
-      @reservation  = @instrument.reservations.create(:reserve_start_at => Time.zone.now+1.day, :order_detail => @order_detail,
-                                                      :duration_value => 60, :duration_unit => 'minutes')
-      @earliest=@reservation.earliest_possible
-      @reservation.reserve_start_at.should_not == @earliest.reserve_start_at
-      @reservation.reserve_end_at.should_not == @earliest.reserve_end_at
-      @params.merge!(:reservation_id => @reservation.id)
+  describe "#move" do
+    let(:reservation) do
+      create(:reservation, :tomorrow, product: instrument, order_detail: order_detail)
     end
 
-    it_should_allow :guest, 'to move a reservation' do
-      assigns(:order).should == @order
-      assigns(:order_detail).should == @order_detail
-      assigns(:instrument).should == @instrument
-      assigns(:reservation).should == @reservation
-      human_datetime(assigns(:reservation).reserve_start_at).should == human_datetime(@earliest.reserve_start_at)
-      human_datetime(assigns(:reservation).reserve_end_at).should == human_datetime(@earliest.reserve_end_at)
+    before(:each) do
+      @method = :post
+      @action = :move
+      expect(reservation.reserve_start_at)
+        .not_to eq(reservation.earliest_possible.reserve_start_at)
+      expect(reservation.reserve_end_at)
+        .not_to eq(reservation.earliest_possible.reserve_end_at)
+      @params.merge!(reservation_id: reservation.id)
+    end
+
+    it_should_allow :guest, "to move a reservation" do
+      expect(assigns(:order)).to eq(order)
+      expect(assigns(:order_detail)).to eq(order_detail)
+      expect(assigns(:instrument)).to eq(instrument)
+      expect(assigns(:reservation)).to eq(reservation)
+      expect(human_datetime(assigns(:reservation).reserve_start_at))
+        .to eq(human_datetime(reservation.earliest_possible.reserve_start_at))
+      expect(human_datetime(assigns(:reservation).reserve_end_at))
+        .to eq(human_datetime(reservation.earliest_possible.reserve_end_at))
       should set_the_flash
-      assert_redirected_to reservations_status_path(:status => 'upcoming')
+      assert_redirected_to reservations_status_path(status: "upcoming")
     end
   end
 
