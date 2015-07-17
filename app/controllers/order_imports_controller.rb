@@ -32,7 +32,7 @@ class OrderImportsController < ApplicationController
     if order_import.error_file_present?
       redirect_to order_import.error_file_download_url
     else
-      render_404
+      raise ActiveRecord::RecordNotFound
     end
   end
 
