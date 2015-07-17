@@ -31,7 +31,7 @@ class Reservation < ActiveRecord::Base
   delegate :note, :ordered_on_behalf_of?, :complete?, :account, :order,
       :problem?, :complete!, :to => :order_detail, :allow_nil => true
 
-  delegate :user, :account, :to => :order, :allow_nil => true
+  delegate :account, :in_cart?, :user, to: :order, allow_nil: true
   delegate :facility, :to => :product, :allow_nil => true
   delegate :lock_window, to: :product, prefix: true
   delegate :owner, :to => :account, :allow_nil => true

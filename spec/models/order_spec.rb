@@ -479,4 +479,18 @@ describe Order do
       @order2.merge_order.should == @order
     end
   end
+
+  describe "#in_cart?" do
+    context "when ordered_at is set" do
+      subject(:order) { build(:order, ordered_at: Time.zone.now) }
+
+      it { expect(order).not_to be_in_cart }
+    end
+
+    context "when ordered_at is not set" do
+      subject(:order) { build(:order, ordered_at: nil) }
+
+      it { expect(order).to be_in_cart }
+    end
+  end
 end
