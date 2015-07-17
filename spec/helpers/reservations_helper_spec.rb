@@ -12,7 +12,17 @@ describe ReservationsHelper do
       context "and reserve_end_at is in the past" do
         subject(:reservation) { create(:setup_reservation, :yesterday) }
 
-        it { expect(end_time_disabled?(reservation)).to be true }
+        context "and the reservation is in a cart" do
+          before { reservation.order.ordered_at = nil }
+
+          it { expect(end_time_disabled?(reservation)).to be false }
+        end
+
+        context "and the reservation has been ordered" do
+          before { reservation.order.ordered_at = Time.zone.now }
+
+          it { expect(end_time_disabled?(reservation)).to be true }
+        end
       end
 
       context "and reserve_end_at is in the future" do
@@ -38,7 +48,17 @@ describe ReservationsHelper do
       context "and reserve_start_at is in the past" do
         subject(:reservation) { create(:setup_reservation, :yesterday) }
 
-        it { expect(start_time_disabled?(reservation)).to be true }
+        context "and the reservation is in a cart" do
+          before { reservation.order.ordered_at = false }
+
+          it { expect(start_time_disabled?(reservation)).to be false }
+        end
+
+        context "and the reservation has been ordered" do
+          before { reservation.order.ordered_at = Time.zone.now }
+
+          it { expect(start_time_disabled?(reservation)).to be true }
+        end
       end
 
       context "and reserve_start_at is in the future" do
