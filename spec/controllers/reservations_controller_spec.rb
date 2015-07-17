@@ -7,6 +7,7 @@ describe ReservationsController do
   let(:instrument) { @instrument }
   let(:order) { @order }
   let(:order_detail) { order.order_details.first }
+  let(:reservation) { @reservation }
 
   render_views
 
@@ -735,52 +736,58 @@ describe ReservationsController do
 
     end
 
-
-    context 'edit' do
-
-      before :each do
+    describe "#edit" do
+      before(:each) do
         @method = :get
         @action = :edit
-        @params.merge!(:id => @reservation.id)
+        @params.merge!(id: reservation.id)
       end
 
       it_should_allow_all facility_users do
-        assigns[:reservation].should == @reservation
-        assigns[:order_detail].should == @reservation.order_detail
-        assigns[:order].should == @reservation.order_detail.order
+        expect(assigns[:reservation]).to eq(reservation)
+        expect(assigns[:order_detail]).to eq(reservation.order_detail)
+        expect(assigns[:order]).to eq(reservation.order_detail.order)
         should respond_with :success
       end
 
-      it "redirects to show page if reservation is canceled" do
-        @reservation.update_attributes(:canceled_at => Time.zone.now - 1.day)
-        sign_in @admin
-        do_request
-        expect(response).to redirect_to [@order, @order_detail, @reservation]
-      end
-
-      context "with a past reservation" do
-        before do
-          @reservation.assign_attributes(
-            reserve_start_at: Time.zone.now - 1.day,
-            reserve_end_at: Time.zone.now - 1.day + 1.hour
-          )
-          @reservation.save(validate: false)
-        end
-
-        it "allows editing by an admin" do
+      context "when the reservation is canceled" do
+        before(:each) do
+          reservation.update_attribute(:canceled_at, 1.day.ago)
           sign_in @admin
           do_request
-          expect(response.response_code).to eq 200
         end
 
-        it "redirects non-admins" do
-          sign_in @staff
-          do_request
-          expect(response.response_code).to eq 302
+        it "redirects to the show page" do
+          expect(response).to redirect_to([order, order_detail, reservation])
+        end
+      end
+
+      context "when the reservation is in the past" do
+        before(:each) do
+          reservation.reserve_start_at = 24.hours.ago
+          reservation.reserve_end_at = 23.hours.ago
+          reservation.save(validate: false)
+        end
+
+        context "when the user is an admin" do
+          before(:each) do
+            sign_in @admin
+            do_request
+          end
+
+          it { expect(response.response_code).to eq(200) }
+        end
+
+        context "when the user is not an admin" do
+          before(:each) do
+            sign_in @staff
+            do_request
+          end
+
+          it { expect(response.response_code).to eq(302) }
         end
       end
     end
-
 
     context 'update' do
 
