@@ -10,6 +10,13 @@ module DownloadableFile
 
   def download_url
     if fog?
+      # This is a workaround due to a bug or limitation in fog to generate a
+      # private, expiring URL and have it force a download.
+      #
+      # This suggested technique is not returning a valid URL:
+      #   https://github.com/fog/fog/issues/1776#issuecomment-16868662
+      # For more background:
+      #   https://github.com/tablexi/chidry/pull/422#issuecomment-74940630
       file.send(:directory).files.get_url(
         file.path,
         10.seconds.from_now,
