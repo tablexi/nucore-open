@@ -183,7 +183,7 @@ class Journal < ActiveRecord::Base
   def reconciled?
     if is_successful.nil?
       false
-    elsif is_successful? == false
+    elsif !successful?
       true
     else
       details = OrderDetail.find(:all, :conditions => ['journal_id = ? AND state <> ?', id, 'reconciled'])
@@ -202,7 +202,7 @@ class Journal < ActiveRecord::Base
   end
 
   def submittable?
-    is_successful? && !reconciled?
+    successful? && !reconciled?
   end
 
   def successful? # TODO Keep until we rename the is_successful column to successful

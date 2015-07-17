@@ -27,9 +27,9 @@
 
 - if @journal.open?
   %p= t(".journal.pending")
-- elsif !@journal.is_successful?
+- elsif !@journal.successful?
   %p= t(".journal.failed")
-- elsif @journal.is_successful? && @journal.reconciled?
+- elsif @journal.successful? && @journal.reconciled?
   %p= t(".journal.success")
 - else
   %p= t(".instruct.reconcile")

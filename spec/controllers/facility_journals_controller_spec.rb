@@ -118,6 +118,7 @@ describe FacilityJournalsController do
 
         it 'should have an is_successful value of true' do
           assigns[:journal].is_successful? == true
+          expect(assigns[:journal]).to be_successful
         end
 
         it 'should set all the order details to reconciled' do
@@ -142,6 +143,7 @@ describe FacilityJournalsController do
         end
         it 'should have an is_successful value of true' do
           assigns[:journal].is_successful == true
+          expect(assigns[:journal]).to be_successful
         end
         it 'should leave the orders as complete' do
           completed_status = OrderStatus.complete.first
@@ -166,9 +168,11 @@ describe FacilityJournalsController do
         it 'should have a successful value of false' do
           assigns[:journal].is_successful.should_not be_nil
           assigns[:journal].is_successful.should == false
+          expect(assigns[:journal]).not_to be_successful
           # make sure it's really false, even in the database
           @journal.reload.is_successful.should_not be_nil
           @journal.reload.is_successful.should == false
+          expect(assigns[:journal].reload).not_to be_successful
         end
         it 'should set all journal ids to nil for all order_details in a failed journal' do
           @order_detail1.reload.journal_id.should be_nil
