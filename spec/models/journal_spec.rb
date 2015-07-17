@@ -74,6 +74,26 @@ describe Journal do
     end
   end
 
+  describe "#successful?" do
+    context "when is_successful is true" do
+      before { journal.is_successful = true }
+
+      it { expect(journal).to be_successful }
+    end
+
+    context "when is_successful is false" do
+      before { journal.is_successful = false }
+
+      it { expect(journal).not_to be_successful }
+    end
+
+    context "when is_successful is nil" do
+      before { journal.is_successful = nil }
+
+      it { expect(journal).not_to be_successful }
+    end
+  end
+
   context "with valid attributes" do
     it "can be created" do
       expect(journal).to be_valid

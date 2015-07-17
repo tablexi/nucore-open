@@ -205,6 +205,10 @@ class Journal < ActiveRecord::Base
     is_successful? && !reconciled?
   end
 
+  def successful? # TODO Keep until we rename the is_successful column to successful
+    is_successful?
+  end
+
   def to_s
     id.to_s
   end
