@@ -27,6 +27,28 @@ describe Reservation do
     Reservation.any_instance.stub(:admin?).and_return(false)
   end
 
+  describe "#can_edit?" do
+    context "when the reservation has been persisted" do
+      context "and has been canceled" do
+        subject(:reservation) { create(:setup_reservation, :canceled) }
+
+        it { expect(reservation).not_to be_can_edit }
+      end
+
+      context "and has not been canceled" do
+        subject(:reservation) { create(:setup_reservation) }
+
+        it { expect(reservation).to be_can_edit }
+      end
+    end
+
+    context "when the reservation has not been persisted" do
+      subject(:reservation) { build(:reservation) }
+
+      it { expect(reservation).to be_can_edit }
+    end
+  end
+
   it 'allows starting of a reservation, whose duration is equal to the max duration, within the grace period' do
     reservation.product.update_attribute :max_reserve_mins, reservation.duration_mins
 
