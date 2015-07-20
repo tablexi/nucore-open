@@ -6,9 +6,11 @@ describe Reservations::DurationChangeValidations do
   let(:reservation) { create :setup_reservation }
 
   describe "#start_time_not_changed" do
+    let(:instrument) { create(:setup_instrument, :always_available) }
     let(:reservation) do
       create(
         :setup_reservation,
+        product: instrument,
         reserve_start_at: reserve_start_at,
         reserve_end_at: reserve_end_at,
       )
@@ -28,6 +30,37 @@ describe Reservations::DurationChangeValidations do
         reservation.reserve_end_at = 65.minutes.from_now
         validator.valid?
         expect(validator.errors).to be_empty
+      end
+
+      context "when the product has a lock window" do
+        let(:reserve_end_at) { reserve_start_at + 1.hour }
+
+        before { reservation.product.update_attribute(:lock_window, 24) }
+
+        context "and the original start time is outside the window" do
+          let(:reserve_start_at) { 25.hours.from_now }
+
+          context "when changing to a time inside the window" do
+            before { reservation.reserve_start_at -= 2.hours }
+
+            it "allows changing the start time" do
+              expect(validator).to be_valid
+              expect(validator.errors).to be_empty
+            end
+          end
+        end
+
+        context "and the original start time is inside the window" do
+          let(:reserve_start_at) { 23.hours.from_now }
+
+          before { reservation.reserve_start_at -= 2.hours }
+
+          it "does not allow changing the start time" do
+            expect(validator).not_to be_valid
+            expect(validator.errors.full_messages)
+              .to include("Reserve start at cannot change once the reservation has started")
+          end
+        end
       end
     end
 
