@@ -26,9 +26,7 @@ describe ReservationsController do
     create(:account_price_group_member, account: @account, price_group: @price_group)
   end
 
-
   context 'index' do
-
     before :each do
       @order.stub(:cart_valid?).and_return(true)
       @order.stub(:place_order?).and_return(true)
@@ -149,14 +147,12 @@ describe ReservationsController do
       @params = {}
     end
 
-
     it "should redirect to default view" do
       maybe_grant_always_sign_in(:staff)
       @params.merge!(:status => 'junk')
       do_request
       should redirect_to "/reservations/upcoming"
     end
-
 
     context "upcoming" do
       before :each do
@@ -231,7 +227,6 @@ describe ReservationsController do
       end
     end
 
-
     context 'all' do
       before :each do
         @params = {:status => 'all'}
@@ -247,9 +242,7 @@ describe ReservationsController do
         should render_template('list')
       end
     end
-
   end
-
 
   context 'creating a reservation in the past' do
     before :each do
@@ -302,11 +295,9 @@ describe ReservationsController do
     it_should_allow_all facility_operators, 'set the right estimated price' do
       assigns[:reservation].order_detail.reload.estimated_cost.should == 120
     end
-
   end
 
   context 'create' do
-
     before :each do
       @method=:post
       @action=:create
@@ -505,7 +496,6 @@ describe ReservationsController do
       end
     end
 
-
     context 'with other things in the cart (bundle or multi-add)' do
 
       before :each do
@@ -523,12 +513,9 @@ describe ReservationsController do
         assert_redirected_to cart_path
       end
     end
-
   end
 
-
   context 'new' do
-
     before :each do
       @method=:get
       @action=:new
@@ -551,6 +538,7 @@ describe ReservationsController do
       assigns[:min_date].should == (Time.zone.now+assigns[:max_days_ago].days).strftime("%Y%m%d")
       assigns[:max_date].should == (Time.zone.now + 365.days).strftime("%Y%m%d")
     end
+
     # guests should only be able to go the default reservation window into the future
     it_should_allow_all [:guest] do
       assigns[:max_window].should == PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
@@ -707,9 +695,7 @@ describe ReservationsController do
     end
   end
 
-
   context 'needs future reservation' do
-
     before :each do
       # create reservation for tomorrow @ 9 am for 60 minutes, with order detail reference
       @start        = Time.zone.now.end_of_day + 1.second + 9.hours
@@ -718,9 +704,7 @@ describe ReservationsController do
       assert @reservation.valid?
     end
 
-
     context 'show' do
-
       before :each do
         @method=:get
         @action=:show
@@ -733,7 +717,6 @@ describe ReservationsController do
         assigns[:order].should == @reservation.order_detail.order
         should respond_with :success
       end
-
     end
 
     describe "#edit" do
@@ -790,7 +773,6 @@ describe ReservationsController do
     end
 
     context 'update' do
-
       before :each do
         @method=:put
         @action=:update
@@ -887,9 +869,7 @@ describe ReservationsController do
           response.should render_template(:edit)
         end
       end
-
     end
-
   end
 
   context 'earliest move possible' do
@@ -989,7 +969,6 @@ describe ReservationsController do
   end
 
   context 'needs now reservation' do
-
     before :each do
       # create reservation for tomorrow @ 9 am for 60 minutes, with order detail reference
       @start        = Time.zone.now + 1.second
