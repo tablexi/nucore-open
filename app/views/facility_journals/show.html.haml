@@ -16,9 +16,7 @@
       = f.input :status_string
   .span4
     .well
-      - %i(xls xml csv).each do |format|
-        - if Settings.financial.journal_format.public_send(format)
-          %p= link_to t(".download.#{format}"), facility_journal_path(current_facility, @journal, format: format)
+      = render "downloads", facility: current_facility, journal: @journal
 
 %hr
 
