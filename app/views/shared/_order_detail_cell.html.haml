@@ -9,6 +9,6 @@
   - if od.survey_completed?
     .order-detail-extra= link_to 'View Order Form', od.external_service_receiver.show_url, :target => '_blank'
   - od.stored_files.template_result.each do |stored_file|
-    .order-detail-extra= link_to 'View Order File', stored_file.file.url
+    .order-detail-extra= link_to 'View Order File', stored_file.download_url
   - if od.note.present?
     .order-detail-extra.order-detail-note= "Note: #{od.note}"

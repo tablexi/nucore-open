@@ -49,7 +49,7 @@ class FileUploadsController < ApplicationController
     authorize! :uploader_create, @upload
     @upload.save!
 
-    render :text => @upload.file.url
+    render text: @upload.download_url
   end
 
   # GET /facilities/1/services/3/files/survey_upload

@@ -38,7 +38,7 @@
                 %li.indented= link_to 'View Order Form', od.external_service_receiver.show_url, :target => '_blank'
               - if !od.stored_files.template_result.empty?
                 - od.stored_files.template_result.each do |stored_file|
-                  %li.indented= link_to 'View Order File', stored_file.file.url
+                  %li.indented= link_to 'View Order File', stored_file.download_url
               - unless od.note.blank?
                 %li
                   %i=h "Note: #{od.note}"
