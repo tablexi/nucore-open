@@ -20,7 +20,10 @@ module DownloadableFile
       file.send(:directory).files.get_url(
         file.path,
         10.seconds.from_now,
-        query: { "response-content-disposition" => "attachment" },
+        query: {
+          "response-content-type" => file_content_type,
+          "response-content-disposition" => "attachment",
+        },
       )
     else
       file.url
