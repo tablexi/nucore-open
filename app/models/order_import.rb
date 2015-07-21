@@ -198,6 +198,7 @@ class OrderImport < ActiveRecord::Base
   def store_error_report
     self.error_file = StoredFile.new(
       file: StringIO.new(self.error_report),
+      file_content_type: "text/csv",
       file_type: "import_error",
       name: "error_report.csv",
       created_by: creator.id,
