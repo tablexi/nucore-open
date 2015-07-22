@@ -39,17 +39,13 @@ describe Journal do
       context "when not reconciled" do
         before { journal.stub(:reconciled?).and_return(false) }
 
-        it "is submittable" do
-          expect(journal).to be_submittable
-        end
+        it { expect(journal).to be_submittable }
       end
 
       context "when reconciled" do
         before { journal.stub(:reconciled?).and_return(true) }
 
-        it "is not submittable" do
-          expect(journal).not_to be_submittable
-        end
+        it { expect(journal).not_to be_submittable }
       end
     end
 
@@ -59,17 +55,13 @@ describe Journal do
       context "when not reconciled" do
         before { journal.stub(:reconciled?).and_return(false) }
 
-        it "is not submittable" do
-          expect(journal).not_to be_submittable
-        end
+        it { expect(journal).not_to be_submittable }
       end
 
       context "when reconciled" do
         before { journal.stub(:reconciled?).and_return(true) }
 
-        it "is not submittable" do
-          expect(journal).not_to be_submittable
-        end
+        it { expect(journal).not_to be_submittable }
       end
     end
   end
