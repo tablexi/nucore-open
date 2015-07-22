@@ -29,7 +29,7 @@
             %tr
               %td
                 %ul.unstyled
-                  = render "downloads", facility: current_facility, journal: pending_journal
+                  = render "downloads", facility: current_facility, journal: pending_journal, label_size: :short
               %td= human_datetime(pending_journal.created_at)
               - if all_facility?
                 %td= facility_abbreviations.join("<br>").html_safe
