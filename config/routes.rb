@@ -326,6 +326,7 @@ Nucore::Application.routes.draw do
   post  '/facilities/:facility_id/:product/:product_id/files',                                          :to => 'file_uploads#create',                :as => 'add_product_file'
   post  '/facilities/:facility_id/:product/:product_id/uploader_files',                                 :to => 'file_uploads#uploader_create',       :as => 'add_uploader_file'
   match '/facilities/:facility_id/:product/:product_id/files/:id',                                      :to => 'file_uploads#destroy',               :as => 'remove_product_file', :via => :delete
+  get   '/facilities/:facility_id/:product/:product_id/files/:file_type/:id',                           :to => 'file_uploads#download',              :as => 'download_product_file'
   get   '/facilities/:facility_id/:product/:product_id/files/product_survey',                           :to => 'file_uploads#product_survey',        :as => 'product_survey'
   post  '/facilities/:facility_id/:product/:product_id/files/create_product_survey',                    :to => 'file_uploads#create_product_survey', :as => 'create_product_survey'
   put   '/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate',   :to => 'surveys#activate',                 :as => 'activate_survey'

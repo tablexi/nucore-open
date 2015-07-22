@@ -23,6 +23,20 @@ class FileUploadsController < ApplicationController
     @file    = @product.stored_files.new(:file_type => params[:file_type])
   end
 
+  # GET /facilities/:facility_id/:product/:product_id/files/:file_type/:id
+  def download
+    redirect_to(
+      current_facility
+        .products
+        .where(type: params[:product].capitalize.singularize)
+        .find_by_url_name!(params[:product_id]) # TODO update to #find_by for Rails 4
+        .stored_files
+        .where(file_type: params[:file_type])
+        .find(params[:id])
+        .download_url
+    )
+  end
+
   # POST /facilities/1/services/3/files
   def create
     @klass   = params[:product]
