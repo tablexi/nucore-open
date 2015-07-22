@@ -30,12 +30,16 @@ module RoutesHelper
     )
   end
 
-  def order_detail_first_template_result_path(order_detail)
+  def template_result_path(template_result_file)
     template_results_facility_order_order_detail_path(
-      order_detail.facility,
-      order_detail.order,
-      order_detail,
-      order_detail.stored_files.template_result.first,
+      template_result_file.order_detail.facility,
+      template_result_file.order_detail.order,
+      template_result_file.order_detail,
+      template_result_file,
     )
+  end
+
+  def order_detail_first_template_result_path(order_detail)
+    template_result_path(order_detail.stored_files.template_result.first)
   end
 end
