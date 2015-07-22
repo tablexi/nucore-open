@@ -187,6 +187,7 @@ Nucore::Application.routes.draw do
           get 'pricing', to: 'order_management/order_details#pricing'
           get 'files', to: 'order_management/order_details#files'
           post 'remove_from_journal', to: 'order_management/order_details#remove_from_journal'
+          get 'sample_results/:stored_file_id', to: 'order_management/order_details#sample_results', as: 'sample_results'
           get 'template_results/:stored_file_id', to: 'order_management/order_details#template_results', as: 'template_results'
         end
       end

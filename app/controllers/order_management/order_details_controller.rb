@@ -49,6 +49,11 @@ class OrderManagement::OrderDetailsController < ApplicationController
     render :layout => false if request.xhr?
   end
 
+  # GET /facilities/:facility_id/orders/:order_id/order_details/:id/sample_results/:stored_file_id
+  def sample_results
+    redirect_to @order_detail.stored_files.sample_result.find(params[:stored_file_id]).download_url
+  end
+
   # GET /facilities/:facility_id/orders/:order_id/order_details/:id/template_results/:stored_file_id
   def template_results
     redirect_to @order_detail.stored_files.template_result.find(params[:stored_file_id]).download_url

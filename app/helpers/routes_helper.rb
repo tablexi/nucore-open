@@ -21,6 +21,15 @@ module RoutesHelper
     facility_account_statement_path(current_facility, statement.account_id, statement, :format => :pdf)
   end
 
+  def sample_result_path(sample_result_file)
+    sample_results_facility_order_order_detail_path(
+      sample_result_file.order_detail.facility,
+      sample_result_file.order_detail.order,
+      sample_result_file.order_detail,
+      sample_result_file,
+    )
+  end
+
   def order_detail_first_template_result_path(order_detail)
     template_results_facility_order_order_detail_path(
       order_detail.facility,
