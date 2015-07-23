@@ -32,8 +32,7 @@ module RoutesHelper
   end
 
   def sample_result_path(sample_result_file)
-    sample_results_facility_order_order_detail_path(
-      sample_result_file.order_detail.facility,
+    order_order_detail_sample_results_path(
       sample_result_file.order_detail.order,
       sample_result_file.order_detail,
       sample_result_file,
@@ -41,8 +40,7 @@ module RoutesHelper
   end
 
   def template_result_path(template_result_file)
-    template_results_facility_order_order_detail_path(
-      template_result_file.order_detail.facility,
+    order_order_detail_template_results_path(
       template_result_file.order_detail.order,
       template_result_file.order_detail,
       template_result_file,
