@@ -5,7 +5,7 @@ class FileUploadsController < ApplicationController
   before_filter       :init_current_facility
   skip_before_filter  :verify_authenticity_token, :only => :create
 
-  load_and_authorize_resource :class => StoredFile, :except => :uploader_create
+  load_and_authorize_resource class: StoredFile, except: [:download, :uploader_create]
 
   layout 'two_column'
 
