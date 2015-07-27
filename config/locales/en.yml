@@ -17,6 +17,7 @@ en:
   date:
     formats:
       journal_line_reference: "%Y%m%d"
+      timeline_navigation: "%a, %B %e, %Y"
       usa: "%m/%d/%Y"
       usa_filename_safe: "%m-%d-%Y"
 

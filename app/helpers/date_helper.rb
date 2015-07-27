@@ -36,10 +36,6 @@ module DateHelper
     "#{Date::MONTHNAMES[date.mon]} #{date.day}, #{date.year}"
   end
 
-  def human_date_with_day(date)
-    date.strftime("%A, %B %e, %Y")
-  end
-
   def human_datetime(datetime, args = {})
     return nil if datetime.blank?
     begin
