@@ -101,6 +101,18 @@ class OrderDetailsController < ApplicationController
     redirect_to(order_path(@order))
   end
 
+  # GET /orders/:order_id/order_details/:id/sample_results/:stored_file_id
+  def sample_results
+    authorize! :sample_results, @order_detail
+    redirect_to @order_detail.stored_files.sample_result.find(params[:stored_file_id]).download_url
+  end
+
+  # GET /orders/:order_id/order_details/:id/template_results/:stored_file_id
+  def template_results
+    authorize! :template_results, @order_detail
+    redirect_to @order_detail.stored_files.template_result.find(params[:stored_file_id]).download_url
+  end
+
   def set_active_tab
     if @order_detail.reservation.nil?
       @active_tab = "orders"
@@ -109,4 +121,9 @@ class OrderDetailsController < ApplicationController
     end
   end
 
+  private
+
+  def ability_resource
+    @order_detail
+  end
 end

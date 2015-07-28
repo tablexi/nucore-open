@@ -299,6 +299,8 @@ Nucore::Application.routes.draw do
       get  '/order_file',        :to => 'order_details#order_file',        :as => 'order_file'
       post '/upload_order_file', :to => 'order_details#upload_order_file', :as => 'upload_order_file'
       get '/remove_order_file',  :to => 'order_details#remove_order_file', :as => 'remove_order_file'
+      get "sample_results/:stored_file_id", to: "order_details#sample_results", as: "sample_results"
+      get "template_results/:stored_file_id", to: "order_details#template_results", as: "template_results"
 
       resources :reservations, :except => [:index] do
         get '/move',               :to => 'reservations#earliest_move_possible'
