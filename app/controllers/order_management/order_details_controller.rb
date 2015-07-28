@@ -5,7 +5,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
 
   helper_method :edit_disabled?
 
-  before_filter :authorize_order_detail
+  before_filter :authorize_order_detail, except: %i(sample_results template_results)
   before_filter :load_accounts, :only => [:edit, :update]
   before_filter :load_order_statuses, :only => [:edit, :update]
 
@@ -51,11 +51,13 @@ class OrderManagement::OrderDetailsController < ApplicationController
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:id/sample_results/:stored_file_id
   def sample_results
+    authorize! :sample_results, @order_detail
     redirect_to @order_detail.stored_files.sample_result.find(params[:stored_file_id]).download_url
   end
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:id/template_results/:stored_file_id
   def template_results
+    authorize! :template_results, @order_detail
     redirect_to @order_detail.stored_files.template_result.find(params[:stored_file_id]).download_url
   end
 
