@@ -200,7 +200,7 @@ class UsersController < ApplicationController
     if session_user.manager_of?(current_facility)
       flash[:notice] = (flash[:notice] + "  You may wish to <a href=\"#{facility_facility_user_map_user_path(current_facility, @user)}\">add a facility role</a> for this user.").html_safe
     end
-    Notifier.delay.new_user(:user: @user, password: nil)
+    Notifier.delay.new_user(:user @user, password: nil)
     redirect_to facility_users_path(user: @user.id)
   end
 
