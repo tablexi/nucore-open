@@ -61,17 +61,17 @@ class FacilityStatementsController < ApplicationController
       end
 
       if @errors.any?
-        flash[:error] = I18n.t('controllers.facility_statements.errors_html', :errors => @errors.join('<br/>')).html_safe
+        flash[:error] = I18n.t('controllers.facility_statements.errors_html', errors: @errors.join('<br/>')).html_safe
         raise ActiveRecord::Rollback
       else
         @account_statements.each do |account, statement|
-          account.notify_users.each {|u| Notifier.statement(:user => u, :facility => current_facility, :account => account, :statement => statement).deliver }
+          account.notify_users.each { |u| Notifier.delay.statement(user: u, facility: current_facility, account: account, statement: statement) }
         end
-        account_list = @account_statements.map {|a,s| a.account_list_item }
-        flash[:notice] = I18n.t('controllers.facility_statements.send_statements.success_html', :accounts => account_list.join('<br/>')).html_safe
+        account_list = @account_statements.map { |a,s| a.account_list_item }
+        flash[:notice] = I18n.t('controllers.facility_statements.send_statements.success_html', accounts: account_list.join('<br/>')).html_safe
       end
     end
-    redirect_to :action => "new"
+    redirect_to action: "new"
   end
 
   # GET /facilities/:facility_id/statements/:id

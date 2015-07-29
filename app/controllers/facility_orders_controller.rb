@@ -47,13 +47,12 @@ class FacilityOrdersController < ApplicationController
     end
   end
 
-
   def send_receipt
     begin
-      Notifier.order_receipt(:order => @order, :user => @order.user ).deliver
-      flash[:notice]="Receipt sent successfully."
+      Notifier.delay.order_receipt(order: @order, user: @order.user)
+      flash[:notice] = "Receipt sent successfully."
     rescue => e
-      flash[:error]="There was a problem while sending the receipt: #{e.message}"
+      flash[:error] = "There was a problem while sending the receipt: #{e.message}"
     end
 
     begin

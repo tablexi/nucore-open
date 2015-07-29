@@ -107,7 +107,7 @@ private
   def notify_accounts
     @accounts_to_notify.each do |account, facility|
       account.notify_users.each do |u|
-        Notifier.review_orders(:user => u, :facility => facility, :account => account).deliver
+        Notifier.delay.review_orders(user: u, facility: facility, account: account)
       end
     end
   end

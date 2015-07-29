@@ -63,7 +63,7 @@ class UsersController < ApplicationController
 
     if @user.save
       # send email
-      Notifier.new_user(:user => @user, :password => @user.password).deliver
+      Notifier.delay.new_user(:user => @user, :password => @user.password)
       redirect_to facility_users_path(:user => @user.id)
     else
       render :action => "new_external" and return
@@ -198,10 +198,10 @@ class UsersController < ApplicationController
   def save_user_success
     flash[:notice] = I18n.t('users.create.success')
     if session_user.manager_of?(current_facility)
-      flash[:notice]=(flash[:notice] + "  You may wish to <a href=\"#{facility_facility_user_map_user_path(current_facility, @user)}\">add a facility role</a> for this user.").html_safe
+      flash[:notice] = (flash[:notice] + "  You may wish to <a href=\"#{facility_facility_user_map_user_path(current_facility, @user)}\">add a facility role</a> for this user.").html_safe
     end
-    Notifier.new_user(:user => @user, :password => nil).deliver
-    redirect_to facility_users_path(:user => @user.id)
+    Notifier.delay.new_user(user: @user, password: nil)
+    redirect_to facility_users_path(user: @user.id)
   end
 
   def add_flash(key, message)
