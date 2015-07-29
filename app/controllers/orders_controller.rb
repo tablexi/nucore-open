@@ -292,7 +292,7 @@ class OrdersController < ApplicationController
           end
         end
 
-        Notifier.order_receipt(:user => @order.user, :order => @order).deliver if should_send_notification?
+        Notifier.delay.order_receipt(user: @order.user, order: @order) if should_send_notification?
 
         # If we're only making a single reservation, we'll redirect
         if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled? && !acting_as?
