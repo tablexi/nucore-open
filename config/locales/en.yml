@@ -305,6 +305,8 @@ en:
       no_problem_orders: There are no problem orders.
 
   facility_reservations:
+    disputed:
+      no_disputed_reservations: There are no Disputed reservations
     show_problems:
       instructions: |
         The reservation line items below are complete and either do not have a
