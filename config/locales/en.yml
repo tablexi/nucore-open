@@ -659,6 +659,9 @@ en:
       head: "Payment Source Details"
 
   facilities:
+    disputed_orders:
+      head: Disputed Orders
+
     index:
       welcome: |
         Welcome to NU Core, the centralized ordering system for all shared facilities at Northwestern University.
