@@ -1,10 +1,10 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_reservation'
+  = render "admin/shared/tabnav_reservation"
 
-- if @order_details.empty?
-  %p.notice There are no Disputed reservations
+- if @order_details.present?
+  = render "facility_orders/disputed_table"
 - else
-  = render :partial => 'facility_orders/disputed_table'
+  %p.notice= t(".no_disputed_reservations")

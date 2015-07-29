@@ -34,6 +34,7 @@ class Ability
     end
 
     can :list, Facility if user.facilities.size > 0 and controller.is_a?(FacilitiesController)
+    can :read, Notification if user.operator? || user.administrator?
 
     return unless resource
 
@@ -133,7 +134,7 @@ class Ability
         can :read, ProductAccessory
         can :manage, Reservation
       end
-      can :start_stop, Reservation if resource.order_detail.order.user_id == user.id
+      can :start_stop, Reservation if resource.order.try(:user_id) == user.id
 
     elsif resource.is_a?(TrainingRequest)
       can :create, TrainingRequest

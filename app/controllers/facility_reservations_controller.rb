@@ -232,11 +232,10 @@ class FacilityReservationsController < ApplicationController
   end
 
   def problem_order_details
-    current_facility.order_details.
-      problem_orders.
-      reservations.
-      complete.
-      joins(:reservation).order('reservations.reserve_start_at desc')
+    current_facility
+      .problem_reservation_order_details
+      .joins(:reservation)
+      .order("reservations.reserve_start_at DESC")
   end
 
   def disputed_orders

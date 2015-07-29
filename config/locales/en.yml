@@ -40,6 +40,13 @@ en:
     cart: Cart
     notices: Notices
 
+  message_summarizer:
+    heading: "Notices (%{count})"
+    order_details_in_dispute: Disputed Orders
+    problem_order_details: Problem Orders
+    problem_reservation_order_details: Problem Reservations
+    training_requests: Training Requests
+
   shared:
     footer:
       copyright_html: "&copy; Copyright 2010%{to_date} Northwestern University"
@@ -305,6 +312,8 @@ en:
       no_problem_orders: There are no problem orders.
 
   facility_reservations:
+    disputed:
+      no_disputed_reservations: There are no disputed reservations
     show_problems:
       instructions: |
         The reservation line items below are complete and either do not have a
@@ -659,6 +668,10 @@ en:
       head: "Payment Source Details"
 
   facilities:
+    disputed_orders:
+      head: Disputed Orders
+      no_orders: There are no disputed orders for this facility
+
     index:
       welcome: |
         Welcome to NU Core, the centralized ordering system for all shared facilities at Northwestern University.

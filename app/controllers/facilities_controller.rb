@@ -1,12 +1,13 @@
 class FacilitiesController < ApplicationController
   customer_tab  :index, :list, :show
   admin_tab     :edit, :manage, :schedule, :update, :agenda, :transactions,
-                :reassign_chart_strings, :movable_transactions, :confirm_transactions, :move_transactions
+                :reassign_chart_strings, :movable_transactions,
+                :confirm_transactions, :move_transactions, :disputed_orders
   before_filter :authenticate_user!, :except => [:index, :show]  # public pages do not require authentication
   before_filter :check_acting_as, :except => [:index, :show]
   before_filter :load_order_details, only: [:confirm_transactions, :move_transactions, :reassign_chart_strings]
-  before_filter :set_admin_billing_tab, only: [:confirm_transactions, :movable_transactions, :transactions]
-  before_filter :set_two_column_head_layout, only: [:movable_transactions, :transactions]
+  before_filter :set_admin_billing_tab, only: [:confirm_transactions, :disputed_orders, :movable_transactions, :transactions]
+  before_filter :set_two_column_head_layout, only: [:disputed_orders, :movable_transactions, :transactions]
   before_filter :store_fullpath_in_session, only: [:index, :show]
 
   load_and_authorize_resource :find_by => :url_name
@@ -110,6 +111,12 @@ class FacilitiesController < ApplicationController
   def transactions_with_search
     set_default_start_date
     @export_enabled = true
+    paginate_order_details
+  end
+
+  # GET /facilities/:facility_id/disputed_orders
+  def disputed_orders_with_search
+    @order_details = @order_details.in_dispute
     paginate_order_details
   end
 

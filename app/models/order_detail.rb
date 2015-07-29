@@ -92,7 +92,7 @@ class OrderDetail < ActiveRecord::Base
   ## TODO validate which fields can be edited for which states
 
   scope :with_product_type, lambda { |s| {:joins => :product, :conditions => ["products.type = ?", s.to_s.capitalize]} }
-  scope :in_dispute, :conditions => ['dispute_at IS NOT NULL AND dispute_resolved_at IS NULL AND STATE != ?', 'canceled'], :order => 'dispute_at'
+
   scope :new_or_inprocess, :conditions => ["order_details.state IN ('new', 'inprocess') AND orders.ordered_at IS NOT NULL"], :include => :order
 
   scope :facility_recent, lambda { |facility|
@@ -127,6 +127,13 @@ class OrderDetail < ActiveRecord::Base
     end
 
     details
+  end
+
+  def self.in_dispute
+    where("dispute_at IS NOT NULL")
+      .where(dispute_resolved_at: nil)
+      .where("order_details.state != ?", "canceled")
+      .order("dispute_at")
   end
 
   def self.purchased_active_reservations
