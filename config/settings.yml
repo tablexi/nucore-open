@@ -92,6 +92,8 @@ feature:
   suspend_accounts_on: true
   product_specific_contacts_on: true
 
+# This is possible to be overridden in settings.local.yml if your fork is using S3, so
+# be sure to check there for configuration
 paperclip:
   storage: filesystem
   url: ":rails_relative_url_root/:attachment/:id_partition/:style/:safe_filename"
