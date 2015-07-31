@@ -490,7 +490,6 @@ describe ReservationsController do
       end
       it "should use the policy based on the account because it's cheaper" do
         do_request
-        puts assigns[:order_detail].estimated_cost.to_f
         assigns[:order_detail].estimated_cost.should == 120.0
         assigns[:order_detail].estimated_subsidy.should == 15
       end
