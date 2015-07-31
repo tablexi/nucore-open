@@ -17,11 +17,24 @@ namespace :price_policies do
 
 
     desc <<-DOC
+      Performs a dry run of the conversion of old instrument price policies to new and updates pricing on
+      new, in process, and completed order details
+    DOC
+    task update_dry_run: :environment do
+      PricePolicy.transaction do
+        IppUpdater.new.update_price_policies
+        raise ActiveRecord::Rollback
+      end
+    end
+
+    desc <<-DOC
       Converts old instrument price policies to new and updates pricing on
       new, in process, and completed order details
     DOC
     task update: :environment do
-      IppUpdater.new.update
+      IppUpdater.new.update_price_policies
+      # For UIC, we don't want to do this.
+      # IppUpdater.new.update_order_details
     end
 
 

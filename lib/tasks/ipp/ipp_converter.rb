@@ -28,24 +28,33 @@ class IppConverter
   def new_policy_attributes_from(old_policy)
     attrs = old_policy.attributes
 
+    raise "#{old_policy.id} | NO PRODUCT: product_id: #{old_policy.product_id}" unless old_policy.product
+
     if !old_policy.can_purchase? && old_policy.usage_rate.nil? && old_policy.reservation_rate.nil? && old_policy.overage_rate.nil?
       attrs.merge!(
         'charge_for' => InstrumentPricePolicy::CHARGE_FOR[:reservation]
       )
     elsif old_policy.product.reservation_only? && old_policy.reservation_rate && old_policy.reservation_mins
+      error! old_policy if old_policy.usage_rate.to_f > 0 || old_policy.overage_rate.to_f > 0
       attrs.merge!(
         'usage_rate' => old_policy.reservation_rate * (60 / old_policy.reservation_mins),
         'usage_subsidy' => old_policy.reservation_subsidy * (60 / old_policy.reservation_mins),
         'charge_for' => InstrumentPricePolicy::CHARGE_FOR[:reservation]
       )
-    elsif old_policy.usage_rate && old_policy.usage_mins
+    elsif !old_policy.product.reservation_only? && old_policy.usage_rate && old_policy.usage_mins
       attrs.merge!(
         'usage_rate' => old_policy.usage_rate * (60 / old_policy.usage_mins),
         'usage_subsidy' => old_policy.usage_subsidy * (60 / old_policy.usage_mins),
         'charge_for' => InstrumentPricePolicy::CHARGE_FOR[:usage]
       )
+    elsif !old_policy.product.reservation_only? && old_policy.reservation_rate && old_policy.overage_rate
+      attrs.merge!(
+        'usage_rate' => old_policy.reservation_rate * (60 / old_policy.reservation_mins),
+        'usage_subsidy' => old_policy.reservation_subsidy * (60 / old_policy.reservation_mins),
+        'charge_for' => InstrumentPricePolicy::CHARGE_FOR[:overage]
+      )
     else
-      raise "Cannot determine calculation type of policy #{old_policy.id}!"
+      error! old_policy
     end
 
     attrs.merge! charge_for: InstrumentPricePolicy::CHARGE_FOR[:overage] if old_policy.overage_rate
@@ -59,6 +68,15 @@ class IppConverter
       'overage_mins' => nil,
       'usage_mins' => nil
     )
+  end
+
+  def error!(old_policy)
+    path = "/facilities/#{old_policy.product.facility.url_name}/instruments/#{old_policy.product.url_name}/price-policies"
+    status = old_policy.expired? ? "EXPIRED" : "ACTIVE"
+    mechanism = old_policy.product.control_mechanism || "reservation"
+
+    rows = [old_policy.id, mechanism, old_policy.reservation_rate.to_f, old_policy.usage_rate.to_f, old_policy.overage_rate.to_f, path, status]
+    raise rows.join(" | ")
   end
 
 end

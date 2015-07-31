@@ -25,11 +25,10 @@ class IppUpdater
     policies.find_each do |policy|
       guard policy do
         update_price_policy policy
-        puts "Policy #{policy.id} updated"
+        # puts "Policy #{policy.id} updated" # commented because it's cleaner output
       end
     end
   end
-
 
   def update_price_policy(policy)
     policy.update_attributes! converter.new_policy_attributes_from(policy)
@@ -71,7 +70,7 @@ class IppUpdater
     begin
       yield
     rescue => e
-     puts converter.error_to_log(e, obj)
+     puts e.message # with a backtrace: converter.error_to_log(e, obj)
     end
   end
 
