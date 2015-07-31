@@ -12,7 +12,7 @@ describe ScheduleRule do
                                         :facility => @facility,
                                         :facility_account => @facility_account)
     @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
-    @rule.should be_valid
+    expect(@rule).to be_valid
   end
 
   describe ".unavailable_for_date" do
@@ -65,17 +65,17 @@ describe ScheduleRule do
 
   context "times" do
     it "should not be valid with start hours outside 0-24" do
-      should_not allow_value(-1).for(:start_hour)
-      should_not allow_value(25).for(:start_hour)
-      should allow_value(0).for(:start_hour)
-      should allow_value(23).for(:start_hour)
+      is_expected.not_to allow_value(-1).for(:start_hour)
+      is_expected.not_to allow_value(25).for(:start_hour)
+      is_expected.to allow_value(0).for(:start_hour)
+      is_expected.to allow_value(23).for(:start_hour)
     end
 
     it "should not be valid with start mins outside 0-59" do
-      should_not allow_value(-1).for(:end_min)
-      should_not allow_value(60).for(:end_min)
-      should allow_value(0).for(:end_min)
-      should allow_value(59).for(:end_min)
+      is_expected.not_to allow_value(-1).for(:end_min)
+      is_expected.not_to allow_value(60).for(:end_min)
+      is_expected.to allow_value(0).for(:end_min)
+      is_expected.to allow_value(59).for(:end_min)
     end
 
     it "should allow all day rule" do
@@ -108,7 +108,7 @@ describe ScheduleRule do
                                         :facility => @facility,
                                         :facility_account => @facility_account)
       @rule       = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
-      @rule.includes_datetime(DateTime.new(1981, 9, 15, 12, 0, 0)).should == true
+      expect(@rule.includes_datetime(DateTime.new(1981, 9, 15, 12, 0, 0))).to eq(true)
     end
 
     it "should not recognize non-inclusive datetimes" do
@@ -118,7 +118,7 @@ describe ScheduleRule do
                                         :facility => @facility,
                                         :facility_account => @facility_account)
       @rule       = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
-      @rule.includes_datetime(DateTime.new(1981, 9, 15, 3, 0, 0)).should == false
+      expect(@rule.includes_datetime(DateTime.new(1981, 9, 15, 3, 0, 0))).to eq(false)
     end
   end
 
@@ -221,11 +221,11 @@ describe ScheduleRule do
     @rule.start_min = 00
     @rule.end_hour = 9
     @rule.end_min = 00
-    @rule.should_not be_valid
+    expect(@rule).not_to be_valid
 
     @rule.end_hour = 8
     @rule.end_min = 20
-    @rule.should_not be_valid
+    expect(@rule).not_to be_valid
   end
 
   context "calendar object" do
@@ -245,19 +245,19 @@ describe ScheduleRule do
 
       # each title should be the same
       @calendar.each do |hash|
-        hash["title"].should == "Interval: #{@instrument.reserve_interval} minute"
-        hash["allDay"].should == false
+        expect(hash["title"]).to eq("Interval: #{@instrument.reserve_interval} minute")
+        expect(hash["allDay"]).to eq(false)
       end
 
       # days should start with this past sunday and end next saturday
       @calendar.each_with_index do |hash, i|
-        Time.zone.parse(hash['start']).should == Time.zone.parse("#{@sunday+i.days} 9:00")
-        Time.zone.parse(hash['end']).should == Time.zone.parse("#{@sunday+i.days} 17:00")
+        expect(Time.zone.parse(hash['start'])).to eq(Time.zone.parse("#{@sunday+i.days} 9:00"))
+        expect(Time.zone.parse(hash['end'])).to eq(Time.zone.parse("#{@sunday+i.days} 17:00"))
       end
 
       # build unavailable rules from the available rules collection
       @not_available = ScheduleRule.unavailable(@rule)
-      @not_available.size.should == 14
+      expect(@not_available.size).to eq(14)
       # should mark each rule as unavailable
       assert_equal true, @not_available.first.unavailable
       @not_calendar  = @not_available.collect{ |na| na.as_calendar_object }.flatten
@@ -269,18 +269,18 @@ describe ScheduleRule do
       odd  = (0..@not_available.size).select{ |i| i.odd? }
 
       even.collect{ |i| @not_calendar.values_at(i) }.flatten.compact.each_with_index do |hash, i|
-        Time.zone.parse(hash['start']).should == Time.zone.parse("#{@sunday+i.days}")
-        Time.zone.parse(hash['end']).should == Time.zone.parse("#{@sunday+i.days} 9:00")
+        expect(Time.zone.parse(hash['start'])).to eq(Time.zone.parse("#{@sunday+i.days}"))
+        expect(Time.zone.parse(hash['end'])).to eq(Time.zone.parse("#{@sunday+i.days} 9:00"))
       end
 
       odd.collect{ |i| @not_calendar.values_at(i) }.flatten.compact.each_with_index do |hash, i|
-        Time.zone.parse(hash['start']).should == Time.zone.parse("#{@sunday + i.days} 17:00")
-        Time.zone.parse(hash['end']).should == Time.zone.parse("#{@sunday + (i+1).days}")
+        expect(Time.zone.parse(hash['start'])).to eq(Time.zone.parse("#{@sunday + i.days} 17:00"))
+        expect(Time.zone.parse(hash['end'])).to eq(Time.zone.parse("#{@sunday + (i+1).days}"))
       end
 
       # should set calendar objects title to ''
       @not_calendar.each do |hash|
-        hash['title'].should == ''
+        expect(hash['title']).to eq('')
       end
     end
 
@@ -315,33 +315,34 @@ describe ScheduleRule do
       # times should be tue 1 am - 3 am
       @calendar1  = @rule1.as_calendar_object
       @calendar1.each_with_index do |hash, i|
-        Time.zone.parse(hash['start']).should == (@tuesday + 1.hour)
-        Time.zone.parse(hash['end']).should == (@tuesday + 3.hours)
+        expect(Time.zone.parse(hash['start'])).to eq(@tuesday + 1.hour)
+        expect(Time.zone.parse(hash['end'])).to eq(@tuesday + 3.hours)
       end
 
       # times should be tue 7 am - 9 am
       @calendar2  = @rule2.as_calendar_object
       @calendar2.each_with_index do |hash, i|
-        Time.zone.parse(hash['start']).should == (@tuesday + 7.hours)
-        Time.zone.parse(hash['end']).should == (@tuesday + 9.hours)
+        expect(Time.zone.parse(hash['start'])).to eq(@tuesday + 7.hours)
+        expect(Time.zone.parse(hash['end'])).to eq(@tuesday + 9.hours)
       end
 
       # build not available rules from the available rules collection, 3 for tue and 1 each for rest of days
       @not_available = ScheduleRule.unavailable([@rule1, @rule2])
-      @not_available.size.should == 9
+      expect(@not_available.size).to eq(9)
       @not_calendar  = @not_available.collect{ |na| na.as_calendar_object }.flatten
 
       # rules for tuesday should be 12am-1am, 3am-7am, 9pm-12pm
       @tuesday_times = @not_calendar.select{ |hash| Time.zone.parse(hash['start']).to_date == @tuesday }.collect do |hash|
         [Time.zone.parse(hash['start']).hour, Time.zone.parse(hash['end']).hour]
       end
-      @tuesday_times.should == [[0,1], [3,7], [9,0]]
+
+      expect(@tuesday_times).to eq([[0,1], [3,7], [9,0]])
 
       # rules for other days should be 12am-12pm
       @other_times = @not_calendar.select{ |hash| Time.zone.parse(hash['start']).to_date != @tuesday }.collect do |hash|
         [Time.zone.parse(hash['start']).hour, Time.zone.parse(hash['end']).hour]
       end
-      @other_times.should == [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0]]
+      expect(@other_times).to eq([[0,0], [0,0], [0,0], [0,0], [0,0], [0,0]])
     end
 
     it "should build calendar object using adjacent rules across days" do
@@ -375,15 +376,15 @@ describe ScheduleRule do
       # times should be tue 9 pm - 12 am
       @calendar1  = @rule1.as_calendar_object
       @calendar1.each_with_index do |hash, i|
-        Time.zone.parse(hash['start']).should == (@tuesday + 21.hours)
-        Time.zone.parse(hash['end']).should == (@tuesday + 24.hours)
+        expect(Time.zone.parse(hash['start'])).to eq(@tuesday + 21.hours)
+        expect(Time.zone.parse(hash['end'])).to eq(@tuesday + 24.hours)
       end
 
       # times should be tue 12 am - 9 am
       @calendar2  = @rule2.as_calendar_object
       @calendar2.each_with_index do |hash, i|
-        Time.zone.parse(hash['start']).should == (@wednesday + 0.hours)
-        Time.zone.parse(hash['end']).should == (@wednesday + 9.hours)
+        expect(Time.zone.parse(hash['start'])).to eq(@wednesday + 0.hours)
+        expect(Time.zone.parse(hash['end'])).to eq(@wednesday + 9.hours)
       end
     end
 
@@ -402,8 +403,8 @@ describe ScheduleRule do
       @calendar   = @rule.as_calendar_object(:start_date => @wednesday)
 
       # should start on wednesday
-      @calendar.size.should == 7
-      Time.zone.parse(@calendar[0]['start']).to_date.should == @wednesday
+      expect(@calendar.size).to eq(7)
+      expect(Time.zone.parse(@calendar[0]['start']).to_date).to eq(@wednesday)
     end
   end
 
@@ -421,12 +422,12 @@ describe ScheduleRule do
 
     context 'if instrument has no levels' do
       it 'should not return a rule if the user is not added' do
-        @instrument.schedule_rules.available_to_user(@user).should be_empty
+        expect(@instrument.schedule_rules.available_to_user(@user)).to be_empty
       end
 
       it 'should return a rule' do
         @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id})
-        @instrument.schedule_rules.available_to_user(@user).to_a.should == [@rule]
+        expect(@instrument.schedule_rules.available_to_user(@user).to_a).to eq([@rule])
       end
     end
 
@@ -441,7 +442,7 @@ describe ScheduleRule do
       context 'the scheduling rule does not have levels' do
         it 'should return a rule if the user is in the group' do
           @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id})
-          @instrument.schedule_rules.available_to_user(@user).to_a.should == [@rule]
+          expect(@instrument.schedule_rules.available_to_user(@user).to_a).to eq([@rule])
         end
       end
 
@@ -453,22 +454,22 @@ describe ScheduleRule do
 
         it 'should return the rule if the user is in the group' do
           @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id, :product_access_group_id => @restriction_levels[0]})
-          @instrument.schedule_rules.available_to_user(@user).to_a.should == []
+          expect(@instrument.schedule_rules.available_to_user(@user).to_a).to eq([])
         end
 
         it 'should not return the rule if the user is not in the group' do
           @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id, :product_access_group_id => @restriction_levels[1]})
-          @instrument.schedule_rules.available_to_user(@user).should be_empty
+          expect(@instrument.schedule_rules.available_to_user(@user)).to be_empty
         end
 
         it 'should not return the rule if the user has no group' do
           @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id})
-          @instrument.schedule_rules.available_to_user(@user).should be_empty
+          expect(@instrument.schedule_rules.available_to_user(@user)).to be_empty
         end
 
         it 'should return the rule if requires_approval has been set to false' do
           @instrument.update_attributes(:requires_approval => false)
-          @instrument.available_schedule_rules(@user).should == [@rule]
+          expect(@instrument.available_schedule_rules(@user)).to eq([@rule])
         end
       end
     end

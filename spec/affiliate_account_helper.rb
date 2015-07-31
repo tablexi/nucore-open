@@ -15,7 +15,7 @@ module AffiliateAccountHelper
         @affiliate_account=described_class.create!(account_attrs)
       end
 
-      it { should validate_presence_of(:affiliate_id) }
+      it { is_expected.to validate_presence_of(:affiliate_id) }
 
       it 'should require affiliate_other if affiliate is other' do
         @affiliate_account.affiliate=Affiliate.OTHER

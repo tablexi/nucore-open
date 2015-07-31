@@ -50,10 +50,10 @@ describe UsersController do
       include_context "feature enabled", :create_users
 
       it "routes" do
-        { :get => "/facilities/url_name/users/new" }.should route_to(:controller => 'users', :action => 'new', :facility_id => 'url_name')
-        { :post => "/facilities/url_name/users" }.should route_to(:controller => 'users', :action => 'create', :facility_id => 'url_name')
-        { :get => "/facilities/url_name/users/new_external" }.should route_to(:controller => 'users', :action => 'new_external', :facility_id => 'url_name')
-        { :post => "/facilities/url_name/users/search" }.should route_to(:controller => 'users', :action => 'search', :facility_id => 'url_name')
+        expect({ :get => "/facilities/url_name/users/new" }).to route_to(:controller => 'users', :action => 'new', :facility_id => 'url_name')
+        expect({ :post => "/facilities/url_name/users" }).to route_to(:controller => 'users', :action => 'create', :facility_id => 'url_name')
+        expect({ :get => "/facilities/url_name/users/new_external" }).to route_to(:controller => 'users', :action => 'new_external', :facility_id => 'url_name')
+        expect({ :post => "/facilities/url_name/users/search" }).to route_to(:controller => 'users', :action => 'search', :facility_id => 'url_name')
       end
 
       context 'search' do
@@ -88,7 +88,7 @@ describe UsersController do
         context 'user does not exist in database' do
           before :each do
             @user2 = FactoryGirl.build(:user)
-            controller.stub(:service_username_lookup).with(@user2.username).and_return(@user2)
+            allow(controller).to receive(:service_username_lookup).with(@user2.username).and_return(@user2)
             @params.merge!(:username_lookup => @user2.username)
           end
 
@@ -156,29 +156,29 @@ describe UsersController do
             end
 
             it 'flashes an error' do
-              should set_the_flash
-              response.should redirect_to facility_users_path
+              is_expected.to set_the_flash
+              expect(response).to redirect_to facility_users_path
             end
           end
 
           context 'user added' do
             before :each do
               @ldap_user = FactoryGirl.build(:user)
-              controller.stub(:service_username_lookup).with(@ldap_user.username).and_return(@ldap_user)
+              allow(controller).to receive(:service_username_lookup).with(@ldap_user.username).and_return(@ldap_user)
               @params.merge!(:username => @ldap_user.username)
               do_request
             end
 
             it 'should save the user' do
-              assigns(:user).should be_persisted
+              expect(assigns(:user)).to be_persisted
             end
 
             it 'should set the flash' do
-              flash[:notice].should_not be_empty
+              expect(flash[:notice]).not_to be_empty
             end
 
             it 'should redirect' do
-              response.should redirect_to facility_users_path(:user => assigns(:user).id)
+              expect(response).to redirect_to facility_users_path(:user => assigns(:user).id)
             end
           end
         end
@@ -188,10 +188,10 @@ describe UsersController do
     context 'disabled' do
       include_context "feature disabled", :create_users
       it "doesn't route route" do
-        { :get => "/facilities/url_name/users/new" }.should_not be_routable
-        { :post => "/facilities/url_name/users" }.should_not be_routable
-        { :get => "/facilities/url_name/users/new_external" }.should_not be_routable
-        { :post => "/facilities/url_name/users/search" }.should_not be_routable
+        expect({ :get => "/facilities/url_name/users/new" }).not_to be_routable
+        expect({ :post => "/facilities/url_name/users" }).not_to be_routable
+        expect({ :get => "/facilities/url_name/users/new_external" }).not_to be_routable
+        expect({ :post => "/facilities/url_name/users/search" }).not_to be_routable
       end
     end
   end

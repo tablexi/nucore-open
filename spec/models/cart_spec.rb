@@ -20,11 +20,11 @@ describe Cart do
 
     # setup is expensive, so only do it once and test several things at once
     it 'should include the proper orders' do
-      carts.should_not include @purchased_instrument_order
-      carts.should include @instrument_order
-      carts.should_not include @instrument_and_item_order
-      carts.should_not include @two_instrument_order
-      carts.should_not include @item_order
+      expect(carts).not_to include @purchased_instrument_order
+      expect(carts).to include @instrument_order
+      expect(carts).not_to include @instrument_and_item_order
+      expect(carts).not_to include @two_instrument_order
+      expect(carts).not_to include @item_order
     end
 
 
@@ -35,23 +35,23 @@ describe Cart do
       end
 
       it 'should have removed only the orders it should have' do
-        all_orders.should include @purchased_instrument_order
-        all_orders.should_not include @instrument_order
-        all_orders.should include @instrument_and_item_order
-        all_orders.should include @two_instrument_order
-        all_orders.should include @item_order
+        expect(all_orders).to include @purchased_instrument_order
+        expect(all_orders).not_to include @instrument_order
+        expect(all_orders).to include @instrument_and_item_order
+        expect(all_orders).to include @two_instrument_order
+        expect(all_orders).to include @item_order
       end
     end
 
     context 'destroy_all_instrument_only_carts with time' do
       it 'should not remove if the order has been updated since the time' do
         Cart.destroy_all_instrument_only_carts(1.day.ago)
-        Order.all.should include @instrument_order
+        expect(Order.all).to include @instrument_order
       end
 
       it 'should destroy if the order has not been updated since the time' do
         Cart.destroy_all_instrument_only_carts(1.minute.from_now)
-        Order.all.should_not include @instrument_order
+        expect(Order.all).not_to include @instrument_order
       end
     end
   end

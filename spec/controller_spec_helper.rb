@@ -82,7 +82,7 @@ end
 def it_should_require_login
   it 'should require login', :auth => true do
     do_request
-    should redirect_to(new_user_session_url)
+    is_expected.to redirect_to(new_user_session_url)
   end
 end
 
@@ -97,7 +97,7 @@ def it_should_deny(user_sym, spec_desc='')
   it "should deny #{user_sym.to_s} " + spec_desc, :auth => true do
     maybe_grant_always_sign_in(user_sym)
     do_request
-    should render_template('403')
+    is_expected.to render_template('403')
   end
 end
 
@@ -185,7 +185,7 @@ def it_should_allow_managers_only(response=:success, spec_desc='', &eval)
   it_should_deny(:senior_staff)
 
   it_should_allow_all(facility_managers, spec_desc) do |user|
-    should respond_with response
+    is_expected.to respond_with response
     instance_exec(user, &eval) if eval
   end
 
@@ -200,7 +200,7 @@ def it_should_allow_managers_and_senior_staff_only(response=:success, spec_desc=
   it_should_deny(:staff, spec_desc)
 
   it_should_allow_all(facility_managers + [:senior_staff], spec_desc) do |user|
-    should respond_with response
+    is_expected.to respond_with response
     instance_exec(user, &eval) if eval
   end
 
@@ -216,7 +216,7 @@ def it_should_allow_operators_only(response=:success, spec_desc='', &eval)
   it_should_deny(:guest, spec_desc)
 
   it_should_allow_all(facility_operators, spec_desc) do |user|
-    should respond_with response
+    is_expected.to respond_with response
     instance_exec(user, &eval) if eval
   end
 
@@ -236,7 +236,7 @@ def it_should_allow_admin_only(response=:success, spec_desc='', &eval)
   it_should_deny(:staff, spec_desc)
 
   it_should_allow(:admin, spec_desc) do
-    should respond_with response
+    is_expected.to respond_with response
     instance_eval &eval if eval
   end
 
@@ -257,28 +257,28 @@ def grant_role(user, authable=nil)
   case user.username
     when 'facility_admin'
       UserRole.grant(user, UserRole::FACILITY_ADMINISTRATOR, authable)
-      user.reload.should be_facility_administrator_of(authable)
+      expect(user.reload).to be_facility_administrator_of(authable)
     when 'director'
       UserRole.grant(user, UserRole::FACILITY_DIRECTOR, authable)
-      user.reload.should be_facility_director_of(authable)
+      expect(user.reload).to be_facility_director_of(authable)
     when 'staff'
       UserRole.grant(user, UserRole::FACILITY_STAFF, authable)
-      user.reload.should be_facility_staff_of(authable)
+      expect(user.reload).to be_facility_staff_of(authable)
     when 'owner'
       # Creating a NufsAccount requires an owner to be present, and some pre-Rails3 tests try to add the same user
       # to the same account with the same role of owner. That's a uniqueness error on AccountUser. Avoid it.
       existing=AccountUser.find_by_user_id_and_account_id_and_user_role(user.id, authable.id, AccountUser::ACCOUNT_OWNER)
       AccountUser.grant(user, AccountUser::ACCOUNT_OWNER, authable, @admin) unless existing
-      user.reload.should be_owner_of(authable)
+      expect(user.reload).to be_owner_of(authable)
     when 'purchaser'
       AccountUser.grant(user, AccountUser::ACCOUNT_PURCHASER, authable, @admin)
-      user.reload.should be_purchaser_of(authable)
+      expect(user.reload).to be_purchaser_of(authable)
     when 'business_admin'
       AccountUser.grant(user, AccountUser::ACCOUNT_ADMINISTRATOR, authable, @admin)
-      user.reload.should be_business_administrator_of(authable)
+      expect(user.reload).to be_business_administrator_of(authable)
     when 'senior_staff'
       UserRole.grant(user, UserRole::FACILITY_SENIOR_STAFF, authable)
-      user.reload.should be_facility_senior_staff_of(authable)
+      expect(user.reload).to be_facility_senior_staff_of(authable)
   end
 end
 

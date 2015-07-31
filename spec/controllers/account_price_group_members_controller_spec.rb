@@ -61,10 +61,10 @@ describe AccountPriceGroupMembersController do
     include_examples "global price group restrictions"
 
     def successful_action_expectations
-      should render_template('new')
+      is_expected.to render_template('new')
       expect(assigns(:price_group)).to be_kind_of PriceGroup
       expect(assigns(:account_price_group_member)).to be_kind_of AccountPriceGroupMember
-      assigns(:account_price_group_member).should be_new_record
+      expect(assigns(:account_price_group_member)).to be_new_record
     end
   end
 
@@ -87,7 +87,7 @@ describe AccountPriceGroupMembersController do
       expect(assigns(:price_group)).to be_kind_of PriceGroup
       expect(assigns(:account)).to be_kind_of Account
       expect(assigns(:account_price_group_member)).to be_kind_of AccountPriceGroupMember
-      should set_the_flash
+      is_expected.to set_the_flash
       assert_redirected_to([@authable, price_group])
     end
   end
@@ -111,7 +111,7 @@ describe AccountPriceGroupMembersController do
     def successful_action_expectations
       expect(assigns(:price_group)).to be_kind_of PriceGroup
       expect(assigns(:account_price_group_member)).to be_kind_of AccountPriceGroupMember
-      should set_the_flash
+      is_expected.to set_the_flash
       assert_redirected_to(facility_price_group_url(@authable, price_group))
     end
   end
@@ -131,7 +131,7 @@ describe AccountPriceGroupMembersController do
       # TODO: test GET with valid search term
       expect(assigns(:limit)).to be_kind_of Fixnum
       expect(assigns(:price_group)).to be_kind_of PriceGroup
-      should render_template('search_results')
+      is_expected.to render_template('search_results')
     end
   end
 end

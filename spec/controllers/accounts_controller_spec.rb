@@ -6,9 +6,9 @@ describe AccountsController do
   render_views
 
   it "should route" do
-    { :get => "/accounts" }.should route_to(:controller => 'accounts', :action => 'index')
-    { :get => "/accounts/1" }.should route_to(:controller => 'accounts', :action => 'show', :id => '1')
-    { :get => "/accounts/1/user_search" }.should route_to(:controller => 'accounts', :action => 'user_search', :id => '1')
+    expect({ :get => "/accounts" }).to route_to(:controller => 'accounts', :action => 'index')
+    expect({ :get => "/accounts/1" }).to route_to(:controller => 'accounts', :action => 'show', :id => '1')
+    expect({ :get => "/accounts/1/user_search" }).to route_to(:controller => 'accounts', :action => 'user_search', :id => '1')
   end
 
   before(:all) { create_users }
@@ -32,10 +32,10 @@ describe AccountsController do
       maybe_grant_always_sign_in(:owner)
       do_request
       # should find 2 account users, with user roles 'Owner'
-      assigns[:account_users].collect(&:user_id).should == [ @owner.id, @owner.id ]
-      assigns[:account_users].collect(&:user_role).should == [ 'Owner', 'Owner' ]
+      expect(assigns[:account_users].collect(&:user_id)).to eq([ @owner.id, @owner.id ])
+      expect(assigns[:account_users].collect(&:user_role)).to eq([ 'Owner', 'Owner' ])
       # should show 2 accounts, with 'edit account' links
-      response.should render_template('accounts/index')
+      expect(response).to render_template('accounts/index')
     end
 
     it_should_allow :purchaser do
@@ -129,19 +129,19 @@ describe AccountsController do
     it "should use reviewed_at" do
       sign_in @user
       do_request
-      response.should be_success
-      assigns[:extra_date_column].should == :reviewed_at
-      assigns[:order_details].to_sql.should be_include("order_details.reviewed_at >")
+      expect(response).to be_success
+      expect(assigns[:extra_date_column]).to eq(:reviewed_at)
+      expect(assigns[:order_details].to_sql).to be_include("order_details.reviewed_at >")
     end
 
     it "should add dispute links" do
       sign_in @user
       do_request
-      response.should be_success
-      OrderDetail.any_instance.stub(:can_dispute?).and_return(true)
-      assigns[:order_detail_link].should_not be_nil
-      assigns[:order_detail_link][:text].should == "Dispute"
-      assigns[:order_detail_link][:display?].call(OrderDetail.new).should be_true
+      expect(response).to be_success
+      allow_any_instance_of(OrderDetail).to receive(:can_dispute?).and_return(true)
+      expect(assigns[:order_detail_link]).not_to be_nil
+      expect(assigns[:order_detail_link][:text]).to eq("Dispute")
+      expect(assigns[:order_detail_link][:display?].call(OrderDetail.new)).to be_truthy
     end
 
 
@@ -165,7 +165,7 @@ describe AccountsController do
 
       it_should_allow_all [:owner, :business_admin] do
         assigns(:account).should == @account
-        should set_the_flash
+        is_expected.to set_the_flash
         @account.reload.should be_suspended
         assert_redirected_to account_path(@account)
       end
@@ -184,7 +184,7 @@ describe AccountsController do
 
       it_should_allow_all [:owner, :business_admin] do
         assigns(:account).should == @account
-        should set_the_flash
+        is_expected.to set_the_flash
         assigns(:account).should_not be_suspended
         assert_redirected_to account_path(@account)
       end

@@ -80,7 +80,7 @@ describe PricePolicyMassAssigner do
           let(:fulfilled_at) { previous_price_policy.start_date - 1.day }
 
           it "assigns no price policies" do
-            expect(mass_assign_price_policies).to have(0).items
+            expect(mass_assign_price_policies.size).to eq(0)
             expect(order_detail.price_policy).to be_blank
           end
         end
@@ -96,7 +96,7 @@ describe PricePolicyMassAssigner do
 
     context "when no compatible price policies exist" do
       it "assigns no price policies" do
-        expect(mass_assign_price_policies).to have(0).items
+        expect(mass_assign_price_policies.size).to eq(0)
         expect(order_detail.price_policy).to be_blank
       end
     end

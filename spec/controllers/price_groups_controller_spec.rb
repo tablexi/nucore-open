@@ -31,7 +31,7 @@ describe PriceGroupsController do
 
     it_should_allow_managers_only do
       expect(assigns(:price_group)).to be_kind_of PriceGroup
-      should render_template 'new'
+      is_expected.to render_template 'new'
     end
   end
 
@@ -44,7 +44,7 @@ describe PriceGroupsController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:price_group)).to be_kind_of PriceGroup
-      should set_the_flash
+      is_expected.to set_the_flash
       assert_redirected_to [@authable, assigns(:price_group)]
     end
   end
@@ -78,7 +78,7 @@ describe PriceGroupsController do
       it_should_allow_managers_only do
         expect(assigns(:user_members)).to be_kind_of ActiveRecord::Relation
         expect(assigns(:tab)).to eq(:users)
-        should render_template 'show'
+        is_expected.to render_template 'show'
       end
 
     end
@@ -94,7 +94,7 @@ describe PriceGroupsController do
       it_should_allow_managers_only do
         expect(assigns(:account_members)).to be_kind_of ActiveRecord::Relation
         expect(assigns(:tab)).to eq(:accounts)
-        should render_template 'show'
+        is_expected.to render_template 'show'
       end
 
     end
@@ -110,7 +110,7 @@ describe PriceGroupsController do
       it_should_allow_managers_only do
         expect(assigns(:price_group)).to be_kind_of PriceGroup
         assigns(:price_group).should == @price_group
-        should render_template 'edit'
+        is_expected.to render_template 'edit'
       end
 
     end
@@ -127,7 +127,7 @@ describe PriceGroupsController do
       it_should_allow_managers_only :redirect do
         expect(assigns(:price_group)).to be_kind_of PriceGroup
         assigns(:price_group).should == @price_group
-        should set_the_flash
+        is_expected.to set_the_flash
         assert_redirected_to [@authable, @price_group]
       end
 

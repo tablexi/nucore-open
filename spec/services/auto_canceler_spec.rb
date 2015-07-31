@@ -43,22 +43,22 @@ describe AutoCanceler do
     end
 
     it 'should find the past reservation in cancelable' do
-      canceler.cancelable_reservations.to_a.should == [past_reservation]
+      expect(canceler.cancelable_reservations.to_a).to eq([past_reservation])
     end
 
     it 'should not cancel the future reservation' do
       canceler.cancel_reservations
-      future_reservation.order_detail.reload.order_status.should_not == canceled_status
+      expect(future_reservation.order_detail.reload.order_status).not_to eq(canceled_status)
     end
 
     it 'should cancel the past reservation' do
       canceler.cancel_reservations
-      past_reservation.order_detail.reload.order_status.should == canceled_status
+      expect(past_reservation.order_detail.reload.order_status).to eq(canceled_status)
     end
 
     it 'should not cancel the completed reservation' do
       canceler.cancel_reservations
-      completed_reservation.order_detail.reload.order_status.should_not == canceled_status
+      expect(completed_reservation.order_detail.reload.order_status).not_to eq(canceled_status)
     end
 
     it 'should not cancel a past reservation in the cart' do
@@ -69,7 +69,7 @@ describe AutoCanceler do
         :reserved_by_admin => true)
 
       canceler.cancel_reservations
-      cart_reservation.order_detail.reload.order_status.should_not == canceled_status
+      expect(cart_reservation.order_detail.reload.order_status).not_to eq(canceled_status)
     end
 
     context 'with cancellation fee' do
@@ -79,7 +79,7 @@ describe AutoCanceler do
 
       it 'should charge the fee' do
         canceler.cancel_reservations
-        past_reservation.order_detail.reload.actual_cost.to_f.should == 10
+        expect(past_reservation.order_detail.reload.actual_cost.to_f).to eq(10)
       end
     end
 

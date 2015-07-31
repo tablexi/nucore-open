@@ -11,27 +11,27 @@ describe OrderUncanceler do
 
     it 'should not uncancel a not-canceled order' do
       uncanceler.uncancel_to_complete(order_detail)
-      order_detail.should_not be_changed
-      order_detail.should_not be_canceled
+      expect(order_detail).not_to be_changed
+      expect(order_detail).not_to be_canceled
     end
 
     context 'with a canceled order' do
       before :each do
         order_detail.update_order_status!(order.user, cancel_status)
-        order_detail.should be_canceled
+        expect(order_detail).to be_canceled
         uncanceler.uncancel_to_complete(order_detail)
       end
 
       it 'should uncancel' do
-        order_detail.should be_complete
+        expect(order_detail).to be_complete
       end
 
       it 'should have a price' do
-        order_detail.actual_cost.should > 0
+        expect(order_detail.actual_cost).to be > 0
       end
 
       it 'should have a price policy' do
-        order_detail.price_policy.should be
+        expect(order_detail.price_policy).to be
       end
     end
   end
@@ -42,7 +42,7 @@ describe OrderUncanceler do
     before :each do
       order_detail.product.price_policies.update_all(:start_date => 7.days.ago)
       reservation.order_detail.backdate_to_complete!(Time.zone.now)
-      order_detail.should be_complete
+      expect(order_detail).to be_complete
     end
 
     context 'and the reservation is canceled' do
@@ -53,24 +53,24 @@ describe OrderUncanceler do
       end
 
       it 'should make complete' do
-        order_detail.should be_complete
+        expect(order_detail).to be_complete
       end
 
       it 'should have a price' do
-        order_detail.actual_cost.should > 0
+        expect(order_detail.actual_cost).to be > 0
       end
 
       it 'should have a price policy' do
-        order_detail.price_policy.should be
+        expect(order_detail.price_policy).to be
       end
 
       it 'should set the fulfilled date to the reservation end time' do
-        order_detail.fulfilled_at.should eq(reservation.reserve_end_at)
+        expect(order_detail.fulfilled_at).to eq(reservation.reserve_end_at)
       end
 
       it 'should set the actuals off the reservation' do
-        reservation.reload.actual_start_at.should eq(reservation.reserve_start_at)
-        reservation.reload.actual_end_at.should eq(reservation.reserve_end_at)
+        expect(reservation.reload.actual_start_at).to eq(reservation.reserve_start_at)
+        expect(reservation.reload.actual_end_at).to eq(reservation.reserve_end_at)
       end
     end
   end

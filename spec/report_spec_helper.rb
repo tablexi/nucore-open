@@ -116,16 +116,16 @@ module ReportSpecHelper
     date_start=Date.new(now.year, now.month, 1) - 1.month
 
     if @params[:date_start].blank?
-      assigns(:date_start).should == date_start
+      expect(assigns(:date_start)).to eq(date_start)
     else
-      assigns(:date_start).should == parse_usa_date(@params[:date_start]).beginning_of_day
+      expect(assigns(:date_start)).to eq(parse_usa_date(@params[:date_start]).beginning_of_day)
     end
 
     if @params[:date_end].blank?
       date_end=date_start + 42.days
-      assigns(:date_end).should == Date.new(date_end.year, date_end.month) - 1.day
+      expect(assigns(:date_end)).to eq(Date.new(date_end.year, date_end.month) - 1.day)
     else
-      assigns(:date_end).should == parse_usa_date(@params[:date_end]).end_of_day
+      expect(assigns(:date_end)).to eq(parse_usa_date(@params[:date_end]).end_of_day)
     end
   end
 
@@ -133,8 +133,8 @@ module ReportSpecHelper
   def assert_report_download_rendered(filename)
     expect(@response.headers['Content-Type']).to match %r(\Atext/csv\b)
     filename += "_#{assigns(:date_start).strftime("%Y%m%d")}-#{assigns(:date_end).strftime("%Y%m%d")}.csv"
-    @response.headers["Content-Disposition"].should == "attachment; filename=\"#{filename}\""
-    should respond_with :success
+    expect(@response.headers["Content-Disposition"]).to eq("attachment; filename=\"#{filename}\"")
+    is_expected.to respond_with :success
   end
 
 
@@ -156,9 +156,9 @@ module ReportSpecHelper
   def assert_report_rendered_html(label, &report_on)
     if @method == :xhr
       assert_report_init label, &report_on
-      should render_template 'reports/report_table'
+      is_expected.to render_template 'reports/report_table'
     else
-      should render_template 'reports/report'
+      is_expected.to render_template 'reports/report'
     end
   end
 

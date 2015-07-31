@@ -64,8 +64,8 @@ describe FacilityOrderDetailsController do
                                             :price_group => @price_group,
                                             :usage_rate => 10,
                                             :usage_subsidy => 0)
-    @instrument_price_policy.should be_persisted
-    Instrument.any_instance.stub(:cheapest_price_policy).and_return(@instrument_price_policy)
+    expect(@instrument_price_policy).to be_persisted
+    allow_any_instance_of(Instrument).to receive(:cheapest_price_policy).and_return(@instrument_price_policy)
     @reservation = place_reservation @authable, @order_detail, 1.day.ago
     @order_detail.backdate_to_complete! @reservation.reserve_end_at
   end

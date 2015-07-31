@@ -16,9 +16,9 @@ describe Notifier do
       
       @files.each do |f|
         it "should render template order_status_changed_to_#{f} successfully" do
-          lambda {
+          expect {
             Notifier.order_detail_status_change(@order_detail, nil, OrderStatus.find_or_create_by_name(f.titleize), 'to@example.org')
-          }.should_not raise_error
+          }.not_to raise_error
         end
       end
     end

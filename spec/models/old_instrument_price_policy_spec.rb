@@ -2,13 +2,13 @@ require 'spec_helper'
 
 describe OldInstrumentPricePolicy do
 
-  it { should allow_value(Date.current+1).for(:start_date) }
+  it { is_expected.to allow_value(Date.current+1).for(:start_date) }
 
-  it { should allow_value(Date.current - 1).for(:start_date) }
+  it { is_expected.to allow_value(Date.current - 1).for(:start_date) }
 
-  it { should allow_value(123.4567).for :usage_rate }
+  it { is_expected.to allow_value(123.4567).for :usage_rate }
 
-  it { should allow_value(123.4567).for :usage_subsidy }
+  it { is_expected.to allow_value(123.4567).for :usage_subsidy }
 
   context "test requiring instruments" do
     before(:each) do
@@ -21,36 +21,36 @@ describe OldInstrumentPricePolicy do
 
     it "should create using factory" do
       # price policy belongs to an instrument and a price group
-      @ipp.should be_valid
+      expect(@ipp).to be_valid
     end
 
     it "should return instrument" do
       # price policy belongs to an instrument and a price group
-      @ipp.product.should == @instrument
+      expect(@ipp.product).to eq(@instrument)
     end
 
     it 'should require usage or reservation rate, but not both' do
       @ipp.restrict_purchase=false
 
-      @ipp.should be_valid
+      expect(@ipp).to be_valid
       @ipp.reservation_rate=nil
       @ipp.usage_rate=nil
-      @ipp.should_not be_valid
+      expect(@ipp).not_to be_valid
 
       @ipp.usage_rate=1
-      @ipp.should be_valid
+      expect(@ipp).to be_valid
 
       @ipp.usage_rate=nil
       @ipp.reservation_rate=1
-      @ipp.should be_valid
+      expect(@ipp).to be_valid
     end
 
     it "should create a price policy for today if no active price policy already exists" do
-      should allow_value(Date.current).for(:start_date)
+      is_expected.to allow_value(Date.current).for(:start_date)
       @ipp.start_date = Date.current - 7.days
       @ipp.save validate: false
       ipp_new = create :old_instrument_price_policy, start_date: Date.current, price_group: @price_group, product: @instrument
-      ipp_new.errors_on(:start_date).should_not be_nil
+      expect(ipp_new.errors_on(:start_date)).not_to be_nil
     end
 
     it "should not create a price policy for a day that a policy already exists for" do
@@ -58,7 +58,7 @@ describe OldInstrumentPricePolicy do
       assert @ipp.save
       ipp_new = build :old_instrument_price_policy, start_date: Date.current + 7.days, price_group: @price_group, product: @instrument
       ipp_new.valid?
-      ipp_new.errors_on(:start_date).should_not be_nil
+      expect(ipp_new.errors_on(:start_date)).not_to be_nil
     end
 
     describe 'non overlapping policies' do
@@ -69,9 +69,9 @@ describe OldInstrumentPricePolicy do
 
       it "should return the date for the current policies" do
         create :old_instrument_price_policy, start_date: Date.current + 7.days, price_group: @price_group, product: @instrument
-        InstrumentPricePolicy.current_date(@instrument).to_date.should == @ipp.start_date.to_date
+        expect(InstrumentPricePolicy.current_date(@instrument).to_date).to eq(@ipp.start_date.to_date)
         @ipp = create :old_instrument_price_policy, price_group: @price_group, product: @instrument
-        InstrumentPricePolicy.current_date(@instrument).to_date.should == @ipp.start_date.to_date
+        expect(InstrumentPricePolicy.current_date(@instrument).to_date).to eq(@ipp.start_date.to_date)
       end
 
       it "should return the date for upcoming policies" do
@@ -112,22 +112,22 @@ describe OldInstrumentPricePolicy do
       start_dt = Time.zone.parse("#{Date.current + 1.day} 9:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 10:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 4
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq(10.75 * 4)
+      expect(costs[:subsidy]).to eq(0)
 
       # 3 hours (4 * 3 intervals)
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 13:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 3 * 4
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq(10.75 * 3 * 4)
+      expect(costs[:subsidy]).to eq(0)
 
       # 35 minutes ceil(35.0/15.0) intervals (3)
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 10:35")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 3
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq(10.75 * 3)
+      expect(costs[:subsidy]).to eq(0)
     end
 
     it "should correctly estimate cost with usage cost and subsidy" do
@@ -137,22 +137,22 @@ describe OldInstrumentPricePolicy do
       start_dt = Time.zone.parse("#{Date.current + 1.day} 9:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 10:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 4
-      costs[:subsidy].should == 1.75 * 4
+      expect(costs[:cost]).to    eq(10.75 * 4)
+      expect(costs[:subsidy]).to eq(1.75 * 4)
 
       # 3 hours (4 * 3 intervals)
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 13:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 3 * 4
-      costs[:subsidy].should == 1.75 * 3 * 4
+      expect(costs[:cost]).to    eq(10.75 * 3 * 4)
+      expect(costs[:subsidy]).to eq(1.75 * 3 * 4)
 
       # 35 minutes ceil(35.0/15.0) intervals (3)
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 10:35")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 3
-      costs[:subsidy].should == 1.75 * 3
+      expect(costs[:cost]).to    eq(10.75 * 3)
+      expect(costs[:subsidy]).to eq(1.75 * 3)
     end
 
     it "should correctly estimate cost with usage cost and overage cost" do
@@ -162,22 +162,22 @@ describe OldInstrumentPricePolicy do
       start_dt = Time.zone.parse("#{Date.current + 1.day} 9:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 10:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 4
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq(10.75 * 4)
+      expect(costs[:subsidy]).to eq(0)
 
       # 3 hours (4 * 3 intervals)
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 13:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 3 * 4
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq(10.75 * 3 * 4)
+      expect(costs[:subsidy]).to eq(0)
 
       # 35 minutes ceil(35.0/15.0) intervals (3)
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 10:35")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 3
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq(10.75 * 3)
+      expect(costs[:subsidy]).to eq(0)
     end
 
     it "should correctly estimate cost with reservation cost" do
@@ -193,22 +193,22 @@ describe OldInstrumentPricePolicy do
       start_dt = Time.zone.parse("#{Date.current + 1.day} 9:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 10:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 4
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq(10.75 * 4)
+      expect(costs[:subsidy]).to eq(0)
 
       # 3 hours (4 * 3 intervals)
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 13:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 3 * 4
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq(10.75 * 3 * 4)
+      expect(costs[:subsidy]).to eq(0)
 
       # 35 minutes ceil(35.0/15.0) intervals (3)
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 10:35")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 3
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq(10.75 * 3)
+      expect(costs[:subsidy]).to eq(0)
     end
 
     it "should correctly estimate cost with reservation cost and subsidy" do
@@ -225,22 +225,22 @@ describe OldInstrumentPricePolicy do
       start_dt = Time.zone.parse("#{Date.current + 1.day} 9:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 10:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 4
-      costs[:subsidy].should == 1.75 * 4
+      expect(costs[:cost]).to    eq(10.75 * 4)
+      expect(costs[:subsidy]).to eq(1.75 * 4)
 
       # 3 hours (4 * 3 intervals)
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 13:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 3 * 4
-      costs[:subsidy].should == 1.75 * 3 * 4
+      expect(costs[:cost]).to    eq(10.75 * 3 * 4)
+      expect(costs[:subsidy]).to eq(1.75 * 3 * 4)
 
       # 35 minutes ceil(35.0/15.0) intervals (3)
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 10:35")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 3
-      costs[:subsidy].should == 1.75 * 3
+      expect(costs[:cost]).to    eq(10.75 * 3)
+      expect(costs[:subsidy]).to eq(1.75 * 3)
     end
 
     it "should correctly estimate cost with usage and reservation cost" do
@@ -256,22 +256,22 @@ describe OldInstrumentPricePolicy do
       start_dt = Time.zone.parse("#{Date.current + 1.day} 9:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 10:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == (5 + 5.75) * 4
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq((5 + 5.75) * 4)
+      expect(costs[:subsidy]).to eq(0)
 
       # 3 hours (4 * 3 intervals)
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 13:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == (5 + 5.75) * 3 * 4
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq((5 + 5.75) * 3 * 4)
+      expect(costs[:subsidy]).to eq(0)
 
       # 35 minutes ceil(35.0/15.0) intervals (3)
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 10:35")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == (5 + 5.75) * 3
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq((5 + 5.75) * 3)
+      expect(costs[:subsidy]).to eq(0)
     end
 
     it "should correctly estimate cost with usage and reservation cost and subsidy" do
@@ -289,22 +289,22 @@ describe OldInstrumentPricePolicy do
       start_dt = Time.zone.parse("#{Date.current + 1.day} 9:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 10:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == (5 + 5.75) * 4
-      costs[:subsidy].should == (0.5 + 0.75) * 4
+      expect(costs[:cost]).to    eq((5 + 5.75) * 4)
+      expect(costs[:subsidy]).to eq((0.5 + 0.75) * 4)
 
       # 3 hours (4 * 3 intervals)
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 13:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == (5 + 5.75) * 3 * 4
-      costs[:subsidy].should == (0.5 + 0.75) * 3 * 4
+      expect(costs[:cost]).to    eq((5 + 5.75) * 3 * 4)
+      expect(costs[:subsidy]).to eq((0.5 + 0.75) * 3 * 4)
 
       # 35 minutes ceil(35.0/15.0) intervals (3)
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 10:35")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == (5 + 5.75) * 3
-      costs[:subsidy].should == (0.5 + 0.75) * 3
+      expect(costs[:cost]).to    eq((5 + 5.75) * 3)
+      expect(costs[:subsidy]).to eq((0.5 + 0.75) * 3)
     end
 
     it "should correctly estimate cost across schedule rules" do
@@ -317,8 +317,8 @@ describe OldInstrumentPricePolicy do
       start_dt = Time.zone.parse("#{Date.current + 1.day} #{@rule.end_hour - 1}:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} #{@rule.end_hour + 1}:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 8
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq(10.75 * 8)
+      expect(costs[:subsidy]).to eq(0)
     end
 
     it "should correctly estimate cost for a schedule rule with a discount" do
@@ -331,8 +331,8 @@ describe OldInstrumentPricePolicy do
       start_dt = Time.zone.parse("#{Date.current + 1.day} #{@discount_rule.start_hour}:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} #{@discount_rule.start_hour + 1}:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 0.5 * 4
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq(10.75 * 0.5 * 4)
+      expect(costs[:subsidy]).to eq(0)
     end
 
     it "should correctly estimate cost across schedule rules with discounts" do
@@ -345,8 +345,8 @@ describe OldInstrumentPricePolicy do
       start_dt = Time.zone.parse("#{Date.current + 1.day} #{@rule.end_hour - 1}:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} #{@rule.end_hour + 1}:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == (10.75 * 0.5 * 4) + (10.75 * 4)
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq((10.75 * 0.5 * 4) + (10.75 * 4))
+      expect(costs[:subsidy]).to eq(0)
     end
 
     it "should return nil if the end time is earlier than the start time" do
@@ -354,7 +354,7 @@ describe OldInstrumentPricePolicy do
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 9:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs.should be_nil
+      expect(costs).to be_nil
     end
 
     it "should return nil for cost if purchase is restricted" do
@@ -371,7 +371,7 @@ describe OldInstrumentPricePolicy do
       start_dt = Time.zone.parse("#{Date.current + 1.day} 10:00")
       end_dt   = Time.zone.parse("#{Date.current + 1.day} 9:00")
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs.should be_nil
+      expect(costs).to be_nil
     end
 
     # TODO finish these tests
@@ -400,8 +400,8 @@ describe OldInstrumentPricePolicy do
       start_dt = Time.zone.parse("#{Date.current + 1.day} 23:00")
       end_dt   = Time.zone.parse("#{Date.current + 2.day} 1:00")
       costs    = @pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 8
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq(10.75 * 8)
+      expect(costs[:subsidy]).to eq(0)
     end
 
     it "should correctly estimate costs across time changes" do
@@ -409,8 +409,8 @@ describe OldInstrumentPricePolicy do
       start_dt = Time.zone.parse("7 November 2010 1:00")
       end_dt   = Time.zone.parse("7 November 2010 4:00")
       costs    = @pp.estimate_cost_and_subsidy(start_dt, end_dt)
-      costs[:cost].should    == 10.75 * 16
-      costs[:subsidy].should == 0
+      expect(costs[:cost]).to    eq(10.75 * 16)
+      expect(costs[:subsidy]).to eq(0)
     end
   end
 
@@ -477,13 +477,13 @@ describe OldInstrumentPricePolicy do
 
       it 'should return zero for zero priced policy' do
         @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-        @costs.should == {:cost => 0, :subsidy => 0}
+        expect(@costs).to eq({:cost => 0, :subsidy => 0})
       end
 
       it 'should return minimum cost for a zero priced policy' do
         @ipp.update_attribute :minimum_cost, 20
         @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-        @costs.should == {:cost => 20, :subsidy => 0}
+        expect(@costs).to eq({:cost => 20, :subsidy => 0})
       end
     end
 
@@ -497,7 +497,7 @@ describe OldInstrumentPricePolicy do
       @reservation.actual_start_at = @reservation.reserve_start_at
       @reservation.actual_end_at = @reservation.reserve_end_at
       @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-      @costs.should == {:cost => 100, :subsidy => 99}
+      expect(@costs).to eq({:cost => 100, :subsidy => 99})
     end
 
     it "should correctly calculate cost with usage rate and subsidy and overage using usage rate for overage rate and usage subsidy for overage subsidy" do
@@ -507,7 +507,7 @@ describe OldInstrumentPricePolicy do
 
       @costs = @ipp.calculate_cost_and_subsidy(@reservation)
 
-      @costs[:subsidy].should == @ipp.usage_subsidy * 2
+      expect(@costs[:subsidy]).to eq(@ipp.usage_subsidy * 2)
     end
 
     it 'should have at least one block even if the actual times are within a minute of each other' do
@@ -515,8 +515,8 @@ describe OldInstrumentPricePolicy do
       @reservation.actual_end_at =  @reservation.actual_start_at + 10.seconds
 
       @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-      @costs[:cost].should == 100
-      @costs[:subsidy].should == 99
+      expect(@costs[:cost]).to eq(100)
+      expect(@costs[:subsidy]).to eq(99)
     end
 
     context 'overage' do
@@ -527,22 +527,22 @@ describe OldInstrumentPricePolicy do
         @reservation.actual_start_at = @reservation.reserve_start_at
         @reservation.actual_end_at = @reservation.reserve_end_at + 10.seconds
         @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-        @costs[:cost].should == 100
-        @costs[:subsidy].should == 99
+        expect(@costs[:cost]).to eq(100)
+        expect(@costs[:subsidy]).to eq(99)
       end
 
       it 'should charge a full interval for more than one minute over' do
         @reservation.actual_start_at = @reservation.reserve_start_at
         @reservation.actual_end_at = @reservation.reserve_end_at + 61.seconds
         @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-        @costs[:cost].should == 300
-        @costs[:subsidy].should == 298
+        expect(@costs[:cost]).to eq(300)
+        expect(@costs[:subsidy]).to eq(298)
       end
     end
 
     context 'reservation only instrument' do
       before :each do
-        @instrument.stub(:control_mechanism).and_return Relay::CONTROL_MECHANISMS[:manual]
+        allow(@instrument).to receive(:control_mechanism).and_return Relay::CONTROL_MECHANISMS[:manual]
       end
 
       context 'with reservation rates' do
@@ -553,8 +553,8 @@ describe OldInstrumentPricePolicy do
         context 'without actual time' do
           it 'should calculate cost' do
             @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-            @costs[:cost].should == 100
-            @costs[:subsidy].should == 99
+            expect(@costs[:cost]).to eq(100)
+            expect(@costs[:subsidy]).to eq(99)
           end
         end
 
@@ -566,8 +566,8 @@ describe OldInstrumentPricePolicy do
 
           it 'should calculate the cost and subsidy' do
             @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-            @costs[:cost].should == 100
-            @costs[:subsidy].should == 99
+            expect(@costs[:cost]).to eq(100)
+            expect(@costs[:subsidy]).to eq(99)
           end
         end
       end
@@ -579,7 +579,7 @@ describe OldInstrumentPricePolicy do
         end
         it 'should return nil' do
           @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-          @costs.should be_nil
+          expect(@costs).to be_nil
         end
       end
     end
@@ -593,7 +593,7 @@ describe OldInstrumentPricePolicy do
       @reservation.actual_start_at = nil
       @reservation.actual_end_at = nil
       @ipp.update_attributes(:overage_rate => 120, :overage_subsidy => 119)
-      @ipp.calculate_cost_and_subsidy(@reservation).should be_nil
+      expect(@ipp.calculate_cost_and_subsidy(@reservation)).to be_nil
     end
     it "should correctly calculate cost with usage, reservation, and overage rate and subsidy"
     it "should correctly calculate cost across time changes"

@@ -6,9 +6,9 @@ describe FacilitiesController do
   render_views
 
   it "should route" do
-    { :get => "/facilities" }.should route_to(:controller => 'facilities', :action => 'index')
-    { :get => "/facilities/url_name" }.should route_to(:controller => 'facilities', :action => 'show', :id => 'url_name')
-    { :get => "/facilities/url_name/manage" }.should route_to(:controller => 'facilities', :action => 'manage', :id => 'url_name')
+    expect({ :get => "/facilities" }).to route_to(:controller => 'facilities', :action => 'index')
+    expect({ :get => "/facilities/url_name" }).to route_to(:controller => 'facilities', :action => 'show', :id => 'url_name')
+    expect({ :get => "/facilities/url_name/manage" }).to route_to(:controller => 'facilities', :action => 'manage', :id => 'url_name')
   end
 
   before(:all) { create_users }
@@ -151,9 +151,9 @@ describe FacilitiesController do
 
       before(:each) do
         @facility2 = FactoryGirl.create(:facility)
-        @controller.stub(:current_facility).and_return(@authable)
-        @controller.stub(:operable_facilities).and_return([@authable, @facility2])
-        @controller.should_receive(:init_current_facility).never
+        allow(@controller).to receive(:current_facility).and_return(@authable)
+        allow(@controller).to receive(:operable_facilities).and_return([@authable, @facility2])
+        expect(@controller).to receive(:init_current_facility).never
       end
 
       it_should_allow_all facility_operators do
@@ -165,8 +165,8 @@ describe FacilitiesController do
 
     context "as facility operators with one facility" do
       before(:each) do
-        @controller.stub(:current_facility).and_return(@authable)
-        @controller.should_receive(:init_current_facility).never
+        allow(@controller).to receive(:current_facility).and_return(@authable)
+        expect(@controller).to receive(:init_current_facility).never
       end
       context 'has instruments' do
         before :each do
@@ -192,7 +192,7 @@ describe FacilitiesController do
 
       before(:each) do
         @facility2 = FactoryGirl.create(:facility)
-        @controller.stub(:current_facility).and_return(@authable)
+        allow(@controller).to receive(:current_facility).and_return(@authable)
       end
 
       it_should_allow :admin do

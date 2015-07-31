@@ -110,11 +110,11 @@ describe OrderImport, :timecop_freeze do
   end
 
   context "validations" do
-    it { should belong_to :creator }
-    it { should belong_to :upload_file }
-    it { should belong_to :error_file }
-    it { should validate_presence_of :upload_file }
-    it { should validate_presence_of :created_by }
+    it { is_expected.to belong_to :creator }
+    it { is_expected.to belong_to :upload_file }
+    it { is_expected.to belong_to :error_file }
+    it { is_expected.to validate_presence_of :upload_file }
+    it { is_expected.to validate_presence_of :created_by }
   end
 
 def generate_import_file(*args)
@@ -332,7 +332,7 @@ end
 
     context "an exception is raised in import" do
       before do
-        OrderRowImporter.any_instance.stub(:import).and_raise("Something unknown happened")
+        allow_any_instance_of(OrderRowImporter).to receive(:import).and_raise("Something unknown happened")
         import.upload_file.file = generate_import_file
         import.upload_file.save!
         import.process_upload!
@@ -355,7 +355,7 @@ end
 
     context "an excetion is raised when opening the CSV" do
       before do
-        CSV.stub(:parse).and_raise(ArgumentError, "invalid byte sequence in UTF-8")
+        allow(CSV).to receive(:parse).and_raise(ArgumentError, "invalid byte sequence in UTF-8")
         import.upload_file.file = generate_import_file
         import.upload_file.save!
         import.process_upload!

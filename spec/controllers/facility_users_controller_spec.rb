@@ -55,7 +55,7 @@ describe FacilityUsersController do
       @action=:search
     end
 
-    it_should_allow_managers_only { should render_template('search') }
+    it_should_allow_managers_only { is_expected.to render_template('search') }
 
   end
 

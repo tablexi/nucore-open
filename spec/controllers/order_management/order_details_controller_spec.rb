@@ -708,7 +708,7 @@ describe OrderManagement::OrderDetailsController do
 
     it_should_allow_operators_only :redirect do
       expect(order_detail.reload.journal).to be_nil
-      should set_the_flash
+      is_expected.to set_the_flash
       assert_redirected_to facility_order_path(facility, order_detail.order)
     end
   end

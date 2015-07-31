@@ -10,7 +10,7 @@ shared_examples 'user without notifications' do
     end
 
     it_should_allow :director, "no access to notifications if there aren't any" do
-      should set_the_flash
+      is_expected.to set_the_flash
       assert_redirected_to root_path
     end
   end
@@ -43,7 +43,7 @@ describe NotificationsController do
 
     it_should_allow_all facility_users do |user|
       assigns(:notices).size.should == user.notifications.active.count
-      should render_template 'index'
+      is_expected.to render_template 'index'
     end
   end
 

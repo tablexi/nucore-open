@@ -9,10 +9,10 @@ describe ExternalServiceReceiver do
     described_class.new response_data: parsed_response_data.to_json
   end
 
-  it { should have_db_column :receiver_type }
-  it { should validate_presence_of :receiver_id }
-  it { should validate_presence_of :external_service_id }
-  it { should validate_presence_of :response_data }
+  it { is_expected.to have_db_column :receiver_type }
+  it { is_expected.to validate_presence_of :receiver_id }
+  it { is_expected.to validate_presence_of :external_service_id }
+  it { is_expected.to validate_presence_of :response_data }
 
   it 'responds to keys in the response data' do
     parsed_response_data.each do |key, _|

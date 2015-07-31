@@ -68,7 +68,7 @@ describe FileUploadsController do
       @params[:stored_file][:file]=''
       sign_in @admin
       do_request
-      should render_template('upload')
+      is_expected.to render_template('upload')
     end
 
   end
@@ -101,7 +101,7 @@ describe FileUploadsController do
       end
 
       it_should_allow_all(facility_operators) do
-        should respond_with :success
+        is_expected.to respond_with :success
       end
     end
 
@@ -158,7 +158,7 @@ describe FileUploadsController do
       expect(assigns[:product]).to eq(@service)
       expect(@service.reload.external_services.size).to eq(1)
       expect(@service.external_services[0].location).to eq(@ext_service_location)
-      should set_the_flash
+      is_expected.to set_the_flash
       assert_redirected_to product_survey_path(@authable, @service.parameterize, @service)
     end
 
@@ -202,7 +202,7 @@ describe FileUploadsController do
       end
 
       it_should_allow_all(facility_operators) do
-        should respond_with :redirect
+        is_expected.to respond_with :redirect
       end
 
     end

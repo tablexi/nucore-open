@@ -16,6 +16,6 @@ describe StatementRow do
       .to_not raise_error
   end
 
-  it { should validate_presence_of :order_detail_id }
-  it { should validate_presence_of :statement_id }
+  it { is_expected.to validate_presence_of :order_detail_id }
+  it { is_expected.to validate_presence_of :statement_id }
 end
