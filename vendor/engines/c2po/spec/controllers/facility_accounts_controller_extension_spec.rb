@@ -62,10 +62,10 @@ describe FacilityAccountsController do
       end
 
       it_should_allow :director, 'to change affiliate to other' do
-        assigns(:account).should == @account
-        assigns(:account).affiliate.should == Affiliate.OTHER
-        assigns(:account).affiliate_other.should == @params[:account][:affiliate_other]
-        should set_the_flash
+        expect(assigns(:account)).to eq(@account)
+        expect(assigns(:account).affiliate).to eq(Affiliate.OTHER)
+        expect(assigns(:account).affiliate_other).to eq(@params[:account][:affiliate_other])
+        is_expected.to set_the_flash
         assert_redirected_to facility_account_url
       end
 
@@ -77,10 +77,10 @@ describe FacilityAccountsController do
         end
 
         it_should_allow :director do
-          assigns(:account).should == @account
-          assigns(:account).affiliate.should == @affiliate
-          assigns(:account).affiliate_other.should be_nil
-          should set_the_flash
+          expect(assigns(:account)).to eq(@account)
+          expect(assigns(:account).affiliate).to eq(@affiliate)
+          expect(assigns(:account).affiliate_other).to be_nil
+          is_expected.to set_the_flash
           assert_redirected_to facility_account_url
         end
 
@@ -110,7 +110,7 @@ describe FacilityAccountsController do
       }
 
       @params[:account] = @acct_attrs
-      @controller.stub(:current_facility).and_return(@authable)
+      allow(@controller).to receive(:current_facility).and_return(@authable)
     end
 
     context 'PurchaseOrderAccount' do
@@ -119,12 +119,12 @@ describe FacilityAccountsController do
       end
 
       it_should_allow :director do
-        assigns(:account).expires_at.should == Time.zone.parse("#{@expiration_year}-5-12").end_of_day
-        assigns(:account).facility_id.should == @authable.id
-        assigns(:account).should be_kind_of PurchaseOrderAccount
-        assigns(:account).affiliate.should == Affiliate.find(@acct_attrs[:affiliate_id])
-        assigns(:account).affiliate_other.should be_nil
-        should set_the_flash
+        expect(assigns(:account).expires_at).to eq(Time.zone.parse("#{@expiration_year}-5-12").end_of_day)
+        expect(assigns(:account).facility_id).to eq(@authable.id)
+        expect(assigns(:account)).to be_kind_of PurchaseOrderAccount
+        expect(assigns(:account).affiliate).to eq(Affiliate.find(@acct_attrs[:affiliate_id]))
+        expect(assigns(:account).affiliate_other).to be_nil
+        is_expected.to set_the_flash
         assert_redirected_to user_accounts_url(@authable, @owner)
       end
     end
@@ -140,8 +140,8 @@ describe FacilityAccountsController do
       end
 
       it_should_allow :director do
-        assigns(:account).expires_at.should  == Time.zone.parse("#{@expiration_year}-5-1").end_of_month.end_of_day
-        assigns(:account).facility.id.should == @authable.id
+        expect(assigns(:account).expires_at).to  eq(Time.zone.parse("#{@expiration_year}-5-1").end_of_month.end_of_day)
+        expect(assigns(:account).facility.id).to eq(@authable.id)
       end
     end
   end
@@ -158,7 +158,7 @@ describe FacilityAccountsController do
         end
 
         it_should_allow_all facility_managers do
-          should render_template 'c2po/reconcile'
+          is_expected.to render_template 'c2po/reconcile'
         end
       end
 
@@ -168,7 +168,7 @@ describe FacilityAccountsController do
         end
 
         it_should_allow_all facility_managers do
-          should redirect_to redirect_path
+          is_expected.to redirect_to redirect_path
         end
       end
     end
@@ -181,7 +181,7 @@ describe FacilityAccountsController do
         expect(assigns :selected).to eq assigns(:accounts).first
         expect(assigns(:unreconciled_details).to_a)
           .to eq OrderDetail.account_unreconciled(facility, assigns(:selected)).to_a
-        should render_template('c2po/reconcile')
+        is_expected.to render_template('c2po/reconcile')
       end
     end
   end
@@ -209,10 +209,10 @@ describe FacilityAccountsController do
     it_should_allow :director do
       expect(assigns(:subnav)).to eq('billing_nav')
       expect(assigns(:active_tab)).to eq('admin_billing')
-      assigns(:accounts).should be_empty
+      expect(assigns(:accounts)).to be_empty
       expect(assigns(:selected)).to be_nil
       expect(assigns(:unreconciled_details)).to be_nil
-      should render_template('c2po/reconcile')
+      is_expected.to render_template('c2po/reconcile')
     end
 
   end
@@ -241,10 +241,10 @@ describe FacilityAccountsController do
     it_should_allow :director do
       expect(assigns(:subnav)).to eq('billing_nav')
       expect(assigns(:active_tab)).to eq('admin_billing')
-      assigns(:accounts).should be_empty
+      expect(assigns(:accounts)).to be_empty
       expect(assigns(:selected)).to be_nil
       expect(assigns(:unreconciled_details)).to be_nil
-      should render_template('c2po/reconcile')
+      is_expected.to render_template('c2po/reconcile')
     end
 
   end
@@ -262,12 +262,12 @@ describe FacilityAccountsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
-      assigns(:error_fields).should be_empty
-      should set_the_flash
+      expect(assigns(:error_fields)).to be_empty
+      is_expected.to set_the_flash
       assert_redirected_to credit_cards_facility_accounts_path
       @order_detail.reload
-      @order_detail.state.should == 'reconciled'
-      @order_detail.reconciled_note.should_not be_nil
+      expect(@order_detail.state).to eq('reconciled')
+      expect(@order_detail.reconciled_note).not_to be_nil
     end
 
     it 'should test multiple cards sent in one POST'
@@ -288,12 +288,12 @@ describe FacilityAccountsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do |user|
-      assigns(:error_fields).should be_empty
-      should set_the_flash
+      expect(assigns(:error_fields)).to be_empty
+      is_expected.to set_the_flash
       assert_redirected_to purchase_orders_facility_accounts_path
       @order_detail.reload
-      @order_detail.state.should == 'reconciled'
-      @order_detail.reconciled_note.should_not be_nil
+      expect(@order_detail.state).to eq('reconciled')
+      expect(@order_detail.reconciled_note).not_to be_nil
     end
 
     it 'should test multiple purchase orders sent in one POST'

@@ -47,9 +47,9 @@ describe ProductApprover do
     def verify_approvals(approved_products)
       all_products.each do |product|
         if approved_products.include?(product)
-          expect(product.can_be_used_by?(user)).to be_true
+          expect(product.can_be_used_by?(user)).to be true
         else
-          expect(product.can_be_used_by?(user)).to be_false
+          expect(product.can_be_used_by?(user)).to be false
         end
       end
     end

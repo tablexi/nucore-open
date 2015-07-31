@@ -3,7 +3,7 @@ require 'spec_helper'
 describe InstrumentPricePolicy do
   before :each do
     @instrument = FactoryGirl.create(:setup_instrument)
-    @instrument.price_policies.count.should == 1
+    expect(@instrument.price_policies.count).to eq(1)
     @price_policy = @instrument.price_policies.first
     @price_policy.update_attributes(:usage_rate => 0,
                                     :usage_subsidy => 0,
@@ -17,32 +17,32 @@ describe InstrumentPricePolicy do
   end
 
   it 'should have estimated costs at zero' do
-    @order_detail.estimated_cost.should == 0
-    @order_detail.estimated_subsidy.should == 0
+    expect(@order_detail.estimated_cost).to eq(0)
+    expect(@order_detail.estimated_subsidy).to eq(0)
   end
 
   it 'should not have actual prices set' do
-    @order_detail.actual_cost.should be_nil
-    @order_detail.actual_subsidy.should be_nil
+    expect(@order_detail.actual_cost).to be_nil
+    expect(@order_detail.actual_subsidy).to be_nil
   end
 
   it 'should not have a price policy set' do
-    @order_detail.price_policy.should be_nil
+    expect(@order_detail.price_policy).to be_nil
   end
 
   context 'completed' do
     before :each do
       @order_detail.change_status! OrderStatus.find_by_name('Complete')
-      @order_detail.state.should == 'complete'
+      expect(@order_detail.state).to eq('complete')
     end
 
     it 'should have actual prices set' do
-      @order_detail.actual_cost.should == 0
-      @order_detail.actual_subsidy.should == 0
+      expect(@order_detail.actual_cost).to eq(0)
+      expect(@order_detail.actual_subsidy).to eq(0)
     end
 
     it 'should have a price policy set' do
-      @order_detail.price_policy.should == @price_policy
+      expect(@order_detail.price_policy).to eq(@price_policy)
     end
   end
 

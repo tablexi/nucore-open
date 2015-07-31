@@ -24,6 +24,6 @@ describe Order do
     @order = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @cc_account, :facility => @facility))
     @order.order_details.create(:product_id => @service.id, :quantity => 1)
     # should not be allowed to purchase with a credit card account
-    @order.validate_order!.should be false
+    expect(@order.validate_order!).to be false
   end
 end

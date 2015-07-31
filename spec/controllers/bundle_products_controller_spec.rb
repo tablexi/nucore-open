@@ -28,7 +28,7 @@ describe BundleProductsController do
 
     it_should_allow_all facility_operators do
       expect(assigns(:bundle_products)).to be_kind_of Array
-      should render_template('index')
+      is_expected.to render_template('index')
     end
 
   end
@@ -54,7 +54,7 @@ describe BundleProductsController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:bundle_product)).to be_kind_of BundleProduct
-      should set_the_flash
+      is_expected.to set_the_flash
       assert_redirected_to facility_bundle_bundle_products_url(@authable, @bundle)
     end
 
@@ -73,8 +73,8 @@ describe BundleProductsController do
 
     it_should_allow_managers_only do
       expect(assigns(:bundle_product)).to be_kind_of BundleProduct
-      assigns(:bundle_product).should be_new_record
-      should render_template('new')
+      expect(assigns(:bundle_product)).to be_new_record
+      is_expected.to render_template('new')
     end
 
   end
@@ -92,7 +92,7 @@ describe BundleProductsController do
 
     it_should_allow_managers_only do
       assert_init_bundle
-      should render_template('edit')
+      is_expected.to render_template('edit')
     end
 
   end
@@ -118,8 +118,8 @@ describe BundleProductsController do
     it_should_allow_managers_only :redirect do
       assert_init_bundle
       expect(assigns(:bundle_product)).to be_kind_of BundleProduct
-      @bundle_product.quantity.should_not == assigns(:bundle_product).quantity
-      should set_the_flash
+      expect(@bundle_product.quantity).not_to eq(assigns(:bundle_product).quantity)
+      is_expected.to set_the_flash
       assert_redirected_to facility_bundle_bundle_products_url(@authable, @bundle)
     end
 
@@ -146,7 +146,7 @@ describe BundleProductsController do
         assert true
       end
 
-      should set_the_flash
+      is_expected.to set_the_flash
       assert_redirected_to facility_bundle_bundle_products_url(@authable, @bundle)
     end
 
@@ -155,7 +155,7 @@ describe BundleProductsController do
 
   def assert_init_bundle
     expect(assigns(:bundle)).to_not be_nil
-    assigns(:bundle).should == @bundle
+    expect(assigns(:bundle)).to eq(@bundle)
   end
 
 end

@@ -24,8 +24,8 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
     it_should_deny :staff
 
     it_should_allow_all facility_managers do
-      assigns(:account).should == @account
-      should render_template('user_search')
+      expect(assigns(:account)).to eq(@account)
+      is_expected.to render_template('user_search')
     end
 
   end
@@ -44,11 +44,11 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
     it_should_deny :staff
 
     it_should_allow_all facility_managers do
-      assigns(:account).should == @account
-      assigns(:user).should == @guest
+      expect(assigns(:account)).to eq(@account)
+      expect(assigns(:user)).to eq(@guest)
       expect(assigns(:account_user)).to be_kind_of AccountUser
-      assigns(:account_user).should be_new_record
-      should render_template('new')
+      expect(assigns(:account_user)).to be_new_record
+      is_expected.to render_template('new')
     end
 
   end
@@ -72,12 +72,12 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
     it_should_deny :staff
 
     it_should_allow_all facility_managers do |user|
-      assigns(:account).should == @account
-      assigns(:user).should == @purchaser
-      assigns(:account_user).user_role.should == AccountUser::ACCOUNT_PURCHASER
-      assigns(:account_user).user.should == @purchaser
-      assigns(:account_user).created_by.should == user.id
-      should set_the_flash
+      expect(assigns(:account)).to eq(@account)
+      expect(assigns(:user)).to eq(@purchaser)
+      expect(assigns(:account_user).user_role).to eq(AccountUser::ACCOUNT_PURCHASER)
+      expect(assigns(:account_user).user).to eq(@purchaser)
+      expect(assigns(:account_user).created_by).to eq(user.id)
+      is_expected.to set_the_flash
       assert_redirected_to facility_account_members_path(@authable, @account)
     end
 
@@ -90,22 +90,22 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
 
         before :each do
           @params[:account_user][:user_role]=AccountUser::ACCOUNT_OWNER
-          @account.account_users.owners.should be_one
-          @account.owner_user.should == @owner
+          expect(@account.account_users.owners).to be_one
+          expect(@account.owner_user).to eq(@owner)
           do_request
         end
 
         it 'changes the owner of an account' do
-          assigns(:account).should == @account
-          assigns(:user).should == @purchaser
-          assigns(:account_user).user_role.should == AccountUser::ACCOUNT_OWNER
-          assigns(:account_user).user.should == @purchaser
-          assigns(:account_user).created_by.should == @director.id
+          expect(assigns(:account)).to eq(@account)
+          expect(assigns(:user)).to eq(@purchaser)
+          expect(assigns(:account_user).user_role).to eq(AccountUser::ACCOUNT_OWNER)
+          expect(assigns(:account_user).user).to eq(@purchaser)
+          expect(assigns(:account_user).created_by).to eq(@director.id)
           # there will be two because the old owner record will have been expired
-          @account.reload.account_users.owners.count.should == 2
-          @account.account_users.owners.active.should be_one
-          assigns(:account).reload.owner_user.should == @purchaser
-          should set_the_flash
+          expect(@account.reload.account_users.owners.count).to eq(2)
+          expect(@account.account_users.owners.active).to be_one
+          expect(assigns(:account).reload.owner_user).to eq(@purchaser)
+          is_expected.to set_the_flash
           assert_redirected_to facility_account_members_path(@authable, @account)
         end
       end
@@ -118,14 +118,14 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
           AccountUser.delete(@acount_user.id)
 
           @params[:account_user][:user_role]=AccountUser::ACCOUNT_OWNER
-          @account.account_users.owners.should_not be_any
+          expect(@account.account_users.owners).not_to be_any
           do_request
         end
 
         it 'adds the owner' do
-          assigns(:account).should == @account
-          @account.account_users.owners.count.should == 1
-          should set_the_flash
+          expect(assigns(:account)).to eq(@account)
+          expect(@account.account_users.owners.count).to eq(1)
+          is_expected.to set_the_flash
           assert_redirected_to facility_account_members_path(@authable, @account)
         end
       end
@@ -140,17 +140,17 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
               :user_id      => @business_admin.id,
               :account_user => { :user_role => AccountUser::ACCOUNT_PURCHASER }
             )
-            @account.account_users.purchasers.should_not be_any
-            @account.account_users.business_administrators.should be_one
+            expect(@account.account_users.purchasers).not_to be_any
+            expect(@account.account_users.business_administrators).to be_one
             do_request
           end
 
           it 'should change the role' do
-            assigns(:account).should == @account
-            @account.account_users.purchasers.map(&:user).should == [@business_admin]
-            @account.account_users.business_administrators.should_not be_any
+            expect(assigns(:account)).to eq(@account)
+            expect(@account.account_users.purchasers.map(&:user)).to eq([@business_admin])
+            expect(@account.account_users.business_administrators).not_to be_any
 
-            should set_the_flash
+            is_expected.to set_the_flash
             assert_redirected_to facility_account_members_path(@authable, @account)
           end
         end
@@ -159,23 +159,23 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
           before :each do
             @params[:user_id]                  = @owner.id
             @params[:account_user][:user_role] = AccountUser::ACCOUNT_PURCHASER
-            @account.account_users.owners.map(&:user).should == [@owner]
-            @account.account_users.purchasers.should_not be_any
+            expect(@account.account_users.owners.map(&:user)).to eq([@owner])
+            expect(@account.account_users.purchasers).not_to be_any
           end
 
           it 'should be prevented' do
             do_request
-            assigns(:account).should == @account
-            assigns(:account).owner_user.should == @owner
-            @account.account_users.owners.map(&:user).should == [@owner]
-            @account.account_users.purchasers.should_not be_any
+            expect(assigns(:account)).to eq(@account)
+            expect(assigns(:account).owner_user).to eq(@owner)
+            expect(@account.account_users.owners.map(&:user)).to eq([@owner])
+            expect(@account.account_users.purchasers).not_to be_any
 
-            flash[:error].should be_present
-            response.should render_template :new
+            expect(flash[:error]).to be_present
+            expect(response).to render_template :new
           end
 
           it 'should not send an email' do
-            Notifier.should_not_receive(:user_update)
+            expect(Notifier).not_to receive(:user_update)
             do_request
           end
         end
@@ -203,11 +203,11 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
     it_should_deny :staff
 
     it_should_allow_all facility_managers do |user|
-      assigns(:account).should == @account
-      assigns(:account_user).should == @account_user
-      assigns(:account_user).deleted_at.should_not be_nil
-      assigns(:account_user).deleted_by.should == user.id
-      should set_the_flash
+      expect(assigns(:account)).to eq(@account)
+      expect(assigns(:account_user)).to eq(@account_user)
+      expect(assigns(:account_user).deleted_at).not_to be_nil
+      expect(assigns(:account_user).deleted_by).to eq(user.id)
+      is_expected.to set_the_flash
       assert_redirected_to facility_account_members_path(@authable, @account)
     end
 

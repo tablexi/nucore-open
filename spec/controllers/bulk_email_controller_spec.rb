@@ -32,51 +32,51 @@ describe BulkEmailController do
 
       it "users should be not nil if there is a search type" do
         do_request
-        assigns[:users].should_not be_nil
+        expect(assigns[:users]).not_to be_nil
       end
       it "@users should be nil if there is no search type" do
         @params.delete(:search_type)
         do_request
-        assigns[:users].should be_nil
+        expect(assigns[:users]).to be_nil
       end
       context 'parameter settings' do
         before :each do
           do_request
-          response.should be_success
+          expect(response).to be_success
         end
         it 'should set products' do
-          assigns[:products].should contain_all [@item, @service, @instrument, @restricted_item]
+          expect(assigns[:products]).to contain_all [@item, @service, @instrument, @restricted_item]
         end
         it 'should set the products in order' do
-          assigns[:products].should == [@item, @service, @instrument, @restricted_item].sort
+          expect(assigns[:products]).to eq([@item, @service, @instrument, @restricted_item].sort)
         end
         it 'should set search types' do
-          assigns[:search_types].should_not be_empty
+          expect(assigns[:search_types]).not_to be_empty
         end
         it 'should set the search types in order' do
-          assigns[:search_types].keys.should == [:customers, :account_owners, :customers_and_account_owners, :authorized_users]
+          expect(assigns[:search_types].keys).to eq([:customers, :account_owners, :customers_and_account_owners, :authorized_users])
         end
         it 'should have the facility_id as the id, not the url_name' do
-          assigns[:search_fields][:facility_id].should == @authable.id
+          expect(assigns[:search_fields][:facility_id]).to eq(@authable.id)
         end
         it 'should not have :authorized_users if there are no restricted instruments' do
           @restricted_item.destroy
           do_request
-          assigns[:search_types].should_not be_include :authorized_users
+          expect(assigns[:search_types]).not_to be_include :authorized_users
         end
       end
       context 'product loading' do
         it 'should include hidden products' do
           @item = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id, :is_hidden => true))
           do_request
-          response.should be_success
-          assigns[:products].should be_include @item
+          expect(response).to be_success
+          expect(assigns[:products]).to be_include @item
         end
         it 'should not include archived products' do
           @item = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id, :is_archived => true))
           do_request
-          response.should be_success
-          assigns[:products].should_not be_include @item
+          expect(response).to be_success
+          expect(assigns[:products]).not_to be_include @item
         end
 
       end
@@ -89,7 +89,7 @@ describe BulkEmailController do
       end
       it "should paginate for html" do
         do_request
-        assigns[:users].should be_respond_to :per_page
+        expect(assigns[:users]).to be_respond_to :per_page
       end
 
       context "csv" do
@@ -98,11 +98,11 @@ describe BulkEmailController do
         end
         it "should not paginate" do
           do_request
-          assigns[:users].should_not be_respond_to :per_page
+          expect(assigns[:users]).not_to be_respond_to :per_page
         end
         it 'should set the filename in the content disposition' do
           do_request
-          response.headers['Content-Disposition'].should == "attachment; filename=\"bulk_email_customers.csv\""
+          expect(response.headers['Content-Disposition']).to eq("attachment; filename=\"bulk_email_customers.csv\"")
         end
       end
     end    

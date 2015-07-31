@@ -24,7 +24,7 @@ describe Reservation do
     @instrument = create(:instrument, facility_account_id: facility_account.id, facility: facility, reserve_interval: 15)
     # add rule, available every day from 12 am to 5 pm, 60 minutes duration
     @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17))
-    Reservation.any_instance.stub(:admin?).and_return(false)
+    allow_any_instance_of(Reservation).to receive(:admin?).and_return(false)
   end
 
   describe "#admin_editable?" do
@@ -51,8 +51,8 @@ describe Reservation do
 
   describe "#locked?" do
     before(:each) do
-      reservation.stub(:admin_editable?).and_return(admin_editable?)
-      reservation.stub(:can_edit_actuals?).and_return(can_edit_actuals?)
+      allow(reservation).to receive(:admin_editable?).and_return(admin_editable?)
+      allow(reservation).to receive(:can_edit_actuals?).and_return(can_edit_actuals?)
     end
 
     context "when editable by admins" do
@@ -125,13 +125,13 @@ describe Reservation do
   context "create using virtual attributes" do
     it "should create using date, integer values" do
       assert reservation.valid?
-      reservation.reload.duration_value.should == 60
-      reservation.reserve_start_hour.should == 10
-      reservation.reserve_start_min.should == 0
-      reservation.reserve_start_meridian.should == 'am'
-      reservation.reserve_end_hour.should == 11
-      reservation.reserve_end_min.should == 0
-      reservation.reserve_end_meridian.should == 'AM'
+      expect(reservation.reload.duration_value).to eq(60)
+      expect(reservation.reserve_start_hour).to eq(10)
+      expect(reservation.reserve_start_min).to eq(0)
+      expect(reservation.reserve_start_meridian).to eq('am')
+      expect(reservation.reserve_end_hour).to eq(11)
+      expect(reservation.reserve_end_min).to eq(0)
+      expect(reservation.reserve_end_meridian).to eq('AM')
     end
 
     it "should create using string values" do
@@ -139,13 +139,13 @@ describe Reservation do
                                                      :reserve_start_min => '0', :reserve_start_meridian => 'am',
                                                      :duration_value => '2', :duration_unit => 'hours')
       assert @reservation.valid?
-      @reservation.reload.duration_mins.should == 120
-      @reservation.reserve_start_hour.should == 10
-      @reservation.reserve_start_min.should == 0
-      @reservation.reserve_start_meridian.should == 'am'
-      @reservation.reserve_end_hour.should == 12
-      @reservation.reserve_end_min.should == 0
-      @reservation.reserve_end_meridian.should == 'PM'
+      expect(@reservation.reload.duration_mins).to eq(120)
+      expect(@reservation.reserve_start_hour).to eq(10)
+      expect(@reservation.reserve_start_min).to eq(0)
+      expect(@reservation.reserve_start_meridian).to eq('am')
+      expect(@reservation.reserve_end_hour).to eq(12)
+      expect(@reservation.reserve_end_min).to eq(0)
+      expect(@reservation.reserve_end_meridian).to eq('PM')
     end
   end
 
@@ -158,11 +158,11 @@ describe Reservation do
     end
 
 
-    it('should not be canceled') { @reservation.should_not be_canceled }
+    it('should not be canceled') { expect(@reservation).not_to be_canceled }
 
     it 'should be canceled' do
       @reservation.canceled_at=Time.zone.now
-      @reservation.should be_canceled
+      expect(@reservation).to be_canceled
     end
   end
 
@@ -293,7 +293,7 @@ describe Reservation do
 
     context "#earliest_possible" do
       it "shouldn't throw an exception if Instrument#next_available_reservation and_return nil" do
-        Instrument.any_instance.stub(:next_available_reservation).and_return nil
+        allow_any_instance_of(Instrument).to receive(:next_available_reservation).and_return nil
         @reservation1.earliest_possible
       end
 
@@ -320,7 +320,7 @@ describe Reservation do
     end
 
     it 'should be the same order' do
-      @reservation1.order.should == @detail1.order
+      expect(@reservation1.order).to eq(@detail1.order)
     end
 
     it 'should not allow two reservations with the same order detail id' do
@@ -328,58 +328,58 @@ describe Reservation do
                                                 :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                 :duration_value => 30, :duration_unit => 'minutes', :order_detail => @reservation1.order_detail)
       assert !reservation2.save
-      reservation2.errors[:order_detail].should_not be_nil
+      expect(reservation2.errors[:order_detail]).not_to be_nil
     end
 
     it 'should be the same user' do
-      @reservation1.user.should == @detail1.order.user
+      expect(@reservation1.user).to eq(@detail1.order.user)
     end
 
     it 'should be the same account' do
-      @detail1.account.should_not be_nil
-      @reservation1.account.should == @detail1.account
+      expect(@detail1.account).not_to be_nil
+      expect(@reservation1.account).to eq(@detail1.account)
     end
 
     it 'should be the same owner' do
-      @detail1.account.owner.should_not be_nil
-      @reservation1.owner.should == @detail1.account.owner
+      expect(@detail1.account.owner).not_to be_nil
+      expect(@reservation1.owner).to eq(@detail1.account.owner)
     end
 
     it "should not allow reservations to conflict with an existing reservation in the same order" do
-      @reservation1.should be_valid
+      expect(@reservation1).to be_valid
 
       @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                        :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                        :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
-      @reservation2.should_not be_valid
+      expect(@reservation2).not_to be_valid
       assert_equal ["The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue."], @reservation2.errors[:base]
 
       @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                        :reserve_start_min => 15, :reserve_start_meridian => 'am',
                                                        :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
-      @reservation2.should_not be_valid
+      expect(@reservation2).not_to be_valid
       assert_equal ["The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue."], @reservation2.errors[:base]
 
       @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 9,
                                                        :reserve_start_min => 45, :reserve_start_meridian => 'am',
                                                        :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
-      @reservation2.should_not be_valid
+      expect(@reservation2).not_to be_valid
       assert_equal ["The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue."], @reservation2.errors[:base]
     end
 
     it "should allow reservations with the same time and date on different instruments" do
-      @reservation1.should be_valid
+      expect(@reservation1).to be_valid
 
       @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                        :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                        :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
 
-      @reservation2.should_not be_does_not_conflict_with_other_reservation
+      expect(@reservation2).not_to be_does_not_conflict_with_other_reservation
 
       @instrument2 = create(:instrument, facility: facility, facility_account: facility_account)
 
       @reservation2.product=@instrument2
-      @reservation2.should be_does_not_conflict_with_other_reservation
+      expect(@reservation2).to be_does_not_conflict_with_other_reservation
     end
 
     context 'moving' do
@@ -387,21 +387,21 @@ describe Reservation do
       before(:each) { @morning=Time.zone.parse("#{Date.today.to_s} 10:31:00") }
 
       it 'should return the earliest possible time slot' do
-        human_date(@reservation1.reserve_start_at).should == human_date(@morning+1.day)
+        expect(human_date(@reservation1.reserve_start_at)).to eq(human_date(@morning+1.day))
 
         earliest=nil
         Timecop.freeze(@morning) { earliest=@reservation1.earliest_possible }
-        human_date(earliest.reserve_start_at).should == human_date(@morning)
+        expect(human_date(earliest.reserve_start_at)).to eq(human_date(@morning))
 
         new_min=0
 
         (@morning.min..60).each do |min|
           new_min=min == 60 ? 0 : min
-          earliest.reserve_start_at.min.should == new_min and break if new_min % @rule.instrument.reserve_interval == 0
+          expect(earliest.reserve_start_at.min).to eq(new_min) and break if new_min % @rule.instrument.reserve_interval == 0
         end
 
-        earliest.reserve_start_at.hour.should == (new_min == 0 ? @morning.hour+1 : @morning.hour)
-        (earliest.reserve_end_at-earliest.reserve_start_at).should == (@reservation1.reserve_end_at-@reservation1.reserve_start_at)
+        expect(earliest.reserve_start_at.hour).to eq(new_min == 0 ? @morning.hour+1 : @morning.hour)
+        expect(earliest.reserve_end_at-earliest.reserve_start_at).to eq(@reservation1.reserve_end_at-@reservation1.reserve_start_at)
       end
 
       it 'should not be moveable if the reservation is in the grace period' do
@@ -413,34 +413,34 @@ describe Reservation do
       end
 
       it 'should not be moveable if the reservation is canceled' do
-        @reservation1.should be_can_move
+        expect(@reservation1).to be_can_move
         @reservation1.canceled_at=Time.zone.now
-        @reservation1.should_not be_can_move
+        expect(@reservation1).not_to be_can_move
       end
 
       it 'should not be moveable if there is not a time slot earlier than this one' do
-        @reservation1.should be_can_move
-        @reservation1.move_to_earliest.should be_true
-        @reservation1.should_not be_can_move
-        @reservation1.move_to_earliest.should be_false
-        @reservation1.errors.messages.should == { :base => ['Sorry, but your reservation can no longer be moved.'] }
+        expect(@reservation1).to be_can_move
+        expect(@reservation1.move_to_earliest).to be true
+        expect(@reservation1).not_to be_can_move
+        expect(@reservation1.move_to_earliest).to be false
+        expect(@reservation1.errors.messages).to eq({ :base => ['Sorry, but your reservation can no longer be moved.'] })
       end
 
       it 'should update the reservation to the earliest available' do
         # if earliest= and move_to_earliest span a second, the test fails
         Timecop.freeze do
           earliest=@reservation1.earliest_possible
-          @reservation1.reserve_start_at.should_not == earliest.reserve_start_at
-          @reservation1.reserve_end_at.should_not == earliest.reserve_end_at
-          @reservation1.move_to_earliest.should be_true
-          @reservation1.reserve_start_at.change(sec: 0).to_i.should == earliest.reserve_start_at.change(sec: 0).to_i
-          @reservation1.reserve_end_at.change(sec: 0).to_i.should == earliest.reserve_end_at.change(sec: 0).to_i
+          expect(@reservation1.reserve_start_at).not_to eq(earliest.reserve_start_at)
+          expect(@reservation1.reserve_end_at).not_to eq(earliest.reserve_end_at)
+          expect(@reservation1.move_to_earliest).to be true
+          expect(@reservation1.reserve_start_at.change(sec: 0).to_i).to eq(earliest.reserve_start_at.change(sec: 0).to_i)
+          expect(@reservation1.reserve_end_at.change(sec: 0).to_i).to eq(earliest.reserve_end_at.change(sec: 0).to_i)
         end
       end
 
       it 'should be able to move to now, but overlapping the current' do
         @reservation1.update_attributes!(:reserve_start_at => 30.minutes.from_now, :reserve_end_at => 60.minutes.from_now)
-        @reservation1.order.stub(:cart_valid?).and_return(true)
+        allow(@reservation1.order).to receive(:cart_valid?).and_return(true)
         @reservation1.order.validate_order!
         @reservation1.order.purchase!
 
@@ -476,22 +476,22 @@ describe Reservation do
       it 'should be true when there is a usage rate but no actuals' do
         #@instrument_pp.update_attributes!(:usage_rate => 5)
 
-        @reservation1.actual_start_at.should be_nil
-        @reservation1.actual_end_at.should be_nil
+        expect(@reservation1.actual_start_at).to be_nil
+        expect(@reservation1.actual_end_at).to be_nil
         #@reservation1.order_detail.price_policy=@instrument_pp
         #assert @reservation1.save
 
-        @reservation1.should be_requires_but_missing_actuals
+        expect(@reservation1).to be_requires_but_missing_actuals
       end
 
       it 'should be true when there is no policy assigned, but the one it would use requires actuals' do
-        @reservation1.actual_start_at.should be_nil
-        @reservation1.actual_end_at.should be_nil
+        expect(@reservation1.actual_start_at).to be_nil
+        expect(@reservation1.actual_end_at).to be_nil
         @instrument_pp.update_attributes(:usage_rate => 5)
 
         assert @reservation1.save
-        @instrument.cheapest_price_policy(@reservation1.order_detail, @reservation1.reserve_end_at).should == @instrument_pp
-        @reservation1.should be_requires_but_missing_actuals
+        expect(@instrument.cheapest_price_policy(@reservation1.order_detail, @reservation1.reserve_end_at)).to eq(@instrument_pp)
+        expect(@reservation1).to be_requires_but_missing_actuals
       end
 
       it 'should be false when there is no price policy' do
@@ -499,9 +499,9 @@ describe Reservation do
         @reservation1.actual_end_at=1.day.ago+1.hour
         @instrument.instrument_price_policies.clear
         assert @reservation1.save
-        @instrument.cheapest_price_policy(@reservation1.order_detail).should be_nil
-        @reservation1.order_detail.price_policy.should be_nil
-        @reservation1.should_not be_requires_but_missing_actuals
+        expect(@instrument.cheapest_price_policy(@reservation1.order_detail)).to be_nil
+        expect(@reservation1.order_detail.price_policy).to be_nil
+        expect(@reservation1).not_to be_requires_but_missing_actuals
       end
 
 
@@ -513,7 +513,7 @@ describe Reservation do
         @reservation1.actual_end_at=1.day.ago+1.hour
         assert @reservation1.save
 
-        @reservation1.should_not be_requires_but_missing_actuals
+        expect(@reservation1).not_to be_requires_but_missing_actuals
       end
 
 
@@ -526,7 +526,7 @@ describe Reservation do
         @reservation1.actual_end_at=1.day.ago+1.hour
         assert @reservation1.save
 
-        @reservation1.should_not be_requires_but_missing_actuals
+        expect(@reservation1).not_to be_requires_but_missing_actuals
       end
 
 
@@ -539,7 +539,7 @@ describe Reservation do
         @reservation1.actual_end_at=1.day.ago+1.hour
         assert @reservation1.save
 
-        @reservation1.should_not be_requires_but_missing_actuals
+        expect(@reservation1).not_to be_requires_but_missing_actuals
       end
 
     end
@@ -548,17 +548,17 @@ describe Reservation do
       it 'should return true if the associated order was ordered by someone else' do
         @user2 = FactoryGirl.create(:user)
         @reservation1.order.update_attributes(:created_by_user => @user2)
-        @reservation1.reload.should be_ordered_on_behalf_of
+        expect(@reservation1.reload).to be_ordered_on_behalf_of
       end
       it 'should return false if the associated order was not ordered on behalf of' do
         user = @reservation1.order_detail.order.user
         @reservation1.order_detail.order.update_attributes(:created_by_user => user)
         @reservation1.reload
-        @reservation1.reload.should_not be_ordered_on_behalf_of
+        expect(@reservation1.reload).not_to be_ordered_on_behalf_of
       end
       it 'should return false for admin reservations' do
         @admin_reservation = FactoryGirl.create(:reservation, :product => @instrument)
-        @admin_reservation.should_not be_ordered_on_behalf_of
+        expect(@admin_reservation).not_to be_ordered_on_behalf_of
       end
 
     end
@@ -584,21 +584,21 @@ describe Reservation do
                                       :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                       :duration_value => '60', :duration_unit => 'minutes')
       res.valid?
-      res.stub(:admin?).and_return(true)
+      allow(res).to receive(:admin?).and_return(true)
       res
     end
 
     it 'should be a conflicting reservation' do
-      conflicting_reservation.should_not be_does_not_conflict_with_other_reservation
+      expect(conflicting_reservation).not_to be_does_not_conflict_with_other_reservation
     end
 
     it 'should be invalid' do
-      conflicting_reservation.should_not be_valid
-      conflicting_reservation.errors[:base].should include 'The reservation conflicts with another reservation.'
+      expect(conflicting_reservation).not_to be_valid
+      expect(conflicting_reservation.errors[:base]).to include 'The reservation conflicts with another reservation.'
     end
 
     it 'should allow an admin reservation to overlap' do
-      conflicting_admin_reservation.should be_valid
+      expect(conflicting_admin_reservation).to be_valid
     end
 
     context 'and the reservation has started' do
@@ -613,7 +613,7 @@ describe Reservation do
       end
 
       it 'should be a conflict' do
-        conflicting_reservation.should_not be_valid
+        expect(conflicting_reservation).not_to be_valid
       end
 
       context 'and ended' do
@@ -622,7 +622,7 @@ describe Reservation do
         end
 
         it 'should not conflict' do
-          conflicting_reservation.should be_valid
+          expect(conflicting_reservation).to be_valid
         end
       end
     end
@@ -636,13 +636,13 @@ describe Reservation do
         end
 
         it 'should allow an admin reservation' do
-          @reservation.stub(:admin?).and_return(true)
-          @reservation.should be_valid
+          allow(@reservation).to receive(:admin?).and_return(true)
+          expect(@reservation).to be_valid
         end
 
         it 'should not allow a regular reservation' do
-          @reservation.should_not be_valid
-          @reservation.errors[:base].should include 'The reservation spans time that the instrument is unavailable for reservation'
+          expect(@reservation).not_to be_valid
+          expect(@reservation.errors[:base]).to include 'The reservation spans time that the instrument is unavailable for reservation'
         end
       end
 
@@ -654,13 +654,13 @@ describe Reservation do
         end
 
         it 'should allow an admin reservation' do
-          @reservation.stub(:admin?).and_return(true)
-          @reservation.should be_valid
+          allow(@reservation).to receive(:admin?).and_return(true)
+          expect(@reservation).to be_valid
         end
 
         it 'should not allow a regular reservation' do
-          @reservation.should_not be_valid
-          @reservation.errors[:base].should include 'The reservation spans time that the instrument is unavailable for reservation'
+          expect(@reservation).not_to be_valid
+          expect(@reservation.errors[:base]).to include 'The reservation spans time that the instrument is unavailable for reservation'
         end
       end
     end
@@ -675,23 +675,23 @@ describe Reservation do
       @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                    :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                    :duration_value => 61, :duration_unit => 'minutes')
-      @reservation.should_not be_valid
-      @reservation.errors[:base].should include "The reservation is too long"
+      expect(@reservation).not_to be_valid
+      expect(@reservation.errors[:base]).to include "The reservation is too long"
     end
 
     it "should allow reservations that don't exceed the maximum length" do
       @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                    :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                    :duration_value => 60, :duration_unit => 'minutes')
-      @reservation.should be_valid
+      expect(@reservation).to be_valid
     end
 
     it 'should allow admin reservation to exceed the maximum length' do
       @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                    :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                    :duration_value => 75, :duration_unit => 'minutes')
-      @reservation.stub(:admin?).and_return(true)
-      @reservation.should be_valid
+      allow(@reservation).to receive(:admin?).and_return(true)
+      expect(@reservation).to be_valid
     end
   end
 
@@ -704,23 +704,23 @@ describe Reservation do
       @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                      :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                      :duration_value => 29, :duration_unit => 'minutes')
-      @reservation.should_not be_valid
-      @reservation.errors[:base].should include "The reservation is too short"
+      expect(@reservation).not_to be_valid
+      expect(@reservation.errors[:base]).to include "The reservation is too short"
     end
 
     it 'should let reservations be over the minimum length' do
       @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                      :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                      :duration_value => 30, :duration_unit => 'minutes')
-      @reservation.should be_valid
+      expect(@reservation).to be_valid
     end
 
     it 'should allow admin reservations to be less than the minimum length' do
       @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                      :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                      :duration_value => 15, :duration_unit => 'minutes')
-      @reservation.stub(:admin?).and_return(true)
-      @reservation.should be_valid
+      allow(@reservation).to receive(:admin?).and_return(true)
+      expect(@reservation).to be_valid
     end
   end
 
@@ -840,7 +840,7 @@ describe Reservation do
     end
 
     it "should not let reservations be made outside the reservation window" do
-      pending
+      skip
     end
 
     context "schedule rules" do
@@ -854,17 +854,17 @@ describe Reservation do
       it "should allow a reservation within the schedule rules" do
 
         @reservation = @instrument.reservations.new(:reserve_start_date => Date.today + 1, :reserve_start_hour => 6, :reserve_start_min => 0, :reserve_start_meridian => 'pm', :duration_value => 1, :duration_unit => 'hours')
-        @reservation.should be_valid
+        expect(@reservation).to be_valid
         @reservation2 = @instrument.reservations.new(:reserve_start_date => Date.today + 1, :reserve_start_hour => 10, :reserve_start_min => 0, :reserve_start_meridian => 'am', :duration_value => 1, :duration_unit => 'hours')
-        @reservation2.should be_valid
+        expect(@reservation2).to be_valid
       end
       it "should not let reservations occur after times defined by schedule rules" do
         @reservation = @instrument.reservations.new(:reserve_start_date => Date.today + 1, :reserve_start_hour => 8, :reserve_start_min => 0, :reserve_start_meridian => 'pm', :duration_value => 1, :duration_unit => 'hours')
-        @reservation.should be_invalid
+        expect(@reservation).to be_invalid
       end
       it "should not let reservations occur before times define by schedule rules" do
         @reservation = @instrument.reservations.new(:reserve_start_date => Date.today + 1, :reserve_start_hour => 5, :reserve_start_min => 0, :reserve_start_meridian => 'am', :duration_value => 1, :duration_unit => 'hours')
-        @reservation.should be_invalid
+        expect(@reservation).to be_invalid
       end
 
       context "schedule rules with restrictions" do
@@ -891,22 +891,22 @@ describe Reservation do
         end
         it "should allow a user to reserve if it doesn't require approval" do
           @instrument.update_attributes(:requires_approval => false)
-          @reservation.should be_valid
+          expect(@reservation).to be_valid
         end
 
         it "should not allow a user who is not approved to reserve" do
-          @reservation.should_not be_valid
+          expect(@reservation).not_to be_valid
         end
         it "should not allow a user who is approved, but not in the group" do
           @product_user = ProductUser.create(:user => @user, :product => @instrument, :approved_by => @user.id)
-          @product_user.should_not be_new_record
-          @reservation.should_not be_valid
+          expect(@product_user).not_to be_new_record
+          expect(@reservation).not_to be_valid
         end
         it "should allow a user who is approved and part of the restriction group" do
           @product_user = @user.product_users.create(:product => @instrument, :product_access_group => @restriction_level, :approved_by => @user.id)
-          @product_user.should_not be_new_record
+          expect(@product_user).not_to be_new_record
 
-          @reservation.should be_valid
+          expect(@reservation).to be_valid
         end
 
         context "admin overrides" do
@@ -922,11 +922,11 @@ describe Reservation do
             # if it raises an exception, we're in trouble
           end
           it "should not allow a regular user to save in a restricted scheduling rule" do
-            lambda { @reservation.save_as_user!(@user) }.should raise_error(ActiveRecord::RecordInvalid)
+            expect { @reservation.save_as_user!(@user) }.to raise_error(ActiveRecord::RecordInvalid)
           end
           it "should not allow an administrator to save outside of scheduling rules" do
             @reservation.update_attributes(:reserve_start_hour => 10)
-            lambda { @reservation.save_as_user!(@admin) }.should raise_error(ActiveRecord::RecordInvalid)
+            expect { @reservation.save_as_user!(@admin) }.to raise_error(ActiveRecord::RecordInvalid)
           end
         end
       end
@@ -975,13 +975,13 @@ describe Reservation do
 
   context 'has_actuals?' do
     it 'should not have actuals' do
-      reservation.should_not be_has_actuals
+      expect(reservation).not_to be_has_actuals
     end
 
     it 'should have actuals' do
       reservation.actual_start_at=Time.zone.now
       reservation.actual_end_at=Time.zone.now
-      reservation.should be_has_actuals
+      expect(reservation).to be_has_actuals
     end
   end
 
@@ -1007,21 +1007,21 @@ describe Reservation do
     end
 
     it "should have start set to reserve_start_at timestamp if no actual" do
-      @cal_obj_wo_actual_end['start'].should == @reserve_start_at_timestamp
+      expect(@cal_obj_wo_actual_end['start']).to eq(@reserve_start_at_timestamp)
     end
     it "should have end set to reserve_end_at timestamp if no actual" do
-      @cal_obj_wo_actual_end['end'].should == @reserve_end_at_timestamp
+      expect(@cal_obj_wo_actual_end['end']).to eq(@reserve_end_at_timestamp)
     end
 
     it "should have start set to actual timestamp" do
-      @cal_obj_w_actual_end['start'].should == @actual_start_at_timestamp
+      expect(@cal_obj_w_actual_end['start']).to eq(@actual_start_at_timestamp)
     end
     it "should have end set to actual_end_at timestamp" do
-      @cal_obj_w_actual_end['end'].should == @actual_end_at_timestamp
+      expect(@cal_obj_w_actual_end['end']).to eq(@actual_end_at_timestamp)
     end
 
     it 'should include the instrument name' do
-      @cal_obj_w_actual_end['product'].should == @instrument.name
+      expect(@cal_obj_w_actual_end['product']).to eq(@instrument.name)
     end
   end
 
@@ -1040,13 +1040,13 @@ describe Reservation do
                                                      :duration_value => 120, :duration_unit => 'minutes')
     end
     it 'should return reservations from a single day' do
-      Reservation.for_date(Time.zone.now - 1.day).should contain_all [@yeserday_reservation]
+      expect(Reservation.for_date(Time.zone.now - 1.day)).to contain_all [@yeserday_reservation]
     end
     it 'should return a reservation that spans days when looking up the earlier date' do
-      Reservation.for_date(Time.zone.now).should contain_all [@today_reservation, @spans_day_reservation]
+      expect(Reservation.for_date(Time.zone.now)).to contain_all [@today_reservation, @spans_day_reservation]
     end
     it 'should return a reservation that spands days when looking up the later date' do
-      Reservation.for_date(Time.zone.now + 1.day).should contain_all [@tomorrow_reservation, @spans_day_reservation]
+      expect(Reservation.for_date(Time.zone.now + 1.day)).to contain_all [@tomorrow_reservation, @spans_day_reservation]
     end
   end
 
@@ -1107,11 +1107,11 @@ describe Reservation do
 
     it 'should find the weekend reservation' do
       reservations = Reservation.in_range this_sunday, next_sunday
-      reservations.should include weekend_res
-      reservations.should include monday_res
-      reservations.should include next_weekend_res
-      reservations.should_not include prior_friday_res
-      reservations.should_not include next_monday_res
+      expect(reservations).to include weekend_res
+      expect(reservations).to include monday_res
+      expect(reservations).to include next_weekend_res
+      expect(reservations).not_to include prior_friday_res
+      expect(reservations).not_to include next_monday_res
     end
   end
 

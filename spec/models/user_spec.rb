@@ -9,36 +9,36 @@ describe User do
 
   it "should validate uniquess of username" do
     # we need at least 1 user to test validations
-    should validate_uniqueness_of(:username)
+    is_expected.to validate_uniqueness_of(:username)
   end
 
   it 'should save the username as lowercase' do
     @user = FactoryGirl.create(:user, :username => 'AnEmail@example.org')
-    @user.reload.username.should == 'anemail@example.org'
+    expect(@user.reload.username).to eq('anemail@example.org')
   end
 
-  it { should have_many(:notifications) }
+  it { is_expected.to have_many(:notifications) }
 
   it "should use factory" do
-    @user.should be_valid
+    expect(@user).to be_valid
   end
 
   it "should belong to NU price group if the username does not have an \"@\" symbol" do
-    @user.price_groups.include?(@nupg).should == true
+    expect(@user.price_groups.include?(@nupg)).to eq(true)
   end
 
   it "should belong to External price group if the username has an \"@\" symbol" do
     user = User.new(FactoryGirl.attributes_for(:user))
     user.username = user.email
     user.save
-    user.price_groups.include?(@epg).should == true
+    expect(user.price_groups.include?(@epg)).to eq(true)
   end
 
   it "should be a member of any explicitly mapped price groups" do
     facility = FactoryGirl.create(:facility)
     pg       = facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
     UserPriceGroupMember.create(:user => @user, :price_group => pg)
-    @user.price_groups.include?(pg).should == true
+    expect(@user.price_groups.include?(pg)).to eq(true)
   end
 
   it "should belong to price groups of accounts" do
@@ -46,7 +46,7 @@ describe User do
     facility = FactoryGirl.create(:facility)
     pg       = facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
     AccountPriceGroupMember.create(:account => cc, :price_group => pg)
-    @user.account_price_groups.include?(pg).should == true
+    expect(@user.account_price_groups.include?(pg)).to eq(true)
   end
 
   it "should belong to price groups of account owner" do
@@ -58,39 +58,39 @@ describe User do
 
     cc.account_users.create(:user => @user, :created_by => owner.id, :user_role => 'Purchaser')
 
-    @user.account_price_groups.include?(pg).should == true
+    expect(@user.account_price_groups.include?(pg)).to eq(true)
   end
 
   it 'should be locally authenticated' do
-    @user.should be_authenticated_locally
+    expect(@user).to be_authenticated_locally
   end
 
   it 'should not be locally authenticated' do
     @user.encrypted_password=nil
     assert @user.save
-    @user.should_not be_authenticated_locally
+    expect(@user).not_to be_authenticated_locally
     @user.password_salt=nil
     assert @user.save
-    @user.should_not be_authenticated_locally
+    expect(@user).not_to be_authenticated_locally
   end
 
   it 'should alias username to login' do
-    @user.should be_respond_to :login
-    @user.username.should == @user.login
+    expect(@user).to be_respond_to :login
+    expect(@user.username).to eq(@user.login)
   end
 
   it 'should respond to ldap_attributes' do
-    @user.should be_respond_to :ldap_attributes
+    expect(@user).to be_respond_to :ldap_attributes
   end
 
   it 'should not be external user' do
-    @user.username.should_not == @user.email
-    @user.should_not be_external
+    expect(@user.username).not_to eq(@user.email)
+    expect(@user).not_to be_external
   end
 
   it 'should be external user' do
     @user.username=@user.email
-    @user.should be_external
+    expect(@user).to be_external
   end
 
   it "should belong to Cancer Center price group if the user is in the Cancer Center view"
@@ -110,32 +110,32 @@ describe User do
 
     it 'should return the order' do
       order=@user.cart
-      order.should == @order
+      expect(order).to eq(@order)
     end
 
     it 'should return the order when given created_by user' do
       order=@user.cart(@user)
-      order.should == @order
+      expect(order).to eq(@order)
     end
 
     it 'should return the existing unordered order even when its empty' do
       @order.order_details.destroy_all
       order = @user.cart(@user)
-      order.reload.should == @order
+      expect(order.reload).to eq(@order)
     end
 
     it 'should return a new order' do
       order=@user.cart(@user, false)
-      order.should_not == @order
-      order.user.should == @user
-      order.created_by.should == @user.id
+      expect(order).not_to eq(@order)
+      expect(order.user).to eq(@user)
+      expect(order.created_by).to eq(@user.id)
     end
 
     it 'should return a new order when created_by user is nil' do
       order=@user.cart(nil, false)
-      order.should_not == @order
-      order.user.should == @user
-      order.created_by.should == @user.id
+      expect(order).not_to eq(@order)
+      expect(order.user).to eq(@user)
+      expect(order.created_by).to eq(@user.id)
     end
   end
 
@@ -153,14 +153,14 @@ describe User do
 
     it 'should not have an account because there is no price group' do
       AccountPriceGroupMember.where(account_id: @account.id, price_group_id: @price_group.id).first.destroy
-      @user.accounts_for_product(@item).should be_empty
+      expect(@user.accounts_for_product(@item)).to be_empty
     end
 
     it 'should have an account' do
       define_open_account @item.account, @account.account_number
       accts=@user.accounts_for_product(@item)
-      accts.size.should == 1
-      accts.first.should == @account
+      expect(accts.size).to eq(1)
+      expect(accts.first).to eq(@account)
     end
   end
 

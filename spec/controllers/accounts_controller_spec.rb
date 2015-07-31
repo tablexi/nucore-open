@@ -6,9 +6,9 @@ describe AccountsController do
   render_views
 
   it "should route" do
-    { :get => "/accounts" }.should route_to(:controller => 'accounts', :action => 'index')
-    { :get => "/accounts/1" }.should route_to(:controller => 'accounts', :action => 'show', :id => '1')
-    { :get => "/accounts/1/user_search" }.should route_to(:controller => 'accounts', :action => 'user_search', :id => '1')
+    expect({ :get => "/accounts" }).to route_to(:controller => 'accounts', :action => 'index')
+    expect({ :get => "/accounts/1" }).to route_to(:controller => 'accounts', :action => 'show', :id => '1')
+    expect({ :get => "/accounts/1/user_search" }).to route_to(:controller => 'accounts', :action => 'user_search', :id => '1')
   end
 
   before(:all) { create_users }
@@ -32,18 +32,18 @@ describe AccountsController do
       maybe_grant_always_sign_in(:owner)
       do_request
       # should find 2 account users, with user roles 'Owner'
-      assigns[:account_users].collect(&:user_id).should == [ @owner.id, @owner.id ]
-      assigns[:account_users].collect(&:user_role).should == [ 'Owner', 'Owner' ]
+      expect(assigns[:account_users].collect(&:user_id)).to eq([ @owner.id, @owner.id ])
+      expect(assigns[:account_users].collect(&:user_role)).to eq([ 'Owner', 'Owner' ])
       # should show 2 accounts, with 'edit account' links
-      response.should render_template('accounts/index')
+      expect(response).to render_template('accounts/index')
     end
 
     it_should_allow :purchaser do
       # should find 1 account user, with user roles as 'Purchaser'
-      assigns[:account_users].collect(&:user_id).should == [@purchaser.id]
-      assigns[:account_users].collect(&:user_role).should == ['Purchaser']
+      expect(assigns[:account_users].collect(&:user_id)).to eq([@purchaser.id])
+      expect(assigns[:account_users].collect(&:user_role)).to eq(['Purchaser'])
       # should show 1 account, with no 'edit account' links
-      response.should render_template('accounts/index')
+      expect(response).to render_template('accounts/index')
     end
   end
 
@@ -61,8 +61,8 @@ describe AccountsController do
     it_should_deny :purchaser
 
     it_should_allow :owner do
-      assigns(:account).should == @authable
-      response.should render_template('accounts/show')
+      expect(assigns(:account)).to eq(@authable)
+      expect(response).to render_template('accounts/show')
     end
   end
 
@@ -80,8 +80,8 @@ describe AccountsController do
     it_should_deny :purchaser
 
     it_should_allow :owner do
-      assigns(:account).should == @authable
-      response.should render_template('account_users/user_search')
+      expect(assigns(:account)).to eq(@authable)
+      expect(response).to render_template('account_users/user_search')
     end
 
   end
@@ -96,10 +96,10 @@ describe AccountsController do
     it_should_require_login
     it_should_deny :purchaser
     it_should_allow :owner do
-      assigns(:account).should == @authable
-      assigns[:order_details].where_values_hash.should == { 'account_id' => @authable.id }
+      expect(assigns(:account)).to eq(@authable)
+      expect(assigns[:order_details].where_values_hash).to eq({ 'account_id' => @authable.id })
       # @authable is an nufs account, so it doesn't have a facility
-      assigns[:facility].should be_nil
+      expect(assigns[:facility]).to be_nil
     end
 
     it_should_support_searching
@@ -120,28 +120,28 @@ describe AccountsController do
     it_should_deny :purchaser
 
     it_should_allow :owner do
-      assigns[:account].should == @authable
-      assigns[:order_details].where_values_hash.should be_has_key(:account_id)
-      assigns[:order_details].where_values_hash[:account_id].should == @authable.id
-      assigns[:facility].should be_nil
+      expect(assigns[:account]).to eq(@authable)
+      expect(assigns[:order_details].where_values_hash).to be_has_key(:account_id)
+      expect(assigns[:order_details].where_values_hash[:account_id]).to eq(@authable.id)
+      expect(assigns[:facility]).to be_nil
     end
 
     it "should use reviewed_at" do
       sign_in @user
       do_request
-      response.should be_success
-      assigns[:extra_date_column].should == :reviewed_at
-      assigns[:order_details].to_sql.should be_include("order_details.reviewed_at >")
+      expect(response).to be_success
+      expect(assigns[:extra_date_column]).to eq(:reviewed_at)
+      expect(assigns[:order_details].to_sql).to be_include("order_details.reviewed_at >")
     end
 
     it "should add dispute links" do
       sign_in @user
       do_request
-      response.should be_success
-      OrderDetail.any_instance.stub(:can_dispute?).and_return(true)
-      assigns[:order_detail_link].should_not be_nil
-      assigns[:order_detail_link][:text].should == "Dispute"
-      assigns[:order_detail_link][:display?].call(OrderDetail.new).should be_true
+      expect(response).to be_success
+      allow_any_instance_of(OrderDetail).to receive(:can_dispute?).and_return(true)
+      expect(assigns[:order_detail_link]).not_to be_nil
+      expect(assigns[:order_detail_link][:text]).to eq("Dispute")
+      expect(assigns[:order_detail_link][:display?].call(OrderDetail.new)).to be true
     end
 
 
@@ -164,9 +164,9 @@ describe AccountsController do
       it_should_deny_all [:purchaser]
 
       it_should_allow_all [:owner, :business_admin] do
-        assigns(:account).should == @account
-        should set_the_flash
-        @account.reload.should be_suspended
+        expect(assigns(:account)).to eq(@account)
+        is_expected.to set_the_flash
+        expect(@account.reload).to be_suspended
         assert_redirected_to account_path(@account)
       end
     end
@@ -183,9 +183,9 @@ describe AccountsController do
       it_should_deny_all [:purchaser]
 
       it_should_allow_all [:owner, :business_admin] do
-        assigns(:account).should == @account
-        should set_the_flash
-        assigns(:account).should_not be_suspended
+        expect(assigns(:account)).to eq(@account)
+        is_expected.to set_the_flash
+        expect(assigns(:account)).not_to be_suspended
         assert_redirected_to account_path(@account)
       end
     end

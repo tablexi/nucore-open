@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe Relay do
-  it { should allow_mass_assignment_of :auto_logout }
-  it { should allow_mass_assignment_of :auto_logout_minutes }
-  it { should allow_mass_assignment_of :instrument_id }
-  it { should allow_mass_assignment_of :type }
+  it { is_expected.to allow_mass_assignment_of :auto_logout }
+  it { is_expected.to allow_mass_assignment_of :auto_logout_minutes }
+  it { is_expected.to allow_mass_assignment_of :instrument_id }
+  it { is_expected.to allow_mass_assignment_of :type }
 
 
   context 'with relay' do
@@ -43,27 +43,27 @@ describe Relay do
     end
 
     it 'should alias host to ip' do
-      @relay.host.should == @relay.ip
+      expect(@relay.host).to eq(@relay.ip)
     end
 
     context 'dummy relay' do
 
       before :each do
         @relay.destroy
-        @relay.should be_destroyed
+        expect(@relay).to be_destroyed
         @relay=RelayDummy.create!(:instrument_id => @instrument.id)
       end
 
 
       it 'should turn on the relay' do
         @relay.activate
-        @relay.get_status.should == true
+        expect(@relay.get_status).to eq(true)
       end
 
 
       it 'should turn off the relay' do
         @relay.deactivate
-        @relay.get_status.should == false
+        expect(@relay.get_status).to eq(false)
       end
 
     end

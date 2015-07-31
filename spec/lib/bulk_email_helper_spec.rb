@@ -43,22 +43,22 @@ describe BulkEmailHelper do
     it "should only return the one today and the one tomorrow" do
       @params.merge!({ :start_date => Time.zone.now })
       users = @controller.do_search(@params)
-      @controller.order_details.should contain_all [@od_today, @od_tomorrow]
-      users.should contain_all [@purchaser3, @purchaser2]
+      expect(@controller.order_details).to contain_all [@od_today, @od_tomorrow]
+      expect(users).to contain_all [@purchaser3, @purchaser2]
     end
     
     it "should only return the one today and the one yesterday" do
       @params.merge!({ :end_date => Time.zone.now })
       users = @controller.do_search(@params)
-      @controller.order_details.should contain_all [@od_yesterday, @od_today]
-      users.should contain_all [@purchaser3, @purchaser]
+      expect(@controller.order_details).to contain_all [@od_yesterday, @od_today]
+      expect(users).to contain_all [@purchaser3, @purchaser]
     end
 
     it "should only return the one from today" do
       @params.merge!({:start_date => Time.zone.now, :end_date => Time.zone.now})
       users = @controller.do_search(@params)
-      @controller.order_details.should == [@od_today]
-      users.should == [@purchaser3]
+      expect(@controller.order_details).to eq([@od_today])
+      expect(users).to eq([@purchaser3])
     end
   end
 
@@ -80,22 +80,22 @@ describe BulkEmailHelper do
     it "should only return the one today and the one tomorrow" do
       @params.merge!({ :start_date => Time.zone.now })
       users = @controller.do_search(@params)
-      @controller.order_details.should contain_all [@reservation_today.order_detail, @reservation_tomorrow.order_detail]
-      users.should contain_all [@purchaser3, @purchaser2]
+      expect(@controller.order_details).to contain_all [@reservation_today.order_detail, @reservation_tomorrow.order_detail]
+      expect(users).to contain_all [@purchaser3, @purchaser2]
     end
     
     it "should only return the one today and the one yesterday" do
       @params.merge!({ :end_date => Time.zone.now })
       users = @controller.do_search(@params)
-      @controller.order_details.should contain_all [@reservation_yesterday.order_detail, @reservation_today.order_detail]
-      users.should contain_all [@purchaser3, @purchaser]
+      expect(@controller.order_details).to contain_all [@reservation_yesterday.order_detail, @reservation_today.order_detail]
+      expect(users).to contain_all [@purchaser3, @purchaser]
     end
 
     it "should only return the one from today" do
       @params.merge!({:start_date => Time.zone.now, :end_date => Time.zone.now})
       users = @controller.do_search(@params)
-      @controller.order_details.should == [@reservation_today.order_detail]
-      users.should == [@purchaser3]
+      expect(@controller.order_details).to eq([@reservation_today.order_detail])
+      expect(users).to eq([@purchaser3])
     end
   end
 
@@ -107,20 +107,20 @@ describe BulkEmailHelper do
     end
     it "should return all three user details" do
       users = @controller.do_search(@params)
-      @controller.order_details.should contain_all [@od1, @od2, @od3]
-      users.should contain_all [@purchaser, @purchaser2, @purchaser3]
+      expect(@controller.order_details).to contain_all [@od1, @od2, @od3]
+      expect(users).to contain_all [@purchaser, @purchaser2, @purchaser3]
     end
     it "should return just one product" do
       @params.merge!({:products => [@product.id]})
       users = @controller.do_search(@params)
-      @controller.order_details.should contain_all [@od1]
-      users.should == [@purchaser]
+      expect(@controller.order_details).to contain_all [@od1]
+      expect(users).to eq([@purchaser])
     end
     it "should return two products" do
       @params.merge!({:products => [@product.id, @product2.id]})
       users = @controller.do_search(@params)
-      @controller.order_details.should contain_all [@od1, @od2]
-      users.should contain_all [@purchaser, @purchaser2]
+      expect(@controller.order_details).to contain_all [@od1, @od2]
+      expect(users).to contain_all [@purchaser, @purchaser2]
     end
   end
 
@@ -139,15 +139,15 @@ describe BulkEmailHelper do
 
     it "should find owners if no other limits" do
       users = @controller.do_search(@params)
-      @controller.order_details.should contain_all [@od1, @od2, @od3]
-      users.map(&:id).should contain_all [@owner, @owner2, @owner3].map(&:id)
+      expect(@controller.order_details).to contain_all [@od1, @od2, @od3]
+      expect(users.map(&:id)).to contain_all [@owner, @owner2, @owner3].map(&:id)
     end
 
     it "should find owners with limited order details" do
       @params.merge!({:products => [@product.id, @product2.id]})
       users = @controller.do_search(@params)
-      @controller.order_details.should contain_all [@od1, @od2]
-      users.should contain_all [@owner, @owner2]
+      expect(@controller.order_details).to contain_all [@od1, @od2]
+      expect(users).to contain_all [@owner, @owner2]
     end
 
   end
@@ -167,15 +167,15 @@ describe BulkEmailHelper do
 
     it "should find owners and purchaser if no other limits" do
       users = @controller.do_search(@params)
-      @controller.order_details.should contain_all [@od1, @od2, @od3]
-      users.should contain_all [@owner, @owner2, @owner3, @purchaser, @purchaser2, @purchaser3]
+      expect(@controller.order_details).to contain_all [@od1, @od2, @od3]
+      expect(users).to contain_all [@owner, @owner2, @owner3, @purchaser, @purchaser2, @purchaser3]
     end
 
     it "should find owners and purchasers with limited order details" do
       @params.merge!({:products => [@product.id, @product2.id]})
       users = @controller.do_search(@params)
-      @controller.order_details.should contain_all [@od1, @od2]
-      users.should contain_all [@owner, @owner2, @purchaser, @purchaser2]
+      expect(@controller.order_details).to contain_all [@od1, @od2]
+      expect(users).to contain_all [@owner, @owner2, @purchaser, @purchaser2]
     end
 
   end
@@ -199,16 +199,16 @@ describe BulkEmailHelper do
     it "should return all authorized users for any instrument" do
       @params.merge!({:products => []})
       users = @controller.do_search(@params)
-      users.should contain_all [@user, @user2, @user3]
+      expect(users).to contain_all [@user, @user2, @user3]
     end
     it "should return only the users for a specific instrument" do
       @params.merge!({:products => [@product.id]})
       users = @controller.do_search(@params)
-      users.should contain_all [@user, @user2]
+      expect(users).to contain_all [@user, @user2]
 
       @params.merge!({:products => [@product2.id]})
       users = @controller.do_search(@params)
-      users.should contain_all [@user2, @user3]
+      expect(users).to contain_all [@user2, @user3]
     end
   end
   

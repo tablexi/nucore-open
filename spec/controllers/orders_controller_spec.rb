@@ -13,16 +13,16 @@ describe OrdersController do
 
 
   it "should route" do
-    { :get => "/orders/cart" }.should route_to(:controller => "orders", :action => "cart")
-    { :get => "/orders/1" }.should route_to(:controller => "orders", :action => "show", :id => "1")
-    { :put => "/orders/1" }.should route_to(:controller => "orders", :action => "update", :id => "1")
-    { :put => "/orders/1/add" }.should route_to(:controller => "orders", :action => "add", :id => "1")
-    { :put => "/orders/1/remove/3" }.should route_to(:controller => "orders", :action => "remove", :id => "1", :order_detail_id => "3")
-    { :put => "/orders/1" }.should route_to(:controller => "orders", :action => "update", :id => "1")
-    { :put => "/orders/1/clear" }.should route_to(:controller => "orders", :action => "clear", :id => "1")
-    { :put => "/orders/1/purchase" }.should route_to(:controller => "orders", :action => "purchase", :id => "1")
-    { :get => "/orders/1/receipt" }.should route_to(:controller => "orders", :action => "receipt", :id => "1")
-    { :get => "/orders/1/choose_account" }.should route_to(:controller => "orders", :action => "choose_account", :id => "1")
+    expect({ :get => "/orders/cart" }).to route_to(:controller => "orders", :action => "cart")
+    expect({ :get => "/orders/1" }).to route_to(:controller => "orders", :action => "show", :id => "1")
+    expect({ :put => "/orders/1" }).to route_to(:controller => "orders", :action => "update", :id => "1")
+    expect({ :put => "/orders/1/add" }).to route_to(:controller => "orders", :action => "add", :id => "1")
+    expect({ :put => "/orders/1/remove/3" }).to route_to(:controller => "orders", :action => "remove", :id => "1", :order_detail_id => "3")
+    expect({ :put => "/orders/1" }).to route_to(:controller => "orders", :action => "update", :id => "1")
+    expect({ :put => "/orders/1/clear" }).to route_to(:controller => "orders", :action => "clear", :id => "1")
+    expect({ :put => "/orders/1/purchase" }).to route_to(:controller => "orders", :action => "purchase", :id => "1")
+    expect({ :get => "/orders/1/receipt" }).to route_to(:controller => "orders", :action => "receipt", :id => "1")
+    expect({ :get => "/orders/1/choose_account" }).to route_to(:controller => "orders", :action => "choose_account", :id => "1")
   end
 
   before :each do
@@ -64,7 +64,7 @@ describe OrdersController do
 
         it 'should redirect to the order' do
           do_request
-          request.should redirect_to order_url(@order)
+          expect(request).to redirect_to order_url(@order)
         end
       end
 
@@ -77,7 +77,7 @@ describe OrdersController do
 
         it 'should redirect to a new cart' do
           do_request
-          request.should_not redirect_to order_url(@order)
+          expect(request).not_to redirect_to order_url(@order)
         end
 
         context 'with a second reservation' do
@@ -89,7 +89,7 @@ describe OrdersController do
 
           it 'should redirect to the existing cart' do
             do_request
-            request.should redirect_to order_url(@order)
+            expect(request).to redirect_to order_url(@order)
           end
         end
       end
@@ -101,7 +101,7 @@ describe OrdersController do
 
     before :each do
       @order.add(@item, 1)
-      @order.order_details.size.should == 1
+      expect(@order.order_details.size).to eq(1)
 
       @method=:get
       @action=:choose_account
@@ -112,8 +112,8 @@ describe OrdersController do
 
     it_should_allow :staff do
       expect(assigns(:order)).to be_kind_of Order
-      assigns(:order).should == @order
-      should render_template 'choose_account'
+      expect(assigns(:order)).to eq(@order)
+      is_expected.to render_template 'choose_account'
     end
 
     context 'staff logged in' do
@@ -122,10 +122,10 @@ describe OrdersController do
       end
       it 'should redirect to cart url if the cart is empty' do
         @order2 = @staff.orders.create(FactoryGirl.attributes_for(:order, :created_by => @staff.id, :account => @account))
-        @order2.order_details.should be_empty
+        expect(@order2.order_details).to be_empty
         @params = { :id => @order2.id }
         do_request
-        response.should redirect_to cart_path
+        expect(response).to redirect_to cart_path
       end
     end
 
@@ -158,15 +158,15 @@ describe OrdersController do
 
       it "should update the quantity" do
         @order_detail.reload
-        @order_detail.quantity.should == 5
+        expect(@order_detail.quantity).to eq(5)
       end
 
       it "should redirect to the cart" do
-        should redirect_to order_path(@order)
+        is_expected.to redirect_to order_path(@order)
       end
 
       it "should not purchase" do
-        assigns[:order].state.should_not == "purchased"
+        expect(assigns[:order].state).not_to eq("purchased")
       end
     end
 
@@ -193,17 +193,17 @@ describe OrdersController do
 
       it "should update the quantities" do
         @order_detail1.reload
-        @order_detail1.quantity.should == 3
+        expect(@order_detail1.quantity).to eq(3)
         @order_detail2.reload
-        @order_detail2.quantity.should == 4
+        expect(@order_detail2.quantity).to eq(4)
       end
 
       it "should redirect to the cart" do
-        should redirect_to order_path(@order)
+        is_expected.to redirect_to order_path(@order)
       end
 
       it "should not purchase" do
-        assigns[:order].state.should_not == "purchased"
+        expect(assigns[:order].state).not_to eq("purchased")
       end
     end
 
@@ -217,12 +217,12 @@ describe OrdersController do
       it "should update the note" do
         order_detail = assigns[:order].order_details.first
         order_detail.reload
-        order_detail.note.should_not be_blank
+        expect(order_detail.note).not_to be_blank
       end
 
       it "should purchase the order" do
         @order.reload
-        @order.state.should == 'purchased'
+        expect(@order.state).to eq('purchased')
       end
     end
 
@@ -252,8 +252,8 @@ describe OrdersController do
 
     it_should_allow :staff do
       expect(assigns(:order)).to be_kind_of Order
-      assigns(:order).should == @order
-      should respond_with :redirect
+      expect(assigns(:order)).to eq(@order)
+      is_expected.to respond_with :redirect
     end
 
     context 'success' do
@@ -266,21 +266,21 @@ describe OrdersController do
         define_open_account(@instrument.account, @account.account_number)
         @reservation = place_reservation_for_instrument(@staff, @instrument, @account, Time.zone.now)
         @order = @reservation.order_detail.order
-        @reservation.order_detail.order_status.should be_nil
+        expect(@reservation.order_detail.order_status).to be_nil
         @params.merge!({:id => @order.id, :order_id => @order.id})
       end
 
       it 'should purchase the order' do
         sign_in @staff
         do_request
-        assigns[:order].state.should == 'purchased'
+        expect(assigns[:order].state).to eq('purchased')
       end
 
       it 'should set the status of the order detail to the products default status' do
         sign_in @staff
         do_request
-        assigns[:order].order_details.size.should == 1
-        assigns[:order].order_details.first.order_status.should == OrderStatus.new_os.first
+        expect(assigns[:order].order_details.size).to eq(1)
+        expect(assigns[:order].order_details.first.order_status).to eq(OrderStatus.new_os.first)
       end
 
       it 'should set the status of the order detail to the products default status' do
@@ -288,22 +288,22 @@ describe OrdersController do
         @instrument.update_attributes!(:initial_order_status_id => @order_status.id)
         sign_in @staff
         do_request
-        assigns[:order].order_details.size.should == 1
-        assigns[:order].order_details.first.order_status.should == @order_status
+        expect(assigns[:order].order_details.size).to eq(1)
+        expect(assigns[:order].order_details.first.order_status).to eq(@order_status)
       end
 
       it 'should redirect to my reservations on a successful purchase of a single reservation' do
         sign_in @staff
         do_request
-        flash[:notice].should == 'Reservation completed successfully'
-        response.should redirect_to reservations_path
+        expect(flash[:notice]).to eq('Reservation completed successfully')
+        expect(response).to redirect_to reservations_path
       end
 
       it 'should redirect to switch on if the instrument has a relay' do
         @instrument.update_attributes(:relay => FactoryGirl.create(:relay_dummy, :instrument => @instrument))
         sign_in @staff
         do_request
-        response.should redirect_to order_order_detail_reservation_switch_instrument_path(
+        expect(response).to redirect_to order_order_detail_reservation_switch_instrument_path(
           @order,
           @order_detail,
           @reservation,
@@ -314,37 +314,37 @@ describe OrdersController do
 
       it 'should redirect to receipt when purchasing multiple reservations' do
         @order.add(@instrument, 1)
-        @order.order_details.size.should == 2
+        expect(@order.order_details.size).to eq(2)
         @reservation2 = FactoryGirl.create(:reservation, :order_detail => @order.order_details[1], :product => @instrument)
-        Reservation.all.size.should == 2
+        expect(Reservation.all.size).to eq(2)
 
         sign_in @staff
         do_request
-        response.should redirect_to receipt_order_url(@order)
+        expect(response).to redirect_to receipt_order_url(@order)
       end
       it 'should redirect to receipt when acting as and ordering a single reservation' do
         sign_in @admin
         switch_to @staff
         do_request
-        response.should redirect_to receipt_order_url(@order)
+        expect(response).to redirect_to receipt_order_url(@order)
       end
 
       describe 'notification sending' do
         it 'should send a notification' do
-          Notifier.should_receive(:order_receipt).once.and_return(DummyNotifier.new)
+          expect(Notifier).to receive(:order_receipt).once.and_return(DummyNotifier.new)
           sign_in @admin
           do_request
         end
 
         it "should not send an email by default if you're acting as" do
-          Notifier.should_receive(:order_receipt).never
+          expect(Notifier).to receive(:order_receipt).never
           sign_in @admin
           switch_to @staff
           do_request
         end
 
         it "should not send an email if you're acting as and have the checkbox unchecked" do
-          Notifier.should_receive(:order_receipt).never
+          expect(Notifier).to receive(:order_receipt).never
           sign_in @admin
           switch_to @staff
           @params.merge!(:send_notification => '0')
@@ -352,7 +352,7 @@ describe OrdersController do
         end
 
         it "should send an email if you're acting as and set the parameter" do
-          Notifier.should_receive(:order_receipt).once.and_return(DummyNotifier.new)
+          expect(Notifier).to receive(:order_receipt).once.and_return(DummyNotifier.new)
           sign_in @admin
           switch_to @staff
           @params.merge!(:send_notification => '1')
@@ -368,36 +368,36 @@ describe OrdersController do
         @params.merge!({:id => @order.id})
       end
       it 'should be set up correctly' do
-        @order.state.should == 'new'
-        @order_detail.state.should == 'new'
+        expect(@order.state).to eq('new')
+        expect(@order_detail.state).to eq('new')
       end
       it 'should validate the order properly' do
-        @order.should be_has_details
-        @order.should be_has_valid_payment
-        @order.should be_cart_valid
+        expect(@order).to be_has_details
+        expect(@order).to be_has_valid_payment
+        expect(@order).to be_cart_valid
       end
       it 'should validate and place order' do
         @order.validate_order!
-        @order.should be_place_order
+        expect(@order).to be_place_order
       end
       it 'should redirect to order receipt on a successful purchase' do
         sign_in @staff
         do_request
-        flash[:error].should be_nil
-        response.should redirect_to receipt_order_path(@order)
+        expect(flash[:error]).to be_nil
+        expect(response).to redirect_to receipt_order_path(@order)
       end
       it 'should set the ordered at to the past' do
         maybe_grant_always_sign_in :director
         switch_to @staff
         @params.merge!({:order_date => format_usa_date(1.day.ago), :order_time => {:hour => '10', :minute => '12', :ampm => 'AM'}})
         do_request
-        assigns[:order].reload.ordered_at.should match_date 1.day.ago.change(:hour => 10, :min => 12)
+        expect(assigns[:order].reload.ordered_at).to match_date 1.day.ago.change(:hour => 10, :min => 12)
       end
       it 'should set the ordered at to now if not acting_as' do
         maybe_grant_always_sign_in :director
         @params.merge!({:order_date => format_usa_date(1.day.ago)})
         do_request
-        assigns[:order].reload.ordered_at.should match_date Time.zone.now
+        expect(assigns[:order].reload.ordered_at).to match_date Time.zone.now
       end
 
       context 'setting status of order details' do
@@ -407,17 +407,17 @@ describe OrdersController do
         end
         it 'should leave as new by default' do
           do_request
-          assigns[:order].reload.order_details.all? { |od| od.state.should == 'new' }
+          assigns[:order].reload.order_details.all? { |od| expect(od.state).to eq('new') }
         end
         it 'should leave as new if new is set as the param' do
           @params.merge!({:order_status_id => OrderStatus.new_os.first.id})
           do_request
-          assigns[:order].reload.order_details.all? { |od| od.state.should == 'new' }
+          assigns[:order].reload.order_details.all? { |od| expect(od.state).to eq('new') }
         end
         it 'should be able to set to canceled' do
           @params.merge!({:order_status_id => OrderStatus.canceled.first.id})
           do_request
-          assigns[:order].reload.order_details.all? { |od| od.state.should == 'canceled' }
+          assigns[:order].reload.order_details.all? { |od| expect(od.state).to eq('canceled') }
         end
 
         context 'completed' do
@@ -426,25 +426,25 @@ describe OrdersController do
           end
           it 'should be able to set to completed' do
             do_request
-            assigns[:order].reload.order_details.all? { |od| od.state.should == 'complete' }
+            assigns[:order].reload.order_details.all? { |od| expect(od.state).to eq('complete') }
           end
           it 'should set reviewed_at if there is zero review period' do
             Settings.billing.review_period = 0.days
             do_request
-            assigns[:order].reload.order_details.all? { |od| od.reviewed_at.should_not be_nil }
+            assigns[:order].reload.order_details.all? { |od| expect(od.reviewed_at).not_to be_nil }
             Settings.reload!
           end
           it 'should leave reviewed_at as nil if there is a review period' do
             Settings.billing.review_period = 7.days
             do_request
-            assigns[:order].reload.order_details.all? { |od| od.reviewed_at.should be_nil }
+            assigns[:order].reload.order_details.all? { |od| expect(od.reviewed_at).to be_nil }
             Settings.reload!
           end
           it 'should set the fulfilled date to the order time' do
             @item_pp = @item.item_price_policies.create!(FactoryGirl.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :start_date => 1.day.ago, :expire_date => 1.day.from_now))
             @params.merge!({:order_date => format_usa_date(1.day.ago), :order_time => {:hour => '10', :minute => '13', :ampm => 'AM'}})
             do_request
-            assigns[:order].reload.order_details.all? { |od| od.fulfilled_at.should match_date 1.day.ago.change(:hour => 10, :min => 13) }
+            assigns[:order].reload.order_details.all? { |od| expect(od.fulfilled_at).to match_date 1.day.ago.change(:hour => 10, :min => 13) }
           end
           context 'price policies' do
             before :each do
@@ -456,12 +456,12 @@ describe OrdersController do
             it 'should use the current price policy for dates in that policy' do
               @params.merge!({:order_date => format_usa_date(1.day.ago)})
               do_request
-              assigns[:order].reload.order_details.all? { |od| od.price_policy.should == @item_pp }
+              assigns[:order].reload.order_details.all? { |od| expect(od.price_policy).to eq(@item_pp) }
             end
             it 'should use an old price policy for the past' do
               @params.merge!({:order_date => format_usa_date(5.days.ago)})
               do_request
-              assigns[:order].reload.order_details.all? { |od| od.price_policy.should == @item_past_pp }
+              assigns[:order].reload.order_details.all? { |od| expect(od.price_policy).to eq(@item_past_pp) }
             end
 
             # when backdating was initially set up, this would cause an error, but behavior changed as of ticket #51239
@@ -469,13 +469,13 @@ describe OrdersController do
               @params.merge!({:order_date => format_usa_date(9.days.ago)})
               do_request
               assigns[:order].reload.order_details.all? do |od|
-                od.price_policy.should be_nil
-                od.actual_cost.should be_nil
-                od.actual_subsidy.should be_nil
-                od.state.should == 'complete'
+                expect(od.price_policy).to be_nil
+                expect(od.actual_cost).to be_nil
+                expect(od.actual_subsidy).to be_nil
+                expect(od.state).to eq('complete')
               end
-              flash[:error].should be_nil
-              response.should redirect_to receipt_order_url(@order)
+              expect(flash[:error]).to be_nil
+              expect(response).to redirect_to receipt_order_url(@order)
             end
           end
 
@@ -490,7 +490,7 @@ describe OrdersController do
           @instrument_pp = create :instrument_price_policy, price_group: @price_group, start_date: 7.day.ago, expire_date: 1.day.from_now, product: @instrument
           define_open_account(@instrument.account, @account.account_number)
           @reservation = place_reservation_for_instrument(@staff, @instrument, @account, 3.days.ago)
-          @reservation.should_not be_nil
+          expect(@reservation).not_to be_nil
           @params.merge!(:id => @reservation.order_detail.order.id)
           maybe_grant_always_sign_in :director
           switch_to @staff
@@ -499,24 +499,24 @@ describe OrdersController do
         end
         it "should completed by default because it's in the past" do
           do_request
-          assigns[:order].order_details.all? { |od| od.state.should == 'complete' }
+          assigns[:order].order_details.all? { |od| expect(od.state).to eq('complete') }
         end
         it 'should set the fulfilment date to the order time' do
           do_request
           assigns[:order].order_details.all? do |od|
-            od.fulfilled_at.should_not be_nil
-            od.fulfilled_at.should match_date @reservation.reserve_end_at
+            expect(od.fulfilled_at).not_to be_nil
+            expect(od.fulfilled_at).to match_date @reservation.reserve_end_at
           end
         end
         it 'should set the actual times to the reservation times for completed' do
           do_request
-          @reservation.reload.actual_start_at.should match_date @reservation.reserve_start_at
-          @reservation.actual_end_at.should match_date(@reservation.reserve_start_at + 60.minutes)
+          expect(@reservation.reload.actual_start_at).to match_date @reservation.reserve_start_at
+          expect(@reservation.actual_end_at).to match_date(@reservation.reserve_start_at + 60.minutes)
         end
         it 'should assign a price policy and cost' do
           do_request
-          @order_detail.reload.price_policy.should_not be_nil
-          @order_detail.actual_cost.should_not be_nil
+          expect(@order_detail.reload.price_policy).not_to be_nil
+          expect(@order_detail.actual_cost).not_to be_nil
         end
         context 'canceled' do
           before :each do
@@ -524,11 +524,11 @@ describe OrdersController do
             do_request
           end
           it 'should be able to be set to canceled' do
-            assigns[:order].order_details.all? { |od| od.state.should == 'canceled' }
+            assigns[:order].order_details.all? { |od| expect(od.state).to eq('canceled') }
           end
           it 'should set the canceled time on the reservation' do
-            assigns[:order].order_details.all? { |od| od.reservation.canceled_at.should_not be_nil }
-            @reservation.reload.canceled_at.should_not be_nil
+            assigns[:order].order_details.all? { |od| expect(od.reservation.canceled_at).not_to be_nil }
+            expect(@reservation.reload.canceled_at).not_to be_nil
             # Should this match the date put in the form, or the date when the action took place
             # @reservation.canceled_at.should match_date @submitted_date
           end
@@ -552,8 +552,8 @@ describe OrdersController do
 
     it_should_allow :staff do
       expect(assigns(:order)).to be_kind_of Order
-      assigns(:order).should == @complete_order
-      should render_template 'receipt'
+      expect(assigns(:order)).to eq(@complete_order)
+      is_expected.to render_template 'receipt'
     end
 
   end
@@ -571,7 +571,7 @@ describe OrdersController do
 
     it_should_allow :staff do
       expect(assigns(:order_details)).to be_kind_of ActiveRecord::Relation
-      should render_template 'index'
+      is_expected.to render_template 'index'
     end
 
   end
@@ -595,15 +595,15 @@ describe OrdersController do
       end
 
       it_should_allow :staff, "to add a product with quantity to cart" do
-        assigns(:order).id.should == @order.id
-        @order.reload.order_details.count.should == 1
-        flash[:error].should be_nil
-        response.should redirect_to "/orders/#{@order.id}"
+        expect(assigns(:order).id).to eq(@order.id)
+        expect(@order.reload.order_details.count).to eq(1)
+        expect(flash[:error]).to be_nil
+        expect(response).to redirect_to "/orders/#{@order.id}"
       end
 
       it_should_allow :staff, 'should assign an estimated price if there is a policy' do
-        @item.price_policies.should_not be_empty
-        @order.reload.order_details.first.estimated_cost.should_not be_nil
+        expect(@item.price_policies).not_to be_empty
+        expect(@order.reload.order_details.first.estimated_cost).not_to be_nil
       end
 
     end
@@ -621,8 +621,8 @@ describe OrdersController do
       end
 
       it_should_allow :staff, "with empty cart (will use same order)" do
-        assigns(:order).id.should == @order.id
-        flash[:error].should be_nil
+        expect(assigns(:order).id).to eq(@order.id)
+        expect(flash[:error]).to be_nil
 
         assert_redirected_to new_order_order_detail_reservation_path(@order.id, @order.reload.order_details.first.id)
       end
@@ -633,8 +633,8 @@ describe OrdersController do
         end
 
         it_should_allow :staff, "with empty cart (will use same order) redirect to choose account" do
-          assigns(:order).id.should == @order.id
-          flash[:error].should be_nil
+          expect(assigns(:order).id).to eq(@order.id)
+          expect(flash[:error]).to be_nil
 
           assert_redirected_to choose_account_order_url(@order)
         end
@@ -647,8 +647,8 @@ describe OrdersController do
         end
 
         it_should_allow :staff, "with non-empty cart (will create new order)" do
-          assigns(:order).should_not == @order
-          flash[:error].should be_nil
+          expect(assigns(:order)).not_to eq(@order)
+          expect(flash[:error]).to be_nil
 
           assert_redirected_to new_order_order_detail_reservation_path(assigns(:order), assigns(:order).order_details.first)
         end
@@ -664,12 +664,12 @@ describe OrdersController do
       end
 
       it "should redirect to choose account" do
-        response.should redirect_to("/orders/#{@order.id}/choose_account")
+        expect(response).to redirect_to("/orders/#{@order.id}/choose_account")
       end
 
       it "should set session with contents of params[:order][:order_details]" do
-        session[:add_to_cart].should_not be_empty
-        session[:add_to_cart].should =~ [{"product_id" => @item.id.to_s, "quantity" => 1}]
+        expect(session[:add_to_cart]).not_to be_empty
+        expect(session[:add_to_cart]).to match_array([{"product_id" => @item.id.to_s, "quantity" => 1}])
       end
     end
 
@@ -693,9 +693,9 @@ describe OrdersController do
           @params.merge!(:order => {:order_details => [{:quantity => 1, :product_id => @item2.id}]})
           do_request
 
-          should set_the_flash.to(/can not/)
-          should set_the_flash.to(/another/)
-          response.should redirect_to "/orders/#{@order.id}"
+          is_expected.to set_the_flash.to(/can not/)
+          is_expected.to set_the_flash.to(/another/)
+          expect(response).to redirect_to "/orders/#{@order.id}"
         end
       end
     end
@@ -718,9 +718,9 @@ describe OrdersController do
             maybe_grant_always_sign_in role
             switch_to @guest
             do_request
-            should_not set_the_flash
-            @order.reload.order_details.should_not be_empty
-            response.should redirect_to "/orders/#{@order.id}"
+            is_expected.not_to set_the_flash
+            expect(@order.reload.order_details).not_to be_empty
+            expect(response).to redirect_to "/orders/#{@order.id}"
           end
         end
         it "should not allow guest" do
@@ -728,8 +728,8 @@ describe OrdersController do
           @guest2 = FactoryGirl.create(:user)
           switch_to @guest2
           do_request
-          should set_the_flash
-          @order.reload.order_details.should be_empty
+          is_expected.to set_the_flash
+          expect(@order.reload.order_details).to be_empty
         end
       end
       context "in the another facility" do
@@ -741,8 +741,8 @@ describe OrdersController do
 
         it "should not allow ordering" do
           do_request
-          @order.reload.order_details.should be_empty
-          should set_the_flash.to(/You are not authorized to place an order on behalf of another user for the facility/)
+          expect(@order.reload.order_details).to be_empty
+          is_expected.to set_the_flash.to(/You are not authorized to place an order on behalf of another user for the facility/)
         end
       end
       it "should show a warning if the user doesn't have access to the product to be added"
@@ -752,7 +752,7 @@ describe OrdersController do
   context "remove from cart" do
     before(:each) do
       @order.add(@item, 1)
-      @order.order_details.size.should == 1
+      expect(@order.order_details.size).to eq(1)
       @order_detail = @order.order_details[0]
 
       @method=:put
@@ -763,8 +763,8 @@ describe OrdersController do
     it_should_require_login
 
     it_should_allow :staff, "should delete an order_detail when /remove/:order_detail_id is called" do
-      @order.reload.order_details.size.should == 0
-      response.should redirect_to "/orders/#{@order.id}"
+      expect(@order.reload.order_details.size).to eq(0)
+      expect(response).to redirect_to "/orders/#{@order.id}"
     end
 
     it "should 404 it the order_detail to be removed is not in the current cart" do
@@ -775,7 +775,7 @@ describe OrdersController do
       @params[:order_detail_id]=@order_detail2.id
       maybe_grant_always_sign_in :staff
       do_request
-      response.response_code.should == 404
+      expect(response.response_code).to eq(404)
     end
 
     context "removing last item in cart" do
@@ -783,11 +783,11 @@ describe OrdersController do
         maybe_grant_always_sign_in :staff
         do_request
 
-        response.should redirect_to "/orders/#{@order.id}"
-        should set_the_flash.to /removed/
+        expect(response).to redirect_to "/orders/#{@order.id}"
+        is_expected.to set_the_flash.to /removed/
 
-        @order.reload.order_details.size.should == 0
-        @order.reload.account.should == nil
+        expect(@order.reload.order_details.size).to eq(0)
+        expect(@order.reload.account).to eq(nil)
       end
     end
 
@@ -798,8 +798,8 @@ describe OrdersController do
       @params.merge!(:redirect_to => overridden_redirect)
       do_request
 
-      response.should redirect_to overridden_redirect
-      should set_the_flash.to /removed/
+      expect(response).to redirect_to overridden_redirect
+      is_expected.to set_the_flash.to /removed/
     end
 
   end
@@ -816,7 +816,7 @@ describe OrdersController do
     it_should_require_login
 
     it_should_allow :staff, "to update the quantities of order_details" do
-      @order_detail.reload.quantity.should == 6
+      expect(@order_detail.reload.quantity).to eq(6)
     end
 
     context "bad input" do
@@ -824,9 +824,9 @@ describe OrdersController do
         @params.merge!("quantity#{@order_detail.id}" => "1.5")
         maybe_grant_always_sign_in :guest
         do_request
-        should set_the_flash.to(/quantity/i)
-        should set_the_flash.to(/integer/i)
-        should render_template :show
+        is_expected.to set_the_flash.to(/quantity/i)
+        is_expected.to set_the_flash.to(/integer/i)
+        is_expected.to render_template :show
       end
 
 
@@ -849,7 +849,7 @@ describe OrdersController do
     it_should_require_login
 
     it_should_allow :staff, "to update the note field of order_details" do
-      @order_detail.reload.note.should == 'new note'
+      expect(@order_detail.reload.note).to eq('new note')
     end
   end
 
@@ -877,7 +877,7 @@ describe OrdersController do
       end
 
       it_should_allow :staff, "to show links for making a reservation for instruments" do
-        response.should be_success
+        expect(response).to be_success
       end
     end
 
@@ -886,7 +886,7 @@ describe OrdersController do
         @instrument.update_attributes(:requires_approval => true)
         @order.update_attributes(:created_by_user => @director, :account => @account)
         @order.add(@instrument)
-        @order.order_details.size.should == 1
+        expect(@order.order_details.size).to eq(1)
         @params.merge!(:id => @order.id)
       end
       it 'should not allow purchasing a restricted item' do
@@ -895,8 +895,8 @@ describe OrdersController do
         #place reservation makes the @order purchased
         @order.reload.update_attributes!(:state => 'new')
         do_request
-        assigns[:order].should == @order
-        assigns[:order].should_not be_validated
+        expect(assigns[:order]).to eq(@order)
+        expect(assigns[:order]).not_to be_validated
       end
       it "should allow purchasing a restricted item the user isn't authorized for" do
         place_reservation(@authable, @order.order_details.first, Time.zone.now)
@@ -905,17 +905,17 @@ describe OrdersController do
         maybe_grant_always_sign_in :director
         switch_to @guest
         do_request
-        response.code.should == '200'
-        assigns[:order].should == @order
-        assigns[:order].should be_validated
+        expect(response.code).to eq('200')
+        expect(assigns[:order]).to eq(@order)
+        expect(assigns[:order]).to be_validated
       end
       it "should not be validated if there is no reservation" do
         maybe_grant_always_sign_in :director
         do_request
-        response.should be_success
-        assigns[:order].should_not be_validated
-        assigns[:order].should == @order
-        assigns[:order].order_details.first.validate_for_purchase.should == "Please make a reservation"
+        expect(response).to be_success
+        expect(assigns[:order]).not_to be_validated
+        expect(assigns[:order]).to eq(@order)
+        expect(assigns[:order].order_details.first.validate_for_purchase).to eq("Please make a reservation")
       end
     end
 
@@ -959,16 +959,16 @@ describe OrdersController do
       @order.purchase!
       maybe_grant_always_sign_in :staff
       do_request
-      response.should redirect_to "/orders/#{@order.id}/receipt"
+      expect(response).to redirect_to "/orders/#{@order.id}/receipt"
 
       @action=:choose_account
       do_request
-      response.should redirect_to "/orders/#{@order.id}/receipt"
+      expect(response).to redirect_to "/orders/#{@order.id}/receipt"
 
       @method=:put
       @action=:purchase
       do_request
-      response.should redirect_to "/orders/#{@order.id}/receipt"
+      expect(response).to redirect_to "/orders/#{@order.id}/receipt"
 
       # TODO: add, etc.
     end
@@ -979,8 +979,8 @@ describe OrdersController do
       @order_status = FactoryGirl.create(:order_status, :facility => @authable, :parent => OrderStatus.new_os.first)
       @order_status_other = FactoryGirl.create(:order_status, :facility => @facility2, :parent => OrderStatus.new_os.first)
       do_request
-      assigns[:order_statuses].should be_include @order_status
-      assigns[:order_statuses].should_not be_include @order_status_other
+      expect(assigns[:order_statuses]).to be_include @order_status
+      expect(assigns[:order_statuses]).not_to be_include @order_status_other
     end
 
     it "should validate and transition to validated"

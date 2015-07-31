@@ -76,7 +76,7 @@ describe SurveysController do
       expect(esr.receiver).to eq @order_detail
       expect(esr.external_service).to eq external_service
       expect(esr.response_data).to include survey_url
-      should redirect_to @params[:referer]
+      is_expected.to redirect_to @params[:referer]
     end
 
     it 'allows acting-as' do
@@ -87,7 +87,7 @@ describe SurveysController do
       expect(esr.receiver).to eq @order_detail
       expect(esr.external_service).to eq external_service
       expect(esr.response_data).to include survey_url
-      should redirect_to @params[:referer]
+      is_expected.to redirect_to @params[:referer]
     end
 
     context 'merge orders' do
@@ -112,13 +112,13 @@ describe SurveysController do
   def test_change_state(active)
     expect(assigns[:service]).to eq service
     expect(external_service_passer.reload.active).to eq active
-    expect(external_service_passer2.reload.active).to be_false
-    should set_the_flash
-    should redirect_to @request.env['HTTP_REFERER']
+    expect(external_service_passer2.reload.active).to be false
+    is_expected.to set_the_flash
+    is_expected.to redirect_to @request.env['HTTP_REFERER']
 
     @params[:external_service_passer_id] = external_service_passer2.id
     do_request
-    expect(external_service_passer.reload.active).to be_false
+    expect(external_service_passer.reload.active).to be false
     expect(external_service_passer2.reload.active).to eq active
   end
 

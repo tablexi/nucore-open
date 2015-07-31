@@ -8,11 +8,11 @@ describe Schedule do
     let(:instrument) { FactoryGirl.create(:setup_instrument) }
     
     it 'should have a schedule' do
-      instrument.schedule.should be
+      expect(instrument.schedule).to be
     end
 
     it 'should be the only product on the schedule' do
-      instrument.schedule.products.should == [instrument]
+      expect(instrument.schedule.products).to eq([instrument])
     end
 
     context 'with a reservation placed' do
@@ -29,7 +29,7 @@ describe Schedule do
                                             :reserve_start_at => first_reservation_time + 30.minutes,
                                             :reserve_end_at => first_reservation_time + 1.hour + 30.minutes
                                             )
-        reservation2.should_not be_valid
+        expect(reservation2).not_to be_valid
       end
 
       it "should allow a second reservation that doesn't overlap" do
@@ -38,7 +38,7 @@ describe Schedule do
                                             :reserve_start_at => first_reservation_time + 1.hour,
                                             :reserve_end_at => first_reservation_time + 2.hours
                                             )
-        reservation2.should be_valid
+        expect(reservation2).to be_valid
       end
     end
   end
@@ -60,7 +60,7 @@ describe Schedule do
                                             :reserve_start_at => first_reservation_time + 30.minutes,
                                             :reserve_end_at => first_reservation_time + 1.hour + 30.minutes
                                             )
-        reservation2.should_not be_valid
+        expect(reservation2).not_to be_valid
       end
 
       context 'a second reservation successfully placed' do
@@ -72,16 +72,16 @@ describe Schedule do
         end
 
         it 'should have the reservations under the individual instruments' do
-          instruments[0].reservations.should == [reservation]
-          instruments[1].reservations.should == [reservation2]
+          expect(instruments[0].reservations).to eq([reservation])
+          expect(instruments[1].reservations).to eq([reservation2])
         end
 
         it 'should have both reservations under the schedule' do
-          schedule.reservations.should == [reservation, reservation2]
+          expect(schedule.reservations).to eq([reservation, reservation2])
         end
 
         it 'should be able to access the schedule reservations through the instrument' do
-          instruments[0].schedule_reservations.should == [reservation, reservation2]
+          expect(instruments[0].schedule_reservations).to eq([reservation, reservation2])
         end
       end
     end
@@ -93,11 +93,11 @@ describe Schedule do
     let!(:archived_instrument) { FactoryGirl.create(:setup_instrument, :facility => facility, :is_archived => true) }
 
     it 'should include non-archived schedule' do
-      Schedule.active.should include instrument.schedule
+      expect(Schedule.active).to include instrument.schedule
     end
 
     it 'should not include the archived schedule' do
-      Schedule.active.should_not include archived_instrument.schedule
+      expect(Schedule.active).not_to include archived_instrument.schedule
     end
   end
 

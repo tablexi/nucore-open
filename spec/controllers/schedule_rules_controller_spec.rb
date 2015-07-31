@@ -11,7 +11,7 @@ describe ScheduleRulesController do
     @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
     @instrument       = FactoryGirl.create(:instrument, :facility => @authable, :facility_account_id => @facility_account.id)
     @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id))
-    @price_policy.should be_valid
+    expect(@price_policy).to be_valid
     @params={ :facility_id => @authable.url_name, :instrument_id => @instrument.url_name }
   end
 
@@ -24,9 +24,9 @@ describe ScheduleRulesController do
     end
 
     it_should_allow_operators_only do |user|
-      assigns[:instrument].should == @instrument
-      response.should be_success
-      response.should render_template('schedule_rules/index')
+      expect(assigns[:instrument]).to eq(@instrument)
+      expect(response).to be_success
+      expect(response).to render_template('schedule_rules/index')
     end
 
   end
@@ -40,9 +40,9 @@ describe ScheduleRulesController do
     end
 
     it_should_allow_managers_and_senior_staff_only do
-      assigns[:instrument].should == @instrument
-      response.should be_success
-      response.should render_template('schedule_rules/new')
+      expect(assigns[:instrument]).to eq(@instrument)
+      expect(response).to be_success
+      expect(response).to render_template('schedule_rules/new')
     end
 
   end
@@ -60,7 +60,7 @@ describe ScheduleRulesController do
 
     it_should_allow_managers_and_senior_staff_only :redirect do
       expect(assigns(:schedule_rule)).to be_kind_of ScheduleRule
-      should set_the_flash
+      is_expected.to set_the_flash
       assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
     end
 
@@ -75,14 +75,14 @@ describe ScheduleRulesController do
 
       it "should come out with no restriction levels" do
         do_request
-        assigns[:schedule_rule].product_access_groups.should be_empty
+        expect(assigns[:schedule_rule].product_access_groups).to be_empty
       end
 
       it "should store restriction_rules" do
         @params.deep_merge!(:schedule_rule => {:product_access_group_ids => [@restriction_levels[0].id, @restriction_levels[2].id]})
         do_request
-        assigns[:schedule_rule].product_access_groups.should contain_all [@restriction_levels[0], @restriction_levels[2]]
-        assigns[:schedule_rule].product_access_groups.size.should == 2
+        expect(assigns[:schedule_rule].product_access_groups).to contain_all [@restriction_levels[0], @restriction_levels[2]]
+        expect(assigns[:schedule_rule].product_access_groups.size).to eq(2)
       end
 
     end
@@ -106,8 +106,8 @@ describe ScheduleRulesController do
       end
 
       it_should_allow_managers_and_senior_staff_only do
-        assigns(:schedule_rule).should == @rule
-        should render_template 'edit'
+        expect(assigns(:schedule_rule)).to eq(@rule)
+        is_expected.to render_template 'edit'
       end
 
     end
@@ -124,8 +124,8 @@ describe ScheduleRulesController do
       end
 
       it_should_allow_managers_and_senior_staff_only :redirect do
-        assigns(:schedule_rule).should == @rule
-        should set_the_flash
+        expect(assigns(:schedule_rule)).to eq(@rule)
+        is_expected.to set_the_flash
         assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
       end
 
@@ -140,21 +140,21 @@ describe ScheduleRulesController do
 
         it "should come out with no restriction levels" do
           do_request
-          assigns[:schedule_rule].product_access_groups.should be_empty
+          expect(assigns[:schedule_rule].product_access_groups).to be_empty
         end
 
         it "should come out with no restriction levels if it had them before" do
           @rule.product_access_groups = @restriction_levels
           @rule.save!
           do_request
-          assigns[:schedule_rule].product_access_groups.should be_empty
+          expect(assigns[:schedule_rule].product_access_groups).to be_empty
         end
 
         it "should store restriction_rules" do
           @params.deep_merge!(:schedule_rule => {:product_access_group_ids => [@restriction_levels[0].id, @restriction_levels[2].id]})
           do_request
-          assigns[:schedule_rule].product_access_groups.should contain_all [@restriction_levels[0], @restriction_levels[2]]
-          assigns[:schedule_rule].product_access_groups.size.should == 2
+          expect(assigns[:schedule_rule].product_access_groups).to contain_all [@restriction_levels[0], @restriction_levels[2]]
+          expect(assigns[:schedule_rule].product_access_groups.size).to eq(2)
         end
 
       end
@@ -170,7 +170,7 @@ describe ScheduleRulesController do
       end
 
       it_should_allow_managers_and_senior_staff_only :redirect do
-        assigns(:schedule_rule).should == @rule
+        expect(assigns(:schedule_rule)).to eq(@rule)
         should_be_destroyed @rule
         assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
       end

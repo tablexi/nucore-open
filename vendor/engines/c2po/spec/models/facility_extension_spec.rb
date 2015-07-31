@@ -21,12 +21,12 @@ describe Facility do
 
       it 'should return false if facility does not accept po and account is po' do
         @facility.accepts_po=false
-        @facility.can_pay_with_account?(@account).should be_false
+        expect(@facility.can_pay_with_account?(@account)).to be false
       end
 
       it 'should return true if facility accepts po and account is po' do
         @facility.accepts_po=true
-        @facility.can_pay_with_account?(@account).should be_true
+        expect(@facility.can_pay_with_account?(@account)).to be true
       end
     end
 
@@ -38,12 +38,12 @@ describe Facility do
 
       it 'should return false if facility does not accept cc and account is cc' do
         @facility.accepts_cc=false
-        @facility.can_pay_with_account?(@account).should be_false
+        expect(@facility.can_pay_with_account?(@account)).to be false
       end
 
       it 'should return true if facility accepts cc and account is cc' do
         @facility.accepts_cc=true
-        @facility.can_pay_with_account?(@account).should be_true
+        expect(@facility.can_pay_with_account?(@account)).to be true
       end
     end
 

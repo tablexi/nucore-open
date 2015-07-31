@@ -26,7 +26,7 @@ describe PriceGroupProductsController do
     # only the managers can submit
     it_should_allow_operators_only do
       assert_init_price_group_products
-      should render_template 'edit'
+      is_expected.to render_template 'edit'
     end
 
   end
@@ -48,8 +48,8 @@ describe PriceGroupProductsController do
 
     it_should_allow_managers_only :redirect, 'to update existing PriceGroupProducts' do
       assert_init_price_group_products
-      PriceGroupProduct.count.should == PriceGroup.count
-      @price_group_products.each {|pgp| pgp.reload.reservation_window.should == 5 }
+      expect(PriceGroupProduct.count).to eq(PriceGroup.count)
+      @price_group_products.each {|pgp| expect(pgp.reload.reservation_window).to eq(5) }
       assert_successful_update
     end
 
@@ -57,10 +57,10 @@ describe PriceGroupProductsController do
     it 'should remove PriceGroupProduct when a PriceGroup cannot purchase' do
       pg=PriceGroup.first
       @params[pg_key(pg)]=nil
-      PriceGroupProduct.count.should == PriceGroup.count
+      expect(PriceGroupProduct.count).to eq(PriceGroup.count)
       maybe_grant_always_sign_in :director
       do_request
-      PriceGroupProduct.count.should == PriceGroup.count-1
+      expect(PriceGroupProduct.count).to eq(PriceGroup.count-1)
       assert_successful_update
     end
 
@@ -68,10 +68,10 @@ describe PriceGroupProductsController do
     it 'should create PriceGroupProducts when a PriceGroup can purchase' do
       pgp=@price_group_products.first
       pgp.destroy
-      PriceGroupProduct.count.should == PriceGroup.count-1
+      expect(PriceGroupProduct.count).to eq(PriceGroup.count-1)
       maybe_grant_always_sign_in :director
       do_request
-      PriceGroupProduct.count.should == PriceGroup.count
+      expect(PriceGroupProduct.count).to eq(PriceGroup.count)
       assert_successful_update
     end
 
@@ -81,8 +81,8 @@ describe PriceGroupProductsController do
       @params[pg_key(pg)][:reservation_window]=''
       maybe_grant_always_sign_in :director
       do_request
-      flash[:notice].should be_nil
-      flash[:error].should_not be_nil
+      expect(flash[:notice]).to be_nil
+      expect(flash[:error]).not_to be_nil
       assert_update_redirect
     end
 
@@ -130,18 +130,18 @@ describe PriceGroupProductsController do
 
 
   def assert_successful_update
-    flash[:notice].should_not be_nil
-    flash[:error].should be_nil
+    expect(flash[:notice]).not_to be_nil
+    expect(flash[:error]).to be_nil
     assert_update_redirect
   end
 
 
   def assert_init_price_group_products
-    assigns[:product].should == @product
-    assigns[:is_instrument].should == @product.is_a?(Instrument)
-    PriceGroup.all.each {|pg| assigns[:price_groups].should be_include pg }
-    @price_group_products.each {|pgp| assigns[:price_group_products].should be_include pgp }
-    assigns[:price_group_products].should be_include assigns[:price_group_product]
+    expect(assigns[:product]).to eq(@product)
+    expect(assigns[:is_instrument]).to eq(@product.is_a?(Instrument))
+    PriceGroup.all.each {|pg| expect(assigns[:price_groups]).to be_include pg }
+    @price_group_products.each {|pgp| expect(assigns[:price_group_products]).to be_include pgp }
+    expect(assigns[:price_group_products]).to be_include assigns[:price_group_product]
   end
 
 end

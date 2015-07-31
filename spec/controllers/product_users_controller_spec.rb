@@ -15,7 +15,7 @@ describe ProductUsersController do
                                       :facility_account => @facility_account,
                                       :requires_approval => true)
     @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id))
-    @price_policy.should be_valid
+    expect(@price_policy).to be_valid
     @params={ :facility_id => @authable.url_name, :instrument_id => @instrument.url_name }
 
     @rule=@instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
@@ -34,15 +34,15 @@ describe ProductUsersController do
     it "should only return the two users" do
       sign_in @admin
       do_request
-      assigns[:product_users].should == [@guest_product, @staff_product]
+      expect(assigns[:product_users]).to eq([@guest_product, @staff_product])
     end
 
     it "should return empty and a flash if the product is not restricted" do
       @instrument.update_attributes(:requires_approval => false)
       sign_in @admin
       do_request
-      assigns[:product_users].should be_nil
-      flash[:notice].should_not be_empty
+      expect(assigns[:product_users]).to be_nil
+      expect(flash[:notice]).not_to be_empty
     end
 
   end
@@ -64,9 +64,9 @@ describe ProductUsersController do
     end
 
     it_should_allow_operators_only :redirect, "update the product_users" do
-      ProductUser.find(@guest_product.id).product_access_group.should == @level
-      ProductUser.find(@staff_product.id).product_access_group.should == @level2
-      flash[:notice].should_not be_nil
+      expect(ProductUser.find(@guest_product.id).product_access_group).to eq(@level)
+      expect(ProductUser.find(@staff_product.id).product_access_group).to eq(@level2)
+      expect(flash[:notice]).not_to be_nil
     end
   end
 end

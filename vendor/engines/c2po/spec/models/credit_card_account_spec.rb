@@ -25,20 +25,19 @@ describe CreditCardAccount do
   end
 
   it "should handle facilities" do
-
     account1 = CreditCardAccount.create(@account_attrs)
-    account1.should respond_to(:facility)
+    expect(account1).to respond_to(:facility)
   end
 
   it "should take a facility" do
     facility = FactoryGirl.create(:facility)
     @account_attrs[:facility] = facility
     account = CreditCardAccount.create(@account_attrs)
-    account.facility.should == facility
+    expect(account.facility).to eq(facility)
   end
 
   it "should be limited to a single facility" do
-    CreditCardAccount.limited_to_single_facility?.should be_true
+    expect(CreditCardAccount.limited_to_single_facility?).to be true
   end
 
   context "valid credit card number" do

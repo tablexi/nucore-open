@@ -50,7 +50,7 @@ describe TransactionSearch do
 
   context "wrapping" do
     it "responds to all_order_details" do
-      @controller.should respond_to(:all_order_details)
+      expect(@controller).to respond_to(:all_order_details)
     end
   end
 
@@ -63,32 +63,32 @@ describe TransactionSearch do
 
       it "should populate facility" do
         @controller.all_order_details
-        @controller.current_facility.should == @authable
-        @controller.facilities.should == [@authable]
+        expect(@controller.current_facility).to eq(@authable)
+        expect(@controller.facilities).to eq([@authable])
       end
 
       it "should populate accounts" do
         @controller.all_order_details
-        @controller.account.should be_nil
-        @controller.accounts.should == [@account]
+        expect(@controller.account).to be_nil
+        expect(@controller.accounts).to eq([@account])
       end
 
       it "populates accounts based off order_details, not orders" do
         @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @staff))
         Order.all.each { |o| o.update_attributes!(:account => @account) }
         OrderDetail.all.each { |od| od.update_attributes!(:account => @account2)}
-        @order.reload.account.should == @account
+        expect(@order.reload.account).to eq(@account)
         @controller.all_order_details
-        @controller.accounts.should == [@account2]
+        expect(@controller.accounts).to eq([@account2])
       end
 
       it "populates owners based off of order_details, not orders" do
         @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @staff2))
         Order.all.each { |o| o.update_attributes!(:account => @account) }
         OrderDetail.all.each { |od| od.update_attributes!(:account => @account2) }
-        @order.reload.account.owner.user.should == @staff
+        expect(@order.reload.account.owner.user).to eq(@staff)
         @controller.all_order_details
-        @controller.account_owners.should == [@staff2]
+        expect(@controller.account_owners).to eq([@staff2])
       end
 
       it "should not populate an account for another facility" do
@@ -96,13 +96,13 @@ describe TransactionSearch do
         @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @staff))
 
         @controller.all_order_details
-        @controller.current_facility.should == @authable
-        @controller.account.should be_nil
-        @controller.accounts.should == [@account]
+        expect(@controller.current_facility).to eq(@authable)
+        expect(@controller.account).to be_nil
+        expect(@controller.accounts).to eq([@account])
       end
       it "should populate order statuses" do
         @controller.all_order_details
-        @controller.order_statuses.should contain_all [@os_new, @os_complete]
+        expect(@controller.order_statuses).to contain_all [@os_new, @os_complete]
       end
     end
 
@@ -121,17 +121,17 @@ describe TransactionSearch do
         @controller.params = { :account_id => @account.id }
         @controller.init_current_account
         @controller.all_order_details
-        @controller.current_facility.should be_nil
-        @controller.account.should == @account
-        @controller.facilities.should contain_all [@authable, @facility2]
+        expect(@controller.current_facility).to be_nil
+        expect(@controller.account).to eq(@account)
+        expect(@controller.facilities).to contain_all [@authable, @facility2]
       end
       it "should only have a single facility for credit card" do
         @controller.params = { :account_id => @credit_account.id }
         @controller.init_current_account
         @controller.all_order_details
-        @controller.current_facility.should be_nil
-        @controller.account.should == @credit_account
-        @controller.facilities.should == [@facility2]
+        expect(@controller.current_facility).to be_nil
+        expect(@controller.account).to eq(@credit_account)
+        expect(@controller.facilities).to eq([@facility2])
       end
     end
     context "account owners" do
@@ -146,7 +146,7 @@ describe TransactionSearch do
         @controller.params = { :facility_id => @authable.url_name }
         @controller.init_current_facility
         @controller.all_order_details
-        @controller.account_owners.should contain_all [@staff, @user2]
+        expect(@controller.account_owners).to contain_all [@staff, @user2]
       end
     end
 
@@ -168,7 +168,7 @@ describe TransactionSearch do
         @controller.all_order_details
       end
       it "should populate products" do
-        @controller.products.should contain_all [@item, @instrument, @service]
+        expect(@controller.products).to contain_all [@item, @instrument, @service]
       end
     end
   end
@@ -216,9 +216,9 @@ describe TransactionSearch do
   context "searching" do
     context "when filtering by date range" do
       before :each do
-        order_detail_new.stub(:total).and_return(100)
+        allow(order_detail_new).to receive(:total).and_return(100)
         order_detail_new.update_attribute(:fulfilled_at, Time.zone.now)
-        order_detail_complete.stub(:total).and_return(100)
+        allow(order_detail_complete).to receive(:total).and_return(100)
         order_detail_complete.update_attribute(:fulfilled_at, Time.zone.now)
       end
 

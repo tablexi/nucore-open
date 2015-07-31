@@ -47,8 +47,8 @@ describe FacilityJournalsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_managers_only do
-      response.should be_success
-      assigns(:pending_journals).should == [@pending_journal]
+      expect(response).to be_success
+      expect(assigns(:pending_journals)).to eq([@pending_journal])
     end
   end
 
@@ -75,28 +75,28 @@ describe FacilityJournalsController do
       end
 
       it 'should have been set up properly' do
-        @creation_errors.should be_empty
-        @order_detail1.reload.journal_id.should_not be_nil
-        @order_detail3.reload.journal_id.should_not be_nil
-        @journal.order_details.uniq.size.should == 2
-        @journal.is_successful.should be_nil
+        expect(@creation_errors).to be_empty
+        expect(@order_detail1.reload.journal_id).not_to be_nil
+        expect(@order_detail3.reload.journal_id).not_to be_nil
+        expect(@journal.order_details.uniq.size).to eq(2)
+        expect(@journal.is_successful).to be_nil
       end
 
       it 'should show an error if journal_status is blank' do
         do_request
-        flash[:error].should include 'Please select a journal status'
+        expect(flash[:error]).to include 'Please select a journal status'
       end
 
       it 'should throw an error if :reference is empty' do
         @params[:journal_status] = 'succeeded'
         @params[:journal].delete :reference
         do_request
-        flash[:error].should include "Reference may not be blank"
+        expect(flash[:error]).to include "Reference may not be blank"
       end
 
       it 'should leave success as nil' do
         do_request
-        @journal.reload.is_successful.should be_nil
+        expect(@journal.reload.is_successful).to be_nil
       end
 
       context 'successful journal' do
@@ -106,13 +106,13 @@ describe FacilityJournalsController do
         end
 
         it 'should not have any errors' do
-          assigns[:journal].errors.should be_empty
-          flash[:error].should be_nil
+          expect(assigns[:journal].errors).to be_empty
+          expect(flash[:error]).to be_nil
         end
 
         it 'should set the updated by to the logged in user and leave created by alone' do
-          assigns[:journal].updated_by.should == @director.id
-          assigns[:journal].created_by.should == @admin.id
+          expect(assigns[:journal].updated_by).to eq(@director.id)
+          expect(assigns[:journal].created_by).to eq(@admin.id)
         end
 
         it "has an is_successful value of true" do
@@ -122,8 +122,8 @@ describe FacilityJournalsController do
 
         it 'should set all the order details to reconciled' do
           reconciled_status = OrderStatus.reconciled.first
-          @order_detail1.reload.order_status.should == reconciled_status
-          @order_detail3.reload.order_status.should == reconciled_status
+          expect(@order_detail1.reload.order_status).to eq(reconciled_status)
+          expect(@order_detail3.reload.order_status).to eq(reconciled_status)
         end
       end
 
@@ -133,12 +133,12 @@ describe FacilityJournalsController do
           do_request
         end
         it 'should not have any errors' do
-          assigns[:pending_journal].errors.should be_empty
-          flash[:error].should be_nil
+          expect(assigns[:pending_journal].errors).to be_empty
+          expect(flash[:error]).to be_nil
         end
         it 'should set the updated by to the logged in user and leave created by alone' do
-          assigns[:journal].updated_by.should == @director.id
-          assigns[:journal].created_by.should == @admin.id
+          expect(assigns[:journal].updated_by).to eq(@director.id)
+          expect(assigns[:journal].created_by).to eq(@admin.id)
         end
 
         it "has an is_successful value of true" do
@@ -148,8 +148,8 @@ describe FacilityJournalsController do
 
         it 'should leave the orders as complete' do
           completed_status = OrderStatus.complete.first
-          @order_detail1.reload.order_status.should == completed_status
-          @order_detail3.reload.order_status.should == completed_status
+          expect(@order_detail1.reload.order_status).to eq(completed_status)
+          expect(@order_detail3.reload.order_status).to eq(completed_status)
         end
       end
 
@@ -159,12 +159,12 @@ describe FacilityJournalsController do
           do_request
         end
         it 'should not have any errors' do
-          assigns[:journal].errors.should be_empty
-          flash[:error].should be_nil
+          expect(assigns[:journal].errors).to be_empty
+          expect(flash[:error]).to be_nil
         end
         it 'should set the updated by to the logged in user and leave created by alone' do
-          assigns[:journal].updated_by.should == @director.id
-          assigns[:journal].created_by.should == @admin.id
+          expect(assigns[:journal].updated_by).to eq(@director.id)
+          expect(assigns[:journal].created_by).to eq(@admin.id)
         end
 
         it "has a successful value of false" do
@@ -182,8 +182,8 @@ describe FacilityJournalsController do
         end
 
         it 'should set all journal ids to nil for all order_details in a failed journal' do
-          @order_detail1.reload.journal_id.should be_nil
-          @order_detail3.reload.journal_id.should be_nil
+          expect(@order_detail1.reload.journal_id).to be_nil
+          expect(@order_detail3.reload.journal_id).to be_nil
         end
       end
     end
@@ -207,7 +207,7 @@ describe FacilityJournalsController do
 
     it_should_allow_managers_only :redirect, 'and respond gracefully when no order details given' do |user|
       journal_date=parse_usa_date(@journal_date)
-      flash[:error].should_not be_nil
+      expect(flash[:error]).not_to be_nil
     end
 
     context 'validations' do
@@ -258,8 +258,8 @@ describe FacilityJournalsController do
         500.times { err += 'x' }
         10.times { msgs << err }
         errors = double 'ActiveModel::Errors', full_messages: msgs
-        Journal.any_instance.stub(:errors).and_return errors
-        Journal.any_instance.stub(:save).and_return false
+        allow_any_instance_of(Journal).to receive(:errors).and_return errors
+        allow_any_instance_of(Journal).to receive(:save).and_return false
         do_request
         expect(response).to redirect_to new_facility_journal_path
         expect(flash[:error]).to be_present
@@ -418,17 +418,17 @@ describe FacilityJournalsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_managers_only do
-      response.should be_success
+      expect(response).to be_success
     end
 
     it "should set appropriate values" do
       sign_in @admin
       do_request
-      response.should be_success
-      assigns(:order_details).should be_include(@order_detail1)
-      assigns(:order_details).should be_include(@order_detail3)
-      assigns(:pending_journals).should be_empty
-      assigns(:order_detail_action).should == :create
+      expect(response).to be_success
+      expect(assigns(:order_details)).to be_include(@order_detail1)
+      expect(assigns(:order_details)).to be_include(@order_detail3)
+      expect(assigns(:pending_journals)).to be_empty
+      expect(assigns(:order_detail_action)).to eq(:create)
     end
 
     it "should not have different values if there is a pending journal" do
@@ -441,9 +441,9 @@ describe FacilityJournalsController do
 
       sign_in @admin
       do_request
-      assigns(:order_details).should contain_all [@order_detail1, @order_detail3]
-      assigns(:pending_journals).should == [@pending_journal]
-      assigns(:order_detail_action).should be_nil
+      expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3]
+      expect(assigns(:pending_journals)).to eq([@pending_journal])
+      expect(assigns(:order_detail_action)).to be_nil
     end
 
     context "searching" do

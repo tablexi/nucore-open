@@ -31,9 +31,9 @@ describe FacilityAccountsController do
 
     it_should_allow_all facility_managers do
       expect(assigns(:accounts)).to be_kind_of ActiveRecord::Relation
-      assigns(:accounts).size.should == 1
-      assigns(:accounts).first.should == @account
-      should render_template('index')
+      expect(assigns(:accounts).size).to eq(1)
+      expect(assigns(:accounts).first).to eq(@account)
+      is_expected.to render_template('index')
     end
 
   end
@@ -52,8 +52,8 @@ describe FacilityAccountsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
-      assigns(:account).should == @account
-      should render_template('show')
+      expect(assigns(:account)).to eq(@account)
+      is_expected.to render_template('show')
     end
 
   end
@@ -73,10 +73,10 @@ describe FacilityAccountsController do
       it_should_deny_all [:staff, :senior_staff]
 
       it_should_allow_all facility_managers do
-        assigns(:owner_user).should == @owner
-        assigns(:account).should be_new_record
-        assigns(:account).expires_at.should_not be_nil
-        should render_template('new')
+        expect(assigns(:owner_user)).to eq(@owner)
+        expect(assigns(:account)).to be_new_record
+        expect(assigns(:account).expires_at).not_to be_nil
+        is_expected.to render_template('new')
       end
 
     end
@@ -95,8 +95,8 @@ describe FacilityAccountsController do
       it_should_deny_all [:staff, :senior_staff]
 
       it_should_allow_all facility_managers do
-        assigns(:account).should == @account
-        should render_template('edit')
+        expect(assigns(:account)).to eq(@account)
+        is_expected.to render_template('edit')
       end
 
     end
@@ -119,10 +119,10 @@ describe FacilityAccountsController do
       it_should_deny_all [:staff, :senior_staff]
 
       it_should_allow_all facility_managers do
-        assigns(:account).should == @account
-        assigns(:account).affiliate.should be_nil
-        assigns(:account).affiliate_other.should be_nil
-        should set_the_flash
+        expect(assigns(:account)).to eq(@account)
+        expect(assigns(:account).affiliate).to be_nil
+        expect(assigns(:account).affiliate_other).to be_nil
+        is_expected.to set_the_flash
         assert_redirected_to facility_account_url
       end
 
@@ -141,7 +141,7 @@ describe FacilityAccountsController do
           :account => @acct_attrs,
           :class_type => 'NufsAccount'
         }
-        @controller.stub(:current_facility).and_return(@authable)
+        allow(@controller).to receive(:current_facility).and_return(@authable)
       end
 
       it_should_require_login
@@ -150,13 +150,13 @@ describe FacilityAccountsController do
 
       it_should_allow_all facility_managers do |user|
         expect(assigns(:account)).to be_kind_of NufsAccount
-        assigns(:account).account_number.should == @acct_attrs[:account_number]
-        assigns(:account).created_by.should == user.id
-        assigns(:account).account_users.size.should == 1
+        expect(assigns(:account).account_number).to eq(@acct_attrs[:account_number])
+        expect(assigns(:account).created_by).to eq(user.id)
+        expect(assigns(:account).account_users.size).to eq(1)
         assigns(:account).account_users[0] == @owner
-        assigns(:account).affiliate.should be_nil
-        assigns(:account).affiliate_other.should be_nil
-        should set_the_flash
+        expect(assigns(:account).affiliate).to be_nil
+        expect(assigns(:account).affiliate_other).to be_nil
+        is_expected.to set_the_flash
         assert_redirected_to user_accounts_url(@authable, assigns(:account).owner_user)
       end
 
@@ -176,7 +176,7 @@ describe FacilityAccountsController do
       it_should_deny_all [:staff, :senior_staff]
 
       it_should_allow_all facility_managers do
-        should render_template 'new_account_user_search'
+        is_expected.to render_template 'new_account_user_search'
       end
 
     end
@@ -195,7 +195,7 @@ describe FacilityAccountsController do
       it_should_deny_all [:staff, :senior_staff]
 
       it_should_allow_all facility_managers do
-        should render_template 'user_search'
+        is_expected.to render_template 'user_search'
       end
 
     end
@@ -228,7 +228,7 @@ describe FacilityAccountsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
-      should render_template 'search'
+      is_expected.to render_template 'search'
     end
 
   end
@@ -250,8 +250,8 @@ describe FacilityAccountsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
-      assigns(:accounts).size.should == 1
-      should render_template('search_results')
+      expect(assigns(:accounts).size).to eq(1)
+      is_expected.to render_template('search_results')
     end
 
 
@@ -260,8 +260,8 @@ describe FacilityAccountsController do
       before(:each) { @method=:post }
 
       it_should_allow :director do
-        assigns(:accounts).size.should == 1
-        should render_template('search_results')
+        expect(assigns(:accounts).size).to eq(1)
+        is_expected.to render_template('search_results')
       end
 
     end
@@ -282,8 +282,8 @@ describe FacilityAccountsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
-      assigns(:user).should == @guest
-      should render_template('user_accounts')
+      expect(assigns(:user)).to eq(@guest)
+      is_expected.to render_template('user_accounts')
     end
 
   end
@@ -302,8 +302,8 @@ describe FacilityAccountsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
-      assigns(:account).should == @account
-      should render_template('members')
+      expect(assigns(:account)).to eq(@account)
+      is_expected.to render_template('members')
     end
 
   end
@@ -328,22 +328,22 @@ describe FacilityAccountsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
-      assigns(:account).should == @account
-      assigns(:facility).should == @authable
+      expect(assigns(:account)).to eq(@account)
+      expect(assigns(:facility)).to eq(@authable)
       expect(assigns(:order_details)).to be_kind_of Array
-      assigns(:order_details).each{|od| od.order.facility.should == @authable }
-      should render_template 'show_statement'
+      assigns(:order_details).each { |od| expect(od.order.facility).to eq(@authable) }
+      is_expected.to render_template 'show_statement'
     end
 
     it 'should show statements list' do
       @params[:statement_id]='list'
       maybe_grant_always_sign_in :director
       do_request
-      assigns(:account).should == @account
-      assigns(:facility).should == @authable
+      expect(assigns(:account)).to eq(@account)
+      expect(assigns(:facility)).to eq(@authable)
       expect(assigns(:statements)).to be_kind_of Array
-      assigns(:statements).count.should == 2
-      should render_template 'show_statement_list'
+      expect(assigns(:statements).count).to eq(2)
+      is_expected.to render_template 'show_statement_list'
     end
 
 
@@ -352,12 +352,12 @@ describe FacilityAccountsController do
       @params[:format]='pdf'
       maybe_grant_always_sign_in :director
       do_request
-      assigns(:account).should == @account
-      assigns(:facility).should == @authable
-      assigns(:statement).should == @statement
-      response.content_type.should == "application/pdf"
-      response.body.should =~ /%PDF-1.3/
-      should render_template 'statements/show'
+      expect(assigns(:account)).to eq(@account)
+      expect(assigns(:facility)).to eq(@authable)
+      expect(assigns(:statement)).to eq(@statement)
+      expect(response.content_type).to eq("application/pdf")
+      expect(response.body).to match(/%PDF-1.3/)
+      is_expected.to render_template 'statements/show'
     end
 
   end
@@ -377,9 +377,9 @@ describe FacilityAccountsController do
       it_should_deny_all [:staff, :senior_staff]
 
       it_should_allow_all facility_managers do
-        assigns(:account).should == @account
-        should set_the_flash
-        assigns(:account).should be_suspended
+        expect(assigns(:account)).to eq(@account)
+        is_expected.to set_the_flash
+        expect(assigns(:account)).to be_suspended
         assert_redirected_to facility_account_path(@authable, @account)
       end
 
@@ -399,9 +399,9 @@ describe FacilityAccountsController do
       it_should_deny_all [:staff, :senior_staff]
 
       it_should_allow_all facility_managers do
-        assigns(:account).should == @account
-        should set_the_flash
-        assigns(:account).should_not be_suspended
+        expect(assigns(:account)).to eq(@account)
+        is_expected.to set_the_flash
+        expect(assigns(:account)).not_to be_suspended
         assert_redirected_to facility_account_path(@authable, @account)
       end
 

@@ -35,11 +35,11 @@ def should_be_destroyed(var)
 end
 
 def ignore_order_detail_account_validations
-  OrderDetail.any_instance.stub(:account_usable_by_order_owner?).and_return(true)
+  allow_any_instance_of(OrderDetail).to receive(:account_usable_by_order_owner?).and_return(true)
 end
 
 def ignore_account_validations
-  Settings.validator.class_name.constantize.any_instance.stub(:account_is_open!).and_return(true)
+  allow_any_instance_of(Settings.validator.class_name.constantize).to receive(:account_is_open!).and_return(true)
   ignore_order_detail_account_validations
 end
 

@@ -6,9 +6,9 @@ describe FacilitiesController do
   render_views
 
   it "should route" do
-    { :get => "/facilities" }.should route_to(:controller => 'facilities', :action => 'index')
-    { :get => "/facilities/url_name" }.should route_to(:controller => 'facilities', :action => 'show', :id => 'url_name')
-    { :get => "/facilities/url_name/manage" }.should route_to(:controller => 'facilities', :action => 'manage', :id => 'url_name')
+    expect({ :get => "/facilities" }).to route_to(:controller => 'facilities', :action => 'index')
+    expect({ :get => "/facilities/url_name" }).to route_to(:controller => 'facilities', :action => 'show', :id => 'url_name')
+    expect({ :get => "/facilities/url_name/manage" }).to route_to(:controller => 'facilities', :action => 'manage', :id => 'url_name')
   end
 
   before(:all) { create_users }
@@ -33,10 +33,10 @@ describe FacilitiesController do
     it_should_deny :director
 
     it_should_allow :admin do
-      @controller.should_receive(:init_current_facility).never
+      expect(@controller).to receive(:init_current_facility).never
       do_request
-      response.should be_success
-      response.should render_template('facilities/new')
+      expect(response).to be_success
+      expect(response).to render_template('facilities/new')
     end
 
   end
@@ -60,8 +60,8 @@ describe FacilitiesController do
     it_should_deny_all [ :guest, :director ]
 
     it_should_allow :admin do
-      assigns[:facility].should be_valid
-      response.should redirect_to "/facilities/anf/manage"
+      expect(assigns[:facility]).to be_valid
+      expect(response).to redirect_to "/facilities/anf/manage"
     end
 
   end
@@ -75,9 +75,9 @@ describe FacilitiesController do
     end
 
     it_should_allow_all [ :admin, :guest ] do
-      assigns[:facilities].should == [@authable]
-      response.should be_success
-      response.should render_template('facilities/index')
+      expect(assigns[:facilities]).to eq([@authable])
+      expect(response).to be_success
+      expect(response).to render_template('facilities/index')
     end
 
   end
@@ -96,8 +96,8 @@ describe FacilitiesController do
     it_should_deny :guest
 
     it_should_allow :director do
-      response.should be_success
-      response.should render_template('facilities/manage')
+      expect(response).to be_success
+      expect(response).to render_template('facilities/manage')
     end
 
   end
@@ -151,39 +151,39 @@ describe FacilitiesController do
 
       before(:each) do
         @facility2 = FactoryGirl.create(:facility)
-        @controller.stub(:current_facility).and_return(@authable)
-        @controller.stub(:operable_facilities).and_return([@authable, @facility2])
-        @controller.should_receive(:init_current_facility).never
+        allow(@controller).to receive(:current_facility).and_return(@authable)
+        allow(@controller).to receive(:operable_facilities).and_return([@authable, @facility2])
+        expect(@controller).to receive(:init_current_facility).never
       end
 
       it_should_allow_all facility_operators do
-        assigns(:facilities).should == [@authable, @facility2]
-        response.should be_success
-        response.should render_template('facilities/list')
+        expect(assigns(:facilities)).to eq([@authable, @facility2])
+        expect(response).to be_success
+        expect(response).to render_template('facilities/list')
       end
     end
 
     context "as facility operators with one facility" do
       before(:each) do
-        @controller.stub(:current_facility).and_return(@authable)
-        @controller.should_receive(:init_current_facility).never
+        allow(@controller).to receive(:current_facility).and_return(@authable)
+        expect(@controller).to receive(:init_current_facility).never
       end
       context 'has instruments' do
         before :each do
           FactoryGirl.create(:instrument, :facility => @authable, :facility_account => facility_account)
         end
         it_should_allow_all (facility_operators - [:admin]) do
-          assigns(:facilities).should == [@authable]
-          assigns(:operable_facilities).should == [@authable]
-          response.should redirect_to(timeline_facility_reservations_path(@authable))
+          expect(assigns(:facilities)).to eq([@authable])
+          expect(assigns(:operable_facilities)).to eq([@authable])
+          expect(response).to redirect_to(timeline_facility_reservations_path(@authable))
         end
       end
       context 'has no instruments' do
         # admin won't be redirected since their operable facilities is something more
         it_should_allow_all (facility_operators - [:admin]) do
-          assigns(:facilities).should == [@authable]
-          assigns(:operable_facilities).should == [@authable]
-          response.should redirect_to(facility_orders_path(@authable))
+          expect(assigns(:facilities)).to eq([@authable])
+          expect(assigns(:operable_facilities)).to eq([@authable])
+          expect(response).to redirect_to(facility_orders_path(@authable))
         end
       end
     end
@@ -192,13 +192,13 @@ describe FacilitiesController do
 
       before(:each) do
         @facility2 = FactoryGirl.create(:facility)
-        @controller.stub(:current_facility).and_return(@authable)
+        allow(@controller).to receive(:current_facility).and_return(@authable)
       end
 
       it_should_allow :admin do
-        assigns[:facilities].should == [@authable, @facility2]
-        response.should be_success
-        response.should render_template('facilities/list')
+        expect(assigns[:facilities]).to eq([@authable, @facility2])
+        expect(response).to be_success
+        expect(response).to render_template('facilities/list')
       end
     end
 

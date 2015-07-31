@@ -6,27 +6,27 @@ describe OrderStatusesController do
   before :each do
     # remove the default ones so they're not in the way
     OrderStatus.all.each { |os| os.destroy }
-    OrderStatus.all.should be_empty
+    expect(OrderStatus.all).to be_empty
 
     @authable = @facility = FactoryGirl.create(:facility)
     
     @root_status = FactoryGirl.create(:order_status)
-    @root_status.should be_root
+    expect(@root_status).to be_root
     @root_status2 = FactoryGirl.create(:order_status)
-    @root_status2.should be_root
+    expect(@root_status2).to be_root
     @order_status = FactoryGirl.create(:order_status, :facility => @facility, :parent => @root_status)
     @order_status2 = FactoryGirl.create(:order_status, :facility => @facility, :parent => @root_status)
-    OrderStatus.all.size.should == 4
+    expect(OrderStatus.all.size).to eq(4)
     @params = { :facility_id => @facility.url_name }
   end
 
   def self.it_should_disallow_editing_root_statuses
     it 'should disallow editing root statuses' do
-      @root_status.should_not be_editable
+      expect(@root_status).not_to be_editable
       @params[:id] = @root_status.id
       maybe_grant_always_sign_in :director
       do_request
-      response.code.should == "404"
+      expect(response.code).to eq("404")
     end
   end
 
@@ -44,13 +44,13 @@ describe OrderStatusesController do
         do_request
       end
       it 'should be a success' do
-        response.should be_success
+        expect(response).to be_success
       end
       it 'should have all statuses' do
-        assigns[:order_statuses].should contain_all [@root_status, @root_status2, @order_status, @order_status2]
+        expect(assigns[:order_statuses]).to contain_all [@root_status, @root_status2, @order_status, @order_status2]
       end
       it 'should have the root statuses' do
-        assigns[:root_order_statuses].should contain_all [@root_status, @root_status2]
+        expect(assigns[:root_order_statuses]).to contain_all [@root_status, @root_status2]
       end
     end
   end
@@ -67,10 +67,10 @@ describe OrderStatusesController do
         do_request
       end
       it 'should create a new record' do
-        assigns[:order_status].should be_new_record
+        expect(assigns[:order_status]).to be_new_record
       end
       it 'should set the facility' do
-        assigns[:order_status].facility.should == @facility
+        expect(assigns[:order_status].facility).to eq(@facility)
       end
     end
   end
@@ -91,19 +91,19 @@ describe OrderStatusesController do
           do_request
         end
         it 'should save the record to the database' do
-          assigns[:order_status].should_not be_new_record
+          expect(assigns[:order_status]).not_to be_new_record
         end
         it 'should redirect' do
-          response.should redirect_to facility_order_statuses_url
+          expect(response).to redirect_to facility_order_statuses_url
         end
         it 'should set the flash' do
-          should set_the_flash
+          is_expected.to set_the_flash
         end
         it 'should save the parent' do
-          assigns[:order_status].parent.should == @root_status
+          expect(assigns[:order_status].parent).to eq(@root_status)
         end
         it 'should set the facility' do
-          assigns[:order_status].facility.should == @facility
+          expect(assigns[:order_status].facility).to eq(@facility)
         end
       end
       context 'failure' do
@@ -113,10 +113,10 @@ describe OrderStatusesController do
             do_request
           end
           it 'should not save to the database' do
-            assigns[:order_status].should be_new_record
+            expect(assigns[:order_status]).to be_new_record
           end
           it 'should render new' do
-            response.should render_template :new
+            expect(response).to render_template :new
           end
         end
       end
@@ -136,7 +136,7 @@ describe OrderStatusesController do
         do_request
       end
       it 'should set the order status' do
-        assigns[:order_status].should == @order_status
+        expect(assigns[:order_status]).to eq(@order_status)
       end
     end
   end
@@ -176,16 +176,16 @@ describe OrderStatusesController do
           do_request
         end
         it 'should set the record' do
-          assigns[:order_status].should == @order_status
+          expect(assigns[:order_status]).to eq(@order_status)
         end
         it 'should destroy the record' do
-          assigns[:order_status].should be_destroyed
+          expect(assigns[:order_status]).to be_destroyed
         end
         it 'should redirect' do
-          response.should redirect_to facility_order_statuses_url(:facility_id => @facility.url_name)
+          expect(response).to redirect_to facility_order_statuses_url(:facility_id => @facility.url_name)
         end
         it 'should set all order details to parent status' do
-          @order_details.each { |od| od.reload.order_status.should == @root_status }
+          @order_details.each { |od| expect(od.reload.order_status).to eq(@root_status) }
         end
       end
     end

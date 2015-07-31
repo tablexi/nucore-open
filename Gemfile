@@ -67,7 +67,7 @@ group :development, :test do
   gem 'pry-rails',         '~> 0.3.2'
   gem 'pry-byebug',        '~> 2.0.0'
   gem 'quiet_assets'
-  gem 'rspec-rails',       '2.14.0'
+  gem 'rspec-rails',       '~> 2.99.0'
   gem 'shoulda-matchers',  '2.4'
   gem 'single_test',       '0.4.0'
   gem 'spring'
@@ -78,7 +78,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'rspec_junit_formatter', '0.2.2'
+  gem 'rspec_junit_formatter', '0.2.3'
   gem 'ci_reporter'
 end
 

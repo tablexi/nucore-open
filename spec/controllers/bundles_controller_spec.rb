@@ -33,8 +33,8 @@ describe BundlesController do
       expect(assigns(:archived_product_count)).to be_kind_of Fixnum
       expect(assigns(:not_archived_product_count)).to be_kind_of Fixnum
       expect(assigns(:product_name)).to be_kind_of String
-      assigns(:bundles).size.should == 1
-      assigns(:bundles).should == @authable.bundles.not_archived
+      expect(assigns(:bundles).size).to eq(1)
+      expect(assigns(:bundles)).to eq(@authable.bundles.not_archived)
     end
 
     it 'should show archived facilities' do
@@ -43,8 +43,8 @@ describe BundlesController do
       maybe_grant_always_sign_in(:director)
       @params.merge!(:archived => 'true')
       do_request
-      assigns(:bundles).size.should == 1
-      assigns(:bundles).should == @authable.bundles.archived
+      expect(assigns(:bundles).size).to eq(1)
+      expect(assigns(:bundles)).to eq(@authable.bundles.archived)
     end
   end
 
@@ -57,33 +57,33 @@ describe BundlesController do
 
     it 'should flash and falsify @add_to_cart if bundle cannot be purchased' do
       sign_in @guest
-      Bundle.any_instance.stub(:available_for_purchase?).and_return(false)
+      allow_any_instance_of(Bundle).to receive(:available_for_purchase?).and_return(false)
       do_request
-      assigns[:add_to_cart].should be_false
-      assigns[:error].should == 'not_available'
-      flash[:notice].should_not be_nil
+      expect(assigns[:add_to_cart]).to be false
+      expect(assigns[:error]).to eq('not_available')
+      expect(flash[:notice]).not_to be_nil
 
     end
 
     it "should fail without a valid account" do
       sign_in @guest
       do_request
-      flash.should_not be_empty
-      assigns[:add_to_cart].should be_false
-      assigns[:error].should == 'no_accounts'
+      expect(flash).not_to be_empty
+      expect(assigns[:add_to_cart]).to be false
+      expect(assigns[:error]).to eq('no_accounts')
     end
 
     it 'should falsify @add_to_cart if #acting_user is nil' do
-      BundlesController.any_instance.stub(:acting_user).and_return(nil)
+      allow_any_instance_of(BundlesController).to receive(:acting_user).and_return(nil)
       do_request
-      assigns[:add_to_cart].should be_false
-      assigns[:login_required].should be_true
+      expect(assigns[:add_to_cart]).to be false
+      expect(assigns[:login_required]).to be true
     end
 
     context "when the bundle requires approval" do
       before(:each) do
         add_account_for_user(:guest, bundle.products.first)
-        BundlesController.any_instance.stub(:price_policy_available_for_product?).and_return(true)
+        allow_any_instance_of(BundlesController).to receive(:price_policy_available_for_product?).and_return(true)
         bundle.update_attributes(requires_approval: true)
       end
 
@@ -112,11 +112,11 @@ describe BundlesController do
     it 'should flash and falsify @add_to_cart if there is no price group for user to purchase through' do
       add_account_for_user(:guest, @bundle.products.first, @nupg)
       sign_in @guest
-      BundlesController.any_instance.stub(:price_policy_available_for_product?).and_return(false)
+      allow_any_instance_of(BundlesController).to receive(:price_policy_available_for_product?).and_return(false)
       do_request
-      assigns[:add_to_cart].should be_false
-      assigns[:error].should == 'not_in_price_group'
-      flash[:notice].should_not be_nil
+      expect(assigns[:add_to_cart]).to be false
+      expect(assigns[:error]).to eq('not_in_price_group')
+      expect(flash[:notice]).not_to be_nil
     end
 
     it 'should flash and falsify @add_to_cart if user is not authorized to purchase on behalf of another user' do
@@ -124,8 +124,8 @@ describe BundlesController do
       switch_to @staff
 
       do_request
-      assigns[:add_to_cart].should be_false
-      assigns[:error].should == 'not_authorized_acting_as'
+      expect(assigns[:add_to_cart]).to be false
+      expect(assigns[:error]).to eq('not_authorized_acting_as')
     end
 
     it 'should not require login' do
@@ -133,20 +133,20 @@ describe BundlesController do
       assert_init_bundle
       expect(assigns(:add_to_cart)).to_not be_nil
       expect(assigns(:login_required)).to_not be_nil
-      should_not set_the_flash
-      should render_template('show')
+      is_expected.not_to set_the_flash
+      is_expected.to render_template('show')
     end
 
     context "restricted bundle" do
       before :each do
         @bundle.update_attributes(:requires_approval => true)
-        BundlesController.any_instance.stub(:price_policy_available_for_product?).and_return(true)
+        allow_any_instance_of(BundlesController).to receive(:price_policy_available_for_product?).and_return(true)
       end
       it "should show a notice if you're not approved" do
         sign_in @guest
         do_request
-        assigns[:add_to_cart].should be_false
-        flash[:notice].should_not be_nil
+        expect(assigns[:add_to_cart]).to be false
+        expect(flash[:notice]).not_to be_nil
       end
 
       it "should not show a notice and show an add to cart" do
@@ -154,8 +154,8 @@ describe BundlesController do
         add_account_for_user(:guest, @bundle.products.first, @nupg)
         sign_in @guest
         do_request
-        flash.should be_empty
-        assigns[:add_to_cart].should be_true
+        expect(flash).to be_empty
+        expect(assigns[:add_to_cart]).to be true
       end
 
       context "when the user is an admin" do
@@ -183,8 +183,8 @@ describe BundlesController do
 
     it_should_allow_managers_only do
       expect(assigns(:bundle)).to be_kind_of Bundle
-      assigns(:bundle).should be_new_record
-      should render_template('new')
+      expect(assigns(:bundle)).to be_new_record
+      is_expected.to render_template('new')
     end
   end
 
@@ -199,7 +199,7 @@ describe BundlesController do
 
     it_should_allow_managers_only do
       assert_init_bundle
-      should render_template('edit')
+      is_expected.to render_template('edit')
     end
   end
 
@@ -214,10 +214,10 @@ describe BundlesController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:bundle)).to be_kind_of Bundle
-      assigns(:bundle).initial_order_status_id.should == OrderStatus.default_order_status.id
-      assigns(:bundle).requires_approval.should == false
-      assigns(:bundle).should be_persisted
-      should set_the_flash
+      expect(assigns(:bundle).initial_order_status_id).to eq(OrderStatus.default_order_status.id)
+      expect(assigns(:bundle).requires_approval).to eq(false)
+      expect(assigns(:bundle)).to be_persisted
+      is_expected.to set_the_flash
       assert_redirected_to [ :manage, @authable, assigns(:bundle) ]
     end
   end
@@ -237,14 +237,14 @@ describe BundlesController do
 
     it_should_allow_managers_only :redirect do
       assert_init_bundle
-      should set_the_flash
+      is_expected.to set_the_flash
       assert_redirected_to manage_facility_bundle_url(@authable, @bundle)
     end
   end
 
   def assert_init_bundle
     expect(assigns(:bundle)).to_not be_nil
-    assigns(:bundle).should == @bundle
+    expect(assigns(:bundle)).to eq(@bundle)
   end
 end
 

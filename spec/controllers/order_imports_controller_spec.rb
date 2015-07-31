@@ -28,7 +28,7 @@ describe OrderImportsController do
 
     it_should_allow_operators_only do
       expect(assigns :order_import).to be_new_record
-      should render_template "new"
+      is_expected.to render_template "new"
     end
   end
 
@@ -51,9 +51,9 @@ describe OrderImportsController do
       let(:send_receipts) { false }
 
       it_should_allow_operators_only(:redirect) do
-        flash[:error].should be_blank
-        flash[:notice].should be_present
-        should redirect_to new_facility_order_import_url
+        expect(flash[:error]).to be_blank
+        expect(flash[:notice]).to be_present
+        is_expected.to redirect_to new_facility_order_import_url
       end
 
       context "when a director is signed in" do

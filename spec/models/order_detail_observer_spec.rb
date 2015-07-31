@@ -24,23 +24,23 @@ describe OrderDetailObserver do
     end
 
     it 'should support a list' do
-      @hooks[:list_with_duplicates].size.should == 2
+      expect(@hooks[:list_with_duplicates].size).to eq(2)
     end
     it 'should support a list with duplicates' do
-      @hooks[:list_with_duplicates].map(&:class).should == [DummyHooks::DummyHook1, DummyHooks::DummyHook1]
+      expect(@hooks[:list_with_duplicates].map(&:class)).to eq([DummyHooks::DummyHook1, DummyHooks::DummyHook1])
     end
     it 'should support settings' do
-      @hooks[:item_with_settings].size.should == 1
-      @hooks[:item_with_settings].first.settings[:setting_1].should == 'test'
-      @hooks[:item_with_settings].first.settings[:setting_2].should == 'test2'
+      expect(@hooks[:item_with_settings].size).to eq(1)
+      expect(@hooks[:item_with_settings].first.settings[:setting_1]).to eq('test')
+      expect(@hooks[:item_with_settings].first.settings[:setting_2]).to eq('test2')
     end
     it 'should support a single class' do
-      @hooks[:single_class].size.should == 1
-      @hooks[:single_class].first.should be_kind_of DummyHooks::DummyHook3
+      expect(@hooks[:single_class].size).to eq(1)
+      expect(@hooks[:single_class].first).to be_kind_of DummyHooks::DummyHook3
     end
     it 'should support simple array' do
-      @hooks[:simple_array].size.should == 2
-      @hooks[:simple_array].map(&:class).should == [DummyHooks::DummyHook1, DummyHooks::DummyHook2]
+      expect(@hooks[:simple_array].size).to eq(2)
+      expect(@hooks[:simple_array].map(&:class)).to eq([DummyHooks::DummyHook1, DummyHooks::DummyHook2])
     end
   end
 
@@ -56,36 +56,36 @@ describe OrderDetailObserver do
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @user     = FactoryGirl.create(:user)
       @item     = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
-      @item.should be_valid
+      expect(@item).to be_valid
       FactoryGirl.create :item_price_policy, :product => @item, :price_group => PriceGroup.base.first
       @account = add_account_for_user(:user, @item)
       @order    = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
       @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @item.id, :account_id => @account.id))
-      @order_detail.state.should == 'new'
-      @order_detail.version.should == 1
-      @order_detail.order_status.should be_nil
+      expect(@order_detail.state).to eq('new')
+      expect(@order_detail.version).to eq(1)
+      expect(@order_detail.order_status).to be_nil
 
-      @order.validate_order!.should be_true
-      @order.purchase!.should be_true
+      expect(@order.validate_order!).to be true
+      expect(@order.purchase!).to be true
 
-      @order_detail.reload.order.state.should == 'purchased'
+      expect(@order_detail.reload.order.state).to eq('purchased')
 
       Settings.order_details.status_change_hooks = {:in_process => 'DummyHooks::DummyHook1', :new => 'DummyHooks::DummyHook2'}
-      @order_detail.order_status.should == OrderStatus.new_os.first
+      expect(@order_detail.order_status).to eq(OrderStatus.new_os.first)
     end
     it 'should trigger a notification on change to inprogress' do
-      DummyHooks::DummyHook1.any_instance.should_receive(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first).once
-      @order_detail.change_status!(OrderStatus.inprocess.first).should be_true
+      expect_any_instance_of(DummyHooks::DummyHook1).to receive(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first).once
+      expect(@order_detail.change_status!(OrderStatus.inprocess.first)).to be true
     end
     it 'should trigger a notification on change from in_process to new' do
-      DummyHooks::DummyHook1.any_instance.should_receive(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first)
-      @order_detail.change_status!(OrderStatus.inprocess.first).should be_true
-      DummyHooks::DummyHook2.any_instance.should_receive(:on_status_change).once.with(@order_detail, OrderStatus.inprocess.first, OrderStatus.new_os.first)
-      @order_detail.change_status!(OrderStatus.new_os.first).should be_true
+      expect_any_instance_of(DummyHooks::DummyHook1).to receive(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first)
+      expect(@order_detail.change_status!(OrderStatus.inprocess.first)).to be true
+      expect_any_instance_of(DummyHooks::DummyHook2).to receive(:on_status_change).once.with(@order_detail, OrderStatus.inprocess.first, OrderStatus.new_os.first)
+      expect(@order_detail.change_status!(OrderStatus.new_os.first)).to be true
     end
     it 'should not trigger going from new to new' do
-      DummyHooks::DummyHook2.any_instance.should_receive(:on_status_change).never
-      @order_detail.change_status!(OrderStatus.new_os.first).should be_true
+      expect_any_instance_of(DummyHooks::DummyHook2).to receive(:on_status_change).never
+      expect(@order_detail.change_status!(OrderStatus.new_os.first)).to be true
     end
   end
 end

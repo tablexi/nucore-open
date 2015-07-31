@@ -35,17 +35,17 @@ describe InstrumentReportsController do
 
 
   def assert_report_init(label, &report_on)
-    assigns(:totals).size.should == 5
+    expect(assigns(:totals).size).to eq(5)
     reservations=Reservation.all
-    assigns(:totals)[0].should == reservations.size
+    expect(assigns(:totals)[0]).to eq(reservations.size)
 
     reserved_mins = reservations.map(&:duration_mins).inject(0, &:+)
-    assigns(:totals)[1].should == to_hours(reserved_mins, 1)
+    expect(assigns(:totals)[1]).to eq(to_hours(reserved_mins, 1))
 
     actual_mins = reservations.map(&:actual_duration_mins).inject(0, &:+)
-    assigns(:totals)[3].should == to_hours(actual_mins, 1)
+    expect(assigns(:totals)[3]).to eq(to_hours(actual_mins, 1))
 
-    assigns(:rows).should be_is_a Array
+    expect(assigns(:rows)).to be_is_a Array
 
     # further testing in spec/models/reports/instrument_utilization_report_spec.rb
   end
@@ -53,8 +53,8 @@ describe InstrumentReportsController do
 
   def assert_report_data_init(label)
     reservations=Reservation.all
-    assigns(:report_data).should == reservations
-    assigns(:totals).should be_is_a Array
+    expect(assigns(:report_data)).to eq(reservations)
+    expect(assigns(:totals)).to be_is_a Array
 
     reserved_hours,actual_hours=0,0
     reservations.each do |res|
@@ -62,8 +62,8 @@ describe InstrumentReportsController do
       actual_hours += to_hours(res.actual_duration_mins)
     end
 
-    assigns(:totals)[0].should == reserved_hours
-    assigns(:totals)[1].should == actual_hours
+    expect(assigns(:totals)[0]).to eq(reserved_hours)
+    expect(assigns(:totals)[1]).to eq(actual_hours)
   end
 
 end

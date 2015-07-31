@@ -20,11 +20,11 @@ describe NufsAccount do
     it "should not have a facility" do
       facility = FactoryGirl.create(:facility)
       account = NufsAccount.create(@options)
-      account.facility.should be_nil
+      expect(account.facility).to be_nil
     end
 
     it "should not be limited to a single facility" do
-      NufsAccount.limited_to_single_facility?.should be_false
+      expect(NufsAccount.limited_to_single_facility?).to be false
     end
 
   end

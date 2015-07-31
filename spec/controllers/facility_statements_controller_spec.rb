@@ -47,9 +47,9 @@ if AccountManager.using_statements?
       end
 
       it_should_allow_managers_only do
-        assigns(:statements).size.should == 1
-        assigns(:statements)[0].should == @statement
-        should_not set_the_flash
+        expect(assigns(:statements).size).to eq(1)
+        expect(assigns(:statements)[0]).to eq(@statement)
+        is_expected.not_to set_the_flash
       end
 
       it_should_deny_all [:staff, :senior_staff]
@@ -64,7 +64,7 @@ if AccountManager.using_statements?
       end
 
       it_should_allow_managers_only do
-        response.should be_success
+        expect(response).to be_success
       end
 
       it_should_deny_all [:staff, :senior_staff]
@@ -72,11 +72,11 @@ if AccountManager.using_statements?
       it "should return the right order details" do
         grant_and_sign_in(@user)
         do_request
-        response.should be_success
-        assigns(:accounts).should contain_all [@account, @account2]
-        assigns(:facility).should == @authable
-        assigns(:order_detail_action).should == :send_statements
-        assigns(:order_details).should contain_all [@order_detail1, @order_detail3]
+        expect(response).to be_success
+        expect(assigns(:accounts)).to contain_all [@account, @account2]
+        expect(assigns(:facility)).to eq(@authable)
+        expect(assigns(:order_detail_action)).to eq(:send_statements)
+        expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3]
       end
 
       it_should_support_searching
@@ -91,24 +91,24 @@ if AccountManager.using_statements?
       end
 
       it_should_allow_managers_only :redirect do
-        response.should be_redirect
+        expect(response).to be_redirect
       end
 
       it_should_deny_all [:staff, :senior_staff]
 
       it "should create and send statements" do
-        @order_detail1.reload.reviewed_at.should < Time.zone.now
-        @order_detail1.statement.should be_nil
-        @order_detail1.price_policy.should_not be_nil
-        @order_detail1.account.type.should == @account_type
-        @order_detail1.dispute_at.should be_nil
+        expect(@order_detail1.reload.reviewed_at).to be < Time.zone.now
+        expect(@order_detail1.statement).to be_nil
+        expect(@order_detail1.price_policy).not_to be_nil
+        expect(@order_detail1.account.type).to eq(@account_type)
+        expect(@order_detail1.dispute_at).to be_nil
 
         grant_and_sign_in(@user)
         do_request
-        flash[:error].should be_nil
-        assigns(:account_statements).should have_key(@account)
-        assigns(:account_statements).should have_key(@account2)
-        response.should redirect_to :action => :new
+        expect(flash[:error]).to be_nil
+        expect(assigns(:account_statements)).to have_key(@account)
+        expect(assigns(:account_statements)).to have_key(@account2)
+        expect(response).to redirect_to :action => :new
       end
 
       context "errors" do
@@ -116,8 +116,8 @@ if AccountManager.using_statements?
           @params[:order_detail_ids] = nil
           grant_and_sign_in(@user)
           do_request
-          flash[:error].should_not be_nil
-          response.should redirect_to :action => :new
+          expect(flash[:error]).not_to be_nil
+          expect(response).to redirect_to :action => :new
         end
       end
     end
@@ -130,7 +130,7 @@ if AccountManager.using_statements?
         @params.merge!(:id => @statement.id)
       end
 
-      it_should_allow_managers_only { assigns(:statement).should == @statement }
+      it_should_allow_managers_only { expect(assigns(:statement)).to eq(@statement) }
 
       it_should_deny_all [:staff, :senior_staff]
 

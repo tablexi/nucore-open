@@ -106,9 +106,9 @@ describe FacilityOrdersController do
         it "should not blow up for sort by #{sort}" do
           @params[:sort] = sort
           do_request
-          response.should be_success
-          assigns[:order_details].should_not be_nil
-          assigns[:order_details].first.should_not be_nil
+          expect(response).to be_success
+          expect(assigns[:order_details]).not_to be_nil
+          expect(assigns[:order_details].first).not_to be_nil
         end
       end
 
@@ -118,9 +118,9 @@ describe FacilityOrdersController do
         @order_detail_reservation = setup_reservation(@authable, @facility_account, @account, @director)
         @reservation = place_reservation(@authable, @order_detail_reservation, Time.zone.now + 1.hour)
 
-        @authable.reload.order_details.should contain_all [@order_detail_item, @order_detail_reservation]
+        expect(@authable.reload.order_details).to contain_all [@order_detail_item, @order_detail_reservation]
         do_request
-        assigns[:order_details].should == [@order_detail_item]
+        expect(assigns[:order_details]).to eq([@order_detail_item])
       end
     end
   end
@@ -160,11 +160,11 @@ describe FacilityOrdersController do
     end
 
     it_should_allow_operators_only :redirect, 'to send a receipt' do
-      flash[:notice].should be_present
-      ActionMailer::Base.deliveries.size.should == 1
+      expect(flash[:notice]).to be_present
+      expect(ActionMailer::Base.deliveries.size).to eq(1)
       mail = ActionMailer::Base.deliveries.first
-      mail.subject.should == I18n.t('notifier.order_receipt.subject')
-      mail.from.first.should == Settings.email.from
+      expect(mail.subject).to eq(I18n.t('notifier.order_receipt.subject'))
+      expect(mail.from.first).to eq(Settings.email.from)
       assert_redirected_to facility_order_path(@authable, @order)
     end
   end
@@ -181,7 +181,7 @@ describe FacilityOrdersController do
     end
 
     it_should_allow_operators_only :redirect, 'to submit product quantity 0 and get failure notice' do
-      flash[:notice].should be_present
+      expect(flash[:notice]).to be_present
       assert_redirected_to facility_order_path(@authable, @order)
     end
 
@@ -218,9 +218,9 @@ describe FacilityOrdersController do
 
         context 'with active survey' do
           before :each do
-            Service.any_instance.stub(:active_survey?).and_return(true)
-            Service.any_instance.stub(:active_template?).and_return(false)
-            OrderDetail.any_instance.stub(:valid_service_meta?).and_return(false)
+            allow_any_instance_of(Service).to receive(:active_survey?).and_return(true)
+            allow_any_instance_of(Service).to receive(:active_template?).and_return(false)
+            allow_any_instance_of(OrderDetail).to receive(:valid_service_meta?).and_return(false)
           end
 
           it_should_allow :director, 'to add a service to existing order via merge' do
@@ -230,9 +230,9 @@ describe FacilityOrdersController do
 
         context 'with active template' do
           before :each do
-            Service.any_instance.stub(:active_survey?).and_return(false)
-            Service.any_instance.stub(:active_template?).and_return(true)
-            OrderDetail.any_instance.stub(:valid_service_meta?).and_return(false)
+            allow_any_instance_of(Service).to receive(:active_survey?).and_return(false)
+            allow_any_instance_of(Service).to receive(:active_template?).and_return(true)
+            allow_any_instance_of(OrderDetail).to receive(:valid_service_meta?).and_return(false)
           end
 
           it_should_allow :director, 'to add an service to existing order via merge' do
@@ -242,8 +242,8 @@ describe FacilityOrdersController do
 
         context 'with nothing active' do
           before :each do
-            Service.any_instance.stub(:active_survey?).and_return(false)
-            Service.any_instance.stub(:active_template?).and_return(false)
+            allow_any_instance_of(Service).to receive(:active_survey?).and_return(false)
+            allow_any_instance_of(Service).to receive(:active_template?).and_return(false)
           end
 
           it_should_allow :director, 'to add an service to existing order directly' do
@@ -293,9 +293,9 @@ describe FacilityOrdersController do
 
           context 'with active survey' do
             before :each do
-              Service.any_instance.stub(:active_survey?).and_return(true)
-              Service.any_instance.stub(:active_template?).and_return(false)
-              OrderDetail.any_instance.stub(:valid_service_meta?).and_return(false)
+              allow_any_instance_of(Service).to receive(:active_survey?).and_return(true)
+              allow_any_instance_of(Service).to receive(:active_template?).and_return(false)
+              allow_any_instance_of(OrderDetail).to receive(:valid_service_meta?).and_return(false)
             end
 
             it_should_allow :director, 'to add a bundle to existing order via merge' do
@@ -305,9 +305,9 @@ describe FacilityOrdersController do
 
           context 'with active template' do
             before :each do
-              Service.any_instance.stub(:active_survey?).and_return(false)
-              Service.any_instance.stub(:active_template?).and_return(true)
-              OrderDetail.any_instance.stub(:valid_service_meta?).and_return(false)
+              allow_any_instance_of(Service).to receive(:active_survey?).and_return(false)
+              allow_any_instance_of(Service).to receive(:active_template?).and_return(true)
+              allow_any_instance_of(OrderDetail).to receive(:valid_service_meta?).and_return(false)
             end
 
             it_should_allow :director, 'to add a bundle to existing order via merge' do
@@ -317,8 +317,8 @@ describe FacilityOrdersController do
 
           context 'with nothing active' do
             before :each do
-              Service.any_instance.stub(:active_survey?).and_return(false)
-              Service.any_instance.stub(:active_template?).and_return(false)
+              allow_any_instance_of(Service).to receive(:active_survey?).and_return(false)
+              allow_any_instance_of(Service).to receive(:active_template?).and_return(false)
             end
 
             it_should_allow :director, 'to add a bundle to existing order directly' do
@@ -332,42 +332,42 @@ describe FacilityOrdersController do
     def assert_update_success order, product
       if product.is_a? Bundle
         order.order_details.each do |od|
-          od.order_status.should == OrderStatus.default_order_status
-          product.products.should be_include(od.product)
+          expect(od.order_status).to eq(OrderStatus.default_order_status)
+          expect(product.products).to be_include(od.product)
         end
       else
         order_detail=order.order_details[0]
-        order_detail.product.should == product
-        order_detail.order_status.should == OrderStatus.default_order_status
+        expect(order_detail.product).to eq(product)
+        expect(order_detail.order_status).to eq(OrderStatus.default_order_status)
       end
 
       if order.to_be_merged?
-        flash[:error].should be_present
+        expect(flash[:error]).to be_present
       else
-        flash[:notice].should be_present
+        expect(flash[:notice]).to be_present
       end
 
       assert_redirected_to facility_order_path(@authable, order.to_be_merged? ? order.merge_order : order)
     end
 
     def assert_no_merge_order original_order, product, detail_count=1
-      original_order.reload.order_details.size.should == detail_count
+      expect(original_order.reload.order_details.size).to eq(detail_count)
       assert_update_success original_order, product
     end
 
     def assert_merge_order original_order, product, detail_count=1, original_detail_count=0
-      original_order.reload.order_details.size.should == original_detail_count
+      expect(original_order.reload.order_details.size).to eq(original_detail_count)
       merges=Order.where(:merge_with_order_id => original_order.id).all
-      merges.size.should == 1
+      expect(merges.size).to eq(1)
       merge_order=merges[0]
-      merge_order.merge_order.should == original_order
-      merge_order.facility_id.should == original_order.facility_id
-      merge_order.account_id.should == original_order.account_id
-      merge_order.user_id.should == original_order.user_id
-      merge_order.created_by.should == @director.id
-      merge_order.ordered_at.should_not be_blank
-      merge_order.order_details.size.should == detail_count
-      MergeNotification.count.should == detail_count
+      expect(merge_order.merge_order).to eq(original_order)
+      expect(merge_order.facility_id).to eq(original_order.facility_id)
+      expect(merge_order.account_id).to eq(original_order.account_id)
+      expect(merge_order.user_id).to eq(original_order.user_id)
+      expect(merge_order.created_by).to eq(@director.id)
+      expect(merge_order.ordered_at).not_to be_blank
+      expect(merge_order.order_details.size).to eq(detail_count)
+      expect(MergeNotification.count).to eq(detail_count)
       assert_update_success merge_order, product
     end
   end
@@ -378,7 +378,7 @@ describe FacilityOrdersController do
       @action = :tab_counts
       @order_detail2=FactoryGirl.create(:order_detail, :order => @order, :product => @product)
 
-      @authable.order_details.non_reservations.new_or_inprocess.size.should == 2
+      expect(@authable.order_details.non_reservations.new_or_inprocess.size).to eq(2)
 
       @problem_order_details = (1..3).map do |i|
         order_detail = place_and_complete_item_order(@staff, @authable)
@@ -395,7 +395,7 @@ describe FacilityOrdersController do
         })
         order_detail
       end
-      @authable.order_details.in_dispute.size.should == 4
+      expect(@authable.order_details.in_dispute.size).to eq(4)
 
       @params.merge!(:tabs => ['new_or_in_process_orders', 'disputed_orders', 'problem_order_details'])
     end
@@ -410,20 +410,20 @@ describe FacilityOrdersController do
         @authable.order_details.non_reservations.new_or_inprocess.to_sql
         @params[:tabs] = ['new_or_in_process_orders']
         do_request
-        response.should be_success
+        expect(response).to be_success
         body = JSON.parse(response.body)
-        body.keys.should contain_all ['new_or_in_process_orders']
-        body['new_or_in_process_orders'].should == 2
+        expect(body.keys).to contain_all ['new_or_in_process_orders']
+        expect(body['new_or_in_process_orders']).to eq(2)
       end
 
       it 'should get everything if you ask for it' do
         do_request
-        response.should be_success
+        expect(response).to be_success
         body = JSON.parse(response.body)
-        body.keys.should contain_all ['new_or_in_process_orders', 'disputed_orders', 'problem_order_details']
-        body['new_or_in_process_orders'].should == 2
-        body['problem_order_details'].should == 3
-        body['disputed_orders'].should == 4
+        expect(body.keys).to contain_all ['new_or_in_process_orders', 'disputed_orders', 'problem_order_details']
+        expect(body['new_or_in_process_orders']).to eq(2)
+        expect(body['problem_order_details']).to eq(3)
+        expect(body['disputed_orders']).to eq(4)
       end
     end
   end

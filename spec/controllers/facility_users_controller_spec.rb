@@ -21,9 +21,9 @@ describe FacilityUsersController do
 
     it_should_allow_managers_only do |user|
       expect(assigns(:users)).to be_kind_of Array
-      assigns(:users).size.should >= 1
-      assigns(:users).should be_include @staff
-      assigns(:users).should be_include user unless user == @admin
+      expect(assigns(:users).size).to be >= 1
+      expect(assigns(:users)).to be_include @staff
+      expect(assigns(:users)).to be_include user unless user == @admin
     end
 
   end
@@ -40,8 +40,8 @@ describe FacilityUsersController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:user)).to be_kind_of User
-      assigns(:user).should == @staff
-      @staff.reload.facility_user_roles(@authable).should be_empty
+      expect(assigns(:user)).to eq(@staff)
+      expect(@staff.reload.facility_user_roles(@authable)).to be_empty
       assert_redirected_to facility_facility_users_url
     end
 
@@ -55,7 +55,7 @@ describe FacilityUsersController do
       @action=:search
     end
 
-    it_should_allow_managers_only { should render_template('search') }
+    it_should_allow_managers_only { is_expected.to render_template('search') }
 
   end
 
@@ -70,10 +70,10 @@ describe FacilityUsersController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:user)).to be_kind_of User
-      assigns(:user).should == @staff
+      expect(assigns(:user)).to eq(@staff)
       expect(assigns(:user_role)).to be_kind_of UserRole
-      assigns(:user_role).user.should == @staff
-      assigns(:user_role).facility.should == @authable
+      expect(assigns(:user_role).user).to eq(@staff)
+      expect(assigns(:user_role).facility).to eq(@authable)
       assert_redirected_to facility_facility_users_url
     end
 

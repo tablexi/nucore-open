@@ -17,16 +17,16 @@ describe PricePolicy do
   end
 
   [:unit_cost, :unit_subsidy, :usage_rate, :usage_subsidy, :reservation_rate, :overage_rate, :overage_subsidy, :minimum_cost].each do |rate|
-    it { should validate_numericality_of(rate) }
-    it { should_not allow_value(-10).for(rate) }
+    it { is_expected.to validate_numericality_of(rate) }
+    it { is_expected.not_to allow_value(-10).for(rate) }
   end
 
   it "should not create using factory" do
     # putting inside begin/rescue as some PricePolicy validation functions throw exception if type is nil
     begin
       @pp = PricePolicy.create(FactoryGirl.attributes_for(:item_price_policy, :price_group_id => @price_group.id, :product_id => @item.id))
-      @pp.should_not be_valid
-      @pp.errors[:type].should_not be_nil
+      expect(@pp).not_to be_valid
+      expect(@pp.errors[:type]).not_to be_nil
     rescue
       true
     end
@@ -40,8 +40,8 @@ describe PricePolicy do
 
     it "should set default expire_date" do
       @pp=FactoryGirl.create(:item_price_policy, :price_group_id => @price_group.id, :product_id => @item.id, :start_date => @start_date, :expire_date => nil)
-      @pp.expire_date.should_not be_nil
-      @pp.expire_date.should == Time.zone.parse("2020-9-30").end_of_day
+      expect(@pp.expire_date).not_to be_nil
+      expect(@pp.expire_date).to eq(Time.zone.parse("2020-9-30").end_of_day)
     end
 
     it 'should not allow an expire date the same as start date' do
@@ -72,21 +72,21 @@ describe PricePolicy do
     it "should not set default expire_date if one is given" do
       expire_date=@start_date+3.months
       pp=FactoryGirl.create(:item_price_policy, :price_group_id => @price_group.id, :product_id => @item.id, :start_date => @start_date, :expire_date => expire_date)
-      pp.expire_date.should_not be_nil
-      pp.expire_date.should == expire_date
+      expect(pp.expire_date).not_to be_nil
+      expect(pp.expire_date).to eq(expire_date)
     end
 
     it "should not be expired" do
       expire_date=@start_date+3.months
       pp=FactoryGirl.create(:item_price_policy, :price_group_id => @price_group.id, :product_id => @item.id, :start_date => @start_date, :expire_date => expire_date)
-      pp.should_not be_expired
+      expect(pp).not_to be_expired
     end
 
     it "should be expired" do
       @start_date=Time.zone.parse("2000-5-5")
       expire_date=@start_date+1.month
       pp=FactoryGirl.create(:item_price_policy, :price_group_id => @price_group.id, :product_id => @item.id, :start_date => @start_date, :expire_date => expire_date)
-      pp.should be_expired
+      expect(pp).to be_expired
     end
 
   end
@@ -100,33 +100,33 @@ describe PricePolicy do
     end
 
     it 'should not restrict purchase' do
-      @pp.restrict_purchase.should == false
+      expect(@pp.restrict_purchase).to eq(false)
     end
 
     it 'should restrict purchase' do
       @pp.update_attributes(:can_purchase => false)
-      @pp.restrict_purchase.should == true
+      expect(@pp.restrict_purchase).to eq(true)
     end
 
     it 'should restrict purchase' do
       @pp.restrict_purchase = true
-      @pp.restrict_purchase.should be_true
-      @pp.can_purchase.should be_false
+      expect(@pp.restrict_purchase).to be true
+      expect(@pp.can_purchase).to be false
     end
 
     it 'should alias #restrict with query method' do
-      @pp.should be_respond_to :restrict_purchase?
-      @pp.restrict_purchase.should == @pp.restrict_purchase?
+      expect(@pp).to be_respond_to :restrict_purchase?
+      expect(@pp.restrict_purchase).to eq(@pp.restrict_purchase?)
     end
 
     it 'should return false when no price group present' do
       @pp.price_group=nil
-      @pp.restrict_purchase.should == false
+      expect(@pp.restrict_purchase).to eq(false)
     end
 
     it 'should return false when no item present' do
       @pp.product=nil
-      @pp.restrict_purchase.should == false
+      expect(@pp.restrict_purchase).to eq(false)
     end
 
     it 'should raise on bad input' do
@@ -153,12 +153,12 @@ describe PricePolicy do
 
         @pp=FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group, :start_date => @today.beginning_of_day, :expire_date => @today + 30.days)
         @pp2=FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group, :start_date => @today + 2.days, :expire_date => @today + 30.days)
-        @pp.reload.start_date.should == @today.beginning_of_day
+        expect(@pp.reload.start_date).to eq(@today.beginning_of_day)
         # they weren't matching up exactly right, but were within a second of each other
         # @pp.exire_date.should == (@today + 1.day).end_of_day
-        ((@today.end_of_day + 1.day) - @pp.expire_date).abs.should < 1
-        @pp2.reload.start_date.should == @today + 2.days
-        @pp2.expire_date.should == @today + 30.days
+        expect(((@today.end_of_day + 1.day) - @pp.expire_date).abs).to be < 1
+        expect(@pp2.reload.start_date).to eq(@today + 2.days)
+        expect(@pp2.expire_date).to eq(@today + 30.days)
       end
     end
 
@@ -169,15 +169,15 @@ describe PricePolicy do
         @pp=FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group, :start_date => @today.beginning_of_day, :expire_date => @today + 30.days)
         @pp3 = FactoryGirl.create(:item_price_policy, :product => @item2, :price_group => @price_group, :start_date => @today, :expire_date => @today + 30.days)
         @pp2=FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group, :start_date => @today + 2.days, :expire_date => @today + 30.days)
-        @pp.reload.start_date.should == @today.beginning_of_day
+        expect(@pp.reload.start_date).to eq(@today.beginning_of_day)
         # they weren't matching up exactly right, but were within a second of each other
         # @pp.exire_date.should == (@today + 1.day).end_of_day
-        ((@today.end_of_day + 1.day) - @pp.expire_date).abs.should < 1
-        @pp2.reload.start_date.should == @today + 2.days
-        @pp2.expire_date.should == @today + 30.days
+        expect(((@today.end_of_day + 1.day) - @pp.expire_date).abs).to be < 1
+        expect(@pp2.reload.start_date).to eq(@today + 2.days)
+        expect(@pp2.expire_date).to eq(@today + 30.days)
 
-        @pp3.reload.start_date.should == @today
-        @pp3.expire_date.should == @today + 30.days
+        expect(@pp3.reload.start_date).to eq(@today)
+        expect(@pp3.expire_date).to eq(@today + 30.days)
       end
     end
 
@@ -189,12 +189,12 @@ describe PricePolicy do
     end
 
     it 'should abstract #calculate_cost_and_subsidy' do
-      @sp.should be_respond_to(:calculate_cost_and_subsidy)
+      expect(@sp).to be_respond_to(:calculate_cost_and_subsidy)
       assert_raise(RuntimeError) { @sp.calculate_cost_and_subsidy }
     end
 
     it 'should abstract #estimate_cost_and_subsidy' do
-      @sp.should be_respond_to(:estimate_cost_and_subsidy)
+      expect(@sp).to be_respond_to(:estimate_cost_and_subsidy)
       assert_raise(RuntimeError) { @sp.estimate_cost_and_subsidy }
     end
 
@@ -216,7 +216,7 @@ describe PricePolicy do
 
 
     it 'should not be assigned' do
-      @pp.should_not be_assigned_to_order
+      expect(@pp).not_to be_assigned_to_order
     end
 
 
@@ -224,7 +224,7 @@ describe PricePolicy do
       @order_detail.reload
       @order_detail.to_inprocess!
       @order_detail.to_complete!
-      @pp.should be_assigned_to_order
+      expect(@pp).to be_assigned_to_order
     end
 
   end

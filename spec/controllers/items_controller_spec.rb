@@ -8,8 +8,8 @@ describe ItemsController do
   render_views
 
   it "should route" do
-    { :get => "/facilities/url_name/items" }.should route_to(:controller => 'items', :action => 'index', :facility_id => 'url_name')
-    { :get => "/facilities/url_name/items/1" }.should route_to(:controller => 'items', :action => 'show', :facility_id => 'url_name', :id => "1")
+    expect({ :get => "/facilities/url_name/items" }).to route_to(:controller => 'items', :action => 'index', :facility_id => 'url_name')
+    expect({ :get => "/facilities/url_name/items/1" }).to route_to(:controller => 'items', :action => 'show', :facility_id => 'url_name', :id => "1")
   end
 
   before(:all) { create_users }
@@ -30,9 +30,9 @@ describe ItemsController do
     end
 
     it_should_allow_operators_only do |user|
-      assigns[:items].should == [@item]
-      response.should be_success
-      response.should render_template('items/index')
+      expect(assigns[:items]).to eq([@item])
+      expect(response).to be_success
+      expect(response).to render_template('items/index')
     end
   end
 
@@ -43,9 +43,9 @@ describe ItemsController do
     end
 
     it_should_allow_operators_only do |user|
-      assigns[:item].should == @item
-      response.should be_success
-      response.should render_template('items/manage')
+      expect(assigns[:item]).to eq(@item)
+      expect(response).to be_success
+      expect(response).to render_template('items/manage')
     end
   end
 
@@ -54,9 +54,9 @@ describe ItemsController do
       @method=:get
       @action=:show
       @block=Proc.new do
-        assigns[:item].should == @item
-        response.should be_success
-        response.should render_template('items/show')
+        expect(assigns[:item]).to eq(@item)
+        expect(response).to be_success
+        expect(response).to render_template('items/show')
       end
     end
 
@@ -72,9 +72,9 @@ describe ItemsController do
     it "should fail without a valid account" do
       sign_in @guest
       do_request
-      flash.should_not be_empty
-      assigns[:add_to_cart].should be_false
-      assigns[:error].should == 'no_accounts'
+      expect(flash).not_to be_empty
+      expect(assigns[:add_to_cart]).to be false
+      expect(assigns[:error]).to eq('no_accounts')
     end
 
     context "when the item requires approval" do
@@ -109,8 +109,8 @@ describe ItemsController do
         add_account_for_user(:guest, @item)
         sign_in @guest
         do_request
-        flash.should be_empty
-        assigns[:add_to_cart].should be_true
+        expect(flash).to be_empty
+        expect(assigns[:add_to_cart]).to be true
       end
 
       context "when the user is an admin" do
@@ -131,15 +131,15 @@ describe ItemsController do
         @item.update_attributes(:is_hidden => true)
       end
       it_should_allow_operators_only do
-        response.should be_success
+        expect(response).to be_success
       end
       it "should show the page if you're acting as a user" do
-        ItemsController.any_instance.stub(:acting_user).and_return(@guest)
-        ItemsController.any_instance.stub(:acting_as?).and_return(true)
+        allow_any_instance_of(ItemsController).to receive(:acting_user).and_return(@guest)
+        allow_any_instance_of(ItemsController).to receive(:acting_as?).and_return(true)
         sign_in @admin
         do_request
-        response.should be_success
-        assigns[:item].should == @item
+        expect(response).to be_success
+        expect(assigns[:item]).to eq(@item)
       end
     end
   end
@@ -152,7 +152,7 @@ describe ItemsController do
 
     it_should_allow_managers_only do
       expect(assigns(:item)).to be_kind_of Item
-      should render_template 'new'
+      is_expected.to render_template 'new'
     end
   end
 
@@ -163,7 +163,7 @@ describe ItemsController do
     end
 
     it_should_allow_managers_only do
-      should render_template 'edit'
+      is_expected.to render_template 'edit'
     end
   end
 
@@ -176,7 +176,7 @@ describe ItemsController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:item)).to be_kind_of Item
-      should set_the_flash
+      is_expected.to set_the_flash
       assert_redirected_to [:manage, @authable, assigns(:item)]
     end
   end
@@ -190,8 +190,8 @@ describe ItemsController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:item)).to be_kind_of Item
-      assigns(:item).should == @item
-      should set_the_flash
+      expect(assigns(:item)).to eq(@item)
+      is_expected.to set_the_flash
       assert_redirected_to manage_facility_item_url(@authable, assigns(:item))
     end
   end

@@ -5,16 +5,16 @@ describe InstrumentPricePolicy do
   subject(:policy) { build :instrument_price_policy }
 
   %w(minimum_cost cancellation_cost).each do |attr|
-    it { should validate_numericality_of(attr.to_sym).is_greater_than_or_equal_to 0 }
-    it { should allow_value(nil).for attr.to_sym }
+    it { is_expected.to validate_numericality_of(attr.to_sym).is_greater_than_or_equal_to 0 }
+    it { is_expected.to allow_value(nil).for attr.to_sym }
   end
 
   %w(reservation_rate reservation_subsidy overage_rate overage_subsidy reservation_mins overage_mins usage_mins).each do |attr|
-    it { should_not allow_value(5.0).for attr.to_sym }
-    it { should allow_value(nil).for attr.to_sym }
+    it { is_expected.not_to allow_value(5.0).for attr.to_sym }
+    it { is_expected.to allow_value(nil).for attr.to_sym }
   end
 
-  it { should ensure_inclusion_of(:charge_for).in_array described_class::CHARGE_FOR.values }
+  it { is_expected.to ensure_inclusion_of(:charge_for).in_array described_class::CHARGE_FOR.values }
 
 
   it 'converts the given hourly usage_rate to a per minute rate' do
@@ -29,7 +29,7 @@ describe InstrumentPricePolicy do
   end
 
 
-  it { should allow_value(nil).for :usage_subsidy }
+  it { is_expected.to allow_value(nil).for :usage_subsidy }
 
 
   it 'ensures that usage subsidy is greater than 0' do
@@ -47,13 +47,13 @@ describe InstrumentPricePolicy do
     end
 
     it 'validates presence of usage rate if purchase is not restricted' do
-      policy.stub(:restrict_purchase?).and_return false
-      should validate_presence_of :usage_rate
+      allow(policy).to receive(:restrict_purchase?).and_return false
+      is_expected.to validate_presence_of :usage_rate
     end
 
     it 'does not validate presence of usage rate if purchase is restricted' do
-      policy.stub(:restrict_purchase?).and_return true
-      should_not validate_presence_of :usage_rate
+      allow(policy).to receive(:restrict_purchase?).and_return true
+      is_expected.not_to validate_presence_of :usage_rate
     end
   end
 
@@ -80,22 +80,22 @@ describe InstrumentPricePolicy do
     it 'sets the usage subsidy to 0 before save if there is a usage_rate' do
       expect(policy.usage_rate).to be_present
       policy.usage_subsidy = nil
-      expect(policy.save).to be_true
+      expect(policy.save).to be true
       expect(policy.reload.usage_subsidy).to eq 0
     end
 
     it 'does not set the usage subsidy before save if there is a usage_rate and it is already set' do
       policy.usage_rate = 50
       policy.usage_subsidy = 5
-      expect(policy.save).to be_true
+      expect(policy.save).to be true
       expect(policy.reload.usage_subsidy).to eq (5 / 60.0).round(4)
     end
 
     it 'does not set the usage subsidy before save if there is no usage_rate' do
-      policy.stub(:restrict_purchase?).and_return true
+      allow(policy).to receive(:restrict_purchase?).and_return true
       policy.usage_rate = nil
       policy.usage_subsidy = nil
-      expect(policy.save).to be_true
+      expect(policy.save).to be true
       expect(policy.reload.usage_subsidy).to be_nil
     end
   end
@@ -105,7 +105,7 @@ describe InstrumentPricePolicy do
     it 'creates a PriceGroupProduct with default reservation window if one does not exist' do
       pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, policy.product.id)
       expect(pgp).to be_nil
-      expect(policy.save).to be_true
+      expect(policy.save).to be true
       pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, policy.product.id)
       expect(pgp.reservation_window).to eq PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
     end
@@ -118,7 +118,7 @@ describe InstrumentPricePolicy do
       )
 
       expect(PriceGroupProduct).to_not receive :create
-      expect(policy.save).to be_true
+      expect(policy.save).to be true
     end
   end
 
@@ -144,7 +144,7 @@ describe InstrumentPricePolicy do
     end
 
     it 'returns the reservation window from the after created PriceGroupProduct' do
-      expect(policy.save).to be_true
+      expect(policy.save).to be true
       pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, policy.product.id)
       expect(policy.reservation_window).to eq pgp.reservation_window
     end

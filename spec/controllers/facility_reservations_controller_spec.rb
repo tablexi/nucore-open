@@ -32,7 +32,7 @@ describe FacilityReservationsController do
     )
 
     @reservation=FactoryGirl.create(:reservation, :product => @product)
-    @reservation.should_not be_new_record
+    expect(@reservation).not_to be_new_record
     @order_detail = create(:order_detail, account: account, order: @order, product: product, reservation: @reservation)
     @order_detail.set_default_status!
     @params={ :facility_id => @authable.url_name, :order_id => @order.id, :order_detail_id => @order_detail.id, :id => @reservation.id }
@@ -92,7 +92,7 @@ describe FacilityReservationsController do
   end
 
   context '#batch_update' do
-    pending "TODO test exists for the FacilityOrdersController version"
+    skip "TODO test exists for the FacilityOrdersController version"
   end
 
   context '#create' do
@@ -117,18 +117,18 @@ describe FacilityReservationsController do
       context 'a success' do
         before(:each) { do_request }
         it 'should create the reservation' do
-          assigns[:reservation].should_not be_nil
-          assigns[:reservation].should_not be_new_record
+          expect(assigns[:reservation]).not_to be_nil
+          expect(assigns[:reservation]).not_to be_new_record
         end
         it 'should be an admin reservation' do
-          assigns[:reservation].should be_admin
+          expect(assigns[:reservation]).to be_admin
         end
         it 'should set the times' do
-          assigns[:reservation].reserve_start_at.should == @time
-          assigns[:reservation].reserve_end_at.should == (@time + 1.hour)
+          expect(assigns[:reservation].reserve_start_at).to eq(@time)
+          expect(assigns[:reservation].reserve_end_at).to eq(@time + 1.hour)
         end
         it "should redirect to the facility's schedule page" do
-          response.should redirect_to facility_instrument_schedule_path
+          expect(response).to redirect_to facility_instrument_schedule_path
         end
       end
 
@@ -137,19 +137,19 @@ describe FacilityReservationsController do
         it 'should not allow an invalid reservation' do
           # Used to fail by overlapping existing reservation, but now admin reservations are
           # allowed to per ticket 38975
-          Reservation.any_instance.stub(:valid?).and_return(false)
+          allow_any_instance_of(Reservation).to receive(:valid?).and_return(false)
           @params[:reservation] = FactoryGirl.attributes_for(:reservation)
           parametrize_dates(@params[:reservation], :reserve)
           do_request
-          assigns[:reservation].should be_new_record
-          response.should render_template :new
+          expect(assigns[:reservation]).to be_new_record
+          expect(response).to render_template :new
         end
       end
     end
   end
 
   context '#disputed' do
-    pending "TODO test exists for the FacilityOrdersController version"
+    skip "TODO test exists for the FacilityOrdersController version"
   end
 
   context '#edit' do
@@ -159,11 +159,11 @@ describe FacilityReservationsController do
     end
 
     it_should_allow_operators_only do
-      assigns(:order).should == @order
-      assigns(:order_detail).should == @order_detail
-      assigns(:reservation).should == @reservation
-      assigns(:instrument).should == @product
-      should render_template 'edit'
+      expect(assigns(:order)).to eq(@order)
+      expect(assigns(:order_detail)).to eq(@order_detail)
+      expect(assigns(:reservation)).to eq(@reservation)
+      expect(assigns(:instrument)).to eq(@product)
+      is_expected.to render_template 'edit'
     end
 
     context 'redirect on no edit' do
@@ -198,9 +198,9 @@ describe FacilityReservationsController do
         @order_detail_item = place_product_order(@director, @authable, @product, @account)
         @order_detail.order.update_attributes!(:state => 'purchased')
 
-        @authable.reload.order_details.should contain_all [@order_detail_reservation, @order_detail_item]
+        expect(@authable.reload.order_details).to contain_all [@order_detail_reservation, @order_detail_item]
         do_request
-        assigns[:order_details].should == [@order_detail_reservation]
+        expect(assigns[:order_details]).to eq([@order_detail_reservation])
       end
 
       it "provides sort headers that don't result in errors"
@@ -227,7 +227,7 @@ describe FacilityReservationsController do
   end
 
   context '#show_problems' do
-    pending "TODO test exists for the FacilityOrdersController version"
+    skip "TODO test exists for the FacilityOrdersController version"
   end
 
   context '#timeline' do
@@ -245,7 +245,7 @@ describe FacilityReservationsController do
       end
 
       it 'should show schedules for hidden instruments' do
-        assigns(:schedules).should =~ [@product.schedule, @instrument2.schedule]
+        expect(assigns(:schedules)).to match_array([@product.schedule, @instrument2.schedule])
       end
 
     end
@@ -268,7 +268,7 @@ describe FacilityReservationsController do
 
         @canceled_reservation = FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => 2.hours.from_now, :reserve_end_at => 3.hours.from_now)
         @order_detail3 = FactoryGirl.create(:order_detail, :order => @order, :product => @product, :reservation => @canceled_reservation)
-        @canceled_reservation.should be_persisted
+        expect(@canceled_reservation).to be_persisted
         @order_detail3.update_order_status! @admin, OrderStatus.canceled.first
 
         @admin_reservation = FactoryGirl.create(:reservation, :product => @product, :reserve_start_at => Time.zone.now, :reserve_end_at => 1.hour.from_now)
@@ -281,25 +281,25 @@ describe FacilityReservationsController do
       end
 
       it 'should not be admin reservations' do
-        @reservation.should_not be_admin
-        @unpurchased_reservation.should_not be_admin
-        @admin_reservation.should be_admin
+        expect(@reservation).not_to be_admin
+        expect(@unpurchased_reservation).not_to be_admin
+        expect(@admin_reservation).to be_admin
       end
 
       it 'should show reservation' do
-        response.body.should include "id='tooltip_reservation_#{@reservation.id}'"
+        expect(response.body).to include "id='tooltip_reservation_#{@reservation.id}'"
       end
 
       it 'should not show unpaid reservation' do
-        response.body.should_not include "id='tooltip_reservation_#{@unpurchased_reservation.id}'"
+        expect(response.body).not_to include "id='tooltip_reservation_#{@unpurchased_reservation.id}'"
       end
 
       it 'should include canceled reservation' do
-        response.body.should include "id='tooltip_reservation_#{@canceled_reservation.id}'"
+        expect(response.body).to include "id='tooltip_reservation_#{@canceled_reservation.id}'"
       end
 
       it 'should include admin reservation' do
-        response.body.should include "id='tooltip_reservation_#{@admin_reservation.id}'"
+        expect(response.body).to include "id='tooltip_reservation_#{@admin_reservation.id}'"
       end
     end
   end
@@ -313,15 +313,15 @@ describe FacilityReservationsController do
 
 
     it_should_allow_operators_only do
-      assigns(:order).should == @order
-      assigns(:order_detail).should == @order_detail
-      assigns(:reservation).should == @reservation
-      assigns(:instrument).should == @product
+      expect(assigns(:order)).to eq(@order)
+      expect(assigns(:order_detail)).to eq(@order_detail)
+      expect(assigns(:reservation)).to eq(@reservation)
+      expect(assigns(:instrument)).to eq(@product)
     end
 
     context "updating reservation length before complete" do
       before :each do
-        @order_detail.price_policy.should be_nil
+        expect(@order_detail.price_policy).to be_nil
         @order_detail.account = @account
         @order_detail.save!
         @price_group=FactoryGirl.create(:price_group, :facility => @authable)
@@ -342,15 +342,15 @@ describe FacilityReservationsController do
         # In rails 3.1, assigning the same value is still triggering
         # attr_will_change! so this breaks:
         # assigns[:reservation].should_not be_reserve_start_at_changed
-        assigns[:reservation].reserve_start_at.should == assigns[:reservation].reserve_start_at_was
-        assigns[:reservation].should be_reserve_end_at_changed
-        assigns[:order_detail].should be_estimated_cost_changed
+        expect(assigns[:reservation].reserve_start_at).to eq(assigns[:reservation].reserve_start_at_was)
+        expect(assigns[:reservation]).to be_reserve_end_at_changed
+        expect(assigns[:order_detail]).to be_estimated_cost_changed
       end
     end
 
     context 'completed order' do
       before :each do
-        @order_detail.price_policy.should be_nil
+        expect(@order_detail.price_policy).to be_nil
         @price_group=FactoryGirl.create(:price_group, :facility => @authable)
         create(:account_price_group_member, account: account, price_group: @price_group)
         @instrument_pp=create(:instrument_price_policy, :product => @product, :price_group_id => @price_group.id, :usage_rate => 2)
@@ -374,17 +374,17 @@ describe FacilityReservationsController do
         it 'should update the actuals and assign a price policy if there is none' do
           Timecop.freeze(@now) do
             do_request
-            assigns(:order).should == @order
-            assigns(:order_detail).should == @order_detail
-            assigns(:reservation).should == @reservation
-            assigns(:instrument).should == @product
-            assigns(:reservation).actual_start_at.should == @reservation_attrs[:actual_start_at]
-            assigns(:reservation).actual_end_at.should == @reservation_attrs[:actual_end_at]
-            assigns(:order_detail).price_policy.should == @instrument_pp
-            assigns(:order_detail).actual_cost.should_not be_nil
-            assigns(:order_detail).actual_subsidy.should_not be_nil
-            flash[:notice].should be_present
-            should render_template 'edit'
+            expect(assigns(:order)).to eq(@order)
+            expect(assigns(:order_detail)).to eq(@order_detail)
+            expect(assigns(:reservation)).to eq(@reservation)
+            expect(assigns(:instrument)).to eq(@product)
+            expect(assigns(:reservation).actual_start_at).to eq(@reservation_attrs[:actual_start_at])
+            expect(assigns(:reservation).actual_end_at).to eq(@reservation_attrs[:actual_end_at])
+            expect(assigns(:order_detail).price_policy).to eq(@instrument_pp)
+            expect(assigns(:order_detail).actual_cost).not_to be_nil
+            expect(assigns(:order_detail).actual_subsidy).not_to be_nil
+            expect(flash[:notice]).to be_present
+            is_expected.to render_template 'edit'
           end
         end
       end
@@ -405,12 +405,12 @@ describe FacilityReservationsController do
         it 'should update the actual cost' do
           Timecop.freeze(@now) do
             do_request
-            assigns(:reservation).actual_start_at.should  == @reservation_attrs[:actual_start_at]
-            assigns(:reservation).actual_end_at.should    == @reservation_attrs[:actual_end_at]
-            assigns(:order_detail).price_policy.should    == @instrument_pp
-            assigns(:order_detail).actual_cost.should_not == @order_detail.actual_cost
-            flash[:notice].should be_present
-            should render_template 'edit'
+            expect(assigns(:reservation).actual_start_at).to  eq(@reservation_attrs[:actual_start_at])
+            expect(assigns(:reservation).actual_end_at).to    eq(@reservation_attrs[:actual_end_at])
+            expect(assigns(:order_detail).price_policy).to    eq(@instrument_pp)
+            expect(assigns(:order_detail).actual_cost).not_to eq(@order_detail.actual_cost)
+            expect(flash[:notice]).to be_present
+            is_expected.to render_template 'edit'
           end
         end
       end
@@ -418,7 +418,7 @@ describe FacilityReservationsController do
   end
 
   context '#tab_counts' do
-    pending "TODO test exists for the FacilityOrdersController version"
+    skip "TODO test exists for the FacilityOrdersController version"
   end
 
   context 'admin' do

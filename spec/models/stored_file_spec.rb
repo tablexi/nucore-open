@@ -3,11 +3,11 @@ require "spec_helper"
 describe StoredFile do
 
   it "should require name" do
-    should validate_presence_of(:name)
+    is_expected.to validate_presence_of(:name)
   end
 
   it "should require file_type" do
-    should validate_presence_of(:file_type)
+    is_expected.to validate_presence_of(:file_type)
   end
 
   context "product_id" do

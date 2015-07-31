@@ -8,15 +8,15 @@ describe Reservation do
   describe 'facility setup' do
     let(:facility) { FactoryGirl.create(:setup_facility) }
     it 'should be saved' do
-      facility.should be_persisted
+      expect(facility).to be_persisted
     end
 
     it 'should have an account' do
-      facility.facility_accounts.should_not be_empty
+      expect(facility.facility_accounts).not_to be_empty
     end
 
     it 'should have a new price group' do
-      facility.price_groups.should_not be_empty
+      expect(facility.price_groups).not_to be_empty
     end
 
   end
@@ -24,38 +24,38 @@ describe Reservation do
   describe 'instrument setup' do
     it 'should be valid' do
       instrument = FactoryGirl.build(:setup_instrument)
-      instrument.should be_valid
+      expect(instrument).to be_valid
     end
 
     it 'should be saved' do
-      instrument.should be_persisted
+      expect(instrument).to be_persisted
     end
 
     it 'should have a facility' do
-      instrument.facility.should be_persisted
+      expect(instrument.facility).to be_persisted
     end
 
     it 'should have a facility_account' do
-      instrument.facility_account.should be
+      expect(instrument.facility_account).to be
     end
 
     it 'should have a schedule rule' do
-      instrument.schedule_rules.should_not be_empty
-      instrument.schedule_rules.first.start_hour.should == 9
-      instrument.schedule_rules.first.end_hour.should == 17
+      expect(instrument.schedule_rules).not_to be_empty
+      expect(instrument.schedule_rules.first.start_hour).to eq(9)
+      expect(instrument.schedule_rules.first.end_hour).to eq(17)
     end
 
     it 'should have a price group' do
-      instrument.price_groups.should_not be_empty
+      expect(instrument.price_groups).not_to be_empty
     end
 
     it 'should have the price group product' do
-      instrument.price_group_products.should_not be_empty
+      expect(instrument.price_group_products).not_to be_empty
     end
 
     context 'price policies' do
       it 'should have a price policy' do
-        instrument.price_policies.should_not be_empty
+        expect(instrument.price_policies).not_to be_empty
       end
 
       it 'should be persisted' do
@@ -63,8 +63,8 @@ describe Reservation do
       end
 
       it 'should be the newly created price group' do
-        instrument.price_policies.first.price_group.facility.should_not be_nil
-        instrument.price_policies.first.price_group.name.should =~ /Price Group/
+        expect(instrument.price_policies.first.price_group.facility).not_to be_nil
+        expect(instrument.price_policies.first.price_group.name).to match(/Price Group/)
       end
     end
   end
@@ -72,11 +72,11 @@ describe Reservation do
   describe 'account setup' do
     let(:account) { FactoryGirl.create(:setup_account) }
     it 'should be persisted' do
-      account.should be_persisted
+      expect(account).to be_persisted
     end
 
     it 'should have an owner' do
-      account.owner.should be
+      expect(account.owner).to be
     end
   end
 
@@ -85,11 +85,11 @@ describe Reservation do
     let (:order) { FactoryGirl.create(:setup_order, :product => product) }
 
     it 'should have an order detail' do
-      order.order_details.should_not be_empty
+      expect(order.order_details).not_to be_empty
     end
 
     it 'should not be validated' do
-      order.state.should == 'new'
+      expect(order.state).to eq('new')
     end
   end
 
@@ -98,11 +98,11 @@ describe Reservation do
       let(:reservation) { FactoryGirl.create(:setup_reservation) }
 
       it 'should be saved' do
-        reservation.should be_persisted
+        expect(reservation).to be_persisted
       end
 
       it 'should be new' do
-        reservation.order.state.should == 'new'
+        expect(reservation.order.state).to eq('new')
       end
     end
 
@@ -110,11 +110,11 @@ describe Reservation do
       let(:reservation) { FactoryGirl.create(:validated_reservation) }
       
       it 'should be saved' do
-        reservation.should be_persisted
+        expect(reservation).to be_persisted
       end
 
       it 'should be validated' do
-        reservation.order.state.should == 'validated'
+        expect(reservation.order.state).to eq('validated')
       end
     end
 
@@ -122,11 +122,11 @@ describe Reservation do
       let(:reservation) { FactoryGirl.create(:purchased_reservation) }
       
       it 'should be saved' do
-        reservation.should be_persisted
+        expect(reservation).to be_persisted
       end
 
       it 'should be purchased' do
-        reservation.order.reload.state.should == 'purchased'
+        expect(reservation.order.reload.state).to eq('purchased')
       end
     end
 

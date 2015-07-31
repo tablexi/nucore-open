@@ -8,8 +8,8 @@ describe ServicesController do
   render_views
 
   it "should route" do
-    { :get => "/facilities/alpha/services" }.should route_to(:controller => 'services', :action => 'index', :facility_id => 'alpha')
-    { :get => "/facilities/alpha/services/1/manage" }.should route_to(:controller => 'services', :action => 'manage', :id => '1', :facility_id => 'alpha')
+    expect({ :get => "/facilities/alpha/services" }).to route_to(:controller => 'services', :action => 'index', :facility_id => 'alpha')
+    expect({ :get => "/facilities/alpha/services/1/manage" }).to route_to(:controller => 'services', :action => 'manage', :id => '1', :facility_id => 'alpha')
   end
 
   before(:all) { create_users }
@@ -29,9 +29,9 @@ describe ServicesController do
     end
 
     it_should_allow_operators_only do
-      assigns[:services].should == [@service]
-      response.should be_success
-      response.should render_template('services/index')
+      expect(assigns[:services]).to eq([@service])
+      expect(response).to be_success
+      expect(response).to render_template('services/index')
     end
   end
 
@@ -44,23 +44,23 @@ describe ServicesController do
 
     it "should allow public access" do
       do_request
-      assigns[:service].should == @service
-      response.should be_success
-      response.should render_template('services/show')
+      expect(assigns[:service]).to eq(@service)
+      expect(response).to be_success
+      expect(response).to render_template('services/show')
     end
 
     it_should_allow_all facility_users do
-      assigns[:service].should == @service
-      response.should be_success
-      response.should render_template('services/show')
+      expect(assigns[:service]).to eq(@service)
+      expect(response).to be_success
+      expect(response).to render_template('services/show')
     end
 
     it "should fail without a valid account" do
       sign_in @guest
       do_request
-      flash.should_not be_empty
-      assigns[:add_to_cart].should be_false
-      assigns[:error].should == 'no_accounts'
+      expect(flash).not_to be_empty
+      expect(assigns[:add_to_cart]).to be false
+      expect(assigns[:error]).to eq('no_accounts')
     end
 
     context "when the service requires approval" do
@@ -95,8 +95,8 @@ describe ServicesController do
         add_account_for_user(:guest, @service, @nupg)
         sign_in @guest
         do_request
-        flash.should be_empty
-        assigns[:add_to_cart].should be_true
+        expect(flash).to be_empty
+        expect(assigns[:add_to_cart]).to be true
       end
 
       context "when the user is an admin" do
@@ -118,16 +118,16 @@ describe ServicesController do
       end
 
       it_should_allow_operators_only do
-        response.should be_success
+        expect(response).to be_success
       end
 
       it "should show the page if you're acting as a user" do
-        ServicesController.any_instance.stub(:acting_user).and_return(@guest)
-        ServicesController.any_instance.stub(:acting_as?).and_return(true)
+        allow_any_instance_of(ServicesController).to receive(:acting_user).and_return(@guest)
+        allow_any_instance_of(ServicesController).to receive(:acting_as?).and_return(true)
         sign_in @admin
         do_request
-        response.should be_success
-        assigns[:service].should == @service
+        expect(response).to be_success
+        expect(assigns[:service]).to eq(@service)
       end
     end
   end
@@ -140,7 +140,7 @@ describe ServicesController do
 
     it_should_allow_managers_only do
       expect(assigns(:service)).to be_kind_of Service
-      assigns(:service).facility.should == @authable
+      expect(assigns(:service).facility).to eq(@authable)
     end
   end
 
@@ -152,7 +152,7 @@ describe ServicesController do
     end
 
     it_should_allow_managers_only do
-      should render_template 'edit'
+      is_expected.to render_template 'edit'
     end
   end
 
@@ -165,8 +165,8 @@ describe ServicesController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:service)).to be_kind_of Service
-      assigns(:service).facility.should == @authable
-      should set_the_flash
+      expect(assigns(:service).facility).to eq(@authable)
+      is_expected.to set_the_flash
       assert_redirected_to [:manage, @authable, assigns(:service)]
     end
   end
@@ -180,7 +180,7 @@ describe ServicesController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:service)).to be_kind_of Service
-      should set_the_flash
+      is_expected.to set_the_flash
       assert_redirected_to manage_facility_service_url(@authable, assigns(:service))
     end
   end
@@ -193,7 +193,7 @@ describe ServicesController do
     end
 
     it_should_allow_managers_only :redirect do
-      assigns(:service).should == @service
+      expect(assigns(:service)).to eq(@service)
       should_be_destroyed @service
       assert_redirected_to facility_services_url
     end
@@ -207,8 +207,8 @@ describe ServicesController do
     end
 
     it_should_allow_operators_only do
-      response.should be_success
-      response.should render_template('services/manage')
+      expect(response).to be_success
+      expect(response).to render_template('services/manage')
     end
   end
 end

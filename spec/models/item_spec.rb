@@ -6,8 +6,8 @@ describe Item do
     @facility         = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @item             = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
-    @item.should be_valid
-    @item.type.should == 'Item'
+    expect(@item).to be_valid
+    expect(@item.type).to eq('Item')
   end
 
   it_should_behave_like "NonReservationProduct", :item

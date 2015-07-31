@@ -19,8 +19,8 @@ describe GeneralReportsController do
 
     before do
       allow(controller).to receive(:authenticate_user!).and_return true
-      allow(controller).to receive(:current_user).and_return build_stubbed(:user) #mock_model(User, administrator?: true, operator?: true, full_name: 'name')
-      allow(controller).to receive(:current_facility).and_return mock_model(Facility)
+      allow(controller).to receive(:current_user).and_return build_stubbed(:user) # TODO including this doesn't matter
+      allow(controller).to receive(:current_facility).and_return build_stubbed(:facility)
     end
 
     context 'defaults' do
@@ -105,31 +105,31 @@ describe GeneralReportsController do
 
       it 'should search' do
         do_request
-        response.should be_success
+        expect(response).to be_success
       end
 
       it 'should search search unfulfilled' do
         @params.merge!(:status_filter => [OrderStatus.new_os.first.id])
         do_request
-        assigns[:report_data].should contain_all [@order_detail_ordered_today_unfulfilled]
+        expect(assigns[:report_data]).to contain_all [@order_detail_ordered_today_unfulfilled]
       end
 
       it 'should search fulfilled' do
         @params.merge!(:status_filter => [@complete_status.id])
         do_request
-        assigns[:report_data].should contain_all [@order_detail_ordered_today_fulfilled_today_unreconciled, @order_detail_ordered_today_fulfilled_next_month_unreconciled]
+        expect(assigns[:report_data]).to contain_all [@order_detail_ordered_today_fulfilled_today_unreconciled, @order_detail_ordered_today_fulfilled_next_month_unreconciled]
       end
 
       it 'should search reconciled' do
         @params.merge!(:status_filter => [OrderStatus.reconciled.first.id])
         do_request
-        assigns[:report_data].should be_empty
+        expect(assigns[:report_data]).to be_empty
       end
 
       it 'should find reconciled that started yesterday' do
         @params.merge!(:status_filter => [OrderStatus.reconciled.first.id], :date_start => 1.day.ago.strftime('%m/%d/%Y'))
         do_request
-        assigns[:report_data].should contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today]
+        expect(assigns[:report_data]).to contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today]
       end
     end
 
@@ -141,25 +141,25 @@ describe GeneralReportsController do
       it 'should have a problem if it searches unfulfilled' do
         @params.merge!(:status_filter => [OrderStatus.new_os.first.id])
         do_request
-        assigns[:report_data].should be_empty
+        expect(assigns[:report_data]).to be_empty
       end
 
       it 'should search fulfilled' do
         @params.merge!(:status_filter => [@complete_status.id])
         do_request
-        assigns[:report_data].should contain_all [@order_detail_ordered_yesterday_fulfilled_today_unreconciled, @order_detail_ordered_today_fulfilled_today_unreconciled]
+        expect(assigns[:report_data]).to contain_all [@order_detail_ordered_yesterday_fulfilled_today_unreconciled, @order_detail_ordered_today_fulfilled_today_unreconciled]
       end
 
       it 'should search reconciled' do
         @params.merge!(:status_filter => [OrderStatus.reconciled.first.id])
         do_request
-        assigns[:report_data].should be_empty
+        expect(assigns[:report_data]).to be_empty
       end
 
       it 'should find reconciled that started yesterday' do
         @params.merge!(:status_filter => [OrderStatus.reconciled.first.id], :date_start => 1.day.ago.strftime('%m/%d/%Y'))
         do_request
-        assigns[:report_data].should contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today]
+        expect(assigns[:report_data]).to contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today]
       end
     end
 
@@ -172,25 +172,25 @@ describe GeneralReportsController do
       it 'should have a problem if it searches unfulfilled' do
         @params.merge!(:status_filter => [OrderStatus.new_os.first.id])
         do_request
-        assigns[:report_data].should be_empty
+        expect(assigns[:report_data]).to be_empty
       end
 
       it 'should have a problem if it searches unjournaled' do
         @params.merge!(:status_filter => [@complete_status.id])
         do_request
-        assigns[:report_data].should be_empty
+        expect(assigns[:report_data]).to be_empty
       end
 
       it 'should search reconciled' do
         @params.merge!(:status_filter => [OrderStatus.reconciled.first.id])
         do_request
-        assigns[:report_data].should == [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today]
+        expect(assigns[:report_data]).to eq([@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today])
       end
 
       it 'should find reconciled that started yesterday' do
         @params.merge!(:status_filter => [OrderStatus.reconciled.first.id], :date_start => 1.day.ago.strftime('%m/%d/%Y'))
         do_request
-        assigns[:report_data].should contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday]
+        expect(assigns[:report_data]).to contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday]
       end
     end
   end
@@ -216,7 +216,7 @@ describe GeneralReportsController do
 
   def assert_report_params_init
     super
-    assigns(:status_ids).should be_instance_of Array
+    expect(assigns(:status_ids)).to be_instance_of Array
 
     if @params[:date_start].blank? && @params[:date_end].blank?
       stati=[ OrderStatus.complete.first, OrderStatus.reconciled.first ]
@@ -233,29 +233,29 @@ describe GeneralReportsController do
       status_ids += stat.children.collect(&:id) if stat.root?
     end
 
-    assigns(:status_ids).should == status_ids
+    expect(assigns(:status_ids)).to eq(status_ids)
   end
 
 
   def assert_report_init(label)
-    response.should be_success
-    assigns(:total_quantity).should be_instance_of Fixnum
+    expect(response).to be_success
+    expect(assigns(:total_quantity)).to be_instance_of Fixnum
 
     rows, ods=assigns(:rows), OrderDetail.all
-    rows.size.should == ods.size
+    expect(rows.size).to eq(ods.size)
 
     rows.each do |row|
-      row.should be_instance_of Array
-      row.size.should == 4
+      expect(row).to be_instance_of Array
+      expect(row.size).to eq(4)
     end
 
     ods.sort!{|a,b| yield(a) <=> yield(b) }
 
     ods.each_with_index do |od, i|
-      rows[i][0].should == yield(od)
-      rows[i][1].should == od.quantity
-      rows[i][2].should == od.total.to_i
-      rows[i][3].should == to_percent(od.total / assigns(:total_cost))
+      expect(rows[i][0]).to eq(yield(od))
+      expect(rows[i][1]).to eq(od.quantity)
+      expect(rows[i][2]).to eq(od.total.to_i)
+      expect(rows[i][3]).to eq(to_percent(od.total / assigns(:total_cost)))
     end
   end
 

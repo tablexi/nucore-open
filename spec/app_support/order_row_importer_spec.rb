@@ -31,7 +31,7 @@ describe OrderRowImporter do
     let(:fulfillment_date) { "1/2/2015" }
 
     before(:each) do
-      Product.any_instance.stub(:can_purchase?).and_return(true)
+      allow_any_instance_of(Product).to receive(:can_purchase?).and_return(true)
     end
   end
 
@@ -229,14 +229,14 @@ describe OrderRowImporter do
       end
 
       context "and it requires a survey" do
-        before { Service.any_instance.stub(:active_survey?).and_return(true) }
+        before { allow_any_instance_of(Service).to receive(:active_survey?).and_return(true) }
 
         it_behaves_like "an order was not created"
         it_behaves_like "it has an error message", "Service requires survey"
       end
 
       context "and it requires a template" do
-        before { Service.any_instance.stub(:active_template?).and_return(true) }
+        before { allow_any_instance_of(Service).to receive(:active_template?).and_return(true) }
 
         it_behaves_like "an order was not created"
         it_behaves_like "it has an error message", "Service requires template"
@@ -252,16 +252,16 @@ describe OrderRowImporter do
       let(:username) { user.username }
 
       before(:each) do
-        User.any_instance.stub(:accounts)
+        allow_any_instance_of(User).to receive(:accounts)
           .and_return(Account.where(id: account.id))
       end
 
       context "and the account is active" do
-        before { Account.any_instance.stub(:is_active?).and_return(true) }
+        before { allow_any_instance_of(Account).to receive(:is_active?).and_return(true) }
 
         context "and the account is invalid for the product" do
           before(:each) do
-            Facility.any_instance.stub(:can_pay_with_account?).and_return(false)
+            allow_any_instance_of(Facility).to receive(:can_pay_with_account?).and_return(false)
           end
 
           it_behaves_like "an order was not created"
@@ -269,17 +269,17 @@ describe OrderRowImporter do
         end
 
         context "and the account is valid for the product" do
-          before { Product.any_instance.stub(:can_purchase?).and_return(true) }
+          before { allow_any_instance_of(Product).to receive(:can_purchase?).and_return(true) }
 
           context "when the order was not purchased" do
             before(:each) do
-              Order.any_instance.stub(:purchased?).and_return(false)
-              Order.any_instance.stub(:purchase!).and_return(false)
+              allow_any_instance_of(Order).to receive(:purchased?).and_return(false)
+              allow_any_instance_of(Order).to receive(:purchase!).and_return(false)
             end
 
             context "and the order is valid" do
               before(:each) do
-                Order.any_instance.stub(:validate_order!).and_return(true)
+                allow_any_instance_of(Order).to receive(:validate_order!).and_return(true)
               end
 
               context "and is not purchaseable" do
@@ -299,7 +299,7 @@ describe OrderRowImporter do
               context "and the product is hidden" do
                 before(:each) do
                   product.update_attribute(:is_hidden, true)
-                  Order.any_instance.stub(:purchase!).and_return(true)
+                  allow_any_instance_of(Order).to receive(:purchase!).and_return(true)
                 end
 
                 it_behaves_like "an order was created"
@@ -352,7 +352,7 @@ describe OrderRowImporter do
       let(:fulfillment_date) { "1/2/2015" }
 
       before(:each) do
-        Product.any_instance.stub(:can_purchase?).and_return(true)
+        allow_any_instance_of(Product).to receive(:can_purchase?).and_return(true)
       end
 
       it_behaves_like "an order was not created"

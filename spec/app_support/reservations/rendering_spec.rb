@@ -84,7 +84,7 @@ describe Reservations::Rendering do
         )
       end
 
-      before { reservation.stub(:order).and_return(order) }
+      before { allow(reservation).to receive(:order).and_return(order) }
 
       context "with details requested" do
         let(:title) { "#{user.first_name}\n#{user.last_name}" }

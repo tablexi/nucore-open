@@ -6,7 +6,7 @@ describe Dataprobe::Ipio do
   let(:fake_socket) { double 'TCPSocket', recv: nil, write: nil, close: nil }
   subject(:relay) { described_class.new ip }
 
-  before(:each) { TCPSocket.stub(:new).and_return fake_socket }
+  before(:each) { allow(TCPSocket).to receive(:new).and_return fake_socket }
 
 
   it 'initializes with the proper host and defaults' do
@@ -57,35 +57,35 @@ describe Dataprobe::Ipio do
 
 
   def should_write_hello
-    fake_socket.should_receive(:write).with "hello-000\x00"
+    expect(fake_socket).to receive(:write).with "hello-000\x00"
   end
 
   def should_update_sequence
     fake_sequence = [ double('Fixnum') ]
     fake_reply = double 'String', unpack: fake_sequence
-    fake_socket.should_receive(:recv).with(2).and_return fake_reply
-    fake_reply.should_receive(:unpack).with 's<'
-    fake_sequence[0].should_receive(:+).with 1
-    fake_sequence.should_receive(:pack).with('s<').and_return "\x01"
+    expect(fake_socket).to receive(:recv).with(2).and_return fake_reply
+    expect(fake_reply).to receive(:unpack).with 's<'
+    expect(fake_sequence[0]).to receive(:+).with 1
+    expect(fake_sequence).to receive(:pack).with('s<').and_return "\x01"
   end
 
   def should_toggle(state_code = "\x01", socket_reply = "\x00")
     should_write_hello
     should_update_sequence
-    fake_socket.should_receive(:write).with "\x03#{relay.username}#{relay.password}\x01\x00\x01\x04#{state_code}"
-    fake_socket.should_receive(:recv).with(1).and_return socket_reply
-    fake_socket.should_receive :close
+    expect(fake_socket).to receive(:write).with "\x03#{relay.username}#{relay.password}\x01\x00\x01\x04#{state_code}"
+    expect(fake_socket).to receive(:recv).with(1).and_return socket_reply
+    expect(fake_socket).to receive :close
   end
 
   def should_give_status(state)
     bool = (state.to_s =~ /\Aon\Z/i).present?
     should_write_hello
     should_update_sequence
-    fake_socket.should_receive(:write).with "\x03#{relay.username}#{relay.password}\x04\x00\x01"
+    expect(fake_socket).to receive(:write).with "\x03#{relay.username}#{relay.password}\x04\x00\x01"
     fake_reply = double 'String', unpack: []
-    fake_socket.should_receive(:recv).with(100).and_return fake_reply
-    fake_reply.should_receive(:unpack).with('C*').and_return bool ? [1] : [0]
-    fake_socket.should_receive :close
+    expect(fake_socket).to receive(:recv).with(100).and_return fake_reply
+    expect(fake_reply).to receive(:unpack).with('C*').and_return bool ? [1] : [0]
+    expect(fake_socket).to receive :close
     expect(relay.status 1).to eq bool
   end
 

@@ -15,7 +15,7 @@ describe AffiliatesController do
     end
 
     it_should_allow_admin_only do
-      should render_template :index
+      is_expected.to render_template :index
     end
   end
 
@@ -28,9 +28,9 @@ describe AffiliatesController do
     end
 
     it_should_allow_admin_only do
-      assigns(:affiliate).should be_kind_of Affiliate
-      assigns(:affiliate).should be_new_record
-      should render_template :new
+      expect(assigns(:affiliate)).to be_kind_of Affiliate
+      expect(assigns(:affiliate)).to be_new_record
+      is_expected.to render_template :new
     end
   end
 
@@ -44,9 +44,9 @@ describe AffiliatesController do
     end
 
     it_should_allow_admin_only :redirect do
-      should set_the_flash
-      assigns(:affiliate).should_not be_new_record
-      assigns(:affiliate).name.should == @params[:affiliate][:name]
+      is_expected.to set_the_flash
+      expect(assigns(:affiliate)).not_to be_new_record
+      expect(assigns(:affiliate).name).to eq(@params[:affiliate][:name])
       assert_redirected_to affiliates_path
     end
 
@@ -55,7 +55,7 @@ describe AffiliatesController do
     end
 
     it('should fail gracefully if bad attributes posted') do
-      bad_attrs_test(:new) { assigns(:affiliate).should be_new_record }
+      bad_attrs_test(:new) { expect(assigns(:affiliate)).to be_new_record }
     end
   end
 
@@ -76,8 +76,8 @@ describe AffiliatesController do
       end
 
       it_should_allow_admin_only do
-        assigns(:affiliate).should == @affiliate
-        should render_template :edit
+        expect(assigns(:affiliate)).to eq(@affiliate)
+        is_expected.to render_template :edit
       end
 
       it('should fail gracefully if bad id given') { bad_id_test }
@@ -93,8 +93,8 @@ describe AffiliatesController do
       end
 
       it_should_allow_admin_only :redirect do
-        should set_the_flash
-        assigns(:affiliate).name.should == @params[:affiliate][:name]
+        is_expected.to set_the_flash
+        expect(assigns(:affiliate).name).to eq(@params[:affiliate][:name])
         assert_redirected_to affiliates_path
       end
 
@@ -103,7 +103,7 @@ describe AffiliatesController do
       it('should fail gracefully if bad attributes posted') { bad_attrs_test :edit }
 
       it 'should fail gracefully if no attributes posted' do
-        no_attrs_test { should render_template :edit }
+        no_attrs_test { is_expected.to render_template :edit }
       end
     end
 
@@ -117,7 +117,7 @@ describe AffiliatesController do
 
       it_should_allow_admin_only :redirect do
         should_be_destroyed @affiliate
-        should set_the_flash
+        is_expected.to set_the_flash
         assert_redirected_to affiliates_path
       end
 
@@ -131,7 +131,7 @@ describe AffiliatesController do
     @params[:id]=98765423456
     maybe_grant_always_sign_in :admin
     do_request
-    should set_the_flash
+    is_expected.to set_the_flash
     assert_redirected_to affiliates_path
   end
 
@@ -141,8 +141,8 @@ describe AffiliatesController do
     maybe_grant_always_sign_in :admin
     do_request
     yield if block_given?
-    assigns(:affiliate).name.should be_nil
-    should render_template template
+    expect(assigns(:affiliate).name).to be_nil
+    is_expected.to render_template template
   end
 
 
@@ -150,7 +150,7 @@ describe AffiliatesController do
     @params[:affiliate]=nil
     maybe_grant_always_sign_in :admin
     do_request
-    flash[:error].should be_present
+    expect(flash[:error]).to be_present
     yield if block_given?
   end
 end

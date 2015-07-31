@@ -123,7 +123,7 @@ describe InstrumentPricePolicyCalculations do
 
   describe 'estimating cost and subsidy' do
     it 'returns nil if purchase is restricted' do
-      policy.stub(:restrict_purchase?).and_return true
+      allow(policy).to receive(:restrict_purchase?).and_return true
       expect(policy.estimate_cost_and_subsidy(start_at, end_at)).to be_nil
     end
 
@@ -136,16 +136,16 @@ describe InstrumentPricePolicyCalculations do
     end
 
     it 'gives a zero cost and subsidy if instrument is free to use and there is no minimum cost' do
-      policy.stub(:free?).and_return true
-      policy.stub(:minimum_cost).and_return nil
+      allow(policy).to receive(:free?).and_return true
+      allow(policy).to receive(:minimum_cost).and_return nil
       costs = policy.estimate_cost_and_subsidy start_at, end_at
       expect(costs[:cost]).to eq 0
       expect(costs[:subsidy]).to eq 0
     end
 
     it 'gives minimum cost and zero subsidy if instrument is free to use and there is a minimum cost' do
-      policy.stub(:free?).and_return true
-      policy.stub(:minimum_cost).and_return 10
+      allow(policy).to receive(:free?).and_return true
+      allow(policy).to receive(:minimum_cost).and_return 10
       costs = policy.estimate_cost_and_subsidy start_at, end_at
       expect(costs[:cost]).to eq 10
       expect(costs[:subsidy]).to eq 0
@@ -245,28 +245,28 @@ describe InstrumentPricePolicyCalculations do
     %w(usage overage).each do |charge_for|
       it "returns nil if actual_start_at is missing and we are charging by #{charge_for}" do
         policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[charge_for.to_sym]
-        reservation.stub(:actual_start_at).and_return nil
+        allow(reservation).to receive(:actual_start_at).and_return nil
         expect(policy.calculate_cost_and_subsidy(reservation)).to be_nil
       end
 
       it "returns nil if actual_end_at is missing and we are charging by #{charge_for}" do
         policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[charge_for.to_sym]
-        reservation.stub(:actual_start_at).and_return now
-        reservation.stub(:actual_end_at).and_return nil
+        allow(reservation).to receive(:actual_start_at).and_return now
+        allow(reservation).to receive(:actual_end_at).and_return nil
         expect(policy.calculate_cost_and_subsidy(reservation)).to be_nil
       end
     end
 
     it 'returns minimum cost if instrument is #free?' do
-      policy.stub(:free?).and_return true
+      allow(policy).to receive(:free?).and_return true
       min_cost = 10
-      policy.stub(:minimum_cost).and_return min_cost
+      allow(policy).to receive(:minimum_cost).and_return min_cost
       expect(policy.calculate_cost_and_subsidy reservation).to eq({ cost: min_cost, subsidy: 0 })
     end
 
     it 'returns 0 if instrument is #free? and there is no minimum_cost' do
-      policy.stub(:free?).and_return true
-      policy.stub(:minimum_cost).and_return nil
+      allow(policy).to receive(:free?).and_return true
+      allow(policy).to receive(:minimum_cost).and_return nil
       expect(policy.calculate_cost_and_subsidy reservation).to eq({ cost: 0, subsidy: 0 })
     end
 
@@ -374,16 +374,16 @@ describe InstrumentPricePolicyCalculations do
 
 
   describe 'determining whether or not a cancellation should be penalized' do
-    before(:each) { policy.product.stub(:min_cancel_hours).and_return 3 }
+    before(:each) { allow(policy.product).to receive(:min_cancel_hours).and_return 3 }
 
     it 'returns true when the cancellation fee applies' do
       reservation = double reserve_start_at: now + 30.minutes, canceled_at: now
-      expect(policy.cancellation_penalty?(reservation)).to be_true
+      expect(policy.cancellation_penalty?(reservation)).to be true
     end
 
     it 'returns false when the cancellation fee does not apply' do
       reservation = double reserve_start_at: now + 4.hours, canceled_at: now
-      expect(policy.cancellation_penalty?(reservation)).to be_false
+      expect(policy.cancellation_penalty?(reservation)).to be false
     end
   end
 
@@ -392,13 +392,13 @@ describe InstrumentPricePolicyCalculations do
     let(:reservation) { double 'Reservation' }
 
     it 'returns the cancellation cost if penalty applies' do
-      policy.stub(:cancellation_penalty?).and_return true
-      policy.stub(:cancellation_cost).and_return 5.0
+      allow(policy).to receive(:cancellation_penalty?).and_return true
+      allow(policy).to receive(:cancellation_cost).and_return 5.0
       expect(policy.calculate_cancellation_costs(reservation)).to eq({ cost: policy.cancellation_cost, subsidy: 0})
     end
 
     it 'returns nil if penalty applies' do
-      policy.stub(:cancellation_penalty?).and_return false
+      allow(policy).to receive(:cancellation_penalty?).and_return false
       expect(policy.calculate_cancellation_costs(reservation)).to be_nil
     end
   end

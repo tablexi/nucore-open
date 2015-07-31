@@ -32,8 +32,8 @@ describe Account do
       context 'with estimated totals' do
         before :each do
           order_details.each_with_index do |order_detail, n|
-            order_detail.stub(:cost_estimated?).and_return true
-            order_detail.stub(:estimated_total).and_return(n + 1)
+            allow(order_detail).to receive(:cost_estimated?).and_return true
+            allow(order_detail).to receive(:estimated_total).and_return(n + 1)
           end
         end
 
@@ -45,8 +45,8 @@ describe Account do
       context 'with actual totals' do
         before :each do
           order_details.each_with_index do |order_detail, n|
-            order_detail.stub(:cost_estimated?).and_return false
-            order_detail.stub(:actual_total).and_return(n + 1)
+            allow(order_detail).to receive(:cost_estimated?).and_return false
+            allow(order_detail).to receive(:actual_total).and_return(n + 1)
           end
         end
 
@@ -62,55 +62,58 @@ describe Account do
     hash     = Hash[:user => @user, :created_by => @user.id, :user_role => 'Owner']
     @account = create_nufs_account_with_owner :user
 
-    @account.errors[:type].should_not be_nil
+    expect(@account.errors[:type]).not_to be_nil
   end
 
   it "should require account_number" do
-    should validate_presence_of(:account_number)
+    is_expected.to validate_presence_of(:account_number)
   end
 
   it "should require expires_at" do
-    should validate_presence_of(:expires_at)
+    is_expected.to validate_presence_of(:expires_at)
   end
 
-  it { should belong_to(:affiliate)}
+  it { is_expected.to belong_to(:affiliate) }
+  it { is_expected.to have_many(:orders) }
+  it { is_expected.to have_one(:owner) }
+  it { is_expected.to have_many(:account_users) }
 
   it 'should be expired' do
     owner   = FactoryGirl.create(:user)
     account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => owner))
     account.expires_at=Time.zone.now
     assert account.save
-    account.should be_expired
+    expect(account).to be_expired
   end
 
   it "should validate description <= 50 chars" do
     @user    = FactoryGirl.create(:user)
     account = Account.new(FactoryGirl.attributes_for(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user)))
     account.description = random_string = SecureRandom.hex(51)
-    account.should_not be_valid
-    account.should have(1).error_on(:description)
+    expect(account).not_to be_valid
+    expect(account.error_on(:description).size).to eq(1)
   end
 
   it "should set suspend_at on suspend and unsuspend" do
     @owner   = FactoryGirl.create(:user)
     @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @owner))
     assert_nothing_raised { @account.suspend! }
-    @account.suspended_at.should_not == nil
+    expect(@account.suspended_at).not_to eq(nil)
     assert_nothing_raised { @account.unsuspend! }
-    @account.suspended_at.should == nil
+    expect(@account.suspended_at).to eq(nil)
   end
 
   context "account users" do
     it "should find all the accounts a user has access to, default suspended? to false" do
       @user    = FactoryGirl.create(:user)
       @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
-      @account.owner_user.should == @user
-      @account.suspended?.should == false
+      expect(@account.owner_user).to eq(@user)
+      expect(@account.suspended?).to eq(false)
     end
 
     it "should require an account owner" do
       @account = Account.create
-      @account.errors[:base].should == ['Must have an account owner']
+      expect(@account.errors[:base]).to eq(['Must have an account owner'])
     end
 
     it "should find the non-deleted account owner" do
@@ -118,11 +121,11 @@ describe Account do
       @user2   = FactoryGirl.create(:user)
       @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user1))
 
-      @account.owner_user.should == @user1
+      expect(@account.owner_user).to eq(@user1)
       @account.owner.update_attributes(:deleted_at => Time.zone.now, :deleted_by => @user1.id)
       @account_user2 = @account.account_users.create(:user_id => @user2.id, :user_role => 'Owner', :created_by => @user2.id)
       @account.reload #load fresh account users with update attributes
-      @account.owner_user.should == @user2
+      expect(@account.owner_user).to eq(@user2)
     end
 
     it "should find all non-suspended account business admins" do
@@ -134,8 +137,8 @@ describe Account do
       @account.account_users.create(:user_id => @user1.id, :user_role => 'Business Administrator', :created_by => @owner.id)
       @account.account_users.create(:user_id => @user2.id, :user_role => 'Business Administrator', :created_by => @owner.id, :deleted_at => Time.zone.now, :deleted_by => @owner.id)
 
-      @account.business_admin_users.should include @user1
-      @account.business_admin_users.should_not include @user2
+      expect(@account.business_admin_users).to include @user1
+      expect(@account.business_admin_users).not_to include @user2
     end
 
     it "should find all non-suspended business admins and the owner as notify users" do
@@ -147,9 +150,9 @@ describe Account do
       @account.account_users.create(:user_id => @user1.id, :user_role => 'Business Administrator', :created_by => @owner.id)
       @account.account_users.create(:user_id => @user2.id, :user_role => 'Business Administrator', :created_by => @owner.id, :deleted_at => Time.zone.now, :deleted_by => @owner.id)
 
-      @account.notify_users.should include @owner
-      @account.notify_users.should include @user1
-      @account.notify_users.should_not include @user2
+      expect(@account.notify_users).to include @owner
+      expect(@account.notify_users).to include @user1
+      expect(@account.notify_users).not_to include @user2
     end
 
     it "should verify if a user can purchase using the account" do
@@ -161,12 +164,12 @@ describe Account do
       @account.account_users.create(:user_id => @admin.id, :user_role => 'Business Administrator', :created_by => @owner.id)
       @user_au = @account.account_users.create(:user_id => @user.id, :user_role => 'Purchaser', :created_by => @owner.id)
 
-      @account.can_be_used_by?(@owner).should == true
-      @account.can_be_used_by?(@admin).should == true
-      @account.can_be_used_by?(@user).should == true
+      expect(@account.can_be_used_by?(@owner)).to eq(true)
+      expect(@account.can_be_used_by?(@admin)).to eq(true)
+      expect(@account.can_be_used_by?(@user)).to eq(true)
 
       @user_au.update_attributes(:deleted_at => Time.zone.now, :deleted_by => @owner.id)
-      @account.can_be_used_by?(@user).should == false
+      expect(@account.can_be_used_by?(@user)).to eq(false)
     end
   end
 
@@ -200,7 +203,7 @@ describe Account do
     context "validation against product/user" do
       it "should return nil if all conditions are met for validation" do
         define_open_account(@item.account, @nufs_account.account_number)
-        @nufs_account.validate_against_product(@item, @user).should == nil
+        expect(@nufs_account.validate_against_product(@item, @user)).to eq(nil)
       end
 
       context 'bundles' do
@@ -215,21 +218,21 @@ describe Account do
 
         it "should not return error if the product is a bundle and both of the bundled product's accounts are open for a chart string" do
           [ @item, @item2 ].each{|item| define_open_account(item.account, @nufs_account.account_number) }
-          @nufs_account.validate_against_product(@bundle, @user).should be_nil
+          expect(@nufs_account.validate_against_product(@bundle, @user)).to be_nil
         end
       end
 
       it "should return error if the product does not have a price policy for the account or user price groups" do
         define_open_account(@item.account, @nufs_account.account_number)
-        @nufs_account.validate_against_product(@item, @user).should == nil
+        expect(@nufs_account.validate_against_product(@item, @user)).to eq(nil)
         @price_group_member.destroy
         @user.reload
         @nufs_account.reload
-        @nufs_account.validate_against_product(@item, @user).should_not == nil
+        expect(@nufs_account.validate_against_product(@item, @user)).not_to eq(nil)
         FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
         @pg_account_member = FactoryGirl.create(:account_price_group_member, :account => @nufs_account, :price_group => @price_group)
         @nufs_account.reload #load fresh account with updated relationships
-        @nufs_account.validate_against_product(@item, @user).should == nil
+        expect(@nufs_account.validate_against_product(@item, @user)).to eq(nil)
       end
     end
   end
@@ -244,7 +247,7 @@ describe Account do
     order_detail = order.order_details.create!(FactoryGirl.attributes_for(:order_detail, :reviewed_at => (Time.zone.now-1.day)).update(:product_id => item.id, :account_id => account.id))
     statement = Statement.create({:facility => facility, :created_by => 1, :account => account})
     account.update_order_details_with_statement(statement)
-    order_detail.reload.statement.should == statement
+    expect(order_detail.reload.statement).to eq(statement)
   end
 
 
@@ -284,8 +287,8 @@ describe Account do
       end
 
       it "should return the right accounts" do
-        Account.for_facility(@facility1).should contain_all @facility1_accounts
-        Account.for_facility(@facility2).should contain_all @facility2_accounts
+        expect(Account.for_facility(@facility1)).to contain_all @facility1_accounts
+        expect(Account.for_facility(@facility2)).to contain_all @facility2_accounts
       end
     end
 

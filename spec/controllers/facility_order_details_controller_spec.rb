@@ -35,8 +35,8 @@ describe FacilityOrderDetailsController do
     end
 
     it_should_allow_operators_only :redirect do
-      flash[:notice].should be_present
-      @order_detail.reload.should_not be_frozen
+      expect(flash[:notice]).to be_present
+      expect(@order_detail.reload).not_to be_frozen
       assert_redirected_to facility_order_path(@authable, @order)
     end
 
@@ -49,7 +49,7 @@ describe FacilityOrderDetailsController do
 
       it_should_allow :director, 'to destroy a detail that is part of a merge order' do
         assert_raises(ActiveRecord::RecordNotFound) { OrderDetail.find @order_detail.id }
-        flash[:notice].should be_present
+        expect(flash[:notice]).to be_present
         assert_redirected_to facility_order_path(@authable, @clone)
       end
     end
@@ -64,8 +64,8 @@ describe FacilityOrderDetailsController do
                                             :price_group => @price_group,
                                             :usage_rate => 10,
                                             :usage_subsidy => 0)
-    @instrument_price_policy.should be_persisted
-    Instrument.any_instance.stub(:cheapest_price_policy).and_return(@instrument_price_policy)
+    expect(@instrument_price_policy).to be_persisted
+    allow_any_instance_of(Instrument).to receive(:cheapest_price_policy).and_return(@instrument_price_policy)
     @reservation = place_reservation @authable, @order_detail, 1.day.ago
     @order_detail.backdate_to_complete! @reservation.reserve_end_at
   end

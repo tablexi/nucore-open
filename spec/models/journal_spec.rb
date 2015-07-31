@@ -37,13 +37,13 @@ describe Journal do
       before { journal.is_successful = true }
 
       context "when not reconciled" do
-        before { journal.stub(:reconciled?).and_return(false) }
+        before { allow(journal).to receive(:reconciled?).and_return(false) }
 
         it { expect(journal).to be_submittable }
       end
 
       context "when reconciled" do
-        before { journal.stub(:reconciled?).and_return(true) }
+        before { allow(journal).to receive(:reconciled?).and_return(true) }
 
         it { expect(journal).not_to be_submittable }
       end
@@ -53,13 +53,13 @@ describe Journal do
       before { journal.is_successful = false }
 
       context "when not reconciled" do
-        before { journal.stub(:reconciled?).and_return(false) }
+        before { allow(journal).to receive(:reconciled?).and_return(false) }
 
         it { expect(journal).not_to be_submittable }
       end
 
       context "when reconciled" do
-        before { journal.stub(:reconciled?).and_return(true) }
+        before { allow(journal).to receive(:reconciled?).and_return(true) }
 
         it { expect(journal).not_to be_submittable }
       end
@@ -184,35 +184,35 @@ describe Journal do
   it "requires reference on update" do
     assert journal.save
     assert !journal.save
-    journal.errors[:reference].should_not be_nil
+    expect(journal.errors[:reference]).not_to be_nil
 
     journal.reference = '12345'
     journal.valid?
-    journal.errors[:reference].should be_empty
+    expect(journal.errors[:reference]).to be_empty
   end
 
   it "requires updated_by on update" do
     assert journal.save
     assert !journal.save
-    journal.errors[:updated_by].should_not be_nil
+    expect(journal.errors[:updated_by]).not_to be_nil
 
     journal.updated_by = '1'
     journal.valid?
-    journal.errors[:updated_by].should be_empty
+    expect(journal.errors[:updated_by]).to be_empty
   end
 
   it "requires a boolean value for is_successful on update" do
     assert journal.save
     assert !journal.save
-    journal.errors[:is_successful].should_not be_nil
+    expect(journal.errors[:is_successful]).not_to be_nil
 
     journal.is_successful = true
     journal.valid?
-    journal.errors[:is_successful].should be_empty
+    expect(journal.errors[:is_successful]).to be_empty
 
     journal.is_successful = false
     journal.valid?
-    journal.errors[:is_successful].should be_empty
+    expect(journal.errors[:is_successful]).to be_empty
   end
 
   it "should create and attach journal spreadsheet" do
@@ -221,17 +221,17 @@ describe Journal do
     @owner    = FactoryGirl.create(:user)
     @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @owner))
     journal.create_spreadsheet
-    journal.file.url.should =~ /^\/files/
+    expect(journal.file.url).to match(/^\/files/)
   end
 
   it 'should be open' do
     journal.is_successful = nil
-    journal.should be_open
+    expect(journal).to be_open
   end
 
   it 'should not be open' do
     journal.is_successful = true
-    journal.should_not be_open
+    expect(journal).not_to be_open
   end
 
   context 'order_details_span_fiscal_years?' do
@@ -256,7 +256,7 @@ describe Journal do
         od.update_attributes(:fulfilled_at => d1 + i.months)
         @order_details << od
       end
-      @order_details.size.should == 24
+      expect(@order_details.size).to eq(24)
       # You can use this to view the indexes
       # @order_details.each_with_index do |od, i|
       #   puts "#{i} #{od.fulfilled_at}"
@@ -264,15 +264,15 @@ describe Journal do
     end
 
     it 'should not span fiscal years with everything in the same year' do
-      journal.order_details_span_fiscal_years?(@order_details[5..16]).should be_false
+      expect(journal.order_details_span_fiscal_years?(@order_details[5..16])).to be false
     end
 
     it 'should span fiscal years when it goes over the beginning' do
-      journal.order_details_span_fiscal_years?([@order_details[6], @order_details[5], @order_details[4]]).should be_true
+      expect(journal.order_details_span_fiscal_years?([@order_details[6], @order_details[5], @order_details[4]])).to be true
     end
 
     it 'should span fiscal years when it goes over the end' do
-      journal.order_details_span_fiscal_years?(@order_details[16..17]).should be_true
+      expect(journal.order_details_span_fiscal_years?(@order_details[16..17])).to be true
     end
 
     it 'should return false with just one order detail' do

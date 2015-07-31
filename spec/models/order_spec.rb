@@ -17,19 +17,19 @@ describe Order do
   let(:order) { user.orders.create FactoryGirl.attributes_for(:order, :created_by => user.id) }
 
   it "should create using factory" do
-    order.should be_valid
+    expect(order).to be_valid
   end
 
   it "should require user" do
-    should validate_presence_of(:user_id)
+    is_expected.to validate_presence_of(:user_id)
   end
 
   it "should require created_by" do
-    should validate_presence_of(:created_by)
+    is_expected.to validate_presence_of(:created_by)
   end
 
   it "should create in new state" do
-    order.should be_new
+    expect(order).to be_new
   end
 
   it 'does not allow backdating with future dates' do
@@ -42,7 +42,7 @@ describe Order do
     expect(order).to be_can_backdate_order_details
   end
 
-  it { should belong_to :order_import }
+  it { is_expected.to belong_to :order_import }
 
   context 'total cost' do
     let(:account) { create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user)) }
@@ -140,7 +140,7 @@ describe Order do
     end
 
     it "should not validate_order if there are no order_details" do
-      @order.validate_order!.should be false
+      expect(@order.validate_order!).to be false
     end
 
     ## TODO simplify these to prevent overlapping test coverage with order_detail_spec
@@ -171,9 +171,9 @@ describe Order do
 
     it "should not allow purchase if the state is not :validated" do
       @order.order_details.create(:product_id => @service.id, :quantity => 1)
-      @order.new?.should be true
+      expect(@order.new?).to be true
       @order.save
-      lambda {@order.purchase!}.should raise_exception AASM::InvalidTransition
+      expect {@order.purchase!}.to raise_exception AASM::InvalidTransition
     end
 
     context 'successfully moving to purchase' do
@@ -181,23 +181,23 @@ describe Order do
         order_attrs=FactoryGirl.attributes_for(:order_detail, :product_id => @service.id, :quantity => 1, :price_policy_id => @service_pp.id, :account_id => @account.id, :actual_cost => 10, :actual_subsidy => 5)
         @order.order_details.create(order_attrs)
         define_open_account(@service.account, @account.account_number)
-        @order.validate_order!.should be true
+        expect(@order.validate_order!).to be true
       end
       it 'should start off with an empty order status' do
-        @order.order_details.all? { |od| od.order_status.should be_nil }
+        @order.order_details.all? { |od| expect(od.order_status).to be_nil }
       end
       it 'should set the ordered_at' do
-        @order.purchase!.should be_true
-        @order.ordered_at.should_not be_nil
+        expect(@order.purchase!).to be true
+        expect(@order.ordered_at).not_to be_nil
       end
       it 'should add to facility.orders collection' do
-        @order.purchase!.should be_true
-        @facility.orders.should == [@order]
-        @facility.order_details.accounts.should == [@account]
+        expect(@order.purchase!).to be true
+        expect(@facility.orders).to eq([@order])
+        expect(@facility.order_details.accounts).to eq([@account])
       end
       it 'purchase should mark the initial state to the products default' do
-        @order.purchase!.should be_true
-        @order.order_details.all? { |od| od.order_status.should == @order_status }
+        expect(@order.purchase!).to be true
+        @order.order_details.all? { |od| expect(od.order_status).to eq(@order_status) }
       end
     end
 
@@ -205,26 +205,26 @@ describe Order do
       order_attrs=FactoryGirl.attributes_for(:order_detail, :product_id => @service.id, :quantity => 1, :price_policy_id => @service_pp.id, :account_id => @account.id, :actual_cost => 10, :actual_subsidy => 5)
       @order.order_details.create(order_attrs)
       define_open_account(@service.account, @account.account_number)
-      @order.validate_order!.should be true
+      expect(@order.validate_order!).to be true
 
       @facility.is_active = false
       @facility.save!
       @order.reload
       @order.invalidate!
-      @order.validate_order!.should be false
+      expect(@order.validate_order!).to be false
     end
 
     it "should check for product active/inactive changes before purchase" do
       order_attrs=FactoryGirl.attributes_for(:order_detail, :product_id => @service.id, :quantity => 1, :price_policy_id => @service_pp.id, :account_id => @account.id, :actual_cost => 10, :actual_subsidy => 5)
       @order.order_details.create(order_attrs)
       define_open_account(@service.account, @account.account_number)
-      @order.validate_order!.should be true
+      expect(@order.validate_order!).to be true
 
       @service.is_archived = true
       @service.save!
       @order.reload
       @order.invalidate!
-      @order.validate_order!.should be false
+      expect(@order.validate_order!).to be false
     end
 
     it "should check for schedule rule changes before purchase" do
@@ -243,13 +243,13 @@ describe Order do
                                                        :reserve_start_min  => 00,               :reserve_start_meridian => 'am',
                                                        :duration_value     => 60,               :duration_unit          => 'minutes',
                                                        :order_detail       => @order_detail)
-      @order.validate_order!.should be true
+      expect(@order.validate_order!).to be true
 
       @rule.start_hour = 10
       @rule.save
       @order.reload
       @order.invalidate!
-      @order.validate_order!.should be false
+      expect(@order.validate_order!).to be false
     end
 
     it "should check for reservation conflicts before purchase"
@@ -298,38 +298,38 @@ describe Order do
 
         it "should add one order_detail per product in the bundle" do
           # should only have as many ods as (# of products in bundle * quantity)
-          @ods.size.should == @bundle.products.count * 2
+          expect(@ods.size).to eq(@bundle.products.count * 2)
 
           # shouldn't be missing any products
-          (@ods.collect(&:product_id) - @bundle.product_ids).should == []
+          expect(@ods.collect(&:product_id) - @bundle.product_ids).to eq([])
         end
 
         it "should have quantity of each = quantity specified in the bundle * passed in quantity" do
           # check quantities
           @ods.each do |od|
-            od.quantity.should == @bundle.bundle_products.find_by_product_id(od.product_id).quantity
+            expect(od.quantity).to eq(@bundle.bundle_products.find_by_product_id(od.product_id).quantity)
           end
         end
       end
 
       it "should add a single order_detail for an item w/ quantity of 2" do
         ods = @cart.add(@item, 2)
-        ods.size.should == 1
-        ods.first.should be_a_kind_of OrderDetail
+        expect(ods.size).to eq(1)
+        expect(ods.first).to be_a_kind_of OrderDetail
       end
 
       context "service" do
         it "should add two order_details when has an active survey and a quantity of 2" do
           # setup
           @service_w_active_survey = @facility.services.create!(FactoryGirl.attributes_for(:service, :initial_order_status_id => @order_status.id, :facility_account_id => @facility_account.id))
-          @service_w_active_survey.stub(:active_survey?).and_return(true)
+          allow(@service_w_active_survey).to receive(:active_survey?).and_return(true)
 
           # doit
           @ods = @cart.add(@service_w_active_survey, 2)
 
           # asserts
-          @ods.should respond_to :each
-          @ods.size.should == 2
+          expect(@ods).to respond_to :each
+          expect(@ods.size).to eq(2)
         end
 
         it "should add two order_details when has an active template and a quantity of 2" do
@@ -341,13 +341,13 @@ describe Order do
           @ods = @cart.add(@service_w_active_template, 2)
 
           #asserts
-          @ods.should respond_to :each
-          @ods.size.should == 2
+          expect(@ods).to respond_to :each
+          expect(@ods.size).to eq(2)
         end
 
         it "should add one order_detail when has a quantity of 2 and service doesn't have a template or survey" do
           @ods = @cart.add(@service, 2)
-          @ods.size.should == 1
+          expect(@ods.size).to eq(1)
         end
       end
 
@@ -356,33 +356,33 @@ describe Order do
         define_purchasable_instrument
 
         @ods = @cart.add(@instrument, 2)
-        @ods.collect(&:product).should == [@instrument, @instrument]
-        @ods.size.should == 2
+        expect(@ods.collect(&:product)).to eq([@instrument, @instrument])
+        expect(@ods.size).to eq(2)
       end
 
       it "should have a facility after adding a product to the cart" do
         @cart.add(@service, 1)
-        @cart.reload.facility.should == @facility
-        @cart.order_details.size.should == 1
+        expect(@cart.reload.facility).to eq(@facility)
+        expect(@cart.order_details.size).to eq(1)
       end
 
       it "should throw exception for order_detail from a facility different than the cart" do
         @cart.add(@service, 1)
-        @cart.order_details.size.should == 1
-        lambda { @cart.add(@service2, 1) }.should raise_exception NUCore::MixedFacilityCart
-        @cart.order_details.size.should == 1
+        expect(@cart.order_details.size).to eq(1)
+        expect { @cart.add(@service2, 1) }.to raise_exception NUCore::MixedFacilityCart
+        expect(@cart.order_details.size).to eq(1)
       end
     end
 
     context 'clear' do
       it "clear should destroy all order_details and set the cart.facility to nil when clearing cart" do
         @cart.add(@service, 1)
-        @cart.reload.facility.should == @facility
+        expect(@cart.reload.facility).to eq(@facility)
         @cart.clear!
-        @cart.facility.should be_nil
-        @cart.order_details.size.should == 0
-        @cart.account.should be_nil
-        @cart.state.should == 'new'
+        expect(@cart.facility).to be_nil
+        expect(@cart.order_details.size).to eq(0)
+        expect(@cart.account).to be_nil
+        expect(@cart.state).to eq('new')
       end
     end
 
@@ -392,14 +392,14 @@ describe Order do
         @order_detail = @cart.reload.order_details.first
         @cart.update_details(@order_detail.id => {:quantity => '2'})
         @order_detail = @cart.reload.order_details.first
-        @order_detail.quantity.should == 2
+        expect(@order_detail.quantity).to eq(2)
       end
 
       it "should delete the order_detail when setting the quantity to 0" do
         @cart.add(@service, 1)
         @order_detail = @cart.order_details[0]
         @cart.update_details(@order_detail.id => {:quantity => '0'})
-        @cart.reload.order_details.size.should == 0
+        expect(@cart.reload.order_details.size).to eq(0)
       end
 
       it "should adjust the note" do
@@ -408,7 +408,7 @@ describe Order do
         # quantity must be there, or we'll delete the order_detail
         @cart.update_details(@order_detail.id => {:quantity => 1, :note => 'new note value'})
         @order_detail = @cart.reload.order_details.first
-        @order_detail.note.should == 'new note value'
+        expect(@order_detail.note).to eq('new note value')
       end
 
       it "should update the child order_details' account on self's account change" do
@@ -420,21 +420,21 @@ describe Order do
         @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
         @cart.account = @account2
         @cart.save
-        @cart.reload.order_details[0].account.should == @account2
-        @cart.order_details[1].account.should == @account2
-        @cart.account.should == @account2
+        expect(@cart.reload.order_details[0].account).to eq(@account2)
+        expect(@cart.order_details[1].account).to eq(@account2)
+        expect(@cart.account).to eq(@account2)
       end
 
       it "should return an error for invalid quantities" do
         @order_detail = @cart.add(@service, 1).first
         result = @cart.update_details(@order_detail.id => {:quantity => "1.5"})
-        result.should be_false
-        @cart.errors.should_not be_empty
-        @cart.errors.to_a.should be_include 'Quantity must be an integer'
+        expect(result).to be false
+        expect(@cart.errors).not_to be_empty
+        expect(@cart.errors.to_a).to be_include 'Quantity must be an integer'
       end
 
       it "should clear the facility and the account when destroying the last order_detail from the cart" do
-        pending
+        skip
 #        @cart.add(@service, 1)
 #        @cart.add(@service_same, 1)
 #        @cart.order_details[1].destroy
@@ -454,11 +454,11 @@ describe Order do
     end
     it "should be false if it was ordered by the same person" do
       @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id))
-      @user.orders.first.should_not be_ordered_on_behalf_of
+      expect(@user.orders.first).not_to be_ordered_on_behalf_of
     end
     it "should be true if it was created by someone else" do
       @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user2.id))
-      @user.orders.first.should be_ordered_on_behalf_of
+      expect(@user.orders.first).to be_ordered_on_behalf_of
     end
   end
 
@@ -469,14 +469,14 @@ describe Order do
     end
 
     it 'should not be mergeable' do
-      @order.should_not be_to_be_merged
-      @order.merge_order.should be_nil
+      expect(@order).not_to be_to_be_merged
+      expect(@order.merge_order).to be_nil
     end
 
     it 'should be mergeable' do
       @order2 = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :merge_with_order_id => @order.id))
-      @order2.should be_to_be_merged
-      @order2.merge_order.should == @order
+      expect(@order2).to be_to_be_merged
+      expect(@order2.merge_order).to eq(@order)
     end
   end
 

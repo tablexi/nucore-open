@@ -3,19 +3,19 @@ require 'spec_helper'
 describe BudgetedChartString do
 
   it "should require fund" do
-    should validate_presence_of(:fund)
+    is_expected.to validate_presence_of(:fund)
   end
 
   it "should require dept" do
-    should validate_presence_of(:dept)
+    is_expected.to validate_presence_of(:dept)
   end
 
   it "should require starts_at" do
-    should validate_presence_of(:starts_at)
+    is_expected.to validate_presence_of(:starts_at)
   end
 
   it "should require expires_at" do
-    should validate_presence_of(:expires_at)
+    is_expected.to validate_presence_of(:expires_at)
   end
 
   # This import may not be used anymore, but I'm refactoring it to use the new fiscal

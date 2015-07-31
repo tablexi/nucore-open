@@ -15,18 +15,25 @@ describe Reservation do
     end
 
     # Confirming setup
-    it { should_not be_has_actuals }
-    it { should be_complete }
+    it { is_expected.not_to be_has_actuals }
+    it { is_expected.to be_complete }
 
     it 'should have a relay' do
-      subject.product.relay.should be_a RelayDummy
+      expect(subject.product.relay).to be_a RelayDummy
     end
 
-    its(:actual_end_at) { should be_nil }
-    its(:actual_start_at) { should be }
+    describe '#actual_end_at' do
+      subject { super().actual_end_at }
+      it { is_expected.to be_nil }
+    end
 
-    it { should_not be_can_switch_instrument_on }
-    it { should_not be_can_switch_instrument_off }
+    describe '#actual_start_at' do
+      subject { super().actual_start_at }
+      it { is_expected.to be }
+    end
+
+    it { is_expected.not_to be_can_switch_instrument_on }
+    it { is_expected.not_to be_can_switch_instrument_off }
   end
 
   context '#other_reservations_using_relay' do

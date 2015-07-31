@@ -10,17 +10,17 @@ describe Instrument do
   subject(:instrument) { build :instrument, :facility => facility, :facility_account => facility_account }
 
   it "should create using factory" do
-    instrument.should be_valid
-    instrument.type.should == 'Instrument'
+    expect(instrument).to be_valid
+    expect(instrument.type).to eq('Instrument')
   end
 
   [ :min_reserve_mins, :auto_cancel_mins ].each do |attr|
     it "should require #{attr} to be >= 0 and integers only" do
       instrument.min_reserve_mins = 0
-      should allow_value(0).for(attr)
-      should allow_value(nil).for(attr)
-      should_not allow_value(-1).for(attr)
-      should_not allow_value(5.0).for(attr)
+      is_expected.to allow_value(0).for(attr)
+      is_expected.to allow_value(nil).for(attr)
+      is_expected.not_to allow_value(-1).for(attr)
+      is_expected.not_to allow_value(5.0).for(attr)
     end
   end
 
@@ -101,7 +101,7 @@ describe Instrument do
     end
   end
 
-  it { should ensure_inclusion_of(:reserve_interval).in_array Instrument::RESERVE_INTERVALS }
+  it { is_expected.to ensure_inclusion_of(:reserve_interval).in_array Instrument::RESERVE_INTERVALS }
 
   describe 'shared schedules' do
     context 'default schedule' do
@@ -110,9 +110,9 @@ describe Instrument do
                                           :facility => facility,
                                           :facility_account => facility_account,
                                           :schedule => nil)
-        @instrument.schedule.should be_nil
-        @instrument.save.should be_true
-        @instrument.schedule.should be
+        expect(@instrument.schedule).to be_nil
+        expect(@instrument.save).to be true
+        expect(@instrument.schedule).to be
       end
 
       it 'should not create a new schedule when defined' do
@@ -121,9 +121,9 @@ describe Instrument do
                                           :facility => facility,
                                           :facility_account => facility_account,
                                           :schedule => @schedule)
-        @instrument.schedule.should be
-        @instrument.save.should be_true
-        @instrument.schedule.should == @schedule
+        expect(@instrument.schedule).to be
+        expect(@instrument.save).to be true
+        expect(@instrument.schedule).to eq(@schedule)
       end
     end
 
@@ -135,7 +135,7 @@ describe Instrument do
         end
 
         it 'should not be sharing' do
-          @instrument.should_not be_schedule_sharing
+          expect(@instrument).not_to be_schedule_sharing
         end
 
         context 'two instruments' do
@@ -144,7 +144,7 @@ describe Instrument do
           end
 
           it 'should be sharing' do
-            @instrument.should be_schedule_sharing
+            expect(@instrument).to be_schedule_sharing
           end
         end
       end
@@ -159,17 +159,17 @@ describe Instrument do
 
       it "should update the schedule's name when updating the primary instrument's name" do
         @instrument.update_attributes(:name => 'New Name')
-        @instrument.schedule.reload.name.should == 'New Name Schedule'
+        expect(@instrument.schedule.reload.name).to eq('New Name Schedule')
       end
 
       it 'should not call update_schedule_name if name did not change' do
-        @instrument.should_receive(:update_schedule_name).never
+        expect(@instrument).to receive(:update_schedule_name).never
         @instrument.update_attributes(:description => 'a description')
       end
 
       it "should not update the schedule's name when updating the secondary instrument" do
         @instrument2.update_attributes(:name => 'New Name')
-        @instrument2.schedule.reload.name.should == "#{@instrument.name} Schedule"
+        expect(@instrument2.schedule.reload.name).to eq("#{@instrument.name} Schedule")
       end
     end
   end
@@ -187,7 +187,7 @@ describe Instrument do
       before :each do
         @instrument.relay = RelayDummy.new(:instrument => @instrument)
         @instrument.relay.save!
-        @instrument.control_mechanism.should == 'timer'
+        expect(@instrument.control_mechanism).to eq('timer')
       end
 
       context "update with new control_mechanism: 'relay' (Timer with relay)" do
@@ -197,11 +197,11 @@ describe Instrument do
           end
 
           it "should fail" do
-            @updated.should be_false
+            expect(@updated).to be false
           end
 
           it "should have errors" do
-            @instrument.errors.full_messages.should_not == []
+            expect(@instrument.errors.full_messages).not_to eq([])
           end
         end
 
@@ -211,15 +211,15 @@ describe Instrument do
           end
 
           it "should succeed" do
-            @updated.should be_true
+            expect(@updated).to be true
           end
 
           it "should have no errors" do
-            @instrument.errors.full_messages.should == []
+            expect(@instrument.errors.full_messages).to eq([])
           end
 
           it "should have control mechanism of relay" do
-            @instrument.reload.control_mechanism.should == 'relay'
+            expect(@instrument.reload.control_mechanism).to eq('relay')
           end
         end
       end
@@ -230,15 +230,15 @@ describe Instrument do
         end
 
         it "should succeed" do
-          @updated.should be_true
+          expect(@updated).to be true
         end
 
         it "should have a control_mechanism of manual" do
-          @instrument.reload.control_mechanism.should == 'manual'
+          expect(@instrument.reload.control_mechanism).to eq('manual')
         end
 
         it "should destroy the relay" do
-          @instrument.reload.relay.should be_nil
+          expect(@instrument.reload.relay).to be_nil
         end
       end
     end
@@ -246,7 +246,7 @@ describe Instrument do
     context "existing type: RelaySynaccessA" do
       before :each do
         FactoryGirl.create(:relay, :instrument_id => @instrument.id)
-        @instrument.reload.control_mechanism.should == 'relay'
+        expect(@instrument.reload.control_mechanism).to eq('relay')
       end
 
       context "update with new control_mechanism: 'manual' (Reservation Only)" do
@@ -255,15 +255,15 @@ describe Instrument do
         end
 
         it "should succeed" do
-          @updated.should be_true
+          expect(@updated).to be true
         end
 
         it "should have a control_mechanism of manual" do
-          @instrument.reload.control_mechanism.should == 'manual'
+          expect(@instrument.reload.control_mechanism).to eq('manual')
         end
 
         it "should destroy the relay" do
-          @instrument.reload.relay.should be_nil
+          expect(@instrument.reload.relay).to be_nil
         end
       end
 
@@ -273,11 +273,11 @@ describe Instrument do
         end
 
         it "should succeed" do
-          @updated.should be_true
+          expect(@updated).to be true
         end
 
         it "control mechanism should be a timer" do
-          @instrument.reload.control_mechanism.should == 'timer'
+          expect(@instrument.reload.control_mechanism).to eq('timer')
         end
       end
     end
@@ -285,7 +285,7 @@ describe Instrument do
     context "existing type: manual 'Reservation Only'" do
       before :each do
         @instrument.relay.destroy if @instrument.relay
-        @instrument.reload.control_mechanism.should == Relay::CONTROL_MECHANISMS[:manual]
+        expect(@instrument.reload.control_mechanism).to eq(Relay::CONTROL_MECHANISMS[:manual])
       end
 
       context "update with new control_mechanism: 'relay' (Timer with relay)" do
@@ -295,11 +295,11 @@ describe Instrument do
           end
 
           it "should fail" do
-            @updated.should be_false
+            expect(@updated).to be false
           end
 
           it "should have errors" do
-            @instrument.errors.full_messages.should_not == []
+            expect(@instrument.errors.full_messages).not_to eq([])
           end
         end
 
@@ -308,15 +308,15 @@ describe Instrument do
             @updated = @instrument.update_attributes(:control_mechanism => "relay", :relay_attributes => FactoryGirl.attributes_for(:relay))
           end
           it "should succeed" do
-            @updated.should be_true
+            expect(@updated).to be true
           end
 
           it "should have no errors" do
-            @instrument.errors.full_messages.should == []
+            expect(@instrument.errors.full_messages).to eq([])
           end
 
           it "should have control mechanism of relay" do
-            @instrument.reload.control_mechanism.should == 'relay'
+            expect(@instrument.reload.control_mechanism).to eq('relay')
           end
         end
       end
@@ -327,11 +327,11 @@ describe Instrument do
         end
 
         it "should succeed" do
-          @updated.should be_true
+          expect(@updated).to be true
         end
 
         it "control mechanism should be a timer" do
-          @instrument.reload.control_mechanism.should == 'timer'
+          expect(@instrument.reload.control_mechanism).to eq('timer')
         end
       end
     end
@@ -349,7 +349,7 @@ describe Instrument do
       # add rule, available every day from 9 to 5, 60 minutes duration
       @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       assert @rule.valid?
-      Reservation.any_instance.stub(:admin?).and_return(false)
+      allow_any_instance_of(Reservation).to receive(:admin?).and_return(false)
     end
 
     it "should not allow reservation in the past" do
@@ -402,24 +402,24 @@ describe Instrument do
       assert @reservation1.valid?
       # not allow 10 am - 11 am
       @reservation2 = @instrument.reservations.create(:reserve_start_at => @start, :reserve_end_at => @start+1.hour)
-      @reservation2.errors[:base].should_not be_empty
+      expect(@reservation2.errors[:base]).not_to be_empty
       # not allow 9:30 am - 10:30 am
       @reservation2 = @instrument.reservations.create(:reserve_start_at => @start-30.minutes, :reserve_end_at => @start+30.minutes)
-      @reservation2.errors[:base].should_not be_empty
+      expect(@reservation2.errors[:base]).not_to be_empty
       # not allow 9:30 am - 10:30 am, using reserve_start_date, reserve_start_hour, reserve_start_min, reserve_start_meridian
       @options      = {:reserve_start_date => @start.to_s, :reserve_start_hour => '9', :reserve_start_min => '30',
                        :reserve_start_meridian => 'am', :duration_value => '60', :duration_unit => 'minutes'}
       @reservation2 = @instrument.reservations.create(@options)
-      @reservation2.errors[:base].should_not be_empty
+      expect(@reservation2.errors[:base]).not_to be_empty
       # not allow 9:30 am - 11:30 am
       @reservation2 = @instrument.reservations.create(:reserve_start_at => @start-30.minutes, :reserve_end_at => @start+90.minutes)
-      @reservation2.errors[:base].should_not be_empty
+      expect(@reservation2.errors[:base]).not_to be_empty
       # not allow 10:30 am - 10:45 am
       @reservation2 = @instrument.reservations.create(:reserve_start_at => @start+30.minutes, :reserve_end_at => @start+45.minutes)
-      @reservation2.errors[:base].should_not be_empty
+      expect(@reservation2.errors[:base]).not_to be_empty
       # not allow 10:30 am - 11:30 am
       @reservation2 = @instrument.reservations.create(:reserve_start_at => @start+30.minutes, :reserve_end_at => @start+90.minutes)
-      @reservation2.errors[:base].should_not be_empty
+      expect(@reservation2.errors[:base]).not_to be_empty
     end
 
     it "should allow adjacent reservations" do
@@ -450,7 +450,7 @@ describe Instrument do
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       assert @rule.valid?
       # stub so today at 9 am is not in the future
-      Reservation.any_instance.stub(:in_the_future).and_return(true)
+      allow_any_instance_of(Reservation).to receive(:in_the_future).and_return(true)
     end
 
     it "should find next available reservation with 60 minute interval rule, without any pending reservations" do
@@ -481,7 +481,7 @@ describe Instrument do
     end
 
     it "should find next available reservation with 5 minute interval rule, without any pending reservations" do
-      expect(@rule.instrument.update_attribute :reserve_interval, 5).to be_true
+      expect(@rule.instrument.update_attribute :reserve_interval, 5).to be true
       # find next reservation after 12 am at 9 am
       @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day
@@ -523,8 +523,8 @@ describe Instrument do
     end
 
     it 'should default to 0 and 23 if no schedule rules' do
-      @instrument.first_available_hour.should == 0
-      @instrument.last_available_hour.should == 23
+      expect(@instrument.first_available_hour).to eq(0)
+      expect(@instrument.last_available_hour).to eq(23)
     end
 
     context 'with a mon-friday rule from 9-5' do
@@ -535,8 +535,8 @@ describe Instrument do
       end
 
       it "should have first avail hour at 9 am, last avail hour at 4 pm" do
-        @instrument.first_available_hour.should == 9
-        @instrument.last_available_hour.should == 16
+        expect(@instrument.first_available_hour).to eq(9)
+        expect(@instrument.last_available_hour).to eq(16)
       end
 
       context 'with a weekend reservation going from 8-6' do
@@ -548,8 +548,8 @@ describe Instrument do
         end
 
         it "should have first avail hour at 8 am, last avail hour at 6 pm" do
-          @instrument.first_available_hour.should == 8
-          @instrument.last_available_hour.should == 17
+          expect(@instrument.first_available_hour).to eq(8)
+          expect(@instrument.last_available_hour).to eq(17)
         end
       end
     end
@@ -629,7 +629,7 @@ describe Instrument do
           @instrument.price_policies.clear
         end
         it 'should have no price policies' do
-          @instrument.price_policies.should be_empty
+          expect(@instrument.price_policies).to be_empty
         end
         it 'should not be purchasable' do
           expect(@instrument).not_to be_can_purchase(price_policy_ids)
@@ -641,12 +641,12 @@ describe Instrument do
           @user.price_group_members.delete(@price_group_member)
         end
         it 'should be set up right' do
-          @instrument.price_policies.current.should_not be_empty
-          @user.price_groups.should_not include @price_group
+          expect(@instrument.price_policies.current).not_to be_empty
+          expect(@user.price_groups).not_to include @price_group
         end
 
         it 'should not be purchasable' do
-          @instrument.should_not be_can_purchase(@user.price_groups.map(&:id))
+          expect(@instrument).not_to be_can_purchase(@user.price_groups.map(&:id))
         end
       end
 
@@ -656,7 +656,7 @@ describe Instrument do
         end
 
         it 'should be set up right' do
-          @instrument.price_policies.current.should be_empty
+          expect(@instrument.price_policies.current).to be_empty
         end
 
         it 'should be purchasable' do
@@ -671,13 +671,13 @@ describe Instrument do
         end
 
         it 'should be set up right' do
-          @instrument.price_policies.current.should be_empty
-          @instrument.price_policies.should_not be_empty
-          @user.price_groups.should_not include @price_groups
+          expect(@instrument.price_policies.current).to be_empty
+          expect(@instrument.price_policies).not_to be_empty
+          expect(@user.price_groups).not_to include @price_groups
         end
 
         it 'should not be purchasable' do
-          @instrument.should_not be_can_purchase(@user.price_groups.map(&:id))
+          expect(@instrument).not_to be_can_purchase(@user.price_groups.map(&:id))
         end
 
       end
@@ -688,28 +688,28 @@ describe Instrument do
   describe 'available?' do
     subject(:instrument) { FactoryGirl.create :setup_instrument }
 
-    it { should be_available }
+    it { is_expected.to be_available }
 
     context 'there is not a current schedule rule' do
       before :each do
         instrument.schedule_rules.destroy_all
       end
 
-      it { should_not be_available }
+      it { is_expected.not_to be_available }
     end
 
     context 'zero minimum reservation' do
       before :each do
         instrument.update_attributes(:min_reserve_mins => 0)
       end
-      it { should be_available }
+      it { is_expected.to be_available }
     end
 
     context 'with nil minimum reservation' do
       before :each do
         instrument.update_attributes(:min_reserve_mins => nil)
       end
-      it { should be_available }
+      it { is_expected.to be_available }
     end
 
     context 'reservation only instrument' do
@@ -719,18 +719,18 @@ describe Instrument do
                 :reserve_end_at   => 30.minutes.from_now,
                 :product => instrument }
 
-        it { should_not be_available }
+        it { is_expected.not_to be_available }
 
         context 'but it was canceled' do
           let(:user) { FactoryGirl.build :user }
           before :each do
             Timecop.travel(60.minutes.ago) do
               reservation.order_detail.update_order_status! user, OrderStatus.canceled.first
-              reservation.should be_canceled
+              expect(reservation).to be_canceled
             end
           end
 
-          it { should be_available }
+          it { is_expected.to be_available }
         end
       end
 
@@ -739,7 +739,7 @@ describe Instrument do
           instrument.update_attributes!(:min_reserve_mins => nil)
         end
 
-        it { should be_available }
+        it { is_expected.to be_available }
       end
     end
 
@@ -760,7 +760,7 @@ describe Instrument do
                                           :actual_start_at => 30.minutes.ago)
           end
 
-          it { should_not be_available }
+          it { is_expected.not_to be_available }
 
           context 'but it was ended already' do
             before :each do
@@ -768,7 +768,7 @@ describe Instrument do
                                             :actual_end_at => 10.minutes.ago)
             end
 
-            it { should be_available }
+            it { is_expected.to be_available }
           end
         end
       end

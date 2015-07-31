@@ -33,32 +33,32 @@ describe InstrumentDayReportsController do
 
 
   def assert_report_init(label, &report_on)
-    assigns(:totals).should be_is_a Array
-    assigns(:totals).size.should == 7
+    expect(assigns(:totals)).to be_is_a Array
+    expect(assigns(:totals).size).to eq(7)
 
     ndx=@reservation.actual_start_at.wday
     assigns(:totals).each_with_index do |sum, i|
       if i == ndx
-        sum.should > 0
+        expect(sum).to be > 0
       else
-        sum.should == 0
+        expect(sum).to eq(0)
       end
     end
 
     instruments=Instrument.all
-    assigns(:rows).should be_is_a Array
-    assigns(:rows).size.should == instruments.count
+    expect(assigns(:rows)).to be_is_a Array
+    expect(assigns(:rows).size).to eq(instruments.count)
 
     assigns(:rows).each do |row|
-      row.size.should == 8
-      instruments.collect(&:name).should be_include(row[0])
-      row[1..-1].all?{|data| data.should be_is_a(Numeric)}
+      expect(row.size).to eq(8)
+      expect(instruments.collect(&:name)).to be_include(row[0])
+      row[1..-1].all?{|data| expect(data).to be_is_a(Numeric)}
     end
   end
 
 
   def assert_report_data_init(label)
-    assigns(:report_data).should == Reservation.all
+    expect(assigns(:report_data)).to eq(Reservation.all)
   end
 
 end

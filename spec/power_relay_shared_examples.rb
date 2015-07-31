@@ -1,6 +1,6 @@
 shared_examples_for PowerRelay do
-  it { should allow_mass_assignment_of :ip }
-  it { should allow_mass_assignment_of :username }
-  it { should allow_mass_assignment_of :password }
-  it { should allow_mass_assignment_of :port }
+  it { is_expected.to allow_mass_assignment_of :ip }
+  it { is_expected.to allow_mass_assignment_of :username }
+  it { is_expected.to allow_mass_assignment_of :password }
+  it { is_expected.to allow_mass_assignment_of :port }
 end
