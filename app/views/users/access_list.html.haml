@@ -7,7 +7,10 @@
 = content_for :tabnav do
   = render partial: 'admin/shared/tabnav_users', locals: { secondary_tab: 'access_list' }
 
-%h1= t(:head, scope: 'users.access_list', name: @user.full_name)
+%h1
+  = t(:head, scope: 'users.access_list', name: @user.full_name)
+  %small= mail_to @user.email
+
 - if @products_by_type.blank?
   %p.notice= t('.no_products', name: @user.full_name)
 - else

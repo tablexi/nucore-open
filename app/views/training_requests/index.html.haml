@@ -10,6 +10,7 @@
     %thead
       %tr
         %th= TrainingRequest.human_attribute_name(:user)
+        %th= User.human_attribute_name(:email)
         %th= TrainingRequest.human_attribute_name(:product)
         %th= TrainingRequest.human_attribute_name(:created_at)
         %th
@@ -21,6 +22,7 @@
 
         %tr
           %td= link_to user.to_s, facility_user_access_list_path(current_facility, user)
+          %td= mail_to user.email
           %td= product.name
           %td= l(requested_at)
           %td
