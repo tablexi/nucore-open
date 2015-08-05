@@ -29,43 +29,24 @@ class FacilityNotificationsController < ApplicationController
 
   # GET /facilities/notifications/send
   def send_notifications
-    @accounts_to_notify = []
-    @orders_notified = []
-    @errors = []
-    reviewed_at = Time.zone.now + Settings.billing.review_period
     if params[:order_detail_ids].nil? or params[:order_detail_ids].empty?
       flash[:error] = I18n.t 'controllers.facility_notifications.no_selection'
       redirect_to :action => :index
       return
     end
-    OrderDetail.transaction do
-      params[:order_detail_ids].each do |order_detail_id|
-        od = nil
-        begin
-          od = OrderDetail.for_facility(current_facility).need_notification.find(order_detail_id, :readonly => false)
-        rescue => e
-          @errors << I18n.t('controllers.facility_notifications.send_notifications.order_error', :order_detail_id => order_detail_id)
-        end
-        if od
-          od.reviewed_at = reviewed_at
-          @errors << "#{od} #{od.errors}" unless od.save
 
-          if Settings.billing.review_period > 0
-            @orders_notified << od
-            @accounts_to_notify << [od.account, od.product.facility] unless @accounts_to_notify.include?([od.account, od.product.facility])
-          end
-        end
-      end
+    sender = NotificationSender.new(current_facility, params[:order_detail_ids])
 
-      if @errors.any?
-        flash[:error] = I18n.t('controllers.facility_notifications.errors_html', :errors => @errors.join('<br/>')).html_safe
-        raise ActiveRecord::Rollback
-      else
-        notify_accounts
-        account_list = @accounts_to_notify.map {|a, f| a.account_list_item }
-        flash[:notice] = send_notification_success_message(account_list)
-      end
+    if sender.perform
+      flash[:notice] = send_notification_success_message(sender)
+    else
+      flash[:error] = I18n.t('controllers.facility_notifications.errors_html', :errors => sender.errors.join('<br/>')).html_safe
     end
+    @accounts_to_notify = sender.account_ids_to_notify
+    @errors = sender.errors
+    @orders_notified = sender.order_details
+
+    # render nothing: true
     redirect_to :action => :index
   end
 
@@ -103,20 +84,11 @@ class FacilityNotificationsController < ApplicationController
   end
 
 private
-
-  def notify_accounts
-    @accounts_to_notify.each do |account, facility|
-      account.notify_users.each do |u|
-        Notifier.delay.review_orders(user: u, facility: facility, account: account)
-      end
-    end
-  end
-
-  def send_notification_success_message(account_list)
-    if account_list.size > 10
-      I18n.t('controllers.facility_notifications.send_notifications.success_count', :accounts => account_list.size)
+  def send_notification_success_message(sender)
+    if sender.accounts_notified_size > 10
+      I18n.t('controllers.facility_notifications.send_notifications.success_count', :accounts => sender.accounts_notified_size)
     else
-      I18n.t('controllers.facility_notifications.send_notifications.success_html', :accounts => account_list.join('<br/>')).html_safe
+      I18n.t('controllers.facility_notifications.send_notifications.success_html', :accounts => sender.accounts_notified.map(&:account_list_item).join('<br/>')).html_safe
     end
   end
 end

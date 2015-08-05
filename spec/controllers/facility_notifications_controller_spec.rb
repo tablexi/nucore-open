@@ -71,7 +71,7 @@ describe FacilityNotificationsController do
 
     it_should_allow_managers_only :redirect do
       assigns(:errors).should be_empty
-      assigns(:accounts_to_notify).should == [[@account, @authable]]
+      assigns(:accounts_to_notify).to_a.should == [[@account.id, @authable.id]]
       assigns(:orders_notified).should == [@order_detail1, @order_detail2]
       @order_detail1.reload.reviewed_at.should_not be_nil
       @order_detail1.reviewed_at.should > 6.days.from_now
@@ -85,7 +85,7 @@ describe FacilityNotificationsController do
       it_should_allow_managers_only :redirect do
         assigns(:errors).should be_empty
         assigns(:orders_notified).should == [@order_detail1, @order_detail2, @order_detail3]
-        assigns(:accounts_to_notify).should == [[@account, @authable], [@account2, @authable]]
+        assigns(:accounts_to_notify).to_a.should == [[@account.id, @authable.id], [@account2.id, @authable.id]]
       end
 
       context 'while signed in' do
@@ -96,42 +96,51 @@ describe FacilityNotificationsController do
         it 'should display the account list if less than 10 accounts' do
           @accounts = FactoryGirl.create_list(:nufs_account, 3, :account_users_attributes => account_users_attributes_hash(:user => @user))
           @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-          @params={ :facility_id => @authable.url_name }
+          @params = { facility_id: @authable.url_name }
 
           @order_details = @accounts.map do |account|
             place_and_complete_item_order(@user, @authable, account)
           end
 
-          @params.merge!(:order_detail_ids => @order_details.map(&:id))
+          @params.merge!(order_detail_ids: @order_details.map(&:id))
           do_request
           should set_the_flash
           @accounts.should be_all { |account| flash[:notice].include? account.account_number }
         end
 
         it 'should display a count if more than 10 accounts notified' do
-          @accounts = FactoryGirl.create_list(:nufs_account, 11, :account_users_attributes => account_users_attributes_hash(:user => @user))
+          @accounts = FactoryGirl.create_list(:nufs_account, 11, :account_users_attributes => account_users_attributes_hash(user: @user))
           @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-          @params={ :facility_id => @authable.url_name }
+          @params = { facility_id: @authable.url_name }
 
           @order_details = @accounts.map do |account|
             place_and_complete_item_order(@user, @authable, account)
           end
 
-          @params.merge!(:order_detail_ids => @order_details.map(&:id))
+          @params.merge!(order_detail_ids: @order_details.map(&:id))
+
           do_request
+
           should set_the_flash
-          flash[:notice].should include "11 accounts"
+          expect(flash[:notice]).to include("11 accounts")
         end
       end
     end
 
     context "errors" do
+      before { maybe_grant_always_sign_in(:admin) }
+
       it "should display an error for no orders" do
         @params[:order_detail_ids] = nil
-        maybe_grant_always_sign_in(:admin)
         do_request
         flash[:error].should_not be_nil
         response.should be_redirect
+      end
+
+      it "should return an error message for order not found in list" do
+        @params[:order_detail_ids] = [0]
+        do_request
+        expect(flash[:error]).to include("0")
       end
     end
   end
@@ -189,6 +198,5 @@ describe FacilityNotificationsController do
       flash[:error].should_not be_nil
     end
   end
-
 
 end
