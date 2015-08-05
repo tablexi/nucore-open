@@ -49,10 +49,10 @@ class Notifier < ActionMailer::Base
   end
 
   def review_orders(args)
-    @user=args[:user]
-    @facility=args[:facility]
-    @account=args[:account]
-    send_nucore_mail args[:user].email, t('notifier.review_orders.subject')
+    @user = User.find(args[:user_id])
+    @facility = Facility.find(args[:facility_id])
+    @account = Account.find(args[:account_id])
+    send_nucore_mail @user.email, t('notifier.review_orders.subject')
   end
 
   # Billing sends out the statement for the month. Appropriate users get

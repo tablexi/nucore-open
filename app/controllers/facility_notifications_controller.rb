@@ -29,7 +29,7 @@ class FacilityNotificationsController < ApplicationController
 
   # GET /facilities/notifications/send
   def send_notifications
-    @accounts_to_notify = []
+    @accounts_to_notify = Set.new
     @orders_notified = []
     @errors = []
     reviewed_at = Time.zone.now + Settings.billing.review_period
@@ -39,21 +39,19 @@ class FacilityNotificationsController < ApplicationController
       return
     end
     OrderDetail.transaction do
-      params[:order_detail_ids].each do |order_detail_id|
-        od = nil
-        begin
-          od = OrderDetail.for_facility(current_facility).need_notification.find(order_detail_id, :readonly => false)
-        rescue => e
-          @errors << I18n.t('controllers.facility_notifications.send_notifications.order_error', :order_detail_id => order_detail_id)
-        end
-        if od
-          od.reviewed_at = reviewed_at
-          @errors << "#{od} #{od.errors}" unless od.save
+      order_details = OrderDetail.for_facility(current_facility).need_notification.find(params[:order_detail_ids], readonly: false)
 
-          if Settings.billing.review_period > 0
-            @orders_notified << od
-            @accounts_to_notify << [od.account, od.product.facility] unless @accounts_to_notify.include?([od.account, od.product.facility])
-          end
+      order_details_not_found = params[:order_detail_ids].map(&:to_i) - order_details.map(&:id)
+      order_details_not_found.each do |order_detail_id|
+        @errors << I18n.t('controllers.facility_notifications.send_notifications.order_error', :order_detail_id => order_detail_id)
+      end
+
+      order_details.each do |od|
+        @errors << "#{od} #{od.errors}" unless od.update_attributes(reviewed_at: reviewed_at)
+
+        if Settings.billing.review_period > 0
+          @orders_notified << od
+          @accounts_to_notify << [od.account_id, od.product.facility_id]
         end
       end
 
@@ -61,11 +59,14 @@ class FacilityNotificationsController < ApplicationController
         flash[:error] = I18n.t('controllers.facility_notifications.errors_html', :errors => @errors.join('<br/>')).html_safe
         raise ActiveRecord::Rollback
       else
-        notify_accounts
-        account_list = @accounts_to_notify.map {|a, f| a.account_list_item }
+        notify_accounts(@accounts_to_notify)
+
+        account_list = Account.find(@accounts_to_notify.map(&:first)).map(&:account_list_item)
         flash[:notice] = send_notification_success_message(account_list)
+        # raise ActiveRecord::Rollback
       end
     end
+    # render nothing: true
     redirect_to :action => :index
   end
 
@@ -103,13 +104,19 @@ class FacilityNotificationsController < ApplicationController
   end
 
 private
-
-  def notify_accounts
-    @accounts_to_notify.each do |account, facility|
-      account.notify_users.each do |u|
-        Notifier.delay.review_orders(user: u, facility: facility, account: account)
+  class AccountNotifier
+    def notify_accounts(accounts_to_notify)
+      accounts_to_notify.each do |account_id, facility_id|
+        account = Account.find(account_id)
+        account.notify_users.each do |u|
+          Notifier.review_orders(user_id: u.id, facility_id: facility_id, account_id: account_id)
+        end
       end
     end
+  end
+
+  def notify_accounts(account_and_facilities)
+    AccountNotifier.new.delay.notify_accounts(account_and_facilities)
   end
 
   def send_notification_success_message(account_list)

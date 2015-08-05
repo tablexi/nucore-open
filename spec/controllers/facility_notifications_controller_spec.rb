@@ -71,7 +71,7 @@ describe FacilityNotificationsController do
 
     it_should_allow_managers_only :redirect do
       assigns(:errors).should be_empty
-      assigns(:accounts_to_notify).should == [[@account, @authable]]
+      assigns(:accounts_to_notify).to_a.should == [[@account.id, @authable.id]]
       assigns(:orders_notified).should == [@order_detail1, @order_detail2]
       @order_detail1.reload.reviewed_at.should_not be_nil
       @order_detail1.reviewed_at.should > 6.days.from_now
@@ -85,7 +85,7 @@ describe FacilityNotificationsController do
       it_should_allow_managers_only :redirect do
         assigns(:errors).should be_empty
         assigns(:orders_notified).should == [@order_detail1, @order_detail2, @order_detail3]
-        assigns(:accounts_to_notify).should == [[@account, @authable], [@account2, @authable]]
+        assigns(:accounts_to_notify).to_a.should == [[@account.id, @authable.id], [@account2.id, @authable.id]]
       end
 
       context 'while signed in' do
