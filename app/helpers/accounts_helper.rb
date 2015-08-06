@@ -13,7 +13,7 @@ module AccountsHelper
       [
         account.to_s,
         account.id,
-        { 'data-account-owner' => account.owner_user.name },
+        { 'data-account-owner' => account.owner_user_name },
       ]
     end
   end

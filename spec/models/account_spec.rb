@@ -7,6 +7,18 @@ describe Account do
 
   it_should_behave_like "an Account"
 
+  describe "#owner_user_name" do
+    context "when the account has an owner" do
+      it { expect(account.owner_user_name).to eq(user.name) }
+    end
+
+    context "when the account has no owner" do
+      before { account.account_users.each(&:destroy) }
+
+      it { expect(account.owner_user_name).to be_blank }
+    end
+  end
+
   context '#unreconciled_total' do
     context 'without unreconciled order_details' do
       it 'should total 0' do
@@ -159,6 +171,8 @@ describe Account do
   end
 
   context do
+    let(:nufs_account) { @nufs_account }
+
     before(:each) do
       @facility          = FactoryGirl.create(:facility)
       @user              = FactoryGirl.create(:user)
@@ -171,15 +185,15 @@ describe Account do
       @price_group_member = create(:account_price_group_member, account: @nufs_account, price_group: @price_group)
     end
 
-    context 'description' do
-      it 'override #to_s and not include owner' do
-        @nufs_account.to_s.should include(@nufs_account.account_number)
-        @nufs_account.to_s.should include(@nufs_account.description)
-        @nufs_account.to_s.should_not include(@nufs_account.owner_user.name)
+    context "description" do
+      it "overrides #to_s and does not include owner" do
+        expect(nufs_account.to_s).to include(nufs_account.account_number)
+        expect(nufs_account.to_s).to include(nufs_account.description)
+        expect(nufs_account.to_s).not_to include(nufs_account.owner_user_name)
       end
 
-      it 'override #to_s and include owner' do
-        @nufs_account.to_s(true).should include(@nufs_account.owner_user.name)
+      it "overrides #to_s and includes owner" do
+        expect(nufs_account.to_s(true)).to include(nufs_account.owner_user_name)
       end
     end
 
