@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Accessories::ChildUpdater do
-  let(:order) { mock_model Order }
+  let(:order) { Order.new }
   let(:order_detail) do
     build_stubbed :order_detail,
                order: order,
