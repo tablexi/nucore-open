@@ -254,7 +254,7 @@ class Account < ActiveRecord::Base
 
   def to_s(with_owner = false, flag_suspended = true)
     desc = "#{description} / #{account_number_to_s}"
-    desc += " / #{owner_user.name}" if with_owner && owner_user
+    desc += " / #{owner_user_name}" if with_owner && owner_user.present?
     desc += " (#{display_status.upcase})" if flag_suspended && suspended?
     desc
   end

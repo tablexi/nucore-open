@@ -13,16 +13,12 @@ module AccountsHelper
       [
         account.to_s,
         account.id,
-        { 'data-account-owner' => account_owner_name(account) },
+        { 'data-account-owner' => account.owner_user_name },
       ]
     end
   end
 
   def available_accounts_options
     options_for_select(available_accounts_array, @order_detail.account_id)
-  end
-
-  def account_owner_name(account)
-    account.owner_user.try(:name) || ""
   end
 end
