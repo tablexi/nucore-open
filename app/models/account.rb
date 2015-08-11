@@ -124,6 +124,10 @@ class Account < ActiveRecord::Base
     self.owner.user if owner
   end
 
+  def owner_user_name
+    owner_user.try(:name) || ""
+  end
+
   def business_admin_users
     self.business_admins.collect{|au| au.user}
   end

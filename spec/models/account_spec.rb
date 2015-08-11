@@ -7,6 +7,18 @@ describe Account do
 
   it_should_behave_like "an Account"
 
+  describe "#owner_user_name" do
+    context "when the account has an owner" do
+      it { expect(account.owner_user_name).to eq(user.name) }
+    end
+
+    context "when the account has no owner" do
+      before { account.account_users.each(&:destroy) }
+
+      it { expect(account.owner_user_name).to be_blank }
+    end
+  end
+
   context '#unreconciled_total' do
     context 'without unreconciled order_details' do
       it 'should total 0' do
