@@ -49,6 +49,31 @@ describe Reservation do
     end
   end
 
+  describe "#reservation_changed?" do
+    context "when altering the reservation start time" do
+      it "becomes true" do
+        expect { reservation.reserve_start_at += 1 }
+          .to change(reservation, :reservation_changed?).from(false).to(true)
+      end
+    end
+
+    context "when altering the reservation end time" do
+      it "becomes true" do
+        expect { reservation.reserve_end_at += 1 }
+          .to change(reservation, :reservation_changed?).from(false).to(true)
+      end
+    end
+
+    context "when the reservation times do not change" do
+      it "remains false" do
+        expect {
+          reservation.reserve_start_at += 0
+          reservation.reserve_end_at += 0
+        }.not_to change(reservation, :reservation_changed?).from(false)
+      end
+    end
+  end
+
   it 'allows starting of a reservation, whose duration is equal to the max duration, within the grace period' do
     reservation.product.update_attribute :max_reserve_mins, reservation.duration_mins
 
