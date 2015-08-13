@@ -771,101 +771,109 @@ describe ReservationsController do
       end
     end
 
-    context 'update' do
-      before :each do
-        @method=:put
-        @action=:update
+    describe "#update" do
+      before(:each) do
+        @method = :put
+        @action = :update
         @params.merge!(
-          :id => @reservation.id,
-          :reservation => {
-            :reserve_start_date => @start.to_date,
-            :reserve_start_hour => '10',
-            :reserve_start_min => '0',
-            :reserve_start_meridian => 'am',
-            :duration_value => '60',
-            :duration_unit => 'minutes'
+          id: reservation.id,
+          reservation: {
+            reserve_start_date: @start.to_date,
+            reserve_start_hour: "10",
+            reserve_start_min: "0",
+            reserve_start_meridian: "am",
+            duration_value: "60",
+            duration_unit: "minutes"
           }
         )
       end
 
       it_should_allow_all facility_users, "to update reservation" do
-        assigns[:order].should == @order
-        assigns[:order_detail].should == @order_detail
-        assigns[:instrument].should == @instrument
-        assigns[:reservation].should be_valid
-        assigns[:reservation].should_not be_changed
-        # should update reservation time
-        @reservation.reload.reserve_start_hour.should == 10
-        @reservation.reserve_end_hour.should == 11
-        @reservation.duration_mins.should == 60
-        assigns[:order_detail].estimated_cost.should_not be_nil
-        assigns[:order_detail].estimated_subsidy.should_not be_nil
+        expect(assigns[:order]).to eq(order)
+        expect(assigns[:order_detail]).to eq(order_detail)
+        expect(assigns[:instrument]).to eq(instrument)
+        expect(assigns[:reservation]).to be_valid
+        expect(assigns[:reservation]).not_to be_changed
+
+        expect(reservation.reload.reserve_start_hour).to eq(10)
+        expect(reservation.reserve_end_hour).to eq(11)
+        expect(reservation.duration_mins).to eq(60)
+        expect(assigns[:order_detail].estimated_cost).to be_present
+        expect(assigns[:order_detail].estimated_subsidy).to be_present
         should set_the_flash
         assert_redirected_to cart_url
       end
 
-      describe 'trying to update a past reservation' do
-        before :each do
+      describe "when trying to update a past reservation" do
+        before(:each) do
           sign_in @admin
           expect(controller).to receive(:invalid_for_update?).and_return true
+          do_request
         end
 
-        it 'redirects to the show page' do
-          do_request
-          expect(response).to redirect_to [@order, @order_detail, @reservation]
+        it "redirects to the show page" do
+          expect(response).to redirect_to([order, order_detail, reservation])
           expect(flash[:notice]).to be_present
         end
       end
 
-      describe 'update a running reservation' do
-        context 'with staff' do
-          before do
+      describe "when trying to update a running reservation" do
+        context "as staff" do
+          before(:each) do
             sign_in @staff
-            @reservation.actual_start_at = @start.to_date
-            @reservation.save(validate: false)
+            reservation.update_attribute(:actual_start_at, @start.to_date)
           end
 
-          it 'runs validations' do
+          it "runs validations" do
             expect_any_instance_of(Reservations::DurationChangeValidations)
               .to receive(:valid?)
               .and_return(false)
             do_request
           end
 
-          it 'ignores start fields' do
+          it "ignores start fields" do
             expect_any_instance_of(Reservations::DurationChangeValidations)
               .to receive(:valid?)
               .and_return(false)
             do_request
-            expect(@reservation.reload.reserve_start_date).to eq(@start.strftime('%m/%d/%Y'))
-            expect(@reservation.reload.reserve_start_hour).to eq(9)
-            expect(@reservation.reload.reserve_start_min).to eq(0)
-            expect(@reservation.reload.reserve_start_meridian).to eq('AM')
+            expect(reservation.reload.reserve_start_date)
+              .to eq(@start.strftime("%m/%d/%Y"))
+            expect(reservation.reload.reserve_start_hour).to eq(9)
+            expect(reservation.reload.reserve_start_min).to eq(0)
+            expect(reservation.reload.reserve_start_meridian).to eq("AM")
           end
 
-          context 'with errors' do
-            it 'renders edit' do
+          context "with errors" do
+            it "renders edit" do
               expect_any_instance_of(Reservations::DurationChangeValidations)
                 .to receive(:valid?)
                 .and_return(true)
               do_request
-              expect(response).to render_template :edit
+              expect(response).to render_template(:edit)
             end
           end
         end
       end
 
-      context 'creating a reservation in the future' do
-        before :each do
-          @params.deep_merge!(:reservation => {:reserve_start_date => Time.zone.now.to_date + (PriceGroupProduct::DEFAULT_RESERVATION_WINDOW + 1).days })
+      context "when creating a reservation in the future" do
+        let(:reserve_start_date) do
+          (PriceGroupProduct::DEFAULT_RESERVATION_WINDOW + 1).days.from_now
         end
+
+        before(:each) do
+          @params.deep_merge!(
+            reservation: { reserve_start_date: reserve_start_date },
+          )
+        end
+
         it_should_allow_all facility_operators, "to create a reservation beyond the default reservation window" do
-          assigns[:reservation].errors.should be_empty
+          expect(assigns[:reservation].errors).to be_empty
           assert_redirected_to cart_url
         end
+
         it_should_allow_all [:guest], "to receive an error that they are trying to reserve outside of the window" do
-          assigns[:reservation].errors.should_not be_empty
-          response.should render_template(:edit)
+          expect(assigns[:reservation].errors).to be_present
+          expect(response).to render_template(:edit)
         end
       end
     end
