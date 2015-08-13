@@ -46,7 +46,7 @@ class FacilityReservationsController < ApplicationController
 
     raise ActiveRecord::RecordNotFound unless @reservation == Reservation.find(params[:id])
     set_windows
-    unless @reservation.can_edit? || @reservation.can_edit_actuals?
+    if @reservation.locked?
       return redirect_to facility_order_order_detail_reservation_path(current_facility, @order, @order_detail, @reservation)
     end
   end
@@ -57,7 +57,9 @@ class FacilityReservationsController < ApplicationController
     @order_detail = @order.order_details.find(params[:order_detail_id])
     @reservation  = @order_detail.reservation
     @instrument   = @order_detail.product
-    raise ActiveRecord::RecordNotFound unless @reservation == Reservation.find(params[:id]) && (@reservation.can_edit? || @reservation.can_edit_actuals?)
+    if @reservation != Reservation.find(params[:id]) || @reservation.locked?
+      raise ActiveRecord::RecordNotFound
+    end
     set_windows
 
     @reservation.assign_times_from_params(params[:reservation])
@@ -197,11 +199,13 @@ class FacilityReservationsController < ApplicationController
   private
 
   def reserve_changed?
-    @reservation.can_edit? && @reservation.changes.any? { |k,v| k == 'reserve_start_at' || k == 'reserve_end_at' }
+    @reservation.admin_editable? &&
+    (@reservation.reserve_start_at_changed? || @reservation.reserve_end_at_changed?)
   end
 
   def actual_changed?
-    @reservation.can_edit_actuals? && @reservation.changes.any? { |k,v| k == 'actual_start_at' || k == 'actual_end_at' }
+    @reservation.can_edit_actuals? &&
+    (@reservation.actual_start_at_changed? || @reservation.actual_end_at_changed?)
   end
 
   def update_prices

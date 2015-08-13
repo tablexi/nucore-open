@@ -197,7 +197,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def reserve_start_at_editable?
-    before_lock_window? && actual_start_at.blank?
+    before_lock_window? && !started?
   end
 
   def reserve_end_at_editable?
@@ -209,7 +209,7 @@ class Reservation < ActiveRecord::Base
 
     return false unless next_available
 
-    current_end_at = reserve_end_at.change(:sec => 0)
+    current_end_at = reserve_end_at.change(sec: 0)
     next_start_at = next_available.reserve_start_at.change(sec: 0)
 
     current_end_at == next_start_at
@@ -223,13 +223,8 @@ class Reservation < ActiveRecord::Base
     before_lock_window? || Time.zone.now >= reserve_start_at
   end
 
-  # can the ADMIN edit the reservation?
-  def can_edit?
-    return true if id.nil? # object is new and hasn't been saved to the DB successfully
-
-    # an admin can edit the reservation times as long as the reservation has not been canceled,
-    # even if it is in the past.
-    !canceled?
+  def admin_editable?
+    new_record? || !canceled?
   end
 
   # TODO does this need to be more robust?
@@ -239,7 +234,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def reservation_changed?
-    changes.any? { |k,v| k == 'reserve_start_at' || k == 'reserve_end_at' }
+    reserve_start_at_changed? || reserve_end_at_changed?
   end
 
   def valid_before_purchase?
@@ -263,6 +258,10 @@ class Reservation < ActiveRecord::Base
 
   def requires_but_missing_actuals?
     !!(!canceled? && product.control_mechanism != Relay::CONTROL_MECHANISMS[:manual] && !has_actuals?) # TODO refactor?
+  end
+
+  def locked?
+    !(admin_editable? || can_edit_actuals?)
   end
 
   protected

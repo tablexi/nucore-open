@@ -29,8 +29,8 @@
             %ul
               - product_name = order_detail_description(od)
               %li= product_name
-              - unless od.reservation.nil?
-                - if od.reservation.can_edit?
+              - if od.reservation.present?
+                - if od.reservation.admin_editable?
                   %li.indented= link_to od.reservation, edit_facility_order_order_detail_reservation_path(current_facility, od.order, od, od.reservation)
                 - else
                   %li.indented= link_to od.reservation, facility_order_order_detail_reservation_path(current_facility, od.order, od, od.reservation)

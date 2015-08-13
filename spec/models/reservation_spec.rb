@@ -27,25 +27,89 @@ describe Reservation do
     Reservation.any_instance.stub(:admin?).and_return(false)
   end
 
-  describe "#can_edit?" do
+  describe "#admin_editable?" do
     context "when the reservation has been persisted" do
       context "and has been canceled" do
         subject(:reservation) { create(:setup_reservation, :canceled) }
 
-        it { expect(reservation).not_to be_can_edit }
+        it { expect(reservation).not_to be_admin_editable }
       end
 
       context "and has not been canceled" do
         subject(:reservation) { create(:setup_reservation) }
 
-        it { expect(reservation).to be_can_edit }
+        it { expect(reservation).to be_admin_editable }
       end
     end
 
     context "when the reservation has not been persisted" do
       subject(:reservation) { build(:reservation) }
 
-      it { expect(reservation).to be_can_edit }
+      it { expect(reservation).to be_admin_editable }
+    end
+  end
+
+  describe "#locked?" do
+    before(:each) do
+      reservation.stub(:admin_editable?).and_return(admin_editable?)
+      reservation.stub(:can_edit_actuals?).and_return(can_edit_actuals?)
+    end
+
+    context "when editable by admins" do
+      let(:admin_editable?) { true }
+
+      context "and actuals are editable" do
+        let(:can_edit_actuals?) { true }
+
+        it { expect(reservation).not_to be_locked }
+      end
+
+      context "and actuals are not editable" do
+        let(:can_edit_actuals?) { false }
+
+        it { expect(reservation).not_to be_locked }
+      end
+    end
+
+    context "when not editable by admins" do
+      let(:admin_editable?) { false }
+
+      context "and actuals are editable" do
+        let(:can_edit_actuals?) { true }
+
+        it { expect(reservation).not_to be_locked }
+      end
+
+      context "and actuals are not editable" do
+        let(:can_edit_actuals?) { false }
+
+        it { expect(reservation).to be_locked }
+      end
+    end
+  end
+
+  describe "#reservation_changed?" do
+    context "when altering the reservation start time" do
+      it "becomes true" do
+        expect { reservation.reserve_start_at += 1 }
+          .to change(reservation, :reservation_changed?).from(false).to(true)
+      end
+    end
+
+    context "when altering the reservation end time" do
+      it "becomes true" do
+        expect { reservation.reserve_end_at += 1 }
+          .to change(reservation, :reservation_changed?).from(false).to(true)
+      end
+    end
+
+    context "when the reservation times do not change" do
+      it "remains false" do
+        expect {
+          reservation.reserve_start_at += 0
+          reservation.reserve_end_at += 0
+        }.not_to change(reservation, :reservation_changed?).from(false)
+      end
     end
   end
 
