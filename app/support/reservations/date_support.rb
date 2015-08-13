@@ -14,7 +14,7 @@ module Reservations::DateSupport
   end
 
   def assign_times_from_params(params)
-    assign_reserve_from_params(params) if can_edit?
+    assign_reserve_from_params(params) if admin_editable?
     assign_actuals_from_params(params) if can_edit_actuals?
 
     set_all_split_times

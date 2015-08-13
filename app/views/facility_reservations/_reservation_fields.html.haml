@@ -1,4 +1,4 @@
-- if @reservation.can_edit?
+- if @reservation.admin_editable?
   .datetime-block
     = f.input :reserve_start_date, input_html: { class: "datepicker" }
     .control-group

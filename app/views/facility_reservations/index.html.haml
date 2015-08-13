@@ -37,7 +37,7 @@
             %td{:colspan => 2}
               = human_datetime(order.ordered_at)
             %td{:colspan => 2}
-              - if res.can_edit?
+              - if res.admin_editable?
                 = link_to res, edit_facility_order_order_detail_reservation_path(current_facility, order, od, res)
               - else
                 = link_to res, facility_order_order_detail_reservation_path(current_facility, order, od, res)
