@@ -234,7 +234,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def reservation_changed?
-    changes.any? { |k,v| k == 'reserve_start_at' || k == 'reserve_end_at' }
+    reserve_start_at_changed? || reserve_end_at_changed?
   end
 
   def valid_before_purchase?
