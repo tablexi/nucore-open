@@ -77,11 +77,16 @@ class ProductsCommonController < ApplicationController
 
     # is the user approved?
     if add_to_cart && !@product.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?(@product)
-      if TrainingRequest.submitted?(session_user, @product)
-        flash[:notice] = t_model_error(Product, "already_requested_access", product: @product)
-        return redirect_to facility_path(current_facility)
+      if SettingsHelper.feature_on?(:training_requests)
+        if TrainingRequest.submitted?(session_user, @product)
+          flash[:notice] = t_model_error(Product, "already_requested_access", product: @product)
+          return redirect_to facility_path(current_facility)
+        else
+          return redirect_to new_facility_product_training_request_path(current_facility, @product)
+        end
       else
-        return redirect_to new_facility_product_training_request_path(current_facility, @product)
+        add_to_cart = false
+        @error = "requires_approval"
       end
     end
 

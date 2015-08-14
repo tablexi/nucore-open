@@ -39,11 +39,22 @@ class InstrumentsController < ProductsCommonController
     end
 
     if add_to_cart && !@instrument.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?(@instrument)
-      if TrainingRequest.submitted?(current_user, @instrument)
-        flash[:notice] = t_model_error(Product, "already_requested_access", product: @instrument)
-        return redirect_to facility_path(current_facility)
+      if SettingsHelper.feature_on?(:training_requests)
+        if TrainingRequest.submitted?(current_user, @instrument)
+          flash[:notice] = t_model_error(Product, "already_requested_access", product: @instrument)
+          return redirect_to facility_path(current_facility)
+        else
+          return redirect_to new_facility_product_training_request_path(current_facility, @instrument)
+        end
       else
-        return redirect_to new_facility_product_training_request_path(current_facility, @instrument)
+        add_to_cart = false
+        flash[:notice] = t_model_error(
+          @instrument.class,
+          "requires_approval_html",
+          email: @instrument.email,
+          facility: @instrument.facility,
+          instrument: @instrument,
+        ).html_safe
       end
     end
 
