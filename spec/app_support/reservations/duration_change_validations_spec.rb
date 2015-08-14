@@ -55,10 +55,18 @@ describe Reservations::DurationChangeValidations do
 
           before { reservation.reserve_start_at -= 2.hours }
 
-          it "does not allow changing the start time" do
-            expect(validator).not_to be_valid
-            expect(validator.errors.full_messages)
-              .to include("Reserve start at cannot change once the reservation has started")
+          context "when still in a cart (not yet ordered)" do
+            it { expect(validator).to be_valid }
+          end
+
+          context "when ordered (no longer in a cart)" do
+            before { reservation.stub(:in_cart?).and_return(false) }
+
+            it "does not allow changing the start time" do
+              expect(validator).not_to be_valid
+              expect(validator.errors.full_messages)
+                .to include("Reserve start at cannot change once the reservation has started")
+            end
           end
         end
       end
@@ -68,18 +76,26 @@ describe Reservations::DurationChangeValidations do
       let(:reserve_start_at) { 30.minutes.ago }
       let(:reserve_end_at) { 40.minutes.from_now }
 
-      it "denies changing start time" do
-        reservation.reserve_start_at = 40.minutes.ago
-        validator.valid?
-        expect(validator.errors.full_messages)
-          .to include("Reserve start at cannot change once the reservation has started")
+      context "when still in a cart (not yet ordered)" do
+        it { expect(validator).to be_valid }
       end
 
-      it "denies shortening end time" do
-        reservation.reserve_end_at = 35.minutes.from_now
-        validator.valid?
-        expect(validator.errors.full_messages)
-          .to include("Reserve end at cannot be shortened once the reservation has started")
+      context "when ordered (no longer in a cart)" do
+        before { reservation.stub(:in_cart?).and_return(false) }
+
+        it "denies changing start time" do
+          reservation.reserve_start_at = 40.minutes.ago
+          validator.valid?
+          expect(validator.errors.full_messages)
+            .to include("Reserve start at cannot change once the reservation has started")
+        end
+
+        it "denies shortening end time" do
+          reservation.reserve_end_at = 35.minutes.from_now
+          validator.valid?
+          expect(validator.errors.full_messages)
+            .to include("Reserve end at cannot be shortened once the reservation has started")
+        end
       end
 
       context "with start time containing seconds" do
@@ -97,20 +113,49 @@ describe Reservations::DurationChangeValidations do
     end
 
     context "with a past reservation" do
-      let(:reservation) { create :setup_reservation, reserve_start_at: 15.minutes.ago, reserve_end_at: 5.minutes.ago, product: create(:setup_instrument, min_reserve_mins: 5) }
-
-      it "denies changing start time" do
-        reservation.reserve_start_at = 10.minutes.ago
-        validator.valid?
-        expect(validator.errors.full_messages)
-          .to include("Reserve start at cannot change once the reservation has started")
+      let(:reservation) do
+        create(
+          :setup_reservation,
+          reserve_start_at: 15.minutes.ago,
+          reserve_end_at: 5.minutes.ago,
+          product: create(:setup_instrument, min_reserve_mins: 5),
+        )
       end
 
-      it "denies shortening end time" do
-        reservation.reserve_end_at = 10.minutes.ago
-        validator.valid?
-        expect(validator.errors.full_messages)
-          .to include("Reserve end at cannot be shortened once the reservation has started")
+      context "when changing the start time" do
+        before { reservation.reserve_start_at = 10.minutes.ago }
+
+        context "when still in a cart (not yet ordered)" do
+          it { expect(validator).to be_valid }
+        end
+
+        context "when ordered (no longer in a cart)" do
+          before { reservation.stub(:in_cart?).and_return(false) }
+
+          it "denies changing the start time" do
+            expect(validator).not_to be_valid
+            expect(validator.errors.full_messages)
+              .to include("Reserve start at cannot change once the reservation has started")
+          end
+        end
+      end
+
+      context "when shortening the reservation time" do
+        before { reservation.reserve_end_at -= 5.minutes }
+
+        context "when still in a cart (not yet ordered)" do
+          it { expect(validator).to be_valid }
+        end
+
+        context "when ordered (no longer in a cart)" do
+          before { reservation.stub(:in_cart?).and_return(false) }
+
+          it "denies shortening the reservation time" do
+            expect(validator).not_to be_valid
+            expect(validator.errors.full_messages)
+              .to include("Reserve end at cannot be shortened once the reservation has started")
+          end
+        end
       end
     end
   end
@@ -161,7 +206,15 @@ describe Reservations::DurationChangeValidations do
         reservation.assign_attributes(reserve_end_at: 1.minute.from_now)
       end
 
-      it { expect(validator).to be_invalid }
+      context "when still in a cart (not yet ordered)" do
+        it { expect(validator).to be_valid }
+      end
+
+      context "when ordered (no longer in a cart)" do
+        before { reservation.stub(:in_cart?).and_return(false) }
+
+        it { expect(validator).to be_invalid }
+      end
     end
 
     context "with a past reservation" do
@@ -174,7 +227,15 @@ describe Reservations::DurationChangeValidations do
         reservation.assign_attributes(reserve_end_at: 30.minutes.ago)
       end
 
-      it { expect(validator).to be_invalid }
+      context "when still in a cart (not yet ordered)" do
+        it { expect(validator).to be_valid }
+      end
+
+      context "when ordered (no longer in a cart)" do
+        before { reservation.stub(:in_cart?).and_return(false) }
+
+        it { expect(validator).to be_invalid }
+      end
     end
 
     context "with a relay reservation started early" do
@@ -188,7 +249,15 @@ describe Reservations::DurationChangeValidations do
         reservation.assign_attributes(reserve_end_at: 30.minutes.from_now)
       end
 
-      it { expect(validator).to be_invalid }
+      context "when still in a cart (not yet ordered)" do
+        it { expect(validator).to be_valid }
+      end
+
+      context "when ordered (no longer in a cart)" do
+        before { reservation.stub(:in_cart?).and_return(false) }
+
+        it { expect(validator).to be_invalid }
+      end
     end
   end
 end
