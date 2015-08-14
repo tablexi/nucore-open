@@ -273,7 +273,7 @@ class ReservationsController < ApplicationController
       :actual_start_meridian
     )
 
-    if !@reservation.reserve_start_at_editable?
+    if !@reservation.admin_editable? && !@reservation.reserve_start_at_editable?
       reservation_params.tap do |p|
         p[:reserve_start_date] = @reservation.reserve_start_date
         p[:reserve_start_hour] = @reservation.reserve_start_hour
