@@ -197,7 +197,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def reserve_start_at_editable?
-    before_lock_window? && actual_start_at.blank?
+    before_lock_window? && !started?
   end
 
   def reserve_end_at_editable?
