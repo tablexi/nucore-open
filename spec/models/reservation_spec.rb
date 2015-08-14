@@ -49,6 +49,45 @@ describe Reservation do
     end
   end
 
+  describe "#locked?" do
+    before(:each) do
+      reservation.stub(:admin_editable?).and_return(admin_editable?)
+      reservation.stub(:can_edit_actuals?).and_return(can_edit_actuals?)
+    end
+
+    context "when editable by admins" do
+      let(:admin_editable?) { true }
+
+      context "and actuals are editable" do
+        let(:can_edit_actuals?) { true }
+
+        it { expect(reservation).not_to be_locked }
+      end
+
+      context "and actuals are not editable" do
+        let(:can_edit_actuals?) { false }
+
+        it { expect(reservation).not_to be_locked }
+      end
+    end
+
+    context "when not editable by admins" do
+      let(:admin_editable?) { false }
+
+      context "and actuals are editable" do
+        let(:can_edit_actuals?) { true }
+
+        it { expect(reservation).not_to be_locked }
+      end
+
+      context "and actuals are not editable" do
+        let(:can_edit_actuals?) { false }
+
+        it { expect(reservation).to be_locked }
+      end
+    end
+  end
+
   describe "#reservation_changed?" do
     context "when altering the reservation start time" do
       it "becomes true" do

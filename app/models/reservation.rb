@@ -260,6 +260,10 @@ class Reservation < ActiveRecord::Base
     !!(!canceled? && product.control_mechanism != Relay::CONTROL_MECHANISMS[:manual] && !has_actuals?) # TODO refactor?
   end
 
+  def locked?
+    !(admin_editable? || can_edit_actuals?)
+  end
+
   protected
 
   def has_order_detail?

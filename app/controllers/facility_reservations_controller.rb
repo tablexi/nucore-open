@@ -46,7 +46,7 @@ class FacilityReservationsController < ApplicationController
 
     raise ActiveRecord::RecordNotFound unless @reservation == Reservation.find(params[:id])
     set_windows
-    unless @reservation.admin_editable? || @reservation.can_edit_actuals?
+    if @reservation.locked?
       return redirect_to facility_order_order_detail_reservation_path(current_facility, @order, @order_detail, @reservation)
     end
   end
@@ -57,7 +57,7 @@ class FacilityReservationsController < ApplicationController
     @order_detail = @order.order_details.find(params[:order_detail_id])
     @reservation  = @order_detail.reservation
     @instrument   = @order_detail.product
-    unless @reservation == Reservation.find(params[:id]) && (@reservation.admin_editable? || @reservation.can_edit_actuals?)
+    if @reservation != Reservation.find(params[:id]) || @reservation.locked?
       raise ActiveRecord::RecordNotFound
     end
     set_windows
