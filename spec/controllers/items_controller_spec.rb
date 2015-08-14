@@ -89,9 +89,18 @@ describe ItemsController do
           do_request
         end
 
-        it "gives the user the option to submit a request for approval" do
-          expect(assigns[:add_to_cart]).to be_blank
-          assert_redirected_to(new_facility_product_training_request_path(facility, item))
+        context "if the training request feature is enabled", feature_setting: { training_requests: true } do
+          it "gives the user the option to submit a request for approval" do
+            expect(assigns[:add_to_cart]).to be_blank
+            assert_redirected_to(new_facility_product_training_request_path(facility, item))
+          end
+        end
+
+        context "if the training request feature is disabled", feature_setting: { training_requests: false } do
+          it "denies access to the user" do
+            expect(assigns[:add_to_cart]).to be_blank
+            expect(flash[:notice]).to include("item requires approval")
+          end
         end
       end
 

@@ -26,6 +26,19 @@ RSpec.configure do |config|
 
   config.include FactoryGirl::Syntax::Methods
 
+  config.around(:each) do |example|
+    if example.metadata[:feature_setting]
+      example.metadata[:feature_setting].each do |feature, value|
+        saved_setting = SettingsHelper.feature_on?(feature)
+        SettingsHelper.enable_feature(feature, value)
+        example.run
+        SettingsHelper.enable_feature(feature, saved_setting)
+      end
+    else
+      example.run
+    end
+  end
+
   config.around(:each, :timecop_freeze) do |example|
     # freeze time to specific time by defining let(:now)
     time = defined?(now) ? now : Time.zone.now
