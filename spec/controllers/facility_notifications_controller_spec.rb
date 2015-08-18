@@ -126,12 +126,19 @@ describe FacilityNotificationsController do
     end
 
     context "errors" do
+      before { maybe_grant_always_sign_in(:admin) }
+
       it "should display an error for no orders" do
         @params[:order_detail_ids] = nil
-        maybe_grant_always_sign_in(:admin)
         do_request
         flash[:error].should_not be_nil
         response.should be_redirect
+      end
+
+      it "should return an error message for order not found in list" do
+        @params[:order_detail_ids] = [0]
+        do_request
+        expect(flash[:error]).to include("0")
       end
     end
   end
@@ -189,6 +196,5 @@ describe FacilityNotificationsController do
       flash[:error].should_not be_nil
     end
   end
-
 
 end
