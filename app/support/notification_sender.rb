@@ -18,6 +18,13 @@ class NotificationSender
         @errors << I18n.t('controllers.facility_notifications.send_notifications.order_error', :order_detail_id => order_detail_id)
       end
 
+      # TODO unsure if we can do this
+      # order_details.update_all(reviewed_at: reviewed_at)
+      # if Settings.billing.review_period > 0
+      #   order_details.each do |od|
+      #     @account_ids_to_notify << [od.account_id, od.product.facility_id]
+      #   end
+      # end
       order_details.each do |od|
         @errors << "#{od} #{od.errors}" unless od.update_attributes(reviewed_at: reviewed_at)
 
@@ -28,7 +35,7 @@ class NotificationSender
 
       notify_accounts
 
-      raise ActiveRecord::Rollback if @errors.any?
+      raise ActiveRecord::Rollback #if @errors.any?
     end
 
     @errors.none?
@@ -39,7 +46,7 @@ class NotificationSender
   end
 
   def order_details
-    @order_details ||= OrderDetail.for_facility(current_facility).need_notification.where(id: @order_detail_ids).readonly(false)
+    @order_details ||= OrderDetail.for_facility(current_facility).need_notification.where(id: @order_detail_ids).readonly(false).includes(:product, :order, :price_policy, :reservation)
   end
 
   private
