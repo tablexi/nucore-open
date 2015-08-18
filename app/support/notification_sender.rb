@@ -18,35 +18,65 @@ class NotificationSender
         @errors << I18n.t('controllers.facility_notifications.send_notifications.order_error', :order_detail_id => order_detail_id)
       end
 
-      # TODO unsure if we can do this
-      # order_details.update_all(reviewed_at: reviewed_at)
-      # if Settings.billing.review_period > 0
-      #   order_details.each do |od|
-      #     @account_ids_to_notify << [od.account_id, od.product.facility_id]
-      #   end
-      # end
-      order_details.each do |od|
-        @errors << "#{od} #{od.errors}" unless od.update_attributes(reviewed_at: reviewed_at)
-
+      if _update_all?
+        # TODO unsure if we can do this
+        order_details.update_all(reviewed_at: reviewed_at)
         if Settings.billing.review_period > 0
-          @account_ids_to_notify << [od.account_id, od.product.facility_id]
+          order_details.each do |od|
+            @account_ids_to_notify << [od.account_id, od.product.facility_id]
+          end
+        end
+      else
+        order_details.each do |od|
+          @errors << "#{od} #{od.errors}" unless od.update_attributes(reviewed_at: reviewed_at)
+
+          if Settings.billing.review_period > 0
+            @account_ids_to_notify << [od.account_id, od.product.facility_id]
+          end
         end
       end
 
       notify_accounts
 
-      raise ActiveRecord::Rollback #if @errors.any?
+      raise ActiveRecord::Rollback if _testing? || @errors.any?
     end
 
     @errors.none?
   end
 
+  def account_ids_notified
+    @account_ids_to_notify.map(&:first)
+  end
+
   def accounts_notified
-    Account.find(@account_ids_to_notify.map(&:first))
+    Account.find(account_ids_notified)
+  end
+
+  def accounts_notified_size
+    account_ids_to_notify.count
   end
 
   def order_details
-    @order_details ||= OrderDetail.for_facility(current_facility).need_notification.where(id: @order_detail_ids).readonly(false).includes(:product, :order, :price_policy, :reservation)
+    return @order_details if @order_details
+
+    @order_details = OrderDetail.for_facility(current_facility).need_notification.where(id: @order_detail_ids).readonly(false)
+    if _includes?
+      @order_details = @order_details.includes(:product, :order, :price_policy, :reservation)
+    else
+      @order_details
+    end
+  end
+
+  def _testing?
+    false
+  end
+
+  def _includes?
+    false
+  end
+
+  def _update_all?
+    false
   end
 
   private

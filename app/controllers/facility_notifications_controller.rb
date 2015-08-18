@@ -38,7 +38,7 @@ class FacilityNotificationsController < ApplicationController
     sender = NotificationSender.new(current_facility, params[:order_detail_ids])
 
     if sender.perform
-      flash[:notice] = send_notification_success_message(sender.accounts_notified.map(&:account_list_item))
+      flash[:notice] = send_notification_success_message(sender)
     else
       flash[:error] = I18n.t('controllers.facility_notifications.errors_html', :errors => sender.errors.join('<br/>')).html_safe
     end
@@ -84,11 +84,11 @@ class FacilityNotificationsController < ApplicationController
   end
 
 private
-  def send_notification_success_message(account_list)
-    if account_list.size > 10
-      I18n.t('controllers.facility_notifications.send_notifications.success_count', :accounts => account_list.size)
+  def send_notification_success_message(sender)
+    if sender.accounts_notified_size > 10
+      I18n.t('controllers.facility_notifications.send_notifications.success_count', :accounts => sender.accounts_notified_size)
     else
-      I18n.t('controllers.facility_notifications.send_notifications.success_html', :accounts => account_list.join('<br/>')).html_safe
+      I18n.t('controllers.facility_notifications.send_notifications.success_html', :accounts => sender.accounts_notified.map(&:account_list_item).join('<br/>')).html_safe
     end
   end
 end
