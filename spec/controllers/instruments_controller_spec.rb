@@ -4,6 +4,12 @@ require "controller_spec_helper"
 RSpec.describe InstrumentsController do
   let(:facility) { @authable }
   let(:instrument) { @instrument }
+  let(:expected_add_order_path) do
+    add_order_path(
+      Order.all.last,
+      order: { order_details: [ product_id: instrument.id, quantity: 1 ] },
+    )
+  end
 
   render_views
 
@@ -73,19 +79,19 @@ RSpec.describe InstrumentsController do
     end
   end
 
-  context "show" do
-    before :each do
+  describe "#show" do
+    before(:each) do
       @method = :get
       @action = :show
     end
 
     it_should_allow :guest, "but not add to cart" do
       expect(assigns[:instrument]).to eq(instrument)
-      assert_redirected_to facility_path(facility)
+      expect(response).to redirect_to(facility_path(facility))
     end
 
     context "when it needs a valid account" do
-      before :each do
+      before(:each) do
         instrument.schedule_rules.create(attributes_for(:schedule_rule))
       end
 
@@ -97,7 +103,7 @@ RSpec.describe InstrumentsController do
 
         it "fails" do
           expect(flash).to be_present
-          assert_redirected_to facility_path(facility)
+          expect(response).to redirect_to(facility_path(facility))
         end
       end
 
@@ -110,18 +116,13 @@ RSpec.describe InstrumentsController do
 
         it "succeeds" do
           expect(flash).to be_empty
-          assert_redirected_to(
-            add_order_path(
-              Order.all.last,
-              order: { order_details: [ product_id: instrument.id, quantity: 1 ] },
-            )
-          )
+          expect(response).to redirect_to(expected_add_order_path)
         end
       end
     end
 
     context "when it needs schedule rules" do
-      before :each do
+      before(:each) do
         facility_operators.each do |operator|
           add_account_for_user(operator, instrument)
         end
@@ -132,28 +133,24 @@ RSpec.describe InstrumentsController do
         do_request
         expect(assigns[:instrument]).to eq(instrument)
         expect(session[:requested_params]).to be_present
-        assert_redirected_to new_user_session_path
+        expect(response).to redirect_to(new_user_session_path)
       end
 
       it_should_allow_all(facility_operators) do
         expect(assigns[:instrument]).to eq(instrument)
-        assert_redirected_to(
-          add_order_path(
-            Order.all.last,
-            order: { order_details: [ product_id: instrument.id, quantity: 1 ] },
-          )
-        )
+        expect(response).to redirect_to(expected_add_order_path)
       end
     end
 
     context "when the instrument requires approval" do
-      before :each do
+      before(:each) do
         instrument.schedule_rules.create(attributes_for(:schedule_rule))
         instrument.update_attributes(requires_approval: true)
       end
 
       context "if the user is not approved" do
         before(:each) do
+          add_account_for_user(:guest, instrument)
           sign_in @guest
           do_request
         end
@@ -161,7 +158,7 @@ RSpec.describe InstrumentsController do
         context "if the training request feature is enabled", feature_setting: { training_requests: true } do
           it "gives the user the option to submit a request for approval" do
             expect(assigns[:add_to_cart]).to be_blank
-            assert_redirected_to(new_facility_product_training_request_path(facility, instrument))
+            expect(response).to redirect_to(new_facility_product_training_request_path(facility, instrument))
           end
         end
 
@@ -188,7 +185,7 @@ RSpec.describe InstrumentsController do
 
         it "adds the instrument to the cart" do
           expect(flash).to be_empty
-          expect(assigns[:add_to_cart]).to be true
+          expect(response).to redirect_to(expected_add_order_path)
         end
       end
 
@@ -200,7 +197,8 @@ RSpec.describe InstrumentsController do
         end
 
         it "adds the instrument to the cart" do
-          expect(assigns[:add_to_cart]).to be true
+          expect(flash).to be_empty
+          expect(response).to redirect_to(expected_add_order_path)
         end
       end
     end
@@ -221,8 +219,7 @@ RSpec.describe InstrumentsController do
 
         it "shows the page if acting as a user" do
           expect(assigns[:instrument]).to eq(instrument)
-          expect(assigns[:add_to_cart]).to be true
-          expect(response).to be_redirect
+          expect(response).to redirect_to(expected_add_order_path)
         end
       end
     end
