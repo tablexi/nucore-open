@@ -1,5 +1,5 @@
 = content_for :tabnav do
-  = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'details'}
+  = render partial: 'shared/tabnav_account', locals: { secondary_tab: "details" }
 = content_for :h1 do
   = t('.head')
 
@@ -7,6 +7,8 @@
   = f.input :account_number
   = f.input :type_string
   = f.input :description
-  = f.input :expires_at, :date_only => true
+  = f.input :expires_at, date_only: true
+  - if @account.suspended?
+    = f.input :suspended_at, date_only: true
 
-  = render :partial => 'accounts/suspend_button'
+  = render partial: "accounts/suspend_button"
