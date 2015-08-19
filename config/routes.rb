@@ -65,12 +65,12 @@ Nucore::Application.routes.draw do
 
     resources :products, :only => [:index] do
       resources :product_accessories, :only => [:index, :create, :destroy], :path => 'accessories'
-      resources :training_requests, :only => [:new, :create]
+      resources :training_requests, :only => [:new, :create] if SettingsHelper.feature_on?(:training_requests)
     end
 
     match 'instrument_statuses', :to => 'instruments#instrument_statuses', :as => 'instrument_statuses'
 
-    resources :training_requests, :only => [:index, :destroy]
+    resources :training_requests, :only => [:index, :destroy] if SettingsHelper.feature_on?(:training_requests)
 
     resources :instruments do
       member do
