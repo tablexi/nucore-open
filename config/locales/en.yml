@@ -40,6 +40,11 @@ en:
     cart: Cart
     notices: Notices
 
+  message_notifier:
+    problem_order_details: Problem Orders
+    problem_reservation_order_details: Problem Reservations
+    training_requests: Training Requests
+
   shared:
     footer:
       copyright_html: "&copy; Copyright 2010%{to_date} Northwestern University"

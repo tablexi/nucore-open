@@ -18,9 +18,9 @@
                 %li.divider-vertical
               %li= link_to t('pages.cart') + " (#{current_cart.order_details.sum(:quantity)})", :cart
               %li.divider-vertical
-              - if current_user.operator? || current_user.administrator?
-                - n_count=current_user.notifications.active.count
-                - if n_count > 0
-                  %li= link_to t('pages.notices') + " (#{n_count})", notifications_path
-                  %li.divider-vertical
+              - notifier = MessageNotifier.new(current_user, current_ability, current_facility)
+              - if notifier.messages?
+                = render "shared/message_notifier", notifier: notifier
+                %li.divider-vertical
+
               %li= link_to t('pages.logout'), sign_out_user_path
