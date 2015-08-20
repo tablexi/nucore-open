@@ -133,7 +133,7 @@ class Ability
         can :read, ProductAccessory
         can :manage, Reservation
       end
-      can :start_stop, Reservation if resource.order_detail.order.user_id == user.id
+      can :start_stop, Reservation if resource.order.try(:user_id) == user.id
 
     elsif resource.is_a?(TrainingRequest)
       can :create, TrainingRequest
