@@ -9,12 +9,14 @@ describe MessageNotifier do
   let(:product) { create(:instrument_requiring_approval) }
   let(:user) { create(:user) }
 
+  let(:disputed_orders_visible?) { false }
   let(:manage_training_requests?) { false }
   let(:notifications_visible?) { false }
   let(:show_problem_orders?) { false }
   let(:show_problem_reservations?) { false }
 
   before(:each) do
+    subject.stub(:disputed_orders_visible?).and_return(disputed_orders_visible?)
     subject.stub(:manage_training_requests?).and_return(manage_training_requests?)
     subject.stub(:notifications_visible?).and_return(notifications_visible?)
     subject.stub(:show_problem_orders?).and_return(show_problem_orders?)
@@ -54,7 +56,7 @@ describe MessageNotifier do
     end
   end
 
-  context "when no active notifications, training requests, or problem orders exist" do
+  context "when no active notifications, training requests, disputed or problem orders exist" do
     it_behaves_like "there are no messages"
   end
 
@@ -85,6 +87,33 @@ describe MessageNotifier do
 
     context "and the user may not view notifications" do
       let(:notifications_visible?) { false }
+
+      it_behaves_like "there are no messages"
+    end
+  end
+
+  context "when a disputed order detail exists" do
+    before { order_detail.update_attribute(:dispute_at, 1.day.ago) }
+
+    context "and the user can access disputed order details" do
+      let(:disputed_orders_visible?) { true }
+
+      it_behaves_like "there is one overall message"
+
+      it "has one disputed order detail message" do
+        expect(subject).to be_order_details_in_dispute
+        expect(subject.order_details_in_dispute.count).to eq(1)
+      end
+
+      context "when not scoped to a facility" do
+        subject { MessageNotifier.new(user, ability, nil) }
+
+        it_behaves_like "there are no messages"
+      end
+    end
+
+    context "and the user cannot access problem orders" do
+      let(:disputed_orders_visible?) { false }
 
       it_behaves_like "there are no messages"
     end

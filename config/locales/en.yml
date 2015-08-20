@@ -41,6 +41,7 @@ en:
     notices: Notices
 
   message_notifier:
+    order_details_in_dispute: Disputed Orders
     problem_order_details: Problem Orders
     problem_reservation_order_details: Problem Reservations
     training_requests: Training Requests

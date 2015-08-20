@@ -7,6 +7,11 @@
         data: { toggle: "dropdown" }
 
       %ul.dropdown-menu
+        - if notifier.order_details_in_dispute?
+          %li
+            = link_to "#{t("message_notifier.order_details_in_dispute")} (#{notifier.order_details_in_dispute.count})",
+              facility_disputed_orders_path(current_facility)
+
         - if notifier.notifications?
           %li
             = link_to "#{t("pages.notices")} (#{notifier.notifications.count})",

@@ -7,6 +7,7 @@ class MessageNotifier
 
   def message_count
     notifications.count +
+    order_details_in_dispute.count +
     problem_order_details.count +
     problem_reservation_order_details.count +
     training_requests.count
@@ -14,9 +15,10 @@ class MessageNotifier
 
   def messages?
     notifications? ||
-    training_requests? ||
+    order_details_in_dispute? ||
     problem_order_details? ||
-    problem_reservation_order_details?
+    problem_reservation_order_details? ||
+    training_requests?
   end
 
   def notifications
@@ -26,6 +28,15 @@ class MessageNotifier
 
   def notifications?
     notifications.any?
+  end
+
+  def order_details_in_dispute
+    return [] unless disputed_orders_visible?
+    @facility.try(:order_details_in_dispute) || []
+  end
+
+  def order_details_in_dispute?
+    order_details_in_dispute.any?
   end
 
   def problem_order_details
@@ -56,6 +67,10 @@ class MessageNotifier
   end
 
   private
+
+  def disputed_orders_visible?
+    @ability.can?(:disputed_orders, Facility)
+  end
 
   def show_problem_orders?
     @ability.can?(:show_problems, Order)
