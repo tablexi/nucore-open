@@ -101,7 +101,19 @@ class Facility < ActiveRecord::Base
     "#{name} (#{abbreviation})"
   end
 
+  def problem_order_details
+    complete_problem_order_details.non_reservations
+  end
+
+  def problem_reservation_order_details
+    complete_problem_order_details.reservations
+  end
+
   private
+
+  def complete_problem_order_details
+    order_details.problem_orders.complete
+  end
 
   def set_journal_mask
     f = Facility.find(:all, :limit => 1, :order => 'journal_mask DESC').first
