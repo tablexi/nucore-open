@@ -276,6 +276,7 @@ en:
         type_string: Payment Source Type
         owner_user: Owner
         remittance_information: Bill To
+        suspended_at: Suspended
       nufs_account:
         account_number: Payment Source Number
       training_request:

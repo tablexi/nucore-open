@@ -1,11 +1,11 @@
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+  = render :partial => "admin/shared/sidenav_billing", locals: { sidenav_tab: "accounts" }
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_payment_method', :locals => {:secondary_tab => 'details'}
+  = render partial: "admin/shared/tabnav_payment_method", locals: { secondary_tab: "details" }
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 %h2= @account
 
@@ -13,18 +13,21 @@
   = f.input :owner_user
   = f.input :type_string
   = f.input :description
-  = f.input :formatted_expires_at
+  = f.input :expires_at, date_only: true
+  - if @account.suspended?
+    = f.input :suspended_at, date_only: true
   - if lookup_context.exists? "facility_accounts/#{@account.class.name.underscore}/show", [], true
-    = render :partial => "facility_accounts/#{@account.class.name.underscore}/show", :locals => { :f => f }
+    = render partial: "facility_accounts/#{@account.class.name.underscore}/show", locals: { f: f }
   - if @account.affiliate
-    = f.input :affiliate, :input_html => { :value => @account.affiliate_to_s }
+    = f.input :affiliate, input_html: { value: @account.affiliate_to_s }
   = f.input :display_status,
     input_html: { class: @account.suspended? ? "suspended-account" : "" }
 
+
   - unless @account.is_a?(NufsAccount)
-    = f.input :remittance_information, :value_method => Proc.new { |value| value.present? ? simple_format(value) : 'None Entered'}
+    = f.input :remittance_information, value_method: Proc.new { |value| value.present? ? simple_format(value) : 'None Entered'}
 
 %ul.inline
   - if SettingsHelper.feature_on? :edit_accounts
-    = link_to t('.link.edit'), edit_facility_account_path(current_facility, @account), :class => ['btn', 'btn-primary']
-  = render :partial => 'accounts/suspend_button'
+    = link_to t('.link.edit'), edit_facility_account_path(current_facility, @account), class: ['btn', 'btn-primary']
+  = render partial: 'accounts/suspend_button'
