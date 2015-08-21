@@ -96,63 +96,33 @@ describe FacilityNotificationsController do
         it 'should display the account list if less than 10 accounts' do
           @accounts = FactoryGirl.create_list(:nufs_account, 3, :account_users_attributes => account_users_attributes_hash(:user => @user))
           @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-          @params={ :facility_id => @authable.url_name }
+          @params = { facility_id: @authable.url_name }
 
           @order_details = @accounts.map do |account|
             place_and_complete_item_order(@user, @authable, account)
           end
 
-          @params.merge!(:order_detail_ids => @order_details.map(&:id))
+          @params.merge!(order_detail_ids: @order_details.map(&:id))
           do_request
           should set_the_flash
           @accounts.should be_all { |account| flash[:notice].include? account.account_number }
         end
 
         it 'should display a count if more than 10 accounts notified' do
-          # TODO change back to 11
-          @accounts = FactoryGirl.create_list(:nufs_account, 90, :account_users_attributes => account_users_attributes_hash(:user => @user))
+          @accounts = FactoryGirl.create_list(:nufs_account, 11, :account_users_attributes => account_users_attributes_hash(user: @user))
           @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-          @params={ :facility_id => @authable.url_name }
+          @params = { facility_id: @authable.url_name }
 
           @order_details = @accounts.map do |account|
             place_and_complete_item_order(@user, @authable, account)
           end
 
-          @params.merge!(:order_detail_ids => @order_details.map(&:id))
+          @params.merge!(order_detail_ids: @order_details.map(&:id))
 
-          prev = Delayed::Worker.delay_jobs
-          Delayed::Worker.delay_jobs = true
-          allow_any_instance_of(NotificationSender).to receive(:_testing?).and_return true
+          do_request
 
-          allow_any_instance_of(NotificationSender).to receive(:_update_all?).and_return false
-          allow_any_instance_of(NotificationSender).to receive(:_includes?).and_return false
-          puts "order_details.each, no includes"
-          10.times do
-            puts (Benchmark.measure { do_request } )
-          end
-
-          puts "order_details.each, includes"
-          allow_any_instance_of(NotificationSender).to receive(:_includes?).and_return true
-          10.times do
-            puts (Benchmark.measure { do_request } )
-          end
-
-          allow_any_instance_of(NotificationSender).to receive(:_update_all?).and_return true
-          allow_any_instance_of(NotificationSender).to receive(:_includes?).and_return false
-          puts "order_details.update_all, no includes"
-          10.times do
-            puts (Benchmark.measure { do_request } )
-          end
-
-          puts "order_details.update_all, includes"
-          allow_any_instance_of(NotificationSender).to receive(:_includes?).and_return true
-          10.times do
-            puts (Benchmark.measure { do_request } )
-          end
-
-          Delayed::Worker.delay_jobs = prev
           should set_the_flash
-          flash[:notice].should include "11 accounts"
+          expect(flash[:notice]).to include("11 accounts")
         end
       end
     end
