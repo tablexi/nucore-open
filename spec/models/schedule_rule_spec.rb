@@ -26,8 +26,10 @@ describe ScheduleRule do
       shared_examples_for "it generates reservations to cover unavailability" do
         it "returns two dummy reservations" do
           expect(reservations.size).to eq(2)
+
           reservations.each do |reservation|
             expect(reservation).to be_kind_of(Reservation)
+            expect(reservation).to be_blackout
             expect(reservation).not_to be_persisted
           end
         end
