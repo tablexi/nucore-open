@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe ScheduleRule do
-
   it "should create using factory" do
     @facility   = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
@@ -59,7 +58,7 @@ describe ScheduleRule do
       @rule       = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
       @rule.includes_datetime(DateTime.new(1981, 9, 15, 12, 0, 0)).should == true
     end
-    
+
     it "should not recognize non-inclusive datetimes" do
       @facility   = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
@@ -85,7 +84,7 @@ describe ScheduleRule do
     @options    = FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 9, :end_hour => 17)
     @rule1      = @instrument.schedule_rules.create(@options)
     assert @rule1.errors[:base]
-    
+
     # not allow rule from 9 am to 10 am
     @options    = FactoryGirl.attributes_for(:schedule_rule).merge(:end_hour => 10)
     @rule1      = @instrument.schedule_rules.create(@options)
@@ -145,11 +144,11 @@ describe ScheduleRule do
   #   # create rule every day from 9 am to 5 pm
   #   @rule1      = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
   #   assert @rule1.valid?
-  # 
+  #
   #   # start/end at the exact same time
   #   @rule2      = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
   #   @rule2.should_not be_valid
-  # 
+  #
   #   # start/end one hour before valid rule, but times overlap
   #   @rule2.start_hour = @rule2.start_hour - 1
   #   @rule2.end_hour   = @rule2.end_hour - 1
@@ -165,7 +164,7 @@ describe ScheduleRule do
     # create rule every day from 9 am to 5 pm
     @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     assert @rule.valid?
-    
+
     @rule.start_hour = 9
     @rule.start_min = 00
     @rule.end_hour = 9
@@ -187,7 +186,7 @@ describe ScheduleRule do
       # create rule every day from 9 am to 5 pm
       @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       assert @rule.valid?
-      
+
       # find past sunday, and build calendar object
       @sunday   = ScheduleRule.sunday_last
       @calendar = @rule.as_calendar_object
@@ -226,7 +225,7 @@ describe ScheduleRule do
         Time.zone.parse(hash['start']).should == Time.zone.parse("#{@sunday + i.days} 17:00")
         Time.zone.parse(hash['end']).should == Time.zone.parse("#{@sunday + (i+1).days}")
       end
-      
+
       # should set calendar objects title to ''
       @not_calendar.each do |hash|
         hash['title'].should == ''
@@ -279,13 +278,13 @@ describe ScheduleRule do
       @not_available = ScheduleRule.unavailable([@rule1, @rule2])
       @not_available.size.should == 9
       @not_calendar  = @not_available.collect{ |na| na.as_calendar_object }.flatten
-      
+
       # rules for tuesday should be 12am-1am, 3am-7am, 9pm-12pm
       @tuesday_times = @not_calendar.select{ |hash| Time.zone.parse(hash['start']).to_date == @tuesday }.collect do |hash|
         [Time.zone.parse(hash['start']).hour, Time.zone.parse(hash['end']).hour]
       end
       @tuesday_times.should == [[0,1], [3,7], [9,0]]
-      
+
       # rules for other days should be 12am-12pm
       @other_times = @not_calendar.select{ |hash| Time.zone.parse(hash['start']).to_date != @tuesday }.collect do |hash|
         [Time.zone.parse(hash['start']).hour, Time.zone.parse(hash['end']).hour]
@@ -345,17 +344,17 @@ describe ScheduleRule do
       # create rule every day from 9 am to 5 pm
       @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       assert @rule.valid?
-      
+
       # set start_date as wednesday
       @wednesday  = ScheduleRule.sunday_last + 3.days
       @calendar   = @rule.as_calendar_object(:start_date => @wednesday)
-      
+
       # should start on wednesday
       @calendar.size.should == 7
       Time.zone.parse(@calendar[0]['start']).to_date.should == @wednesday
     end
   end
-  
+
   context 'available_to_user' do
     before :each do
       @facility   = FactoryGirl.create(:facility)
@@ -367,15 +366,18 @@ describe ScheduleRule do
       @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       @user = FactoryGirl.create(:user)
     end
+
     context 'if instrument has no levels' do
       it 'should not return a rule if the user is not added' do
         @instrument.schedule_rules.available_to_user(@user).should be_empty
       end
+
       it 'should return a rule' do
         @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id})
         @instrument.schedule_rules.available_to_user(@user).to_a.should == [@rule]
       end
     end
+
     context 'if instrument has levels' do
       before :each do
         @restriction_levels = []
@@ -383,40 +385,40 @@ describe ScheduleRule do
           @restriction_levels << FactoryGirl.create(:product_access_group, :product_id => @instrument.id)
         end
       end
-      
+
       context 'the scheduling rule does not have levels' do
         it 'should return a rule if the user is in the group' do
           @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id})
           @instrument.schedule_rules.available_to_user(@user).to_a.should == [@rule]
         end
       end
-      
+
       context 'the scheduling rule has levels' do
         before :each do
           @rule.product_access_groups = [@restriction_levels[0], @restriction_levels[2]]
           @rule.save!
         end
+
         it 'should return the rule if the user is in the group' do
           @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id, :product_access_group_id => @restriction_levels[0]})
           @instrument.schedule_rules.available_to_user(@user).to_a.should == []
         end
-        
+
         it 'should not return the rule if the user is not in the group' do
           @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id, :product_access_group_id => @restriction_levels[1]})
           @instrument.schedule_rules.available_to_user(@user).should be_empty
         end
+
         it 'should not return the rule if the user has no group' do
           @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id})
           @instrument.schedule_rules.available_to_user(@user).should be_empty
         end
-        
+
         it 'should return the rule if requires_approval has been set to false' do
           @instrument.update_attributes(:requires_approval => false)
           @instrument.available_schedule_rules(@user).should == [@rule]
         end
       end
-      
-      
     end
   end
 end
