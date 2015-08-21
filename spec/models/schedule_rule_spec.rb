@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe ScheduleRule do
+  let(:facility) { create(:facility) }
+  let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
+  let(:instrument) { create(:instrument, facility: facility, facility_account: facility_account) }
+
   it "should create using factory" do
     @facility   = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
@@ -9,6 +13,52 @@ describe ScheduleRule do
                                         :facility_account => @facility_account)
     @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     @rule.should be_valid
+  end
+
+  describe ".unavailable_for_date" do
+    context "for an instrument available only from 9 AM to 5 PM" do
+      before(:each) do
+        instrument.schedule_rules.create(attributes_for(:schedule_rule))
+      end
+
+      let(:reservations) { ScheduleRule.unavailable_for_date(instrument, day) }
+
+      shared_examples_for "it generates reservations to cover unavailability" do
+        it "returns two dummy reservations" do
+          expect(reservations.size).to eq(2)
+          reservations.each do |reservation|
+            expect(reservation).to be_kind_of(Reservation)
+            expect(reservation).not_to be_persisted
+          end
+        end
+
+        it "reserves midnight to 9 AM as unavailable" do
+          expect(reservations.first.reserve_start_at)
+            .to eq(day.to_time.change(hour: 0, min: 0))
+          expect(reservations.first.reserve_end_at)
+            .to eq(day.to_time.change(hour: 9, min: 0))
+        end
+
+        it "reserves 5 PM to midnight as unavailable" do
+          expect(reservations.last.reserve_start_at)
+            .to eq(day.to_time.change(hour: 17, min: 0))
+          expect(reservations.last.reserve_end_at)
+            .to eq(day.to_time.change(hour: 24, min: 0))
+        end
+      end
+
+      context "when the 'day' argument is a date" do
+        let(:day) { Date.today }
+
+        it_behaves_like "it generates reservations to cover unavailability"
+      end
+
+      context "when the 'day' argument is a time" do
+        let(:day) { Time.zone.now }
+
+        it_behaves_like "it generates reservations to cover unavailability"
+      end
+    end
   end
 
   context "times" do
