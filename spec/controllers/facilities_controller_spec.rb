@@ -13,8 +13,11 @@ describe FacilitiesController do
 
   before(:all) { create_users }
 
+  let(:facility) { FactoryGirl.create(:facility) }
+  let(:facility_account) { FactoryGirl.create(:facility_account, :facility => facility) }
+
   before(:each) do
-    @authable = FactoryGirl.create(:facility)
+    @authable = facility
   end
 
 
@@ -99,28 +102,39 @@ describe FacilitiesController do
 
   end
 
-
   context "show" do
     before(:each) do
-      @method=:get
-      @action=:show
-      @params={ :id => @authable.url_name }
+      @method = :get
+      @action = :show
+      @params = { id: facility.url_name }
     end
 
     it_should_allow_all ([ :guest ] + facility_operators) do
-      @controller.current_facility.should == @authable
-      response.should be_success
-      response.should render_template('facilities/show')
+      expect(@controller.current_facility).to eq(facility)
+      expect(response).to be_success
+      expect(response).to render_template("facilities/show")
     end
 
-    it 'should 404 for invalid facility' do
-      @params.merge!({:id => 'randomstringofcharacters'})
+    describe "daily view link" do
+      let!(:instrument) { create(:instrument, facility: facility, facility_account: facility_account) }
+
+      it "includes link to daily view", feature_setting: { daily_view: true } do
+        do_request
+        expect(response.body).to include("daily view")
+      end
+
+      it "does not include a link to the daily view when disabled", feature_setting: { daily_view: false } do
+        do_request
+        expect(response.body).not_to include("daily view")
+      end
+    end
+
+    it "should 404 for invalid facility" do
+      @params.merge!(id: 'randomstringofcharacters')
       do_request
-      response.code.should == "404"
+      expect(response.code).to eq("404")
     end
-
   end
-
 
   context "list" do
 
@@ -156,8 +170,7 @@ describe FacilitiesController do
       end
       context 'has instruments' do
         before :each do
-          @facility_account = FactoryGirl.create(:facility_account, :facility => @authable)
-          FactoryGirl.create(:instrument, :facility => @authable, :facility_account => @facility_account)
+          FactoryGirl.create(:instrument, :facility => @authable, :facility_account => facility_account)
         end
         it_should_allow_all (facility_operators - [:admin]) do
           assigns(:facilities).should == [@authable]
