@@ -29,11 +29,14 @@ RSpec.configure do |config|
   config.around(:each) do |example|
     if example.metadata[:feature_setting]
       example.metadata[:feature_setting].each do |feature, value|
-        saved_setting = SettingsHelper.feature_on?(feature)
         SettingsHelper.enable_feature(feature, value)
-        example.run
-        SettingsHelper.enable_feature(feature, saved_setting)
       end
+      Nucore::Application.reload_routes!
+
+      example.run
+
+      Settings.reload!
+      Nucore::Application.reload_routes!
     else
       example.run
     end
