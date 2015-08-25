@@ -981,3 +981,6 @@ en:
     mailer:
       reset_password_instructions:
         subject: "NU Core Password Reset Instructions"
+
+  testing:
+    overriding: This should be overriden in override/en.yml
