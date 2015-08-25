@@ -1178,13 +1178,13 @@ describe ReservationsController do
     end
   end
 
-  describe 'timeline as guest' do
+  describe 'timeline as guest', feature_setting: { daily_view: true } do
     let!(:hidden_instrument) do
       create(
         :instrument,
-        :facility_account => @facility_account,
-        :facility => @authable,
-        :is_hidden => true
+        facility_account: @facility_account,
+        facility: @authable,
+        is_hidden: true
       )
     end
 
@@ -1192,7 +1192,7 @@ describe ReservationsController do
       maybe_grant_always_sign_in :guest
       @method = :get
       @action = :public_timeline
-      @params={ :facility_id => @authable.url_name }
+      @params = { facility_id: @authable.url_name }
       do_request
       expect(assigns[:public_timeline]).to be_true
       expect(response).to render_template :timeline
