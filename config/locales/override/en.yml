@@ -1,0 +1,14 @@
+# Put any locale overrides specific to your fork in this file
+en:
+  # app_name: NU Core
+  # app_admin_name: NU Core Admin
+  # institution_name: Northwestern
+
+  # shared:
+  #   footer:
+  #     copyright_html: "&copy; Copyright 2011%{to_date} Northwestern University"
+  #     logo_alt: "Northwestern University Logo"
+
+  testing: # DO NOT DELETE: these are used to verify proper file loading in the specs
+    locale_loading: This is here to verify the file is loaded in the specs
+    overriding: This overrides the version in en.yml

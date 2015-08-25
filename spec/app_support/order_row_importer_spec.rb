@@ -265,7 +265,7 @@ describe OrderRowImporter do
           end
 
           it_behaves_like "an order was not created"
-          it_behaves_like "it has an error message", "does not accept Chart String payment"
+          it_behaves_like "it has an error message", "does not accept #{NufsAccount.model_name.human} payment"
         end
 
         context "and the account is valid for the product" do
