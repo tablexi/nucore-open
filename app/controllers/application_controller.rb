@@ -194,11 +194,11 @@ class ApplicationController < ActionController::Base
     session[:requested_params] = request.fullpath
   end
 
-  private
-
   def current_ability
     @current_ability ||= Ability.new(current_user, ability_resource, self)
   end
+
+  private
 
   #
   # The +Ability+ class, which is used by cancan for authorization,
