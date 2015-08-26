@@ -39,3 +39,12 @@ The default configuration for daemons includes a monitoring process that will re
 output is sent to log/<daemon_name>.output and log/<daemon_name>.log. Since a daemon is a stand-alone process you can
 see it in your system's `ps` output by grepping for <daemon_name>.
 
+Skip Monitoring
+-------------------
+If you wish to forego monitoring, for example if you are using a separate monitoring
+system such as Eye, you can start up the daemon directly with the --no-monitor option:
+
+ruby lib/daemons/auto_cancel.rb start -- --no-monitor
+(the additional -- is required)
+
+ruby lib/daemons/auto_cancel.rb stop

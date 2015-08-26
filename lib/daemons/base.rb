@@ -14,14 +14,15 @@ class Daemons::Base
   #   What you want to call the daemon. Log and PID
   #   files will be named after +name+, as will the
   #   the actual process in `ps` output
+
   def initialize(name)
-    @rails_root=File.expand_path(File.join('..', '..'), File.dirname(__FILE__))
-    self.name=name
-    self.daemon_opts={
+    @rails_root = File.expand_path(File.join('..', '..'), File.dirname(__FILE__))
+    self.name = name
+    self.daemon_opts = {
       :dir_mode => :normal,
-      :dir => @rails_root,
+      :dir => File.join(@rails_root, 'tmp/pids'),
       :backtrace => true,
-      :monitor => true,
+      :monitor => monitor?,
       :log_output => true,
       :log_dir => File.join(@rails_root, 'log')
     }
@@ -55,4 +56,10 @@ class Daemons::Base
     end
   end
 
+  private
+
+  # See usage notes in doc/HOWTO_daemons.txt
+  def monitor?
+    !ARGV.include?('--no-monitor')
+  end
 end
