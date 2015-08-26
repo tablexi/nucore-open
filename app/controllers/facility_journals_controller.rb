@@ -34,56 +34,25 @@ class FacilityJournalsController < ApplicationController
   #PUT /facilities/journals/:id
   def update
     @pending_journal = @journal
-    @pending_journal.updated_by = session_user.id
 
-    Journal.transaction do
-      begin
-        # blank input
-        @pending_journal.errors.add(:base, I18n.t('controllers.facility_journals.update.error.status')) if params[:journal_status].blank?
+    action = Journals::Closer.new(@pending_journal, params[:journal].merge(updated_by: session_user.id))
 
-        # failed
-        if params[:journal_status] == 'failed'
-          # Oracle is sometimes not leaving false as null
-          @pending_journal.is_successful = NUCore::Database.boolean(false)
-          @pending_journal.update_attributes!(params[:journal])
-          OrderDetail.update_all('journal_id = NULL', "journal_id = #{@pending_journal.id}") # null out journal_id for all order_details
+    if action.perform params[:journal_status]
+      flash[:notice] = I18n.t 'controllers.facility_journals.update.notice'
+      redirect_to facility_journals_path(current_facility)
+    else
+      @order_details = OrderDetail.for_facility(current_facility).need_journal
+      set_soonest_journal_date
+      set_pending_journals
 
-        # succeeded, with errors
-        elsif params[:journal_status] == 'succeeded_errors'
-          @pending_journal.is_successful = true
-          @pending_journal.update_attributes!(params[:journal])
-
-        # if succeeded, no errors
-        elsif params[:journal_status] == 'succeeded'
-          @pending_journal.is_successful = true
-          @pending_journal.update_attributes!(params[:journal])
-          reconciled_status = OrderStatus.reconciled.first
-          @pending_journal.order_details.each do |od|
-            raise StandardError unless od.change_status!(reconciled_status)
-          end
-        else
-          raise StandardError
-        end
-
-        flash[:notice] = I18n.t 'controllers.facility_journals.update.notice'
-        redirect_to facility_journals_path(current_facility) and return
-      rescue => e
-        logger.error("ERROR: #{e.message}")
-        @pending_journal.errors.add(:base, I18n.t('controllers.facility_journals.update.error.rescue'))
-        raise ActiveRecord::Rollback
+      # move error messages for pending journal into the flash
+      if @pending_journal.errors.any?
+        flash[:error] = @journal.errors.full_messages.join("<br/>").html_safe
       end
-    end
-    @order_details = OrderDetail.for_facility(current_facility).need_journal
-    set_soonest_journal_date
-    set_pending_journals
 
-    # move error messages for pending journal into the flash
-    if @pending_journal.errors.any?
-      flash[:error] = @journal.errors.full_messages.join("<br/>").html_safe
+      @soonest_journal_date = params[:journal_date] || @soonest_journal_date
+      render :action => :index
     end
-
-    @soonest_journal_date = params[:journal_date] || @soonest_journal_date
-    render :action => :index
   end
 
   # POST /facilities/journals

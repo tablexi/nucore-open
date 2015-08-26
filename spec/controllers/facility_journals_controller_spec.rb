@@ -22,9 +22,10 @@ describe FacilityJournalsController do
     @authable_account2 = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @order_detail3 = place_and_complete_item_order(@user, @authable, @account2, true)
 
-    [@order_detail1, @order_detail3].each do |od|
-      od.reviewed_at = 1.day.ago
-      od.save!
+    @more_details = 100.times.map { place_and_complete_item_order(@user, @authable, @account, true) }
+
+    ([@order_detail1, @order_detail3] + @more_details).each do |od|
+      od.update_attribute(:reviewed_at, 1.day.ago)
     end
 
   end
@@ -103,25 +104,49 @@ describe FacilityJournalsController do
       context 'successful journal' do
         before :each do
           @params.merge!({:journal_status => 'succeeded'})
-          do_request
+        end
+
+        describe 'benchmark' do
+          specify 'update each' do
+            10.times do
+              Journal.transaction do
+                puts(Benchmark.measure { do_request })
+                raise ActiveRecord::Rollback
+              end
+            end
+          end
+
+          specify 'update_all' do
+            allow_any_instance_of(Journals::Closer).to receive(:update_all?).and_return true
+            10.times do
+              Journal.transaction do
+                puts(Benchmark.measure { do_request })
+                raise ActiveRecord::Rollback
+              end
+            end
+          end
         end
 
         it 'should not have any errors' do
+          do_request
           assigns[:journal].errors.should be_empty
           flash[:error].should be_nil
         end
 
         it 'should set the updated by to the logged in user and leave created by alone' do
+          do_request
           assigns[:journal].updated_by.should == @director.id
           assigns[:journal].created_by.should == @admin.id
         end
 
         it "has an is_successful value of true" do
+          do_request
           expect(assigns[:journal].is_successful?).to be true
           expect(assigns[:journal]).to be_successful
         end
 
         it 'should set all the order details to reconciled' do
+          do_request
           reconciled_status = OrderStatus.reconciled.first
           @order_detail1.reload.order_status.should == reconciled_status
           @order_detail3.reload.order_status.should == reconciled_status
