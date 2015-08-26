@@ -1,7 +1,7 @@
 require "spec_helper"
 
-describe MessageNotifier do
-  subject { MessageNotifier.new(controller) }
+describe MessageSummarizer do
+  subject { MessageSummarizer.new(controller) }
   let(:ability) { Object.new.extend(CanCan::Ability) }
   let(:controller) { Object.new }
   let(:current_facility) { facility }
@@ -32,9 +32,6 @@ describe MessageNotifier do
   shared_examples_for "there are no messages" do
     it "has no messages of any kind" do
       expect(subject).not_to be_messages
-      expect(subject).not_to be_notifications
-      expect(subject).not_to be_problem_order_details
-      expect(subject).not_to be_problem_reservation_order_details
       expect(subject.message_count).to eq(0)
       expect(subject.notifications.count).to eq(0)
       expect(subject.problem_order_details.count).to eq(0)
@@ -60,20 +57,14 @@ describe MessageNotifier do
     shared_examples_for "the user may view notifications" do
       it_behaves_like "there is one overall message"
 
-      it "has one notification" do
-        expect(subject).to be_notifications
-        expect(subject.notifications.count).to eq(1)
-      end
+      it { expect(subject.notifications.count).to eq(1) }
 
       context "when not scoped to a facility" do
         let(:current_facility) { nil }
 
         it_behaves_like "there is one overall message"
 
-        it "has one notification" do
-          expect(subject).to be_notifications
-          expect(subject.notifications.count).to eq(1)
-        end
+        it { expect(subject.notifications.count).to eq(1) }
       end
     end
 
@@ -102,10 +93,7 @@ describe MessageNotifier do
 
       it_behaves_like "there is one overall message"
 
-      it "has one disputed order detail message" do
-        expect(subject).to be_order_details_in_dispute
-        expect(subject.order_details_in_dispute.count).to eq(1)
-      end
+      it { expect(subject.order_details_in_dispute.count).to eq(1) }
 
       context "when not scoped to a facility" do
         let(:current_facility) { nil }
@@ -129,10 +117,7 @@ describe MessageNotifier do
 
       it_behaves_like "there is one overall message"
 
-      it "has one problem order detail message" do
-        expect(subject).to be_problem_order_details
-        expect(subject.problem_order_details.count).to eq(1)
-      end
+      it { expect(subject.problem_order_details.count).to eq(1) }
 
       context "when not scoped to a facility" do
         let(:current_facility) { nil }
@@ -154,10 +139,7 @@ describe MessageNotifier do
 
       it_behaves_like "there is one overall message"
 
-      it "has one problem reservation order detail message" do
-        expect(subject).to be_problem_reservation_order_details
-        expect(subject.problem_reservation_order_details.count).to eq(1)
-      end
+      it { expect(subject.problem_reservation_order_details.count).to eq(1) }
 
       context "when not scoped to a facility" do
         let(:current_facility) { nil }
@@ -179,10 +161,7 @@ describe MessageNotifier do
 
       it_behaves_like "there is one overall message"
 
-      it "has one training request message" do
-        expect(subject).to be_training_requests
-        expect(subject.training_requests.count).to eq(1)
-      end
+      it { expect(subject.training_requests.count).to eq(1) }
 
       context "when not scoped to a facility" do
         let(:current_facility) { nil }
