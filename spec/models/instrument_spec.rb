@@ -24,41 +24,81 @@ describe Instrument do
     end
   end
 
-  it 'ensures that the minimum reservation time is a multiple of the reservation interval' do
-    instrument.reserve_interval = 5
-    instrument.min_reserve_mins = 10
-    expect(instrument).to be_valid
-  end
+  describe 'min/max reservation is a multiple of reservation interval' do
+    subject { instrument }
+    let(:reserve_interval) { 5 }
+    let(:min_reserve_mins) { 1 }
+    let(:max_reserve_mins) { 1000 }
 
-  it 'is not valid if the minimum reservation time is not a multiple of the reservation interval' do
-    expect(instrument).to be_valid
-    instrument.reserve_interval = 3
-    instrument.min_reserve_mins = 10
-    expect(instrument).to_not be_valid
-    expect(instrument.errors[:min_reserve_mins]).to be_present
-  end
+    before do
+      instrument.assign_attributes(reserve_interval: reserve_interval,
+        min_reserve_mins: min_reserve_mins,
+        max_reserve_mins: max_reserve_mins)
+    end
 
-  it 'ensures that the maximum reservation time is a multiple of the reservation interval' do
-    instrument.reserve_interval = 5
-    instrument.min_reserve_mins = 10
-    instrument.max_reserve_mins = 10
-    expect(instrument).to be_valid
-  end
+    describe 'min reservation' do
+      context 'is a multiple' do
+        let(:min_reserve_mins) { reserve_interval * 4 }
+        it 'does not have an error' do
+          instrument.valid?
+          expect(instrument.errors[:min_reserve_mins]).to be_blank
+        end
+      end
 
-  it 'is not valid if the maximum reservation time is not a multiple of the reservation interval' do
-    expect(instrument).to be_valid
-    instrument.reserve_interval = 3
-    instrument.min_reserve_mins = 10
-    instrument.max_reserve_mins = 10
-    expect(instrument).to_not be_valid
-    expect(instrument.errors[:max_reserve_mins]).to be_present
-  end
+      context 'is not a multiple' do
+        let(:min_reserve_mins) { reserve_interval * 4 + 1 }
 
-  it 'ensures that the maximum reservation time is not less than the minimum reservation time' do
-    instrument.min_reserve_mins = 10
-    instrument.max_reserve_mins = 5
-    expect(instrument).to_not be_valid
-    expect(instrument.errors[:max_reserve_mins]).to be_present
+        it 'is is not valid' do
+          expect(instrument).not_to be_valid
+          expect(instrument.errors[:min_reserve_mins]).to be_present
+        end
+      end
+
+      context 'when the reservation interval is not set' do
+        let(:reserve_interval) { nil }
+        it 'does not error' do
+          expect { instrument.valid? }.not_to raise_error
+          expect(instrument.errors[:reserve_interval]).to be_present
+        end
+      end
+    end
+
+    describe 'max reservation' do
+      context 'is a multiple' do
+        let(:max_reserve_mins) { reserve_interval * 4 }
+        it 'does not have an error' do
+          instrument.valid?
+          expect(instrument.errors[:max_reserve_mins]).to be_blank
+        end
+      end
+
+      context 'is not a multiple' do
+        let(:max_reserve_mins) { reserve_interval * 4 + 1 }
+
+        it 'is not valid' do
+          expect(instrument).not_to be_valid
+          expect(instrument.errors[:max_reserve_mins]).to be_present
+        end
+      end
+
+      context 'when the maximum reservation is less than the minimum reservation' do
+        let(:min_reserve_mins) { 10 }
+        let(:max_reserve_mins) { 5 }
+
+        it 'is not valid' do
+          expect(instrument).not_to be_valid
+          expect(instrument.errors[:max_reserve_mins]).to be_present
+        end
+      end
+
+      context 'when the reservation interval is not set' do
+        let(:reserve_interval) { nil }
+        it 'does not error' do
+          expect { instrument.valid? }.not_to raise_error
+          expect(instrument.errors[:reserve_interval]).to be_present
+        end
+      end
+    end
   end
 
   it { should ensure_inclusion_of(:reserve_interval).in_array Instrument::RESERVE_INTERVALS }
