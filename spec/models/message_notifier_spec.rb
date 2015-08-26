@@ -1,13 +1,21 @@
 require "spec_helper"
 
 describe MessageNotifier do
-  subject { MessageNotifier.new(user, ability, facility) }
+  subject { MessageNotifier.new(controller) }
   let(:ability) { Object.new.extend(CanCan::Ability) }
+  let(:controller) { Object.new }
+  let(:current_facility) { facility }
   let(:facility) { order.facility }
   let(:order) { create(:purchased_order, product: product) }
   let(:order_detail) { order.order_details.first }
   let(:product) { create(:instrument_requiring_approval) }
   let(:user) { create(:user) }
+
+  before(:each) do
+    controller.stub(:current_ability).and_return(ability)
+    controller.stub(:current_facility).and_return(current_facility)
+    controller.stub(:current_user).and_return(user)
+  end
 
   def create_merge_notification
     merge_to_order = order.dup
@@ -58,7 +66,7 @@ describe MessageNotifier do
       end
 
       context "when not scoped to a facility" do
-        subject { MessageNotifier.new(user, ability, nil) }
+        let(:current_facility) { nil }
 
         it_behaves_like "there is one overall message"
 
@@ -100,7 +108,7 @@ describe MessageNotifier do
       end
 
       context "when not scoped to a facility" do
-        subject { MessageNotifier.new(user, ability, nil) }
+        let(:current_facility) { nil }
 
         it_behaves_like "there are no messages"
       end
@@ -127,7 +135,7 @@ describe MessageNotifier do
       end
 
       context "when not scoped to a facility" do
-        subject { MessageNotifier.new(user, ability, nil) }
+        let(:current_facility) { nil }
 
         it_behaves_like "there are no messages"
       end
@@ -152,7 +160,7 @@ describe MessageNotifier do
       end
 
       context "when not scoped to a facility" do
-        subject { MessageNotifier.new(user, ability, nil) }
+        let(:current_facility) { nil }
 
         it_behaves_like "there are no messages"
       end
@@ -177,7 +185,7 @@ describe MessageNotifier do
       end
 
       context "when not scoped to a facility" do
-        subject { MessageNotifier.new(user, ability, nil) }
+        let(:current_facility) { nil }
 
         it_behaves_like "there are no messages"
       end

@@ -18,7 +18,7 @@
                 %li.divider-vertical
               %li= link_to t('pages.cart') + " (#{current_cart.order_details.sum(:quantity)})", :cart
               %li.divider-vertical
-              - notifier = MessageNotifier.new(current_user, current_ability, current_facility)
+              - notifier = MessageNotifier.new(controller)
               - if notifier.messages?
                 = render "shared/message_notifier", notifier: notifier
                 %li.divider-vertical

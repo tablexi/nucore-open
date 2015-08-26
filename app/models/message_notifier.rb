@@ -1,8 +1,6 @@
 class MessageNotifier
-  def initialize(user, ability, facility)
-    @user = user
-    @ability = ability
-    @facility = facility
+  def initialize(controller)
+    @controller = controller
   end
 
   def message_count
@@ -22,7 +20,7 @@ class MessageNotifier
   end
 
   def notifications
-    (@user.operator? || @user.administrator?) ? @user.notifications.active : []
+    (user.operator? || user.administrator?) ? user.notifications.active : []
   end
 
   def notifications?
@@ -30,8 +28,8 @@ class MessageNotifier
   end
 
   def order_details_in_dispute
-    return [] unless @ability.can?(:disputed_orders, Facility)
-    @facility.try(:order_details_in_dispute) || []
+    return [] unless ability.can?(:disputed_orders, Facility)
+    facility.try(:order_details_in_dispute) || []
   end
 
   def order_details_in_dispute?
@@ -39,8 +37,8 @@ class MessageNotifier
   end
 
   def problem_order_details
-    return [] unless @ability.can?(:show_problems, Order)
-    @facility.try(:problem_order_details) || []
+    return [] unless ability.can?(:show_problems, Order)
+    facility.try(:problem_order_details) || []
   end
 
   def problem_order_details?
@@ -48,8 +46,8 @@ class MessageNotifier
   end
 
   def problem_reservation_order_details
-    return [] unless @ability.can?(:show_problems, Reservation)
-    @facility.try(:problem_reservation_order_details) || []
+    return [] unless ability.can?(:show_problems, Reservation)
+    facility.try(:problem_reservation_order_details) || []
   end
 
   def problem_reservation_order_details?
@@ -57,11 +55,26 @@ class MessageNotifier
   end
 
   def training_requests
-    return [] unless @ability.can?(:manage, TrainingRequest)
-    @facility.try(:training_requests) || []
+    return [] unless ability.can?(:manage, TrainingRequest)
+    facility.try(:training_requests) || []
   end
 
   def training_requests?
     training_requests.any?
+  end
+
+  private
+
+  def ability
+    @ability ||= @controller.current_ability
+  end
+
+  def facility
+    return @facility if defined?(@facility)
+    @facility = @controller.current_facility
+  end
+
+  def user
+    @user ||= @controller.current_user
   end
 end
