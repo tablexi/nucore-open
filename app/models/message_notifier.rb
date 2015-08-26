@@ -22,8 +22,7 @@ class MessageNotifier
   end
 
   def notifications
-    return [] unless notifications_visible?
-    @user.notifications.active
+    (@user.operator? || @user.administrator?) ? @user.notifications.active : []
   end
 
   def notifications?
@@ -31,7 +30,7 @@ class MessageNotifier
   end
 
   def order_details_in_dispute
-    return [] unless disputed_orders_visible?
+    return [] unless @ability.can?(:disputed_orders, Facility)
     @facility.try(:order_details_in_dispute) || []
   end
 
@@ -40,7 +39,7 @@ class MessageNotifier
   end
 
   def problem_order_details
-    return [] unless show_problem_orders?
+    return [] unless @ability.can?(:show_problems, Order)
     @facility.try(:problem_order_details) || []
   end
 
@@ -49,7 +48,7 @@ class MessageNotifier
   end
 
   def problem_reservation_order_details
-    return [] unless show_problem_reservations?
+    return [] unless @ability.can?(:show_problems, Reservation)
     @facility.try(:problem_reservation_order_details) || []
   end
 
@@ -58,33 +57,11 @@ class MessageNotifier
   end
 
   def training_requests
-    return [] unless manage_training_requests?
+    return [] unless @ability.can?(:manage, TrainingRequest)
     @facility.try(:training_requests) || []
   end
 
   def training_requests?
     training_requests.any?
-  end
-
-  private
-
-  def disputed_orders_visible?
-    @ability.can?(:disputed_orders, Facility)
-  end
-
-  def show_problem_orders?
-    @ability.can?(:show_problems, Order)
-  end
-
-  def show_problem_reservations?
-    @ability.can?(:show_problems, Reservation)
-  end
-
-  def manage_training_requests?
-    @ability.can?(:manage, TrainingRequest)
-  end
-
-  def notifications_visible?
-    @user.operator? || @user.administrator?
   end
 end
