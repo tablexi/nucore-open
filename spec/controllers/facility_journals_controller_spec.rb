@@ -23,8 +23,7 @@ describe FacilityJournalsController do
     @order_detail3 = place_and_complete_item_order(@user, @authable, @account2, true)
 
     [@order_detail1, @order_detail3].each do |od|
-      od.reviewed_at = 1.day.ago
-      od.save!
+      od.update_attribute(:reviewed_at, 1.day.ago)
     end
 
   end
