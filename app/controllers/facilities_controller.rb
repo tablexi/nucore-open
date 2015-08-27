@@ -116,8 +116,6 @@ class FacilitiesController < ApplicationController
 
   # GET /facilities/:facility_id/disputed_orders
   def disputed_orders_with_search
-    set_default_start_date
-    @export_enabled = true
     @order_details = @order_details.in_dispute
     paginate_order_details
   end
