@@ -669,6 +669,7 @@ en:
   facilities:
     disputed_orders:
       head: Disputed Orders
+      no_orders: There are no disputed orders for this facility
 
     index:
       welcome: |
