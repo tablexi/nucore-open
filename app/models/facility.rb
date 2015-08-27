@@ -102,7 +102,7 @@ class Facility < ActiveRecord::Base
     "#{name} (#{abbreviation})"
   end
 
-  def problem_order_details
+  def problem_non_reservation_order_details
     complete_problem_order_details.non_reservations
   end
 

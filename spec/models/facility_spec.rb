@@ -9,6 +9,55 @@ describe Facility do
     should validate_presence_of(:abbreviation)
   end
 
+  context "when finding problem orders and reservations" do
+    subject(:facility) { order.facility }
+    let(:order) { create(:purchased_order, product: product) }
+
+    def convert_to_problem_order(order)
+      order.order_details.each do |order_detail|
+        order_detail.update_attributes(price_policy: nil, state: "complete")
+      end
+    end
+
+    describe "#problem_non_reservation_order_details" do
+      let(:product) { create(:setup_item) }
+
+      context "when there are no problem non-reservations" do
+        it { expect(facility.problem_non_reservation_order_details).to be_empty }
+      end
+
+      context "when there are problem orders" do
+        let(:problem_orders) { order.order_details }
+
+        before { convert_to_problem_order(order) }
+
+        it "returns the problem non-reservation order details" do
+          expect(facility.problem_non_reservation_order_details)
+            .to match_array(problem_orders)
+        end
+      end
+    end
+
+    describe "#problem_reservation_order_details" do
+      let(:product) { create(:setup_instrument) }
+
+      context "when there are no problem reservations" do
+        it { expect(facility.problem_reservation_order_details).to be_empty }
+      end
+
+      context "when there are problem reservations" do
+        let(:problem_reservations) { order.order_details }
+
+        before { convert_to_problem_order(order) }
+
+        it "returns the problem reservation order details" do
+          expect(facility.problem_reservation_order_details)
+            .to match_array(problem_reservations)
+        end
+      end
+    end
+  end
+
   describe ".training_requests" do
     let(:products) { create_list(:instrument_requiring_approval, 3) }
 

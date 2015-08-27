@@ -84,7 +84,7 @@ class FacilityOrdersController < ApplicationController
   end
 
   def problem_order_details
-    current_facility.problem_order_details
+    current_facility.problem_non_reservation_order_details
   end
 
   private

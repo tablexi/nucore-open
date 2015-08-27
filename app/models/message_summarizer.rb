@@ -162,7 +162,7 @@ class MessageSummarizer
 
   def problem_order_details_count
     if facility && ability.can?(:show_problems, Order)
-      facility.problem_order_details.count
+      facility.problem_non_reservation_order_details.count
     end
   end
 
