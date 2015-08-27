@@ -11,10 +11,6 @@ class MessageSummarizer
       count > 0
     end
 
-    def label
-      "#{I18n.t(l18n_key)} (#{count})"
-    end
-
     def link
       controller.view_context.link_to(label, path)
     end
@@ -23,6 +19,10 @@ class MessageSummarizer
 
     def facility
       controller.current_facility
+    end
+
+    def label
+      "#{I18n.t(l18n_key)} (#{count})"
     end
   end
 
@@ -42,7 +42,7 @@ class MessageSummarizer
     private
 
     def l18n_key
-      "message_notifier.order_details_in_dispute"
+      "message_summarizer.order_details_in_dispute"
     end
 
     def path
@@ -54,7 +54,7 @@ class MessageSummarizer
     private
 
     def l18n_key
-      "message_notifier.problem_order_details"
+      "message_summarizer.problem_order_details"
     end
 
     def path
@@ -66,7 +66,7 @@ class MessageSummarizer
     private
 
     def l18n_key
-      "message_notifier.problem_reservation_order_details"
+      "message_summarizer.problem_reservation_order_details"
     end
 
     def path
@@ -78,7 +78,7 @@ class MessageSummarizer
     private
 
     def l18n_key
-      "message_notifier.training_requests"
+      "message_summarizer.training_requests"
     end
 
     def path

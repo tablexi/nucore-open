@@ -40,7 +40,8 @@ en:
     cart: Cart
     notices: Notices
 
-  message_notifier:
+  message_summarizer:
+    heading: "Notices (%{count})"
     order_details_in_dispute: Disputed Orders
     problem_order_details: Problem Orders
     problem_reservation_order_details: Problem Reservations

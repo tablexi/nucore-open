@@ -3,7 +3,7 @@
   %li
     %ul.nav.pull-right
       %li.dropdown.pull-right
-        = link_to "Notices (#{summarizer.message_count})",
+        = link_to t("message_summarizer.heading", count: summarizer.message_count),
           :notifications,
           class: "dropdown-toggle",
           data: { toggle: "dropdown" }
