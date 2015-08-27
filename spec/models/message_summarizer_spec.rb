@@ -37,6 +37,10 @@ describe MessageSummarizer do
       expect(subject.problem_order_details.count).to eq(0)
       expect(subject.problem_reservation_order_details.count).to eq(0)
       expect(subject.training_requests.count).to eq(0)
+
+      iteration_count = 0
+      subject.each { ++iteration_count }
+      expect(iteration_count).to eq(0)
     end
   end
 
@@ -44,6 +48,16 @@ describe MessageSummarizer do
     it "has one message" do
       expect(subject).to be_messages
       expect(subject.message_count).to eq(1)
+
+      summaries = []
+
+      subject.each do |message_summary|
+        summaries << message_summary
+        expect(message_summary).to be_any
+        expect(message_summary.count).to eq(1)
+      end
+
+      expect(summaries.count).to eq(1)
     end
   end
 
@@ -65,6 +79,13 @@ describe MessageSummarizer do
         it_behaves_like "there is one overall message"
 
         it { expect(subject.notifications.count).to eq(1) }
+
+        it "returns only notifications when iterating" do
+          subject.each do |message_summary|
+            expect(message_summary)
+              .to be_kind_of(MessageSummarizer::Notifications)
+          end
+        end
       end
     end
 
@@ -95,6 +116,13 @@ describe MessageSummarizer do
 
       it { expect(subject.order_details_in_dispute.count).to eq(1) }
 
+      it "returns only disputed order detail messages when iterating" do
+        subject.each do |message_summary|
+          expect(message_summary)
+            .to be_kind_of(MessageSummarizer::OrderDetailsInDispute)
+        end
+      end
+
       context "when not scoped to a facility" do
         let(:current_facility) { nil }
 
@@ -119,6 +147,13 @@ describe MessageSummarizer do
 
       it { expect(subject.problem_order_details.count).to eq(1) }
 
+      it "returns only problem order detail messages when iterating" do
+        subject.each do |message_summary|
+          expect(message_summary)
+            .to be_kind_of(MessageSummarizer::ProblemOrderDetails)
+        end
+      end
+
       context "when not scoped to a facility" do
         let(:current_facility) { nil }
 
@@ -141,6 +176,13 @@ describe MessageSummarizer do
 
       it { expect(subject.problem_reservation_order_details.count).to eq(1) }
 
+      it "returns only problem reservation messages when iterating" do
+        subject.each do |message_summary|
+          expect(message_summary)
+            .to be_kind_of(MessageSummarizer::ProblemReservationOrderDetails)
+        end
+      end
+
       context "when not scoped to a facility" do
         let(:current_facility) { nil }
 
@@ -162,6 +204,13 @@ describe MessageSummarizer do
       it_behaves_like "there is one overall message"
 
       it { expect(subject.training_requests.count).to eq(1) }
+
+      it "returns only training requests when iterating" do
+        subject.each do |message_summary|
+          expect(message_summary)
+            .to be_kind_of(MessageSummarizer::TrainingRequests)
+        end
+      end
 
       context "when not scoped to a facility" do
         let(:current_facility) { nil }
