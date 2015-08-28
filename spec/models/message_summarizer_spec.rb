@@ -37,10 +37,6 @@ describe MessageSummarizer do
       expect(subject).not_to be_messages
       expect(subject.count).to eq(0)
       expect(subject.message_count).to eq(0)
-      expect(subject.notifications.count).to eq(0)
-      expect(subject.problem_order_details.count).to eq(0)
-      expect(subject.problem_reservation_order_details.count).to eq(0)
-      expect(subject.training_requests.count).to eq(0)
 
       iteration_count = 0
       subject.each { ++iteration_count }
@@ -76,22 +72,11 @@ describe MessageSummarizer do
     shared_examples_for "the user may view notifications" do
       it_behaves_like "there is one overall message"
 
-      it { expect(subject.notifications.count).to eq(1) }
-
       context "when not scoped to a facility" do
         let(:current_facility) { nil }
 
         it_behaves_like "there is one overall message"
-
-        it { expect(subject.notifications.count).to eq(1) }
         it { expect(subject.first.link).to match(/\bNotices \(1\)/) }
-
-        it "returns only notifications when iterating" do
-          subject.each do |message_summary|
-            expect(message_summary)
-              .to be_kind_of(MessageSummarizer::NotificationsSummary)
-          end
-        end
       end
     end
 
@@ -113,16 +98,7 @@ describe MessageSummarizer do
       before { ability.can(:disputed_orders, Facility) }
 
       it_behaves_like "there is one overall message"
-
-      it { expect(subject.order_details_in_dispute.count).to eq(1) }
       it { expect(subject.first.link).to match(/\bDisputed Orders \(1\)/) }
-
-      it "returns only disputed order detail messages when iterating" do
-        subject.each do |message_summary|
-          expect(message_summary)
-            .to be_kind_of(MessageSummarizer::OrderDetailsInDisputeSummary)
-        end
-      end
 
       context "when not scoped to a facility" do
         let(:current_facility) { nil }
@@ -145,16 +121,7 @@ describe MessageSummarizer do
       before { ability.can(:show_problems, Order) }
 
       it_behaves_like "there is one overall message"
-
-      it { expect(subject.problem_order_details.count).to eq(1) }
       it { expect(subject.first.link).to match(/\bProblem Orders \(1\)/) }
-
-      it "returns only problem order detail messages when iterating" do
-        subject.each do |message_summary|
-          expect(message_summary)
-            .to be_kind_of(MessageSummarizer::ProblemOrderDetailsSummary)
-        end
-      end
 
       context "when not scoped to a facility" do
         let(:current_facility) { nil }
@@ -175,16 +142,7 @@ describe MessageSummarizer do
       before { ability.can(:show_problems, Reservation) }
 
       it_behaves_like "there is one overall message"
-
-      it { expect(subject.problem_reservation_order_details.count).to eq(1) }
       it { expect(subject.first.link).to match(/\bProblem Reservations \(1\)/) }
-
-      it "returns only problem reservation messages when iterating" do
-        subject.each do |message_summary|
-          expect(message_summary)
-            .to be_kind_of(MessageSummarizer::ProblemReservationOrderDetailsSummary)
-        end
-      end
 
       context "when not scoped to a facility" do
         let(:current_facility) { nil }
@@ -205,16 +163,7 @@ describe MessageSummarizer do
       before { ability.can(:manage, TrainingRequest) }
 
       it_behaves_like "there is one overall message"
-
-      it { expect(subject.training_requests.count).to eq(1) }
       it { expect(subject.first.link).to match(/\bTraining Requests \(1\)/) }
-
-      it "returns only training requests when iterating" do
-        subject.each do |message_summary|
-          expect(message_summary)
-            .to be_kind_of(MessageSummarizer::TrainingRequestsSummary)
-        end
-      end
 
       context "when not scoped to a facility" do
         let(:current_facility) { nil }

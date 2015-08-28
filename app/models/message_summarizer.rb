@@ -17,6 +17,8 @@ class MessageSummarizer
     message_summaries.any?
   end
 
+  private
+
   def notifications
     @notifications ||= NotificationsSummary.new(@controller)
   end
@@ -37,8 +39,6 @@ class MessageSummarizer
   def training_requests
     @training_requests ||= TrainingRequestsSummary.new(@controller)
   end
-
-  private
 
   def message_summaries
     [
