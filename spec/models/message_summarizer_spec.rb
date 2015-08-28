@@ -3,7 +3,7 @@ require "spec_helper"
 describe MessageSummarizer do
   subject { MessageSummarizer.new(controller) }
   let(:ability) { Object.new.extend(CanCan::Ability) }
-  let(:controller) { Object.new }
+  let(:controller) { ApplicationController.new }
   let(:current_facility) { facility }
   let(:facility) { order.facility }
   let(:order) { create(:purchased_order, product: product) }
@@ -15,6 +15,9 @@ describe MessageSummarizer do
     controller.stub(:current_ability).and_return(ability)
     controller.stub(:current_facility).and_return(current_facility)
     controller.stub(:current_user).and_return(user)
+    MessageSummarizer::MessageSummary.subclasses.each do |klass|
+      klass.any_instance.stub(:path).and_return("/stub")
+    end
   end
 
   def create_merge_notification
@@ -32,6 +35,7 @@ describe MessageSummarizer do
   shared_examples_for "there are no messages" do
     it "has no messages of any kind" do
       expect(subject).not_to be_messages
+      expect(subject.count).to eq(0)
       expect(subject.message_count).to eq(0)
       expect(subject.notifications.count).to eq(0)
       expect(subject.problem_order_details.count).to eq(0)
@@ -47,6 +51,7 @@ describe MessageSummarizer do
   shared_examples_for "there is one overall message" do
     it "has one message" do
       expect(subject).to be_messages
+      expect(subject.count).to eq(1)
       expect(subject.message_count).to eq(1)
 
       summaries = []
@@ -79,6 +84,7 @@ describe MessageSummarizer do
         it_behaves_like "there is one overall message"
 
         it { expect(subject.notifications.count).to eq(1) }
+        it { expect(subject.first.link).to match(/\bNotices \(1\)/) }
 
         it "returns only notifications when iterating" do
           subject.each do |message_summary|
@@ -109,6 +115,7 @@ describe MessageSummarizer do
       it_behaves_like "there is one overall message"
 
       it { expect(subject.order_details_in_dispute.count).to eq(1) }
+      it { expect(subject.first.link).to match(/\bDisputed Orders \(1\)/) }
 
       it "returns only disputed order detail messages when iterating" do
         subject.each do |message_summary|
@@ -140,6 +147,7 @@ describe MessageSummarizer do
       it_behaves_like "there is one overall message"
 
       it { expect(subject.problem_order_details.count).to eq(1) }
+      it { expect(subject.first.link).to match(/\bProblem Orders \(1\)/) }
 
       it "returns only problem order detail messages when iterating" do
         subject.each do |message_summary|
@@ -169,6 +177,7 @@ describe MessageSummarizer do
       it_behaves_like "there is one overall message"
 
       it { expect(subject.problem_reservation_order_details.count).to eq(1) }
+      it { expect(subject.first.link).to match(/\bProblem Reservations \(1\)/) }
 
       it "returns only problem reservation messages when iterating" do
         subject.each do |message_summary|
@@ -198,6 +207,7 @@ describe MessageSummarizer do
       it_behaves_like "there is one overall message"
 
       it { expect(subject.training_requests.count).to eq(1) }
+      it { expect(subject.first.link).to match(/\bTraining Requests \(1\)/) }
 
       it "returns only training requests when iterating" do
         subject.each do |message_summary|

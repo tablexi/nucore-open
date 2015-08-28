@@ -1,4 +1,6 @@
 class MessageSummarizer
+  include Enumerable
+
   def initialize(controller)
     @controller = controller
   end
