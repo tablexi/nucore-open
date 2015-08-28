@@ -83,7 +83,7 @@ describe MessageSummarizer do
         it "returns only notifications when iterating" do
           subject.each do |message_summary|
             expect(message_summary)
-              .to be_kind_of(MessageSummarizer::Notifications)
+              .to be_kind_of(MessageSummarizer::NotificationsSummary)
           end
         end
       end
@@ -119,7 +119,7 @@ describe MessageSummarizer do
       it "returns only disputed order detail messages when iterating" do
         subject.each do |message_summary|
           expect(message_summary)
-            .to be_kind_of(MessageSummarizer::OrderDetailsInDispute)
+            .to be_kind_of(MessageSummarizer::OrderDetailsInDisputeSummary)
         end
       end
 
@@ -150,7 +150,7 @@ describe MessageSummarizer do
       it "returns only problem order detail messages when iterating" do
         subject.each do |message_summary|
           expect(message_summary)
-            .to be_kind_of(MessageSummarizer::ProblemOrderDetails)
+            .to be_kind_of(MessageSummarizer::ProblemOrderDetailsSummary)
         end
       end
 
@@ -179,7 +179,7 @@ describe MessageSummarizer do
       it "returns only problem reservation messages when iterating" do
         subject.each do |message_summary|
           expect(message_summary)
-            .to be_kind_of(MessageSummarizer::ProblemReservationOrderDetails)
+            .to be_kind_of(MessageSummarizer::ProblemReservationOrderDetailsSummary)
         end
       end
 
@@ -208,7 +208,7 @@ describe MessageSummarizer do
       it "returns only training requests when iterating" do
         subject.each do |message_summary|
           expect(message_summary)
-            .to be_kind_of(MessageSummarizer::TrainingRequests)
+            .to be_kind_of(MessageSummarizer::TrainingRequestsSummary)
         end
       end
 
