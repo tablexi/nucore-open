@@ -89,14 +89,8 @@ describe MessageSummarizer do
       end
     end
 
-    context "and the user is an operator" do
-      let(:user) { create(:user, :staff) }
-
-      it_behaves_like "the user may view notifications"
-    end
-
-    context "and the user is an administrator" do
-      let(:user) { create(:user, :administrator) }
+    context "and the user may view notifications" do
+      before { ability.can(:read, Notification) }
 
       it_behaves_like "the user may view notifications"
     end

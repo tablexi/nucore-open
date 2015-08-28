@@ -2,7 +2,7 @@ class MessageSummarizer::NotificationsSummary < MessageSummarizer::MessageSummar
   private
 
   def allowed?
-    user.operator? || user.administrator?
+    ability.can?(:read, Notification)
   end
 
   def get_count
@@ -18,6 +18,6 @@ class MessageSummarizer::NotificationsSummary < MessageSummarizer::MessageSummar
   end
 
   def user
-    @user ||= controller.current_user
+    controller.current_user
   end
 end
