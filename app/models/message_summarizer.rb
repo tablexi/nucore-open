@@ -1,12 +1,10 @@
 class MessageSummarizer
   include Enumerable
 
+  delegate :each, to: :message_summaries
+
   def initialize(controller)
     @controller = controller
-  end
-
-  def each
-    message_summaries.each { |message_summary| yield message_summary }
   end
 
   def message_count
