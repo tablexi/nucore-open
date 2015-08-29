@@ -9,7 +9,7 @@ class MessageSummarizer::NotificationsSummary < MessageSummarizer::MessageSummar
     user.notifications.active.count
   end
 
-  def l18n_key
+  def i18n_key
     "pages.notices"
   end
 

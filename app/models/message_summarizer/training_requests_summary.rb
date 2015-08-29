@@ -9,7 +9,7 @@ class MessageSummarizer::TrainingRequestsSummary < MessageSummarizer::MessageSum
     facility.training_requests.count
   end
 
-  def l18n_key
+  def i18n_key
     "message_summarizer.training_requests"
   end
 

@@ -35,12 +35,12 @@ class MessageSummarizer::MessageSummary
     raise NotImplementedError.new("Subclass must implement")
   end
 
-  def l18n_key
+  def i18n_key
     raise NotImplementedError.new("Subclass must implement")
   end
 
   def label
-    "#{I18n.t(l18n_key)} (#{count})"
+    "#{I18n.t(i18n_key)} (#{count})"
   end
 
   def path

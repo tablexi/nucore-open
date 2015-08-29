@@ -9,7 +9,7 @@ class MessageSummarizer::ProblemReservationOrderDetailsSummary < MessageSummariz
     facility.problem_reservation_order_details.count
   end
 
-  def l18n_key
+  def i18n_key
     "message_summarizer.problem_reservation_order_details"
   end
 

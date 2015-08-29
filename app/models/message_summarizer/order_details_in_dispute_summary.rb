@@ -9,7 +9,7 @@ class MessageSummarizer::OrderDetailsInDisputeSummary < MessageSummarizer::Messa
     facility.order_details_in_dispute.count
   end
 
-  def l18n_key
+  def i18n_key
     "message_summarizer.order_details_in_dispute"
   end
 
