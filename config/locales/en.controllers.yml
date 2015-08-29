@@ -128,6 +128,9 @@ en:
     price_policies:
       errors:
         remove_active_policy: "Sorry, but you cannot remove an active price policy. If you really want to do so move the start date to the future and try again."
+      update:
+        success: Price Rules were successfully updated.
+        failure: There was an error saving the policy
 
     orders:
       purchase:

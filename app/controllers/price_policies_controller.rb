@@ -80,27 +80,23 @@ class PricePoliciesController < ApplicationController
     render 'price_policies/edit'
   end
 
-  # PUT /price_policies/1
+  # PUT /facilities/:facility_id/{product_type}/:product_id/price_policies/:id
   def update
     @start_date = start_date_from_params
 
     build_price_policies
 
-    @expire_date    = params[:expire_date]
+    @expire_date = params[:expire_date]
     @max_expire_date = PricePolicy.generate_expire_date(@start_date)
 
     update_policies_from_params
 
-    respond_to do |format|
-      if ActiveRecord::Base.transaction do
-          raise ActiveRecord::Rollback unless @price_policies.all?(&:save)
-          flash[:notice] = 'Price Rules were successfully updated.'
-          format.html { redirect_to facility_product_price_policies_path }
-        end
-      else
-        flash[:error] = "There was an error saving the policy"
-        format.html { render 'price_policies/edit' }
-      end
+    if save_all_price_policies!
+      flash[:notice] = I18n.t("controllers.price_policies.update.success")
+      redirect_to facility_product_price_policies_path
+    else
+      flash[:error] = I18n.t("controllers.price_policies.update.failure")
+      render "price_policies/edit"
     end
   end
 
@@ -152,6 +148,12 @@ class PricePoliciesController < ApplicationController
     groups_with_policy = Hash[original_price_policies.map {|pp| [pp.price_group, pp] }]
     current_facility.price_groups.each do |pg|
       @price_policies << (groups_with_policy[pg] || model_class.new({:price_group_id => pg.id, :product_id => @product.id, :can_purchase => false }))
+    end
+  end
+
+  def save_all_price_policies!
+    ActiveRecord::Base.transaction do
+      @price_policies.all?(&:save) || raise(ActiveRecord::Rollback)
     end
   end
 
