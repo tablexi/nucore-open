@@ -23,11 +23,27 @@ class MessageSummarizer::MessageSummary
     controller.current_ability
   end
 
+  def allowed?
+    raise NotImplementedError.new("Subclass must implement")
+  end
+
   def facility
     controller.current_facility
   end
 
+  def get_count
+    raise NotImplementedError.new("Subclass must implement")
+  end
+
+  def l18n_key
+    raise NotImplementedError.new("Subclass must implement")
+  end
+
   def label
     "#{I18n.t(l18n_key)} (#{count})"
+  end
+
+  def path
+    raise NotImplementedError.new("Subclass must implement")
   end
 end
