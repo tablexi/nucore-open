@@ -5,6 +5,7 @@ describe Ability do
   let(:facility) { create(:setup_facility) }
   let(:instrument) { create(:instrument_requiring_approval, facility: facility) }
   let(:stub_controller) { OpenStruct.new }
+  let(:subject_resource) { :stub }
 
   shared_examples_for "it can manage price group members" do
     it "can manage its members" do
@@ -40,6 +41,14 @@ describe Ability do
     end
   end
 
+  shared_examples_for "it can read notifications" do
+    it { expect(ability.can?(:read, Notification)).to be true }
+  end
+
+  shared_examples_for "it cannot read notifications" do
+    it { expect(ability.can?(:read, Notification)).to be false }
+  end
+
   describe "administrator" do
     let(:user) { create(:user, :administrator) }
 
@@ -62,6 +71,8 @@ describe Ability do
         end
       end
     end
+
+    it_behaves_like "it can read notifications"
 
     describe StoredFile do
       describe "#download" do
@@ -98,18 +109,21 @@ describe Ability do
     end
 
     it_behaves_like "it can manage training requests"
+    it_behaves_like "it can read notifications"
   end
 
   describe "senior staff" do
     let(:user) { create(:user, :senior_staff, facility: facility) }
 
     it_behaves_like "it can manage training requests"
+    it_behaves_like "it cannot read notifications"
   end
 
   describe "staff" do
     let(:user) { create(:user, :staff, facility: facility) }
 
     it_behaves_like "it can create but not manage training requests"
+    it_behaves_like "it can read notifications"
   end
 
   describe "unprivileged user" do
@@ -150,5 +164,7 @@ describe Ability do
         end
       end
     end
+
+    it_behaves_like "it cannot read notifications"
   end
 end

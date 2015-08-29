@@ -9,10 +9,6 @@ FactoryGirl.define do
     sequence(:name) { |n| "Level #{n}" }
   end
 
-  factory :order_status, :class => OrderStatus do
-    sequence(:name) { |n| "Status #{n}" }
-  end
-
   factory :payment_account_transaction do
     description 'fake trans'
     transaction_amount -12.34

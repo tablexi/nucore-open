@@ -233,6 +233,10 @@ describe FacilitiesController do
     it_behaves_like "transactions", :transactions
   end
 
+  context "disputed_orders" do
+    it_behaves_like "transactions", :disputed_orders
+  end
+
   context "movable_transactions" do
     it_behaves_like "transactions", :movable_transactions
   end
