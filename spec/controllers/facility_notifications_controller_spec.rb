@@ -60,9 +60,10 @@ describe FacilityNotificationsController do
 
   context "send_notifications" do
     before :each do
-      @method=:post
-      @action=:send_notifications
-      @params.merge!({ :order_detail_ids => [@order_detail1.id, @order_detail2.id] })
+      Notifier.deliveries.clear
+      @method = :post
+      @action = :send_notifications
+      @params.merge!(order_detail_ids: [@order_detail1.id, @order_detail2.id])
     end
 
     it_should_404_for_zero_day_review
@@ -70,16 +71,19 @@ describe FacilityNotificationsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_managers_only :redirect do
-      assigns(:errors).should be_empty
-      assigns(:accounts_to_notify).to_a.should == [[@account.id, @authable.id]]
-      assigns(:orders_notified).should == [@order_detail1, @order_detail2]
-      @order_detail1.reload.reviewed_at.should_not be_nil
-      @order_detail1.reviewed_at.should > 6.days.from_now
+      expect(assigns(:errors)).to be_empty
+      expect(assigns(:accounts_to_notify).to_a).to eq([[@account.id, @authable.id]])
+      expect(assigns(:orders_notified)).to eq([@order_detail1, @order_detail2])
+
+      expect(@order_detail1.reload.reviewed_at).to be_present
+      expect(@order_detail1.reviewed_at).to be > 6.days.from_now
+
+      expect(Notifier.deliveries.count).to eq(1)
     end
 
     context "multiple accounts" do
       before :each do
-        @params.merge!({:order_detail_ids => [@order_detail1.id, @order_detail2.id, @order_detail3.id] })
+        @params.merge!(order_detail_ids: [@order_detail1.id, @order_detail2.id, @order_detail3.id])
       end
 
       it_should_allow_managers_only :redirect do
@@ -91,6 +95,10 @@ describe FacilityNotificationsController do
       context 'while signed in' do
         before :each do
           maybe_grant_always_sign_in(:admin)
+        end
+
+        it 'sends emails to the two accounts' do
+          expect { do_request }.to change { Notifier.deliveries.count }.by(2)
         end
 
         it 'should display the account list if less than 10 accounts' do
