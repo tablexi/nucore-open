@@ -14,7 +14,7 @@ header {
     }
   }
 
-  .navbar-inner {
+  .navbar-inner, .dropdown-toggle {
     padding: 10px 0;
     @include gradient-vertical($headerBackgroundColorHighLight, $headerBackgroundColor);
   }
@@ -25,12 +25,12 @@ header {
       border-left: 1px solid $usernavDividerColor;
     }
     > li > a {
-      color: $usernavColor;
+      color: $usernavColor !important;
       text-shadow: none;
       padding: 10px 0;
 
       &:hover {
-        color: $usernavColorHover;
+        color: $usernavColorHover !important;
       }
     }
 
