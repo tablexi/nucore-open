@@ -1,31 +1,37 @@
 = content_for :head_content do
-  = javascript_include_tag 'price_policy'
+  = javascript_include_tag "price_policy"
 
-= render :partial => 'price_policies/dates', :locals => { :f => f }
+= render "price_policies/dates", f: f
 
-- policy = @price_policies.first
-= f.input :charge_for, :collection => charge_for_options(policy.product), :selected => policy.charge_for
-
+- price_policy = @price_policies.first
+= f.input :charge_for,
+  collection: charge_for_options(price_policy.product),
+  selected: price_policy.charge_for
 
 %table.table.table-striped.table-hover.price-policy-table
   %thead
     %tr
-      %th Price Group
-      %th Type
-      %th Can Purchase?
-      %th Rate Per Hour
-      %th Minimum Cost
-      %th Reservation Cost
+      %th= t(".price_group")
+      %th= t(".type")
+      %th= t(".can_purchase")
+      %th= t(".rate_per_hour")
+      %th= t(".minimum_cost")
+      %th= t(".reservation_cost")
   %tbody
-    - @price_policies.each do |pp|
-      - pg = pp.price_group
+    - @price_policies.each do |price_policy|
+      - price_group = price_policy.price_group
       %tr
-        %td= pg.name
-        %td= pg.type_string
-        %td= check_box_tag "price_policy_#{pg.id}[can_purchase]", '1', pp.can_purchase?, :class => 'can_purchase'
-        - if !pg.is_internal?
-          = render :partial => 'price_policies/instrument/external_row', :locals => { :pg => pg, :pp => pp }
-        - elsif pg.is_master_internal?
-          = render :partial => 'price_policies/instrument/master_internal_row', :locals => { :pg => pg, :pp => pp }
+        %td= price_group.name
+        %td= price_group.type_string
+        %td= check_box_tag "price_policy_#{price_group.id}[can_purchase]",
+          "1", price_policy.can_purchase?, class: "can_purchase"
+        - case
+        - when price_group.external?
+          = render "price_policies/instrument/external_row",
+            pg: price_group, pp: price_policy
+        - when price_group.master_internal?
+          = render "price_policies/instrument/master_internal_row",
+            pg: price_group, pp: price_policy
         - else
-          = render :partial => 'price_policies/instrument/internal_row', :locals => { :pg => pg, :pp => pp }
+          = render "price_policies/instrument/internal_row",
+            pg: price_group, pp: price_policy

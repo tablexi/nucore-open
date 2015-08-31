@@ -1,6 +1,5 @@
 module PricePoliciesHelper
 
-
   def format_date(date)
     return date.is_a?(String) ? date : date.strftime("%m/%d/%Y")
   end
@@ -32,22 +31,19 @@ module PricePoliciesHelper
   end
 
   def display_usage_rate(price_group, price_policy)
-     if params["price_policy_#{price_group.id}"].present?
-       rate = params["price_policy_#{price_group.id}"][:usage_rate] * 60
-     else
-       rate = price_policy.hourly_usage_rate
-     end
-
-     number_to_currency rate, :unit => '', :delimiter => ''
+    param_for_price_group(price_group, :usage_rate) ||
+      number_to_currency(price_policy.hourly_usage_rate, unit: "", delimiter: "")
   end
 
   def display_usage_subsidy(price_group, price_policy)
-    if params["price_policy_#{price_group.id}"].present?
-      sub = params["price_policy_#{price_group.id}"][:usage_subsidy] * 60
-    else
-      sub = price_policy.hourly_usage_subsidy
-    end
+    param_for_price_group(price_group, :usage_subsidy) ||
+    number_to_currency(price_policy.hourly_usage_subsidy, unit: "", delimiter: "")
+  end
 
-    number_to_currency sub, :unit => '', :delimiter => ''
+  private
+
+  def param_for_price_group(price_group, key)
+    price_group_key = "price_policy_#{price_group.id}"
+    params[price_group_key].present? && params[price_group_key][key]
   end
 end

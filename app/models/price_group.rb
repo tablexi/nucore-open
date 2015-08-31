@@ -35,7 +35,7 @@ class PriceGroup < ActiveRecord::Base
   end
 
   def name
-    is_master_internal? ? "#{I18n.t('institution_name')} #{self[:name]}" : self[:name]
+    master_internal? ? "#{I18n.t('institution_name')} #{self[:name]}" : self[:name]
   end
 
   def to_s
@@ -46,8 +46,8 @@ class PriceGroup < ActiveRecord::Base
     is_internal? ? 'Internal' : 'External'
   end
 
-  def is_master_internal?
-    self.is_internal? && self.display_order == 1
+  def master_internal?
+    is_internal? && display_order == 1
   end
 
   def <=> (obj)
@@ -57,5 +57,9 @@ class PriceGroup < ActiveRecord::Base
   def can_delete?
     # use !.any? because it uses SQL count(), unlike none?
     !global? && !order_details.any?
+  end
+
+  def external?
+    !is_internal?
   end
 end

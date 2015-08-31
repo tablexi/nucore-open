@@ -20,6 +20,7 @@ en:
       timeline_navigation: "%a, %B %e, %Y"
       usa: "%m/%d/%Y"
       usa_filename_safe: "%m-%d-%Y"
+      ymd: "%Y-%m-%d"
 
   time:
     formats:
@@ -713,16 +714,37 @@ en:
       no_orders: There are no orders in this facility
 
   price_policies:
+    adjustment: Adjustment
+    amount: Amount
+    edit:
+      head: Edit Pricing Rules
+      cancel: Cancel
+      save: Save Rules
+    instrument:
+      price_policy_fields:
+        price_group: Price Group
+        type: Type
+        can_purchase: Can Purchase?
+        rate_per_hour: Rate Per Hour
+        minimum_cost: Minimum Cost
+        reservation_cost: Reservation Cost
     instructional_text:
       common: "All Northwestern users must be charged the same base rate.  Rates must be reviewed by the Provost's Office.  You may define adjustments to this rate for individual internal price groups."
       item: ""
       service: ""
       instrument: "The user will be charged the sum of actual, scheduled, and overage usage fees.  Actual usage is measured by power relay or manually entered by facility staff.  Scheduled usage is calculated from the user's reservation.  Overage is any usage that exceeds the user's reservation.  If an overage rate is not specified, the actual usage rate will be applied for any overage."
+    price_policy_fields:
+      price_group: Price Group
+      type: Type
+      can_purchase: Can Purchase?
+      unit_cost: Unit Cost
+      unit_adjustment: Unit Adjustment
     problem: There is a problem with this price policy.
     errors:
       none_exist_for_date: No valid price policies exists for that date.
       none_exist: No current price policies
       fewer_than_price_groups: Some price groups are missing price policies
+    rate: Rate
 
   price_groups:
     price_group_fields:

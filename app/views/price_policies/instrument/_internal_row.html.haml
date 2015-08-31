@@ -1,15 +1,20 @@
 %td
-  = hidden_field_tag "price_policy_#{pg.id}[usage_rate]", display_usage_rate(pg, pp), class: "usage_cost"
-  Adjustment
+  = hidden_field_tag "price_policy_#{pg.id}[usage_rate]",
+    display_usage_rate(pg, pp),
+    class: "usage_cost"
+  = t("price_policies.adjustment")
   %br
-  = text_field_tag "price_policy_#{pg.id}[usage_subsidy]", display_usage_subsidy(pg, pp), size: 8, class: "usage_adjustment"
+  = text_field_tag "price_policy_#{pg.id}[usage_subsidy]",
+    display_usage_subsidy(pg, pp), size: 8, class: "usage_adjustment"
+
 %td
-  Amount
+  = t("price_policies.amount")
   %br
   %span.minimum_cost{ data: { usage_subsidy: pp.usage_subsidy } }
   = hidden_price_policy_tag(pg.id, pp.minimum_cost, :minimum_cost, params["price_policy_#{pg.id}"])
+
 %td
-  Amount
+  = t("price_policies.amount")
   %br
   %span.cancellation_cost
   = hidden_price_policy_tag(pg.id, pp.cancellation_cost, :cancellation_cost, params["price_policy_#{pg.id}"])
