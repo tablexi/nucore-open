@@ -33,7 +33,7 @@ class PricePoliciesController < ApplicationController
     @expire_date    = PricePolicy.generate_expire_date(@start_date)
     @max_expire_date = @expire_date
 
-    build_price_policies
+    build_price_policies!
 
     # Base the new policies off the most recent version
     new_price_policy_list = []
@@ -54,10 +54,9 @@ class PricePoliciesController < ApplicationController
     @start_date = start_date_from_params
     @expire_date = params[:expire_date]
 
-    build_price_policies
-    update_policies_from_params
+    build_price_policies!
 
-    if save_all_price_policies!
+    if update_policies_from_params!
       flash[:notice] = I18n.t("controllers.price_policies.create.success")
       redirect_to facility_product_price_policies_path
     else
@@ -70,10 +69,11 @@ class PricePoliciesController < ApplicationController
   def edit
     @start_date = start_date_from_params
 
-    build_price_policies
+    build_price_policies!
 
     @expire_date=@price_policies.map(&:expire_date).compact.first
     @max_expire_date = PricePolicy.generate_expire_date(@start_date)
+
     render 'price_policies/edit'
   end
 
@@ -81,14 +81,12 @@ class PricePoliciesController < ApplicationController
   def update
     @start_date = start_date_from_params
 
-    build_price_policies
+    build_price_policies!
 
     @expire_date = params[:expire_date]
     @max_expire_date = PricePolicy.generate_expire_date(@start_date)
 
-    update_policies_from_params
-
-    if save_all_price_policies!
+    if update_policies_from_params!
       flash[:notice] = I18n.t("controllers.price_policies.update.success")
       redirect_to facility_product_price_policies_path
     else
@@ -122,7 +120,6 @@ class PricePoliciesController < ApplicationController
     end
   end
 
-
   private
 
   def facility_product_price_policies_path
@@ -137,43 +134,23 @@ class PricePoliciesController < ApplicationController
     @product_var = product_var
   end
 
-  def build_price_policies
-    original_price_policies = @product.price_policies.for_date(@start_date) || []
-    @price_policies = []
-
-    raise ActiveRecord::RecordNotFound unless original_price_policies.all?{ |pp| pp.editable? } || original_price_policies.empty?
-    groups_with_policy = Hash[original_price_policies.map {|pp| [pp.price_group, pp] }]
-    current_facility.price_groups.each do |pg|
-      @price_policies << (groups_with_policy[pg] || model_class.new({:price_group_id => pg.id, :product_id => @product.id, :can_purchase => false }))
-    end
+  def build_price_policies!
+    @price_policies = PricePolicyBuilder.get(@product, @start_date)
+    raise ActiveRecord::RecordNotFound if @price_policies.blank?
   end
 
-  def save_all_price_policies!
-    ActiveRecord::Base.transaction do
-      @price_policies.all?(&:save) || raise(ActiveRecord::Rollback)
-    end
+  def update_policies_from_params!
+    PricePolicyUpdater.update_all!(
+      @price_policies,
+      parse_usa_date(params[:start_date]).beginning_of_day,
+      parse_usa_date(@expire_date).end_of_day,
+      params,
+    )
   end
-
-  def update_policies_from_params
-    @price_policies.each do |price_policy|
-      pp_param = params["price_policy_#{price_policy.price_group.id}"] || {:can_purchase => false}
-      pp_param.merge!(
-        start_date: parse_usa_date(params[:start_date]).beginning_of_day,
-        expire_date: parse_usa_date(@expire_date).end_of_day
-      )
-      pp_param.merge! charge_for: params[:charge_for] if params[:charge_for].present?
-      price_policy.attributes = pp_param
-    end
-  end
-
 
   def model_name
     self.class.name.gsub('Controller', '').singularize
   end
-  def model_class
-    model_name.constantize
-  end
-
 
   #
   # Override CanCan's find -- it won't properly search by zoned date
