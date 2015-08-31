@@ -1,4 +1,8 @@
 shared_examples_for PricePoliciesController do |product_type, params_modifier = nil|
+  let(:facility) { @authable }
+  let(:price_policy) { @price_policy }
+  let(:product) { @product }
+
   before(:each) do
     @product_type = product_type
     @params_modifier = params_modifier
@@ -134,7 +138,6 @@ shared_examples_for PricePoliciesController do |product_type, params_modifier = 
   end
 
   context "edit" do
-
     before :each do
       @method=:get
       @action=:edit
@@ -169,7 +172,6 @@ shared_examples_for PricePoliciesController do |product_type, params_modifier = 
       end
     end
 
-
     it 'should not allow edit of assigned effective price policy' do
       @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @director))
       @order    = @director.orders.create(FactoryGirl.attributes_for(:order, :created_by => @director.id))
@@ -181,24 +183,21 @@ shared_examples_for PricePoliciesController do |product_type, params_modifier = 
       assigns[:price_policies].should be_empty
       should render_template '404'
     end
-
   end
 
-  context 'policy params' do
-
+  context "with policy params" do
     before :each do
-      @params.merge!({
-        :interval => 5,
-      })
+      @params.merge!(interval: 5)
 
-      @authable.price_groups.each do |pg|
-        @params.merge!(:"price_policy_#{pg.id}" => FactoryGirl.attributes_for(:"#{@product_type}_price_policy"))
+      facility.price_groups.map(&:id).each do |id|
+        @params.merge!(
+          :"price_policy_#{id}" =>
+            attributes_for(:"#{@product_type}_price_policy")
+        )
       end
     end
 
-
     context "create" do
-
       before :each do
         @method=:post
         @action=:create
@@ -262,94 +261,150 @@ shared_examples_for PricePoliciesController do |product_type, params_modifier = 
           end
         end
       end
-
     end
 
-
-    context "update" do
-
-      before :each do
-        @method=:put
-        @action=:update
+    describe "#update" do
+      before(:each) do
+        @method = :put
+        @action = :update
         set_policy_date
-        @params.merge!(:id => @price_policy.start_date.to_s,
-          :start_date => @price_policy.start_date.to_s,
-          :expire_date => @price_policy.expire_date.to_s)
+        @params.merge!(
+          id: price_policy.start_date.to_s,
+          start_date: price_policy.start_date.to_s,
+          expire_date: price_policy.expire_date.to_s,
+        )
 
-        @params_modifier.before_update @params if @params_modifier.try :respond_to?, :before_update
+        if @params_modifier.respond_to?(:before_update)
+          @params_modifier.before_update(@params)
+        end
       end
 
       it_should_allow_managers_only(:redirect) {}
 
-      context 'signed in' do
-        before :each do
-          maybe_grant_always_sign_in :director
+      context "when signed in as a director" do
+        before { maybe_grant_always_sign_in(:director) }
+
+        it "redirects to the price policy index on success" do
+          do_request
+          expect(response).to redirect_to(price_policy_index_path)
         end
 
-        it 'should redirect to show on success' do
-          do_request
-          should redirect_to price_policy_index_path
-        end
+        context "when setting an expire_date param" do
+          let(:new_expire_date) { price_policy.expire_date - 1.day }
+          let(:updated_price_policies) do
+            product.price_policies.for_date(price_policy.start_date)
+          end
 
-        it 'should update the expiration dates for all price policies' do
-          @new_expire_date = @price_policy.expire_date - 1.day
-          @params[:expire_date] = @new_expire_date.to_s
-          do_request
-          @product.price_policies.for_date(@price_policy.start_date).each do |pp|
-            pp.expire_date.should match_date @new_expire_date
+          before(:each) do
+            @params[:expire_date] = new_expire_date.to_s
+            do_request
+          end
+
+          it "updates the expiration date" do
+            updated_price_policies.each do |updated_price_policy|
+              expect(updated_price_policy.expire_date)
+                .to match_date(new_expire_date)
+            end
           end
         end
 
-        it 'should update the start_date for all price policies' do
-          @new_start_date = @price_policy.start_date + 1.day
-          @params[:start_date] = @new_start_date.to_s
-          do_request
-          assigns[:price_policies].each do |pp|
-            pp.start_date.should match_date @new_start_date
+        context "when setting a start_date param" do
+          let(:new_start_date) { price_policy.start_date + 1.day }
+
+          before(:each) do
+            @params[:start_date] = new_start_date.to_s
+            do_request
+          end
+
+          it "updates the start_date for all price policies" do
+            assigns[:price_policies].each do |updated_price_policy|
+              expect(updated_price_policy.start_date)
+                .to match_date(new_start_date)
+            end
           end
         end
 
-        it 'should update the can_purchase for price policy' do
-          last_price_group = @authable.price_groups.last
-          @params[:"price_policy_#{last_price_group.id}"][:can_purchase] = false
-          do_request
-          @product.price_policies.for_date(@price_policy.start_date).where(:price_group_id => last_price_group.id).first.should_not be_can_purchase
-        end
+        context "when setting the can_purchase param to false" do
+          let(:last_price_group_id) { facility.price_groups.last.id }
+          let(:updated_price_policy) do
+            product
+              .price_policies
+              .for_date(price_policy.start_date)
+              .where(price_group_id: last_price_group_id)
+              .first # TODO: update to #find_by for Rails 4
+          end
 
-        it 'should create a new price policy that cant be purchased for a new price group' do
-          @price_group3 = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
-          do_request
-          @product.price_policies.map(&:price_group).should be_include @price_group3
+          before(:each) do
+            @params[:"price_policy_#{last_price_group_id}"][:can_purchase] = false
+            do_request
+          end
 
-          new_pp = @product.price_policies.for_date(@price_policy.start_date).where(:price_group_id => @price_group3.id).first
-          new_pp.should_not be_can_purchase
-        end
-        it 'should reject everything if expire date is before start date' do
-          @params[:expire_date] = (@price_policy.start_date - 2.days).to_s
-          do_request
-          flash[:error].should_not be_nil
-          response.should render_template 'price_policies/edit'
-          @product.price_policies.for_date(@price_policy.start_date).each do |pp|
-            pp.expire_date.should match_date @price_policy.expire_date
+          it "makes the price policy not purchaseable" do
+            expect(updated_price_policy).not_to be_can_purchase
           end
         end
 
-        it 'should reject everything if the expiration date spans into the next fiscal year' do
-          @params[:expire_date] = (PricePolicy.generate_expire_date(@price_policy.start_date) + 1.day).to_s
-          do_request
-          response.should be
-          flash[:error].should_not be_nil
-          response.should render_template 'price_policies/edit'
-          @product.price_policies.for_date(@price_policy.start_date).each do |pp|
-            pp.expire_date.should match_date @price_policy.expire_date
+        context "when creating a new price group" do
+          let!(:new_price_group) do
+            facility.price_groups.create(attributes_for(:price_group))
           end
+          let(:new_price_policy) do
+            product
+              .price_policies
+              .for_date(price_policy.start_date)
+              .where(price_group_id: new_price_group)
+              .first # TODO: update to #find_by for Rails 4
+          end
+          let(:product_price_groups) do
+            product.price_policies.map(&:price_group)
+          end
+
+          before { do_request }
+
+          it "creates a new unpurchaseable price policy" do
+            expect(product_price_groups).to be_include(new_price_group)
+            expect(new_price_policy).not_to be_can_purchase
+          end
+        end
+
+        shared_examples_for "it rejects expire_date changes" do
+          let(:unchanged_price_policies) do
+            product.price_policies.for_date(price_policy.start_date)
+          end
+
+          before(:each) do
+            @params[:expire_date] = expire_date.to_s
+            do_request
+          end
+
+          it { expect(flash[:error]).to include("error saving") }
+          it { expect(response).to render_template("price_policies/edit") }
+
+          it "does not update expire_dates" do
+            unchanged_price_policies.each do |unchanged_price_policy|
+              expect(unchanged_price_policy.expire_date)
+                .to match_date(price_policy.expire_date)
+            end
+          end
+        end
+
+        context "when setting the expire_date before the start_date" do
+          let(:expire_date) { price_policy.start_date - 2.days }
+
+          it_behaves_like "it rejects expire_date changes"
+        end
+
+        context "when setting the expiration_date beyond this fiscal year" do
+          let(:expire_date) do
+            PricePolicy.generate_expire_date(price_policy.start_date) + 1.day
+          end
+
+          it_behaves_like "it rejects expire_date changes"
         end
       end
     end
 
-
     context "destroy" do
-
       before :each do
         @method=:delete
         @action=:destroy
@@ -389,7 +444,6 @@ shared_examples_for PricePoliciesController do |product_type, params_modifier = 
         end
       end
     end
-
   end
 
   private
