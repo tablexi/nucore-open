@@ -97,7 +97,7 @@ describe FacilityNotificationsController do
           maybe_grant_always_sign_in(:admin)
         end
 
-        it 'should send emails to the two accounts accounts' do
+        it 'sends emails to the two accounts' do
           expect { do_request }.to change { Notifier.deliveries.count }.by(2)
         end
 
