@@ -70,7 +70,7 @@ class NotificationSender
       accounts_to_notify.each do |account_id, facility_id|
         account = Account.find(account_id)
         account.notify_users.each do |u|
-          Notifier.review_orders(user_id: u.id, facility_id: facility_id, account_id: account_id)
+          Notifier.review_orders(user_id: u.id, facility_id: facility_id, account_id: account_id).deliver
         end
       end
     end
