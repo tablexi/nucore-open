@@ -37,8 +37,8 @@ describe PricePoliciesHelper do
         { price_policy_0: { usage_rate: "43.21" } }.with_indifferent_access
       end
 
-      it "returns 60 times the usage rate from params, formatted" do
-        expect(usage_rate).to eq("2592.60")
+      it "returns the usage rate from params" do
+        expect(usage_rate).to eq("43.21")
       end
     end
 
@@ -61,8 +61,8 @@ describe PricePoliciesHelper do
         { price_policy_0: { usage_subsidy: "43.21" } }.with_indifferent_access
       end
 
-      it "returns 60 times the usage subsidy from params, formatted" do
-        expect(usage_subsidy).to eq("2592.60")
+      it "returns usage subsidy from params" do
+        expect(usage_subsidy).to eq("43.21")
       end
     end
 
