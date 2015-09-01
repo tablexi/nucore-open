@@ -25,10 +25,11 @@
         %td= price_group.type_string
         %td= check_box_tag "price_policy_#{price_group.id}[can_purchase]",
           "1", price_policy.can_purchase?, class: "can_purchase"
-        - if price_group.external?
+        - case
+        - when price_group.external?
           = render "price_policies/instrument/external_row",
             pg: price_group, pp: price_policy
-        - elsif price_group.master_internal?
+        - when price_group.master_internal?
           = render "price_policies/instrument/master_internal_row",
             pg: price_group, pp: price_policy
         - else

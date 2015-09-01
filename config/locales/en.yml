@@ -714,6 +714,8 @@ en:
       no_orders: There are no orders in this facility
 
   price_policies:
+    adjustment: Adjustment
+    amount: Amount
     edit:
       head: Edit Pricing Rules
       cancel: Cancel
@@ -742,6 +744,7 @@ en:
       none_exist_for_date: No valid price policies exists for that date.
       none_exist: No current price policies
       fewer_than_price_groups: Some price groups are missing price policies
+    rate: Rate
 
   price_groups:
     price_group_fields:
