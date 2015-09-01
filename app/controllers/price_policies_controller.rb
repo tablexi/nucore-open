@@ -7,6 +7,9 @@ class PricePoliciesController < ApplicationController
   before_filter :init_current_facility
   before_filter :init_product
   before_filter :init_price_policy, except: [:index, :new]
+  before_filter :build_price_policies!, only: [:create, :edit, :update]
+  before_filter :set_expire_date_from_params, only: [:create, :update]
+  before_filter :set_max_expire_date, only: [:edit, :update]
 
   load_and_authorize_resource
 
@@ -29,8 +32,7 @@ class PricePoliciesController < ApplicationController
   def new
     # If there are active policies, start tomorrow. If none, start today
     @start_date = Date.today + (@product.price_policies.current.empty? ? 0 : 1)
-    @expire_date = PricePolicy.generate_expire_date(@start_date)
-    @max_expire_date = @expire_date
+    @expire_date = set_max_expire_date
 
     build_price_policies!
 
@@ -51,55 +53,25 @@ class PricePoliciesController < ApplicationController
 
   # POST /facilities/:facility_id/{product_type}/:product_id/price_policies
   def create
-    @expire_date = params[:expire_date]
-
-    build_price_policies!
-
-    if update_policies_from_params!
-      flash[:notice] = I18n.t("controllers.price_policies.create.success")
-      redirect_to facility_product_price_policies_path
-    else
-      flash[:error] = I18n.t("controllers.price_policies.errors.save")
-      render "price_policies/new"
-    end
-  end
-
-  # GET /facilities/:facility_id/{product_type}/:product_id/price_policies/:id/edit
-  def edit
-    build_price_policies!
-
-    @expire_date = @price_policies.map(&:expire_date).compact.first
-    @max_expire_date = PricePolicy.generate_expire_date(@start_date)
-
-    render "price_policies/edit"
+    create_or_update(:new)
   end
 
   # PUT /facilities/:facility_id/{product_type}/:product_id/price_policies/:id
   def update
-    build_price_policies!
+    create_or_update(:edit)
+  end
 
-    @expire_date = params[:expire_date]
-    @max_expire_date = PricePolicy.generate_expire_date(@start_date)
+  # GET /facilities/:facility_id/{product_type}/:product_id/price_policies/:id/edit
+  def edit
+    @expire_date = @price_policies.map(&:expire_date).compact.first
 
-    if update_policies_from_params!
-      flash[:notice] = I18n.t("controllers.price_policies.update.success")
-      redirect_to facility_product_price_policies_path
-    else
-      flash[:error] = I18n.t("controllers.price_policies.errors.save")
-      render "price_policies/edit"
-    end
+    render "price_policies/edit"
   end
 
   # DELETE /facilities/:facility_id/{product_type}/:product_id/price_policies/:id
   def destroy
-    unless @start_date > Date.today
-      # force the user to really think about what they're doing, but tell them how to do it if they really want.
-      flash[:error] = I18n.t("controllers.price_policies.errors.remove_active_policy")
-      return redirect_to facility_product_price_policies_path
-    end
-
-    @price_policies = @product.price_policies.for_date(@start_date)
-    raise ActiveRecord::RecordNotFound if @price_policies.none?
+    return remove_active_policy_warning if @start_date <= Date.today
+    load_price_policies_for_start_date!
 
     if PricePolicyUpdater.destroy_all!(@price_policies, @start_date)
       flash[:notice] = I18n.t("controllers.price_policies.destroy.success")
@@ -112,24 +84,77 @@ class PricePoliciesController < ApplicationController
 
   private
 
-  def facility_product_price_policies_path
-    method("facility_#{@product_var}_price_policies_path")
-      .call(current_facility, @product)
-  end
-
-  def init_product # TODO: refactor
-    product_var = model_name.gsub("PricePolicy", "").downcase
-    var = current_facility.method(product_var.pluralize)
-      .call
-      .find_by_url_name!(params["#{product_var}_id".to_sym])
-    instance_variable_set("@#{product_var}", var)
-    @product = var
-    @product_var = product_var
-  end
-
   def build_price_policies!
     @price_policies = PricePolicyBuilder.get(@product, @start_date)
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
+  end
+
+  def create_or_update(action)
+    if update_policies_from_params!
+      flash[:notice] = I18n.t("controllers.price_policies.#{action}.success")
+      redirect_to facility_product_price_policies_path
+    else
+      flash[:error] = I18n.t("controllers.price_policies.errors.save")
+      render "price_policies/#{action}"
+    end
+  end
+
+  def facility_product_price_policies_path
+    method("facility_#{product_var}_price_policies_path")
+      .call(current_facility, @product)
+  end
+
+  # Override CanCan's find -- it won't properly search by zoned date
+  def init_price_policy
+    @start_date = start_date_from_params
+
+    instance_variable_set(
+      "@#{model_name.underscore}",
+      instance_variable_get("@#{product_var}")
+        .price_policies
+        .for_date(@start_date)
+        .first
+    )
+  end
+
+  def init_product
+    @product = current_facility.method(product_var.pluralize)
+      .call
+      .find_by_url_name!(params["#{product_var}_id".to_sym])
+    instance_variable_set("@#{product_var}", @product)
+  end
+
+  def load_price_policies_for_start_date!
+    @price_policies = @product.price_policies.for_date(@start_date)
+    raise ActiveRecord::RecordNotFound if @price_policies.none?
+  end
+
+  def model_name
+    self.class.name.gsub(/Controller\z/, "").singularize
+  end
+
+  def product_var
+    @product_var ||= model_name.gsub(/PricePolicy\z/, "").downcase
+  end
+
+  def remove_active_policy_warning
+    flash[:error] =
+      I18n.t("controllers.price_policies.errors.remove_active_policy")
+    redirect_to facility_product_price_policies_path
+  end
+
+  def set_expire_date_from_params
+    @expire_date = params[:expire_date]
+  end
+
+  def set_max_expire_date
+    @max_expire_date = PricePolicy.generate_expire_date(@start_date)
+  end
+
+  def start_date_from_params
+    start_date = params[:id] || params[:start_date] || return
+    format = start_date.include?("/") ? :usa : :ymd
+    Date.strptime(start_date, I18n.t("date.formats.#{format}"))
   end
 
   def update_policies_from_params!
@@ -140,26 +165,4 @@ class PricePoliciesController < ApplicationController
       params,
     )
   end
-
-  def model_name
-    self.class.name.gsub(/Controller\z/, "").singularize
-  end
-
-  # Override CanCan's find -- it won't properly search by zoned date
-  def init_price_policy
-    @start_date = start_date_from_params
-    product_var = "@#{model_name.gsub('PricePolicy', '').downcase}"
-
-    instance_variable_set(
-      "@#{model_name.underscore}",
-      instance_variable_get(product_var).price_policies.for_date(@start_date).first
-    )
-  end
-
-  def start_date_from_params
-    start_date = params[:id] || params[:start_date] || return
-    format = start_date.include?("/") ? :usa : :ymd
-    Date.strptime(start_date, I18n.t("date.formats.#{format}"))
-  end
-
 end
