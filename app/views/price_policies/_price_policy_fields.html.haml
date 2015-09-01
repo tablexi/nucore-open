@@ -1,31 +1,44 @@
 = content_for :head_content do
-  = javascript_include_tag 'price_policy'
+  = javascript_include_tag "price_policy"
 
-= render :partial => 'price_policies/dates', :locals => { :f => f }
+= render "price_policies/dates", f: f
 
 %table.table.table-striped.table-hover.price-policy-table
   %thead
     %tr
-      %th Price Group
-      %th Type
-      %th Can purchase?
-      %th.centered Unit Cost
-      %th.centered Unit Adjustment
+      %th= t(".price_group")
+      %th= t(".type")
+      %th= t(".can_purchase")
+      %th.centered= t(".unit_cost")
+      %th.centered= t(".unit_adjustment")
   %tbody
-    - @price_policies.each do |pp|
-      - pg = pp.price_group
+    - @price_policies.each do |price_policy|
+      - price_group = price_policy.price_group
       %tr
-        %td= pg.name
-        %td= pg.type_string
-        %td= check_box_tag "price_policy_#{pg.id}[can_purchase]", '1', pp.can_purchase?, :class => 'can_purchase'
-        - if !pg.is_internal?
-          %td.centered= text_field_tag "price_policy_#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => '', :delimiter => ''), :size => 8
+        %td= price_group.name
+        %td= price_group.type_string
+        %td= check_box_tag "price_policy_#{price_group.id}[can_purchase]",
+          "1", price_policy.can_purchase?, class: "can_purchase"
+        - if price_group.external?
           %td.centered
-        - elsif pg.is_master_internal?
-          %td.centered= text_field_tag "price_policy_#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => '', :delimiter => ''), :size => 8, :class => 'master_unit_cost'
+            = text_field_tag "price_policy_#{price_group.id}[unit_cost]",
+              number_to_currency(price_policy.unit_cost, unit: "", delimiter: ""),
+              size: 8
+          %td.centered
+        - elsif price_group.master_internal?
+          %td.centered
+            = text_field_tag "price_policy_#{price_group.id}[unit_cost]",
+              number_to_currency(price_policy.unit_cost, unit: "", delimiter: ""),
+              size: 8,
+              class: "master_unit_cost"
           %td
         - else
           %td.centered
             %span.unit_cost
-            = hidden_field_tag "price_policy_#{pg.id}[unit_cost]", number_to_currency(pp.unit_cost, :unit => '', :delimiter => ''), :class => "unit_cost"
-          %td.centered= text_field_tag "price_policy_#{pg.id}[unit_subsidy]", number_to_currency(pp.unit_subsidy, :unit => '', :delimiter => ''), :size => 8
+            = hidden_field_tag "price_policy_#{price_group.id}[unit_cost]",
+              number_to_currency(price_policy.unit_cost, unit: "", delimiter: ""),
+              class: "unit_cost"
+          %td.centered
+            = text_field_tag "price_policy_#{price_group.id}[unit_subsidy]",
+              number_to_currency(price_policy.unit_subsidy, unit: "", delimiter: ""),
+              size: 8
