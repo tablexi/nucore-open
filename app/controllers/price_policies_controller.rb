@@ -20,9 +20,10 @@ class PricePoliciesController < ApplicationController
     super
   end
 
+  # GET /facilities/:facility_id/{product_type}/:product_id/price_policies
   def index
     @current_price_policies = @product.price_policies.current
-    @current_start_date = @current_price_policies.first ? @current_price_policies.first.start_date : nil
+    @current_start_date = @current_price_policies.first.try(:start_date)
     @past_price_policies_by_date = @product.past_price_policies_grouped_by_start_date
     @next_price_policies_by_date = @product.upcoming_price_policies_grouped_by_start_date
     render "price_policies/index"
@@ -30,24 +31,10 @@ class PricePoliciesController < ApplicationController
 
   # GET /facilities/:facility_id/{product_type}/:product_id/price_policies/new
   def new
-    # If there are active policies, start tomorrow. If none, start today
-    @start_date = Date.today + (@product.price_policies.current.empty? ? 0 : 1)
+    @start_date = new_start_date
     @expire_date = set_max_expire_date
-
     build_price_policies!
-
-    # TODO: extract and refactor the following @price_policies manipulation:
-    # Base the new policies off the most recent version
-    new_price_policy_list = []
-    @price_policies.each do |pp|
-      existing_pp = @product.price_policies.where(price_group_id: pp.price_group.id).order(:expire_date).last
-      new_price_policy_list << (existing_pp ? existing_pp.dup : pp)
-    end
-    # If it's all new policies (i.e. nothing changed in the list), make the default can_purchase true
-    new_price_policy_list.each { |pp| pp.can_purchase = true } if @price_policies == new_price_policy_list
-
-    @price_policies = new_price_policy_list
-
+    base_new_policies_on_most_recent
     render "price_policies/new"
   end
 
@@ -81,6 +68,22 @@ class PricePoliciesController < ApplicationController
   end
 
   private
+
+  def active_policies?
+    @product.price_policies.current.any?
+  end
+
+  def base_new_policies_on_most_recent
+    new_price_policies = @price_policies.map do |price_policy|
+      last_price_policy_for_price_group(price_policy.price_group) || price_policy
+    end
+    # If it's all new policies (i.e. nothing changed in the list), make the default can_purchase true
+    if @price_policies == new_price_policies
+      make_all_price_policies_purchaseable
+    else
+      @price_policies = new_price_policies
+    end
+  end
 
   def build_price_policies!
     @price_policies = PricePolicyBuilder.get(@product, @start_date)
@@ -122,8 +125,25 @@ class PricePoliciesController < ApplicationController
     instance_variable_set("@#{product_var}", @product)
   end
 
+  def last_price_policy_for_price_group(price_group)
+    @product
+      .price_policies
+      .where(price_group_id: price_group.id)
+      .order(:expire_date)
+      .last
+  end
+
+  def make_all_price_policies_purchaseable
+    @price_policies.each { |price_policy| price_policy.can_purchase = true }
+  end
+
   def model_name
     self.class.name.gsub(/Controller\z/, "").singularize
+  end
+
+  def new_start_date
+    # If there are active policies, start tomorrow. If none, start today
+    Date.today + (active_policies? ? 1 : 0)
   end
 
   def product_var
