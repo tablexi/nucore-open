@@ -128,6 +128,9 @@ en:
     price_policies:
       create:
         success: Price Rules were successfully created.
+      destroy:
+        success: Price Rules were successfully removed.
+        failure: An error was encountered while trying to remove the Price Rules
       errors:
         remove_active_policy: "Sorry, but you cannot remove an active price policy. If you really want to do so move the start date to the future and try again."
         save: There was an error saving the policy

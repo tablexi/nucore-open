@@ -101,13 +101,11 @@ class PricePoliciesController < ApplicationController
     @price_policies = @product.price_policies.for_date(@start_date)
     raise ActiveRecord::RecordNotFound if @price_policies.none?
 
-    if ActiveRecord::Base.transaction do
-        raise ActiveRecord::Rollback unless @price_policies.all?(&:destroy)
-        flash[:notice] = "Price Rules were successfully removed"
-        redirect_to facility_product_price_policies_path
-      end
+    if PricePolicyUpdater.destroy_all!(@price_policies, @start_date)
+      flash[:notice] = I18n.t("controllers.price_policies.destroy.success")
+      redirect_to facility_product_price_policies_path
     else
-      flash[:error] = "An error was encountered while trying to remove the Price Rules"
+      flash[:error] = I18n.t("controllers.price_policies.destroy.failure")
       redirect_to facility_product_price_policies_path
     end
   end

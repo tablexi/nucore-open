@@ -3,11 +3,21 @@ class PricePolicyUpdater
     self.new(price_policies, start_date, expire_date, params).update_all!
   end
 
-  def initialize(price_policies, start_date, expire_date, params)
+  def self.destroy_all!(price_policies, start_date)
+    self.new(price_policies, start_date).destroy_all!
+  end
+
+  def initialize(price_policies, start_date, expire_date = nil, params = nil)
     @price_policies = price_policies
     @start_date = start_date
     @expire_date = expire_date
     @params = params
+  end
+
+  def destroy_all!
+    ActiveRecord::Base.transaction do
+      @price_policies.all?(&:destroy) || raise(ActiveRecord::Rollback)
+    end
   end
 
   def update_all!
