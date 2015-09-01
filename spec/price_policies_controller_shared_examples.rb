@@ -404,43 +404,53 @@ shared_examples_for PricePoliciesController do |product_type, params_modifier = 
       end
     end
 
-    context "destroy" do
-      before :each do
-        @method=:delete
-        @action=:destroy
+    describe "#destroy" do
+      before(:each) do
+        @method = :delete
+        @action = :destroy
         set_policy_date(1.day)
-        @params.merge!(:id => @price_policy.start_date.to_s)
-        @price_policy.start_date.should > Time.zone.now
+        @params.merge!(id: price_policy.start_date.to_s)
+        expect(price_policy.start_date).to be > Time.zone.now
       end
 
       it_should_allow_managers_only(:redirect) {}
 
-      context 'signed in' do
-        before :each do
-          maybe_grant_always_sign_in :director
-        end
-        it 'should destroy the price policies' do
-          do_request
-          assigns[:price_policies].each do |pp|
-            pp.should be_destroyed
+      context "when signed in as a director" do
+        let!(:price_policies) { product.price_policies.for_date(price_policy.start_date) }
+
+        before { maybe_grant_always_sign_in(:director) }
+
+        context "when the price policies are destroyable" do
+          before { do_request }
+
+          it "successfully destroys them" do
+            price_policies.each do |price_policy|
+              expect(price_policy).to be_destroyed
+            end
+            expect(response).to redirect_to(price_policy_index_path)
           end
         end
-        it 'should redirect to the price policies page for the product' do
-          do_request
-          should redirect_to price_policy_index_path
-        end
-        it 'should not allow destroying an active price policy' do
-          @price_policy.update_attributes(:start_date => Time.zone.now - 1.day, :expire_date => Time.zone.now + 1.day)
-          @params.merge!(:id => @price_policy.start_date.to_s)
-          do_request
-          flash[:error].should_not be_nil
-          response.should redirect_to price_policy_index_path
+
+        context "when a price policy is active" do
+          before(:each) do
+            price_policy.update_attributes(start_date: 1.day.ago, expire_date: 1.day.from_now)
+            @params.merge!(id: price_policy.start_date.to_s)
+            do_request
+          end
+
+          it "will not be destroyed" do
+            expect(flash[:error]).to include("cannot remove an active price policy")
+            expect(response).to redirect_to(price_policy_index_path)
+          end
         end
 
-        it 'should raise a 404 if there are no price policies for that date' do
-          @params.merge!(:id => (@price_policy.start_date + 1.day).to_s)
-          do_request
-          response.code.should == "404"
+        context "when there are no price policies for the start_date" do
+          before(:each) do
+            @params.merge!(id: (price_policy.start_date + 1.day).to_s)
+            do_request
+          end
+
+          it { expect(response.code).to eq("404") }
         end
       end
     end
