@@ -51,7 +51,6 @@ class PricePoliciesController < ApplicationController
 
   # POST /facilities/:facility_id/{product_type}/:product_id/price_policies
   def create
-    @start_date = start_date_from_params
     @expire_date = params[:expire_date]
 
     build_price_policies!
@@ -65,10 +64,8 @@ class PricePoliciesController < ApplicationController
     end
   end
 
-  # GET /price_policies/1/edit
+  # GET /facilities/:facility_id/{product_type}/:product_id/price_policies/:id/edit
   def edit
-    @start_date = start_date_from_params
-
     build_price_policies!
 
     @expire_date=@price_policies.map(&:expire_date).compact.first
@@ -79,8 +76,6 @@ class PricePoliciesController < ApplicationController
 
   # PUT /facilities/:facility_id/{product_type}/:product_id/price_policies/:id
   def update
-    @start_date = start_date_from_params
-
     build_price_policies!
 
     @expire_date = params[:expire_date]
@@ -155,11 +150,12 @@ class PricePoliciesController < ApplicationController
   #
   # Override CanCan's find -- it won't properly search by zoned date
   def init_price_policy
+    @start_date = start_date_from_params
     product_var="@#{model_name.gsub('PricePolicy', '').downcase}"
 
     instance_variable_set(
       "@#{model_name.underscore}",
-      instance_variable_get(product_var).price_policies.for_date(start_date_from_params).first
+      instance_variable_get(product_var).price_policies.for_date(@start_date).first
     )
   end
 
