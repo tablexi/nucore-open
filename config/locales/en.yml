@@ -20,6 +20,7 @@ en:
       timeline_navigation: "%a, %B %e, %Y"
       usa: "%m/%d/%Y"
       usa_filename_safe: "%m-%d-%Y"
+      ymd: "%Y-%m-%d"
 
   time:
     formats:
