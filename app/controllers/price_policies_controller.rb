@@ -71,15 +71,13 @@ class PricePoliciesController < ApplicationController
   # DELETE /facilities/:facility_id/{product_type}/:product_id/price_policies/:id
   def destroy
     return remove_active_policy_warning if @start_date <= Date.today
-    load_price_policies_for_start_date!
 
-    if PricePolicyUpdater.destroy_all!(@price_policies, @start_date)
+    if PricePolicyUpdater.destroy_all_for_product!(@product, @start_date)
       flash[:notice] = I18n.t("controllers.price_policies.destroy.success")
-      redirect_to facility_product_price_policies_path
     else
       flash[:error] = I18n.t("controllers.price_policies.destroy.failure")
-      redirect_to facility_product_price_policies_path
     end
+    redirect_to facility_product_price_policies_path
   end
 
   private
@@ -122,11 +120,6 @@ class PricePoliciesController < ApplicationController
       .call
       .find_by_url_name!(params["#{product_var}_id".to_sym])
     instance_variable_set("@#{product_var}", @product)
-  end
-
-  def load_price_policies_for_start_date!
-    @price_policies = @product.price_policies.for_date(@start_date)
-    raise ActiveRecord::RecordNotFound if @price_policies.none?
   end
 
   def model_name

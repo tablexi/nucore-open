@@ -3,7 +3,9 @@ class PricePolicyUpdater
     self.new(price_policies, start_date, expire_date, params).update_all!
   end
 
-  def self.destroy_all!(price_policies, start_date)
+  def self.destroy_all_for_product!(product, start_date)
+    price_policies = product.price_policies.for_date(start_date)
+    raise ActiveRecord::RecordNotFound if price_policies.none?
     self.new(price_policies, start_date).destroy_all!
   end
 
