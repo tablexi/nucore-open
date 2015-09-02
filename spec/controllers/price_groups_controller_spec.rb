@@ -13,8 +13,8 @@ describe PriceGroupsController do
 
   context 'index' do
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
 
     it_should_allow_managers_only do
@@ -37,8 +37,8 @@ describe PriceGroupsController do
 
   context 'create' do
     before :each do
-      @method=:post
-      @action=:create
+      @method = :post
+      @action = :create
       @params.merge!(:price_group => FactoryGirl.attributes_for(:price_group, :facility_id => @authable.id))
     end
 
@@ -55,8 +55,8 @@ describe PriceGroupsController do
     context 'show' do
 
       before :each do
-        @method=:get
-        @action=:show
+        @method = :get
+        @action = :show
       end
 
       it_should_allow_managers_only :redirect do
@@ -71,13 +71,13 @@ describe PriceGroupsController do
     context 'users' do
 
       before :each do
-        @method=:get
-        @action=:users
+        @method = :get
+        @action = :users
       end
 
       it_should_allow_managers_only do
-        expect(assigns(:user_members)).to be_kind_of Array
-        expect(assigns(:tab)).to_not be_nil
+        expect(assigns(:user_members)).to be_kind_of ActiveRecord::Relation
+        expect(assigns(:tab)).to eq(:users)
         should render_template 'show'
       end
 
@@ -87,13 +87,13 @@ describe PriceGroupsController do
     context 'accounts' do
 
       before :each do
-        @method=:get
+        @method = :get
         @action=:accounts
       end
 
       it_should_allow_managers_only do
-        expect(assigns(:account_members)).to be_kind_of Array
-        expect(assigns(:tab)).to_not be_nil
+        expect(assigns(:account_members)).to be_kind_of ActiveRecord::Relation
+        expect(assigns(:tab)).to eq(:accounts)
         should render_template 'show'
       end
 
@@ -103,8 +103,8 @@ describe PriceGroupsController do
     context 'edit' do
 
       before :each do
-        @method=:get
-        @action=:edit
+        @method = :get
+        @action = :edit
       end
 
       it_should_allow_managers_only do
@@ -119,8 +119,8 @@ describe PriceGroupsController do
     context 'update' do
 
       before :each do
-        @method=:put
-        @action=:update
+        @method = :put
+        @action = :update
         @params.merge!(:price_group => FactoryGirl.attributes_for(:price_group, :facility_id => @authable.id))
       end
 
@@ -137,8 +137,8 @@ describe PriceGroupsController do
     context 'destroy' do
 
       before :each do
-        @method=:delete
-        @action=:destroy
+        @method = :delete
+        @action = :destroy
       end
 
       it_should_allow_managers_only :redirect do
