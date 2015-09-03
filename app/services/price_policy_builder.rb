@@ -29,18 +29,6 @@ class PricePolicyBuilder
     price_policies
   end
 
-  def last_price_policy_for_price_group(price_group)
-    product
-      .price_policies
-      .where(price_group_id: price_group.id)
-      .order(:expire_date)
-      .last
-  end
-
-  def make_all_price_policies_purchaseable
-    price_policies.each { |price_policy| price_policy.can_purchase = true }
-  end
-
   private
 
   def editable?
@@ -54,8 +42,24 @@ class PricePolicyBuilder
     end
   end
 
-  def policy_for_price_group(price_group)
-    groups_with_policy[price_group] || new_price_policy(price_group)
+  def groups_with_policy
+    @groups_with_policy ||= original_price_policies_hash
+  end
+
+  def last_price_policy_for_price_group(price_group)
+    product
+      .price_policies
+      .where(price_group_id: price_group.id)
+      .order(:expire_date)
+      .last
+  end
+
+  def make_all_price_policies_purchaseable
+    price_policies.each { |price_policy| price_policy.can_purchase = true }
+  end
+
+  def model_class
+    @model_class ||= "#{product.class}PricePolicy".constantize
   end
 
   def new_price_policy(price_group)
@@ -66,29 +70,25 @@ class PricePolicyBuilder
     )
   end
 
-  def groups_with_policy
-    @groups_with_policy ||= original_price_policies_hash
-  end
-
   def original_price_policies_hash
     original_price_policies.map do |price_policy|
       [price_policy.price_group, price_policy]
     end.to_h
   end
 
-  def model_class
-    @model_class ||= "#{product.class}PricePolicy".constantize
-  end
-
   def original_price_policies_editable?
     original_price_policies.all?(&:editable?)
   end
 
-  def price_policies_for_start_date
-    product.price_policies.for_date(start_date)
-  end
-
   def original_price_policies
     @original_price_policies ||= price_policies_for_start_date || []
+  end
+
+  def policy_for_price_group(price_group)
+    groups_with_policy[price_group] || new_price_policy(price_group)
+  end
+
+  def price_policies_for_start_date
+    product.price_policies.for_date(start_date)
   end
 end
