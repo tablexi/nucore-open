@@ -18,7 +18,7 @@ class PricePolicyUpdater
 
   def destroy_all!
     ActiveRecord::Base.transaction do
-      @price_policies.all?(&:destroy) || raise(ActiveRecord::Rollback)
+      @price_policies.destroy_all || raise(ActiveRecord::Rollback)
     end
   end
 
