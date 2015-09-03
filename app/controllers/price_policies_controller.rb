@@ -33,8 +33,8 @@ class PricePoliciesController < ApplicationController
   def new
     @start_date = new_start_date
     @expire_date = set_max_expire_date
-    build_price_policies!
-    base_new_policies_on_most_recent
+    @price_policies = PricePolicyBuilder.get_new_policies_based_on_most_recent(@product, @start_date)
+    raise ActiveRecord::RecordNotFound if @price_policies.blank?
     render "price_policies/new"
   end
 
@@ -71,18 +71,6 @@ class PricePoliciesController < ApplicationController
 
   def active_policies?
     @product.price_policies.current.any?
-  end
-
-  def base_new_policies_on_most_recent
-    new_price_policies = @price_policies.map do |price_policy|
-      last_price_policy_for_price_group(price_policy.price_group) || price_policy
-    end
-    # If it's all new policies (i.e. nothing changed in the list), make the default can_purchase true
-    if @price_policies == new_price_policies
-      make_all_price_policies_purchaseable
-    else
-      @price_policies = new_price_policies
-    end
   end
 
   def build_price_policies!
@@ -123,18 +111,6 @@ class PricePoliciesController < ApplicationController
       .call
       .find_by_url_name!(params["#{product_var}_id".to_sym])
     instance_variable_set("@#{product_var}", @product)
-  end
-
-  def last_price_policy_for_price_group(price_group)
-    @product
-      .price_policies
-      .where(price_group_id: price_group.id)
-      .order(:expire_date)
-      .last
-  end
-
-  def make_all_price_policies_purchaseable
-    @price_policies.each { |price_policy| price_policy.can_purchase = true }
   end
 
   def model_name

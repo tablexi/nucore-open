@@ -4,7 +4,11 @@ class PricePolicyBuilder
   delegate :facility, to: :product
 
   def self.get(product, start_date)
-    self.new(product, start_date).get_price_policies
+    self.new(product, start_date).price_policies
+  end
+
+  def self.get_new_policies_based_on_most_recent(product, start_date)
+    self.new(product, start_date).new_policies_based_on_most_recent
   end
 
   def initialize(product, start_date)
@@ -12,17 +16,42 @@ class PricePolicyBuilder
     @start_date = start_date
   end
 
-  def get_price_policies
-    return [] unless editable?
-    facility.price_groups.map do |price_group|
-      policy_for_price_group(price_group)
+  def price_policies
+    @price_policies ||= get_price_policies
+  end
+
+  def new_policies_based_on_most_recent
+    new_price_policies = price_policies.map do |price_policy|
+      last_price_policy_for_price_group(price_policy.price_group) || price_policy
     end
+    return new_price_policies if price_policies != new_price_policies
+    make_all_price_policies_purchaseable
+    price_policies
+  end
+
+  def last_price_policy_for_price_group(price_group)
+    product
+      .price_policies
+      .where(price_group_id: price_group.id)
+      .order(:expire_date)
+      .last
+  end
+
+  def make_all_price_policies_purchaseable
+    price_policies.each { |price_policy| price_policy.can_purchase = true }
   end
 
   private
 
   def editable?
     original_price_policies.empty? || original_price_policies_editable?
+  end
+
+  def get_price_policies
+    return [] unless editable?
+    facility.price_groups.map do |price_group|
+      policy_for_price_group(price_group)
+    end
   end
 
   def policy_for_price_group(price_group)
