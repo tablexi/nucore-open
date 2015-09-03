@@ -30,7 +30,8 @@ class Journals::Closer
     false_value = NUCore::Database.boolean(false)
     if journal.update_attributes(params.merge(is_successful: false_value))
       # remove all the orders from the journal
-      journal.order_details.update_all(journal_id: nil)
+      # Do not use the Journal#order_details relation because it goes through journal_rows
+      OrderDetail.where(journal_id: journal.id).update_all(journal_id: nil)
       true
     else
       false
