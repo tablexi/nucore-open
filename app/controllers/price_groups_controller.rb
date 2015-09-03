@@ -32,7 +32,11 @@ class PriceGroupsController < ApplicationController
       raise ActiveRecord::RecordNotFound
     end
 
-    @user_members = get_paginated_group_members(:user_price_group_members)
+    @user_members = @price_group.user_price_group_members
+      .includes(:user)
+      .joins(:user)
+      .order(:last_name, :first_name)
+    @user_members = paginate(@user_members)
     @tab = :users
 
     render action: "show"
@@ -40,7 +44,11 @@ class PriceGroupsController < ApplicationController
 
   # GET /facilities/:facility_id/price_groups/:id/accounts
   def accounts
-    @account_members = get_paginated_group_members(:account_price_group_members)
+    @account_members = @price_group.account_price_group_members
+      .includes(:account)
+      .joins(:account)
+      .order(:account_number)
+    @account_members = paginate(@account_members)
     @tab = :accounts
 
     render action: "show"
@@ -95,8 +103,8 @@ class PriceGroupsController < ApplicationController
 
   private
 
-  def get_paginated_group_members(method)
-    @price_group.public_send(method).paginate(page: params[:page], per_page: 10)
+  def paginate(relation)
+    relation.paginate(page: params[:page], per_page: 10)
   end
 
   def load_price_group_and_ability!
