@@ -37,10 +37,6 @@ class Journals::Closer
     end
   end
 
-  def update_all?
-    false
-  end
-
   def mark_as_succeeded_with_errors
     journal.update_attributes(params.merge(is_successful: true))
   end
@@ -48,14 +44,7 @@ class Journals::Closer
   def mark_as_succeeded
     if journal.update_attributes(params.merge(is_successful: true))
       reconciled_status = OrderStatus.reconciled.first
-      if update_all?
-        journal.order_details.update_all(state: 'reconciled', order_status_id: reconciled_status.id)
-      else
-        journal.order_details.each do |od|
-          od.change_status!(reconciled_status)
-        end
-      end
-      true
+      journal.order_details.update_all(state: 'reconciled', order_status_id: reconciled_status.id)
     else
       false
     end
