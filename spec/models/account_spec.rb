@@ -73,7 +73,10 @@ describe Account do
     is_expected.to validate_presence_of(:expires_at)
   end
 
-  it { is_expected.to belong_to(:affiliate)}
+  it { is_expected.to belong_to(:affiliate) }
+  it { is_expected.to have_many(:orders) }
+  it { is_expected.to have_one(:owner) }
+  it { is_expected.to have_many(:account_users) }
 
   it 'should be expired' do
     owner   = FactoryGirl.create(:user)
