@@ -157,4 +157,11 @@ class User < ActiveRecord::Base
   def to_s
     full_name
   end
+
+  def recently_used_facilities(limit = 5)
+    @recently_used_facilities ||= Hash.new do |hash, key|
+      hash[key] = Facility.where(id: orders.pluck(:facility_id).uniq).limit(limit)
+    end
+    @recently_used_facilities[limit]
+  end
 end

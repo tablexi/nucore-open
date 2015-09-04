@@ -1,11 +1,22 @@
+- plural_model_name = Facility.model_name.human.pluralize
+
 = content_for :h1 do
-  = Facility.model_name.human.pluralize
+  = plural_model_name
 
 .alert.alert-info= t(".welcome")
 
-- if @facilities.empty?
-  .alert.alert-info= "No #{Facility.model_name.human.pluralize.downcase} are available at this time."
+- if @facilities.any?
 
-- @facilities.sort.each do |facility|
-  %h3= link_to h(facility), facility_path(facility)
-  %p= facility.short_description
+  - if @recently_used_facilities.present?
+    %h4= t(".recently_used")
+    - @recently_used_facilities.each do |facility|
+      %h4.header-tight= link_to facility, facility_path(facility)
+    %hr
+    %h4= t(".all")
+
+  - @facilities.each do |facility|
+    %h4.header-tight= link_to facility, facility_path(facility)
+    %p= facility.short_description
+
+- else
+  .alert.alert-info= t(".empty", items: plural_model_name.downcase)

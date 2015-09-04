@@ -39,10 +39,15 @@ class Facility < ActiveRecord::Base
   validates_format_of    :abbreviation, :with => /^[a-zA-Z\d\-\.\s]+$/, :message => "may include letters, numbers, hyphens, spaces, or periods only"
   validates_format_of    :journal_mask, :with => /^C\d{2}$/, :message => "must be in the format C##"
 
+  validates :short_description,
+    length: { maximum: 300 },
+    if: -> { SettingsHelper.feature_on?(:limit_short_description) }
+
   delegate :in_dispute, to: :order_details, prefix: true
   delegate :requiring_approval, :requiring_approval_by_type, to: :products, prefix: true
 
   scope :active, :conditions => { :is_active => true }
+  scope :sorted, order: :name
 
   def self.ids_from_urls(urls)
     where("url_name in (?)", urls).select(:id).map(&:id)
@@ -54,10 +59,6 @@ class Facility < ActiveRecord::Base
   def destroy
     # TODO: can you ever delete a facility? Currently no.
     # super
-  end
-
-  def <=> (obj)
-    name.casecmp obj.name
   end
 
   def description

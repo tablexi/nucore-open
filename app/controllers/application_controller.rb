@@ -84,17 +84,17 @@ class ApplicationController < ActionController::Base
   #
   # interprets the sentinel all_facility as all facilities
   def manageable_facilities
-    @manageable_facilities = case current_facility
-
-    when all_facility
-      # if client ever wants cross-facility billing for a subset of facilities,
-      # make this return session_user.manageable_facilities in the case of all_facility
-      Facility.scoped
-    when nil
-      session_user.manageable_facilities
-    else # only facility that can be managed is the current facility
-      Facility.where(:id => current_facility.id)
-    end
+    @manageable_facilities =
+      case current_facility
+      when all_facility
+        # if client ever wants cross-facility billing for a subset of facilities,
+        # make this return session_user.manageable_facilities in the case of all_facility
+        Facility.sorted
+      when nil
+        session_user.manageable_facilities
+      else # only facility that can be managed is the current facility
+        Facility.where(id: current_facility.id)
+      end
   end
 
   # return an ActiveRecord:Relation of facilities where this user has a role (ie is staff or higher)

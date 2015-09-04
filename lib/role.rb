@@ -31,9 +31,9 @@ module Role
     # returns relation of facilities for which this user is staff, a director, or an admin
     define_method(:operable_facilities) do
       if self.try(:administrator?)
-        Facility.scoped
+        Facility.sorted
       else
-        self.facilities.where("user_roles.role IN(?)", UserRole.facility_roles)
+        facilities.sorted.where("user_roles.role IN(?)", UserRole.facility_roles)
       end
     end
 
@@ -43,9 +43,9 @@ module Role
     # returns relation of facilities for which this user is a director or admin
     define_method(:manageable_facilities) do
       if self.try(:administrator?) or self.try(:billing_administrator?)
-        Facility.scoped
+        Facility.sorted
       else
-        facilities.where("user_roles.role IN (?)", UserRole.facility_management_roles)
+        facilities.sorted.where("user_roles.role IN (?)", UserRole.facility_management_roles)
       end
     end
   end
