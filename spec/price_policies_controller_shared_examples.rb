@@ -94,6 +94,7 @@ shared_examples_for PricePoliciesController do |product_type, params_modifier = 
         before :each do
           @price_group2_policy = make_price_policy(@price_group2, :can_purchase => false, :unit_cost => 13)
         end
+
         it 'should set can_purchase based off old policy' do
           do_request
           assigns[:price_policies].map(&:price_group).should == [@price_policy.price_group, @price_group2_policy.price_group]
@@ -102,7 +103,7 @@ shared_examples_for PricePoliciesController do |product_type, params_modifier = 
         end
         it 'should set fields based off the old policy' do
           do_request
-          expect(assigns[:price_policies].map(&:price_group)).to match_array([@price_policy.price_group, @price_group2_policy.price_group])
+          expect(assigns[:price_policies].map(&:price_group)).to eq([@price_policy.price_group, @price_group2_policy.price_group])
           expect(assigns[:price_policies][0].unit_cost).to eq(@price_policy.unit_cost)
           expect(assigns[:price_policies][1].unit_cost).to eq(@price_group2_policy.unit_cost)
         end
