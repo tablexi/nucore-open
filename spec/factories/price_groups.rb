@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :price_group do
     facility
-    sequence(:name) { |n| "Price Group #{n}" }
+    sequence(:name, "AAAAAAAA") { |n| "Price Group #{n}" }
     display_order 999
     is_internal true
     admin_editable true
