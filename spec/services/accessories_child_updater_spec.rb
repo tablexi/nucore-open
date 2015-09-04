@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe Accessories::ChildUpdater do
   let(:order) { Order.new }

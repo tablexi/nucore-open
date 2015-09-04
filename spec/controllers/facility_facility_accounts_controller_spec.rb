@@ -1,4 +1,5 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "rails_helper"
+require 'controller_spec_helper'
 
 describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:recharge_accounts) do
   render_views

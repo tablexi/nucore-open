@@ -1,4 +1,5 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "rails_helper"
+require 'controller_spec_helper'
 
 describe UsersController do
   render_views

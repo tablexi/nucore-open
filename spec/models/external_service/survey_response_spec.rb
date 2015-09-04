@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe SurveyResponse do
   include_context 'external service'

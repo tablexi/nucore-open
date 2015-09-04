@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 
 describe Ability do
   subject(:ability) { Ability.new(user, subject_resource, stub_controller) }

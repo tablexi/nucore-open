@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 
 describe Reservations::Rendering do
   subject(:reservation) do

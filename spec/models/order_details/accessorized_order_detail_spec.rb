@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe OrderDetail do
   let(:instrument) { FactoryGirl.create(:instrument_with_accessory) }

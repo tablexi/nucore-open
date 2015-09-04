@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 
 describe ExportRawReportMailer do
   context '.raw_report_email' do

@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 require 'power_relay_shared_examples'
 
 describe RelaySynaccessRevB do

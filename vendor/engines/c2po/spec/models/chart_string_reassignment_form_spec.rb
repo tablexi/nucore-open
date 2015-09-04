@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 
 describe ChartStringReassignmentForm do
   describe "#available_accounts" do

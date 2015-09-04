@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe OrderDetailJournalRemover do
   let(:facility) { create(:setup_facility) }

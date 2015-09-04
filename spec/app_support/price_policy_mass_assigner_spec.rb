@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 
 describe PricePolicyMassAssigner do
   context ".assign_price_policies" do

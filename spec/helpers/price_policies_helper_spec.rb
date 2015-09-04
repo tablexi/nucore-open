@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 
 describe PricePoliciesHelper do
   let(:price_group) { build_stubbed(:price_group, id: 0) }

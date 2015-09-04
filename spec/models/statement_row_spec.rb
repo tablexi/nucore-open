@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe StatementRow do
   # TODO reduce this elaborate setup!

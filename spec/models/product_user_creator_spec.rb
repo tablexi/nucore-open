@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 
 describe ProductUserCreator do
   def create_product_user

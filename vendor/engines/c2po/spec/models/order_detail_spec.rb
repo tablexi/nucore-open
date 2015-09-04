@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe OrderDetail do
   subject(:order_detail) { setup_order_detail(order, item, original_statement) }

@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe NufsAccount do
   context "account number validations" do

@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 require 'account_cleaner'
 
 describe AccountCleaner do

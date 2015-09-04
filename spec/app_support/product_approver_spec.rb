@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe ProductApprover do
   let(:all_products) { create_list(:instrument_requiring_approval, 10, facility: facility) }

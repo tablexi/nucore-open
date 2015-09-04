@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe InstrumentPricePolicy do
   before :each do
@@ -9,7 +9,7 @@ describe InstrumentPricePolicy do
                                     :usage_subsidy => 0,
                                     :minimum_cost => 0,
                                     :cancellation_cost => 0)
-    
+
     @reservation = FactoryGirl.create(:purchased_reservation, :product => @instrument,
       :reserve_start_at => 1.day.ago, :reserve_end_at => 1.day.ago + 1.hour)
     @order_detail = @reservation.reload.order_detail

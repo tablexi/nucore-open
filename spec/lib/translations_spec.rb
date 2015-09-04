@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe 'Translation loading' do
   it "loads override/*.yml files" do

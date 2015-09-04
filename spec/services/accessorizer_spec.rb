@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe Accessories::Accessorizer do
   let(:product) { create(:instrument_with_accessory) }

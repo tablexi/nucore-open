@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe ChartStringReassignmentForm do
   let(:account_owner) { create(:user) }

@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 
 describe ReservationsHelper do
   describe "#end_time_disabled?" do

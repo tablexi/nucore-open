@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe Statement do
   subject(:statement) { create(:statement, account: account, created_by: user.id, facility: facility) }

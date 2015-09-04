@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe Cart do
   describe "instrument_only_carts" do

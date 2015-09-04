@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe ExternalServicePasser do
   it { is_expected.to have_db_column :passer_type }

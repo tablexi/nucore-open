@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe ExternalServiceReceiver do
   let(:parsed_response_data) do

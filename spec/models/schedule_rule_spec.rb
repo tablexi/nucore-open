@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe ScheduleRule do
   let(:facility) { create(:facility) }

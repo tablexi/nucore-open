@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe AccountUser do
   it "should create through account" do

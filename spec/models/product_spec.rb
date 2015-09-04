@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe Product do
   subject(:product) { create(:instrument_requiring_approval) }

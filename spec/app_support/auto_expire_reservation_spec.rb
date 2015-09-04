@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe AutoExpireReservation, :timecop_freeze do
   let(:now) { Time.zone.now.change(hour: 9, min: 31)  }

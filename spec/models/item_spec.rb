@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 require 'product_shared_examples'
 
 describe Item do

@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 require 'controller_spec_helper'
 
 def it_should_find_the_order(desc = '')

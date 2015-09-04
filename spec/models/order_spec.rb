@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 def define_purchasable_instrument
   @instrument    = FactoryGirl.create(:instrument,

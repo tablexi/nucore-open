@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 describe OrderDetailObserver do
   module DummyHooks
     class DummyHook1

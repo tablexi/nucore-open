@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 
 describe Api::OrderDetail do
   subject { Api::OrderDetail.new(order_detail) }

@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 
 describe ProductUser do
   let(:facility) { create(:facility) }

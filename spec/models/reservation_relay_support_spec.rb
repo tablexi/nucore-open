@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe Reservation do
   context 'started reservation completed by cron job' do

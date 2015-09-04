@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 
 describe Account do
   let(:account_users_attributes) { [{ user: user, created_by: user.id, user_role: "Owner" }] }

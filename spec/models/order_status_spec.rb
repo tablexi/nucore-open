@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe OrderStatus do
 
@@ -7,7 +7,7 @@ describe OrderStatus do
   #     :name => "StatusName"
   #   }
   # end
-  # 
+  #
   # it "should return the New status for default_order_status" do
   #   o = OrderStatus.default_order_status
   #   o.name.should match "New"

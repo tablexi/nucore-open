@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe Reports::InstrumentUtilizationReport do
   subject(:report) { described_class.new(reservations) }

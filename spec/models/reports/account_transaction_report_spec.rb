@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe Reports::AccountTransactionsReport do
   subject(:report) { Reports::AccountTransactionsReport.new(order_details) }

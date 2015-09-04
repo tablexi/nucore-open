@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe ItemPricePolicy do
   it "should create a price policy for tomorrow if no policies already exist for that day" do

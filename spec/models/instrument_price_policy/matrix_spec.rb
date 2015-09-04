@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 #
 # Implements the NU provided price policy test matrix

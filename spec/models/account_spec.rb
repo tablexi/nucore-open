@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe Account do
   let(:account) { create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user)) }

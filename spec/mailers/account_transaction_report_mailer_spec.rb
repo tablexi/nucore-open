@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 
 describe AccountTransactionReportMailer do
   context '#csv_report_email' do

@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 
 describe FacilitiesHelper do
   describe "#facility_default_admin_path" do

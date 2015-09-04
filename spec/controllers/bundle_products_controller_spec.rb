@@ -1,4 +1,5 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "rails_helper"
+require 'controller_spec_helper'
 
 # NOTE: changed create/new/edit/update from it_should_allow_all facility_operators to
 # it_should_allow_managers_only as part of ticket #38481

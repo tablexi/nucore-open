@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 require 'controller_spec_helper'
 
 describe BulkEmailController do
@@ -80,9 +80,9 @@ describe BulkEmailController do
         end
 
       end
-      
+
     end
-    
+
     context "pagination" do
       before :each do
         maybe_grant_always_sign_in :director
@@ -105,6 +105,6 @@ describe BulkEmailController do
           expect(response.headers['Content-Disposition']).to eq("attachment; filename=\"bulk_email_customers.csv\"")
         end
       end
-    end    
+    end
   end
 end

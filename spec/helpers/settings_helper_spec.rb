@@ -1,4 +1,5 @@
-require 'spec_helper'
+require "rails_helper"
+
 describe SettingsHelper do
   # Make sure we return the Settings to the default state after each test
   after :each do

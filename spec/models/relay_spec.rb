@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe Relay do
   it { is_expected.to allow_mass_assignment_of :auto_logout }
