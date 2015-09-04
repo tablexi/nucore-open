@@ -476,6 +476,8 @@ en:
       td:
         dispute: "In Dispute"
         unassigned: "Unassigned"
+    pdf:
+      filename: "Statement-%{date}.pdf"
 
   orders:
     add_account:
