@@ -477,7 +477,7 @@ en:
         dispute: "In Dispute"
         unassigned: "Unassigned"
     pdf:
-      filename: "Statement-%{date}.pdf"
+      filename: "%{facility}-%{invoice_number}-%{date}.pdf"
 
   orders:
     add_account:
