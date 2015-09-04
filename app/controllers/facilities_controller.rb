@@ -41,7 +41,7 @@ class FacilitiesController < ApplicationController
     # show list of operable facilities for current user, and admins manage all facilities
     @active_tab = 'manage_facilites'
     if session_user.administrator?
-      @facilities = Facility.all
+      @facilities = Facility.sorted
       flash.now[:notice] = "No facilities have been added" if @facilities.empty?
     else
       @facilities = operable_facilities

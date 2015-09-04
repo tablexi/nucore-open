@@ -43,6 +43,7 @@ class Facility < ActiveRecord::Base
   delegate :requiring_approval, :requiring_approval_by_type, to: :products, prefix: true
 
   scope :active, :conditions => { :is_active => true }
+  scope :sorted, order: :name
 
   def self.ids_from_urls(urls)
     where("url_name in (?)", urls).select(:id).map(&:id)
@@ -54,10 +55,6 @@ class Facility < ActiveRecord::Base
   def destroy
     # TODO: can you ever delete a facility? Currently no.
     # super
-  end
-
-  def <=> (obj)
-    name.casecmp obj.name
   end
 
   def description
