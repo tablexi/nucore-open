@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe ExportRawReportMailer do
+RSpec.describe ExportRawReportMailer do
   context '.raw_report_email' do
     let(:email) { ActionMailer::Base.deliveries.last }
     let(:report) { double Reports::ExportRaw, filename: 'test.csv', to_csv: "1,2,3\n", description: 'test' }

@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 def define_purchasable_instrument
   @instrument    = FactoryGirl.create(:instrument,
@@ -12,7 +12,7 @@ def define_purchasable_instrument
 end
 
 
-describe Order do
+RSpec.describe Order do
   let(:user) { FactoryGirl.create(:user) }
   let(:order) { user.orders.create FactoryGirl.attributes_for(:order, :created_by => user.id) }
 

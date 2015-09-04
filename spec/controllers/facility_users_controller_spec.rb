@@ -1,6 +1,7 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "rails_helper"
+require 'controller_spec_helper'
 
-describe FacilityUsersController do
+RSpec.describe FacilityUsersController do
   render_views
 
   before(:all) { create_users }

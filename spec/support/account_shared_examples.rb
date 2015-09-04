@@ -1,4 +1,4 @@
-shared_examples_for "an Account" do
+RSpec.shared_examples_for "an Account" do
   context "#to_s" do
     context "when not suspended" do
       it "does not append '(SUSPENDED)'" do

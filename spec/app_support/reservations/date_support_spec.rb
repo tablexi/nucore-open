@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe Reservations::DateSupport do
+RSpec.describe Reservations::DateSupport do
   subject(:reservation) do
     build_stubbed(
       :reservation,

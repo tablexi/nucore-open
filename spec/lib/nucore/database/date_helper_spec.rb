@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe NUCore::Database::DateHelper do
+RSpec.describe NUCore::Database::DateHelper do
   class DateHelperClass
     include NUCore::Database::DateHelper
   end

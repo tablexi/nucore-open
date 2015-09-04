@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe MessageSummarizer do
+RSpec.describe MessageSummarizer do
   subject { MessageSummarizer.new(controller) }
   let(:ability) { Object.new.extend(CanCan::Ability) }
   let(:admin_tab?) { false }

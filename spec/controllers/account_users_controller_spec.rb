@@ -1,6 +1,7 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "rails_helper"
+require 'controller_spec_helper'
 
-describe AccountUsersController do
+RSpec.describe AccountUsersController do
   render_views
 
   before(:all) { create_users }
@@ -73,7 +74,7 @@ describe AccountUsersController do
       expect(assigns(:account_user).user).to eq(@purchaser)
       expect(assigns(:account_user).created_by).to eq(@owner.id)
       expect(@purchaser.reload).to be_purchaser_of(@authable)
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to(account_account_users_path(@authable))
     end
 
@@ -103,7 +104,7 @@ describe AccountUsersController do
       @account_user.reload
       expect(@account_user.deleted_at).not_to be_nil
       expect(@account_user.deleted_by).to eq(@owner.id)
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to(account_account_users_path(@authable))
     end
 

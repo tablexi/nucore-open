@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe ChartStringReassignmentForm do
+RSpec.describe ChartStringReassignmentForm do
   let(:account_owner) { create(:user) }
   let(:accounts) { create_list(:setup_account, users.count, owner: account_owner) }
   let(:order_details) do

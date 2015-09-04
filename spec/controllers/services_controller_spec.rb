@@ -1,7 +1,7 @@
-require "spec_helper"
+require "rails_helper"
 require "controller_spec_helper"
 
-describe ServicesController do
+RSpec.describe ServicesController do
   let(:service) { @service }
   let(:facility) { @authable }
 
@@ -166,7 +166,7 @@ describe ServicesController do
     it_should_allow_managers_only :redirect do
       expect(assigns(:service)).to be_kind_of Service
       expect(assigns(:service).facility).to eq(@authable)
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to [:manage, @authable, assigns(:service)]
     end
   end
@@ -180,7 +180,7 @@ describe ServicesController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:service)).to be_kind_of Service
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to manage_facility_service_url(@authable, assigns(:service))
     end
   end

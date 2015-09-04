@@ -1,4 +1,4 @@
-shared_examples_for "NonReservationProduct" do |product_type|
+RSpec.shared_examples_for "NonReservationProduct" do |product_type|
   let(:account) { create(:setup_account) }
 
   before :each do
@@ -117,7 +117,7 @@ shared_examples_for "NonReservationProduct" do |product_type|
   end
 end
 
-shared_examples_for "ReservationProduct" do |product_type|
+RSpec.shared_examples_for "ReservationProduct" do |product_type|
   let(:account) { create(:setup_account, owner: user) }
   let(:user) { @user }
 

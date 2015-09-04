@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Order do
+RSpec.describe Order do
   before(:each) do
     @facility     = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))

@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe ChartStringReassignmentForm do
+RSpec.describe ChartStringReassignmentForm do
   describe "#available_accounts" do
     subject(:form) { ChartStringReassignmentForm.new(order_details) }
 

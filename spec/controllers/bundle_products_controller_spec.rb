@@ -1,8 +1,9 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "rails_helper"
+require 'controller_spec_helper'
 
 # NOTE: changed create/new/edit/update from it_should_allow_all facility_operators to
 # it_should_allow_managers_only as part of ticket #38481
-describe BundleProductsController do
+RSpec.describe BundleProductsController do
   render_views
 
   before(:all) { create_users }
@@ -54,7 +55,7 @@ describe BundleProductsController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:bundle_product)).to be_kind_of BundleProduct
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to facility_bundle_bundle_products_url(@authable, @bundle)
     end
 
@@ -119,7 +120,7 @@ describe BundleProductsController do
       assert_init_bundle
       expect(assigns(:bundle_product)).to be_kind_of BundleProduct
       expect(@bundle_product.quantity).not_to eq(assigns(:bundle_product).quantity)
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to facility_bundle_bundle_products_url(@authable, @bundle)
     end
 
@@ -146,7 +147,7 @@ describe BundleProductsController do
         assert true
       end
 
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to facility_bundle_bundle_products_url(@authable, @bundle)
     end
 

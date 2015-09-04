@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe OldInstrumentPricePolicy do
+RSpec.describe OldInstrumentPricePolicy do
 
   it { is_expected.to allow_value(Date.current+1).for(:start_date) }
 

@@ -1,6 +1,7 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "rails_helper"
+require 'controller_spec_helper'
 
-describe PriceGroupsController do
+RSpec.describe PriceGroupsController do
   render_views
 
   before(:all) { create_users }
@@ -44,7 +45,7 @@ describe PriceGroupsController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:price_group)).to be_kind_of PriceGroup
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to [@authable, assigns(:price_group)]
     end
   end
@@ -127,7 +128,7 @@ describe PriceGroupsController do
       it_should_allow_managers_only :redirect do
         expect(assigns(:price_group)).to be_kind_of PriceGroup
         expect(assigns(:price_group)).to eq(@price_group)
-        is_expected.to set_the_flash
+        is_expected.to set_flash
         assert_redirected_to [@authable, @price_group]
       end
 

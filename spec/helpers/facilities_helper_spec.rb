@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe FacilitiesHelper do
+RSpec.describe FacilitiesHelper do
   describe "#facility_default_admin_path" do
     let(:facility) { create(:setup_facility) }
     let(:result) { facility_default_admin_path(facility) }

@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe ScheduleRule do
+RSpec.describe ScheduleRule do
   let(:facility) { create(:facility) }
   let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
   let(:instrument) { create(:instrument, facility: facility, facility_account: facility_account) }

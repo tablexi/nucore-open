@@ -1,6 +1,8 @@
 require 'set'
 
 class Journal < ActiveRecord::Base
+  class CreationError < StandardError; end
+
   module Overridable
     def create_journal_rows!(order_details)
       recharge_by_product = {}
@@ -23,7 +25,7 @@ class Journal < ActiveRecord::Base
           # check against facility_ids which actually have pending journals
           # in the DB
           if pending_facility_ids.member? od_facility_id
-            raise I18n.t("activerecord.errors.models.journal.pending_overlap", label: od.to_s, facility: Facility.find(od_facility_id))
+            raise CreationError.new(I18n.t("activerecord.errors.models.journal.pending_overlap", label: od.to_s, facility: Facility.find(od_facility_id)))
           end
           facility_ids_already_in_journal.add(od_facility_id)
         end

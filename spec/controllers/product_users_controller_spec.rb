@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
 require 'controller_spec_helper'
 
-describe ProductUsersController do
+RSpec.describe ProductUsersController do
   render_views
 
   before(:all) { create_users }

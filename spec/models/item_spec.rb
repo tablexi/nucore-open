@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
 require 'product_shared_examples'
 
-describe Item do
+RSpec.describe Item do
   it "should create using factory" do
     @facility         = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))

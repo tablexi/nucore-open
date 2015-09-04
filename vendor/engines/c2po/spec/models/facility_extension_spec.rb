@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Facility do
+RSpec.describe Facility do
 
   context 'can_pay_with_account?' do
 

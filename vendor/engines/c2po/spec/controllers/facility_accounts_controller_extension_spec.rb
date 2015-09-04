@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
 require 'controller_spec_helper'
 
-describe FacilityAccountsController do
+RSpec.describe FacilityAccountsController do
   render_views
 
   let(:account) { @account }
@@ -65,7 +65,7 @@ describe FacilityAccountsController do
         expect(assigns(:account)).to eq(@account)
         expect(assigns(:account).affiliate).to eq(Affiliate.OTHER)
         expect(assigns(:account).affiliate_other).to eq(@params[:account][:affiliate_other])
-        is_expected.to set_the_flash
+        is_expected.to set_flash
         assert_redirected_to facility_account_url
       end
 
@@ -80,7 +80,7 @@ describe FacilityAccountsController do
           expect(assigns(:account)).to eq(@account)
           expect(assigns(:account).affiliate).to eq(@affiliate)
           expect(assigns(:account).affiliate_other).to be_nil
-          is_expected.to set_the_flash
+          is_expected.to set_flash
           assert_redirected_to facility_account_url
         end
 
@@ -124,7 +124,7 @@ describe FacilityAccountsController do
         expect(assigns(:account)).to be_kind_of PurchaseOrderAccount
         expect(assigns(:account).affiliate).to eq(Affiliate.find(@acct_attrs[:affiliate_id]))
         expect(assigns(:account).affiliate_other).to be_nil
-        is_expected.to set_the_flash
+        is_expected.to set_flash
         assert_redirected_to user_accounts_url(@authable, @owner)
       end
     end
@@ -263,7 +263,7 @@ describe FacilityAccountsController do
 
     it_should_allow_all facility_managers do
       expect(assigns(:error_fields)).to be_empty
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to credit_cards_facility_accounts_path
       @order_detail.reload
       expect(@order_detail.state).to eq('reconciled')
@@ -289,7 +289,7 @@ describe FacilityAccountsController do
 
     it_should_allow_all facility_managers do |user|
       expect(assigns(:error_fields)).to be_empty
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to purchase_orders_facility_accounts_path
       @order_detail.reload
       expect(@order_detail.state).to eq('reconciled')

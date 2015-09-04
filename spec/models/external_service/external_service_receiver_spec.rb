@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe ExternalServiceReceiver do
+RSpec.describe ExternalServiceReceiver do
   let(:parsed_response_data) do
     { show_url: 'http://survey.test.local/show', edit_url: 'http://survey.test.local/edit' }
   end

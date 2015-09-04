@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe OrderSearcher do
+RSpec.describe OrderSearcher do
 
   let(:searcher) { described_class.new build(:user) }
 

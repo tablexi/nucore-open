@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe PriceGroupMember do
+RSpec.describe PriceGroupMember do
 #  before(:each) do
 #    @valid_attributes = {
 #    }

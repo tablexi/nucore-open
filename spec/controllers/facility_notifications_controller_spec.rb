@@ -1,8 +1,8 @@
-require 'spec_helper'
+require "rails_helper"
 require 'controller_spec_helper'
 require 'transaction_search_spec_helper'
 
-describe FacilityNotificationsController do
+RSpec.describe FacilityNotificationsController do
 
   before(:all) { create_users }
   render_views
@@ -46,7 +46,7 @@ describe FacilityNotificationsController do
     it_should_allow_managers_only do
       expect(assigns(:order_details) - [@order_detail1, @order_detail2, @order_detail3]).to be_empty
       expect(assigns(:order_detail_action)).to eq(:send_notifications)
-      is_expected.not_to set_the_flash
+      is_expected.not_to set_flash
     end
 
     context "searching" do
@@ -112,7 +112,7 @@ describe FacilityNotificationsController do
 
           @params.merge!(order_detail_ids: @order_details.map(&:id))
           do_request
-          is_expected.to set_the_flash
+          is_expected.to set_flash
           expect(@accounts).to be_all { |account| flash[:notice].include? account.account_number }
         end
 
@@ -129,7 +129,7 @@ describe FacilityNotificationsController do
 
           do_request
 
-          is_expected.to set_the_flash
+          is_expected.to set_flash
           expect(flash[:notice]).to include("11 accounts")
         end
       end
@@ -169,7 +169,7 @@ describe FacilityNotificationsController do
     it_should_allow_managers_only do
       expect(assigns(:order_details) - [@order_detail1, @order_detail3]).to be_empty
       expect(assigns(:order_detail_action)).to eq(:mark_as_reviewed)
-      is_expected.not_to set_the_flash
+      is_expected.not_to set_flash
     end
 
     context "searching" do

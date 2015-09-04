@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe DateHelper do
+RSpec.describe DateHelper do
 
   describe "#parse_usa_import_date" do
     context "with bad dates" do

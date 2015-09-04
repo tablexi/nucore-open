@@ -1,6 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
 require 'controller_spec_helper'
-describe OrderStatusesController do
+
+RSpec.describe OrderStatusesController do
   render_views
   before(:all) { create_users }
   before :each do
@@ -9,7 +10,7 @@ describe OrderStatusesController do
     expect(OrderStatus.all).to be_empty
 
     @authable = @facility = FactoryGirl.create(:facility)
-    
+
     @root_status = FactoryGirl.create(:order_status)
     expect(@root_status).to be_root
     @root_status2 = FactoryGirl.create(:order_status)
@@ -35,9 +36,9 @@ describe OrderStatusesController do
       @action = :index
       @method = :get
     end
-    
+
     it_should_allow_managers_only {}
-    
+
     context 'signed in' do
       before :each do
         maybe_grant_always_sign_in :director
@@ -97,7 +98,7 @@ describe OrderStatusesController do
           expect(response).to redirect_to facility_order_statuses_url
         end
         it 'should set the flash' do
-          is_expected.to set_the_flash
+          is_expected.to set_flash
         end
         it 'should save the parent' do
           expect(assigns[:order_status].parent).to eq(@root_status)
@@ -140,7 +141,7 @@ describe OrderStatusesController do
       end
     end
   end
-  
+
   context 'update' do
     before :each do
       @action = :update

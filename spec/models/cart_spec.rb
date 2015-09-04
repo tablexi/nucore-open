@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Cart do
+RSpec.describe Cart do
   describe "instrument_only_carts" do
     let(:carts) { Cart.abandoned_carts }
     let(:instrument) { FactoryGirl.create(:setup_instrument) }

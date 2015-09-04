@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe AccountTransactionReportMailer do
+RSpec.describe AccountTransactionReportMailer do
   context '#csv_report_email' do
     let(:email) { ActionMailer::Base.deliveries.last }
     let(:report) { double Reports::AccountTransactionsReport, to_csv: "1,2,3\n", description: 'test' }

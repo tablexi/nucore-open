@@ -1,8 +1,8 @@
-require 'spec_helper'
+require "rails_helper"
 require 'controller_spec_helper'
 require 'report_spec_helper'
 
-describe InstrumentDayReportsController do
+RSpec.describe InstrumentDayReportsController do
   include ReportSpecHelper
 
 

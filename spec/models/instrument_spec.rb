@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
 require 'product_shared_examples'
 
-describe Instrument do
+RSpec.describe Instrument do
   it_should_behave_like 'ReservationProduct', :instrument
 
 
@@ -101,7 +101,7 @@ describe Instrument do
     end
   end
 
-  it { is_expected.to ensure_inclusion_of(:reserve_interval).in_array Instrument::RESERVE_INTERVALS }
+  it { is_expected.to validate_inclusion_of(:reserve_interval).in_array Instrument::RESERVE_INTERVALS }
 
   describe 'shared schedules' do
     context 'default schedule' do

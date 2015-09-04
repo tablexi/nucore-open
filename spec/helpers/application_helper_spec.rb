@@ -1,12 +1,13 @@
-require 'spec_helper'
+require "rails_helper"
 require 'controller_spec_helper'
-describe ApplicationHelper do
+
+RSpec.describe ApplicationHelper do
   describe "#menu_facilities" do
   	before :all do
   	  create_users
   	end
-    
-    before :each do      
+
+    before :each do
       @facility1 = FactoryGirl.create(:facility)
       @facility2 = FactoryGirl.create(:facility)
       @facility3 = FactoryGirl.create(:facility)

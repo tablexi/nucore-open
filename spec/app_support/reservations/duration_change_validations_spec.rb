@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe Reservations::DurationChangeValidations do
+RSpec.describe Reservations::DurationChangeValidations do
 
   subject(:validator) { described_class.new(reservation) }
   let(:reservation) { create :setup_reservation }
@@ -60,7 +60,7 @@ describe Reservations::DurationChangeValidations do
           end
 
           context "when ordered (no longer in a cart)" do
-            before { reservation.stub(:in_cart?).and_return(false) }
+            before { allow(reservation).to receive(:in_cart?).and_return(false) }
 
             it "does not allow changing the start time" do
               expect(validator).not_to be_valid
@@ -81,7 +81,7 @@ describe Reservations::DurationChangeValidations do
       end
 
       context "when ordered (no longer in a cart)" do
-        before { reservation.stub(:in_cart?).and_return(false) }
+        before { allow(reservation).to receive(:in_cart?).and_return(false) }
 
         it "denies changing start time" do
           reservation.reserve_start_at = 40.minutes.ago
@@ -130,7 +130,7 @@ describe Reservations::DurationChangeValidations do
         end
 
         context "when ordered (no longer in a cart)" do
-          before { reservation.stub(:in_cart?).and_return(false) }
+          before { allow(reservation).to receive(:in_cart?).and_return(false) }
 
           it "denies changing the start time" do
             expect(validator).not_to be_valid
@@ -148,7 +148,7 @@ describe Reservations::DurationChangeValidations do
         end
 
         context "when ordered (no longer in a cart)" do
-          before { reservation.stub(:in_cart?).and_return(false) }
+          before { allow(reservation).to receive(:in_cart?).and_return(false) }
 
           it "denies shortening the reservation time" do
             expect(validator).not_to be_valid
@@ -211,7 +211,7 @@ describe Reservations::DurationChangeValidations do
       end
 
       context "when ordered (no longer in a cart)" do
-        before { reservation.stub(:in_cart?).and_return(false) }
+        before { allow(reservation).to receive(:in_cart?).and_return(false) }
 
         it { expect(validator).to be_invalid }
       end
@@ -232,7 +232,7 @@ describe Reservations::DurationChangeValidations do
       end
 
       context "when ordered (no longer in a cart)" do
-        before { reservation.stub(:in_cart?).and_return(false) }
+        before { allow(reservation).to receive(:in_cart?).and_return(false) }
 
         it { expect(validator).to be_invalid }
       end
@@ -254,7 +254,7 @@ describe Reservations::DurationChangeValidations do
       end
 
       context "when ordered (no longer in a cart)" do
-        before { reservation.stub(:in_cart?).and_return(false) }
+        before { allow(reservation).to receive(:in_cart?).and_return(false) }
 
         it { expect(validator).to be_invalid }
       end

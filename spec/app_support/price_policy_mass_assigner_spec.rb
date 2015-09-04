@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe PricePolicyMassAssigner do
+RSpec.describe PricePolicyMassAssigner do
   context ".assign_price_policies" do
     let(:account) { create(:setup_account, owner: user) }
     let(:facility) { create(:facility) }

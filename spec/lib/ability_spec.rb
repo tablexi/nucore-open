@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe Ability do
+RSpec.describe Ability do
   subject(:ability) { Ability.new(user, subject_resource, stub_controller) }
   let(:facility) { create(:setup_facility) }
   let(:instrument) { create(:instrument_requiring_approval, facility: facility) }

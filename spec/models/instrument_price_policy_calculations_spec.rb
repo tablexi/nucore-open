@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe InstrumentPricePolicyCalculations do
+RSpec.describe InstrumentPricePolicyCalculations do
 
   subject(:policy) { build :instrument_price_policy }
 

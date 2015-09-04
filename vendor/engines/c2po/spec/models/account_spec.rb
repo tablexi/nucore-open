@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe Account do
+RSpec.describe Account do
   let(:account_users_attributes) { [{ user: user, created_by: user.id, user_role: "Owner" }] }
   let(:cc_account) { create(:credit_card_account, account_users_attributes: account_users_attributes) }
   let(:facility) { create(:setup_facility) }

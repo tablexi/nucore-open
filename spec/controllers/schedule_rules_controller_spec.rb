@@ -1,6 +1,7 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "rails_helper"
+require 'controller_spec_helper'
 
-describe ScheduleRulesController do
+RSpec.describe ScheduleRulesController do
   render_views
 
   before(:all) { create_users }
@@ -60,7 +61,7 @@ describe ScheduleRulesController do
 
     it_should_allow_managers_and_senior_staff_only :redirect do
       expect(assigns(:schedule_rule)).to be_kind_of ScheduleRule
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
     end
 
@@ -125,7 +126,7 @@ describe ScheduleRulesController do
 
       it_should_allow_managers_and_senior_staff_only :redirect do
         expect(assigns(:schedule_rule)).to eq(@rule)
-        is_expected.to set_the_flash
+        is_expected.to set_flash
         assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
       end
 

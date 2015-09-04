@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
 require 'controller_spec_helper'
 
-describe AffiliatesController do
+RSpec.describe AffiliatesController do
   render_views
 
   before(:all) { create_users }
@@ -44,7 +44,7 @@ describe AffiliatesController do
     end
 
     it_should_allow_admin_only :redirect do
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       expect(assigns(:affiliate)).not_to be_new_record
       expect(assigns(:affiliate).name).to eq(@params[:affiliate][:name])
       assert_redirected_to affiliates_path
@@ -93,7 +93,7 @@ describe AffiliatesController do
       end
 
       it_should_allow_admin_only :redirect do
-        is_expected.to set_the_flash
+        is_expected.to set_flash
         expect(assigns(:affiliate).name).to eq(@params[:affiliate][:name])
         assert_redirected_to affiliates_path
       end
@@ -117,7 +117,7 @@ describe AffiliatesController do
 
       it_should_allow_admin_only :redirect do
         should_be_destroyed @affiliate
-        is_expected.to set_the_flash
+        is_expected.to set_flash
         assert_redirected_to affiliates_path
       end
 
@@ -131,7 +131,7 @@ describe AffiliatesController do
     @params[:id]=98765423456
     maybe_grant_always_sign_in :admin
     do_request
-    is_expected.to set_the_flash
+    is_expected.to set_flash
     assert_redirected_to affiliates_path
   end
 

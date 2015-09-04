@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe ProductAccessory do
+RSpec.describe ProductAccessory do
 
   before(:each) { create :accessory }
 

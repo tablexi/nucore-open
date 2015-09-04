@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe 'Translation loading' do
+RSpec.describe 'Translation loading' do
   it "loads override/*.yml files" do
     expect(I18n.t("testing.locale_loading")).to start_with("This is here")
   end

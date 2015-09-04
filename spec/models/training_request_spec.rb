@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe TrainingRequest do
+RSpec.describe TrainingRequest do
   let(:user) { create(:user) }
 
   describe "#new" do

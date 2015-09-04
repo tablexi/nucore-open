@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe ExternalServiceManager do
+RSpec.describe ExternalServiceManager do
 
   Settings.external_services.to_hash.each do |service, klass_name|
     it 'has an accessor specific to this service' do

@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe ProductUser do
+RSpec.describe ProductUser do
   let(:facility) { create(:facility) }
   let(:facility_account) do
     facility.facility_accounts.create(attributes_for(:facility_account))

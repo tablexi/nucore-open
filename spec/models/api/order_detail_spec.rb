@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe Api::OrderDetail do
+RSpec.describe Api::OrderDetail do
   subject { Api::OrderDetail.new(order_detail) }
 
   let(:expected_hash) {{ account: account_hash, ordered_for: ordered_for_hash }}

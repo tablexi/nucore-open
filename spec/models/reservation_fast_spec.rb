@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
 
 # No specs in this file should touch the database
-describe Reservation do
+RSpec.describe Reservation do
   describe 'ongoing?' do
     context 'complete' do
       before { allow(reservation).to receive(:complete?).and_return true }

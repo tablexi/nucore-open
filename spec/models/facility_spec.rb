@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Facility do
+RSpec.describe Facility do
   it "should require name" do
     is_expected.to validate_presence_of(:name)
   end

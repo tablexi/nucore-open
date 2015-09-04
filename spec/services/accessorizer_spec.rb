@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Accessories::Accessorizer do
+RSpec.describe Accessories::Accessorizer do
   let(:product) { create(:instrument_with_accessory) }
   let(:quantity_accessory) { product.accessories.first }
   let!(:auto_scaled_accessory) { create(:accessory, parent: product, scaling_type: 'auto') }
