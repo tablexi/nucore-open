@@ -57,7 +57,7 @@ class PricePoliciesController < ApplicationController
 
   # DELETE /facilities/:facility_id/{product_type}/:product_id/price_policies/:id
   def destroy
-    return remove_active_policy_warning_and_redirect if @start_date <= Date.today
+    return flash_remove_active_policy_warning_and_redirect if @start_date <= Date.today
 
     if PricePolicyUpdater.destroy_all_for_product!(@product, @start_date)
       flash[:notice] = I18n.t("controllers.price_policies.destroy.success")
@@ -126,7 +126,7 @@ class PricePoliciesController < ApplicationController
     @product_var ||= model_name.gsub(/PricePolicy\z/, "").downcase
   end
 
-  def remove_active_policy_warning_and_redirect
+  def flash_remove_active_policy_warning_and_redirect
     flash[:error] =
       I18n.t("controllers.price_policies.errors.remove_active_policy")
     redirect_to facility_product_price_policies_path
