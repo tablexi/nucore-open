@@ -63,6 +63,10 @@ class OrderImport < ActiveRecord::Base
     processed_at.present?
   end
 
+  def error_mode?
+    @in_error_mode
+  end
+
   private
 
   def create_order_from_imported_row!(row_importer)
@@ -79,10 +83,6 @@ class OrderImport < ActiveRecord::Base
   def discard_error_report
     self.error_file = nil
     self.error_report = nil
-  end
-
-  def error_mode?
-    @in_error_mode
   end
 
   def handle_save_clean_orders # TODO refactor and rename
