@@ -16,7 +16,7 @@ module Dataprobe
       mode = status ? 1 : 0
       socket = hello_socket
       write_control_cmd socket, mode, outlet
-      raise "Error while toggling outlet #{outlet}" unless socket.recv(1) == "\x00"
+      raise Dataprobe::Error.new("Error while toggling outlet #{outlet}") unless socket.recv(1) == "\x00"
       status
     ensure
       socket.close

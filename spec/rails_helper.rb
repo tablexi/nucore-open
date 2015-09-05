@@ -5,7 +5,7 @@ require 'spec_helper'
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
-
+require 'shoulda/matchers'
 #
 # Check for engine factories. If they exist and the engine is in use load it up
 Dir[File.expand_path('vendor/engines/*', Rails.root)].each do |engine|
@@ -81,4 +81,8 @@ RSpec.configure do |config|
   #       # Equivalent to being in spec/controllers
   #     end
   config.infer_spec_type_from_file_location!
+end
+
+FactoryGirl::SyntaxRunner.class_eval do
+  include RSpec::Mocks::ExampleMethods
 end

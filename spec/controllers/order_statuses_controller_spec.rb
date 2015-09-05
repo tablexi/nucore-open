@@ -98,7 +98,7 @@ describe OrderStatusesController do
           expect(response).to redirect_to facility_order_statuses_url
         end
         it 'should set the flash' do
-          is_expected.to set_the_flash
+          is_expected.to set_flash
         end
         it 'should save the parent' do
           expect(assigns[:order_status].parent).to eq(@root_status)

@@ -10,7 +10,7 @@ shared_examples 'user without notifications' do
     end
 
     it_should_allow :director, "no access to notifications if there aren't any" do
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to root_path
     end
   end

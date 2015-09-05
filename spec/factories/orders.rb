@@ -21,7 +21,7 @@ FactoryGirl.define do
 
     factory :purchased_order do
       after(:create) do |order|
-        order.stub(:cart_valid?).and_return(true) #so we don't have to worry about defining price groups, etc
+        allow(order).to receive(:cart_valid?).and_return(true) #so we don't have to worry about defining price groups, etc
         order.validate_order!
         order.purchase!
       end

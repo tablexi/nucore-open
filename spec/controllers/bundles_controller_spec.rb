@@ -134,7 +134,7 @@ describe BundlesController do
       assert_init_bundle
       expect(assigns(:add_to_cart)).to_not be_nil
       expect(assigns(:login_required)).to_not be_nil
-      is_expected.not_to set_the_flash
+      is_expected.not_to set_flash
       is_expected.to render_template('show')
     end
 
@@ -218,7 +218,7 @@ describe BundlesController do
       expect(assigns(:bundle).initial_order_status_id).to eq(OrderStatus.default_order_status.id)
       expect(assigns(:bundle).requires_approval).to eq(false)
       expect(assigns(:bundle)).to be_persisted
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to [ :manage, @authable, assigns(:bundle) ]
     end
   end
@@ -238,7 +238,7 @@ describe BundlesController do
 
     it_should_allow_managers_only :redirect do
       assert_init_bundle
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to manage_facility_bundle_url(@authable, @bundle)
     end
   end

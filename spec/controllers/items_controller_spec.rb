@@ -176,7 +176,7 @@ describe ItemsController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:item)).to be_kind_of Item
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to [:manage, @authable, assigns(:item)]
     end
   end
@@ -191,7 +191,7 @@ describe ItemsController do
     it_should_allow_managers_only :redirect do
       expect(assigns(:item)).to be_kind_of Item
       expect(assigns(:item)).to eq(@item)
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to manage_facility_item_url(@authable, assigns(:item))
     end
   end

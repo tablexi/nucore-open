@@ -159,7 +159,7 @@ describe FileUploadsController do
       expect(assigns[:product]).to eq(@service)
       expect(@service.reload.external_services.size).to eq(1)
       expect(@service.external_services[0].location).to eq(@ext_service_location)
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to product_survey_path(@authable, @service.parameterize, @service)
     end
 

@@ -157,7 +157,7 @@ describe UsersController do
             end
 
             it 'flashes an error' do
-              is_expected.to set_the_flash
+              is_expected.to set_flash
               expect(response).to redirect_to facility_users_path
             end
           end

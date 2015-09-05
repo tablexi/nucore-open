@@ -57,7 +57,7 @@ describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:
     it_should_allow_managers_only :redirect do
       expect(assigns(:facility_account)).to be_kind_of FacilityAccount
       expect(assigns(:facility_account)).to eq(@facility_account)
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to facility_facility_accounts_path
     end
 
@@ -75,7 +75,7 @@ describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:
     it_should_allow_managers_only :redirect do |user|
       expect(assigns(:facility_account)).to be_kind_of FacilityAccount
       expect(assigns(:facility_account).created_by).to eq(user.id)
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to facility_facility_accounts_path
     end
 

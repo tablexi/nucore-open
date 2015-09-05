@@ -88,7 +88,7 @@ describe AccountPriceGroupMembersController do
       expect(assigns(:price_group)).to be_kind_of PriceGroup
       expect(assigns(:account)).to be_kind_of Account
       expect(assigns(:account_price_group_member)).to be_kind_of AccountPriceGroupMember
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to([@authable, price_group])
     end
   end
@@ -112,7 +112,7 @@ describe AccountPriceGroupMembersController do
     def successful_action_expectations
       expect(assigns(:price_group)).to be_kind_of PriceGroup
       expect(assigns(:account_price_group_member)).to be_kind_of AccountPriceGroupMember
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to(facility_price_group_url(@authable, price_group))
     end
   end

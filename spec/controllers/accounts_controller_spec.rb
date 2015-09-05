@@ -165,7 +165,7 @@ describe AccountsController do
 
       it_should_allow_all [:owner, :business_admin] do
         expect(assigns(:account)).to eq(@account)
-        is_expected.to set_the_flash
+        is_expected.to set_flash
         expect(@account.reload).to be_suspended
         assert_redirected_to account_path(@account)
       end
@@ -184,7 +184,7 @@ describe AccountsController do
 
       it_should_allow_all [:owner, :business_admin] do
         expect(assigns(:account)).to eq(@account)
-        is_expected.to set_the_flash
+        is_expected.to set_flash
         expect(assigns(:account)).not_to be_suspended
         assert_redirected_to account_path(@account)
       end
