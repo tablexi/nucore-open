@@ -5,7 +5,9 @@ RSpec.describe OrderDetailObserver do
       attr_accessor :settings
       def on_status_change(order_detail, old_status, new_status); end
     end
-    class DummyHook2 < DummyHook1; end
+    class DummyHook2
+      def on_status_change(order_detail, old_status, new_status); end
+    end
     class DummyHook3; end
   end
 
