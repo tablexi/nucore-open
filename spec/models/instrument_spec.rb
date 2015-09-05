@@ -101,7 +101,7 @@ describe Instrument do
     end
   end
 
-  it { is_expected.to ensure_inclusion_of(:reserve_interval).in_array Instrument::RESERVE_INTERVALS }
+  it { is_expected.to validate_inclusion_of(:reserve_interval).in_array Instrument::RESERVE_INTERVALS }
 
   describe 'shared schedules' do
     context 'default schedule' do

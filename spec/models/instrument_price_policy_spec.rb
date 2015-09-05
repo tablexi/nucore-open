@@ -14,7 +14,7 @@ describe InstrumentPricePolicy do
     it { is_expected.to allow_value(nil).for attr.to_sym }
   end
 
-  it { is_expected.to ensure_inclusion_of(:charge_for).in_array described_class::CHARGE_FOR.values }
+  it { is_expected.to validate_inclusion_of(:charge_for).in_array described_class::CHARGE_FOR.values }
 
 
   it 'converts the given hourly usage_rate to a per minute rate' do

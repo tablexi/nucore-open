@@ -21,7 +21,7 @@ module AffiliateAccountHelper
         @affiliate_account.affiliate = Affiliate.OTHER
         @affiliate_account.affiliate_other=nil
         assert !@affiliate_account.save
-        expect(@affiliate_account).to ensure_length_of(:affiliate_other).is_at_least(1)
+        expect(@affiliate_account).to validate_length_of(:affiliate_other).is_at_least(1)
       end
 
       it 'should not require affiliate_other if affiliate is not other' do
