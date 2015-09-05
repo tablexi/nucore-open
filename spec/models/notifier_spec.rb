@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Notifier do
+RSpec.describe Notifier do
   before :each do
     @user = FactoryGirl.create(:user)
     @facility = FactoryGirl.create(:facility)

@@ -8,7 +8,7 @@ def fixture_file(filename)
   )
 end
 
-describe OrderImportsController do
+RSpec.describe OrderImportsController do
   let(:facility) { create(:facility) }
 
   render_views

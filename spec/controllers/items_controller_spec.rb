@@ -1,7 +1,7 @@
 require "rails_helper"
 require "controller_spec_helper"
 
-describe ItemsController do
+RSpec.describe ItemsController do
   let(:item) { @item }
   let(:facility) { @authable }
 

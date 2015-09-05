@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'controller_spec_helper'
 
-describe BundlesController do
+RSpec.describe BundlesController do
   let(:bundle) { @bundle }
   let(:facility) { @authable }
 

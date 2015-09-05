@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'timecop'
 
-describe OrderDetail do
+RSpec.describe OrderDetail do
   let(:account) { @account }
   let(:facility) { @facility }
   let(:facility_account) { @facility_account }

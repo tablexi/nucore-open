@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe OrderStatus do
+RSpec.describe OrderStatus do
 
   # before(:each) do
   #   @valid_attributes = {

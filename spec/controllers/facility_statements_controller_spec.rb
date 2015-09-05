@@ -4,7 +4,7 @@ require 'transaction_search_spec_helper'
 
 if AccountManager.using_statements?
 
-  describe FacilityStatementsController do
+  RSpec.describe FacilityStatementsController do
     render_views
 
     def create_order_details

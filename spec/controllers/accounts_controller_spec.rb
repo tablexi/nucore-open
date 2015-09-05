@@ -2,7 +2,7 @@ require "rails_helper"
 require 'controller_spec_helper'
 require 'transaction_search_spec_helper'
 
-describe AccountsController do
+RSpec.describe AccountsController do
   render_views
 
   it "should route" do

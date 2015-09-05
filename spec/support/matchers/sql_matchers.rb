@@ -16,11 +16,11 @@ if NUCore::Database.oracle?
     match do |actual|
       actual.to_sql.upcase.include? expected
     end
-    failure_message_for_should do |actual|
+    failure_message do |actual|
       "expected that #{actual.to_sql.upcase} would include #{expected}"
     end
 
-    failure_message_for_should_not do |actual|
+    failure_message_when_negated do |actual|
       "expected that #{actual.to_sql.upcase} would not include #{expected}"
     end
   end
@@ -42,7 +42,7 @@ else
       actual.to_sql.include? expected
     end
 
-    failure_message_for_should do |actual|
+    failure_message do |actual|
       "Expected: #{actual.to_sql}\n To Contain: #{expected}"
     end
   end

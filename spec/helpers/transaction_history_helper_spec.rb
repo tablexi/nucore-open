@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe TransactionHistoryHelper do
+RSpec.describe TransactionHistoryHelper do
   describe "#chosen_field"
 
   describe "#order_statuses_options" do

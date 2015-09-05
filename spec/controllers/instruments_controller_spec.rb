@@ -1,7 +1,7 @@
 require "rails_helper"
 require "controller_spec_helper"
 
-describe InstrumentsController do
+RSpec.describe InstrumentsController do
   let(:facility) { @authable }
   let(:instrument) { @instrument }
 

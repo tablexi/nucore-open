@@ -61,7 +61,7 @@ RSpec.configure do |config|
   #   - http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax
   #   - http://www.teaisaweso.me/blog/2013/05/27/rspecs-new-message-expectation-syntax/
   #   - http://myronmars.to/n/dev-blog/2014/05/notable-changes-in-rspec-3#new__config_option_to_disable_rspeccore_monkey_patching
-  # config.disable_monkey_patching!
+  config.disable_monkey_patching!
 
   # Many RSpec users commonly either run the entire suite or an individual
   # file, and it's useful to allow more verbose output when running an
@@ -97,4 +97,13 @@ RSpec.configure do |config|
       example.call
     end
   end
+
+  # Setting this config option `false` removes rspec-core's monkey patching of the
+  # top level methods like `describe`, `shared_examples_for` and `shared_context`
+  # on `main` and `Module`. The methods are always available through the `RSpec`
+  # module like `RSpec.describe` regardless of this setting.
+  # For backwards compatibility this defaults to `true`.
+  #
+  # https://relishapp.com/rspec/rspec-core/v/3-0/docs/configuration/global-namespace-dsl
+  config.expose_dsl_globally = false
 end

@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'controller_spec_helper'
 
-describe StatementsController do
+RSpec.describe StatementsController do
 
   before(:all) do
     create_users

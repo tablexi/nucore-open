@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'controller_spec_helper'
 
-describe ScheduleRulesController do
+RSpec.describe ScheduleRulesController do
   render_views
 
   before(:all) { create_users }

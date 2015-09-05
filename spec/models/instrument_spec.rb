@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'product_shared_examples'
 
-describe Instrument do
+RSpec.describe Instrument do
   it_should_behave_like 'ReservationProduct', :instrument
 
 

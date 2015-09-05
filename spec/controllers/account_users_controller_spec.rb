@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'controller_spec_helper'
 
-describe AccountUsersController do
+RSpec.describe AccountUsersController do
   render_views
 
   before(:all) { create_users }

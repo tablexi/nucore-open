@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Schedule do
+RSpec.describe Schedule do
   let(:schedule) { FactoryGirl.create(:schedule) }
   let(:first_reservation_time) { Time.zone.parse("#{Date.today.to_s} 10:00:00") + 1.day }
 

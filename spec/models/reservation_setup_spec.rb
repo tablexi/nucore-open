@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Reservation do
+RSpec.describe Reservation do
   let(:instrument) { FactoryGirl.create(:setup_instrument) }
   let(:user) { FactoryGirl.create(:user) }
   let(:reservation) { FactoryGirl.create(:purchased_reservation, :user => user, :product => :instrument) }

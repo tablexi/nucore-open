@@ -3,7 +3,7 @@ require 'controller_spec_helper'
 
 # NOTE: changed create/new/edit/update from it_should_allow_all facility_operators to
 # it_should_allow_managers_only as part of ticket #38481
-describe BundleProductsController do
+RSpec.describe BundleProductsController do
   render_views
 
   before(:all) { create_users }

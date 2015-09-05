@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'controller_spec_helper'
 
-describe OrdersController do
+RSpec.describe OrdersController do
   include DateHelper
 
   render_views

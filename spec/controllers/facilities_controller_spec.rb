@@ -2,7 +2,7 @@ require "rails_helper"
 require 'controller_spec_helper'
 require 'transaction_search_spec_helper'
 
-describe FacilitiesController do
+RSpec.describe FacilitiesController do
   render_views
 
   it "should route" do

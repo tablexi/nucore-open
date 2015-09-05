@@ -1,5 +1,5 @@
 require "rails_helper"
-describe StatusChangeNotifications do
+RSpec.describe StatusChangeNotifications do
   before :each do
     @order_status = FactoryGirl.create(:order_status)
     Settings.order_details ||= {}

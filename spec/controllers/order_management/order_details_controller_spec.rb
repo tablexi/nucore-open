@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'controller_spec_helper'
 
-describe OrderManagement::OrderDetailsController do
+RSpec.describe OrderManagement::OrderDetailsController do
   before(:all) { create_users }
   let(:facility) { FactoryGirl.create(:setup_facility) }
   let(:item) { FactoryGirl.create(:setup_item, :facility => facility) }

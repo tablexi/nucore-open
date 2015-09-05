@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Reservations::Rendering do
+RSpec.describe Reservations::Rendering do
   subject(:reservation) do
     build_stubbed(
       :reservation,

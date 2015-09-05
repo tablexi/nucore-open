@@ -33,7 +33,7 @@ def it_should_have_customer_paths
 end
 
 
-describe OrderSearchController do
+RSpec.describe OrderSearchController do
   before(:all) { create_users }
   let!(:product) { FactoryGirl.create(:setup_item) }
   let!(:order) { FactoryGirl.create(:purchased_order, :product => product) }

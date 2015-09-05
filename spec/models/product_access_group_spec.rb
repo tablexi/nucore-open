@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe ProductAccessGroup do
+RSpec.describe ProductAccessGroup do
   before :each do
     @facility         = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))

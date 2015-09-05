@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe TimelineHelper do
+RSpec.describe TimelineHelper do
   before :each do
     @display_date = Time.zone.now
   end

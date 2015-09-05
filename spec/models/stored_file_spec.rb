@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe StoredFile do
+RSpec.describe StoredFile do
 
   it "should require name" do
     is_expected.to validate_presence_of(:name)

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe InstrumentPricePolicy do
+RSpec.describe InstrumentPricePolicy do
   before :each do
     @instrument = FactoryGirl.create(:setup_instrument)
     expect(@instrument.price_policies.count).to eq(1)

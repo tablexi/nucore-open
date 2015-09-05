@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Reservation do
+RSpec.describe Reservation do
   include DateHelper
 
   subject(:reservation) do

@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'controller_spec_helper'
 
-describe FileUploadsController do
+RSpec.describe FileUploadsController do
   render_views
 
   it "should route" do

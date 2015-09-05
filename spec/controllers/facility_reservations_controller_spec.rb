@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'controller_spec_helper'
 
-describe FacilityReservationsController do
+RSpec.describe FacilityReservationsController do
   include DateHelper
 
   let(:account) { @account }

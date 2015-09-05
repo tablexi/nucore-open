@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe BulkEmailHelper do
+RSpec.describe BulkEmailHelper do
 
   # Utility class for testing the helper methods
   class BulkEmailTest

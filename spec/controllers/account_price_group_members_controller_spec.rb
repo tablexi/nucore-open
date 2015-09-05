@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'controller_spec_helper'
 
-describe AccountPriceGroupMembersController do
+RSpec.describe AccountPriceGroupMembersController do
   render_views
 
   let(:price_group) { @authable.price_groups.create(FactoryGirl.attributes_for(:price_group)) }

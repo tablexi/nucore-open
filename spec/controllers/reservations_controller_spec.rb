@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'controller_spec_helper'
 
-describe ReservationsController do
+RSpec.describe ReservationsController do
   include DateHelper
 
   let(:instrument) { @instrument }

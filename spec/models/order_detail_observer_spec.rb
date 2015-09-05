@@ -1,5 +1,5 @@
 require "rails_helper"
-describe OrderDetailObserver do
+RSpec.describe OrderDetailObserver do
   module DummyHooks
     class DummyHook1
       attr_accessor :settings

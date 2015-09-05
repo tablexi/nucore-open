@@ -2,7 +2,7 @@ require "rails_helper"
 require 'controller_spec_helper'
 require 'transaction_search_spec_helper'
 
-describe FacilityNotificationsController do
+RSpec.describe FacilityNotificationsController do
 
   before(:all) { create_users }
   render_views

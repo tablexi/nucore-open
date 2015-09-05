@@ -2,7 +2,7 @@ require "rails_helper"
 require 'controller_spec_helper'
 require 'transaction_search_spec_helper'
 
-describe FacilityJournalsController do
+RSpec.describe FacilityJournalsController do
   let(:account) { @account }
   let(:admin_user) { @admin }
   let(:facility) { @authable }

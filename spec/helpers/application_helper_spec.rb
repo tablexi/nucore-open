@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'controller_spec_helper'
 
-describe ApplicationHelper do
+RSpec.describe ApplicationHelper do
   describe "#menu_facilities" do
   	before :all do
   	  create_users

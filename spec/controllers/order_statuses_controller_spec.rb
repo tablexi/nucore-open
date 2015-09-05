@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'controller_spec_helper'
 
-describe OrderStatusesController do
+RSpec.describe OrderStatusesController do
   render_views
   before(:all) { create_users }
   before :each do

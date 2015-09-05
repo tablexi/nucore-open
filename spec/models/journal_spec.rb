@@ -1,7 +1,7 @@
 require "rails_helper"
 require "journal"
 
-describe Journal do
+RSpec.describe Journal do
   subject(:journal) do
     build(:journal,
       facility: facility,
