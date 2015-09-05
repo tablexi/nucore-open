@@ -160,11 +160,11 @@ describe FacilityOrdersController do
     end
 
     it_should_allow_operators_only :redirect, 'to send a receipt' do
-      flash[:notice].should be_present
-      ActionMailer::Base.deliveries.size.should == 1
+      expect(flash[:notice]).to be_present
+      expect(ActionMailer::Base.deliveries.size).to eq(1)
       mail = ActionMailer::Base.deliveries.first
-      mail.subject.should == I18n.t('notifier.order_receipt.subject')
-      mail.from.first.should == Settings.email.from
+      expect(mail.subject).to eq(I18n.t('notifier.order_receipt.subject'))
+      expect(mail.from.first).to eq(Settings.email.from)
       assert_redirected_to facility_order_path(@authable, @order)
     end
   end
@@ -181,7 +181,7 @@ describe FacilityOrdersController do
     end
 
     it_should_allow_operators_only :redirect, 'to submit product quantity 0 and get failure notice' do
-      flash[:notice].should be_present
+      expect(flash[:notice]).to be_present
       assert_redirected_to facility_order_path(@authable, @order)
     end
 

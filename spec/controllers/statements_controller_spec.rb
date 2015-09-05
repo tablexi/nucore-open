@@ -23,7 +23,7 @@ describe StatementsController do
     it_should_deny_all [:guest, :purchaser]
     
     it_should_allow_all [:admin, :owner]  do
-      response.should be_success
+      expect(response).to be_success
     end
     
   end

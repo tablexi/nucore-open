@@ -24,9 +24,9 @@ describe ScheduleRulesController do
     end
 
     it_should_allow_operators_only do |user|
-      assigns[:instrument].should == @instrument
-      response.should be_success
-      response.should render_template('schedule_rules/index')
+      expect(assigns[:instrument]).to eq(@instrument)
+      expect(response).to be_success
+      expect(response).to render_template('schedule_rules/index')
     end
 
   end
@@ -40,9 +40,9 @@ describe ScheduleRulesController do
     end
 
     it_should_allow_managers_and_senior_staff_only do
-      assigns[:instrument].should == @instrument
-      response.should be_success
-      response.should render_template('schedule_rules/new')
+      expect(assigns[:instrument]).to eq(@instrument)
+      expect(response).to be_success
+      expect(response).to render_template('schedule_rules/new')
     end
 
   end
@@ -106,7 +106,7 @@ describe ScheduleRulesController do
       end
 
       it_should_allow_managers_and_senior_staff_only do
-        assigns(:schedule_rule).should == @rule
+        expect(assigns(:schedule_rule)).to eq(@rule)
         is_expected.to render_template 'edit'
       end
 
@@ -124,7 +124,7 @@ describe ScheduleRulesController do
       end
 
       it_should_allow_managers_and_senior_staff_only :redirect do
-        assigns(:schedule_rule).should == @rule
+        expect(assigns(:schedule_rule)).to eq(@rule)
         is_expected.to set_the_flash
         assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
       end
@@ -170,7 +170,7 @@ describe ScheduleRulesController do
       end
 
       it_should_allow_managers_and_senior_staff_only :redirect do
-        assigns(:schedule_rule).should == @rule
+        expect(assigns(:schedule_rule)).to eq(@rule)
         should_be_destroyed @rule
         assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
       end

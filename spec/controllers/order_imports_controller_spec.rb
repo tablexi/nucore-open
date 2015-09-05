@@ -51,8 +51,8 @@ describe OrderImportsController do
       let(:send_receipts) { false }
 
       it_should_allow_operators_only(:redirect) do
-        flash[:error].should be_blank
-        flash[:notice].should be_present
+        expect(flash[:error]).to be_blank
+        expect(flash[:notice]).to be_present
         is_expected.to redirect_to new_facility_order_import_url
       end
 

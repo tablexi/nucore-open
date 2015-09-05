@@ -29,8 +29,8 @@ describe UsersController do
     end
 
     it_should_allow_operators_only :success, 'include the right users' do
-      assigns[:users].size.should == 1
-      assigns[:users].should include @active_user
+      expect(assigns[:users].size).to eq(1)
+      expect(assigns[:users]).to include @active_user
     end
 
     context 'with newly created user' do
@@ -39,7 +39,7 @@ describe UsersController do
         @params.merge!({ :user => @user.id })
       end
       it_should_allow_operators_only :success, 'set the user' do
-        assigns[:new_user].should == @user
+        expect(assigns[:new_user]).to eq(@user)
       end
     end
 
@@ -69,8 +69,8 @@ describe UsersController do
           end
 
           it_should_allow_operators_only do
-            assigns(:user).should be_nil
-            response.should be_success
+            expect(assigns(:user)).to be_nil
+            expect(response).to be_success
           end
         end
 
@@ -80,8 +80,8 @@ describe UsersController do
           end
 
           it_should_allow_operators_only do
-            assigns(:user).should == @user
-            assigns(:user).should be_persisted
+            expect(assigns(:user)).to eq(@user)
+            expect(assigns(:user)).to be_persisted
           end
         end
 
@@ -93,8 +93,8 @@ describe UsersController do
           end
 
           it_should_allow_operators_only do
-            assigns(:user).should == @user2
-            assigns(:user).should be_new_record
+            expect(assigns(:user)).to eq(@user2)
+            expect(assigns(:user)).to be_new_record
           end
         end
       end
@@ -107,7 +107,7 @@ describe UsersController do
 
         it_should_allow_operators_only do
           expect(assigns(:user)).to be_kind_of User
-          assigns(:user).should be_new_record
+          expect(assigns(:user)).to be_new_record
         end
       end
 
@@ -126,7 +126,7 @@ describe UsersController do
 
             it_should_allow_operators_only :redirect do
               expect(assigns(:user)).to be_kind_of User
-              assigns(:user).should be_persisted
+              expect(assigns(:user)).to be_persisted
               assert_redirected_to facility_users_url(:user => assigns[:user].id)
             end
           end
@@ -137,8 +137,8 @@ describe UsersController do
             end
 
             it_should_allow_operators_only do
-              assigns(:user).should be_new_record
-              response.should render_template 'new_external'
+              expect(assigns(:user)).to be_new_record
+              expect(response).to render_template 'new_external'
             end
           end
         end
@@ -205,9 +205,9 @@ describe UsersController do
     end
 
     it_should_allow_operators_only :redirect do
-      assigns(:user).should == @guest
-      session[:acting_user_id].should == @guest.id
-      session[:acting_ref_url].should == facility_users_path
+      expect(assigns(:user)).to eq(@guest)
+      expect(session[:acting_user_id]).to eq(@guest.id)
+      expect(session[:acting_ref_url]).to eq(facility_users_path)
       assert_redirected_to facility_path(@authable)
     end
 

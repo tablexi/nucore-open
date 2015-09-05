@@ -64,9 +64,9 @@ describe ProductUsersController do
     end
 
     it_should_allow_operators_only :redirect, "update the product_users" do
-      ProductUser.find(@guest_product.id).product_access_group.should == @level
-      ProductUser.find(@staff_product.id).product_access_group.should == @level2
-      flash[:notice].should_not be_nil
+      expect(ProductUser.find(@guest_product.id).product_access_group).to eq(@level)
+      expect(ProductUser.find(@staff_product.id).product_access_group).to eq(@level2)
+      expect(flash[:notice]).not_to be_nil
     end
   end
 end

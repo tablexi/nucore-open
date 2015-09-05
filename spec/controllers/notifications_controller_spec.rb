@@ -42,7 +42,7 @@ describe NotificationsController do
     it_should_behave_like 'user without notifications'
 
     it_should_allow_all facility_users do |user|
-      assigns(:notices).size.should == user.notifications.active.count
+      expect(assigns(:notices).size).to eq(user.notifications.active.count)
       is_expected.to render_template 'index'
     end
   end

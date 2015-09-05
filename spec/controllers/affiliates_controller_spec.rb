@@ -28,8 +28,8 @@ describe AffiliatesController do
     end
 
     it_should_allow_admin_only do
-      assigns(:affiliate).should be_kind_of Affiliate
-      assigns(:affiliate).should be_new_record
+      expect(assigns(:affiliate)).to be_kind_of Affiliate
+      expect(assigns(:affiliate)).to be_new_record
       is_expected.to render_template :new
     end
   end
@@ -45,8 +45,8 @@ describe AffiliatesController do
 
     it_should_allow_admin_only :redirect do
       is_expected.to set_the_flash
-      assigns(:affiliate).should_not be_new_record
-      assigns(:affiliate).name.should == @params[:affiliate][:name]
+      expect(assigns(:affiliate)).not_to be_new_record
+      expect(assigns(:affiliate).name).to eq(@params[:affiliate][:name])
       assert_redirected_to affiliates_path
     end
 
@@ -76,7 +76,7 @@ describe AffiliatesController do
       end
 
       it_should_allow_admin_only do
-        assigns(:affiliate).should == @affiliate
+        expect(assigns(:affiliate)).to eq(@affiliate)
         is_expected.to render_template :edit
       end
 
@@ -94,7 +94,7 @@ describe AffiliatesController do
 
       it_should_allow_admin_only :redirect do
         is_expected.to set_the_flash
-        assigns(:affiliate).name.should == @params[:affiliate][:name]
+        expect(assigns(:affiliate).name).to eq(@params[:affiliate][:name])
         assert_redirected_to affiliates_path
       end
 

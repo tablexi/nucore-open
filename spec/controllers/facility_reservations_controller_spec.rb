@@ -159,10 +159,10 @@ describe FacilityReservationsController do
     end
 
     it_should_allow_operators_only do
-      assigns(:order).should == @order
-      assigns(:order_detail).should == @order_detail
-      assigns(:reservation).should == @reservation
-      assigns(:instrument).should == @product
+      expect(assigns(:order)).to eq(@order)
+      expect(assigns(:order_detail)).to eq(@order_detail)
+      expect(assigns(:reservation)).to eq(@reservation)
+      expect(assigns(:instrument)).to eq(@product)
       is_expected.to render_template 'edit'
     end
 
@@ -313,10 +313,10 @@ describe FacilityReservationsController do
 
 
     it_should_allow_operators_only do
-      assigns(:order).should == @order
-      assigns(:order_detail).should == @order_detail
-      assigns(:reservation).should == @reservation
-      assigns(:instrument).should == @product
+      expect(assigns(:order)).to eq(@order)
+      expect(assigns(:order_detail)).to eq(@order_detail)
+      expect(assigns(:reservation)).to eq(@reservation)
+      expect(assigns(:instrument)).to eq(@product)
     end
 
     context "updating reservation length before complete" do

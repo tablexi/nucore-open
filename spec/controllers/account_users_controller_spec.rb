@@ -42,9 +42,9 @@ describe AccountUsersController do
     it_should_deny :purchaser
 
     it_should_allow :owner do
-      assigns(:user).should == @purchaser
+      expect(assigns(:user)).to eq(@purchaser)
       expect(assigns(:account_user)).to be_kind_of AccountUser
-      assigns(:account_user).should be_new_record
+      expect(assigns(:account_user)).to be_new_record
       is_expected.to render_template('new')
     end
 
@@ -68,11 +68,11 @@ describe AccountUsersController do
     it_should_deny :purchaser
 
     it_should_allow :owner do
-      assigns(:user).should == @purchaser
+      expect(assigns(:user)).to eq(@purchaser)
       expect(assigns(:account_user)).to be_kind_of AccountUser
-      assigns(:account_user).user.should == @purchaser
-      assigns(:account_user).created_by.should == @owner.id
-      @purchaser.reload.should be_purchaser_of(@authable)
+      expect(assigns(:account_user).user).to eq(@purchaser)
+      expect(assigns(:account_user).created_by).to eq(@owner.id)
+      expect(@purchaser.reload).to be_purchaser_of(@authable)
       is_expected.to set_the_flash
       assert_redirected_to(account_account_users_path(@authable))
     end
@@ -101,8 +101,8 @@ describe AccountUsersController do
     it_should_allow :owner do
       expect(assigns(:account_user)).to be_kind_of AccountUser
       @account_user.reload
-      @account_user.deleted_at.should_not be_nil
-      @account_user.deleted_by.should == @owner.id
+      expect(@account_user.deleted_at).not_to be_nil
+      expect(@account_user.deleted_by).to eq(@owner.id)
       is_expected.to set_the_flash
       assert_redirected_to(account_account_users_path(@authable))
     end

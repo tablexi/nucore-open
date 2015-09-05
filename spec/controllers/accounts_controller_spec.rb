@@ -40,10 +40,10 @@ describe AccountsController do
 
     it_should_allow :purchaser do
       # should find 1 account user, with user roles as 'Purchaser'
-      assigns[:account_users].collect(&:user_id).should == [@purchaser.id]
-      assigns[:account_users].collect(&:user_role).should == ['Purchaser']
+      expect(assigns[:account_users].collect(&:user_id)).to eq([@purchaser.id])
+      expect(assigns[:account_users].collect(&:user_role)).to eq(['Purchaser'])
       # should show 1 account, with no 'edit account' links
-      response.should render_template('accounts/index')
+      expect(response).to render_template('accounts/index')
     end
   end
 
@@ -61,8 +61,8 @@ describe AccountsController do
     it_should_deny :purchaser
 
     it_should_allow :owner do
-      assigns(:account).should == @authable
-      response.should render_template('accounts/show')
+      expect(assigns(:account)).to eq(@authable)
+      expect(response).to render_template('accounts/show')
     end
   end
 
@@ -80,8 +80,8 @@ describe AccountsController do
     it_should_deny :purchaser
 
     it_should_allow :owner do
-      assigns(:account).should == @authable
-      response.should render_template('account_users/user_search')
+      expect(assigns(:account)).to eq(@authable)
+      expect(response).to render_template('account_users/user_search')
     end
 
   end
@@ -96,10 +96,10 @@ describe AccountsController do
     it_should_require_login
     it_should_deny :purchaser
     it_should_allow :owner do
-      assigns(:account).should == @authable
-      assigns[:order_details].where_values_hash.should == { 'account_id' => @authable.id }
+      expect(assigns(:account)).to eq(@authable)
+      expect(assigns[:order_details].where_values_hash).to eq({ 'account_id' => @authable.id })
       # @authable is an nufs account, so it doesn't have a facility
-      assigns[:facility].should be_nil
+      expect(assigns[:facility]).to be_nil
     end
 
     it_should_support_searching
@@ -120,10 +120,10 @@ describe AccountsController do
     it_should_deny :purchaser
 
     it_should_allow :owner do
-      assigns[:account].should == @authable
-      assigns[:order_details].where_values_hash.should be_has_key(:account_id)
-      assigns[:order_details].where_values_hash[:account_id].should == @authable.id
-      assigns[:facility].should be_nil
+      expect(assigns[:account]).to eq(@authable)
+      expect(assigns[:order_details].where_values_hash).to be_has_key(:account_id)
+      expect(assigns[:order_details].where_values_hash[:account_id]).to eq(@authable.id)
+      expect(assigns[:facility]).to be_nil
     end
 
     it "should use reviewed_at" do
@@ -164,9 +164,9 @@ describe AccountsController do
       it_should_deny_all [:purchaser]
 
       it_should_allow_all [:owner, :business_admin] do
-        assigns(:account).should == @account
+        expect(assigns(:account)).to eq(@account)
         is_expected.to set_the_flash
-        @account.reload.should be_suspended
+        expect(@account.reload).to be_suspended
         assert_redirected_to account_path(@account)
       end
     end
@@ -183,9 +183,9 @@ describe AccountsController do
       it_should_deny_all [:purchaser]
 
       it_should_allow_all [:owner, :business_admin] do
-        assigns(:account).should == @account
+        expect(assigns(:account)).to eq(@account)
         is_expected.to set_the_flash
-        assigns(:account).should_not be_suspended
+        expect(assigns(:account)).not_to be_suspended
         assert_redirected_to account_path(@account)
       end
     end

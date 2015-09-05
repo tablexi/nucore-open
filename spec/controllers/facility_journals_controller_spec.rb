@@ -47,8 +47,8 @@ describe FacilityJournalsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_managers_only do
-      response.should be_success
-      assigns(:pending_journals).should == [@pending_journal]
+      expect(response).to be_success
+      expect(assigns(:pending_journals)).to eq([@pending_journal])
     end
   end
 
@@ -207,7 +207,7 @@ describe FacilityJournalsController do
 
     it_should_allow_managers_only :redirect, 'and respond gracefully when no order details given' do |user|
       journal_date=parse_usa_date(@journal_date)
-      flash[:error].should_not be_nil
+      expect(flash[:error]).not_to be_nil
     end
 
     context 'validations' do
@@ -418,7 +418,7 @@ describe FacilityJournalsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_managers_only do
-      response.should be_success
+      expect(response).to be_success
     end
 
     it "should set appropriate values" do

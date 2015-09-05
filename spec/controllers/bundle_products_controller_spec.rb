@@ -73,7 +73,7 @@ describe BundleProductsController do
 
     it_should_allow_managers_only do
       expect(assigns(:bundle_product)).to be_kind_of BundleProduct
-      assigns(:bundle_product).should be_new_record
+      expect(assigns(:bundle_product)).to be_new_record
       is_expected.to render_template('new')
     end
 
@@ -118,7 +118,7 @@ describe BundleProductsController do
     it_should_allow_managers_only :redirect do
       assert_init_bundle
       expect(assigns(:bundle_product)).to be_kind_of BundleProduct
-      @bundle_product.quantity.should_not == assigns(:bundle_product).quantity
+      expect(@bundle_product.quantity).not_to eq(assigns(:bundle_product).quantity)
       is_expected.to set_the_flash
       assert_redirected_to facility_bundle_bundle_products_url(@authable, @bundle)
     end

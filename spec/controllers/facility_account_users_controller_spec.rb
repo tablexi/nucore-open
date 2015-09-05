@@ -24,7 +24,7 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
     it_should_deny :staff
 
     it_should_allow_all facility_managers do
-      assigns(:account).should == @account
+      expect(assigns(:account)).to eq(@account)
       is_expected.to render_template('user_search')
     end
 
@@ -44,10 +44,10 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
     it_should_deny :staff
 
     it_should_allow_all facility_managers do
-      assigns(:account).should == @account
-      assigns(:user).should == @guest
+      expect(assigns(:account)).to eq(@account)
+      expect(assigns(:user)).to eq(@guest)
       expect(assigns(:account_user)).to be_kind_of AccountUser
-      assigns(:account_user).should be_new_record
+      expect(assigns(:account_user)).to be_new_record
       is_expected.to render_template('new')
     end
 
@@ -72,11 +72,11 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
     it_should_deny :staff
 
     it_should_allow_all facility_managers do |user|
-      assigns(:account).should == @account
-      assigns(:user).should == @purchaser
-      assigns(:account_user).user_role.should == AccountUser::ACCOUNT_PURCHASER
-      assigns(:account_user).user.should == @purchaser
-      assigns(:account_user).created_by.should == user.id
+      expect(assigns(:account)).to eq(@account)
+      expect(assigns(:user)).to eq(@purchaser)
+      expect(assigns(:account_user).user_role).to eq(AccountUser::ACCOUNT_PURCHASER)
+      expect(assigns(:account_user).user).to eq(@purchaser)
+      expect(assigns(:account_user).created_by).to eq(user.id)
       is_expected.to set_the_flash
       assert_redirected_to facility_account_members_path(@authable, @account)
     end
@@ -203,10 +203,10 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
     it_should_deny :staff
 
     it_should_allow_all facility_managers do |user|
-      assigns(:account).should == @account
-      assigns(:account_user).should == @account_user
-      assigns(:account_user).deleted_at.should_not be_nil
-      assigns(:account_user).deleted_by.should == user.id
+      expect(assigns(:account)).to eq(@account)
+      expect(assigns(:account_user)).to eq(@account_user)
+      expect(assigns(:account_user).deleted_at).not_to be_nil
+      expect(assigns(:account_user).deleted_by).to eq(user.id)
       is_expected.to set_the_flash
       assert_redirected_to facility_account_members_path(@authable, @account)
     end

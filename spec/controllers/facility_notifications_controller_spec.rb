@@ -44,8 +44,8 @@ describe FacilityNotificationsController do
     it_should_404_for_zero_day_review
 
     it_should_allow_managers_only do
-      (assigns(:order_details) - [@order_detail1, @order_detail2, @order_detail3]).should be_empty
-      assigns(:order_detail_action).should == :send_notifications
+      expect(assigns(:order_details) - [@order_detail1, @order_detail2, @order_detail3]).to be_empty
+      expect(assigns(:order_detail_action)).to eq(:send_notifications)
       is_expected.not_to set_the_flash
     end
 
@@ -87,9 +87,9 @@ describe FacilityNotificationsController do
       end
 
       it_should_allow_managers_only :redirect do
-        assigns(:errors).should be_empty
-        assigns(:orders_notified).should == [@order_detail1, @order_detail2, @order_detail3]
-        assigns(:accounts_to_notify).to_a.should == [[@account.id, @authable.id], [@account2.id, @authable.id]]
+        expect(assigns(:errors)).to be_empty
+        expect(assigns(:orders_notified)).to eq([@order_detail1, @order_detail2, @order_detail3])
+        expect(assigns(:accounts_to_notify).to_a).to eq([[@account.id, @authable.id], [@account2.id, @authable.id]])
       end
 
       context 'while signed in' do
@@ -167,8 +167,8 @@ describe FacilityNotificationsController do
     it_should_404_for_zero_day_review
 
     it_should_allow_managers_only do
-      (assigns(:order_details) - [@order_detail1, @order_detail3]).should be_empty
-      assigns(:order_detail_action).should == :mark_as_reviewed
+      expect(assigns(:order_details) - [@order_detail1, @order_detail3]).to be_empty
+      expect(assigns(:order_detail_action)).to eq(:mark_as_reviewed)
       is_expected.not_to set_the_flash
     end
 

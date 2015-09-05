@@ -48,8 +48,8 @@ describe PriceGroupProductsController do
 
     it_should_allow_managers_only :redirect, 'to update existing PriceGroupProducts' do
       assert_init_price_group_products
-      PriceGroupProduct.count.should == PriceGroup.count
-      @price_group_products.each {|pgp| pgp.reload.reservation_window.should == 5 }
+      expect(PriceGroupProduct.count).to eq(PriceGroup.count)
+      @price_group_products.each {|pgp| expect(pgp.reload.reservation_window).to eq(5) }
       assert_successful_update
     end
 

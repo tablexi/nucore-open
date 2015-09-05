@@ -5,7 +5,7 @@ require 'controller_spec_helper'
     it "should not allow if you're signed in" do
       sign_in(@user)
       do_request
-      response.should redirect_to(edit_current_password_path)
+      expect(response).to redirect_to(edit_current_password_path)
     end
   end
 

@@ -4,14 +4,14 @@ require 'controller_spec_helper'
 def it_should_find_the_order(desc = '')
   it 'should find the order ' + desc do
     get :index, :search => order.id.to_s
-    assigns(:order_details).should == [order_detail]
+    expect(assigns(:order_details)).to eq([order_detail])
   end
 end
 
 def it_should_not_find_the_order(desc = '')
   it 'should not find the order ' + desc do
     get :index, :search => order.id.to_s
-    assigns(:order_details).should be_empty
+    expect(assigns(:order_details)).to be_empty
   end
 end
 
@@ -19,7 +19,7 @@ def it_should_have_admin_edit_paths
   render_views
   it 'should have link to the admin path' do
     get :index, :search => order.id.to_s
-    response.body.should include facility_order_path(order_detail.facility, order_detail.order)
+    expect(response.body).to include facility_order_path(order_detail.facility, order_detail.order)
   end
 end
 
@@ -27,8 +27,8 @@ def it_should_have_customer_paths
   render_views
   it 'should have links to the customer view' do
     get :index, :search => order.id.to_s
-    response.body.should include order_order_detail_path(order_detail.order, order_detail)
-    response.body.should include order_path(order)
+    expect(response.body).to include order_order_detail_path(order_detail.order, order_detail)
+    expect(response.body).to include order_path(order)
   end
 end
 

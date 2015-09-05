@@ -29,9 +29,9 @@ describe ProductAccessGroupsController do
       @method = :get
     end
     it_should_allow_operators_only :success, 'see index' do
-      assigns[:facility].should == @authable
-      assigns[:instrument].should == @instrument
-      assigns[:product_access_groups].should == [@level, @level2]
+      expect(assigns[:facility]).to eq(@authable)
+      expect(assigns[:instrument]).to eq(@instrument)
+      expect(assigns[:product_access_groups]).to eq([@level, @level2])
     end
   end
 
@@ -41,10 +41,10 @@ describe ProductAccessGroupsController do
       @method = :get
     end
     it_should_allow_managers_and_senior_staff_only :success, 'do new' do
-      assigns[:facility].should == @authable
-      assigns[:instrument].should == @instrument
-      assigns[:product_access_group].should be_new_record
-      response.should render_template :new
+      expect(assigns[:facility]).to eq(@authable)
+      expect(assigns[:instrument]).to eq(@instrument)
+      expect(assigns[:product_access_group]).to be_new_record
+      expect(response).to render_template :new
     end
   end
 
@@ -58,11 +58,11 @@ describe ProductAccessGroupsController do
         @params.merge!({:product_access_group => FactoryGirl.attributes_for(:product_access_group)})
       end
       it_should_allow_managers_and_senior_staff_only :redirect, 'do create' do
-        assigns[:facility].should == @authable
-        assigns[:instrument].should == @instrument
-        assigns[:product_access_group].should_not be_new_record
-        flash[:notice].should_not be_nil
-        response.should redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
+        expect(assigns[:facility]).to eq(@authable)
+        expect(assigns[:instrument]).to eq(@instrument)
+        expect(assigns[:product_access_group]).not_to be_new_record
+        expect(flash[:notice]).not_to be_nil
+        expect(response).to redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
       end
     end
     context 'missing data' do
@@ -70,11 +70,11 @@ describe ProductAccessGroupsController do
         @params.merge!({:product_access_group => FactoryGirl.attributes_for(:product_access_group, :name => '')})
       end
       it_should_allow_managers_and_senior_staff_only :success, 'do create' do
-        assigns[:facility].should == @authable
-        assigns[:instrument].should == @instrument
-        assigns[:product_access_group].should be_new_record
-        assigns[:product_access_group].errors.should_not be_empty
-        response.should render_template :new
+        expect(assigns[:facility]).to eq(@authable)
+        expect(assigns[:instrument]).to eq(@instrument)
+        expect(assigns[:product_access_group]).to be_new_record
+        expect(assigns[:product_access_group].errors).not_to be_empty
+        expect(response).to render_template :new
       end
     end
   end
@@ -87,10 +87,10 @@ describe ProductAccessGroupsController do
       @params.merge!({:id => @product_access_group.id})
     end
     it_should_allow_managers_and_senior_staff_only :success, 'do edit' do
-      assigns[:facility].should == @authable
-      assigns[:instrument].should == @instrument
-      assigns[:product_access_group].should == @product_access_group
-      response.should render_template :edit
+      expect(assigns[:facility]).to eq(@authable)
+      expect(assigns[:instrument]).to eq(@instrument)
+      expect(assigns[:product_access_group]).to eq(@product_access_group)
+      expect(response).to render_template :edit
     end
   end
   context 'update' do
@@ -105,12 +105,12 @@ describe ProductAccessGroupsController do
         @params.merge!({:product_access_group => {:name => 'new name'}})
       end
       it_should_allow_managers_and_senior_staff_only :redirect, 'do update' do
-        assigns[:facility].should == @authable
-        assigns[:instrument].should == @instrument
-        assigns[:product_access_group].should == @product_access_group
-        assigns[:product_access_group].name.should == 'new name'
-        flash[:notice].should_not be_nil
-        response.should redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
+        expect(assigns[:facility]).to eq(@authable)
+        expect(assigns[:instrument]).to eq(@instrument)
+        expect(assigns[:product_access_group]).to eq(@product_access_group)
+        expect(assigns[:product_access_group].name).to eq('new name')
+        expect(flash[:notice]).not_to be_nil
+        expect(response).to redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
       end
     end
     context 'missing data' do
@@ -118,11 +118,11 @@ describe ProductAccessGroupsController do
         @params.merge!({:product_access_group => {:name => ''}})
       end
       it_should_allow_managers_and_senior_staff_only :success, 'do update' do
-        assigns[:facility].should == @authable
-        assigns[:instrument].should == @instrument
-        assigns[:product_access_group].should == @product_access_group
-        assigns[:product_access_group].errors.should_not be_empty
-        response.should render_template :edit
+        expect(assigns[:facility]).to eq(@authable)
+        expect(assigns[:instrument]).to eq(@instrument)
+        expect(assigns[:product_access_group]).to eq(@product_access_group)
+        expect(assigns[:product_access_group].errors).not_to be_empty
+        expect(response).to render_template :edit
       end
     end
   end
@@ -135,9 +135,9 @@ describe ProductAccessGroupsController do
       @params.merge!({:id => @product_access_group.id})
     end
     it_should_allow_managers_and_senior_staff_only :redirect, 'do delete' do
-      assigns[:product_access_group].should be_destroyed
-      flash[:notice].should_not be_nil
-      response.should redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
+      expect(assigns[:product_access_group]).to be_destroyed
+      expect(flash[:notice]).not_to be_nil
+      expect(response).to redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
     end
   end
 

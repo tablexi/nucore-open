@@ -112,7 +112,7 @@ describe OrdersController do
 
     it_should_allow :staff do
       expect(assigns(:order)).to be_kind_of Order
-      assigns(:order).should == @order
+      expect(assigns(:order)).to eq(@order)
       is_expected.to render_template 'choose_account'
     end
 
@@ -252,7 +252,7 @@ describe OrdersController do
 
     it_should_allow :staff do
       expect(assigns(:order)).to be_kind_of Order
-      assigns(:order).should == @order
+      expect(assigns(:order)).to eq(@order)
       is_expected.to respond_with :redirect
     end
 
@@ -552,7 +552,7 @@ describe OrdersController do
 
     it_should_allow :staff do
       expect(assigns(:order)).to be_kind_of Order
-      assigns(:order).should == @complete_order
+      expect(assigns(:order)).to eq(@complete_order)
       is_expected.to render_template 'receipt'
     end
 
@@ -595,15 +595,15 @@ describe OrdersController do
       end
 
       it_should_allow :staff, "to add a product with quantity to cart" do
-        assigns(:order).id.should == @order.id
-        @order.reload.order_details.count.should == 1
-        flash[:error].should be_nil
-        response.should redirect_to "/orders/#{@order.id}"
+        expect(assigns(:order).id).to eq(@order.id)
+        expect(@order.reload.order_details.count).to eq(1)
+        expect(flash[:error]).to be_nil
+        expect(response).to redirect_to "/orders/#{@order.id}"
       end
 
       it_should_allow :staff, 'should assign an estimated price if there is a policy' do
-        @item.price_policies.should_not be_empty
-        @order.reload.order_details.first.estimated_cost.should_not be_nil
+        expect(@item.price_policies).not_to be_empty
+        expect(@order.reload.order_details.first.estimated_cost).not_to be_nil
       end
 
     end
@@ -621,8 +621,8 @@ describe OrdersController do
       end
 
       it_should_allow :staff, "with empty cart (will use same order)" do
-        assigns(:order).id.should == @order.id
-        flash[:error].should be_nil
+        expect(assigns(:order).id).to eq(@order.id)
+        expect(flash[:error]).to be_nil
 
         assert_redirected_to new_order_order_detail_reservation_path(@order.id, @order.reload.order_details.first.id)
       end
@@ -633,8 +633,8 @@ describe OrdersController do
         end
 
         it_should_allow :staff, "with empty cart (will use same order) redirect to choose account" do
-          assigns(:order).id.should == @order.id
-          flash[:error].should be_nil
+          expect(assigns(:order).id).to eq(@order.id)
+          expect(flash[:error]).to be_nil
 
           assert_redirected_to choose_account_order_url(@order)
         end
@@ -647,8 +647,8 @@ describe OrdersController do
         end
 
         it_should_allow :staff, "with non-empty cart (will create new order)" do
-          assigns(:order).should_not == @order
-          flash[:error].should be_nil
+          expect(assigns(:order)).not_to eq(@order)
+          expect(flash[:error]).to be_nil
 
           assert_redirected_to new_order_order_detail_reservation_path(assigns(:order), assigns(:order).order_details.first)
         end
@@ -763,8 +763,8 @@ describe OrdersController do
     it_should_require_login
 
     it_should_allow :staff, "should delete an order_detail when /remove/:order_detail_id is called" do
-      @order.reload.order_details.size.should == 0
-      response.should redirect_to "/orders/#{@order.id}"
+      expect(@order.reload.order_details.size).to eq(0)
+      expect(response).to redirect_to "/orders/#{@order.id}"
     end
 
     it "should 404 it the order_detail to be removed is not in the current cart" do
@@ -816,7 +816,7 @@ describe OrdersController do
     it_should_require_login
 
     it_should_allow :staff, "to update the quantities of order_details" do
-      @order_detail.reload.quantity.should == 6
+      expect(@order_detail.reload.quantity).to eq(6)
     end
 
     context "bad input" do
@@ -849,7 +849,7 @@ describe OrdersController do
     it_should_require_login
 
     it_should_allow :staff, "to update the note field of order_details" do
-      @order_detail.reload.note.should == 'new note'
+      expect(@order_detail.reload.note).to eq('new note')
     end
   end
 
@@ -877,7 +877,7 @@ describe OrdersController do
       end
 
       it_should_allow :staff, "to show links for making a reservation for instruments" do
-        response.should be_success
+        expect(response).to be_success
       end
     end
 

@@ -47,8 +47,8 @@ if AccountManager.using_statements?
       end
 
       it_should_allow_managers_only do
-        assigns(:statements).size.should == 1
-        assigns(:statements)[0].should == @statement
+        expect(assigns(:statements).size).to eq(1)
+        expect(assigns(:statements)[0]).to eq(@statement)
         is_expected.not_to set_the_flash
       end
 
@@ -64,7 +64,7 @@ if AccountManager.using_statements?
       end
 
       it_should_allow_managers_only do
-        response.should be_success
+        expect(response).to be_success
       end
 
       it_should_deny_all [:staff, :senior_staff]
@@ -91,7 +91,7 @@ if AccountManager.using_statements?
       end
 
       it_should_allow_managers_only :redirect do
-        response.should be_redirect
+        expect(response).to be_redirect
       end
 
       it_should_deny_all [:staff, :senior_staff]
@@ -130,7 +130,7 @@ if AccountManager.using_statements?
         @params.merge!(:id => @statement.id)
       end
 
-      it_should_allow_managers_only { assigns(:statement).should == @statement }
+      it_should_allow_managers_only { expect(assigns(:statement)).to eq(@statement) }
 
       it_should_deny_all [:staff, :senior_staff]
 

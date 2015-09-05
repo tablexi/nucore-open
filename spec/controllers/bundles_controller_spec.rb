@@ -33,8 +33,8 @@ describe BundlesController do
       expect(assigns(:archived_product_count)).to be_kind_of Fixnum
       expect(assigns(:not_archived_product_count)).to be_kind_of Fixnum
       expect(assigns(:product_name)).to be_kind_of String
-      assigns(:bundles).size.should == 1
-      assigns(:bundles).should == @authable.bundles.not_archived
+      expect(assigns(:bundles).size).to eq(1)
+      expect(assigns(:bundles)).to eq(@authable.bundles.not_archived)
     end
 
     it 'should show archived facilities' do
@@ -183,7 +183,7 @@ describe BundlesController do
 
     it_should_allow_managers_only do
       expect(assigns(:bundle)).to be_kind_of Bundle
-      assigns(:bundle).should be_new_record
+      expect(assigns(:bundle)).to be_new_record
       is_expected.to render_template('new')
     end
   end
@@ -214,9 +214,9 @@ describe BundlesController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:bundle)).to be_kind_of Bundle
-      assigns(:bundle).initial_order_status_id.should == OrderStatus.default_order_status.id
-      assigns(:bundle).requires_approval.should == false
-      assigns(:bundle).should be_persisted
+      expect(assigns(:bundle).initial_order_status_id).to eq(OrderStatus.default_order_status.id)
+      expect(assigns(:bundle).requires_approval).to eq(false)
+      expect(assigns(:bundle)).to be_persisted
       is_expected.to set_the_flash
       assert_redirected_to [ :manage, @authable, assigns(:bundle) ]
     end

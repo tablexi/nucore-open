@@ -21,8 +21,8 @@ describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:
 
     it_should_allow_managers_only do
       expect(assigns(:accounts)).to be_kind_of Array
-      assigns(:accounts).size.should == 1
-      assigns(:accounts)[0].should == @facility_account
+      expect(assigns(:accounts).size).to eq(1)
+      expect(assigns(:accounts)[0]).to eq(@facility_account)
       is_expected.to render_template 'index'
     end
 
@@ -38,7 +38,7 @@ describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:
 
     it_should_allow_managers_only do
       expect(assigns(:facility_account)).to be_kind_of FacilityAccount
-      assigns(:facility_account).should be_new_record
+      expect(assigns(:facility_account)).to be_new_record
       is_expected.to render_template 'new'
     end
 
@@ -55,7 +55,7 @@ describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:facility_account)).to be_kind_of FacilityAccount
-      assigns(:facility_account).should == @facility_account
+      expect(assigns(:facility_account)).to eq(@facility_account)
       is_expected.to set_the_flash
       assert_redirected_to facility_facility_accounts_path
     end
@@ -73,7 +73,7 @@ describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:
 
     it_should_allow_managers_only :redirect do |user|
       expect(assigns(:facility_account)).to be_kind_of FacilityAccount
-      assigns(:facility_account).created_by.should == user.id
+      expect(assigns(:facility_account).created_by).to eq(user.id)
       is_expected.to set_the_flash
       assert_redirected_to facility_facility_accounts_path
     end
@@ -91,7 +91,7 @@ describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:
 
     it_should_allow_managers_only do
       expect(assigns(:facility_account)).to be_kind_of FacilityAccount
-      assigns(:facility_account).should == @facility_account
+      expect(assigns(:facility_account)).to eq(@facility_account)
       is_expected.to render_template 'edit'
     end
 

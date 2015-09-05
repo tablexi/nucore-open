@@ -29,9 +29,9 @@ describe ServicesController do
     end
 
     it_should_allow_operators_only do
-      assigns[:services].should == [@service]
-      response.should be_success
-      response.should render_template('services/index')
+      expect(assigns[:services]).to eq([@service])
+      expect(response).to be_success
+      expect(response).to render_template('services/index')
     end
   end
 
@@ -50,9 +50,9 @@ describe ServicesController do
     end
 
     it_should_allow_all facility_users do
-      assigns[:service].should == @service
-      response.should be_success
-      response.should render_template('services/show')
+      expect(assigns[:service]).to eq(@service)
+      expect(response).to be_success
+      expect(response).to render_template('services/show')
     end
 
     it "should fail without a valid account" do
@@ -118,7 +118,7 @@ describe ServicesController do
       end
 
       it_should_allow_operators_only do
-        response.should be_success
+        expect(response).to be_success
       end
 
       it "should show the page if you're acting as a user" do
@@ -140,7 +140,7 @@ describe ServicesController do
 
     it_should_allow_managers_only do
       expect(assigns(:service)).to be_kind_of Service
-      assigns(:service).facility.should == @authable
+      expect(assigns(:service).facility).to eq(@authable)
     end
   end
 
@@ -165,7 +165,7 @@ describe ServicesController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:service)).to be_kind_of Service
-      assigns(:service).facility.should == @authable
+      expect(assigns(:service).facility).to eq(@authable)
       is_expected.to set_the_flash
       assert_redirected_to [:manage, @authable, assigns(:service)]
     end
@@ -193,7 +193,7 @@ describe ServicesController do
     end
 
     it_should_allow_managers_only :redirect do
-      assigns(:service).should == @service
+      expect(assigns(:service)).to eq(@service)
       should_be_destroyed @service
       assert_redirected_to facility_services_url
     end
@@ -207,8 +207,8 @@ describe ServicesController do
     end
 
     it_should_allow_operators_only do
-      response.should be_success
-      response.should render_template('services/manage')
+      expect(response).to be_success
+      expect(response).to render_template('services/manage')
     end
   end
 end
