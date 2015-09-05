@@ -3,8 +3,9 @@ describe OrderDetailObserver do
   module DummyHooks
     class DummyHook1
       attr_accessor :settings
+      def on_status_change(order_detail, old_status, new_status); end
     end
-    class DummyHook2; end
+    class DummyHook2 < DummyHook1; end
     class DummyHook3; end
   end
 
