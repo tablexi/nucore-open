@@ -10,6 +10,7 @@ gem 'foreigner',        '1.1.1'
 
 ## deployment
 gem 'capistrano',       '2.15.4'
+gem 'whenever', require: false
 
 ## auth
 gem 'devise',           '~>2.2.8'
