@@ -33,8 +33,8 @@ describe InstrumentsController do
     end
 
     it_should_allow_operators_only do |user|
-      assigns[:instruments].should == [@instrument]
-      response.should render_template('instruments/index')
+      expect(assigns[:instruments]).to eq([@instrument])
+      expect(response).to render_template('instruments/index')
     end
   end
 
@@ -69,7 +69,7 @@ describe InstrumentsController do
     end
 
     it_should_allow_operators_only do |user|
-      response.should render_template('instruments/manage')
+      expect(response).to render_template('instruments/manage')
     end
   end
 
@@ -236,8 +236,8 @@ describe InstrumentsController do
 
     it_should_allow_managers_only do
       expect(assigns(:instrument)).to be_kind_of Instrument
-      assigns(:instrument).should be_new_record
-      assigns(:instrument).facility.should == @authable
+      expect(assigns(:instrument)).to be_new_record
+      expect(assigns(:instrument).facility).to eq(@authable)
       is_expected.to render_template 'new'
     end
   end
@@ -266,7 +266,7 @@ describe InstrumentsController do
     end
 
     it_should_allow_managers_only :redirect do
-      assert_successful_creation { assigns(:instrument).relay.should be_nil }
+      assert_successful_creation { expect(assigns(:instrument).relay).to be_nil }
     end
 
     context 'with relay' do
@@ -288,12 +288,12 @@ describe InstrumentsController do
       it_should_allow :director, 'to create a relay' do
         assert_successful_creation do
           relay=assigns(:instrument).relay
-          relay.should be_is_a Relay
-          relay.ip.should == @params[:instrument][:relay_attributes][:ip]
-          relay.port.should == @params[:instrument][:relay_attributes][:port]
-          relay.username.should == @params[:instrument][:relay_attributes][:username]
-          relay.password.should == @params[:instrument][:relay_attributes][:password]
-          relay.type.should == @params[:instrument][:relay_attributes][:type]
+          expect(relay).to be_is_a Relay
+          expect(relay.ip).to eq(@params[:instrument][:relay_attributes][:ip])
+          expect(relay.port).to eq(@params[:instrument][:relay_attributes][:port])
+          expect(relay.username).to eq(@params[:instrument][:relay_attributes][:username])
+          expect(relay.password).to eq(@params[:instrument][:relay_attributes][:password])
+          expect(relay.type).to eq(@params[:instrument][:relay_attributes][:type])
         end
       end
 
@@ -337,8 +337,8 @@ describe InstrumentsController do
       it_should_allow :director, 'to create a timer' do
         assert_successful_creation do
           relay=assigns(:instrument).relay
-          relay.should be_a Relay
-          relay.type.should == RelayDummy.name
+          expect(relay).to be_a Relay
+          expect(relay.type).to eq(RelayDummy.name)
         end
       end
     end
@@ -384,7 +384,7 @@ describe InstrumentsController do
 
       it_should_allow :director, 'and fail when no name is given' do
         expect(assigns(:instrument)).to be_kind_of Instrument
-        assigns(:instrument).initial_order_status_id.should == OrderStatus.default_order_status.id
+        expect(assigns(:instrument).initial_order_status_id).to eq(OrderStatus.default_order_status.id)
         is_expected.to render_template 'new'
       end
 
@@ -420,7 +420,7 @@ describe InstrumentsController do
       end
 
       it_should_allow_managers_only :redirect do
-        assert_successful_update { assigns(:instrument).reload.relay.should be_nil }
+        assert_successful_update { expect(assigns(:instrument).reload.relay).to be_nil }
       end
     end
 
@@ -443,12 +443,12 @@ describe InstrumentsController do
       it_should_allow :director, 'to create a relay' do
         assert_successful_update do
           relay=assigns(:instrument).relay
-          relay.should be_is_a Relay
-          relay.ip.should == @params[:instrument][:relay_attributes][:ip]
-          relay.port.should == @params[:instrument][:relay_attributes][:port]
-          relay.username.should == @params[:instrument][:relay_attributes][:username]
-          relay.password.should == @params[:instrument][:relay_attributes][:password]
-          relay.type.should == @params[:instrument][:relay_attributes][:type]
+          expect(relay).to be_is_a Relay
+          expect(relay.ip).to eq(@params[:instrument][:relay_attributes][:ip])
+          expect(relay.port).to eq(@params[:instrument][:relay_attributes][:port])
+          expect(relay.username).to eq(@params[:instrument][:relay_attributes][:username])
+          expect(relay.password).to eq(@params[:instrument][:relay_attributes][:password])
+          expect(relay.type).to eq(@params[:instrument][:relay_attributes][:type])
         end
       end
 
@@ -464,12 +464,12 @@ describe InstrumentsController do
       it_should_allow :director, 'to create a timer' do
         assert_successful_update do
           relay=assigns(:instrument).relay
-          relay.should be_is_a Relay
-          relay.ip.should be_nil
-          relay.port.should be_nil
-          relay.username.should be_nil
-          relay.password.should be_nil
-          relay.type.should == RelayDummy.name
+          expect(relay).to be_is_a Relay
+          expect(relay.ip).to be_nil
+          expect(relay.port).to be_nil
+          expect(relay.username).to be_nil
+          expect(relay.password).to be_nil
+          expect(relay.type).to eq(RelayDummy.name)
         end
       end
     end

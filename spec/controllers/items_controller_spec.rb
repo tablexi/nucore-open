@@ -30,9 +30,9 @@ describe ItemsController do
     end
 
     it_should_allow_operators_only do |user|
-      assigns[:items].should == [@item]
-      response.should be_success
-      response.should render_template('items/index')
+      expect(assigns[:items]).to eq([@item])
+      expect(response).to be_success
+      expect(response).to render_template('items/index')
     end
   end
 
@@ -43,9 +43,9 @@ describe ItemsController do
     end
 
     it_should_allow_operators_only do |user|
-      assigns[:item].should == @item
-      response.should be_success
-      response.should render_template('items/manage')
+      expect(assigns[:item]).to eq(@item)
+      expect(response).to be_success
+      expect(response).to render_template('items/manage')
     end
   end
 
@@ -131,7 +131,7 @@ describe ItemsController do
         @item.update_attributes(:is_hidden => true)
       end
       it_should_allow_operators_only do
-        response.should be_success
+        expect(response).to be_success
       end
       it "should show the page if you're acting as a user" do
         allow_any_instance_of(ItemsController).to receive(:acting_user).and_return(@guest)
@@ -190,7 +190,7 @@ describe ItemsController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:item)).to be_kind_of Item
-      assigns(:item).should == @item
+      expect(assigns(:item)).to eq(@item)
       is_expected.to set_the_flash
       assert_redirected_to manage_facility_item_url(@authable, assigns(:item))
     end
