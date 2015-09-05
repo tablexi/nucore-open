@@ -51,8 +51,8 @@ describe Reservation do
 
   describe "#locked?" do
     before(:each) do
-      reservation.stub(:admin_editable?).and_return(admin_editable?)
-      reservation.stub(:can_edit_actuals?).and_return(can_edit_actuals?)
+      allow(reservation).to receive(:admin_editable?).and_return(admin_editable?)
+      allow(reservation).to receive(:can_edit_actuals?).and_return(can_edit_actuals?)
     end
 
     context "when editable by admins" do

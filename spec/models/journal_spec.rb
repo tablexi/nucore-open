@@ -37,13 +37,13 @@ describe Journal do
       before { journal.is_successful = true }
 
       context "when not reconciled" do
-        before { journal.stub(:reconciled?).and_return(false) }
+        before { allow(journal).to receive(:reconciled?).and_return(false) }
 
         it { expect(journal).to be_submittable }
       end
 
       context "when reconciled" do
-        before { journal.stub(:reconciled?).and_return(true) }
+        before { allow(journal).to receive(:reconciled?).and_return(true) }
 
         it { expect(journal).not_to be_submittable }
       end
@@ -53,13 +53,13 @@ describe Journal do
       before { journal.is_successful = false }
 
       context "when not reconciled" do
-        before { journal.stub(:reconciled?).and_return(false) }
+        before { allow(journal).to receive(:reconciled?).and_return(false) }
 
         it { expect(journal).not_to be_submittable }
       end
 
       context "when reconciled" do
-        before { journal.stub(:reconciled?).and_return(true) }
+        before { allow(journal).to receive(:reconciled?).and_return(true) }
 
         it { expect(journal).not_to be_submittable }
       end

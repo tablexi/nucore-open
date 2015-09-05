@@ -12,11 +12,11 @@ describe MessageSummarizer do
   let(:user) { create(:user) }
 
   before(:each) do
-    controller.stub(:current_ability).and_return(ability)
-    controller.stub(:current_facility).and_return(current_facility)
-    controller.stub(:current_user).and_return(user)
+    allow(controller).to receive(:current_ability).and_return(ability)
+    allow(controller).to receive(:current_facility).and_return(current_facility)
+    allow(controller).to receive(:current_user).and_return(user)
     MessageSummarizer::MessageSummary.subclasses.each do |klass|
-      klass.any_instance.stub(:path).and_return("/stub")
+      allow_any_instance_of(klass).to receive(:path).and_return("/stub")
     end
   end
 
