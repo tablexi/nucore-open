@@ -65,8 +65,8 @@ describe OrderDetailObserver do
       expect(@order_detail.version).to eq(1)
       expect(@order_detail.order_status).to be_nil
 
-      expect(@order.validate_order!).to be_truthy
-      expect(@order.purchase!).to be_truthy
+      expect(@order.validate_order!).to be true
+      expect(@order.purchase!).to be true
 
       expect(@order_detail.reload.order.state).to eq('purchased')
 
@@ -75,17 +75,17 @@ describe OrderDetailObserver do
     end
     it 'should trigger a notification on change to inprogress' do
       expect_any_instance_of(DummyHooks::DummyHook1).to receive(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first).once
-      expect(@order_detail.change_status!(OrderStatus.inprocess.first)).to be_truthy
+      expect(@order_detail.change_status!(OrderStatus.inprocess.first)).to be true
     end
     it 'should trigger a notification on change from in_process to new' do
       expect_any_instance_of(DummyHooks::DummyHook1).to receive(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first)
-      expect(@order_detail.change_status!(OrderStatus.inprocess.first)).to be_truthy
+      expect(@order_detail.change_status!(OrderStatus.inprocess.first)).to be true
       expect_any_instance_of(DummyHooks::DummyHook2).to receive(:on_status_change).once.with(@order_detail, OrderStatus.inprocess.first, OrderStatus.new_os.first)
-      expect(@order_detail.change_status!(OrderStatus.new_os.first)).to be_truthy
+      expect(@order_detail.change_status!(OrderStatus.new_os.first)).to be true
     end
     it 'should not trigger going from new to new' do
       expect_any_instance_of(DummyHooks::DummyHook2).to receive(:on_status_change).never
-      expect(@order_detail.change_status!(OrderStatus.new_os.first)).to be_truthy
+      expect(@order_detail.change_status!(OrderStatus.new_os.first)).to be true
     end
   end
 end

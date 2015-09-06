@@ -462,7 +462,7 @@ describe Product do
         end
 
         it 'has an access list' do
-          expect(product.has_access_list?).to be_truthy
+          expect(product.has_access_list?).to be true
         end
       end
 

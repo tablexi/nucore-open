@@ -55,7 +55,7 @@ shared_examples_for PricePoliciesController do |product_type, params_modifier = 
       end
 
       it 'should set the date to today if there are no active policies' do
-        expect(@price_policy.destroy).to be_truthy
+        expect(@price_policy.destroy).to eq(@price_policy)
         do_request
         expect(response.code).to eq("200")
         expect(response).to be_success
@@ -88,7 +88,7 @@ shared_examples_for PricePoliciesController do |product_type, params_modifier = 
         make_price_policy(@price_group2)
         do_request
         expect(assigns[:price_policies].size).to eq(2)
-        expect(assigns[:price_policies].all?{|pp| pp.can_purchase?}).to be_truthy
+        expect(assigns[:price_policies].all?{|pp| pp.can_purchase?}).to be true
       end
       it 'should render the new template' do
         do_request

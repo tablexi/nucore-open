@@ -184,12 +184,12 @@ describe OrderDetail do
     describe '#can_be_assigned_to_account?' do
       it 'may be reassigned to its current account' do
         expect(@order_detail.can_be_assigned_to_account?(@order_detail.account))
-          .to be_truthy
+          .to be true
       end
 
       it "may assign to any of its user's accounts" do
         @user_accounts.each do |account|
-          expect(@order_detail.can_be_assigned_to_account?(account)).to be_truthy
+          expect(@order_detail.can_be_assigned_to_account?(account)).to be true
         end
       end
       it 'may not assign to an account its user does not have' do

@@ -208,7 +208,7 @@ describe UserPasswordController, :if => SettingsHelper.feature_on?(:password_upd
       expect(assigns[:user]).to eq(@user)
       expect(assigns[:user].errors).to be_empty
       expect(flash[:notice]).not_to be_nil
-      expect(assigns[:user].reload.valid_password?("newpassword")).to be_truthy
+      expect(assigns[:user].reload.valid_password?("newpassword")).to be true
       expect(assigns[:user].reset_password_token).to be_nil
     end
   end

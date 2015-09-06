@@ -187,16 +187,16 @@ describe Order do
         @order.order_details.all? { |od| expect(od.order_status).to be_nil }
       end
       it 'should set the ordered_at' do
-        expect(@order.purchase!).to be_truthy
+        expect(@order.purchase!).to be true
         expect(@order.ordered_at).not_to be_nil
       end
       it 'should add to facility.orders collection' do
-        expect(@order.purchase!).to be_truthy
+        expect(@order.purchase!).to be true
         expect(@facility.orders).to eq([@order])
         expect(@facility.order_details.accounts).to eq([@account])
       end
       it 'purchase should mark the initial state to the products default' do
-        expect(@order.purchase!).to be_truthy
+        expect(@order.purchase!).to be true
         @order.order_details.all? { |od| expect(od.order_status).to eq(@order_status) }
       end
     end

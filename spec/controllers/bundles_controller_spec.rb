@@ -77,7 +77,7 @@ describe BundlesController do
       allow_any_instance_of(BundlesController).to receive(:acting_user).and_return(nil)
       do_request
       expect(assigns[:add_to_cart]).to be_falsey
-      expect(assigns[:login_required]).to be_truthy
+      expect(assigns[:login_required]).to be true
     end
 
     context "when the bundle requires approval" do
@@ -155,7 +155,7 @@ describe BundlesController do
         sign_in @guest
         do_request
         expect(flash).to be_empty
-        expect(assigns[:add_to_cart]).to be_truthy
+        expect(assigns[:add_to_cart]).to be true
       end
 
       context "when the user is an admin" do

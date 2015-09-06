@@ -110,7 +110,7 @@ describe PricePolicy do
 
     it 'should restrict purchase' do
       @pp.restrict_purchase = true
-      expect(@pp.restrict_purchase).to be_truthy
+      expect(@pp.restrict_purchase).to be true
       expect(@pp.can_purchase).to be_falsey
     end
 

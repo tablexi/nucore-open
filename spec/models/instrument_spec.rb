@@ -111,7 +111,7 @@ describe Instrument do
                                           :facility_account => facility_account,
                                           :schedule => nil)
         expect(@instrument.schedule).to be_nil
-        expect(@instrument.save).to be_truthy
+        expect(@instrument.save).to be true
         expect(@instrument.schedule).to be
       end
 
@@ -122,7 +122,7 @@ describe Instrument do
                                           :facility_account => facility_account,
                                           :schedule => @schedule)
         expect(@instrument.schedule).to be
-        expect(@instrument.save).to be_truthy
+        expect(@instrument.save).to be true
         expect(@instrument.schedule).to eq(@schedule)
       end
     end
@@ -211,7 +211,7 @@ describe Instrument do
           end
 
           it "should succeed" do
-            expect(@updated).to be_truthy
+            expect(@updated).to be true
           end
 
           it "should have no errors" do
@@ -230,7 +230,7 @@ describe Instrument do
         end
 
         it "should succeed" do
-          expect(@updated).to be_truthy
+          expect(@updated).to be true
         end
 
         it "should have a control_mechanism of manual" do
@@ -255,7 +255,7 @@ describe Instrument do
         end
 
         it "should succeed" do
-          expect(@updated).to be_truthy
+          expect(@updated).to be true
         end
 
         it "should have a control_mechanism of manual" do
@@ -273,7 +273,7 @@ describe Instrument do
         end
 
         it "should succeed" do
-          expect(@updated).to be_truthy
+          expect(@updated).to be true
         end
 
         it "control mechanism should be a timer" do
@@ -308,7 +308,7 @@ describe Instrument do
             @updated = @instrument.update_attributes(:control_mechanism => "relay", :relay_attributes => FactoryGirl.attributes_for(:relay))
           end
           it "should succeed" do
-            expect(@updated).to be_truthy
+            expect(@updated).to be true
           end
 
           it "should have no errors" do
@@ -327,7 +327,7 @@ describe Instrument do
         end
 
         it "should succeed" do
-          expect(@updated).to be_truthy
+          expect(@updated).to be true
         end
 
         it "control mechanism should be a timer" do
@@ -481,7 +481,7 @@ describe Instrument do
     end
 
     it "should find next available reservation with 5 minute interval rule, without any pending reservations" do
-      expect(@rule.instrument.update_attribute :reserve_interval, 5).to be_truthy
+      expect(@rule.instrument.update_attribute :reserve_interval, 5).to be true
       # find next reservation after 12 am at 9 am
       @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day

@@ -37,7 +37,7 @@ describe CreditCardAccount do
   end
 
   it "should be limited to a single facility" do
-    expect(CreditCardAccount.limited_to_single_facility?).to be_truthy
+    expect(CreditCardAccount.limited_to_single_facility?).to be true
   end
 
   context "valid credit card number" do

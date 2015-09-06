@@ -618,9 +618,9 @@ describe InstrumentsController do
 
         it 'should return true for a relay thats switched on' do
           expect(assigns[:instrument_statuses][1].instrument).to eq(@instrument_with_dummy_relay)
-          expect(assigns[:instrument_statuses][1].is_on).to be_truthy
+          expect(assigns[:instrument_statuses][1].is_on).to be true
           expect(@json_output[1][:instrument_status][:instrument_id]).to eq(@instrument_with_dummy_relay.id)
-          expect(@json_output[1][:instrument_status][:is_on]).to be_truthy
+          expect(@json_output[1][:instrument_status][:is_on]).to be true
         end
         it 'should return false for a relay thats not turned on' do
           expect(assigns[:instrument_statuses].first.instrument).to eq(@instrument_with_relay)

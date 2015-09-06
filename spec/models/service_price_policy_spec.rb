@@ -102,8 +102,8 @@ describe ServicePricePolicy do
       expect(ServicePricePolicy.next_date(@service)).to eq(spp2.start_date.to_date)
       next_dates = ServicePricePolicy.next_dates(@service)
       expect(next_dates.length).to eq(2)
-      expect(next_dates.include?(spp2.start_date.to_date)).to be_truthy
-      expect(next_dates.include?(spp3.start_date.to_date)).to be_truthy
+      expect(next_dates.include?(spp2.start_date.to_date)).to be true
+      expect(next_dates.include?(spp3.start_date.to_date)).to be true
     end
   end
 end

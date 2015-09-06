@@ -378,7 +378,7 @@ describe InstrumentPricePolicyCalculations do
 
     it 'returns true when the cancellation fee applies' do
       reservation = double reserve_start_at: now + 30.minutes, canceled_at: now
-      expect(policy.cancellation_penalty?(reservation)).to be_truthy
+      expect(policy.cancellation_penalty?(reservation)).to be true
     end
 
     it 'returns false when the cancellation fee does not apply' do

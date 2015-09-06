@@ -100,8 +100,8 @@ describe ItemPricePolicy do
       expect(ItemPricePolicy.next_date(@item).to_date).to eq(ipp2.start_date.to_date)
       next_dates = ItemPricePolicy.next_dates(@item)
       expect(next_dates.length).to eq(2)
-      expect(next_dates.include?(ipp2.start_date.to_date)).to be_truthy
-      expect(next_dates.include?(ipp3.start_date.to_date)).to be_truthy
+      expect(next_dates.include?(ipp2.start_date.to_date)).to be true
+      expect(next_dates.include?(ipp3.start_date.to_date)).to be true
     end
   end
 end

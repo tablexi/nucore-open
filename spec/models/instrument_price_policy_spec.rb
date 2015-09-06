@@ -80,14 +80,14 @@ describe InstrumentPricePolicy do
     it 'sets the usage subsidy to 0 before save if there is a usage_rate' do
       expect(policy.usage_rate).to be_present
       policy.usage_subsidy = nil
-      expect(policy.save).to be_truthy
+      expect(policy.save).to be true
       expect(policy.reload.usage_subsidy).to eq 0
     end
 
     it 'does not set the usage subsidy before save if there is a usage_rate and it is already set' do
       policy.usage_rate = 50
       policy.usage_subsidy = 5
-      expect(policy.save).to be_truthy
+      expect(policy.save).to be true
       expect(policy.reload.usage_subsidy).to eq (5 / 60.0).round(4)
     end
 
@@ -95,7 +95,7 @@ describe InstrumentPricePolicy do
       allow(policy).to receive(:restrict_purchase?).and_return true
       policy.usage_rate = nil
       policy.usage_subsidy = nil
-      expect(policy.save).to be_truthy
+      expect(policy.save).to be true
       expect(policy.reload.usage_subsidy).to be_nil
     end
   end
@@ -105,7 +105,7 @@ describe InstrumentPricePolicy do
     it 'creates a PriceGroupProduct with default reservation window if one does not exist' do
       pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, policy.product.id)
       expect(pgp).to be_nil
-      expect(policy.save).to be_truthy
+      expect(policy.save).to be true
       pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, policy.product.id)
       expect(pgp.reservation_window).to eq PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
     end
@@ -118,7 +118,7 @@ describe InstrumentPricePolicy do
       )
 
       expect(PriceGroupProduct).to_not receive :create
-      expect(policy.save).to be_truthy
+      expect(policy.save).to be true
     end
   end
 
@@ -144,7 +144,7 @@ describe InstrumentPricePolicy do
     end
 
     it 'returns the reservation window from the after created PriceGroupProduct' do
-      expect(policy.save).to be_truthy
+      expect(policy.save).to be true
       pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, policy.product.id)
       expect(policy.reservation_window).to eq pgp.reservation_window
     end

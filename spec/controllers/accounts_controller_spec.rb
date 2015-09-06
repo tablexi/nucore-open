@@ -141,7 +141,7 @@ describe AccountsController do
       allow_any_instance_of(OrderDetail).to receive(:can_dispute?).and_return(true)
       expect(assigns[:order_detail_link]).not_to be_nil
       expect(assigns[:order_detail_link][:text]).to eq("Dispute")
-      expect(assigns[:order_detail_link][:display?].call(OrderDetail.new)).to be_truthy
+      expect(assigns[:order_detail_link][:display?].call(OrderDetail.new)).to be true
     end
 
 

@@ -20,7 +20,7 @@ describe AccountCleaner do
     end
 
     it "should update if expires_at is set to beginning of day" do
-      expect(AccountCleaner.clean_expires_at(@beginning_of_day_account)).to be_truthy
+      expect(AccountCleaner.clean_expires_at(@beginning_of_day_account)).to be true
     end
 
   end

@@ -268,11 +268,11 @@ describe Journal do
     end
 
     it 'should span fiscal years when it goes over the beginning' do
-      expect(journal.order_details_span_fiscal_years?([@order_details[6], @order_details[5], @order_details[4]])).to be_truthy
+      expect(journal.order_details_span_fiscal_years?([@order_details[6], @order_details[5], @order_details[4]])).to be true
     end
 
     it 'should span fiscal years when it goes over the end' do
-      expect(journal.order_details_span_fiscal_years?(@order_details[16..17])).to be_truthy
+      expect(journal.order_details_span_fiscal_years?(@order_details[16..17])).to be true
     end
 
     it 'should return false with just one order detail' do

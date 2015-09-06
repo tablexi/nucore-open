@@ -420,7 +420,7 @@ describe Reservation do
 
       it 'should not be moveable if there is not a time slot earlier than this one' do
         expect(@reservation1).to be_can_move
-        expect(@reservation1.move_to_earliest).to be_truthy
+        expect(@reservation1.move_to_earliest).to be true
         expect(@reservation1).not_to be_can_move
         expect(@reservation1.move_to_earliest).to be_falsey
         expect(@reservation1.errors.messages).to eq({ :base => ['Sorry, but your reservation can no longer be moved.'] })
@@ -432,7 +432,7 @@ describe Reservation do
           earliest=@reservation1.earliest_possible
           expect(@reservation1.reserve_start_at).not_to eq(earliest.reserve_start_at)
           expect(@reservation1.reserve_end_at).not_to eq(earliest.reserve_end_at)
-          expect(@reservation1.move_to_earliest).to be_truthy
+          expect(@reservation1.move_to_earliest).to be true
           expect(@reservation1.reserve_start_at.change(sec: 0).to_i).to eq(earliest.reserve_start_at.change(sec: 0).to_i)
           expect(@reservation1.reserve_end_at.change(sec: 0).to_i).to eq(earliest.reserve_end_at.change(sec: 0).to_i)
         end

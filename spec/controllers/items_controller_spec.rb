@@ -110,7 +110,7 @@ describe ItemsController do
         sign_in @guest
         do_request
         expect(flash).to be_empty
-        expect(assigns[:add_to_cart]).to be_truthy
+        expect(assigns[:add_to_cart]).to be true
       end
 
       context "when the user is an admin" do
