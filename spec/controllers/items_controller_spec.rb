@@ -73,7 +73,7 @@ describe ItemsController do
       sign_in @guest
       do_request
       expect(flash).not_to be_empty
-      expect(assigns[:add_to_cart]).to be_falsey
+      expect(assigns[:add_to_cart]).to be false
       expect(assigns[:error]).to eq('no_accounts')
     end
 

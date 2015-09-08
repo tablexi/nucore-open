@@ -624,8 +624,8 @@ describe InstrumentsController do
         end
         it 'should return false for a relay thats not turned on' do
           expect(assigns[:instrument_statuses].first.instrument).to eq(@instrument_with_relay)
-          expect(assigns[:instrument_statuses].first.is_on).to be_falsey
-          expect(@json_output[0][:instrument_status][:is_on]).to be_falsey
+          expect(assigns[:instrument_statuses].first.is_on).to be false
+          expect(@json_output[0][:instrument_status][:is_on]).to be false
           expect(@json_output[0][:instrument_status][:instrument_id]).to eq(@instrument_with_relay.id)
         end
 

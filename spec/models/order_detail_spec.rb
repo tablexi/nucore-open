@@ -194,7 +194,7 @@ describe OrderDetail do
       end
       it 'may not assign to an account its user does not have' do
         expect(@order_detail.can_be_assigned_to_account?(unassociated_account))
-          .to be_falsey
+          .to be false
       end
     end
 
@@ -1212,7 +1212,7 @@ describe OrderDetail do
         context 'the reservation was already canceled' do
           it 'should not cancel' do
             @reservation.update_attribute :canceled_at, Time.zone.now
-            expect(order_detail.cancel_reservation(user)).to be_falsey
+            expect(order_detail.cancel_reservation(user)).to be false
           end
         end
 

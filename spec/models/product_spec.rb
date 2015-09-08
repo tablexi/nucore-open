@@ -468,7 +468,7 @@ describe Product do
 
       context 'when it has no access groups' do
         it 'does not have an access list' do
-          expect(product.has_access_list?).to be_falsey
+          expect(product.has_access_list?).to be false
         end
       end
     end
@@ -477,7 +477,7 @@ describe Product do
       let(:generic_item) { build(:setup_item) }
 
       it 'does not have an access list' do
-        expect(generic_item.has_access_list?).to be_falsey
+        expect(generic_item.has_access_list?).to be false
       end
     end
   end

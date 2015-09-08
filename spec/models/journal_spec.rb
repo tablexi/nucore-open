@@ -264,7 +264,7 @@ describe Journal do
     end
 
     it 'should not span fiscal years with everything in the same year' do
-      expect(journal.order_details_span_fiscal_years?(@order_details[5..16])).to be_falsey
+      expect(journal.order_details_span_fiscal_years?(@order_details[5..16])).to be false
     end
 
     it 'should span fiscal years when it goes over the beginning' do

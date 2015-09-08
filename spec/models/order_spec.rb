@@ -428,7 +428,7 @@ describe Order do
       it "should return an error for invalid quantities" do
         @order_detail = @cart.add(@service, 1).first
         result = @cart.update_details(@order_detail.id => {:quantity => "1.5"})
-        expect(result).to be_falsey
+        expect(result).to be false
         expect(@cart.errors).not_to be_empty
         expect(@cart.errors.to_a).to be_include 'Quantity must be an integer'
       end

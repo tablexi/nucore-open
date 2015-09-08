@@ -12,11 +12,11 @@ describe AccountCleaner do
   context "update accounts.expires_at" do
 
     it "should not update if expires_at has a time other than beginning of day or end of day" do
-      expect(AccountCleaner.clean_expires_at(@account)).to be_falsey
+      expect(AccountCleaner.clean_expires_at(@account)).to be false
     end
 
     it "should not update if expires_at is set to end of day" do
-      expect(AccountCleaner.clean_expires_at(@end_of_day_account)).to be_falsey
+      expect(AccountCleaner.clean_expires_at(@end_of_day_account)).to be false
     end
 
     it "should update if expires_at is set to beginning of day" do

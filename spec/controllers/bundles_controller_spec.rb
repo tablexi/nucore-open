@@ -59,7 +59,7 @@ describe BundlesController do
       sign_in @guest
       allow_any_instance_of(Bundle).to receive(:available_for_purchase?).and_return(false)
       do_request
-      expect(assigns[:add_to_cart]).to be_falsey
+      expect(assigns[:add_to_cart]).to be false
       expect(assigns[:error]).to eq('not_available')
       expect(flash[:notice]).not_to be_nil
 
@@ -69,14 +69,14 @@ describe BundlesController do
       sign_in @guest
       do_request
       expect(flash).not_to be_empty
-      expect(assigns[:add_to_cart]).to be_falsey
+      expect(assigns[:add_to_cart]).to be false
       expect(assigns[:error]).to eq('no_accounts')
     end
 
     it 'should falsify @add_to_cart if #acting_user is nil' do
       allow_any_instance_of(BundlesController).to receive(:acting_user).and_return(nil)
       do_request
-      expect(assigns[:add_to_cart]).to be_falsey
+      expect(assigns[:add_to_cart]).to be false
       expect(assigns[:login_required]).to be true
     end
 
@@ -114,7 +114,7 @@ describe BundlesController do
       sign_in @guest
       allow_any_instance_of(BundlesController).to receive(:price_policy_available_for_product?).and_return(false)
       do_request
-      expect(assigns[:add_to_cart]).to be_falsey
+      expect(assigns[:add_to_cart]).to be false
       expect(assigns[:error]).to eq('not_in_price_group')
       expect(flash[:notice]).not_to be_nil
     end
@@ -124,7 +124,7 @@ describe BundlesController do
       switch_to @staff
 
       do_request
-      expect(assigns[:add_to_cart]).to be_falsey
+      expect(assigns[:add_to_cart]).to be false
       expect(assigns[:error]).to eq('not_authorized_acting_as')
     end
 
@@ -145,7 +145,7 @@ describe BundlesController do
       it "should show a notice if you're not approved" do
         sign_in @guest
         do_request
-        expect(assigns[:add_to_cart]).to be_falsey
+        expect(assigns[:add_to_cart]).to be false
         expect(flash[:notice]).not_to be_nil
       end
 

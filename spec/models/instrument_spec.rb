@@ -197,7 +197,7 @@ describe Instrument do
           end
 
           it "should fail" do
-            expect(@updated).to be_falsey
+            expect(@updated).to be false
           end
 
           it "should have errors" do
@@ -295,7 +295,7 @@ describe Instrument do
           end
 
           it "should fail" do
-            expect(@updated).to be_falsey
+            expect(@updated).to be false
           end
 
           it "should have errors" do

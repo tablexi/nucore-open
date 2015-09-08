@@ -49,7 +49,7 @@ describe ProductApprover do
         if approved_products.include?(product)
           expect(product.can_be_used_by?(user)).to be true
         else
-          expect(product.can_be_used_by?(user)).to be_falsey
+          expect(product.can_be_used_by?(user)).to be false
         end
       end
     end
