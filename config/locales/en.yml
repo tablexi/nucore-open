@@ -676,7 +676,9 @@ en:
       no_orders: There are no disputed orders for this facility
 
     index:
+      all: All Facilities
       empty: "No %{items} are available at this time."
+      recently_used: Recently Used Facilities
       welcome: |
         Welcome to NU Core, the centralized ordering system for all shared facilities at Northwestern University.
         Please select the shared facility below to view and purchase services and products offered by the facility.

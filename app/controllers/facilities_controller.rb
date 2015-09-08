@@ -7,6 +7,7 @@ class FacilitiesController < ApplicationController
   before_filter :check_acting_as, :except => [:index, :show]
   before_filter :load_order_details, only: [:confirm_transactions, :move_transactions, :reassign_chart_strings]
   before_filter :set_admin_billing_tab, only: [:confirm_transactions, :disputed_orders, :movable_transactions, :transactions]
+  before_filter :set_recently_used_facilities, only: [:index]
   before_filter :set_two_column_head_layout, only: [:disputed_orders, :movable_transactions, :transactions]
   before_filter :store_fullpath_in_session, only: [:index, :show]
 
@@ -19,6 +20,11 @@ class FacilitiesController < ApplicationController
   include FacilitiesHelper
 
   layout 'two_column'
+
+  def set_recently_used_facilities
+    @recently_used_facilities =
+      current_user.present? && current_user.recently_used_facilities.sorted
+  end
 
   # GET /facilities
   def index
