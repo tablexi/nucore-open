@@ -164,4 +164,42 @@ describe User do
     end
   end
 
+  describe "#recently_used_facilities" do
+    subject { user.recently_used_facilities(limit) }
+    let(:account) { create(:setup_account, owner: user) }
+    let(:facilities) { products.map(&:facility) }
+    let(:limit) { 5 }
+    let(:products) { create_list(:setup_item, 6) }
+    let(:user) { create(:user) }
+
+    context "when the user has no orders" do
+      it { expect(subject).to be_empty }
+    end
+
+    context "when the user has orders" do
+      before(:each) do
+        products.first(order_count).each do |product|
+          create(:setup_order, account: account, product: product, user: user)
+        end
+      end
+
+      context "made in fewer than 5 facilities" do
+        let(:order_count) { 4 }
+
+        it { expect(subject).to eq(facilities.first(order_count)) }
+      end
+
+      context "made in 5 facilities" do
+        let(:order_count) { 5 }
+
+        it { expect(subject).to eq(facilities.first(order_count)) }
+      end
+
+      context "made in more than 5 facilities" do
+        let(:order_count) { 6 }
+
+        it { expect(subject).to eq(facilities.first(limit)) }
+      end
+    end
+  end
 end
