@@ -1,8 +1,8 @@
-class MessageSummarizer::TrainingRequestsSummary < MessageSummarizer::MessageSummary
+class MessageSummarizer::TrainingRequestsSummary < MessageSummarizer::FacilityMessageSummary
   private
 
   def allowed?
-    facility && ability.can?(:manage, TrainingRequest)
+    ability.can?(:manage, TrainingRequest)
   end
 
   def get_count

@@ -22,16 +22,16 @@ module NavTab
     end
   end
 
+  # Returns true if the current action is an admin tab action
+  def admin_tab?
+    ((self.class.admin_actions || []) & [action_name.to_sym, :all]).any?
+  end
+
   protected
 
   # Returns true if the current action is a customer tab action
   def customer_tab?
     ((self.class.customer_actions || []) & [action_name.to_sym, :all]).any?
-  end
-
-  # Returns true if the current action is an admin tab action
-  def admin_tab?
-    ((self.class.admin_actions || []) & [action_name.to_sym, :all]).any?
   end
 
 end

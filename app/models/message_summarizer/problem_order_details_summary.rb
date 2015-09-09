@@ -1,8 +1,8 @@
-class MessageSummarizer::ProblemOrderDetailsSummary < MessageSummarizer::MessageSummary
+class MessageSummarizer::ProblemOrderDetailsSummary < MessageSummarizer::FacilityMessageSummary
   private
 
   def allowed?
-    facility && ability.can?(:show_problems, Order)
+    ability.can?(:show_problems, Order)
   end
 
   def get_count
