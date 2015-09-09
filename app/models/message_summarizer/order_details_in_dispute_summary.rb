@@ -2,7 +2,7 @@ class MessageSummarizer::OrderDetailsInDisputeSummary < MessageSummarizer::Messa
   private
 
   def allowed?
-    facility && ability.can?(:disputed_orders, Facility)
+    manager_context? && ability.can?(:disputed_orders, Facility)
   end
 
   def get_count

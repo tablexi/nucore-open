@@ -43,6 +43,10 @@ class MessageSummarizer::MessageSummary
     "#{I18n.t(i18n_key)} (#{count})"
   end
 
+  def manager_context?
+    facility && controller.admin_tab?
+  end
+
   def path
     raise NotImplementedError.new("Subclass must implement")
   end
