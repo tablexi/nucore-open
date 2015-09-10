@@ -10,12 +10,12 @@
   - if @recently_used_facilities.present?
     %h4= t(".recently_used")
     - @recently_used_facilities.each do |facility|
-      %h3.header-tight= link_to facility, facility_path(facility)
+      %h4.header-tight= link_to facility, facility_path(facility)
     %hr
     %h4= t(".all")
 
   - @facilities.each do |facility|
-    %h3= link_to facility, facility_path(facility)
+    %h4.header-tight= link_to facility, facility_path(facility)
     %p= facility.short_description
 
 - else
