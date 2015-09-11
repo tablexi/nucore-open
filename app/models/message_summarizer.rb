@@ -11,10 +11,6 @@ class MessageSummarizer
     message_summaries.sum(&:count)
   end
 
-  def messages?
-    message_summaries.any?
-  end
-
   private
 
   def notifications
