@@ -113,7 +113,7 @@ describe Reservations::DateSupport do
     end
   end
 
-  context "#assign_times_from_params" do
+  describe "#assign_times_from_params" do
     subject(:reservation) { create(:purchased_reservation, :started_early) }
 
     context "with a running reservation" do
@@ -220,16 +220,12 @@ describe Reservations::DateSupport do
         end
 
         context "and reserve_end_at is unset" do
-          it "is 0" do
-            expect(reservation.duration_mins).to eq(0)
-          end
+          it { expect(reservation.duration_mins).to eq(0) }
         end
       end
 
       context "when reserve_start_at is unset" do
-        it "is 0" do
-          expect(reservation.duration_mins).to eq(0)
-        end
+        it { expect(reservation.duration_mins).to eq(0) }
       end
     end
   end
