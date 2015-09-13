@@ -218,6 +218,14 @@ class OrderDetail < ActiveRecord::Base
     where("order_details.state <> ?", "reconciled")
   end
 
+  def self.with_actual_costs
+    where("actual_cost IS NOT NULL")
+  end
+
+  def self.with_estimated_costs
+    where("estimated_cost IS NOT NULL")
+  end
+
   def in_review?
     # check in the database if self.id is in the scope
     self.class.all_in_review.find_by_id(self.id) ? true :false

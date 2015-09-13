@@ -1,49 +1,53 @@
-- @order.order_details.each { |od| od.send(:extend, PriceDisplayment) }
+- @order.order_details.each { |order_detail| order_detail.send(:extend, PriceDisplayment) }
 
-%p= t('.intro')
+%p= t(".intro")
 
 %ul
   %li
-    %label Ordered at
-    =h @order.ordered_at.strftime("%b %e, %Y %l:%M %p")
+    %label= t(".label.ordered_at")
+    = l(@order.ordered_at, format: :receipt)
   %li
-    %label Facility
-    =h @order.facility
+    %label= OrderDetail.human_attribute_name(:facility)
+    = @order.facility
   %li
-    %label Ordered By
-    =h "#{@order.created_by_user.full_name}"
+    %label= OrderDetail.human_attribute_name(:ordered_by)
+    = @order.created_by_user.full_name
 
 %table.table.table-striped.table-hover
   %thead
     %tr
-      %th Order #
-      %th Product
-      %th Quantity
-      %th Status
-      - text = order_estimated_or_actual_text(@order)
-      %th= "#{text} Price"
-      %th= "#{text} Adjustment"
-      %th= "#{text} Total"
+      %th= OrderDetail.human_attribute_name(:id)
+      %th= OrderDetail.human_attribute_name(:product)
+      %th= OrderDetail.human_attribute_name(:quantity)
+      %th= OrderDetail.human_attribute_name(:status)
+      - label_key_prefix = display_cost_prefix_for_order(@order)
+      %th= OrderDetail.human_attribute_name("#{label_key_prefix}_cost")
+      %th= OrderDetail.human_attribute_name("#{label_key_prefix}_subsidy")
+      %th= OrderDetail.human_attribute_name("#{label_key_prefix}_total")
+      %th= OrderDetail.human_attribute_name(:note).pluralize
   %tbody
-    - @order.order_details.each do |od|
-      - od.send(:extend, PriceDisplayment)
+    - @order.order_details.each do |order_detail|
+      - order_detail.send(:extend, PriceDisplayment)
       %tr
-        %td= od
-        - if od.reservation
-          %td
-            = ((od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)).html_safe
+        %td= order_detail
+        %td
+          = order_detail_description_as_html(order_detail)
+          - if order_detail.reservation
             %br
-            =h od.reservation
-        - else
-          %td= ((od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)).html_safe
-        %td=h od.quantity
-        %td=h od.order_status.name
-        %td= od.display_cost
-        %td= od.display_subsidy
-        %td= od.display_total
+            = order_detail.reservation
+        %td= order_detail.quantity
+        %td= order_detail.order_status.name
+        %td= order_detail.display_cost
+        %td= order_detail.display_subsidy
+        %td= order_detail.display_total
+        %td
+          - if order_detail.note.present?
+            = order_detail.note
     %tr
       %td{colspan: 6}
-        %strong= t('.total')
+        %strong= t(".total")
       %td.currency= number_to_currency(@order.order_details.sum { |d| d.total || 0 })
+      %td
 
-%p= t('.outro') if @order.any_details_estimated?
+- if @order.any_details_estimated?
+  %p= t(".outro")

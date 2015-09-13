@@ -1,26 +1,29 @@
-#{t('.intro')}
+#{t(".intro")}
 ==
 
-Ordered at: #{@order.ordered_at.strftime("%b %e, %Y %l:%M %p")}
-Facility: #{@order.facility}
-Ordered By: #{@order.created_by_user.full_name}
+#{t(".label.ordered_at")}: #{l(@order.ordered_at, format: :receipt)}
+#{OrderDetail.human_attribute_name(:facility)}: #{@order.facility}
+#{OrderDetail.human_attribute_name(:ordered_by)}: #{@order.created_by_user.full_name}
 ==
-Order Details
+= OrderDetail.model_name.titleize.pluralize
 = "========================================"
-- @order.order_details.each do |od|
-  Order #: #{od}
-  = (od.bundle ? "#{h od.bundle} -- " : '') + h(od.product)
-  - if od.reservation
-    Reservation: #{od.reservation}
-  Quantity: #{od.quantity}
-  Status: #{od.order_status.name}
-  - od.send(:extend, PriceDisplayment)
-  - text = od.display_cost_class == 'unassigned' ? '' : "#{od.display_cost_class.humanize} "
-  #{text}Price: #{od.display_cost}
-  #{text}Adjustment: #{od.display_subsidy}
-  #{text}Total: #{od.display_total}
+- @order.order_details.each do |order_detail|
+  #{OrderDetail.human_attribute_name(:id)}: #{order_detail}
+  #{order_detail_description_as_text(order_detail)}
+  - if order_detail.reservation
+    #{Reservation.model_name.titleize}: #{order_detail.reservation}
+  #{OrderDetail.human_attribute_name(:quantity)}: #{order_detail.quantity}
+  #{OrderDetail.human_attribute_name(:status)}: #{order_detail.order_status.name}
+  - order_detail.send(:extend, PriceDisplayment)
+  - label_key_prefix = display_cost_prefix_for_order_detail(order_detail)
+  #{OrderDetail.human_attribute_name("#{label_key_prefix}_cost")}: #{order_detail.display_cost}
+  #{OrderDetail.human_attribute_name("#{label_key_prefix}_subsidy")}: #{order_detail.display_subsidy}
+  #{OrderDetail.human_attribute_name("#{label_key_prefix}_total")}: #{order_detail.display_total}
+  - if order_detail.note.present?
+
+    #{order_detail.note}
   ==
 ==
 
 - if @order.any_details_estimated?
-  * #{t('.outro')} %p= t('.outro')
+  * #{t(".outro")}

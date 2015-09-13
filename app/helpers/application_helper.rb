@@ -13,16 +13,26 @@ module ApplicationHelper
     (full_title + app_name).html_safe
   end
 
-  def order_detail_description(order_detail)
-    name = ""
+  def order_detail_description(order_detail) # TODO: deprecate in favor of "_as_(html|text)" methods
+    order_detail_description_as_html(order_detail)
+  end
 
+  def order_detail_description_as_html(order_detail)
+    name = ERB::Util.html_escape(order_detail.product)
     if order_detail.bundle
-      name << "#{h order_detail.bundle}"
-      name << " &mdash; "
-    end
+      name.prepend(ERB::Util.html_escape(order_detail.bundle) + " &mdash; ".html_safe)
+    else
+      name
+    end.html_safe
+  end
 
-    name << h(order_detail.product)
-    name.html_safe
+  def order_detail_description_as_text(order_detail)
+    name = order_detail.product.to_s
+    if order_detail.bundle
+      name.prepend("#{order_detail.bundle} -- ")
+    else
+      name
+    end.html_safe
   end
 
   def sortable (column, title = nil)

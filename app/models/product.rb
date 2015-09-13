@@ -124,7 +124,7 @@ class Product < ActiveRecord::Base
   end
 
   def to_s
-    name.present? ? name.html_safe : ''
+    name.presence || ""
   end
 
   def to_s_with_status

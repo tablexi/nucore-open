@@ -201,31 +201,40 @@ en:
         ordered_at: Ordered Date
         account: Payment Source
       order_detail:
-        dispute_at: Disputed At
-        dispute_reason: Dispute Reason
-        dispute_by: Dispute By
-        dispute_resolved_reason: Resolution Notes
-        dispute_resolved_at: Dispute Resolved At
-        description: Description
-        fulfilled_at: Fulfilled Date
-        ordered_at: Ordered Date
-        journal_date: Journal Date
-        journal_or_statement_date: "Journal/Statement Date"
-        user: Ordered For
-        created_by_user: Ordered By
-        reviewed_at: Review Closes
-        reviewed_at_past: Review Closed
-        id: "Order #"
-        assigned_user: Assigned Staff
         account: Payment Source
-        order_status: Order Status
-        estimated_cost: Estimated Price
-        estimated_subsidy: Estimated Adjustment
-        estimated_total: Estimated Total
         actual_cost: Price
         actual_subsidy: Adjustment
         actual_total: Total
+        assigned_user: Assigned Staff
+        created_by_user: Ordered By
+        description: Description
+        dispute_at: Disputed At
+        dispute_by: Dispute By
+        dispute_reason: Dispute Reason
+        dispute_resolved_at: Dispute Resolved At
+        dispute_resolved_reason: Resolution Notes
+        estimated_cost: Estimated Price
+        estimated_subsidy: Estimated Adjustment
+        estimated_total: Estimated Total
+        facility: Facility
+        fulfilled_at: Fulfilled Date
+        id: "Order #"
+        journal_date: Journal Date
+        journal_or_statement_date: "Journal/Statement Date"
+        note: Note
+        order_status: Order Status
+        ordered_at: Ordered Date
+        ordered_by: Ordered By
+        product: Product
+        quantity: Quantity
         reconciled_note: Reconciliation Note
+        reviewed_at: Review Closes
+        reviewed_at_past: Review Closed
+        status: Status
+        unassigned_cost: Price
+        unassigned_subsidy: Adjustment
+        unassigned_total: Total
+        user: Ordered For
       order_import:
         created_at: Uploaded at
         creator: Imported by
