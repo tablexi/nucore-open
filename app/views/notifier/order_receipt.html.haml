@@ -1,30 +1,30 @@
 - @order.order_details.each { |od| od.send(:extend, PriceDisplayment) }
 
-%p= t('.intro')
+%p= t(".intro")
 
 %ul
   %li
-    %label Ordered at
-    =h @order.ordered_at.strftime("%b %e, %Y %l:%M %p")
+    %label= t(".label.ordered_at")
+    = l(@order.ordered_at, format: :receipt)
   %li
-    %label Facility
-    =h @order.facility
+    %label= t(".label.facility")
+    = @order.facility
   %li
-    %label Ordered By
-    =h "#{@order.created_by_user.full_name}"
+    %label= t(".label.ordered_by")
+    = @order.created_by_user.full_name
 
 %table.table.table-striped.table-hover
   %thead
     %tr
-      %th Order #
-      %th Product
-      %th Quantity
-      %th Status
+      %th= t(".th.order_number")
+      %th= t(".th.product")
+      %th= t(".th.quantity")
+      %th= t(".th.status")
       - text = order_estimated_or_actual_text(@order)
-      %th= "#{text} Price"
-      %th= "#{text} Adjustment"
-      %th= "#{text} Total"
-      %th Notes
+      %th= t(".th.price", text: text)
+      %th= t(".th.adjustment", text: text)
+      %th= t(".th.total", text: text)
+      %th= t(".th.notes")
   %tbody
     - @order.order_details.each do |od|
       - od.send(:extend, PriceDisplayment)
@@ -32,13 +32,13 @@
         %td= od
         - if od.reservation
           %td
-            = ((od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)).html_safe
+            = ((od.bundle ? "#{od.bundle} &mdash; " : "") + h(od.product)).html_safe
             %br
-            =h od.reservation
+            = od.reservation
         - else
-          %td= ((od.bundle ? "#{h od.bundle} &mdash; " : '') + h(od.product)).html_safe
-        %td=h od.quantity
-        %td=h od.order_status.name
+          %td= ((od.bundle ? "#{od.bundle} &mdash; " : "") + h(od.product)).html_safe
+        %td= od.quantity
+        %td= od.order_status.name
         %td= od.display_cost
         %td= od.display_subsidy
         %td= od.display_total
@@ -47,7 +47,8 @@
             = od.note
     %tr
       %td{colspan: 6}
-        %strong= t('.total')
+        %strong= t(".total")
       %td.currency= number_to_currency(@order.order_details.sum { |d| d.total || 0 })
+      %td
 
-%p= t('.outro') if @order.any_details_estimated?
+%p= t(".outro") if @order.any_details_estimated?

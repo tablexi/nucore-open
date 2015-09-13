@@ -25,6 +25,7 @@ en:
   time:
     formats:
       default: "%a, %m/%d/%Y %-l:%M %p"
+      receipt: "%b %e, %Y %l:%M %p"
       timeonly: "%-l:%M %p"
       calendar: "%a, %d %b %Y %H:%M:%S"
       usa: "%m/%d/%Y %l:%M %p"
@@ -796,7 +797,22 @@ en:
     order_receipt:
       subject: "NU Core Order Receipt"
       intro: "Thank you for your order on the NU Core website."
+      label:
+        ordered_at: Ordered at
+        facility: Facility
+        ordered_by: Ordered By
+      order_details: Order Details
       outro: "All prices are estimates. Actual cost is assigned when the order is complete."
+      reservation: Reservation
+      th:
+        order_number: "Order #"
+        product: Product
+        quantity: Quantity
+        status: Status
+        price: "%{text}Price"
+        adjustment: "%{text}Adjustment"
+        total: "%{text}Total"
+        notes: Notes
       total: Total
     review_orders:
       subject: "NU Core Orders For Review"
