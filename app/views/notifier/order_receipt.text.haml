@@ -19,6 +19,9 @@ Order Details
   #{text}Price: #{od.display_cost}
   #{text}Adjustment: #{od.display_subsidy}
   #{text}Total: #{od.display_total}
+  - if od.note.present?
+
+    = od.note
   ==
 ==
 

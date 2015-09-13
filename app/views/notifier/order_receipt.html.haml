@@ -24,6 +24,7 @@
       %th= "#{text} Price"
       %th= "#{text} Adjustment"
       %th= "#{text} Total"
+      %th Notes
   %tbody
     - @order.order_details.each do |od|
       - od.send(:extend, PriceDisplayment)
@@ -41,6 +42,9 @@
         %td= od.display_cost
         %td= od.display_subsidy
         %td= od.display_total
+        %td
+          - if od.note.present?
+            = od.note
     %tr
       %td{colspan: 6}
         %strong= t('.total')
