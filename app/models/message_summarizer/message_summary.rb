@@ -10,7 +10,7 @@ class MessageSummarizer::MessageSummary
   end
 
   def count
-    @count ||= allowed? ? get_count : 0
+    @count ||= (visible? && allowed?) ? get_count : 0
   end
 
   def link
@@ -45,5 +45,9 @@ class MessageSummarizer::MessageSummary
 
   def path
     raise NotImplementedError.new("Subclass must implement")
+  end
+
+  def visible?
+    controller.admin_tab?
   end
 end

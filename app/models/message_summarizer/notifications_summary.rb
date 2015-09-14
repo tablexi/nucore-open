@@ -20,4 +20,8 @@ class MessageSummarizer::NotificationsSummary < MessageSummarizer::MessageSummar
   def user
     controller.current_user
   end
+
+  def visible?
+    true
+  end
 end
