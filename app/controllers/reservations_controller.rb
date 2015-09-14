@@ -273,16 +273,22 @@ class ReservationsController < ApplicationController
       :actual_start_meridian
     )
 
-    if !@reservation.admin_editable? && !@reservation.reserve_start_at_editable?
-      reservation_params.tap do |p|
-        p[:reserve_start_date] = @reservation.reserve_start_date
-        p[:reserve_start_hour] = @reservation.reserve_start_hour
-        p[:reserve_start_min] = @reservation.reserve_start_min
-        p[:reserve_start_meridian] = @reservation.reserve_start_meridian
-      end
-    end
+    reservation_params.merge!(reservation_start_as_params) if fixed_start_time?
 
     reservation_params
+  end
+
+  def fixed_start_time?
+    !@reservation.admin_editable? || !@reservation.reserve_start_at_editable?
+  end
+
+  def reservation_start_as_params
+    {
+      reserve_start_date: @reservation.reserve_start_date,
+      reserve_start_hour: @reservation.reserve_start_hour,
+      reserve_start_min: @reservation.reserve_start_min,
+      reserve_start_meridian: @reservation.reserve_start_meridian,
+    }
   end
 
   def switch_instrument_off!
