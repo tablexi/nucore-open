@@ -67,30 +67,44 @@ describe MessageSummarizer do
 
   context "when no active notifications, training requests, disputed or problem orders exist" do
     it_behaves_like "there are no messages"
+
+    context "when not in a manager context" do
+      it { expect(subject).not_to have_visible_tab }
+    end
+
+    context "when in a manager context" do
+      let(:admin_tab?) { true }
+
+      it { expect(subject).to have_visible_tab }
+    end
   end
 
   context "when an active notification exists" do
     before { create_merge_notification }
 
-    shared_examples_for "the user may view notifications" do
+    context "and the user may view notifications" do
+      before { ability.can(:read, Notification) }
+
       it_behaves_like "there is one overall message"
 
-      context "when not scoped to a facility" do
-        let(:current_facility) { nil }
+      context "when not in a manager context" do
+        it_behaves_like "there is one overall message"
+        it { expect(subject).to have_visible_tab }
+        it { expect(subject.first.link).to match(/\bNotices \(1\)/) }
+      end
+
+      context "when in a manager context "do
+        let(:admin_tab?) { true }
 
         it_behaves_like "there is one overall message"
+        it { expect(subject).to have_visible_tab }
         it { expect(subject.first.link).to match(/\bNotices \(1\)/) }
       end
     end
 
-    context "and the user may view notifications" do
-      before { ability.can(:read, Notification) }
-
-      it_behaves_like "the user may view notifications"
-    end
-
     context "and the user may not view notifications" do
       it_behaves_like "there are no messages"
+      it { expect(subject).not_to have_visible_tab }
     end
   end
 
@@ -104,16 +118,19 @@ describe MessageSummarizer do
         let(:admin_tab?) { true }
 
         it_behaves_like "there is one overall message"
+        it { expect(subject).to have_visible_tab }
         it { expect(subject.first.link).to match(/\bDisputed Orders \(1\)/) }
       end
 
       context "when not in a manager context" do
         it_behaves_like "there are no messages"
+        it { expect(subject).not_to have_visible_tab }
       end
     end
 
     context "and the user cannot access disputed order details" do
       it_behaves_like "there are no messages"
+      it { expect(subject).not_to have_visible_tab }
     end
   end
 
@@ -129,16 +146,19 @@ describe MessageSummarizer do
         let(:admin_tab?) { true }
 
         it_behaves_like "there is one overall message"
+        it { expect(subject).to have_visible_tab }
         it { expect(subject.first.link).to match(/\bProblem Orders \(1\)/) }
       end
 
       context "when not in a manager context" do
         it_behaves_like "there are no messages"
+        it { expect(subject).not_to have_visible_tab }
       end
     end
 
     context "and the user cannot access problem orders" do
       it_behaves_like "there are no messages"
+      it { expect(subject).not_to have_visible_tab }
     end
   end
 
@@ -152,16 +172,19 @@ describe MessageSummarizer do
         let(:admin_tab?) { true }
 
         it_behaves_like "there is one overall message"
+        it { expect(subject).to have_visible_tab }
         it { expect(subject.first.link).to match(/\bProblem Reservations \(1\)/) }
       end
 
       context "when not in a manager context" do
         it_behaves_like "there are no messages"
+        it { expect(subject).not_to have_visible_tab }
       end
     end
 
     context "and the user cannot access problem reservations" do
       it_behaves_like "there are no messages"
+      it { expect(subject).not_to have_visible_tab }
     end
   end
 
@@ -175,16 +198,19 @@ describe MessageSummarizer do
         let(:admin_tab?) { true }
 
         it_behaves_like "there is one overall message"
+        it { expect(subject).to have_visible_tab }
         it { expect(subject.first.link).to match(/\bTraining Requests \(1\)/) }
       end
 
       context "when not in a manager context" do
         it_behaves_like "there are no messages"
+        it { expect(subject).not_to have_visible_tab }
       end
     end
 
     context "and the user cannot manage training requests" do
       it_behaves_like "there are no messages"
+      it { expect(subject).not_to have_visible_tab }
     end
   end
 end

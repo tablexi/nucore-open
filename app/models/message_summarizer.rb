@@ -7,6 +7,10 @@ class MessageSummarizer
     @controller = controller
   end
 
+  def has_visible_tab?
+    manager_context? || notifications.any?
+  end
+
   def message_count
     @message_count ||= message_summaries.sum(&:count)
   end
@@ -16,6 +20,10 @@ class MessageSummarizer
   end
 
   private
+
+  def manager_context?
+    @controller.current_facility && @controller.admin_tab?
+  end
 
   def notifications
     @notifications ||= NotificationsSummary.new(@controller)

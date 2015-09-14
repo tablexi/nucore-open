@@ -1,9 +1,9 @@
 - summarizer = MessageSummarizer.new(controller)
-%li
-  - if summarizer.messages?
-    %ul.nav.pull-right
-      %li.dropdown.pull-right
-        - if summarizer.messages?
+- if summarizer.has_visible_tab?
+  %li
+    - if summarizer.messages?
+      %ul.nav.pull-right
+        %li.dropdown.pull-right
           = link_to t("message_summarizer.heading", count: summarizer.message_count),
             :notifications,
             class: "dropdown-toggle",
@@ -12,7 +12,7 @@
           %ul.dropdown-menu
             - summarizer.each do |message_summary|
               %li= message_summary.link
-  - else
-    .navbar-text= t("message_summarizer.heading", count: 0)
+    - else
+      .navbar-text= t("message_summarizer.heading", count: 0)
 
-%li.divider-vertical
+  %li.divider-vertical
