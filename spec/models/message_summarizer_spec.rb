@@ -39,7 +39,6 @@ describe MessageSummarizer do
     it "has no messages of any kind" do
       expect(subject).not_to be_messages
       expect(subject.count).to eq(0)
-      expect(subject.message_count).to eq(0)
 
       iteration_count = 0
       subject.each { ++iteration_count }
@@ -51,7 +50,6 @@ describe MessageSummarizer do
     it "has one message" do
       expect(subject).to be_messages
       expect(subject.count).to eq(1)
-      expect(subject.message_count).to eq(1)
 
       summaries = []
 
@@ -65,6 +63,11 @@ describe MessageSummarizer do
     end
   end
 
+  shared_examples_for "it has a visible notices tab" do |count|
+    it { expect(subject).to have_visible_tab }
+    it { expect(subject.tab_label).to eq("Notices (#{count})") }
+  end
+
   context "when no active notifications, training requests, disputed or problem orders exist" do
     it_behaves_like "there are no messages"
 
@@ -75,7 +78,7 @@ describe MessageSummarizer do
     context "when in a manager context" do
       let(:admin_tab?) { true }
 
-      it { expect(subject).to have_visible_tab }
+      it_behaves_like "it has a visible notices tab", 0
     end
   end
 
@@ -89,7 +92,7 @@ describe MessageSummarizer do
 
       context "when not in a manager context" do
         it_behaves_like "there is one overall message"
-        it { expect(subject).to have_visible_tab }
+        it_behaves_like "it has a visible notices tab", 1
         it { expect(subject.first.link).to match(/\bNotices \(1\)/) }
       end
 
@@ -97,7 +100,7 @@ describe MessageSummarizer do
         let(:admin_tab?) { true }
 
         it_behaves_like "there is one overall message"
-        it { expect(subject).to have_visible_tab }
+        it_behaves_like "it has a visible notices tab", 1
         it { expect(subject.first.link).to match(/\bNotices \(1\)/) }
       end
     end
@@ -118,7 +121,7 @@ describe MessageSummarizer do
         let(:admin_tab?) { true }
 
         it_behaves_like "there is one overall message"
-        it { expect(subject).to have_visible_tab }
+        it_behaves_like "it has a visible notices tab", 1
         it { expect(subject.first.link).to match(/\bDisputed Orders \(1\)/) }
       end
 
@@ -144,7 +147,7 @@ describe MessageSummarizer do
         let(:admin_tab?) { true }
 
         it_behaves_like "there is one overall message"
-        it { expect(subject).to have_visible_tab }
+        it_behaves_like "it has a visible notices tab", 1
         it { expect(subject.first.link).to match(/\bProblem Orders \(1\)/) }
       end
 
@@ -168,7 +171,7 @@ describe MessageSummarizer do
         let(:admin_tab?) { true }
 
         it_behaves_like "there is one overall message"
-        it { expect(subject).to have_visible_tab }
+        it_behaves_like "it has a visible notices tab", 1
         it { expect(subject.first.link).to match(/\bProblem Reservations \(1\)/) }
       end
 
@@ -192,7 +195,7 @@ describe MessageSummarizer do
         let(:admin_tab?) { true }
 
         it_behaves_like "there is one overall message"
-        it { expect(subject).to have_visible_tab }
+        it_behaves_like "it has a visible notices tab", 1
         it { expect(subject.first.link).to match(/\bTraining Requests \(1\)/) }
       end
 

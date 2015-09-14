@@ -11,18 +11,22 @@ class MessageSummarizer
     manager_context? || notifications.any?
   end
 
-  def message_count
-    @message_count ||= message_summaries.sum(&:count)
-  end
-
   def messages?
     message_count > 0
+  end
+
+  def tab_label
+    I18n.t("message_summarizer.heading", count: message_count)
   end
 
   private
 
   def manager_context?
     @controller.admin_tab?
+  end
+
+  def message_count
+    @message_count ||= message_summaries.sum(&:count)
   end
 
   def notifications

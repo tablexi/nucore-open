@@ -4,7 +4,7 @@
     - if summarizer.messages?
       %ul.nav.pull-right
         %li.dropdown.pull-right
-          = link_to t("message_summarizer.heading", count: summarizer.message_count),
+          = link_to summarizer.tab_label,
             :notifications,
             class: "dropdown-toggle",
             data: { toggle: "dropdown" }
@@ -13,6 +13,6 @@
             - summarizer.each do |message_summary|
               %li= message_summary.link
     - else
-      .navbar-text= t("message_summarizer.heading", count: 0)
+      .navbar-text= summarizer.tab_label
 
   %li.divider-vertical
