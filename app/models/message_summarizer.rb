@@ -8,7 +8,11 @@ class MessageSummarizer
   end
 
   def message_count
-    message_summaries.sum(&:count)
+    @message_count ||= message_summaries.sum(&:count)
+  end
+
+  def messages?
+    message_count > 0
   end
 
   private

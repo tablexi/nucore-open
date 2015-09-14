@@ -37,6 +37,7 @@ describe MessageSummarizer do
 
   shared_examples_for "there are no messages" do
     it "has no messages of any kind" do
+      expect(subject).not_to be_messages
       expect(subject.count).to eq(0)
       expect(subject.message_count).to eq(0)
 
@@ -48,6 +49,7 @@ describe MessageSummarizer do
 
   shared_examples_for "there is one overall message" do
     it "has one message" do
+      expect(subject).to be_messages
       expect(subject.count).to eq(1)
       expect(subject.message_count).to eq(1)
 
