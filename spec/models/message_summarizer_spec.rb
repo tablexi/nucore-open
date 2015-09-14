@@ -64,7 +64,7 @@ describe MessageSummarizer do
   end
 
   shared_examples_for "it has a visible notices tab" do |count|
-    it { expect(subject).to have_visible_tab }
+    it { expect(subject).to be_visible_tab } # TODO: change to have_visible_tab after RSpec upgrade
     it { expect(subject.tab_label).to eq("Notices (#{count})") }
   end
 
@@ -72,7 +72,7 @@ describe MessageSummarizer do
     it_behaves_like "there are no messages"
 
     context "when not in a manager context" do
-      it { expect(subject).not_to have_visible_tab }
+      it { expect(subject).not_to be_visible_tab } # TODO: change to have_visible_tab after RSpec upgrade
     end
 
     context "when in a manager context" do
@@ -107,7 +107,7 @@ describe MessageSummarizer do
 
     context "and the user may not view notifications" do
       it_behaves_like "there are no messages"
-      it { expect(subject).not_to have_visible_tab }
+      it { expect(subject).not_to be_visible_tab } # TODO: change to have_visible_tab after RSpec upgrade
     end
   end
 
@@ -126,12 +126,12 @@ describe MessageSummarizer do
       end
 
       context "when not in a manager context" do
-        it { expect(subject).not_to have_visible_tab }
+        it { expect(subject).not_to be_visible_tab } # TODO: change to have_visible_tab after RSpec upgrade
       end
     end
 
     context "and the user cannot access disputed order details" do
-      it { expect(subject).not_to have_visible_tab }
+      it { expect(subject).not_to be_visible_tab } # TODO: change to have_visible_tab after RSpec upgrade
     end
   end
 
@@ -152,12 +152,12 @@ describe MessageSummarizer do
       end
 
       context "when not in a manager context" do
-        it { expect(subject).not_to have_visible_tab }
+        it { expect(subject).not_to be_visible_tab } # TODO: change to have_visible_tab after RSpec upgrade
       end
     end
 
     context "and the user cannot access problem orders" do
-      it { expect(subject).not_to have_visible_tab }
+      it { expect(subject).not_to be_visible_tab } # TODO: change to have_visible_tab after RSpec upgrade
     end
   end
 
@@ -176,12 +176,12 @@ describe MessageSummarizer do
       end
 
       context "when not in a manager context" do
-        it { expect(subject).not_to have_visible_tab }
+        it { expect(subject).not_to be_visible_tab } # TODO: change to have_visible_tab after RSpec upgrade
       end
     end
 
     context "and the user cannot access problem reservations" do
-      it { expect(subject).not_to have_visible_tab }
+      it { expect(subject).not_to be_visible_tab } # TODO: change to have_visible_tab after RSpec upgrade
     end
   end
 
@@ -200,12 +200,12 @@ describe MessageSummarizer do
       end
 
       context "when not in a manager context" do
-        it { expect(subject).not_to have_visible_tab }
+        it { expect(subject).not_to be_visible_tab } # TODO: change to have_visible_tab after RSpec upgrade
       end
     end
 
     context "and the user cannot manage training requests" do
-      it { expect(subject).not_to have_visible_tab }
+      it { expect(subject).not_to be_visible_tab } # TODO: change to have_visible_tab after RSpec upgrade
     end
   end
 end

@@ -7,16 +7,16 @@ class MessageSummarizer
     @controller = controller
   end
 
-  def has_visible_tab?
-    manager_context? || notifications.any?
-  end
-
   def messages?
     message_count > 0
   end
 
   def tab_label
     I18n.t("message_summarizer.heading", count: message_count)
+  end
+
+  def visible_tab?
+    manager_context? || notifications.any?
   end
 
   private
