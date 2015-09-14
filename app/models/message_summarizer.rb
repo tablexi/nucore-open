@@ -22,7 +22,7 @@ class MessageSummarizer
   private
 
   def manager_context?
-    @controller.current_facility && @controller.admin_tab?
+    @controller.admin_tab?
   end
 
   def notifications

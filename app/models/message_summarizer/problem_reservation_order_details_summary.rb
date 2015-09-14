@@ -2,7 +2,7 @@ class MessageSummarizer::ProblemReservationOrderDetailsSummary < MessageSummariz
   private
 
   def allowed?
-    manager_context? && ability.can?(:show_problems, Reservation)
+    ability.can?(:show_problems, Reservation)
   end
 
   def get_count

@@ -123,13 +123,11 @@ describe MessageSummarizer do
       end
 
       context "when not in a manager context" do
-        it_behaves_like "there are no messages"
         it { expect(subject).not_to have_visible_tab }
       end
     end
 
     context "and the user cannot access disputed order details" do
-      it_behaves_like "there are no messages"
       it { expect(subject).not_to have_visible_tab }
     end
   end
@@ -151,13 +149,11 @@ describe MessageSummarizer do
       end
 
       context "when not in a manager context" do
-        it_behaves_like "there are no messages"
         it { expect(subject).not_to have_visible_tab }
       end
     end
 
     context "and the user cannot access problem orders" do
-      it_behaves_like "there are no messages"
       it { expect(subject).not_to have_visible_tab }
     end
   end
@@ -177,13 +173,11 @@ describe MessageSummarizer do
       end
 
       context "when not in a manager context" do
-        it_behaves_like "there are no messages"
         it { expect(subject).not_to have_visible_tab }
       end
     end
 
     context "and the user cannot access problem reservations" do
-      it_behaves_like "there are no messages"
       it { expect(subject).not_to have_visible_tab }
     end
   end
@@ -203,13 +197,11 @@ describe MessageSummarizer do
       end
 
       context "when not in a manager context" do
-        it_behaves_like "there are no messages"
         it { expect(subject).not_to have_visible_tab }
       end
     end
 
     context "and the user cannot manage training requests" do
-      it_behaves_like "there are no messages"
       it { expect(subject).not_to have_visible_tab }
     end
   end

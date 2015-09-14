@@ -2,7 +2,7 @@ class MessageSummarizer::TrainingRequestsSummary < MessageSummarizer::MessageSum
   private
 
   def allowed?
-    manager_context? && ability.can?(:manage, TrainingRequest)
+    ability.can?(:manage, TrainingRequest)
   end
 
   def get_count
