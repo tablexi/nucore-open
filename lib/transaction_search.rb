@@ -81,7 +81,7 @@ module TransactionSearch
     @products = Product.find_by_sql(@order_details.joins(:product).
                                                    select("distinct(products.id), products.name, products.facility_id, products.type, products.requires_approval").
                                                    reorder("products.name").to_sql)
-    @account_owners = User.find_by_sql(@order_details.joins(:account => {:owner => :user}).
+    @account_owners = User.find_by_sql(@order_details.joins(:account => :owner_user).
                                                       select("distinct(users.id), users.first_name, users.last_name").
                                                       reorder("users.last_name, users.first_name").to_sql)
 
@@ -131,7 +131,9 @@ module TransactionSearch
         includes(:reservation).
         includes(:order => :user).
         includes(:price_policy).
-        preload(:bundle)
+        preload(:bundle).
+        preload(:account => :owner_user)
+
   end
 
   def sort_and_paginate

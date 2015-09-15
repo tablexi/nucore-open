@@ -7,7 +7,7 @@ module TransactionHistoryHelper
     search_fields.map! { |i| i.to_s } if search_fields
     options = []
     products.each do |product|
-      options << [product.name, product.id, { :"data-facility" => product.facility.id,
+      options << [product.name, product.id, { :"data-facility" => product.facility_id,
                                               :"data-restricted" => product.requires_approval?,
                                               :"data-product-type" => product.type.downcase}]
     end
