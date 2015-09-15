@@ -1,43 +1,40 @@
-require 'spec_helper'
-require 'controller_spec_helper'
+require "spec_helper"
+require "controller_spec_helper"
+
 describe ApplicationHelper do
   describe "#menu_facilities" do
-  	before :all do
-  	  create_users
-  	end
-    
-    before :each do      
-      @facility1 = FactoryGirl.create(:facility)
-      @facility2 = FactoryGirl.create(:facility)
-      @facility3 = FactoryGirl.create(:facility)
+    before(:all) do
+      create_users
     end
+
+    before(:each) do
+      UserRole.grant(user, UserRole::FACILITY_DIRECTOR, facilities.first)
+      UserRole.grant(user, UserRole::FACILITY_STAFF, facilities.second)
+    end
+
+    let!(:facilities) { create_list(:facility, 3) }
+
     def session_user
-      @user
+      user
     end
 
-  	it "should return only facilities with a role" do
-      @user = @guest
-      UserRole.grant(@user, UserRole::FACILITY_DIRECTOR, @facility1)
-      UserRole.grant(@user, UserRole::FACILITY_STAFF, @facility2)
-
-      expect(menu_facilities.size).to eq(2)
-      expect(menu_facilities).to contain_all [@facility1, @facility2]
+    shared_examples_for "it returns only facilities with a role" do
+      it { expect(menu_facilities).to match_array(facilities.first(2)) }
     end
 
-    it "should return only facilities with a role for global admins" do
-      @user = @admin
-      UserRole.grant(@user, UserRole::FACILITY_DIRECTOR, @facility1)
-      UserRole.grant(@user, UserRole::FACILITY_STAFF, @facility2)
-      expect(menu_facilities.size).to eq(2)
-      expect(menu_facilities).to contain_all [@facility1, @facility2]
+    context "when the user is a guest" do
+      let(:user) { @guest }
+      it_behaves_like "it returns only facilities with a role"
     end
 
-    it "should return only facilities with a role for billing admins" do
-      @user = @billing_admin
-      UserRole.grant(@user, UserRole::FACILITY_DIRECTOR, @facility1)
-      UserRole.grant(@user, UserRole::FACILITY_STAFF, @facility2)
-      expect(menu_facilities.size).to eq(2)
-      expect(menu_facilities).to contain_all [@facility1, @facility2]
+    context "when the user is a global admin" do
+      let(:user) { @admin }
+      it_behaves_like "it returns only facilities with a role"
+    end
+
+    context "when the user is a billing_admin" do
+      let(:user) { @billing_admin }
+      it_behaves_like "it returns only facilities with a role"
     end
   end
 end
