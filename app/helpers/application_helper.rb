@@ -14,14 +14,12 @@ module ApplicationHelper
   end
 
   def order_detail_description(order_detail)
-    name = ""
+    name = ERB::Util.html_escape(order_detail.product)
     if order_detail.bundle
-      name << ERB::Util.html_escape(order_detail.bundle)
-      name << " &mdash; "
-    end
-
-    name << ERB::Util.html_escape(order_detail.product)
-    name.html_safe
+      name.prepend(ERB::Util.html_escape(order_detail.bundle) + " &mdash; ".html_safe)
+    else
+      name
+    end.html_safe
   end
 
   def sortable (column, title = nil)
