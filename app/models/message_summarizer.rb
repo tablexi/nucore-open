@@ -1,7 +1,7 @@
 class MessageSummarizer
   include Enumerable
 
-  delegate :each, to: :message_summaries
+  delegate :each, to: :visible_summaries
 
   def initialize(controller)
     @controller = controller
@@ -16,17 +16,27 @@ class MessageSummarizer
   end
 
   def visible_tab?
-    manager_context? || notifications.any?
+    visible_summaries.any?
+  end
+
+  def visible_summaries
+    summaries.select(&:visible?)
+  end
+
+  def summaries
+    [
+      notifications,
+      order_details_in_dispute,
+      problem_order_details,
+      problem_reservation_order_details,
+      training_requests,
+    ]
   end
 
   private
 
-  def manager_context?
-    @controller.admin_tab?
-  end
-
   def message_count
-    @message_count ||= message_summaries.sum(&:count)
+    @message_count ||= visible_summaries.sum(&:count)
   end
 
   def notifications
@@ -50,13 +60,4 @@ class MessageSummarizer
     @training_requests ||= TrainingRequestsSummary.new(@controller)
   end
 
-  def message_summaries
-    [
-      notifications,
-      order_details_in_dispute,
-      problem_order_details,
-      problem_reservation_order_details,
-      training_requests,
-    ].select(&:any?)
-  end
 end

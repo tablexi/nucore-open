@@ -18,8 +18,8 @@ describe MessageSummarizer do
     allow(controller).to receive(:current_facility).and_return(current_facility)
     allow(controller).to receive(:current_user).and_return(user)
 
-    MessageSummarizer::MessageSummary.subclasses.each do |klass|
-      allow_any_instance_of(klass).to receive(:path).and_return("/stub")
+    subject.summaries.each do |summary|
+      allow(summary).to receive(:path).and_return("/stub")
     end
   end
 
@@ -81,6 +81,7 @@ describe MessageSummarizer do
 
     context "when in a manager context" do
       let(:admin_tab?) { true }
+      before { ability.can(:manage, :all) }
 
       it_behaves_like "it has a visible notices tab", 0
     end
@@ -200,6 +201,7 @@ describe MessageSummarizer do
 
         it_behaves_like "there is one overall message"
         it_behaves_like "it has a visible notices tab", 1
+
         it { expect(subject.first.link).to match(/\bTraining Requests \(1\)/) }
       end
 

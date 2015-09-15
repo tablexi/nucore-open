@@ -1,4 +1,4 @@
-class MessageSummarizer::OrderDetailsInDisputeSummary < MessageSummarizer::MessageSummary
+class MessageSummarizer::OrderDetailsInDisputeSummary < MessageSummarizer::FacilityMessageSummary
   private
 
   def allowed?
