@@ -15,13 +15,12 @@ module ApplicationHelper
 
   def order_detail_description(order_detail)
     name = ""
-
     if order_detail.bundle
-      name << "#{h order_detail.bundle}"
+      name << ERB::Util.html_escape(order_detail.bundle)
       name << " &mdash; "
     end
 
-    name << h(order_detail.product)
+    name << ERB::Util.html_escape(order_detail.product)
     name.html_safe
   end
 
