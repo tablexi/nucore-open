@@ -37,4 +37,25 @@ describe ApplicationHelper do
       it_behaves_like "it returns only facilities with a role"
     end
   end
+
+  describe "#order_detail_description" do
+    subject { order_detail_description(order_detail) }
+    let(:order_detail) { build_stubbed(:order_detail) }
+    let(:product) { build_stubbed(:product, name: ">& Product <") }
+
+    before { allow(order_detail).to receive(:product).and_return(product) }
+
+    context "when not part of a bundle" do
+      it { expect(subject).to be_html_safe }
+      it { expect(subject).to eq("&gt;&amp; Product &lt;") }
+    end
+
+    context "when part of a bundle" do
+      let(:bundle) { build_stubbed(:bundle, name: ">& Bundle <") }
+      before { allow(order_detail).to receive(:bundle).and_return(bundle) }
+
+      it { expect(subject).to be_html_safe }
+      it { expect(subject).to eq("&gt;&amp; Bundle &lt; &mdash; &gt;&amp; Product &lt;") }
+    end
+  end
 end
