@@ -20,10 +20,10 @@
       %th= OrderDetail.human_attribute_name(:product)
       %th= OrderDetail.human_attribute_name(:quantity)
       %th= OrderDetail.human_attribute_name(:status)
-      - text = order_estimated_or_actual_text(@order)
-      %th= t(".th.price", text: text)
-      %th= t(".th.adjustment", text: text)
-      %th= t(".th.total", text: text)
+      - label_key_prefix = display_cost_prefix_for_order(@order)
+      %th= OrderDetail.human_attribute_name("#{label_key_prefix}_cost")
+      %th= OrderDetail.human_attribute_name("#{label_key_prefix}_subsidy")
+      %th= OrderDetail.human_attribute_name("#{label_key_prefix}_total")
       %th= OrderDetail.human_attribute_name(:note).pluralize
   %tbody
     - @order.order_details.each do |od|
@@ -51,4 +51,5 @@
       %td.currency= number_to_currency(@order.order_details.sum { |d| d.total || 0 })
       %td
 
-%p= t(".outro") if @order.any_details_estimated?
+- if @order.any_details_estimated?
+  %p= t(".outro")

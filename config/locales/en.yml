@@ -799,13 +799,7 @@ en:
       intro: "Thank you for your order on the NU Core website."
       label:
         ordered_at: Ordered at
-      order_details: Order Details
       outro: "All prices are estimates. Actual cost is assigned when the order is complete."
-      reservation: Reservation
-      th:
-        price: "%{text}Price"
-        adjustment: "%{text}Adjustment"
-        total: "%{text}Total"
       total: Total
     review_orders:
       subject: "NU Core Orders For Review"

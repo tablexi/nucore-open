@@ -231,6 +231,9 @@ en:
         reviewed_at: Review Closes
         reviewed_at_past: Review Closed
         status: Status
+        unassigned_cost: Price
+        unassigned_subsidy: Adjustment
+        unassigned_total: Total
         user: Ordered For
       order_import:
         created_at: Uploaded at
