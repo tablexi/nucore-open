@@ -216,15 +216,21 @@ en:
         estimated_cost: Estimated Price
         estimated_subsidy: Estimated Adjustment
         estimated_total: Estimated Total
+        facility: Facility
         fulfilled_at: Fulfilled Date
         id: "Order #"
         journal_date: Journal Date
         journal_or_statement_date: "Journal/Statement Date"
+        note: Note
         order_status: Order Status
         ordered_at: Ordered Date
+        ordered_by: Ordered By
+        product: Product
+        quantity: Quantity
         reconciled_note: Reconciliation Note
         reviewed_at: Review Closes
         reviewed_at_past: Review Closed
+        status: Status
         user: Ordered For
       order_import:
         created_at: Uploaded at
