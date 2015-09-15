@@ -7,21 +7,21 @@
 ==
 = OrderDetail.model_name.titleize.pluralize
 = "========================================"
-- @order.order_details.each do |od|
-  #{OrderDetail.human_attribute_name(:id)}: #{od}
-  = (od.bundle ? "#{h od.bundle} -- " : '') + h(od.product)
-  - if od.reservation
-    #{Reservation.model_name.titleize}: #{od.reservation}
-  #{OrderDetail.human_attribute_name(:quantity)}: #{od.quantity}
-  #{OrderDetail.human_attribute_name(:status)}: #{od.order_status.name}
-  - od.send(:extend, PriceDisplayment)
-  - label_key_prefix = display_cost_prefix_for_order_detail(od)
-  #{OrderDetail.human_attribute_name("#{label_key_prefix}_cost")}: #{od.display_cost}
-  #{OrderDetail.human_attribute_name("#{label_key_prefix}_subsidy")}: #{od.display_subsidy}
-  #{OrderDetail.human_attribute_name("#{label_key_prefix}_total")}: #{od.display_total}
-  - if od.note.present?
+- @order.order_details.each do |order_detail|
+  #{OrderDetail.human_attribute_name(:id)}: #{order_detail}
+  = CGI.unescape_html(order_detail_description(order_detail))
+  - if order_detail.reservation
+    #{Reservation.model_name.titleize}: #{order_detail.reservation}
+  #{OrderDetail.human_attribute_name(:quantity)}: #{order_detail.quantity}
+  #{OrderDetail.human_attribute_name(:status)}: #{order_detail.order_status.name}
+  - order_detail.send(:extend, PriceDisplayment)
+  - label_key_prefix = display_cost_prefix_for_order_detail(order_detail)
+  #{OrderDetail.human_attribute_name("#{label_key_prefix}_cost")}: #{order_detail.display_cost}
+  #{OrderDetail.human_attribute_name("#{label_key_prefix}_subsidy")}: #{order_detail.display_subsidy}
+  #{OrderDetail.human_attribute_name("#{label_key_prefix}_total")}: #{order_detail.display_total}
+  - if order_detail.note.present?
 
-    = od.note
+    = order_detail.note
   ==
 ==
 

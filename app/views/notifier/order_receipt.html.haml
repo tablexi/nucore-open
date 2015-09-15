@@ -1,4 +1,4 @@
-- @order.order_details.each { |od| od.send(:extend, PriceDisplayment) }
+- @order.order_details.each { |order_detail| order_detail.send(:extend, PriceDisplayment) }
 
 %p= t(".intro")
 
@@ -26,25 +26,23 @@
       %th= OrderDetail.human_attribute_name("#{label_key_prefix}_total")
       %th= OrderDetail.human_attribute_name(:note).pluralize
   %tbody
-    - @order.order_details.each do |od|
-      - od.send(:extend, PriceDisplayment)
+    - @order.order_details.each do |order_detail|
+      - order_detail.send(:extend, PriceDisplayment)
       %tr
-        %td= od
-        - if od.reservation
-          %td
-            = ((od.bundle ? "#{od.bundle} &mdash; " : "") + h(od.product)).html_safe
-            %br
-            = od.reservation
-        - else
-          %td= ((od.bundle ? "#{od.bundle} &mdash; " : "") + h(od.product)).html_safe
-        %td= od.quantity
-        %td= od.order_status.name
-        %td= od.display_cost
-        %td= od.display_subsidy
-        %td= od.display_total
+        %td= order_detail
         %td
-          - if od.note.present?
-            = od.note
+          = order_detail_description(order_detail)
+          - if order_detail.reservation
+            %br
+            = order_detail.reservation
+        %td= order_detail.quantity
+        %td= order_detail.order_status.name
+        %td= order_detail.display_cost
+        %td= order_detail.display_subsidy
+        %td= order_detail.display_total
+        %td
+          - if order_detail.note.present?
+            = order_detail.note
     %tr
       %td{colspan: 6}
         %strong= t(".total")
