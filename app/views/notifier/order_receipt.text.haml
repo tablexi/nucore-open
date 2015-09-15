@@ -9,7 +9,7 @@
 = "========================================"
 - @order.order_details.each do |order_detail|
   #{OrderDetail.human_attribute_name(:id)}: #{order_detail}
-  = CGI.unescape_html(order_detail_description(order_detail))
+  #{order_detail_description_as_text(order_detail)}
   - if order_detail.reservation
     #{Reservation.model_name.titleize}: #{order_detail.reservation}
   #{OrderDetail.human_attribute_name(:quantity)}: #{order_detail.quantity}
@@ -21,7 +21,7 @@
   #{OrderDetail.human_attribute_name("#{label_key_prefix}_total")}: #{order_detail.display_total}
   - if order_detail.note.present?
 
-    = order_detail.note
+    #{order_detail.note}
   ==
 ==
 

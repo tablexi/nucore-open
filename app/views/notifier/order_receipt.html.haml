@@ -31,7 +31,7 @@
       %tr
         %td= order_detail
         %td
-          = order_detail_description(order_detail)
+          = order_detail_description_as_html(order_detail)
           - if order_detail.reservation
             %br
             = order_detail.reservation

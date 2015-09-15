@@ -1,5 +1,6 @@
 class Notifier < ActionMailer::Base
   include DateHelper
+  add_template_helper ApplicationHelper
   add_template_helper TranslationHelper
   add_template_helper OrdersHelper
 
