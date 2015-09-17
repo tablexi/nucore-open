@@ -108,11 +108,11 @@ class OrderDetail < ActiveRecord::Base
     for_facility_id(facility.id)
   end
 
-  def self.for_facility_id(facility_id=nil)
-    details = joins(:order)
+  def self.for_facility_id(facility_id = nil)
+    details = scoped
 
-    unless facility_id.nil?
-      details = details.where(:orders => { :facility_id => facility_id})
+    if facility_id.present?
+      details = details.joins(:order).where(orders: { :facility_id => facility_id })
     end
 
     details

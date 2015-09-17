@@ -11,7 +11,7 @@ class Account < ActiveRecord::Base
   include DateHelper
 
   has_many   :account_users, :inverse_of => :account
-  has_one    :owner, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_OWNER, :deleted_at => nil}
+  has_one    :owner, :class_name => 'AccountUser', :conditions => { user_role: AccountUser::ACCOUNT_OWNER, deleted_at: nil }
   has_one    :owner_user, :through => :owner, :source => :user
   has_many   :business_admins, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_ADMINISTRATOR, :deleted_at => nil}
   has_many   :price_group_members
