@@ -59,7 +59,7 @@ module TransactionSearch
   end
 
   def init_order_details
-    @order_details = OrderDetail.joins(:order).joins(:product).ordered
+    @order_details = OrderDetail.ordered
 
     if current_facility
       @order_details = @order_details.for_facility(current_facility)
@@ -71,20 +71,22 @@ module TransactionSearch
   # Find all the unique search options based on @order_details. This needs to happen before do_search so these
   # variables have the full non-searched section of values
   def load_search_options
+
     @facilities = Facility.find_by_sql(@order_details.joins(:order => :facility).
                                                       select("distinct(facilities.id), facilities.name, facilities.abbreviation").
                                                       reorder("facilities.name").to_sql)
 
-    @accounts = Account.find_by_sql(@order_details.joins(:account).
-                                                   select("distinct(accounts.id), accounts.description, accounts.account_number, accounts.type").
-                                                   reorder("accounts.account_number, accounts.description").to_sql)
-    @products = Product.find_by_sql(@order_details.joins(:product).
-                                                   select("distinct(products.id), products.name, products.facility_id, products.type, products.requires_approval").
-                                                   reorder("products.name").to_sql)
-    @account_owners = User.find_by_sql(@order_details.joins(:account => :owner_user).
-                                                      select("distinct(users.id), users.first_name, users.last_name").
-                                                      reorder("users.last_name, users.first_name").to_sql)
+    @accounts = Account.select("accounts.id, accounts.account_number, accounts.description, accounts.type").
+                        where(id: @order_details.select("distinct order_details.account_id")).
+                        order(:account_number, :description)
 
+    @products = Product.where(id: @order_details.select("distinct product_id")).order(:name)
+
+    @account_owners = User.select("users.id, users.first_name, users.last_name").
+               where(id: @order_details.select("distinct account_users.user_id").joins(account: :owner_user)).
+               order(:last_name, :first_name)
+
+    # Unlike the other lookups, this query is much faster this way than using a subquery
     @order_statuses = OrderStatus.find_by_sql(@order_details.joins(:order_status).
                                                              select("distinct(order_statuses.id), order_statuses.facility_id, order_statuses.name, order_statuses.lft").
                                                              reorder("order_statuses.lft").to_sql)

@@ -24,6 +24,10 @@ module NUCore
       @@is_oracle ||= ActiveRecord::Base.connection.adapter_name == 'OracleEnhanced'
     end
 
+    def self.mysql?
+      @@is_mysql ||= ActiveRecord::Base.connection.adapter_name == 'Mysql2'
+    end
+
 
     def self.boolean(value)
       # Oracle doesn't always properly handle boolean values correctly
