@@ -5,10 +5,10 @@ class TransactionChosenInput < SimpleForm::Inputs::Base #CollectionSelectInput
     options[:label_method] ||= :name
     options[:value_method] ||= :id
 
-    search_fields[attribute_name] = [collection_items.first.send(options[:value_method].to_sym)] if collection_items.size == 1
+    search_fields[attribute_name] = [collection_items.first.send(options[:value_method].to_sym)] if collection_items.to_a.size == 1
 
     select_options = {:multiple => true, :"data-placeholder" => placeholder_label }
-    select_options.merge!({:disabled => :disabled}) unless collection_items && collection_items.size > 1
+    select_options.merge!({:disabled => :disabled}) unless collection_items.to_a.size > 1
 
     template.select_tag(attribute_name, option_data, select_options).html_safe
   end
