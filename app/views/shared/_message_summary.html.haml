@@ -1,7 +1,7 @@
 - summarizer = MessageSummarizer.new(controller)
 - if summarizer.visible_tab?
-  %li
-    - if summarizer.messages?
+  - if summarizer.messages?
+    %li
       %ul.nav.pull-right
         %li.dropdown.pull-right
           = link_to summarizer.tab_label,
@@ -12,7 +12,7 @@
           %ul.dropdown-menu
             - summarizer.select(&:any?).each do |message_summary|
               %li= message_summary.link
-    - else
-      .navbar-text= summarizer.tab_label
+  - else
+    %li.navbar-text= summarizer.tab_label
 
   %li.divider-vertical
