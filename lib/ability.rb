@@ -91,7 +91,7 @@ class Ability
 
       if user.manager_of?(resource)
         can :manage, [
-          AccountUser, FacilityAccount, Journal,
+          AccountUser, Facility, FacilityAccount, Journal,
           Statement, StoredFile, PricePolicy, InstrumentPricePolicy,
           ItemPricePolicy, OrderStatus, PriceGroup, ReportsController,
           ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup,
@@ -106,8 +106,7 @@ class Ability
           account.facility.nil? || account.facility == resource
         end
 
-        can :show_problems, Order
-        can [:update, :manage], Facility
+        can :show_problems, [Order, Reservation]
       end
 
       # Facility senior staff is based off of staff, but has a few more abilities
