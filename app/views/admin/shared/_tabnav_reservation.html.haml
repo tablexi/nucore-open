@@ -1,6 +1,7 @@
 %ul.nav.nav-tabs
   = tab "Daily View", timeline_facility_reservations_path(current_facility), tab_active?(:timeline)
   = display_tab "New / In Process", facility_reservations_path, action: :index
-  - if current_user.manager_of?(current_facility)
+  - if current_ability.can?(:show_problems, Reservation)
     = display_tab "Problem Reservations", show_problems_facility_reservations_path, action: :show_problems
-    = display_tab "Disputed", disputed_facility_reservations_path, action: :disputed if SettingsHelper.has_review_period?
+  - if SettingsHelper.has_review_period? && current_ability.can?(:disputed, Reservation)
+    = display_tab "Disputed", disputed_facility_reservations_path, action: :disputed

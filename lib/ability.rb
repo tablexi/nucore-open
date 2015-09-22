@@ -63,9 +63,37 @@ class Ability
 
       if user.operator_of?(resource)
         can :manage, [
-          AccountPriceGroupMember, OrderDetail, Order, Reservation,
-          UserPriceGroupMember, ProductUser, TrainingRequest
+          AccountPriceGroupMember,
+          OrderDetail,
+          ProductUser,
+          TrainingRequest,
+          UserPriceGroupMember,
         ]
+
+        can [
+          :assign_price_policies_to_problem_orders,
+          :create,
+          :edit,
+          :edit_admin,
+          :index,
+          :show,
+          :tab_counts,
+          :timeline,
+          :update,
+          :update_admin,
+        ], Reservation
+
+        can [
+          :assign_price_policies_to_problem_orders,
+          :batch_update,
+          :create,
+          :index,
+          :order_in_past,
+          :send_receipt,
+          :show,
+          :tab_counts,
+          :update,
+        ], Order
 
         can [:index, :view_details, :schedule, :show], [Product]
 
@@ -86,12 +114,13 @@ class Ability
 
       if user.facility_director_of?(resource)
         can [ :activate, :deactivate ], ExternalService
+        can :disputed, [Order, Reservation]
         can :manage, TrainingRequest
       end
 
       if user.manager_of?(resource)
         can :manage, [
-          AccountUser, FacilityAccount, Journal,
+          AccountUser, Facility, FacilityAccount, Journal,
           Statement, StoredFile, PricePolicy, InstrumentPricePolicy,
           ItemPricePolicy, OrderStatus, PriceGroup, ReportsController,
           ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup,
@@ -106,8 +135,7 @@ class Ability
           account.facility.nil? || account.facility == resource
         end
 
-        can :show_problems, Order
-        can [:update, :manage], Facility
+        can :show_problems, [Order, Reservation]
       end
 
       # Facility senior staff is based off of staff, but has a few more abilities

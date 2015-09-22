@@ -5,7 +5,7 @@ RSpec.describe Ability do
   let(:facility) { create(:setup_facility) }
   let(:instrument) { create(:instrument_requiring_approval, facility: facility) }
   let(:stub_controller) { OpenStruct.new }
-  let(:subject_resource) { :stub }
+  let(:subject_resource) { facility }
 
   shared_examples_for "it can manage price group members" do
     it "can manage its members" do
@@ -49,6 +49,14 @@ RSpec.describe Ability do
     it { expect(ability.can?(:read, Notification)).to be false }
   end
 
+  shared_examples_for "it can access problem reservations" do
+    it { expect(ability.can?(:show_problems, Reservation)).to be true }
+  end
+
+  shared_examples_for "it cannot access problem reservations" do
+    it { expect(ability.can?(:show_problems, Reservation)).to be false }
+  end
+
   describe "administrator" do
     let(:user) { create(:user, :administrator) }
 
@@ -83,6 +91,7 @@ RSpec.describe Ability do
     end
 
     it_behaves_like "it can manage training requests"
+    it_behaves_like "it can access problem reservations"
   end
 
   describe "facility director" do
@@ -110,6 +119,7 @@ RSpec.describe Ability do
 
     it_behaves_like "it can manage training requests"
     it_behaves_like "it can read notifications"
+    it_behaves_like "it can access problem reservations"
   end
 
   describe "senior staff" do
@@ -117,6 +127,7 @@ RSpec.describe Ability do
 
     it_behaves_like "it can manage training requests"
     it_behaves_like "it cannot read notifications"
+    it_behaves_like "it cannot access problem reservations"
   end
 
   describe "staff" do
@@ -124,6 +135,7 @@ RSpec.describe Ability do
 
     it_behaves_like "it can create but not manage training requests"
     it_behaves_like "it can read notifications"
+    it_behaves_like "it cannot access problem reservations"
   end
 
   describe "unprivileged user" do
@@ -166,5 +178,6 @@ RSpec.describe Ability do
     end
 
     it_behaves_like "it cannot read notifications"
+    it_behaves_like "it cannot access problem reservations"
   end
 end

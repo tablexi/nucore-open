@@ -1,6 +1,8 @@
 %ul.nav.nav-tabs.js-tab-counts
   = display_tab "New / In Process", facility_orders_path, action: :index
-  - if current_user.manager_of?(current_facility)
+  - if current_ability.can?(:show_problems, Order)
     = display_tab "Problem Orders", show_problems_facility_orders_path, action: :show_problems
-    = display_tab "Disputed", disputed_facility_orders_path, action: :disputed if SettingsHelper.has_review_period?
+  - if SettingsHelper.has_review_period? && current_ability.can?(:disputed, Order)
+    = display_tab "Disputed", disputed_facility_orders_path, action: :disputed
+  - if current_user.manager_of?(current_facility)
     = tab "Add New", new_facility_order_import_path(current_facility), (controller.controller_name == 'facility_orders_import')

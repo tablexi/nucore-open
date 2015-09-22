@@ -120,7 +120,7 @@ RSpec.describe MessageSummarizer do
     before { order_detail.update_attribute(:dispute_at, 1.day.ago) }
 
     context "and the user can access disputed order details" do
-      before { ability.can(:disputed_orders, Facility) }
+      before { ability.can(:disputed, Order) }
 
       context "when in a manager context" do
         let(:admin_tab?) { true }

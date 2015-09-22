@@ -150,7 +150,12 @@ RSpec.describe FacilityReservationsController do
   end
 
   context '#disputed' do
-    skip "TODO test exists for the FacilityOrdersController version"
+    before(:each) do
+      @method = :get
+      @action = :disputed
+    end
+
+    it_should_allow_managers_only # TODO: identical to FacilityOrdersController#disputed spec
   end
 
   context '#edit' do
@@ -418,8 +423,15 @@ RSpec.describe FacilityReservationsController do
     end
   end
 
-  context '#tab_counts' do
-    skip "TODO test exists for the FacilityOrdersController version"
+  describe "#tab_counts" do
+    before(:each) do
+      @method = :get
+      @action = :tab_counts
+      @params.merge!(tabs: %w(new_or_in_process_orders disputed_orders problem_order_details))
+    end
+
+    it_should_allow_operators_only
+    # TODO: more complete tests exist for the FacilityOrdersController version
   end
 
   context 'admin' do
