@@ -5,10 +5,15 @@ class TransactionChosenInput < SimpleForm::Inputs::Base #CollectionSelectInput
     options[:label_method] ||= :name
     options[:value_method] ||= :id
 
-    search_fields[attribute_name] = [collection_items.first.send(options[:value_method].to_sym)] if collection_items.to_a.size == 1
+    # By calling `to_a` here, it fetches the AR::Relation into objects. Since that will
+    # happen later anyways, by doing it up front, we prevent extra `count(*)` queries,
+    # which were slowing down the page.
+    collection_size = collection_items.to_a.size
+
+    search_fields[attribute_name] = [collection_items.first.send(options[:value_method].to_sym)] if collection_size == 1
 
     select_options = {:multiple => true, :"data-placeholder" => placeholder_label }
-    select_options.merge!({:disabled => :disabled}) unless collection_items.to_a.size > 1
+    select_options.merge!({:disabled => :disabled}) unless collection_size > 1
 
     template.select_tag(attribute_name, option_data, select_options).html_safe
   end
@@ -21,7 +26,7 @@ class TransactionChosenInput < SimpleForm::Inputs::Base #CollectionSelectInput
   private
 
   def collection_items
-    template.instance_variable_get("@#{attribute_name}")
+    template.instance_variable_get("@#{attribute_name}").to_a
   end
 
   def model_label
