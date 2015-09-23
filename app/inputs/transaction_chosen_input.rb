@@ -26,7 +26,7 @@ class TransactionChosenInput < SimpleForm::Inputs::Base #CollectionSelectInput
   private
 
   def collection_items
-    template.instance_variable_get("@#{attribute_name}").to_a
+    template.instance_variable_get("@#{attribute_name}")
   end
 
   def model_label
