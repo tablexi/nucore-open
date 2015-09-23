@@ -121,10 +121,6 @@ class Account < ActiveRecord::Base
     account_number <=> obj.account_number
   end
 
-  # def owner_user
-  #   self.owner.user if owner
-  # end
-
   def owner_user_name
     owner_user.try(:name) || ""
   end
