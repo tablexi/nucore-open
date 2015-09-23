@@ -112,8 +112,7 @@ class OrderDetail < ActiveRecord::Base
     details = scoped
 
     if facility_id.present?
-      details = joins(:order)
-      details = details.where(orders: { :facility_id => facility_id })
+      details = details.joins(:order).where(orders: { :facility_id => facility_id })
     end
 
     details
