@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe Notifier do
+RSpec.describe Notifier do
   describe ".order_receipt" do
     let(:email) { ActionMailer::Base.deliveries.last }
     let(:note) { nil }
