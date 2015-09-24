@@ -13,9 +13,9 @@ gem 'capistrano',       '2.15.4'
 gem 'whenever', require: false
 
 ## auth
-gem 'devise',           '~>2.2.8'
-gem 'devise-encryptable', '0.1.2'
-gem 'devise_ldap_authenticatable', '~>0.7.0'
+gem 'devise',           '~> 3.5.0'
+gem 'devise-encryptable', '~> 0.2.0'
+gem 'devise_ldap_authenticatable', '~> 0.8.5'
 gem 'cancancan',        '1.10'
 
 ## models
