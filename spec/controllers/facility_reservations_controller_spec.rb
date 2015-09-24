@@ -150,7 +150,12 @@ RSpec.describe FacilityReservationsController do
   end
 
   context '#disputed' do
-    skip "TODO test exists for the FacilityOrdersController version"
+    before(:each) do
+      @method = :get
+      @action = :disputed
+    end
+
+    it_should_allow_managers_only # TODO: identical to FacilityOrdersController#disputed spec
   end
 
   context '#edit' do

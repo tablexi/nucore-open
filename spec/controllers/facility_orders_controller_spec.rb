@@ -88,7 +88,7 @@ RSpec.describe FacilityOrdersController do
       @action=:disputed
     end
 
-    it_should_allow_operators_only
+    it_should_allow_managers_only
   end
 
   context '#index' do

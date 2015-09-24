@@ -63,9 +63,36 @@ class Ability
 
       if user.operator_of?(resource)
         can :manage, [
-          AccountPriceGroupMember, OrderDetail, Order, Reservation,
-          UserPriceGroupMember, ProductUser, TrainingRequest
+          AccountPriceGroupMember,
+          OrderDetail,
+          ProductUser,
+          TrainingRequest,
+          UserPriceGroupMember,
         ]
+
+        can [
+          :assign_price_policies_to_problem_orders,
+          :create,
+          :edit,
+          :edit_admin,
+          :index,
+          :show,
+          :timeline,
+          :update,
+          :update_admin,
+        ], Reservation
+
+        can [
+          :assign_price_policies_to_problem_orders,
+          :batch_update,
+          :create,
+          :index,
+          :order_in_past,
+          :send_receipt,
+          :show,
+          :tab_counts,
+          :update,
+        ], Order
 
         can [:index, :view_details, :schedule, :show], [Product]
 
@@ -86,6 +113,7 @@ class Ability
 
       if user.facility_director_of?(resource)
         can [ :activate, :deactivate ], ExternalService
+        can :disputed, [Order, Reservation]
         can :manage, TrainingRequest
       end
 
