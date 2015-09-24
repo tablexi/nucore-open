@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
 require 'account_cleaner'
 
-describe AccountCleaner do
+RSpec.describe AccountCleaner do
 
   before :each do
     @account                  = FactoryGirl.create(:setup_account, :expires_at => Time.zone.parse('2063-04-20 14:30:30'))

@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe NufsAccount do
+RSpec.describe NufsAccount do
   context "account number validations" do
     before(:each) do
       @user     = FactoryGirl.create(:user)

@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe ReservationUserActionPresenter do
+RSpec.describe ReservationUserActionPresenter do
   include Rails.application.routes.url_helpers
 
   let(:facility) { build_stubbed(:facility) }

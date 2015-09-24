@@ -1,6 +1,7 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "rails_helper"
+require 'controller_spec_helper'
 
-describe SurveysController do
+RSpec.describe SurveysController do
   render_views
 
   before(:all) { create_users }
@@ -113,7 +114,7 @@ describe SurveysController do
     expect(assigns[:service]).to eq service
     expect(external_service_passer.reload.active).to eq active
     expect(external_service_passer2.reload.active).to be false
-    is_expected.to set_the_flash
+    is_expected.to set_flash
     is_expected.to redirect_to @request.env['HTTP_REFERER']
 
     @params[:external_service_passer_id] = external_service_passer2.id

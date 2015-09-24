@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe PriceGroupProduct do
+RSpec.describe PriceGroupProduct do
 
   before :each do
     @facility=FactoryGirl.create(:facility)

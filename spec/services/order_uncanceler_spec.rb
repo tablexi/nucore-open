@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe OrderUncanceler do
+RSpec.describe OrderUncanceler do
   let(:cancel_status) { OrderStatus.canceled.first }
   let(:uncanceler) { OrderUncanceler.new }
 

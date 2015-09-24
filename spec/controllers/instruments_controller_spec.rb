@@ -1,7 +1,7 @@
-require "spec_helper"
+require "rails_helper"
 require "controller_spec_helper"
 
-describe InstrumentsController do
+RSpec.describe InstrumentsController do
   let(:facility) { @authable }
   let(:instrument) { @instrument }
 
@@ -395,7 +395,7 @@ describe InstrumentsController do
       expect(assigns(:instrument)).to be_kind_of Instrument
       expect(assigns(:instrument).initial_order_status_id).to eq(OrderStatus.default_order_status.id)
       yield
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to manage_facility_instrument_url(@authable, assigns(:instrument))
     end
   end
@@ -478,7 +478,7 @@ describe InstrumentsController do
       expect(assigns(:header_prefix)).to eq("Edit")
       expect(assigns(:instrument)).to eq(@instrument)
       yield
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to manage_facility_instrument_url(@authable, assigns(:instrument))
     end
   end

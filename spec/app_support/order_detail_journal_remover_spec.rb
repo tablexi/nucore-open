@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe OrderDetailJournalRemover do
+RSpec.describe OrderDetailJournalRemover do
   let(:facility) { create(:setup_facility) }
   let(:product) { create(:setup_item, facility: facility) }
   let(:orders) { create_list(:purchased_order, 2, product: product) }

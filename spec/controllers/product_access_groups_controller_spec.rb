@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
 require 'controller_spec_helper'
 
-describe ProductAccessGroupsController do
+RSpec.describe ProductAccessGroupsController do
   render_views
   before :all do
     create_users

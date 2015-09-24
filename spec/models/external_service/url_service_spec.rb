@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe UrlService do
+RSpec.describe UrlService do
 
   subject(:url_service) { described_class.create location: 'http://www.survey.com' }
 

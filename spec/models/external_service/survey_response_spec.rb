@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe SurveyResponse do
+RSpec.describe SurveyResponse do
   include_context 'external service'
 
   let :deserialized_response_data do {

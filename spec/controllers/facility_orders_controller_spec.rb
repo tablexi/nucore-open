@@ -1,6 +1,7 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "rails_helper"
+require 'controller_spec_helper'
 
-describe FacilityOrdersController do
+RSpec.describe FacilityOrdersController do
   let(:account) { @account }
   let(:facility) { @authable }
   let(:product) { @product }

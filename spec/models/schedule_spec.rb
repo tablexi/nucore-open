@@ -1,12 +1,12 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Schedule do
+RSpec.describe Schedule do
   let(:schedule) { FactoryGirl.create(:schedule) }
   let(:first_reservation_time) { Time.zone.parse("#{Date.today.to_s} 10:00:00") + 1.day }
-  
+
   context 'single instrument on schedule' do
     let(:instrument) { FactoryGirl.create(:setup_instrument) }
-    
+
     it 'should have a schedule' do
       expect(instrument.schedule).to be
     end
@@ -17,7 +17,7 @@ describe Schedule do
 
     context 'with a reservation placed' do
       let!(:reservation) do
-        FactoryGirl.create(:purchased_reservation, 
+        FactoryGirl.create(:purchased_reservation,
                               :product => instrument,
                               :reserve_start_at => first_reservation_time,
                               :reserve_end_at => first_reservation_time + 1.hour)
@@ -48,7 +48,7 @@ describe Schedule do
 
     context 'with a reservation placed' do
       let!(:reservation) do
-        FactoryGirl.create(:purchased_reservation, 
+        FactoryGirl.create(:purchased_reservation,
                               :product => instruments[0],
                               :reserve_start_at => first_reservation_time,
                               :reserve_end_at => first_reservation_time + 1.hour)
@@ -65,7 +65,7 @@ describe Schedule do
 
       context 'a second reservation successfully placed' do
         let!(:reservation2) do
-          FactoryGirl.create(:purchased_reservation, 
+          FactoryGirl.create(:purchased_reservation,
                               :product => instruments[1],
                               :reserve_start_at => first_reservation_time + 1.hour,
                               :reserve_end_at => first_reservation_time + 2.hours)

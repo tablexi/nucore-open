@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Reservation do
+RSpec.describe Reservation do
   context 'started reservation completed by cron job' do
     subject do
       res = FactoryGirl.create :purchased_reservation,

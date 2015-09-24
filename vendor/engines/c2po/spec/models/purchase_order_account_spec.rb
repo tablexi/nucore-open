@@ -1,7 +1,7 @@
-require "spec_helper"
+require "rails_helper"
 require "affiliate_account_helper"
 
-describe PurchaseOrderAccount do
+RSpec.describe PurchaseOrderAccount do
   include AffiliateAccountHelper
 
   subject(:account) { PurchaseOrderAccount.create(@account_attrs) }

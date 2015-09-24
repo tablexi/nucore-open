@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe ItemPricePolicy do
+RSpec.describe ItemPricePolicy do
   it "should create a price policy for tomorrow if no policies already exist for that day" do
     is_expected.to allow_value(Date.today+1).for(:start_date)
   end

@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe BudgetedChartString do
+RSpec.describe BudgetedChartString do
 
   it "should require fund" do
     is_expected.to validate_presence_of(:fund)

@@ -1,9 +1,9 @@
-require 'spec_helper'
+require "rails_helper"
 
 #
 # Implements the NU provided price policy test matrix
 # https://docs.google.com/a/tablexi.com/spreadsheet/ccc?key=0Arnc3pO6pwnFdFlWa2ZKbW40ZzZHUVAzOC1CMERBTXc&usp=sharing
-describe InstrumentPricePolicy do
+RSpec.describe InstrumentPricePolicy do
   shared_context 'Res 3-4, Actual 3-4' do
     let(:reserve) { [15, 0, 16, 0] }
     let(:actual)  { [15, 0, 16, 0] }

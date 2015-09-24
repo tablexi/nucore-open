@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
 require 'controller_spec_helper'
 
-describe PriceGroupProductsController do
+RSpec.describe PriceGroupProductsController do
   render_views
 
   before(:all) { create_users }
@@ -9,7 +9,7 @@ describe PriceGroupProductsController do
   before(:each) do
     @authable=FactoryGirl.create(:facility)
     @facility_account=@authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @product = FactoryGirl.create(:instrument, :facility_account_id => @facility_account.id, :facility => @authable)    
+    @product = FactoryGirl.create(:instrument, :facility_account_id => @facility_account.id, :facility => @authable)
     create_price_group_products
     @params={ :facility_id => @authable.url_name, :id => @product.url_name }
   end

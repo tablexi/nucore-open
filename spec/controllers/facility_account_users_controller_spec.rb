@@ -1,6 +1,7 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "rails_helper"
+require 'controller_spec_helper'
 
-describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit_accounts) do
+RSpec.describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit_accounts) do
   render_views
 
   before(:all) { create_users }
@@ -77,7 +78,7 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
       expect(assigns(:account_user).user_role).to eq(AccountUser::ACCOUNT_PURCHASER)
       expect(assigns(:account_user).user).to eq(@purchaser)
       expect(assigns(:account_user).created_by).to eq(user.id)
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to facility_account_members_path(@authable, @account)
     end
 
@@ -105,7 +106,7 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
           expect(@account.reload.account_users.owners.count).to eq(2)
           expect(@account.account_users.owners.active).to be_one
           expect(assigns(:account).reload.owner_user).to eq(@purchaser)
-          is_expected.to set_the_flash
+          is_expected.to set_flash
           assert_redirected_to facility_account_members_path(@authable, @account)
         end
       end
@@ -125,7 +126,7 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
         it 'adds the owner' do
           expect(assigns(:account)).to eq(@account)
           expect(@account.account_users.owners.count).to eq(1)
-          is_expected.to set_the_flash
+          is_expected.to set_flash
           assert_redirected_to facility_account_members_path(@authable, @account)
         end
       end
@@ -150,7 +151,7 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
             expect(@account.account_users.purchasers.map(&:user)).to eq([@business_admin])
             expect(@account.account_users.business_administrators).not_to be_any
 
-            is_expected.to set_the_flash
+            is_expected.to set_flash
             assert_redirected_to facility_account_members_path(@authable, @account)
           end
         end
@@ -207,7 +208,7 @@ describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit
       expect(assigns(:account_user)).to eq(@account_user)
       expect(assigns(:account_user).deleted_at).not_to be_nil
       expect(assigns(:account_user).deleted_by).to eq(user.id)
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to facility_account_members_path(@authable, @account)
     end
 

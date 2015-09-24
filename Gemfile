@@ -10,6 +10,7 @@ gem 'foreigner',        '1.1.1'
 
 ## deployment
 gem 'capistrano',       '2.15.4'
+gem 'whenever', require: false
 
 ## auth
 gem 'devise',           '~>2.2.8'
@@ -67,8 +68,9 @@ group :development, :test do
   gem 'pry-rails',         '~> 0.3.2'
   gem 'pry-byebug',        '~> 2.0.0'
   gem 'quiet_assets'
-  gem 'rspec-rails',       '~> 2.99.0'
-  gem 'shoulda-matchers',  '2.4'
+  gem 'rspec-rails',       '~> 3.3.0'
+  gem 'shoulda-matchers',  '~> 2.8.0', require: false
+  gem 'rspec-collection_matchers'
   gem 'single_test',       '0.4.0'
   gem 'spring'
   gem 'spring-commands-rspec'

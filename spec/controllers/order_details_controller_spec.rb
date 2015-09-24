@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe OrderDetailsController do
+RSpec.describe OrderDetailsController do
   describe '#dispute' do
     let(:user) { order_detail.user }
     let(:reservation) { create(:purchased_reservation) }

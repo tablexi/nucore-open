@@ -1,10 +1,10 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Reservation do
+RSpec.describe Reservation do
   let(:instrument) { FactoryGirl.create(:setup_instrument) }
   let(:user) { FactoryGirl.create(:user) }
   let(:reservation) { FactoryGirl.create(:purchased_reservation, :user => user, :product => :instrument) }
-  
+
   describe 'facility setup' do
     let(:facility) { FactoryGirl.create(:setup_facility) }
     it 'should be saved' do
@@ -108,7 +108,7 @@ describe Reservation do
 
     describe 'validated reservation' do
       let(:reservation) { FactoryGirl.create(:validated_reservation) }
-      
+
       it 'should be saved' do
         expect(reservation).to be_persisted
       end
@@ -120,7 +120,7 @@ describe Reservation do
 
     describe 'purchased reservation' do
       let(:reservation) { FactoryGirl.create(:purchased_reservation) }
-      
+
       it 'should be saved' do
         expect(reservation).to be_persisted
       end

@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Reports::InstrumentUtilizationReport do
+RSpec.describe Reports::InstrumentUtilizationReport do
   subject(:report) { described_class.new(reservations) }
   let(:product) { build_stubbed(:product, name: 'Test 1') }
   let(:product2) { build_stubbed(:product, name: 'Test 2') }

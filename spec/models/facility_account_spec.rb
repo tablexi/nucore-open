@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe FacilityAccount do
+RSpec.describe FacilityAccount do
   context "valid account number" do
     before(:each) do
       @user     = FactoryGirl.create(:user)

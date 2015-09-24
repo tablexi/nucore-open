@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Reservations::Validations do
+RSpec.describe Reservations::Validations do
 
   subject(:reservation) { build :setup_reservation }
 

@@ -1,4 +1,8 @@
 class MessageSummarizer::NotificationsSummary < MessageSummarizer::MessageSummary
+  def in_context?
+    any?
+  end
+
   private
 
   def allowed?

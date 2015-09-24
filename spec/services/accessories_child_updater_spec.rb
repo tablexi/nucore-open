@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Accessories::ChildUpdater do
+RSpec.describe Accessories::ChildUpdater do
   let(:order) { Order.new }
   let(:order_detail) do
     build_stubbed :order_detail,

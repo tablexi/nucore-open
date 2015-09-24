@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe OrderDetail do
+RSpec.describe OrderDetail do
   let(:instrument) { FactoryGirl.create(:instrument_with_accessory) }
   let(:accessory) { instrument.accessories.first }
   let(:reservation) { FactoryGirl.create(:completed_reservation, :product => instrument) }

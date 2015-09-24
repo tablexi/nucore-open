@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Survey do
+RSpec.describe Survey do
   include_context 'external service'
 
   subject(:survey) { described_class.new external_service_passer.passer, params }

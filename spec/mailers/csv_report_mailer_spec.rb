@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe CsvReportMailer do
+RSpec.describe CsvReportMailer do
   describe ".csv_report_email" do
     let(:email) { ActionMailer::Base.deliveries.last }
     let(:recipient) { "recipient@example.net" }

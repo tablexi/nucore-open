@@ -1,6 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
+require "journal"
 
-describe Journal do
+RSpec.describe Journal do
   subject(:journal) do
     build(:journal,
       facility: facility,
@@ -150,7 +151,7 @@ describe Journal do
       end
 
       it "should not allow creation of a journal for A" do
-        expect { create_pending_journal_for( @facilitya) }.to raise_error
+        expect { create_pending_journal_for( @facilitya) }.to raise_error(Journal::CreationError)
       end
     end
 
@@ -160,15 +161,15 @@ describe Journal do
       end
 
       it "should not allow creation of a journal for B & C (journal pending on B)" do
-        expect { create_pending_journal_for( @facilityb, @facilityc ) }.to raise_error
+        expect { create_pending_journal_for( @facilityb, @facilityc ) }.to raise_error(Journal::CreationError)
       end
 
       it "should not allow creation of a journal for A (journal pending on A)" do
-        expect { create_pending_journal_for( @facilitya ) }.to raise_error
+        expect { create_pending_journal_for( @facilitya ) }.to raise_error(Journal::CreationError)
       end
 
       it "should not allow creation of a journal for B (journal pending on B)" do
-        expect { create_pending_journal_for( @facilityb ) }.to raise_error
+        expect { create_pending_journal_for( @facilityb ) }.to raise_error(Journal::CreationError)
       end
 
       it "should allow creation of a journal for C" do

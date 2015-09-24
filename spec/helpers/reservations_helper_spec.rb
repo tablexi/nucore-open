@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe ReservationsHelper do
+RSpec.describe ReservationsHelper do
   describe "#end_time_disabled?" do
     context "when the reservation is not persisted" do
       subject(:reservation) { Reservation.new }

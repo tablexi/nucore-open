@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
 require 'controller_spec_helper'
 
-describe AccessoriesController do
+RSpec.describe AccessoriesController do
   render_views
   before(:all) { create_users }
 

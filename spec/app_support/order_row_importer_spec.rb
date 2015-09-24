@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe OrderRowImporter do
+RSpec.describe OrderRowImporter do
   include DateHelper
 
   subject { OrderRowImporter.new(row, order_import) }

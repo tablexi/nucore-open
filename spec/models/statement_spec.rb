@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Statement do
+RSpec.describe Statement do
   subject(:statement) { create(:statement, account: account, created_by: user.id, facility: facility) }
 
   let(:account) { create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user)) }

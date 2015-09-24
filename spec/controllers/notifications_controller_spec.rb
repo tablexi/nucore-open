@@ -1,23 +1,23 @@
-require 'spec_helper'
+require "rails_helper"
 require 'controller_spec_helper'
 require 'notifications_helper'
 
 
-shared_examples 'user without notifications' do
+RSpec.shared_examples 'user without notifications' do
   context 'director without notices' do
     before :each do
       @director.notifications.all.each{|n| n.destroy}
     end
 
     it_should_allow :director, "no access to notifications if there aren't any" do
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to root_path
     end
   end
 end
 
 
-describe NotificationsController do
+RSpec.describe NotificationsController do
   include NotificationsHelper
 
   before :each do

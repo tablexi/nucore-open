@@ -1,4 +1,4 @@
-shared_context "feature enabled" do |feature|
+RSpec.shared_context "feature enabled" do |feature|
   before(:all) do
     SettingsHelper.enable_feature(feature)
     Nucore::Application.reload_routes!
@@ -10,7 +10,7 @@ shared_context "feature enabled" do |feature|
   end
 end
 
-shared_context "feature disabled" do |feature|
+RSpec.shared_context "feature disabled" do |feature|
   before(:all) do
     SettingsHelper.enable_feature(feature, false)
     Nucore::Application.reload_routes!

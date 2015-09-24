@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
 require 'affiliate_account_helper'
 
-describe CreditCardAccount do
+RSpec.describe CreditCardAccount do
   include AffiliateAccountHelper
 
   before(:each) do

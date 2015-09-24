@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe OrderDetail do
+RSpec.describe OrderDetail do
   subject(:order_detail) { setup_order_detail(order, item, original_statement) }
 
   let(:account) { setup_account(:purchase_order_account, facility, user) }

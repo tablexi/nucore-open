@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 RSpec.describe ReservationInstrumentSwitcher do
   let(:instrument) { FactoryGirl.create(:setup_instrument, relay: create(:relay_syna)) }

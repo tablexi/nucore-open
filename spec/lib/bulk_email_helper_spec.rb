@@ -1,12 +1,12 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe BulkEmailHelper do
-  
+RSpec.describe BulkEmailHelper do
+
   # Utility class for testing the helper methods
   class BulkEmailTest
     include BulkEmailHelper
     include DateHelper
-    
+
     attr_reader :order_details
   end
 
@@ -33,10 +33,10 @@ describe BulkEmailHelper do
     before :each do
       @od_yesterday = place_product_order(@purchaser, @facility, @product, @account)
       @od_yesterday.order.update_attributes(:ordered_at => (Time.zone.now - 1.day))
-      
+
       @od_tomorrow = place_product_order(@purchaser2, @facility, @product2, @account)
       @od_tomorrow.order.update_attributes(:ordered_at => (Time.zone.now + 1.day))
-      
+
       @od_today = place_product_order(@purchaser3, @facility, @product, @account)
     end
 
@@ -46,7 +46,7 @@ describe BulkEmailHelper do
       expect(@controller.order_details).to contain_all [@od_today, @od_tomorrow]
       expect(users).to contain_all [@purchaser3, @purchaser2]
     end
-    
+
     it "should only return the one today and the one yesterday" do
       @params.merge!({ :end_date => Time.zone.now })
       users = @controller.do_search(@params)
@@ -71,9 +71,9 @@ describe BulkEmailHelper do
             :facility_account => @facility_account,
             :min_reserve_mins => 60,
             :max_reserve_mins => 60)
-      
+
       @reservation_yesterday = place_reservation_for_instrument(@purchaser, @instrument, @account, Time.zone.now - 1.day)
-      @reservation_tomorrow = place_reservation_for_instrument(@purchaser2, @instrument, @account, Time.zone.now + 1.day)      
+      @reservation_tomorrow = place_reservation_for_instrument(@purchaser2, @instrument, @account, Time.zone.now + 1.day)
       @reservation_today = place_reservation_for_instrument(@purchaser3, @instrument, @account, Time.zone.now)
     end
 
@@ -83,7 +83,7 @@ describe BulkEmailHelper do
       expect(@controller.order_details).to contain_all [@reservation_today.order_detail, @reservation_tomorrow.order_detail]
       expect(users).to contain_all [@purchaser3, @purchaser2]
     end
-    
+
     it "should only return the one today and the one yesterday" do
       @params.merge!({ :end_date => Time.zone.now })
       users = @controller.do_search(@params)
@@ -130,7 +130,7 @@ describe BulkEmailHelper do
       @owner3 = FactoryGirl.create(:user)
       @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner2) ])
       @account3 = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner3) ])
-      
+
       @od1 = place_product_order(@purchaser, @facility, @product, @account)
       @od2 = place_product_order(@purchaser, @facility, @product2, @account2)
       @od3 = place_product_order(@purchaser, @facility, @product3, @account3)
@@ -158,7 +158,7 @@ describe BulkEmailHelper do
       @owner3 = FactoryGirl.create(:user)
       @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner2) ])
       @account3 = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner3) ])
-      
+
       @od1 = place_product_order(@purchaser, @facility, @product, @account)
       @od2 = place_product_order(@purchaser2, @facility, @product2, @account2)
       @od3 = place_product_order(@purchaser3, @facility, @product3, @account3)
@@ -211,7 +211,7 @@ describe BulkEmailHelper do
       expect(users).to contain_all [@user2, @user3]
     end
   end
-  
+
   # Oracle blows up if you do a WHERE IN (...) clause with more than a 1000 items
   # so let's test it.
   # commented out because the creation of users takes so long. run it every once in a while

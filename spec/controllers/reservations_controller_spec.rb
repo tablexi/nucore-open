@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
 require 'controller_spec_helper'
 
-describe ReservationsController do
+RSpec.describe ReservationsController do
   include DateHelper
 
   let(:instrument) { @instrument }
@@ -321,7 +321,7 @@ describe ReservationsController do
       expect(assigns[:reservation]).to be_valid
       expect(assigns[:order_detail].estimated_cost).not_to be_nil
       expect(assigns[:order_detail].estimated_subsidy).not_to be_nil
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to purchase_order_path(@order)
     end
 
@@ -508,7 +508,7 @@ describe ReservationsController do
         expect(assigns[:reservation]).to be_valid
         expect(assigns[:order_detail].estimated_cost).not_to be_nil
         expect(assigns[:order_detail].estimated_subsidy).not_to be_nil
-        is_expected.to set_the_flash
+        is_expected.to set_flash
         assert_redirected_to cart_path
       end
     end
@@ -801,7 +801,7 @@ describe ReservationsController do
         expect(assigns[:order_detail].estimated_cost).to be_present
         expect(assigns[:order_detail].estimated_subsidy).to be_present
 
-        is_expected.to set_the_flash
+        is_expected.to set_flash
         assert_redirected_to cart_url
       end
 
@@ -971,7 +971,7 @@ describe ReservationsController do
         .to eq(human_datetime(reservation.earliest_possible.reserve_start_at))
       expect(human_datetime(assigns(:reservation).reserve_end_at))
         .to eq(human_datetime(reservation.earliest_possible.reserve_end_at))
-      is_expected.to set_the_flash
+      is_expected.to set_flash
       assert_redirected_to reservations_status_path(status: "upcoming")
     end
   end
@@ -1002,7 +1002,7 @@ describe ReservationsController do
         expect(assigns(:reservation)).to eq(@reservation)
         expect(human_datetime(assigns(:reservation).reserve_start_at)).to eq(human_datetime(@orig_start_at))
         expect(human_datetime(assigns(:reservation).reserve_end_at)).to eq(human_datetime(@orig_end_at))
-        is_expected.to set_the_flash
+        is_expected.to set_flash
         assert_redirected_to reservations_status_path(:status => 'upcoming')
       end
     end
@@ -1040,7 +1040,7 @@ describe ReservationsController do
           end
 
           it 'responds properly' do
-            is_expected.to set_the_flash
+            is_expected.to set_flash
             is_expected.to respond_with :redirect
           end
 
@@ -1135,7 +1135,7 @@ describe ReservationsController do
           expect(assigns(:reservation)).to be_complete
           expect(assigns(:instrument).instrument_statuses.size).to eq(1)
           expect(assigns(:instrument).instrument_statuses[0].is_on).to eq(false)
-          is_expected.to set_the_flash
+          is_expected.to set_flash
           is_expected.to respond_with :redirect
         end
 

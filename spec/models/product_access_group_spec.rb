@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe ProductAccessGroup do
+RSpec.describe ProductAccessGroup do
   before :each do
     @facility         = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
@@ -16,18 +16,18 @@ describe ProductAccessGroup do
   it { is_expected.to validate_presence_of :name }
   it { is_expected.to validate_presence_of :product }
   it { is_expected.to validate_uniqueness_of(:name).scoped_to(:product_id) }
-  
+
   it "removing the level should also remove the join to the scheduling rule" do
     @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     @rule.product_access_groups << @restriction_level
-    
+
     expect(@rule.product_access_groups.size).to eq(1)
-    
+
     @restriction_level.destroy
     @rule.reload
     expect(@rule.product_access_groups).to be_empty
   end
-  
+
   it "should nullify the product users's instrument restrcition when it's deleted" do
     @user = FactoryGirl.create(:user)
     @product_user = ProductUser.create(:product => @instrument, :user => @user, :approved_by => @user.id, :product_access_group => @restriction_level)

@@ -1,19 +1,19 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Notifier do
+RSpec.describe Notifier do
   before :each do
     @user = FactoryGirl.create(:user)
     @facility = FactoryGirl.create(:facility)
     @order_detail = place_and_complete_item_order(@user, @facility)
   end
-  
+
   context 'order_detail_status_change' do
     context 'all order status emails render' do
       # Find all the files that start with order_status_changed_to, find the statuses and
       # get the uniq ones.
       @files = Dir['app/views/notifier/order_status_changed_to_*'].map { |a| File.basename(a) }
       @files = @files.map {|f| f.match(/order_status_changed_to_(.*)\.(html|text)\.(haml|erb)$/)[1]}.uniq
-      
+
       @files.each do |f|
         it "should render template order_status_changed_to_#{f} successfully" do
           expect {
@@ -22,5 +22,5 @@ describe Notifier do
         end
       end
     end
-  end     
+  end
 end

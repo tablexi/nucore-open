@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe PricePolicy do
+RSpec.describe PricePolicy do
   before :all do
     # Settings should be 09-01 or 08-01
     Settings.financial.fiscal_year_begins = '10-01'

@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 require "controller_spec_helper"
 
 require "stringio"
@@ -18,7 +18,7 @@ def nucore_format_date(date)
   date.strftime("%m/%d/%Y")
 end
 
-describe OrderImport, :timecop_freeze do
+RSpec.describe OrderImport, :timecop_freeze do
   let(:now) { fiscal_year_beginning + 5.days }
 
   subject(:order_import) do

@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe ProductUserCreator do
+RSpec.describe ProductUserCreator do
   def create_product_user
     ProductUserCreator.create(user: user, product: product, approver: approver)
   end

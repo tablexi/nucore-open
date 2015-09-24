@@ -1,6 +1,7 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "rails_helper"
+require 'controller_spec_helper'
 
-describe OrdersController do
+RSpec.describe OrdersController do
   include DateHelper
 
   render_views
@@ -693,8 +694,8 @@ describe OrdersController do
           @params.merge!(:order => {:order_details => [{:quantity => 1, :product_id => @item2.id}]})
           do_request
 
-          is_expected.to set_the_flash.to(/can not/)
-          is_expected.to set_the_flash.to(/another/)
+          is_expected.to set_flash.to(/can not/)
+          is_expected.to set_flash.to(/another/)
           expect(response).to redirect_to "/orders/#{@order.id}"
         end
       end
@@ -718,7 +719,7 @@ describe OrdersController do
             maybe_grant_always_sign_in role
             switch_to @guest
             do_request
-            is_expected.not_to set_the_flash
+            is_expected.not_to set_flash
             expect(@order.reload.order_details).not_to be_empty
             expect(response).to redirect_to "/orders/#{@order.id}"
           end
@@ -728,7 +729,7 @@ describe OrdersController do
           @guest2 = FactoryGirl.create(:user)
           switch_to @guest2
           do_request
-          is_expected.to set_the_flash
+          is_expected.to set_flash
           expect(@order.reload.order_details).to be_empty
         end
       end
@@ -742,7 +743,7 @@ describe OrdersController do
         it "should not allow ordering" do
           do_request
           expect(@order.reload.order_details).to be_empty
-          is_expected.to set_the_flash.to(/You are not authorized to place an order on behalf of another user for the facility/)
+          is_expected.to set_flash.to(/You are not authorized to place an order on behalf of another user for the facility/)
         end
       end
       it "should show a warning if the user doesn't have access to the product to be added"
@@ -784,7 +785,7 @@ describe OrdersController do
         do_request
 
         expect(response).to redirect_to "/orders/#{@order.id}"
-        is_expected.to set_the_flash.to /removed/
+        is_expected.to set_flash.to /removed/
 
         expect(@order.reload.order_details.size).to eq(0)
         expect(@order.reload.account).to eq(nil)
@@ -799,7 +800,7 @@ describe OrdersController do
       do_request
 
       expect(response).to redirect_to overridden_redirect
-      is_expected.to set_the_flash.to /removed/
+      is_expected.to set_flash.to /removed/
     end
 
   end
@@ -824,8 +825,8 @@ describe OrdersController do
         @params.merge!("quantity#{@order_detail.id}" => "1.5")
         maybe_grant_always_sign_in :guest
         do_request
-        is_expected.to set_the_flash.to(/quantity/i)
-        is_expected.to set_the_flash.to(/integer/i)
+        is_expected.to set_flash.to(/quantity/i)
+        is_expected.to set_flash.to(/integer/i)
         is_expected.to render_template :show
       end
 

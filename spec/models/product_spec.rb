@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Product do
+RSpec.describe Product do
   subject(:product) { create(:instrument_requiring_approval) }
 
   let(:access_group) { create(:product_access_group, product: product) }

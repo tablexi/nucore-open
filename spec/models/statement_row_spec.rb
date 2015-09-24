@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe StatementRow do
+RSpec.describe StatementRow do
   # TODO reduce this elaborate setup!
   let(:account) { create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user)) }
   let(:facility) { create(:facility) }

@@ -1,10 +1,10 @@
-require 'spec_helper'
+require "rails_helper"
 require 'controller_spec_helper'
 require 'transaction_search_spec_helper'
 
 if AccountManager.using_statements?
 
-  describe FacilityStatementsController do
+  RSpec.describe FacilityStatementsController do
     render_views
 
     def create_order_details
@@ -49,7 +49,7 @@ if AccountManager.using_statements?
       it_should_allow_managers_only do
         expect(assigns(:statements).size).to eq(1)
         expect(assigns(:statements)[0]).to eq(@statement)
-        is_expected.not_to set_the_flash
+        is_expected.not_to set_flash
       end
 
       it_should_deny_all [:staff, :senior_staff]

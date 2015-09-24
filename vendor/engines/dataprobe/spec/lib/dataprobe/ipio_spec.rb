@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Dataprobe::Ipio do
+RSpec.describe Dataprobe::Ipio do
 
   let(:ip) { '192.168.10.15' }
   let(:fake_socket) { double 'TCPSocket', recv: nil, write: nil, close: nil }
@@ -44,7 +44,7 @@ describe Dataprobe::Ipio do
 
   it 'raises an error if an unexpected response was given by the socket' do
     should_toggle "\x00", "\x01"
-    expect { relay.toggle 4, false }.to raise_error
+    expect { relay.toggle 4, false }.to raise_error(Dataprobe::Error)
   end
 
   it 'indicates that the relay is on' do

@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe AccountUser do
+RSpec.describe AccountUser do
   it "should create through account" do
     @user    = FactoryGirl.create(:user)
     @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))

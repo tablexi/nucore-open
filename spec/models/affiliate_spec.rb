@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe Affiliate do
+RSpec.describe Affiliate do
 
   it { is_expected.to validate_uniqueness_of(:name) }
 

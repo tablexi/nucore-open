@@ -1,6 +1,6 @@
-require "spec_helper"
+require "rails_helper"
 
-describe PricePoliciesHelper do
+RSpec.describe PricePoliciesHelper do
   let(:price_group) { build_stubbed(:price_group, id: 0) }
   let(:price_policy) { build_stubbed(:instrument_usage_price_policy, product: nil) }
 
@@ -9,13 +9,13 @@ describe PricePoliciesHelper do
     let(:options) { charge_for_options(instrument) }
 
     context "when the instrument is reservation-only" do
-      before { instrument.stub(:reservation_only?).and_return(true) }
+      before { allow(instrument).to receive(:reservation_only?).and_return(true) }
 
       it { expect(options).to eq([%w(Reservation reservation)]) }
     end
 
     context "when the instrument is not reservation-only" do
-      before { instrument.stub(:reservation_only?).and_return(false) }
+      before { allow(instrument).to receive(:reservation_only?).and_return(false) }
 
       it do
         expect(options).to match_array([
@@ -29,7 +29,7 @@ describe PricePoliciesHelper do
     let(:usage_rate) { display_usage_rate(price_group, price_policy) }
 
     before(:each) do
-      price_policy.stub(:hourly_usage_rate).and_return(BigDecimal("54.32"))
+      allow(price_policy).to receive(:hourly_usage_rate).and_return(BigDecimal("54.32"))
     end
 
     context "when params for the price group are present" do
@@ -53,7 +53,7 @@ describe PricePoliciesHelper do
     let(:usage_subsidy) { display_usage_subsidy(price_group, price_policy) }
 
     before(:each) do
-      price_policy.stub(:hourly_usage_subsidy).and_return(BigDecimal("54.32"))
+      allow(price_policy).to receive(:hourly_usage_subsidy).and_return(BigDecimal("54.32"))
     end
 
     context "when params for the price group are present" do

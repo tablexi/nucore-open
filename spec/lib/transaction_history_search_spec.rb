@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "rails_helper"
 
-describe TransactionSearch do
+RSpec.describe TransactionSearch do
   let(:account) { @account }
   let(:facility) { @authable }
   let(:order_detail_complete) { @order_detail_complete }

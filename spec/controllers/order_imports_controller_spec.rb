@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 require "controller_spec_helper"
 
 def fixture_file(filename)
@@ -8,7 +8,7 @@ def fixture_file(filename)
   )
 end
 
-describe OrderImportsController do
+RSpec.describe OrderImportsController do
   let(:facility) { create(:facility) }
 
   render_views

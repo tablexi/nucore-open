@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
 require 'timecop'
 
-describe OrderDetail do
+RSpec.describe OrderDetail do
   let(:account) { @account }
   let(:facility) { @facility }
   let(:facility_account) { @facility_account }
@@ -896,10 +896,12 @@ describe OrderDetail do
     after :each do
       Settings.reload!
     end
+
     context '7 day' do
       before :each do
         Settings.billing.review_period = 7.days
       end
+
       it 'should not have a reviewed time' do
         @order_detail.to_complete
         expect(@order_detail.reviewed_at).to be_nil
@@ -909,9 +911,10 @@ describe OrderDetail do
       before :each do
         Settings.billing.review_period = 0.days
       end
-      it 'should set reviewed_at to now' do
+
+      it 'should set reviewed_at to now', :timecop_freeze do
         @order_detail.to_complete
-        expect(@order_detail.reviewed_at).to be < Time.zone.now
+        expect(@order_detail.reviewed_at).to eq(Time.zone.now)
       end
     end
   end

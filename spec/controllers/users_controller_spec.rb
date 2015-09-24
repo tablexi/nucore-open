@@ -1,6 +1,7 @@
-require 'spec_helper'; require 'controller_spec_helper'
+require "rails_helper"
+require 'controller_spec_helper'
 
-describe UsersController do
+RSpec.describe UsersController do
   render_views
 
   before(:all) { create_users }
@@ -156,7 +157,7 @@ describe UsersController do
             end
 
             it 'flashes an error' do
-              is_expected.to set_the_flash
+              is_expected.to set_flash
               expect(response).to redirect_to facility_users_path
             end
           end
