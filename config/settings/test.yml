@@ -1,0 +1,2 @@
+devise:
+  secret_key: override-me-in-settings.local.yml
