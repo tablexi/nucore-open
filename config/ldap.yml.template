@@ -6,9 +6,9 @@
 #   'base' => Base Distinguished Name (Base DN)
 #
 development:
-  host: localhost
-  port: 389
-  base: dc=example,dc=com
+  host: <%= LDAP_PORT_389_TCP_ADDR %>
+  port: <%= LDAP_PORT_389_TCP_PORT %>
+  base: dc=example,dc=org
   attribute: cn
-  admin_user: "cn=admin,dc=example,dc=com"
-  admin_password: secret
+  admin_user: "cn=admin,dc=example,dc=org"
+  admin_password: admin
