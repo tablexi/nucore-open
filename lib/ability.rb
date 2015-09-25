@@ -77,6 +77,7 @@ class Ability
           :edit_admin,
           :index,
           :show,
+          :tab_counts,
           :timeline,
           :update,
           :update_admin,
