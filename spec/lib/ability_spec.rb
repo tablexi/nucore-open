@@ -20,8 +20,6 @@ RSpec.describe Ability do
   end
 
   shared_examples_for "it can manage training requests" do
-    let(:subject_resource) { create(:training_request, product: instrument) }
-
     it "can manage training requests" do
       expect(ability.can?(:manage, TrainingRequest)).to be true
     end
@@ -55,6 +53,14 @@ RSpec.describe Ability do
 
   shared_examples_for "it cannot access problem reservations" do
     it { expect(ability.can?(:show_problems, Reservation)).to be false }
+  end
+
+  shared_examples_for "it can access disputed orders" do
+    it { expect(ability.can?(:disputed, Order)).to be true }
+  end
+
+  shared_examples_for "it cannot access disputed orders" do
+    it { expect(ability.can?(:disputed, Order)).to be false }
   end
 
   describe "administrator" do
@@ -94,6 +100,15 @@ RSpec.describe Ability do
     it_behaves_like "it can access problem reservations"
   end
 
+  describe "facility administrator" do
+    let(:user) { create(:user, :facility_administrator, facility: facility) }
+
+    it_behaves_like "it can read notifications"
+    it_behaves_like "it can manage training requests"
+    it_behaves_like "it can access problem reservations"
+    it_behaves_like "it can access disputed orders"
+  end
+
   describe "facility director" do
     let(:user) { create(:user, :facility_director, facility: facility) }
 
@@ -120,6 +135,7 @@ RSpec.describe Ability do
     it_behaves_like "it can manage training requests"
     it_behaves_like "it can read notifications"
     it_behaves_like "it can access problem reservations"
+    it_behaves_like "it can access disputed orders"
   end
 
   describe "senior staff" do
@@ -128,6 +144,7 @@ RSpec.describe Ability do
     it_behaves_like "it can manage training requests"
     it_behaves_like "it cannot read notifications"
     it_behaves_like "it cannot access problem reservations"
+    it_behaves_like "it cannot access disputed orders"
   end
 
   describe "staff" do
@@ -136,6 +153,7 @@ RSpec.describe Ability do
     it_behaves_like "it can create but not manage training requests"
     it_behaves_like "it can read notifications"
     it_behaves_like "it cannot access problem reservations"
+    it_behaves_like "it cannot access disputed orders"
   end
 
   describe "unprivileged user" do
@@ -179,5 +197,6 @@ RSpec.describe Ability do
 
     it_behaves_like "it cannot read notifications"
     it_behaves_like "it cannot access problem reservations"
+    it_behaves_like "it cannot access disputed orders"
   end
 end

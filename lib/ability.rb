@@ -112,12 +112,6 @@ class Ability
         can :edit, [PriceGroupProduct]
       end
 
-      if user.facility_director_of?(resource)
-        can [ :activate, :deactivate ], ExternalService
-        can :disputed, [Order, Reservation]
-        can :manage, TrainingRequest
-      end
-
       if user.manager_of?(resource)
         can :manage, [
           AccountUser, Facility, FacilityAccount, Journal,
@@ -135,7 +129,8 @@ class Ability
           account.facility.nil? || account.facility == resource
         end
 
-        can :show_problems, [Order, Reservation]
+        can [:disputed, :show_problems], [Order, Reservation]
+        can [:activate, :deactivate], ExternalService
       end
 
       # Facility senior staff is based off of staff, but has a few more abilities
