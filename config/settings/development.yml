@@ -2,3 +2,8 @@
 # the development environment. Changing it to true will allow you to log in
 # as any user without checking for a valid password.
 ignore_passwords: false
+
+# This is sufficient for development, but you will need to set this value on
+# staging/production (use `rake secret`).
+devise:
+  secret_key: override-me-in-settings.local.yml
