@@ -151,7 +151,7 @@ RSpec.describe UserPasswordController, :if => SettingsHelper.feature_on?(:passwo
       @method = :get
       @action = :edit
       @user = FactoryGirl.create(:user, :username => 'email@example.org', :email => 'email@example.org')
-      @user.send(:generate_reset_password_token!)
+      @user.send(:set_reset_password_token)
       @params = {:reset_password_token => @user.reset_password_token}
     end
     it_should_deny_if_signed_in
@@ -182,7 +182,7 @@ RSpec.describe UserPasswordController, :if => SettingsHelper.feature_on?(:passwo
       @method = :put
       @action = :update
       @user = FactoryGirl.create(:user, :username => 'email@example.org', :email => 'email@example.org')
-      @user.send(:generate_reset_password_token!)
+      @user.send(:set_reset_password_token)
       @params = {:user => {:reset_password_token => @user.reset_password_token}}
     end
     it_should_deny_if_signed_in
