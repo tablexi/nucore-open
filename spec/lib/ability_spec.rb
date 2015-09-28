@@ -39,6 +39,21 @@ RSpec.describe Ability do
     end
   end
 
+  shared_examples_for "it can destroy admistrative reservations" do
+    let(:order) { build_stubbed(:order) }
+    let(:order_detail) { build_stubbed(:order_detail, order: order) }
+
+    it "cannot destroy a regular reservation" do
+      reservation = Reservation.new(order_detail: order_detail)
+      expect(ability.can?(:destroy, reservation)).to be false
+    end
+
+    it "can destroy an admin reservation" do
+      reservation = Reservation.new(order_detail_id: nil)
+      expect(ability.can?(:destroy, reservation)).to be true
+    end
+  end
+
   shared_examples_for "it can read notifications" do
     it { expect(ability.can?(:read, Notification)).to be true }
   end
@@ -107,6 +122,7 @@ RSpec.describe Ability do
     it_behaves_like "it can manage training requests"
     it_behaves_like "it can access problem reservations"
     it_behaves_like "it can access disputed orders"
+    it_behaves_like "it can destroy admistrative reservations"
   end
 
   describe "facility director" do
@@ -136,6 +152,7 @@ RSpec.describe Ability do
     it_behaves_like "it can read notifications"
     it_behaves_like "it can access problem reservations"
     it_behaves_like "it can access disputed orders"
+    it_behaves_like "it can destroy admistrative reservations"
   end
 
   describe "senior staff" do
@@ -145,6 +162,7 @@ RSpec.describe Ability do
     it_behaves_like "it cannot read notifications"
     it_behaves_like "it cannot access problem reservations"
     it_behaves_like "it cannot access disputed orders"
+    it_behaves_like "it can destroy admistrative reservations"
   end
 
   describe "staff" do
@@ -154,6 +172,7 @@ RSpec.describe Ability do
     it_behaves_like "it can read notifications"
     it_behaves_like "it cannot access problem reservations"
     it_behaves_like "it cannot access disputed orders"
+    it_behaves_like "it can destroy admistrative reservations"
   end
 
   describe "unprivileged user" do

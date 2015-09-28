@@ -83,6 +83,8 @@ class Ability
           :update_admin,
         ], Reservation
 
+        can(:destroy, Reservation) { |r| r.admin? }
+
         can [
           :assign_price_policies_to_problem_orders,
           :batch_update,
@@ -103,7 +105,6 @@ class Ability
 
         can :manage, User if controller.is_a?(UsersController)
 
-        cannot :show_problems, Order
         can [ :schedule, :agenda, :list, :show ], Facility
         can :act_as, Facility
 
