@@ -5,15 +5,15 @@
 # still sent via email to sysadmins
 job_type :rake, "cd :path && :environment_variable=:environment bundle exec rake :task :output"
 
-every 5.minutes do
+every 5.minutes, roles: [:db] do
   rake "order_details:expire_reservations"
 end
 
-every 5.minutes do
+every 5.minutes, roles: [:db] do
   rake "order_details:auto_logout"
 end
 
-every :day, at: '4:17am' do
+every :day, at: '4:17am', roles: [:db] do
   rake "order_details:remove_merge_orders"
 end
 
