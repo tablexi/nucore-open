@@ -64,10 +64,7 @@ Nucore::Application.configure do
   config.assets.digest = true
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w( 960gs/reset.css 960gs/960.css )
   config.assets.precompile += %w( ie.css ie8.css )
-  config.assets.precompile += %w( reports.js reports.css )
-  config.assets.precompile += %w( chosen.css )
   config.assets.precompile += %w( *.js ) # precompile all js files
 
   # Defaults to Rails.root.join("public/assets")
