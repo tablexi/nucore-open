@@ -40,7 +40,6 @@ class User < ActiveRecord::Base
   # Gem ldap_authenticatable expects User to respond_to? :ldap_attributes. For us should return nil.
   attr_accessor :ldap_attributes
 
-
   # Scopes
   def self.with_recent_orders(facility)
     order_query = Order.recent.for_facility(facility)

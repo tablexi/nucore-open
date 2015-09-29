@@ -10,7 +10,7 @@ module Ldap
     private
 
     def admin_ldap
-      Devise::LdapAdapter::LdapConnect.admin
+      Devise::LDAP::Connection.admin
     end
 
     def make_user_from_ldap(ldap_user)
