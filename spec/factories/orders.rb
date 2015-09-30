@@ -13,6 +13,11 @@ FactoryGirl.define do
     user { account.owner.user }
     created_by { account.owner.user.id }
 
+    trait :purchased do
+      ordered_at { 1.week.ago }
+      state "purchased"
+    end
+
     after(:create) do |order, evaluator|
       create(:account_price_group_member, account: order.account, price_group: evaluator.product.facility.price_groups.last)
       FactoryGirl.create(:user_price_group_member, :user => evaluator.user, :price_group => evaluator.product.facility.price_groups.last)

@@ -159,7 +159,8 @@ class User < ActiveRecord::Base
 
   def recently_used_facilities(limit = 5)
     @recently_used_facilities ||= Hash.new do |hash, key|
-      hash[key] = Facility.where(id: orders.pluck(:facility_id).uniq).limit(limit)
+      facility_ids = orders.purchased.order("MAX(ordered_at) DESC").limit(limit).group(:facility_id).pluck(:facility_id)
+      hash[key] = Facility.where(id: facility_ids).sorted
     end
     @recently_used_facilities[limit]
   end

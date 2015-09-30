@@ -23,12 +23,12 @@ class FacilitiesController < ApplicationController
 
   def set_recently_used_facilities
     @recently_used_facilities =
-      current_user.present? && current_user.recently_used_facilities.sorted
+      acting_user.present? && acting_user.recently_used_facilities.sorted
   end
 
   # GET /facilities
   def index
-    @facilities = Facility.active
+    @facilities = Facility.active.sorted
     @active_tab = 'home'
     render :layout => 'application'
   end

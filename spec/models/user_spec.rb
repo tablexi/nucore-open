@@ -176,10 +176,31 @@ RSpec.describe User do
       it { expect(subject).to be_empty }
     end
 
+    context "a user has made an update very recently" do
+      let!(:old_order) { create(:setup_order, :purchased, account: account, product: products.first, user: user, ordered_at: 1.week.ago) }
+      let!(:new_order) { create(:setup_order, :purchased, account: account, product: products.second, user: user, ordered_at: 1.day.ago) }
+      let!(:unpurchased_order) { create(:setup_order, account: account, product: products.third, user: user) }
+
+      context "bubbling up the newest" do
+        let(:limit) { 1 }
+        it { is_expected.to eq([facilities.second]) }
+      end
+
+      context "ordering by name" do
+        let(:limit) { 2 }
+        it { is_expected.to eq(facilities.first(2)) }
+      end
+
+      context "excludes unpurchased" do
+        let(:limit) { 3 }
+        it { is_expected.to eq(facilities.first(2)) }
+      end
+    end
+
     context "when the user has orders" do
       before(:each) do
-        products.first(order_count).each do |product|
-          create(:setup_order, account: account, product: product, user: user)
+        products.first(order_count).each_with_index do |product, i|
+          create(:setup_order, :purchased, account: account, product: product, user: user, ordered_at: i.days.ago)
         end
       end
 

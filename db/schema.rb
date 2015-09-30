@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150611175130) do
+ActiveRecord::Schema.define(:version => 20150930213606) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -142,6 +142,7 @@ ActiveRecord::Schema.define(:version => 20150611175130) do
   end
 
   add_index "facilities", ["abbreviation"], :name => "sys_c008532", :unique => true
+  add_index "facilities", ["is_active", "name"], :name => "index_facilities_on_is_active_and_name"
   add_index "facilities", ["name"], :name => "sys_c008531", :unique => true
   add_index "facilities", ["url_name"], :name => "sys_c008533", :unique => true
 
@@ -435,10 +436,10 @@ ActiveRecord::Schema.define(:version => 20150611175130) do
 
   create_table "relays", :force => true do |t|
     t.integer  "instrument_id"
-    t.string   "ip",            :limit => 15
+    t.string   "ip",                  :limit => 15
     t.integer  "port"
-    t.string   "username",      :limit => 50
-    t.string   "password",      :limit => 50
+    t.string   "username",            :limit => 50
+    t.string   "password",            :limit => 50
     t.boolean  "auto_logout"
     t.string   "type"
     t.datetime "created_at"
