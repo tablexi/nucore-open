@@ -7,9 +7,16 @@ gem "rails", "3.2.22.2"
 gem "strong_parameters"
 gem "rails_config",     "0.3.3"
 
-## database
-gem "mysql2",           "~> 0.3.20"
-gem "foreigner",        "1.7.4"
+group :mysql do
+  gem 'mysql2',           '~> 0.3.20'
+  gem 'foreigner',        '~> 1.7.4'
+end
+
+group :oracle do
+  gem 'ruby-oci8',        '~> 2.2.1'
+  gem 'activerecord-oracle_enhanced-adapter', '~> 1.4.3'
+  gem 'highline'
+end
 
 ## auth
 gem "devise",           "~> 3.5.0"
@@ -112,9 +119,4 @@ group :assets do
   gem "uglifier",     "~> 2.7.2"
   gem "therubyracer"
   gem "turbo-sprockets-rails3"
-end
-
-group :oracle do
-  gem "ruby-oci8", "~> 2.2.0"
-  gem "activerecord-oracle_enhanced-adapter", "1.4.3"
 end

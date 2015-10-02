@@ -33,17 +33,23 @@ docker-compose run web rake demo:seed
 * This runs Oracle 11g XE, which is the free version of Oracle. Your production
   infrastructure might run Oracle 12c, so do not rely on this for 100% coverage.
 
-Uncomment the `oracle` references in `docker-compose.yml` and comment/delete the
+1. Uncomment the `oracle` references in `docker-compose.yml` and comment/delete the
 mysql references.
 
+2. Download the [Oracle Instant Client libraries](http://www.oracle.com/technetwork/database/features/instant-client/index-097480.html)
+    * Basic
+    * SQL Plus
+    * SDK
+3. Copy the `.deb` files into the `tmp` directory
+
 ```
+docker-compose build
+docker-compose run web docker/oracle/setup.sh
 docker-compose up -d
-docker-compose docker/db/setup.sh`
+#Optional
+docker-compose run web rake demo:seed
 
-*If you've already set up the database once, this will blow all existing data away*
-
-
-
+```
 TODO
 
 ## LDAP

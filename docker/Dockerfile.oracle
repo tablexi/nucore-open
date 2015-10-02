@@ -1,0 +1,34 @@
+FROM ruby:2.1
+
+ENV RAILS_ENV development
+RUN apt-get update
+
+# libaio1 is required for rails to find ruby-oci8
+# http://stackoverflow.com/questions/7016937/activerecord-oracle-enhanced-adapter-cant-load-ruby-oci8-library
+RUN apt-get install -qq -y nodejs libaio1
+
+ENV ORACLE_HOME /usr/lib/oracle/12.1/client64
+ENV PATH $PATH:$ORACLE_HOME/bin
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:$ORACLE_HOME/lib
+ENV NLS_LANG AMERICAN_AMERICA.WE8MSWIN1252
+
+ADD tmp/oracle-* /tmp/
+
+# Install instantclients
+RUN dpkg -i /tmp/oracle-instantclient12.1-basic_12.1.0.2.0-2_amd64.deb
+RUN dpkg -i /tmp/oracle-instantclient12.1-devel_12.1.0.2.0-2_amd64.deb
+RUN dpkg -i /tmp/oracle-instantclient12.1-sqlplus_12.1.0.2.0-2_amd64.deb
+
+RUN rm /tmp/oracle-*
+
+# Doing this first will allow us to cache the bundle so if the gemfile doesn't change
+# we don't need to redo a full bundle
+
+RUN mkdir /app
+WORKDIR /app
+ADD Gemfile /app/Gemfile
+#ADD Gemfile.lock /app/Gemfile.lock
+ADD vendor/engines /app/vendor/engines
+RUN bundle install --without mysql
+
+ADD . /app

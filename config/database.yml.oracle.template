@@ -1,7 +1,8 @@
 defaults: &defaults
   adapter: oracle_enhanced
-  database: 10.114.22.3:1521/xe
-  encoding: utf8
+  username: nucore_open_development
+  password: password
+  database: <%= ENV['ORACLE_1_PORT_1521_TCP_ADDR'] || 'dockerhost' %>:<%= ENV['ORACLE_1_PORT_1521_TCP_PORT'] || 1521 %>/xe
 
 development:
   <<: *defaults
@@ -12,4 +13,3 @@ test:
   <<: *defaults
   username: nucore_open_test
   password:
-
