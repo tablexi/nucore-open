@@ -12,3 +12,4 @@ ADD vendor/engines /app/vendor/engines
 RUN bundle install --without oracle
 
 ADD . /app
+ADD config/database.yml.mysql.template /app/config/database.yml

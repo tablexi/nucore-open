@@ -5,6 +5,8 @@ defaults: &defaults
   encoding: utf8
   pool: 5
   timeout: 5000
+  host: <%= ENV["MYSQL_1_PORT_3306_TCP_ADDR"] || "localhost" %>
+  port: <%= ENV["MYSQL_1_PORT_3306_TCP_PORT "] || 3306 %>
 
 development:
   <<: *defaults
