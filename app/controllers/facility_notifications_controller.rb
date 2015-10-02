@@ -44,9 +44,7 @@ class FacilityNotificationsController < ApplicationController
     end
     @accounts_to_notify = sender.account_ids_to_notify
     @errors = sender.errors
-    @orders_notified = sender.order_details
 
-    # render nothing: true
     redirect_to :action => :index
   end
 

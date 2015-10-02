@@ -73,10 +73,7 @@ RSpec.describe FacilityNotificationsController do
     it_should_allow_managers_only :redirect do
       expect(assigns(:errors)).to be_empty
       expect(assigns(:accounts_to_notify).to_a).to eq([[@account.id, @authable.id]])
-      expect(assigns(:orders_notified)).to eq([@order_detail1, @order_detail2])
-
-      expect(@order_detail1.reload.reviewed_at).to be_present
-      expect(@order_detail1.reviewed_at).to be > 6.days.from_now
+      expect([@order_detail1, @order_detail2]).to be_all { |od| od.reload.reviewed_at > 6.days.from_now }
 
       expect(Notifier.deliveries.count).to eq(1)
     end
@@ -88,7 +85,7 @@ RSpec.describe FacilityNotificationsController do
 
       it_should_allow_managers_only :redirect do
         expect(assigns(:errors)).to be_empty
-        expect(assigns(:orders_notified)).to eq([@order_detail1, @order_detail2, @order_detail3])
+        expect([@order_detail1, @order_detail2, @order_detail3]).to be_all { |od| od.reload.reviewed_at? }
         expect(assigns(:accounts_to_notify).to_a).to eq([[@account.id, @authable.id], [@account2.id, @authable.id]])
       end
 
