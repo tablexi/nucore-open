@@ -15,7 +15,7 @@ RSpec.describe NotificationSender, :aggregate_failures do
     .create(attributes_for(:item, facility_account_id: facility_account.id))
   end
 
-  let(:account) { create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => user), :facility_id => facility.id) }
+  let(:account) { create(:setup_account, owner: user, facility_id: facility.id) }
   let(:ids) { order_details.map(&:id) }
   let(:action) { described_class.new(facility, ids) }
 
@@ -38,20 +38,6 @@ RSpec.describe NotificationSender, :aggregate_failures do
         expect(action.errors.first).to include("-1")
         expect(order_details.first.reload).not_to be_reviewed
       end
-    end
-  end
-
-  describe "with more than 1000 items" do
-    let!(:order_details) do
-      1001.times.map do
-        place_product_order(user, facility, item, account)
-      end
-    end
-
-    it "allows notification" do
-      OrderDetail.update_all(state: "complete", price_policy_id: item.price_policies.first.id)
-      expect(action.perform).to be_truthy
-      expect(action.account_ids_notified).to eq([account.id])
     end
   end
 end
