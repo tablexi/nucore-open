@@ -257,6 +257,9 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
+    guard-teaspoon (0.8.0)
+      guard (~> 2.2)
+      teaspoon (>= 0.8.0)
     haml (4.0.5)
       tilt
     hashery (2.1.1)
@@ -483,6 +486,7 @@ DEPENDENCIES
   font-awesome-rails (~> 3.2.0)
   foreigner (= 1.1.1)
   guard-rspec
+  guard-teaspoon
   haml (~> 4.0.5)
   jquery-rails (~> 2.1.4)
   jquery-ui-sass-rails
