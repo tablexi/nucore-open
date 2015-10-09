@@ -65,6 +65,7 @@ group :development, :test do
   gem 'awesome_print',     '1.1.0'
   gem 'factory_girl_rails', '~> 4.5.0'
   gem 'guard-rspec', require: false
+  gem 'guard-teaspoon', require: false
   gem 'pry-rails',         '~> 0.3.2'
   gem 'pry-byebug',        '~> 2.0.0'
   gem 'quiet_assets'

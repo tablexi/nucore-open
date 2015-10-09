@@ -1,9 +1,11 @@
-guard :rspec, cmd: "bundle exec rspec" do
+guard :rspec, cmd: "bundle exec rspec", spec_paths: ["spec", "vendor/engines/*/spec"] do
   watch(%r{^spec/.+_spec\.rb$})
-  watch(%r{^vendor/.+/spec/.+_spec\.rb$})
-  watch(%r{^lib/(.+)\.rb$})     { |m| "spec/lib/#{m[1]}_spec.rb" }
+  watch(%r{^vendor/engines/\w+/spec/.+_spec\.rb$})
+  watch(%r{^(vendor/engines/\w+)/app/(.+)\.rb$}) { |m| "#{m[1]}/spec/#{m[2]}_spec.rb" }
+  watch(%r{^(vendor/engines/\w+)/(lib/.+)\.rb$}) { |m| "#{m[1]}/spec/#{m[2]}_spec.rb" }
+  watch(%r{^lib/(.+)\.rb$}) { |m| "spec/lib/#{m[1]}_spec.rb" }
   watch(%r{^app/support/(.+)\.rb$}) { |m| "spec/app_support/#{m[1]}_spec.rb" }
-  watch("spec/spec_helper.rb")  { "spec" }
+  watch("spec/spec_helper.rb") { "spec" }
 
   # Rails example
   watch(%r{^app/(.+)\.rb$})                           { |m| "spec/#{m[1]}_spec.rb" }
@@ -13,11 +15,12 @@ guard :rspec, cmd: "bundle exec rspec" do
   watch("config/routes.rb")                           { "spec/routing" }
   watch("app/controllers/application_controller.rb")  { "spec/controllers" }
   watch("spec/rails_helper.rb")                       { "spec" }
+end
 
-  # Capybara features specs
-  watch(%r{^app/views/(.+)/.*\.(erb|haml|slim)$})     { |m| "spec/features/#{m[1]}_spec.rb" }
+guard :teaspoon do
+  # Implementation files
+  watch(%r{^app/assets/javascripts/(.+)(\.js)?\.coffee$}) { |m| "#{m[1]}_spec#{m[2]}.coffee" }
 
-  # Turnip features and steps
-  watch(%r{^spec/acceptance/(.+)\.feature$})
-  watch(%r{^spec/acceptance/steps/(.+)_steps\.rb$})   { |m| Dir[File.join("**/#{m[1]}.feature")][0] || "spec/acceptance" }
+  # Specs / Helpers
+  watch(%r{^spec/javascripts/.+})
 end
