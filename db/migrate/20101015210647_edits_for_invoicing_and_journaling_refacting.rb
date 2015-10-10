@@ -1,9 +1,10 @@
 class EditsForInvoicingAndJournalingRefacting < ActiveRecord::Migration
   def self.up
     # update the account_transaction table
+    remove_foreign_key :account_transactions, :name => :fk_int_at_fa
     remove_column :account_transactions, :facility_account_id
     add_column    :account_transactions, :statement_id, :integer, :null => true
-    
+
     # remove statement_accounts as account_transactions now have a link back to the statement
     # add an invoice_date to statements
     drop_table :statement_accounts

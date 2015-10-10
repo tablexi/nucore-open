@@ -29,7 +29,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
       od.save!
     end
 
-    OrderDetail.find_all_by_state(['inprocess', 'new']) do |od|
+    OrderDetail.where(:state => ['inprocess', 'new']).each do |od|
       od.estimated_cost=od.actual_cost
       od.estimated_subsidy=od.actual_subsidy
       od.actual_cost=nil
@@ -64,7 +64,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
 
         at_rows.each do |at_row|
           od=OrderDetail.find(at_row.order_detail_id)
-          StatementRow.create!(:order_detail => od, :statement => statement, :amount => at_row.transaction_amount)                  
+          StatementRow.create!(:order_detail => od, :statement => statement, :amount => at_row.transaction_amount)
           od.statement=statement
           od.save!
         end
@@ -78,6 +78,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
 
     change_column(:statements, :account_id, :integer, :null => false)
 
+    remove_foreign_key :journal_rows, :name => :fk_jour_row_act_txn
     change_table :journal_rows do |t|
       t.remove :account_transaction_id
     end
@@ -85,7 +86,6 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
     drop_table :account_transactions
   end
 
-  
   def self.down
     change_table :journal_rows do |t|
       t.column :account_transaction_id, :integer
