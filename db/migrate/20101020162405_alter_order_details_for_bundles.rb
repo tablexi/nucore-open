@@ -3,6 +3,7 @@ class AlterOrderDetailsForBundles < ActiveRecord::Migration
     add_column    :order_details, :group_id,           :integer, :null => true
     add_column    :order_details, :bundle_product_id,  :integer, :null => true
     execute "ALTER TABLE order_details ADD CONSTRAINT fk_bundle_prod_id FOREIGN KEY (bundle_product_id) REFERENCES products (id)"
+    remove_foreign_key :order_details, :name => :fk_od_bundle_od
     remove_column :order_details, :bundle_order_detail_id
   end
 

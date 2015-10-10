@@ -8,18 +8,18 @@ class CreateOrderDetails < ActiveRecord::Migration
 
     create_table :order_details do |t|
       t.references :order, :null => false
-      t.foreign_key :order
+      t.foreign_key :orders
 
       t.references :product, :null => false
-      t.foreign_key :product
+      t.foreign_key :products
 
       t.references :reservation
-      t.foreign_key :reservation
+      t.foreign_key :reservations
 
       t.integer :quantity, :null => false
 
       t.references :price_policy, :null => false
-      t.foreign_key :price_policy
+      t.foreign_key :price_policies
 
       t.decimal :unit_cost,     :precision => 8, :scale => 2, :null => false
       t.decimal :unit_subsidy,  :precision => 8, :scale => 2, :null => false
@@ -27,12 +27,12 @@ class CreateOrderDetails < ActiveRecord::Migration
       t.decimal :total_subsidy, :precision => 8, :scale => 2, :null => false
 
       t.references :order_status
-      t.foreign_key :order_status
+      t.foreign_key :order_statuses
 
       t.integer :assigned_user_id
 
       t.references :statement
-      t.foreign_key :statement
+      t.foreign_key :statements
     end
   end
 
