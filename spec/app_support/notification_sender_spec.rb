@@ -19,6 +19,9 @@ RSpec.describe NotificationSender, :aggregate_failures do
   let(:ids) { order_details.map(&:id) }
   let(:action) { described_class.new(facility, ids) }
 
+  # This feature only gets used when there is a review period, so go ahead and enable it.
+  before { allow(SettingsHelper).to receive(:has_review_period?).and_return true }
+
   describe "with a reasonable sized group" do
     let!(:order_details) { 5.times.map { place_product_order(user, facility, item, account) } }
 

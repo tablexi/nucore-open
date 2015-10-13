@@ -16,7 +16,7 @@ class NotificationSender
 
       raise ActiveRecord::Rollback if @errors.any?
 
-      find_accounts_to_notify if Settings.billing.review_period > 0
+      find_accounts_to_notify if SettingsHelper.has_review_period?
       mark_order_details_as_reviewed
       notify_accounts
     end
