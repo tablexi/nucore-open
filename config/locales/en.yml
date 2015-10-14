@@ -120,12 +120,19 @@ en:
     search: "Search by Order #"
     results: Search Results
     no_results: No orders found
+
   facility_accounts:
+    edit:
+      cancel: Cancel
+      head: "Edit %{account}"
+      save: Save
     index:
+      clear_search: Clear Search
       head: "Recent Payment Sources"
       add_account: "Add Payment Source"
       label:
         search_term: "Search by payment source number or payment source owner's name, NetID, or username"
+      search: Search
     accounts_receivable:
       head: Accounts Receivable
       show_with_balance: Show %{model} with a balance
@@ -176,6 +183,7 @@ en:
         activate: "Activate"
         suspend: "Suspend"
     show_statement_list:
+      download: Download
       notice: "No statements have been sent for this payment source."
       th:
         sent_at: "Sent At"
