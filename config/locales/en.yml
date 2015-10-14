@@ -478,6 +478,8 @@ en:
         phone: "Phone Number:"
         fax: "Fax Number:"
         email: "Email:"
+      created_by:
+        unknown: Unknown
       notice: "No transactions exist for this period."
       th:
         transact: "Transaction Date"
