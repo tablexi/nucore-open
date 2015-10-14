@@ -17,9 +17,6 @@ FactoryGirl.define do
     is_in_dispute false
   end
 
-  factory :statement do
-  end
-
   factory :statement_row do
     amount 5
   end

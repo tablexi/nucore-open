@@ -1,5 +1,6 @@
 class AccountPriceGroupMembersController < ApplicationController
   include PriceGroupMembersController
+  include SearchHelper
 
   before_filter :authorize_account_price_group_member!, only: [:new, :create, :destroy]
 

@@ -1,32 +1,26 @@
-- if params[:search_term] == '' || params[:search_term].nil?
-  %p.alert.alert-info Please enter a search term
+- if params[:search_term].blank?
+  %p.alert.alert-info= t(".blank_term")
 - else
   - if @users.empty?
-    - if params[:create_link] == 'true' && SettingsHelper.feature_on?(:create_users)
-      %p
-        Can't find the user you're looking for?
-        = link_to 'Create a new user', new_facility_user_path(@facility)
-    %p.alert.alert-info No existing users found.
+    = render "create_new_user"
+    %p.alert.alert-info= t(".no_users_found")
   - else
-    %h3 Select an Existing User
-    - if params[:search_type] == 'manage_user'
-      = render :partial => "#{params[:search_type]}_table", :locals => {:users => @users}
+    %h3= t(".select_existing_user")
+    - if params[:search_type] == "manage_user"
+      = render "manage_user_table", users: @users
     - else
       %table.table.table-striped.table-hover
         %thead
           %tr
-            %th= t('.th.name')
-            %th= t('.th.username')
-            %th= t('.th.email')
+            %th= t(".th.name")
+            %th= t(".th.username")
+            %th= t(".th.email")
         %tbody
           - @users.each do |user|
             %tr
-              %td= render :partial => "#{params[:search_type]}_link", :locals => {:user => user}
-              %td=h user.username
-              %td=h user.email
+              %td= render "#{params[:search_type]}_link", user: user
+              %td= user.username
+              %td= user.email
       - if @count > @limit
-        %p.alert.alert-info="#{@count-@limit} more users exist, try refining your search."
-    - if params[:create_link] == 'true' && SettingsHelper.feature_on?(:create_users)
-      %p
-        Can't find the user you're looking for?
-        = link_to 'Create a new user', new_facility_user_path(@facility.url_name)
+        %p.alert.alert-info= t(".more_users_alert", count: @count - @limit)
+    = render "create_new_user"

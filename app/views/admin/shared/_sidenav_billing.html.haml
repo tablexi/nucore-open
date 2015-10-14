@@ -11,14 +11,15 @@
     = tab t("facilities.disputed_orders.head"), facility_disputed_orders_path, (sidenav_tab == "disputed_orders")
   %li.divider
   = tab t('facility_accounts.accounts_receivable.head'), facility_accounts_receivable_path, (sidenav_tab == 'accounts_receivable')
-  %li.divider
-  = tab Account.model_name.human.pluralize, facility_accounts_path, (sidenav_tab == 'accounts')
+  - unless SettingsHelper.feature_on?(:manage_payment_sources_with_users)
+    %li.divider
+    = tab Account.model_name.human.pluralize, facility_accounts_path, (sidenav_tab === "accounts")
   %li.divider
   %li.nav-header= Journal.model_name.human.pluralize
   = tab t_create_model(Journal), new_facility_journal_path, (sidenav_tab == 'new_journal')
   = tab t_manage_models(Journal), facility_journals_path, (sidenav_tab == 'journals')
-  - if !all_facility? && AccountManager.using_statements?
+  - if current_facility.single_facility? && AccountManager.using_statements?
     %li.divider
     %li.nav-header= Statement.model_name.human.pluralize
     = tab t_create_models(Statement), new_facility_statement_path(current_facility), (sidenav_tab == 'statements')
-    = tab t('facility_statements.index.head'), facility_statements_path(current_facility), (sidenav_tab == 'statement_history')
+    = tab t("facility_statements.index.head"), facility_statements_path(current_facility), (sidenav_tab == "statement_history")

@@ -1,29 +1,29 @@
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+  = render "admin/shared/sidenav_users", sidenav_tab: "accounts"
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_payment_method', :locals => {:secondary_tab => 'statements'}
+  = render "admin/shared/tabnav_payment_method", secondary_tab: "statements"
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 %h2= @account
 
 - if @statements.empty?
-  %p.notice= t('.notice')
+  %p.notice= t(".notice")
 - else
   %table.table.table-striped.table-hover
     %thead
       %tr
         %th
-        %th= t('.th.sent_at')
-        %th= t('.th.sent_by')
-        %th.currency= t('.th.orders')
+        %th= t(".th.sent_at")
+        %th= t(".th.sent_by")
+        %th.currency= t(".th.orders")
     %tbody
-      - @statements.each do |s|
+      - StatementPresenter.wrap(@statements).each do |statement|
         %tr
-          %td.centered= link_to 'Download', facility_account_statement_path(current_facility, @account, s, :format => :pdf)
-          %td=h human_datetime(s.created_at)
-          %td=h begin User.find(s.created_by).full_name rescue 'Unknown' end
-          %td.currency=h s.order_details.count
+          %td.centered= link_to t(".download"), statement.download_path
+          %td= statement.sent_at
+          %td= statement.sent_by
+          %td.currency= statement.order_count
   = will_paginate(@statements)

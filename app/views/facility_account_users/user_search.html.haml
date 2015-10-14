@@ -1,23 +1,24 @@
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+  = render "admin/shared/sidenav_users", sidenav_tab: "accounts"
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_payment_method', :locals => {:secondary_tab => 'members'}
+  = render "admin/shared/tabnav_payment_method", secondary_tab: "members"
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
+-# TODO: The following is very similar to app/views/users/_search_form.html.haml
 %h2= @account
-%h3= t('.head')
+%h3= t(".head")
 
-= form_tag user_search_results_path, :id => "ajax_form" do
-  = label_tag :search_term, t('.label.search_term')
+= form_tag user_search_results_path, id: "ajax_form" do
+  = label_tag :search_term, t(".label.search_term")
   %br
-  = text_field_tag :search_term, nil, :size => 30, :class => 'search-query'
-  = submit_tag "Search", :class => 'btn'
+  = text_field_tag :search_term, nil, size: 30, class: "search-query"
+  = submit_tag "Search", class: "btn"
   = hidden_field_tag :facility_id, current_facility.id
   = hidden_field_tag :account_id, @account.id
-  = hidden_field_tag :search_type, 'facility_account_account_user'
-  = hidden_field_tag :create_link, 'true'
+  = hidden_field_tag :search_type, "facility_account_account_user"
+  = hidden_field_tag :create_link, "true"
 %br
 #result

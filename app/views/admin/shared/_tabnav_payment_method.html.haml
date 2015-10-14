@@ -1,5 +1,6 @@
 %ul.nav.nav-tabs
-  = tab 'Details', facility_account_path(current_facility, @account), (secondary_tab == 'details')
+  = tab t(".details"), facility_account_path(current_facility, @account), (secondary_tab == "details")
+  -# TODO: use a feature flag here instead
   - if @account.statements.any?
-    = tab 'Statements', facility_account_statement_path(current_facility, @account, 'list'), (secondary_tab == 'statements')
-  = tab 'Members', facility_account_members_path(current_facility, @account), (secondary_tab == 'members')
+    = tab t(".statements"), facility_account_statement_path(current_facility, @account, "list"), (secondary_tab == "statements")
+  = tab t(".members"), facility_account_members_path(current_facility, @account), (secondary_tab == "members")

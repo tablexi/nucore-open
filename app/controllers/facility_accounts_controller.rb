@@ -31,6 +31,7 @@ class FacilityAccountsController < ApplicationController
 
   include Overridable
   include AccountSuspendActions
+  include SearchHelper
 
   admin_tab     :all
   before_filter :authenticate_user!
@@ -45,7 +46,7 @@ class FacilityAccountsController < ApplicationController
   layout 'two_column'
 
   def initialize
-    @active_tab = 'admin_billing'
+    @active_tab = "admin_users"
     super
   end
 

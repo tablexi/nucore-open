@@ -22,7 +22,7 @@ class Order < ActiveRecord::Base
   end
 
   def self.for_facility(facility)
-    where(:facility_id => facility.id)
+    facility.cross_facility? ? scoped : where(facility_id: facility.id)
   end
 
   def self.recent

@@ -49,6 +49,11 @@ class Facility < ActiveRecord::Base
   scope :active, :conditions => { :is_active => true }
   scope :sorted, order: :name
 
+  def self.cross_facility
+    @@cross_facility ||=
+      new(url_name: "all", name: "Cross-Facility", abbreviation: "ALL")
+  end
+
   def self.ids_from_urls(urls)
     where("url_name in (?)", urls).select(:id).map(&:id)
   end
@@ -88,15 +93,19 @@ class Facility < ActiveRecord::Base
 
   def has_pending_journals?
     pending_facility_ids = Journal.facility_ids_with_pending_journals
-    if all_facility?
+    if cross_facility?
       pending_facility_ids.any?
     else
       pending_facility_ids.member?(self.id)
     end
   end
 
-  def all_facility?
-    url_name == 'all'
+  def cross_facility?
+    eql? self.class.cross_facility
+  end
+
+  def single_facility?
+    !cross_facility?
   end
 
   def to_s

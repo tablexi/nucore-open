@@ -1,16 +1,15 @@
-= content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+= render "sidebar"
 
 = content_for :head_content do
-  = javascript_include_tag 'accounts.js'
+  = javascript_include_tag "accounts.js"
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
-%h2= t('.head')
-= simple_form_for(@account, :url => facility_accounts_path(current_facility)) do |f|
+%h2= t(".head")
+= simple_form_for(@account, url: facility_accounts_path(current_facility)) do |f|
   = f.error_messages
-  = render :partial => 'account_fields', :locals => {:f => f, :instructions_for => :all}
+  = render "account_fields", f: f, instructions_for: :all
   %ul.inline
-    %li= f.submit 'Create', :class => ['btn', 'btn-primary']
-    %li= link_to 'Cancel', new_account_user_search_facility_accounts_path
+    %li= f.submit "Create", class: %w(btn btn-primary)
+    %li= link_to "Cancel", new_account_user_search_facility_accounts_path

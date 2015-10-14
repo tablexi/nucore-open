@@ -2,15 +2,17 @@
   %thead
     %tr
       %th
-      %th= t('search.manage_user_table.th.name')
-      %th= t('search.manage_user_table.th.username')
-      %th= t('search.manage_user_table.th.email')
+      %th= t(".th.name")
+      %th= t(".th.username")
+      %th= t(".th.email")
   %tbody
     - @users.each do |user|
       %tr
-        %td.centered= link_to('Order For', facility_user_switch_to_path(@facility, user))
-        %td= link_to "#{user.last_name}, #{user.first_name}", facility_user_path(@facility, user)
-        %td=h user.username
-        %td=h user.email
+        %td.centered
+          = link_to("Order For", facility_user_switch_to_path(@facility, user))
+        %td
+          = link_to "#{user.last_name}, #{user.first_name}", facility_user_path(@facility, user)
+        %td= user.username
+        %td= user.email
 - if @count > @limit
-  %p.notice= t('search.manage_user_table.notice', :count => @count-@limit)
+  %p.notice= t(".notice", count: @count - @limit)
