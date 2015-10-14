@@ -50,6 +50,8 @@ gem 'fast-aes',         '0.1.1'
 gem 'pdf-reader',       '1.3.3'
 gem 'exception_notification', '~> 4.0.1'
 gem 'daemons',          '1.1.9'
+gem 'lograge'
+gem 'logstash-event'
 
 ## custom
 gem 'c2po',             '~> 1.0.0', path: 'vendor/engines/c2po'

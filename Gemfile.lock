@@ -284,6 +284,11 @@ GEM
     listen (3.0.3)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
+    lograge (0.3.4)
+      actionpack (>= 3)
+      activesupport (>= 3)
+      railties (>= 3)
+    logstash-event (1.2.02)
     lumberjack (1.0.9)
     mail (2.5.4)
       mime-types (~> 1.16)
@@ -490,6 +495,8 @@ DEPENDENCIES
   haml (~> 4.0.5)
   jquery-rails (~> 2.1.4)
   jquery-ui-sass-rails
+  lograge
+  logstash-event
   mysql2 (~> 0.3.17)
   nokogiri (~> 1.6.1)
   paperclip (~> 4.2.0)
