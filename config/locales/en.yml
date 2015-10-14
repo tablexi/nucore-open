@@ -95,6 +95,10 @@ en:
       transact: "Transactions"
       statement: "Statements"
       members: "Members"
+    tabnav_payment_method:
+      details: Details
+      members: Members
+      statements: Statements
     tabnav_price_group:
       accounts: "Payment Sources"
       users: "Users"

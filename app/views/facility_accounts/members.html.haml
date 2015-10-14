@@ -1,7 +1,7 @@
 - can_edit_accounts=SettingsHelper.feature_on? :edit_accounts
 
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+  = render "admin/shared/sidenav_users", sidenav_tab: "accounts"
 
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_payment_method', :locals => {:secondary_tab => 'members'}
