@@ -8,6 +8,14 @@ module ApplicationHelper
     #NUCore.app_name
   end
 
+  def app_name_link_text
+    if current_ability.can?(:act_as, current_facility)
+      I18n.t("app_admin_name")
+    else
+      I18n.t("app_name")
+    end
+  end
+
   def html_title(title=nil)
     full_title = title.nil? ? "" : "#{title} - "
     (full_title + app_name).html_safe
