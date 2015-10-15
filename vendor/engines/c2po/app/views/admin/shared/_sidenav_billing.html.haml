@@ -19,7 +19,7 @@
     %li.divider
     %li.nav-header= Statement.model_name.human.pluralize
     = tab t_create_models(Statement), new_facility_statement_path(current_facility), (sidenav_tab == 'statements')
-    = tab t("facility_statements.index.head"), facility_statements_path(current_facility), (sidenav_tab == 'statement_history')
+    = tab t("facility_statements.index.head"), facility_statements_path(current_facility), (sidenav_tab == "statement_history")
     %li.nav-spacer
     = tab t("facility_accounts.credit_cards.head"), credit_cards_facility_accounts_path(current_facility), (sidenav_tab == 'credit_cards')
     = tab t("facility_accounts.purchase_orders.head"), purchase_orders_facility_accounts_path(current_facility), (sidenav_tab == 'purchase_orders')
