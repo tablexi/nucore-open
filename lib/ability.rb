@@ -34,7 +34,7 @@ class Ability
     end
 
     can :list, Facility if user.facilities.size > 0 and controller.is_a?(FacilitiesController)
-    can :read, Notification if user.operator? || user.administrator?
+    can :read, Notification if user.notifications.active.any?
 
     return unless resource
 
@@ -69,6 +69,8 @@ class Ability
           TrainingRequest,
           UserPriceGroupMember,
         ]
+
+        can :read, Notification
 
         can [
           :assign_price_policies_to_problem_orders,

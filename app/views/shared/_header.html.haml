@@ -3,7 +3,7 @@
     .container
       .row
         .span12
-          = link_to (current_user && current_user.operator? ? t(:app_admin_name) : t(:app_name)), :root, :class => 'brand'
+          = link_to app_name, :root, class: "brand"
           %ul.nav.pull-right
             - if session_user.nil?
               %li= link_to t("pages.login"), :new_user_session

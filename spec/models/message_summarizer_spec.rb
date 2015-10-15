@@ -101,7 +101,7 @@ RSpec.describe MessageSummarizer do
         it { expect(subject.first.link).to match(/\bNotices \(1\)/) }
       end
 
-      context "when in a manager context "do
+      context "when in a manager context" do
         let(:admin_tab?) { true }
 
         it_behaves_like "there is one overall message"
