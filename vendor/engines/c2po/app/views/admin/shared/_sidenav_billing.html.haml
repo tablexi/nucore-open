@@ -12,8 +12,6 @@
   %li.divider
   = tab t('facility_accounts.accounts_receivable.head'), facility_accounts_receivable_path, (sidenav_tab == 'accounts_receivable')
   %li.divider
-  = tab Account.model_name.human.pluralize, facility_accounts_path, (sidenav_tab == 'accounts')
-  %li.divider
   %li.nav-header= Journal.model_name.human.pluralize
   = tab t_create_model(Journal), new_facility_journal_path, (sidenav_tab == 'new_journal')
   = tab t_manage_models(Journal), facility_journals_path, (sidenav_tab == 'journals')
