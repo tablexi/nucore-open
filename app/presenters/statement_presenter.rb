@@ -1,19 +1,12 @@
-class StatementPresenter
-  attr_reader :statement
-  delegate :account, :created_at, :created_by, :facility, :order_details, to: :statement
-
+class StatementPresenter < SimpleDelegator
   include Rails.application.routes.url_helpers
 
   def self.wrap(statements)
     statements.map { |statement| new(statement) }
   end
 
-  def initialize(statement)
-    @statement = statement
-  end
-
   def download_path
-    facility_account_statement_path(facility, account, statement, format: :pdf)
+    facility_account_statement_path(facility, account, id, format: :pdf)
   end
 
   def order_count
