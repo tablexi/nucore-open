@@ -70,6 +70,8 @@ class Ability
           UserPriceGroupMember,
         ]
 
+        can :read, Notification
+
         can [
           :assign_price_policies_to_problem_orders,
           :create,

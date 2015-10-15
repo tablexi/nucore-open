@@ -159,7 +159,7 @@ RSpec.describe Ability do
     let(:user) { create(:user, :senior_staff, facility: facility) }
 
     it_behaves_like "it can manage training requests"
-    it_behaves_like "it cannot read notifications"
+    it_behaves_like "it can read notifications"
     it_behaves_like "it cannot access problem reservations"
     it_behaves_like "it cannot access disputed orders"
     it_behaves_like "it can destroy admistrative reservations"
