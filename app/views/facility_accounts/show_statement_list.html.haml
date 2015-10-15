@@ -20,11 +20,10 @@
         %th= t(".th.sent_by")
         %th.currency= t(".th.orders")
     %tbody
-      - @statements.each do |statement|
+      - StatementPresenter.wrap(@statements).each do |statement|
         %tr
-          %td.centered
-            = link_to t(".download"), facility_account_statement_path(current_facility, @account, statement, format: :pdf)
-          %td= human_datetime(statement.created_at)
-          %td= begin User.find(statement.created_by).full_name rescue "Unknown" end
-          %td.currency= statement.order_details.count
+          %td.centered= link_to t(".download"), statement.download_path
+          %td= statement.sent_at
+          %td= statement.sent_by
+          %td.currency= statement.order_count
   = will_paginate(@statements)
