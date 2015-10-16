@@ -178,7 +178,7 @@ Nucore::Application.routes.draw do
         get 'tab_counts'
       end
 
-      resources :order_details, :controller => 'facility_order_details', :only => [:destroy] do
+      resources :order_details, :controller => 'facility_order_details', :only => [:show, :destroy] do
         resources :reservations, :controller => 'facility_reservations', :only => [:edit, :update, :show]
         resources :accessories, only: [:new, :create]
         member do

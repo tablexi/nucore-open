@@ -15,6 +15,12 @@ class FacilityOrderDetailsController < ApplicationController
     super
   end
 
+  def show
+    # This is deprecated in favor of OrderManagement::OrderDetailsController, but
+    # we want to avoid 404s
+    redirect_to facility_order_path(current_facility, @order)
+  end
+
   def destroy
     if @order.to_be_merged?
       begin
