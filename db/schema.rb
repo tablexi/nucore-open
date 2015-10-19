@@ -178,7 +178,6 @@ ActiveRecord::Schema.define(:version => 20151003051241) do
 
   create_table "journals", :force => true do |t|
     t.integer  "facility_id"
-    t.date     "journal_date",                     :null => false
     t.string   "reference",         :limit => 50
     t.string   "description",       :limit => 200
     t.boolean  "is_successful"
@@ -190,6 +189,7 @@ ActiveRecord::Schema.define(:version => 20151003051241) do
     t.string   "file_content_type"
     t.integer  "file_file_size"
     t.datetime "file_updated_at"
+    t.datetime "journal_date",                     :null => false
   end
 
   add_index "journals", ["facility_id"], :name => "index_journals_on_facility_id"
