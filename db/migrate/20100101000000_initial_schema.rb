@@ -25,9 +25,9 @@ class InitialSchema < ActiveRecord::Migration
       t.string   "pers_affiliate_id" # Only here to support removing it in a later migration
     end
 
-    add_index "facilities", ["abbreviation"], :name => "sys_c008532", :unique => true
-    add_index "facilities", ["name"], :name => "sys_c008531", :unique => true
-    add_index "facilities", ["url_name"], :name => "sys_c008533", :unique => true
+    add_index "facilities", ["abbreviation"], :unique => true
+    add_index "facilities", ["name"], :unique => true
+    add_index "facilities", ["url_name"], :unique => true
 
     create_table "nucs_accounts" do |t|
       t.string "value",     :limit => 16,  :null => false
@@ -112,7 +112,7 @@ class InitialSchema < ActiveRecord::Migration
       t.integer "rgt",                       :precision => 38, :scale => 0
     end
 
-    add_index "order_statuses", ["facility_id", "parent_id", "name"], :name => "sys_c008542", :unique => true
+    add_index "order_statuses", ["facility_id", "parent_id", "name"], :unique => true
 
     create_table "price_group_members" do |t|
       t.string  "type",           :limit => 50,                                :null => false
@@ -126,7 +126,7 @@ class InitialSchema < ActiveRecord::Migration
       t.string  "name",          :limit => 50,                                :null => false
     end
 
-    add_index "price_groups", ["facility_id", "name"], :name => "sys_c008577", :unique => true
+    add_index "price_groups", ["facility_id", "name"], :unique => true
 
     create_table "price_policies" do |t|
       t.string   "type",                :limit => 50,                                :null => false
@@ -169,7 +169,7 @@ class InitialSchema < ActiveRecord::Migration
       t.string   "unit_size"
     end
 
-    add_index "products", ["relay_ip", "relay_port"], :name => "sys_c008555", :unique => true
+    add_index "products", ["relay_ip", "relay_port"], :unique => true
 
     create_table "roles" do |t|
       t.string "name"
@@ -192,14 +192,14 @@ class InitialSchema < ActiveRecord::Migration
       t.boolean "on_sat",           :precision => 1,  :scale => 0,                  :null => false
     end
 
-    add_foreign_key "price_group_members", "price_groups", :name => "sys_c008583"
+    add_foreign_key "price_group_members", "price_groups"
 
-    add_foreign_key "price_groups", "facilities", :name => "sys_c008578"
+    add_foreign_key "price_groups", "facilities"
 
-    add_foreign_key "price_policies", "price_groups", :name => "sys_c008589"
+    add_foreign_key "price_policies", "price_groups"
 
-    add_foreign_key "products", "facilities", :name => "sys_c008556"
+    add_foreign_key "products", "facilities"
 
-    add_foreign_key "schedule_rules", "products", :name => "sys_c008573", :column => "instrument_id"
+    add_foreign_key "schedule_rules", "products", :column => "instrument_id"
   end
 end

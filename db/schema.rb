@@ -141,10 +141,10 @@ ActiveRecord::Schema.define(:version => 20151003051241) do
     t.boolean  "show_instrument_availability",                :default => false, :null => false
   end
 
-  add_index "facilities", ["abbreviation"], :name => "sys_c008532", :unique => true
+  add_index "facilities", ["abbreviation"], :name => "index_facilities_on_abbreviation", :unique => true
   add_index "facilities", ["is_active", "name"], :name => "index_facilities_on_is_active_and_name"
-  add_index "facilities", ["name"], :name => "sys_c008531", :unique => true
-  add_index "facilities", ["url_name"], :name => "sys_c008533", :unique => true
+  add_index "facilities", ["name"], :name => "index_facilities_on_name", :unique => true
+  add_index "facilities", ["url_name"], :name => "index_facilities_on_url_name", :unique => true
 
   create_table "facility_accounts", :force => true do |t|
     t.integer  "facility_id",                   :null => false
@@ -284,7 +284,7 @@ ActiveRecord::Schema.define(:version => 20151003051241) do
     t.integer "rgt"
   end
 
-  add_index "order_statuses", ["facility_id", "parent_id", "name"], :name => "sys_c008542", :unique => true
+  add_index "order_statuses", ["facility_id", "parent_id", "name"], :name => "index_order_statuses_on_facility_id_and_parent_id_and_name", :unique => true
 
   create_table "orders", :force => true do |t|
     t.integer  "account_id"
@@ -312,7 +312,7 @@ ActiveRecord::Schema.define(:version => 20151003051241) do
     t.integer "account_id"
   end
 
-  add_index "price_group_members", ["price_group_id"], :name => "sys_c008583"
+  add_index "price_group_members", ["price_group_id"], :name => "price_group_members_price_group_id_fk"
   add_index "price_group_members", ["user_id"], :name => "index_price_group_members_on_user_id"
 
   create_table "price_group_products", :force => true do |t|
@@ -334,7 +334,7 @@ ActiveRecord::Schema.define(:version => 20151003051241) do
     t.boolean "admin_editable",               :default => true, :null => false
   end
 
-  add_index "price_groups", ["facility_id", "name"], :name => "sys_c008577", :unique => true
+  add_index "price_groups", ["facility_id", "name"], :name => "index_price_groups_on_facility_id_and_name", :unique => true
 
   create_table "price_policies", :force => true do |t|
     t.string   "type",                :limit => 50,                                                   :null => false
@@ -359,7 +359,7 @@ ActiveRecord::Schema.define(:version => 20151003051241) do
     t.string   "charge_for"
   end
 
-  add_index "price_policies", ["price_group_id"], :name => "sys_c008589"
+  add_index "price_policies", ["price_group_id"], :name => "price_policies_price_group_id_fk"
   add_index "price_policies", ["product_id"], :name => "index_price_policies_on_product_id"
 
   create_table "product_access_groups", :force => true do |t|
@@ -428,7 +428,7 @@ ActiveRecord::Schema.define(:version => 20151003051241) do
   end
 
   add_index "products", ["facility_account_id"], :name => "fk_facility_accounts"
-  add_index "products", ["facility_id"], :name => "sys_c008556"
+  add_index "products", ["facility_id"], :name => "products_facility_id_fk"
   add_index "products", ["schedule_id"], :name => "i_instruments_schedule_id"
   add_index "products", ["url_name"], :name => "index_products_on_url_name"
 
@@ -483,7 +483,7 @@ ActiveRecord::Schema.define(:version => 20151003051241) do
     t.boolean "on_sat",                                                           :null => false
   end
 
-  add_index "schedule_rules", ["instrument_id"], :name => "sys_c008573"
+  add_index "schedule_rules", ["instrument_id"], :name => "schedule_rules_instrument_id_fk"
 
   create_table "schedules", :force => true do |t|
     t.string   "name"
@@ -620,22 +620,22 @@ ActiveRecord::Schema.define(:version => 20151003051241) do
   add_foreign_key "orders", "accounts", name: "orders_account_id_fk"
   add_foreign_key "orders", "facilities", name: "orders_facility_id_fk"
 
-  add_foreign_key "price_group_members", "price_groups", name: "sys_c008583"
+  add_foreign_key "price_group_members", "price_groups", name: "price_group_members_price_group_id_fk"
 
-  add_foreign_key "price_groups", "facilities", name: "sys_c008578"
+  add_foreign_key "price_groups", "facilities", name: "price_groups_facility_id_fk"
 
-  add_foreign_key "price_policies", "price_groups", name: "sys_c008589"
+  add_foreign_key "price_policies", "price_groups", name: "price_policies_price_group_id_fk"
 
   add_foreign_key "product_users", "products", name: "fk_products"
 
-  add_foreign_key "products", "facilities", name: "sys_c008556"
+  add_foreign_key "products", "facilities", name: "products_facility_id_fk"
   add_foreign_key "products", "facility_accounts", name: "fk_facility_accounts"
   add_foreign_key "products", "schedules", name: "fk_instruments_schedule"
 
   add_foreign_key "reservations", "order_details", name: "reservations_order_detail_id_fk"
   add_foreign_key "reservations", "products", name: "reservations_product_id_fk"
 
-  add_foreign_key "schedule_rules", "products", name: "sys_c008573", column: "instrument_id"
+  add_foreign_key "schedule_rules", "products", name: "schedule_rules_instrument_id_fk", column: "instrument_id"
 
   add_foreign_key "schedules", "facilities", name: "fk_schedules_facility"
 
