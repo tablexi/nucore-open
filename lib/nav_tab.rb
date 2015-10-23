@@ -34,10 +34,12 @@ module NavTab
     case
     when customer_tab? && acting_user.present?
       links.push(orders_tab_link, reservations_tab_link, accounts_tab_link)
-    when admin_tab? && current_user.operator_of?(current_facility)
-      links.push(admin_orders_tab_link, admin_reservations_tab_link)
+    when admin_tab? && current_facility.present?
+      links << admin_orders_tab_link if can?(:administer, Order)
+      links << admin_reservations_tab_link if can?(:administer, Reservation)
       links << admin_billing_tab_link if can?(:manage_billing, current_facility)
-      links.push(admin_products_tab_link, admin_users_tab_link)
+      links << admin_products_tab_link if can?(:administer, Product)
+      links << admin_users_tab_link if can?(:administer, User)
       links << admin_reports_tab_link if can?(:manage, ReportsController)
       links << admin_facility_tab_link if can?(:edit, current_facility)
     end

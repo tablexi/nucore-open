@@ -71,6 +71,7 @@ class Ability
         ]
 
         can [
+          :administer,
           :assign_price_policies_to_problem_orders,
           :create,
           :edit,
@@ -86,6 +87,7 @@ class Ability
         can(:destroy, Reservation) { |r| r.admin? }
 
         can [
+          :administer,
           :assign_price_policies_to_problem_orders,
           :batch_update,
           :create,
@@ -97,12 +99,13 @@ class Ability
           :update,
         ], Order
 
-        can [:index, :view_details, :schedule, :show], [Product]
+        can [:administer, :index, :view_details, :schedule, :show], Product
 
         can [:upload, :uploader_create, :destroy], StoredFile do |fileupload|
           fileupload.file_type == 'sample_result'
         end
 
+        can :administer, User
         can :manage, User if controller.is_a?(UsersController)
 
         can [ :schedule, :agenda, :list, :show ], Facility
