@@ -3,4 +3,4 @@
 %p #{@order_detail.user} has placed a reservation for #{@order_detail.product}. It is currently pending approval.
 
 %p
-  %a= link_to "Please approve order ##{@order_detail}.", facility_order_order_detail_url(@order_detail.facility, @order_detail.order, @order_detail)
+  %a= link_to "Please approve Order ##{@order_detail}.", facility_order_url(@order_detail.facility, @order_detail.order)
