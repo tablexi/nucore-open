@@ -8,6 +8,7 @@ module NavTab
 
     helper_method(:customer_tab?)
     helper_method(:admin_tab?)
+    helper_method(:global_settings_link)
     helper_method(:navigation_links)
   end
 
@@ -47,6 +48,31 @@ module NavTab
     links
   end
 
+  class Link
+    include ActionView::Helpers::UrlHelper
+
+    attr_reader :subnav, :text, :url
+
+    def initialize(tab_name: nil, text:, url: nil, subnav: nil)
+      @tab_name = tab_name
+      @text = text
+      @url = url
+      @subnav = subnav
+    end
+
+    def active?(controller)
+      controller.active_tab == @tab_name
+    end
+
+    def tab_id
+      "#{@tab_name}_tab" if @tab_name.present?
+    end
+
+    def to_html
+      url.present? ? link_to(text, url) : link.text
+    end
+  end
+
   protected
 
   # Returns true if the current action is a customer tab action
@@ -57,19 +83,19 @@ module NavTab
   private
 
   def accounts_tab_link
-    {
+    Link.new(
       tab_name: "accounts",
       text: I18n.t("pages.my_tab", model: Account.model_name.human.pluralize),
       url: accounts_path,
-    }
+    )
   end
 
   def admin_billing_tab_link
-    {
+    Link.new(
       tab_name: "admin_billing",
       text: "Billing",
       url: billing_tab_landing_path,
-    }
+    )
   end
 
   def billing_tab_landing_path
@@ -81,68 +107,93 @@ module NavTab
   end
 
   def admin_facility_tab_link
-    {
+    Link.new(
       tab_name: "admin_facility",
       text: "Admin",
       url: manage_facility_path(current_facility),
-    }
+    )
   end
 
   def admin_orders_tab_link
-    {
+    Link.new(
       tab_name: "admin_orders",
       text: "Orders",
       url: facility_orders_path(current_facility),
-    }
+    )
   end
 
   def admin_products_tab_link
-    {
+    Link.new(
       tab_name: "admin_products",
       text: "Products",
       url: facility_products_path(current_facility),
-    }
+    )
   end
 
   def admin_reports_tab_link
-    reports_sub = [{ url: product_facility_general_reports_path(current_facility), text: "General"},
-                   { url: instrument_facility_instrument_reports_path(current_facility), text: "Instrument Utilization"}]
-    { text: "Reports", tab_name: "admin_reports", subnav: reports_sub }
+    Link.new(text: "Reports", tab_name: "admin_reports", subnav: reports_subnav)
   end
 
   def admin_users_tab_link
-    {
+    Link.new(
       tab_name: "admin_users",
       text: "Users",
       url: facility_users_path(current_facility),
-    }
+    )
   end
 
   def admin_reservations_tab_link
-    {
+    Link.new(
       tab_name: "admin_reservations",
       text: "Reservations",
       url: timeline_facility_reservations_path(current_facility),
-    }
+    )
+  end
+
+  def general_reports_link
+    Link.new(
+      text: "General",
+      url: product_facility_general_reports_path(current_facility),
+    )
+  end
+
+  def global_settings_link
+    @global_settings_link ||=
+      Link.new(
+        tab_name: "global_settings",
+        text: I18n.t("pages.global_settings"),
+        url: affiliates_path,
+      )
   end
 
   def home_tab_link
-    { url: root_path, text: "Home", tab_name: "home" }
+    Link.new(url: root_path, text: "Home", tab_name: "home")
+  end
+
+  def instrument_utilization_reports_link
+    Link.new(
+      text: "Instrument Utilization",
+      url: instrument_facility_instrument_reports_path(current_facility),
+    )
   end
 
   def orders_tab_link
-    {
+    Link.new(
       tab_name: "orders",
       text: I18n.t("pages.my_tab", model: Order.model_name.human.pluralize),
       url: orders_url,
-    }
+    )
+  end
+
+  def reports_subnav
+    [ general_reports_link, instrument_utilization_reports_link ]
   end
 
   def reservations_tab_link
-    {
+    Link.new(
       tab_name: "reservations",
       text: I18n.t("pages.my_tab", model: Reservation.model_name.human.pluralize),
       url: reservations_url,
-    }
+    )
   end
 end
