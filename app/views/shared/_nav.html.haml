@@ -21,11 +21,4 @@
 
       %ul.nav.pull-right
         = render "shared/nav/manage_facilities"
-
-        - if !acting_as? && current_user.try(:administrator?)
-          %li{class: global_settings_link.active?(controller) ? "active" : ""}
-            = global_settings_link.to_html
-
-        - if !acting_as? && current_user.try(:billing_administrator?)
-          %li.pull-right{class: controller.active_tab == "admin_billing" ? "active" : ""}
-            = link_to t("pages.global_billing"), facility_transactions_path("all")
+        = render "shared/nav/administration"

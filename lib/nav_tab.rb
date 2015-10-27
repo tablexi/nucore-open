@@ -61,7 +61,7 @@ module NavTab
     end
 
     def active?(controller)
-      controller.active_tab == @tab_name
+      (controller.active_tab == @tab_name) && !controller.all_facility?
     end
 
     def tab_id
