@@ -11,9 +11,11 @@ namespace :db do
   desc "Drop database for current RAILS_ENV"
   task :oracle_drop => :environment do
     next unless db_allow_task?
-    config= Rails.configuration.database_configuration[Rails.env]
+    config = Rails.configuration.database_configuration[Rails.env]
     connect_string = "#{config["username"]}/#{config["password"]}@#{config["database"]}"
-    system "bash -ic 'cd #{Rails.root}/db && ./generate_drops.sh | sqlplus #{connect_string}'"
+    Dir.chdir(Rails.root.join("db")) do
+      system "./generate_drops.sh | sqlplus #{Shellwords.shellescape(connect_string)}"
+    end
   end
 
   desc "DANGER! Drops all user tables and sequences"
