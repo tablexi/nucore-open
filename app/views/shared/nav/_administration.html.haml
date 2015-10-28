@@ -3,5 +3,5 @@
     = global_settings_link.to_html
 
 - if !acting_as? && current_user.try(:billing_administrator?)
-  %li.pull-right{class: (controller.active_tab == "admin_billing" && all_facility?) ? "active" : ""}
+  %li.pull-right{class: admin_cross_facility_billing_tab_link.active?(controller) ? "active" : ""}
     = link_to t("pages.global_billing"), facility_transactions_path("all")

@@ -6,6 +6,7 @@ module NavTab
     class_attribute :customer_actions
     class_attribute :admin_actions
 
+    helper_method(:admin_cross_facility_billing_tab_link)
     helper_method(:customer_tab?)
     helper_method(:admin_tab?)
     helper_method(:global_settings_link)
@@ -22,6 +23,14 @@ module NavTab
     def admin_tab(*actions)
       self.admin_actions = actions
     end
+  end
+
+  def admin_cross_facility_billing_tab_link
+    @admin_cross_facility_billing_tab_link ||= Link.new(
+      cross_facility: true,
+      tab_name: "admin_billing",
+      text: "Billing",
+    )
   end
 
   # Returns true if the current action is an admin tab action
@@ -53,15 +62,17 @@ module NavTab
 
     attr_reader :subnav, :text, :url
 
-    def initialize(tab_name: nil, text:, url: nil, subnav: nil)
+    def initialize(tab_name: nil, text:, url: nil, subnav: nil, cross_facility: false)
       @tab_name = tab_name
       @text = text
       @url = url
       @subnav = subnav
+      @cross_facility = cross_facility
     end
 
     def active?(controller)
-      (controller.active_tab == @tab_name) && !controller.all_facility?
+      return false if controller.active_tab != @tab_name
+      controller.all_facility? ? @cross_facility : !@cross_facility
     end
 
     def tab_id
