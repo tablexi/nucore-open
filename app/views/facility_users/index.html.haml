@@ -1,29 +1,33 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'staff' }
+  = render "admin/shared/sidenav_admin", sidenav_tab: "staff"
 
-%h2 Facility Staff
+%h2= t(".head")
 
 %ul.inline
-  %li= link_to 'Add Facility Staff', search_facility_facility_users_path, :class => 'btn-add'
+  %li= link_to t(".add"), search_facility_facility_users_path, class: "btn-add"
 
 - if @users.empty?
-  %p.notice No staff has been added to this facility.
+  %p.notice= t(".no_users")
 - else
   %table.table.table-striped.table-hover
     %thead
       %tr
         %th
-        %th== Name
-        %th== Username
-        %th== Email
-        %th== Roles
+        %th= t(".th.name")
+        %th= t(".th.username")
+        %th= t(".th.email")
+        %th= t(".th.roles")
     %tbody
       - @users.each do |user|
         %tr
-          %td.centered= link_to 'Remove Roles', facility_facility_user_path(current_facility, user), :confirm => 'Are you sure?', :method => :delete
+          %td.centered
+            = link_to t(".remove_roles"),
+              facility_facility_user_path(current_facility, user),
+              confirm: t(".remove_roles_confirm"),
+              method: :delete
           %td= user.full_name
           %td= user.username
           %td= user.email
-          %td= user.facility_user_roles(current_facility).collect {|g| g.role }.join ', '
+          %td= user.facility_user_roles(current_facility).map(&:role).join(", ")
