@@ -30,8 +30,8 @@ en:
       calendar: "%a, %d %b %Y %H:%M:%S"
       usa: "%m/%d/%Y %l:%M %p"
 
-
   pages:
+    affiliates: Affiliates
     my_tab: My %{model}
     create: Create %{model}
     manage: Manage %{model}
@@ -41,6 +41,14 @@ en:
     logout: Logout
     cart: Cart
     notices: Notices
+
+  affiliates:
+    add: Add Affiliate
+    edit: Edit
+    remove:
+      confirm: "Really remove affiliate %{name}?"
+      label: Remove
+    th: Affiliate
 
   message_summarizer:
     heading: "Notices (%{count})"
@@ -553,7 +561,6 @@ en:
     purchase:
       error: Unable to place order.
 
-
   order_details:
     show:
       head:
@@ -794,6 +801,7 @@ en:
         type: "Type"
         users: "Number of Users"
         accounts: "Number of Payment Sources"
+
   bulk_email:
     title: Bulk Email
     search_type:
