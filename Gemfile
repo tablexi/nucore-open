@@ -8,10 +8,6 @@ gem 'rails_config',     '0.3.3'
 gem 'mysql2',           '~> 0.3.20'
 gem 'foreigner',        '1.7.4'
 
-## deployment
-gem 'capistrano',       '2.15.4'
-gem 'whenever', require: false
-
 ## auth
 gem 'devise',           '~> 3.5.0'
 gem 'devise-encryptable', '~> 0.2.0'
@@ -61,6 +57,14 @@ gem 'synaccess_connect', '0.2.2', github: 'tablexi/synaccess'
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
+end
+
+group :development, :deployment do
+  gem "capistrano",         require: false
+  gem "capistrano-rails",   require: false
+  gem "capistrano-rvm",     require: false
+  gem "capistrano-bundler", require: false
+  gem 'whenever',           require: false
 end
 
 group :development, :test do
