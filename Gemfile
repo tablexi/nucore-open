@@ -5,7 +5,7 @@ gem 'rails',            '3.2.22'
 gem 'rails_config',     '0.3.3'
 
 ## database
-gem 'mysql2',           '~> 0.3.17'
+gem 'mysql2',           '~> 0.3.20'
 gem 'foreigner',        '1.7.4'
 
 ## deployment
