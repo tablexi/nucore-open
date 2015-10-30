@@ -93,6 +93,9 @@ GEM
     chronic (0.10.2)
     ci_reporter (2.0.0)
       builder (>= 2.1.2)
+    ci_reporter_rspec (1.0.0)
+      ci_reporter (~> 2.0)
+      rspec (>= 2.14, < 4)
     ckeditor (4.0.11)
       mime-types
       orm_adapter (~> 0.5.0)
@@ -483,7 +486,7 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   capistrano-rvm
-  ci_reporter
+  ci_reporter_rspec
   ckeditor (~> 4.0.10)
   clockpunch (~> 0.1.0)
   coffee-rails (~> 3.2.2)
