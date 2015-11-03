@@ -1,0 +1,149 @@
+class NavTab::LinkCollection
+  include Rails.application.routes.url_helpers
+
+  attr_reader :ability, :facility
+
+  def initialize(facility, ability)
+    @facility = facility
+    @ability = ability
+  end
+
+  def admin
+    [
+      home,
+      admin_orders,
+      admin_reservations,
+      admin_billing,
+      admin_products,
+      admin_users,
+      admin_reports,
+      admin_facility,
+    ].compact
+  end
+
+  def customer
+    [home, orders, reservations, accounts].compact
+  end
+
+  private
+
+  def accounts
+    NavTab::Link.new(
+      tab_name: "accounts",
+      text: I18n.t("pages.my_tab", model: Account.model_name.human.pluralize),
+      url: accounts_path,
+    )
+  end
+
+  def admin_billing
+    if ability.can?(:manage_billing, facility)
+      NavTab::Link.new(
+        tab_name: "admin_billing",
+        text: "Billing",
+        url: billing_tab_landing_path,
+      )
+    end
+  end
+
+  def admin_orders
+    if ability.can?(:administer, Order)
+      NavTab::Link.new(
+        tab_name: "admin_orders",
+        text: "Orders",
+        url: facility_orders_path(facility),
+      )
+    end
+  end
+
+  def admin_products
+    if ability.can?(:administer, Product)
+      NavTab::Link.new(
+        tab_name: "admin_products",
+        text: "Products",
+        url: facility_products_path(facility),
+      )
+    end
+  end
+
+  def admin_reports
+    if ability.can?(:manage, ReportsController)
+      NavTab::Link.new(
+        text: "Reports",
+        subnav: [general_reports, instrument_utilization_reports],
+        tab_name: "admin_reports",
+      )
+    end
+  end
+
+  def admin_reservations
+    if ability.can?(:administer, Reservation)
+      NavTab::Link.new(
+        tab_name: "admin_reservations",
+        text: "Reservations",
+        url: timeline_facility_reservations_path(facility),
+      )
+    end
+  end
+
+  def admin_users
+    if ability.can?(:administer, User)
+      NavTab::Link.new(
+        tab_name: "admin_users",
+        text: "Users",
+        url: facility_users_path(facility),
+      )
+    end
+  end
+
+  def admin_facility
+    if ability.can?(:edit, facility)
+      NavTab::Link.new(
+        tab_name: "admin_facility",
+        text: "Admin",
+        url: manage_facility_path(facility),
+      )
+    end
+  end
+
+  def billing_tab_landing_path
+    if SettingsHelper.has_review_period?
+      facility_notifications_path(facility)
+    else
+      facility_transactions_path(facility)
+    end
+  end
+
+  def general_reports
+    NavTab::Link.new(
+      text: "General",
+      url: product_facility_general_reports_path(facility),
+    )
+  end
+
+  def home
+    NavTab::Link.new(url: root_path, text: "Home", tab_name: "home")
+  end
+
+  def instrument_utilization_reports
+    NavTab::Link.new(
+      text: "Instrument Utilization",
+      url: instrument_facility_instrument_reports_path(facility),
+    )
+  end
+
+  def orders
+    NavTab::Link.new(
+      tab_name: "orders",
+      text: I18n.t("pages.my_tab", model: Order.model_name.human.pluralize),
+      url: orders_url,
+    )
+  end
+
+  def reservations
+    NavTab::Link.new(
+      tab_name: "reservations",
+      text: I18n.t("pages.my_tab", model: Reservation.model_name.human.pluralize),
+      url: reservations_url,
+    )
+  end
+end
