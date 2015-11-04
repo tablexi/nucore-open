@@ -10,8 +10,7 @@ class NavTab::LinkCollection
   end
 
   def admin
-    [
-      home,
+    default + [
       admin_orders,
       admin_reservations,
       admin_billing,
@@ -23,7 +22,11 @@ class NavTab::LinkCollection
   end
 
   def customer
-    [home, orders, reservations, accounts].compact
+    default + [orders, reservations, accounts]
+  end
+
+  def default
+    [home]
   end
 
   private
