@@ -39,18 +39,18 @@ en:
     admin_reservations: Reservations
     admin_users: Users
     affiliates: Affiliates
+    cart: Cart
+    create: Create %{model}
     general_reports: General
+    global_billing: Billing
+    global_settings: Global Settings
     global_user_roles: Global User Roles
     home: Home
     instrument_utilization_reports: Instrument Utilization
-    my_tab: My %{model}
-    create: Create %{model}
-    manage: Manage %{model}
-    global_settings: Global Settings
-    global_billing: Billing
     login: Login
     logout: Logout
-    cart: Cart
+    manage: Manage %{model}
+    my_tab: My %{model}
     notices: Notices
 
   affiliates:
