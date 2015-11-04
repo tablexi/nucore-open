@@ -36,57 +36,44 @@ class NavTab::LinkCollection
   end
 
   def admin_billing
-    if ability.can?(:manage_billing, facility)
+    ability.can?(:manage_billing, facility) &&
       NavTab::Link.new(tab: :admin_billing, url: billing_tab_landing_path)
-    end
   end
 
   def admin_orders
-    if ability.can?(:administer, Order)
+    ability.can?(:administer, Order) &&
       NavTab::Link.new(tab: :admin_orders, url: facility_orders_path(facility))
-    end
   end
 
   def admin_products
-    if ability.can?(:administer, Product)
-      NavTab::Link.new(
-        tab: :admin_products,
-        url: facility_products_path(facility),
-      )
-    end
+    ability.can?(:administer, Product) &&
+      NavTab::Link.new(tab: :admin_products, url: facility_products_path(facility))
   end
 
   def admin_reports
-    if ability.can?(:manage, ReportsController)
+    ability.can?(:manage, ReportsController) &&
       NavTab::Link.new(
         tab: :admin_reports,
         subnav: [general_reports, instrument_utilization_reports],
       )
-    end
   end
 
   def admin_reservations
-    if ability.can?(:administer, Reservation)
+    ability.can?(:administer, Reservation) &&
       NavTab::Link.new(
         tab: :admin_reservations,
         url: timeline_facility_reservations_path(facility),
       )
-    end
   end
 
   def admin_users
-    if ability.can?(:administer, User)
+    ability.can?(:administer, User) &&
       NavTab::Link.new(tab: :admin_users, url: facility_users_path(facility))
-    end
   end
 
   def admin_facility
-    if ability.can?(:edit, facility)
-      NavTab::Link.new(
-        tab: :admin_facility,
-        url: manage_facility_path(facility),
-      )
-    end
+    ability.can?(:edit, facility) &&
+      NavTab::Link.new(tab: :admin_facility, url: manage_facility_path(facility))
   end
 
   def billing_tab_landing_path
