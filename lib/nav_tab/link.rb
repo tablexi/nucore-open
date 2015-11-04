@@ -21,6 +21,6 @@ class NavTab::Link
   end
 
   def to_html
-    url.present? ? link_to(text, url) : link.text
+    url.present? ? link_to(text, url) : text
   end
 end
