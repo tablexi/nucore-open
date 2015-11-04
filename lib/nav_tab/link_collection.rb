@@ -1,5 +1,6 @@
 class NavTab::LinkCollection
   include Rails.application.routes.url_helpers
+  include TranslationHelper
 
   attr_reader :ability, :facility
 
@@ -28,11 +29,7 @@ class NavTab::LinkCollection
   private
 
   def accounts
-    NavTab::Link.new(
-      tab: :accounts,
-      text: I18n.t("pages.my_tab", model: Account.model_name.human.pluralize),
-      url: accounts_path,
-    )
+    NavTab::Link.new(tab: :accounts, text: t_my(Account), url: accounts_path)
   end
 
   def admin_billing
@@ -103,17 +100,13 @@ class NavTab::LinkCollection
   end
 
   def orders
-    NavTab::Link.new(
-      tab: :orders,
-      text: I18n.t("pages.my_tab", model: Order.model_name.human.pluralize),
-      url: orders_path,
-    )
+    NavTab::Link.new(tab: :orders, text: t_my(Order), url: orders_path)
   end
 
   def reservations
     NavTab::Link.new(
       tab: :reservations,
-      text: I18n.t("pages.my_tab", model: Reservation.model_name.human.pluralize),
+      text: t_my(Reservation),
       url: reservations_path,
     )
   end
