@@ -39,7 +39,6 @@ class NavTab::LinkCollection
     if ability.can?(:manage_billing, facility)
       NavTab::Link.new(
         tab_name: "admin_billing",
-        text: "Billing",
         url: billing_tab_landing_path,
       )
     end
@@ -49,7 +48,6 @@ class NavTab::LinkCollection
     if ability.can?(:administer, Order)
       NavTab::Link.new(
         tab_name: "admin_orders",
-        text: "Orders",
         url: facility_orders_path(facility),
       )
     end
@@ -59,7 +57,6 @@ class NavTab::LinkCollection
     if ability.can?(:administer, Product)
       NavTab::Link.new(
         tab_name: "admin_products",
-        text: "Products",
         url: facility_products_path(facility),
       )
     end
@@ -68,7 +65,6 @@ class NavTab::LinkCollection
   def admin_reports
     if ability.can?(:manage, ReportsController)
       NavTab::Link.new(
-        text: "Reports",
         subnav: [general_reports, instrument_utilization_reports],
         tab_name: "admin_reports",
       )
@@ -79,7 +75,6 @@ class NavTab::LinkCollection
     if ability.can?(:administer, Reservation)
       NavTab::Link.new(
         tab_name: "admin_reservations",
-        text: "Reservations",
         url: timeline_facility_reservations_path(facility),
       )
     end
@@ -89,7 +84,6 @@ class NavTab::LinkCollection
     if ability.can?(:administer, User)
       NavTab::Link.new(
         tab_name: "admin_users",
-        text: "Users",
         url: facility_users_path(facility),
       )
     end
@@ -99,7 +93,6 @@ class NavTab::LinkCollection
     if ability.can?(:edit, facility)
       NavTab::Link.new(
         tab_name: "admin_facility",
-        text: "Admin",
         url: manage_facility_path(facility),
       )
     end
@@ -115,18 +108,18 @@ class NavTab::LinkCollection
 
   def general_reports
     NavTab::Link.new(
-      text: "General",
+      text: I18n.t("pages.general_reports"),
       url: product_facility_general_reports_path(facility),
     )
   end
 
   def home
-    NavTab::Link.new(url: root_path, text: "Home", tab_name: "home")
+    NavTab::Link.new(url: root_path, tab_name: "home")
   end
 
   def instrument_utilization_reports
     NavTab::Link.new(
-      text: "Instrument Utilization",
+      text: I18n.t("pages.instrument_utilization_reports"),
       url: instrument_facility_instrument_reports_path(facility),
     )
   end
@@ -135,7 +128,7 @@ class NavTab::LinkCollection
     NavTab::Link.new(
       tab_name: "orders",
       text: I18n.t("pages.my_tab", model: Order.model_name.human.pluralize),
-      url: orders_url,
+      url: orders_path,
     )
   end
 
@@ -143,7 +136,7 @@ class NavTab::LinkCollection
     NavTab::Link.new(
       tab_name: "reservations",
       text: I18n.t("pages.my_tab", model: Reservation.model_name.human.pluralize),
-      url: reservations_url,
+      url: reservations_path,
     )
   end
 end

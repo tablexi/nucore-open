@@ -3,9 +3,9 @@ class NavTab::Link
 
   attr_reader :subnav, :text, :url
 
-  def initialize(tab_name: nil, text:, url: nil, subnav: nil, cross_facility: false)
+  def initialize(tab_name: nil, text: nil, url: nil, subnav: nil, cross_facility: false)
     @tab_name = tab_name
-    @text = text
+    @text = text || I18n.t("pages.#{tab_name}")
     @url = url
     @subnav = subnav
     @cross_facility = cross_facility

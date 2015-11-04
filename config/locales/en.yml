@@ -31,8 +31,18 @@ en:
       usa: "%m/%d/%Y %l:%M %p"
 
   pages:
+    admin_billing: Billing
+    admin_facility: Admin
+    admin_orders: Orders
+    admin_products: Products
+    admin_reports: Reports
+    admin_reservations: Reservations
+    admin_users: Users
     affiliates: Affiliates
+    general_reports: General
     global_user_roles: Global User Roles
+    home: Home
+    instrument_utilization_reports: Instrument Utilization
     my_tab: My %{model}
     create: Create %{model}
     manage: Manage %{model}
