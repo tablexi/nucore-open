@@ -26,11 +26,8 @@ module NavTab
   end
 
   def admin_cross_facility_billing_tab_link
-    @admin_cross_facility_billing_tab_link ||= Link.new(
-      cross_facility: true,
-      tab_name: "admin_billing",
-      text: "Billing",
-    )
+    @admin_cross_facility_billing_tab_link ||=
+      Link.new(cross_facility: true, tab: :admin_billing)
   end
 
   # Returns true if the current action is an admin tab action
@@ -56,11 +53,8 @@ module NavTab
   private
 
   def global_settings_link
-    @global_settings_link ||= NavTab::Link.new(
-      tab_name: "global_settings",
-      text: I18n.t("pages.global_settings"),
-      url: affiliates_path,
-    )
+    @global_settings_link ||=
+      NavTab::Link.new(tab: :global_settings, url: affiliates_path)
   end
 
   def link_collection

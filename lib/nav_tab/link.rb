@@ -3,21 +3,21 @@ class NavTab::Link
 
   attr_reader :subnav, :text, :url
 
-  def initialize(tab_name: nil, text: nil, url: nil, subnav: nil, cross_facility: false)
-    @tab_name = tab_name
-    @text = text || I18n.t("pages.#{tab_name}")
+  def initialize(tab: nil, text: nil, url: nil, subnav: nil, cross_facility: false)
+    @tab = tab.present? && tab.to_s
+    @text = text || I18n.t("pages.#{tab}")
     @url = url
     @subnav = subnav
     @cross_facility = cross_facility
   end
 
   def active?(controller)
-    return false if controller.active_tab != @tab_name
+    return false if controller.active_tab != @tab
     controller.all_facility? ? @cross_facility : !@cross_facility
   end
 
   def tab_id
-    "#{@tab_name}_tab" if @tab_name.present?
+    "#{@tab}_tab" if @tab.present?
   end
 
   def to_html
