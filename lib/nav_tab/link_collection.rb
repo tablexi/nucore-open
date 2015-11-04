@@ -18,7 +18,7 @@ class NavTab::LinkCollection
       admin_users,
       admin_reports,
       admin_facility,
-    ].compact
+    ].select(&:present?)
   end
 
   def customer
