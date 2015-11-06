@@ -214,7 +214,24 @@ RSpec.describe Ability do
       end
     end
 
-    it_behaves_like "it cannot read notifications"
+    context "when the user has notifications" do
+      let(:order) { create(:purchased_order, product: product) }
+      let(:product) { create(:instrument_requiring_approval) }
+
+      before(:each) do
+        merge_to_order = order.dup
+        merge_to_order.save!
+        order.update_attribute(:merge_with_order_id, merge_to_order.id)
+        MergeNotification.create_for!(user, order.order_details.first.reload)
+      end
+
+      it_behaves_like "it can read notifications"
+    end
+
+    context "when the user has no notifications" do
+      it_behaves_like "it cannot read notifications"
+    end
+
     it_behaves_like "it cannot access problem reservations"
     it_behaves_like "it cannot access disputed orders"
   end
