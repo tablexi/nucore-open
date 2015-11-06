@@ -12,7 +12,7 @@ class AddProductAccessGroups < ActiveRecord::Migration
       t.references :product_access_group, :null => false
       t.references :schedule_rule, :null => false
     end
-    add_column :product_users, :product_access_group_id, :int
+    add_column :product_users, :product_access_group_id, :integer
   end
 
   def self.down

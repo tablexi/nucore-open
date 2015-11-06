@@ -2,9 +2,9 @@ class ChangeReservations < ActiveRecord::Migration
   def self.up
     change_table :reservations do |t|
       t.references  :order_detail
-      t.foreign_key :order_detail
+      t.foreign_key :order_details
       t.references  :instrument, :null => false
-      t.foreign_key :product, :column => :instrument_id
+      t.foreign_key :products, :column => :instrument_id
       t.datetime    :reserve_start_at, :null => false
       t.datetime    :reserve_end_at,   :null => false
       t.datetime    :actual_start_at

@@ -7,7 +7,8 @@ class AddTableStatementAccounts < ActiveRecord::Migration
     end
     execute "ALTER TABLE statement_accounts add CONSTRAINT fk_st_acts_st FOREIGN KEY (statement_id) REFERENCES statements (id)"
     execute "ALTER TABLE statement_accounts add CONSTRAINT fk_st_acts_acts FOREIGN KEY (account_id) REFERENCES accounts (id)"
-    execute "INSERT INTO statement_accounts SELECT statement_accounts_seq.nextVal, id, account_id, 0 FROM statements"
+
+    remove_foreign_key :statements, :name => "fk_statement_accounts"
     remove_column :statements, :account_id
   end
 

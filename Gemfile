@@ -5,12 +5,8 @@ gem 'rails',            '3.2.22'
 gem 'rails_config',     '0.3.3'
 
 ## database
-gem 'mysql2',           '~> 0.3.17'
-gem 'foreigner',        '1.1.1'
-
-## deployment
-gem 'capistrano',       '2.15.4'
-gem 'whenever', require: false
+gem 'mysql2',           '~> 0.3.20'
+gem 'foreigner',        '1.7.4'
 
 ## auth
 gem 'devise',           '~> 3.5.0'
@@ -63,6 +59,14 @@ group :development do
   gem 'binding_of_caller'
 end
 
+group :development, :deployment do
+  gem "capistrano",         require: false
+  gem "capistrano-rails",   require: false
+  gem "capistrano-rvm",     require: false
+  gem "capistrano-bundler", require: false
+  gem 'whenever',           require: false
+end
+
 group :development, :test do
   gem 'awesome_print',     '1.1.0'
   gem 'factory_girl_rails', '~> 4.5.0'
@@ -84,7 +88,7 @@ end
 
 group :test do
   gem 'rspec_junit_formatter', '0.2.3'
-  gem 'ci_reporter'
+  gem 'ci_reporter_rspec'
 end
 
 group :assets do
@@ -96,10 +100,6 @@ group :assets do
 end
 
 group :oracle do
-  # ruby-oci8 won't compile on lion
-  unless RUBY_PLATFORM =~ /(?:i686|x86_64)-darwin(?:11|12)/
-    gem 'ruby-oci8',        '2.1.8'
-  end
-
+  gem 'ruby-oci8',        '~> 2.2.0'
   gem 'activerecord-oracle_enhanced-adapter', '1.4.3'
 end

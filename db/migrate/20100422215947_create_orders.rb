@@ -2,9 +2,8 @@ class CreateOrders < ActiveRecord::Migration
   def self.up
     create_table :orders do |t|
       t.references :facility, :null => false
-      t.foreign_key :facility
       t.references :account,  :null => false
-      t.foreign_key :account
+      t.foreign_key :accounts
       t.references :user, :null => false
       t.integer :created_by, :null => false
       t.references :price_group, :null => false

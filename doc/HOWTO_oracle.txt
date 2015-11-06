@@ -1,4 +1,4 @@
-# FOR OS X MOUNTAIN LION
+# FOR OS X
 
 #################################
 # Oracle SQL Developer
@@ -33,7 +33,7 @@ sudo ln -s libocci.dylib.11.1   libocci.dylib
 # Add to (bash) ~/.profile
 export NLS_LANG="AMERICAN_AMERICA.AL32UTF8"
 export ORACLE_HOME=/opt/oracle/instantclient
-export DYLD_LIBRARY_PATH=$ORACLE_HOME
+export OCI_DIR=$ORACLE_HOME
 
 source ~/.profile
 
@@ -41,9 +41,23 @@ source ~/.profile
 # Add to (tcsh) ~/.tcshrc
 setenv NLS_LANG "AMERICAN_AMERICA.UTF8"
 setenv ORACLE_HOME /opt/oracle/instantclient
-setenv DYLD_LIBRARY_PATH $ORACLE_HOME
+setenv OCI_DIR=$ORACLE_HOME
 
 source ~/.tcshrc
+
+#########################################
+# El Capitan
+
+In El Capitan, DYLD_* environment variables are unset by default for security reasons.
+
+The scripts here allow instantclient to work without the DYLD_ variables
+https://github.com/kubo/fix_oralib_osx
+
+```
+cd $ORACLE_HOME
+curl -O https://raw.githubusercontent.com/kubo/fix_oralib_osx/master/fix_oralib.rb
+ruby fix_oralib.rb
+```
 
 # sqlplus in path
 sudo ln -s /opt/oracle/instantclient/sqlplus /usr/local/bin/sqlplus
@@ -69,57 +83,6 @@ development:
   encoding: utf8
 
 
-################################################################################
-# Phusion Passenger (Optional)
-################################################################################
-# Instructions sourced from:
-# http://www.fngtps.com/2008/04/using-passenger-on-osx-for-rails-development
-
-gem install passenger
-passenger-install-apache2-module
-
-# Add to /etc/apache2/users/<username>.conf
-LoadModule passenger_module /Library/Ruby/Gems/1.8/gems/passenger-1.0.1/ext/apache2/mod_passenger.so
-RailsSpawnServer /Library/Ruby/Gems/1.8/gems/passenger-1.0.1/bin/passenger-spawn-server
-RailsRuby /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
-
-RailsEnv development
-
-Allow Apache serve files from our development directories.
-
-<Directory "/Users/<username>/Code">
-    Order allow,deny
-    Allow from all
-</Directory>
-Finally, configure virtual hosts for our various projects.
-
-NameVirtualHost *:80
-
-<VirtualHost *:80>
-DocumentRoot "/Users/<username>/Code/project1/public"
-ServerName project1.local
-</VirtualHost>
-
-<VirtualHost *:80>
-DocumentRoot "/Users/<username>/Code/project2/public"
-ServerName project2.local
-</VirtualHost>
-
-# Convenience config
-# add to /etc/hosts
-nucores.local localhost
-
-# Add this to /System/Library/LaunchDaemons/org.apache.httpd.plist
-<key>EnvironmentVariables</key>
-<dict>
-<key>DYLD_LIBRARY_PATH</key>
-<string>/opt/oracle/instantclient:/opt/local/lib</string>
-<key>NLS_LANG</key>
-<string>AMERICAN_AMERICA.UTF8</string>
-<key>TNS_ADMIN</key>
-<string>/opt/oracle/network/admin</string>
-</dict>
-
 # Other untested techniques...
 # Choose one of the methods at the bottom of this page: http://wiki.github.com/rsim/oracle-enhanced/troubleshooting
 
@@ -138,7 +101,7 @@ nucores.local localhost
 <dict>
   <key>ORACLE_HOME</key>
   <string>/opt/oracle/instantclient</string>
-  <key>DYLD_LIBRARY_PATH</key>
+  <key>OCI_DIR</key>
   <string>/opt/oracle/instantclient</string>
   <key>NLS_LANG</key>
   <string>AMERICAN_AMERICA.AL32UTF8</string>
