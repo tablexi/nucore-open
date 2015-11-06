@@ -16,6 +16,10 @@ class NavTab::Link
     controller.all_facility? ? @cross_facility : !@cross_facility
   end
 
+  def tab_class(controller)
+    active?(controller) ? "active" : ""
+  end
+
   def tab_id
     "#{@tab}_tab" if @tab.present?
   end
