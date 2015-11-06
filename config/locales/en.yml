@@ -669,13 +669,24 @@ en:
         search_term: "Search by name, NetID, or username"
 
   search:
+    create_new_user:
+      prompt: Can't find the user you're looking for?
+      link: Create a new user
     user_search_results:
+      blank_term: Please enter a search term
+      more_users_alert:
+        one: "One more user exists. Try refining your search."
+        other: "%{count} more users exist. Try refining your search."
+      no_users_found: No existing users found.
+      select_existing_user: Select an Existing User
       th:
         name: "Name"
         username: "Username or NetID"
         email: "Email"
     manage_user_table:
-      notice: "%{count} more users exist, try refining your search."
+      notice:
+        one: "One more user exists. Try refining your search."
+        other: "%{count} more users exist. Try refining your search."
       th:
         name: "Name"
         username: "Username or NetID"

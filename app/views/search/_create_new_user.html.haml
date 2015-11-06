@@ -1,0 +1,4 @@
+- if params[:create_link] == "true" && SettingsHelper.feature_on?(:create_users)
+  %p
+    = t(".prompt")
+    = link_to t(".link"), new_facility_user_path(@facility)
