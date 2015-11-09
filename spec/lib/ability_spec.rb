@@ -102,10 +102,15 @@ RSpec.describe Ability do
     it { expect(ability.can?(:disputed, Order)).to be false }
   end
 
+  shared_examples_for "it can manage users" do
+    it { expect(ability.can?(:manage, User)).to be true }
+  end
+
   describe "account manager" do
     let(:user) { create(:user, :account_manager) }
 
     it_behaves_like "it can manage accounts"
+    it_behaves_like "it can manage users"
     it_behaves_like "it cannot read notifications"
     it_behaves_like "it cannot access problem reservations"
     it_behaves_like "it cannot access disputed orders"

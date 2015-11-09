@@ -23,7 +23,7 @@ class Ability
       return
     end
 
-    can :manage, Account if user.account_manager?
+    can :manage, [Account, User] if user.account_manager?
 
     if resource.is_a?(PriceGroup)
       if !resource.global? && user.manager_of?(resource.facility)
