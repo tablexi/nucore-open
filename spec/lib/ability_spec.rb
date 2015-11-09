@@ -8,7 +8,7 @@ RSpec.describe Ability do
   let(:subject_resource) { facility }
 
   shared_examples_for "it can manage accounts" do
-    it { expect(ability.can?(:manage, Account)) }
+    it { expect(ability.can?(:manage, Account)).to be true }
   end
 
   shared_examples_for "it can manage journals" do
@@ -25,6 +25,10 @@ RSpec.describe Ability do
 
   shared_examples_for "it can manage reservations" do
     it { expect(ability.can?(:manage, Reservation)) }
+  end
+
+  shared_examples_for "it cannot manage accounts" do
+    it { expect(ability.can?(:manage, Account)).to be false }
   end
 
   shared_examples_for "it can manage price group members" do
@@ -98,8 +102,19 @@ RSpec.describe Ability do
     it { expect(ability.can?(:disputed, Order)).to be false }
   end
 
+  describe "account manager" do
+    let(:user) { create(:user, :account_manager) }
+
+    it_behaves_like "it can manage accounts"
+    it_behaves_like "it cannot read notifications"
+    it_behaves_like "it cannot access problem reservations"
+    it_behaves_like "it cannot access disputed orders"
+  end
+
   describe "administrator" do
     let(:user) { create(:user, :administrator) }
+
+    it_behaves_like "it can manage accounts"
 
     context "managing price groups" do
       context "when the price group has a facility" do
@@ -166,6 +181,7 @@ RSpec.describe Ability do
   describe "facility administrator" do
     let(:user) { create(:user, :facility_administrator, facility: facility) }
 
+    it_behaves_like "it can manage accounts"
     it_behaves_like "it can read notifications"
     it_behaves_like "it can manage training requests"
     it_behaves_like "it can access problem reservations"
@@ -196,6 +212,7 @@ RSpec.describe Ability do
       end
     end
 
+    it_behaves_like "it can manage accounts"
     it_behaves_like "it can manage training requests"
     it_behaves_like "it can read notifications"
     it_behaves_like "it can access problem reservations"
@@ -206,6 +223,7 @@ RSpec.describe Ability do
   describe "senior staff" do
     let(:user) { create(:user, :senior_staff, facility: facility) }
 
+    it_behaves_like "it cannot manage accounts"
     it_behaves_like "it can manage training requests"
     it_behaves_like "it can read notifications"
     it_behaves_like "it cannot access problem reservations"
@@ -216,6 +234,7 @@ RSpec.describe Ability do
   describe "staff" do
     let(:user) { create(:user, :staff, facility: facility) }
 
+    it_behaves_like "it cannot manage accounts"
     it_behaves_like "it can create but not manage training requests"
     it_behaves_like "it can read notifications"
     it_behaves_like "it cannot access problem reservations"
@@ -226,6 +245,7 @@ RSpec.describe Ability do
   describe "unprivileged user" do
     let(:user) { create(:user) }
 
+    it_behaves_like "it cannot manage accounts"
     it_behaves_like "it can create but not manage training requests"
 
     %i(sample_result template_result).each do |file_type|

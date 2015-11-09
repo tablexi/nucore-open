@@ -4,11 +4,17 @@
 # convenience methods for testing the role status of users.
 module Role
 
+  def grant_role!(role, facility: nil)
+    user_roles.create!(role: UserRole.const_get(role.upcase, facility))
+  rescue NameError => exception
+    raise "Invalid role '#{role}'"
+  end
+
   #
   # Facility management roles
   #
 
-  (UserRole.administrator + UserRole.billing_administrator + UserRole.facility_roles).each do |role|
+  UserRole.valid_roles.each do |role|
     #
     # Creates methods #administrator?, #facility_staff?, etc.
     # Each returns true if #user_roles has the role for any facility.

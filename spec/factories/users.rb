@@ -8,6 +8,12 @@ FactoryGirl.define do
     sequence(:email) { |n| "user#{n}@example.com" }
   end
 
+  trait :account_manager do
+    after(:create) do |user, _|
+      UserRole.grant(user, UserRole::ACCOUNT_MANAGER)
+    end
+  end
+
   trait :administrator do
     after(:create) do |user, _|
       UserRole.grant(user, UserRole::ADMINISTRATOR)
