@@ -14,7 +14,7 @@
       = link_to "&laquo;".html_safe,
         facility_public_timeline_path(current_facility, date: format_usa_date(@display_date - 1.day)), id: "reservation_left"
       #reservation_date
-        = l(@display_date, format: :timeline_navigation)
+        = l(@display_date.to_date, format: :timeline_navigation)
         = hidden_field_tag "date", format_usa_date(@display_date), class: "datepicker"
       = link_to "&raquo;".html_safe,
         facility_public_timeline_path(current_facility, date: format_usa_date(@display_date + 1.day)), id: "reservation_right"

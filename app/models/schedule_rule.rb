@@ -24,23 +24,18 @@ class ScheduleRule < ActiveRecord::Base
   end
 
   def self.unavailable_for_date(instrument, day)
-    rules = where(:instrument_id => instrument.id)
+    rules = where(instrument_id: instrument.id)
     rules = unavailable(rules)
-    rules = rules.select {|item| item.send(:"on_#{day.strftime("%a").downcase}?")}
-    reservations = []
-    rules.each do |rule|
-      res = Reservation.new({
-        :product => instrument,
-        :reserve_start_at => day.to_time.change(:hour => rule.start_hour, :min => rule.start_min),
-        :reserve_end_at => day.to_time.change(:hour => rule.end_hour, :min => rule.end_min),
-        :blackout => true
-        })
-      reservations << res
+    rules = rules.select { |item| item.public_send(:"on_#{day.strftime("%a").downcase}?")}
+    rules.each_with_object([]) do |rule, reservations|
+      reservations << Reservation.new(
+        product: instrument,
+        reserve_start_at: day.change(hour: rule.start_hour, min: rule.start_min),
+        reserve_end_at: day.change(hour: rule.end_hour, min: rule.end_min),
+        blackout: true
+        )
     end
-    reservations
   end
-
-
 
   def at_least_one_day_selected
     errors.add(:base, "Please select at least one day") unless
