@@ -21,44 +21,31 @@ RSpec.describe ScheduleRule do
         instrument.schedule_rules.create(attributes_for(:schedule_rule))
       end
 
-      let(:reservations) { ScheduleRule.unavailable_for_date(instrument, day) }
+      let(:now) { Time.zone.parse("2015-07-05T12:14:00") }
+      let(:reservations) { ScheduleRule.unavailable_for_date(instrument, now) }
 
-      shared_examples_for "it generates reservations to cover unavailability" do
-        it "returns two dummy reservations" do
-          expect(reservations.size).to eq(2)
+      it "returns two dummy reservations" do
+        expect(reservations.size).to eq(2)
 
-          reservations.each do |reservation|
-            expect(reservation).to be_kind_of(Reservation)
-            expect(reservation).to be_blackout
-            expect(reservation).not_to be_persisted
-          end
-        end
-
-        it "reserves midnight to 9 AM as unavailable" do
-          expect(reservations.first.reserve_start_at)
-            .to eq(day.to_time.change(hour: 0, min: 0))
-          expect(reservations.first.reserve_end_at)
-            .to eq(day.to_time.change(hour: 9, min: 0))
-        end
-
-        it "reserves 5 PM to midnight as unavailable" do
-          expect(reservations.last.reserve_start_at)
-            .to eq(day.to_time.change(hour: 17, min: 0))
-          expect(reservations.last.reserve_end_at)
-            .to eq(day.to_time.change(hour: 24, min: 0))
+        reservations.each do |reservation|
+          expect(reservation).to be_kind_of(Reservation)
+          expect(reservation).to be_blackout
+          expect(reservation).not_to be_persisted
         end
       end
 
-      context "when the 'day' argument is a date" do
-        let(:day) { Date.today }
-
-        it_behaves_like "it generates reservations to cover unavailability"
+      it "reserves midnight to 9 AM as unavailable" do
+        expect(reservations.first.reserve_start_at)
+          .to eq(now.beginning_of_day)
+        expect(reservations.first.reserve_end_at)
+          .to eq(Time.zone.parse("2015-07-05T09:00:00"))
       end
 
-      context "when the 'day' argument is a time" do
-        let(:day) { Time.zone.now }
-
-        it_behaves_like "it generates reservations to cover unavailability"
+      it "reserves 5 PM to midnight as unavailable" do
+        expect(reservations.last.reserve_start_at)
+          .to eq(Time.zone.parse("2015-07-05T17:00:00"))
+        expect(reservations.last.reserve_end_at)
+          .to eq(Time.zone.parse("2015-07-06T00:00:00"))
       end
     end
   end
