@@ -19,6 +19,8 @@ class Ability
         can :manage, AccountPriceGroupMember
       else
         can :manage, :all
+        cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
+        cannot :manage, User unless resource.is_a?(Facility) && resource.single_facility?
       end
       return
     end
@@ -36,15 +38,26 @@ class Ability
     can :list, Facility if user.facilities.size > 0 and controller.is_a?(FacilitiesController)
     can :read, Notification if user.notifications.active.any?
 
-    return unless resource
+    if user.account_manager?
+      can [:manage_accounts, :manage_users], Facility.cross_facility
+
+      if resource.blank? || resource == Facility.cross_facility
+        can :manage, [Account, AccountUser, User]
+      end
+
+      cannot [:suspend, :unsuspend], Account
+    end
 
     if user.billing_administrator?
       can :manage, [Account, Journal, Order, OrderDetail, Reservation]
       cannot :administer, [Order, OrderDetail, Reservation]
-      can [:manage_billing, :transactions], Facility do
-        resource.cross_facility?
+      can :manage_billing, Facility.cross_facility
+      can [:disputed_orders, :movable_transactions, :transactions], Facility do |facility|
+        facility.cross_facility?
       end
     end
+
+    return unless resource
 
     if resource.is_a?(OrderDetail)
       order_details_ability(user, resource)
@@ -121,6 +134,7 @@ class Ability
         ]
 
         can :manage, User if controller.is_a?(FacilityUsersController)
+        cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
 
         # A facility admin can manage an account if it has no facility (i.e. it's a chart string) or the account
         # is attached to the current facility.

@@ -21,4 +21,5 @@
 
       %ul.nav.pull-right
         = render "shared/nav/manage_facilities"
-        = render "shared/nav/administration"
+        - global_navigation_links.each do |link|
+          %li{class: link.tab_class(controller)}= link.to_html

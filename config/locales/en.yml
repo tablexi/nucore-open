@@ -29,6 +29,15 @@ en:
       calendar: "%a, %d %b %Y %H:%M:%S"
       usa: "%m/%d/%Y %l:%M %p"
 
+  admin:
+    shared:
+      tabnav_users:
+        details: "Details"
+        orders: "Orders"
+        reservations: "Reservations"
+        accounts: "Payment Sources"
+        access_list: "Access List"
+
   pages:
     admin_billing: Billing
     admin_facility: Admin
@@ -121,12 +130,6 @@ en:
       accounts: "Payment Sources"
       users: "Users"
       edit: "Edit"
-    tabnav_users:
-      details: "Details"
-      orders: "Orders"
-      reservations: "Reservations"
-      accounts: "Payment Sources"
-      access_list: "Access List"
     admin:
       tabnav_account:
         recent: "Recent Payment Sources"
@@ -198,8 +201,6 @@ en:
         bill_to: "Bill To"
       link:
         edit: "Edit"
-        activate: "Activate"
-        suspend: "Suspend"
     show_statement_list:
       download: Download
       notice: "No statements have been sent for this payment source."
@@ -225,6 +226,23 @@ en:
         username: Username
     search:
       instruct: "Search for an existing user by name, NetID, or username.  Click on the name of the user you wish to grant access to.  If the search does not return any acceptable matches, you may create a new user."
+
+  facility_account_orders:
+    index:
+      h3: Purchased Orders
+      label:
+        view_order:
+          file: View Order File
+          form: View Order Form
+      no_orders: No transactions exist for this period.
+      note: "Note: %{text}"
+      th:
+        amount: Amount
+        order_number: "Order #"
+        order_status: Order Status
+        product: Product
+        transaction_date: Transaction Date
+      unassigned: Unassigned
 
   facility_account_users:
     user_search:
@@ -723,6 +741,9 @@ en:
   accounts:
     show:
       head: "Payment Source Details"
+    suspend_button:
+      activate: Activate
+      suspend: Suspend
 
   facilities:
     disputed_orders:

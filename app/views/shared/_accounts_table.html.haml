@@ -4,14 +4,19 @@
       %th= Account.model_name.human
       %th.centered= Facility.model_name.human
   %tbody
-    - @accounts.each do |a|
+    - @accounts.each do |account|
       %tr
-        - if can?(:manage, a) || session_user.administrator? #au.can_administer? || session_user.administrator?
-          - if current_facility && AccountManager.using_statements?
-            %td= link_to a, facility_account_statement_path(current_facility, a, 'recent')
-          - else
-            %td= link_to a, account_statements_path(a)
-        - else
-          %td= a
+        %td
+          - case
+          - when !current_ability.can?(:manage, account)
+            = account
 
-        %td{:style => "padding-left: 50px"}= a.facility || '<i>All</i>'.html_safe
+          - when current_facility.cross_facility?
+            = link_to account, facility_account_path(current_facility, account)
+
+          - else
+            = link_to account,
+              facility_account_orders_path(current_facility, account)
+
+        %td{style: "padding-left: 50px"}
+          = account.facility || "<i>All</i>".html_safe

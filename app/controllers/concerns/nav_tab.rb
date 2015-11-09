@@ -6,10 +6,9 @@ module NavTab
     class_attribute :customer_actions
     class_attribute :admin_actions
 
-    helper_method(:admin_cross_facility_billing_tab_link)
     helper_method(:customer_tab?)
     helper_method(:admin_tab?)
-    helper_method(:global_settings_link)
+    helper_method(:global_navigation_links)
     helper_method(:navigation_links)
   end
 
@@ -23,11 +22,6 @@ module NavTab
     def admin_tab(*actions)
       self.admin_actions = actions
     end
-  end
-
-  def admin_cross_facility_billing_tab_link
-    @admin_cross_facility_billing_tab_link ||=
-      Link.new(cross_facility: true, tab: :admin_billing)
   end
 
   # Returns true if the current action is an admin tab action
@@ -46,6 +40,10 @@ module NavTab
     end
   end
 
+  def global_navigation_links
+    acting_as? ? [] : global_link_collection.links
+  end
+
   protected
 
   # Returns true if the current action is a customer tab action
@@ -55,9 +53,8 @@ module NavTab
 
   private
 
-  def global_settings_link
-    @global_settings_link ||=
-      NavTab::Link.new(tab: :global_settings, url: affiliates_path)
+  def global_link_collection
+    @global_link_collection ||= NavTab::GlobalLinkCollection.new(current_ability)
   end
 
   def link_collection

@@ -1,18 +1,24 @@
-- valid_account_types = AccountManager.new.valid_account_types
+- if controller.action_name == "new" || controller.action_name == "create"
+  - account_types = AccountManager.creatable_account_types_for_facility(current_facility)
 
-- if controller.action_name == 'new' || controller.action_name == 'create'
-  = hidden_field_tag "owner_user_id", @owner_user.id, :class => 'NufsAccount'
-  = f.input :owner, :as => :readonly, :input_html => { :class => 'show_always', :value => @owner_user.full_name }
+  = hidden_field_tag "owner_user_id", @owner_user.id, class: "NufsAccount"
 
-  = label_tag :class_type, t('facility_accounts.account_fields.label.payment_type'), :class => 'require'
-  = select_tag 'class_type', options_for_select(valid_account_types.map { |type| [type.model_name.human, type.name]}, :selected => params[:class_type]), :class => 'NufsAccount show_always'
+  = f.input :owner,
+      as: :readonly,
+      input_html: { class: "show_always", value: @owner_user.full_name }
 
-  - valid_account_types.each do |type|
-    .account_type_fields.account_type_new_fields{ :class => type.name }
-      = render :partial => "facility_accounts/account_fields/new_#{type.name.underscore}", :locals => { :f => f }
+  = label_tag :class_type, t(".label.payment_type"), class: "require"
 
+  = select_tag "class_type",
+    options_for_select(account_types.map { |type| [type.model_name.human, type.name] }, selected: params[:class_type]),
+    class: "NufsAccount show_always"
 
-    .account_type_fields{ :class => type.name }
-      = render :partial => "facility_accounts/account_fields/#{type.name.underscore}", :locals => { :f => f }
+  - account_types.each do |type|
+    .account_type_fields.account_type_new_fields{ class: type.name }
+      = render "facility_accounts/account_fields/new_#{type.name.underscore}", f: f
+
+    .account_type_fields{ class: type.name }
+      = render "facility_accounts/account_fields/#{type.name.underscore}", f: f
+
 - else
-  = render :partial => "facility_accounts/account_fields/#{@account.class.name.underscore}", :locals => { :f => f }
+  = render "facility_accounts/account_fields/#{@account.class.name.underscore}", f: f

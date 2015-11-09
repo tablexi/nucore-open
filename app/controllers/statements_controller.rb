@@ -3,19 +3,13 @@ class StatementsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_account
-  before_filter :init_statement, :except => :index
+  before_filter :init_statement
 
   load_and_authorize_resource
 
   def initialize
     @active_tab = 'accounts'
     super
-  end
-
-  # GET /accounts/:account_id/statements
-  def index
-    facility_ids = @account.order_details.find(:all, :select => 'orders.facility_id', :joins => :order, :group => :facility_id).collect {|od| od.facility_id}
-    @facilities  = Facility.find(facility_ids, :order => :name)
   end
 
   # GET /accounts/:account_id/facilities/:facility_id/statements/:id

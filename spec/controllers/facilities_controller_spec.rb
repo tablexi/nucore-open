@@ -204,6 +204,15 @@ RSpec.describe FacilitiesController do
       end
     end
 
+    context "when requesting the 'all' facility (cross-facility)" do
+      let(:facility) { Facility.cross_facility }
+
+      it "redirects to the index" do
+        do_request
+        expect(response).to redirect_to(facilities_path)
+      end
+    end
+
     it "should 404 for invalid facility" do
       @params.merge!(id: "randomstringofcharacters")
       do_request

@@ -8,7 +8,7 @@ module Role
   # Facility management roles
   #
 
-  (UserRole.administrator + UserRole.billing_administrator + UserRole.facility_roles).each do |role|
+  UserRole.valid_roles.each do |role|
     #
     # Creates methods #administrator?, #facility_staff?, etc.
     # Each returns true if #user_roles has the role for any facility.

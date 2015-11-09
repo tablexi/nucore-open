@@ -46,13 +46,21 @@ class FacilityAccountsController < ApplicationController
   layout 'two_column'
 
   def initialize
-    @active_tab = "admin_users"
+    @active_tab =
+      if SettingsHelper.feature_on?(:manage_payment_sources_with_users)
+        "admin_users"
+      else
+        "admin_billing"
+      end
     super
   end
 
   # GET /facilties/:facility_id/accounts
   def index
-    @accounts = Account.has_orders_for_facility(current_facility).paginate(:page => params[:page])
+    accounts = Account.with_orders_for_facility(current_facility)
+    accounts = accounts.where(facility_id: nil) if current_facility.cross_facility?
+
+    @accounts = accounts.paginate(page: params[:page])
   end
 
   # GET /facilties/:facility_id/accounts/:id
@@ -95,7 +103,7 @@ class FacilityAccountsController < ApplicationController
 
     if @account.save
       flash[:notice] = 'Account was successfully created.'
-      redirect_to(user_accounts_path(current_facility, @account.owner_user)) and return
+      redirect_to facility_user_accounts_path(current_facility, @account.owner_user)
     else
       render :action => 'new'
     end
@@ -171,22 +179,22 @@ class FacilityAccountsController < ApplicationController
   # GET /facilities/:facility_id/accounts/:account_id/statements/:statement_id
   def show_statement
     @facility = current_facility
-    action='show_statement'
 
-    case params[:statement_id]
-      when 'list'
-        action += '_list'
-        @statements = Statement.where(:facility_id => current_facility.id, :account_id => @account).order('created_at DESC').all.paginate(:page => params[:page])
-      when 'recent'
-        @order_details = @account.order_details.for_facility(@facility).delete_if{|od| od.order.state != 'purchased'}
-        @order_details = @order_details.paginate(:page => params[:page])
-      else
-        @statement=Statement.find(params[:statement_id].to_i)
-        @order_details = @statement.order_details
+    if params[:statement_id] == "list"
+      action = "show_statement_list"
+      @statements =
+        current_facility
+        .statements
+        .where(account_id: @account.id)
+        .paginate(page: params[:page])
+    else
+      action = "show_statement"
+      @statement = Statement.find(params[:statement_id])
+      @order_details = @statement.order_details.paginate(page: params[:page])
     end
 
     respond_to do |format|
-      format.html { render :action => action }
+      format.html { render action: action }
       format.pdf { render_statement_pdf }
     end
   end

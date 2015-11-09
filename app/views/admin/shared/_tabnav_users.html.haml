@@ -1,6 +1,24 @@
 %ul.nav.nav-tabs
-  = tab t('shared.tabnav_users.details'), facility_user_path(current_facility, @user), (secondary_tab == 'details')
-  = tab t('shared.tabnav_users.orders'), facility_user_orders_path(current_facility, @user),  (secondary_tab == 'orders')
-  = tab t('shared.tabnav_users.reservations'), facility_user_reservations_path(current_facility, @user),  (secondary_tab == 'reservations')
-  = tab t('shared.tabnav_users.accounts'), facility_user_accounts_path(current_facility, @user),  (secondary_tab == 'accounts')
-  = tab t('shared.tabnav_users.access_list'), facility_user_access_list_path(current_facility, @user),  (secondary_tab == 'access_list')
+  = tab t(".details"),
+    facility_user_path(current_facility, @user),
+    secondary_tab == "details"
+
+  - if current_ability.can?(:administer, Order)
+    = tab t(".orders"),
+      facility_user_orders_path(current_facility, @user),
+      secondary_tab == "orders"
+
+  - if current_ability.can?(:administer, Reservation)
+    = tab t(".reservations"),
+      facility_user_reservations_path(current_facility, @user),
+      secondary_tab == "reservations"
+
+  - if current_ability.can?(:manage, Account)
+    = tab t(".accounts"),
+      facility_user_accounts_path(current_facility, @user),
+      secondary_tab == "accounts"
+
+  - if current_ability.can?(:administer, Product)
+    = tab t(".access_list"),
+      facility_user_access_list_path(current_facility, @user),
+      secondary_tab == "access_list"

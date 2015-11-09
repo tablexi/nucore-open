@@ -276,7 +276,11 @@ class OrderDetail < ActiveRecord::Base
   scope :non_reservations, joins(:product).where("products.type <> 'Instrument'")
   scope :reservations, joins(:product).where("products.type = 'Instrument'")
 
-  scope :ordered, joins(:order).merge(Order.purchased)
+  scope :purchased, joins(:order).merge(Order.purchased)
+  class << self
+    alias_method :ordered, :purchased # TODO: deprecate .ordered in favor of .purchased
+  end
+
   scope :pending, joins(:order).where(:state => ['new', 'inprocess']).ordered
   scope :confirmed_reservations,  reservations.
                                  joins(:order).

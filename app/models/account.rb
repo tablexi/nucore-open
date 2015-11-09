@@ -80,6 +80,10 @@ class Account < ActiveRecord::Base
     AccountManager::FACILITY_ACCOUNT_CLASSES.include? self.name
   end
 
+  def self.cross_facility?
+    !limited_to_single_facility?
+  end
+
   def self.for_facility(facility)
     accounts = scoped
 
@@ -102,7 +106,7 @@ class Account < ActiveRecord::Base
     .where("accounts.facility_id IS NULL OR accounts.facility_id = ?", order_detail.facility.id)
   end
 
-  def self.has_orders_for_facility(facility)
+  def self.with_orders_for_facility(facility)
     where(id: ids_with_orders(facility))
   end
 

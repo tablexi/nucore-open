@@ -1,11 +1,17 @@
-= content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => {:sidenav_tab => 'accounts'}
+= render "sidebar"
+
+= content_for :h1 do
+  = current_facility
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_account', :locals => {:secondary_tab => 'search_by_user'}
+  = render "admin/shared/tabnav_account", secondary_tab: "search_by_user"
 
 - if SettingsHelper.feature_on?(:edit_accounts)
-  %ul
-    %li= link_to t('.add_account'), new_facility_account_path(current_facility, {:owner_user_id => @user.id})
+  = link_to t(".add_account"),
+    new_facility_account_path(current_facility, owner_user_id: @user.id),
+    class: "btn-add"
 
-= render(:partial => 'accounts', :locals => {:accounts => @user.accounts, :title => t('.title', :name => @user.full_name), :role => 'Owner'})
+= render "accounts",
+  accounts: @user.accounts,
+  title: t(".title", name: @user.full_name),
+  role: "Owner"

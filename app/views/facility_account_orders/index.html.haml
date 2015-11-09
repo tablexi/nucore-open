@@ -1,0 +1,69 @@
+= render "facility_accounts/sidebar"
+
+= content_for :h1 do
+  = current_facility
+
+%h2= @account
+
+- if @order_details.empty?
+  %p.notice= t(".no_orders")
+
+- else
+  %h3= t(".h3")
+
+  %table.table.table-striped.table-hover.old-table
+    %thead
+      %tr
+        %th= t(".th.order_number")
+        %th= t(".th.transaction_date")
+        %th= t(".th.product")
+        %th= t(".th.order_status")
+        %th.currency= t(".th.amount")
+
+    %tbody
+      - OrderDetailPresenter.wrap(@order_details).each do |order_detail|
+        %tr{class: order_detail.row_class}
+          %td
+            = link_to order_detail.description, order_detail.show_order_path
+
+          %td= order_detail.ordered_at
+          %td
+            %ul
+              %li= order_detail.description_as_html
+              - if order_detail.reservation.present?
+                - if order_detail.reservation_admin_editable?
+                  %li.indented
+                    = link_to order_detail.reservation,
+                      order_detail.edit_reservation_path
+                - else
+                  %li.indented
+                    = link_to order_detail.reservation,
+                      order_detail.show_reservation_path
+
+              - if order_detail.survey_completed?
+                %li.indented
+                  = link_to t(".label.view_order.form"),
+                    order_detail.survey_url, target: "_blank"
+
+              - if order_detail.stored_files_template_result.present?
+                - order_detail.stored_files_template_result.each do |stored_file|
+                  %li.indented
+                    = link_to t(".label.view_order.file"), stored_file.download_url
+
+              - if order_detail.note.present?
+                %li
+                  %i= t(".note", text: order_detail.note)
+
+          %td= order_detail.order_status
+          %td.currency
+            - if order_detail.cost_estimated?
+              %span.estimated_cost= order_detail.estimated_total
+            - elsif order_detail.price_policy.blank?
+              = t(".unassigned")
+            - else
+              %span.actual_cost= order_detail.actual_total
+      %tr
+        %td.centered{colspan: 5}= will_paginate(@order_details)
+
+  = render "/price_display_footnote", admin: true
+  = render "shared/reconcile_footnote"

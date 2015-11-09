@@ -1,30 +1,35 @@
-= content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+= render "facility_accounts/sidebar"
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_payment_method', :locals => {:secondary_tab => 'members'}
+  = render "admin/shared/tabnav_payment_method", secondary_tab: "members"
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
-%h2= t('.head')
-= simple_form_for(@account_user, :url => facility_account_account_users_path(current_facility, @account)) do |f|
+%h2= t(".head")
+
+= simple_form_for(@account_user, url: facility_account_account_users_path(current_facility, @account)) do |f|
   = f.error_messages
 
   - if current_owner?
-    %p.error= t('.messages.current_user')
-  = f.simple_fields_for @account do |a|
-    = a.input :type_string, :as => :readonly
-    = a.input :account_number, :as => :readonly
-    = a.input :description, :as => :readonly
-    = a.input :expires_at, :as => :readonly, :date_only => true
+    %p.error= t(".messages.current_user")
 
-  = f.simple_fields_for @user do |u|
-    = u.input :full_name, :as => :readonly, :label => Account.human_attribute_name(:user)
-  = f.input :user_id, :as => :hidden, :input_html => { :value => @user.id, :name => 'user_id' }
+  = f.simple_fields_for @account do |account|
+    = account.input :type_string, as: :readonly
+    = account.input :account_number, as: :readonly
+    = account.input :description, as: :readonly
+    = account.input :expires_at, as: :readonly, date_only: true
 
-  = f.input :user_role, :collection => AccountUser.selectable_user_roles(current_user, current_facility), :selected => @account_user.user_role, :disabled => current_owner?
+  = f.simple_fields_for @user do |user|
+    = user.input :full_name, as: :readonly, label: Account.human_attribute_name(:user)
+
+  = f.input :user_id, as: :hidden, input_html: { value: @user.id, name: "user_id" }
+
+  = f.input :user_role,
+    collection: AccountUser.selectable_user_roles(current_user, current_facility),
+    selected: @account_user.user_role,
+    disabled: current_owner?
 
   %ul.inline
-    %li= f.submit 'Create', :class => 'btn' unless current_owner?
-    %li= link_to 'Cancel', facility_account_path(current_facility, @account)
+    %li= f.submit "Create", class: "btn" unless current_owner?
+    %li= link_to "Cancel", facility_account_path(current_facility, @account)

@@ -125,7 +125,7 @@ RSpec.describe FacilityAccountsController do
         expect(assigns(:account).affiliate).to eq(Affiliate.find(@acct_attrs[:affiliate_id]))
         expect(assigns(:account).affiliate_other).to be_nil
         is_expected.to set_flash
-        assert_redirected_to user_accounts_url(@authable, @owner)
+        expect(response).to redirect_to(facility_user_accounts_url(facility, @owner))
       end
     end
 
