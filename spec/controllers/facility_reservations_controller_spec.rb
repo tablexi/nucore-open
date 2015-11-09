@@ -240,21 +240,32 @@ RSpec.describe FacilityReservationsController do
     context 'instrument listing' do
       before :each do
         @instrument2 = FactoryGirl.create(:instrument,
-                      :facility_account => @facility_account,
-                      :facility => @authable,
-                      :is_hidden => true)
+                      facility_account: @facility_account,
+                      facility: @authable,
+                      is_hidden: true)
         maybe_grant_always_sign_in :director
         @method = :get
         @action = :timeline
-        @params={ :facility_id => @authable.url_name }
-        do_request
+        @params = { facility_id: @authable.url_name }
       end
 
       it 'should show schedules for hidden instruments' do
+        do_request
         expect(assigns(:schedules)).to match_array([@product.schedule, @instrument2.schedule])
       end
 
+      it "defaults the display date to today" do
+        do_request
+        expect(assigns[:display_datetime]).to eq(Time.current.beginning_of_day)
+      end
+
+      it "parses the date" do
+        @params.merge!(date: "6/14/2015")
+        do_request
+        expect(assigns[:display_datetime]).to eq(Time.zone.parse("2015-06-14T00:00"))
+      end
     end
+
     context 'orders' do
       before :each do
         # create unpurchased reservation

@@ -6,13 +6,13 @@ module Timelineable
   end
 
   def timeline
-    @display_date = display_date_as_time.to_date
+    @display_datetime = display_date_as_time
     @schedules = current_facility.schedules.active.order(:name)
   end
 
   private
 
   def display_date_as_time
-    (parse_usa_date(params[:date]) if params[:date]) || Time.zone.now
+    parse_usa_date(params[:date]) || Time.current.beginning_of_day
   end
 end
