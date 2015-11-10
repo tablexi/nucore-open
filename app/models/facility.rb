@@ -49,6 +49,11 @@ class Facility < ActiveRecord::Base
   scope :active, :conditions => { :is_active => true }
   scope :sorted, order: :name
 
+  def self.cross_facility
+    @@cross_facility ||=
+      new(url_name: "all", name: "Cross-Facility", abbreviation: "ALL")
+  end
+
   def self.ids_from_urls(urls)
     where("url_name in (?)", urls).select(:id).map(&:id)
   end

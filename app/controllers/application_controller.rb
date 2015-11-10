@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
 
   ## sentinal value meaning all facilities
   def all_facility
-    @@all_facility ||= Facility.new(:url_name => 'all', :name => "Cross-Facility", :abbreviation => 'ALL')
+    Facility.cross_facility
   end
 
   def all_facility?

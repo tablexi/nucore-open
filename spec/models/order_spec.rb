@@ -496,10 +496,8 @@ RSpec.describe Order do
     end
 
     context "when specifying all facilities" do
-      let(:all_facility) { Facility.new(url_name: "all", name: "Cross-Facility", abbreviation: "ALL") }
-
       it "returns all orders" do
-        expect(described_class.for_facility(all_facility))
+        expect(described_class.for_facility(Facility.cross_facility))
           .to match_array(first_facility_orders + second_facility_orders)
       end
     end
