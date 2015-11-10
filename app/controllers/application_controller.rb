@@ -151,14 +151,6 @@ class ApplicationController < ActionController::Base
     render :file => '/acting_error', :status => 403, :layout => 'application'
   end
 
-  # TODO: move to shared lib as this doesn't depend on state
-  def generate_multipart_like_search_term(raw_term)
-    term = (raw_term || '').strip
-    term.tr_s! ' ', '%'
-    term = '%' + term + '%'
-    term.downcase
-  end
-
   #
   # Customize Devise redirect after login
   def after_sign_in_path_for(resource)

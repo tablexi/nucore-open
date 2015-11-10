@@ -31,6 +31,7 @@ class FacilityAccountsController < ApplicationController
 
   include Overridable
   include AccountSuspendActions
+  include SearchHelper
 
   admin_tab     :all
   before_filter :authenticate_user!

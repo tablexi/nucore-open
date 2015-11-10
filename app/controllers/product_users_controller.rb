@@ -9,6 +9,8 @@ class ProductUsersController < ApplicationController
 
   layout 'two_column'
 
+  include SearchHelper
+
   def initialize
     @active_tab = 'admin_products'
     super
