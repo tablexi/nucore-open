@@ -14,4 +14,5 @@ GRANT connect, resource TO nucore_test;
 
 create tablespace BC_NUCORE
     DATAFILE 'bc_nucore.dat'
-    SIZE 100M;
+    SIZE 100M
+    AUTOEXTEND ON;
