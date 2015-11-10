@@ -27,13 +27,11 @@ class UsersController < ApplicationController
   # GET /facilities/:facility_id/users
   def index
     @new_user = User.find_by_id(params[:user])
-
     @users =
-      if all_facility?
-        User.scoped
-      else
-        User.with_recent_orders(current_facility)
-      end.order(:last_name, :first_name).paginate(page: params[:page])
+      User
+      .with_recent_orders(current_facility)
+      .order(:last_name, :first_name)
+      .paginate(page: params[:page])
   end
 
   def search
