@@ -73,6 +73,12 @@ FactoryGirl.define do
       end
     end
 
+    trait :with_facility_account do
+      after(:build) do |product|
+        product.facility_account =
+          product.facility.facility_accounts.create(attributes_for(:facility_account))
+      end
+    end
   end
 
   factory :setup_instrument, :class => Instrument, :parent => :setup_product do

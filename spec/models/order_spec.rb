@@ -480,6 +480,31 @@ RSpec.describe Order do
     end
   end
 
+  describe ".for_facility" do
+    let(:facilities) { items.map(&:facility) }
+    let(:items) { create_list(:setup_item, 2, :with_facility_account) }
+    let!(:first_facility_orders) { create_list(:setup_order, 3, product: items.first) }
+    let!(:second_facility_orders) { create_list(:setup_order, 3, product: items.second) }
+
+    context "when specifying a facility" do
+      it "returns orders for that facility" do
+        expect(described_class.for_facility(facilities.first))
+          .to match_array(first_facility_orders)
+        expect(described_class.for_facility(facilities.second))
+          .to match_array(second_facility_orders)
+      end
+    end
+
+    context "when specifying all facilities" do
+      let(:all_facility) { Facility.new(url_name: "all", name: "Cross-Facility", abbreviation: "ALL") }
+
+      it "returns all orders" do
+        expect(described_class.for_facility(all_facility))
+          .to match_array(first_facility_orders + second_facility_orders)
+      end
+    end
+  end
+
   describe "#in_cart?" do
     context "when ordered_at is set" do
       subject(:order) { build(:order, ordered_at: Time.zone.now) }
