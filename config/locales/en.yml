@@ -946,9 +946,12 @@ en:
       head:
         h2: "Search Users"
         h3: "Active Users"
-      instruct: "Active users are users which have placed an order or had an order placed on their behalf at this facility in the last year."
+      instruct: |
+        Active users are users which have placed an order or had an order placed
+        on their behalf at this facility in the last year.
       notice: "There are no active users for this facility."
       label:
+        order_for: Order For
         search_term: "Search by name, NetID, or username"
       th:
         name: "Name"
