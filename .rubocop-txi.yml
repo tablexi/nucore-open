@@ -1,0 +1,52 @@
+AllCops:
+  Exclude:
+    - "db/schema.rb" # You can't touch this
+    - ".bundle/**/*" # Auto-generated
+    - "bin/**/*"     # Auto-generated
+  RunRailsCops: true
+
+Lint/HandleExceptions:
+  Exclude:
+    - "config/unicorn/*"
+
+Metrics/AbcSize:
+  Max: 25
+
+Metrics/LineLength:
+  Max: 120
+
+Metrics/MethodLength:
+  Max: 20
+
+Style/ClassAndModuleChildren:
+  Exclude:
+    - "app/controllers/**/*" # We generally use compact style here
+
+Style/EmptyLinesAroundBlockBody:
+  Exclude:
+    # These are naturally DSL-y, and so let's be lenient.
+    - "spec/**/*"
+    - "lib/tasks/*.rake"
+
+Style/EmptyLinesAroundClassBody:
+  EnforcedStyle: empty_lines
+
+Style/EmptyLinesAroundModuleBody:
+  EnforcedStyle: empty_lines
+
+Style/SignalException:
+  EnforcedStyle: only_raise
+
+Style/SingleSpaceBeforeFirstArg:
+  Exclude:
+    # We often add extra spaces for alignment in factories.
+    - "spec/factories/**/*"
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/TrailingComma:
+  EnforcedStyleForMultiline: comma
+
+Style/TrivialAccessors:
+  ExactNameMatch: true
