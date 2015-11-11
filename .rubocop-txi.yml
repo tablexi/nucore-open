@@ -3,7 +3,6 @@ AllCops:
     - "db/schema.rb" # You can't touch this
     - ".bundle/**/*" # Auto-generated
     - "bin/**/*"     # Auto-generated
-    - "vendor/**/*"  # We cannot solve the world's problems
   RunRailsCops: true
 
 Lint/HandleExceptions:
