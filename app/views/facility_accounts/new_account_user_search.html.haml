@@ -2,17 +2,18 @@
   = render "admin/shared/sidenav_users", sidenav_tab: "accounts"
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
-%h2= t('.head')
-%p= t('.instruct')
-= form_tag user_search_results_path, :id => 'ajax_form' do
-  = label_tag :search_term, t('.label.search_term')
+-# TODO: The following is very similar to app/views/users/_search_form.html.haml
+%h2= t(".head")
+%p= t(".instruct")
+= form_tag user_search_results_path, id: "ajax_form" do
+  = label_tag :search_term, t(".label.search_term")
   %br
-  = text_field_tag :search_term, nil, :size => 30, :class => 'search-query'
-  = submit_tag 'Search', :class => 'btn'
+  = text_field_tag :search_term, nil, size: 30, class: "search-query"
+  = submit_tag "Search", class: "btn"
   = hidden_field_tag :facility_id, current_facility.id
-  = hidden_field_tag :search_type, 'user_new_account'
-  = hidden_field_tag :create_link, 'true'
+  = hidden_field_tag :search_type, "user_new_account"
+  = hidden_field_tag :create_link, "true"
 %br
 #result
