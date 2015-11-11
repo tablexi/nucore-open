@@ -942,21 +942,6 @@ en:
       body: Your export is ready. Please see the attached file.
 
   users:
-    index:
-      head:
-        h2: "Search Users"
-        h3: "Active Users"
-      instruct: |
-        Active users are users which have placed an order or had an order placed
-        on their behalf at this facility in the last year.
-      notice: "There are no active users for this facility."
-      label:
-        order_for: Order For
-        search_term: "Search by name, NetID, or username"
-      th:
-        name: "Name"
-        username: "Username or NetID"
-        email: "Email"
     access_list:
       head: "%{name} Access List"
       no_products: "%{name} does not have any available products."
@@ -965,6 +950,20 @@ en:
       training_requested: Training Requested
       update_approvals:
         submit: "Update Access List"
+    list:
+      head:
+        h3: Active Users
+      instruct: |
+        Active users are users which have placed an order or had an order placed
+        on their behalf at this facility in the last year.
+      label:
+        order_for: Order For
+      notice:
+        no_users: There are no active users for this facility.
+      th:
+        name: Name
+        username: Username or NetID
+        email: Email
     new_external:
       head: "Add External User"
       main: "You may use this to grant NU Core access to external users. The email address and username must match."
@@ -990,6 +989,11 @@ en:
       email_not_found: "No user information was found in the university databases."
       found: "The following user was found.  Click \"Add User\" to allow this user access to NU Core."
       user_already_exists: The user %{username} already exists in NUCore
+    search_form:
+      head:
+        h2: "Search Users"
+      label:
+        search_term: "Search by name, NetID, or username"
     accounts:
       h1: "%{user_name} Payment Sources"
       link: "Add Payment Source"
