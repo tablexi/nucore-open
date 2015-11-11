@@ -241,6 +241,18 @@ namespace :demo do
       user_director.password = "password"
       user_director.save
     end
+
+    user_billing_administrator = User.find_by_email("bba123@example.com")
+    unless user_billing_administrator
+      user_billing_administrator = User.new(username: "bba123@example.com",
+                                            email: "bba123@example.com",
+                                            first_name: "Billy",
+                                            last_name: "Billing",
+                                           )
+      user_billing_administrator.password = "password"
+      user_billing_administrator.save
+    end
+
     UserRole.grant(user_director, UserRole::FACILITY_DIRECTOR, facility)
 
     UserRole.grant(user_billing_administrator, UserRole::BILLING_ADMINISTRATOR)
