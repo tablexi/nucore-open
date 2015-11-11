@@ -57,6 +57,7 @@ gem 'synaccess_connect', '0.2.2', github: 'tablexi/synaccess'
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'rubocop', require: false
 end
 
 group :development, :deployment do
