@@ -101,10 +101,8 @@ class Account < ActiveRecord::Base
     .where("accounts.facility_id IS NULL OR accounts.facility_id = ?", order_detail.facility.id)
   end
 
-  # find all accounts that have ordered fror a facility
   def self.has_orders_for_facility(facility)
-    ids = OrderDetail.for_facility(facility).select("distinct order_details.account_id").collect(&:account_id)
-    where(:id => ids)
+    where(id: ids_with_orders(facility))
   end
 
   def facilities
@@ -272,6 +270,14 @@ class Account < ActiveRecord::Base
     else
       description
     end
+  end
+
+  private
+
+  def self.ids_with_orders(facility)
+    relation = joins(order_details: :order)
+    relation = relation.where("orders.facility_id = ?", facility) unless facility.all_facility?
+    relation.select("distinct order_details.account_id")
   end
 
 end
