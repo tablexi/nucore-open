@@ -13,6 +13,10 @@ class MessageSummarizer::TrainingRequestsSummary < MessageSummarizer::FacilityMe
     "message_summarizer.training_requests"
   end
 
+  def in_context?
+    SettingsHelper.feature_on?(:training_requests) && super
+  end
+
   def path
     controller.facility_training_requests_path(facility)
   end

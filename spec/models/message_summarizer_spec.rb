@@ -199,10 +199,16 @@ RSpec.describe MessageSummarizer do
       context "when in a manager context" do
         let(:admin_tab?) { true }
 
-        it_behaves_like "there is one overall message"
-        it_behaves_like "it has a visible notices tab", 1
+        context "and the training request feature is enabled", feature_setting: { training_requests: true } do
+          it_behaves_like "there is one overall message"
+          it_behaves_like "it has a visible notices tab", 1
 
-        it { expect(subject.first.link).to match(/\bTraining Requests \(1\)/) }
+          it { expect(subject.first.link).to match(/\bTraining Requests \(1\)/) }
+        end
+
+        context "and the training request feature is disabled", feature_setting: { training_requests: false } do
+          it_behaves_like "the notices tab is not visible"
+        end
       end
 
       context "when not in a manager context" do
