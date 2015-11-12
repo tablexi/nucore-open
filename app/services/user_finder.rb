@@ -23,22 +23,18 @@ class UserFinder
   def condition_sql
     <<-SQL
       (
-          LOWER(first_name) LIKE ?
+          LOWER(first_name) LIKE :search_term
         OR
-          LOWER(last_name) LIKE ?
+          LOWER(last_name) LIKE :search_term
         OR
-          LOWER(username) LIKE ?
+          LOWER(username) LIKE :search_term
         OR
-          LOWER(CONCAT(first_name, last_name)) LIKE ?
+          LOWER(CONCAT(first_name, last_name)) LIKE :search_term
       )
     SQL
   end
 
-  def query_conditions
-    [condition_sql, @search_term, @search_term, @search_term, @search_term]
-  end
-
   def relation
-    @relation ||= User.where(query_conditions)
+    @relation ||= User.where(condition_sql, search_term: @search_term)
   end
 end
