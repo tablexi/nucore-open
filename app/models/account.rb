@@ -21,6 +21,7 @@ class Account < ActiveRecord::Base
   has_many   :order_details
   has_many   :orders
   has_many   :statements, :through => :order_details
+  has_many   :payments, inverse_of: :account
   belongs_to :affiliate
   accepts_nested_attributes_for :account_users
 
