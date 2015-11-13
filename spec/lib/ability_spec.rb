@@ -7,6 +7,26 @@ RSpec.describe Ability do
   let(:stub_controller) { OpenStruct.new }
   let(:subject_resource) { facility }
 
+  shared_examples_for "it can manage accounts" do
+    it { expect(ability.can?(:manage, Account)) }
+  end
+
+  shared_examples_for "it can manage journals" do
+    it { expect(ability.can?(:manage, Journal)) }
+  end
+
+  shared_examples_for "it can manage order details" do
+    it { expect(ability.can?(:manage, OrderDetail)) }
+  end
+
+  shared_examples_for "it can manage orders" do
+    it { expect(ability.can?(:manage, Order)) }
+  end
+
+  shared_examples_for "it can manage reservations" do
+    it { expect(ability.can?(:manage, Reservation)) }
+  end
+
   shared_examples_for "it can manage price group members" do
     it "can manage its members" do
       expect(ability.can?(:manage, UserPriceGroupMember)).to be true
@@ -113,6 +133,19 @@ RSpec.describe Ability do
 
     it_behaves_like "it can manage training requests"
     it_behaves_like "it can access problem reservations"
+  end
+
+  describe "billing administrator" do
+    let(:user) { create(:user, :billing_administrator) }
+
+    it_behaves_like "it can manage accounts"
+    it_behaves_like "it can manage journals"
+    it_behaves_like "it can manage order details"
+    it_behaves_like "it can manage orders"
+    it_behaves_like "it can manage reservations"
+
+    it { expect(ability.can?(:manage_billing, Facility)) }
+    it { expect(ability.can?(:transactions, Facility)) }
   end
 
   describe "facility administrator" do
