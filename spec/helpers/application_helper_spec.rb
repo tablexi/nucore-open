@@ -2,61 +2,6 @@ require "rails_helper"
 require 'controller_spec_helper'
 
 RSpec.describe ApplicationHelper do
-  describe "#app_name_link_text" do
-    subject { app_name_link_text }
-    let(:current_ability) { Ability.new(user, current_facility, {}) }
-    let(:current_facility) { nil }
-
-    context "when the user is not logged in" do
-      let(:user) { nil }
-
-      it { is_expected.to match(/Core\z/) }
-    end
-
-    context "when the user is logged in" do
-      let(:user) { create(:user) }
-
-      context "as a global administrator" do
-        let(:user) { create(:user, :administrator) }
-
-        it { is_expected.to match(/Core Admin\z/) }
-      end
-
-      facility_operator_roles =
-        %i(facility_administrator facility_director senior_staff staff)
-
-      context "and is scoped to a facility" do
-        let(:current_facility) { create(:facility) }
-
-        facility_operator_roles.each do |role|
-          context "and has the #{role} role" do
-            let(:user) { create(:user, role, facility: current_facility) }
-
-            it { is_expected.to match(/Core Admin\z/) }
-          end
-        end
-
-        context "as a non-operator" do
-          it { is_expected.to match(/Core\z/) }
-        end
-      end
-
-      context "and is not scoped to a facility" do
-        facility_operator_roles.each do |role|
-          context "and has the #{role} role" do
-            let(:user) { create(:user, role, facility: current_facility) }
-
-            it { is_expected.to match(/Core\z/) }
-          end
-        end
-
-        context "as an unprivileged user" do
-          it { is_expected.to match(/Core\z/) }
-        end
-      end
-    end
-  end
-
   describe "#menu_facilities" do
     before(:all) do
       create_users
