@@ -39,18 +39,8 @@ class Ability
     return unless resource
 
     if user.billing_administrator?
-
-      # can manage orders / order_details / reservations
-      can :manage, [Order, OrderDetail, Reservation]
-
-      # can manage all journals
-      can :manage, Journal
-
-      # can manage all accounts
-      can :manage, Account
-
-      # can list transactions for a facility
-      can [:transactions, :manage_billing], Facility
+      can :manage, [Account, Journal, Order, OrderDetail, Reservation]
+      can [:manage_billing, :transactions], Facility
     end
 
     if resource.is_a?(OrderDetail)
