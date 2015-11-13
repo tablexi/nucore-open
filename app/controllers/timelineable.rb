@@ -6,7 +6,7 @@ module Timelineable
   end
 
   def timeline
-    @display_date = display_date_as_time
+    @display_datetime = display_date_as_time
     @schedules = current_facility.schedules.active.order(:name)
   end
 
