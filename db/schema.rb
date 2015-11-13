@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151003051241) do
+ActiveRecord::Schema.define(:version => 20151113205331) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -304,6 +304,21 @@ ActiveRecord::Schema.define(:version => 20151003051241) do
   add_index "orders", ["order_import_id"], :name => "index_orders_on_order_import_id"
   add_index "orders", ["state"], :name => "index_orders_on_state"
   add_index "orders", ["user_id"], :name => "index_orders_on_user_id"
+
+  create_table "payments", :force => true do |t|
+    t.integer  "account_id",                                  :null => false
+    t.integer  "statement_id"
+    t.string   "source",                                      :null => false
+    t.string   "source_id"
+    t.decimal  "amount",       :precision => 10, :scale => 2, :null => false
+    t.integer  "paid_by_id"
+    t.datetime "created_at",                                  :null => false
+    t.datetime "updated_at",                                  :null => false
+  end
+
+  add_index "payments", ["account_id"], :name => "index_payments_on_account_id"
+  add_index "payments", ["paid_by_id"], :name => "index_payments_on_paid_by_id"
+  add_index "payments", ["statement_id"], :name => "index_payments_on_statement_id"
 
   create_table "price_group_members", :force => true do |t|
     t.string  "type",           :limit => 50, :null => false
@@ -621,6 +636,10 @@ ActiveRecord::Schema.define(:version => 20151003051241) do
   add_foreign_key "orders", "facilities", name: "orders_facility_id_fk"
 
   add_foreign_key "price_group_members", "price_groups", name: "price_group_members_price_group_id_fk"
+  add_foreign_key "payments", "accounts", name: "payments_account_id_fk"
+  add_foreign_key "payments", "statements", name: "payments_statement_id_fk"
+  add_foreign_key "payments", "users", name: "payments_paid_by_id_fk", column: "paid_by_id"
+
 
   add_foreign_key "price_groups", "facilities", name: "price_groups_facility_id_fk"
 

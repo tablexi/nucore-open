@@ -1,6 +1,8 @@
 class Statement < ActiveRecord::Base
   has_many :order_details, :inverse_of => :statement
   has_many :statement_rows, :dependent => :destroy
+  has_many :payments, inverse_of: :statement
+
   belongs_to :account
   belongs_to :facility
   belongs_to :created_by_user, :class_name => 'User', :foreign_key => :created_by
@@ -33,6 +35,10 @@ class Statement < ActiveRecord::Base
 
   def reconciled?
     order_details.where('state <> ?', 'reconciled').empty?
+  end
+
+  def paid_in_full?
+    payments.sum(:amount) >= total_cost
   end
 
   def add_order_detail(order_detail)

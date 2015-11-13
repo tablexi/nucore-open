@@ -105,5 +105,27 @@ RSpec.describe Statement do
         expect { statement.reload }.to raise_error ActiveRecord::RecordNotFound
       end
     end
+
+    describe "#paid_in_full?" do
+      it "is not paid_in_full with no payments" do
+        expect(statement).not_to be_paid_in_full
+      end
+
+      describe "with partial payment" do
+        let!(:payments) { FactoryGirl.create(:payment, account: statement.account, statement: statement, amount: statement.total_cost / 2) }
+
+        it "is not paid_in_full" do
+          expect(statement).not_to be_paid_in_full
+        end
+      end
+
+      describe "with multiple payments totaling to the total amount" do
+        let!(:payments) { FactoryGirl.create_list(:payment, 2, account: statement.account, statement: statement, amount: statement.total_cost / 2) }
+
+        it "is paid_in_full" do
+          expect(statement).to be_paid_in_full
+        end
+      end
+    end
   end
 end
