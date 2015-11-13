@@ -256,13 +256,13 @@ RSpec.describe FacilityReservationsController do
 
       it "defaults the display date to today" do
         do_request
-        expect(assigns[:display_date]).to eq(Time.current.beginning_of_day)
+        expect(assigns[:display_datetime]).to eq(Time.current.beginning_of_day)
       end
 
       it "parses the date" do
         @params.merge!(date: "6/14/2015")
         do_request
-        expect(assigns[:display_date]).to eq(Time.zone.parse("2015-06-14T00:00"))
+        expect(assigns[:display_datetime]).to eq(Time.zone.parse("2015-06-14T00:00"))
       end
     end
 
