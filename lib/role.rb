@@ -50,22 +50,10 @@ module Role
     end
   end
 
-
-  def operator?
-    manager? || facility_staff?
-  end
-
-
-  def manager?
-    facility_director? || facility_administrator?
-  end
-
-
   def operator_of?(facility)
     return false if facility.blank?
     manager_of?(facility) || facility_staff_of?(facility) || facility_senior_staff_of?(facility)
   end
-
 
   def manager_of?(facility)
     return false if facility.blank?
