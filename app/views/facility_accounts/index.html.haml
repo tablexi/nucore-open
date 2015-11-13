@@ -15,7 +15,7 @@
 
 %hr
 
-- if !all_facility? && SettingsHelper.feature_on?(:edit_accounts)
+- if current_facility.single_facility? && SettingsHelper.feature_on?(:edit_accounts)
   %ul.inline
     %li= link_to t(".add_account"), new_account_user_search_facility_accounts_path, class: "btn-add"
 

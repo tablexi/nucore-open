@@ -9,7 +9,7 @@
       %th.nowrap= OrderDetail.human_attribute_name(@date_range_field)
       - if @extra_date_column
         %th.nowrap= OrderDetail.human_attribute_name(@extra_date_column_header || @extra_date_column)
-      - if !current_facility || all_facility?
+      - if current_facility.blank? || cross_facility?
         %th= Facility.model_name.human
       %th= OrderDetail.human_attribute_name("description")
       %th.nowrap= OrderDetail.human_attribute_name("user")
@@ -34,7 +34,7 @@
         %td= order_detail.send(:"#{@date_range_field}").try(:strftime, "%m/%d/%Y")
         - if @extra_date_column and order_detail.send(@extra_date_column)
           %td= order_detail.send(@extra_date_column).strftime("%m/%d/%Y")
-        - if !current_facility || all_facility?
+        - if current_facility.blank? || cross_facility?
 
           %td= order_detail.order.facility
         %td.user-order-detail

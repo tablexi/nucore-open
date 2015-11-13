@@ -15,7 +15,7 @@
         - @users.each do |user|
           %tr
             %td.centered
-              - unless current_facility.all_facility?
+              - if current_facility.single_facility?
                 = link_to t(".label.order_for"),
                   facility_user_switch_to_path(current_facility, user)
             %td

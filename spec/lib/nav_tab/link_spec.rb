@@ -16,17 +16,17 @@ RSpec.describe NavTab::Link do
 
   describe "#active?" do
     let(:active_tab) { nil }
-    let(:all_facility?) { nil }
+    let(:cross_facility?) { nil }
     let(:controller) do
-      OpenStruct.new(active_tab: active_tab, all_facility?: all_facility?)
+      OpenStruct.new(active_tab: active_tab, cross_facility?: cross_facility?)
     end
     subject { link.active?(controller) }
 
     context "when the current controller tab name matches" do
       let(:active_tab) { "admin_billing" }
 
-      context "when the controller is in an all-facilities context" do
-        let(:all_facility?) { true }
+      context "when the controller is in a cross-facility context" do
+        let(:cross_facility?) { true }
 
         context "and the tab is cross-facility" do
           let(:cross_facility) { true }
@@ -40,7 +40,7 @@ RSpec.describe NavTab::Link do
       end
 
       context "when the controller is in a single facility context" do
-        let(:all_facility?) { false }
+        let(:cross_facility?) { false }
 
         context "and the tab is cross-facility" do
           let(:cross_facility) { true }

@@ -82,7 +82,7 @@ class Account < ActiveRecord::Base
   def self.for_facility(facility)
     accounts = scoped
 
-    unless facility.all_facility?
+    if facility.single_facility?
       accounts = accounts.where("accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)",
             {:allow_all => AccountManager::GLOBAL_ACCOUNT_CLASSES,
               :limit_one => AccountManager::FACILITY_ACCOUNT_CLASSES,
@@ -276,7 +276,7 @@ class Account < ActiveRecord::Base
 
   def self.ids_with_orders(facility)
     relation = joins(order_details: :order)
-    relation = relation.where("orders.facility_id = ?", facility) unless facility.all_facility?
+    relation = relation.where("orders.facility_id = ?", facility) if facility.single_facility?
     relation.select("distinct order_details.account_id")
   end
 

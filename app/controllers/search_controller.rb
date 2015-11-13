@@ -22,7 +22,7 @@ class SearchController < ApplicationController
       if params[:facility_id].present?
         Facility.find(params[:facility_id])
       else
-        all_facility
+        Facility.cross_facility
       end
   end
 end
