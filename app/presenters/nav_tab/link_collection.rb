@@ -4,6 +4,8 @@ class NavTab::LinkCollection
 
   attr_reader :ability, :facility
 
+  delegate :single_facility?, to: :facility
+
   def initialize(facility, ability)
     @facility = facility
     @ability = ability
@@ -36,25 +38,25 @@ class NavTab::LinkCollection
   end
 
   def admin_billing
-    if facility.single_facility? && ability.can?(:manage_billing, facility)
+    if single_facility? && ability.can?(:manage_billing, facility)
       NavTab::Link.new(tab: :admin_billing, url: billing_tab_landing_path)
     end
   end
 
   def admin_orders
-    if facility.single_facility? && ability.can?(:administer, Order)
+    if single_facility? && ability.can?(:administer, Order)
       NavTab::Link.new(tab: :admin_orders, url: facility_orders_path(facility))
     end
   end
 
   def admin_products
-    if facility.single_facility? && ability.can?(:administer, Product)
+    if single_facility? && ability.can?(:administer, Product)
       NavTab::Link.new(tab: :admin_products, url: facility_products_path(facility))
     end
   end
 
   def admin_reports
-    if facility.single_facility? && ability.can?(:manage, ReportsController)
+    if single_facility? && ability.can?(:manage, ReportsController)
       NavTab::Link.new(
         tab: :admin_reports,
         subnav: [general_reports, instrument_utilization_reports],
@@ -63,7 +65,7 @@ class NavTab::LinkCollection
   end
 
   def admin_reservations
-    if facility.single_facility? && ability.can?(:administer, Reservation)
+    if single_facility? && ability.can?(:administer, Reservation)
       NavTab::Link.new(
         tab: :admin_reservations,
         url: timeline_facility_reservations_path(facility),
