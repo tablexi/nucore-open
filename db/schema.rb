@@ -311,11 +311,13 @@ ActiveRecord::Schema.define(:version => 20151113205331) do
     t.string   "source",                                      :null => false
     t.string   "source_id"
     t.decimal  "amount",       :precision => 10, :scale => 2, :null => false
+    t.integer  "paid_by_id"
     t.datetime "created_at",                                  :null => false
     t.datetime "updated_at",                                  :null => false
   end
 
   add_index "payments", ["account_id"], :name => "index_payments_on_account_id"
+  add_index "payments", ["paid_by_id"], :name => "index_payments_on_paid_by_id"
   add_index "payments", ["statement_id"], :name => "index_payments_on_statement_id"
 
   create_table "price_group_members", :force => true do |t|
@@ -636,6 +638,8 @@ ActiveRecord::Schema.define(:version => 20151113205331) do
   add_foreign_key "price_group_members", "price_groups", name: "price_group_members_price_group_id_fk"
   add_foreign_key "payments", "accounts", name: "payments_account_id_fk"
   add_foreign_key "payments", "statements", name: "payments_statement_id_fk"
+  add_foreign_key "payments", "users", name: "payments_paid_by_id_fk", column: "paid_by_id"
+
 
   add_foreign_key "price_groups", "facilities", name: "price_groups_facility_id_fk"
 

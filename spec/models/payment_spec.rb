@@ -9,4 +9,14 @@ RSpec.describe Payment do
       expect(payment.errors).to include(:source)
     end
   end
+
+  describe "belongs to user" do
+    let(:payment) { described_class.new }
+    let(:user) { FactoryGirl.create(:user) }
+
+    it "belongs to the user" do
+      payment.paid_by = user
+      expect(payment.paid_by_id).to eq(user.id)
+    end
+  end
 end
