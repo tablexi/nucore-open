@@ -75,6 +75,11 @@ Prefix your commits and pull requests with the ticket number. `[#12345] Fix crit
 ### Refactor Scopes
 There are plenty of old-style scopes and finders (`find(:all, conditions: ...)`, `scope :xxxx, conditions: ...`, etc) lying around from when NUCore was young. Always use the newer style, and fix up scopes as you have the opportunity.
 
+### Prepare for Rails Upgrades
+Since this is still a Rails 3.2 project, you may find yourself needing to use
+outmoded idioms like a dynamic finders. Tag these with `TODO:` comments so we
+can more easily find them with `rake notes`.
+
 ### Put application code where it belongs
 There is quite a bit of code inside of `/lib` that is actually application code. Many of the
 classes/modules are actually service objects or model concerns. Move them to the appropriate
