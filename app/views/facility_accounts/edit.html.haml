@@ -1,7 +1,7 @@
+= render "sidebar"
+
 = content_for :h1 do
   = current_facility
-= content_for :sidebar do
-  = render "admin/shared/sidenav_users", sidenav_tab: "accounts"
 
 = content_for :head_content do
   = javascript_include_tag "accounts.js"

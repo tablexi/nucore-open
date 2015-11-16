@@ -11,7 +11,7 @@
     = tab t("facilities.disputed_orders.head"), facility_disputed_orders_path, (sidenav_tab == "disputed_orders")
   %li.divider
   = tab t('facility_accounts.accounts_receivable.head'), facility_accounts_receivable_path, (sidenav_tab == 'accounts_receivable')
-  - if current_user.billing_administrator?
+  - unless SettingsHelper.feature_on?(:manage_payment_sources_with_users)
     %li.divider
     = tab Account.model_name.human.pluralize, facility_accounts_path, (sidenav_tab === "accounts")
   %li.divider

@@ -86,6 +86,7 @@ api:
 feature:
   create_users_on: true
   limit_short_description_on: true
+  manage_payment_sources_with_users_on: true
   password_update_on: true
   recharge_accounts_on: true
   expense_accounts_on: true
