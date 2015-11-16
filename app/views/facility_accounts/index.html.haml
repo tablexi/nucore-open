@@ -1,23 +1,22 @@
-= content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+= render "sidebar"
 
 = content_for :h1 do
   = current_facility
 
-%h2= t('.head')
+%h2= t(".head")
 
-= form_tag search_results_facility_accounts_path, :id => 'ajax_form' do
-  = label_tag :search_term, t('.label.search_term')
+= form_tag search_results_facility_accounts_path, id: "ajax_form" do
+  = label_tag :search_term, t(".label.search_term")
   %br
-  = text_field_tag :search_term, nil, :size => 30, :class => 'search-query'
-  = submit_tag "Search", :class => 'btn'
-  = link_to 'Clear Search', facility_accounts_path
+  = text_field_tag :search_term, nil, size: 30, class: "search-query"
+  = submit_tag t(".search"), class: "btn"
+  = link_to t(".clear_search"), facility_accounts_path
 
 %hr
 
-- if !all_facility? && SettingsHelper.feature_on?(:edit_accounts)
+- if current_facility.single_facility? && SettingsHelper.feature_on?(:edit_accounts)
   %ul.inline
-    %li= link_to t('.add_account'), new_account_user_search_facility_accounts_path, :class => 'btn-add'
+    %li= link_to t(".add_account"), new_account_user_search_facility_accounts_path, class: "btn-add"
 
 #result
-  = render :partial => 'account_balances'
+  = render "account_balances"

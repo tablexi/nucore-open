@@ -1,0 +1,26 @@
+#result
+  %h3= t(".head.h3")
+  %p= t(".instruct")
+  - if @users.empty?
+    %p.notice= t(".notice.no_users")
+  - else
+    %table.table.table-striped.table-hover
+      %thead
+        %tr
+          %th
+          %th= t(".th.name")
+          %th= t(".th.username")
+          %th= t(".th.email")
+      %tbody
+        - @users.each do |user|
+          %tr
+            %td.centered
+              - if current_facility.single_facility?
+                = link_to t(".label.order_for"),
+                  facility_user_switch_to_path(current_facility, user)
+            %td
+              = link_to "#{user.last_name}, #{user.first_name}",
+                facility_user_path(current_facility, user)
+            %td= user.username
+            %td= user.email
+    = will_paginate(@users)

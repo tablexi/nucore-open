@@ -8,7 +8,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
   # Make the following methods available to all views
-  helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :all_facility?, :backend?
+  helper_method :cross_facility?
+  helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :backend?
   helper_method :open_or_facility_path
 
   # Navigation tabs configuration
@@ -19,22 +20,21 @@ class ApplicationController < ActionController::Base
   # UNLESS that url parameter has the value of 'all'
   # in which case, return the all facility
   def current_facility
-    return unless facility_id = params[:facility_id] || params[:id]
+    facility_id = params[:facility_id] || params[:id]
 
-    if facility_id.present? and facility_id == 'all'
-      @current_facility ||= all_facility
-    else
-      @current_facility ||= Facility.find_by_url_name(facility_id.to_s)
-    end
+    @current_facility ||=
+      case
+      when facility_id.blank?
+        nil # TODO: consider a refactoring to use a null object
+      when facility_id == Facility.cross_facility.url_name
+        Facility.cross_facility
+      else
+        Facility.find_by_url_name(facility_id.to_s) # TODO: rewrite as #find_by(url_name: …) after Rails 4.x upgrade
+      end
   end
 
-  ## sentinal value meaning all facilities
-  def all_facility
-    @@all_facility ||= Facility.new(:url_name => 'all', :name => "Cross-Facility", :abbreviation => 'ALL')
-  end
-
-  def all_facility?
-    current_facility == all_facility
+  def cross_facility?  # TODO: try to use current_facility.cross_facility? but note current_facility may be nil
+    current_facility == Facility.cross_facility
   end
 
   def init_current_facility
@@ -68,7 +68,6 @@ class ApplicationController < ActionController::Base
 
   end
 
-
   # helper for actions in the 'Billing' manager tab
   #
   # Purpose:
@@ -81,18 +80,14 @@ class ApplicationController < ActionController::Base
   #   when running a transaction search or working in the billing tab
   #
   # depends heavily on value of current_facility
-  #
-  # interprets the sentinel all_facility as all facilities
   def manageable_facilities
     @manageable_facilities =
-      case current_facility
-      when all_facility
-        # if client ever wants cross-facility billing for a subset of facilities,
-        # make this return session_user.manageable_facilities in the case of all_facility
-        Facility.sorted
-      when nil
+      case
+      when current_facility.blank?
         session_user.manageable_facilities
-      else # only facility that can be managed is the current facility
+      when current_facility.cross_facility?
+        Facility.sorted
+      else
         Facility.where(id: current_facility.id)
       end
   end
@@ -149,14 +144,6 @@ class ApplicationController < ActionController::Base
   rescue_from NUCore::NotPermittedWhileActingAs, :with => :render_acting_error
   def render_acting_error
     render :file => '/acting_error', :status => 403, :layout => 'application'
-  end
-
-  # TODO: move to shared lib as this doesn't depend on state
-  def generate_multipart_like_search_term(raw_term)
-    term = (raw_term || '').strip
-    term.tr_s! ' ', '%'
-    term = '%' + term + '%'
-    term.downcase
   end
 
   #

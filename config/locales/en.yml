@@ -29,17 +29,36 @@ en:
       calendar: "%a, %d %b %Y %H:%M:%S"
       usa: "%m/%d/%Y %l:%M %p"
 
-
   pages:
-    my_tab: My %{model}
+    admin_billing: Billing
+    admin_facility: Admin
+    admin_orders: Orders
+    admin_products: Products
+    admin_reports: Reports
+    admin_reservations: Reservations
+    admin_users: Users
+    affiliates: Affiliates
+    cart: Cart
     create: Create %{model}
-    manage: Manage %{model}
-    global_settings: Global Settings
+    general_reports: General
     global_billing: Billing
+    global_settings: Global Settings
+    global_user_roles: Global User Roles
+    home: Home
+    instrument_utilization_reports: Instrument Utilization
     login: Login
     logout: Logout
-    cart: Cart
+    manage: Manage %{model}
+    my_tab: My %{model}
     notices: Notices
+
+  affiliates:
+    add: Add Affiliate
+    edit: Edit
+    remove:
+      confirm: "Really remove affiliate %{name}?"
+      label: Remove
+    th: Affiliate
 
   message_summarizer:
     heading: "Notices (%{count})"
@@ -94,6 +113,10 @@ en:
       transact: "Transactions"
       statement: "Statements"
       members: "Members"
+    tabnav_payment_method:
+      details: Details
+      members: Members
+      statements: Statements
     tabnav_price_group:
       accounts: "Payment Sources"
       users: "Users"
@@ -115,12 +138,19 @@ en:
     search: "Search by Order #"
     results: Search Results
     no_results: No orders found
+
   facility_accounts:
+    edit:
+      cancel: Cancel
+      head: "Edit %{account}"
+      save: Save
     index:
+      clear_search: Clear Search
       head: "Recent Payment Sources"
       add_account: "Add Payment Source"
       label:
         search_term: "Search by payment source number or payment source owner's name, NetID, or username"
+      search: Search
     accounts_receivable:
       head: Accounts Receivable
       show_with_balance: Show %{model} with a balance
@@ -171,6 +201,7 @@ en:
         activate: "Activate"
         suspend: "Suspend"
     show_statement_list:
+      download: Download
       notice: "No statements have been sent for this payment source."
       th:
         sent_at: "Sent At"
@@ -181,6 +212,17 @@ en:
       title: "Payment Sources for %{name}"
 
   facility_users:
+    index:
+      add: Add Facility Staff
+      head: Facility Staff
+      no_users: No staff has been added to this facility.
+      remove_roles_confirm: Are you sure?
+      remove_roles: Remove Roles
+      th:
+        email: Email
+        name: Name
+        roles: Roles
+        username: Username
     search:
       instruct: "Search for an existing user by name, NetID, or username.  Click on the name of the user you wish to grant access to.  If the search does not return any acceptable matches, you may create a new user."
 
@@ -465,6 +507,8 @@ en:
         phone: "Phone Number:"
         fax: "Fax Number:"
         email: "Email:"
+      created_by:
+        unknown: Unknown
       notice: "No transactions exist for this period."
       th:
         transact: "Transaction Date"
@@ -537,7 +581,6 @@ en:
         new: "Complete Online Order Form"
     purchase:
       error: Unable to place order.
-
 
   order_details:
     show:
@@ -625,13 +668,24 @@ en:
         search_term: "Search by name, NetID, or username"
 
   search:
+    create_new_user:
+      prompt: Can't find the user you're looking for?
+      link: Create a new user
     user_search_results:
+      blank_term: Please enter a search term
+      more_users_alert:
+        one: "One more user exists. Try refining your search."
+        other: "%{count} more users exist. Try refining your search."
+      no_users_found: No existing users found.
+      select_existing_user: Select an Existing User
       th:
         name: "Name"
         username: "Username or NetID"
         email: "Email"
     manage_user_table:
-      notice: "%{count} more users exist, try refining your search."
+      notice:
+        one: "One more user exists. Try refining your search."
+        other: "%{count} more users exist. Try refining your search."
       th:
         name: "Name"
         username: "Username or NetID"
@@ -779,6 +833,7 @@ en:
         type: "Type"
         users: "Number of Users"
         accounts: "Number of Payment Sources"
+
   bulk_email:
     title: Bulk Email
     search_type:
@@ -886,18 +941,6 @@ en:
       body: Your export is ready. Please see the attached file.
 
   users:
-    index:
-      head:
-        h2: "Search Users"
-        h3: "Active Users"
-      instruct: "Active users are users which have placed an order or had an order placed on their behalf at this facility in the last year."
-      notice: "There are no active users for this facility."
-      label:
-        search_term: "Search by name, NetID, or username"
-      th:
-        name: "Name"
-        username: "Username or NetID"
-        email: "Email"
     access_list:
       head: "%{name} Access List"
       no_products: "%{name} does not have any available products."
@@ -906,6 +949,20 @@ en:
       training_requested: Training Requested
       update_approvals:
         submit: "Update Access List"
+    list:
+      head:
+        h3: Active Users
+      instruct: |
+        Active users are users which have placed an order or had an order placed
+        on their behalf at this facility in the last year.
+      label:
+        order_for: Order For
+      notice:
+        no_users: There are no active users for this facility.
+      th:
+        name: Name
+        username: Username or NetID
+        email: Email
     new_external:
       head: "Add External User"
       main: "You may use this to grant NU Core access to external users. The email address and username must match."
@@ -931,6 +988,11 @@ en:
       email_not_found: "No user information was found in the university databases."
       found: "The following user was found.  Click \"Add User\" to allow this user access to NU Core."
       user_already_exists: The user %{username} already exists in NUCore
+    search_form:
+      head:
+        h2: "Search Users"
+      label:
+        search_term: "Search by name, NetID, or username"
     accounts:
       h1: "%{user_name} Payment Sources"
       link: "Add Payment Source"

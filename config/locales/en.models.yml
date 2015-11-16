@@ -155,6 +155,9 @@ en:
       training_request:
         one: Training Request
         other: Training Requests
+      user:
+        one: User
+        other: Users
     # Model Attributes
     attributes:
       schedule_rule:

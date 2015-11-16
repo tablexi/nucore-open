@@ -7,6 +7,26 @@ RSpec.describe Ability do
   let(:stub_controller) { OpenStruct.new }
   let(:subject_resource) { facility }
 
+  shared_examples_for "it can manage accounts" do
+    it { expect(ability.can?(:manage, Account)) }
+  end
+
+  shared_examples_for "it can manage journals" do
+    it { expect(ability.can?(:manage, Journal)) }
+  end
+
+  shared_examples_for "it can manage order details" do
+    it { expect(ability.can?(:manage, OrderDetail)) }
+  end
+
+  shared_examples_for "it can manage orders" do
+    it { expect(ability.can?(:manage, Order)) }
+  end
+
+  shared_examples_for "it can manage reservations" do
+    it { expect(ability.can?(:manage, Reservation)) }
+  end
+
   shared_examples_for "it can manage price group members" do
     it "can manage its members" do
       expect(ability.can?(:manage, UserPriceGroupMember)).to be true
@@ -113,6 +133,34 @@ RSpec.describe Ability do
 
     it_behaves_like "it can manage training requests"
     it_behaves_like "it can access problem reservations"
+  end
+
+  describe "billing administrator" do
+    let(:user) { create(:user, :billing_administrator) }
+
+    it_behaves_like "it can manage accounts"
+    it_behaves_like "it can manage journals"
+    it_behaves_like "it can manage order details"
+    it_behaves_like "it can manage orders"
+    it_behaves_like "it can manage reservations"
+
+    it "cannot administer resources" do
+      expect(ability.can?(:administer, Order)).to be false
+      expect(ability.can?(:administer, OrderDetail)).to be false
+      expect(ability.can?(:administer, Reservation)).to be false
+    end
+
+    context "is a single facility" do
+      it { expect(ability.can?(:manage_billing, facility)).to be false }
+      it { expect(ability.can?(:transactions, facility)).to be false }
+    end
+
+    context "is cross-facility" do
+      let(:facility) { Facility.cross_facility }
+
+      it { expect(ability.can?(:manage_billing, facility)).to be true }
+      it { expect(ability.can?(:transactions, facility)).to be true }
+    end
   end
 
   describe "facility administrator" do

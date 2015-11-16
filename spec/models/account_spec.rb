@@ -2,10 +2,60 @@ require "rails_helper"
 
 RSpec.describe Account do
   let(:account) { create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user)) }
-  let(:facility) { create(:facility) }
+  let(:facility) { facility_a }
+  let(:facility_a) { create(:facility) }
+  let(:facility_b) { create(:facility) }
   let(:user) { create(:user) }
 
   it_should_behave_like "an Account"
+
+  describe ".has_orders_for_facility" do
+    subject { described_class.has_orders_for_facility(facility) }
+    let(:product_a) { create(:setup_item, :with_facility_account, facility: facility_a) }
+    let(:product_b) { create(:setup_item, :with_facility_account, facility: facility_b) }
+
+    context "when there are no orders" do
+      context "when querying a single facility" do
+        it { is_expected.to be_empty }
+      end
+
+      context "when querying across all facilities" do
+        let(:facility) { Facility.cross_facility }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
+    context "when there are fewer than 1000 accounts" do
+      before(:each) do
+        create_list(:nufs_account, 3, :with_order, product: product_a)
+        create_list(:nufs_account, 3, :with_order, product: product_b)
+      end
+
+      context "when querying a single facility" do
+        it { is_expected.to have(3).items }
+        it { is_expected.to all be_a(NufsAccount) }
+      end
+
+      context "when querying across all facilities" do
+        let(:facility) { Facility.cross_facility }
+
+        it { is_expected.to have(6).items }
+        it { is_expected.to all be_a(NufsAccount) }
+      end
+    end
+
+    context "when there are more than 1000 accounts" do
+      before { create_list(:nufs_account, 1001, :with_order, product: product_a) }
+      let(:accounts_for_facility_a) { described_class.has_orders_for_facility(facility_a) }
+      let(:accounts_for_all_facilities) { described_class.has_orders_for_facility(Facility.cross_facility) }
+
+      it "queries without error" do
+        expect(accounts_for_facility_a.count).to eq(1001)
+        expect(accounts_for_all_facilities.count).to eq(1001)
+      end
+    end
+  end
 
   describe "#owner_user_name" do
     context "when the account has an owner" do
