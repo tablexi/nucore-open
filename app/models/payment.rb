@@ -7,7 +7,7 @@ class Payment < ActiveRecord::Base
     @@valid_sources ||= [:check]
   end
 
-  validate :source, presence: true, inclusion: { in: valid_sources }
-  validate :account, :amount, presence: true
+  validates :source, presence: true, inclusion: { in: valid_sources }
+  validates :account, :amount, presence: true
 
 end
