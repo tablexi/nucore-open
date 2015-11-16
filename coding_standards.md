@@ -4,7 +4,7 @@ NUCore is an old project and has passed through many hands. There are long contr
 
 Times have changed, styles and best practices have evolved, and we want to keep the codebase healthy. That means cleaning things up and refactoring as needed. We can't fix everything at once, but we can make things better one little piece at a time.
 
-If you see a nasty or incomprehensible method, see if you can refactor it to make it more understandable. If you're trying to make a change and it's hard, [refactor to make the change easy](https://twitter.com/kentbeck/status/250733358307500032). 
+If you see a nasty or incomprehensible method, see if you can refactor it to make it more understandable. If you're trying to make a change and it's hard, [refactor to make the change easy](https://twitter.com/kentbeck/status/250733358307500032).
 
 But do consider the value vs effort. If it's a bug fix where you have `>` instead of `>=`, it might not be worth spending four hours refactoring. But if you're working within a nasty method and you know there's constant churn on that class, it's likely worth it.
 
@@ -36,13 +36,13 @@ its own PR if the changes are significant enough.
 ## Fork-specific changes
 
 Some features such as authentication or financial system integration may be specific to
-a particular instance of NUCore. These kinds of features should be developed within their 
+a particular instance of NUCore. These kinds of features should be developed within their
 respective downstream forks. When developing these kinds of features, it is important to
 avoid making changes to application code (primarily `/app` and `/lib`) that also exists in
 the open-source fork. Otherwise, there is a high likelyhood of merge conflict if anything
 changes upstream.
 
-The best method is to isolate your feature inside of an engine in `vendor/engines`. When 
+The best method is to isolate your feature inside of an engine in `vendor/engines`. When
 necessary, create a hook point where you need it within the open-source branch and hook
 into that with your engine. Try to avoid overriding entire views (like happens in the `c2po` engine). Then a change to the default view might need to happen in multiple places.
 
@@ -54,7 +54,7 @@ _We have yet to find a perfect mechanism for this, but some options include:_
 
 ## Gemfiles
 
-There will necessarily be differences between the `Gemfile`s of different instances (the 
+There will necessarily be differences between the `Gemfile`s of different instances (the
 included engines, database, etc.). Do your best to keep the common gems in Gemfiles are in
 the same order. This will help prevent merge conflicts in `Gemfile`. Unfortunately, merge
 conflicts within `Gemfile.lock` are likely inevitable.
