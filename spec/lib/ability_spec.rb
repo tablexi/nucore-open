@@ -144,8 +144,23 @@ RSpec.describe Ability do
     it_behaves_like "it can manage orders"
     it_behaves_like "it can manage reservations"
 
-    it { expect(ability.can?(:manage_billing, Facility)) }
-    it { expect(ability.can?(:transactions, Facility)) }
+    it "cannot administer resources" do
+      expect(ability.can?(:administer, Order)).to be false
+      expect(ability.can?(:administer, OrderDetail)).to be false
+      expect(ability.can?(:administer, Reservation)).to be false
+    end
+
+    context "is a single facility" do
+      it { expect(ability.can?(:manage_billing, facility)).to be false }
+      it { expect(ability.can?(:transactions, facility)).to be false }
+    end
+
+    context "is cross-facility" do
+      let(:facility) { Facility.cross_facility }
+
+      it { expect(ability.can?(:manage_billing, facility)).to be true }
+      it { expect(ability.can?(:transactions, facility)).to be true }
+    end
   end
 
   describe "facility administrator" do
