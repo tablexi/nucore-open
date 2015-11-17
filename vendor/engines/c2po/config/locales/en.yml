@@ -24,11 +24,6 @@ en:
       errors:
         expires_at: "Expiration may not be blank and must be in MM/DD/YYYY format"
 
-  facilities:
-    facility_fields:
-      accepts_po: "Accept Purchase Orders?"
-      accepts_cc: "Accept Credit Cards?"
-
   accounts:
     credit_card: Credit Card
     po: Purchase Order

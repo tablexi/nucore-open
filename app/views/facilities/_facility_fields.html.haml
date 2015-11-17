@@ -10,6 +10,12 @@
   %p
     = f.input :show_instrument_availability, :as => :boolean, :label => false, :inline_label => t('facilities.facility_fields.show_instrument_availability')
 
+- if FacilityManagement.payment_types.any?
+  .well
+    %p= t('facilities.facility_fields.payment_options')
+    - FacilityManagement.payment_types.each do |type, options|
+      = f.input "accepts_#{options[:short_name]}", label: false, inline_label: t("facilities.facility_fields.accept", type: type.model_name.human(count: 2))
+
 .well
   %p= t('facilities.facility_fields.inactive')
   = f.input :is_active, :as => :boolean, :label => false, :inline_label => t('facilities.facility_fields.is_active')
