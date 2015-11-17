@@ -749,7 +749,6 @@ en:
       abbreviation: "Abbreviated name or acronym for the facility"
       short_description: "Description as it will appear on the home page"
       description: "Description as it will appear on the facility main page"
-      payment_options: "By default, all facilities accept NU Chart Strings; you may check additional payment options:"
       accepts_multi_add: "Show Order Form for Facility (allows adding of multiple products simultaneously)"
       inactive: "Uncheck this box to prevent end users from viewing or purchasing from this facility:"
       is_active: "Is Active?"
