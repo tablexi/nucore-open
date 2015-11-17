@@ -11,50 +11,58 @@ RSpec.describe Ability do
     it { expect(ability.can?(:manage, Account)).to be true }
   end
 
-  shared_examples_for "it can manage journals" do
-    it { expect(ability.can?(:manage, Journal)) }
-  end
-
-  shared_examples_for "it can manage order details" do
-    it { expect(ability.can?(:manage, OrderDetail)) }
-  end
-
-  shared_examples_for "it can manage orders" do
-    it { expect(ability.can?(:manage, Order)) }
-  end
-
-  shared_examples_for "it can manage reservations" do
-    it { expect(ability.can?(:manage, Reservation)) }
-  end
-
   shared_examples_for "it cannot manage accounts" do
     it { expect(ability.can?(:manage, Account)).to be false }
   end
 
+  shared_examples_for "it can manage billing" do
+    it { expect(ability.can?(:manage_billing, facility)).to be true }
+  end
+
+  shared_examples_for "it cannot manage billing" do
+    it { expect(ability.can?(:manage_billing, facility)).to be false }
+  end
+
+  shared_examples_for "it can manage accounts for the facility" do
+    it { expect(ability.can?(:manage_accounts, facility)).to be true }
+  end
+
+  shared_examples_for "it cannot manage accounts for the facility" do
+    it { expect(ability.can?(:manage_accounts, facility)).to be false }
+  end
+
+  shared_examples_for "it can manage journals" do
+    it { expect(ability.can?(:manage, Journal)).to be true }
+  end
+
+  shared_examples_for "it can manage order details" do
+    it { expect(ability.can?(:manage, OrderDetail)).to be true }
+  end
+
+  shared_examples_for "it can manage orders" do
+    it { expect(ability.can?(:manage, Order)).to be true }
+  end
+
   shared_examples_for "it can manage price group members" do
-    it "can manage its members" do
-      expect(ability.can?(:manage, UserPriceGroupMember)).to be true
-    end
+    it { expect(ability.can?(:manage, UserPriceGroupMember)).to be true }
   end
 
   shared_examples_for "it cannot manage price group members" do
-    it "can manage its members" do
-      expect(ability.can?(:manage, UserPriceGroupMember)).to be false
-    end
+    it { expect(ability.can?(:manage, UserPriceGroupMember)).to be false }
+  end
+
+  shared_examples_for "it can manage reservations" do
+    it { expect(ability.can?(:manage, Reservation)).to be true }
   end
 
   shared_examples_for "it can manage training requests" do
-    it "can manage training requests" do
-      expect(ability.can?(:manage, TrainingRequest)).to be true
-    end
+    it { expect(ability.can?(:manage, TrainingRequest)).to be true }
   end
 
   shared_examples_for "it can create but not manage training requests" do
     let(:subject_resource) { create(:training_request, product: instrument) }
 
-    it "can create a training request" do
-      expect(ability.can?(:create, TrainingRequest)).to be true
-    end
+    it { expect(ability.can?(:create, TrainingRequest)).to be true }
 
     %i(read update delete index).each do |action|
       it "cannot #{action} training requests" do
@@ -106,20 +114,34 @@ RSpec.describe Ability do
     it { expect(ability.can?(:manage, User)).to be true }
   end
 
+  shared_examples_for "it cannot manage facility users" do
+    it { expect(ability.can?(:manage_users, facility)).to be false }
+  end
+
   describe "account manager" do
     let(:user) { create(:user, :account_manager) }
 
-    it_behaves_like "it can manage accounts"
-    it_behaves_like "it can manage users"
     it_behaves_like "it cannot read notifications"
     it_behaves_like "it cannot access problem reservations"
     it_behaves_like "it cannot access disputed orders"
+    it_behaves_like "it cannot manage billing"
+    it { expect(ability.can?(:administer, User)).to be false }
+
+    context "in a single facility" do
+      it_behaves_like "it cannot manage accounts for the facility"
+      it_behaves_like "it cannot manage facility users"
+    end
+
+    context "in cross-facility" do
+      let(:facility) { Facility.cross_facility }
+
+      it_behaves_like "it can manage accounts for the facility"
+      it_behaves_like "it can manage users"
+    end
   end
 
   describe "administrator" do
     let(:user) { create(:user, :administrator) }
-
-    it_behaves_like "it can manage accounts"
 
     context "managing price groups" do
       context "when the price group has a facility" do
@@ -153,6 +175,20 @@ RSpec.describe Ability do
 
     it_behaves_like "it can manage training requests"
     it_behaves_like "it can access problem reservations"
+
+    context "in a single facility" do
+      it_behaves_like "it can manage accounts for the facility"
+      it_behaves_like "it can manage billing"
+      it_behaves_like "it can manage users"
+    end
+
+    context "in cross-facility" do
+      let(:facility) { Facility.cross_facility }
+
+      it_behaves_like "it cannot manage accounts for the facility"
+      it_behaves_like "it cannot manage billing"
+      it_behaves_like "it cannot manage facility users"
+    end
   end
 
   describe "billing administrator" do
@@ -170,12 +206,12 @@ RSpec.describe Ability do
       expect(ability.can?(:administer, Reservation)).to be false
     end
 
-    context "is a single facility" do
+    context "in a single facility" do
       it { expect(ability.can?(:manage_billing, facility)).to be false }
       it { expect(ability.can?(:transactions, facility)).to be false }
     end
 
-    context "is cross-facility" do
+    context "in cross-facility" do
       let(:facility) { Facility.cross_facility }
 
       it { expect(ability.can?(:manage_billing, facility)).to be true }

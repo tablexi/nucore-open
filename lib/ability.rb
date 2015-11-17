@@ -19,11 +19,10 @@ class Ability
         can :manage, AccountPriceGroupMember
       else
         can :manage, :all
+        cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
       end
       return
     end
-
-    can :manage, [Account, User] if user.account_manager?
 
     if resource.is_a?(PriceGroup)
       if !resource.global? && user.manager_of?(resource.facility)
@@ -37,6 +36,15 @@ class Ability
 
     can :list, Facility if user.facilities.size > 0 and controller.is_a?(FacilitiesController)
     can :read, Notification if user.notifications.active.any?
+
+    if user.account_manager?
+      can [:manage_accounts, :manage_users], Facility.cross_facility
+
+      if resource == Facility.cross_facility
+        can :manage, [Account, User]
+        cannot :administer, User
+      end
+    end
 
     return unless resource
 

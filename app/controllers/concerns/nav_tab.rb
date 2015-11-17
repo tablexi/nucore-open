@@ -41,7 +41,7 @@ module NavTab
   end
 
   def global_navigation_links
-    global_link_collection.links
+    acting_as? ? [] : global_link_collection.links
   end
 
   protected
@@ -54,8 +54,7 @@ module NavTab
   private
 
   def global_link_collection
-    @global_link_collection ||=
-      NavTab::GlobalLinkCollection.new(acting_as: acting_as?, user: current_user)
+    @global_link_collection ||= NavTab::GlobalLinkCollection.new(current_ability)
   end
 
   def link_collection
