@@ -12,6 +12,9 @@ module C2po
       index = paths.find_index { |p| p.to_s.include? 'c2po' }
       paths.unshift paths.delete_at(index)
       ActionController::Base.view_paths = paths
+
+      ViewHook.add_hook("facilities.manage", "before_is_active", "facilities/c2po_manage")
+      ViewHook.add_hook("facilities.facility_fields", "before_is_active", "facilities/c2po_facility_fields")
     end
 
     # make this engine's routes override the main app's routes
