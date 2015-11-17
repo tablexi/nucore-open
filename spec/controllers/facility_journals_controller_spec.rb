@@ -343,7 +343,7 @@ RSpec.describe FacilityJournalsController do
 
         @params[:facility_id] = "all"
         @params[:order_detail_ids] = [@order_detail1.id, @facility2_order_detail.id]
-        sign_in @admin
+        sign_in @billing_admin
         do_request
       end
 
