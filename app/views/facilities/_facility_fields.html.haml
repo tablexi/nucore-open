@@ -10,6 +10,9 @@
   %p
     = f.input :show_instrument_availability, :as => :boolean, :label => false, :inline_label => t('facilities.facility_fields.show_instrument_availability')
 
+- FacilityManagement.edit_partials.each do |partial|
+  = render partial, f: f
+
 .well
   %p= t('facilities.facility_fields.inactive')
   = f.input :is_active, :as => :boolean, :label => false, :inline_label => t('facilities.facility_fields.is_active')

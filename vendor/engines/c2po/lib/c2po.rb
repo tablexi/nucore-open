@@ -1,4 +1,5 @@
 module C2po
+
   class Engine < Rails::Engine
     config.autoload_paths << File.join(File.dirname(__FILE__), "../lib")
 
@@ -12,6 +13,9 @@ module C2po
       index = paths.find_index { |p| p.to_s.include? 'c2po' }
       paths.unshift paths.delete_at(index)
       ActionController::Base.view_paths = paths
+
+      FacilityManagement.manage_partials << "c2po_manage"
+      FacilityManagement.edit_partials << "c2po_form"
     end
 
     # make this engine's routes override the main app's routes
@@ -22,4 +26,5 @@ module C2po
       app_paths.unshift app_paths.delete_at(index)
     end
   end
+
 end
