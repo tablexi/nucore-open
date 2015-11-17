@@ -25,7 +25,8 @@ en:
         expires_at: "Expiration may not be blank and must be in MM/DD/YYYY format"
 
   facilities:
-    facility_fields:
+    manage:
+      payment_options: "By default, all facilities accept NU Chart Strings; you may check additional payment options:"
       accepts_po: "Accept Purchase Orders?"
       accepts_cc: "Accept Credit Cards?"
 
