@@ -5,11 +5,11 @@ defaults: &defaults
 
 development:
   <<: *defaults
-  username: nucore_development
+  username: nucore_open_development
   password:
 
 test:
   <<: *defaults
-  username: nucore_test
+  username: nucore_open_test
   password:
 

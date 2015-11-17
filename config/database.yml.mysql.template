@@ -8,8 +8,8 @@ defaults: &defaults
 
 development:
   <<: *defaults
-  database: nucore-open_development
+  database: nucore_open_development
 
 test:
   <<: *defaults
-  database: nucore-open_test
+  database: nucore_open_test
