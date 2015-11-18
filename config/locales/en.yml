@@ -382,6 +382,16 @@ en:
         Each will need to be corrected.
       no_problem_reservations: There are no problem reservations.
 
+  global_user_roles:
+    index:
+      remove_roles: Remove Roles
+      remove_roles_confirm: Are you sure?
+      th:
+        email: Email
+        name: Name
+        roles: Roles
+        username: Username
+
   order_imports:
     new:
       h2: "Bulk Import"

@@ -34,6 +34,10 @@ class UserRole < ActiveRecord::Base
     account_manager + administrator + billing_administrator + facility_roles
   end
 
+  def self.global
+    where(facility_id: nil)
+  end
+
   #
   # Assigns +role+ to +user+ for +facility+
   # [_user_]

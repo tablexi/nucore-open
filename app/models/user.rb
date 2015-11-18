@@ -43,7 +43,7 @@ class User < ActiveRecord::Base
   # Scopes
 
   def self.with_global_roles
-    where(id: UserRole.where(facility_id: nil).select("distinct user_id"))
+    where(id: UserRole.global.select("distinct user_id"))
   end
 
   def self.with_recent_orders(facility)
