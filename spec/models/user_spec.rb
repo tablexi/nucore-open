@@ -1,166 +1,158 @@
 require "rails_helper"
 
 RSpec.describe User do
+  subject(:user) { create(:user) }
+  let(:facility) { create(:facility) }
+  let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
+  let(:item) { facility.items.create(attributes_for(:item, facility_account_id: facility_account.id)) }
+  let(:price_group) { create(:price_group, facility: facility) }
+  let(:price_policy) { item.item_price_policies.create(attributes_for(:item_price_policy, price_group_id: price_group.id)) }
 
-
-  before :each do
-    @user=FactoryGirl.create(:user)
-  end
-
-  it "should validate uniquess of username" do
+  it "validates uniquess of username" do
     # we need at least 1 user to test validations
     is_expected.to validate_uniqueness_of(:username)
   end
 
-  it 'should save the username as lowercase' do
-    @user = FactoryGirl.create(:user, :username => 'AnEmail@example.org')
-    expect(@user.reload.username).to eq('anemail@example.org')
+  context "when the created username is mixed-case" do
+    subject(:user) { create(:user, username: "AnEmail@example.org") }
+
+    it "lowercases the username" do
+      expect(user.reload.username).to eq("anemail@example.org")
+    end
   end
 
   it { is_expected.to have_many(:notifications) }
 
-  it "should use factory" do
-    expect(@user).to be_valid
+  it { is_expected.to be_valid }
+
+  context "when the username does not contain an '@' symbol" do
+    before { expect(user.username).not_to include("@") }
+
+    it "belongs to the NU price group" do
+      expect(user.price_groups.include?(@nupg)).to eq(true)
+    end
   end
 
-  it "should belong to NU price group if the username does not have an \"@\" symbol" do
-    expect(@user.price_groups.include?(@nupg)).to eq(true)
+  context "when the username contains an '@' symbol" do
+    subject(:user) { create(:user, username: "ext@example.net") }
+
+    it "belongs to the External price group" do
+      expect(user.price_groups.include?(@epg)).to eq(true)
+    end
   end
 
-  it "should belong to External price group if the username has an \"@\" symbol" do
-    user = User.new(FactoryGirl.attributes_for(:user))
+  it "is a member of any explicitly mapped price groups" do
+    pg = facility.price_groups.create(attributes_for(:price_group))
+    UserPriceGroupMember.create(user: user, price_group: pg)
+    expect(user.price_groups.include?(pg)).to eq(true)
+  end
+
+  it "belongs to price groups of accounts" do
+    cc = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user))
+    pg = facility.price_groups.create(attributes_for(:price_group))
+    AccountPriceGroupMember.create(account: cc, price_group: pg)
+    expect(user.account_price_groups.include?(pg)).to be true
+  end
+
+  it "belongs to price groups of the account owner" do
+    owner = create(:user)
+    cc = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: owner))
+    pg = facility.price_groups.create(attributes_for(:price_group))
+    UserPriceGroupMember.create(user: owner, price_group: pg)
+
+    cc.account_users.create(user: user, created_by: owner.id, user_role: "Purchaser")
+
+    expect(user.account_price_groups.include?(pg)).to be true
+  end
+
+  it { is_expected.to be_authenticated_locally }
+
+  it "can not be locally authenticated" do
+    user.encrypted_password = nil
+    assert user.save
+    expect(user).not_to be_authenticated_locally
+    user.password_salt = nil
+    assert user.save
+    expect(user).not_to be_authenticated_locally
+  end
+
+  it "aliases username to login" do
+    expect(user).to be_respond_to(:login)
+    expect(user.username).to eq(user.login)
+  end
+
+  it { is_expected.to be_respond_to(:ldap_attributes) }
+
+  it "is not an external user when the username and email differ" do
+    expect(user.username).not_to eq(user.email)
+    expect(user).not_to be_external
+  end
+
+  it "is an external user when the username is the same as the email" do
     user.username = user.email
-    user.save
-    expect(user.price_groups.include?(@epg)).to eq(true)
+    expect(user).to be_external
   end
 
-  it "should be a member of any explicitly mapped price groups" do
-    facility = FactoryGirl.create(:facility)
-    pg       = facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    UserPriceGroupMember.create(:user => @user, :price_group => pg)
-    expect(@user.price_groups.include?(pg)).to eq(true)
-  end
+  it "belongs to the Cancer Center price group if the user is in the Cancer Center view"
 
-  it "should belong to price groups of accounts" do
-    cc       = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
-    facility = FactoryGirl.create(:facility)
-    pg       = facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    AccountPriceGroupMember.create(:account => cc, :price_group => pg)
-    expect(@user.account_price_groups.include?(pg)).to eq(true)
-  end
+  describe "#accounts_for_product" do
+    let(:account) { create(:nufs_account, account_users_attributes: [attributes_for(:account_user, user: user)]) }
 
-  it "should belong to price groups of account owner" do
-    owner    = FactoryGirl.create(:user)
-    cc       = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => owner))
-    facility = FactoryGirl.create(:facility)
-    pg       = facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    UserPriceGroupMember.create(:user => owner, :price_group => pg)
-
-    cc.account_users.create(:user => @user, :created_by => owner.id, :user_role => 'Purchaser')
-
-    expect(@user.account_price_groups.include?(pg)).to eq(true)
-  end
-
-  it 'should be locally authenticated' do
-    expect(@user).to be_authenticated_locally
-  end
-
-  it 'should not be locally authenticated' do
-    @user.encrypted_password=nil
-    assert @user.save
-    expect(@user).not_to be_authenticated_locally
-    @user.password_salt=nil
-    assert @user.save
-    expect(@user).not_to be_authenticated_locally
-  end
-
-  it 'should alias username to login' do
-    expect(@user).to be_respond_to :login
-    expect(@user.username).to eq(@user.login)
-  end
-
-  it 'should respond to ldap_attributes' do
-    expect(@user).to be_respond_to :ldap_attributes
-  end
-
-  it 'should not be external user' do
-    expect(@user.username).not_to eq(@user.email)
-    expect(@user).not_to be_external
-  end
-
-  it 'should be external user' do
-    @user.username=@user.email
-    expect(@user).to be_external
-  end
-
-  it "should belong to Cancer Center price group if the user is in the Cancer Center view"
-
-  context 'cart' do
-    before :each do
-      @facility=FactoryGirl.create(:facility)
-      @facility_account=@facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @item=@facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
-      @order=@user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :facility => @facility))
-      @price_group=FactoryGirl.create(:price_group, :facility => @facility)
-      FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group)
-      @item_pp=@item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
-      @item_pp.reload.restrict_purchase=false
-      @order_detail=@order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product_id => @item.id))
+    before(:each) do
+      price_policy.reload.restrict_purchase = false
+      create(:account_price_group_member, account: account, price_group: price_group)
     end
 
-    it 'should return the order' do
-      order=@user.cart
-      expect(order).to eq(@order)
+    it "does not have an account because there is no price group" do
+      AccountPriceGroupMember.where(account_id: account.id, price_group_id: price_group.id).first.destroy
+      expect(user.accounts_for_product(item)).to be_empty
     end
 
-    it 'should return the order when given created_by user' do
-      order=@user.cart(@user)
-      expect(order).to eq(@order)
-    end
-
-    it 'should return the existing unordered order even when its empty' do
-      @order.order_details.destroy_all
-      order = @user.cart(@user)
-      expect(order.reload).to eq(@order)
-    end
-
-    it 'should return a new order' do
-      order=@user.cart(@user, false)
-      expect(order).not_to eq(@order)
-      expect(order.user).to eq(@user)
-      expect(order.created_by).to eq(@user.id)
-    end
-
-    it 'should return a new order when created_by user is nil' do
-      order=@user.cart(nil, false)
-      expect(order).not_to eq(@order)
-      expect(order.user).to eq(@user)
-      expect(order.created_by).to eq(@user.id)
-    end
-  end
-
-  context 'accounts_for_product' do
-    before :each do
-      @facility=FactoryGirl.create(:facility)
-      @facility_account=@facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @item=@facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
-      @price_group=FactoryGirl.create(:price_group, :facility => @facility)
-      @item_pp=@item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
-      @item_pp.reload.restrict_purchase=false
-      @account=FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @user) ])
-      create(:account_price_group_member, account: @account, price_group: @price_group)
-    end
-
-    it 'should not have an account because there is no price group' do
-      AccountPriceGroupMember.where(account_id: @account.id, price_group_id: @price_group.id).first.destroy
-      expect(@user.accounts_for_product(@item)).to be_empty
-    end
-
-    it 'should have an account' do
-      define_open_account @item.account, @account.account_number
-      accts=@user.accounts_for_product(@item)
+    it "has no account" do
+      define_open_account(item.account, account.account_number)
+      accts = user.accounts_for_product(item)
       expect(accts.size).to eq(1)
-      expect(accts.first).to eq(@account)
+      expect(accts.first).to eq(account)
+    end
+  end
+
+  describe "#cart" do
+    let(:order) { user.orders.create(attributes_for(:order, created_by: user.id, facility: facility)) }
+
+    before(:each) do
+      create(:user_price_group_member, user: user, price_group: price_group)
+      price_policy.reload.restrict_purchase = false
+      order.order_details.create(attributes_for(:order_detail, product_id: item.id))
+    end
+
+    it "returns the order when given created_by user" do
+      expect(user.cart(user)).to eq(order)
+    end
+
+    it "returns the order when not given a created_by user" do
+      expect(user.cart).to eq(order)
+    end
+
+    context "when the order is empty (has no order_details)" do
+      before { order.order_details.destroy_all }
+
+      it "returns the existing unordered order" do
+        expect(user.cart(user).reload).to eq(order)
+      end
+    end
+
+    it "returns a new order when given a created_by user" do
+      new_order = user.cart(user, false)
+      expect(new_order).not_to eq(order)
+      expect(new_order.user).to eq(user)
+      expect(new_order.created_by).to eq(user.id)
+    end
+
+    it "returns a new order when created_by user is nil" do
+      new_order = user.cart(nil, false)
+      expect(new_order).not_to eq(order)
+      expect(new_order.user).to eq(user)
+      expect(new_order.created_by).to eq(user.id)
     end
   end
 
