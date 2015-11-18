@@ -95,6 +95,33 @@ RSpec.describe User do
 
   it "belongs to the Cancer Center price group if the user is in the Cancer Center view"
 
+  describe ".with_global_roles" do
+    subject(:users_with_global_roles) { described_class.with_global_roles }
+    let!(:unprivileged_users) { create_list(:user, 2) }
+
+    context "when no users have global roles" do
+      it { is_expected.to be_empty }
+    end
+
+    context "when users have the account manager role" do
+      let!(:privileged_users) { create_list(:user, 2, :account_manager) }
+
+      it { is_expected.to match_array(privileged_users) }
+    end
+
+    context "when users have the billing administrator role" do
+      let!(:privileged_users) { create_list(:user, 2, :billing_administrator) }
+
+      it { is_expected.to match_array(privileged_users) }
+    end
+
+    context "when users have the global administrator role" do
+      let!(:privileged_users) { create_list(:user, 2, :administrator) }
+
+      it { is_expected.to match_array(privileged_users) }
+    end
+  end
+
   describe "#accounts_for_product" do
     let(:account) { create(:nufs_account, account_users_attributes: [attributes_for(:account_user, user: user)]) }
 
