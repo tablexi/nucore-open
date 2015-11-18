@@ -1,0 +1,18 @@
+= content_for :h1 do
+  = t("pages.global_settings")
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_global", sidenav_tab: "global_user_roles"
+
+%h2= t(".h2")
+= form_tag user_search_results_path, id: "ajax_form" do
+  %p.instructions
+    = t(".instructions.search")
+    - if can_create_users?
+      = t(".instructions.add_user")
+
+  = text_field_tag :search_term, nil, size: 30, class: "search-query"
+  = submit_tag "Search", class: "btn"
+  = hidden_field_tag :search_type, "global_user_role"
+  = hidden_field_tag :create_link, can_create_users?
+#result

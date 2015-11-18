@@ -5,7 +5,7 @@ RSpec.describe AffiliatesController do
   render_views
 
   before(:all) { create_users }
-
+  before(:each) { @authable = create(:facility) }
 
   context 'index' do
 

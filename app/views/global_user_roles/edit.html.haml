@@ -1,0 +1,34 @@
+= content_for :h1 do
+  = t("pages.global_settings")
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_global", sidenav_tab: "global_user_roles"
+
+%h2= t("pages.global_user_roles")
+
+= form_for(:user_role, url: global_user_role_path(@user.id), method: :put) do |form|
+  = form.error_messages
+  .form
+    = label_tag :username, nil, class: "require"
+    = text_field_tag :username, @user.username, disabled: true
+
+    = label_tag :name, nil, class: "require"
+    = text_field_tag :name, @user.full_name, disabled: true
+
+    = label_tag :email, nil, class: "require"
+    = text_field_tag :email, @user.email, disabled: true
+
+    -# Chosen attempts to disable autocomplete, but Chrome still does.
+    -# This hidden field tells Chrome to really disable autocomplete:
+    %input.hidden{type: "text", id: "PreventChromeAutocomplete", name: "PreventChromeAutocomplete"}
+
+    = form.label :roles, nil, class: "require"
+    = select_tag :roles,
+      @user.global_role_select_options,
+      class: "js--chosen",
+      data: { placeholder: t(".select_role_placeholder") },
+      multiple: true
+
+  %ul.inline
+    %li= form.submit t(".submit"), class: "btn"
+    %li= link_to t(".cancel"), global_user_roles_path

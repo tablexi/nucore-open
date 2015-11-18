@@ -8,6 +8,11 @@ module ApplicationHelper
     #NUCore.app_name
   end
 
+  def can_create_users?
+    SettingsHelper.feature_on?(:create_users) &&
+      current_ability.can?(:manage_users, current_facility || Facility.cross_facility)
+  end
+
   def html_title(title=nil)
     full_title = title.blank? ? "" : "#{title} - "
     (full_title + app_name).html_safe

@@ -41,13 +41,17 @@ class User < ActiveRecord::Base
   attr_accessor :ldap_attributes
 
   # Scopes
+
+  def self.with_global_roles
+    where(id: UserRole.global.select("distinct user_id"))
+  end
+
   def self.with_recent_orders(facility)
     order_query = Order.recent.for_facility(facility)
     select("DISTINCT users.*")
       .joins(:orders)
       .merge(order_query)
   end
-
 
   # finds all user role mappings for a this user in a facility
   def facility_user_roles(facility)

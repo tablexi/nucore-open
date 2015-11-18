@@ -74,7 +74,7 @@ class NavTab::LinkCollection
   end
 
   def admin_users
-    if ability.can?(:administer, User)
+    if single_facility? && ability.can?(:administer, User)
       NavTab::Link.new(tab: :admin_users, url: facility_users_path(facility))
     end
   end

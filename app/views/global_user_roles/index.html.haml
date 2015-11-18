@@ -1,0 +1,39 @@
+= content_for :h1 do
+  = t("pages.global_settings")
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_global", sidenav_tab: "global_user_roles"
+
+%h2= t("pages.global_user_roles")
+
+%ul.inline
+  %li= link_to t(".grant_roles"), search_global_user_roles_path, class: "btn-add"
+
+- if @users.empty?
+  %p.notice= t(".no_users")
+- else
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th
+        %th= t(".th.name")
+        %th= t(".th.username")
+        %th= t(".th.email")
+        %th= t(".th.roles")
+    %tbody
+      - @users.each do |user|
+        %tr
+          %td.centered
+            - if current_user.id != user.id
+              = link_to t(".remove_roles"),
+                global_user_role_path(user.id),
+                confirm: t(".remove_roles_confirm"),
+                method: :delete
+          %td= user.full_name
+          %td
+            - if current_user.id == user.id
+              = user.username
+            - else
+              = link_to user.username, edit_global_user_role_path(user.id)
+          %td= user.email
+          %td= user.global_role_list

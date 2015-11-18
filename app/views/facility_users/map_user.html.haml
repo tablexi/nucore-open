@@ -1,26 +1,26 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
+
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'staff' }
+  = render "admin/shared/sidenav_admin", sidenav_tab: "staff"
 
-%h2 Grant Facility Role
+%h2= t(".h2")
 
-= form_for(:user_role, :url => facility_facility_user_map_user_path) do |f|
-  = f.error_messages
-  %ul.form
-    %li
-      = label_tag :username, nil, :class => 'require'
-      = text_field_tag :username, @user.username, :disabled => true
-    %li
-      = label_tag :name, nil, :class => 'require'
-      = text_field_tag :name, @user.full_name, :disabled => true
-    %li
-      = label_tag :email, nil, :class => 'require' 
-      = text_field_tag :email, @user.email, :disabled => true
-    %li
-      = f.label :role, 'User Role', :class => 'require'
-      %p.instruction Select the facility role for this user
-      = f.select :role, options_for_select(UserRole.facility_roles, {:selected => UserRole::FACILITY_STAFF.to_s})
+= form_for(:user_role, url: facility_facility_user_map_user_path) do |form|
+  = form.error_messages
+  .form
+    = label_tag :username, nil, class: "require"
+    = text_field_tag :username, @user.username, disabled: true
+
+    = label_tag :name, nil, class: "require"
+    = text_field_tag :name, @user.full_name, disabled: true
+
+    = label_tag :email, nil, class: "require"
+    = text_field_tag :email, @user.email, disabled: true
+
+    = form.label :role, nil, class: "require"
+    = form.select :role, options_for_select(UserRole.facility_roles, selected: UserRole::FACILITY_STAFF.to_s)
+
   %ul.inline
-    %li= f.submit 'Create', :class => 'btn'
-    %li= link_to 'Cancel', facility_facility_users_path
+    %li= form.submit t(".submit"), class: "btn"
+    %li= link_to t(".cancel"), facility_facility_users_path

@@ -19,8 +19,12 @@ class Ability
         can :manage, AccountPriceGroupMember
       else
         can :manage, :all
-        cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
-        cannot :manage, User unless resource.is_a?(Facility) && resource.single_facility?
+        unless user.billing_administrator?
+          cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
+        end
+        unless user.account_manager?
+          cannot :manage, User unless resource.is_a?(Facility) && resource.single_facility?
+        end
       end
       return
     end

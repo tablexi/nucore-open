@@ -224,6 +224,10 @@ en:
         name: Name
         roles: Roles
         username: Username
+    map_user:
+      cancel: Cancel
+      h2: Grant Facility Role
+      submit: Create
     search:
       instruct: "Search for an existing user by name, NetID, or username.  Click on the name of the user you wish to grant access to.  If the search does not return any acceptable matches, you may create a new user."
 
@@ -381,6 +385,37 @@ en:
         price policy or are reservations without usage information.
         Each will need to be corrected.
       no_problem_reservations: There are no problem reservations.
+
+  global_user_roles:
+    destroy:
+      failure: Global roles could not be removed for %{user}.
+      success: All global roles have been removed for %{user}.
+    edit:
+      cancel: Cancel
+      select_role_placeholder: Select Roles…
+      submit: Grant
+    index:
+      grant_roles: Grant Roles
+      remove_roles: Remove Roles
+      remove_roles_confirm: Are you sure?
+      th:
+        email: Email
+        name: Name
+        roles: Roles
+        username: Username
+    search:
+      h2: Grant global roles to a user
+      instructions:
+        search: |
+          Search for an existing user by name, NetID, or username.
+          Click on the name of the user you wish to grant global roles to.
+        add_user: |
+          If the search does not return any acceptable matches,
+          you may create a new user.
+    self_not_allowed: You may not %{action} global roles for yourself.
+    update:
+      failure: Global role assignment for %{user} failed.
+      success: Global role assignment for %{user} succeeded.
 
   order_imports:
     new:
@@ -1099,6 +1134,10 @@ en:
           move_failed: Sorry, but your reservation could not be moved. Please try again later.
           change_reserve_start_at: cannot change once the reservation has started
           shorten_reserve_end_at: cannot be shortened once the reservation has started
+        user_role:
+          duplicate: The user already has this role
+          global_cannot_have_facility: Global role %{role} may not have a facility.
+          role_must_have_facility: "%{role} must be associated with a facility."
         training_request:
           product:
             requires_no_approval: This product does not require approval

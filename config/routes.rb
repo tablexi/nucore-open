@@ -274,10 +274,15 @@ Nucore::Application.routes.draw do
     end
   end
 
+  resources :global_user_roles do
+    collection do
+      get "search"
+    end
+  end
+
   # order process
   match '/orders/cart', :to => 'orders#cart', :as => 'cart'
   match "/orders(\/:status)", :to => 'orders#index', :as => 'orders_status', :constraints => { :status => /pending|all/ } ## emacs quoting \/
-
 
   put '/orders/:id/remove/:order_detail_id', :to => 'orders#remove',      :as => 'remove_order'
   match '/order/:id/add_account',            :to => 'orders#add_account', :as => 'add_account'

@@ -33,6 +33,7 @@ RSpec.describe NotificationsController do
 
   context 'index' do
     before :each do
+      @authable = create(:facility)
       @method=:get
       @action=:index
     end

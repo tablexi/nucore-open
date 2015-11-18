@@ -15,7 +15,7 @@ class UserFinder
   end
 
   def result
-    [relation.order(:last_name, :first_name).limit(@limit), relation.count]
+    [UserPresenter.wrap(users), relation.count]
   end
 
   private
@@ -36,5 +36,9 @@ class UserFinder
 
   def relation
     @relation ||= User.where(condition_sql, search_term: @search_term)
+  end
+
+  def users
+    relation.order(:last_name, :first_name).limit(@limit)
   end
 end

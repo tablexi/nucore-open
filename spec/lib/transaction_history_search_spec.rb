@@ -27,13 +27,13 @@ RSpec.describe TransactionSearch do
   end
 
   before :each do
+    @authable = create(:facility)
     ignore_order_detail_account_validations
     @user = FactoryGirl.create(:user)
     @staff = FactoryGirl.create(:user, :username => "staff")
     @staff2 = FactoryGirl.create(:user, :username => "staff2")
-    UserRole.grant(@staff, UserRole::FACILITY_DIRECTOR)
+    UserRole.create!(user: @staff, role: UserRole::FACILITY_DIRECTOR, facility: facility)
     @controller = TransactionSearcher.new
-    @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
     @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @staff))

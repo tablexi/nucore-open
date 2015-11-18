@@ -11,6 +11,7 @@
 //= require jquery.ui.effect
 //= require bootstrap
 //= require chosen.jquery.min
+//= require activate_chosen
 //= require _common
 //= require date
 //= require_tree ./app

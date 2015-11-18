@@ -25,4 +25,5 @@ class SearchController < ApplicationController
         Facility.cross_facility
       end
   end
+
 end
