@@ -4,12 +4,6 @@
 # convenience methods for testing the role status of users.
 module Role
 
-  def grant_role!(role, facility: nil)
-    user_roles.create!(role: UserRole.const_get(role.upcase, facility))
-  rescue NameError => exception
-    raise "Invalid role '#{role}'"
-  end
-
   #
   # Facility management roles
   #
