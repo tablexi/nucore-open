@@ -1,5 +1,5 @@
 = content_for :h1 do
-  = "TK PLACEHOLDER"
+  = t("pages.global_settings")
 
 = content_for :sidebar do
   = render "admin/shared/sidenav_global", sidenav_tab: "global_user_roles"
@@ -7,7 +7,7 @@
 %h2= t("pages.global_user_roles")
 
 %ul.inline
-  %li= link_to t(".grant_role"), "#TK", class: "btn-add"
+  %li= link_to t(".grant_role"), search_global_user_roles_path, class: "btn-add"
 
 - if @users.empty?
   %p.notice= t(".no_users")

@@ -383,6 +383,10 @@ en:
       no_problem_reservations: There are no problem reservations.
 
   global_user_roles:
+    destroy:
+      failure: Global roles could not be removed for %{username}.
+      self_not_allowed: You may not remove global roles from yourself.
+      success: All global roles have been removed for %{username}.
     index:
       remove_roles: Remove Roles
       remove_roles_confirm: Are you sure?
@@ -391,6 +395,13 @@ en:
         name: Name
         roles: Roles
         username: Username
+    search:
+      h2: Grant global roles to a user
+      instruct: |
+        Search for an existing user by name, NetID, or username.
+        Click on the name of the user you wish to grant global roles to.
+        If the search does not return any acceptable matches,
+        you may create a new user.
 
   order_imports:
     new:

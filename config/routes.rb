@@ -274,7 +274,11 @@ Nucore::Application.routes.draw do
     end
   end
 
-  resources :global_user_roles # TK exceptions?
+  resources :global_user_roles do
+    collection do
+      get "search"
+    end
+  end
 
   # order process
   match '/orders/cart', :to => 'orders#cart', :as => 'cart'

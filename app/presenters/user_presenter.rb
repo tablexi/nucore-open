@@ -10,6 +10,10 @@ class UserPresenter < SimpleDelegator
     global_roles.join(", ")
   end
 
+  def name_last_comma_first
+    "#{last_name}, #{first_name}"
+  end
+
   private
 
   def global_roles
