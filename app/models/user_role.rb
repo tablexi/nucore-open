@@ -53,4 +53,17 @@ class UserRole < ActiveRecord::Base
 
   validates_presence_of :user_id
   validates_inclusion_of :role, in: valid_roles, message: "is not a valid value"
+  validates_uniqueness_of :role,
+    scope: [:facility_id, :user_id],
+    message: I18n.t("activerecord.errors.models.user_role.duplicate")
+  validates_with UserRoleFacilityValidator
+
+  def facility_role?
+    self.class.facility_roles.include?(role)
+  end
+
+  def global_role?
+    !facility_role?
+  end
+
 end

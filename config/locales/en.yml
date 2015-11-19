@@ -1120,6 +1120,10 @@ en:
           move_failed: Sorry, but your reservation could not be moved. Please try again later.
           change_reserve_start_at: cannot change once the reservation has started
           shorten_reserve_end_at: cannot be shortened once the reservation has started
+        user_role:
+          duplicate: The user already has this role
+          global_cannot_have_facility: Global role %{role} may not have a facility.
+          role_must_have_facility: "%{role} must be associated with a facility."
         training_request:
           product:
             requires_no_approval: This product does not require approval
