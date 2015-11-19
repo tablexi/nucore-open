@@ -10,7 +10,7 @@
   %p
     = f.input :show_instrument_availability, :as => :boolean, :label => false, :inline_label => t('facilities.facility_fields.show_instrument_availability')
 
-= view_hook("before_is_active", f: f)
+= render_view_hook("before_is_active", f: f)
 
 .well
   %p= t('facilities.facility_fields.inactive')

@@ -1,20 +1,32 @@
-module ViewHook
+class ViewHook
 
-  def self.add_hook(view, placement, partial)
-    _view_hooks[view][placement] += [partial]
+  class << self
+    def instance
+      @@instance ||= new
+    end
+
+    delegate :add_hook, :render_view_hook, to: :instance
   end
 
-  # Best used throught `view_hook` helper method
-  def self.render_placement(view, placement, context, args = {})
-    _view_hooks[view][placement].each_with_object("".html_safe) do |partial, buffer|
+  # Best used throught `render_view_hook` helper method
+  def render_view_hook(view, placement, context, args = {})
+    find(view, placement).each_with_object("".html_safe) do |partial, buffer|
       buffer.safe_concat context.render(partial, args)
     end
   end
 
+  def add_hook(view, placement, partial)
+    _view_hooks[view.to_s][placement.to_s] += [partial.to_s]
+  end
+
+  def find(view, placement)
+    _view_hooks[view.to_s][placement.to_s]
+  end
+
   private
 
-  def self._view_hooks
-    @@view_hooks ||= Hash.new { |h, k| h[k] = Hash.new([]) }
+  def _view_hooks
+    @view_hooks ||= Hash.new { |h, k| h[k] = Hash.new([]) }
   end
 
 end
