@@ -29,6 +29,15 @@ en:
       calendar: "%a, %d %b %Y %H:%M:%S"
       usa: "%m/%d/%Y %l:%M %p"
 
+  admin:
+    shared:
+      tabnav_users:
+        details: "Details"
+        orders: "Orders"
+        reservations: "Reservations"
+        accounts: "Payment Sources"
+        access_list: "Access List"
+
   pages:
     admin_billing: Billing
     admin_facility: Admin
@@ -121,12 +130,6 @@ en:
       accounts: "Payment Sources"
       users: "Users"
       edit: "Edit"
-    tabnav_users:
-      details: "Details"
-      orders: "Orders"
-      reservations: "Reservations"
-      accounts: "Payment Sources"
-      access_list: "Access List"
     admin:
       tabnav_account:
         recent: "Recent Payment Sources"
