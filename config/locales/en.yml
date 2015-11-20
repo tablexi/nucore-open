@@ -201,8 +201,6 @@ en:
         bill_to: "Bill To"
       link:
         edit: "Edit"
-        activate: "Activate"
-        suspend: "Suspend"
     show_statement_list:
       download: Download
       notice: "No statements have been sent for this payment source."
@@ -726,6 +724,9 @@ en:
   accounts:
     show:
       head: "Payment Source Details"
+    suspend_button:
+      activate: Activate
+      suspend: Suspend
 
   facilities:
     disputed_orders:

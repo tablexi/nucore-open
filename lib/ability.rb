@@ -44,6 +44,8 @@ class Ability
         can :manage, [Account, User]
         cannot :administer, User
       end
+
+      cannot [:suspend, :unsuspend], Account
     end
 
     return unless resource

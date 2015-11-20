@@ -42,6 +42,8 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:disputed, Order) }
     it { is_expected.not_to be_allowed_to(:manage_billing, facility) }
     it { is_expected.not_to be_allowed_to(:administer, User) }
+    it { is_expected.not_to be_allowed_to(:suspend, Account) }
+    it { is_expected.not_to be_allowed_to(:unsuspend, Account) }
 
     context "in a single facility" do
       it { is_expected.not_to be_allowed_to(:manage_accounts, facility) }
