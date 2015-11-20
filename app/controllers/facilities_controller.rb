@@ -1,7 +1,7 @@
 class FacilitiesController < ApplicationController
 
   customer_tab :index, :list, :show
-  admin_tab :edit, :manage, :schedule, :update, :agenda, :transactions,
+  admin_tab :edit, :manage, :update, :transactions,
             :reassign_chart_strings, :movable_transactions,
             :confirm_transactions, :move_transactions, :disputed_orders
   before_filter :authenticate_user!, except: [:index, :show] # public pages do not require authentication
@@ -102,16 +102,6 @@ class FacilitiesController < ApplicationController
     else
       render action: "edit"
     end
-  end
-
-  def schedule
-    @active_tab = "admin_products"
-    render layout: "product"
-  end
-
-  def agenda
-    @active_tab = "admin_products"
-    render layout: "product"
   end
 
   # GET /facilities/transactions

@@ -103,7 +103,7 @@ class Ability
         can :administer, User
         can :manage, User if controller.is_a?(UsersController)
 
-        can [ :schedule, :agenda, :list, :show ], Facility
+        can [ :list, :show ], Facility
         can :act_as, Facility
 
         can :index, [ BundleProduct, PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup ]
