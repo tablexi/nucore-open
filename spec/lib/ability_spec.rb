@@ -7,67 +7,13 @@ RSpec.describe Ability do
   let(:stub_controller) { OpenStruct.new }
   let(:subject_resource) { facility }
 
-  shared_examples_for "it can manage accounts" do
-    it { expect(ability.can?(:manage, Account)).to be true }
-  end
-
-  shared_examples_for "it cannot manage accounts" do
-    it { expect(ability.can?(:manage, Account)).to be false }
-  end
-
-  shared_examples_for "it can manage billing" do
-    it { expect(ability.can?(:manage_billing, facility)).to be true }
-  end
-
-  shared_examples_for "it cannot manage billing" do
-    it { expect(ability.can?(:manage_billing, facility)).to be false }
-  end
-
-  shared_examples_for "it can manage accounts for the facility" do
-    it { expect(ability.can?(:manage_accounts, facility)).to be true }
-  end
-
-  shared_examples_for "it cannot manage accounts for the facility" do
-    it { expect(ability.can?(:manage_accounts, facility)).to be false }
-  end
-
-  shared_examples_for "it can manage journals" do
-    it { expect(ability.can?(:manage, Journal)).to be true }
-  end
-
-  shared_examples_for "it can manage order details" do
-    it { expect(ability.can?(:manage, OrderDetail)).to be true }
-  end
-
-  shared_examples_for "it can manage orders" do
-    it { expect(ability.can?(:manage, Order)).to be true }
-  end
-
-  shared_examples_for "it can manage price group members" do
-    it { expect(ability.can?(:manage, UserPriceGroupMember)).to be true }
-  end
-
-  shared_examples_for "it cannot manage price group members" do
-    it { expect(ability.can?(:manage, UserPriceGroupMember)).to be false }
-  end
-
-  shared_examples_for "it can manage reservations" do
-    it { expect(ability.can?(:manage, Reservation)).to be true }
-  end
-
-  shared_examples_for "it can manage training requests" do
-    it { expect(ability.can?(:manage, TrainingRequest)).to be true }
-  end
-
   shared_examples_for "it can create but not manage training requests" do
     let(:subject_resource) { create(:training_request, product: instrument) }
 
-    it { expect(ability.can?(:create, TrainingRequest)).to be true }
+    it { is_expected.to be_allowed_to(:create, TrainingRequest) }
 
     %i(read update delete index).each do |action|
-      it "cannot #{action} training requests" do
-        expect(ability.can?(action, TrainingRequest)).to be false
-      end
+      it { is_expected.not_to be_allowed_to(action, TrainingRequest) }
     end
   end
 
@@ -75,68 +21,38 @@ RSpec.describe Ability do
     let(:order) { build_stubbed(:order) }
     let(:order_detail) { build_stubbed(:order_detail, order: order) }
 
-    it "cannot destroy a regular reservation" do
-      reservation = Reservation.new(order_detail: order_detail)
-      expect(ability.can?(:destroy, reservation)).to be false
+    context "with a regular reservation" do
+      let(:reservation) { Reservation.new(order_detail: order_detail) }
+
+      it { is_expected.not_to be_allowed_to(:destroy, reservation) }
     end
 
-    it "can destroy an admin reservation" do
-      reservation = Reservation.new(order_detail_id: nil)
-      expect(ability.can?(:destroy, reservation)).to be true
+    context "with an admin reservation" do
+      let(:reservation) { Reservation.new(order_detail_id: nil) }
+
+      it { is_expected.to be_allowed_to(:destroy, reservation) }
     end
-  end
-
-  shared_examples_for "it can read notifications" do
-    it { expect(ability.can?(:read, Notification)).to be true }
-  end
-
-  shared_examples_for "it cannot read notifications" do
-    it { expect(ability.can?(:read, Notification)).to be false }
-  end
-
-  shared_examples_for "it can access problem reservations" do
-    it { expect(ability.can?(:show_problems, Reservation)).to be true }
-  end
-
-  shared_examples_for "it cannot access problem reservations" do
-    it { expect(ability.can?(:show_problems, Reservation)).to be false }
-  end
-
-  shared_examples_for "it can access disputed orders" do
-    it { expect(ability.can?(:disputed, Order)).to be true }
-  end
-
-  shared_examples_for "it cannot access disputed orders" do
-    it { expect(ability.can?(:disputed, Order)).to be false }
-  end
-
-  shared_examples_for "it can manage users" do
-    it { expect(ability.can?(:manage, User)).to be true }
-  end
-
-  shared_examples_for "it cannot manage facility users" do
-    it { expect(ability.can?(:manage_users, facility)).to be false }
   end
 
   describe "account manager" do
     let(:user) { create(:user, :account_manager) }
 
-    it_behaves_like "it cannot read notifications"
-    it_behaves_like "it cannot access problem reservations"
-    it_behaves_like "it cannot access disputed orders"
-    it_behaves_like "it cannot manage billing"
-    it { expect(ability.can?(:administer, User)).to be false }
+    it { is_expected.not_to be_allowed_to(:read, Notification) }
+    it { is_expected.not_to be_allowed_to(:show_problems, Reservation) }
+    it { is_expected.not_to be_allowed_to(:disputed, Order) }
+    it { is_expected.not_to be_allowed_to(:manage_billing, facility) }
+    it { is_expected.not_to be_allowed_to(:administer, User) }
 
     context "in a single facility" do
-      it_behaves_like "it cannot manage accounts for the facility"
-      it_behaves_like "it cannot manage facility users"
+      it { is_expected.not_to be_allowed_to(:manage_accounts, facility) }
+      it { is_expected.not_to be_allowed_to(:manage_users, facility) }
     end
 
     context "in cross-facility" do
       let(:facility) { Facility.cross_facility }
 
-      it_behaves_like "it can manage accounts for the facility"
-      it_behaves_like "it can manage users"
+      it { is_expected.to be_allowed_to(:manage_accounts, facility) }
+      it { is_expected.to be_allowed_to(:manage, User) }
     end
   end
 
@@ -147,86 +63,86 @@ RSpec.describe Ability do
       context "when the price group has a facility" do
         let(:subject_resource) { create(:price_group, facility: facility) }
 
-        it_behaves_like "it can manage price group members"
+        it { is_expected.to be_allowed_to(:manage, UserPriceGroupMember) }
       end
 
       context "when the price group is global" do
         let(:subject_resource) { create(:price_group, :global) }
 
-        it_behaves_like "it cannot manage price group members"
+        it { is_expected.not_to be_allowed_to(:manage, UserPriceGroupMember) }
 
         context "when it's the cancer center price group" do
           let(:subject_resource) { create(:price_group, :cancer_center) }
 
-          it_behaves_like "it can manage price group members"
+          it { is_expected.to be_allowed_to(:manage, UserPriceGroupMember) }
         end
       end
     end
 
-    it_behaves_like "it can read notifications"
+    it { is_expected.to be_allowed_to(:read, Notification) }
 
     describe StoredFile do
       describe "#download" do
         let(:subject_resource) { build_stubbed(:stored_file) }
 
-        it { expect(ability.can?(:download, StoredFile)).to be true }
+        it { is_expected.to be_allowed_to(:download, StoredFile) }
       end
     end
 
-    it_behaves_like "it can manage training requests"
-    it_behaves_like "it can access problem reservations"
+    it { is_expected.to be_allowed_to(:manage, TrainingRequest) }
+    it { is_expected.to be_allowed_to(:show_problems, Reservation) }
 
     context "in a single facility" do
-      it_behaves_like "it can manage accounts for the facility"
-      it_behaves_like "it can manage billing"
-      it_behaves_like "it can manage users"
+      it { is_expected.to be_allowed_to(:manage_accounts, facility) }
+      it { is_expected.to be_allowed_to(:manage_billing, facility) }
+      it { is_expected.to be_allowed_to(:manage, User) }
     end
 
     context "in cross-facility" do
       let(:facility) { Facility.cross_facility }
 
-      it_behaves_like "it cannot manage accounts for the facility"
-      it_behaves_like "it cannot manage billing"
-      it_behaves_like "it cannot manage facility users"
+      it { is_expected.not_to be_allowed_to(:manage_accounts, facility) }
+      it { is_expected.not_to be_allowed_to(:manage_billing, facility) }
+      it { is_expected.not_to be_allowed_to(:manage_users, facility) }
     end
   end
 
   describe "billing administrator" do
     let(:user) { create(:user, :billing_administrator) }
 
-    it_behaves_like "it can manage accounts"
-    it_behaves_like "it can manage journals"
-    it_behaves_like "it can manage order details"
-    it_behaves_like "it can manage orders"
-    it_behaves_like "it can manage reservations"
+    it { is_expected.to be_allowed_to(:manage, Account) }
+    it { is_expected.to be_allowed_to(:manage, Journal) }
+    it { is_expected.to be_allowed_to(:manage, OrderDetail) }
+    it { is_expected.to be_allowed_to(:manage, Order) }
+    it { is_expected.to be_allowed_to(:manage, Reservation) }
 
     it "cannot administer resources" do
-      expect(ability.can?(:administer, Order)).to be false
-      expect(ability.can?(:administer, OrderDetail)).to be false
-      expect(ability.can?(:administer, Reservation)).to be false
+      is_expected.not_to be_allowed_to(:administer, Order)
+      is_expected.not_to be_allowed_to(:administer, OrderDetail)
+      is_expected.not_to be_allowed_to(:administer, Reservation)
     end
 
     context "in a single facility" do
-      it { expect(ability.can?(:manage_billing, facility)).to be false }
-      it { expect(ability.can?(:transactions, facility)).to be false }
+      it { is_expected.not_to be_allowed_to(:manage_billing, facility) }
+      it { is_expected.not_to be_allowed_to(:transactions, facility) }
     end
 
     context "in cross-facility" do
       let(:facility) { Facility.cross_facility }
 
-      it { expect(ability.can?(:manage_billing, facility)).to be true }
-      it { expect(ability.can?(:transactions, facility)).to be true }
+      it { is_expected.to be_allowed_to(:manage_billing, facility) }
+      it { is_expected.to be_allowed_to(:transactions, facility) }
     end
   end
 
   describe "facility administrator" do
     let(:user) { create(:user, :facility_administrator, facility: facility) }
 
-    it_behaves_like "it can manage accounts"
-    it_behaves_like "it can read notifications"
-    it_behaves_like "it can manage training requests"
-    it_behaves_like "it can access problem reservations"
-    it_behaves_like "it can access disputed orders"
+    it { is_expected.to be_allowed_to(:manage, Account) }
+    it { is_expected.to be_allowed_to(:read, Notification) }
+    it { is_expected.to be_allowed_to(:manage, TrainingRequest) }
+    it { is_expected.to be_allowed_to(:show_problems, Reservation) }
+    it { is_expected.to be_allowed_to(:disputed, Order) }
     it_behaves_like "it can destroy admistrative reservations"
   end
 
@@ -237,56 +153,56 @@ RSpec.describe Ability do
       context "when the price group has a facility" do
         let(:subject_resource) { create(:price_group, facility: facility) }
 
-        it_behaves_like "it can manage price group members"
+        it { is_expected.to be_allowed_to(:manage, UserPriceGroupMember) }
       end
 
       context "when the price group is global" do
         let(:subject_resource) { create(:price_group, :global) }
 
-        it_behaves_like "it cannot manage price group members"
+        it { is_expected.not_to be_allowed_to(:manage, UserPriceGroupMember) }
 
         context "when it's the cancer center price group" do
           let(:subject_resource) { create(:price_group, :cancer_center) }
 
-          it_behaves_like "it cannot manage price group members"
+          it { is_expected.not_to be_allowed_to(:manage, UserPriceGroupMember) }
         end
       end
     end
 
-    it_behaves_like "it can manage accounts"
-    it_behaves_like "it can manage training requests"
-    it_behaves_like "it can read notifications"
-    it_behaves_like "it can access problem reservations"
-    it_behaves_like "it can access disputed orders"
+    it { is_expected.to be_allowed_to(:manage, Account) }
+    it { is_expected.to be_allowed_to(:manage, TrainingRequest) }
+    it { is_expected.to be_allowed_to(:read, Notification) }
+    it { is_expected.to be_allowed_to(:show_problems, Reservation) }
+    it { is_expected.to be_allowed_to(:disputed, Order) }
     it_behaves_like "it can destroy admistrative reservations"
   end
 
   describe "senior staff" do
     let(:user) { create(:user, :senior_staff, facility: facility) }
 
-    it_behaves_like "it cannot manage accounts"
-    it_behaves_like "it can manage training requests"
-    it_behaves_like "it can read notifications"
-    it_behaves_like "it cannot access problem reservations"
-    it_behaves_like "it cannot access disputed orders"
+    it { is_expected.not_to be_allowed_to(:manage, Account) }
+    it { is_expected.to be_allowed_to(:manage, TrainingRequest) }
+    it { is_expected.to be_allowed_to(:read, Notification) }
+    it { is_expected.not_to be_allowed_to(:show_problems, Reservation) }
+    it { is_expected.not_to be_allowed_to(:disputed, Order) }
     it_behaves_like "it can destroy admistrative reservations"
   end
 
   describe "staff" do
     let(:user) { create(:user, :staff, facility: facility) }
 
-    it_behaves_like "it cannot manage accounts"
+    it { is_expected.not_to be_allowed_to(:manage, Account) }
     it_behaves_like "it can create but not manage training requests"
-    it_behaves_like "it can read notifications"
-    it_behaves_like "it cannot access problem reservations"
-    it_behaves_like "it cannot access disputed orders"
+    it { is_expected.to be_allowed_to(:read, Notification) }
+    it { is_expected.not_to be_allowed_to(:show_problems, Reservation) }
+    it { is_expected.not_to be_allowed_to(:disputed, Order) }
     it_behaves_like "it can destroy admistrative reservations"
   end
 
   describe "unprivileged user" do
     let(:user) { create(:user) }
 
-    it_behaves_like "it cannot manage accounts"
+    it { is_expected.not_to be_allowed_to(:manage, Account) }
     it_behaves_like "it can create but not manage training requests"
 
     %i(sample_result template_result).each do |file_type|
@@ -309,7 +225,7 @@ RSpec.describe Ability do
           let(:user) { order.user }
 
           it "is allowed to download" do
-            expect(ability.can?(controller_method, order_detail)).to be true
+            is_expected.to be_allowed_to(controller_method, order_detail)
           end
         end
 
@@ -317,7 +233,7 @@ RSpec.describe Ability do
           let(:user) { create(:user) }
 
           it "is not allowed to download" do
-            expect(ability.can?(controller_method, order_detail)).to be false
+            is_expected.not_to be_allowed_to(controller_method, order_detail)
           end
         end
       end
@@ -334,14 +250,14 @@ RSpec.describe Ability do
         MergeNotification.create_for!(user, order.order_details.first.reload)
       end
 
-      it_behaves_like "it can read notifications"
+      it { is_expected.to be_allowed_to(:read, Notification) }
     end
 
     context "when the user has no notifications" do
-      it_behaves_like "it cannot read notifications"
+      it { is_expected.not_to be_allowed_to(:read, Notification) }
     end
 
-    it_behaves_like "it cannot access problem reservations"
-    it_behaves_like "it cannot access disputed orders"
+    it { is_expected.not_to be_allowed_to(:show_problems, Reservation) }
+    it { is_expected.not_to be_allowed_to(:disputed, Order) }
   end
 end
