@@ -12,6 +12,8 @@ module C2po
       index = paths.find_index { |p| p.to_s.include? 'c2po' }
       paths.unshift paths.delete_at(index)
       ActionController::Base.view_paths = paths
+
+      FacilitiesController.permitted_facility_params.concat [:accepts_po, :accepts_cc]
     end
 
     # make this engine's routes override the main app's routes

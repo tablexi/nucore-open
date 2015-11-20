@@ -43,14 +43,16 @@ RSpec.describe FacilitiesController do
 
 
   context "create" do
-
     before(:each) do
-      @method=:post
-      @action=:create
-      @params={
+      @method = :post
+      @action = :create
+      @params = {
         :facility => {
           :name => "A New Facility", :abbreviation => "anf", :description => "A boring description",
-          :is_active => 1, :url_name => 'anf', :short_description => 'A short boring desc'
+          :is_active => 1, :url_name => 'anf', :short_description => 'A short boring desc',
+          :accepts_multi_add => true, :show_instrument_availability => true,
+          :address => "Test Address", :phone_number => "555-1223", :fax_number => "555-3211",
+          :email => "facility@example.com"
         }
       }
     end
@@ -60,10 +62,87 @@ RSpec.describe FacilitiesController do
     it_should_deny_all [ :guest, :director ]
 
     it_should_allow :admin do
-      expect(assigns[:facility]).to be_valid
+      expect(facility).to be_valid
       expect(response).to redirect_to "/facilities/anf/manage"
     end
 
+    describe "as an admin" do
+      before { sign_in @admin }
+
+      it "sets all the fields", :aggregate_failures do
+        do_request
+        facility = assigns(:facility)
+
+        expect(facility.name).to eq("A New Facility")
+        expect(facility.abbreviation).to eq("anf")
+        expect(facility.description).to eq("A boring description")
+        expect(facility).to be_is_active
+        expect(facility.url_name).to eq("anf")
+        expect(facility.short_description).to eq("A short boring desc")
+        expect(facility).to be_accepts_multi_add
+        expect(facility).to be_show_instrument_availability
+        expect(facility.address).to eq("Test Address")
+        expect(facility.phone_number).to eq("555-1223")
+        expect(facility.fax_number).to eq("555-3211")
+        expect(facility.email).to eq("facility@example.com")
+      end
+
+      it "does not allow setting journal_mask" do
+        @params[:facility].merge!(journal_mask: "C17")
+        do_request
+        expect(assigns(:facility).journal_mask).not_to eq("C17")
+      end
+    end
+
+  end
+
+  describe "update" do
+    let(:facility) { FactoryGirl.create(:facility) }
+    before(:each) do
+      @method = :put
+      @action = :update
+      @params = {
+        :facility_id => facility.url_name,
+        :facility => {
+          :name => "A New Facility", :abbreviation => "anf", :description => "A boring description",
+          :is_active => 0, :url_name => 'anf', :short_description => 'A short boring desc',
+          :accepts_multi_add => false, :show_instrument_availability => false,
+          :address => "Test Address", :phone_number => "555-1223", :fax_number => "555-3211",
+          :email => "facility@example.com"
+        }
+      }
+    end
+
+    it_should_require_login
+
+    it_should_deny_all [ :guest ]
+
+    describe "as an admin" do
+      before { sign_in @admin }
+
+      it "sets all the fields", :aggregate_failures do
+        do_request
+
+        expect(facility.reload.name).to eq("A New Facility")
+        expect(facility.abbreviation).to eq("anf")
+        expect(facility.description).to eq("A boring description")
+        expect(facility).not_to be_is_active
+        expect(facility.url_name).to eq("anf")
+        expect(facility.short_description).to eq("A short boring desc")
+        expect(facility).not_to be_accepts_multi_add
+        expect(facility).not_to be_show_instrument_availability
+        expect(facility.address).to eq("Test Address")
+        expect(facility.phone_number).to eq("555-1223")
+        expect(facility.fax_number).to eq("555-3211")
+        expect(facility.email).to eq("facility@example.com")
+      end
+
+      it "does not allow setting journal_mask" do
+        @params[:facility].merge!(journal_mask: "C17")
+        do_request
+        expect(facility.reload.journal_mask).not_to eq("C17")
+      end
+    end
   end
 
 

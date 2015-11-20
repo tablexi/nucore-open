@@ -83,7 +83,7 @@ class FacilitiesController < ApplicationController
   # POST /facilities
   def create
     @active_tab = 'manage_facilites'
-    @facility = Facility.new(params[:facility])
+    @facility = Facility.new(facility_params)
 
     if @facility.save
       flash[:notice] = 'The facility was successfully created.'
@@ -95,7 +95,7 @@ class FacilitiesController < ApplicationController
 
   # PUT /facilities/:facility_id
   def update
-    if current_facility.update_attributes(params[:facility])
+    if current_facility.update_attributes(facility_params)
       flash[:notice] = 'The facility was successfully updated.'
       redirect_to manage_facility_path(current_facility)
     else
@@ -163,6 +163,16 @@ class FacilitiesController < ApplicationController
   end
 
   private
+
+  def facility_params
+    params.require(:facility).permit(*self.class.permitted_facility_params)
+  end
+
+  def self.permitted_facility_params
+    @@permitted_facility_params ||= [:name, :abbreviation, :url_name, :short_description,
+      :description, :accepts_multi_add, :show_instrument_availability, :is_active,
+      :address, :phone_number, :fax_number, :email]
+  end
 
   def ensure_order_details_selected
     if @order_details.count < 1
