@@ -1,31 +1,30 @@
 require "rails_helper"
-require 'controller_spec_helper'
-require 'transaction_search_spec_helper'
+require "controller_spec_helper"
+require "transaction_search_spec_helper"
 
 RSpec.describe FacilitiesController do
   render_views
 
   it "should route" do
-    expect({ :get => "/facilities" }).to route_to(:controller => 'facilities', :action => 'index')
-    expect({ :get => "/facilities/url_name" }).to route_to(:controller => 'facilities', :action => 'show', :id => 'url_name')
-    expect({ :get => "/facilities/url_name/manage" }).to route_to(:controller => 'facilities', :action => 'manage', :id => 'url_name')
+    expect(get: "/facilities").to route_to(controller: "facilities", action: "index")
+    expect(get: "/facilities/url_name").to route_to(controller: "facilities", action: "show", id: "url_name")
+    expect(get: "/facilities/url_name/manage").to route_to(controller: "facilities", action: "manage", id: "url_name")
   end
 
   before(:all) { create_users }
 
   let(:facility) { FactoryGirl.create(:facility) }
-  let(:facility_account) { FactoryGirl.create(:facility_account, :facility => facility) }
+  let(:facility_account) { FactoryGirl.create(:facility_account, facility: facility) }
 
   before(:each) do
     @authable = facility
   end
 
-
   context "new" do
 
     before(:each) do
-      @method=:get
-      @action=:new
+      @method = :get
+      @action = :new
     end
 
     it_should_require_login
@@ -36,30 +35,29 @@ RSpec.describe FacilitiesController do
       expect(@controller).to receive(:init_current_facility).never
       do_request
       expect(response).to be_success
-      expect(response).to render_template('facilities/new')
+      expect(response).to render_template("facilities/new")
     end
 
   end
-
 
   context "create" do
     before(:each) do
       @method = :post
       @action = :create
       @params = {
-        :facility => {
-          :name => "A New Facility", :abbreviation => "anf", :description => "A boring description",
-          :is_active => 1, :url_name => 'anf', :short_description => 'A short boring desc',
-          :accepts_multi_add => true, :show_instrument_availability => true,
-          :address => "Test Address", :phone_number => "555-1223", :fax_number => "555-3211",
-          :email => "facility@example.com"
+        facility: {
+          name: "A New Facility", abbreviation: "anf", description: "A boring description",
+          is_active: 1, url_name: "anf", short_description: "A short boring desc",
+          accepts_multi_add: true, show_instrument_availability: true,
+          address: "Test Address", phone_number: "555-1223", fax_number: "555-3211",
+          email: "facility@example.com"
         }
       }
     end
 
     it_should_require_login
 
-    it_should_deny_all [ :guest, :director ]
+    it_should_deny_all [:guest, :director]
 
     it_should_allow :admin do
       expect(facility).to be_valid
@@ -102,20 +100,20 @@ RSpec.describe FacilitiesController do
       @method = :put
       @action = :update
       @params = {
-        :facility_id => facility.url_name,
-        :facility => {
-          :name => "A New Facility", :abbreviation => "anf", :description => "A boring description",
-          :is_active => 0, :url_name => 'anf', :short_description => 'A short boring desc',
-          :accepts_multi_add => false, :show_instrument_availability => false,
-          :address => "Test Address", :phone_number => "555-1223", :fax_number => "555-3211",
-          :email => "facility@example.com"
-        }
+        facility_id: facility.url_name,
+        facility: {
+          name: "A New Facility", abbreviation: "anf", description: "A boring description",
+          is_active: 0, url_name: "anf", short_description: "A short boring desc",
+          accepts_multi_add: false, show_instrument_availability: false,
+          address: "Test Address", phone_number: "555-1223", fax_number: "555-3211",
+          email: "facility@example.com"
+        },
       }
     end
 
     it_should_require_login
 
-    it_should_deny_all [ :guest ]
+    it_should_deny_all [:guest]
 
     describe "as an admin" do
       before { sign_in @admin }
@@ -145,29 +143,27 @@ RSpec.describe FacilitiesController do
     end
   end
 
-
   context "index" do
 
     before(:each) do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
 
-    it_should_allow_all [ :admin, :guest ] do
+    it_should_allow_all [:admin, :guest] do
       expect(assigns[:facilities]).to eq([@authable])
       expect(response).to be_success
-      expect(response).to render_template('facilities/index')
+      expect(response).to render_template("facilities/index")
     end
 
   end
 
-
   context "manage" do
 
     before(:each) do
-      @method=:get
-      @action=:manage
-      @params={ :facility_id => @authable.url_name, :id => @authable.url_name }
+      @method = :get
+      @action = :manage
+      @params = { facility_id: @authable.url_name, id: @authable.url_name }
     end
 
     it_should_require_login
@@ -176,7 +172,7 @@ RSpec.describe FacilitiesController do
 
     it_should_allow :director do
       expect(response).to be_success
-      expect(response).to render_template('facilities/manage')
+      expect(response).to render_template("facilities/manage")
     end
 
   end
@@ -188,7 +184,7 @@ RSpec.describe FacilitiesController do
       @params = { id: facility.url_name }
     end
 
-    it_should_allow_all ([ :guest ] + facility_operators) do
+    it_should_allow_all ([:guest] + facility_operators) do
       expect(@controller.current_facility).to eq(facility)
       expect(response).to be_success
       expect(response).to render_template("facilities/show")
@@ -209,7 +205,7 @@ RSpec.describe FacilitiesController do
     end
 
     it "should 404 for invalid facility" do
-      @params.merge!(id: 'randomstringofcharacters')
+      @params.merge!(id: "randomstringofcharacters")
       do_request
       expect(response.code).to eq("404")
     end
@@ -218,8 +214,8 @@ RSpec.describe FacilitiesController do
   context "list" do
 
     before(:each) do
-      @method=:get
-      @action=:list
+      @method = :get
+      @action = :list
     end
 
     it_should_require_login
@@ -238,7 +234,7 @@ RSpec.describe FacilitiesController do
       it_should_allow_all facility_operators do
         expect(assigns(:facilities)).to eq([@authable, @facility2])
         expect(response).to be_success
-        expect(response).to render_template('facilities/list')
+        expect(response).to render_template("facilities/list")
       end
     end
 
@@ -247,9 +243,9 @@ RSpec.describe FacilitiesController do
         allow(@controller).to receive(:current_facility).and_return(@authable)
         expect(@controller).to receive(:init_current_facility).never
       end
-      context 'has instruments' do
+      context "has instruments" do
         before :each do
-          FactoryGirl.create(:instrument, :facility => @authable, :facility_account => facility_account)
+          FactoryGirl.create(:instrument, facility: @authable, facility_account: facility_account)
         end
         it_should_allow_all (facility_operators - [:admin]) do
           expect(assigns(:facilities)).to eq([@authable])
@@ -257,7 +253,7 @@ RSpec.describe FacilitiesController do
           expect(response).to redirect_to(timeline_facility_reservations_path(@authable))
         end
       end
-      context 'has no instruments' do
+      context "has no instruments" do
         # admin won't be redirected since their operable facilities is something more
         it_should_allow_all (facility_operators - [:admin]) do
           expect(assigns(:facilities)).to eq([@authable])
@@ -277,7 +273,7 @@ RSpec.describe FacilitiesController do
       it_should_allow :admin do
         expect(assigns[:facilities]).to eq([@authable, @facility2])
         expect(response).to be_success
-        expect(response).to render_template('facilities/list')
+        expect(response).to render_template("facilities/list")
       end
     end
 
