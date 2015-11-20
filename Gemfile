@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 ## base
 gem 'rails',            '3.2.22'
+gem "strong_parameters"
 gem 'rails_config',     '0.3.3'
 
 ## database

@@ -79,7 +79,6 @@ Nucore::Application.routes.draw do
 
       match 'public_schedule', :to => 'instruments#public_schedule'
       match 'schedule',        :to => 'instruments#schedule'
-      match 'agenda',          :to => 'instruments#agenda'
       match 'status',          :to => 'instruments#instrument_status'
       match 'switch',          :to => 'instruments#switch'
 
@@ -126,8 +125,6 @@ Nucore::Application.routes.draw do
 
     resources :price_group_products, :only => [:edit, :update]
 
-    match 'schedule', :to => 'facilities#schedule'
-    match 'agenda',   :to => 'facilities#agenda'
     resources :order_statuses, :except => [:show]
 
     resources :facility_users, :controller => 'facility_users', :only => [:index, :destroy] do
