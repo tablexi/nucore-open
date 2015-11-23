@@ -451,6 +451,11 @@ GEM
       colorize (>= 0.7.0)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
+    strong_parameters (0.2.3)
+      actionpack (~> 3.0)
+      activemodel (~> 3.0)
+      activesupport (~> 3.0)
+      railties (~> 3.0)
     teaspoon (1.0.2)
       railties (>= 3.2.5, < 5)
     teaspoon-jasmine (2.2.0)
@@ -548,6 +553,7 @@ DEPENDENCIES
   spreadsheet (~> 0.6.5.5)
   spring
   spring-commands-rspec
+  strong_parameters
   synaccess_connect (= 0.2.2)!
   teaspoon-jasmine
   therubyracer

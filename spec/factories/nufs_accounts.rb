@@ -6,29 +6,33 @@ overridable_factory :nufs_account do
   sequence(:description, 'aaaaaaaa') { |n| "nufs account #{n}" }
   expires_at { Time.zone.now + 1.month }
   created_by 0
+end
 
-  trait :with_order do
-    transient do
-      product nil
-      owner { FactoryGirl.create(:user) }
-    end
+FactoryGirl.modify do
+  factory :nufs_account do
+    trait :with_order do
+      transient do
+        product nil
+        owner { FactoryGirl.create(:user) }
+      end
 
-    account_users_attributes { [FactoryGirl.attributes_for(:account_user, user: owner)] }
+      account_users_attributes { [FactoryGirl.attributes_for(:account_user, user: owner)] }
 
-    after(:create) do |account, evaluator|
-      order = FactoryGirl.create(
-        :order,
-        user: evaluator.owner,
-        created_by: evaluator.owner.id,
-        facility: evaluator.product.facility,
-      )
+      after(:create) do |account, evaluator|
+        order = FactoryGirl.create(
+          :order,
+          user: evaluator.owner,
+          created_by: evaluator.owner.id,
+          facility: evaluator.product.facility,
+        )
 
-      FactoryGirl.create(
-        :order_detail,
-        product: evaluator.product,
-        order: order,
-        account: account,
-      )
+        FactoryGirl.create(
+          :order_detail,
+          product: evaluator.product,
+          order: order,
+          account: account,
+        )
+      end
     end
   end
 end

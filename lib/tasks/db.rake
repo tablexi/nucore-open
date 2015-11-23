@@ -22,30 +22,40 @@ namespace :db do
   task :oracle_drop_severe => :environment do
     next unless db_allow_task?
 
-    table_names = ActiveRecord::Base.connection.select_rows(
-      "select table_name from user_tables").map(&:first)
-    table_names.each do |table|
-      begin
-        command = "drop table #{table} cascade constraints purge"
-        puts command
-        ActiveRecord::Base.connection.execute(command)
-      rescue => e
-        puts e.message
+    def purge(select)
+      names = ActiveRecord::Base.connection.select_rows(select).map(&:first)
+      names.each do |name|
+        begin
+          command = yield name
+          puts command
+          ActiveRecord::Base.connection.execute(command)
+        rescue => e
+          puts e.message
+        end
       end
     end
 
-    sequence_names = ActiveRecord::Base.connection.select_rows(
-      "select sequence_name from user_sequences").map(&:first)
-
-    sequence_names.each do |sequence|
-      begin
-        seq_command = "drop sequence #{sequence}"
-        puts seq_command
-        ActiveRecord::Base.connection.execute(seq_command)
-      rescue => e
-        puts e.message
-      end
+    purge("select table_name from user_tables") do |table|
+      "drop table #{table} cascade constraints purge"
     end
+
+    purge("select sequence_name from user_sequences") do |sequence|
+      "drop sequence #{sequence}"
+    end
+
+    purge("select view_name from user_views") do |view|
+      "drop view #{view}"
+    end
+
+    purge("select index_name from user_indexes") do |index|
+      "drop index #{index}"
+    end
+
+    purge("select type_name from user_types") do |type|
+      "drop type #{type}"
+    end
+
+    ActiveRecord::Base.connection.execute("purge recyclebin")
   end
 
 end

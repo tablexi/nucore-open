@@ -55,6 +55,9 @@ class Reports::AccountTransactionsReport
       OrderDetail.human_attribute_name('cost'),
       OrderDetail.human_attribute_name('subsidy'),
       OrderDetail.human_attribute_name('total'),
+      "#{Account.model_name.human} #{Account.human_attribute_name(:description)}",
+      Account.model_name.human,
+      Account.human_attribute_name("owner"),
       OrderDetail.human_attribute_name('order_status')
     ]
   end
@@ -79,6 +82,9 @@ class Reports::AccountTransactionsReport
       order_detail.display_cost,
       order_detail.display_subsidy,
       order_detail.display_total,
+      order_detail.account.description,
+      order_detail.account.account_number,
+      order_detail.account.owner_user,
       order_detail.order_status
     ]
   end

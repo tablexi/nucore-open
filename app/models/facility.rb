@@ -1,4 +1,6 @@
 class Facility < ActiveRecord::Base
+  include ActiveModel::ForbiddenAttributesProtection
+
   module Overridable
     def can_pay_with_account?(account)
       true
@@ -7,7 +9,6 @@ class Facility < ActiveRecord::Base
 
   include Overridable
 
-  attr_protected :journal_mask
   before_validation :set_journal_mask, :on => :create
 
   has_many :order_statuses, :finder_sql => proc { "SELECT * FROM order_statuses WHERE facility_id = #{self.id} or facility_id IS NULL order by lft" }
