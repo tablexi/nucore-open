@@ -18,7 +18,7 @@
   %li.nav-header= Journal.model_name.human.pluralize
   = tab t_create_model(Journal), new_facility_journal_path, (sidenav_tab == 'new_journal')
   = tab t_manage_models(Journal), facility_journals_path, (sidenav_tab == 'journals')
-  - if current_facility.single_facility? && AccountManager.using_statements?
+  - if current_facility.single_facility? && Account.config.statements_enabled?
     %li.divider
     %li.nav-header= Statement.model_name.human.pluralize
     = tab t_create_models(Statement), new_facility_statement_path(current_facility), (sidenav_tab == 'statements')

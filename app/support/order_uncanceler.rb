@@ -6,7 +6,7 @@ class OrderUncanceler
 
   def uncancel_to_complete(order_detail)
     unless order_detail.canceled?
-      puts "#{order_detail} was not in canceled state"
+      Rails.logger.info "OrderDetail #{order_detail} was not in canceled state"
       return
     end
 
@@ -31,10 +31,10 @@ class OrderUncanceler
 
         order_detail.assign_price_policy(fulfilled_at)
         order_detail.save!
-        puts "#{order_detail} was uncanceled"
+        Rails.logger.info "OrderDetail #{order_detail} was uncanceled"
         true
       rescue => e
-        puts "Could not save #{order_detail} because #{e.message}"
+        Rails.logger.info "Could not save OrderDetail #{order_detail} because #{e.message}"
         raise ActiveRecord::Rollback
       end
     end

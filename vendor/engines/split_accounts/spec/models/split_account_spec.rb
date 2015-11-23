@@ -1,6 +1,7 @@
 require "rails_helper"
+require_relative "../engine_helper"
 
-RSpec.describe SplitAccounts::SplitAccount, type: :model do
+RSpec.describe SplitAccounts::SplitAccount, type: :model, split_accounts: true do
 
   it "is an account type" do
     expect(described_class.new).to be_an(Account)
@@ -99,6 +100,14 @@ RSpec.describe SplitAccounts::SplitAccount, type: :model do
 
     it "counts splits with extra penny" do
       expect(split_account.extra_penny_count).to eq(2)
+    end
+  end
+
+  describe "has_many subaccounts" do
+    let(:split_account) { create(:split_account) }
+
+    it "returns subaccounts" do
+      expect(split_account.subaccounts).to contain_exactly(split_account.splits.first.subaccount)
     end
   end
 

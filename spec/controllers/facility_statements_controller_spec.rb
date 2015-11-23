@@ -2,7 +2,7 @@ require "rails_helper"
 require 'controller_spec_helper'
 require 'transaction_search_spec_helper'
 
-if AccountManager.using_statements?
+if Account.config.statements_enabled?
 
   RSpec.describe FacilityStatementsController do
     render_views
@@ -25,8 +25,8 @@ if AccountManager.using_statements?
 
     before(:all) do
       create_users
-      @account_type=AccountManager::STATEMENT_ACCOUNT_CLASSES.first
-      @account_sym=@account_type.underscore.to_sym
+      @account_type = Account.config.statement_account_types.first
+      @account_sym = @account_type.underscore.to_sym
     end
 
     before(:each) do

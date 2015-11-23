@@ -244,15 +244,19 @@ class OrderDetail < ActiveRecord::Base
   scope :need_statement, lambda { |facility| {
     :joins => [:product, :account],
     :conditions => [
-       "products.facility_id = :facility_id
-       AND order_details.state = :state
-       AND problem = :problem
-       AND reviewed_at <= :reviewed_at
-       AND order_details.statement_id IS NULL
-       AND order_details.price_policy_id IS NOT NULL
-       AND accounts.type IN (:accounts)
-       AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)",
-       { :facility_id => facility.id, :state =>'complete', :problem => false, :reviewed_at => Time.zone.now, :accounts => AccountManager::STATEMENT_ACCOUNT_CLASSES }
+      "products.facility_id = :facility_id
+        AND order_details.state = :state
+        AND problem = :problem
+        AND reviewed_at <= :reviewed_at
+        AND order_details.statement_id IS NULL
+        AND order_details.price_policy_id IS NOT NULL
+        AND accounts.type IN (:accounts)
+        AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)",
+      :facility_id => facility.id,
+      :state =>'complete',
+      :problem => false,
+      :reviewed_at => Time.zone.now,
+      :accounts => Account.config.statement_account_types
     ]
   }}
 

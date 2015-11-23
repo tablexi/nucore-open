@@ -1,0 +1,7 @@
+- if local_assigns[:is_new]
+  = f.input :account_number
+
+= f.input :description
+
+- if local_assigns[:is_new]
+  = render partial: "facility_accounts/account_fields/split_accounts/splits", locals: {f: f}

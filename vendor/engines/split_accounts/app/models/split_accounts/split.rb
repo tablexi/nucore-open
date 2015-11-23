@@ -10,11 +10,22 @@ module SplitAccounts
     validates :subaccount, presence: true
 
     validate :not_self_referential
+    validate :not_split_subaccount
 
     def not_self_referential
       if parent_split_account == subaccount
         errors.add(:subaccount, :not_self_referential)
       end
+    end
+
+    def not_split_subaccount
+      if subaccount.is_a?(SplitAccounts::SplitAccount)
+        errors.add(:subaccount, :not_split_subaccount)
+      end
+    end
+
+    def self.available_subaccounts
+      Account.excluding_split_accounts.global_account_types.active
     end
 
   end

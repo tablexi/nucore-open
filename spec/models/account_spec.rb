@@ -320,7 +320,7 @@ RSpec.describe Account do
     it "should return the most recent account statement for a given facility"
   end
 
-  unless AccountManager::FACILITY_ACCOUNT_CLASSES.empty?
+  unless Account.config.facility_account_types.empty?
     context "limited facilities" do
       before :each do
         @user             = FactoryGirl.create(:user)
@@ -329,8 +329,8 @@ RSpec.describe Account do
         @nufs_account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
         @facility1_accounts, @facility2_accounts=[ @nufs_account ], [ @nufs_account ]
 
-        AccountManager::FACILITY_ACCOUNT_CLASSES.each do |class_name|
-          class_sym=class_name.underscore.to_sym
+        Account.config.facility_account_types.each do |class_name|
+          class_sym = class_name.underscore.to_sym
           @facility1_accounts << FactoryGirl.create(class_sym, :account_users_attributes => account_users_attributes_hash(:user => @user), :facility => @facility1)
           @facility2_accounts << FactoryGirl.create(class_sym, :account_users_attributes => account_users_attributes_hash(:user => @user), :facility => @facility2)
         end

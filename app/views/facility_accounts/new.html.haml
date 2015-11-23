@@ -1,15 +1,23 @@
-= render "sidebar"
-
 = content_for :head_content do
-  = javascript_include_tag "accounts.js"
+  = javascript_include_tag "accounts"
 
 = content_for :h1 do
   = current_facility
 
+= render "sidebar"
+
 %h2= t(".head")
+
 = simple_form_for(@account, url: facility_accounts_path(current_facility)) do |f|
   = f.error_messages
-  = render "account_fields", f: f, instructions_for: :all
+
+  = hidden_field_tag :owner_user_id, @owner_user.id
+  = f.input :owner, as: :readonly, input_html: { class: "show_always", value: @owner_user.full_name }
+
+  = hidden_field_tag :account_type, @current_account_type
+  = render "facility_accounts/account_type_tabs", available_account_types: @available_account_types, current_account_type: @current_account_type, owner_user: @owner_user
+  = render "facility_accounts/account_fields/#{@current_account_type.to_s.underscore}", f: f, is_new: true
+
   %ul.inline
-    %li= f.submit "Create", class: %w(btn btn-primary)
+    %li= f.submit "Create", class: "btn btn-primary"
     %li= link_to "Cancel", new_account_user_search_facility_accounts_path

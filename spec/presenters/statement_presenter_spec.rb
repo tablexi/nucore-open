@@ -18,7 +18,7 @@ RSpec.describe StatementPresenter do
 
   describe "#download_path" do
     it "returns a download path to the PDF version of the statement" do
-      if AccountManager.using_statements?
+      if Account.config.statements_enabled?
         expect(subject.download_path)
           .to eq("/facilities/#{facility.url_name}/accounts/#{account.id}/statements/#{statement.id}.pdf")
       end

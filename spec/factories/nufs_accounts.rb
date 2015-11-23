@@ -41,7 +41,7 @@ end
 FactoryGirl.define do
   factory :setup_account, :class => NufsAccount, :parent => :nufs_account do
     transient do
-      owner { FactoryGirl.create(:user) }
+      owner { create(:user) }
     end
 
     account_users_attributes { account_users_attributes_hash(:user => owner) }

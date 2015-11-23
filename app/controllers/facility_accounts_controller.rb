@@ -1,35 +1,12 @@
 class FacilityAccountsController < ApplicationController
-  module Overridable
-    extend ActiveSupport::Concern
 
-    module ClassMethods
-      def billing_access_checked_actions
-        [ :accounts_receivable, :show_statement ]
-      end
-    end
-
-    def account_class_params
-      params[:account] || params[:nufs_account]
-    end
-
-    def configure_new_account(account)
-      # set temporary expiration to be updated later
-      account.valid? # populate virtual charstring attributes required by set_expires_at
-      account.errors.clear
-
-      # be verbose with failures. Too many tasks (#29563, #31873) need it
-      begin
-        account.set_expires_at!
-        account.errors.add(:base, I18n.t('controllers.facility_accounts.create.expires_at_missing')) unless account.expires_at
-      rescue AccountNumberFormatError => e
-        account.expires_at = Time.zone.now # Prevent expires_at missing message
-      rescue ValidatorError => e
-        account.errors.add(:base, e.message)
-      end
-    end
+  # Actions included in the `check_billing_access` before_filter.
+  # This method must be defined before the before_filter
+  # Overridable by engines.
+  def self.check_billing_access_actions
+    @@check_billing_access_actions ||= [:accounts_receivable, :show_statement]
   end
 
-  include Overridable
   include AccountSuspendActions
   include SearchHelper
 
@@ -39,11 +16,11 @@ class FacilityAccountsController < ApplicationController
   before_filter :init_current_facility
   before_filter :init_account
 
-  authorize_resource :class => Account
+  authorize_resource class: Account
 
-  before_filter :check_billing_access, :only => billing_access_checked_actions
+  before_filter :check_billing_access, only: check_billing_access_actions
 
-  layout 'two_column'
+  layout "two_column"
 
   def initialize
     @active_tab =
@@ -70,7 +47,31 @@ class FacilityAccountsController < ApplicationController
   # GET /facilities/:facility_id/accounts/new
   def new
     @owner_user = User.find(params[:owner_user_id])
-    @account    = @owner_user.accounts.new(:expires_at => Time.zone.now + 1.year)
+    @available_account_types = available_account_types
+    @current_account_type = current_account_type
+    @account = current_account_type.constantize.new
+  end
+
+  # POST /facilities/:facility_id/accounts
+  def create
+    @owner_user = User.find(params[:owner_user_id])
+    @available_account_types = available_account_types
+    @current_account_type = current_account_type
+
+    @account = AccountBuilder.for(params[:account_type]).new(
+      account_type: params[:account_type],
+      facility: current_facility,
+      current_user: current_user,
+      owner_user: @owner_user,
+      params: params,
+    ).build
+
+    if @account.save
+      flash[:notice] = I18n.t("controllers.facility_accounts.create.success")
+      redirect_to facility_user_accounts_path(current_facility, @account.owner_user)
+    else
+      render action: "new"
+    end
   end
 
   # GET /facilities/:facility_id/accounts/:id/edit
@@ -79,33 +80,20 @@ class FacilityAccountsController < ApplicationController
 
   # PUT /facilities/:facility_id/accounts/:id
   def update
-    class_params = account_class_params
+    account_type = Account.config.account_type_to_param(@account.class)
 
-    if @account.is_a?(AffiliateAccount)
-      class_params[:affiliate_other] = nil if class_params[:affiliate_id] != Affiliate.OTHER.id.to_s
-    end
-
-    if @account.update_attributes(class_params)
-      flash[:notice] = I18n.t('controllers.facility_accounts.update')
-      redirect_to facility_account_path
-    else
-      render :action => "edit"
-    end
-  end
-
-  # POST /facilities/:facility_id/accounts
-  def create
-    builder = Accounts::AccountBuilder.new(current_facility, session_user, params)
-    @account = builder.account
-    @owner_user = User.find(params[:owner_user_id])
-    configure_new_account @account
-    return render :action => 'new' unless @account.errors[:base].empty?
+    @account = AccountBuilder.for(account_type).new(
+      account: @account,
+      current_user: current_user,
+      owner_user: @owner_user,
+      params: params,
+    ).update
 
     if @account.save
-      flash[:notice] = 'Account was successfully created.'
-      redirect_to facility_user_accounts_path(current_facility, @account.owner_user)
+      flash[:notice] = I18n.t("controllers.facility_accounts.update")
+      redirect_to facility_account_path
     else
-      render :action => 'new'
+      render action: "edit"
     end
   end
 
@@ -117,10 +105,11 @@ class FacilityAccountsController < ApplicationController
 
   # GET /facilities/:facility_id/accounts/search
   def search
-    flash.now[:notice] = 'This page is not yet implemented'
+    flash.now[:notice] = "This page is not yet implemented"
   end
 
   # GET/POST /facilities/:facility_id/accounts/search_results
+  # TODO: use a service object here
   def search_results
     owner_where_clause =<<-end_of_where
       (
@@ -132,28 +121,30 @@ class FacilityAccountsController < ApplicationController
       AND account_users.user_role = :acceptable_role
       AND account_users.deleted_at IS NULL
     end_of_where
-    term   = generate_multipart_like_search_term(params[:search_term])
+
+    term = generate_multipart_like_search_term(params[:search_term])
     if params[:search_term].length >= 3
 
       # retrieve accounts matched on user for this facility
-      @accounts = Account.joins(:account_users => :user).for_facility(current_facility).where(
+      @accounts = Account.joins(account_users: :user).for_facility(current_facility).where(
         owner_where_clause,
-        :term             => term,
-        :acceptable_role  => 'Owner').
-        order('users.last_name, users.first_name')
+        term: term,
+        acceptable_role: "Owner"
+      ).order("users.last_name, users.first_name")
 
       # retrieve accounts matched on account_number for this facility
       @accounts += Account.for_facility(current_facility).where(
         "LOWER(account_number) LIKE ?", term).
-        order('type, account_number')
+        order("type, account_number"
+      )
 
       # only show an account once.
-      @accounts = @accounts.uniq.paginate(:page => params[:page]) #hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
+      @accounts = @accounts.uniq.paginate(page: params[:page]) #hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
     else
-      flash.now[:errors] = 'Search terms must be 3 or more characters.'
+      flash.now[:errors] = "Search terms must be 3 or more characters."
     end
     respond_to do |format|
-      format.html { render :layout => false }
+      format.html { render layout: false }
     end
   end
 
@@ -201,16 +192,28 @@ class FacilityAccountsController < ApplicationController
 
   private
 
+  def available_account_types
+    Account.config.account_types_for_facility(current_facility)
+  end
+
+  def current_account_type
+    if available_account_types.include?(params[:account_type])
+      params[:account_type]
+    else
+      available_account_types.first
+    end
+  end
+
   def render_statement_pdf
     @statement_pdf = StatementPdfFactory.instance(@statement, params[:show].blank?)
-    render template: '/statements/show'
+    render template: "/statements/show"
   end
 
   def init_account
     if params.has_key? :id
-      @account=Account.find params[:id].to_i
+      @account = Account.find params[:id].to_i
     elsif params.has_key? :account_id
-      @account=Account.find params[:account_id].to_i
+      @account = Account.find params[:account_id].to_i
     end
   end
 

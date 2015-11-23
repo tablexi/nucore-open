@@ -26,6 +26,7 @@ class Account < ActiveRecord::Base
   accepts_nested_attributes_for :account_users
 
   scope :active, lambda {{ :conditions => ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] }}
+  scope :global_account_types, -> { where(accounts: { type: config.global_account_types }) }
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
   validates_length_of :description, :maximum => 50
@@ -38,60 +39,39 @@ class Account < ActiveRecord::Base
     end
   end
 
-  def add_or_update_member(user, new_role, session_user)
-    Account.transaction do
-      # expire old owner if new
-      if new_role == AccountUser::ACCOUNT_OWNER
-        # expire old owner record
-        @old_owner = self.owner
-        if @old_owner
-          @old_owner.deleted_at = Time.zone.now
-          @old_owner.deleted_by = session_user.id
-          @old_owner.save!
-        end
-      end
-
-      # find non-deleted record for this user and account or init new one
-      # deleted_at MUST be nil to preserve existing audit trail
-      @account_user = AccountUser.find_or_initialize_by_account_id_and_user_id_and_deleted_at(
-        self.id,
-        user.id,
-        nil
-      )
-      # set (new?) role
-      @account_user.user_role = new_role
-      # set creation information
-      @account_user.created_by = session_user.id
-
-      self.account_users << @account_user
-
-      raise ActiveRecord::Rollback unless self.save
-    end
-
-    return @account_user
+  # The @@config class variable stores account configuration details via a
+  # seperate `AccountConfig` class. This way downstream repositories can use
+  # customized account configurations. Also the `Account` model stays as thin
+  # as possible by striving to contain only methods related to database logic.
+  def self.config
+    @@config ||= AccountConfig.new
   end
 
-  def facility
-    nil
+  # Returns true if this account type is limited to a single facility.
+  def self.single_facility?
+    config.single_facility?(self.name)
   end
 
-
-  def self.limited_to_single_facility?
-    AccountManager::FACILITY_ACCOUNT_CLASSES.include? self.name
-  end
-
+  # Returns true if this account type can cross multiple facilities.
   def self.cross_facility?
-    !limited_to_single_facility?
+    config.cross_facility?(self.name)
+  end
+
+  # Returns true if this account type can assign an affiliate.
+  def self.using_affiliate?
+    config.using_affiliate?(self.name)
   end
 
   def self.for_facility(facility)
     accounts = scoped
 
     if facility.single_facility?
-      accounts = accounts.where("accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)",
-            {:allow_all => AccountManager::GLOBAL_ACCOUNT_CLASSES,
-              :limit_one => AccountManager::FACILITY_ACCOUNT_CLASSES,
-              :facility => facility})
+      accounts = accounts.where(
+        "accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)",
+        allow_all: config.global_account_types,
+        limit_one: config.facility_account_types,
+        facility: facility
+      )
     end
 
     accounts
@@ -108,6 +88,13 @@ class Account < ActiveRecord::Base
 
   def self.with_orders_for_facility(facility)
     where(id: ids_with_orders(facility))
+  end
+
+  # The subclassed Account objects will be cross facility by default; override
+  # this method with `belongs_to :facility` if the subclassed Account object is
+  # always scoped to a single facility.
+  def facility
+    nil
   end
 
   def facilities
@@ -275,6 +262,39 @@ class Account < ActiveRecord::Base
     else
       description
     end
+  end
+
+  def add_or_update_member(user, new_role, session_user)
+    Account.transaction do
+      # expire old owner if new
+      if new_role == AccountUser::ACCOUNT_OWNER
+        # expire old owner record
+        @old_owner = self.owner
+        if @old_owner
+          @old_owner.deleted_at = Time.zone.now
+          @old_owner.deleted_by = session_user.id
+          @old_owner.save!
+        end
+      end
+
+      # find non-deleted record for this user and account or init new one
+      # deleted_at MUST be nil to preserve existing audit trail
+      @account_user = AccountUser.find_or_initialize_by_account_id_and_user_id_and_deleted_at(
+        self.id,
+        user.id,
+        nil
+      )
+      # set (new?) role
+      @account_user.user_role = new_role
+      # set creation information
+      @account_user.created_by = session_user.id
+
+      self.account_users << @account_user
+
+      raise ActiveRecord::Rollback unless self.save
+    end
+
+    return @account_user
   end
 
   private

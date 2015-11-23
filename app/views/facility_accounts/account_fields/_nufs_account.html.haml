@@ -1,1 +1,4 @@
+- if local_assigns[:is_new]
+  = render partial: "shared/account_fields", locals: { f: f, account_class: NufsAccount }
+
 = f.input :description

@@ -96,6 +96,7 @@ feature:
   product_specific_contacts_on: true
   training_requests_on: true
   daily_view_on: true
+  split_accounts_on: false
 
 # This may be overridden in settings.local.yml if your fork is using S3, so
 # be sure to check there for configuration
