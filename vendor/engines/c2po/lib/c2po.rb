@@ -13,6 +13,10 @@ module C2po
       paths.unshift paths.delete_at(index)
       ActionController::Base.view_paths = paths
 
+      ViewHook.add_hook("facilities.manage", "before_is_active", "c2po/facilities/manage")
+      ViewHook.add_hook("facilities.facility_fields", "before_is_active", "c2po/facilities/facility_fields")
+      ViewHook.add_hook("admin.shared.sidenav_billing", "after_statements", "c2po/sidenav_billing")
+
       FacilitiesController.permitted_facility_params.concat [:accepts_po, :accepts_cc]
 
       ViewHook.add_hook("facilities.manage", "before_is_active", "c2po/facilities/manage")
