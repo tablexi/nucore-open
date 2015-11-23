@@ -7,10 +7,8 @@ RSpec.describe Ability do
   let(:stub_controller) { OpenStruct.new }
   let(:subject_resource) { facility }
 
-  shared_examples_for "it can create but not manage training requests" do
+  shared_examples_for "it can not manage training requests" do
     let(:subject_resource) { create(:training_request, product: instrument) }
-
-    it { is_expected.to be_allowed_to(:create, TrainingRequest) }
 
     %i(read update delete index).each do |action|
       it { is_expected.not_to be_allowed_to(action, TrainingRequest) }
@@ -47,7 +45,7 @@ RSpec.describe Ability do
 
     context "in a single facility" do
       it { is_expected.not_to be_allowed_to(:manage_accounts, facility) }
-      it { is_expected.not_to be_allowed_to(:manage_users, facility) }
+      it { is_expected.not_to be_allowed_to(:index, User) }
     end
 
     context "in cross-facility" do
@@ -95,17 +93,17 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:show_problems, Reservation) }
 
     context "in a single facility" do
+      it { is_expected.to be_allowed_to(:manage, User) }
       it { is_expected.to be_allowed_to(:manage_accounts, facility) }
       it { is_expected.to be_allowed_to(:manage_billing, facility) }
-      it { is_expected.to be_allowed_to(:manage, User) }
     end
 
     context "in cross-facility" do
       let(:facility) { Facility.cross_facility }
 
+      it { is_expected.not_to be_allowed_to(:manage, User) }
       it { is_expected.not_to be_allowed_to(:manage_accounts, facility) }
       it { is_expected.not_to be_allowed_to(:manage_billing, facility) }
-      it { is_expected.not_to be_allowed_to(:manage_users, facility) }
     end
   end
 
@@ -179,33 +177,35 @@ RSpec.describe Ability do
     it_behaves_like "it can destroy admistrative reservations"
   end
 
+  shared_examples_for "it has common staff abilities" do
+    it { is_expected.not_to be_allowed_to(:disputed, Order) }
+    it { is_expected.not_to be_allowed_to(:manage, Account) }
+    it { is_expected.not_to be_allowed_to(:show_problems, Reservation) }
+    it { is_expected.to be_allowed_to(:read, Notification) }
+    it_behaves_like "it can destroy admistrative reservations"
+  end
+
   describe "senior staff" do
     let(:user) { create(:user, :senior_staff, facility: facility) }
 
-    it { is_expected.not_to be_allowed_to(:manage, Account) }
+    it_behaves_like "it has common staff abilities"
     it { is_expected.to be_allowed_to(:manage, TrainingRequest) }
-    it { is_expected.to be_allowed_to(:read, Notification) }
-    it { is_expected.not_to be_allowed_to(:show_problems, Reservation) }
-    it { is_expected.not_to be_allowed_to(:disputed, Order) }
-    it_behaves_like "it can destroy admistrative reservations"
   end
 
   describe "staff" do
     let(:user) { create(:user, :staff, facility: facility) }
 
-    it { is_expected.not_to be_allowed_to(:manage, Account) }
-    it_behaves_like "it can create but not manage training requests"
-    it { is_expected.to be_allowed_to(:read, Notification) }
-    it { is_expected.not_to be_allowed_to(:show_problems, Reservation) }
-    it { is_expected.not_to be_allowed_to(:disputed, Order) }
-    it_behaves_like "it can destroy admistrative reservations"
+    it_behaves_like "it has common staff abilities"
+    it { is_expected.to be_allowed_to(:create, TrainingRequest) }
+    it_behaves_like "it can not manage training requests"
   end
 
   describe "unprivileged user" do
     let(:user) { create(:user) }
 
     it { is_expected.not_to be_allowed_to(:manage, Account) }
-    it_behaves_like "it can create but not manage training requests"
+    it { is_expected.to be_allowed_to(:create, TrainingRequest) }
+    it_behaves_like "it can not manage training requests"
 
     %i(sample_result template_result).each do |file_type|
       describe "downloading a #{file_type}" do

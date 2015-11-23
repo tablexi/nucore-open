@@ -19,7 +19,8 @@ class Ability
         can :manage, AccountPriceGroupMember
       else
         can :manage, :all
-        cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
+        cannot [:manage_accounts, :manage_billing], Facility.cross_facility
+        cannot :manage, User if resource.is_a?(Facility) && resource.cross_facility?
       end
       return
     end
@@ -38,7 +39,7 @@ class Ability
     can :read, Notification if user.notifications.active.any?
 
     if user.account_manager?
-      can [:manage_accounts, :manage_users], Facility.cross_facility
+      can :manage_accounts, Facility.cross_facility
 
       if resource == Facility.cross_facility
         can :manage, [Account, User]
