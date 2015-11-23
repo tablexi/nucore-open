@@ -80,6 +80,10 @@ class Account < ActiveRecord::Base
     AccountManager::FACILITY_ACCOUNT_CLASSES.include? self.name
   end
 
+  def self.cross_facility?
+    !limited_to_single_facility?
+  end
+
   def self.for_facility(facility)
     accounts = scoped
 
