@@ -510,6 +510,16 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
 
   add_index "schedules", ["facility_id"], :name => "i_schedules_facility_id"
 
+  create_table "splits", :force => true do |t|
+    t.integer "parent_split_account_id",                               :null => false
+    t.integer "subaccount_id",                                         :null => false
+    t.decimal "percent",                 :precision => 6, :scale => 3, :null => false
+    t.boolean "extra_penny",                                           :null => false
+  end
+
+  add_index "splits", ["parent_split_account_id"], :name => "index_splits_on_parent_split_account_id"
+  add_index "splits", ["subaccount_id"], :name => "index_splits_on_subaccount_id"
+
   create_table "statement_rows", :force => true do |t|
     t.integer  "statement_id",    :null => false
     t.integer  "order_detail_id", :null => false
@@ -636,11 +646,11 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
   add_foreign_key "orders", "accounts", name: "orders_account_id_fk"
   add_foreign_key "orders", "facilities", name: "orders_facility_id_fk"
 
-  add_foreign_key "price_group_members", "price_groups", name: "price_group_members_price_group_id_fk"
   add_foreign_key "payments", "accounts", name: "payments_account_id_fk"
   add_foreign_key "payments", "statements", name: "payments_statement_id_fk"
   add_foreign_key "payments", "users", name: "payments_paid_by_id_fk", column: "paid_by_id"
 
+  add_foreign_key "price_group_members", "price_groups", name: "price_group_members_price_group_id_fk"
 
   add_foreign_key "price_groups", "facilities", name: "price_groups_facility_id_fk"
 
