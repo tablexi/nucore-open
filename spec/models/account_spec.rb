@@ -9,8 +9,8 @@ RSpec.describe Account do
 
   it_should_behave_like "an Account"
 
-  describe ".has_orders_for_facility" do
-    subject { described_class.has_orders_for_facility(facility) }
+  describe ".with_orders_for_facility" do
+    subject { described_class.with_orders_for_facility(facility) }
     let(:product_a) { create(:setup_item, :with_facility_account, facility: facility_a) }
     let(:product_b) { create(:setup_item, :with_facility_account, facility: facility_b) }
 
@@ -47,8 +47,8 @@ RSpec.describe Account do
 
     context "when there are more than 1000 accounts" do
       before { create_list(:nufs_account, 1001, :with_order, product: product_a) }
-      let(:accounts_for_facility_a) { described_class.has_orders_for_facility(facility_a) }
-      let(:accounts_for_all_facilities) { described_class.has_orders_for_facility(Facility.cross_facility) }
+      let(:accounts_for_facility_a) { described_class.with_orders_for_facility(facility_a) }
+      let(:accounts_for_all_facilities) { described_class.with_orders_for_facility(Facility.cross_facility) }
 
       it "queries without error" do
         expect(accounts_for_facility_a.count).to eq(1001)

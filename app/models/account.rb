@@ -106,7 +106,7 @@ class Account < ActiveRecord::Base
     .where("accounts.facility_id IS NULL OR accounts.facility_id = ?", order_detail.facility.id)
   end
 
-  def self.has_orders_for_facility(facility)
+  def self.with_orders_for_facility(facility)
     where(id: ids_with_orders(facility))
   end
 
