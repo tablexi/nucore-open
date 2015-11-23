@@ -45,13 +45,19 @@ RSpec.describe Ability do
 
     context "in a single facility" do
       it { is_expected.not_to be_allowed_to(:manage_accounts, facility) }
-      it { is_expected.not_to be_allowed_to(:index, User) }
+      it { is_expected.not_to be_allowed_to(:manage, User) }
     end
 
     context "in cross-facility" do
       let(:facility) { Facility.cross_facility }
 
       it { is_expected.to be_allowed_to(:manage_accounts, facility) }
+      it { is_expected.to be_allowed_to(:manage, User) }
+    end
+
+    context "in no facility" do
+      let(:facility) { nil }
+
       it { is_expected.to be_allowed_to(:manage, User) }
     end
   end
@@ -104,6 +110,12 @@ RSpec.describe Ability do
       it { is_expected.not_to be_allowed_to(:manage, User) }
       it { is_expected.not_to be_allowed_to(:manage_accounts, facility) }
       it { is_expected.not_to be_allowed_to(:manage_billing, facility) }
+    end
+
+    context "in no facility" do
+      let(:facility) { nil }
+
+      it { is_expected.not_to be_allowed_to(:manage, User) }
     end
   end
 

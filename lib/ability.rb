@@ -20,7 +20,9 @@ class Ability
       else
         can :manage, :all
         cannot [:manage_accounts, :manage_billing], Facility.cross_facility
-        cannot :manage, User if resource.is_a?(Facility) && resource.cross_facility?
+        if resource.blank? || resource.is_a?(Facility) && resource.cross_facility?
+          cannot :manage, User
+        end
       end
       return
     end
@@ -41,7 +43,7 @@ class Ability
     if user.account_manager?
       can :manage_accounts, Facility.cross_facility
 
-      if resource == Facility.cross_facility
+      if resource.blank? || resource == Facility.cross_facility
         can :manage, [Account, User]
         cannot :administer, User
       end
