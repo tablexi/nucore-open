@@ -4,7 +4,7 @@ class PurchaseOrderAccount < Account
 
   belongs_to :facility
 
-  validates_presence_of   :account_number
+  validates_presence_of :account_number
 
   def to_s(with_owner = false, flag_suspended = true)
     desc = super(with_owner, false)

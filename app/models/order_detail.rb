@@ -252,7 +252,7 @@ class OrderDetail < ActiveRecord::Base
        AND order_details.price_policy_id IS NOT NULL
        AND accounts.type IN (:accounts)
        AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)",
-       { :facility_id => facility.id, :state =>'complete', :problem => false, :reviewed_at => Time.zone.now, :accounts => AccountManager::STATEMENT_ACCOUNT_CLASSES }
+       { :facility_id => facility.id, :state =>'complete', :problem => false, :reviewed_at => Time.zone.now, :accounts => Account.statement_account_types.map(&:to_s) }
     ]
   }}
 

@@ -9,6 +9,7 @@
 //= require jquery.ui.tabs
 //= require jquery.ui.dialog
 //= require jquery.ui.effect
+//= require nested_form_fields
 //= require bootstrap
 //= require chosen.jquery.min
 //= require activate_chosen

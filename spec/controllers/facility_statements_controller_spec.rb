@@ -25,7 +25,7 @@ if AccountManager.using_statements?
 
     before(:all) do
       create_users
-      @account_type=AccountManager::STATEMENT_ACCOUNT_CLASSES.first
+      @account_type=Account.statement_account_types.map(&:to_s).first
       @account_sym=@account_type.underscore.to_sym
     end
 

@@ -1,15 +1,17 @@
-= render "sidebar"
+= content_for :head_content do
+  = javascript_include_tag "accounts"
 
 = content_for :h1 do
   = current_facility
 
-= content_for :head_content do
-  = javascript_include_tag "accounts.js"
+= render "sidebar"
 
 %h2= t(".head", account: @account)
 = simple_form_for([current_facility, @account], url: facility_account_path(current_facility, @account)) do |f|
   = f.error_messages
-  = render "account_fields", f: f, instructions_for: @account.class.name
+
+  = render "facility_accounts/account_fields/#{@account.class.name.underscore}", f: f
+
   %ul.inline
-    %li= f.submit t(".save"), class: %w(btn btn-primary)
+    %li= f.submit t(".save"), class: "btn btn-primary"
     %li= link_to t(".cancel"), facility_account_path

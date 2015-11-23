@@ -3,21 +3,27 @@ module C2po
     config.autoload_paths << File.join(File.dirname(__FILE__), "../lib")
 
     config.to_prepare do
+      # Include extensions
+      AccountBuilder.send :include, C2po::AccountBuilderExtension
       Facility.send :include, C2po::FacilityExtension
       FacilityAccountsController.send :include, C2po::FacilityAccountsControllerExtension
-      AccountManager.send :include, C2po::AccountTypesExtension
 
-      # make this engine's views override the main app's views
+      # Concat class variables
+      Account.account_types.concat [CreditCardAccount, PurchaseOrderAccount]
+      Account.facility_account_types.concat [CreditCardAccount, PurchaseOrderAccount]
+      FacilityAccountsController.check_billing_access_actions.concat C2po::FacilityAccountsControllerExtension.check_billing_access_actions_extension
+      FacilitiesController.permitted_facility_params.concat [:accepts_po, :accepts_cc]
+
+      # Make this engine's views override the main app's views
       paths = ActionController::Base.view_paths.to_a
       index = paths.find_index { |p| p.to_s.include? 'c2po' }
       paths.unshift paths.delete_at(index)
       ActionController::Base.view_paths = paths
 
-      FacilitiesController.permitted_facility_params.concat [:accepts_po, :accepts_cc]
-
-      ViewHook.add_hook("facilities.manage", "before_is_active", "c2po/facilities/manage")
-      ViewHook.add_hook("facilities.facility_fields", "before_is_active", "c2po/facilities/facility_fields")
-      ViewHook.add_hook("admin.shared.sidenav_billing", "after_statements", "c2po/sidenav_billing")
+      # Register view hooks
+      ViewHook.add_hook "facilities.manage", "before_is_active", "c2po/facilities/manage"
+      ViewHook.add_hook "facilities.facility_fields", "before_is_active", "c2po/facilities/facility_fields"
+      ViewHook.add_hook "admin.shared.sidenav_billing", "after_statements", "c2po/sidenav_billing"
     end
 
     # make this engine's routes override the main app's routes

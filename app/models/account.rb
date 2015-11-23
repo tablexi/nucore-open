@@ -38,60 +38,82 @@ class Account < ActiveRecord::Base
     end
   end
 
-  def add_or_update_member(user, new_role, session_user)
-    Account.transaction do
-      # expire old owner if new
-      if new_role == AccountUser::ACCOUNT_OWNER
-        # expire old owner record
-        @old_owner = self.owner
-        if @old_owner
-          @old_owner.deleted_at = Time.zone.now
-          @old_owner.deleted_by = session_user.id
-          @old_owner.save!
-        end
-      end
+  # Given an account_type return a param string that can be used as a variable
+  # name, filename, param, etc. Replaces any backslashes with underscore to
+  # support namespaced classes.
+  def self.account_type_to_param(account_type)
+    account_type.to_s.underscore.gsub("/", "_")
+  end
 
-      # find non-deleted record for this user and account or init new one
-      # deleted_at MUST be nil to preserve existing audit trail
-      @account_user = AccountUser.find_or_initialize_by_account_id_and_user_id_and_deleted_at(
-        self.id,
-        user.id,
-        nil
-      )
-      # set (new?) role
-      @account_user.user_role = new_role
-      # set creation information
-      @account_user.created_by = session_user.id
+  # Returns an array of subclassed Account objects.
+  # Engines can concat to this on initialization.
+  def self.account_types
+    @@account_types ||= [NufsAccount]
+  end
 
-      self.account_users << @account_user
+  # Returns an array of subclassed Account objects available across multiple
+  # facilities. Engines can concat to this on initialization.
+  def self.global_account_types
+    @@global_account_types ||= [NufsAccount]
+  end
 
-      raise ActiveRecord::Rollback unless self.save
-    end
+  # Returns an array of subclassed Account objects available per facility.
+  # Engines can concat to this on initialization.
+  def self.facility_account_types
+    @@facility_account_types ||= []
+  end
 
-    return @account_user
+  # Returns an array of subclassed Account objects availalbe for statements.
+  def self.statement_account_types
+    facility_account_types
+  end
+
+  # Returns an array of `creatable` subclassed Account objects given a facility.
+  def self.creatable_account_types_for_facility(facility)
+    return account_types.select(&:cross_facility?) if facility.cross_facility?
+    account_types
+  end
+
+  # Returns true if multiple account types are available
+  def self.multiple_account_types?
+    account_types.size > 1
+  end
+
+  def self.using_statements?
+    statement_account_types.present?
+  end
+
+  def self.using_affiliates?
+    using_statements?
+  end
+
+  # Returns true if this account type is limited to a single facility.
+  # TODO: rename to scoped_to_single_facility?
+  def self.limited_to_single_facility?
+    facility_account_types.map(&:to_s).include?(self.name)
+  end
+
+  # TODO: shouldn't this use `global_account_types.include?(self.name)` instead?
+  def self.cross_facility?
+    !limited_to_single_facility?
   end
 
   def facility
     nil
   end
 
-
-  def self.limited_to_single_facility?
-    AccountManager::FACILITY_ACCOUNT_CLASSES.include? self.name
-  end
-
-  def self.cross_facility?
-    !limited_to_single_facility?
-  end
-
   def self.for_facility(facility)
     accounts = scoped
 
     if facility.single_facility?
-      accounts = accounts.where("accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)",
-            {:allow_all => AccountManager::GLOBAL_ACCOUNT_CLASSES,
-              :limit_one => AccountManager::FACILITY_ACCOUNT_CLASSES,
-              :facility => facility})
+      accounts = accounts.where(
+        "accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)",
+        {
+          allow_all: global_account_types.map(&:to_s),
+          limit_one: facility_account_types.map(&:to_s),
+          facility: facility
+        }
+      )
     end
 
     accounts
@@ -275,6 +297,39 @@ class Account < ActiveRecord::Base
     else
       description
     end
+  end
+
+  def add_or_update_member(user, new_role, session_user)
+    Account.transaction do
+      # expire old owner if new
+      if new_role == AccountUser::ACCOUNT_OWNER
+        # expire old owner record
+        @old_owner = self.owner
+        if @old_owner
+          @old_owner.deleted_at = Time.zone.now
+          @old_owner.deleted_by = session_user.id
+          @old_owner.save!
+        end
+      end
+
+      # find non-deleted record for this user and account or init new one
+      # deleted_at MUST be nil to preserve existing audit trail
+      @account_user = AccountUser.find_or_initialize_by_account_id_and_user_id_and_deleted_at(
+        self.id,
+        user.id,
+        nil
+      )
+      # set (new?) role
+      @account_user.user_role = new_role
+      # set creation information
+      @account_user.created_by = session_user.id
+
+      self.account_users << @account_user
+
+      raise ActiveRecord::Rollback unless self.save
+    end
+
+    return @account_user
   end
 
   private

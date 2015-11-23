@@ -6,38 +6,9 @@ module C2po
       before_filter :set_billing_navigation, only: [:credit_cards, :purchase_orders]
     end
 
-    module ClassMethods
-      def billing_access_checked_actions
-        [:credit_cards, :update_credit_cards, :purchase_orders, :update_purchase_orders, :accounts_receivable, :show_statement]
-      end
-    end
-
-    def account_class_params
-      params[:account] || params[:credit_card_account] || params[:purchase_order_account] || params[:nufs_account]
-    end
-
-    def configure_new_account(account)
-      case account
-      when PurchaseOrderAccount
-        configure_new_purchase_order_account(account)
-      when CreditCardAccount
-        configure_new_credit_card_account(account)
-      else
-        super
-      end
-    end
-
-    def configure_new_purchase_order_account(account)
-      account.expires_at = parse_usa_date(account.expires_at).try(:end_of_day)
-      if account.expires_at.blank?
-        account.errors.add(:base, I18n.t("facility_accounts.account_fields.errors.expires_at"))
-      end
-    end
-
-    def configure_new_credit_card_account(account)
-      account.expires_at = Date.civil(account.expiration_year.to_i, account.expiration_month.to_i).end_of_month.end_of_day
-    rescue => e
-      account.errors.add(:base, e.message)
+    # Actions appended onto the `check_billing_access` before_filter
+    def self.check_billing_access_actions_extension
+      [:credit_cards, :update_credit_cards, :purchase_orders, :update_purchase_orders]
     end
 
     # GET /facilities/:facility_id/accounts/credit_cards
@@ -112,7 +83,7 @@ module C2po
         count = 0
         update_details.each do |od|
           od_params = params[:order_detail][od.id.to_s]
-          od.reconciled_note=od_params[:notes]
+          od.reconciled_note = od_params[:notes]
 
           begin
             if od_params[:reconciled] == '1'

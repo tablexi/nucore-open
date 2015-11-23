@@ -3,7 +3,13 @@ module SplitAccounts
 
     # Include modules in main rails app
     config.to_prepare do
-      Account.send :include, SplitAccounts::AccountExtensions
+      Account.send :include, SplitAccounts::AccountExtension
+      AccountBuilder.send :include, SplitAccounts::AccountBuilderExtension
+
+      Account.account_types.concat [SplitAccounts::SplitAccount]
+      Account.global_account_types.concat [SplitAccounts::SplitAccount]
+
+      ViewHook.add_hook "facility_accounts.show", "after_end_of_form", "split_accounts/facility_accounts/show_splits"
     end
 
     # Include migrations in main rails app

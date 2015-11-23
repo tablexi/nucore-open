@@ -11,5 +11,5 @@ Gem::Specification.new do |s|
   s.summary = "Optional split accounts feature"
   s.description = ""
 
-  s.files = Dir["{app,db,lib}/**/*", "spec/factories/**/*"]
+  s.files = Dir["{app,config,db,lib}/**/*", "spec/factories/**/*"]
 end

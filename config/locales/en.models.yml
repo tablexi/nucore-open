@@ -280,7 +280,7 @@ en:
         sent_to: Sent To
         total_cost: Total
       account:
-        account_number: Number
+        account_number: Account Number
         display_status: Status
         expires_at: Expiration
         formatted_expires_at: Expiration

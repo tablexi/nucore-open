@@ -1,8 +1,10 @@
-Gem::Specification.new do |gem|
-  gem.name    = 'c2po'
-  gem.version = '1.0.0'
-  gem.summary = "Provides credit card and purchase order accounts for nucore apps"
-  gem.authors  = ['Table XI']
-  gem.email    = 'chris@tablexi.com'
-  gem.homepage = 'https://github.com/tablexi/nucore-open'
+Gem::Specification.new do |s|
+  s.name    = "c2po"
+  s.version = "1.0.0"
+  s.authors  = ["Table XI"]
+  s.email    = "devs@tablexi.com"
+  s.homepage = "https://github.com/tablexi/nucore-open"
+  s.summary = "Provides credit card and purchase order accounts for nucore apps"
+
+  s.files = Dir["{app,config,db,lib}/**/*"]
 end

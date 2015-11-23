@@ -115,8 +115,8 @@ RSpec.describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?
       context 'with a missing owner' do
 
         before :each do
-          @acount_user = @account.owner
-          AccountUser.delete(@acount_user.id)
+          @account_user = @account.owner
+          AccountUser.delete(@account_user.id)
 
           @params[:account_user][:user_role]=AccountUser::ACCOUNT_OWNER
           expect(@account.account_users.owners).not_to be_any

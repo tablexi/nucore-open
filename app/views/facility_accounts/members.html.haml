@@ -1,10 +1,10 @@
-= render "sidebar"
-
 = content_for :tabnav do
   = render "admin/shared/tabnav_payment_method", secondary_tab: "members"
 
 = content_for :h1 do
   = current_facility
+
+= render "sidebar"
 
 %h2= @account
 

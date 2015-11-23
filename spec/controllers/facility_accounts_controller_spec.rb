@@ -77,7 +77,6 @@ RSpec.describe FacilityAccountsController do
       it_should_allow_all facility_managers do
         expect(assigns(:owner_user)).to eq(@owner)
         expect(assigns(:account)).to be_new_record
-        expect(assigns(:account).expires_at).not_to be_nil
         is_expected.to render_template('new')
       end
 
@@ -141,8 +140,8 @@ RSpec.describe FacilityAccountsController do
         @params={
           :facility_id => @authable.url_name,
           :owner_user_id => @owner.id,
-          :account => @acct_attrs,
-          :class_type => 'NufsAccount'
+          :nufs_account => @acct_attrs,
+          :account_type => 'NufsAccount'
         }
         allow(@controller).to receive(:current_facility).and_return(@authable)
       end

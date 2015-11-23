@@ -5,16 +5,14 @@ class FacilityAccount < ActiveRecord::Base
 
   validates_numericality_of :revenue_account, :only_integer => true, :greater_than_or_equal_to => 10000, :less_than_or_equal_to => 99999
   validates_uniqueness_of   :account_number, :scope => [:revenue_account, :facility_id]
+  validate :validate_chartstring
 
   scope :active,   :conditions => { :is_active => true }
   scope :inactive, :conditions => { :is_active => false }
 
-  validate :validate_chartstring
-
   def to_s
     "#{account_number} (#{revenue_account})"
   end
-
 
   def method_missing(method_sym, *arguments, &block)
     begin
@@ -27,7 +25,6 @@ class FacilityAccount < ActiveRecord::Base
     end
   end
 
-
   def respond_to?(method_sym, include_private = false)
     return true if super
 
@@ -37,7 +34,6 @@ class FacilityAccount < ActiveRecord::Base
       return false
     end
   end
-
 
   def validate_chartstring
     begin

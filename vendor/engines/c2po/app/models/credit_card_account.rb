@@ -11,7 +11,6 @@ class CreditCardAccount < Account
   validates_numericality_of :expiration_month, :only_integer => true, :greater_than => 0, :less_than => 13
   validate :expiration_year_in_future
 
-
   def expiration_year_in_future
     if expiration_year.nil? || expiration_year < Time.zone.now.year || expiration_year > Time.zone.now.year + 20
       self.errors.add(:expiration_year, "must be between #{Time.zone.now.year} and #{Time.zone.now.year + 20}")
@@ -21,8 +20,6 @@ class CreditCardAccount < Account
   def formatted_expires_at
     expires_at.try(:strftime, "%m/%Y")
   end
-
-
 
   protected
 

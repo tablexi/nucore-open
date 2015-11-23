@@ -1,0 +1,9 @@
+- is_new ||= false
+
+- if is_new
+  = f.input :account_number
+
+= f.input :description
+
+- if is_new
+  = render partial: "facility_accounts/account_fields/split_accounts/splits", locals: {f: f}

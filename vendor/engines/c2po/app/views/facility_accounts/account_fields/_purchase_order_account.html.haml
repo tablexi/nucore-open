@@ -1,9 +1,9 @@
-= f.input :account_number, :label => t('facility_accounts.purchase_orders.account_number'), :required => true
+- is_new ||= false
 
-= f.input :formatted_expires_at, :required => true, :input_html => { :class => 'datepicker' }, :label => Account.human_attribute_name(:expires_at)
+= f.input :account_number, label: t('facility_accounts.purchase_orders.account_number'), required: true
+= f.input :description, required: true
 
-= f.input :description, :required => true
+= render partial: 'facility_accounts/account_fields/affiliate', locals: { f: f }
+= render partial: 'facility_accounts/account_fields/remittance_information', locals: { f: f }
 
-= render :partial => 'facility_accounts/account_fields/affiliate', :locals => { :f => f }
-
-= render :partial => 'facility_accounts/account_fields/remittance_information', :locals => { :f => f }
+= f.input :formatted_expires_at, required: true, input_html: { class: 'datepicker' }, label: Account.human_attribute_name(:expires_at)

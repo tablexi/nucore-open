@@ -1,0 +1,6 @@
+- if available_account_types.present? && available_account_types.size > 1
+  %ul.nav.nav-tabs
+    - available_account_types.each do |account_type|
+      %li{class: ("active" if current_account_type == account_type)}
+        = link_to new_facility_account_path(owner_user_id: owner_user.id, account_type: account_type) do
+          = account_type.constantize.model_name.human

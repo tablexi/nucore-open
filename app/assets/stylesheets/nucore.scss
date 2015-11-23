@@ -319,7 +319,8 @@ textarea.wide {
 }
 
 .input-inline {
-  display: inline;
+  display: inline-block;
+  margin-right: 1em;
   .controls {
     display: inherit;
   }
