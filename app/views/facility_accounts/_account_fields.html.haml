@@ -1,6 +1,6 @@
-- valid_account_types = AccountManager.new.valid_account_types
-
 - if controller.action_name == "new" || controller.action_name == "create"
+  - account_types = AccountManager.creatable_account_types_for_facility(current_facility)
+
   = hidden_field_tag "owner_user_id", @owner_user.id, class: "NufsAccount"
 
   = f.input :owner,
@@ -10,10 +10,10 @@
   = label_tag :class_type, t(".label.payment_type"), class: "require"
 
   = select_tag "class_type",
-    options_for_select(valid_account_types.map { |type| [type.model_name.human, type.name] }, selected: params[:class_type]),
+    options_for_select(account_types.map { |type| [type.model_name.human, type.name] }, selected: params[:class_type]),
     class: "NufsAccount show_always"
 
-  - valid_account_types.each do |type|
+  - account_types.each do |type|
     .account_type_fields.account_type_new_fields{ class: type.name }
       = render "facility_accounts/account_fields/new_#{type.name.underscore}", f: f
 
