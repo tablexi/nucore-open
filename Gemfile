@@ -53,6 +53,7 @@ gem 'logstash-event'
 ## custom
 gem 'c2po',             '~> 1.0.0', path: 'vendor/engines/c2po'
 gem 'dataprobe',        '~> 1.0.0', path: 'vendor/engines/dataprobe'
+gem 'split_accounts',   '~> 0.0.1', path: 'vendor/engines/split_accounts'
 gem 'synaccess_connect', '0.2.2', github: 'tablexi/synaccess'
 
 group :development do

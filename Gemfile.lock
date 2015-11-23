@@ -23,6 +23,11 @@ PATH
   specs:
     dataprobe (1.0.0)
 
+PATH
+  remote: vendor/engines/split_accounts
+  specs:
+    split_accounts (0.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -550,6 +555,7 @@ DEPENDENCIES
   shoulda-matchers (~> 2.8.0)
   simple_form (~> 2.1.1)
   single_test (= 0.4.0)
+  split_accounts (~> 0.0.1)!
   spreadsheet (~> 0.6.5.5)
   spring
   spring-commands-rspec
