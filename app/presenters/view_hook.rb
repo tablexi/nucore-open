@@ -8,7 +8,7 @@ class ViewHook
     delegate :add_hook, :render_view_hook, to: :instance
   end
 
-  # Best used throught `render_view_hook` helper method
+  # Best used through `render_view_hook` helper method
   def render_view_hook(view, placement, context, args = {})
     find(view, placement).each_with_object("".html_safe) do |partial, buffer|
       buffer.safe_concat context.render(partial, args)
