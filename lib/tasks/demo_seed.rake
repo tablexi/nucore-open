@@ -402,17 +402,20 @@ namespace :demo do
         created_at = (ordered_at - (60 * rand(60) + 1))
         group_id   = (o.order_details.collect { |od| od.group_id || 0 }.max || 0) + 1
         product.bundle_products.each do |bp|
-          od = OrderDetail.create!(created_by: o.user.id,
-                                   order_id: o.id,
-                                   product_id: bp.product_id,
-                                   actual_cost: rand(2),
-                                   actual_subsidy: 0,
-                                   estimated_cost: rand(2),
-                                   estimated_subsidy: 0,
-                                   quantity: bp.quantity,
-                                   created_at: created_at,
-                                   bundle_product_id: product.id,
-                                   group_id: group_id)
+          od = OrderDetail.create!(
+            created_by: o.user.id,
+            order_id: o.id,
+            product_id: bp.product_id,
+            actual_cost: rand(2),
+            actual_subsidy: 0,
+            estimated_cost: rand(2),
+            estimated_subsidy: 0,
+            quantity: bp.quantity,
+            created_at: created_at,
+            bundle_product_id: product.id,
+            group_id: group_id,
+            order_status_id: bp.product.initial_order_status.id,
+          )
           od.account = account
           od.save!
         end
@@ -427,6 +430,7 @@ namespace :demo do
           estimated_subsidy: 0,
           quantity: product.is_a?(Item) ? (rand(3) + 1) : 1,
           created_at: (ordered_at - (60 * rand(60) + 1)),
+          order_status_id: product.initial_order_status.id,
         )
 
         # create a reservation
