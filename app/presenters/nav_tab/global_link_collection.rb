@@ -27,7 +27,7 @@ class NavTab::GlobalLinkCollection
   end
 
   def admin_cross_facility_users
-    if can?(:manage_accounts, Facility.cross_facility) || can?(:manage, User)
+    if can?(:manage_accounts, Facility.cross_facility) || can?(:manage_users, Facility.cross_facility)
       global_tab(:admin_users, facility_users_path("all"))
     end
   end
