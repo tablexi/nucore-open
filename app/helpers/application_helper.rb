@@ -9,7 +9,7 @@ module ApplicationHelper
   end
 
   def html_title(title=nil)
-    full_title = title.nil? ? "" : "#{title} - "
+    full_title = title.blank? ? "" : "#{title} - "
     (full_title + app_name).html_safe
   end
 
