@@ -98,7 +98,7 @@ class FacilityAccountsController < ApplicationController
 
     if @account.save
       flash[:notice] = 'Account was successfully created.'
-      redirect_to(user_accounts_path(current_facility, @account.owner_user)) and return
+      redirect_to facility_user_accounts_path(current_facility, @account.owner_user)
     else
       render :action => 'new'
     end
