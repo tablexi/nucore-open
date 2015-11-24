@@ -51,15 +51,16 @@ class Ability
       cannot [:suspend, :unsuspend], Account
     end
 
-    return unless resource
-
     if user.billing_administrator?
       can :manage, [Account, Journal, Order, OrderDetail, Reservation]
       cannot :administer, [Order, OrderDetail, Reservation]
-      can [:manage_billing, :transactions], Facility do
-        resource.cross_facility?
+      can :manage_billing, Facility.cross_facility
+      can [:disputed_orders, :movable_transactions, :transactions], Facility do |facility|
+        facility.cross_facility?
       end
     end
+
+    return unless resource
 
     if resource.is_a?(OrderDetail)
       order_details_ability(user, resource)
