@@ -44,7 +44,7 @@ class Ability
       can :manage_accounts, Facility.cross_facility
 
       if resource.blank? || resource == Facility.cross_facility
-        can :manage, [Account, User]
+        can :manage, [Account, AccountUser, User]
         cannot :administer, User
       end
 
