@@ -13,7 +13,7 @@ class GeneralReportsController < ReportsController
 
   def account_owner
     render_report(2, 'Name') do |od|
-      # Space at beginning it intentional to bubble it to thee top of the list
+      # Space at beginning is intentional to bubble it to the top of the list
       od.account.owner_user ? format_username(od.account.owner_user) : " Missing Owner for #{od.account.account_number}"
     end
   end
