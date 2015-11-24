@@ -9,7 +9,8 @@
     - @users.each do |user|
       %tr
         %td.centered
-          = link_to("Order For", facility_user_switch_to_path(@facility, user))
+          - if current_ability.can?(:manage, @facility)
+            = link_to("Order For", facility_user_switch_to_path(@facility, user))
         %td
           = link_to "#{user.last_name}, #{user.first_name}", facility_user_path(@facility, user)
         %td= user.username
