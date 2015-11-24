@@ -2,6 +2,8 @@ require "rails_helper"
 require 'controller_spec_helper'
 
 RSpec.describe FacilityAccountsController do
+  let(:facility) { @authable }
+
   render_views
 
   before(:all) { create_users }
@@ -130,6 +132,7 @@ RSpec.describe FacilityAccountsController do
 
 
     context 'create' do
+      let(:owner_user) { assigns(:account).owner_user }
 
       before :each do
         @method=:post
@@ -157,7 +160,7 @@ RSpec.describe FacilityAccountsController do
         expect(assigns(:account).affiliate).to be_nil
         expect(assigns(:account).affiliate_other).to be_nil
         is_expected.to set_flash
-        assert_redirected_to user_accounts_url(@authable, assigns(:account).owner_user)
+        expect(response).to redirect_to(facility_user_accounts_path(facility, owner_user))
       end
 
     end
