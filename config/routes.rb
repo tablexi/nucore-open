@@ -235,6 +235,8 @@ Nucore::Application.routes.draw do
         match 'suspend',   :to => 'facility_accounts#suspend',   :as => 'suspend'
         match 'unsuspend', :to => 'facility_accounts#unsuspend', :as => 'unsuspend'
       end
+
+      resources :orders, controller: "facility_account_orders", only: [:index]
     end
 
     ######

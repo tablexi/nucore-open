@@ -167,6 +167,10 @@ class OrderDetail < ActiveRecord::Base
     .where("order_details.state NOT IN('canceled', 'reconciled')")
   end
 
+  def self.purchased
+    joins(:order).where("orders.state = 'purchased'")
+  end
+
   def self.unreconciled_accounts(facility, account_type)
     joins(:order, :account)
     .select('DISTINCT(order_details.account_id) AS account_id')

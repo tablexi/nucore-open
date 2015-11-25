@@ -1,0 +1,68 @@
+= render "facility_accounts/sidebar"
+
+-# = content_for :tabnav do
+-#   = render "admin/shared/tabnav_payment_method", secondary_tab: "transactions"
+
+= content_for :h1 do
+  = current_facility
+
+%h2= @account
+%h3 Purchased Orders
+
+- if @order_details.empty?
+  %p.notice No transactions exist for this period.
+- else
+  %table.table.table-striped.table-hover.old-table
+    %thead
+      %tr
+        %th Order #
+        %th Transaction Date
+        %th Product
+        %th Order Status
+        %th.currency Amount
+    %tbody
+      - @order_details.each do |od|
+        %tr{class: needs_reconcile_warning?(od) ? "reconcile-warning" : ""}
+          %td= link_to od.description, facility_order_path(current_facility, od.order)
+          %td= human_datetime(od.order.ordered_at)
+          %td
+            %ul
+              - product_name = order_detail_description(od)
+              %li= product_name
+              - if od.reservation.present?
+                - if od.reservation.admin_editable?
+                  %li.indented
+                    = link_to od.reservation, edit_facility_order_order_detail_reservation_path(current_facility, od.order, od, od.reservation)
+                - else
+                  %li.indented
+                    = link_to od.reservation, facility_order_order_detail_reservation_path(current_facility, od.order, od, od.reservation)
+
+              - if od.survey_completed?
+                %li.indented
+                  = link_to "View Order Form",
+                    od.external_service_receiver.show_url,
+                    target: "_blank"
+
+              - if od.stored_files.template_result.present?
+                - od.stored_files.template_result.each do |stored_file|
+                  %li.indented
+                    = link_to "View Order File", stored_file.download_url
+
+              - if od.note.present?
+                %li
+                  %i= "Note: #{od.note}"
+
+          %td= od.order_status.name
+          %td.currency
+            - if od.cost_estimated?
+              %span.estimated_cost
+                = show_estimated_total(od)
+            - elsif od.price_policy.nil?
+              Unassigned
+            - else
+              %span.actual_cost= show_actual_total(od)
+      %tr
+        %td.centered{colspan: 5}= will_paginate(@order_details)
+
+  = render "/price_display_footnote", admin: true
+  = render "shared/reconcile_footnote"
