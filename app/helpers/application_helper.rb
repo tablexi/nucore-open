@@ -17,7 +17,7 @@ module ApplicationHelper
     order_detail_description_as_html(order_detail)
   end
 
-  def order_detail_description_as_html(order_detail)
+  def order_detail_description_as_html(order_detail) # TODO: deprecate in favor of OrderDetailPresenter#description_as_html
     name = ERB::Util.html_escape(order_detail.product)
     if order_detail.bundle
       name.prepend(ERB::Util.html_escape(order_detail.bundle) + " &mdash; ".html_safe)
@@ -44,6 +44,7 @@ module ApplicationHelper
   #
   # Tells whether or not a fulfilled order detail is approaching the end of the 90 day reconcile period
   # Returns true if the order detail is 60+ days fulfilled, false otherwise
+  # TODO: only used in views to determine css class; deprecate in favor of OrderDetailPresenter#row_class
   def needs_reconcile_warning?(order_detail)
     !order_detail.reconciled? && order_detail.fulfilled_at && (Time.zone.now.to_date - order_detail.fulfilled_at.to_date).to_i >= 60
   end
