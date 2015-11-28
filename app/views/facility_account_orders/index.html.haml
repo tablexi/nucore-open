@@ -1,66 +1,67 @@
 = render "facility_accounts/sidebar"
 
--# = content_for :tabnav do
--#   = render "admin/shared/tabnav_payment_method", secondary_tab: "transactions"
-
 = content_for :h1 do
   = current_facility
 
 %h2= @account
-%h3 Purchased Orders
 
 - if @order_details.empty?
-  %p.notice No transactions exist for this period.
+  %p.notice= t(".no_orders")
+
 - else
+  %h3= t(".h3")
+
   %table.table.table-striped.table-hover.old-table
     %thead
       %tr
-        %th Order #
-        %th Transaction Date
-        %th Product
-        %th Order Status
-        %th.currency Amount
+        %th= t(".th.order_number")
+        %th= t(".th.transaction_date")
+        %th= t(".th.product")
+        %th= t(".th.order_status")
+        %th.currency= t(".th.amount")
+
     %tbody
-      - @order_details.each do |od|
-        %tr{class: needs_reconcile_warning?(od) ? "reconcile-warning" : ""}
-          %td= link_to od.description, facility_order_path(current_facility, od.order)
-          %td= human_datetime(od.order.ordered_at)
+      - OrderDetailPresenter.wrap(@order_details).each do |order_detail|
+        %tr{class: order_detail.row_class}
+          %td
+            = link_to order_detail.description, order_detail.show_order_path
+
+          %td= order_detail.ordered_at
           %td
             %ul
-              - product_name = order_detail_description(od)
-              %li= product_name
-              - if od.reservation.present?
-                - if od.reservation.admin_editable?
+              %li= order_detail.description_as_html
+              - if order_detail.reservation.present?
+                - if order_detail.reservation_admin_editable?
                   %li.indented
-                    = link_to od.reservation, edit_facility_order_order_detail_reservation_path(current_facility, od.order, od, od.reservation)
+                    = link_to order_detail.reservation,
+                      order_detail.edit_reservation_path
                 - else
                   %li.indented
-                    = link_to od.reservation, facility_order_order_detail_reservation_path(current_facility, od.order, od, od.reservation)
+                    = link_to order_detail.reservation,
+                      order_detail.show_reservation_path
 
-              - if od.survey_completed?
+              - if order_detail.survey_completed?
                 %li.indented
-                  = link_to "View Order Form",
-                    od.external_service_receiver.show_url,
-                    target: "_blank"
+                  = link_to t(".label.view_order.form"),
+                    order_detail.survey_url, target: "_blank"
 
-              - if od.stored_files.template_result.present?
-                - od.stored_files.template_result.each do |stored_file|
+              - if order_detail.stored_files_template_result.present?
+                - order_detail.stored_files_template_result.each do |stored_file|
                   %li.indented
-                    = link_to "View Order File", stored_file.download_url
+                    = link_to t(".label.view_order.file"), stored_file.download_url
 
-              - if od.note.present?
+              - if order_detail.note.present?
                 %li
-                  %i= "Note: #{od.note}"
+                  %i= t(".note", text: order_detail.note)
 
-          %td= od.order_status.name
+          %td= order_detail.order_status_name
           %td.currency
-            - if od.cost_estimated?
-              %span.estimated_cost
-                = show_estimated_total(od)
-            - elsif od.price_policy.nil?
-              Unassigned
+            - if order_detail.cost_estimated?
+              %span.estimated_cost= order_detail.estimated_total
+            - elsif order_detail.price_policy.blank?
+              = t(".unassigned")
             - else
-              %span.actual_cost= show_actual_total(od)
+              %span.actual_cost= order_detail.actual_total
       %tr
         %td.centered{colspan: 5}= will_paginate(@order_details)
 

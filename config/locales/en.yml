@@ -227,6 +227,23 @@ en:
     search:
       instruct: "Search for an existing user by name, NetID, or username.  Click on the name of the user you wish to grant access to.  If the search does not return any acceptable matches, you may create a new user."
 
+  facility_account_orders:
+    index:
+      h3: Purchased Orders
+      label:
+        view_order:
+          file: View Order File
+          form: View Order Form
+      no_orders: No transactions exist for this period.
+      note: "Note: %{text}"
+      th:
+        amount: Amount
+        order_number: "Order #"
+        order_status: Order Status
+        product: Product
+        transaction_date: Transaction Date
+      unassigned: Unassigned
+
   facility_account_users:
     user_search:
       head: "Add Payment Source User"
