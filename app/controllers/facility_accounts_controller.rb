@@ -185,11 +185,6 @@ class FacilityAccountsController < ApplicationController
       when 'list'
         action += '_list'
         @statements = Statement.where(:facility_id => current_facility.id, :account_id => @account).order('created_at DESC').all.paginate(:page => params[:page])
-      when 'recent'
-        # TODO: obsolete; replaced with FacilityAccountsController#index
-        # TODO: remove this code and remove from routes
-        @order_details = @account.order_details.for_facility(@facility).delete_if{|od| od.order.state != 'purchased'}
-        @order_details = @order_details.paginate(:page => params[:page])
       else
         @statement=Statement.find(params[:statement_id].to_i)
         @order_details = @statement.order_details

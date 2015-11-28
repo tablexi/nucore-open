@@ -323,20 +323,12 @@ RSpec.describe FacilityAccountsController do
         Timecop.travel(1.second.from_now) # need different timestamp on statement
       end
 
-      @params={ :facility_id => @authable.url_name, :account_id => @account.id, :statement_id => 'recent' }
+      @params = { facility_id: facility.url_name, account_id: @account.id }
     end
 
     it_should_require_login
 
     it_should_deny_all [:staff, :senior_staff]
-
-    it_should_allow_all facility_managers do
-      expect(assigns(:account)).to eq(@account)
-      expect(assigns(:facility)).to eq(@authable)
-      expect(assigns(:order_details)).to be_kind_of Array
-      assigns(:order_details).each { |od| expect(od.order.facility).to eq(@authable) }
-      is_expected.to render_template 'show_statement'
-    end
 
     it 'should show statements list' do
       @params[:statement_id]='list'
