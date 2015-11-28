@@ -46,7 +46,12 @@ class FacilityAccountsController < ApplicationController
   layout 'two_column'
 
   def initialize
-    @active_tab = "admin_users"
+    @active_tab =
+      if SettingsHelper.feature_on?(:manage_payment_sources_with_users)
+        "admin_users"
+      else
+        "admin_billing"
+      end
     super
   end
 
