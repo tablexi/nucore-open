@@ -41,8 +41,6 @@ Nucore::Application.routes.draw do
       end
     end
 
-    resources :statements, :only => [:index]
-
     resources :facilities, :only => [] do
       resources :statements, :only => [:show]
     end
