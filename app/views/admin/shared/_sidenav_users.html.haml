@@ -1,5 +1,5 @@
 %ul.sidebar-nav
-  - if current_ability.can?(:manage, User)
+  - if current_ability.can?(:administer, User)
     = tab t("activerecord.models.user", count: 2), facility_users_path, (sidenav_tab == "users")
   - if current_ability.can?(:send_bulk_emails, current_facility)
     = tab t("bulk_email.title"), facility_bulk_email_path, (sidenav_tab == "bulk_email")
