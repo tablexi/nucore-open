@@ -134,7 +134,7 @@ class Ability
         ]
 
         can :manage, User if controller.is_a?(FacilityUsersController)
-        cannot [:manage_accounts, :manage_users], Facility.cross_facility
+        cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
 
         # A facility admin can manage an account if it has no facility (i.e. it's a chart string) or the account
         # is attached to the current facility.

@@ -203,6 +203,7 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:disputed, Order) }
     it { is_expected.to be_allowed_to(:administer, User) }
     it { is_expected.not_to be_allowed_to(:manage_accounts, Facility.cross_facility) }
+    it { is_expected.not_to be_allowed_to(:manage_billing, Facility.cross_facility) }
     it { is_expected.not_to be_allowed_to(:manage_users, Facility.cross_facility) }
     it_behaves_like "it can destroy admistrative reservations"
   end
