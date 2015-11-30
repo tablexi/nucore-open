@@ -1,0 +1,15 @@
+en:
+  activerecord:
+    errors:
+      models:
+
+        split_account:
+          attributes:
+            splits:
+              percent_total: percent total must equal 100
+              only_one_extra_penny: can have only one with extra penny
+
+        split:
+          attributes:
+            subaccount:
+              not_self_referential: can not be self referential

@@ -12,7 +12,7 @@ class Split < ActiveRecord::Base
 
   def not_self_referential
     if parent_split_account == subaccount
-      errors.add(:subaccount, "can't be self referential")
+      errors.add(:subaccount, :not_self_referential)
     end
   end
 

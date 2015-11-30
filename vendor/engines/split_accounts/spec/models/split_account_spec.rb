@@ -35,7 +35,8 @@ RSpec.describe SplitAccount, type: :model do
       end
 
       it "is invalid" do
-        expect(split_account).to_not be_valid
+        expect(split_account).not_to be_valid
+        expect(split_account.errors).to include(:splits)
       end
     end
 
@@ -48,7 +49,8 @@ RSpec.describe SplitAccount, type: :model do
       end
 
       it "is invalid" do
-        expect(split_account).to_not be_valid
+        expect(split_account).not_to be_valid
+        expect(split_account.errors).to include(:splits)
       end
     end
 
@@ -61,7 +63,8 @@ RSpec.describe SplitAccount, type: :model do
       end
 
       it "is invalid" do
-        expect(split_account).to_not be_valid
+        expect(split_account).not_to be_valid
+        expect(split_account.errors).to include(:splits)
       end
     end
   end

@@ -16,7 +16,8 @@ RSpec.describe Split, type: :model do
       end
 
       it "is invalid" do
-        expect(split).to_not be_valid
+        expect(split).not_to be_valid
+        expect(split.errors).to include(:subaccount)
       end
     end
   end
