@@ -24,11 +24,16 @@
       - @users.each do |user|
         %tr
           %td.centered
-            = link_to t(".remove_roles"),
-              global_user_role_path(user),
-              confirm: t(".remove_roles_confirm"),
-              method: :delete
+            - if current_user.id != user.id
+              = link_to t(".remove_roles"),
+                global_user_role_path(user.id),
+                confirm: t(".remove_roles_confirm"),
+                method: :delete
           %td= user.full_name
-          %td= user.username
+          %td
+            - if current_user.id == user.id
+              = user.username
+            - else
+              = link_to user.username, edit_global_user_role_path(user.id)
           %td= user.email
           %td= user.global_role_list

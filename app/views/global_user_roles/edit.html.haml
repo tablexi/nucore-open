@@ -1,0 +1,27 @@
+= content_for :h1 do
+  = t("pages.global_settings")
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_global", sidenav_tab: "global_user_roles"
+
+%h2= t("pages.global_user_roles")
+
+= form_for(:user_role, url: global_user_role_path(@user.id), method: :put) do |form|
+  = form.error_messages
+  %ul.form
+    %li
+      = label_tag :username, nil, class: "require"
+      = text_field_tag :username, @user.username, disabled: true
+    %li
+      = label_tag :name, nil, class: "require"
+      = text_field_tag :name, @user.full_name, disabled: true
+    %li
+      = label_tag :email, nil, class: "require"
+      = text_field_tag :email, @user.email, disabled: true
+    %li
+      = form.label :role, nil, class: "require"
+      = form.select :role, @user.global_role_select_options, include_blank: true
+
+  %ul.inline
+    %li= form.submit t(".submit"), class: "btn"
+    %li= link_to t(".cancel"), global_user_roles_path

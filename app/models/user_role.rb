@@ -30,8 +30,12 @@ class UserRole < ActiveRecord::Base
     facility_roles - [FACILITY_STAFF, FACILITY_SENIOR_STAFF]
   end
 
+  def self.global_roles
+    account_manager + administrator + billing_administrator
+  end
+
   def self.valid_roles
-    account_manager + administrator + billing_administrator + facility_roles
+    global_roles + facility_roles
   end
 
   def self.global

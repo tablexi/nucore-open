@@ -52,7 +52,7 @@ RSpec.describe GlobalUserRolesController do
       let(:user_with_roles_to_destroy) { administrators.last }
 
       it "removes global administrator roles from the user" do
-        expect(flash[:notice]).to be_present
+        expect(flash[:notice]).to include("roles have been removed")
         expect(user_with_roles_to_destroy).not_to be_administrator
       end
     end
@@ -61,8 +61,55 @@ RSpec.describe GlobalUserRolesController do
       let(:user_with_roles_to_destroy) { user }
 
       it "removes no global administrator roles" do
-        expect(flash[:error]).to be_present
+        expect(flash[:error]).to include("may not remove global roles")
         expect(administrators).to all be_administrator
+      end
+    end
+  end
+
+  describe "#update" do
+    let(:administrator) { create(:user, :administrator) }
+    let(:role) { "Administrator" }
+
+    before(:each) do
+      sign_in(administrator)
+      put(:update, id: user.id, user_role: { role: role })
+    end
+
+    context "when updating the current user's global roles" do
+      let(:user) { administrator }
+
+      it "does not update global roles" do
+        expect(flash[:error]).to include("may not change global roles")
+        expect(administrator).to be_administrator
+      end
+    end
+
+    context "when the user has no existing global roles" do
+      let(:user) { create(:user) }
+
+      it "grants the role" do
+        expect(flash[:notice]).to include("granted to")
+        expect(user).to be_administrator
+      end
+    end
+
+    context "when the user has an existing global role" do
+      let(:user) { create(:user, :account_manager) }
+
+      it "grants the new role" do
+        expect(flash[:notice]).to include("granted to")
+        expect(user).not_to be_account_manager
+        expect(user).to be_administrator
+      end
+    end
+
+    context "when the user already has this global role" do
+      let(:user) { create(:user, :administrator) }
+
+      it "retains the user's global role" do
+        expect(flash[:notice]).to include("granted to")
+        expect(user).to be_administrator
       end
     end
   end

@@ -20,7 +20,28 @@ class GlobalUserRolesController < GlobalSettingsController
     redirect_to global_user_roles_url
   end
 
+  def edit
+    @user = UserPresenter.new(User.find(params[:id]))
+  end
+
   def search
+  end
+
+  def update
+    user = User.find(params[:id])
+    if user == current_user
+      flash[:error] = t("global_user_roles.update.self_not_allowed")
+    else
+      role_name = params[:user_role][:role]
+      user.transaction do
+        user.user_roles.global.each(&:destroy)
+        UserRole.create!(user: user, role: role_name)
+      end
+      flash[:notice] =
+        t("global_user_roles.update.success", user: user.username, role: role_name)
+    end
+
+    redirect_to global_user_roles_url
   end
 
 end

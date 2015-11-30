@@ -1,4 +1,5 @@
 class UserPresenter < SimpleDelegator
+  include ActionView::Helpers::FormOptionsHelper
 
   delegate :global, to: :user_roles, prefix: true
 
@@ -8,6 +9,10 @@ class UserPresenter < SimpleDelegator
 
   def global_role_list
     global_roles.join(", ")
+  end
+
+  def global_role_select_options
+    options_for_select(UserRole.global_roles, selected: user_roles.map(&:role))
   end
 
   def name_last_comma_first

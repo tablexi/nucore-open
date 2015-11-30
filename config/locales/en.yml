@@ -387,6 +387,9 @@ en:
       failure: Global roles could not be removed for %{username}.
       self_not_allowed: You may not remove global roles from yourself.
       success: All global roles have been removed for %{username}.
+    edit:
+      cancel: Cancel
+      submit: Grant
     index:
       remove_roles: Remove Roles
       remove_roles_confirm: Are you sure?
@@ -402,6 +405,9 @@ en:
         Click on the name of the user you wish to grant global roles to.
         If the search does not return any acceptable matches,
         you may create a new user.
+    update:
+      self_not_allowed: You may not change global roles for yourself.
+      success: The %{role} role was granted to %{user}.
 
   order_imports:
     new:
