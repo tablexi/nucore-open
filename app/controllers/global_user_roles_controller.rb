@@ -1,47 +1,64 @@
 class GlobalUserRolesController < GlobalSettingsController
 
+  before_filter :load_user, only: [:destroy, :edit, :update]
+
   def index
     @users = UserPresenter.wrap(User.with_global_roles)
   end
 
   def destroy
-    user = User.find(params[:id])
-    if user == current_user
-      flash[:error] = t("global_user_roles.destroy.self_not_allowed")
+    case
+    when @user == current_user
+      flash[:error] = translate("self_not_allowed", action: "remove")
+    when @user.user_roles.global.destroy_all
+      flash[:notice] = translate("destroy.success", user: @user.username)
     else
-      user.user_roles.global.each(&:destroy)
-      if user.user_roles.global.empty?
-        flash[:notice] = t("global_user_roles.destroy.success", username: user.username)
-      else
-        flash[:error] = t("global_user_roles.destroy.failure", username: user.username)
-      end
+      flash[:error] = translate("destroy.failure", user: @user.username)
     end
 
     redirect_to global_user_roles_url
   end
 
   def edit
-    @user = UserPresenter.new(User.find(params[:id]))
+    @user = UserPresenter.new(@user)
   end
 
   def search
   end
 
   def update
-    user = User.find(params[:id])
-    if user == current_user
-      flash[:error] = t("global_user_roles.update.self_not_allowed")
+    if @user == current_user
+      flash[:error] = translate("self_not_allowed", action: "change")
     else
-      role_name = params[:user_role][:role]
-      user.transaction do
-        user.user_roles.global.each(&:destroy)
-        UserRole.create!(user: user, role: role_name)
-      end
+      assign_global_role!
       flash[:notice] =
-        t("global_user_roles.update.success", user: user.username, role: role_name)
+        translate("update.success", user: @user.username, role: role_name)
     end
-
+  rescue ActiveRecord::RecordInvalid
+    flash[:error] =
+      translate("update.failure", user: @user.username, role: role_name)
+  ensure
     redirect_to global_user_roles_url
   end
 
+  private
+
+  def assign_global_role!
+    @user.transaction do
+      @user.user_roles.global.destroy_all
+      UserRole.create!(user: @user, role: role_name)
+    end
+  end
+
+  def load_user
+    @user = User.find(params[:id])
+  end
+
+  def role_name
+    @role_name ||= params[:user_role][:role]
+  end
+
+  def translate(key, arguments = {})
+    I18n.t("global_user_roles.#{key}", arguments)
+  end
 end

@@ -76,6 +76,8 @@ RSpec.describe GlobalUserRolesController do
       put(:update, id: user.id, user_role: { role: role })
     end
 
+    after { expect(response).to redirect_to(global_user_roles_url) }
+
     context "when updating the current user's global roles" do
       let(:user) { administrator }
 
@@ -101,6 +103,30 @@ RSpec.describe GlobalUserRolesController do
         expect(flash[:notice]).to include("granted to")
         expect(user).not_to be_account_manager
         expect(user).to be_administrator
+      end
+    end
+
+    context "when the role does not exist" do
+      let(:role) { "?This%role+will-never|exist]" }
+      let(:user) { create(:user) }
+
+      it "does not grant the role" do
+        expect(flash[:error]).to include("role was not granted")
+        expect(user.user_roles).to be_empty
+      end
+    end
+
+    context "when the user has an existing facility role" do
+      let(:facility) { create(:facility) }
+      let(:user) { create(:user, :facility_director, facility: facility) }
+
+      it "grants the global role" do
+        expect(flash[:notice]).to include("granted to")
+        expect(user).to be_administrator
+      end
+
+      it "does not revoke the existing facility role" do
+        expect(user).to be_facility_director_of(facility)
       end
     end
 
