@@ -179,19 +179,22 @@ class FacilityAccountsController < ApplicationController
   # GET /facilities/:facility_id/accounts/:account_id/statements/:statement_id
   def show_statement
     @facility = current_facility
-    action='show_statement'
 
-    case params[:statement_id]
-      when 'list'
-        action += '_list'
-        @statements = Statement.where(:facility_id => current_facility.id, :account_id => @account).order('created_at DESC').all.paginate(:page => params[:page])
-      else
-        @statement=Statement.find(params[:statement_id].to_i)
-        @order_details = @statement.order_details
+    if params[:statement_id] == "list"
+      action = "show_statement_list"
+      @statements =
+        current_facility
+        .statements
+        .where(account_id: @account.id)
+        .paginate(page: params[:page])
+    else
+      action = "show_statement"
+      @statement = Statement.find(params[:statement_id])
+      @order_details = @statement.order_details
     end
 
     respond_to do |format|
-      format.html { render :action => action }
+      format.html { render action: action }
       format.pdf { render_statement_pdf }
     end
   end

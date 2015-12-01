@@ -336,7 +336,7 @@ RSpec.describe FacilityAccountsController do
       do_request
       expect(assigns(:account)).to eq(@account)
       expect(assigns(:facility)).to eq(@authable)
-      expect(assigns(:statements)).to be_kind_of Array
+      expect(assigns(:statements)).to be_kind_of(ActiveRecord::Relation)
       expect(assigns(:statements).count).to eq(2)
       is_expected.to render_template 'show_statement_list'
     end
