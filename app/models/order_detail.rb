@@ -167,10 +167,6 @@ class OrderDetail < ActiveRecord::Base
     .where("order_details.state NOT IN('canceled', 'reconciled')")
   end
 
-  def self.purchased
-    joins(:order).where("orders.state = 'purchased'")
-  end
-
   def self.unreconciled_accounts(facility, account_type)
     joins(:order, :account)
     .select('DISTINCT(order_details.account_id) AS account_id')
@@ -280,7 +276,11 @@ class OrderDetail < ActiveRecord::Base
   scope :non_reservations, joins(:product).where("products.type <> 'Instrument'")
   scope :reservations, joins(:product).where("products.type = 'Instrument'")
 
-  scope :ordered, joins(:order).merge(Order.purchased)
+  scope :purchased, joins(:order).merge(Order.purchased)
+  class << self
+    alias_method :ordered, :purchased # TODO: deprecate .ordered in favor of .purchased
+  end
+
   scope :pending, joins(:order).where(:state => ['new', 'inprocess']).ordered
   scope :confirmed_reservations,  reservations.
                                  joins(:order).
