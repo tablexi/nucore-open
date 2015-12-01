@@ -54,7 +54,7 @@
                 %li
                   %i= t(".note", text: order_detail.note)
 
-          %td= order_detail.order_status_name
+          %td= order_detail.order_status
           %td.currency
             - if order_detail.cost_estimated?
               %span.estimated_cost= order_detail.estimated_total

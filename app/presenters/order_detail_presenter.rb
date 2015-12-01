@@ -4,7 +4,6 @@ class OrderDetailPresenter < SimpleDelegator
   include DateHelper
 
   delegate :admin_editable?, to: :reservation, prefix: true
-  delegate :name, to: :order_status, prefix: true
   delegate :template_result, to: :stored_files, prefix: true
 
   def self.wrap(order_details)
