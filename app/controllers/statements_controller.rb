@@ -51,19 +51,19 @@ class StatementsController < ApplicationController
 
   def init_account
     # CanCan will make sure that we're authorizing the account
-    @account = Account.find(params[:account_id]) 
+    @account = Account.find(params[:account_id])
   end
 
   #
   # Override CanCan's find -- it won't properly search by 'recent'
   def init_statement
-    @facility=Facility.find_by_url_name!(params[:facility_id])
-    @statements=@account.statements.find(:all, :conditions => {:facility_id => @facility.id})
+    @facility = Facility.find_by_url_name!(params[:facility_id])
+    @statements = @account.statements.where(facility_id: @facility.id)
 
     if params[:id] =~ /\w+/i
-      @statement=@statements.blank? ? Statement.find_by_facility_id(@facility.id) : @statements.first
+      @statement = @statements.blank? ? Statement.find_by_facility_id(@facility.id) : @statements.first
     else
-      @statement=@account.statements.find(params[:id])
+      @statement = @account.statements.find(params[:id])
     end
     @statement = Statement.new if @statement.nil?
   end

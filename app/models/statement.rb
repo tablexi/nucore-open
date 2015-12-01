@@ -33,6 +33,10 @@ class Statement < ActiveRecord::Base
     "#{account_id}-#{id}"
   end
 
+  def invoice_date
+    created_at.to_date
+  end
+
   def reconciled?
     order_details.where('state <> ?', 'reconciled').empty?
   end
