@@ -190,7 +190,7 @@ class FacilityAccountsController < ApplicationController
     else
       action = "show_statement"
       @statement = Statement.find(params[:statement_id])
-      @order_details = @statement.order_details
+      @order_details = @statement.order_details.paginate(page: params[:page])
     end
 
     respond_to do |format|
