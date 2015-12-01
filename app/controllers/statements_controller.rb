@@ -3,6 +3,7 @@ class StatementsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_account
+  before_filter :init_statement
 
   load_and_authorize_resource
 
