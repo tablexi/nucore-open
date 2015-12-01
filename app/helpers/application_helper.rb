@@ -41,12 +41,9 @@ module ApplicationHelper
     link_to title, {:sort => column, :dir => direction}, {:class => (column == sort_column ? sort_direction : 'sortable')}
   end
 
-  #
-  # Tells whether or not a fulfilled order detail is approaching the end of the 90 day reconcile period
-  # Returns true if the order detail is 60+ days fulfilled, false otherwise
-  # TODO: only used in views to determine css class; deprecate in favor of OrderDetailPresenter#row_class
+  # TODO: deprecate in favor of OrderDetailPresenter#row_class
   def needs_reconcile_warning?(order_detail)
-    !order_detail.reconciled? && order_detail.fulfilled_at && (Time.zone.now.to_date - order_detail.fulfilled_at.to_date).to_i >= 60
+    OrderDetailPresenter.new(order_detail).row_class
   end
 
   #
