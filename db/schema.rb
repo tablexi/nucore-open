@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151113205331) do
+ActiveRecord::Schema.define(:version => 20151201221103) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -306,14 +306,15 @@ ActiveRecord::Schema.define(:version => 20151113205331) do
   add_index "orders", ["user_id"], :name => "index_orders_on_user_id"
 
   create_table "payments", :force => true do |t|
-    t.integer  "account_id",                                  :null => false
+    t.integer  "account_id",                                    :null => false
     t.integer  "statement_id"
-    t.string   "source",                                      :null => false
+    t.string   "source",                                        :null => false
     t.string   "source_id"
-    t.decimal  "amount",       :precision => 10, :scale => 2, :null => false
+    t.decimal  "amount",         :precision => 10, :scale => 2, :null => false
     t.integer  "paid_by_id"
-    t.datetime "created_at",                                  :null => false
-    t.datetime "updated_at",                                  :null => false
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
+    t.decimal  "processing_fee", :precision => 10, :scale => 2
   end
 
   add_index "payments", ["account_id"], :name => "index_payments_on_account_id"
