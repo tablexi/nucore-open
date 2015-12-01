@@ -2,6 +2,7 @@ class OrderDetailPresenter < SimpleDelegator
 
   include ActionView::Helpers::NumberHelper
   include DateHelper
+  include Rails.application.routes.url_helpers
 
   delegate :admin_editable?, to: :reservation, prefix: true
   delegate :template_result, to: :stored_files, prefix: true
