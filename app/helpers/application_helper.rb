@@ -13,20 +13,15 @@ module ApplicationHelper
     (full_title + app_name).html_safe
   end
 
-  def order_detail_description(order_detail) # TODO: deprecate in favor of "_as_(html|text)" methods
-    order_detail_description_as_html(order_detail)
+  def order_detail_description(order_detail) # TODO: deprecate in favor of OrderDetailPresenter#description_as_html
+    OrderDetailPresenter.new(order_detail).description_as_html
   end
 
   def order_detail_description_as_html(order_detail) # TODO: deprecate in favor of OrderDetailPresenter#description_as_html
-    name = ERB::Util.html_escape(order_detail.product)
-    if order_detail.bundle
-      name.prepend(ERB::Util.html_escape(order_detail.bundle) + " &mdash; ".html_safe)
-    else
-      name
-    end.html_safe
+    OrderDetailPresenter.new(order_detail).description_as_html
   end
 
-  def order_detail_description_as_text(order_detail)
+  def order_detail_description_as_text(order_detail) # TODO: move this into OrderDetailPresenter
     name = order_detail.product.to_s
     if order_detail.bundle
       name.prepend("#{order_detail.bundle} -- ")
