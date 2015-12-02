@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe SplitAccount, type: :model do
+RSpec.describe SplitAccounts::SplitAccount, type: :model do
 
   it "is an account type" do
     expect(described_class.new).to be_an(Account)

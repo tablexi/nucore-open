@@ -3,7 +3,7 @@ module SplitAccounts
 
     # Include modules in main rails app
     config.to_prepare do
-      Account.send :include, SplitAccounts::Concerns::AccountExtension
+      Account.send :include, SplitAccounts::AccountExtensions
     end
 
     # Include migrations in main rails app

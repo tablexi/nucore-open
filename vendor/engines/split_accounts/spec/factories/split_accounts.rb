@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :split_account do
+  factory :split_account, class: SplitAccounts::SplitAccount do
 
     transient do
       owner { create(:user) }

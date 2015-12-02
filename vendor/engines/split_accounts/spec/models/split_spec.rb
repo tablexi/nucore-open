@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Split, type: :model do
+RSpec.describe SplitAccounts::Split, type: :model do
 
   # TODO: remove this if/when we do factory linting
   it "has a valid factory" do
