@@ -36,8 +36,8 @@
             %td= order.user.full_name
             %td.centered= od.quantity
             = render :partial => 'shared/order_detail_cell', :locals => { :od => od }
-            %td= od.assigned_user.nil? ? '' : od.assigned_user.full_name
-            %td= od.order_status.name
+            %td= od.assigned_user
+            %td= od.order_status
             %td.currency
               - od.send(:extend, PriceDisplayment)
               = od.wrapped_total
