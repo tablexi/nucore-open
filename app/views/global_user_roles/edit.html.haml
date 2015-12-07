@@ -19,8 +19,8 @@
       = label_tag :email, nil, class: "require"
       = text_field_tag :email, @user.email, disabled: true
     %li
-      = form.label :role, nil, class: "require"
-      = form.select :role, @user.global_role_select_options, include_blank: true
+      = form.label :roles, nil, class: "require"
+      = select_tag :roles, @user.global_role_select_options, multiple: true
 
   %ul.inline
     %li= form.submit t(".submit"), class: "btn"

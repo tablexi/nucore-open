@@ -30,32 +30,28 @@ class GlobalUserRolesController < GlobalSettingsController
     if @user == current_user
       flash[:error] = translate("self_not_allowed", action: "change")
     else
-      assign_global_role!
-      flash[:notice] =
-        translate("update.success", user: @user.username, role: role_name)
+      assign_global_roles!
+      flash[:notice] = translate("update.success", user: @user.username)
     end
   rescue ActiveRecord::RecordInvalid
-    flash[:error] =
-      translate("update.failure", user: @user.username, role: role_name)
+    flash[:error] = translate("update.failure", user: @user.username)
   ensure
     redirect_to global_user_roles_url
   end
 
   private
 
-  def assign_global_role!
+  def assign_global_roles!
     @user.transaction do
       @user.user_roles.global.destroy_all
-      UserRole.create!(user: @user, role: role_name)
+      params[:roles].each do |role_name|
+        UserRole.create!(user: @user, role: role_name)
+      end
     end
   end
 
   def load_user
     @user = User.find(params[:id])
-  end
-
-  def role_name
-    @role_name ||= params[:user_role][:role]
   end
 
   def translate(key, arguments = {})

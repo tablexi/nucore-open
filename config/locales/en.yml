@@ -407,8 +407,8 @@ en:
         you may create a new user.
     self_not_allowed: You may not %{action} global roles for yourself.
     update:
-      failure: The %{role} role was not granted to %{user}.
-      success: The %{role} role was granted to %{user}.
+      failure: Global role assignment for %{user} failed.
+      success: Global role assignment for %{user} succeeded.
 
   order_imports:
     new:

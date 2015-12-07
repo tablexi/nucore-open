@@ -69,11 +69,11 @@ RSpec.describe GlobalUserRolesController do
 
   describe "#update" do
     let(:administrator) { create(:user, :administrator) }
-    let(:role) { "Administrator" }
+    let(:roles) { ["Administrator"] }
 
     before(:each) do
       sign_in(administrator)
-      put(:update, id: user.id, user_role: { role: role })
+      put(:update, id: user.id, roles: roles)
     end
 
     after { expect(response).to redirect_to(global_user_roles_url) }
@@ -91,7 +91,7 @@ RSpec.describe GlobalUserRolesController do
       let(:user) { create(:user) }
 
       it "grants the role" do
-        expect(flash[:notice]).to include("granted to")
+        expect(flash[:notice]).to include("succeeded")
         expect(user).to be_administrator
       end
     end
@@ -100,18 +100,18 @@ RSpec.describe GlobalUserRolesController do
       let(:user) { create(:user, :account_manager) }
 
       it "grants the new role" do
-        expect(flash[:notice]).to include("granted to")
+        expect(flash[:notice]).to include("succeeded")
         expect(user).not_to be_account_manager
         expect(user).to be_administrator
       end
     end
 
     context "when the role does not exist" do
-      let(:role) { "?This%role+will-never|exist]" }
+      let(:roles) { ["?This%role+will-never|exist]"] }
       let(:user) { create(:user) }
 
       it "does not grant the role" do
-        expect(flash[:error]).to include("role was not granted")
+        expect(flash[:error]).to include("failed")
         expect(user.user_roles).to be_empty
       end
     end
@@ -121,7 +121,7 @@ RSpec.describe GlobalUserRolesController do
       let(:user) { create(:user, :facility_director, facility: facility) }
 
       it "grants the global role" do
-        expect(flash[:notice]).to include("granted to")
+        expect(flash[:notice]).to include("succeeded")
         expect(user).to be_administrator
       end
 
@@ -134,7 +134,7 @@ RSpec.describe GlobalUserRolesController do
       let(:user) { create(:user, :administrator) }
 
       it "retains the user's global role" do
-        expect(flash[:notice]).to include("granted to")
+        expect(flash[:notice]).to include("succeeded")
         expect(user).to be_administrator
       end
     end
