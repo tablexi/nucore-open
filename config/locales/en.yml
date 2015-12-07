@@ -400,11 +400,13 @@ en:
         username: Username
     search:
       h2: Grant global roles to a user
-      instruct: |
-        Search for an existing user by name, NetID, or username.
-        Click on the name of the user you wish to grant global roles to.
-        If the search does not return any acceptable matches,
-        you may create a new user.
+      instructions:
+        search: |
+          Search for an existing user by name, NetID, or username.
+          Click on the name of the user you wish to grant global roles to.
+        add_user: |
+          If the search does not return any acceptable matches,
+          you may create a new user.
     self_not_allowed: You may not %{action} global roles for yourself.
     update:
       failure: Global role assignment for %{user} failed.
