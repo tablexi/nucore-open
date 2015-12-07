@@ -22,7 +22,9 @@ class Ability
         unless user.billing_administrator?
           cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
         end
-        cannot :manage, User unless resource.is_a?(Facility) && resource.single_facility?
+        unless user.account_manager?
+          cannot :manage, User unless resource.is_a?(Facility) && resource.single_facility?
+        end
       end
       return
     end
