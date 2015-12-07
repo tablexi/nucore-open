@@ -7,7 +7,7 @@
 %h2= t("pages.global_user_roles")
 
 %ul.inline
-  %li= link_to t(".grant_role"), search_global_user_roles_path, class: "btn-add"
+  %li= link_to t(".grant_roles"), search_global_user_roles_path, class: "btn-add"
 
 - if @users.empty?
   %p.notice= t(".no_users")

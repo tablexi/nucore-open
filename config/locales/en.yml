@@ -390,6 +390,7 @@ en:
       cancel: Cancel
       submit: Grant
     index:
+      grant_roles: Grant Roles
       remove_roles: Remove Roles
       remove_roles_confirm: Are you sure?
       th:
