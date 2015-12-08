@@ -39,7 +39,7 @@ class UserRole < ActiveRecord::Base
   end
 
   def self.global
-    where(facility_id: nil)
+    where(role: global_roles)
   end
 
   #
