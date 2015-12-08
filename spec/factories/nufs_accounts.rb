@@ -11,9 +11,10 @@ end
 FactoryGirl.modify do
   factory :nufs_account do
     trait :with_order do
+      with_account_owner
+
       transient do
         product nil
-        owner { FactoryGirl.create(:user) }
       end
 
       account_users_attributes { [FactoryGirl.attributes_for(:account_user, user: owner)] }

@@ -1,8 +1,8 @@
 FactoryGirl.define do
   factory :split_account, class: SplitAccounts::SplitAccount do
+    with_account_owner
 
     transient do
-      owner { create(:user) }
       without_splits { false } # set to true to skip generating a valid split
     end
 
@@ -10,13 +10,6 @@ FactoryGirl.define do
     sequence(:description) { |n| "split account #{n}" }
     expires_at { Time.zone.now + 1.month }
     created_by 0
-
-    # Every account must have an account_user "owner" in order for the account
-    # to be valid in rails. And foreign key constraints require that each
-    # account_user has an account inserted before the account_user is inserted.
-    callback(:after_build, :before_create) do |split_account, evaluator|
-      split_account.account_users << build(:account_user, user: evaluator.owner, account: split_account)
-    end
 
     trait :with_two_splits do
       callback(:after_build, :before_create) do |split_account, evalutor|
