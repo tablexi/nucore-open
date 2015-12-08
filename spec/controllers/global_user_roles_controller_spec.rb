@@ -121,6 +121,15 @@ RSpec.describe GlobalUserRolesController do
         expect(user).not_to be_account_manager
         expect(user).to be_administrator
       end
+
+      context "and no roles are specified in params" do
+        let(:roles) { nil }
+
+        it "revokes the user's existing global roles" do
+          expect(flash[:notice]).to include("roles have been removed")
+          expect(user).not_to be_account_manager
+        end
+      end
     end
 
     context "when the role does not exist" do
