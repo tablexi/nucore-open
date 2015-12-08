@@ -65,10 +65,6 @@ class GlobalUserRolesController < GlobalSettingsController
     @user = User.find(params[:id])
   end
 
-  def roles_from_params
-    params[:roles].presence || []
-  end
-
   def translate(key, arguments = {})
     I18n.t("global_user_roles.#{key}", arguments)
   end
