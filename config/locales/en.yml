@@ -224,6 +224,10 @@ en:
         name: Name
         roles: Roles
         username: Username
+    map_user:
+      cancel: Cancel
+      h2: Grant Facility Role
+      submit: Create
     search:
       instruct: "Search for an existing user by name, NetID, or username.  Click on the name of the user you wish to grant access to.  If the search does not return any acceptable matches, you may create a new user."
 
