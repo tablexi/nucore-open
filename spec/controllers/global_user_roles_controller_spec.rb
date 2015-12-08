@@ -57,6 +57,33 @@ RSpec.describe GlobalUserRolesController do
     end
   end
 
+  describe "#edit" do
+    let(:administrators) { create_list(:user, 2, :administrator) }
+
+    before(:each) do
+      sign_in(administrators.first)
+      get(:edit, id: user.id)
+    end
+
+    context "when attempting to edit itself" do
+      let(:user) { administrators.first }
+
+      it "redirects the user away from the edit form" do
+        expect(flash[:error]).to include("may not change global roles")
+        expect(response).to redirect_to(global_user_roles_url)
+      end
+    end
+
+    context "when attempting to edit another user" do
+      let(:user) { administrators.last }
+
+      it "displays the edit form" do
+        expect(response.code).to eq("200")
+        expect(assigns[:user]).to eq(user)
+      end
+    end
+  end
+
   describe "#update" do
     let(:administrator) { create(:user, :administrator) }
     let(:roles) { ["Administrator"] }

@@ -20,7 +20,12 @@ class GlobalUserRolesController < GlobalSettingsController
   end
 
   def edit
-    @user = UserPresenter.new(@user)
+    if @user == current_user
+      flash[:error] = translate("self_not_allowed", action: "change")
+      redirect_to global_user_roles_url
+    else
+      @user = UserPresenter.new(@user)
+    end
   end
 
   def search
