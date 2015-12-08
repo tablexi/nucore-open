@@ -14,7 +14,5 @@
   = text_field_tag :search_term, nil, size: 30, class: "search-query"
   = submit_tag "Search", class: "btn"
   = hidden_field_tag :search_type, "global_user_role"
-  = hidden_field_tag :create_link,
-    SettingsHelper.feature_on?(:create_users) ? "true" : "false"
-
+  = hidden_field_tag :create_link, SettingsHelper.feature_on?(:create_users)
 #result
