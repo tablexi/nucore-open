@@ -6,5 +6,5 @@
   = submit_tag "Search", class: "btn"
   = hidden_field_tag :facility_id, current_facility.id
   = hidden_field_tag :search_type, "manage_user"
-  = hidden_field_tag :create_link, "true"
+  = hidden_field_tag :create_link, can_create_users?
 %br
