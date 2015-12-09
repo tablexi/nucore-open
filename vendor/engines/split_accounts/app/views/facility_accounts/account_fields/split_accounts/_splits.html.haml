@@ -1,3 +1,4 @@
+- available_subaccounts = Account.excluding_split_accounts.filter_global_account_types
 = javascript_include_tag "split_account_splits"
 
 %h4 Subaccounts
@@ -5,7 +6,7 @@
 %div{data: {subaccounts: true}}
   = f.nested_fields_for :splits, class_name: "SplitAccounts::Split" do |ff|
     .well
-      = ff.input :subaccount_id, collection: Account.excluding_split_accounts, wrapper_html: {class: "input-inline"}
+      = ff.input :subaccount_id, collection: available_subaccounts, wrapper_html: {class: "input-inline"}
       = ff.input :percent, input_html: {min: 0, max: 100, data: {percent: true}}, wrapper_html: {class: "input-inline"}
       = ff.input :extra_penny, wrapper_html: {class: "input-inline"}
       = ff.remove_nested_fields_link "Remove", class: "btn", wrapper_html: {class: "input-inline"}

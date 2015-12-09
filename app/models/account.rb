@@ -26,6 +26,7 @@ class Account < ActiveRecord::Base
   accepts_nested_attributes_for :account_users
 
   scope :active, lambda {{ :conditions => ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] }}
+  scope :filter_global_account_types, -> { where("accounts.type in (:global)", { global: global_account_types.map(&:to_s) }) }
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
   validates_length_of :description, :maximum => 50
@@ -98,10 +99,6 @@ class Account < ActiveRecord::Base
     !limited_to_single_facility?
   end
 
-  def facility
-    nil
-  end
-
   def self.for_facility(facility)
     accounts = scoped
 
@@ -130,6 +127,13 @@ class Account < ActiveRecord::Base
 
   def self.with_orders_for_facility(facility)
     where(id: ids_with_orders(facility))
+  end
+
+  # The subclassed Account objects will be cross facility by default; override
+  # this method if the subclassed Account object is always scoped to a
+  # particular facility.
+  def facility
+    nil
   end
 
   def facilities
