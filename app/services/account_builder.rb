@@ -13,7 +13,6 @@ class AccountBuilder
     account = build_created_by(account, current_user)
     account = build_facility(account, facility)
     account = build_subclass(account, params)
-    binding.pry
     account
   end
 

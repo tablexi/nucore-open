@@ -9,7 +9,6 @@ module C2po
       FacilityAccountsController.send :include, C2po::FacilityAccountsControllerExtension
 
       # Concat class variables
-      Account.account_types.concat [CreditCardAccount, PurchaseOrderAccount]
       Account.facility_account_types.concat [CreditCardAccount, PurchaseOrderAccount]
       FacilityAccountsController.check_billing_access_actions.concat C2po::FacilityAccountsControllerExtension.check_billing_access_actions_extension
       FacilitiesController.permitted_facility_params.concat [:accepts_po, :accepts_cc]

@@ -46,9 +46,9 @@ class Account < ActiveRecord::Base
   end
 
   # Returns an array of subclassed Account objects.
-  # Engines can concat to this on initialization.
+  # Engines should NOT concat to this.
   def self.account_types
-    @@account_types ||= [NufsAccount]
+    global_account_types + facility_account_types
   end
 
   # Returns an array of subclassed Account objects available across multiple

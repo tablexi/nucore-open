@@ -1,14 +1,15 @@
 module SplitAccounts
   class Engine < Rails::Engine
 
-    # Include modules in main rails app
     config.to_prepare do
+      # Include modules in main rails app
       Account.send :include, SplitAccounts::AccountExtension
       AccountBuilder.send :include, SplitAccounts::AccountBuilderExtension
 
-      Account.account_types.concat [SplitAccounts::SplitAccount]
+      # Concat class variables in main rails app
       Account.global_account_types.concat [SplitAccounts::SplitAccount]
 
+      # Add views to view hooks in main rails app
       ViewHook.add_hook "facility_accounts.show", "after_end_of_form", "split_accounts/facility_accounts/show_splits"
     end
 
