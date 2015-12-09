@@ -2,6 +2,43 @@ require "rails_helper"
 require 'controller_spec_helper'
 
 RSpec.describe ApplicationHelper do
+  describe "#can_create_users?" do
+    let(:current_ability) { Ability.new(user, current_facility, stub_controller) }
+    let(:current_facility) { build_stubbed(:facility) }
+    let(:stub_controller) { OpenStruct.new }
+    let(:user) { build_stubbed(:user) }
+
+    before(:each) do
+      allow(current_ability)
+        .to receive(:can?)
+        .with(:manage_users, current_facility) { can_manage_users? }
+    end
+
+    context "when the user can :manage_users for the current facility" do
+      let(:can_manage_users?) { true }
+
+      context "and the :create_users feature is on", feature_setting: { create_users: true } do
+        it { expect(can_create_users?).to be true }
+      end
+
+      context "and the :create_users feature is off", feature_setting: { create_users: false } do
+        it { expect(can_create_users?).to be false }
+      end
+    end
+
+    context "when the user cannot :manage_users for the current facility" do
+      let(:can_manage_users?) { false }
+
+      context "and the :create_users feature is on", feature_setting: { create_users: true } do
+        it { expect(can_create_users?).to be false }
+      end
+
+      context "and the :create_users feature is off", feature_setting: { create_users: false } do
+        it { expect(can_create_users?).to be false }
+      end
+    end
+  end
+
   describe "#menu_facilities" do
     before(:all) do
       create_users
