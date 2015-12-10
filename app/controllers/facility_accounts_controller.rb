@@ -73,7 +73,7 @@ class FacilityAccountsController < ApplicationController
 
   # PUT /facilities/:facility_id/accounts/:id
   def update
-    type = Account.account_type_to_param(@account.class)
+    type = Account.config.account_type_to_param(@account.class)
 
     # TODO: refactor
     if @account.is_a?(AffiliateAccount) && params[type][:affiliate_id] != Affiliate.OTHER.id.to_s
@@ -182,7 +182,7 @@ class FacilityAccountsController < ApplicationController
   private
 
   def available_account_types
-    Account.creatable_account_types_for_facility(current_facility).map(&:to_s)
+    Account.config.account_types_for_facility(current_facility).map(&:to_s)
   end
 
   def current_account_type
@@ -197,9 +197,9 @@ class FacilityAccountsController < ApplicationController
 
   def init_account
     if params.has_key? :id
-      @account=Account.find params[:id].to_i
+      @account = Account.find params[:id].to_i
     elsif params.has_key? :account_id
-      @account=Account.find params[:account_id].to_i
+      @account = Account.find params[:account_id].to_i
     end
   end
 

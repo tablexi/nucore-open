@@ -39,64 +39,22 @@ class Account < ActiveRecord::Base
     end
   end
 
-  # Given an account_type return a param string that can be used as a variable
-  # name, filename, param, etc. Replaces any backslashes with underscore to
-  # support namespaced classes.
-  def self.account_type_to_param(account_type)
-    account_type.to_s.underscore.gsub("/", "_")
-  end
-
-  # Returns an array of subclassed Account objects.
-  # Engines should NOT concat to this.
-  def self.account_types
-    global_account_types + facility_account_types
-  end
-
-  # Returns an array of subclassed Account objects available across multiple
-  # facilities. Engines can concat to this on initialization.
-  def self.global_account_types
-    @@global_account_types ||= [NufsAccount]
-  end
-
-  # Returns an array of subclassed Account objects available per facility.
-  # Engines can concat to this on initialization.
-  def self.facility_account_types
-    @@facility_account_types ||= []
-  end
-
-  # Returns an array of subclassed Account objects availalbe for statements.
-  def self.statement_account_types
-    facility_account_types
-  end
-
-  # Returns an array of `creatable` subclassed Account objects given a facility.
-  def self.creatable_account_types_for_facility(facility)
-    return account_types.select(&:cross_facility?) if facility.cross_facility?
-    account_types
-  end
-
-  # Returns true if multiple account types are available
-  def self.multiple_account_types?
-    account_types.size > 1
-  end
-
-  def self.using_statements?
-    statement_account_types.present?
-  end
-
-  def self.using_affiliates?
-    using_statements?
+  # The @@config class variable stores account configuration details via a
+  # seperate `AccountConfig` class. This way downstream repositories can use
+  # customized account configurations. Also the `Account` model stays as thin
+  # as possible by striving to contain only methods related to database logic.
+  def self.config
+    @@config ||= AccountConfig.new
   end
 
   # Returns true if this account type is limited to a single facility.
-  # TODO: rename to scoped_to_single_facility?
   def self.limited_to_single_facility?
-    facility_account_types.map(&:to_s).include?(self.name)
+    config.single_facility?(self.name)
   end
 
-  # TODO: shouldn't this use `global_account_types.include?(self.name)` instead?
+  # Returns true if this acocunt type can cross multiple facilities.
   def self.cross_facility?
-    !limited_to_single_facility?
+    config.cross_facility?(self.name)
   end
 
   def self.for_facility(facility)
@@ -105,11 +63,9 @@ class Account < ActiveRecord::Base
     if facility.single_facility?
       accounts = accounts.where(
         "accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)",
-        {
-          allow_all: global_account_types.map(&:to_s),
-          limit_one: facility_account_types.map(&:to_s),
-          facility: facility
-        }
+        allow_all: config.global_account_types.map(&:to_s),
+        limit_one: config.facility_account_types.map(&:to_s),
+        facility: facility
       )
     end
 

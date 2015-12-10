@@ -311,7 +311,7 @@ RSpec.describe FacilityAccountsController do
   end
 
 
-  context 'show_statement', :timecop_freeze, :if => AccountManager.using_statements? do
+  context 'show_statement', :timecop_freeze, :if => Account.config.using_statements? do
 
     before :each do
       @method=:get

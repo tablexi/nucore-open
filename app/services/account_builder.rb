@@ -21,7 +21,7 @@ class AccountBuilder
   # Dynamically calls a subclass method if one exists. Returns a modified
   # account object.
   def build_subclass(account, params)
-    method = "build_#{Account.account_type_to_param(account.class.to_s)}"
+    method = "build_#{Account.config.account_type_to_param(account.class.to_s)}"
     return account unless respond_to?(method, true)
     account = send(method, account, params)
   end
@@ -42,7 +42,7 @@ class AccountBuilder
   # given account type.  Returns the modified account object.
   def build_affiliate(account, params)
     return account unless account.class.included_modules.include?(AffiliateAccount)
-    key = Account.account_type_to_param(account.class.to_s)
+    key = Account.config.account_type_to_param(account.class.to_s)
     account.affiliate_other = nil if params[key][:affiliate_id] != Affiliate.OTHER.id.to_s
     account
   end
@@ -78,14 +78,14 @@ class AccountBuilder
   # Given an account type, create a new account and assign params.
   # This method was only created in case we ever need to override it.
   def new_account(account_type, params)
-    key = Account.account_type_to_param(account_type)
+    key = Account.config.account_type_to_param(account_type)
     account_type.constantize.new(params[key])
   end
 
   # Returns a valid subclassed Account object; unless account_type is invalid,
   # then raises an AccountController::RoutingErro exception.
   def valid_account_type!(account_type, facility)
-    account_types = Account.creatable_account_types_for_facility(facility).map(&:to_s)
+    account_types = Account.config.account_types_for_facility(facility).map(&:to_s)
     return account_type if account_types.include?(account_type)
     raise ActionController::RoutingError, "invalid account_type: #{account_type}"
   end
