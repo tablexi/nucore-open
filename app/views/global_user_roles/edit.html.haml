@@ -19,7 +19,11 @@
     = text_field_tag :email, @user.email, disabled: true
 
     = form.label :roles, nil, class: "require"
-    = select_tag :roles, @user.global_role_select_options, multiple: true
+    = select_tag :roles,
+      @user.global_role_select_options,
+      class: "js--chosen",
+      data: { placeholder: t(".select_role_placeholder") },
+      multiple: true
 
   %ul.inline
     %li= form.submit t(".submit"), class: "btn"

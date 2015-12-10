@@ -392,6 +392,7 @@ en:
       success: All global roles have been removed for %{user}.
     edit:
       cancel: Cancel
+      select_role_placeholder: Select Roles…
       submit: Grant
     index:
       grant_roles: Grant Roles
