@@ -256,7 +256,7 @@ class OrderDetail < ActiveRecord::Base
       :state =>'complete',
       :problem => false,
       :reviewed_at => Time.zone.now,
-      :accounts => Account.config.statement_account_types.map(&:to_s)
+      :accounts => Account.config.statement_account_types
     ]
   }}
 

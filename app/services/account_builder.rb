@@ -1,93 +1,192 @@
-# Builds an Account object given params.
-# This class supports extensions from engines via the `build_subclass` method.
+# Builds a subclassed Account object given params.
+#
+# This class supports extensions from engines via subclassing `AccountBuilder`
+# object that are named `#{AccountSubclass}Builder` (i.e. NufsAccountBuilder).
+# See `self.for()` for additional detail.
+#
+# Example usage:
+#   factory = AccountBuilder.for("NufsAccount")
+#   account = factory.new(...).build
+#
 class AccountBuilder
 
-  # The `do` method for this service object.
-  # Extendable via the `build_subclass` method call.
-  # Returns the built account object.
-  def build(facility, current_user, owner_user, params)
-    account_type = valid_account_type!(params[:account_type], facility)
-    account = new_account(account_type, params)
-    account = build_account_users(account, current_user, params)
-    account = build_affiliate(account, params)
-    account = build_created_by(account, current_user)
-    account = build_facility(account, facility)
-    account = build_subclass(account, params)
+  attr_reader :action, :account, :account_params,
+    :account_type, :current_user, :facility, :owner_user, :params
+
+  # Initialize the instance variables.
+  def initialize(options = {})
+    @account = options[:account] # optional, required for update
+    @account_type = options[:account_type] # optional, required for build
+    @account_params_key = options[:account_params_key] # computed; optional, used for testing
+    @current_user = options[:current_user] # required
+    @facility = options[:facility] # optional
+    @owner_user = options[:owner_user] # optional, required for build
+    @params = ActionController::Parameters.new(options[:params]) # optional
+  end
+
+  # Factory method that returns a subclassed `AccountBuilder` if one exists for
+  # the given account_type; otherwise returns `AccountBuilder` class (self).
+  # The `account_type` argument accepts an `Account` class object, class name
+  # string/symbol, or underscored class name string/symbol.
+  #
+  # Example usage:
+  #   AccountBuilder.for("NufsAccount") => NufsAccountBuilder
+  #   AccountBuilder.for("BuilderDoesNotExist") => AccountBuilder
+  #
+  def self.for(account_type)
+    begin
+      klass = "#{account_type}_builder".classify
+      klass.constantize
+    rescue NameError
+      self
+    end
+  end
+
+  # Returns a new account subclassed `Account` object.
+  # Can thrown an error if the account_type is invalid.
+  def build
+    set_action(:build)
+    validate_account_type!
+    new_account
+    assign_params
+    build_account_users
+    set_affiliate
+    set_created_by
+    set_facility
+
+    after_build
     account
   end
 
-  private
+  # Returns an updated account subclassed `Account` object.
+  # Can thrown an error if the account_type is invalid.
+  def update
+    set_action(:update)
+    set_account_type
+    validate_account_type!
+    assign_params
+    set_affiliate
+    set_updated_by
 
-  # Dynamically calls a subclass method if one exists. Returns a modified
-  # account object.
-  def build_subclass(account, params)
-    method = "build_#{Account.config.account_type_to_param(account.class.to_s)}"
-    return account unless respond_to?(method, true)
-    account = send(method, account, params)
+    after_update
+    account
   end
 
-  # Build an owner account_user.
-  # Returns the modified account object.
-  def build_account_users(account, current_user, params)
-    owner = User.find(params[:owner_user_id])
+  # Given an account type, set the account_params_key.
+  def account_params_key
+    @account_params_key ||= Account.config.account_type_to_param(account_type)
+  end
+
+  protected
+
+  # Override this method in subclassed builder to extend `build` functionality.
+  def after_build
+  end
+
+  # Override this method in subclassed builder to extend `update` functionality.
+  def after_update
+  end
+
+  # Override in subclassed builder to define additional strong_param attributes
+  # for build action. Returns an array of "permitted" params.
+  def account_params_for_build
+    [
+      :account_number,
+      :description,
+    ]
+  end
+
+  # Override in subclassed builder to define additional strong_param attributes
+  # for update action. Returns an array of "permitted" params.
+  def account_params_for_update
+    [
+      :description,
+    ]
+  end
+
+  # Applies strong_param rules to the passed in params based on the current
+  # `action`. Assumes params are guarenteed to be an instantiated
+  # `ActionController::Parameters` object. Silently returns an empty
+  # params hash if the `account_params_key` is missing.
+  def account_params
+    return ActionController::Parameters.new unless params.key?(account_params_key)
+    permitted = send("account_params_for_#{action}")
+    params.require(account_params_key).permit(*permitted)
+  end
+
+  # Simply assigns the strong_params to the account new/persisted account object.
+  def assign_params
+    account.assign_attributes(account_params)
+    account
+  end
+
+  # Validates the account type given the current facility.  Facility can be nil
+  # or a null object and this should still work. Throws an
+  # ActionController::RoutingError if the account type is invalid.
+  def validate_account_type!
+    valid_account_types = Account.config.account_types_for_facility(facility)
+    unless valid_account_types.include?(account_type)
+      raise ActionController::RoutingError, "invalid account_type"
+    end
+  end
+
+  # Creates a new acocunt object given an account type.
+  # Should throw a NameError exception if the account_type object doesn't exist.
+  def new_account
+    @account = account_type.constantize.new
+  end
+
+  # Sets the `action` which is used to load the proper set of account_params.
+  # The action should always get set before `account_params` is called.
+  def set_action(action)
+    @action = action
+  end
+
+  # Given an account, set the account_type.
+  # Only used for `update`.
+  def set_account_type
+    @account_type = account.class.to_s
+  end
+
+  # Build the owner account_user.
+  # Only used for `build`.
+  def build_account_users
     account.account_users.build(
-      user_id: owner.id,
+      user_id: owner_user.id,
       user_role: 'Owner',
       created_by: current_user.id,
     )
     account
   end
 
-  # Set the affiliate for an account only if affiliates are supported for the
-  # given account type.  Returns the modified account object.
-  def build_affiliate(account, params)
-    return account unless account.class.included_modules.include?(AffiliateAccount)
-    key = Account.config.account_type_to_param(account.class.to_s)
-    account.affiliate_other = nil if params[key][:affiliate_id] != Affiliate.OTHER.id.to_s
+  # Set the affiliate_id if the account type supports affiliates, the affiliate
+  # param is present, and the affiliate exists. Also ensure affiliate_other
+  # gets wiped out if the affiliate_id does not point to `Other`.
+  def set_affiliate
+    return account unless account.class.using_affiliate? && account_params.key?(:affiliate_id)
+
+    affiliate = Affiliate.find_by_id(account_params[:affiliate_id])
+    account.affiliate_id = affiliate.try(:id)
+    account.affiliate_other = nil if affiliate.try(:id) != Affiliate.OTHER.id
     account
   end
 
-  # Set the created_by attribute for an account.
-  # Returns the modified account object.
-  def build_created_by(account, current_user)
+  # Set the facility if the account type is scoped to facility.
+  def set_facility
+    account.facility_id = account.class.single_facility? ? facility.try(:id) : nil
+    account
+  end
+
+  # Set created_by. Only used for `build`.
+  def set_created_by
     account.created_by = current_user.id
     account
   end
 
-  # Set the faciltiy for an account.
-  # Returns the modified account object.
-  def build_facility(account, facility)
-    account.facility_id = facility.id if facility.present?
+  # Set updated_by. Only used for `update`.
+  def set_updated_by
+    account.updated_by = current_user.id
     account
-  end
-
-  # Dynamically called by `build_subclass` if the account_type is NufsAccount.
-  def build_nufs_account(account, params)
-    account = build_nufs_account_expires_at(account, params)
-    account
-  end
-
-  # TODO: figure out how to refactor existing expires_at code. See both
-  # `configure_new_account` and `set_expires_at!`. Those methods should get
-  # deprecated.
-  def build_nufs_account_expires_at(account, params)
-    account.set_expires_at!
-    account
-  end
-
-  # Given an account type, create a new account and assign params.
-  # This method was only created in case we ever need to override it.
-  def new_account(account_type, params)
-    key = Account.config.account_type_to_param(account_type)
-    account_type.constantize.new(params[key])
-  end
-
-  # Returns a valid subclassed Account object; unless account_type is invalid,
-  # then raises an AccountController::RoutingErro exception.
-  def valid_account_type!(account_type, facility)
-    account_types = Account.config.account_types_for_facility(facility).map(&:to_s)
-    return account_type if account_types.include?(account_type)
-    raise ActionController::RoutingError, "invalid account_type: #{account_type}"
   end
 
 end

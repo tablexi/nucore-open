@@ -102,4 +102,12 @@ RSpec.describe SplitAccounts::SplitAccount, type: :model do
     end
   end
 
+  describe "has_many subaccounts" do
+    let(:split_account) { create(:split_account) }
+
+    it "returns subaccounts" do
+      expect(split_account.subaccounts).to contain_exactly(split_account.splits.first.subaccount)
+    end
+  end
+
 end

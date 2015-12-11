@@ -57,7 +57,15 @@ class FacilityAccountsController < ApplicationController
     @owner_user = User.find(params[:owner_user_id])
     @available_account_types = available_account_types
     @current_account_type = current_account_type
-    @account = AccountBuilder.new.build(current_facility, session_user, @owner_user, params)
+
+    @account = AccountBuilder.for(params[:account_type]).new({
+      account_type: params[:account_type],
+      facility: current_facility,
+      current_user: current_user,
+      owner_user: @owner_user,
+      params: params,
+    }).build
+
 
     if @account.save
       flash[:notice] = 'Account was successfully created.'
@@ -73,14 +81,16 @@ class FacilityAccountsController < ApplicationController
 
   # PUT /facilities/:facility_id/accounts/:id
   def update
-    type = Account.config.account_type_to_param(@account.class)
+    account_type = Account.config.account_type_to_param(@account.class)
 
-    # TODO: refactor
-    if @account.is_a?(AffiliateAccount) && params[type][:affiliate_id] != Affiliate.OTHER.id.to_s
-      params[type][:affiliate_other] = nil
-    end
+    @account = AccountBuilder.for(account_type).new({
+      account: @account,
+      current_user: current_user,
+      owner_user: @owner_user,
+      params: params,
+    }).update
 
-    if @account.update_attributes(params[type])
+    if @account.save
       flash[:notice] = I18n.t('controllers.facility_accounts.update')
       redirect_to facility_account_path
     else
@@ -182,12 +192,15 @@ class FacilityAccountsController < ApplicationController
   private
 
   def available_account_types
-    Account.config.account_types_for_facility(current_facility).map(&:to_s)
+    Account.config.account_types_for_facility(current_facility)
   end
 
   def current_account_type
-    return params[:account_type] if available_account_types.include?(params[:account_type])
-    available_account_types.first
+    if available_account_types.include?(params[:account_type])
+      params[:account_type]
+    else
+      available_account_types.first
+    end
   end
 
   def render_statement_pdf

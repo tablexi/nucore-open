@@ -26,7 +26,7 @@ RSpec.describe PurchaseOrderAccount do
   end
 
   it "is limited to a single facility" do
-    expect(PurchaseOrderAccount).to be_limited_to_single_facility
+    expect(PurchaseOrderAccount).to be_single_facility
   end
 
   context "with facility" do

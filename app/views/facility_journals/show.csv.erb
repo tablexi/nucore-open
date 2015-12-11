@@ -14,7 +14,7 @@ output = CSVHelper::CSV.generate do |csv|
               "#{Product.model_name.human} #{Product.human_attribute_name(:name)}",
               OrderDetail.human_attribute_name(:quantity)]
   headers << "#{Account.model_name.human} #{Account.human_attribute_name(:type)}" if Account.config.multiple_account_types?
-  headers << Account.human_attribute_name(:affiliate) if Account.config.using_affiliates?
+  headers << Account.human_attribute_name(:affiliate) if Account.config.affiliates_enabled?
 
   headers += ["#{Account.model_name.human} #{Account.human_attribute_name(:account_number)}",
               "#{Account.model_name.human} #{Account.human_attribute_name(:description)}",
@@ -69,7 +69,7 @@ output = CSVHelper::CSV.generate do |csv|
 
            # account information
     row << account.type.underscore.humanize if Account.config.multiple_account_types?
-    row << account.affiliate.try(:name) if Account.config.using_affiliates?
+    row << account.affiliate.try(:name) if Account.config.affiliates_enabled?
 
     row +=[account.account_number,
            account.description_to_s,

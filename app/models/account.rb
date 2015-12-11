@@ -26,7 +26,7 @@ class Account < ActiveRecord::Base
   accepts_nested_attributes_for :account_users
 
   scope :active, lambda {{ :conditions => ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] }}
-  scope :filter_global_account_types, -> { where("accounts.type in (:global)", { global: global_account_types.map(&:to_s) }) }
+  scope :global_account_types, -> { where("accounts.type in (:global)", { global: config.global_account_types }) }
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
   validates_length_of :description, :maximum => 50
@@ -48,13 +48,18 @@ class Account < ActiveRecord::Base
   end
 
   # Returns true if this account type is limited to a single facility.
-  def self.limited_to_single_facility?
+  def self.single_facility?
     config.single_facility?(self.name)
   end
 
-  # Returns true if this acocunt type can cross multiple facilities.
+  # Returns true if this account type can cross multiple facilities.
   def self.cross_facility?
     config.cross_facility?(self.name)
+  end
+
+  # Returns true if this account type can assign an affiliate.
+  def self.using_affiliate?
+    config.using_affiliate?(self.name)
   end
 
   def self.for_facility(facility)
@@ -63,8 +68,8 @@ class Account < ActiveRecord::Base
     if facility.single_facility?
       accounts = accounts.where(
         "accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)",
-        allow_all: config.global_account_types.map(&:to_s),
-        limit_one: config.facility_account_types.map(&:to_s),
+        allow_all: config.global_account_types,
+        limit_one: config.facility_account_types,
         facility: facility
       )
     end
@@ -86,8 +91,8 @@ class Account < ActiveRecord::Base
   end
 
   # The subclassed Account objects will be cross facility by default; override
-  # this method if the subclassed Account object is always scoped to a
-  # particular facility.
+  # this method with `belongs_to :facility` if the subclassed Account object is
+  # always scoped to a single facility.
   def facility
     nil
   end

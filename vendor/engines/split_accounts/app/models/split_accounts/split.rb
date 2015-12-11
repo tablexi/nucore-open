@@ -24,5 +24,9 @@ module SplitAccounts
       end
     end
 
+    def self.available_subaccounts
+      Account.excluding_split_accounts.global_account_types.active
+    end
+
   end
 end

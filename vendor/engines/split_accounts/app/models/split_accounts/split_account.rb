@@ -29,9 +29,15 @@ module SplitAccounts
       splits.select(&:extra_penny?).size
     end
 
-    # TODO: expire at same time as most recently expiring subaccount
-    def set_expires_at!
-      self.expires_at = Time.now + 1.year
+    # Stopped using SQL because that didn't seem to work until the built splits
+    # and subaccounts were created.
+    #
+    # SQL version:
+    #   subaccounts.where("expires_at IS NOT NULL").order(expires_at: :asc).first
+    #
+    def earliest_expiring_subaccount
+      subaccounts = splits.map{ |split| split.subaccount }.select(&:expires_at)
+      subaccounts.sort_by(&:expires_at).first
     end
 
   end

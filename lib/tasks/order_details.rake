@@ -31,6 +31,7 @@ namespace :order_details  do
 
   desc "Uncancels a list of order details. The file should contain just the OD ID, one per line"
   task :uncancel, [:filename] => :environment do |t, args|
+    Rails.logger = Logger.new(STDOUT)
     uncanceler = OrderUncanceler.new
     File.open(args[:filename]).each_line do |line|
       order_detail = OrderDetail.find_by_id(line.chomp)
