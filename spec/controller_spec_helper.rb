@@ -34,7 +34,10 @@ def create_users
   end
 
   UserRole.grant(@admin, UserRole::ADMINISTRATOR)
-  UserRole.grant(@billing_admin, UserRole::BILLING_ADMINISTRATOR)
+
+  if SettingsHelper.feature_on?(:billing_administrator)
+    @billing_admin = FactoryGirl.create(:user, :billing_administrator, username: "billing_admin")
+  end
 end
 
 

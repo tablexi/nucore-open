@@ -109,7 +109,7 @@ RSpec.describe User do
       it { is_expected.to match_array(privileged_users) }
     end
 
-    context "when users have the billing administrator role" do
+    context "when users have the billing administrator role", feature_setting: { billing_administrator: true } do
       let!(:privileged_users) { create_list(:user, 2, :billing_administrator) }
 
       it { is_expected.to match_array(privileged_users) }

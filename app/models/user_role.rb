@@ -31,7 +31,11 @@ class UserRole < ActiveRecord::Base
   end
 
   def self.global_roles
-    account_manager + administrator + billing_administrator
+    if SettingsHelper.feature_on?(:billing_administrator)
+      account_manager + administrator + billing_administrator
+    else
+      account_manager + administrator
+    end
   end
 
   def self.valid_roles
