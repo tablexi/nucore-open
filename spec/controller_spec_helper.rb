@@ -25,23 +25,16 @@ end
 #
 # Call this method in a before(:all) block at the top of your +describe+
 def create_users
-  user_names = %w(
-    admin
-    business_admin
-    director
-    facility_admin
-    guest
-    owner
-    purchaser
-    staff
-    senior_staff
-  )
-
-  @users = user_names.map do |name|
-    instance_variable_set("@#{name}", FactoryGirl.create(:user, username: name))
-  end
-
-  UserRole.create!(user: @admin, role: UserRole::ADMINISTRATOR)
+  # TODO: Phase these out with "let" assignments, and use traits to assign roles
+  @admin = FactoryGirl.create(:user, :administrator, username: "admin")
+  @business_admin = FactoryGirl.create(:user, username: "business_admin")
+  @director = FactoryGirl.create(:user, username: "director")
+  @facility_admin = FactoryGirl.create(:user, username: "facility_admin")
+  @guest = FactoryGirl.create(:user, username: "guest")
+  @owner = FactoryGirl.create(:user, username: "owner")
+  @purchaser = FactoryGirl.create(:user, username: "purchaser")
+  @staff = FactoryGirl.create(:user, username: "staff")
+  @senior_staff = FactoryGirl.create(:user, username: "senior_staff")
 end
 
 #
