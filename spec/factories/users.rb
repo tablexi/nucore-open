@@ -10,19 +10,19 @@ FactoryGirl.define do
 
   trait :account_manager do
     after(:create) do |user, _|
-      UserRole.grant(user, UserRole::ACCOUNT_MANAGER)
+      UserRole.create!(user: user, role: UserRole::ACCOUNT_MANAGER)
     end
   end
 
   trait :administrator do
     after(:create) do |user, _|
-      UserRole.grant(user, UserRole::ADMINISTRATOR)
+      UserRole.create!(user: user, role: UserRole::ADMINISTRATOR)
     end
   end
 
   trait :billing_administrator do
     after(:create) do |user, _|
-      UserRole.grant(user, UserRole::BILLING_ADMINISTRATOR)
+      UserRole.create!(user: user, role: UserRole::BILLING_ADMINISTRATOR)
     end
   end
 
@@ -46,7 +46,11 @@ FactoryGirl.define do
     transient { facility nil }
 
     after(:create) do |user, evaluator|
-      UserRole.grant(user, UserRole::FACILITY_ADMINISTRATOR, evaluator.facility)
+      UserRole.create!(
+        user: user,
+        role: UserRole::FACILITY_ADMINISTRATOR,
+        facility: evaluator.facility,
+      )
     end
   end
 
@@ -54,7 +58,11 @@ FactoryGirl.define do
     transient { facility nil }
 
     after(:create) do |user, evaluator|
-      UserRole.grant(user, UserRole::FACILITY_DIRECTOR, evaluator.facility)
+      UserRole.create!(
+        user: user,
+        role: UserRole::FACILITY_DIRECTOR,
+        facility: evaluator.facility,
+      )
     end
   end
 
@@ -78,7 +86,11 @@ FactoryGirl.define do
     transient { facility nil }
 
     after(:create) do |user, evaluator|
-      UserRole.grant(user, UserRole::FACILITY_SENIOR_STAFF, evaluator.facility)
+      UserRole.create!(
+        user: user,
+        role: UserRole::FACILITY_SENIOR_STAFF,
+        facility: evaluator.facility,
+      )
     end
   end
 
@@ -86,7 +98,11 @@ FactoryGirl.define do
     transient { facility nil }
 
     after(:create) do |user, evaluator|
-      UserRole.grant(user, UserRole::FACILITY_STAFF, evaluator.facility)
+      UserRole.create!(
+        user: user,
+        role: UserRole::FACILITY_STAFF,
+        facility: evaluator.facility,
+      )
     end
   end
 end

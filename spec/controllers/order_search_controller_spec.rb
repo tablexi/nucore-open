@@ -110,10 +110,8 @@ RSpec.describe OrderSearchController do
       it_should_have_customer_paths
     end
 
-    context 'when signed in as a billing manager' do
-      before :each do
-        sign_in @billing_admin
-      end
+    context "when signed in as a billing administrator", feature_setting: { billing_administrator: true } do
+      before { sign_in create(:user, :billing_administrator) }
 
       it_should_find_the_order
       it_should_have_admin_edit_paths

@@ -5,6 +5,23 @@ RSpec.describe UserRole do
     subject(:user_role) { described_class.new(user: user, role: role, facility: facility) }
     let(:user) { create(:user) }
 
+    context "when the role is Billing Administrator" do
+      let(:facility) { nil }
+      let(:role) { described_class::BILLING_ADMINISTRATOR }
+
+      context "and the billing_administrator feature is enabled", feature_setting: { billing_administrator: true } do
+        it { is_expected.to be_valid }
+      end
+
+      context "and the billing_administrator feature is disabled", feature_setting: { billing_administrator: false } do
+        it "is invalid" do
+          is_expected.not_to be_valid
+          expect(user_role.errors[:role])
+            .to include(a_string_matching("is not a valid value"))
+        end
+      end
+    end
+
     context "when given a nonexistent role" do
       let(:role) { "NOT A VALID ROLE" }
       let(:facility) { nil }

@@ -124,7 +124,7 @@ RSpec.describe Ability do
     end
   end
 
-  describe "billing administrator" do
+  describe "billing administrator", feature_setting: { billing_administrator: true } do
     let(:user) { create(:user, :billing_administrator) }
 
     it { is_expected.to be_allowed_to(:manage, Account) }

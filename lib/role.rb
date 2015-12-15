@@ -12,9 +12,11 @@ module Role
     #
     # Creates methods #administrator?, #facility_staff?, etc.
     # Each returns true if #user_roles has the role for any facility.
-    define_method(role.gsub(/\s/, '_').downcase + '?') do
-      roles=user_roles.collect(&:role)
-      roles.include?(role)
+    if role != UserRole::BILLING_ADMINISTRATOR
+      define_method(role.gsub(/\s/, '_').downcase + '?') do
+        roles=user_roles.collect(&:role)
+        roles.include?(role)
+      end
     end
 
     #
@@ -47,6 +49,14 @@ module Role
       else
         facilities.sorted.where("user_roles.role IN (?)", UserRole.facility_management_roles)
       end
+    end
+  end
+
+  def billing_administrator?
+    if SettingsHelper.feature_on?(:billing_administrator)
+      user_roles.where(role: UserRole::BILLING_ADMINISTRATOR).any?
+    else
+      false
     end
   end
 

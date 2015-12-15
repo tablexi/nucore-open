@@ -31,7 +31,11 @@ class UserRole < ActiveRecord::Base
   end
 
   def self.global_roles
-    account_manager + administrator + billing_administrator
+    if SettingsHelper.feature_on?(:billing_administrator)
+      account_manager + administrator + billing_administrator
+    else
+      account_manager + administrator
+    end
   end
 
   def self.valid_roles
@@ -56,7 +60,7 @@ class UserRole < ActiveRecord::Base
   end
 
   validates_presence_of :user_id
-  validates_inclusion_of :role, in: valid_roles, message: "is not a valid value"
+  validates_inclusion_of :role, in: ->(roles) { valid_roles }, message: "is not a valid value"
   validates_uniqueness_of :role,
     scope: [:facility_id, :user_id],
     message: I18n.t("activerecord.errors.models.user_role.duplicate")
