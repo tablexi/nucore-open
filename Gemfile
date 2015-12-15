@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
+
 ## base
 gem 'rails',            '3.2.22'
 gem "strong_parameters"

@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/elzoiddy/vestal_versions.git
+  remote: git@github.com:elzoiddy/vestal_versions.git
   revision: 1905429b80303875c261370a16b086a3d6a88b25
   specs:
     vestal_versions (1.2.4.3)
@@ -7,7 +7,7 @@ GIT
       activesupport (>= 3.0.0)
 
 GIT
-  remote: git://github.com/tablexi/synaccess.git
+  remote: git@github.com:tablexi/synaccess.git
   revision: 7342482d6d5b77aa33b09fbc48e538100f9c31dd
   specs:
     synaccess_connect (0.2.2)
