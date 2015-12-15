@@ -25,21 +25,29 @@ end
 #
 # Call this method in a before(:all) block at the top of your +describe+
 def create_users
-  @users=[]
+  user_names = %w(
+    admin
+    business_admin
+    director
+    facility_admin
+    guest
+    owner
+    purchaser
+    staff
+    senior_staff
+  )
 
-  [ 'admin', 'facility_admin', 'director', 'staff', 'guest', 'owner', 'purchaser', 'business_admin', 'senior_staff', 'billing_admin' ].each do |name|
-    user=FactoryGirl.create(:user, :username => name)
-    instance_variable_set("@#{name}".to_sym, user)
-    @users << user
+  @users = user_names.map do |name|
+    instance_variable_set("@#{name}", FactoryGirl.create(:user, username: name))
   end
 
-  UserRole.grant(@admin, UserRole::ADMINISTRATOR)
+  UserRole.create!(user: @admin, role: UserRole::ADMINISTRATOR)
 
   if SettingsHelper.feature_on?(:billing_administrator)
     @billing_admin = FactoryGirl.create(:user, :billing_administrator, username: "billing_admin")
+    @users << @billing_admin
   end
 end
-
 
 #
 # This nifty method allows you to keep DRY the requests of a context.
