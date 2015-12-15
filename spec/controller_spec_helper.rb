@@ -42,11 +42,6 @@ def create_users
   end
 
   UserRole.create!(user: @admin, role: UserRole::ADMINISTRATOR)
-
-  if SettingsHelper.feature_on?(:billing_administrator)
-    @billing_admin = FactoryGirl.create(:user, :billing_administrator, username: "billing_admin")
-    @users << @billing_admin
-  end
 end
 
 #

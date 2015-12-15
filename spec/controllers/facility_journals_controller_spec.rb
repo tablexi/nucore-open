@@ -332,7 +332,7 @@ RSpec.describe FacilityJournalsController do
       it_should_support_searching
     end
 
-    context "with a mixed facility journal" do
+    context "with a mixed facility journal", feature_setting: { billing_administrator: true } do
       before :each do
         ignore_account_validations
         create_order_details
@@ -343,7 +343,7 @@ RSpec.describe FacilityJournalsController do
 
         @params[:facility_id] = "all"
         @params[:order_detail_ids] = [@order_detail1.id, @facility2_order_detail.id]
-        sign_in @billing_admin
+        sign_in create(:user, :billing_administrator)
         do_request
       end
 
