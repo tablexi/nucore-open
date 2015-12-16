@@ -75,8 +75,8 @@ RSpec.describe FacilityOrdersController do
 
   context '#batch_update' do
     before :each do
-      @method=:post
-      @action=:batch_update
+      @method = :post
+      @action = :batch_update
     end
 
     it_should_allow_operators_only :redirect
