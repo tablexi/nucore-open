@@ -1,87 +1,135 @@
 require "rails_helper"
 
 RSpec.describe AccountUser do
-  it "should create through account" do
-    @user    = FactoryGirl.create(:user)
-    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
-    expect(@account).to be_valid
+  context "when creating through Account" do
+    subject(:account) { build(:nufs_account, :with_account_owner) }
+
+    it { is_expected.to be_valid }
   end
 
-  it "should allow only predefined roles" do
-    AccountUser.user_roles.each do |role|
-      @au = AccountUser.new({:user_role => role})
-      @au.valid?
-      expect(@au.errors[:user_id]).to be_empty
+  context "with a valid user_role" do
+    described_class.user_roles.each do |role|
+      context role do
+        subject { build(:account_user, user_role: role) }
+
+        it { is_expected.to be_valid }
+      end
+    end
+  end
+
+  context "with a blank user_role" do
+    subject(:account_user) { build(:account_user, user_role: nil) }
+
+    it "is invalid" do
+      is_expected.not_to be_valid
+      expect(account_user.errors[:user_role])
+        .to include(a_string_matching("invalid"))
+    end
+  end
+
+  context "with an invalid user_role" do
+    subject(:account_user) { build(:account_user, user_role: "Not A Role") }
+
+    it "is invalid" do
+      is_expected.not_to be_valid
+      expect(account_user.errors[:user_role])
+        .to include(a_string_matching("invalid"))
+    end
+  end
+
+  context "when a user has an active role for an account" do
+    let(:account) { create(:nufs_account, :with_account_owner, owner: user) }
+    let(:user) { create(:user) }
+
+    context "when creating another role for the user for the account" do
+      subject(:account_user) do
+        build(:account_user, :purchaser, account: account, user: user)
+      end
+
+      it "is invalid" do
+        is_expected.not_to be_valid
+        expect(account_user.errors[:user_id])
+          .to include(a_string_matching("already a member"))
+      end
+    end
+  end
+
+  context "when a user has inactive (deleted) roles for an account" do
+    let(:account) { create(:nufs_account, :with_account_owner) }
+    let(:user) { create(:user) }
+
+    before(:each) do
+      create(:account_user, :purchaser, :inactive, account: account, user: user)
     end
 
-    @au = AccountUser.create({:user_role => nil})
-    expect(@au.errors[:user_id]).not_to be_nil
+    context "when creating an identical active role" do
+      subject(:account_user) do
+        build(:account_user, :purchaser, account: account, user: user)
+      end
 
-    @au = AccountUser.create({:user_role => 'NotAValidRole'})
-    expect(@au.errors[:user_id]).not_to be_nil
+      it { is_expected.to be_valid }
+    end
   end
 
-  it "should allow only one active role per user per account" do
-    @user    = FactoryGirl.create(:user)
-    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
+  context "when an account has an active owner" do
+    let!(:account) { create(:nufs_account, :with_account_owner) }
 
-    @au      = @account.account_users.create({:user => @user, :user_role => 'Purchaser', :created_by => @user.id})
-    expect(@au.errors[:user_id]).not_to be_nil
+    context "when attempting to add another owner" do
+      subject(:account_user) do
+        build(:account_user, :owner, account: account, user: user)
+      end
+      let(:user) { create(:user) }
+
+      it "is invalid" do
+        is_expected.not_to be_valid
+        expect(account_user.errors[:user_role])
+          .to include(a_string_matching("already been taken"))
+      end
+    end
   end
 
-  it "should allow multiple inactive entries for the same user / role" do
-    @user    = FactoryGirl.create(:user)
-    @user2   = FactoryGirl.create(:user)
-    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
+  describe ".selectable_user_roles" do
+    let(:facility) { create(:facility) }
 
-    @au_deleted = @account.account_users.create(:user => @user2, :user_role => 'Purchaser', :created_by => @user.id, :deleted_at => Time.zone.now, :deleted_by => @user.id)
-    @au         = @account.account_users.create(:user => @user2, :user_role => 'Purchaser', :created_by => @user.id)
+    context "when supplying a user who will grant the role" do
+      context "who is a facility director (manager)" do
+        let(:user) { create(:user, :facility_director, facility: facility) }
 
-    expect(@au.errors[:user_id]).to be_empty
-  end
+        context "and a facility" do
+          subject(:roles) { described_class.selectable_user_roles(user, facility) }
 
-  it "should not allow multiple active account owners" do
-    @user1   = FactoryGirl.create(:user)
-    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user1))
+          it { is_expected.to include(AccountUser::ACCOUNT_OWNER) }
+        end
 
-    @user2   = FactoryGirl.create(:user)
-    @au = @account.account_users.create({:user => @user2, :user_role => 'Owner', :created_by => @user1.id})
-    expect(@au.errors[:user_role]).not_to be_nil
-  end
+        context "but no facility" do
+          subject(:roles) { described_class.selectable_user_roles(user) }
 
+          it { is_expected.not_to include(AccountUser::ACCOUNT_OWNER) }
+        end
+      end
 
-  context 'selectable_user_roles' do
+      context "who is an account manager" do
+        subject(:roles) do
+          described_class.selectable_user_roles(user, Facility.cross_facility)
+        end
+        let(:user) { create(:user, :account_manager) }
 
-    it 'should not include account owner role by default' do
-      roles=AccountUser.selectable_user_roles
-      expect(roles).not_to be_include AccountUser::ACCOUNT_OWNER
+        it { is_expected.to include(AccountUser::ACCOUNT_OWNER) }
+      end
     end
 
+    context "when not supplying a user" do
+      context "but supplying a facility" do
+        subject(:roles) { described_class.selectable_user_roles(nil, facility) }
 
-    context 'with manager' do
-
-      before :each do
-        @user=FactoryGirl.create(:user)
-        @facility=FactoryGirl.create(:facility)
-        UserRole.grant(@user, UserRole::FACILITY_DIRECTOR, @facility)
-        expect(@user).to be_manager_of @facility
+        it { is_expected.not_to include(AccountUser::ACCOUNT_OWNER) }
       end
 
-      it 'should not include account owner role without facility' do
-        roles=AccountUser.selectable_user_roles(@user)
-        expect(roles).not_to be_include AccountUser::ACCOUNT_OWNER
-      end
+      context "or a facility" do
+        subject(:roles) { described_class.selectable_user_roles }
 
-      it 'should not include account owner role without user' do
-        roles=AccountUser.selectable_user_roles(nil, @facility)
-        expect(roles).not_to be_include AccountUser::ACCOUNT_OWNER
+        it { is_expected.not_to include(AccountUser::ACCOUNT_OWNER) }
       end
-
-      it 'should include account owner role if called by manager' do
-        roles=AccountUser.selectable_user_roles(@user, @facility)
-        expect(roles).to be_include AccountUser::ACCOUNT_OWNER
-      end
-
     end
   end
 end

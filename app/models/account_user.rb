@@ -44,16 +44,22 @@ class AccountUser < ActiveRecord::Base
   # Provides an +Array+ of roles that can be assigned
   # to a user. Optionally filters the set by the given
   # arguments
-  # [_user_]
+  # [_granting_user_]
   # The user selecting a role to be applied to
   # another user; the grantor
   # [_facility_]
   # The facility under which the selected role is
   # granted by +user+
-  def self.selectable_user_roles(user=nil, facility=nil)
-    user_roles.reject { |r| r == ACCOUNT_OWNER if user.nil? || facility.nil? || !user.manager_of?(facility) }
+  def self.selectable_user_roles(granting_user = nil, facility = nil)
+    case
+    when granting_user.blank? || facility.blank?
+      user_roles - [ACCOUNT_OWNER]
+    when granting_user.account_manager? || granting_user.manager_of?(facility)
+      user_roles
+    else
+      user_roles - [ACCOUNT_OWNER]
+    end
   end
-
 
   #
   # Assigns +role+ to +user+ for +account+
