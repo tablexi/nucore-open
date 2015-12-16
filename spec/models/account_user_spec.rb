@@ -107,6 +107,15 @@ RSpec.describe AccountUser do
           it { is_expected.not_to include(AccountUser::ACCOUNT_OWNER) }
         end
       end
+
+      context "who is an account manager" do
+        subject(:roles) do
+          described_class.selectable_user_roles(user, Facility.cross_facility)
+        end
+        let(:user) { create(:user, :account_manager) }
+
+        it { is_expected.to include(AccountUser::ACCOUNT_OWNER) }
+      end
     end
 
     context "when not supplying a user" do
