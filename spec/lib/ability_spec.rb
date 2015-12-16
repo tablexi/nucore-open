@@ -43,6 +43,8 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:administer, User) }
     it { is_expected.not_to be_allowed_to(:suspend, Account) }
     it { is_expected.not_to be_allowed_to(:unsuspend, Account) }
+    it { is_expected.not_to be_allowed_to(:batch_update, Order) }
+    it { is_expected.not_to be_allowed_to(:batch_update, Reservation) }
 
     context "in a single facility" do
       it { is_expected.not_to be_allowed_to(:manage_accounts, facility) }
@@ -107,6 +109,8 @@ RSpec.describe Ability do
       it { is_expected.to be_allowed_to(:manage, User) }
       it { is_expected.to be_allowed_to(:manage_accounts, facility) }
       it { is_expected.to be_allowed_to(:manage_billing, facility) }
+      it { is_expected.to be_allowed_to(:batch_update, Order) }
+      it { is_expected.to be_allowed_to(:batch_update, Reservation) }
     end
 
     context "in cross-facility" do
@@ -169,7 +173,10 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:manage, TrainingRequest) }
     it { is_expected.to be_allowed_to(:show_problems, Reservation) }
     it { is_expected.to be_allowed_to(:disputed, Order) }
+    it { is_expected.to be_allowed_to(:batch_update, Order) }
+    it { is_expected.to be_allowed_to(:batch_update, Reservation) }
     it { is_expected.to be_allowed_to(:administer, User) }
+
     it_behaves_like "it can destroy admistrative reservations"
   end
 
@@ -201,6 +208,8 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:read, Notification) }
     it { is_expected.to be_allowed_to(:show_problems, Reservation) }
     it { is_expected.to be_allowed_to(:disputed, Order) }
+    it { is_expected.to be_allowed_to(:batch_update, Order) }
+    it { is_expected.to be_allowed_to(:batch_update, Reservation) }
     it { is_expected.to be_allowed_to(:administer, User) }
     it { is_expected.not_to be_allowed_to(:manage_accounts, Facility.cross_facility) }
     it { is_expected.not_to be_allowed_to(:manage_billing, Facility.cross_facility) }
@@ -212,6 +221,8 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:disputed, Order) }
     it { is_expected.not_to be_allowed_to(:manage, Account) }
     it { is_expected.not_to be_allowed_to(:show_problems, Reservation) }
+    it { is_expected.to be_allowed_to(:batch_update, Order) }
+    it { is_expected.to be_allowed_to(:batch_update, Reservation) }
     it { is_expected.to be_allowed_to(:read, Notification) }
     it { is_expected.to be_allowed_to(:administer, User) }
     it_behaves_like "it can destroy admistrative reservations"

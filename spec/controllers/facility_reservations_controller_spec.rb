@@ -93,7 +93,12 @@ RSpec.describe FacilityReservationsController do
   end
 
   context '#batch_update' do
-    skip "TODO test exists for the FacilityOrdersController version"
+    before :each do
+      @method = :post
+      @action = :batch_update
+    end
+
+    it_should_allow_operators_only :redirect
   end
 
   context '#create' do
