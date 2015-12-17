@@ -66,7 +66,6 @@ class FacilityAccountsController < ApplicationController
       params: params,
     }).build
 
-
     if @account.save
       flash[:notice] = 'Account was successfully created.'
       redirect_to facility_user_accounts_path(current_facility, @account.owner_user)

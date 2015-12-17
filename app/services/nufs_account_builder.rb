@@ -4,6 +4,15 @@ class NufsAccountBuilder < AccountBuilder
 
   protected
 
+  # Override strong_params for `build` account.
+  def account_params_for_build
+    [ 
+      { account_number_parts: [:account_number] },
+      :account_number,
+      :description,
+    ]
+  end
+
   # Hooks into superclass's `build` method.
   def after_build
     set_expires_at
