@@ -24,13 +24,19 @@ class AccountConfig
   # Returns an array of subclassed Account object names that support statements.
   # Engines can append to this list.
   def statement_account_types
-    @statement_account_types ||= []
+    @statement_account_types ||= ["NufsAccount"]
   end
 
   # Returns an array of subclassed Account object names that support affiliates.
   # Engines can append to this list.
   def affiliate_account_types
     @affiliate_account_types ||= []
+  end
+
+  # Returns an array of subclassed Account object names that support journal.
+  # Engines can append to this list.
+  def journal_account_types
+    @journal_account_types ||= ["NufsAccount"]
   end
 
   # Given an subclassed `Account` name return a param-friendly string. Replaces
@@ -77,6 +83,16 @@ class AccountConfig
   # Returns true if this account type can assign an affiliate.
   def using_affiliate?(account_type)
     affiliate_account_types.include?(account_type.to_s.classify)
+  end
+
+  # Returns true if this account type can assign an affiliate.
+  def using_statements?(account_type)
+    statement_account_types.include?(account_type.to_s.classify)
+  end
+
+  # Returns true if this account type can journal.
+  def using_journal?(account_type)
+    journal_account_types.include?(account_type.to_s.classify)
   end
 
 end
