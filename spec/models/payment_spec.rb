@@ -19,4 +19,57 @@ RSpec.describe Payment do
       expect(payment.paid_by_id).to eq(user.id)
     end
   end
+
+  describe "amount" do
+    subject(:payment) { described_class.new(amount: amount) }
+    before { payment.valid? }
+
+    context "positive amount" do
+      let(:amount) { 23.45 }
+
+      it "does not have an error on amount" do
+        expect(payment.errors).not_to include(:amount)
+      end
+    end
+
+    context "negative amount" do
+      let(:amount) { -23.45 }
+
+      it "does not have an error on amount" do
+        expect(payment.errors).not_to include(:amount)
+      end
+    end
+
+    context "a zero amount" do
+      let(:amount) { 0 }
+
+      it "has an error on amount" do
+        expect(payment.errors).to include(:amount)
+      end
+    end
+
+    context "a nil amount" do
+      let(:amount) { nil }
+
+      it "has an error on amount" do
+        expect(payment.errors).to include(:amount)
+      end
+    end
+  end
+
+  describe "processing_fee" do
+    let(:payment) { described_class.new }
+
+    it "has a default processing fee of zero" do
+      expect(payment.processing_fee).to eq(0)
+      payment.valid?
+      expect(payment.errors).not_to include(:processing_fee)
+    end
+
+    it "is invalid if you try to set the processing fee to nil" do
+      payment.processing_fee = nil
+      expect(payment).to be_invalid
+      expect(payment.errors).to include(:processing_fee)
+    end
+  end
 end
