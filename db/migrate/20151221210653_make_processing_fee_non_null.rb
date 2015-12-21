@@ -1,0 +1,9 @@
+class MakeProcessingFeeNonNull < ActiveRecord::Migration
+  def up
+    change_column :payments, :processing_fee, :decimal, precision: 10, scale: 2, null: false, default: 0
+  end
+
+  def down
+    change_column :payments, :processing_fee, :decimal, precision: 10, scale: 2, null: true, default: nil
+  end
+end
