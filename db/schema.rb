@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151201221103) do
+ActiveRecord::Schema.define(:version => 20151221210653) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -141,10 +141,10 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
     t.boolean  "show_instrument_availability",                :default => false, :null => false
   end
 
-  add_index "facilities", ["abbreviation"], :name => "index_facilities_on_abbreviation", :unique => true
+  add_index "facilities", ["abbreviation"], :name => "sys_c008532", :unique => true
   add_index "facilities", ["is_active", "name"], :name => "index_facilities_on_is_active_and_name"
-  add_index "facilities", ["name"], :name => "index_facilities_on_name", :unique => true
-  add_index "facilities", ["url_name"], :name => "index_facilities_on_url_name", :unique => true
+  add_index "facilities", ["name"], :name => "sys_c008531", :unique => true
+  add_index "facilities", ["url_name"], :name => "sys_c008533", :unique => true
 
   create_table "facility_accounts", :force => true do |t|
     t.integer  "facility_id",                   :null => false
@@ -168,9 +168,9 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
   create_table "journal_rows", :force => true do |t|
     t.integer "journal_id",                                                   :null => false
     t.integer "order_detail_id"
-    t.string  "account",         :limit => 5
     t.decimal "amount",                         :precision => 9, :scale => 2, :null => false
     t.string  "description",     :limit => 200
+    t.string  "account",         :limit => 5
   end
 
   add_index "journal_rows", ["journal_id"], :name => "index_journal_rows_on_journal_id"
@@ -218,7 +218,6 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
     t.integer  "assigned_user_id"
     t.decimal  "estimated_cost",                         :precision => 10, :scale => 2
     t.decimal  "estimated_subsidy",                      :precision => 10, :scale => 2
-    t.integer  "response_set_id"
     t.integer  "account_id"
     t.datetime "dispute_at"
     t.integer  "dispute_by_id"
@@ -229,6 +228,7 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
     t.datetime "updated_at"
     t.integer  "order_status_id"
     t.string   "state",                   :limit => 50
+    t.integer  "response_set_id"
     t.integer  "group_id"
     t.integer  "bundle_product_id"
     t.string   "note",                    :limit => 100
@@ -248,13 +248,13 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
   add_index "order_details", ["dispute_by_id"], :name => "order_details_dispute_by_id_fk"
   add_index "order_details", ["group_id"], :name => "index_order_details_on_group_id"
   add_index "order_details", ["journal_id"], :name => "index_order_details_on_journal_id"
-  add_index "order_details", ["order_id"], :name => "order_details_order_id_fk"
+  add_index "order_details", ["order_id"], :name => "sys_c009172"
   add_index "order_details", ["order_status_id"], :name => "index_order_details_on_order_status_id"
   add_index "order_details", ["parent_order_detail_id"], :name => "order_details_parent_order_detail_id_fk"
-  add_index "order_details", ["price_policy_id"], :name => "order_details_price_policy_id_fk"
+  add_index "order_details", ["price_policy_id"], :name => "sys_c009175"
   add_index "order_details", ["problem"], :name => "index_order_details_on_problem"
   add_index "order_details", ["product_accessory_id"], :name => "order_details_product_accessory_id_fk"
-  add_index "order_details", ["product_id"], :name => "order_details_product_id_fk"
+  add_index "order_details", ["product_id"], :name => "sys_c009173"
   add_index "order_details", ["response_set_id"], :name => "index_order_details_on_response_set_id"
   add_index "order_details", ["state"], :name => "index_order_details_on_state"
   add_index "order_details", ["statement_id"], :name => "index_order_details_on_statement_id"
@@ -284,7 +284,7 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
     t.integer "rgt"
   end
 
-  add_index "order_statuses", ["facility_id", "parent_id", "name"], :name => "index_order_statuses_on_facility_id_and_parent_id_and_name", :unique => true
+  add_index "order_statuses", ["facility_id", "parent_id", "name"], :name => "sys_c008542", :unique => true
 
   create_table "orders", :force => true do |t|
     t.integer  "account_id"
@@ -299,22 +299,23 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
     t.integer  "order_import_id"
   end
 
-  add_index "orders", ["account_id"], :name => "orders_account_id_fk"
+  add_index "orders", ["account_id"], :name => "sys_c008808"
   add_index "orders", ["facility_id"], :name => "index_orders_on_facility_id"
+  add_index "orders", ["facility_id"], :name => "orders_facility_id_fk"
   add_index "orders", ["order_import_id"], :name => "index_orders_on_order_import_id"
   add_index "orders", ["state"], :name => "index_orders_on_state"
   add_index "orders", ["user_id"], :name => "index_orders_on_user_id"
 
   create_table "payments", :force => true do |t|
-    t.integer  "account_id",                                    :null => false
+    t.integer  "account_id",                                                     :null => false
     t.integer  "statement_id"
-    t.string   "source",                                        :null => false
+    t.string   "source",                                                         :null => false
     t.string   "source_id"
-    t.decimal  "amount",         :precision => 10, :scale => 2, :null => false
+    t.decimal  "amount",         :precision => 10, :scale => 2,                  :null => false
     t.integer  "paid_by_id"
-    t.datetime "created_at",                                    :null => false
-    t.datetime "updated_at",                                    :null => false
-    t.decimal  "processing_fee", :precision => 10, :scale => 2
+    t.datetime "created_at",                                                     :null => false
+    t.datetime "updated_at",                                                     :null => false
+    t.decimal  "processing_fee", :precision => 10, :scale => 2, :default => 0.0, :null => false
   end
 
   add_index "payments", ["account_id"], :name => "index_payments_on_account_id"
@@ -328,7 +329,7 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
     t.integer "account_id"
   end
 
-  add_index "price_group_members", ["price_group_id"], :name => "price_group_members_price_group_id_fk"
+  add_index "price_group_members", ["price_group_id"], :name => "sys_c008583"
   add_index "price_group_members", ["user_id"], :name => "index_price_group_members_on_user_id"
 
   create_table "price_group_products", :force => true do |t|
@@ -339,8 +340,8 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
     t.datetime "updated_at",         :null => false
   end
 
-  add_index "price_group_products", ["price_group_id"], :name => "index_price_group_products_on_price_group_id"
-  add_index "price_group_products", ["product_id"], :name => "index_price_group_products_on_product_id"
+  add_index "price_group_products", ["price_group_id"], :name => "i_pri_gro_pro_pri_gro_id"
+  add_index "price_group_products", ["product_id"], :name => "i_pri_gro_pro_pro_id"
 
   create_table "price_groups", :force => true do |t|
     t.integer "facility_id"
@@ -350,7 +351,7 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
     t.boolean "admin_editable",               :default => true, :null => false
   end
 
-  add_index "price_groups", ["facility_id", "name"], :name => "index_price_groups_on_facility_id_and_name", :unique => true
+  add_index "price_groups", ["facility_id", "name"], :name => "sys_c008577", :unique => true
 
   create_table "price_policies", :force => true do |t|
     t.string   "type",                :limit => 50,                                                   :null => false
@@ -375,7 +376,7 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
     t.string   "charge_for"
   end
 
-  add_index "price_policies", ["price_group_id"], :name => "price_policies_price_group_id_fk"
+  add_index "price_policies", ["price_group_id"], :name => "sys_c008589"
   add_index "price_policies", ["product_id"], :name => "index_price_policies_on_product_id"
 
   create_table "product_access_groups", :force => true do |t|
@@ -444,7 +445,7 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
   end
 
   add_index "products", ["facility_account_id"], :name => "fk_facility_accounts"
-  add_index "products", ["facility_id"], :name => "products_facility_id_fk"
+  add_index "products", ["facility_id"], :name => "sys_c008556"
   add_index "products", ["schedule_id"], :name => "i_instruments_schedule_id"
   add_index "products", ["url_name"], :name => "index_products_on_url_name"
 
@@ -476,8 +477,9 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
     t.string   "admin_note"
   end
 
-  add_index "reservations", ["order_detail_id"], :name => "reservations_order_detail_id_fk"
+  add_index "reservations", ["order_detail_id"], :name => "res_ord_det_id_fk"
   add_index "reservations", ["product_id", "reserve_start_at"], :name => "index_reservations_on_product_id_and_reserve_start_at"
+  add_index "reservations", ["product_id"], :name => "reservations_instrument_id_fk"
 
   create_table "roles", :force => true do |t|
     t.string "name"
@@ -499,7 +501,7 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
     t.boolean "on_sat",                                                           :null => false
   end
 
-  add_index "schedule_rules", ["instrument_id"], :name => "schedule_rules_instrument_id_fk"
+  add_index "schedule_rules", ["instrument_id"], :name => "sys_c008573"
 
   create_table "schedules", :force => true do |t|
     t.string   "name"
@@ -522,9 +524,9 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
 
   create_table "statement_rows", :force => true do |t|
     t.integer  "statement_id",    :null => false
-    t.integer  "order_detail_id", :null => false
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
+    t.integer  "order_detail_id", :null => false
   end
 
   add_index "statement_rows", ["order_detail_id"], :name => "index_statement_rows_on_order_detail_id"
@@ -572,7 +574,7 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
     t.string  "role",        :null => false
   end
 
-  add_index "user_roles", ["user_id", "facility_id", "role"], :name => "index_user_roles_on_user_id_and_facility_id_and_role"
+  add_index "user_roles", ["user_id", "facility_id", "role"], :name => "i_use_rol_use_id_fac_id_rol"
 
   create_table "users", :force => true do |t|
     t.string   "username",                               :null => false
@@ -616,10 +618,10 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
   add_index "versions", ["commit_label"], :name => "index_versions_on_commit_label"
   add_index "versions", ["created_at"], :name => "index_versions_on_created_at"
   add_index "versions", ["tag"], :name => "index_versions_on_tag"
-  add_index "versions", ["user_id", "user_type"], :name => "index_versions_on_user_id_and_user_type"
+  add_index "versions", ["user_id", "user_type"], :name => "i_versions_user_id_user_type"
   add_index "versions", ["user_name"], :name => "index_versions_on_user_name"
   add_index "versions", ["version_number"], :name => "index_versions_on_number"
-  add_index "versions", ["versioned_id", "versioned_type"], :name => "index_versions_on_versioned_id_and_versioned_type"
+  add_index "versions", ["versioned_id", "versioned_type"], :name => "i_ver_ver_id_ver_typ"
 
   add_foreign_key "account_users", "accounts", name: "fk_accounts"
 
@@ -634,38 +636,38 @@ ActiveRecord::Schema.define(:version => 20151201221103) do
 
   add_foreign_key "order_details", "accounts", name: "fk_od_accounts"
   add_foreign_key "order_details", "order_details", name: "order_details_parent_order_detail_id_fk", column: "parent_order_detail_id"
-  add_foreign_key "order_details", "orders", name: "order_details_order_id_fk"
-  add_foreign_key "order_details", "price_policies", name: "order_details_price_policy_id_fk"
+  add_foreign_key "order_details", "orders", name: "sys_c009172"
+  add_foreign_key "order_details", "price_policies", name: "sys_c009175"
   add_foreign_key "order_details", "product_accessories", name: "order_details_product_accessory_id_fk"
   add_foreign_key "order_details", "products", name: "fk_bundle_prod_id", column: "bundle_product_id"
-  add_foreign_key "order_details", "products", name: "order_details_product_id_fk"
+  add_foreign_key "order_details", "products", name: "sys_c009173"
   add_foreign_key "order_details", "users", name: "order_details_dispute_by_id_fk", column: "dispute_by_id"
 
   add_foreign_key "order_imports", "facilities", name: "fk_order_imports_facilities"
 
-  add_foreign_key "orders", "accounts", name: "orders_account_id_fk"
+  add_foreign_key "orders", "accounts", name: "sys_c008808"
   add_foreign_key "orders", "facilities", name: "orders_facility_id_fk"
 
   add_foreign_key "payments", "accounts", name: "payments_account_id_fk"
   add_foreign_key "payments", "statements", name: "payments_statement_id_fk"
   add_foreign_key "payments", "users", name: "payments_paid_by_id_fk", column: "paid_by_id"
 
-  add_foreign_key "price_group_members", "price_groups", name: "price_group_members_price_group_id_fk"
+  add_foreign_key "price_group_members", "price_groups", name: "sys_c008583"
 
-  add_foreign_key "price_groups", "facilities", name: "price_groups_facility_id_fk"
+  add_foreign_key "price_groups", "facilities", name: "sys_c008578"
 
-  add_foreign_key "price_policies", "price_groups", name: "price_policies_price_group_id_fk"
+  add_foreign_key "price_policies", "price_groups", name: "sys_c008589"
 
   add_foreign_key "product_users", "products", name: "fk_products"
 
-  add_foreign_key "products", "facilities", name: "products_facility_id_fk"
+  add_foreign_key "products", "facilities", name: "sys_c008556"
   add_foreign_key "products", "facility_accounts", name: "fk_facility_accounts"
   add_foreign_key "products", "schedules", name: "fk_instruments_schedule"
 
-  add_foreign_key "reservations", "order_details", name: "reservations_order_detail_id_fk"
+  add_foreign_key "reservations", "order_details", name: "res_ord_det_id_fk"
   add_foreign_key "reservations", "products", name: "reservations_product_id_fk"
 
-  add_foreign_key "schedule_rules", "products", name: "schedule_rules_instrument_id_fk", column: "instrument_id"
+  add_foreign_key "schedule_rules", "products", name: "sys_c008573", column: "instrument_id"
 
   add_foreign_key "schedules", "facilities", name: "fk_schedules_facility"
 

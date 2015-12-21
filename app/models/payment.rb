@@ -9,6 +9,7 @@ class Payment < ActiveRecord::Base
   end
 
   validates :source, presence: true, inclusion: { in: valid_sources }
-  validates :account, :amount, presence: true
+  validates :account, :amount, numericality: true, presence: true
+  validates :processing_fee, numericality: true, allow_nil: false
 
 end
