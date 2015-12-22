@@ -19,16 +19,16 @@ RSpec.describe NufsAccountBuilder, type: :service do
     end
 
     let(:params) do
-      ActionController::Parameters.new({
+      ActionController::Parameters.new(
         nufs_account: {
           account_number: "1234",
           description: "foobar",
         }
-      })
+      )
     end
 
     it "sets expired_at" do
-      expect(builder.build.expires_at).not_to be_nil
+      expect(builder.build.expires_at).to be_present
     end
   end
 end

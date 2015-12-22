@@ -23,6 +23,7 @@ en:
     facility_accounts:
       create:
         expires_at_missing: "The chart string appears to be invalid. Either the fund, department, project, or activity could not be found."
+        success: "Account was successfully created."
       update: "The payment source was successfully updated."
       suspend:
         success: "Payment source suspended successfully"

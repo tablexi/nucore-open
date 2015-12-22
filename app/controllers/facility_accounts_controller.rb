@@ -20,7 +20,7 @@ class FacilityAccountsController < ApplicationController
 
   before_filter :check_billing_access, only: check_billing_access_actions
 
-  layout 'two_column'
+  layout "two_column"
 
   def initialize
     @active_tab =
@@ -58,19 +58,19 @@ class FacilityAccountsController < ApplicationController
     @available_account_types = available_account_types
     @current_account_type = current_account_type
 
-    @account = AccountBuilder.for(params[:account_type]).new({
+    @account = AccountBuilder.for(params[:account_type]).new(
       account_type: params[:account_type],
       facility: current_facility,
       current_user: current_user,
       owner_user: @owner_user,
       params: params,
-    }).build
+    ).build
 
     if @account.save
-      flash[:notice] = 'Account was successfully created.'
+      flash[:notice] = I18n.t("controllers.facility_accounts.create.success")
       redirect_to facility_user_accounts_path(current_facility, @account.owner_user)
     else
-      render action: 'new'
+      render action: "new"
     end
   end
 
@@ -82,18 +82,18 @@ class FacilityAccountsController < ApplicationController
   def update
     account_type = Account.config.account_type_to_param(@account.class)
 
-    @account = AccountBuilder.for(account_type).new({
+    @account = AccountBuilder.for(account_type).new(
       account: @account,
       current_user: current_user,
       owner_user: @owner_user,
       params: params,
-    }).update
+    ).update
 
     if @account.save
-      flash[:notice] = I18n.t('controllers.facility_accounts.update')
+      flash[:notice] = I18n.t("controllers.facility_accounts.update")
       redirect_to facility_account_path
     else
-      render :action => "edit"
+      render action: "edit"
     end
   end
 
@@ -105,7 +105,7 @@ class FacilityAccountsController < ApplicationController
 
   # GET /facilities/:facility_id/accounts/search
   def search
-    flash.now[:notice] = 'This page is not yet implemented'
+    flash.now[:notice] = "This page is not yet implemented"
   end
 
   # GET/POST /facilities/:facility_id/accounts/search_results
@@ -121,28 +121,30 @@ class FacilityAccountsController < ApplicationController
       AND account_users.user_role = :acceptable_role
       AND account_users.deleted_at IS NULL
     end_of_where
-    term   = generate_multipart_like_search_term(params[:search_term])
+
+    term = generate_multipart_like_search_term(params[:search_term])
     if params[:search_term].length >= 3
 
       # retrieve accounts matched on user for this facility
-      @accounts = Account.joins(:account_users => :user).for_facility(current_facility).where(
+      @accounts = Account.joins(account_users: :user).for_facility(current_facility).where(
         owner_where_clause,
-        :term             => term,
-        :acceptable_role  => 'Owner').
-        order('users.last_name, users.first_name')
+        term: term,
+        acceptable_role: "Owner"
+      ).order("users.last_name, users.first_name")
 
       # retrieve accounts matched on account_number for this facility
       @accounts += Account.for_facility(current_facility).where(
         "LOWER(account_number) LIKE ?", term).
-        order('type, account_number')
+        order("type, account_number"
+      )
 
       # only show an account once.
-      @accounts = @accounts.uniq.paginate(:page => params[:page]) #hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
+      @accounts = @accounts.uniq.paginate(page: params[:page]) #hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
     else
-      flash.now[:errors] = 'Search terms must be 3 or more characters.'
+      flash.now[:errors] = "Search terms must be 3 or more characters."
     end
     respond_to do |format|
-      format.html { render :layout => false }
+      format.html { render layout: false }
     end
   end
 
@@ -204,7 +206,7 @@ class FacilityAccountsController < ApplicationController
 
   def render_statement_pdf
     @statement_pdf = StatementPdfFactory.instance(@statement, params[:show].blank?)
-    render template: '/statements/show'
+    render template: "/statements/show"
   end
 
   def init_account
