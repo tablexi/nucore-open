@@ -10,7 +10,8 @@ class Payment < ActiveRecord::Base
 
   validates :source, presence: true, inclusion: { in: valid_sources }
   validates :account, presence: true
-  validates :amount, presence: true, numericality: true
-  validates :processing_fee, numericality: true, allow_nil: false
+  # TODO use `numericality: { other_than: 0 }` in newer rails
+  validates :amount, presence: true, numericality: true, exclusion: { in: [0], message: "may not be 0" }
+  validates :processing_fee, presence: true, numericality: true, allow_nil: false
 
 end

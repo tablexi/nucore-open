@@ -20,6 +20,43 @@ RSpec.describe Payment do
     end
   end
 
+  describe "amount" do
+    subject(:payment) { described_class.new(amount: amount) }
+    before { payment.valid? }
+
+    context "positive amount" do
+      let(:amount) { 23.45 }
+
+      it "does not have an error on amount" do
+        expect(payment.errors).not_to include(:amount)
+      end
+    end
+
+    context "negative amount" do
+      let(:amount) { -23.45 }
+
+      it "does not have an error on amount" do
+        expect(payment.errors).not_to include(:amount)
+      end
+    end
+
+    context "a zero amount" do
+      let(:amount) { 0 }
+
+      it "has an error on amount" do
+        expect(payment.errors).to include(:amount)
+      end
+    end
+
+    context "a nil amount" do
+      let(:amount) { nil }
+
+      it "has an error on amount" do
+        expect(payment.errors).to include(:amount)
+      end
+    end
+  end
+
   describe "processing_fee" do
     let(:payment) { described_class.new }
 
