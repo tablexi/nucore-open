@@ -17,7 +17,7 @@
       %th= t(".th.problem")
   %tbody
     - @order_details.each do |order_detail|
-      %tr{class: needs_reconcile_warning?(order_detail) ? "reconcile-warning" : ""}
+      %tr{ class: row_class(order_detail) }
         %td.centered= link_to order_detail.order_id,
           facility_order_path(current_facility, order_detail.order)
         %td.centered= link_to order_detail.id,

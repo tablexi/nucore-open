@@ -20,7 +20,7 @@
       %th= OrderDetail.human_attribute_name("order_status")
   %tbody
     - query_in_slices(order_details).each do |order_detail|
-      %tr{:class => row_class(order_detail)}
+      %tr{ class: row_class(order_detail) }
         - if @order_detail_action
           %td= check_box_tag "order_detail_ids[]", order_detail.id, false, {:class => 'toggle'}
         - if @order_detail_link

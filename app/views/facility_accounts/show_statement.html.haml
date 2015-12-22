@@ -22,7 +22,7 @@
         %th.currency Amount
     %tbody
       - @order_details.each do |od|
-        %tr{:class => needs_reconcile_warning?(od) ? 'reconcile-warning' : ''}
+        %tr{ class: row_class(od) }
           %td= link_to od.description, facility_order_path(current_facility, od.order)
           %td= human_datetime(od.order.ordered_at)
           %td

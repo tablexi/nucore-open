@@ -41,11 +41,6 @@ module ApplicationHelper
     link_to title, {:sort => column, :dir => direction}, {:class => (column == sort_column ? sort_direction : 'sortable')}
   end
 
-  # TODO: deprecate in favor of OrderDetailPresenter#row_class
-  def needs_reconcile_warning?(order_detail)
-    OrderDetailPresenter.new(order_detail).row_class
-  end
-
   #
   # currency display helpers
   [ :total, :cost, :subsidy ].each do |type|

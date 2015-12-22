@@ -1,6 +1,6 @@
 module TransactionHistoryHelper
   def row_class(order_detail)
-    needs_reconcile_warning?(order_detail) ? 'reconcile-warning' : ''
+    OrderDetailPresenter.new(order_detail).row_class
   end
 
   def product_options(products, search_fields)
