@@ -214,7 +214,6 @@ RSpec.describe FacilityReservationsController do
         expect(assigns[:order_details]).to eq([@order_detail_reservation])
       end
 
-      it "provides sort headers that don't result in errors"
     end
   end
 

@@ -129,8 +129,6 @@ RSpec.describe OrdersController do
         expect(response).to redirect_to cart_path
       end
     end
-
-    it 'should test more than auth'
   end
 
 
@@ -746,7 +744,6 @@ RSpec.describe OrdersController do
           is_expected.to set_flash.to(/You are not authorized to place an order on behalf of another user for the facility/)
         end
       end
-      it "should show a warning if the user doesn't have access to the product to be added"
     end
   end
 
@@ -833,7 +830,6 @@ RSpec.describe OrdersController do
 
     end
 
-    it "should not allow updates of quantities for instruments"
   end
 
   context "update order_detail notes" do
@@ -919,10 +915,6 @@ RSpec.describe OrdersController do
         expect(assigns[:order].order_details.first.validate_for_purchase).to eq("Please make a reservation")
       end
     end
-
-    it "should show links for uploading files for services where required by service"
-    it "should show links for submitting survey for services where required by service"
-
   end
 
 
@@ -984,13 +976,6 @@ RSpec.describe OrdersController do
       expect(assigns[:order_statuses]).not_to be_include @order_status_other
     end
 
-    it "should validate and transition to validated"
-
-    it "should only allow checkout if the cart has at least one order_detail"
-  end
-
-  context "receipt /receipt/:order_id" do
-    it "should 404 unless :order_id exists and is related to the current user"
   end
 
 end

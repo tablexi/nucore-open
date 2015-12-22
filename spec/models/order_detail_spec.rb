@@ -330,8 +330,6 @@ RSpec.describe OrderDetail do
       expect(@order_detail.valid_for_purchase?).not_to eq(true)
     end
 
-    it "should not be valid if the chart string account does not match the product account"
-
     context 'needs open account' do
       before :each do
         create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
@@ -415,46 +413,6 @@ RSpec.describe OrderDetail do
       it 'allows purchase' do
         expect(order_detail).to be_valid_for_purchase
       end
-    end
-
-#    before :each do
-#      @price_group    = create(:price_group, facility: @facility)
-#      @pg_user_member = create(:user_price_group_member, user: @user, price_group: @price_group)
-#      @order          = @user.orders.create(attributes_for(:order, facility_id: @facility.id, account_id: @account.id, created_by: @user.id))
-#      @instrument     = @facility.instruments.create(attributes_for(:instrument, facility_account_id: @facility_account.id))
-#      @order_detail   = @order.order_details.create(attributes_for(:order_detail).update(product_id: @instrument.id, account_id: @account.id))
-#    end
-
-
-    context 'problem orders' do
-
-#      before :each do
-#        @rule           = @instrument.schedule_rules.create(attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 17))
-#        @instrument_pp  = @instrument.instrument_price_policies.create(attributes_for(:instrument_price_policy, price_group_id: @price_group.id))
-#        @reservation    = @instrument.reservations.create(reserve_start_date: Date.today+1.day, reserve_start_hour: 10,
-#                                                          reserve_start_min: 0, reserve_start_meridian: 'am',
-#                                                          duration_value: 60, duration_unit: 'minutes')
-#
-#        @order_detail.reservation=@reservation
-#        define_open_account(@order_detail.product.account, @order_detail.account.account_number)
-#        create(:price_group_product, product: @instrument, price_group: @price_group)
-#
-#        @order_detail.to_inprocess!
-#        @order_detail.to_complete!
-#      end
-
-
-      # The setup for instrument order tests is absolutely painful...
-      it 'should test that an order with no actual start date is a problem'
-      it 'should test that an order with no actual end date is a problem'
-      it 'should test that an order with actuals is not a problem'
-
-    end
-
-    context "instrument purchase validation" do
-      it "should validate for a valid instrument with reservation"
-      it "should not be valid if an instrument reservation is not valid"
-      it "should not be valid if there is no estimated or actual price"
     end
   end
 

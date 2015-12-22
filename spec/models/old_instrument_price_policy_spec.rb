@@ -373,12 +373,6 @@ RSpec.describe OldInstrumentPricePolicy do
       costs    = pp.estimate_cost_and_subsidy(start_dt, end_dt)
       expect(costs).to be_nil
     end
-
-    # TODO finish these tests
-    it "should return nil if the start or end time is outside of the schedule rules" # we should catch this before price estimatation.  should probably remove this test.
-    it "should apply schedule rule discounts to rate and not subsidy only" # what about a discount making [(rate * discount) - subsidy] negative?
-    it "should correctly estimate cost with minimum cost" # minimum cost is before subsidies are taken int account.  but what if the subsidy is greater than the minimum cost?
-
   end
 
   context "cost estimate tests with all day schedule rules" do
@@ -584,23 +578,12 @@ RSpec.describe OldInstrumentPricePolicy do
       end
     end
 
-    it "should correctly calculate cost with usage and reservation rate and subsidy"
-    it "should correctly calculate cost with usage and overage rate"
-    it "should correctly calculate cost with usage and overage rate and subsidy"
-    it "should correctly calculate cost with reservation and overage rate"
-    it "should correctly calculate cost with reservation and overage rate and subsidy"
     it "should return nil for calculate cost with reservation and overage rate without actual hours" do
       @reservation.actual_start_at = nil
       @reservation.actual_end_at = nil
       @ipp.update_attributes(:overage_rate => 120, :overage_subsidy => 119)
       expect(@ipp.calculate_cost_and_subsidy(@reservation)).to be_nil
     end
-    it "should correctly calculate cost with usage, reservation, and overage rate and subsidy"
-    it "should correctly calculate cost across time changes"
-    it "should return nil for cost if purchase is restricted"
-    it "should correctly calculate cast across multiple days"
-    it "should correctly calculate cost for a schedule rule with a discount"
-    it "should correctly calculate cost across schedule rules"
-    it "should correctly calculate cost across schedule rules with discounts"
+
   end
 end

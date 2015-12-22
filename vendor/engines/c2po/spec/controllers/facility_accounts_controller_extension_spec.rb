@@ -270,9 +270,6 @@ RSpec.describe FacilityAccountsController do
       expect(@order_detail.reconciled_note).not_to be_nil
     end
 
-    it 'should test multiple cards sent in one POST'
-    it 'should test transaction failure'
-
   end
 
 
@@ -295,9 +292,6 @@ RSpec.describe FacilityAccountsController do
       expect(@order_detail.state).to eq('reconciled')
       expect(@order_detail.reconciled_note).not_to be_nil
     end
-
-    it 'should test multiple purchase orders sent in one POST'
-    it 'should test transaction failure'
 
   end
 
