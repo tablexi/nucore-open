@@ -300,26 +300,6 @@ RSpec.describe Account do
     expect(order_detail.reload.statement).to eq(statement)
   end
 
-
-  context "billing" do
-    before(:each) do
-      @facility1        = FactoryGirl.create(:facility)
-      @facility2        = FactoryGirl.create(:facility)
-      @user             = FactoryGirl.create(:user)
-      @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
-    end
-
-    it "should find all accounts that need statements for a facility"
-
-    it "should return the correct billable balance for a facility"
-
-    it "should return the correct pending balance for a facility"
-
-    it "should return the correct facility balance for a given date"
-
-    it "should return the most recent account statement for a given facility"
-  end
-
   unless Account.config.facility_account_types.empty?
     context "limited facilities" do
       before :each do

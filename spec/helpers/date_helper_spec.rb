@@ -54,8 +54,6 @@ RSpec.describe DateHelper do
       end
 
     end
-
-    it "should do something with extra_date_info (unknown)"
   end
 
   describe "#human_datetime" do

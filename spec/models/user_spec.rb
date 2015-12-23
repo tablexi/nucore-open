@@ -93,8 +93,6 @@ RSpec.describe User do
     expect(user).to be_external
   end
 
-  it "belongs to the Cancer Center price group if the user is in the Cancer Center view"
-
   describe ".with_global_roles" do
     subject(:users_with_global_roles) { described_class.with_global_roles }
     let!(:unprivileged_users) { create_list(:user, 2) }

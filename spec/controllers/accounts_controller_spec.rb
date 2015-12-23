@@ -191,9 +191,5 @@ RSpec.describe AccountsController do
     end
   end
 
-  context "POST /accounts/create" do
-    it "should 403 unless class_type is legit"
-  end
-
 end
 

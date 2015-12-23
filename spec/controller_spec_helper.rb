@@ -188,7 +188,6 @@ def it_should_allow_managers_only(response=:success, spec_desc='', &eval)
     instance_exec(user, &eval) if eval
   end
 
-  it 'should test more than auth' unless eval
 end
 
 def it_should_allow_managers_and_senior_staff_only(response=:success, spec_desc='', &eval)
@@ -203,7 +202,6 @@ def it_should_allow_managers_and_senior_staff_only(response=:success, spec_desc=
     instance_exec(user, &eval) if eval
   end
 
-  it 'should test more than auth' unless eval
 end
 
 
@@ -219,7 +217,6 @@ def it_should_allow_operators_only(response=:success, spec_desc='', &eval)
     instance_exec(user, &eval) if eval
   end
 
-  it 'should test more than auth' unless eval
 end
 
 
@@ -239,7 +236,6 @@ def it_should_allow_admin_only(response=:success, spec_desc='', &eval)
     instance_eval &eval if eval
   end
 
-  it 'should test more than auth' unless eval
 end
 
 

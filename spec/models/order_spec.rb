@@ -144,15 +144,6 @@ RSpec.describe Order do
       expect(@order.validate_order!).to be false
     end
 
-    ## TODO simplify these to prevent overlapping test coverage with order_detail_spec
-    it "should validate_extras for a valid instrument with reservation"
-    it "should validate_extras for a service with no survey"
-    it "should not validate_extras for a service with a survey and no response set"
-    it "should not validate_extras for a service with a survey and a uncompleted response set"
-    it "should validate_extras for a service with a survey and a completed response set"
-    it "should not validate_extras for a service file template upload with no template results"
-    it "should validate_extras for a service file template upload with template results"
-    it "should validate_extras for a valid item"
   end
 
   context "purchase state transition" do
@@ -253,10 +244,6 @@ RSpec.describe Order do
       expect(@order.validate_order!).to be false
     end
 
-    it "should check for reservation conflicts before purchase"
-    it "should check for price policy changes before purchase"
-    it "should check for payment source expiration before purchase"
-    it "should check for chart string account being open before purchase"
   end
 
   context do # 'add, clear, adjust' do
