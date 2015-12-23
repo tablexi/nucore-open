@@ -46,7 +46,13 @@ RSpec.describe AccountBuilder, type: :service do
     end
   end
 
-  describe ".for() factory" do
+  describe ".for" do
+    context "when passed nil" do
+      it "returns default builder" do
+        expect(described_class.for(nil)).to eq(AccountBuilder)
+      end
+    end
+
     context "when subclassed account builder exists" do
       before do
         ExistingBuilder = Class.new(AccountBuilder)

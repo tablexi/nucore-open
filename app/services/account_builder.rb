@@ -34,6 +34,7 @@ class AccountBuilder
   #   AccountBuilder.for("BuilderDoesNotExist") => AccountBuilder
   #
   def self.for(account_type)
+    return self unless account_type.present?
     begin
       klass = "#{account_type}_builder".classify
       klass.constantize
