@@ -15,6 +15,10 @@ class SearchController < ApplicationController
     render layout: false
   end
 
+  def current_facility
+    @facility ||= load_facility
+  end
+
   private
 
   def load_facility

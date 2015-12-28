@@ -176,6 +176,7 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:batch_update, Order) }
     it { is_expected.to be_allowed_to(:batch_update, Reservation) }
     it { is_expected.to be_allowed_to(:administer, User) }
+    it { is_expected.to be_allowed_to(:switch_to, User) }
 
     it_behaves_like "it can destroy admistrative reservations"
   end
@@ -211,6 +212,7 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:batch_update, Order) }
     it { is_expected.to be_allowed_to(:batch_update, Reservation) }
     it { is_expected.to be_allowed_to(:administer, User) }
+    it { is_expected.to be_allowed_to(:switch_to, User) }
     it { is_expected.not_to be_allowed_to(:manage_accounts, Facility.cross_facility) }
     it { is_expected.not_to be_allowed_to(:manage_billing, Facility.cross_facility) }
     it { is_expected.not_to be_allowed_to(:manage_users, Facility.cross_facility) }
@@ -225,6 +227,7 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:batch_update, Reservation) }
     it { is_expected.to be_allowed_to(:read, Notification) }
     it { is_expected.to be_allowed_to(:administer, User) }
+    it { is_expected.to be_allowed_to(:switch_to, User) }
     it_behaves_like "it can destroy admistrative reservations"
   end
 
@@ -249,6 +252,7 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:manage, Account) }
     it { is_expected.to be_allowed_to(:create, TrainingRequest) }
     it_behaves_like "it can not manage training requests"
+    it { is_expected.not_to be_allowed_to(:switch_to, User) }
 
     %i(sample_result template_result).each do |file_type|
       describe "downloading a #{file_type}" do
