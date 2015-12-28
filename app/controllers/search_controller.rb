@@ -15,6 +15,13 @@ class SearchController < ApplicationController
     render layout: false
   end
 
+  # ApplicationController#current_ability depends on current_facility being set
+  # correctly. Since ApplicationController#current_facility loads based on the
+  # facility's url_name, we need to override to load it through its id instead.
+  def current_facility
+    @facility ||= load_facility
+  end
+
   private
 
   def load_facility

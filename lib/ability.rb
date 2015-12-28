@@ -118,7 +118,7 @@ class Ability
           fileupload.file_type == 'sample_result'
         end
 
-        can :administer, User
+        can [:administer, :switch_to], User
         can :manage, User if controller.is_a?(UsersController)
 
         can [ :list, :show ], Facility
