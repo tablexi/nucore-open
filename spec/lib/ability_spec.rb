@@ -50,6 +50,7 @@ RSpec.describe Ability do
       it { is_expected.not_to be_allowed_to(:manage_accounts, facility) }
       it { is_expected.not_to be_allowed_to(:manage, AccountUser) }
       it { is_expected.not_to be_allowed_to(:manage, User) }
+      it { is_expected.not_to be_allowed_to(:switch_to, User) }
     end
 
     context "in cross-facility" do
@@ -58,6 +59,7 @@ RSpec.describe Ability do
       it { is_expected.to be_allowed_to(:manage_accounts, facility) }
       it { is_expected.to be_allowed_to(:manage, AccountUser) }
       it { is_expected.to be_allowed_to(:manage, User) }
+      it { is_expected.not_to be_allowed_to(:switch_to, User) }
     end
 
     context "in no facility" do
@@ -65,6 +67,7 @@ RSpec.describe Ability do
 
       it { is_expected.to be_allowed_to(:manage, AccountUser) }
       it { is_expected.to be_allowed_to(:manage, User) }
+      it { is_expected.not_to be_allowed_to(:switch_to, User) }
     end
   end
 
