@@ -14,7 +14,9 @@ class TrainingRequestsController < ApplicationController
   # POST /facilities/:facility_id/products/:product_id/training_requests
   def create
     load_product
-    if TrainingRequest.create(user: current_user, product: @product)
+    @training_request = TrainingRequest.new(user: current_user, product: @product)
+    if @training_request.save
+      trigger_email_to_facility_staff
       flash[:notice] = t("training_requests.create.success", product: @product)
     else
       flash[:error] = t("training_requests.create.failure", product: @product)
@@ -40,6 +42,10 @@ class TrainingRequestsController < ApplicationController
   end
 
   private
+
+  def trigger_email_to_facility_staff
+    TrainingRequestMailer.delay.notify_facility_staff(current_user.id, @product.id)
+  end
 
   def flash_arguments
     @flash_arguments ||= {

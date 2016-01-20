@@ -210,6 +210,14 @@ class Product < ActiveRecord::Base
     product_users.find_by_user_id(user.id)
   end
 
+  def training_request_contacts
+    CsvArrayString.new(self[:training_request_contacts])
+  end
+
+  def training_request_contacts=(str)
+    self[:training_request_contacts] = CsvArrayString.new(str).to_s
+  end
+
   private
 
   def account_required

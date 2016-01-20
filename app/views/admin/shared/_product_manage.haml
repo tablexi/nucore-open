@@ -12,5 +12,7 @@
 
   = f.input :initial_order_status
   = f.input :requires_approval
+  - if SettingsHelper.feature_on?(:training_requests) && f.object.training_request_contacts?
+    = f.input :training_request_contacts
 = f.input :is_archived
 = f.input :is_hidden

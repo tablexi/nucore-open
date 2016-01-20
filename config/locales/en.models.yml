@@ -187,6 +187,7 @@ en:
         initial_order_status: Initial Order Status
         is_archived: Is Inactive?
         is_hidden: Is Hidden?
+        training_request_contacts: Training Request Contacts
       instrument:
         min_reserve_mins: Minimum Reservation Minutes
         max_reserve_mins: Maximum Reservation Minutes
