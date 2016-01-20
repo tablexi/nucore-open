@@ -17,6 +17,8 @@
     = f.input :account, :hint => t('shared.product_details_fields.account')
   = f.input :initial_order_status_id, :collection => OrderStatus.initial_statuses(current_facility).collect {|cf| [cf.name_with_level, cf.id] }, :hint => t('shared.product_details_fields.initial_order_status'), :include_blank => false
   = f.input :requires_approval, :as => :boolean, :label => false, :inline_label => t('shared.product_details_fields.requires_approval')
+  - if SettingsHelper.feature_on?(:training_requests)
+    = f.input :training_request_contacts, as: :string, hint: t('shared.product_details_fields.training_request_contacts')
 
 = f.input :is_archived, :as => :boolean, :label => false, :inline_label => t('shared.product_details_fields.is_archived')
 = f.input :is_hidden,   :as => :boolean, :label => false, :inline_label => t('shared.product_details_fields.is_hidden', :field => f.object.class.name.downcase)
