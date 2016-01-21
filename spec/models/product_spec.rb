@@ -526,16 +526,37 @@ RSpec.describe Product do
     describe "a single address" do
       let(:contacts) { "testing@example.com" }
       it { is_expected.to eq ["testing@example.com"] }
+      it "is valid" do
+        product.valid?
+        expect(product.errors).not_to include(:training_request_contacts)
+      end
     end
 
     describe "multiple addresses" do
       let(:contacts) { "testing@example.com, test2@nucore.com" }
       it { is_expected.to eq ["testing@example.com", "test2@nucore.com"] }
+      it "is valid" do
+        product.valid?
+        expect(product.errors).not_to include(:training_request_contacts)
+      end
     end
 
     describe "some extra commas in there" do
-      let(:contacts) { "testing@example.com,, ,test2@nucore.com," }
-      it { is_expected.to eq ["testing@example.com", "test2@nucore.com"] }
+      let(:contacts) { "testing@example.com,, ,test2@nucore.com,test-something+other@test.com" }
+      it { is_expected.to eq ["testing@example.com", "test2@nucore.com", "test-something+other@test.com"] }
+      it "is valid" do
+        product.valid?
+        expect(product.errors).not_to include(:training_request_contacts)
+      end
+    end
+
+    describe "invalid emails" do
+      let(:contacts) { "valid@tablexi.com, invalid@ " }
+      it { is_expected.to eq ["valid@tablexi.com", "invalid@"] }
+      it "is invalid" do
+        expect(product).to be_invalid
+        expect(product.errors).to include(:training_request_contacts)
+      end
     end
   end
 

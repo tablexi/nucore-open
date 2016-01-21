@@ -28,6 +28,14 @@ class Product < ActiveRecord::Base
     errors.add(:contact_email, :required) unless email.present?
   end
 
+  validate do |record|
+    # Simple validation that all emails contain an @ followed by a word character,
+    # and is not at the start of the string.
+    unless training_request_contacts.all? { |email| email =~ /.@\w/ }
+      record.errors.add(:training_request_contacts)
+    end
+  end
+
   scope :active,             :conditions => { :is_archived => false, :is_hidden => false }
   scope :active_plus_hidden, :conditions => { :is_archived => false}
   scope :archived,           :conditions => { :is_archived => true }
