@@ -1,5 +1,4 @@
 require "rails_helper"
-# require 'controller_spec_helper'
 
 RSpec.describe TrainingRequestsController do
   let(:facility) { FactoryGirl.create(:setup_facility) }
