@@ -1,7 +1,7 @@
 #
 # Messages for views
 en:
-  app_name: NU Core
+  app_name: NUcore
   institution_name: Northwestern
 
   boolean:
@@ -11,7 +11,7 @@ en:
 
   sessions:
     new:
-      help_text: "If you do not have a NU Core account, please contact the facility manager."
+      help_text: "If you do not have a NUcore account, please contact the facility manager."
 
   date:
     formats:
@@ -791,7 +791,7 @@ en:
       empty: "No %{items} are available at this time."
       recently_used: Recently Used Facilities
       welcome: |
-        Welcome to NU Core, the centralized ordering system for all shared facilities at Northwestern University.
+        Welcome to NUcore, the centralized ordering system for all shared facilities at Northwestern University.
         Please select the shared facility below to view and purchase services and products offered by the facility.
 
     list:
@@ -906,37 +906,37 @@ en:
 
   notifier:
     new_user:
-      intro_html: "Congratulations, %{first_name}. A NU Core account has been created for you. You may log in at <a href=\"%{login_url}\">%{login_url}</a>."
-      intro: "Congratulations, %{first_name}. A NU Core account has been created for you. You may log in at %{login_url}."
+      intro_html: "Congratulations, %{first_name}. A NUcore account has been created for you. You may log in at <a href=\"%{login_url}\">%{login_url}</a>."
+      intro: "Congratulations, %{first_name}. A NUcore account has been created for you. You may log in at %{login_url}."
       no_password: "You may log in with your Northwestern NetID and password."
-      subject: "Welcome to NU Core"
+      subject: "Welcome to NUcore"
     new_account:
-      subject: "NU Core New Payment Method"
+      subject: "NUcore New Payment Method"
     order_receipt:
-      subject: "NU Core Order Receipt"
-      intro: "Thank you for your order on the NU Core website."
+      subject: "NUcore Order Receipt"
+      intro: "Thank you for your order on the NUcore website."
       label:
         ordered_at: Ordered at
       outro: "All prices are estimates. Actual cost is assigned when the order is complete."
       total: Total
     review_orders:
-      subject: "NU Core Orders For Review"
-      body: "New transactions for %{facility} have been posted to \"%{account}\". Please log in to NU Core and review these charges."
+      subject: "NUcore Orders For Review"
+      body: "New transactions for %{facility} have been posted to \"%{account}\". Please log in to NUcore and review these charges."
       body_html: "New transactions for %{facility} have been posted to \"%{account}\".<br/><br/>Please %{login_link} and review these charges."
     statement:
-      subject: "NU Core Statement"
+      subject: "NUcore Statement"
       body: "A new statement from %{facility} has been created for your payment source, \"%{account}\"."
       body_html: "A new statement from %{facility} has been created for your payment source, \"%{account}\"."
     user_update:
-      subject: "NU Core User Updated"
+      subject: "NUcore User Updated"
       body: |
         The following user %{user} has been added to your payment source %{account} by administrator %{created_by}.
-        If this is incorrect you may log in to NU Core at %{login_link} and remove this user or contact the administrator named above.
+        If this is incorrect you may log in to NUcore at %{login_link} and remove this user or contact the administrator named above.
       body_html: |
         The following user %{user} has been added to your payment source "%{account}" by administrator %{created_by}.<br/><br/>
         If this is incorrect you may %{login_link} and remove this user or contact the administrator named above.
     account_update:
-      subject: "NU Core Payment Method Updated"
+      subject: "NUcore Payment Method Updated"
     order_status_changed_to_approved:
       subject: "Reservation #%{order_detail} has been approved"
     order_status_changed_to_pending_approval:
@@ -956,7 +956,7 @@ en:
       intro: "You may provide an Online Order Form and/or an Order File Template.  If provided, the user must complete one before placing an order."
       order_form:
         head: "Online Order Form"
-        main: "Online Order Forms are external Surveyor services. Multiple Online Order Forms may be added, but only one may be active at a time. Please contact the NU Core support specialist for more information."
+        main: "Online Order Forms are external Surveyor services. Multiple Online Order Forms may be added, but only one may be active at a time. Please contact the NUcore support specialist for more information."
         notice: "No Online Order Forms have been added."
       download_form:
         head: "Downloadable Order Form"
@@ -993,7 +993,7 @@ en:
       success: "The import completed successfully. %{successes} line items were created."
     account_transactions:
       export: Export as CSV
-      subject: NUCore Transaction Export
+      subject: NUcore Transaction Export
       body: Your export is ready. Please see the attached file.
 
   users:
@@ -1021,7 +1021,7 @@ en:
         email: Email
     new_external:
       head: "Add External User"
-      main: "You may use this to grant NU Core access to external users. The email address and username must match."
+      main: "You may use this to grant NUcore access to external users. The email address and username must match."
     new:
       js:
         id: "NetID"
@@ -1042,8 +1042,8 @@ en:
       main_html: "You may add a new external user by clicking <a href=\"%{link}\">Add a new external user</a>."
       netid_not_found: "The user could not be located in the university database.  Please make sure you typed the NetID correctly."
       email_not_found: "No user information was found in the university databases."
-      found: "The following user was found.  Click \"Add User\" to allow this user access to NU Core."
-      user_already_exists: The user %{username} already exists in NUCore
+      found: "The following user was found.  Click \"Add User\" to allow this user access to NUcore."
+      user_already_exists: The user %{username} already exists in NUcore
     search_form:
       head:
         h2: "Search Users"
@@ -1159,7 +1159,7 @@ en:
       not_found_in_database: 'Invalid username or password.'
     mailer:
       reset_password_instructions:
-        subject: "NU Core Password Reset Instructions"
+        subject: "NUcore Password Reset Instructions"
 
   testing:
     overriding: This should be overriden in override/en.yml

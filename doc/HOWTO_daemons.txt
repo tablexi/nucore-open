@@ -1,5 +1,5 @@
-There is small, simple framework inside NU Core for creating and controlling daemons that have the same environment as
-the web application. This is useful for monitoring NU Core's database outside of the running web application while using
+There is small, simple framework inside NUcore for creating and controlling daemons that have the same environment as
+the web application. This is useful for monitoring NUcore's database outside of the running web application while using
 the application's classes. The daemons framework is based on the daemons gem (http://daemons.rubyforge.org/)
 
 Creating daemons

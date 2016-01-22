@@ -1,6 +1,6 @@
 # Coding Standards/Guidelines
 
-NUCore is an old project and has passed through many hands. There are long controller methods, complex view logic, and odd routing. It began as a Rails 2.X project and pieces of that legacy remain. Many of the things that you may consider as bad may have even been considered best practices at the time. Give the past developers some credit. Future you may have similar things to say about what you're doing right now.
+NUcore is an old project and has passed through many hands. There are long controller methods, complex view logic, and odd routing. It began as a Rails 2.X project and pieces of that legacy remain. Many of the things that you may consider as bad may have even been considered best practices at the time. Give the past developers some credit. Future you may have similar things to say about what you're doing right now.
 
 Times have changed, styles and best practices have evolved, and we want to keep the codebase healthy. That means cleaning things up and refactoring as needed. We can't fix everything at once, but we can make things better one little piece at a time.
 
@@ -36,7 +36,7 @@ its own PR if the changes are significant enough.
 ## Fork-specific changes
 
 Some features such as authentication or financial system integration may be specific to
-a particular instance of NUCore. These kinds of features should be developed within their
+a particular instance of NUcore. These kinds of features should be developed within their
 respective downstream forks. When developing these kinds of features, it is important to
 avoid making changes to application code (primarily `/app` and `/lib`) that also exists in
 the open-source fork. Otherwise, there is a high likelyhood of merge conflict if anything
@@ -73,7 +73,7 @@ Prefix your commits and pull requests with the ticket number. `[#12345] Fix crit
 ## Other
 
 ### Refactor Scopes
-There are plenty of old-style scopes and finders (`find(:all, conditions: ...)`, `scope :xxxx, conditions: ...`, etc) lying around from when NUCore was young. Always use the newer style, and fix up scopes as you have the opportunity.
+There are plenty of old-style scopes and finders (`find(:all, conditions: ...)`, `scope :xxxx, conditions: ...`, etc) lying around from when NUcore was young. Always use the newer style, and fix up scopes as you have the opportunity.
 
 ### Prepare for Rails Upgrades
 Since this is still a Rails 3.2 project, you may find yourself needing to use

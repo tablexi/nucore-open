@@ -1,6 +1,6 @@
 # How to use the factories
 
-NU Core has been upgraded Factory Girl 2.6. Until support for 1.8 is able to be dropped, that is
+NUcore has been upgraded Factory Girl 2.6. Until support for 1.8 is able to be dropped, that is
 the highest version we can use.
 
 Since the upgrade from Factory Girl 1, we've set up a new series of factories for use.

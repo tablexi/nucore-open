@@ -1,6 +1,6 @@
 # Branches and Forks
 
-NUCore is usually deployed from a separate fork containing customized branding
+NUcore is usually deployed from a separate fork containing customized branding
 and functionality. In order to move changes between the commits you'll need to
 set up remote repositories on each side.
 

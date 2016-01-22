@@ -3,7 +3,7 @@ require 'daemons'
 
 #
 # This class provides a base for running daemons
-# alongside NU Core. It wraps the Daemons API
+# alongside NUcore. It wraps the Daemons API
 # so that you don't have to think about it.
 # http://daemons.rubyforge.org/
 class Daemons::Base

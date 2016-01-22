@@ -1,10 +1,10 @@
-# NU Core Open
+# NUcore Open
 
 Open source version of Northwestern University Core Facility Management Software
 
 ## Quickstart
 
-Welcome to NU Core! This guide will help you get a development environment up and running. It makes a few assumptions:
+Welcome to NUcore! This guide will help you get a development environment up and running. It makes a few assumptions:
 
 1. You write code on a Mac.
 2. You have a running Oracle or MySQL instance with two brand new databases.
@@ -90,12 +90,12 @@ Welcome to NU Core! This guide will help you get a development environment up an
     | ast123@example.com | Facility Staff |
     | ddi123@example.com | Facility Director |
 
-9. Play around! You're running NU Core!
+9. Play around! You're running NUcore!
 
 
 ### Test it
 
-NU Core uses [Rspec](http://rspec.info) to run tests. Try any of the following from NU Core's root directory.
+NUcore uses [Rspec](http://rspec.info) to run tests. Try any of the following from NUcore's root directory.
 
 * To run all tests (this will take awhile!)
     rake spec
@@ -109,7 +109,7 @@ NU Core uses [Rspec](http://rspec.info) to run tests. Try any of the following f
 
 ## Learn more
 
-There are valuable resources in the NU Core's doc directory.
+There are valuable resources in the NUcore's doc directory.
 
 * Want to conform to the project's established coding standards? [**See coding_standards.md**](doc/coding_standards.md)
 
@@ -121,6 +121,6 @@ There are valuable resources in the NU Core's doc directory.
 
 * Want to authenticate users against your institution's LDAP server? [**See HOWTO_ldap.txt**](doc/HOWTO_ldap.md)
 
-* Need to use a 3rd party service with your NU Core? [**See HOWTO_external_services.txt**](doc/HOWTO_external_services.md)
+* Need to use a 3rd party service with your NUcore? [**See HOWTO_external_services.txt**](doc/HOWTO_external_services.md)
 
-* Need to asynchronously monitor some aspect of NU Core? [**See HOWTO_daemons.txt**](doc/HOWTO_daemons.txt)
+* Need to asynchronously monitor some aspect of NUcore? [**See HOWTO_daemons.txt**](doc/HOWTO_daemons.txt)
