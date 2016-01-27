@@ -49,9 +49,6 @@ Nucore::Application.routes.draw do
   # transaction searches
   match '/transactions', :to => 'transaction_history#my_history', :as => 'transaction_history'
 
-  # global settings
-  resources :affiliates, :except => :show
-
   resources :facilities, :except => [:delete] do
     collection do
       get 'list'
@@ -274,10 +271,11 @@ Nucore::Application.routes.draw do
     end
   end
 
+  # global settings
+  resources :affiliates, :except => :show
+  resources :journal_cutoff_dates
   resources :global_user_roles do
-    collection do
-      get "search"
-    end
+    get "search", on: :collection
   end
 
   # order process

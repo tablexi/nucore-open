@@ -105,6 +105,9 @@ en:
           no_orders: "No orders were selected to journal"
           cannot_be_in_future: may not be in the future.
           cannot_be_before_last_fulfillment: may not be before the latest fulfillment date.
+          must_be_after_cutoffs: "The cutoff date for %{month} has passed. Journal date must be after %{cutoff}"
+        journal_cutoff_date:
+          month_taken: There is already a cutoff date for %{month}
         nufs_account:
           missing_expires_at: "The chart string appears to be invalid. Either the fund, department, project, or activity could not be found."
 
@@ -117,12 +120,27 @@ en:
         statuses:
           active: Active
           suspended: Suspended
+      account_user:
+        one: Account User
+        other: Account Users
+      bundle:
+        one: Bundle
+        other: Bundles
+      facility:
+        one: Facility
+        other: Facilities
+      instrument:
+        one: Instrument
+        other: Instruments
+      item:
+        one: Item
+        other: Items
+      journal_cutoff_date:
+        one: Journal Cutoff Date
+        other: Journal Cutoff Dates
       nufs_account:
         one: Chart String
         other: Chart Strings
-      account user:
-        one: Account User
-        other: Account Users
       reservation:
         one: Reservation
         other: Reservations
@@ -135,25 +153,13 @@ en:
       order_status:
         one: Order Status
         other: Order Statuses
-      facility:
-        one: Facility
-        other: Facilities
       product:
         one: Product
         other: Products
-      instrument:
-        one: Instrument
-        other: Instruments
+      product_access_group: Scheduling Group
       service:
         one: Services
         other: Services
-      item:
-        one: Item
-        other: Items
-      bundle:
-        one: Bundle
-        other: Bundles
-      product_access_group: Scheduling Group
       training_request:
         one: Training Request
         other: Training Requests

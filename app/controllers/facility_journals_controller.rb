@@ -42,7 +42,7 @@ class FacilityJournalsController < ApplicationController
       redirect_to facility_journals_path(current_facility)
     else
       @order_details = OrderDetail.for_facility(current_facility).need_journal
-      set_soonest_journal_date
+      set_earliest_journal_date
       set_pending_journals
 
       # move error messages for pending journal into the flash
@@ -50,7 +50,7 @@ class FacilityJournalsController < ApplicationController
         flash[:error] = @journal.errors.full_messages.join("<br/>").html_safe
       end
 
-      @soonest_journal_date = params[:journal_date] || @soonest_journal_date
+      @earliest_journal_date = params[:journal_date] || @earliest_journal_date
       render :action => :index
     end
   end
@@ -145,21 +145,23 @@ class FacilityJournalsController < ApplicationController
     @pending_journals = @journals.where(:is_successful => nil)
   end
 
-  def set_soonest_journal_date
-    @soonest_journal_date=@order_details.collect{ |od| od.fulfilled_at }.max
-    @soonest_journal_date=Time.zone.now unless @soonest_journal_date
+  def set_earliest_journal_date
+    @earliest_journal_date = [
+      @order_details.collect { |od| od.fulfilled_at }.max,
+      JournalCutoffDate.first_valid_date
+    ].compact.max
   end
 
   def set_default_variables
     @order_details   = @order_details.need_journal
 
     set_pending_journals
-    set_soonest_journal_date
+    set_earliest_journal_date
 
     blocked_facility_ids = Journal.facility_ids_with_pending_journals
     if cross_facility? || !has_pending_journals?
       @order_detail_action = :create
-      @action_date_field = {:journal_date => @soonest_journal_date}
+      @action_date_field = { journal_date: @earliest_journal_date }
     end
   end
 

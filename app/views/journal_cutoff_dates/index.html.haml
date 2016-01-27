@@ -1,0 +1,32 @@
+= content_for :h1 do
+  = t("pages.global_settings")
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_global", sidenav_tab: "journal_cutoff_dates"
+
+%h2= JournalCutoffDate.model_name.human(count: 2)
+
+- if @first_valid_date
+  %p= t(".valid_date", date: format_usa_date(@first_valid_date))
+- else
+  %p= t(".no_available_dates")
+
+= link_to t(".new"), new_journal_cutoff_date_path, class: "btn-add"
+
+%table.table
+  %thead
+    %th
+    %th= t(".month")
+    %th= t(".cutoff_date")
+    %th= t(".day")
+  %tbody
+    - @journal_cutoff_dates.each do |journal_cutoff_date|
+      %tr{class: journal_cutoff_date.past? ? "row-warning" : "" }
+        %td= link_to t(".edit"), edit_journal_cutoff_date_path(journal_cutoff_date)
+        %td= l(journal_cutoff_date.last_valid_date, format: "%B")
+        %td= format_usa_datetime journal_cutoff_date.cutoff_date
+        %td= l(journal_cutoff_date.cutoff_date, format: "%A")
+
+%p
+  %em= t(".recency")
+

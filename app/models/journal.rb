@@ -110,7 +110,7 @@ class Journal < ActiveRecord::Base
   validate :must_have_order_details, :on => :create, :if => :order_details_for_creation
   validate :must_not_span_fiscal_years, :on => :create, :if => :has_order_details_for_creation?
   validate :journal_date_cannot_be_before_last_fulfillment, :on => :create, :if => :has_order_details_for_creation?
-
+  validates_with JournalDateMustBeAfterCutoffs, on: :create
   before_validation :set_facility_id, :on => :create, :if => :has_order_details_for_creation?
   after_create :create_new_journal_rows, :if => :has_order_details_for_creation?
 

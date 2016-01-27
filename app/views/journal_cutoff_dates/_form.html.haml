@@ -1,0 +1,8 @@
+= simple_form_for(@journal_cutoff_date) do |f|
+  = f.input :cutoff_date, as: :string, input_html: { class: "datepicker", value: format_usa_date(f.object.cutoff_date) }
+  .time-select= time_select_tag "journal_cutoff_date[cutoff_date_time]", f.object.cutoff_date
+  = f.button :submit, t(".submit"), class: ["btn", "btn-primary"]
+  = link_to t(".cancel"), journal_cutoff_dates_path
+
+  :javascript
+    $(function () { $(".datepicker").datepicker(); });

@@ -242,6 +242,12 @@ th.currency {
   }
 }
 
+.table tr.row-warning {
+   td, th {
+    background-color: $errorBackground;
+  }
+}
+
 .table .super-th {
   text-align: center;
 }

@@ -1,10 +1,11 @@
 = content_for :head_content do
   :javascript
     $(function(){
-      var today = "#{l Time.zone.now.to_date, format: :usa}";
+      var today = "#{l(Time.zone.now.to_date, format: :usa)}";
 
       $("#journal_date").val(today).datepicker({
-        "minDate": "#{l @soonest_journal_date, format: :usa}", "maxDate": today
+        "minDate": "#{l(@earliest_journal_date, format: :usa)}",
+        "maxDate": today
       });
     });
 

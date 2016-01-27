@@ -113,6 +113,64 @@ RSpec.describe Journal do
     end
   end
 
+  describe "cutoff date validations", :timecop_freeze do
+    let(:now) { Time.zone.parse("2016-02-03") }
+
+    context "no cutoff dates" do
+      let(:journal_date) { Time.zone.parse("2013-03-04") }
+      it { is_expected.to be_valid }
+    end
+
+    context "before this month's cutoff" do
+      let!(:cutoff) { JournalCutoffDate.create(cutoff_date: Time.zone.parse("2016-02-04")) }
+      let!(:last_cutoff) { JournalCutoffDate.create(cutoff_date: Time.zone.parse("2016-01-04 16:45")) }
+
+      describe "cannot journal before the last month" do
+        let(:journal_date) { Time.zone.parse("2016-12-30") }
+        it { is_expected.not_to be_valid }
+      end
+
+      describe "can journal last month" do
+        let(:journal_date) { Time.zone.parse("2016-01-15") }
+        it { is_expected.to be_valid }
+      end
+
+      describe "can journal this month (before now)" do
+        let(:journal_date) { Time.zone.parse("2016-02-02") }
+        it { is_expected.to be_valid }
+      end
+    end
+
+    context "after this month's cutoff" do
+      let!(:cutoff) { JournalCutoffDate.create(cutoff_date: Time.zone.parse("2016-02-02")) }
+
+      describe "cannot journal last month" do
+        let(:journal_date) { Time.zone.parse("2016-01-15") }
+        it { is_expected.not_to be_valid }
+      end
+
+      describe "can journal this month (before now)" do
+        let(:journal_date) { Time.zone.parse("2016-02-02") }
+        it { is_expected.to be_valid }
+      end
+    end
+
+    context "on the day of the cutoff" do
+      let!(:cutoff) { JournalCutoffDate.create(cutoff_date: Time.zone.parse("2016-02-04 16:45")) }
+      let(:journal_date) { Time.zone.parse("2016-01-15") }
+
+      describe "before the cutoff" do
+        let(:now) { Time.zone.parse("2016-02-04 15:45") }
+        it { is_expected.to be_valid }
+      end
+
+      describe "after the cutoff" do
+        let(:now) { Time.zone.parse("2016-02-04 17:00") }
+        it { is_expected.not_to be_valid }
+      end
+    end
+  end
+
   context "journal creation" do
     before :each do
       @admin = FactoryGirl.create(:user)

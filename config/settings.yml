@@ -11,6 +11,7 @@ financial:
     xls: true
     csv: true
     xml: true
+  default_journal_cutoff_time: "16:45"
 
 reports:
   export_raw:
