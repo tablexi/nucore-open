@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160120162354) do
+ActiveRecord::Schema.define(:version => 20160201171348) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -164,6 +164,12 @@ ActiveRecord::Schema.define(:version => 20160120162354) do
   end
 
   add_index "instrument_statuses", ["instrument_id"], :name => "fk_int_stats_product"
+
+  create_table "journal_cutoff_dates", :force => true do |t|
+    t.datetime "cutoff_date"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
 
   create_table "journal_rows", :force => true do |t|
     t.integer "journal_id",                                                   :null => false

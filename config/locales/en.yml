@@ -418,6 +418,32 @@ en:
       failure: Global role assignment for %{user} failed.
       success: Global role assignment for %{user} succeeded.
 
+  journal_cutoff_dates:
+    index:
+      new: Add Cutoff Date
+      month: Month
+      cutoff_date: Cutoff Date
+      day: Day of Week
+      edit: Edit
+      valid_date: Journals must currently be dated after %{date}
+      no_available_dates: All dates are currently valid. Add a cutoff in the past to restrict the valid dates.
+      recency: "Note: only the last two months of cutoffs are displayed."
+    create:
+      success: Cutoff date successfully added
+    destroy:
+      success: Cutoff date successfully deleted
+    edit:
+      delete: delete
+      delete_confirm: Are you sure you want to delete this cutoff date?
+      header: Edit Journal Cutoff Date
+    form:
+      submit: Submit
+      cancel: Cancel
+    new:
+      header: New Journal Cutoff Date
+    update:
+      success: Cutoff date successfully updated
+
   order_imports:
     new:
       h2: "Bulk Import"
