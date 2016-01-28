@@ -106,9 +106,11 @@ class OrderDetailManagement
       $('.cancel-fee-option').toggle(parseInt($(this).val()) == cancel_id)
 
   disableForm: ->
+    obj = @
     form_elements = @$element.find('select,textarea,input')
     form_elements.prop 'disabled', ->
-      !($(this).hasClass('js-always-enabled') || $(this).is('[type=submit]'))
+      leaveEnabled = $(this).hasClass('js-always-enabled') || $(this).is('[type=submit]') || obj.isRailsFormInput(this)
+      !leaveEnabled
 
     # remove the submit button if all form elements are disabled
     any_enabled = form_elements.filter(':not([type=submit])').is(':not(:disabled)')
@@ -137,6 +139,8 @@ class OrderDetailManagement
       owner_name = $(this).find(':selected').data('account-owner')
       $(this).closest('.control-group').find('.account-owner').text(owner_name)
 
+  isRailsFormInput: (input) ->
+    $(input).is("[name=_method],[name=utf8],[name=authenticity_token]")
 
 $ ->
   prepareForm = ->
