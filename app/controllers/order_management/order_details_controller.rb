@@ -11,13 +11,18 @@ class OrderManagement::OrderDetailsController < ApplicationController
   before_filter :load_accounts, :only => [:edit, :update]
   before_filter :load_order_statuses, :only => [:edit, :update]
 
+  admin_tab :all
+
   # GET /facilities/:facility_id/orders/:order_id/order_details/:id/manage
   def edit
-    render :layout => false if request.xhr?
+    @active_tab = "admin_orders"
+    render layout: false if modal?
   end
 
   # PUT /facilities/:facility_id/orders/:order_id/order_details/:id/manage
   def update
+    @active_tab = "admin_orders"
+
     updater = OrderDetails::ParamUpdater.new(@order_detail, :user => session_user, :cancel_fee => params[:with_cancel_fee] == '1')
 
     if updater.update_attributes(params[:order_detail])
@@ -26,14 +31,14 @@ class OrderManagement::OrderDetailsController < ApplicationController
         flash[:notice] << " Auto-scaled accessories have been updated as well."
         flash[:updated_order_details] = @order_detail.updated_children.map &:id
       end
-      if request.xhr?
-        render :nothing => true
+      if modal?
+        render nothing: true
       else
         redirect_to [current_facility, @order]
       end
     else
       flash.now[:error] = 'Error while updating order'
-      render :edit, :layout => !request.xhr?, :status => 406
+      render :edit, layout: !modal?, status: 406
     end
   end
 
@@ -48,7 +53,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
   # GET /facilities/:facility_id/orders/:order_id/order_details/:id/files
   def files
     @files = @order_detail.stored_files.sample_result.order(:created_at)
-    render :layout => false if request.xhr?
+    render :layout => false if modal?
   end
 
   # POST /facilities/:facility_id/orders/:order_id/order_details/:id/remove_from_journal
@@ -58,7 +63,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
     flash[:notice] =
       I18n.t 'controllers.order_management.order_details.remove_from_journal.notice'
 
-    if request.xhr?
+    if modal?
       render nothing: true
     else
       redirect_to [current_facility, @order]
@@ -66,6 +71,11 @@ class OrderManagement::OrderDetailsController < ApplicationController
   end
 
   private
+
+  def modal?
+    request.xhr?
+  end
+  helper_method :modal?
 
   def ability_resource
     @order_detail

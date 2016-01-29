@@ -4,7 +4,7 @@
       .row
         .span12
           = link_to app_name, :root, class: "brand"
-          %ul.nav.pull-right
+          %ul.nav.pull-right.hide-from-print
             - if session_user.nil?
               %li= link_to t("pages.login"), :new_user_session
             - elsif acting_as?

@@ -90,6 +90,10 @@
     font-size: 200%;
     margin-top: 0.75em;
   }
+
+  .icon-print {
+    font-size: 175%;
+  }
 }
 
 /* Order Management Page */
@@ -165,16 +169,11 @@ table.order-list {
   }
 }
 
-.modal {
-  .updating-message {
-    color: #AAA;
-    display: inline-block;
-    padding-left: 20px;
-    background-image: image-url("spinner-arrow.gif");
-    background-repeat: no-repeat;
-    margin-right: 0.75em;
-  }
+.updating-message {
+  color: #AAA;
+  display: inline-block;
+  padding-left: 20px;
+  background-image: image-url("spinner-arrow.gif");
+  background-repeat: no-repeat;
+  margin-right: 0.75em;
 }
-
-
-

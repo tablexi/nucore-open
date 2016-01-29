@@ -1,12 +1,16 @@
-.modal-header
-  = modal_close_button
+- unless modal?
+  = content_for :h1 do
+    = current_facility
+
+%div{class: modal? ? "modal-header" : ""}
+  = modal_close_button if modal?
   %h3= "Order ##{@order_detail} #{@order_detail.product}"
 
 = simple_form_for @order_detail,
     :url => manage_facility_order_order_detail_path(current_facility, @order, @order_detail),
-    :remote => request.xhr?,
+    :remote => modal?,
     :html => { :class => ['manage_order_detail', edit_disabled? ? 'disabled' : ''] } do |f|
-  .modal-body
+  %div{class: modal? ? "modal-body" : ""}
     .row
       .span10
         = render :partial => 'warnings'
@@ -70,7 +74,10 @@
       .row
         = render :partial => 'dispute', :locals => { :f => f }
 
-  .modal-footer
+  .modal-footer.hide-from-print
+    - if modal? #&& SettingsHelper.feature_on?(:print_order_detail)
+      = link_to manage_facility_order_order_detail_path(current_facility, @order, @order_detail, anchor: "print"), target: "_blank" do
+        %i.icon-print.pull-left
     .hidden.updating-message= t('facility_order_details.edit.label.updating')
     = f.submit 'Save', :class => ['btn', 'btn-primary']
     = modal_cancel_button

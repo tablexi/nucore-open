@@ -1,0 +1,26 @@
+@media print {
+  a[href]:after {
+    content: none !important;
+  }
+
+  .hide-from-print {
+    display: none !important;
+  }
+
+  .manage_order_detail {
+    .banner-list {
+      .span2 {
+        width: 1.75in;
+        float: left;
+      }
+    }
+
+    .cost-table {
+      clear: both;
+
+      .cost, .subsidy, .total {
+        width: 1.5in !important;
+      }
+    }
+  }
+}
