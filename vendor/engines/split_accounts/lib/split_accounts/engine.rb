@@ -8,6 +8,7 @@ module SplitAccounts
 
         # Concat class variables in main rails app
         Account.config.account_types << "SplitAccounts::SplitAccount"
+        Account.config.journal_account_types << "SplitAccounts::SplitAccount"
 
         # Add views to view hooks in main rails app
         ViewHook.add_hook "facility_accounts.show", "after_end_of_form", "split_accounts/facility_accounts/show_splits"

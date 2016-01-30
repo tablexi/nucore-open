@@ -288,6 +288,65 @@ namespace :demo do
       nufsaccount.set_expires_at
     end
 
+    # create a second nufsaccount for split accounts
+    nufsaccount2 = NufsAccount.find_by_account_number("111-2222222-44444444-01")
+
+    unless nufsaccount2
+      nufsaccount2 = NufsAccount.create!(account_number: "111-2222222-44444444-01",
+                                        description: "Paul PI's Other Chart String",
+                                        expires_at: Time.zone.now + 1.year,
+                                        created_by: user_director.id,
+                                        account_users_attributes: [
+                                          { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
+                                          { user_id: user_student.id, user_role: "Purchaser", created_by: user_director.id },
+                                        ])
+      nufsaccount2.set_expires_at!
+    end
+
+    # create split account if the feature is enabled
+    if SettingsHelper.feature_on?(:split_accounts)
+      split_account = SplitAccounts::SplitAccount.find_by_account_number("111-2222222-55555555-01")
+      unless split_account
+
+        params = {
+          split_accounts_split_account: {
+            account_number: "111-2222222-55555555-01",
+            description: "Paul PI's 50/50 Split Account",
+            splits_attributes: [
+              {
+                subaccount_id: nufsaccount.id,
+                percent: 50,
+                extra_penny: true,
+              },
+              {
+                subaccount_id: nufsaccount2.id,
+                percent: 50,
+                extra_penny: false,
+              },
+            ]
+          }
+        }
+
+        builder = AccountBuilder.for("SplitAccounts::SplitAccount")
+
+        split_account = builder.new({
+          account_type: "SplitAccounts::SplitAccount",
+          current_user: user_director,
+          owner_user: user_pi,
+          params: params,
+        }).build
+
+        split_account.account_users.build({
+          user_id: user_student.id,
+          user_role: "Purchaser",
+          created_by: user_director.id
+        })
+
+        split_account.save
+      end
+    end
+
+
     other_affiliate = Affiliate.find_or_create_by_name("Other")
 
     if EngineManager.engine_loaded? :c2po

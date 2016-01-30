@@ -4,57 +4,6 @@ class Journal < ActiveRecord::Base
   class CreationError < StandardError; end
 
   module Overridable
-    def create_journal_rows!(order_details)
-      recharge_by_product = {}
-      facility_ids_already_in_journal = Set.new
-      order_detail_ids = []
-      pending_facility_ids = Journal.facility_ids_with_pending_journals
-      row_errors = []
-      recharge_enabled=SettingsHelper.feature_on? :recharge_accounts
-
-      # create rows for each transaction
-      order_details.each do |od|
-        row_errors << "##{od} is already journaled in journal ##{od.journal_id}" if od.journal_id
-        account = od.account
-        od_facility_id = od.order.facility_id
-
-        # unless we've already encountered this facility_id during
-        # this call to create_journal_rows,
-        unless facility_ids_already_in_journal.member? od_facility_id
-
-          # check against facility_ids which actually have pending journals
-          # in the DB
-          if pending_facility_ids.member? od_facility_id
-            raise CreationError.new(I18n.t("activerecord.errors.models.journal.pending_overlap", label: od.to_s, facility: Facility.find(od_facility_id)))
-          end
-          facility_ids_already_in_journal.add(od_facility_id)
-        end
-
-        begin
-          ValidatorFactory.instance(account.account_number, od.product.account).account_is_open!(od.fulfilled_at)
-        rescue ValidatorError => e
-          row_errors << I18n.t("activerecord.errors.models.journal.invalid_account",
-            account_number: account.account_number_to_s,
-            validation_error: e.message
-          )
-        end
-
-        JournalRow.create!(journal_row_attributes_from_order_detail(od))
-        order_detail_ids << od.id
-        recharge_by_product[od.product_id] = recharge_by_product[od.product_id].to_f + od.total if recharge_enabled
-      end
-
-      # create rows for each recharge chart string
-      recharge_by_product.each_pair do |product_id, total|
-        product = Product.find(product_id)
-        JournalRow.create!(journal_row_attributes_from_product_and_total(product, total))
-      end
-
-      set_journal_for_order_details(order_detail_ids) if row_errors.blank?
-
-      row_errors.uniq
-    end
-
     def create_spreadsheet
       rows = journal_rows
       return false if rows.empty?
@@ -69,27 +18,6 @@ class Journal < ActiveRecord::Base
       File.unlink(temp_file.path) rescue nil
       status
     end
-
-    private
-
-    def journal_row_attributes_from_order_detail(order_detail)
-      {
-        account: order_detail.product.account,
-        amount: order_detail.total,
-        description: order_detail.long_description,
-        journal_id: id,
-        order_detail_id: order_detail.id,
-      }
-    end
-
-    def journal_row_attributes_from_product_and_total(product, total)
-      {
-        account: product.facility_account.revenue_account,
-        amount: total * -1,
-        description: product.to_s,
-        journal_id: id,
-      }
-    end
   end
 
   include DownloadableFile
@@ -100,7 +28,7 @@ class Journal < ActiveRecord::Base
 
   has_many                :journal_rows
   belongs_to              :facility
-  has_many                :order_details, :through => :journal_rows
+  has_many                :order_details, through: :journal_rows, uniq: true
   belongs_to              :created_by_user, :class_name => 'User', :foreign_key => :created_by
 
   validates_presence_of   :reference, :updated_by, :on => :update
@@ -141,6 +69,11 @@ class Journal < ActiveRecord::Base
     pending_facility_ids = Journal.connection.select_values(pending_facility_ids_sql)
 
     return pending_facility_ids
+  end
+
+  def create_journal_rows!(order_details)
+    builder = JournalRowBuilder.new(self, order_details).create
+    builder.errors.uniq
   end
 
   def facility_ids
@@ -257,9 +190,4 @@ class Journal < ActiveRecord::Base
     end
   end
 
-  def set_journal_for_order_details(order_detail_ids)
-    array_slice(order_detail_ids) do |id_slice|
-      OrderDetail.where(id: id_slice).update_all(journal_id: self.id)
-    end
-  end
 end

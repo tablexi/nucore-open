@@ -13,6 +13,13 @@ financial:
     xml: true
   default_journal_cutoff_time: "16:45"
 
+converters:
+  default:
+    product_to_journal_rows: Converters::ProductToJournalRowAttributes
+    order_detail_to_journal_rows: Converters::OrderDetailToJournalRowAttributes
+  split_accounts/split_account:
+    order_detail_to_journal_rows: SplitAccounts::Converters::OrderDetailToJournalRowAttributes
+
 reports:
   export_raw:
     class_name: Reports::ExportRaw
