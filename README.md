@@ -92,6 +92,18 @@ Welcome to NUcore! This guide will help you get a development environment up and
 
 9. Play around! You're running NUcore!
 
+10. Run `delayed_job` to support in-browser email previews.
+
+    Run delayed jobs indefinitely in the background:
+    ```
+    ./script/delayed_job start
+    ```
+
+    Or run delayed jobs once for one-off jobs:
+    ```
+    ./script/delayed_job run
+    ```
+
 
 ### Test it
 
