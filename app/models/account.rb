@@ -57,9 +57,19 @@ class Account < ActiveRecord::Base
     config.cross_facility?(self.name)
   end
 
-  # Returns true if this account type can assign an affiliate.
+  # Returns true if this account type supports affiliate.
   def self.using_affiliate?
     config.using_affiliate?(self.name)
+  end
+
+  # Returns true if this account type supports statements.
+  def self.using_statements?
+    config.using_statements?(self.name)
+  end
+
+  # Returns true if this account type supports journal.
+  def self.using_journal?
+    config.using_journal?(self.name)
   end
 
   def self.for_facility(facility)
