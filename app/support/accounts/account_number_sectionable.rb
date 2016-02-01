@@ -1,4 +1,12 @@
 module Accounts::AccountNumberSectionable
+  extend ActiveSupport::Concern
+
+  module ClassMethods
+    def account_number_field_names
+      new.account_number_fields.keys
+    end
+  end
+
   def account_number_fields
     { :account_number => { :required => true } }
   end
