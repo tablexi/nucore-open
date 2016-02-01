@@ -22,7 +22,7 @@ class NufsAccountBuilder < AccountBuilder
   def set_expires_at
     account.set_expires_at!
   rescue AccountNumberFormatError => e
-    nil # do nothing
+    account.expires_at = Time.current
   end
 
 end
