@@ -6,8 +6,8 @@ class NufsAccountBuilder < AccountBuilder
 
   # Override strong_params for `build` account.
   def account_params_for_build
-    [ 
-      { account_number_parts: [:account_number] },
+    [
+      { account_number_parts: NufsAccount.account_number_field_names },
       :account_number,
       :description,
     ]
@@ -21,7 +21,8 @@ class NufsAccountBuilder < AccountBuilder
   # Sets `expires_at` via a factory.
   def set_expires_at
     account.set_expires_at!
-    account
+  rescue AccountNumberFormatError => e
+    nil # do nothing
   end
 
 end
