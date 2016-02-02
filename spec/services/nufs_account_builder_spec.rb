@@ -8,6 +8,8 @@ RSpec.describe NufsAccountBuilder, type: :service do
   end
 
   describe "#build override" do
+    before { allow(ValidatorFactory).to receive(:validator_class).and_return(ValidatorDefault) }
+
     let(:options) do
       {
         account_type: "NufsAccount",
@@ -28,6 +30,19 @@ RSpec.describe NufsAccountBuilder, type: :service do
     end
 
     it "sets expired_at" do
+      expect(builder.build.expires_at).to be_present
+    end
+
+    it "sets the account_number" do
+      expect(builder.build.account_number).to eq("1234")
+    end
+
+    it "sets the description" do
+      expect(builder.build.description).to eq("foobar")
+    end
+
+    it "still sets the expiration date on a validator error" do
+      allow_any_instance_of(ValidatorDefault).to receive(:latest_expiration).and_raise(ValidatorError)
       expect(builder.build.expires_at).to be_present
     end
   end

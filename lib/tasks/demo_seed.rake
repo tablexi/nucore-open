@@ -285,7 +285,7 @@ namespace :demo do
                                           { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
                                           { user_id: user_student.id, user_role: "Purchaser", created_by: user_director.id },
                                         ])
-      nufsaccount.set_expires_at!
+      nufsaccount.set_expires_at
     end
 
     other_affiliate = Affiliate.find_or_create_by_name("Other")

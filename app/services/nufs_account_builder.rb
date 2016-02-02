@@ -15,14 +15,7 @@ class NufsAccountBuilder < AccountBuilder
 
   # Hooks into superclass's `build` method.
   def after_build
-    set_expires_at
-  end
-
-  # Sets `expires_at` via a factory.
-  def set_expires_at
-    account.set_expires_at!
-  rescue AccountNumberFormatError => e
-    account.expires_at = Time.current
+    account.set_expires_at
   end
 
 end
