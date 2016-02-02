@@ -57,9 +57,19 @@ class Account < ActiveRecord::Base
     config.cross_facility?(self.name)
   end
 
-  # Returns true if this account type can assign an affiliate.
+  # Returns true if this account type supports affiliate.
   def self.using_affiliate?
     config.using_affiliate?(self.name)
+  end
+
+  # Returns true if this account type supports statements.
+  def self.using_statements?
+    config.using_statements?(self.name)
+  end  
+
+  # Returns true if this account type supports journal.
+  def self.using_journal?
+    config.using_journal?(self.name)
   end
 
   def self.for_facility(facility)
@@ -176,6 +186,7 @@ class Account < ActiveRecord::Base
     return "The #{self.type_string} has insufficient price groups" unless product.can_purchase?((self.price_groups + user.price_groups).flatten.uniq.collect {|pg| pg.id})
 
     # check chart string account number
+    # TODO: should this include SplitAccount?
     if self.is_a?(NufsAccount)
       accts=product.is_a?(Bundle) ? product.products.collect(&:account) : [ product.account ]
       accts.uniq.each {|acct| return "The #{self.type_string} is not open for the required account" unless self.account_open?(acct) }

@@ -3,6 +3,7 @@ class OrderDetail < ActiveRecord::Base
   include TranslationHelper
   include NotificationSubject
   include OrderDetail::Accessorized
+  include AASM
 
   versioned
 
@@ -242,33 +243,39 @@ class OrderDetail < ActiveRecord::Base
   end
 
   scope :need_statement, lambda { |facility| {
-    :joins => [:product, :account],
-    :conditions => [
+    joins: [:product, :account],
+    conditions: [
       "products.facility_id = :facility_id
         AND order_details.state = :state
         AND problem = :problem
         AND reviewed_at <= :reviewed_at
         AND order_details.statement_id IS NULL
         AND order_details.price_policy_id IS NOT NULL
-        AND accounts.type IN (:accounts)
+        AND accounts.type IN (:account_types)
         AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)",
-      :facility_id => facility.id,
-      :state =>'complete',
-      :problem => false,
-      :reviewed_at => Time.zone.now,
-      :accounts => Account.config.statement_account_types
+      facility_id: facility.id,
+      state: "complete",
+      problem: false,
+      reviewed_at: Time.zone.now,
+      account_types: Account.config.statement_account_types,
     ]
-  }}
+  } }
 
   scope :need_journal, lambda { {
-    :joins => [:product, :account],
-    :conditions => ['order_details.state = ?
-                     AND problem = ?
-                     AND reviewed_at <= ?
-                     AND accounts.type = ?
-                     AND journal_id IS NULL
-                     AND order_details.price_policy_id IS NOT NULL
-                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', 'complete', false, Time.zone.now, 'NufsAccount']
+    joins: [:product, :account],
+    conditions: [
+      "order_details.state = :state
+        AND problem = :problem
+        AND reviewed_at <= :reviewed_at
+        AND accounts.type IN (:account_types)
+        AND journal_id IS NULL
+        AND order_details.price_policy_id IS NOT NULL
+        AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)",
+      state: "complete",
+      problem: false,
+      reviewed_at: Time.zone.now,
+      account_types: Account.config.journal_account_types,
+    ]
   } }
 
   scope :statemented, lambda {|facility| {
@@ -385,8 +392,8 @@ class OrderDetail < ActiveRecord::Base
 
     query.where(sql, {:start => start_date, :end => end_date})
   end
+
   # BEGIN acts_as_state_machine
-  include AASM
 
   aasm_column           :state
   aasm_initial_state    :new
@@ -564,6 +571,7 @@ class OrderDetail < ActiveRecord::Base
     return "The account is expired and cannot be used" if account.expires_at < Time.zone.now || account.suspended_at
 
     # TODO if chart string, is chart string + account valid
+    # TODO should any other account types be included here?
     return "The #{account.type_string} is not open for the required account" if account.is_a?(NufsAccount) && !account.account_open?(product.account)
 
     # is the user approved for the product
@@ -654,6 +662,7 @@ class OrderDetail < ActiveRecord::Base
     end
   end
 
+  # TODO: update this to support split accounts
   def update_journal_row_amounts
     journal_rows.each(&:update_amount)
   end
@@ -808,7 +817,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def self.account_unreconciled(facility, account)
-    if account.is_a?(NufsAccount)
+    if account.class.using_journal?
       joins(:journal)
       .complete_for_facility_and_account(facility, account)
       .where('journals.is_successful' => true)
@@ -942,7 +951,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def removable_from_journal?
-    journal.present? && account.is_a?(NufsAccount) && can_reconcile?
+    journal.present? && account.class.using_journal? && can_reconcile?
   end
 
   private
@@ -953,7 +962,7 @@ class OrderDetail < ActiveRecord::Base
 
   def make_complete
     assign_price_policy
-    self.fulfilled_at=Time.zone.now
+    self.fulfilled_at = Time.zone.now
     self.reviewed_at = Time.zone.now unless SettingsHelper::has_review_period?
   end
 

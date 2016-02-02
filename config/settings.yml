@@ -12,6 +12,14 @@ financial:
     csv: true
     xml: true
 
+journal_row:
+  converters:
+    default: JournalRowConverter
+    split_accounts/split_account: SplitAccounts::JournalRowConverter
+  spreadsheeters:
+    default: JournalRowSpreadsheeter
+    split_accounts/split_account: SplitAccounts::JournalRowSpreadsheeter
+
 reports:
   export_raw:
     class_name: Reports::ExportRaw

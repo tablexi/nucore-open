@@ -41,9 +41,13 @@ class GeneralReportsController < ReportsController
   end
 
   def generate_report_data_csv
-    ExportRawReportMailer.delay.raw_report_email(email_to_address, raw_report)
-    flash[:notice] = I18n.t('controllers.reports.mail_queued', email: email_to_address)
-    redirect_to send("#{action_name}_facility_general_reports_path", current_facility)
+    if Rails.env.development?
+      send_data raw_report.to_csv, type: "text/csv", filename: "report.csv"
+    else
+      ExportRawReportMailer.delay.raw_report_email(email_to_address, raw_report)
+      flash[:notice] = I18n.t('controllers.reports.mail_queued', email: email_to_address)
+      redirect_to send("#{action_name}_facility_general_reports_path", current_facility)
+    end
   end
 
   def raw_report

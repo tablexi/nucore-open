@@ -1,17 +1,16 @@
-#
 # Keeper of this app's loaded engines
 class EngineManager
 
-  @@loaded_engines={}
+  @@loaded_engines = {}
 
   def self.engine_loaded?(engine_name)
-    normalized=engine_name.to_s.camelize.to_sym
+    class_name = "#{engine_name.to_s.camelize}::Engine"
 
-    unless @@loaded_engines.has_key? normalized
-      @@loaded_engines[normalized]=Rails.application.railties.engines.any?{|e| e.class.name.start_with? normalized.to_s }
+    unless @@loaded_engines.has_key?(class_name)
+      @@loaded_engines[class_name] = Rails.application.railties.engines.any?{ |e| e.class.name == class_name }
     end
 
-    @@loaded_engines[normalized]
+    @@loaded_engines[class_name]
   end
 
 end

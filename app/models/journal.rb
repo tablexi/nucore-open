@@ -4,55 +4,14 @@ class Journal < ActiveRecord::Base
   class CreationError < StandardError; end
 
   module Overridable
+
     def create_journal_rows!(order_details)
-      recharge_by_product = {}
-      facility_ids_already_in_journal = Set.new
-      order_detail_ids = []
-      pending_facility_ids = Journal.facility_ids_with_pending_journals
-      row_errors = []
-      recharge_enabled=SettingsHelper.feature_on? :recharge_accounts
-
-      # create rows for each transaction
-      order_details.each do |od|
-        row_errors << "##{od} is already journaled in journal ##{od.journal_id}" if od.journal_id
-        account = od.account
-        od_facility_id = od.order.facility_id
-
-        # unless we've already encountered this facility_id during
-        # this call to create_journal_rows,
-        unless facility_ids_already_in_journal.member? od_facility_id
-
-          # check against facility_ids which actually have pending journals
-          # in the DB
-          if pending_facility_ids.member? od_facility_id
-            raise CreationError.new(I18n.t("activerecord.errors.models.journal.pending_overlap", label: od.to_s, facility: Facility.find(od_facility_id)))
-          end
-          facility_ids_already_in_journal.add(od_facility_id)
-        end
-
-        begin
-          ValidatorFactory.instance(account.account_number, od.product.account).account_is_open!(od.fulfilled_at)
-        rescue ValidatorError => e
-          row_errors << I18n.t("activerecord.errors.models.journal.invalid_account",
-            account_number: account.account_number_to_s,
-            validation_error: e.message
-          )
-        end
-
-        JournalRow.create!(journal_row_attributes_from_order_detail(od))
-        order_detail_ids << od.id
-        recharge_by_product[od.product_id] = recharge_by_product[od.product_id].to_f + od.total if recharge_enabled
+      builder = JournalRowBuilder.new(order_details, self).build
+      if builder.valid?
+        builder.journal_rows.each { |journal_row| JournalRow.create!(journal_row) }
+        set_journal_for_order_details(order_details.map(&:id))
       end
-
-      # create rows for each recharge chart string
-      recharge_by_product.each_pair do |product_id, total|
-        product = Product.find(product_id)
-        JournalRow.create!(journal_row_attributes_from_product_and_total(product, total))
-      end
-
-      set_journal_for_order_details(order_detail_ids) if row_errors.blank?
-
-      row_errors.uniq
+      builder.errors.uniq
     end
 
     def create_spreadsheet
