@@ -15,7 +15,6 @@ class JournalRowBuilder
   end
 
   # Reset instance variables both on initialize and build.
-  # Returns self to support chaining.
   def reset
     @errors = []
     @journal_rows = []
@@ -30,15 +29,12 @@ class JournalRowBuilder
   def build
     reset
     order_details.each do |order_detail|
-      validate_order_detail_unjournaled(order_detail)
-      validate_facility_can_journal(order_detail)
-      validate_account(order_detail)
+      validate_order_detail(order_detail)
       new_journal_rows = order_detail_to_journal_rows(order_detail)
       update_product_recharges(order_detail)
       @journal_rows.concat(new_journal_rows)
     end
     add_journal_rows_from_product_recharges
-
     self
   end
 
@@ -46,6 +42,7 @@ class JournalRowBuilder
   # Does not gracefully handle unexpected database failures.
   # Wrapping everything in a transaction was not an option because oracle will
   # only support 1000 transactions per request.
+  # Returns self to support chaining.
   def create
     build
     if valid? && journal_rows.present?
@@ -64,6 +61,13 @@ class JournalRowBuilder
   # Set an array of facility_ids with pending journals
   def pending_facility_ids
     @pending_facility_ids ||= Journal.facility_ids_with_pending_journals
+  end
+
+  # Run all validations on an order detail
+  def validate_order_detail(order_detail)
+    validate_order_detail_unjournaled(order_detail)
+    validate_facility_can_journal(order_detail)
+    validate_account(order_detail)
   end
 
   # Validate the order_detail hasn't already been journaled
