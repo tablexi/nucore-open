@@ -153,18 +153,14 @@ class OrdersController < ApplicationController
   # POST /orders/:id/choose_account
   def choose_account
     if request.post?
-      begin
-        account = Account.find(params[:account_id])
-        raise ActiveRecord::RecordNotFound unless account.can_be_used_by?(@order.user)
-      rescue
-      end
+      account = Account.find(params[:account_id])
       if account
         success = true
         @order.transaction do
           begin
             @order.invalidate
-            @order.update_attributes!(:account => account)
-          rescue => e
+            @order.update_attributes!(account_id: account.id)
+          rescue ActiveRecord::ActiveRecordError => e
             success = false
             raise ActiveRecord::Rollback
           end
@@ -180,13 +176,6 @@ class OrdersController < ApplicationController
         return
       else
         flash.now[:error] = account.nil? ? 'Please select a payment method.' : 'An error was encountered while selecting a payment method.'
-      end
-    end
-
-    if params[:reset_account]
-      @order.order_details.each do |od|
-        od.account = nil
-        od.save!
       end
     end
 
