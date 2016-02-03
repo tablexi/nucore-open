@@ -40,6 +40,8 @@ RSpec.describe OrdersController do
     @params = { id: @order.id, order_id: @order.id }
   end
 
+  let(:account) { @account }
+  let(:item) { @item }
   let(:params) { @params }
   let(:order) { @order }
 
@@ -97,35 +99,36 @@ RSpec.describe OrdersController do
     end
   end
 
-  context "choose_account" do
-    before :each do
-      @order.add(@item, 1)
-      expect(@order.order_details.size).to eq(1)
+  describe "GET #choose_account" do
+    before(:each) do
+      expect { order.add(item, 1) }
+        .to change(order.order_details, :size).from(0).to(1)
 
       @method = :get
       @action = :choose_account
-      @params.merge!(account_id: @account.id)
+      @params.merge!(account_id: account.id)
     end
 
     it_should_require_login
 
     it_should_allow :staff do
-      expect(assigns(:order)).to be_kind_of Order
-      expect(assigns(:order)).to eq(@order)
+      expect(assigns(:order)).to be_kind_of(Order).and eq(order)
       is_expected.to render_template "choose_account"
     end
 
-    context "staff logged in" do
-      before :each do
-        sign_in @staff
-      end
+    context "with a logged-in staff user" do
+      before { sign_in @staff }
 
-      it "should redirect to cart url if the cart is empty" do
-        @order2 = @staff.orders.create(FactoryGirl.attributes_for(:order, created_by: @staff.id, account: @account))
-        expect(@order2.order_details).to be_empty
-        @params = { id: @order2.id }
-        do_request
-        expect(response).to redirect_to cart_path
+      context "and an empty cart" do
+        before(:each) do
+          new_order = @staff.orders.create(attributes_for(:order, created_by: @staff.id, account: account))
+          expect(new_order.order_details).to be_empty
+
+          @params = { id: new_order.id }
+          do_request
+        end
+
+        it { expect(response).to redirect_to(cart_path) }
       end
     end
   end
