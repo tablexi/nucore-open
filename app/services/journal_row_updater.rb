@@ -28,9 +28,8 @@ class JournalRowUpdater
   end
 
   def recreate_journal_rows?
-    method = :recreate_journal_rows_on_order_detail_update
     account = order_detail.account
-    account.respond_to?(method) && account.send(method)
+    account && account.recreate_journal_rows_on_order_detail_update?
   end
 
 end

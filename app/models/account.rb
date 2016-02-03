@@ -307,6 +307,13 @@ class Account < ActiveRecord::Base
     return @account_user
   end
 
+  # Optionally override this method for models that inherit from Account.
+  # Forces journal rows to be destroyed and recreated when an order detail is
+  # updated.
+  def recreate_journal_rows_on_order_detail_update?
+    false
+  end
+
   private
 
   def self.ids_with_orders(facility)

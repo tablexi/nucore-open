@@ -40,7 +40,7 @@ module SplitAccounts
       subaccounts.sort_by(&:expires_at).first
     end
 
-    def recreate_journal_rows_on_order_detail_update
+    def recreate_journal_rows_on_order_detail_update?
       true
     end
 
