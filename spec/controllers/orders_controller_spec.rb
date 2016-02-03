@@ -43,6 +43,7 @@ RSpec.describe OrdersController do
   let(:account) { @account }
   let(:item) { @item }
   let(:params) { @params }
+  let(:price_group) { @price_group }
   let(:order) { @order }
 
   context "cart" do
@@ -129,6 +130,51 @@ RSpec.describe OrdersController do
         end
 
         it { expect(response).to redirect_to(cart_path) }
+      end
+    end
+  end
+
+  describe "POST #choose_account" do
+    let(:order_detail) { order.order_details.first }
+    let(:other_account) { add_account_for_user(:staff, item, price_group) }
+
+    before(:each) do
+      sign_in @staff
+
+      expect { order.add(item, 1) }
+        .to change(order.order_details, :size).from(0).to(1)
+
+      @method = :post
+      @action = :choose_account
+    end
+
+    context "when selecting a different account" do
+      before { @params.merge!(account_id: other_account.id) }
+
+      it "updates the account associated with the order" do
+        expect { do_request }
+          .to change { order.reload.account }
+          .from(account)
+          .to(other_account)
+      end
+
+      it "updates the account associated with the order_detail" do
+        expect { do_request }
+          .to change { order_detail.reload.account }
+          .from(account)
+          .to(other_account)
+      end
+    end
+
+    context "when selecting the same account" do
+      before { @params.merge!(account_id: account.id) }
+
+      it "does not change the account associated with the order" do
+        expect { do_request }.not_to change { order.reload.account }
+      end
+
+      it "does not change the account associated with the order_detail" do
+        expect { do_request }.not_to change { order_detail.reload.account }
       end
     end
   end
