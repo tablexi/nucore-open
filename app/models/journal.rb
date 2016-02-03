@@ -110,7 +110,7 @@ class Journal < ActiveRecord::Base
   validate :must_have_order_details, :on => :create, :if => :order_details_for_creation
   validate :must_not_span_fiscal_years, :on => :create, :if => :has_order_details_for_creation?
   validate :journal_date_cannot_be_before_last_fulfillment, :on => :create, :if => :has_order_details_for_creation?
-
+  validate :journal_date_must_be_after_cutoffs, :on => :create, if: "journal_date.present?"
   before_validation :set_facility_id, :on => :create, :if => :has_order_details_for_creation?
   after_create :create_new_journal_rows, :if => :has_order_details_for_creation?
 
@@ -237,6 +237,13 @@ class Journal < ActiveRecord::Base
     return unless journal_date.present?
     last_fulfilled = @order_details_for_creation.collect(&:fulfilled_at).max
     errors.add(:journal_date, :cannot_be_before_last_fulfillment) if journal_date.end_of_day < last_fulfilled
+  end
+
+  include DateHelper
+  def journal_date_must_be_after_cutoffs
+    return unless journal_date.present?
+    first_valid_date = JournalCutoffDate.first_valid_date
+    errors.add(:base, :must_be_after_cutoffs, cutoff: format_usa_date(first_valid_date), month: I18n.l(journal_date, format: "%B")) if first_valid_date && first_valid_date > journal_date.beginning_of_day
   end
 
   def set_facility_id

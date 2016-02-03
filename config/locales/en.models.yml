@@ -105,6 +105,7 @@ en:
           no_orders: "No orders were selected to journal"
           cannot_be_in_future: may not be in the future.
           cannot_be_before_last_fulfillment: may not be before the latest fulfillment date.
+          must_be_after_cutoffs: "The cutoff date for %{month} has passed. Journal date must be after %{cutoff}"
         journal_cutoff_date:
           month_taken: There is already a cutoff date for %{month}
         nufs_account:
