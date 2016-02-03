@@ -242,8 +242,8 @@ class OrderDetail < ActiveRecord::Base
   end
 
   scope :need_statement, lambda { |facility| {
-    :joins => [:product, :account],
-    :conditions => [
+    joins: [:product, :account],
+    conditions: [
       "products.facility_id = :facility_id
         AND order_details.state = :state
         AND problem = :problem
@@ -252,23 +252,29 @@ class OrderDetail < ActiveRecord::Base
         AND order_details.price_policy_id IS NOT NULL
         AND accounts.type IN (:account_types)
         AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)",
-      :facility_id => facility.id,
-      :state =>'complete',
-      :problem => false,
-      :reviewed_at => Time.zone.now,
-      :account_types => Account.config.statement_account_types
+      facility_id: facility.id,
+      state: 'complete',
+      problem: false,
+      reviewed_at: Time.zone.now,
+      account_types: Account.config.statement_account_types,
     ]
   }}
 
   scope :need_journal, lambda { {
-    :joins => [:product, :account],
-    :conditions => ['order_details.state = ?
-                     AND problem = ?
-                     AND reviewed_at <= ?
-                     AND accounts.type IN (?)
-                     AND journal_id IS NULL
-                     AND order_details.price_policy_id IS NOT NULL
-                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', 'complete', false, Time.zone.now, Account.config.journal_account_types]
+    joins: [:product, :account],
+    conditions: [
+      "order_details.state = :state
+        AND problem = :problem
+        AND reviewed_at <= :reviewed_at
+        AND accounts.type IN (:account_types)
+        AND journal_id IS NULL
+        AND order_details.price_policy_id IS NOT NULL
+        AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)",
+      state: "complete",
+      problem: false,
+      reviewed_at: Time.zone.now,
+      account_types: Account.config.journal_account_types,
+    ]
   } }
 
   scope :statemented, lambda {|facility| {
