@@ -9,10 +9,11 @@ class NufsAccount < Account
   def set_expires_at
     self.expires_at = ValidatorFactory.instance(account_number).latest_expiration
     # If this Validator instance has an error, suppress it. The errors
-    # will be raised later.
-    rescue ValidatorError, AccountNumberFormatError
-      # Prevent the expires_at validation error message from appearing on the front end
-      self.expires_at ||= Time.current
+    # will be handled later.
+  rescue ValidatorError, AccountNumberFormatError
+    # Suppress the "Expiration cannot be blank" error if it's invalid for
+    # some other reason
+    self.expires_at ||= Time.current
   end
 
   def account_open?(account_num)
@@ -29,8 +30,6 @@ class NufsAccount < Account
     order_detail.journal.try(:successful?) ||
       OrderDetail.need_journal.exists?(order_detail.id)
   end
-
-  private
 
   #
   # Retrieves +#components+ from +ValidatorFactory#instance+ and sets
@@ -54,6 +53,8 @@ class NufsAccount < Account
     Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
     raise ValidatorError.new(e)
   end
+
+  private
 
   def validate_account_number
     begin

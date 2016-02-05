@@ -22,7 +22,6 @@ en:
           failure: "No transactions were reassigned. %{reassignment_error} on Order Detail #%{order_detail_id}."
     facility_accounts:
       create:
-        expires_at_missing: "The chart string appears to be invalid. Either the fund, department, project, or activity could not be found."
         success: "Account was successfully created."
       update: "The payment source was successfully updated."
       suspend:
