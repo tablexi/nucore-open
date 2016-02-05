@@ -84,15 +84,19 @@ class TabbableReports
 
   init_export_all_handler: ->
     @$emailToAddressField = $('#email_to_address')
-    $('#export-all').click (event) => @export_all_email_confirm(event)
+    $('#export-all')
+      .attr("data-remote", true)
+      .click (event) => @export_all_email_confirm(event)
 
   export_all_email_confirm: (event) ->
     new_to = prompt 'Have the report emailed to this address:', @$emailToAddressField.val()
+
     if new_to
       @$emailToAddressField.val(new_to)
       @update_export_urls()
-    else
-      event.preventDefault()
+      # Actual sending handled by remote: true
+      Flash.info("A report is being prepared and will be emailed to #{new_to} when complete")
+    event.preventDefault()
 
 $ ->
   window.report = new TabbableReports($('#refresh-form'))
