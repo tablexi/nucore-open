@@ -190,6 +190,27 @@ RSpec.describe OrdersController do
         expect { do_request }.not_to change { order_detail.reload.account }
       end
     end
+
+    context "when the accounts for the order_details were previously reset" do
+      before(:each) do
+        order_detail.account = nil
+        order_detail.save!
+        @params.merge!(account_id: account.id)
+      end
+
+      context "when selecting the same account" do
+        it "does not change the account associated with the order" do
+          expect { do_request }.not_to change { order.reload.account }
+        end
+
+        it "updates the account associated with the order_detail" do
+          expect { do_request }
+            .to change { order_detail.reload.account }
+            .from(nil)
+            .to(account)
+        end
+      end
+    end
   end
 
   context "update on purchase" do
