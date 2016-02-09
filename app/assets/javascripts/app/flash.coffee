@@ -13,14 +13,14 @@ class exports.Flash
   @flash: (level, message, location_selector = '#js--flash') ->
     new Flash(location_selector).flash(level, message)
 
-  constructor: (@location_selector) ->
+  constructor: (location_selector) ->
     @location_selector = $(location_selector)
 
   flash: (level, message) ->
     # existing flashes
     @location_selector.find(".alert").remove()
 
-    flash = $("<p>#{message}</p>").addClass('alert').addClass("alert-#{level}")
+    flash = $("<p></p>").text(message).addClass('alert').addClass("alert-#{level}")
     @location_selector.append(flash)
 
     setTimeout ->
