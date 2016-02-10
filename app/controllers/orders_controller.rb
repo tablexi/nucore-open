@@ -153,11 +153,7 @@ class OrdersController < ApplicationController
   # POST /orders/:id/choose_account
   def choose_account
     if request.post?
-      begin
-        account = Account.find(params[:account_id])
-        raise ActiveRecord::RecordNotFound unless account.can_be_used_by?(@order.user)
-      rescue
-      end
+      account = Account.find(params[:account_id])
       if account
         success = true
         @order.transaction do
