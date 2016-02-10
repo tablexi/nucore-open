@@ -186,13 +186,6 @@ class OrdersController < ApplicationController
       end
     end
 
-    if params[:reset_account]
-      @order.order_details.each do |od|
-        od.account = nil
-        od.save!
-      end
-    end
-
     if session[:add_to_cart].blank?
       @product = @order.order_details[0].try(:product)
     else
