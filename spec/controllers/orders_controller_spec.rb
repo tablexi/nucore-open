@@ -209,21 +209,32 @@ RSpec.describe OrdersController do
     context "when selecting a different account" do
       before { @params.merge!(account_id: other_account.id) }
 
-      it "updates the account associated with the order" do
-        expect { do_request }
-          .to change { order.reload.account }
-          .from(account)
-          .to(other_account)
+      context "that the user is allowed to use" do
+        it "updates the account associated with the order" do
+          expect { do_request }
+            .to change { order.reload.account }
+            .from(account)
+            .to(other_account)
+        end
+
+        it "updates the account associated with the order_detail" do
+          expect { do_request }
+            .to change { order_detail.reload.account }
+            .from(account)
+            .to(other_account)
+        end
+
+        it_behaves_like "it uses add_to_cart to determine redirects"
       end
 
-      it "updates the account associated with the order_detail" do
-        expect { do_request }
-          .to change { order_detail.reload.account }
-          .from(account)
-          .to(other_account)
-      end
+      context "that the user is not allowed to use" do
+        let(:other_account) { create(:setup_account) }
 
-      it_behaves_like "it uses add_to_cart to determine redirects"
+        it "does not change the account while flashing an error message" do
+          expect { do_request }.not_to change { order.reload.account }
+          expect(flash[:error]).to include("error was encountered")
+        end
+      end
     end
 
     context "when selecting the same account" do
