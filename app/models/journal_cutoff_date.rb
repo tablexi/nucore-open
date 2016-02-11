@@ -4,13 +4,8 @@ class JournalCutoffDate < ActiveRecord::Base
   validates :cutoff_date, presence: true
   validate :unique_month_for_cutoff_date, if: :cutoff_date?
 
-  def self.recent_and_upcoming
-    where("cutoff_date > ?", 1.month.ago.beginning_of_month).order(:cutoff_date)
-  end
-
-  def self.past
-    where("cutoff_date < ?", Time.current).order(:cutoff_date)
-  end
+  scope :recent_and_upcoming, -> { where("cutoff_date > ?", 1.month.ago.beginning_of_month).order(:cutoff_date) }
+  scope :past, -> { where("cutoff_date < ?", Time.current).order(:cutoff_date) }
 
   def self.first_valid_date
     past.last.try(:cutoff_date).try(:beginning_of_month)

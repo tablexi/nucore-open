@@ -242,8 +242,8 @@ th.currency {
   }
 }
 
-.table {
-  tr.row-warning td {
+.table tr.row-warning {
+   td, th {
     background-color: $errorBackground;
   }
 }

@@ -161,7 +161,7 @@ class FacilityJournalsController < ApplicationController
     blocked_facility_ids = Journal.facility_ids_with_pending_journals
     if cross_facility? || !has_pending_journals?
       @order_detail_action = :create
-      @action_date_field = {:journal_date => @earliest_journal_date}
+      @action_date_field = { journal_date: @earliest_journal_date }
     end
   end
 
