@@ -25,14 +25,7 @@
 
 = simple_form_for([@order, @order_detail, @reservation]) do |f|
   = f.error_messages
-
-  - unless @order_detail.bundled?
-    - accounts = @order.user.accounts_for_product(@instrument)
-    - selected_account_id = @order.account_id || params[:order_account]
-    - if selected_account_id.blank? && accounts.count == 1
-      - selected_account_id = accounts.first.id
-
-    = render "account_field", accounts: accounts, selected_account_id: selected_account_id
+  = render partial: 'account_field', locals: { f: f } unless @order_detail.bundled?
 
   .row
     .well.span12
