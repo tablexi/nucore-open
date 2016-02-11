@@ -131,6 +131,47 @@ RSpec.describe OrdersController do
 
         it { expect(response).to redirect_to(cart_path) }
       end
+
+      context "when add_to_cart is set in the session" do
+        before(:each) do
+          session[:add_to_cart] = [{ product_id: added_item_id }]
+          do_request
+        end
+
+        context "and the product exists" do
+          let(:added_item) { create(:setup_item) }
+          let(:added_item_id) { added_item.id }
+
+          it "sets @product to the first product in the cart" do
+            expect(assigns(:product)).to eq(added_item)
+          end
+        end
+
+        context "and the product does not exist" do
+          let(:added_item_id) { 0 }
+
+          it { expect(response.response_code).to eq(404) }
+        end
+      end
+
+      context "when add_to_cart is not set in the session" do
+        context "and there are no order_details" do
+          before(:each) do
+            order.order_details.destroy_all
+            do_request
+          end
+
+          it { expect(response).to redirect_to(cart_path) }
+        end
+
+        context "and there are order_details" do
+          before { do_request }
+
+          it "sets @product to the first product in the first order_detail" do
+            expect(assigns(:product)).to eq(order.order_details.first.product)
+          end
+        end
+      end
     end
   end
 
@@ -146,6 +187,23 @@ RSpec.describe OrdersController do
 
       @method = :post
       @action = :choose_account
+    end
+
+    shared_examples_for "it uses add_to_cart to determine redirects" do
+      context "when add_to_cart is set in the session" do
+        before(:each) do
+          session[:add_to_cart] = [{ product_id: item.id }]
+          do_request
+        end
+
+        it { expect(response).to redirect_to(add_order_path(order)) }
+      end
+
+      context "when add_to_cart is not set in the session" do
+        before { do_request }
+
+        it { expect(response).to redirect_to(cart_path) }
+      end
     end
 
     context "when selecting a different account" do
@@ -164,6 +222,8 @@ RSpec.describe OrdersController do
           .from(account)
           .to(other_account)
       end
+
+      it_behaves_like "it uses add_to_cart to determine redirects"
     end
 
     context "when selecting the same account" do
@@ -176,6 +236,8 @@ RSpec.describe OrdersController do
       it "does not change the account associated with the order_detail" do
         expect { do_request }.not_to change { order_detail.reload.account }
       end
+
+      it_behaves_like "it uses add_to_cart to determine redirects"
     end
   end
 
