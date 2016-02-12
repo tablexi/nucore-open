@@ -121,6 +121,10 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.10.0)
+    coffeelint (1.14.0)
+      coffee-script
+      execjs
+      json
     colorize (0.7.7)
     columnize (0.9.0)
     daemons (1.1.9)
@@ -517,6 +521,7 @@ DEPENDENCIES
   ckeditor (~> 4.0.10)
   clockpunch (~> 0.1.0)
   coffee-rails (~> 3.2.2)
+  coffeelint
   daemons (= 1.1.9)
   dataprobe (~> 1.0.0)!
   delayed_job_active_record (~> 4.0.1)
