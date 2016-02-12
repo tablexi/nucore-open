@@ -3,7 +3,9 @@ AllCops:
     - "db/schema.rb" # You can't touch this
     - ".bundle/**/*" # Auto-generated
     - "bin/**/*"     # Auto-generated
-  RunRailsCops: true
+
+Rails:
+  Enabled: true
 
 Lint/HandleExceptions:
   Exclude:
@@ -37,7 +39,7 @@ Style/EmptyLinesAroundModuleBody:
 Style/SignalException:
   EnforcedStyle: only_raise
 
-Style/SingleSpaceBeforeFirstArg:
+Style/SpaceBeforeFirstArg:
   Exclude:
     # We often add extra spaces for alignment in factories.
     - "spec/factories/**/*"
@@ -45,7 +47,10 @@ Style/SingleSpaceBeforeFirstArg:
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 
-Style/TrailingComma:
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInLiteral:
   EnforcedStyleForMultiline: comma
 
 Style/TrivialAccessors:
