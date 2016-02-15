@@ -34,10 +34,16 @@ class TabbableReports
         true
 
       beforeLoad: (_, ui) ->
+        @in_flight_xhr.abort() if @in_flight_xhr?
+        @in_flight_xhr = ui.jqXHR
+
         # Show a loading message so the user sees immediate feedback
         # that their action is being applied
         ui.panel.html('<span class="updating"></span> Loading...')
         ui.ajaxSettings.dataType = 'text/html'
+
+        ui.jqXHR.always => @in_flight_xhr = null if @in_flight_xhr == ui.jqXHR
+
         ui.jqXHR.error (xhr, status, error) ->
           # don't show error message if the user aborted the ajax request
           if status != 'abort'
