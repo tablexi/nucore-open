@@ -347,6 +347,7 @@ GEM
       ruby-rc4
       ttfunk
     polyglot (0.3.5)
+    power_assert (0.2.7)
     powerpack (0.1.1)
     prawn (0.12.0)
       pdf-reader (>= 0.9.0)
@@ -471,6 +472,8 @@ GEM
       railties (>= 3.2.5, < 5)
     teaspoon-jasmine (2.3.4)
       teaspoon (>= 1.0.0)
+    test-unit (3.1.7)
+      power_assert
     therubyracer (0.12.2)
       libv8 (~> 3.16.14.0)
       ref
@@ -571,6 +574,7 @@ DEPENDENCIES
   strong_parameters
   synaccess_connect (= 0.2.2)!
   teaspoon-jasmine
+  test-unit (~> 3.0)
   therubyracer
   thin
   timecop (~> 0.6.3)
@@ -581,4 +585,4 @@ DEPENDENCIES
   will_paginate (~> 3.0.5)
 
 BUNDLED WITH
-   1.10.6
+   1.11.2

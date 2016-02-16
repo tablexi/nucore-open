@@ -89,6 +89,7 @@ group :development, :test do
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'teaspoon-jasmine'
+  gem 'test-unit', '~> 3.0'
   gem 'thin'
   gem 'timecop',           '~> 0.6.3'
 end
