@@ -93,6 +93,8 @@ class TabbableReports
       .click (event) => @export_all_email_confirm(event)
 
   export_all_email_confirm: (event) ->
+    event.preventDefault()
+
     new_to = prompt(
       'Have the report emailed to this address:'
       @$emailToAddressField.val()
@@ -104,7 +106,8 @@ class TabbableReports
       # Actual sending handled by remote: true
       Flash.info("A report is being prepared and will be emailed to #{new_to}
         when complete")
-    event.preventDefault()
+    else
+      false # prevent handling by remote: true
 
 $ ->
   window.report = new TabbableReports($('#refresh-form'))
