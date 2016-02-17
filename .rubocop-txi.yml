@@ -7,6 +7,9 @@ AllCops:
 Rails:
   Enabled: true
 
+Rails/ActionFilter:
+  EnforcedStyle: filter # TODO: remove after upgrading to Rails 4
+
 Lint/HandleExceptions:
   Exclude:
     - "config/unicorn/*"
