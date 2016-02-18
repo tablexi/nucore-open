@@ -115,11 +115,12 @@ RSpec.describe FacilityAccountsController do
 
     context 'PurchaseOrderAccount' do
       before :each do
-        @acct_attrs[:expires_at] = "12/5/#{@expiration_year}"
+        # December 5
+        @acct_attrs[:formatted_expires_at] = "12/5/#{@expiration_year}"
       end
 
       it_should_allow :director do
-        expect(assigns(:account).expires_at).to eq(Time.zone.parse("#{@expiration_year}-5-12").end_of_day)
+        expect(assigns(:account).expires_at).to eq(Time.zone.parse("#{@expiration_year}-12-05").end_of_day)
         expect(assigns(:account).facility_id).to eq(@authable.id)
         expect(assigns(:account)).to be_kind_of PurchaseOrderAccount
         expect(assigns(:account).affiliate).to eq(Affiliate.find(@acct_attrs[:affiliate_id]))
