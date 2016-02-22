@@ -4,10 +4,10 @@ RSpec.describe OrderDetailsController do
   let(:order) { order_detail.order }
   let(:order_detail) { reservation.order_detail }
   let(:reservation) { create(:purchased_reservation) }
+  let(:user) { order_detail.user }
 
   describe "#dispute" do
     let(:params) { { order_id: order.id, order_detail_id: order_detail.id } }
-    let(:user) { order_detail.user }
     before { sign_in user }
 
     context "when the order is not disputable" do
@@ -47,8 +47,6 @@ RSpec.describe OrderDetailsController do
     end
 
     context "when logged in as the user who owns the order" do
-      let(:user) { order_detail.user }
-
       it { expect(response.code).to eq("200") }
     end
 
@@ -56,6 +54,32 @@ RSpec.describe OrderDetailsController do
       let(:user) { create(:user) }
 
       it { expect(response.code).to eq("404") }
+    end
+  end
+
+  describe "#update" do
+    context "when the order is a reservation" do
+      context "when attempting to cancel the reservation" do
+        before { sign_in user }
+
+        context "and the reservation is cancelable" do
+          before(:each) do
+            put :update, order_id: order.id, order_detail_id: order_detail.id, cancel: true
+          end
+
+          it { expect(order_detail.reload).to be_canceled }
+        end
+
+        context "and the reservation is not cancelable" do
+          before(:each) do
+            create(:journal_row, order_detail: order_detail)
+            put :update, order_id: order.id, order_detail_id: order_detail.id, cancel: true
+          end
+
+# PROBLEM: order_detail.cancelable? is false, but reservation.can_cancel? is true
+          it { expect(order_detail.reload).not_to be_canceled }
+        end
+      end
     end
   end
 end
