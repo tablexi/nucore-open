@@ -21,12 +21,6 @@ FactoryGirl.define do
     amount 5
   end
 
-  factory :journal do
-    is_successful true
-    created_by 1
-    journal_date { Time.zone.now }
-  end
-
   factory :response_set do
     sequence(:access_code) { |n| "#{n}#{n}#{n}" }
   end
