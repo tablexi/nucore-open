@@ -181,7 +181,7 @@ RSpec.describe OldInstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with reservation cost" do
-      options = ipp_attributes(        product: @instrument,
+      options = ipp_attributes(product: @instrument,
         usage_rate: 0,
         reservation_rate: 10.75)
 
@@ -210,7 +210,7 @@ RSpec.describe OldInstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with reservation cost and subsidy" do
-      options = ipp_attributes(        product: @instrument,
+      options = ipp_attributes(product: @instrument,
         usage_rate: 0,
         reservation_rate: 10.75,
         reservation_subsidy: 1.75)
@@ -240,7 +240,7 @@ RSpec.describe OldInstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with usage and reservation cost" do
-      options = ipp_attributes(        product: @instrument,
+      options = ipp_attributes(product: @instrument,
         usage_rate: 5,
         reservation_rate: 5.75)
 
@@ -269,7 +269,7 @@ RSpec.describe OldInstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with usage and reservation cost and subsidy" do
-      options = ipp_attributes(        product: @instrument,
+      options = ipp_attributes(product: @instrument,
         usage_rate: 5,
         usage_subsidy: 0.5,
         reservation_rate: 5.75,

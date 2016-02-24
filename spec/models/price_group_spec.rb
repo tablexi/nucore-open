@@ -72,7 +72,7 @@ RSpec.describe PriceGroup do
 
       it 'should not be deletable if there are orders on a policy' do
         @user = FactoryGirl.create(:user)
-        @order = FactoryGirl.create(:order, user: @user, created_by: @user.id )
+        @order = FactoryGirl.create(:order, user: @user, created_by: @user.id)
         @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail, product: @item, price_policy: @price_policy))
         expect(@order_detail.reload.price_policy).to eq(@price_policy)
         expect(@price_group).not_to be_can_delete

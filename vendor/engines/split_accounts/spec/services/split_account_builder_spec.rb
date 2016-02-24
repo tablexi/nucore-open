@@ -21,7 +21,7 @@ RSpec.describe SplitAccounts::SplitAccountBuilder, type: :service, split_account
     end
 
     let(:params) do
-      ActionController::Parameters.new( split_accounts_split_account: {
+      ActionController::Parameters.new(split_accounts_split_account: {
                                          splits_attributes: {
                                            "0" => {
                                              subaccount_id: subaccount_2.id,

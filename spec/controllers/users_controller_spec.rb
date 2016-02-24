@@ -65,7 +65,7 @@ RSpec.describe UsersController do
 
         context 'blank post' do
           before :each do
-            @params.merge!( username_lookup: '')
+            @params.merge!(username_lookup: '')
           end
 
           it_should_allow_operators_only do
