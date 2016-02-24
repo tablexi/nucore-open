@@ -112,7 +112,7 @@ class PricePolicy < ActiveRecord::Base
     !can_purchase?
   end
 
-  alias_method :restrict_purchase?, :restrict_purchase
+  alias restrict_purchase? restrict_purchase
 
 
   #

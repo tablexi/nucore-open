@@ -73,7 +73,7 @@ class OrderDetail < ActiveRecord::Base
 
 
 
-  alias_method :merge!, :save!
+  alias merge! save!
 
   validates_presence_of :product_id, :order_id, :created_by
   validates_numericality_of :quantity, :only_integer => true, :greater_than_or_equal_to => 1
@@ -282,7 +282,7 @@ class OrderDetail < ActiveRecord::Base
 
   scope :purchased, joins(:order).merge(Order.purchased)
   class << self
-    alias_method :ordered, :purchased # TODO: deprecate .ordered in favor of .purchased
+    alias ordered purchased # TODO: deprecate .ordered in favor of .purchased
   end
 
   scope :pending, joins(:order).where(:state => ['new', 'inprocess']).ordered
