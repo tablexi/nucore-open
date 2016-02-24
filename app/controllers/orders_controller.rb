@@ -18,14 +18,14 @@ class OrdersController < ApplicationController
 
   def protect_purchased_orders
     if @order.state == 'purchased'
-      redirect_to(receipt_order_path(@order)) && (return)
+      redirect_to(receipt_order_path(@order)) && return
     end
   end
 
   # GET /orders/cart
   def cart
     @order = acting_user.cart(session_user)
-    redirect_to(order_path(@order)) && (return)
+    redirect_to(order_path(@order)) && return
   end
 
   # GET /orders/:id
@@ -39,7 +39,7 @@ class OrdersController < ApplicationController
   # PUT /orders/:id/clear
   def clear
     @order.clear!
-    redirect_to(order_path(@order)) && (return)
+    redirect_to(order_path(@order)) && return
   end
 
   # GET /orders/2/add/
@@ -60,7 +60,7 @@ class OrdersController < ApplicationController
     # if acting_as, make sure the session user can place orders for the facility
     if acting_as? && facility_ability.cannot?(:act_as, first_product.facility)
       flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{current_facility.try(:name)}."
-      redirect_to(order_path(@order)) && (return)
+      redirect_to(order_path(@order)) && return
     end
 
     ## handle a single instrument reservation
@@ -87,7 +87,7 @@ class OrdersController < ApplicationController
 
       ## save the state to the session and redirect
       session[:add_to_cart] = items
-      redirect_to(choose_account_order_path(@order)) && (return)
+      redirect_to(choose_account_order_path(@order)) && return
     end
 
     ## process each item
@@ -211,7 +211,7 @@ class OrdersController < ApplicationController
   def update_or_purchase
     # When returning from an external service, we may be called with a get; in that
     # case, we should just redirect to the show path
-    redirect_to(action: :show) && (return) if request.get?
+    redirect_to(action: :show) && return if request.get?
 
     # if update button was clicked
     if params[:commit] == "Update"
@@ -301,7 +301,7 @@ class OrdersController < ApplicationController
       flash[:error] += " #{e.message}" if e.message
       puts e.message
       @order.reload.invalidate!
-      redirect_to(order_path(@order)) && (return)
+      redirect_to(order_path(@order)) && return
     end
   end
 

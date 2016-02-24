@@ -47,7 +47,7 @@ class FileUploadsController < ApplicationController
 
     if @file.save
       flash[:notice] = "File uploaded"
-      redirect_to(upload_product_file_path(current_facility, @product.parameterize, @product, file_type: @file.file_type)) && (return)
+      redirect_to(upload_product_file_path(current_facility, @product.parameterize, @product, file_type: @file.file_type)) && return
     end
     render :upload
   end
@@ -99,9 +99,9 @@ class FileUploadsController < ApplicationController
     # use return_to if it was sent
     @return_to = params[:return_to]
     if @file.file_type == 'template'
-      redirect_to(@return_to || product_survey_path(current_facility, @product.parameterize, @product)) && (return)
+      redirect_to(@return_to || product_survey_path(current_facility, @product.parameterize, @product)) && return
     else
-      redirect_to(@return_to || upload_product_file_path(current_facility, @product.parameterize, @product, file_type: @file.file_type)) && (return)
+      redirect_to(@return_to || upload_product_file_path(current_facility, @product.parameterize, @product, file_type: @file.file_type)) && return
     end
   end
 
@@ -122,7 +122,7 @@ class FileUploadsController < ApplicationController
         end
         @file.save!
         flash[:notice] = "Order File Template uploaded"
-        redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) && (return)
+        redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) && return
       rescue => e
         @file.errors.add(:base, "Order File Template delete error: #{e.message}")
         raise ActiveRecord::Rollback
@@ -150,7 +150,7 @@ class FileUploadsController < ApplicationController
           ExternalServicePasser.create!(passer: @product, external_service: ext)
         end
 
-        redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) && (return)
+        redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) && return
       rescue => e
         @survey ||= ExternalServiceManager.survey_service.new
         @survey.errors.add(:base, "Online Order Form add error: #{e.message}")

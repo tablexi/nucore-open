@@ -29,7 +29,7 @@ RSpec.describe BudgetedChartString do
       # should have 2 records plus the 4 test records
       assert_equal 6, BudgetedChartString.count
       # should properly parse account fields and dates
-      @bcs1 = (BudgetedChartString.all)[4]
+      @bcs1 = BudgetedChartString.all[4]
       @bcs2 = BudgetedChartString.last
     end
     after :each do

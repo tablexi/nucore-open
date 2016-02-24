@@ -70,7 +70,7 @@ class UsersController < ApplicationController
       Notifier.delay.new_user(user: @user, password: @user.password)
       redirect_to facility_users_path(user: @user.id)
     else
-      render(action: "new_external") && (return)
+      render(action: "new_external") && return
     end
   end
 
