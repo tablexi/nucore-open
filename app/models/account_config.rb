@@ -36,7 +36,7 @@ class AccountConfig
   # Given an subclassed `Account` name return a param-friendly string. Replaces
   # any backslashes with underscore to support namespaced class names.
   def account_type_to_param(account_type)
-    account_type.to_s.underscore.gsub("/", "_")
+    account_type.to_s.underscore.tr("/", "_")
   end
 
   # Returns an array of subclassed Account objects given a facility.

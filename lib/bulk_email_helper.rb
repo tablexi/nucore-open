@@ -48,8 +48,8 @@ module BulkEmailHelper
     order_details = OrderDetail.for_products(search_fields[:products])
     order_details = order_details.joins(:order).where(:orders => {:facility_id => search_fields[:facility_id]})
 
-    start_date = parse_usa_date(search_fields[:start_date].to_s.to_s.gsub("-", "/")) if search_fields[:start_date]
-    end_date = parse_usa_date(search_fields[:end_date].to_s.to_s.gsub("-", "/")) if search_fields[:end_date]
+    start_date = parse_usa_date(search_fields[:start_date].to_s.to_s.tr("-", "/")) if search_fields[:start_date]
+    end_date = parse_usa_date(search_fields[:end_date].to_s.to_s.tr("-", "/")) if search_fields[:end_date]
     order_details = order_details.ordered_or_reserved_in_range(start_date, end_date)
     
     @order_details = order_details

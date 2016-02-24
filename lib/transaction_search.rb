@@ -115,8 +115,8 @@ module TransactionSearch
     @order_details = @order_details.for_products(search_params[:products])
     @order_details = @order_details.for_owners(search_params[:account_owners])
     @order_details = @order_details.for_order_statuses(search_params[:order_statuses])
-    start_date = parse_usa_date(search_params[:start_date].to_s.gsub("-", "/"))
-    end_date = parse_usa_date(search_params[:end_date].to_s.gsub("-", "/"))
+    start_date = parse_usa_date(search_params[:start_date].to_s.tr("-", "/"))
+    end_date = parse_usa_date(search_params[:end_date].to_s.tr("-", "/"))
 
     @order_details = @order_details.for_facilities(search_params[:facilities])
     @date_range_field = date_range_field(search_params[:date_range_field])
