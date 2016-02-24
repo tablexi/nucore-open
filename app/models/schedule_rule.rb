@@ -208,16 +208,15 @@ class ScheduleRule < ActiveRecord::Base
         not_rules.push(not_rule)
       end
 
-      unless not_start_hour == 24 && not_start_min == 0
-        # build not rule for last part of day
-        not_rule = ScheduleRule.new("on_#{day.downcase}" => true, :unavailable => true)
-        not_rule.start_hour = not_start_hour
-        not_rule.start_min  = not_start_min
-        not_rule.end_hour   = 24
-        not_rule.end_min    = 0
-        not_rule.freeze
-        not_rules.push(not_rule)
-      end
+      next if not_start_hour == 24 && not_start_min == 0
+      # build not rule for last part of day
+      not_rule = ScheduleRule.new("on_#{day.downcase}" => true, :unavailable => true)
+      not_rule.start_hour = not_start_hour
+      not_rule.start_min  = not_start_min
+      not_rule.end_hour   = 24
+      not_rule.end_min    = 0
+      not_rule.freeze
+      not_rules.push(not_rule)
     end
 
     not_rules

@@ -195,11 +195,10 @@ class OrdersController < ApplicationController
         error = account.validate_against_product(Product.find(product_id), acting_user)
         @errors[account.id] = error if error
       end
-      unless @errors[account.id]
-        details.each do |od|
-          error = account.validate_against_product(od.product, acting_user)
-          @errors[account.id] = error if error
-        end
+      next if @errors[account.id]
+      details.each do |od|
+        error = account.validate_against_product(od.product, acting_user)
+        @errors[account.id] = error if error
       end
     end
   end
