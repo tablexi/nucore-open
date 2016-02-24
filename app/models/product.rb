@@ -140,7 +140,7 @@ class Product < ActiveRecord::Base
   end
 
   def set_default_pricing
-    PriceGroup.globals.all.each do |pg|
+    PriceGroup.globals.all.find_each do |pg|
       PriceGroupProduct.create!(:product => self, :price_group => pg)
     end
   end
