@@ -1,11 +1,11 @@
 class ProductsCommonController < ApplicationController
   customer_tab  :show
   admin_tab     :create, :destroy, :new, :edit, :index, :update, :manage
-  before_filter :authenticate_user!, :except => [:show]
-  before_filter :check_acting_as, :except => [:show]
-  before_filter :init_current_facility
-  before_filter :init_product, :except => [:index, :new, :create]
-  before_filter :store_fullpath_in_session
+  before_action :authenticate_user!, :except => [:show]
+  before_action :check_acting_as, :except => [:show]
+  before_action :init_current_facility
+  before_action :init_product, :except => [:index, :new, :create]
+  before_action :store_fullpath_in_session
 
   include TranslationHelper
   load_and_authorize_resource :except => [:show, :manage]

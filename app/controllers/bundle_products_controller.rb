@@ -1,11 +1,11 @@
 class BundleProductsController < ApplicationController
   customer_tab  :show
   admin_tab     :create, :destroy, :new, :edit, :index, :update, :manage
-  before_filter :authenticate_user!, :except => :show
-  before_filter :check_acting_as
-  before_filter :init_current_facility
-  before_filter :init_bundle
-  before_filter :init_bundle_product, :except => [:new, :create, :index]
+  before_action :authenticate_user!, :except => :show
+  before_action :check_acting_as
+  before_action :init_current_facility
+  before_action :init_bundle
+  before_action :init_bundle_product, :except => [:new, :create, :index]
 
   load_and_authorize_resource :except => :show
 

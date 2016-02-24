@@ -2,8 +2,8 @@ class AccessoriesController < ApplicationController
   load_resource :order
   load_resource :order_detail, :through => :order
 
-  before_filter :authorize_order_detail
-  before_filter :load_product
+  before_action :authorize_order_detail
+  before_action :load_product
 
   def new
     accessorizer = Accessories::Accessorizer.new(@order_detail)

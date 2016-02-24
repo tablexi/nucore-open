@@ -1,9 +1,9 @@
 class ProductUsersController < ApplicationController
   admin_tab :index, :new
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_current_facility
-  before_filter :init_product
+  before_action :authenticate_user!
+  before_action :check_acting_as
+  before_action :init_current_facility
+  before_action :init_product
 
   load_and_authorize_resource
 

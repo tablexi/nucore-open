@@ -10,10 +10,10 @@ class UsersController < ApplicationController
 
   customer_tab :password
   admin_tab     :all
-  before_filter :init_current_facility, :except => [:password, :password_reset]
-  before_filter :authenticate_user!, :except => [:password_reset]
-  before_filter :check_acting_as
-  before_filter :load_user_from_user_id_param, only: [:access_list, :access_list_approvals, :accounts, :orders, :reservations, :switch_to]
+  before_action :init_current_facility, :except => [:password, :password_reset]
+  before_action :authenticate_user!, :except => [:password_reset]
+  before_action :check_acting_as
+  before_action :load_user_from_user_id_param, only: [:access_list, :access_list_approvals, :accounts, :orders, :reservations, :switch_to]
 
   load_and_authorize_resource :except => [:password, :password_reset]
 

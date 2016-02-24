@@ -2,8 +2,8 @@ class FacilityAccountOrdersController < ApplicationController
 
   admin_tab :all
 
-  before_filter :authenticate_user!
-  before_filter { @active_tab = "admin_users" }
+  before_action :authenticate_user!
+  before_action { @active_tab = "admin_users" }
 
   layout "two_column"
 

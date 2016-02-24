@@ -4,13 +4,13 @@ class FacilitiesController < ApplicationController
   admin_tab :edit, :manage, :update, :transactions,
             :reassign_chart_strings, :movable_transactions,
             :confirm_transactions, :move_transactions, :disputed_orders
-  before_filter :authenticate_user!, except: [:index, :show] # public pages do not require authentication
-  before_filter :check_acting_as, except: [:index, :show]
-  before_filter :load_order_details, only: [:confirm_transactions, :move_transactions, :reassign_chart_strings]
-  before_filter :set_admin_billing_tab, only: [:confirm_transactions, :disputed_orders, :movable_transactions, :transactions]
-  before_filter :set_recently_used_facilities, only: [:index]
-  before_filter :set_two_column_head_layout, only: [:disputed_orders, :movable_transactions, :transactions]
-  before_filter :store_fullpath_in_session, only: [:index, :show]
+  before_action :authenticate_user!, except: [:index, :show] # public pages do not require authentication
+  before_action :check_acting_as, except: [:index, :show]
+  before_action :load_order_details, only: [:confirm_transactions, :move_transactions, :reassign_chart_strings]
+  before_action :set_admin_billing_tab, only: [:confirm_transactions, :disputed_orders, :movable_transactions, :transactions]
+  before_action :set_recently_used_facilities, only: [:index]
+  before_action :set_two_column_head_layout, only: [:disputed_orders, :movable_transactions, :transactions]
+  before_action :store_fullpath_in_session, only: [:index, :show]
 
   load_and_authorize_resource find_by: :url_name
   skip_load_and_authorize_resource only: [:index, :show]

@@ -1,7 +1,7 @@
 class UserPriceGroupMembersController < ApplicationController
   include PriceGroupMembersController
 
-  before_filter :authorize_user_price_group_member!
+  before_action :authorize_user_price_group_member!
 
   private
 
