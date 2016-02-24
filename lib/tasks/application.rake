@@ -1,17 +1,17 @@
 namespace :daemon do
 
   desc "start daemon found in lib/daemons"
-  task :start, [ :daemon_name ] do |_t, args|
+  task :start, [:daemon_name] do |_t, args|
     manage_daemon(args.daemon_name, 'start')
   end
 
   desc "stop daemon found in lib/daemons"
-  task :stop, [ :daemon_name ] do |_t, args|
+  task :stop, [:daemon_name] do |_t, args|
     manage_daemon(args.daemon_name, 'stop')
   end
 
   desc "start daemon found in lib/daemons in debug mode"
-  task :debug, [ :daemon_name ] do |_t, args|
+  task :debug, [:daemon_name] do |_t, args|
     manage_daemon(args.daemon_name, 'run')
   end
 

@@ -3,11 +3,11 @@ class AccountsController < ApplicationController
   customer_tab  :all
   before_action :authenticate_user!
   before_action :check_acting_as
-  before_action :init_account, only: [:show, :user_search, :transactions, :transactions_in_review, :suspend, :unsuspend ]
+  before_action :init_account, only: [:show, :user_search, :transactions, :transactions_in_review, :suspend, :unsuspend]
 
   include TransactionSearch
   include AccountSuspendActions
-  load_and_authorize_resource only: [:show, :user_search, :transactions, :transactions_in_review, :suspend, :unsuspend ]
+  load_and_authorize_resource only: [:show, :user_search, :transactions, :transactions_in_review, :suspend, :unsuspend]
 
   def initialize
     @active_tab = 'accounts'

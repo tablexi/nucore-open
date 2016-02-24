@@ -12,7 +12,7 @@ module Reservations::Validations
              if: :reserve_start_at && :reserve_end_at && :reservation_changed?,
              unless: :admin?
 
-    validates_each [ :actual_start_at, :actual_end_at ] do |record, attr, value|
+    validates_each [:actual_start_at, :actual_end_at] do |record, attr, value|
       if value
         record.errors.add(attr.to_s, 'cannot be in the future') if Time.zone.now < value
       end

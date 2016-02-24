@@ -23,7 +23,7 @@ RSpec.describe InstrumentDayReportsController do
   end
 
   def report_headers(_label)
-    headers = [ 'Instrument', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]
+    headers = ['Instrument', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     headers += report_attributes(@reservation, @instrument) if export_all_request?
     headers
   end

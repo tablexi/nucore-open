@@ -3,10 +3,10 @@ class ReservationsController < ApplicationController
   include Timelineable
 
   customer_tab  :all
-  before_action :authenticate_user!, except: [ :index ]
-  before_action :check_acting_as, only: [ :switch_instrument, :show, :list ]
+  before_action :authenticate_user!, except: [:index]
+  before_action :check_acting_as, only: [:switch_instrument, :show, :list]
   before_action :load_basic_resources, only: [:new, :create, :edit, :update]
-  before_action :load_and_check_resources, only: [ :move, :switch_instrument ]
+  before_action :load_and_check_resources, only: [:move, :switch_instrument]
 
   include TranslationHelper
   include FacilityReservationsHelper
@@ -70,7 +70,7 @@ class ReservationsController < ApplicationController
     relation = acting_user.order_details
     in_progress = relation.in_progress_reservations.all
     @status = params[:status]
-    @available_statuses = [ in_progress.blank? ? 'upcoming' : 'upcoming_and_in_progress', 'all' ]
+    @available_statuses = [in_progress.blank? ? 'upcoming' : 'upcoming_and_in_progress', 'all']
 
     if @status == 'all'
       @order_details = relation.all_reservations.all

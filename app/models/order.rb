@@ -57,7 +57,7 @@ class Order < ActiveRecord::Base
     transitions to: :new, from: [:new, :validated], guard: :clear_cart?
   end
 
-  [ :total, :cost, :subsidy, :estimated_total, :estimated_cost, :estimated_subsidy ].each do |method_name|
+  [:total, :cost, :subsidy, :estimated_total, :estimated_cost, :estimated_subsidy].each do |method_name|
     define_method(method_name) { total_cost method_name }
   end
 

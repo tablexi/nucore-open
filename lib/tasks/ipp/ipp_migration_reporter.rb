@@ -42,7 +42,7 @@ class IppMigrationReporter
 
   def price_policy_row(pp)
     product = pp.product
-    [ product.facility.name, product.name ]
+    [product.facility.name, product.name]
   end
 
   def order_detail_row(od)

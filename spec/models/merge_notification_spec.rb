@@ -9,7 +9,7 @@ RSpec.describe MergeNotification do
     MergeNotification.create_for! @user, @subject
   end
 
-  [ :user_id, :subject_id, :notice ].each do |field|
+  [:user_id, :subject_id, :notice].each do |field|
     it { is_expected.to validate_presence_of field }
   end
 

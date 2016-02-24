@@ -60,7 +60,7 @@ class GeneralReportsController < ReportsController
 
     stati = if params[:date_start].blank? && params[:date_end].blank?
       # page load -- default to most interesting/common statuses
-              [ OrderStatus.complete.first, OrderStatus.reconciled.first ]
+              [OrderStatus.complete.first, OrderStatus.reconciled.first]
             elsif status_ids.blank?
       # user removed all status filters. They will get nothing back but that's what they want!
               []
@@ -82,7 +82,7 @@ class GeneralReportsController < ReportsController
 
   def init_report_headers(report_on_label)
     @headers = if !report_data_request?
-                 [ report_on_label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
+                 [report_on_label, 'Quantity', 'Total Cost', 'Percent of Cost']
                else
                  I18n.t 'controllers.general_reports.headers.data'
                end

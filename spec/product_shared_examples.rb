@@ -52,11 +52,11 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
         base_pg.save(validate: false)
         base_pp = make_price_policy(unit_cost: 1, price_group: base_pg)
 
-        [ base_pg, @price_group3, @price_group4 ].each do |pg|
+        [base_pg, @price_group3, @price_group4].each do |pg|
           create(:account_price_group_member, account: account, price_group: pg)
         end
 
-        [ @pp_g1, @pp_g2, @pp_g3, @pp_g4 ].each do |pp|
+        [@pp_g1, @pp_g2, @pp_g3, @pp_g4].each do |pp|
           pp.update_attribute :unit_cost, base_pp.unit_cost
           expect(@product.cheapest_price_policy(@order_detail)).to eq(base_pp)
         end

@@ -179,7 +179,7 @@ class Account < ActiveRecord::Base
 
     # check chart string account number
     if is_a?(NufsAccount)
-      accts = product.is_a?(Bundle) ? product.products.collect(&:account) : [ product.account ]
+      accts = product.is_a?(Bundle) ? product.products.collect(&:account) : [product.account]
       accts.uniq.each { |acct| return "The #{type_string} is not open for the required account" unless account_open?(acct) }
     end
 

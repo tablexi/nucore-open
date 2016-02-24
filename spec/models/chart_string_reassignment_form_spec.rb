@@ -74,7 +74,7 @@ RSpec.describe ChartStringReassignmentForm do
       end
 
       context 'Users have some accounts in common' do
-        let(:common_accounts) { [ accounts.first, accounts.last ] }
+        let(:common_accounts) { [accounts.first, accounts.last] }
         let!(:sorted_user_accounts) do
           all_user_accounts = Set.new
 

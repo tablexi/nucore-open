@@ -33,7 +33,7 @@ module Dataprobe
     end
 
     def hex_s(int)
-      [ int ].pack 'C'
+      [int].pack 'C'
     end
 
     private

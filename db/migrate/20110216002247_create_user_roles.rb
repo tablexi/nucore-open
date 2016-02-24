@@ -7,11 +7,11 @@ class CreateUserRoles < ActiveRecord::Migration
       t.string :role, null: false
     end
 
-    add_index(:user_roles, [ :user_id, :facility_id, :role ])
+    add_index(:user_roles, [:user_id, :facility_id, :role])
   end
 
   def self.down
-    remove_index(:user_roles, [ :user_id, :facility_id, :role ])
+    remove_index(:user_roles, [:user_id, :facility_id, :role])
     drop_table :user_roles
   end
 

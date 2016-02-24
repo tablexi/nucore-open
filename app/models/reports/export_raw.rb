@@ -132,11 +132,11 @@ class Reports::ExportRaw
   end
 
   def statement_datetime_column(statement)
-    [ statement.present? ? format_usa_datetime(statement.created_at) : nil ]
+    [statement.present? ? format_usa_datetime(statement.created_at) : nil]
   end
 
   def journal_datetime_column(journal)
-    [ journal.present? ? format_usa_datetime(journal.created_at) : nil ]
+    [journal.present? ? format_usa_datetime(journal.created_at) : nil]
   end
 
   def order_detail_row(order_detail)
@@ -149,14 +149,14 @@ class Reports::ExportRaw
         user_info_columns(order_detail.account.owner_user) +
         pricing_info_columns(order_detail) +
         reservation_info_columns(order_detail.reservation) +
-        [ order_detail.note ] +
+        [order_detail.note] +
         dispute_info_columns(order_detail) +
-        [ format_usa_datetime(order_detail.reviewed_at) ] +
+        [format_usa_datetime(order_detail.reviewed_at)] +
         statement_datetime_column(order_detail.statement) +
         journal_datetime_column(order_detail.journal) +
-        [ order_detail.reconciled_note ]
+        [order_detail.reconciled_note]
     rescue => e
-      [ "*** ERROR WHEN REPORTING ON ORDER DETAIL #{order_detail}: #{e.message} ***" ]
+      ["*** ERROR WHEN REPORTING ON ORDER DETAIL #{order_detail}: #{e.message} ***"]
     
   end
 

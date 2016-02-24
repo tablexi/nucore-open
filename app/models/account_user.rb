@@ -10,11 +10,11 @@ class AccountUser < ActiveRecord::Base
   ACCOUNT_ADMINISTRATOR = 'Business Administrator'.freeze
 
   def self.read_only_user_roles
-    [ ACCOUNT_PURCHASER ]
+    [ACCOUNT_PURCHASER]
   end
 
   def self.admin_user_roles
-    [ ACCOUNT_OWNER, ACCOUNT_ADMINISTRATOR ]
+    [ACCOUNT_OWNER, ACCOUNT_ADMINISTRATOR]
   end
 
   def self.user_roles

@@ -25,7 +25,7 @@ RSpec.describe BulkEmailHelper do
     @product2 = FactoryGirl.create(:item, facility_account: @facility_account, facility: @facility)
     @product3 = FactoryGirl.create(:item, facility_account: @facility_account, facility: @facility)
 
-    @account = FactoryGirl.create(:nufs_account, account_users_attributes: [ FactoryGirl.attributes_for(:account_user, user: @owner) ])
+    @account = FactoryGirl.create(:nufs_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: @owner)])
 
     @controller = BulkEmailTest.new
     @params = { search_type: :customers, facility_id: @facility.id }
@@ -132,8 +132,8 @@ RSpec.describe BulkEmailHelper do
     before :each do
       @owner2 = FactoryGirl.create(:user)
       @owner3 = FactoryGirl.create(:user)
-      @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: [ FactoryGirl.attributes_for(:account_user, user: @owner2) ])
-      @account3 = FactoryGirl.create(:nufs_account, account_users_attributes: [ FactoryGirl.attributes_for(:account_user, user: @owner3) ])
+      @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: @owner2)])
+      @account3 = FactoryGirl.create(:nufs_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: @owner3)])
 
       @od1 = place_product_order(@purchaser, @facility, @product, @account)
       @od2 = place_product_order(@purchaser, @facility, @product2, @account2)
@@ -160,8 +160,8 @@ RSpec.describe BulkEmailHelper do
     before :each do
       @owner2 = FactoryGirl.create(:user)
       @owner3 = FactoryGirl.create(:user)
-      @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: [ FactoryGirl.attributes_for(:account_user, user: @owner2) ])
-      @account3 = FactoryGirl.create(:nufs_account, account_users_attributes: [ FactoryGirl.attributes_for(:account_user, user: @owner3) ])
+      @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: @owner2)])
+      @account3 = FactoryGirl.create(:nufs_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: @owner3)])
 
       @od1 = place_product_order(@purchaser, @facility, @product, @account)
       @od2 = place_product_order(@purchaser2, @facility, @product2, @account2)

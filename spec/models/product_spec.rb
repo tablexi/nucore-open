@@ -382,7 +382,7 @@ RSpec.describe Product do
     context '#access_group_for_user' do
       context 'with an access group' do
         before :each do
-          schedule_rule.product_access_groups = [ access_group ]
+          schedule_rule.product_access_groups = [access_group]
         end
 
         context 'with a user in the access group' do
@@ -461,7 +461,7 @@ RSpec.describe Product do
       context 'when its type supports access groups' do
         context 'when it has an access group' do
           before :each do
-            product.product_access_groups = [ access_group ]
+            product.product_access_groups = [access_group]
           end
 
           it 'has an access list' do

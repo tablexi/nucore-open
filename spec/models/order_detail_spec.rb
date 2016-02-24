@@ -779,7 +779,7 @@ RSpec.describe OrderDetail do
   end
 
   context 'date attributes' do
-    [ :fulfilled_at, :reviewed_at ].each do |attr|
+    [:fulfilled_at, :reviewed_at].each do |attr|
       it { is_expected.to allow_value(nil).for(attr) }
       it { is_expected.to allow_value(Time.zone.now).for(attr) }
     end

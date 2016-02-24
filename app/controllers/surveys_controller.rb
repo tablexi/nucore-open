@@ -5,7 +5,7 @@ class SurveysController < ApplicationController
   before_action :check_acting_as, except: :complete
   before_action :init_current_facility
   before_action :init_service
-  before_action :init_survey, only: [ :activate, :deactivate ]
+  before_action :init_survey, only: [:activate, :deactivate]
 
   load_and_authorize_resource class: 'ExternalService'
 

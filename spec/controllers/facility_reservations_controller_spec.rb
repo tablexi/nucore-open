@@ -40,7 +40,7 @@ RSpec.describe FacilityReservationsController do
   end
 
   context '#assign_price_policies_to_problem_orders' do
-    let(:order_details) { [ @order_detail ] }
+    let(:order_details) { [@order_detail] }
     let(:order_detail_ids) { order_details.map(&:id) }
 
     before :each do

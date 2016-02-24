@@ -297,7 +297,7 @@ RSpec.describe Journal do
     before :each do
       Settings.financial.fiscal_year_begins = '06-01'
       @owner    = FactoryGirl.create(:user)
-      @account  = FactoryGirl.create(:nufs_account, account_users_attributes: [ FactoryGirl.attributes_for(:account_user, user: @owner) ])
+      @account  = FactoryGirl.create(:nufs_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: @owner)])
       @facility_account = facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @item = facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
       @price_group = FactoryGirl.create(:price_group, facility: facility)

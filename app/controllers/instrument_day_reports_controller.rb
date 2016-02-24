@@ -22,7 +22,7 @@ class InstrumentDayReportsController < ReportsController
   private
 
   def init_report_headers(_report_on_label)
-    @headers ||= [ 'Instrument', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]
+    @headers ||= ['Instrument', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   end
 
   def init_report(_report_on_label, &report_on)
