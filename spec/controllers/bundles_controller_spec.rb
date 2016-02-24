@@ -248,4 +248,3 @@ RSpec.describe BundlesController do
     expect(assigns(:bundle)).to eq(@bundle)
   end
 end
-

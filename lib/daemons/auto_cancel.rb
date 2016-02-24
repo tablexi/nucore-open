@@ -6,5 +6,3 @@ Daemons::Base.new("auto_cancel").start do
 
   sleep 1.minute.to_i
 end
-
-

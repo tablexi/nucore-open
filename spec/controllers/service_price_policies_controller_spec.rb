@@ -10,4 +10,3 @@ RSpec.describe ServicePricePoliciesController do
   it_should_behave_like PricePoliciesController, :service
 
 end
-

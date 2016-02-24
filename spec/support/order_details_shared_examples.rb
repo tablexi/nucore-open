@@ -23,4 +23,3 @@ RSpec.shared_examples "it does not complete order" do
     expect(order_detail.state).to eq("new")
   end
 end
-
