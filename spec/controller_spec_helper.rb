@@ -250,28 +250,28 @@ def grant_role(user, authable=nil)
   end
 
   case user.username
-    when 'facility_admin'
+  when 'facility_admin'
       UserRole.grant(user, UserRole::FACILITY_ADMINISTRATOR, authable)
       expect(user.reload).to be_facility_administrator_of(authable)
-    when 'director'
+  when 'director'
       UserRole.grant(user, UserRole::FACILITY_DIRECTOR, authable)
       expect(user.reload).to be_facility_director_of(authable)
-    when 'staff'
+  when 'staff'
       UserRole.create!(user: user, role: UserRole::FACILITY_STAFF, facility: authable) unless user.facility_staff_of?(authable)
       expect(user.reload).to be_facility_staff_of(authable)
-    when 'owner'
+  when 'owner'
       # Creating a NufsAccount requires an owner to be present, and some pre-Rails3 tests try to add the same user
       # to the same account with the same role of owner. That's a uniqueness error on AccountUser. Avoid it.
       existing=AccountUser.find_by_user_id_and_account_id_and_user_role(user.id, authable.id, AccountUser::ACCOUNT_OWNER)
       AccountUser.grant(user, AccountUser::ACCOUNT_OWNER, authable, @admin) unless existing
       expect(user.reload).to be_owner_of(authable)
-    when 'purchaser'
+  when 'purchaser'
       AccountUser.grant(user, AccountUser::ACCOUNT_PURCHASER, authable, @admin)
       expect(user.reload).to be_purchaser_of(authable)
-    when 'business_admin'
+  when 'business_admin'
       AccountUser.grant(user, AccountUser::ACCOUNT_ADMINISTRATOR, authable, @admin)
       expect(user.reload).to be_business_administrator_of(authable)
-    when 'senior_staff'
+  when 'senior_staff'
       UserRole.grant(user, UserRole::FACILITY_SENIOR_STAFF, authable)
       expect(user.reload).to be_facility_senior_staff_of(authable)
   end

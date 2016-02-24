@@ -123,9 +123,9 @@ class PricePolicy < ActiveRecord::Base
   #   false or 0 if #product should be purchaseable by #price_group
   def restrict_purchase=(state)
     case state
-      when false, 0
+    when false, 0
         self.can_purchase = true
-      when true, 1
+    when true, 1
         self.can_purchase = false
       else
         raise ArgumentError.new('state must be true, false, 0, or 1')

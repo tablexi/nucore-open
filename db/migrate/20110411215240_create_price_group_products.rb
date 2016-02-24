@@ -19,12 +19,12 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
       pgp=PriceGroupProduct.new(:price_group => pp.price_group)
 
       case pp
-        when InstrumentPricePolicy
+      when InstrumentPricePolicy
           pgp.product=pp.instrument
           pgp.reservation_window=pp[:reservation_window]
-        when ServicePricePolicy
+      when ServicePricePolicy
           pgp.product=pp.service
-        when ItemPricePolicy
+      when ItemPricePolicy
           pgp.product=pp.item
       end
 
@@ -39,9 +39,9 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
   def self.down
     PricePolicy.all.each do |policy|
       product=case policy
-                when ItemPricePolicy then policy.item
-                when ServicePricePolicy then policy.service
-                when InstrumentPricePolicy then policy.instrument
+              when ItemPricePolicy then policy.item
+              when ServicePricePolicy then policy.service
+              when InstrumentPricePolicy then policy.instrument
               end
 
       pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, product.id)

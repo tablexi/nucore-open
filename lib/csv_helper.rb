@@ -1,6 +1,6 @@
 module CSVHelper
   CSV = case RUBY_VERSION
-    when "1.8.7"
+        when "1.8.7"
       unless defined?(FasterCSV)
         require 'faster_csv'
       end

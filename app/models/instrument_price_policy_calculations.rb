@@ -53,9 +53,9 @@ module InstrumentPricePolicyCalculations
     return nil unless reservation.actual_start_at && reservation.actual_end_at
 
     case charge_for
-      when InstrumentPricePolicy::CHARGE_FOR[:usage]
+    when InstrumentPricePolicy::CHARGE_FOR[:usage]
         calculate_usage(reservation)
-      when InstrumentPricePolicy::CHARGE_FOR[:overage]
+    when InstrumentPricePolicy::CHARGE_FOR[:overage]
         calculate_overage(reservation)
     end
   end

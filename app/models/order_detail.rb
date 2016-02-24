@@ -835,12 +835,12 @@ class OrderDetail < ActiveRecord::Base
 
   def to_notice(notification_class, *_args)
     case notification_class.name
-      when MergeNotification.name
+    when MergeNotification.name
         notice="<a href=\"#{facility_order_path(order.facility, order.merge_order)}\">Order ##{order.merge_order.id}</a> needs your attention. A line item was added after purchase and "
 
         notice += case product
-          when Instrument then 'has an incomplete reservation.'
-          when Service then 'has an incomplete order form.'
+                  when Instrument then 'has an incomplete reservation.'
+                  when Service then 'has an incomplete order form.'
           else; 'is incomplete.'
         end
 
