@@ -105,10 +105,10 @@ RSpec.describe Reservation do
 
     context "when the reservation times do not change" do
       it "remains false" do
-        expect {
+        expect do
           reservation.reserve_start_at += 0
           reservation.reserve_end_at += 0
-        }.not_to change(reservation, :reservation_changed?).from(false)
+        end.not_to change(reservation, :reservation_changed?).from(false)
       end
     end
   end

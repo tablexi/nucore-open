@@ -11,10 +11,10 @@ class ChangeOrderDetailStatus < ActiveRecord::Migration
     #execute "UPDATE order_details od SET od.order_status_id = (SELECT * FROM (SELECT order_status_id FROM order_detail_statuses ods WHERE ods.order_detail_id = od.id ORDER BY ods.created_at DESC ) WHERE ROWNUM <= 1)"
     
     ## so instead we do this
-    OrderDetail.find(:all).each { |od|
+    OrderDetail.find(:all).each do |od|
       ods = OrderDetailStatus.find(:first, :conditions => { :order_detail_id => od.id }, :order => 'created_at DESC')
       execute "UPDATE order_details SET order_status_id = #{ods.order_status_id}"
-    }
+    end
 
     change_column :order_details, :order_status_id, :integer, :null => false
     drop_table :order_detail_statuses
