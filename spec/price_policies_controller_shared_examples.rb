@@ -28,7 +28,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
       @price_policy_future = make_price_policy(@price_group, {:start_date => 1.year.from_now, :expire_date => PricePolicy.generate_expire_date(1.year.from_now)})
     end
 
-    it_should_allow_operators_only do |user|
+    it_should_allow_operators_only do |_user|
       expect(assigns[:product]).to eq(@product)
       expect(assigns[:current_price_policies]).to eq([@price_policy])
       expect(assigns[:next_price_policies_by_date].keys).to include_date @price_policy_future.start_date

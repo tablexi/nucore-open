@@ -10,7 +10,7 @@ class PricePolicy < ActiveRecord::Base
 
   validates :unit_cost, :unit_subsidy, :usage_rate, :usage_subsidy, :reservation_rate, :overage_rate, :overage_subsidy, :minimum_cost, :numericality => { :greater_than_or_equal_to => 0 }, :allow_nil => true
 
-  validates_each :expire_date do |record,attr,value|
+  validates_each :expire_date do |record,_attr,value|
     unless value.blank?
       start_date=record.start_date
       gen_exp_date=generate_expire_date(start_date)

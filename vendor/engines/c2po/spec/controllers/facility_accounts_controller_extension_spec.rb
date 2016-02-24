@@ -285,7 +285,7 @@ RSpec.describe FacilityAccountsController do
 
     it_should_deny_all [:staff, :senior_staff]
 
-    it_should_allow_all facility_managers do |user|
+    it_should_allow_all facility_managers do |_user|
       expect(assigns(:error_fields)).to be_empty
       is_expected.to set_flash
       assert_redirected_to purchase_orders_facility_accounts_path

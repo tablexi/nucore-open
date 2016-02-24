@@ -39,7 +39,7 @@ namespace :price_policies do
 
 
     desc 'updates order details from attributes in a json file'
-    task :update_journaled_details, [:json_file] => :environment do |t, args|
+    task :update_journaled_details, [:json_file] => :environment do |_t, args|
       oids_to_attrs = IppJsonBuilder.new.parse_json_file args.json_file
       IppUpdater.new.update_journaled_details oids_to_attrs
     end
@@ -60,14 +60,14 @@ namespace :price_policies do
 
 
     desc 'creates a report of order details that are journaled but still complete using attributes from a json file'
-    task :report_journaled_details, [:json_file] => :environment do |t, args|
+    task :report_journaled_details, [:json_file] => :environment do |_t, args|
       oids_to_attrs = IppJsonBuilder.new.parse_json_file args.json_file
       IppMigrationReporter.new.report_journaled_details oids_to_attrs
     end
 
 
     desc 'creates a report of order details that are statemented but still complete using attributes from a json file'
-    task :report_statemented_details, [:json_file] => :environment do |t, args|
+    task :report_statemented_details, [:json_file] => :environment do |_t, args|
       oids_to_attrs = IppJsonBuilder.new.parse_json_file args.json_file
       IppMigrationReporter.new.report_statemented_details oids_to_attrs
     end

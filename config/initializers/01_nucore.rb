@@ -17,6 +17,6 @@ end
 # Log info about how each user is authenticated.
 # In the future we may want to record in the DB the means
 # by which auth happened.
-Warden::Manager.after_authentication do |user,auth,opts|
+Warden::Manager.after_authentication do |user,auth,_opts|
   Rails.logger.info "User #{user.username} authenticated via #{auth.winning_strategy.class} at #{user.current_sign_in_at}"
 end

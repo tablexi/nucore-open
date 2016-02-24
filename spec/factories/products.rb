@@ -5,7 +5,7 @@ FactoryGirl.define do
     requires_approval false
     is_archived false
     is_hidden false
-    initial_order_status_id { |o| find_order_status('New').id }
+    initial_order_status_id { |_o| find_order_status('New').id }
 
     factory :instrument, :class => Instrument do
       transient do

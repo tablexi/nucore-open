@@ -188,7 +188,7 @@ module Reservations::DateSupport
      :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian,
      :actual_start_at, :actual_end_at, :actual_duration_mins)
 
-    reserve_attrs.reject! { |key,value| value.blank? }
+    reserve_attrs.reject! { |_key,value| value.blank? }
 
     self.assign_attributes reserve_attrs
   end

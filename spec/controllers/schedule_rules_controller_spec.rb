@@ -24,7 +24,7 @@ RSpec.describe ScheduleRulesController do
       @action=:index
     end
 
-    it_should_allow_operators_only do |user|
+    it_should_allow_operators_only do |_user|
       expect(assigns[:instrument]).to eq(@instrument)
       expect(response).to be_success
       expect(response).to render_template('schedule_rules/index')

@@ -29,7 +29,7 @@ RSpec.describe ItemsController do
       @params.delete(:id)
     end
 
-    it_should_allow_operators_only do |user|
+    it_should_allow_operators_only do |_user|
       expect(assigns[:items]).to eq([@item])
       expect(response).to be_success
       expect(response).to render_template('items/index')
@@ -42,7 +42,7 @@ RSpec.describe ItemsController do
       @action=:manage
     end
 
-    it_should_allow_operators_only do |user|
+    it_should_allow_operators_only do |_user|
       expect(assigns[:item]).to eq(@item)
       expect(response).to be_success
       expect(response).to render_template('items/manage')

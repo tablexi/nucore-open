@@ -32,7 +32,7 @@ RSpec.describe InstrumentsController do
       @params.delete(:id)
     end
 
-    it_should_allow_operators_only do |user|
+    it_should_allow_operators_only do |_user|
       expect(assigns[:instruments]).to eq([@instrument])
       expect(response).to render_template('instruments/index')
     end
@@ -68,7 +68,7 @@ RSpec.describe InstrumentsController do
       @action=:manage
     end
 
-    it_should_allow_operators_only do |user|
+    it_should_allow_operators_only do |_user|
       expect(response).to render_template('instruments/manage')
     end
   end
