@@ -12,7 +12,7 @@ CSV_HEADERS = [
   "Order Date",
   "Fulfillment Date",
   "Note",
-]
+].freeze
 
 def nucore_format_date(date)
   date.strftime("%m/%d/%Y")

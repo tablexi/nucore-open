@@ -421,7 +421,7 @@ class OrderDetail < ActiveRecord::Base
     transitions to: :reconciled, from: :complete, guard: :actual_total
   end
 
-  CANCELABLE_STATES = [:new, :inprocess, :complete]
+  CANCELABLE_STATES = [:new, :inprocess, :complete].freeze
   aasm_event :to_canceled do
     transitions to: :canceled, from: CANCELABLE_STATES, guard: :cancelable?
   end
