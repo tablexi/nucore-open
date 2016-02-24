@@ -101,7 +101,7 @@ class Account < ActiveRecord::Base
     if facility_id
       # return a relation
       Facility.active.where(:id => facility_id)
-   else
+    else
       Facility.active
     end
   end

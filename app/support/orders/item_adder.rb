@@ -10,12 +10,12 @@ class Orders::ItemAdder
 
     ods = if product.is_a? Bundle
       add_bundles(product, @quantity, attributes)
-    elsif product.is_a? Service
+          elsif product.is_a? Service
       add_services(product, @quantity, attributes)
     # products which have reservations (instruments) should each get their own order_detail
-    elsif (product.respond_to?(:reservations) && quantity > 1) then
+          elsif (product.respond_to?(:reservations) && quantity > 1) then
       add_instruments(product, @quantity, attributes)
-    else
+          else
       [create_order_detail({product_id: product.id, quantity: @quantity}.merge(attributes))]
           end
     ods || []

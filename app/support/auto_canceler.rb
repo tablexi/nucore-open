@@ -37,7 +37,7 @@ class AutoCanceler
          EXTRACT(HOUR FROM (:now - reserve_start_at))*60 +
          EXTRACT(DAY FROM (:now - reserve_start_at))*24*60) >= auto_cancel_mins
       CONDITION
-    else
+                     else
       " TIMESTAMPDIFF(MINUTE, reserve_start_at, :now) >= auto_cancel_mins"
                      end
 

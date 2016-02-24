@@ -209,7 +209,7 @@ RSpec.describe GeneralReportsController do
   def report_headers(label)
     headers = if export_all_request?
       I18n.t 'controllers.general_reports.headers.data'
-    else
+              else
       [ label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
               end
 
@@ -223,9 +223,9 @@ RSpec.describe GeneralReportsController do
 
     stati = if @params[:date_start].blank? && @params[:date_end].blank?
       [ OrderStatus.complete.first, OrderStatus.reconciled.first ]
-    elsif @params[:status_filter].blank?
+            elsif @params[:status_filter].blank?
       []
-    else
+            else
       @params[:status_filter].collect{|si| OrderStatus.find(si.to_i) }
             end
 

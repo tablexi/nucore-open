@@ -841,11 +841,11 @@ class OrderDetail < ActiveRecord::Base
         notice += case product
                   when Instrument then 'has an incomplete reservation.'
                   when Service then 'has an incomplete order form.'
-          else; 'is incomplete.'
+                  else; 'is incomplete.'
         end
 
         notice.html_safe
-      else
+    else
         ''
     end
   end

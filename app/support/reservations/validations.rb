@@ -107,7 +107,7 @@ module Reservations::Validations
     # we want access to all schedule rules
     rules = if order_detail.try(:order).nil? || reserved_by_admin || in_grace_period?
       product.schedule_rules
-    else
+            else
       product.available_schedule_rules(order_detail.order.user)
             end
 

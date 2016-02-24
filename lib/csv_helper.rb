@@ -6,7 +6,7 @@ module CSVHelper
       end
 
       FasterCSV
-    else
+        else
       unless defined?(CSV)
         require 'csv'
       end
