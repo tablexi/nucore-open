@@ -3,6 +3,7 @@ require 'active_support/secure_random'
 require 'base64'
 
 module Encryption
+
   #Basic AES symmetric encryption functions
   #based on http://snippets.dzone.com/posts/show/4975
 
@@ -17,4 +18,5 @@ module Encryption
     output = aes.decrypt(Base64.decode64(data))
     text = output[24..-1]
   end
+
 end

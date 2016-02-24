@@ -1,6 +1,7 @@
 # These will use the order_status_changed_to_STATUS templates
 
 module StatusChangeNotifications
+
   class NotifyPurchaserHook
 
     def on_status_change(order_detail, old_status, new_status)
@@ -16,4 +17,5 @@ module StatusChangeNotifications
     end
 
   end
+
 end

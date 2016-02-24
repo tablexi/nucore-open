@@ -5,6 +5,7 @@ class Journal < ActiveRecord::Base
   class CreationError < StandardError; end
 
   module Overridable
+
     def create_journal_rows!(order_details)
       recharge_by_product = {}
       facility_ids_already_in_journal = Set.new
@@ -91,6 +92,7 @@ class Journal < ActiveRecord::Base
         journal_id: id,
       }
     end
+
   end
 
   include DownloadableFile

@@ -1,6 +1,7 @@
 # Support for reading/writing reservation and actual start and
 # end times using values split across text inputs
 module Reservations::DateSupport
+
   extend ActiveSupport::Concern
 
   included do
@@ -236,4 +237,5 @@ module Reservations::DateSupport
   def duration_with_seconds_stripped(start_time, end_time)
     ((end_time.change(sec: 0) - start_time.change(sec: 0)) / 60).to_i
   end
+
 end

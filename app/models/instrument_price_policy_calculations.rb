@@ -124,4 +124,5 @@ module InstrumentPricePolicyCalculations
   def strip_seconds(datetime)
     datetime.change sec: 0
   end
+
 end

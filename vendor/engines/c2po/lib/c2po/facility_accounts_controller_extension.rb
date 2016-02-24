@@ -1,5 +1,7 @@
 module C2po
+
   module FacilityAccountsControllerExtension
+
     extend ActiveSupport::Concern
 
     included do
@@ -106,6 +108,7 @@ module C2po
 
       redirect_to redirect_path
     end
+
   end
 
 end

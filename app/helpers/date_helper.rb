@@ -109,4 +109,5 @@ module DateHelper
   def parse_mmddyyyy_in_current_zone!(date_string)
     DateTime.strptime(date_string, '%m/%d/%Y').to_time_in_current_zone
   end
+
 end

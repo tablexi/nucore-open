@@ -1,4 +1,5 @@
 module AccountSuspendActions
+
   # GET /facilities/:facility_id/accounts/:account_id/suspend
   def suspend
     begin
@@ -22,4 +23,5 @@ module AccountSuspendActions
 
     redirect_to open_or_facility_path('account', @account)
   end
+
 end

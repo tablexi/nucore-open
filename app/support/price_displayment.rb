@@ -12,6 +12,7 @@
 # it's using. E.g. an estimated order detail will have a class of .estimated_cost
 
 module PriceDisplayment
+
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TagHelper
 
@@ -115,4 +116,5 @@ module PriceDisplayment
     return unless number
     number_to_currency(number)
   end
+
 end

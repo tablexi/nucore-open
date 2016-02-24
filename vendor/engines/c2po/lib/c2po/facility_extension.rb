@@ -1,5 +1,7 @@
 module C2po
+
   module FacilityExtension
+
     extend ActiveSupport::Concern
 
     def can_pay_with_account?(account)
@@ -7,5 +9,7 @@ module C2po
       return false if account.is_a?(CreditCardAccount) && !accepts_cc?
       true
     end
+
   end
+
 end

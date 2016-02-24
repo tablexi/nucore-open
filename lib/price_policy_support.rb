@@ -1,9 +1,11 @@
 module PricePolicySupport
+
   # TODO: Refactor out of InstrumentPricePolicy into here
   module ReservationPolicy
   end
 
   module QuantityPolicy
+
     extend ActiveSupport::Concern
     included do
       validates_numericality_of :unit_cost, :unless => :restrict_purchase
@@ -42,5 +44,7 @@ module PricePolicySupport
     def unit_total
       unit_cost - unit_subsidy
     end
+
   end
+
 end

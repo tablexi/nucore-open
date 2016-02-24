@@ -1,4 +1,5 @@
 module TransactionHistoryHelper
+
   def row_class(order_detail)
     OrderDetailPresenter.new(order_detail).row_class
   end

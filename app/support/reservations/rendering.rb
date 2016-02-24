@@ -70,4 +70,5 @@ module Reservations::Rendering
       "product" => product.name,
     }
   end
+
 end

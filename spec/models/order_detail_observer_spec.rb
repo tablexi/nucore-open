@@ -1,6 +1,7 @@
 require "rails_helper"
 RSpec.describe OrderDetailObserver do
   module DummyHooks
+
     class DummyHook1
 
       attr_accessor :settings
@@ -13,6 +14,7 @@ RSpec.describe OrderDetailObserver do
 
     end
     class DummyHook3; end
+
   end
 
   context 'status change hooks' do

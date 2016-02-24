@@ -1,4 +1,5 @@
 module DownloadableFile
+
   extend ActiveSupport::Concern
 
   included do
@@ -35,4 +36,5 @@ module DownloadableFile
   def fog?
     Settings.paperclip.storage == "fog"
   end
+
 end

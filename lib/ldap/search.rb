@@ -1,4 +1,5 @@
 module Ldap
+
   class Search
 
     def search(query)
@@ -19,4 +20,5 @@ module Ldap
     end
 
   end
+
 end

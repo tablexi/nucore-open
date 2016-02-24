@@ -46,4 +46,5 @@ module PricePoliciesHelper
     price_group_key = "price_policy_#{price_group.id}"
     params[price_group_key].present? && params[price_group_key][key]
   end
+
 end

@@ -1,6 +1,7 @@
 # Including class must implement #relay_connection
 # Port refers to the outlet, not the IP port
 module PowerRelay
+
   extend ActiveSupport::Concern
 
   included do
@@ -32,4 +33,5 @@ module PowerRelay
   def relay_connection
     raise NotImplementedError.new('Subclass must define')
   end
+
 end

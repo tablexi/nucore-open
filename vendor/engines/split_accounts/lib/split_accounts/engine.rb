@@ -1,4 +1,5 @@
 module SplitAccounts
+
   class Engine < Rails::Engine
 
     config.to_prepare do
@@ -30,4 +31,5 @@ module SplitAccounts
     end
 
   end
+
 end

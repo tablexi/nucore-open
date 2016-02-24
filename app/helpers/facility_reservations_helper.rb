@@ -1,4 +1,5 @@
 module FacilityReservationsHelper
+
   def reservation_links(reservation)
     links = []
     if reservation.admin?

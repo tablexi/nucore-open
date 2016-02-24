@@ -1,4 +1,5 @@
 module Products::RelaySupport
+
   extend ActiveSupport::Concern
 
   included do
@@ -75,4 +76,5 @@ module Products::RelaySupport
         self.build_relay attrs
     end
   end
+
 end

@@ -1,4 +1,5 @@
 module ProblemOrderDetailsController
+
   extend ActiveSupport::Concern
 
   def assign_price_policies_to_problem_orders
@@ -19,4 +20,5 @@ module ProblemOrderDetailsController
       I18n.t("controllers.problem_order_details.assign_price_policies.success",
              count: successfully_assigned.count)
   end
+
 end

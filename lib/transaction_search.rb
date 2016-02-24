@@ -1,4 +1,5 @@
 module TransactionSearch
+
   DATE_RANGE_FIELDS = [['Ordered', 'ordered_at'],
                        ['Fulfilled', 'fulfilled_at'],
                        ['Journaled/Statement', 'journal_or_statement_date']
@@ -10,6 +11,7 @@ module TransactionSearch
   end
 
   module ClassMethods
+
     def transaction_search(*actions)
       self.before_filter :remove_ugly_params_and_redirect, :only => actions
     end
@@ -48,6 +50,7 @@ module TransactionSearch
         end
       end
     end
+
   end
 
   def order_by_desc
@@ -171,4 +174,5 @@ module TransactionSearch
   def to_email
     params[:email] || current_user.email
   end
+
 end

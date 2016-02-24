@@ -1,4 +1,5 @@
 module Timelineable
+
   extend ActiveSupport::Concern
 
   included do
@@ -15,4 +16,5 @@ module Timelineable
   def display_date_as_time
     parse_usa_date(params[:date]) || Time.current.beginning_of_day
   end
+
 end

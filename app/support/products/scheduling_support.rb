@@ -1,4 +1,5 @@
 module Products::SchedulingSupport
+
   extend ActiveSupport::Concern
 
   included do

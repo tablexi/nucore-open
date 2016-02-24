@@ -1,4 +1,5 @@
 module C2po
+
   C2PO_ACCOUNT_TYPES = ["CreditCardAccount", "PurchaseOrderAccount"]
 
   class Engine < Rails::Engine
@@ -39,4 +40,5 @@ module C2po
     end
 
   end
+
 end
