@@ -61,7 +61,7 @@ class ScheduleRule < ActiveRecord::Base
       # skip unless this rule occurs on this day
       next unless send("on_#{day.downcase}?")
       # check all existing rules for this day
-      rules.select{ |r| r.send("on_#{day.downcase}?") }.each do |rule|
+      rules.select { |r| r.send("on_#{day.downcase}?") }.each do |rule|
         next if start_time_int == rule.end_time_int || end_time_int == rule.start_time_int # start and end times may touch
         if start_time_int.between?(rule.start_time_int, rule.end_time_int) ||
            end_time_int.between?(rule.start_time_int, rule.end_time_int) ||
@@ -175,7 +175,7 @@ class ScheduleRule < ActiveRecord::Base
 
     # group rules by day, sort by start_hour
     Date::ABBR_DAYNAMES.each do |day|
-      day_rules = rules.select{ |rule| rule.send("on_#{day.downcase}?") }.sort_by{ |rule| rule.start_hour }
+      day_rules = rules.select { |rule| rule.send("on_#{day.downcase}?") }.sort_by { |rule| rule.start_hour }
 
       if day_rules.empty?
         # build entire day not rule

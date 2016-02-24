@@ -6,7 +6,7 @@ class IppJsonBuilder
   def build_json_file(order_details)
     json = []
     wanted_attrs = [ :id, :actual_cost, :actual_subsidy, :estimated_cost, :estimated_subsidy ]
-    order_details.each{|od| json << od.to_json(only: wanted_attrs, root: false) }
+    order_details.each {|od| json << od.to_json(only: wanted_attrs, root: false) }
     File.write 'order_details.json', json.join("\n")
   end
 

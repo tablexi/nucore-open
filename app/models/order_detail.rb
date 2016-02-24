@@ -243,7 +243,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def can_be_viewed_by?(user)
-    order.user_id == user.id || account.owner_user.id == user.id || account.business_admins.any?{|au| au.user_id == user.id}
+    order.user_id == user.id || account.owner_user.id == user.id || account.business_admins.any? {|au| au.user_id == user.id}
   end
 
   scope :need_statement, lambda { |facility| 

@@ -353,7 +353,7 @@ RSpec.describe InstrumentsController do
         end
 
         it 'should create a new schedule' do
-          expect { do_request }.to change{ Schedule.count }.by(1)
+          expect { do_request }.to change { Schedule.count }.by(1)
         end
 
         it 'should be the newest schedule' do

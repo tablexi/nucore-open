@@ -6,11 +6,11 @@ RSpec.describe GeneralReportsController do
   include ReportSpecHelper
 
   run_report_tests([
-                     { action: :product, index: 0, report_on_label: 'Name', report_on: proc{|od| od.product.name} },
-    { action: :account, index: 1, report_on_label: 'Description', report_on: proc{|od| od.account.to_s} },
-    { action: :account_owner, index: 2, report_on_label: 'Name', report_on: proc{|od| owner = od.account.owner.user; "#{owner.last_name}, #{owner.first_name} (#{owner.username})"} },
-    { action: :purchaser, index: 3, report_on_label: 'Name', report_on: proc{|od| usr = od.order.user; "#{usr.last_name}, #{usr.first_name} (#{usr.username})"} },
-    { action: :price_group, index: 4, report_on_label: 'Name', report_on: proc{|od| od.price_policy ? od.price_policy.price_group.name : 'Unassigned'} }
+                     { action: :product, index: 0, report_on_label: 'Name', report_on: proc {|od| od.product.name} },
+    { action: :account, index: 1, report_on_label: 'Description', report_on: proc {|od| od.account.to_s} },
+    { action: :account_owner, index: 2, report_on_label: 'Name', report_on: proc {|od| owner = od.account.owner.user; "#{owner.last_name}, #{owner.first_name} (#{owner.username})"} },
+    { action: :purchaser, index: 3, report_on_label: 'Name', report_on: proc {|od| usr = od.order.user; "#{usr.last_name}, #{usr.first_name} (#{usr.username})"} },
+    { action: :price_group, index: 4, report_on_label: 'Name', report_on: proc {|od| od.price_policy ? od.price_policy.price_group.name : 'Unassigned'} }
                    ])
 
   describe 'time parameters', :timecop_freeze do
@@ -221,7 +221,7 @@ RSpec.describe GeneralReportsController do
             elsif @params[:status_filter].blank?
               []
             else
-              @params[:status_filter].collect{|si| OrderStatus.find(si.to_i) }
+              @params[:status_filter].collect {|si| OrderStatus.find(si.to_i) }
             end
 
     status_ids = []
@@ -247,7 +247,7 @@ RSpec.describe GeneralReportsController do
       expect(row.size).to eq(4)
     end
 
-    ods.sort!{|a, b| yield(a) <=> yield(b) }
+    ods.sort! {|a, b| yield(a) <=> yield(b) }
 
     ods.each_with_index do |od, i|
       expect(rows[i][0]).to eq(yield(od))

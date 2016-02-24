@@ -117,7 +117,7 @@ RSpec.describe Reservation do
     reservation.product.update_attribute :max_reserve_mins, reservation.duration_mins
 
     Timecop.freeze(reservation.reserve_start_at - 2.minutes) do # in grace period
-      expect{ reservation.start_reservation! }.to_not raise_error
+      expect { reservation.start_reservation! }.to_not raise_error
       expect(reservation.errors).to be_empty
     end
   end
@@ -820,8 +820,8 @@ RSpec.describe Reservation do
       end
 
       it 'does nothing' do
-        expect{ reservation.start_reservation! }
-          .to_not change{ complete.reload.attributes }
+        expect { reservation.start_reservation! }
+          .to_not change { complete.reload.attributes }
       end
     end
   end

@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   module Overridable
 
     def price_groups
-      groups = price_group_members.collect{ |pgm| pgm.price_group }
+      groups = price_group_members.collect { |pgm| pgm.price_group }
       # check internal/external membership
       groups << (username =~ /@/ ? PriceGroup.external.first : PriceGroup.base.first)
       groups.flatten.uniq
@@ -133,7 +133,7 @@ class User < ActiveRecord::Base
   end
 
   def account_price_groups
-    groups = accounts.active.collect{ |a| a.price_groups }.flatten.uniq
+    groups = accounts.active.collect { |a| a.price_groups }.flatten.uniq
   end
 
   #
@@ -141,7 +141,7 @@ class User < ActiveRecord::Base
   # purchasing that product
   def accounts_for_product(product)
     acts = accounts.active.for_facility(product.facility)
-    acts.reject!{|acct| !acct.validate_against_product(product, self).nil?}
+    acts.reject! {|acct| !acct.validate_against_product(product, self).nil?}
     acts
   end
 

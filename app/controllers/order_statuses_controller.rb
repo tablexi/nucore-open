@@ -63,7 +63,7 @@ class OrderStatusesController < ApplicationController
     @order_status.transaction do
       begin
         # used instead of update_all so vestal_versions can do its thing; annoying, I know
-        @order_status.order_details.each{ |os| os.update_attribute(:order_status, parent_status) }
+        @order_status.order_details.each { |os| os.update_attribute(:order_status, parent_status) }
         @order_status.destroy
         flash[:notice] = 'The order status was successfully removed.'
       rescue => e

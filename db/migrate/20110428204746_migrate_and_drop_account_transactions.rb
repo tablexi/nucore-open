@@ -74,7 +74,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
     end
 
     Statement.reset_column_information
-    Statement.all.each{|s| s.destroy if s.account.is_a? NufsAccount }
+    Statement.all.each {|s| s.destroy if s.account.is_a? NufsAccount }
 
     change_column(:statements, :account_id, :integer, null: false)
 
