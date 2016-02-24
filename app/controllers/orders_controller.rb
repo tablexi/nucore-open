@@ -321,7 +321,7 @@ class OrdersController < ApplicationController
   def index
     # new or in process
     @order_details = session_user.order_details.non_reservations
-    @available_statuses = ["pending", "all"]
+    @available_statuses = %w(pending all)
     case params[:status]
     when "pending"
       @order_details = @order_details.pending

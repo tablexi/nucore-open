@@ -1,7 +1,7 @@
 module TransactionSearch
 
-  DATE_RANGE_FIELDS = [["Ordered", "ordered_at"],
-                       ["Fulfilled", "fulfilled_at"],
+  DATE_RANGE_FIELDS = [%w(Ordered ordered_at),
+                       %w(Fulfilled fulfilled_at),
                        ["Journaled/Statement", "journal_or_statement_date"],
                       ].freeze
 

@@ -103,7 +103,7 @@ RSpec.describe FacilityOrdersController do
       before :each do
         maybe_grant_always_sign_in :director
       end
-      ["order_number", "date", "product", "assigned_to", "status"].each do |sort|
+      %w(order_number date product assigned_to status).each do |sort|
         it "should not blow up for sort by #{sort}" do
           @params[:sort] = sort
           do_request
@@ -394,7 +394,7 @@ RSpec.describe FacilityOrdersController do
       end
       expect(@authable.order_details.in_dispute.size).to eq(4)
 
-      @params.merge!(tabs: ["new_or_in_process_orders", "disputed_orders", "problem_order_details"])
+      @params.merge!(tabs: %w(new_or_in_process_orders disputed_orders problem_order_details))
     end
 
     it_should_allow_operators_only {}
@@ -417,7 +417,7 @@ RSpec.describe FacilityOrdersController do
         do_request
         expect(response).to be_success
         body = JSON.parse(response.body)
-        expect(body.keys).to contain_all ["new_or_in_process_orders", "disputed_orders", "problem_order_details"]
+        expect(body.keys).to contain_all %w(new_or_in_process_orders disputed_orders problem_order_details)
         expect(body["new_or_in_process_orders"]).to eq(2)
         expect(body["problem_order_details"]).to eq(3)
         expect(body["disputed_orders"]).to eq(4)

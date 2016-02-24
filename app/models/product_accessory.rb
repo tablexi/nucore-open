@@ -1,6 +1,6 @@
 class ProductAccessory < ActiveRecord::Base
 
-  SCALING_TYPES = ["quantity", "manual", "auto"].freeze
+  SCALING_TYPES = %w(quantity manual auto).freeze
 
   ## relationships
   belongs_to :product
