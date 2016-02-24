@@ -53,7 +53,7 @@ RSpec.describe ItemsController do
     before :each do
       @method=:get
       @action=:show
-      @block=Proc.new do
+      @block=proc do
         expect(assigns[:item]).to eq(@item)
         expect(response).to be_success
         expect(response).to render_template('items/show')

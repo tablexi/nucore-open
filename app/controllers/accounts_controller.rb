@@ -44,8 +44,8 @@ class AccountsController < ApplicationController
     @extra_date_column = :reviewed_at
     @order_detail_link = {
       text: "Dispute",
-      display?: Proc.new {|order_detail| order_detail.can_dispute?},
-      proc: Proc.new {|order_detail| order_order_detail_path(order_detail.order, order_detail)}
+      display?: proc {|order_detail| order_detail.can_dispute?},
+      proc: proc {|order_detail| order_order_detail_path(order_detail.order, order_detail)}
     }
   end
 
