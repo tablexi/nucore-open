@@ -4,7 +4,7 @@ FactoryGirl.define do
     sequence(:account_number) do |n|
       # This sequence was often running into blacklist problems
       # s = "1#{n%10}#{rand(10)}-7777777" # fund3-dept7
-      s = "134-7#{"%06d" % n}"
+      s = "134-7#{'%06d' % n}"
       define_open_account(51_234, s)
       s
     end

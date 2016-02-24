@@ -82,7 +82,7 @@ class FacilityJournalsController < ApplicationController
   # GET /facilities/journals/:id
   def show
     @journal_rows = @journal.journal_rows
-    @filename = "journal_#{@journal.id}_#{@journal.created_at.strftime("%Y%m%d")}"
+    @filename = "journal_#{@journal.id}_#{@journal.created_at.strftime('%Y%m%d')}"
 
     respond_to do |format|
       format.xml do

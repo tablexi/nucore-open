@@ -42,7 +42,7 @@ class Reports::ExportRaw
   end
 
   def formatted_compact_date_range
-    "#{date_start.strftime("%Y%m%d")}-#{date_end.strftime("%Y%m%d")}"
+    "#{date_start.strftime('%Y%m%d')}-#{date_end.strftime('%Y%m%d')}"
   end
 
   private

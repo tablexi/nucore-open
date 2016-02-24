@@ -122,7 +122,7 @@ module ReportSpecHelper
 
   def assert_report_download_rendered(filename)
     expect(@response.headers["Content-Type"]).to match %r{\Atext/csv\b}
-    filename += "_#{assigns(:date_start).strftime("%Y%m%d")}-#{assigns(:date_end).strftime("%Y%m%d")}.csv"
+    filename += "_#{assigns(:date_start).strftime('%Y%m%d')}-#{assigns(:date_end).strftime('%Y%m%d')}.csv"
     expect(@response.headers["Content-Disposition"]).to eq("attachment; filename=\"#{filename}\"")
     is_expected.to respond_with :success
   end
