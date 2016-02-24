@@ -12,14 +12,16 @@ RSpec.describe UrlService do
       host: 'localhost.test',
       port: 8080,
       protocol: 'https'
-  } end
+  } 
+  end
 
   let :url_components do {
     :facility_id => order_detail.product.facility.url_name,
     :service_id => order_detail.product.url_name,
     :external_service_id => url_service.id,
     :receiver_id => order_detail.id
-  } end
+  } 
+  end
 
   it 'uses the default host, port, and protocol if there is no request' do
     url_service.default_url_options[:host] = 'localhost'

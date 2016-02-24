@@ -68,7 +68,8 @@ RSpec.describe Reservations::Rendering do
       "product" => "Generic",
       "start" => "Sat, 01 Aug 2015 09:15:16",
       "title" => title,
-    } end
+    } 
+    end
 
     before { reservation.product = build_stubbed(:product, name: "Generic") }
 

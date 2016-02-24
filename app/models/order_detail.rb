@@ -98,11 +98,13 @@ class OrderDetail < ActiveRecord::Base
   scope :facility_recent, lambda { |facility|
                                   { :conditions => ['(order_details.statement_id IS NULL OR order_details.reviewed_at > ?) AND orders.facility_id = ?', Time.zone.now, facility.id],
                                     :joins => 'LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id',
-                                    :order => 'order_details.created_at DESC' }}
+                                    :order => 'order_details.created_at DESC' }
+  }
 
   scope :finalized, lambda {|facility| { :joins => :order,
                                          :conditions => ['orders.facility_id = ? AND order_details.reviewed_at < ?', facility.id, Time.zone.now],
-                                         :order => 'order_details.created_at DESC' }}
+                                         :order => 'order_details.created_at DESC' }
+  }
 
   def self.for_facility(facility)
     for_facility_id(facility.id)
@@ -308,7 +310,8 @@ class OrderDetail < ActiveRecord::Base
   scope :for_products, lambda { |products| where("order_details.product_id in (?)", products) unless products.blank? }
   scope :for_owners, lambda { |owners| joins(:account).
                                        joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'").
-                                       where("account_users.user_id in (?)", owners) unless owners.blank? }
+                                       where("account_users.user_id in (?)", owners) unless owners.blank? 
+  }
   scope :for_order_statuses, lambda {|statuses| where("order_details.order_status_id in (?)", statuses) unless statuses.nil? || statuses.empty? }
 
   scope :in_date_range, lambda { |start_date, end_date|
