@@ -66,7 +66,7 @@ class IppUpdater
 
   private
 
-  def guard(obj)
+  def guard(_obj)
     begin
       yield
     rescue => e

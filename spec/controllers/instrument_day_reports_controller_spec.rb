@@ -16,7 +16,7 @@ RSpec.describe InstrumentDayReportsController do
 
   private
 
-  def setup_extra_test_data(user)
+  def setup_extra_test_data(_user)
     start_at=parse_usa_date(@params[:date_start], '10:00 AM')+10.days
     place_reservation(@authable, @order_detail, start_at)
     @reservation.actual_start_at=start_at
@@ -25,14 +25,14 @@ RSpec.describe InstrumentDayReportsController do
   end
 
 
-  def report_headers(label)
+  def report_headers(_label)
     headers=[ 'Instrument', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]
     headers += report_attributes(@reservation, @instrument) if export_all_request?
     headers
   end
 
 
-  def assert_report_init(label, &report_on)
+  def assert_report_init(_label, &_report_on)
     expect(assigns(:totals)).to be_is_a Array
     expect(assigns(:totals).size).to eq(7)
 
@@ -57,7 +57,7 @@ RSpec.describe InstrumentDayReportsController do
   end
 
 
-  def assert_report_data_init(label)
+  def assert_report_data_init(_label)
     expect(assigns(:report_data)).to eq(Reservation.all)
   end
 

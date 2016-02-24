@@ -36,7 +36,7 @@ class InstrumentReportsController < ReportsController
   end
 
 
-  def init_report(report_on_label, &report_on)
+  def init_report(_report_on_label, &report_on)
     report = Reports::InstrumentUtilizationReport.new(report_data)
     report.build_report &report_on
 
@@ -48,7 +48,7 @@ class InstrumentReportsController < ReportsController
   end
 
 
-  def init_report_data(report_on_label, &report_on)
+  def init_report_data(_report_on_label, &_report_on)
     @totals, @report_data=[0,0], report_data.all
 
     @report_data.each do |res|

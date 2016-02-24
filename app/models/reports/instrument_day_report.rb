@@ -3,7 +3,7 @@ class Reports::InstrumentDayReport
     @reservations = reservations
   end
 
-  def build_report(&report_on)
+  def build_report(&_report_on)
     @data = {}
     @totals = DataRow.new
     @reservations.each do |reservation|
@@ -25,7 +25,7 @@ class Reports::InstrumentDayReport
   end
 
   class DataRow
-    def initialize(*args)
+    def initialize(*_args)
       @data = [0,0,0,0,0,0,0]
     end
 

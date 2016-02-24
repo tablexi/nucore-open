@@ -830,7 +830,7 @@ class OrderDetail < ActiveRecord::Base
     !bundle.nil?
   end
 
-  def to_notice(notification_class, *args)
+  def to_notice(notification_class, *_args)
     case notification_class.name
       when MergeNotification.name
         notice="<a href=\"#{facility_order_path(order.facility, order.merge_order)}\">Order ##{order.merge_order.id}</a> needs your attention. A line item was added after purchase and "

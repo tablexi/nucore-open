@@ -106,7 +106,7 @@ class FileUploadsController < ApplicationController
 
   protected
 
-  def manage_path(facility, product)
+  def manage_path(_facility, _product)
     eval("manage_facility_#{@klass.singularize}_path(current_facility, @product)")
   end
 

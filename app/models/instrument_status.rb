@@ -10,7 +10,7 @@ class InstrumentStatus < ActiveRecord::Base
     is_on? ? 'On' : 'Off'
   end
 
-  def as_json(options = {})
+  def as_json(_options = {})
     { :instrument_status => 
       {
         :created_at => created_at,

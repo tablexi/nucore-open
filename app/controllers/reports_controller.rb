@@ -45,17 +45,17 @@ class ReportsController < ApplicationController
   end
 
 
-  def init_report(report_on_label, &report_on)
+  def init_report(_report_on_label, &_report_on)
     raise 'Subclass must implement!'
   end
 
 
-  def init_report_data(report_on_label, &report_on)
+  def init_report_data(_report_on_label, &_report_on)
     raise 'Subclass must implement!'
   end
 
 
-  def init_report_headers(report_on_label)
+  def init_report_headers(_report_on_label)
     raise 'Subclass must implement!'
   end
 
