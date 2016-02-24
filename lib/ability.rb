@@ -195,7 +195,7 @@ class Ability
     (facility_roles & roles).any?
   end
 
-private
+  private
 
   def order_details_ability(user, resource)
     can %i(add_accessories sample_results show template_results), OrderDetail, order: { user_id: user.id }

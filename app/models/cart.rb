@@ -39,7 +39,7 @@ class Cart
     orders
   end
 
-private
+  private
 
   # Will find the first cart that either has a non-instrument,
   # has multiple items, or is empty
