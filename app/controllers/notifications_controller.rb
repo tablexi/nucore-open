@@ -1,9 +1,9 @@
 class NotificationsController < ApplicationController
 
   customer_tab  :all
-  before_action :authenticate_user!
-  before_action :check_acting_as
-  before_action :check_notifications
+  before_filter :authenticate_user!
+  before_filter :check_acting_as
+  before_filter :check_notifications
 
   # respond_to :js, :only => :update
 

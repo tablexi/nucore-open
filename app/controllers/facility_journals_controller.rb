@@ -5,10 +5,10 @@ class FacilityJournalsController < ApplicationController
   include CSVHelper
 
   admin_tab     :all
-  before_action :authenticate_user!
-  before_action :check_acting_as
-  before_action :check_billing_access
-  before_action :init_journals, except: :create_with_search
+  before_filter :authenticate_user!
+  before_filter :check_acting_as
+  before_filter :check_billing_access
+  before_filter :init_journals, except: :create_with_search
   helper_method :has_pending_journals?
 
   include TransactionSearch

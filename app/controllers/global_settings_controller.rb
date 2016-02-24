@@ -1,6 +1,6 @@
 class GlobalSettingsController < ApplicationController
 
-  before_action :authenticate_user!
+  before_filter :authenticate_user!
 
   authorize_resource class: NUCore
 

@@ -11,14 +11,14 @@ class FacilityAccountsController < ApplicationController
   include SearchHelper
 
   admin_tab     :all
-  before_action :authenticate_user!
-  before_action :check_acting_as
-  before_action :init_current_facility
-  before_action :init_account
+  before_filter :authenticate_user!
+  before_filter :check_acting_as
+  before_filter :init_current_facility
+  before_filter :init_account
 
   authorize_resource class: Account
 
-  before_action :check_billing_access, only: check_billing_access_actions
+  before_filter :check_billing_access, only: check_billing_access_actions
 
   layout "two_column"
 

@@ -1,9 +1,9 @@
 class FacilityStatementsController < ApplicationController
 
   admin_tab     :all
-  before_action :authenticate_user!
-  before_action :check_acting_as
-  before_action { @facility = current_facility }
+  before_filter :authenticate_user!
+  before_filter :check_acting_as
+  before_filter { @facility = current_facility }
 
   load_and_authorize_resource class: Statement
 

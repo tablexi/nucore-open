@@ -1,10 +1,10 @@
 class FileUploadsController < ApplicationController
 
   admin_tab           :all
-  before_action       :authenticate_user!
-  before_action       :check_acting_as
-  before_action       :init_current_facility
-  skip_before_action  :verify_authenticity_token, only: :create
+  before_filter       :authenticate_user!
+  before_filter       :check_acting_as
+  before_filter       :init_current_facility
+  skip_before_filter  :verify_authenticity_token, only: :create
 
   load_and_authorize_resource class: StoredFile, except: [:download, :uploader_create]
 
