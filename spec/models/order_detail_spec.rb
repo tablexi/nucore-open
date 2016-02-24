@@ -628,7 +628,11 @@ RSpec.describe OrderDetail do
 
   context "state management" do
     it "should not allow transition from 'new' to 'invoiced'" do
-      @order_detail.invoice! rescue nil
+      begin
+        @order_detail.invoice!
+      rescue
+        nil
+      end
       expect(@order_detail.state).to eq('new')
       expect(@order_detail.version).to eq(1)
     end

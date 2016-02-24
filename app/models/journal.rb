@@ -68,7 +68,11 @@ class Journal < ActiveRecord::Base
       # add/import journal spreadsheet
       status      = add_spreadsheet(output_file)
       # remove temp file
-      File.unlink(temp_file.path) rescue nil
+      begin
+        File.unlink(temp_file.path)
+      rescue
+        nil
+      end
       status
     end
 

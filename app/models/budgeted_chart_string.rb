@@ -10,7 +10,11 @@ class BudgetedChartString < ActiveRecord::Base
   validates_length_of   :account, is: 5, allow_blank: true
 
   def self.import(filename)
-    file = File.open(filename, 'r') rescue nil
+    file = begin
+             File.open(filename, 'r')
+           rescue
+             nil
+           end
     if file.blank?
       puts "error: Invalid file #{filename}"
       return
