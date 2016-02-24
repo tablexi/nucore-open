@@ -183,7 +183,7 @@ class Account < ActiveRecord::Base
       accts.uniq.each {|acct| return "The #{self.type_string} is not open for the required account" unless self.account_open?(acct) }
     end
 
-    return nil
+    nil
   end
 
   def can_reconcile?(order_detail)
@@ -296,7 +296,7 @@ class Account < ActiveRecord::Base
       raise ActiveRecord::Rollback unless self.save
     end
 
-    return @account_user
+    @account_user
   end
 
   private

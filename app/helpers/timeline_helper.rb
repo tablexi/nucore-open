@@ -47,7 +47,7 @@ module TimelineHelper
     classes = []
     classes << 'runs_into_tomorrow' if datetime_end > @display_datetime.end_of_day
     classes << 'runs_into_yesterday' if datetime_start < @display_datetime.beginning_of_day
-    return classes
+    classes
   end
 
   def reservation_date_range_display(date, reservation)

@@ -59,7 +59,7 @@ module Products::RelaySupport
       self.errors[:relay] << error_msg
     end
 
-    return valid
+    valid
   end
 
   # Don't bother with relay updates. STI + nested attributes

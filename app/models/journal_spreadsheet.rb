@@ -44,7 +44,7 @@ class JournalSpreadsheet
     output_file = options[:output_file] || "#{Rails.root}/nucore.journal.#{Time.zone.now.strftime("%Y%m%dT%H%M%S")}.xls"
     book.write(output_file)
 
-    return output_file
+    output_file
   end
 
 end

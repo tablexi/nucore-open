@@ -33,7 +33,7 @@ class OldInstrumentPricePolicy < PricePolicy
 
   def reservation_window
     pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
-    return pgp ? pgp.reservation_window : 0
+    pgp ? pgp.reservation_window : 0
   end
 
   def subsidy_less_than_rate?

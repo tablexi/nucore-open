@@ -21,7 +21,7 @@ module Reservations::RelaySupport
   end
 
   def can_switch_instrument?
-    return can_switch_instrument_off? || can_switch_instrument_on?
+    can_switch_instrument_off? || can_switch_instrument_on?
   end
 
   def can_kill_power?

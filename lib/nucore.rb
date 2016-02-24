@@ -15,7 +15,7 @@ module NUCore
   class PurchaseException < StandardError; end
 
   def self.portal
-    return 'nucore'
+    'nucore'
   end
 
   module Database

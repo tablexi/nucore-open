@@ -1,7 +1,7 @@
 module PricePoliciesHelper
 
   def format_date(date)
-    return date.is_a?(String) ? date : date.strftime("%m/%d/%Y")
+    date.is_a?(String) ? date : date.strftime("%m/%d/%Y")
   end
 
   def new_price_policy_path(product)
