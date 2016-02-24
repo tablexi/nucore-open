@@ -104,11 +104,11 @@ class OrderDetailsController < ApplicationController
   end
 
   def set_active_tab
-    if @order_detail.reservation.nil?
-      @active_tab = "orders"
+    @active_tab = if @order_detail.reservation.nil?
+      "orders"
     else
-      @active_tab = "reservations"
-    end
+      "reservations"
+                  end
   end
 
   private

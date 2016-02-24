@@ -8,16 +8,16 @@ class Orders::ItemAdder
     @quantity = quantity.to_i
     return [] if quantity <= 0
 
-    if product.is_a? Bundle
-      ods = add_bundles(product, @quantity, attributes)
+    ods = if product.is_a? Bundle
+      add_bundles(product, @quantity, attributes)
     elsif product.is_a? Service
-      ods = add_services(product, @quantity, attributes)
+      add_services(product, @quantity, attributes)
     # products which have reservations (instruments) should each get their own order_detail
     elsif (product.respond_to?(:reservations) && quantity > 1) then
-      ods = add_instruments(product, @quantity, attributes)
+      add_instruments(product, @quantity, attributes)
     else
-      ods = [create_order_detail({product_id: product.id, quantity: @quantity}.merge(attributes))]
-    end
+      [create_order_detail({product_id: product.id, quantity: @quantity}.merge(attributes))]
+          end
     ods || []
   end
 

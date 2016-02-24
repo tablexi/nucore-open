@@ -54,11 +54,11 @@ class StatementsController < ApplicationController
     @facility = Facility.find_by_url_name!(params[:facility_id])
     @statements = @account.statements.where(facility_id: @facility.id)
 
-    if params[:id] =~ /\w+/i
-      @statement = @statements.blank? ? Statement.find_by_facility_id(@facility.id) : @statements.first
+    @statement = if params[:id] =~ /\w+/i
+      @statements.blank? ? Statement.find_by_facility_id(@facility.id) : @statements.first
     else
-      @statement = @account.statements.find(params[:id])
-    end
+      @account.statements.find(params[:id])
+                 end
     @statement = Statement.new if @statement.nil?
   end
 

@@ -207,11 +207,11 @@ RSpec.describe GeneralReportsController do
 
 
   def report_headers(label)
-    if export_all_request?
-      headers=I18n.t 'controllers.general_reports.headers.data'
+    headers = if export_all_request?
+      I18n.t 'controllers.general_reports.headers.data'
     else
-      headers=[ label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
-    end
+      [ label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
+              end
 
     headers
   end
@@ -221,13 +221,13 @@ RSpec.describe GeneralReportsController do
     super
     expect(assigns(:status_ids)).to be_instance_of Array
 
-    if @params[:date_start].blank? && @params[:date_end].blank?
-      stati=[ OrderStatus.complete.first, OrderStatus.reconciled.first ]
+    stati = if @params[:date_start].blank? && @params[:date_end].blank?
+      [ OrderStatus.complete.first, OrderStatus.reconciled.first ]
     elsif @params[:status_filter].blank?
-      stati=[]
+      []
     else
-      stati=@params[:status_filter].collect{|si| OrderStatus.find(si.to_i) }
-    end
+      @params[:status_filter].collect{|si| OrderStatus.find(si.to_i) }
+            end
 
     status_ids=[]
 

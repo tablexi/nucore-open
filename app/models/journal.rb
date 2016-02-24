@@ -241,11 +241,11 @@ class Journal < ActiveRecord::Base
 
   def set_facility_id
     # detect if this should be a multi-facility journal, set facility_id appropriately
-    if @order_details_for_creation.collect{|od|od.order.facility_id}.uniq.size > 1
-      self.facility_id = nil
+    self.facility_id = if @order_details_for_creation.collect{|od|od.order.facility_id}.uniq.size > 1
+      nil
     else
-      self.facility_id = @order_details_for_creation.first.order.facility_id
-    end
+      @order_details_for_creation.first.order.facility_id
+                       end
   end
 
   def create_new_journal_rows

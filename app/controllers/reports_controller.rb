@@ -30,18 +30,18 @@ class ReportsController < ApplicationController
 
   def init_report_params
     @date_start = parse_usa_date(params[:date_start])
-    if @date_start.blank?
-      @date_start = (Time.zone.now - 1.month).beginning_of_month
+    @date_start = if @date_start.blank?
+      (Time.zone.now - 1.month).beginning_of_month
     else
-      @date_start = @date_start.beginning_of_day
-    end
+      @date_start.beginning_of_day
+                  end
 
     @date_end = parse_usa_date(params[:date_end])
-    if @date_end.blank?
-      @date_end = @date_start.end_of_month
+    @date_end = if @date_end.blank?
+      @date_start.end_of_month
     else
-      @date_end = @date_end.end_of_day
-    end
+      @date_end.end_of_day
+                end
   end
 
 
@@ -62,11 +62,11 @@ class ReportsController < ApplicationController
 
   def page_report(rows)
     # Don't paginate reports if we're exporting
-    if params[:export_id].present?
-      @rows = rows
+    @rows = if params[:export_id].present?
+      rows
     else
-      @rows = rows.paginate(:page => params[:page], :per_page => 25)
-    end
+      rows.paginate(:page => params[:page], :per_page => 25)
+            end
   end
 
 
