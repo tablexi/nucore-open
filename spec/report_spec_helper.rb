@@ -107,7 +107,7 @@ module ReportSpecHelper
 
 
   def export_all_request?
-    @params.has_key?(:export_id) && @params[:export_id] == 'report_data'
+    @params.key?(:export_id) && @params[:export_id] == 'report_data'
   end
 
 

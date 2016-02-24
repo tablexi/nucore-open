@@ -15,7 +15,7 @@ class MigrateDurationMins < ActiveRecord::Migration
     rs = ScheduleRule.select('instrument_id,duration_mins').group :instrument_id, :duration_mins
 
     rs.each do |r|
-      if idm.has_key?(r.instrument_id) && idm[r.instrument_id] != r.duration_mins
+      if idm.key?(r.instrument_id) && idm[r.instrument_id] != r.duration_mins
         raise "ScheduleRule with instrument id #{r.instrument_id} has conflicting duration_mins (#{r.duration_mins}, #{idm[r.instrument_id]})!\n"
       end
 

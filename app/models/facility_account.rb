@@ -20,7 +20,7 @@ class FacilityAccount < ActiveRecord::Base
     rescue NoMethodError => e
       raise e unless account_number
       validator=ValidatorFactory.instance(account_number)
-      raise e unless validator.components.has_key?(method_sym)
+      raise e unless validator.components.key?(method_sym)
       validator.send(method_sym, *arguments)
     end
   end
