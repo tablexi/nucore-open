@@ -27,7 +27,7 @@ class ScheduleRule < ActiveRecord::Base
   def self.unavailable_for_date(instrument, day)
     rules = where(instrument_id: instrument.id)
     rules = unavailable(rules)
-    rules = rules.select { |item| item.public_send(:"on_#{day.strftime("%a").downcase}?")}
+    rules = rules.select { |item| item.public_send(:"on_#{day.strftime("%a").downcase}?") }
     rules.each_with_object([]) do |rule, reservations|
       reservations << Reservation.new(
         product: instrument,
@@ -56,7 +56,7 @@ class ScheduleRule < ActiveRecord::Base
 
   def no_overlap_with_existing_rules
     return if instrument.blank?
-    rules = instrument.schedule_rules.reject {|r| r.id == id} # select all rules except self
+    rules = instrument.schedule_rules.reject { |r| r.id == id } # select all rules except self
     Date::ABBR_DAYNAMES.each do |day|
       # skip unless this rule occurs on this day
       next unless send("on_#{day.downcase}?")

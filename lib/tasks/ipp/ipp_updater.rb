@@ -54,7 +54,7 @@ class IppUpdater
 
   def update_journaled_details(oid_to_attrs)
     details = OrderDetail.find oid_to_attrs.keys
-    details.each {|od| od.update_attributes! oid_to_attrs[od.id]}
+    details.each { |od| od.update_attributes! oid_to_attrs[od.id] }
   end
 
   private

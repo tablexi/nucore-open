@@ -1,11 +1,11 @@
 class GeneralReportsController < ReportsController
 
   def product
-    render_report(0, 'Name') {|od| od.product.name }
+    render_report(0, 'Name') { |od| od.product.name }
   end
 
   def account
-    render_report(1, 'Description') {|od| od.account.to_s }
+    render_report(1, 'Description') { |od| od.account.to_s }
   end
 
   def account_owner
@@ -16,15 +16,15 @@ class GeneralReportsController < ReportsController
   end
 
   def purchaser
-    render_report(3, 'Name') {|od| format_username od.order.user}
+    render_report(3, 'Name') { |od| format_username od.order.user }
   end
 
   def price_group
-    render_report(4, 'Name') {|od| od.price_policy ? od.price_policy.price_group.name : 'Unassigned' }
+    render_report(4, 'Name') { |od| od.price_policy ? od.price_policy.price_group.name : 'Unassigned' }
   end
 
   def assigned_to
-    render_report(5, 'Name') {|od| od.assigned_user.presence ? format_username(od.assigned_user) : 'Unassigned' }
+    render_report(5, 'Name') { |od| od.assigned_user.presence ? format_username(od.assigned_user) : 'Unassigned' }
   end
 
   private
@@ -66,7 +66,7 @@ class GeneralReportsController < ReportsController
               []
             else
       # user filters
-              status_ids.reject(&:blank?).collect {|si| OrderStatus.find(si.to_i) }
+              status_ids.reject(&:blank?).collect { |si| OrderStatus.find(si.to_i) }
             end
 
     @status_ids = []
@@ -122,7 +122,7 @@ class GeneralReportsController < ReportsController
       rows << v.push(percent_cost).unshift(k)
     end
 
-    rows.sort! {|a, b| a.first <=> b.first}
+    rows.sort! { |a, b| a.first <=> b.first }
 
     page_report(rows)
   end

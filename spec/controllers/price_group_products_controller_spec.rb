@@ -44,7 +44,7 @@ RSpec.describe PriceGroupProductsController do
     it_should_allow_managers_only :redirect, 'to update existing PriceGroupProducts' do
       assert_init_price_group_products
       expect(PriceGroupProduct.count).to eq(PriceGroup.count)
-      @price_group_products.each {|pgp| expect(pgp.reload.reservation_window).to eq(5) }
+      @price_group_products.each { |pgp| expect(pgp.reload.reservation_window).to eq(5) }
       assert_successful_update
     end
 
@@ -125,8 +125,8 @@ RSpec.describe PriceGroupProductsController do
   def assert_init_price_group_products
     expect(assigns[:product]).to eq(@product)
     expect(assigns[:is_instrument]).to eq(@product.is_a?(Instrument))
-    PriceGroup.all.each {|pg| expect(assigns[:price_groups]).to be_include pg }
-    @price_group_products.each {|pgp| expect(assigns[:price_group_products]).to be_include pgp }
+    PriceGroup.all.each { |pg| expect(assigns[:price_groups]).to be_include pg }
+    @price_group_products.each { |pgp| expect(assigns[:price_group_products]).to be_include pgp }
     expect(assigns[:price_group_products]).to be_include assigns[:price_group_product]
   end
 

@@ -141,7 +141,7 @@ class User < ActiveRecord::Base
   # purchasing that product
   def accounts_for_product(product)
     acts = accounts.active.for_facility(product.facility)
-    acts.reject! {|acct| !acct.validate_against_product(product, self).nil?}
+    acts.reject! { |acct| !acct.validate_against_product(product, self).nil? }
     acts
   end
 

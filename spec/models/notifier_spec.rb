@@ -12,7 +12,7 @@ RSpec.describe Notifier do
       # Find all the files that start with order_status_changed_to, find the statuses and
       # get the uniq ones.
       @files = Dir['app/views/notifier/order_status_changed_to_*'].map { |a| File.basename(a) }
-      @files = @files.map {|f| f.match(/order_status_changed_to_(.*)\.(html|text)\.(haml|erb)$/)[1]}.uniq
+      @files = @files.map { |f| f.match(/order_status_changed_to_(.*)\.(html|text)\.(haml|erb)$/)[1] }.uniq
 
       @files.each do |f|
         it "should render template order_status_changed_to_#{f} successfully" do

@@ -389,7 +389,7 @@ RSpec.describe OrderRowImporter do
 
   describe "#row_with_errors" do
     let(:errors) { %w(one two three) }
-    let(:row) {{ "Errors" => "" }}
+    let(:row) { { "Errors" => "" } }
 
     context "when the import has no errors" do
       it "does not add errors to the error column" do

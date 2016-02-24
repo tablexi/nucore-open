@@ -267,7 +267,7 @@ RSpec.describe Account do
         end
 
         it "should not return error if the product is a bundle and both of the bundled product's accounts are open for a chart string" do
-          [ @item, @item2 ].each {|item| define_open_account(item.account, @nufs_account.account_number) }
+          [ @item, @item2 ].each { |item| define_open_account(item.account, @nufs_account.account_number) }
           expect(@nufs_account.validate_against_product(@bundle, @user)).to be_nil
         end
       end
@@ -325,7 +325,7 @@ RSpec.describe Account do
 
     describe "#for_facility" do
       let!(:user) { create :user }
-      let!(:facility) { create :facility}
+      let!(:facility) { create :facility }
       let!(:po_show) { create_po_for(user, facility) }
       let!(:po_hidden) { create_po_for(user, create(:facility)) }
       let!(:po_deleted) { create_po_for(user, facility, Time.now - 1.day) }

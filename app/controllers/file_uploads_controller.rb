@@ -117,7 +117,7 @@ class FileUploadsController < ApplicationController
     @file = @product.stored_files.new(params[:stored_file].merge(created_by: session_user.id, name: 'Order Form Template'))
     @file.transaction do
       begin
-        unless @product.stored_files.template.all? {|t| t.destroy}
+        unless @product.stored_files.template.all? { |t| t.destroy }
           raise ActiveRecord::Rollback
         end
         @file.save!

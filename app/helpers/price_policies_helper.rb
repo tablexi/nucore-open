@@ -26,7 +26,7 @@ module PricePoliciesHelper
     if instrument.reservation_only?
       [ [ 'Reservation', InstrumentPricePolicy::CHARGE_FOR[:reservation] ] ]
     else
-      InstrumentPricePolicy::CHARGE_FOR.map {|k, v| [ k.to_s.titleize, v ] }
+      InstrumentPricePolicy::CHARGE_FOR.map { |k, v| [ k.to_s.titleize, v ] }
     end
   end
 

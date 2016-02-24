@@ -25,7 +25,7 @@ module Role
     # Each returns true if #user_roles has the role for the given facility.
     define_method(role.gsub(/\s/, '_').downcase + '_of?') do |facility|
       is = false
-      user_roles.each {|ur| (is = true) && break if ur.facility == facility && ur.role == role }
+      user_roles.each { |ur| (is = true) && break if ur.facility == facility && ur.role == role }
       is
     end
 
@@ -96,7 +96,7 @@ module Role
     # Each returns true if #account_users has the user_role for the given account.
     define_method(role.gsub(/\s/, '_').downcase + '_of?') do |account|
       is = false
-      account_users.each {|au| (is = true) && break if au.account == account && au.user_role == role }
+      account_users.each { |au| (is = true) && break if au.account == account && au.user_role == role }
       is
     end
   end

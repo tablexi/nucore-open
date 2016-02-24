@@ -8,7 +8,7 @@ class EngineManager
     normalized = engine_name.to_s.camelize.to_sym
 
     unless @@loaded_engines.key? normalized
-      @@loaded_engines[normalized] = Rails.application.railties.engines.any? {|e| e.class.name.start_with? normalized.to_s }
+      @@loaded_engines[normalized] = Rails.application.railties.engines.any? { |e| e.class.name.start_with? normalized.to_s }
     end
 
     @@loaded_engines[normalized]

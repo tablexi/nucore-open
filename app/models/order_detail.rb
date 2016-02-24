@@ -77,8 +77,8 @@ class OrderDetail < ActiveRecord::Base
 
   validates_presence_of :product_id, :order_id, :created_by
   validates_numericality_of :quantity, only_integer: true, greater_than_or_equal_to: 1
-  validates_numericality_of :actual_cost, greater_than_or_equal_to: 0, if: ->(o) { o.actual_cost_changed? && !o.actual_cost.nil?}
-  validates_numericality_of :actual_subsidy, greater_than_or_equal_to: 0, if: ->(o) { o.actual_subsidy_changed? && !o.actual_cost.nil?}
+  validates_numericality_of :actual_cost, greater_than_or_equal_to: 0, if: ->(o) { o.actual_cost_changed? && !o.actual_cost.nil? }
+  validates_numericality_of :actual_subsidy, greater_than_or_equal_to: 0, if: ->(o) { o.actual_subsidy_changed? && !o.actual_cost.nil? }
   validates_numericality_of :actual_total, greater_than_or_equal_to: 0, allow_nil: true
   validates_presence_of :dispute_reason, if: :dispute_at
   validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, if: proc { dispute_resolved_reason.present? || dispute_resolved_at.present? }
@@ -243,7 +243,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def can_be_viewed_by?(user)
-    order.user_id == user.id || account.owner_user.id == user.id || account.business_admins.any? {|au| au.user_id == user.id}
+    order.user_id == user.id || account.owner_user.id == user.id || account.business_admins.any? { |au| au.user_id == user.id }
   end
 
   scope :need_statement, lambda { |facility| 
@@ -882,7 +882,7 @@ class OrderDetail < ActiveRecord::Base
     end
     order_details = OrderDetail.find(order_detail_ids)
 
-    if order_details.any? { |od| od.product.facility_id != current_facility.id || !(od.state.include?('inprocess') || od.state.include?('new'))}
+    if order_details.any? { |od| od.product.facility_id != current_facility.id || !(od.state.include?('inprocess') || od.state.include?('new')) }
       msg_hash[:error] = "There was an error updating the selected #{msg_type}"
       return msg_hash
     end
@@ -890,7 +890,7 @@ class OrderDetail < ActiveRecord::Base
     changes = false
     if update_params[:assigned_user_id] && update_params[:assigned_user_id].length > 0
       changes = true
-      order_details.each {|od| od.assigned_user_id = (update_params[:assigned_user_id] == "unassign" ? nil : update_params[:assigned_user_id])}
+      order_details.each { |od| od.assigned_user_id = (update_params[:assigned_user_id] == "unassign" ? nil : update_params[:assigned_user_id]) }
     end
 
     OrderDetail.transaction do

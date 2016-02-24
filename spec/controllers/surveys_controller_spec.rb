@@ -79,7 +79,7 @@ RSpec.describe SurveysController do
     it 'allows acting-as' do
       maybe_grant_always_sign_in :admin
       switch_to @guest
-      expect { do_request }.to change {ExternalServiceReceiver.count}.by(1)
+      expect { do_request }.to change { ExternalServiceReceiver.count }.by(1)
       esr = ExternalServiceReceiver.last
       expect(esr.receiver).to eq @order_detail
       expect(esr.external_service).to eq external_service

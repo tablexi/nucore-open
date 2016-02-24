@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Api::OrderDetail do
   subject { Api::OrderDetail.new(order_detail) }
 
-  let(:expected_hash) {{ account: account_hash, ordered_for: ordered_for_hash }}
+  let(:expected_hash) { { account: account_hash, ordered_for: ordered_for_hash } }
 
   let(:order) { double(Order, user: ordered_for) }
   let(:order_detail) { double(OrderDetail, account: account, order: order) }
