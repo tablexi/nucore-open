@@ -52,7 +52,7 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
         base_pg.save(validate: false)
         base_pp = make_price_policy(unit_cost: 1, price_group: base_pg)
 
-        [ base_pg , @price_group3, @price_group4 ].each do |pg|
+        [ base_pg, @price_group3, @price_group4 ].each do |pg|
           create(:account_price_group_member, account: account, price_group: pg)
         end
 
