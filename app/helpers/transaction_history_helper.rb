@@ -12,7 +12,7 @@ module TransactionHistoryHelper
                                               :"data-restricted" => product.requires_approval?,
                                               :"data-product-type" => product.type.downcase}]
     end
-    options_for_select options, :selected => search_fields
+    options_for_select options, selected: search_fields
   end
 
   def order_statuses_options(order_statuses, search_fields)
@@ -24,7 +24,7 @@ module TransactionHistoryHelper
 
       options << [order_status.name, order_status.id, attributes]
     end
-    options_for_select options, :selected => search_fields
+    options_for_select options, selected: search_fields
   end
 
   def chosen_field(field, label, value_field = "id", label_field = "name", from_collection_method = nil)

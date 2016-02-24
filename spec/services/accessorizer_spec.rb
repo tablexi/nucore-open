@@ -109,7 +109,7 @@ RSpec.describe Accessories::Accessorizer do
           let(:results) { accessorizer.update_attributes(params) }
 
           it 'is not valid' do
-            expect(Accessories::UpdateResponse).to receive(:new) { double("UpdateResponse", :valid? => false) }
+            expect(Accessories::UpdateResponse).to receive(:new) { double("UpdateResponse", valid?: false) }
             expect(results).to_not be_valid
           end
         end

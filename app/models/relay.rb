@@ -2,9 +2,9 @@ require "net/http"
 
 class Relay < ActiveRecord::Base
 
-  belongs_to :instrument, :inverse_of => :relay
+  belongs_to :instrument, inverse_of: :relay
 
-  validates_presence_of :instrument_id, :on => :update
+  validates_presence_of :instrument_id, on: :update
   validate :unique_ip
 
   attr_accessible :type, :username, :password, :ip, :port, :auto_logout, :auto_logout_minutes, :instrument_id

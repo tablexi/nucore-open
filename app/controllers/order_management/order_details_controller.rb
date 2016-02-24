@@ -2,15 +2,15 @@ class OrderManagement::OrderDetailsController < ApplicationController
 
   include OrderDetailFileDownload
 
-  load_resource :facility, :find_by => :url_name
-  load_resource :order, :through => :facility
-  load_resource :order_detail, :through => :order
+  load_resource :facility, find_by: :url_name
+  load_resource :order, through: :facility
+  load_resource :order_detail, through: :order
 
   helper_method :edit_disabled?
 
   before_action :authorize_order_detail, except: %i(sample_results template_results)
-  before_action :load_accounts, :only => [:edit, :update]
-  before_action :load_order_statuses, :only => [:edit, :update]
+  before_action :load_accounts, only: [:edit, :update]
+  before_action :load_order_statuses, only: [:edit, :update]
 
   admin_tab :all
 
@@ -24,7 +24,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
   def update
     @active_tab = "admin_orders"
 
-    updater = OrderDetails::ParamUpdater.new(@order_detail, :user => session_user, :cancel_fee => params[:with_cancel_fee] == '1')
+    updater = OrderDetails::ParamUpdater.new(@order_detail, user: session_user, cancel_fee: params[:with_cancel_fee] == '1')
 
     if updater.update_attributes(params[:order_detail])
       flash[:notice] = 'The order was successfully updated.'
@@ -48,13 +48,13 @@ class OrderManagement::OrderDetailsController < ApplicationController
     checker = OrderDetails::PriceChecker.new(@order_detail)
     @prices = checker.prices_from_params(params[:order_detail])
 
-    render :json => @prices.to_json
+    render json: @prices.to_json
   end
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:id/files
   def files
     @files = @order_detail.stored_files.sample_result.order(:created_at)
-    render :layout => false if modal?
+    render layout: false if modal?
   end
 
   # POST /facilities/:facility_id/orders/:order_id/order_details/:id/remove_from_journal

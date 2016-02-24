@@ -6,7 +6,7 @@ RSpec.describe OrderUncanceler do
 
   context 'with an item' do
     let(:item) { FactoryGirl.create(:setup_item) }
-    let(:order) { FactoryGirl.create(:purchased_order, :product => item) }
+    let(:order) { FactoryGirl.create(:purchased_order, product: item) }
     let(:order_detail) { order.order_details.first }
 
     it 'should not uncancel a not-canceled order' do
@@ -37,17 +37,17 @@ RSpec.describe OrderUncanceler do
   end
 
   context 'with a reservation' do
-    let(:reservation) { FactoryGirl.create(:purchased_reservation, :reserve_start_at => 1.day.ago, :reserve_end_at => 23.hours.ago, :reserved_by_admin => true) }
+    let(:reservation) { FactoryGirl.create(:purchased_reservation, reserve_start_at: 1.day.ago, reserve_end_at: 23.hours.ago, reserved_by_admin: true) }
     let(:order_detail) { reservation.order_detail }
     before :each do
-      order_detail.product.price_policies.update_all(:start_date => 7.days.ago)
+      order_detail.product.price_policies.update_all(start_date: 7.days.ago)
       reservation.order_detail.backdate_to_complete!(Time.zone.now)
       expect(order_detail).to be_complete
     end
 
     context 'and the reservation is canceled' do
       before :each do
-        order_detail.update_order_status!(order_detail.user, cancel_status, :admin => true)
+        order_detail.update_order_status!(order_detail.user, cancel_status, admin: true)
         expect(order_detail).to be_canceled
         uncanceler.uncancel_to_complete(order_detail)
       end

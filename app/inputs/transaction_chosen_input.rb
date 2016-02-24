@@ -31,7 +31,7 @@ class TransactionChosenInput < SimpleForm::Inputs::Base #CollectionSelectInput
   end
 
   def model_label
-    attribute_class.model_name.human(:count => 2)
+    attribute_class.model_name.human(count: 2)
   end
 
   def search_fields

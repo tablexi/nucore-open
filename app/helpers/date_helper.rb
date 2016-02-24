@@ -59,12 +59,12 @@ module DateHelper
   end
 
   def time_ceil(time, precision = 5.minutes)
-    time = time.dup.change(:sec => 0)
+    time = time.dup.change(sec: 0)
     Time.zone.at((time.to_f / precision).ceil * precision)
   end
 
   def time_floor(time, precision = 5.minutes)
-    time = time.dup.change(:sec => 0)
+    time = time.dup.change(sec: 0)
     Time.zone.at((time.to_f / precision).floor * precision)
   end
 
@@ -81,14 +81,14 @@ module DateHelper
     output =  f.select(:"#{field}_hour", (1..12).to_a, {}, html_options)
     output << f.select(:"#{field}_min", minute_options(options_tag[:minute_step]), {}, html_options)
     output << f.select(:"#{field}_meridian", ['AM', 'PM'], {}, html_options)
-    content_tag :div, output.html_safe, :class => 'time-select'
+    content_tag :div, output.html_safe, class: 'time-select'
   end
 
   def time_select24(f, field, options = {})
-    options.reverse_merge! :hours => (0..23)
+    options.reverse_merge! hours: (0..23)
     output =  f.select(:"#{field}_hour", options[:hours].to_a)
     output << f.select(:"#{field}_min",minute_options(options[:minute_step]))
-    content_tag :div, output, :class => 'time-select'
+    content_tag :div, output, class: 'time-select'
   end
 
   def join_time_select_values(values)

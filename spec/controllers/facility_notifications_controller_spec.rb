@@ -11,14 +11,14 @@ RSpec.describe FacilityNotificationsController do
     Settings.billing.review_period = 7.days
     @authable=FactoryGirl.create(:facility)
     @user=FactoryGirl.create(:user)
-    @account=FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
+    @account=FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
     @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @params={ :facility_id => @authable.url_name }
+    @params={ facility_id: @authable.url_name }
 
     @order_detail1 = place_and_complete_item_order(@user, @authable, @account)
     @order_detail2 = place_and_complete_item_order(@user, @authable, @account)
 
-    @account2=FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
+    @account2=FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
     @authable_account2 = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @order_detail3 = place_and_complete_item_order(@user, @authable, @account2)
   end
@@ -98,7 +98,7 @@ RSpec.describe FacilityNotificationsController do
         end
 
         it 'should display the account list if less than 10 accounts' do
-          @accounts = FactoryGirl.create_list(:nufs_account, 3, :account_users_attributes => account_users_attributes_hash(:user => @user))
+          @accounts = FactoryGirl.create_list(:nufs_account, 3, account_users_attributes: account_users_attributes_hash(user: @user))
           @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
           @params = { facility_id: @authable.url_name }
 
@@ -113,7 +113,7 @@ RSpec.describe FacilityNotificationsController do
         end
 
         it 'should display a count if more than 10 accounts notified' do
-          @accounts = FactoryGirl.create_list(:nufs_account, 11, :account_users_attributes => account_users_attributes_hash(user: @user))
+          @accounts = FactoryGirl.create_list(:nufs_account, 11, account_users_attributes: account_users_attributes_hash(user: @user))
           @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
           @params = { facility_id: @authable.url_name }
 

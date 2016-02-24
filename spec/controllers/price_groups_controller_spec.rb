@@ -8,8 +8,8 @@ RSpec.describe PriceGroupsController do
 
   before :each do
     @authable=FactoryGirl.create(:facility)
-    @price_group=FactoryGirl.create(:price_group, :facility => @authable)
-    @params={ :facility_id => @authable.url_name }
+    @price_group=FactoryGirl.create(:price_group, facility: @authable)
+    @params={ facility_id: @authable.url_name }
   end
 
   context 'index' do
@@ -40,7 +40,7 @@ RSpec.describe PriceGroupsController do
     before :each do
       @method = :post
       @action = :create
-      @params.merge!(:price_group => FactoryGirl.attributes_for(:price_group, :facility_id => @authable.id))
+      @params.merge!(price_group: FactoryGirl.attributes_for(:price_group, facility_id: @authable.id))
     end
 
     it_should_allow_managers_only :redirect do
@@ -51,7 +51,7 @@ RSpec.describe PriceGroupsController do
   end
 
   context 'with price group id' do
-    before(:each) { @params.merge!(:id => @price_group.id) }
+    before(:each) { @params.merge!(id: @price_group.id) }
 
     context 'show' do
 
@@ -118,7 +118,7 @@ RSpec.describe PriceGroupsController do
       before :each do
         @method = :put
         @action = :update
-        @params.merge!(:price_group => FactoryGirl.attributes_for(:price_group, :facility_id => @authable.id))
+        @params.merge!(price_group: FactoryGirl.attributes_for(:price_group, facility_id: @authable.id))
       end
 
       it_should_allow_managers_only :redirect do

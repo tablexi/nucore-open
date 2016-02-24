@@ -9,7 +9,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
       od=OrderDetail.find(at_row.order_detail_id)
       next if od.account_id != at_row.account_id
 
-      j_rows=JournalRow.find(:all, :conditions => {:account_transaction_id => at_row.id})
+      j_rows=JournalRow.find(:all, conditions: {account_transaction_id: at_row.id})
 
       j_rows.each do |j_row|
         journal=j_row.journal
@@ -30,13 +30,13 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
       od.save!
     end
 
-    OrderDetail.where(:state => ['inprocess', 'new']).each do |od|
+    OrderDetail.where(state: ['inprocess', 'new']).each do |od|
       od.estimated_cost=od.actual_cost
       od.estimated_subsidy=od.actual_subsidy
       od.actual_cost=nil
       od.actual_subsidy=nil
       od.price_policy=nil
-      od.save(:validate => false)
+      od.save(validate: false)
     end
 
     Statement.all.each do |stmt|
@@ -65,7 +65,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
 
         at_rows.each do |at_row|
           od=OrderDetail.find(at_row.order_detail_id)
-          StatementRow.create!(:order_detail => od, :statement => statement, :amount => at_row.transaction_amount)
+          StatementRow.create!(order_detail: od, statement: statement, amount: at_row.transaction_amount)
           od.statement=statement
           od.save!
         end
@@ -77,9 +77,9 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
     Statement.reset_column_information
     Statement.all.each{|s| s.destroy if s.account.is_a? NufsAccount }
 
-    change_column(:statements, :account_id, :integer, :null => false)
+    change_column(:statements, :account_id, :integer, null: false)
 
-    remove_foreign_key :journal_rows, :name => :fk_jour_row_act_txn
+    remove_foreign_key :journal_rows, name: :fk_jour_row_act_txn
     change_table :journal_rows do |t|
       t.remove :account_transaction_id
     end
@@ -95,18 +95,18 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
     JournalRow.reset_column_information
 
     create_table :account_transactions do |t|
-      t.integer  "account_id", :null => false
-      t.integer  "facility_id", :null => false
-      t.string   "description", :limit => 200
-      t.decimal  "transaction_amount", :precision => 10, :scale => 2, :null => false
-      t.integer  "created_by", :null => false
-      t.datetime "created_at", :null => false
-      t.string   "type", :limit => 50, :null => false
+      t.integer  "account_id", null: false
+      t.integer  "facility_id", null: false
+      t.string   "description", limit: 200
+      t.decimal  "transaction_amount", precision: 10, scale: 2, null: false
+      t.integer  "created_by", null: false
+      t.datetime "created_at", null: false
+      t.string   "type", limit: 50, null: false
       t.datetime "finalized_at"
       t.integer  "order_detail_id"
-      t.boolean  "is_in_dispute", :precision => 1, :scale => 0, :null => false
+      t.boolean  "is_in_dispute", precision: 1, scale: 0, null: false
       t.integer  "statement_id"
-      t.string   "reference", :limit => 50
+      t.string   "reference", limit: 50
     end
 
     puts <<-OUT

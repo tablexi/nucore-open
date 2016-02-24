@@ -23,7 +23,7 @@ class ScheduleRulesController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.js { render :json => @schedule_rules.map(&:as_calendar_object).flatten }
+      format.js { render json: @schedule_rules.map(&:as_calendar_object).flatten }
     end
   end
 
@@ -50,7 +50,7 @@ class ScheduleRulesController < ApplicationController
         flash[:notice] = 'Schedule Rule was successfully created.'
         format.html { redirect_to(facility_instrument_schedule_rules_path(current_facility, @instrument)) }
       else
-        format.html { render :action => "new" }
+        format.html { render action: "new" }
       end
     end
   end
@@ -67,7 +67,7 @@ class ScheduleRulesController < ApplicationController
         flash[:notice] = 'Schedule Rule was successfully updated.'
         format.html { redirect_to(facility_instrument_schedule_rules_path(current_facility, @instrument)) }
       else
-        format.html { render :action => "edit" }
+        format.html { render action: "edit" }
       end
     end
   end

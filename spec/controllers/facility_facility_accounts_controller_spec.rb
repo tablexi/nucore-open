@@ -1,15 +1,15 @@
 require "rails_helper"
 require 'controller_spec_helper'
 
-RSpec.describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:recharge_accounts) do
+RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on?(:recharge_accounts) do
   render_views
 
   before(:all) { create_users }
 
   before(:each) do
     @authable=FactoryGirl.create(:facility)
-    @facility_account=FactoryGirl.create(:facility_account, :facility => @authable, :created_by => @admin.id)
-    @params={ :facility_id => @authable.url_name }
+    @facility_account=FactoryGirl.create(:facility_account, facility: @authable, created_by: @admin.id)
+    @params={ facility_id: @authable.url_name }
   end
 
   context 'index' do
@@ -48,7 +48,7 @@ RSpec.describe FacilityFacilityAccountsController, :if => SettingsHelper.feature
     before :each do
       @method=:put
       @action=:update
-      @params.merge!(:id => @facility_account.id, :facility_account => FactoryGirl.attributes_for(:facility_account))
+      @params.merge!(id: @facility_account.id, facility_account: FactoryGirl.attributes_for(:facility_account))
     end
 
     it_should_allow_managers_only :redirect do
@@ -65,7 +65,7 @@ RSpec.describe FacilityFacilityAccountsController, :if => SettingsHelper.feature
     before :each do
       @method=:post
       @action=:create
-      @params.merge!(:facility_account => FactoryGirl.attributes_for(:facility_account))
+      @params.merge!(facility_account: FactoryGirl.attributes_for(:facility_account))
     end
 
     it_should_allow_managers_only :redirect do |user|
@@ -82,7 +82,7 @@ RSpec.describe FacilityFacilityAccountsController, :if => SettingsHelper.feature
     before :each do
       @method=:get
       @action=:edit
-      @params.merge!(:id => @facility_account.id)
+      @params.merge!(id: @facility_account.id)
     end
 
     it_should_allow_managers_only do

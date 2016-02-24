@@ -3,14 +3,14 @@ module Reservations::Validations
   extend ActiveSupport::Concern
 
   included do
-    validates_uniqueness_of :order_detail_id, :allow_nil => true
+    validates_uniqueness_of :order_detail_id, allow_nil: true
     validates_presence_of :product_id, :reserve_start_at, :reserve_end_at
     validate :does_not_conflict_with_other_reservation,
              :instrument_is_available_to_reserve,
              :satisfies_minimum_length,
              :satisfies_maximum_length,
-             :if => :reserve_start_at && :reserve_end_at && :reservation_changed?,
-             :unless => :admin?
+             if: :reserve_start_at && :reserve_end_at && :reservation_changed?,
+             unless: :admin?
 
     validates_each [ :actual_start_at, :actual_end_at ] do |record,attr,value|
       if value
@@ -62,7 +62,7 @@ module Reservations::Validations
     conflicting_reservations =
       Reservation
         .joins_order
-        .where(:product_id => product.schedule.product_ids)
+        .where(product_id: product.schedule.product_ids)
         .not_this_reservation(options[:exclude] || self)
         .not_canceled
         .not_ended
@@ -114,7 +114,7 @@ module Reservations::Validations
 
     mins  = (end_at - start_at)/60
     (0..mins).each do |n|
-      dt    = start_at.advance(:minutes => n)
+      dt    = start_at.advance(minutes: n)
       found = false
       rules.each do |s|
         if s.includes_datetime(dt)
@@ -167,7 +167,7 @@ module Reservations::Validations
   # return the longest available reservation window for the groups
   def longest_reservation_window(groups = [])
     return default_reservation_window if groups.empty?
-    pgps = product.price_group_products.find(:all, :conditions => {:price_group_id => groups.collect{|pg| pg.id}})
+    pgps = product.price_group_products.find(:all, conditions: {price_group_id: groups.collect{|pg| pg.id}})
     pgps.collect{|pgp| pgp.reservation_window}.max
   end
 

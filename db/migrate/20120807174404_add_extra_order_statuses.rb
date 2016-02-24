@@ -6,14 +6,14 @@ class AddExtraOrderStatuses < ActiveRecord::Migration
   def self.up
     new_status = OrderStatus.find_by_name('New')
     OrderDetailObserver.status_change_hooks.keys.each do |status|
-      OrderStatus.find_or_create_by_name_and_facility_id(:name => status.to_s.titleize, :facility_id => nil, :parent => new_status)
+      OrderStatus.find_or_create_by_name_and_facility_id(name: status.to_s.titleize, facility_id: nil, parent: new_status)
     end
   end
 
   def self.down
     new_status = OrderStatus.find_by_name('New')
     OrderDetailObserver.status_change_hooks.keys.each do |status|
-      OrderStatus.destroy_all(:name => status.to_s.titleize, :facility_id => nil, :parent_id => new_status.id)
+      OrderStatus.destroy_all(name: status.to_s.titleize, facility_id: nil, parent_id: new_status.id)
     end
   end
 

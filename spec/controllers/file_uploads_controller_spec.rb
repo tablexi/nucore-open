@@ -5,8 +5,8 @@ RSpec.describe FileUploadsController do
   render_views
 
   it "should route" do
-    expect(:get => "/facilities/alpha/services/1/files/upload").to route_to(:controller => 'file_uploads', :action => 'upload', :facility_id => 'alpha', :product => 'services', :product_id => '1')
-    expect(:post => "/facilities/alpha/services/1/files").to route_to(:controller => 'file_uploads', :action => 'create', :facility_id => 'alpha', :product => 'services', :product_id => '1')
+    expect(get: "/facilities/alpha/services/1/files/upload").to route_to(controller: 'file_uploads', action: 'upload', facility_id: 'alpha', product: 'services', product_id: '1')
+    expect(post: "/facilities/alpha/services/1/files").to route_to(controller: 'file_uploads', action: 'create', facility_id: 'alpha', product: 'services', product_id: '1')
     # params_from(:post, "/facilities/alpha/services/1/yui_files").should ==
     #   {:controller => 'file_uploads', :action => 'yui_create', :facility_id => 'alpha', :product => 'services', :product_id => '1'}
   end
@@ -16,7 +16,7 @@ RSpec.describe FileUploadsController do
   before :each do
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @service          = @authable.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
+    @service          = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
     assert @service.valid?
   end
 
@@ -26,10 +26,10 @@ RSpec.describe FileUploadsController do
       @method=:get
       @action=:upload
       @params={
-        :facility_id => @authable.url_name,
-        :product => 'services',
-        :product_id => @service.url_name,
-        :file_type => 'info'
+        facility_id: @authable.url_name,
+        product: 'services',
+        product_id: @service.url_name,
+        file_type: 'info'
       }
     end
 
@@ -45,20 +45,20 @@ RSpec.describe FileUploadsController do
       @method=:post
       @action=:create
       @params={
-        :facility_id => @authable.url_name,
-        :product => 'services',
-        :product_id => @service.url_name,
-        :stored_file => {
-          :name => "File 1",
-          :file_type => 'info',
-          :file => fixture_file_upload("#{Rails.root}/spec/files/template1.txt")
+        facility_id: @authable.url_name,
+        product: 'services',
+        product_id: @service.url_name,
+        stored_file: {
+          name: "File 1",
+          file_type: 'info',
+          file: fixture_file_upload("#{Rails.root}/spec/files/template1.txt")
         }
       }
     end
 
     it_should_allow_managers_and_senior_staff_only :redirect do
       expect(assigns[:product]).to eq(@service)
-      expect(response).to redirect_to(upload_product_file_path(@authable, @service.parameterize, @service, :file_type => 'info'))
+      expect(response).to redirect_to(upload_product_file_path(@authable, @service.parameterize, @service, file_type: 'info'))
       expect(@service.reload.stored_files.size).to eq(1)
       expect(@service.reload.stored_files.collect(&:name)).to eq(['File 1'])
     end
@@ -79,13 +79,13 @@ RSpec.describe FileUploadsController do
       @action=:uploader_create
       create_order_detail
       @params={
-        :facility_id => @authable.url_name,
-        :product => 'services',
-        :product_id => @service.url_name,
-        :fileData => ActionDispatch::TestProcess.fixture_file_upload("#{Rails.root}/spec/files/flash_file.swf", 'application/x-shockwave-flash'),
-        :Filename => "#{Rails.root}/spec/files/flash_file.swf",
-        :file_type => 'info',
-        :order_detail_id => @order_detail.id
+        facility_id: @authable.url_name,
+        product: 'services',
+        product_id: @service.url_name,
+        fileData: ActionDispatch::TestProcess.fixture_file_upload("#{Rails.root}/spec/files/flash_file.swf", 'application/x-shockwave-flash'),
+        Filename: "#{Rails.root}/spec/files/flash_file.swf",
+        file_type: 'info',
+        order_detail_id: @order_detail.id
       }
     end
 
@@ -95,7 +95,7 @@ RSpec.describe FileUploadsController do
 
     context "sample_result" do
       before :each do
-        @params.merge!(:file_type => 'sample_result')
+        @params.merge!(file_type: 'sample_result')
       end
 
       it_should_allow_all(facility_operators) do
@@ -110,7 +110,7 @@ RSpec.describe FileUploadsController do
     before :each do
       @method=:get
       @action=:product_survey
-      @params={ :facility_id => @authable.url_name, :product => @service.id, :product_id => @service.url_name }
+      @params={ facility_id: @authable.url_name, product: @service.id, product_id: @service.url_name }
     end
 
     it_should_allow_managers_and_senior_staff_only do
@@ -135,7 +135,7 @@ RSpec.describe FileUploadsController do
         :product => @service.id,
         :product_id => @service.url_name,
         @survey_param => {
-          :location => @ext_service_location
+          location: @ext_service_location
         }
       }
     end
@@ -168,16 +168,16 @@ RSpec.describe FileUploadsController do
 
       create_order_detail
       @file_upload=FactoryGirl.create(:stored_file,
-                                      :order_detail_id => @order_detail.id,
-                                      :created_by => @admin.id,
-                                      :product => @service
+                                      order_detail_id: @order_detail.id,
+                                      created_by: @admin.id,
+                                      product: @service
                                      )
 
       @params={
-        :facility_id => @authable.url_name,
-        :product => 'services',
-        :product_id => @service.url_name,
-        :id => @file_upload.id
+        facility_id: @authable.url_name,
+        product: 'services',
+        product_id: @service.url_name,
+        id: @file_upload.id
       }
     end
 
@@ -188,12 +188,12 @@ RSpec.describe FileUploadsController do
     context 'sample_result' do
       before :each do
         @sample_result=FactoryGirl.create(:stored_file,
-                                          :order_detail_id => @order_detail.id,
-                                          :created_by => @staff.id,
-                                          :product => @service,
-                                          :file_type => 'sample_result'
+                                          order_detail_id: @order_detail.id,
+                                          created_by: @staff.id,
+                                          product: @service,
+                                          file_type: 'sample_result'
                                          )
-        @params.merge!(:id => @sample_result.id)
+        @params.merge!(id: @sample_result.id)
       end
 
       it_should_allow_all(facility_operators) do
@@ -204,21 +204,21 @@ RSpec.describe FileUploadsController do
   end
 
   def create_order_detail
-    @facility_account=FactoryGirl.create(:facility_account, :facility => @authable)
+    @facility_account=FactoryGirl.create(:facility_account, facility: @authable)
     @product=FactoryGirl.create(:item,
-                                :facility_account => @facility_account,
-                                :facility => @authable
+                                facility_account: @facility_account,
+                                facility: @authable
                                )
     @account=create_nufs_account_with_owner
     @order=FactoryGirl.create(:order,
-                              :facility => @authable,
-                              :user => @director,
-                              :created_by => @director.id,
-                              :account => @account,
-                              :ordered_at => Time.zone.now
+                              facility: @authable,
+                              user: @director,
+                              created_by: @director.id,
+                              account: @account,
+                              ordered_at: Time.zone.now
                              )
-    @price_group=FactoryGirl.create(:price_group, :facility => @authable)
-    @price_policy=FactoryGirl.create(:item_price_policy, :product => @product, :price_group => @price_group)
-    @order_detail=FactoryGirl.create(:order_detail, :order => @order, :product => @product, :price_policy => @price_policy)
+    @price_group=FactoryGirl.create(:price_group, facility: @authable)
+    @price_policy=FactoryGirl.create(:item_price_policy, product: @product, price_group: @price_group)
+    @order_detail=FactoryGirl.create(:order_detail, order: @order, product: @product, price_policy: @price_policy)
   end
 end

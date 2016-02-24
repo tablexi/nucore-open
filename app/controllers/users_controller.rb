@@ -13,12 +13,12 @@ class UsersController < ApplicationController
 
   customer_tab :password
   admin_tab     :all
-  before_action :init_current_facility, :except => [:password, :password_reset]
-  before_action :authenticate_user!, :except => [:password_reset]
+  before_action :init_current_facility, except: [:password, :password_reset]
+  before_action :authenticate_user!, except: [:password_reset]
   before_action :check_acting_as
   before_action :load_user_from_user_id_param, only: [:access_list, :access_list_approvals, :accounts, :orders, :reservations, :switch_to]
 
-  load_and_authorize_resource :except => [:password, :password_reset]
+  load_and_authorize_resource except: [:password, :password_reset]
 
   layout 'two_column'
 
@@ -39,7 +39,7 @@ class UsersController < ApplicationController
 
   def search
     @user = username_lookup(params[:username_lookup])
-    render :layout => false
+    render layout: false
   end
 
   # GET /facilities/:facility_id/users/new
@@ -47,7 +47,7 @@ class UsersController < ApplicationController
   end
 
   def new_external
-    @user = User.new(:email => params[:email], :username => params[:email])
+    @user = User.new(email: params[:email], username: params[:email])
   end
 
   # POST /facilities/:facility_id/users
@@ -67,10 +67,10 @@ class UsersController < ApplicationController
 
     if @user.save
       # send email
-      Notifier.delay.new_user(:user => @user, :password => @user.password)
-      redirect_to facility_users_path(:user => @user.id)
+      Notifier.delay.new_user(user: @user, password: @user.password)
+      redirect_to facility_users_path(user: @user.id)
     else
-      render(:action => "new_external") && (return)
+      render(action: "new_external") && (return)
     end
   end
 
@@ -80,7 +80,7 @@ class UsersController < ApplicationController
       flash[:error] = I18n.t('users.search.notice1')
       redirect_to facility_users_path
     elsif @user.persisted?
-      flash[:error] = I18n.t('users.search.user_already_exists', :username => @user.username)
+      flash[:error] = I18n.t('users.search.user_already_exists', username: @user.username)
       redirect_to facility_users_path
     elsif @user.save
       save_user_success
@@ -106,7 +106,7 @@ class UsersController < ApplicationController
       .non_reservations
       .where("orders.facility_id = ? AND orders.ordered_at IS NOT NULL", current_facility.id)
       .order('orders.ordered_at DESC')
-      .paginate(:page => params[:page])
+      .paginate(page: params[:page])
   end
 
   # GET /facilities/:facility_id/users/:user_id/reservations
@@ -116,7 +116,7 @@ class UsersController < ApplicationController
       .reservations
       .where("orders.facility_id = ? AND orders.ordered_at IS NOT NULL", current_facility.id)
       .order('orders.ordered_at DESC')
-      .paginate(:page => params[:page])
+      .paginate(page: params[:page])
   end
 
   # GET /facilities/:facility_id/users/:user_id/accounts

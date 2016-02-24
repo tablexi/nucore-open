@@ -2,7 +2,7 @@ class AddShowDetailsToInstruments < ActiveRecord::Migration
 
   def self.up
     change_table :products do |t|
-      t.boolean :show_details, :default => false, :null => false
+      t.boolean :show_details, default: false, null: false
     end
   end
 

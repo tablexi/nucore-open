@@ -15,10 +15,10 @@ RSpec.describe OrderStatusesController do
     expect(@root_status).to be_root
     @root_status2 = FactoryGirl.create(:order_status)
     expect(@root_status2).to be_root
-    @order_status = FactoryGirl.create(:order_status, :facility => @facility, :parent => @root_status)
-    @order_status2 = FactoryGirl.create(:order_status, :facility => @facility, :parent => @root_status)
+    @order_status = FactoryGirl.create(:order_status, facility: @facility, parent: @root_status)
+    @order_status2 = FactoryGirl.create(:order_status, facility: @facility, parent: @root_status)
     expect(OrderStatus.all.size).to eq(4)
-    @params = { :facility_id => @facility.url_name }
+    @params = { facility_id: @facility.url_name }
   end
 
   def self.it_should_disallow_editing_root_statuses
@@ -80,7 +80,7 @@ RSpec.describe OrderStatusesController do
     before :each do
       @action = :create
       @method = :post
-      @params.merge!(:order_status => FactoryGirl.attributes_for(:order_status, :parent_id => @root_status.id))
+      @params.merge!(order_status: FactoryGirl.attributes_for(:order_status, parent_id: @root_status.id))
     end
     it_should_allow_managers_only(:redirect) {}
     context 'signed_in' do
@@ -127,7 +127,7 @@ RSpec.describe OrderStatusesController do
     before :each do
       @action = :edit
       @method = :get
-      @params.merge!(:id => @order_status.id)
+      @params.merge!(id: @order_status.id)
     end
     it_should_allow_managers_only {}
     it_should_disallow_editing_root_statuses
@@ -146,7 +146,7 @@ RSpec.describe OrderStatusesController do
     before :each do
       @action = :update
       @method = :put
-      @params.merge!(:id => @order_status.id, :order_status =>  FactoryGirl.attributes_for(:order_status, :parent_id => @root_status.id))
+      @params.merge!(id: @order_status.id, order_status: FactoryGirl.attributes_for(:order_status, parent_id: @root_status.id))
     end
     it_should_allow_managers_only :redirect
     it_should_disallow_editing_root_statuses
@@ -156,7 +156,7 @@ RSpec.describe OrderStatusesController do
     before :each do
       @action = :destroy
       @method = :delete
-      @params.merge!(:id => @order_status.id)
+      @params.merge!(id: @order_status.id)
     end
     it_should_allow_managers_only(:redirect) {}
     it_should_disallow_editing_root_statuses
@@ -166,8 +166,8 @@ RSpec.describe OrderStatusesController do
       context 'success' do
         before :each do
           @user = FactoryGirl.create(:user)
-          @facility_account = FactoryGirl.create(:facility_account, :facility => @facility)
-          @product = FactoryGirl.create(:item, :facility => @facility, :facility_account => @facility_account)
+          @facility_account = FactoryGirl.create(:facility_account, facility: @facility)
+          @product = FactoryGirl.create(:item, facility: @facility, facility_account: @facility_account)
           @order_details = []
           3.times do
             order_detail = place_product_order(@user, @facility, @product)
@@ -183,7 +183,7 @@ RSpec.describe OrderStatusesController do
           expect(assigns[:order_status]).to be_destroyed
         end
         it 'should redirect' do
-          expect(response).to redirect_to facility_order_statuses_url(:facility_id => @facility.url_name)
+          expect(response).to redirect_to facility_order_statuses_url(facility_id: @facility.url_name)
         end
         it 'should set all order details to parent status' do
           @order_details.each { |od| expect(od.reload.order_status).to eq(@root_status) }

@@ -97,10 +97,10 @@ RSpec.describe OldInstrumentPricePolicy do
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
       @instrument       = FactoryGirl.create(:instrument,
-                                             :facility => @facility,
-                                             :reserve_interval => 30,
-                                             :facility_account => @facility_account)
-      @price_group_product=FactoryGirl.create(:price_group_product, :price_group => @price_group, :product => @instrument)
+                                             facility: @facility,
+                                             reserve_interval: 30,
+                                             facility_account: @facility_account)
+      @price_group_product=FactoryGirl.create(:price_group_product, price_group: @price_group, product: @instrument)
       # create rule every day from 9 am to 5 pm, no discount, duration= 30 minutes
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     end
@@ -181,9 +181,9 @@ RSpec.describe OldInstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with reservation cost" do
-      options = ipp_attributes(        :product             => @instrument,
-        :usage_rate          => 0,
-        :reservation_rate    => 10.75)
+      options = ipp_attributes(        product: @instrument,
+        usage_rate: 0,
+        reservation_rate: 10.75)
 
       pp = create :old_instrument_price_policy, options
 
@@ -210,10 +210,10 @@ RSpec.describe OldInstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with reservation cost and subsidy" do
-      options = ipp_attributes(        :product             => @instrument,
-        :usage_rate          => 0,
-        :reservation_rate    => 10.75,
-        :reservation_subsidy => 1.75)
+      options = ipp_attributes(        product: @instrument,
+        usage_rate: 0,
+        reservation_rate: 10.75,
+        reservation_subsidy: 1.75)
 
       pp = create :old_instrument_price_policy, options
 
@@ -240,9 +240,9 @@ RSpec.describe OldInstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with usage and reservation cost" do
-      options = ipp_attributes(        :product             => @instrument,
-        :usage_rate          => 5,
-        :reservation_rate    => 5.75)
+      options = ipp_attributes(        product: @instrument,
+        usage_rate: 5,
+        reservation_rate: 5.75)
 
       pp = create :old_instrument_price_policy, options
 
@@ -269,11 +269,11 @@ RSpec.describe OldInstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with usage and reservation cost and subsidy" do
-      options = ipp_attributes(        :product             => @instrument,
-        :usage_rate          => 5,
-        :usage_subsidy       => 0.5,
-        :reservation_rate    => 5.75,
-        :reservation_subsidy => 0.75)
+      options = ipp_attributes(        product: @instrument,
+        usage_rate: 5,
+        usage_subsidy: 0.5,
+        reservation_rate: 5.75,
+        reservation_subsidy: 0.75)
 
       pp = create :old_instrument_price_policy, options
 
@@ -302,7 +302,7 @@ RSpec.describe OldInstrumentPricePolicy do
     it "should correctly estimate cost across schedule rules" do
       # create adjacent schedule rule
       @instrument.update_attribute :reserve_interval, 30
-      @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1))
+      @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: @rule.end_hour, end_hour: @rule.end_hour + 1))
       pp = create :old_instrument_price_policy, ipp_attributes
 
       # 2 hour (8 intervals)
@@ -316,7 +316,7 @@ RSpec.describe OldInstrumentPricePolicy do
     it "should correctly estimate cost for a schedule rule with a discount" do
       # create discount schedule rule
       @instrument.update_attribute :reserve_interval, 30
-      @discount_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :discount_percent => 50))
+      @discount_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: @rule.end_hour, end_hour: @rule.end_hour + 1, discount_percent: 50))
       pp = create :old_instrument_price_policy, ipp_attributes
 
       # 1 hour (4 intervals)
@@ -330,7 +330,7 @@ RSpec.describe OldInstrumentPricePolicy do
     it "should correctly estimate cost across schedule rules with discounts" do
       # create discount schedule rule
       @instrument.update_attribute :reserve_interval, 30
-      @discount_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :start_hour => @rule.end_hour, :end_hour => @rule.end_hour + 1, :discount_percent => 50))
+      @discount_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: @rule.end_hour, end_hour: @rule.end_hour + 1, discount_percent: 50))
       pp = create :old_instrument_price_policy, ipp_attributes
 
       # 2 hour (8 intervals); half of the time, 50% discount
@@ -351,10 +351,10 @@ RSpec.describe OldInstrumentPricePolicy do
 
     it "should return nil for cost if purchase is restricted" do
       options = {
-        :start_date => Date.current,
-        :expire_date => Date.current+7.days,
-        :price_group => @price_group,
-        :product => @instrument
+        start_date: Date.current,
+        expire_date: Date.current+7.days,
+        price_group: @price_group,
+        product: @instrument
       }
 
       @price_group_product.destroy
@@ -373,11 +373,11 @@ RSpec.describe OldInstrumentPricePolicy do
       @facility_account = @facility.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create!(FactoryGirl.attributes_for(:price_group))
       @instrument       = FactoryGirl.create(:instrument,
-                                             :facility => @facility,
-                                             :reserve_interval => 30,
-                                             :facility_account => @facility_account)
-      @price_group_product=FactoryGirl.create(:price_group_product, :price_group => @price_group, :product => @instrument)
-      @rule = @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24))
+                                             facility: @facility,
+                                             reserve_interval: 30,
+                                             facility_account: @facility_account)
+      @price_group_product=FactoryGirl.create(:price_group_product, price_group: @price_group, product: @instrument)
+      @rule = @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, start_hour: 0, end_hour: 24))
       @pp = create :old_instrument_price_policy, ipp_attributes
     end
 
@@ -402,22 +402,22 @@ RSpec.describe OldInstrumentPricePolicy do
 
   def ipp_attributes(overrides={})
     attrs={
-      :start_date          => Date.current,
-      :expire_date         => Date.current+7.days,
-      :usage_rate          => 10.75,
-      :usage_subsidy       => 0,
-      :usage_mins          => 15,
-      :reservation_rate    => 0,
-      :reservation_subsidy => 0,
-      :reservation_mins    => 15,
-      :overage_rate        => 0,
-      :overage_subsidy     => 0,
-      :overage_mins        => 15,
-      :minimum_cost        => nil,
-      :cancellation_cost   => nil,
-      :price_group         => @price_group,
-      :can_purchase        => true,
-      :product             => @instrument
+      start_date: Date.current,
+      expire_date: Date.current+7.days,
+      usage_rate: 10.75,
+      usage_subsidy: 0,
+      usage_mins: 15,
+      reservation_rate: 0,
+      reservation_subsidy: 0,
+      reservation_mins: 15,
+      overage_rate: 0,
+      overage_subsidy: 0,
+      overage_mins: 15,
+      minimum_cost: nil,
+      cancellation_cost: nil,
+      price_group: @price_group,
+      can_purchase: true,
+      product: @instrument
     }
 
     attrs.merge(overrides)
@@ -428,27 +428,27 @@ RSpec.describe OldInstrumentPricePolicy do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
-      @instrument       = FactoryGirl.create(:instrument, :facility_account => @facility_account, :facility => @facility)
+      @instrument       = FactoryGirl.create(:instrument, facility_account: @facility_account, facility: @facility)
       @ipp = create :old_instrument_price_policy, ipp_attributes(
-        :usage_rate => 100,
-        :usage_subsidy => 99,
-        :usage_mins => 15,
-        :overage_rate => nil,
-        :overage_subsidy => nil,
-        :reservation_rate => 0
+        usage_rate: 100,
+        usage_subsidy: 99,
+        usage_mins: 15,
+        overage_rate: nil,
+        overage_subsidy: nil,
+        reservation_rate: 0
       )
       @now = Time.zone.now
       # set reservation window to usage minutes from the price policy
       @reservation = Reservation.new(
-        :product => @instrument,
-        :reserve_start_at => @now,
-        :reserve_end_at => @now + @ipp.usage_mins.minutes
+        product: @instrument,
+        reserve_start_at: @now,
+        reserve_end_at: @now + @ipp.usage_mins.minutes
       )
     end
 
     context 'free with actuals' do
       before :each do
-        @ipp.update_attributes(:usage_rate => 0, :usage_subsidy => 0)
+        @ipp.update_attributes(usage_rate: 0, usage_subsidy: 0)
         yesterday = @now - 1.day
         end_time = yesterday + 1.hour
         @reservation.update_attributes(
@@ -461,18 +461,18 @@ RSpec.describe OldInstrumentPricePolicy do
 
       it 'should return zero for zero priced policy' do
         @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-        expect(@costs).to eq(:cost => 0, :subsidy => 0)
+        expect(@costs).to eq(cost: 0, subsidy: 0)
       end
 
       it 'should return minimum cost for a zero priced policy' do
         @ipp.update_attribute :minimum_cost, 20
         @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-        expect(@costs).to eq(:cost => 20, :subsidy => 0)
+        expect(@costs).to eq(cost: 20, subsidy: 0)
       end
     end
 
     it 'should return nil if an instrument is free and the reservation requires but is missing actuals' do
-      @ipp.update_attributes(:usage_rate => 0, :usage_subsidy => 0)
+      @ipp.update_attributes(usage_rate: 0, usage_subsidy: 0)
       expect(@reservation).to be_requires_but_missing_actuals
       expect(@ipp.calculate_cost_and_subsidy(@reservation)).to be_nil
     end
@@ -481,7 +481,7 @@ RSpec.describe OldInstrumentPricePolicy do
       @reservation.actual_start_at = @reservation.reserve_start_at
       @reservation.actual_end_at = @reservation.reserve_end_at
       @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-      expect(@costs).to eq(:cost => 100, :subsidy => 99)
+      expect(@costs).to eq(cost: 100, subsidy: 99)
     end
 
     it "should correctly calculate cost with usage rate and subsidy and overage using usage rate for overage rate and usage subsidy for overage subsidy" do
@@ -505,7 +505,7 @@ RSpec.describe OldInstrumentPricePolicy do
 
     context 'overage' do
       before :each do
-        @ipp.update_attributes(:overage_rate => 200, :overage_subsidy => 199)
+        @ipp.update_attributes(overage_rate: 200, overage_subsidy: 199)
       end
       it 'should not overage for less than one minute' do
         @reservation.actual_start_at = @reservation.reserve_start_at
@@ -531,7 +531,7 @@ RSpec.describe OldInstrumentPricePolicy do
 
       context 'with reservation rates' do
         before :each do
-          @ipp.update_attributes!(:reservation_rate => 100, :reservation_subsidy => 99, :usage_rate => nil, :usage_subsidy => nil)
+          @ipp.update_attributes!(reservation_rate: 100, reservation_subsidy: 99, usage_rate: nil, usage_subsidy: nil)
         end
 
         context 'without actual time' do
@@ -558,8 +558,8 @@ RSpec.describe OldInstrumentPricePolicy do
 
       context 'with usage rates instead of reservation rates' do
         before :each do
-          @ipp.update_attributes!(:reservation_rate => nil, :reservation_subsidy => nil,
-                                  :usage_rate => 100, :usage_subsidy => 99)
+          @ipp.update_attributes!(reservation_rate: nil, reservation_subsidy: nil,
+                                  usage_rate: 100, usage_subsidy: 99)
         end
         it 'should return nil' do
           @costs = @ipp.calculate_cost_and_subsidy(@reservation)
@@ -571,7 +571,7 @@ RSpec.describe OldInstrumentPricePolicy do
     it "should return nil for calculate cost with reservation and overage rate without actual hours" do
       @reservation.actual_start_at = nil
       @reservation.actual_end_at = nil
-      @ipp.update_attributes(:overage_rate => 120, :overage_subsidy => 119)
+      @ipp.update_attributes(overage_rate: 120, overage_subsidy: 119)
       expect(@ipp.calculate_cost_and_subsidy(@reservation)).to be_nil
     end
 

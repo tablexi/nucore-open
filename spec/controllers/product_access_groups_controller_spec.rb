@@ -11,19 +11,19 @@ RSpec.describe ProductAccessGroupsController do
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @instrument       = FactoryGirl.create(:instrument,
-                                           :facility => @authable,
-                                           :facility_account => @facility_account)
-    @params={ :instrument_id => @instrument.url_name, :facility_id => @authable.url_name }
+                                           facility: @authable,
+                                           facility_account: @facility_account)
+    @params={ instrument_id: @instrument.url_name, facility_id: @authable.url_name }
   end
 
   context 'index' do
     before :each do
-      @level = FactoryGirl.create(:product_access_group, :product => @instrument)
-      @level2 = FactoryGirl.create(:product_access_group, :product => @instrument)
+      @level = FactoryGirl.create(:product_access_group, product: @instrument)
+      @level2 = FactoryGirl.create(:product_access_group, product: @instrument)
       @instrument2 = FactoryGirl.create(:instrument,
-                                        :facility => @authable,
-                                        :facility_account => @facility_account)
-      @level3 = FactoryGirl.create(:product_access_group, :product => @instrument2)
+                                        facility: @authable,
+                                        facility_account: @facility_account)
+      @level3 = FactoryGirl.create(:product_access_group, product: @instrument2)
 
       @action = :index
       @method = :get
@@ -55,7 +55,7 @@ RSpec.describe ProductAccessGroupsController do
     end
     context 'correct info' do
       before :each do
-        @params.merge!(:product_access_group => FactoryGirl.attributes_for(:product_access_group))
+        @params.merge!(product_access_group: FactoryGirl.attributes_for(:product_access_group))
       end
       it_should_allow_managers_and_senior_staff_only :redirect, 'do create' do
         expect(assigns[:facility]).to eq(@authable)
@@ -67,7 +67,7 @@ RSpec.describe ProductAccessGroupsController do
     end
     context 'missing data' do
       before :each do
-        @params.merge!(:product_access_group => FactoryGirl.attributes_for(:product_access_group, :name => ''))
+        @params.merge!(product_access_group: FactoryGirl.attributes_for(:product_access_group, name: ''))
       end
       it_should_allow_managers_and_senior_staff_only :success, 'do create' do
         expect(assigns[:facility]).to eq(@authable)
@@ -83,8 +83,8 @@ RSpec.describe ProductAccessGroupsController do
     before :each do
       @action = :edit
       @method = :get
-      @product_access_group = FactoryGirl.create(:product_access_group, :product_id => @instrument.id)
-      @params.merge!(:id => @product_access_group.id)
+      @product_access_group = FactoryGirl.create(:product_access_group, product_id: @instrument.id)
+      @params.merge!(id: @product_access_group.id)
     end
     it_should_allow_managers_and_senior_staff_only :success, 'do edit' do
       expect(assigns[:facility]).to eq(@authable)
@@ -97,12 +97,12 @@ RSpec.describe ProductAccessGroupsController do
     before :each do
       @action = :update
       @method = :post
-      @product_access_group = FactoryGirl.create(:product_access_group, :product_id => @instrument.id)
-      @params.merge!(:id => @product_access_group.id)
+      @product_access_group = FactoryGirl.create(:product_access_group, product_id: @instrument.id)
+      @params.merge!(id: @product_access_group.id)
     end
     context 'correct info' do
       before :each do
-        @params.merge!(:product_access_group => {:name => 'new name'})
+        @params.merge!(product_access_group: {name: 'new name'})
       end
       it_should_allow_managers_and_senior_staff_only :redirect, 'do update' do
         expect(assigns[:facility]).to eq(@authable)
@@ -115,7 +115,7 @@ RSpec.describe ProductAccessGroupsController do
     end
     context 'missing data' do
       before :each do
-        @params.merge!(:product_access_group => {:name => ''})
+        @params.merge!(product_access_group: {name: ''})
       end
       it_should_allow_managers_and_senior_staff_only :success, 'do update' do
         expect(assigns[:facility]).to eq(@authable)
@@ -131,8 +131,8 @@ RSpec.describe ProductAccessGroupsController do
     before :each do
       @method=:delete
       @action=:destroy
-      @product_access_group = FactoryGirl.create(:product_access_group, :product => @instrument)
-      @params.merge!(:id => @product_access_group.id)
+      @product_access_group = FactoryGirl.create(:product_access_group, product: @instrument)
+      @params.merge!(id: @product_access_group.id)
     end
     it_should_allow_managers_and_senior_staff_only :redirect, 'do delete' do
       expect(assigns[:product_access_group]).to be_destroyed

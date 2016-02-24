@@ -10,7 +10,7 @@ class AddOrderDetailsCreatedBy < ActiveRecord::Migration
     end
 
     # oracle won't let us put a not null constraint on a new column for an existing, non-empty table
-    change_column :order_details, :created_by, :integer, :null => false
+    change_column :order_details, :created_by, :integer, null: false
   end
 
   def self.down

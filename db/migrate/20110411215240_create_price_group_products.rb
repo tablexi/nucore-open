@@ -2,8 +2,8 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
 
   def self.up
     create_table :price_group_products do |t|
-      t.integer :price_group_id, :null => false
-      t.integer :product_id, :null => false
+      t.integer :price_group_id, null: false
+      t.integer :product_id, null: false
       t.integer :reservation_window
       t.timestamps
     end
@@ -13,10 +13,10 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
 
     PriceGroupProduct.reset_column_information
 
-    price_policies=PricePolicy.find(:all, :conditions => [ 'start_date <= ? AND restrict_purchase != 1', Time.zone.now ])
+    price_policies=PricePolicy.find(:all, conditions: [ 'start_date <= ? AND restrict_purchase != 1', Time.zone.now ])
 
     price_policies.each do |pp|
-      pgp=PriceGroupProduct.new(:price_group => pp.price_group)
+      pgp=PriceGroupProduct.new(price_group: pp.price_group)
 
       case pp
       when InstrumentPricePolicy
@@ -31,7 +31,7 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
       pgp.save!
     end
 
-    price_policies=PricePolicy.find(:all, :conditions => 'restrict_purchase = 1')
+    price_policies=PricePolicy.find(:all, conditions: 'restrict_purchase = 1')
     price_policies.each{|pp| pp.destroy }
   end
 

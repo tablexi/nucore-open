@@ -8,12 +8,12 @@ RSpec.describe ProductAccessoriesController do
 
   let(:instrument) { FactoryGirl.create(:setup_instrument) }
   let(:facility) { instrument.facility }
-  let(:accessory) { FactoryGirl.create(:setup_item, :facility => facility) }
-  let(:unchosen_accessory) { FactoryGirl.create(:setup_item, :facility => facility) }
+  let(:accessory) { FactoryGirl.create(:setup_item, facility: facility) }
+  let(:unchosen_accessory) { FactoryGirl.create(:setup_item, facility: facility) }
 
   before :each do
     @authable = facility
-    @params = { :facility_id => facility.url_name, :product_id => instrument.url_name }
+    @params = { facility_id: facility.url_name, product_id: instrument.url_name }
   end
 
   describe 'index' do
@@ -68,7 +68,7 @@ RSpec.describe ProductAccessoriesController do
     context 'success' do
       before :each do
         maybe_grant_always_sign_in :admin
-        @params.merge! :product_accessory => { :accessory_id => accessory.id }
+        @params.merge! product_accessory: { accessory_id: accessory.id }
       end
 
       context 'default type' do
@@ -86,13 +86,13 @@ RSpec.describe ProductAccessoriesController do
         end
 
         it 'redirects to index' do
-          expect(response).to redirect_to(:action => :index)
+          expect(response).to redirect_to(action: :index)
         end
       end
 
       context 'auto scaled' do
         before :each do
-          @params.deep_merge! :product_accessory => { :scaling_type => 'auto' }
+          @params.deep_merge! product_accessory: { scaling_type: 'auto' }
           do_request
         end
 
@@ -105,7 +105,7 @@ RSpec.describe ProductAccessoriesController do
         end
 
         it 'redirects to index' do
-          expect(response).to redirect_to(:action => :index)
+          expect(response).to redirect_to(action: :index)
         end
       end
     end
@@ -116,7 +116,7 @@ RSpec.describe ProductAccessoriesController do
       instrument.accessories << accessory
       @method = :delete
       @action = :destroy
-      @params.merge! :id => instrument.product_accessories.first.id
+      @params.merge! id: instrument.product_accessories.first.id
     end
 
     it_should_allow_managers_and_senior_staff_only(:redirect) {}
@@ -132,7 +132,7 @@ RSpec.describe ProductAccessoriesController do
       end
 
       it 'redirects to index' do
-        expect(response).to redirect_to(:action => :index)
+        expect(response).to redirect_to(action: :index)
       end
     end
   end

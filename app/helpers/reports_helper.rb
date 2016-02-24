@@ -7,7 +7,7 @@ module ReportsHelper
   end
 
   def truncate_seconds(datetime)
-    datetime.change(:sec => 0)
+    datetime.change(sec: 0)
   end
 
   def to_percent(decimal)

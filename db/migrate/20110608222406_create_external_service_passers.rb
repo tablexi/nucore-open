@@ -5,7 +5,7 @@ class CreateExternalServicePassers < ActiveRecord::Migration
       t.integer :external_service_id
       t.integer :passer_id
       t.string :passer_type
-      t.boolean :active, :default => false
+      t.boolean :active, default: false
       t.timestamps
     end
   end

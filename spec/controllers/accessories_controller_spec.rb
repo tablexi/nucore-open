@@ -8,9 +8,9 @@ RSpec.describe AccessoriesController do
   let(:instrument) { create(:instrument_with_accessory) }
   let(:facility) { instrument.facility }
   let(:quantity_accessory) { instrument.accessories.first }
-  let(:auto_accessory) { create(:accessory, :parent => instrument, :scaling_type => 'auto') }
-  let(:manual_accessory) { create(:accessory, :parent => instrument, :scaling_type => 'manual') }
-  let(:reservation) { create(:purchased_reservation, :product => instrument, :reserve_start_at => 1.day.ago) }
+  let(:auto_accessory) { create(:accessory, parent: instrument, scaling_type: 'auto') }
+  let(:manual_accessory) { create(:accessory, parent: instrument, scaling_type: 'manual') }
+  let(:reservation) { create(:purchased_reservation, product: instrument, reserve_start_at: 1.day.ago) }
   let(:order_detail) { reservation.order_detail }
   let(:order) { order_detail.order }
   let(:new_order_status) { OrderStatus.new_os.first }
@@ -19,7 +19,7 @@ RSpec.describe AccessoriesController do
     order_detail.change_status! new_order_status
     reservation.update_attributes(actual_start_at: 1.day.ago, actual_end_at: 1.day.ago + 30.minutes)
     @authable = instrument.facility
-    @params = { :order_id => order.id, :order_detail_id => order_detail.id }
+    @params = { order_id: order.id, order_detail_id: order_detail.id }
   end
 
   describe 'new' do
@@ -106,10 +106,10 @@ RSpec.describe AccessoriesController do
 
       describe 'adding a quantity-based accessory' do
         before :each do
-          @params.merge! :accessories => {
+          @params.merge! accessories: {
             quantity_accessory.id.to_s => {
-              :quantity => '3',
-              :enabled => 'true'
+              quantity: '3',
+              enabled: 'true'
             }
           }
         end
@@ -176,12 +176,12 @@ RSpec.describe AccessoriesController do
 
       describe 'adding a manual-scaled accessory' do
         before :each do
-          instrument.product_accessories.first.update_attributes(:scaling_type => 'manual')
+          instrument.product_accessories.first.update_attributes(scaling_type: 'manual')
 
-          @params.merge! :accessories => {
+          @params.merge! accessories: {
             quantity_accessory.id.to_s => {
-              :quantity => '30',
-              :enabled => 'true'
+              quantity: '30',
+              enabled: 'true'
             }
           }
         end
@@ -221,12 +221,12 @@ RSpec.describe AccessoriesController do
 
       describe 'adding an autoscaled accessory' do
         before :each do
-          instrument.product_accessories.first.update_attributes(:scaling_type => 'auto')
+          instrument.product_accessories.first.update_attributes(scaling_type: 'auto')
 
-          @params.merge! :accessories => {
+          @params.merge! accessories: {
             quantity_accessory.id.to_s => {
-              :quantity => '40',
-              :enabled => 'true'
+              quantity: '40',
+              enabled: 'true'
             }
           }
         end

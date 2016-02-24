@@ -3,9 +3,9 @@ class OrdersController < ApplicationController
   customer_tab  :all
 
   before_action :authenticate_user!
-  before_action :check_acting_as,          :except => [:cart, :add, :choose_account, :show, :remove, :purchase, :update_or_purchase, :receipt, :update]
-  before_action :init_order,               :except => [:cart, :index, :receipt]
-  before_action :protect_purchased_orders, :except => [:cart, :receipt, :confirmed, :index]
+  before_action :check_acting_as,          except: [:cart, :add, :choose_account, :show, :remove, :purchase, :update_or_purchase, :receipt, :update]
+  before_action :init_order,               except: [:cart, :index, :receipt]
+  before_action :protect_purchased_orders, except: [:cart, :receipt, :confirmed, :index]
 
   def initialize
     @active_tab = 'orders'
@@ -52,7 +52,7 @@ class OrdersController < ApplicationController
 
     # ignore ods w/ empty or 0 quantities
     items = items.select { |od| od.is_a?(Hash) && od[:quantity].present? && (od[:quantity] = od[:quantity].to_i) > 0 }
-    return redirect_to(:back, :notice => "Please add at least one quantity to order something") unless items.size > 0
+    return redirect_to(:back, notice: "Please add at least one quantity to order something") unless items.size > 0
 
     first_product = Product.find(items.first[:product_id])
     facility_ability = Ability.new(session_user, first_product.facility, self)
@@ -121,7 +121,7 @@ class OrdersController < ApplicationController
 
     # remove bundles
     if order_detail.group_id
-      order_details = @order.order_details.find(:all, :conditions => {:group_id => order_detail.group_id})
+      order_details = @order.order_details.find(:all, conditions: {group_id: order_detail.group_id})
       OrderDetail.transaction do
         if order_details.all?{|od| od.destroy}
           flash[:notice] = "The bundle has been removed."
@@ -285,7 +285,7 @@ class OrdersController < ApplicationController
           od=@order.order_details[0]
 
           if od.reservation.can_switch_instrument_on?
-            redirect_to order_order_detail_reservation_switch_instrument_path(@order, od, od.reservation, :switch => 'on', :redirect_to => reservations_path)
+            redirect_to order_order_detail_reservation_switch_instrument_path(@order, od, od.reservation, switch: 'on', redirect_to: reservations_path)
           else
             redirect_to reservations_path
           end
@@ -329,10 +329,10 @@ class OrdersController < ApplicationController
     when "all"
       @order_details = @order_details.ordered
     else
-      redirect_to orders_status_path(:status => "pending")
+      redirect_to orders_status_path(status: "pending")
       return
     end
-    @order_details = @order_details. order('order_details.created_at DESC').paginate(:page => params[:page])
+    @order_details = @order_details. order('order_details.created_at DESC').paginate(page: params[:page])
   end
 
   private

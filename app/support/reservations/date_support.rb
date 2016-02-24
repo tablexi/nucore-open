@@ -128,7 +128,7 @@ module Reservations::DateSupport
   private
 
   def instance_variable_fetch(field, options = {})
-    options.reverse_merge!(:to_i => false)
+    options.reverse_merge!(to_i: false)
     result = instance_variable_get("@#{field}") || yield
     result = result.to_i if options[:to_i]
     result
@@ -141,7 +141,7 @@ module Reservations::DateSupport
   end
 
   def hour_field(field)
-    instance_variable_fetch("#{field}_hour", :to_i => true) do
+    instance_variable_fetch("#{field}_hour", to_i: true) do
       human_hour(self.send("#{field}_at"))
     end
   end
@@ -153,7 +153,7 @@ module Reservations::DateSupport
   end
 
   def min_field(field)
-    instance_variable_fetch("#{field}_min", :to_i => true) do
+    instance_variable_fetch("#{field}_min", to_i: true) do
       self.send("#{field}_at").try(:min)
     end
   end

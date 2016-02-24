@@ -13,7 +13,7 @@ module TransactionSearch
   module ClassMethods
 
     def transaction_search(*actions)
-      self.before_filter :remove_ugly_params_and_redirect, :only => actions
+      self.before_filter :remove_ugly_params_and_redirect, only: actions
     end
 
     # If a method is tagged with _with_search at the end, then define the normal controller
@@ -25,7 +25,7 @@ module TransactionSearch
       @@methods_with_remove_ugly_filter ||= []
       if (name.to_s =~ /(.*)_with_search$/)
         @@methods_with_remove_ugly_filter << $1
-        self.before_filter :remove_ugly_params_and_redirect, :only => @@methods_with_remove_ugly_filter
+        self.before_filter :remove_ugly_params_and_redirect, only: @@methods_with_remove_ugly_filter
         define_search_method($1, $&)
       end
     end
@@ -68,13 +68,13 @@ module TransactionSearch
       @order_details = @order_details.for_facility(current_facility)
     end
 
-    @order_details = @order_details.where(:account_id => @account.id) if @account
+    @order_details = @order_details.where(account_id: @account.id) if @account
   end
 
   # Find all the unique search options based on @order_details. This needs to happen before do_search so these
   # variables have the full non-searched section of values
   def load_search_options
-    @facilities = Facility.find_by_sql(@order_details.joins(:order => :facility)
+    @facilities = Facility.find_by_sql(@order_details.joins(order: :facility)
                                                       .select("distinct(facilities.id), facilities.name, facilities.abbreviation")
                                                       .reorder("facilities.name").to_sql)
 
@@ -127,15 +127,15 @@ module TransactionSearch
   def add_optimizations
     # cut down on some n+1s
     @order_details = @order_details
-        .includes(:order => :facility)
+        .includes(order: :facility)
         .includes(:account)
         .preload(:product)
         .preload(:order_status)
         .includes(:reservation)
-        .includes(:order => :user)
+        .includes(order: :user)
         .includes(:price_policy)
         .preload(:bundle)
-        .preload(:account => :owner_user)
+        .preload(account: :owner_user)
   end
 
   def sort_and_paginate

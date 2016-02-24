@@ -16,7 +16,7 @@ class OrderSearcher
     elsif query =~ /\A[A-Za-z]+-\d+\z/
       relation = search_external query
     elsif query =~ /\A\d+\z/
-      relation = OrderDetail.where("order_details.id = :id OR order_details.order_id = :id", :id => query)
+      relation = OrderDetail.where("order_details.id = :id OR order_details.order_id = :id", id: query)
     end
 
     return [] unless relation
@@ -25,7 +25,7 @@ class OrderSearcher
 
   def search_full(query)
     order_id, order_detail_id = query.split('-')
-    OrderDetail.where(:id => order_detail_id, :order_id => order_id)
+    OrderDetail.where(id: order_detail_id, order_id: order_id)
   end
 
   def search_external(query)

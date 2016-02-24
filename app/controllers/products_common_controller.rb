@@ -2,14 +2,14 @@ class ProductsCommonController < ApplicationController
 
   customer_tab  :show
   admin_tab     :create, :destroy, :new, :edit, :index, :update, :manage
-  before_action :authenticate_user!, :except => [:show]
-  before_action :check_acting_as, :except => [:show]
+  before_action :authenticate_user!, except: [:show]
+  before_action :check_acting_as, except: [:show]
   before_action :init_current_facility
-  before_action :init_product, :except => [:index, :new, :create]
+  before_action :init_product, except: [:index, :new, :create]
   before_action :store_fullpath_in_session
 
   include TranslationHelper
-  load_and_authorize_resource :except => [:show, :manage]
+  load_and_authorize_resource except: [:show, :manage]
 
   layout 'two_column'
 
@@ -100,7 +100,7 @@ class ProductsCommonController < ApplicationController
 
   # GET /services/new
   def new
-    @product = current_facility_products.new(:account => NUCore::COMMON_ACCOUNT)
+    @product = current_facility_products.new(account: NUCore::COMMON_ACCOUNT)
     save_product_into_object_name_instance
   end
 
@@ -115,7 +115,7 @@ class ProductsCommonController < ApplicationController
       flash[:notice] = "#{@product.class.name} was successfully created."
       redirect_to([:manage, current_facility, @product])
     else
-      render :action => "new"
+      render action: "new"
     end
   end
 
@@ -130,7 +130,7 @@ class ProductsCommonController < ApplicationController
         flash[:notice] = "#{@product.class.name.capitalize} was successfully updated."
         format.html { redirect_to([:manage, current_facility, @product]) }
       else
-        format.html { render :action => "edit" }
+        format.html { render action: "edit" }
       end
     end
   end

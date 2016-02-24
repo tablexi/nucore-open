@@ -1,7 +1,7 @@
 namespace :chart_strings do
 
   desc "Updates the expiration dates of all +NufsAccount+s based on the latest chart string data"
-  task :update_expiration => :environment do
+  task update_expiration: :environment do
     NufsAccount.all.each do |fs|
       next if fs.suspended?
       validator=NucsValidator.new(fs.account_number)
@@ -16,7 +16,7 @@ namespace :chart_strings do
       # that we should set it's expiration date to 1 year from now
       begin        
         if fs.expires_at == now
-          fs.save(:validate => false) # we're expiring the chart string now so we don't care if validations fail (they'd just cause a headache)
+          fs.save(validate: false) # we're expiring the chart string now so we don't care if validations fail (they'd just cause a headache)
         else
           fs.save!
         end

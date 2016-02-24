@@ -9,7 +9,7 @@ class FacilityReservationsController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
 
-  load_and_authorize_resource :class => Reservation
+  load_and_authorize_resource class: Reservation
 
   helper_method :sort_column, :sort_direction
 
@@ -34,7 +34,7 @@ class FacilityReservationsController < ApplicationController
     order_by_clause = [real_sort_clause, sort_direction].join(' ')
     @order_details = new_or_in_process_orders(order_by_clause)
 
-    @order_details=@order_details.paginate(:page => params[:page])
+    @order_details=@order_details.paginate(page: params[:page])
   end
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/reservations/:id/edit
@@ -98,7 +98,7 @@ class FacilityReservationsController < ApplicationController
       end
     end
 
-    render :action => "edit"
+    render action: "edit"
   end
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/reservations/:id
@@ -116,7 +116,7 @@ class FacilityReservationsController < ApplicationController
     @reservation.round_reservation_times
     set_windows
 
-    render :layout => 'two_column'
+    render layout: 'two_column'
   end
 
   # POST /facilities/:facility_id/instruments/:instrument_id/reservations
@@ -129,7 +129,7 @@ class FacilityReservationsController < ApplicationController
       redirect_to facility_instrument_schedule_url
     else
       set_windows
-      render :action => "new", :layout => 'two_column'
+      render action: "new", layout: 'two_column'
     end
   end
 
@@ -139,7 +139,7 @@ class FacilityReservationsController < ApplicationController
     @reservation = @instrument.reservations.find(params[:reservation_id])
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
     set_windows
-    render :layout => 'two_column'
+    render layout: 'two_column'
   end
 
   # PUT /facilities/:facility_id/instruments/:instrument_id/reservations/:id
@@ -156,7 +156,7 @@ class FacilityReservationsController < ApplicationController
       flash[:notice] = 'The reservation has been updated successfully.'
       redirect_to facility_instrument_schedule_url
     else
-      render :action => "edit_admin", :layout => 'two_column'
+      render action: "edit_admin", layout: 'two_column'
     end
   end
 
@@ -175,7 +175,7 @@ class FacilityReservationsController < ApplicationController
   # GET /facilities/:facility_id/reservations/disputed
   def disputed
     @order_details = disputed_orders
-      .paginate(:page => params[:page])
+      .paginate(page: params[:page])
   end
 
   # DELETE  /facilities/:facility_id/instruments/:instrument_id/reservations/:id
@@ -221,7 +221,7 @@ class FacilityReservationsController < ApplicationController
   def new_or_in_process_orders(order_by_clause = 'reservations.reserve_start_at')
     current_facility.order_details.new_or_inprocess.reservations
       .includes(
-        {:order => :user},
+        {order: :user},
         :order_status,
         :reservation,
         :assigned_user

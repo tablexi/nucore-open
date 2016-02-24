@@ -16,10 +16,10 @@ RSpec.describe UrlService do
   end
 
   let :url_components do {
-    :facility_id => order_detail.product.facility.url_name,
-    :service_id => order_detail.product.url_name,
-    :external_service_id => url_service.id,
-    :receiver_id => order_detail.id
+    facility_id: order_detail.product.facility.url_name,
+    service_id: order_detail.product.url_name,
+    external_service_id: url_service.id,
+    receiver_id: order_detail.id
   } 
   end
 

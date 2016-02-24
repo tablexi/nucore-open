@@ -8,7 +8,7 @@ RSpec.describe FacilityUsersController do
 
   before(:each) do
     @authable=FactoryGirl.create(:facility)
-    @params={ :facility_id => @authable.url_name }
+    @params={ facility_id: @authable.url_name }
   end
 
   context 'index' do
@@ -34,7 +34,7 @@ RSpec.describe FacilityUsersController do
       @method=:delete
       @action=:destroy
       grant_role(@staff)
-      @params.merge!(:id => @staff.id)
+      @params.merge!(id: @staff.id)
     end
 
     it_should_allow_managers_only :redirect do
@@ -62,7 +62,7 @@ RSpec.describe FacilityUsersController do
     before :each do
       @method=:post
       @action=:map_user
-      @params.merge!(:facility_user_id => @staff.id, :user_role => { :role => UserRole::FACILITY_STAFF })
+      @params.merge!(facility_user_id: @staff.id, user_role: { role: UserRole::FACILITY_STAFF })
     end
 
     it_should_allow_managers_only :redirect do

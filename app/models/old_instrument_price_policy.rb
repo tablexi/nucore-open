@@ -5,11 +5,11 @@ class OldInstrumentPricePolicy < PricePolicy
   @@intervals = [1, 5, 10, 15, 30, 60]
 
   validates_numericality_of :minimum_cost, :usage_rate, :reservation_rate, :overage_rate, :usage_subsidy, :overage_subsidy, :reservation_subsidy, :cancellation_cost, allow_nil: true, greater_than_or_equal_to: 0
-  validates_inclusion_of :usage_mins, :reservation_mins, :overage_mins, :in => @@intervals, :unless => :restrict_purchase
-  validates_presence_of :usage_rate, :unless => lambda { |o| o.reservation_rate || o.usage_subsidy.nil? || o.restrict_purchase?}
-  validates_presence_of :reservation_rate, :unless => lambda { |o| o.usage_rate || o.reservation_subsidy.nil? || o.restrict_purchase?}
-  validate :has_usage_or_reservation_rate?, :unless => :restrict_purchase
-  validate :subsidy_less_than_rate?, :unless => :restrict_purchase
+  validates_inclusion_of :usage_mins, :reservation_mins, :overage_mins, in: @@intervals, unless: :restrict_purchase
+  validates_presence_of :usage_rate, unless: lambda { |o| o.reservation_rate || o.usage_subsidy.nil? || o.restrict_purchase?}
+  validates_presence_of :reservation_rate, unless: lambda { |o| o.usage_rate || o.reservation_subsidy.nil? || o.restrict_purchase?}
+  validate :has_usage_or_reservation_rate?, unless: :restrict_purchase
+  validate :subsidy_less_than_rate?, unless: :restrict_purchase
 
   before_save do |o|
     o.usage_subsidy       = 0 if o.usage_subsidy.nil?       && !o.usage_rate.nil?
@@ -20,7 +20,7 @@ class OldInstrumentPricePolicy < PricePolicy
   # Make sure we have a default reservation window for this price group and product
   after_create do |o|
     pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(o.price_group.id, o.product.id)
-    PriceGroupProduct.create(:price_group => o.price_group, :product => o.product, :reservation_window => PriceGroupProduct::DEFAULT_RESERVATION_WINDOW) unless pgp
+    PriceGroupProduct.create(price_group: o.price_group, product: o.product, reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW) unless pgp
   end
 
   def self.intervals

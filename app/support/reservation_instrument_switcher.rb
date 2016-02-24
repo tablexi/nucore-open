@@ -13,7 +13,7 @@ class ReservationInstrumentSwitcher
     else
       raise relay_error_msg
     end
-    instrument.instrument_statuses.create(:is_on => true)
+    instrument.instrument_statuses.create(is_on: true)
   end
 
   def switch_off!
@@ -24,7 +24,7 @@ class ReservationInstrumentSwitcher
     else
       raise relay_error_msg
     end
-    instrument.instrument_statuses.create(:is_on => false)
+    instrument.instrument_statuses.create(is_on: false)
   end
 
   private

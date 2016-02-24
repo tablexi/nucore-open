@@ -8,8 +8,8 @@ RSpec.describe ItemsController do
   render_views
 
   it "should route" do
-    expect(:get => "/facilities/url_name/items").to route_to(:controller => 'items', :action => 'index', :facility_id => 'url_name')
-    expect(:get => "/facilities/url_name/items/1").to route_to(:controller => 'items', :action => 'show', :facility_id => 'url_name', :id => "1")
+    expect(get: "/facilities/url_name/items").to route_to(controller: 'items', action: 'index', facility_id: 'url_name')
+    expect(get: "/facilities/url_name/items/1").to route_to(controller: 'items', action: 'show', facility_id: 'url_name', id: "1")
   end
 
   before(:all) { create_users }
@@ -17,9 +17,9 @@ RSpec.describe ItemsController do
   before(:each) do
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @item             = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
-    @item_pp          = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group => @nupg))
-    @params={ :facility_id => @authable.url_name, :id => @item.url_name }
+    @item             = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+    @item_pp          = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group: @nupg))
+    @params={ facility_id: @authable.url_name, id: @item.url_name }
   end
 
   context "index" do
@@ -105,7 +105,7 @@ RSpec.describe ItemsController do
       end
 
       it "should not show a notice and show an add to cart" do
-        @product_user = ProductUser.create(:product => @item, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
+        @product_user = ProductUser.create(product: @item, user: @guest, approved_by: @admin.id, approved_at: Time.zone.now)
         add_account_for_user(:guest, @item)
         sign_in @guest
         do_request
@@ -128,7 +128,7 @@ RSpec.describe ItemsController do
 
     context "hidden item" do
       before :each do
-        @item.update_attributes(:is_hidden => true)
+        @item.update_attributes(is_hidden: true)
       end
       it_should_allow_operators_only do
         expect(response).to be_success
@@ -171,7 +171,7 @@ RSpec.describe ItemsController do
     before :each do
       @method=:post
       @action=:create
-      @params.merge!(:item => FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @params.merge!(item: FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
     end
 
     it_should_allow_managers_only :redirect do
@@ -185,7 +185,7 @@ RSpec.describe ItemsController do
     before :each do
       @method=:put
       @action=:update
-      @params.merge!(:item => FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @params.merge!(item: FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
     end
 
     it_should_allow_managers_only :redirect do

@@ -5,7 +5,7 @@ class OrderDetailsController < ApplicationController
   customer_tab  :all
 
   before_action :authenticate_user!
-  before_action :check_acting_as, :except => [:order_file, :upload_order_file, :remove_order_file]
+  before_action :check_acting_as, except: [:order_file, :upload_order_file, :remove_order_file]
   before_action :init_order_detail
   after_action :set_active_tab
 
@@ -68,7 +68,7 @@ class OrderDetailsController < ApplicationController
   # GET /orders/:order_id/order_details/:order_detail_id/order_file
   def order_file
     raise ActiveRecord::RecordNotFound if @order_detail.product.stored_files.template.empty?
-    @file = @order_detail.stored_files.new(:file_type => 'template_result')
+    @file = @order_detail.stored_files.new(file_type: 'template_result')
   end
 
   # POST /orders/:order_id/order_details/:order_detail_id/upload_order_file

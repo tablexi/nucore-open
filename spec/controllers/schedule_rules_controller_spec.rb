@@ -10,10 +10,10 @@ RSpec.describe ScheduleRulesController do
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    @instrument       = FactoryGirl.create(:instrument, :facility => @authable, :facility_account_id => @facility_account.id)
-    @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id))
+    @instrument       = FactoryGirl.create(:instrument, facility: @authable, facility_account_id: @facility_account.id)
+    @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id))
     expect(@price_policy).to be_valid
-    @params={ :facility_id => @authable.url_name, :instrument_id => @instrument.url_name }
+    @params={ facility_id: @authable.url_name, instrument_id: @instrument.url_name }
   end
 
   context "index" do
@@ -52,7 +52,7 @@ RSpec.describe ScheduleRulesController do
       @method=:post
       @action=:create
       @params.merge!(
-        :schedule_rule => FactoryGirl.attributes_for(:schedule_rule, :instrument_id => @instrument.id)
+        schedule_rule: FactoryGirl.attributes_for(:schedule_rule, instrument_id: @instrument.id)
       )
     end
 
@@ -66,7 +66,7 @@ RSpec.describe ScheduleRulesController do
       before :each do
         @restriction_levels = []
         3.times do
-          @restriction_levels << FactoryGirl.create(:product_access_group, :product_id => @instrument.id)
+          @restriction_levels << FactoryGirl.create(:product_access_group, product_id: @instrument.id)
         end
         sign_in(@admin)
       end
@@ -77,7 +77,7 @@ RSpec.describe ScheduleRulesController do
       end
 
       it "should store restriction_rules" do
-        @params.deep_merge!(:schedule_rule => {:product_access_group_ids => [@restriction_levels[0].id, @restriction_levels[2].id]})
+        @params.deep_merge!(schedule_rule: {product_access_group_ids: [@restriction_levels[0].id, @restriction_levels[2].id]})
         do_request
         expect(assigns[:schedule_rule].product_access_groups).to contain_all [@restriction_levels[0], @restriction_levels[2]]
         expect(assigns[:schedule_rule].product_access_groups.size).to eq(2)
@@ -91,7 +91,7 @@ RSpec.describe ScheduleRulesController do
 
     before :each do
       @rule=@instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
-      @params.merge!(:id => @rule.id)
+      @params.merge!(id: @rule.id)
     end
 
     context "edit" do
@@ -114,7 +114,7 @@ RSpec.describe ScheduleRulesController do
         @method=:put
         @action=:update
         @params.merge!(
-          :schedule_rule => FactoryGirl.attributes_for(:schedule_rule)
+          schedule_rule: FactoryGirl.attributes_for(:schedule_rule)
         )
       end
 
@@ -128,7 +128,7 @@ RSpec.describe ScheduleRulesController do
         before :each do
           @restriction_levels = []
           3.times do
-            @restriction_levels << FactoryGirl.create(:product_access_group, :product_id => @instrument.id)
+            @restriction_levels << FactoryGirl.create(:product_access_group, product_id: @instrument.id)
           end
           sign_in(@admin)
         end
@@ -146,7 +146,7 @@ RSpec.describe ScheduleRulesController do
         end
 
         it "should store restriction_rules" do
-          @params.deep_merge!(:schedule_rule => {:product_access_group_ids => [@restriction_levels[0].id, @restriction_levels[2].id]})
+          @params.deep_merge!(schedule_rule: {product_access_group_ids: [@restriction_levels[0].id, @restriction_levels[2].id]})
           do_request
           expect(assigns[:schedule_rule].product_access_groups).to contain_all [@restriction_levels[0], @restriction_levels[2]]
           expect(assigns[:schedule_rule].product_access_groups.size).to eq(2)

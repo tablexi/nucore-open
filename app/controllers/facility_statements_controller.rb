@@ -5,7 +5,7 @@ class FacilityStatementsController < ApplicationController
   before_action :check_acting_as
   before_action { @facility = current_facility }
 
-  load_and_authorize_resource :class => Statement
+  load_and_authorize_resource class: Statement
 
   include TransactionSearch
 
@@ -18,7 +18,7 @@ class FacilityStatementsController < ApplicationController
 
   # GET /facilities/:facility_id/statements
   def index
-    @statements = current_facility.statements.find(:all, :order => 'statements.created_at DESC').paginate(:page => params[:page])
+    @statements = current_facility.statements.find(:all, order: 'statements.created_at DESC').paginate(page: params[:page])
   end
 
   # GET /facilities/:facility_id/statements/new
@@ -32,7 +32,7 @@ class FacilityStatementsController < ApplicationController
   def send_statements
     if params[:order_detail_ids].nil? || params[:order_detail_ids].empty?
       flash[:error] = I18n.t 'controllers.facility_statements.send_statements.no_selection'
-      redirect_to :action => :new
+      redirect_to action: :new
       return
     end
     @errors = []
@@ -41,17 +41,17 @@ class FacilityStatementsController < ApplicationController
       params[:order_detail_ids].each do |order_detail_id|
         od = nil
         begin
-          od = OrderDetail.need_statement(current_facility).find(order_detail_id, :readonly => false)
+          od = OrderDetail.need_statement(current_facility).find(order_detail_id, readonly: false)
           to_statement[od.account] ||= []
           to_statement[od.account] << od
         rescue => e
-          @errors << I18n.t('controllers.facility_statements.send_statements.order_error', :order_detail_id => order_detail_id)
+          @errors << I18n.t('controllers.facility_statements.send_statements.order_error', order_detail_id: order_detail_id)
         end
       end
 
       @account_statements = {}
       to_statement.each do |account, order_details|
-        statement = Statement.create!(:facility => current_facility, :account_id => account.id, :created_by => session_user.id)
+        statement = Statement.create!(facility: current_facility, account_id: account.id, created_by: session_user.id)
         order_details.each do |od|
           StatementRow.create!(statement_id: statement.id, order_detail_id: od.id)
           od.statement_id = statement.id

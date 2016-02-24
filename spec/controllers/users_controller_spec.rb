@@ -8,7 +8,7 @@ RSpec.describe UsersController do
 
   before(:each) do
     @authable = FactoryGirl.create(:facility)
-    @params={ :facility_id => @authable.url_name }
+    @params={ facility_id: @authable.url_name }
   end
 
   context 'index' do
@@ -16,16 +16,16 @@ RSpec.describe UsersController do
     before :each do
       @method=:get
       @action=:index
-      @inactive_user = FactoryGirl.create(:user, :first_name => 'Inactive')
+      @inactive_user = FactoryGirl.create(:user, first_name: 'Inactive')
 
-      @active_user = FactoryGirl.create(:user, :first_name => 'Active')
+      @active_user = FactoryGirl.create(:user, first_name: 'Active')
       place_and_complete_item_order(@active_user, @authable)
       # place two orders to make sure it only and_return the user once
       place_and_complete_item_order(@active_user, @authable)
 
-      @lapsed_user = FactoryGirl.create(:user, :first_name => 'Lapsed')
+      @lapsed_user = FactoryGirl.create(:user, first_name: 'Lapsed')
       @old_order_detail = place_and_complete_item_order(@lapsed_user, @authable)
-      @old_order_detail.order.update_attributes(:ordered_at => 400.days.ago)
+      @old_order_detail.order.update_attributes(ordered_at: 400.days.ago)
     end
 
     it_should_allow_operators_only :success, 'include the right users' do
@@ -36,7 +36,7 @@ RSpec.describe UsersController do
     context 'with newly created user' do
       before :each do
         @user = FactoryGirl.create(:user)
-        @params.merge!(:user => @user.id)
+        @params.merge!(user: @user.id)
       end
       it_should_allow_operators_only :success, 'set the user' do
         expect(assigns[:new_user]).to eq(@user)
@@ -50,10 +50,10 @@ RSpec.describe UsersController do
       include_context "feature enabled", :create_users
 
       it "routes" do
-        expect(:get => "/facilities/url_name/users/new").to route_to(:controller => 'users', :action => 'new', :facility_id => 'url_name')
-        expect(:post => "/facilities/url_name/users").to route_to(:controller => 'users', :action => 'create', :facility_id => 'url_name')
-        expect(:get => "/facilities/url_name/users/new_external").to route_to(:controller => 'users', :action => 'new_external', :facility_id => 'url_name')
-        expect(:post => "/facilities/url_name/users/search").to route_to(:controller => 'users', :action => 'search', :facility_id => 'url_name')
+        expect(get: "/facilities/url_name/users/new").to route_to(controller: 'users', action: 'new', facility_id: 'url_name')
+        expect(post: "/facilities/url_name/users").to route_to(controller: 'users', action: 'create', facility_id: 'url_name')
+        expect(get: "/facilities/url_name/users/new_external").to route_to(controller: 'users', action: 'new_external', facility_id: 'url_name')
+        expect(post: "/facilities/url_name/users/search").to route_to(controller: 'users', action: 'search', facility_id: 'url_name')
       end
 
       context 'search' do
@@ -65,7 +65,7 @@ RSpec.describe UsersController do
 
         context 'blank post' do
           before :each do
-            @params.merge!( :username_lookup => '')
+            @params.merge!( username_lookup: '')
           end
 
           it_should_allow_operators_only do
@@ -76,7 +76,7 @@ RSpec.describe UsersController do
 
         context 'user already exists in database' do
           before :each do
-            @params.merge!(:username_lookup => @user.username)
+            @params.merge!(username_lookup: @user.username)
           end
 
           it_should_allow_operators_only do
@@ -89,7 +89,7 @@ RSpec.describe UsersController do
           before :each do
             @user2 = FactoryGirl.build(:user)
             allow(controller).to receive(:service_username_lookup).with(@user2.username).and_return(@user2)
-            @params.merge!(:username_lookup => @user2.username)
+            @params.merge!(username_lookup: @user2.username)
           end
 
           it_should_allow_operators_only do
@@ -121,19 +121,19 @@ RSpec.describe UsersController do
         context 'external user' do
           context 'with successful parameters' do
             before :each do
-              @params.merge!(:group_name => UserRole::FACILITY_DIRECTOR, :user => FactoryGirl.attributes_for(:user))
+              @params.merge!(group_name: UserRole::FACILITY_DIRECTOR, user: FactoryGirl.attributes_for(:user))
             end
 
             it_should_allow_operators_only :redirect do
               expect(assigns(:user)).to be_kind_of User
               expect(assigns(:user)).to be_persisted
-              assert_redirected_to facility_users_url(:user => assigns[:user].id)
+              assert_redirected_to facility_users_url(user: assigns[:user].id)
             end
           end
 
           context 'with missing parameters' do
             before :each do
-              @params.merge!(:user => {})
+              @params.merge!(user: {})
             end
 
             it_should_allow_operators_only do
@@ -178,7 +178,7 @@ RSpec.describe UsersController do
             end
 
             it 'should redirect' do
-              expect(response).to redirect_to facility_users_path(:user => assigns(:user).id)
+              expect(response).to redirect_to facility_users_path(user: assigns(:user).id)
             end
           end
         end
@@ -188,10 +188,10 @@ RSpec.describe UsersController do
     context 'disabled' do
       include_context "feature disabled", :create_users
       it "doesn't route route" do
-        expect(:get => "/facilities/url_name/users/new").not_to be_routable
-        expect(:post => "/facilities/url_name/users").not_to be_routable
-        expect(:get => "/facilities/url_name/users/new_external").not_to be_routable
-        expect(:post => "/facilities/url_name/users/search").not_to be_routable
+        expect(get: "/facilities/url_name/users/new").not_to be_routable
+        expect(post: "/facilities/url_name/users").not_to be_routable
+        expect(get: "/facilities/url_name/users/new_external").not_to be_routable
+        expect(post: "/facilities/url_name/users/search").not_to be_routable
       end
     end
   end
@@ -201,7 +201,7 @@ RSpec.describe UsersController do
     before :each do
       @method=:get
       @action=:switch_to
-      @params.merge!(:user_id => @guest.id)
+      @params.merge!(user_id: @guest.id)
     end
 
     it_should_allow_operators_only :redirect do
@@ -217,7 +217,7 @@ RSpec.describe UsersController do
     before :each do
       @method=:get
       @action=:orders
-      @params.merge!(:user_id => @guest.id)
+      @params.merge!(user_id: @guest.id)
     end
 
     it_should_allow_operators_only do
@@ -230,7 +230,7 @@ RSpec.describe UsersController do
     before :each do
       @method=:get
       @action=:reservations
-      @params.merge!(:user_id => @guest.id)
+      @params.merge!(user_id: @guest.id)
     end
 
     it_should_allow_operators_only do
@@ -243,7 +243,7 @@ RSpec.describe UsersController do
     before :each do
       @method=:get
       @action=:accounts
-      @params.merge!(:user_id => @guest.id)
+      @params.merge!(user_id: @guest.id)
     end
 
     it_should_allow_operators_only do

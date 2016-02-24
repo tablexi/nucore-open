@@ -13,9 +13,9 @@ module ReportSpecHelper
       @method=:get
       @authable=FactoryGirl.create(:facility)
       @params={
-        :facility_id => @authable.url_name,
-        :date_start => Time.zone.now.strftime('%m/%d/%Y'),
-        :date_end => (Time.zone.now+1.year).strftime('%m/%d/%Y')
+        facility_id: @authable.url_name,
+        date_start: Time.zone.now.strftime('%m/%d/%Y'),
+        date_end: (Time.zone.now+1.year).strftime('%m/%d/%Y')
       }
 
       setup_extra_params(@params)
@@ -55,7 +55,7 @@ module ReportSpecHelper
 
           context 'export' do
             before :each do
-              @params.merge!(:format => :csv, :export_id => 'report')
+              @params.merge!(format: :csv, export_id: 'report')
             end
 
             it_should_allow :director do

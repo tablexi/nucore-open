@@ -38,7 +38,7 @@ RSpec.describe AffiliatesController do
     before :each do
       @method=:post
       @action=:create
-      @params={ :affiliate => { :name => 'Chik-Fil-A' } }
+      @params={ affiliate: { name: 'Chik-Fil-A' } }
     end
 
     it_should_allow_admin_only :redirect do
@@ -61,7 +61,7 @@ RSpec.describe AffiliatesController do
 
     before :each do
       @affiliate=Affiliate.find_or_create_by_name('CTA')
-      @params={ :id => @affiliate.id }
+      @params={ id: @affiliate.id }
     end
 
     context 'edit' do
@@ -84,7 +84,7 @@ RSpec.describe AffiliatesController do
       before :each do
         @method=:put
         @action=:update
-        @params.merge!(:affiliate => { :name => 'fugly.com' })
+        @params.merge!(affiliate: { name: 'fugly.com' })
       end
 
       it_should_allow_admin_only :redirect do

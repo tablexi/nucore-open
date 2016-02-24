@@ -13,7 +13,7 @@ class AffiliatesController < GlobalSettingsController
     end
 
     @affiliate=Affiliate.create(attrs)
-    return render :action => :new unless @affiliate.errors.empty?
+    return render action: :new unless @affiliate.errors.empty?
 
     flash[:notice]="Affiliate #{@affiliate.name} created"
     redirect_to affiliates_path
@@ -42,10 +42,10 @@ class AffiliatesController < GlobalSettingsController
 
       if attrs.blank?
         flash.now[:error]='Affiliate attributes not found!'
-        return render :action => :edit
+        return render action: :edit
       end
 
-      return render :action => :edit unless @affiliate.update_attributes(attrs)
+      return render action: :edit unless @affiliate.update_attributes(attrs)
 
       flash[:notice]="Affiliate #{@affiliate.name} updated"
     end

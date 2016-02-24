@@ -2,8 +2,8 @@ class AddAcceptsFlagsToFacilities < ActiveRecord::Migration
 
   def self.up
     change_table :facilities do |t|
-      t.boolean :accepts_cc, :default => true
-      t.boolean :accepts_po, :default => true
+      t.boolean :accepts_cc, default: true
+      t.boolean :accepts_po, default: true
     end
   end
 

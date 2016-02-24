@@ -3,8 +3,8 @@ module Products::RelaySupport
   extend ActiveSupport::Concern
 
   included do
-    has_one  :relay, :inverse_of => :instrument, :dependent => :destroy
-    has_many :instrument_statuses, :foreign_key => 'instrument_id'
+    has_one  :relay, inverse_of: :instrument, dependent: :destroy
+    has_many :instrument_statuses, foreign_key: 'instrument_id'
 
     accepts_nested_attributes_for :relay
 

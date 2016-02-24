@@ -13,24 +13,24 @@ RSpec.describe AutoCanceler do
   let(:base_date) { Time.zone.parse("#{Date.today} 12:30:00") }
   let(:instrument) { FactoryGirl.create :setup_instrument }
   let!(:future_reservation) do FactoryGirl.create :purchased_reservation,
-                                                 :product => instrument,
-                                                 :reserve_start_at => base_date + 1.day,
-                                                 :reserve_end_at => base_date + 1.day + 1.hour 
+                                                 product: instrument,
+                                                 reserve_start_at: base_date + 1.day,
+                                                 reserve_end_at: base_date + 1.day + 1.hour 
   end
 
   let!(:past_reservation) do FactoryGirl.create :purchased_reservation,
-                                               :product => instrument,
-                                               :reserve_start_at => base_date - 2.hours,
-                                               :reserve_end_at => base_date - 1.hour,
-                                               :reserved_by_admin => true 
+                                               product: instrument,
+                                               reserve_start_at: base_date - 2.hours,
+                                               reserve_end_at: base_date - 1.hour,
+                                               reserved_by_admin: true 
   end
 
   let!(:completed_reservation) do
     res = FactoryGirl.create :purchased_reservation,
-                             :product => instrument,
-                             :reserve_start_at => base_date - 3.hours,
-                             :reserve_end_at => base_date - 2.hours,
-                             :reserved_by_admin => true
+                             product: instrument,
+                             reserve_start_at: base_date - 3.hours,
+                             reserve_end_at: base_date - 2.hours,
+                             reserved_by_admin: true
     res.order_detail.to_complete!
     res
   end
@@ -41,7 +41,7 @@ RSpec.describe AutoCanceler do
 
   context 'with auto-cancel minutes' do
     before :each do
-      instrument.update_attributes(:auto_cancel_mins => 10, :min_cancel_hours => 1)
+      instrument.update_attributes(auto_cancel_mins: 10, min_cancel_hours: 1)
     end
 
     it 'should find the past reservation in cancelable' do
@@ -65,10 +65,10 @@ RSpec.describe AutoCanceler do
 
     it 'should not cancel a past reservation in the cart' do
       cart_reservation = FactoryGirl.create(:setup_reservation,
-                                            :product => instrument,
-                                            :reserve_start_at => base_date - 1.day,
-                                            :reserve_end_at => base_date - 1.day + 1.hour,
-                                            :reserved_by_admin => true)
+                                            product: instrument,
+                                            reserve_start_at: base_date - 1.day,
+                                            reserve_end_at: base_date - 1.day + 1.hour,
+                                            reserved_by_admin: true)
 
       canceler.cancel_reservations
       expect(cart_reservation.order_detail.reload.order_status).not_to eq(canceled_status)
@@ -89,7 +89,7 @@ RSpec.describe AutoCanceler do
 
   context 'without auto-cancel minutes' do
     before :each do
-      instrument.update_attributes(:auto_cancel_mins => 0)
+      instrument.update_attributes(auto_cancel_mins: 0)
     end
 
     it 'should not cancel reservations' do

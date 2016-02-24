@@ -21,7 +21,7 @@ class RemoveReviewableState < ActiveRecord::Migration
   end
 
   def self.down
-    OrderStatus.create!(:name => 'Reviewable')
+    OrderStatus.create!(name: 'Reviewable')
   end
 
 end

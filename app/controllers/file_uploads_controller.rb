@@ -4,7 +4,7 @@ class FileUploadsController < ApplicationController
   before_action       :authenticate_user!
   before_action       :check_acting_as
   before_action       :init_current_facility
-  skip_before_action  :verify_authenticity_token, :only => :create
+  skip_before_action  :verify_authenticity_token, only: :create
 
   load_and_authorize_resource class: StoredFile, except: [:download, :uploader_create]
 
@@ -21,7 +21,7 @@ class FileUploadsController < ApplicationController
   def upload
     @klass   = params[:product]
     @product = current_facility.send(@klass).find_by_url_name!(params[:product_id])
-    @file    = @product.stored_files.new(:file_type => params[:file_type])
+    @file    = @product.stored_files.new(file_type: params[:file_type])
   end
 
   # GET /facilities/:facility_id/:product/:product_id/files/:file_type/:id
@@ -43,11 +43,11 @@ class FileUploadsController < ApplicationController
     @klass   = params[:product]
     @product = current_facility.send(@klass).find_by_url_name!(params[:product_id])
 
-    @file = @product.stored_files.new(params[:stored_file].merge(:created_by => session_user.id))
+    @file = @product.stored_files.new(params[:stored_file].merge(created_by: session_user.id))
 
     if @file.save
       flash[:notice] = "File uploaded"
-      redirect_to(upload_product_file_path(current_facility, @product.parameterize, @product, :file_type => @file.file_type)) && (return)
+      redirect_to(upload_product_file_path(current_facility, @product.parameterize, @product, file_type: @file.file_type)) && (return)
     end
     render :upload
   end
@@ -57,9 +57,9 @@ class FileUploadsController < ApplicationController
     @klass    = params[:product]
     @product  = current_facility.send(@klass).find_by_url_name!(params[:product_id])
 
-    @options = Hash[:swf_uploaded_data => params[:fileData], :name => params[:Filename],
-                    :file_type => params[:file_type], :order_detail_id => params[:order_detail_id],
-                    :created_by => session_user.id]
+    @options = Hash[swf_uploaded_data: params[:fileData], name: params[:Filename],
+                    file_type: params[:file_type], order_detail_id: params[:order_detail_id],
+                    created_by: session_user.id]
     @upload = @product.stored_files.new(@options)
     authorize! :uploader_create, @upload
     @upload.save!
@@ -70,7 +70,7 @@ class FileUploadsController < ApplicationController
   # GET /facilities/1/services/3/files/survey_upload
   def product_survey
     @product  = current_facility.services.find_by_url_name!(params[:product_id])
-    @file     = @product.stored_files.new(:file_type => 'template')
+    @file     = @product.stored_files.new(file_type: 'template')
     @survey = ExternalServiceManager.survey_service.new
   end
 
@@ -101,7 +101,7 @@ class FileUploadsController < ApplicationController
     if @file.file_type == 'template'
       redirect_to(@return_to || product_survey_path(current_facility, @product.parameterize, @product)) && (return)
     else
-      redirect_to(@return_to || upload_product_file_path(current_facility, @product.parameterize, @product, :file_type => @file.file_type)) && (return)
+      redirect_to(@return_to || upload_product_file_path(current_facility, @product.parameterize, @product, file_type: @file.file_type)) && (return)
     end
   end
 
@@ -114,7 +114,7 @@ class FileUploadsController < ApplicationController
   private
 
   def create_product_survey_from_file
-    @file = @product.stored_files.new(params[:stored_file].merge(:created_by => session_user.id, :name => 'Order Form Template'))
+    @file = @product.stored_files.new(params[:stored_file].merge(created_by: session_user.id, name: 'Order Form Template'))
     @file.transaction do
       begin
         unless @product.stored_files.template.all? {|t| t.destroy}
@@ -140,14 +140,14 @@ class FileUploadsController < ApplicationController
     else
       begin
         url = params[survey_param][:location]
-        ext=ExternalServiceManager.survey_service.find_or_create_by_location(:location => url)
+        ext=ExternalServiceManager.survey_service.find_or_create_by_location(location: url)
         esp=ExternalServicePasser.where(passer_id: @product.id, external_service_id: ext.id).first
 
         if esp
           flash[:notice] = "That Online Order Form already exists"
         else
           flash[:notice] = "Online Order Form added"
-          ExternalServicePasser.create!(:passer => @product, :external_service => ext)
+          ExternalServicePasser.create!(passer: @product, external_service: ext)
         end
 
         redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) && (return)
@@ -156,7 +156,7 @@ class FileUploadsController < ApplicationController
         @survey.errors.add(:base, "Online Order Form add error: #{e.message}")
       end
     end
-    @file = @product.stored_files.new(:file_type => 'template')
+    @file = @product.stored_files.new(file_type: 'template')
   end
 
 end

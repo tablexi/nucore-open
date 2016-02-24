@@ -8,10 +8,10 @@ class FacilityOrdersController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
 
-  load_and_authorize_resource :class => Order
+  load_and_authorize_resource class: Order
 
-  before_action :load_order, :only => [:edit, :show, :update, :send_receipt]
-  before_action :load_merge_orders, :only => [:edit, :show]
+  before_action :load_order, only: [:edit, :show, :update, :send_receipt]
+  before_action :load_merge_orders, only: [:edit, :show]
 
   include FacilityOrderStatusHelper
 
@@ -22,12 +22,12 @@ class FacilityOrdersController < ApplicationController
 
   # GET /facility/1/orders
   def index
-    @order_details = new_or_in_process_orders.paginate(:page => params[:page])
+    @order_details = new_or_in_process_orders.paginate(page: params[:page])
   end
 
   # GET /facilities/:facility_id/orders/disputed
   def disputed
-    @order_details = disputed_orders.paginate(:page => params[:page])
+    @order_details = disputed_orders.paginate(page: params[:page])
   end
 
   def show
@@ -111,25 +111,25 @@ class FacilityOrdersController < ApplicationController
       end
 
       if notifications
-        flash[:error] = I18n.t 'controllers.facility_orders.update.notices', :product => product.name
+        flash[:error] = I18n.t 'controllers.facility_orders.update.notices', product: product.name
       else
-        flash[:notice] = I18n.t 'controllers.facility_orders.update.success', :product => product.name
+        flash[:notice] = I18n.t 'controllers.facility_orders.update.success', product: product.name
       end
     rescue => e
       Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
       @order.destroy if @order != original_order
-      flash[:error] = I18n.t 'controllers.facility_orders.update.error', :product => product.name
+      flash[:error] = I18n.t 'controllers.facility_orders.update.error', product: product.name
     end
   end
 
   def build_merge_order
     Order.create!(
-      :merge_with_order_id => @order.id,
-      :facility_id => @order.facility_id,
-      :account_id => @order.account_id,
-      :user_id => @order.user_id,
-      :created_by => current_user.id,
-      :ordered_at => Time.zone.now
+      merge_with_order_id: @order.id,
+      facility_id: @order.facility_id,
+      account_id: @order.account_id,
+      user_id: @order.user_id,
+      created_by: current_user.id,
+      ordered_at: Time.zone.now
     )
   end
 
@@ -138,7 +138,7 @@ class FacilityOrdersController < ApplicationController
   end
 
   def load_merge_orders
-    @merge_orders = Order.where(:merge_with_order_id => @order.id, :created_by => current_user.id).all
+    @merge_orders = Order.where(merge_with_order_id: @order.id, created_by: current_user.id).all
   end
 
 end

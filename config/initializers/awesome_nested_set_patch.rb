@@ -13,7 +13,7 @@ if NUCore::Database.oracle?
           module Model
 
             def set_default_left_and_right
-              highest_right_row = nested_set_scope(:order => "#{quoted_right_column_full_name} desc").first
+              highest_right_row = nested_set_scope(order: "#{quoted_right_column_full_name} desc").first
               highest_right_row && highest_right_row.lock!
 
               maxright = highest_right_row ? (highest_right_row[right_column_name] || 0) : 0

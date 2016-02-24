@@ -20,24 +20,24 @@ RSpec.describe BulkEmailHelper do
     @purchaser3 = FactoryGirl.create(:user)
 
     @facility = FactoryGirl.create(:facility)
-    @facility_account=FactoryGirl.create(:facility_account, :facility => @facility)
-    @product=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @facility)
-    @product2=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @facility)
-    @product3=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @facility)
+    @facility_account=FactoryGirl.create(:facility_account, facility: @facility)
+    @product=FactoryGirl.create(:item, facility_account: @facility_account, facility: @facility)
+    @product2=FactoryGirl.create(:item, facility_account: @facility_account, facility: @facility)
+    @product3=FactoryGirl.create(:item, facility_account: @facility_account, facility: @facility)
 
-    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner) ])
+    @account = FactoryGirl.create(:nufs_account, account_users_attributes: [ FactoryGirl.attributes_for(:account_user, user: @owner) ])
 
     @controller = BulkEmailTest.new
-    @params = { :search_type => :customers, :facility_id => @facility.id }
+    @params = { search_type: :customers, facility_id: @facility.id }
   end
 
   context "search customers filtered by ordered dates" do
     before :each do
       @od_yesterday = place_product_order(@purchaser, @facility, @product, @account)
-      @od_yesterday.order.update_attributes(:ordered_at => (Time.zone.now - 1.day))
+      @od_yesterday.order.update_attributes(ordered_at: (Time.zone.now - 1.day))
 
       @od_tomorrow = place_product_order(@purchaser2, @facility, @product2, @account)
-      @od_tomorrow.order.update_attributes(:ordered_at => (Time.zone.now + 1.day))
+      @od_tomorrow.order.update_attributes(ordered_at: (Time.zone.now + 1.day))
 
       @od_today = place_product_order(@purchaser3, @facility, @product, @account)
     end
@@ -70,10 +70,10 @@ RSpec.describe BulkEmailHelper do
 
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
       @instrument=FactoryGirl.create(:instrument,
-                                     :facility => @facility,
-                                     :facility_account => @facility_account,
-                                     :min_reserve_mins => 60,
-                                     :max_reserve_mins => 60)
+                                     facility: @facility,
+                                     facility_account: @facility_account,
+                                     min_reserve_mins: 60,
+                                     max_reserve_mins: 60)
 
       @reservation_yesterday = place_reservation_for_instrument(@purchaser, @instrument, @account, Time.zone.now - 1.day)
       @reservation_tomorrow = place_reservation_for_instrument(@purchaser2, @instrument, @account, Time.zone.now + 1.day)
@@ -132,13 +132,13 @@ RSpec.describe BulkEmailHelper do
     before :each do
       @owner2 = FactoryGirl.create(:user)
       @owner3 = FactoryGirl.create(:user)
-      @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner2) ])
-      @account3 = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner3) ])
+      @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: [ FactoryGirl.attributes_for(:account_user, user: @owner2) ])
+      @account3 = FactoryGirl.create(:nufs_account, account_users_attributes: [ FactoryGirl.attributes_for(:account_user, user: @owner3) ])
 
       @od1 = place_product_order(@purchaser, @facility, @product, @account)
       @od2 = place_product_order(@purchaser, @facility, @product2, @account2)
       @od3 = place_product_order(@purchaser, @facility, @product3, @account3)
-      @params.merge!(:search_type => :account_owners)
+      @params.merge!(search_type: :account_owners)
     end
 
     it "should find owners if no other limits" do
@@ -160,13 +160,13 @@ RSpec.describe BulkEmailHelper do
     before :each do
       @owner2 = FactoryGirl.create(:user)
       @owner3 = FactoryGirl.create(:user)
-      @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner2) ])
-      @account3 = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner3) ])
+      @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: [ FactoryGirl.attributes_for(:account_user, user: @owner2) ])
+      @account3 = FactoryGirl.create(:nufs_account, account_users_attributes: [ FactoryGirl.attributes_for(:account_user, user: @owner3) ])
 
       @od1 = place_product_order(@purchaser, @facility, @product, @account)
       @od2 = place_product_order(@purchaser2, @facility, @product2, @account2)
       @od3 = place_product_order(@purchaser3, @facility, @product3, @account3)
-      @params.merge!(:search_type => :customers_and_account_owners)
+      @params.merge!(search_type: :customers_and_account_owners)
     end
 
     it "should find owners and purchaser if no other limits" do
@@ -190,15 +190,15 @@ RSpec.describe BulkEmailHelper do
       @user2 = FactoryGirl.create(:user)
       @user3 = FactoryGirl.create(:user)
 
-      @product.update_attributes(:requires_approval => true)
-      @product2.update_attributes(:requires_approval => true)
+      @product.update_attributes(requires_approval: true)
+      @product2.update_attributes(requires_approval: true)
       # Users 1 and 2 have access to product1
       # Users 2 and 3 have access to product2
-      ProductUser.create(:product => @product, :user => @user, :approved_by => @owner.id, :approved_at => Time.zone.now)
-      ProductUser.create(:product => @product, :user => @user2, :approved_by => @owner.id, :approved_at => Time.zone.now)
-      ProductUser.create(:product => @product2, :user => @user2, :approved_by => @owner.id, :approved_at => Time.zone.now)
-      ProductUser.create(:product => @product2, :user => @user3, :approved_by => @owner.id, :approved_at => Time.zone.now)
-      @params.merge!(:search_type => :authorized_users)
+      ProductUser.create(product: @product, user: @user, approved_by: @owner.id, approved_at: Time.zone.now)
+      ProductUser.create(product: @product, user: @user2, approved_by: @owner.id, approved_at: Time.zone.now)
+      ProductUser.create(product: @product2, user: @user2, approved_by: @owner.id, approved_at: Time.zone.now)
+      ProductUser.create(product: @product2, user: @user3, approved_by: @owner.id, approved_at: Time.zone.now)
+      @params.merge!(search_type: :authorized_users)
     end
     it "should return all authorized users for any instrument" do
       @params[:products] = []

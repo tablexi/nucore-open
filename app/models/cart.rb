@@ -10,8 +10,8 @@ class Cart
   end
 
   def new_cart
-    Order.create(:user => @user,
-                 :created_by => @created_by_user.id)
+    Order.create(user: @user,
+                 created_by: @created_by_user.id)
   end
 
   def self.destroy_all_instrument_only_carts(before = Time.zone.now)
@@ -32,9 +32,9 @@ class Cart
                            .having("count(*) = 1")
                            .select(:order_id)
 
-    orders = Order.joins(:order_details => :product)
-                   .where(:products => { :type => 'Instrument' })
-                   .where(:id => subquery)
+    orders = Order.joins(order_details: :product)
+                   .where(products: { type: 'Instrument' })
+                   .where(id: subquery)
 
     orders = orders.limit(limit) if limit
     orders

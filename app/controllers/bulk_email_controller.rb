@@ -19,7 +19,7 @@ class BulkEmailController < ApplicationController
     @users = do_search(@search_fields) if params[:search_type]
 
     respond_to do |format|
-      format.html { @users = @users.paginate(:page => params[:page]) if @users }
+      format.html { @users = @users.paginate(page: params[:page]) if @users }
       format.csv do
         filename = "bulk_email_#{params[:search_type]}.csv"
         set_csv_headers(filename)
@@ -30,10 +30,10 @@ class BulkEmailController < ApplicationController
   private
  
   def init_search_options
-    @search_fields = params.merge(:facility_id => current_facility.id)
+    @search_fields = params.merge(facility_id: current_facility.id)
     @products = current_facility.products.active_plus_hidden.order("products.name").includes(:facility)
     @search_types = BulkEmailHelper.search_types_and_titles
-    @search_types.delete(:authorized_users) unless @products.exists?(:requires_approval => true)
+    @search_types.delete(:authorized_users) unless @products.exists?(requires_approval: true)
   end
 
 end

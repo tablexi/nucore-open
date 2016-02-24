@@ -4,7 +4,7 @@ class AddServiceSurveys < ActiveRecord::Migration
     create_table :service_surveys do |t|
       t.references  :service
       t.references  :survey
-      t.boolean     :active, :default => false
+      t.boolean     :active, default: false
       t.datetime    :active_at
 
       t.timestamps

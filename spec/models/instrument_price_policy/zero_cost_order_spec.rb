@@ -5,13 +5,13 @@ RSpec.describe InstrumentPricePolicy do
     @instrument = FactoryGirl.create(:setup_instrument)
     expect(@instrument.price_policies.count).to eq(1)
     @price_policy = @instrument.price_policies.first
-    @price_policy.update_attributes(:usage_rate => 0,
-                                    :usage_subsidy => 0,
-                                    :minimum_cost => 0,
-                                    :cancellation_cost => 0)
+    @price_policy.update_attributes(usage_rate: 0,
+                                    usage_subsidy: 0,
+                                    minimum_cost: 0,
+                                    cancellation_cost: 0)
 
-    @reservation = FactoryGirl.create(:purchased_reservation, :product => @instrument,
-                                                              :reserve_start_at => 1.day.ago, :reserve_end_at => 1.day.ago + 1.hour)
+    @reservation = FactoryGirl.create(:purchased_reservation, product: @instrument,
+                                                              reserve_start_at: 1.day.ago, reserve_end_at: 1.day.ago + 1.hour)
     @order_detail = @reservation.reload.order_detail
     @order_detail.assign_estimated_price
   end

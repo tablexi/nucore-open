@@ -5,7 +5,7 @@ class ProductAccessoriesController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
   before_action :init_product
-  load_and_authorize_resource :through => :product
+  load_and_authorize_resource through: :product
 
   layout 'two_column'
 
@@ -22,13 +22,13 @@ class ProductAccessoriesController < ApplicationController
   def create
     @product.product_accessories.create(params[:product_accessory])
     flash[:notice] = I18n.t('product_accessories.create.success')
-    redirect_to :action => :index
+    redirect_to action: :index
   end
 
   def destroy
     @product_accessory.soft_delete
     flash[:notice] = I18n.t('product_accessories.destroy.success')
-    redirect_to :action => :index
+    redirect_to action: :index
   end
 
   private

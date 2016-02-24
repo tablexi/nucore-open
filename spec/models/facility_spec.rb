@@ -94,7 +94,7 @@ RSpec.describe Facility do
 
     it "is unique" do
       @factory1 = FactoryGirl.create(:facility)
-      @factory2 = FactoryGirl.build(:facility, :url_name => @factory1.url_name)
+      @factory2 = FactoryGirl.build(:facility, url_name: @factory1.url_name)
       expect(@factory2).not_to be_valid
     end
   end

@@ -8,19 +8,19 @@ RSpec.describe CreditCardAccount do
     @user = FactoryGirl.create(:user)
 
     @owner = {
-      :user => @user,
-      :created_by => @user.id,
-      :user_role => "Owner"
+      user: @user,
+      created_by: @user.id,
+      user_role: "Owner"
     }
 
     @account_attrs={
-      :expiration_month => 1,
-      :expiration_year => (Time.zone.now + 1.year).year,
-      :expires_at => Time.zone.now + 1.year,
-      :description => "account description",
-      :name_on_card => "Person",
-      :created_by => @user.id,
-      :account_users_attributes => [@owner]
+      expiration_month: 1,
+      expiration_year: (Time.zone.now + 1.year).year,
+      expires_at: Time.zone.now + 1.year,
+      description: "account description",
+      name_on_card: "Person",
+      created_by: @user.id,
+      account_users_attributes: [@owner]
     }
   end
 

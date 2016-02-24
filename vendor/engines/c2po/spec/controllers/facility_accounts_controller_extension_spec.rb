@@ -11,13 +11,13 @@ RSpec.describe FacilityAccountsController do
 
   before(:each) do
     @authable = facility # TODO: replace '@authable' with 'facility' throughout
-    @facility_account = FactoryGirl.create(:facility_account, :facility => @authable)
-    @item = FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
-    @account = FactoryGirl.create(:credit_card_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner) ])
+    @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
+    @item = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
+    @account = FactoryGirl.create(:credit_card_account, account_users_attributes: [ FactoryGirl.attributes_for(:account_user, user: @owner) ])
     grant_role(@purchaser, @account)
     grant_role(@owner, @account)
-    @order = FactoryGirl.create(:order, :user => @purchaser, :created_by => @purchaser.id, :facility => @authable)
-    @order_detail = FactoryGirl.create(:order_detail, :product => @item, :order => @order, :account => @account)
+    @order = FactoryGirl.create(:order, user: @purchaser, created_by: @purchaser.id, facility: @authable)
+    @order_detail = FactoryGirl.create(:order_detail, product: @item, order: @order, account: @account)
   end
 
   context 'update' do
@@ -25,9 +25,9 @@ RSpec.describe FacilityAccountsController do
       @method = :put
       @action = :update
       @params = {
-        :facility_id => @authable.url_name,
-        :id => @account.id,
-        :purchase_order_account => FactoryGirl.attributes_for(:purchase_order_account)
+        facility_id: @authable.url_name,
+        id: @account.id,
+        purchase_order_account: FactoryGirl.attributes_for(:purchase_order_account)
       }
       @params[:purchase_order_account][:affiliate_id] = @params[:purchase_order_account].delete(:affiliate).id
     end
@@ -37,14 +37,14 @@ RSpec.describe FacilityAccountsController do
         user=FactoryGirl.create(:user)
 
         owner={
-          :user => user,
-          :created_by => user.id,
-          :user_role => 'Owner'
+          user: user,
+          created_by: user.id,
+          user_role: 'Owner'
         }
 
         account_attrs={
-          :created_by => user.id,
-          :account_users_attributes => [owner],
+          created_by: user.id,
+          account_users_attributes: [owner],
         }
 
         @account = FactoryGirl.create(:purchase_order_account, account_attrs)
@@ -67,7 +67,7 @@ RSpec.describe FacilityAccountsController do
 
       context 'not other' do
         before :each do
-          @affiliate = Affiliate.create!(:name => 'Rod Blagojevich')
+          @affiliate = Affiliate.create!(name: 'Rod Blagojevich')
           @params[:purchase_order_account][:affiliate_id] = @affiliate.id
         end
 
@@ -94,11 +94,11 @@ RSpec.describe FacilityAccountsController do
       @acct_attrs.delete :expires_at
 
       @params = {
-        :id            => @account.id,
-        :facility_id   => @authable.url_name,
-        :owner_user_id => @owner.id,
-        :purchase_order_account       => @acct_attrs,
-        :account_type    => 'PurchaseOrderAccount'
+        id: @account.id,
+        facility_id: @authable.url_name,
+        owner_user_id: @owner.id,
+        purchase_order_account: @acct_attrs,
+        account_type: 'PurchaseOrderAccount'
       }
 
       @params[:purchase_order_account] = @acct_attrs
@@ -194,7 +194,7 @@ RSpec.describe FacilityAccountsController do
     before :each do
       @method = :get
       @action = :credit_cards
-      @params = { :facility_id => @authable.url_name }
+      @params = { facility_id: @authable.url_name }
     end
 
     it_should_allow :director do
@@ -222,7 +222,7 @@ RSpec.describe FacilityAccountsController do
     before :each do
       @method = :get
       @action = :purchase_orders
-      @params = { :facility_id => @authable.url_name }
+      @params = { facility_id: @authable.url_name }
     end
 
     it_should_allow :director do
@@ -280,10 +280,10 @@ RSpec.describe FacilityAccountsController do
   def prepare_for_account_update(action, account)
     @method = :post
     @action = action
-    account.account_users_attributes = [{:user_id => @purchaser.id, :user_role => AccountUser::ACCOUNT_OWNER, :created_by => @admin.id }]
+    account.account_users_attributes = [{user_id: @purchaser.id, user_role: AccountUser::ACCOUNT_OWNER, created_by: @admin.id }]
     assert account.save
-    @price_policy = FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @nupg)
-    @price_group_product = FactoryGirl.create(:price_group_product, :product => @item, :price_group => @nupg, :reservation_window => nil)
+    @price_policy = FactoryGirl.create(:item_price_policy, product: @item, price_group: @nupg)
+    @price_group_product = FactoryGirl.create(:price_group_product, product: @item, price_group: @nupg, reservation_window: nil)
     @order_detail.account = account
     @order_detail.assign_price_policy
     assert @order_detail.save
@@ -291,11 +291,11 @@ RSpec.describe FacilityAccountsController do
     @order_detail.change_status!(OrderStatus.complete.first)
 
     @params={
-      :facility_id => @authable.url_name,
-      :order_detail => {
+      facility_id: @authable.url_name,
+      order_detail: {
         @order_detail.id.to_s => {
-          :reconciled => '1',
-          :notes => 'this transaction is fake'
+          reconciled: '1',
+          notes: 'this transaction is fake'
         }
       }
     }
@@ -304,10 +304,10 @@ RSpec.describe FacilityAccountsController do
   def prepare_for_account_show(action, account)
     @method = :get
     @action = action
-    @params = { :facility_id => @authable.url_name }
-    account.account_users_attributes = [{:user_id => @purchaser.id, :user_role => AccountUser::ACCOUNT_OWNER, :created_by => @admin.id }]
+    @params = { facility_id: @authable.url_name }
+    account.account_users_attributes = [{user_id: @purchaser.id, user_role: AccountUser::ACCOUNT_OWNER, created_by: @admin.id }]
     assert account.save
-    statement = FactoryGirl.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => account)
+    statement = FactoryGirl.create(:statement, facility_id: @authable.id, created_by: @admin.id, account: account)
     @order_detail.to_complete!
     @order_detail.update_attributes(account: account, fulfilled_at: 1.day.ago, actual_cost: 10, actual_subsidy: 2)
     @order_detail.statement = statement

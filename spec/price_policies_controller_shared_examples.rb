@@ -14,7 +14,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
 
     @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
     @price_group2     = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    @product          = create product_type, :facility_account_id => @facility_account.id, facility: @authable
+    @product          = create product_type, facility_account_id: @facility_account.id, facility: @authable
     @price_policy     = make_price_policy(@price_group)
     expect(@price_policy).to be_valid
     @params={ :facility_id => @authable.url_name, :"#{product_type}_id" => @product.url_name }
@@ -24,8 +24,8 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
     before :each do
       @method=:get
       @action=:index
-      @price_policy_past = make_price_policy(@price_group, {:start_date => 1.year.ago, :expire_date => PricePolicy.generate_expire_date(1.year.ago)})
-      @price_policy_future = make_price_policy(@price_group, :start_date => 1.year.from_now, :expire_date => PricePolicy.generate_expire_date(1.year.from_now))
+      @price_policy_past = make_price_policy(@price_group, {start_date: 1.year.ago, expire_date: PricePolicy.generate_expire_date(1.year.ago)})
+      @price_policy_future = make_price_policy(@price_group, start_date: 1.year.from_now, expire_date: PricePolicy.generate_expire_date(1.year.from_now))
     end
 
     it_should_allow_operators_only do |_user|
@@ -79,8 +79,8 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
         expect(price_groups).to contain_all PriceGroup.all
       end
       it 'should set the policies in the correct order' do
-        @price_group.update_attributes(:display_order => 2)
-        @price_group2.update_attributes(:display_order => 1)
+        @price_group.update_attributes(display_order: 2)
+        @price_group2.update_attributes(display_order: 1)
         do_request
         expect(assigns[:price_policies].map(&:price_group)).to eq([@price_group2, @price_group])
       end
@@ -96,7 +96,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
       end
       context 'old policies exist' do
         before :each do
-          @price_group2_policy = make_price_policy(@price_group2, :can_purchase => false, :unit_cost => 13)
+          @price_group2_policy = make_price_policy(@price_group2, can_purchase: false, unit_cost: 13)
         end
 
         it 'should set can_purchase based off old policy' do
@@ -127,9 +127,9 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
           expect(price_group3_policy).to_not be_can_purchase
         end
         it 'should use the policy with the furthest out expiration date' do
-          @price_policy.update_attributes(:unit_cost => 16.0)
-          @price_policy2 = make_price_policy(@price_group, :start_date => 1.year.from_now, :expire_date => SettingsHelper.fiscal_year_end(1.year.from_now), :unit_cost => 17.0)
-          @price_policy3 = make_price_policy(@price_group, :start_date => 1.year.ago, :expire_date => SettingsHelper.fiscal_year_end(1.year.ago), :unit_cost => 18.0)
+          @price_policy.update_attributes(unit_cost: 16.0)
+          @price_policy2 = make_price_policy(@price_group, start_date: 1.year.from_now, expire_date: SettingsHelper.fiscal_year_end(1.year.from_now), unit_cost: 17.0)
+          @price_policy3 = make_price_policy(@price_group, start_date: 1.year.ago, expire_date: SettingsHelper.fiscal_year_end(1.year.ago), unit_cost: 18.0)
           # Ensure the policy two is the one with the max expire date
           expect([@price_policy, @price_policy2, @price_policy3].max_by(&:expire_date)).to eq(@price_policy2)
           do_request
@@ -147,7 +147,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
       @method=:get
       @action=:edit
       set_policy_date
-      @params.merge!(:id => @price_policy.start_date.to_s)
+      @params.merge!(id: @price_policy.start_date.to_s)
     end
 
     it_should_allow_managers_only {}
@@ -179,10 +179,10 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
     end
 
     it 'should not allow edit of assigned effective price policy' do
-      @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @director))
-      @order    = @director.orders.create(FactoryGirl.attributes_for(:order, :created_by => @director.id))
-      @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(:product_id => @product.id, :account_id => @account.id, :price_policy => @price_policy))
-      UserPriceGroupMember.create!(:price_group => @price_group, :user => @director)
+      @account  = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @director))
+      @order    = @director.orders.create(FactoryGirl.attributes_for(:order, created_by: @director.id))
+      @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(product_id: @product.id, account_id: @account.id, price_policy: @price_policy))
+      UserPriceGroupMember.create!(price_group: @price_group, user: @director)
       maybe_grant_always_sign_in :director
       do_request
       expect(assigns[:start_date]).to eq(Date.strptime(@params[:id], "%Y-%m-%d"))

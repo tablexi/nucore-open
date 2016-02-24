@@ -20,12 +20,12 @@ class Daemons::Base
     @rails_root = File.expand_path(File.join('..', '..'), File.dirname(__FILE__))
     self.name = name
     self.daemon_opts = {
-      :dir_mode => :normal,
-      :dir => File.join(@rails_root, 'tmp/pids'),
-      :backtrace => true,
-      :monitor => monitor?,
-      :log_output => true,
-      :log_dir => File.join(@rails_root, 'log')
+      dir_mode: :normal,
+      dir: File.join(@rails_root, 'tmp/pids'),
+      backtrace: true,
+      monitor: monitor?,
+      log_output: true,
+      log_dir: File.join(@rails_root, 'log')
     }
   end
 

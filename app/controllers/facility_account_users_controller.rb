@@ -5,7 +5,7 @@ class FacilityAccountUsersController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
 
-  load_and_authorize_resource :class => AccountUser
+  load_and_authorize_resource class: AccountUser
 
   layout 'two_column'
 
@@ -26,7 +26,7 @@ class FacilityAccountUsersController < ApplicationController
     @account      = Account.find(params[:account_id])
     @user         = User.find(params[:user_id])
     role = current_owner? ? AccountUser::ACCOUNT_OWNER : AccountUser::ACCOUNT_PURCHASER
-    @account_user = AccountUser.new(:user_role => role)
+    @account_user = AccountUser.new(user_role: role)
   end
 
   # POST /facilities/:facility_id/accounts/:account_id/account_users
@@ -41,10 +41,10 @@ class FacilityAccountUsersController < ApplicationController
 
     if @account.errors.any?
       flash.now[:error] = "An error was encountered while trying to add #{@user.full_name} to the #{@account.type_string} Account"
-      render(:action => 'new')
+      render(action: 'new')
     else
       flash[:notice] = "#{@user.full_name} was added to the #{@account.type_string} Account"
-      Notifier.user_update(:account => @account, :user => @user, :created_by => session_user).deliver
+      Notifier.user_update(account: @account, user: @user, created_by: session_user).deliver
       redirect_to facility_account_members_path(current_facility, @account)
     end
   end

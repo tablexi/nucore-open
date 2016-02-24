@@ -131,7 +131,7 @@ class GeneralReportsController < ReportsController
   def report_data_query(stati, date_column)
     return [] if stati.blank?
     # default to using fulfilled_at
-    result = OrderDetail.where(:order_status_id => stati)
+    result = OrderDetail.where(order_status_id: stati)
                         .for_facility(current_facility)
                         .action_in_date_range(date_column, @date_start, @date_end)
                         .includes(:order, :account, :price_policy, :product, :order_status)

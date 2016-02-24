@@ -10,10 +10,10 @@ RSpec.describe BundleProductsController do
 
   before(:each) do
     @authable=FactoryGirl.create(:facility)
-    @facility_account=FactoryGirl.create(:facility_account, :facility => @authable)
-    @item=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
-    @bundle=FactoryGirl.create(:bundle, :facility_account => @facility_account, :facility => @authable)
-    @bundle_product=BundleProduct.create!(:bundle => @bundle, :product => @item, :quantity => 1)
+    @facility_account=FactoryGirl.create(:facility_account, facility: @authable)
+    @item=FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
+    @bundle=FactoryGirl.create(:bundle, facility_account: @facility_account, facility: @authable)
+    @bundle_product=BundleProduct.create!(bundle: @bundle, product: @item, quantity: 1)
   end
 
   context 'index' do
@@ -21,7 +21,7 @@ RSpec.describe BundleProductsController do
     before(:each) do
       @method=:get
       @action=:index
-      @params={ :facility_id => @authable.url_name, :bundle_id => @bundle.url_name }
+      @params={ facility_id: @authable.url_name, bundle_id: @bundle.url_name }
     end
 
     it_should_require_login
@@ -38,13 +38,13 @@ RSpec.describe BundleProductsController do
     before(:each) do
       @method=:post
       @action=:create
-      item2=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
+      item2=FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
       @params={
-        :facility_id => @authable.url_name,
-        :bundle_id => @bundle.url_name,
-        :bundle_product => {
-          :product_id => item2.id,
-          :quantity => 2
+        facility_id: @authable.url_name,
+        bundle_id: @bundle.url_name,
+        bundle_product: {
+          product_id: item2.id,
+          quantity: 2
         }
       }
     end
@@ -64,7 +64,7 @@ RSpec.describe BundleProductsController do
     before(:each) do
       @method=:get
       @action=:new
-      @params={ :facility_id => @authable.url_name, :bundle_id => @bundle.url_name }
+      @params={ facility_id: @authable.url_name, bundle_id: @bundle.url_name }
     end
 
     it_should_require_login
@@ -82,7 +82,7 @@ RSpec.describe BundleProductsController do
     before(:each) do
       @method=:get
       @action=:edit
-      @params={ :facility_id => @authable.url_name, :bundle_id => @bundle.url_name, :id => @bundle_product.id }
+      @params={ facility_id: @authable.url_name, bundle_id: @bundle.url_name, id: @bundle_product.id }
     end
 
     it_should_require_login
@@ -100,11 +100,11 @@ RSpec.describe BundleProductsController do
       @method=:put
       @action=:update
       @params={
-        :facility_id => @authable.url_name,
-        :bundle_id => @bundle.url_name,
-        :id => @bundle_product.id,
-        :bundle_product => {
-          :quantity => 3
+        facility_id: @authable.url_name,
+        bundle_id: @bundle.url_name,
+        id: @bundle_product.id,
+        bundle_product: {
+          quantity: 3
         }
       }
     end
@@ -126,7 +126,7 @@ RSpec.describe BundleProductsController do
     before(:each) do
       @method=:delete
       @action=:destroy
-      @params={ :facility_id => @authable.url_name, :bundle_id => @bundle.url_name, :id => @bundle_product.id }
+      @params={ facility_id: @authable.url_name, bundle_id: @bundle.url_name, id: @bundle_product.id }
     end
 
     it_should_require_login

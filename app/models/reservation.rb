@@ -12,9 +12,9 @@ class Reservation < ActiveRecord::Base
   # Associations
   #####
   belongs_to :product
-  belongs_to :order_detail, :inverse_of => :reservation
+  belongs_to :order_detail, inverse_of: :reservation
   has_one :order, through: :order_detail
-  belongs_to :canceled_by_user, :foreign_key => :canceled_by, :class_name => 'User'
+  belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: 'User'
 
   ## Virtual attributes
   #####
@@ -30,16 +30,16 @@ class Reservation < ActiveRecord::Base
   # Delegations
   #####
   delegate :note, :ordered_on_behalf_of?, :complete?, :account, :order,
-           :problem?, :complete!, :to => :order_detail, :allow_nil => true
+           :problem?, :complete!, to: :order_detail, allow_nil: true
 
   delegate :account, :in_cart?, :user, to: :order, allow_nil: true
-  delegate :facility, :to => :product, :allow_nil => true
+  delegate :facility, to: :product, allow_nil: true
   delegate :lock_window, to: :product, prefix: true
-  delegate :owner, :to => :account, :allow_nil => true
+  delegate :owner, to: :account, allow_nil: true
 
   ## AR Hooks
   after_save :save_note
-  after_update :auto_save_order_detail, :if => :order_detail
+  after_update :auto_save_order_detail, if: :order_detail
 
   # Scopes
   #####
@@ -56,19 +56,19 @@ class Reservation < ActiveRecord::Base
   end
 
   def self.admin
-    where(:order_detail_id => nil)
+    where(order_detail_id: nil)
   end
 
   def self.not_canceled
-    where(:canceled_at => nil)
+    where(canceled_at: nil)
   end
 
   def self.not_started
-    where(:actual_start_at => nil)
+    where(actual_start_at: nil)
   end
 
   def self.not_ended
-    where(:actual_end_at => nil)
+    where(actual_end_at: nil)
   end
 
   def self.not_this_reservation(reservation)
@@ -95,7 +95,7 @@ class Reservation < ActiveRecord::Base
   def self.upcoming(t=Time.zone.now)
     # If this is a named scope differences emerge between Oracle & MySQL on #reserve_end_at querying.
     # Eliminate by letting Rails filter by #reserve_end_at
-    reservations=find(:all, :conditions => "reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)", :order => 'reserve_end_at asc', :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id'])
+    reservations=find(:all, conditions: "reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)", order: 'reserve_end_at asc', joins: ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id'])
     reservations.delete_if{|r| r.reserve_end_at < t}
     reservations
   end
@@ -110,7 +110,7 @@ class Reservation < ActiveRecord::Base
           (reserve_start_at <= :start AND reserve_end_at > :start) OR
           (reserve_start_at < :end AND reserve_end_at >= :end) OR
           (reserve_start_at = :start AND reserve_end_at = :end))",
-          :start => tstart_at, :end => tend_at)
+          start: tstart_at, end: tend_at)
   end
 
   def self.relay_in_progress

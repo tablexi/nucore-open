@@ -16,7 +16,7 @@ FactoryGirl.define do
     end
 
     after(:create) do |item, evaluator|
-      evaluator.parent.product_accessories.create(:accessory => item, :scaling_type => evaluator.scaling_type)
+      evaluator.parent.product_accessories.create(accessory: item, scaling_type: evaluator.scaling_type)
     end
   end
 end

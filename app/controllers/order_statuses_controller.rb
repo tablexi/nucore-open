@@ -7,7 +7,7 @@ class OrderStatusesController < ApplicationController
 
   load_and_authorize_resource
   # Disallow editing root statuses
-  before_action :ensure_editable, :only => [:edit, :update, :destroy]
+  before_action :ensure_editable, only: [:edit, :update, :destroy]
 
   layout 'two_column'
 
@@ -40,7 +40,7 @@ class OrderStatusesController < ApplicationController
       flash[:notice] = 'The Order Status was successfully created.'
       redirect_to facility_order_statuses_url
     else
-      render :action => "new"
+      render action: "new"
     end
   end
 
@@ -52,7 +52,7 @@ class OrderStatusesController < ApplicationController
       flash[:notice] = 'The Order Status was successfully updated.'
       redirect_to facility_order_statuses_path
     else
-      render :action => "edit"
+      render action: "edit"
     end
   end
 

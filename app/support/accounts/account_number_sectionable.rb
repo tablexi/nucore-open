@@ -11,7 +11,7 @@ module Accounts::AccountNumberSectionable
   end
 
   def account_number_fields
-    { :account_number => { :required => true } }
+    { account_number: { required: true } }
   end
 
   def account_number_to_s

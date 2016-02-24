@@ -5,8 +5,8 @@ class Schedule < ActiveRecord::Base
   # --------
   belongs_to :facility
 
-  has_many :products, :class_name => 'Instrument'
-  has_many :reservations, :through => :products
+  has_many :products, class_name: 'Instrument'
+  has_many :reservations, through: :products
 
   # Validations
   # --------
@@ -22,7 +22,7 @@ class Schedule < ActiveRecord::Base
        where is_archived = :archived
        and schedule_id is not null
        group by schedule_id)",
-          :archived => false)
+          archived: false)
   end
 
   def self.ordered

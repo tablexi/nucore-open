@@ -8,8 +8,8 @@ class Instrument < Product
   # Associations
   # -------
 
-  has_many :instrument_price_policies, :foreign_key => 'product_id'
-  has_many :product_access_groups, :foreign_key => 'product_id'
+  has_many :instrument_price_policies, foreign_key: 'product_id'
+  has_many :product_access_groups, foreign_key: 'product_id'
 
   # Validations
   # --------
@@ -51,12 +51,12 @@ class Instrument < Product
   end
 
   def restriction_levels_for(user)
-    product_access_groups.joins(:product_users).where(:product_users => {:user_id => user.id})
+    product_access_groups.joins(:product_users).where(product_users: {user_id: user.id})
   end
 
   def set_default_pricing
     PriceGroup.globals.all.find_each do |pg|
-      PriceGroupProduct.create!(:product => self, :price_group => pg, :reservation_window => PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)
+      PriceGroupProduct.create!(product: self, price_group: pg, reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)
     end
   end
 

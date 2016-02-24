@@ -1,7 +1,7 @@
 class AccessoriesController < ApplicationController
 
   load_resource :order
-  load_resource :order_detail, :through => :order
+  load_resource :order_detail, through: :order
 
   before_action :authorize_order_detail
   before_action :load_product

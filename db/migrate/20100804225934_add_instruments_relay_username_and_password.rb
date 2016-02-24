@@ -1,8 +1,8 @@
 class AddInstrumentsRelayUsernameAndPassword < ActiveRecord::Migration
 
   def self.up
-    add_column :products, :relay_username, :string, :null => true, :limit => 50
-    add_column :products, :relay_password, :string, :null => true, :limit => 50
+    add_column :products, :relay_username, :string, null: true, limit: 50
+    add_column :products, :relay_password, :string, null: true, limit: 50
   end
 
   def self.down

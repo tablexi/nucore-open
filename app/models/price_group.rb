@@ -1,27 +1,27 @@
 class PriceGroup < ActiveRecord::Base
 
   belongs_to :facility
-  has_many   :order_details, :through => :price_policies, :dependent => :restrict
-  has_many   :price_group_members, :dependent => :destroy
+  has_many   :order_details, through: :price_policies, dependent: :restrict
+  has_many   :price_group_members, dependent: :destroy
   has_many   :user_price_group_members, class_name: 'UserPriceGroupMember'
   has_many   :account_price_group_members, class_name: 'AccountPriceGroupMember'
 
-  has_many   :price_policies, :dependent => :destroy
+  has_many   :price_policies, dependent: :destroy
 
   validates_presence_of   :facility_id # enforce facility constraint here, though it's not always required
   validates_presence_of   :name
-  validates_uniqueness_of :name, :scope => :facility_id
+  validates_uniqueness_of :name, scope: :facility_id
 
-  default_scope :order => 'is_internal DESC, display_order ASC, name ASC'
+  default_scope order: 'is_internal DESC, display_order ASC, name ASC'
 
   before_destroy :is_not_global
   before_create  lambda {|o| o.display_order = 999 if !o.facility_id.nil?}
 
-  scope :base, :conditions => { :name => Settings.price_group.name.base, :facility_id => nil }
-  scope :external,      :conditions => { :name => Settings.price_group.name.external, :facility_id => nil }
-  scope :cancer_center, :conditions => { :name => Settings.price_group.name.cancer_center, :facility_id => nil }
+  scope :base, conditions: { name: Settings.price_group.name.base, facility_id: nil }
+  scope :external,      conditions: { name: Settings.price_group.name.external, facility_id: nil }
+  scope :cancer_center, conditions: { name: Settings.price_group.name.cancer_center, facility_id: nil }
 
-  scope :globals, :conditions => { :facility_id => nil }
+  scope :globals, conditions: { facility_id: nil }
 
   def is_not_global
     !global?

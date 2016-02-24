@@ -12,26 +12,26 @@ class Account < ActiveRecord::Base
   include Accounts::AccountNumberSectionable
   include DateHelper
 
-  has_many   :account_users, :inverse_of => :account
+  has_many   :account_users, inverse_of: :account
   # Using a basic hash doesn't work with the `owner_user` :through association. It would
   # only include the last item in the hash as part of the scoping.
   # TODO Consider changing when we get to Rails 4.
   has_one    :owner, class_name: 'AccountUser', conditions: "account_users.user_role = '#{AccountUser::ACCOUNT_OWNER}' AND account_users.deleted_at IS NULL"
   has_one    :owner_user, through: :owner, source: :user
-  has_many   :business_admins, :class_name => 'AccountUser', :conditions => {:user_role => AccountUser::ACCOUNT_ADMINISTRATOR, :deleted_at => nil}
+  has_many   :business_admins, class_name: 'AccountUser', conditions: {user_role: AccountUser::ACCOUNT_ADMINISTRATOR, deleted_at: nil}
   has_many   :price_group_members
   has_many   :order_details
   has_many   :orders
-  has_many   :statements, :through => :order_details
+  has_many   :statements, through: :order_details
   has_many   :payments, inverse_of: :account
   belongs_to :affiliate
   accepts_nested_attributes_for :account_users
 
-  scope :active, lambda {{ :conditions => ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] }}
+  scope :active, lambda {{ conditions: ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] }}
   scope :global_account_types, -> { where(accounts: { type: config.global_account_types }) }
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
-  validates_length_of :description, :maximum => 50
+  validates_length_of :description, maximum: 50
 
   validate do |acct|
     # a current account owner if required
@@ -102,14 +102,14 @@ class Account < ActiveRecord::Base
   def facilities
     if facility_id
       # return a relation
-      Facility.active.where(:id => facility_id)
+      Facility.active.where(id: facility_id)
     else
       Facility.active
     end
   end
 
   def type_string
-    I18n.t("activerecord.models.#{self.class.to_s.underscore}.one", :default => self.class.model_name.human)
+    I18n.t("activerecord.models.#{self.class.to_s.underscore}.one", default: self.class.model_name.human)
   end
 
   def <=>(obj)
@@ -229,7 +229,7 @@ class Account < ActiveRecord::Base
                           .readonly(false)
                           .all
 
-    details.each {|od| od.update_attributes(:reviewed_at => Time.zone.now+Settings.billing.review_period, :statement => statement) }
+    details.each {|od| od.update_attributes(reviewed_at: Time.zone.now+Settings.billing.review_period, statement: statement) }
   end
 
   def can_be_used_by?(user)

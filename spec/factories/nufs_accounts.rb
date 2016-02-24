@@ -39,12 +39,12 @@ FactoryGirl.modify do
 end
 
 FactoryGirl.define do
-  factory :setup_account, :class => NufsAccount, :parent => :nufs_account do
+  factory :setup_account, class: NufsAccount, parent: :nufs_account do
     transient do
       owner { create(:user) }
     end
 
-    account_users_attributes { account_users_attributes_hash(:user => owner) }
+    account_users_attributes { account_users_attributes_hash(user: owner) }
 
     after(:build) do |model|
       define_open_account '42345', model.account_number

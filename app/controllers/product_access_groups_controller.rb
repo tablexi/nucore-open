@@ -4,9 +4,9 @@ class ProductAccessGroupsController < ApplicationController
   before_action :init_current_facility
 
   admin_tab :all
-  load_and_authorize_resource :facility, :find_by => :url_name
-  load_and_authorize_resource :instrument, :through => :facility, :find_by => :url_name
-  load_and_authorize_resource :product_access_group, :through => :instrument
+  load_and_authorize_resource :facility, find_by: :url_name
+  load_and_authorize_resource :instrument, through: :facility, find_by: :url_name
+  load_and_authorize_resource :product_access_group, through: :instrument
 
   layout 'two_column'
   
@@ -29,7 +29,7 @@ class ProductAccessGroupsController < ApplicationController
       flash[:notice] = "#{ProductAccessGroup.model_name.human} was successfully updated"
       redirect_to facility_instrument_product_access_groups_path(@facility, @instrument)
     else
-      render :action => :edit
+      render action: :edit
     end
   end
   
@@ -39,7 +39,7 @@ class ProductAccessGroupsController < ApplicationController
       flash[:notice] = "#{ProductAccessGroup.model_name.human} was successfully created"
       redirect_to facility_instrument_product_access_groups_path(@facility, @instrument)
     else
-      render :action => :new
+      render action: :new
     end
   end
   

@@ -9,8 +9,8 @@ module AffiliateAccountHelper
     base.context 'affiliates' do
 
       before :each do
-        affiliate = Affiliate.create!(:name => 'Banana Video')
-        account_attrs = instance_variable_get(:@account_attrs).merge(:affiliate => affiliate)
+        affiliate = Affiliate.create!(name: 'Banana Video')
+        account_attrs = instance_variable_get(:@account_attrs).merge(affiliate: affiliate)
         @affiliate_account = described_class.create!(account_attrs)
       end
 
