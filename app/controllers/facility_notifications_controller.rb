@@ -82,6 +82,7 @@ class FacilityNotificationsController < ApplicationController
   end
 
   private
+
   def send_notification_success_message(sender)
     if sender.accounts_notified_size > 10
       I18n.t('controllers.facility_notifications.send_notifications.success_count', :accounts => sender.accounts_notified_size)
