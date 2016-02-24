@@ -258,7 +258,7 @@ RSpec.describe Account do
 
       context 'bundles' do
         before :each do
-          @item2 = @facility.items.create(FactoryGirl.attributes_for(:item, account: 78960, facility_account_id: @facility_account.id))
+          @item2 = @facility.items.create(FactoryGirl.attributes_for(:item, account: 78_960, facility_account_id: @facility_account.id))
           @bundle = @facility.bundles.create(FactoryGirl.attributes_for(:bundle, facility_account_id: @facility_account.id))
           [ @item, @item2 ].each do |item|
             price_policy = item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group: @price_group))

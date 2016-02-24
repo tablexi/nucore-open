@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :product do
     description 'Lorem ipsum...'
-    account 71234
+    account 71_234
     requires_approval false
     is_archived false
     is_hidden false
@@ -46,7 +46,7 @@ FactoryGirl.define do
     sequence(:name) { |n| "Product #{n}" }
     sequence(:url_name) { |n| "product-#{n}" }
     description "Product description"
-    account 71234
+    account 71_234
     requires_approval false
     is_archived false
     is_hidden false

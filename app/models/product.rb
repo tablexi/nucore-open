@@ -19,7 +19,7 @@ class Product < ActiveRecord::Base
     :account,
       only_integer: true,
       greater_than_or_equal_to: 0,
-      less_than_or_equal_to: 99999,
+      less_than_or_equal_to: 99_999,
       if: :account_required
   ) if SettingsHelper.feature_on? :expense_accounts
 
@@ -193,7 +193,7 @@ class Product < ActiveRecord::Base
 
     price_policies.min_by do |pp|
       # default to very large number if the estimate returns a nil
-      costs = pp.estimate_cost_and_subsidy_from_order_detail(order_detail) || {cost: 999999999, subsidy: 0}
+      costs = pp.estimate_cost_and_subsidy_from_order_detail(order_detail) || {cost: 999_999_999, subsidy: 0}
       costs[:cost] - costs[:subsidy]
     end
   end

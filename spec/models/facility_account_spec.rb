@@ -6,7 +6,7 @@ RSpec.describe FacilityAccount do
       @user     = FactoryGirl.create(:user)
       @facility = FactoryGirl.create(:facility)
       assert @facility.valid?
-      @options = Hash[is_active: 1, created_by: @user.id, facility_id: @facility.id, revenue_account: 51234]
+      @options = Hash[is_active: 1, created_by: @user.id, facility_id: @facility.id, revenue_account: 51_234]
       @starts_at  = Time.zone.now-3.days
       @expires_at = Time.zone.now+3.days
     end
