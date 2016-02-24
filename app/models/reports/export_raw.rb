@@ -140,7 +140,7 @@ class Reports::ExportRaw
   end
 
   def order_detail_row(order_detail)
-    begin
+    
       basic_info_columns(order_detail) +
         user_info_columns(order_detail.order.created_by_user) +
         user_info_columns(order_detail.order.user) +
@@ -157,7 +157,7 @@ class Reports::ExportRaw
         [ order_detail.reconciled_note ]
     rescue => e
       [ "*** ERROR WHEN REPORTING ON ORDER DETAIL #{order_detail}: #{e.message} ***" ]
-    end
+    
   end
 
   def csv_body

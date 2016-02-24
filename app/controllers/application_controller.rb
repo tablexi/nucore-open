@@ -100,11 +100,11 @@ class ApplicationController < ActionController::Base
 
   # BCSEC legacy method. Kept to give us ability to override devises #current_user.
   def session_user
-    begin
+    
       @session_user ||= current_user
     rescue
       nil
-    end
+    
   end
 
   def acting_user

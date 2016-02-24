@@ -16,14 +16,14 @@ class FacilityAccount < ActiveRecord::Base
   end
 
   def method_missing(method_sym, *arguments, &block)
-    begin
+    
       super # we must call super! Not doing so makes ruby 1.9.2 die a hard death
     rescue NoMethodError => e
       raise e unless account_number
       validator=ValidatorFactory.instance(account_number)
       raise e unless validator.components.key?(method_sym)
       validator.send(method_sym, *arguments)
-    end
+    
   end
 
   def respond_to?(method_sym, include_private = false)
@@ -37,13 +37,13 @@ class FacilityAccount < ActiveRecord::Base
   end
 
   def validate_chartstring
-    begin
+    
       ValidatorFactory.instance(account_number, revenue_account).account_is_open!
     rescue AccountNumberFormatError => e
       e.apply_to_model(self)
     rescue ValidatorError => e
       errors.add(:account_number, e.message)
-    end
+    
   end
 
 end

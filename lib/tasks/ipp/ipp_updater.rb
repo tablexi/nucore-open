@@ -60,11 +60,11 @@ class IppUpdater
   private
 
   def guard(_obj)
-    begin
+    
       yield
     rescue => e
       puts e.message # with a backtrace: converter.error_to_log(e, obj)
-    end
+    
   end
 
 end
