@@ -39,7 +39,7 @@ module FacilityOrdersHelper
 
       content_tag :dl, class: 'span2' do
         content_tag(:dt, object.class.human_attribute_name(field)) +
-        content_tag(:dd, value)
+          content_tag(:dd, value)
       end
     end
   end

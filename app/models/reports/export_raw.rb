@@ -142,19 +142,19 @@ class Reports::ExportRaw
   def order_detail_row(order_detail)
     begin
       basic_info_columns(order_detail) +
-      user_info_columns(order_detail.order.created_by_user) +
-      user_info_columns(order_detail.order.user) +
-      product_info_columns(order_detail) +
-      account_info_columns(order_detail.account) +
-      user_info_columns(order_detail.account.owner_user) +
-      pricing_info_columns(order_detail) +
-      reservation_info_columns(order_detail.reservation) +
-      [ order_detail.note ] +
-      dispute_info_columns(order_detail) +
-      [ format_usa_datetime(order_detail.reviewed_at) ] +
-      statement_datetime_column(order_detail.statement) +
-      journal_datetime_column(order_detail.journal) +
-      [ order_detail.reconciled_note ]
+        user_info_columns(order_detail.order.created_by_user) +
+        user_info_columns(order_detail.order.user) +
+        product_info_columns(order_detail) +
+        account_info_columns(order_detail.account) +
+        user_info_columns(order_detail.account.owner_user) +
+        pricing_info_columns(order_detail) +
+        reservation_info_columns(order_detail.reservation) +
+        [ order_detail.note ] +
+        dispute_info_columns(order_detail) +
+        [ format_usa_datetime(order_detail.reviewed_at) ] +
+        statement_datetime_column(order_detail.statement) +
+        journal_datetime_column(order_detail.journal) +
+        [ order_detail.reconciled_note ]
     rescue => e
       [ "*** ERROR WHEN REPORTING ON ORDER DETAIL #{order_detail}: #{e.message} ***" ]
     end

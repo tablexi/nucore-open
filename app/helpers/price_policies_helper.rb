@@ -37,7 +37,7 @@ module PricePoliciesHelper
 
   def display_usage_subsidy(price_group, price_policy)
     param_for_price_group(price_group, :usage_subsidy) ||
-    number_to_currency(price_policy.hourly_usage_subsidy, unit: "", delimiter: "")
+      number_to_currency(price_policy.hourly_usage_subsidy, unit: "", delimiter: "")
   end
 
   private

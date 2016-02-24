@@ -197,12 +197,12 @@ class FacilityReservationsController < ApplicationController
 
   def reserve_changed?
     @reservation.admin_editable? &&
-    (@reservation.reserve_start_at_changed? || @reservation.reserve_end_at_changed?)
+      (@reservation.reserve_start_at_changed? || @reservation.reserve_end_at_changed?)
   end
 
   def actual_changed?
     @reservation.can_edit_actuals? &&
-    (@reservation.actual_start_at_changed? || @reservation.actual_end_at_changed?)
+      (@reservation.actual_start_at_changed? || @reservation.actual_end_at_changed?)
   end
 
   def update_prices

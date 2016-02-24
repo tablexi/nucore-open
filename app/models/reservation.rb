@@ -238,9 +238,9 @@ class Reservation < ActiveRecord::Base
 
   def valid_before_purchase?
     satisfies_minimum_length? &&
-    satisfies_maximum_length? &&
-    instrument_is_available_to_reserve? &&
-    does_not_conflict_with_other_reservation?
+      satisfies_maximum_length? &&
+      instrument_is_available_to_reserve? &&
+      does_not_conflict_with_other_reservation?
   end
 
   def has_actuals?

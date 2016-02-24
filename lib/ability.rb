@@ -181,7 +181,7 @@ class Ability
       can :create, TrainingRequest
 
       if user.facility_director_of?(resource.product.facility) ||
-          in_role?(user, resource.product.facility, UserRole::FACILITY_SENIOR_STAFF)
+         in_role?(user, resource.product.facility, UserRole::FACILITY_SENIOR_STAFF)
         can :manage, TrainingRequest
       end
     end
