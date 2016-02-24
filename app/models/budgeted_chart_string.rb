@@ -38,7 +38,7 @@ class BudgetedChartString < ActiveRecord::Base
         while line = file.readline.strip
           # parse, import line
           case
-          when line.match(/^\d{4,4}\|/)
+          when line =~ /^\d{4,4}\|/
             # chart string with fiscal year
             tokens = line.split('|').map{ |s| s.gsub('-', '') }
             # build start_at, expires_at from fiscal year
@@ -47,7 +47,7 @@ class BudgetedChartString < ActiveRecord::Base
             expires_at  = starts_at + 1.year - 1.second
             # parse fields
             fund, dept, project, activity, account = tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]
-          when line.match(/\d{2,2}-[A-Z]{3,3}-\d{2,2}\|\d{2,2}-[A-Z]{3,3}-\d{2,2}$/)
+          when line =~ /\d{2,2}-[A-Z]{3,3}-\d{2,2}\|\d{2,2}-[A-Z]{3,3}-\d{2,2}$/
             # chart string with start and expire dates
             tokens = line.split('|').map{ |s| s.gsub('-', '') }
             # parse fields

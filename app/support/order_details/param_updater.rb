@@ -7,7 +7,7 @@ class OrderDetails::ParamUpdater
 
   def assign_attributes(params)
     params = params.try(:dup) || {}
-    params.delete(:quantity) unless params[:quantity].to_s.match(/\A\d+\z/)
+    params.delete(:quantity) unless params[:quantity].to_s =~ /\A\d+\z/
 
     cost_params = [:actual_cost, :actual_subsidy]
     assign_self_and_reservation_attributes(params.except(*cost_params))
