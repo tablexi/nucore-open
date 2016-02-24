@@ -11,7 +11,7 @@ class AccountUsersController < ApplicationController
     @active_tab = "accounts"
     super
   end
-  
+
   # GET /accounts/:account_id/account_users/user_search
   def user_search
   end

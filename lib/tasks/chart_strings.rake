@@ -15,7 +15,7 @@ namespace :chart_strings do
       # TBD: Could we encounter a valid chart string not in the GL066?
       # If so it might mean that chart string never expires, and
       # that we should set it's expiration date to 1 year from now
-      begin        
+      begin
         if fs.expires_at == now
           fs.save(validate: false) # we're expiring the chart string now so we don't care if validations fail (they'd just cause a headache)
         else

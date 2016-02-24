@@ -9,7 +9,7 @@ class FacilityUsersController < ApplicationController
 
   layout "two_column"
 
-  def initialize 
+  def initialize
     @active_tab = "admin_facility"
     super
   end
@@ -42,6 +42,6 @@ class FacilityUsersController < ApplicationController
         render action: "map_user"
       end
     end
-  end 
+  end
 
 end

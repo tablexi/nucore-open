@@ -2,7 +2,7 @@ class MoveCanPurchaseIntoPricePolicy < ActiveRecord::Migration
 
   def self.up
     add_column :price_policies, :can_purchase, :boolean, after: :price_group_id, default: false, null: false
-    
+
     PricePolicy.reset_column_information
     InstrumentPricePolicy.reset_column_information
     ServicePricePolicy.reset_column_information
@@ -19,15 +19,15 @@ class MoveCanPurchaseIntoPricePolicy < ActiveRecord::Migration
       else
         next if pgp.product.type == "Bundle" # skip bundles since they don't have their own price policies
         next if pgp.product.is_archived? # Ignore inactive products
-        
+
         puts "Missing policies for | #{pgp.product.facility} | ##{pgp.product.id} | #{pgp.product} | #{pgp.price_group} | #{pgp.product.price_policies.size > 0 ? 'Has policies' : 'No policies'}"
-        
+
       end
     end
   end
 
   def self.down
-    remove_column :price_policies, :can_purchase    
+    remove_column :price_policies, :can_purchase
   end
 
 end

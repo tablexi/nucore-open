@@ -1,7 +1,7 @@
 class AddExtraOrderStatuses < ActiveRecord::Migration
 
   # Looks at settings.yml and finds any of the statuses declared to have a hook when an order
-  # detail enters that status. Then check to make sure that status is in the database as a 
+  # detail enters that status. Then check to make sure that status is in the database as a
   # substatus of New.
   def self.up
     new_status = OrderStatus.find_by_name("New")

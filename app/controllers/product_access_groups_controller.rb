@@ -9,21 +9,21 @@ class ProductAccessGroupsController < ApplicationController
   load_and_authorize_resource :product_access_group, through: :instrument
 
   layout "two_column"
-  
+
   def initialize
     @active_tab = "admin_products"
     super
   end
-  
+
   def index
   end
-  
+
   def edit
   end
-  
+
   def new
   end
-  
+
   def update
     if @product_access_group.update_attributes(params[:product_access_group])
       flash[:notice] = "#{ProductAccessGroup.model_name.human} was successfully updated"
@@ -32,7 +32,7 @@ class ProductAccessGroupsController < ApplicationController
       render action: :edit
     end
   end
-  
+
   def create
     @product_access_group = @instrument.product_access_groups.new(params[:product_access_group])
     if @product_access_group.save
@@ -42,7 +42,7 @@ class ProductAccessGroupsController < ApplicationController
       render action: :new
     end
   end
-  
+
   def destroy
     if @product_access_group.destroy
       flash[:notice] = "#{ProductAccessGroup.model_name.human} was deleted"

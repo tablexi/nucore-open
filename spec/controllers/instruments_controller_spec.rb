@@ -513,17 +513,17 @@ RSpec.describe InstrumentsController do
       end
 
       describe "schedule sharing" do
-        let(:instrument2) do 
+        let(:instrument2) do
           FactoryGirl.create(:setup_instrument, facility: @authable,
-                                                                  schedule: @instrument.schedule) 
+                                                                  schedule: @instrument.schedule)
         end
-        let(:admin_reservation) do 
+        let(:admin_reservation) do
           FactoryGirl.create(:reservation, product: instrument2,
-                                                                   reserve_start_at: 2.days.from_now) 
+                                                                   reserve_start_at: 2.days.from_now)
         end
-        let(:admin_reservation2) do 
+        let(:admin_reservation2) do
           FactoryGirl.create(:reservation, product: instrument2,
-                                                                    reserve_start_at: 1.day.from_now) 
+                                                                    reserve_start_at: 1.day.from_now)
         end
         before :each do
           sign_in @admin

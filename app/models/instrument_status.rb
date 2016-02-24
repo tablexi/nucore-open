@@ -1,7 +1,7 @@
 class InstrumentStatus < ActiveRecord::Base
 
   belongs_to :instrument
-  
+
   validates_numericality_of :instrument_id
 
   attr_accessor :error_message

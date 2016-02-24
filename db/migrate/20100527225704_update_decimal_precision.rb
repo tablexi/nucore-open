@@ -2,7 +2,7 @@ class UpdateDecimalPrecision < ActiveRecord::Migration
 
   def self.up
     change_column :schedule_rules, :discount_percent,    :decimal, precision: 10, scale: 2, null: false, default: 0
-    
+
     change_column :price_policies, :usage_rate,          :decimal, precision: 10, scale: 2, null: true
     change_column :price_policies, :usage_subsidy,       :decimal, precision: 10, scale: 2, null: true
     change_column :price_policies, :reservation_rate,    :decimal, precision: 10, scale: 2, null: true
@@ -13,14 +13,14 @@ class UpdateDecimalPrecision < ActiveRecord::Migration
     change_column :price_policies, :unit_subsidy,        :decimal, precision: 10, scale: 2, null: true
     change_column :price_policies, :minimum_cost,        :decimal, precision: 10, scale: 2, null: true
     change_column :price_policies, :cancellation_cost,   :decimal, precision: 10, scale: 2, null: true
-    
+
     change_column :order_details, :total_cost,           :decimal, precision: 10, scale: 2, null: true
     change_column :order_details, :total_subsidy,        :decimal, precision: 10, scale: 2, null: true
   end
 
   def self.down
     change_column :schedule_rules, :discount_percent,    :decimal, precision: 5, scale: 2, null: false, default: 0
-    
+
     change_column :price_policies, :usage_rate,          :decimal, precision: 9, scale: 2, null: true
     change_column :price_policies, :usage_subsidy,       :decimal, precision: 9, scale: 2, null: true
     change_column :price_policies, :reservation_rate,    :decimal, precision: 9, scale: 2, null: true
@@ -31,7 +31,7 @@ class UpdateDecimalPrecision < ActiveRecord::Migration
     change_column :price_policies, :unit_subsidy,        :decimal, precision: 9, scale: 2, null: true
     change_column :price_policies, :minimum_cost,        :decimal, precision: 9, scale: 2, null: true
     change_column :price_policies, :cancellation_cost,   :decimal, precision: 9, scale: 2, null: true
-    
+
     change_column :order_details, :total_cost,           :decimal, precision: 8, scale: 2, null: true
     change_column :order_details, :total_subsidy,        :decimal, precision: 8, scale: 2, null: true
   end

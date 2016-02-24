@@ -5,7 +5,7 @@ class CreateDependencies < ActiveRecord::Migration
       # Context
       t.integer :question_id # the dependent question
       t.integer :question_group_id
-      
+
       # Conditional
       t.string :rule
 

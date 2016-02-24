@@ -14,7 +14,7 @@ RSpec.describe Api::OrderDetail do
     name: ordered_for.name,
     username: ordered_for.username,
     email: ordered_for.email,
-  } 
+  }
   end
 
   describe "#to_h" do
@@ -31,7 +31,7 @@ RSpec.describe Api::OrderDetail do
           username: account_owner.username,
           email: account_owner.email,
         },
-      } 
+      }
       end
 
       it "generates the expected hash" do

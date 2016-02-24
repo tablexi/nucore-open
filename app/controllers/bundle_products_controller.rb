@@ -53,7 +53,7 @@ class BundleProductsController < ApplicationController
       render action: "edit"
     end
   end
-  
+
   # DELETE /facilities/:facility_id/bundles/:bundle_id/bundle_products/:id
   def destroy
     if @bundle_product.destroy
@@ -63,11 +63,11 @@ class BundleProductsController < ApplicationController
     end
     redirect_to facility_bundle_bundle_products_path(current_facility, @bundle)
   end
-  
+
   def init_bundle
     @bundle = current_facility.bundles.find_by_url_name!(params[:bundle_id])
   end
-  
+
   def init_bundle_product
     @bundle_product = @bundle.bundle_products.find(params[:id])
   end
