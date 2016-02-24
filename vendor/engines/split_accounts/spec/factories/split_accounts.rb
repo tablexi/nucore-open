@@ -33,6 +33,5 @@ FactoryGirl.define do
         split_account.splits << build(:split, percent: 100, extra_penny: true, parent_split_account: split_account)
       end
     end
-
   end
 end

@@ -21,7 +21,6 @@ RSpec.describe FacilityAccountsController do
   end
 
   context 'update' do
-
     before(:each) do
       @method = :put
       @action = :update
@@ -34,7 +33,6 @@ RSpec.describe FacilityAccountsController do
     end
 
     context 'with affiliate' do
-
       before :each do
         user=FactoryGirl.create(:user)
 
@@ -68,7 +66,6 @@ RSpec.describe FacilityAccountsController do
       end
 
       context 'not other' do
-
         before :each do
           @affiliate = Affiliate.create!(:name => 'Rod Blagojevich')
           @params[:purchase_order_account][:affiliate_id] = @affiliate.id
@@ -81,10 +78,8 @@ RSpec.describe FacilityAccountsController do
           is_expected.to set_flash
           assert_redirected_to facility_account_url
         end
-
       end
     end
-
   end
 
   context 'create' do
@@ -196,7 +191,6 @@ RSpec.describe FacilityAccountsController do
   end
 
   context 'credit_cards without account' do
-
     before :each do
       @method = :get
       @action = :credit_cards
@@ -211,7 +205,6 @@ RSpec.describe FacilityAccountsController do
       expect(assigns(:unreconciled_details)).to be_nil
       is_expected.to render_template('c2po/reconcile')
     end
-
   end
 
   context 'purchase_orders with account' do
@@ -226,7 +219,6 @@ RSpec.describe FacilityAccountsController do
   end
 
   context 'purchase_orders without account' do
-
     before :each do
       @method = :get
       @action = :purchase_orders
@@ -241,11 +233,9 @@ RSpec.describe FacilityAccountsController do
       expect(assigns(:unreconciled_details)).to be_nil
       is_expected.to render_template('c2po/reconcile')
     end
-
   end
 
   context 'update_credit_cards' do
-
     before :each do
       ccact=FactoryGirl.build(:credit_card_account)
       prepare_for_account_update(:update_credit_cards, ccact)
@@ -263,11 +253,9 @@ RSpec.describe FacilityAccountsController do
       expect(@order_detail.state).to eq('reconciled')
       expect(@order_detail.reconciled_note).not_to be_nil
     end
-
   end
 
   context 'update_purchase_orders' do
-
     before :each do
       @poact=FactoryGirl.build(:purchase_order_account)
       prepare_for_account_update(:update_purchase_orders, @poact)
@@ -285,7 +273,6 @@ RSpec.describe FacilityAccountsController do
       expect(@order_detail.state).to eq('reconciled')
       expect(@order_detail.reconciled_note).not_to be_nil
     end
-
   end
 
   private
@@ -326,5 +313,4 @@ RSpec.describe FacilityAccountsController do
     @order_detail.statement = statement
     @order_detail.save
   end
-
 end

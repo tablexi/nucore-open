@@ -48,5 +48,4 @@ RSpec.describe SplitAccounts::SplitAccountBuilder, type: :service, split_account
       expect(builder.build.expires_at).to eq(subaccount_1.expires_at)
     end
   end
-
 end

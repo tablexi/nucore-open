@@ -39,5 +39,4 @@ RSpec.describe CreditCardAccount do
   it "should be limited to a single facility" do
     expect(CreditCardAccount.single_facility?).to eq(true)
   end
-
 end
