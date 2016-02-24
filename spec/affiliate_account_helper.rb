@@ -6,7 +6,6 @@
 module AffiliateAccountHelper
 
   def self.included(base)
-
     base.context 'affiliates' do
 
       before :each do
@@ -32,7 +31,6 @@ module AffiliateAccountHelper
       end
 
     end
-
   end
 
 end

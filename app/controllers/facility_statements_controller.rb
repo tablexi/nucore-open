@@ -30,7 +30,6 @@ class FacilityStatementsController < ApplicationController
 
   # POST /facilities/:facility_id/statements/send_statements
   def send_statements
-
     if params[:order_detail_ids].nil? || params[:order_detail_ids].empty?
       flash[:error] = I18n.t 'controllers.facility_statements.send_statements.no_selection'
       redirect_to :action => :new

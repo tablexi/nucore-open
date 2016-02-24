@@ -1,6 +1,5 @@
 module ProductsHelper
   def price_policy_errors(product)
-
     @facility_price_groups ||= current_facility.price_groups.count
     price_policy_count = product.price_policies.current.count
     error_msg = ''
@@ -47,7 +46,6 @@ module ProductsHelper
       { :class => ['icon-calendar'],
         :title => t('instruments.public_schedule.icon') }
     end
-
   end
 
   def public_calendar_availability_options(product)

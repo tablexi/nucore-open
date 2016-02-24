@@ -67,7 +67,6 @@ class PriceGroupProductsController < ApplicationController
       @price_group_products << (groups_with_pgp[pg] || PriceGroupProduct.new(:price_group => pg, :product => @product, :reservation_window => @is_instrument ? PriceGroupProduct::DEFAULT_RESERVATION_WINDOW : nil))
     end
     @price_group_product=@price_group_products.empty? ? PriceGroupProduct.new : @price_group_products.first # for CanCan authorization
-
   end
 
 end

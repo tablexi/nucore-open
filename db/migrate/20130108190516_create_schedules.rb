@@ -18,7 +18,6 @@ class CreateSchedules < ActiveRecord::Migration
       schedule = Schedule.create(:name => "#{instrument.name} Schedule", :facility_id => instrument.facility_id)
       instrument.update_attributes(:schedule_id => schedule.id)
     end
-
   end
 
   def self.down

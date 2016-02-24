@@ -213,7 +213,6 @@ class ReservationsController < ApplicationController
 
   # POST /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
   def move
-
     if @reservation.move_to_earliest
       flash[:notice] = 'The reservation was moved successfully.'
     else

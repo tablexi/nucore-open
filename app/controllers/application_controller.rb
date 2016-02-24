@@ -66,7 +66,6 @@ class ApplicationController < ActionController::Base
     raise ActiveRecord::RecordNotFound unless current_facility
 
     authorize! :manage_billing, current_facility
-
   end
 
   # helper for actions in the 'Billing' manager tab
