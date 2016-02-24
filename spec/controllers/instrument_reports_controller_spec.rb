@@ -51,7 +51,8 @@ RSpec.describe InstrumentReportsController do
     expect(assigns(:report_data)).to eq(reservations)
     expect(assigns(:totals)).to be_is_a Array
 
-    reserved_hours,actual_hours=0,0
+    reserved_hours = 0
+    actual_hours = 0
     reservations.each do |res|
       reserved_hours += to_hours(res.duration_mins)
       actual_hours += to_hours(res.actual_duration_mins)

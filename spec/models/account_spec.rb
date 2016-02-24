@@ -307,7 +307,8 @@ RSpec.describe Account do
         @facility1        = FactoryGirl.create(:facility)
         @facility2        = FactoryGirl.create(:facility)
         @nufs_account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
-        @facility1_accounts, @facility2_accounts=[ @nufs_account ], [ @nufs_account ]
+        @facility1_accounts = [ @nufs_account ]
+        @facility2_accounts = [ @nufs_account ]
 
         Account.config.facility_account_types.each do |class_name|
           class_sym = class_name.underscore.to_sym

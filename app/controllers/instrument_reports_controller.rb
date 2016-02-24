@@ -43,7 +43,8 @@ class InstrumentReportsController < ReportsController
   end
 
   def init_report_data(_report_on_label, &_report_on)
-    @totals, @report_data=[0,0], report_data.all
+    @totals = [0,0]
+    @report_data = report_data.all
 
     @report_data.each do |res|
       @totals[0] += to_hours(res.duration_mins)
