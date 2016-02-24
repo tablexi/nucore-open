@@ -16,7 +16,7 @@ class Product < ActiveRecord::Base
   validates_presence_of :name, :type
   validate_url_name :url_name, :facility_id
   validates_numericality_of(
-      :account,
+    :account,
       :only_integer => true,
       :greater_than_or_equal_to => 0,
       :less_than_or_equal_to => 99999,

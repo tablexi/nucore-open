@@ -48,7 +48,7 @@ RSpec.describe FacilityOrdersController do
         order_details.each do |order_detail|
           order_detail.update_attribute(:account_id, account.id)
           order_detail.product.item_price_policies.create(attributes_for(
-            :item_price_policy, price_group_id: price_group.id))
+                                                            :item_price_policy, price_group_id: price_group.id))
         end
 
         do_request

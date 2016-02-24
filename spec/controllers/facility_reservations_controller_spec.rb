@@ -68,7 +68,7 @@ RSpec.describe FacilityReservationsController do
         create(:account_price_group_member, account: account, price_group: price_group)
 
         order_details.first.product.instrument_price_policies.create(attributes_for(
-          :instrument_price_policy, price_group_id: price_group.id))
+                                                                       :instrument_price_policy, price_group_id: price_group.id))
 
         do_request
       end
@@ -384,7 +384,7 @@ RSpec.describe FacilityReservationsController do
         before :each do
           @reservation.update_attributes(:actual_start_at => nil, :actual_end_at => nil)
           @reservation_attrs=FactoryGirl.attributes_for(
-              :reservation,
+            :reservation,
               :actual_start_at => @now-2.hours,
               :actual_end_at => @now-1.hour
           )
@@ -413,7 +413,7 @@ RSpec.describe FacilityReservationsController do
         before :each do
           @reservation.update_attributes(:actual_start_at => @reservation.reserve_start_at, :actual_end_at => @reservation.reserve_end_at)
           @reservation_attrs=FactoryGirl.attributes_for(
-              :reservation,
+            :reservation,
               :reserve_start_at => @now-3.hours,
               :reserve_end_at   => @now-1.hour,
               :actual_start_at  => @reservation.reserve_start_at,
