@@ -1,4 +1,5 @@
 class AutoLogout
+
   def perform
     order_details.each do |od|
       next unless should_auto_logout?(od)
@@ -46,4 +47,5 @@ class AutoLogout
     STDERR.puts "Error on Order # #{od} - #{e}"
     raise ActiveRecord::Rollback
   end
+
 end

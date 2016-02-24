@@ -1,4 +1,5 @@
 class AddProductUsersTable < ActiveRecord::Migration
+
   def self.up
     create_table :product_users do |t|
       t.references :product, :null => false
@@ -12,4 +13,5 @@ class AddProductUsersTable < ActiveRecord::Migration
   def self.down
     drop_table :product_users
   end
+
 end

@@ -1,4 +1,5 @@
 class OrderSearchController < ApplicationController
+
   customer_tab :all
   before_action :authenticate_user!
   before_action :check_acting_as

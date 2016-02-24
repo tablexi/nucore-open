@@ -1,4 +1,5 @@
 class DropAmountFromStatementRow < ActiveRecord::Migration
+
   def up
     remove_column :statement_rows, :amount
   end
@@ -14,4 +15,5 @@ class DropAmountFromStatementRow < ActiveRecord::Migration
     change_column :statement_rows, :amount, :decimal, precision: 10, scale: 2,
                                                       null: false
   end
+
 end

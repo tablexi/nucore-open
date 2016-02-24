@@ -1,4 +1,5 @@
 class EditsForInvoicingAndJournalingRefacting < ActiveRecord::Migration
+
   def self.up
     # update the account_transaction table
     remove_foreign_key :account_transactions, :name => :fk_int_at_fa
@@ -31,4 +32,5 @@ class EditsForInvoicingAndJournalingRefacting < ActiveRecord::Migration
   def self.down
     raise ActiveRecord::IrreversibleMigration
   end
+
 end

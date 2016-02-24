@@ -1,4 +1,5 @@
 class FlattenPricePolicyForeignKeys < ActiveRecord::Migration
+
   def self.up
     add_column :price_policies, :product_id, :integer, :after => :type
     PricePolicy.reset_column_information
@@ -22,4 +23,5 @@ class FlattenPricePolicyForeignKeys < ActiveRecord::Migration
     end
     remove_column :price_policies, :product_id
   end
+
 end

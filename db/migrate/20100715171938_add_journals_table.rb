@@ -1,4 +1,5 @@
 class AddJournalsTable < ActiveRecord::Migration
+
   def self.up
     create_table :journals do |t|
       t.references :facility,       :null => false
@@ -21,4 +22,5 @@ class AddJournalsTable < ActiveRecord::Migration
     drop_table :journaled_accounts
     drop_table :journals
   end
+
 end

@@ -1,4 +1,5 @@
 class Api::OrderDetail
+
   def initialize(order_detail)
     @order_detail = order_detail
   end
@@ -31,4 +32,5 @@ class Api::OrderDetail
       email: user.email,
     }
   end
+
 end

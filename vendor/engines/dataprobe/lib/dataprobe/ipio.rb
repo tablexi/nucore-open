@@ -1,5 +1,6 @@
 module Dataprobe
   class Ipio
+
     attr_reader :ip, :port
     attr_accessor :username, :password
 
@@ -56,5 +57,6 @@ module Dataprobe
     def write_status_cmd(socket)
       socket.write "\x03#{username}#{password}\x04\x00#{update_sequence socket}"
     end
+
   end
 end

@@ -1,4 +1,5 @@
 class AddContactEmailToProduct < ActiveRecord::Migration
+
   def self.up
   	add_column :products, :contact_email, :string
   end
@@ -6,4 +7,5 @@ class AddContactEmailToProduct < ActiveRecord::Migration
   def self.down
   	remove_column :products, :contact_email
   end
+
 end

@@ -1,4 +1,5 @@
 class Service < Product
+
   has_many :service_price_policies, :foreign_key => :product_id
   has_many :external_service_passers, :as => :passer
   has_many :external_services, :through => :external_service_passers

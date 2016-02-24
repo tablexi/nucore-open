@@ -1,4 +1,5 @@
 class Api::OrderDetailsController < ApplicationController
+
   respond_to :json
   rescue_from ActiveRecord::RecordNotFound, with: :order_detail_not_found
 
@@ -17,4 +18,5 @@ class Api::OrderDetailsController < ApplicationController
   def order_detail_not_found
     render json: { error: "not found" }, status: 404
   end
+
 end

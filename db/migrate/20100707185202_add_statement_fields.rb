@@ -1,4 +1,5 @@
 class AddStatementFields < ActiveRecord::Migration
+
   def self.up
     add_column :statements, :account_id,  :integer,  :null => false
     add_column :statements, :facility_id, :integer,  :null => false
@@ -16,4 +17,5 @@ class AddStatementFields < ActiveRecord::Migration
     remove_column :statements, :created_by
     remove_column :statements, :created_at
   end
+
 end

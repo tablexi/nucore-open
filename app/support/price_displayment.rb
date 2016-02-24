@@ -55,6 +55,7 @@ module PriceDisplayment
   end
 
   class QuantityDisplay < Struct.new(:value)
+
     def html
       value
     end
@@ -62,9 +63,11 @@ module PriceDisplayment
     def csv
       value.to_s
     end
+
   end
 
   class TimeQuantityDisplay < QuantityDisplay
+
     include ActionView::Helpers::TagHelper
 
     def csv
@@ -75,6 +78,7 @@ module PriceDisplayment
     def html
       content_tag :span, value, :class => 'timeinput'
     end
+
   end
 
   def build_quantity_presenter

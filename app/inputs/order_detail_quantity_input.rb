@@ -16,4 +16,5 @@ class OrderDetailQuantityInput < SimpleForm::Inputs::FileInput
   def has_disabled?
     !object.quantity_editable?
   end
+
 end

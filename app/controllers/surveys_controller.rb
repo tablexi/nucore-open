@@ -1,4 +1,5 @@
 class SurveysController < ApplicationController
+
   admin_tab     :all
   before_action :authenticate_user!
   before_action :check_acting_as, except: :complete
@@ -46,4 +47,5 @@ class SurveysController < ApplicationController
   def init_service
     @service = current_facility.services.find_by_url_name!(params[:service_id])
   end
+
 end

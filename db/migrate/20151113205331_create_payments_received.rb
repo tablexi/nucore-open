@@ -1,4 +1,5 @@
 class CreatePaymentsReceived < ActiveRecord::Migration
+
   def up
     create_table :payments do |t|
       t.references :account, null: false
@@ -20,4 +21,5 @@ class CreatePaymentsReceived < ActiveRecord::Migration
   def down
     drop_table :payments
   end
+
 end

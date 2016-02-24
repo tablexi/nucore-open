@@ -1,4 +1,5 @@
 class Payment < ActiveRecord::Base
+
   belongs_to :account, inverse_of: :payments
   belongs_to :statement, inverse_of: :payments
   belongs_to :paid_by, class_name: "User"

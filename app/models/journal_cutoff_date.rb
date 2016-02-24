@@ -1,4 +1,5 @@
 class JournalCutoffDate < ActiveRecord::Base
+
   include ActiveModel::ForbiddenAttributesProtection
 
   validates :cutoff_date, presence: true
@@ -65,4 +66,5 @@ class JournalCutoffDate < ActiveRecord::Base
       where("#{section}(cutoff_date) = ?", time)
     end
   end
+
 end

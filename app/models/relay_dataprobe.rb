@@ -11,4 +11,5 @@ class RelayDataprobe < Relay
   def relay_connection
     @relay_connection ||= Dataprobe::Ipio.new(host, connection_options)
   end
+
 end

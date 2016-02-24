@@ -1,4 +1,5 @@
 class FacilityAccount < ActiveRecord::Base
+
   include Accounts::AccountNumberSectionable
 
   belongs_to :facility

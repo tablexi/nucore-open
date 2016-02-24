@@ -1,4 +1,5 @@
 class ConvertExternalServiceReceiverData < ActiveRecord::Migration
+
   def up
     ExternalServiceReceiver.find_each do |receiver|
       show_url = receiver.response_data
@@ -14,4 +15,5 @@ class ConvertExternalServiceReceiverData < ActiveRecord::Migration
       receiver.update_attribute :response_data, parsed[:show_url]
     end
   end
+
 end

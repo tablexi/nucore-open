@@ -1,4 +1,5 @@
 class Notifier < ActionMailer::Base
+
   include DateHelper
   add_template_helper ApplicationHelper
   add_template_helper TranslationHelper
@@ -93,4 +94,5 @@ class Notifier < ActionMailer::Base
   def send_nucore_mail(to, subject, template_name=nil)
     mail(:subject => subject, :to => Settings.email.fake.enabled ? Settings.email.fake.to : to, :template_name => template_name)
   end
+
 end

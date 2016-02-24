@@ -1,4 +1,5 @@
 class ProductAccessGroupsController < ApplicationController
+
   before_action :authenticate_user!
   before_action :init_current_facility
 

@@ -1,4 +1,5 @@
 class AddAccountTransactionsTable < ActiveRecord::Migration
+
   def self.up
     create_table   :account_transactions do |t|
       t.references :account,            :null => false
@@ -17,4 +18,5 @@ class AddAccountTransactionsTable < ActiveRecord::Migration
   def self.down
     drop_table :account_transactions
   end
+
 end

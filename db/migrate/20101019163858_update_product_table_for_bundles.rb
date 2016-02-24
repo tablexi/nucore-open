@@ -1,4 +1,5 @@
 class UpdateProductTableForBundles < ActiveRecord::Migration
+
   def self.up
     change_column :products, :initial_order_status_id, :integer, :null => true
     change_column :products, :facility_account_id,     :integer, :null => true
@@ -11,4 +12,5 @@ class UpdateProductTableForBundles < ActiveRecord::Migration
   def self.down
     raise ActiveRecord::IrreversibleMigration
   end
+
 end

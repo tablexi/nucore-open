@@ -1,4 +1,5 @@
 class AutoCanceler
+
   AdminStruct = Struct.new(:id)
 
   def initialize
@@ -65,4 +66,5 @@ class AutoCanceler
     admin.id = 0
     admin
   end
+
 end

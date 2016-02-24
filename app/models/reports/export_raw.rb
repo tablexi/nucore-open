@@ -1,4 +1,5 @@
 class Reports::ExportRaw
+
   include DateHelper
 
   def initialize(arguments)
@@ -191,4 +192,5 @@ class Reports::ExportRaw
       reservation.canceled_by_user.try(:full_name)
     end
   end
+
 end

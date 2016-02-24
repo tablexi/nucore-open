@@ -1,6 +1,7 @@
 require "date_helper" # parse_usa_import_date
 
 class OrderRowImporter
+
   include DateHelper
 
   HEADERS = {
@@ -227,4 +228,5 @@ class OrderRowImporter
   def validate_user
     add_error("Invalid username or email") if user.blank?
   end
+
 end

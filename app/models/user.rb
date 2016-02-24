@@ -167,4 +167,5 @@ class User < ActiveRecord::Base
     end
     @recently_used_facilities[limit]
   end
+
 end

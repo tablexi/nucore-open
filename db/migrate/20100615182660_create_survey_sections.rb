@@ -1,4 +1,5 @@
 class CreateSurveySections < ActiveRecord::Migration
+
   def self.up
     create_table :survey_sections do |t|
       # Context
@@ -26,4 +27,5 @@ class CreateSurveySections < ActiveRecord::Migration
   def self.down
     drop_table :survey_sections
   end
+
 end

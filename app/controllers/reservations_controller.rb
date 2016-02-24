@@ -1,4 +1,5 @@
 class ReservationsController < ApplicationController
+
   include Timelineable
 
   customer_tab  :all
@@ -416,4 +417,5 @@ class ReservationsController < ApplicationController
     .except(:reserve_end_date, :reserve_end_hour, :reserve_end_min, :reserve_end_meridian)
     .merge(product: @instrument)
   end
+
 end

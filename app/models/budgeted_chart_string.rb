@@ -1,4 +1,5 @@
 class BudgetedChartString < ActiveRecord::Base
+
   include NUCore::Database::DateHelper
 
   validates_presence_of :fund, :dept, :starts_at, :expires_at
@@ -73,4 +74,5 @@ class BudgetedChartString < ActiveRecord::Base
       end
     end
   end
+
 end

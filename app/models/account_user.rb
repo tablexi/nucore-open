@@ -1,4 +1,5 @@
 class AccountUser < ActiveRecord::Base
+
   belongs_to :user
   belongs_to :account, :inverse_of => :account_users
 
@@ -79,4 +80,5 @@ class AccountUser < ActiveRecord::Base
   validates_inclusion_of :user_role, :in => user_roles, :message => 'is invalid'
   validates_uniqueness_of :user_id, :scope => [:account_id, :deleted_at]
   validates_uniqueness_of :user_role, :scope => [:account_id, :deleted_at], :if => lambda {|o| o.user_role == ACCOUNT_OWNER }
+
 end

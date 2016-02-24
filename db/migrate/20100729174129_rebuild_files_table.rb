@@ -1,4 +1,5 @@
 class RebuildFilesTable < ActiveRecord::Migration
+
   def self.up
     drop_table :files
     create_table :files do |t|
@@ -17,4 +18,5 @@ class RebuildFilesTable < ActiveRecord::Migration
   def self.down
     drop_table :files
   end
+
 end

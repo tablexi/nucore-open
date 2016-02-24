@@ -1,4 +1,5 @@
 class FacilityNotificationsController < ApplicationController
+
   admin_tab     :all
   before_action :authenticate_user!
   before_action :check_acting_as
@@ -90,4 +91,5 @@ class FacilityNotificationsController < ApplicationController
       I18n.t('controllers.facility_notifications.send_notifications.success_html', :accounts => sender.accounts_notified.map(&:account_list_item).join('<br/>')).html_safe
     end
   end
+
 end

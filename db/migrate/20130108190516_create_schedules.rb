@@ -1,4 +1,5 @@
 class CreateSchedules < ActiveRecord::Migration
+
   def self.up
     create_table :schedules do |t|
       t.string :name
@@ -26,4 +27,5 @@ class CreateSchedules < ActiveRecord::Migration
     remove_column :products, :schedule_id
     drop_table :schedules
   end
+
 end

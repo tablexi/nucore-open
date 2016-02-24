@@ -1,4 +1,5 @@
 class FacilityStatementsController < ApplicationController
+
   admin_tab     :all
   before_action :authenticate_user!
   before_action :check_acting_as
@@ -78,4 +79,5 @@ class FacilityStatementsController < ApplicationController
   def show
     @statement = Statement.find(params[:id])
   end
+
 end

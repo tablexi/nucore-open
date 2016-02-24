@@ -1,4 +1,5 @@
 class JournalRow < ActiveRecord::Base
+
   belongs_to :journal
   belongs_to :order_detail
 
@@ -10,4 +11,5 @@ class JournalRow < ActiveRecord::Base
   def update_amount
     update_attributes(amount: order_detail.actual_cost)
   end
+
 end

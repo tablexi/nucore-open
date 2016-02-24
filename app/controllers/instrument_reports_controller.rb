@@ -1,4 +1,5 @@
 class InstrumentReportsController < ReportsController
+
   include InstrumentReporter
 
   def instrument

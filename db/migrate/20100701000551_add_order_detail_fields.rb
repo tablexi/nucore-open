@@ -1,4 +1,5 @@
 class AddOrderDetailFields < ActiveRecord::Migration
+
   def self.up
     change_table :order_details do |t|
       t.integer   :account_id
@@ -21,4 +22,5 @@ class AddOrderDetailFields < ActiveRecord::Migration
     remove_column :order_details, :updated_at
     remove_column :order_details, :created_at
   end
+
 end

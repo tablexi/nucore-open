@@ -1,4 +1,5 @@
 class MigrateDurationMins < ActiveRecord::Migration
+
   def up
     instrument_duration_mins.each do |instrument_id, duration_mins|
       Instrument.find(instrument_id).update_attribute :reserve_interval, duration_mins
@@ -24,4 +25,5 @@ class MigrateDurationMins < ActiveRecord::Migration
 
     idm
   end
+
 end

@@ -1,6 +1,7 @@
 require "net/http"
 
 class Relay < ActiveRecord::Base
+
   belongs_to :instrument, :inverse_of => :relay
 
   validates_presence_of :instrument_id, :on => :update
@@ -51,4 +52,5 @@ class Relay < ActiveRecord::Base
       errors.add :port, :taken
     end
   end
+
 end

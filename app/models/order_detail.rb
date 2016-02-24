@@ -1,4 +1,5 @@
 class OrderDetail < ActiveRecord::Base
+
   include NUCore::Database::SortHelper
   include TranslationHelper
   include NotificationSubject
@@ -283,7 +284,9 @@ class OrderDetail < ActiveRecord::Base
 
   scope :purchased, joins(:order).merge(Order.purchased)
   class << self
+
     alias ordered purchased # TODO: deprecate .ordered in favor of .purchased
+
   end
 
   scope :pending, joins(:order).where(:state => ['new', 'inprocess']).ordered
@@ -993,4 +996,5 @@ class OrderDetail < ActiveRecord::Base
       self.fulfilled_at = reservation.reserve_end_at
     end
   end
+
 end

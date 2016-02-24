@@ -1,4 +1,5 @@
 class CreateNotifications < ActiveRecord::Migration
+
   def self.up
     create_table :notifications do |t|
       t.column :type, :string, :null => false
@@ -14,4 +15,5 @@ class CreateNotifications < ActiveRecord::Migration
   def self.down
     drop_table :notifications
   end
+
 end

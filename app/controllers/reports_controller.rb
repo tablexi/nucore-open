@@ -1,4 +1,5 @@
 class ReportsController < ApplicationController
+
   include ReportsHelper
   include CSVHelper
 

@@ -1,4 +1,5 @@
 class AlterJournalRowsRemoveNu < ActiveRecord::Migration
+
   def self.up
     if NUCore::Database.oracle?
       puts <<-WARN
@@ -22,4 +23,5 @@ class AlterJournalRowsRemoveNu < ActiveRecord::Migration
       t.column :program, :string, :limit => 4
     end
   end
+
 end

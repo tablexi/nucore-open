@@ -1,4 +1,5 @@
 class ProductsCommonController < ApplicationController
+
   customer_tab  :show
   admin_tab     :create, :destroy, :new, :edit, :index, :update, :manage
   before_action :authenticate_user!, :except => [:show]
@@ -192,4 +193,5 @@ class ProductsCommonController < ApplicationController
   def session_user_can_override_restrictions?(product)
     session_user.present? && session_user.can_override_restrictions?(product)
   end
+
 end

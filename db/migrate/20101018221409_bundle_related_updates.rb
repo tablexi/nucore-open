@@ -1,4 +1,5 @@
 class BundleRelatedUpdates < ActiveRecord::Migration
+
   def self.up
     add_column :order_details, :bundle_order_detail_id, :integer, :null => true
     execute "ALTER TABLE order_details ADD CONSTRAINT fk_od_bundle_od FOREIGN KEY (bundle_order_detail_id) REFERENCES order_details (id)"
@@ -15,4 +16,5 @@ class BundleRelatedUpdates < ActiveRecord::Migration
     remove_column :order_details, :bundle_order_detail_id
     drop_table :bundle_products
   end
+
 end

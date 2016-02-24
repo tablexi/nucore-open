@@ -1,4 +1,5 @@
 class AddAttachmentsFileToFileUpload < ActiveRecord::Migration
+
   def self.up
     add_column :file_uploads, :file_file_name, :string
     add_column :file_uploads, :file_content_type, :string
@@ -16,4 +17,5 @@ class AddAttachmentsFileToFileUpload < ActiveRecord::Migration
     
     add_column :file_uploads, :content_type, :string # old column
   end
+
 end

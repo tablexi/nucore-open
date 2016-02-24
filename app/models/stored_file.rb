@@ -1,4 +1,5 @@
 class StoredFile < ActiveRecord::Base
+
   include DownloadableFile
 
   belongs_to              :product
@@ -29,4 +30,5 @@ class StoredFile < ActiveRecord::Base
     data.content_type = MIME::Types.type_for(data.original_filename).first.to_s
     self.file = data
   end
+
 end

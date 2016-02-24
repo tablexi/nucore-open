@@ -1,4 +1,5 @@
 class AlterProductsRemoveRelays < ActiveRecord::Migration
+
   def self.up
     remove_column(:products, :relay_ip)
     remove_column(:products, :relay_port)
@@ -18,4 +19,5 @@ class AlterProductsRemoveRelays < ActiveRecord::Migration
       t.column "relay_type", :string, :limit => 50
     end
   end
+
 end

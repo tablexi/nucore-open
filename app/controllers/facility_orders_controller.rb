@@ -1,4 +1,5 @@
 class FacilityOrdersController < ApplicationController
+
   include ProblemOrderDetailsController
   include TabCountHelper
 
@@ -139,4 +140,5 @@ class FacilityOrdersController < ApplicationController
   def load_merge_orders
     @merge_orders = Order.where(:merge_with_order_id => @order.id, :created_by => current_user.id).all
   end
+
 end

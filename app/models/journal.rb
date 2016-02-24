@@ -1,6 +1,7 @@
 require 'set'
 
 class Journal < ActiveRecord::Base
+
   class CreationError < StandardError; end
 
   module Overridable
@@ -262,4 +263,5 @@ class Journal < ActiveRecord::Base
       OrderDetail.where(id: id_slice).update_all(journal_id: self.id)
     end
   end
+
 end

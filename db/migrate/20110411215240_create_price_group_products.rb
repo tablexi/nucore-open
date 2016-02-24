@@ -1,4 +1,5 @@
 class CreatePriceGroupProducts < ActiveRecord::Migration
+
   def self.up
 
     create_table :price_group_products do |t|
@@ -53,4 +54,5 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
 
     drop_table :price_group_products
   end
+
 end

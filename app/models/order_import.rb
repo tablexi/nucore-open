@@ -1,6 +1,7 @@
 require "csv_helper"
 
 class OrderImport < ActiveRecord::Base
+
   include CSVHelper
 
   belongs_to :facility
@@ -213,6 +214,7 @@ class OrderImport < ActiveRecord::Base
   end
 
   class Result
+
     attr_accessor :successes, :failures
 
     def initialize
@@ -234,9 +236,11 @@ class OrderImport < ActiveRecord::Base
     def to_h
       { successes: successes, failures: failures }
     end
+
   end
 
   class OrderCache
+
     def initialize
       @orders = {}
     end
@@ -254,5 +258,7 @@ class OrderImport < ActiveRecord::Base
     def fetch_all_orders
       Order.where(id: @orders.values)
     end
+
   end
+
 end

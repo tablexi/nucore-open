@@ -1,4 +1,5 @@
 class PriceGroup < ActiveRecord::Base
+
   belongs_to :facility
   has_many   :order_details, :through => :price_policies, :dependent => :restrict
   has_many   :price_group_members, :dependent => :destroy
@@ -62,4 +63,5 @@ class PriceGroup < ActiveRecord::Base
   def external?
     !is_internal?
   end
+
 end

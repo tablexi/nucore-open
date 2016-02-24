@@ -1,4 +1,5 @@
 class AlterOrderDetails < ActiveRecord::Migration
+
   def self.up
     change_table :order_details do |t|
       t.column :fulfilled_at, :datetime
@@ -18,4 +19,5 @@ class AlterOrderDetails < ActiveRecord::Migration
       t.remove :reconciled_note
     end
   end
+
 end

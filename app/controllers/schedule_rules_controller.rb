@@ -1,4 +1,5 @@
 class ScheduleRulesController < ApplicationController
+
   admin_tab     :all
   before_action :authenticate_user!
   before_action :check_acting_as
@@ -85,4 +86,5 @@ class ScheduleRulesController < ApplicationController
   def init_instrument
     @instrument     = current_facility.instruments.find_by_url_name!(params[:instrument_id])
   end
+
 end

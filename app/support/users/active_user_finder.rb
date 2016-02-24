@@ -1,4 +1,5 @@
 class Users::ActiveUserFinder
+
   # Format active users as a CSV
   def active_users_csv(_time = 1.year.ago)
     user_rows = active_users.map { |u| user_fields(u).join(',') }
@@ -24,4 +25,5 @@ class Users::ActiveUserFinder
       user.orders.last.try(:created_at)
     ]
   end
+
 end

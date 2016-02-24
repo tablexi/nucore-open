@@ -1,4 +1,5 @@
 class AddServiceSurveys < ActiveRecord::Migration
+
   def self.up
     create_table :service_surveys do |t|
       t.references  :service
@@ -13,4 +14,5 @@ class AddServiceSurveys < ActiveRecord::Migration
   def self.down
     drop_table :service_surveys
   end
+
 end

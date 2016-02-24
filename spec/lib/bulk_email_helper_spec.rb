@@ -4,10 +4,12 @@ RSpec.describe BulkEmailHelper do
 
   # Utility class for testing the helper methods
   class BulkEmailTest
+
     include BulkEmailHelper
     include DateHelper
 
     attr_reader :order_details
+
   end
 
   before :each do

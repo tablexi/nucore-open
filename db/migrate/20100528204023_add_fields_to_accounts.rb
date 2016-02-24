@@ -1,4 +1,5 @@
 class AddFieldsToAccounts < ActiveRecord::Migration
+
   class Account < ActiveRecord::Base
   end
 
@@ -40,4 +41,5 @@ class AddFieldsToAccounts < ActiveRecord::Migration
     remove_column :accounts, :updated_at
     remove_column :accounts, :updated_by
   end
+
 end

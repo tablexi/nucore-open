@@ -1,4 +1,5 @@
 class AddOrderDetailsCreatedBy < ActiveRecord::Migration
+
   def self.up
     add_column :order_details, :created_by, :integer
 
@@ -15,4 +16,5 @@ class AddOrderDetailsCreatedBy < ActiveRecord::Migration
   def self.down
     remove_column :order_details, :created_by
   end
+
 end

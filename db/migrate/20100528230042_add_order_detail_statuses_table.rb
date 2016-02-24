@@ -1,4 +1,5 @@
 class AddOrderDetailStatusesTable < ActiveRecord::Migration
+
   def self.up
     create_table :order_detail_statuses do |t|
       t.references :order_detail, :null => false
@@ -13,4 +14,5 @@ class AddOrderDetailStatusesTable < ActiveRecord::Migration
   def self.down
     drop_table :order_detail_statuses
   end
+
 end

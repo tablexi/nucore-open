@@ -1,4 +1,5 @@
 class AddShortDescriptionToFacilities < ActiveRecord::Migration
+
   def self.up
     add_column :facilities, :short_description, :text, :null => false
   end
@@ -6,4 +7,5 @@ class AddShortDescriptionToFacilities < ActiveRecord::Migration
   def self.down
     remove_column :facilities, :short_description
   end
+
 end

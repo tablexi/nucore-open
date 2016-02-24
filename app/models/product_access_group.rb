@@ -1,4 +1,5 @@
 class ProductAccessGroup < ActiveRecord::Base
+
   belongs_to :product
   has_many :product_users, dependent: :nullify
   has_many :users, through: :product_users

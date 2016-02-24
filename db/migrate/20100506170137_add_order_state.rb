@@ -1,4 +1,5 @@
 class AddOrderState < ActiveRecord::Migration
+
   def self.up
     change_table :orders do |t|
       t.string :state, :limit => 50
@@ -8,4 +9,5 @@ class AddOrderState < ActiveRecord::Migration
   def self.down
     remove_column :orders, :state
   end
+
 end

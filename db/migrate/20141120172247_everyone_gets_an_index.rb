@@ -1,4 +1,5 @@
 class EveryoneGetsAnIndex < ActiveRecord::Migration
+
   def change
     add_index :account_users,       :user_id
     add_index :orders,              :facility_id
@@ -24,4 +25,5 @@ class EveryoneGetsAnIndex < ActiveRecord::Migration
     add_index :statement_rows, :order_detail_id
     add_index :statements, :account_id
   end
+
 end

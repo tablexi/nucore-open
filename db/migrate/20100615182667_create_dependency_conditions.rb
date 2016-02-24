@@ -1,4 +1,5 @@
 class CreateDependencyConditions < ActiveRecord::Migration
+
   def self.up
     create_table :dependency_conditions do |t|
       # Context
@@ -26,4 +27,5 @@ class CreateDependencyConditions < ActiveRecord::Migration
   def self.down
     drop_table :dependency_conditions
   end
+
 end

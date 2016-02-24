@@ -1,4 +1,5 @@
 class BundleProduct < ActiveRecord::Base
+
   belongs_to :bundle, :foreign_key => :bundle_product_id
   belongs_to :product
   
@@ -14,4 +15,5 @@ class BundleProduct < ActiveRecord::Base
   def <=>(other)
     self.product.name <=> other.product.name
   end
+
 end

@@ -1,4 +1,5 @@
 class InstrumentDayReportsController < ReportsController
+
   include InstrumentReporter
   helper_method :report_data_row
 

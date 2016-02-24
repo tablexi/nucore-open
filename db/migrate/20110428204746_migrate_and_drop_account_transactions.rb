@@ -1,4 +1,5 @@
 class MigrateAndDropAccountTransactions < ActiveRecord::Migration
+
   def self.up
     OrderDetail.reset_column_information
 
@@ -115,4 +116,5 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
       ****************************************************************************
     OUT
   end
+
 end

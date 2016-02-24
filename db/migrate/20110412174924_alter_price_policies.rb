@@ -1,4 +1,5 @@
 class AlterPricePolicies < ActiveRecord::Migration
+
   def self.up
     remove_column(:price_policies, :reservation_window)
     remove_column(:price_policies, :restrict_purchase)
@@ -20,4 +21,5 @@ class AlterPricePolicies < ActiveRecord::Migration
     add_column(:price_policies, :reservation_window, :integer)
     add_column(:price_policies, :restrict_purchase, :boolean)
   end
+
 end

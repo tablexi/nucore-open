@@ -1,4 +1,5 @@
 class InstrumentPricePolicy < PricePolicy
+
   include InstrumentPricePolicyCalculations
 
   CHARGE_FOR = {
@@ -98,4 +99,5 @@ class InstrumentPricePolicy < PricePolicy
       reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
     ) unless pgp
   end
+
 end

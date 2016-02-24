@@ -1,4 +1,5 @@
 class CreateFacilityAccounts < ActiveRecord::Migration
+
   def self.up
     create_table :facility_accounts do |t|
       t.references :facility,       :null => false
@@ -24,4 +25,5 @@ class CreateFacilityAccounts < ActiveRecord::Migration
   def self.down
     raise ActiveRecord::IrreversibleMigration
   end
+
 end

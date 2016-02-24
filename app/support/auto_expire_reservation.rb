@@ -1,4 +1,5 @@
 class AutoExpireReservation
+
   def perform
     order_details.each do |od|
       od.transaction do
@@ -34,4 +35,5 @@ class AutoExpireReservation
                                             exception: e, information: "Failed expire reservation order detail with id: #{od.id}")
     raise ActiveRecord::Rollback
   end
+
 end

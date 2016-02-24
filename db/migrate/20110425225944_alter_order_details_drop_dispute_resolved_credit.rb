@@ -1,4 +1,5 @@
 class AlterOrderDetailsDropDisputeResolvedCredit < ActiveRecord::Migration
+
   def self.up
     details=OrderDetail.find(:all, :conditions => 'dispute_resolved_credit IS NOT NULL')
 
@@ -13,4 +14,5 @@ class AlterOrderDetailsDropDisputeResolvedCredit < ActiveRecord::Migration
   def self.down
     add_column :order_details, :dispute_resolved_credit, :decimal, :precision => 10, :scale => 2
   end
+
 end

@@ -19,4 +19,5 @@ class FacilityAccountOrdersController < ApplicationController
       .order("orders.ordered_at DESC")
       .paginate(page: params[:page])
   end
+
 end

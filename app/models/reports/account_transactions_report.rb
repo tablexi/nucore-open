@@ -1,6 +1,7 @@
 require 'csv'
 
 class Reports::AccountTransactionsReport
+
   include ApplicationHelper
   include ERB::Util
 
@@ -98,4 +99,5 @@ class Reports::AccountTransactionsReport
       order_detail.csv_quantity
     end
   end
+
 end

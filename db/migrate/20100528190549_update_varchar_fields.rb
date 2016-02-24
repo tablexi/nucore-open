@@ -1,4 +1,5 @@
 class UpdateVarcharFields < ActiveRecord::Migration
+
   def self.up
     change_column :facilities, :url_name,      :string, :limit => 50,  :null => false
     change_column :facilities, :account,       :string, :limit => 50,  :null => false
@@ -49,4 +50,5 @@ class UpdateVarcharFields < ActiveRecord::Migration
 
     change_column :price_policies, :type,      :string, :limit => 200,  :null => false
   end
+
 end

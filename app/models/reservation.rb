@@ -1,6 +1,7 @@
 require "date"
 
 class Reservation < ActiveRecord::Base
+
   include DateHelper
   include Reservations::DateSupport
   include Reservations::Validations
@@ -296,4 +297,5 @@ class Reservation < ActiveRecord::Base
   def grace_period_duration
     SettingsHelper.setting('reservations.grace_period') || 5.minutes
   end
+
 end

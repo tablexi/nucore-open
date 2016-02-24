@@ -1,4 +1,5 @@
 class OrdersController < ApplicationController
+
   customer_tab  :all
 
   before_action :authenticate_user!
@@ -367,4 +368,5 @@ class OrdersController < ApplicationController
   def should_send_notification?
     !acting_as? || params[:send_notification] == '1'
   end
+
 end

@@ -1,4 +1,5 @@
 class AccessoriesController < ApplicationController
+
   load_resource :order
   load_resource :order_detail, :through => :order
 
@@ -66,4 +67,5 @@ class AccessoriesController < ApplicationController
   def helpers
     ActionController::Base.helpers
   end
+
 end

@@ -1,4 +1,5 @@
 class MessageSummarizer
+
   include Enumerable
 
   delegate :each, to: :visible_summaries

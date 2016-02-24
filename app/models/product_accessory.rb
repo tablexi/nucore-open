@@ -1,4 +1,5 @@
 class ProductAccessory < ActiveRecord::Base
+
   SCALING_TYPES = ['quantity', 'manual', 'auto']
 
   ## relationships
@@ -21,4 +22,5 @@ class ProductAccessory < ActiveRecord::Base
   def deleted?
     self.deleted_at.present?
   end
+
 end

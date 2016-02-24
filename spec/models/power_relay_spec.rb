@@ -1,7 +1,9 @@
 require "rails_helper"
 
 class SomeRelay < Relay
+
   include PowerRelay
+
 end
 
 RSpec.describe SomeRelay do

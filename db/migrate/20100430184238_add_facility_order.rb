@@ -1,4 +1,5 @@
 class AddFacilityOrder < ActiveRecord::Migration
+
   def self.up
     change_table :orders do |t|
       t.references :facility
@@ -12,4 +13,5 @@ class AddFacilityOrder < ActiveRecord::Migration
       t.remove :facility_id
     end
   end
+
 end

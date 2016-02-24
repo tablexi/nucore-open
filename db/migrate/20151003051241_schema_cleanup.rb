@@ -1,4 +1,5 @@
 class SchemaCleanup < ActiveRecord::Migration
+
   def up
     change_column :affiliates, :created_at, :datetime, :null => false
     change_column :affiliates, :updated_at, :datetime, :null => false
@@ -86,4 +87,5 @@ class SchemaCleanup < ActiveRecord::Migration
     change_column :versions, :created_at, :datetime, :null => true
     change_column :versions, :updated_at, :datetime, :null => true
   end
+
 end

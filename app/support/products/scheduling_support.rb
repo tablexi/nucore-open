@@ -139,6 +139,7 @@ module Products::SchedulingSupport
   end
 
   class ReservationFinder
+
     attr_accessor :time, :rule, :day_start, :day_end, :options
 
     def initialize(time, rule, options = {})
@@ -171,6 +172,7 @@ module Products::SchedulingSupport
         start_time = conflict.reserve_end_at
       end
     end
+
   end
 
 end

@@ -1,4 +1,5 @@
 class CreateOrderImports < ActiveRecord::Migration
+
   def self.up
     create_table :order_imports do |t|
       t.column :upload_file_id, :integer, :null => false
@@ -21,4 +22,5 @@ class CreateOrderImports < ActiveRecord::Migration
 
     drop_table :order_imports
   end
+
 end

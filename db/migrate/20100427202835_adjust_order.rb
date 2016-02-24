@@ -1,4 +1,5 @@
 class AdjustOrder < ActiveRecord::Migration
+
   def self.up
     change_table :orders do |t|
       t.change :account_id, :integer, :null => true
@@ -14,4 +15,5 @@ class AdjustOrder < ActiveRecord::Migration
       t.change :ordered_at, :datetime, :null => false
     end
   end
+
 end

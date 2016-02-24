@@ -1,4 +1,5 @@
 class RemoveDefaultForDisplayOrder < ActiveRecord::Migration
+
   def self.up
     remove_column :price_groups, :display_order
     add_column :price_groups, :display_order, :integer, :precision => 38, :scale => 0, :null => true
@@ -10,4 +11,5 @@ class RemoveDefaultForDisplayOrder < ActiveRecord::Migration
     remove_column :price_groups, :display_order
     add_column :price_groups, :display_order, :integer, :precision => 38, :default => 3, :scale => 0, :null => false
   end
+
 end

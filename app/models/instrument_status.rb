@@ -1,4 +1,5 @@
 class InstrumentStatus < ActiveRecord::Base
+
   belongs_to :instrument
   
   validates_numericality_of :instrument_id
@@ -20,4 +21,5 @@ class InstrumentStatus < ActiveRecord::Base
       }
     }
   end
+
 end

@@ -1,4 +1,5 @@
 class PurchaseOrderAccount < Account
+
   include AffiliateAccount
   include ReconcilableAccount
 
@@ -12,4 +13,5 @@ class PurchaseOrderAccount < Account
     desc += " (#{display_status.upcase})" if flag_suspended && suspended?
     desc
   end
+
 end

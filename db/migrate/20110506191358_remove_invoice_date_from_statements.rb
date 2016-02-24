@@ -1,4 +1,5 @@
 class RemoveInvoiceDateFromStatements < ActiveRecord::Migration
+
   def self.up
     statements = Statement.all
     statements.each do |s|
@@ -14,4 +15,5 @@ class RemoveInvoiceDateFromStatements < ActiveRecord::Migration
   def self.down
     raise ActiveRecord::IrreversibleMigration
   end
+
 end

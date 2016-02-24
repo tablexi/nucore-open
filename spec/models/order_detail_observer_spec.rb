@@ -2,11 +2,15 @@ require "rails_helper"
 RSpec.describe OrderDetailObserver do
   module DummyHooks
     class DummyHook1
+
       attr_accessor :settings
       def on_status_change(order_detail, old_status, new_status); end
+
     end
     class DummyHook2
+
       def on_status_change(order_detail, old_status, new_status); end
+
     end
     class DummyHook3; end
   end

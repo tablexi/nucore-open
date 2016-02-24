@@ -1,4 +1,5 @@
 class AddTableStatementAccounts < ActiveRecord::Migration
+
   def self.up
     create_table :statement_accounts do |t|
       t.references :statement,      :null => false
@@ -15,4 +16,5 @@ class AddTableStatementAccounts < ActiveRecord::Migration
   def self.down
     raise ActiveRecord::IrreversibleMigration
   end
+
 end

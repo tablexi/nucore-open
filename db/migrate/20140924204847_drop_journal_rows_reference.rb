@@ -1,4 +1,5 @@
 class DropJournalRowsReference < ActiveRecord::Migration
+
   def up
     remove_column :journal_rows, :reference
   end
@@ -6,4 +7,5 @@ class DropJournalRowsReference < ActiveRecord::Migration
   def down
     raise ActiveRecord::IrreversibleMigration
   end
+
 end

@@ -1,4 +1,5 @@
 class RemoveUnitSizeAndRenameColumnInProducts < ActiveRecord::Migration
+
   def self.up
     remove_column :products, :unit_size
   end
@@ -6,4 +7,5 @@ class RemoveUnitSizeAndRenameColumnInProducts < ActiveRecord::Migration
   def self.down
     raise ActiveRecord::IrreversibleMigration
   end
+
 end

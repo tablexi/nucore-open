@@ -1,4 +1,5 @@
 class NufsAccount < Account
+
   validates_uniqueness_of :account_number, message: "already exists"
   validates_presence_of :expires_at
 
@@ -75,4 +76,5 @@ class NufsAccount < Account
       self.errors.add(:account_number, msg)
     end
   end
+
 end

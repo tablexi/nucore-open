@@ -1,4 +1,5 @@
 class OrderStatus < ActiveRecord::Base
+
   acts_as_nested_set
 
   has_many :order_details
@@ -65,6 +66,7 @@ class OrderStatus < ActiveRecord::Base
   end
 
   class << self
+
     def root_statuses
       roots.sort {|a,b| a.lft <=> b.lft }
     end
@@ -90,5 +92,7 @@ class OrderStatus < ActiveRecord::Base
       statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } if !facility.nil?
       statuses
     end
+
   end
+
 end

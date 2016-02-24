@@ -1,4 +1,5 @@
 class AddFacilitiesJournalMaskColumn < ActiveRecord::Migration
+
   def self.up
     add_column :facilities, :journal_mask, :string, :limit => 50, :null => true #TODO: why? , :after =>
     i = 0
@@ -12,4 +13,5 @@ class AddFacilitiesJournalMaskColumn < ActiveRecord::Migration
   def self.down
     remove_column :facilities, :journal_mask
   end
+
 end

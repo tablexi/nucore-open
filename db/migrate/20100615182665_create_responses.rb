@@ -1,4 +1,5 @@
 class CreateResponses < ActiveRecord::Migration
+
   def self.up
     create_table :responses do |t|
       # Context
@@ -30,4 +31,5 @@ class CreateResponses < ActiveRecord::Migration
   def self.down
     drop_table :responses
   end
+
 end

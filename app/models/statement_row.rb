@@ -1,4 +1,5 @@
 class StatementRow < ActiveRecord::Base
+
   belongs_to :statement
   belongs_to :order_detail
 
@@ -10,4 +11,5 @@ class StatementRow < ActiveRecord::Base
   def amount
     order_detail.total
   end
+
 end

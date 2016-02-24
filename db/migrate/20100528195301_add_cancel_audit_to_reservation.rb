@@ -1,4 +1,5 @@
 class AddCancelAuditToReservation < ActiveRecord::Migration
+
   def self.up
     add_column :reservations, :canceled_at,     :datetime,             :null => true
     add_column :reservations, :canceled_by,     :integer,              :null => true
@@ -10,4 +11,5 @@ class AddCancelAuditToReservation < ActiveRecord::Migration
     remove_column :reservations, :canceled_by
     remove_column :reservations, :canceled_reason
   end
+
 end

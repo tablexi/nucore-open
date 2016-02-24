@@ -11,9 +11,11 @@ RSpec.describe Product do
     let(:user) { create(:user) }
 
     class TestProduct < Product
+
       def account_required
         false
       end
+
     end
 
     before :each do

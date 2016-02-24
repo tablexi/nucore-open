@@ -1,4 +1,5 @@
 class PricePolicyBuilder
+
   attr_reader :product, :start_date
 
   delegate :facility, to: :product
@@ -91,4 +92,5 @@ class PricePolicyBuilder
   def price_policies_for_start_date
     product.price_policies.for_date(start_date)
   end
+
 end
