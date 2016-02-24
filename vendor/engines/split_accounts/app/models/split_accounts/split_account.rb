@@ -26,7 +26,7 @@ module SplitAccounts
     end
 
     def extra_penny_count
-      splits.select(&:extra_penny?).size
+      splits.count(&:extra_penny?)
     end
 
     # Stopped using SQL because that didn't seem to work until the built splits
