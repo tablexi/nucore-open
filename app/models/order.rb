@@ -12,7 +12,7 @@ class Order < ActiveRecord::Base
 
   after_save :update_order_detail_accounts, if: :account_id_changed?
 
-  scope :for_user, lambda { |user| { conditions: ['user_id = ? AND ordered_at IS NOT NULL AND state = ?', user.id, 'purchased'] } }
+  scope :for_user, ->(user) { { conditions: ['user_id = ? AND ordered_at IS NOT NULL AND state = ?', user.id, 'purchased'] } }
 
   def self.created_by_user(user)
     where(created_by: user.id)

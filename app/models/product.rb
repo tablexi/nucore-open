@@ -24,7 +24,7 @@ class Product < ActiveRecord::Base
   ) if SettingsHelper.feature_on? :expense_accounts
 
   # Use lambda so we can dynamically enable/disable in specs
-  validate if: lambda {SettingsHelper.feature_on?(:product_specific_contacts)} do
+  validate if: -> {SettingsHelper.feature_on?(:product_specific_contacts)} do
     errors.add(:contact_email, :required) unless email.present?
   end
 

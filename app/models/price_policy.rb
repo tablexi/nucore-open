@@ -7,7 +7,7 @@ class PricePolicy < ActiveRecord::Base
   has_many :order_details
 
   validates_presence_of :start_date, :price_group_id, :type
-  validate :start_date_is_unique, unless: lambda { |o| o.start_date.nil? }
+  validate :start_date_is_unique, unless: ->(o) { o.start_date.nil? }
 
   validates :unit_cost, :unit_subsidy, :usage_rate, :usage_subsidy, :reservation_rate, :overage_rate, :overage_subsidy, :minimum_cost, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
