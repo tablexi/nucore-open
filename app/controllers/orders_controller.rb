@@ -64,7 +64,7 @@ class OrdersController < ApplicationController
     end
 
     ## handle a single instrument reservation
-    if items.size == 1 && (quantity = items.first[:quantity].to_i) == 1 #only one od w/ quantity of 1
+    if items.size == 1 && (quantity = items.first[:quantity].to_i) == 1 # only one od w/ quantity of 1
       if first_product.respond_to?(:reservations) # and product is reservable
 
         # make a new cart w/ instrument (unless this order is empty.. then use that one)
@@ -242,7 +242,7 @@ class OrdersController < ApplicationController
   # PUT /orders/1/purchase
   def purchase
     facility_ability = Ability.new(session_user, @order.facility, self)
-    #revalidate the cart, but only if the user is not an admin
+    # revalidate the cart, but only if the user is not an admin
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
 
     @order.ordered_at = build_order_date if params[:order_date].present? && params[:order_time].present? && acting_as?

@@ -88,7 +88,7 @@ class Facility < ActiveRecord::Base
   end
 
   def order_notification_email
-    #TODO: generate an email address to send the order notifications to
+    # TODO: generate an email address to send the order notifications to
     nil
   end
 

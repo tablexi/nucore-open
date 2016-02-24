@@ -110,7 +110,7 @@ module TransactionSearch
   private
 
   def do_search(search_params)
-    #Rails.logger.debug "search: #{search_params}"
+    # Rails.logger.debug "search: #{search_params}"
     @order_details = @order_details || OrderDetail.joins(:order).ordered
     @order_details = @order_details.for_accounts(search_params[:accounts])
     @order_details = @order_details.for_products(search_params[:products])

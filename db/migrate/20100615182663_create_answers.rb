@@ -7,7 +7,7 @@ class CreateAnswers < ActiveRecord::Migration
 
       # Content
       t.text :text
-      t.text :short_text #Used for presenting responses to experts (ie non-survey takers). Just a shorted version of the string
+      t.text :short_text # Used for presenting responses to experts (ie non-survey takers). Just a shorted version of the string
       t.text :help_text
       t.integer :weight # Used to assign a weight to an answer object (used for computing surveys that have numerical results) (I added this to support the Urology questionnaire -BLC)
       t.string :response_class # What kind of additional data does this answer accept?

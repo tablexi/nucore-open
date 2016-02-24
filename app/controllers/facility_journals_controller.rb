@@ -32,7 +32,7 @@ class FacilityJournalsController < ApplicationController
     @layout = "two_column_head"
   end
 
-  #PUT /facilities/journals/:id
+  # PUT /facilities/journals/:id
   def update
     @pending_journal = @journal
 

@@ -45,7 +45,7 @@ RSpec.describe NotificationsController do
     end
   end
 
-  #context 'update' do
+  # context 'update' do
   #  before :each do
   #    @method=:put
   #    @action=:update
@@ -71,6 +71,6 @@ RSpec.describe NotificationsController do
   #      end
   #    end
   #  end
-  #end
+  # end
 
 end

@@ -1,4 +1,4 @@
-class TransactionChosenInput < SimpleForm::Inputs::Base #CollectionSelectInput
+class TransactionChosenInput < SimpleForm::Inputs::Base # CollectionSelectInput
 
   disable :required
 

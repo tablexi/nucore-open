@@ -141,7 +141,7 @@ class FacilityAccountsController < ApplicationController
              )
 
       # only show an account once.
-      @accounts = @accounts.uniq.paginate(page: params[:page]) #hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
+      @accounts = @accounts.uniq.paginate(page: params[:page]) # hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
     else
       flash.now[:errors] = "Search terms must be 3 or more characters."
     end

@@ -485,7 +485,7 @@ RSpec.describe InstrumentsController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:instrument)).to be_kind_of Instrument
-      #assert_redirected_to manage_facility_instrument_url(@authable, assigns(:instrument))
+      # assert_redirected_to manage_facility_instrument_url(@authable, assigns(:instrument))
       assert_redirected_to facility_instruments_url
       dead=false
 

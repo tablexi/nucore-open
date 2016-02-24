@@ -174,7 +174,7 @@ RSpec.describe Account do
       expect(@account.owner_user).to eq(@user1)
       @account.owner.update_attributes(deleted_at: Time.zone.now, deleted_by: @user1.id)
       @account_user2 = @account.account_users.create(user_id: @user2.id, user_role: 'Owner', created_by: @user2.id)
-      @account.reload #load fresh account users with update attributes
+      @account.reload # load fresh account users with update attributes
       expect(@account.owner_user).to eq(@user2)
     end
 
@@ -281,7 +281,7 @@ RSpec.describe Account do
         expect(@nufs_account.validate_against_product(@item, @user)).not_to eq(nil)
         FactoryGirl.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
         @pg_account_member = FactoryGirl.create(:account_price_group_member, account: @nufs_account, price_group: @price_group)
-        @nufs_account.reload #load fresh account with updated relationships
+        @nufs_account.reload # load fresh account with updated relationships
         expect(@nufs_account.validate_against_product(@item, @user)).to eq(nil)
       end
     end

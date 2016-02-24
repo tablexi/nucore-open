@@ -225,7 +225,7 @@ RSpec.describe FacilityAccountsController do
 
   end
 
-  #TODO: ping Chris / Matt for functions / factories
+  # TODO: ping Chris / Matt for functions / factories
   #      to create other accounts w/ custom numbers
   #      and non-nufs type
   context 'search_results' do

@@ -473,12 +473,12 @@ RSpec.describe Reservation do
     context 'requires_but_missing_actuals?' do
 
       it 'should be true when there is a usage rate but no actuals' do
-        #@instrument_pp.update_attributes!(:usage_rate => 5)
+        # @instrument_pp.update_attributes!(:usage_rate => 5)
 
         expect(@reservation1.actual_start_at).to be_nil
         expect(@reservation1.actual_end_at).to be_nil
-        #@reservation1.order_detail.price_policy=@instrument_pp
-        #assert @reservation1.save
+        # @reservation1.order_detail.price_policy=@instrument_pp
+        # assert @reservation1.save
 
         expect(@reservation1).to be_requires_but_missing_actuals
       end

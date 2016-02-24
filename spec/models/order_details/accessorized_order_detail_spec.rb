@@ -106,7 +106,7 @@ RSpec.describe OrderDetail do
     let(:accessory_order_detail) { accessorizer.add_accessory(accessory) }
     before :each do
       accessorizer.send(:product_accessory, accessory).update_attributes(scaling_type: 'auto')
-      accessory_order_detail #load
+      accessory_order_detail # load
     end
 
     it_behaves_like "an accessory's order detail"

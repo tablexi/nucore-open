@@ -94,7 +94,7 @@ RSpec.describe PricePolicy do
 
     before :each do
       @pp=FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group)
-      #@pgp=FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
+      # @pgp=FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
     end
 
     it 'should not restrict purchase' do
@@ -147,7 +147,7 @@ RSpec.describe PricePolicy do
     it "should truncate the old policy" do
       @today = Time.zone.local(2011, 06, 06, 12, 0, 0)
       Timecop.freeze(@today) do
-        #@today = Time.zone.local(2011, 06, 06, 12, 0, 0)
+        # @today = Time.zone.local(2011, 06, 06, 12, 0, 0)
 
         @pp=FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today.beginning_of_day, expire_date: @today + 30.days)
         @pp2=FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today + 2.days, expire_date: @today + 30.days)

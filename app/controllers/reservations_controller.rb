@@ -100,7 +100,7 @@ class ReservationsController < ApplicationController
       @reservation.valid? # run validations so it sets reserve_end_at
       set_windows
       render(:new) && (return)
-      #return redirect_to new_order_order_detail_reservation_path(@order, @order_detail)
+      # return redirect_to new_order_order_detail_reservation_path(@order, @order_detail)
     end
 
     @reservation.transaction do
@@ -316,7 +316,7 @@ class ReservationsController < ApplicationController
 
   def load_and_check_resources
     load_basic_resources
-    #@reservation  = @instrument.reservations.find_by_id_and_order_detail_id(params[:reservation_id], @order_detail.id)
+    # @reservation  = @instrument.reservations.find_by_id_and_order_detail_id(params[:reservation_id], @order_detail.id)
     raise ActiveRecord::RecordNotFound if @reservation.blank?
   end
 
