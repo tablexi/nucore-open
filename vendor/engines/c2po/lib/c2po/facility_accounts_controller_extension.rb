@@ -97,7 +97,7 @@ module C2po
           rescue
             @error_fields = { od.id => od.errors.collect { |field, _error| field } }
             errors = od.errors.full_messages
-            errors = [$!.message] if errors.empty?
+            errors = [$ERROR_INFO.message] if errors.empty?
             flash.now[:error] = (["There was an error processing the #{model_class.name.underscore.humanize.downcase} payments"] + errors).join("<br />")
             raise ActiveRecord::Rollback
           end
