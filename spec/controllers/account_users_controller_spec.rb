@@ -86,12 +86,10 @@ RSpec.describe AccountUsersController do
     before :each do
       @method=:delete
       @action=:destroy
-      @account_user=FactoryGirl.create(:account_user, {
-        :user_role => AccountUser::ACCOUNT_ADMINISTRATOR,
+      @account_user=FactoryGirl.create(:account_user,         :user_role => AccountUser::ACCOUNT_ADMINISTRATOR,
         :account_id => @authable.id,
         :user_id => @staff.id,
-        :created_by => @admin.id
-      })
+        :created_by => @admin.id)
       @params={ :account_id => @authable.id, :id => @account_user.id }
     end
 

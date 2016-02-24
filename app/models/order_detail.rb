@@ -386,7 +386,7 @@ class OrderDetail < ActiveRecord::Base
       sql = "(reservations.id IS NULL AND orders.ordered_at < :end) OR (reservations.id IS NOT NULL AND reservations.reserve_start_at < :end)"
     end
 
-    query.where(sql, {:start => start_date, :end => end_date})
+    query.where(sql, :start => start_date, :end => end_date)
   end
   # BEGIN acts_as_state_machine
   include AASM

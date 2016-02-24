@@ -413,7 +413,7 @@ RSpec.describe ScheduleRule do
       end
 
       it 'should return a rule' do
-        @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id})
+        @product_user = ProductUser.create(:product => @instrument, :user => @user, :approved_by => @user.id)
         expect(@instrument.schedule_rules.available_to_user(@user).to_a).to eq([@rule])
       end
     end
@@ -428,7 +428,7 @@ RSpec.describe ScheduleRule do
 
       context 'the scheduling rule does not have levels' do
         it 'should return a rule if the user is in the group' do
-          @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id})
+          @product_user = ProductUser.create(:product => @instrument, :user => @user, :approved_by => @user.id)
           expect(@instrument.schedule_rules.available_to_user(@user).to_a).to eq([@rule])
         end
       end
@@ -440,17 +440,17 @@ RSpec.describe ScheduleRule do
         end
 
         it 'should return the rule if the user is in the group' do
-          @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id, :product_access_group_id => @restriction_levels[0]})
+          @product_user = ProductUser.create(:product => @instrument, :user => @user, :approved_by => @user.id, :product_access_group_id => @restriction_levels[0])
           expect(@instrument.schedule_rules.available_to_user(@user).to_a).to eq([])
         end
 
         it 'should not return the rule if the user is not in the group' do
-          @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id, :product_access_group_id => @restriction_levels[1]})
+          @product_user = ProductUser.create(:product => @instrument, :user => @user, :approved_by => @user.id, :product_access_group_id => @restriction_levels[1])
           expect(@instrument.schedule_rules.available_to_user(@user)).to be_empty
         end
 
         it 'should not return the rule if the user has no group' do
-          @product_user = ProductUser.create({:product => @instrument, :user => @user, :approved_by => @user.id})
+          @product_user = ProductUser.create(:product => @instrument, :user => @user, :approved_by => @user.id)
           expect(@instrument.schedule_rules.available_to_user(@user)).to be_empty
         end
 

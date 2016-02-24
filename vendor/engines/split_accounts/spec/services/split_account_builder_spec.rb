@@ -21,8 +21,7 @@ RSpec.describe SplitAccounts::SplitAccountBuilder, type: :service, split_account
     end
 
     let(:params) do
-      ActionController::Parameters.new({
-        split_accounts_split_account: {
+      ActionController::Parameters.new(        split_accounts_split_account: {
           splits_attributes: {
             "0" => {
               subaccount_id: subaccount_2.id,
@@ -35,8 +34,7 @@ RSpec.describe SplitAccounts::SplitAccountBuilder, type: :service, split_account
               extra_penny: false
             },
           }
-        }
-      })
+        })
     end
 
     let(:subaccount_1) { create(:setup_account, expires_at: (Time.zone.now + 1.month).change(usec: 0)) }

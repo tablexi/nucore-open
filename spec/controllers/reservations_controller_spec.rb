@@ -98,7 +98,7 @@ RSpec.describe ReservationsController do
         end
 
         it 'should contain rule if user is part of group' do
-          @product_user = ProductUser.create({:product => @instrument, :user => @guest, :approved_by => @director.id, :product_access_group => @restriction_level})
+          @product_user = ProductUser.create(:product => @instrument, :user => @guest, :approved_by => @director.id, :product_access_group => @restriction_level)
           do_request
           expect(assigns[:rules]).to match_array([@rule])
         end

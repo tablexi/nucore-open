@@ -423,7 +423,7 @@ RSpec.describe Reservation do
         expect(@reservation1.move_to_earliest).to be true
         expect(@reservation1).not_to be_can_move
         expect(@reservation1.move_to_earliest).to be false
-        expect(@reservation1.errors.messages).to eq({ :base => ['Sorry, but your reservation can no longer be moved.'] })
+        expect(@reservation1.errors.messages).to eq(:base => ['Sorry, but your reservation can no longer be moved.'])
       end
 
       it 'should update the reservation to the earliest available' do

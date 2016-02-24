@@ -87,7 +87,7 @@ if Account.config.statements_enabled?
         create_order_details
         @method=:post
         @action=:send_statements
-        @params.merge!({:order_detail_ids => [@order_detail1.id, @order_detail3.id]})
+        @params.merge!(:order_detail_ids => [@order_detail1.id, @order_detail3.id])
       end
 
       it_should_allow_managers_only :redirect do

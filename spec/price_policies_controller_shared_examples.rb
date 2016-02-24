@@ -25,7 +25,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
       @method=:get
       @action=:index
       @price_policy_past = make_price_policy(@price_group, {:start_date => 1.year.ago, :expire_date => PricePolicy.generate_expire_date(1.year.ago)})
-      @price_policy_future = make_price_policy(@price_group, {:start_date => 1.year.from_now, :expire_date => PricePolicy.generate_expire_date(1.year.from_now)})
+      @price_policy_future = make_price_policy(@price_group, :start_date => 1.year.from_now, :expire_date => PricePolicy.generate_expire_date(1.year.from_now))
     end
 
     it_should_allow_operators_only do |_user|

@@ -355,7 +355,7 @@ RSpec.describe OrderDetail do
         @item.update_attributes(requires_approval: true)
         @order_detail.reload # reload to update related item
         expect(@order_detail.valid_for_purchase?).not_to eq(true)
-        ProductUser.create({product: @item, user: @user, approved_by: @user.id})
+        ProductUser.create(product: @item, user: @user, approved_by: @user.id)
         expect(@order_detail.valid_for_purchase?).to eq(true)
       end
     end
@@ -914,7 +914,7 @@ RSpec.describe OrderDetail do
 
       it 'should be upcoming' do
         start_time=@now+2.days
-        place_reservation @facility, @order_detail, start_time, { reserve_end_at: start_time+1.hour }
+        place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time+1.hour
         upcoming=OrderDetail.upcoming_reservations.all
         expect(upcoming.size).to eq(1)
         expect(upcoming[0]).to eq(@order_detail)
@@ -923,14 +923,14 @@ RSpec.describe OrderDetail do
 
       it 'should not be upcoming because reserve_end_at is in the past' do
         start_time=@now-2.days
-        place_reservation @facility, @order_detail, start_time, { reserve_end_at: start_time+1.hour }
+        place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time+1.hour
         expect(OrderDetail.upcoming_reservations.all).to be_blank
       end
 
 
       it 'should not be upcoming because actual_start_at exists' do
         start_time=@now+2.days
-        place_reservation @facility, @order_detail, start_time, { reserve_end_at: start_time+1.hour, actual_start_at: start_time }
+        place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time+1.hour, actual_start_at: start_time
         expect(OrderDetail.upcoming_reservations.all).to be_blank
       end
 
@@ -951,7 +951,7 @@ RSpec.describe OrderDetail do
 
       it 'should not be in progress because actual_end_at exists' do
         start_time=@now-3.hours
-        place_reservation @facility, @order_detail, start_time, { actual_start_at: start_time, actual_end_at: start_time+1.hour }
+        place_reservation @facility, @order_detail, start_time, actual_start_at: start_time, actual_end_at: start_time+1.hour
         expect(OrderDetail.in_progress_reservations.all).to be_empty
       end
     end
@@ -959,7 +959,7 @@ RSpec.describe OrderDetail do
     context 'needs statement' do
 
       before :each do
-        @statement = Statement.create({facility: @facility, created_by: 1, account: @account})
+        @statement = Statement.create(facility: @facility, created_by: 1, account: @account)
         @order_detail.update_attributes(statement: @statement, reviewed_at: (Time.zone.now-1.day))
         @statement2 = Statement.create({facility: @facility2, created_by: 1, account: @account})
         @order_detail2.statement=@statement2
