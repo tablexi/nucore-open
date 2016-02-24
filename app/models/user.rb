@@ -68,7 +68,7 @@ class User < ActiveRecord::Base
   #
   # Returns true if this user is external to organization, false othewise
   def external?
-    username.downcase == email.downcase
+    username.casecmp(email.downcase).zero?
   end
 
   def password_updatable?
