@@ -70,7 +70,7 @@ module C2po
       OrderDetail
         .account_unreconciled(current_facility, @selected)
         .order(%w(
-          order_details.account_id
+                 order_details.account_id
           order_details.statement_id
           order_details.order_id
           order_details.id))
