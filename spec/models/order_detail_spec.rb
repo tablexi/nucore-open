@@ -371,7 +371,7 @@ RSpec.describe OrderDetail do
       @service_pp     = @service.service_price_policies.create(attributes_for(:service_price_policy, price_group_id: @price_group.id))
       @order_detail   = @order.order_details.create(attributes_for(:order_detail).update(product_id: @service.id, account_id: @account.id))
       @order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10, price_policy_id: @service_pp.id)
-    end
+     end
 
     ## TODO will need to re-write to check for file uploads
     it 'should validate for a service with no file template upload' do

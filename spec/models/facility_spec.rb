@@ -85,7 +85,7 @@ RSpec.describe Facility do
       is_expected.not_to allow_value('12').for(:url_name)
       is_expected.not_to allow_value('').for(:url_name)
       is_expected.not_to allow_value(nil).for(:url_name)
-     end
+    end
 
     it "is valid between 3 and 50 characters" do
       is_expected.to allow_value('123').for(:url_name)
