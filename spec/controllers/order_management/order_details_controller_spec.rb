@@ -228,9 +228,9 @@ RSpec.describe OrderManagement::OrderDetailsController do
           context 'it conflicts with another reservation' do
             before :each do
               @other_reservation = FactoryGirl.create(:purchased_reservation,
-                  :reserve_start_at => @new_reserve_start,
-                  :reserve_end_at => @new_reserve_start + 1.hour,
-                  :product => instrument)
+                                                      :reserve_start_at => @new_reserve_start,
+                                                      :reserve_end_at => @new_reserve_start + 1.hour,
+                                                      :product => instrument)
               @old_start_time = reservation.reserve_start_at
               do_request
             end

@@ -13,8 +13,8 @@ module FormHelper
 
   def scheduling_group_select(product, user)
     select_tag "product_access_group[#{product.id}]",
-      scheduling_group_options(product.product_access_groups, product.access_group_for_user(user)),
-      include_blank: true
+               scheduling_group_options(product.product_access_groups, product.access_group_for_user(user)),
+               include_blank: true
   end
 
   def scheduling_group_options(access_groups, selected_access_group)

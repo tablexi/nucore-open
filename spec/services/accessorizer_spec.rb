@@ -13,13 +13,13 @@ RSpec.describe Accessories::Accessorizer do
   let(:child_order_details) { [child_order_detail].compact }
   let(:order_detail) do
     build_stubbed :order_detail,
-    product: product,
-    order: order,
-    reservation: reservation,
-    child_order_details: child_order_details,
-    attributes: {
-      order_id: order.id
-    }
+                  product: product,
+                  order: order,
+                  reservation: reservation,
+                  child_order_details: child_order_details,
+                  attributes: {
+                    order_id: order.id
+                  }
   end
 
   subject(:accessorizer) { described_class.new(order_detail) }

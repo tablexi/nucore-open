@@ -126,16 +126,16 @@ RSpec.describe SurveysController do
 
   def create_order_detail
     @product = create(:item,
-      facility_account: facility_account,
-      facility: authable
+                      facility_account: facility_account,
+                      facility: authable
     )
     @account = create_nufs_account_with_owner
     @order = create(:order,
-      facility: authable,
-      user: @director,
-      created_by: @director.id,
-      account: @account,
-      ordered_at: Time.zone.now
+                    facility: authable,
+                    user: @director,
+                    created_by: @director.id,
+                    account: @account,
+                    ordered_at: Time.zone.now
     )
     @price_group = FactoryGirl.create(:price_group, facility: authable)
     @price_policy = FactoryGirl.create(:item_price_policy, product: @product, price_group: @price_group)

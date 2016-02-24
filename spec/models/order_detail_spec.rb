@@ -38,21 +38,21 @@ RSpec.describe OrderDetail do
     shared_context "define price policies" do
       let!(:previous_price_policy) do
         item.item_price_policies.create(attributes_for(:item_price_policy,
-          unit_cost: 10.00,
-          unit_subsidy: 2.00,
-          price_group_id: price_group.id,
-          start_date: 8.years.ago,
-          expire_date: nil,
+                                                       unit_cost: 10.00,
+                                                       unit_subsidy: 2.00,
+                                                       price_group_id: price_group.id,
+                                                       start_date: 8.years.ago,
+                                                       expire_date: nil,
         ))
       end
 
       let!(:current_price_policy) do
         item.item_price_policies.create(attributes_for(:item_price_policy,
-          unit_cost: 20.00,
-          unit_subsidy: 3.00,
-          price_group_id: price_group.id,
-          start_date: 1.day.ago,
-          expire_date: nil,
+                                                       unit_cost: 20.00,
+                                                       unit_subsidy: 3.00,
+                                                       price_group_id: price_group.id,
+                                                       start_date: 1.day.ago,
+                                                       expire_date: nil,
         ))
       end
     end
@@ -282,18 +282,18 @@ RSpec.describe OrderDetail do
     context "for reservations" do
       before(:each) do
         @instrument = create(:instrument,
-                                            facility: @facility,
-                                            reserve_interval: 15,
-                                            facility_account_id: @facility_account.id)
+                             facility: @facility,
+                             reserve_interval: 15,
+                             facility_account_id: @facility_account.id)
         @price_group = create(:price_group, facility: @facility)
         create(:price_group_product, product: @instrument, price_group: @price_group)
         create(:account_price_group_member, account: account, price_group: @price_group)
         @pp=create(:instrument_price_policy, :product=> @instrument, price_group: @price_group)
         @rule = @instrument.schedule_rules.create(attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 24))
         @order_detail.reservation = create(:reservation,
-                reserve_start_at: Time.now,
-                reserve_end_at: Time.now+1.hour,
-                :product=> @instrument
+                                           reserve_start_at: Time.now,
+                                           reserve_end_at: Time.now+1.hour,
+                                           :product=> @instrument
               )
         @order_detail.product = @instrument
         @order_detail.save
@@ -448,11 +448,11 @@ RSpec.describe OrderDetail do
 
       let(:order) do
         create(:order,
-          facility: facility,
-          user: user,
-          created_by: user.id,
-          account: account,
-          ordered_at: Time.zone.now,
+               facility: facility,
+               user: user,
+               created_by: user.id,
+               account: account,
+               ordered_at: Time.zone.now,
         )
       end
 
@@ -469,8 +469,8 @@ RSpec.describe OrderDetail do
 
       let(:reservation_for_instrument_with_actuals_and_price_policy) do
         create(:reservation,
-          order_detail: order_detail_with_actuals_and_price_policy,
-          product: instrument_with_actuals_and_price_policy,
+               order_detail: order_detail_with_actuals_and_price_policy,
+               product: instrument_with_actuals_and_price_policy,
         )
       end
 
@@ -492,19 +492,19 @@ RSpec.describe OrderDetail do
         create_price_policy(product: instrument_with_actuals_and_price_policy, usage_rate: 1)
 
         create(:reservation,
-          product: instrument_without_actuals,
-          order_detail: order_detail_without_actuals,
+               product: instrument_without_actuals,
+               order_detail: order_detail_without_actuals,
         )
         create(:reservation,
-          product: instrument_with_actuals,
-          order_detail: order_detail_with_actuals,
+               product: instrument_with_actuals,
+               order_detail: order_detail_with_actuals,
         )
 
         create(:reservation,
-          product: instrument_with_actuals_and_price_policy,
-          reserve_start_at: reservation_for_instrument_with_actuals_and_price_policy.reserve_start_at + 1.hour,
-          duration_mins: 60,
-          order_detail: order_detail_without_price_policy,
+               product: instrument_with_actuals_and_price_policy,
+               reserve_start_at: reservation_for_instrument_with_actuals_and_price_policy.reserve_start_at + 1.hour,
+               duration_mins: 60,
+               order_detail: order_detail_without_price_policy,
         )
 
         Timecop.travel(2.days.from_now) do
@@ -1038,10 +1038,10 @@ RSpec.describe OrderDetail do
 
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
       @instrument=create(:instrument,
-                                      facility: @facility,
-                                      facility_account: @facility_account,
-                                      min_reserve_mins: 60,
-                                      max_reserve_mins: 60)
+                         facility: @facility,
+                         facility_account: @facility_account,
+                         min_reserve_mins: 60,
+                         max_reserve_mins: 60)
 
       # all reservations get placed in today
       @reservation_yesterday = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now - 1.day)
@@ -1302,33 +1302,33 @@ RSpec.describe OrderDetail do
 
     let(:instrument_overage_price_policy) do
       create(:instrument_overage_price_policy,
-        cancellation_cost: 100,
-        price_group: price_group,
-        product: instrument,
+             cancellation_cost: 100,
+             price_group: price_group,
+             product: instrument,
       )
     end
 
     let(:instrument_reservation_price_policy) do
       create(:instrument_price_policy,
-        cancellation_cost: 100,
-        price_group: price_group,
-        product: instrument,
+             cancellation_cost: 100,
+             price_group: price_group,
+             product: instrument,
       )
     end
 
     let(:instrument_usage_price_policy) do
       create(:instrument_usage_price_policy,
-        cancellation_cost: 100,
-        price_group: price_group,
-        product: instrument,
+             cancellation_cost: 100,
+             price_group: price_group,
+             product: instrument,
       )
     end
 
     let(:reservation) do
       create(:reservation,
-        reserve_start_at: 4.hours.from_now,
-        reserve_end_at: 5.hours.from_now,
-        product: instrument,
+             reserve_start_at: 4.hours.from_now,
+             reserve_end_at: 5.hours.from_now,
+             product: instrument,
       )
     end
 
@@ -1580,10 +1580,10 @@ RSpec.describe OrderDetail do
       context 'instrument' do
         before :each do
           @instrument = create(:instrument,
-                                            facility: @facility,
-                                            facility_account_id: @facility_account.id,
-                                            min_reserve_mins: 60,
-                                            max_reserve_mins: 60)
+                               facility: @facility,
+                               facility_account_id: @facility_account.id,
+                               min_reserve_mins: 60,
+                               max_reserve_mins: 60)
           @instrument_order_detail=@order.order_details.create(attributes_for(:order_detail, product_id: @instrument.id, account_id: @account.id))
         end
 

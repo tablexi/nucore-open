@@ -13,9 +13,9 @@ RSpec.describe Relay do
       @facility         = create(:facility)
       @facility_account = @facility.facility_accounts.create(attributes_for(:facility_account))
       @instrument       = create(:instrument,
-                                                :facility => @facility,
-                                                :facility_account => @facility_account,
-                                                :no_relay => true)
+                                 :facility => @facility,
+                                 :facility_account => @facility_account,
+                                 :no_relay => true)
 
       @relay            = create(:relay_syna, :instrument => @instrument)
     end
@@ -23,19 +23,19 @@ RSpec.describe Relay do
     describe 'validating uniqueness' do
       it 'does not allow two different instruments to have the same IP/port' do
         instrument2 = create :instrument,
-                              facility: @facility,
-                              facility_account: @facility_account,
-                              no_relay: true
+                             facility: @facility,
+                             facility_account: @facility_account,
+                             no_relay: true
         relay2 = build :relay_syna, instrument: instrument2, port: @relay.port
         expect(relay2).to_not be_valid
       end
 
       it 'allows two shared schedule instruments to include the same IP/port' do
         instrument2 = create :instrument,
-                              facility: @facility,
-                              facility_account: @facility_account,
-                              no_relay: true,
-                              schedule: @instrument.schedule
+                             facility: @facility,
+                             facility_account: @facility_account,
+                             no_relay: true,
+                             schedule: @instrument.schedule
         relay2 = build :relay_syna, instrument: instrument2, port: @relay.port
         expect(relay2).to be_valid
       end

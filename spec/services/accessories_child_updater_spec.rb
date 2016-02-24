@@ -4,11 +4,11 @@ RSpec.describe Accessories::ChildUpdater do
   let(:order) { Order.new }
   let(:order_detail) do
     build_stubbed :order_detail,
-               order: order,
-               child_order_details: [],
-               attributes: {
-                order_id: order.id
-               }
+                  order: order,
+                  child_order_details: [],
+                  attributes: {
+                   order_id: order.id
+                  }
   end
 
   describe 'update_children' do

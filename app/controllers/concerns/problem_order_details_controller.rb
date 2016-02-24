@@ -17,6 +17,6 @@ module ProblemOrderDetailsController
       PricePolicyMassAssigner.assign_price_policies(order_details)
     flash[:notice] =
       I18n.t("controllers.problem_order_details.assign_price_policies.success",
-      count: successfully_assigned.count)
+             count: successfully_assigned.count)
   end
 end

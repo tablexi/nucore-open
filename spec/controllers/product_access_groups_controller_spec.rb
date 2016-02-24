@@ -11,8 +11,8 @@ RSpec.describe ProductAccessGroupsController do
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @instrument       = FactoryGirl.create(:instrument,
-                                      :facility => @authable,
-                                      :facility_account => @facility_account)
+                                           :facility => @authable,
+                                           :facility_account => @facility_account)
     @params={ :instrument_id => @instrument.url_name, :facility_id => @authable.url_name }
   end
 
@@ -21,8 +21,8 @@ RSpec.describe ProductAccessGroupsController do
       @level = FactoryGirl.create(:product_access_group, :product => @instrument)
       @level2 = FactoryGirl.create(:product_access_group, :product => @instrument)
       @instrument2 = FactoryGirl.create(:instrument,
-                                      :facility => @authable,
-                                      :facility_account => @facility_account)
+                                        :facility => @authable,
+                                        :facility_account => @facility_account)
       @level3 = FactoryGirl.create(:product_access_group, :product => @instrument2)
 
       @action = :index

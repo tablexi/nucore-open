@@ -5,8 +5,8 @@ RSpec.describe ProductAccessGroup do
     @facility         = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @instrument = @product = FactoryGirl.create(:instrument,
-                                                  :facility => @facility,
-                                                  :facility_account => @facility_account)
+                                                :facility => @facility,
+                                                :facility_account => @facility_account)
     @restriction_levels = []
     3.times do
       @restriction_levels << FactoryGirl.create(:product_access_group, :product_id => @product.id)

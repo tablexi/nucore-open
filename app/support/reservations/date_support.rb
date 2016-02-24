@@ -176,8 +176,8 @@ module Reservations::DateSupport
     self.reserve_start_at = nil
     self.reserve_end_at   = nil
     reserve_attrs = params.slice(:reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian,
-      :duration_value, :duration_unit, :duration_mins,
-      :reserve_start_at, :reserve_end_at)
+                                 :duration_value, :duration_unit, :duration_mins,
+                                 :reserve_start_at, :reserve_end_at)
     self.assign_attributes reserve_attrs
   end
 
@@ -185,8 +185,8 @@ module Reservations::DateSupport
     self.actual_start_at = nil
     self.actual_end_at   = nil
     reserve_attrs = params.slice(:actual_start_date, :actual_start_hour, :actual_start_min, :actual_start_meridian,
-     :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian,
-     :actual_start_at, :actual_end_at, :actual_duration_mins)
+                                 :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian,
+                                 :actual_start_at, :actual_end_at, :actual_duration_mins)
 
     reserve_attrs.reject! { |_key,value| value.blank? }
 

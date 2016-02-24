@@ -73,19 +73,19 @@ class ReservationUserActionPresenter
 
     if fee > 0
       link_to I18n.t('reservations.delete.link'), order_order_detail_path(order, order_detail, cancel: 'cancel'),
-        method: :put,
-        confirm: I18n.t('reservations.delete.confirm_with_fee', fee: number_to_currency(fee))
+              method: :put,
+              confirm: I18n.t('reservations.delete.confirm_with_fee', fee: number_to_currency(fee))
     else
       link_to I18n.t('reservations.delete.link'), order_order_detail_path(order, order_detail, cancel: 'cancel'),
-        method: :put,
-        confirm: I18n.t('reservations.delete.confirm')
+              method: :put,
+              confirm: I18n.t('reservations.delete.confirm')
     end
   end
 
   def move_link
     link_to I18n.t('reservations.moving_up.link'), order_order_detail_reservation_move_reservation_path(order, order_detail, reservation),
-      class: 'move-res',
-      data: { reservation_id: reservation.id }
+            class: 'move-res',
+            data: { reservation_id: reservation.id }
   end
 
   private

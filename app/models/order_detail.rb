@@ -361,8 +361,8 @@ class OrderDetail < ActiveRecord::Base
 
     search.where(
       "(#{journal_query.join(' AND ')}) OR (#{statement_query.join(' AND ')})",
-        start_date: start_date,
-        end_date: end_date
+      start_date: start_date,
+      end_date: end_date
     )
   end
 

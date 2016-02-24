@@ -339,14 +339,14 @@ RSpec.describe Account do
 
       def create_po_for(user, facility, deleted_at = nil)
         account = create(:purchase_order_account,
-                    facility: facility,
-                    account_users: [build(:account_user, user_role: 'Owner', user: create(:user))])
+                         facility: facility,
+                         account_users: [build(:account_user, user_role: 'Owner', user: create(:user))])
 
         create(:account_user,
-          user: user,
-          deleted_at: deleted_at,
-          user_role: AccountUser::ACCOUNT_PURCHASER,
-          account: account)
+               user: user,
+               deleted_at: deleted_at,
+               user_role: AccountUser::ACCOUNT_PURCHASER,
+               account: account)
 
         account
       end

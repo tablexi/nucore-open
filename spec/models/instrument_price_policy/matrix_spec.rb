@@ -99,10 +99,10 @@ RSpec.describe InstrumentPricePolicy do
   let(:reservation) do
     now = Time.zone.now
     build_stubbed :reservation,
-          reserve_start_at: now.change(hour: reserve[0], min: reserve[1]),
-          reserve_end_at: now.change(hour: reserve[2], min: reserve[3]),
-          actual_start_at: now.change(hour: actual[0], min: actual[1]),
-          actual_end_at: now.change(hour: actual[2], min: actual[3])
+                  reserve_start_at: now.change(hour: reserve[0], min: reserve[1]),
+                  reserve_end_at: now.change(hour: reserve[2], min: reserve[3]),
+                  actual_start_at: now.change(hour: actual[0], min: actual[1]),
+                  actual_end_at: now.change(hour: actual[2], min: actual[3])
   end
 
   context 'normal price policy with no subsidy' do

@@ -48,7 +48,7 @@ end
 def create_nufs_account_with_owner(owner=:owner)
   owner = instance_variable_get("@#{owner}")
   FactoryGirl.create(:nufs_account,
-    account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner)]
+                     account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner)]
   )
 end
 
@@ -210,10 +210,10 @@ end
 def setup_reservation(facility, facility_account, account, user)
   # create instrument, min reserve time is 60 minutes, max is 60 minutes
   @instrument       = FactoryGirl.create(:instrument,
-                                           :facility => facility,
-                                           :facility_account => facility_account,
-                                           :min_reserve_mins => 60,
-                                           :max_reserve_mins => 60)
+                                         :facility => facility,
+                                         :facility_account => facility_account,
+                                         :min_reserve_mins => 60,
+                                         :max_reserve_mins => 60)
   assert @instrument.valid?
   @price_group      = facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
   FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => @price_group)
@@ -282,8 +282,8 @@ end
 
 def setup_account(factory, facility, user)
   FactoryGirl.create(factory,
-    facility: facility,
-    account_users_attributes: account_users_attributes_hash(user: user)
+                     facility: facility,
+                     account_users_attributes: account_users_attributes_hash(user: user)
   )
 end
 

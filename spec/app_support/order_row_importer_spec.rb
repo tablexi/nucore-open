@@ -6,7 +6,7 @@ RSpec.describe OrderRowImporter do
   subject { OrderRowImporter.new(row, order_import) }
   let(:account) do
     create(:nufs_account,
-      account_users_attributes: [ attributes_for(:account_user, user: user) ],
+           account_users_attributes: [ attributes_for(:account_user, user: user) ],
     )
   end
   let(:facility) { create(:facility) }
@@ -16,8 +16,8 @@ RSpec.describe OrderRowImporter do
   let(:order_import) { build(:order_import, creator: user, facility: facility) }
   let(:service) do
     create(:setup_service,
-      facility: facility,
-      facility_account: facility_account,
+           facility: facility,
+           facility_account: facility_account,
     )
   end
   let(:user) { create(:user) }

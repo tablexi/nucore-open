@@ -4,9 +4,9 @@ require "journal"
 RSpec.describe Journal do
   subject(:journal) do
     build(:journal,
-      facility: facility,
-      created_by: 1,
-      journal_date: journal_date,
+          facility: facility,
+          created_by: 1,
+          journal_date: journal_date,
     )
   end
 

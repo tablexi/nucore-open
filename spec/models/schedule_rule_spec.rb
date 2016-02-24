@@ -9,8 +9,8 @@ RSpec.describe ScheduleRule do
     @facility   = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @instrument = FactoryGirl.create(:instrument,
-                                        :facility => @facility,
-                                        :facility_account => @facility_account)
+                                     :facility => @facility,
+                                     :facility_account => @facility_account)
     @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     expect(@rule).to be_valid
   end
@@ -69,8 +69,8 @@ RSpec.describe ScheduleRule do
       @facility   = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
-                                        :facility => @facility,
-                                        :facility_account => @facility_account)
+                                       :facility => @facility,
+                                       :facility_account => @facility_account)
       @options    = Hash[:start_hour => 0, :start_min => 0, :end_hour => 24, :end_min => 0]
       @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(@options))
       assert @rule.valid?
@@ -80,8 +80,8 @@ RSpec.describe ScheduleRule do
       @facility   = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
-                                        :facility => @facility,
-                                        :facility_account => @facility_account)
+                                       :facility => @facility,
+                                       :facility_account => @facility_account)
       @options    = Hash[:start_hour => 0, :start_min => 0, :end_hour => 24, :end_min => 1]
       @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(@options))
       assert @rule.invalid?
@@ -92,8 +92,8 @@ RSpec.describe ScheduleRule do
       @facility   = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
-                                        :facility => @facility,
-                                        :facility_account => @facility_account)
+                                       :facility => @facility,
+                                       :facility_account => @facility_account)
       @rule       = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
       expect(@rule.includes_datetime(DateTime.new(1981, 9, 15, 12, 0, 0))).to eq(true)
     end
@@ -102,8 +102,8 @@ RSpec.describe ScheduleRule do
       @facility   = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
-                                        :facility => @facility,
-                                        :facility_account => @facility_account)
+                                       :facility => @facility,
+                                       :facility_account => @facility_account)
       @rule       = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
       expect(@rule.includes_datetime(DateTime.new(1981, 9, 15, 3, 0, 0))).to eq(false)
     end
@@ -113,8 +113,8 @@ RSpec.describe ScheduleRule do
     @facility   = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @instrument = FactoryGirl.create(:instrument,
-                                        :facility => @facility,
-                                        :facility_account => @facility_account)
+                                     :facility => @facility,
+                                     :facility_account => @facility_account)
     # create rule every day from 9 am to 5 pm
     @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     assert @rule.valid?
@@ -159,8 +159,8 @@ RSpec.describe ScheduleRule do
     @facility   = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @instrument = FactoryGirl.create(:instrument,
-                                        :facility => @facility,
-                                        :facility_account => @facility_account)
+                                     :facility => @facility,
+                                     :facility_account => @facility_account)
     # create rule every day from 9 am to 5 pm
     @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     assert @rule.valid?
@@ -198,8 +198,8 @@ RSpec.describe ScheduleRule do
     @facility   = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @instrument = FactoryGirl.create(:instrument,
-                                        :facility => @facility,
-                                        :facility_account => @facility_account)
+                                     :facility => @facility,
+                                     :facility_account => @facility_account)
     # create rule every day from 9 am to 5 pm
     @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     assert @rule.valid?
@@ -220,8 +220,8 @@ RSpec.describe ScheduleRule do
       @facility   = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
-                                        :facility => @facility,
-                                        :facility_account => @facility_account)
+                                       :facility => @facility,
+                                       :facility_account => @facility_account)
       # create rule every day from 9 am to 5 pm
       @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       assert @rule.valid?
@@ -275,9 +275,9 @@ RSpec.describe ScheduleRule do
       @facility   = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
-                                        :facility => @facility,
-                                        :reserve_interval => 60,
-                                        :facility_account => @facility_account)
+                                       :facility => @facility,
+                                       :reserve_interval => 60,
+                                       :facility_account => @facility_account)
       # create rule tue 1 am - 3 am
       @options = {
         :on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
@@ -336,9 +336,9 @@ RSpec.describe ScheduleRule do
       @facility   = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
-                                        :facility => @facility,
-                                        :reserve_interval => 60,
-                                        :facility_account => @facility_account)
+                                       :facility => @facility,
+                                       :reserve_interval => 60,
+                                       :facility_account => @facility_account)
       # create rule tue 9 pm - 12 am
       @options = {
         :on_mon => false, :on_tue => true, :on_wed => false, :on_thu => false, :on_fri => false, :on_sat => false, :on_sun => false,
@@ -379,8 +379,8 @@ RSpec.describe ScheduleRule do
       @facility   = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
-                                        :facility => @facility,
-                                        :facility_account => @facility_account)
+                                       :facility => @facility,
+                                       :facility_account => @facility_account)
       # create rule every day from 9 am to 5 pm
       @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       assert @rule.valid?
@@ -400,9 +400,9 @@ RSpec.describe ScheduleRule do
       @facility   = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
-                                        :facility => @facility,
-                                        :facility_account => @facility_account,
-                                        :requires_approval => true)
+                                       :facility => @facility,
+                                       :facility_account => @facility_account,
+                                       :requires_approval => true)
       @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       @user = FactoryGirl.create(:user)
     end

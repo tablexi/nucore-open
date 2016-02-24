@@ -34,8 +34,8 @@ class Journal < ActiveRecord::Base
           ValidatorFactory.instance(account.account_number, od.product.account).account_is_open!(od.fulfilled_at)
         rescue ValidatorError => e
           row_errors << I18n.t("activerecord.errors.models.journal.invalid_account",
-            account_number: account.account_number_to_s,
-            validation_error: e.message
+                               account_number: account.account_number_to_s,
+                               validation_error: e.message
           )
         end
 

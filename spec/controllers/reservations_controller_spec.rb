@@ -122,9 +122,9 @@ RSpec.describe ReservationsController do
         assert @reservation.valid?
         # Second reservation that begins immediately after the first reservation
         @reservation2 = FactoryGirl.create(:purchased_reservation,
-                                              :product => @instrument2,
-                                              :reserve_start_at => @reservation.reserve_end_at,
-                                              :reserve_end_at => @reservation.reserve_end_at + 1.hour)
+                                           :product => @instrument2,
+                                           :reserve_start_at => @reservation.reserve_end_at,
+                                           :reserve_end_at => @reservation.reserve_end_at + 1.hour)
         assert @reservation2.valid?
         @params[:start] = 1.day.from_now.to_i
         sign_in @admin

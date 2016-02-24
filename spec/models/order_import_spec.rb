@@ -31,9 +31,9 @@ RSpec.describe OrderImport, :timecop_freeze do
 
   let(:account) do
     create(:nufs_account,
-      description: "dummy account",
-      account_number: '111-2222222-33333333-01',
-      account_users_attributes: account_users_attributes,
+           description: "dummy account",
+           account_number: '111-2222222-33333333-01',
+           account_users_attributes: account_users_attributes,
     )
   end
 
@@ -66,14 +66,14 @@ RSpec.describe OrderImport, :timecop_freeze do
   let(:import_file_row_count) { import_file.read.split("\n").count }
   let(:item) do
     facility.items.create!(attributes_for(:item,
-      facility_account_id: facility_account.id,
-      name: "Example Item",
+                                          facility_account_id: facility_account.id,
+                                          name: "Example Item",
     ))
   end
   let(:service) do
     facility.services.create!(attributes_for(:service,
-      facility_account_id: facility_account.id,
-      name: "Example Service",
+                                             facility_account_id: facility_account.id,
+                                             name: "Example Service",
     ))
   end
   let(:stored_file) do
@@ -93,12 +93,12 @@ RSpec.describe OrderImport, :timecop_freeze do
     price_group = facility.price_groups.create!(attributes_for(:price_group))
     create(:account_price_group_member, account: account, price_group: price_group)
     item.item_price_policies.create!(attributes_for(:item_price_policy,
-      price_group_id: price_group.id,
-      start_date: fiscal_year_beginning,
+                                                    price_group_id: price_group.id,
+                                                    start_date: fiscal_year_beginning,
     ))
     service.service_price_policies.create!(attributes_for(:service_price_policy,
-      price_group_id: price_group.id,
-      start_date: fiscal_year_beginning,
+                                                          price_group_id: price_group.id,
+                                                          start_date: fiscal_year_beginning,
     ))
   end
 
