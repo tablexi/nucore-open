@@ -197,25 +197,25 @@ class Order < ActiveRecord::Base
 
   # was originally used in OrdersController#add
   #def auto_assign_account!(product)
-    #return if self.account
+  #return if self.account
 
-    #accounts=user.accounts.active.for_facility(product.facility)
+  #accounts=user.accounts.active.for_facility(product.facility)
 
-    #if accounts.size > 0
-      #orders=user.orders.delete_if{|o| o.ordered_at.nil? || o == self || !accounts.include?(o.account) }
+  #if accounts.size > 0
+  #orders=user.orders.delete_if{|o| o.ordered_at.nil? || o == self || !accounts.include?(o.account) }
 
-      #if orders.blank?
-        #accounts.each{|acct| self.account=acct and break if acct.validate_against_product(product, user).nil? }
-      #else
-        ## last useable account used to place an order
-        #orders.sort{|x,y| y.ordered_at <=> x.ordered_at}.each do |order|
-          #acct=order.account
-          #self.account=acct and break if accounts.include?(acct) && acct.validate_against_product(product, user).nil?
-        #end
-      #end
-    #end
+  #if orders.blank?
+  #accounts.each{|acct| self.account=acct and break if acct.validate_against_product(product, user).nil? }
+  #else
+  ## last useable account used to place an order
+  #orders.sort{|x,y| y.ordered_at <=> x.ordered_at}.each do |order|
+  #acct=order.account
+  #self.account=acct and break if accounts.include?(acct) && acct.validate_against_product(product, user).nil?
+  #end
+  #end
+  #end
 
-    #raise I18n.t('models.order.auto_assign_account', :product_name => product.name) if self.account.nil?
+  #raise I18n.t('models.order.auto_assign_account', :product_name => product.name) if self.account.nil?
   #end
 
   # If user_id doesn't match created_by, that means it was ordered on behalf of

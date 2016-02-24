@@ -145,7 +145,7 @@ end
         # First order:
         { order_date: nucore_format_date(default_order_date) },
         { order_date: nucore_format_date(default_order_date) },
-        # Second order (a different order_date):
+                  # Second order (a different order_date):
                   order_date: nucore_format_date(default_order_date + 1.day),
           product_name: "Invalid Item"
       )

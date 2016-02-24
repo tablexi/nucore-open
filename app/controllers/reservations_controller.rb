@@ -366,7 +366,7 @@ class ReservationsController < ApplicationController
     elsif reservation.can_switch_instrument_on? # do you need to begin your reservation
       I18n.t('reservations.notices.can_switch_on', :reservation => reservation)
     elsif reservation.canceled?
-      # no message
+    # no message
     # do you have a reservation for today that hasn't ended
     elsif upcoming_today? reservation
       I18n.t('reservations.notices.upcoming', :reservation => reservation)
