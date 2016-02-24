@@ -52,7 +52,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
                                                 discount_percent: 25,
                                                 start_hour: 0,
                                                 end_hour: 24
-        )
+                                               )
       end
 
       it 'calculates a discount based on the given time and configured schedule rules' do
@@ -78,7 +78,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
                                                 discount_percent: 20,
                                                 start_hour: 17,
                                                 end_hour: 24
-        )
+                                               )
         @reservation_start = 1.day.from_now.change hour: 16, min: 15, sec: 0
         @reservation_end = @reservation_start + 1.hour + 30.minutes
       end

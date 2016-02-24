@@ -261,7 +261,7 @@ RSpec.describe InstrumentsController do
         :instrument => FactoryGirl.attributes_for(:instrument,
                                                   :facility_account_id => @facility_account.id,
                                                   :control_mechanism => 'manual'
-        )
+                                                 )
       )
     end
 

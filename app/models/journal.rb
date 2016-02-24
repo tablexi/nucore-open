@@ -36,7 +36,7 @@ class Journal < ActiveRecord::Base
           row_errors << I18n.t("activerecord.errors.models.journal.invalid_account",
                                account_number: account.account_number_to_s,
                                validation_error: e.message
-          )
+                              )
         end
 
         JournalRow.create!(journal_row_attributes_from_order_detail(od))

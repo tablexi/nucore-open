@@ -19,7 +19,7 @@ RSpec.describe FacilityReservationsController do
     @product=FactoryGirl.create(:instrument,
                                 :facility_account => @facility_account,
                                 :facility => @authable
-    )
+                               )
     @schedule_rule=FactoryGirl.create(:schedule_rule, :instrument => @product)
     @product.reload
     @account = create_nufs_account_with_owner :director
@@ -30,7 +30,7 @@ RSpec.describe FacilityReservationsController do
                               :account => @account,
                               :ordered_at => Time.zone.now,
                               :state => 'purchased'
-    )
+                             )
 
     @reservation=FactoryGirl.create(:reservation, :product => @product)
     expect(@reservation).not_to be_new_record
@@ -280,7 +280,7 @@ RSpec.describe FacilityReservationsController do
                                    :account => @account,
                                    :ordered_at => nil,
                                    :state => 'new'
-        )
+                                  )
         # make sure the reservations are happening today
         @reservation.update_attributes!(:reserve_start_at => Time.zone.now, :reserve_end_at => 1.hour.from_now)
 
@@ -354,7 +354,7 @@ RSpec.describe FacilityReservationsController do
                 :reserve_start_at => @reservation.reserve_start_at,
                 :reserve_end_at => @reservation.reserve_end_at - 15.minutes
               }
-            )
+                      )
       end
 
       it "should update estimated cost" do

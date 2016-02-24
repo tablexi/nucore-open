@@ -267,7 +267,7 @@ RSpec.describe Ability do
                 file_type: file_type,
                 order_detail: order_detail,
                 product: product,
-          )
+               )
         end
         let(:order_detail) { order.order_details.first }
         let(:order) { create(:purchased_order, product: product) }

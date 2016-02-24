@@ -49,7 +49,7 @@ def create_nufs_account_with_owner(owner=:owner)
   owner = instance_variable_get("@#{owner}")
   FactoryGirl.create(:nufs_account,
                      account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner)]
-  )
+                    )
 end
 
 # Simulates placing an order for a product
@@ -284,7 +284,7 @@ def setup_account(factory, facility, user)
   FactoryGirl.create(factory,
                      facility: facility,
                      account_users_attributes: account_users_attributes_hash(user: user)
-  )
+                    )
 end
 
 def setup_item_from_facility_account(facility_account)
