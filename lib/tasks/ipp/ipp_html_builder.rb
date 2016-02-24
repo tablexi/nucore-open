@@ -29,7 +29,7 @@ class IppHtmlBuilder
 
     append_to_article do |doc|
       doc.section.comparison {
-        doc.h2 "#{product.facility.name} | #{product.name} | #{detail.to_s}"
+        doc.h2 "#{product.facility.name} | #{product.name} | #{detail}"
         doc.p "Reserved for #{(reservation.reserve_end_at - reservation.reserve_start_at) / 60} minutes"
         doc.p "Used for #{(reservation.actual_end_at - reservation.actual_start_at) / 60} minutes"
         doc.table(border: 1) {
@@ -92,7 +92,7 @@ class IppHtmlBuilder
 
 
   def render
-    File.write 'price_change_report.html', "<!DOCTYPE html>#{html.root.to_s}"
+    File.write 'price_change_report.html', "<!DOCTYPE html>#{html.root}"
   end
 
 
