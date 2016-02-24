@@ -134,7 +134,7 @@ class Facility < ActiveRecord::Base
   def set_journal_mask
     f = Facility.find(:all, limit: 1, order: 'journal_mask DESC').first
     self.journal_mask = if f && f.journal_mask.match(/^C(\d{2})$/)
-                          sprintf("C%02d", $1.to_i + 1)
+                          sprintf("C%02d", Regexp.last_match(1).to_i + 1)
                         else
                           'C01'
                         end
