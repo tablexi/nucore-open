@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe ReservationsController do
   include DateHelper
@@ -26,7 +26,7 @@ RSpec.describe ReservationsController do
     create(:account_price_group_member, account: @account, price_group: @price_group)
   end
 
-  context 'index' do
+  context "index" do
     before :each do
       allow(@order).to receive(:cart_valid?).and_return(true)
       allow(@order).to receive(:place_order?).and_return(true)
@@ -43,48 +43,48 @@ RSpec.describe ReservationsController do
       expect(assigns[:instrument]).to eq(@instrument)
     end
 
-    context 'schedule rules' do
+    context "schedule rules" do
       before :each do
         sign_in @guest
         @now = Time.zone.now
         @params.merge!(start: @now.to_i)
       end
 
-      it 'should set end to end of day of start if blank' do
+      it "should set end to end of day of start if blank" do
         do_request
         expect(assigns[:end_at]).to match_date @now.end_of_day
       end
 
-      it 'should include a reservation from today' do
+      it "should include a reservation from today" do
         @reservation = @instrument.reservations.create(reserve_start_at: @now, order_detail: @order_detail,
-                                                       duration_value: 60, duration_unit: 'minutes')
+                                                       duration_value: 60, duration_unit: "minutes")
         do_request
         expect(assigns[:reservations]).to match_array([@reservation])
       end
 
-      it 'should not contain reservations from before start date' do
+      it "should not contain reservations from before start date" do
         @reservation = @instrument.reservations.create(reserve_start_at: @now - 1.day, order_detail: @order_detail,
-                                                       duration_value: 60, duration_unit: 'minutes')
+                                                       duration_value: 60, duration_unit: "minutes")
         do_request
         expect(assigns[:reservations]).not_to include @reservation
       end
 
-      it 'should not contain reservations from after the end date' do
+      it "should not contain reservations from after the end date" do
         @reservation = @instrument.reservations.create(reserve_start_at: @now + 3.days, order_detail: @order_detail,
-                                                       duration_value: 60, duration_unit: 'minutes')
+                                                       duration_value: 60, duration_unit: "minutes")
         @params[:end] = @now + 2.days
         do_request
         expect(assigns[:reservations]).not_to include @reservation
       end
 
-      it 'should not contain @unavailable if month view' do
+      it "should not contain @unavailable if month view" do
         @params[:start] = 1.day.ago.to_i
         @params[:end] = 30.days.from_now.to_i
         do_request
         expect(assigns[:unavailable]).to eq([])
       end
 
-      context 'schedule rules' do
+      context "schedule rules" do
         before :each do
           @instrument.update_attributes(requires_approval: true)
           @restriction_level = FactoryGirl.create(:product_access_group, product_id: @instrument.id)
@@ -92,22 +92,22 @@ RSpec.describe ReservationsController do
           @rule.save!
         end
 
-        it 'should not contain rule if not part of group' do
+        it "should not contain rule if not part of group" do
           do_request
           expect(assigns[:rules]).to be_empty
         end
 
-        it 'should contain rule if user is part of group' do
+        it "should contain rule if user is part of group" do
           @product_user = ProductUser.create(product: @instrument, user: @guest, approved_by: @director.id, product_access_group: @restriction_level)
           do_request
           expect(assigns[:rules]).to match_array([@rule])
         end
 
-        context 'as admin' do
+        context "as admin" do
           before :each do
             maybe_grant_always_sign_in :director
           end
-          it 'should contain all schedule rules' do
+          it "should contain all schedule rules" do
             do_request
             expect(assigns[:rules]).to match_array([@rule])
           end
@@ -115,7 +115,7 @@ RSpec.describe ReservationsController do
       end
     end
 
-    describe 'shared scheduling' do
+    describe "shared scheduling" do
       before :each do
         @instrument2 = FactoryGirl.create(:setup_instrument, facility: @authable, schedule: @instrument.schedule)
         @reservation = FactoryGirl.create(:purchased_reservation, product: @instrument)
@@ -131,17 +131,17 @@ RSpec.describe ReservationsController do
         do_request
       end
 
-      it 'should include reservation from instrument 1' do
+      it "should include reservation from instrument 1" do
         expect(assigns(:reservations)).to include @reservation
       end
 
-      it 'should include reservation from instrument 2' do
+      it "should include reservation from instrument 2" do
         expect(assigns(:reservations)).to include @reservation2
       end
     end
   end
 
-  context 'list' do
+  context "list" do
     before :each do
       @method = :get
       @action = :list
@@ -150,14 +150,14 @@ RSpec.describe ReservationsController do
 
     it "should redirect to default view" do
       maybe_grant_always_sign_in(:staff)
-      @params[:status] = 'junk'
+      @params[:status] = "junk"
       do_request
       is_expected.to redirect_to "/reservations/upcoming"
     end
 
     context "upcoming" do
       before :each do
-        @params = { status: 'upcoming' }
+        @params = { status: "upcoming" }
         @upcoming = FactoryGirl.create(:purchased_reservation, product: @instrument)
         @in_progress = FactoryGirl.create(:purchased_reservation, product: @instrument, reserve_start_at: Time.zone.now, reserve_end_at: 1.hour.from_now)
         @in_progress.update_attributes!(actual_start_at: Time.zone.now)
@@ -170,82 +170,82 @@ RSpec.describe ReservationsController do
         expect(assigns(:available_statuses).size).to eq(2)
         expect(assigns(:status)).to eq(assigns(:available_statuses).first)
         expect(assigns(:order_details).map(&:id)).to match_array([@in_progress.order_detail, @upcoming.order_detail].map(&:id))
-        expect(assigns(:active_tab)).to eq('reservations')
-        is_expected.to render_template('list')
+        expect(assigns(:active_tab)).to eq("reservations")
+        is_expected.to render_template("list")
       end
 
-      context 'notices' do
+      context "notices" do
         before :each do
           sign_in @staff
         end
 
-        it 'should have message if you can switch on' do
+        it "should have message if you can switch on" do
           allow_any_instance_of(Reservation).to receive(:can_switch_instrument_on?).and_return(true)
           do_request
-          expect(response.body).to include I18n.t('reservations.notices.can_switch_on', reservation: @upcoming)
+          expect(response.body).to include I18n.t("reservations.notices.can_switch_on", reservation: @upcoming)
         end
 
-        it 'should have message if you can switch off' do
+        it "should have message if you can switch off" do
           allow_any_instance_of(Reservation).to receive(:can_switch_instrument_off?).and_return(true)
           do_request
-          expect(response.body).to include I18n.t('reservations.notices.can_switch_off', reservation: @upcoming)
+          expect(response.body).to include I18n.t("reservations.notices.can_switch_off", reservation: @upcoming)
         end
 
-        it 'should have a message for todays reservations' do
+        it "should have a message for todays reservations" do
           @upcoming.update_attributes(reserve_start_at: 1.hour.from_now, reserve_end_at: 2.hours.from_now)
           tomorrow_reservation = FactoryGirl.create(:purchased_reservation, product: @instrument, reserve_start_at: 1.day.from_now, reserve_end_at: 1.day.from_now + 1.hour)
           tomorrow_reservation.order_detail.order.update_attributes(user: @staff)
           do_request
-          expect(response.body).to include I18n.t('reservations.notices.upcoming', reservation: @upcoming)
-          expect(response.body).to_not include I18n.t('reservations.notices.upcoming', reservation: @tomorrow)
+          expect(response.body).to include I18n.t("reservations.notices.upcoming", reservation: @upcoming)
+          expect(response.body).to_not include I18n.t("reservations.notices.upcoming", reservation: @tomorrow)
         end
 
-        it 'should not have an upcoming message for a canceled reservation' do
+        it "should not have an upcoming message for a canceled reservation" do
           @upcoming.update_attributes(reserve_start_at: 1.hour.from_now, reserve_end_at: 2.hours.from_now)
           @upcoming.order_detail.update_order_status!(@staff, OrderStatus.canceled.first)
           do_request
-          expect(response.body).to_not include I18n.t('reservations.notices.upcoming', reservation: @upcoming)
+          expect(response.body).to_not include I18n.t("reservations.notices.upcoming", reservation: @upcoming)
         end
 
       end
 
-      context 'moving forward' do
+      context "moving forward" do
         before :each do
           sign_in @staff
         end
 
-        it 'should not show Begin Now if there is no time to move it forward to' do
+        it "should not show Begin Now if there is no time to move it forward to" do
           allow_any_instance_of(Reservation).to receive(:earliest_possible).and_return(nil)
           do_request
-          expect(response.body).not_to include('Begin Now')
+          expect(response.body).not_to include("Begin Now")
         end
 
-        it 'should show Begin Now if there is a time to move it forward to' do
+        it "should show Begin Now if there is a time to move it forward to" do
           allow_any_instance_of(Reservation).to receive(:earliest_possible).and_return(Reservation.new)
           do_request
-          expect(response.body).to include('Begin Now')
+          expect(response.body).to include("Begin Now")
         end
       end
     end
 
-    context 'all' do
+    context "all" do
       before :each do
-        @params = { status: 'all' }
+        @params = { status: "all" }
       end
 
-      it 'should respond with all reservations' do
+      it "should respond with all reservations" do
         maybe_grant_always_sign_in :staff
         do_request
-        expect(assigns(:status)).to eq('all')
+        expect(assigns(:status)).to eq("all")
         expect(assigns(:available_statuses).size).to eq(2)
         expect(assigns(:order_details)).to eq(OrderDetail.all_reservations.all)
-        expect(assigns(:active_tab)).to eq('reservations')
-        is_expected.to render_template('list')
+        expect(assigns(:active_tab)).to eq("reservations")
+        is_expected.to render_template("list")
       end
     end
   end
 
-  context 'creating a reservation in the past' do
+  context "creating a reservation in the past" do
     before :each do
       @method = :post
       @action = :create
@@ -259,46 +259,46 @@ RSpec.describe ReservationsController do
         order_account: @account.id,
         reservation: {
           reserve_start_date: format_usa_date(Time.zone.now.to_date - 5.days),
-            reserve_start_hour: '9',
-            reserve_start_min: '0',
-            reserve_start_meridian: 'am',
-            duration_value: '60',
-            duration_unit: 'minutes'
+            reserve_start_hour: "9",
+            reserve_start_min: "0",
+            reserve_start_meridian: "am",
+            duration_value: "60",
+            duration_unit: "minutes"
         }
       }
     end
 
-    it_should_allow_all facility_operators, 'should redirect' do
+    it_should_allow_all facility_operators, "should redirect" do
       assert_redirected_to purchase_order_path(@order)
     end
 
-    it_should_allow_all facility_operators, 'and not have errors' do
+    it_should_allow_all facility_operators, "and not have errors" do
       expect(assigns[:reservation].errors).to be_empty
     end
 
-    it_should_allow_all facility_operators, 'to still be new' do
-      expect(assigns[:reservation].order_detail.reload.state).to eq('new')
+    it_should_allow_all facility_operators, "to still be new" do
+      expect(assigns[:reservation].order_detail.reload.state).to eq("new")
     end
 
     it_should_allow_all facility_operators, "and isn't a problem" do
       expect(assigns[:reservation].order_detail.reload).not_to be_problem_order
     end
 
-    it_should_allow_all [:guest], 'to receive an error they are trying to reserve in the past' do
+    it_should_allow_all [:guest], "to receive an error they are trying to reserve in the past" do
       expect(assigns[:reservation].errors).not_to be_empty
       expect(response).to render_template(:new)
     end
 
-    it_should_allow_all facility_operators, 'not set a price policy' do
+    it_should_allow_all facility_operators, "not set a price policy" do
       expect(assigns[:reservation].order_detail.reload.price_policy).to be_nil
     end
 
-    it_should_allow_all facility_operators, 'set the right estimated price' do
+    it_should_allow_all facility_operators, "set the right estimated price" do
       expect(assigns[:reservation].order_detail.reload.estimated_cost).to eq(120)
     end
   end
 
-  context 'create' do
+  context "create" do
     before :each do
       @method = :post
       @action = :create
@@ -306,11 +306,11 @@ RSpec.describe ReservationsController do
         order_account: @account.id,
         reservation: {
           reserve_start_date: format_usa_date(Time.zone.now.to_date + 1.day),
-            reserve_start_hour: '9',
-            reserve_start_min: '0',
-            reserve_start_meridian: 'am',
-            duration_value: '60',
-            duration_unit: 'minutes'
+            reserve_start_hour: "9",
+            reserve_start_min: "0",
+            reserve_start_meridian: "am",
+            duration_value: "60",
+            duration_unit: "minutes"
         }
       )
     end
@@ -326,87 +326,87 @@ RSpec.describe ReservationsController do
       assert_redirected_to purchase_order_path(@order)
     end
 
-    context 'notifications when acting as' do
+    context "notifications when acting as" do
       before :each do
         sign_in @admin
         switch_to @guest
       end
 
-      it 'should set the option for sending notifications' do
-        @params[:send_notification] = '1'
+      it "should set the option for sending notifications" do
+        @params[:send_notification] = "1"
         do_request
-        expect(response).to redirect_to purchase_order_path(@order, send_notification: '1')
+        expect(response).to redirect_to purchase_order_path(@order, send_notification: "1")
       end
 
-      it 'should set the option for not sending notifications' do
-        @params[:send_notification] = '0'
+      it "should set the option for not sending notifications" do
+        @params[:send_notification] = "0"
         do_request
         expect(response).to redirect_to purchase_order_path(@order)
       end
     end
 
-    context 'merge order' do
+    context "merge order" do
       before :each do
         @merge_to_order = @order.dup
         assert @merge_to_order.save
         assert @order.update_attribute :merge_with_order_id, @merge_to_order.id
       end
 
-      it_should_allow :director, 'to create a reservation on merge order detail and redirect to order summary when merge order is destroyed' do
+      it_should_allow :director, "to create a reservation on merge order detail and redirect to order summary when merge order is destroyed" do
         assert_redirected_to facility_order_path(@authable, @merge_to_order)
         assert_raises(ActiveRecord::RecordNotFound) { Order.find @order }
       end
 
-      context 'extra order details' do
+      context "extra order details" do
         before :each do
           @service = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
           allow_any_instance_of(Service).to receive(:active_survey?).and_return(true)
           @service_order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail, product_id: @service.id, account_id: @account.id))
         end
 
-        it_should_allow :director, 'to create a reservation on merge order detail and redirect to order summary when merge order is not destroyed' do
+        it_should_allow :director, "to create a reservation on merge order detail and redirect to order summary when merge order is not destroyed" do
           assert_redirected_to facility_order_path(@authable, @merge_to_order)
           assert_nothing_raised { Order.find @order }
         end
       end
 
-      context 'creating a reservation in the past' do
+      context "creating a reservation in the past" do
         before :each do
           @params.deep_merge!(reservation: { reserve_start_date: 1.day.ago })
         end
 
-        it_should_allow_all facility_operators, 'to create a reservation in the past and have it be complete' do
+        it_should_allow_all facility_operators, "to create a reservation in the past and have it be complete" do
           expect(assigns(:reservation).errors).to be_empty
-          expect(assigns(:order_detail).state).to eq('complete')
+          expect(assigns(:order_detail).state).to eq("complete")
           expect(response).to redirect_to facility_order_path(@authable, @merge_to_order)
         end
 
-        context 'and there is no price policy' do
+        context "and there is no price policy" do
           before :each do
             @price_policy.update_attributes(expire_date: 2.days.ago)
           end
 
-          it_should_allow_all facility_operators, 'to create the reservation, but have it be a problem order' do
-            expect(assigns(:order_detail).state).to eq('complete')
+          it_should_allow_all facility_operators, "to create the reservation, but have it be a problem order" do
+            expect(assigns(:order_detail).state).to eq("complete")
             expect(assigns(:order_detail)).to be_problem_order
           end
         end
       end
 
-      context 'creating a reservation in the future' do
+      context "creating a reservation in the future" do
         before :each do
           @params.deep_merge!(reservation: { reserve_start_date: 1.day.from_now })
         end
 
-        it_should_allow_all facility_operators, 'to create a reservation in the future' do
+        it_should_allow_all facility_operators, "to create a reservation in the future" do
           expect(assigns(:reservation).errors).to be_empty
-          expect(assigns(:order_detail).state).to eq('new')
+          expect(assigns(:order_detail).state).to eq("new")
           expect(response).to redirect_to facility_order_path(@authable, @merge_to_order)
         end
       end
     end
 
-    context 'creating a reservation in the future' do
+    context "creating a reservation in the future" do
       before :each do
         @params.deep_merge!(reservation: { reserve_start_date: Time.zone.now.to_date + (PriceGroupProduct::DEFAULT_RESERVATION_WINDOW + 1).days })
       end
@@ -419,40 +419,40 @@ RSpec.describe ReservationsController do
       end
     end
 
-    context 'creating a reservation in the future with no price policy' do
+    context "creating a reservation in the future with no price policy" do
       before :each do
         @params[:reservation][:reserve_start_date] = format_usa_date(@price_policy.expire_date + 1.day)
         @price_group_product.update_attributes(reservation_window: 365)
         sign_in @guest
         do_request
       end
-      it 'should allow creation' do
+      it "should allow creation" do
         expect(assigns[:reservation]).not_to be_nil
         expect(assigns[:reservation]).not_to be_new_record
       end
     end
 
-    context 'without account' do
+    context "without account" do
       before :each do
         @params.delete :order_account
         sign_in @guest
         do_request
       end
-      it 'should have a flash message and render :new' do
+      it "should have a flash message and render :new" do
         expect(flash[:error]).to be_present
         expect(response).to render_template :new
       end
-      it 'should maintain duration value and units' do
+      it "should maintain duration value and units" do
         expect(assigns[:reservation].duration_value).to eq(60)
         expect(assigns[:reservation].duration_unit).to eq("minutes")
       end
-      it 'should not lose the time' do
+      it "should not lose the time" do
         expect(assigns[:reservation].reserve_start_date).to eq(format_usa_date(Time.zone.now.to_date + 1.day))
         expect(assigns[:reservation].reserve_start_hour).to eq(9)
         expect(assigns[:reservation].reserve_start_min).to eq(0)
-        expect(assigns[:reservation].reserve_start_meridian).to eq('am')
+        expect(assigns[:reservation].reserve_start_meridian).to eq("am")
       end
-      it 'should assign the correct variables' do
+      it "should assign the correct variables" do
         expect(assigns[:order]).to eq(@order)
         expect(assigns[:order_detail]).to eq(@order_detail)
         expect(assigns[:instrument]).to eq(@instrument)
@@ -461,7 +461,7 @@ RSpec.describe ReservationsController do
       end
     end
 
-    context 'with new account' do
+    context "with new account" do
 
       before :each do
         @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @guest))
@@ -478,7 +478,7 @@ RSpec.describe ReservationsController do
       end
     end
 
-    context 'with a price policy attached to the account' do
+    context "with a price policy attached to the account" do
       before :each do
         @order.update_attributes(account: nil)
         expect(@order.account).to be_nil
@@ -496,13 +496,13 @@ RSpec.describe ReservationsController do
       end
     end
 
-    context 'with other things in the cart (bundle or multi-add)' do
+    context "with other things in the cart (bundle or multi-add)" do
 
       before :each do
         @order.add(@instrument, 1)
       end
 
-      it_should_allow :staff, 'but should redirect to cart' do
+      it_should_allow :staff, "but should redirect to cart" do
         expect(assigns[:order]).to eq(@order)
         expect(assigns[:order_detail]).to eq(@order_detail)
         expect(assigns[:instrument]).to eq(@instrument)
@@ -515,7 +515,7 @@ RSpec.describe ReservationsController do
     end
   end
 
-  context 'new' do
+  context "new" do
     before :each do
       @method = :get
       @action = :new
@@ -547,46 +547,46 @@ RSpec.describe ReservationsController do
       expect(assigns[:min_date]).to eq(Time.zone.now.strftime("%Y%m%d"))
     end
 
-    describe 'default reservation time' do
+    describe "default reservation time" do
       before :each do
         sign_in @guest
         allow(controller).to receive :set_windows
       end
-      context 'the instrument has a minimum reservation time' do
+      context "the instrument has a minimum reservation time" do
         before :each do
           @instrument.update_attributes(min_reserve_mins: 35)
           do_request
         end
 
-        it 'should set the time to the minimum reservation time' do
+        it "should set the time to the minimum reservation time" do
           expect(assigns(:reservation).duration_mins).to eq(35)
         end
       end
 
-      context 'the instrument has zero minimum reservation minutes' do
+      context "the instrument has zero minimum reservation minutes" do
         before :each do
           @instrument.update_attributes(min_reserve_mins: 0)
           do_request
         end
 
-        it 'should default to 30 minutes' do
+        it "should default to 30 minutes" do
           expect(assigns(:reservation).duration_mins).to eq(30)
         end
       end
 
-      context 'the instrument has nil minimum reservation minutes' do
+      context "the instrument has nil minimum reservation minutes" do
         before :each do
           @instrument.update_attributes(min_reserve_mins: nil)
           do_request
         end
 
-        it 'should default to 30 minutes' do
+        it "should default to 30 minutes" do
           expect(assigns(:reservation).duration_mins).to eq(30)
         end
       end
     end
 
-    context 'rounding times' do
+    context "rounding times" do
       before :each do
         sign_in @guest
         allow(controller).to receive :set_windows
@@ -594,61 +594,61 @@ RSpec.describe ReservationsController do
         do_request
       end
 
-      context 'next reservation is between 5 minutes' do
+      context "next reservation is between 5 minutes" do
         let(:reserve_interval) { 1 }
 
         let(:next_reservation) do
-          Reservation.new reserve_start_at: Time.zone.parse('2013-08-15 12:02'),
-                          reserve_end_at: Time.zone.parse('2013-08-15 12:17'),
+          Reservation.new reserve_start_at: Time.zone.parse("2013-08-15 12:02"),
+                          reserve_end_at: Time.zone.parse("2013-08-15 12:17"),
                           product: create(:setup_instrument, reserve_interval: reserve_interval)
         end
 
-        it 'should default the duration mins to minimum duration' do
+        it "should default the duration mins to minimum duration" do
           expect(assigns(:reservation).duration_mins).to eq(15)
         end
 
-        describe 'and the instrument has a one minute interval' do
+        describe "and the instrument has a one minute interval" do
           let(:reserve_interval) { 1 }
 
-          it 'should not do any additional rounding' do
+          it "should not do any additional rounding" do
             expect(assigns(:reservation).reserve_start_min).to eq(2)
           end
         end
 
-        describe 'and the instrument has a 5 minute interval' do
+        describe "and the instrument has a 5 minute interval" do
           let(:reserve_interval) { 5 }
 
-          it 'should round up to the nearest 5 minutes' do
+          it "should round up to the nearest 5 minutes" do
             expect(assigns(:reservation).reserve_start_min).to eq(5)
           end
         end
 
-        describe 'and the instrument has a 15 minute interval' do
+        describe "and the instrument has a 15 minute interval" do
           let(:reserve_interval) { 15 }
-          it 'should round up to the nearest 15 minutes' do
+          it "should round up to the nearest 15 minutes" do
             expect(assigns(:reservation).reserve_start_min).to eq(15)
           end
         end
       end
 
-      context 'next reservation is on a 5 minute, but with seconds' do
+      context "next reservation is on a 5 minute, but with seconds" do
         let(:next_reservation) do
-          Reservation.new reserve_start_at: Time.zone.parse('2013-08-15 12:05:30'),
-                          reserve_end_at: Time.zone.parse('2013-08-15 12:20:30'),
+          Reservation.new reserve_start_at: Time.zone.parse("2013-08-15 12:05:30"),
+                          reserve_end_at: Time.zone.parse("2013-08-15 12:20:30"),
                           product: create(:setup_instrument)
         end
 
-        it 'should round up to the nearest 5 minutes' do
+        it "should round up to the nearest 5 minutes" do
           expect(assigns(:reservation).reserve_start_min).to eq(5)
         end
 
-        it 'should default the duration mins to minimum duration' do
+        it "should default the duration mins to minimum duration" do
           expect(assigns(:reservation).duration_mins).to eq(15)
         end
       end
     end
 
-    context 'a user with no price groups' do
+    context "a user with no price groups" do
       before :each do
         sign_in @guest
         allow_any_instance_of(User).to receive(:price_groups).and_return([])
@@ -663,7 +663,7 @@ RSpec.describe ReservationsController do
         expect(assigns(:order_detail).account).to be_nil
       end
 
-      it 'is a successful page render' do
+      it "is a successful page render" do
         do_request
         expect(response).to be_success
       end
@@ -676,18 +676,18 @@ RSpec.describe ReservationsController do
       end
     end
 
-    describe 'restricted instrument' do
+    describe "restricted instrument" do
       before :each do
         @instrument.update_attributes(requires_approval: true)
       end
 
-      context 'acting as non-authorized user' do
+      context "acting as non-authorized user" do
         before :each do
           sign_in @admin
           switch_to @guest
         end
 
-        it 'shows correctly' do
+        it "shows correctly" do
           do_request
           expect(response).to be_success
         end
@@ -695,16 +695,16 @@ RSpec.describe ReservationsController do
     end
   end
 
-  context 'needs future reservation' do
+  context "needs future reservation" do
     before :each do
       # create reservation for tomorrow @ 9 am for 60 minutes, with order detail reference
       @start        = Time.zone.now.end_of_day + 1.second + 9.hours
       @reservation  = @instrument.reservations.create(reserve_start_at: @start, order_detail: @order_detail,
-                                                      duration_value: 60, duration_unit: 'minutes')
+                                                      duration_value: 60, duration_unit: "minutes")
       assert @reservation.valid?
     end
 
-    context 'show' do
+    context "show" do
       before :each do
         @method = :get
         @action = :show
@@ -881,7 +881,7 @@ RSpec.describe ReservationsController do
     end
   end
 
-  context 'earliest move possible' do
+  context "earliest move possible" do
     before :each do
       @method = :get
       @action = :earliest_move_possible
@@ -889,28 +889,28 @@ RSpec.describe ReservationsController do
       maybe_grant_always_sign_in :guest
     end
 
-    context 'valid short reservation' do
+    context "valid short reservation" do
       before :each do
         @reservation = @instrument.reservations.create(
           reserve_start_at: Time.zone.now + 1.day,
           order_detail: @order_detail,
           duration_value: 60,
-          duration_unit: 'minutes'
+          duration_unit: "minutes"
         )
 
         @params[:reservation_id] = @reservation.id
         do_request
       end
 
-      it 'should get earliest move possible' do
+      it "should get earliest move possible" do
         expect(response.code).to eq("200")
-        expect(response.headers['Content-Type']).to eq('text/html; charset=utf-8')
-        expect(response).to render_template 'reservations/earliest_move_possible'
+        expect(response.headers["Content-Type"]).to eq("text/html; charset=utf-8")
+        expect(response).to render_template "reservations/earliest_move_possible"
         expect(response.body.to_s).to match(/The earliest time you can move this reservation to begins on [^<>]+ at [^<>]+ and ends at [^<>]+./)
       end
     end
 
-    context 'valid long reservation' do
+    context "valid long reservation" do
       before :each do
         # remove all scheduling rules/constraints to allow for the creation of a long reservation
         @instrument.schedule_rules.destroy_all
@@ -921,28 +921,28 @@ RSpec.describe ReservationsController do
           reserve_start_at: Time.zone.now + 1.day,
           order_detail: @order_detail,
           duration_value: 24,
-          duration_unit: 'hours'
+          duration_unit: "hours"
         )
 
         @params[:reservation_id] = @reservation.id
         do_request
       end
 
-      it 'should get earliest move possible' do
+      it "should get earliest move possible" do
         expect(response.code).to eq("200")
-        expect(response.headers['Content-Type']).to eq('text/html; charset=utf-8')
-        expect(response).to render_template 'reservations/earliest_move_possible'
+        expect(response.headers["Content-Type"]).to eq("text/html; charset=utf-8")
+        expect(response).to render_template "reservations/earliest_move_possible"
         expect(response.body.to_s).to match(/The earliest time you can move this reservation to begins on [^<>]+ at [^<>]+ and ends on [^<>]+ at [^<>]+./)
       end
     end
 
-    context 'invalid reservation' do
+    context "invalid reservation" do
       before :each do
         @params[:reservation_id] = 999
         do_request
       end
 
-      it 'should return a 404' do
+      it "should return a 404" do
         expect(response.code).to eq("404")
       end
     end
@@ -977,16 +977,16 @@ RSpec.describe ReservationsController do
     end
   end
 
-  context 'needs now reservation' do
+  context "needs now reservation" do
     before :each do
       # create reservation for tomorrow @ 9 am for 60 minutes, with order detail reference
       @start        = Time.zone.now + 1.second
       @reservation  = @instrument.reservations.create(reserve_start_at: @start, order_detail: @order_detail,
-                                                      duration_value: 60, duration_unit: 'minutes')
+                                                      duration_value: 60, duration_unit: "minutes")
       assert @reservation.valid?
     end
 
-    context 'move' do
+    context "move" do
       before :each do
         @method = :post
         @action = :move
@@ -996,7 +996,7 @@ RSpec.describe ReservationsController do
         @params.merge!(reservation_id: @reservation.id)
       end
 
-      it_should_allow :guest, 'but not move the reservation' do
+      it_should_allow :guest, "but not move the reservation" do
         expect(assigns(:order)).to eq(@order)
         expect(assigns(:order_detail)).to eq(@order_detail)
         expect(assigns(:instrument)).to eq(@instrument)
@@ -1004,11 +1004,11 @@ RSpec.describe ReservationsController do
         expect(human_datetime(assigns(:reservation).reserve_start_at)).to eq(human_datetime(@orig_start_at))
         expect(human_datetime(assigns(:reservation).reserve_end_at)).to eq(human_datetime(@orig_end_at))
         is_expected.to set_flash
-        assert_redirected_to reservations_status_path(status: 'upcoming')
+        assert_redirected_to reservations_status_path(status: "upcoming")
       end
     end
 
-    context 'switch_instrument', :timecop_freeze do
+    context "switch_instrument", :timecop_freeze do
       before :each do
         @method = :get
         @action = :switch_instrument
@@ -1017,46 +1017,46 @@ RSpec.describe ReservationsController do
         @random_user = create(:user)
       end
 
-      context 'on' do
+      context "on" do
         before :each do
-          @params.merge!(switch: 'on')
+          @params.merge!(switch: "on")
         end
 
-        context 'as the user' do
+        context "as the user" do
           before :each do
             sign_in @guest
             do_request
           end
 
-          it 'assigns the proper variables' do
+          it "assigns the proper variables" do
             expect(assigns(:order)).to eq(@order)
             expect(assigns(:order_detail)).to eq(@order_detail)
             expect(assigns(:instrument)).to eq(@instrument)
             expect(assigns(:reservation)).to eq(@reservation)
           end
 
-          it 'updates the instrument status' do
+          it "updates the instrument status" do
             expect(assigns(:instrument).instrument_statuses.size).to eq(1)
             expect(assigns(:instrument).instrument_statuses[0].is_on).to eq(true)
           end
 
-          it 'responds properly' do
+          it "responds properly" do
             is_expected.to set_flash
             is_expected.to respond_with :redirect
           end
 
-          it 'starts the reservation' do
+          it "starts the reservation" do
             expect(assigns(:reservation).actual_start_at).to eq(Time.zone.now)
           end
         end
 
-        it_should_allow_all facility_operators, 'turn on instrument from someone elses reservation' do
+        it_should_allow_all facility_operators, "turn on instrument from someone elses reservation" do
           is_expected.to respond_with :redirect
         end
 
         it_should_deny :random_user
 
-        context 'before the reservation start (in grace period)' do
+        context "before the reservation start (in grace period)" do
           let(:start_at) { 3.minutes.from_now.change(usec: 0) }
           let(:end_at) { 63.minutes.from_now.change(usec: 0) }
 
@@ -1066,34 +1066,34 @@ RSpec.describe ReservationsController do
             sign_in @guest
           end
 
-          context 'for a restricted instrument' do
+          context "for a restricted instrument" do
             before { @instrument.update_attributes(requires_approval: true) }
-            it 'allows it to start' do
+            it "allows it to start" do
               do_request
               expect(assigns(:reservation)).to_not be_changed
               expect(assigns(:reservation).actual_start_at).to eq(Time.zone.now)
             end
           end
 
-          context 'and the reservation is already at maximum length' do
+          context "and the reservation is already at maximum length" do
             before do
               @instrument.update_attributes(max_reserve_mins: 60)
               do_request
             end
 
-            it 'allows it to start' do
+            it "allows it to start" do
               expect(assigns(:reservation)).to_not be_changed
               expect(assigns(:reservation).actual_start_at).to eq(Time.zone.now)
             end
           end
 
-          context 'and there is another reservation still going on' do
+          context "and there is another reservation still going on" do
             let!(:reservation2) do 
               create(:purchased_reservation, product: @instrument,
                                                                  reserve_start_at: start_at - 30.minutes, reserve_end_at: start_at) 
             end
 
-            it 'allows it to start' do
+            it "allows it to start" do
               do_request
               expect(assigns(:reservation)).to_not be_changed
               expect(assigns(:reservation).reserve_start_at).to eq(start_at)
@@ -1102,7 +1102,7 @@ RSpec.describe ReservationsController do
           end
         end
 
-        context 'after the reservation starts' do
+        context "after the reservation starts" do
           let(:start_at) { 3.minutes.ago.change(usec: 0) }
           let(:end_at) { 57.minutes.from_now.change(usec: 0) }
 
@@ -1112,7 +1112,7 @@ RSpec.describe ReservationsController do
             do_request
           end
 
-          it 'does not change the reservation start time' do
+          it "does not change the reservation start time" do
             expect(assigns(:reservation).reserve_start_at).to eq(start_at)
             expect(assigns(:reservation).reserve_end_at).to eq(end_at)
           end
@@ -1120,10 +1120,10 @@ RSpec.describe ReservationsController do
 
       end
 
-      context 'off' do
+      context "off" do
         before :each do
           @reservation.update_attribute(:actual_start_at, @start)
-          @params[:switch] = 'off'
+          @params[:switch] = "off"
           Timecop.travel(2.seconds.from_now)
           expect(@reservation.order_detail.price_policy).to be_nil
         end
@@ -1142,7 +1142,7 @@ RSpec.describe ReservationsController do
            is_expected.to respond_with :redirect
          end
 
-         it_should_allow_all facility_operators, 'turn off instrument from someone elses reservation' do
+         it_should_allow_all facility_operators, "turn off instrument from someone elses reservation" do
            is_expected.to respond_with :redirect
          end
          it_should_deny :random_user
@@ -1164,7 +1164,7 @@ RSpec.describe ReservationsController do
            end
          end
 
-         context 'and a reservation using the same relay as another running reservation' do
+         context "and a reservation using the same relay as another running reservation" do
            let!(:reservation_running) do 
              create(:purchased_reservation, product: @instrument,
                                                                        actual_start_at: 30.minutes.ago, reserve_start_at: 30.minutes.ago,
@@ -1173,7 +1173,7 @@ RSpec.describe ReservationsController do
 
            before { @params[:reservation_id] = reservation_running.id }
 
-           it 'does not switch off the relay' do
+           it "does not switch off the relay" do
              expect_any_instance_of(ReservationInstrumentSwitcher).to_not receive(:switch_off!)
 
              sign_in @guest
@@ -1184,7 +1184,7 @@ RSpec.describe ReservationsController do
     end
   end
 
-  describe 'timeline as guest', feature_setting: { daily_view: true } do
+  describe "timeline as guest", feature_setting: { daily_view: true } do
     let!(:hidden_instrument) do
       create(
         :instrument,
@@ -1204,21 +1204,21 @@ RSpec.describe ReservationsController do
       expect(response).to render_template :timeline
     end
 
-    it 'considers display for every active schedule' do
+    it "considers display for every active schedule" do
       expect(assigns(:schedules)).to match_array [@instrument.schedule, hidden_instrument.schedule]
     end
 
-    it 'displays visible instruments only' do
+    it "displays visible instruments only" do
       expect(response.body).to include @instrument.name
       expect(response.body).to_not include hidden_instrument.name
     end
 
-    it 'does not allow controlling of relays' do
+    it "does not allow controlling of relays" do
       expect(response.body).to_not include "relay[#{@instrument.id}]"
     end
 
-    it 'does not allow showing of canceled reservations' do
-      expect(response.body).to_not include 'show_canceled'
+    it "does not allow showing of canceled reservations" do
+      expect(response.body).to_not include "show_canceled"
     end
   end
 end

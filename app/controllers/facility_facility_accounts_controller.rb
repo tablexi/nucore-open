@@ -7,10 +7,10 @@ class FacilityFacilityAccountsController < ApplicationController
 
   load_and_authorize_resource class: FacilityAccount
 
-  layout 'two_column'
+  layout "two_column"
 
   def initialize
-    @active_tab = 'admin_facility'
+    @active_tab = "admin_facility"
     super
   end
 
@@ -21,7 +21,7 @@ class FacilityFacilityAccountsController < ApplicationController
 
   # GET /facilities/:facility_id/facility_accounts/new(.:format)
   def new
-    @facility_account = current_facility.facility_accounts.new(is_active: true, revenue_account: '50617')
+    @facility_account = current_facility.facility_accounts.new(is_active: true, revenue_account: "50617")
   end
 
   # POST /facilities/:facility_id/facility_accounts(.:format)
@@ -30,7 +30,7 @@ class FacilityFacilityAccountsController < ApplicationController
     @facility_account.created_by = session_user.id
 
     if @facility_account.save
-      flash[:notice] = 'Facility account was successfully created.'
+      flash[:notice] = "Facility account was successfully created."
       redirect_to facility_facility_accounts_path
     else
       render action: "new"
@@ -47,7 +47,7 @@ class FacilityFacilityAccountsController < ApplicationController
     @facility_account = current_facility.facility_accounts.find(params[:id])
 
     if @facility_account.update_attributes(params[:facility_account])
-      flash[:notice] = 'Facility account was successfully updated.'
+      flash[:notice] = "Facility account was successfully updated."
       redirect_to facility_facility_accounts_path
     else
       render action: "edit"

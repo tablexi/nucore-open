@@ -3,7 +3,7 @@ overridable_factory :nufs_account do
     "9#{'%02d' % n}-7777777" # fund3-dept7
   end
 
-  sequence(:description, 'aaaaaaaa') { |n| "nufs account #{n}" }
+  sequence(:description, "aaaaaaaa") { |n| "nufs account #{n}" }
   expires_at { Time.zone.now + 1.month }
   created_by 0
 end
@@ -47,7 +47,7 @@ FactoryGirl.define do
     account_users_attributes { account_users_attributes_hash(user: owner) }
 
     after(:build) do |model|
-      define_open_account '42345', model.account_number
+      define_open_account "42345", model.account_number
     end
   end
 end

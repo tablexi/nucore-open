@@ -9,10 +9,10 @@ class OrderStatusesController < ApplicationController
   # Disallow editing root statuses
   before_action :ensure_editable, only: [:edit, :update, :destroy]
 
-  layout 'two_column'
+  layout "two_column"
 
   def initialize
-    @active_tab = 'admin_facility'
+    @active_tab = "admin_facility"
     super
   end
 
@@ -37,7 +37,7 @@ class OrderStatusesController < ApplicationController
     @order_status = current_facility.order_statuses.new(params[:order_status])
 
     if @order_status.save
-      flash[:notice] = 'The Order Status was successfully created.'
+      flash[:notice] = "The Order Status was successfully created."
       redirect_to facility_order_statuses_url
     else
       render action: "new"
@@ -49,7 +49,7 @@ class OrderStatusesController < ApplicationController
     @order_status = current_facility.order_statuses.find(params[:id])
 
     if @order_status.update_attributes(params[:order_status])
-      flash[:notice] = 'The Order Status was successfully updated.'
+      flash[:notice] = "The Order Status was successfully updated."
       redirect_to facility_order_statuses_path
     else
       render action: "edit"
@@ -65,9 +65,9 @@ class OrderStatusesController < ApplicationController
         # used instead of update_all so vestal_versions can do its thing; annoying, I know
         @order_status.order_details.each { |os| os.update_attribute(:order_status, parent_status) }
         @order_status.destroy
-        flash[:notice] = 'The order status was successfully removed.'
+        flash[:notice] = "The order status was successfully removed."
       rescue => e
-        flash[:error] = 'An error was encountered while removing the order status.'
+        flash[:error] = "An error was encountered while removing the order status."
         raise ActiveRecord::Rollback
       end
     end

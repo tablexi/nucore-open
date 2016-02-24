@@ -29,7 +29,7 @@ RSpec.describe OldInstrumentPricePolicy do
       expect(@ipp.product).to eq(@instrument)
     end
 
-    it 'should require usage or reservation rate, but not both' do
+    it "should require usage or reservation rate, but not both" do
       @ipp.restrict_purchase = false
 
       expect(@ipp).to be_valid
@@ -61,7 +61,7 @@ RSpec.describe OldInstrumentPricePolicy do
       expect(ipp_new.errors_on(:start_date)).not_to be_nil
     end
 
-    describe 'non overlapping policies' do
+    describe "non overlapping policies" do
       before :each do
         @ipp.start_date = Date.current - 7.days
         @ipp.save validate: false
@@ -446,7 +446,7 @@ RSpec.describe OldInstrumentPricePolicy do
       )
     end
 
-    context 'free with actuals' do
+    context "free with actuals" do
       before :each do
         @ipp.update_attributes(usage_rate: 0, usage_subsidy: 0)
         yesterday = @now - 1.day
@@ -459,19 +459,19 @@ RSpec.describe OldInstrumentPricePolicy do
         )
       end
 
-      it 'should return zero for zero priced policy' do
+      it "should return zero for zero priced policy" do
         @costs = @ipp.calculate_cost_and_subsidy(@reservation)
         expect(@costs).to eq(cost: 0, subsidy: 0)
       end
 
-      it 'should return minimum cost for a zero priced policy' do
+      it "should return minimum cost for a zero priced policy" do
         @ipp.update_attribute :minimum_cost, 20
         @costs = @ipp.calculate_cost_and_subsidy(@reservation)
         expect(@costs).to eq(cost: 20, subsidy: 0)
       end
     end
 
-    it 'should return nil if an instrument is free and the reservation requires but is missing actuals' do
+    it "should return nil if an instrument is free and the reservation requires but is missing actuals" do
       @ipp.update_attributes(usage_rate: 0, usage_subsidy: 0)
       expect(@reservation).to be_requires_but_missing_actuals
       expect(@ipp.calculate_cost_and_subsidy(@reservation)).to be_nil
@@ -494,7 +494,7 @@ RSpec.describe OldInstrumentPricePolicy do
       expect(@costs[:subsidy]).to eq(@ipp.usage_subsidy * 2)
     end
 
-    it 'should have at least one block even if the actual times are within a minute of each other' do
+    it "should have at least one block even if the actual times are within a minute of each other" do
       @reservation.actual_start_at = @reservation.reserve_start_at
       @reservation.actual_end_at = @reservation.actual_start_at + 10.seconds
 
@@ -503,11 +503,11 @@ RSpec.describe OldInstrumentPricePolicy do
       expect(@costs[:subsidy]).to eq(99)
     end
 
-    context 'overage' do
+    context "overage" do
       before :each do
         @ipp.update_attributes(overage_rate: 200, overage_subsidy: 199)
       end
-      it 'should not overage for less than one minute' do
+      it "should not overage for less than one minute" do
         @reservation.actual_start_at = @reservation.reserve_start_at
         @reservation.actual_end_at = @reservation.reserve_end_at + 10.seconds
         @costs = @ipp.calculate_cost_and_subsidy(@reservation)
@@ -515,7 +515,7 @@ RSpec.describe OldInstrumentPricePolicy do
         expect(@costs[:subsidy]).to eq(99)
       end
 
-      it 'should charge a full interval for more than one minute over' do
+      it "should charge a full interval for more than one minute over" do
         @reservation.actual_start_at = @reservation.reserve_start_at
         @reservation.actual_end_at = @reservation.reserve_end_at + 61.seconds
         @costs = @ipp.calculate_cost_and_subsidy(@reservation)
@@ -524,31 +524,31 @@ RSpec.describe OldInstrumentPricePolicy do
       end
     end
 
-    context 'reservation only instrument' do
+    context "reservation only instrument" do
       before :each do
         allow(@instrument).to receive(:control_mechanism).and_return Relay::CONTROL_MECHANISMS[:manual]
       end
 
-      context 'with reservation rates' do
+      context "with reservation rates" do
         before :each do
           @ipp.update_attributes!(reservation_rate: 100, reservation_subsidy: 99, usage_rate: nil, usage_subsidy: nil)
         end
 
-        context 'without actual time' do
-          it 'should calculate cost' do
+        context "without actual time" do
+          it "should calculate cost" do
             @costs = @ipp.calculate_cost_and_subsidy(@reservation)
             expect(@costs[:cost]).to eq(100)
             expect(@costs[:subsidy]).to eq(99)
           end
         end
 
-        context 'with actual time' do
+        context "with actual time" do
           before :each do
             @reservation.actual_start_at = @reservation.reserve_start_at
             @reservation.actual_end_at = @reservation.reserve_end_at
           end
 
-          it 'should calculate the cost and subsidy' do
+          it "should calculate the cost and subsidy" do
             @costs = @ipp.calculate_cost_and_subsidy(@reservation)
             expect(@costs[:cost]).to eq(100)
             expect(@costs[:subsidy]).to eq(99)
@@ -556,12 +556,12 @@ RSpec.describe OldInstrumentPricePolicy do
         end
       end
 
-      context 'with usage rates instead of reservation rates' do
+      context "with usage rates instead of reservation rates" do
         before :each do
           @ipp.update_attributes!(reservation_rate: nil, reservation_subsidy: nil,
                                   usage_rate: 100, usage_subsidy: 99)
         end
-        it 'should return nil' do
+        it "should return nil" do
           @costs = @ipp.calculate_cost_and_subsidy(@reservation)
           expect(@costs).to be_nil
         end

@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe AccountPriceGroupMembersController do
   render_views
@@ -62,7 +62,7 @@ RSpec.describe AccountPriceGroupMembersController do
     include_examples "global price group restrictions"
 
     def successful_action_expectations
-      is_expected.to render_template('new')
+      is_expected.to render_template("new")
       expect(assigns(:price_group)).to be_kind_of PriceGroup
       expect(assigns(:account_price_group_member)).to be_kind_of AccountPriceGroupMember
       expect(assigns(:account_price_group_member)).to be_new_record
@@ -121,7 +121,7 @@ RSpec.describe AccountPriceGroupMembersController do
     before :each do
       @method = :get
       @action = :search_results
-      @params = { facility_id: @authable.url_name, price_group_id: price_group.id, search_term: '' }
+      @params = { facility_id: @authable.url_name, price_group_id: price_group.id, search_term: "" }
     end
 
     it_should_require_login
@@ -132,7 +132,7 @@ RSpec.describe AccountPriceGroupMembersController do
       # TODO: test GET with valid search term
       expect(assigns(:limit)).to be_kind_of Fixnum
       expect(assigns(:price_group)).to be_kind_of PriceGroup
-      is_expected.to render_template('search_results')
+      is_expected.to render_template("search_results")
     end
   end
 end

@@ -8,12 +8,12 @@ class ProductUsersController < ApplicationController
 
   load_and_authorize_resource
 
-  layout 'two_column'
+  layout "two_column"
 
   include SearchHelper
 
   def initialize
-    @active_tab = 'admin_products'
+    @active_tab = "admin_products"
     super
   end
 

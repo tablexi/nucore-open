@@ -27,7 +27,7 @@ class OrderUncanceler
 
         order_detail.update_attributes!(
           order_status: @complete_status,
-          state: 'complete',
+          state: "complete",
           fulfilled_at: fulfilled_at)
 
         order_detail.assign_price_policy(fulfilled_at)

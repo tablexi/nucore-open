@@ -25,7 +25,7 @@ class PricePolicy < ActiveRecord::Base
   before_create :truncate_existing_policies
 
   def self.for_date(start_date)
-    where('start_date >= ? AND start_date <= ?', start_date.beginning_of_day, start_date.end_of_day)
+    where("start_date >= ? AND start_date <= ?", start_date.beginning_of_day, start_date.end_of_day)
   end
 
   def self.current
@@ -53,18 +53,18 @@ class PricePolicy < ActiveRecord::Base
   end
 
   def self.current_date(product)
-    ipp = product.price_policies.find(:first, conditions: [dateize('start_date', ' <= ? AND ') + dateize('expire_date', ' > ?'), Time.zone.now, Time.zone.now], order: 'start_date DESC')
+    ipp = product.price_policies.find(:first, conditions: [dateize("start_date", " <= ? AND ") + dateize("expire_date", " > ?"), Time.zone.now, Time.zone.now], order: "start_date DESC")
     ipp ? ipp.start_date.to_date : nil
   end
 
   def self.next_date(product)
-    ipp = product.price_policies.find(:first, conditions: [dateize('start_date', ' > ?'), Time.zone.now], order: 'start_date')
+    ipp = product.price_policies.find(:first, conditions: [dateize("start_date", " > ?"), Time.zone.now], order: "start_date")
     ipp ? ipp.start_date.to_date : nil
   end
 
   def self.next_dates(product)
     product.price_policies
-           .where('start_date > ?', Time.zone.now.beginning_of_day)
+           .where("start_date > ?", Time.zone.now.beginning_of_day)
            .order(:start_date)
            .uniq
            .pluck(:start_date)
@@ -125,7 +125,7 @@ class PricePolicy < ActiveRecord::Base
     when true, 1
       self.can_purchase = false
     else
-      raise ArgumentError.new('state must be true, false, 0, or 1')
+      raise ArgumentError.new("state must be true, false, 0, or 1")
     end
   end
 
@@ -144,7 +144,7 @@ class PricePolicy < ActiveRecord::Base
   end
 
   def start_date_is_unique
-    type          = self.class.name.downcase.gsub(/pricepolicy$/, '')
+    type          = self.class.name.downcase.gsub(/pricepolicy$/, "")
     price_group   = self.price_group
     unless product.nil? || price_group.nil?
       if id.nil?

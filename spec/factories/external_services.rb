@@ -1,7 +1,7 @@
 FactoryGirl.define do
 
   factory :external_service, class: UrlService do
-    location 'http://survey.test.local'
+    location "http://survey.test.local"
   end
 
   factory :external_service_passer do
@@ -12,7 +12,7 @@ FactoryGirl.define do
 
   factory :external_service_receiver do
     external_service
-    response_data({ show_url: 'http://survey.test.local/show', edit_url: 'http://survey.test.local/edit' }.to_json)
+    response_data({ show_url: "http://survey.test.local/show", edit_url: "http://survey.test.local/edit" }.to_json)
 
     after :build do |esr|
       service = create :setup_service

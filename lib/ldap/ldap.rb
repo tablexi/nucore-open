@@ -1,7 +1,7 @@
 module Ldap
 
   def self.attribute_field
-    config['attribute']
+    config["attribute"]
   end
 
   def self.config

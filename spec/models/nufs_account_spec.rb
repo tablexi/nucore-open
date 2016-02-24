@@ -11,10 +11,10 @@ RSpec.describe NufsAccount do
     end
 
     it "should copy account_number to display_account_number" do
-      @bcs = BudgetedChartString.create(fund: '123', dept: '1234567', starts_at: @starts_at, expires_at: @expires_at)
-      @options[:account_number] = '123-1234567'
+      @bcs = BudgetedChartString.create(fund: "123", dept: "1234567", starts_at: @starts_at, expires_at: @expires_at)
+      @options[:account_number] = "123-1234567"
       @account = NufsAccount.create(@options)
-      assert_equal '123-1234567', @account.account_number
+      assert_equal "123-1234567", @account.account_number
     end
 
     it "should not have a facility" do

@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on?(:recharge_accounts) do
   render_views
@@ -12,7 +12,7 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
     @params = { facility_id: @authable.url_name }
   end
 
-  context 'index' do
+  context "index" do
 
     before :each do
       @method = :get
@@ -23,12 +23,12 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
       expect(assigns(:accounts)).to be_kind_of Array
       expect(assigns(:accounts).size).to eq(1)
       expect(assigns(:accounts)[0]).to eq(@facility_account)
-      is_expected.to render_template 'index'
+      is_expected.to render_template "index"
     end
 
   end
 
-  context 'new' do
+  context "new" do
 
     before :each do
       @method = :get
@@ -38,12 +38,12 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
     it_should_allow_managers_only do
       expect(assigns(:facility_account)).to be_kind_of FacilityAccount
       expect(assigns(:facility_account)).to be_new_record
-      is_expected.to render_template 'new'
+      is_expected.to render_template "new"
     end
 
   end
 
-  context 'update' do
+  context "update" do
 
     before :each do
       @method = :put
@@ -60,7 +60,7 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
 
   end
 
-  context 'create' do
+  context "create" do
 
     before :each do
       @method = :post
@@ -77,7 +77,7 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
 
   end
 
-  context 'edit' do
+  context "edit" do
 
     before :each do
       @method = :get
@@ -88,7 +88,7 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
     it_should_allow_managers_only do
       expect(assigns(:facility_account)).to be_kind_of FacilityAccount
       expect(assigns(:facility_account)).to eq(@facility_account)
-      is_expected.to render_template 'edit'
+      is_expected.to render_template "edit"
     end
 
   end

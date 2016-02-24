@@ -15,7 +15,7 @@ class AutoLogout
   def order_details
     OrderDetail.purchased_active_reservations
                .merge(Reservation.relay_in_progress)
-               .where('reserve_end_at < ?', Time.zone.now)
+               .where("reserve_end_at < ?", Time.zone.now)
                .includes(:product)
                .readonly(false)
                .all
@@ -36,7 +36,7 @@ class AutoLogout
   end
 
   def complete_status
-    @complete_status ||= OrderStatus.find_by_name!('Complete')
+    @complete_status ||= OrderStatus.find_by_name!("Complete")
   end
 
   def complete_reservation(od)

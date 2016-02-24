@@ -7,10 +7,10 @@ class ProductAccessoriesController < ApplicationController
   before_action :init_product
   load_and_authorize_resource through: :product
 
-  layout 'two_column'
+  layout "two_column"
 
   def initialize
-    @active_tab = 'admin_products'
+    @active_tab = "admin_products"
     super
   end
 
@@ -21,13 +21,13 @@ class ProductAccessoriesController < ApplicationController
 
   def create
     @product.product_accessories.create(params[:product_accessory])
-    flash[:notice] = I18n.t('product_accessories.create.success')
+    flash[:notice] = I18n.t("product_accessories.create.success")
     redirect_to action: :index
   end
 
   def destroy
     @product_accessory.soft_delete
-    flash[:notice] = I18n.t('product_accessories.destroy.success')
+    flash[:notice] = I18n.t("product_accessories.destroy.success")
     redirect_to action: :index
   end
 

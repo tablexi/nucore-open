@@ -11,15 +11,15 @@ class FacilityNotificationsController < ApplicationController
 
   include TransactionSearch
 
-  layout 'two_column_head'
+  layout "two_column_head"
 
   def initialize
-    @active_tab = 'admin_billing'
+    @active_tab = "admin_billing"
     super
   end
 
   def check_review_period
-    raise ActionController::RoutingError.new('Notifications disabled with a zero-day review period') unless SettingsHelper.has_review_period?
+    raise ActionController::RoutingError.new("Notifications disabled with a zero-day review period") unless SettingsHelper.has_review_period?
   end
 
   # GET /facilities/notifications
@@ -31,7 +31,7 @@ class FacilityNotificationsController < ApplicationController
   # GET /facilities/notifications/send
   def send_notifications
     if params[:order_detail_ids].nil? || params[:order_detail_ids].empty?
-      flash[:error] = I18n.t 'controllers.facility_notifications.no_selection'
+      flash[:error] = I18n.t "controllers.facility_notifications.no_selection"
       redirect_to action: :index
       return
     end
@@ -41,7 +41,7 @@ class FacilityNotificationsController < ApplicationController
     if sender.perform
       flash[:notice] = send_notification_success_message(sender)
     else
-      flash[:error] = I18n.t('controllers.facility_notifications.errors_html', errors: sender.errors.join('<br/>')).html_safe
+      flash[:error] = I18n.t("controllers.facility_notifications.errors_html", errors: sender.errors.join("<br/>")).html_safe
     end
     @accounts_to_notify = sender.account_ids_to_notify
     @errors = sender.errors
@@ -61,7 +61,7 @@ class FacilityNotificationsController < ApplicationController
   # GET /facilities/notifications/in_review/mark
   def mark_as_reviewed
     if params[:order_detail_ids].nil? || params[:order_detail_ids].empty?
-      flash[:error] = I18n.t 'controllers.facility_notifications.no_selection'
+      flash[:error] = I18n.t "controllers.facility_notifications.no_selection"
     else
       @errors = []
       @order_details_updated = []
@@ -76,8 +76,8 @@ class FacilityNotificationsController < ApplicationController
           @errors << order_detail_id
         end
       end
-      flash[:notice] = I18n.t('controllers.facility_notifications.mark_as_reviewed.success') if @order_details_updated.any?
-      flash[:error] = I18n.t('controllers.facility_notifications.mark_as_reviewed.errors', errors: @errors.join(', ')) if @errors.any?
+      flash[:notice] = I18n.t("controllers.facility_notifications.mark_as_reviewed.success") if @order_details_updated.any?
+      flash[:error] = I18n.t("controllers.facility_notifications.mark_as_reviewed.errors", errors: @errors.join(", ")) if @errors.any?
     end
     redirect_to action: :in_review
   end
@@ -86,9 +86,9 @@ class FacilityNotificationsController < ApplicationController
 
   def send_notification_success_message(sender)
     if sender.accounts_notified_size > 10
-      I18n.t('controllers.facility_notifications.send_notifications.success_count', accounts: sender.accounts_notified_size)
+      I18n.t("controllers.facility_notifications.send_notifications.success_count", accounts: sender.accounts_notified_size)
     else
-      I18n.t('controllers.facility_notifications.send_notifications.success_html', accounts: sender.accounts_notified.map(&:account_list_item).join('<br/>')).html_safe
+      I18n.t("controllers.facility_notifications.send_notifications.success_html", accounts: sender.accounts_notified.map(&:account_list_item).join("<br/>")).html_safe
     end
   end
 

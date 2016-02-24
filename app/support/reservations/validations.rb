@@ -14,7 +14,7 @@ module Reservations::Validations
 
     validates_each [:actual_start_at, :actual_end_at] do |record, attr, value|
       if value
-        record.errors.add(attr.to_s, 'cannot be in the future') if Time.zone.now < value
+        record.errors.add(attr.to_s, "cannot be in the future") if Time.zone.now < value
       end
     end
 
@@ -26,10 +26,10 @@ module Reservations::Validations
 
   def starts_before_ends
     if reserve_start_at && reserve_end_at
-      errors.add('reserve_end_date', 'must be after the reservation start time') if reserve_end_at <= reserve_start_at
+      errors.add("reserve_end_date", "must be after the reservation start time") if reserve_end_at <= reserve_start_at
     end
     if actual_start_at && actual_end_at
-      errors.add('actual_end_date', 'must be after the actual start time') if actual_end_at <= actual_start_at
+      errors.add("actual_end_date", "must be after the actual start time") if actual_end_at <= actual_start_at
     end
   end
 

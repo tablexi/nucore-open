@@ -52,7 +52,7 @@ module SettingsHelper
   # Setting is accessed like "reservations.grace_period"
   def self.setting(setting)
     current = Settings
-    setting.split('.').each do |s|
+    setting.split(".").each do |s|
       current = current.try(:[], s)
     end
     current

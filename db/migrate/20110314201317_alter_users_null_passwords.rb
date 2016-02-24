@@ -6,8 +6,8 @@ class AlterUsersNullPasswords < ActiveRecord::Migration
   end
 
   def self.down
-    change_column(:users, :encrypted_password, :string, null: false, default: '')
-    change_column(:users, :password_salt, :string, null: false, default: '')
+    change_column(:users, :encrypted_password, :string, null: false, default: "")
+    change_column(:users, :password_salt, :string, null: false, default: "")
   end
 
 end

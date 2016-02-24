@@ -20,7 +20,7 @@ module TransactionHistoryHelper
     options = []
     order_statuses.each do |order_status|
       attributes = {}
-      attributes['data-facility'] = order_status.facility_id if order_status.facility_id
+      attributes["data-facility"] = order_status.facility_id if order_status.facility_id
 
       options << [order_status.name, order_status.id, attributes]
     end

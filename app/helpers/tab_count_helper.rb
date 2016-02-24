@@ -21,8 +21,8 @@ module TabCountHelper
     if active
       title << " (#{@order_details.try(:total_entries) || @order_details.count})"
     end
-    content_tag(:li, class: active ? 'active' : nil) do
-      link_to title, link, { id: ACTIONS_TO_COUNT_TYPE[args[:action]], class: 'js-tab-counts' }
+    content_tag(:li, class: active ? "active" : nil) do
+      link_to title, link, { id: ACTIONS_TO_COUNT_TYPE[args[:action]], class: "js-tab-counts" }
     end
   end
 
@@ -33,7 +33,7 @@ module TabCountHelper
   def tab(title, link, active = nil, options = {})
     active ||= request.path == link
     classes = []
-    classes << 'active' if active
+    classes << "active" if active
     classes.concat [*options[:class]]
 
     content_tag(:li, class: classes) do

@@ -1,8 +1,8 @@
 class Order < ActiveRecord::Base
 
   belongs_to :user
-  belongs_to :created_by_user, class_name: 'User', foreign_key: :created_by
-  belongs_to :merge_order, class_name: 'Order', foreign_key: :merge_with_order_id
+  belongs_to :created_by_user, class_name: "User", foreign_key: :created_by
+  belongs_to :merge_order, class_name: "Order", foreign_key: :merge_with_order_id
   belongs_to :account
   belongs_to :facility
   belongs_to :order_import
@@ -12,7 +12,7 @@ class Order < ActiveRecord::Base
 
   after_save :update_order_detail_accounts, if: :account_id_changed?
 
-  scope :for_user, ->(user) { { conditions: ['user_id = ? AND ordered_at IS NOT NULL AND state = ?', user.id, 'purchased'] } }
+  scope :for_user, ->(user) { { conditions: ["user_id = ? AND ordered_at IS NOT NULL AND state = ?", user.id, "purchased"] } }
 
   def self.created_by_user(user)
     where(created_by: user.id)
@@ -27,7 +27,7 @@ class Order < ActiveRecord::Base
   end
 
   def self.recent
-    where('orders.ordered_at > ?', Time.zone.now - 1.year)
+    where("orders.ordered_at > ?", Time.zone.now - 1.year)
   end
 
   attr_accessor :being_purchased_by_admin
@@ -106,15 +106,15 @@ class Order < ActiveRecord::Base
   # END acts_as_state_machine
 
   def instrument_order_details
-    order_details.find(:all, joins: 'LEFT JOIN products p ON p.id = order_details.product_id', conditions: { 'p.type' => 'Instrument' })
+    order_details.find(:all, joins: "LEFT JOIN products p ON p.id = order_details.product_id", conditions: { "p.type" => "Instrument" })
   end
 
   def service_order_details
-    order_details.find(:all, joins: 'LEFT JOIN products p ON p.id = order_details.product_id', conditions: { 'p.type' => 'Service' })
+    order_details.find(:all, joins: "LEFT JOIN products p ON p.id = order_details.product_id", conditions: { "p.type" => "Service" })
   end
 
   def item_order_details
-    order_details.find(:all, joins: 'LEFT JOIN products p ON p.id = order_details.product_id', conditions: { 'p.type' => 'Item' })
+    order_details.find(:all, joins: "LEFT JOIN products p ON p.id = order_details.product_id", conditions: { "p.type" => "Item" })
   end
 
   def add(product, quantity = 1, attributes = {})

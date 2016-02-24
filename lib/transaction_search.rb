@@ -1,8 +1,8 @@
 module TransactionSearch
 
-  DATE_RANGE_FIELDS = [['Ordered', 'ordered_at'],
-                       ['Fulfilled', 'fulfilled_at'],
-                       ['Journaled/Statement', 'journal_or_statement_date']
+  DATE_RANGE_FIELDS = [["Ordered", "ordered_at"],
+                       ["Fulfilled", "fulfilled_at"],
+                       ["Journaled/Statement", "journal_or_statement_date"]
                       ].freeze
 
   def self.included(base)
@@ -153,16 +153,16 @@ module TransactionSearch
 
   def date_range_field(field)
     whitelist = TransactionSearch::DATE_RANGE_FIELDS.map(&:last)
-    whitelist.include?(field) ? field : 'fulfilled_at'
+    whitelist.include?(field) ? field : "fulfilled_at"
   end
 
   def handle_csv_search
     email_csv_export
 
     if request.xhr?
-      render text: I18n.t('controllers.reports.mail_queued', email: to_email)
+      render text: I18n.t("controllers.reports.mail_queued", email: to_email)
     else
-      flash[:notice] = I18n.t('controllers.reports.mail_queued', email: to_email)
+      flash[:notice] = I18n.t("controllers.reports.mail_queued", email: to_email)
       redirect_to url_for(params.merge(format: nil, email: nil))
     end
   end

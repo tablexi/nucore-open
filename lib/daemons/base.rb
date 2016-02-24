@@ -1,5 +1,5 @@
-require 'rubygems'
-require 'daemons'
+require "rubygems"
+require "daemons"
 
 #
 # This class provides a base for running daemons
@@ -17,15 +17,15 @@ class Daemons::Base
   #   the actual process in `ps` output
 
   def initialize(name)
-    @rails_root = File.expand_path(File.join('..', '..'), File.dirname(__FILE__))
+    @rails_root = File.expand_path(File.join("..", ".."), File.dirname(__FILE__))
     self.name = name
     self.daemon_opts = {
       dir_mode: :normal,
-      dir: File.join(@rails_root, 'tmp/pids'),
+      dir: File.join(@rails_root, "tmp/pids"),
       backtrace: true,
       monitor: monitor?,
       log_output: true,
-      log_dir: File.join(@rails_root, 'log')
+      log_dir: File.join(@rails_root, "log")
     }
   end
 
@@ -49,7 +49,7 @@ class Daemons::Base
   #   this method will do so for you.
   def start(&work)
     run_proc(name, daemon_opts) do
-      require File.join(@rails_root, 'config', 'environment')
+      require File.join(@rails_root, "config", "environment")
       loop { yield }
     end
   end
@@ -58,7 +58,7 @@ class Daemons::Base
 
   # See usage notes in doc/HOWTO_daemons.txt
   def monitor?
-    !ARGV.include?('--no-monitor')
+    !ARGV.include?("--no-monitor")
   end
 
 end

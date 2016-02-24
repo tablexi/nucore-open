@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 # NOTE: changed create/new/edit/update from it_should_allow_all facility_operators to
 # it_should_allow_managers_only as part of ticket #38481
@@ -16,7 +16,7 @@ RSpec.describe BundleProductsController do
     @bundle_product = BundleProduct.create!(bundle: @bundle, product: @item, quantity: 1)
   end
 
-  context 'index' do
+  context "index" do
 
     before(:each) do
       @method = :get
@@ -28,12 +28,12 @@ RSpec.describe BundleProductsController do
 
     it_should_allow_all facility_operators do
       expect(assigns(:bundle_products)).to be_kind_of Array
-      is_expected.to render_template('index')
+      is_expected.to render_template("index")
     end
 
   end
 
-  context 'create' do
+  context "create" do
 
     before(:each) do
       @method = :post
@@ -59,7 +59,7 @@ RSpec.describe BundleProductsController do
 
   end
 
-  context 'new' do
+  context "new" do
 
     before(:each) do
       @method = :get
@@ -72,12 +72,12 @@ RSpec.describe BundleProductsController do
     it_should_allow_managers_only do
       expect(assigns(:bundle_product)).to be_kind_of BundleProduct
       expect(assigns(:bundle_product)).to be_new_record
-      is_expected.to render_template('new')
+      is_expected.to render_template("new")
     end
 
   end
 
-  context 'edit' do
+  context "edit" do
 
     before(:each) do
       @method = :get
@@ -89,12 +89,12 @@ RSpec.describe BundleProductsController do
 
     it_should_allow_managers_only do
       assert_init_bundle
-      is_expected.to render_template('edit')
+      is_expected.to render_template("edit")
     end
 
   end
 
-  context 'update' do
+  context "update" do
 
     before(:each) do
       @method = :put
@@ -121,7 +121,7 @@ RSpec.describe BundleProductsController do
 
   end
 
-  context 'destroy' do
+  context "destroy" do
 
     before(:each) do
       @method = :delete

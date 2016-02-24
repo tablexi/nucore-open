@@ -10,7 +10,7 @@ module FacilitiesHelper
 
   def daily_view_link
     if SettingsHelper.feature_on? :daily_view
-      link_to t('facilities.show.daily_view'), facility_public_timeline_path(current_facility)
+      link_to t("facilities.show.daily_view"), facility_public_timeline_path(current_facility)
     end
   end
 

@@ -31,7 +31,7 @@ class Facility < ActiveRecord::Base
     end
   end
   has_many :order_imports, dependent: :destroy
-  has_many :orders, conditions: 'ordered_at IS NOT NULL'
+  has_many :orders, conditions: "ordered_at IS NOT NULL"
   has_many :facility_accounts
   has_many :training_requests, through: :products
   has_many :user_roles, dependent: :destroy
@@ -84,7 +84,7 @@ class Facility < ActiveRecord::Base
   end
 
   def status_string
-    is_active? ? 'Active' : 'Inactive'
+    is_active? ? "Active" : "Inactive"
   end
 
   def order_notification_email
@@ -132,11 +132,11 @@ class Facility < ActiveRecord::Base
   end
 
   def set_journal_mask
-    f = Facility.find(:all, limit: 1, order: 'journal_mask DESC').first
+    f = Facility.find(:all, limit: 1, order: "journal_mask DESC").first
     self.journal_mask = if f && f.journal_mask.match(/^C(\d{2})$/)
                           sprintf("C%02d", Regexp.last_match(1).to_i + 1)
                         else
-                          'C01'
+                          "C01"
                         end
   end
 

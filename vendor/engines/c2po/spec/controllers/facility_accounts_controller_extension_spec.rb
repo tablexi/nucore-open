@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe FacilityAccountsController do
   render_views
@@ -20,7 +20,7 @@ RSpec.describe FacilityAccountsController do
     @order_detail = FactoryGirl.create(:order_detail, product: @item, order: @order, account: @account)
   end
 
-  context 'update' do
+  context "update" do
     before(:each) do
       @method = :put
       @action = :update
@@ -32,14 +32,14 @@ RSpec.describe FacilityAccountsController do
       @params[:purchase_order_account][:affiliate_id] = @params[:purchase_order_account].delete(:affiliate).id
     end
 
-    context 'with affiliate' do
+    context "with affiliate" do
       before :each do
         user = FactoryGirl.create(:user)
 
         owner = {
           user: user,
           created_by: user.id,
-          user_role: 'Owner'
+          user_role: "Owner"
         }
 
         account_attrs = {
@@ -50,14 +50,14 @@ RSpec.describe FacilityAccountsController do
         @account = FactoryGirl.create(:purchase_order_account, account_attrs)
 
         @params[:id] = @account.id
-        @params[:account_type] = 'PurchaseOrderAccount'
+        @params[:account_type] = "PurchaseOrderAccount"
         @params[:purchase_order_account] = @account.attributes
 
         @params[:purchase_order_account][:affiliate_id] = Affiliate.OTHER.id.to_s
-        @params[:purchase_order_account][:affiliate_other] = 'Jesus Charisma'
+        @params[:purchase_order_account][:affiliate_other] = "Jesus Charisma"
       end
 
-      it_should_allow :director, 'to change affiliate to other' do
+      it_should_allow :director, "to change affiliate to other" do
         expect(assigns(:account)).to eq(@account)
         expect(assigns(:account).affiliate).to eq(Affiliate.OTHER)
         expect(assigns(:account).affiliate_other).to eq(@params[:purchase_order_account][:affiliate_other])
@@ -65,9 +65,9 @@ RSpec.describe FacilityAccountsController do
         assert_redirected_to facility_account_url
       end
 
-      context 'not other' do
+      context "not other" do
         before :each do
-          @affiliate = Affiliate.create!(name: 'Rod Blagojevich')
+          @affiliate = Affiliate.create!(name: "Rod Blagojevich")
           @params[:purchase_order_account][:affiliate_id] = @affiliate.id
         end
 
@@ -82,7 +82,7 @@ RSpec.describe FacilityAccountsController do
     end
   end
 
-  context 'create' do
+  context "create" do
     before :each do
       @method = :post
       @action = :create
@@ -98,14 +98,14 @@ RSpec.describe FacilityAccountsController do
         facility_id: @authable.url_name,
         owner_user_id: @owner.id,
         purchase_order_account: @acct_attrs,
-        account_type: 'PurchaseOrderAccount'
+        account_type: "PurchaseOrderAccount"
       }
 
       @params[:purchase_order_account] = @acct_attrs
       allow(@controller).to receive(:current_facility).and_return(@authable)
     end
 
-    context 'PurchaseOrderAccount' do
+    context "PurchaseOrderAccount" do
       before :each do
         # December 5
         @acct_attrs[:formatted_expires_at] = "12/5/#{@expiration_year}"
@@ -122,9 +122,9 @@ RSpec.describe FacilityAccountsController do
       end
     end
 
-    context 'CreditCardAccount' do
+    context "CreditCardAccount" do
       before :each do
-        @params[:account_type]         = 'CreditCardAccount'
+        @params[:account_type]         = "CreditCardAccount"
         @acct_attrs                    = FactoryGirl.attributes_for(:credit_card_account)
         @acct_attrs[:affiliate_id]     = @acct_attrs.delete(:affiliate).id.to_s
         @acct_attrs[:expiration_month] = "5"
@@ -139,23 +139,23 @@ RSpec.describe FacilityAccountsController do
     end
   end
 
-  shared_examples 'an authable account' do
+  shared_examples "an authable account" do
     it_should_require_login
 
     it_should_deny_all [:staff, :senior_staff]
 
-    context 'the selected_account param is set' do
-      context 'selected_account is valid' do
+    context "the selected_account param is set" do
+      context "selected_account is valid" do
         before :each do
           @params[:selected_account] = unreconciled_account.id
         end
 
         it_should_allow_all facility_managers do
-          is_expected.to render_template 'c2po/reconcile'
+          is_expected.to render_template "c2po/reconcile"
         end
       end
 
-      context 'selected_account is invalid' do
+      context "selected_account is invalid" do
         before :each do
           @params[:selected_account] = account.id
         end
@@ -166,20 +166,20 @@ RSpec.describe FacilityAccountsController do
       end
     end
 
-    context 'the selected_account param is not set' do
+    context "the selected_account param is not set" do
       it_should_allow_all facility_managers do
-        expect(assigns :subnav).to eq('billing_nav')
-        expect(assigns :active_tab).to eq('admin_billing')
+        expect(assigns :subnav).to eq("billing_nav")
+        expect(assigns :active_tab).to eq("admin_billing")
         expect(assigns :accounts).to be_kind_of ActiveRecord::Relation
         expect(assigns :selected).to eq assigns(:accounts).first
         expect(assigns(:unreconciled_details).to_a)
           .to eq OrderDetail.account_unreconciled(facility, assigns(:selected)).to_a
-        is_expected.to render_template('c2po/reconcile')
+        is_expected.to render_template("c2po/reconcile")
       end
     end
   end
 
-  context 'credit_cards with account' do
+  context "credit_cards with account" do
     let(:unreconciled_account) { build(:credit_card_account) }
     let(:redirect_path) { credit_cards_facility_accounts_path }
 
@@ -187,10 +187,10 @@ RSpec.describe FacilityAccountsController do
       prepare_for_account_show(:credit_cards, unreconciled_account)
     end
 
-    it_behaves_like 'an authable account'
+    it_behaves_like "an authable account"
   end
 
-  context 'credit_cards without account' do
+  context "credit_cards without account" do
     before :each do
       @method = :get
       @action = :credit_cards
@@ -198,16 +198,16 @@ RSpec.describe FacilityAccountsController do
     end
 
     it_should_allow :director do
-      expect(assigns(:subnav)).to eq('billing_nav')
-      expect(assigns(:active_tab)).to eq('admin_billing')
+      expect(assigns(:subnav)).to eq("billing_nav")
+      expect(assigns(:active_tab)).to eq("admin_billing")
       expect(assigns(:accounts)).to be_empty
       expect(assigns(:selected)).to be_nil
       expect(assigns(:unreconciled_details)).to be_nil
-      is_expected.to render_template('c2po/reconcile')
+      is_expected.to render_template("c2po/reconcile")
     end
   end
 
-  context 'purchase_orders with account' do
+  context "purchase_orders with account" do
     let(:unreconciled_account) { build(:purchase_order_account) }
     let(:redirect_path) { purchase_orders_facility_accounts_path }
 
@@ -215,10 +215,10 @@ RSpec.describe FacilityAccountsController do
       prepare_for_account_show(:purchase_orders, unreconciled_account)
     end
 
-    it_behaves_like 'an authable account'
+    it_behaves_like "an authable account"
   end
 
-  context 'purchase_orders without account' do
+  context "purchase_orders without account" do
     before :each do
       @method = :get
       @action = :purchase_orders
@@ -226,16 +226,16 @@ RSpec.describe FacilityAccountsController do
     end
 
     it_should_allow :director do
-      expect(assigns(:subnav)).to eq('billing_nav')
-      expect(assigns(:active_tab)).to eq('admin_billing')
+      expect(assigns(:subnav)).to eq("billing_nav")
+      expect(assigns(:active_tab)).to eq("admin_billing")
       expect(assigns(:accounts)).to be_empty
       expect(assigns(:selected)).to be_nil
       expect(assigns(:unreconciled_details)).to be_nil
-      is_expected.to render_template('c2po/reconcile')
+      is_expected.to render_template("c2po/reconcile")
     end
   end
 
-  context 'update_credit_cards' do
+  context "update_credit_cards" do
     before :each do
       ccact = FactoryGirl.build(:credit_card_account)
       prepare_for_account_update(:update_credit_cards, ccact)
@@ -250,12 +250,12 @@ RSpec.describe FacilityAccountsController do
       is_expected.to set_flash
       assert_redirected_to credit_cards_facility_accounts_path
       @order_detail.reload
-      expect(@order_detail.state).to eq('reconciled')
+      expect(@order_detail.state).to eq("reconciled")
       expect(@order_detail.reconciled_note).not_to be_nil
     end
   end
 
-  context 'update_purchase_orders' do
+  context "update_purchase_orders" do
     before :each do
       @poact = FactoryGirl.build(:purchase_order_account)
       prepare_for_account_update(:update_purchase_orders, @poact)
@@ -270,7 +270,7 @@ RSpec.describe FacilityAccountsController do
       is_expected.to set_flash
       assert_redirected_to purchase_orders_facility_accounts_path
       @order_detail.reload
-      expect(@order_detail.state).to eq('reconciled')
+      expect(@order_detail.state).to eq("reconciled")
       expect(@order_detail.reconciled_note).not_to be_nil
     end
   end
@@ -294,8 +294,8 @@ RSpec.describe FacilityAccountsController do
       facility_id: @authable.url_name,
       order_detail: {
         @order_detail.id.to_s => {
-          reconciled: '1',
-          notes: 'this transaction is fake'
+          reconciled: "1",
+          notes: "this transaction is fake"
         }
       }
     }

@@ -1,9 +1,9 @@
 require "rails_helper"
-require 'controller_spec_helper'
-require 'notifications_helper'
+require "controller_spec_helper"
+require "notifications_helper"
 
-RSpec.shared_examples 'user without notifications' do
-  context 'director without notices' do
+RSpec.shared_examples "user without notifications" do
+  context "director without notices" do
     before :each do
       @director.notifications.all.each { |n| n.destroy }
     end
@@ -28,7 +28,7 @@ RSpec.describe NotificationsController do
     end
   end
 
-  context 'index' do
+  context "index" do
     before :each do
       @authable = create(:facility)
       @method = :get
@@ -37,11 +37,11 @@ RSpec.describe NotificationsController do
 
     it_should_require_login
 
-    it_should_behave_like 'user without notifications'
+    it_should_behave_like "user without notifications"
 
     it_should_allow_all facility_users do |user|
       expect(assigns(:notices).size).to eq(user.notifications.active.count)
-      is_expected.to render_template 'index'
+      is_expected.to render_template "index"
     end
   end
 

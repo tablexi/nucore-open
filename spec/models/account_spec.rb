@@ -70,16 +70,16 @@ RSpec.describe Account do
   end
 
   context '#unreconciled_total' do
-    context 'without unreconciled order_details' do
-      it 'should total 0' do
+    context "without unreconciled order_details" do
+      it "should total 0" do
         expect(account.unreconciled_total(facility)).to eq 0
       end
     end
 
-    context 'with unreconciled order_details' do
+    context "with unreconciled order_details" do
       let(:order_details) { 5.times.map { double OrderDetail } }
 
-      context 'with estimated totals' do
+      context "with estimated totals" do
         before :each do
           order_details.each_with_index do |order_detail, n|
             allow(order_detail).to receive(:cost_estimated?).and_return true
@@ -87,12 +87,12 @@ RSpec.describe Account do
           end
         end
 
-        it 'should produce the expected total' do
+        it "should produce the expected total" do
           expect(account.unreconciled_total(facility, order_details)).to eq(15)
         end
       end
 
-      context 'with actual totals' do
+      context "with actual totals" do
         before :each do
           order_details.each_with_index do |order_detail, n|
             allow(order_detail).to receive(:cost_estimated?).and_return false
@@ -100,7 +100,7 @@ RSpec.describe Account do
           end
         end
 
-        it 'should produce the expected total' do
+        it "should produce the expected total" do
           expect(account.unreconciled_total(facility, order_details)).to eq(15)
         end
       end
@@ -109,7 +109,7 @@ RSpec.describe Account do
 
   it "should not create using factory" do
     @user    = FactoryGirl.create(:user)
-    hash     = Hash[user: @user, created_by: @user.id, user_role: 'Owner']
+    hash     = Hash[user: @user, created_by: @user.id, user_role: "Owner"]
     @account = create_nufs_account_with_owner :user
 
     expect(@account.errors[:type]).not_to be_nil
@@ -128,7 +128,7 @@ RSpec.describe Account do
   it { is_expected.to have_one(:owner) }
   it { is_expected.to have_many(:account_users) }
 
-  it 'should be expired' do
+  it "should be expired" do
     owner   = FactoryGirl.create(:user)
     account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: owner))
     account.expires_at = Time.zone.now
@@ -163,7 +163,7 @@ RSpec.describe Account do
 
     it "should require an account owner" do
       @account = Account.create
-      expect(@account.errors[:base]).to eq(['Must have an account owner'])
+      expect(@account.errors[:base]).to eq(["Must have an account owner"])
     end
 
     it "should find the non-deleted account owner" do
@@ -173,7 +173,7 @@ RSpec.describe Account do
 
       expect(@account.owner_user).to eq(@user1)
       @account.owner.update_attributes(deleted_at: Time.zone.now, deleted_by: @user1.id)
-      @account_user2 = @account.account_users.create(user_id: @user2.id, user_role: 'Owner', created_by: @user2.id)
+      @account_user2 = @account.account_users.create(user_id: @user2.id, user_role: "Owner", created_by: @user2.id)
       @account.reload # load fresh account users with update attributes
       expect(@account.owner_user).to eq(@user2)
     end
@@ -184,8 +184,8 @@ RSpec.describe Account do
 
       @user1   = FactoryGirl.create(:user)
       @user2   = FactoryGirl.create(:user)
-      @account.account_users.create(user_id: @user1.id, user_role: 'Business Administrator', created_by: @owner.id)
-      @account.account_users.create(user_id: @user2.id, user_role: 'Business Administrator', created_by: @owner.id, deleted_at: Time.zone.now, deleted_by: @owner.id)
+      @account.account_users.create(user_id: @user1.id, user_role: "Business Administrator", created_by: @owner.id)
+      @account.account_users.create(user_id: @user2.id, user_role: "Business Administrator", created_by: @owner.id, deleted_at: Time.zone.now, deleted_by: @owner.id)
 
       expect(@account.business_admin_users).to include @user1
       expect(@account.business_admin_users).not_to include @user2
@@ -197,8 +197,8 @@ RSpec.describe Account do
 
       @user1   = FactoryGirl.create(:user)
       @user2   = FactoryGirl.create(:user)
-      @account.account_users.create(user_id: @user1.id, user_role: 'Business Administrator', created_by: @owner.id)
-      @account.account_users.create(user_id: @user2.id, user_role: 'Business Administrator', created_by: @owner.id, deleted_at: Time.zone.now, deleted_by: @owner.id)
+      @account.account_users.create(user_id: @user1.id, user_role: "Business Administrator", created_by: @owner.id)
+      @account.account_users.create(user_id: @user2.id, user_role: "Business Administrator", created_by: @owner.id, deleted_at: Time.zone.now, deleted_by: @owner.id)
 
       expect(@account.notify_users).to include @owner
       expect(@account.notify_users).to include @user1
@@ -211,8 +211,8 @@ RSpec.describe Account do
 
       @admin   = FactoryGirl.create(:user)
       @user    = FactoryGirl.create(:user)
-      @account.account_users.create(user_id: @admin.id, user_role: 'Business Administrator', created_by: @owner.id)
-      @user_au = @account.account_users.create(user_id: @user.id, user_role: 'Purchaser', created_by: @owner.id)
+      @account.account_users.create(user_id: @admin.id, user_role: "Business Administrator", created_by: @owner.id)
+      @user_au = @account.account_users.create(user_id: @user.id, user_role: "Purchaser", created_by: @owner.id)
 
       expect(@account.can_be_used_by?(@owner)).to eq(true)
       expect(@account.can_be_used_by?(@admin)).to eq(true)
@@ -256,7 +256,7 @@ RSpec.describe Account do
         expect(@nufs_account.validate_against_product(@item, @user)).to eq(nil)
       end
 
-      context 'bundles' do
+      context "bundles" do
         before :each do
           @item2 = @facility.items.create(FactoryGirl.attributes_for(:item, account: 78_960, facility_account_id: @facility_account.id))
           @bundle = @facility.bundles.create(FactoryGirl.attributes_for(:bundle, facility_account_id: @facility_account.id))
@@ -287,7 +287,7 @@ RSpec.describe Account do
     end
   end
 
-  it 'should update order details with statement' do
+  it "should update order details with statement" do
     facility = FactoryGirl.create(:facility)
     facility_account = facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     user     = FactoryGirl.create(:user)
@@ -341,7 +341,7 @@ RSpec.describe Account do
       def create_po_for(user, facility, deleted_at = nil)
         account = create(:purchase_order_account,
                          facility: facility,
-                         account_users: [build(:account_user, user_role: 'Owner', user: create(:user))])
+                         account_users: [build(:account_user, user_role: "Owner", user: create(:user))])
 
         create(:account_user,
                user: user,

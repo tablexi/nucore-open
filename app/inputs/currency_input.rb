@@ -5,8 +5,8 @@ class CurrencyInput < SimpleForm::Inputs::Base
   def input
     set_value
 
-    out = template.content_tag :div, class: ['input-prepend', 'currency-input'] do
-      template.content_tag(:span, '$', class: 'add-on') +
+    out = template.content_tag :div, class: ["input-prepend", "currency-input"] do
+      template.content_tag(:span, "$", class: "add-on") +
         @builder.text_field(attribute_name, input_html_options)
     end
     out.html_safe

@@ -30,7 +30,7 @@ class NotificationsController < ApplicationController
     @notices = current_user.notifications.active.all
 
     if @notices.count == 0
-      flash[:notice] = I18n.t 'controllers.notifications.no_notices'
+      flash[:notice] = I18n.t "controllers.notifications.no_notices"
 
       begin
         redirect_to :back

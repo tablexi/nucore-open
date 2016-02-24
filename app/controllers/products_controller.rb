@@ -7,10 +7,10 @@ class ProductsController < ApplicationController
 
   load_and_authorize_resource
 
-  layout 'two_column'
+  layout "two_column"
 
   def initialize
-    @active_tab = 'admin_facility'
+    @active_tab = "admin_facility"
     super
   end
 

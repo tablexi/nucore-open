@@ -10,7 +10,7 @@ class AccountsController < ApplicationController
   load_and_authorize_resource only: [:show, :user_search, :transactions, :transactions_in_review, :suspend, :unsuspend]
 
   def initialize
-    @active_tab = 'accounts'
+    @active_tab = "accounts"
     super
   end
 
@@ -33,7 +33,7 @@ class AccountsController < ApplicationController
     @order_details = @order_details.where(account_id: @account.id)
     @export_enabled = true
     paginate_order_details
-    @active_tab = 'accounts'
+    @active_tab = "accounts"
   end
 
   def transactions_in_review_with_search

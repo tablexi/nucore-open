@@ -26,7 +26,7 @@ module SplitAccounts
     # Include factories in main rails app
     initializer "model_core.factories", after: "factory_girl.set_factory_paths" do
       if defined?(FactoryGirl) && SettingsHelper.feature_on?(:split_accounts)
-        FactoryGirl.definition_file_paths << File.expand_path('../../../spec/factories', __FILE__)
+        FactoryGirl.definition_file_paths << File.expand_path("../../../spec/factories", __FILE__)
       end
     end
 

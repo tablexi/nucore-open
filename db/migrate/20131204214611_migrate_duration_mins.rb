@@ -13,7 +13,7 @@ class MigrateDurationMins < ActiveRecord::Migration
 
   def instrument_duration_mins
     idm = {}
-    rs = ScheduleRule.select('instrument_id,duration_mins').group :instrument_id, :duration_mins
+    rs = ScheduleRule.select("instrument_id,duration_mins").group :instrument_id, :duration_mins
 
     rs.each do |r|
       if idm.key?(r.instrument_id) && idm[r.instrument_id] != r.duration_mins

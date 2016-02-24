@@ -8,10 +8,10 @@ class PriceGroupProductsController < ApplicationController
 
   load_and_authorize_resource
 
-  layout 'two_column'
+  layout "two_column"
 
   def initialize
-    @active_tab = 'admin_products'
+    @active_tab = "admin_products"
     super
   end
 
@@ -41,7 +41,7 @@ class PriceGroupProductsController < ApplicationController
     end
 
     if window_errors.blank?
-      flash[:notice] = 'Pricing restrictions successfully updated.'
+      flash[:notice] = "Pricing restrictions successfully updated."
     else
       flash[:error] = "Please assign a reservation window for the #{window_errors.to_sentence}"
     end

@@ -13,11 +13,11 @@ class FacilityJournalsController < ApplicationController
 
   include TransactionSearch
 
-  layout 'two_column'
+  layout "two_column"
 
   def initialize
-    @subnav     = 'billing_nav'
-    @active_tab = 'admin_billing'
+    @subnav     = "billing_nav"
+    @active_tab = "admin_billing"
     super
   end
 
@@ -39,7 +39,7 @@ class FacilityJournalsController < ApplicationController
     action = Journals::Closer.new(@pending_journal, params[:journal].merge(updated_by: session_user.id))
 
     if action.perform params[:journal_status]
-      flash[:notice] = I18n.t 'controllers.facility_journals.update.notice'
+      flash[:notice] = I18n.t "controllers.facility_journals.update.notice"
       redirect_to facility_journals_path(current_facility)
     else
       @order_details = OrderDetail.for_facility(current_facility).need_journal
@@ -65,12 +65,12 @@ class FacilityJournalsController < ApplicationController
     # are selected. We've seen Apache not like stuff like that and give a "malformed
     # header from script. Bad header" error which causes the page to completely bomb out.
     # (See Task #48311). This is just preventative.
-    referer = response.headers['Referer']
-    response.headers['Referer'] = referer[0..referrer.index('?')] if referer.present?
+    referer = response.headers["Referer"]
+    response.headers["Referer"] = referer[0..referrer.index("?")] if referer.present?
 
     if @journal.errors.blank? && @journal.save
       @journal.create_spreadsheet if Settings.financial.journal_format.xls
-      flash[:notice] = I18n.t('controllers.facility_journals.create.notice')
+      flash[:notice] = I18n.t("controllers.facility_journals.create.notice")
       redirect_to facility_journals_path(current_facility)
     else
       flash_error_messages
@@ -86,11 +86,11 @@ class FacilityJournalsController < ApplicationController
 
     respond_to do |format|
       format.xml do
-        headers['Content-Disposition'] = "attachment; filename=\"#{@filename}.xml\""
+        headers["Content-Disposition"] = "attachment; filename=\"#{@filename}.xml\""
       end
 
       format.csv do
-        @show_uid = @journal_rows.joins(order_detail: { order: :user }).where('users.uid IS NOT NULL').any?
+        @show_uid = @journal_rows.joins(order_detail: { order: :user }).where("users.uid IS NOT NULL").any?
         set_csv_headers("#{@filename}.csv")
       end
 
@@ -102,7 +102,7 @@ class FacilityJournalsController < ApplicationController
 
   def reconcile
     if params[:order_detail_ids].blank?
-      flash[:error] = 'No orders were selected to reconcile'
+      flash[:error] = "No orders were selected to reconcile"
       redirect_to(facility_journal_path(current_facility, @journal)) && return
     end
     rec_status = OrderStatus.reconciled.first
@@ -114,7 +114,7 @@ class FacilityJournalsController < ApplicationController
       end
       od.change_status!(rec_status)
     end
-    flash[:notice] = 'The selected orders have been reconciled successfully'
+    flash[:notice] = "The selected orders have been reconciled successfully"
     redirect_to(facility_journal_path(current_facility, @journal)) && return
   end
 
@@ -177,13 +177,13 @@ class FacilityJournalsController < ApplicationController
   end
 
   def flash_error_messages
-    msg = ''
+    msg = ""
 
     @journal.errors.full_messages.each do |error|
       msg += "#{error}<br/>"
 
       if msg.size > 2000 # don't overflow session (flash) cookie
-        msg += I18n.t 'controllers.facility_journals.create_with_search.more_errors'
+        msg += I18n.t "controllers.facility_journals.create_with_search.more_errors"
         break
       end
     end

@@ -16,9 +16,9 @@ RSpec.describe ServicePricePolicy do
     expect(ipp.unit_total.to_f).to eq(10)
   end
 
-  context 'validations' do
+  context "validations" do
     it { is_expected.to validate_numericality_of :unit_cost }
-    it 'should not allow a subsidy more than cost' do
+    it "should not allow a subsidy more than cost" do
       pp = FactoryGirl.build(:item_price_policy, unit_subsidy: 10, unit_cost: 5)
       expect(pp).not_to be_valid
       expect(pp.errors.keys).to be_include :unit_subsidy
@@ -40,7 +40,7 @@ RSpec.describe ServicePricePolicy do
       expect(ipp).to be_valid
     end
 
-    it 'should return the item' do
+    it "should return the item" do
       ipp = @service.service_price_policies.create(FactoryGirl.attributes_for(:service_price_policy, start_date: Date.today, price_group_id: @price_group.id))
       expect(ipp.product).to eq(@service)
     end
@@ -75,7 +75,7 @@ RSpec.describe ServicePricePolicy do
       expect(costs[:subsidy].to_f).to eq(1.5)
     end
 
-    it 'should estimate the same as calculate' do
+    it "should estimate the same as calculate" do
       ipp = @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Date.today, price_group_id: @price_group.id)
       expect(ipp.estimate_cost_and_subsidy(2)).to eq(ipp.calculate_cost_and_subsidy(2))
     end

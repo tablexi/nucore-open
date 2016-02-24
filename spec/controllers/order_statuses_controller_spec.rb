@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe OrderStatusesController do
   render_views
@@ -22,7 +22,7 @@ RSpec.describe OrderStatusesController do
   end
 
   def self.it_should_disallow_editing_root_statuses
-    it 'should disallow editing root statuses' do
+    it "should disallow editing root statuses" do
       expect(@root_status).not_to be_editable
       @params[:id] = @root_status.id
       maybe_grant_always_sign_in :director
@@ -31,7 +31,7 @@ RSpec.describe OrderStatusesController do
     end
   end
 
-  context 'index' do
+  context "index" do
     before :each do
       @action = :index
       @method = :get
@@ -39,91 +39,91 @@ RSpec.describe OrderStatusesController do
 
     it_should_allow_managers_only {}
 
-    context 'signed in' do
+    context "signed in" do
       before :each do
         maybe_grant_always_sign_in :director
         do_request
       end
-      it 'should be a success' do
+      it "should be a success" do
         expect(response).to be_success
       end
-      it 'should have all statuses' do
+      it "should have all statuses" do
         expect(assigns[:order_statuses]).to contain_all [@root_status, @root_status2, @order_status, @order_status2]
       end
-      it 'should have the root statuses' do
+      it "should have the root statuses" do
         expect(assigns[:root_order_statuses]).to contain_all [@root_status, @root_status2]
       end
     end
   end
 
-  context 'new' do
+  context "new" do
     before :each do
       @action = :new
       @method = :get
     end
     it_should_allow_managers_only {}
-    context 'signed in' do
+    context "signed in" do
       before :each do
         maybe_grant_always_sign_in :director
         do_request
       end
-      it 'should create a new record' do
+      it "should create a new record" do
         expect(assigns[:order_status]).to be_new_record
       end
-      it 'should set the facility' do
+      it "should set the facility" do
         expect(assigns[:order_status].facility).to eq(@facility)
       end
     end
   end
 
-  context 'create' do
+  context "create" do
     before :each do
       @action = :create
       @method = :post
       @params.merge!(order_status: FactoryGirl.attributes_for(:order_status, parent_id: @root_status.id))
     end
     it_should_allow_managers_only(:redirect) {}
-    context 'signed_in' do
+    context "signed_in" do
       before :each do
         maybe_grant_always_sign_in :director
       end
-      context 'success' do
+      context "success" do
         before :each do
           do_request
         end
-        it 'should save the record to the database' do
+        it "should save the record to the database" do
           expect(assigns[:order_status]).not_to be_new_record
         end
-        it 'should redirect' do
+        it "should redirect" do
           expect(response).to redirect_to facility_order_statuses_url
         end
-        it 'should set the flash' do
+        it "should set the flash" do
           is_expected.to set_flash
         end
-        it 'should save the parent' do
+        it "should save the parent" do
           expect(assigns[:order_status].parent).to eq(@root_status)
         end
-        it 'should set the facility' do
+        it "should set the facility" do
           expect(assigns[:order_status].facility).to eq(@facility)
         end
       end
-      context 'failure' do
-        context 'without name' do
+      context "failure" do
+        context "without name" do
           before :each do
-            @params[:order_status][:name] = ''
+            @params[:order_status][:name] = ""
             do_request
           end
-          it 'should not save to the database' do
+          it "should not save to the database" do
             expect(assigns[:order_status]).to be_new_record
           end
-          it 'should render new' do
+          it "should render new" do
             expect(response).to render_template :new
           end
         end
       end
     end
   end
-  context 'edit' do
+  context "edit" do
     before :each do
       @action = :edit
       @method = :get
@@ -131,18 +131,18 @@ RSpec.describe OrderStatusesController do
     end
     it_should_allow_managers_only {}
     it_should_disallow_editing_root_statuses
-    context 'signed in' do
+    context "signed in" do
       before :each do
         maybe_grant_always_sign_in :director
         do_request
       end
-      it 'should set the order status' do
+      it "should set the order status" do
         expect(assigns[:order_status]).to eq(@order_status)
       end
     end
   end
 
-  context 'update' do
+  context "update" do
     before :each do
       @action = :update
       @method = :put
@@ -152,7 +152,7 @@ RSpec.describe OrderStatusesController do
     it_should_disallow_editing_root_statuses
   end
 
-  context 'destroy' do
+  context "destroy" do
     before :each do
       @action = :destroy
       @method = :delete
@@ -161,9 +161,9 @@ RSpec.describe OrderStatusesController do
     it_should_allow_managers_only(:redirect) {}
     it_should_disallow_editing_root_statuses
 
-    context 'signed in' do
+    context "signed in" do
       before(:each) { maybe_grant_always_sign_in :director }
-      context 'success' do
+      context "success" do
         before :each do
           @user = FactoryGirl.create(:user)
           @facility_account = FactoryGirl.create(:facility_account, facility: @facility)
@@ -176,16 +176,16 @@ RSpec.describe OrderStatusesController do
           end
           do_request
         end
-        it 'should set the record' do
+        it "should set the record" do
           expect(assigns[:order_status]).to eq(@order_status)
         end
-        it 'should destroy the record' do
+        it "should destroy the record" do
           expect(assigns[:order_status]).to be_destroyed
         end
-        it 'should redirect' do
+        it "should redirect" do
           expect(response).to redirect_to facility_order_statuses_url(facility_id: @facility.url_name)
         end
-        it 'should set all order details to parent status' do
+        it "should set all order details to parent status" do
           @order_details.each { |od| expect(od.reload.order_status).to eq(@root_status) }
         end
       end

@@ -31,7 +31,7 @@ module PowerRelay
   end
 
   def relay_connection
-    raise NotImplementedError.new('Subclass must define')
+    raise NotImplementedError.new("Subclass must define")
   end
 
 end

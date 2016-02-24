@@ -4,7 +4,7 @@ module Products::RelaySupport
 
   included do
     has_one  :relay, inverse_of: :instrument, dependent: :destroy
-    has_many :instrument_statuses, foreign_key: 'instrument_id'
+    has_many :instrument_statuses, foreign_key: "instrument_id"
 
     accepts_nested_attributes_for :relay
 
@@ -21,7 +21,7 @@ module Products::RelaySupport
   end
 
   def current_instrument_status
-    instrument_statuses.order('created_at DESC').first
+    instrument_statuses.order("created_at DESC").first
   end
 
   def has_relay?
@@ -44,7 +44,7 @@ module Products::RelaySupport
   # and populate self.errors ourselves
   def check_relay_with_right_type
     # only run this if passed in control_mechanism and relay
-    return true if relay.nil? || control_mechanism == 'manual'
+    return true if relay.nil? || control_mechanism == "manual"
 
     # transform to right type
     a_relay = relay.becomes(relay.type.constantize)

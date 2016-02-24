@@ -16,32 +16,32 @@ RSpec.describe InstrumentPricePolicy do
     @order_detail.assign_estimated_price
   end
 
-  it 'should have estimated costs at zero' do
+  it "should have estimated costs at zero" do
     expect(@order_detail.estimated_cost).to eq(0)
     expect(@order_detail.estimated_subsidy).to eq(0)
   end
 
-  it 'should not have actual prices set' do
+  it "should not have actual prices set" do
     expect(@order_detail.actual_cost).to be_nil
     expect(@order_detail.actual_subsidy).to be_nil
   end
 
-  it 'should not have a price policy set' do
+  it "should not have a price policy set" do
     expect(@order_detail.price_policy).to be_nil
   end
 
-  context 'completed' do
+  context "completed" do
     before :each do
-      @order_detail.change_status! OrderStatus.find_by_name('Complete')
-      expect(@order_detail.state).to eq('complete')
+      @order_detail.change_status! OrderStatus.find_by_name("Complete")
+      expect(@order_detail.state).to eq("complete")
     end
 
-    it 'should have actual prices set' do
+    it "should have actual prices set" do
       expect(@order_detail.actual_cost).to eq(0)
       expect(@order_detail.actual_subsidy).to eq(0)
     end
 
-    it 'should have a price policy set' do
+    it "should have a price policy set" do
       expect(@order_detail.price_policy).to eq(@price_policy)
     end
   end

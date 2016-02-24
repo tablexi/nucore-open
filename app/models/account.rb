@@ -16,9 +16,9 @@ class Account < ActiveRecord::Base
   # Using a basic hash doesn't work with the `owner_user` :through association. It would
   # only include the last item in the hash as part of the scoping.
   # TODO Consider changing when we get to Rails 4.
-  has_one    :owner, class_name: 'AccountUser', conditions: "account_users.user_role = '#{AccountUser::ACCOUNT_OWNER}' AND account_users.deleted_at IS NULL"
+  has_one    :owner, class_name: "AccountUser", conditions: "account_users.user_role = '#{AccountUser::ACCOUNT_OWNER}' AND account_users.deleted_at IS NULL"
   has_one    :owner_user, through: :owner, source: :user
-  has_many   :business_admins, class_name: 'AccountUser', conditions: { user_role: AccountUser::ACCOUNT_ADMINISTRATOR, deleted_at: nil }
+  has_many   :business_admins, class_name: "AccountUser", conditions: { user_role: AccountUser::ACCOUNT_ADMINISTRATOR, deleted_at: nil }
   has_many   :price_group_members
   has_many   :order_details
   has_many   :orders
@@ -27,7 +27,7 @@ class Account < ActiveRecord::Base
   belongs_to :affiliate
   accepts_nested_attributes_for :account_users
 
-  scope :active, -> { { conditions: ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] } }
+  scope :active, -> { { conditions: ["expires_at > ? AND suspended_at IS NULL", Time.zone.now] } }
   scope :global_account_types, -> { where(accounts: { type: config.global_account_types }) }
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
@@ -203,7 +203,7 @@ class Account < ActiveRecord::Base
   end
 
   def facility_balance(facility, date = Time.zone.now)
-    details = OrderDetail.for_facility(facility).complete.where('order_details.fulfilled_at <= ? AND price_policy_id IS NOT NULL AND order_details.account_id = ?', date, id)
+    details = OrderDetail.for_facility(facility).complete.where("order_details.fulfilled_at <= ? AND price_policy_id IS NOT NULL AND order_details.account_id = ?", date, id)
     details.collect { |od| od.total }.sum.to_f
   end
 
@@ -225,7 +225,7 @@ class Account < ActiveRecord::Base
 
   def update_order_details_with_statement(statement)
     details = order_details.joins(:order)
-                         .where('orders.facility_id = ? AND order_details.reviewed_at < ? AND order_details.statement_id IS NULL', statement.facility.id, Time.zone.now)
+                         .where("orders.facility_id = ? AND order_details.reviewed_at < ? AND order_details.statement_id IS NULL", statement.facility.id, Time.zone.now)
                          .readonly(false)
                          .all
 
@@ -233,7 +233,7 @@ class Account < ActiveRecord::Base
   end
 
   def can_be_used_by?(user)
-    !account_users.where('user_id = ? AND deleted_at IS NULL', user.id).first.nil?
+    !account_users.where("user_id = ? AND deleted_at IS NULL", user.id).first.nil?
   end
 
   def is_active?

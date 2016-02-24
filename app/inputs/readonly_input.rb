@@ -23,7 +23,7 @@ class ReadonlyInput < SimpleForm::Inputs::Base
   end
 
   def process_boolean(value)
-    value ? I18n.t('boolean.true') : I18n.t('boolean.false')
+    value ? I18n.t("boolean.true") : I18n.t("boolean.false")
   end
 
 end

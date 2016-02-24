@@ -1,4 +1,4 @@
-require 'spreadsheet'
+require "spreadsheet"
 
 class JournalSpreadsheet
 
@@ -14,7 +14,7 @@ class JournalSpreadsheet
 
     # initialize client encoding
     # Spreadsheet.client_encoding = book.encoding
-    Spreadsheet.client_encoding = 'UTF-8'
+    Spreadsheet.client_encoding = "UTF-8"
 
     # write journal date
     # sheet1.row(4)[1] = Time.zone.now.strftime("%m/%d/%Y")

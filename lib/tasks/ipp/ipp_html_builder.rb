@@ -11,7 +11,7 @@ class IppHtmlBuilder
     Nokogiri::HTML::Builder.with(html) do |doc|
       doc.html do
         doc.head do
-          doc.link rel: 'stylesheet', type: 'text/css', href: File.expand_path('report.css', File.dirname(__FILE__))
+          doc.link rel: "stylesheet", type: "text/css", href: File.expand_path("report.css", File.dirname(__FILE__))
         end
         doc.body do
           doc.article do
@@ -33,30 +33,30 @@ class IppHtmlBuilder
         doc.table(border: 1) do
           doc.tr do
             doc.th
-            doc.th 'Old'
-            doc.th 'New'
+            doc.th "Old"
+            doc.th "New"
           end
 
           doc.tr do
-            doc.td.label 'Estimated Cost'
+            doc.td.label "Estimated Cost"
             doc.td detail.estimated_cost.to_f
             doc.td estimates[:cost].to_f
           end
 
           doc.tr do
-            doc.td.label 'Estimated Subsidy'
+            doc.td.label "Estimated Subsidy"
             doc.td detail.estimated_subsidy.to_f
             doc.td estimates[:subsidy].to_f
           end
 
           doc.tr do
-            doc.td.label 'Actual Cost'
+            doc.td.label "Actual Cost"
             doc.td detail.actual_cost.to_f
             doc.td actuals[:cost].to_f
           end
 
           doc.tr do
-            doc.td.label 'Actual Subsidy'
+            doc.td.label "Actual Subsidy"
             doc.td detail.actual_subsidy.to_f
             doc.td actuals[:subsidy].to_f
           end
@@ -68,7 +68,7 @@ class IppHtmlBuilder
   def summarize(reporter)
     append_to_article do |doc|
       doc.section.summary! do
-        doc.h2 'Summary'
+        doc.h2 "Summary"
         doc.p "#{reporter.details.size} new, in process, or completed reservations processed"
         doc.p "#{reporter.changed} had different prices while #{reporter.details.size - reporter.changed} were the same"
       end
@@ -79,7 +79,7 @@ class IppHtmlBuilder
     append_to_article do |doc|
       doc.section.errors! do
         doc.details do
-          doc.summary 'Errors'
+          doc.summary "Errors"
           reporter.errors.each { |err| doc.pre err }
         end
       end
@@ -87,11 +87,11 @@ class IppHtmlBuilder
   end
 
   def render
-    File.write 'price_change_report.html', "<!DOCTYPE html>#{html.root}"
+    File.write "price_change_report.html", "<!DOCTYPE html>#{html.root}"
   end
 
   def append_to_article
-    Nokogiri::HTML::Builder.with(html.at('article')) { |doc| yield doc }
+    Nokogiri::HTML::Builder.with(html.at("article")) { |doc| yield doc }
   end
 
 end

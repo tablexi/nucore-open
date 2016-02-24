@@ -1,6 +1,6 @@
 require "rails_helper"
-require 'controller_spec_helper'
-require 'transaction_search_spec_helper'
+require "controller_spec_helper"
+require "transaction_search_spec_helper"
 
 RSpec.describe FacilityNotificationsController do
 
@@ -26,7 +26,7 @@ RSpec.describe FacilityNotificationsController do
     Settings.reload!
   end
   def self.it_should_404_for_zero_day_review
-    it 'should 404 for zero day review' do
+    it "should 404 for zero day review" do
       Settings.billing.review_period = 0.days
       sign_in @admin
       do_request
@@ -88,16 +88,16 @@ RSpec.describe FacilityNotificationsController do
         expect(assigns(:accounts_to_notify).to_a).to eq([[@account.id, @authable.id], [@account2.id, @authable.id]])
       end
 
-      context 'while signed in' do
+      context "while signed in" do
         before :each do
           maybe_grant_always_sign_in(:admin)
         end
 
-        it 'sends emails to the two accounts' do
+        it "sends emails to the two accounts" do
           expect { do_request }.to change { Notifier.deliveries.count }.by(2)
         end
 
-        it 'should display the account list if less than 10 accounts' do
+        it "should display the account list if less than 10 accounts" do
           @accounts = FactoryGirl.create_list(:nufs_account, 3, account_users_attributes: account_users_attributes_hash(user: @user))
           @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
           @params = { facility_id: @authable.url_name }
@@ -112,7 +112,7 @@ RSpec.describe FacilityNotificationsController do
           expect(@accounts).to be_all { |account| flash[:notice].include? account.account_number }
         end
 
-        it 'should display a count if more than 10 accounts notified' do
+        it "should display a count if more than 10 accounts notified" do
           @accounts = FactoryGirl.create_list(:nufs_account, 11, account_users_attributes: account_users_attributes_hash(user: @user))
           @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
           @params = { facility_id: @authable.url_name }

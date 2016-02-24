@@ -4,9 +4,9 @@ class BulkEmailController < ApplicationController
  include CSVHelper
   
  admin_tab :all
- layout 'two_column'
+ layout "two_column"
 
- before_action { @active_tab = 'admin_users' }
+ before_action { @active_tab = "admin_users" }
  before_action :remove_ugly_params_and_redirect
  before_action :authenticate_user!
 	before_action :check_acting_as

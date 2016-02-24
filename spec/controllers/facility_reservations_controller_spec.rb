@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe FacilityReservationsController do
   include DateHelper
@@ -29,7 +29,7 @@ RSpec.describe FacilityReservationsController do
                               created_by: @director.id,
                               account: @account,
                               ordered_at: Time.zone.now,
-                              state: 'purchased'
+                              state: "purchased"
                              )
 
     @reservation = FactoryGirl.create(:reservation, product: @product)
@@ -61,7 +61,7 @@ RSpec.describe FacilityReservationsController do
       end
     end
 
-    context 'when compatible price policies exist' do
+    context "when compatible price policies exist" do
       let(:price_group) { create(:price_group, facility: facility) }
 
       before :each do
@@ -79,7 +79,7 @@ RSpec.describe FacilityReservationsController do
       end
     end
 
-    context 'when no compatible price policies exist' do
+    context "when no compatible price policies exist" do
       before :each do
         InstrumentPricePolicy.all.each(&:destroy)
         do_request
@@ -116,20 +116,20 @@ RSpec.describe FacilityReservationsController do
 
     it_should_allow_operators_only(:redirect) {}
 
-    context 'while signed in' do
+    context "while signed in" do
       before :each do
         maybe_grant_always_sign_in :director
       end
-      context 'a success' do
+      context "a success" do
         before(:each) { do_request }
-        it 'should create the reservation' do
+        it "should create the reservation" do
           expect(assigns[:reservation]).not_to be_nil
           expect(assigns[:reservation]).not_to be_new_record
         end
-        it 'should be an admin reservation' do
+        it "should be an admin reservation" do
           expect(assigns[:reservation]).to be_admin
         end
-        it 'should set the times' do
+        it "should set the times" do
           expect(assigns[:reservation].reserve_start_at).to eq(@time)
           expect(assigns[:reservation].reserve_end_at).to eq(@time + 1.hour)
         end
@@ -138,9 +138,9 @@ RSpec.describe FacilityReservationsController do
         end
       end
 
-      context 'fails validations' do
+      context "fails validations" do
 
-        it 'should not allow an invalid reservation' do
+        it "should not allow an invalid reservation" do
           # Used to fail by overlapping existing reservation, but now admin reservations are
           # allowed to per ticket 38975
           allow_any_instance_of(Reservation).to receive(:valid?).and_return(false)
@@ -174,10 +174,10 @@ RSpec.describe FacilityReservationsController do
       expect(assigns(:order_detail)).to eq(@order_detail)
       expect(assigns(:reservation)).to eq(@reservation)
       expect(assigns(:instrument)).to eq(@product)
-      is_expected.to render_template 'edit'
+      is_expected.to render_template "edit"
     end
 
-    context 'redirect on no edit' do
+    context "redirect on no edit" do
       before :each do
         @reservation.update_attribute(:canceled_at, Time.zone.now)
       end
@@ -201,13 +201,13 @@ RSpec.describe FacilityReservationsController do
         sign_in(@admin)
       end
 
-      it 'should not return non-reservation order details' do
+      it "should not return non-reservation order details" do
         # setup_reservation overwrites @order_detail
         @order_detail_reservation = @order_detail
 
         @product = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
         @order_detail_item = place_product_order(@director, @authable, @product, @account)
-        @order_detail.order.update_attributes!(state: 'purchased')
+        @order_detail.order.update_attributes!(state: "purchased")
 
         expect(@authable.reload.order_details).to contain_all [@order_detail_reservation, @order_detail_item]
         do_request
@@ -241,7 +241,7 @@ RSpec.describe FacilityReservationsController do
   end
 
   context '#timeline' do
-    context 'instrument listing' do
+    context "instrument listing" do
       before :each do
         @instrument2 = FactoryGirl.create(:instrument,
                                           facility_account: @facility_account,
@@ -253,7 +253,7 @@ RSpec.describe FacilityReservationsController do
         @params = { facility_id: @authable.url_name }
       end
 
-      it 'should show schedules for hidden instruments' do
+      it "should show schedules for hidden instruments" do
         do_request
         expect(assigns(:schedules)).to match_array([@product.schedule, @instrument2.schedule])
       end
@@ -270,7 +270,7 @@ RSpec.describe FacilityReservationsController do
       end
     end
 
-    context 'orders' do
+    context "orders" do
       before :each do
         # create unpurchased reservation
         @order2 = FactoryGirl.create(:order,
@@ -279,7 +279,7 @@ RSpec.describe FacilityReservationsController do
                                    created_by: @director.id,
                                    account: @account,
                                    ordered_at: nil,
-                                   state: 'new'
+                                   state: "new"
                                   )
         # make sure the reservations are happening today
         @reservation.update_attributes!(reserve_start_at: Time.zone.now, reserve_end_at: 1.hour.from_now)
@@ -301,25 +301,25 @@ RSpec.describe FacilityReservationsController do
         do_request
       end
 
-      it 'should not be admin reservations' do
+      it "should not be admin reservations" do
         expect(@reservation).not_to be_admin
         expect(@unpurchased_reservation).not_to be_admin
         expect(@admin_reservation).to be_admin
       end
 
-      it 'should show reservation' do
+      it "should show reservation" do
         expect(response.body).to include "id='tooltip_reservation_#{@reservation.id}'"
       end
 
-      it 'should not show unpaid reservation' do
+      it "should not show unpaid reservation" do
         expect(response.body).not_to include "id='tooltip_reservation_#{@unpurchased_reservation.id}'"
       end
 
-      it 'should include canceled reservation' do
+      it "should include canceled reservation" do
         expect(response.body).to include "id='tooltip_reservation_#{@canceled_reservation.id}'"
       end
 
-      it 'should include admin reservation' do
+      it "should include admin reservation" do
         expect(response.body).to include "id='tooltip_reservation_#{@admin_reservation.id}'"
       end
     end
@@ -368,7 +368,7 @@ RSpec.describe FacilityReservationsController do
       end
     end
 
-    context 'completed order' do
+    context "completed order" do
       before :each do
         expect(@order_detail.price_policy).to be_nil
         @price_group = FactoryGirl.create(:price_group, facility: @authable)
@@ -380,7 +380,7 @@ RSpec.describe FacilityReservationsController do
         Timecop.freeze(@now) { @order_detail.to_complete! }
       end
 
-      context 'update actuals' do
+      context "update actuals" do
         before :each do
           @reservation.update_attributes(actual_start_at: nil, actual_end_at: nil)
           @reservation_attrs = FactoryGirl.attributes_for(
@@ -391,7 +391,7 @@ RSpec.describe FacilityReservationsController do
           @params.merge!(reservation: @reservation_attrs)
         end
 
-        it 'should update the actuals and assign a price policy if there is none' do
+        it "should update the actuals and assign a price policy if there is none" do
           Timecop.freeze(@now) do
             do_request
             expect(assigns(:order)).to eq(@order)
@@ -404,12 +404,12 @@ RSpec.describe FacilityReservationsController do
             expect(assigns(:order_detail).actual_cost).not_to be_nil
             expect(assigns(:order_detail).actual_subsidy).not_to be_nil
             expect(flash[:notice]).to be_present
-            is_expected.to render_template 'edit'
+            is_expected.to render_template "edit"
           end
         end
       end
 
-      context 'update reserve' do
+      context "update reserve" do
         before :each do
           @reservation.update_attributes(actual_start_at: @reservation.reserve_start_at, actual_end_at: @reservation.reserve_end_at)
           @reservation_attrs = FactoryGirl.attributes_for(
@@ -422,7 +422,7 @@ RSpec.describe FacilityReservationsController do
           @params[:reservation] = @reservation_attrs
         end
 
-        it 'should update the actual cost' do
+        it "should update the actual cost" do
           Timecop.freeze(@now) do
             do_request
             expect(assigns(:reservation).actual_start_at).to  eq(@reservation_attrs[:actual_start_at])
@@ -430,7 +430,7 @@ RSpec.describe FacilityReservationsController do
             expect(assigns(:order_detail).price_policy).to    eq(@instrument_pp)
             expect(assigns(:order_detail).actual_cost).not_to eq(@order_detail.actual_cost)
             expect(flash[:notice]).to be_present
-            is_expected.to render_template 'edit'
+            is_expected.to render_template "edit"
           end
         end
       end
@@ -448,7 +448,7 @@ RSpec.describe FacilityReservationsController do
     # TODO: more complete tests exist for the FacilityOrdersController version
   end
 
-  context 'admin' do
+  context "admin" do
     before :each do
       @reservation.order_detail_id = nil
       @reservation.save

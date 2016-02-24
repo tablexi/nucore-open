@@ -9,7 +9,7 @@ class EditsForInvoicingAndJournalingRefacting < ActiveRecord::Migration
     # remove statement_accounts as account_transactions now have a link back to the statement
     # add an invoice_date to statements
     drop_table :statement_accounts
-    execute 'DELETE FROM statements'
+    execute "DELETE FROM statements"
     add_column :statements, :invoice_date, :datetime, null: false
 
     # track individual journal rows

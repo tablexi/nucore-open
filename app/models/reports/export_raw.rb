@@ -10,7 +10,7 @@ class Reports::ExportRaw
         raise ArgumentError, "Required argument '#{property}' is missing"
       end
     end
-    @date_range_field = arguments[:date_range_field] || 'journal_or_statement_date'
+    @date_range_field = arguments[:date_range_field] || "journal_or_statement_date"
   end
 
   def date_start
@@ -73,7 +73,7 @@ class Reports::ExportRaw
 
   def product_info_columns(order_detail)
     product = order_detail.product
-    bundle_desc = product.is_a?(Bundle) ? product.products.collect(&:name).join(' & ') : nil
+    bundle_desc = product.is_a?(Bundle) ? product.products.collect(&:name).join(" & ") : nil
     [
       product.url_name,
       product.type.underscore.humanize,
@@ -181,13 +181,13 @@ class Reports::ExportRaw
     if number.present?
       ActionController::Base.helpers.number_to_currency(number)
     else
-      ''
+      ""
     end
   end
 
   def canceled_by_name(reservation)
     if reservation.canceled_by == 0
-      I18n.t('reports.fields.auto_cancel_name')
+      I18n.t("reports.fields.auto_cancel_name")
     else
       reservation.canceled_by_user.try(:full_name)
     end

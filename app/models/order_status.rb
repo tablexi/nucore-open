@@ -9,17 +9,17 @@ class OrderStatus < ActiveRecord::Base
   validates_uniqueness_of :name, scope: [:parent_id, :facility_id]
   validates_each :parent_id do |model, attr, value|
     begin
-      model.errors.add(attr, 'must be a root') unless value.nil? || OrderStatus.find(value).root?
+      model.errors.add(attr, "must be a root") unless value.nil? || OrderStatus.find(value).root?
     rescue => e
-      model.errors.add(attr, 'must be a valid root')
+      model.errors.add(attr, "must be a valid root")
     end
   end
 
-  scope :new_os, conditions: { name: 'New' }, limit: 1
-  scope :inprocess, conditions: { name: 'In Process' }, limit: 1
-  scope :canceled, conditions: { name: 'Canceled' }, limit: 1
-  scope :complete, conditions: { name: 'Complete' }, limit: 1
-  scope :reconciled, conditions: { name: 'Reconciled' }, limit: 1
+  scope :new_os, conditions: { name: "New" }, limit: 1
+  scope :inprocess, conditions: { name: "In Process" }, limit: 1
+  scope :canceled, conditions: { name: "Canceled" }, limit: 1
+  scope :complete, conditions: { name: "Complete" }, limit: 1
+  scope :reconciled, conditions: { name: "Reconciled" }, limit: 1
 
   def self.complete_status
     complete.first
@@ -38,11 +38,11 @@ class OrderStatus < ActiveRecord::Base
   end
 
   def state_name
-    root.name.downcase.delete(' ').to_sym
+    root.name.downcase.delete(" ").to_sym
   end
 
   def downcase_name
-    name.downcase.gsub(/\s+/, '_')
+    name.downcase.gsub(/\s+/, "_")
   end
 
   def is_left_of?(o)
@@ -76,7 +76,7 @@ class OrderStatus < ActiveRecord::Base
     end
 
     def initial_statuses(facility)
-      first_invalid_status = find_by_name('Canceled')
+      first_invalid_status = find_by_name("Canceled")
       statuses = find(:all).sort { |a, b| a.lft <=> b.lft }.reject do|os|
         !os.is_left_of?(first_invalid_status)
       end
@@ -85,7 +85,7 @@ class OrderStatus < ActiveRecord::Base
     end
 
     def non_protected_statuses(facility)
-      first_protected_status = find_by_name('Reconciled')
+      first_protected_status = find_by_name("Reconciled")
       statuses = find(:all).sort { |a, b| a.lft <=> b.lft }.reject do|os|
         !os.is_left_of?(first_protected_status)
       end

@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:edit_accounts) do
   render_views
@@ -11,7 +11,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
     @account = create_nufs_account_with_owner
   end
 
-  context 'user_search' do
+  context "user_search" do
 
     before(:each) do
       @method = :get
@@ -25,12 +25,12 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
 
     it_should_allow_all facility_managers do
       expect(assigns(:account)).to eq(@account)
-      is_expected.to render_template('user_search')
+      is_expected.to render_template("user_search")
     end
 
   end
 
-  context 'new' do
+  context "new" do
 
     before(:each) do
       @method = :get
@@ -47,12 +47,12 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
       expect(assigns(:user)).to eq(@guest)
       expect(assigns(:account_user)).to be_kind_of AccountUser
       expect(assigns(:account_user)).to be_new_record
-      is_expected.to render_template('new')
+      is_expected.to render_template("new")
     end
 
   end
 
-  context 'create' do
+  context "create" do
 
     before(:each) do
       @method = :post
@@ -79,12 +79,12 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
       assert_redirected_to facility_account_members_path(@authable, @account)
     end
 
-    context 'changing roles' do
+    context "changing roles" do
       before :each do
         maybe_grant_always_sign_in :director
       end
 
-      context 'with an existing owner' do
+      context "with an existing owner" do
 
         before :each do
           @params[:account_user][:user_role] = AccountUser::ACCOUNT_OWNER
@@ -93,7 +93,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
           do_request
         end
 
-        it 'changes the owner of an account' do
+        it "changes the owner of an account" do
           expect(assigns(:account)).to eq(@account)
           expect(assigns(:user)).to eq(@purchaser)
           expect(assigns(:account_user).user_role).to eq(AccountUser::ACCOUNT_OWNER)
@@ -108,7 +108,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
         end
       end
 
-      context 'with a missing owner' do
+      context "with a missing owner" do
 
         before :each do
           @account_user = @account.owner
@@ -119,7 +119,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
           do_request
         end
 
-        it 'adds the owner' do
+        it "adds the owner" do
           expect(assigns(:account)).to eq(@account)
           expect(@account.account_users.owners.count).to eq(1)
           is_expected.to set_flash
@@ -128,7 +128,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
       end
 
       context "changing a user's role" do
-        context 'from business admin to purchaser' do
+        context "from business admin to purchaser" do
           before :each do
             @business_admin = FactoryGirl.create(:user)
             FactoryGirl.create(:account_user, account: @account, user: @business_admin, user_role: AccountUser::ACCOUNT_ADMINISTRATOR)
@@ -142,7 +142,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
             do_request
           end
 
-          it 'should change the role' do
+          it "should change the role" do
             expect(assigns(:account)).to eq(@account)
             expect(@account.account_users.purchasers.map(&:user)).to eq([@business_admin])
             expect(@account.account_users.business_administrators).not_to be_any
@@ -152,7 +152,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
           end
         end
 
-        context 'from owner to purchaser' do
+        context "from owner to purchaser" do
           before :each do
             @params[:user_id]                  = @owner.id
             @params[:account_user][:user_role] = AccountUser::ACCOUNT_PURCHASER
@@ -160,7 +160,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
             expect(@account.account_users.purchasers).not_to be_any
           end
 
-          it 'should be prevented' do
+          it "should be prevented" do
             do_request
             expect(assigns(:account)).to eq(@account)
             expect(assigns(:account).owner_user).to eq(@owner)
@@ -171,7 +171,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
             expect(response).to render_template :new
           end
 
-          it 'should not send an email' do
+          it "should not send an email" do
             expect(Notifier).not_to receive(:user_update)
             do_request
           end
@@ -180,7 +180,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
     end
   end
 
-  context 'destroy' do
+  context "destroy" do
 
     before(:each) do
       @method = :delete

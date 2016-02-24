@@ -1,17 +1,17 @@
 module TimelineHelper
 
   def reservation_classes(reservation, product = nil)
-    classes = ['unit']
+    classes = ["unit"]
     if reservation.product == product
-      classes << 'tip' unless reservation.blackout?
+      classes << "tip" unless reservation.blackout?
     else
-      classes << 'other-product'
+      classes << "other-product"
     end
 
-    classes << 'blackout' if reservation.blackout?
-    classes << 'admin' if reservation.admin?
-    classes << 'behalf_of' if reservation.ordered_on_behalf_of?
-    classes << 'in_progress' if reservation.can_switch_instrument?
+    classes << "blackout" if reservation.blackout?
+    classes << "admin" if reservation.admin?
+    classes << "behalf_of" if reservation.ordered_on_behalf_of?
+    classes << "in_progress" if reservation.can_switch_instrument?
     classes << "status_#{reservation.order_detail.order_status.to_s.downcase}" if reservation.order_detail
     classes.concat spans_midnight_class(reservation.reserve_start_at, reservation.reserve_end_at)
     classes.join(" ")
@@ -45,8 +45,8 @@ module TimelineHelper
 
   def spans_midnight_class(datetime_start, datetime_end)
     classes = []
-    classes << 'runs_into_tomorrow' if datetime_end > @display_datetime.end_of_day
-    classes << 'runs_into_yesterday' if datetime_start < @display_datetime.beginning_of_day
+    classes << "runs_into_tomorrow" if datetime_end > @display_datetime.end_of_day
+    classes << "runs_into_yesterday" if datetime_start < @display_datetime.beginning_of_day
     classes
   end
 

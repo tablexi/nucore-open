@@ -7,7 +7,7 @@ class ReservationUserActionPresenter
 
   delegate :current_facility, to: :controller
 
-  delegate :link_to, to: 'ActionController::Base.helpers'
+  delegate :link_to, to: "ActionController::Base.helpers"
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::NumberHelper
   include ReservationsHelper
@@ -28,7 +28,7 @@ class ReservationUserActionPresenter
     end
 
     actions << cancel_link if can_cancel?
-    actions.compact.join('&nbsp;|&nbsp;').html_safe
+    actions.compact.join("&nbsp;|&nbsp;").html_safe
   end
 
   def view_edit_link
@@ -46,7 +46,7 @@ class ReservationUserActionPresenter
   end
 
   def accessories_link
-    link_to I18n.t('product_accessories.pick_accessories.title'), reservation_pick_accessories_path(reservation), class: 'has_accessories persistent'
+    link_to I18n.t("product_accessories.pick_accessories.title"), reservation_pick_accessories_path(reservation), class: "has_accessories persistent"
   end
 
   def edit_reservation_path
@@ -59,11 +59,11 @@ class ReservationUserActionPresenter
 
   def switch_actions
     if can_switch_instrument_on?
-      link_to I18n.t('reservations.switch.start'),
-              order_order_detail_reservation_switch_instrument_path(order, order_detail, reservation, switch: 'on')
+      link_to I18n.t("reservations.switch.start"),
+              order_order_detail_reservation_switch_instrument_path(order, order_detail, reservation, switch: "on")
     elsif can_switch_instrument_off?
-      link_to I18n.t('reservations.switch.end'),
-              order_order_detail_reservation_switch_instrument_path(order, order_detail, reservation, switch: 'off', reservation_ended: 'on'),
+      link_to I18n.t("reservations.switch.end"),
+              order_order_detail_reservation_switch_instrument_path(order, order_detail, reservation, switch: "off", reservation_ended: "on"),
               class: end_reservation_class(reservation),
               data: { refresh_on_cancel: true }
     end
@@ -73,19 +73,19 @@ class ReservationUserActionPresenter
     fee = with_cancelation_now { order_detail.cancellation_fee }
 
     if fee > 0
-      link_to I18n.t('reservations.delete.link'), order_order_detail_path(order, order_detail, cancel: 'cancel'),
+      link_to I18n.t("reservations.delete.link"), order_order_detail_path(order, order_detail, cancel: "cancel"),
               method: :put,
-              confirm: I18n.t('reservations.delete.confirm_with_fee', fee: number_to_currency(fee))
+              confirm: I18n.t("reservations.delete.confirm_with_fee", fee: number_to_currency(fee))
     else
-      link_to I18n.t('reservations.delete.link'), order_order_detail_path(order, order_detail, cancel: 'cancel'),
+      link_to I18n.t("reservations.delete.link"), order_order_detail_path(order, order_detail, cancel: "cancel"),
               method: :put,
-              confirm: I18n.t('reservations.delete.confirm')
+              confirm: I18n.t("reservations.delete.confirm")
     end
   end
 
   def move_link
-    link_to I18n.t('reservations.moving_up.link'), order_order_detail_reservation_move_reservation_path(order, order_detail, reservation),
-            class: 'move-res',
+    link_to I18n.t("reservations.moving_up.link"), order_order_detail_reservation_move_reservation_path(order, order_detail, reservation),
+            class: "move-res",
             data: { reservation_id: reservation.id }
   end
 

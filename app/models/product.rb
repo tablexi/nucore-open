@@ -1,7 +1,7 @@
 class Product < ActiveRecord::Base
 
   belongs_to :facility
-  belongs_to :initial_order_status, class_name: 'OrderStatus'
+  belongs_to :initial_order_status, class_name: "OrderStatus"
   belongs_to :facility_account
   has_many   :product_users
   has_many   :order_details
@@ -9,7 +9,7 @@ class Product < ActiveRecord::Base
   has_many   :price_groups, through: :price_group_products
   has_many   :price_group_products
   has_many   :product_accessories, conditions: { deleted_at: nil }, dependent: :destroy
-  has_many   :accessories, through: :product_accessories, class_name: 'Product'
+  has_many   :accessories, through: :product_accessories, class_name: "Product"
   has_many   :price_policies
   has_many   :training_requests, dependent: :destroy
 
@@ -136,7 +136,7 @@ class Product < ActiveRecord::Base
   end
 
   def to_s_with_status
-    to_s + (is_archived? ? ' (inactive)' : '')
+    to_s + (is_archived? ? " (inactive)" : "")
   end
 
   def set_default_pricing

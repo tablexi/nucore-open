@@ -11,14 +11,14 @@ RSpec.describe Reservations::Validations do
     reservation.save
   end
 
-  it 'does not produce an error if the duration of the reservation is a factor of the instrument interval' do
+  it "does not produce an error if the duration of the reservation is a factor of the instrument interval" do
     reservation.product.update_attribute :reserve_interval, 15
     expect(reservation.errors).to be_blank
     reservation.update_attributes reserve_start_at: now, reserve_end_at: now + 1.hour
     expect(reservation.errors).to be_blank
   end
 
-  it 'does not produce an error if the duration of the reservation is not a factor of the instrument interval' do
+  it "does not produce an error if the duration of the reservation is not a factor of the instrument interval" do
     reservation.product.update_attribute :reserve_interval, 15
     expect(reservation.errors).to be_blank
     reservation.update_attributes reserve_start_at: now, reserve_end_at: now + 1.hour + 5.minutes

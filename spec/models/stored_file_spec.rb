@@ -12,23 +12,23 @@ RSpec.describe StoredFile do
 
   context "product_id" do
     it "should be required for 'info' file_type" do
-      @fu = StoredFile.create(file_type: 'info')
+      @fu = StoredFile.create(file_type: "info")
       expect(@fu).to validate_presence_of(:product_id)
     end
 
     it "should be required for 'template' file_type" do
-      @fu = StoredFile.create(file_type: 'template')
+      @fu = StoredFile.create(file_type: "template")
       expect(@fu).to validate_presence_of(:product_id)
     end
   end
 
   context "order_detail_id" do
     it "should be required for 'template_result' file_type" do
-      @fu = StoredFile.create(file_type: 'template_result')
+      @fu = StoredFile.create(file_type: "template_result")
       expect(@fu).to validate_presence_of(:order_detail_id)
     end
     it "should be required for 'sample_result' file_type" do
-      @fu = StoredFile.create(file_type: 'sample_result')
+      @fu = StoredFile.create(file_type: "sample_result")
       expect(@fu).to validate_presence_of(:order_detail_id)
     end
   end

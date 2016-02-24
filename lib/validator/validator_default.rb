@@ -13,7 +13,7 @@ class ValidatorDefault
   # Returns the payment source format that is
   # considered valid. Example: '123-456-7890'
   def self.pattern_format
-    '++ any characters ++'
+    "++ any characters ++"
   end
 
   #

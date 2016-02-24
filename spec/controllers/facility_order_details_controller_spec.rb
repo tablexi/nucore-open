@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe FacilityOrderDetailsController do
   render_views
@@ -20,7 +20,7 @@ RSpec.describe FacilityOrderDetailsController do
                               created_by: @director.id,
                               account: @account,
                               ordered_at: Time.zone.now,
-                              state: 'purchased'
+                              state: "purchased"
                              )
     @price_group = FactoryGirl.create(:price_group, facility: @authable)
     @price_policy = FactoryGirl.create(:item_price_policy, product: @product, price_group: @price_group)
@@ -29,7 +29,7 @@ RSpec.describe FacilityOrderDetailsController do
     @params = { facility_id: @authable.url_name, order_id: @order.id, id: @order_detail.id }
   end
 
-  context 'destroy' do
+  context "destroy" do
     before :each do
       @method = :delete
       @action = :destroy
@@ -41,14 +41,14 @@ RSpec.describe FacilityOrderDetailsController do
       assert_redirected_to facility_order_path(@authable, @order)
     end
 
-    context 'merge order' do
+    context "merge order" do
       before :each do
         @clone = @order.dup
         assert @clone.save
         @order.update_attribute :merge_with_order_id, @clone.id
       end
 
-      it_should_allow :director, 'to destroy a detail that is part of a merge order' do
+      it_should_allow :director, "to destroy a detail that is part of a merge order" do
         assert_raises(ActiveRecord::RecordNotFound) { OrderDetail.find @order_detail.id }
         expect(flash[:notice]).to be_present
         assert_redirected_to facility_order_path(@authable, @clone)

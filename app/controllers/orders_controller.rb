@@ -8,7 +8,7 @@ class OrdersController < ApplicationController
   before_action :protect_purchased_orders, except: [:cart, :receipt, :confirmed, :index]
 
   def initialize
-    @active_tab = 'orders'
+    @active_tab = "orders"
     super
   end
 
@@ -17,7 +17,7 @@ class OrdersController < ApplicationController
   end
 
   def protect_purchased_orders
-    if @order.state == 'purchased'
+    if @order.state == "purchased"
       redirect_to(receipt_order_path(@order)) && return
     end
   end
@@ -173,7 +173,7 @@ class OrdersController < ApplicationController
         end
         return
       else
-        flash.now[:error] = account.nil? ? 'Please select a payment method.' : 'An error was encountered while selecting a payment method.'
+        flash.now[:error] = account.nil? ? "Please select a payment method." : "An error was encountered while selecting a payment method."
       end
     end
 
@@ -267,7 +267,7 @@ class OrdersController < ApplicationController
         raise NUCore::PurchaseException.new("") unless @order.validate_order! && @order.purchase!
 
         if facility_ability.can? :order_in_past, @order
-          raise NUCore::PurchaseException.new(I18n.t('controllers.orders.purchase.future_dating_error')) unless @order.can_backdate_order_details?
+          raise NUCore::PurchaseException.new(I18n.t("controllers.orders.purchase.future_dating_error")) unless @order.can_backdate_order_details?
 
           # update order detail statuses if you've changed it while acting as
           if acting_as? && params[:order_status_id].present?
@@ -284,12 +284,12 @@ class OrdersController < ApplicationController
           od = @order.order_details[0]
 
           if od.reservation.can_switch_instrument_on?
-            redirect_to order_order_detail_reservation_switch_instrument_path(@order, od, od.reservation, switch: 'on', redirect_to: reservations_path)
+            redirect_to order_order_detail_reservation_switch_instrument_path(@order, od, od.reservation, switch: "on", redirect_to: reservations_path)
           else
             redirect_to reservations_path
           end
 
-          flash[:notice] = 'Reservation completed successfully'
+          flash[:notice] = "Reservation completed successfully"
         else
           redirect_to receipt_order_path(@order)
         end
@@ -297,7 +297,7 @@ class OrdersController < ApplicationController
         return
       end
     rescue => e
-      flash[:error] = I18n.t('orders.purchase.error')
+      flash[:error] = I18n.t("orders.purchase.error")
       flash[:error] += " #{e.message}" if e.message
       puts e.message
       @order.reload.invalidate!
@@ -321,7 +321,7 @@ class OrdersController < ApplicationController
   def index
     # new or in process
     @order_details = session_user.order_details.non_reservations
-    @available_statuses = ['pending', 'all']
+    @available_statuses = ["pending", "all"]
     case params[:status]
     when "pending"
       @order_details = @order_details.pending
@@ -331,7 +331,7 @@ class OrdersController < ApplicationController
       redirect_to orders_status_path(status: "pending")
       return
     end
-    @order_details = @order_details. order('order_details.created_at DESC').paginate(page: params[:page])
+    @order_details = @order_details. order("order_details.created_at DESC").paginate(page: params[:page])
   end
 
   private
@@ -365,7 +365,7 @@ class OrdersController < ApplicationController
   end
 
   def should_send_notification?
-    !acting_as? || params[:send_notification] == '1'
+    !acting_as? || params[:send_notification] == "1"
   end
 
 end

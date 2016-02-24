@@ -8,7 +8,7 @@ class AffiliatesController < GlobalSettingsController
     attrs = params[:affiliate]
 
     if attrs.blank?
-      flash[:error] = 'Affiliate attributes not found!'
+      flash[:error] = "Affiliate attributes not found!"
       return redirect_to new_affiliate_path
     end
 
@@ -41,7 +41,7 @@ class AffiliatesController < GlobalSettingsController
       attrs = params[:affiliate]
 
       if attrs.blank?
-        flash.now[:error] = 'Affiliate attributes not found!'
+        flash.now[:error] = "Affiliate attributes not found!"
         return render action: :edit
       end
 

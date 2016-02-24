@@ -1,4 +1,4 @@
-require_relative 'ipp_converter'
+require_relative "ipp_converter"
 
 #
 # This class and it's usages can be removed after

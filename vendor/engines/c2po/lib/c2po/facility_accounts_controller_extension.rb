@@ -50,12 +50,12 @@ module C2po
     def render_account_reconcile
       set_selected_account_and_order_details if @accounts.present?
       return nil if selected_account_not_found?
-      render 'c2po/reconcile'
+      render "c2po/reconcile"
     end
 
     def set_billing_navigation
-      @subnav = 'billing_nav'
-      @active_tab = 'admin_billing'
+      @subnav = "billing_nav"
+      @active_tab = "admin_billing"
     end
 
     def get_selected_account(selected_id)
@@ -88,7 +88,7 @@ module C2po
           od.reconciled_note = od_params[:notes]
 
           begin
-            if od_params[:reconciled] == '1'
+            if od_params[:reconciled] == "1"
               od.change_status!(OrderStatus.reconciled.first)
               count += 1
             else

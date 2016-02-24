@@ -42,7 +42,7 @@ class Accessories::Accessorizer
   end
 
   def update_order_detail(od, params)
-    if ['true', '1'].include? params[:enabled]
+    if ["true", "1"].include? params[:enabled]
       assign_attributes_and_save(od, params)
     else
       od.destroy
@@ -74,7 +74,7 @@ class Accessories::Accessorizer
   end
 
   def assign_attributes_and_save(od, params)
-    od.assign_attributes(params.slice('quantity'))
+    od.assign_attributes(params.slice("quantity"))
     od.update_quantity # so auto-scaled overrides the parameter
     od.order_status_id = @order_detail.order_status_id
     od.assign_estimated_price
@@ -101,12 +101,12 @@ class Accessories::Accessorizer
   end
 
   def detail_attributes(accessory, options)
-    attrs = @order_detail.attributes.slice('account_id', 'created_by')
+    attrs = @order_detail.attributes.slice("account_id", "created_by")
     attrs.merge(order: @order_detail.order,
       product: accessory,
       quantity: options[:quantity],
       product_accessory: product_accessory(accessory),
-      state: 'new')
+      state: "new")
   end
 
   def current_accessories

@@ -8,7 +8,7 @@ class InstrumentStatus < ActiveRecord::Base
 
   def status_string
     return error_message if error_message
-    is_on? ? 'On' : 'Off'
+    is_on? ? "On" : "Off"
   end
 
   def as_json(_options = {})

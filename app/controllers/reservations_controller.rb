@@ -13,7 +13,7 @@ class ReservationsController < ApplicationController
 
   def initialize
     super
-    @active_tab = 'reservations'
+    @active_tab = "reservations"
   end
 
   def public_timeline
@@ -70,11 +70,11 @@ class ReservationsController < ApplicationController
     relation = acting_user.order_details
     in_progress = relation.in_progress_reservations.all
     @status = params[:status]
-    @available_statuses = [in_progress.blank? ? 'upcoming' : 'upcoming_and_in_progress', 'all']
+    @available_statuses = [in_progress.blank? ? "upcoming" : "upcoming_and_in_progress", "all"]
 
-    if @status == 'all'
+    if @status == "all"
       @order_details = relation.all_reservations.all
-    elsif @status == 'upcoming'
+    elsif @status == "upcoming"
       @status = @available_statuses.first
       @order_details = in_progress + relation.upcoming_reservations.all
     else
@@ -88,7 +88,7 @@ class ReservationsController < ApplicationController
     end
     notices.compact!
     existing_notices = flash[:notice].presence ? [flash[:notice]] : []
-    flash.now[:notice] = existing_notices.concat(notices).join('<br />').html_safe unless notices.empty?
+    flash.now[:notice] = existing_notices.concat(notices).join("<br />").html_safe unless notices.empty?
   end
 
   # POST /orders/1/order_details/1/reservations
@@ -97,7 +97,7 @@ class ReservationsController < ApplicationController
     @reservation = @order_detail.build_reservation(reservation_create_params)
 
     if !@order_detail.bundled? && params[:order_account].blank?
-      flash.now[:error] = I18n.t 'controllers.reservations.create.no_selection'
+      flash.now[:error] = I18n.t "controllers.reservations.create.no_selection"
       @reservation.valid? # run validations so it sets reserve_end_at
       set_windows
       render(:new) && return
@@ -119,7 +119,7 @@ class ReservationsController < ApplicationController
 
         save_reservation_and_order_detail
 
-        flash[:notice] = I18n.t 'controllers.reservations.create.success'
+        flash[:notice] = I18n.t "controllers.reservations.create.success"
 
         if mergeable
           # The purchase_order_path or cart_path will handle the backdating, but we need
@@ -128,7 +128,7 @@ class ReservationsController < ApplicationController
           redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
         elsif @order_detail.product.is_a?(Instrument) && @order.order_details.count == 1
           redirect_params = {}
-          redirect_params[:send_notification] = '1' if params[:send_notification] == '1'
+          redirect_params[:send_notification] = "1" if params[:send_notification] == "1"
           # only trigger purchase if instrument
           # and is only thing in cart (isn't bundled or on a multi-add order)
           redirect_to purchase_order_path(@order, redirect_params)
@@ -142,7 +142,7 @@ class ReservationsController < ApplicationController
         raise ActiveRecord::Rollback
       rescue => e
         logger.error e.message
-        flash.now[:error] = I18n.t('orders.purchase.error')
+        flash.now[:error] = I18n.t("orders.purchase.error")
         flash.now[:error] += " #{e.message}" if e.message
         raise ActiveRecord::Rollback
       end
@@ -159,7 +159,7 @@ class ReservationsController < ApplicationController
     @reservation = next_available || default_reservation
     @reservation.round_reservation_times
     unless @instrument.can_be_used_by?(acting_user)
-      flash[:notice] = t_model_error(Instrument, 'acting_as_not_on_approval_list')
+      flash[:notice] = t_model_error(Instrument, "acting_as_not_on_approval_list")
     end
     set_windows
   end
@@ -182,7 +182,7 @@ class ReservationsController < ApplicationController
   # PUT  /orders/1/order_details/1/reservations/1
   def update
     if invalid_for_update?
-      redirect_to [@order, @order_detail, @reservation], notice: I18n.t('controllers.reservations.update.failure')
+      redirect_to [@order, @order_detail, @reservation], notice: I18n.t("controllers.reservations.update.failure")
       return
     end
 
@@ -198,7 +198,7 @@ class ReservationsController < ApplicationController
 
         save_reservation_and_order_detail
 
-        flash[:notice] = 'The reservation was successfully updated.'
+        flash[:notice] = "The reservation was successfully updated."
         if mergeable
           redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
         else
@@ -215,12 +215,12 @@ class ReservationsController < ApplicationController
   # POST /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
   def move
     if @reservation.move_to_earliest
-      flash[:notice] = 'The reservation was moved successfully.'
+      flash[:notice] = "The reservation was moved successfully."
     else
       flash[:error] = @reservation.errors.full_messages.join("<br/>")
     end
 
-    redirect_to reservations_status_path(status: 'upcoming')
+    redirect_to reservations_status_path(status: "upcoming")
   end
 
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
@@ -244,20 +244,20 @@ class ReservationsController < ApplicationController
   def switch_instrument
     authorize! :start_stop, @reservation
 
-    raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == 'on' || params[:switch] == 'off')
+    raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == "on" || params[:switch] == "off")
 
     begin
       case
-      when params[:switch] == 'on'
+      when params[:switch] == "on"
         switch_instrument_on!
-      when params[:switch] == 'off'
+      when params[:switch] == "off"
         switch_instrument_off!
       end
     rescue => e
       flash[:error] = e.message
     end
 
-    if params[:switch] == 'off' && @order_detail.accessories?
+    if params[:switch] == "off" && @order_detail.accessories?
       redirect_to new_order_order_detail_accessory_path(@order, @order_detail)
       return
     end
@@ -296,14 +296,14 @@ class ReservationsController < ApplicationController
   def switch_instrument_off!
     unless @reservation.other_reservation_using_relay?
       ReservationInstrumentSwitcher.new(@reservation).switch_off!
-      flash[:notice] = 'The instrument has been deactivated successfully'
+      flash[:notice] = "The instrument has been deactivated successfully"
     end
     session[:reservation_ended] = true if params[:reservation_ended].present?
   end
 
   def switch_instrument_on!
     ReservationInstrumentSwitcher.new(@reservation).switch_on!
-    flash[:notice] = 'The instrument has been activated successfully'
+    flash[:notice] = "The instrument has been activated successfully"
   end
 
   def load_basic_resources
@@ -364,14 +364,14 @@ class ReservationsController < ApplicationController
     return unless reservation
 
     if reservation.can_switch_instrument_off? # do you need to click stop
-      I18n.t('reservations.notices.can_switch_off', reservation: reservation)
+      I18n.t("reservations.notices.can_switch_off", reservation: reservation)
     elsif reservation.can_switch_instrument_on? # do you need to begin your reservation
-      I18n.t('reservations.notices.can_switch_on', reservation: reservation)
+      I18n.t("reservations.notices.can_switch_on", reservation: reservation)
     elsif reservation.canceled?
     # no message
     # do you have a reservation for today that hasn't ended
     elsif upcoming_today? reservation
-      I18n.t('reservations.notices.upcoming', reservation: reservation)
+      I18n.t("reservations.notices.upcoming", reservation: reservation)
     end
   end
 

@@ -7,7 +7,7 @@ class RelaySynaccessRevA < Relay
   private
 
   def self.to_s
-    'Synaccess Revision A'
+    "Synaccess Revision A"
   end
 
   def relay_connection

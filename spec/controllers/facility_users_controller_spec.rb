@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe FacilityUsersController do
   render_views
@@ -11,7 +11,7 @@ RSpec.describe FacilityUsersController do
     @params = { facility_id: @authable.url_name }
   end
 
-  context 'index' do
+  context "index" do
 
     before :each do
       @method = :get
@@ -28,7 +28,7 @@ RSpec.describe FacilityUsersController do
 
   end
 
-  context 'destroy' do
+  context "destroy" do
 
     before :each do
       @method = :delete
@@ -46,18 +46,18 @@ RSpec.describe FacilityUsersController do
 
   end
 
-  context 'search' do
+  context "search" do
 
     before :each do
       @method = :get
       @action = :search
     end
 
-    it_should_allow_managers_only { is_expected.to render_template('search') }
+    it_should_allow_managers_only { is_expected.to render_template("search") }
 
   end
 
-  context 'map_user' do
+  context "map_user" do
 
     before :each do
       @method = :post

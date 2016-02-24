@@ -13,11 +13,11 @@ every 5.minutes, roles: [:db] do
   rake "order_details:auto_logout"
 end
 
-every :day, at: '4:17am', roles: [:db] do
+every :day, at: "4:17am", roles: [:db] do
   rake "order_details:remove_merge_orders"
 end
 
 require "active_support/core_ext/numeric/time"
-instance_eval(File.read(File.expand_path("../schedule_custom.rb", __FILE__)), 'schedule_custom.rb')
+instance_eval(File.read(File.expand_path("../schedule_custom.rb", __FILE__)), "schedule_custom.rb")
 
 # Learn more: http://github.com/javan/whenever

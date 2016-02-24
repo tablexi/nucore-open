@@ -245,7 +245,7 @@ RSpec.describe Journal do
     assert !journal.save
     expect(journal.errors[:reference]).not_to be_nil
 
-    journal.reference = '12345'
+    journal.reference = "12345"
     journal.valid?
     expect(journal.errors[:reference]).to be_empty
   end
@@ -255,7 +255,7 @@ RSpec.describe Journal do
     assert !journal.save
     expect(journal.errors[:updated_by]).not_to be_nil
 
-    journal.updated_by = '1'
+    journal.updated_by = "1"
     journal.valid?
     expect(journal.errors[:updated_by]).to be_empty
   end
@@ -283,19 +283,19 @@ RSpec.describe Journal do
     expect(journal.file.url).to match(/^\/files/)
   end
 
-  it 'should be open' do
+  it "should be open" do
     journal.is_successful = nil
     expect(journal).to be_open
   end
 
-  it 'should not be open' do
+  it "should not be open" do
     journal.is_successful = true
     expect(journal).not_to be_open
   end
 
-  context 'order_details_span_fiscal_years?' do
+  context "order_details_span_fiscal_years?" do
     before :each do
-      Settings.financial.fiscal_year_begins = '06-01'
+      Settings.financial.fiscal_year_begins = "06-01"
       @owner    = FactoryGirl.create(:user)
       @account  = FactoryGirl.create(:nufs_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: @owner)])
       @facility_account = facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
@@ -305,7 +305,7 @@ RSpec.describe Journal do
       @pp = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group_id: @price_group.id))
 
       # Create one order detail fulfulled in each month for a two year range
-      d1 = Time.zone.parse('2020-01-01')
+      d1 = Time.zone.parse("2020-01-01")
       @order_details = []
       (0..23).each do |i|
         order = @owner.orders.create(FactoryGirl.attributes_for(:order, created_by: @owner.id))
@@ -322,19 +322,19 @@ RSpec.describe Journal do
       # end
     end
 
-    it 'should not span fiscal years with everything in the same year' do
+    it "should not span fiscal years with everything in the same year" do
       expect(journal.order_details_span_fiscal_years?(@order_details[5..16])).to be false
     end
 
-    it 'should span fiscal years when it goes over the beginning' do
+    it "should span fiscal years when it goes over the beginning" do
       expect(journal.order_details_span_fiscal_years?([@order_details[6], @order_details[5], @order_details[4]])).to be true
     end
 
-    it 'should span fiscal years when it goes over the end' do
+    it "should span fiscal years when it goes over the end" do
       expect(journal.order_details_span_fiscal_years?(@order_details[16..17])).to be true
     end
 
-    it 'should return false with just one order detail' do
+    it "should return false with just one order detail" do
       journal.order_details_span_fiscal_years?([@order_details[3]])
     end
   end

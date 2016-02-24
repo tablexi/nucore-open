@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe PricePolicy do
   before :all do
     # Settings should be 09-01 or 08-01
-    Settings.financial.fiscal_year_begins = '10-01'
+    Settings.financial.fiscal_year_begins = "10-01"
   end
   after :all do
     Settings.reload!
@@ -32,7 +32,7 @@ RSpec.describe PricePolicy do
     end
   end
 
-  context 'expire date' do
+  context "expire date" do
     before :each do
       @start_date = Time.zone.parse("2020-5-5")
     end
@@ -43,7 +43,7 @@ RSpec.describe PricePolicy do
       expect(@pp.expire_date).to eq(Time.zone.parse("2020-9-30").end_of_day)
     end
 
-    it 'should not allow an expire date the same as start date' do
+    it "should not allow an expire date the same as start date" do
       pp = ItemPricePolicy.new(
         FactoryGirl.attributes_for(:item_price_policy,
                                    price_group_id: @price_group.id,
@@ -56,7 +56,7 @@ RSpec.describe PricePolicy do
       assert pp.errors[:expire_date]
     end
 
-    it 'should not allow an expire date after a generated date' do
+    it "should not allow an expire date after a generated date" do
       pp = ItemPricePolicy.new(
         FactoryGirl.attributes_for(:item_price_policy,
                                    price_group_id: @price_group.id,
@@ -90,23 +90,23 @@ RSpec.describe PricePolicy do
 
   end
 
-  context 'restrict purchase' do
+  context "restrict purchase" do
 
     before :each do
       @pp = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group)
       # @pgp=FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
     end
 
-    it 'should not restrict purchase' do
+    it "should not restrict purchase" do
       expect(@pp.restrict_purchase).to eq(false)
     end
 
-    it 'should restrict purchase' do
+    it "should restrict purchase" do
       @pp.update_attributes(can_purchase: false)
       expect(@pp.restrict_purchase).to eq(true)
     end
 
-    it 'should restrict purchase' do
+    it "should restrict purchase" do
       @pp.restrict_purchase = true
       expect(@pp.restrict_purchase).to be true
       expect(@pp.can_purchase).to be false
@@ -117,21 +117,21 @@ RSpec.describe PricePolicy do
       expect(@pp.restrict_purchase).to eq(@pp.restrict_purchase?)
     end
 
-    it 'should return false when no price group present' do
+    it "should return false when no price group present" do
       @pp.price_group = nil
       expect(@pp.restrict_purchase).to eq(false)
     end
 
-    it 'should return false when no item present' do
+    it "should return false when no item present" do
       @pp.product = nil
       expect(@pp.restrict_purchase).to eq(false)
     end
 
-    it 'should raise on bad input' do
+    it "should raise on bad input" do
       assert_raise(ArgumentError) { @pp.restrict_purchase = 44 }
     end
 
-    it 'should destroy PriceGroupProduct when restricted' do
+    it "should destroy PriceGroupProduct when restricted" do
       @pp.restrict_purchase = true
       should_be_destroyed @pgp
     end
@@ -179,7 +179,7 @@ RSpec.describe PricePolicy do
       end
     end
 
-    context 'should define abstract methods' do
+    context "should define abstract methods" do
   
       before :each do
         @sp = PricePolicy.new
@@ -197,7 +197,7 @@ RSpec.describe PricePolicy do
   
     end
 
-    context 'order assignment' do
+    context "order assignment" do
   
       before :each do
         @user     = FactoryGirl.create(:user)
@@ -210,11 +210,11 @@ RSpec.describe PricePolicy do
         @pp = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group)
       end
   
-      it 'should not be assigned' do
+      it "should not be assigned" do
         expect(@pp).not_to be_assigned_to_order
       end
   
-      it 'should be assigned' do
+      it "should be assigned" do
         @order_detail.reload
         @order_detail.to_inprocess!
         @order_detail.to_complete!

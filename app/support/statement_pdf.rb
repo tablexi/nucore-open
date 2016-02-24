@@ -3,7 +3,7 @@ class StatementPdf
   include ActionView::Helpers::NumberHelper
   include DateHelper
 
-  LABEL_ROW_STYLE = { font_style: :bold, background_color: 'cccccc' }.freeze
+  LABEL_ROW_STYLE = { font_style: :bold, background_color: "cccccc" }.freeze
 
   DEFAULT_OPTIONS = {
     left_margin: 50,
@@ -66,7 +66,7 @@ class StatementPdf
   end
 
   def generate_document_footer(pdf)
-    pdf.number_pages 'Page <page> of <total>', at: [0, -15]
+    pdf.number_pages "Page <page> of <total>", at: [0, -15]
   end
 
   def generate_document_header(pdf)
@@ -88,19 +88,19 @@ class StatementPdf
 
   def generate_remittance_information(pdf)
     pdf.move_down(10)
-    pdf.text 'Bill To:', font_style: :bold
+    pdf.text "Bill To:", font_style: :bold
     pdf.text @account.remittance_information
   end
 
   def order_detail_headers
-    ['Fulfillment Date', 'Order', 'Amount']
+    ["Fulfillment Date", "Order", "Amount"]
   end
 
   def order_detail_rows
-    @statement.order_details.includes(:product).order('fulfilled_at DESC').map do |order_detail|
+    @statement.order_details.includes(:product).order("fulfilled_at DESC").map do |order_detail|
       [
         human_datetime(order_detail.fulfilled_at),
-        "##{order_detail}: #{order_detail.product}" + (order_detail.note.blank? ? '' : "\n#{order_detail.note}"),
+        "##{order_detail}: #{order_detail.product}" + (order_detail.note.blank? ? "" : "\n#{order_detail.note}"),
         number_to_currency(order_detail.actual_total)
       ]
     end

@@ -19,7 +19,7 @@ RSpec.describe Cart do
     end
 
     # setup is expensive, so only do it once and test several things at once
-    it 'should include the proper orders' do
+    it "should include the proper orders" do
       expect(carts).not_to include @purchased_instrument_order
       expect(carts).to include @instrument_order
       expect(carts).not_to include @instrument_and_item_order
@@ -27,13 +27,13 @@ RSpec.describe Cart do
       expect(carts).not_to include @item_order
     end
 
-    context 'destroy_all_instrument_only_carts' do
+    context "destroy_all_instrument_only_carts" do
       let(:all_orders) { Order.all }
       before :each do
         Cart.destroy_all_instrument_only_carts(Time.zone.now + 2.minutes)
       end
 
-      it 'should have removed only the orders it should have' do
+      it "should have removed only the orders it should have" do
         expect(all_orders).to include @purchased_instrument_order
         expect(all_orders).not_to include @instrument_order
         expect(all_orders).to include @instrument_and_item_order
@@ -42,13 +42,13 @@ RSpec.describe Cart do
       end
     end
 
-    context 'destroy_all_instrument_only_carts with time' do
-      it 'should not remove if the order has been updated since the time' do
+    context "destroy_all_instrument_only_carts with time" do
+      it "should not remove if the order has been updated since the time" do
         Cart.destroy_all_instrument_only_carts(1.day.ago)
         expect(Order.all).to include @instrument_order
       end
 
-      it 'should destroy if the order has not been updated since the time' do
+      it "should destroy if the order has not been updated since the time" do
         Cart.destroy_all_instrument_only_carts(1.minute.from_now)
         expect(Order.all).not_to include @instrument_order
       end

@@ -1,4 +1,4 @@
-require 'username_only_authenticatable'
+require "username_only_authenticatable"
 
 Rails.application.config.to_prepare do
   if File.exist?("#{Rails.root}/config/ldap.yml")

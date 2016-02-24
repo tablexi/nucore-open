@@ -1,7 +1,7 @@
 module NUCore
 
   # 'magic number'; is simply the most frequently used account by NU
-  COMMON_ACCOUNT = '75340'.freeze
+  COMMON_ACCOUNT = "75340".freeze
 
   class PermissionDenied < SecurityError
   end
@@ -15,17 +15,17 @@ module NUCore
   class PurchaseException < StandardError; end
 
   def self.portal
-    'nucore'
+    "nucore"
   end
 
   module Database
 
     def self.oracle?
-      @@is_oracle ||= ActiveRecord::Base.connection.adapter_name == 'OracleEnhanced'
+      @@is_oracle ||= ActiveRecord::Base.connection.adapter_name == "OracleEnhanced"
     end
 
     def self.mysql?
-      @@is_mysql ||= ActiveRecord::Base.connection.adapter_name == 'Mysql2'
+      @@is_mysql ||= ActiveRecord::Base.connection.adapter_name == "Mysql2"
     end
 
     def self.boolean(value)

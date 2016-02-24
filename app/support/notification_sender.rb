@@ -44,7 +44,7 @@ class NotificationSender
     order_details_not_found = @order_detail_ids.map(&:to_i) - ids
 
     order_details_not_found.each do |order_detail_id|
-      @errors << I18n.t('controllers.facility_notifications.send_notifications.order_error', order_detail_id: order_detail_id)
+      @errors << I18n.t("controllers.facility_notifications.send_notifications.order_error", order_detail_id: order_detail_id)
     end
   end
 

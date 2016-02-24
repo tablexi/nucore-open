@@ -25,7 +25,7 @@ class User < ActiveRecord::Base
   has_many :product_users
   has_many :notifications
   has_many :products, through: :product_users
-  has_many :assigned_order_details, class_name: 'OrderDetail', foreign_key: 'assigned_user_id'
+  has_many :assigned_order_details, class_name: "OrderDetail", foreign_key: "assigned_user_id"
   has_many :user_roles, dependent: :destroy
   has_many :facilities, through: :user_roles
   has_many :training_requests, dependent: :destroy
