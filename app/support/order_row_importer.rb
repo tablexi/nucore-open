@@ -61,9 +61,7 @@ class OrderRowImporter
     @order_date ||= parse_usa_import_date(order_date_field)
   end
 
-  def order_id
-    order.id
-  end
+  delegate :id, to: :order, prefix: true
 
   def order_key
     @order_key ||= [user_field, chart_string_field, order_date_field]
