@@ -1,4 +1,5 @@
 class UserPriceGroupMembersController < ApplicationController
+
   include PriceGroupMembersController
 
   before_filter :authorize_user_price_group_member!
@@ -16,7 +17,7 @@ class UserPriceGroupMembersController < ApplicationController
   def create_flash_arguments
     {
       full_name: price_group_member.user.full_name,
-      price_group_name: @price_group.name
+      price_group_name: @price_group.name,
     }
   end
 
@@ -29,4 +30,5 @@ class UserPriceGroupMembersController < ApplicationController
   def authorize_user_price_group_member!
     @price_group_ability.authorize!(action_name, UserPriceGroupMember)
   end
+
 end

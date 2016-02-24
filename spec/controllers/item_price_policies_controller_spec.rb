@@ -1,6 +1,6 @@
 require "rails_helper"
-require 'controller_spec_helper'
-require 'price_policies_controller_shared_examples'
+require "controller_spec_helper"
+require "price_policies_controller_shared_examples"
 
 RSpec.describe ItemPricePoliciesController do
   render_views
@@ -10,4 +10,3 @@ RSpec.describe ItemPricePoliciesController do
   it_should_behave_like PricePoliciesController, :item
 
 end
-

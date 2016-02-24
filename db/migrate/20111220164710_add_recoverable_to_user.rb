@@ -1,4 +1,5 @@
 class AddRecoverableToUser < ActiveRecord::Migration
+
   def self.up
     change_table :users do |t|
       t.string   :reset_password_token
@@ -10,4 +11,5 @@ class AddRecoverableToUser < ActiveRecord::Migration
     remove_column :users, :reset_password_token
     remove_column :users, :reset_password_sent_at
   end
+
 end

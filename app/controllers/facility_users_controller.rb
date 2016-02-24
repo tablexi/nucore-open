@@ -1,15 +1,16 @@
 class FacilityUsersController < ApplicationController
+
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility
 
-  load_and_authorize_resource :class => User
+  load_and_authorize_resource class: User
 
-  layout 'two_column'
+  layout "two_column"
 
-  def initialize 
-    @active_tab = 'admin_facility'
+  def initialize
+    @active_tab = "admin_facility"
     super
   end
 
@@ -22,7 +23,7 @@ class FacilityUsersController < ApplicationController
   # remove the user's facility-role mapping
   def destroy
     @user = User.find(params[:id])
-    @user.facility_user_roles(current_facility).each {|r| r.destroy }
+    @user.facility_user_roles(current_facility).each(&:destroy)
     redirect_to facility_facility_users_url
   end
 
@@ -35,11 +36,12 @@ class FacilityUsersController < ApplicationController
 
     if request.post?
       begin
-        @user_role=UserRole.grant(@user, params[:user_role][:role], current_facility)
+        @user_role = UserRole.grant(@user, params[:user_role][:role], current_facility)
         redirect_to facility_facility_users_url
       rescue ActiveRecord::RecordInvalid
-        render :action => "map_user"
+        render action: "map_user"
       end
     end
-  end 
+  end
+
 end

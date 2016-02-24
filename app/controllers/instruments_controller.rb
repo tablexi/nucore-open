@@ -1,4 +1,5 @@
 class InstrumentsController < ProductsCommonController
+
   customer_tab  :show, :public_schedule
   admin_tab     :create, :edit, :index, :manage, :new, :schedule, :update
 
@@ -6,17 +7,17 @@ class InstrumentsController < ProductsCommonController
   before_filter :set_default_lock_window, only: [:create, :update]
 
   # public_schedule does not require login
-  skip_before_filter :authenticate_user!, :only => [:public_schedule]
-  skip_authorize_resource :only => [:public_schedule]
+  skip_before_filter :authenticate_user!, only: [:public_schedule]
+  skip_authorize_resource only: [:public_schedule]
 
-  skip_before_filter :init_product, :only => [:instrument_statuses]
+  skip_before_filter :init_product, only: [:instrument_statuses]
 
   # GET /facilities/:facility_id/instruments
   def index
     super
     # find current and next upcoming reservations for each instrument
     @reservations = {}
-    @instruments.each { |i| @reservations[i.id] = i.reservations.upcoming[0..2]}
+    @instruments.each { |i| @reservations[i.id] = i.reservations.upcoming[0..2] }
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id
@@ -91,7 +92,7 @@ class InstrumentsController < ProductsCommonController
 
     redirect_to add_order_path(
       acting_user.cart(session_user),
-      order: { order_details: [ { product_id: @instrument.id, quantity: 1} ] },
+      order: { order_details: [{ product_id: @instrument.id, quantity: 1 }] },
     )
   end
 
@@ -100,20 +101,20 @@ class InstrumentsController < ProductsCommonController
     @header_prefix = "Edit"
 
     if @instrument.update_attributes(params[:instrument])
-      flash[:notice] = 'Instrument was successfully updated.'
+      flash[:notice] = "Instrument was successfully updated."
       return redirect_to(manage_facility_instrument_path(current_facility, @instrument))
     end
 
-    render :action => "edit"
+    render action: "edit"
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/schedule
   def schedule
-    @admin_reservations = @instrument.schedule.reservations.where('reserve_end_at > ? AND order_detail_id IS NULL', Time.zone.now).order("reserve_start_at ASC")
+    @admin_reservations = @instrument.schedule.reservations.where("reserve_end_at > ? AND order_detail_id IS NULL", Time.zone.now).order("reserve_start_at ASC")
   end
 
   def public_schedule
-    render :layout => 'application'
+    render layout: "application"
   end
 
   def set_default_lock_window
@@ -125,16 +126,16 @@ class InstrumentsController < ProductsCommonController
   # GET /facilities/:facility_id/instruments/:instrument_id/status
   def instrument_status
     begin
-      @relay  = @instrument.relay
+      @relay = @instrument.relay
       status = Rails.env.test? ? true : @relay.get_status
-      @status = @instrument.instrument_statuses.create!(:is_on => status)
+      @status = @instrument.instrument_statuses.create!(is_on: status)
     rescue => e
       logger.error e
       raise ActiveRecord::RecordNotFound
     end
     respond_to do |format|
-      format.html  { render :layout => false }
-      format.json  { render :json => @status }
+      format.html  { render layout: false }
+      format.json  { render json: @status }
     end
   end
 
@@ -155,37 +156,37 @@ class InstrumentsController < ProductsCommonController
           @instrument_statuses << instrument_status
         else
           # || false will ensure that the value of is_on is not nil (causes a DB error)
-          @instrument_statuses << instrument.instrument_statuses.create!(:is_on => status || NUCore::Database.boolean(false))
+          @instrument_statuses << instrument.instrument_statuses.create!(is_on: status || NUCore::Database.boolean(false))
         end
       rescue => e
         logger.error e.message
-        @instrument_statuses << InstrumentStatus.new(:instrument => instrument, :error_message => e.message)
+        @instrument_statuses << InstrumentStatus.new(instrument: instrument, error_message: e.message)
       end
     end
-    render :json => @instrument_statuses
+    render json: @instrument_statuses
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/switch
   def switch
-    raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == 'on' || params[:switch] == 'off')
+    raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == "on" || params[:switch] == "off")
 
     begin
       relay = @instrument.relay
-      status=true
+      status = true
 
       if SettingsHelper.relays_enabled_for_admin?
-        status = (params[:switch] == 'on' ? relay.activate : relay.deactivate)
+        status = (params[:switch] == "on" ? relay.activate : relay.deactivate)
       end
 
-      @status = @instrument.instrument_statuses.create!(:is_on => status)
+      @status = @instrument.instrument_statuses.create!(is_on: status)
     rescue => e
       logger.error "ERROR: #{e.message}"
-      @status = InstrumentStatus.new(:instrument => @instrument, :error_message => e.message)
-      #raise ActiveRecord::RecordNotFound
+      @status = InstrumentStatus.new(instrument: @instrument, error_message: e.message)
+      # raise ActiveRecord::RecordNotFound
     end
     respond_to do |format|
-      format.html { render :action => :instrument_status, :layout => false }
-      format.json { render :json => @status }
+      format.html { render action: :instrument_status, layout: false }
+      format.json { render json: @status }
     end
   end
 
@@ -197,8 +198,9 @@ class InstrumentsController < ProductsCommonController
 
   def acting_user_price_group_ids
     (acting_user.price_groups + acting_user.account_price_groups)
-    .flatten
-    .uniq
-    .map(&:id)
+      .flatten
+      .uniq
+      .map(&:id)
   end
+
 end

@@ -1,14 +1,15 @@
 class PricePolicyBuilder
+
   attr_reader :product, :start_date
 
   delegate :facility, to: :product
 
   def self.get(product, start_date)
-    self.new(product, start_date).price_policies
+    new(product, start_date).price_policies
   end
 
   def self.get_new_policies_based_on_most_recent(product, start_date)
-    self.new(product, start_date).new_policies_based_on_most_recent
+    new(product, start_date).new_policies_based_on_most_recent
   end
 
   def initialize(product, start_date)
@@ -91,4 +92,5 @@ class PricePolicyBuilder
   def price_policies_for_start_date
     product.price_policies.for_date(start_date)
   end
+
 end

@@ -1,15 +1,15 @@
 class Instrument < Product
+
   include Products::RelaySupport
   include Products::SchedulingSupport
 
-  RESERVE_INTERVALS = [ 1, 5, 10, 15, 30, 60 ]
-
+  RESERVE_INTERVALS = [1, 5, 10, 15, 30, 60].freeze
 
   # Associations
   # -------
 
-  has_many :instrument_price_policies, :foreign_key => 'product_id'
-  has_many :product_access_groups, :foreign_key => 'product_id'
+  has_many :instrument_price_policies, foreign_key: "product_id"
+  has_many :product_access_groups, foreign_key: "product_id"
 
   # Validations
   # --------
@@ -34,8 +34,8 @@ class Instrument < Product
   # Scopes
   # --------
   def self.reservation_only
-    joins('LEFT OUTER JOIN relays ON relays.instrument_id = products.id')
-      .where('relays.instrument_id IS NULL')
+    joins("LEFT OUTER JOIN relays ON relays.instrument_id = products.id")
+      .where("relays.instrument_id IS NULL")
   end
 
   # Instance methods
@@ -47,23 +47,22 @@ class Instrument < Product
   end
 
   def max_reservation_window
-    days = price_group_products.collect{|pgp| pgp.reservation_window }.max.to_i
+    days = price_group_products.collect(&:reservation_window).max.to_i
   end
 
   def restriction_levels_for(user)
-    product_access_groups.joins(:product_users).where(:product_users => {:user_id => user.id})
+    product_access_groups.joins(:product_users).where(product_users: { user_id: user.id })
   end
 
   def set_default_pricing
     PriceGroup.globals.all.each do |pg|
-      PriceGroupProduct.create!(:product => self, :price_group => pg, :reservation_window => PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)
+      PriceGroupProduct.create!(product: self, price_group: pg, reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)
     end
   end
 
   def reservation_only?
     control_mechanism == Relay::CONTROL_MECHANISMS[:manual]
   end
-
 
   private
 
@@ -81,13 +80,13 @@ class Instrument < Product
     return unless reserve_interval.to_i > 0 && field_value > 0
 
     if field_value % reserve_interval != 0
-      self.errors.add attribute, :not_interval, reserve_interval: reserve_interval
+      errors.add attribute, :not_interval, reserve_interval: reserve_interval
     end
   end
 
   def max_reservation_not_less_than_min
     if max_reserve_mins && min_reserve_mins && max_reserve_mins < min_reserve_mins
-      self.errors.add :max_reserve_mins, :max_less_than_min
+      errors.add :max_reserve_mins, :max_less_than_min
     end
   end
 

@@ -6,13 +6,13 @@ RSpec.describe FacilityAccount do
       @user     = FactoryGirl.create(:user)
       @facility = FactoryGirl.create(:facility)
       assert @facility.valid?
-      @options  = Hash[:is_active => 1, :created_by => @user.id, :facility_id => @facility.id, :revenue_account => 51234]
-      @starts_at  = Time.zone.now-3.days
-      @expires_at = Time.zone.now+3.days
+      @options = Hash[is_active: 1, created_by: @user.id, facility_id: @facility.id, revenue_account: 51_234]
+      @starts_at  = Time.zone.now - 3.days
+      @expires_at = Time.zone.now + 3.days
     end
 
     it "should create using factory" do
-      attrs=FactoryGirl.attributes_for(:facility_account)
+      attrs = FactoryGirl.attributes_for(:facility_account)
       define_open_account(attrs[:revenue_account], attrs[:account_number])
       @facility_account = @facility.facility_accounts.create(attrs)
       assert @facility_account.valid?
@@ -35,21 +35,21 @@ RSpec.describe FacilityAccount do
     end
 
     it "should allow format fund3-dept7-project8" do
-      @options[:account_number] = '123-1234567-12345678'
+      @options[:account_number] = "123-1234567-12345678"
       define_open_account(@options[:revenue_account], @options[:account_number])
       @account = FacilityAccount.create(@options)
       assert @account.valid?
     end
 
     it "should allow format fund3-dept7-project8" do
-      @options[:account_number] = '123-1234567-12345678'
+      @options[:account_number] = "123-1234567-12345678"
       define_open_account(@options[:revenue_account], @options[:account_number])
       @account = FacilityAccount.create(@options)
       assert @account.valid?
     end
 
     it "should allow format fund3-dept7-project8-activity2" do
-      @options[:account_number] = '123-1234567-12345678-12'
+      @options[:account_number] = "123-1234567-12345678-12"
       define_open_account(@options[:revenue_account], @options[:account_number])
       @account = FacilityAccount.create(@options)
       assert @account.valid?
@@ -57,28 +57,28 @@ RSpec.describe FacilityAccount do
 
     it "should allow format fund3-dept7-project8-activity2-program4" do
       # create chart string without program value
-      @options[:account_number] = '123-1234567-12345678-12-1234'
+      @options[:account_number] = "123-1234567-12345678-12-1234"
       define_open_account(@options[:revenue_account], @options[:account_number])
       @account = FacilityAccount.create(@options)
       assert @account.valid?
     end
 
     # we no longer validate facility accounts against BCS table
-    #it "should not allow account that has expired" do
+    # it "should not allow account that has expired" do
     #  @bcs = BudgetedChartString.create(:fund => '123', :dept => '1234567', :starts_at => @starts_at, :expires_at => @starts_at)
     #  @options[:account_number] = '123-1234567'
     #  @account = FacilityAccount.create(@options)
     #  assert !@account.valid?
     #  assert_equal "Account has expired", @account.errors[:base]
-    #end
+    # end
 
     # we no longer validate facility accounts against BCS table
-    #it "should not allow account that has not started" do
+    # it "should not allow account that has not started" do
     #  @bcs = BudgetedChartString.create(:fund => '123', :dept => '1234567', :starts_at => @starts_at+1.year, :expires_at => @expires_at)
     #  @options[:account_number] = '123-1234567'
     #  @account = FacilityAccount.create(@options)
     #  assert !@account.valid?
     #  assert_equal "Account is not active", @account.errors[:base]
-    #end
+    # end
   end
 end

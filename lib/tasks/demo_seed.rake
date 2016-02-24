@@ -262,7 +262,6 @@ namespace :demo do
 
     UserRole.grant(user_director, UserRole::FACILITY_DIRECTOR, facility)
 
-
     UserPriceGroupMember.find_or_create_by_user_id_and_price_group_id(user_id: user_pi.id,
                                                                       price_group_id: pgnu.id)
     UserPriceGroupMember.find_or_create_by_user_id_and_price_group_id(user_id: user_student.id,

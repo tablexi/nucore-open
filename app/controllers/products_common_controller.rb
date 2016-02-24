@@ -1,33 +1,34 @@
 class ProductsCommonController < ApplicationController
+
   customer_tab  :show
   admin_tab     :create, :destroy, :new, :edit, :index, :update, :manage
-  before_filter :authenticate_user!, :except => [:show]
-  before_filter :check_acting_as, :except => [:show]
+  before_filter :authenticate_user!, except: [:show]
+  before_filter :check_acting_as, except: [:show]
   before_filter :init_current_facility
-  before_filter :init_product, :except => [:index, :new, :create]
+  before_filter :init_product, except: [:index, :new, :create]
   before_filter :store_fullpath_in_session
 
   include TranslationHelper
-  load_and_authorize_resource :except => [:show, :manage]
+  load_and_authorize_resource except: [:show, :manage]
 
-  layout 'two_column'
+  layout "two_column"
 
   def initialize
-    @active_tab = 'admin_products'
+    @active_tab = "admin_products"
     super
   end
 
   # GET /services
   def index
-    @product_name = self.class.name.gsub(/Controller$/, '')
+    @product_name = self.class.name.gsub(/Controller$/, "")
 
     @archived_product_count     = current_facility_products.archived.length
     @not_archived_product_count = current_facility_products.not_archived.length
-    if params[:archived].nil? || params[:archived] != 'true'
-      @products = current_facility_products.not_archived
-    else
-      @products = current_facility_products.archived
-    end
+    @products = if params[:archived].nil? || params[:archived] != "true"
+                  current_facility_products.not_archived
+                else
+                  current_facility_products.archived
+                end
 
     # not sure this actually does anything since @products is a Relation, not an Array, but it was
     # in ServicesController, ItemsController, and InstrumentsController before I pulled #index up
@@ -99,7 +100,7 @@ class ProductsCommonController < ApplicationController
 
   # GET /services/new
   def new
-    @product = current_facility_products.new(:account => NUCore::COMMON_ACCOUNT)
+    @product = current_facility_products.new(account: NUCore::COMMON_ACCOUNT)
     save_product_into_object_name_instance
   end
 
@@ -114,7 +115,7 @@ class ProductsCommonController < ApplicationController
       flash[:notice] = "#{@product.class.name} was successfully created."
       redirect_to([:manage, current_facility, @product])
     else
-      render :action => "new"
+      render action: "new"
     end
   end
 
@@ -129,7 +130,7 @@ class ProductsCommonController < ApplicationController
         flash[:notice] = "#{@product.class.name.capitalize} was successfully updated."
         format.html { redirect_to([:manage, current_facility, @product]) }
       else
-        format.html { render :action => "edit" }
+        format.html { render action: "edit" }
       end
     end
   end
@@ -146,7 +147,7 @@ class ProductsCommonController < ApplicationController
 
   def manage
     authorize! :view_details, @product
-    @active_tab = 'admin_products'
+    @active_tab = "admin_products"
   end
 
   private
@@ -159,13 +160,14 @@ class ProductsCommonController < ApplicationController
     is_operator = session_user && session_user.operator_of?(current_facility)
     !(@product.is_archived? || (@product.is_hidden? && !is_operator))
   end
+
   # The equivalent of calling current_facility.services or current_facility.items
   def current_facility_products
-    return current_facility.send(:"#{plural_object_name}")
+    current_facility.send(:"#{plural_object_name}")
   end
 
   def price_policy_available_for_product?
-    groups = (acting_user.price_groups + acting_user.account_price_groups).flatten.uniq.collect{ |pg| pg.id }
+    groups = (acting_user.price_groups + acting_user.account_price_groups).flatten.uniq.collect(&:id)
     @product.can_purchase?(groups)
   end
 
@@ -178,10 +180,12 @@ class ProductsCommonController < ApplicationController
   def save_product_into_object_name_instance
     instance_variable_set("@#{singular_object_name}", @product)
   end
+
   # Get the object name to work off of. E.g. In ServicesController, this returns "services"
   def plural_object_name
     self.class.name.underscore.gsub(/_controller$/, "")
   end
+
   def singular_object_name
     plural_object_name.singularize
   end
@@ -189,4 +193,5 @@ class ProductsCommonController < ApplicationController
   def session_user_can_override_restrictions?(product)
     session_user.present? && session_user.can_override_restrictions?(product)
   end
+
 end

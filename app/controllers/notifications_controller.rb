@@ -1,11 +1,11 @@
 class NotificationsController < ApplicationController
+
   customer_tab  :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :check_notifications
 
-  #respond_to :js, :only => :update
-
+  # respond_to :js, :only => :update
 
   def index
   end
@@ -13,7 +13,7 @@ class NotificationsController < ApplicationController
   #
   # Currently not routed to, but if you want to allow
   # dismissal of notifications you should enable this action
-  #def update
+  # def update
   #  begin
   #    notice=Notification.find params[:id].to_i
   #    notice.update_attribute :dismissed_at, Time.zone.now
@@ -22,16 +22,15 @@ class NotificationsController < ApplicationController
   #  end
   #
   #  respond_with nil
-  #end
-
+  # end
 
   private
 
   def check_notifications
-    @notices=current_user.notifications.active.all
+    @notices = current_user.notifications.active.all
 
     if @notices.count == 0
-      flash[:notice]=I18n.t 'controllers.notifications.no_notices'
+      flash[:notice] = I18n.t "controllers.notifications.no_notices"
 
       begin
         redirect_to :back

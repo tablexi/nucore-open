@@ -1,4 +1,5 @@
 class AccountUsersController < ApplicationController
+
   customer_tab  :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -7,10 +8,10 @@ class AccountUsersController < ApplicationController
   load_and_authorize_resource
 
   def initialize
-    @active_tab = 'accounts'
+    @active_tab = "accounts"
     super
   end
-  
+
   # GET /accounts/:account_id/account_users/user_search
   def user_search
   end
@@ -53,17 +54,16 @@ class AccountUsersController < ApplicationController
     redirect_to account_account_users_path(@account)
   end
 
-
   protected
 
   def init_account
     @account = session_user.accounts.find(params[:account_id])
   end
 
-
   private
 
   def ability_resource
-    return @account
+    @account
   end
+
 end

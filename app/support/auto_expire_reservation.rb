@@ -1,4 +1,5 @@
 class AutoExpireReservation
+
   def perform
     order_details.each do |od|
       od.transaction do
@@ -15,11 +16,11 @@ class AutoExpireReservation
 
   def purchased_active_order_details
     OrderDetail.purchased_active_reservations
-      .joins(:product)
-      .joins_relay
-      .where("reservations.reserve_end_at < ?", Time.zone.now - 12.hours)
-      .readonly(false)
-      .all
+               .joins(:product)
+               .joins_relay
+               .where("reservations.reserve_end_at < ?", Time.zone.now - 12.hours)
+               .readonly(false)
+               .all
   end
 
   def expire_reservation(od)
@@ -30,8 +31,9 @@ class AutoExpireReservation
     od.fulfilled_at = od.reservation.reserve_end_at
     od.save!
   rescue => e
-    ActiveSupport::Notifications.instrument('background_error',
-        exception: e, information: "Failed expire reservation order detail with id: #{od.id}")
+    ActiveSupport::Notifications.instrument("background_error",
+                                            exception: e, information: "Failed expire reservation order detail with id: #{od.id}")
     raise ActiveRecord::Rollback
   end
+
 end

@@ -15,18 +15,18 @@ RSpec.describe PricePolicyMassAssigner do
     let(:order) { user.orders.create(order_attributes) }
     let(:order_attributes) do
       attributes_for(:order,
-        created_by: user.id,
-        account: account,
-        facility: facility,
-      )
+                     created_by: user.id,
+                     account: account,
+                     facility: facility,
+                    )
     end
     let(:order_detail) do
       create(:order_detail,
-        account: account,
-        fulfilled_at: fulfilled_at,
-        order: order,
-        product: product,
-      )
+             account: account,
+             fulfilled_at: fulfilled_at,
+             order: order,
+             product: product,
+            )
     end
     let(:price_group) { create(:price_group, facility: facility) }
     let(:product) { facility.items.create(item_attributes) }
@@ -43,18 +43,18 @@ RSpec.describe PricePolicyMassAssigner do
 
       let!(:previous_price_policy) do
         product.item_price_policies.create(attributes_for(:item_price_policy,
-          price_group_id: price_group.id,
-          start_date: 8.years.ago,
-          expire_date: nil,
-        ))
+                                                          price_group_id: price_group.id,
+                                                          start_date: 8.years.ago,
+                                                          expire_date: nil,
+                                                         ))
       end
 
       let!(:current_price_policy) do
         product.item_price_policies.create(attributes_for(:item_price_policy,
-          price_group_id: price_group.id,
-          start_date: 1.day.ago,
-          expire_date: nil,
-        ))
+                                                          price_group_id: price_group.id,
+                                                          start_date: 1.day.ago,
+                                                          expire_date: nil,
+                                                         ))
       end
 
       context "when order details are fulfilled" do

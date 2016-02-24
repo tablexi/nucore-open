@@ -12,6 +12,7 @@
 # it's using. E.g. an estimated order detail will have a class of .estimated_cost
 
 module PriceDisplayment
+
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TagHelper
 
@@ -29,24 +30,24 @@ module PriceDisplayment
   end
 
   def wrapped_cost
-    content_tag :span, display_cost, :class => "#{display_cost_class}_cost"
+    content_tag :span, display_cost, class: "#{display_cost_class}_cost"
   end
 
   def wrapped_subsidy
-    content_tag :span, display_subsidy, :class => "#{display_cost_class}_cost"
+    content_tag :span, display_subsidy, class: "#{display_cost_class}_cost"
   end
 
   def wrapped_total
-    content_tag :span, display_total, :class => "#{display_cost_class}_cost"
+    content_tag :span, display_total, class: "#{display_cost_class}_cost"
   end
 
   def display_cost_class
     if actual_cost
-      'actual'
+      "actual"
     elsif estimated_cost
-      'estimated'
+      "estimated"
     else
-      'unassigned'
+      "unassigned"
     end
   end
 
@@ -55,6 +56,7 @@ module PriceDisplayment
   end
 
   class QuantityDisplay < Struct.new(:value)
+
     def html
       value
     end
@@ -62,9 +64,11 @@ module PriceDisplayment
     def csv
       value.to_s
     end
+
   end
 
   class TimeQuantityDisplay < QuantityDisplay
+
     include ActionView::Helpers::TagHelper
 
     def csv
@@ -73,8 +77,9 @@ module PriceDisplayment
     end
 
     def html
-      content_tag :span, value, :class => 'timeinput'
+      content_tag :span, value, class: "timeinput"
     end
+
   end
 
   def build_quantity_presenter
@@ -104,11 +109,12 @@ module PriceDisplayment
   private
 
   def empty_display
-    'Unassigned'
+    "Unassigned"
   end
 
   def format(number)
     return unless number
     number_to_currency(number)
   end
+
 end

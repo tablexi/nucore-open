@@ -1,4 +1,5 @@
 class Accessories::Scaling::Default < SimpleDelegator
+
   attr_accessor :enabled
 
   def order_detail
@@ -31,7 +32,8 @@ class Accessories::Scaling::Default < SimpleDelegator
     if other.is_a? OrderDetail
       order_detail == other
     else
-      self.equal? other
+      equal? other
     end
   end
+
 end

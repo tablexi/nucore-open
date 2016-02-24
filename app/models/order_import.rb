@@ -1,6 +1,7 @@
 require "csv_helper"
 
 class OrderImport < ActiveRecord::Base
+
   include CSVHelper
 
   belongs_to :facility
@@ -36,7 +37,7 @@ class OrderImport < ActiveRecord::Base
   def process_upload!
     init_error_report
 
-    if self.fail_on_error?
+    if fail_on_error?
       handle_save_nothing_on_error
     else
       handle_save_clean_orders
@@ -44,7 +45,7 @@ class OrderImport < ActiveRecord::Base
 
     store_error_report if result.failed?
     self.processed_at = Time.zone.now
-    self.save!
+    save!
   end
 
   def result
@@ -76,7 +77,7 @@ class OrderImport < ActiveRecord::Base
       user: row_importer.user,
       created_by_user: creator,
       ordered_at: row_importer.order_date,
-      order_import_id: self.id,
+      order_import_id: id,
     )
   end
 
@@ -85,7 +86,7 @@ class OrderImport < ActiveRecord::Base
     self.error_report = nil
   end
 
-  def handle_save_clean_orders # TODO refactor and rename
+  def handle_save_clean_orders # TODO: refactor and rename
     rows_by_order_key.each do |order_key, rows|
       reset_error_mode
       processed_rows = []
@@ -110,7 +111,7 @@ class OrderImport < ActiveRecord::Base
     end
   end
 
-  def handle_save_nothing_on_error # TODO refactor and rename
+  def handle_save_nothing_on_error # TODO: refactor and rename
     Order.transaction do
       begin
         CSV.parse(upload_file.read, headers: true, skip_lines: /^,*$/).each do |row|
@@ -133,18 +134,18 @@ class OrderImport < ActiveRecord::Base
     end
 
     if result.succeeded?
-      send_notifications(processed_orders) if self.send_receipts?
+      send_notifications(processed_orders) if send_receipts?
       discard_error_report
     end
   end
 
-  def import_row(row) # TODO refactor
+  def import_row(row) # TODO: refactor
     begin
       row_importer = OrderRowImporter.new(row, self)
       row_importer.import
     rescue => e
-      ActiveSupport::Notifications.instrument('background_error',
-        exception: e, information: "Failed to bulk import: #{upload_file_path}")
+      ActiveSupport::Notifications.instrument("background_error",
+                                              exception: e, information: "Failed to bulk import: #{upload_file_path}")
       row_importer.add_error("Failed to import row")
     end
     if row_importer.errors?
@@ -176,7 +177,7 @@ class OrderImport < ActiveRecord::Base
     @in_error_mode = false
   end
 
-  def rows_by_order_key # TODO refactor
+  def rows_by_order_key # TODO: refactor
     rows = Hash.new { |hash, key| hash[key] = [] }
     CSV.parse(upload_file.read, headers: true, skip_lines: /^,*$/).each do |row|
       order_key = OrderRowImporter.order_key_for_row(row)
@@ -204,8 +205,8 @@ class OrderImport < ActiveRecord::Base
       created_by: creator.id,
     )
 
-    self.error_file.file.instance_write(:file_name, "error_report.csv")
-    self.error_file.save!
+    error_file.file.instance_write(:file_name, "error_report.csv")
+    error_file.save!
   end
 
   def upload_file_path
@@ -213,10 +214,12 @@ class OrderImport < ActiveRecord::Base
   end
 
   class Result
+
     attr_accessor :successes, :failures
 
     def initialize
-      self.successes, self.failures=0, 0
+      self.successes = 0
+      self.failures = 0
     end
 
     def failed?
@@ -234,9 +237,11 @@ class OrderImport < ActiveRecord::Base
     def to_h
       { successes: successes, failures: failures }
     end
+
   end
 
   class OrderCache
+
     def initialize
       @orders = {}
     end
@@ -246,13 +251,13 @@ class OrderImport < ActiveRecord::Base
     end
 
     def [](order_key)
-      if @orders[order_key].present?
-        Order.find(@orders[order_key])
-      end
+      Order.find(@orders[order_key]) if @orders[order_key].present?
     end
 
     def fetch_all_orders
       Order.where(id: @orders.values)
     end
+
   end
+
 end

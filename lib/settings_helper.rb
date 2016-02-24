@@ -1,11 +1,11 @@
 module SettingsHelper
 
-  def self.fiscal_year_end(date=nil)
+  def self.fiscal_year_end(date = nil)
     date ||= Time.zone.now
-    (fiscal_year_beginning(date) + 1.year- 1.day).end_of_day
+    (fiscal_year_beginning(date) + 1.year - 1.day).end_of_day
   end
 
-  def self.fiscal_year_beginning(date=nil)
+  def self.fiscal_year_beginning(date = nil)
     date ||= Time.zone.now
     fiscal_year_starts = fiscal_year(date.year)
     date.to_time >= fiscal_year_starts ? fiscal_year_starts : fiscal_year_starts - 1.year
@@ -43,7 +43,7 @@ module SettingsHelper
   #   then this parameter would be :password_update
   # [_value_]
   #   If set to false, it will disable the feature
-  def self.enable_feature(feature, value=true)
+  def self.enable_feature(feature, value = true)
     Settings.feature.send(:"#{feature}_on=", !!value) # !! forces to boolean
   end
 
@@ -52,9 +52,10 @@ module SettingsHelper
   # Setting is accessed like "reservations.grace_period"
   def self.setting(setting)
     current = Settings
-    setting.split('.').each do |s|
+    setting.split(".").each do |s|
       current = current.try(:[], s)
     end
     current
   end
+
 end

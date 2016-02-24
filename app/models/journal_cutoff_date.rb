@@ -1,4 +1,5 @@
 class JournalCutoffDate < ActiveRecord::Base
+
   include ActiveModel::ForbiddenAttributesProtection
 
   validates :cutoff_date, presence: true
@@ -19,7 +20,7 @@ class JournalCutoffDate < ActiveRecord::Base
     cutoff_date < Time.current
   end
 
-  # TODO consider turning this into a reusable module
+  # TODO: consider turning this into a reusable module
   def cutoff_date_time=(hash)
     formatted = "#{cutoff_date.to_date} #{hash[:hour]}:#{hash[:minute]}#{hash[:ampm]}"
     self.cutoff_date = Time.zone.parse(formatted)
@@ -29,7 +30,7 @@ class JournalCutoffDate < ActiveRecord::Base
     {
       hour: cutoff_date.strftime("%-l"),
       minute:  "%02d" % cutoff_date.min,
-      ampm: cutoff_date.strftime("%p")
+      ampm: cutoff_date.strftime("%p"),
     }
   end
 
@@ -37,8 +38,8 @@ class JournalCutoffDate < ActiveRecord::Base
 
   def unique_month_for_cutoff_date
     query = self.class
-      .month_equal(cutoff_date.month)
-      .year_equal(cutoff_date.year)
+                .month_equal(cutoff_date.month)
+                .year_equal(cutoff_date.year)
 
     # Do not conflict with itself
     query = query.where("id != ?", id) if persisted?
@@ -65,4 +66,5 @@ class JournalCutoffDate < ActiveRecord::Base
       where("#{section}(cutoff_date) = ?", time)
     end
   end
+
 end

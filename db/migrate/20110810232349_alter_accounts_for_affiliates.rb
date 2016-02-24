@@ -1,4 +1,5 @@
 class AlterAccountsForAffiliates < ActiveRecord::Migration
+
   def self.up
     change_table :accounts do |t|
       t.integer :affiliate_id
@@ -12,4 +13,5 @@ class AlterAccountsForAffiliates < ActiveRecord::Migration
     remove_index :accounts, :affiliate_id
     remove_column :accounts, :affiliate_id, :affiliate_other
   end
+
 end

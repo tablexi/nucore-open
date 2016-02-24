@@ -1,4 +1,5 @@
 class NavTab::LinkCollection
+
   include Rails.application.routes.url_helpers
   include TranslationHelper
 
@@ -122,4 +123,5 @@ class NavTab::LinkCollection
       url: reservations_path,
     )
   end
+
 end

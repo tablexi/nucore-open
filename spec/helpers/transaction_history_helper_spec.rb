@@ -29,7 +29,7 @@ RSpec.describe TransactionHistoryHelper do
         let(:search_fields) { order_statuses.map(&:id) }
 
         it "sets options as selected" do
-          order_statuses.each_with_index do |order_status, index|
+          order_statuses.each_with_index do |_order_status, index|
             expect(option_nodes[index].attribute("selected")).to be_present
           end
         end

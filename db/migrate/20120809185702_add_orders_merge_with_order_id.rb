@@ -1,4 +1,5 @@
 class AddOrdersMergeWithOrderId < ActiveRecord::Migration
+
   def self.up
     add_column :orders, :merge_with_order_id, :integer
   end
@@ -6,4 +7,5 @@ class AddOrdersMergeWithOrderId < ActiveRecord::Migration
   def self.down
     remove_column :orders, :merge_with_order_id
   end
+
 end

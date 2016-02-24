@@ -2,7 +2,6 @@ require "rails_helper"
 require_relative "../engine_helper"
 
 RSpec.describe SplitAccounts::SplitAccount, type: :model, split_accounts: true do
-
   it "is an account type" do
     expect(described_class.new).to be_an(Account)
   end
@@ -13,7 +12,6 @@ RSpec.describe SplitAccounts::SplitAccount, type: :model, split_accounts: true d
   end
 
   describe "validations" do
-
     context "when splits total 100 and one split has extra_penny" do
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
@@ -110,5 +108,4 @@ RSpec.describe SplitAccounts::SplitAccount, type: :model, split_accounts: true d
       expect(split_account.subaccounts).to contain_exactly(split_account.splits.first.subaccount)
     end
   end
-
 end

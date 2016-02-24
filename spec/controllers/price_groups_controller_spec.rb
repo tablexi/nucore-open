@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe PriceGroupsController do
   render_views
@@ -7,12 +7,12 @@ RSpec.describe PriceGroupsController do
   before(:all) { create_users }
 
   before :each do
-    @authable=FactoryGirl.create(:facility)
-    @price_group=FactoryGirl.create(:price_group, :facility => @authable)
-    @params={ :facility_id => @authable.url_name }
+    @authable = FactoryGirl.create(:facility)
+    @price_group = FactoryGirl.create(:price_group, facility: @authable)
+    @params = { facility_id: @authable.url_name }
   end
 
-  context 'index' do
+  context "index" do
     before :each do
       @method = :get
       @action = :index
@@ -24,23 +24,23 @@ RSpec.describe PriceGroupsController do
     end
   end
 
-  context 'new' do
+  context "new" do
     before :each do
-      @method=:get
-      @action=:new
+      @method = :get
+      @action = :new
     end
 
     it_should_allow_managers_only do
       expect(assigns(:price_group)).to be_kind_of PriceGroup
-      is_expected.to render_template 'new'
+      is_expected.to render_template "new"
     end
   end
 
-  context 'create' do
+  context "create" do
     before :each do
       @method = :post
       @action = :create
-      @params.merge!(:price_group => FactoryGirl.attributes_for(:price_group, :facility_id => @authable.id))
+      @params.merge!(price_group: FactoryGirl.attributes_for(:price_group, facility_id: @authable.id))
     end
 
     it_should_allow_managers_only :redirect do
@@ -50,10 +50,10 @@ RSpec.describe PriceGroupsController do
     end
   end
 
-  context 'with price group id' do
-    before(:each) { @params.merge!(:id => @price_group.id) }
+  context "with price group id" do
+    before(:each) { @params.merge!(id: @price_group.id) }
 
-    context 'show' do
+    context "show" do
 
       before :each do
         @method = :get
@@ -68,8 +68,7 @@ RSpec.describe PriceGroupsController do
 
     end
 
-
-    context 'users' do
+    context "users" do
 
       before :each do
         @method = :get
@@ -79,29 +78,27 @@ RSpec.describe PriceGroupsController do
       it_should_allow_managers_only do
         expect(assigns(:user_members)).to be_kind_of ActiveRecord::Relation
         expect(assigns(:tab)).to eq(:users)
-        is_expected.to render_template 'show'
+        is_expected.to render_template "show"
       end
 
     end
 
-
-    context 'accounts' do
+    context "accounts" do
 
       before :each do
         @method = :get
-        @action=:accounts
+        @action = :accounts
       end
 
       it_should_allow_managers_only do
         expect(assigns(:account_members)).to be_kind_of ActiveRecord::Relation
         expect(assigns(:tab)).to eq(:accounts)
-        is_expected.to render_template 'show'
+        is_expected.to render_template "show"
       end
 
     end
 
-
-    context 'edit' do
+    context "edit" do
 
       before :each do
         @method = :get
@@ -111,18 +108,17 @@ RSpec.describe PriceGroupsController do
       it_should_allow_managers_only do
         expect(assigns(:price_group)).to be_kind_of PriceGroup
         expect(assigns(:price_group)).to eq(@price_group)
-        is_expected.to render_template 'edit'
+        is_expected.to render_template "edit"
       end
 
     end
 
-
-    context 'update' do
+    context "update" do
 
       before :each do
         @method = :put
         @action = :update
-        @params.merge!(:price_group => FactoryGirl.attributes_for(:price_group, :facility_id => @authable.id))
+        @params.merge!(price_group: FactoryGirl.attributes_for(:price_group, facility_id: @authable.id))
       end
 
       it_should_allow_managers_only :redirect do
@@ -134,8 +130,7 @@ RSpec.describe PriceGroupsController do
 
     end
 
-
-    context 'destroy' do
+    context "destroy" do
 
       before :each do
         @method = :delete

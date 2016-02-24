@@ -6,25 +6,24 @@
 module AffiliateAccountHelper
 
   def self.included(base)
-
-    base.context 'affiliates' do
+    base.context "affiliates" do
 
       before :each do
-        affiliate = Affiliate.create!(:name => 'Banana Video')
-        account_attrs = instance_variable_get(:@account_attrs).merge(:affiliate => affiliate)
+        affiliate = Affiliate.create!(name: "Banana Video")
+        account_attrs = instance_variable_get(:@account_attrs).merge(affiliate: affiliate)
         @affiliate_account = described_class.create!(account_attrs)
       end
 
       it { is_expected.to validate_presence_of(:affiliate_id) }
 
-      it 'should require affiliate_other if affiliate is other' do
+      it "should require affiliate_other if affiliate is other" do
         @affiliate_account.affiliate = Affiliate.OTHER
-        @affiliate_account.affiliate_other=nil
+        @affiliate_account.affiliate_other = nil
         assert !@affiliate_account.save
         expect(@affiliate_account).to validate_length_of(:affiliate_other).is_at_least(1)
       end
 
-      it 'should not require affiliate_other if affiliate is not other' do
+      it "should not require affiliate_other if affiliate is not other" do
         expect(@affiliate_account.affiliate).to be_present
         expect(@affiliate_account.affiliate).not_to eq(Affiliate.OTHER)
         expect(@affiliate_account).to be_valid
@@ -32,7 +31,6 @@ module AffiliateAccountHelper
       end
 
     end
-
   end
 
 end

@@ -19,8 +19,8 @@ RSpec.describe PricePoliciesHelper do
 
       it do
         expect(options).to match_array([
-          %w(Overage overage), %w(Reservation reservation), %w(Usage usage),
-        ])
+                                         %w(Overage overage), %w(Reservation reservation), %w(Usage usage)
+                                       ])
       end
     end
   end

@@ -1,6 +1,7 @@
 class AddOrderDetailNote < ActiveRecord::Migration
+
   def self.up
-    add_column :order_details, :note, :string, :limit => 25
+    add_column :order_details, :note, :string, limit: 25
   end
 
   def self.down
@@ -9,4 +10,5 @@ class AddOrderDetailNote < ActiveRecord::Migration
        ALTER TABLE order_details DROP COLUMN note
      SQL
   end
+
 end

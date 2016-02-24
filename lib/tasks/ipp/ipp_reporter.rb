@@ -1,6 +1,6 @@
-require_relative 'ipp_converter'
-require_relative 'ipp_csv_builder'
-require_relative 'ipp_html_builder'
+require_relative "ipp_converter"
+require_relative "ipp_csv_builder"
+require_relative "ipp_html_builder"
 
 #
 # This class and it's usages can be removed after
@@ -15,7 +15,6 @@ class IppReporter
               :csv_builder,
               :converter
 
-
   def initialize
     @changed = 0
     @errors = []
@@ -25,7 +24,6 @@ class IppReporter
     @details = converter.convertible_details
   end
 
-
   def report_changes
     build_report
     html_builder.summarize self
@@ -33,7 +31,6 @@ class IppReporter
     html_builder.render
     csv_builder.render
   end
-
 
   def build_report
     details.find_each do |detail|
@@ -53,12 +50,11 @@ class IppReporter
     end
   end
 
-
   def same?(detail, actuals, estimates)
     detail.estimated_cost == estimates[:cost] &&
-    detail.estimated_subsidy == estimates[:subsidy] &&
-    detail.actual_cost == actuals[:cost] &&
-    detail.actual_subsidy == actuals[:subsidy]
+      detail.estimated_subsidy == estimates[:subsidy] &&
+      detail.actual_cost == actuals[:cost] &&
+      detail.actual_subsidy == actuals[:subsidy]
   end
 
 end

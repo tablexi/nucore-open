@@ -1,4 +1,5 @@
 class CreateExternalServiceReceivers < ActiveRecord::Migration
+
   def self.up
     create_table :external_service_receivers do |t|
       t.integer :external_service_id
@@ -12,4 +13,5 @@ class CreateExternalServiceReceivers < ActiveRecord::Migration
   def self.down
     drop_table :external_service_receivers
   end
+
 end

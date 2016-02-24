@@ -8,8 +8,8 @@ RSpec.describe ServicesController do
   render_views
 
   it "should route" do
-    expect({ :get => "/facilities/alpha/services" }).to route_to(:controller => 'services', :action => 'index', :facility_id => 'alpha')
-    expect({ :get => "/facilities/alpha/services/1/manage" }).to route_to(:controller => 'services', :action => 'manage', :id => '1', :facility_id => 'alpha')
+    expect(get: "/facilities/alpha/services").to route_to(controller: "services", action: "index", facility_id: "alpha")
+    expect(get: "/facilities/alpha/services/1/manage").to route_to(controller: "services", action: "manage", id: "1", facility_id: "alpha")
   end
 
   before(:all) { create_users }
@@ -17,42 +17,42 @@ RSpec.describe ServicesController do
   before(:each) do
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @service          = @authable.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
-    @service_pp       = @service.service_price_policies.create(FactoryGirl.attributes_for(:service_price_policy, :price_group => @nupg))
-    @params={ :facility_id => @authable.url_name }
+    @service          = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
+    @service_pp       = @service.service_price_policies.create(FactoryGirl.attributes_for(:service_price_policy, price_group: @nupg))
+    @params = { facility_id: @authable.url_name }
   end
 
   context "index" do
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
 
     it_should_allow_operators_only do
       expect(assigns[:services]).to eq([@service])
       expect(response).to be_success
-      expect(response).to render_template('services/index')
+      expect(response).to render_template("services/index")
     end
   end
 
   context "show" do
     before :each do
-      @method=:get
-      @action=:show
-      @params.merge!(:id => @service.url_name)
+      @method = :get
+      @action = :show
+      @params.merge!(id: @service.url_name)
     end
 
     it "should allow public access" do
       do_request
       expect(assigns[:service]).to eq(@service)
       expect(response).to be_success
-      expect(response).to render_template('services/show')
+      expect(response).to render_template("services/show")
     end
 
     it_should_allow_all facility_users do
       expect(assigns[:service]).to eq(@service)
       expect(response).to be_success
-      expect(response).to render_template('services/show')
+      expect(response).to render_template("services/show")
     end
 
     it "should fail without a valid account" do
@@ -60,7 +60,7 @@ RSpec.describe ServicesController do
       do_request
       expect(flash).not_to be_empty
       expect(assigns[:add_to_cart]).to be false
-      expect(assigns[:error]).to eq('no_accounts')
+      expect(assigns[:error]).to eq("no_accounts")
     end
 
     context "when the service requires approval" do
@@ -91,7 +91,7 @@ RSpec.describe ServicesController do
       end
 
       it "should not show a notice and show an add to cart" do
-        @product_user = ProductUser.create(:product => @service, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
+        @product_user = ProductUser.create(product: @service, user: @guest, approved_by: @admin.id, approved_at: Time.zone.now)
         add_account_for_user(:guest, @service, @nupg)
         sign_in @guest
         do_request
@@ -114,7 +114,7 @@ RSpec.describe ServicesController do
 
     context "hidden service" do
       before :each do
-        @service.update_attributes(:is_hidden => true)
+        @service.update_attributes(is_hidden: true)
       end
 
       it_should_allow_operators_only do
@@ -132,10 +132,10 @@ RSpec.describe ServicesController do
     end
   end
 
-  context 'new' do
+  context "new" do
     before :each do
-      @method=:get
-      @action=:new
+      @method = :get
+      @action = :new
     end
 
     it_should_allow_managers_only do
@@ -144,23 +144,23 @@ RSpec.describe ServicesController do
     end
   end
 
-  context 'edit' do
+  context "edit" do
     before :each do
-      @method=:get
-      @action=:edit
-      @params.merge!(:id => @service.url_name)
+      @method = :get
+      @action = :edit
+      @params.merge!(id: @service.url_name)
     end
 
     it_should_allow_managers_only do
-      is_expected.to render_template 'edit'
+      is_expected.to render_template "edit"
     end
   end
 
-  context 'create' do
+  context "create" do
     before :each do
-      @method=:post
-      @action=:create
-      @params.merge!(:service => FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
+      @method = :post
+      @action = :create
+      @params.merge!(service: FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
     end
 
     it_should_allow_managers_only :redirect do
@@ -171,11 +171,11 @@ RSpec.describe ServicesController do
     end
   end
 
-  context 'update' do
+  context "update" do
     before :each do
-      @method=:put
-      @action=:update
-      @params.merge!(:id => @service.url_name, :service => FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
+      @method = :put
+      @action = :update
+      @params.merge!(id: @service.url_name, service: FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
     end
 
     it_should_allow_managers_only :redirect do
@@ -185,11 +185,11 @@ RSpec.describe ServicesController do
     end
   end
 
-  context 'destroy' do
+  context "destroy" do
     before :each do
-      @method=:delete
-      @action=:destroy
-      @params.merge!(:id => @service.url_name)
+      @method = :delete
+      @action = :destroy
+      @params.merge!(id: @service.url_name)
     end
 
     it_should_allow_managers_only :redirect do
@@ -201,14 +201,14 @@ RSpec.describe ServicesController do
 
   context "manage" do
     before :each do
-      @method=:get
-      @action=:manage
-      @params={ :id => @service.url_name, :facility_id => @authable.url_name }
+      @method = :get
+      @action = :manage
+      @params = { id: @service.url_name, facility_id: @authable.url_name }
     end
 
     it_should_allow_operators_only do
       expect(response).to be_success
-      expect(response).to render_template('services/manage')
+      expect(response).to render_template("services/manage")
     end
   end
 end

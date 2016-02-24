@@ -27,7 +27,7 @@ RSpec.describe ChartStringReassignmentForm do
       list[rand(list.length)]
     end
 
-    context 'with a single User' do
+    context "with a single User" do
       subject(:form) { ChartStringReassignmentForm.new([order_detail]) }
       let(:order) { order_detail.order }
       let(:order_detail) { order_details.first }
@@ -39,19 +39,19 @@ RSpec.describe ChartStringReassignmentForm do
         grant_accounts_to_user(accounts, user)
       end
 
-      it 'has available accounts' do
+      it "has available accounts" do
         expect(form.available_accounts.count).to eq accounts.count
       end
 
-      it 'determines available accounts' do
+      it "determines available accounts" do
         expect(form.available_accounts).to match_array(user.accounts)
       end
     end
 
-    context 'with multiple Users' do
+    context "with multiple Users" do
       subject(:form) { ChartStringReassignmentForm.new(order_details) }
 
-      context 'Users have all accounts in common' do
+      context "Users have all accounts in common" do
         before :each do
           users.each_with_index do |user, index|
             grant_accounts_to_user(accounts, user)
@@ -68,13 +68,13 @@ RSpec.describe ChartStringReassignmentForm do
           end
         end
 
-        it 'determines available_accounts' do
+        it "determines available_accounts" do
           expect(form.available_accounts).to eq(accounts)
         end
       end
 
-      context 'Users have some accounts in common' do
-        let(:common_accounts) { [ accounts.first, accounts.last ] }
+      context "Users have some accounts in common" do
+        let(:common_accounts) { [accounts.first, accounts.last] }
         let!(:sorted_user_accounts) do
           all_user_accounts = Set.new
 
@@ -92,12 +92,12 @@ RSpec.describe ChartStringReassignmentForm do
           all_user_accounts.sort_by(&:description)
         end
 
-        it 'determines available_accounts' do
+        it "determines available_accounts" do
           expect(form.available_accounts).to eq sorted_user_accounts
         end
       end
 
-      context 'Users have no accounts in common' do
+      context "Users have no accounts in common" do
         let(:sorted_user_accounts) { accounts.sort_by(&:description) }
 
         before :each do
@@ -111,7 +111,7 @@ RSpec.describe ChartStringReassignmentForm do
           end
         end
 
-        it 'determines available_accounts' do
+        it "determines available_accounts" do
           expect(form.available_accounts).to eq sorted_user_accounts
         end
       end

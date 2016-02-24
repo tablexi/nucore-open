@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe ApplicationHelper do
   describe "#can_create_users?" do
@@ -11,7 +11,7 @@ RSpec.describe ApplicationHelper do
     before(:each) do
       allow(current_ability)
         .to receive(:can?)
-        .with(:manage_users, current_facility) { can_manage_users? }
+          .with(:manage_users, current_facility) { can_manage_users? }
     end
 
     context "when the user can :manage_users for the current facility" do

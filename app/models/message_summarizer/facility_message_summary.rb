@@ -1,4 +1,5 @@
 class MessageSummarizer::FacilityMessageSummary < MessageSummarizer::MessageSummary
+
   private
 
   def in_context?
@@ -8,4 +9,5 @@ class MessageSummarizer::FacilityMessageSummary < MessageSummarizer::MessageSumm
   def facility
     controller.current_facility
   end
+
 end

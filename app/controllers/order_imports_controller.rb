@@ -1,4 +1,5 @@
 class OrderImportsController < ApplicationController
+
   include ActionView::Helpers::TextHelper
 
   admin_tab     :all
@@ -9,7 +10,7 @@ class OrderImportsController < ApplicationController
   authorize_resource class: Order
 
   def initialize
-    @active_tab = 'admin_orders'
+    @active_tab = "admin_orders"
     super
   end
 
@@ -43,8 +44,8 @@ class OrderImportsController < ApplicationController
       params[:order_import].merge(
         created_by: session_user.id,
         upload_file: stored_file,
-        facility: @current_facility
-      )
+        facility: @current_facility,
+      ),
     )
   end
 
@@ -54,7 +55,7 @@ class OrderImportsController < ApplicationController
   end
 
   def import_exception_message(exception)
-    I18n.t('controllers.order_imports.create.error', error: exception.message)
+    I18n.t("controllers.order_imports.create.error", error: exception.message)
   end
 
   def get_order_imports
@@ -83,13 +84,14 @@ class OrderImportsController < ApplicationController
   def stored_file
     StoredFile.new(
       file: upload_file,
-      file_type: 'import_upload',
+      file_type: "import_upload",
       name: upload_file.try(:original_filename),
-      created_by: session_user.id
+      created_by: session_user.id,
     )
   end
 
   def upload_file
     @upload_file ||= params[:order_import].delete(:upload_file)
   end
+
 end

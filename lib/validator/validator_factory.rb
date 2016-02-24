@@ -10,7 +10,6 @@ class ValidatorFactory
     validator_class.new(*args)
   end
 
-
   #
   # Make it easy to query the validator class through the factory
   #
@@ -19,9 +18,9 @@ class ValidatorFactory
     validator_class.send(method_sym, *arguments, &block)
   end
 
-
   def self.respond_to?(method_sym, include_private = false)
     return true if method_sym.in?([:validator_class, :instance])
     validator_class.respond_to? method_sym, include_private
   end
+
 end

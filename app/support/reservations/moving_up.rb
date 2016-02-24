@@ -1,6 +1,7 @@
 # Support for finding the next available time and moving a reservation
 # up to that next time slot
 module Reservations::MovingUp
+
   #
   # Returns a new reservation with the reserve_*_at times updated
   # to the next accommodating time slot on the calendar from NOW. Returns nil
@@ -24,10 +25,10 @@ module Reservations::MovingUp
       if save
         return true
       else
-        self.errors.add(:base, :move_failed)
+        errors.add(:base, :move_failed)
       end
     else
-      self.errors.add(:base, :cannot_move)
+      errors.add(:base, :cannot_move)
     end
     false
   end
@@ -36,6 +37,7 @@ module Reservations::MovingUp
   # returns true if this reservation can be moved to
   # an earlier time slot, false otherwise
   def can_move?
-    !(canceled? || order_detail.complete? || in_grace_period? || earliest_possible.nil?) # TODO refactor?
+    !(canceled? || order_detail.complete? || in_grace_period? || earliest_possible.nil?) # TODO: refactor?
   end
+
 end

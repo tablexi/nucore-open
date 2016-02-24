@@ -1,4 +1,5 @@
 class Journals::Closer
+
   attr_reader :journal, :params
 
   def initialize(journal, params)
@@ -10,14 +11,14 @@ class Journals::Closer
   def perform(status)
     rollback_on_fail do
       case status
-      when 'failed'
+      when "failed"
         mark_as_failed
-      when 'succeeded_errors'
+      when "succeeded_errors"
         mark_as_succeeded_with_errors
-      when 'succeeded'
+      when "succeeded"
         mark_as_succeeded
       else
-        journal.errors.add(:base, I18n.t('controllers.facility_journals.update.error.status'))
+        journal.errors.add(:base, I18n.t("controllers.facility_journals.update.error.status"))
         false
       end
     end
@@ -45,7 +46,7 @@ class Journals::Closer
   def mark_as_succeeded
     if journal.update_attributes(params.merge(is_successful: true))
       reconciled_status = OrderStatus.reconciled.first
-      journal.order_details.update_all(state: 'reconciled', order_status_id: reconciled_status.id)
+      journal.order_details.update_all(state: "reconciled", order_status_id: reconciled_status.id)
     else
       false
     end
@@ -60,4 +61,5 @@ class Journals::Closer
       end
     end
   end
+
 end

@@ -5,11 +5,15 @@
 if NUCore::Database.oracle?
   Rails.application.config.to_prepare do
     module CollectiveIdea
+
       module Acts
+
         module NestedSet
+
           module Model
+
             def set_default_left_and_right
-              highest_right_row = nested_set_scope(:order => "#{quoted_right_column_full_name} desc").first
+              highest_right_row = nested_set_scope(order: "#{quoted_right_column_full_name} desc").first
               highest_right_row && highest_right_row.lock!
 
               maxright = highest_right_row ? (highest_right_row[right_column_name] || 0) : 0
@@ -17,9 +21,13 @@ if NUCore::Database.oracle?
               self[left_column_name] = maxright + 1
               self[right_column_name] = maxright + 2
             end
+
           end
+
         end
+
       end
+
     end
   end
 end

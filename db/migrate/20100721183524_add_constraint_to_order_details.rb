@@ -1,4 +1,5 @@
 class AddConstraintToOrderDetails < ActiveRecord::Migration
+
   def self.up
     execute "ALTER TABLE order_details ADD CONSTRAINT fk_od_accounts FOREIGN KEY (account_id) REFERENCES accounts (id)"
   end
@@ -6,4 +7,5 @@ class AddConstraintToOrderDetails < ActiveRecord::Migration
   def self.down
     execute "ALTER TABLE order_details DROP CONSTRAINT fk_od_accounts"
   end
+
 end

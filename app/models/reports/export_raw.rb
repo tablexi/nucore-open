@@ -1,4 +1,5 @@
 class Reports::ExportRaw
+
   include DateHelper
 
   def initialize(arguments)
@@ -9,7 +10,7 @@ class Reports::ExportRaw
         raise ArgumentError, "Required argument '#{property}' is missing"
       end
     end
-    @date_range_field = arguments[:date_range_field] || 'journal_or_statement_date'
+    @date_range_field = arguments[:date_range_field] || "journal_or_statement_date"
   end
 
   def date_start
@@ -41,7 +42,7 @@ class Reports::ExportRaw
   end
 
   def formatted_compact_date_range
-    "#{date_start.strftime("%Y%m%d")}-#{date_end.strftime("%Y%m%d")}"
+    "#{date_start.strftime('%Y%m%d')}-#{date_end.strftime('%Y%m%d')}"
   end
 
   private
@@ -72,7 +73,7 @@ class Reports::ExportRaw
 
   def product_info_columns(order_detail)
     product = order_detail.product
-    bundle_desc = product.is_a?(Bundle) ? product.products.collect(&:name).join(' & ') : nil
+    bundle_desc = product.is_a?(Bundle) ? product.products.collect(&:name).join(" & ") : nil
     [
       product.url_name,
       product.type.underscore.humanize,
@@ -88,7 +89,7 @@ class Reports::ExportRaw
       account.affiliate_to_s,
       account.account_number,
       account.description_to_s,
-      format_usa_datetime(account.expires_at)
+      format_usa_datetime(account.expires_at),
     ]
   end
 
@@ -131,32 +132,32 @@ class Reports::ExportRaw
   end
 
   def statement_datetime_column(statement)
-    [ statement.present? ? format_usa_datetime(statement.created_at) : nil ]
+    [statement.present? ? format_usa_datetime(statement.created_at) : nil]
   end
 
   def journal_datetime_column(journal)
-    [ journal.present? ? format_usa_datetime(journal.created_at) : nil ]
+    [journal.present? ? format_usa_datetime(journal.created_at) : nil]
   end
 
   def order_detail_row(order_detail)
-    begin
+
       basic_info_columns(order_detail) +
-      user_info_columns(order_detail.order.created_by_user) +
-      user_info_columns(order_detail.order.user) +
-      product_info_columns(order_detail) +
-      account_info_columns(order_detail.account) +
-      user_info_columns(order_detail.account.owner_user) +
-      pricing_info_columns(order_detail) +
-      reservation_info_columns(order_detail.reservation) +
-      [ order_detail.note ] +
-      dispute_info_columns(order_detail) +
-      [ format_usa_datetime(order_detail.reviewed_at) ] +
-      statement_datetime_column(order_detail.statement) +
-      journal_datetime_column(order_detail.journal) +
-      [ order_detail.reconciled_note ]
+        user_info_columns(order_detail.order.created_by_user) +
+        user_info_columns(order_detail.order.user) +
+        product_info_columns(order_detail) +
+        account_info_columns(order_detail.account) +
+        user_info_columns(order_detail.account.owner_user) +
+        pricing_info_columns(order_detail) +
+        reservation_info_columns(order_detail.reservation) +
+        [order_detail.note] +
+        dispute_info_columns(order_detail) +
+        [format_usa_datetime(order_detail.reviewed_at)] +
+        statement_datetime_column(order_detail.statement) +
+        journal_datetime_column(order_detail.journal) +
+        [order_detail.reconciled_note]
     rescue => e
-      [ "*** ERROR WHEN REPORTING ON ORDER DETAIL #{order_detail}: #{e.message} ***" ]
-    end
+      ["*** ERROR WHEN REPORTING ON ORDER DETAIL #{order_detail}: #{e.message} ***"]
+
   end
 
   def csv_body
@@ -171,24 +172,25 @@ class Reports::ExportRaw
     return [] if @order_status_ids.blank?
 
     OrderDetail.where(order_status_id: @order_status_ids)
-      .for_facility(@facility)
-      .action_in_date_range(@date_range_field, date_start, date_end)
-      .includes(:account, :order, :order_status, :price_policy, :product, :reservation, :statement)
+               .for_facility(@facility)
+               .action_in_date_range(@date_range_field, date_start, date_end)
+               .includes(:account, :order, :order_status, :price_policy, :product, :reservation, :statement)
   end
 
   def as_currency(number)
     if number.present?
       ActionController::Base.helpers.number_to_currency(number)
     else
-      ''
+      ""
     end
   end
 
   def canceled_by_name(reservation)
     if reservation.canceled_by == 0
-      I18n.t('reports.fields.auto_cancel_name')
+      I18n.t("reports.fields.auto_cancel_name")
     else
       reservation.canceled_by_user.try(:full_name)
     end
   end
+
 end

@@ -1,57 +1,54 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
-RSpec.describe FacilityFacilityAccountsController, :if => SettingsHelper.feature_on?(:recharge_accounts) do
+RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on?(:recharge_accounts) do
   render_views
 
   before(:all) { create_users }
 
   before(:each) do
-    @authable=FactoryGirl.create(:facility)
-    @facility_account=FactoryGirl.create(:facility_account, :facility => @authable, :created_by => @admin.id)
-    @params={ :facility_id => @authable.url_name }
+    @authable = FactoryGirl.create(:facility)
+    @facility_account = FactoryGirl.create(:facility_account, facility: @authable, created_by: @admin.id)
+    @params = { facility_id: @authable.url_name }
   end
 
-
-  context 'index' do
+  context "index" do
 
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
 
     it_should_allow_managers_only do
       expect(assigns(:accounts)).to be_kind_of Array
       expect(assigns(:accounts).size).to eq(1)
       expect(assigns(:accounts)[0]).to eq(@facility_account)
-      is_expected.to render_template 'index'
+      is_expected.to render_template "index"
     end
 
   end
 
-
-  context 'new' do
+  context "new" do
 
     before :each do
-      @method=:get
-      @action=:new
+      @method = :get
+      @action = :new
     end
 
     it_should_allow_managers_only do
       expect(assigns(:facility_account)).to be_kind_of FacilityAccount
       expect(assigns(:facility_account)).to be_new_record
-      is_expected.to render_template 'new'
+      is_expected.to render_template "new"
     end
 
   end
 
-
-  context 'update' do
+  context "update" do
 
     before :each do
-      @method=:put
-      @action=:update
-      @params.merge!(:id => @facility_account.id, :facility_account => FactoryGirl.attributes_for(:facility_account))
+      @method = :put
+      @action = :update
+      @params.merge!(id: @facility_account.id, facility_account: FactoryGirl.attributes_for(:facility_account))
     end
 
     it_should_allow_managers_only :redirect do
@@ -63,13 +60,12 @@ RSpec.describe FacilityFacilityAccountsController, :if => SettingsHelper.feature
 
   end
 
-
-  context 'create' do
+  context "create" do
 
     before :each do
-      @method=:post
-      @action=:create
-      @params.merge!(:facility_account => FactoryGirl.attributes_for(:facility_account))
+      @method = :post
+      @action = :create
+      @params.merge!(facility_account: FactoryGirl.attributes_for(:facility_account))
     end
 
     it_should_allow_managers_only :redirect do |user|
@@ -81,19 +77,18 @@ RSpec.describe FacilityFacilityAccountsController, :if => SettingsHelper.feature
 
   end
 
-
-  context 'edit' do
+  context "edit" do
 
     before :each do
-      @method=:get
-      @action=:edit
-      @params.merge!(:id => @facility_account.id)
+      @method = :get
+      @action = :edit
+      @params.merge!(id: @facility_account.id)
     end
 
     it_should_allow_managers_only do
       expect(assigns(:facility_account)).to be_kind_of FacilityAccount
       expect(assigns(:facility_account)).to eq(@facility_account)
-      is_expected.to render_template 'edit'
+      is_expected.to render_template "edit"
     end
 
   end

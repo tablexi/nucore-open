@@ -41,7 +41,7 @@ RSpec.describe JournalCutoffDate do
     end
 
     describe "pm" do
-      let(:cutoff_date_hash) { { hour: "4", minute: "37", ampm: "PM" }  }
+      let(:cutoff_date_hash) { { hour: "4", minute: "37", ampm: "PM" } }
       it { is_expected.to eq(Time.zone.parse("2016-02-01 16:37")) }
     end
 

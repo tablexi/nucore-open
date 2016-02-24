@@ -3,9 +3,9 @@ require "rails_helper"
 RSpec.describe ProductApprover do
   let(:all_products) { create_list(:instrument_requiring_approval, 10, facility: facility) }
   let(:approver) { create(:user) }
-  let(:expert_access_group) { create(:product_access_group, name: 'Expert', product: product) }
+  let(:expert_access_group) { create(:product_access_group, name: "Expert", product: product) }
   let(:facility) { create(:setup_facility) }
-  let(:novice_access_group) { create(:product_access_group, name: 'Novice', product: product) }
+  let(:novice_access_group) { create(:product_access_group, name: "Novice", product: product) }
   let(:product) { all_products.first }
   let(:product_approver) { ProductApprover.new(all_products, user, approver) }
   let(:product_user) { product.find_product_user(user) }
@@ -20,14 +20,14 @@ RSpec.describe ProductApprover do
   end
 
   context '#approve_access' do
-    it 'grants usage approval to a product' do
+    it "grants usage approval to a product" do
       expect { product_approver.approve_access(product) }
-        .to change{product.can_be_used_by?(user)}.from(false).to(true)
+        .to change { product.can_be_used_by?(user) }.from(false).to(true)
     end
 
-    it 'grants usage approval to a product' do
+    it "grants usage approval to a product" do
       expect { product_approver.approve_access(product) }
-        .to change{product.can_be_used_by?(user)}.from(false).to(true)
+        .to change { product.can_be_used_by?(user) }.from(false).to(true)
     end
   end
 
@@ -36,9 +36,9 @@ RSpec.describe ProductApprover do
       product_approver.approve_access(product)
     end
 
-    it 'revokes usage approval to a product' do
+    it "revokes usage approval to a product" do
       expect { product_approver.revoke_access(product) }
-        .to change{product.can_be_used_by?(user)}.from(true).to(false)
+        .to change { product.can_be_used_by?(user) }.from(true).to(false)
     end
   end
 
@@ -54,76 +54,76 @@ RSpec.describe ProductApprover do
       end
     end
 
-    shared_examples 'no grants were changed' do
-      it 'does not change grants' do
+    shared_examples "no grants were changed" do
+      it "does not change grants" do
         expect(stats).not_to be_grants_changed
       end
 
-      it 'makes no grants' do
+      it "makes no grants" do
         expect(stats.granted).to eq 0
       end
 
-      it 'makes no revocations' do
+      it "makes no revocations" do
         expect(stats.revoked).to eq 0
       end
     end
 
-    shared_examples 'no access group changes were made' do
-      it 'changes no access groups' do
+    shared_examples "no access group changes were made" do
+      it "changes no access groups" do
         expect(stats).not_to be_access_groups_changed
       end
     end
 
-    context 'with no changes' do
-      context 'with an empty access_group_hash' do
+    context "with no changes" do
+      context "with an empty access_group_hash" do
         let(:stats) { product_approver.update_approvals([]) }
 
-        it_behaves_like 'no grants were changed'
-        it_behaves_like 'no access group changes were made'
+        it_behaves_like "no grants were changed"
+        it_behaves_like "no access group changes were made"
       end
 
-      context 'with a nil access_group_hash' do
+      context "with a nil access_group_hash" do
         let(:stats) { product_approver.update_approvals([], nil) }
 
-        it_behaves_like 'no grants were changed'
-        it_behaves_like 'no access group changes were made'
+        it_behaves_like "no grants were changed"
+        it_behaves_like "no access group changes were made"
       end
     end
 
-    shared_examples 'grants were changed' do |expected_grants, expected_revocations|
-      it 'changed grants' do
+    shared_examples "grants were changed" do |expected_grants, expected_revocations|
+      it "changed grants" do
         expect(stats).to be_grants_changed
       end
 
-      it 'made the expected number of grants' do
+      it "made the expected number of grants" do
         expect(stats.granted).to eq expected_grants
       end
 
-      it 'made the expected number of revocations' do
+      it "made the expected number of revocations" do
         expect(stats.revoked).to eq expected_revocations
       end
     end
 
-    context 'without access groups' do
+    context "without access groups" do
       let(:products_to_approve) { all_products[0..3] }
       let(:stats) { product_approver.update_approvals(products_to_approve, access_group_hash) }
 
-      context 'with an empty access_group_hash' do
+      context "with an empty access_group_hash" do
         let(:access_group_hash) { {} }
 
-        it_behaves_like 'grants were changed', 4, 0
-        it_behaves_like 'no access group changes were made'
+        it_behaves_like "grants were changed", 4, 0
+        it_behaves_like "no access group changes were made"
       end
 
-      context 'with a nil access_group_hash' do
+      context "with a nil access_group_hash" do
         let(:access_group_hash) { nil }
 
-        it_behaves_like 'grants were changed', 4, 0
-        it_behaves_like 'no access group changes were made'
+        it_behaves_like "grants were changed", 4, 0
+        it_behaves_like "no access group changes were made"
       end
     end
 
-    context 'with access groups' do
+    context "with access groups" do
       let(:products_to_approve) { all_products[0..3] }
       let(:stats) { product_approver.update_approvals(products_to_approve, access_group_hash) }
 
@@ -131,10 +131,10 @@ RSpec.describe ProductApprover do
         set_up_access_list
       end
 
-      context 'when an access group changes' do
+      context "when an access group changes" do
         let(:access_group_hash) { { product.id.to_s => expert_access_group.id } }
 
-        it 'has approvals' do
+        it "has approvals" do
           expect(stats).to be_grants_changed
           expect(stats.granted).to eq(products_to_approve.count - 1)
           expect(stats.revoked).to eq 0
@@ -145,10 +145,10 @@ RSpec.describe ProductApprover do
         end
       end
 
-      context 'when access groups stay the same' do
+      context "when access groups stay the same" do
         let(:access_group_hash) { { product.id.to_s => novice_access_group.id } }
 
-        it 'has approvals' do
+        it "has approvals" do
           expect(stats).to be_grants_changed
           expect(stats.granted).to eq(products_to_approve.count - 1)
           expect(stats.revoked).to eq 0
@@ -160,7 +160,7 @@ RSpec.describe ProductApprover do
       end
     end
 
-    it 'has revocations' do
+    it "has revocations" do
       all_products[0..3].each do |product|
         product_approver.approve_access(product)
       end
@@ -174,7 +174,7 @@ RSpec.describe ProductApprover do
       verify_approvals([])
     end
 
-    it 'has both approvals and revocations' do
+    it "has both approvals and revocations" do
       initially_approved_products = all_products[0..4]
       initially_approved_products.each do |product|
         product_approver.approve_access(product)

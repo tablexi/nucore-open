@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 # NOTE: changed create/new/edit/update from it_should_allow_all facility_operators to
 # it_should_allow_managers_only as part of ticket #38481
@@ -9,45 +9,43 @@ RSpec.describe BundleProductsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable=FactoryGirl.create(:facility)
-    @facility_account=FactoryGirl.create(:facility_account, :facility => @authable)
-    @item=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
-    @bundle=FactoryGirl.create(:bundle, :facility_account => @facility_account, :facility => @authable)
-    @bundle_product=BundleProduct.create!(:bundle => @bundle, :product => @item, :quantity => 1)
+    @authable = FactoryGirl.create(:facility)
+    @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
+    @item = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
+    @bundle = FactoryGirl.create(:bundle, facility_account: @facility_account, facility: @authable)
+    @bundle_product = BundleProduct.create!(bundle: @bundle, product: @item, quantity: 1)
   end
 
-
-  context 'index' do
+  context "index" do
 
     before(:each) do
-      @method=:get
-      @action=:index
-      @params={ :facility_id => @authable.url_name, :bundle_id => @bundle.url_name }
+      @method = :get
+      @action = :index
+      @params = { facility_id: @authable.url_name, bundle_id: @bundle.url_name }
     end
 
     it_should_require_login
 
     it_should_allow_all facility_operators do
       expect(assigns(:bundle_products)).to be_kind_of Array
-      is_expected.to render_template('index')
+      is_expected.to render_template("index")
     end
 
   end
 
-
-  context 'create' do
+  context "create" do
 
     before(:each) do
-      @method=:post
-      @action=:create
-      item2=FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
-      @params={
-        :facility_id => @authable.url_name,
-        :bundle_id => @bundle.url_name,
-        :bundle_product => {
-          :product_id => item2.id,
-          :quantity => 2
-        }
+      @method = :post
+      @action = :create
+      item2 = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
+      @params = {
+        facility_id: @authable.url_name,
+        bundle_id: @bundle.url_name,
+        bundle_product: {
+          product_id: item2.id,
+          quantity: 2,
+        },
       }
     end
 
@@ -61,13 +59,12 @@ RSpec.describe BundleProductsController do
 
   end
 
-
-  context 'new' do
+  context "new" do
 
     before(:each) do
-      @method=:get
-      @action=:new
-      @params={ :facility_id => @authable.url_name, :bundle_id => @bundle.url_name }
+      @method = :get
+      @action = :new
+      @params = { facility_id: @authable.url_name, bundle_id: @bundle.url_name }
     end
 
     it_should_require_login
@@ -75,42 +72,40 @@ RSpec.describe BundleProductsController do
     it_should_allow_managers_only do
       expect(assigns(:bundle_product)).to be_kind_of BundleProduct
       expect(assigns(:bundle_product)).to be_new_record
-      is_expected.to render_template('new')
+      is_expected.to render_template("new")
     end
 
   end
 
-
-  context 'edit' do
+  context "edit" do
 
     before(:each) do
-      @method=:get
-      @action=:edit
-      @params={ :facility_id => @authable.url_name, :bundle_id => @bundle.url_name, :id => @bundle_product.id }
+      @method = :get
+      @action = :edit
+      @params = { facility_id: @authable.url_name, bundle_id: @bundle.url_name, id: @bundle_product.id }
     end
 
     it_should_require_login
 
     it_should_allow_managers_only do
       assert_init_bundle
-      is_expected.to render_template('edit')
+      is_expected.to render_template("edit")
     end
 
   end
 
-
-  context 'update' do
+  context "update" do
 
     before(:each) do
-      @method=:put
-      @action=:update
-      @params={
-        :facility_id => @authable.url_name,
-        :bundle_id => @bundle.url_name,
-        :id => @bundle_product.id,
-        :bundle_product => {
-          :quantity => 3
-        }
+      @method = :put
+      @action = :update
+      @params = {
+        facility_id: @authable.url_name,
+        bundle_id: @bundle.url_name,
+        id: @bundle_product.id,
+        bundle_product: {
+          quantity: 3,
+        },
       }
     end
 
@@ -126,13 +121,12 @@ RSpec.describe BundleProductsController do
 
   end
 
-
-  context 'destroy' do
+  context "destroy" do
 
     before(:each) do
-      @method=:delete
-      @action=:destroy
-      @params={ :facility_id => @authable.url_name, :bundle_id => @bundle.url_name, :id => @bundle_product.id }
+      @method = :delete
+      @action = :destroy
+      @params = { facility_id: @authable.url_name, bundle_id: @bundle.url_name, id: @bundle_product.id }
     end
 
     it_should_require_login
@@ -152,7 +146,6 @@ RSpec.describe BundleProductsController do
     end
 
   end
-
 
   def assert_init_bundle
     expect(assigns(:bundle)).to_not be_nil

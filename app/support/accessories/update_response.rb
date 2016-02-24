@@ -1,4 +1,5 @@
 class Accessories::UpdateResponse
+
   attr_reader :order_details
 
   def initialize(order_details)
@@ -12,4 +13,5 @@ class Accessories::UpdateResponse
   def persisted_count
     @order_details.count &:persisted?
   end
+
 end

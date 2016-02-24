@@ -1,12 +1,12 @@
 require "rails_helper"
-require 'account_cleaner'
+require "account_cleaner"
 
 RSpec.describe AccountCleaner do
 
   before :each do
-    @account                  = FactoryGirl.create(:setup_account, :expires_at => Time.zone.parse('2063-04-20 14:30:30'))
-    @end_of_day_account       = FactoryGirl.create(:setup_account, :expires_at => Time.zone.parse('2063-04-21 23:59:59'))
-    @beginning_of_day_account = FactoryGirl.create(:setup_account, :expires_at => Time.zone.parse('2063-04-22 00:00:00'))
+    @account                  = FactoryGirl.create(:setup_account, expires_at: Time.zone.parse("2063-04-20 14:30:30"))
+    @end_of_day_account       = FactoryGirl.create(:setup_account, expires_at: Time.zone.parse("2063-04-21 23:59:59"))
+    @beginning_of_day_account = FactoryGirl.create(:setup_account, expires_at: Time.zone.parse("2063-04-22 00:00:00"))
   end
 
   context "update accounts.expires_at" do

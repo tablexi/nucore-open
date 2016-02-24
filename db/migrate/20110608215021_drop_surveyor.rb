@@ -1,4 +1,5 @@
 class DropSurveyor < ActiveRecord::Migration
+
   def self.up
     drop_table :answers
     drop_table :dependencies
@@ -17,4 +18,5 @@ class DropSurveyor < ActiveRecord::Migration
   def self.down
     raise ActiveRecord::IrreversibleMigration
   end
+
 end

@@ -1,4 +1,5 @@
 class CreateExternalServices < ActiveRecord::Migration
+
   def self.up
     create_table :external_services do |t|
       t.string :type
@@ -10,4 +11,5 @@ class CreateExternalServices < ActiveRecord::Migration
   def self.down
     drop_table :external_services
   end
+
 end

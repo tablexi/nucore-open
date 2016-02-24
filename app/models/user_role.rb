@@ -1,14 +1,15 @@
 class UserRole < ActiveRecord::Base
+
   belongs_to :user
   belongs_to :facility
 
-  ACCOUNT_MANAGER = "Account Manager"
-  ADMINISTRATOR = "Administrator"
-  BILLING_ADMINISTRATOR = "Billing Administrator"
-  FACILITY_DIRECTOR = "Facility Director"
-  FACILITY_ADMINISTRATOR = "Facility Administrator"
-  FACILITY_STAFF = "Facility Staff"
-  FACILITY_SENIOR_STAFF = "Facility Senior Staff"
+  ACCOUNT_MANAGER = "Account Manager".freeze
+  ADMINISTRATOR = "Administrator".freeze
+  BILLING_ADMINISTRATOR = "Billing Administrator".freeze
+  FACILITY_DIRECTOR = "Facility Director".freeze
+  FACILITY_ADMINISTRATOR = "Facility Administrator".freeze
+  FACILITY_STAFF = "Facility Staff".freeze
+  FACILITY_SENIOR_STAFF = "Facility Senior Staff".freeze
 
   def self.account_manager
     [ACCOUNT_MANAGER]
@@ -60,9 +61,9 @@ class UserRole < ActiveRecord::Base
   end
 
   validates_presence_of :user_id
-  validates_inclusion_of :role, in: ->(roles) { valid_roles }, message: "is not a valid value"
+  validates_inclusion_of :role, in: ->(_roles) { valid_roles }, message: "is not a valid value"
   validates_uniqueness_of :role,
-    scope: [:facility_id, :user_id]
+                          scope: [:facility_id, :user_id]
   validates_with UserRoleFacilityValidator
 
   def facility_role?

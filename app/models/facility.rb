@@ -1,53 +1,56 @@
 class Facility < ActiveRecord::Base
+
   include ActiveModel::ForbiddenAttributesProtection
 
   module Overridable
-    def can_pay_with_account?(account)
+
+    def can_pay_with_account?(_account)
       true
     end
+
   end
 
   include Overridable
 
-  before_validation :set_journal_mask, :on => :create
+  before_validation :set_journal_mask, on: :create
 
-  has_many :order_statuses, :finder_sql => proc { "SELECT * FROM order_statuses WHERE facility_id = #{self.id} or facility_id IS NULL order by lft" }
+  has_many :order_statuses, finder_sql: proc { "SELECT * FROM order_statuses WHERE facility_id = #{id} or facility_id IS NULL order by lft" }
   has_many :items
   has_many :services
   has_many :instruments
   has_many :bundles
-  has_many :price_groups, :finder_sql => proc { "SELECT * FROM price_groups WHERE price_groups.facility_id = #{self.id} OR price_groups.facility_id IS NULL ORDER BY price_groups.is_internal DESC, price_groups.display_order ASC, price_groups.name ASC" }
+  has_many :price_groups, finder_sql: proc { "SELECT * FROM price_groups WHERE price_groups.facility_id = #{id} OR price_groups.facility_id IS NULL ORDER BY price_groups.is_internal DESC, price_groups.display_order ASC, price_groups.name ASC" }
   has_many :journals
   has_many :products
   has_many :schedules
   has_many :statements
-  has_many :order_details, :through => :products do
+  has_many :order_details, through: :products do
     # extend to find all accounts that have ordered from the facility
     def accounts
-      self.collect(&:account).compact.uniq
+      collect(&:account).compact.uniq
     end
   end
   has_many :order_imports, dependent: :destroy
-  has_many :orders, :conditions => 'ordered_at IS NOT NULL'
+  has_many :orders, conditions: "ordered_at IS NOT NULL"
   has_many :facility_accounts
   has_many :training_requests, through: :products
-  has_many :user_roles, :dependent => :destroy
-  has_many :users, :through => :user_roles
+  has_many :user_roles, dependent: :destroy
+  has_many :users, through: :user_roles
 
   validates_presence_of :name, :short_description, :abbreviation
   validate_url_name :url_name
-  validates_uniqueness_of :abbreviation, :journal_mask, :case_sensitive => false
-  validates_format_of    :abbreviation, :with => /^[a-zA-Z\d\-\.\s]+$/, :message => "may include letters, numbers, hyphens, spaces, or periods only"
-  validates_format_of    :journal_mask, :with => /^C\d{2}$/, :message => "must be in the format C##"
+  validates_uniqueness_of :abbreviation, :journal_mask, case_sensitive: false
+  validates_format_of    :abbreviation, with: /^[a-zA-Z\d\-\.\s]+$/, message: "may include letters, numbers, hyphens, spaces, or periods only"
+  validates_format_of    :journal_mask, with: /^C\d{2}$/, message: "must be in the format C##"
 
   validates :short_description,
-    length: { maximum: 300 },
-    if: -> { SettingsHelper.feature_on?(:limit_short_description) }
+            length: { maximum: 300 },
+            if: -> { SettingsHelper.feature_on?(:limit_short_description) }
 
   delegate :in_dispute, to: :order_details, prefix: true
   delegate :requiring_approval, :requiring_approval_by_type, to: :products, prefix: true
 
-  scope :active, :conditions => { :is_active => true }
+  scope :active, conditions: { is_active: true }
   scope :sorted, order: :name
 
   def self.cross_facility
@@ -62,6 +65,7 @@ class Facility < ActiveRecord::Base
   def self.urls_from_ids(ids)
     where("id in (?)", ids).select(:url_name).map(&:url_name)
   end
+
   def destroy
     # TODO: can you ever delete a facility? Currently no.
     # super
@@ -80,11 +84,11 @@ class Facility < ActiveRecord::Base
   end
 
   def status_string
-    is_active? ? 'Active' : 'Inactive'
+    is_active? ? "Active" : "Inactive"
   end
 
   def order_notification_email
-    #TODO: generate an email address to send the order notifications to
+    # TODO: generate an email address to send the order notifications to
     nil
   end
 
@@ -97,7 +101,7 @@ class Facility < ActiveRecord::Base
     if cross_facility?
       pending_facility_ids.any?
     else
-      pending_facility_ids.member?(self.id)
+      pending_facility_ids.member?(id)
     end
   end
 
@@ -128,11 +132,12 @@ class Facility < ActiveRecord::Base
   end
 
   def set_journal_mask
-    f = Facility.find(:all, :limit => 1, :order => 'journal_mask DESC').first
-    if f && f.journal_mask.match(/^C(\d{2})$/)
-      self.journal_mask = sprintf("C%02d", $1.to_i + 1)
-    else
-      self.journal_mask = 'C01'
-    end
+    f = Facility.find(:all, limit: 1, order: "journal_mask DESC").first
+    self.journal_mask = if f && f.journal_mask.match(/^C(\d{2})$/)
+                          sprintf("C%02d", Regexp.last_match(1).to_i + 1)
+                        else
+                          "C01"
+                        end
   end
+
 end

@@ -1,6 +1,7 @@
 class ProductApprover
 
   class Stats
+
     attr_reader :access_groups_changed, :granted, :revoked
 
     def initialize
@@ -28,6 +29,7 @@ class ProductApprover
     def grants_changed?
       @granted + @revoked > 0
     end
+
   end
 
   def initialize(all_products, user, approver)
@@ -60,7 +62,7 @@ class ProductApprover
     product_user = product.find_product_user(@user) || return
     update_product_user_access_group(
       product_user,
-      ProductAccessGroup.find_by_id(access_group_id)
+      ProductAccessGroup.find_by_id(access_group_id),
     )
   end
 

@@ -1,12 +1,13 @@
-require 'csv'
+require "csv"
 
 class Reports::AccountTransactionsReport
+
   include ApplicationHelper
   include ERB::Util
 
   def initialize(order_details, options = {})
     @order_details = order_details
-    @date_range_field = options[:date_range_field] || 'fulfilled_at'
+    @date_range_field = options[:date_range_field] || "fulfilled_at"
   end
 
   def to_csv
@@ -22,15 +23,15 @@ class Reports::AccountTransactionsReport
   end
 
   def filename
-    'transaction_report.csv'
+    "transaction_report.csv"
   end
 
   def description
-    I18n.t('reports.account_transactions.subject')
+    I18n.t("reports.account_transactions.subject")
   end
 
   def text_content
-    I18n.t('reports.account_transactions.body')
+    I18n.t("reports.account_transactions.body")
   end
 
   def has_attachment?
@@ -45,20 +46,20 @@ class Reports::AccountTransactionsReport
       OrderDetail.model_name.human,
       OrderDetail.human_attribute_name(@date_range_field),
       Facility.model_name.human,
-      OrderDetail.human_attribute_name('description'),
-      Reservation.human_attribute_name('reserve_start_at'),
-      Reservation.human_attribute_name('reserve_end_at'),
-      Reservation.human_attribute_name('actual_start_at'),
-      Reservation.human_attribute_name('actual_end_at'),
-      OrderDetail.human_attribute_name('quantity'),
-      OrderDetail.human_attribute_name('user'),
-      OrderDetail.human_attribute_name('cost'),
-      OrderDetail.human_attribute_name('subsidy'),
-      OrderDetail.human_attribute_name('total'),
+      OrderDetail.human_attribute_name("description"),
+      Reservation.human_attribute_name("reserve_start_at"),
+      Reservation.human_attribute_name("reserve_end_at"),
+      Reservation.human_attribute_name("actual_start_at"),
+      Reservation.human_attribute_name("actual_end_at"),
+      OrderDetail.human_attribute_name("quantity"),
+      OrderDetail.human_attribute_name("user"),
+      OrderDetail.human_attribute_name("cost"),
+      OrderDetail.human_attribute_name("subsidy"),
+      OrderDetail.human_attribute_name("total"),
       "#{Account.model_name.human} #{Account.human_attribute_name(:description)}",
       Account.model_name.human,
       Account.human_attribute_name("owner"),
-      OrderDetail.human_attribute_name('order_status')
+      OrderDetail.human_attribute_name("order_status"),
     ]
   end
 
@@ -85,7 +86,7 @@ class Reports::AccountTransactionsReport
       order_detail.account.description,
       order_detail.account.account_number,
       order_detail.account.owner_user,
-      order_detail.order_status
+      order_detail.order_status,
     ]
   end
 
@@ -93,9 +94,10 @@ class Reports::AccountTransactionsReport
 
   def order_detail_duration(order_detail)
     if order_detail.problem?
-      ''
+      ""
     else
       order_detail.csv_quantity
     end
   end
+
 end

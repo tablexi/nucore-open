@@ -13,8 +13,8 @@ module Role
     # Creates methods #administrator?, #facility_staff?, etc.
     # Each returns true if #user_roles has the role for any facility.
     if role != UserRole::BILLING_ADMINISTRATOR
-      define_method(role.gsub(/\s/, '_').downcase + '?') do
-        roles=user_roles.collect(&:role)
+      define_method(role.gsub(/\s/, "_").downcase + "?") do
+        roles = user_roles.collect(&:role)
         roles.include?(role)
       end
     end
@@ -23,28 +23,27 @@ module Role
     # Creates methods #administrator_of?, #facility_staff_of?, etc.
     # Each takes a +Facility+ as an argument.
     # Each returns true if #user_roles has the role for the given facility.
-    define_method(role.gsub(/\s/, '_').downcase + '_of?') do |facility|
-      is=false
-      user_roles.each {|ur| is=true and break if ur.facility == facility && ur.role == role }
+    define_method(role.gsub(/\s/, "_").downcase + "_of?") do |facility|
+      is = false
+      user_roles.each { |ur| (is = true) && break if ur.facility == facility && ur.role == role }
       is
     end
 
     # Creates method #operable_facilities
     # returns relation of facilities for which this user is staff, a director, or an admin
     define_method(:operable_facilities) do
-      if self.try(:administrator?)
+      if try(:administrator?)
         Facility.sorted
       else
         facilities.sorted.where("user_roles.role IN(?)", UserRole.facility_roles)
       end
     end
 
-
     #
     # Creates method #manageable_facilities
     # returns relation of facilities for which this user is a director or admin
     define_method(:manageable_facilities) do
-      if self.try(:administrator?) or self.try(:billing_administrator?)
+      if try(:administrator?) || try(:billing_administrator?)
         Facility.sorted
       else
         facilities.sorted.where("user_roles.role IN (?)", UserRole.facility_management_roles)
@@ -86,8 +85,8 @@ module Role
     #
     # Creates methods #purchaser?, #owner?, etc.
     # Each returns true if #account_users has the user_role for any account.
-    define_method(role.gsub(/\s/, '_').downcase + '?') do
-      roles=account_users.collect(&:user_role)
+    define_method(role.gsub(/\s/, "_").downcase + "?") do
+      roles = account_users.collect(&:user_role)
       roles.include?(role)
     end
 
@@ -95,26 +94,24 @@ module Role
     # Creates methods #purchaser_of?, #owner_of?, etc.
     # Each takes an +Account+ as an argument.
     # Each returns true if #account_users has the user_role for the given account.
-    define_method(role.gsub(/\s/, '_').downcase + '_of?') do |account|
-      is=false
-      account_users.each {|au| is=true and break if au.account == account && au.user_role == role }
+    define_method(role.gsub(/\s/, "_").downcase + "_of?") do |account|
+      is = false
+      account_users.each { |au| (is = true) && break if au.account == account && au.user_role == role }
       is
     end
   end
-
 
   def account_administrator?
     owner? || business_administrator?
   end
 
-
   def account_administrator_of?(account)
     owner_of?(account) || business_administrator_of?(account)
   end
-
 
   # where is this used? do we need it?
   def name
     to_s
   end
+
 end

@@ -1,4 +1,5 @@
 class UserFinder
+
   include SearchHelper
 
   def self.search(search_term, limit)
@@ -41,4 +42,5 @@ class UserFinder
   def users
     relation.order(:last_name, :first_name).limit(@limit)
   end
+
 end

@@ -7,12 +7,12 @@ RSpec.describe CsvReportMailer do
     let(:rendered_text) { email.parts.first.body.to_s }
     let(:report) do
       double(Reports::OrderImport,
-        filename: "test.csv",
-        to_csv: "1,2,3\n",
-        description: subject_line,
-        text_content: text_content,
-        has_attachment?: true,
-      )
+             filename: "test.csv",
+             to_csv: "1,2,3\n",
+             description: subject_line,
+             text_content: text_content,
+             has_attachment?: true,
+            )
     end
     let(:subject_line) { "Subject Line" }
     let(:text_content) { "Text Content" }

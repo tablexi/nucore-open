@@ -1,22 +1,25 @@
 module OrderDetail::Accessorized
+
   extend ActiveSupport::Concern
 
   included do
     belongs_to :product_accessory
 
-    belongs_to :parent_order_detail, class_name: 'OrderDetail', :inverse_of => :child_order_details
-    has_many   :child_order_details, class_name: 'OrderDetail', foreign_key: 'parent_order_detail_id', :inverse_of => :parent_order_detail
+    belongs_to :parent_order_detail, class_name: "OrderDetail", inverse_of: :child_order_details
+    has_many   :child_order_details, class_name: "OrderDetail", foreign_key: "parent_order_detail_id", inverse_of: :parent_order_detail
 
     after_save :update_children
 
-    delegate :scaling_type, :to => :product_accessory, :allow_nil => true
+    delegate :scaling_type, to: :product_accessory, allow_nil: true
   end
 
   module ClassMethods
+
     # Puts parent orders first, followed by their children. Children are ordered by id
     def ordered_by_parents
       order("COALESCE(order_details.parent_order_detail_id, order_details.id), order_details.parent_order_detail_id, order_details.id")
     end
+
   end
 
   def accessories?
@@ -30,13 +33,9 @@ module OrderDetail::Accessorized
     complete? && product.accessories.count > child_order_details.count
   end
 
-  def quantity_as_time?
-    decorated_self.quantity_as_time? #if product_accessory_id
-  end
+  delegate :quantity_as_time?, to: :decorated_self
 
-  def quantity_editable?
-    decorated_self.quantity_editable?
-  end
+  delegate :quantity_editable?, to: :decorated_self
 
   def update_children
     return unless child_order_details.any?
@@ -53,4 +52,5 @@ module OrderDetail::Accessorized
   def decorated_self
     @decorated_self ||= Accessories::Scaling.decorate(self)
   end
+
 end

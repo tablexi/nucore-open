@@ -1,4 +1,5 @@
 module SplitAccounts
+
   module AccountExtension
 
     extend ActiveSupport::Concern
@@ -11,4 +12,5 @@ module SplitAccounts
     end
 
   end
+
 end

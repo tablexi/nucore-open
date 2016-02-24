@@ -1,16 +1,18 @@
-require 'set'
+require "set"
 
 class Journal < ActiveRecord::Base
+
   class CreationError < StandardError; end
 
   module Overridable
+
     def create_journal_rows!(order_details)
       recharge_by_product = {}
       facility_ids_already_in_journal = Set.new
       order_detail_ids = []
       pending_facility_ids = Journal.facility_ids_with_pending_journals
       row_errors = []
-      recharge_enabled=SettingsHelper.feature_on? :recharge_accounts
+      recharge_enabled = SettingsHelper.feature_on? :recharge_accounts
 
       # create rows for each transaction
       order_details.each do |od|
@@ -34,9 +36,9 @@ class Journal < ActiveRecord::Base
           ValidatorFactory.instance(account.account_number, od.product.account).account_is_open!(od.fulfilled_at)
         rescue ValidatorError => e
           row_errors << I18n.t("activerecord.errors.models.journal.invalid_account",
-            account_number: account.account_number_to_s,
-            validation_error: e.message
-          )
+                               account_number: account.account_number_to_s,
+                               validation_error: e.message,
+                              )
         end
 
         JournalRow.create!(journal_row_attributes_from_order_detail(od))
@@ -61,12 +63,16 @@ class Journal < ActiveRecord::Base
 
       # write journal spreadsheet to tmp directory
       # temp_file   = Tempfile.new("journalspreadsheet")
-      temp_file   = File.new("#{Dir::tmpdir}/journal.spreadsheet.#{Time.zone.now.strftime("%Y%m%dT%H%M%S")}.xls", "w")
-      output_file = JournalSpreadsheet.write_journal_entry(rows, :output_file => temp_file.path)
+      temp_file   = File.new("#{Dir.tmpdir}/journal.spreadsheet.#{Time.zone.now.strftime('%Y%m%dT%H%M%S')}.xls", "w")
+      output_file = JournalSpreadsheet.write_journal_entry(rows, output_file: temp_file.path)
       # add/import journal spreadsheet
       status      = add_spreadsheet(output_file)
       # remove temp file
-      File.unlink(temp_file.path) rescue nil
+      begin
+        File.unlink(temp_file.path)
+      rescue
+        nil
+      end
       status
     end
 
@@ -90,6 +96,7 @@ class Journal < ActiveRecord::Base
         journal_id: id,
       }
     end
+
   end
 
   include DownloadableFile
@@ -100,19 +107,19 @@ class Journal < ActiveRecord::Base
 
   has_many                :journal_rows
   belongs_to              :facility
-  has_many                :order_details, :through => :journal_rows
-  belongs_to              :created_by_user, :class_name => 'User', :foreign_key => :created_by
+  has_many                :order_details, through: :journal_rows
+  belongs_to              :created_by_user, class_name: "User", foreign_key: :created_by
 
-  validates_presence_of   :reference, :updated_by, :on => :update
+  validates_presence_of   :reference, :updated_by, on: :update
   validates_presence_of   :created_by
   validates_presence_of   :journal_date
   validate :journal_date_cannot_be_in_future, if: "journal_date.present?"
-  validate :must_have_order_details, :on => :create, :if => :order_details_for_creation
-  validate :must_not_span_fiscal_years, :on => :create, :if => :has_order_details_for_creation?
-  validate :journal_date_cannot_be_before_last_fulfillment, :on => :create, :if => :has_order_details_for_creation?
+  validate :must_have_order_details, on: :create, if: :order_details_for_creation
+  validate :must_not_span_fiscal_years, on: :create, if: :has_order_details_for_creation?
+  validate :journal_date_cannot_be_before_last_fulfillment, on: :create, if: :has_order_details_for_creation?
   validates_with JournalDateMustBeAfterCutoffs, on: :create
-  before_validation :set_facility_id, :on => :create, :if => :has_order_details_for_creation?
-  after_create :create_new_journal_rows, :if => :has_order_details_for_creation?
+  before_validation :set_facility_id, on: :create, if: :has_order_details_for_creation?
+  after_create :create_new_journal_rows, if: :has_order_details_for_creation?
 
   # Digs up journals pertaining to the passed in facilities
   #
@@ -127,40 +134,40 @@ class Journal < ActiveRecord::Base
     allowed_ids = facilities.collect(&:id)
 
     if include_multi
-      Journal.includes(:journal_rows => {:order_detail => :order}).where('orders.facility_id IN (?)', allowed_ids).select('journals.*')
+      Journal.includes(journal_rows: { order_detail: :order }).where("orders.facility_id IN (?)", allowed_ids).select("journals.*")
     else
-      Journal.where(:facility_id => allowed_ids)
+      Journal.where(facility_id: allowed_ids)
     end
   end
 
   def self.facility_ids_with_pending_journals
     # use AR to build the SQL for pending journals
-    pending_facility_ids_sql = Journal.joins(:order_details => :order).where(:is_successful => nil).select("DISTINCT orders.facility_id").to_sql
+    pending_facility_ids_sql = Journal.joins(order_details: :order).where(is_successful: nil).select("DISTINCT orders.facility_id").to_sql
 
     # run it and get the results back (a list)
     pending_facility_ids = Journal.connection.select_values(pending_facility_ids_sql)
 
-    return pending_facility_ids
+    pending_facility_ids
   end
 
   def facility_ids
     if facility_id?
       [facility_id]
     else
-        order_details.joins(:order).
-        select('orders.facility_id').
-        collect(&:facility_id).
-        uniq
+      order_details.joins(:order)
+                   .select("orders.facility_id")
+                   .collect(&:facility_id)
+                   .uniq
     end
   end
 
   def facility_abbreviations
-    Facility.where(:id => self.facility_ids).collect(&:abbreviation)
+    Facility.where(id: facility_ids).collect(&:abbreviation)
   end
 
   def amount
     # only sum positive amounts since this is a double entry journal
-    journal_rows.inject(0) {|sum, row| sum + (row.amount > 0 ? row.amount : 0)}
+    journal_rows.inject(0) { |sum, row| sum + (row.amount > 0 ? row.amount : 0) }
   end
 
   def open?
@@ -168,15 +175,15 @@ class Journal < ActiveRecord::Base
   end
 
   def add_spreadsheet(file_path)
-    return false if !File.exists?(file_path)
+    return false unless File.exist?(file_path)
     update_attribute(:file, File.open(file_path))
   end
 
   def status_string
     if is_successful.nil?
-      'Pending'
+      "Pending"
     elsif is_successful? == false
-      'Failed'
+      "Failed"
     else
       reconciled? ? "Successful, reconciled" : "Successful, not reconciled"
     end
@@ -188,17 +195,17 @@ class Journal < ActiveRecord::Base
     elsif !successful?
       true
     else
-      details = OrderDetail.find(:all, :conditions => ['journal_id = ? AND state <> ?', id, 'reconciled'])
+      details = OrderDetail.find(:all, conditions: ["journal_id = ? AND state <> ?", id, "reconciled"])
       details.empty? ? true : false
     end
   end
 
   def order_details_span_fiscal_years?(order_details)
     d = order_details.first.fulfilled_at
-    start_fy = SettingsHelper::fiscal_year_beginning(d)
-    end_fy = SettingsHelper::fiscal_year_end(d)
+    start_fy = SettingsHelper.fiscal_year_beginning(d)
+    end_fy = SettingsHelper.fiscal_year_end(d)
     order_details.each do |od|
-      return true if (od.fulfilled_at < start_fy || od.fulfilled_at >= end_fy)
+      return true if od.fulfilled_at < start_fy || od.fulfilled_at >= end_fy
     end
     false
   end
@@ -207,7 +214,7 @@ class Journal < ActiveRecord::Base
     successful? && !reconciled?
   end
 
-  def successful? # TODO Keep until we rename the is_successful column to successful
+  def successful? # TODO: Keep until we rename the is_successful column to successful
     is_successful?
   end
 
@@ -241,25 +248,26 @@ class Journal < ActiveRecord::Base
 
   def set_facility_id
     # detect if this should be a multi-facility journal, set facility_id appropriately
-    if @order_details_for_creation.collect{|od|od.order.facility_id}.uniq.size > 1
-      self.facility_id = nil
-    else
-      self.facility_id = @order_details_for_creation.first.order.facility_id
-    end
+    self.facility_id = if @order_details_for_creation.collect { |od| od.order.facility_id }.uniq.size > 1
+                         nil
+                       else
+                         @order_details_for_creation.first.order.facility_id
+                       end
   end
 
   def create_new_journal_rows
     row_errors = create_journal_rows!(@order_details_for_creation)
     if row_errors.any?
       row_errors.each { |e| errors.add(:base, e) }
-      self.destroy # so it's treated as a new record
+      destroy # so it's treated as a new record
       raise ActiveRecord::RecordInvalid.new(self)
     end
   end
 
   def set_journal_for_order_details(order_detail_ids)
     array_slice(order_detail_ids) do |id_slice|
-      OrderDetail.where(id: id_slice).update_all(journal_id: self.id)
+      OrderDetail.where(id: id_slice).update_all(journal_id: id)
     end
   end
+
 end

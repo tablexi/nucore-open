@@ -1,4 +1,5 @@
 module OrdersHelper
+
   def display_cost_prefix_for_order(order)
     case
     when order.order_details.with_actual_costs.present?
@@ -20,4 +21,5 @@ module OrdersHelper
       :unassigned
     end
   end
+
 end

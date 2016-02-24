@@ -1,5 +1,6 @@
 class PriceGroupsController < ApplicationController
-  # TODO refactor to use PriceGroupMembersController concern, maybe with a new name?
+
+  # TODO: refactor to use PriceGroupMembersController concern, maybe with a new name?
 
   admin_tab     :all
   before_filter :authenticate_user!
@@ -33,9 +34,9 @@ class PriceGroupsController < ApplicationController
     end
 
     @user_members = @price_group.user_price_group_members
-      .includes(:user)
-      .joins(:user)
-      .order(:last_name, :first_name)
+                                .includes(:user)
+                                .joins(:user)
+                                .order(:last_name, :first_name)
     @user_members = paginate(@user_members)
     @tab = :users
 
@@ -45,9 +46,9 @@ class PriceGroupsController < ApplicationController
   # GET /facilities/:facility_id/price_groups/:id/accounts
   def accounts
     @account_members = @price_group.account_price_group_members
-      .includes(:account)
-      .joins(:account)
-      .order(:account_number)
+                                   .includes(:account)
+                                   .joins(:account)
+                                   .order(:account_number)
     @account_members = paginate(@account_members)
     @tab = :accounts
 
@@ -111,4 +112,5 @@ class PriceGroupsController < ApplicationController
     @price_group = current_facility.price_groups.find(params[:id])
     @price_group_ability = Ability.new(current_user, @price_group, self)
   end
+
 end
