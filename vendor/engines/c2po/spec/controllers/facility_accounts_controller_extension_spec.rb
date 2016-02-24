@@ -280,7 +280,7 @@ RSpec.describe FacilityAccountsController do
   def prepare_for_account_update(action, account)
     @method = :post
     @action = action
-    account.account_users_attributes = [{user_id: @purchaser.id, user_role: AccountUser::ACCOUNT_OWNER, created_by: @admin.id }]
+    account.account_users_attributes = [{ user_id: @purchaser.id, user_role: AccountUser::ACCOUNT_OWNER, created_by: @admin.id }]
     assert account.save
     @price_policy = FactoryGirl.create(:item_price_policy, product: @item, price_group: @nupg)
     @price_group_product = FactoryGirl.create(:price_group_product, product: @item, price_group: @nupg, reservation_window: nil)
@@ -305,7 +305,7 @@ RSpec.describe FacilityAccountsController do
     @method = :get
     @action = action
     @params = { facility_id: @authable.url_name }
-    account.account_users_attributes = [{user_id: @purchaser.id, user_role: AccountUser::ACCOUNT_OWNER, created_by: @admin.id }]
+    account.account_users_attributes = [{ user_id: @purchaser.id, user_role: AccountUser::ACCOUNT_OWNER, created_by: @admin.id }]
     assert account.save
     statement = FactoryGirl.create(:statement, facility_id: @authable.id, created_by: @admin.id, account: account)
     @order_detail.to_complete!

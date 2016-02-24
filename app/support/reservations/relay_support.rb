@@ -35,7 +35,7 @@ module Reservations::RelaySupport
     order_detail.reservation.product.schedule.reservations
                 .active
                 .relay_in_progress
-                .where(order_details: { state: ['new', 'inprocess', nil]})
+                .where(order_details: { state: ['new', 'inprocess', nil] })
                 .not_this_reservation(self)
   end
 

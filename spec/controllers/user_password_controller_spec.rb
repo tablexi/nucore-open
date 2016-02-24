@@ -30,7 +30,7 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
     it "should throw errors if blank" do
       sign_in(@user)
       @method = :post
-      @params = {user: {password: "", password_confirmation: "", current_password: 'password'}}
+      @params = { user: { password: "", password_confirmation: "", current_password: 'password' } }
       do_request
       expect(response).to render_template("user_password/edit_current")
       expect(assigns[:user].errors).not_to be_empty
@@ -40,7 +40,7 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
     it "should throw errors if passwords don't match" do
       sign_in(@user)
       @method = :post
-      @params = {user: {password: 'password1', password_confirmation: 'password2', current_password: 'password'}}
+      @params = { user: { password: 'password1', password_confirmation: 'password2', current_password: 'password' } }
       do_request
       expect(response).to render_template("user_password/edit_current")
       expect(assigns[:user].errors).not_to be_empty
@@ -50,7 +50,7 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
     it "should display errors if the current password is incorrect" do
       sign_in(@user)
       @method = :post
-      @params = {user: {password: 'password1', password_confirmation: 'password1', current_password: 'incorrectpassword'}}
+      @params = { user: { password: 'password1', password_confirmation: 'password1', current_password: 'incorrectpassword' } }
       do_request
       expect(response).to render_template("user_password/edit_current")
       expect(assigns[:user].errors).not_to be_empty
@@ -60,7 +60,7 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
     it "should update password" do
       sign_in(@user)
       @method = :post
-      @params = {user: {password: 'newpassword', password_confirmation: 'newpassword', current_password: 'password'}}
+      @params = { user: { password: 'newpassword', password_confirmation: 'newpassword', current_password: 'password' } }
       do_request
       expect(response).to render_template("user_password/edit_current")
       expect(assigns[:user].errors).to be_empty
@@ -113,7 +113,7 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
     it_should_deny_if_signed_in
 
     it "should not find someone" do
-      @params = {user: {email: 'xxxxx'}}
+      @params = { user: { email: 'xxxxx' } }
       do_request
       expect(response).to render_template "user_password/reset"
       expect(response).to render_template "layouts/application"
@@ -123,7 +123,7 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
     end
 
     it "should not be able to do anything for non-local users" do
-      @params = {user: {email: @remote_authenticated_user.email}}
+      @params = { user: { email: @remote_authenticated_user.email } }
       do_request
       expect(response).to render_template "user_password/reset"
       expect(response).to render_template "layouts/application"
@@ -132,7 +132,7 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
     end
 
     it "should send a notification and set a new token" do
-      @params = {user: {email: @db_user.email}}
+      @params = { user: { email: @db_user.email } }
       expect(@db_user.reset_password_token).to be_nil
       do_request
       assigns[:user] == @db_user
@@ -150,12 +150,12 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
       @action = :edit
       @user = FactoryGirl.create(:user, username: 'email@example.org', email: 'email@example.org')
       @user.send(:set_reset_password_token)
-      @params = {reset_password_token: @user.reset_password_token}
+      @params = { reset_password_token: @user.reset_password_token }
     end
     it_should_deny_if_signed_in
 
     it "should redirect if there isn't a valid token" do
-      @params = {reset_password_token: "xxxxx"}
+      @params = { reset_password_token: "xxxxx" }
       do_request
       expect(response).to redirect_to(reset_password_path)
       expect(flash[:error]).not_to be_nil
@@ -181,26 +181,26 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
       @action = :update
       @user = FactoryGirl.create(:user, username: 'email@example.org', email: 'email@example.org')
       @user.send(:set_reset_password_token)
-      @params = {user: {reset_password_token: @user.reset_password_token}}
+      @params = { user: { reset_password_token: @user.reset_password_token } }
     end
     it_should_deny_if_signed_in
 
     it "should redirect if there isn't a valid token" do
-      @params = {user: {reset_password_token: "xxxxx"}}
+      @params = { user: { reset_password_token: "xxxxx" } }
       do_request
       expect(response).to redirect_to(reset_password_path)
       expect(flash[:error]).not_to be_nil
     end
 
     it "should fail if passwords don't match" do
-      @params.deep_merge!(user: {password: "newpassword", password_confirmation: "anotherpassword"})
+      @params.deep_merge!(user: { password: "newpassword", password_confirmation: "anotherpassword" })
       do_request
       expect(response).to render_template("user_password/edit")
       expect(assigns[:user].errors).not_to be_empty
     end
 
     it "should succeed" do
-      @params.deep_merge!(user: {password: "newpassword", password_confirmation: "newpassword"})
+      @params.deep_merge!(user: { password: "newpassword", password_confirmation: "newpassword" })
       do_request
       expect(response).to redirect_to(:root)
       expect(assigns[:user]).to eq(@user)

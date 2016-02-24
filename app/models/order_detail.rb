@@ -91,7 +91,7 @@ class OrderDetail < ActiveRecord::Base
   ## TODO validate order status is global or a member of the product's facility
   ## TODO validate which fields can be edited for which states
 
-  scope :with_product_type, ->(s) { {joins: :product, conditions: ["products.type = ?", s.to_s.capitalize]} }
+  scope :with_product_type, ->(s) { { joins: :product, conditions: ["products.type = ?", s.to_s.capitalize] } }
 
   scope :new_or_inprocess, conditions: ["order_details.state IN ('new', 'inprocess') AND orders.ordered_at IS NOT NULL"], include: :order
 
@@ -126,7 +126,7 @@ class OrderDetail < ActiveRecord::Base
 
     unless facility_url.nil?
       details = details.joins(order: :facility)
-      details = details.where(facilities: {url_name: facility_url})
+      details = details.where(facilities: { url_name: facility_url })
     end
 
     details
@@ -183,7 +183,7 @@ class OrderDetail < ActiveRecord::Base
 
   scope :in_review, lambda { |facility|
     scoped.joins(:product)
-      .where(products: {facility_id: facility.id})
+      .where(products: { facility_id: facility.id })
       .where(state: 'complete')
       .where("order_details.reviewed_at > ?", Time.zone.now)
       .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")

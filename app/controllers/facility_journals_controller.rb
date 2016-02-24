@@ -90,7 +90,7 @@ class FacilityJournalsController < ApplicationController
       end
 
       format.csv do
-        @show_uid = @journal_rows.joins(order_detail: {order: :user}).where('users.uid IS NOT NULL').any?
+        @show_uid = @journal_rows.joins(order_detail: { order: :user }).where('users.uid IS NOT NULL').any?
         set_csv_headers("#{@filename}.csv")
       end
 

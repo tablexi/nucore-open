@@ -37,7 +37,7 @@ class Product < ActiveRecord::Base
   end
 
   scope :active,             conditions: { is_archived: false, is_hidden: false }
-  scope :active_plus_hidden, conditions: { is_archived: false}
+  scope :active_plus_hidden, conditions: { is_archived: false }
   scope :archived,           conditions: { is_archived: true }
   scope :not_archived,       conditions: { is_archived: false }
 
@@ -193,7 +193,7 @@ class Product < ActiveRecord::Base
 
     price_policies.min_by do |pp|
       # default to very large number if the estimate returns a nil
-      costs = pp.estimate_cost_and_subsidy_from_order_detail(order_detail) || {cost: 999_999_999, subsidy: 0}
+      costs = pp.estimate_cost_and_subsidy_from_order_detail(order_detail) || { cost: 999_999_999, subsidy: 0 }
       costs[:cost] - costs[:subsidy]
     end
   end

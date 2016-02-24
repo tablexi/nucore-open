@@ -77,7 +77,7 @@ RSpec.describe ScheduleRulesController do
       end
 
       it "should store restriction_rules" do
-        @params.deep_merge!(schedule_rule: {product_access_group_ids: [@restriction_levels[0].id, @restriction_levels[2].id]})
+        @params.deep_merge!(schedule_rule: { product_access_group_ids: [@restriction_levels[0].id, @restriction_levels[2].id] })
         do_request
         expect(assigns[:schedule_rule].product_access_groups).to contain_all [@restriction_levels[0], @restriction_levels[2]]
         expect(assigns[:schedule_rule].product_access_groups.size).to eq(2)
@@ -146,7 +146,7 @@ RSpec.describe ScheduleRulesController do
         end
 
         it "should store restriction_rules" do
-          @params.deep_merge!(schedule_rule: {product_access_group_ids: [@restriction_levels[0].id, @restriction_levels[2].id]})
+          @params.deep_merge!(schedule_rule: { product_access_group_ids: [@restriction_levels[0].id, @restriction_levels[2].id] })
           do_request
           expect(assigns[:schedule_rule].product_access_groups).to contain_all [@restriction_levels[0], @restriction_levels[2]]
           expect(assigns[:schedule_rule].product_access_groups.size).to eq(2)

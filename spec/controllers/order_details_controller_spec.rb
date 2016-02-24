@@ -6,7 +6,7 @@ RSpec.describe OrderDetailsController do
     let(:reservation) { create(:purchased_reservation) }
     let(:order_detail) { reservation.order_detail }
     let(:order) { order_detail.order }
-    let(:params) { { order_id: order.id, order_detail_id: order_detail.id} }
+    let(:params) { { order_id: order.id, order_detail_id: order_detail.id } }
     before { sign_in user }
 
     context 'the order is not disputable' do

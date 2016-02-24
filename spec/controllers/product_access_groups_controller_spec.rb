@@ -102,7 +102,7 @@ RSpec.describe ProductAccessGroupsController do
     end
     context 'correct info' do
       before :each do
-        @params.merge!(product_access_group: {name: 'new name'})
+        @params.merge!(product_access_group: { name: 'new name' })
       end
       it_should_allow_managers_and_senior_staff_only :redirect, 'do update' do
         expect(assigns[:facility]).to eq(@authable)
@@ -115,7 +115,7 @@ RSpec.describe ProductAccessGroupsController do
     end
     context 'missing data' do
       before :each do
-        @params.merge!(product_access_group: {name: ''})
+        @params.merge!(product_access_group: { name: '' })
       end
       it_should_allow_managers_and_senior_staff_only :success, 'do update' do
         expect(assigns[:facility]).to eq(@authable)

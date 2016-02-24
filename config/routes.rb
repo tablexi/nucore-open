@@ -144,7 +144,7 @@ Nucore::Application.routes.draw do
         post  'access_list/approvals', to: 'users#access_list_approvals'
       end
     else
-      resources :users, except: [:edit, :update, :new, :create], constraints: {id: /\d+/} do
+      resources :users, except: [:edit, :update, :new, :create], constraints: { id: /\d+/ } do
         get   'switch_to',    to: 'users#switch_to'
         match 'orders',       to: 'users#orders'
         match 'reservations', to: 'users#reservations'

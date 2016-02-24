@@ -41,7 +41,7 @@ class PricePolicy < ActiveRecord::Base
   end
 
   def self.upcoming
-    where("start_date > :now", {now: Time.zone.now})
+    where("start_date > :now", { now: Time.zone.now })
   end
 
   def self.past

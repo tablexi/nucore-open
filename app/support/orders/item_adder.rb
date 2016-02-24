@@ -17,7 +17,7 @@ class Orders::ItemAdder
           elsif product.respond_to?(:reservations) && quantity > 1
             add_instruments(product, @quantity, attributes)
           else
-            [create_order_detail({product_id: product.id, quantity: @quantity}.merge(attributes))]
+            [create_order_detail({ product_id: product.id, quantity: @quantity }.merge(attributes))]
           end
     ods || []
   end
@@ -36,7 +36,7 @@ class Orders::ItemAdder
 
   def add_instruments(product, quantity, attributes)
     quantity.times.collect do
-      create_order_detail({product_id: product.id, quantity: 1}.merge(attributes))
+      create_order_detail({ product_id: product.id, quantity: 1 }.merge(attributes))
     end
   end
 
@@ -49,7 +49,7 @@ class Orders::ItemAdder
     individual_quantity = separate ? 1 : quantity
 
     repeat.times.collect do
-      create_order_detail({product_id: product.id, quantity: individual_quantity}.merge(attributes))
+      create_order_detail({ product_id: product.id, quantity: individual_quantity }.merge(attributes))
     end
   end
 
@@ -64,7 +64,7 @@ class Orders::ItemAdder
         product_id: bp.product.id,
         quantity: bp.quantity,
         bundle_product_id: product.id,
-        group_id: group_id}.merge(
+        group_id: group_id }.merge(
           attributes))
     end
   end

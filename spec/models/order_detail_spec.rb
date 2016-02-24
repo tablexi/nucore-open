@@ -951,7 +951,7 @@ RSpec.describe OrderDetail do
       before :each do
         @statement = Statement.create(facility: @facility, created_by: 1, account: @account)
         @order_detail.update_attributes(statement: @statement, reviewed_at: (Time.zone.now - 1.day))
-        @statement2 = Statement.create({facility: @facility2, created_by: 1, account: @account})
+        @statement2 = Statement.create({ facility: @facility2, created_by: 1, account: @account })
         @order_detail2.statement = @statement2
         assert @order_detail2.save
       end
