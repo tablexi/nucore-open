@@ -712,7 +712,8 @@ RSpec.describe Instrument do
 
     context 'reservation only instrument' do
       context 'with a current reservation' do
-        let!(:reservation) do FactoryGirl.create :purchased_reservation,
+        let!(:reservation) do 
+          FactoryGirl.create :purchased_reservation,
                                                 reserve_start_at: 30.minutes.ago,
                                                 reserve_end_at: 30.minutes.from_now,
                                                 product: instrument 
@@ -748,7 +749,8 @@ RSpec.describe Instrument do
       end
 
       context 'with a current reservation' do
-        let!(:reservation) do FactoryGirl.create :purchased_reservation,
+        let!(:reservation) do 
+          FactoryGirl.create :purchased_reservation,
                                                 reserve_start_at: 30.minutes.ago,
                                                 reserve_end_at: 30.minutes.from_now,
                                                 product: instrument 

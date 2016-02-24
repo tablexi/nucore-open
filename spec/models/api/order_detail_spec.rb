@@ -8,7 +8,8 @@ RSpec.describe Api::OrderDetail do
   let(:order) { double(Order, user: ordered_for) }
   let(:order_detail) { double(OrderDetail, account: account, order: order) }
   let(:ordered_for) { build(:user, id: 2) }
-  let(:ordered_for_hash) do{
+  let(:ordered_for_hash) do
+    {
     id: ordered_for.id,
     name: ordered_for.name,
     username: ordered_for.username,
@@ -21,7 +22,8 @@ RSpec.describe Api::OrderDetail do
       let(:account) { double(Account, id: 1, owner: account_user) }
       let(:account_owner) { build(:user, id: 1) }
       let(:account_user) { double(AccountUser, user: account_owner) }
-      let(:account_hash) do{
+      let(:account_hash) do
+        {
         id: account.id,
         owner: {
           id: account_owner.id,

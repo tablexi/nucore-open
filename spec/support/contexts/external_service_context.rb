@@ -4,7 +4,8 @@ RSpec.shared_context 'external service' do
   let(:external_service) { external_service_passer.external_service }
   let(:external_service_receiver) { create :external_service_receiver, external_service: external_service }
 
-  let :params do {
+  let :params do 
+    {
     receiver_id: external_service_receiver.receiver.id,
     external_service_id: external_service.id,
     external_service_passer_id: external_service_passer.id,

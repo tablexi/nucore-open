@@ -1088,7 +1088,8 @@ RSpec.describe ReservationsController do
           end
 
           context 'and there is another reservation still going on' do
-            let!(:reservation2) do create(:purchased_reservation, product: @instrument,
+            let!(:reservation2) do 
+              create(:purchased_reservation, product: @instrument,
                                                                  reserve_start_at: start_at - 30.minutes, reserve_end_at: start_at) 
             end
 
@@ -1164,7 +1165,8 @@ RSpec.describe ReservationsController do
          end
 
          context 'and a reservation using the same relay as another running reservation' do
-           let!(:reservation_running) do create(:purchased_reservation, product: @instrument,
+           let!(:reservation_running) do 
+             create(:purchased_reservation, product: @instrument,
                                                                        actual_start_at: 30.minutes.ago, reserve_start_at: 30.minutes.ago,
                                                                        reserve_end_at: 30.minutes.from_now) 
            end

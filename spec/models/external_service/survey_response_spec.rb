@@ -3,7 +3,8 @@ require "rails_helper"
 RSpec.describe SurveyResponse do
   include_context 'external service'
 
-  let :deserialized_response_data do {
+  let :deserialized_response_data do 
+    {
     show_url: params[:survey_url],
     edit_url: params[:survey_edit_url]
   } 
