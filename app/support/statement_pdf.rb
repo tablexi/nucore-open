@@ -33,8 +33,8 @@ class StatementPdf
   def filename
     date = I18n.l(@statement.created_at.to_date, format: :usa_filename_safe)
     I18n.t("statements.pdf.filename", date: date,
-      facility: @facility.abbreviation.gsub(/\s+/, "_"),
-      invoice_number: @statement.invoice_number)
+                                      facility: @facility.abbreviation.gsub(/\s+/, "_"),
+                                      invoice_number: @statement.invoice_number)
   end
 
   def render

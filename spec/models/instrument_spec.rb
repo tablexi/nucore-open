@@ -32,8 +32,8 @@ RSpec.describe Instrument do
 
     before do
       instrument.assign_attributes(reserve_interval: reserve_interval,
-        min_reserve_mins: min_reserve_mins,
-        max_reserve_mins: max_reserve_mins)
+                                   min_reserve_mins: min_reserve_mins,
+                                   max_reserve_mins: max_reserve_mins)
     end
 
     describe 'min reservation' do
