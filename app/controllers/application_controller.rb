@@ -204,6 +204,7 @@ class ApplicationController < ActionController::Base
       return false
     end
   end
+
   def remove_ugly_params
     [:commit, :utf8, :authenticity_token].each do |p|
       params.delete(p)

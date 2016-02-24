@@ -67,6 +67,7 @@ class OrderDetail < ActiveRecord::Base
   def statement_date
     statement.try(:created_at)
   end
+
   def journal_or_statement_date
     journal_date || statement_date
   end

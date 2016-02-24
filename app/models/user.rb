@@ -81,6 +81,7 @@ class User < ActiveRecord::Base
     end
     update_password(params)
   end
+
   def update_password(params)
     unless password_updatable?
       self.errors.add(:base, :password_not_updatable)
@@ -102,6 +103,7 @@ class User < ActiveRecord::Base
 
 
   end
+
   # Find the users for a facility
   # TODO: move this to facility?
   def self.find_users_by_facility(facility)

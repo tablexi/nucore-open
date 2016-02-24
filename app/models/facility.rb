@@ -62,6 +62,7 @@ class Facility < ActiveRecord::Base
   def self.urls_from_ids(ids)
     where("id in (?)", ids).select(:url_name).map(&:url_name)
   end
+
   def destroy
     # TODO: can you ever delete a facility? Currently no.
     # super
