@@ -122,9 +122,7 @@ module Reservations::Validations
           break
         end
       end
-      unless found
-        return false
-      end
+      return false unless found
     end
     true
   end

@@ -65,9 +65,7 @@ class Ability
 
     return unless resource
 
-    if resource.is_a?(OrderDetail)
-      order_details_ability(user, resource)
-    end
+    order_details_ability(user, resource) if resource.is_a?(OrderDetail)
 
     if resource.is_a?(Facility)
       can :complete, ExternalService

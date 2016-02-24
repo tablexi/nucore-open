@@ -48,9 +48,7 @@ class Relay < ActiveRecord::Base
     scope = Relay.unscoped.where(ip: ip, port: port)
     scope = scope.joins(:instrument).where("products.schedule_id != ?", instrument.schedule_id) if instrument.try(:schedule_id)
     scope = scope.where('relays.id != ?', id) if persisted?
-    if scope.exists?
-      errors.add :port, :taken
-    end
+    errors.add :port, :taken if scope.exists?
   end
 
 end

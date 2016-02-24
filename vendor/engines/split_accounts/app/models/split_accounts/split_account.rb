@@ -11,9 +11,7 @@ module SplitAccounts
     accepts_nested_attributes_for :splits, allow_destroy: true
 
     def valid_percent_total
-      if percent_total != 100
-        errors.add(:splits, :percent_total)
-      end
+      errors.add(:splits, :percent_total) if percent_total != 100
     end
 
     def percent_total
@@ -21,9 +19,7 @@ module SplitAccounts
     end
 
     def one_split_has_extra_penny
-      if extra_penny_count != 1
-        errors.add(:splits, :only_one_extra_penny)
-      end
+      errors.add(:splits, :only_one_extra_penny) if extra_penny_count != 1
     end
 
     def extra_penny_count
