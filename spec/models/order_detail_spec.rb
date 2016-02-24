@@ -71,22 +71,22 @@ RSpec.describe OrderDetail do
 
           it "assigns the expected price policy" do
             expect { order_detail.assign_price_policy(order_detail.fulfilled_at) }
-            .to change { order_detail.price_policy }
-            .from(nil).to(current_price_policy)
+              .to change { order_detail.price_policy }
+              .from(nil).to(current_price_policy)
           end
 
           it 'assigns an actual cost' do
             expect { order_detail.assign_price_policy(order_detail.fulfilled_at) }
-            .to change { order_detail.actual_cost }
-            .from(nil)
-            .to(current_price_policy.unit_cost)
+              .to change { order_detail.actual_cost }
+              .from(nil)
+              .to(current_price_policy.unit_cost)
           end
 
           it 'assigns an actual subsidy' do
             expect { order_detail.assign_price_policy(order_detail.fulfilled_at) }
-            .to change { order_detail.actual_subsidy }
-            .from(nil)
-            .to(current_price_policy.unit_subsidy)
+              .to change { order_detail.actual_subsidy }
+              .from(nil)
+              .to(current_price_policy.unit_subsidy)
           end
         end
 
@@ -100,22 +100,22 @@ RSpec.describe OrderDetail do
 
           it "assigns the expected price policy" do
             expect { order_detail.assign_price_policy(order_detail.fulfilled_at) }
-            .to change { order_detail.price_policy }
-            .from(nil).to(previous_price_policy)
+              .to change { order_detail.price_policy }
+              .from(nil).to(previous_price_policy)
           end
 
           it 'assigns an actual cost' do
             expect { order_detail.assign_price_policy(order_detail.fulfilled_at) }
-            .to change { order_detail.actual_cost }
-            .from(nil)
-            .to(previous_price_policy.unit_cost)
+              .to change { order_detail.actual_cost }
+              .from(nil)
+              .to(previous_price_policy.unit_cost)
           end
 
           it 'assigns an actual subsidy' do
             expect { order_detail.assign_price_policy(order_detail.fulfilled_at) }
-            .to change { order_detail.actual_subsidy }
-            .from(nil)
-            .to(previous_price_policy.unit_subsidy)
+              .to change { order_detail.actual_subsidy }
+              .from(nil)
+              .to(previous_price_policy.unit_subsidy)
           end
         end
 
@@ -129,7 +129,7 @@ RSpec.describe OrderDetail do
 
           it 'it does not assign a price policy' do
             expect { order_detail.assign_price_policy(order_detail.fulfilled_at) }
-            .not_to change { order_detail.price_policy }
+              .not_to change { order_detail.price_policy }
           end
         end
       end
@@ -137,7 +137,7 @@ RSpec.describe OrderDetail do
       context "when no compatible price policies exist" do
         it 'it does not assign a price policy' do
           expect { order_detail.assign_price_policy }
-          .not_to change { order_detail.price_policy }
+            .not_to change { order_detail.price_policy }
         end
       end
     end
@@ -149,22 +149,22 @@ RSpec.describe OrderDetail do
         context "when fulfilled_at matches the current policy date range" do
           it "assigns the expected price policy" do
             expect { order_detail.assign_price_policy }
-            .to change { order_detail.price_policy }
-            .from(nil).to(current_price_policy)
+              .to change { order_detail.price_policy }
+              .from(nil).to(current_price_policy)
           end
 
           it 'assigns an actual cost' do
             expect { order_detail.assign_price_policy }
-            .to change { order_detail.actual_cost }
-            .from(nil)
-            .to(current_price_policy.unit_cost)
+              .to change { order_detail.actual_cost }
+              .from(nil)
+              .to(current_price_policy.unit_cost)
           end
 
           it 'assigns an actual subsidy' do
             expect { order_detail.assign_price_policy }
-            .to change { order_detail.actual_subsidy }
-            .from(nil)
-            .to(current_price_policy.unit_subsidy)
+              .to change { order_detail.actual_subsidy }
+              .from(nil)
+              .to(current_price_policy.unit_subsidy)
           end
         end
       end
@@ -172,7 +172,7 @@ RSpec.describe OrderDetail do
       context "when no compatible price policies exist" do
         it 'it does not assign a price policy' do
           expect { order_detail.assign_price_policy }
-          .not_to change { order_detail.price_policy }
+            .not_to change { order_detail.price_policy }
         end
       end
     end
@@ -1385,7 +1385,7 @@ RSpec.describe OrderDetail do
             order_detail.reservation = create(:reservation, product: instrument)
             order_detail.product = instrument.reload
             order_detail.price_policy = instrument.instrument_price_policies
-              .create(attributes_for(:instrument_price_policy, price_group_id: price_group.id))
+                                                  .create(attributes_for(:instrument_price_policy, price_group_id: price_group.id))
             order_detail.save!
           end
 
@@ -1425,7 +1425,7 @@ RSpec.describe OrderDetail do
         context 'product has no reservation' do
           before :each do
             order_detail.price_policy = item.item_price_policies
-              .create(attributes_for(:item_price_policy, price_group_id: price_group.id))
+                                            .create(attributes_for(:item_price_policy, price_group_id: price_group.id))
             order_detail.product = item
             order_detail.save!
           end

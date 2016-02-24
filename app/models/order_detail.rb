@@ -141,8 +141,8 @@ class OrderDetail < ActiveRecord::Base
 
   def self.purchased_active_reservations
     scoped.pending
-      .joins(:reservation)
-      .merge(Reservation.not_canceled)
+          .joins(:reservation)
+          .merge(Reservation.not_canceled)
   end
 
   scope :for_facility_with_price_policy, lambda { |facility| 
@@ -162,44 +162,44 @@ class OrderDetail < ActiveRecord::Base
 
   def self.all_need_notification
     where(state: 'complete')
-    .where(reviewed_at: nil)
-    .where("price_policy_id IS NOT NULL")
-    .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+      .where(reviewed_at: nil)
+      .where("price_policy_id IS NOT NULL")
+      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   end
 
   def self.all_movable
     where(journal_id: nil)
-    .where("order_details.state NOT IN('canceled', 'reconciled')")
+      .where("order_details.state NOT IN('canceled', 'reconciled')")
   end
 
   def self.unreconciled_accounts(facility, account_type)
     joins(:order, :account)
-    .select('DISTINCT(order_details.account_id) AS account_id')
-    .where('orders.facility_id' => facility.id)
-    .where('accounts.type' => account_type)
-    .where('order_details.state' => 'complete')
-    .where('statement_id IS NOT NULL')
+      .select('DISTINCT(order_details.account_id) AS account_id')
+      .where('orders.facility_id' => facility.id)
+      .where('accounts.type' => account_type)
+      .where('order_details.state' => 'complete')
+      .where('statement_id IS NOT NULL')
   end
 
   scope :in_review, lambda { |facility|
     scoped.joins(:product)
-    .where(products: {facility_id: facility.id})
-    .where(state: 'complete')
-    .where("order_details.reviewed_at > ?", Time.zone.now)
-    .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+      .where(products: {facility_id: facility.id})
+      .where(state: 'complete')
+      .where("order_details.reviewed_at > ?", Time.zone.now)
+      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   }
 
   def self.all_in_review
     where(state: 'complete')
-    .where("order_details.reviewed_at > ?", Time.zone.now)
-    .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+      .where("order_details.reviewed_at > ?", Time.zone.now)
+      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   end
 
   def self.recently_reviewed
     where(state: ['complete', 'reconciled'])
-    .where("order_details.reviewed_at < ?", Time.zone.now)
-    .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
-    .order(:reviewed_at).reverse_order
+      .where("order_details.reviewed_at < ?", Time.zone.now)
+      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+      .order(:reviewed_at).reverse_order
   end
 
   def self.reassign_account!(account, order_details)
@@ -297,14 +297,14 @@ class OrderDetail < ActiveRecord::Base
 
   scope :pending, joins(:order).where(state: ['new', 'inprocess']).ordered
   scope :confirmed_reservations, reservations
-                                 .joins(:order)
-                                 .includes(:reservation)
-                                 .ordered
+    .joins(:order)
+    .includes(:reservation)
+    .ordered
 
   scope :upcoming_reservations, lambda { 
                                   confirmed_reservations
-                                        .where("reservations.reserve_end_at > ? AND reservations.actual_start_at IS NULL", Time.zone.now)
-                                        .order('reservations.reserve_start_at ASC')
+                                    .where("reservations.reserve_end_at > ? AND reservations.actual_start_at IS NULL", Time.zone.now)
+                                    .order('reservations.reserve_start_at ASC')
                                 }
 
   scope :in_progress_reservations, confirmed_reservations
@@ -312,15 +312,15 @@ class OrderDetail < ActiveRecord::Base
     .order('reservations.reserve_start_at ASC')
 
   scope :all_reservations, confirmed_reservations
-                           .order('reservations.reserve_start_at DESC')
+    .order('reservations.reserve_start_at DESC')
 
   scope :for_accounts, ->(accounts) { where("order_details.account_id in (?)", accounts) unless accounts.nil? || accounts.empty? }
   scope :for_facilities, ->(facilities) { joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }
   scope :for_products, ->(products) { where("order_details.product_id in (?)", products) unless products.blank? }
   scope :for_owners, lambda { |owners| 
                        joins(:account)
-                                       .joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'")
-                                       .where("account_users.user_id in (?)", owners) unless owners.blank? 
+                         .joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'")
+                         .where("account_users.user_id in (?)", owners) unless owners.blank? 
   }
   scope :for_order_statuses, ->(statuses) { where("order_details.order_status_id in (?)", statuses) unless statuses.nil? || statuses.empty? }
 
@@ -360,7 +360,7 @@ class OrderDetail < ActiveRecord::Base
 
   def self.journaled_or_statemented_in_date_range(start_date, end_date)
     search = joins("LEFT JOIN journals ON journals.id = order_details.journal_id")
-      .joins("LEFT JOIN statements in_range_statements ON in_range_statements.id = order_details.statement_id")
+             .joins("LEFT JOIN statements in_range_statements ON in_range_statements.id = order_details.statement_id")
 
     journal_query = ["journal_id IS NOT NULL"]
     journal_query << "journal_date > :start_date" if start_date
@@ -801,18 +801,18 @@ class OrderDetail < ActiveRecord::Base
   def self.account_unreconciled(facility, account)
     if account.is_a?(NufsAccount)
       joins(:journal)
-      .complete_for_facility_and_account(facility, account)
-      .where('journals.is_successful' => true)
+        .complete_for_facility_and_account(facility, account)
+        .where('journals.is_successful' => true)
     else
       complete_for_facility_and_account(facility, account)
-      .where('order_details.statement_id IS NOT NULL')
+        .where('order_details.statement_id IS NOT NULL')
     end
   end
 
   def self.complete_for_facility_and_account(facility, account)
     for_facility(facility)
-    .where('order_details.account_id' => account.id)
-    .where('order_details.state' => 'complete')
+      .where('order_details.account_id' => account.id)
+      .where('order_details.state' => 'complete')
   end
 
   #

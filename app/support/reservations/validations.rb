@@ -61,13 +61,13 @@ module Reservations::Validations
 
     conflicting_reservations =
       Reservation
-        .joins_order
-        .where(product_id: product.schedule.product_ids)
-        .not_this_reservation(options[:exclude] || self)
-        .not_canceled
-        .not_ended
-        .where("(orders.state = 'purchased' OR orders.state IS NULL OR orders.id = ?)", order_id)
-        .overlapping(reserve_start_at, reserve_end_at)
+      .joins_order
+      .where(product_id: product.schedule.product_ids)
+      .not_this_reservation(options[:exclude] || self)
+      .not_canceled
+      .not_ended
+      .where("(orders.state = 'purchased' OR orders.state IS NULL OR orders.id = ?)", order_id)
+      .overlapping(reserve_start_at, reserve_end_at)
 
     conflicting_reservations.first
   end

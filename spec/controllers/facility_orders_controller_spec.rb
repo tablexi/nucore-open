@@ -56,7 +56,7 @@ RSpec.describe FacilityOrdersController do
 
       it_should_allow_operators_only :redirect do
         expect(OrderDetail.where(id: order_detail_ids, problem: false).count)
-        .to eq order_details.count
+          .to eq order_details.count
       end
     end
 
@@ -68,7 +68,7 @@ RSpec.describe FacilityOrdersController do
 
       it_should_allow_operators_only :redirect do
         expect(OrderDetail.where(id: order_detail_ids, problem: true).count)
-        .to eq order_details.count
+          .to eq order_details.count
       end
     end
   end

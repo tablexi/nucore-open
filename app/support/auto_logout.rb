@@ -14,11 +14,11 @@ class AutoLogout
 
   def order_details
     OrderDetail.purchased_active_reservations
-      .merge(Reservation.relay_in_progress)
-      .where('reserve_end_at < ?', Time.zone.now)
-      .includes(:product)
-      .readonly(false)
-      .all
+               .merge(Reservation.relay_in_progress)
+               .where('reserve_end_at < ?', Time.zone.now)
+               .includes(:product)
+               .readonly(false)
+               .all
   end
 
   def should_auto_logout?(order_detail)

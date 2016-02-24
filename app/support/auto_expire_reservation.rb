@@ -16,11 +16,11 @@ class AutoExpireReservation
 
   def purchased_active_order_details
     OrderDetail.purchased_active_reservations
-      .joins(:product)
-      .joins_relay
-      .where("reservations.reserve_end_at < ?", Time.zone.now - 12.hours)
-      .readonly(false)
-      .all
+               .joins(:product)
+               .joins_relay
+               .where("reservations.reserve_end_at < ?", Time.zone.now - 12.hours)
+               .readonly(false)
+               .all
   end
 
   def expire_reservation(od)

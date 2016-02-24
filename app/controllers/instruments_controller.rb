@@ -198,9 +198,9 @@ class InstrumentsController < ProductsCommonController
 
   def acting_user_price_group_ids
     (acting_user.price_groups + acting_user.account_price_groups)
-    .flatten
-    .uniq
-    .map(&:id)
+      .flatten
+      .uniq
+      .map(&:id)
   end
 
 end

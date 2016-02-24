@@ -32,10 +32,10 @@ class ReservationsController < ApplicationController
     @end_at       = params[:end] ? Time.zone.at(params[:end].to_i) : @start_at.end_of_day
 
     @reservations = @instrument.schedule
-                                  .reservations
-                                  .active
-                                  .in_range(@start_at, @end_at)
-                                  .includes(order_detail: { order: :user })
+                               .reservations
+                               .active
+                               .in_range(@start_at, @end_at)
+                               .includes(order_detail: { order: :user })
 
     @rules        = @instrument.schedule_rules
 
@@ -414,8 +414,8 @@ class ReservationsController < ApplicationController
 
   def reservation_create_params
     params[:reservation]
-    .except(:reserve_end_date, :reserve_end_hour, :reserve_end_min, :reserve_end_meridian)
-    .merge(product: @instrument)
+      .except(:reserve_end_date, :reserve_end_hour, :reserve_end_min, :reserve_end_meridian)
+      .merge(product: @instrument)
   end
 
 end

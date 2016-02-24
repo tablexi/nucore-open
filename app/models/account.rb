@@ -85,7 +85,7 @@ class Account < ActiveRecord::Base
 
   def self.for_order_detail(order_detail)
     for_user(order_detail.user)
-    .where("accounts.facility_id IS NULL OR accounts.facility_id = ?", order_detail.facility.id)
+      .where("accounts.facility_id IS NULL OR accounts.facility_id = ?", order_detail.facility.id)
   end
 
   def self.with_orders_for_facility(facility)
@@ -225,9 +225,9 @@ class Account < ActiveRecord::Base
 
   def update_order_details_with_statement (statement)
     details=order_details.joins(:order)
-                          .where('orders.facility_id = ? AND order_details.reviewed_at < ? AND order_details.statement_id IS NULL', statement.facility.id, Time.zone.now)
-                          .readonly(false)
-                          .all
+                         .where('orders.facility_id = ? AND order_details.reviewed_at < ? AND order_details.statement_id IS NULL', statement.facility.id, Time.zone.now)
+                         .readonly(false)
+                         .all
 
     details.each {|od| od.update_attributes(reviewed_at: Time.zone.now+Settings.billing.review_period, statement: statement) }
   end

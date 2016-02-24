@@ -38,8 +38,8 @@ class JournalCutoffDate < ActiveRecord::Base
 
   def unique_month_for_cutoff_date
     query = self.class
-      .month_equal(cutoff_date.month)
-      .year_equal(cutoff_date.year)
+                .month_equal(cutoff_date.month)
+                .year_equal(cutoff_date.year)
 
     # Do not conflict with itself
     query = query.where("id != ?", id) if persisted?

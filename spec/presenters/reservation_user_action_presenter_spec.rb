@@ -124,8 +124,8 @@ RSpec.describe ReservationUserActionPresenter do
 
         before :each do
           expect(reservation)
-          .to receive(:can_switch_instrument_on?)
-          .and_return true
+            .to receive(:can_switch_instrument_on?)
+            .and_return true
         end
 
         it 'includes the switch on event' do
@@ -138,8 +138,8 @@ RSpec.describe ReservationUserActionPresenter do
 
         before :each do
           expect(reservation)
-          .to receive(:can_switch_instrument_off?)
-          .and_return true
+            .to receive(:can_switch_instrument_off?)
+            .and_return true
         end
 
         it 'includes the switch off event' do

@@ -172,9 +172,9 @@ class Reports::ExportRaw
     return [] if @order_status_ids.blank?
 
     OrderDetail.where(order_status_id: @order_status_ids)
-      .for_facility(@facility)
-      .action_in_date_range(@date_range_field, date_start, date_end)
-      .includes(:account, :order, :order_status, :price_policy, :product, :reservation, :statement)
+               .for_facility(@facility)
+               .action_in_date_range(@date_range_field, date_start, date_end)
+               .includes(:account, :order, :order_status, :price_policy, :product, :reservation, :statement)
   end
 
   def as_currency(number)
