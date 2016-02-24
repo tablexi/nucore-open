@@ -80,7 +80,7 @@ class OrderStatus < ActiveRecord::Base
       statuses = self.find(:all).sort {|a,b| a.lft <=> b.lft }.reject do|os|
         !os.is_left_of?(first_invalid_status)
       end
-      statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } if !facility.nil?
+      statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } unless facility.nil?
       statuses
     end
 
@@ -89,7 +89,7 @@ class OrderStatus < ActiveRecord::Base
       statuses = self.find(:all).sort {|a,b| a.lft <=> b.lft }.reject do|os|
         !os.is_left_of?(first_protected_status)
       end
-      statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } if !facility.nil?
+      statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } unless facility.nil?
       statuses
     end
 

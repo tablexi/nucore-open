@@ -15,7 +15,7 @@ class PriceGroup < ActiveRecord::Base
   default_scope order: 'is_internal DESC, display_order ASC, name ASC'
 
   before_destroy :is_not_global
-  before_create  ->(o) { o.display_order = 999 if !o.facility_id.nil?}
+  before_create  ->(o) { o.display_order = 999 unless o.facility_id.nil?}
 
   scope :base, conditions: { name: Settings.price_group.name.base, facility_id: nil }
   scope :external,      conditions: { name: Settings.price_group.name.external, facility_id: nil }
