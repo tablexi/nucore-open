@@ -98,9 +98,9 @@ RSpec.describe AccountBuilder, type: :service do
     context "with params" do
       let(:params) do
         ActionController::Parameters.new( nufs_account: {
-            account_number: "1234",
+                                           account_number: "1234",
             description: "my description",
-          })
+                                         })
       end
 
       it "sets account_number" do
@@ -148,8 +148,8 @@ RSpec.describe AccountBuilder, type: :service do
       context "and affiliate param present" do
         let(:params) do
           ActionController::Parameters.new( nufs_account: {
-              affiliate_id: affiliate.id,
-            })
+                                             affiliate_id: affiliate.id,
+                                           })
         end
 
         it "sets affiliate" do
@@ -174,8 +174,8 @@ RSpec.describe AccountBuilder, type: :service do
       context "and affiliate param present" do
         let(:params) do
           ActionController::Parameters.new( nufs_account: {
-              affiliate_id: affiliate.id,
-            })
+                                             affiliate_id: affiliate.id,
+                                           })
         end
 
         it "sets affiliate" do
@@ -204,9 +204,9 @@ RSpec.describe AccountBuilder, type: :service do
 
     let(:params) do
       ActionController::Parameters.new( nufs_account: {
-          account_number: "9999",
+                                         account_number: "9999",
           description: "changed description",
-        })
+                                       })
     end
 
     it "returns an account" do

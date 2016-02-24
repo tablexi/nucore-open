@@ -14,7 +14,7 @@ class FacilityReservationsController < ApplicationController
   helper_method :sort_column, :sort_direction
 
   ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN = {
-      'date'          => 'reservations.reserve_start_at',
+    'date'          => 'reservations.reserve_start_at',
       'reserve_range' => 'CONCAT(reservations.reserve_start_at, reservations.reserve_end_at)',
       'product_name'  => 'products.name',
       'status'        => 'order_statuses.name',

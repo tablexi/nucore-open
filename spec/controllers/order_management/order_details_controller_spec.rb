@@ -485,7 +485,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
       it 'returns an error when trying to set subsidy more than quantity' do
         @params[:order_detail] = {
-            actual_cost: "10.00",
+          actual_cost: "10.00",
             actual_subsidy: "11.00"
         }
         do_request
@@ -569,11 +569,11 @@ RSpec.describe OrderManagement::OrderDetailsController do
         let(:json_response) { JSON.parse(response.body) }
         before :each do
           @params[:order_detail] = {
-              reservation: {
-                reserve_start_at: reservation.reserve_start_at,
-                duration_mins: new_duration
-              }
+            reservation: {
+              reserve_start_at: reservation.reserve_start_at,
+              duration_mins: new_duration
             }
+          }
           do_request
         end
 
@@ -606,13 +606,13 @@ RSpec.describe OrderManagement::OrderDetailsController do
           reservation.update_attributes(reserve_start_at: reservation.reserve_start_at - 2.days, reserve_end_at: reservation.reserve_end_at - 2.days)
           order_detail.update_order_status! @admin, OrderStatus.complete.first
           @params[:order_detail] = {
-              reservation: {
-                reserve_start_at: reservation.reserve_start_at,
-                duration_mins: reservation.duration_mins,
-                actual_start_at: reservation.reserve_start_at,
-                actual_duration_mins: new_duration
-              }
+            reservation: {
+              reserve_start_at: reservation.reserve_start_at,
+              duration_mins: reservation.duration_mins,
+              actual_start_at: reservation.reserve_start_at,
+              actual_duration_mins: new_duration
             }
+          }
           expect(order_detail).to be_complete
         end
 
