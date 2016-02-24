@@ -60,7 +60,7 @@ RSpec.describe OrderImport, :timecop_freeze do
   let(:facility_account) do
     facility.facility_accounts.create!(attributes_for(:facility_account))
   end
-  let(:fiscal_year_beginning) { SettingsHelper::fiscal_year_beginning }
+  let(:fiscal_year_beginning) { SettingsHelper.fiscal_year_beginning }
   let(:guest) { @guest }
   let(:guest2) { create(:user, username: "guest2") }
   let(:import_file_row_count) { import_file.read.split("\n").count }

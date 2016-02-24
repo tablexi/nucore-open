@@ -4,7 +4,7 @@ module BulkEmailHelper
   SEARCH_TYPES = [:customers, :account_owners, :customers_and_account_owners, :authorized_users]
 
   def do_search(search_fields)
-    return unless BulkEmailHelper::search_types.include? search_fields[:search_type].to_sym
+    return unless BulkEmailHelper.search_types.include? search_fields[:search_type].to_sym
     @users = self.send(:"search_#{search_fields[:search_type]}", search_fields)
   end
 

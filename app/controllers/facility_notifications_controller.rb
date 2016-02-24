@@ -18,7 +18,7 @@ class FacilityNotificationsController < ApplicationController
   end
 
   def check_review_period
-    raise ActionController::RoutingError.new('Notifications disabled with a zero-day review period') unless SettingsHelper::has_review_period?
+    raise ActionController::RoutingError.new('Notifications disabled with a zero-day review period') unless SettingsHelper.has_review_period?
   end
 
   # GET /facilities/notifications

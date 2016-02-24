@@ -66,7 +66,7 @@ RSpec.configure do |config|
 
     #now=Time.zone.parse("#{Date.today.to_s} 09:30:00")
     Timecop.return
-    now=(SettingsHelper::fiscal_year_beginning(Date.today) + 1.year + 10.days).change(:hour => 9, :min => 30)
+    now=(SettingsHelper.fiscal_year_beginning(Date.today) + 1.year + 10.days).change(:hour => 9, :min => 30)
     #puts "travelling to #{now}"
     Timecop.travel(now)
   end

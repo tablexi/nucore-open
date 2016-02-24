@@ -126,7 +126,7 @@ RSpec.describe Product do
       end
 
       before :all do
-        SettingsHelper::enable_feature(:expense_accounts, false)
+        SettingsHelper.enable_feature(:expense_accounts, false)
       end
 
       after :all do
@@ -135,11 +135,11 @@ RSpec.describe Product do
 
       context 'product specific enabled' do
         before :all do
-          @original_setting = SettingsHelper::feature_on? :product_specific_contacts
-          SettingsHelper::enable_feature(:product_specific_contacts)
+          @original_setting = SettingsHelper.feature_on? :product_specific_contacts
+          SettingsHelper.enable_feature(:product_specific_contacts)
         end
         after :all do
-          SettingsHelper::enable_feature(:product_specific_contacts, @original_setting)
+          SettingsHelper.enable_feature(:product_specific_contacts, @original_setting)
         end
 
         it "should return the product's email if it has it" do
@@ -165,11 +165,11 @@ RSpec.describe Product do
       end
       context 'product specific disabled' do
         before :all do
-          @original_setting = SettingsHelper::feature_on? :product_specific_contacts
-          SettingsHelper::enable_feature(:product_specific_contacts, false)
+          @original_setting = SettingsHelper.feature_on? :product_specific_contacts
+          SettingsHelper.enable_feature(:product_specific_contacts, false)
         end
         after :all do
-          SettingsHelper::enable_feature(:product_specific_contacts, @original_setting)
+          SettingsHelper.enable_feature(:product_specific_contacts, @original_setting)
         end
         it "should return the facility's email address even if the product has an email" do
           expect(@product.email).to eq('facility@example.com')

@@ -43,7 +43,7 @@ class BudgetedChartString < ActiveRecord::Base
             tokens = line.split('|').map{ |s| s.delete('-') }
             # build start_at, expires_at from fiscal year
             fiscal_year = tokens[0]
-            starts_at   = SettingsHelper::fiscal_year(fiscal_year.to_i) #Time.zone.parse("#{fiscal_year}0901")
+            starts_at   = SettingsHelper.fiscal_year(fiscal_year.to_i) #Time.zone.parse("#{fiscal_year}0901")
             expires_at  = starts_at + 1.year - 1.second
             # parse fields
             fund, dept, project, activity, account = tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]

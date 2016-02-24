@@ -109,7 +109,7 @@ RSpec.describe ReservationUserActionPresenter do
     end
 
     describe 'switching' do
-      let(:encoded_link) { CGI::escapeHTML(link) }
+      let(:encoded_link) { CGI.escapeHTML(link) }
       let(:link) do
         order_order_detail_reservation_switch_instrument_path(
           order,
