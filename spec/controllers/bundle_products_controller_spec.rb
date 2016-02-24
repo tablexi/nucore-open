@@ -16,7 +16,6 @@ RSpec.describe BundleProductsController do
     @bundle_product=BundleProduct.create!(:bundle => @bundle, :product => @item, :quantity => 1)
   end
 
-
   context 'index' do
 
     before(:each) do
@@ -33,7 +32,6 @@ RSpec.describe BundleProductsController do
     end
 
   end
-
 
   context 'create' do
 
@@ -61,7 +59,6 @@ RSpec.describe BundleProductsController do
 
   end
 
-
   context 'new' do
 
     before(:each) do
@@ -80,7 +77,6 @@ RSpec.describe BundleProductsController do
 
   end
 
-
   context 'edit' do
 
     before(:each) do
@@ -97,7 +93,6 @@ RSpec.describe BundleProductsController do
     end
 
   end
-
 
   context 'update' do
 
@@ -126,7 +121,6 @@ RSpec.describe BundleProductsController do
 
   end
 
-
   context 'destroy' do
 
     before(:each) do
@@ -152,7 +146,6 @@ RSpec.describe BundleProductsController do
     end
 
   end
-
 
   def assert_init_bundle
     expect(assigns(:bundle)).to_not be_nil

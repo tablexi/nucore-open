@@ -11,7 +11,6 @@ RSpec.describe FacilityUsersController do
     @params={ :facility_id => @authable.url_name }
   end
 
-
   context 'index' do
 
     before :each do
@@ -28,7 +27,6 @@ RSpec.describe FacilityUsersController do
     end
 
   end
-
 
   context 'destroy' do
 
@@ -48,7 +46,6 @@ RSpec.describe FacilityUsersController do
 
   end
 
-
   context 'search' do
 
     before :each do
@@ -59,7 +56,6 @@ RSpec.describe FacilityUsersController do
     it_should_allow_managers_only { is_expected.to render_template('search') }
 
   end
-
 
   context 'map_user' do
 

@@ -68,7 +68,6 @@ RSpec.describe PriceGroupsController do
 
     end
 
-
     context 'users' do
 
       before :each do
@@ -83,7 +82,6 @@ RSpec.describe PriceGroupsController do
       end
 
     end
-
 
     context 'accounts' do
 
@@ -100,7 +98,6 @@ RSpec.describe PriceGroupsController do
 
     end
 
-
     context 'edit' do
 
       before :each do
@@ -115,7 +112,6 @@ RSpec.describe PriceGroupsController do
       end
 
     end
-
 
     context 'update' do
 
@@ -133,7 +129,6 @@ RSpec.describe PriceGroupsController do
       end
 
     end
-
 
     context 'destroy' do
 

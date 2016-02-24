@@ -11,7 +11,6 @@ RSpec.describe UsersController do
     @params={ :facility_id => @authable.url_name }
   end
 
-
   context 'index' do
 
     before :each do

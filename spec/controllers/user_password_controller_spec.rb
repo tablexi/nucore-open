@@ -12,7 +12,6 @@ require 'controller_spec_helper'
 RSpec.describe UserPasswordController, :if => SettingsHelper.feature_on?(:password_update) do
   render_views
 
-
   context "password change" do
     before :each do
       @method = :get
@@ -94,7 +93,6 @@ RSpec.describe UserPasswordController, :if => SettingsHelper.feature_on?(:passwo
       expect(response.body).not_to include("Change Password</a>")
     end
   end
-
 
   context "reset password" do
     before :each do

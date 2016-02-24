@@ -40,7 +40,6 @@ RSpec.describe FacilityAccountsController do
 
   end
 
-
   context 'show' do
 
     before(:each) do
@@ -59,7 +58,6 @@ RSpec.describe FacilityAccountsController do
     end
 
   end
-
 
   context 'edit accounts', :if => SettingsHelper.feature_on?(:edit_accounts) do
     context 'new' do
@@ -82,7 +80,6 @@ RSpec.describe FacilityAccountsController do
 
     end
 
-
     context 'edit' do
 
       before(:each) do
@@ -101,7 +98,6 @@ RSpec.describe FacilityAccountsController do
       end
 
     end
-
 
     context 'update' do
 
@@ -127,7 +123,6 @@ RSpec.describe FacilityAccountsController do
       end
 
     end
-
 
     context 'create' do
       let(:owner_user) { assigns(:account).owner_user }
@@ -163,7 +158,6 @@ RSpec.describe FacilityAccountsController do
 
     end
 
-
     context 'new_account_user_search' do
 
       before :each do
@@ -181,7 +175,6 @@ RSpec.describe FacilityAccountsController do
       end
 
     end
-
 
     context 'user_search' do
 
@@ -202,7 +195,6 @@ RSpec.describe FacilityAccountsController do
     end
   end
 
-
   context 'accounts_receivable' do
 
     before :each do
@@ -214,7 +206,6 @@ RSpec.describe FacilityAccountsController do
     it_should_allow_managers_only
     it_should_deny_all [:staff, :senior_staff]
   end
-
 
   context 'search' do
 
@@ -233,7 +224,6 @@ RSpec.describe FacilityAccountsController do
     end
 
   end
-
 
   #TODO: ping Chris / Matt for functions / factories
   #      to create other accounts w/ custom numbers
@@ -255,7 +245,6 @@ RSpec.describe FacilityAccountsController do
       is_expected.to render_template('search_results')
     end
 
-
     context 'POST' do
 
       before(:each) { @method = :post }
@@ -268,7 +257,6 @@ RSpec.describe FacilityAccountsController do
     end
 
   end
-
 
   context 'user_accounts' do
 
@@ -289,7 +277,6 @@ RSpec.describe FacilityAccountsController do
 
   end
 
-
   context 'members' do
 
     before :each do
@@ -308,7 +295,6 @@ RSpec.describe FacilityAccountsController do
     end
 
   end
-
 
   context 'show_statement', :timecop_freeze, :if => Account.config.statements_enabled? do
 
@@ -339,7 +325,6 @@ RSpec.describe FacilityAccountsController do
       is_expected.to render_template 'show_statement_list'
     end
 
-
     it 'should show statement PDF' do
       @params[:statement_id] = @statement.id
       @params[:format] = 'pdf'
@@ -354,7 +339,6 @@ RSpec.describe FacilityAccountsController do
     end
 
   end
-
 
   context 'suspension', :if => SettingsHelper.feature_on?(:suspend_accounts) do
     context 'suspend' do
@@ -377,7 +361,6 @@ RSpec.describe FacilityAccountsController do
       end
 
     end
-
 
     context 'unsuspend' do
 

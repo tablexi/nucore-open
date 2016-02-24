@@ -15,7 +15,6 @@ class IppReporter
               :csv_builder,
               :converter
 
-
   def initialize
     @changed = 0
     @errors = []
@@ -25,7 +24,6 @@ class IppReporter
     @details = converter.convertible_details
   end
 
-
   def report_changes
     build_report
     html_builder.summarize self
@@ -33,7 +31,6 @@ class IppReporter
     html_builder.render
     csv_builder.render
   end
-
 
   def build_report
     details.find_each do |detail|
@@ -52,7 +49,6 @@ class IppReporter
       end
     end
   end
-
 
   def same?(detail, actuals, estimates)
     detail.estimated_cost == estimates[:cost] &&

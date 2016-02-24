@@ -54,7 +54,6 @@ class AccountsController < ApplicationController
     @account = Account.find(params[:id] || params[:account_id])
   end
 
-
   private
 
   def ability_resource

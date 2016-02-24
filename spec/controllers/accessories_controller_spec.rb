@@ -5,7 +5,6 @@ RSpec.describe AccessoriesController do
   render_views
   before(:all) { create_users }
 
-
   let(:instrument) { create(:instrument_with_accessory) }
   let(:facility) { instrument.facility }
   let(:quantity_accessory) { instrument.accessories.first }

@@ -38,7 +38,6 @@ class Bundle < Product
     end
   end
 
-
   private
 
   def account_required

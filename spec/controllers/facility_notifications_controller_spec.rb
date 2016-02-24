@@ -34,7 +34,6 @@ RSpec.describe FacilityNotificationsController do
     end
   end
 
-
   context "index" do
     before :each do
       @method=:get

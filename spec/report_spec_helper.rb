@@ -3,7 +3,6 @@ module ReportSpecHelper
   include ReportsHelper
   extend ActiveSupport::Concern
 
-
   included do |base|
     base.render_views
 
@@ -22,7 +21,6 @@ module ReportSpecHelper
     end
   end
 
-
   module ClassMethods
     def run_report_tests(tests)
       tests.each do |test|
@@ -38,11 +36,9 @@ module ReportSpecHelper
             end
           end
 
-
           it_should_allow_managers_and_senior_staff_only do
             assert_report_rendered(test[:index], test[:report_on_label], &test[:report_on])
           end
-
 
           context 'ajax' do
             before :each do
@@ -54,7 +50,6 @@ module ReportSpecHelper
               assert_report_rendered(test[:index], test[:report_on_label], &test[:report_on])
             end
           end
-
 
           context 'export' do
             before :each do
@@ -80,36 +75,29 @@ module ReportSpecHelper
     end
   end
 
-
   private
 
   def setup_extra_params(params)
   end
 
-
   def setup_extra_test_data(user)
   end
-
 
   def report_headers(_label)
     raise 'Including class must implement!'
   end
 
-
   def assert_report_init(_label, &_report_on)
     raise 'Including class must implement!'
   end
-
 
   def assert_report_data_init(_label)
     raise 'Including class must implement!'
   end
 
-
   def export_all_request?
     @params.key?(:export_id) && @params[:export_id] == 'report_data'
   end
-
 
   def assert_report_params_init
     now=Date.today
@@ -129,14 +117,12 @@ module ReportSpecHelper
     end
   end
 
-
   def assert_report_download_rendered(filename)
     expect(@response.headers['Content-Type']).to match %r(\Atext/csv\b)
     filename += "_#{assigns(:date_start).strftime("%Y%m%d")}-#{assigns(:date_end).strftime("%Y%m%d")}.csv"
     expect(@response.headers["Content-Disposition"]).to eq("attachment; filename=\"#{filename}\"")
     is_expected.to respond_with :success
   end
-
 
   def assert_report_rendered(tab_index, label, &report_on)
     assert_report_params_init

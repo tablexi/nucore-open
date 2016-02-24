@@ -7,19 +7,16 @@ class IppUpdater
 
   attr_reader :converter, :details, :policies
 
-
   def initialize
     @converter = IppConverter.new
     @details = converter.convertible_details
     @policies = converter.convertible_policies
   end
 
-
   def update
     update_price_policies
     update_order_details
   end
-
 
   def update_price_policies
     policies.find_each do |policy|
@@ -34,7 +31,6 @@ class IppUpdater
     policy.update_attributes! converter.new_policy_attributes_from(policy)
   end
 
-
   def update_order_details
     details.readonly(false).find_each do |detail|
       guard detail do
@@ -43,7 +39,6 @@ class IppUpdater
       end
     end
   end
-
 
   def update_order_detail(detail)
     price_policy = detail.price_policy
@@ -57,12 +52,10 @@ class IppUpdater
     )
   end
 
-
   def update_journaled_details(oid_to_attrs)
     details = OrderDetail.find oid_to_attrs.keys
     details.each {|od| od.update_attributes! oid_to_attrs[od.id]}
   end
-
 
   private
 

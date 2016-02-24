@@ -7,23 +7,19 @@ class IppConverter
     PricePolicy.where(type: InstrumentPricePolicy.name) # not using #all because we want a relation
   end
 
-
   def convertible_details
     OrderDetail.joins(:reservation)
                .where('price_policy_id IS NOT NULL')
                .where(state: %w(new inprocess complete))
   end
 
-
   def error_to_log(e, obj)
     "#{obj.class.name} #{obj.id} :: #{e.message}\n#{e.backtrace.keep_if{|t| t =~ /\/nucore-/ }.join("\n")}"
   end
 
-
   def new_policy_from(detail)
     InstrumentPricePolicy.new new_policy_attributes_from(detail.price_policy)
   end
-
 
   def new_policy_attributes_from(old_policy)
     attrs = old_policy.attributes

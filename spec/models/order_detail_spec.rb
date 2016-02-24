@@ -639,7 +639,6 @@ RSpec.describe OrderDetail do
       expect(@order_detail.version).to eq(2)
     end
 
-
     context 'needs price policy' do
 
       before :each do
@@ -648,7 +647,6 @@ RSpec.describe OrderDetail do
         create(:price_group_product, product: @item, price_group: @price_group3, reservation_window: nil)
         @order_detail.reload
       end
-
 
       it 'should assign a price policy' do
         pp=create(:item_price_policy, product: @item, price_group: @price_group3)
@@ -665,7 +663,6 @@ RSpec.describe OrderDetail do
         expect(@order_detail.actual_cost).to eq(costs[:cost])
         expect(@order_detail.actual_subsidy).to eq(costs[:subsidy])
       end
-
 
       it 'should not assign a price policy' do
         expect(@order_detail.price_policy).to be_nil
@@ -746,7 +743,6 @@ RSpec.describe OrderDetail do
         expect(@order_detail.version).to eq(4)
       end
 
-
       it "should not transition to reconciled if there are no actual costs" do
         @order_detail.to_inprocess!
         @order_detail.to_complete!
@@ -798,20 +794,17 @@ RSpec.describe OrderDetail do
       expect(@order_detail).to be_in_dispute
     end
 
-
     it 'should not be in dispute if dispute_at is nil' do
       @order_detail.dispute_at=nil
       @order_detail.dispute_resolved_at="all good"
       expect(@order_detail).not_to be_in_dispute
     end
 
-
     it 'should not be in dispute if dispute_resolved_at is not nil' do
       @order_detail.dispute_at=Time.zone.now
       @order_detail.dispute_resolved_at=Time.zone.now+1.day
       expect(@order_detail).not_to be_in_dispute
     end
-
 
     it 'should not be in dispute if order detail is canceled' do
       @order_detail.to_canceled!
@@ -904,13 +897,11 @@ RSpec.describe OrderDetail do
       expect(ods.first).to eq(@order_detail)
     end
 
-
     context 'reservations' do
       before :each do
         @now=Time.zone.now
         setup_reservation @facility, @facility_account, @account, @user
       end
-
 
       it 'should be upcoming' do
         start_time=@now+2.days
@@ -920,20 +911,17 @@ RSpec.describe OrderDetail do
         expect(upcoming[0]).to eq(@order_detail)
       end
 
-
       it 'should not be upcoming because reserve_end_at is in the past' do
         start_time=@now-2.days
         place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time+1.hour
         expect(OrderDetail.upcoming_reservations.all).to be_blank
       end
 
-
       it 'should not be upcoming because actual_start_at exists' do
         start_time=@now+2.days
         place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time+1.hour, actual_start_at: start_time
         expect(OrderDetail.upcoming_reservations.all).to be_blank
       end
-
 
       it 'should be in progress' do
         place_reservation @facility, @order_detail, @now, { actual_start_at: @now }
@@ -942,12 +930,10 @@ RSpec.describe OrderDetail do
         expect(upcoming[0]).to eq(@order_detail)
       end
 
-
       it 'should not be in progress because actual_start_at missing' do
         place_reservation @facility, @order_detail, @now
         expect(OrderDetail.in_progress_reservations.all).to be_empty
       end
-
 
       it 'should not be in progress because actual_end_at exists' do
         start_time=@now-3.hours

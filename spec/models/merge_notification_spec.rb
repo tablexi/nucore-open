@@ -9,11 +9,9 @@ RSpec.describe MergeNotification do
     MergeNotification.create_for! @user, @subject
   end
 
-
   [ :user_id, :subject_id, :notice ].each do |field|
     it { is_expected.to validate_presence_of field }
   end
-
 
   it 'should create for user by subject' do
     notices=MergeNotification.all
@@ -23,7 +21,6 @@ RSpec.describe MergeNotification do
     expect(notice.subject).to eq(@subject)
     expect(notice.notice).to eq(@subject.to_notice(MergeNotification, @user))
   end
-
 
   context 'scopes' do
 

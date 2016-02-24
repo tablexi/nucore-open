@@ -39,7 +39,6 @@ module Role
       end
     end
 
-
     #
     # Creates method #manageable_facilities
     # returns relation of facilities for which this user is a director or admin
@@ -102,16 +101,13 @@ module Role
     end
   end
 
-
   def account_administrator?
     owner? || business_administrator?
   end
 
-
   def account_administrator_of?(account)
     owner_of?(account) || business_administrator_of?(account)
   end
-
 
   # where is this used? do we need it?
   def name

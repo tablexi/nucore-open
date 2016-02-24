@@ -24,7 +24,6 @@ RSpec.describe SurveysController do
     }
   end
 
-
   context 'deactivate' do
 
     before(:each) do
@@ -37,7 +36,6 @@ RSpec.describe SurveysController do
     end
 
   end
-
 
   context "activate" do
 
@@ -52,10 +50,8 @@ RSpec.describe SurveysController do
 
   end
 
-
   context "complete" do
     let(:survey_url) { 'http://this.survey.url' }
-
 
     before(:each) do
       @method = :get
@@ -107,7 +103,6 @@ RSpec.describe SurveysController do
     end
   end
 
-
   private
 
   def test_change_state(active)
@@ -122,7 +117,6 @@ RSpec.describe SurveysController do
     expect(external_service_passer.reload.active).to be false
     expect(external_service_passer2.reload.active).to eq active
   end
-
 
   def create_order_detail
     @product = create(:item,

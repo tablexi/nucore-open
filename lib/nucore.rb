@@ -28,7 +28,6 @@ module NUCore
       @@is_mysql ||= ActiveRecord::Base.connection.adapter_name == 'Mysql2'
     end
 
-
     def self.boolean(value)
       # Oracle doesn't always properly handle boolean values correctly
       if self.oracle?
@@ -79,7 +78,6 @@ module NUCore
       end
     end
 
-
     module RelationHelper
       #
       # If ActiveRecord might produce a query with a large IN clause (>= 1000)
@@ -127,7 +125,6 @@ module NUCore
       end
     end
 
-
     module SortHelper
       def self.included(base)
         base.extend ClassMethods
@@ -138,7 +135,6 @@ module NUCore
         end
       end
     end
-
 
     module CaseSensitivityHelper
       def insensitive_where(relation, column, value)

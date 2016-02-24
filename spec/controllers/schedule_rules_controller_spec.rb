@@ -16,7 +16,6 @@ RSpec.describe ScheduleRulesController do
     @params={ :facility_id => @authable.url_name, :instrument_id => @instrument.url_name }
   end
 
-
   context "index" do
 
     before :each do
@@ -32,7 +31,6 @@ RSpec.describe ScheduleRulesController do
 
   end
 
-
   context "new" do
 
     before :each do
@@ -47,7 +45,6 @@ RSpec.describe ScheduleRulesController do
     end
 
   end
-
 
   context 'create' do
 
@@ -90,14 +87,12 @@ RSpec.describe ScheduleRulesController do
 
   end
 
-
   context 'needs schedule rule' do
 
     before :each do
       @rule=@instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       @params.merge!(:id => @rule.id)
     end
-
 
     context "edit" do
 
@@ -112,7 +107,6 @@ RSpec.describe ScheduleRulesController do
       end
 
     end
-
 
     context 'update' do
 
@@ -161,7 +155,6 @@ RSpec.describe ScheduleRulesController do
       end
 
     end
-
 
     context 'destroy' do
 

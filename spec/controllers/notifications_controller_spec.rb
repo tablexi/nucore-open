@@ -2,7 +2,6 @@ require "rails_helper"
 require 'controller_spec_helper'
 require 'notifications_helper'
 
-
 RSpec.shared_examples 'user without notifications' do
   context 'director without notices' do
     before :each do
@@ -16,7 +15,6 @@ RSpec.shared_examples 'user without notifications' do
   end
 end
 
-
 RSpec.describe NotificationsController do
   include NotificationsHelper
 
@@ -29,7 +27,6 @@ RSpec.describe NotificationsController do
       MergeNotification.create_for! instance_variable_get("@#{usr}"), @order_detail
     end
   end
-
 
   context 'index' do
     before :each do
@@ -47,7 +44,6 @@ RSpec.describe NotificationsController do
       is_expected.to render_template 'index'
     end
   end
-
 
   #context 'update' do
   #  before :each do

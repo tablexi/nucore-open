@@ -32,7 +32,6 @@ RSpec.describe PricePolicy do
     end
   end
 
-
   context 'expire date' do
     before :each do
       @start_date=Time.zone.parse("2020-5-5")
@@ -90,7 +89,6 @@ RSpec.describe PricePolicy do
     end
 
   end
-
 
   context 'restrict purchase' do
 
@@ -181,7 +179,6 @@ RSpec.describe PricePolicy do
       end
     end
 
-
   context 'should define abstract methods' do
 
     before :each do
@@ -200,7 +197,6 @@ RSpec.describe PricePolicy do
 
   end
 
-
   context 'order assignment' do
 
     before :each do
@@ -214,11 +210,9 @@ RSpec.describe PricePolicy do
       @pp=FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group)
     end
 
-
     it 'should not be assigned' do
       expect(@pp).not_to be_assigned_to_order
     end
-
 
     it 'should be assigned' do
       @order_detail.reload
@@ -228,7 +222,6 @@ RSpec.describe PricePolicy do
     end
 
   end
-
 
   end
 

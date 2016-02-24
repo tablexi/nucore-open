@@ -28,12 +28,10 @@ class Daemons::Base
     }
   end
 
-
   #
   # Same as that given to #initialize. Use this accessor
   # if you want to change the name before calling #start
   attr_accessor :name
-
 
   #
   # The set of options passed to +Daemons#run_proc+ by #start.
@@ -41,7 +39,6 @@ class Daemons::Base
   # If you want to change the default use this accessor
   # before calling #start
   attr_accessor :daemon_opts
-
 
   #
   # Fires up the daemon. Wraps +Daemons#run_proc+.

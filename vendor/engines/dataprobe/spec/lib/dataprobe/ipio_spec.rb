@@ -8,7 +8,6 @@ RSpec.describe Dataprobe::Ipio do
 
   before(:each) { allow(TCPSocket).to receive(:new).and_return fake_socket }
 
-
   it 'initializes with the proper host and defaults' do
     expect(relay.ip).to eq ip
     expect(relay.port).to eq 9100
@@ -54,7 +53,6 @@ RSpec.describe Dataprobe::Ipio do
   it 'indicates that the relay is off' do
     should_give_status :off
   end
-
 
   def should_write_hello
     expect(fake_socket).to receive(:write).with "hello-000\x00"

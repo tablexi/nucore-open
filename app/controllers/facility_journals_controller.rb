@@ -117,7 +117,6 @@ class FacilityJournalsController < ApplicationController
     redirect_to(facility_journal_path(current_facility, @journal)) && (return)
   end
 
-
   private
 
   def new_journal_from_params

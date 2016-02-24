@@ -98,6 +98,4 @@ class Reports::InstrumentDayReport
     end
   end
 
-
-
 end

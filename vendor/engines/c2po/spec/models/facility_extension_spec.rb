@@ -30,7 +30,6 @@ RSpec.describe Facility do
       end
     end
 
-
     context 'credit cards' do
       before :each do
         @account=FactoryGirl.create(:credit_card_account, :account_users_attributes => @owner_attrs)

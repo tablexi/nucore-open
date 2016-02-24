@@ -17,7 +17,6 @@ RSpec.describe AccountsController do
     @authable = create_nufs_account_with_owner
   end
 
-
   context "index" do
 
     before(:each) do
@@ -47,7 +46,6 @@ RSpec.describe AccountsController do
     end
   end
 
-
   context "show" do
 
     before :each do
@@ -65,7 +63,6 @@ RSpec.describe AccountsController do
       expect(response).to render_template('accounts/show')
     end
   end
-
 
   context 'user_search' do
 
@@ -143,7 +140,6 @@ RSpec.describe AccountsController do
       expect(assigns[:order_detail_link][:text]).to eq("Dispute")
       expect(assigns[:order_detail_link][:display?].call(OrderDetail.new)).to be true
     end
-
 
   end
 

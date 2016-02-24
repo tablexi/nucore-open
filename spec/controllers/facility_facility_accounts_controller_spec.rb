@@ -12,7 +12,6 @@ RSpec.describe FacilityFacilityAccountsController, :if => SettingsHelper.feature
     @params={ :facility_id => @authable.url_name }
   end
 
-
   context 'index' do
 
     before :each do
@@ -29,7 +28,6 @@ RSpec.describe FacilityFacilityAccountsController, :if => SettingsHelper.feature
 
   end
 
-
   context 'new' do
 
     before :each do
@@ -44,7 +42,6 @@ RSpec.describe FacilityFacilityAccountsController, :if => SettingsHelper.feature
     end
 
   end
-
 
   context 'update' do
 
@@ -63,7 +60,6 @@ RSpec.describe FacilityFacilityAccountsController, :if => SettingsHelper.feature
 
   end
 
-
   context 'create' do
 
     before :each do
@@ -80,7 +76,6 @@ RSpec.describe FacilityFacilityAccountsController, :if => SettingsHelper.feature
     end
 
   end
-
 
   context 'edit' do
 

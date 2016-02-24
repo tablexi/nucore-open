@@ -5,7 +5,6 @@ require 'report_spec_helper'
 RSpec.describe GeneralReportsController do
   include ReportSpecHelper
 
-
   run_report_tests([
     { :action => :product, :index => 0, :report_on_label => 'Name', :report_on => Proc.new{|od| od.product.name} },
     { :action => :account, :index => 1, :report_on_label => 'Description', :report_on => Proc.new{|od| od.account.to_s} },
@@ -86,7 +85,6 @@ RSpec.describe GeneralReportsController do
       @journal_yesterday = FactoryGirl.create(:journal, :facility => @authable, :created_by => @admin.id, :journal_date => 1.day.ago)
       @journal_yesterday.create_journal_rows!([@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday])
       @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday.change_status!(OrderStatus.reconciled.first)
-
 
       @method = :xhr
       @action = :product
@@ -198,13 +196,11 @@ RSpec.describe GeneralReportsController do
     end
   end
 
-
   private
 
   def setup_extra_params(params)
     params.merge!(:status_filter => [ OrderStatus.complete.first.id ], :date_range_field => 'fulfilled_at')
   end
-
 
   def report_headers(label)
     headers = if export_all_request?
@@ -215,7 +211,6 @@ RSpec.describe GeneralReportsController do
 
     headers
   end
-
 
   def assert_report_params_init
     super
@@ -238,7 +233,6 @@ RSpec.describe GeneralReportsController do
 
     expect(assigns(:status_ids)).to eq(status_ids)
   end
-
 
   def assert_report_init(_label)
     expect(response).to be_success

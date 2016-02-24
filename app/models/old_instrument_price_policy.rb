@@ -22,22 +22,18 @@ class OldInstrumentPricePolicy < PricePolicy
     PriceGroupProduct.create(:price_group => o.price_group, :product => o.product, :reservation_window => PriceGroupProduct::DEFAULT_RESERVATION_WINDOW) unless pgp
   end
 
-
   def self.intervals
     @@intervals
   end
-
 
   def has_usage_or_reservation_rate?
     errors.add(:base, "You must enter a reservation rate or usage rate for all price groups") if usage_rate.nil? && reservation_rate.nil?
   end
 
-
   def reservation_window
     pgp=PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
     return pgp ? pgp.reservation_window : 0
   end
-
 
   def subsidy_less_than_rate?
     if (reservation_subsidy && reservation_rate)
@@ -51,12 +47,10 @@ class OldInstrumentPricePolicy < PricePolicy
     end
   end
 
-
   # if the subsidy is zero, return false
   def has_subsidy?
     usage_subsidy && usage_subsidy > 0
   end
-
 
   def free?
     @is_free ||= (reservation_rate.to_f == 0 && usage_rate.to_f == 0 && overage_rate.to_f == 0)

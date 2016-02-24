@@ -12,7 +12,6 @@ module NotificationSubject
     raise 'to be implemented by including class!'
   end
 
-
   private
 
   def default_url_options

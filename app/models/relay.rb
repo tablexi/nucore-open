@@ -10,13 +10,11 @@ class Relay < ActiveRecord::Base
 
   alias_attribute :host, :ip
 
-
   CONTROL_MECHANISMS = {
     manual: nil,
     timer: 'timer',
     relay: 'relay'
   }
-
 
   def get_status
     query_status

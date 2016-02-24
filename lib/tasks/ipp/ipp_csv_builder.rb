@@ -7,7 +7,6 @@ class IppCsvBuilder
 
   attr_reader :csv
 
-
   def initialize
     @csv = CSV.open 'price_change_report.csv', 'w'
 
@@ -27,7 +26,6 @@ class IppCsvBuilder
       'new subsidy actual'
     ]
   end
-
 
   def report(detail, actuals, estimates)
     reservation = detail.reservation
@@ -49,7 +47,6 @@ class IppCsvBuilder
       actuals[:subsidy].to_f
     ]
   end
-
 
   def render
     csv.close

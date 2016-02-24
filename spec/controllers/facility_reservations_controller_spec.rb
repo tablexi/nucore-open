@@ -332,7 +332,6 @@ RSpec.describe FacilityReservationsController do
       @params.merge!(:reservation => FactoryGirl.attributes_for(:reservation))
     end
 
-
     it_should_allow_operators_only do
       expect(assigns(:order)).to eq(@order)
       expect(assigns(:order_detail)).to eq(@order_detail)

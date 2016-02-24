@@ -4,7 +4,6 @@ class Instrument < Product
 
   RESERVE_INTERVALS = [ 1, 5, 10, 15, 30, 60 ]
 
-
   # Associations
   # -------
 
@@ -63,7 +62,6 @@ class Instrument < Product
   def reservation_only?
     control_mechanism == Relay::CONTROL_MECHANISMS[:manual]
   end
-
 
   private
 

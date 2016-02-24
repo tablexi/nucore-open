@@ -5,7 +5,6 @@ module InstrumentPricePolicyCalculations
     estimate_cost_and_subsidy reservation.reserve_start_at, reservation.reserve_end_at if reservation
   end
 
-
   def estimate_cost_and_subsidy(start_at, end_at)
     start_at = strip_seconds start_at
     end_at = strip_seconds end_at
@@ -18,16 +17,13 @@ module InstrumentPricePolicyCalculations
     cost_and_subsidy duration, discount
   end
 
-
   def calculate_cost(duration_mins, discount)
     duration_mins * usage_rate * discount
   end
 
-
   def calculate_subsidy(duration_mins, discount)
     duration_mins * usage_subsidy * discount
   end
-
 
   def calculate_discount(start_at, end_at)
     discount = 0
@@ -60,7 +56,6 @@ module InstrumentPricePolicyCalculations
     end
   end
 
-
   def cancellation_penalty?(reservation)
     return false unless product.min_cancel_hours
     res_start_at = strip_seconds reservation.reserve_start_at
@@ -68,13 +63,11 @@ module InstrumentPricePolicyCalculations
     res_start_at - canceled_at <= product.min_cancel_hours.hours
   end
 
-
   def calculate_cancellation_costs(reservation)
     if cancellation_penalty?(reservation)
       { cost: cancellation_cost, subsidy: 0 }
     end
   end
-
 
   def calculate_usage(reservation, start_at = nil)
     act_end_at = strip_seconds reservation.actual_end_at
@@ -83,7 +76,6 @@ module InstrumentPricePolicyCalculations
     discount = calculate_discount act_start_at, act_end_at
     cost_and_subsidy usage_minutes, discount
   end
-
 
   def calculate_overage(reservation)
     if over_reservation? reservation
@@ -94,16 +86,13 @@ module InstrumentPricePolicyCalculations
     end
   end
 
-
   def calculate_reservation(reservation)
     estimate_cost_and_subsidy reservation.reserve_start_at, reservation.reserve_end_at
   end
 
-
   def subsidy_ratio
     usage_subsidy / usage_rate
   end
-
 
   private
 
@@ -122,18 +111,15 @@ module InstrumentPricePolicyCalculations
     costs
   end
 
-
   def calculate_subsidy_for_cost(cost)
     usage_subsidy.present? ? (cost * subsidy_ratio) : 0
   end
-
 
   def over_reservation?(reservation)
     usage_end = strip_seconds reservation.actual_end_at
     reserve_end = strip_seconds reservation.reserve_end_at
     usage_end > reserve_end
   end
-
 
   def strip_seconds(datetime)
     datetime.change sec: 0

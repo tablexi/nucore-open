@@ -5,7 +5,6 @@ class IppHtmlBuilder
 
   attr_reader :html
 
-
   def initialize
     @html = Nokogiri::HTML::Document.new
 
@@ -21,7 +20,6 @@ class IppHtmlBuilder
       end
     end
   end
-
 
   def report(detail, actuals, estimates)
     reservation = detail.reservation
@@ -67,7 +65,6 @@ class IppHtmlBuilder
     end
   end
 
-
   def summarize(reporter)
     append_to_article do |doc|
       doc.section.summary! do
@@ -77,7 +74,6 @@ class IppHtmlBuilder
       end
     end
   end
-
 
   def report_errors(reporter)
     append_to_article do |doc|
@@ -90,11 +86,9 @@ class IppHtmlBuilder
     end
   end
 
-
   def render
     File.write 'price_change_report.html', "<!DOCTYPE html>#{html.root}"
   end
-
 
   def append_to_article
     Nokogiri::HTML::Builder.with(html.at('article')) {|doc| yield doc }

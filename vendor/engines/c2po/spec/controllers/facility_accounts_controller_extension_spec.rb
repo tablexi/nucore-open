@@ -20,7 +20,6 @@ RSpec.describe FacilityAccountsController do
     @order_detail = FactoryGirl.create(:order_detail, :product => @item, :order => @order, :account => @account)
   end
 
-
   context 'update' do
 
     before(:each) do
@@ -33,7 +32,6 @@ RSpec.describe FacilityAccountsController do
       }
       @params[:purchase_order_account][:affiliate_id] = @params[:purchase_order_account].delete(:affiliate).id
     end
-
 
     context 'with affiliate' do
 
@@ -88,7 +86,6 @@ RSpec.describe FacilityAccountsController do
     end
 
   end
-
 
   context 'create' do
     before :each do
@@ -198,7 +195,6 @@ RSpec.describe FacilityAccountsController do
     it_behaves_like 'an authable account'
   end
 
-
   context 'credit_cards without account' do
 
     before :each do
@@ -218,7 +214,6 @@ RSpec.describe FacilityAccountsController do
 
   end
 
-
   context 'purchase_orders with account' do
     let(:unreconciled_account) { build(:purchase_order_account) }
     let(:redirect_path) { purchase_orders_facility_accounts_path }
@@ -229,7 +224,6 @@ RSpec.describe FacilityAccountsController do
 
     it_behaves_like 'an authable account'
   end
-
 
   context 'purchase_orders without account' do
 
@@ -249,7 +243,6 @@ RSpec.describe FacilityAccountsController do
     end
 
   end
-
 
   context 'update_credit_cards' do
 
@@ -273,7 +266,6 @@ RSpec.describe FacilityAccountsController do
 
   end
 
-
   context 'update_purchase_orders' do
 
     before :each do
@@ -295,8 +287,6 @@ RSpec.describe FacilityAccountsController do
     end
 
   end
-
-
 
   private
 
@@ -323,7 +313,6 @@ RSpec.describe FacilityAccountsController do
       }
     }
   end
-
 
   def prepare_for_account_show(action, account)
     @method = :get

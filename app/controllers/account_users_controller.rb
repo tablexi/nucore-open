@@ -53,13 +53,11 @@ class AccountUsersController < ApplicationController
     redirect_to account_account_users_path(@account)
   end
 
-
   protected
 
   def init_account
     @account = session_user.accounts.find(params[:account_id])
   end
-
 
   private
 

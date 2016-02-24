@@ -8,11 +8,9 @@ class ExternalServiceReceiver < ActiveRecord::Base
 
   validates_presence_of :external_service_id, :receiver_id, :response_data
 
-
   def respond_to?(symbol, include_private=false)
     super || parsed_response_data.key?(symbol)
   end
-
 
   private
 
@@ -21,7 +19,6 @@ class ExternalServiceReceiver < ActiveRecord::Base
     return parsed[symbol] if parsed.key? symbol
     super
   end
-
 
   def parsed_response_data
     JSON.parse(response_data).symbolize_keys

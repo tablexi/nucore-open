@@ -2,11 +2,9 @@ class SurveyResponse
 
   attr_reader :params
 
-
   def initialize(params)
     @params = params
   end
-
 
   def save!
     od = OrderDetail.find params[:receiver_id]
@@ -23,7 +21,6 @@ class SurveyResponse
       receiver
     end
   end
-
 
   def response_data
     show_url = params[:survey_url]

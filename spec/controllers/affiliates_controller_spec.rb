@@ -19,7 +19,6 @@ RSpec.describe AffiliatesController do
     end
   end
 
-
   context 'new' do
 
     before :each do
@@ -33,7 +32,6 @@ RSpec.describe AffiliatesController do
       is_expected.to render_template :new
     end
   end
-
 
   context 'create' do
 
@@ -59,14 +57,12 @@ RSpec.describe AffiliatesController do
     end
   end
 
-
   context 'with id param' do
 
     before :each do
       @affiliate=Affiliate.find_or_create_by_name('CTA')
       @params={ :id => @affiliate.id }
     end
-
 
     context 'edit' do
 
@@ -82,7 +78,6 @@ RSpec.describe AffiliatesController do
 
       it('should fail gracefully if bad id given') { bad_id_test }
     end
-
 
     context 'update' do
 
@@ -107,7 +102,6 @@ RSpec.describe AffiliatesController do
       end
     end
 
-
     context 'destroy' do
 
       before :each do
@@ -126,7 +120,6 @@ RSpec.describe AffiliatesController do
 
   end
 
-
   def bad_id_test
     @params[:id]=98765423456
     maybe_grant_always_sign_in :admin
@@ -134,7 +127,6 @@ RSpec.describe AffiliatesController do
     is_expected.to set_flash
     assert_redirected_to affiliates_path
   end
-
 
   def bad_attrs_test(template)
     @params[:affiliate][:name]=nil
@@ -144,7 +136,6 @@ RSpec.describe AffiliatesController do
     expect(assigns(:affiliate).name).to be_nil
     is_expected.to render_template template
   end
-
 
   def no_attrs_test
     @params[:affiliate]=nil

@@ -101,7 +101,6 @@ class User < ActiveRecord::Base
       return false
     end
 
-
   end
 
   # Find the users for a facility
@@ -136,7 +135,6 @@ class User < ActiveRecord::Base
     groups = self.accounts.active.collect{ |a| a.price_groups }.flatten.uniq
   end
 
-
   #
   # Given a +Product+ returns all valid accounts this user has for
   # purchasing that product
@@ -145,7 +143,6 @@ class User < ActiveRecord::Base
     acts.reject!{|acct| !acct.validate_against_product(product, self).nil?}
     acts
   end
-
 
   def full_name
     unless first_name.nil? && last_name.nil?

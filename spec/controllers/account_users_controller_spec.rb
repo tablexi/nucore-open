@@ -10,7 +10,6 @@ RSpec.describe AccountUsersController do
     @authable=create_nufs_account_with_owner
   end
 
-
   context 'user_search' do
 
     before :each do
@@ -28,7 +27,6 @@ RSpec.describe AccountUsersController do
     end
 
   end
-
 
   context 'new' do
 
@@ -50,7 +48,6 @@ RSpec.describe AccountUsersController do
     end
 
   end
-
 
   context 'create' do
 
@@ -79,7 +76,6 @@ RSpec.describe AccountUsersController do
     end
 
   end
-
 
   context 'destroy' do
 

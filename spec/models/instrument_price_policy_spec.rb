@@ -16,28 +16,23 @@ RSpec.describe InstrumentPricePolicy do
 
   it { is_expected.to validate_inclusion_of(:charge_for).in_array described_class::CHARGE_FOR.values }
 
-
   it 'converts the given hourly usage_rate to a per minute rate' do
     policy.usage_rate = 10
     expect(policy.usage_rate.round(4)).to eq (10 / 60.0).round(4)
   end
-
 
   it 'converts the given hourly usage_subsidy to a per minute rate' do
     policy.usage_subsidy = 10
     expect(policy.usage_subsidy.round(4)).to eq (10 / 60.0).round(4)
   end
 
-
   it { is_expected.to allow_value(nil).for :usage_subsidy }
-
 
   it 'ensures that usage subsidy is greater than 0' do
     policy.usage_subsidy = -1
     expect(policy).to_not be_valid
     expect(policy.errors[:usage_subsidy]).to be_present
   end
-
 
   describe 'usage rate validations' do
     it 'ensures that usage rate is greater than 0' do
@@ -57,7 +52,6 @@ RSpec.describe InstrumentPricePolicy do
     end
   end
 
-
   describe 'validation using #subsidy_less_than_rate?' do
     it 'gives an error if usage_subsidy > usage_rate' do
       expect(policy).to be_valid
@@ -74,7 +68,6 @@ RSpec.describe InstrumentPricePolicy do
       expect(policy).to be_valid
     end
   end
-
 
   describe 'before save' do
     it 'sets the usage subsidy to 0 before save if there is a usage_rate' do
@@ -100,7 +93,6 @@ RSpec.describe InstrumentPricePolicy do
     end
   end
 
-
   describe 'after create' do
     it 'creates a PriceGroupProduct with default reservation window if one does not exist' do
       pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, policy.product.id)
@@ -122,7 +114,6 @@ RSpec.describe InstrumentPricePolicy do
     end
   end
 
-
   it 'returns the date for upcoming policies' do
     instrument = policy.product
     price_group = policy.price_group
@@ -137,7 +128,6 @@ RSpec.describe InstrumentPricePolicy do
     expect(next_dates).to include ipp3.start_date.to_date
   end
 
-
   describe '#reservation_window' do
     it 'returns 0 if there is no PriceGroupProduct' do
       expect(policy.reservation_window).to eq 0
@@ -149,7 +139,6 @@ RSpec.describe InstrumentPricePolicy do
       expect(policy.reservation_window).to eq pgp.reservation_window
     end
   end
-
 
   describe '#has_subsidy?' do
     it 'has a subsidy if the attribute is greater than 0' do
@@ -168,7 +157,6 @@ RSpec.describe InstrumentPricePolicy do
     end
   end
 
-
   describe '#free?' do
     it 'is free if the usage rate is 0' do
       policy.usage_rate = 0
@@ -180,7 +168,6 @@ RSpec.describe InstrumentPricePolicy do
       expect(policy).to_not be_free
     end
   end
-
 
   describe 'hourly rates' do
     it 'gives the hourly version of the usage rate' do

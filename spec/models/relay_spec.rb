@@ -6,7 +6,6 @@ RSpec.describe Relay do
   it { is_expected.to allow_mass_assignment_of :instrument_id }
   it { is_expected.to allow_mass_assignment_of :type }
 
-
   context 'with relay' do
 
     before :each do
@@ -54,12 +53,10 @@ RSpec.describe Relay do
         @relay=RelayDummy.create!(:instrument_id => @instrument.id)
       end
 
-
       it 'should turn on the relay' do
         @relay.activate
         expect(@relay.get_status).to eq(true)
       end
-
 
       it 'should turn off the relay' do
         @relay.deactivate
