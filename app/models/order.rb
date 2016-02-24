@@ -66,7 +66,7 @@ class Order < ActiveRecord::Base
   end
 
   def move_order_details_to_default_status
-    order_details.each { |od| od.set_default_status! }
+    order_details.each(&:set_default_status!)
   end
 
   def cart_valid?
@@ -121,7 +121,7 @@ class Order < ActiveRecord::Base
     adder = Orders::ItemAdder.new(self)
     ods = adder.add(product, quantity, attributes)
 
-    ods.each { |od| od.assign_estimated_price! }
+    ods.each(&:assign_estimated_price!)
     ods
   end
 
@@ -183,7 +183,7 @@ class Order < ActiveRecord::Base
   end
 
   def has_subsidies?
-    order_details.any? { |od| od.has_subsidies? }
+    order_details.any?(&:has_subsidies?)
   end
 
   def only_reservation

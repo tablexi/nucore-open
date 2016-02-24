@@ -3,7 +3,7 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
 
   before :each do
     # clear out default price groups so they don't get in the way
-    PriceGroup.all.each { |pg| pg.delete }
+    PriceGroup.all.each(&:delete)
     @product_type = product_type
 
     @user = FactoryGirl.create(:user)
@@ -124,7 +124,7 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
 
   before :each do
     # clear out default price groups so they don't get in the way
-    PriceGroup.all.each { |pg| pg.delete }
+    PriceGroup.all.each(&:delete)
     @product_type = product_type
 
     @user = FactoryGirl.create(:user)

@@ -175,7 +175,7 @@ class ScheduleRule < ActiveRecord::Base
 
     # group rules by day, sort by start_hour
     Date::ABBR_DAYNAMES.each do |day|
-      day_rules = rules.select { |rule| rule.send("on_#{day.downcase}?") }.sort_by { |rule| rule.start_hour }
+      day_rules = rules.select { |rule| rule.send("on_#{day.downcase}?") }.sort_by(&:start_hour)
 
       if day_rules.empty?
         # build entire day not rule

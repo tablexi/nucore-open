@@ -123,7 +123,7 @@ class OrdersController < ApplicationController
     if order_detail.group_id
       order_details = @order.order_details.find(:all, conditions: { group_id: order_detail.group_id })
       OrderDetail.transaction do
-        if order_details.all? { |od| od.destroy }
+        if order_details.all?(&:destroy)
           flash[:notice] = "The bundle has been removed."
         else
           flash[:error] = "An error was encountered while removing the bundle."

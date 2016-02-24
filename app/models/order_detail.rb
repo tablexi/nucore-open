@@ -917,7 +917,7 @@ class OrderDetail < ActiveRecord::Base
         return msg_hash
       end
       begin
-        order_details.all? { |od| od.save! }
+        order_details.all?(&:save!)
         msg_hash[:notice] = "The #{msg_type} were successfully updated"
       rescue
         msg_hash[:error] = "There was an error updating the selected #{msg_type}"

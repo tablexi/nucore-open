@@ -13,7 +13,7 @@ namespace :order_details do
   desc "task to remove merge orders that have been abandoned. See Task #48377"
   task remove_merge_orders: :environment do
     stale_merge_orders = Order.where("merge_with_order_id IS NOT NULL AND created_at <= ?", Time.zone.now - 4.weeks).all
-    stale_merge_orders.each { |order| order.destroy }
+    stale_merge_orders.each(&:destroy)
   end
 
   desc "Retouch all complete order details and recalculate pricing"
