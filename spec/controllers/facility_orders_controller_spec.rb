@@ -155,7 +155,7 @@ RSpec.describe FacilityOrdersController do
     before :each do
       @method = :post
       @action = :send_receipt
-      @params.merge! id: @order.id
+      @params[:id] = @order.id
       request.env['HTTP_REFERRER'] = facility_order_path @authable, @order
       ActionMailer::Base.deliveries.clear
     end

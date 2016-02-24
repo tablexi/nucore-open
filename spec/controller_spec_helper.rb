@@ -306,7 +306,8 @@ def parametrize_dates(params, key)
   end_time = params[:"#{key}_end_at"]
 
   params.merge!(split_date_to_params("#{key}_start", start_time))
-  params.merge!(:duration_value => ((end_time - start_time) / 60).ceil.to_s, :duration_unit => 'minutes')
+  params[:duration_value] = ((end_time - start_time) / 60).ceil.to_s
+  params[:duration_unit] = 'minutes'
 
   params.delete :"#{key}_start_at"
   params.delete :"#{key}_end_at"

@@ -507,7 +507,7 @@ RSpec.describe InstrumentsController do
 
   context "instrument id" do
     before :each do
-      @params.merge!(:instrument_id => @params[:id])
+      @params[:instrument_id] = @params[:id]
       @params.delete(:id)
     end
 

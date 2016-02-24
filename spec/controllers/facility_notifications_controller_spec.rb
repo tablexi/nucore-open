@@ -107,7 +107,7 @@ RSpec.describe FacilityNotificationsController do
             place_and_complete_item_order(@user, @authable, account)
           end
 
-          @params.merge!(order_detail_ids: @order_details.map(&:id))
+          @params[:order_detail_ids] = @order_details.map(&:id)
           do_request
           is_expected.to set_flash
           expect(@accounts).to be_all { |account| flash[:notice].include? account.account_number }
@@ -122,7 +122,7 @@ RSpec.describe FacilityNotificationsController do
             place_and_complete_item_order(@user, @authable, account)
           end
 
-          @params.merge!(order_detail_ids: @order_details.map(&:id))
+          @params[:order_detail_ids] = @order_details.map(&:id)
 
           do_request
 
@@ -189,7 +189,7 @@ RSpec.describe FacilityNotificationsController do
 
     it "should update" do
       Timecop.freeze do
-        @params.merge!({:order_detail_ids => [@order_detail1.id, @order_detail3.id]})
+        @params[:order_detail_ids] = [@order_detail1.id, @order_detail3.id]
         do_request
         expect(flash[:error]).to be_nil
         expect(assigns(:order_details_updated)).to eq([@order_detail1, @order_detail3])

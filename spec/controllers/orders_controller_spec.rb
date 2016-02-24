@@ -461,7 +461,7 @@ RSpec.describe OrdersController do
           expect(Notifier).to receive(:order_receipt).never
           sign_in @admin
           switch_to @staff
-          @params.merge!(send_notification: "0")
+          @params[:send_notification] = "0"
           do_request
         end
 
@@ -469,7 +469,7 @@ RSpec.describe OrdersController do
           expect(Notifier).to receive(:order_receipt).once.and_return(DummyNotifier.new)
           sign_in @admin
           switch_to @staff
-          @params.merge!(send_notification: "1")
+          @params[:send_notification] = "1"
           do_request
         end
       end
@@ -508,14 +508,15 @@ RSpec.describe OrdersController do
       it "sets ordered_at to a time in the past" do
         maybe_grant_always_sign_in :director
         switch_to @staff
-        @params.merge!(order_date: format_usa_date(1.day.ago), order_time: { hour: "10", minute: "12", ampm: "AM" })
+        @params[:order_date] = format_usa_date(1.day.ago)
+        @params[:order_time] = { hour: "10", minute: "12", ampm: "AM" }
         do_request
         expect(assigns[:order].reload.ordered_at).to match_date 1.day.ago.change(hour: 10, min: 12)
       end
 
       it "sets ordered_at to now if not acting_as" do
         maybe_grant_always_sign_in :director
-        @params.merge!(order_date: format_usa_date(1.day.ago))
+        @params[:order_date] = format_usa_date(1.day.ago)
         do_request
         expect(assigns[:order].reload.ordered_at).to match_date Time.zone.now
       end
@@ -532,13 +533,13 @@ RSpec.describe OrdersController do
         end
 
         it "leave the order_detail states as new if new is set as the param" do
-          @params.merge!(order_status_id: OrderStatus.new_os.first.id)
+          @params[:order_status_id] = OrderStatus.new_os.first.id
           do_request
           assigns[:order].reload.order_details.all? { |od| expect(od.state).to eq("new") }
         end
 
         it "can set the order_detail states to canceled" do
-          @params.merge!(order_status_id: OrderStatus.canceled.first.id)
+          @params[:order_status_id] = OrderStatus.canceled.first.id
           do_request
           assigns[:order].reload.order_details.all? { |od| expect(od.state).to eq("canceled") }
         end
@@ -569,7 +570,8 @@ RSpec.describe OrdersController do
 
           it "sets the order_detail fulfilled dates to the order time" do
             @item_pp = @item.item_price_policies.create!(FactoryGirl.attributes_for(:item_price_policy, price_group_id: @price_group.id, start_date: 1.day.ago, expire_date: 1.day.from_now))
-            @params.merge!(order_date: format_usa_date(1.day.ago), order_time: { hour: "10", minute: "13", ampm: "AM" })
+            @params[:order_date] = format_usa_date(1.day.ago)
+            @params[:order_time] = { hour: "10", minute: "13", ampm: "AM" }
             do_request
             assigns[:order].reload.order_details.all? { |od| expect(od.fulfilled_at).to match_date 1.day.ago.change(hour: 10, min: 13) }
           end
@@ -583,20 +585,20 @@ RSpec.describe OrdersController do
             end
 
             it "uses the current price policy if the order date falls in the policy's date range" do
-              @params.merge!(order_date: format_usa_date(1.day.ago))
+              @params[:order_date] = format_usa_date(1.day.ago)
               do_request
               assigns[:order].reload.order_details.all? { |od| expect(od.price_policy).to eq(@item_pp) }
             end
 
             it "uses an old price policy if the order date falls in the old policy's date range" do
-              @params.merge!(order_date: format_usa_date(5.days.ago))
+              @params[:order_date] = format_usa_date(5.days.ago)
               do_request
               assigns[:order].reload.order_details.all? { |od| expect(od.price_policy).to eq(@item_past_pp) }
             end
 
             # when backdating was initially set up, this would cause an error, but behavior changed as of ticket #51239
             it "does not error if there is no policy set for the date in the past" do
-              @params.merge!(order_date: format_usa_date(9.days.ago))
+              @params[:order_date] = format_usa_date(9.days.ago)
               do_request
               assigns[:order].reload.order_details.all? do |od|
                 expect(od.price_policy).to be_nil
@@ -620,10 +622,11 @@ RSpec.describe OrdersController do
           define_open_account(@instrument.account, @account.account_number)
           @reservation = place_reservation_for_instrument(@staff, @instrument, @account, 3.days.ago)
           expect(@reservation).not_to be_nil
-          @params.merge!(id: @reservation.order_detail.order.id)
+          @params[:id] = @reservation.order_detail.order.id
           maybe_grant_always_sign_in :director
           switch_to @staff
-          @params.merge!(order_date: format_usa_date(2.days.ago), order_time: { hour: "2", minute: "27", ampm: "PM" })
+          @params[:order_date] = format_usa_date(2.days.ago)
+          @params[:order_time] = { hour: "2", minute: "27", ampm: "PM" }
           @submitted_date = 2.days.ago.change(hour: 14, min: 27)
         end
 
@@ -654,7 +657,7 @@ RSpec.describe OrdersController do
 
         context "canceled" do
           before :each do
-            @params.merge!(order_status_id: OrderStatus.canceled.first.id)
+            @params[:order_status_id] = OrderStatus.canceled.first.id
             do_request
           end
 
@@ -710,7 +713,7 @@ RSpec.describe OrdersController do
     before(:each) do
       @method = :put
       @action = :add
-      @params.merge!(order: { order_details: [{ quantity: 1, product_id: @item.id }] })
+      @params[:order] = { order_details: [{ quantity: 1, product_id: @item.id }] }
       @order.clear_cart?
     end
 
@@ -817,7 +820,7 @@ RSpec.describe OrdersController do
           do_request
 
           # add second item to cart
-          @params.merge!(order: { order_details: [{ quantity: 1, product_id: @item2.id }] })
+          @params[:order] = { order_details: [{ quantity: 1, product_id: @item2.id }] }
           do_request
 
           is_expected.to set_flash.to(/can not/)
@@ -925,7 +928,7 @@ RSpec.describe OrdersController do
       maybe_grant_always_sign_in :staff
       overridden_redirect = facility_url(@item.facility)
 
-      @params.merge!(redirect_to: overridden_redirect)
+      @params[:redirect_to] = overridden_redirect
       do_request
 
       expect(response).to redirect_to overridden_redirect
@@ -949,7 +952,7 @@ RSpec.describe OrdersController do
 
     context "bad input" do
       it "errors when quantity is not an integer" do
-        @params.merge!("quantity#{@order_detail.id}" => "1.5")
+        @params["quantity#{@order_detail.id}"] = "1.5"
         maybe_grant_always_sign_in :guest
         do_request
         is_expected.to set_flash.to(/quantity/i)

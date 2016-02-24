@@ -152,7 +152,7 @@ RSpec.describe UsersController do
           context 'user already exists' do
             before :each do
               @user = FactoryGirl.create(:user)
-              @params.merge!(:username => @user.username)
+              @params[:username] = @user.username
               do_request
             end
 
@@ -166,7 +166,7 @@ RSpec.describe UsersController do
             before :each do
               @ldap_user = FactoryGirl.build(:user)
               allow(controller).to receive(:service_username_lookup).with(@ldap_user.username).and_return(@ldap_user)
-              @params.merge!(:username => @ldap_user.username)
+              @params[:username] = @ldap_user.username
               do_request
             end
 

@@ -183,7 +183,7 @@ RSpec.describe TransactionSearch do
       expect(order_detail_new.order_status).to eq @os_new
       @controller.params = params
       @controller.init_current_facility
-      @controller.params.merge!(order_statuses: order_statuses)
+      @controller.params[:order_statuses] = order_statuses
       @controller.all_order_details
     end
 

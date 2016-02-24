@@ -193,7 +193,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
 
   context "with policy params" do
     before :each do
-      @params.merge!(interval: 5)
+      @params[:interval] = 5
 
       facility.price_groups.map(&:id).each do |id|
         @params.merge!(
@@ -209,10 +209,8 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
         @action=:create
         @start_date=Time.zone.now+1.year
         @expire_date=PricePolicy.generate_expire_date(@start_date)
-        @params.merge!({
-          :start_date => @start_date.to_s,
-          :expire_date => @expire_date.to_s
-        })
+        @params[:start_date] = @start_date.to_s
+        @params[:expire_date] = @expire_date.to_s
 
         @params_modifier.before_create @params if @params_modifier.try :respond_to?, :before_create
       end
@@ -415,7 +413,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
         @method = :delete
         @action = :destroy
         set_policy_date(1.day)
-        @params.merge!(id: price_policy.start_date.to_s)
+        @params[:id] = price_policy.start_date.to_s
         expect(price_policy.start_date).to be > Time.zone.now
       end
 
@@ -440,7 +438,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
         context "when a price policy is active" do
           before(:each) do
             price_policy.update_attributes(start_date: 1.day.ago, expire_date: 1.day.from_now)
-            @params.merge!(id: price_policy.start_date.to_s)
+            @params[:id] = price_policy.start_date.to_s
             do_request
           end
 
@@ -452,7 +450,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
 
         context "when there are no price policies for the start_date" do
           before(:each) do
-            @params.merge!(id: (price_policy.start_date + 1.day).to_s)
+            @params[:id] = (price_policy.start_date + 1.day).to_s
             do_request
           end
 
