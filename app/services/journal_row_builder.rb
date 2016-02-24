@@ -121,7 +121,7 @@ class JournalRowBuilder
   def order_detail_to_journal_rows(order_detail)
     factory = Converters::ConverterFactory.new(account: order_detail.account)
     klass = factory.for("order_detail_to_journal_rows")
-    klass.new(journal, order_detail).to_a
+    klass.new(journal, order_detail).convert
   end
 
   # Given a product and total, return an array of one or more new JournalRow
@@ -129,7 +129,7 @@ class JournalRowBuilder
   def product_to_journal_rows(product, total)
     factory = Converters::ConverterFactory.new
     klass = factory.for("product_to_journal_rows")
-    klass.new(journal, product, total).to_a
+    klass.new(journal, product, total).convert
   end
 
   # If recharge_enabled, then sum up the product_recharges by product so each

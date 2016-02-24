@@ -13,11 +13,11 @@ module SplitAccounts
         @splits = options[:splits] || order_detail.account.splits
       end
 
-      def to_a
+      def convert
         build_split_amounts.map do |split_amount|
           factory = ::Converters::ConverterFactory.new(account: split_amount.split.subaccount)
           klass = factory.for("order_detail_to_journal_rows")
-          klass.new(journal, order_detail, total: split_amount.amount).to_a
+          klass.new(journal, order_detail, total: split_amount.amount).convert
         end.flatten
       end
 

@@ -9,7 +9,7 @@ module Converters
       @total = total
     end
 
-    def to_a
+    def convert
       [{
         account: product.facility_account.revenue_account,
         amount: total * -1,

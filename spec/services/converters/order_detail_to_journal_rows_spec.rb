@@ -20,8 +20,8 @@ RSpec.describe Converters::OrderDetailToJournalRowAttributes, type: :service do
     expect(converter.order_detail).to eq(order_detail)
   end
 
-  describe "#to_a" do
-    let(:returned) { converter.to_a }
+  describe "#convert" do
+    let(:returned) { converter.convert }
 
     it "returns one journal row" do
       expect(returned.size).to eq(1)

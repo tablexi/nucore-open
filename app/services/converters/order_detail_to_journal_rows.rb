@@ -9,7 +9,7 @@ module Converters
       @total = options[:total] || order_detail.total
     end
 
-    def to_a
+    def convert
       [{
         account: order_detail.product.account,
         amount: total,
