@@ -150,7 +150,7 @@ module OldInstrumentPricePolicyCalculations
   private
 
   def strip_seconds(time)
-   Time.zone.parse("#{time.year}-#{time.month}-#{time.day} #{time.hour}:#{time.min}")
+    Time.zone.parse("#{time.year}-#{time.month}-#{time.day} #{time.hour}:#{time.min}")
   end
 
 end

@@ -1,7 +1,7 @@
 class PublicController < ApplicationController
 
   def index
-     flash.keep
+    flash.keep
      redirect_to(controller: "facilities", action: "index")
   end
 

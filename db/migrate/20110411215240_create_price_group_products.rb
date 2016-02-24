@@ -20,12 +20,12 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
 
       case pp
       when InstrumentPricePolicy
-          pgp.product=pp.instrument
+        pgp.product=pp.instrument
           pgp.reservation_window=pp[:reservation_window]
       when ServicePricePolicy
-          pgp.product=pp.service
+        pgp.product=pp.service
       when ItemPricePolicy
-          pgp.product=pp.item
+        pgp.product=pp.item
       end
 
       pgp.save!

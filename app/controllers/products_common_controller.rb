@@ -25,9 +25,9 @@ class ProductsCommonController < ApplicationController
     @archived_product_count     = current_facility_products.archived.length
     @not_archived_product_count = current_facility_products.not_archived.length
     @products = if params[:archived].nil? || params[:archived] != 'true'
-      current_facility_products.not_archived
+                  current_facility_products.not_archived
                 else
-      current_facility_products.archived
+                  current_facility_products.archived
                 end
 
     # not sure this actually does anything since @products is a Relation, not an Array, but it was

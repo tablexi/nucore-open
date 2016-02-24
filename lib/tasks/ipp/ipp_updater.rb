@@ -63,7 +63,7 @@ class IppUpdater
     begin
       yield
     rescue => e
-     puts e.message # with a backtrace: converter.error_to_log(e, obj)
+      puts e.message # with a backtrace: converter.error_to_log(e, obj)
     end
   end
 

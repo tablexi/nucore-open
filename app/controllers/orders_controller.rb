@@ -178,9 +178,9 @@ class OrdersController < ApplicationController
     end
 
     @product = if session[:add_to_cart].blank?
-      @order.order_details[0].try(:product)
+                 @order.order_details[0].try(:product)
                else
-      Product.find(session[:add_to_cart].first[:product_id])
+                 Product.find(session[:add_to_cart].first[:product_id])
                end
 
     redirect_to(cart_path) && return unless @product

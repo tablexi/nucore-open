@@ -107,9 +107,9 @@ module Reservations::Validations
     # if we're saving as an administrator, or doing a starting in the grace period,
     # we want access to all schedule rules
     rules = if order_detail.try(:order).nil? || reserved_by_admin || in_grace_period?
-      product.schedule_rules
+              product.schedule_rules
             else
-      product.available_schedule_rules(order_detail.order.user)
+              product.available_schedule_rules(order_detail.order.user)
             end
 
     mins  = (end_at - start_at)/60

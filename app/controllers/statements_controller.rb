@@ -20,10 +20,10 @@ class StatementsController < ApplicationController
 
     case params[:id]
     when 'recent'
-        @order_details = @account.order_details.for_facility_with_price_policy(@facility)
+      @order_details = @account.order_details.for_facility_with_price_policy(@facility)
         @order_details = @order_details.paginate(page: params[:page])
     when 'list'
-        action='list'
+      action='list'
         @statements=@statements.paginate(page: params[:page])
     end
 
@@ -54,9 +54,9 @@ class StatementsController < ApplicationController
     @statements = @account.statements.where(facility_id: @facility.id)
 
     @statement = if params[:id] =~ /\w+/i
-      @statements.blank? ? Statement.find_by_facility_id(@facility.id) : @statements.first
+                   @statements.blank? ? Statement.find_by_facility_id(@facility.id) : @statements.first
                  else
-      @account.statements.find(params[:id])
+                   @account.statements.find(params[:id])
                  end
     @statement = Statement.new if @statement.nil?
   end

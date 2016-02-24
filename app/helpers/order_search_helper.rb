@@ -2,18 +2,18 @@ module OrderSearchHelper
 
   def order_result_link(order_detail)
     path = if can_manage_order_detail? order_detail
-      facility_order_path(order_detail.order.facility, order_detail.order)
+             facility_order_path(order_detail.order.facility, order_detail.order)
            else
-      order_path(order_detail.order)
+             order_path(order_detail.order)
            end
     link_to order_detail.order.id, path
   end
 
   def order_detail_result_link(order_detail)
     path = if can_manage_order_detail? order_detail
-      facility_order_path(order_detail.order.facility, order_detail.order)
+             facility_order_path(order_detail.order.facility, order_detail.order)
            else
-      order_order_detail_path(order_detail.order, order_detail)
+             order_order_detail_path(order_detail.order, order_detail)
            end
     link_to order_detail.id, path
   end

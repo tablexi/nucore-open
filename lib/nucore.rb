@@ -118,9 +118,9 @@ module NUCore
         begin
           # If a limit has already been set, make sure we don't go over that limit
           limit = if relation.limit_value && results.size + slice_size > relation.limit_value
-            relation.limit_value % slice_size
+                    relation.limit_value % slice_size
                   else
-            slice_size
+                    slice_size
                   end
 
           slice = relation.limit(limit).offset(offset).all

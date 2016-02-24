@@ -1120,12 +1120,12 @@ RSpec.describe ReservationsController do
       end
 
       context 'off' do
-         before :each do
-           @reservation.update_attribute(:actual_start_at, @start)
-           @params[:switch] = 'off'
-           Timecop.travel(2.seconds.from_now)
-           expect(@reservation.order_detail.price_policy).to be_nil
-         end
+        before :each do
+          @reservation.update_attribute(:actual_start_at, @start)
+          @params[:switch] = 'off'
+          Timecop.travel(2.seconds.from_now)
+          expect(@reservation.order_detail.price_policy).to be_nil
+        end
 
          it_should_allow :guest do
            expect(assigns(:order)).to eq(@order)

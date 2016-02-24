@@ -50,9 +50,9 @@ module InstrumentPricePolicyCalculations
 
     case charge_for
     when InstrumentPricePolicy::CHARGE_FOR[:usage]
-        calculate_usage(reservation)
+      calculate_usage(reservation)
     when InstrumentPricePolicy::CHARGE_FOR[:overage]
-        calculate_overage(reservation)
+      calculate_overage(reservation)
     end
   end
 

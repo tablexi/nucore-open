@@ -1,6 +1,6 @@
 class BulkEmailController < ApplicationController
 
-	include BulkEmailHelper
+	 include BulkEmailHelper
  include CSVHelper
   
  admin_tab :all
@@ -16,7 +16,7 @@ class BulkEmailController < ApplicationController
  before_action :init_search_options
 
 	def search
-    @users = do_search(@search_fields) if params[:search_type]
+   @users = do_search(@search_fields) if params[:search_type]
 
     respond_to do |format|
       format.html { @users = @users.paginate(page: params[:page]) if @users }
