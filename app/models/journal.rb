@@ -168,7 +168,7 @@ class Journal < ActiveRecord::Base
   end
 
   def add_spreadsheet(file_path)
-    return false if !File.exists?(file_path)
+    return false if !File.exist?(file_path)
     update_attribute(:file, File.open(file_path))
   end
 
