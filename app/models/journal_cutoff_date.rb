@@ -19,7 +19,7 @@ class JournalCutoffDate < ActiveRecord::Base
     cutoff_date < Time.current
   end
 
-  # TODO consider turning this into a reusable module
+  # TODO: consider turning this into a reusable module
   def cutoff_date_time=(hash)
     formatted = "#{cutoff_date.to_date} #{hash[:hour]}:#{hash[:minute]}#{hash[:ampm]}"
     self.cutoff_date = Time.zone.parse(formatted)

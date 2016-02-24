@@ -1,5 +1,5 @@
 class PriceGroupsController < ApplicationController
-  # TODO refactor to use PriceGroupMembersController concern, maybe with a new name?
+  # TODO: refactor to use PriceGroupMembersController concern, maybe with a new name?
 
   admin_tab     :all
   before_action :authenticate_user!

@@ -193,7 +193,7 @@ RSpec.describe OrderDetail do
         order_detail.save!
       end
 
-      it 'should assign the account but not set estimated costs' do # TODO is this behavior correct?
+      it 'should assign the account but not set estimated costs' do # TODO: is this behavior correct?
         expect(order_detail.account).to eq cc_account
         expect(order_detail.estimated_cost).to be_blank
         expect(order_detail.estimated_subsidy).to be_blank

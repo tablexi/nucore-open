@@ -49,7 +49,7 @@ class NotificationSender
 
   def find_accounts_to_notify
     order_detail_groups.each do |order_details|
-      # TODO Poor man's multi-item `pluck`
+      # TODO: Poor man's multi-item `pluck`
       ActiveRecord::Base.connection.select_all(order_details.select(["order_details.account_id", "products.facility_id"])).each do |od|
         @account_ids_to_notify << [od["account_id"], od["facility_id"]]
       end

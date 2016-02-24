@@ -227,7 +227,7 @@ class Reservation < ActiveRecord::Base
     new_record? || !canceled?
   end
 
-  # TODO does this need to be more robust?
+  # TODO: does this need to be more robust?
   def can_edit_actuals?
     return false if order_detail.nil?
     complete?
@@ -257,7 +257,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def requires_but_missing_actuals?
-    !!(!canceled? && product.control_mechanism != Relay::CONTROL_MECHANISMS[:manual] && !has_actuals?) # TODO refactor?
+    !!(!canceled? && product.control_mechanism != Relay::CONTROL_MECHANISMS[:manual] && !has_actuals?) # TODO: refactor?
   end
 
   def locked?

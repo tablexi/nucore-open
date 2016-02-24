@@ -67,7 +67,7 @@ class OrderRowImporter
     @order_key ||= [user_field, chart_string_field, order_date_field]
   end
 
-  def row_with_errors # TODO refactor
+  def row_with_errors # TODO: refactor
     new_row = @row.dup
     new_row[HEADERS[:errors]] = errors.join(", ")
     new_row

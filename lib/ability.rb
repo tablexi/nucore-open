@@ -169,7 +169,7 @@ class Ability
       end
 
     elsif resource.is_a?(Reservation)
-      # TODO Add :accessory hash back in to hide hidden accessories from non-admin users
+      # TODO: Add :accessory hash back in to hide hidden accessories from non-admin users
       # See task #55479
       can :read, ProductAccessory #, :accessory => { :is_hidden => false }
       if user.operator_of?(resource.product.facility)

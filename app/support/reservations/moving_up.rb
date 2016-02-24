@@ -36,6 +36,6 @@ module Reservations::MovingUp
   # returns true if this reservation can be moved to
   # an earlier time slot, false otherwise
   def can_move?
-    !(canceled? || order_detail.complete? || in_grace_period? || earliest_possible.nil?) # TODO refactor?
+    !(canceled? || order_detail.complete? || in_grace_period? || earliest_possible.nil?) # TODO: refactor?
   end
 end
