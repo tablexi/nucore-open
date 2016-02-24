@@ -52,7 +52,7 @@ RSpec.describe ScheduleRulesController do
       @method = :post
       @action = :create
       @params.merge!(
-        schedule_rule: FactoryGirl.attributes_for(:schedule_rule, instrument_id: @instrument.id)
+        schedule_rule: FactoryGirl.attributes_for(:schedule_rule, instrument_id: @instrument.id),
       )
     end
 
@@ -114,7 +114,7 @@ RSpec.describe ScheduleRulesController do
         @method = :put
         @action = :update
         @params.merge!(
-          schedule_rule: FactoryGirl.attributes_for(:schedule_rule)
+          schedule_rule: FactoryGirl.attributes_for(:schedule_rule),
         )
       end
 

@@ -20,7 +20,7 @@ class Product < ActiveRecord::Base
       only_integer: true,
       greater_than_or_equal_to: 0,
       less_than_or_equal_to: 99_999,
-      if: :account_required
+      if: :account_required,
   ) if SettingsHelper.feature_on? :expense_accounts
 
   # Use lambda so we can dynamically enable/disable in specs

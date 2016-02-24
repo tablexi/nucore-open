@@ -170,7 +170,7 @@ RSpec.describe FileUploadsController do
       @file_upload = FactoryGirl.create(:stored_file,
                                       order_detail_id: @order_detail.id,
                                       created_by: @admin.id,
-                                      product: @service
+                                      product: @service,
                                      )
 
       @params = {
@@ -191,7 +191,7 @@ RSpec.describe FileUploadsController do
                                           order_detail_id: @order_detail.id,
                                           created_by: @staff.id,
                                           product: @service,
-                                          file_type: "sample_result"
+                                          file_type: "sample_result",
                                          )
         @params.merge!(id: @sample_result.id)
       end
@@ -207,7 +207,7 @@ RSpec.describe FileUploadsController do
     @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
     @product = FactoryGirl.create(:item,
                                 facility_account: @facility_account,
-                                facility: @authable
+                                facility: @authable,
                                )
     @account = create_nufs_account_with_owner
     @order = FactoryGirl.create(:order,
@@ -215,7 +215,7 @@ RSpec.describe FileUploadsController do
                               user: @director,
                               created_by: @director.id,
                               account: @account,
-                              ordered_at: Time.zone.now
+                              ordered_at: Time.zone.now,
                              )
     @price_group = FactoryGirl.create(:price_group, facility: @authable)
     @price_policy = FactoryGirl.create(:item_price_policy, product: @product, price_group: @price_group)

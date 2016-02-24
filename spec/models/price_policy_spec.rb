@@ -49,7 +49,7 @@ RSpec.describe PricePolicy do
                                    price_group_id: @price_group.id,
                                    product_id: @item.id,
                                    start_date: @start_date,
-                                   expire_date: @start_date)
+                                   expire_date: @start_date),
       )
 
       assert !pp.save
@@ -62,7 +62,7 @@ RSpec.describe PricePolicy do
                                    price_group_id: @price_group.id,
                                    product_id: @item.id,
                                    start_date: @start_date,
-                                   expire_date: PricePolicy.generate_expire_date(@start_date) + 1.month)
+                                   expire_date: PricePolicy.generate_expire_date(@start_date) + 1.month),
       )
       assert !pp.save
       assert pp.errors[:expire_date]

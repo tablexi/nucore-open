@@ -33,7 +33,7 @@ class ScheduleRule < ActiveRecord::Base
         product: instrument,
         reserve_start_at: day.change(hour: rule.start_hour, min: rule.start_min),
         reserve_end_at: day.change(hour: rule.end_hour, min: rule.end_min),
-        blackout: true
+        blackout: true,
       )
     end
   end

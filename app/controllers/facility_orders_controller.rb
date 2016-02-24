@@ -127,7 +127,7 @@ class FacilityOrdersController < ApplicationController
       account_id: @order.account_id,
       user_id: @order.user_id,
       created_by: current_user.id,
-      ordered_at: Time.zone.now
+      ordered_at: Time.zone.now,
     )
   end
 

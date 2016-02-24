@@ -48,7 +48,7 @@ class IppUpdater
       actual_cost: actuals[:cost],
       actual_subsidy: actuals[:subsidy],
       estimated_cost: estimates[:cost],
-      estimated_subsidy: estimates[:subsidy]
+      estimated_subsidy: estimates[:subsidy],
     )
   end
 

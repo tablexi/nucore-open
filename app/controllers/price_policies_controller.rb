@@ -103,7 +103,7 @@ class PricePoliciesController < ApplicationController
       instance_variable_get("@#{product_var}")
         .price_policies
         .for_date(@start_date)
-        .first
+        .first,
     )
   end
 

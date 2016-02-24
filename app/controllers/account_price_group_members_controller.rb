@@ -51,7 +51,7 @@ class AccountPriceGroupMembersController < ApplicationController
       :all,
       conditions: search_conditions,
       order: "account_number",
-      limit: @limit
+      limit: @limit,
     )
     @count = Account.count(:all, conditions: search_conditions)
   end

@@ -224,7 +224,7 @@ RSpec.describe OrderRowImporter do
       before(:each) do
         create(:user_price_group_member, user: user, price_group: price_group)
         product.service_price_policies.create(
-          attributes_for(:service_price_policy, price_group: price_group)
+          attributes_for(:service_price_policy, price_group: price_group),
         )
       end
 

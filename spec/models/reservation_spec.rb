@@ -231,7 +231,7 @@ RSpec.describe Reservation do
               before do
                 instrument.reservations.create!(
                   reserve_start_at: reservation.reserve_end_at,
-                  reserve_end_at: reservation.reserve_end_at + 1.hour
+                  reserve_end_at: reservation.reserve_end_at + 1.hour,
                 )
               end
 
@@ -268,7 +268,7 @@ RSpec.describe Reservation do
               context "before the lock window begins" do
                 before :each do
                   Timecop.freeze(
-                    reservation.reserve_start_at - (window_hours + 2).hours
+                    reservation.reserve_start_at - (window_hours + 2).hours,
                   )
                 end
 
@@ -278,7 +278,7 @@ RSpec.describe Reservation do
               context "after the lock window has begun" do
                 before :each do
                   Timecop.freeze(
-                    reservation.reserve_start_at - (window_hours - 2).hours
+                    reservation.reserve_start_at - (window_hours - 2).hours,
                   )
                 end
 
@@ -1065,7 +1065,7 @@ RSpec.describe Reservation do
       @instrument.reservations.create!(
         reserve_start_at: Time.zone.parse("2013-02-22 17:00:00"),
         duration_value: 4080,
-        duration_unit: "minutes"
+        duration_unit: "minutes",
       )
     end
 
@@ -1073,7 +1073,7 @@ RSpec.describe Reservation do
       @instrument.reservations.create!(
         reserve_start_at: Time.zone.parse("2013-02-25 13:00:00"),
         duration_value: 180,
-        duration_unit: "minutes"
+        duration_unit: "minutes",
       )
     end
 
@@ -1081,7 +1081,7 @@ RSpec.describe Reservation do
       @instrument.reservations.create!(
         reserve_start_at: next_sunday - 7.hours,
         duration_value: 600,
-        duration_unit: "minutes"
+        duration_unit: "minutes",
       )
     end
 
@@ -1089,7 +1089,7 @@ RSpec.describe Reservation do
       @instrument.reservations.create!(
         reserve_start_at: next_sunday + 7.hours,
         duration_value: 180,
-        duration_unit: "minutes"
+        duration_unit: "minutes",
       )
     end
 
@@ -1097,7 +1097,7 @@ RSpec.describe Reservation do
       @instrument.reservations.create!(
         reserve_start_at: weekend_res.reserve_start_at - 7.hours,
         duration_value: 180,
-        duration_unit: "minutes"
+        duration_unit: "minutes",
       )
     end
 

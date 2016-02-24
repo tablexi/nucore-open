@@ -435,14 +435,14 @@ RSpec.describe OldInstrumentPricePolicy do
         usage_mins: 15,
         overage_rate: nil,
         overage_subsidy: nil,
-        reservation_rate: 0
+        reservation_rate: 0,
       )
       @now = Time.zone.now
       # set reservation window to usage minutes from the price policy
       @reservation = Reservation.new(
         product: @instrument,
         reserve_start_at: @now,
-        reserve_end_at: @now + @ipp.usage_mins.minutes
+        reserve_end_at: @now + @ipp.usage_mins.minutes,
       )
     end
 
@@ -455,7 +455,7 @@ RSpec.describe OldInstrumentPricePolicy do
           reserve_start_at: yesterday,
           reserve_end_at: end_time,
           actual_start_at: yesterday,
-          actual_end_at: end_time
+          actual_end_at: end_time,
         )
       end
 

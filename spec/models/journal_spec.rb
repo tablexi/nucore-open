@@ -194,7 +194,7 @@ RSpec.describe Journal do
         journal = Journal.create!(
           facility_id: (facilities_list.size == 1 ? facilities_list.first.id : nil),
           created_by: @admin.id,
-          journal_date: Time.zone.now
+          journal_date: Time.zone.now,
         )
 
         journal.create_journal_rows!(@ods)

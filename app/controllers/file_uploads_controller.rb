@@ -34,7 +34,7 @@ class FileUploadsController < ApplicationController
         .stored_files
         .where(file_type: params[:file_type])
         .find(params[:id])
-        .download_url
+        .download_url,
     )
   end
 

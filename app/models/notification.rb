@@ -16,7 +16,7 @@ class Notification < ActiveRecord::Base
     create!(
       user: user,
       subject: subject,
-      notice: subject.to_notice(self, user)
+      notice: subject.to_notice(self, user),
     )
   end
 

@@ -44,8 +44,8 @@ class OrderImportsController < ApplicationController
       params[:order_import].merge(
         created_by: session_user.id,
         upload_file: stored_file,
-        facility: @current_facility
-      )
+        facility: @current_facility,
+      ),
     )
   end
 
@@ -86,7 +86,7 @@ class OrderImportsController < ApplicationController
       file: upload_file,
       file_type: "import_upload",
       name: upload_file.try(:original_filename),
-      created_by: session_user.id
+      created_by: session_user.id,
     )
   end
 

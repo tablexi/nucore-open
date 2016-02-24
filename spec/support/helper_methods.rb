@@ -48,7 +48,7 @@ end
 def create_nufs_account_with_owner(owner = :owner)
   owner = instance_variable_get("@#{owner}")
   FactoryGirl.create(:nufs_account,
-                     account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner)]
+                     account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner)],
                     )
 end
 
@@ -273,20 +273,20 @@ def reset_settings
   Settings.reload_from_files(
     Rails.root.join("config", "settings.yml").to_s,
     Rails.root.join("config", "settings", "#{Rails.env}.yml").to_s,
-    Rails.root.join("config", "environments", "#{Rails.env}.yml").to_s
+    Rails.root.join("config", "environments", "#{Rails.env}.yml").to_s,
   )
 end
 
 def setup_account(factory, facility, user)
   FactoryGirl.create(factory,
                      facility: facility,
-                     account_users_attributes: account_users_attributes_hash(user: user)
+                     account_users_attributes: account_users_attributes_hash(user: user),
                     )
 end
 
 def setup_item_from_facility_account(facility_account)
   facility_account.facility.items.create(
-    FactoryGirl.attributes_for(:item, facility_account_id: facility_account.id)
+    FactoryGirl.attributes_for(:item, facility_account_id: facility_account.id),
   )
 end
 
@@ -295,8 +295,8 @@ def setup_order_detail(order, product, statement = nil)
     FactoryGirl.attributes_for(:order_detail).update(
       product_id: product.id,
       account_id: order.account.id,
-      statement_id: statement.try(:id)
-    )
+      statement_id: statement.try(:id),
+    ),
   )
 end
 

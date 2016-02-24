@@ -55,7 +55,7 @@ module Reservations::Rendering
         end
       else
         { "admin" => true, "title" => "Admin\nReservation" }
-      end
+      end,
     )
   end
 

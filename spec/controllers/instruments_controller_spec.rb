@@ -114,7 +114,7 @@ RSpec.describe InstrumentsController do
             add_order_path(
               Order.all.last,
               order: { order_details: [product_id: instrument.id, quantity: 1] },
-            )
+            ),
           )
         end
       end
@@ -141,7 +141,7 @@ RSpec.describe InstrumentsController do
           add_order_path(
             Order.all.last,
             order: { order_details: [product_id: instrument.id, quantity: 1] },
-          )
+          ),
         )
       end
     end
@@ -260,8 +260,8 @@ RSpec.describe InstrumentsController do
       @params.merge!(
         instrument: FactoryGirl.attributes_for(:instrument,
                                                   facility_account_id: @facility_account.id,
-                                                  control_mechanism: "manual"
-                                                 )
+                                                  control_mechanism: "manual",
+                                                 ),
       )
     end
 
@@ -412,7 +412,7 @@ RSpec.describe InstrumentsController do
           username: "username",
           password: "password",
           type: RelaySynaccessRevA.name,
-          instrument_id: @instrument.id
+          instrument_id: @instrument.id,
         )
       end
 

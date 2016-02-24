@@ -37,19 +37,19 @@ class IppConverter
       attrs.merge!(
         "usage_rate" => old_policy.reservation_rate * (60 / old_policy.reservation_mins),
         "usage_subsidy" => old_policy.reservation_subsidy * (60 / old_policy.reservation_mins),
-        "charge_for" => InstrumentPricePolicy::CHARGE_FOR[:reservation]
+        "charge_for" => InstrumentPricePolicy::CHARGE_FOR[:reservation],
       )
     elsif !old_policy.product.reservation_only? && old_policy.usage_rate && old_policy.usage_mins
       attrs.merge!(
         "usage_rate" => old_policy.usage_rate * (60 / old_policy.usage_mins),
         "usage_subsidy" => old_policy.usage_subsidy * (60 / old_policy.usage_mins),
-        "charge_for" => InstrumentPricePolicy::CHARGE_FOR[:usage]
+        "charge_for" => InstrumentPricePolicy::CHARGE_FOR[:usage],
       )
     elsif !old_policy.product.reservation_only? && old_policy.reservation_rate && old_policy.overage_rate
       attrs.merge!(
         "usage_rate" => old_policy.reservation_rate * (60 / old_policy.reservation_mins),
         "usage_subsidy" => old_policy.reservation_subsidy * (60 / old_policy.reservation_mins),
-        "charge_for" => InstrumentPricePolicy::CHARGE_FOR[:overage]
+        "charge_for" => InstrumentPricePolicy::CHARGE_FOR[:overage],
       )
     else
       error! old_policy, "INVALID CONFIGURATION"
@@ -64,7 +64,7 @@ class IppConverter
       "overage_subsidy" => nil,
       "reservation_mins" => nil,
       "overage_mins" => nil,
-      "usage_mins" => nil
+      "usage_mins" => nil,
     )
   end
 

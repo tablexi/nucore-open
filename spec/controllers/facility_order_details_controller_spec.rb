@@ -11,7 +11,7 @@ RSpec.describe FacilityOrderDetailsController do
     @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
     @product = FactoryGirl.create(:item,
                                 facility_account: @facility_account,
-                                facility: @authable
+                                facility: @authable,
                                )
     @account = create_nufs_account_with_owner :director
     @order = FactoryGirl.create(:order,
@@ -20,7 +20,7 @@ RSpec.describe FacilityOrderDetailsController do
                               created_by: @director.id,
                               account: @account,
                               ordered_at: Time.zone.now,
-                              state: "purchased"
+                              state: "purchased",
                              )
     @price_group = FactoryGirl.create(:price_group, facility: @authable)
     @price_policy = FactoryGirl.create(:item_price_policy, product: @product, price_group: @price_group)
