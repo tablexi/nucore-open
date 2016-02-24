@@ -1127,57 +1127,57 @@ RSpec.describe ReservationsController do
            expect(@reservation.order_detail.price_policy).to be_nil
          end
 
-        it_should_allow :guest do
-          expect(assigns(:order)).to eq(@order)
-          expect(assigns(:order_detail)).to eq(@order_detail)
-          expect(assigns(:instrument)).to eq(@instrument)
-          expect(assigns(:reservation)).to eq(@reservation)
-          expect(assigns(:reservation).order_detail.price_policy).not_to be_nil
-          expect(assigns(:reservation).actual_end_at).to be < Time.zone.now
-          expect(assigns(:reservation)).to be_complete
-          expect(assigns(:instrument).instrument_statuses.size).to eq(1)
-          expect(assigns(:instrument).instrument_statuses[0].is_on).to eq(false)
-          is_expected.to set_flash
-          is_expected.to respond_with :redirect
-        end
+         it_should_allow :guest do
+           expect(assigns(:order)).to eq(@order)
+           expect(assigns(:order_detail)).to eq(@order_detail)
+           expect(assigns(:instrument)).to eq(@instrument)
+           expect(assigns(:reservation)).to eq(@reservation)
+           expect(assigns(:reservation).order_detail.price_policy).not_to be_nil
+           expect(assigns(:reservation).actual_end_at).to be < Time.zone.now
+           expect(assigns(:reservation)).to be_complete
+           expect(assigns(:instrument).instrument_statuses.size).to eq(1)
+           expect(assigns(:instrument).instrument_statuses[0].is_on).to eq(false)
+           is_expected.to set_flash
+           is_expected.to respond_with :redirect
+         end
 
-        it_should_allow_all facility_operators, 'turn off instrument from someone elses reservation' do
-          is_expected.to respond_with :redirect
-        end
-        it_should_deny :random_user
+         it_should_allow_all facility_operators, 'turn off instrument from someone elses reservation' do
+           is_expected.to respond_with :redirect
+         end
+         it_should_deny :random_user
 
-        context "for instrument w/ accessory" do
-          before :each do
-            ## (setup stolen from orders_controller_spec)
-            ## create a purchasable item
-            @item = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
-            @item_pp=@item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group_id: @price_group.id))
-            @item_pp.reload.restrict_purchase=false
+         context "for instrument w/ accessory" do
+           before :each do
+             ## (setup stolen from orders_controller_spec)
+             ## create a purchasable item
+             @item = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+             @item_pp=@item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group_id: @price_group.id))
+             @item_pp.reload.restrict_purchase=false
 
-            ## make it an accessory of the reserved product
-            @instrument.product_accessories.create!(accessory: @item)
-          end
+             ## make it an accessory of the reserved product
+             @instrument.product_accessories.create!(accessory: @item)
+           end
 
-          it_should_allow :guest, "it redirects to the accessories" do
-            is_expected.to redirect_to new_order_order_detail_accessory_path(@order, @order_detail)
-          end
-        end
+           it_should_allow :guest, "it redirects to the accessories" do
+             is_expected.to redirect_to new_order_order_detail_accessory_path(@order, @order_detail)
+           end
+         end
 
-        context 'and a reservation using the same relay as another running reservation' do
-          let!(:reservation_running) do create(:purchased_reservation, product: @instrument,
-                                                                      actual_start_at: 30.minutes.ago, reserve_start_at: 30.minutes.ago,
-                                                                      reserve_end_at: 30.minutes.from_now) 
-          end
+         context 'and a reservation using the same relay as another running reservation' do
+           let!(:reservation_running) do create(:purchased_reservation, product: @instrument,
+                                                                       actual_start_at: 30.minutes.ago, reserve_start_at: 30.minutes.ago,
+                                                                       reserve_end_at: 30.minutes.from_now) 
+           end
 
-          before { @params[:reservation_id] = reservation_running.id }
+           before { @params[:reservation_id] = reservation_running.id }
 
-          it 'does not switch off the relay' do
-            expect_any_instance_of(ReservationInstrumentSwitcher).to_not receive(:switch_off!)
+           it 'does not switch off the relay' do
+             expect_any_instance_of(ReservationInstrumentSwitcher).to_not receive(:switch_off!)
 
-            sign_in @guest
-            do_request
-          end
-        end
+             sign_in @guest
+             do_request
+           end
+         end
       end
     end
   end

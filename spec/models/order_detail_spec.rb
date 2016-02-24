@@ -374,28 +374,28 @@ RSpec.describe OrderDetail do
      end
 
     ## TODO will need to re-write to check for file uploads
-    it 'should validate for a service with no file template upload' do
-      expect(@order_detail.valid_service_meta?).to be true
-    end
+     it 'should validate for a service with no file template upload' do
+       expect(@order_detail.valid_service_meta?).to be true
+     end
 
-    it 'should not validate_extras for a service file template upload with no template results' do
-      # add service file template
-      @file1      = "#{Rails.root}/spec/files/template1.txt"
-      @template1  = @service.stored_files.create(name: "Template 1", file: File.open(@file1), file_type: "template",
-                                                 created_by: @user.id)
-      expect(@order_detail.valid_service_meta?).to be false
-    end
+     it 'should not validate_extras for a service file template upload with no template results' do
+       # add service file template
+       @file1      = "#{Rails.root}/spec/files/template1.txt"
+       @template1  = @service.stored_files.create(name: "Template 1", file: File.open(@file1), file_type: "template",
+                                                  created_by: @user.id)
+       expect(@order_detail.valid_service_meta?).to be false
+     end
 
-    it 'should validate_extras for a service file template upload with template results' do
-      # add service file template
-      @file1      = "#{Rails.root}/spec/files/template1.txt"
-      @template1  = @service.stored_files.create(name: "Template 1", file: File.open(@file1), file_type: "template",
-                                                 created_by: @user)
-      # add results for a specific order detail
-      @results1   = @service.stored_files.create(name: "Results 1", file: File.open(@file1), file_type: "template_result",
-                                                 order_detail: @order_detail, created_by: @user)
-      expect(@order_detail.valid_service_meta?).to be true
-    end
+     it 'should validate_extras for a service file template upload with template results' do
+       # add service file template
+       @file1      = "#{Rails.root}/spec/files/template1.txt"
+       @template1  = @service.stored_files.create(name: "Template 1", file: File.open(@file1), file_type: "template",
+                                                  created_by: @user)
+       # add results for a specific order detail
+       @results1   = @service.stored_files.create(name: "Results 1", file: File.open(@file1), file_type: "template_result",
+                                                  order_detail: @order_detail, created_by: @user)
+       expect(@order_detail.valid_service_meta?).to be true
+     end
   end
 
   context 'instrument' do

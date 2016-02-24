@@ -179,49 +179,49 @@ RSpec.describe PricePolicy do
       end
     end
 
-  context 'should define abstract methods' do
-
-    before :each do
-      @sp = PricePolicy.new
+    context 'should define abstract methods' do
+  
+      before :each do
+        @sp = PricePolicy.new
+      end
+  
+      it 'should abstract #calculate_cost_and_subsidy' do
+        expect(@sp).to be_respond_to(:calculate_cost_and_subsidy)
+        assert_raise(RuntimeError) { @sp.calculate_cost_and_subsidy }
+      end
+  
+      it 'should abstract #estimate_cost_and_subsidy' do
+        expect(@sp).to be_respond_to(:estimate_cost_and_subsidy)
+        assert_raise(RuntimeError) { @sp.estimate_cost_and_subsidy }
+      end
+  
     end
 
-    it 'should abstract #calculate_cost_and_subsidy' do
-      expect(@sp).to be_respond_to(:calculate_cost_and_subsidy)
-      assert_raise(RuntimeError) { @sp.calculate_cost_and_subsidy }
+    context 'order assignment' do
+  
+      before :each do
+        @user     = FactoryGirl.create(:user)
+        @account  = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
+        @order    = @user.orders.create(FactoryGirl.attributes_for(:order, created_by: @user.id))
+        @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(product_id: @item.id, account_id: @account.id))
+        @price_group = FactoryGirl.create(:price_group, facility: @facility)
+        create(:account_price_group_member, account: @account, price_group: @price_group)
+        FactoryGirl.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
+        @pp=FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group)
+      end
+  
+      it 'should not be assigned' do
+        expect(@pp).not_to be_assigned_to_order
+      end
+  
+      it 'should be assigned' do
+        @order_detail.reload
+        @order_detail.to_inprocess!
+        @order_detail.to_complete!
+        expect(@pp).to be_assigned_to_order
+      end
+  
     end
-
-    it 'should abstract #estimate_cost_and_subsidy' do
-      expect(@sp).to be_respond_to(:estimate_cost_and_subsidy)
-      assert_raise(RuntimeError) { @sp.estimate_cost_and_subsidy }
-    end
-
-  end
-
-  context 'order assignment' do
-
-    before :each do
-      @user     = FactoryGirl.create(:user)
-      @account  = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
-      @order    = @user.orders.create(FactoryGirl.attributes_for(:order, created_by: @user.id))
-      @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(product_id: @item.id, account_id: @account.id))
-      @price_group = FactoryGirl.create(:price_group, facility: @facility)
-      create(:account_price_group_member, account: @account, price_group: @price_group)
-      FactoryGirl.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
-      @pp=FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group)
-    end
-
-    it 'should not be assigned' do
-      expect(@pp).not_to be_assigned_to_order
-    end
-
-    it 'should be assigned' do
-      @order_detail.reload
-      @order_detail.to_inprocess!
-      @order_detail.to_complete!
-      expect(@pp).to be_assigned_to_order
-    end
-
-  end
 
   end
 
