@@ -21,7 +21,7 @@ RSpec.describe OrderDetail do
     expect(@item).to be_valid
     @user_accounts = create_list(:nufs_account, 5, account_users_attributes: account_users_attributes_hash(user: @user))
     @account = @user_accounts.first
-    @order    = @user.orders.create(attributes_for(:order, created_by: @user.id, account: @account, facility: @facility))
+    @order = @user.orders.create(attributes_for(:order, created_by: @user.id, account: @account, facility: @facility))
     expect(@order).to be_valid
     @order_detail = @order.order_details.create(attributes_for(:order_detail).update(product_id: @item.id, account_id: @account.id))
     expect(@order_detail.state).to eq('new')
@@ -321,7 +321,7 @@ RSpec.describe OrderDetail do
       @account        = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
       @price_group    = create(:price_group, facility: @facility)
       create(:account_price_group_member, account: account, price_group: @price_group)
-      @item_pp        = @item.item_price_policies.create(attributes_for(:item_price_policy, price_group_id: @price_group.id))
+      @item_pp = @item.item_price_policies.create(attributes_for(:item_price_policy, price_group_id: @price_group.id))
       @order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10, price_policy_id: @item_pp.id)
     end
 
@@ -1254,7 +1254,7 @@ RSpec.describe OrderDetail do
     end
 
     shared_examples_for 'it charges for reservation' do
-      let!(:price_policy)  { instrument_reservation_price_policy }
+      let!(:price_policy) { instrument_reservation_price_policy }
 
       context 'when the reservation has been canceled' do
         before { reservation.update_attribute(:canceled_at, Time.zone.now) }

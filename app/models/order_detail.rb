@@ -290,7 +290,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   scope :pending, joins(:order).where(:state => ['new', 'inprocess']).ordered
-  scope :confirmed_reservations,  reservations
+  scope :confirmed_reservations, reservations
                                  .joins(:order)
                                  .includes(:reservation)
                                  .ordered

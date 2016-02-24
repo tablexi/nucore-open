@@ -70,7 +70,7 @@ class FacilityReservationsController < ApplicationController
       update_prices
 
       if @order_detail.actual_cost_changed? || @order_detail.actual_subsidy_changed?
-        additional_notice          = '  Order detail actual cost has been updated as well.'
+        additional_notice = '  Order detail actual cost has been updated as well.'
       end
     else
       # We're updating a reservation before it's been completed

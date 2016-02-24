@@ -272,7 +272,7 @@ RSpec.describe InstrumentsController do
     context 'with relay' do
 
       before :each do
-        @params[:instrument].merge!(          :control_mechanism => 'relay',
+        @params[:instrument].merge!( :control_mechanism => 'relay',
           :relay_attributes => {
             :ip => '192.168.1.2',
             :port => 1234,
@@ -424,7 +424,7 @@ RSpec.describe InstrumentsController do
     context 'with relay' do
 
       before :each do
-        @params[:instrument].merge!(          :control_mechanism => 'relay',
+        @params[:instrument].merge!( :control_mechanism => 'relay',
           :relay_attributes => {
             :ip => '192.168.1.2',
             :port => 1234,

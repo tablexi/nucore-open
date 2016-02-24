@@ -175,7 +175,7 @@ RSpec.describe Instrument do
 
   context "updating nested relay" do
     before :each do
-      @instrument       = FactoryGirl.create(:instrument,
+      @instrument = FactoryGirl.create(:instrument,
                                              :facility => facility,
                                              :facility_account => facility_account,
                                              :no_relay => true)
@@ -338,14 +338,14 @@ RSpec.describe Instrument do
   context "reservations with schedule rules from 9 am to 5 pm every day, with 60 minute durations" do
     before(:each) do
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @instrument       = FactoryGirl.create(:instrument,
+      @instrument = FactoryGirl.create(:instrument,
                                              :facility => facility,
                                              :facility_account => facility_account,
                                              :min_reserve_mins => 60,
                                              :max_reserve_mins => 60)
       assert @instrument.valid?
       # add rule, available every day from 9 to 5, 60 minutes duration
-      @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       assert @rule.valid?
       allow_any_instance_of(Reservation).to receive(:admin?).and_return(false)
     end
@@ -437,7 +437,7 @@ RSpec.describe Instrument do
   context "next available reservation based on schedule rules" do
     before(:each) do
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @instrument       = create(:instrument,
+      @instrument = create(:instrument,
                                  :facility => facility,
                                  :facility_account => facility_account,
                                  :min_reserve_mins => 60,
@@ -512,7 +512,7 @@ RSpec.describe Instrument do
   context "available hours based on schedule rules" do
     before(:each) do
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @instrument       = FactoryGirl.create(:instrument,
+      @instrument = FactoryGirl.create(:instrument,
                                              :facility => facility,
                                              :facility_account => facility_account,
                                              :min_reserve_mins => 60,
@@ -566,7 +566,7 @@ RSpec.describe Instrument do
       assert @instrument.valid?
 
       # create price policy with default window of 1 day
-      @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id))
+      @price_policy = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id))
     end
 
     it "should have last_reserve_date == tomorrow, last_reserve_days_from_now == 1 when window is 1" do
@@ -592,7 +592,7 @@ RSpec.describe Instrument do
     let(:price_policy_ids) { account.price_groups.map(&:id) }
 
     before :each do
-      @instrument       = FactoryGirl.create(:instrument,
+      @instrument = FactoryGirl.create(:instrument,
                                              :facility => facility,
                                              :facility_account => facility_account)
       @price_group = FactoryGirl.create(:price_group, :facility => facility)

@@ -2,7 +2,7 @@ module Reservations::RelaySupport
 
   def can_switch_instrument_on?(check_off = true)
     return false if canceled?
-    return false unless product.relay   # is relay controlled
+    return false unless product.relay # is relay controlled
     return false if can_switch_instrument_off?(false) if check_off # mutually exclusive
     return false unless actual_start_at.nil?   # already turned on
     return false unless actual_end_at.nil?     # already turned off
@@ -12,8 +12,8 @@ module Reservations::RelaySupport
   end
 
   def can_switch_instrument_off?(check_on = true)
-    return false unless product.relay  # is relay controlled
-    return false if can_switch_instrument_on?(false) if check_on  # mutually exclusive
+    return false unless product.relay # is relay controlled
+    return false if can_switch_instrument_on?(false) if check_on # mutually exclusive
     return false unless actual_end_at.nil?    # already ended
     return false if actual_start_at.nil?      # hasn't been started yet
     return false if order_detail.complete?

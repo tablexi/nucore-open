@@ -46,7 +46,7 @@ RSpec.describe ItemPricePolicy do
 
     it "should create a price policy for today if no active price policy already exists" do
       is_expected.to allow_value(Date.today).for(:start_date)
-      ipp     = @item.item_price_policies.create(:unit_cost => 1, :unit_subsidy => 0, :start_date => Date.today - 7,
+      ipp = @item.item_price_policies.create(:unit_cost => 1, :unit_subsidy => 0, :start_date => Date.today - 7,
                                                  :price_group => @price_group)
       ipp.save(:validate => false)
       ipp_new = @item.item_price_policies.create(:unit_cost => 1, :unit_subsidy => 0, :start_date => Date.today,
@@ -60,21 +60,21 @@ RSpec.describe ItemPricePolicy do
     end
 
     it "should calculate the cost for an 1 item" do
-      ipp   = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
+      ipp   = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
       costs = ipp.calculate_cost_and_subsidy
       expect(costs[:cost].to_f).to eq(10.75)
       expect(costs[:subsidy].to_f).to eq(0.75)
     end
 
     it "should calculate the cost for multiple item when given a quantity" do
-      ipp   = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
+      ipp   = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
       costs = ipp.calculate_cost_and_subsidy(2)
       expect(costs[:cost].to_f).to eq(21.5)
       expect(costs[:subsidy].to_f).to eq(1.5)
     end
 
     it "should estimate the same as calculate" do
-      ipp   = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
+      ipp = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
       expect(ipp.estimate_cost_and_subsidy(2)).to eq(ipp.calculate_cost_and_subsidy(2))
     end
 
@@ -85,15 +85,15 @@ RSpec.describe ItemPricePolicy do
     end
 
     it "should return the date for the current policies" do
-      ipp = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today - 7.days, :price_group_id => @price_group.id, :can_purchase => true)
-      @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 7.days, :price_group_id => @price_group.id)
+      ipp = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today - 7.days, :price_group_id => @price_group.id, :can_purchase => true)
+      @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today + 7.days, :price_group_id => @price_group.id)
       expect(ItemPricePolicy.current_date(@item).to_date).to eq(ipp.start_date.to_date)
-      ipp3 = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id)
+      ipp3 = @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id)
       expect(ItemPricePolicy.current_date(@item).to_date).to eq(ipp3.start_date.to_date)
     end
 
     it "should return the date for upcoming policies" do
-      @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
+      @item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id, :can_purchase => true)
       ipp2=@item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 7.days, :price_group_id => @price_group.id, :can_purchase => true)
       ipp3=@item.item_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75,  :start_date => Date.today + 14.days, :price_group_id => @price_group.id, :can_purchase => true)
 

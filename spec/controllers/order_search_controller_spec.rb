@@ -137,7 +137,7 @@ RSpec.describe OrderSearchController do
       context 'when signed in as an account owner' do
         before :each do
           sign_in @staff
-          order_detail.account.add_or_update_member(@staff,  AccountUser::ACCOUNT_OWNER, @admin)
+          order_detail.account.add_or_update_member(@staff, AccountUser::ACCOUNT_OWNER, @admin)
         end
 
         it_should_find_the_order

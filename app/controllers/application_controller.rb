@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
       end
   end
 
-  def cross_facility?  # TODO: try to use current_facility.cross_facility? but note current_facility may be nil
+  def cross_facility? # TODO: try to use current_facility.cross_facility? but note current_facility may be nil
     current_facility == Facility.cross_facility
   end
 

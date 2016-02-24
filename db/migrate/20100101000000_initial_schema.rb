@@ -19,7 +19,7 @@ class InitialSchema < ActiveRecord::Migration
       t.string   "abbreviation",      :limit => 50,                                                  :null => false
       t.string   "url_name",          :limit => 50,                                                  :null => false
       t.string   "account"
-      t.boolean  "is_active",                        :precision => 1, :scale => 0,                   :null => false
+      t.boolean  "is_active", :precision => 1, :scale => 0, :null => false
       t.datetime "created_at",                                                                       :null => false
       t.datetime "updated_at",                                                                       :null => false
       t.text     "description"
@@ -31,7 +31,7 @@ class InitialSchema < ActiveRecord::Migration
     add_index "facilities", ["url_name"], :unique => true
 
     create_table "order_statuses" do |t|
-      t.string  "name",        :limit => 50,                                :null => false
+      t.string  "name", :limit => 50, :null => false
       t.integer "facility_id",               :precision => 38, :scale => 0
       t.integer "parent_id",                 :precision => 38, :scale => 0
       t.integer "lft",                       :precision => 38, :scale => 0
@@ -41,21 +41,21 @@ class InitialSchema < ActiveRecord::Migration
     add_index "order_statuses", ["facility_id", "parent_id", "name"], :unique => true
 
     create_table "price_group_members" do |t|
-      t.string  "type",           :limit => 50,                                :null => false
+      t.string  "type", :limit => 50, :null => false
       t.integer "price_group_id",               :precision => 38, :scale => 0, :null => false
       t.integer "user_id",                      :precision => 38, :scale => 0
       t.integer "account_id",                   :precision => 38, :scale => 0
     end
 
     create_table "price_groups" do |t|
-      t.integer "facility_id",                 :precision => 38, :scale => 0
-      t.string  "name",          :limit => 50,                                :null => false
+      t.integer "facility_id", :precision => 38, :scale => 0
+      t.string  "name", :limit => 50, :null => false
     end
 
     add_index "price_groups", ["facility_id", "name"], :unique => true
 
     create_table "price_policies" do |t|
-      t.string   "type",                :limit => 50,                                :null => false
+      t.string   "type", :limit => 50, :null => false
       t.integer  "instrument_id",                     :precision => 38, :scale => 0
       t.integer  "service_id",                        :precision => 38, :scale => 0
       t.integer  "item_id",                           :precision => 38, :scale => 0
@@ -75,8 +75,8 @@ class InitialSchema < ActiveRecord::Migration
     end
 
     create_table "products" do |t|
-      t.string   "type",                    :limit => 50,                                 :null => false
-      t.integer  "facility_id",                            :precision => 38, :scale => 0, :null => false
+      t.string   "type", :limit => 50, :null => false
+      t.integer  "facility_id", :precision => 38, :scale => 0, :null => false
       t.string   "name",                    :limit => 200,                                :null => false
       t.string   "url_name",                :limit => 50,                                 :null => false
       t.text     "description"
@@ -86,7 +86,7 @@ class InitialSchema < ActiveRecord::Migration
       t.boolean  "is_hidden",                              :precision => 1,  :scale => 0, :null => false
       t.datetime "created_at",                                                            :null => false
       t.datetime "updated_at",                                                            :null => false
-      t.string   "relay_ip",                :limit => 15
+      t.string   "relay_ip", :limit => 15
       t.integer  "relay_port",                             :precision => 38, :scale => 0
       t.boolean  "auto_logout",                            :precision => 1,  :scale => 0
       t.integer  "min_reserve_mins",                       :precision => 38, :scale => 0

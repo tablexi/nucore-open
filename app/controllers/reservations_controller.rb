@@ -4,7 +4,7 @@ class ReservationsController < ApplicationController
 
   customer_tab  :all
   before_action :authenticate_user!, :except => [ :index ]
-  before_action :check_acting_as,  :only => [ :switch_instrument, :show, :list ]
+  before_action :check_acting_as, :only => [ :switch_instrument, :show, :list ]
   before_action :load_basic_resources, :only => [:new, :create, :edit, :update]
   before_action :load_and_check_resources, :only => [ :move, :switch_instrument ]
 
@@ -155,7 +155,7 @@ class ReservationsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
     options = current_user.can_override_restrictions?(@instrument) ? {} : { user: acting_user }
     next_available = @instrument.next_available_reservation(1.minute.from_now, default_reservation_mins.minutes, options)
-    @reservation  = next_available || default_reservation
+    @reservation = next_available || default_reservation
     @reservation.round_reservation_times
     unless @instrument.can_be_used_by?(acting_user)
       flash[:notice] = t_model_error(Instrument, 'acting_as_not_on_approval_list')
@@ -309,7 +309,7 @@ class ReservationsController < ApplicationController
     @order_detail = Order.find(params[:order_id]).order_details.find(params[:order_detail_id])
     @order = @order_detail.order
     @reservation = @order_detail.reservation
-    @instrument   = @order_detail.product
+    @instrument = @order_detail.product
     @facility = @instrument.facility
     nil
   end

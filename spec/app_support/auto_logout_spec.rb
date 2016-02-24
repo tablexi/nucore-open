@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe AutoLogout, :timecop_freeze do
-  let(:now) { Time.zone.now.change(hour: 9, min: 31)  }
+  let(:now) { Time.zone.now.change(hour: 9, min: 31) }
 
   let(:action) { described_class.new }
   let(:order_detail) { reservation.order_detail }
@@ -51,7 +51,7 @@ RSpec.describe AutoLogout, :timecop_freeze do
   describe 'a new reservation prior to log out time' do
     let!(:reservation) do
       start_at = 30.minutes.ago # 9:01am
-      end_at = 1.minute.ago    # 9:30am
+      end_at = 1.minute.ago # 9:30am
 
       # Auto-logout is at 9:40
 

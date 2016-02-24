@@ -65,7 +65,7 @@ module OldInstrumentPricePolicyCalculations
       end
       reserve_discount = 1 - reserve_discount/100
       actual_cost = reservation_rate * reserve_intervals * reserve_discount
-      actual_subsidy  = reservation_subsidy * reserve_intervals * reserve_discount
+      actual_subsidy = reservation_subsidy * reserve_intervals * reserve_discount
       if actual_cost.to_f < minimum_cost.to_f
         actual_cost    = minimum_cost
         actual_subsidy = 0

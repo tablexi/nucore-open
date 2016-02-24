@@ -185,7 +185,7 @@ RSpec.describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?
     before(:each) do
       @method=:delete
       @action=:destroy
-      @account_user=FactoryGirl.create(:account_user,         :user => @purchaser,
+      @account_user=FactoryGirl.create(:account_user, :user => @purchaser,
         :account => @account,
         :user_role => AccountUser::ACCOUNT_PURCHASER,
         :created_by => @admin.id)

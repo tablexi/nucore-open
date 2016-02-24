@@ -234,7 +234,7 @@ RSpec.describe Account do
       @item              = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
       @price_group       = FactoryGirl.create(:price_group, :facility => @facility)
       @price_group_product=FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
-      @price_policy      = FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group)
+      @price_policy = FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group)
       @price_group_member = create(:account_price_group_member, account: @nufs_account, price_group: @price_group)
     end
 

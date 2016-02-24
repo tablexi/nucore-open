@@ -14,7 +14,7 @@ module Encryption
   end
 
   def self.decrypt(data)
-    aes  = FastAES.new(Settings.aes_crypt_key)
+    aes = FastAES.new(Settings.aes_crypt_key)
     output = aes.decrypt(Base64.decode64(data))
     text = output[24..-1]
   end

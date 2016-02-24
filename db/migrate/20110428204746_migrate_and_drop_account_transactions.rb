@@ -104,7 +104,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
       t.string   "type", :limit => 50, :null => false
       t.datetime "finalized_at"
       t.integer  "order_detail_id"
-      t.boolean  "is_in_dispute", :precision => 1,  :scale => 0, :null => false
+      t.boolean  "is_in_dispute", :precision => 1, :scale => 0, :null => false
       t.integer  "statement_id"
       t.string   "reference", :limit => 50
     end

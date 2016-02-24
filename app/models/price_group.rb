@@ -17,7 +17,7 @@ class PriceGroup < ActiveRecord::Base
   before_destroy :is_not_global
   before_create  lambda {|o| o.display_order = 999 if !o.facility_id.nil?}
 
-  scope :base,  :conditions => { :name => Settings.price_group.name.base, :facility_id => nil }
+  scope :base, :conditions => { :name => Settings.price_group.name.base, :facility_id => nil }
   scope :external,      :conditions => { :name => Settings.price_group.name.external, :facility_id => nil }
   scope :cancer_center, :conditions => { :name => Settings.price_group.name.cancer_center, :facility_id => nil }
 

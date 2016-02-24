@@ -126,7 +126,7 @@ class InstrumentsController < ProductsCommonController
   # GET /facilities/:facility_id/instruments/:instrument_id/status
   def instrument_status
     begin
-      @relay  = @instrument.relay
+      @relay = @instrument.relay
       status = Rails.env.test? ? true : @relay.get_status
       @status = @instrument.instrument_statuses.create!(:is_on => status)
     rescue => e
