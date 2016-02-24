@@ -97,7 +97,7 @@ class ReservationsController < ApplicationController
       flash.now[:error]=I18n.t 'controllers.reservations.create.no_selection'
       @reservation.valid? # run validations so it sets reserve_end_at
       set_windows
-      render :new and return
+      render(:new) && (return)
       #return redirect_to new_order_order_detail_reservation_path(@order, @order_detail)
     end
 
@@ -185,7 +185,7 @@ class ReservationsController < ApplicationController
 
     @reservation.assign_times_from_params(reservation_params)
 
-    render_edit and return unless duration_change_valid?
+    render_edit && (return) unless duration_change_valid?
 
     Reservation.transaction do
       begin

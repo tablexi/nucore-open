@@ -48,7 +48,7 @@ class ScheduleRule < ActiveRecord::Base
   end
 
   def end_time_is_valid
-    if end_hour == 24 and end_min.to_i != 0
+    if end_hour == 24 && end_min.to_i != 0
       errors.add(:base, "End time is invalid")
     end
   end
@@ -61,10 +61,10 @@ class ScheduleRule < ActiveRecord::Base
       next unless self.send("on_#{day.downcase}?")
       # check all existing rules for this day
       rules.select{ |r| r.send("on_#{day.downcase}?") }.each do |rule|
-        next if self.start_time_int == rule.end_time_int or self.end_time_int == rule.start_time_int # start and end times may touch
-        if self.start_time_int.between?(rule.start_time_int, rule.end_time_int) or
-           self.end_time_int.between?(rule.start_time_int, rule.end_time_int) or
-           (self.start_time_int < rule.start_time_int and self.end_time_int > rule.end_time_int)
+        next if self.start_time_int == rule.end_time_int || self.end_time_int == rule.start_time_int # start and end times may touch
+        if self.start_time_int.between?(rule.start_time_int, rule.end_time_int) ||
+           self.end_time_int.between?(rule.start_time_int, rule.end_time_int) ||
+           (self.start_time_int < rule.start_time_int && self.end_time_int > rule.end_time_int)
           # overlap
           errors.add(:base, "This rule conflicts with an existing rule on #{day}")
         end

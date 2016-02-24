@@ -196,7 +196,7 @@ module Reservations::DateSupport
   # set set_reserve_start_at based on reserve_start_xxx virtual attributes
   def set_reserve_start_at
     return unless self.reserve_start_at.blank?
-    if @reserve_start_date and @reserve_start_hour and @reserve_start_min and @reserve_start_meridian
+    if @reserve_start_date && @reserve_start_hour && @reserve_start_min && @reserve_start_meridian
       self.reserve_start_at = parse_usa_date(@reserve_start_date, "#{@reserve_start_hour}:#{@reserve_start_min.to_s.rjust(2, '0')} #{@reserve_start_meridian}")
     end
   end

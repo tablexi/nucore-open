@@ -102,19 +102,19 @@ class FacilityJournalsController < ApplicationController
   def reconcile
     if params[:order_detail_ids].blank?
       flash[:error] = 'No orders were selected to reconcile'
-      redirect_to facility_journal_path(current_facility, @journal) and return
+      redirect_to(facility_journal_path(current_facility, @journal)) && (return)
     end
     rec_status = OrderStatus.reconciled.first
     order_details = OrderDetail.for_facility(current_facility).where(:id => params[:order_detail_ids]).readonly(false)
     order_details.each do |od|
       if od.journal_id != @journal.id
         flash[:error] = "Order detail #{od} does not belong to this journal! Please reconcile without it."
-        redirect_to facility_journal_path(current_facility, @journal) and return
+        redirect_to(facility_journal_path(current_facility, @journal)) && (return)
       end
       od.change_status!(rec_status)
     end
     flash[:notice] = 'The selected orders have been reconciled successfully'
-    redirect_to facility_journal_path(current_facility, @journal) and return
+    redirect_to(facility_journal_path(current_facility, @journal)) && (return)
   end
 
 

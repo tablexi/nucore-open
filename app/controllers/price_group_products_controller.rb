@@ -32,7 +32,7 @@ class PriceGroupProductsController < ApplicationController
       else
         res_win=params[pg_key][:reservation_window]
 
-        if @is_instrument and res_win.blank?
+        if @is_instrument && res_win.blank?
           window_errors << pg.name
         else
           pgp=PriceGroupProduct.new(:price_group => pg, :product => @product) unless pgp
