@@ -47,7 +47,7 @@ module Reservations::Rendering
           {
             "admin" => false,
             "email" => order.user.email,
-            "name"  => "#{order.user.full_name}",
+            "name"  => (order.user.full_name).to_s,
             "title" => "#{order.user.first_name}\n#{order.user.last_name}",
           }
         else
