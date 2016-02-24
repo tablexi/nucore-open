@@ -354,7 +354,7 @@ RSpec.describe OldInstrumentPricePolicy do
         start_date: Date.current,
         expire_date: Date.current + 7.days,
         price_group: @price_group,
-        product: @instrument
+        product: @instrument,
       }
 
       @price_group_product.destroy
@@ -417,7 +417,7 @@ RSpec.describe OldInstrumentPricePolicy do
       cancellation_cost: nil,
       price_group: @price_group,
       can_purchase: true,
-      product: @instrument
+      product: @instrument,
     }
 
     attrs.merge(overrides)

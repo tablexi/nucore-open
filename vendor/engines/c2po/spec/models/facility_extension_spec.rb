@@ -8,7 +8,7 @@ RSpec.describe Facility do
       @owner_attrs = [{
         user: owner,
         created_by: owner.id,
-        user_role: "Owner"
+        user_role: "Owner",
       }]
     end
 

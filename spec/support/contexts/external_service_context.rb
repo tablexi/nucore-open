@@ -12,7 +12,7 @@ RSpec.shared_context "external service" do
     quantity: external_service_receiver.receiver.quantity,
     survey_id: "CX-12345",
     survey_url: "http://survey.local/show",
-    survey_edit_url: "http://survey.local/edit"
+    survey_edit_url: "http://survey.local/edit",
   } 
   end
 

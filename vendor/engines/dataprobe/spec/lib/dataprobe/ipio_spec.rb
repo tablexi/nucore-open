@@ -18,7 +18,7 @@ RSpec.describe Dataprobe::Ipio do
     opts = {
       port: 2323,
       username: "frankie",
-      password: "fingers"
+      password: "fingers",
     }
 
     relay = described_class.new ip, opts

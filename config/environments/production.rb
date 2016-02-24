@@ -76,7 +76,7 @@ Nucore::Application.configure do
   config.middleware.use ExceptionNotification::Rack,
                         email: {
                           sender_address: Settings.email.exceptions.sender,
-                          exception_recipients: Settings.email.exceptions.recipients
+                          exception_recipients: Settings.email.exceptions.recipients,
                         }
 end
 

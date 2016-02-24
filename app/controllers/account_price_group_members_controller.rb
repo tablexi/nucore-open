@@ -29,7 +29,7 @@ class AccountPriceGroupMembersController < ApplicationController
   def create_flash_arguments # TODO: very similar to UserPriceGroupMembersController#create_flash_arguments
     {
       account_number: price_group_member.account.account_number,
-      price_group_name: @price_group.name
+      price_group_name: @price_group.name,
     }
   end
 
@@ -42,7 +42,7 @@ class AccountPriceGroupMembersController < ApplicationController
   def search_conditions
     @search_conditions ||= [
       "LOWER(account_number) LIKE ?",
-      generate_multipart_like_search_term(params[:search_term])
+      generate_multipart_like_search_term(params[:search_term]),
     ]
   end
 

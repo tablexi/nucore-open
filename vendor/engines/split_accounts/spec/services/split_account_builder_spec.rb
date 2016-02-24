@@ -26,14 +26,14 @@ RSpec.describe SplitAccounts::SplitAccountBuilder, type: :service, split_account
                                            "0" => {
                                              subaccount_id: subaccount_2.id,
                                              percent: 50,
-                                             extra_penny: true
+                                             extra_penny: true,
                                            },
                                            "1" => {
                                              subaccount_id: subaccount_1.id,
                                              percent: 50,
-                                             extra_penny: false
+                                             extra_penny: false,
                                            },
-                                         }
+                                         },
                                        })
     end
 

@@ -23,7 +23,7 @@ class IppCsvBuilder
       "old cost actual",
       "new cost actual",
       "old subsidy actual",
-      "new subsidy actual"
+      "new subsidy actual",
     ]
   end
 
@@ -44,7 +44,7 @@ class IppCsvBuilder
       detail.actual_cost.to_f,
       actuals[:cost].to_f,
       detail.actual_subsidy.to_f,
-      actuals[:subsidy].to_f
+      actuals[:subsidy].to_f,
     ]
   end
 

@@ -107,7 +107,7 @@ RSpec.describe FacilityAccountsController do
         @params = {
           facility_id: @authable.url_name,
           id: @account.id,
-          nufs_account: FactoryGirl.attributes_for(:nufs_account)
+          nufs_account: FactoryGirl.attributes_for(:nufs_account),
         }
       end
 
@@ -135,7 +135,7 @@ RSpec.describe FacilityAccountsController do
           facility_id: @authable.url_name,
           owner_user_id: @owner.id,
           nufs_account: @acct_attrs,
-          account_type: "NufsAccount"
+          account_type: "NufsAccount",
         }
         allow(@controller).to receive(:current_facility).and_return(@authable)
       end

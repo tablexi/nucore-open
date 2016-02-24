@@ -263,8 +263,8 @@ RSpec.describe ReservationsController do
             reserve_start_min: "0",
             reserve_start_meridian: "am",
             duration_value: "60",
-            duration_unit: "minutes"
-        }
+            duration_unit: "minutes",
+        },
       }
     end
 
@@ -310,7 +310,7 @@ RSpec.describe ReservationsController do
             reserve_start_min: "0",
             reserve_start_meridian: "am",
             duration_value: "60",
-            duration_unit: "minutes"
+            duration_unit: "minutes",
         },
       )
     end
@@ -784,7 +784,7 @@ RSpec.describe ReservationsController do
             reserve_start_min: "0",
             reserve_start_meridian: "am",
             duration_value: "60",
-            duration_unit: "minutes"
+            duration_unit: "minutes",
           },
         )
       end

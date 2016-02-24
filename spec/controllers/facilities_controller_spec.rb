@@ -51,7 +51,7 @@ RSpec.describe FacilitiesController do
           accepts_multi_add: true, show_instrument_availability: true,
           address: "Test Address", phone_number: "555-1223", fax_number: "555-3211",
           email: "facility@example.com"
-        }
+        },
       }
     end
 

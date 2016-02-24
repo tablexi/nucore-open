@@ -18,7 +18,7 @@ RSpec.describe Accessories::Accessorizer do
                   reservation: reservation,
                   child_order_details: child_order_details,
                   attributes: {
-                    order_id: order.id
+                    order_id: order.id,
                   }
   end
 

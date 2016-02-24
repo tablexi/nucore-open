@@ -204,8 +204,8 @@ RSpec.describe OrderManagement::OrderDetailsController do
             @params[:order_detail] = {
               reservation: {
                 reserve_start_at: @new_reserve_start,
-                duration_mins: 30
-              }
+                duration_mins: 30,
+              },
             }
           end
 
@@ -256,8 +256,8 @@ RSpec.describe OrderManagement::OrderDetailsController do
             @params[:order_detail] = {
               reservation: {
                 reserve_start_at: reservation.reserve_start_at,
-                duration_mins: 30
-              }
+                duration_mins: 30,
+              },
             }
           end
 
@@ -280,7 +280,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
           )
 
           @params[:order_detail] = {
-            order_status_id: OrderStatus.canceled.first.id.to_s
+            order_status_id: OrderStatus.canceled.first.id.to_s,
           }
         end
 
@@ -477,7 +477,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
       it "updates the price manually" do
         @params[:order_detail] = {
           actual_cost: "20.00",
-          actual_subsidy: "4.00"
+          actual_subsidy: "4.00",
         }
         do_request
         expect(order_detail.reload.actual_total).to eq(16.00)
@@ -486,7 +486,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
       it "returns an error when trying to set subsidy more than quantity" do
         @params[:order_detail] = {
           actual_cost: "10.00",
-            actual_subsidy: "11.00"
+            actual_subsidy: "11.00",
         }
         do_request
         expect(assigns(:order_detail).errors).to include(:actual_total)
@@ -571,8 +571,8 @@ RSpec.describe OrderManagement::OrderDetailsController do
           @params[:order_detail] = {
             reservation: {
               reserve_start_at: reservation.reserve_start_at,
-              duration_mins: new_duration
-            }
+              duration_mins: new_duration,
+            },
           }
           do_request
         end
@@ -610,8 +610,8 @@ RSpec.describe OrderManagement::OrderDetailsController do
               reserve_start_at: reservation.reserve_start_at,
               duration_mins: reservation.duration_mins,
               actual_start_at: reservation.reserve_start_at,
-              actual_duration_mins: new_duration
-            }
+              actual_duration_mins: new_duration,
+            },
           }
           expect(order_detail).to be_complete
         end

@@ -277,12 +277,12 @@ RSpec.describe InstrumentPricePolicyCalculations do
     it "charges for at least 1 minute of time" do
       policy.attributes = {
         minimum_cost: nil,
-        charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage]
+        charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage],
       }
 
       reservation.attributes = {
         actual_start_at: reservation.reserve_start_at,
-        actual_end_at: reservation.reserve_start_at + 5.seconds
+        actual_end_at: reservation.reserve_start_at + 5.seconds,
       }
 
       new_costs = policy.calculate_cost_and_subsidy reservation
@@ -292,7 +292,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
     it "calculates usage costs precisely" do
       policy.attributes = {
         usage_subsidy: 10.33,
-        usage_rate: 73.20
+        usage_rate: 73.20,
       }
 
       policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:usage]
@@ -306,7 +306,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
     it "calculates overage costs precisely" do
       policy.attributes = {
         usage_subsidy: 7,
-        usage_rate: 25
+        usage_rate: 25,
       }
 
       policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:overage]
@@ -320,7 +320,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
     it "charges for 90 minutes when an hour reservation is started 15 minutes late and goes over the reserved end time by 30 minutes" do
       policy.attributes = {
         usage_subsidy: 0,
-        usage_rate: 60
+        usage_rate: 60,
       }
 
       policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:overage]
@@ -336,7 +336,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
     it "charges for overage even if the the usage is less than reservation" do
       policy.attributes = {
         usage_subsidy: 0,
-        usage_rate: 60
+        usage_rate: 60,
       }
 
       policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:overage]
@@ -353,7 +353,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
       policy.attributes = {
         usage_subsidy: 0,
         usage_rate: 60,
-        minimum_cost: 100
+        minimum_cost: 100,
       }
 
       policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:overage]

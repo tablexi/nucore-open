@@ -89,7 +89,7 @@ class Reports::ExportRaw
       account.affiliate_to_s,
       account.account_number,
       account.description_to_s,
-      format_usa_datetime(account.expires_at)
+      format_usa_datetime(account.expires_at),
     ]
   end
 

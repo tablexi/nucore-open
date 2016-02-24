@@ -57,7 +57,7 @@ RSpec.describe AccountUsersController do
       @params = {
         account_id: @authable.id,
         user_id: @purchaser.id,
-        account_user: { user_role: AccountUser::ACCOUNT_PURCHASER }
+        account_user: { user_role: AccountUser::ACCOUNT_PURCHASER },
       }
     end
 

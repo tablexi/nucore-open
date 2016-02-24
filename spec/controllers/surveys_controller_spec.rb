@@ -20,7 +20,7 @@ RSpec.describe SurveysController do
     @params = {
       facility_id: authable.url_name,
       service_id: service.url_name,
-      external_service_passer_id: external_service_passer.id
+      external_service_passer_id: external_service_passer.id,
     }
   end
 

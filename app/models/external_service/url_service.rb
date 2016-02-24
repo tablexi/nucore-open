@@ -37,7 +37,7 @@ class UrlService < ExternalService
     params = {  facility_id: receiver.product.facility.url_name,
                 service_id: receiver.product.url_name,
                 external_service_id: id,
-                receiver_id: receiver.id
+                receiver_id: receiver.id,
               }
     params.merge!(host: request.host, port: request.port, protocol: request.protocol) if request
     complete_survey_url(params)

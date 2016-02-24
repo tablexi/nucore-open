@@ -142,7 +142,7 @@ class ScheduleRule < ActiveRecord::Base
           "title"  => title,
           "start"  => I18n.l(start_at, format: :calendar),
           "end"    => I18n.l(end_at, format: :calendar),
-          "allDay" => false
+          "allDay" => false,
         }
       end
 

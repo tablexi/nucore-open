@@ -17,7 +17,7 @@ class UserPriceGroupMembersController < ApplicationController
   def create_flash_arguments
     {
       full_name: price_group_member.user.full_name,
-      price_group_name: @price_group.name
+      price_group_name: @price_group.name,
     }
   end
 

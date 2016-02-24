@@ -157,7 +157,7 @@ class OrderDetail < ActiveRecord::Base
     conditions: ['order_details.state = ?
                      AND order_details.reviewed_at IS NULL
                      AND order_details.price_policy_id IS NOT NULL
-                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', "complete"]
+                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', "complete"],
   }}
 
   def self.all_need_notification
@@ -262,8 +262,8 @@ class OrderDetail < ActiveRecord::Base
       state: "complete",
       problem: false,
       reviewed_at: Time.zone.now,
-      accounts: Account.config.statement_account_types
-    ]
+      accounts: Account.config.statement_account_types,
+    ],
   }}
 
   scope :need_journal, lambda { 
@@ -275,7 +275,7 @@ class OrderDetail < ActiveRecord::Base
                      AND accounts.type = ?
                      AND journal_id IS NULL
                      AND order_details.price_policy_id IS NOT NULL
-                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', "complete", false, Time.zone.now, "NufsAccount"]
+                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', "complete", false, Time.zone.now, "NufsAccount"],
   } }
 
   scope :statemented, lambda {|facility| 
