@@ -64,7 +64,7 @@ class NufsAccount < Account
       e.apply_to_model(self)
       return
     rescue ValidatorError => e
-      self.errors.add(:account_number, e.message)
+      errors.add(:account_number, e.message)
       return
     end
 
@@ -73,7 +73,7 @@ class NufsAccount < Account
     rescue ValidatorError => e
       msg=e.message
       msg="not found, is inactive, or is invalid" if msg.blank?
-      self.errors.add(:account_number, msg)
+      errors.add(:account_number, msg)
     end
   end
 

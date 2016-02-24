@@ -30,7 +30,7 @@ module NUCore
 
     def self.boolean(value)
       # Oracle doesn't always properly handle boolean values correctly
-      if self.oracle?
+      if oracle?
         value ? 1 : 0
       else
         value ? true : false

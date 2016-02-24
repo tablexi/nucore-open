@@ -136,25 +136,25 @@ module Reservations::DateSupport
 
   def date_field(field)
     instance_variable_fetch("#{field}_date") do
-      self.send("#{field}_at").try(:strftime, "%m/%d/%Y")
+      send("#{field}_at").try(:strftime, "%m/%d/%Y")
     end
   end
 
   def hour_field(field)
     instance_variable_fetch("#{field}_hour", to_i: true) do
-      human_hour(self.send("#{field}_at"))
+      human_hour(send("#{field}_at"))
     end
   end
 
   def meridian_field(field)
     instance_variable_fetch("#{field}_meridian") do
-      self.send("#{field}_at").try(:strftime, "%p")
+      send("#{field}_at").try(:strftime, "%p")
     end
   end
 
   def min_field(field)
     instance_variable_fetch("#{field}_min", to_i: true) do
-      self.send("#{field}_at").try(:min)
+      send("#{field}_at").try(:min)
     end
   end
 
@@ -179,7 +179,7 @@ module Reservations::DateSupport
     reserve_attrs = params.slice(:reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian,
                                  :duration_value, :duration_unit, :duration_mins,
                                  :reserve_start_at, :reserve_end_at)
-    self.assign_attributes reserve_attrs
+    assign_attributes reserve_attrs
   end
 
   def assign_actuals_from_params(params)
@@ -191,12 +191,12 @@ module Reservations::DateSupport
 
     reserve_attrs.reject! { |_key,value| value.blank? }
 
-    self.assign_attributes reserve_attrs
+    assign_attributes reserve_attrs
   end
 
   # set set_reserve_start_at based on reserve_start_xxx virtual attributes
   def set_reserve_start_at
-    return unless self.reserve_start_at.blank?
+    return unless reserve_start_at.blank?
     if @reserve_start_date && @reserve_start_hour && @reserve_start_min && @reserve_start_meridian
       self.reserve_start_at = parse_usa_date(@reserve_start_date, "#{@reserve_start_hour}:#{@reserve_start_min.to_s.rjust(2, '0')} #{@reserve_start_meridian}")
     end
@@ -204,7 +204,7 @@ module Reservations::DateSupport
 
   # set reserve_end_at based on duration_value, duration_unit virtual attribute
   def set_reserve_end_at
-    return if self.reserve_end_at.present? || self.reserve_start_at.blank?
+    return if reserve_end_at.present? || reserve_start_at.blank?
     unless @duration_mins
       case @duration_unit
       when 'minutes', 'minute'
@@ -215,22 +215,22 @@ module Reservations::DateSupport
         @duration_mins = 0
       end
     end
-    self.reserve_end_at = self.reserve_start_at + @duration_mins.to_i.minutes
+    self.reserve_end_at = reserve_start_at + @duration_mins.to_i.minutes
   end
 
   def set_actual_start_at
-    return if self.actual_start_at.present?
+    return if actual_start_at.present?
     if @actual_start_date && @actual_start_hour && @actual_start_min && @actual_start_meridian
       self.actual_start_at = parse_usa_date(@actual_start_date, "#{@actual_start_hour}:#{@actual_start_min.to_s.rjust(2, '0')} #{@actual_start_meridian}")
     end
   end
 
   def set_actual_end_at
-    return if self.actual_end_at.present?
+    return if actual_end_at.present?
     if @actual_end_date && @actual_end_hour && @actual_end_min && @actual_end_meridian
       self.actual_end_at = parse_usa_date(@actual_end_date, "#{@actual_end_hour}:#{@actual_end_min.to_s.rjust(2, '0')} #{@actual_end_meridian}")
-    elsif @actual_duration_mins && self.actual_start_at
-      self.actual_end_at = self.actual_start_at + @actual_duration_mins.to_i.minutes
+    elsif @actual_duration_mins && actual_start_at
+      self.actual_end_at = actual_start_at + @actual_duration_mins.to_i.minutes
     end
   end
 

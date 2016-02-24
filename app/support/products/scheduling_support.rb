@@ -14,27 +14,27 @@ module Products::SchedulingSupport
   end
 
   def active_reservations
-    self.reservations.active
+    reservations.active
   end
 
   def purchased_reservations
-    self.reservations.joins(order_detail: :order).merge(Order.purchased)
+    reservations.joins(order_detail: :order).merge(Order.purchased)
   end
 
   def admin_reservations
-    self.reservations.admin
+    reservations.admin
   end
 
   def started_reservations
-    self.purchased_reservations
+    purchased_reservations
         .not_canceled
         .merge(OrderDetail.unreconciled)
         .merge(Reservation.relay_in_progress)
   end
 
   def visible_reservations(date = nil)
-    purchased = self.purchased_reservations.order(:reserve_start_at)
-    admin = self.admin_reservations
+    purchased = purchased_reservations.order(:reserve_start_at)
+    admin = admin_reservations
     if date
       purchased = purchased.for_date(date)
       admin = admin.for_date(date)
@@ -43,7 +43,7 @@ module Products::SchedulingSupport
   end
 
   def active_schedule_reservations
-    self.schedule.reservations.active
+    schedule.reservations.active
   end
 
   def can_purchase? (group_ids = nil)
@@ -92,9 +92,9 @@ module Products::SchedulingSupport
 
   def available_schedule_rules(user)
     if requires_approval? && user
-      self.schedule_rules.available_to_user user
+      schedule_rules.available_to_user user
     else
-      self.schedule_rules
+      schedule_rules
     end
   end
 
@@ -129,12 +129,12 @@ module Products::SchedulingSupport
   end
 
   def create_default_schedule
-    self.schedule = Schedule.create(name: "#{self.name} Schedule", facility: self.facility)
+    self.schedule = Schedule.create(name: "#{name} Schedule", facility: facility)
   end
 
   def update_schedule_name
-    if self.schedule.name == "#{self.name_was} Schedule"
-      self.schedule.update_attributes(name: "#{self.name} Schedule")
+    if schedule.name == "#{name_was} Schedule"
+      schedule.update_attributes(name: "#{name} Schedule")
     end
   end
 

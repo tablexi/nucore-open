@@ -136,23 +136,23 @@ class Reservation < ActiveRecord::Base
 
   def round_reservation_times
     interval = product.reserve_interval.minutes # Round to the nearest reservation interval
-    self.reserve_start_at = time_ceil(self.reserve_start_at, interval) if self.reserve_start_at
-    self.reserve_end_at   = time_ceil(self.reserve_end_at, interval) if self.reserve_end_at
+    self.reserve_start_at = time_ceil(reserve_start_at, interval) if reserve_start_at
+    self.reserve_end_at   = time_ceil(reserve_end_at, interval) if reserve_end_at
     self
   end
 
   def assign_actuals_off_reserve
-    self.actual_start_at ||= self.reserve_start_at
-    self.actual_end_at   ||= self.reserve_end_at
+    self.actual_start_at ||= reserve_start_at
+    self.actual_end_at   ||= reserve_end_at
   end
 
   def save_as_user(user)
     if user.operator_of?(product.facility)
       @reserved_by_admin = true
-      self.save
+      save
     else
       @reserved_by_admin = false
-      self.save_extended_validations
+      save_extended_validations
     end
   end
 
@@ -266,7 +266,7 @@ class Reservation < ActiveRecord::Base
   protected
 
   def has_order_detail?
-    !self.order_detail.nil?
+    !order_detail.nil?
   end
 
   private

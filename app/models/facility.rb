@@ -14,12 +14,12 @@ class Facility < ActiveRecord::Base
 
   before_validation :set_journal_mask, on: :create
 
-  has_many :order_statuses, finder_sql: proc { "SELECT * FROM order_statuses WHERE facility_id = #{self.id} or facility_id IS NULL order by lft" }
+  has_many :order_statuses, finder_sql: proc { "SELECT * FROM order_statuses WHERE facility_id = #{id} or facility_id IS NULL order by lft" }
   has_many :items
   has_many :services
   has_many :instruments
   has_many :bundles
-  has_many :price_groups, finder_sql: proc { "SELECT * FROM price_groups WHERE price_groups.facility_id = #{self.id} OR price_groups.facility_id IS NULL ORDER BY price_groups.is_internal DESC, price_groups.display_order ASC, price_groups.name ASC" }
+  has_many :price_groups, finder_sql: proc { "SELECT * FROM price_groups WHERE price_groups.facility_id = #{id} OR price_groups.facility_id IS NULL ORDER BY price_groups.is_internal DESC, price_groups.display_order ASC, price_groups.name ASC" }
   has_many :journals
   has_many :products
   has_many :schedules
@@ -27,7 +27,7 @@ class Facility < ActiveRecord::Base
   has_many :order_details, through: :products do
     # extend to find all accounts that have ordered from the facility
     def accounts
-      self.collect(&:account).compact.uniq
+      collect(&:account).compact.uniq
     end
   end
   has_many :order_imports, dependent: :destroy
@@ -101,7 +101,7 @@ class Facility < ActiveRecord::Base
     if cross_facility?
       pending_facility_ids.any?
     else
-      pending_facility_ids.member?(self.id)
+      pending_facility_ids.member?(id)
     end
   end
 

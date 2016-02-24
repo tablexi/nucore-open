@@ -20,7 +20,7 @@ class ProductAccessory < ActiveRecord::Base
   end
 
   def deleted?
-    self.deleted_at.present?
+    deleted_at.present?
   end
 
 end

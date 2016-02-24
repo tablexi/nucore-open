@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
     def price_groups
       groups = price_group_members.collect{ |pgm| pgm.price_group }
       # check internal/external membership
-      groups << (self.username =~ /@/ ? PriceGroup.external.first : PriceGroup.base.first)
+      groups << (username =~ /@/ ? PriceGroup.external.first : PriceGroup.base.first)
       groups.flatten.uniq
     end
 
@@ -78,26 +78,26 @@ class User < ActiveRecord::Base
   end
 
   def update_password_confirm_current(params)
-    unless self.valid_password? params[:current_password]
-      self.errors.add(:current_password, :incorrect)
+    unless valid_password? params[:current_password]
+      errors.add(:current_password, :incorrect)
     end
     update_password(params)
   end
 
   def update_password(params)
     unless password_updatable?
-      self.errors.add(:base, :password_not_updatable)
+      errors.add(:base, :password_not_updatable)
       return false
     end
 
-    self.errors.add(:password, :empty) if params[:password].blank?
-    self.errors.add(:password, :password_too_short) if params[:password] && params[:password].strip.length < 6
-    self.errors.add(:password_confirmation, :confirmation) if params[:password] != params[:password_confirmation]
+    errors.add(:password, :empty) if params[:password].blank?
+    errors.add(:password, :password_too_short) if params[:password] && params[:password].strip.length < 6
+    errors.add(:password_confirmation, :confirmation) if params[:password] != params[:password_confirmation]
 
-    if self.errors.empty?
+    if errors.empty?
       self.password = params[:password].strip
-      self.clear_reset_password_token
-      self.save!
+      clear_reset_password_token
+      save!
       return true
     else
       return false
@@ -133,7 +133,7 @@ class User < ActiveRecord::Base
   end
 
   def account_price_groups
-    groups = self.accounts.active.collect{ |a| a.price_groups }.flatten.uniq
+    groups = accounts.active.collect{ |a| a.price_groups }.flatten.uniq
   end
 
   #

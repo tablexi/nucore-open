@@ -15,7 +15,7 @@ module Accounts::AccountNumberSectionable
   end
 
   def account_number_to_s
-    self.account_number
+    account_number
   end
 
   def account_number_to_storage_format

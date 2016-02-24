@@ -13,7 +13,7 @@ class BundleProduct < ActiveRecord::Base
   end
 
   def <=>(other)
-    self.product.name <=> other.product.name
+    product.name <=> other.product.name
   end
 
 end
