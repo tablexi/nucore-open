@@ -11,8 +11,8 @@ class Notifier < ActionMailer::Base
   # Welcome user, login credentials.  CC to PI and Department Admin.
   # Who created the account.  How to update.
   def new_user(args)
-    @user=args[:user]
-    @password=args[:password]
+    @user = args[:user]
+    @password = args[:password]
     send_nucore_mail args[:user].email, t('notifier.new_user.subject')
   end
 
@@ -20,17 +20,17 @@ class Notifier < ActionMailer::Base
   # out to the PI, Departmental Administrators, and that particular
   # account's administrator(s)
   def new_account(args)
-    @user=args[:user]
-    @account=args[:account]
+    @user = args[:user]
+    @account = args[:account]
     send_nucore_mail args[:user].email, t('notifier.new_account.subject')
   end
 
   # Changes to the user affecting the PI or department will alert their
   # PI, the Dept Admins, and Lab Manager.
   def user_update(args)
-    @user=args[:user]
-    @account=args[:account]
-    @created_by=args[:created_by]
+    @user = args[:user]
+    @account = args[:account]
+    @created_by = args[:created_by]
     send_nucore_mail @account.owner.user.email, t('notifier.user_update.subject')
   end
 
@@ -38,16 +38,16 @@ class Notifier < ActionMailer::Base
   # when it is not them making the change. Adding someone to any role of a
   # financial account as well. Roles: Order, Admin, PI.
   def account_update(args)
-    @user=args[:user]
-    @account=args[:account]
+    @user = args[:user]
+    @account = args[:account]
     send_nucore_mail args[:user].email, t('notifier.account_update.subject')
   end
 
   # Custom order forms send out a confirmation email when filled out by a
   # customer. Customer gets one along with PI/Admin/Lab Manager.
   def order_receipt(args)
-    @user=args[:user]
-    @order=args[:order]
+    @user = args[:user]
+    @order = args[:order]
     send_nucore_mail args[:user].email, t('notifier.order_receipt.subject')
   end
 
@@ -62,10 +62,10 @@ class Notifier < ActionMailer::Base
   # their version of usage.
   # args = :user, :account, :facility
   def statement(args)
-    @user=args[:user]
-    @facility=args[:facility]
-    @account=args[:account]
-    @statement=args[:statement]
+    @user = args[:user]
+    @facility = args[:facility]
+    @account = args[:account]
+    @statement = args[:statement]
     attach_statement_pdf
     send_nucore_mail args[:user].email, t('notifier.statement.subject')
   end

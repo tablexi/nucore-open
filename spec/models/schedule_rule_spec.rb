@@ -238,8 +238,8 @@ RSpec.describe ScheduleRule do
 
       # days should start with this past sunday and end next saturday
       @calendar.each_with_index do |hash, i|
-        expect(Time.zone.parse(hash['start'])).to eq(Time.zone.parse("#{@sunday+i.days} 9:00"))
-        expect(Time.zone.parse(hash['end'])).to eq(Time.zone.parse("#{@sunday+i.days} 17:00"))
+        expect(Time.zone.parse(hash['start'])).to eq(Time.zone.parse("#{@sunday + i.days} 9:00"))
+        expect(Time.zone.parse(hash['end'])).to eq(Time.zone.parse("#{@sunday + i.days} 17:00"))
       end
 
       # build unavailable rules from the available rules collection
@@ -256,13 +256,13 @@ RSpec.describe ScheduleRule do
       odd  = (0..@not_available.size).select{ |i| i.odd? }
 
       even.collect{ |i| @not_calendar.values_at(i) }.flatten.compact.each_with_index do |hash, i|
-        expect(Time.zone.parse(hash['start'])).to eq(Time.zone.parse("#{@sunday+i.days}"))
-        expect(Time.zone.parse(hash['end'])).to eq(Time.zone.parse("#{@sunday+i.days} 9:00"))
+        expect(Time.zone.parse(hash['start'])).to eq(Time.zone.parse("#{@sunday + i.days}"))
+        expect(Time.zone.parse(hash['end'])).to eq(Time.zone.parse("#{@sunday + i.days} 9:00"))
       end
 
       odd.collect{ |i| @not_calendar.values_at(i) }.flatten.compact.each_with_index do |hash, i|
         expect(Time.zone.parse(hash['start'])).to eq(Time.zone.parse("#{@sunday + i.days} 17:00"))
-        expect(Time.zone.parse(hash['end'])).to eq(Time.zone.parse("#{@sunday + (i+1).days}"))
+        expect(Time.zone.parse(hash['end'])).to eq(Time.zone.parse("#{@sunday + (i + 1).days}"))
       end
 
       # should set calendar objects title to ''

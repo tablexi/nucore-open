@@ -8,8 +8,8 @@ RSpec.describe GeneralReportsController do
   run_report_tests([
                      { action: :product, index: 0, report_on_label: 'Name', report_on: proc{|od| od.product.name} },
     { action: :account, index: 1, report_on_label: 'Description', report_on: proc{|od| od.account.to_s} },
-    { action: :account_owner, index: 2, report_on_label: 'Name', report_on: proc{|od| owner=od.account.owner.user; "#{owner.last_name}, #{owner.first_name} (#{owner.username})"} },
-    { action: :purchaser, index: 3, report_on_label: 'Name', report_on: proc{|od| usr=od.order.user; "#{usr.last_name}, #{usr.first_name} (#{usr.username})"} },
+    { action: :account_owner, index: 2, report_on_label: 'Name', report_on: proc{|od| owner = od.account.owner.user; "#{owner.last_name}, #{owner.first_name} (#{owner.username})"} },
+    { action: :purchaser, index: 3, report_on_label: 'Name', report_on: proc{|od| usr = od.order.user; "#{usr.last_name}, #{usr.first_name} (#{usr.username})"} },
     { action: :price_group, index: 4, report_on_label: 'Name', report_on: proc{|od| od.price_policy ? od.price_policy.price_group.name : 'Unassigned'} }
                    ])
 
@@ -52,8 +52,8 @@ RSpec.describe GeneralReportsController do
       @complete_status = OrderStatus.complete.first
 
       @user = FactoryGirl.create(:user)
-      @authable=FactoryGirl.create(:facility)
-      @facility_account=@authable.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
+      @authable = FactoryGirl.create(:facility)
+      @facility_account = @authable.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
       @item = @authable.items.create!(FactoryGirl.attributes_for(:item, facility_account: @facility_account))
 
       @account = create_nufs_account_with_owner :user
@@ -224,7 +224,7 @@ RSpec.describe GeneralReportsController do
               @params[:status_filter].collect{|si| OrderStatus.find(si.to_i) }
             end
 
-    status_ids=[]
+    status_ids = []
 
     stati.each do |stat|
       status_ids << stat.id

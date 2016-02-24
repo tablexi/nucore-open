@@ -10,8 +10,8 @@ RSpec.describe AffiliatesController do
   context 'index' do
 
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
 
     it_should_allow_admin_only do
@@ -22,8 +22,8 @@ RSpec.describe AffiliatesController do
   context 'new' do
 
     before :each do
-      @method=:get
-      @action=:new
+      @method = :get
+      @action = :new
     end
 
     it_should_allow_admin_only do
@@ -36,9 +36,9 @@ RSpec.describe AffiliatesController do
   context 'create' do
 
     before :each do
-      @method=:post
-      @action=:create
-      @params={ affiliate: { name: 'Chik-Fil-A' } }
+      @method = :post
+      @action = :create
+      @params = { affiliate: { name: 'Chik-Fil-A' } }
     end
 
     it_should_allow_admin_only :redirect do
@@ -60,15 +60,15 @@ RSpec.describe AffiliatesController do
   context 'with id param' do
 
     before :each do
-      @affiliate=Affiliate.find_or_create_by_name('CTA')
-      @params={ id: @affiliate.id }
+      @affiliate = Affiliate.find_or_create_by_name('CTA')
+      @params = { id: @affiliate.id }
     end
 
     context 'edit' do
 
       before :each do
-        @method=:get
-        @action=:edit
+        @method = :get
+        @action = :edit
       end
 
       it_should_allow_admin_only do
@@ -82,8 +82,8 @@ RSpec.describe AffiliatesController do
     context 'update' do
 
       before :each do
-        @method=:put
-        @action=:update
+        @method = :put
+        @action = :update
         @params.merge!(affiliate: { name: 'fugly.com' })
       end
 
@@ -105,8 +105,8 @@ RSpec.describe AffiliatesController do
     context 'destroy' do
 
       before :each do
-        @method=:delete
-        @action=:destroy
+        @method = :delete
+        @action = :destroy
       end
 
       it_should_allow_admin_only :redirect do
@@ -121,7 +121,7 @@ RSpec.describe AffiliatesController do
   end
 
   def bad_id_test
-    @params[:id]=98_765_423_456
+    @params[:id] = 98_765_423_456
     maybe_grant_always_sign_in :admin
     do_request
     is_expected.to set_flash
@@ -129,7 +129,7 @@ RSpec.describe AffiliatesController do
   end
 
   def bad_attrs_test(template)
-    @params[:affiliate][:name]=nil
+    @params[:affiliate][:name] = nil
     maybe_grant_always_sign_in :admin
     do_request
     yield if block_given?
@@ -138,7 +138,7 @@ RSpec.describe AffiliatesController do
   end
 
   def no_attrs_test
-    @params[:affiliate]=nil
+    @params[:affiliate] = nil
     maybe_grant_always_sign_in :admin
     do_request
     expect(flash[:error]).to be_present

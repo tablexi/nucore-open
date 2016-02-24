@@ -16,7 +16,7 @@ namespace :daemon do
   end
 
   def manage_daemon(daemon_name, state)
-    daemon=File.expand_path(File.join('..', 'daemons', "#{daemon_name}.rb"), File.dirname(__FILE__))
+    daemon = File.expand_path(File.join('..', 'daemons', "#{daemon_name}.rb"), File.dirname(__FILE__))
     system "ruby #{daemon} #{state}"
   end
 

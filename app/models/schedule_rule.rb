@@ -87,13 +87,13 @@ class ScheduleRule < ActiveRecord::Base
   end
 
   def start_time_int
-    start_hour*100+start_min
+    start_hour * 100 + start_min
   end
 
   # multiplying by 100 means 8:00 is 800 -- it's time on a clock face minus the formatting and meridian
 
   def end_time_int
-    end_hour*100+end_min
+    end_hour * 100 + end_min
   end
 
   # Compare the start time of this with another schedule rule's
@@ -130,7 +130,7 @@ class ScheduleRule < ActiveRecord::Base
       title = "Interval: #{duration_mins} minute#{duration_mins == 1 ? '' : 's'}"
     end
 
-    Range.new(0, num_days-1).inject([]) do |array, i|
+    Range.new(0, num_days - 1).inject([]) do |array, i|
       date = (start_date + i.days).to_datetime
       start_at = date.change hour: start_hour, min: start_min
       end_at = date.change hour: end_hour, min: end_min
@@ -157,10 +157,10 @@ class ScheduleRule < ActiveRecord::Base
   def percent_overlap(start_at, end_at)
     return 0 unless end_at > start_at
     overlap  = 0
-    duration = (end_at - start_at)/60
+    duration = (end_at - start_at) / 60
     # TODO: rewrite to be more efficient; don't iterate over every minute
     while start_at < end_at
-      if start_at.hour*100+start_at.min >= start_time_int && start_at.hour*100+start_at.min < end_time_int && send("on_#{start_at.strftime("%a").downcase}?")
+      if start_at.hour * 100 + start_at.min >= start_time_int && start_at.hour * 100 + start_at.min < end_time_int && send("on_#{start_at.strftime("%a").downcase}?")
         overlap += 1
       end
       start_at += 60

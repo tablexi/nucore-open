@@ -135,7 +135,7 @@ RSpec.describe Reservation do
     end
 
     it "should create using string values" do
-      @reservation = @instrument.reservations.create(reserve_start_date: (Date.today+1.day).to_s, reserve_start_hour: '10',
+      @reservation = @instrument.reservations.create(reserve_start_date: (Date.today + 1.day).to_s, reserve_start_hour: '10',
                                                      reserve_start_min: '0', reserve_start_meridian: 'am',
                                                      duration_value: '2', duration_unit: 'hours')
       assert @reservation.valid?
@@ -151,7 +151,7 @@ RSpec.describe Reservation do
 
   context 'canceled?' do
     before :each do
-      @reservation = @instrument.reservations.create(reserve_start_date: (Date.today+1.day).to_s, reserve_start_hour: '10',
+      @reservation = @instrument.reservations.create(reserve_start_date: (Date.today + 1.day).to_s, reserve_start_hour: '10',
                                                      reserve_start_min: '0', reserve_start_meridian: 'am',
                                                      duration_value: '2', duration_unit: 'hours')
       assert @reservation.valid?
@@ -160,7 +160,7 @@ RSpec.describe Reservation do
     it('should not be canceled') { expect(@reservation).not_to be_canceled }
 
     it 'should be canceled' do
-      @reservation.canceled_at=Time.zone.now
+      @reservation.canceled_at = Time.zone.now
       expect(@reservation).to be_canceled
     end
   end
@@ -183,7 +183,7 @@ RSpec.describe Reservation do
       @instrument.min_reserve_mins = 15
       @instrument.save
 
-      @reservation1 = @instrument.reservations.create(reserve_start_date: Date.today+1.day, reserve_start_hour: 10,
+      @reservation1 = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
                                                        reserve_start_min: 0, reserve_start_meridian: 'am',
                                                        duration_value: 30, duration_unit: 'minutes', order_detail: @detail1)
     end
@@ -323,7 +323,7 @@ RSpec.describe Reservation do
     end
 
     it 'should not allow two reservations with the same order detail id' do
-      reservation2=@instrument.reservations.new(reserve_start_date: Date.today+1.day, reserve_start_hour: 10,
+      reservation2 = @instrument.reservations.new(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
                                                 reserve_start_min: 0, reserve_start_meridian: 'am',
                                                 duration_value: 30, duration_unit: 'minutes', order_detail: @reservation1.order_detail)
       assert !reservation2.save
@@ -347,19 +347,19 @@ RSpec.describe Reservation do
     it "should not allow reservations to conflict with an existing reservation in the same order" do
       expect(@reservation1).to be_valid
 
-      @reservation2 = @instrument.reservations.create(reserve_start_date: Date.today+1.day, reserve_start_hour: 10,
+      @reservation2 = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
                                                        reserve_start_min: 0, reserve_start_meridian: 'am',
                                                        duration_value: 30, duration_unit: 'minutes', order_detail: @detail2)
       expect(@reservation2).not_to be_valid
       assert_equal ["The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue."], @reservation2.errors[:base]
 
-      @reservation2 = @instrument.reservations.create(reserve_start_date: Date.today+1.day, reserve_start_hour: 10,
+      @reservation2 = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
                                                        reserve_start_min: 15, reserve_start_meridian: 'am',
                                                        duration_value: 30, duration_unit: 'minutes', order_detail: @detail2)
       expect(@reservation2).not_to be_valid
       assert_equal ["The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue."], @reservation2.errors[:base]
 
-      @reservation2 = @instrument.reservations.create(reserve_start_date: Date.today+1.day, reserve_start_hour: 9,
+      @reservation2 = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 9,
                                                        reserve_start_min: 45, reserve_start_meridian: 'am',
                                                        duration_value: 30, duration_unit: 'minutes', order_detail: @detail2)
       expect(@reservation2).not_to be_valid
@@ -369,7 +369,7 @@ RSpec.describe Reservation do
     it "should allow reservations with the same time and date on different instruments" do
       expect(@reservation1).to be_valid
 
-      @reservation2 = @instrument.reservations.create(reserve_start_date: Date.today+1.day, reserve_start_hour: 10,
+      @reservation2 = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
                                                        reserve_start_min: 0, reserve_start_meridian: 'am',
                                                        duration_value: 30, duration_unit: 'minutes', order_detail: @detail2)
 
@@ -377,30 +377,30 @@ RSpec.describe Reservation do
 
       @instrument2 = create(:instrument, facility: facility, facility_account: facility_account)
 
-      @reservation2.product=@instrument2
+      @reservation2.product = @instrument2
       expect(@reservation2).to be_does_not_conflict_with_other_reservation
     end
 
     context 'moving' do
 
-      before(:each) { @morning=Time.zone.parse("#{Date.today} 10:31:00") }
+      before(:each) { @morning = Time.zone.parse("#{Date.today} 10:31:00") }
 
       it 'should return the earliest possible time slot' do
-        expect(human_date(@reservation1.reserve_start_at)).to eq(human_date(@morning+1.day))
+        expect(human_date(@reservation1.reserve_start_at)).to eq(human_date(@morning + 1.day))
 
-        earliest=nil
-        Timecop.freeze(@morning) { earliest=@reservation1.earliest_possible }
+        earliest = nil
+        Timecop.freeze(@morning) { earliest = @reservation1.earliest_possible }
         expect(human_date(earliest.reserve_start_at)).to eq(human_date(@morning))
 
-        new_min=0
+        new_min = 0
 
         (@morning.min..60).each do |min|
-          new_min=min == 60 ? 0 : min
+          new_min = min == 60 ? 0 : min
           expect(earliest.reserve_start_at.min).to(eq(new_min)) && break if new_min % @rule.instrument.reserve_interval == 0
         end
 
-        expect(earliest.reserve_start_at.hour).to eq(new_min == 0 ? @morning.hour+1 : @morning.hour)
-        expect(earliest.reserve_end_at-earliest.reserve_start_at).to eq(@reservation1.reserve_end_at-@reservation1.reserve_start_at)
+        expect(earliest.reserve_start_at.hour).to eq(new_min == 0 ? @morning.hour + 1 : @morning.hour)
+        expect(earliest.reserve_end_at - earliest.reserve_start_at).to eq(@reservation1.reserve_end_at - @reservation1.reserve_start_at)
       end
 
       it 'should not be moveable if the reservation is in the grace period' do
@@ -413,7 +413,7 @@ RSpec.describe Reservation do
 
       it 'should not be moveable if the reservation is canceled' do
         expect(@reservation1).to be_can_move
-        @reservation1.canceled_at=Time.zone.now
+        @reservation1.canceled_at = Time.zone.now
         expect(@reservation1).not_to be_can_move
       end
 
@@ -428,7 +428,7 @@ RSpec.describe Reservation do
       it 'should update the reservation to the earliest available' do
         # if earliest= and move_to_earliest span a second, the test fails
         Timecop.freeze do
-          earliest=@reservation1.earliest_possible
+          earliest = @reservation1.earliest_possible
           expect(@reservation1.reserve_start_at).not_to eq(earliest.reserve_start_at)
           expect(@reservation1.reserve_end_at).not_to eq(earliest.reserve_end_at)
           expect(@reservation1.move_to_earliest).to be true
@@ -494,8 +494,8 @@ RSpec.describe Reservation do
       end
 
       it 'should be false when there is no price policy' do
-        @reservation1.actual_start_at=1.day.ago
-        @reservation1.actual_end_at=1.day.ago+1.hour
+        @reservation1.actual_start_at = 1.day.ago
+        @reservation1.actual_end_at = 1.day.ago + 1.hour
         @instrument.instrument_price_policies.clear
         assert @reservation1.save
         expect(@instrument.cheapest_price_policy(@reservation1.order_detail)).to be_nil
@@ -506,33 +506,33 @@ RSpec.describe Reservation do
       it 'should be false when price policy has no usage rate' do
         @instrument_pp.update_attribute :usage_rate, 0
 
-        @reservation1.order_detail.price_policy=@instrument_pp
-        @reservation1.actual_start_at=1.day.ago
-        @reservation1.actual_end_at=1.day.ago+1.hour
+        @reservation1.order_detail.price_policy = @instrument_pp
+        @reservation1.actual_start_at = 1.day.ago
+        @reservation1.actual_end_at = 1.day.ago + 1.hour
         assert @reservation1.save
 
         expect(@reservation1).not_to be_requires_but_missing_actuals
       end
 
       it 'should be false when price policy has zero usage rate' do
-        @instrument_pp.usage_rate=0
+        @instrument_pp.usage_rate = 0
         assert @instrument_pp.save
 
-        @reservation1.order_detail.price_policy=@instrument_pp
-        @reservation1.actual_start_at=1.day.ago
-        @reservation1.actual_end_at=1.day.ago+1.hour
+        @reservation1.order_detail.price_policy = @instrument_pp
+        @reservation1.actual_start_at = 1.day.ago
+        @reservation1.actual_end_at = 1.day.ago + 1.hour
         assert @reservation1.save
 
         expect(@reservation1).not_to be_requires_but_missing_actuals
       end
 
       it 'should be false when there is a usage rate and actuals' do
-        @instrument_pp.usage_rate=5
+        @instrument_pp.usage_rate = 5
         assert @instrument_pp.save
 
-        @reservation1.order_detail.price_policy=@instrument_pp
-        @reservation1.actual_start_at=1.day.ago
-        @reservation1.actual_end_at=1.day.ago+1.hour
+        @reservation1.order_detail.price_policy = @instrument_pp
+        @reservation1.actual_start_at = 1.day.ago
+        @reservation1.actual_end_at = 1.day.ago + 1.hour
         assert @reservation1.save
 
         expect(@reservation1).not_to be_requires_but_missing_actuals
@@ -562,13 +562,13 @@ RSpec.describe Reservation do
 
   context 'conflicting reservations' do
     let!(:reservation) do
-      @instrument.reservations.create!(reserve_start_date: Date.today+1.day, reserve_start_hour: 10,
+      @instrument.reservations.create!(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
                                        reserve_start_min: 0, reserve_start_meridian: 'am',
                                        duration_value: '60', duration_unit: 'minutes')
     end
 
     let (:conflicting_reservation) do
-      res = @instrument.reservations.build(reserve_start_date: Date.today+1.day, reserve_start_hour: 10,
+      res = @instrument.reservations.build(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
                                            reserve_start_min: 0, reserve_start_meridian: 'am',
                                            duration_value: '60', duration_unit: 'minutes')
       res.valid?
@@ -576,7 +576,7 @@ RSpec.describe Reservation do
     end
 
     let(:conflicting_admin_reservation) do
-      res = @instrument.reservations.build(reserve_start_date: Date.today+1.day, reserve_start_hour: 10,
+      res = @instrument.reservations.build(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
                                            reserve_start_min: 0, reserve_start_meridian: 'am',
                                            duration_value: '60', duration_unit: 'minutes')
       res.valid?
@@ -626,7 +626,7 @@ RSpec.describe Reservation do
     context 'overlapping scheduling rules' do
       context 'completely within a blacked out time' do
         before :each do
-          @reservation = @instrument.reservations.build(reserve_start_date: Date.today+1.day, reserve_start_hour: 6,
+          @reservation = @instrument.reservations.build(reserve_start_date: Date.today + 1.day, reserve_start_hour: 6,
                                                         reserve_start_min: 0, reserve_start_meridian: 'pm',
                                                         duration_value: '60', duration_unit: 'minutes')
         end
@@ -644,7 +644,7 @@ RSpec.describe Reservation do
 
       context 'overlapping a border of blacked out time' do
         before :each do
-          @reservation = @instrument.reservations.build(reserve_start_date: Date.today+1.day, reserve_start_hour: 5,
+          @reservation = @instrument.reservations.build(reserve_start_date: Date.today + 1.day, reserve_start_hour: 5,
                                                         reserve_start_min: 30, reserve_start_meridian: 'pm',
                                                         duration_value: '60', duration_unit: 'minutes')
         end
@@ -668,7 +668,7 @@ RSpec.describe Reservation do
     end
 
     it "should not let reservations exceed the maximum length" do
-      @reservation = @instrument.reservations.create(reserve_start_date: Date.today+1.day, reserve_start_hour: 10,
+      @reservation = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
                                                      reserve_start_min: 0, reserve_start_meridian: 'am',
                                                      duration_value: 61, duration_unit: 'minutes')
       expect(@reservation).not_to be_valid
@@ -676,14 +676,14 @@ RSpec.describe Reservation do
     end
 
     it "should allow reservations that don't exceed the maximum length" do
-      @reservation = @instrument.reservations.create(reserve_start_date: Date.today+1.day, reserve_start_hour: 10,
+      @reservation = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
                                                      reserve_start_min: 0, reserve_start_meridian: 'am',
                                                      duration_value: 60, duration_unit: 'minutes')
       expect(@reservation).to be_valid
     end
 
     it 'should allow admin reservation to exceed the maximum length' do
-      @reservation = @instrument.reservations.create(reserve_start_date: Date.today+1.day, reserve_start_hour: 10,
+      @reservation = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
                                                      reserve_start_min: 0, reserve_start_meridian: 'am',
                                                      duration_value: 75, duration_unit: 'minutes')
       allow(@reservation).to receive(:admin?).and_return(true)
@@ -697,7 +697,7 @@ RSpec.describe Reservation do
     end
 
     it "should not let reservations be under the minimum length" do
-      @reservation = @instrument.reservations.create(reserve_start_date: Date.today+1.day, reserve_start_hour: 10,
+      @reservation = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
                                                      reserve_start_min: 0, reserve_start_meridian: 'am',
                                                      duration_value: 29, duration_unit: 'minutes')
       expect(@reservation).not_to be_valid
@@ -705,14 +705,14 @@ RSpec.describe Reservation do
     end
 
     it 'should let reservations be over the minimum length' do
-      @reservation = @instrument.reservations.create(reserve_start_date: Date.today+1.day, reserve_start_hour: 10,
+      @reservation = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
                                                      reserve_start_min: 0, reserve_start_meridian: 'am',
                                                      duration_value: 30, duration_unit: 'minutes')
       expect(@reservation).to be_valid
     end
 
     it 'should allow admin reservations to be less than the minimum length' do
-      @reservation = @instrument.reservations.create(reserve_start_date: Date.today+1.day, reserve_start_hour: 10,
+      @reservation = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
                                                      reserve_start_min: 0, reserve_start_meridian: 'am',
                                                      duration_value: 15, duration_unit: 'minutes')
       allow(@reservation).to receive(:admin?).and_return(true)
@@ -725,7 +725,7 @@ RSpec.describe Reservation do
     @instrument.max_reserve_mins = 240
     @instrument.save
     @today        = Date.today
-    @tomorrow     = @today+1.day
+    @tomorrow     = @today + 1.day
     # should not allow multi-day reservation with existing rules
     @reservation  = @instrument.reservations.create(reserve_start_date: @tomorrow, reserve_start_hour: 10,
                                                     reserve_start_min: 0, reserve_start_meridian: 'pm',
@@ -935,11 +935,11 @@ RSpec.describe Reservation do
       PriceGroupProduct.destroy_all
 
       @user = FactoryGirl.create(:user)
-      @nupg_pgp=FactoryGirl.create(:price_group_product, product: @instrument, price_group: @nupg)
+      @nupg_pgp = FactoryGirl.create(:price_group_product, product: @instrument, price_group: @nupg)
 
       # Setup a price group with an account for this user
       @price_group1 = facility.price_groups.create(attributes_for(:price_group))
-      @pg1_pgp=FactoryGirl.create(:price_group_product, product: @instrument, price_group: @price_group1)
+      @pg1_pgp = FactoryGirl.create(:price_group_product, product: @instrument, price_group: @price_group1)
       @account1 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
       @account_price_group_member1 = AccountPriceGroupMember.create(FactoryGirl.attributes_for(:account_price_group_member).merge(account: @account1, price_group: @price_group1))
 
@@ -956,10 +956,10 @@ RSpec.describe Reservation do
 
     it "should find the best reservation window" do
       @pp_short = InstrumentPricePolicy.create(FactoryGirl.attributes_for(:instrument_price_policy, product_id: @instrument.id))
-      @pg1_pgp.reservation_window=30
+      @pg1_pgp.reservation_window = 30
       assert @pg1_pgp.save
       @pp_long = InstrumentPricePolicy.create(FactoryGirl.attributes_for(:instrument_price_policy, product_id: @instrument.id))
-      @nupg_pgp.reservation_window=60
+      @nupg_pgp.reservation_window = 60
       assert @nupg_pgp.save
       @price_group1.price_policies << @pp_short
       @nupg.price_policies         << @pp_long
@@ -975,8 +975,8 @@ RSpec.describe Reservation do
     end
 
     it 'should have actuals' do
-      reservation.actual_start_at=Time.zone.now
-      reservation.actual_end_at=Time.zone.now
+      reservation.actual_start_at = Time.zone.now
+      reservation.actual_end_at = Time.zone.now
       expect(reservation).to be_has_actuals
     end
   end

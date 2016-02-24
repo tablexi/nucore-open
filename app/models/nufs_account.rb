@@ -71,8 +71,8 @@ class NufsAccount < Account
     begin
       validator.account_is_open!
     rescue ValidatorError => e
-      msg=e.message
-      msg="not found, is inactive, or is invalid" if msg.blank?
+      msg = e.message
+      msg = "not found, is inactive, or is invalid" if msg.blank?
       errors.add(:account_number, msg)
     end
   end

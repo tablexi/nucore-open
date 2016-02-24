@@ -9,16 +9,16 @@ RSpec.describe FacilityNotificationsController do
 
   before :each do
     Settings.billing.review_period = 7.days
-    @authable=FactoryGirl.create(:facility)
-    @user=FactoryGirl.create(:user)
-    @account=FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
+    @authable = FactoryGirl.create(:facility)
+    @user = FactoryGirl.create(:user)
+    @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
     @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @params={ facility_id: @authable.url_name }
+    @params = { facility_id: @authable.url_name }
 
     @order_detail1 = place_and_complete_item_order(@user, @authable, @account)
     @order_detail2 = place_and_complete_item_order(@user, @authable, @account)
 
-    @account2=FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
+    @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
     @authable_account2 = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @order_detail3 = place_and_complete_item_order(@user, @authable, @account2)
   end
@@ -36,8 +36,8 @@ RSpec.describe FacilityNotificationsController do
 
   context "index" do
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
     it_should_deny_all [:staff, :senior_staff]
     it_should_404_for_zero_day_review
@@ -151,8 +151,8 @@ RSpec.describe FacilityNotificationsController do
 
   context "in review" do
     before :each do
-      @method=:get
-      @action=:in_review
+      @method = :get
+      @action = :in_review
       @order_detail1.reviewed_at = 7.days.from_now
       @order_detail1.save!
       @order_detail3.reviewed_at = 7.days.from_now

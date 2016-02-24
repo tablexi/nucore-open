@@ -5,7 +5,7 @@ class AddReconciledOrderStatus < ActiveRecord::Migration
   end
 
   def self.down
-    os=OrderStatus.find_by_name('Reconciled')
+    os = OrderStatus.find_by_name('Reconciled')
     os.destroy if os
   end
 

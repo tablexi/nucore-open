@@ -24,8 +24,8 @@ RSpec.describe PriceGroup do
   context 'can_purchase?' do
 
     before :each do
-      @facility_account=@facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @product=@facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @product = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
     end
 
     it 'should not be able to purchase product' do

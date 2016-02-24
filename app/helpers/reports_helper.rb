@@ -33,13 +33,13 @@ module ReportsHelper
   private
 
   def combine_attributes(*records)
-    attrs=[]
+    attrs = []
     records.each {|ar| attrs += yield(ar) }
     attrs
   end
 
   def order_and_filter_attributes(ar)
-    attrs=ar.attributes.to_a
+    attrs = ar.attributes.to_a
     attrs.delete_if{|ray| ray[0] =~ /._id$|^id$|^updated_at$|^created_at$|._by$/}
     attrs.sort{|a1, a2| a1[0] <=> a2[0]}
   end

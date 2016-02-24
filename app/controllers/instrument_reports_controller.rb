@@ -12,14 +12,14 @@ class InstrumentReportsController < ReportsController
 
   def account_owner
     render_report(2, 'Name') do |r|
-      owner=r.order_detail.account.owner.user
+      owner = r.order_detail.account.owner.user
       [ r.product.name, format_username(owner) ]
     end
   end
 
   def purchaser
     render_report(3, 'Name') do |r|
-      usr=r.order_detail.order.user
+      usr = r.order_detail.order.user
       [ r.product.name, format_username(usr) ]
     end
   end
@@ -27,7 +27,7 @@ class InstrumentReportsController < ReportsController
   private
 
   def init_report_headers(report_on_label)
-    @headers=[ 'Instrument', 'Quantity', 'Reserved Time (h)', 'Percent of Reserved', 'Actual Time (h)', 'Percent of Actual Time' ]
+    @headers = [ 'Instrument', 'Quantity', 'Reserved Time (h)', 'Percent of Reserved', 'Actual Time (h)', 'Percent of Actual Time' ]
     @headers.insert(1, report_on_label) if report_on_label
   end
 
@@ -51,7 +51,7 @@ class InstrumentReportsController < ReportsController
       @totals[1] += to_hours(res.actual_duration_mins)
     end
 
-    reservation=@report_data.first
+    reservation = @report_data.first
     @headers += report_attributes(reservation, reservation.product)
   end
 

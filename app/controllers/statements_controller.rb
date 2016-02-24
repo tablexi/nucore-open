@@ -15,7 +15,7 @@ class StatementsController < ApplicationController
 
   # GET /accounts/:account_id/facilities/:facility_id/statements/:id
   def show
-    action='show'
+    action = 'show'
     @active_tab = 'accounts'
 
     case params[:id]
@@ -23,8 +23,8 @@ class StatementsController < ApplicationController
       @order_details = @account.order_details.for_facility_with_price_policy(@facility)
         @order_details = @order_details.paginate(page: params[:page])
     when 'list'
-      action='list'
-        @statements=@statements.paginate(page: params[:page])
+      action = 'list'
+        @statements = @statements.paginate(page: params[:page])
     end
 
     respond_to do |format|

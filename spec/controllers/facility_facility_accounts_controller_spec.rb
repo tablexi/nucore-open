@@ -7,16 +7,16 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
   before(:all) { create_users }
 
   before(:each) do
-    @authable=FactoryGirl.create(:facility)
-    @facility_account=FactoryGirl.create(:facility_account, facility: @authable, created_by: @admin.id)
-    @params={ facility_id: @authable.url_name }
+    @authable = FactoryGirl.create(:facility)
+    @facility_account = FactoryGirl.create(:facility_account, facility: @authable, created_by: @admin.id)
+    @params = { facility_id: @authable.url_name }
   end
 
   context 'index' do
 
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
 
     it_should_allow_managers_only do
@@ -31,8 +31,8 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
   context 'new' do
 
     before :each do
-      @method=:get
-      @action=:new
+      @method = :get
+      @action = :new
     end
 
     it_should_allow_managers_only do
@@ -46,8 +46,8 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
   context 'update' do
 
     before :each do
-      @method=:put
-      @action=:update
+      @method = :put
+      @action = :update
       @params.merge!(id: @facility_account.id, facility_account: FactoryGirl.attributes_for(:facility_account))
     end
 
@@ -63,8 +63,8 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
   context 'create' do
 
     before :each do
-      @method=:post
-      @action=:create
+      @method = :post
+      @action = :create
       @params.merge!(facility_account: FactoryGirl.attributes_for(:facility_account))
     end
 
@@ -80,8 +80,8 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
   context 'edit' do
 
     before :each do
-      @method=:get
-      @action=:edit
+      @method = :get
+      @action = :edit
       @params.merge!(id: @facility_account.id)
     end
 

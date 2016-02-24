@@ -10,7 +10,7 @@ class RemoveReviewableState < ActiveRecord::Migration
     if reviewable
       right reviewable.right
       left = reviewable.left
-      diff = right-left
+      diff = right - left
 
       # awesome_nested_set barfs trying to fix descendants on Oracle, so skip its shoddy work and rebuild tree manually
       reviewable.skip_before_destroy = true

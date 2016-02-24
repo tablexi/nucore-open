@@ -12,7 +12,7 @@ if Account.config.statements_enabled?
       @order_detail2 = place_and_complete_item_order(@user, @authable, @account)
       @order_detail2.update_attributes(reviewed_at: nil)
 
-      @account2=FactoryGirl.create(@account_sym, account_users_attributes: account_users_attributes_hash(user: @user), facility_id: @authable.id)
+      @account2 = FactoryGirl.create(@account_sym, account_users_attributes: account_users_attributes_hash(user: @user), facility_id: @authable.id)
       @authable_account2 = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @order_detail3 = place_and_complete_item_order(@user, @authable, @account2)
 
@@ -29,19 +29,19 @@ if Account.config.statements_enabled?
     end
 
     before(:each) do
-      @authable=FactoryGirl.create(:facility)
-      @user=FactoryGirl.create(:user)
+      @authable = FactoryGirl.create(:facility)
+      @user = FactoryGirl.create(:user)
       UserRole.grant(@user, UserRole::ADMINISTRATOR)
-      @account=FactoryGirl.create(@account_sym, account_users_attributes: account_users_attributes_hash(user: @user), facility_id: @authable.id)
-      @statement=FactoryGirl.create(:statement, facility_id: @authable.id, created_by: @admin.id, account: @account)
-      @params={ facility_id: @authable.url_name }
+      @account = FactoryGirl.create(@account_sym, account_users_attributes: account_users_attributes_hash(user: @user), facility_id: @authable.id)
+      @statement = FactoryGirl.create(:statement, facility_id: @authable.id, created_by: @admin.id, account: @account)
+      @params = { facility_id: @authable.url_name }
     end
 
     context 'index' do
 
       before :each do
-        @method=:get
-        @action=:index
+        @method = :get
+        @action = :index
       end
 
       it_should_allow_managers_only do
@@ -83,8 +83,8 @@ if Account.config.statements_enabled?
     context "send_statements" do
       before :each do
         create_order_details
-        @method=:post
-        @action=:send_statements
+        @method = :post
+        @action = :send_statements
         @params.merge!(order_detail_ids: [@order_detail1.id, @order_detail3.id])
       end
 
@@ -123,8 +123,8 @@ if Account.config.statements_enabled?
     context 'show' do
 
       before :each do
-        @method=:get
-        @action=:show
+        @method = :get
+        @action = :show
         @params.merge!(id: @statement.id)
       end
 

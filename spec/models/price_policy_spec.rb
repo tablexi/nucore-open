@@ -34,17 +34,17 @@ RSpec.describe PricePolicy do
 
   context 'expire date' do
     before :each do
-      @start_date=Time.zone.parse("2020-5-5")
+      @start_date = Time.zone.parse("2020-5-5")
     end
 
     it "should set default expire_date" do
-      @pp=FactoryGirl.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: nil)
+      @pp = FactoryGirl.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: nil)
       expect(@pp.expire_date).not_to be_nil
       expect(@pp.expire_date).to eq(Time.zone.parse("2020-9-30").end_of_day)
     end
 
     it 'should not allow an expire date the same as start date' do
-      pp=ItemPricePolicy.new(
+      pp = ItemPricePolicy.new(
         FactoryGirl.attributes_for(:item_price_policy,
                                    price_group_id: @price_group.id,
                                    product_id: @item.id,
@@ -57,34 +57,34 @@ RSpec.describe PricePolicy do
     end
 
     it 'should not allow an expire date after a generated date' do
-      pp=ItemPricePolicy.new(
+      pp = ItemPricePolicy.new(
         FactoryGirl.attributes_for(:item_price_policy,
                                    price_group_id: @price_group.id,
                                    product_id: @item.id,
                                    start_date: @start_date,
-                                   expire_date: PricePolicy.generate_expire_date(@start_date)+1.month)
+                                   expire_date: PricePolicy.generate_expire_date(@start_date) + 1.month)
       )
       assert !pp.save
       assert pp.errors[:expire_date]
     end
 
     it "should not set default expire_date if one is given" do
-      expire_date=@start_date+3.months
-      pp=FactoryGirl.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: expire_date)
+      expire_date = @start_date + 3.months
+      pp = FactoryGirl.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: expire_date)
       expect(pp.expire_date).not_to be_nil
       expect(pp.expire_date).to eq(expire_date)
     end
 
     it "should not be expired" do
-      expire_date=@start_date+3.months
-      pp=FactoryGirl.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: expire_date)
+      expire_date = @start_date + 3.months
+      pp = FactoryGirl.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: expire_date)
       expect(pp).not_to be_expired
     end
 
     it "should be expired" do
-      @start_date=Time.zone.parse("2000-5-5")
-      expire_date=@start_date+1.month
-      pp=FactoryGirl.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: expire_date)
+      @start_date = Time.zone.parse("2000-5-5")
+      expire_date = @start_date + 1.month
+      pp = FactoryGirl.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: expire_date)
       expect(pp).to be_expired
     end
 
@@ -93,7 +93,7 @@ RSpec.describe PricePolicy do
   context 'restrict purchase' do
 
     before :each do
-      @pp=FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group)
+      @pp = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group)
       # @pgp=FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
     end
 
@@ -118,21 +118,21 @@ RSpec.describe PricePolicy do
     end
 
     it 'should return false when no price group present' do
-      @pp.price_group=nil
+      @pp.price_group = nil
       expect(@pp.restrict_purchase).to eq(false)
     end
 
     it 'should return false when no item present' do
-      @pp.product=nil
+      @pp.product = nil
       expect(@pp.restrict_purchase).to eq(false)
     end
 
     it 'should raise on bad input' do
-      assert_raise(ArgumentError) { @pp.restrict_purchase=44 }
+      assert_raise(ArgumentError) { @pp.restrict_purchase = 44 }
     end
 
     it 'should destroy PriceGroupProduct when restricted' do
-      @pp.restrict_purchase=true
+      @pp.restrict_purchase = true
       should_be_destroyed @pgp
     end
   end
@@ -149,8 +149,8 @@ RSpec.describe PricePolicy do
       Timecop.freeze(@today) do
         # @today = Time.zone.local(2011, 06, 06, 12, 0, 0)
 
-        @pp=FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today.beginning_of_day, expire_date: @today + 30.days)
-        @pp2=FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today + 2.days, expire_date: @today + 30.days)
+        @pp = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today.beginning_of_day, expire_date: @today + 30.days)
+        @pp2 = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today + 2.days, expire_date: @today + 30.days)
         expect(@pp.reload.start_date).to eq(@today.beginning_of_day)
         # they weren't matching up exactly right, but were within a second of each other
         # @pp.exire_date.should == (@today + 1.day).end_of_day
@@ -164,9 +164,9 @@ RSpec.describe PricePolicy do
       @today = Time.zone.local(2011, 06, 06, 12, 0, 0)
 
       Timecop.freeze(@today) do
-        @pp=FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today.beginning_of_day, expire_date: @today + 30.days)
+        @pp = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today.beginning_of_day, expire_date: @today + 30.days)
         @pp3 = FactoryGirl.create(:item_price_policy, product: @item2, price_group: @price_group, start_date: @today, expire_date: @today + 30.days)
-        @pp2=FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today + 2.days, expire_date: @today + 30.days)
+        @pp2 = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today + 2.days, expire_date: @today + 30.days)
         expect(@pp.reload.start_date).to eq(@today.beginning_of_day)
         # they weren't matching up exactly right, but were within a second of each other
         # @pp.exire_date.should == (@today + 1.day).end_of_day
@@ -207,7 +207,7 @@ RSpec.describe PricePolicy do
         @price_group = FactoryGirl.create(:price_group, facility: @facility)
         create(:account_price_group_member, account: @account, price_group: @price_group)
         FactoryGirl.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
-        @pp=FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group)
+        @pp = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group)
       end
   
       it 'should not be assigned' do

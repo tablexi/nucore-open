@@ -20,10 +20,10 @@ RSpec.describe BulkEmailHelper do
     @purchaser3 = FactoryGirl.create(:user)
 
     @facility = FactoryGirl.create(:facility)
-    @facility_account=FactoryGirl.create(:facility_account, facility: @facility)
-    @product=FactoryGirl.create(:item, facility_account: @facility_account, facility: @facility)
-    @product2=FactoryGirl.create(:item, facility_account: @facility_account, facility: @facility)
-    @product3=FactoryGirl.create(:item, facility_account: @facility_account, facility: @facility)
+    @facility_account = FactoryGirl.create(:facility_account, facility: @facility)
+    @product = FactoryGirl.create(:item, facility_account: @facility_account, facility: @facility)
+    @product2 = FactoryGirl.create(:item, facility_account: @facility_account, facility: @facility)
+    @product3 = FactoryGirl.create(:item, facility_account: @facility_account, facility: @facility)
 
     @account = FactoryGirl.create(:nufs_account, account_users_attributes: [ FactoryGirl.attributes_for(:account_user, user: @owner) ])
 
@@ -69,7 +69,7 @@ RSpec.describe BulkEmailHelper do
     before :each do
 
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @instrument=FactoryGirl.create(:instrument,
+      @instrument = FactoryGirl.create(:instrument,
                                      facility: @facility,
                                      facility_account: @facility_account,
                                      min_reserve_mins: 60,

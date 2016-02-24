@@ -7,9 +7,9 @@ RSpec.describe PriceGroupsController do
   before(:all) { create_users }
 
   before :each do
-    @authable=FactoryGirl.create(:facility)
-    @price_group=FactoryGirl.create(:price_group, facility: @authable)
-    @params={ facility_id: @authable.url_name }
+    @authable = FactoryGirl.create(:facility)
+    @price_group = FactoryGirl.create(:price_group, facility: @authable)
+    @params = { facility_id: @authable.url_name }
   end
 
   context 'index' do
@@ -26,8 +26,8 @@ RSpec.describe PriceGroupsController do
 
   context 'new' do
     before :each do
-      @method=:get
-      @action=:new
+      @method = :get
+      @action = :new
     end
 
     it_should_allow_managers_only do
@@ -87,7 +87,7 @@ RSpec.describe PriceGroupsController do
 
       before :each do
         @method = :get
-        @action=:accounts
+        @action = :accounts
       end
 
       it_should_allow_managers_only do

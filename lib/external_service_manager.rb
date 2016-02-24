@@ -5,7 +5,7 @@
 # call the methods of this class to deal with external services.
 class ExternalServiceManager
 
-  @@services={}
+  @@services = {}
 
   #
   # Defines class method #<service type>_service for every

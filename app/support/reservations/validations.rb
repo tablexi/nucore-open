@@ -44,7 +44,7 @@ module Reservations::Validations
   end
 
   def does_not_conflict_with_other_reservation
-    res=conflicting_reservation
+    res = conflicting_reservation
 
     if res
       msg = res.order.try(:==, order) ? :conflict_in_cart : :conflict
@@ -74,7 +74,7 @@ module Reservations::Validations
 
   def satisfies_minimum_length?
     diff = reserve_end_at - reserve_start_at # in seconds
-    return false unless product.min_reserve_mins.nil? || product.min_reserve_mins == 0 || diff/60 >= product.min_reserve_mins
+    return false unless product.min_reserve_mins.nil? || product.min_reserve_mins == 0 || diff / 60 >= product.min_reserve_mins
     true
   end
 
@@ -112,7 +112,7 @@ module Reservations::Validations
               product.available_schedule_rules(order_detail.order.user)
             end
 
-    mins  = (end_at - start_at)/60
+    mins  = (end_at - start_at) / 60
     (0..mins).each do |n|
       dt    = start_at.advance(minutes: n)
       found = false

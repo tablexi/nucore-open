@@ -6,11 +6,11 @@ class RelayDummy < Relay
   end
 
   def activate
-    @active=true
+    @active = true
   end
 
   def deactivate
-    @active=false
+    @active = false
   end
 
   def control_mechanism

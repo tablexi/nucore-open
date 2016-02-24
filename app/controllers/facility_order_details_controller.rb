@@ -26,13 +26,13 @@ class FacilityOrderDetailsController < ApplicationController
     if @order.to_be_merged?
       begin
         @order_detail.destroy
-        flash[:notice]=I18n.t 'controllers.facility_order_details.destroy.success'
+        flash[:notice] = I18n.t 'controllers.facility_order_details.destroy.success'
       rescue => e
         Rails.logger.error "#{e.message}:#{e.backtrace.join("\n")}"
-        flash[:error]=I18n.t 'controllers.facility_order_details.destroy.error', @order_detail.to_s
+        flash[:error] = I18n.t 'controllers.facility_order_details.destroy.error', @order_detail.to_s
       end
     else
-      flash[:notice]=I18n.t 'controllers.facility_order_details.destroy.notice'
+      flash[:notice] = I18n.t 'controllers.facility_order_details.destroy.notice'
       return redirect_to facility_order_path(current_facility, @order)
     end
 
@@ -43,8 +43,8 @@ class FacilityOrderDetailsController < ApplicationController
 
   def process_account_change
     return if params[:order_detail][:account_id].to_i == @order_detail.account_id
-    @order_detail.account=Account.find(params[:order_detail][:account_id])
-    @order_detail.statement=nil
+    @order_detail.account = Account.find(params[:order_detail][:account_id])
+    @order_detail.statement = nil
     @order_detail.save!
   end
 

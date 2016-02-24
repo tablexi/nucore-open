@@ -13,7 +13,7 @@ RSpec.describe BulkEmailController do
     @service = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
     @instrument = FactoryGirl.create(:instrument, facility: @authable, facility_account_id: @facility_account.id)
     @restricted_item = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id, requires_approval: true))
-    @params={ facility_id: @authable.url_name }
+    @params = { facility_id: @authable.url_name }
   end
 
   context "search" do

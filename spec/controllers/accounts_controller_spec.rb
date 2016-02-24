@@ -20,8 +20,8 @@ RSpec.describe AccountsController do
   context "index" do
 
     before(:each) do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
 
     it_should_require_login
@@ -49,9 +49,9 @@ RSpec.describe AccountsController do
   context "show" do
 
     before :each do
-      @method=:get
-      @action=:show
-      @params={ id: @authable.id }
+      @method = :get
+      @action = :show
+      @params = { id: @authable.id }
     end
 
     it_should_require_login
@@ -67,9 +67,9 @@ RSpec.describe AccountsController do
   context 'user_search' do
 
     before :each do
-      @method=:get
-      @action=:user_search
-      @params={ id: @authable.id }
+      @method = :get
+      @action = :user_search
+      @params = { id: @authable.id }
     end
 
     it_should_require_login

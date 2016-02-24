@@ -7,18 +7,18 @@ RSpec.describe PriceGroupProductsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable=FactoryGirl.create(:facility)
-    @facility_account=@authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @authable = FactoryGirl.create(:facility)
+    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @product = FactoryGirl.create(:instrument, facility_account_id: @facility_account.id, facility: @authable)
     create_price_group_products
-    @params={ facility_id: @authable.url_name, id: @product.url_name }
+    @params = { facility_id: @authable.url_name, id: @product.url_name }
   end
 
   context 'edit' do
 
     before :each do
-      @method=:get
-      @action=:edit
+      @method = :get
+      @action = :edit
     end
 
     # Edit is really a view/show, so all operators can view, but
@@ -33,8 +33,8 @@ RSpec.describe PriceGroupProductsController do
   context 'update' do
 
     before :each do
-      @method=:put
-      @action=:update
+      @method = :put
+      @action = :update
 
       PriceGroup.all.each do |pg|
         @params.merge!( pg_key(pg) => { reservation_window: 5, purchase: '1' })
@@ -49,19 +49,19 @@ RSpec.describe PriceGroupProductsController do
     end
 
     it 'should remove PriceGroupProduct when a PriceGroup cannot purchase' do
-      pg=PriceGroup.first
-      @params[pg_key(pg)]=nil
+      pg = PriceGroup.first
+      @params[pg_key(pg)] = nil
       expect(PriceGroupProduct.count).to eq(PriceGroup.count)
       maybe_grant_always_sign_in :director
       do_request
-      expect(PriceGroupProduct.count).to eq(PriceGroup.count-1)
+      expect(PriceGroupProduct.count).to eq(PriceGroup.count - 1)
       assert_successful_update
     end
 
     it 'should create PriceGroupProducts when a PriceGroup can purchase' do
-      pgp=@price_group_products.first
+      pgp = @price_group_products.first
       pgp.destroy
-      expect(PriceGroupProduct.count).to eq(PriceGroup.count-1)
+      expect(PriceGroupProduct.count).to eq(PriceGroup.count - 1)
       maybe_grant_always_sign_in :director
       do_request
       expect(PriceGroupProduct.count).to eq(PriceGroup.count)
@@ -69,8 +69,8 @@ RSpec.describe PriceGroupProductsController do
     end
 
     it 'should error if no reservation window given on instrument' do
-      pg=PriceGroup.first
-      @params[pg_key(pg)][:reservation_window]=''
+      pg = PriceGroup.first
+      @params[pg_key(pg)][:reservation_window] = ''
       maybe_grant_always_sign_in :director
       do_request
       expect(flash[:notice]).to be_nil
@@ -79,11 +79,11 @@ RSpec.describe PriceGroupProductsController do
     end
 
     it 'should not error if no reservation window given on non-instrument' do
-      @product=@authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+      @product = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
       create_price_group_products
-      pg=@price_group_products.first.price_group
-      @params[pg_key(pg)][:reservation_window]=''
-      @params[:id]=@product.url_name
+      pg = @price_group_products.first.price_group
+      @params[pg_key(pg)][:reservation_window] = ''
+      @params[:id] = @product.url_name
       maybe_grant_always_sign_in :director
       do_request
       assert_successful_update
@@ -98,13 +98,13 @@ RSpec.describe PriceGroupProductsController do
   end
 
   def create_price_group_products
-    @price_group_products=[]
+    @price_group_products = []
 
     PriceGroup.all.each do |pg|
-      price_group_product=PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pg.id, @product.id)
+      price_group_product = PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pg.id, @product.id)
 
       if @product.is_a? Instrument
-        price_group_product.reservation_window=14
+        price_group_product.reservation_window = 14
         assert price_group_product.save
       end
 

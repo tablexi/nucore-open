@@ -8,7 +8,7 @@ class Service < Product
   validates_presence_of :facility_account_id if SettingsHelper.feature_on? :recharge_accounts
 
   def active_survey
-    active=external_service_passers.joins(:external_service)
+    active = external_service_passers.joins(:external_service)
                                    .where('active = 1 AND external_services.type = ?', ExternalServiceManager.survey_service.name)
                                    .first
 

@@ -7,15 +7,15 @@ RSpec.describe FacilityUsersController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable=FactoryGirl.create(:facility)
-    @params={ facility_id: @authable.url_name }
+    @authable = FactoryGirl.create(:facility)
+    @params = { facility_id: @authable.url_name }
   end
 
   context 'index' do
 
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
       grant_role(@staff)
     end
 
@@ -31,8 +31,8 @@ RSpec.describe FacilityUsersController do
   context 'destroy' do
 
     before :each do
-      @method=:delete
-      @action=:destroy
+      @method = :delete
+      @action = :destroy
       grant_role(@staff)
       @params.merge!(id: @staff.id)
     end
@@ -49,8 +49,8 @@ RSpec.describe FacilityUsersController do
   context 'search' do
 
     before :each do
-      @method=:get
-      @action=:search
+      @method = :get
+      @action = :search
     end
 
     it_should_allow_managers_only { is_expected.to render_template('search') }
@@ -60,8 +60,8 @@ RSpec.describe FacilityUsersController do
   context 'map_user' do
 
     before :each do
-      @method=:post
-      @action=:map_user
+      @method = :post
+      @action = :map_user
       @params.merge!(facility_user_id: @staff.id, user_role: { role: UserRole::FACILITY_STAFF })
     end
 

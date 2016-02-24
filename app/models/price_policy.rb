@@ -13,8 +13,8 @@ class PricePolicy < ActiveRecord::Base
 
   validates_each :expire_date do |record, _attr, value|
     unless value.blank?
-      start_date=record.start_date
-      gen_exp_date=generate_expire_date(start_date)
+      start_date = record.start_date
+      gen_exp_date = generate_expire_date(start_date)
       if value <= start_date || value > gen_exp_date
         record.errors.add(:expire_date, "must be after #{start_date.to_date} and before #{gen_exp_date.to_date}")
       end
@@ -165,7 +165,7 @@ class PricePolicy < ActiveRecord::Base
   end
 
   def set_expire_date
-    self.expire_date=self.class.generate_expire_date(self) unless expire_date
+    self.expire_date = self.class.generate_expire_date(self) unless expire_date
   end
 
   def editable?

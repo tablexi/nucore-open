@@ -16,9 +16,9 @@ RSpec.describe ProductUsersController do
                                            requires_approval: true)
     @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id))
     expect(@price_policy).to be_valid
-    @params={ facility_id: @authable.url_name, instrument_id: @instrument.url_name }
+    @params = { facility_id: @authable.url_name, instrument_id: @instrument.url_name }
 
-    @rule=@instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+    @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     @level = FactoryGirl.create(:product_access_group, product_id: @instrument.id)
     @level2 = FactoryGirl.create(:product_access_group, product_id: @instrument.id)
   end

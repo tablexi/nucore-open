@@ -19,7 +19,7 @@ class ReportsController < ApplicationController
   private
 
   def format_username(user)
-    name=''
+    name = ''
     name += (user.last_name || '')
     name += ", " unless name.blank?
     name += (user.first_name || '')
@@ -64,7 +64,7 @@ class ReportsController < ApplicationController
   end
 
   def render_report(tab_index, report_on_label, &report_on)
-    @selected_index=tab_index
+    @selected_index = tab_index
     init_report_headers report_on_label
 
     respond_to do |format|

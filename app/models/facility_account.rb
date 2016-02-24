@@ -20,7 +20,7 @@ class FacilityAccount < ActiveRecord::Base
       super # we must call super! Not doing so makes ruby 1.9.2 die a hard death
     rescue NoMethodError => e
       raise e unless account_number
-      validator=ValidatorFactory.instance(account_number)
+      validator = ValidatorFactory.instance(account_number)
       raise e unless validator.components.key?(method_sym)
       validator.send(method_sym, *arguments)
     

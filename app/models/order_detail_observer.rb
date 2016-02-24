@@ -2,20 +2,20 @@ class OrderDetailObserver < ActiveRecord::Observer
 
   def after_destroy(order_detail)
     # merge orders should be cleaned up if they are without order details
-    order=order_detail.order.reload
+    order = order_detail.order.reload
     order.destroy if order.to_be_merged? && order.order_details.empty?
   end
 
   def before_save(order_detail)
-    order=order_detail.order
-    product=order_detail.product
+    order = order_detail.order
+    product = order_detail.product
 
     if order.to_be_merged? && (product.is_a?(Item) ||
                               (product.is_a?(Service) && order_detail.valid_service_meta?) ||
                               (product.is_a?(Instrument) && order_detail.valid_reservation?))
 
       # move this detail to the original order if it is 100% valid
-      order_detail.order_id=order.merge_order.id
+      order_detail.order_id = order.merge_order.id
     end
   end
 
@@ -27,10 +27,10 @@ class OrderDetailObserver < ActiveRecord::Observer
        hooks_to_run.each { |hook| hook.on_status_change(order_detail, old_status, new_status) } if hooks_to_run
      end
 
-   changes=order_detail.changes
+   changes = order_detail.changes
     # check to see if #before_save switch order ids on us
    if changes.key?('order_id') && changes['order_id'][0].present?
-     merge_order=Order.find changes['order_id'][0].to_i
+     merge_order = Order.find changes['order_id'][0].to_i
 
      # clean up merge notifications
      MergeNotification.about(order_detail).first.try(:destroy)

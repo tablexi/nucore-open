@@ -19,13 +19,13 @@ RSpec.describe ServicesController do
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @service          = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
     @service_pp       = @service.service_price_policies.create(FactoryGirl.attributes_for(:service_price_policy, price_group: @nupg))
-    @params={ facility_id: @authable.url_name }
+    @params = { facility_id: @authable.url_name }
   end
 
   context "index" do
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
 
     it_should_allow_operators_only do
@@ -37,8 +37,8 @@ RSpec.describe ServicesController do
 
   context "show" do
     before :each do
-      @method=:get
-      @action=:show
+      @method = :get
+      @action = :show
       @params.merge!(id: @service.url_name)
     end
 
@@ -134,8 +134,8 @@ RSpec.describe ServicesController do
 
   context 'new' do
     before :each do
-      @method=:get
-      @action=:new
+      @method = :get
+      @action = :new
     end
 
     it_should_allow_managers_only do
@@ -146,8 +146,8 @@ RSpec.describe ServicesController do
 
   context 'edit' do
     before :each do
-      @method=:get
-      @action=:edit
+      @method = :get
+      @action = :edit
       @params.merge!(id: @service.url_name)
     end
 
@@ -158,8 +158,8 @@ RSpec.describe ServicesController do
 
   context 'create' do
     before :each do
-      @method=:post
-      @action=:create
+      @method = :post
+      @action = :create
       @params.merge!(service: FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
     end
 
@@ -173,8 +173,8 @@ RSpec.describe ServicesController do
 
   context 'update' do
     before :each do
-      @method=:put
-      @action=:update
+      @method = :put
+      @action = :update
       @params.merge!(id: @service.url_name, service: FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
     end
 
@@ -187,8 +187,8 @@ RSpec.describe ServicesController do
 
   context 'destroy' do
     before :each do
-      @method=:delete
-      @action=:destroy
+      @method = :delete
+      @action = :destroy
       @params.merge!(id: @service.url_name)
     end
 
@@ -201,9 +201,9 @@ RSpec.describe ServicesController do
 
   context "manage" do
     before :each do
-      @method=:get
-      @action=:manage
-      @params={ id: @service.url_name, facility_id: @authable.url_name }
+      @method = :get
+      @action = :manage
+      @params = { id: @service.url_name, facility_id: @authable.url_name }
     end
 
     it_should_allow_operators_only do

@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe ItemPricePolicy do
   it "should create a price policy for tomorrow if no policies already exist for that day" do
-    is_expected.to allow_value(Date.today+1).for(:start_date)
+    is_expected.to allow_value(Date.today + 1).for(:start_date)
   end
 
   it "should create a price policy for yesterday" do
@@ -30,7 +30,7 @@ RSpec.describe ItemPricePolicy do
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
       @item             = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account: @facility_account))
-      @price_group_product=FactoryGirl.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
+      @price_group_product = FactoryGirl.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
     end
 
     it "should create using factory" do
@@ -94,8 +94,8 @@ RSpec.describe ItemPricePolicy do
 
     it "should return the date for upcoming policies" do
       @item.item_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Date.today, price_group_id: @price_group.id, can_purchase: true)
-      ipp2=@item.item_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75,  start_date: Date.today + 7.days, price_group_id: @price_group.id, can_purchase: true)
-      ipp3=@item.item_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75,  start_date: Date.today + 14.days, price_group_id: @price_group.id, can_purchase: true)
+      ipp2 = @item.item_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75,  start_date: Date.today + 7.days, price_group_id: @price_group.id, can_purchase: true)
+      ipp3 = @item.item_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75,  start_date: Date.today + 14.days, price_group_id: @price_group.id, can_purchase: true)
 
       expect(ItemPricePolicy.next_date(@item).to_date).to eq(ipp2.start_date.to_date)
       next_dates = ItemPricePolicy.next_dates(@item)

@@ -21,14 +21,14 @@ RSpec.describe InstrumentsController do
                                            facility: @authable,
                                            facility_account: @facility_account,
                                            no_relay: true)
-    @params={ id: @instrument.url_name, facility_id: @authable.url_name }
+    @params = { id: @instrument.url_name, facility_id: @authable.url_name }
     @instrument_pp = create :instrument_price_policy, product: @instrument, price_group: @nupg
   end
 
   context "index" do
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
       @params.delete(:id)
     end
 
@@ -64,8 +64,8 @@ RSpec.describe InstrumentsController do
 
   context "manage" do
     before :each do
-      @method=:get
-      @action=:manage
+      @method = :get
+      @action = :manage
     end
 
     it_should_allow_operators_only do |_user|
@@ -230,8 +230,8 @@ RSpec.describe InstrumentsController do
 
   context "new" do
     before :each do
-      @method=:get
-      @action=:new
+      @method = :get
+      @action = :new
     end
 
     it_should_allow_managers_only do
@@ -244,8 +244,8 @@ RSpec.describe InstrumentsController do
 
   context "edit" do
     before :each do
-      @method=:get
-      @action=:edit
+      @method = :get
+      @action = :edit
     end
 
     it_should_allow_managers_only do
@@ -255,8 +255,8 @@ RSpec.describe InstrumentsController do
 
   context "create" do
     before :each do
-      @method=:post
-      @action=:create
+      @method = :post
+      @action = :create
       @params.merge!(
         instrument: FactoryGirl.attributes_for(:instrument,
                                                   facility_account_id: @facility_account.id,
@@ -285,7 +285,7 @@ RSpec.describe InstrumentsController do
 
       it_should_allow :director, 'to create a relay' do
         assert_successful_creation do
-          relay=assigns(:instrument).relay
+          relay = assigns(:instrument).relay
           expect(relay).to be_is_a Relay
           expect(relay.ip).to eq(@params[:instrument][:relay_attributes][:ip])
           expect(relay.port).to eq(@params[:instrument][:relay_attributes][:port])
@@ -334,7 +334,7 @@ RSpec.describe InstrumentsController do
 
       it_should_allow :director, 'to create a timer' do
         assert_successful_creation do
-          relay=assigns(:instrument).relay
+          relay = assigns(:instrument).relay
           expect(relay).to be_a Relay
           expect(relay.type).to eq(RelayDummy.name)
         end
@@ -399,8 +399,8 @@ RSpec.describe InstrumentsController do
 
   context "update" do
     before :each do
-      @method=:put
-      @action=:update
+      @method = :put
+      @action = :update
       @params.merge!(instrument: @instrument.attributes.merge!(control_mechanism: 'manual'))
     end
 
@@ -437,7 +437,7 @@ RSpec.describe InstrumentsController do
 
       it_should_allow :director, 'to create a relay' do
         assert_successful_update do
-          relay=assigns(:instrument).relay
+          relay = assigns(:instrument).relay
           expect(relay).to be_is_a Relay
           expect(relay.ip).to eq(@params[:instrument][:relay_attributes][:ip])
           expect(relay.port).to eq(@params[:instrument][:relay_attributes][:port])
@@ -457,7 +457,7 @@ RSpec.describe InstrumentsController do
 
       it_should_allow :director, 'to create a timer' do
         assert_successful_update do
-          relay=assigns(:instrument).relay
+          relay = assigns(:instrument).relay
           expect(relay).to be_is_a Relay
           expect(relay.ip).to be_nil
           expect(relay.port).to be_nil
@@ -479,20 +479,20 @@ RSpec.describe InstrumentsController do
 
   context "destroy" do
     before :each do
-      @method=:delete
-      @action=:destroy
+      @method = :delete
+      @action = :destroy
     end
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:instrument)).to be_kind_of Instrument
       # assert_redirected_to manage_facility_instrument_url(@authable, assigns(:instrument))
       assert_redirected_to facility_instruments_url
-      dead=false
+      dead = false
 
       begin
         Instrument.find(assigns(:instrument).id)
       rescue
-        dead=true
+        dead = true
       end
 
       assert dead
@@ -508,8 +508,8 @@ RSpec.describe InstrumentsController do
     context "schedule" do
 
       before :each do
-        @method=:get
-        @action=:schedule
+        @method = :get
+        @action = :schedule
       end
 
       describe 'schedule sharing' do
@@ -549,8 +549,8 @@ RSpec.describe InstrumentsController do
     context "status" do
 
       before :each do
-        @method=:get
-        @action=:instrument_status
+        @method = :get
+        @action = :instrument_status
       end
 
       it_should_allow_operators_only
@@ -562,8 +562,8 @@ RSpec.describe InstrumentsController do
         # So it doesn't try to actually connect
         allow_any_instance_of(RelaySynaccessRevA).to receive(:query_status).and_return(false)
 
-        @method=:get
-        @action=:instrument_statuses
+        @method = :get
+        @action = :instrument_statuses
         @instrument_with_relay = FactoryGirl.create(:instrument,
                                                     facility: @authable,
                                                     facility_account: @facility_account,
@@ -641,8 +641,8 @@ RSpec.describe InstrumentsController do
     context "switch" do
 
       before :each do
-        @method=:get
-        @action=:switch
+        @method = :get
+        @action = :switch
         @params.merge!(switch: 'on')
       end
 

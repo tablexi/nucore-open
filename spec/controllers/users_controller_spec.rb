@@ -8,14 +8,14 @@ RSpec.describe UsersController do
 
   before(:each) do
     @authable = FactoryGirl.create(:facility)
-    @params={ facility_id: @authable.url_name }
+    @params = { facility_id: @authable.url_name }
   end
 
   context 'index' do
 
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
       @inactive_user = FactoryGirl.create(:user, first_name: 'Inactive')
 
       @active_user = FactoryGirl.create(:user, first_name: 'Active')
@@ -101,8 +101,8 @@ RSpec.describe UsersController do
 
       context 'new_external' do
         before :each do
-          @method=:get
-          @action=:new_external
+          @method = :get
+          @action = :new_external
         end
 
         it_should_allow_operators_only do
@@ -113,8 +113,8 @@ RSpec.describe UsersController do
 
       context "create" do
         before :each do
-          @method=:post
-          @action=:create
+          @method = :post
+          @action = :create
 
         end
 
@@ -199,8 +199,8 @@ RSpec.describe UsersController do
   context 'switch_to' do
 
     before :each do
-      @method=:get
-      @action=:switch_to
+      @method = :get
+      @action = :switch_to
       @params.merge!(user_id: @guest.id)
     end
 
@@ -215,8 +215,8 @@ RSpec.describe UsersController do
 
   context "orders" do
     before :each do
-      @method=:get
-      @action=:orders
+      @method = :get
+      @action = :orders
       @params.merge!(user_id: @guest.id)
     end
 
@@ -228,8 +228,8 @@ RSpec.describe UsersController do
 
   context "reservations" do
     before :each do
-      @method=:get
-      @action=:reservations
+      @method = :get
+      @action = :reservations
       @params.merge!(user_id: @guest.id)
     end
 
@@ -241,8 +241,8 @@ RSpec.describe UsersController do
 
   context "accounts" do
     before :each do
-      @method=:get
-      @action=:accounts
+      @method = :get
+      @action = :accounts
       @params.merge!(user_id: @guest.id)
     end
 

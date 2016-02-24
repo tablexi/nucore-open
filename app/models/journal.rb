@@ -12,7 +12,7 @@ class Journal < ActiveRecord::Base
       order_detail_ids = []
       pending_facility_ids = Journal.facility_ids_with_pending_journals
       row_errors = []
-      recharge_enabled=SettingsHelper.feature_on? :recharge_accounts
+      recharge_enabled = SettingsHelper.feature_on? :recharge_accounts
 
       # create rows for each transaction
       order_details.each do |od|

@@ -33,13 +33,13 @@ class BudgetedChartString < ActiveRecord::Base
       begin
         # add testing/place holder records
         BudgetedChartString.create(fund: '123', dept: '1234567', project: '12345678', account: '75340',
-                                   starts_at: Time.zone.now-1.week, expires_at: Time.zone.now+1.year)
+                                   starts_at: Time.zone.now - 1.week, expires_at: Time.zone.now + 1.year)
         BudgetedChartString.create(fund: '123', dept: '1234567', project: '12345678', account: '50617',
-                                   starts_at: Time.zone.now-1.week, expires_at: Time.zone.now+1.year)
+                                   starts_at: Time.zone.now - 1.week, expires_at: Time.zone.now + 1.year)
         BudgetedChartString.create(fund: '111', dept: '2222222', project: '33333333', account: '75340',
-                                   starts_at: Time.zone.now-1.week, expires_at: Time.zone.now+1.year)
+                                   starts_at: Time.zone.now - 1.week, expires_at: Time.zone.now + 1.year)
         BudgetedChartString.create(fund: '111', dept: '2222222', project: '33333333', account: '50617',
-                                   starts_at: Time.zone.now-1.week, expires_at: Time.zone.now+1.year)
+                                   starts_at: Time.zone.now - 1.week, expires_at: Time.zone.now + 1.year)
         while line = file.readline.strip
           # parse, import line
           case

@@ -13,7 +13,7 @@ RSpec.describe ProductAccessGroupsController do
     @instrument       = FactoryGirl.create(:instrument,
                                            facility: @authable,
                                            facility_account: @facility_account)
-    @params={ instrument_id: @instrument.url_name, facility_id: @authable.url_name }
+    @params = { instrument_id: @instrument.url_name, facility_id: @authable.url_name }
   end
 
   context 'index' do
@@ -129,8 +129,8 @@ RSpec.describe ProductAccessGroupsController do
 
   context 'destroy' do
     before :each do
-      @method=:delete
-      @action=:destroy
+      @method = :delete
+      @action = :destroy
       @product_access_group = FactoryGirl.create(:product_access_group, product: @instrument)
       @params.merge!(id: @product_access_group.id)
     end

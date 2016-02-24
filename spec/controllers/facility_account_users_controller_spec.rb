@@ -7,16 +7,16 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
   before(:all) { create_users }
 
   before(:each) do
-    @authable=FactoryGirl.create(:facility)
-    @account=create_nufs_account_with_owner
+    @authable = FactoryGirl.create(:facility)
+    @account = create_nufs_account_with_owner
   end
 
   context 'user_search' do
 
     before(:each) do
-      @method=:get
-      @action=:user_search
-      @params={ facility_id: @authable.url_name, account_id: @account.id }
+      @method = :get
+      @action = :user_search
+      @params = { facility_id: @authable.url_name, account_id: @account.id }
     end
 
     it_should_require_login
@@ -33,9 +33,9 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
   context 'new' do
 
     before(:each) do
-      @method=:get
-      @action=:new
-      @params={ facility_id: @authable.url_name, account_id: @account.id, user_id: @guest.id }
+      @method = :get
+      @action = :new
+      @params = { facility_id: @authable.url_name, account_id: @account.id, user_id: @guest.id }
     end
 
     it_should_require_login
@@ -55,9 +55,9 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
   context 'create' do
 
     before(:each) do
-      @method=:post
-      @action=:create
-      @params={
+      @method = :post
+      @action = :create
+      @params = {
         facility_id: @authable.url_name,
         account_id: @account.id,
         user_id: @purchaser.id,
@@ -87,7 +87,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
       context 'with an existing owner' do
 
         before :each do
-          @params[:account_user][:user_role]=AccountUser::ACCOUNT_OWNER
+          @params[:account_user][:user_role] = AccountUser::ACCOUNT_OWNER
           expect(@account.account_users.owners).to be_one
           expect(@account.owner_user).to eq(@owner)
           do_request
@@ -114,7 +114,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
           @account_user = @account.owner
           AccountUser.delete(@account_user.id)
 
-          @params[:account_user][:user_role]=AccountUser::ACCOUNT_OWNER
+          @params[:account_user][:user_role] = AccountUser::ACCOUNT_OWNER
           expect(@account.account_users.owners).not_to be_any
           do_request
         end
@@ -183,13 +183,13 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
   context 'destroy' do
 
     before(:each) do
-      @method=:delete
-      @action=:destroy
-      @account_user=FactoryGirl.create(:account_user, user: @purchaser,
+      @method = :delete
+      @action = :destroy
+      @account_user = FactoryGirl.create(:account_user, user: @purchaser,
         account: @account,
         user_role: AccountUser::ACCOUNT_PURCHASER,
         created_by: @admin.id)
-      @params={ facility_id: @authable.url_name, account_id: @account.id, id: @account_user.id }
+      @params = { facility_id: @authable.url_name, account_id: @account.id, id: @account_user.id }
     end
 
     it_should_require_login

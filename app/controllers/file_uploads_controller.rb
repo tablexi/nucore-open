@@ -132,7 +132,7 @@ class FileUploadsController < ApplicationController
   end
 
   def create_product_survey_from_url
-    survey_param=ExternalServiceManager.survey_service.name.underscore.to_sym
+    survey_param = ExternalServiceManager.survey_service.name.underscore.to_sym
 
     if params[survey_param].nil? || params[survey_param][:location].blank?
       @survey = ExternalServiceManager.survey_service.new
@@ -140,8 +140,8 @@ class FileUploadsController < ApplicationController
     else
       begin
         url = params[survey_param][:location]
-        ext=ExternalServiceManager.survey_service.find_or_create_by_location(location: url)
-        esp=ExternalServicePasser.where(passer_id: @product.id, external_service_id: ext.id).first
+        ext = ExternalServiceManager.survey_service.find_or_create_by_location(location: url)
+        esp = ExternalServicePasser.where(passer_id: @product.id, external_service_id: ext.id).first
 
         if esp
           flash[:notice] = "That Online Order Form already exists"

@@ -8,8 +8,8 @@ RSpec.describe InstrumentReportsController do
   run_report_tests([
                      { action: :instrument, index: 0, report_on_label: nil, report_on: proc{|res| [ res.product.url_name ]} },
     { action: :account, index: 1, report_on_label: 'Description', report_on: proc{|res| [ res.product.url_name, res.order_detail.account.to_s ] } },
-    { action: :account_owner, index: 2, report_on_label: 'Name', report_on: proc{|res| owner=res.order_detail.account.owner.user; [ res.product.url_name, "#{owner.full_name} (#{owner.username})" ] } },
-    { action: :purchaser, index: 3, report_on_label: 'Name', report_on: proc{|res| usr=res.order_detail.order.user; [ res.product.url_name, "#{usr.full_name} (#{usr.username})" ] } }
+    { action: :account_owner, index: 2, report_on_label: 'Name', report_on: proc{|res| owner = res.order_detail.account.owner.user; [ res.product.url_name, "#{owner.full_name} (#{owner.username})" ] } },
+    { action: :purchaser, index: 3, report_on_label: 'Name', report_on: proc{|res| usr = res.order_detail.order.user; [ res.product.url_name, "#{usr.full_name} (#{usr.username})" ] } }
                    ])
 
   private
@@ -24,7 +24,7 @@ RSpec.describe InstrumentReportsController do
   end
 
   def report_headers(label)
-    headers=[ 'Instrument', 'Quantity', 'Reserved Time (h)', 'Percent of Reserved', 'Actual Time (h)', 'Percent of Actual Time' ]
+    headers = [ 'Instrument', 'Quantity', 'Reserved Time (h)', 'Percent of Reserved', 'Actual Time (h)', 'Percent of Actual Time' ]
     headers.insert(1, label) if label
     headers += report_attributes(@reservation, @instrument) if export_all_request?
     headers
@@ -32,7 +32,7 @@ RSpec.describe InstrumentReportsController do
 
   def assert_report_init(_label, &_report_on)
     expect(assigns(:totals).size).to eq(5)
-    reservations=Reservation.all
+    reservations = Reservation.all
     expect(assigns(:totals)[0]).to eq(reservations.size)
 
     reserved_mins = reservations.map(&:duration_mins).inject(0, &:+)
@@ -47,7 +47,7 @@ RSpec.describe InstrumentReportsController do
   end
 
   def assert_report_data_init(_label)
-    reservations=Reservation.all
+    reservations = Reservation.all
     expect(assigns(:report_data)).to eq(reservations)
     expect(assigns(:totals)).to be_is_a Array
 
