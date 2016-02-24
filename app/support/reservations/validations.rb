@@ -128,7 +128,7 @@ module Reservations::Validations
   end
 
   # Extended validation methods
-  def save_extended_validations(options ={})
+  def save_extended_validations(options = {})
     perform_validations(options)
     in_window
     in_the_future

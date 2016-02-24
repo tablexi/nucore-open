@@ -49,7 +49,7 @@ end
 # and the request described by the variables will be made.
 # [_params_]
 #   Overrides the @params variable
-def do_request(params=nil)
+def do_request(params = nil)
   params=@params unless params
   if @method == :xhr
     xhr :get, @action, params
@@ -90,7 +90,7 @@ end
 #   The +Symbol+ic username of the #create_users user to test
 # [_spec_desc_]
 #   If present is passed to the spec as its description
-def it_should_deny(user_sym, spec_desc='')
+def it_should_deny(user_sym, spec_desc = '')
   it "should deny #{user_sym} " + spec_desc, auth: true do
     maybe_grant_always_sign_in(user_sym)
     do_request
@@ -108,7 +108,7 @@ end
 # [_eval_]
 #   block of tests to be evaluated after roles are
 #   granted and the user is signed in
-def it_should_allow(user_sym, spec_desc='', &eval)
+def it_should_allow(user_sym, spec_desc = '', &eval)
   it "should allow #{user_sym} " + spec_desc, auth: true do
     maybe_grant_always_sign_in(user_sym)
     do_request
@@ -124,11 +124,11 @@ end
 #   An Array of the +Symbol+ic usernames of #create_users users to test
 #
 
-def it_should_deny_all(user_syms, spec_desc='')
+def it_should_deny_all(user_syms, spec_desc = '')
   user_syms.each { |user_sym| it_should_deny user_sym, spec_desc }
 end
 
-def it_should_allow_all(user_syms, spec_desc='', &eval)
+def it_should_allow_all(user_syms, spec_desc = '', &eval)
   user_syms.each do |user_sym|
     it "should allow #{user_sym} " + spec_desc, auth: true do
       user=maybe_grant_always_sign_in(user_sym)
@@ -166,7 +166,7 @@ end
 # [_eval_]
 #   A block holding successful auth tests. If given will be passed the
 #   user whose auth is currently being tested. Not required.
-def it_should_allow_managers_only(response=:success, spec_desc='', &eval)
+def it_should_allow_managers_only(response = :success, spec_desc = '', &eval)
   it_should_require_login
 
   it_should_deny(:guest, spec_desc)
@@ -181,7 +181,7 @@ def it_should_allow_managers_only(response=:success, spec_desc='', &eval)
   end
 end
 
-def it_should_allow_managers_and_senior_staff_only(response=:success, spec_desc='', &eval)
+def it_should_allow_managers_and_senior_staff_only(response = :success, spec_desc = '', &eval)
   it_should_require_login
 
   it_should_deny(:guest, spec_desc)
@@ -196,7 +196,7 @@ end
 
 #
 # Similar to #it_should_allow_managers_only, but for operators
-def it_should_allow_operators_only(response=:success, spec_desc='', &eval)
+def it_should_allow_operators_only(response = :success, spec_desc = '', &eval)
   it_should_require_login
 
   it_should_deny(:guest, spec_desc)
@@ -209,7 +209,7 @@ end
 
 #
 # Similar to #it_should_allow_managers_only, but tests admin access
-def it_should_allow_admin_only(response=:success, spec_desc='', &eval)
+def it_should_allow_admin_only(response = :success, spec_desc = '', &eval)
   it_should_require_login
 
   it_should_deny(:guest, spec_desc)
@@ -228,7 +228,7 @@ end
 # Helpers for the above API. Stand-alone use is discouraged.
 #
 
-def grant_role(user, authable=nil)
+def grant_role(user, authable = nil)
   if authable.nil?
     authable = @authable
     authable = send(:authable) if authable.nil? && respond_to?(:authable)

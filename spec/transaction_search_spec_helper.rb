@@ -1,4 +1,4 @@
-def it_should_support_searching(date_range_field=:fulfilled_at)
+def it_should_support_searching(date_range_field = :fulfilled_at)
   context "searching" do
     before :each do
       sign_in @user

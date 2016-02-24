@@ -6,7 +6,7 @@ class JournalSpreadsheet
     "#{Rails.root}/public/templates/nucore.journal.template.xls"
   end
 
-  def self.write_journal_entry(rows, options={})
+  def self.write_journal_entry(rows, options = {})
     # worksheet 0, row 1, column 0 (all 0 based) is where the first line of the first entry goes
     book   = Spreadsheet.open(options[:input_file] || JournalSpreadsheet.template_file)
     sheet1 = book.worksheets[0]

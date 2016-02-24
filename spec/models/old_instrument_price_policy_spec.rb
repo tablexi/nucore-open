@@ -400,7 +400,7 @@ RSpec.describe OldInstrumentPricePolicy do
     end
   end
 
-  def ipp_attributes(overrides={})
+  def ipp_attributes(overrides = {})
     attrs={
       start_date: Date.current,
       expire_date: Date.current+7.days,

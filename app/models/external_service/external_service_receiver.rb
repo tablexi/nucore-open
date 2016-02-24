@@ -9,7 +9,7 @@ class ExternalServiceReceiver < ActiveRecord::Base
 
   validates_presence_of :external_service_id, :receiver_id, :response_data
 
-  def respond_to?(symbol, include_private=false)
+  def respond_to?(symbol, include_private = false)
     super || parsed_response_data.key?(symbol)
   end
 

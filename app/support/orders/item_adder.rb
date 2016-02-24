@@ -4,7 +4,7 @@ class Orders::ItemAdder
     @order = order
   end
 
-  def add(product, quantity = 1, attributes={})
+  def add(product, quantity = 1, attributes = {})
     check_for_mixed_facility! product
     @quantity = quantity.to_i
     return [] if quantity <= 0
@@ -53,11 +53,11 @@ class Orders::ItemAdder
     end
   end
 
-  def add_bundles(product, quantity, attributes={})
+  def add_bundles(product, quantity, attributes = {})
     quantity.times.inject([]) { |ods, _i| ods.concat create_bundle_order_detail(product, attributes) }
   end
 
-  def create_bundle_order_detail(product, attributes={})
+  def create_bundle_order_detail(product, attributes = {})
     group_id = @order.max_group_id + 1
     product.bundle_products.collect do |bp|
       create_order_detail({

@@ -124,7 +124,7 @@ class User < ActiveRecord::Base
   # [_find_existing_]
   #   true if we want to look in the DB for an order to add
   #   new +OrderDetail+s to, false if we want a brand new order
-  def cart(created_by_user = nil, find_existing=true)
+  def cart(created_by_user = nil, find_existing = true)
     if find_existing
       Cart.new(self, created_by_user).order
     else

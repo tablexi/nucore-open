@@ -45,7 +45,7 @@ end
 
 #
 # Factory wrapper for creating an account with owner
-def create_nufs_account_with_owner(owner=:owner)
+def create_nufs_account_with_owner(owner = :owner)
   owner = instance_variable_get("@#{owner}")
   FactoryGirl.create(:nufs_account,
                      account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner)]
@@ -61,7 +61,7 @@ end
 #   The product being ordered
 # [_account_]
 #   The account under which the order is placed
-def place_product_order(ordered_by, facility, product, account=nil, purchased=true)
+def place_product_order(ordered_by, facility, product, account = nil, purchased = true)
   @price_group=FactoryGirl.create(:price_group, facility: facility)
 
   o_attrs={ created_by: ordered_by.id, facility: facility, ordered_at: Time.zone.now }
@@ -92,7 +92,7 @@ end
 #   The account under which the order is placed
 # [_reviewed_]
 #   true if the completed order should also be marked as reviewed, false by default
-def place_and_complete_item_order(ordered_by, facility, account=nil, reviewed=false)
+def place_and_complete_item_order(ordered_by, facility, account = nil, reviewed = false)
   @facility_account=facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
   @item=facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
   place_product_order(ordered_by, facility, @item, account)
@@ -130,7 +130,7 @@ end
 #   Other parameters for the reservation; will override the defaults defined below
 #
 # and_return the reservation
-def place_reservation_for_instrument(ordered_by, instrument, account, reserve_start, extra_reservation_attrs=nil)
+def place_reservation_for_instrument(ordered_by, instrument, account, reserve_start, extra_reservation_attrs = nil)
   order_detail = place_product_order(ordered_by, instrument.facility, instrument, account, false)
 
   instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule)) if instrument.schedule_rules.empty?
@@ -159,7 +159,7 @@ end
 #   +Reservation+ should begin
 # [_extra_reservation_attrs_]
 #   Custom attributes for the +Reservation+, if any
-def place_reservation(facility, order_detail, reserve_start, extra_reservation_attrs=nil)
+def place_reservation(facility, order_detail, reserve_start, extra_reservation_attrs = nil)
   # create instrument, min reserve time is 60 minutes, max is 60 minutes
   @instrument ||= FactoryGirl.create(
     :instrument,
