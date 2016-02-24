@@ -509,24 +509,18 @@ class OrderDetail < ActiveRecord::Base
   def actual_total
     if actual_cost && actual_subsidy
       actual_cost - actual_subsidy
-    else
-      nil
     end
   end
 
   def estimated_total
     if estimated_cost && estimated_subsidy
       estimated_cost - estimated_subsidy
-    else
-      nil
     end
   end
 
   def total
     unless cost.nil? || subsidy.nil?
       cost - subsidy
-    else
-      nil
     end
   end
 
@@ -631,8 +625,6 @@ class OrderDetail < ActiveRecord::Base
       results = self.stored_files.template_result
       if results.empty?
         "Please upload an order form"
-      else
-        nil
       end
     end
   end

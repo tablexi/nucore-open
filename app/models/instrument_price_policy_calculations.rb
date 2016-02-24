@@ -72,8 +72,6 @@ module InstrumentPricePolicyCalculations
   def calculate_cancellation_costs(reservation)
     if cancellation_penalty?(reservation)
       { cost: cancellation_cost, subsidy: 0 }
-    else
-      nil
     end
   end
 
