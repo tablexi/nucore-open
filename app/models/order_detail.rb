@@ -326,10 +326,10 @@ class OrderDetail < ActiveRecord::Base
 
   scope :in_date_range, lambda { |start_date, end_date|
     search = scoped
-    if (start_date)
+    if start_date
       search = search.where("orders.ordered_at > ?", start_date.beginning_of_day)
     end
-    if (end_date)
+    if end_date
       search = search.where("orders.ordered_at < ?", end_date.end_of_day)
     end
     search

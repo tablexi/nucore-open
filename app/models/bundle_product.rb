@@ -9,7 +9,7 @@ class BundleProduct < ActiveRecord::Base
   validate                  :instrument_quantity
   
   def instrument_quantity
-    errors.add("quantity", " must be 1 for instruments") if (product && product.is_a?(Instrument) && quantity.to_i != 1)
+    errors.add("quantity", " must be 1 for instruments") if product && product.is_a?(Instrument) && quantity.to_i != 1
   end
 
   def <=>(other)

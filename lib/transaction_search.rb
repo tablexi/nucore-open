@@ -23,7 +23,7 @@ module TransactionSearch
     # method has run
     def method_added(name)
       @@methods_with_remove_ugly_filter ||= []
-      if (name.to_s =~ /(.*)_with_search$/)
+      if name.to_s =~ /(.*)_with_search$/
         @@methods_with_remove_ugly_filter << $1
         self.before_filter :remove_ugly_params_and_redirect, only: @@methods_with_remove_ugly_filter
         define_search_method($1, $&)

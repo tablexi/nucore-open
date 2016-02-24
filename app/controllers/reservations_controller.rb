@@ -170,7 +170,7 @@ class ReservationsController < ApplicationController
     @order_detail = @order.order_details.find(params[:order_detail_id])
     @reservation  = Reservation.find(params[:id])
 
-    raise ActiveRecord::RecordNotFound if (@reservation != @order_detail.reservation)
+    raise ActiveRecord::RecordNotFound if @reservation != @order_detail.reservation
   end
 
   # GET /orders/1/order_details/1/reservations/1/edit
