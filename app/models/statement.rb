@@ -22,7 +22,7 @@ class Statement < ActiveRecord::Base
 
   # Used in NU branch
   def first_order_detail_date
-    min_order = order_details.min {|a,b| a.order.ordered_at <=> b.order.ordered_at}
+    min_order = order_details.min {|a, b| a.order.ordered_at <=> b.order.ordered_at}
     min_order.order.ordered_at
   end
 

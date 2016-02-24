@@ -43,7 +43,7 @@ class OrderDetailObserver < ActiveRecord::Observer
   def self.status_change_hooks
     hash = Settings.try(:order_details).try(:status_change_hooks).try(:to_hash) || {}
     new_hash = {}
-    hash.each do |status,classes_listing|
+    hash.each do |status, classes_listing|
       hooks = []
       Array.wrap(classes_listing).each do |class_definition|
         hooks << build_hook(class_definition)

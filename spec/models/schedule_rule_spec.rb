@@ -323,13 +323,13 @@ RSpec.describe ScheduleRule do
         [Time.zone.parse(hash['start']).hour, Time.zone.parse(hash['end']).hour]
       end
 
-      expect(@tuesday_times).to eq([[0,1], [3,7], [9,0]])
+      expect(@tuesday_times).to eq([[0, 1], [3, 7], [9, 0]])
 
       # rules for other days should be 12am-12pm
       @other_times = @not_calendar.select{ |hash| Time.zone.parse(hash['start']).to_date != @tuesday }.collect do |hash|
         [Time.zone.parse(hash['start']).hour, Time.zone.parse(hash['end']).hour]
       end
-      expect(@other_times).to eq([[0,0], [0,0], [0,0], [0,0], [0,0], [0,0]])
+      expect(@other_times).to eq([[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]])
     end
 
     it "should build calendar object using adjacent rules across days" do

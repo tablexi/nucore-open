@@ -42,7 +42,7 @@ class NufsAccount < Account
     validator = ValidatorFactory.instance(account_number, NUCore::COMMON_ACCOUNT)
     @components = validator.components
 
-    @components.each do |k,v|
+    @components.each do |k, v|
       self.class.class_eval "attr_accessor :#{k}" unless respond_to? k
       send("#{k}=", v)
     end

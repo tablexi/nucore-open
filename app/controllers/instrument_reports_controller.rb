@@ -43,7 +43,7 @@ class InstrumentReportsController < ReportsController
   end
 
   def init_report_data(_report_on_label, &_report_on)
-    @totals = [0,0]
+    @totals = [0, 0]
     @report_data = report_data.all
 
     @report_data.each do |res|

@@ -28,7 +28,7 @@ class Reports::InstrumentDayReport
   class DataRow
 
     def initialize(*_args)
-      @data = [0,0,0,0,0,0,0]
+      @data = [0, 0, 0, 0, 0, 0, 0]
     end
 
     def add(new_data)

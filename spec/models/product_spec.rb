@@ -67,7 +67,7 @@ RSpec.describe Product do
       end
 
       let!(:past_price_policies) do
-        [4,1,5,3,2].map do |n|
+        [4, 1, 5, 3, 2].map do |n|
           create(:instrument_price_policy,
                  product: instrument,
                  start_date: n.months.ago,
@@ -77,7 +77,7 @@ RSpec.describe Product do
       end
 
       let!(:upcoming_price_policies) do
-        [4,1,5,3,2].map do |n|
+        [4, 1, 5, 3, 2].map do |n|
           create(:instrument_price_policy,
                  product: instrument,
                  start_date: n.months.from_now,

@@ -87,7 +87,7 @@ module DateHelper
   def time_select24(f, field, options = {})
     options.reverse_merge! hours: (0..23)
     output =  f.select(:"#{field}_hour", options[:hours].to_a)
-    output << f.select(:"#{field}_min",minute_options(options[:minute_step]))
+    output << f.select(:"#{field}_min", minute_options(options[:minute_step]))
     content_tag :div, output, class: 'time-select'
   end
 
@@ -103,7 +103,7 @@ module DateHelper
   end
 
   def hour_options
-    (1..12).map {|x| [x,x]}
+    (1..12).map {|x| [x, x]}
   end
 
   def parse_mmddyyyy_in_current_zone!(date_string)

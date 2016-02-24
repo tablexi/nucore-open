@@ -25,7 +25,7 @@ module BulkEmailHelper
   def search_customers_and_account_owners(search_fields)
     customers = search_customers(search_fields)
     account_owners = search_account_owners(search_fields)
-    (customers + account_owners).uniq.sort {|x,y| x.last_name <=> y.last_name }
+    (customers + account_owners).uniq.sort {|x, y| x.last_name <=> y.last_name }
   end
 
   def search_authorized_users(search_fields)

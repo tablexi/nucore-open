@@ -247,7 +247,7 @@ RSpec.describe GeneralReportsController do
       expect(row.size).to eq(4)
     end
 
-    ods.sort!{|a,b| yield(a) <=> yield(b) }
+    ods.sort!{|a, b| yield(a) <=> yield(b) }
 
     ods.each_with_index do |od, i|
       expect(rows[i][0]).to eq(yield(od))

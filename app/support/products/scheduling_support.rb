@@ -60,12 +60,12 @@ module Products::SchedulingSupport
 
   def first_available_hour
     return 0 unless schedule_rules.any?
-    schedule_rules.min { |a,b| a.start_hour <=> b.start_hour }.start_hour
+    schedule_rules.min { |a, b| a.start_hour <=> b.start_hour }.start_hour
   end
 
   def last_available_hour
     return 23 unless schedule_rules.any?
-    max_rule = schedule_rules.max { |a,b| a.hour_floor <=> b.hour_floor }
+    max_rule = schedule_rules.max { |a, b| a.hour_floor <=> b.hour_floor }
     max_rule.end_min == 0 ? max_rule.end_hour - 1 : max_rule.end_hour
   end
 

@@ -103,7 +103,7 @@ RSpec.describe FacilityOrdersController do
       before :each do
         maybe_grant_always_sign_in :director
       end
-      ['order_number','date', 'product', 'assigned_to', 'status'].each do |sort|
+      ['order_number', 'date', 'product', 'assigned_to', 'status'].each do |sort|
         it "should not blow up for sort by #{sort}" do
           @params[:sort] = sort
           do_request
