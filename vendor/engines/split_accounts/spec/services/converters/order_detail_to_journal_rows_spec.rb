@@ -1,7 +1,7 @@
 require "rails_helper"
 require_relative "../../engine_helper"
 
-RSpec.describe SplitAccounts::Converters::OrderDetailToJournalRows, type: :service, split_accounts: true do
+RSpec.describe SplitAccounts::Converters::OrderDetailToJournalRowAttributes, type: :service, split_accounts: true do
 
   let(:converter) do
     described_class.new(journal, order_detail, total: total, splits: splits)

@@ -1,5 +1,5 @@
 module Converters
-  class ProductToJournalRows
+  class ProductToJournalRowAttributes
 
     attr_accessor :journal, :product, :total
 

@@ -1,6 +1,6 @@
 module SplitAccounts
   module Converters
-    class OrderDetailToJournalRows
+    class OrderDetailToJournalRowAttributes
 
       SplitAmount = Struct.new(:split, :amount)
 

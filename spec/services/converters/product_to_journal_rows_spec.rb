@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Converters::ProductToJournalRows, type: :service do
+RSpec.describe Converters::ProductToJournalRowAttributes, type: :service do
 
   let(:converter) { described_class.new(journal, product, total) }
   let(:journal) { build_stubbed(:journal) }
