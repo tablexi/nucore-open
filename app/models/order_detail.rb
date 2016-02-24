@@ -429,7 +429,7 @@ class OrderDetail < ActiveRecord::Base
   # END acts_as_state_machine
 
   # block will be called after the transition, but before the save
-  def change_status! (new_status, &block)
+  def change_status!(new_status, &block)
     new_state = new_status.state_name
     # don't try to change state if it's not a valid state or it's the same as it was before
     if OrderDetail.aasm_states.map(&:name).include?(new_state) && new_state != state.to_sym

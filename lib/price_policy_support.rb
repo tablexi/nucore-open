@@ -25,7 +25,7 @@ module PricePolicySupport
       calculate_cost_and_subsidy(order_detail.quantity)
     end
 
-    def calculate_cost_and_subsidy (qty = 1)
+    def calculate_cost_and_subsidy(qty = 1)
       estimate_cost_and_subsidy(qty)
     end
 

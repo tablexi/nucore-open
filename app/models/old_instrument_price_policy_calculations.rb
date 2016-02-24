@@ -5,7 +5,7 @@ module OldInstrumentPricePolicyCalculations
     estimate_cost_and_subsidy reservation.reserve_start_at, reservation.reserve_end_at if reservation
   end
 
-  def estimate_cost_and_subsidy (start_at, end_at)
+  def estimate_cost_and_subsidy(start_at, end_at)
     return nil if restrict_purchase? || end_at <= start_at
     costs = {}
 
@@ -36,7 +36,7 @@ module OldInstrumentPricePolicyCalculations
     calculate_cost_and_subsidy order_detail.reservation
   end
 
-  def calculate_cost_and_subsidy (reservation)
+  def calculate_cost_and_subsidy(reservation)
     res_end_at=strip_seconds reservation.reserve_end_at
     res_start_at=strip_seconds reservation.reserve_start_at
 

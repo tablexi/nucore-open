@@ -96,7 +96,7 @@ class Product < ActiveRecord::Base
     upcoming_price_policies.order("start_date ASC").group_by(&:start_date)
   end
 
-  def <=> (obj)
+  def <=>(obj)
     name.casecmp obj.name
   end
 
@@ -149,7 +149,7 @@ class Product < ActiveRecord::Base
     !is_archived? && facility.is_active?
   end
 
-  def can_purchase? (group_ids)
+  def can_purchase?(group_ids)
     return false unless available_for_purchase?
 
     # return false if there are no existing policies at all

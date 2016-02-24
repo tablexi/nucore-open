@@ -51,7 +51,7 @@ class PriceGroup < ActiveRecord::Base
     is_internal? && display_order == 1
   end
 
-  def <=> (obj)
+  def <=>(obj)
     "#{display_order}-#{name}".casecmp("#{obj.display_order}-#{obj.name}")
   end
 

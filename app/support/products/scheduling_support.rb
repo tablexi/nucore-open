@@ -46,7 +46,7 @@ module Products::SchedulingSupport
     schedule.reservations.active
   end
 
-  def can_purchase? (group_ids = nil)
+  def can_purchase?(group_ids = nil)
     if schedule_rules.empty?
       false
     else
