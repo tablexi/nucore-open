@@ -10,15 +10,15 @@ module BulkEmailHelper
 
   def search_customers(search_fields)
     order_details = find_order_details(search_fields).joins(:order => :user)
-    User.find_by_sql(order_details.select("distinct(users.id), users.*").
-                                          reorder("users.last_name, users.first_name").to_sql)
+    User.find_by_sql(order_details.select("distinct(users.id), users.*")
+                                          .reorder("users.last_name, users.first_name").to_sql)
   end
 
   def search_account_owners(search_fields)
     order_details = find_order_details_for_roles(search_fields, [AccountUser::ACCOUNT_OWNER])
-    User.find_by_sql(order_details.joins(:account => {:account_users => :user}).
-                                   select("distinct(users.id), users.*").
-                                   reorder("users.last_name, users.first_name").to_sql)
+    User.find_by_sql(order_details.joins(:account => {:account_users => :user})
+                                   .select("distinct(users.id), users.*")
+                                   .reorder("users.last_name, users.first_name").to_sql)
   end
 
   def search_customers_and_account_owners(search_fields)

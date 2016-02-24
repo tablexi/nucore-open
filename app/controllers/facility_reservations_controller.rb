@@ -175,8 +175,8 @@ class FacilityReservationsController < ApplicationController
 
   # GET /facilities/:facility_id/reservations/disputed
   def disputed
-    @order_details = disputed_orders.
-      paginate(:page => params[:page])
+    @order_details = disputed_orders
+      .paginate(:page => params[:page])
   end
 
   # DELETE  /facilities/:facility_id/instruments/:instrument_id/reservations/:id
@@ -220,15 +220,15 @@ class FacilityReservationsController < ApplicationController
   end
 
   def new_or_in_process_orders(order_by_clause = 'reservations.reserve_start_at')
-    current_facility.order_details.new_or_inprocess.reservations.
-      includes(
+    current_facility.order_details.new_or_inprocess.reservations
+      .includes(
         {:order => :user},
         :order_status,
         :reservation,
         :assigned_user
-      ).
-      where("reservations.id IS NOT NULL").
-      order(order_by_clause)
+      )
+      .where("reservations.id IS NOT NULL")
+      .order(order_by_clause)
   end
 
   def problem_order_details
@@ -239,9 +239,9 @@ class FacilityReservationsController < ApplicationController
   end
 
   def disputed_orders
-    current_facility.order_details.
-      reservations.
-      in_dispute
+    current_facility.order_details
+      .reservations
+      .in_dispute
   end
 
   def sort_column

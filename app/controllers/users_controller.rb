@@ -99,21 +99,21 @@ class UsersController < ApplicationController
   # GET /facilities/:facility_id/users/:user_id/orders
   def orders
     # order details for this facility
-    @order_details = @user.order_details.
-      non_reservations.
-      where("orders.facility_id = ? AND orders.ordered_at IS NOT NULL", current_facility.id).
-      order('orders.ordered_at DESC').
-      paginate(:page => params[:page])
+    @order_details = @user.order_details
+      .non_reservations
+      .where("orders.facility_id = ? AND orders.ordered_at IS NOT NULL", current_facility.id)
+      .order('orders.ordered_at DESC')
+      .paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/users/:user_id/reservations
   def reservations
     # order details for this facility
-    @order_details = @user.order_details.
-      reservations.
-      where("orders.facility_id = ? AND orders.ordered_at IS NOT NULL", current_facility.id).
-      order('orders.ordered_at DESC').
-      paginate(:page => params[:page])
+    @order_details = @user.order_details
+      .reservations
+      .where("orders.facility_id = ? AND orders.ordered_at IS NOT NULL", current_facility.id)
+      .order('orders.ordered_at DESC')
+      .paginate(:page => params[:page])
   end
 
   # GET /facilities/:facility_id/users/:user_id/accounts
