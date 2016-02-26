@@ -11,7 +11,9 @@ Nucore::Application.initialize!
 # Remove this require and the patch file itself after upgrading to Rails 4.
 # https://github.com/rails/rails/pull/13247#issuecomment-32425844
 if Rails.version < "4"
-  require File.expand_path('../../lib/patches/abstract_mysql_adapter', __FILE__)
+  if defined?(ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter)
+    require File.expand_path('../../lib/patches/abstract_mysql_adapter', __FILE__)
+  end
 else
   raise "Remove the reference to the abstract_mysql_adapter patch in #{__FILE__} for Rails 4+"
 end
