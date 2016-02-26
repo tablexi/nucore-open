@@ -44,7 +44,7 @@ RSpec.describe OrderDetailJournalRemover do
       end
 
       it 'does not remove it from the old journal' do
-        expect(old_journal.reload.order_details).to eq(order_details)
+        expect(old_journal.reload.order_details).to contain_exactly(*order_details)
       end
     end
   end
