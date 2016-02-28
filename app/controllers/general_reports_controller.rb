@@ -104,7 +104,6 @@ class GeneralReportsController < ReportsController
 
   def init_report(report_on_label)
     sums, rows, @total_quantity, @total_cost={}, [], 0, 0.0
-
     report_data.each do |od|
       key=yield od
 
@@ -139,13 +138,14 @@ class GeneralReportsController < ReportsController
     @report_data = report_data_query(@status_ids, @date_range_field)
   end
 
-  def report_data_query(stati, date_column)
-    return [] if stati.blank?
-    # default to using fulfilled_at
-    result = OrderDetail.where(:order_status_id => stati)
-                        .for_facility(current_facility)
-                        .action_in_date_range(date_column, @date_start, @date_end)
-                        .includes(:order, :account, :price_policy, :product, :order_status)
+  def report_data_query(order_status_id, date_range_field)
+    Reports::Querier.new(
+      order_status_id: order_status_id,
+      current_facility: current_facility,
+      date_range_field: date_range_field,
+      date_range_start: @date_start,
+      date_range_end: @date_end,
+    ).perform
   end
 
 end
