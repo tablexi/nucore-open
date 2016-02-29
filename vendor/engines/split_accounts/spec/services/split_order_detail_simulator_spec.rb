@@ -47,7 +47,7 @@ RSpec.describe SplitAccounts::SplitOrderDetailSimulator, type: :service do
       expect(results.map(&:account)).to contain_exactly(subaccount_1, subaccount_2)
     end
 
-    xit "splits simulated quantity" do
+    it "splits simulated quantity" do
       expect(results.map(&:quantity)).to contain_exactly(1.5, 1.5)
     end
 
