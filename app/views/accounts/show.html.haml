@@ -11,4 +11,6 @@
   - if @account.suspended?
     = f.input :suspended_at, date_only: true
 
+  = render_view_hook("after_end_of_form", f: f, account: @account)
+
   = render partial: "accounts/suspend_button"
