@@ -139,7 +139,7 @@ class GeneralReportsController < ReportsController
   end
 
   def report_data_query(order_status_id, date_range_field)
-    Reports::Querier.new({
+    Reports::QuerierFactory.instance({
       order_status_id: order_status_id,
       current_facility: current_facility,
       date_range_field: date_range_field,

@@ -21,6 +21,7 @@ converters:
     order_detail_to_journal_rows: SplitAccounts::Converters::OrderDetailToJournalRowAttributes
 
 reports:
+  querier: SplitAccounts::Reports::Querier
   export_raw:
     class_name: Reports::ExportRaw
 
