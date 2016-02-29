@@ -8,6 +8,7 @@ en:
             splits:
               percent_total: percent total must equal 100
               only_one_extra_penny: must have one split with extra penny
+              duplicate_subaccounts: must have unique subaccounts
         split_accounts/split:
           attributes:
             subaccount:

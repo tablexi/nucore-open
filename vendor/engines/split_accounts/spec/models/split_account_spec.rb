@@ -14,11 +14,14 @@ RSpec.describe SplitAccounts::SplitAccount, type: :model, split_accounts: true d
 
   describe "validations" do
 
+    let(:subaccount_1) { build_stubbed(:setup_account) }
+    let(:subaccount_2) { build_stubbed(:setup_account) }
+
     context "when splits total 100 and one split has extra_penny" do
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account)
-          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account)
+          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: subaccount_1)
+          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: subaccount_2)
         end
       end
 
@@ -30,8 +33,8 @@ RSpec.describe SplitAccounts::SplitAccount, type: :model, split_accounts: true d
     context "when splits do not total 100 and one split has extra_penny" do
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account)
-          split_account.splits << build(:split, percent: 49.99, extra_penny: false, parent_split_account: split_account)
+          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: subaccount_1)
+          split_account.splits << build(:split, percent: 49.99, extra_penny: false, parent_split_account: split_account, subaccount: subaccount_2)
         end
       end
 
@@ -44,8 +47,8 @@ RSpec.describe SplitAccounts::SplitAccount, type: :model, split_accounts: true d
     context "when splits total 100 and no splits have extra_penny" do
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account)
-          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account)
+          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: subaccount_1)
+          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: subaccount_2)
         end
       end
 
@@ -58,8 +61,23 @@ RSpec.describe SplitAccounts::SplitAccount, type: :model, split_accounts: true d
     context "when splits total 100 and multiple splits have extra_penny" do
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account)
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account)
+          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: subaccount_1)
+          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: subaccount_2)
+        end
+      end
+
+      it "is invalid" do
+        expect(split_account).not_to be_valid
+        expect(split_account.errors).to include(:splits)
+      end
+    end
+
+    context "when splits share one or more subaccount" do
+
+      let(:split_account) do
+        build(:split_account, without_splits: true).tap do |split_account|
+          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: subaccount_1)
+          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: subaccount_1)
         end
       end
 
