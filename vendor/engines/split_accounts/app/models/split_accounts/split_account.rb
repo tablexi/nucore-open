@@ -11,6 +11,9 @@ module SplitAccounts
 
     accepts_nested_attributes_for :splits, allow_destroy: true
 
+    before_save :set_expires_at_from_subaccounts
+    before_save :set_suspended_at_from_subaccounts
+
     def valid_percent_total
       if percent_total != 100
         errors.add(:splits, :percent_total)
@@ -49,15 +52,32 @@ module SplitAccounts
       end
     end
 
-    # Stopped using SQL because that didn't seem to work until the built splits
-    # and subaccounts were created. `subaccounts` has_many :through seems to not
-    # work here, either
-    #
-    # SQL version:
-    #   subaccounts.where("expires_at IS NOT NULL").order(expires_at: :asc).first
-    #
+    # Stopped using SQL because that didn't work until the built splits
+    # and subaccounts were persisted. And `subaccounts` has_many :through seems
+    # to not work here either.
     def earliest_expiring_subaccount
-      splits.map(&:subaccount).compact.min_by(&:expires_at)
+      subaccounts = splits.map(&:subaccount).compact.select(&:expires_at?)
+      subaccounts.min_by(&:expires_at)
+    end
+
+    def earliest_suspended_subaccount
+      subaccounts = splits.map(&:subaccount).compact.select(&:suspended_at?)
+      subaccounts.min_by(&:suspended_at)
+    end
+
+    # Updates the parent account expires_at with earliest subaccount expires_at.
+    # Gracefully handles whenever all subaccounts have expires_at set to nil
+    # (even though techincally expires_at should always be set).
+    def set_expires_at_from_subaccounts
+      self.expires_at = earliest_expiring_subaccount.try(:expires_at)
+    end
+
+    # Suspend the parent account if any subaccounts are suspended.
+    # Do not automatically unsuspend the parent account if all subaccounts
+    # become unsuspended.
+    def set_suspended_at_from_subaccounts
+      subaccount = earliest_suspended_subaccount
+      self.suspended_at = subaccount.suspended_at if subaccount
     end
 
     def recreate_journal_rows_on_order_detail_update?
