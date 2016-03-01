@@ -11,7 +11,8 @@ module SplitAccounts
         Account.config.journal_account_types << "SplitAccounts::SplitAccount"
 
         # Add views to view hooks in main rails app
-        ViewHook.add_hook "facility_accounts.show", "after_end_of_form", "split_accounts/facility_accounts/show_splits"
+        ViewHook.add_hook "accounts.show", "after_end_of_form", "split_accounts/shared/show_splits"
+        ViewHook.add_hook "facility_accounts.show", "after_end_of_form", "split_accounts/shared/show_splits"
       end
     end
 
