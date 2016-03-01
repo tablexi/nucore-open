@@ -38,9 +38,8 @@ module SplitAccounts
 
     def duplicate_subaccounts?
       splits.map(&:subaccount_id)
-        .group_by{ |e| e }
-        .select{ |k, v| v.size > 1 }
-        .present?
+        .group_by { |e| e }
+        .any? { |k, v| v.size > 1 }
     end
 
     # Stopped using SQL because that didn't seem to work until the built splits
