@@ -40,7 +40,8 @@ RSpec.describe SplitAccounts::SplitAccount, type: :model, split_accounts: true d
 
       it "is invalid" do
         expect(split_account).not_to be_valid
-        expect(split_account.errors).to include(:splits)
+        message = I18n.t("activerecord.errors.models.split_accounts/split_account.attributes.splits.percent_total")
+        expect(split_account.errors[:splits]).to include(message)
       end
     end
 
@@ -54,7 +55,8 @@ RSpec.describe SplitAccounts::SplitAccount, type: :model, split_accounts: true d
 
       it "is invalid" do
         expect(split_account).not_to be_valid
-        expect(split_account.errors).to include(:splits)
+        message = I18n.t("activerecord.errors.models.split_accounts/split_account.attributes.splits.only_one_extra_penny")
+        expect(split_account.errors[:splits]).to include(message)
       end
     end
 
@@ -68,7 +70,8 @@ RSpec.describe SplitAccounts::SplitAccount, type: :model, split_accounts: true d
 
       it "is invalid" do
         expect(split_account).not_to be_valid
-        expect(split_account.errors).to include(:splits)
+        message = I18n.t("activerecord.errors.models.split_accounts/split_account.attributes.splits.only_one_extra_penny")
+        expect(split_account.errors[:splits]).to include(message)
       end
     end
 
@@ -83,7 +86,8 @@ RSpec.describe SplitAccounts::SplitAccount, type: :model, split_accounts: true d
 
       it "is invalid" do
         expect(split_account).not_to be_valid
-        expect(split_account.errors).to include(:splits)
+        message = I18n.t("activerecord.errors.models.split_accounts/split_account.attributes.splits.duplicate_subaccounts")
+        expect(split_account.errors[:splits]).to include(message)
       end
     end
   end
