@@ -5,7 +5,7 @@
 %div{data: {subaccounts: true}}
   = f.nested_fields_for :splits, class_name: "SplitAccounts::Split" do |ff|
     .well
-      = ff.input :subaccount_id, collection: SplitAccounts::Split.available_subaccounts, wrapper_html: {class: "input-inline"}
+      = ff.input :subaccount_id, collection: SplitAccounts::Split.available_subaccounts, wrapper_html: {class: "input-inline"}, input_html: {class: "js--chosen"}
       = ff.input :percent, input_html: {min: 0, max: 100, data: {percent: true}}, wrapper_html: {class: "input-inline"}
       = ff.input :extra_penny, wrapper_html: {class: "input-inline"}
       = ff.remove_nested_fields_link "Remove", class: "btn", wrapper_html: {class: "input-inline"}
@@ -14,3 +14,7 @@
   = f.add_nested_fields_link :splits, "Add another subaccount", class: "btn btn-success"
 
 %br
+
+:coffee
+  $(document).on "fields_added.nested_form_fields", (event, param) ->
+    $(event.target).find(".js--chosen").chosen()
