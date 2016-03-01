@@ -1,3 +1,4 @@
+require 'csv'
 class Reports::ExportRaw
   include DateHelper
 
