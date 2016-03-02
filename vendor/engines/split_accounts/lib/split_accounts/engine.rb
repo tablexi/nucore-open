@@ -23,6 +23,7 @@ module SplitAccounts
     config.to_prepare do
       # Include modules in main rails app
       Account.send :include, SplitAccounts::AccountExtension
+      FacilityAccountsController.send :include, SplitAccounts::FacilityAccountsControllerExtension
 
       if SettingsHelper.feature_on?(:split_accounts)
         SplitAccounts::Engine.enable!
