@@ -28,7 +28,7 @@ module SplitAccounts
     end
 
     def simulated_order_detail(item)
-      clone = SplitOrderDetailDecorator.new(order_detail.deep_clone)
+      clone = SplitOrderDetailDecorator.new(order_detail.dup)
 
       clone.account = item.split.subaccount
       clone.quantity = item.quantity
