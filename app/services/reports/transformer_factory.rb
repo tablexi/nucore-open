@@ -1,8 +1,8 @@
 module Reports
 
-  class QuerierFactory
+  class TransformerFactory
 
-    @@klass = Settings.reports.querier.constantize
+    @@klass = Settings.reports.transformer.constantize
 
     def self.instance(*args)
       @@klass.new(*args)

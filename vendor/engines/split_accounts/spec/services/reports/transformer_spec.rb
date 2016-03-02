@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe SplitAccounts::Reports::Querier, type: :service do
+RSpec.describe SplitAccounts::Reports::Transformer, type: :service do
 
   let(:subaccount_1) { build_stubbed(:nufs_account) }
   let(:subaccount_2) { build_stubbed(:nufs_account) }
@@ -26,20 +26,16 @@ RSpec.describe SplitAccounts::Reports::Querier, type: :service do
     build_stubbed(:order_detail, account: other_account)
   end
 
-  before(:each) do
-    allow_any_instance_of(::Reports::Querier).to receive(:perform) do
-      [split_order_detail, other_order_detail]
-    end
-  end
+  let(:order_details) { [split_order_detail, other_order_detail] }
 
   it "can initialize" do
     expect(described_class.new).to be_a(described_class)
   end
 
   describe "#perform" do
-    let(:results) { described_class.new.perform }
+    let(:results) { described_class.new(order_details).perform }
 
-    it "returns other order detail and two simulated split order details" do
+    it "returns other order detail and two spoofed split order details" do
       expect(results.map(&:account)).to contain_exactly(other_account, subaccount_1, subaccount_2)
     end
   end

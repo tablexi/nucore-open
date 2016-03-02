@@ -4,7 +4,7 @@ module SplitAccounts
   # when dealing with simulated split order details.
   class SplitOrderDetailDecorator < SimpleDelegator
 
-    attr_accessor :quantity_override
+    attr_accessor :quantity_override, :split
 
     def quantity
       quantity_override || __getobj__.quantity

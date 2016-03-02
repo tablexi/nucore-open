@@ -14,8 +14,11 @@ module Reports
     end
 
     def perform
-      return [] if order_status_id.blank?
+      Reports::TransformerFactory.instance(order_details).perform
+    end
 
+    def order_details
+      return [] if order_status_id.blank?
       OrderDetail.where(order_status_id: order_status_id)
         .for_facility(current_facility)
         .action_in_date_range(date_range_field, date_range_start, date_range_end)

@@ -1,6 +1,7 @@
+
 require "rails_helper"
 
-RSpec.describe SplitAccounts::SplitOrderDetailSimulator, type: :service do
+RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
 
   let(:subaccount_1) { build_stubbed(:nufs_account) }
   let(:subaccount_2) { build_stubbed(:nufs_account) }
@@ -14,7 +15,7 @@ RSpec.describe SplitAccounts::SplitOrderDetailSimulator, type: :service do
 
   let(:order_detail) do
     build_stubbed(:order_detail).tap do |order_detail|
-      order_detail.created_by = 1 # used to test clone
+      order_detail.created_by = 1 # for testing dup
 
       order_detail.quantity = 3
       order_detail.actual_cost = BigDecimal("9.99")
@@ -30,40 +31,40 @@ RSpec.describe SplitAccounts::SplitOrderDetailSimulator, type: :service do
     expect(described_class.new(order_detail))
   end
 
-  describe "#simulated_order_details" do
-    let(:results) { described_class.new(order_detail).simulated_order_details }
+  describe "#build_split_order_details" do
+    let(:results) { described_class.new(order_detail).build_split_order_details }
 
-    it "returns correct number of simulated order details" do
+    it "returns correct number of split order details" do
       expect(results.size).to eq(split_account.splits.size)
     end
 
-    it "clones order details" do
+    it "dups original order detail" do
       results.each do |result|
         expect(result.created_by).to eq(order_detail.created_by)
       end
     end
 
-    it "simulates account" do
+    it "changes account" do
       expect(results.map(&:account)).to contain_exactly(subaccount_1, subaccount_2)
     end
 
-    it "splits simulated quantity" do
+    it "splits quantity" do
       expect(results.map(&:quantity)).to contain_exactly(1.5, 1.5)
     end
 
-    it "splits simulated actual_cost" do
+    it "splits actual_cost" do
       expect(results.map(&:actual_cost)).to contain_exactly(5.0, 4.99)
     end
 
-    it "splits simulated actual_subsidy" do
+    it "splits actual_subsidy" do
       expect(results.map(&:actual_subsidy)).to contain_exactly(10.0, 9.99)
     end
 
-    it "splits simulated estimated_cost" do
+    it "splits estimated_cost" do
       expect(results.map(&:estimated_cost)).to contain_exactly(15.0, 14.99)
     end
 
-    it "splits simulated estimated_subsidy" do
+    it "splits estimated_subsidy" do
       expect(results.map(&:estimated_subsidy)).to contain_exactly(20.0, 19.99)
     end
   end

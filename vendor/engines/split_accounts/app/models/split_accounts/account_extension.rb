@@ -10,5 +10,11 @@ module SplitAccounts
       scope :excluding_split_accounts, -> { where("accounts.type != ?", "SplitAccounts::SplitAccount") }
     end
 
+    # Allows all account types to appropriately respond to a method that is
+    # specific to the SplitAccount account type.
+    def splits
+      []
+    end
+
   end
 end
