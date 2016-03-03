@@ -566,6 +566,8 @@ en:
       can_switch_off: Do not forget to click the "End Reservation" link when you finished your %{reservation} reservation.
       can_switch_on: You may click the "Begin Reservation" link when you are ready to begin your %{reservation} reservation.
       upcoming: You have an upcoming reservation for %{reservation}.
+    account_field:
+      prompt: "Please select a payment source"
 
   statements:
     index:
