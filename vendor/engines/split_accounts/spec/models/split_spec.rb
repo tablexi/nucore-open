@@ -21,6 +21,25 @@ RSpec.describe SplitAccounts::Split, type: :model, split_accounts: true do
         expect(split.errors).to include(:subaccount)
       end
     end
+
+    context "when percent is greater than 100" do
+      let(:split) { build_stubbed(:split, percent: 101) }
+
+      it "is invalid" do
+        expect(split).not_to be_valid
+        expect(split.errors).to include(:percent)
+      end
+    end
+
+    context "when percent is less than 0" do
+      let(:split) { build_stubbed(:split, percent: -1) }
+
+      it "is invalid" do
+        expect(split).not_to be_valid
+        expect(split.errors).to include(:percent)
+      end
+    end
+
   end
 
 end
