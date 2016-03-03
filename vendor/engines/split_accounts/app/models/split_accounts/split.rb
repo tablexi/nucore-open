@@ -8,6 +8,7 @@ module SplitAccounts
 
     validates :parent_split_account, presence: true
     validates :subaccount, presence: true
+    validates :percent, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
 
     validate :not_self_referential
     validate :not_split_subaccount
