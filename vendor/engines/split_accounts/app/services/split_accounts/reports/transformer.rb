@@ -12,7 +12,9 @@ module SplitAccounts
 
       def perform
         order_details.map do |order_detail|
-          if order_detail.account.splits.present?
+          # We will need to refactor the general_reports_controller_spec in
+          # order to remove the `try` methods below.
+          if order_detail.account.try(:splits).try(:present?)
             SplitAccounts::OrderDetailSplitter.new(order_detail).build_split_order_details
           else
             order_detail
