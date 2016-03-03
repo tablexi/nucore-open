@@ -7,6 +7,7 @@ module SplitAccounts
     validate :valid_percent_total
     validate :one_split_has_extra_penny
     validate :unique_split_subaccounts
+    validate :more_than_one_split
 
     accepts_nested_attributes_for :splits, allow_destroy: true
 
@@ -40,6 +41,12 @@ module SplitAccounts
       splits.map(&:subaccount_id)
         .group_by { |e| e }
         .any? { |k, v| v.size > 1 }
+    end
+
+    def more_than_one_split
+      if splits.size <= 1
+        errors.add(:splits, :more_than_one_split)
+      end
     end
 
     # Stopped using SQL because that didn't seem to work until the built splits

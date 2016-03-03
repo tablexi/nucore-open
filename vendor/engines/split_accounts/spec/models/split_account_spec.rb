@@ -17,6 +17,19 @@ RSpec.describe SplitAccounts::SplitAccount, type: :model, split_accounts: true d
     let(:subaccount_1) { build_stubbed(:setup_account) }
     let(:subaccount_2) { build_stubbed(:setup_account) }
 
+    context "when only one split" do
+      let(:split_account) do
+        build(:split_account, without_splits: true).tap do |split_account|
+          split_account.splits << build(:split, percent: 100, extra_penny: true, parent_split_account: split_account)
+        end
+      end
+
+      it "is invalid" do
+        expect(split_account).not_to be_valid
+        expect(split_account.errors[:splits]).to include(I18n.t("activerecord.errors.models.split_accounts/split_account.attributes.splits.more_than_one_split"))
+      end
+    end
+
     context "when splits total 100 and one split has extra_penny" do
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
@@ -129,7 +142,7 @@ RSpec.describe SplitAccounts::SplitAccount, type: :model, split_accounts: true d
     let(:split_account) { create(:split_account) }
 
     it "returns subaccounts" do
-      expect(split_account.subaccounts).to contain_exactly(split_account.splits.first.subaccount)
+      expect(split_account.subaccounts).to contain_exactly(*split_account.splits.map(&:subaccount))
     end
   end
 
