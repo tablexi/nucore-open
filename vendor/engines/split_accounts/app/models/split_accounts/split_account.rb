@@ -56,8 +56,9 @@ module SplitAccounts
     #   subaccounts.where("expires_at IS NOT NULL").order(expires_at: :asc).first
     #
     def earliest_expiring_subaccount
-      subaccounts = splits.map{ |split| split.subaccount }.select(&:expires_at)
-      subaccounts.sort_by(&:expires_at).first
+      if subaccounts.present?
+        subaccounts.sort_by(&:expires_at).first
+      end
     end
 
     def recreate_journal_rows_on_order_detail_update?
