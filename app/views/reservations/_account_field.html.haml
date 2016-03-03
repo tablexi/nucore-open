@@ -13,7 +13,7 @@
             = order_fields.input :account,
               collection: accounts,
               input_html: { name: "order_account" },
-              include_blank: true,
+              prompt: t(".prompt"),
               selected: selected_account_id
 
         - if acting_as?
