@@ -1,8 +1,8 @@
 require "rails_helper"
 require "action_controller/parameters"
-require_relative "../engine_helper"
+require_relative "../split_accounts_spec_helper"
 
-RSpec.describe SplitAccounts::SplitAccountBuilder, type: :service, split_accounts: true do
+RSpec.describe SplitAccounts::SplitAccountBuilder, :enable_split_accounts do
   let(:builder) { described_class.new(options) }
 
   it "is an AccountBuilder" do

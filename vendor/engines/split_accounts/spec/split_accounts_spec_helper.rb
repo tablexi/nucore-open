@@ -1,0 +1,9 @@
+RSpec.configure do |config|
+  config.before(:all, :enable_split_accounts) do
+    SplitAccounts::Engine.enable! unless SettingsHelper.feature_on?(:split_accounts)
+  end
+
+  config.after(:all, :enable_split_accounts) do
+    SplitAccounts::Engine.disable! unless SettingsHelper.feature_on?(:split_accounts)
+  end
+end
