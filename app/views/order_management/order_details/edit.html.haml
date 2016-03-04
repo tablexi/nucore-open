@@ -75,7 +75,7 @@
         = render :partial => 'dispute', :locals => { :f => f }
 
   .modal-footer.hide-from-print
-    - if modal? #&& SettingsHelper.feature_on?(:print_order_detail)
+    - if modal? && SettingsHelper.feature_on?(:print_order_detail)
       = link_to manage_facility_order_order_detail_path(current_facility, @order, @order_detail, anchor: "print"), target: "_blank" do
         %i.icon-print.pull-left
     .hidden.updating-message= t('facility_order_details.edit.label.updating')
