@@ -8,6 +8,14 @@ class JournalRowBuilder
   attr_reader :order_details, :journal, :journal_rows, :errors, :options,
               :recharge_enabled, :product_recharges, :journaled_facility_ids
 
+
+  # This is for when you need to create a journal row without all the additional
+  # validations and error checking
+  def self.create_for_single_order_detail!(journal, order_detail)
+    attribute_rows = new(journal, nil).order_detail_to_journal_rows(order_detail)
+    attribute_rows.each { |attr| JournalRow.create!(attr) }
+  end
+
   def initialize(journal, order_details)
     @order_details = order_details
     @journal = journal

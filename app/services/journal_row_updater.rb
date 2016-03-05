@@ -21,9 +21,10 @@ class JournalRowUpdater
   end
 
   def recreate_journal_rows
-    if journal_rows.present?
-      order_detail.journal_rows.destroy_all
-      JournalRowBuilder.new(order_detail.journal, [order_detail]).create
+    journal_rows.each do |journal_row|
+      journal = journal_row.journal
+      journal_row.destroy
+      JournalRowBuilder.create_for_single_order_detail!(journal, order_detail)
     end
   end
 
