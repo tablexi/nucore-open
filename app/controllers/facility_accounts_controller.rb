@@ -15,8 +15,9 @@ class FacilityAccountsController < ApplicationController
   before_filter :check_acting_as
   before_filter :init_current_facility
   before_filter :init_account
+  before_filter :build_account, only: [:new, :create]
 
-  authorize_resource class: Account
+  authorize_resource :account
 
   before_filter :check_billing_access, only: check_billing_access_actions
 
@@ -46,25 +47,12 @@ class FacilityAccountsController < ApplicationController
 
   # GET /facilities/:facility_id/accounts/new
   def new
-    @owner_user = User.find(params[:owner_user_id])
     @available_account_types = available_account_types
-    @current_account_type = current_account_type
-    @account = current_account_type.constantize.new
   end
 
   # POST /facilities/:facility_id/accounts
   def create
-    @owner_user = User.find(params[:owner_user_id])
     @available_account_types = available_account_types
-    @current_account_type = current_account_type
-
-    @account = AccountBuilder.for(params[:account_type]).new(
-      account_type: params[:account_type],
-      facility: current_facility,
-      current_user: current_user,
-      owner_user: @owner_user,
-      params: params,
-    ).build
 
     # The builder might add some errors to base. If those exist,
     # we don't want to try saving as that would clear the original errors
@@ -195,7 +183,9 @@ class FacilityAccountsController < ApplicationController
   private
 
   def available_account_types
-    Account.config.account_types_for_facility(current_facility)
+    Account.config.account_types_for_facility(current_facility).select do |account_type|
+      current_ability.can?(:create, account_type.constantize)
+    end
   end
 
   def current_account_type
@@ -218,5 +208,20 @@ class FacilityAccountsController < ApplicationController
       @account = Account.find params[:account_id].to_i
     end
   end
+
+  def build_account
+    raise CanCan::AccessDenied if current_account_type.blank?
+
+    @owner_user = User.find(params[:owner_user_id])
+    @current_account_type = current_account_type
+    @account = AccountBuilder.for(current_account_type).new(
+      account_type: current_account_type,
+      facility: current_facility,
+      current_user: current_user,
+      owner_user: @owner_user,
+      params: params,
+    ).build
+  end
+
 
 end
