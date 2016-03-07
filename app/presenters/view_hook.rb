@@ -5,7 +5,7 @@ class ViewHook
       @@instance ||= new
     end
 
-    delegate :add_hook, :render_view_hook, to: :instance
+    delegate :add_hook, :remove_hook, :render_view_hook, to: :instance
   end
 
   # Best used through `render_view_hook` helper method
@@ -18,6 +18,11 @@ class ViewHook
   def add_hook(view, placement, partial)
     _view_hooks[view.to_s][placement.to_s] += [partial.to_s]
   end
+
+  def remove_hook(view, placement, partial)
+    _view_hooks[view.to_s][placement.to_s].delete partial.to_s
+  end
+
 
   def find(view, placement)
     _view_hooks[view.to_s][placement.to_s]

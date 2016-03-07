@@ -50,15 +50,14 @@ module SplitAccounts
     end
 
     # Stopped using SQL because that didn't seem to work until the built splits
-    # and subaccounts were created.
+    # and subaccounts were created. `subaccounts` has_many :through seems to not
+    # work here, either
     #
     # SQL version:
     #   subaccounts.where("expires_at IS NOT NULL").order(expires_at: :asc).first
     #
     def earliest_expiring_subaccount
-      if subaccounts.present?
-        subaccounts.sort_by(&:expires_at).first
-      end
+      splits.map(&:subaccount).compact.min_by(&:expires_at)
     end
 
     def recreate_journal_rows_on_order_detail_update?

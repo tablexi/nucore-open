@@ -40,6 +40,22 @@ RSpec.describe ViewHook do
     end
   end
 
+  describe "removing" do
+    before do
+      view_hook.add_hook(:view1, :placement, :partial)
+    end
+
+    it "removes with symbols" do
+      view_hook.remove_hook(:view1, :placement, :partial)
+      expect(view_hook.find(:view1, :placement)).to be_empty
+    end
+
+    it "removes with strings" do
+      view_hook.remove_hook("view1", "placement", "partial")
+      expect(view_hook.find(:view1, :placement)).to be_empty
+    end
+  end
+
   describe "render_view_hook" do
     let(:context) { double }
     before do
