@@ -24,6 +24,13 @@ module SplitAccounts
       ]
     end
 
+    def splittable_reservation_attrs
+      [
+        :duration_mins,
+        :actual_duration_mins,
+      ]
+    end
+
     def build_split_order_details
       @split_order_details = splits.map { |split| build_split_order_detail(split) }
       apply_remainders
@@ -38,6 +45,17 @@ module SplitAccounts
       splittable_attrs.each do |attr|
         split_order_detail.send "#{attr}=", floored_amount(split.percent, order_detail.send(attr))
       end
+
+      if order_detail.reservation
+        split_reservation = order_detail.reservation.dup
+        split_order_detail.reservation = split_reservation
+        split_reservation.order_detail = split_order_detail
+
+        splittable_reservation_attrs.each do |attr|
+          split_reservation.send "#{attr}=", floored_amount(split.percent, order_detail.reservation.send(attr))
+        end
+      end
+
       split_order_detail
     end
 
