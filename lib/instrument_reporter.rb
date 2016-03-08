@@ -1,9 +1,19 @@
 module InstrumentReporter
 
   def report_data
-    Reservation.where(%q/orders.facility_id = ? AND fulfilled_at >= ? AND fulfilled_at <= ? AND canceled_at IS NULL AND (order_details.state IS NULL OR order_details.state = 'complete' OR order_details.state = 'reconciled')/, current_facility.id, @date_start, @date_end).
-               joins('LEFT JOIN order_details ON reservations.order_detail_id = order_details.id INNER JOIN orders ON order_details.order_id = orders.id').
-               includes(:product)
+    reservations = Reservation.where("orders.facility_id = ?", current_facility.id)
+      .where("fulfilled_at >= ?", @date_start)
+      .where("fulfilled_at <= ?", @date_end)
+      .where(canceled_at: nil)
+      .where(order_details: { state: ["complete", "reconciled"]})
+      .joins(:order_detail)
+      .joins(order_detail: :order)
+      .includes(:product)
+      .includes(:order_detail)
+
+    order_details = reservations.map(&:order_detail)
+    virtual_order_details = OrderDetailListTransformerFactory.instance(order_details).perform(reservations: true)
+    virtual_order_details.map(&:reservation)
   end
 
 end

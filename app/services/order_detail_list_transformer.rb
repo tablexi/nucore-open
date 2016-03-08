@@ -9,7 +9,7 @@ class OrderDetailListTransformer
     @order_details = order_details
   end
 
-  def perform
+  def perform(options = {})
     order_details
   end
 

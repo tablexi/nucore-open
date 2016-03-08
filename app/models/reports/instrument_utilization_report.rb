@@ -26,7 +26,7 @@ class Reports::InstrumentUtilizationReport
 
   def add_reservation(key, reservation)
     @data[key] ||= DataRow.new(0, 0, 0)
-    data_row = DataRow.new(1, reservation.duration_mins, reservation.actual_duration_mins)
+    data_row = DataRow.new(reservation.quantity, reservation.duration_mins, reservation.actual_duration_mins)
     @data[key] += data_row
     @totals += data_row
   end

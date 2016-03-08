@@ -14,6 +14,15 @@ module SplitAccounts
       @quantity_override = BigDecimal("#{value}")
     end
 
+    # Let it pretend to be a real OrderDetail
+    def is_a? klass
+      __getobj__.class.object_id == klass.object_id
+    end
+
+    def self.primary_key
+      __getobj__.class.primary_key
+    end
+
   end
 
 end

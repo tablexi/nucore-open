@@ -7,27 +7,38 @@ module SplitAccounts
 
     attr_accessor :order_detail, :account, :splits, :split_order_details
 
-    def initialize(order_detail)
+    def initialize(order_detail, split_reservations: false)
       @order_detail = order_detail
       @account = order_detail.account
       @splits = account.splits
       @split_order_details = []
+      @split_reservations = split_reservations
     end
 
-    def splittable_attrs
-      [
+    def split
+      @split_order_details = splits.map { |split| build_split_order_detail(split) }
+      apply_remainders
+      split_order_details
+    end
+
+    private
+
+    def order_detail_attribute_splitter
+      AttributeSplitter.new(
         :quantity,
         :actual_cost,
         :actual_subsidy,
         :estimated_cost,
         :estimated_subsidy,
-      ]
+      )
     end
 
-    def build_split_order_details
-      @split_order_details = splits.map { |split| build_split_order_detail(split) }
-      apply_remainders
-      split_order_details
+    def reservation_attribute_splitter
+      AttributeSplitter.new(
+        :duration_mins,
+        :actual_duration_mins,
+        :quantity,
+      )
     end
 
     def build_split_order_detail(split)
@@ -35,15 +46,26 @@ module SplitAccounts
       split_order_detail.id = order_detail.id # dup does not copy over IDs
       split_order_detail.split = split
       split_order_detail.account = split.subaccount
-      splittable_attrs.each do |attr|
-        split_order_detail.send "#{attr}=", floored_amount(split.percent, order_detail.send(attr))
-      end
+      order_detail_attribute_splitter.split(order_detail, split_order_detail, split)
+
+      build_split_reservation(split_order_detail, split) if split_reservations?
+
       split_order_detail
+    end
+
+    def split_reservations?
+      @split_reservations.present?
+    end
+
+    def build_split_reservation(split_order_detail, split)
+      split_reservation = SplitReservationDecorator.new(order_detail.reservation.dup)
+      reservation_attribute_splitter.split(order_detail.reservation, split_reservation, split)
+      split_order_detail.reservation = split_reservation
     end
 
     def apply_remainders
       index = find_remainder_index
-      splittable_attrs.each { |attr| apply_remainder(attr, index) }
+      order_detail_attribute_splitter.splittable_attributes.each { |attr| apply_remainder(attr, index) }
     end
 
     def apply_remainder(attr, index)
@@ -59,12 +81,6 @@ module SplitAccounts
 
     def floored_total(items, attr)
       items.reduce(BigDecimal(0)) { |sum, item| sum + item.send(attr) }
-    end
-
-    def floored_amount(percent, value)
-      return BigDecimal(0) if percent == 0 || value.blank?
-      amount = BigDecimal(value) * BigDecimal(percent) / 100
-      amount.floor(2)
     end
 
   end

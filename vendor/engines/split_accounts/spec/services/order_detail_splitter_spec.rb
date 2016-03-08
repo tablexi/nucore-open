@@ -32,8 +32,8 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
     expect(described_class.new(order_detail))
   end
 
-  describe "#build_split_order_details" do
-    let(:results) { described_class.new(order_detail).build_split_order_details }
+  describe "#split" do
+    let(:results) { described_class.new(order_detail).split }
 
     it "returns correct number of split order details" do
       expect(results.size).to eq(split_account.splits.size)
